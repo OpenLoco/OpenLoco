@@ -382,5 +382,5 @@ namespace OpenLoco::S5
     static_assert(sizeof(Entity) == 0x80);
 #pragma pack(pop)
 
-    S5::Entity exportEntity(OpenLoco::Entity& src);
+    S5::Entity exportEntity(const OpenLoco::Entity& src);
 }

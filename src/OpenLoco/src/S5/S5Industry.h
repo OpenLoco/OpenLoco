@@ -52,5 +52,5 @@ namespace OpenLoco::S5
     static_assert(sizeof(Industry) == 0x453);
 #pragma pack(pop)
 
-    S5::Industry exportIndustry(OpenLoco::Industry& src);
+    S5::Industry exportIndustry(const OpenLoco::Industry& src);
 }

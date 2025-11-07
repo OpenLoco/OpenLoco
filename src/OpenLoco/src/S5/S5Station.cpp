@@ -20,7 +20,7 @@ namespace OpenLoco::S5
         return dst;
     }
 
-    S5::Station exportStation(OpenLoco::Station& src)
+    S5::Station exportStation(const OpenLoco::Station& src)
     {
         S5::Station dst{};
         dst.name = src.name;

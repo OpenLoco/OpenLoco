@@ -3,7 +3,7 @@
 
 namespace OpenLoco::S5
 {
-    S5::LabelFrame exportLabelFrame(OpenLoco::LabelFrame& src)
+    S5::LabelFrame exportLabelFrame(const OpenLoco::LabelFrame& src)
     {
         S5::LabelFrame dst{};
         std::ranges::copy(src.left, dst.left);

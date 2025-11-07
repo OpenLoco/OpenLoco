@@ -3,7 +3,7 @@
 
 namespace OpenLoco::S5
 {
-    S5::Animation exportAnimation(OpenLoco::World::Animation& src)
+    S5::Animation exportAnimation(const OpenLoco::World::Animation& src)
     {
         S5::Animation dst{};
         dst.baseZ = src.baseZ;

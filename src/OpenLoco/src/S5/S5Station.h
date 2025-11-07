@@ -50,5 +50,5 @@ namespace OpenLoco::S5
     static_assert(sizeof(Station) == 0x3D2);
 #pragma pack(pop)
 
-    S5::Station exportStation(OpenLoco::Station& src);
+    S5::Station exportStation(const OpenLoco::Station& src);
 }

@@ -5,7 +5,7 @@
 namespace OpenLoco::S5
 {
 
-    S5::Message exportMessage(OpenLoco::Message& src)
+    S5::Message exportMessage(const OpenLoco::Message& src)
     {
         S5::Message dst{};
         dst.type = enumValue(src.type);

@@ -13,7 +13,7 @@
 
 namespace OpenLoco::S5
 {
-    static Entity exportNullEntity(OpenLoco::Entity& src)
+    static Entity exportNullEntity(const OpenLoco::Entity& src)
     {
         Entity dst{};
         dst.base.baseType = enumValue(src.baseType);
@@ -25,7 +25,7 @@ namespace OpenLoco::S5
         return dst;
     }
 
-    static EntityBase exportEntityBase(OpenLoco::EntityBase& src, const uint8_t type)
+    static EntityBase exportEntityBase(const OpenLoco::EntityBase& src, const uint8_t type)
     {
         EntityBase dst{};
         dst.baseType = enumValue(src.baseType);
@@ -52,7 +52,7 @@ namespace OpenLoco::S5
         return dst;
     }
 
-    static Entity exportExhaust(OpenLoco::Exhaust& src)
+    static Entity exportExhaust(const OpenLoco::Exhaust& src)
     {
         Entity dst{};
         S5::Exhaust& dstExhaust = reinterpret_cast<S5::Exhaust&>(dst);
@@ -66,7 +66,7 @@ namespace OpenLoco::S5
         return dst;
     }
 
-    static Entity exportMoneyEffect(OpenLoco::MoneyEffect& src)
+    static Entity exportMoneyEffect(const OpenLoco::MoneyEffect& src)
     {
         Entity dst{};
         S5::MoneyEffect& dstMoney = reinterpret_cast<S5::MoneyEffect&>(dst);
@@ -82,7 +82,7 @@ namespace OpenLoco::S5
         return dst;
     }
 
-    static Entity exportVehicleCrashParticle(OpenLoco::VehicleCrashParticle& src)
+    static Entity exportVehicleCrashParticle(const OpenLoco::VehicleCrashParticle& src)
     {
         Entity dst{};
         S5::VehicleCrashParticle& dstParticle = reinterpret_cast<S5::VehicleCrashParticle&>(dst);
@@ -99,7 +99,7 @@ namespace OpenLoco::S5
         return dst;
     }
 
-    static Entity exportExplosionCloud(OpenLoco::ExplosionCloud& src)
+    static Entity exportExplosionCloud(const OpenLoco::ExplosionCloud& src)
     {
         Entity dst{};
         S5::ExplosionCloud& dstCloud = reinterpret_cast<S5::ExplosionCloud&>(dst);
@@ -108,7 +108,7 @@ namespace OpenLoco::S5
         return dst;
     }
 
-    static Entity exportSplash(OpenLoco::Splash& src)
+    static Entity exportSplash(const OpenLoco::Splash& src)
     {
         Entity dst{};
         S5::Splash& dstSplash = reinterpret_cast<S5::Splash&>(dst);
@@ -117,7 +117,7 @@ namespace OpenLoco::S5
         return dst;
     }
 
-    static Entity exportFireball(OpenLoco::Fireball& src)
+    static Entity exportFireball(const OpenLoco::Fireball& src)
     {
         Entity dst{};
         S5::Fireball& dstFireball = reinterpret_cast<S5::Fireball&>(dst);
@@ -126,7 +126,7 @@ namespace OpenLoco::S5
         return dst;
     }
 
-    static Entity exportExplosionSmoke(OpenLoco::ExplosionSmoke& src)
+    static Entity exportExplosionSmoke(const OpenLoco::ExplosionSmoke& src)
     {
         Entity dst{};
         S5::ExplosionSmoke& dstSmoke = reinterpret_cast<S5::ExplosionSmoke&>(dst);
@@ -135,7 +135,7 @@ namespace OpenLoco::S5
         return dst;
     }
 
-    static Entity exportSmoke(OpenLoco::Smoke& src)
+    static Entity exportSmoke(const OpenLoco::Smoke& src)
     {
         Entity dst{};
         S5::Smoke& dstSmoke = reinterpret_cast<S5::Smoke&>(dst);
@@ -144,7 +144,7 @@ namespace OpenLoco::S5
         return dst;
     }
 
-    static Entity exportEffectEntity(OpenLoco::EffectEntity& src)
+    static Entity exportEffectEntity(const OpenLoco::EffectEntity& src)
     {
         switch (src.getSubType())
         {
@@ -169,7 +169,7 @@ namespace OpenLoco::S5
         }
     }
 
-    static Entity exportVehicleHead(OpenLoco::Vehicles::VehicleHead& src)
+    static Entity exportVehicleHead(const OpenLoco::Vehicles::VehicleHead& src)
     {
         Entity dst{};
         S5::VehicleHead& dstHead = reinterpret_cast<S5::VehicleHead&>(dst);
@@ -232,7 +232,7 @@ namespace OpenLoco::S5
         return dst;
     }
 
-    static Entity exportVehicle1(OpenLoco::Vehicles::Vehicle1& src)
+    static Entity exportVehicle1(const OpenLoco::Vehicles::Vehicle1& src)
     {
         Entity dst{};
         S5::Vehicle1& dstVehicle1 = reinterpret_cast<S5::Vehicle1&>(dst);
@@ -262,7 +262,7 @@ namespace OpenLoco::S5
         return dst;
     }
 
-    static Entity exportVehicle2(OpenLoco::Vehicles::Vehicle2& src)
+    static Entity exportVehicle2(const OpenLoco::Vehicles::Vehicle2& src)
     {
         Entity dst{};
         S5::Vehicle2& dstVehicle2 = reinterpret_cast<S5::Vehicle2&>(dst);
@@ -315,7 +315,7 @@ namespace OpenLoco::S5
         return dst;
     }
 
-    static Entity exportVehicleBogie(OpenLoco::Vehicles::VehicleBogie& src)
+    static Entity exportVehicleBogie(const OpenLoco::Vehicles::VehicleBogie& src)
     {
         Entity dst{};
         S5::VehicleBogie& dstBogie = reinterpret_cast<S5::VehicleBogie&>(dst);
@@ -356,7 +356,7 @@ namespace OpenLoco::S5
         return dst;
     }
 
-    static Entity exportVehicleBody(OpenLoco::Vehicles::VehicleBody& src)
+    static Entity exportVehicleBody(const OpenLoco::Vehicles::VehicleBody& src)
     {
         Entity dst{};
         S5::VehicleBody& dstBody = reinterpret_cast<S5::VehicleBody&>(dst);
@@ -394,7 +394,7 @@ namespace OpenLoco::S5
         return dst;
     }
 
-    static Entity exportVehicleTail(OpenLoco::Vehicles::VehicleTail& src)
+    static Entity exportVehicleTail(const OpenLoco::Vehicles::VehicleTail& src)
     {
         Entity dst{};
         S5::VehicleTail& dstTail = reinterpret_cast<S5::VehicleTail&>(dst);
@@ -424,7 +424,7 @@ namespace OpenLoco::S5
         return dst;
     }
 
-    static Entity exportVehicleEntity(OpenLoco::Vehicles::VehicleBase& src)
+    static Entity exportVehicleEntity(const OpenLoco::Vehicles::VehicleBase& src)
     {
         switch (src.getSubType())
         {
@@ -444,7 +444,7 @@ namespace OpenLoco::S5
         }
     }
 
-    S5::Entity exportEntity(OpenLoco::Entity& src)
+    S5::Entity exportEntity(const OpenLoco::Entity& src)
     {
         if (src.baseType == EntityBaseType::effect)
         {

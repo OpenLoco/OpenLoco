@@ -20,5 +20,5 @@ namespace OpenLoco::S5
     static_assert(sizeof(LabelFrame) == 0x20);
 #pragma pack(pop)
 
-    S5::LabelFrame exportLabelFrame(OpenLoco::LabelFrame& src);
+    S5::LabelFrame exportLabelFrame(const OpenLoco::LabelFrame& src);
 }
