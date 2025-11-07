@@ -374,7 +374,7 @@ namespace OpenLoco::S5
         dst.industryFlags = enumValue(src.industryFlags);
         dst.forbiddenVehiclesPlayers = src.forbiddenVehiclesPlayers;
         dst.forbiddenVehiclesCompetitors = src.forbiddenVehiclesCompetitors;
-        dst.fixFlags = enumValue(src.fixFlags);
+        dst.fixFlags = src.fixFlags;
         dst.companyRecords = exportRecords(src.companyRecords);
         dst.var_44C = src.var_44C;
         dst.var_450 = src.var_450;
@@ -385,10 +385,10 @@ namespace OpenLoco::S5
         dst.var_464 = src.var_464;
         dst.var_468 = src.var_468;
         dst.lastMapWindowFlags = enumValue(src.lastMapWindowAttributes.flags);
-        dst.lastMapWindowSize[0] = enumValue(src.lastMapWindowAttributes.size.width);
-        dst.lastMapWindowSize[1] = enumValue(src.lastMapWindowAttributes.size.height);
-        dst.lastMapWindowVar88A = enumValue(src.lastMapWindowAttributes.var88A);
-        dst.lastMapWindowVar88C = enumValue(src.lastMapWindowAttributes.var88C);
+        dst.lastMapWindowSize[0] = src.lastMapWindowAttributes.size.width;
+        dst.lastMapWindowSize[1] = src.lastMapWindowAttributes.size.height;
+        dst.lastMapWindowVar88A = src.lastMapWindowAttributes.var88A;
+        dst.lastMapWindowVar88C = src.lastMapWindowAttributes.var88C;
 
         dst.var_478 = src.var_478;
         dst.numMessages = src.numMessages;
@@ -447,6 +447,7 @@ namespace OpenLoco::S5
             std::ranges::copy(src.routings[i], dst.routings[i]);
         }
         std::ranges::copy(src.orders, dst.orders);
+        return dst;
     }
 
     static S5::GameState importGameStateType2(const S5::GameStateType2& src)
@@ -472,6 +473,19 @@ namespace OpenLoco::S5
             std::ranges::copy(src.routings[i], dst.routings[i]);
         }
         std::ranges::copy(src.orders, dst.orders);
+        return dst;
+    }
+    static OpenLoco::Scenario::Construction importConstruction(const S5::Construction& src)
+    {
+        OpenLoco::Scenario::Construction dst{};
+        std::ranges::copy(src.signals, dst.signals);
+        std::ranges::copy(src.bridges, dst.bridges);
+        std::ranges::copy(src.trainStations, dst.trainStations);
+        std::ranges::copy(src.trackMods, dst.trackMods);
+        std::ranges::copy(src.var_17A, dst.var_17A);
+        std::ranges::copy(src.roadStations, dst.roadStations);
+        std::ranges::copy(src.roadMods, dst.roadMods);
+
         return dst;
     }
 
@@ -628,6 +642,7 @@ namespace OpenLoco::S5
             std::ranges::copy(src.routings[i], dst.routings[i]);
         }
         std::ranges::copy(src.orders, dst.orders);
+        return dst;
     }
 
     static std::unique_ptr<S5File> prepareGameState(SaveFlags flags, const std::vector<ObjectHeader>& requiredObjects, const std::vector<ObjectHeader>& packedObjects)
@@ -656,10 +671,10 @@ namespace OpenLoco::S5
         // Copy the source gamestate contents to the S5 gamestate, field by field
         auto& dst = file->gameState;
         dst = exportGameState(src);
-        dst.savedViewX = savedView.viewX;
-        dst.savedViewY = savedView.viewY;
-        dst.savedViewZoom = static_cast<uint8_t>(savedView.zoomLevel);
-        dst.savedViewRotation = savedView.rotation;
+        dst.general.savedViewX = savedView.viewX;
+        dst.general.savedViewY = savedView.viewY;
+        dst.general.savedViewZoom = static_cast<uint8_t>(savedView.zoomLevel);
+        dst.general.savedViewRotation = savedView.rotation;
 
         // Copy tile elements; remove any ghosts before saving
         auto tileElements = TileManager::getElements();

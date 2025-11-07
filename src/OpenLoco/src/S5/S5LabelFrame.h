@@ -21,4 +21,5 @@ namespace OpenLoco::S5
 #pragma pack(pop)
 
     S5::LabelFrame exportLabelFrame(const OpenLoco::LabelFrame& src);
+    OpenLoco::LabelFrame importLabelFrame(const S5::LabelFrame& src);
 }

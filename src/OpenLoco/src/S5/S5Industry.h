@@ -53,4 +53,5 @@ namespace OpenLoco::S5
 #pragma pack(pop)
 
     S5::Industry exportIndustry(const OpenLoco::Industry& src);
+    OpenLoco::Industry importIndustry(const S5::Industry& src);
 }

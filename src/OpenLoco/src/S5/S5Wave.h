@@ -18,4 +18,5 @@ namespace OpenLoco::S5
 #pragma pack(pop)
 
     S5::Wave exportWave(const OpenLoco::World::Wave& src);
+    OpenLoco::World::Wave importWave(const S5::Wave& src);
 }

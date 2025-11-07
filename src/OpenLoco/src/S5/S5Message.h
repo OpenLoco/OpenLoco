@@ -22,4 +22,5 @@ namespace OpenLoco::S5
 
     
     S5::Message exportMessage(const OpenLoco::Message& src);
+    OpenLoco::Message importMessage(const S5::Message& src);
 }

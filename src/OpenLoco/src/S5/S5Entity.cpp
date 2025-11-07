@@ -167,6 +167,7 @@ namespace OpenLoco::S5
             case EffectType::smoke:
                 return exportSmoke(*src.asSmoke());
         }
+        return {};
     }
 
     static Entity exportVehicleHead(const OpenLoco::Vehicles::VehicleHead& src)
@@ -307,7 +308,7 @@ namespace OpenLoco::S5
     {
         VehicleCargo dst{};
         dst.acceptedTypes = src.acceptedTypes;
-        dst.type = enumValue(src.type);
+        dst.type = src.type;
         dst.maxQty = src.maxQty;
         dst.townFrom = enumValue(src.townFrom);
         dst.numDays = src.numDays;
@@ -373,7 +374,7 @@ namespace OpenLoco::S5
         dstBody.trackType = src.trackType;
         dstBody.routingHandle = src.routingHandle._data;
         dstBody.var_38 = enumValue(src.var_38);
-        dstBody.objectSpriteType = enumValue(src.objectSpriteType);
+        dstBody.objectSpriteType = src.objectSpriteType;
         dstBody.nextCarId = enumValue(src.nextCarId);
         dstBody.var_3C = src.var_3C;
         dstBody.objectId = src.objectId;
@@ -442,6 +443,7 @@ namespace OpenLoco::S5
             case Vehicles::VehicleEntityType::tail:
                 return exportVehicleTail(*src.asVehicleTail());
         }
+        return {};
     }
 
     S5::Entity exportEntity(const OpenLoco::Entity& src)

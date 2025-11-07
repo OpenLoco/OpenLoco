@@ -19,4 +19,5 @@ namespace OpenLoco::S5
     static_assert(sizeof(Animation) == 0x6);
 
     S5::Animation exportAnimation(const OpenLoco::World::Animation& src);
+    OpenLoco::World::Animation importAnimation(const S5::Animation& src);
 }

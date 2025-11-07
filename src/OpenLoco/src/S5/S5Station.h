@@ -51,4 +51,5 @@ namespace OpenLoco::S5
 #pragma pack(pop)
 
     S5::Station exportStation(const OpenLoco::Station& src);
+    OpenLoco::Station importStation(const S5::Station& src);
 }
