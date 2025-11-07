@@ -121,11 +121,11 @@ namespace OpenLoco::Jukebox
                 sortPlaylistByName(playlist, true);
                 break;
 
-            case MusicSortMode::year:
+            case MusicSortMode::yearsAscending:
                 sortPlaylistByYear(playlist);
                 break;
 
-            case MusicSortMode::yearReverse:
+            case MusicSortMode::yearsDescending:
                 sortPlaylistByYear(playlist, true);
                 break;
 

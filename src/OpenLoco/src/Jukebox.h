@@ -30,8 +30,8 @@ namespace OpenLoco::Jukebox
         original, // Tracks were always ordered tracks by interal ID in vanilla
         name,
         nameReverse,
-        year,
-        yearReverse,
+        yearsAscending,
+        yearsDescending,
     };
 
     const MusicInfo& getMusicInfo(MusicId track);

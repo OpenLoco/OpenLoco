@@ -63,18 +63,19 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         window.invalidate();
     }
 
-    static void cycleSortMode(Ui::Window& window, Jukebox::MusicSortMode descending, Jukebox::MusicSortMode ascending)
+    // Cycles window.sortMode: (MusicSortMode::original or other) → order1 → order2 → MusicSortMode::original
+    static void cycleSortMode(Ui::Window& window, Jukebox::MusicSortMode order1, Jukebox::MusicSortMode order2)
     {
         auto oldSortMode = Jukebox::MusicSortMode(window.sortMode);
-        auto newSortMode = descending;
+        auto newSortMode = order1;
 
-        if (oldSortMode == ascending)
+        if (oldSortMode == order2)
         {
             newSortMode = Jukebox::MusicSortMode::original;
         }
-        else if (oldSortMode == descending)
+        else if (oldSortMode == order1)
         {
-            newSortMode = ascending;
+            newSortMode = order2;
         }
         setSortMode(window, newSortMode);
     }
@@ -127,11 +128,11 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             case Jukebox::MusicSortMode::nameReverse:
                 window.widgets[widx::sort_name].text = StringIds::table_header_name_asc;
                 break;
-            case Jukebox::MusicSortMode::year:
-                window.widgets[widx::sort_years].text = StringIds::table_header_years_desc;
-                break;
-            case Jukebox::MusicSortMode::yearReverse:
+            case Jukebox::MusicSortMode::yearsAscending:
                 window.widgets[widx::sort_years].text = StringIds::table_header_years_asc;
+                break;
+            case Jukebox::MusicSortMode::yearsDescending:
+                window.widgets[widx::sort_years].text = StringIds::table_header_years_desc;
                 break;
         }
     }
@@ -261,7 +262,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
                 cycleSortMode(window, Jukebox::MusicSortMode::name, Jukebox::MusicSortMode::nameReverse);
                 break;
             case sort_years:
-                cycleSortMode(window, Jukebox::MusicSortMode::year, Jukebox::MusicSortMode::yearReverse);
+                cycleSortMode(window, Jukebox::MusicSortMode::yearsDescending, Jukebox::MusicSortMode::yearsAscending);
                 break;
         }
     }
