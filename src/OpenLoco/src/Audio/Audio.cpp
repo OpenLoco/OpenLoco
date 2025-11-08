@@ -460,16 +460,13 @@ namespace OpenLoco::Audio
 
     bool shouldSoundLoop(SoundId id)
     {
-        loco_global<uint8_t[64], 0x0050D514> _unk_50D514;
-        if (isObjectSoundId(id))
+        if (!isObjectSoundId(id))
         {
-            auto obj = getSoundObject(id);
-            return obj->shouldLoop != 0;
+            return false;
         }
-        else
-        {
-            return _unk_50D514[(int32_t)id * 2] != 0;
-        }
+
+        auto obj = getSoundObject(id);
+        return obj->shouldLoop != 0;
     }
 
     // 0x0048A4BF
