@@ -685,18 +685,6 @@ namespace OpenLoco::Audio
         }
     }
 
-    // 0x00401A05
-    static void stopChannel(ChannelId id)
-    {
-        Logging::verbose("stopChannel({})", static_cast<int>(id));
-
-        auto channel = getChannel(id);
-        if (channel != nullptr)
-        {
-            channel->stop();
-        }
-    }
-
     // 0x0048A268
     static void triggerVehicleSoundIfInView(Vehicles::VehicleSoundPlayer* v)
     {
