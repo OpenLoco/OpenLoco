@@ -1,10 +1,8 @@
 #pragma once
 
-#include <OpenLoco/Interop/Interop.hpp>
+#include <OpenLoco/Core/Exception.hpp>
 #include <array>
 #include <sfl/small_vector.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
@@ -61,17 +59,17 @@ namespace OpenLoco
 
         FormatArguments()
         {
-            loco_global<std::byte[20], 0x0112C826> _commonFormatArgs;
-
-            _bufferStart = _buffer = &*_commonFormatArgs;
-            _capacity = std::size(_commonFormatArgs);
+            // TODO: refactor users to use non-static buffers
+            static std::byte defaultBuffer[20];
+            _bufferStart = _buffer = &*defaultBuffer;
+            _capacity = std::size(defaultBuffer);
         }
 
         template<typename... T>
         static FormatArguments common(T&&... args)
         {
-            loco_global<std::byte[20], 0x0112C826> _commonFormatArgs;
-            FormatArguments formatter{ _commonFormatArgs.get(), std::size(_commonFormatArgs) };
+            // TODO: refactor users to use non-static buffers
+            FormatArguments formatter;
             (formatter.push(args), ...);
             return formatter;
         }
@@ -79,8 +77,9 @@ namespace OpenLoco
         template<typename... T>
         static FormatArguments mapToolTip(T&&... args)
         {
-            loco_global<std::byte[40], 0x0050A018> _mapTooltipFormatArguments;
-            FormatArguments formatter{ _mapTooltipFormatArguments.get(), std::size(_mapTooltipFormatArguments) };
+            // TODO: refactor users to use non-static buffers
+            static std::byte mapTooltipBuffer[40];
+            FormatArguments formatter{ mapTooltipBuffer, std::size(mapTooltipBuffer) };
             (formatter.push(args), ...);
             return formatter;
         }
