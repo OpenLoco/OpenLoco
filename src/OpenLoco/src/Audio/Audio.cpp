@@ -877,6 +877,7 @@ namespace OpenLoco::Audio
     static constexpr auto kAmbientNumTreeTilesForForest = 30;
     static constexpr auto kAmbientNumMountainTilesForWilderness = 60;
 
+    // 0x004FEAA6
     static constexpr int32_t getAmbientMaxVolume(uint8_t zoom)
     {
         constexpr int32_t _volumes[]{ -1200, -2000, -3000, -3000 };
@@ -1005,11 +1006,10 @@ namespace OpenLoco::Audio
     // 0x0048ABE3
     void stopAmbientNoise()
     {
-        loco_global<uint32_t, 0x0050D5AC> _50D5AC;
-        if (_audioIsInitialised && _50D5AC != 1)
+        auto* channel = getChannel(ChannelId::ambient);
+        if (_audioIsInitialised && channel != nullptr && channel->isPlaying())
         {
-            stopChannel(ChannelId::ambient);
-            _50D5AC = 1;
+            channel->stop();
         }
     }
 
