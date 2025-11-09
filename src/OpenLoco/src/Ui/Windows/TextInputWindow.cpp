@@ -258,7 +258,7 @@ namespace OpenLoco::Ui::Windows::TextInput
             args.push<uint16_t>(numCharacters);
             args.push<uint16_t>(maxNumCharacters);
 
-            auto widget = &_widgets[Widx::ok];
+            widget = &_widgets[Widx::ok];
             auto point = Point(window.x + widget->left - 5, window.y + widget->top + 1);
             tr.drawStringRight(point, Colour::black, StringIds::num_characters_left_int_int, args);
         }
