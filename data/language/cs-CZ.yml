@@ -1,0 +1,2180 @@
+header:
+  locale: cs-CZ
+  english_name: Czech
+  native_name: Čeština
+  loco_original_id: 0
+strings:
+  0: ""
+  1: "{POP16}"
+  2: New Company{POP16}
+  3: Unnamed{POP16}
+  4: Train {INT16}
+  5: Bus {INT16}
+  6: Truck {INT16}
+  7: Tram {INT16}
+  8: Aircraft {INT16}
+  9: Ship {INT16}
+
+  # Days
+  10: 1st
+  11: 2nd
+  12: 3rd
+  13: 4th
+  14: 5th
+  15: 6th
+  16: 7th
+  17: 8th
+  18: 9th
+  19: 10th
+  20: 11th
+  21: 12th
+  22: 13th
+  23: 14th
+  24: 15th
+  25: 16th
+  26: 17th
+  27: 18th
+  28: 19th
+  29: 20th
+  30: 21st
+  31: 22nd
+  32: 23rd
+  33: 24th
+  34: 25th
+  35: 26th
+  36: 27th
+  37: 28th
+  38: 29th
+  39: 30th
+  40: 31st
+
+  41: Jan
+  42: Feb
+  43: Mar
+  44: Apr
+  45: May
+  46: Jun
+  47: Jul
+  48: Aug
+  49: Sep
+  50: Oct
+  51: Nov
+  52: Dec
+
+  53: Unable to access graphic data file
+  54: Missing or inaccessible data file
+  55: Unable to allocate enough memory
+  56: "{COLOUR BLACK}❌"
+  57: Chosen name in use already
+  58: Too many names defined
+  59: Not enough cash - requires {CURRENCY32}
+  60: "{SMALLFONT}{COLOUR BLACK}Close window"
+  61: Game Initialization Failed
+  62: Unable to start game in a minimized state
+  63: Unable to initialize graphics system
+  64: CD Key Code {INT32 RAW} is not valid for your Locomotion CD!{COLOUR WINDOW_1}{COLOUR WINDOW_1}Please un-install Chris Sawyer's Locomotion and re-install with the correct CD Key Code
+
+  65: "{UINT16 RAW} x {UINT16 RAW}"
+  66: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{UINT16 RAW} x {UINT16 RAW}"
+
+  67: About 'Chris Sawyer's Locomotion'
+  68: Chris Sawyer's Locomotion
+  69: "{COLOUR WINDOW_2}Version 4.02.176 (US English)"
+  70: "{COLOUR WINDOW_2}Copyright © 2004 Chris Sawyer, All Rights Reserved"
+  71: "{COLOUR WINDOW_2}Designed & Programmed by Chris Sawyer"
+  72: "{COLOUR WINDOW_2}Graphics by Simon Foster"
+  73: "{COLOUR WINDOW_2}Sound & Music by Allister Brimble"
+  74: "{COLOUR WINDOW_2}Title Music by John Broomhall"
+  75: "{COLOUR WINDOW_2}Representation by Jacqui Lyons at Marjacq Ltd."
+  76: "{COLOUR WINDOW_2}Thanks to:-"
+  77: "{COLOUR WINDOW_2}Katrina Morrin, Natasha Morrin, Jim Wills"
+  78: ""
+  79: ""
+  80: ""
+  81: ""
+  82: ""
+  83: ""
+  84: ""
+
+  85: "{STRINGID}"
+  86: "{POP16}{STRINGID}"
+  87: "{POP16}{POP16}{STRINGID}"
+  88: "{POP16}{POP16}{POP16}{STRINGID}"
+  89: "{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  90: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  91: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  92: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  93: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  94: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  95: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  96: "{COLOUR BLACK}▼"
+  97: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  98: Too low!
+  99: Too high!
+  100: Can't lower land here...
+  101: Can't raise land here...
+  102: Object in the way
+  103: Load Game
+  104: Save Game
+  105: Quit Scenario Editor
+  106: Quit Game
+  107: Screenshot
+  108: Screenshot
+  109: Screenshot saved to disk as '{STRING}'
+  110: Screenshot failed!
+  111: Landscape data area full!
+  112: Can't build partly above and partly below ground
+  113: "{STRINGID}"
+  114: "{SMALLFONT}{COLOUR BLACK}Left-Hand Curve"
+  115: "{SMALLFONT}{COLOUR BLACK}Right-Hand Curve"
+  116: "{SMALLFONT}{COLOUR BLACK}Left-Hand Curve (Small Radius)"
+  117: "{SMALLFONT}{COLOUR BLACK}Right-Hand Curve (Small Radius)"
+  118: "{SMALLFONT}{COLOUR BLACK}Left-Hand Curve (Very Small Radius)"
+  119: "{SMALLFONT}{COLOUR BLACK}Right-Hand Curve (Very Small Radius)"
+  120: "{SMALLFONT}{COLOUR BLACK}Left-Hand Curve (Large Radius)"
+  121: "{SMALLFONT}{COLOUR BLACK}Right-Hand Curve (Large Radius)"
+  122: "{SMALLFONT}{COLOUR BLACK}Straight"
+  123: "{SMALLFONT}{COLOUR BLACK}'S' Bend Left"
+  124: "{SMALLFONT}{COLOUR BLACK}'S' Bend Right"
+  125: "{SMALLFONT}{COLOUR BLACK}'S' Bend to left side of dual track"
+  126: "{SMALLFONT}{COLOUR BLACK}'S' Bend to right side of dual track"
+  127: "{SMALLFONT}{COLOUR BLACK}'S' Bend to single track"
+  128: "{SMALLFONT}{COLOUR BLACK}Turnaround"
+  129: "{SMALLFONT}{COLOUR BLACK}(Click on landscape to start construction)"
+  130: "{SMALLFONT}{COLOUR BLACK}Construct this Track Section"
+  131: "{SMALLFONT}{COLOUR BLACK}Remove Previous Track Section"
+  132: "{SMALLFONT}{COLOUR BLACK}Steep Slope Down"
+  133: "{SMALLFONT}{COLOUR BLACK}Slope Down"
+  134: "{SMALLFONT}{COLOUR BLACK}Level"
+  135: "{SMALLFONT}{COLOUR BLACK}Slope Up"
+  136: "{SMALLFONT}{COLOUR BLACK}Steep Slope Up"
+  137: "{COLOUR WINDOW_2}Build this..."
+  138: "{COLOUR WINDOW_2}Cost: {COLOUR BLACK}{CURRENCY32}"
+  139: Can't build signal here...
+  140: Can't build signals here...
+  141: Can't remove signal...
+  142: Can't remove {POP16}{POP16}{POP16}{STRINGID}...
+  143: Can't build {POP16}{POP16}{POP16}{STRINGID}...
+  144: Raise or lower land first
+  145: Underground view
+  146: Hide foreground tracks & roads
+  147: Station type can only be built at end of road
+  148: Wrong type of station for {STRINGID}
+  149: Station not compatible with {STRINGID}
+  150: Level crossing in the way
+  151: Level crossing only possible with straight road and track at same level
+  152: Junction not possible
+  153: Junction must be entirely level
+  154: "{STRINGID} in the way / wrong height for junction"
+  155: Already built here
+  156: Unable to cross or create junction with {STRINGID}
+  157: Junctions not possible
+  158: Signal
+  159: Station
+  160: Airport
+  161: Ship Port
+  162: Station in the way
+  163: Signal in the way
+  164: Can't remove airport...
+  165: Can't remove ship port...
+  166: Can't remove station...
+  167: Wrong type of track/road!
+  168: Bridge types must match
+  169: Bridge not suitable for junction
+  170: Track combination not possible
+  171: Too many objects in game
+  172: Rotate Clockwise
+  173: Rotate Anti-Clockwise
+  174: "Starting for the first time..."
+  175: "Checking object files..."
+  176: Load Game
+  177: Quit Game
+  178: Quit Game
+  179: Quit Scenario Editor
+  180: Load Landscape
+  181: Save this before loading ?
+  182: Save this before quitting ?
+  183: Save this before quitting ?
+  184: Save
+  185: Don't Save
+  186: Cancel
+  187: OK
+
+  188: "{SMALLFONT}{COLOUR BLACK}Scroll {STRINGID} left"
+  189: "{SMALLFONT}{COLOUR BLACK}Scroll {STRINGID} right"
+  190: "{SMALLFONT}{COLOUR BLACK}Scroll {STRINGID} left fast"
+  191: "{SMALLFONT}{COLOUR BLACK}Scroll {STRINGID} right fast"
+  192: "{SMALLFONT}{COLOUR BLACK}Scroll {STRINGID} left/right"
+  193: "{SMALLFONT}{COLOUR BLACK}Scroll {STRINGID} up"
+  194: "{SMALLFONT}{COLOUR BLACK}Scroll {STRINGID} down"
+  195: "{SMALLFONT}{COLOUR BLACK}Scroll {STRINGID} up fast"
+  196: "{SMALLFONT}{COLOUR BLACK}Scroll {STRINGID} down fast"
+  197: "{SMALLFONT}{COLOUR BLACK}Scroll {STRINGID} up/down"
+
+  198: map
+  199: vehicle list
+  200: new vehicle list
+  201: list
+  202: trees list
+  203: orders list
+  204: station list
+  205: town list
+  206: industry list
+  207: new industry list
+  208: building list
+  209: walls list
+  210: ratings list
+  211: cargo list
+  212: message list
+  213: company list
+  214: scenario list
+  215: credits list
+
+  216: "{COLOUR WINDOW_2}▲{COLOUR BLACK}  {CURRENCY32}"
+  217: "{COLOUR WINDOW_2}▼{COLOUR BLACK}  {CURRENCY32}"
+  218: Unable to switch to selected mode
+  219: "{COLOUR WINDOW_2}Cost: {COLOUR BLACK}{CURRENCY32}"
+  220: (player 1)
+  221: (player 2)
+  222: Can't change color scheme...
+  223: Zoom In
+  224: Zoom Out
+  225: Towns
+  226: Industries
+  227: Airport
+  228: Ship Port
+  229: Landscape Generation Options
+  230: ""
+  231: 🛤
+  232: 🛣️
+  233: 🛤🛣️
+  234: ☁️
+  235: 🛤☁️
+  236: 🛣️☁️
+  237: 🛤🛣️☁️
+  238: 🌊
+  239: 🛤🌊
+  240: 🛣️🌊
+  241: 🛤🛣️🌊
+  242: ☁️🌊
+  243: 🛤☁️🌊
+  244: 🛣️☁️🌊
+  245: 🛤🛣️☁️🌊
+  246: "{STRINGID}"
+  247: "{STRINGID} - Details"
+  248: "{STRINGID} - Finances"
+  249: "{STRINGID} - Cargo Delivered"
+  250: "{STRINGID} - Color Scheme"
+  251: "{STRINGID} - Challenge"
+  252: "{SMALLFONT}{COLOUR BLACK}Change direction"
+  253: "{SMALLFONT}{COLOUR BLACK}Pass signal at danger"
+  254: "{SMALLFONT}{COLOUR BLACK}Remove {POP16}{STRINGID} from track/road"
+  255: "{SMALLFONT}{COLOUR BLACK}Place {POP16}{STRINGID} on track/road"
+  256: "{SMALLFONT}{COLOUR BLACK}Remove {POP16}{STRINGID} from airport"
+  257: "{SMALLFONT}{COLOUR BLACK}Place {POP16}{STRINGID} in airport"
+  258: "{SMALLFONT}{COLOUR BLACK}Remove {POP16}{STRINGID} from water"
+  259: "{SMALLFONT}{COLOUR BLACK}Place {POP16}{STRINGID} in dock"
+  260: Can't start {POP16}{POP16}{POP16}{STRINGID}...
+  261: Can't select manual mode for {POP16}{POP16}{POP16}{STRINGID}...
+  262: Can't stop {POP16}{POP16}{POP16}{STRINGID}...
+  263: "{VELOCITY}"
+  264: Unlimited{POP16}
+  265: Stop
+  266: Start
+  267: Manual
+  268: "{SMALLFONT}{COLOUR BLACK}Select how much track/road to upgrade"
+  269: "{SMALLFONT}{COLOUR BLACK}Stop/Start {POP16}{STRINGID}"
+  270: "{COLOUR BLACK}{STRINGID}"
+  271: "{SMALLFONT}{COLOUR BLACK}Track/road construction"
+  272: "{SMALLFONT}{COLOUR BLACK}Station construction"
+  273: "{SMALLFONT}{COLOUR BLACK}Signal construction"
+  274: "{SMALLFONT}{COLOUR BLACK}Track electrification and other enhancements"
+  275: "{SMALLFONT}{COLOUR BLACK}Select signal type"
+  276: "{SMALLFONT}{COLOUR BLACK}Build signals in both directions"
+  277: "{SMALLFONT}{COLOUR BLACK}Build signal in one direction only (trains will not be allowed to travel in the other direction)"
+  278: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID}{NEWLINE}Max. speed:  {STRINGID}{NEWLINE}Max. height above ground:  {HEIGHT}"
+  279: "{SMALLFONT}{COLOUR BLACK}Select station type"
+  280: Station {INT16}
+  281: "{STRINGID}"
+  282: "{STRINGID} North"
+  283: "{STRINGID} South"
+  284: "{STRINGID} East"
+  285: "{STRINGID} West"
+  286: "{STRINGID} Central"
+  287: "{STRINGID} Transfer"
+  288: "{STRINGID} Halt"
+  289: "{STRINGID} Valley"
+  290: "{STRINGID} Heights"
+  291: "{STRINGID} Woods"
+  292: "{STRINGID} Lakeside"
+  293: "{STRINGID} Exchange"
+  294: "{STRINGID} Airport"
+  295: "{STRINGID} Oilfield"
+  296: "{STRINGID} Mines"
+  297: "{STRINGID} Docks"
+  298: "{STRINGID} Annexe"
+  299: "{STRINGID} Sidings"
+  300: "{STRINGID} Branch"
+  301: Upper {STRINGID}
+  302: Lower {STRINGID}
+  303: "{STRINGID} Heliport"
+  304: "{STRINGID} Forest"
+  305: "{STRINGID} Junction"
+  306: "{STRINGID} Cross"
+  307: "{STRINGID} Views"
+  308: "{STRINGID} 1"
+  309: "{STRINGID} 2"
+  310: "{STRINGID} 3"
+  311: "{STRINGID} 4"
+  312: "{STRINGID} 5"
+  313: "{STRINGID} 6"
+  314: "{STRINGID} 7"
+  315: "{STRINGID} 8"
+  316: "{STRINGID} 9"
+  317: "{STRINGID} 10"
+  318: "{STRINGID} 11"
+  319: "{STRINGID} 12"
+  320: "{STRINGID} 13"
+  321: "{STRINGID} 14"
+  322: "{STRINGID} 15"
+  323: "{STRINGID} 16"
+  324: "{STRINGID} 17"
+  325: "{STRINGID} 18"
+  326: "{STRINGID} 19"
+  327: "{STRINGID} 20"
+  328: "{COLOUR WINDOW_2}{POP16}Weight: {COLOUR BLACK}{INT32}t"
+  329: "{COLOUR WINDOW_2}Total power: {COLOUR BLACK}{POWER}{COLOUR WINDOW_2} Weight: {COLOUR BLACK}{INT32}t"
+  330: "{COLOUR WINDOW_2}Max. speed: {COLOUR BLACK}{VELOCITY}{POP16}{COLOUR WINDOW_2} Reliability: {COLOUR BLACK}{INT16}%"
+  331: "{COLOUR WINDOW_2}Max. speed: {COLOUR BLACK}{VELOCITY} / {VELOCITY}{COLOUR WINDOW_2} Reliability: {COLOUR BLACK}{INT16}%"
+  332: "{SMALLFONT}{COLOUR BLACK}Sell {POP16}{STRINGID}{NEWLINE}(Or drag individual vehicle here to sell it)"
+  333: "{SMALLFONT}{COLOUR BLACK}Build new vehicle for this {POP16}{STRINGID}"
+  334: "{COLOUR BLACK}(click on view to set {STRINGID} starting position)"
+  335: Vehicles are not compatible
+  336: Too many vehicles in game
+  337: ""
+  338: ""
+  339: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  340: "{NEWLINE}Built:  {DATE MY}"
+  341: "{NEWLINE}Value:  {CURRENCY32}"
+  342: "{NEWLINE}Power:  {POWER}"
+  343: "{NEWLINE}Weight:  {INT16}t"
+  344: "{NEWLINE}Max. Speed:  {VELOCITY}"
+  345: " ({VELOCITY} on {STRINGID})"
+  346: "{NEWLINE}Reliability:  {INT16}%"
+  347: "{STRINGID} {STRINGID}"
+  348: Single section
+  349: Block section
+  350: All connected track
+  351: "Warning: Too much track!{NEWLINE}Some of selected track may not have been upgraded"
+  352: "{SMALLFONT}{COLOUR BLACK}Upgrade track with these enhancements"
+  353: "{SMALLFONT}{COLOUR BLACK}(Click on selected track to add this)"
+  354: "{SMALLFONT}{COLOUR BLACK}Select what to add to track"
+  355: "{SMALLFONT}{COLOUR BLACK}Move main view to show this"
+  356: Off edge of map!
+  357: Cannot build partly above and partly below water!
+  358: Too close to water surface!
+  359: Can't build this underwater!
+  360: Can only build this above ground!
+  361: Can only build this on level land
+  362: Load Game
+  363: Load Landscape
+  364: Save Landscape
+  365: Save Game
+  366: Save Scenario
+  367: OpenLoco Saved Game File
+  368: OpenLoco Scenario File
+  369: OpenLoco Landscape File
+  370: Game Save Failed!
+  371: Failed to load saved game...{NEWLINE}File contains invalid data!
+  372: Hide foreground scenery & buildings
+  373: Can only be built on water!
+  374: Can only be built on water if next to a water-based industry!
+  375: Name {STRINGID}
+  376: "Type new name for this {STRINGID}:"
+  377: Can't rename this vehicle...
+  378: Bridge needed
+  379: Too far above ground for this bridge type
+  380: Bridge is already at its maximum height above ground
+  381: "{STRINGID} requires a bridge"
+  382: Bridge type unsuitable for this configuration
+  383: Station Name
+  384: "Type new name for {STRINGID} station:"
+  385: Can't rename station...
+  386: Invalid name for station
+  387: Can't move vehicle...
+  388: Can't reverse train...
+  389: Can't sell vehicle...
+  390: Can't sell {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}...
+  391: "{STRINGID}"
+  392: "{STRINGID}"
+  393: "{STRINGID} station platform"
+  394: "{STRINGID} station building / bus stop"
+  395: "{SMALLFONT}{COLOUR BLACK}Highlight catchment area of this station"
+  396: Mute
+  397: Play Music
+  398: "{COLOUR RED}Bankrupt!"
+  399: "{STRINGID} not allowed to wait for a full load at {STRINGID}"
+  400: "{STRINGID} has slipped to a halt on an incline"
+  401: "{STRINGID} now accepts {STRINGID}"
+  402: "{STRINGID} no longer accepts {STRINGID}"
+  403: New Transport Company!{NEWLINE}{STRINGID} starts construction near {STRINGID}!
+  404: "{STRINGID} is not able to land at {STRINGID} due to the airport being unsuitable"
+  405: Citizens Celebrate!{NEWLINE}First {STRINGID} arrive in {STRINGID}!
+  406: Citizens Celebrate!{NEWLINE}First {STRINGID} delivery arrives in {STRINGID}!
+  407: Workers Celebrate!{NEWLINE}First {STRINGID} delivered to {STRINGID}!
+  408: New Vehicle Invented -{NEWLINE}“{STRINGID}”!
+  409: "{STRINGID} is promoted from “{STRINGID}” to “{STRINGID}”!"
+  410: New {STRINGID} under construction near {STRINGID}!
+  411: Congratulations!{NEWLINE}You have successfully completed your challenge!
+  412: Failure!{NEWLINE}You have failed your challenge!
+  413: Beaten!{NEWLINE}{STRINGID} has completed the challenge!
+  414: Bankruptcy Warning!{NEWLINE}{STRINGID} will be closed down in 6 months unless performance improves!
+  415: Final Warning!{NEWLINE}{STRINGID} will be closed down in 3 months unless performance improves!
+  416: Bankrupt!{NEWLINE}{STRINGID} has been declared bankrupt and closed down!
+  417: Bankrupt!{NEWLINE}{STRINGID} has been declared bankrupt and closed down!
+  418: "{STRINGID} has crashed!"
+  419: Corporate Scandal!{NEWLINE}{STRINGID} jailed for attempted robbery!
+  420: New {STRINGID} speed record!{NEWLINE}{STRINGID} achieves average speed of {VELOCITY} between stops!
+
+  421: "{MOVE_X 10}{STRINGID}"
+  422: »{MOVE_X 10}{STRINGID}
+
+  423: "{NEWLINE 1 2}{SPRITE}{NEWLINE 26 8}{STRINGID}"
+
+  424: "{MOVE_X 10}{STRING}"
+  425: »{MOVE_X 10}{STRING}
+
+  426: Height marks on tracks & roads
+  427: Height marks on land
+  428: One-way direction arrows
+  429: Town names displayed
+  430: Station names displayed
+  431: "{NEWLINE}{COLOUR WINDOW_3}Accepts "
+  432: "1/8 "
+  433: "1/4 "
+  434: "3/8 "
+  435: "1/2 "
+  436: "5/8 "
+  437: "3/4 "
+  438: "7/8 "
+  439: ", "
+  440: "{NEWLINE}{COLOUR WINDOW_3}Produces "
+  441: "{NEWLINE}{COLOUR WINDOW_3}Under construction"
+  442: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}Owned by {STRINGID}"
+  443: "{MOVE_X 10}{STRINGID}"
+  444: ✓{MOVE_X 10}{STRINGID}
+  445: Can't remove this...
+  446: Walls & Fences
+  447: Plant Trees
+  448: Can't position this here...
+  449: Can't plant this here...
+  450: "{OUTLINE}{COLOUR WINDOW_2}{STRINGID}"
+  451: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}Right-Click to Modify"
+  452: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}Right-Click to Remove"
+  453: "{TINYFONT}{COLOUR BLACK}{STRINGID}"
+  454: "{COLOUR RED}{STRINGID}"
+  455: "{COLOUR BLACK}{STRINGID}"
+  456: "{COLOUR BLACK}{STRINGID} {STRINGID}"
+  457: "{COLOUR WINDOW_2}{STRINGID}"
+  458: "{COLOUR WHITE}{STRINGID}"
+  459: Stopping{POP16}{POP16}
+  460: / Waiting at signal{POP16}{POP16}
+  461: at {VELOCITY}{POP16}
+  462: "{COLOUR RED}Crashed!{POP16}{POP16}"
+  463: "{COLOUR RED}Stuck!{POP16}{POP16}"
+  464: "{COLOUR RED}Broken down{POP16}{POP16}"
+  465: Stopped{POP16}{POP16}
+  466: Loading at {STRINGID}
+  467: Unloading at {STRINGID}
+  468: Approaching {STRINGID}
+  469: Landing at {STRINGID}
+  470: Taxiing at {STRINGID}
+  471: Taking off from {STRINGID}
+  472: Heading for {STRINGID}
+  473: No position{POP16}{POP16}
+  474: Traveling{POP16}{POP16}
+  475: "{STRINGID} - {STRINGID}"
+  476: "{POP16}{POP16}{STRINGID}"
+  477: Can't lower water level here...
+  478: Can't raise water level here...
+  479: (None)
+  480: "{STRING}"
+  481: "{COLOUR RED}Closed - - "
+  482: "{COLOUR YELLOW}{STRINGID} - - "
+  483: Land slope unsuitable
+  484: Can't build this underwater!
+  485: Land type not suitable
+  486: "{COLOUR BLACK}▴"
+  487: "{COLOUR BLACK}▾"
+  488: train
+  489: trains
+  490: Train
+  491: Trains
+  492: "{INT16} train"
+  493: "{INT16} trains"
+  494: Train {INT16}
+  495: boat
+  496: boats
+  497: Boat
+  498: Boats
+  499: "{INT16} boat"
+  500: "{INT16} boats"
+  501: Boat {INT16}
+  502: track
+  503: tracks
+  504: Track
+  505: Tracks
+  506: "{INT16} track"
+  507: "{INT16} tracks"
+  508: Track {INT16}
+  509: docking platform
+  510: docking platforms
+  511: Docking platform
+  512: Docking platforms
+  513: "{INT16} docking platform"
+  514: "{INT16} docking platforms"
+  515: Docking platform {INT16}
+  516: station
+  517: stations
+  518: Station
+  519: Stations
+  520: "{INT16} station"
+  521: "{INT16} stations"
+  522: Station {INT16}
+  523: vehicle
+  524: vehicles
+  525: Vehicle
+  526: Vehicles
+  527: "{INT16} vehicle"
+  528: "{INT16} vehicles"
+  529: Vehicle {INT16}
+  530: building
+  531: buildings
+  532: Building
+  533: Buildings
+  534: "{INT16} building"
+  535: "{INT16} buildings"
+  536: Building {INT16}
+  537: structure
+  538: structures
+  539: Structure
+  540: Structures
+  541: "{INT16} structure"
+  542: "{INT16} structures"
+  543: Structure {INT16}
+  544: ship
+  545: ships
+  546: Ship
+  547: Ships
+  548: "{INT16} ship"
+  549: "{INT16} ships"
+  550: Ship {INT16}
+  551: town
+  552: towns
+  553: Town
+  554: Towns
+  555: "{INT16} town"
+  556: "{INT16} towns"
+  557: Town {INT16}
+  558: industry
+  559: industries
+  560: Industry
+  561: Industries
+  562: "{INT16} industry"
+  563: "{INT16} industries"
+  564: Industry {INT16}
+  565: "{SMALLFONT}{COLOUR BLACK}Rotate objects by 90°"
+  566: Level land required
+  567: Can't change land type...
+  568: "{OUTLINE}{COLOUR GREEN}+ {CURRENCY32}"
+  569: "{OUTLINE}{COLOUR RED}- {CURRENCY32}"
+  570: "{OUTLINE}{COLOUR WINDOW_1}+ {CURRENCY32}"
+  571: "{OUTLINE}{COLOUR WINDOW_1}- {CURRENCY32}"
+  572: "{CURRENCY48}"
+  573: "{COLOUR RED}{CURRENCY48}"
+  574: "{SMALLFONT}{COLOUR BLACK}Show view of {POP16}{STRINGID}"
+  575: "{SMALLFONT}{COLOUR BLACK}Show {POP16}{STRINGID} design details and options"
+  576: "{SMALLFONT}{COLOUR BLACK}Show cargo/passengers in {POP16}{STRINGID}"
+  577: "{SMALLFONT}{COLOUR BLACK}Show {POP16}{STRINGID} route details"
+  578: "{SMALLFONT}{COLOUR BLACK}Show {POP16}{STRINGID} running costs and income"
+  579: "{SMALLFONT}{COLOUR BLACK}Select new start position for construction"
+  580: "{SMALLFONT}{COLOUR BLACK}Rotate 90°"
+  581: "{STRINGID} in the way"
+  582: "{CURRENCY32}"
+  583: Can't build this here...
+  584: "{DATE MY}"
+  585: OpenLoco
+  586: Please insert your Locomotion CD in the following drive:-
+  587: "{COLOUR WINDOW_2}Expenditure/Income"
+  588: Train Income
+  589: Train Running Costs
+  590: Bus Income
+  591: Bus Running Costs
+  592: Truck Income
+  593: Truck Running Costs
+  594: Tram Income
+  595: Tram Running Costs
+  596: Aircraft Income
+  597: Aircraft Running Costs
+  598: Ship Income
+  599: Ship Running Costs
+  600: Construction
+  601: Vehicle Purchases
+  602: Vehicle Disposals
+  603: Loan Interest
+  604: Miscellaneous
+  605: "{UINT16 RAW}"
+  606: +{CURRENCY48}
+  607: "{CURRENCY48}"
+  608: "{COLOUR WINDOW_2}Loan:"
+  609: "{CURRENCY32}"
+  610: Can't borrow any more money!
+  611: Not enough cash available!
+  612: Can't pay back loan!
+  613: "{SMALLFONT}{COLOUR BLACK}Start New Game"
+  614: "{SMALLFONT}{COLOUR BLACK}Load Saved Game"
+  615: "{SMALLFONT}{COLOUR BLACK}Show Tutorial"
+  616: "{SMALLFONT}{COLOUR BLACK}Exit from game"
+  617: Hamlet
+  618: Village
+  619: Town
+  620: City
+  621: Metropolis
+  622: Track/road unsuitable
+  623: Track/road unsuitable for station
+  624: Station cannot be built on a junction
+  625: Signals cannot be built on a junction
+  626: Signals cannot be built in stations
+  627: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}"
+  628: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}"
+  629: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID} {STRINGID}"
+  630: "{COLOUR WINDOW_2}Cash:  {MOVE_X 81}{COLOUR RED}Bankrupt!"
+  631: "{COLOUR WINDOW_2}Cash:  {MOVE_X 81}{COLOUR BLACK}{CURRENCY48}"
+  632: "{COLOUR WINDOW_2}Cash:  {MOVE_X 81}{COLOUR RED}{CURRENCY48}"
+  633: "{COLOUR WINDOW_2}Company Value: {COLOUR BLACK}{CURRENCY48}"
+  634: "{COLOUR WINDOW_2}Profit from Vehicles: {COLOUR BLACK}{CURRENCY48} per month"
+
+  635: January
+  636: February
+  637: March
+  638: April
+  639: May
+  640: June
+  641: July
+  642: August
+  643: September
+  644: October
+  645: November
+  646: December
+
+  647: "{SMALLFONT}{COLOUR BLACK}{DATE DMY}{STRINGID}"
+  648: Select Scenario for New Game
+  649: ""
+  650: "{COLOUR WINDOW_2}Sound Quality:"
+  651: Low
+  652: Medium
+  653: High
+  654: Options
+  655: "{COLOUR WINDOW_2}Currency:"
+  656: "{COLOUR WINDOW_2}Distance and Speed:"
+  657: "{COLOUR WINDOW_2}Heights:"
+  658: Imperial
+  659: Metric
+  660: Units
+  661: Real Values
+  662: "{COLOUR WINDOW_2}Display Resolution:"
+  663: Landscape Smoothing
+  664: "{SMALLFONT}{COLOUR BLACK}Toggle landscape tile edge smoothing on/off"
+  665: Gridlines on Landscape
+  666: "{SMALLFONT}{COLOUR BLACK}Toggle gridlines on landscape on/off"
+  667: The bank refuses to increase your loan!
+  668: "{SMALLFONT}{COLOUR BLACK}Click on landscape to remove trees and buildings"
+  669: "{SMALLFONT}{COLOUR BLACK}Clear smaller area of land"
+  670: "{SMALLFONT}{COLOUR BLACK}Clear larger area of land"
+  671: "{SMALLFONT}{COLOUR BLACK}Adjust smaller area of land"
+  672: "{SMALLFONT}{COLOUR BLACK}Adjust larger area of land"
+  673: "{SMALLFONT}{COLOUR BLACK}Adjust smaller area of water"
+  674: "{SMALLFONT}{COLOUR BLACK}Adjust larger area of water"
+  675: Adjust Land
+  676: Adjust Water
+  677: "{SMALLFONT}{COLOUR BLACK}Click on landscape and drag up/down to raise/lower water level"
+  678: "{SMALLFONT}{COLOUR BLACK}Click on landscape and drag up/down to raise/lower land"
+  679: Clear Area
+  680: Clear Area
+  681: Adjust Land
+  682: Adjust Water
+  683: Plant Trees
+  684: Build Walls
+  685: "{STRINGID} - Vehicle Details"
+  686: "{STRINGID} - Cargo"
+  687: "{STRINGID} - Route"
+  688: "{STRINGID} - Finances"
+  689: "{COLOUR WINDOW_2}Trains: {COLOUR BLACK}{INT16}"
+  690: "{COLOUR WINDOW_2}Buses: {COLOUR BLACK}{INT16}"
+  691: "{COLOUR WINDOW_2}Trucks: {COLOUR BLACK}{INT16}"
+  692: "{COLOUR WINDOW_2}Trams: {COLOUR BLACK}{INT16}"
+  693: "{COLOUR WINDOW_2}Aircraft: {COLOUR BLACK}{INT16}"
+  694: "{COLOUR WINDOW_2}Ships: {COLOUR BLACK}{INT16}"
+  695: "{NEWLINE}Challenge failed!"
+  696: "{NEWLINE}Challenge completed!"
+  697: "{SMALLFONT}{COLOUR BLACK}Performance Index: {INT16_1DP}% “{STRINGID}”"
+  698: "{SMALLFONT}{COLOUR BLACK}Company Value: {CURRENCY48}{NEWLINE}Profit from vehicles: {CURRENCY48}/month"
+  699: "{NEWLINE}Challenge progress: {INT16}%{STRINGID}"
+  700: "{NEWLINE}Time left: {COLOUR BLACK}{INT16} years {INT16} months"
+  701: Customize Keys...
+  702: Keyboard Shortcuts
+  703: Reset Keys
+  704: "{SMALLFONT}{COLOUR BLACK}Set all keyboard shortcuts back to default settings"
+  705: Close Top-most Window
+  706: Close All Floating Windows
+  707: Cancel Construction Mode
+  708: Pause/Unpause Game
+  709: Zoom View Out
+  710: Zoom View In
+  711: Rotate View
+  712: Rotate Construction Object
+  713: Underground View Toggle
+  714: Hide Foreground Tracks & Roads Toggle
+  715: Hide Foreground Scenery Toggle
+  716: Height Marks on Land Toggle
+  717: Height Marks on Tracks & Roads Toggle
+  718: Dir. Arrows on Tracks & Roads Toggle
+  719: Adjust Land
+  720: Adjust Water
+  721: Plant Trees
+  722: Bulldoze Area
+  723: Build Tracks
+  724: Build Roads
+  725: Build Airports
+  726: Build Ship Ports
+  727: Build New Vehicles
+  728: Show Vehicles List
+  729: Show Stations List
+  730: Show Towns List
+  731: Show Industries List
+  732: Show Map
+  733: Show Companies List
+  734: Show Company Information
+  735: Show Finances
+  736: Show Announcements List
+  737: Screenshot
+  738: Cancel or Show Last Announcement
+  739: Send Message (2-player mode)
+
+  # Virtual-Key Codes
+  740: ???
+  741: ???
+  742: ???
+  743: ???
+  744: ???
+  745: ???
+  746: ???
+  747: ???
+  748: Backspace
+  749: Tab
+  750: ???
+  751: ???
+  752: Clear
+  753: Return
+  754: ???
+  755: ???
+  756: ???
+  757: ???
+  758: Alt/Menu
+  759: Pause
+  760: Caps
+  761: ???
+  762: ???
+  763: ???
+  764: ???
+  765: ???
+  766: ???
+  767: Escape
+  768: ???
+  769: ???
+  770: ???
+  771: ???
+  772: Spacebar
+  773: PgUp
+  774: PgDn
+  775: End
+  776: Home
+  777: Left
+  778: Up
+  779: Right
+  780: Down
+  781: Select
+  782: Print
+  783: Execute
+  784: Snapshot
+  785: Insert
+  786: Delete
+  787: Help
+  788: "0"
+  789: "1"
+  790: "2"
+  791: "3"
+  792: "4"
+  793: "5"
+  794: "6"
+  795: "7"
+  796: "8"
+  797: "9"
+  798: ???
+  799: ???
+  800: ???
+  801: ???
+  802: ???
+  803: ???
+  804: ???
+  805: A
+  806: B
+  807: C
+  808: D
+  809: E
+  810: F
+  811: G
+  812: H
+  813: I
+  814: J
+  815: K
+  816: L
+  817: M
+  818: N
+  819: O
+  820: P
+  821: Q
+  822: R
+  823: S
+  824: T
+  825: U
+  826: V
+  827: W
+  828: X
+  829: Y
+  830: Z
+  831: ???
+  832: ???
+  833: Menu
+  834: ???
+  835: ???
+  836: NumPad 0
+  837: NumPad 1
+  838: NumPad 2
+  839: NumPad 3
+  840: NumPad 4
+  841: NumPad 5
+  842: NumPad 6
+  843: NumPad 7
+  844: NumPad 8
+  845: NumPad 9
+  846: NumPad *
+  847: NumPad +
+  848: NumPad Enter
+  849: NumPad -
+  850: NumPad .
+  851: NumPad /
+  852: F1
+  853: F2
+  854: F3
+  855: F4
+  856: F5
+  857: F6
+  858: F7
+  859: F8
+  860: F9
+  861: F10
+  862: F11
+  863: F12
+  864: F13
+  865: F14
+  866: F15
+  867: F16
+  868: F17
+  869: F18
+  870: F19
+  871: F20
+  872: F21
+  873: F22
+  874: F23
+  875: F24
+  876: ???
+  877: ???
+  878: ???
+  879: ???
+  880: ???
+  881: ???
+  882: ???
+  883: ???
+  884: NumLock
+  885: Scroll
+  886: ???
+  887: ???
+  888: ???
+  889: ???
+  890: ???
+  891: ???
+  892: ???
+  893: ???
+  894: ???
+  895: ???
+  896: ???
+  897: ???
+  898: ???
+  899: ???
+  900: ???
+  901: ???
+  902: ???
+  903: ???
+  904: ???
+  905: ???
+  906: ???
+  907: ???
+  908: ???
+  909: ???
+  910: ???
+  911: ???
+  912: ???
+  913: ???
+  914: ???
+  915: ???
+  916: ???
+  917: ???
+  918: ???
+  919: ???
+  920: ???
+  921: ???
+  922: ???
+  923: ???
+  924: ???
+  925: ???
+  926: ;
+  927: =
+  928: ","
+  929: "-"
+  930: .
+  931: /
+  932: "'"
+  933: ???
+  934: ???
+  935: ???
+  936: ???
+  937: ???
+  938: ???
+  939: ???
+  940: ???
+  941: ???
+  942: ???
+  943: ???
+  944: ???
+  945: ???
+  946: ???
+  947: ???
+  948: ???
+  949: ???
+  950: ???
+  951: ???
+  952: ???
+  953: ???
+  954: ???
+  955: ???
+  956: ???
+  957: ???
+  958: ???
+  959: "["
+  960: \
+  961: "]"
+  962: "#"
+  963: Bar
+  964: ???
+  965: ???
+  966: ???
+  967: ???
+  968: ???
+  969: ???
+  970: ???
+  971: ???
+  972: ???
+  973: ???
+  974: ???
+  975: ???
+  976: ???
+  977: ???
+  978: ???
+  979: ???
+  980: ???
+  981: ???
+  982: ???
+  983: ???
+  984: ???
+  985: ???
+  986: ???
+  987: ???
+  988: ???
+  989: ???
+  990: ???
+  991: ???
+  992: ???
+  993: ???
+  994: ???
+  995: ???
+
+  996: "{STRINGID}:{MOVE_X 215}{STRINGID}{STRINGID}"
+  997: "SHIFT + "
+  998: "CTRL + "
+  999: Change Keyboard Shortcut
+  1000: "{COLOUR WINDOW_2}Press new shortcut key for:{NEWLINE}{NEWLINE_SMALLER}{COLOUR BLACK}“{STRINGID}”"
+  1001: "{SMALLFONT}{COLOUR BLACK}Click on shortcut description to select new key"
+  1002: Scroll View when Pointer at Screen Edge
+  1003: "{SMALLFONT}{COLOUR BLACK}Select whether to scroll the view when the mouse pointer is at the screen edge"
+  1004: "{SMALLFONT}{COLOUR BLACK}View or change control key assignments"
+  1005: Map
+  1006: Map - Vehicles
+  1007: Map - Industries
+  1008: Map - Transport Routes
+  1009: Map - Companies
+  1010: Forced Software Buffer Mixing
+  1011: "{SMALLFONT}{COLOUR BLACK}Select this option to improve performance if the game pauses slightly when sounds start or interference is heard"
+  1012: Scenario successfully installed
+  1013: Scenario already installed
+  1014: "{OUTLINE}{COLOUR WINDOW_1}{STRINGID}"
+  1015: "{OUTLINE}{COLOUR WINDOW_2}(Press a key or mouse button to take control)"
+  1016: Another instance of Chris Sawyer's Locomotion is already running
+
+  1017: Music Acknowledgements...
+  1018: Music Acknowledgements
+  1019: "{COLOUR BLACK}Copyright © Chris Sawyer"
+  1020: "{COLOUR WINDOW_2}Locomotion Title"
+  1021: "{COLOUR BLACK}John Broomhall (Guitar played by Keith Thompson)"
+  1022: "{COLOUR WINDOW_2}Long Dusty Road"
+  1023: "{COLOUR BLACK}Allister Brimble (Trumpet played by Brian Moore)"
+  1024: "{COLOUR WINDOW_2}Flying High"
+  1025: "{COLOUR BLACK}Allister Brimble"
+  1026: "{COLOUR WINDOW_2}Gettin' On The Gas"
+  1027: "{COLOUR BLACK}Allister Brimble"
+  1028: "{COLOUR WINDOW_2}Jumpin' The Rails"
+  1029: "{COLOUR BLACK}Allister Brimble"
+  1030: "{COLOUR WINDOW_2}Smooth Running"
+  1031: "{COLOUR BLACK}Allister Brimble"
+  1032: "{COLOUR WINDOW_2}Traffic Jam"
+  1033: "{COLOUR BLACK}Allister Brimble"
+  1034: "{COLOUR WINDOW_2}Never Stop 'til You Get There"
+  1035: "{COLOUR BLACK}Allister Brimble"
+  1036: "{COLOUR WINDOW_2}Soaring Away"
+  1037: "{COLOUR BLACK}Allister Brimble"
+  1038: "{COLOUR WINDOW_2}Techno Torture"
+  1039: "{COLOUR BLACK}Allister Brimble"
+  1040: "{COLOUR WINDOW_2}Everlasting High-Rise"
+  1041: "{COLOUR BLACK}Allister Brimble"
+  1042: "{COLOUR WINDOW_2}Solace"
+  1043: "{COLOUR BLACK}Scott Joplin (Performed by Peter James Adcock)"
+  1044: "{COLOUR WINDOW_2}Chrysanthemum"
+  1045: "{COLOUR BLACK}Scott Joplin (Performed by Peter James Adcock)"
+  1046: "{COLOUR WINDOW_2}Eugenia"
+  1047: "{COLOUR BLACK}Scott Joplin (Performed by Peter James Adcock)"
+  1048: "{COLOUR WINDOW_2}The Ragtime Dance"
+  1049: "{COLOUR BLACK}Scott Joplin (Performed by Peter James Adcock)"
+  1050: "{COLOUR WINDOW_2}Easy Winners"
+  1051: "{COLOUR BLACK}Scott Joplin (Performed by Peter James Adcock)"
+  1052: "{COLOUR WINDOW_2}Setting Off"
+  1053: "{COLOUR BLACK}Allister Brimble (Trumpet played by Brian Moore, Clarinet played by John Glanfield)"
+  1054: "{COLOUR WINDOW_2}A Traveller's Seranade"
+  1055: "{COLOUR BLACK}David Punshon"
+  1056: "{COLOUR WINDOW_2}Latino Trip"
+  1057: "{COLOUR BLACK}David Punshon"
+  1058: "{COLOUR WINDOW_2}A Good Head Of Steam"
+  1059: "{COLOUR BLACK}Allister Brimble"
+  1060: "{COLOUR WINDOW_2}Hop To The Bop"
+  1061: "{COLOUR BLACK}David Punshon"
+  1062: "{COLOUR WINDOW_2}The City Lights"
+  1063: "{COLOUR BLACK}Allister Brimble"
+  1064: "{COLOUR WINDOW_2}Steamin' Down Town"
+  1065: "{COLOUR BLACK}David Punshon"
+  1066: "{COLOUR WINDOW_2}Bright Expectations"
+  1067: "{COLOUR BLACK}Allister Brimble"
+  1068: "{COLOUR WINDOW_2}Mo' Station"
+  1069: "{COLOUR BLACK}John Broomhall"
+  1070: "{COLOUR WINDOW_2}Far Out"
+  1071: "{COLOUR BLACK}John Broomhall"
+  1072: "{COLOUR WINDOW_2}Running On Time"
+  1073: "{COLOUR BLACK}Allister Brimble"
+  1074: "{COLOUR WINDOW_2}Get Me To Gladstone Bay"
+  1075: "{COLOUR BLACK}Allister Brimble"
+  1076: "{COLOUR WINDOW_2}Chuggin' Along"
+  1077: "{COLOUR BLACK}Allister Brimble (Trumpet played by Brian Moore)"
+  1078: "{COLOUR WINDOW_2}Don't Lose Your Rag"
+  1079: "{COLOUR BLACK}Allister Brimble"
+  1080: "{COLOUR WINDOW_2}Sandy Track Blues"
+  1081: "{COLOUR BLACK}Allister Brimble"
+
+  1082: Unable to load saved game...
+  1083: File contains invalid data
+  1084: File is not a single player saved game
+  1085: File is not a two player saved game
+  1086: Please wait...
+  1087: Initialising...
+  1088: Loading...
+  1089: "Installing new data: "
+
+  1090: White
+  1091: Translucent
+  1092: "{COLOUR WINDOW_2}Construction Marker:"
+  1093: "{COLOUR WINDOW_2}Vehicles min. display scale:"
+  1094: "{COLOUR WINDOW_2}Station names min. display scale:"
+  1095: Full-scale
+  1096: Half-scale
+  1097: Quarter-scale
+  1098: Eighth-scale
+  1099: "{SMALLFONT}{COLOUR BLACK}Select minimum view scale to show vehicles at"
+  1100: "{SMALLFONT}{COLOUR BLACK}Select minimum view scale to show station names on"
+
+  1101: "{COLOUR WINDOW_2}Main color scheme:"
+  1102: "{COLOUR BLACK}Steam Locomotives:"
+  1103: "{COLOUR BLACK}Diesel Locomotives:"
+  1104: "{COLOUR BLACK}Electric Locomotives:"
+  1105: "{COLOUR BLACK}Multiple Units:"
+  1106: "{COLOUR BLACK}Passenger Vehicles:"
+  1107: "{COLOUR BLACK}Freight Vehicles:"
+  1108: "{COLOUR BLACK}Buses:"
+  1109: "{COLOUR BLACK}Trucks:"
+  1110: "{COLOUR BLACK}Aircraft:"
+  1111: "{COLOUR BLACK}Ships:"
+  1112: "{SMALLFONT}{COLOUR BLACK}Company headquarters and details"
+  1113: "{SMALLFONT}{COLOUR BLACK}Company owner and status"
+  1114: "{SMALLFONT}{COLOUR BLACK}Company finances"
+  1115: "{SMALLFONT}{COLOUR BLACK}Cargo delivered"
+  1116: "{SMALLFONT}{COLOUR BLACK}Company color scheme"
+  1117: "{SMALLFONT}{COLOUR BLACK}Company challenge for this game"
+  1118: "{COLOUR WINDOW_2}Special color schemes used for:"
+  1119: "{SMALLFONT}{COLOUR BLACK}Select main color"
+  1120: '{SMALLFONT}{COLOUR BLACK}Select secondary color (used only on some vehicle types)'
+  1121: '{SMALLFONT}{COLOUR BLACK}Select whether to use a different color scheme for this type of vehicle'
+  1122: "{STRINGID} - Trains"
+  1123: "{STRINGID} - Buses"
+  1124: "{STRINGID} - Trucks"
+  1125: "{STRINGID} - Trams"
+  1126: "{STRINGID} - Aircraft"
+  1127: "{STRINGID} - Ships"
+  1128: "{STRINGID} - All Stations"
+  1129: "{STRINGID} - Rail Stations"
+  1130: "{STRINGID} - Road Stations"
+  1131: "{STRINGID} - Airports"
+  1132: "{STRINGID} - Ship Ports"
+  1133: All Stations
+  1134: Rail Stations
+  1135: Road Stations
+  1136: Airports
+  1137: Ship Ports
+  1138: "{COLOUR WINDOW_2}{STRINGID} - {STRINGID}"
+  1139: "{COLOUR WINDOW_2}{STRINGID} - {STRINGID} {STRINGID}"
+  1140: "{COLOUR WINDOW_2}{CURRENCY32}"
+  1141: "{COLOUR RED}-{CURRENCY32}"
+  1142: "{COLOUR WINDOW_2}{INT16} year"
+  1143: "{COLOUR WINDOW_2}{INT16} years"
+  1144: "{COLOUR WINDOW_2}{INT16}%"
+  1145: "{COLOUR BLACK}Name"
+  1146: "{COLOUR BLACK}Name ▼"
+  1147: "{COLOUR BLACK}Monthly Profit"
+  1148: "{COLOUR BLACK}Monthly Profit ▼"
+  1149: "{COLOUR BLACK}Age"
+  1150: "{COLOUR BLACK}Age ▼"
+  1151: "{COLOUR BLACK}Reliability"
+  1152: "{COLOUR BLACK}Reliability ▼"
+  1153: "{SMALLFONT}{COLOUR BLACK}Sort list by name"
+  1154: "{SMALLFONT}{COLOUR BLACK}Sort list by profit"
+  1155: "{SMALLFONT}{COLOUR BLACK}Sort list by age"
+  1156: "{SMALLFONT}{COLOUR BLACK}Sort list by reliability"
+  1157: Vehicle must be stopped first!
+  1158: Vehicle has crashed!
+  1159: Vehicle has broken down!
+  1160: Vehicle is stuck!
+  1161: Not enough space, or vehicle in the way
+  1162: Vehicle approaching, or in the way
+  1163: Can't place {POP16}{POP16}{POP16}{STRINGID} here...
+  1164: Can't remove {POP16}{POP16}{POP16}{STRINGID}...
+  1165: Can't pass signal at danger...
+  1166: This vehicle requires {STRINGID}
+  1167: Train has no vehicles!
+  1168: Train has no driving cab
+  1169: Train needs a locomotive or power car
+  1170: "{STRINGID} from {STRINGID}"
+  1171: Empty
+  1172: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  1173: "{NEWLINE}Capacity:  {STRINGID}"
+  1174: "{NEWLINE}+ {STRINGID}"
+  1175: Too many stations in game!
+  1176: Station too large!
+  1177: Town must be built first!
+  1178: "{SMALLFONT}{COLOUR BLACK}Show overall map"
+  1179: "{SMALLFONT}{COLOUR BLACK}Show vehicle types on map"
+  1180: "{SMALLFONT}{COLOUR BLACK}Show industry types on map"
+  1181: "{SMALLFONT}{COLOUR BLACK}Show vehicle routes on map"
+  1182: "{SMALLFONT}{COLOUR BLACK}Show company ownership on map"
+  1183: Station too spread out!
+  1184: Can't add {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID} to {STRINGID}...
+  1185: Can't build {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}...
+  1186: "{COLOUR BLACK}Select new vehicle"
+  1187: "{COLOUR BLACK}Select vehicle to add to {STRINGID}"
+  1188: "{SMALLFONT}{COLOUR BLACK}Build new train vehicles"
+  1189: "{SMALLFONT}{COLOUR BLACK}Build new buses"
+  1190: "{SMALLFONT}{COLOUR BLACK}Build new trucks"
+  1191: "{SMALLFONT}{COLOUR BLACK}Build new trams"
+  1192: "{SMALLFONT}{COLOUR BLACK}Build new aircraft"
+  1193: "{SMALLFONT}{COLOUR BLACK}Build new ships"
+  1194: "{SMALLFONT}{COLOUR BLACK}Trains"
+  1195: "{SMALLFONT}{COLOUR BLACK}Buses"
+  1196: "{SMALLFONT}{COLOUR BLACK}Trucks"
+  1197: "{SMALLFONT}{COLOUR BLACK}Trams"
+  1198: "{SMALLFONT}{COLOUR BLACK}Aircraft"
+  1199: "{SMALLFONT}{COLOUR BLACK}Ships"
+  1200: "{SMALLFONT}{COLOUR BLACK}All stations"
+  1201: "{SMALLFONT}{COLOUR BLACK}Rail stations"
+  1202: "{SMALLFONT}{COLOUR BLACK}Road stations"
+  1203: "{SMALLFONT}{COLOUR BLACK}Airports"
+  1204: "{SMALLFONT}{COLOUR BLACK}Ship ports"
+  1205: "{SMALLFONT}{COLOUR BLACK}Clear an area of land"
+  1206: "{SMALLFONT}{COLOUR BLACK}Trees"
+  1207: "{SMALLFONT}{COLOUR BLACK}Adjust or create land"
+  1208: "{SMALLFONT}{COLOUR BLACK}Adjust or create water"
+  1209: "{SMALLFONT}{COLOUR BLACK}Walls and fences"
+  1210: "{SMALLFONT}{COLOUR BLACK}Select object color"
+  1211: "{COLOUR WINDOW_2}{STRINGID}"
+  1212: "{COLOUR WINDOW_2}{STRINGID} (en-route from"
+  1213: "{COLOUR WINDOW_2}{STRINGID})"
+  1214: No space for more vehicle orders!
+  1215: Too many orders for this vehicle!
+  1216: "Local"
+  1217: "Express"
+  1218: "{COLOUR BLACK}- - No route defined - -"
+  1219: "{COLOUR BLACK}- - End of route list - -"
+  1220: Stop at {STRINGID}
+  1221: Route through {STRINGID}
+  1222: Route through waypoint
+  1223: Unload all {STRINGID} {SPRITE}
+  1224: Wait for full load of {STRINGID} {SPRITE}
+  1225: Unload all {STRINGID} {SPRITE}
+  1226: Wait for full load of {STRINGID} {SPRITE}
+  1227: "{COLOUR WINDOW_2}▶"
+  1228: Can't insert order...
+  1229: "{COLOUR WINDOW_3}Click to insert new order to{NEWLINE}route through waypoint at this position"
+  1230: "{COLOUR WINDOW_3}Click to insert new order to{NEWLINE}stop at {STRINGID}"
+  1231: "{COLOUR WINDOW_3}Click again to change last order to{NEWLINE}route through {STRINGID}"
+  1232: "{SMALLFONT}{COLOUR BLACK}Insert an order to wait for a full load of cargo"
+  1233: "{SMALLFONT}{COLOUR BLACK}Insert an order to force unloading of cargo, even if cargo is not accepted by station"
+  1234: "{SMALLFONT}{COLOUR BLACK}Skip to next order in list"
+  1235: "{SMALLFONT}{COLOUR BLACK}Delete the last or selected order"
+  1236: "{COLOUR BLACK}Click on station or waypoint position to set route"
+  1237: "{SMALLFONT}{COLOUR BLACK}Click on order to select it, click twice to move view to show station/waypoint"
+  1238: "{SMALLFONT}{COLOUR BLACK}Click on order to copy it to selected vehicle"
+  1239: "{STRINGID} {STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}"
+  1240: Build Trains
+  1241: Build Buses
+  1242: Build Trucks
+  1243: Build Trams
+  1244: Build Aircraft
+  1245: Build Ships
+  1246: Can only be placed on {STRINGID}...
+  1247: Road
+  1248: "{COLOUR BLACK}No vehicles available"
+  1249: "{COLOUR BLACK}No compatible vehicles available to add to {STRINGID}"
+  1250: ""
+  1251: "{COLOUR WINDOW_2} Cost: {COLOUR BLACK}{CURRENCY32}"
+  1252: "{NEWLINE}{COLOUR WINDOW_2} Requires: {COLOUR BLACK}"
+  1253: "{NEWLINE}{COLOUR WINDOW_2} Power: {COLOUR BLACK}{POWER}"
+  1254: "{NEWLINE}{COLOUR WINDOW_2} Weight: {COLOUR BLACK}{INT16}t"
+  1255: "{NEWLINE}{COLOUR WINDOW_2} Max. Speed: {COLOUR BLACK}{VELOCITY}"
+  1256: "{NEWLINE}{COLOUR WINDOW_2} Designed: {COLOUR BLACK}{UINT16 RAW}"
+  1257: "{NEWLINE}{COLOUR WINDOW_2} Capacity: {COLOUR BLACK}{STRINGID}"
+  1258: " + {STRINGID}"
+  1259: " ( + {STRINGID} for steep slopes)"
+  1260: " ({VELOCITY} on {STRINGID})"
+  1261: or {STRINGID}
+  1262: "{NEWLINE}{COLOUR WINDOW_2} Running Cost: {COLOUR BLACK}{CURRENCY32}/month"
+  1263: " (refittable)"
+  1264: "{INT16} train"
+  1265: "{INT16} bus"
+  1266: "{INT16} truck"
+  1267: "{INT16} tram"
+  1268: "{INT16} aircraft"
+  1269: "{INT16} ship"
+  1270: "{INT16} trains"
+  1271: "{INT16} buses"
+  1272: "{INT16} trucks"
+  1273: "{INT16} trams"
+  1274: "{INT16} aircraft"
+  1275: "{INT16} ships"
+  1276: train
+  1277: bus
+  1278: truck
+  1279: tram
+  1280: aircraft
+  1281: ship
+  1282: "{COLOUR WINDOW_2}Total: {COLOUR BLACK}{STRINGID}"
+  1283: Empty
+  1284: "{SMALLFONT}{COLOUR BLACK}Load: "
+  1285: Requires an extra {STRINGID}
+  1286: "{SMALLFONT}{COLOUR BLACK}Vehicles for {STRINGID}"
+  1287: "{SPRITE}{NEWLINE 31 8} {STRINGID}"
+  1288: "{POP16}{POP16}{NEWLINE 31 8} {STRINGID}"
+  1289: "{SPRITE}{NEWLINE 31 8} {STRINGID} Construction"
+  1290: "{STRINGID} local authority refuses permission!"
+  1291: Towns
+  1292: Build New Towns
+  1293: Build Individual Town Buildings
+  1294: Build Miscellaneous Buildings
+  1295: "{COLOUR BLACK}Population"
+  1296: "{COLOUR BLACK}Population ▼"
+  1297: "{SMALLFONT}{COLOUR BLACK}Sort list by population"
+  1298: "{INT32}"
+  1299: "{COLOUR BLACK}Stations"
+  1300: "{COLOUR BLACK}Stations ▼"
+  1301: "{SMALLFONT}{COLOUR BLACK}Sort list by no. of stations"
+  1302: "{COLOUR BLACK}Town"
+  1303: "{COLOUR BLACK}Town ▼"
+  1304: "{STRINGID} population {INT32}"
+  1305: "{SMALLFONT}{COLOUR BLACK}Sort list by town type"
+  1306: "{COLOUR BLACK}Type"
+  1307: "{COLOUR BLACK}Type ▼"
+  1308: Town Name
+  1309: "Type new name for {STRINGID}:"
+  1310: "{COLOUR BLACK}{STRINGID} population {INT32}"
+  1311: Can't rename town...
+  1312: New Station
+  1313: "{COLOUR BLACK}({STRINGID})"
+  1314: "{COLOUR WINDOW_2}Catchment Area{NEWLINE}  Accepts: "
+  1315: "{COLOUR WINDOW_2}  Produces: "
+  1316: "{COLOUR BLACK}Nothing"
+  1317: Too many industries
+  1318: Industries
+  1319: Fund New Industries
+  1320: Build Industries
+  1321: "{SMALLFONT}{COLOUR BLACK}Towns list"
+  1322: "{SMALLFONT}{COLOUR BLACK}Build towns"
+  1323: "{SMALLFONT}{COLOUR BLACK}Build individual town buildings"
+  1324: "{SMALLFONT}{COLOUR BLACK}Build miscellaneous buildings"
+  1325: "{SMALLFONT}{COLOUR BLACK}Industries List"
+  1326: "{SMALLFONT}{COLOUR BLACK}Fund new industries"
+  1327: "{SMALLFONT}{COLOUR BLACK}Build industries"
+  1328: Ebony
+  1329: Silver
+  1330: Ivory
+  1331: Indigo
+  1332: Sapphire
+  1333: Emerald
+  1334: Golden
+  1335: Amber
+  1336: Bronze
+  1337: Burgundy
+  1338: Scarlet
+  1339: "{STRINGID}"
+  1340: "{POP16}{STRINGID}"
+  1341: "{STRINGID} Transport"
+  1342: "{STRINGID} Express"
+  1343: "{STRINGID} Lines"
+  1344: "{STRINGID} Tracks"
+  1345: "{STRINGID} Coaches"
+  1346: "{STRINGID} Air"
+  1347: "{STRINGID} Rail"
+  1348: "{STRINGID} Carts"
+  1349: "{STRINGID} Trains"
+  1350: "{STRINGID} Haulage"
+  1351: "{STRINGID} Shipping"
+  1352: "{STRINGID} Freight"
+  1353: "{STRINGID} Trucks"
+  1354: "{COLOUR WINDOW_2}Headquarters"
+  1355: "{COLOUR WINDOW_2}Owner"
+  1356: "{COLOUR BLACK}@ {INT16}% interest per year"
+  1357: "{COLOUR BLACK}{SMALLFONT}{INT32}"
+  1358: "{COLOUR BLACK}{SMALLFONT}{UINT16 RAW}"
+  1359: "{STRINGID}"
+  1360: "{STRINGID} - Population"
+  1361: "{STRINGID} Local Authority"
+  1362: "{STRINGID} - Monthly Production"
+  1363: "{STRINGID} - Statistics"
+  1364: "{STRINGID} {STRINGID}"
+  1365: "{SMALLFONT}{COLOUR BLACK}Demolish this industry"
+  1366: Under construction
+  1367: "Producing "
+  1368: "Produces "
+  1369: "Produce "
+  1370: " to produce "
+  1371: "Requires "
+  1372: "Require "
+  1373: " and "
+  1374: " or "
+  1375: ", "
+  1376: "{SMALLFONT}{COLOUR BLACK}Sort list by industry status"
+  1377: "{SMALLFONT}{COLOUR BLACK}Sort list by production percentage transported"
+  1378: "{COLOUR BLACK}Status"
+  1379: "{COLOUR BLACK}Status ▼"
+  1380: "{COLOUR BLACK}Production Transported"
+  1381: "{COLOUR BLACK}Production Transported ▼"
+  1382: "{SMALLFONT}{COLOUR BLACK}Sort list by industry name"
+  1383: "{COLOUR BLACK}Industry"
+  1384: "{COLOUR BLACK}Industry ▼"
+  1385: "{COLOUR BLACK}No industries available"
+  1386: "{SMALLFONT}{COLOUR BLACK}Town"
+  1387: "{SMALLFONT}{COLOUR BLACK}Population graph"
+  1388: "{SMALLFONT}{COLOUR BLACK}Town's ratings of each company"
+  1389: "{SMALLFONT}{COLOUR BLACK}Industry"
+  1390: "{SMALLFONT}{COLOUR BLACK}Production graph"
+  1391: "{COLOUR BLACK}{SMALLFONT}({STRINGID})"
+  1392: "{SMALLFONT}{COLOUR BLACK}Completely demolish this town (and any nearby industries)"
+  1393: Can't remove town...
+  1394: All stations near this town must be removed first
+  1395: Too close to another town
+  1396: Too many towns
+  1397: Too close to another town, or position is unsuitable
+  1398: "{SMALLFONT}{COLOUR BLACK}Select size of town to construct"
+  1399: 1 (small)
+  1400: "2"
+  1401: 3 (medium)
+  1402: "4"
+  1403: "5"
+  1404: 6 (large)
+  1405: "7"
+  1406: 8 (gigantic)
+  1407: "{COLOUR BLACK}Town size:"
+  1408: "{COLOUR BLACK}(Click on landscape to build new town)"
+  1409: "{SMALLFONT}{COLOUR BLACK}Expand this town"
+  1410: Too close to another industry
+  1411: Town must be built nearby first
+  1412: "{SMALLFONT}{COLOUR BLACK}Plant a cluster of the selected tree type"
+  1413: "{SMALLFONT}{COLOUR BLACK}Plant a random cluster of trees"
+  1414: "{SMALLFONT}{COLOUR BLACK}Statistics"
+  1415: "{COLOUR WINDOW_2}Received last month:"
+  1416: "{COLOUR WINDOW_2}Produced last month:"
+  1417: "{COLOUR BLACK}{STRINGID} ({INT16}% transported)"
+  1418: "{COLOUR BLACK}{INT16}%"
+  1419: Closing down
+  1420: Belongs to {STRINGID}
+  1421: "{STRINGID} belongs to {STRINGID}"
+  1422: Signal belongs to {STRINGID}
+  1423: "{COLOUR BLACK}{INT16}%"
+  1424: "{COLOUR BLACK}{TINYFONT}{DATE DMY}"
+  1425: Messages
+  1426: "{SMALLFONT}{COLOUR BLACK}Show recent messages"
+  1427: "{SMALLFONT}{COLOUR BLACK}Message options"
+  1428: Message Options
+  1429: "{TINYFONT}{DATE DMY}"
+  1430: " + "
+  1431: " waiting"
+  1432: Nothing waiting
+  1433: "{COLOUR BLACK}Status"
+  1434: "{COLOUR BLACK}Status ▼"
+  1435: "{COLOUR BLACK}Total waiting"
+  1436: "{COLOUR BLACK}Total waiting ▼"
+  1437: "{COLOUR BLACK}Accepts"
+  1438: "{COLOUR BLACK}Accepts ▼"
+  1439: "{SMALLFONT}{COLOUR BLACK}Sort list by station status"
+  1440: "{SMALLFONT}{COLOUR BLACK}Sort list by total units waiting"
+  1441: "{SMALLFONT}{COLOUR BLACK}Sort list by cargo accepted"
+  1442: "{INT32} units"
+  1443: ", "
+  1444: "{NEWLINE}Accepts "
+  1445: "{COLOUR BLACK}Accepts: "
+  1446: Nothing
+  1447: "{SMALLFONT}{COLOUR BLACK}Station"
+  1448: "{SMALLFONT}{COLOUR BLACK}Cargo waiting and accepted"
+  1449: "{SMALLFONT}{COLOUR BLACK}Cargo ratings"
+  1450: Demolition not allowed
+  1451: Another company is about to build here
+  1452: Too long!
+  1453: "{SMALLFONT}{COLOUR BLACK}Build or move headquarters"
+  1454: "{SMALLFONT}{COLOUR BLACK}Change owner name"
+  1455: "{COLOUR BLACK}(not yet constructed)"
+  1456: Name Company
+  1457: "Enter new company name:"
+  1458: Can't rename this company...
+  1459: Name Owner
+  1460: "Enter new name for owner:"
+  1461: Can't change owner name...
+  1462: Headquarters
+  1463: "{STRINGID} Headquarters"
+  1464: "{STRINGID} local authority won't allow removal of roads currently in use"
+  1465: "{SMALLFONT}{COLOUR BLACK}Select company"
+  1466: Two Player Game
+  1467: Two Player Game - Options
+  1468: "{COLOUR BLACK}To set up a two player game, one computer should be set up as a host and then the other should connect to it.{NEWLINE}{NEWLINE}Please select :"
+  1469: ""
+  1470: "{COLOUR BLACK}Setting this computer up as a host..."
+  1471: "{COLOUR BLACK}Error: Unable to set up this computer as a host"
+  1472: "{COLOUR BLACK}Host setup completed - Waiting for the other computer to connect..."
+  1473: ""
+  1474: ""
+  1475: ""
+  1476: "{COLOUR BLACK}Attempting to connect..."
+  1477: "{COLOUR BLACK}Error: Unable to locate or connect to host"
+  1478: "{COLOUR BLACK}Success!{NEWLINE}You are now connected to: {STRINGID}"
+  1479: "{COLOUR BLACK}Currently connected to: {STRINGID}{NEWLINE}{NEWLINE}Click below to disconnect and return to single player mode"
+  1480: "{COLOUR WINDOW_2}Set this computer up as a host"
+  1481: "{COLOUR WINDOW_2}Connect to host"
+  1482: "{COLOUR WINDOW_2}Disconnect"
+  1483: Enter Host Address
+  1484: "Enter the IP address or computer name of the host to connect to, or leave blank to search the local network:"
+  1485: "{COLOUR RED}Warning: You are connected to a different version of Chris Sawyer's Locomotion and two player game performance may not be reliable"
+
+  # Options
+  1486: "{SMALLFONT}{COLOUR BLACK}Display options"
+  1487: "{SMALLFONT}{COLOUR BLACK}Sound options"
+  1488: "{SMALLFONT}{COLOUR BLACK}Music options"
+  1489: "{SMALLFONT}{COLOUR BLACK}Regional options"
+  1490: "{SMALLFONT}{COLOUR BLACK}Control options"
+  1491: "{SMALLFONT}{COLOUR BLACK}Miscellaneous options"
+  1492: Options - Display
+  1493: Options - Sound
+  1494: Options - Music
+  1495: Options - Regional
+  1496: Options - Controls
+  1497: Options - Miscellaneous
+
+  # Options/Currency
+  1498: Use preferred currency always
+  1499: "{SMALLFONT}{COLOUR BLACK}Always use the preferred currency"
+  1500: Use preferred currency when starting new game
+  1501: "{SMALLFONT}{COLOUR BLACK}Select this option to override the default currency in a scenario"
+  1502: "{SMALLFONT}{COLOUR BLACK}Select the currency for the current game"
+  1503: "{SMALLFONT}{COLOUR BLACK}Select the default currency for creating new scenarios"
+  1504: "{COLOUR WINDOW_2}Current currency:"
+  1505: "{COLOUR WINDOW_2}Preferred currency:"
+  1506: ""
+
+  1507: "Own company major news:"
+  1508: "Other company major news:"
+  1509: "Own company minor news:"
+  1510: "Other company minor news:"
+  1511: "General news:"
+  1512: "Advice:"
+  1513: Off
+  1514: Ticker Message
+  1515: News Window
+  1516: "{COLOUR WINDOW_2}Monthly Running Cost: {COLOUR BLACK}{CURRENCY32}"
+  1517: "{COLOUR WINDOW_2}Monthly Profit: {COLOUR BLACK}{CURRENCY32}"
+  1518: Trains
+  1519: Buses
+  1520: Trucks
+  1521: Trams
+  1522: Aircraft
+  1523: Ships
+  1524: Airport
+  1525: Ship Port
+  1526: Order type not valid for aircraft
+  1527: Order type not valid for ships
+  1528: Station owned by another company
+  1529: No water!
+  1530: Water channel is currently needed by ships
+  1531: Currently in use by at least one vehicle
+  1532: "{SMALLFONT}{COLOUR BLACK}Refit vehicle to carry a different type of cargo"
+  1533: Can't refit this vehicle to carry a different type of cargo
+  1534: Requires water in front of dock
+
+  1535: "{COLOUR WINDOW_2}Currently playing:"
+  1536: "{SMALLFONT}{COLOUR BLACK}Stop music"
+  1537: "{SMALLFONT}{COLOUR BLACK}Play music"
+  1538: "{SMALLFONT}{COLOUR BLACK}Next music track"
+  1539: Play only music for current era
+  1540: Play all music
+  1541: Play customized selection of music
+  1542: Edit selection...
+  1543: "{SMALLFONT}{COLOUR BLACK}Edit the music track selection list"
+  1544: Edit Music Selection
+  1545: "{SMALLFONT}{COLOUR BLACK}Click on music track to toggle selection on/off"
+  1546: ✓
+  1547: "{COLOUR WINDOW_2}Volume:"
+  1548: "{SMALLFONT}{COLOUR BLACK}Set music volume"
+  1549: Music Options
+  1550: Select Owner's Face for {STRINGID}
+  1551: "{SMALLFONT}{COLOUR BLACK}Click to select company/owner face"
+  1552: Already selected for another company
+  1553: Can't select face...
+  1554: airports
+  1555: docks
+  1556: "{COLOUR WINDOW_2}Company started: {COLOUR BLACK}{DATE MY}"
+  1557: "{COLOUR WINDOW_2}Performance Index: {COLOUR BLACK}{INT16_1DP}% {NEWLINE}  “{STRINGID}”"
+  1558: "{COLOUR WINDOW_2}Performance Index: {COLOUR BLACK}{INT16_1DP}%{SPRITE 2325}{NEWLINE}  “{STRINGID}”"
+  1559: "{COLOUR WINDOW_2}Performance Index: {COLOUR BLACK}{INT16_1DP}%{SPRITE 2324}{NEWLINE}  “{STRINGID}”"
+  1560: "{COLOUR WINDOW_2}Owner: {COLOUR BLACK}{STRINGID}"
+  1561: low
+  1562: medium
+  1563: high
+  1564: "{COLOUR WINDOW_2}Intelligence: {COLOUR BLACK}{INT16} ({STRINGID})"
+  1565: "{COLOUR WINDOW_2}Aggressiveness: {COLOUR BLACK}{INT16} ({STRINGID})"
+  1566: "{COLOUR WINDOW_2}Competitiveness: {COLOUR BLACK}{INT16} ({STRINGID})"
+  1567: "{SMALLFONT}{COLOUR BLACK}Toggle between single player and two player mode"
+  1568: "{OUTLINE}{COLOUR WINDOW_2}Single Player Mode"
+  1569: "{OUTLINE}{COLOUR WINDOW_2}Two Player Mode: Connected to {STRINGID}"
+  1570: Beginner
+  1571: Easy
+  1572: Medium
+  1573: Challenging
+  1574: Expert
+  1575: Region / Object Selection
+  1576: Landscape Editor
+  1577: Scenario Options
+  1578: Save Scenario
+  1579: "Back to Previous Step:"
+  1580: "Forward to Next Step:"
+  1581: Load Landscape
+  1582: Save Landscape
+  1583: Generating landscape...
+  1584: Can't clear entire area...
+  1585: Landscape Generation - Options
+  1586: Landscape Generation - Land
+  1587: Landscape Generation - Forests
+  1588: Landscape Generation - Towns
+  1589: Landscape Generation - Industries
+  1590: "{SMALLFONT}{COLOUR BLACK}Landscape generation general options"
+  1591: "{SMALLFONT}{COLOUR BLACK}Land generation options"
+  1592: "{SMALLFONT}{COLOUR BLACK}Forest generation options"
+  1593: "{SMALLFONT}{COLOUR BLACK}Town generation options"
+  1594: "{SMALLFONT}{COLOUR BLACK}Industry generation options"
+
+  1595: "[None]"
+  1596: Chuggin' Along
+  1597: Long Dusty Road
+  1598: Flying High
+  1599: Gettin' On The Gas
+  1600: Jumpin' The Rails
+  1601: Smooth Running
+  1602: Traffic Jam
+  1603: Never Stop 'til You Get There
+  1604: Soaring Away
+  1605: Techno Torture
+  1606: Everlasting High-Rise
+  1607: Solace
+  1608: Chrysanthemum
+  1609: Eugenia
+  1610: The Ragtime Dance
+  1611: Easy Winners
+  1612: Setting Off
+  1613: A Traveller's Seranade
+  1614: Latino Trip
+  1615: A Good Head Of Steam
+  1616: Hop To The Bop
+  1617: The City Lights
+  1618: Steamin' Down Town
+  1619: Bright Expectations
+  1620: Mo' Station
+  1621: Far Out
+  1622: Running On Time
+  1623: Get Me To Gladstone Bay
+  1624: Sandy Track Blues
+
+  1625: "{UINT16 RAW}"
+  1626: "{COLOUR WINDOW_2}Start year:"
+  1627: Only generate random landscape when game starts
+  1628: "{SMALLFONT}{COLOUR BLACK}Generate random landscape each time a new game is started"
+  1629: Generate new landscape
+  1630: "{SMALLFONT}{COLOUR BLACK}Generate a new random landscape (the current landscape will be lost)"
+  1631: OK
+  1632: Generate New Landscape
+  1633: Random Landscape Option
+  1634: Are you sure you want to generate a new landscape, losing your current one ?
+  1635: Are you sure you want to generate a new landscape at the start of each game ?{NEWLINE}Choosing this option will mean you lose your current landscape
+  1636: "{COLOUR WINDOW_2}Sea level:"
+  1637: +{INT16} units
+  1638: "{COLOUR WINDOW_2}No. of forests:"
+  1639: "{INT16}"
+  1640: "{COLOUR WINDOW_2}Minimum forest radius:"
+  1641: "{INT16} blocks"
+  1642: "{COLOUR WINDOW_2}Maximum forest radius:"
+  1643: "{INT16} blocks"
+  1644: "{COLOUR WINDOW_2}Minimum forest density:"
+  1645: "{INT16}%"
+  1646: "{COLOUR WINDOW_2}Maximum forest density:"
+  1647: "{INT16}%"
+  1648: "{COLOUR WINDOW_2}No. of random individual trees:"
+  1649: "{INT16}"
+  1650: "{COLOUR WINDOW_2}Minimum altitude for trees:"
+  1651: "{HEIGHT}"
+  1652: "{COLOUR WINDOW_2}Maximum altitude for trees:"
+  1653: "{HEIGHT}"
+  1654: "{COLOUR WINDOW_2}Minimum land height:"
+  1655: "{INT16} units"
+  1656: "{COLOUR WINDOW_2}Topography style:"
+  1657: Flat Land
+  1658: Small Hills
+  1659: Mountains
+  1660: Half Mountains, Half Hills
+  1661: Half Mountains, Half Flat
+  1662: "{COLOUR WINDOW_2}Hill density:"
+  1663: "{INT16}%"
+  1664: "{COLOUR WINDOW_2}No. of towns:"
+  1665: "{INT16}"
+  1666: "{COLOUR WINDOW_2}Maximum town size:"
+  1667: Low
+  1668: Medium
+  1669: High
+  1670: "{COLOUR WINDOW_2}No. of industries:"
+  1671: At least one town needs to be built
+  1672: Can't advance to next editor stage...
+  1673: Can't save scenario yet...
+  1674: "{SMALLFONT}{COLOUR BLACK}Scenario options"
+  1675: "{SMALLFONT}{COLOUR BLACK}Scenario challenge"
+  1676: "{SMALLFONT}{COLOUR BLACK}Company options"
+  1677: "{SMALLFONT}{COLOUR BLACK}Financial options"
+  1678: Scenario Options
+  1679: Scenario Challenge
+  1680: Company Options
+  1681: Financial Options
+  1682: "{COLOUR WINDOW_2}Maximum competing companies:"
+  1683: "{INT16}"
+  1684: "{COLOUR WINDOW_2}Delay before competing companies start:"
+  1685: "{INT16} months"
+  1686: "{COLOUR WINDOW_2}Selection of competing companies"
+  1687: "{COLOUR WINDOW_2}Preferred Intelligence:"
+  1688: "{COLOUR WINDOW_2}Preferred Aggressiveness:"
+  1689: "{COLOUR WINDOW_2}Preferred Competitiveness:"
+  1690: Any
+  1691: Low
+  1692: Medium
+  1693: High
+  1694: "{COLOUR WINDOW_2}Starting loan:"
+  1695: "{CURRENCY32}"
+  1696: "{COLOUR WINDOW_2}Maximum loan size:"
+  1697: "{CURRENCY32}"
+  1698: "{COLOUR WINDOW_2}Loan interest rate:"
+  1699: "{INT16}%"
+  1700: Change...
+  1701: "{COLOUR WINDOW_2}Scenario Name: {COLOUR BLACK}{STRINGID}"
+  1702: "{COLOUR WINDOW_2}Scenario Group:"
+  1703: "{COLOUR WINDOW_2}Scenario Details:"
+  1704: Scenario Name
+  1705: Enter name for scenario:-
+  1706: Scenario Details
+  1707: Enter description of this scenario:-
+  1708: No details yet
+  1709: Unnamed
+  1710: Landscape save failed!
+  1711: Scenario save failed!
+  1712: Transferring data to other player...
+  1713: Receiving data from other player...
+  1714: Please wait - Game is being saved by the other player...
+  1715: Please wait - Game is being loaded by the other player...
+  1716: Send Message
+  1717: Send Message
+  1718: "Enter message to be sent to {STRINGID}:"
+  1719: ""
+  1720: "{COLOUR WINDOW_2}Connection time-out:"
+  1721: "{INT16} secs."
+  1722: Two-player data connection failed!
+  1723: "{COLOUR WINDOW_2} Designed in: {COLOUR BLACK}{UINT16 RAW}"
+  1724: "{COLOUR WINDOW_2} Obsolete from: {COLOUR BLACK}{UINT16 RAW}"
+  1725: "{COLOUR WINDOW_2} Power: {COLOUR BLACK}{POWER}"
+  1726: "{COLOUR WINDOW_2} Weight: {COLOUR BLACK}{INT16}t"
+  1727: "{COLOUR WINDOW_2} Max. Speed: {COLOUR BLACK}{VELOCITY}"
+  1728: "{COLOUR WINDOW_2} Capacity: {COLOUR BLACK}{STRINGID}"
+  1729: Establishing connection...
+  1730: Everywhere
+  1731: Nowhere
+  1732: Far from water
+  1733: Near water
+  1734: On mountains
+  1735: Far from mountains
+  1736: In small random areas
+  1737: In large random areas
+  1738: Around cliffs
+  1739: Create hills right up to edge of map
+  1740: "{SMALLFONT}{COLOUR BLACK}Scenario Editor"
+  1741: "{STRINGID} Transport"
+  1742: Map
+  1743: "{NEWLINE 1 2}{SPRITE}{NEWLINE 33 8}Companies List"
+  1744: "{NEWLINE 0 8}{STRINGID}{NEWLINE 25 2}{SPRITE}{NEWLINE 51 2}{STRINGID}{NEWLINE 51 12}{COLOUR WINDOW_1}{INT16_1DP}% “{STRINGID}”"
+  1745: Companies
+  1746: Company Performance Indexes
+  1747: Units of Cargo Delivered per Month
+  1748: Company Values
+  1749: Cargo Payment Rates
+  1750: "{SMALLFONT}{COLOUR BLACK}Compare companies"
+  1751: "{SMALLFONT}{COLOUR BLACK}Company performance index graphs"
+  1752: "{SMALLFONT}{COLOUR BLACK}Graphs of cargo delivered by each company"
+  1753: "{SMALLFONT}{COLOUR BLACK}Company value graphs"
+  1754: "{SMALLFONT}{COLOUR BLACK}Cargo payment rates"
+  1755: "{SMALLFONT}{COLOUR BLACK}Sort list by company name"
+  1756: "{SMALLFONT}{COLOUR BLACK}Sort list by company status"
+  1757: "{SMALLFONT}{COLOUR BLACK}Sort list by performance index"
+  1758: "{SMALLFONT}{COLOUR BLACK}Sort list by company value"
+  1759: "{COLOUR BLACK}Company"
+  1760: "{COLOUR BLACK}Company ▼"
+  1761: "{COLOUR BLACK}Status"
+  1762: "{COLOUR BLACK}Status ▼"
+  1763: "{COLOUR BLACK}Performance Index"
+  1764: "{COLOUR BLACK}Performance Index ▼"
+  1765: "{COLOUR BLACK}Company Value"
+  1766: "{COLOUR BLACK}Company Value ▼"
+  1767: "{NEWLINE 1 2}{SPRITE}{NEWLINE 27 8}{STRINGID}"
+  1768: "{NEWLINE 0 3}{INT16_1DP}%        {NEWLINE 0 13}“{STRINGID}”"
+  1769: "{NEWLINE 0 3}{INT16_1DP}%{SPRITE 2325}{NEWLINE 0 13}“{STRINGID}”"
+  1770: "{NEWLINE 0 3}{INT16_1DP}%{SPRITE 2324}{NEWLINE 0 13}“{STRINGID}”"
+  1771: "{NEWLINE 0 8}{CURRENCY48}"
+  1772: Platelayer
+  1773: Engineer
+  1774: Traffic Manager
+  1775: Transport Coordinator
+  1776: Route Supervisor
+  1777: Director
+  1778: Chief Executive
+  1779: Chairman
+  1780: President
+  1781: Tycoon
+  1782: "{INT16} company"
+  1783: "{INT16} companies"
+  1784: "{RAWDATE MY SHORT}"
+  1785: "{INT16_1DP}%"
+  1786: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  1787: "{INT32}"
+  1788: "{INT16_1DP}%"
+  1789: "         {INT16_1DP}% {SPRITE 2325}"
+  1790: "         {INT16_1DP}% {SPRITE 2324}"
+  1791: "{SMALLFONT}{COLOUR BLACK}{CURRENCY48}"
+  1792: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  1793: "{SMALLFONT}{COLOUR WHITE}{STRINGID}"
+  1794: Airport type is not suitable for this aircraft
+  1795: "{COLOUR BLACK}£"
+  1796: "{INT16} days"
+  1797: "{CURRENCY32}"
+  1798: "{SMALLFONT}{COLOUR BLACK}Payment for transporting {INT16} units of cargo a distance of {INT16} blocks"
+  1799: "{SMALLFONT}{COLOUR BLACK}Transit time"
+  1800: "*  Paused  *"
+  1801: Town authority won't allow another airport to be constructed here
+  1802: Towns
+  1803: Industries
+  1804: Roads
+  1805: Railroads
+  1806: Stations
+  1807: Vegetation
+  1808: Aircraft Routes
+  1809: Ship Routes
+  1810: ""
+  1811: Building {STRINGID} near {STRINGID}
+  1812: Building {STRINGID} near {STRINGID}
+  1813: Building {STRINGID} near {STRINGID}
+  1814: Checking services near {STRINGID}
+  1815: Surveying landscape near {STRINGID}
+  1816: "{COLOUR RED}Bankrupt!"
+  1817: "{SMALLFONT}{COLOUR BLACK}Pause game"
+  1818: "{SMALLFONT}{COLOUR BLACK}Normal speed"
+  1819: "{SMALLFONT}{COLOUR BLACK}Fast forward"
+  1820: "{SMALLFONT}{COLOUR BLACK}Extra fast forward"
+  1821: "{COLOUR BLACK}Randomly Generated Landscape"
+  1822: "{COLOUR WINDOW_2}Start date: {COLOUR BLACK}{UINT16 RAW}"
+  1823: "{COLOUR WINDOW_2}Competing companies: {COLOUR BLACK}None"
+  1824: "{COLOUR WINDOW_2}Competing companies: {COLOUR BLACK}Up to {INT16}"
+  1825: "{COLOUR BLACK}{MOVE_X 10}(not starting for {INT16} month)"
+  1826: "{COLOUR BLACK}{MOVE_X 10}(not starting for {INT16} months)"
+  1827: "{COLOUR WINDOW_2}Sale value of vehicle: {COLOUR BLACK}{CURRENCY32}"
+  1828: "{COLOUR WINDOW_2}Last income: {COLOUR BLACK}N/A"
+  1829: "{COLOUR WINDOW_2}Last income on: {COLOUR BLACK}{DATE DMY}"
+  1830: "{COLOUR BLACK}{STRINGID} transported {INT16} blocks in {INT16} days = {CURRENCY32}"
+  1831: "{COLOUR WINDOW_2} Earliest construction year: {COLOUR BLACK}{UINT16 RAW}"
+  1832: "{COLOUR WINDOW_2} Latest construction year: {COLOUR BLACK}{UINT16 RAW}"
+  1833: "{COLOUR WINDOW_2}Local authority's ratings of transport companies:"
+  1834: Appalling
+  1835: Poor
+  1836: Average
+  1837: Good
+  1838: Excellent
+  1839: "{COLOUR WINDOW_2}{STRINGID}: {COLOUR BLACK}{INT16}% ({STRINGID})"
+  1840: Achieve a company value of {CURRENCY32}{STRINGID}{STRINGID}
+  1841: Achieve a monthly profit from vehicles of {CURRENCY32}{STRINGID}{STRINGID}
+  1842: Achieve a performance index of {INT16_1DP}% (“{STRINGID}”){STRINGID}{STRINGID}
+  1843: Deliver {STRINGID}{STRINGID}{STRINGID}
+  1844: " and be the top performing company"
+  1845: " and be one of the top 3 performing companies"
+  1846: " within {INT16} years"
+  1847: " by the end of {UINT16 RAW}"
+  1848: ...and be the top company
+  1849: ...and be within the top 3 companies
+  1850: "...with a time limit of:"
+  1851: "{COLOUR WINDOW_2}Challenge:"
+  1852: "{COLOUR BLACK}  {STRINGID}"
+  1853: Achieve a certain company value
+  1854: Achieve a certain monthly profit from vehicles
+  1855: Achieve a certain performance index
+  1856: Deliver a certain amount of cargo
+  1857: "{CURRENCY32}"
+  1858: "{INT16_1DP}%"
+  1859: "{INT32}"
+  1860: "{INT16} years"
+  1861: "{SMALLFONT}(Completed by {STRINGID} in {INT16} years {INT16} months)"
+  1862: "{COLOUR WINDOW_2}Success!{NEWLINE}{COLOUR BLACK}  You completed the challenge in {INT16} years {INT16} months"
+  1863: "{COLOUR WINDOW_2}Failed!{NEWLINE}{COLOUR BLACK}  You failed to complete the challenge"
+  1864: "{COLOUR WINDOW_2}You have been beaten by the other player!{NEWLINE}{COLOUR BLACK}  Challenge completed by {STRINGID} in {INT16} years {INT16} months"
+  1865: "{COLOUR WINDOW_2}Progress towards completing challenge: {COLOUR BLACK}{INT16}%"
+  1866: "{COLOUR WINDOW_2}Time remaining: {COLOUR BLACK}{INT16} years {INT16} months"
+  1867: "{COLOUR WINDOW_2}Cargo delivered:"
+  1868: "{COLOUR BLACK}None"
+
+  1869: "{OUTLINE}{COLOUR WINDOW_2}Exit{NEWLINE}Game"
+
+  1870: Company is bankrupt!
+  1871: Allow industries to close down during game
+  1872: Allow new industries to start up during game
+  1873: Share additional companies/owner faces
+  1874: "{SMALLFONT}{COLOUR BLACK}Select this option to send any customized companies/owner face data files to the other computer during the connection process"
+  1875: "{COLOUR WINDOW_2}Forbid competing companies from using"
+  1876: "{COLOUR WINDOW_2}Forbid player companies from using"
+  1877: "{NEWLINE}Stops at: {STRINGID}"
+  1878: ", {STRINGID}"
+
+  1879: "Tutorial 1: Starting a bus service within a town"
+  1880: "Tutorial 2: Building a bus service between two towns"
+  1881: "Tutorial 3: Building a rail service between two towns"
+
+  # Tutorial 1
+  1882: "{SMALLFONT}{COLOUR BLACK}We're going to build a bus service to transport passengers within a town, so the first step is to choose a town..."
+  1883: "{SMALLFONT}{COLOUR BLACK}Move the mouse with the right mouse button held down to scroll the view to take a look at the towns..."
+  1884: "{SMALLFONT}{COLOUR BLACK}Boulders Bay is the largest town, so will produce the most passengers. Zoom in using the mouse scroll wheel or the zoom icon..."
+  1885: "{SMALLFONT}{COLOUR BLACK}All road-based construction is done using the road construction window..."
+  1886: "{SMALLFONT}{COLOUR BLACK}We don't need any new roads in the town for our bus service, just bus stop stations..."
+  1887: "{SMALLFONT}{COLOUR BLACK}Our bus service will go from one side of town to the other..."
+  1888: "{SMALLFONT}{COLOUR BLACK}The area highlighted in blue is the catchment area of the station. The more buildings in the catchment area the more passengers will use your station..."
+  1889: "{SMALLFONT}{COLOUR BLACK}Check the station position accepts passengers otherwise you won't be able to unload them and won't be paid. Watch the “Catchment Area” text at the bottom of the construction window..."
+  1890: "{SMALLFONT}{COLOUR BLACK}When you're happy with the location, click the left mouse button to build the station..."
+  1891: "{SMALLFONT}{COLOUR BLACK}We'll build the second station at the opposite side of town..."
+  1892: "{SMALLFONT}{COLOUR BLACK}Now we need to purchase a bus..."
+  1893: "{SMALLFONT}{COLOUR BLACK}We have a choice of two bus types. Let's choose the newer design which carries more passengers..."
+  1894: "{SMALLFONT}{COLOUR BLACK}Move the mouse cursor to position the bus on a road and click the left mouse button to place it..."
+  1895: "{SMALLFONT}{COLOUR BLACK}Before we set the bus going it needs to know where to go to. Select the route details tab on the vehicle window..."
+  1896: "{SMALLFONT}{COLOUR BLACK}To set the route, just click on the stations in the view..."
+  1897: "{SMALLFONT}{COLOUR BLACK}Now we can set the bus going..."
+  1898: "{SMALLFONT}{COLOUR BLACK}Let's watch it pick up its first passengers..."
+
+  # Tutorial 2
+  1899: "{SMALLFONT}{COLOUR BLACK}We're going to build a bus service to transport passengers between Boulder Bay and Breakers Bridge. As there are no roads linking the towns, we'll need to build one..."
+  1900: "{SMALLFONT}{COLOUR BLACK}Select the orientation of the new section of road, and click on the view to start construction..."
+  1901: "{SMALLFONT}{COLOUR BLACK}Clicking the 'build this' icon will add more road sections of the same type..."
+  1902: "{SMALLFONT}{COLOUR BLACK}Before continuing, here's a quicker way of starting road construction..."
+  1903: "{SMALLFONT}{COLOUR BLACK}Just click the right mouse button on the end of the road you want to extend..."
+  1904: "{SMALLFONT}{COLOUR BLACK}We need to turn left here, so select a left hand curve..."
+  1905: "{SMALLFONT}{COLOUR BLACK}And now back to building straight again..."
+  1906: "{SMALLFONT}{COLOUR BLACK}That's the road built, now for the stations..."
+  1907: "{SMALLFONT}{COLOUR BLACK}And finally we'll purchase a bus and set it going..."
+  1908: "{SMALLFONT}{COLOUR BLACK}This could be quite a busy route, so we'll buy a second bus as well..."
+  1909: "{SMALLFONT}{COLOUR BLACK}To quickly copy Bus 1's entire route to Bus 2, just click on Bus 1's 'end of route list' text..."
+
+  # Tutorial 3
+  1910: "{SMALLFONT}{COLOUR BLACK}Let's start by building a rail passenger service between the two largest towns..."
+  1911: "{SMALLFONT}{COLOUR BLACK}Rail stations can only be built on straight track and need to be long enough for our train - This is where we'll build one station in a few minutes..."
+  1912: "{SMALLFONT}{COLOUR BLACK}Now to build the stations..."
+  1913: "{SMALLFONT}{COLOUR BLACK}Now to build the train. We will need a locomotive to pull the train and carriages to carry the passengers..."
+  1914: "{SMALLFONT}{COLOUR BLACK}Because the track is just a single line, there's no need to set up a route - Just start the train..."
+  1915: "{SMALLFONT}{COLOUR BLACK}Let's extend the track to create a junction and spur to the third town. Right-clicking the track opens the track construction window ready to build a junction..."
+  1916: "{SMALLFONT}{COLOUR BLACK}Because the track layout is no longer simple we need to give our train a route..."
+  1917: "{SMALLFONT}{COLOUR BLACK}We could now add a second train, but first we need to build signals to prevent train collisions..."
+  1918: "{SMALLFONT}{COLOUR BLACK}The signals divide the track into 3 separate 'block sections' and only one train will be allowed to enter each section at once..."
+
+  # Options/Misc
+  1919: Use preferred owner name when starting a new game
+  1920: "{SMALLFONT}{COLOUR BLACK}Select this option to use the same company owner name every time you start a new game"
+  1921: "{COLOUR WINDOW_2}Preferred owner name: {COLOUR BLACK}{STRINGID}"
+  1922: Preferred Owner Name
+  1923: "Enter the preferred owner name:"
+
+  1924: "{COLOUR BLACK}{TINYFONT}Power"
+  1925: "{COLOUR BLACK}{TINYFONT}Brake"
+  1926: "{SMALLFONT}{COLOUR BLACK}Move the selected order up in the list"
+  1927: "{SMALLFONT}{COLOUR BLACK}Move the selected order down in the list"
+  1928: Unable to run the game directly from read-only media
+
+  1929: Atari Inc. Credits...
+  1930: "{COLOUR WINDOW_2}Licensed to Atari Inc."
+  1931: Atari Inc. Credits
+
+  1932: Game versions are incompatible - Unable to connect!
+  1933: "{SMALLFONT}{COLOUR BLACK}Send a short text message to the other player"
+  1934: the other player
+  1935: "The other player has exited the game: Two player mode has been disconnected"
+
+  1936: "{COLOUR YELLOW}Use of this product is subject to the terms of a license agreement{NEWLINE}found in the product's “ReadMe” file and in the manual"
+  1937: "{COLOUR YELLOW}ESRB Notice: Game experience may change during online play"
+  1938: "{COLOUR TOPAZ}Some forms of transport in this game have names that may be similar to those of real vehicles."
+  1939: "{COLOUR TOPAZ}This is a device to help players relate to the fictional universe of the game."
+  1940: "{COLOUR TOPAZ}The qualities (including speed, capacity, reliability, and cost) that have been attributed to various"
+  1941: "{COLOUR TOPAZ}vehicles are for game purposes only and are not intended to represent those of real"
+  1942: "{COLOUR TOPAZ}commercially available machines whether similarly named or not."
+
+  1943: "{COLOUR WINDOW_2}Senior Producer:  Thomas J. Zahorik"
+  1944: "{COLOUR WINDOW_2}Senior Brand Manager:  Jeff Foley"
+  1945: "{COLOUR WINDOW_2}Executive Producer:  Bob Welch"
+  1946: "{COLOUR WINDOW_2}Director of Technology:  Paul Hellier"
+  1947: "{COLOUR WINDOW_2}Director of Marketing:  Peter Matiss"
+  1948: "{COLOUR WINDOW_2}Director of Creative Services:  Steve Martin"
+  1949: "{COLOUR WINDOW_2}Graphic Designer:  Rod Tilley"
+  1950: "{COLOUR WINDOW_2}Director of Editorial & Documentation Services:  Elizabeth Mackney"
+  1951: "{COLOUR WINDOW_2}Documentation Specialist:  Kurt Carlson"
+  1952: "{COLOUR WINDOW_2}Copywriter:  Paul Collin"
+  1953: "{COLOUR WINDOW_2}Manual Writer:  David Ellis"
+  1954: "{COLOUR WINDOW_2}Director of Publishing Support:  Michael Gilmartin"
+  1955: "{COLOUR WINDOW_2}Q.A. Managers:  Bill Carroll, Dave Strang"
+  1956: "{COLOUR WINDOW_2}Q.A. Supervisor:  Jason Cordero"
+  1957: "{COLOUR WINDOW_2}I.T. Manager/Western Region:  Ken Ford"
+  1958: "{COLOUR WINDOW_2}Manager of Technical Support:  Michael Vetsch"
+  1959: "{COLOUR WINDOW_2}Lead Tester:  Marshall Clevesy"
+  1960: "{COLOUR WINDOW_2}Assistant Lead Tester:  Sean McLaren"
+  1961: "{COLOUR WINDOW_2}Testers:  Randy Alfonso, Leticia Dueñas, John Hockaday, Tony Hsu, Brandon Reed, Nessie Rilveria"
+  1962: "{COLOUR WINDOW_2}Compatibility Lab Supervisor:  Dave Strang "
+  1963: "{COLOUR WINDOW_2}Compatibility Test Lead:  Cuong Vu"
+  1964: "{COLOUR WINDOW_2}Compatibility Analysts:  Randy Buchholz, Mark Florentino, Chris McQuinn, Scotte Kramer, Patricia-Jean Cody"
+  1965: "{COLOUR WINDOW_2}Engineering Services Specialist:  Ken Edwards"
+  1966: "{COLOUR WINDOW_2}Engineering Services Technicians:  Eugene Lai, Dan Burkhead"
+  1967: "{COLOUR WINDOW_2}Special Thanks:  John Billington, Cecelia Hernandez"
+  1968: "{COLOUR WINDOW_2}"
+  1969: "{COLOUR WINDOW_2}"
+  1970: "{COLOUR WINDOW_2}"
+  1971: "{COLOUR WINDOW_2}"
+  1972: "{COLOUR WINDOW_2}"
+  1973: "{COLOUR WINDOW_2}"
+  1974: "{COLOUR WINDOW_2}"
+  1975: "{COLOUR WINDOW_2}"
+  1976: "{COLOUR WINDOW_2}"
+  1977: "{COLOUR WINDOW_2}"
+  1978: "{COLOUR WINDOW_2}"
+  1979: "{COLOUR WINDOW_2}"
+  1980: "{COLOUR WINDOW_2}"
+  1981: "{COLOUR WINDOW_2}"
+  1982: "{COLOUR WINDOW_2}"
+
+  1983: Distance x Units of Cargo Delivered per Month
+  1984: "{SMALLFONT}{COLOUR BLACK}Graphs of distance cargo delivered by each company"
+  1985: "{COLOUR WINDOW_2}Last journey average speed: {COLOUR BLACK}{VELOCITY}"
+  1986: land
+  1987: air
+  1988: water
+  1989: Train
+  1990: Bus
+  1991: Truck
+  1992: Tram
+  1993: Aircraft
+  1994: Ship
+  1995: "{SMALLFONT}{COLOUR BLACK}Speed records"
+  1996: Speed Records
+  1997: "{COLOUR WINDOW_2}Land service speed record: {COLOUR BLACK}{VELOCITY}"
+  1998: "{COLOUR WINDOW_2}Air service speed record: {COLOUR BLACK}{VELOCITY}"
+  1999: "{COLOUR WINDOW_2}Water service speed record: {COLOUR BLACK}{VELOCITY}"
+  2000: "{COLOUR BLACK}Achieved by {STRINGID} on {DATE DMY}"
+  2001: Confirm Display Mode Change
+  2002: "{COLOUR WINDOW_2}Display resolution changed to {UINT16 RAW} x {UINT16 RAW}"
+  2003: "{COLOUR WINDOW_2}_"
+  2004: "{COLOUR WINDOW_2}File name:"
+  2005: "{COLOUR WINDOW_2}Folder: {COLOUR BLACK}{STRINGID}"
+  2006: "{SMALLFONT}{COLOUR BLACK}Up one level to parent folder"
+  2007: "{COLOUR WINDOW_2}Company: {COLOUR BLACK}{STRINGID}"
+  2008: "{COLOUR WINDOW_2}Date: {COLOUR BLACK}{DATE DMY}"
+  2009: "{COLOUR WINDOW_2}Challenge progress: {COLOUR BLACK}{INT16}%"
+  2010: "{COLOUR WINDOW_2}Challenge: {COLOUR BLACK}Completed"
+  2011: "{COLOUR WINDOW_2}Challenge: {COLOUR BLACK}Failed"
+  2012: "Replace existing file: “{STRINGID}”?"
+  2013: Replace
+  2014: "Delete file: “{STRINGID}”?"
+  2015: Delete
+  2016: "Error: Invalid filename"
+  2017: Industry Name
+  2018: "Enter new name for {STRINGID}:"
+  2019: Can't rename industry...
+  2020: "{NEWLINE 0 1}{SPRITE}{SMALLFONT}{NEWLINE 45 1}Max. speed: {STRINGID}{NEWLINE 45 11}Height limit: {HEIGHT}"
+  2021: Duplicate CD Keys found - Unable to connect!
+  2022: "{COLOUR BLACK}{SMALLFONT}(Computer Name = {STRINGID})"
+  2023: 1st
+  2024: 2nd
+  2025: 3rd
+  2026: 4th
+  2027: 5th
+  2028: 6th
+  2029: 7th
+  2030: 8th
+  2031: 9th
+  2032: 10th
+  2033: 11th
+  2034: 12th
+  2035: 13th
+  2036: 14th
+  2037: 15th
+  2038: "{COLOUR BLACK}{INT16} selected (maximum {INT16})"
+  2039: ""
+  2040: ""
+  2041: "{COLOUR BLACK}(ID: "
+  2042: "Data for the following object not found: "
+  2043: Not enough space for graphics
+  2044: Too many objects of this type selected
+  2045: "The following object must be selected first: "
+  2046: This object is currently in use
+  2047: This object is required by another object
+  2048: This object is always required
+  2049: Unable to select this object
+  2050: Unable to deselect this object
+  2051: Invalid selection of objects
+  2052: Object Selection - {STRINGID}
+  2053: Interface Styles
+  2054: Sounds
+  2055: Currency
+  2056: Animation Effects
+  2057: Land Vertical Faces
+  2058: Water
+  2059: Land
+  2060: Town Names
+  2061: Cargo
+  2062: Walls
+  2063: Signals
+  2064: Level Crossings
+  2065: Street Lights
+  2066: Tunnels
+  2067: Bridges
+  2068: Track Stations
+  2069: Track Extras
+  2070: Tracks
+  2071: Road Stations
+  2072: Road Extras
+  2073: Roads
+  2074: Airports
+  2075: Ship Ports
+  2076: Vehicles
+  2077: Trees
+  2078: Snow
+  2079: Climate
+  2080: Map Generation Data
+  2081: Buildings
+  2082: Scaffolding
+  2083: Industries
+  2084: World Region
+  2085: Company Owners
+  2086: Scenario Descriptions
+  2087: list of objects
+  2088: "Missing object data, ID: "
+  2089: Export plug-in objects with saved games
+  2090: "{SMALLFONT}{COLOUR BLACK}Select whether to save any additional plug-in object data required (add-in data not supplied with the main product) in saved game or scenario files, allowing them to be loaded by someone who doesn't have the additional object data"
+  2091: At least one generic dual direction road type must be selected
+  2092: A scaffolding type must be selected
+  2093: Advanced
+  2094: "{SMALLFONT}{COLOUR BLACK}Allow more advanced selection of individual items"
+  2095: "{COLOUR WHITE}{BIGFONT}£"
+  2096: New objects installed successfully
+  2097: At least one industry must be selected
+  2098: At least one town building must be selected
+  2099: A company headquarters building type must be selected
+  2100: Only one company headquarters building type must be selected
+  2101: An interface type must be selected
+  2102: At least one vehicle type must be selected
+  2103: At least one land type must be selected
+  2104: A currency type must be selected
+  2105: A water type must be selected
+  2106: A town name style must be selected
+  2107: At least one level crossing type must be selected
+  2108: A street light type must be selected
+  2109: A snow type must be selected (even if not needed)
+  2110: A climate type must be selected
+  2111: A map generation data type must be selected
+  2112: A region type must be selected
+  2113: mph
+  2114: kmh⁻¹
+  2115: "hour:"
+  2116: "hours:"
+  2117: mins
+  2118: "min:"
+  2119: secs
+  2120: " units"
+  2121: ft
+  2122: m
+  2123: hp
+  2124: kW
+  2125: "{COLOUR WINDOW_2}Language:"
