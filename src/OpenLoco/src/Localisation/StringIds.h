@@ -103,7 +103,7 @@ namespace OpenLoco::StringIds
     constexpr StringId arg18_stringid = 94;
     constexpr StringId arg20_stringid = 95;
     constexpr StringId dropdown = 96;
-    
+
     constexpr StringId unused_small_black_string = UNUSED_STR(97); // May have been for a tooltip
 
     constexpr StringId error_too_low = 98;
