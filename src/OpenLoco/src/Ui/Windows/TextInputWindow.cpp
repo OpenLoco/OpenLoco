@@ -232,6 +232,8 @@ namespace OpenLoco::Ui::Windows::TextInput
             tr.drawStringLeft(position, Colour::black, StringIds::black_stringid, args);
         }
 
+        drawingCtx.popRenderTarget();
+
         const uint16_t numCharacters = static_cast<uint16_t>(inputSession.cursorPosition);
         const uint16_t maxNumCharacters = inputSession.inputLenLimit;
 
@@ -257,8 +259,6 @@ namespace OpenLoco::Ui::Windows::TextInput
                 drawingCtx.fillRect(cursorPos.x, cursorPos.y, cursorPos.x, cursorPos.y + 9, Colours::getShade(window.getColour(WindowColour::secondary).c(), 9), Gfx::RectFlags::none);
             }
         }
-
-        drawingCtx.popRenderTarget();
     }
 
     // 0x004CE8B6
