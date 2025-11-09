@@ -100,7 +100,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         StringManager::formatString(temp, value, args);
 
         inputSession = Ui::TextInput::InputSession(temp, inputSize);
-        inputSession.calculateTextOffset(_widgets[Widx::input].width() - 2);
+        inputSession.calculateTextOffset(window->widgets[Widx::input].width() - 2);
 
         caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
 
@@ -212,8 +212,8 @@ namespace OpenLoco::Ui::Windows::TextInput
         Ui::Point position = Point(window.x + window.width / 2, window.y + 30);
         tr.drawStringCentredWrapped(position, window.width - 8, Colour::black, StringIds::wcolour2_stringid, FormatArguments::common());
 
-        auto widget = &_widgets[Widx::input];
-        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(widget->left + 1 + window.x, widget->top + 1 + window.y, widget->width() - 2, widget->height() - 2));
+        auto& inputWidget = window.widgets[Widx::input];
+        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(inputWidget.left + 1 + window.x, inputWidget.top + 1 + window.y, inputWidget.width() - 2, inputWidget.height() - 2));
         if (!clipped)
         {
             return;
@@ -240,8 +240,8 @@ namespace OpenLoco::Ui::Windows::TextInput
             args.push<uint16_t>(numCharacters);
             args.push<uint16_t>(maxNumCharacters);
 
-            widget = &_widgets[Widx::ok];
-            auto point = Point(window.x + widget->left - 5, window.y + widget->top + 1);
+            auto& buttonWidget = window.widgets[Widx::ok];
+            auto point = Point(window.x + buttonWidget.left - 5, window.y + buttonWidget.top + 1);
             tr.drawStringRight(point, Colour::black, StringIds::num_characters_left_int_int, args);
         }
 
@@ -312,7 +312,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         WindowManager::invalidate(WindowType::textInput, 0);
         inputSession.cursorFrame = 0;
 
-        int containerWidth = _widgets[Widx::input].width() - 2;
+        int containerWidth = w.widgets[Widx::input].width() - 2;
         if (inputSession.needsReoffsetting(containerWidth))
         {
             inputSession.calculateTextOffset(containerWidth);
