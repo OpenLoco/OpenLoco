@@ -1327,6 +1327,7 @@ namespace OpenLoco::StringIds
     constexpr StringId tooltip_landscape_generation_forests = 1592;
     constexpr StringId tooltip_landscape_generation_towns = 1593;
     constexpr StringId tooltip_landscape_generation_industries = 1594;
+
     constexpr StringId music_none = 1595;
     constexpr StringId music_chuggin_along = 1596;
     constexpr StringId music_long_dusty_road = 1597;
@@ -1357,6 +1358,7 @@ namespace OpenLoco::StringIds
     constexpr StringId music_running_on_time = 1622;
     constexpr StringId music_get_me_to_gladstone_bay = 1623;
     constexpr StringId music_sandy_track_blues = 1624;
+
     constexpr StringId start_year_value = 1625;
     constexpr StringId start_year = 1626;
     constexpr StringId label_generate_random_landscape_when_game_starts = 1627;
