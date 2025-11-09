@@ -1774,11 +1774,11 @@ namespace OpenLoco::StringIds
     constexpr StringId region_type_must_be_selected = 2112;
     constexpr StringId unit_mph = 2113;
     constexpr StringId unit_kmh = 2114;
-    constexpr StringId unit_hour = 2115;
-    constexpr StringId unit_hours = 2116;
-    constexpr StringId unit_mins = 2117;
-    constexpr StringId unit_min = 2118;
-    constexpr StringId unit_secs = 2119;
+    constexpr StringId unit_hour = UNUSED_STR(2115);
+    constexpr StringId unit_hours = UNUSED_STR(2116);
+    constexpr StringId unit_mins = UNUSED_STR(2117);
+    constexpr StringId unit_min = UNUSED_STR(2118);
+    constexpr StringId unit_secs = UNUSED_STR(2119);
     constexpr StringId unit_units = 2120;
     constexpr StringId unit_ft = 2121;
     constexpr StringId unit_m = 2122;
