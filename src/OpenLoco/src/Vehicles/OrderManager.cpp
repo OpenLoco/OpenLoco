@@ -502,10 +502,10 @@ namespace OpenLoco::Vehicles::OrderManager
                     // Find the vehicle that has the order
                     for (auto* head : VehicleManager::VehicleList())
                     {
-                        if (head->orderTableOffset >= i
+                        if (i >= head->orderTableOffset
                             && i < head->orderTableOffset + head->sizeOfOrderTable)
                         {
-                            deleteOrder(head, i);
+                            deleteOrder(head, i - head->orderTableOffset);
                             break;
                         }
                     }
