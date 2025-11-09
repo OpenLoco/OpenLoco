@@ -1675,6 +1675,47 @@ namespace OpenLoco::StringIds
     constexpr StringId intro_vehicle_notice_4 = 1942;
 
     // String ids 1943--1982 (some blank) were used in the Atari credits screen, but are now unused.
+    constexpr StringId atari_credits_1943 = UNUSED_STR(1943);
+    constexpr StringId atari_credits_1944 = UNUSED_STR(1944);
+    constexpr StringId atari_credits_1945 = UNUSED_STR(1945);
+    constexpr StringId atari_credits_1946 = UNUSED_STR(1946);
+    constexpr StringId atari_credits_1947 = UNUSED_STR(1947);
+    constexpr StringId atari_credits_1948 = UNUSED_STR(1948);
+    constexpr StringId atari_credits_1949 = UNUSED_STR(1949);
+    constexpr StringId atari_credits_1950 = UNUSED_STR(1950);
+    constexpr StringId atari_credits_1951 = UNUSED_STR(1951);
+    constexpr StringId atari_credits_1952 = UNUSED_STR(1952);
+    constexpr StringId atari_credits_1953 = UNUSED_STR(1953);
+    constexpr StringId atari_credits_1954 = UNUSED_STR(1954);
+    constexpr StringId atari_credits_1955 = UNUSED_STR(1955);
+    constexpr StringId atari_credits_1956 = UNUSED_STR(1956);
+    constexpr StringId atari_credits_1957 = UNUSED_STR(1957);
+    constexpr StringId atari_credits_1958 = UNUSED_STR(1958);
+    constexpr StringId atari_credits_1959 = UNUSED_STR(1959);
+    constexpr StringId atari_credits_1960 = UNUSED_STR(1960);
+    constexpr StringId atari_credits_1961 = UNUSED_STR(1961);
+    constexpr StringId atari_credits_1962 = UNUSED_STR(1962);
+    constexpr StringId atari_credits_1963 = UNUSED_STR(1963);
+    constexpr StringId atari_credits_1964 = UNUSED_STR(1964);
+    constexpr StringId atari_credits_1965 = UNUSED_STR(1965);
+    constexpr StringId atari_credits_1966 = UNUSED_STR(1966);
+    constexpr StringId atari_credits_1967 = UNUSED_STR(1967);
+    constexpr StringId atari_credits_1968 = UNUSED_STR(1968);
+    constexpr StringId atari_credits_1969 = UNUSED_STR(1969);
+    constexpr StringId atari_credits_1970 = UNUSED_STR(1970);
+    constexpr StringId atari_credits_1971 = UNUSED_STR(1971);
+    constexpr StringId atari_credits_1972 = UNUSED_STR(1972);
+    constexpr StringId atari_credits_1973 = UNUSED_STR(1973);
+    constexpr StringId atari_credits_1974 = UNUSED_STR(1974);
+    constexpr StringId atari_credits_1975 = UNUSED_STR(1975);
+    constexpr StringId atari_credits_1976 = UNUSED_STR(1976);
+    constexpr StringId atari_credits_1977 = UNUSED_STR(1977);
+    constexpr StringId atari_credits_1978 = UNUSED_STR(1978);
+    constexpr StringId atari_credits_1979 = UNUSED_STR(1979);
+    constexpr StringId atari_credits_1980 = UNUSED_STR(1980);
+    constexpr StringId atari_credits_1981 = UNUSED_STR(1981);
+    constexpr StringId atari_credits_1982 = UNUSED_STR(1982);
+
     constexpr StringId title_cargo_distance_graphs = 1983;
     constexpr StringId tab_cargo_distance_graphs = 1984;
     constexpr StringId last_journey_average_speed = 1985;
