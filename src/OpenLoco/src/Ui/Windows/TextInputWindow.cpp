@@ -232,6 +232,19 @@ namespace OpenLoco::Ui::Windows::TextInput
             tr.drawStringLeft(position, Colour::black, StringIds::black_stringid, args);
         }
 
+        if ((inputSession.cursorFrame % 32) < 16)
+        {
+            strncpy(drawnBuffer, inputSession.buffer.c_str(), inputSession.cursorPosition);
+            drawnBuffer[inputSession.cursorPosition] = '\0';
+
+            if (Input::isFocused(window.type, window.number, Widx::input))
+            {
+                auto width = tr.getStringWidth(drawnBuffer);
+                auto cursorPos = Point(inputSession.xOffset + width, 1);
+                drawingCtx.fillRect(cursorPos.x, cursorPos.y, cursorPos.x, cursorPos.y + 9, Colours::getShade(window.getColour(WindowColour::secondary).c(), 9), Gfx::RectFlags::none);
+            }
+        }
+
         drawingCtx.popRenderTarget();
 
         const uint16_t numCharacters = static_cast<uint16_t>(inputSession.cursorPosition);
@@ -245,19 +258,6 @@ namespace OpenLoco::Ui::Windows::TextInput
             auto& buttonWidget = window.widgets[Widx::ok];
             auto point = Point(window.x + buttonWidget.left - 5, window.y + buttonWidget.top + 1);
             tr.drawStringRight(point, Colour::black, StringIds::num_characters_left_int_int, args);
-        }
-
-        if ((inputSession.cursorFrame % 32) < 16)
-        {
-            strncpy(drawnBuffer, inputSession.buffer.c_str(), inputSession.cursorPosition);
-            drawnBuffer[inputSession.cursorPosition] = '\0';
-
-            if (Input::isFocused(window.type, window.number, Widx::input))
-            {
-                auto width = tr.getStringWidth(drawnBuffer);
-                auto cursorPos = Point(inputSession.xOffset + width, 1);
-                drawingCtx.fillRect(cursorPos.x, cursorPos.y, cursorPos.x, cursorPos.y + 9, Colours::getShade(window.getColour(WindowColour::secondary).c(), 9), Gfx::RectFlags::none);
-            }
         }
     }
 
