@@ -149,9 +149,7 @@ namespace OpenLoco::StringIds
     constexpr StringId cant_build_pop3_string = 143;
     constexpr StringId raise_or_lower_land_first = 144;
     constexpr StringId menu_underground_view = 145;
-
-    // String below is unused
-    constexpr StringId menu_hide_foreground_tracks_roads = 146;
+    constexpr StringId menu_hide_foreground_tracks_roads = UNUSED_STR(146);
     constexpr StringId station_type_can_only_be_built_at_road_ends = 147;
     constexpr StringId wrong_type_of_station_for_string_id = 148;
     constexpr StringId station_not_compatible_with_string_id = 149;
@@ -375,9 +373,8 @@ namespace OpenLoco::StringIds
     constexpr StringId format_openloco_scenario = 368;
     constexpr StringId format_openloco_landscape = 369;
     constexpr StringId error_game_save_failed = 370;
-
-    // String below is unused
-    constexpr StringId menu_hide_foreground_scenery_buildings = 372;
+    constexpr StringId error_failed_to_load_saved_game_file_contains_invalid_data = UNUSED_STR(371); // Similar to 1082 and 1083 but as one string
+    constexpr StringId menu_hide_foreground_scenery_buildings = UNUSED_STR(372);
     constexpr StringId can_only_be_built_on_water = 373;
     constexpr StringId can_only_be_built_on_water_next_to_water_based_industry = 374;
     constexpr StringId title_name_vehicle = 375;
@@ -489,7 +486,7 @@ namespace OpenLoco::StringIds
     constexpr StringId audio_device_none = 479;
     constexpr StringId stringptr = 480;
 
-    constexpr StringId cant_build_this_underwater_duplicate = 484; // This is a duplicate and could be deleted
+    constexpr StringId cant_build_this_underwater_duplicate = UNUSED_STR(484); // This is a duplicate and could be deleted
     constexpr StringId land_type_not_suitable = 485;
     constexpr StringId spinner_up = 486;
     constexpr StringId spinner_down = 487;
@@ -1755,9 +1752,8 @@ namespace OpenLoco::StringIds
     constexpr StringId export_plugin_objects_tip = 2090;
     constexpr StringId at_least_one_generic_dual_direction_road_type_must_be_selected = 2091;
     constexpr StringId scaffolding_type_must_be_selected = 2092;
-    // Two unused strings below
-    constexpr StringId object_selection_advanced = 2093;
-    constexpr StringId object_selection_advanced_tooltip = 2094;
+    constexpr StringId object_selection_advanced = UNUSED_STR(2093);
+    constexpr StringId object_selection_advanced_tooltip = UNUSED_STR(2094);
     constexpr StringId object_currency_big_font = 2095;
     constexpr StringId new_objects_installed_successfully = 2096;
     constexpr StringId industry_type_must_be_selected = 2097;
