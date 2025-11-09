@@ -701,11 +701,15 @@ namespace OpenLoco::StringIds
 
     constexpr StringId keyboard_backspace = 748;
     constexpr StringId keyboard_tab = 749;
+
     constexpr StringId keyboard_return = 753;
+
     constexpr StringId keyboard_alt_menu = 758;
     constexpr StringId keyboard_pause = 759;
     constexpr StringId keyboard_caps = 760;
+
     constexpr StringId keyboard_escape = 767;
+
     constexpr StringId keyboard_spacebar = 772;
     constexpr StringId keyboard_pageup = 773;
     constexpr StringId keyboard_pagedown = 774;
@@ -715,8 +719,10 @@ namespace OpenLoco::StringIds
     constexpr StringId keyboard_up = 778;
     constexpr StringId keyboard_right = 779;
     constexpr StringId keyboard_down = 780;
+
     constexpr StringId keyboard_insert = 785;
     constexpr StringId keyboard_delete = 786;
+
     constexpr StringId keyboard_numpad_0 = 836;
     constexpr StringId keyboard_numpad_1 = 837;
     constexpr StringId keyboard_numpad_2 = 838;
@@ -733,6 +739,7 @@ namespace OpenLoco::StringIds
     constexpr StringId keyboard_numpad_minus = 849;
     constexpr StringId keyboard_numpad_period = 850;
     constexpr StringId keyboard_numpad_divide = 851;
+
     constexpr StringId keyboard_numlock = 884;
     constexpr StringId keyboard_scroll = 885;
 
