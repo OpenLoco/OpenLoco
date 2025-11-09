@@ -1,6 +1,6 @@
 25.11+ (???)
 ------------------------------------------------------------------------
-- Fix: [#3313] Vehicle orders not being deleted correctly when the station is dealocated.
+- Fix: [#3313] Vehicle orders not being deleted correctly when the station is deallocated.
 
 25.11 (2025-11-05)
 ------------------------------------------------------------------------
