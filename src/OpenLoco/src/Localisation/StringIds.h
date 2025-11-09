@@ -488,8 +488,8 @@ namespace OpenLoco::StringIds
 
     constexpr StringId cant_build_this_underwater_duplicate = UNUSED_STR(484); // This is a duplicate and could be deleted
     constexpr StringId land_type_not_suitable = 485;
-    constexpr StringId spinner_up = 486;
-    constexpr StringId spinner_down = 487;
+    constexpr StringId spinner_up = UNUSED_STR(486); // For original version of stepper widget
+    constexpr StringId spinner_down = UNUSED_STR(487);
 
     constexpr StringId status_num_stations_singular = 520;
     constexpr StringId status_num_stations_plural = 521;
