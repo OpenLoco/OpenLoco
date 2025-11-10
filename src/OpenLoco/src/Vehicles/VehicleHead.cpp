@@ -74,7 +74,6 @@ namespace OpenLoco::Vehicles
     static loco_global<uint8_t, 0x0113646D> _vehicleUpdate_helicopterTargetYaw;
     static loco_global<AirportMovementNodeFlags, 0x00525BB0> _vehicleUpdate_helicopterAirportMovement;
     static loco_global<uint32_t, 0x0112C30C> _vehicleUpdate_compatibleRoadStationTypes;
-    static loco_global<int8_t[88], 0x004F865C> _vehicle_arr_4F865C; // This is static move to TrackData
     static loco_global<SignalStateFlags, 0x005220BC> _vehicleManagerIgnoreSignalFlagsMasks;
     static loco_global<uint8_t, 0x0113623B> _vehicleMangled_113623B; // This shouldn't be used as it will be mangled but it is
 
@@ -4383,10 +4382,10 @@ namespace OpenLoco::Vehicles
         sfl::static_vector<int8_t, 16> unk113621F;
         for (const auto& otherConnection : tc.connections)
         {
-            unk113621F.push_back(_vehicle_arr_4F865C[(otherConnection & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2]);
+            unk113621F.push_back(TrackData::getCurvatureDegree((otherConnection & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2));
         }
 
-        const auto curUnk = _vehicle_arr_4F865C[(newRouting & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2];
+        const auto curUnk = TrackData::getCurvatureDegree((newRouting & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2);
 
         int8_t cl = unk113621F[0];
         int8_t ch = unk113621F[0];
