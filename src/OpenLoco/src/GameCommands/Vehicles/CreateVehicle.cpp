@@ -39,12 +39,12 @@ namespace OpenLoco::GameCommands
     constexpr auto kNumVehicleComponentsInBase = 4;         // head unk_1 unk_2 tail
     constexpr auto kMaxNumVehicleComponentsInCar = kNumVehicleComponentsInCarComponent * kMaxNumCarComponentsInCar;
 
-    static VehicleHead* _backupVeh0 = nullptr;     // 0x01136240
-    static int16_t _backup2E = 0;                  // 0x01136248
-    static TrackAndDirection _backup2C = { 0, 0 }; // 0x0113624C
-    static int16_t _backupX = 0;                   // 0x01136250
-    static int16_t _backupY = 0;                   // 0x01136254
-    static uint8_t _backupZ = 0;                   // 0x01136258
+    static loco_global<VehicleHead*, 0x01136240> _backupVeh0;
+    static loco_global<int16_t, 0x01136248> _backup2E;
+    static loco_global<TrackAndDirection, 0x0113624C> _backup2C;
+    static loco_global<int16_t, 0x01136250> _backupX;
+    static loco_global<int16_t, 0x01136254> _backupY;
+    static loco_global<uint8_t, 0x01136258> _backupZ;
 
     static loco_global<EntityId, 0x0113642A> _113642A; // used by build window and others
 
