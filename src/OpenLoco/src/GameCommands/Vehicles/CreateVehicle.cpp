@@ -39,13 +39,6 @@ namespace OpenLoco::GameCommands
     constexpr auto kNumVehicleComponentsInBase = 4;         // head unk_1 unk_2 tail
     constexpr auto kMaxNumVehicleComponentsInCar = kNumVehicleComponentsInCarComponent * kMaxNumCarComponentsInCar;
 
-    static loco_global<VehicleHead*, 0x01136240> _backupVeh0;
-    static loco_global<int16_t, 0x01136248> _backup2E;
-    static loco_global<TrackAndDirection, 0x0113624C> _backup2C;
-    static loco_global<int16_t, 0x01136250> _backupX;
-    static loco_global<int16_t, 0x01136254> _backupY;
-    static loco_global<uint8_t, 0x01136258> _backupZ;
-
     static loco_global<EntityId, 0x0113642A> _113642A; // used by build window and others
 
     // 0x004B1D96
@@ -587,16 +580,26 @@ namespace OpenLoco::GameCommands
         return { head };
     }
 
+    struct TrainPlacementData
+    {
+        int16_t x;
+        int16_t y;
+        uint8_t tileBaseZ;
+        TrackAndDirection trackAndDirection;
+        uint16_t subPosition;
+        VehicleHead* head;
+    };
+
     // 0x004AE6DE
-    static void updateWholeVehicle(VehicleHead* const head)
+    static void updateWholeVehicle(VehicleHead* const head, std::optional<TrainPlacementData> placement)
     {
         head->autoLayoutTrain();
         auto company = CompanyManager::get(getUpdatingCompanyId());
         company->recalculateTransportCounts();
 
-        if (_backupVeh0 != reinterpret_cast<VehicleHead*>(-1))
+        if (placement.has_value())
         {
-            VehicleManager::placeDownVehicle(_backupVeh0, _backupX, _backupY, _backupZ, _backup2C, _backup2E);
+            VehicleManager::placeDownVehicle(placement->head, placement->x, placement->y, placement->tileBaseZ, placement->trackAndDirection, placement->subPosition);
         }
 
         Ui::WindowManager::invalidate(Ui::WindowType::vehicleList, enumValue(head->owner));
@@ -631,7 +634,7 @@ namespace OpenLoco::GameCommands
             if (createCar(_head, vehicleTypeId))
             {
                 // 0x004AE6DE
-                updateWholeVehicle(_head);
+                updateWholeVehicle(_head, std::nullopt);
             }
             else
             {
@@ -692,35 +695,33 @@ namespace OpenLoco::GameCommands
 
         if (flags & Flags::apply)
         {
+            std::optional<TrainPlacementData> placement = std::nullopt;
             if (train.head->tileX != -1)
             {
-                _backupX = train.head->tileX;
-                _backupY = train.head->tileY;
-                _backupZ = train.head->tileBaseZ;
-                _backup2C = train.head->trackAndDirection;
-                _backup2E = train.head->subPosition;
-                _backupVeh0 = train.head;
+                placement = TrainPlacementData{ train.head->tileX, train.head->tileY, train.head->tileBaseZ, train.head->trackAndDirection, train.head->subPosition, train.head };
                 train.head->liftUpVehicle();
             }
 
             if (createCar(train.head, vehicleTypeId))
             {
                 // Note train.cars is no longer valid from after createCar
-                updateWholeVehicle(train.head);
+                updateWholeVehicle(train.head, placement);
             }
             else
             {
-                if (_backupVeh0 == reinterpret_cast<VehicleHead*>(-1))
+                // Create car failed so try place back the train if we lifted it
+
+                if (!placement.has_value())
                 {
                     return FAILURE;
                 }
 
-                VehicleHead* veh0backup = _backupVeh0;
+                VehicleHead* veh0backup = placement->head;
                 // If it has an existing body
                 Vehicle bkupTrain(*veh0backup);
                 if (!bkupTrain.cars.empty())
                 {
-                    VehicleManager::placeDownVehicle(_backupVeh0, _backupX, _backupY, _backupZ, _backup2C, _backup2E);
+                    VehicleManager::placeDownVehicle(placement->head, placement->x, placement->y, placement->tileBaseZ, placement->trackAndDirection, placement->subPosition);
                 }
                 return FAILURE;
             }
@@ -735,7 +736,6 @@ namespace OpenLoco::GameCommands
     static uint32_t createVehicle(const uint8_t flags, const uint16_t vehicleTypeId, const EntityId headId)
     {
         setExpenditureType(ExpenditureType::VehiclePurchases);
-        _backupVeh0 = reinterpret_cast<VehicleHead*>(-1);
 
         const auto* company = CompanyManager::get(GameCommands::getUpdatingCompanyId());
         auto vehicleIsLocked = !company->isVehicleIndexUnlocked(static_cast<uint16_t>(vehicleTypeId));
