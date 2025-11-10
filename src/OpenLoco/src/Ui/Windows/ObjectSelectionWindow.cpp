@@ -653,6 +653,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         // Resize scroll view to take up the full window height, leaving room for a status line
         self.widgets[widx::scrollview].bottom = self.height - 12;
         self.widgets[widx::scrollview].right = self.width / 2 - 12;
+        self.widgets[widx::scrollviewFrame].bottom = self.widgets[widx::scrollview].bottom + 1;
+        self.widgets[widx::scrollviewFrame].right = self.widgets[widx::scrollview].right + 1;
 
         // Secondary tabs reduce the amount of space for the scroll view
         if (showSecondaryTabs)
