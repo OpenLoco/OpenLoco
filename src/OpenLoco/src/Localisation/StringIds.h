@@ -1926,7 +1926,7 @@ namespace OpenLoco::StringIds
     constexpr StringId object_selection_length = 2260;
     constexpr StringId stats_length = 2261;
     constexpr StringId vehicle_details_tooltip_length = 2262;
-    constexpr StringId num_characters_left_int_int = 2263;
+    constexpr StringId text_input_length = 2263;
     constexpr StringId menu_giant_screenshot = 2264;
     constexpr StringId object_selection_filename = 2265;
     constexpr StringId open_scenario_options = 2266;
@@ -2053,6 +2053,7 @@ namespace OpenLoco::StringIds
     constexpr StringId year_range_no_start_no_end = 2387;
     constexpr StringId status_music_tracks_selected_singular = 2388;
     constexpr StringId status_music_tracks_selected_plural = 2389;
+    constexpr StringId text_input_length_maxed = 2390;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

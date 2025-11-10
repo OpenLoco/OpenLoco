@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Change: [#3384] Music selection window is now resizable, sortable, and displays the time period associated with each track.
 - Change: [#3402] Text input windows now show the total characters used rather than the current character position.
+- Change: [#3404] Text input length numbers now turn red when the character limit is reached.
 - Fix: [#3313] Vehicle orders not being deleted correctly when the station is deallocated.
 - Fix: [#3395] Text input windows no longer show character limits.
 - Fix: [#3401] The character limit label is using the wrong text colour.
