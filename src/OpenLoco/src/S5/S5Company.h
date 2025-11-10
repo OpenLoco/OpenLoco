@@ -267,7 +267,7 @@ namespace OpenLoco::S5
 
     struct Records
     {
-        int16_t speed[3];  // 0x000436 (0x0052624E)
+        int16_t speed[3];   // 0x000436 (0x0052624E)
         uint8_t company[3]; // 0x00043C (0x00526254)
         uint8_t pad_43A;
         uint32_t date[3]; // 0x000440 (0x00526258)
