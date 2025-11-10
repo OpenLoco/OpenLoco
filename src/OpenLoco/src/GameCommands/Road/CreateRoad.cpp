@@ -611,10 +611,12 @@ namespace OpenLoco::GameCommands
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3{ 16, 16, 0 });
-        getLegacyReturnState().flags_1136072 = ElementPositionFlags::none;
-        getLegacyReturnState().flags_1136073 = 0; // Bridge related
-        getLegacyReturnState().byte_1136074 = 0;
-        getLegacyReturnState().byte_1136075 = 0xFFU;
+
+        auto& returnState = getLegacyReturnState();
+        returnState.flags_1136072 = ElementPositionFlags::none;
+        returnState.flags_1136073 = 0; // Bridge related
+        returnState.byte_1136074 = 0;
+        returnState.byte_1136075 = 0xFFU;
         _alternateTrackObjectId = 0xFFU;
 
         const auto companyId = SceneManager::isEditorMode() ? CompanyId::neutral : getUpdatingCompanyId();
@@ -689,8 +691,6 @@ namespace OpenLoco::GameCommands
                 setErrorText(StringIds::error_too_low);
                 return FAILURE;
             }
-
-            auto& returnState = getLegacyReturnState();
 
             const auto baseZ = roadLoc.z / World::kSmallZStep;
             auto clearZ = baseZ + (piece.clearZ + 32) / World::kSmallZStep;
@@ -1079,20 +1079,20 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        if ((getLegacyReturnState().flags_1136073 & (1U << 0)) && !(getLegacyReturnState().flags_1136073 & (1U << 6)))
+        if ((returnState.flags_1136073 & (1U << 0)) && !(returnState.flags_1136073 & (1U << 6)))
         {
             auto* bridgeObj = ObjectManager::get<BridgeObject>(args.bridge);
-            const auto heightCost = getLegacyReturnState().byte_1136074 * bridgeObj->heightCostFactor;
+            const auto heightCost = returnState.byte_1136074 * bridgeObj->heightCostFactor;
             const auto bridgeBaseCost = Economy::getInflationAdjustedCost(bridgeObj->baseCostFactor + heightCost, bridgeObj->costIndex, 10);
             auto cost = (bridgeBaseCost * World::TrackData::getRoadMiscData(args.roadId).costFactor) / 256;
-            if (getLegacyReturnState().flags_1136073 & (1U << 7))
+            if (returnState.flags_1136073 & (1U << 7))
             {
                 cost *= 2;
             }
             totalCost += cost;
         }
 
-        if (((getLegacyReturnState().flags_1136072 & ElementPositionFlags::underground) != ElementPositionFlags::none) && !(getLegacyReturnState().flags_1136073 & (1U << 6)))
+        if (((returnState.flags_1136072 & ElementPositionFlags::underground) != ElementPositionFlags::none) && !(returnState.flags_1136073 & (1U << 6)))
         {
             const auto tunnelBaseCost = Economy::getInflationAdjustedCost(roadObj->tunnelCostFactor, 2, 8);
             auto cost = (tunnelBaseCost * World::TrackData::getTrackMiscData(args.roadId).costFactor) / 256;
