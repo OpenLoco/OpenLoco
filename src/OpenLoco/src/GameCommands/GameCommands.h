@@ -16,6 +16,11 @@ namespace OpenLoco
     enum class LoadOrQuitMode : uint16_t;
 }
 
+namespace OpenLoco::World::TileManager
+{
+    enum class ElementPositionFlags : uint8_t;
+}
+
 namespace OpenLoco::Vehicles
 {
     struct VehicleHead;
@@ -199,10 +204,10 @@ namespace OpenLoco::GameCommands
     // TODO: rework these
     struct LegacyReturnState
     {
-        uint8_t byte_1136072;        // 0x01136072
-        uint8_t byte_1136073;        // 0x01136073
-        World::MicroZ _byte_1136074; // 0x01136074
-        uint8_t byte_1136075;        // 0x01136075
+        World::TileManager::ElementPositionFlags byte_1136072; // 0x01136072
+        uint8_t byte_1136073;                                  // 0x01136073
+        World::MicroZ byte_1136074;                            // 0x01136074
+        uint8_t byte_1136075;                                  // 0x01136075
     };
 
     // Note: this is deliberately a mutable ref
