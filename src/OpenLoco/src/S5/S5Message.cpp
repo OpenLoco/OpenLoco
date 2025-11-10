@@ -1,6 +1,7 @@
 #include "S5Message.h"
 #include "Message.h"
-#include <ranges>
+#include <algorithm>
+#include <cstring>
 
 namespace OpenLoco::S5
 {
