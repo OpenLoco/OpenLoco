@@ -192,7 +192,7 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        getLegacyReturnState().byte_1136073 = getLegacyReturnState().byte_1136073 | (1U << 3);
+        getLegacyReturnState().byte_1136073 |= (1U << 3);
         return World::TileClearance::ClearFuncResult::noCollision;
     }
 
@@ -252,7 +252,7 @@ namespace OpenLoco::GameCommands
         }
 
         hasLevelCrossing = true;
-        getLegacyReturnState().byte_1136073 = getLegacyReturnState().byte_1136073 | (1U << 2);
+        getLegacyReturnState().byte_1136073 |= (1U << 2);
 
         if (!(args.flags & (Flags::aiAllocated | Flags::ghost))
             && (args.flags & Flags::apply))
@@ -303,7 +303,7 @@ namespace OpenLoco::GameCommands
                 {
                     return World::TileClearance::ClearFuncResult::noCollision;
                 }
-                getLegacyReturnState().byte_1136073 = getLegacyReturnState().byte_1136073 | (1U << 4);
+                getLegacyReturnState().byte_1136073 |= (1U << 4);
                 return World::TileClearance::clearBuildingCollision(*elBuilding, args.pos, removedBuildings, args.flags, totalCost);
             }
             case World::ElementType::tree:

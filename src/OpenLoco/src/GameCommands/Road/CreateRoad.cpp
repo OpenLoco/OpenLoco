@@ -141,7 +141,7 @@ namespace OpenLoco::GameCommands
 
         auto res = RoadClearFunctionResult(World::TileClearance::ClearFuncResult::noCollision);
         res.hasLevelCrossing = true;
-        getLegacyReturnState().byte_1136073 = getLegacyReturnState().byte_1136073 | (1U << 2);
+        getLegacyReturnState().byte_1136073 |= (1U << 2);
 
         if (!(args.flags & (Flags::aiAllocated | Flags::ghost))
             && (args.flags & Flags::apply))
@@ -259,7 +259,7 @@ namespace OpenLoco::GameCommands
     {
         if (!elRoad.isGhost() && !elRoad.isAiAllocated())
         {
-            getLegacyReturnState().byte_1136073 = getLegacyReturnState().byte_1136073 | (1U << 6);
+            getLegacyReturnState().byte_1136073 |= (1U << 6);
         }
 
         if (elRoad.hasBridge())
@@ -306,7 +306,7 @@ namespace OpenLoco::GameCommands
             {
                 if (isPotentialOverlayRoad(elRoad, args))
                 {
-                    getLegacyReturnState().byte_1136073 = getLegacyReturnState().byte_1136073 | (1U << 5);
+                    getLegacyReturnState().byte_1136073 |= (1U << 5);
                     if (elRoad.roadObjectId() != args.roadObjectId)
                     {
                         confirmedOverlay = true;
@@ -442,7 +442,7 @@ namespace OpenLoco::GameCommands
 
         if (isExactOverlay)
         {
-            getLegacyReturnState().byte_1136073 = getLegacyReturnState().byte_1136073 | (1U << 5);
+            getLegacyReturnState().byte_1136073 |= (1U << 5);
             if (elRoad.roadObjectId() == args.roadObjectId)
             {
                 // 0x004773BC
@@ -489,7 +489,7 @@ namespace OpenLoco::GameCommands
                 return res;
             }
             // 0x004773A5
-            getLegacyReturnState().byte_1136073 = getLegacyReturnState().byte_1136073 | (1U << 5);
+            getLegacyReturnState().byte_1136073 |= (1U << 5);
             if (elRoad.roadObjectId() == args.roadObjectId)
             {
                 // 0x004773BC
@@ -577,7 +577,7 @@ namespace OpenLoco::GameCommands
                 {
                     return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::noCollision);
                 }
-                getLegacyReturnState().byte_1136073 = getLegacyReturnState().byte_1136073 | (1U << 4);
+                getLegacyReturnState().byte_1136073 |= (1U << 4);
                 return RoadClearFunctionResult(World::TileClearance::clearBuildingCollision(*elBuilding, args.pos, removedBuildings, args.flags, totalCost));
             }
             case World::ElementType::tree:
@@ -694,7 +694,7 @@ namespace OpenLoco::GameCommands
 
             const auto baseZ = roadLoc.z / World::kSmallZStep;
             auto clearZ = baseZ + (piece.clearZ + 32) / World::kSmallZStep;
-            returnState.byte_1136073 = returnState.byte_1136073 & ~(1U << 1);
+            returnState.byte_1136073 &= ~(1U << 1);
 
             // Why aren't we just failing invalid???
             if (World::validCoords(roadLoc))
@@ -703,14 +703,14 @@ namespace OpenLoco::GameCommands
                 auto* elSurface = tile.surface();
                 if (elSurface->water())
                 {
-                    returnState.byte_1136073 = returnState.byte_1136073 | (1U << 7);
+                    returnState.byte_1136073 |= (1U << 7);
                 }
 
                 const bool requiresBridge = isBridgeRequired(baseZ, *elSurface, piece, unk);
                 if (requiresBridge)
                 {
                     // 0x004762CD
-                    returnState.byte_1136073 = returnState.byte_1136073 | (1U << 1) | (1U << 0);
+                    returnState.byte_1136073 |= (1U << 1) | (1U << 0);
                     World::MicroZ heightDiff = (baseZ - elSurface->baseZ()) / World::kMicroToSmallZStep;
                     if (args.bridge == 0xFFU)
                     {

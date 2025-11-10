@@ -130,7 +130,7 @@ namespace OpenLoco::GameCommands
         }
 
         hasLevelCrossing = true;
-        getLegacyReturnState().byte_1136073 = getLegacyReturnState().byte_1136073 | (1U << 2);
+        getLegacyReturnState().byte_1136073 |= (1U << 2);
 
         if (args.flags & Flags::apply)
         {
