@@ -173,7 +173,7 @@ namespace OpenLoco::S5
         int8_t manualPower;                // 0x6E manual power control VehicleFlags::manualControl
         World::Pos2 journeyStartPos;       // 0x6F journey start position
         uint32_t journeyStartTicks;        // 0x73 ticks since journey start
-        uint16_t lastAverageSpeed;         // 0x77
+        int16_t lastAverageSpeed;          // 0x77
         uint8_t restartStoppedCarsTimeout; // 0x79 timeout before auto starting trams/buses
     };
     static_assert(sizeof(VehicleHead) == 0x7A); // Can't use offset_of change this to last field if more found
@@ -209,7 +209,7 @@ namespace OpenLoco::S5
         uint8_t pad_40[0x2]; // 0x40
         uint8_t mode;        // 0x42 field same in all vehicles
         uint8_t pad_43;
-        uint16_t targetSpeed;  // 0x44
+        int16_t targetSpeed;   // 0x44
         uint16_t timeAtSignal; // 0x46
         uint8_t var_48;
         uint8_t var_49;      // 0x49 rackrail mod?
@@ -249,13 +249,13 @@ namespace OpenLoco::S5
         uint16_t soundWindowNumber;     // 0x4C common with tail
         uint8_t soundWindowType;        // 0x4E common with tail
         int8_t var_4F;
-        uint16_t totalPower;   // 0x50 maybe not used by aircraft and ship
-        uint16_t totalWeight;  // 0x52
-        uint16_t maxSpeed;     // 0x54
-        uint32_t currentSpeed; // 0x56
+        uint16_t totalPower;  // 0x50 maybe not used by aircraft and ship
+        uint16_t totalWeight; // 0x52
+        int16_t maxSpeed;     // 0x54
+        int32_t currentSpeed; // 0x56
         uint8_t motorState;
         uint8_t brakeLightTimeout;
-        uint16_t rackRailMaxSpeed;    // 0x5C
+        int16_t rackRailMaxSpeed;     // 0x5C
         currency32_t curMonthRevenue; // 0x5E monthly revenue
         currency32_t profit[4];       // 0x62 last 4 months net profit
         uint8_t reliability;          // 0x72
