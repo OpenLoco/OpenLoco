@@ -572,6 +572,21 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x004733AC
     static void prepareDraw(Ui::Window& self)
     {
+        // Resize basic window
+        self.widgets[widx::frame].right = self.width - 1;
+        self.widgets[widx::frame].bottom = self.height - 1;
+        self.widgets[widx::panel].right = self.width - 1;
+        self.widgets[widx::panel].bottom = self.height - 1;
+        self.widgets[widx::caption].right = self.width - 2;
+        self.widgets[widx::closeButton].left = self.width - 15;
+        self.widgets[widx::closeButton].right = self.width - 3;
+
+        // Reposition filter label/dropdown
+        self.widgets[widx::filterLabel].right = self.width - 8;
+        self.widgets[widx::filterLabel].left = self.widgets[widx::filterLabel].right - 100;
+        self.widgets[widx::filterDropdown].right = self.widgets[widx::filterLabel].right - 1;
+        self.widgets[widx::filterDropdown].left = self.widgets[widx::filterDropdown].right - 12;
+
         self.activatedWidgets = (1 << widx::objectImage);
 
         self.widgets[widx::closeButton].hidden = false;
@@ -634,6 +649,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             self.widgets[widx::scrollview].top = 62;
             self.widgets[widx::scrollviewFrame].hidden = true;
         }
+
+        self.widgets[widx::scrollview].bottom = self.height - 12;
     }
 
     static loco_global<uint16_t[kMaxObjectTypes], 0x0112C1C5> _112C1C5;
