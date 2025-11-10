@@ -9,7 +9,7 @@
 #include "Effects/VehicleCrashEffect.h"
 #include "Entities/Entity.h"
 #include "Vehicles/Vehicle.h"
-#include <ranges>
+#include <algorithm>
 
 namespace OpenLoco::S5
 {

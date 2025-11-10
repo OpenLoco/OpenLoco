@@ -1,6 +1,6 @@
 #include "S5Station.h"
 #include "World/Station.h"
-#include <ranges>
+#include <algorithm>
 
 namespace OpenLoco::S5
 {
@@ -32,7 +32,7 @@ namespace OpenLoco::S5
         dst.noTilesTimeout = src.noTilesTimeout;
         dst.flags = enumValue(src.flags);
         dst.town = enumValue(src.town);
-        for (auto i = 0; i < std::size(dst.cargoStats); ++i)
+        for (size_t i = 0; i < std::size(dst.cargoStats); ++i)
         {
             dst.cargoStats[i] = exportCargoStats(src.cargoStats[i]);
         }
@@ -76,7 +76,7 @@ namespace OpenLoco::S5
         dst.noTilesTimeout = src.noTilesTimeout;
         dst.flags = static_cast<StationFlags>(src.flags);
         dst.town = static_cast<TownId>(src.town);
-        for (auto i = 0; i < std::size(dst.cargoStats); ++i)
+        for (size_t i = 0; i < std::size(dst.cargoStats); ++i)
         {
             dst.cargoStats[i] = importCargoStats(src.cargoStats[i]);
         }
