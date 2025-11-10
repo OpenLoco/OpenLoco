@@ -1,5 +1,6 @@
 25.11+ (???)
 ------------------------------------------------------------------------
+- Fix: [#3313] Vehicle orders not being deleted correctly when the station is deallocated.
 - Fix: [#3395] Text input windows no longer show character limits.
 
 25.11 (2025-11-05)
