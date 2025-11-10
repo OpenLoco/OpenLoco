@@ -32,7 +32,6 @@
 #include <map>
 #include <queue>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Ui::ScrollView;
 using namespace OpenLoco::Ui::ViewportInteraction;
@@ -61,7 +60,7 @@ namespace OpenLoco::Input
 
 #pragma mark - Input
 
-    static int32_t _pendingMouseInputUpdate; // 0x00525324
+    static bool _pendingMouseInputUpdate; // 0x00525324
     static MouseButton _lastKnownButtonState;
 
     static Ui::Point _cursorPressed;
@@ -1931,16 +1930,16 @@ namespace OpenLoco::Input
 
     bool hasPendingMouseInputUpdate()
     {
-        return _pendingMouseInputUpdate == 1;
+        return _pendingMouseInputUpdate;
     }
 
     void clearPendingMouseInputUpdate()
     {
-        _pendingMouseInputUpdate = 0;
+        _pendingMouseInputUpdate = false;
     }
 
     void setPendingMouseInputUpdate()
     {
-        _pendingMouseInputUpdate = 1;
+        _pendingMouseInputUpdate = true;
     }
 }
