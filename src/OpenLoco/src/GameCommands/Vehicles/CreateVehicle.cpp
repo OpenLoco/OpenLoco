@@ -586,7 +586,7 @@ namespace OpenLoco::GameCommands
         int16_t y;
         uint8_t tileBaseZ;
         TrackAndDirection trackAndDirection;
-        int16_t subPosition;
+        uint16_t subPosition;
         VehicleHead* head;
     };
 
@@ -698,7 +698,7 @@ namespace OpenLoco::GameCommands
             std::optional<TrainPlacementData> placement = std::nullopt;
             if (train.head->tileX != -1)
             {
-                placement.emplace(train.head->tileX, train.head->tileY, train.head->tileBaseZ, train.head->trackAndDirection, train.head->subPosition, train.head);
+                placement = TrainPlacementData{ train.head->tileX, train.head->tileY, train.head->tileBaseZ, train.head->trackAndDirection, train.head->subPosition, train.head };
                 train.head->liftUpVehicle();
             }
 
