@@ -67,7 +67,7 @@ namespace OpenLoco::GameCommands
                 }
 
                 // There is a level crossing so we can't place a station
-                if (getLegacyReturnState().byte_1136073 & (1U << 2))
+                if (getLegacyReturnState().flags_1136073 & (1U << 2))
                 {
                     return GameCommands::FAILURE;
                 }

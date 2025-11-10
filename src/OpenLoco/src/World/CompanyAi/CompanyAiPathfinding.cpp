@@ -422,14 +422,14 @@ namespace OpenLoco::CompanyAi
         auto& returnState = GameCommands::getLegacyReturnState();
 
         // Place track attempt required a bridge
-        if (returnState.byte_1136073 & (1U << 0))
+        if (returnState.flags_1136073 & (1U << 0))
         {
             // returnState.byte_1136074 is the bridge height
             const auto unkFactor = (returnState.byte_1136074 * World::TrackData::getTrackMiscData(trackId).unkWeighting) / 2;
             state.bridgeWeighting += unkFactor;
         }
         // Place track attempt requires removing a building
-        if (returnState.byte_1136073 & (1U << 4))
+        if (returnState.flags_1136073 & (1U << 4))
         {
             state.numBuildingsRequiredDestroyed++;
         }
@@ -576,21 +576,21 @@ namespace OpenLoco::CompanyAi
         auto placementWeighting = World::TrackData::getRoadMiscData(roadId).unkWeighting;
 
         // Place road attempt overlayed an existing road
-        if (returnState.byte_1136073 & (1U << 5))
+        if (returnState.flags_1136073 & (1U << 5))
         {
             placementWeighting -= placementWeighting / 4;
         }
         state.currentWeighting += placementWeighting;
 
         // Place road attempt required a bridge
-        if (returnState.byte_1136073 & (1U << 0))
+        if (returnState.flags_1136073 & (1U << 0))
         {
             // returnState.byte_1136074 is the bridge height
             const auto unkFactor = (returnState.byte_1136074 * placementWeighting) / 2;
             state.bridgeWeighting += unkFactor;
         }
         // Place road attempt requires removing a building
-        if (returnState.byte_1136073 & (1U << 4))
+        if (returnState.flags_1136073 & (1U << 4))
         {
             state.numBuildingsRequiredDestroyed++;
         }

@@ -1943,7 +1943,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 if (args)
                 {
                     _cState->trackCost = placeRoadGhost(*args);
-                    _cState->byte_1136076 = _cState->byte_1136073;
+                    _cState->byte_1136076 = _cState->flags_1136073;
                     sub_4A193B();
                     activateSelectedConstructionWidgets();
                 }
@@ -1958,7 +1958,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 if (args)
                 {
                     _cState->trackCost = placeTrackGhost(*args);
-                    _cState->byte_1136076 = _cState->byte_1136073;
+                    _cState->byte_1136076 = _cState->flags_1136073;
                     sub_4A193B();
                     activateSelectedConstructionWidgets();
                 }
@@ -2307,7 +2307,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _ghostRemovalTrackObjectId = args.trackObjectId;
             _cState->ghostRemovalTrackRotation = args.rotation;
             _ghostVisibilityFlags = GhostVisibilityFlags::track | *_ghostVisibilityFlags;
-            const auto newViewState = (_cState->byte_1136072 & (1 << 1)) ? WindowManager::ViewportVisibility::undergroundView : WindowManager::ViewportVisibility::overgroundView;
+            const auto newViewState = (_cState->flags_1136072 & (1 << 1)) ? WindowManager::ViewportVisibility::undergroundView : WindowManager::ViewportVisibility::overgroundView;
             WindowManager::viewportSetVisibility(newViewState);
             if (_cState->lastSelectedTrackGradient != 0)
             {
@@ -2360,7 +2360,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _ghostRemovalTrackObjectId = args.roadObjectId | (1 << 7);
             _cState->ghostRemovalTrackRotation = args.rotation;
             _ghostVisibilityFlags = GhostVisibilityFlags::track | *_ghostVisibilityFlags;
-            const auto newViewState = (_cState->byte_1136072 & (1 << 1)) ? WindowManager::ViewportVisibility::undergroundView : WindowManager::ViewportVisibility::overgroundView;
+            const auto newViewState = (_cState->flags_1136072 & (1 << 1)) ? WindowManager::ViewportVisibility::undergroundView : WindowManager::ViewportVisibility::overgroundView;
             WindowManager::viewportSetVisibility(newViewState);
             if (_cState->lastSelectedTrackGradient != 0)
             {
@@ -2433,7 +2433,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             auto res = placeGhost(*args);
             _cState->trackCost = res;
-            _cState->byte_1136076 = _cState->byte_1136073;
+            _cState->byte_1136076 = _cState->flags_1136073;
             sub_4A193B();
 
             if (_cState->trackCost == 0x80000000)

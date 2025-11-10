@@ -130,7 +130,7 @@ namespace OpenLoco::GameCommands
         }
 
         hasLevelCrossing = true;
-        getLegacyReturnState().byte_1136073 |= (1U << 2);
+        getLegacyReturnState().flags_1136073 |= (1U << 2);
 
         if (args.flags & Flags::apply)
         {
@@ -207,7 +207,7 @@ namespace OpenLoco::GameCommands
 
     static currency32_t aiTrackReplacement(const AiTrackReplacementArgs& args, const uint8_t flags)
     {
-        getLegacyReturnState().byte_1136072 = World::TileManager::ElementPositionFlags::none;
+        getLegacyReturnState().flags_1136072 = World::TileManager::ElementPositionFlags::none;
         GameCommands::setExpenditureType(ExpenditureType::Construction);
         const auto companyId = GameCommands::getUpdatingCompanyId();
         if (flags & GameCommands::Flags::apply)
@@ -372,7 +372,7 @@ namespace OpenLoco::GameCommands
             const auto posFlags = World::TileClearance::getPositionFlags();
             // Abridged flags for just above/underground
             const auto newGroundFlags = posFlags & (World::TileManager::ElementPositionFlags::aboveGround | World::TileManager::ElementPositionFlags::underground);
-            getLegacyReturnState().byte_1136072 = newGroundFlags;
+            getLegacyReturnState().flags_1136072 = newGroundFlags;
 
             if (hasLevelCrossing && (flags & GameCommands::Flags::apply))
             {
@@ -403,7 +403,7 @@ namespace OpenLoco::GameCommands
             totalCost += cost;
         }
 
-        if ((getLegacyReturnState().byte_1136072 & World::TileManager::ElementPositionFlags::underground) != World::TileManager::ElementPositionFlags::none)
+        if ((getLegacyReturnState().flags_1136072 & World::TileManager::ElementPositionFlags::underground) != World::TileManager::ElementPositionFlags::none)
         {
             const auto tunnelBaseCost = Economy::getInflationAdjustedCost(trackObj->tunnelCostFactor, 2, 8);
             auto cost = (tunnelBaseCost * trackIdCostFactor) / 256;

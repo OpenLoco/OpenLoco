@@ -111,8 +111,8 @@ namespace OpenLoco::Ui::Windows::Construction
         uint8_t stationGhostTileIndex;                  // 0x0113606D
         Track::ModSection lastSelectedTrackModSection;  // 0x0113606E
         uint8_t pad_113606F[3];                         // 0x0113606F
-        uint8_t byte_1136072;                           // 0x01136072 -> GameCommands::LegacyReturnState
-        uint8_t byte_1136073;                           // 0x01136073 -> GameCommands::LegacyReturnState
+        uint8_t flags_1136072;                          // 0x01136072 -> GameCommands::LegacyReturnState
+        uint8_t flags_1136073;                          // 0x01136073 -> GameCommands::LegacyReturnState
         uint8_t byte_1136074;                           // 0x01136074 -> GameCommands::LegacyReturnState
         uint8_t byte_1136075;                           // 0x01136075 -> GameCommands::LegacyReturnState
         uint8_t byte_1136076;                           // 0x01136076
