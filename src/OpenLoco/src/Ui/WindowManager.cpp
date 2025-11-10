@@ -40,9 +40,9 @@ namespace OpenLoco::Ui::WindowManager
 {
     static constexpr size_t kMaxWindows = 64;
 
-    static uint16_t _thousandthTickCounter; // 0x0052334E
-    static WindowType _currentModalType;    // 0x005233B6
-    static int32_t _currentRotation;        // 0x00E3F0B8
+    static uint16_t _thousandthTickCounter;                      // 0x0052334E
+    static WindowType _currentModalType = WindowType::undefined; // 0x005233B6
+    static int32_t _currentRotation;                             // 0x00E3F0B8
 
     static sfl::static_vector<Window, kMaxWindows> _windows;
 

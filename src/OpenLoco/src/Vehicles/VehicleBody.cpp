@@ -24,7 +24,6 @@ using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Vehicles
 {
-
     static loco_global<VehicleHead*, 0x01136118> _vehicleUpdate_head;
     static loco_global<Vehicle2*, 0x01136120> _vehicleUpdate_2;
     static loco_global<VehicleBogie*, 0x01136124> _vehicleUpdate_frontBogie;
@@ -32,7 +31,6 @@ namespace OpenLoco::Vehicles
     static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
     static loco_global<bool, 0x01136237> _vehicleUpdate_frontBogieHasMoved;
     static loco_global<bool, 0x01136238> _vehicleUpdate_backBogieHasMoved;
-    static loco_global<int8_t[88], 0x004F865C> _vehicle_arr_4F865C; // cargoType related?
 
     // 0x00503E5C
     static constexpr Pitch kVehicleBodyIndexToPitch[] = {
@@ -196,7 +194,7 @@ namespace OpenLoco::Vehicles
             }
             else
             {
-                targetTiltFrame = _vehicle_arr_4F865C[frontBogie->trackAndDirection.track._data >> 2];
+                targetTiltFrame = World::TrackData::getCurvatureDegree(frontBogie->trackAndDirection.track._data >> 2);
                 // S-bend
                 if ((frontBogie->trackAndDirection.track.id() == 12) || (frontBogie->trackAndDirection.track.id() == 13))
                 {
