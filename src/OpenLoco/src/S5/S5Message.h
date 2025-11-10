@@ -20,7 +20,6 @@ namespace OpenLoco::S5
     static_assert(sizeof(Message) == 0xD4);
 #pragma pack(pop)
 
-    
     S5::Message exportMessage(const OpenLoco::Message& src);
     OpenLoco::Message importMessage(const S5::Message& src);
 }

@@ -18,7 +18,7 @@ namespace OpenLoco::S5
         uint8_t age;            // 0x33
         uint8_t rating;         // 0x34
         uint8_t enrouteAge;     // 0x35
-        int16_t vehicleSpeed;  // 0x36 max speed of vehicle that transported the cargo
+        int16_t vehicleSpeed;   // 0x36 max speed of vehicle that transported the cargo
         uint8_t vehicleAge;     // 0x38 age of the vehicle (car) that transported the cargo
         uint8_t industryId;     // 0x39
         uint8_t densityPerTile; // 0x3A amount of cargo visible per tile of station
