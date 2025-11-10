@@ -599,6 +599,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         self.widgets[widx::filterDropdown].right = self.widgets[widx::filterLabel].right - 1;
         self.widgets[widx::filterDropdown].left = self.widgets[widx::filterDropdown].right - 12;
 
+        // Resize text input field and clear button
+        self.widgets[widx::textInput].right = self.width / 2 - 54;
+        self.widgets[widx::clearButton].left = self.widgets[widx::textInput].right + 4;
+        self.widgets[widx::clearButton].right = self.widgets[widx::clearButton].left + 38;
+
         self.activatedWidgets = (1 << widx::objectImage);
 
         self.widgets[widx::closeButton].hidden = false;
