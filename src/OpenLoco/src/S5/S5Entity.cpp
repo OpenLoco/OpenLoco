@@ -462,8 +462,414 @@ namespace OpenLoco::S5
         }
     }
 
-    OpenLoco::Entity importEntity(const S5::Entity& )
+    static OpenLoco::Entity importNullEntity(const S5::Entity& src)
     {
-        return OpenLoco::Entity();
+        OpenLoco::Entity dst{};
+        dst.baseType = EntityBaseType::null;
+        dst.nextEntityId = static_cast<EntityId>(src.base.nextEntityId);
+        dst.llPreviousId = static_cast<EntityId>(src.base.llPreviousId);
+        dst.id = static_cast<EntityId>(src.base.id);
+        dst.linkedListOffset = src.base.linkedListOffset;
+        return dst;
+    }
+
+    static OpenLoco::Entity importEntityBase(const S5::EntityBase& src)
+    {
+        OpenLoco::Entity dst{};
+        dst.baseType = static_cast<EntityBaseType>(src.baseType);
+        dst.nextQuadrantId = static_cast<EntityId>(src.nextQuadrantId);
+        dst.nextEntityId = static_cast<EntityId>(src.nextEntityId);
+        dst.llPreviousId = static_cast<EntityId>(src.llPreviousId);
+        dst.linkedListOffset = src.linkedListOffset;
+        dst.spriteHeightNegative = src.spriteHeightNegative;
+        dst.id = static_cast<EntityId>(src.id);
+        dst.vehicleFlags = static_cast<VehicleFlags>(src.vehicleFlags);
+        dst.position = src.position;
+        dst.spriteWidth = src.spriteWidth;
+        dst.spriteHeightPositive = src.spriteHeightPositive;
+        dst.spriteLeft = src.spriteLeft;
+        dst.spriteTop = src.spriteTop;
+        dst.spriteRight = src.spriteRight;
+        dst.spriteBottom = src.spriteBottom;
+        dst.spriteYaw = src.spriteYaw;
+        dst.spritePitch = static_cast<Pitch>(src.spritePitch);
+        dst.owner = static_cast<CompanyId>(src.owner);
+        dst.name = src.name;
+        return dst;
+    }
+
+    static void importExhaustEffect(OpenLoco::Exhaust& dst, const S5::Exhaust& src)
+    {
+        dst.frameNum = src.frameNum;
+        dst.stationaryProgress = src.stationaryProgress;
+        dst.windProgress = src.windProgress;
+        dst.var_34 = src.var_34;
+        dst.var_36 = src.var_36;
+        dst.objectId = src.objectId;
+    }
+
+    static void importMoneyEffect(OpenLoco::MoneyEffect& dst, const S5::MoneyEffect& src)
+    {
+        dst.frame = src.frame;
+        dst.numMovements = src.numMovements;
+        dst.amount = src.amount;
+        dst.var_2E = static_cast<CompanyId>(src.var_2E);
+        dst.offsetX = src.offsetX;
+        dst.wiggle = src.wiggle;
+    }
+
+    static void importVehicleCrashEffect(OpenLoco::VehicleCrashParticle& dst, const S5::VehicleCrashParticle& src)
+    {
+        dst.timeToLive = src.timeToLive;
+        dst.frame = src.frame;
+        dst.colourScheme.primary = static_cast<Colour>(src.colourSchemePrimary);
+        dst.colourScheme.secondary = static_cast<Colour>(src.colourSchemeSecondary);
+        dst.crashedSpriteBase = src.crashedSpriteBase;
+        dst.velocity = src.velocity;
+        dst.accelerationX = src.accelerationX;
+        dst.accelerationY = src.accelerationY;
+        dst.accelerationZ = src.accelerationZ;
+    }
+
+    static void importExplosionCloud(OpenLoco::ExplosionCloud& dst, const S5::ExplosionCloud& src)
+    {
+        dst.frame = src.frame;
+    }
+
+    static void importSplashEffect(OpenLoco::Splash& dst, const S5::Splash& src)
+    {
+        dst.frame = src.frame;
+    }
+
+    static void importFireballEffect(OpenLoco::Fireball& dst, const S5::Fireball& src)
+    {
+        dst.frame = src.frame;
+    }
+
+    static void importExplosionSmokeEffect(OpenLoco::ExplosionSmoke& dst, const S5::ExplosionSmoke& src)
+    {
+        dst.frame = src.frame;
+    }
+
+    static void importSmokeEffect(OpenLoco::Smoke& dst, const S5::Smoke& src)
+    {
+        dst.frame = src.frame;
+    }
+
+    static OpenLoco::Entity importEffectEntity(const S5::Entity& src)
+    {
+        const auto effectType = static_cast<EffectType>(src.base.type);
+        auto dst = importEntityBase(src.base);
+        auto* effectEntity = dst.asBase<EffectEntity>();
+        effectEntity->setSubType(effectType);
+
+        switch (effectType)
+        {
+            case EffectType::exhaust:
+                importExhaustEffect(*effectEntity->asExhaust(), reinterpret_cast<const S5::Exhaust&>(src));
+                break;
+            case EffectType::redGreenCurrency:
+                importMoneyEffect(*effectEntity->asRedGreenCurrency(), reinterpret_cast<const S5::MoneyEffect&>(src));
+                break;
+            case EffectType::windowCurrency:
+                importMoneyEffect(*effectEntity->asWindowCurrency(), reinterpret_cast<const S5::MoneyEffect&>(src));
+                break;
+            case EffectType::vehicleCrashParticle:
+                importVehicleCrashEffect(*effectEntity->asVehicleCrashParticle(), reinterpret_cast<const S5::VehicleCrashParticle&>(src));
+                break;
+            case EffectType::explosionCloud:
+                importExplosionCloud(*effectEntity->asExplosionCloud(), reinterpret_cast<const S5::ExplosionCloud&>(src));
+                break;
+            case EffectType::splash:
+                importSplashEffect(*effectEntity->asSplash(), reinterpret_cast<const S5::Splash&>(src));
+                break;
+            case EffectType::fireball:
+                importFireballEffect(*effectEntity->asFireball(), reinterpret_cast<const S5::Fireball&>(src));
+                break;
+            case EffectType::explosionSmoke:
+                importExplosionSmokeEffect(*effectEntity->asExplosionSmoke(), reinterpret_cast<const S5::ExplosionSmoke&>(src));
+                break;
+            case EffectType::smoke:
+                importSmokeEffect(*effectEntity->asSmoke(), reinterpret_cast<const S5::Smoke&>(src));
+                break;
+        }
+        return dst;
+    }
+
+    static void importHeadVehicle(OpenLoco::Vehicles::VehicleHead& dst, const S5::VehicleHead& src)
+    {
+        dst.head = static_cast<EntityId>(src.head);
+        dst.remainingDistance = src.remainingDistance;
+        dst.trackAndDirection.track._data = src.trackAndDirection;
+        dst.subPosition = src.subPosition;
+        dst.tileX = src.tileX;
+        dst.tileY = src.tileY;
+        dst.tileBaseZ = src.tileBaseZ;
+        dst.trackType = src.trackType;
+        dst.routingHandle._data = src.routingHandle;
+        dst.var_38 = static_cast<Vehicles::Flags38>(src.var_38);
+        dst.nextCarId = static_cast<EntityId>(src.nextCarId);
+        dst.var_3C = src.var_3C;
+        dst.mode = static_cast<TransportMode>(src.mode);
+        dst.ordinalNumber = src.ordinalNumber;
+        dst.orderTableOffset = src.orderTableOffset;
+        dst.currentOrder = src.currentOrder;
+        dst.sizeOfOrderTable = src.sizeOfOrderTable;
+        dst.trainAcceptedCargoTypes = src.trainAcceptedCargoTypes;
+        dst.var_52 = src.var_52;
+        dst.var_53 = src.var_53;
+        dst.stationId = static_cast<StationId>(src.stationId);
+        dst.cargoTransferTimeout = src.cargoTransferTimeout;
+        dst.var_58 = src.var_58;
+        dst.var_5C = src.var_5C;
+        dst.status = static_cast<Vehicles::Status>(src.status);
+        dst.vehicleType = static_cast<VehicleType>(src.vehicleType);
+        dst.breakdownFlags = static_cast<Vehicles::BreakdownFlags>(src.breakdownFlags);
+        dst.aiThoughtId = src.aiThoughtId;
+        dst.aiPlacementPos = src.aiPlacementPos;
+        dst.aiPlacementTaD = src.aiPlacementTaD;
+        dst.aiPlacementBaseZ = src.aiPlacementBaseZ;
+        dst.airportMovementEdge = src.airportMovementEdge;
+        dst.totalRefundCost = src.totalRefundCost;
+        dst.crashedTimeout = src.crashedTimeout;
+        dst.manualPower = src.manualPower;
+        dst.journeyStartPos = src.journeyStartPos;
+        dst.journeyStartTicks = src.journeyStartTicks;
+        dst.lastAverageSpeed = Speed16(src.lastAverageSpeed);
+        dst.restartStoppedCarsTimeout = src.restartStoppedCarsTimeout;
+    }
+
+    static OpenLoco::Vehicles::IncomeStats importIncomeStats(const S5::IncomeStats& src)
+    {
+        OpenLoco::Vehicles::IncomeStats dst{};
+        dst.day = src.day;
+        for (size_t i = 0; i < std::size(src.cargoTypes); i++)
+        {
+            dst.cargoTypes[i] = src.cargoTypes[i];
+            dst.cargoQtys[i] = src.cargoQtys[i];
+            dst.cargoDistances[i] = src.cargoDistances[i];
+            dst.cargoAges[i] = src.cargoAges[i];
+            dst.cargoProfits[i] = src.cargoProfits[i];
+        }
+        return dst;
+    }
+
+    static void importVehicle1(OpenLoco::Vehicles::Vehicle1& dst, const S5::Vehicle1& src)
+    {
+        dst.head = static_cast<EntityId>(src.head);
+        dst.remainingDistance = src.remainingDistance;
+        dst.trackAndDirection.track._data = src.trackAndDirection;
+        dst.subPosition = src.subPosition;
+        dst.tileX = src.tileX;
+        dst.tileY = src.tileY;
+        dst.tileBaseZ = src.tileBaseZ;
+        dst.trackType = src.trackType;
+        dst.routingHandle._data = src.routingHandle;
+        dst.var_38 = static_cast<Vehicles::Flags38>(src.var_38);
+        dst.nextCarId = static_cast<EntityId>(src.nextCarId);
+        dst.var_3C = src.var_3C;
+        dst.mode = static_cast<TransportMode>(src.mode);
+        dst.targetSpeed = Speed16(src.targetSpeed);
+        dst.timeAtSignal = src.timeAtSignal;
+        dst.var_48 = static_cast<Vehicles::Flags48>(src.var_48);
+        dst.var_49 = src.var_49;
+        dst.dayCreated = src.dayCreated;
+        dst.var_4E = src.var_4E;
+        dst.var_50 = src.var_50;
+        dst.var_52 = src.var_52;
+        dst.lastIncome = importIncomeStats(src.lastIncome);
+    }
+
+    static void importVehicle2(OpenLoco::Vehicles::Vehicle2& dst, const S5::Vehicle2& src)
+    {
+        dst.head = static_cast<EntityId>(src.head);
+        dst.remainingDistance = src.remainingDistance;
+        dst.trackAndDirection.track._data = src.trackAndDirection;
+        dst.subPosition = src.subPosition;
+        dst.tileX = src.tileX;
+        dst.tileY = src.tileY;
+        dst.tileBaseZ = src.tileBaseZ;
+        dst.trackType = src.trackType;
+        dst.routingHandle._data = src.routingHandle;
+        dst.var_38 = static_cast<Vehicles::Flags38>(src.var_38);
+        dst.nextCarId = static_cast<EntityId>(src.nextCarId);
+        dst.var_3C = src.var_3C;
+        dst.mode = static_cast<TransportMode>(src.mode);
+        dst.drivingSoundId = src.drivingSoundId;
+        dst.drivingSoundVolume = src.drivingSoundVolume;
+        dst.drivingSoundFrequency = src.drivingSoundFrequency;
+        dst.objectId = src.objectId;
+        dst.soundFlags = static_cast<Vehicles::SoundFlags>(src.soundFlags);
+        dst.soundWindowNumber = src.soundWindowNumber;
+        dst.soundWindowType = static_cast<Ui::WindowType>(src.soundWindowType);
+        dst.var_4F = src.var_4F;
+        dst.totalPower = src.totalPower;
+        dst.totalWeight = src.totalWeight;
+        dst.maxSpeed = Speed16(src.maxSpeed);
+        dst.currentSpeed = Speed32(src.currentSpeed);
+        dst.motorState = static_cast<Vehicles::MotorState>(src.motorState);
+        dst.brakeLightTimeout = src.brakeLightTimeout;
+        dst.rackRailMaxSpeed = Speed16(src.rackRailMaxSpeed);
+        dst.curMonthRevenue = src.curMonthRevenue;
+        std::ranges::copy(src.profit, dst.profit);
+        dst.reliability = src.reliability;
+        dst.var_73 = static_cast<Vehicles::Flags73>(src.var_73);
+    }
+
+    static OpenLoco::Vehicles::VehicleCargo importVehicleCargo(const S5::VehicleCargo& src)
+    {
+        OpenLoco::Vehicles::VehicleCargo dst{};
+        dst.acceptedTypes = src.acceptedTypes;
+        dst.type = src.type;
+        dst.maxQty = src.maxQty;
+        dst.townFrom = static_cast<StationId>(src.townFrom);
+        dst.numDays = src.numDays;
+        dst.qty = src.qty;
+        return dst;
+    }
+
+    static void importVehicleBogie(OpenLoco::Vehicles::VehicleBogie& dst, const S5::VehicleBogie& src)
+    {
+        dst.colourScheme.primary = static_cast<Colour>(src.colourSchemePrimary);
+        dst.colourScheme.secondary = static_cast<Colour>(src.colourSchemeSecondary);
+        dst.head = static_cast<EntityId>(src.head);
+        dst.remainingDistance = src.remainingDistance;
+        dst.trackAndDirection.track._data = src.trackAndDirection;
+        dst.subPosition = src.subPosition;
+        dst.tileX = src.tileX;
+        dst.tileY = src.tileY;
+        dst.tileBaseZ = src.tileBaseZ;
+        dst.trackType = src.trackType;
+        dst.routingHandle._data = src.routingHandle;
+        dst.var_38 = static_cast<Vehicles::Flags38>(src.var_38);
+        dst.objectSpriteType = src.objectSpriteType;
+        dst.nextCarId = static_cast<EntityId>(src.nextCarId);
+        dst.var_3C = src.var_3C;
+        dst.objectId = src.objectId;
+        dst.mode = static_cast<TransportMode>(src.mode);
+        dst.var_44 = src.var_44;
+        dst.animationIndex = src.animationIndex;
+        dst.var_47 = src.var_47;
+        dst.secondaryCargo = importVehicleCargo(src.secondaryCargo);
+        dst.totalCarWeight = src.totalCarWeight;
+        dst.bodyIndex = src.bodyIndex;
+        dst.creationDay = src.creationDay;
+        dst.var_5A = src.var_5A;
+        dst.wheelSlipping = src.wheelSlipping;
+        dst.breakdownFlags = static_cast<Vehicles::BreakdownFlags>(src.breakdownFlags);
+        dst.var_60 = src.var_60;
+        dst.var_61 = src.var_61;
+        dst.refundCost = src.refundCost;
+        dst.reliability = src.reliability;
+        dst.timeoutToBreakdown = src.timeoutToBreakdown;
+        dst.breakdownTimeout = src.breakdownTimeout;
+    }
+
+    static void importVehicleBody(OpenLoco::Vehicles::VehicleBody& dst, const S5::VehicleBody& src)
+    {
+        dst.colourScheme.primary = static_cast<Colour>(src.colourSchemePrimary);
+        dst.colourScheme.secondary = static_cast<Colour>(src.colourSchemeSecondary);
+        dst.head = static_cast<EntityId>(src.head);
+        dst.remainingDistance = src.remainingDistance;
+        dst.trackAndDirection.track._data = src.trackAndDirection;
+        dst.subPosition = src.subPosition;
+        dst.tileX = src.tileX;
+        dst.tileY = src.tileY;
+        dst.tileBaseZ = src.tileBaseZ;
+        dst.trackType = src.trackType;
+        dst.routingHandle._data = src.routingHandle;
+        dst.var_38 = static_cast<Vehicles::Flags38>(src.var_38);
+        dst.objectSpriteType = src.objectSpriteType;
+        dst.nextCarId = static_cast<EntityId>(src.nextCarId);
+        dst.var_3C = src.var_3C;
+        dst.objectId = src.objectId;
+        dst.mode = static_cast<TransportMode>(src.mode);
+        dst.var_44 = src.var_44;
+        dst.animationFrame = src.animationFrame;
+        dst.cargoFrame = src.cargoFrame;
+        dst.primaryCargo = importVehicleCargo(src.primaryCargo);
+        dst.bodyIndex = src.bodyIndex;
+        dst.chuffSoundIndex = src.chuffSoundIndex;
+        dst.creationDay = src.creationDay;
+        dst.var_5A = src.var_5A;
+        dst.wheelSlipping = src.wheelSlipping;
+        dst.breakdownFlags = static_cast<Vehicles::BreakdownFlags>(src.breakdownFlags);
+        dst.refundCost = src.refundCost;
+        dst.breakdownTimeout = src.breakdownTimeout;
+    }
+
+    static void importVehicleTail(OpenLoco::Vehicles::VehicleTail& dst, const S5::VehicleTail& src)
+    {
+        dst.head = static_cast<EntityId>(src.head);
+        dst.remainingDistance = src.remainingDistance;
+        dst.trackAndDirection.track._data = src.trackAndDirection;
+        dst.subPosition = src.subPosition;
+        dst.tileX = src.tileX;
+        dst.tileY = src.tileY;
+        dst.tileBaseZ = src.tileBaseZ;
+        dst.trackType = src.trackType;
+        dst.routingHandle._data = src.routingHandle;
+        dst.var_38 = static_cast<Vehicles::Flags38>(src.var_38);
+        dst.nextCarId = static_cast<EntityId>(src.nextCarId);
+        dst.var_3C = src.var_3C;
+        dst.mode = static_cast<TransportMode>(src.mode);
+        dst.drivingSoundId = src.drivingSoundId;
+        dst.drivingSoundVolume = src.drivingSoundVolume;
+        dst.drivingSoundFrequency = src.drivingSoundFrequency;
+        dst.objectId = src.objectId;
+        dst.soundFlags = static_cast<Vehicles::SoundFlags>(src.soundFlags);
+        dst.soundWindowNumber = src.soundWindowNumber;
+        dst.soundWindowType = static_cast<Ui::WindowType>(src.soundWindowType);
+        dst.trainDanglingTimeout = src.trainDanglingTimeout;
+    }
+
+    static OpenLoco::Entity importVehicleEntity(const S5::Entity& src)
+    {
+        const auto vehicleType = static_cast<OpenLoco::Vehicles::VehicleEntityType>(src.base.type);
+        auto dst = importEntityBase(src.base);
+        auto* vehicleEntity = dst.asBase<OpenLoco::Vehicles::VehicleBase>();
+        vehicleEntity->setSubType(vehicleType);
+
+        switch (vehicleType)
+        {
+            case OpenLoco::Vehicles::VehicleEntityType::head:
+                importHeadVehicle(*vehicleEntity->asVehicleHead(), reinterpret_cast<const S5::VehicleHead&>(src));
+                break;
+            case OpenLoco::Vehicles::VehicleEntityType::vehicle_1:
+                importVehicle1(*vehicleEntity->asVehicle1(), reinterpret_cast<const S5::Vehicle1&>(src));
+                break;
+            case OpenLoco::Vehicles::VehicleEntityType::vehicle_2:
+                importVehicle2(*vehicleEntity->asVehicle2(), reinterpret_cast<const S5::Vehicle2&>(src));
+                break;
+            case OpenLoco::Vehicles::VehicleEntityType::bogie:
+                importVehicleBogie(*vehicleEntity->asVehicleBogie(), reinterpret_cast<const S5::VehicleBogie&>(src));
+                break;
+            case OpenLoco::Vehicles::VehicleEntityType::body_start:
+            case OpenLoco::Vehicles::VehicleEntityType::body_continued:
+                importVehicleBody(*vehicleEntity->asVehicleBody(), reinterpret_cast<const S5::VehicleBody&>(src));
+                break;
+            case OpenLoco::Vehicles::VehicleEntityType::tail:
+                importVehicleTail(*vehicleEntity->asVehicleTail(), reinterpret_cast<const S5::VehicleTail&>(src));
+                break;
+        }
+
+        return dst;
+    }
+
+    OpenLoco::Entity importEntity(const S5::Entity& src)
+    {
+        const auto baseType = static_cast<EntityBaseType>(src.base.baseType);
+        if (baseType == EntityBaseType::effect)
+        {
+            return importEffectEntity(src);
+        }
+        else if (baseType == EntityBaseType::vehicle)
+        {
+            return importVehicleEntity(src);
+        }
+        else
+        {
+            return importNullEntity(src);
+        }
     }
 }
