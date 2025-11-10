@@ -71,7 +71,8 @@ using namespace OpenLoco::Diagnostics;
 namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 {
     static constexpr int kRowHeight = 12;
-    static constexpr Ui::Size32 kWindowSize = { 600, 398 };
+    static constexpr Ui::Size32 kWindowSizeMin = { 600, 398 };
+    static constexpr Ui::Size32 kWindowSizeMax = { 800, 800 }; // NB: frame background is only 800px :(
 
     enum class ObjectTabFlags : uint8_t
     {
@@ -511,8 +512,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         auto& selection = ObjectManager::prepareSelectionList(true);
 
-        window = WindowManager::createWindowCentred(WindowType::objectSelection, { kWindowSize }, WindowFlags::none, getEvents());
+        window = WindowManager::createWindowCentred(WindowType::objectSelection, { kWindowSizeMin }, WindowFlags::resizable, getEvents());
         window->setWidgets(widgets);
+        window->setSize(kWindowSizeMin, kWindowSizeMax);
         window->initScrollWidgets();
         window->frameNo = 0;
         window->rowHover = -1;
