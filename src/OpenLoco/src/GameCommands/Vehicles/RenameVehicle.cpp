@@ -33,6 +33,12 @@ namespace OpenLoco::GameCommands
     {
         setExpenditureType(ExpenditureType::TrainRunningCosts);
 
+        if ((flags & Flags::apply) == 0)
+        {
+            // The checks only work correctly on the apply side of things (#3320), so don't bother.
+            return 0;
+        }
+
         static loco_global<EntityId, 0x0113621D> _headId_113621D;
         if (args.i == 1)
         {
