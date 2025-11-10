@@ -1,5 +1,6 @@
 25.11+ (???)
 ------------------------------------------------------------------------
+- Change: [#3402] Text input length numbers now turn red when the character limit is reached.
 - Fix: [#3395] Text input windows no longer show character limits.
 
 25.11 (2025-11-05)
