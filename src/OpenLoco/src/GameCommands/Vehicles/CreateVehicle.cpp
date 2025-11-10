@@ -39,13 +39,6 @@ namespace OpenLoco::GameCommands
     constexpr auto kNumVehicleComponentsInBase = 4;         // head unk_1 unk_2 tail
     constexpr auto kMaxNumVehicleComponentsInCar = kNumVehicleComponentsInCarComponent * kMaxNumCarComponentsInCar;
 
-    static loco_global<VehicleHead*, 0x01136240> _backupVeh0;
-    static loco_global<int16_t, 0x01136248> _backup2E;
-    static loco_global<TrackAndDirection, 0x0113624C> _backup2C;
-    static loco_global<int16_t, 0x01136250> _backupX;
-    static loco_global<int16_t, 0x01136254> _backupY;
-    static loco_global<uint8_t, 0x01136258> _backupZ;
-
     static loco_global<EntityId, 0x0113642A> _113642A; // used by build window and others
 
     // 0x004B1D96
@@ -743,7 +736,6 @@ namespace OpenLoco::GameCommands
     static uint32_t createVehicle(const uint8_t flags, const uint16_t vehicleTypeId, const EntityId headId)
     {
         setExpenditureType(ExpenditureType::VehiclePurchases);
-        _backupVeh0 = reinterpret_cast<VehicleHead*>(-1);
 
         const auto* company = CompanyManager::get(GameCommands::getUpdatingCompanyId());
         auto vehicleIsLocked = !company->isVehicleIndexUnlocked(static_cast<uint16_t>(vehicleTypeId));
