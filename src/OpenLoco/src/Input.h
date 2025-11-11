@@ -142,4 +142,8 @@ namespace OpenLoco::Input
 
     Ui::WindowNumber_t getPressedWindowNumber();
     void setPressedWindowNumber(Ui::WindowNumber_t wndNumber);
+
+    bool hasPendingMouseInputUpdate();
+    void clearPendingMouseInputUpdate();
+    void setPendingMouseInputUpdate();
 }
