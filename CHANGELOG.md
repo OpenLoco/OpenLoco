@@ -1,6 +1,6 @@
 25.11+ (???)
 ------------------------------------------------------------------------
-- Change: [#3384] Music selection window is now resizable, sortable, and displays the time period associated with each track.
+- Change: [#3384] Music selection window is now resizable, sortable, displays the time period associated with each track, and has a status bar.
 - Fix: [#3313] Vehicle orders not being deleted correctly when the station is deallocated.
 - Fix: [#3395] Text input windows no longer show character limits.
 
