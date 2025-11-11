@@ -103,7 +103,8 @@ using namespace OpenLoco::Ui;
 namespace OpenLoco::GameCommands
 {
     static uint16_t _gameCommandFlags;
-    static uint8_t _gameCommandNestLevel = 0;                                                 // 0x00508F08
+    static uint8_t _gameCommandNestLevel = 0; // 0x00508F08
+
     static CompanyId _updatingCompanyId;                                                      // 0x009C68EB
     static const World::TileElement* _errorTileElementPtr = World::TileManager::kInvalidTile; // 0x009C68D0
     static World::Pos3 _gGameCommandPosition;                                                 // 0x009C68E0
@@ -111,6 +112,8 @@ namespace OpenLoco::GameCommands
     static StringId _gGameCommandErrorTitle;                                                  // 0x009C68E8
     static ExpenditureType _gGameCommandExpenditureType;                                      // 0x009C68EA
     static CompanyId _errorCompanyId;                                                         // 0x009C68EE
+
+    static LegacyReturnState _legacyReturnState; // 0x01136072
 
     using GameCommandFunc = void (*)(registers& regs);
 
@@ -591,6 +594,11 @@ namespace OpenLoco::GameCommands
     void resetCommandNestLevel()
     {
         _gameCommandNestLevel = 0;
+    }
+
+    LegacyReturnState& getLegacyReturnState()
+    {
+        return _legacyReturnState;
     }
 
     // TODO: Maybe move this somewhere else used by multiple game commands

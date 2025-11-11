@@ -66,9 +66,6 @@ namespace OpenLoco::CompanyAi
     static Interop::loco_global<uint16_t, 0x0112C3CA> _unkTad112C3CA;
     static Interop::loco_global<uint16_t, 0x0112C3D0> _queryTrackRoadPlacementMinScore;
     static Interop::loco_global<uint16_t, 0x0112C3D2> _queryTrackRoadPlacementMinWeighting;
-    static Interop::loco_global<uint8_t, 0x01136073> _byte_1136073;
-    static Interop::loco_global<World::MicroZ, 0x01136074> _byte_1136074;
-    static Interop::loco_global<uint8_t, 0x01136075> _byte_1136075;           // bridgeType of any overlapping track
     static Interop::loco_global<uint8_t, 0x0112C2E9> _alternateTrackObjectId; // set from GameCommands::createRoad
 
     // 0x00483A7E
@@ -421,15 +418,18 @@ namespace OpenLoco::CompanyAi
 
         totalResult.flags |= (1U << 0);
         state.currentWeighting += World::TrackData::getTrackMiscData(trackId).unkWeighting;
+
+        auto& returnState = GameCommands::getLegacyReturnState();
+
         // Place track attempt required a bridge
-        if (_byte_1136073 & (1U << 0))
+        if (returnState.flags_1136073 & (1U << 0))
         {
-            // _byte_1136074 is the bridge height
-            const auto unkFactor = (_byte_1136074 * World::TrackData::getTrackMiscData(trackId).unkWeighting) / 2;
+            // returnState.byte_1136074 is the bridge height
+            const auto unkFactor = (returnState.byte_1136074 * World::TrackData::getTrackMiscData(trackId).unkWeighting) / 2;
             state.bridgeWeighting += unkFactor;
         }
         // Place track attempt requires removing a building
-        if (_byte_1136073 & (1U << 4))
+        if (returnState.flags_1136073 & (1U << 4))
         {
             state.numBuildingsRequiredDestroyed++;
         }
@@ -546,6 +546,8 @@ namespace OpenLoco::CompanyAi
         args.mods = 0;
         args.unkFlags = *_createTrackRoadCommandAiUnkFlags >> 16;
 
+        auto& returnState = GameCommands::getLegacyReturnState();
+
         {
             auto regs = static_cast<Interop::registers>(args);
             regs.bl = GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment;
@@ -556,9 +558,9 @@ namespace OpenLoco::CompanyAi
                 {
                     args.roadObjectId = _alternateTrackObjectId;
                 }
-                if (_byte_1136075 != 0xFFU)
+                if (returnState.byte_1136075 != 0xFFU)
                 {
-                    args.bridge = _byte_1136075;
+                    args.bridge = returnState.byte_1136075;
                 }
                 regs = static_cast<Interop::registers>(args);
                 regs.bl = GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment;
@@ -574,21 +576,21 @@ namespace OpenLoco::CompanyAi
         auto placementWeighting = World::TrackData::getRoadMiscData(roadId).unkWeighting;
 
         // Place road attempt overlayed an existing road
-        if (_byte_1136073 & (1U << 5))
+        if (returnState.flags_1136073 & (1U << 5))
         {
             placementWeighting -= placementWeighting / 4;
         }
         state.currentWeighting += placementWeighting;
 
         // Place road attempt required a bridge
-        if (_byte_1136073 & (1U << 0))
+        if (returnState.flags_1136073 & (1U << 0))
         {
-            // _byte_1136074 is the bridge height
-            const auto unkFactor = (_byte_1136074 * placementWeighting) / 2;
+            // returnState.byte_1136074 is the bridge height
+            const auto unkFactor = (returnState.byte_1136074 * placementWeighting) / 2;
             state.bridgeWeighting += unkFactor;
         }
         // Place road attempt requires removing a building
-        if (_byte_1136073 & (1U << 4))
+        if (returnState.flags_1136073 & (1U << 4))
         {
             state.numBuildingsRequiredDestroyed++;
         }
@@ -1133,9 +1135,11 @@ namespace OpenLoco::CompanyAi
                     {
                         auto argsUnk = args;
                         argsUnk.bridge = 0xFFU;
-                        if (_byte_1136075 != 0xFFU)
+
+                        auto& returnState = GameCommands::getLegacyReturnState();
+                        if (returnState.byte_1136075 != 0xFFU)
                         {
-                            argsUnk.bridge = _byte_1136075;
+                            argsUnk.bridge = returnState.byte_1136075;
                         }
                         if (_createTrackRoadCommandAiUnkFlags & (1U << 20) && _alternateTrackObjectId != 0xFFU)
                         {

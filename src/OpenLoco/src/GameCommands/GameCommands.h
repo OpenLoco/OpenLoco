@@ -16,6 +16,11 @@ namespace OpenLoco
     enum class LoadOrQuitMode : uint16_t;
 }
 
+namespace OpenLoco::World::TileManager
+{
+    enum class ElementPositionFlags : uint8_t;
+}
+
 namespace OpenLoco::Vehicles
 {
     struct VehicleHead;
@@ -195,6 +200,18 @@ namespace OpenLoco::GameCommands
     void setUpdatingCompanyId(CompanyId companyId);
     uint8_t getCommandNestLevel();
     void resetCommandNestLevel();
+
+    // TODO: rework these
+    struct LegacyReturnState
+    {
+        World::TileManager::ElementPositionFlags flags_1136072; // 0x01136072
+        uint8_t flags_1136073;                                  // 0x01136073
+        World::MicroZ byte_1136074;                             // 0x01136074
+        uint8_t byte_1136075;                                   // 0x01136075
+    };
+
+    // Note: this is deliberately a mutable ref
+    LegacyReturnState& getLegacyReturnState();
 
     void playConstructionPlacementSound(World::Pos3 pos);
     bool shouldInvalidateTile(uint8_t flags);
