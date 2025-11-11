@@ -93,7 +93,10 @@ namespace OpenLoco::Ui
 
     bool Window::isTranslucent()
     {
-        return this->hasFlags(WindowFlags::transparent);
+        const bool isTransparent = this->hasFlags(WindowFlags::transparent);
+        const bool isMainWindow = type == WindowType::main;
+        const bool hasTransparentFrame = true; // config
+        return !isMainWindow && (hasTransparentFrame || isTransparent);
     }
 
     bool Window::isEnabled(WidgetIndex_t widgetIndex)
