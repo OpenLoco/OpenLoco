@@ -1315,7 +1315,7 @@ namespace OpenLoco::Ui::Windows::Construction
             auto window = WindowManager::createWindow(
                 WindowType::construction,
                 Construction::kWindowSize,
-                WindowFlags::flag_11 | WindowFlags::noAutoClose,
+                WindowFlags::lighterFrame | WindowFlags::noAutoClose,
                 Construction::getEvents());
 
             window->setWidgets(Construction::getWidgets());

@@ -53,7 +53,7 @@ namespace OpenLoco::Ui
         flag_8 = 1U << 8,
         resizable = 1U << 9,
         noAutoClose = 1U << 10,
-        flag_11 = 1U << 11,
+        lighterFrame = 1U << 11,
         flag_12 = 1U << 12,
         openQuietly = 1U << 13,
         notScrollView = 1U << 14,
