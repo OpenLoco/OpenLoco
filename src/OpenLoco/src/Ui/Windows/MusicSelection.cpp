@@ -22,13 +22,12 @@
 
 namespace OpenLoco::Ui::Windows::MusicSelection
 {
-    static constexpr auto kColumnYearsWidth = 59;
-    static constexpr auto kPaddingBottom = 12;
-
     static constexpr Ui::Size32 kWindowSizeMin = { 300, 100 };
     static constexpr Ui::Size32 kWindowSizeMax = { 800, 800 };
     static constexpr Ui::Size32 kWindowSizeDefault = { 360, 238 };
 
+    static constexpr auto kColumnYearsWidth = 59;
+    static constexpr auto kPaddingBottom = 12;
     static constexpr uint8_t kRowHeight = 12; // CJK: 15
 
     // TODO: make this an attribute of the Music Selection window object rather than static
