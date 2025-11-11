@@ -1,4 +1,5 @@
 #include "FrameWidget.h"
+#include "Config.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
@@ -33,17 +34,17 @@ namespace OpenLoco::Ui::Widgets
     // 0x004CAAB9
     void Frame::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
-        if (false)
+        switch (Config::get().windowFrameStyle)
         {
-            Frame::drawBackground(drawingCtx, widget, widgetState);
-        }
-        else if (true)
-        {
-            Frame::drawSolid(drawingCtx, widget, widgetState);
-        }
-        else
-        {
-            Frame::drawTransparent(drawingCtx, widget, widgetState);
+            case Config::WindowFrameStyle::background:
+                Frame::drawBackground(drawingCtx, widget, widgetState);
+                break;
+            case Config::WindowFrameStyle::solid:
+                Frame::drawSolid(drawingCtx, widget, widgetState);
+                break;
+            case Config::WindowFrameStyle::transparent:
+                Frame::drawTransparent(drawingCtx, widget, widgetState);
+                break;
         }
 
         uint8_t shade;
