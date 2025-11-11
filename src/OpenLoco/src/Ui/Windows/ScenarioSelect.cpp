@@ -169,6 +169,13 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     {
         auto tr = Gfx::TextRenderer(drawingCtx);
 
+        // Extend background frame with a solid colour
+        // TODO: this should not be needed
+        if (Config::get().windowFrameStyle == Config::WindowFrameStyle::background)
+        {
+            drawingCtx.drawRectInset(self.x, self.y + 20, self.width, 41, self.getColour(WindowColour::primary), Gfx::RectInsetFlags::none);
+        }
+
         // Draw widgets.
         self.draw(drawingCtx);
 
