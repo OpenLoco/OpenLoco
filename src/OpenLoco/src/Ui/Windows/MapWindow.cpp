@@ -54,12 +54,15 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui::Windows::MapWindow
 {
-    static constexpr uint16_t kMinimumWindowWidth = 229;  // Chosen so that the map cannot be smaller than its key
-    static constexpr uint16_t kMinimumWindowHeight = 176; // Chosen so that the minimum size makes the map square
-
     static constexpr int16_t kRenderedMapWidth = kMapColumns * 2;
     static constexpr int16_t kRenderedMapHeight = kRenderedMapWidth;
     static constexpr int32_t kRenderedMapSize = kRenderedMapWidth * kRenderedMapHeight;
+
+    // Chosen so that the map cannot be smaller than its key, and minimum size makes the map square
+    static constexpr Ui::Size32 kMinWindowSize = { 229, 176 };
+
+    // Chosen so the window cannot exceed map boundaries
+    static constexpr Ui::Size32 kMaxWindowSize = { kRenderedMapWidth + 120, kRenderedMapHeight + 60 };
 
     // 0x004FDC4C
     static std::array<Point, 4> kViewFrameOffsetsByRotation = { {
@@ -219,12 +222,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static void onResize(Window& self)
     {
         self.flags |= WindowFlags::resizable;
-        self.minWidth = kMinimumWindowWidth;
-        self.maxWidth = kRenderedMapWidth + 120;
-        self.maxHeight = kRenderedMapHeight + 60;
+        self.minWidth = kMinWindowSize.width;
 
-        Ui::Size32 kMinWindowSize = { self.minWidth, self.minHeight };
-        Ui::Size32 kMaxWindowSize = { self.maxWidth, self.maxHeight };
         self.setSize(kMinWindowSize, kMaxWindowSize);
 
         auto& widget = self.widgets[widx::scrollview];
@@ -1706,7 +1705,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             y -= self.y;
             y += 14;
-            y = std::max(y, kMinimumWindowHeight);
+            y = std::max<uint16_t>(y, kMinWindowSize.height);
 
             self.minHeight = y;
         }
