@@ -173,6 +173,7 @@ namespace OpenLoco::Ui::Windows
         bool isSignalTabOpen();
         bool rotate(Window& self);
         void removeConstructionGhosts();
+        void resetGhostVisibilityFlags();
         uint16_t getLastSelectedMods();
         World::Track::ModSection getLastSelectedTrackModSection();
     }

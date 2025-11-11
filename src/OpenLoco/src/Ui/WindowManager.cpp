@@ -23,7 +23,6 @@
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Ui/ToolManager.h"
-#include "Ui/Windows/Construction/Construction.h"
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
 #include "Widget.h"
@@ -1112,7 +1111,7 @@ namespace OpenLoco::Ui::WindowManager
         close(WindowType::construction);
         close(WindowType::companyFaceSelection);
         ToolManager::toolCancel();
-        Windows::Construction::_ghostVisibilityFlags = Windows::Construction::GhostVisibilityFlags::none;
+        Windows::Construction::resetGhostVisibilityFlags();
     }
 
     // 0x004BF089
