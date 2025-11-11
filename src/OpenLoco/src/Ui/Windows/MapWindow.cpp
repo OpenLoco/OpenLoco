@@ -228,13 +228,14 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         auto& widget = self.widgets[widx::scrollview];
         auto& map = self.scrollAreas[0];
-        if (map.contentOffsetX + map.contentWidth > widget.width())
+
+        if (map.contentOffsetX + widget.width() > map.contentWidth)
         {
-            map.contentOffsetX = 0;
+            map.contentOffsetX = map.contentWidth - widget.width();
         }
-        if (map.contentOffsetY + map.contentHeight > widget.height())
+        if (map.contentOffsetY + widget.height() > map.contentHeight)
         {
-            map.contentOffsetY = 0;
+            map.contentOffsetY = map.contentHeight - widget.height();
         }
     }
 
