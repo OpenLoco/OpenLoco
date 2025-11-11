@@ -95,7 +95,7 @@ namespace OpenLoco::Ui
     {
         const bool isTransparent = this->hasFlags(WindowFlags::transparent);
         const bool isMainWindow = type == WindowType::main;
-        const bool hasTransparentFrame = true; // config
+        const bool hasTransparentFrame = Config::get().windowFrameStyle == Config::WindowFrameStyle::transparent;
         return !isMainWindow && (hasTransparentFrame || isTransparent);
     }
 
