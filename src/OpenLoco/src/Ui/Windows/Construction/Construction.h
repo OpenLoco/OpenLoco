@@ -41,7 +41,9 @@ namespace OpenLoco::Ui::Windows::Construction
         uint32_t constructingStationId;                       // 0x01135F70
         uint32_t constructingStationAcceptedCargoTypes;       // 0x01135F74
         uint32_t constructingStationProducedCargoTypes;       // 0x01135F78
-        uint8_t pad_1135F7C[10];                              // 0x01135F7C
+        World::Pos2 stationMinPos;                            // 0x01135F7C
+        World::Pos2 stationMaxPos;                            // 0x01135F80
+        uint8_t pad_113584[2];                                // 0x00113584
         ViewportFlags viewportFlags;                          // 0x01135F86
         uint8_t pad_1135F88[44];                              // 0x01135F88
         uint16_t x;                                           // 0x01135FB4

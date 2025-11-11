@@ -280,9 +280,6 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     static std::optional<GameCommands::RoadStationPlacementArgs> getRoadStationPlacementArgs(const World::Pos2 pos, const World::RoadElement* roadEl);
     static std::optional<GameCommands::TrainStationPlacementArgs> getTrainStationPlacementArgs(const World::Pos2 pos, const World::TrackElement* trackEl);
 
-    static loco_global<World::Pos2, 0x001135F7C> _1135F7C;
-    static loco_global<World::Pos2, 0x001135F80> _1135F90;
-
     // 0x004A4CF9
     static void onToolUpdateFail()
     {
@@ -313,9 +310,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         _constructionArrowDirection = args->rotation;
         _constructionArrowPos = args->pos;
 
-        setMapSelectedTilesFromRange(World::getClampedRange(*_1135F7C, *_1135F90));
-
         auto& cState = getConstructionState();
+        setMapSelectedTilesFromRange(World::getClampedRange(cState.stationMinPos, cState.stationMaxPos));
 
         if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::station))
         {
@@ -378,9 +374,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         _constructionArrowDirection = args->rotation;
         _constructionArrowPos = args->pos;
 
-        setMapSelectedTilesFromRange(World::getClampedRange(*_1135F7C, *_1135F90));
-
         auto& cState = getConstructionState();
+        setMapSelectedTilesFromRange(World::getClampedRange(cState.stationMinPos, cState.stationMaxPos));
 
         if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::station))
         {
@@ -659,8 +654,9 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         const auto airportObj = ObjectManager::get<AirportObject>(placementArgs.type);
         const auto [minPos, maxPos] = airportObj->getAirportExtents(World::toTileSpace(pos), placementArgs.rotation);
 
-        _1135F7C = World::toWorldSpace(minPos);
-        _1135F90 = World::toWorldSpace(maxPos);
+        cState.stationMinPos = World::toWorldSpace(minPos);
+        cState.stationMaxPos = World::toWorldSpace(maxPos);
+
         auto maxBaseZ = 0;
         for (auto checkPos = minPos; checkPos.y <= maxPos.y; ++checkPos.y)
         {
@@ -726,8 +722,10 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         uint8_t directionOfIndustry = 0xFF;
         uint8_t waterHeight = 0;
-        _1135F7C = pos;
-        _1135F90 = World::toWorldSpace(World::toTileSpace(pos) + TilePos2(1, 1));
+
+        auto& cState = getConstructionState();
+        cState.stationMinPos = pos;
+        cState.stationMaxPos = World::toWorldSpace(World::toTileSpace(pos) + TilePos2(1, 1));
 
         constexpr std::array<std::array<TilePos2, 2>, 4> searchArea = {
             std::array<TilePos2, 2>{ TilePos2{ -1, 0 }, TilePos2{ -1, 1 } },
@@ -798,8 +796,6 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         {
             return std::nullopt;
         }
-
-        auto& cState = getConstructionState();
 
         GameCommands::PortPlacementArgs placementArgs;
         placementArgs.type = cState.lastSelectedStationType;
