@@ -22,10 +22,12 @@
 
 namespace OpenLoco::Ui::Windows::MusicSelection
 {
-    static constexpr auto kColumnNameWidth = 261;
     static constexpr auto kColumnYearsWidth = 59;
+    static constexpr auto kPaddingBottom = 12;
 
-    static constexpr Ui::Size32 kWindowSize = { 20 + kColumnNameWidth + kColumnYearsWidth + 20, 249 };
+    static constexpr Ui::Size32 kWindowSizeMin = { 300, 100 };
+    static constexpr Ui::Size32 kWindowSizeMax = { 800, 800 };
+    static constexpr Ui::Size32 kWindowSizeDefault = { 360, 238 };
 
     static constexpr uint8_t kRowHeight = 12; // CJK: 15
 
@@ -44,13 +46,13 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     };
 
     static constexpr auto _widgets = makeWidgets(
-        Widgets::Frame({ 0, 0 }, { kWindowSize.width, kWindowSize.height }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { kWindowSize.width - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::music_selection_title),
-        Widgets::ImageButton({ kWindowSize.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        Widgets::Panel({ 0, 15 }, { kWindowSize.width, kWindowSize.height - 15 }, WindowColour::secondary),
-        Widgets::TableHeader({ 20, 17 }, { kColumnNameWidth, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_name),
-        Widgets::TableHeader({ 20 + kColumnNameWidth, 17 }, { kColumnYearsWidth, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_music_years),
-        Widgets::ScrollView({ 4, 30 }, { kWindowSize.width - 8, kWindowSize.height - 1 - 30 }, WindowColour::secondary, Scrollbars::vertical, StringIds::music_selection_tooltip)
+        Widgets::Frame({ 0, 0 }, { kWindowSizeDefault.width, kWindowSizeDefault.height }, WindowColour::primary),
+        Widgets::Caption({ 1, 1 }, { kWindowSizeDefault.width - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::music_selection_title),
+        Widgets::ImageButton({ kWindowSizeDefault.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::Panel({ 0, 15 }, { kWindowSizeDefault.width, kWindowSizeDefault.height - 15 }, WindowColour::secondary),
+        Widgets::TableHeader({ 20, 17 }, { kWindowSizeDefault.width - 40 - kColumnYearsWidth, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_name),
+        Widgets::TableHeader({ 20 + kWindowSizeDefault.width - 40 - kColumnYearsWidth, 17 }, { kColumnYearsWidth, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_music_years),
+        Widgets::ScrollView({ 4, 30 }, { kWindowSizeDefault.width - 8, kWindowSizeDefault.height - kPaddingBottom - 30 }, WindowColour::secondary, Scrollbars::vertical, StringIds::music_selection_tooltip)
 
     );
 
@@ -114,8 +116,8 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 
         window = WindowManager::createWindow(
             WindowType::musicSelection,
-            kWindowSize,
-            WindowFlags::none,
+            kWindowSizeDefault,
+            WindowFlags::resizable,
             getEvents());
 
         window->setWidgets(_widgets);
@@ -133,6 +135,27 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         return window;
     }
 
+    static void onResize(Ui::Window& self)
+    {
+        self.setSize(kWindowSizeMin, kWindowSizeMax);
+
+        const auto columnNameRight = self.widgets[widx::sort_name].left + self.width - 1 - 40 - kColumnYearsWidth;
+
+        // Resize & reposition widgets
+        self.widgets[widx::frame].right = self.width - 1;
+        self.widgets[widx::frame].bottom = self.height - 1;
+        self.widgets[widx::title].right = self.width - 2;
+        self.widgets[widx::close].left = self.width - 15;
+        self.widgets[widx::close].right = self.width - 3;
+        self.widgets[widx::panel].right = self.width - 1;
+        self.widgets[widx::panel].bottom = self.height - 1;
+        self.widgets[widx::sort_name].right = columnNameRight;
+        self.widgets[widx::sort_years].left = columnNameRight + 1;
+        self.widgets[widx::sort_years].right = columnNameRight + kColumnYearsWidth;
+        self.widgets[widx::scrollview].right = self.width - 5;
+        self.widgets[widx::scrollview].bottom = self.height - 1 - kPaddingBottom;
+    }
+
     // 0x004C165D
     static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
     {
@@ -143,6 +166,10 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     // 0x004C1663
     static void drawScroll(Ui::Window& window, Gfx::DrawingContext& drawingCtx, [[maybe_unused]] const uint32_t scrollIndex)
     {
+        // Horizontal offsets of columns within the scrollview widget.
+        const auto columnNameOffset = 15;
+        const auto columnYearsOffset = columnNameOffset + window.width - 40 - kColumnYearsWidth;
+
         const auto& rt = drawingCtx.currentRenderTarget();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
@@ -192,7 +219,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 
             // Draw track name.
             {
-                auto point = Point(15, y);
+                auto point = Point(columnNameOffset, y);
                 StringId musicTitle = musicInfo.titleId;
 
                 auto argsBuf = FormatArgumentsBuffer{};
@@ -203,7 +230,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 
             // Draw track years.
             {
-                auto point = Point(15 + kColumnNameWidth, y);
+                auto point = Point(columnYearsOffset, y);
                 auto argsBuf = FormatArgumentsBuffer{};
                 auto args = FormatArguments{ argsBuf };
                 bool hasStart = musicInfo.startYear != Jukebox::kNoStartYear;
@@ -330,6 +357,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 
     static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
+        .onResize = onResize,
         .onUpdate = onUpdate,
         .getScrollSize = getScrollSize,
         .scrollMouseDown = onScrollMouseDown,
