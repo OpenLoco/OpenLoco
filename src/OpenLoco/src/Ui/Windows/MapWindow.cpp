@@ -220,12 +220,23 @@ namespace OpenLoco::Ui::Windows::MapWindow
     {
         self.flags |= WindowFlags::resizable;
         self.minWidth = kMinimumWindowWidth;
-        self.maxWidth = 1600; // NB: twice the frame background (800px)
-        self.maxHeight = 1600;
+        self.maxWidth = kRenderedMapWidth + 120;
+        self.maxHeight = kRenderedMapHeight + 60;
 
         Ui::Size32 kMinWindowSize = { self.minWidth, self.minHeight };
         Ui::Size32 kMaxWindowSize = { self.maxWidth, self.maxHeight };
         self.setSize(kMinWindowSize, kMaxWindowSize);
+
+        auto& widget = self.widgets[widx::scrollview];
+        auto& map = self.scrollAreas[0];
+        if (map.contentOffsetX + map.contentWidth > widget.width())
+        {
+            map.contentOffsetX = 0;
+        }
+        if (map.contentOffsetY + map.contentHeight > widget.height())
+        {
+            map.contentOffsetY = 0;
+        }
     }
 
     // 0x0046C5E5
