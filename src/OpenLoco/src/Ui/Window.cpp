@@ -86,6 +86,16 @@ namespace OpenLoco::Ui
         }
     }
 
+    bool Window::isVisible()
+    {
+        return true;
+    }
+
+    bool Window::isTranslucent()
+    {
+        return this->hasFlags(WindowFlags::transparent);
+    }
+
     bool Window::isEnabled(WidgetIndex_t widgetIndex)
     {
         return (this->disabledWidgets & (1ULL << widgetIndex)) == 0;

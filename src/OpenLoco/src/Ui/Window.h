@@ -312,16 +312,8 @@ namespace OpenLoco::Ui
             return (flags & flagsToTest) != WindowFlags::none;
         }
 
-        bool isVisible()
-        {
-            return true;
-        }
-
-        bool isTranslucent()
-        {
-            return this->hasFlags(WindowFlags::transparent);
-        }
-
+        bool isVisible();
+        bool isTranslucent();
         bool isEnabled(WidgetIndex_t widgetIndex);
         bool isDisabled(WidgetIndex_t widgetIndex);
         bool isActivated(WidgetIndex_t index);
