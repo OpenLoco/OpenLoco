@@ -66,10 +66,10 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
     // 0x004FDC4C
     static std::array<Point, 4> kViewFrameOffsetsByRotation = { {
-        { kMapColumns - 8, 0 },
-        { kRenderedMapWidth - 8, kMapRows },
-        { kMapColumns - 8, kRenderedMapHeight },
-        { -8, kMapRows },
+        { kMapColumns, 0 },
+        { kRenderedMapWidth, kMapRows },
+        { kMapColumns, kRenderedMapHeight },
+        { 0, kMapRows },
     } };
 
     static constexpr std::array<PaletteIndex_t, 256> kFlashColours = []() {
@@ -173,7 +173,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         x /= kTileSize;
         y /= kTileSize;
 
-        return Point(-x + y + kMapColumns - 8, x + y - 8);
+        return Point(-x + y + kMapColumns, x + y);
     }
 
     // 0x0046B8E6
@@ -2172,8 +2172,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         Gfx::getG1Element(0)->offset = offset;
         Gfx::getG1Element(0)->width = kMapColumns * 2;
         Gfx::getG1Element(0)->height = kMapRows * 2;
-        Gfx::getG1Element(0)->xOffset = -8;
-        Gfx::getG1Element(0)->yOffset = -8;
+        Gfx::getG1Element(0)->xOffset = 0;
+        Gfx::getG1Element(0)->yOffset = 0;
         Gfx::getG1Element(0)->flags = Gfx::G1ElementFlags::none;
 
         drawingCtx.drawImage(0, 0, 0);
