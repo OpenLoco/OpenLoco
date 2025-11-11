@@ -53,6 +53,14 @@ namespace OpenLoco::Ui::Widgets
             }
 
             drawingCtx.pushRenderTarget(*clipped);
+
+            // Draw background image twice for large windows
+            // NB: right side first to counter the border on the left side
+            if (widget.width() > 799)
+            {
+                drawingCtx.drawImage(799, 0, imageId);
+            }
+
             drawingCtx.drawImage(0, 0, imageId);
             drawingCtx.popRenderTarget();
         }
