@@ -54,14 +54,15 @@ namespace OpenLoco::Ui::Widgets
 
             drawingCtx.pushRenderTarget(*clipped);
 
-            // Draw background image twice for large windows
-            // NB: right side first to counter the border on the left side
-            if (widget.width() > 799)
+            // Draw background image repeatedly to account for large windows
+            // NB: starting on the right side to counter the border on the left side of the sprite
+            const auto kBackgroundImageWidth = 800;
+            auto numPassesNeeded = 1 + widget.width() / kBackgroundImageWidth;
+            for (auto i = numPassesNeeded; i >= 0; i--)
             {
-                drawingCtx.drawImage(799, 0, imageId);
+                drawingCtx.drawImage(i * (kBackgroundImageWidth - 1), 0, imageId);
             }
 
-            drawingCtx.drawImage(0, 0, imageId);
             drawingCtx.popRenderTarget();
         }
 
