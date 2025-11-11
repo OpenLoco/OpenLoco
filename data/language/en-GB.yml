@@ -2437,3 +2437,5 @@ strings:
   2382: "{UINT16}-"
   2383: "-{UINT16}"
   2384: "-"
+  2385: "{UINT16} music track selected"
+  2386: "{UINT16} music tracks selected"

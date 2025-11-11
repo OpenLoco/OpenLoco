@@ -15,6 +15,7 @@
 #include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/TableHeaderWidget.h"
@@ -27,7 +28,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     static constexpr Ui::Size32 kWindowSizeDefault = { 360, 238 };
 
     static constexpr auto kColumnYearsWidth = 59;
-    static constexpr auto kPaddingBottom = 12;
+    static constexpr auto kStatusBarClearance = 13;
     static constexpr uint8_t kRowHeight = 12; // CJK: 15
 
     // TODO: make this an attribute of the Music Selection window object rather than static
@@ -42,6 +43,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         sort_name,
         sort_years,
         scrollview,
+        status_bar,
     };
 
     static constexpr auto _widgets = makeWidgets(
@@ -51,8 +53,8 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         Widgets::Panel({ 0, 15 }, { kWindowSizeDefault.width, kWindowSizeDefault.height - 15 }, WindowColour::secondary),
         Widgets::TableHeader({ 20, 17 }, { kWindowSizeDefault.width - 40 - kColumnYearsWidth, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_name),
         Widgets::TableHeader({ 20 + kWindowSizeDefault.width - 40 - kColumnYearsWidth, 17 }, { kColumnYearsWidth, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_music_years),
-        Widgets::ScrollView({ 4, 30 }, { kWindowSizeDefault.width - 8, kWindowSizeDefault.height - kPaddingBottom - 30 }, WindowColour::secondary, Scrollbars::vertical, StringIds::music_selection_tooltip)
-
+        Widgets::ScrollView({ 4, 30 }, { kWindowSizeDefault.width - 8, kWindowSizeDefault.height - kStatusBarClearance - 30 }, WindowColour::secondary, Scrollbars::vertical, StringIds::music_selection_tooltip),
+        Widgets::Label({ 4, kWindowSizeDefault.height - 12 }, { kWindowSizeDefault.width, 11 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
     );
 
     static const WindowEventList& getEvents();
@@ -104,6 +106,13 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         window.invalidate();
     }
 
+    static void updateStatusBar(Ui::Window& self, uint16_t numEnabledTracks)
+    {
+        FormatArguments args{ self.widgets[widx::status_bar].textArgs };
+        args.push(numEnabledTracks == 1 ? StringIds::status_music_tracks_selected_singular : StringIds::status_music_tracks_selected_plural);
+        args.push(numEnabledTracks);
+    }
+
     // 0x004C1602
     Window* open()
     {
@@ -131,6 +140,15 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 
         setSortMode(*window, Jukebox::MusicSortMode::original);
 
+        // Set status bar text
+        const auto& config = Config::get().audio;
+        uint16_t numEnabled = 0;
+        for (uint16_t i = 0; i < Jukebox::kNumMusicTracks; i++)
+        {
+            numEnabled += config.customJukebox[i];
+        }
+        updateStatusBar(*window, numEnabled);
+
         return window;
     }
 
@@ -152,7 +170,9 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         self.widgets[widx::sort_years].left = columnNameRight + 1;
         self.widgets[widx::sort_years].right = columnNameRight + kColumnYearsWidth;
         self.widgets[widx::scrollview].right = self.width - 5;
-        self.widgets[widx::scrollview].bottom = self.height - 1 - kPaddingBottom;
+        self.widgets[widx::scrollview].bottom = self.height - 1 - kStatusBarClearance;
+        self.widgets[widx::status_bar].top = self.height - 12;
+        self.widgets[widx::status_bar].bottom = self.height - 2;
     }
 
     // 0x004C165D
@@ -292,12 +312,12 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     // 0x004C1799
     static void onScrollMouseDown(Ui::Window& window, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
-        uint16_t currentRow = y / kRowHeight;
-        Jukebox::MusicId currentTrack = playlist[currentRow];
-        if (currentTrack > Jukebox::kNumMusicTracks)
+        const uint16_t currentRow = y / kRowHeight;
+        if (currentRow > window.rowCount)
         {
             return;
         }
+        const Jukebox::MusicId currentTrack = playlist[currentRow];
 
         auto& config = Config::get().audio;
 
@@ -305,18 +325,20 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         config.customJukebox[currentTrack] ^= true;
 
         // Are any tracks enabled?
-        bool anyEnabled = false;
-        for (uint8_t i = 0; i < Jukebox::kNumMusicTracks; i++)
+        uint16_t numEnabled = 0;
+        for (uint16_t i = 0; i < Jukebox::kNumMusicTracks; i++)
         {
-            anyEnabled |= config.customJukebox[i];
+            numEnabled += config.customJukebox[i];
         }
 
         // Ensure at least this track is enabled.
-        if (!anyEnabled)
+        if (numEnabled == 0)
         {
             config.customJukebox[currentTrack] = true;
+            numEnabled = 1;
         }
 
+        updateStatusBar(window, numEnabled);
         Config::write();
         Audio::revalidateCurrentTrack();
         window.invalidate();

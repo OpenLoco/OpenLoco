@@ -2048,6 +2048,8 @@ namespace OpenLoco::StringIds
     constexpr StringId year_range_no_end = 2382;
     constexpr StringId year_range_no_start = 2383;
     constexpr StringId year_range_no_start_no_end = 2384;
+    constexpr StringId status_music_tracks_selected_singular = 2385;
+    constexpr StringId status_music_tracks_selected_plural = 2386;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
