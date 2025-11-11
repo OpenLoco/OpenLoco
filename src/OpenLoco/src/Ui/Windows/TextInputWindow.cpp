@@ -123,7 +123,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         window->widgets[Widx::title].styleData = enumValue(Widgets::Caption::Style::whiteText);
         if (window->owner != CompanyId::null)
         {
-            window->flags |= WindowFlags::flag_11;
+            window->flags |= WindowFlags::lighterFrame;
             window->widgets[Widx::title].styleData = enumValue(Widgets::Caption::Style::colourText);
         }
 
