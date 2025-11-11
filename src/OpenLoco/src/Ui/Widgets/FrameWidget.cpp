@@ -38,6 +38,7 @@ namespace OpenLoco::Ui::Widgets
         const auto pos = window->position() + widget.position();
         const auto size = widget.size();
 
+        /*
         const auto& rt = drawingCtx.currentRenderTarget();
         const auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(pos.x, pos.y, size.width, 41));
         if (clipped)
@@ -67,6 +68,11 @@ namespace OpenLoco::Ui::Widgets
 
             drawingCtx.popRenderTarget();
         }
+        */
+
+        auto flags = widgetState.flags;
+        auto colour = widgetState.colour.translucent();
+        drawingCtx.fillRectInset(window->position() + widget.position(), widget.size(), colour, flags);
 
         uint8_t shade;
         if (window->hasFlags(WindowFlags::lighterFrame))
