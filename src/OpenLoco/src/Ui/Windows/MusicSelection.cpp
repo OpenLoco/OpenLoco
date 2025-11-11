@@ -55,6 +55,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         Widgets::TableHeader({ 20 + kWindowSizeDefault.width - 40 - kColumnYearsWidth, 17 }, { kColumnYearsWidth, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_music_years),
         Widgets::ScrollView({ 4, 30 }, { kWindowSizeDefault.width - 8, kWindowSizeDefault.height - kStatusBarClearance - 30 }, WindowColour::secondary, Scrollbars::vertical, StringIds::music_selection_tooltip),
         Widgets::Label({ 4, kWindowSizeDefault.height - 12 }, { kWindowSizeDefault.width, 11 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
+
     );
 
     static const WindowEventList& getEvents();
