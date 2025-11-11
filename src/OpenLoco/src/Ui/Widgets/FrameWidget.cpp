@@ -54,13 +54,15 @@ namespace OpenLoco::Ui::Widgets
 
             drawingCtx.pushRenderTarget(*clipped);
 
+            // Derive the number of background images to paint
+            const auto backgroundImageWidth = Gfx::getG1Element(imageId)->width;
+            auto numPassesNeeded = 1 + widget.width() / backgroundImageWidth;
+
             // Draw background image repeatedly to account for large windows
             // NB: starting on the right side to counter the border on the left side of the sprite
-            const auto kBackgroundImageWidth = 800;
-            auto numPassesNeeded = 1 + widget.width() / kBackgroundImageWidth;
             for (auto i = numPassesNeeded; i >= 0; i--)
             {
-                drawingCtx.drawImage(i * (kBackgroundImageWidth - 1), 0, imageId);
+                drawingCtx.drawImage(i * (backgroundImageWidth - 1), 0, imageId);
             }
 
             drawingCtx.popRenderTarget();
