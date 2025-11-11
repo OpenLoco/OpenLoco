@@ -2221,13 +2221,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x004A193B
     static void sub_4A193B()
     {
+        auto& returnState = GameCommands::getLegacyReturnState();
         for (const auto bridgeType : _cState->bridgeList)
         {
             if (bridgeType == 0xFF)
             {
                 return;
             }
-            if (_cState->byte_1136075 == bridgeType)
+            if (returnState.byte_1136075 == bridgeType)
             {
                 _cState->lastSelectedBridge = bridgeType;
                 return;
