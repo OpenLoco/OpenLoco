@@ -43,7 +43,6 @@
 #include "World/Industry.h"
 #include "World/StationManager.h"
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 using namespace OpenLoco::World::TileManager;
 
