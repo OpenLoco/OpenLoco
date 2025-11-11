@@ -70,10 +70,10 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             case Jukebox::MusicSortMode::original:
                 break;
             case Jukebox::MusicSortMode::name:
-                window.widgets[widx::sort_name].text = StringIds::table_header_name_desc;
+                window.widgets[widx::sort_name].text = StringIds::table_header_name_asc;
                 break;
             case Jukebox::MusicSortMode::nameReverse:
-                window.widgets[widx::sort_name].text = StringIds::table_header_name_asc;
+                window.widgets[widx::sort_name].text = StringIds::table_header_name_desc;
                 break;
             case Jukebox::MusicSortMode::yearsAscending:
                 window.widgets[widx::sort_years].text = StringIds::table_header_years_asc;
