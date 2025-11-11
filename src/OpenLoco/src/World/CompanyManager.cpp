@@ -39,16 +39,15 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Bound.hpp>
+#include <array>
 #include <sfl/static_vector.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 
 namespace OpenLoco::CompanyManager
 {
-    static loco_global<Colour[Limits::kMaxCompanies + 1], 0x009C645C> _companyColours;
+    static std::array<Colour, Limits::kMaxCompanies + 1> _companyColours; // 0x009C645C
 
     static void produceCompanies();
 

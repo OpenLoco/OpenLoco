@@ -111,4 +111,10 @@ namespace OpenLoco::World::TrackData
     // - isChangingLane (whether the vehicle is in the process of changing lanes)
     // The returned value's upper nibble (>> 4) contains a 2-bit lane occupation mask.
     uint8_t getRoadOccupationMask(uint8_t index);
+
+    // 0x004F865C
+    // The index is (trackAndDirection._track.data >> 2), which encodes:
+    // - reversed (bit 0)
+    // - track id (bit 1-6)
+    int8_t getCurvatureDegree(uint8_t index);
 }

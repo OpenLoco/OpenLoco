@@ -1,6 +1,8 @@
 25.11+ (???)
 ------------------------------------------------------------------------
 - Change: [#3384] Music selection window is now resizable, sortable, and displays the time period associated with each track.
+- Fix: [#3313] Vehicle orders not being deleted correctly when the station is deallocated.
+- Fix: [#3395] Text input windows no longer show character limits.
 
 25.11 (2025-11-05)
 ------------------------------------------------------------------------

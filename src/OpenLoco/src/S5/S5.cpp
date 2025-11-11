@@ -854,7 +854,7 @@ namespace OpenLoco::S5
             TownManager::updateLabels();
             StationManager::updateLabels();
             sub_4BAEC4();
-            addr<0x0052334E, uint16_t>() = 0; // _thousandthTickCounter
+            WindowManager::resetThousandthTickCounter();
             Gfx::invalidateScreen();
             if (!hasLoadFlags(flags, LoadFlags::landscape))
             {

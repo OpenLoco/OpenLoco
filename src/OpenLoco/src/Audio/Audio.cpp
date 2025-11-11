@@ -460,16 +460,13 @@ namespace OpenLoco::Audio
 
     bool shouldSoundLoop(SoundId id)
     {
-        loco_global<uint8_t[64], 0x0050D514> _unk_50D514;
-        if (isObjectSoundId(id))
+        if (!isObjectSoundId(id))
         {
-            auto obj = getSoundObject(id);
-            return obj->shouldLoop != 0;
+            return false;
         }
-        else
-        {
-            return _unk_50D514[(int32_t)id * 2] != 0;
-        }
+
+        auto obj = getSoundObject(id);
+        return obj->shouldLoop != 0;
     }
 
     // 0x0048A4BF
@@ -688,18 +685,6 @@ namespace OpenLoco::Audio
         }
     }
 
-    // 0x00401A05
-    static void stopChannel(ChannelId id)
-    {
-        Logging::verbose("stopChannel({})", static_cast<int>(id));
-
-        auto channel = getChannel(id);
-        if (channel != nullptr)
-        {
-            channel->stop();
-        }
-    }
-
     // 0x0048A268
     static void triggerVehicleSoundIfInView(Vehicles::VehicleSoundPlayer* v)
     {
@@ -880,6 +865,7 @@ namespace OpenLoco::Audio
     static constexpr auto kAmbientNumTreeTilesForForest = 30;
     static constexpr auto kAmbientNumMountainTilesForWilderness = 60;
 
+    // 0x004FEAA6
     static constexpr int32_t getAmbientMaxVolume(uint8_t zoom)
     {
         constexpr int32_t _volumes[]{ -1200, -2000, -3000, -3000 };
@@ -1008,11 +994,10 @@ namespace OpenLoco::Audio
     // 0x0048ABE3
     void stopAmbientNoise()
     {
-        loco_global<uint32_t, 0x0050D5AC> _50D5AC;
-        if (_audioIsInitialised && _50D5AC != 1)
+        auto* channel = getChannel(ChannelId::ambient);
+        if (_audioIsInitialised && channel != nullptr && channel->isPlaying())
         {
-            stopChannel(ChannelId::ambient);
-            _50D5AC = 1;
+            channel->stop();
         }
     }
 
