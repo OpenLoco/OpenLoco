@@ -74,12 +74,19 @@ namespace OpenLoco
             return formatter;
         }
 
-        template<typename... T>
-        static FormatArguments mapToolTip(T&&... args)
+        static FormatArguments mapToolTip()
         {
             // TODO: refactor users to use non-static buffers
             static std::byte mapTooltipBuffer[40];
             FormatArguments formatter{ mapTooltipBuffer, std::size(mapTooltipBuffer) };
+            return formatter;
+        }
+
+        template<typename... T>
+        static FormatArguments mapToolTip(T&&... args)
+        {
+            // TODO: refactor users to use non-static buffers
+            auto formatter = FormatArguments::mapToolTip();
             (formatter.push(args), ...);
             return formatter;
         }
