@@ -820,8 +820,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 }
                 else
                 {
-                    static loco_global<uint8_t, 0x00113608A> _113608A; // ai rotation??
-                    placementArgs.rotation = _113608A;
+                    placementArgs.rotation = 0;
                 }
             }
         }
