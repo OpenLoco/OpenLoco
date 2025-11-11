@@ -107,11 +107,11 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         window.invalidate();
     }
 
-    static void updateStatusBar(Ui::Window& self, uint16_t numEnabledTracks)
+    static void updateStatusBar(Ui::Window& self, uint16_t numTracksSelected)
     {
         FormatArguments args{ self.widgets[widx::status_bar].textArgs };
-        args.push(numEnabledTracks == 1 ? StringIds::status_music_tracks_selected_singular : StringIds::status_music_tracks_selected_plural);
-        args.push(numEnabledTracks);
+        args.push(numTracksSelected == 1 ? StringIds::status_music_tracks_selected_singular : StringIds::status_music_tracks_selected_plural);
+        args.push(numTracksSelected);
     }
 
     // 0x004C1602
@@ -142,13 +142,8 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         setSortMode(*window, Jukebox::MusicSortMode::original);
 
         // Set status bar text
-        const auto& config = Config::get().audio;
-        uint16_t numEnabled = 0;
-        for (uint16_t i = 0; i < Jukebox::kNumMusicTracks; i++)
-        {
-            numEnabled += config.customJukebox[i];
-        }
-        updateStatusBar(*window, numEnabled);
+        uint16_t numTracksSelected = std::ranges::count(Config::get().audio.customJukebox, true);
+        updateStatusBar(*window, numTracksSelected);
 
         return window;
     }
@@ -325,21 +320,15 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         // Toggle the track in question.
         config.customJukebox[currentTrack] ^= true;
 
-        // Are any tracks enabled?
-        uint16_t numEnabled = 0;
-        for (uint16_t i = 0; i < Jukebox::kNumMusicTracks; i++)
-        {
-            numEnabled += config.customJukebox[i];
-        }
-
-        // Ensure at least this track is enabled.
-        if (numEnabled == 0)
+        // Do not allow there being 0 tracks enabled
+        uint16_t numTracksSelected = std::ranges::count(config.customJukebox, true);
+        if (numTracksSelected == 0)
         {
             config.customJukebox[currentTrack] = true;
-            numEnabled = 1;
+            numTracksSelected = 1;
         }
 
-        updateStatusBar(window, numEnabled);
+        updateStatusBar(window, numTracksSelected);
         Config::write();
         Audio::revalidateCurrentTrack();
         window.invalidate();
