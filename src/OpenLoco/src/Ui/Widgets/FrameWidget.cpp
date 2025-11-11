@@ -33,12 +33,49 @@ namespace OpenLoco::Ui::Widgets
     // 0x004CAAB9
     void Frame::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
-        auto* window = widgetState.window;
+        if (false)
+        {
+            Frame::drawBackground(drawingCtx, widget, widgetState);
+        }
+        else if (true)
+        {
+            Frame::drawSolid(drawingCtx, widget, widgetState);
+        }
+        else
+        {
+            Frame::drawTransparent(drawingCtx, widget, widgetState);
+        }
+
+        uint8_t shade;
+        const auto* window = widgetState.window;
+        if (window->hasFlags(WindowFlags::lighterFrame))
+        {
+            shade = Colours::getShade(widgetState.colour.c(), 3);
+        }
+        else
+        {
+            shade = Colours::getShade(widgetState.colour.c(), 1);
+        }
 
         const auto pos = window->position() + widget.position();
         const auto size = widget.size();
 
-        /*
+        // Shadow at the right side.
+        drawingCtx.fillRect(
+            pos + Point{ size.width - 1, 0 },
+            Ui::Size{ 1, 40u },
+            shade,
+            Gfx::RectFlags::none);
+
+        drawResizeHandle(drawingCtx, window, widget, widgetState.colour);
+    }
+
+    void Frame::drawBackground(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
+    {
+        const auto* window = widgetState.window;
+        const auto pos = window->position() + widget.position();
+        const auto size = widget.size();
+
         const auto& rt = drawingCtx.currentRenderTarget();
         const auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(pos.x, pos.y, size.width, 41));
         if (clipped)
@@ -68,29 +105,21 @@ namespace OpenLoco::Ui::Widgets
 
             drawingCtx.popRenderTarget();
         }
-        */
+    }
 
-        auto flags = widgetState.flags;
-        auto colour = widgetState.colour.translucent();
+    void Frame::drawSolid(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
+    {
+        const auto flags = widgetState.flags;
+        const auto colour = widgetState.colour;
+        const auto* window = widgetState.window;
         drawingCtx.fillRectInset(window->position() + widget.position(), widget.size(), colour, flags);
+    }
 
-        uint8_t shade;
-        if (window->hasFlags(WindowFlags::lighterFrame))
-        {
-            shade = Colours::getShade(widgetState.colour.c(), 3);
-        }
-        else
-        {
-            shade = Colours::getShade(widgetState.colour.c(), 1);
-        }
-
-        // Shadow at the right side.
-        drawingCtx.fillRect(
-            pos + Point{ size.width - 1, 0 },
-            Ui::Size{ 1, 40u },
-            shade,
-            Gfx::RectFlags::none);
-
-        drawResizeHandle(drawingCtx, window, widget, widgetState.colour);
+    void Frame::drawTransparent(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
+    {
+        const auto flags = widgetState.flags;
+        const auto colour = widgetState.colour.translucent();
+        const auto* window = widgetState.window;
+        drawingCtx.fillRectInset(window->position() + widget.position(), widget.size(), colour, flags);
     }
 }
