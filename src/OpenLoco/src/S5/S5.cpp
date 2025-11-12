@@ -499,6 +499,10 @@ namespace OpenLoco::S5
         dst.currentYear = src.currentYear;
         dst.currentMonth = src.currentMonth;
         dst.currentDayOfMonth = src.currentDayOfMonth;
+        dst.savedViewX = src.savedViewX;
+        dst.savedViewY = src.savedViewY;
+        dst.savedViewZoom = src.savedViewZoom;
+        dst.savedViewRotation = src.savedViewRotation;
         for (auto i = 0U; i < std::size(dst.playerCompanies); ++i)
         {
             dst.playerCompanies[i] = static_cast<CompanyId>(src.playerCompanies[i]);
