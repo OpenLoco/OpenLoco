@@ -2130,7 +2130,7 @@ namespace OpenLoco::CompanyAi
     struct PathfindResult
     {
         PathfindResultState state;
-        currency32_t unk112C34C; // 0x0112C34C
+        currency32_t totalCost; // 0x0112C34C
         uint32_t unk112C35C;     // 0x0112C35C
         uint32_t unk112C364;     // 0x0112C364
         uint32_t unk112C36C;     // 0x0112C36C
@@ -2187,7 +2187,7 @@ namespace OpenLoco::CompanyAi
                 GameCommands::aiTrackReplacement(regs);
                 if (static_cast<uint32_t>(regs.ebx) != GameCommands::FAILURE)
                 {
-                    result.unk112C34C += static_cast<uint32_t>(regs.ebx);
+                    result.totalCost += static_cast<uint32_t>(regs.ebx);
                 }
             }
             if (sub_4A80E1(posAdjusted, rotation, 0, trackId, trackObjId))
@@ -2266,7 +2266,7 @@ namespace OpenLoco::CompanyAi
             auto posAdjusted = pos;
             posAdjusted.z += World::TrackData::getRoadPiece(roadId)[0].z;
 
-            result.unk112C34C += static_cast<uint32_t>(RoadReplacePrice::aiRoadReplacementCost(posAdjusted, rotation, 0, roadId, companyId));
+            result.totalCost += static_cast<uint32_t>(RoadReplacePrice::aiRoadReplacementCost(posAdjusted, rotation, 0, roadId, companyId));
 
             if (sub_47B336(posAdjusted, rotation, 0, roadId, companyId))
             {
@@ -2452,7 +2452,7 @@ namespace OpenLoco::CompanyAi
                 }
             }
             company.var_85C2 = 0xFFU;
-            thought.var_76 += pathResult.unk112C34C;
+            thought.var_76 += pathResult.totalCost;
             return false;
         }
     }
