@@ -1843,7 +1843,7 @@ namespace OpenLoco::CompanyAi
     // sequenceIndex: dh
     // trackId: dl
     // trackObjId : bp
-    static bool sub_4A7E86(World::Pos3 pos, uint8_t rotation, uint8_t sequenceIndex, uint8_t trackId, uint8_t trackObjId)
+    static bool connectsToExistingTrack(World::Pos3 pos, uint8_t rotation, uint8_t sequenceIndex, uint8_t trackId, uint8_t trackObjId)
     {
         auto getElTrack = [rotation, trackId, trackObjId](World::Pos3 pos, uint8_t sequenceIndex) -> const World::TrackElement* {
             auto tile = World::TileManager::get(pos);
@@ -1938,7 +1938,7 @@ namespace OpenLoco::CompanyAi
     // sequenceIndex: dh
     // roadId: dl
     // roadObjId : bp (unused)
-    static bool sub_47B7CC(World::Pos3 pos, uint8_t rotation, uint8_t sequenceIndex, uint8_t roadId, CompanyId companyId)
+    static bool connectsToExistingRoad(World::Pos3 pos, uint8_t rotation, uint8_t sequenceIndex, uint8_t roadId, CompanyId companyId)
     {
         auto getElRoad = [rotation, roadId, companyId](World::Pos3 pos, uint8_t sequenceIndex) -> const World::RoadElement* {
             auto tile = World::TileManager::get(pos);
@@ -2122,9 +2122,9 @@ namespace OpenLoco::CompanyAi
 
     enum class PathfindResultState : uint8_t
     {
-        unk0 = 0U,
-        unk1 = 1U << 0,
-        unk2 = 1U << 1,
+        targetReached = 0U,
+        noRoute = 1U,
+        targetReachedWithConnection = 2U, // Connection to existing track/road
     };
 
     struct PathfindResult
@@ -2132,7 +2132,7 @@ namespace OpenLoco::CompanyAi
         PathfindResultState state;
         currency32_t totalCost;     // 0x0112C34C
         uint32_t totalPenalties;    // 0x0112C35C penalties such as destroying buildings (road only), something to do with bridges
-        uint32_t euclideanDistance; // 0x0112C364 only set when path to target found (state == unk0 or unk2)
+        uint32_t euclideanDistance; // 0x0112C364 only set when path to target found (state == targetReached or targetReachedWithConnection)
         uint32_t totalWeighting;    // 0x0112C36C
     };
 
@@ -2149,7 +2149,7 @@ namespace OpenLoco::CompanyAi
     static PathfindResult sub_485B75(const World::Pos3 startPos, const uint16_t startTad, const World::Pos3 targetPos, const uint8_t targetRot, const uint8_t trackObjId, const CompanyId companyId)
     {
         PathfindResult result{};
-        bool unk112C368 = false;
+        bool hasExistingTrackConnection = false;
         uint32_t unk112C360 = _pathFindTotalTrackRoadWeighting;
         World::Pos3 pos = startPos;
         uint16_t tad = startTad;
@@ -2161,7 +2161,7 @@ namespace OpenLoco::CompanyAi
                 const auto posA = startPos + World::TrackData::getUnkTrack(startTad).pos;
                 const auto posB = targetPos + World::Pos3(World::kRotationOffset[targetRot], 0);
                 result.euclideanDistance = Math::Vector::distance3D(posA, posB);
-                result.state = unk112C368 ? PathfindResultState::unk2 : PathfindResultState::unk0;
+                result.state = hasExistingTrackConnection ? PathfindResultState::targetReachedWithConnection : PathfindResultState::targetReached;
                 return result;
             }
 
@@ -2196,9 +2196,9 @@ namespace OpenLoco::CompanyAi
             }
             if (result.totalWeighting > 128 && unk112C360 > 64)
             {
-                if (sub_4A7E86(posAdjusted, rotation, 0, trackId, trackObjId))
+                if (connectsToExistingTrack(posAdjusted, rotation, 0, trackId, trackObjId))
                 {
-                    unk112C368 = true;
+                    hasExistingTrackConnection = true;
                 }
             }
             const auto rotationBegin = World::TrackData::getUnkTrack(tad).rotationBegin;
@@ -2211,7 +2211,7 @@ namespace OpenLoco::CompanyAi
             const auto tc = World::Track::getTrackConnectionsAi(nextPos, nextRot, companyId, trackObjId, 0, 0);
             if (tc.connections.empty() || tc.connections.size() > 1)
             {
-                result.state = PathfindResultState::unk1;
+                result.state = PathfindResultState::noRoute;
                 return result;
             }
 
@@ -2229,7 +2229,7 @@ namespace OpenLoco::CompanyAi
                 tad = (tad & 0x3) | (0U << 3);
             }
         }
-        result.state = PathfindResultState::unk1;
+        result.state = PathfindResultState::noRoute;
         return result;
     }
 
@@ -2246,7 +2246,7 @@ namespace OpenLoco::CompanyAi
     static PathfindResult sub_485E6A(const World::Pos3 startPos, const uint16_t startTad, const World::Pos3 targetPos, const uint8_t targetRot, const uint8_t roadObjId, const CompanyId companyId)
     {
         PathfindResult result{};
-        bool unk112C368 = false;
+        bool hasExistingRoadConnection = false;
         World::Pos3 pos = startPos;
         uint16_t tad = startTad;
         bool targetReached = false;
@@ -2278,9 +2278,9 @@ namespace OpenLoco::CompanyAi
                 result.totalPenalties += unkWeighting;
             }
 
-            if (sub_47B7CC(posAdjusted, rotation, 0, roadId, companyId))
+            if (connectsToExistingRoad(posAdjusted, rotation, 0, roadId, companyId))
             {
-                unk112C368 = true;
+                hasExistingRoadConnection = true;
             }
 
             const auto rotationBegin = World::TrackData::getUnkRoad(tad).rotationBegin;
@@ -2296,7 +2296,7 @@ namespace OpenLoco::CompanyAi
             const auto rc = World::Track::getRoadConnectionsAiAllocated(nextPos, nextRot, companyId, matchRoadObjId, 0, 0);
             if (rc.connections.size() > 1)
             {
-                result.state = PathfindResultState::unk1;
+                result.state = PathfindResultState::noRoute;
                 return result;
             }
             if (rc.connections.empty())
@@ -2325,12 +2325,12 @@ namespace OpenLoco::CompanyAi
             const auto posA = startPos + World::TrackData::getUnkRoad(startTad).pos;
             const auto posB = targetPos + World::Pos3(World::kRotationOffset[targetRot], 0);
             result.euclideanDistance = Math::Vector::distance3D(posA, posB);
-            result.state = unk112C368 ? PathfindResultState::unk2 : PathfindResultState::unk0;
+            result.state = hasExistingRoadConnection ? PathfindResultState::targetReachedWithConnection : PathfindResultState::targetReached;
             return result;
         }
         else
         {
-            result.state = PathfindResultState::unk1;
+            result.state = PathfindResultState::noRoute;
             return result;
         }
     }
@@ -2375,11 +2375,11 @@ namespace OpenLoco::CompanyAi
     {
         const auto pathResult = sub_485B68(trackRoadObjId);
         const auto pathfindState = pathResult.state;
-        if (pathfindState == PathfindResultState::unk1)
+        if (pathfindState == PathfindResultState::noRoute)
         {
             return true;
         }
-        if (pathfindState == PathfindResultState::unk2)
+        if (pathfindState == PathfindResultState::targetReachedWithConnection)
         {
             // 0x004845FF
             aiPathfindNextState(company);
@@ -2495,7 +2495,7 @@ namespace OpenLoco::CompanyAi
                         // 0x004845EF
 
                         const auto pathfindState = sub_485B68(placementVars.trackRoadObjId).state;
-                        if (pathfindState == PathfindResultState::unk1)
+                        if (pathfindState == PathfindResultState::noRoute)
                         {
                             return true;
                         }
@@ -2593,7 +2593,7 @@ namespace OpenLoco::CompanyAi
                         // 0x004845EF duplicate
 
                         const auto pathfindState = sub_485B68(placementVars.trackRoadObjId).state;
-                        if (pathfindState == PathfindResultState::unk1)
+                        if (pathfindState == PathfindResultState::noRoute)
                         {
                             return true;
                         }
