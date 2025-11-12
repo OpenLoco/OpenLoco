@@ -2124,6 +2124,22 @@ namespace OpenLoco::CompanyAi
         return false;
     }
 
+    enum class PathfindResultState : uint8_t
+    {
+        unk0 = 0U,
+        unk1 = 1U << 0,
+        unk2 = 1U << 1,
+    };
+
+    struct PathfindResult
+    {
+        PathfindResultState state;
+        currency32_t unk112C34C; // 0x0112C34C
+        uint32_t unk112C35C;     // 0x0112C35C
+        uint32_t unk112C364;     // 0x0112C364
+        uint32_t unk112C36C;     // 0x0112C36C
+    };
+
     // 0x00485B75
     // startPos.x: 0x0112C3C6
     // startPos.y: 0x0112C3C8
@@ -2134,7 +2150,7 @@ namespace OpenLoco::CompanyAi
     // targetPos.z: 0x0112C515 * World::kSmallZStep
     // targetRot: 0x0112C516
     // trackObjId: 0x0112C519
-    static uint32_t sub_485B75(const World::Pos3 startPos, const uint16_t startTad, const World::Pos3 targetPos, const uint8_t targetRot, const uint8_t trackObjId, const CompanyId companyId)
+    static PathfindResultState sub_485B75(const World::Pos3 startPos, const uint16_t startTad, const World::Pos3 targetPos, const uint8_t targetRot, const uint8_t trackObjId, const CompanyId companyId)
     {
         _unk112C36C = 0U;
         _unk112C35C = 0U;
@@ -2151,7 +2167,7 @@ namespace OpenLoco::CompanyAi
                 const auto posA = startPos + World::TrackData::getUnkTrack(startTad).pos;
                 const auto posB = targetPos + World::Pos3(World::kRotationOffset[targetRot], 0);
                 _unk112C364 = Math::Vector::distance3D(posA, posB);
-                return unk112C368 ? (1U << 1) : 0U;
+                return unk112C368 ? PathfindResultState::unk2 : PathfindResultState::unk0;
             }
 
             const uint8_t trackId = (tad >> 3U) & 0x3F;
@@ -2200,7 +2216,7 @@ namespace OpenLoco::CompanyAi
             const auto tc = World::Track::getTrackConnectionsAi(nextPos, nextRot, companyId, trackObjId, 0, 0);
             if (tc.connections.empty() || tc.connections.size() > 1)
             {
-                return 1;
+                return PathfindResultState::unk1;
             }
 
             tad = tc.connections[0] & World::Track::AdditionalTaDFlags::basicTaDMask;
@@ -2217,7 +2233,7 @@ namespace OpenLoco::CompanyAi
                 tad = (tad & 0x3) | (0U << 3);
             }
         }
-        return 1;
+        return PathfindResultState::unk1;
     }
 
     // 0x00485E6A
@@ -2230,7 +2246,7 @@ namespace OpenLoco::CompanyAi
     // targetPos.z: 0x0112C515 * World::kSmallZStep
     // targetRot: 0x0112C516
     // roadObjId: 0x0112C519
-    static uint32_t sub_485E6A(const World::Pos3 startPos, const uint16_t startTad, const World::Pos3 targetPos, const uint8_t targetRot, const uint8_t roadObjId, const CompanyId companyId)
+    static PathfindResultState sub_485E6A(const World::Pos3 startPos, const uint16_t startTad, const World::Pos3 targetPos, const uint8_t targetRot, const uint8_t roadObjId, const CompanyId companyId)
     {
         _unk112C36C = 0U;
         _unk112C35C = 0U;
@@ -2285,7 +2301,7 @@ namespace OpenLoco::CompanyAi
             const auto rc = World::Track::getRoadConnectionsAiAllocated(nextPos, nextRot, companyId, matchRoadObjId, 0, 0);
             if (rc.connections.size() > 1)
             {
-                return 1;
+                return PathfindResultState::unk1;
             }
             if (rc.connections.empty())
             {
@@ -2313,16 +2329,16 @@ namespace OpenLoco::CompanyAi
             const auto posA = startPos + World::TrackData::getUnkRoad(startTad).pos;
             const auto posB = targetPos + World::Pos3(World::kRotationOffset[targetRot], 0);
             _unk112C364 = Math::Vector::distance3D(posA, posB);
-            return unk112C368 ? (1U << 1) : 0U;
+            return unk112C368 ? PathfindResultState::unk2 : PathfindResultState::unk0;
         }
         else
         {
-            return 1;
+            return PathfindResultState::unk1;
         }
     }
 
     // 0x00485B68
-    static uint32_t sub_485B68(const uint8_t trackRoadObjId)
+    static PathfindResultState sub_485B68(const uint8_t trackRoadObjId)
     {
         const auto startPos = World::Pos3{ _unk2Pos112C3C6->x, _unk2Pos112C3C6->y, _unk2PosBaseZ112C517 * World::kSmallZStep };
         const auto startTad = *_unkTad112C3CA;
@@ -2360,11 +2376,11 @@ namespace OpenLoco::CompanyAi
     static bool evaluatePathfound(Company& company, AiThought& thought, const uint8_t trackRoadObjId)
     {
         const auto flags = sub_485B68(trackRoadObjId);
-        if (flags & (1U << 0))
+        if (flags == PathfindResultState::unk1)
         {
             return true;
         }
-        if (flags & (1U << 1))
+        if (flags == PathfindResultState::unk2)
         {
             // 0x004845FF
             aiPathfindNextState(company);
@@ -2480,7 +2496,7 @@ namespace OpenLoco::CompanyAi
                         // 0x004845EF
 
                         const auto flags = sub_485B68(placementVars.trackRoadObjId);
-                        if (flags & (1U << 0))
+                        if (flags == PathfindResultState::unk1)
                         {
                             return true;
                         }
@@ -2578,7 +2594,7 @@ namespace OpenLoco::CompanyAi
                         // 0x004845EF duplicate
 
                         const auto flags = sub_485B68(placementVars.trackRoadObjId);
-                        if (flags & (1U << 0))
+                        if (flags == PathfindResultState::unk1)
                         {
                             return true;
                         }
