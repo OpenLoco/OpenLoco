@@ -37,7 +37,6 @@ namespace OpenLoco::CompanyAi
 
     static Interop::loco_global<uint8_t, 0x0112C518> _pathFindUndoCount112C518;        // company 0x85EE
     static Interop::loco_global<int32_t, 0x0112C398> _pathFindTotalTrackRoadWeighting; // company 0x85DE
-    static Interop::loco_global<uint8_t, 0x0112C519> _trackRoadObjType112C519;
     static Interop::loco_global<World::Pos2, 0x0112C3C2> _unk1Pos112C3C2;
     static Interop::loco_global<World::SmallZ, 0x0112C515> _unk1PosBaseZ112C515;
     static Interop::loco_global<uint8_t, 0x0112C516> _unk1Rot112C516;
@@ -50,8 +49,6 @@ namespace OpenLoco::CompanyAi
     static Interop::loco_global<uint32_t, 0x0112C35C> _unk112C35C;
     static Interop::loco_global<uint32_t, 0x0112C34C> _unk112C34C; // currency_32t
     static Interop::loco_global<uint8_t, 0x0112C59E> _unk3Rot112C59E;
-    static Interop::loco_global<uint32_t, 0x0112C388> _createTrackRoadCommandMods;
-    static Interop::loco_global<uint32_t, 0x0112C38C> _createTrackRoadCommandRackRail;
     static Interop::loco_global<Company*, 0x0112C390> _unk112C390;
     static Interop::loco_global<uint32_t, 0x0112C358> _maxTrackRoadWeightingLimit; // Limits the extent of the track/road placement search
     static Interop::loco_global<uint32_t, 0x0112C374> _createTrackRoadCommandAiUnkFlags;
@@ -59,22 +56,31 @@ namespace OpenLoco::CompanyAi
     static Interop::loco_global<uint32_t, 0x0112C37C> _trackRoadPlacementBridgeWeighting;
     static Interop::loco_global<uint32_t, 0x0112C380> _numBuildingRequiredDestroyed112C380;
     static Interop::loco_global<uint8_t, 0x0112C59B> _queryTrackRoadPlacementFlags;
-    static Interop::loco_global<uint8_t, 0x0112C59F> _createTrackRoadCommandBridge0;
-    static Interop::loco_global<uint8_t, 0x0112C5A0> _createTrackRoadCommandBridge1;
-    static Interop::loco_global<uint8_t, 0x0112C5A1> _createTrackRoadCommandBridge2;
     static Interop::loco_global<uint16_t, 0x0112C4D4> _unkTad112C4D4;
     static Interop::loco_global<uint16_t, 0x0112C3CA> _unkTad112C3CA;
     static Interop::loco_global<uint16_t, 0x0112C3D0> _queryTrackRoadPlacementMinScore;
     static Interop::loco_global<uint16_t, 0x0112C3D2> _queryTrackRoadPlacementMinWeighting;
+
+    // Actual globals
     static Interop::loco_global<uint8_t, 0x0112C2E9> _alternateTrackObjectId; // set from GameCommands::createRoad
 
+    struct PlacementVars
+    {
+        uint8_t trackRoadObjId;             // 0x0112C519 1 << 7 if road
+        uint32_t mods;                      // 0x0112C388 << 16
+        uint32_t rackRailType;              // 0x0112C38C << 16
+        std::array<uint8_t, 3> bridgeTypes; // 0x0112C59F, 0x0112C5A0, 0x0112C5A1
+        ValidTrackRoadIds validIds;         // valid track/road ids
+    };
+
     // 0x00483A7E
-    static ValidTrackRoadIds sub_483A7E(const Company& company, const AiThought& thought)
+    static PlacementVars sub_483A7E(const Company& company, const AiThought& thought)
     {
         // 0x0112C384
         bool allowSteepSlopes = false;
 
-        _trackRoadObjType112C519 = thought.trackObjId;
+        PlacementVars result{};
+        result.trackRoadObjId = thought.trackObjId;
         const bool isRoad = thought.trackObjId & (1U << 7);
         uint32_t unkMods = 0U;
         uint32_t unkRackRail = 0U;
@@ -122,8 +128,8 @@ namespace OpenLoco::CompanyAi
                 }
             }
         }
-        _createTrackRoadCommandMods = unkMods;
-        _createTrackRoadCommandRackRail = unkRackRail;
+        result.mods = unkMods;
+        result.rackRailType = unkRackRail;
         _createTrackRoadCommandAiUnkFlags = 1U << 22;
 
         if (company.var_85C3 & (1U << 3))
@@ -162,111 +168,109 @@ namespace OpenLoco::CompanyAi
             }
         }
 
-        _createTrackRoadCommandBridge0 = company.var_259A;
-        _createTrackRoadCommandBridge1 = company.var_259B;
-        _createTrackRoadCommandBridge2 = company.var_259C;
+        result.bridgeTypes[0] = company.var_259A;
+        result.bridgeTypes[1] = company.var_259B;
+        result.bridgeTypes[2] = company.var_259C;
 
         if (isRoad)
         {
             // 0x00483DAA
             auto* roadObj = ObjectManager::get<RoadObject>(thought.trackObjId & ~(1U << 7));
 
-            ValidTrackRoadIds validRoadIds;
-            validRoadIds.push_back(0U); // straight
+            result.validIds.push_back(0U); // straight
 
             using enum World::Track::RoadTraitFlags;
 
             if (roadObj->hasTraitFlags(turnaround))
             {
-                validRoadIds.push_back(9U); // turnaround
+                result.validIds.push_back(9U); // turnaround
             }
             if (roadObj->hasTraitFlags(smallCurve))
             {
-                validRoadIds.push_back(3U); // leftCurveSmall
-                validRoadIds.push_back(4U); // rightCurveSmall
+                result.validIds.push_back(3U); // leftCurveSmall
+                result.validIds.push_back(4U); // rightCurveSmall
             }
             if (roadObj->hasTraitFlags(verySmallCurve))
             {
-                validRoadIds.push_back(1U); // leftCurveVerySmall
-                validRoadIds.push_back(2U); // rightCurveVerySmall
+                result.validIds.push_back(1U); // leftCurveVerySmall
+                result.validIds.push_back(2U); // rightCurveVerySmall
             }
             if (roadObj->hasTraitFlags(slope))
             {
-                validRoadIds.push_back(5U); // straightSlopeUp
-                validRoadIds.push_back(6U); // straightSlopeDown
+                result.validIds.push_back(5U); // straightSlopeUp
+                result.validIds.push_back(6U); // straightSlopeDown
                 if (roadObj->hasTraitFlags(steepSlope) && allowSteepSlopes)
                 {
-                    validRoadIds.push_back(7U); // straightSteepSlopeUp
-                    validRoadIds.push_back(8U); // straightSteepSlopeDown
+                    result.validIds.push_back(7U); // straightSteepSlopeUp
+                    result.validIds.push_back(8U); // straightSteepSlopeDown
                 }
             }
-            return validRoadIds;
+            return result;
         }
         else
         {
             // 0x00483CB6
             auto* trackObj = ObjectManager::get<TrackObject>(thought.trackObjId);
 
-            ValidTrackRoadIds validTrackIds;
-            validTrackIds.push_back(0U); // straight
+            result.validIds.push_back(0U); // straight
 
             using enum World::Track::TrackTraitFlags;
             if (trackObj->hasTraitFlags(diagonal))
             {
-                validTrackIds.push_back(1U); // diagonal
+                result.validIds.push_back(1U); // diagonal
             }
             if (trackObj->hasTraitFlags(sBend))
             {
-                validTrackIds.push_back(12U); // sBendLeft
-                validTrackIds.push_back(13U); // sBendRight
+                result.validIds.push_back(12U); // sBendLeft
+                result.validIds.push_back(13U); // sBendRight
             }
             if (trackObj->hasTraitFlags(largeCurve))
             {
-                validTrackIds.push_back(8U);  // leftCurveLarge
-                validTrackIds.push_back(9U);  // rightCurveLarge
-                validTrackIds.push_back(10U); // diagonalLeftCurveLarge
-                validTrackIds.push_back(11U); // diagonalRightCurveLarge
+                result.validIds.push_back(8U);  // leftCurveLarge
+                result.validIds.push_back(9U);  // rightCurveLarge
+                result.validIds.push_back(10U); // diagonalLeftCurveLarge
+                result.validIds.push_back(11U); // diagonalRightCurveLarge
             }
             if (trackObj->hasTraitFlags(normalCurve))
             {
-                validTrackIds.push_back(6U); // leftCurve
-                validTrackIds.push_back(7U); // rightCurve
+                result.validIds.push_back(6U); // leftCurve
+                result.validIds.push_back(7U); // rightCurve
             }
             if (trackObj->hasTraitFlags(smallCurve))
             {
-                validTrackIds.push_back(4U); // leftCurveSmall
-                validTrackIds.push_back(5U); // rightCurveSmall
+                result.validIds.push_back(4U); // leftCurveSmall
+                result.validIds.push_back(5U); // rightCurveSmall
                 if (trackObj->hasTraitFlags(slopedCurve))
                 {
-                    validTrackIds.push_back(18U); // leftCurveSmallSlopeUp
-                    validTrackIds.push_back(19U); // rightCurveSmallSlopeUp
-                    validTrackIds.push_back(20U); // leftCurveSmallSlopeDown
-                    validTrackIds.push_back(21U); // rightCurveSmallSlopeDown
+                    result.validIds.push_back(18U); // leftCurveSmallSlopeUp
+                    result.validIds.push_back(19U); // rightCurveSmallSlopeUp
+                    result.validIds.push_back(20U); // leftCurveSmallSlopeDown
+                    result.validIds.push_back(21U); // rightCurveSmallSlopeDown
                     if (trackObj->hasTraitFlags(steepSlope) && allowSteepSlopes)
                     {
-                        validTrackIds.push_back(22U); // leftCurveSmallSteepSlopeUp
-                        validTrackIds.push_back(23U); // rightCurveSmallSteepSlopeUp
-                        validTrackIds.push_back(24U); // leftCurveSmallSteepSlopeDown
-                        validTrackIds.push_back(25U); // rightCurveSmallSteepSlopeDown
+                        result.validIds.push_back(22U); // leftCurveSmallSteepSlopeUp
+                        result.validIds.push_back(23U); // rightCurveSmallSteepSlopeUp
+                        result.validIds.push_back(24U); // leftCurveSmallSteepSlopeDown
+                        result.validIds.push_back(25U); // rightCurveSmallSteepSlopeDown
                     }
                 }
             }
             if (trackObj->hasTraitFlags(verySmallCurve))
             {
-                validTrackIds.push_back(2U); // leftCurveVerySmall
-                validTrackIds.push_back(3U); // rightCurveVerySmall
+                result.validIds.push_back(2U); // leftCurveVerySmall
+                result.validIds.push_back(3U); // rightCurveVerySmall
             }
             if (trackObj->hasTraitFlags(slope))
             {
-                validTrackIds.push_back(14U); // straightSlopeUp
-                validTrackIds.push_back(15U); // straightSlopeDown
+                result.validIds.push_back(14U); // straightSlopeUp
+                result.validIds.push_back(15U); // straightSlopeDown
                 if (trackObj->hasTraitFlags(steepSlope) && allowSteepSlopes)
                 {
-                    validTrackIds.push_back(16U); // straightSteepSlopeUp
-                    validTrackIds.push_back(17U); // straightSteepSlopeDown
+                    result.validIds.push_back(16U); // straightSteepSlopeUp
+                    result.validIds.push_back(17U); // straightSteepSlopeDown
                 }
             }
-            return validTrackIds;
+            return result;
         }
     }
 
@@ -303,9 +307,8 @@ namespace OpenLoco::CompanyAi
     }
 
     // 0x00483E20
-    static bool sub_483E20(const Company& company)
+    static bool sub_483E20(const Company& company, const bool isRoad)
     {
-        const bool isRoad = _trackRoadObjType112C519 & (1U << 7);
         if (isRoad)
         {
             return sub_483EF2(company);
@@ -337,7 +340,7 @@ namespace OpenLoco::CompanyAi
     // company : _unk112C390
     //
     // return : _queryTrackRoadPlacementFlags, _queryTrackRoadPlacementMinScore, _queryTrackRoadPlacementMinWeighting
-    static void queryTrackPlacementScoreRecurse(Company& company, const World::Pos3 pos, const uint16_t tad, const bool unkFlag, const ValidTrackRoadIds& validTrackIds, QueryTrackRoadPlacementResult& totalResult, QueryTrackRoadPlacementState& state)
+    static void queryTrackPlacementScoreRecurse(Company& company, const World::Pos3 pos, const uint16_t tad, const bool unkFlag, const PlacementVars& placementVars, QueryTrackRoadPlacementResult& totalResult, QueryTrackRoadPlacementState& state)
     {
         // bl
         const auto direction = tad & 0x3;
@@ -399,8 +402,8 @@ namespace OpenLoco::CompanyAi
             args.rotation += 12;
         }
         args.trackId = trackId;
-        args.trackObjectId = _trackRoadObjType112C519;
-        args.bridge = _createTrackRoadCommandBridge0;
+        args.trackObjectId = placementVars.trackRoadObjId;
+        args.bridge = placementVars.bridgeTypes[0];
         args.pos = pos;
         args.mods = 0;
         args.unk = false;
@@ -472,7 +475,7 @@ namespace OpenLoco::CompanyAi
             }
             else
             {
-                for (auto newTrackId : validTrackIds)
+                for (auto newTrackId : placementVars.validIds)
                 {
                     const auto newTad = (newTrackId << 3) | nextRotation;
                     const auto rotBegin = World::TrackData::getUnkTrack(newTad).rotationBegin;
@@ -494,13 +497,13 @@ namespace OpenLoco::CompanyAi
                     // Make a copy of the state as each track needs to be evaluated independently
                     auto tempState = state;
 
-                    queryTrackPlacementScoreRecurse(company, nextPos, newTad, newUnkFlag, validTrackIds, totalResult, tempState);
+                    queryTrackPlacementScoreRecurse(company, nextPos, newTad, newUnkFlag, placementVars, totalResult, tempState);
                 }
             }
         }
     }
 
-    static QueryTrackRoadPlacementResult queryTrackPlacementScore(Company& company, const World::Pos3 pos, const uint16_t tad, const bool unkFlag, const ValidTrackRoadIds& validTrackIds)
+    static QueryTrackRoadPlacementResult queryTrackPlacementScore(Company& company, const World::Pos3 pos, const uint16_t tad, const bool unkFlag, const PlacementVars& placementVars)
     {
         QueryTrackRoadPlacementResult result{};
         result.flags = 1U << 7;
@@ -512,7 +515,7 @@ namespace OpenLoco::CompanyAi
         state.currentWeighting = 0U;
         state.bridgeWeighting = 0U;
 
-        queryTrackPlacementScoreRecurse(company, pos, tad, unkFlag, validTrackIds, result, state);
+        queryTrackPlacementScoreRecurse(company, pos, tad, unkFlag, placementVars, result, state);
 
         return result;
     }
@@ -523,7 +526,7 @@ namespace OpenLoco::CompanyAi
     // company : _unk112C390
     //
     // return : _queryTrackRoadPlacementFlags, _queryTrackRoadPlacementMinScore, _queryTrackRoadPlacementMinWeighting
-    static void queryRoadPlacementScoreRecurse(Company& company, const World::Pos3 pos, const uint16_t tad, const ValidTrackRoadIds& validRoadIds, QueryTrackRoadPlacementResult& totalResult, QueryTrackRoadPlacementState& state)
+    static void queryRoadPlacementScoreRecurse(Company& company, const World::Pos3 pos, const uint16_t tad, const PlacementVars& placementVars, QueryTrackRoadPlacementResult& totalResult, QueryTrackRoadPlacementState& state)
     {
         // bl
         const auto direction = tad & 0x3;
@@ -540,8 +543,8 @@ namespace OpenLoco::CompanyAi
 
         args.rotation = direction;
         args.roadId = roadId;
-        args.roadObjectId = _trackRoadObjType112C519 & ~(1U << 7);
-        args.bridge = _createTrackRoadCommandBridge0;
+        args.roadObjectId = placementVars.trackRoadObjId & ~(1U << 7);
+        args.bridge = placementVars.bridgeTypes[0];
         args.pos = pos;
         args.mods = 0;
         args.unkFlags = *_createTrackRoadCommandAiUnkFlags >> 16;
@@ -628,20 +631,20 @@ namespace OpenLoco::CompanyAi
             }
             else
             {
-                for (const auto newRoadId : validRoadIds)
+                for (const auto newRoadId : placementVars.validIds)
                 {
                     const auto newTad = (newRoadId << 3) | nextRotation;
 
                     // Make a copy of the state as each track needs to be evaluated independently
                     auto tempState = state;
 
-                    queryRoadPlacementScoreRecurse(company, nextPos, newTad, validRoadIds, totalResult, tempState);
+                    queryRoadPlacementScoreRecurse(company, nextPos, newTad, placementVars, totalResult, tempState);
                 }
             }
         }
     }
 
-    static QueryTrackRoadPlacementResult queryRoadPlacementScore(Company& company, const World::Pos3 pos, const uint16_t tad, const ValidTrackRoadIds& validRoadIds)
+    static QueryTrackRoadPlacementResult queryRoadPlacementScore(Company& company, const World::Pos3 pos, const uint16_t tad, const PlacementVars& placementVars)
     {
         QueryTrackRoadPlacementResult result{};
         result.flags = 1U << 7;
@@ -653,13 +656,13 @@ namespace OpenLoco::CompanyAi
         state.currentWeighting = 0U;
         state.bridgeWeighting = 0U;
 
-        queryRoadPlacementScoreRecurse(company, pos, tad, validRoadIds, result, state);
+        queryRoadPlacementScoreRecurse(company, pos, tad, placementVars, result, state);
 
         return result;
     }
 
     // 0x00484B5C
-    static void pathFindTrackUndoSection(Company& company)
+    static void pathFindTrackUndoSection(Company& company, const uint8_t trackObjId)
     {
         if (_pathFindTotalTrackRoadWeighting <= 0)
         {
@@ -675,7 +678,7 @@ namespace OpenLoco::CompanyAi
         auto& trackPiece0 = World::TrackData::getTrackPiece(trackId)[0];
         const auto pos = World::Pos3(_unk2Pos112C3C6, (_unk2PosBaseZ112C517 * World::kSmallZStep) + trackPiece0.z);
 
-        const auto hasAiAllocatedElTrack = [&pos, rotation, trackId]() {
+        const auto hasAiAllocatedElTrack = [&pos, rotation, trackId, trackObjId]() {
             auto tile = World::TileManager::get(pos);
             for (auto& el : tile)
             {
@@ -708,7 +711,7 @@ namespace OpenLoco::CompanyAi
                 {
                     continue;
                 }
-                if (elTrack->trackObjectId() != _trackRoadObjType112C519)
+                if (elTrack->trackObjectId() != trackObjId)
                 {
                     continue;
                 }
@@ -728,7 +731,7 @@ namespace OpenLoco::CompanyAi
         args.rotation = rotation;
         args.trackId = trackId;
         args.index = 0U;
-        args.trackObjectId = _trackRoadObjType112C519;
+        args.trackObjectId = trackObjId;
         GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment | GameCommands::Flags::apply);
         // No check of failure!
 
@@ -739,7 +742,7 @@ namespace OpenLoco::CompanyAi
             nextPos -= World::Pos3(World::kRotationOffset[rot], 0);
         }
         const auto nextRot = World::kReverseRotation[rot];
-        const auto tc = World::Track::getTrackConnectionsAi(nextPos, nextRot, company.id(), _trackRoadObjType112C519, 0, 0);
+        const auto tc = World::Track::getTrackConnectionsAi(nextPos, nextRot, company.id(), trackObjId, 0, 0);
 
         if (tc.connections.empty())
         {
@@ -771,7 +774,7 @@ namespace OpenLoco::CompanyAi
     }
 
     // 0x00484655
-    static void pathFindTrackSection(Company& company, const ValidTrackRoadIds& validTrackIds)
+    static void pathFindTrackSection(Company& company, const PlacementVars& placementVars)
     {
         if (_pathFindUndoCount112C518 == 0)
         {
@@ -812,7 +815,7 @@ namespace OpenLoco::CompanyAi
             tad |= rotation;
             // 0x0112C55B, 0x0112C3D4, 0x00112C454
             sfl::static_vector<std::pair<uint8_t, QueryTrackRoadPlacementResult>, 64> placementResults;
-            for (const auto trackId : validTrackIds)
+            for (const auto trackId : placementVars.validIds)
             {
                 const auto rotationBegin = World::TrackData::getUnkTrack(trackId << 3).rotationBegin;
                 if (diagFlag)
@@ -830,7 +833,7 @@ namespace OpenLoco::CompanyAi
                     }
                 }
                 const auto newTad = (trackId << 3) | rotation;
-                placementResults.push_back(std::make_pair(trackId, queryTrackPlacementScore(company, pos, newTad, diagFlag, validTrackIds)));
+                placementResults.push_back(std::make_pair(trackId, queryTrackPlacementScore(company, pos, newTad, diagFlag, placementVars)));
             }
             // 0x00484813
             uint16_t bestMinScore = 0xFFFFU;
@@ -863,21 +866,21 @@ namespace OpenLoco::CompanyAi
                 args.trackId = bestTrackId;
                 args.pos = pos;
                 args.rotation = trackSize.rotationEnd;
-                args.trackObjectId = _trackRoadObjType112C519;
-                args.bridge = _createTrackRoadCommandBridge0;
+                args.trackObjectId = placementVars.trackRoadObjId;
+                args.bridge = placementVars.bridgeTypes[0];
                 if (_createTrackRoadCommandAiUnkFlags & (1U << 22))
                 {
-                    args.bridge = _createTrackRoadCommandBridge1;
+                    args.bridge = placementVars.bridgeTypes[1];
                     if (args.trackId != 0)
                     {
-                        args.bridge = _createTrackRoadCommandBridge0;
+                        args.bridge = placementVars.bridgeTypes[0];
                     }
                 }
                 args.unkFlags = *_createTrackRoadCommandAiUnkFlags >> 20;
-                args.mods = _createTrackRoadCommandMods >> 16;
+                args.mods = placementVars.mods >> 16;
                 if ((World::TrackData::getTrackMiscData(args.trackId).flags & World::Track::CommonTraitFlags::steepSlope) != World::Track::CommonTraitFlags::none)
                 {
-                    args.mods |= _createTrackRoadCommandRackRail >> 16;
+                    args.mods |= placementVars.rackRailType >> 16;
                 }
                 args.unk = false;
                 auto argsNoBridge = args;
@@ -924,12 +927,12 @@ namespace OpenLoco::CompanyAi
         }
         else
         {
-            pathFindTrackUndoSection(company);
+            pathFindTrackUndoSection(company, placementVars.trackRoadObjId);
         }
     }
 
     // 0x00485283
-    static void pathFindRoadUndoSection(Company& company)
+    static void pathFindRoadUndoSection(Company& company, const uint8_t roadObjId)
     {
         if (_pathFindTotalTrackRoadWeighting <= 0)
         {
@@ -1008,13 +1011,13 @@ namespace OpenLoco::CompanyAi
         nextPos -= World::Pos3(World::kRotationOffset[rot], 0);
 
         const auto nextRot = World::kReverseRotation[rot];
-        auto roadObjId = _trackRoadObjType112C519 & ~(1U << 7);
+        auto adjustedRoadObjId = roadObjId;
         auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
         if (roadObj->hasFlags(RoadObjectFlags::unk_03))
         {
-            roadObjId = 0xFFU;
+            adjustedRoadObjId = 0xFFU;
         }
-        const auto rc = World::Track::getRoadConnectionsAiAllocated(nextPos, nextRot, company.id(), roadObjId, 0, 0);
+        const auto rc = World::Track::getRoadConnectionsAiAllocated(nextPos, nextRot, company.id(), adjustedRoadObjId, 0, 0);
 
         {
             auto newTad = rc.connections.empty() ? (nextRot | (0U << 3)) : rc.connections[0] & 0x1FFU;
@@ -1037,8 +1040,9 @@ namespace OpenLoco::CompanyAi
     }
 
     // 0x00484D76
-    static void pathFindRoadSection(Company& company, const ValidTrackRoadIds& validRoadIds)
+    static void pathFindRoadSection(Company& company, const PlacementVars& placementVars)
     {
+        const auto roadObjId = placementVars.trackRoadObjId & ~(1U << 7);
         if (_pathFindUndoCount112C518 == 0)
         {
             // 0x00484D83
@@ -1075,10 +1079,10 @@ namespace OpenLoco::CompanyAi
 
             // 0x0112C55B, 0x0112C3D4, 0x00112C454
             sfl::static_vector<std::pair<uint8_t, QueryTrackRoadPlacementResult>, 64> placementResults;
-            for (const auto roadId : validRoadIds)
+            for (const auto roadId : placementVars.validIds)
             {
                 const auto newTad = (roadId << 3) | rotation;
-                placementResults.push_back(std::make_pair(roadId, queryRoadPlacementScore(company, pos, newTad, validRoadIds)));
+                placementResults.push_back(std::make_pair(roadId, queryRoadPlacementScore(company, pos, newTad, placementVars)));
             }
             // 0x00484EF0
             uint16_t bestMinScore = 0xFFFFU;
@@ -1111,18 +1115,18 @@ namespace OpenLoco::CompanyAi
                 args.roadId = bestRoadId;
                 args.pos = pos;
                 args.rotation = roadSize.rotationEnd;
-                args.roadObjectId = _trackRoadObjType112C519 & ~(1U << 7);
-                args.bridge = _createTrackRoadCommandBridge1;
+                args.roadObjectId = roadObjId;
+                args.bridge = placementVars.bridgeTypes[1];
 
                 if (args.roadId != 0)
                 {
-                    args.bridge = _createTrackRoadCommandBridge0;
+                    args.bridge = placementVars.bridgeTypes[0];
                 }
                 args.unkFlags = *_createTrackRoadCommandAiUnkFlags >> 16;
-                args.mods = _createTrackRoadCommandMods >> 16;
+                args.mods = placementVars.mods >> 16;
                 if ((World::TrackData::getRoadMiscData(args.roadId).flags & World::Track::CommonTraitFlags::steepSlope) != World::Track::CommonTraitFlags::none)
                 {
-                    args.mods |= _createTrackRoadCommandRackRail >> 16;
+                    args.mods |= placementVars.rackRailType >> 16;
                 }
                 auto argsNoBridge = args;
                 argsNoBridge.bridge = 0xFFU; // no bridge
@@ -1184,21 +1188,21 @@ namespace OpenLoco::CompanyAi
         }
         else
         {
-            pathFindRoadUndoSection(company);
+            pathFindRoadUndoSection(company, roadObjId);
         }
     }
 
     // 0x00484648
     // company : _unk112C390
-    static void sub_484648(Company& company, const ValidTrackRoadIds& validTrackRoadIds)
+    static void sub_484648(Company& company, const PlacementVars& placementVars)
     {
-        if (_trackRoadObjType112C519 & (1U << 7))
+        if (placementVars.trackRoadObjId & (1U << 7))
         {
-            pathFindRoadSection(company, validTrackRoadIds);
+            pathFindRoadSection(company, placementVars);
         }
         else
         {
-            pathFindTrackSection(company, validTrackRoadIds);
+            pathFindTrackSection(company, placementVars);
         }
     }
 
@@ -2330,14 +2334,13 @@ namespace OpenLoco::CompanyAi
     }
 
     // 0x00485B68
-    static uint32_t sub_485B68()
+    static uint32_t sub_485B68(const uint8_t trackRoadObjId)
     {
         const auto startPos = World::Pos3{ _unk2Pos112C3C6->x, _unk2Pos112C3C6->y, _unk2PosBaseZ112C517 * World::kSmallZStep };
         const auto startTad = *_unkTad112C3CA;
         const auto targetPos = World::Pos3{ _unk1Pos112C3C2->x, _unk1Pos112C3C2->y, _unk1PosBaseZ112C515 * World::kSmallZStep };
         const auto targetRot = *_unk1Rot112C516;
         const auto companyId = GameCommands::getUpdatingCompanyId();
-        const auto trackRoadObjId = *_trackRoadObjType112C519;
         if (trackRoadObjId & (1U << 7))
         {
             const auto roadObjId = trackRoadObjId & ~(1U << 7);
@@ -2366,9 +2369,9 @@ namespace OpenLoco::CompanyAi
     }
 
     // 0x00484508
-    static bool evaluatePathfound(Company& company, AiThought& thought)
+    static bool evaluatePathfound(Company& company, AiThought& thought, const uint8_t trackRoadObjId)
     {
-        const auto flags = sub_485B68();
+        const auto flags = sub_485B68(trackRoadObjId);
         if (flags & (1U << 0))
         {
             return true;
@@ -2473,12 +2476,12 @@ namespace OpenLoco::CompanyAi
                 _pathFindTotalTrackRoadWeighting = company.var_85DE;
                 _pathFindUndoCount112C518 = company.var_85EE;
 
-                const auto validTrackRoadIds = sub_483A7E(company, thought);
+                const auto placementVars = sub_483A7E(company, thought);
 
-                if (sub_483E20(company))
+                if (sub_483E20(company, placementVars.trackRoadObjId & (1U << 7)))
                 {
                     // 0x00484508
-                    return evaluatePathfound(company, thought);
+                    return evaluatePathfound(company, thought, placementVars.trackRoadObjId);
                 }
                 else
                 {
@@ -2488,7 +2491,7 @@ namespace OpenLoco::CompanyAi
                     {
                         // 0x004845EF
 
-                        const auto flags = sub_485B68();
+                        const auto flags = sub_485B68(placementVars.trackRoadObjId);
                         if (flags & (1U << 0))
                         {
                             return true;
@@ -2499,7 +2502,7 @@ namespace OpenLoco::CompanyAi
                         return false;
                     }
 
-                    sub_484648(company, validTrackRoadIds);
+                    sub_484648(company, placementVars);
                     company.var_85DE = _pathFindTotalTrackRoadWeighting;
                     company.var_85EE = _pathFindUndoCount112C518;
                     company.var_85D0 = _unk2Pos112C3C6;
@@ -2525,7 +2528,7 @@ namespace OpenLoco::CompanyAi
                 _pathFindTotalTrackRoadWeighting = company.var_85DE;
                 _pathFindUndoCount112C518 = company.var_85EE;
 
-                const auto validTrackRoadIds = sub_483A7E(company, thought);
+                const auto placementVars = sub_483A7E(company, thought);
 
                 if (_pathFindTotalTrackRoadWeighting == 0)
                 {
@@ -2543,7 +2546,7 @@ namespace OpenLoco::CompanyAi
                     }
 
                     _pathFindUndoCount112C518 = 1;
-                    sub_484648(company, validTrackRoadIds);
+                    sub_484648(company, placementVars);
                     company.var_85DE = _pathFindTotalTrackRoadWeighting;
                     company.var_85EE = _pathFindUndoCount112C518;
                     company.var_85D0 = _unk2Pos112C3C6;
@@ -2570,12 +2573,12 @@ namespace OpenLoco::CompanyAi
                 _pathFindTotalTrackRoadWeighting = company.var_85E2;
                 _pathFindUndoCount112C518 = company.var_85EF;
 
-                const auto validTrackRoadIds = sub_483A7E(company, thought);
+                const auto placementVars = sub_483A7E(company, thought);
 
-                if (sub_483E20(company))
+                if (sub_483E20(company, placementVars.trackRoadObjId & (1U << 7)))
                 {
                     // 0x00484508
-                    return evaluatePathfound(company, thought);
+                    return evaluatePathfound(company, thought, placementVars.trackRoadObjId);
                 }
                 else
                 {
@@ -2586,7 +2589,7 @@ namespace OpenLoco::CompanyAi
                     {
                         // 0x004845EF duplicate
 
-                        const auto flags = sub_485B68();
+                        const auto flags = sub_485B68(placementVars.trackRoadObjId);
                         if (flags & (1U << 0))
                         {
                             return true;
@@ -2597,7 +2600,7 @@ namespace OpenLoco::CompanyAi
                         return false;
                     }
 
-                    sub_484648(company, validTrackRoadIds);
+                    sub_484648(company, placementVars);
                     company.var_85E2 = _pathFindTotalTrackRoadWeighting;
                     company.var_85EF = _pathFindUndoCount112C518;
                     company.var_85D7 = _unk2Pos112C3C6;
