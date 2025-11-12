@@ -406,47 +406,47 @@ namespace OpenLoco::S5
         return dst;
     }
 
-    static S5::GameState exportGameState(const OpenLoco::GameState& src)
+    static std::unique_ptr<S5::GameState> exportGameState(const OpenLoco::GameState& src)
     {
-        S5::GameState dst{};
-        dst.general = exportGeneralState(src);
+        auto dst = std::make_unique<S5::GameState>();
+        dst->general = exportGeneralState(src);
         for (auto i = 0U; i < std::size(src.companies); i++)
         {
-            dst.companies[i] = exportCompany(src.companies[i]);
+            dst->companies[i] = exportCompany(src.companies[i]);
         }
         for (auto i = 0U; i < std::size(src.towns); i++)
         {
-            dst.towns[i] = exportTown(src.towns[i]);
+            dst->towns[i] = exportTown(src.towns[i]);
         }
         for (auto i = 0U; i < std::size(src.industries); i++)
         {
-            dst.industries[i] = exportIndustry(src.industries[i]);
+            dst->industries[i] = exportIndustry(src.industries[i]);
         }
         for (auto i = 0U; i < std::size(src.stations); i++)
         {
-            dst.stations[i] = exportStation(src.stations[i]);
+            dst->stations[i] = exportStation(src.stations[i]);
         }
         for (auto i = 0U; i < std::size(src.entities); i++)
         {
-            dst.entities[i] = exportEntity(src.entities[i]);
+            dst->entities[i] = exportEntity(src.entities[i]);
         }
         for (auto i = 0U; i < std::size(src.animations); i++)
         {
-            dst.animations[i] = exportAnimation(src.animations[i]);
+            dst->animations[i] = exportAnimation(src.animations[i]);
         }
         for (auto i = 0U; i < std::size(src.waves); i++)
         {
-            dst.waves[i] = exportWave(src.waves[i]);
+            dst->waves[i] = exportWave(src.waves[i]);
         }
         for (auto i = 0U; i < Limits::kMaxUserStrings; i++)
         {
-            std::ranges::copy(src.userStrings[i], dst.userStrings[i]);
+            std::ranges::copy(src.userStrings[i], dst->userStrings[i]);
         }
         for (auto i = 0U; i < Limits::kMaxVehicles; i++)
         {
-            std::ranges::copy(src.routings[i], dst.routings[i]);
+            std::ranges::copy(src.routings[i], dst->routings[i]);
         }
-        std::ranges::copy(src.orders, dst.orders);
+        std::ranges::copy(src.orders, dst->orders);
         return dst;
     }
 
@@ -670,7 +670,7 @@ namespace OpenLoco::S5
 
         // Copy the source gamestate contents to the S5 gamestate, field by field
         auto& dst = file->gameState;
-        dst = exportGameState(src);
+        dst = *exportGameState(src);
         dst.general.savedViewX = savedView.viewX;
         dst.general.savedViewY = savedView.viewY;
         dst.general.savedViewZoom = static_cast<uint8_t>(savedView.zoomLevel);
