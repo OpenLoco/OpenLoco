@@ -108,7 +108,7 @@ namespace OpenLoco::Config
 
         // Regional
         _config.language = config["language"].as<std::string>("en-GB");
-        _config.measurementFormat = config["measurementFormat"].as<MeasurementFormat>(MeasurementFormat::metric);
+        _config.measurementFormat = config["measurementFormat"].as<MeasurementFormat>(MeasurementFormat::imperial);
         _config.preferredCurrency = config["preferredCurrency"].as<ObjectHeader>(kDefaultPreferredCurrency);
         _config.usePreferredCurrencyForNewGames = config["usePreferredCurrencyForNewGames"].as<bool>(false);
         _config.usePreferredCurrencyAlways = config["usePreferredCurrencyAlways"].as<bool>(false);
@@ -256,7 +256,6 @@ namespace OpenLoco::Config
         node["uncapFPS"] = _config.uncapFPS;
 
         // Rendering
-
         node["constructionMarker"] = _config.constructionMarker;
         node["gridlinesOnLandscape"] = _config.gridlinesOnLandscape;
         node["heightMarkerOffset"] = _config.heightMarkerOffset;
