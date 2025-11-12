@@ -44,10 +44,6 @@ namespace OpenLoco::CompanyAi
     static Interop::loco_global<World::SmallZ, 0x0112C517> _unk2PosBaseZ112C517;
     static Interop::loco_global<World::Pos2, 0x0112C3CC> _unk3Pos112C3CC;
     static Interop::loco_global<World::SmallZ, 0x0112C59C> _unk3PosBaseZ112C59C;
-    static Interop::loco_global<uint32_t, 0x0112C364> _unk112C364;
-    static Interop::loco_global<uint32_t, 0x0112C36C> _unk112C36C;
-    static Interop::loco_global<uint32_t, 0x0112C35C> _unk112C35C;
-    static Interop::loco_global<uint32_t, 0x0112C34C> _unk112C34C;                 // currency_32t
     static Interop::loco_global<uint32_t, 0x0112C358> _maxTrackRoadWeightingLimit; // Limits the extent of the track/road placement search
     static Interop::loco_global<uint32_t, 0x0112C374> _createTrackRoadCommandAiUnkFlags;
     static Interop::loco_global<uint16_t, 0x0112C4D4> _unkTad112C4D4;
