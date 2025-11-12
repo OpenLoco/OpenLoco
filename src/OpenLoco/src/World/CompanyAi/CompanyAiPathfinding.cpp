@@ -48,18 +48,10 @@ namespace OpenLoco::CompanyAi
     static Interop::loco_global<uint32_t, 0x0112C36C> _unk112C36C;
     static Interop::loco_global<uint32_t, 0x0112C35C> _unk112C35C;
     static Interop::loco_global<uint32_t, 0x0112C34C> _unk112C34C; // currency_32t
-    static Interop::loco_global<uint8_t, 0x0112C59E> _unk3Rot112C59E;
-    static Interop::loco_global<Company*, 0x0112C390> _unk112C390;
     static Interop::loco_global<uint32_t, 0x0112C358> _maxTrackRoadWeightingLimit; // Limits the extent of the track/road placement search
     static Interop::loco_global<uint32_t, 0x0112C374> _createTrackRoadCommandAiUnkFlags;
-    static Interop::loco_global<uint32_t, 0x0112C378> _trackRoadPlacementCurrentWeighting;
-    static Interop::loco_global<uint32_t, 0x0112C37C> _trackRoadPlacementBridgeWeighting;
-    static Interop::loco_global<uint32_t, 0x0112C380> _numBuildingRequiredDestroyed112C380;
-    static Interop::loco_global<uint8_t, 0x0112C59B> _queryTrackRoadPlacementFlags;
     static Interop::loco_global<uint16_t, 0x0112C4D4> _unkTad112C4D4;
     static Interop::loco_global<uint16_t, 0x0112C3CA> _unkTad112C3CA;
-    static Interop::loco_global<uint16_t, 0x0112C3D0> _queryTrackRoadPlacementMinScore;
-    static Interop::loco_global<uint16_t, 0x0112C3D2> _queryTrackRoadPlacementMinWeighting;
 
     // Actual globals
     static Interop::loco_global<uint8_t, 0x0112C2E9> _alternateTrackObjectId; // set from GameCommands::createRoad
@@ -339,7 +331,7 @@ namespace OpenLoco::CompanyAi
     // unkFlag : ebp & (1U << 31)
     // company : _unk112C390
     //
-    // return : _queryTrackRoadPlacementFlags, _queryTrackRoadPlacementMinScore, _queryTrackRoadPlacementMinWeighting
+    // return via ref argument totalResult
     static void queryTrackPlacementScoreRecurse(Company& company, const World::Pos3 pos, const uint16_t tad, const bool unkFlag, const PlacementVars& placementVars, QueryTrackRoadPlacementResult& totalResult, QueryTrackRoadPlacementState& state)
     {
         // bl
@@ -525,7 +517,7 @@ namespace OpenLoco::CompanyAi
     // tad : bp
     // company : _unk112C390
     //
-    // return : _queryTrackRoadPlacementFlags, _queryTrackRoadPlacementMinScore, _queryTrackRoadPlacementMinWeighting
+    // return via ref argument totalResult
     static void queryRoadPlacementScoreRecurse(Company& company, const World::Pos3 pos, const uint16_t tad, const PlacementVars& placementVars, QueryTrackRoadPlacementResult& totalResult, QueryTrackRoadPlacementState& state)
     {
         // bl
@@ -792,15 +784,13 @@ namespace OpenLoco::CompanyAi
                 auto tad = _unkTad112C4D4 & 0x3FFU;
                 auto& trackSize = World::TrackData::getUnkTrack(tad);
                 pos += trackSize.pos;
-                auto rotation = trackSize.rotationEnd;
+                const auto rotation = trackSize.rotationEnd;
                 if (rotation < 12)
                 {
                     pos -= World::Pos3(World::kRotationOffset[rotation], 0);
                 }
-                rotation ^= (1U << 1);
                 _unk3Pos112C3CC = pos;
                 _unk3PosBaseZ112C59C = pos.z / World::kSmallZStep;
-                _unk3Rot112C59E = rotation;
             }
 
             auto pos = World::Pos3(_unk2Pos112C3C6, _unk2PosBaseZ112C517 * World::kSmallZStep);
@@ -1059,13 +1049,11 @@ namespace OpenLoco::CompanyAi
                 auto tad = _unkTad112C4D4 & 0x3FFU;
                 const auto& roadSize = World::TrackData::getUnkRoad(tad);
                 pos += roadSize.pos;
-                auto rotation = roadSize.rotationEnd;
+                const auto rotation = roadSize.rotationEnd;
                 pos -= World::Pos3(World::kRotationOffset[rotation], 0);
 
-                rotation ^= (1U << 1);
                 _unk3Pos112C3CC = pos;
                 _unk3PosBaseZ112C59C = pos.z / World::kSmallZStep;
-                _unk3Rot112C59E = rotation;
             }
 
             auto pos = World::Pos3(_unk2Pos112C3C6, _unk2PosBaseZ112C517 * World::kSmallZStep);
