@@ -2130,10 +2130,10 @@ namespace OpenLoco::CompanyAi
     struct PathfindResult
     {
         PathfindResultState state;
-        currency32_t totalCost; // 0x0112C34C
-        uint32_t unk112C35C;     // 0x0112C35C
-        uint32_t unk112C364;     // 0x0112C364
-        uint32_t unk112C36C;     // 0x0112C36C
+        currency32_t totalCost;     // 0x0112C34C
+        uint32_t totalPenalties;    // 0x0112C35C penalties such as destroying buildings (road only), something to do with bridges
+        uint32_t euclideanDistance; // 0x0112C364 only set when path to target found (state == unk0 or unk2)
+        uint32_t totalWeighting;    // 0x0112C36C
     };
 
     // 0x00485B75
@@ -2160,7 +2160,7 @@ namespace OpenLoco::CompanyAi
                 // 0x00485DBD
                 const auto posA = startPos + World::TrackData::getUnkTrack(startTad).pos;
                 const auto posB = targetPos + World::Pos3(World::kRotationOffset[targetRot], 0);
-                result.unk112C364 = Math::Vector::distance3D(posA, posB);
+                result.euclideanDistance = Math::Vector::distance3D(posA, posB);
                 result.state = unk112C368 ? PathfindResultState::unk2 : PathfindResultState::unk0;
                 return result;
             }
@@ -2168,7 +2168,7 @@ namespace OpenLoco::CompanyAi
             const uint8_t trackId = (tad >> 3U) & 0x3F;
             const uint8_t rotation = tad & 0x3U;
             const auto unkWeighting = World::TrackData::getTrackMiscData(trackId).unkWeighting;
-            result.unk112C36C += unkWeighting;
+            result.totalWeighting += unkWeighting;
             unk112C360 -= unkWeighting;
 
             auto posAdjusted = pos;
@@ -2192,9 +2192,9 @@ namespace OpenLoco::CompanyAi
             }
             if (sub_4A80E1(posAdjusted, rotation, 0, trackId, trackObjId))
             {
-                result.unk112C35C += unkWeighting;
+                result.totalPenalties += unkWeighting;
             }
-            if (result.unk112C36C > 128 && unk112C360 > 64)
+            if (result.totalWeighting > 128 && unk112C360 > 64)
             {
                 if (sub_4A7E86(posAdjusted, rotation, 0, trackId, trackObjId))
                 {
@@ -2261,7 +2261,7 @@ namespace OpenLoco::CompanyAi
             const uint8_t roadId = (tad >> 3U) & 0xF;
             const uint8_t rotation = tad & 0x3U;
             const auto unkWeighting = World::TrackData::getRoadMiscData(roadId).unkWeighting;
-            result.unk112C36C += unkWeighting;
+            result.totalWeighting += unkWeighting;
 
             auto posAdjusted = pos;
             posAdjusted.z += World::TrackData::getRoadPiece(roadId)[0].z;
@@ -2270,12 +2270,12 @@ namespace OpenLoco::CompanyAi
 
             if (sub_47B336(posAdjusted, rotation, 0, roadId, companyId))
             {
-                result.unk112C35C += unkWeighting;
+                result.totalPenalties += unkWeighting;
             }
 
             if (willRoadDestroyABuilding(posAdjusted, rotation, 0, roadId, companyId))
             {
-                result.unk112C35C += unkWeighting;
+                result.totalPenalties += unkWeighting;
             }
 
             if (sub_47B7CC(posAdjusted, rotation, 0, roadId, companyId))
@@ -2324,7 +2324,7 @@ namespace OpenLoco::CompanyAi
             // 0x004860F4
             const auto posA = startPos + World::TrackData::getUnkRoad(startTad).pos;
             const auto posB = targetPos + World::Pos3(World::kRotationOffset[targetRot], 0);
-            result.unk112C364 = Math::Vector::distance3D(posA, posB);
+            result.euclideanDistance = Math::Vector::distance3D(posA, posB);
             result.state = unk112C368 ? PathfindResultState::unk2 : PathfindResultState::unk0;
             return result;
         }
@@ -2387,16 +2387,16 @@ namespace OpenLoco::CompanyAi
         }
         else
         {
-            const auto weighting = std::max<uint32_t>(pathResult.unk112C364, 256);
-            // 1.75 x weighting
-            const auto adjustedWeighting = weighting + weighting / 2 + weighting / 4;
-            if (adjustedWeighting < pathResult.unk112C36C)
+            const auto distance = std::max<uint32_t>(pathResult.euclideanDistance, 256);
+            // 1.75 x distance
+            const auto distanceWeighting = distance + distance / 2 + distance / 4;
+            if (distanceWeighting < pathResult.totalWeighting)
             {
                 // 0x004845FF
                 aiPathfindNextState(company);
                 return false;
             }
-            if (pathResult.unk112C35C * 5 >= pathResult.unk112C36C)
+            if (pathResult.totalPenalties * 5 >= pathResult.totalWeighting)
             {
                 // 0x004845FF
                 aiPathfindNextState(company);
