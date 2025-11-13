@@ -54,6 +54,8 @@ using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Scenario
 {
+    static loco_global<uint8_t, 0x00F25374> _madeAnyChangesBackup;
+
     // 0x0046115C
     void sub_46115C()
     {
@@ -239,7 +241,7 @@ namespace OpenLoco::Scenario
         Ui::WindowManager::invalidate(Ui::WindowType::landscapeGeneration, 0);
         reset();
         Scenario::getOptions().madeAnyChanges = 0;
-        addr<0x00F25374, uint8_t>() = 0;
+        setMadeAnyChangesBackup(0);
         Gfx::invalidateScreen();
     }
 
@@ -249,7 +251,7 @@ namespace OpenLoco::Scenario
         auto& options = Scenario::getOptions();
         MapGenerator::generate(options);
         options.madeAnyChanges = 0;
-        addr<0x00F25374, uint8_t>() = 0;
+        setMadeAnyChangesBackup(0);
     }
 
     // 0x0049685C
@@ -465,13 +467,7 @@ namespace OpenLoco::Scenario
         args.push<uint16_t>(0);
     }
 
-    static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _inUseobjectSelection;
     static loco_global<ObjectManager::ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
-
-    static std::span<ObjectManager::SelectedObjectsFlags> getInUseSelectedObjectFlags()
-    {
-        return std::span<ObjectManager::SelectedObjectsFlags>(*_inUseobjectSelection, ObjectManager::getNumInstalledObjects());
-    }
 
     static void loadPreferredCurrency()
     {
@@ -483,7 +479,7 @@ namespace OpenLoco::Scenario
         }
 
         ObjectManager::prepareSelectionList(true);
-        const auto oldCurrency = ObjectManager::getActiveObject(ObjectType::currency, getInUseSelectedObjectFlags());
+        const auto oldCurrency = ObjectManager::getActiveObject(ObjectType::currency, ObjectManager::getSelectionFlags());
         if (oldCurrency.index != ObjectManager::kNullObjectIndex)
         {
             if (oldCurrency.object._header == preferredCurreny)
@@ -491,17 +487,17 @@ namespace OpenLoco::Scenario
                 ObjectManager::freeSelectionList();
                 return;
             }
-            ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultDeselect, oldCurrency.object._header, getInUseSelectedObjectFlags(), _objectSelectionMeta);
+            ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultDeselect, oldCurrency.object._header, ObjectManager::getSelectionFlags(), _objectSelectionMeta);
         }
-        if (!ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultSelect, preferredCurreny, getInUseSelectedObjectFlags(), _objectSelectionMeta))
+        if (!ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultSelect, preferredCurreny, ObjectManager::getSelectionFlags(), _objectSelectionMeta))
         {
             // Failed so reselect the old currency and give up
-            ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultSelect, oldCurrency.object._header, getInUseSelectedObjectFlags(), _objectSelectionMeta);
+            ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultSelect, oldCurrency.object._header, ObjectManager::getSelectionFlags(), _objectSelectionMeta);
             ObjectManager::freeSelectionList();
             return;
         }
-        ObjectManager::unloadUnselectedSelectionListObjects(getInUseSelectedObjectFlags());
-        ObjectManager::loadSelectionListObjects(getInUseSelectedObjectFlags());
+        ObjectManager::unloadUnselectedSelectionListObjects(ObjectManager::getSelectionFlags());
+        ObjectManager::loadSelectionListObjects(ObjectManager::getSelectionFlags());
         ObjectManager::reloadAll();
         Gfx::loadCurrency();
         ObjectManager::freeSelectionList();
@@ -528,5 +524,15 @@ namespace OpenLoco::Scenario
         }
 
         loadPreferredCurrency();
+    }
+
+    uint8_t getMadeAnyChangesBackup()
+    {
+        return _madeAnyChangesBackup;
+    }
+
+    void setMadeAnyChangesBackup(uint8_t value)
+    {
+        _madeAnyChangesBackup = value;
     }
 }

@@ -105,6 +105,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             wall = 1 << 1,
         };
         OPENLOCO_ENABLE_ENUM_OPERATORS(GhostPlacedFlags);
+        static_assert(sizeof(GhostPlacedFlags) == 1);
     }
 
     // These are still referred to in CreateWall and S5

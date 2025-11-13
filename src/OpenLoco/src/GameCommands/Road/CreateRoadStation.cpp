@@ -20,8 +20,6 @@ namespace OpenLoco::GameCommands
 {
     static loco_global<StationId, 0x0112C730> _lastPlacedTrackStationId;
     static loco_global<bool, 0x0112C7A9> _112C7A9;
-    static loco_global<uint32_t, 0x00112C734> _lastConstructedAdjoiningStationId;           // Can be 0xFFFF'FFFFU for no adjoining station
-    static loco_global<World::Pos2, 0x00112C792> _lastConstructedAdjoiningStationCentrePos; // Can be x = -1 for no adjoining station
 
     // 0x004900B8
     static StationManager::NearbyStation findNearbyStationOnRoad(World::Pos3 pos, uint16_t tad, uint8_t roadObjectId)
@@ -205,8 +203,8 @@ namespace OpenLoco::GameCommands
         setPosition(args.pos + World::Pos3(16, 16, 0));
 
         _lastPlacedTrackStationId = StationId::null;
-        _lastConstructedAdjoiningStationCentrePos = World::Pos2(-1, -1);
-        _lastConstructedAdjoiningStationId = 0xFFFFFFFFU;
+        StationManager::setLastConstructedAdjoiningStationCentrePos(World::Pos2(-1, -1));
+        StationManager::setLastConstructedAdjoiningStationId(0xFFFFFFFFU);
 
         auto* stationObj = ObjectManager::get<RoadStationObject>(args.type);
 
@@ -297,10 +295,10 @@ namespace OpenLoco::GameCommands
 
         if ((flags & Flags::ghost) && (flags & Flags::apply))
         {
-            _lastConstructedAdjoiningStationCentrePos = roadStart;
+            StationManager::setLastConstructedAdjoiningStationCentrePos(roadStart);
             uint16_t tad = (args.roadId << 3) | args.rotation;
             auto nearbyStation = findNearbyStationOnRoad(roadStart, tad, args.roadObjectId);
-            _lastConstructedAdjoiningStationId = static_cast<int16_t>(nearbyStation.id);
+            StationManager::setLastConstructedAdjoiningStationId(static_cast<int16_t>(nearbyStation.id));
         }
 
         if (!(flags & Flags::ghost))

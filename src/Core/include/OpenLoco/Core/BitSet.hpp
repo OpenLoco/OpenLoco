@@ -49,7 +49,7 @@ namespace OpenLoco
                 constexpr size_t numBits = byteAlignBits<TNumBits>();
                 if constexpr (numBits >= std::numeric_limits<uintptr_t>::digits)
                 {
-                    return sizeof(uintptr_t);
+                    return std::min(sizeof(uintptr_t), sizeof(uint32_t));
                 }
                 else
                 {

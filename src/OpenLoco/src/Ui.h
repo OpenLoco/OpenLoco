@@ -76,6 +76,7 @@ namespace OpenLoco::Ui
         placeHQ = 43,
         placeStation = 44,
     };
+    static_assert(sizeof(CursorId) == 1);
 
     struct Resolution
     {

@@ -38,13 +38,8 @@ using namespace OpenLoco::Ui;
 
 namespace OpenLoco::EditorController
 {
-    static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _inUseobjectSelection;
     static loco_global<ObjectManager::ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
-
-    static std::span<ObjectManager::SelectedObjectsFlags> getInUseSelectedObjectFlags()
-    {
-        return std::span<ObjectManager::SelectedObjectsFlags>(*_inUseobjectSelection, ObjectManager::getNumInstalledObjects());
-    }
+    static_assert(sizeof(ObjectManager::ObjectSelectionMeta) == 0x48);
 
     static void resetLandDistributionPatterns();
 
@@ -61,7 +56,7 @@ namespace OpenLoco::EditorController
         options.editorStep = Step::objectSelection;
         options.difficulty = 2;
         options.madeAnyChanges = 0;
-        addr<0x00F25374, uint8_t>() = 0; // ?? backup for madeAnyChanges?
+        Scenario::setMadeAnyChangesBackup(0);
         options.scenarioFlags = Scenario::ScenarioFlags::landscapeGenerationDone;
         gameState.lastLandOption = 0xFF;
         gameState.lastMapWindowAttributes.flags = WindowFlags::none;
@@ -73,7 +68,7 @@ namespace OpenLoco::EditorController
         Audio::unpauseSound();
         ObjectManager::unloadAll();
         ObjectManager::prepareSelectionList(false);
-        ObjectManager::loadSelectionListObjects(getInUseSelectedObjectFlags());
+        ObjectManager::loadSelectionListObjects(ObjectManager::getSelectionFlags());
         ObjectManager::freeSelectionList();
         ObjectManager::reloadAll();
         Scenario::sub_4748D4();

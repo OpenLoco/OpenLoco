@@ -27,6 +27,7 @@ namespace OpenLoco::Ui::Windows::Construction
         overhead = 1U << 4,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(GhostVisibilityFlags);
+    static_assert(sizeof(GhostVisibilityFlags) == 1);
 
     struct ConstructionState
     {

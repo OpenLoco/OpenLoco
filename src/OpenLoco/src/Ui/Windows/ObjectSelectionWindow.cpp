@@ -211,13 +211,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         Visibility display;
     };
 
-    static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _objectSelection;
-
-    static std::span<ObjectManager::SelectedObjectsFlags> getSelectedObjectFlags()
-    {
-        return std::span<ObjectManager::SelectedObjectsFlags>(*_objectSelection, ObjectManager::getNumInstalledObjects());
-    }
-
     // _tabObjectCounts can be integrated after implementing sub_473A95
     static loco_global<uint16_t[33], 0x00112C181> _tabObjectCounts;
 
@@ -490,7 +483,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x00472BBC
     static ObjectManager::ObjIndexPair getFirstAvailableSelectedObject([[maybe_unused]] Window* self)
     {
-        const auto selectionFlags = getSelectedObjectFlags();
+        const auto selectionFlags = ObjectManager::getSelectionFlags();
         for (auto& entry : _tabObjectList)
         {
             if ((selectionFlags[entry.index] & ObjectManager::SelectedObjectsFlags::selected) != ObjectManager::SelectedObjectsFlags::none)
@@ -635,6 +628,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     static loco_global<uint16_t[kMaxObjectTypes], 0x0112C1C5> _112C1C5;
+    static_assert(sizeof(uint16_t[kMaxObjectTypes]) == 68);
     static loco_global<uint32_t, 0x0112C209> _112C209;
 
     // 0x0047328D
@@ -1115,7 +1109,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             return;
         }
 
-        const auto selectionFlags = getSelectedObjectFlags();
+        const auto selectionFlags = ObjectManager::getSelectionFlags();
         int y = 0;
         for (auto& entry : _tabObjectList)
         {
@@ -1243,7 +1237,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x00473A13
     bool tryCloseWindow()
     {
-        const auto res = ObjectManager::validateObjectSelection(getSelectedObjectFlags());
+        const auto res = ObjectManager::validateObjectSelection(ObjectManager::getSelectionFlags());
         if (!res.has_value())
         {
             // All okay selection is good!
@@ -1548,7 +1542,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         auto type = objIndex.object._header.getType();
 
-        const auto selectionFlags = getSelectedObjectFlags();
+        const auto selectionFlags = ObjectManager::getSelectionFlags();
         if (ObjectManager::getMaxObjects(type) == 1)
         {
             if ((selectionFlags[index] & ObjectManager::SelectedObjectsFlags::selected) == ObjectManager::SelectedObjectsFlags::none)
@@ -1599,8 +1593,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x004739DD
     static void onClose([[maybe_unused]] Window& self)
     {
-        ObjectManager::unloadUnselectedSelectionListObjects(getSelectedObjectFlags());
-        ObjectManager::loadSelectionListObjects(getSelectedObjectFlags());
+        auto selectionFlags = ObjectManager::getSelectionFlags();
+        ObjectManager::unloadUnselectedSelectionListObjects(selectionFlags);
+        ObjectManager::loadSelectionListObjects(selectionFlags);
         ObjectManager::reloadAll();
         ObjectManager::freeTemporaryObject();
 

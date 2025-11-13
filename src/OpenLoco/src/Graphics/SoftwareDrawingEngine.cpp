@@ -18,6 +18,7 @@ using namespace OpenLoco::Diagnostics;
 namespace OpenLoco::Gfx
 {
     using SetPaletteFunc = void (*)(const PaletteEntry* palette, int32_t index, int32_t count);
+    // static_assert(sizeof(SetPaletteFunc) == 4);
 
     // TODO: Move into the renderer.
     // 0x0050B884

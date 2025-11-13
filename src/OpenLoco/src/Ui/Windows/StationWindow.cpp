@@ -45,6 +45,7 @@ using namespace OpenLoco::World;
 namespace OpenLoco::Ui::Windows::Station
 {
     static loco_global<uint8_t[kMapSize], 0x00F00484> _byte_F00484;
+    static_assert(sizeof(uint8_t[kMapSize]) == 147456);
     static loco_global<StationId, 0x00112C786> _lastSelectedStation;
 
     using Vehicles::VehicleHead;
