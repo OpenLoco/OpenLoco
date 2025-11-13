@@ -127,7 +127,7 @@ namespace OpenLoco::S5
         uint16_t numMessages;                               // 0x0013B6 (0x005271CE)
         uint16_t activeMessageIndex;                        // 0x0013B8 (0x005271D0)
         Message messages[S5::Limits::kMaxMessages];         // 0x0013BA (0x005271D2)
-        uint8_t pad_B886[0xB95C - 0xB886];                  // 0x00B886
+        uint8_t pad_B95A[0xB95C - 0xB95A];                  // 0x00B95A
         uint8_t var_B95C;                                   // 0x00B95C (0x00531774)
         uint8_t pad_B95D[0xB960 - 0xB95D];                  // 0x00B95D
         uint8_t var_B960;                                   // 0x00B960 (0x00531778)
