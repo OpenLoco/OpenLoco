@@ -378,7 +378,7 @@ namespace OpenLoco
     // year : ax
     // dx : dx
     // largeTile : bl
-    // unk2 : 525D24
+    // unk1 : 525D24
     // targetHeight : esi
     // return : ebp
     static sfl::static_vector<uint8_t, ObjectManager::getMaxObjects(ObjectType::building)> sub_42CEBF(uint16_t year, uint16_t dx, bool largeTile, uint32_t unk1, uint16_t targetHeight)
