@@ -305,9 +305,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
     static constexpr std::array<uint16_t, 6> kScrollRowHeight = { { 22, 22, 22, 22, 42, 30 } };
 
-    // Array of types if 0xFF then no type, flag (1<<7) as well
-    static loco_global<uint8_t[widxToTrackTypeTab(widx::tab_track_type_7) + 1], 0x011364F0> _trackTypesForTab;
-
     static Ui::TextInput::InputSession inputSession;
 
     static void setDisabledTransportTabs(Ui::Window* window);

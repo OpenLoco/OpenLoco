@@ -536,7 +536,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         Common::setGhostVisibilityFlag(GhostVisibilityFlags::station);
         World::setMapSelectionFlags(World::MapSelectionFlags::catchmentArea);
-        cState->constructingStationId = StationManager::getLastConstructedAdjoiningStationId();
+        cState.constructingStationId = StationManager::getLastConstructedAdjoiningStationId();
 
         auto* station = StationManager::getLastConstructedAdjoiningStationId() != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(StationManager::getLastConstructedAdjoiningStationId())) : nullptr;
         setCatchmentDisplay(station, CatchmentFlags::flag_0);
