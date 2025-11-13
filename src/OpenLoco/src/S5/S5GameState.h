@@ -10,6 +10,12 @@
 #include "S5Station.h"
 #include "S5Town.h"
 #include "S5Wave.h"
+#include <memory>
+
+namespace OpenLoco
+{
+    struct GameState;
+}
 
 namespace OpenLoco::S5
 {
@@ -177,4 +183,8 @@ namespace OpenLoco::S5
     };
     static_assert(sizeof(GameStateType2) == 0x49EA24);
 #pragma pack(pop)
+
+    std::unique_ptr<S5::GameState> exportGameState(const OpenLoco::GameState& src);
+    std::unique_ptr<S5::GameState> importGameStateType2(const S5::GameStateType2& src);
+    std::unique_ptr<OpenLoco::GameState> importGameState(const S5::GameState& src);
 }
