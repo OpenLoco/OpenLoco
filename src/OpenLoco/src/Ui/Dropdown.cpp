@@ -28,61 +28,85 @@ namespace OpenLoco::Ui::Dropdown
     static constexpr int kBytesPerItem = 8;
 
     // 0x00504619
-    static constexpr Colour kDropdownColourTable[31] = {
-        Colour::grey,              // 0x01
-        Colour::grey,              // 0x01
-        Colour::white,             // 0x02
-        Colour::mutedPurple,       // 0x04
-        Colour::mutedPurple,       // 0x04
-        Colour::purple,            // 0x05
-        Colour::blue,              // 0x07
-        Colour::blue,              // 0x07
-        Colour::mutedDarkTeal,     // 0x08
-        Colour::mutedDarkTeal,     // 0x08
-        Colour::green,             // 0x0D
-        Colour::mutedSeaGreen,     // 0x0B
-        Colour::mutedGrassGreen,   // 0x0C
-        Colour::green,             // 0x0D
-        Colour::mutedAvocadoGreen, // 0x0E
-        Colour::mutedOliveGreen,   // 0x0F
-        Colour::yellow,            // 0x10
-        Colour::yellow,            // 0x10
-        Colour::orange,            // 0x12
-        Colour::amber,             // 0x13
-        Colour::orange,            // 0x12
-        Colour::mutedDarkYellow,   // 0x15
-        Colour::mutedDarkYellow,   // 0x15
-        Colour::brown,             // 0x17
-        Colour::mutedOrange,       // 0x18
-        Colour::mutedDarkRed,      // 0x19
-        Colour::red,               // 0x1B
-        Colour::red,               // 0x1B
-        Colour::pink,              // 0x1D
-        Colour::pink,              // 0x1D
-        Colour::mutedRed           // 0x1E
-    };
+    // Translucent colour to base colour mapping table
+    // Maps each colour index to its base colour when handling translucent colours
+    static constexpr std::array<Colour, 31> kDropdownColourTable = { {
+        Colour::grey,              // black -> grey
+        Colour::grey,              // grey -> grey
+        Colour::white,             // white -> white
+        Colour::mutedPurple,       // mutedDarkPurple -> mutedPurple
+        Colour::mutedPurple,       // mutedPurple -> mutedPurple
+        Colour::purple,            // purple -> purple
+        Colour::blue,              // darkBlue -> blue
+        Colour::blue,              // blue -> blue
+        Colour::mutedDarkTeal,     // mutedDarkTeal -> mutedDarkTeal
+        Colour::mutedDarkTeal,     // mutedTeal -> mutedDarkTeal
+        Colour::green,             // darkGreen -> green
+        Colour::mutedSeaGreen,     // mutedSeaGreen -> mutedSeaGreen
+        Colour::mutedGrassGreen,   // mutedGrassGreen -> mutedGrassGreen
+        Colour::green,             // green -> green
+        Colour::mutedAvocadoGreen, // mutedAvocadoGreen -> mutedAvocadoGreen
+        Colour::mutedOliveGreen,   // mutedOliveGreen -> mutedOliveGreen
+        Colour::yellow,            // yellow -> yellow
+        Colour::yellow,            // darkYellow -> yellow
+        Colour::orange,            // orange -> orange
+        Colour::amber,             // amber -> amber
+        Colour::orange,            // darkOrange -> orange
+        Colour::mutedDarkYellow,   // mutedDarkYellow -> mutedDarkYellow
+        Colour::mutedDarkYellow,   // mutedYellow -> mutedDarkYellow
+        Colour::brown,             // brown -> brown
+        Colour::mutedOrange,       // mutedOrange -> mutedOrange
+        Colour::mutedDarkRed,      // mutedDarkRed -> mutedDarkRed
+        Colour::red,               // darkRed -> red
+        Colour::red,               // red -> red
+        Colour::pink,              // darkPink -> pink
+        Colour::pink,              // pink -> pink
+        Colour::mutedRed,          // mutedRed -> mutedRed
+    } };
 
     // 0x005046FA
-    static constexpr std::uint8_t kAppropriateImageDropdownItemsPerRow[33] = {
-        1, 1, 1, 1, 2, 2, 3, 3, 4, 3, 5, 4, 4, 5, 5, 5, 4, 5, 6, 5, 5, 7, 4, 5, 6, 5, 6, 6, 6, 6, 6, 8, 8
-    };
+    // Optimal items per row for image dropdown layouts, indexed by total item count
+    // Determines grid layout to best fit items in a dropdown (balances width vs height)
+    static constexpr std::array<uint8_t, 33> kAppropriateImageDropdownItemsPerRow = { {
+        // clang-format off
+        1, 1, 1, 1,    // 0-3 items
+        2, 2,          // 4-5 items
+        3, 3,          // 6-7 items
+        4,             // 8 items
+        3,             // 9 items
+        5,             // 10 items
+        4, 4,          // 11-12 items
+        5, 5, 5,       // 13-15 items
+        4,             // 16 items
+        5,             // 17 items
+        6,             // 18 items
+        5, 5,          // 19-20 items
+        7,             // 21 items
+        4,             // 22 items
+        5,             // 23 items
+        6,             // 24 items
+        5,             // 25 items
+        6, 6, 6, 6, 6, // 26-30 items
+        8, 8,          // 31-32 items
+        // clang-format on
+    } };
 
-    static char _byte_112CC04[512];
-    static uint8_t _windowDropdownOnpaintCellX;
-    static uint8_t _windowDropdownOnpaintCellY;
-    static uint16_t _dropdownItemCount;
-    static uint32_t _dropdownDisabledItems;
-    static uint32_t _dropdownItemHeight;
-    static uint32_t _dropdownItemWidth;
-    static uint32_t _dropdownColumnCount;
-    static uint32_t _dropdownRowCount;
-    static Flags _dropdownFlags;
-    static int16_t _dropdownHighlightedIndex;
-    static uint32_t _dropdownSelection;
-    static StringId _dropdownItemFormats[40];
-    static std::byte _dropdownItemArgs[40][kBytesPerItem];
-    static std::byte _dropdownItemArgs2[40][kBytesPerItem];
-    static uint8_t _menuOptions[40];
+    static char _byte_112CC04[512];                         // 0x0112CC04
+    static uint8_t _windowDropdownOnpaintCellX;             // 0x01136F94
+    static uint8_t _windowDropdownOnpaintCellY;             // 0x01136F96
+    static uint16_t _dropdownItemCount;                     // 0x0113D84C
+    static uint32_t _dropdownDisabledItems;                 // 0x0113DC60
+    static uint32_t _dropdownItemHeight;                    // 0x0113DC68
+    static uint32_t _dropdownItemWidth;                     // 0x0113DC6C
+    static uint32_t _dropdownColumnCount;                   // 0x0113DC70
+    static uint32_t _dropdownRowCount;                      // 0x0113DC74
+    static Flags _dropdownFlags;                            // 0x0113DC78
+    static int16_t _dropdownHighlightedIndex;               // 0x0113D84E
+    static uint32_t _dropdownSelection;                     // 0x0113DC64
+    static StringId _dropdownItemFormats[40];               // 0x0113D850
+    static std::byte _dropdownItemArgs[40][kBytesPerItem];  // 0x0113D8A0
+    static std::byte _dropdownItemArgs2[40][kBytesPerItem]; // 0x0113D9E0
+    static uint8_t _menuOptions[40];                        // 0x0113DB20
 
     static std::vector<std::optional<DropdownItemId>> _dropdownIds;
     static bool _dropdownUseDefault;
