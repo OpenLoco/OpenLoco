@@ -1662,163 +1662,163 @@ strings:
 
   1625: "{UINT16 RAW}"
   1626: "{COLOUR WINDOW_2}Počáteční rok:"
-  1627: Only generate random landscape when game starts
-  1628: "{SMALLFONT}{COLOUR BLACK}Generate random landscape each time a new game is started"
-  1629: Generate new landscape
-  1630: "{SMALLFONT}{COLOUR BLACK}Generate a new random landscape (the current landscape will be lost)"
+  1627: Generovat jen náhodný terén při startu hry
+  1628: "{SMALLFONT}{COLOUR BLACK}Generovat pouze náhodný terén při každém startu hry"
+  1629: Generovat nový terén
+  1630: "{SMALLFONT}{COLOUR BLACK}Generovat nový náhodný terén (současný terén bude ztracen)"
   1631: OK
-  1632: Generate New Landscape
-  1633: Random Landscape Option
-  1634: Are you sure you want to generate a new landscape, losing your current one ?
-  1635: Are you sure you want to generate a new landscape at the start of each game ?{NEWLINE}Choosing this option will mean you lose your current landscape
-  1636: "{COLOUR WINDOW_2}Sea level:"
-  1637: +{INT16} units
-  1638: "{COLOUR WINDOW_2}No. of forests:"
+  1632: Generovat nový terén
+  1633: Možnosti náhodného terénu
+  1634: Opravdu generovat nový terén a ztratit tak současný ?
+  1635: Opravdu chcete generovat nový terén při každém startu nové hry ?{NEWLINE}Zvolením této možnosti přijdete o současný terén
+  1636: "{COLOUR WINDOW_2}Výška mořské hladiny:"
+  1637: +{INT16} jednotek
+  1638: "{COLOUR WINDOW_2}Poč. lesů:"
   1639: "{INT16}"
-  1640: "{COLOUR WINDOW_2}Minimum forest radius:"
-  1641: "{INT16} blocks"
-  1642: "{COLOUR WINDOW_2}Maximum forest radius:"
-  1643: "{INT16} blocks"
-  1644: "{COLOUR WINDOW_2}Minimum forest density:"
+  1640: "{COLOUR WINDOW_2}Min. poloměr lesu:"
+  1641: "{INT16} bloků"
+  1642: "{COLOUR WINDOW_2}Max. poloměr lesu:"
+  1643: "{INT16} bloků"
+  1644: "{COLOUR WINDOW_2}Min. hustota lesu:"
   1645: "{INT16}%"
-  1646: "{COLOUR WINDOW_2}Maximum forest density:"
+  1646: "{COLOUR WINDOW_2}Max. hustota lesu:"
   1647: "{INT16}%"
-  1648: "{COLOUR WINDOW_2}No. of random individual trees:"
+  1648: "{COLOUR WINDOW_2}Poč. náhodných samostatných stromů:"
   1649: "{INT16}"
-  1650: "{COLOUR WINDOW_2}Minimum altitude for trees:"
+  1650: "{COLOUR WINDOW_2}Max. výška stromů:"
   1651: "{HEIGHT}"
-  1652: "{COLOUR WINDOW_2}Maximum altitude for trees:"
+  1652: "{COLOUR WINDOW_2}Max. výška stromů:"
   1653: "{HEIGHT}"
-  1654: "{COLOUR WINDOW_2}Minimum land height:"
-  1655: "{INT16} units"
-  1656: "{COLOUR WINDOW_2}Topography style:"
-  1657: Flat Land
-  1658: Small Hills
-  1659: Mountains
-  1660: Half Mountains, Half Hills
-  1661: Half Mountains, Half Flat
-  1662: "{COLOUR WINDOW_2}Hill density:"
+  1654: "{COLOUR WINDOW_2}Min. výška terénu:"
+  1655: "{INT16} jednotek"
+  1656: "{COLOUR WINDOW_2}Styl topografie:"
+  1657: Plochá krajina
+  1658: Malé kopce
+  1659: Hory
+  1660: Polovina hory, polovina kopce
+  1661: Polovina hory, polovina plochá
+  1662: "{COLOUR WINDOW_2}Hustota kopců:"
   1663: "{INT16}%"
-  1664: "{COLOUR WINDOW_2}No. of towns:"
+  1664: "{COLOUR WINDOW_2}Poč. měst:"
   1665: "{INT16}"
-  1666: "{COLOUR WINDOW_2}Maximum town size:"
-  1667: Low
-  1668: Medium
-  1669: High
-  1670: "{COLOUR WINDOW_2}No. of industries:"
-  1671: At least one town needs to be built
-  1672: Can't advance to next editor stage...
-  1673: Can't save scenario yet...
-  1674: "{SMALLFONT}{COLOUR BLACK}Scenario options"
-  1675: "{SMALLFONT}{COLOUR BLACK}Scenario challenge"
-  1676: "{SMALLFONT}{COLOUR BLACK}Company options"
-  1677: "{SMALLFONT}{COLOUR BLACK}Financial options"
-  1678: Scenario Options
-  1679: Scenario Challenge
-  1680: Company Options
-  1681: Financial Options
-  1682: "{COLOUR WINDOW_2}Maximum competing companies:"
+  1666: "{COLOUR WINDOW_2}Max. velikost měst:"
+  1667: Nízká
+  1668: Střední
+  1669: Vysoká
+  1670: "{COLOUR WINDOW_2}Poč. průmysl. obj.:"
+  1671: Alespoň jedno město musí být postaveno
+  1672: Nelze postoupit do další části editoru...
+  1673: Ještě nelze uložit scénář...
+  1674: "{SMALLFONT}{COLOUR BLACK}Možnosti scénáře"
+  1675: "{SMALLFONT}{COLOUR BLACK}Výzva scénáře"
+  1676: "{SMALLFONT}{COLOUR BLACK}Možnosti společnosti"
+  1677: "{SMALLFONT}{COLOUR BLACK}Možnosti financí"
+  1678: Možnosti scénáře
+  1679: Výzva scénáře
+  1680: Možnosti společnosti
+  1681: Možnosti financí
+  1682: "{COLOUR WINDOW_2}Max. soupeřících společností:"
   1683: "{INT16}"
-  1684: "{COLOUR WINDOW_2}Delay before competing companies start:"
-  1685: "{INT16} months"
-  1686: "{COLOUR WINDOW_2}Selection of competing companies"
-  1687: "{COLOUR WINDOW_2}Preferred Intelligence:"
-  1688: "{COLOUR WINDOW_2}Preferred Aggressiveness:"
-  1689: "{COLOUR WINDOW_2}Preferred Competitiveness:"
-  1690: Any
-  1691: Low
-  1692: Medium
-  1693: High
-  1694: "{COLOUR WINDOW_2}Starting loan:"
+  1684: "{COLOUR WINDOW_2}Odklad startu společností:"
+  1685: "{INT16} měsíců"
+  1686: "{COLOUR WINDOW_2}Výběr soupeřících společností"
+  1687: "{COLOUR WINDOW_2}Upřednostňovaná inteligence:"
+  1688: "{COLOUR WINDOW_2}Upřednostňovaná agresivita:"
+  1689: "{COLOUR WINDOW_2}Upřednostňovaná soutěživost:"
+  1690: Žádná
+  1691: Nízká
+  1692: Střední
+  1693: Vysoká
+  1694: "{COLOUR WINDOW_2}Počáteční půjčka:"
   1695: "{CURRENCY32}"
-  1696: "{COLOUR WINDOW_2}Maximum loan size:"
+  1696: "{COLOUR WINDOW_2}Maximální půjčka:"
   1697: "{CURRENCY32}"
-  1698: "{COLOUR WINDOW_2}Loan interest rate:"
+  1698: "{COLOUR WINDOW_2}Úrok z půjčky:"
   1699: "{INT16}%"
-  1700: Change...
-  1701: "{COLOUR WINDOW_2}Scenario Name: {COLOUR BLACK}{STRINGID}"
-  1702: "{COLOUR WINDOW_2}Scenario Group:"
-  1703: "{COLOUR WINDOW_2}Scenario Details:"
-  1704: Scenario Name
-  1705: Enter name for scenario:-
-  1706: Scenario Details
-  1707: Enter description of this scenario:-
-  1708: No details yet
-  1709: Unnamed
-  1710: Landscape save failed!
-  1711: Scenario save failed!
-  1712: Transferring data to other player...
-  1713: Receiving data from other player...
-  1714: Please wait - Game is being saved by the other player...
-  1715: Please wait - Game is being loaded by the other player...
-  1716: Send Message
-  1717: Send Message
-  1718: "Enter message to be sent to {STRINGID}:"
+  1700: Změnit...
+  1701: "{COLOUR WINDOW_2}Název scénáře: {COLOUR BLACK}{STRINGID}"
+  1702: "{COLOUR WINDOW_2}Skupina scénáře:"
+  1703: "{COLOUR WINDOW_2}Detail scénáře:"
+  1704: Název scénáře
+  1705: Zadejte název scénáře:-
+  1706: Detaily scénáře
+  1707: Zadejte popis pro tento scénář:-
+  1708: Zatím bez detailu
+  1709: Beze jména
+  1710: Uložení krajiny selhalo!
+  1711: Uložení scénáře selhalo!
+  1712: Přenáším data druhému hráči...
+  1713: Příjmám data druhého hráče...
+  1714: Čekejte prosím - Druhý hráč ukládá hru...
+  1715: Čekejte prosím - Druhý hráč načítá hru...
+  1716: Poslat zprávu
+  1717: Poslat zprávu
+  1718: "Zadejte zprávu k poslání {STRINGID}:"
   1719: ""
-  1720: "{COLOUR WINDOW_2}Connection time-out:"
-  1721: "{INT16} secs."
-  1722: Two-player data connection failed!
-  1723: "{COLOUR WINDOW_2} Designed in: {COLOUR BLACK}{UINT16 RAW}"
-  1724: "{COLOUR WINDOW_2} Obsolete from: {COLOUR BLACK}{UINT16 RAW}"
-  1725: "{COLOUR WINDOW_2} Power: {COLOUR BLACK}{POWER}"
-  1726: "{COLOUR WINDOW_2} Weight: {COLOUR BLACK}{INT16}t"
-  1727: "{COLOUR WINDOW_2} Max. Speed: {COLOUR BLACK}{VELOCITY}"
-  1728: "{COLOUR WINDOW_2} Capacity: {COLOUR BLACK}{STRINGID}"
-  1729: Establishing connection...
-  1730: Everywhere
-  1731: Nowhere
-  1732: Far from water
-  1733: Near water
-  1734: On mountains
-  1735: Far from mountains
-  1736: In small random areas
-  1737: In large random areas
-  1738: Around cliffs
-  1739: Create hills right up to edge of map
-  1740: "{SMALLFONT}{COLOUR BLACK}Scenario Editor"
+  1720: "{COLOUR WINDOW_2}Spojení vypršelo:"
+  1721: "{INT16} sek."
+  1722: Datové spojení pro dva hráče selhalo!
+  1723: "{COLOUR WINDOW_2} Navrhnuto: {COLOUR BLACK}{UINT16 RAW}"
+  1724: "{COLOUR WINDOW_2} Zastaralé od: {COLOUR BLACK}{UINT16 RAW}"
+  1725: "{COLOUR WINDOW_2} Výkon: {COLOUR BLACK}{POWER}"
+  1726: "{COLOUR WINDOW_2} Váha: {COLOUR BLACK}{INT16}t"
+  1727: "{COLOUR WINDOW_2} Max. rychlost: {COLOUR BLACK}{VELOCITY}"
+  1728: "{COLOUR WINDOW_2} Kapacita: {COLOUR BLACK}{STRINGID}"
+  1729: Navazování spojení...
+  1730: Všude
+  1731: Nikde
+  1732: Daleko od vody
+  1733: Poblíž vody
+  1734: Na horách
+  1735: Daleko od hor
+  1736: V malých náhodných plochách
+  1737: Ve velkých náhodných plochách
+  1738: Okolo útesů
+  1739: Vytvořit kopce až k okraji mapy
+  1740: "{SMALLFONT}{COLOUR BLACK}Editor scénáře"
   1741: "{STRINGID} Transport"
-  1742: Map
-  1743: "{NEWLINE 1 2}{SPRITE}{NEWLINE 33 8}Companies List"
+  1742: Mapa
+  1743: "{NEWLINE 1 2}{SPRITE}{NEWLINE 33 8}Seznam společností"
   1744: "{NEWLINE 0 8}{STRINGID}{NEWLINE 25 2}{SPRITE}{NEWLINE 51 2}{STRINGID}{NEWLINE 51 12}{COLOUR WINDOW_1}{INT16_1DP}% “{STRINGID}”"
-  1745: Companies
-  1746: Company Performance Indexes
-  1747: Units of Cargo Delivered per Month
-  1748: Company Values
-  1749: Cargo Payment Rates
-  1750: "{SMALLFONT}{COLOUR BLACK}Compare companies"
-  1751: "{SMALLFONT}{COLOUR BLACK}Company performance index graphs"
-  1752: "{SMALLFONT}{COLOUR BLACK}Graphs of cargo delivered by each company"
-  1753: "{SMALLFONT}{COLOUR BLACK}Company value graphs"
-  1754: "{SMALLFONT}{COLOUR BLACK}Cargo payment rates"
-  1755: "{SMALLFONT}{COLOUR BLACK}Sort list by company name"
-  1756: "{SMALLFONT}{COLOUR BLACK}Sort list by company status"
-  1757: "{SMALLFONT}{COLOUR BLACK}Sort list by performance index"
-  1758: "{SMALLFONT}{COLOUR BLACK}Sort list by company value"
-  1759: "{COLOUR BLACK}Company"
-  1760: "{COLOUR BLACK}Company ▼"
-  1761: "{COLOUR BLACK}Status"
-  1762: "{COLOUR BLACK}Status ▼"
-  1763: "{COLOUR BLACK}Performance Index"
-  1764: "{COLOUR BLACK}Performance Index ▼"
-  1765: "{COLOUR BLACK}Company Value"
-  1766: "{COLOUR BLACK}Company Value ▼"
+  1745: Společnosti
+  1746: Index výkonnosti společností
+  1747: Jednotek nákladu dodaných za měsíc
+  1748: Hodnoty společností
+  1749: Platby za náklad
+  1750: "{SMALLFONT}{COLOUR BLACK}Porovnat společnosti"
+  1751: "{SMALLFONT}{COLOUR BLACK}Grafy výkonnosti společností"
+  1752: "{SMALLFONT}{COLOUR BLACK}Grafy nákladu doručeného každou společností"
+  1753: "{SMALLFONT}{COLOUR BLACK}Grafy hodnoty společnosti"
+  1754: "{SMALLFONT}{COLOUR BLACK}Grafy plateb na náklad"
+  1755: "{SMALLFONT}{COLOUR BLACK}Seřadit podle názvu společnosti"
+  1756: "{SMALLFONT}{COLOUR BLACK}Seřadit podle stavu společnosti"
+  1757: "{SMALLFONT}{COLOUR BLACK}Seřadit podle výkonnosti"
+  1758: "{SMALLFONT}{COLOUR BLACK}Seřadit podle hodnoty společnosti"
+  1759: "{COLOUR BLACK}Společnost"
+  1760: "{COLOUR BLACK}Společnost ▼"
+  1761: "{COLOUR BLACK}Stav"
+  1762: "{COLOUR BLACK}Stav ▼"
+  1763: "{COLOUR BLACK}Index výkonnosti"
+  1764: "{COLOUR BLACK}Index výkonnosti ▼"
+  1765: "{COLOUR BLACK}Hodonota společnosti"
+  1766: "{COLOUR BLACK}Hodonota společnosti ▼"
   1767: "{NEWLINE 1 2}{SPRITE}{NEWLINE 27 8}{STRINGID}"
   1768: "{NEWLINE 0 3}{INT16_1DP}%        {NEWLINE 0 13}“{STRINGID}”"
   1769: "{NEWLINE 0 3}{INT16_1DP}%{SPRITE 2325}{NEWLINE 0 13}“{STRINGID}”"
   1770: "{NEWLINE 0 3}{INT16_1DP}%{SPRITE 2324}{NEWLINE 0 13}“{STRINGID}”"
   1771: "{NEWLINE 0 8}{CURRENCY48}"
-  1772: Platelayer
-  1773: Engineer
-  1774: Traffic Manager
-  1775: Transport Coordinator
-  1776: Route Supervisor
-  1777: Director
-  1778: Chief Executive
-  1779: Chairman
-  1780: President
-  1781: Tycoon
-  1782: "{INT16} company"
-  1783: "{INT16} companies"
+  1772: Železniční dělník
+  1773: Strojvůdce
+  1774: Manažer dopravy
+  1775: Koordinátor přepravy
+  1776: Supervizor trasy
+  1777: Ředitel
+  1778: Výkonný ředitel
+  1779: Předseda
+  1780: Prezident
+  1781: Magnát
+  1782: "{INT16} společnost"
+  1783: "{INT16} společnosti"
   1784: "{RAWDATE MY SHORT}"
   1785: "{INT16_1DP}%"
   1786: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
@@ -1829,92 +1829,92 @@ strings:
   1791: "{SMALLFONT}{COLOUR BLACK}{CURRENCY48}"
   1792: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
   1793: "{SMALLFONT}{COLOUR WHITE}{STRINGID}"
-  1794: Airport type is not suitable for this aircraft
+  1794: Nevhodný typ letiětě pro toto letadlo
   1795: "{COLOUR BLACK}£"
-  1796: "{INT16} days"
+  1796: "{INT16} dní"
   1797: "{CURRENCY32}"
-  1798: "{SMALLFONT}{COLOUR BLACK}Payment for transporting {INT16} units of cargo a distance of {INT16} blocks"
-  1799: "{SMALLFONT}{COLOUR BLACK}Transit time"
-  1800: "*  Paused  *"
-  1801: Town authority won't allow another airport to be constructed here
-  1802: Towns
-  1803: Industries
-  1804: Roads
-  1805: Railroads
-  1806: Stations
-  1807: Vegetation
-  1808: Aircraft Routes
-  1809: Ship Routes
+  1798: "{SMALLFONT}{COLOUR BLACK}Výplata za přepravu {INT16} jednotek nákladu do vzdálenosti {INT16} bloků"
+  1799: "{SMALLFONT}{COLOUR BLACK}Doba přepravy"
+  1800: "*  Pauza  *"
+  1801: Místní správa zde nedovolí stabu dalšího letiště
+  1802: Města
+  1803: Průmysl
+  1804: Silnice
+  1805: Cesty
+  1806: Stanice
+  1807: Zeleň
+  1808: Letecké cesty
+  1809: Lodní cesta
   1810: ""
-  1811: Building {STRINGID} near {STRINGID}
-  1812: Building {STRINGID} near {STRINGID}
-  1813: Building {STRINGID} near {STRINGID}
-  1814: Checking services near {STRINGID}
-  1815: Surveying landscape near {STRINGID}
-  1816: "{COLOUR RED}Bankrupt!"
-  1817: "{SMALLFONT}{COLOUR BLACK}Pause game"
-  1818: "{SMALLFONT}{COLOUR BLACK}Normal speed"
-  1819: "{SMALLFONT}{COLOUR BLACK}Fast forward"
-  1820: "{SMALLFONT}{COLOUR BLACK}Extra fast forward"
-  1821: "{COLOUR BLACK}Randomly Generated Landscape"
+  1811: Staví {STRINGID} poblíž {STRINGID}
+  1812: Staví {STRINGID} poblíž {STRINGID}
+  1813: Staví {STRINGID} poblíž {STRINGID}
+  1814: Zkoumá služby poblíž {STRINGID}
+  1815: Zkoumá terén poblíž {STRINGID}
+  1816: "{COLOUR RED}Bankrot!"
+  1817: "{SMALLFONT}{COLOUR BLACK}Pauza hry"
+  1818: "{SMALLFONT}{COLOUR BLACK}Normální rychlost"
+  1819: "{SMALLFONT}{COLOUR BLACK}Vysoká rychlost"
+  1820: "{SMALLFONT}{COLOUR BLACK}Ještě vyšší rychlost"
+  1821: "{COLOUR BLACK}Náhodně generovaná krajina"
   1822: "{COLOUR WINDOW_2}Start date: {COLOUR BLACK}{UINT16 RAW}"
-  1823: "{COLOUR WINDOW_2}Competing companies: {COLOUR BLACK}None"
-  1824: "{COLOUR WINDOW_2}Competing companies: {COLOUR BLACK}Up to {INT16}"
+  1823: "{COLOUR WINDOW_2}Konkurenční společnosti: {COLOUR BLACK}Žádné"
+  1824: "{COLOUR WINDOW_2}Konkurenční společnosti: {COLOUR BLACK}Až {INT16}"
   1825: "{COLOUR BLACK}{MOVE_X 10}(not starting for {INT16} month)"
   1826: "{COLOUR BLACK}{MOVE_X 10}(not starting for {INT16} months)"
-  1827: "{COLOUR WINDOW_2}Sale value of vehicle: {COLOUR BLACK}{CURRENCY32}"
-  1828: "{COLOUR WINDOW_2}Last income: {COLOUR BLACK}N/A"
-  1829: "{COLOUR WINDOW_2}Last income on: {COLOUR BLACK}{DATE DMY}"
+  1827: "{COLOUR WINDOW_2}Tržní cena vozidla: {COLOUR BLACK}{CURRENCY32}"
+  1828: "{COLOUR WINDOW_2}Poslední příjem: {COLOUR BLACK}N/A"
+  1829: "{COLOUR WINDOW_2}Poslední příjem dne: {COLOUR BLACK}{DATE DMY}"
   1830: "{COLOUR BLACK}{STRINGID} transported {INT16} blocks in {INT16} days = {CURRENCY32}"
   1831: "{COLOUR WINDOW_2} Earliest construction year: {COLOUR BLACK}{UINT16 RAW}"
   1832: "{COLOUR WINDOW_2} Latest construction year: {COLOUR BLACK}{UINT16 RAW}"
-  1833: "{COLOUR WINDOW_2}Local authority's ratings of transport companies:"
-  1834: Appalling
-  1835: Poor
-  1836: Average
-  1837: Good
-  1838: Excellent
+  1833: "{COLOUR WINDOW_2}Hodonocení přepravních společností místní samosprávou:"
+  1834: Mizerné
+  1835: Slabé
+  1836: Průměrné
+  1837: Dobré
+  1838: Vynikající
   1839: "{COLOUR WINDOW_2}{STRINGID}: {COLOUR BLACK}{INT16}% ({STRINGID})"
-  1840: Achieve a company value of {CURRENCY32}{STRINGID}{STRINGID}
-  1841: Achieve a monthly profit from vehicles of {CURRENCY32}{STRINGID}{STRINGID}
-  1842: Achieve a performance index of {INT16_1DP}% (“{STRINGID}”){STRINGID}{STRINGID}
-  1843: Deliver {STRINGID}{STRINGID}{STRINGID}
-  1844: " and be the top performing company"
-  1845: " and be one of the top 3 performing companies"
-  1846: " within {INT16} years"
-  1847: " by the end of {UINT16 RAW}"
-  1848: ...and be the top company
-  1849: ...and be within the top 3 companies
-  1850: "...with a time limit of:"
-  1851: "{COLOUR WINDOW_2}Challenge:"
+  1840: Dosáhnout hodnoty společnosti {CURRENCY32}{STRINGID}{STRINGID}
+  1841: Dosáhnout měsíčního zisku z vozidel {CURRENCY32}{STRINGID}{STRINGID}
+  1842: Dosáhnout výkonnostního indexu {INT16_1DP}% (“{STRINGID}”){STRINGID}{STRINGID}
+  1843: Doručit {STRINGID}{STRINGID}{STRINGID}
+  1844: " a být nejvýkonnější spoječností"
+  1845: " a být jednou ze tří nejvýkonnějších společností"
+  1846: " během {INT16} let"
+  1847: " do konce {UINT16 RAW}"
+  1848: ...a stát se nejlepší společností
+  1849: ...a být mezi třemi nejlepšími společnostmi
+  1850: "...s časovým omezením:"
+  1851: "{COLOUR WINDOW_2}Výzva:"
   1852: "{COLOUR BLACK}  {STRINGID}"
-  1853: Achieve a certain company value
-  1854: Achieve a certain monthly profit from vehicles
-  1855: Achieve a certain performance index
-  1856: Deliver a certain amount of cargo
+  1853: Dosáhnout dané hodnoty společnosti
+  1854: Dosáhnout měsíčního zisku z vozidel
+  1855: Dosáhnout indexu výkonnosti
+  1856: Doručit dané množství zboží
   1857: "{CURRENCY32}"
   1858: "{INT16_1DP}%"
   1859: "{INT32}"
   1860: "{INT16} years"
-  1861: "{SMALLFONT}(Completed by {STRINGID} in {INT16} years {INT16} months)"
-  1862: "{COLOUR WINDOW_2}Success!{NEWLINE}{COLOUR BLACK}  You completed the challenge in {INT16} years {INT16} months"
-  1863: "{COLOUR WINDOW_2}Failed!{NEWLINE}{COLOUR BLACK}  You failed to complete the challenge"
-  1864: "{COLOUR WINDOW_2}You have been beaten by the other player!{NEWLINE}{COLOUR BLACK}  Challenge completed by {STRINGID} in {INT16} years {INT16} months"
-  1865: "{COLOUR WINDOW_2}Progress towards completing challenge: {COLOUR BLACK}{INT16}%"
-  1866: "{COLOUR WINDOW_2}Time remaining: {COLOUR BLACK}{INT16} years {INT16} months"
-  1867: "{COLOUR WINDOW_2}Cargo delivered:"
-  1868: "{COLOUR BLACK}None"
+  1861: "{SMALLFONT}(Dokončil {STRINGID} za {INT16} let {INT16} měsíců)"
+  1862: "{COLOUR WINDOW_2}Uspěch!{NEWLINE}{COLOUR BLACK}  Splnili jste úkol za {INT16} let {INT16} měsíců"
+  1863: "{COLOUR WINDOW_2}Neúspěch!{NEWLINE}{COLOUR BLACK}  Nesplnili jste úkol"
+  1864: "{COLOUR WINDOW_2}Porazil vás druhý hráč!{NEWLINE}{COLOUR BLACK}  Úkol splnil {STRINGID} za {INT16} let {INT16} měsíců"
+  1865: "{COLOUR WINDOW_2}Úkol splněn na: {COLOUR BLACK}{INT16}%"
+  1866: "{COLOUR WINDOW_2}Zbývající čas: {COLOUR BLACK}{INT16} let {INT16} měsíců"
+  1867: "{COLOUR WINDOW_2}Doručený náklad:"
+  1868: "{COLOUR BLACK}Nic"
 
-  1869: "{OUTLINE}{COLOUR WINDOW_2}Exit{NEWLINE}Game"
+  1869: "{OUTLINE}{COLOUR WINDOW_2}Ukončit{NEWLINE}hru"
 
-  1870: Company is bankrupt!
-  1871: Allow industries to close down during game
-  1872: Allow new industries to start up during game
-  1873: Share additional companies/owner faces
-  1874: "{SMALLFONT}{COLOUR BLACK}Select this option to send any customized companies/owner face data files to the other computer during the connection process"
-  1875: "{COLOUR WINDOW_2}Forbid competing companies from using"
-  1876: "{COLOUR WINDOW_2}Forbid player companies from using"
-  1877: "{NEWLINE}Stops at: {STRINGID}"
+  1870: Společnost zbankrotovala!
+  1871: Povolit uzavření průmyslu během hry
+  1872: Povolit otevření průmyslu během hry
+  1873: Sdílet další společnosti/tváře majitelů
+  1874: "{SMALLFONT}{COLOUR BLACK}Vyberte tuto možnost pro sdílení dalších přidaných tváří společností/majitelů během spojování s druhým počítačem"
+  1875: "{COLOUR WINDOW_2}Zakázat společnostem využít"
+  1876: "{COLOUR WINDOW_2}Zakazát hráčům využit"
+  1877: "{NEWLINE}Zastavuje: {STRINGID}"
   1878: ", {STRINGID}"
 
   1879: "Tutorial 1: Starting a bus service within a town"
@@ -1965,26 +1965,26 @@ strings:
   1918: "{SMALLFONT}{COLOUR BLACK}The signals divide the track into 3 separate 'block sections' and only one train will be allowed to enter each section at once..."
 
   # Options/Misc
-  1919: Use preferred owner name when starting a new game
-  1920: "{SMALLFONT}{COLOUR BLACK}Select this option to use the same company owner name every time you start a new game"
-  1921: "{COLOUR WINDOW_2}Preferred owner name: {COLOUR BLACK}{STRINGID}"
-  1922: Preferred Owner Name
-  1923: "Enter the preferred owner name:"
+  1919: Použít Upřednostňovaný název společnosti
+  1920: "{SMALLFONT}{COLOUR BLACK}Vyberte tuto možnost pro použití stejného názvu společnosti v každé nové hře"
+  1921: "{COLOUR WINDOW_2}Upřednostňované jméno vlastníka: {COLOUR BLACK}{STRINGID}"
+  1922: Upřednostňované jméno vlastníka
+  1923: "Zadejte upřednostňované jméno vlastníka:"
 
-  1924: "{COLOUR BLACK}{TINYFONT}Power"
-  1925: "{COLOUR BLACK}{TINYFONT}Brake"
-  1926: "{SMALLFONT}{COLOUR BLACK}Move the selected order up in the list"
-  1927: "{SMALLFONT}{COLOUR BLACK}Move the selected order down in the list"
-  1928: Unable to run the game directly from read-only media
+  1924: "{COLOUR BLACK}{TINYFONT}Výkon"
+  1925: "{COLOUR BLACK}{TINYFONT}Brzda"
+  1926: "{SMALLFONT}{COLOUR BLACK}Posunout vybraný příkaz nahoru v seznamu"
+  1927: "{SMALLFONT}{COLOUR BLACK}Pousnout vybraný příkaz dolů v seznamu"
+  1928: Nelze spustit hru přímo ze zařízení určeného jen pro čtení
 
-  1929: Atari Inc. Credits...
-  1930: "{COLOUR WINDOW_2}Licensed to Atari Inc."
-  1931: Atari Inc. Credits
+  1929: Autoři Atari Inc. ...
+  1930: "{COLOUR WINDOW_2}Licencováno Atari Inc."
+  1931: Autoři Atari Inc. 
 
-  1932: Game versions are incompatible - Unable to connect!
-  1933: "{SMALLFONT}{COLOUR BLACK}Send a short text message to the other player"
-  1934: the other player
-  1935: "The other player has exited the game: Two player mode has been disconnected"
+  1932: Verze hry nejsou kompatibilní - Nelze se připojit!
+  1933: "{SMALLFONT}{COLOUR BLACK}Poslat krátkou zprávu druhému hráči"
+  1934: druhý hráč
+  1935: "Druhý hráč opustil hru: Režim pro dva hráče skončil"
 
   1936: "{COLOUR YELLOW}Use of this product is subject to the terms of a license agreement{NEWLINE}found in the product's “ReadMe” file and in the manual"
   1937: "{COLOUR YELLOW}ESRB Notice: Game experience may change during online play"
@@ -2035,146 +2035,146 @@ strings:
   1981: "{COLOUR WINDOW_2}"
   1982: "{COLOUR WINDOW_2}"
 
-  1983: Distance x Units of Cargo Delivered per Month
+  1983: Vzdálenost x jednotky doručeného nákladu za měsíc
   1984: "{SMALLFONT}{COLOUR BLACK}Graphs of distance cargo delivered by each company"
-  1985: "{COLOUR WINDOW_2}Last journey average speed: {COLOUR BLACK}{VELOCITY}"
-  1986: land
-  1987: air
-  1988: water
-  1989: Train
-  1990: Bus
-  1991: Truck
-  1992: Tram
-  1993: Aircraft
-  1994: Ship
-  1995: "{SMALLFONT}{COLOUR BLACK}Speed records"
-  1996: Speed Records
-  1997: "{COLOUR WINDOW_2}Land service speed record: {COLOUR BLACK}{VELOCITY}"
-  1998: "{COLOUR WINDOW_2}Air service speed record: {COLOUR BLACK}{VELOCITY}"
-  1999: "{COLOUR WINDOW_2}Water service speed record: {COLOUR BLACK}{VELOCITY}"
-  2000: "{COLOUR BLACK}Achieved by {STRINGID} on {DATE DMY}"
-  2001: Confirm Display Mode Change
-  2002: "{COLOUR WINDOW_2}Display resolution changed to {UINT16 RAW} x {UINT16 RAW}"
+  1985: "{COLOUR WINDOW_2}Průměrná rychlost poslední cesty: {COLOUR BLACK}{VELOCITY}"
+  1986: zem
+  1987: vzduch
+  1988: voda
+  1989: Vlak
+  1990: Autobus
+  1991: Náklaďák
+  1992: Tramvaj
+  1993: Letadlo
+  1994: Loď
+  1995: "{SMALLFONT}{COLOUR BLACK}Rychlostní rekordy"
+  1996: Rychlostní rekordy
+  1997: "{COLOUR WINDOW_2}Pozemní rychlostní rekord: {COLOUR BLACK}{VELOCITY}"
+  1998: "{COLOUR WINDOW_2}Letecký rychlostní rekord: {COLOUR BLACK}{VELOCITY}"
+  1999: "{COLOUR WINDOW_2}Rychlostní rekord na vodě: {COLOUR BLACK}{VELOCITY}"
+  2000: "{COLOUR BLACK}Dosáhl {STRINGID} {DATE DMY}"
+  2001: Potvrdit změnu nastavení displeje
+  2002: "{COLOUR WINDOW_2}Rozlišení displeje nastaveno na {UINT16 RAW} x {UINT16 RAW}"
   2003: "{COLOUR WINDOW_2}_"
-  2004: "{COLOUR WINDOW_2}File name:"
-  2005: "{COLOUR WINDOW_2}Folder: {COLOUR BLACK}{STRINGID}"
-  2006: "{SMALLFONT}{COLOUR BLACK}Up one level to parent folder"
-  2007: "{COLOUR WINDOW_2}Company: {COLOUR BLACK}{STRINGID}"
-  2008: "{COLOUR WINDOW_2}Date: {COLOUR BLACK}{DATE DMY}"
-  2009: "{COLOUR WINDOW_2}Challenge progress: {COLOUR BLACK}{INT16}%"
-  2010: "{COLOUR WINDOW_2}Challenge: {COLOUR BLACK}Completed"
-  2011: "{COLOUR WINDOW_2}Challenge: {COLOUR BLACK}Failed"
-  2012: "Replace existing file: “{STRINGID}”?"
-  2013: Replace
-  2014: "Delete file: “{STRINGID}”?"
-  2015: Delete
-  2016: "Error: Invalid filename"
-  2017: Industry Name
-  2018: "Enter new name for {STRINGID}:"
-  2019: Can't rename industry...
-  2020: "{NEWLINE 0 1}{SPRITE}{SMALLFONT}{NEWLINE 45 1}Max. speed: {STRINGID}{NEWLINE 45 11}Height limit: {HEIGHT}"
-  2021: Duplicate CD Keys found - Unable to connect!
-  2022: "{COLOUR BLACK}{SMALLFONT}(Computer Name = {STRINGID})"
-  2023: 1st
-  2024: 2nd
-  2025: 3rd
-  2026: 4th
-  2027: 5th
-  2028: 6th
-  2029: 7th
-  2030: 8th
-  2031: 9th
-  2032: 10th
-  2033: 11th
-  2034: 12th
-  2035: 13th
-  2036: 14th
-  2037: 15th
-  2038: "{COLOUR BLACK}{INT16} selected (maximum {INT16})"
+  2004: "{COLOUR WINDOW_2}Název souboru:"
+  2005: "{COLOUR WINDOW_2}Složka: {COLOUR BLACK}{STRINGID}"
+  2006: "{SMALLFONT}{COLOUR BLACK}Do nadřazené složky"
+  2007: "{COLOUR WINDOW_2}Společnost: {COLOUR BLACK}{STRINGID}"
+  2008: "{COLOUR WINDOW_2}Datum: {COLOUR BLACK}{DATE DMY}"
+  2009: "{COLOUR WINDOW_2}Plnění úkolu: {COLOUR BLACK}{INT16}%"
+  2010: "{COLOUR WINDOW_2}Úkol: {COLOUR BLACK}Completed"
+  2011: "{COLOUR WINDOW_2}Úkol: {COLOUR BLACK}Failed"
+  2012: "Nahradit existující soubor: “{STRINGID}”?"
+  2013: Nahradit
+  2014: "Smazat soubor: “{STRINGID}”?"
+  2015: Smazat
+  2016: "Chyba: Neplatný název souboru"
+  2017: Název průmyslu
+  2018: "Zadejte nový název pro {STRINGID}:"
+  2019: Nelze přejmenovat průmysl...
+  2020: "{NEWLINE 0 1}{SPRITE}{SMALLFONT}{NEWLINE 45 1}Max. rychlost: {STRINGID}{NEWLINE 45 11}Výškový limit: {HEIGHT}"
+  2021: Zjišteny duplictní CD klíče - nelze se připojit
+  2022: "{COLOUR BLACK}{SMALLFONT}(Název počítače = {STRINGID})"
+  2023: 1.
+  2024: 2.
+  2025: 3.
+  2026: 4.
+  2027: 5.
+  2028: 6.
+  2029: 7.
+  2030: 8.
+  2031: 9.
+  2032: 10.
+  2033: 11.
+  2034: 12.
+  2035: 13.
+  2036: 14.
+  2037: 15.
+  2038: "{COLOUR BLACK}{INT16} vybráno (maximum {INT16})"
   2039: ""
   2040: ""
   2041: "{COLOUR BLACK}(ID: "
-  2042: "Data for the following object not found: "
-  2043: Not enough space for graphics
-  2044: Too many objects of this type selected
-  2045: "The following object must be selected first: "
-  2046: This object is currently in use
-  2047: This object is required by another object
-  2048: This object is always required
-  2049: Unable to select this object
-  2050: Unable to deselect this object
-  2051: Invalid selection of objects
-  2052: Object Selection - {STRINGID}
-  2053: Interface Styles
-  2054: Sounds
-  2055: Currency
-  2056: Animation Effects
-  2057: Land Vertical Faces
-  2058: Water
-  2059: Land
-  2060: Town Names
-  2061: Cargo
-  2062: Walls
-  2063: Signals
-  2064: Level Crossings
-  2065: Street Lights
-  2066: Tunnels
-  2067: Bridges
-  2068: Track Stations
-  2069: Track Extras
-  2070: Tracks
-  2071: Road Stations
-  2072: Road Extras
-  2073: Roads
-  2074: Airports
-  2075: Ship Ports
-  2076: Vehicles
-  2077: Trees
-  2078: Snow
-  2079: Climate
+  2042: "Nenalezena data pro objekt: "
+  2043: Nedostatek místa pro grafiky
+  2044: Vybráno příliš mnoho objektů tohoto typu
+  2045: "Napřed musí být vybrán tento objekt: "
+  2046: Tento objekt se momentálně používá
+  2047: Tento objekt je vyžadován jiným objektem
+  2048: Tento objekt je vždy vyžadován
+  2049: Nelze vybrat objekt
+  2050: Nelze zrušit výběr objektu
+  2051: Neplatný výběr objektů
+  2052: Výběr objektů - {STRINGID}
+  2053: Styly rozhraní
+  2054: Zvuky
+  2055: Měna
+  2056: Efekty animace
+  2057: Svislé plochy krajiny
+  2058: Voda
+  2059: Krajina
+  2060: Jména měst
+  2061: Náklad
+  2062: Zdi
+  2063: Návěstidla
+  2064: Úrovňová křížení
+  2065: Pouliční osvětlení
+  2066: Tunely
+  2067: Mosty
+  2068: Železniční stanice
+  2069: Železniční dodatky
+  2070: Železnice
+  2071: Zastávky
+  2072: Silniční dodatky
+  2073: Silnice
+  2074: Letiště
+  2075: Přístavy
+  2076: Vozidla
+  2077: Stromy
+  2078: Sníh
+  2079: Klima
   2080: Map Generation Data
-  2081: Buildings
-  2082: Scaffolding
-  2083: Industries
-  2084: World Region
-  2085: Company Owners
-  2086: Scenario Descriptions
-  2087: list of objects
-  2088: "Missing object data, ID: "
-  2089: Export plug-in objects with saved games
+  2081: Budovy
+  2082: Lešení
+  2083: Průmysl
+  2084: Region světa
+  2085: Majitelé světa
+  2086: Popisky scénářů
+  2087: seznam objektů
+  2088: "Chybí data objektu ID: "
+  2089: Exportovat zásuvné objekty s uloženou hrou
   2090: "{SMALLFONT}{COLOUR BLACK}Select whether to save any additional plug-in object data required (add-in data not supplied with the main product) in saved game or scenario files, allowing them to be loaded by someone who doesn't have the additional object data"
-  2091: At least one generic dual direction road type must be selected
-  2092: A scaffolding type must be selected
-  2093: Advanced
-  2094: "{SMALLFONT}{COLOUR BLACK}Allow more advanced selection of individual items"
+  2091: Alespoň jedna běžná obousměrná silnice musí být vybrána
+  2092: Alespoň jeden typ lešení musí být vybrán
+  2093: Pokročilé
+  2094: "{SMALLFONT}{COLOUR BLACK}Povolit pokročilý výběr jednotlivých položek"
   2095: "{COLOUR WHITE}{BIGFONT}£"
-  2096: New objects installed successfully
-  2097: At least one industry must be selected
-  2098: At least one town building must be selected
-  2099: A company headquarters building type must be selected
-  2100: Only one company headquarters building type must be selected
-  2101: An interface type must be selected
-  2102: At least one vehicle type must be selected
-  2103: At least one land type must be selected
-  2104: A currency type must be selected
-  2105: A water type must be selected
-  2106: A town name style must be selected
-  2107: At least one level crossing type must be selected
-  2108: A street light type must be selected
-  2109: A snow type must be selected (even if not needed)
-  2110: A climate type must be selected
-  2111: A map generation data type must be selected
-  2112: A region type must be selected
-  2113: mph
-  2114: kmh⁻¹
-  2115: "hour:"
-  2116: "hours:"
-  2117: mins
+  2096: Instalace nových objektů proběhla úspěšně
+  2097: Alespoň jeden průmyslový objekt musí být vybrán
+  2098: Alespoň jedna městská budova musí být vybrána
+  2099: Musí být vybrána budova ředitelství společnosti
+  2100: Nesmí být vybráno více budov ředitelství společnosti
+  2101: Typ rohraní musí být vybrán
+  2102: Alespoň jedno vozidlo musí být vybráno
+  2103: Alespoň jeden typ krajiny musí být vybrán
+  2104: Měna musí být vybrána
+  2105: Typ vody musí být vybrán
+  2106: Jméno města musí být vybráno
+  2107: Alespoň jedno úrovňové křížení musí být vybráno
+  2108: Typ pouličního osvětlení musí být vybrán
+  2109: Typ sněhu musí být vybrán (ikdyž není potřeba)
+  2110: Typ klimatu musí být vybrán
+  2111: Data k generování mapy musí být vybrána
+  2112: Region musí být vybrán
+  2113: mil/h
+  2114: km/h
+  2115: "hodin:"
+  2116: "hodin:"
+  2117: min
   2118: "min:"
-  2119: secs
-  2120: " units"
+  2119: sek
+  2120: " jednotek"
   2121: ft
   2122: m
   2123: hp
   2124: kW
-  2125: "{COLOUR WINDOW_2}Language:"
+  2125: "{COLOUR WINDOW_2}Jazyk:"
