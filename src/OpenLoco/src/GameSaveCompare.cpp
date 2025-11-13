@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "Effects/EffectsManager.h"
+#include "Effects/Effect.h"
 #include "GameState.h"
 #include "Logging.h"
 #include "OpenLoco.h"

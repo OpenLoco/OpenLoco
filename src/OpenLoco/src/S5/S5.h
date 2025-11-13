@@ -4,8 +4,6 @@
 #include "Objects/Object.h"
 #include "S5/S5GameState.h"
 #include "S5/S5TileElement.h"
-#include "ScenarioConstruction.h"
-#include "ScenarioObjective.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/FileSystem.hpp>
