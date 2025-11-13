@@ -109,7 +109,6 @@ namespace OpenLoco::Ui::Windows::Terraform
 
     // These are still referred to in CreateWall and S5
     static loco_global<World::TileElement*, 0x01136470> _lastPlacedWall;
-    static loco_global<uint8_t, 0x01136496> _treeRotation;
 
     static int16_t _adjustToolSize;                             // 0x0050A000
     static uint8_t _adjustLandToolSize;                         // 0x009C870E
@@ -123,6 +122,7 @@ namespace OpenLoco::Ui::Windows::Terraform
     static World::Pos2 _terraformGhostPos;                      // 0x01136488
     static uint16_t _lastTreeColourFlag;                        // 0x01136490
     static uint16_t _terraformGhostTreeRotationFlag;            // 0x01136492
+    static uint8_t _treeRotation;                               // 0x01136496
     static Colour _treeColour;                                  // 0x01136497
     static uint8_t _terraformGhostBaseZ;                        // 0x01136499
     static Common::GhostPlacedFlags _terraformGhostPlacedFlags; // 0x0113649A
@@ -294,7 +294,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 case widx::rotate_object:
                 {
                     _treeRotation++;
-                    _treeRotation = _treeRotation & 3;
+                    _treeRotation &= 3;
                     self.invalidate();
                     break;
                 }
