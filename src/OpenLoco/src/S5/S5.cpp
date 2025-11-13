@@ -329,11 +329,11 @@ namespace OpenLoco::S5
         {
             dst.messages[i] = exportMessage(src.messages[i]);
         }
-        dst.var_B94C = src.var_B94C;
-        dst.var_B950 = src.var_B950;
-        dst.var_B952 = src.var_B952;
-        dst.var_B954 = src.var_B954;
-        dst.var_B956 = src.var_B956;
+        dst.var_B95C = src.var_B95C;
+        dst.var_B960 = src.var_B960;
+        dst.var_B962 = src.var_B962;
+        dst.var_B964 = src.var_B964;
+        dst.var_B966 = src.var_B966;
         dst.currentRainLevel = src.currentRainLevel;
         return dst;
     }
@@ -529,11 +529,11 @@ namespace OpenLoco::S5
         {
             dst.messages[i] = importMessage(src.messages[i]);
         }
-        dst.var_B94C = src.var_B94C;
-        dst.var_B950 = src.var_B950;
-        dst.var_B952 = src.var_B952;
-        dst.var_B954 = src.var_B954;
-        dst.var_B956 = src.var_B956;
+        dst.var_B95C = src.var_B95C;
+        dst.var_B960 = src.var_B960;
+        dst.var_B962 = src.var_B962;
+        dst.var_B964 = src.var_B964;
+        dst.var_B966 = src.var_B966;
         dst.currentRainLevel = src.currentRainLevel;
     }
 

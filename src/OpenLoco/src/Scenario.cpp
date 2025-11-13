@@ -184,11 +184,11 @@ namespace OpenLoco::Scenario
     void sub_4969E0(uint8_t al)
     {
         auto& gameState = getGameState();
-        gameState.var_B94C = al;
-        gameState.var_B950 = 1;
-        gameState.var_B952 = 0;
-        gameState.var_B954 = 0;
-        gameState.var_B956 = 0;
+        gameState.var_B95C = al;
+        gameState.var_B960 = 1;
+        gameState.var_B962 = 0;
+        gameState.var_B964 = 0;
+        gameState.var_B966 = 0;
         gameState.currentRainLevel = 0;
     }
 
