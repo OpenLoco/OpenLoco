@@ -65,9 +65,31 @@ namespace OpenLoco::Ui::Dropdown
     } };
 
     // 0x005046FA
-    static constexpr std::uint8_t kAppropriateImageDropdownItemsPerRow[33] = {
-        1, 1, 1, 1, 2, 2, 3, 3, 4, 3, 5, 4, 4, 5, 5, 5, 4, 5, 6, 5, 5, 7, 4, 5, 6, 5, 6, 6, 6, 6, 6, 8, 8
-    };
+    // Optimal items per row for image dropdown layouts, indexed by total item count
+    // Determines grid layout to best fit items in a dropdown (balances width vs height)
+    static constexpr std::array<uint8_t, 33> kAppropriateImageDropdownItemsPerRow = { {
+        // clang-format off
+        1, 1, 1, 1,    // 0-3 items
+        2, 2,          // 4-5 items
+        3, 3,          // 6-7 items
+        4,             // 8 items
+        3,             // 9 items
+        5,             // 10 items
+        4, 4,          // 11-12 items
+        5, 5, 5,       // 13-15 items
+        4,             // 16 items
+        5,             // 17 items
+        6,             // 18 items
+        5, 5,          // 19-20 items
+        7,             // 21 items
+        4,             // 22 items
+        5,             // 23 items
+        6,             // 24 items
+        5,             // 25 items
+        6, 6, 6, 6, 6, // 26-30 items
+        8, 8,          // 31-32 items
+        // clang-format on
+    } };
 
     static char _byte_112CC04[512];                         // 0x0112CC04
     static uint8_t _windowDropdownOnpaintCellX;             // 0x01136F94
