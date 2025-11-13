@@ -1,3 +1,5 @@
+#pragma once
+
 #include "S5LabelFrame.h"
 #include <OpenLoco/Engine/World.hpp>
 #include <cstdint>

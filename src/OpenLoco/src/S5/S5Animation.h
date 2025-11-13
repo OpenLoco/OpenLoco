@@ -1,3 +1,5 @@
+#pragma once
+
 #include <OpenLoco/Engine/World.hpp>
 #include <cstdint>
 

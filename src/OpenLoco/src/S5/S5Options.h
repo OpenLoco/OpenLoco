@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Objects/Object.h"
 
 namespace OpenLoco::Scenario

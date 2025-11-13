@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Limits.h"
 #include "S5Animation.h"
 #include "S5Company.h"
