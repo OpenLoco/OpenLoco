@@ -11,6 +11,7 @@
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
+#include "Ui/ScrollView.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
@@ -27,8 +28,9 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     static constexpr Ui::Size32 kWindowSizeMax = { 800, 800 };
     static constexpr Ui::Size32 kWindowSizeDefault = { 360, 238 };
 
-    static constexpr auto kColumnYearsWidth = 59;
+    static constexpr auto kColumnYearsWidth = 75;
     static constexpr auto kStatusBarClearance = 13;
+    static constexpr auto kPadding = 5;
     static constexpr uint8_t kRowHeight = 12; // CJK: 15
 
     // TODO: make this an attribute of the Music Selection window object rather than static
@@ -51,8 +53,8 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         Widgets::Caption({ 1, 1 }, { kWindowSizeDefault.width - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::music_selection_title),
         Widgets::ImageButton({ kWindowSizeDefault.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { kWindowSizeDefault.width, kWindowSizeDefault.height - 15 }, WindowColour::secondary),
-        Widgets::TableHeader({ 20, 17 }, { kWindowSizeDefault.width - 40 - kColumnYearsWidth, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_track_title),
-        Widgets::TableHeader({ 20 + kWindowSizeDefault.width - 40 - kColumnYearsWidth, 17 }, { kColumnYearsWidth, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_music_years),
+        Widgets::TableHeader({ 5, 17 }, { kWindowSizeDefault.width - kColumnYearsWidth - 5, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_track_title),
+        Widgets::TableHeader({ 5 + kWindowSizeDefault.width, 17 }, { kColumnYearsWidth, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_music_years),
         Widgets::ScrollView({ 4, 30 }, { kWindowSizeDefault.width - 8, kWindowSizeDefault.height - kStatusBarClearance - 30 }, WindowColour::secondary, Scrollbars::vertical, StringIds::music_selection_tooltip),
         Widgets::Label({ 4, kWindowSizeDefault.height - 12 }, { kWindowSizeDefault.width, 11 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
 
@@ -152,8 +154,6 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     {
         self.setSize(kWindowSizeMin, kWindowSizeMax);
 
-        const auto columnTitleRight = self.widgets[widx::sort_title].left + self.width - 1 - 40 - kColumnYearsWidth;
-
         // Resize & reposition widgets
         self.widgets[widx::frame].right = self.width - 1;
         self.widgets[widx::frame].bottom = self.height - 1;
@@ -162,10 +162,11 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         self.widgets[widx::close].right = self.width - 3;
         self.widgets[widx::panel].right = self.width - 1;
         self.widgets[widx::panel].bottom = self.height - 1;
-        self.widgets[widx::sort_title].right = columnTitleRight;
-        self.widgets[widx::sort_years].left = columnTitleRight + 1;
-        self.widgets[widx::sort_years].right = columnTitleRight + kColumnYearsWidth;
-        self.widgets[widx::scrollview].right = self.width - 5;
+
+        self.widgets[widx::sort_years].right = self.width - kPadding;
+        self.widgets[widx::sort_years].left = self.widgets[widx::sort_years].right - kColumnYearsWidth;
+        self.widgets[widx::sort_title].right = self.widgets[widx::sort_years].left - 1;
+        self.widgets[widx::scrollview].right = self.width - kPadding;
         self.widgets[widx::scrollview].bottom = self.height - 1 - kStatusBarClearance;
         self.widgets[widx::status_bar].top = self.height - 12;
         self.widgets[widx::status_bar].bottom = self.height - 2;
@@ -183,7 +184,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     {
         // Horizontal offsets of columns within the scrollview widget.
         const auto columnTitleOffset = 15;
-        const auto columnYearsOffset = columnTitleOffset + window.width - 40 - kColumnYearsWidth;
+        const auto columnYearsOffset = window.widgets[widx::sort_years].left - 5;
 
         const auto& rt = drawingCtx.currentRenderTarget();
         auto tr = Gfx::TextRenderer(drawingCtx);
@@ -267,7 +268,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
                 {
                     args.push(StringIds::year_range_no_start);
                     args.push(musicInfo.endYear);
-                    point.x += kColumnYearsWidth;
+                    point.x += kColumnYearsWidth - ScrollView::kScrollbarSize - 7;
                     tr.drawStringRight(point, window.getColour(WindowColour::secondary), textColour, args);
                 }
                 else

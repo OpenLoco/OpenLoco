@@ -2428,9 +2428,9 @@ strings:
   2373: "{COLOUR WINDOW_2}Music volume:"
   2374: Show planned AI track/road as ghosts
   2375: "{SMALLFONT}{COLOUR BLACK}This shows the routes planned by AI companies as regular ghost elements."
-  2376: "{COLOUR BLACK}Title"
-  2377: "{COLOUR BLACK}Title ▲"
-  2378: "{COLOUR BLACK}Title ▼"
+  2376: "{MOVE_X 14}{COLOUR BLACK}Title"
+  2377: "{MOVE_X 14}{COLOUR BLACK}Title ▲"
+  2378: "{MOVE_X 14}{COLOUR BLACK}Title ▼"
   2379: "{COLOUR BLACK}Years"
   2380: "{COLOUR BLACK}Years ▲"
   2381: "{COLOUR BLACK}Years ▼"
