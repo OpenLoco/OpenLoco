@@ -54,7 +54,7 @@ namespace OpenLoco::S5
     constexpr uint32_t kCurrentVersion = 0x62262;
     constexpr uint32_t kMagicNumber = 0x62300;
 
-    static loco_global<int8_t, 0x0050C197> _loadErrorCode; // 0x0050C197
+    static loco_global<int8_t, 0x0050C197> _loadErrorCode;      // 0x0050C197
     static loco_global<StringId, 0x0050C198> _loadErrorMessage; // 0x0050C198
 
     // TODO: move this?
