@@ -61,7 +61,6 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     std::vector<const Company*> _sortedCompanies;
 
     static loco_global<uint16_t, 0x0050A004> _50A004;
-    static loco_global<uint16_t, 0x0113DC78> _113DC78; // Dropdown flags?
 
     // 0x43AA4C
     static void playerMouseDown(Ui::Window* self, WidgetIndex_t widgetIndex)
@@ -127,7 +126,8 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         {
             Dropdown::setHighlightedItem(highlightIndex);
         }
-        _113DC78 = _113DC78 | (1 << 1);
+
+        Dropdown::setFlags(Dropdown::Flags::unk2);
     }
 
     // 0x43AB87

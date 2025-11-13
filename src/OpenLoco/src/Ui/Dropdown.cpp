@@ -1137,6 +1137,11 @@ namespace OpenLoco::Ui::Dropdown
         return (_dropdownFlags & flags) != Flags::none;
     }
 
+    void setFlags(Flags flags)
+    {
+        _dropdownFlags |= flags;
+    }
+
     void setMenuOption(size_t index, uint8_t value)
     {
         assert(index < std::size(_menuOptions));
