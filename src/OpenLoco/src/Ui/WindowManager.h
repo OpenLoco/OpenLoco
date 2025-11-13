@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringManager.h"
 #include "Window.h"
 #include <Map/Track/TrackModSection.h>
@@ -372,7 +373,7 @@ namespace OpenLoco::Ui::Windows
 
     namespace TextInput
     {
-        void openTextInput(Ui::Window* w, StringId title, StringId message, StringId value, int callingWidget, const void* valueArgs, uint32_t inputSize = StringManager::kUserStringSize - 1);
+        void openTextInput(Ui::Window* w, StringId title, StringId message, StringId value, int callingWidget, FormatArgumentsView valueArgs, uint32_t inputSize = StringManager::kUserStringSize - 1);
         void sub_4CE6C9(WindowType type, WindowNumber_t number);
         void cancel();
         void sub_4CE6FF();
