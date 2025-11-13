@@ -280,6 +280,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Animation.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Company.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Entity.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5GameState.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Industry.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5LabelFrame.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Message.cpp"

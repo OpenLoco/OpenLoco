@@ -120,6 +120,8 @@ namespace OpenLoco::S5
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(SaveFlags);
 
+    constexpr uint32_t kMagicNumber = 0x62300;
+
     constexpr const char* extensionSC5 = ".SC5";
     constexpr const char* extensionSV5 = ".SV5";
 
