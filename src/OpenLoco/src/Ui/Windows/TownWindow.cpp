@@ -737,7 +737,7 @@ namespace OpenLoco::Ui::Windows::Town
             args.push(town->name);
             args.push(town->name);
 
-            TextInput::openTextInput(&self, StringIds::title_town_name, StringIds::prompt_type_new_town_name, town->name, widgetIndex, &args);
+            TextInput::openTextInput(&self, StringIds::title_town_name, StringIds::prompt_type_new_town_name, town->name, widgetIndex, args);
         }
 
         // 0x004991BC

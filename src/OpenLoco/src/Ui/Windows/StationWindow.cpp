@@ -1392,7 +1392,10 @@ namespace OpenLoco::Ui::Windows::Station
             args.push(station->name);
             args.push(station->town);
 
-            TextInput::openTextInput(self, StringIds::title_station_name, StringIds::prompt_type_new_station_name, station->name, widgetIndex, &station->town);
+            FormatArgumentsBuffer buffer{};
+            auto args2 = FormatArguments(buffer);
+            args2.push(station->town);
+            TextInput::openTextInput(self, StringIds::title_station_name, StringIds::prompt_type_new_station_name, station->name, widgetIndex, args2);
         }
 
         // 0x0048E520
