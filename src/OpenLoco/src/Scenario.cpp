@@ -589,7 +589,7 @@ namespace OpenLoco::Scenario
     }
 
     // 0x0046DB4C
-    void drawScenarioPreviewImage()
+    void drawScenarioMiniMapImage()
     {
         auto& options = Scenario::getOptions();
         const auto kPreviewSize = sizeof(options.preview[0]);

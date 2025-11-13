@@ -9,9 +9,6 @@
 #include "GameException.hpp"
 #include "GameState.h"
 #include "GameStateFlags.h"
-#include "Graphics/DrawingContext.h"
-#include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Gui.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
@@ -28,6 +25,7 @@
 #include "SawyerStream.h"
 #include "ScenarioManager.h"
 #include "ScenarioOptions.h"
+#include "ScenarioPreview.h"
 #include "SceneManager.h"
 #include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
@@ -109,48 +107,6 @@ namespace OpenLoco::S5
         return result;
     }
 
-    static void drawSavePreviewImage(void* pixels, Ui::Size size)
-    {
-        auto mainViewport = WindowManager::getMainViewport();
-        if (mainViewport == nullptr)
-        {
-            return;
-        }
-
-        const auto mapPosXY = mainViewport->getCentreMapPosition();
-        const auto mapPosXYZ = Pos3(mapPosXY.x, mapPosXY.y, coord_t{ TileManager::getHeight(mapPosXY) });
-
-        Viewport saveVp{};
-        saveVp.x = 0;
-        saveVp.y = 0;
-        saveVp.width = size.width;
-        saveVp.height = size.height;
-        saveVp.flags = ViewportFlags::town_names_displayed | ViewportFlags::station_names_displayed;
-        saveVp.zoom = ZoomLevel::half;
-        saveVp.viewWidth = size.width << saveVp.zoom;
-        saveVp.viewHeight = size.height << saveVp.zoom;
-
-        const auto viewPos = saveVp.centre2dCoordinates(mapPosXYZ);
-        saveVp.viewX = viewPos.x;
-        saveVp.viewY = viewPos.y;
-
-        Gfx::RenderTarget rt{};
-        rt.bits = static_cast<uint8_t*>(pixels);
-        rt.x = 0;
-        rt.y = 0;
-        rt.width = size.width;
-        rt.height = size.height;
-        rt.pitch = 0;
-        rt.zoomLevel = saveVp.zoom;
-
-        auto& drawingEngine = Gfx::getDrawingEngine();
-        auto& drawingCtx = drawingEngine.getDrawingContext();
-
-        drawingCtx.pushRenderTarget(rt);
-        saveVp.render(drawingCtx);
-        drawingCtx.popRenderTarget();
-    }
-
     // 0x004471A4
     static std::unique_ptr<SaveDetails> prepareSaveDetails(OpenLoco::GameState& gameState)
     {
@@ -166,7 +122,7 @@ namespace OpenLoco::S5
         saveDetails->challengeFlags = playerCompany.challengeFlags;
 
         std::strncpy(saveDetails->scenario, gameState.scenarioName, sizeof(saveDetails->scenario));
-        drawSavePreviewImage(saveDetails->image, { 250, 200 });
+        Scenario::drawSavePreviewImage(saveDetails->image, { 250, 200 });
 
         return saveDetails;
     }
