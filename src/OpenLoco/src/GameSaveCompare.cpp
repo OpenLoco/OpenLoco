@@ -515,7 +515,7 @@ namespace OpenLoco::GameSaveCompare
         foundDivergence |= isLoggedDivergentGameStateField("numMessages", 0, gameState1.general.numMessages, gameState2.general.numMessages);
         foundDivergence |= isLoggedDivergentGameStateField("activeMessageIndex", 0, gameState1.general.activeMessageIndex, gameState2.general.activeMessageIndex);
         foundDivergence |= isLoggedDivergence("messages", gameState1.general.messages, gameState2.general.messages, Limits::kMaxMessages, displayAllDivergences);
-        foundDivergence |= isLoggedDivergence("pad_B886", gameState1.general.pad_B886, gameState2.general.pad_B886, 0xB95C - 0xB886, displayAllDivergences);
+        foundDivergence |= isLoggedDivergence("pad_B886", gameState1.general.pad_B95A, gameState2.general.pad_B95A, 0xB95C - 0xB95A, displayAllDivergences);
         foundDivergence |= isLoggedDivergentGameStateField("var_B95C", 0, gameState1.general.var_B95C, gameState2.general.var_B95C);
         foundDivergence |= isLoggedDivergence("pad_B94D", gameState1.general.pad_B95D, gameState2.general.pad_B95D, 0xB960 - 0xB95D, displayAllDivergences);
         foundDivergence |= isLoggedDivergentGameStateField("var_B960", 0, gameState1.general.var_B960, gameState2.general.var_B960);
