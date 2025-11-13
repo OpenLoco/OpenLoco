@@ -142,6 +142,7 @@ namespace OpenLoco::Ui::Dropdown
     std::optional<int> dropdownIndexFromPoint(Ui::Window* window, int x, int y);
 
     bool hasFlags(Flags flags);
+    void setFlags(Flags flags);
     void setMenuOption(size_t index, uint8_t value);
     uint8_t getMenuOption(size_t index);
 }
