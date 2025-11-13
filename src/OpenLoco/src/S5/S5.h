@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Engine/Limits.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <cstdint>
