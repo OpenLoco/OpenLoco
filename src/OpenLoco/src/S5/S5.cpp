@@ -54,8 +54,8 @@ namespace OpenLoco::S5
     constexpr uint32_t kCurrentVersion = 0x62262;
     constexpr uint32_t kMagicNumber = 0x62300;
 
-    static uint8_t _loadErrorCode;     // 0x0050C197
-    static StringId _loadErrorMessage; // 0x0050C198
+    static loco_global<int8_t, 0x0050C197> _loadErrorCode; // 0x0050C197
+    static loco_global<StringId, 0x0050C198> _loadErrorMessage; // 0x0050C198
 
     // TODO: move this?
     static std::vector<ObjectHeader> _loadErrorObjectsList;
@@ -857,7 +857,7 @@ namespace OpenLoco::S5
         auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2040));
         StringManager::formatString(buffer, 512, StringIds::missing_object_data_id_x);
         objectCreateIdentifierName(strchr(buffer, 0), header);
-        _loadErrorCode = 255;
+        _loadErrorCode = -1;
         _loadErrorMessage = StringIds::buffer_2040;
     }
 
@@ -940,7 +940,7 @@ namespace OpenLoco::S5
             {
                 if (file->header.type != S5Type::scenario)
                 {
-                    _loadErrorCode = 255;
+                    _loadErrorCode = -1;
                     _loadErrorMessage = StringIds::error_file_contains_invalid_data;
                     Ui::ProgressBar::end();
                     return false;
@@ -986,7 +986,7 @@ namespace OpenLoco::S5
             if (file->header.type == S5Type::objects)
             {
                 dst.var_014A = 0;
-                _loadErrorCode = 254;
+                _loadErrorCode = -2;
                 _loadErrorMessage = StringIds::new_objects_installed_successfully;
                 Ui::ProgressBar::end();
                 // Throws!
@@ -1174,7 +1174,7 @@ namespace OpenLoco::S5
         catch (const LoadException& e)
         {
             Logging::error("Unable to load S5: {}", e.what());
-            _loadErrorCode = 255;
+            _loadErrorCode = -1;
             _loadErrorMessage = e.getLocalisedMessage();
             Ui::ProgressBar::end();
             return false;
@@ -1182,7 +1182,7 @@ namespace OpenLoco::S5
         catch (const std::exception& e)
         {
             Logging::error("Unable to load S5: {}", e.what());
-            _loadErrorCode = 255;
+            _loadErrorCode = -1;
             _loadErrorMessage = StringIds::null;
             Ui::ProgressBar::end();
             return false;
