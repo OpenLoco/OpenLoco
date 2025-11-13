@@ -24,6 +24,7 @@
 #include "Objects/ScenarioTextObject.h"
 #include "Objects/WaterObject.h"
 #include "OpenLoco.h"
+#include "S5Options.h"
 #include "SawyerStream.h"
 #include "ScenarioManager.h"
 #include "ScenarioOptions.h"
@@ -53,7 +54,6 @@ namespace OpenLoco::S5
     constexpr uint32_t kCurrentVersion = 0x62262;
     constexpr uint32_t kMagicNumber = 0x62300;
 
-    static Options _activeOptions;     // 0x009C8714
     static uint8_t _loadErrorCode;     // 0x0050C197
     static StringId _loadErrorMessage; // 0x0050C198
 
@@ -107,78 +107,6 @@ namespace OpenLoco::S5
         }
 
         return result;
-    }
-
-    static PaletteIndex_t getPreviewColourByTilePos(const TilePos2& pos)
-    {
-        PaletteIndex_t colour = PaletteIndex::transparent;
-        auto tile = TileManager::get(pos);
-
-        for (auto& el : tile)
-        {
-            switch (el.type())
-            {
-                case ElementType::surface:
-                {
-                    auto* surfaceEl = el.as<SurfaceElement>();
-                    if (surfaceEl == nullptr)
-                    {
-                        continue;
-                    }
-
-                    if (surfaceEl->water() == 0)
-                    {
-                        const auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
-                        const auto* landImage = Gfx::getG1Element(landObj->mapPixelImage);
-                        auto offset = surfaceEl->baseZ() / kMicroToSmallZStep * 2;
-                        colour = landImage->offset[offset];
-                    }
-                    else
-                    {
-                        const auto* waterObj = ObjectManager::get<WaterObject>();
-                        const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
-                        auto offset = (surfaceEl->water() * kMicroToSmallZStep - surfaceEl->baseZ()) / 2;
-                        colour = waterImage->offset[offset - 2];
-                    }
-                    break;
-                }
-
-                case ElementType::building:
-                case ElementType::road:
-                    colour = PaletteIndex::mutedDarkRed7;
-                    break;
-
-                case ElementType::industry:
-                    colour = PaletteIndex::mutedPurple7;
-                    break;
-
-                case ElementType::tree:
-                    colour = PaletteIndex::green6;
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        return colour;
-    }
-
-    // 0x0046DB4C
-    void drawScenarioPreviewImage()
-    {
-        auto& options = _activeOptions;
-        const auto kPreviewSize = sizeof(options.preview[0]);
-        const auto kMapSkipFactor = kMapRows / kPreviewSize;
-
-        for (auto y = 0U; y < kPreviewSize; y++)
-        {
-            for (auto x = 0U; x < kPreviewSize; x++)
-            {
-                auto pos = TilePos2(kMapColumns - (x + 1) * kMapSkipFactor + 1, y * kMapSkipFactor + 1);
-                options.preview[y][x] = getPreviewColourByTilePos(pos);
-            }
-        }
     }
 
     static void drawSavePreviewImage(void* pixels, Ui::Size size)
@@ -662,7 +590,7 @@ namespace OpenLoco::S5
         file->header = prepareHeader(flags, packedObjects.size());
         if (file->header.type == S5Type::scenario || file->header.type == S5Type::landscape)
         {
-            file->scenarioOptions = std::make_unique<Options>(_activeOptions);
+            file->scenarioOptions = std::make_unique<Options>(exportOptions(Scenario::getOptions()));
         }
         if (file->header.hasFlags(HeaderFlags::hasSaveDetails))
         {
@@ -1124,7 +1052,7 @@ namespace OpenLoco::S5
             // Copy scenario options
             if (hasLoadFlags(flags, LoadFlags::scenario | LoadFlags::landscape))
             {
-                _activeOptions = *file->scenarioOptions;
+                Scenario::getOptions() = importOptions(*file->scenarioOptions);
             }
 
             // Copy tile elements
@@ -1168,10 +1096,11 @@ namespace OpenLoco::S5
                     ObjectManager::unload(header);
                     ObjectManager::reloadAll();
                     ObjectManager::updateTerraformObjects();
-                    _activeOptions.editorStep = enumValue(EditorController::Step::landscapeEditor);
-                    _activeOptions.difficulty = 3;
-                    StringManager::formatString(_activeOptions.scenarioDetails, StringIds::no_details_yet);
-                    _activeOptions.scenarioName[0] = '\0';
+                    auto& options = Scenario::getOptions();
+                    options.editorStep = EditorController::Step::landscapeEditor;
+                    options.difficulty = 3;
+                    StringManager::formatString(options.scenarioDetails, StringIds::no_details_yet);
+                    options.scenarioName[0] = '\0';
                 }
             }
             Audio::resetSoundObjects();
@@ -1320,12 +1249,9 @@ namespace OpenLoco::S5
             // 0x009DA285 = 1
             // 0x009CCA54 _previewOptions
 
-            // TODO: For now OpenLoco::Options and S5::Options are identical in the future
-            // there should be an import and validation step that converts from one to the
-            // other
-            auto ret = std::make_unique<Scenario::Options>();
-            fs.readChunk(ret.get(), sizeof(*ret));
-            return ret;
+            auto s5Options = std::make_unique<S5::Options>();
+            fs.readChunk(s5Options.get(), sizeof(S5::Options));
+            return std::make_unique<Scenario::Options>(importOptions(*s5Options));
         }
         return nullptr;
     }
