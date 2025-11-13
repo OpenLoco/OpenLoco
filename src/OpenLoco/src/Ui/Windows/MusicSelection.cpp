@@ -40,7 +40,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         title,
         close,
         panel,
-        sort_name,
+        sort_title,
         sort_years,
         scrollview,
         status_bar,
@@ -51,7 +51,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         Widgets::Caption({ 1, 1 }, { kWindowSizeDefault.width - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::music_selection_title),
         Widgets::ImageButton({ kWindowSizeDefault.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { kWindowSizeDefault.width, kWindowSizeDefault.height - 15 }, WindowColour::secondary),
-        Widgets::TableHeader({ 20, 17 }, { kWindowSizeDefault.width - 40 - kColumnYearsWidth, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_name),
+        Widgets::TableHeader({ 20, 17 }, { kWindowSizeDefault.width - 40 - kColumnYearsWidth, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_track_title),
         Widgets::TableHeader({ 20 + kWindowSizeDefault.width - 40 - kColumnYearsWidth, 17 }, { kColumnYearsWidth, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_music_years),
         Widgets::ScrollView({ 4, 30 }, { kWindowSizeDefault.width - 8, kWindowSizeDefault.height - kStatusBarClearance - 30 }, WindowColour::secondary, Scrollbars::vertical, StringIds::music_selection_tooltip),
         Widgets::Label({ 4, kWindowSizeDefault.height - 12 }, { kWindowSizeDefault.width, 11 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
@@ -67,17 +67,17 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         playlist = Jukebox::makeAllMusicPlaylist(sortMode);
 
         // Set table header button captions
-        window.widgets[widx::sort_name].text = StringIds::table_header_name;
+        window.widgets[widx::sort_title].text = StringIds::table_header_title;
         window.widgets[widx::sort_years].text = StringIds::table_header_years;
         switch (sortMode)
         {
             case Jukebox::MusicSortMode::original:
                 break;
-            case Jukebox::MusicSortMode::name:
-                window.widgets[widx::sort_name].text = StringIds::table_header_name_asc;
+            case Jukebox::MusicSortMode::titleAscending:
+                window.widgets[widx::sort_title].text = StringIds::table_header_title_asc;
                 break;
-            case Jukebox::MusicSortMode::nameReverse:
-                window.widgets[widx::sort_name].text = StringIds::table_header_name_desc;
+            case Jukebox::MusicSortMode::titleDescending:
+                window.widgets[widx::sort_title].text = StringIds::table_header_title_desc;
                 break;
             case Jukebox::MusicSortMode::yearsAscending:
                 window.widgets[widx::sort_years].text = StringIds::table_header_years_asc;
@@ -152,7 +152,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     {
         self.setSize(kWindowSizeMin, kWindowSizeMax);
 
-        const auto columnNameRight = self.widgets[widx::sort_name].left + self.width - 1 - 40 - kColumnYearsWidth;
+        const auto columnTitleRight = self.widgets[widx::sort_title].left + self.width - 1 - 40 - kColumnYearsWidth;
 
         // Resize & reposition widgets
         self.widgets[widx::frame].right = self.width - 1;
@@ -162,9 +162,9 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         self.widgets[widx::close].right = self.width - 3;
         self.widgets[widx::panel].right = self.width - 1;
         self.widgets[widx::panel].bottom = self.height - 1;
-        self.widgets[widx::sort_name].right = columnNameRight;
-        self.widgets[widx::sort_years].left = columnNameRight + 1;
-        self.widgets[widx::sort_years].right = columnNameRight + kColumnYearsWidth;
+        self.widgets[widx::sort_title].right = columnTitleRight;
+        self.widgets[widx::sort_years].left = columnTitleRight + 1;
+        self.widgets[widx::sort_years].right = columnTitleRight + kColumnYearsWidth;
         self.widgets[widx::scrollview].right = self.width - 5;
         self.widgets[widx::scrollview].bottom = self.height - 1 - kStatusBarClearance;
         self.widgets[widx::status_bar].top = self.height - 12;
@@ -182,8 +182,8 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     static void drawScroll(Ui::Window& window, Gfx::DrawingContext& drawingCtx, [[maybe_unused]] const uint32_t scrollIndex)
     {
         // Horizontal offsets of columns within the scrollview widget.
-        const auto columnNameOffset = 15;
-        const auto columnYearsOffset = columnNameOffset + window.width - 40 - kColumnYearsWidth;
+        const auto columnTitleOffset = 15;
+        const auto columnYearsOffset = columnTitleOffset + window.width - 40 - kColumnYearsWidth;
 
         const auto& rt = drawingCtx.currentRenderTarget();
         auto tr = Gfx::TextRenderer(drawingCtx);
@@ -232,9 +232,9 @@ namespace OpenLoco::Ui::Windows::MusicSelection
                 tr.drawStringLeft(point, window.getColour(WindowColour::secondary), StringIds::wcolour2_stringid, args);
             }
 
-            // Draw track name.
+            // Draw track title.
             {
-                auto point = Point(columnNameOffset, y);
+                auto point = Point(columnTitleOffset, y);
                 StringId musicTitle = musicInfo.titleId;
 
                 auto argsBuf = FormatArgumentsBuffer{};
@@ -296,8 +296,8 @@ namespace OpenLoco::Ui::Windows::MusicSelection
                 WindowManager::close(window.type);
                 break;
 
-            case sort_name:
-                cycleSortMode(window, Jukebox::MusicSortMode::name, Jukebox::MusicSortMode::nameReverse);
+            case sort_title:
+                cycleSortMode(window, Jukebox::MusicSortMode::titleAscending, Jukebox::MusicSortMode::titleDescending);
                 break;
             case sort_years:
                 cycleSortMode(window, Jukebox::MusicSortMode::yearsDescending, Jukebox::MusicSortMode::yearsAscending);

@@ -76,7 +76,7 @@ namespace OpenLoco::Jukebox
         return StringIds::music_none;
     }
 
-    static void sortPlaylistByName(std::vector<uint8_t>& playlist, bool reversed = false)
+    static void sortPlaylistByTitle(std::vector<uint8_t>& playlist, bool reversed = false)
     {
         // Sort alphabetically using lambda expression that compares localised music titles
         std::sort(playlist.begin(), playlist.end(), [reversed](int a, int b) {
@@ -111,12 +111,12 @@ namespace OpenLoco::Jukebox
                 assert(std::is_sorted(playlist.cbegin(), playlist.cend()));
                 break;
 
-            case MusicSortMode::name:
-                sortPlaylistByName(playlist);
+            case MusicSortMode::titleAscending:
+                sortPlaylistByTitle(playlist);
                 break;
 
-            case MusicSortMode::nameReverse:
-                sortPlaylistByName(playlist, true);
+            case MusicSortMode::titleDescending:
+                sortPlaylistByTitle(playlist, true);
                 break;
 
             case MusicSortMode::yearsAscending:

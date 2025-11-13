@@ -28,8 +28,8 @@ namespace OpenLoco::Jukebox
     enum class MusicSortMode : uint8_t
     {
         original, // In vanilla, music tracks were displayed in internal ID order.
-        name,
-        nameReverse,
+        titleAscending,
+        titleDescending,
         yearsAscending,
         yearsDescending,
     };
