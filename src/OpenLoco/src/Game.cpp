@@ -98,7 +98,7 @@ namespace OpenLoco::Game
         if (hasFlags(GameStateFlags::tileManagerLoaded))
         {
             Scenario::getOptions().scenarioFlags |= Scenario::ScenarioFlags::landscapeGenerationDone;
-            Scenario::drawScenarioPreviewImage();
+            Scenario::drawScenarioMiniMapImage();
         }
 
         auto path = Environment::getPath(Environment::PathId::landscape) / Scenario::getOptions().scenarioName;
