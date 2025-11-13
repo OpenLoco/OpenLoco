@@ -229,6 +229,10 @@ namespace OpenLoco::S5
         dst.currentYear = src.currentYear;
         dst.currentMonth = src.currentMonth;
         dst.currentDayOfMonth = src.currentDayOfMonth;
+        dst.savedViewX = src.savedViewX;
+        dst.savedViewY = src.savedViewY;
+        dst.savedViewZoom = src.savedViewZoom;
+        dst.savedViewRotation = src.savedViewRotation;
         dst.playerCompanies[0] = enumValue(src.playerCompanies[0]);
         dst.playerCompanies[1] = enumValue(src.playerCompanies[1]);
 
