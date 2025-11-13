@@ -3,7 +3,7 @@
 
 namespace OpenLoco::Scenario
 {
-    static Interop::loco_global<Options, 0x009C8714> _activeOptions;
+    static Options _activeOptions; // 0x009C8714
 
     Options& getOptions()
     {

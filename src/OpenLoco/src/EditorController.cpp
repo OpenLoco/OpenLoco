@@ -204,7 +204,7 @@ namespace OpenLoco::EditorController
         if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
         {
             options.scenarioFlags |= Scenario::ScenarioFlags::landscapeGenerationDone;
-            S5::drawScenarioPreviewImage();
+            Scenario::drawScenarioPreviewImage();
         }
 
         options.maxCompetingCompanies = CompanyManager::getMaxCompetingCompanies();
