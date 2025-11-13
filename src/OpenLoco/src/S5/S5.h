@@ -1,10 +1,6 @@
 #pragma once
 
 #include "Engine/Limits.h"
-#include "Objects/Object.h"
-#include "S5/S5GameState.h"
-#include "S5/S5TileElement.h"
-#include "World/CompanyManager.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <cstdint>
@@ -13,7 +9,9 @@
 
 namespace OpenLoco
 {
+    enum class CompanyFlags : uint32_t;
     enum class GameStateFlags : uint32_t;
+    struct ObjectHeader;
     class Stream;
 }
 
@@ -86,16 +84,7 @@ namespace OpenLoco::S5
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(S5FixFlags);
 
-    struct S5File
-    {
-        Header header;
-        std::unique_ptr<Options> scenarioOptions;
-        std::unique_ptr<SaveDetails> saveDetails;
-        ObjectHeader requiredObjects[859];
-        GameState gameState;
-        std::vector<TileElement> tileElements;
-        std::vector<std::pair<ObjectHeader, std::vector<std::byte>>> packedObjects;
-    };
+    struct S5File;
 
     enum class LoadFlags : uint32_t
     {

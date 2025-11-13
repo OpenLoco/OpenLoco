@@ -18,6 +18,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/ScenarioTextObject.h"
 #include "OpenLoco.h"
+#include "S5File.h"
 #include "S5Options.h"
 #include "SawyerStream.h"
 #include "ScenarioManager.h"

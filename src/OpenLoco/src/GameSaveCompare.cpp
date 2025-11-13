@@ -8,6 +8,7 @@
 #include "OpenLoco.h"
 #include "S5/Limits.h"
 #include "S5/S5.h"
+#include "S5/S5File.h"
 #include "S5/S5Options.h"
 #include "Vehicles/Vehicle.h"
 #include <OpenLoco/Core/FileStream.h>

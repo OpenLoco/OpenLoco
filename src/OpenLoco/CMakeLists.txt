@@ -684,6 +684,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Company.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Entity.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5GameState.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5File.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Industry.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5LabelFrame.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Station.h"
