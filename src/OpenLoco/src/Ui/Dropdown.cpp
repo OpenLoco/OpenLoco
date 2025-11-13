@@ -69,22 +69,22 @@ namespace OpenLoco::Ui::Dropdown
         1, 1, 1, 1, 2, 2, 3, 3, 4, 3, 5, 4, 4, 5, 5, 5, 4, 5, 6, 5, 5, 7, 4, 5, 6, 5, 6, 6, 6, 6, 6, 8, 8
     };
 
-    static char _byte_112CC04[512];
-    static uint8_t _windowDropdownOnpaintCellX;
-    static uint8_t _windowDropdownOnpaintCellY;
-    static uint16_t _dropdownItemCount;
-    static uint32_t _dropdownDisabledItems;
-    static uint32_t _dropdownItemHeight;
-    static uint32_t _dropdownItemWidth;
-    static uint32_t _dropdownColumnCount;
-    static uint32_t _dropdownRowCount;
-    static Flags _dropdownFlags;
-    static int16_t _dropdownHighlightedIndex;
-    static uint32_t _dropdownSelection;
-    static StringId _dropdownItemFormats[40];
-    static std::byte _dropdownItemArgs[40][kBytesPerItem];
-    static std::byte _dropdownItemArgs2[40][kBytesPerItem];
-    static uint8_t _menuOptions[40];
+    static char _byte_112CC04[512];                         // 0x0112CC04
+    static uint8_t _windowDropdownOnpaintCellX;             // 0x01136F94
+    static uint8_t _windowDropdownOnpaintCellY;             // 0x01136F96
+    static uint16_t _dropdownItemCount;                     // 0x0113D84C
+    static uint32_t _dropdownDisabledItems;                 // 0x0113DC60
+    static uint32_t _dropdownItemHeight;                    // 0x0113DC68
+    static uint32_t _dropdownItemWidth;                     // 0x0113DC6C
+    static uint32_t _dropdownColumnCount;                   // 0x0113DC70
+    static uint32_t _dropdownRowCount;                      // 0x0113DC74
+    static Flags _dropdownFlags;                            // 0x0113DC78
+    static int16_t _dropdownHighlightedIndex;               // 0x0113D84E
+    static uint32_t _dropdownSelection;                     // 0x0113DC64
+    static StringId _dropdownItemFormats[40];               // 0x0113D850
+    static std::byte _dropdownItemArgs[40][kBytesPerItem];  // 0x0113D8A0
+    static std::byte _dropdownItemArgs2[40][kBytesPerItem]; // 0x0113D9E0
+    static uint8_t _menuOptions[40];                        // 0x0113DB20
 
     static std::vector<std::optional<DropdownItemId>> _dropdownIds;
     static bool _dropdownUseDefault;
