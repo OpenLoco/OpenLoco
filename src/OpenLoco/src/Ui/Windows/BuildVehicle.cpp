@@ -293,7 +293,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static int16_t _numAvailableVehicles; // 0x01136268
 
     // Array of types if 0xFF then no type, flag (1<<7) as well
-    static uint8_t _trackTypesForTab[widxToTrackTypeTab(widx::tab_track_type_7) + 1];      // 0x011364F0
+    static uint8_t _trackTypesForTab[widxToTrackTypeTab(widx::tab_track_type_7) + 1]; // 0x011364F0
     static_assert(sizeof(uint8_t[widxToTrackTypeTab(widx::tab_track_type_7) + 1]) == 8);
 
     static uint16_t _availableVehicles[ObjectManager::getMaxObjects(ObjectType::vehicle)]; // 0x0113626A
