@@ -53,8 +53,8 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         Widgets::Caption({ 1, 1 }, { kWindowSizeDefault.width - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::music_selection_title),
         Widgets::ImageButton({ kWindowSizeDefault.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { kWindowSizeDefault.width, kWindowSizeDefault.height - 15 }, WindowColour::secondary),
-        Widgets::TableHeader({ kHorizontalPadding + 1, 17 }, { kWindowSizeDefault.width - kColumnYearsWidth - (kHorizontalPadding + 1), 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_track_title),
-        Widgets::TableHeader({ kHorizontalPadding + 1 + kWindowSizeDefault.width, 17 }, { kColumnYearsWidth, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_music_years),
+        Widgets::TableHeader({ kHorizontalPadding + 1, 17 }, { kWindowSizeDefault.width - 2 * kHorizontalPadding - kColumnYearsWidth - 1, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_track_title),
+        Widgets::TableHeader({ kWindowSizeDefault.width - kHorizontalPadding - kColumnYearsWidth, 17 }, { kColumnYearsWidth, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_music_years),
         Widgets::ScrollView({ kHorizontalPadding, 30 }, { kWindowSizeDefault.width - 2 * kHorizontalPadding, kWindowSizeDefault.height - kStatusBarClearance - 30 }, WindowColour::secondary, Scrollbars::vertical, StringIds::music_selection_tooltip),
         Widgets::Label({ kHorizontalPadding, kWindowSizeDefault.height - 12 }, { kWindowSizeMin.width - kHorizontalPadding - 20, 11 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
 
@@ -164,7 +164,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         self.widgets[widx::panel].bottom = self.height - 1;
 
         self.widgets[widx::sort_years].right = self.width - 1 - kHorizontalPadding;
-        self.widgets[widx::sort_years].left = self.widgets[widx::sort_years].right - kColumnYearsWidth;
+        self.widgets[widx::sort_years].left = self.widgets[widx::sort_years].right - kColumnYearsWidth + 1;
         self.widgets[widx::sort_title].right = self.widgets[widx::sort_years].left - 1;
         self.widgets[widx::scrollview].right = self.width - 1 - kHorizontalPadding;
         self.widgets[widx::scrollview].bottom = self.height - 1 - kStatusBarClearance;
