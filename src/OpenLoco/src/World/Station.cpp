@@ -34,12 +34,10 @@
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Bound.hpp>
 #include <algorithm>
 #include <cassert>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Literals;
