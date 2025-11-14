@@ -20,6 +20,8 @@ namespace OpenLoco::Ui
     using WidgetIndex_t = int16_t;
     constexpr WidgetIndex_t kWidgetIndexNull = -1;
 
+    constexpr auto kResizeHandleSize = 18;
+
     namespace Detail
     {
         // TODO: Move this to a more appropriate location.
