@@ -74,7 +74,6 @@ namespace OpenLoco::Vehicles
     static loco_global<uint8_t, 0x0113646D> _vehicleUpdate_helicopterTargetYaw;
     static loco_global<AirportMovementNodeFlags, 0x00525BB0> _vehicleUpdate_helicopterAirportMovement;
     static loco_global<uint32_t, 0x0112C30C> _vehicleUpdate_compatibleRoadStationTypes;
-    static loco_global<SignalStateFlags, 0x005220BC> _vehicleManagerIgnoreSignalFlagsMasks;
     static loco_global<uint8_t, 0x0113623B> _vehicleMangled_113623B; // This shouldn't be used as it will be mangled but it is
 
     static constexpr uint16_t kTrainOneWaySignalTimeout = 1920;
@@ -1552,7 +1551,7 @@ namespace OpenLoco::Vehicles
     bool VehicleHead::landNormalMovementUpdate()
     {
         advanceToNextRoutableOrder();
-        auto [al, flags, nextStation] = sub_4ACEE7(0xD4CB00, _vehicleUpdate_var_113612C);
+        auto [al, flags, nextStation] = sub_4ACEE7(0xD4CB00, _vehicleUpdate_var_113612C, false);
 
         if (mode == TransportMode::road)
         {
@@ -4425,7 +4424,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004ACEF1
-    static Sub4ACEE7Result sub_4ACEF1(VehicleHead& head, uint32_t unk1, uint32_t var_113612C)
+    static Sub4ACEE7Result sub_4ACEF1(VehicleHead& head, uint32_t unk1, uint32_t var_113612C, bool isPlaceDown)
     {
         // TRACK only
 
@@ -4603,7 +4602,9 @@ namespace OpenLoco::Vehicles
 
                 TrackAndDirection::_TrackAndDirection tad{ 0, 0 };
                 tad._data = connection & World::Track::AdditionalTaDFlags::basicTaDMask;
-                const auto signalState = getSignalState(nextPos, tad, head.trackType, 0U) & *_vehicleManagerIgnoreSignalFlagsMasks;
+                const auto keySignalStateFlags = isPlaceDown ? (SignalStateFlags::occupied)
+                                                             : (SignalStateFlags::occupied | SignalStateFlags::occupiedOneWay | SignalStateFlags::blockedNoRoute);
+                const auto signalState = getSignalState(nextPos, tad, head.trackType, 0U) & keySignalStateFlags;
 
                 if ((signalState & SignalStateFlags::blockedNoRoute) != SignalStateFlags::none)
                 {
@@ -4725,7 +4726,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004ACEE7
-    Sub4ACEE7Result VehicleHead::sub_4ACEE7(uint32_t unk1, uint32_t var_113612C)
+    Sub4ACEE7Result VehicleHead::sub_4ACEE7(uint32_t unk1, uint32_t var_113612C, bool isPlaceDown)
     {
         if (mode == TransportMode::road)
         {
@@ -4733,7 +4734,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            return sub_4ACEF1(*this, unk1, var_113612C);
+            return sub_4ACEF1(*this, unk1, var_113612C, isPlaceDown);
         }
     }
 
@@ -6627,7 +6628,7 @@ namespace OpenLoco::Vehicles
         var_3C = -train.veh2->remainingDistance;
         train.veh1->var_3C = -train.veh2->remainingDistance;
 
-        if (positionVehicleOnTrack(*this))
+        if (positionVehicleOnTrack(*this, false))
         {
             vehicleFlags |= VehicleFlags::commandStop;
             liftUpVehicle();
@@ -7113,14 +7114,14 @@ namespace OpenLoco::Vehicles
     // esi : head
     //
     // return eax : bool
-    bool positionVehicleOnTrack(VehicleHead& head)
+    bool positionVehicleOnTrack(VehicleHead& head, const bool isPlaceDown)
     {
         Vehicle train(head);
         _vehicleUpdate_1 = train.veh1;
         _vehicleUpdate_2 = train.veh2;
         for (auto i = 0; i < 32; ++i)
         {
-            const auto res = head.sub_4ACEE7(0, 0);
+            const auto res = head.sub_4ACEE7(0, 0, isPlaceDown);
             if (res.status != 0)
             {
                 break;
