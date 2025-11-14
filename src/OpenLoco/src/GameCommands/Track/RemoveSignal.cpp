@@ -174,7 +174,7 @@ namespace OpenLoco::GameCommands
             {
                 const Vehicles::TrackAndDirection::_TrackAndDirection tad(args.trackId, args.rotation);
 
-                Vehicles::sub_4A2AD7(trackStart, tad, getUpdatingCompanyId(), args.trackObjType);
+                Vehicles::updateSignalOccupiedInBlock(trackStart, tad, getUpdatingCompanyId(), args.trackObjType);
             }
         }
         return cost;
