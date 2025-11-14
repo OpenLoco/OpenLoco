@@ -2039,6 +2039,20 @@ namespace OpenLoco::StringIds
     constexpr StringId music_volume = 2373;
     constexpr StringId show_company_ai_planning = 2374;
     constexpr StringId show_company_ai_planning_tip = 2375;
+    constexpr StringId table_header_title = 2376;
+    constexpr StringId table_header_title_asc = 2377;
+    constexpr StringId table_header_title_desc = 2378;
+    constexpr StringId table_header_years = 2379;
+    constexpr StringId table_header_years_asc = 2380;
+    constexpr StringId table_header_years_desc = 2381;
+    constexpr StringId tooltip_sort_by_track_title = 2382;
+    constexpr StringId tooltip_sort_by_music_years = 2383;
+    constexpr StringId year_range = 2384;
+    constexpr StringId year_range_no_end = 2385;
+    constexpr StringId year_range_no_start = 2386;
+    constexpr StringId year_range_no_start_no_end = 2387;
+    constexpr StringId status_music_tracks_selected_singular = 2388;
+    constexpr StringId status_music_tracks_selected_plural = 2389;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
