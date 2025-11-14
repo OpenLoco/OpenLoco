@@ -56,7 +56,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         Widgets::TableHeader({ kHorizontalPadding + 1, 17 }, { kWindowSizeDefault.width - kColumnYearsWidth - (kHorizontalPadding + 1), 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_track_title),
         Widgets::TableHeader({ kHorizontalPadding + 1 + kWindowSizeDefault.width, 17 }, { kColumnYearsWidth, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_music_years),
         Widgets::ScrollView({ kHorizontalPadding, 30 }, { kWindowSizeDefault.width - 2 * kHorizontalPadding, kWindowSizeDefault.height - kStatusBarClearance - 30 }, WindowColour::secondary, Scrollbars::vertical, StringIds::music_selection_tooltip),
-        Widgets::Label({ kHorizontalPadding, kWindowSizeDefault.height - 12 }, { kWindowSizeDefault.width, 11 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
+        Widgets::Label({ kHorizontalPadding, kWindowSizeDefault.height - 12 }, { kWindowSizeMin.width - kHorizontalPadding - 20, 11 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
 
     );
 
