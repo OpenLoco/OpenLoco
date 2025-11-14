@@ -508,7 +508,7 @@ namespace OpenLoco::Vehicles
         }
         void movePlaneTo(const World::Pos3& newLoc, const uint8_t newYaw, const Pitch newPitch);
         void moveBoatTo(const World::Pos3& loc, const uint8_t yaw, const Pitch pitch);
-        Sub4ACEE7Result sub_4ACEE7(uint32_t unk1, uint32_t var_113612C);
+        Sub4ACEE7Result sub_4ACEE7(uint32_t unk1, uint32_t var_113612C, bool isPlaceDown);
 
     private:
         void updateDrivingSounds();
@@ -531,8 +531,8 @@ namespace OpenLoco::Vehicles
         bool updateAir();
         bool airplaneLoadingUpdate();
         bool sub_4A95CB();
-        bool sub_4A9348(uint8_t newMovementEdge, uint16_t targetZ);
-        bool airplaneApproachTarget(uint16_t targetZ);
+        bool sub_4A9348(uint8_t newMovementEdge, uint16_t targetZ, const uint32_t distanceToStation);
+        bool airplaneApproachTarget(uint16_t targetZ, const uint32_t manhattanDistanceToStation);
         std::pair<Status, Speed16> airplaneGetNewStatus();
         uint8_t airportGetNextMovementEdge(uint8_t curEdge);
         std::tuple<uint32_t, uint16_t, uint8_t> sub_427122();
@@ -1097,5 +1097,5 @@ namespace OpenLoco::Vehicles
     void connectJacobsBogies(VehicleHead& head);
 
     void applyVehicleObjectLength(Vehicle& train);
-    bool positionVehicleOnTrack(VehicleHead& head);
+    bool positionVehicleOnTrack(VehicleHead& head, const bool isPlaceDown);
 }

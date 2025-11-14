@@ -60,7 +60,6 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<uint32_t, 0x011360D0> _vehicleUpdate_manhattanDistanceToStation;
     static loco_global<VehicleHead*, 0x01136118> _vehicleUpdate_head;
     static loco_global<Vehicle1*, 0x0113611C> _vehicleUpdate_1;
     static loco_global<Vehicle2*, 0x01136120> _vehicleUpdate_2;
@@ -68,8 +67,7 @@ namespace OpenLoco::Vehicles
     static loco_global<VehicleBogie*, 0x01136128> _vehicleUpdate_backBogie;
     static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
     static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
-    static loco_global<int16_t, 0x01136168> _vehicleUpdate_targetZ;
-    static loco_global<uint16_t, 0x01136458> _1136458; // Actually just a bool
+    static loco_global<uint16_t, 0x01136458> _1136458;                  // Actually just a bool
     static loco_global<Status, 0x0113646C> _vehicleUpdate_initialStatus;
     static loco_global<uint8_t, 0x0113646D> _vehicleUpdate_helicopterTargetYaw;
     static loco_global<AirportMovementNodeFlags, 0x00525BB0> _vehicleUpdate_helicopterAirportMovement;
@@ -1813,9 +1811,6 @@ namespace OpenLoco::Vehicles
 
         auto [manhattanDistance, targetZ, targetYaw] = sub_427122();
 
-        _vehicleUpdate_manhattanDistanceToStation = manhattanDistance;
-        _vehicleUpdate_targetZ = targetZ;
-
         // Helicopter
         if ((_vehicleUpdate_helicopterAirportMovement & (AirportMovementNodeFlags::heliTakeoffEnd)) != AirportMovementNodeFlags::none)
         {
@@ -1884,7 +1879,7 @@ namespace OpenLoco::Vehicles
             vehType2->currentSpeed = 8.0_mph;
             if (targetZ != position.z)
             {
-                return airplaneApproachTarget(targetZ);
+                return airplaneApproachTarget(targetZ, manhattanDistance);
             }
         }
         else
@@ -1901,7 +1896,7 @@ namespace OpenLoco::Vehicles
 
             if (manhattanDistance > targetTolerance)
             {
-                return airplaneApproachTarget(targetZ);
+                return airplaneApproachTarget(targetZ, manhattanDistance);
             }
         }
 
@@ -1934,12 +1929,12 @@ namespace OpenLoco::Vehicles
 
         if (newMovementEdge != static_cast<uint8_t>(-2))
         {
-            return sub_4A9348(newMovementEdge, targetZ);
+            return sub_4A9348(newMovementEdge, targetZ, manhattanDistance);
         }
 
         if (vehType2->currentSpeed > 30.0_mph)
         {
-            return airplaneApproachTarget(targetZ);
+            return airplaneApproachTarget(targetZ, manhattanDistance);
         }
         else
         {
@@ -2082,7 +2077,8 @@ namespace OpenLoco::Vehicles
         {
             // Strangely the original would enter this function with an
             // uninitialised targetZ. We will pass a valid z.
-            return sub_4A9348(newMovementEdge, position.z);
+            // As we are passing position.z for targetZ the distance to station can be 0
+            return sub_4A9348(newMovementEdge, position.z, 0);
         }
 
         status = Status::loading;
@@ -2090,7 +2086,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A94A9
-    bool VehicleHead::airplaneApproachTarget(uint16_t targetZ)
+    bool VehicleHead::airplaneApproachTarget(uint16_t targetZ, const uint32_t manhattanDistanceToStation)
     {
         auto yaw = spriteYaw;
         // Helicopter
@@ -2111,7 +2107,7 @@ namespace OpenLoco::Vehicles
         if (targetZ != position.z)
         {
             // Final section of landing / helicopter
-            if (_vehicleUpdate_manhattanDistanceToStation <= 28)
+            if (manhattanDistanceToStation <= 28)
             {
                 int16_t zShift = 1;
                 if (vehType2->currentSpeed >= 50.0_mph)
@@ -2137,7 +2133,7 @@ namespace OpenLoco::Vehicles
                 int32_t zDiff = targetZ - position.z;
                 // We want a SAR instruction so use >>5
                 int32_t param1 = (zDiff * toSpeed16(vehType2->currentSpeed).getRaw()) >> 5;
-                int32_t param2 = _vehicleUpdate_manhattanDistanceToStation - 18;
+                int32_t param2 = manhattanDistanceToStation - 18;
 
                 auto modulo = param1 % param2;
                 if (modulo < 0)
@@ -2154,7 +2150,7 @@ namespace OpenLoco::Vehicles
         return true;
     }
 
-    bool VehicleHead::sub_4A9348(uint8_t newMovementEdge, uint16_t targetZ)
+    bool VehicleHead::sub_4A9348(uint8_t newMovementEdge, uint16_t targetZ, const uint32_t distanceToStation)
     {
         if (stationId != StationId::null && airportMovementEdge != kAirportMovementNodeNull)
         {
@@ -2169,7 +2165,7 @@ namespace OpenLoco::Vehicles
             {
                 // 0x4a94a5
                 airportMovementEdge = kAirportMovementNodeNull;
-                return airplaneApproachTarget(targetZ);
+                return airplaneApproachTarget(targetZ, distanceToStation);
             }
 
             auto orders = getCurrentOrders();
@@ -2177,7 +2173,7 @@ namespace OpenLoco::Vehicles
             if (order == nullptr)
             {
                 airportMovementEdge = kAirportMovementNodeNull;
-                return airplaneApproachTarget(targetZ);
+                return airplaneApproachTarget(targetZ, distanceToStation);
             }
 
             StationId orderStationId = order->getStation();
@@ -2187,14 +2183,14 @@ namespace OpenLoco::Vehicles
             if (station == nullptr || (station->flags & StationFlags::flag_6) == StationFlags::none)
             {
                 airportMovementEdge = kAirportMovementNodeNull;
-                return airplaneApproachTarget(targetZ);
+                return airplaneApproachTarget(targetZ, distanceToStation);
             }
 
             if (!CompanyManager::isPlayerCompany(owner))
             {
                 stationId = orderStationId;
                 airportMovementEdge = kAirportMovementNodeNull;
-                return airplaneApproachTarget(targetZ);
+                return airplaneApproachTarget(targetZ, distanceToStation);
             }
 
             Pos3 loc = station->airportStartPos;
@@ -2221,7 +2217,7 @@ namespace OpenLoco::Vehicles
                 {
                     stationId = orderStationId;
                     airportMovementEdge = kAirportMovementNodeNull;
-                    return airplaneApproachTarget(targetZ);
+                    return airplaneApproachTarget(targetZ, distanceToStation);
                 }
 
                 if (owner == CompanyManager::getControllingId())
@@ -2234,7 +2230,7 @@ namespace OpenLoco::Vehicles
                 }
 
                 airportMovementEdge = kAirportMovementNodeNull;
-                return airplaneApproachTarget(targetZ);
+                return airplaneApproachTarget(targetZ, distanceToStation);
             }
 
             // Todo: fail gracefully on tile not found
@@ -2251,7 +2247,7 @@ namespace OpenLoco::Vehicles
                 auto station = StationManager::get(stationId);
                 station->airportMovementOccupiedEdges |= (1 << airportMovementEdge);
             }
-            return airplaneApproachTarget(targetZ);
+            return airplaneApproachTarget(targetZ, distanceToStation);
         }
     }
 
