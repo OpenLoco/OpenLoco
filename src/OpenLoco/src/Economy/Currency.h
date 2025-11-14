@@ -13,6 +13,8 @@ namespace OpenLoco
         uint32_t var_00 = 0;
         int16_t var_04 = 0;
 
+        constexpr currency48_t() = default;
+
         constexpr currency48_t(int32_t currency)
             : currency48_t(static_cast<int64_t>(currency))
         {

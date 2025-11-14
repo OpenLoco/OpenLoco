@@ -11,6 +11,11 @@ namespace OpenLoco::World
         Pos2 _pos;
 
     public:
+        TileLoop() = default;
+        explicit TileLoop(const Pos2& startPos)
+            : _pos(startPos)
+        {
+        }
         Pos2 current() const { return _pos; }
         Pos2 next()
         {

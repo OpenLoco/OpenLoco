@@ -3,7 +3,7 @@
 
 namespace OpenLoco::S5::Limits
 {
-    constexpr size_t kMaxMessages = 199;
+    constexpr size_t kMaxMessages = 200;
     constexpr size_t kMaxCompanies = 15;
     constexpr size_t kMinTowns = 1;
     constexpr size_t kMaxTowns = 80;
