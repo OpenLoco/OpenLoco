@@ -631,8 +631,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
-    static loco_global<uint16_t[kMaxObjectTypes], 0x0112C1C5> _112C1C5;
-    static loco_global<uint32_t, 0x0112C209> _112C209;
+    static loco_global<ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
 
     // 0x0047328D
     static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx)
@@ -1030,7 +1029,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
 
         auto args = FormatArguments();
-        args.push(_112C1C5[enumValue(type)]);
+        args.push(_objectSelectionMeta[enumValue(type)]);
         args.push(ObjectManager::getMaxObjects(type));
 
         {
@@ -1555,11 +1554,12 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 if (oldIndex != ObjectManager ::kNullObjectIndex)
                 {
                     ObjectManager::ObjectSelectionMeta meta{};
-                    std::copy(std::begin(_112C1C5), std::end(_112C1C5), std::begin(meta.numSelectedObjects));
-                    meta.numImages = _112C209;
+                    std::copy(std::begin(_objectSelectionMeta), std::end(_objectSelectionMeta), std::begin(meta.numSelectedObjects));
+                    meta.numImages = _objectSelectionMeta.numImages;
+
                     ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultDeselect, oldObject._header, selectionFlags, meta);
-                    std::copy(std::begin(meta.numSelectedObjects), std::end(meta.numSelectedObjects), std::begin(_112C1C5));
-                    _112C209 = meta.numImages;
+                    std::copy(std::begin(meta.numSelectedObjects), std::end(meta.numSelectedObjects), std::begin(_objectSelectionMeta));
+                    _objectSelectionMeta.numImages = meta.numImages;
                 }
             }
         }
@@ -1572,11 +1572,12 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
 
         ObjectManager::ObjectSelectionMeta meta{};
-        std::copy(std::begin(_112C1C5), std::end(_112C1C5), std::begin(meta.numSelectedObjects));
-        meta.numImages = _112C209;
+        std::copy(std::begin(_objectSelectionMeta), std::end(_objectSelectionMeta), std::begin(meta.numSelectedObjects));
+        meta.numImages = _objectSelectionMeta.numImages;
+
         bool success = ObjectManager::selectObjectFromIndex(mode, object, selectionFlags, meta);
-        std::copy(std::begin(meta.numSelectedObjects), std::end(meta.numSelectedObjects), std::begin(_112C1C5));
-        _112C209 = meta.numImages;
+        std::copy(std::begin(meta.numSelectedObjects), std::end(meta.numSelectedObjects), std::begin(_objectSelectionMeta));
+        _objectSelectionMeta.numImages = meta.numImages;
 
         if (success)
         {
@@ -1584,7 +1585,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
 
         auto errorTitle = StringIds::error_unable_to_select_object;
-
         if ((mode & ObjectManager::SelectObjectModes::select) == ObjectManager::SelectObjectModes::none)
         {
             errorTitle = StringIds::error_unable_to_deselect_object;
