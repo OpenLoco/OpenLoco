@@ -1250,7 +1250,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         auto width = self.width - 4;
         drawingCtx.drawRectInset(xPos, yPos, width, 1, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset);
 
-        if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::station))
+        // Following information is only calculated when a ghost has been placed
+        if (!Common::hasGhostVisibilityFlag(GhostVisibilityFlags::station))
         {
             return;
         }
