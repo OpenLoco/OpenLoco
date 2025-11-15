@@ -218,9 +218,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         return std::span<ObjectManager::SelectedObjectsFlags>(*_objectSelection, ObjectManager::getNumInstalledObjects());
     }
 
-    // _tabObjectCounts can be integrated after implementing sub_473A95
-    static loco_global<uint16_t[33], 0x00112C181> _tabObjectCounts;
-
     static std::vector<TabObjectEntry> _tabObjectList;
     static uint16_t _numVisibleObjectsListed;
     static bool _filterByVehicleType = false;
@@ -330,14 +327,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
 
         // Skip all types that don't have any objects
-        auto objectType = enumValue(tabInfo.objectType);
-        if (_tabObjectCounts[objectType] == 0)
+        auto numObjectsForType = ObjectManager::getObjectCountByType(tabInfo.objectType);
+        if (numObjectsForType == 0)
         {
             return false;
         }
 
         // Skip certain object types that only have one entry in game
-        if ((tabFlags & ObjectTabFlags::showEvenIfSingular) == ObjectTabFlags::none && _tabObjectCounts[objectType] == 1)
+        if ((tabFlags & ObjectTabFlags::showEvenIfSingular) == ObjectTabFlags::none && numObjectsForType == 1)
         {
             return false;
         }
