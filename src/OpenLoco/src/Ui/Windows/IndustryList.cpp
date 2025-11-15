@@ -38,9 +38,6 @@
 #include "Ui/WindowManager.h"
 #include "World/IndustryManager.h"
 #include <OpenLoco/Engine/World.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::IndustryList
 {
@@ -1023,7 +1020,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
             auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 4);
             drawingCtx.clearSingle(shade);
 
-            loco_global<uint16_t, 0x00E0C3C6> _word_E0C3C6;
             uint16_t xPos = 0;
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < self.var_83C; i++)
@@ -1043,18 +1039,15 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     break;
                 }
 
-                _word_E0C3C6 = 0xFFFF;
                 if (self.rowInfo[i] != self.rowHover)
                 {
                     if (self.rowInfo[i] == self.var_846)
                     {
-                        _word_E0C3C6 = AdvancedColour::translucentFlag;
                         drawingCtx.drawRectInset(xPos, yPos, kRowHeight, kRowHeight, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::colourLight);
                     }
                 }
                 else
                 {
-                    _word_E0C3C6 = AdvancedColour::translucentFlag | AdvancedColour::outlineFlag;
                     drawingCtx.drawRectInset(xPos, yPos, kRowHeight, kRowHeight, self.getColour(WindowColour::secondary), (Gfx::RectInsetFlags::colourLight | Gfx::RectInsetFlags::borderInset));
                 }
 

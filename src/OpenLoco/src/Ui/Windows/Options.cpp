@@ -52,7 +52,6 @@ namespace OpenLoco::Ui::Windows::Options
 
     // Pointer to an array of SelectedObjectsFlags
     static loco_global<ObjectManager::SelectedObjectsFlags*, 0x011364A0> __11364A0;
-    static loco_global<uint16_t, 0x0112C185> _112C185;
 
     // TODO: This shouldn't be required but its due to how the lifetime
     // of the string needs to exist beyond a prepare draw function and
@@ -1551,8 +1550,10 @@ namespace OpenLoco::Ui::Windows::Options
         {
             const auto selectedObjectFlags = getLoadedSelectedObjectFlags();
 
-            Widget dropdown = w->widgets[Widx::currency];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), _112C185, 0x80);
+            auto& dropdown = w->widgets[Widx::currency];
+            auto numItems = ObjectManager::getNumAvailableObjectsByType(ObjectType::currency);
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), numItems, 0x80);
+
             int index = -1;
             for (auto& object : _availableCurrencies)
             {
@@ -1605,8 +1606,9 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C0DCF
         static void preferredCurrencyMouseDown(Window* w)
         {
-            Widget dropdown = w->widgets[Widx::preferred_currency];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), _112C185, 0x80);
+            auto& dropdown = w->widgets[Widx::preferred_currency];
+            auto numItems = ObjectManager::getNumAvailableObjectsByType(ObjectType::currency);
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), numItems, 0x80);
 
             int index = -1;
             for (auto& object : _availableCurrencies)

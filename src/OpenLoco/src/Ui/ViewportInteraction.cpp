@@ -1474,8 +1474,6 @@ namespace OpenLoco::Ui::ViewportInteraction
     std::pair<ViewportInteraction::InteractionArg, Viewport*> getMapCoordinatesFromPos(int32_t screenX, int32_t screenY, InteractionItemFlags flags)
     {
         static loco_global<uint8_t, 0x0050BF68> _50BF68; // If in get map coords
-        static loco_global<Gfx::RenderTarget, 0x00E0C3E4> _rt1;
-        static loco_global<Gfx::RenderTarget, 0x00E0C3F4> _rt2;
 
         _50BF68 = 1;
         ViewportInteraction::InteractionArg interaction{};
@@ -1502,14 +1500,18 @@ namespace OpenLoco::Ui::ViewportInteraction
 
             chosenV = vp;
             auto vpPos = vp->screenToViewport({ screenPos.x, screenPos.y });
-            _rt1->zoomLevel = vp->zoom;
-            _rt1->x = (0xFFFF << vp->zoom) & vpPos.x;
-            _rt1->y = (0xFFFF << vp->zoom) & vpPos.y;
-            _rt2->x = _rt1->x;
-            _rt2->y = _rt1->y;
-            _rt2->width = 1;
-            _rt2->height = 1;
-            _rt2->zoomLevel = _rt1->zoomLevel;
+
+            Gfx::RenderTarget _rt1; // 0x00E0C3E4
+            _rt1.zoomLevel = vp->zoom;
+            _rt1.x = (0xFFFF << vp->zoom) & vpPos.x;
+            _rt1.y = (0xFFFF << vp->zoom) & vpPos.y;
+
+            Gfx::RenderTarget _rt2; // 0x00E0C3F4
+            _rt2.x = _rt1.x;
+            _rt2.y = _rt1.y;
+            _rt2.width = 1;
+            _rt2.height = 1;
+            _rt2.zoomLevel = _rt1.zoomLevel;
 
             Paint::SessionOptions options{};
             options.rotation = vp->getRotation();
@@ -1522,7 +1524,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             interaction = session.getNormalInteractionInfo(flags);
             if (!vp->hasFlags(ViewportFlags::station_names_displayed))
             {
-                if (_rt2->zoomLevel <= Config::get().stationNamesMinScale)
+                if (_rt2.zoomLevel <= Config::get().stationNamesMinScale)
                 {
                     auto stationInteraction = session.getStationNameInteractionInfo(flags);
                     if (stationInteraction.type != InteractionItem::noInteraction)

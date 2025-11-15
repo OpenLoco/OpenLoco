@@ -36,15 +36,13 @@
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/String.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui::Windows::Station
 {
-    static loco_global<StationId, 0x00112C786> _lastSelectedStation;
+    static StationId _lastSelectedStation; // 0x0112C786
 
     using Vehicles::VehicleHead;
 
