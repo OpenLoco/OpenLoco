@@ -2,7 +2,7 @@
 
 // clang-format off
 
-#define OPENLOCO_NAME "OpenLoco TEST"
+#define OPENLOCO_NAME "OpenLoco"
 
 #if defined(__amd64__) || defined(_M_AMD64)
     #define OPENLOCO_ARCHITECTURE "x86-64"
