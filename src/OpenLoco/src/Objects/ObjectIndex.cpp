@@ -47,8 +47,8 @@ namespace OpenLoco::ObjectManager
     // Was previously 0x0050D13C count was in 0x0112A110
     static std::vector<ObjectIndexEntry> _installedObjectList;
     static bool _customObjectsInIndex;
-    static bool _isFirstTime;                                        // 0x0050AEAD
-    static std::array<uint16_t, kMaxObjectTypes> _numObjectsPerType; // 0x0112C181
+    static bool _isFirstTime = false;                                  // 0x0050AEAD
+    static std::array<uint16_t, kMaxObjectTypes> _numObjectsPerType{}; // 0x0112C181
 
     static loco_global<bool, 0x0050D161> _isPartialLoaded;
     static loco_global<int32_t, 0x0050D148> _50D144refCount;

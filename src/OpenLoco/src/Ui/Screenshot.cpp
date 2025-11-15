@@ -23,7 +23,7 @@ using namespace OpenLoco::Ui;
 
 namespace OpenLoco::Ui
 {
-    static int8_t _screenshotCountdown; // 0x00508F16
+    static int8_t _screenshotCountdown = 0; // 0x00508F16
 
     static ScreenshotType _screenshotType = ScreenshotType::regular;
 
