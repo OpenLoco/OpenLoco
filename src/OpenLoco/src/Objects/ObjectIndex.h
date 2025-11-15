@@ -51,6 +51,7 @@ namespace OpenLoco::ObjectManager
     void loadIndex();
 
     std::vector<ObjIndexPair> getAvailableObjects(ObjectType type);
+    uint16_t getNumAvailableObjectsByType(ObjectType type);
     bool isObjectInstalled(const ObjectHeader& objectHeader);
     std::optional<ObjectIndexEntry> findObjectInIndex(const ObjectHeader& objectHeader);
     const ObjectIndexEntry& getObjectInIndex(ObjectIndexId index);

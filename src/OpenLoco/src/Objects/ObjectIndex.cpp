@@ -47,13 +47,13 @@ namespace OpenLoco::ObjectManager
     // Was previously 0x0050D13C count was in 0x0112A110
     static std::vector<ObjectIndexEntry> _installedObjectList;
     static bool _customObjectsInIndex;
+    static bool _isFirstTime = false;                                  // 0x0050AEAD
+    static std::array<uint16_t, kMaxObjectTypes> _numObjectsPerType{}; // 0x0112C181
 
-    static loco_global<bool, 0x0050AEAD> _isFirstTime;
     static loco_global<bool, 0x0050D161> _isPartialLoaded;
     static loco_global<int32_t, 0x0050D148> _50D144refCount;
     static loco_global<SelectedObjectsFlags*, 0x0050D144> _50D144;
     static loco_global<ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
-    static loco_global<std::array<uint16_t, kMaxObjectTypes>, 0x0112C181> _numObjectsPerType;
 
     static constexpr uint8_t kCurrentIndexVersion = 5;
     static constexpr uint32_t kMaxStringLength = 1024;
@@ -588,6 +588,11 @@ namespace OpenLoco::ObjectManager
         }
 
         return list;
+    }
+
+    uint16_t getNumAvailableObjectsByType(ObjectType type)
+    {
+        return _numObjectsPerType[enumValue(type)];
     }
 
     static std::optional<ObjIndexPair> internalFindObjectInIndex(const ObjectHeader& objectHeader)
@@ -1127,7 +1132,7 @@ namespace OpenLoco::ObjectManager
 
         for (auto& entry : _installedObjectList)
         {
-            (*_numObjectsPerType)[enumValue(entry._header.getType())]++;
+            _numObjectsPerType[enumValue(entry._header.getType())]++;
         }
         if (markInUse)
         {
