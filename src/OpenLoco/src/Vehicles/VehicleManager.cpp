@@ -25,8 +25,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::VehicleManager
 {
-    static loco_global<Vehicles::SignalStateFlags, 0x005220BC> _vehicleManagerIgnoreSignalFlagsMasks;
-
     // 0x004A8826
     void update()
     {
@@ -243,13 +241,11 @@ namespace OpenLoco::VehicleManager
             moveComponentToSubPosition(component);
         });
 
-        _vehicleManagerIgnoreSignalFlagsMasks &= ~(Vehicles::SignalStateFlags::occupiedOneWay | Vehicles::SignalStateFlags::blockedNoRoute);
         Vehicles::applyVehicleObjectLength(train);
         auto oldVar52 = head->var_52;
         head->var_52 = 1;
-        const bool failure = Vehicles::positionVehicleOnTrack(*head);
+        const bool failure = Vehicles::positionVehicleOnTrack(*head, true);
         head->var_52 = oldVar52;
-        _vehicleManagerIgnoreSignalFlagsMasks |= (Vehicles::SignalStateFlags::occupiedOneWay | Vehicles::SignalStateFlags::blockedNoRoute);
 
         if (failure)
         {
