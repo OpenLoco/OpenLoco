@@ -11,7 +11,6 @@
 #include "Ui.h"
 #include "WindowManager.h"
 #include <OpenLoco/Core/Exception.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Platform.h>
 #include <cstdint>
 #include <fstream>
@@ -20,12 +19,11 @@
 
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non-portable
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 
 namespace OpenLoco::Ui
 {
-    static loco_global<int8_t, 0x00508F16> _screenshotCountdown;
+    static int8_t _screenshotCountdown; // 0x00508F16
 
     static ScreenshotType _screenshotType = ScreenshotType::regular;
 
