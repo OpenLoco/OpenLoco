@@ -1811,7 +1811,7 @@ namespace OpenLoco::Vehicles
 
         uint8_t targetYaw = airportApproachParams.targetYaw;
         // Helicopter
-        if ((airportApproachParams.helicopterAirportMovement & (AirportMovementNodeFlags::heliTakeoffEnd)) != AirportMovementNodeFlags::none)
+        if (airportApproachParams.isHeliTakeOffEnd)
         {
             targetYaw = spriteYaw;
             vehType2->motorState = MotorState::accelerating;
@@ -1872,7 +1872,7 @@ namespace OpenLoco::Vehicles
         }
 
         // Helicopter
-        if ((airportApproachParams.helicopterAirportMovement & AirportMovementNodeFlags::heliTakeoffEnd) != AirportMovementNodeFlags::none)
+        if (airportApproachParams.isHeliTakeOffEnd)
         {
             vehType2->currentSpeed = 8.0_mph;
             if (airportApproachParams.targetZ != position.z)
@@ -2091,7 +2091,7 @@ namespace OpenLoco::Vehicles
     {
         auto yaw = spriteYaw;
         // Helicopter
-        if ((params.helicopterAirportMovement & AirportMovementNodeFlags::heliTakeoffEnd) != AirportMovementNodeFlags::none)
+        if (params.isHeliTakeOffEnd)
         {
             yaw = params.targetYaw;
         }
@@ -2389,7 +2389,7 @@ namespace OpenLoco::Vehicles
                 else
                 {
                     auto [flags, pos] = airportGetMovementEdgeTarget(stationId, airportMovementEdge);
-                    res.helicopterAirportMovement = flags;
+                    res.isHeliTakeOffEnd = (flags & AirportMovementNodeFlags::heliTakeoffEnd) != AirportMovementNodeFlags::none;
                     targetPos = pos;
                 }
             }

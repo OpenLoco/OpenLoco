@@ -430,10 +430,10 @@ namespace OpenLoco::Vehicles
 
     struct AirplaneApproachTargetParams
     {
-        uint16_t targetZ;                                   // 0x01136168
-        uint32_t manhattanDistanceToStation;                // 0x011360D0
-        uint8_t targetYaw;                                  // 0x0113646D
-        AirportMovementNodeFlags helicopterAirportMovement; // 0x00525BB0
+        uint16_t targetZ = 0U;                    // 0x01136168
+        uint32_t manhattanDistanceToStation = 0U; // 0x011360D0
+        uint8_t targetYaw = 0U;                   // 0x0113646D
+        bool isHeliTakeOffEnd = false;            // 0x00525BB0
     };
 
     struct VehicleHead : VehicleBase
