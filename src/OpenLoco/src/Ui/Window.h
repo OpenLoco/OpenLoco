@@ -53,7 +53,7 @@ namespace OpenLoco::Ui
         flag_8 = 1U << 8,
         resizable = 1U << 9,
         noAutoClose = 1U << 10,
-        flag_11 = 1U << 11,
+        lighterFrame = 1U << 11,
         flag_12 = 1U << 12,
         openQuietly = 1U << 13,
         notScrollView = 1U << 14,
@@ -314,16 +314,8 @@ namespace OpenLoco::Ui
             return (flags & flagsToTest) != WindowFlags::none;
         }
 
-        bool isVisible()
-        {
-            return true;
-        }
-
-        bool isTranslucent()
-        {
-            return this->hasFlags(WindowFlags::transparent);
-        }
-
+        bool isVisible();
+        bool isTranslucent();
         bool isEnabled(WidgetIndex_t widgetIndex);
         bool isDisabled(WidgetIndex_t widgetIndex);
         bool isActivated(WidgetIndex_t index);
