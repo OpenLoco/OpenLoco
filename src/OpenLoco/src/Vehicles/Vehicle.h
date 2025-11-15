@@ -428,6 +428,14 @@ namespace OpenLoco::Vehicles
         StationId stationId;
     };
 
+    struct AirplaneApproachTargetParams
+    {
+        uint16_t targetZ;                                   // 0x01136168
+        uint32_t manhattanDistanceToStation;                // 0x011360D0
+        uint8_t targetYaw;                                  // 0x0113646D
+        AirportMovementNodeFlags helicopterAirportMovement; // 0x00525BB0
+    };
+
     struct VehicleHead : VehicleBase
     {
         static constexpr auto kVehicleThingType = VehicleEntityType::head;
@@ -531,11 +539,11 @@ namespace OpenLoco::Vehicles
         bool updateAir();
         bool airplaneLoadingUpdate();
         bool sub_4A95CB();
-        bool sub_4A9348(uint8_t newMovementEdge, uint16_t targetZ, const uint32_t distanceToStation);
-        bool airplaneApproachTarget(uint16_t targetZ, const uint32_t manhattanDistanceToStation);
+        bool sub_4A9348(uint8_t newMovementEdge, const AirplaneApproachTargetParams& approachParams);
+        bool airplaneApproachTarget(const AirplaneApproachTargetParams& params);
         std::pair<Status, Speed16> airplaneGetNewStatus();
         uint8_t airportGetNextMovementEdge(uint8_t curEdge);
-        std::tuple<uint32_t, uint16_t, uint8_t> sub_427122();
+        AirplaneApproachTargetParams sub_427122();
         std::pair<AirportMovementNodeFlags, World::Pos3> airportGetMovementEdgeTarget(StationId targetStation, uint8_t curEdge);
         bool updateWater();
         void tryCreateInitialMovementSound();
