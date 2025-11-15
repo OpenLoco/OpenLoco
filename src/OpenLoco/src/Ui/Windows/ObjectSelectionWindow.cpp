@@ -327,7 +327,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
 
         // Skip all types that don't have any objects
-        auto numObjectsForType = ObjectManager::getObjectCountByType(tabInfo.objectType);
+        auto numObjectsForType = ObjectManager::getNumAvailableObjectsByType(tabInfo.objectType);
         if (numObjectsForType == 0)
         {
             return false;

@@ -1551,7 +1551,7 @@ namespace OpenLoco::Ui::Windows::Options
             const auto selectedObjectFlags = getLoadedSelectedObjectFlags();
 
             auto& dropdown = w->widgets[Widx::currency];
-            auto numItems = ObjectManager::getObjectCountByType(ObjectType::currency);
+            auto numItems = ObjectManager::getNumAvailableObjectsByType(ObjectType::currency);
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), numItems, 0x80);
 
             int index = -1;
@@ -1607,7 +1607,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void preferredCurrencyMouseDown(Window* w)
         {
             auto& dropdown = w->widgets[Widx::preferred_currency];
-            auto numItems = ObjectManager::getObjectCountByType(ObjectType::currency);
+            auto numItems = ObjectManager::getNumAvailableObjectsByType(ObjectType::currency);
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), numItems, 0x80);
 
             int index = -1;

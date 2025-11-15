@@ -590,7 +590,7 @@ namespace OpenLoco::ObjectManager
         return list;
     }
 
-    uint16_t getObjectCountByType(ObjectType type)
+    uint16_t getNumAvailableObjectsByType(ObjectType type)
     {
         return _numObjectsPerType[enumValue(type)];
     }
