@@ -74,7 +74,7 @@ namespace OpenLoco::Ui::Windows::StationList
         Widgets::TableHeader({ 404, 43 }, { 90, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_total_units_waiting),
         Widgets::TableHeader({ 494, 43 }, { 120, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_cargo_accepted),
         Widgets::ScrollView({ 3, 56 }, { 594, 126 }, WindowColour::secondary, Scrollbars::vertical),
-        Widgets::Label({ 4, kWindowSize.height - 12 }, { kWindowSize.width, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
+        Widgets::Label({ 4, kWindowSize.height - 12 }, { kWindowSize.width - kResizeHandleSize, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
 
     );
 
@@ -442,6 +442,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
         window.widgets[widx::scrollview].right = window.width - 4;
         window.widgets[widx::scrollview].bottom = window.height - 14;
+        window.widgets[widx::status_bar].right = window.width - kResizeHandleSize - 1;
 
         // Reposition header buttons.
         window.widgets[widx::sort_name].right = std::min(203, window.width - 4);

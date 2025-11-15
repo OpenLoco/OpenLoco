@@ -1292,7 +1292,7 @@ namespace OpenLoco::Input
             case Ui::WidgetType::panel:
             case Ui::WidgetType::newsPanel:
             case Ui::WidgetType::frame:
-                if (window->canResize() && (x >= (window->x + window->width - 19)) && (y >= (window->y + window->height - 19)))
+                if (window->canResize() && (x >= (window->x + window->width - kResizeHandleSize - 1)) && (y >= (window->y + window->height - kResizeHandleSize - 1)))
                 {
                     windowResizeBegin(x, y, window, widgetIndex);
                 }
