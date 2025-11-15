@@ -1553,8 +1553,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
                 if (oldIndex != ObjectManager ::kNullObjectIndex)
                 {
-                    ObjectManager::ObjectSelectionMeta meta = *_objectSelectionMeta;
-
+                    auto meta = *_objectSelectionMeta;
                     ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultDeselect, oldObject._header, selectionFlags, meta);
                     *_objectSelectionMeta = meta;
                 }
@@ -1567,7 +1566,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             mode = ObjectManager::SelectObjectModes::defaultSelect;
         }
 
-        ObjectManager::ObjectSelectionMeta meta = *_objectSelectionMeta;
+        auto meta = *_objectSelectionMeta;
         bool success = ObjectManager::selectObjectFromIndex(mode, object, selectionFlags, meta);
         *_objectSelectionMeta = meta;
 
