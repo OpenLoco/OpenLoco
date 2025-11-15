@@ -426,7 +426,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         Window* self = WindowManager::createWindow(
             WindowType::vehicleList,
             kWindowSize,
-            WindowFlags::flag_11,
+            WindowFlags::lighterFrame,
             getEvents());
 
         self->setWidgets(_widgets);
