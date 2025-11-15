@@ -67,7 +67,6 @@ namespace OpenLoco::Vehicles
     static loco_global<VehicleBogie*, 0x01136128> _vehicleUpdate_backBogie;
     static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
     static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
-    static loco_global<Status, 0x0113646C> _vehicleUpdate_initialStatus;
     static loco_global<uint32_t, 0x0112C30C> _vehicleUpdate_compatibleRoadStationTypes;
     static loco_global<uint8_t, 0x0113623B> _vehicleMangled_113623B; // This shouldn't be used as it will be mangled but it is
 
@@ -158,7 +157,7 @@ namespace OpenLoco::Vehicles
         _vehicleUpdate_1 = train.veh1;
         _vehicleUpdate_2 = train.veh2;
 
-        _vehicleUpdate_initialStatus = status;
+        const auto initialStatus = status;
         updateDrivingSounds();
 
         _vehicleUpdate_frontBogie = reinterpret_cast<VehicleBogie*>(0xFFFFFFFF);
@@ -205,7 +204,7 @@ namespace OpenLoco::Vehicles
         }
         if (continueUpdating)
         {
-            tryCreateInitialMovementSound();
+            tryCreateInitialMovementSound(initialStatus);
         }
         return continueUpdating;
     }
@@ -2625,14 +2624,14 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004B980A
-    void VehicleHead::tryCreateInitialMovementSound()
+    void VehicleHead::tryCreateInitialMovementSound(const Status initialStatus)
     {
         if (status != Status::travelling)
         {
             return;
         }
 
-        if (_vehicleUpdate_initialStatus != Status::stopped && _vehicleUpdate_initialStatus != Status::waitingAtSignal)
+        if (initialStatus != Status::stopped && initialStatus != Status::waitingAtSignal)
         {
             return;
         }

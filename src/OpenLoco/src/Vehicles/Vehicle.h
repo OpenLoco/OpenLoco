@@ -546,7 +546,7 @@ namespace OpenLoco::Vehicles
         AirplaneApproachTargetParams sub_427122();
         std::pair<AirportMovementNodeFlags, World::Pos3> airportGetMovementEdgeTarget(StationId targetStation, uint8_t curEdge);
         bool updateWater();
-        void tryCreateInitialMovementSound();
+        void tryCreateInitialMovementSound(const Status initialStatus);
         void setStationVisitedTypes();
         void checkIfAtOrderStation();
         void updateLastJourneyAverageSpeed();
