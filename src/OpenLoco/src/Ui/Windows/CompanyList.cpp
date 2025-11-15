@@ -414,6 +414,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             self.widgets[widx::scrollview].right = self.width - 4;
             self.widgets[widx::scrollview].bottom = self.height - 14;
+            self.widgets[widx::status_bar].right = self.width - kResizeHandleSize - 1;
 
             // Reposition header buttons
             self.widgets[widx::sort_name].right = std::min(178, self.width - 8);

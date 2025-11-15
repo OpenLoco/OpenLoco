@@ -130,6 +130,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             self.widgets[widx::scrollview].right = self.width - 4;
             self.widgets[widx::scrollview].bottom = self.height - 14;
+            self.widgets[widx::status_bar].right = self.width - kResizeHandleSize - 1;
 
             // Reposition header buttons
             self.widgets[widx::sort_town_name].right = std::min(203, self.width - 8);
