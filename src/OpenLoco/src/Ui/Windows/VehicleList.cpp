@@ -550,6 +550,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         self.widgets[Widx::scrollview].right = self.width - 4;
         self.widgets[Widx::scrollview].bottom = self.height - 14;
+        self.widgets[Widx::status_bar].right = self.width - kResizeHandleSize - 1;
 
         // Reposition table headers
         self.widgets[Widx::sort_name].right = std::min(self.width - 4, 313);

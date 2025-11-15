@@ -442,6 +442,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
         window.widgets[widx::scrollview].right = window.width - 4;
         window.widgets[widx::scrollview].bottom = window.height - 14;
+        window.widgets[widx::status_bar].right = window.width - kResizeHandleSize - 1;
 
         // Reposition header buttons.
         window.widgets[widx::sort_name].right = std::min(203, window.width - 4);
