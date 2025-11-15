@@ -2315,7 +2315,7 @@ strings:
   2260: "{COLOUR WINDOW_2} Długość: {COLOUR BLACK}{INT32_2DP} pól/pola"
   2261: "{NEWLINE}{COLOUR WINDOW_2} Długość: {COLOUR BLACK}{INT32_2DP} pól/pola"
   2262: "{NEWLINE}Długość:  {INT32_2DP} pól/pola"
-  2263: "{COLOUR WINDOW_2}{UINT16}/{UINT16}"
+  2263: "{COLOUR BLACK}{UINT16}/{UINT16}"
   2264: "Gigantyczny zrzut ekranu"
   2265: "{COLOUR WINDOW_2} Nazwa pliku: {COLOUR BLACK}{STRINGID}"
   2266: "Opcje scenariusza"
