@@ -2036,7 +2036,7 @@ strings:
   1982: "{COLOUR WINDOW_2}"
 
   1983: Entfernung x Gelieferte Einheiten Ladung pro Monat
-  1984: "{SMALLFONT}{COLOUR BLACK}Stellt gelieferte Ladung und Entfernung für jede Firma grafisch dar"
+  1984: "{SMALLFONT}{COLOUR BLACK}Stellt gelieferte Ladung und Entfernung für jedes Unternehmen grafisch dar"
   1985: "{COLOUR WINDOW_2}Durchschnittsgeschwindigkeit letzte Fahrt: {COLOUR BLACK}{VELOCITY}"
   1986: Land
   1987: Luft
@@ -2059,7 +2059,7 @@ strings:
   2004: "{COLOUR WINDOW_2}Dateiname:"
   2005: "{COLOUR WINDOW_2}Ordner: {COLOUR BLACK}{STRINGID}"
   2006: "{SMALLFONT}{COLOUR BLACK}Einen Schritt nach oben"
-  2007: "{COLOUR WINDOW_2}Firma: {COLOUR BLACK}{STRINGID}"
+  2007: "{COLOUR WINDOW_2}Unternehmen: {COLOUR BLACK}{STRINGID}"
   2008: "{COLOUR WINDOW_2}Datum: {COLOUR BLACK}{DATE DMY}"
   2009: "{COLOUR WINDOW_2}Herausforderungs-Fortschritt: {COLOUR BLACK}{INT16}%"
   2010: "{COLOUR WINDOW_2}Herausforderung: {COLOUR BLACK}Vollendet"
@@ -2183,5 +2183,37 @@ strings:
   2128: Fenstermodus
   2129: Vollbild
   2130: Vollbild (Randlos)
+  2131: Standard-Soundgerät
+  2132: "{COLOUR WINDOW_2}Fensterskalierungsfaktor:"
+
+  2136: "{COLOUR WINDOW_2}Zum Mauszeiger zoomen"
+  2137: "{SMALLFONT}{COLOUR BLACK}Wählen Sie ob beim Hereinzoomen der Mauszeiger zum Zentrum, statt der Bildschirmmittelpunkt werden soll."
+  2138: "{COLOUR WINDOW_2}Musik des Titelbildschirms abspielen"
+
+  2161: "Zeige FPS an"
+  2162: "{SMALLFONT}{COLOUR BLACK}Zeige die Anzahl der Bilder pro Sekunde (FPS) oben am Bildschirm an."
+  2163: "FPS-Limiter deaktivieren"
+  2164: "{SMALLFONT}{COLOUR BLACK}Entfernt die limitierung auf 40Hz."
+
+  2166: "Kartendarstellung"
+
+  2251: "Rechtsklick drag umkehren"
+  2252: "{SMALLFONT}{COLOUR BLACK}Wählen Sie, ob die Bewegung der Hauptansicht umgekehrt sein soll."
+  2253: "Zeige Geld Benachrichtigungen"
+  2254: "{SMALLFONT}{COLOUR BLACK}Anzeigen von Geld Benachrichtigungen von Gebäuden und Fahrzeugen an-/ausschalten"
+
+  2269: "Bevorzugter Besitzer"
+
+  2325: "{SMALLFONT}{COLOUR BLACK}Unternehmen optionen"
+  2326: "Optionen - Unternehmen"
+  2327: "Gesicht des Unternehmen"
+  2328: "Bevorzugtes Gesicht der Unternehmen beim Spielstart verwenden"
+  2329: "{SMALLFONT}{COLOUR BLACK}Wählen Sie ob beim Start eines neuen Szenarios das bevorzugte Gesicht des Unternehmen verwendet werden soll."
 
   2349: Optionsfenster anzeigen
+
+  2371: "Ton"
+
+  2373: "{COLOUR WINDOW_2}Musiklautstärke:"
+  2374: KI-Streckenplanung als Vorschau anzeigen
+  2375: "{SMALLFONT}{COLOUR BLACK}Wählen Sie ob die Streckenplanung der KI Unternehmen als Vorschau angezeigt werden soll."
