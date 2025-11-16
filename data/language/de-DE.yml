@@ -2187,7 +2187,7 @@ strings:
   2132: "{COLOUR WINDOW_2}Fensterskalierungsfaktor:"
 
   2136: "{COLOUR WINDOW_2}Zum Mauszeiger zoomen"
-  2137: "{SMALLFONT}{COLOUR BLACK}Wählen Sie ob beim Hereinzoomen der Mauszeiger zum Zentrum, statt der Bildschirmmittelpunkt werden soll."
+  2137: "{SMALLFONT}{COLOUR BLACK}Wählen Sie, ob beim Hereinzoomen der Mauszeiger statt des Bildschirmmittelpunkts zum Zentrum wird."
   2138: "{COLOUR WINDOW_2}Musik des Titelbildschirms abspielen"
 
   2161: "Zeige FPS an"
