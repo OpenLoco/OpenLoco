@@ -74,6 +74,7 @@ namespace OpenLoco::ObjectManager
     struct ObjectEntry2 : public ObjectHeader
     {
         uint32_t dataSize;
+        ObjectEntry2() = default;
         ObjectEntry2(ObjectHeader head, uint32_t size)
             : ObjectHeader(head)
             , dataSize(size)
@@ -92,7 +93,37 @@ namespace OpenLoco::ObjectManager
 
     static_assert(Traits::IsPOD<ObjectHeader>::value, "Object Header must be trivial for I/O purposes");
 
-    loco_global<ObjectRepositoryItem[kMaxObjectTypes], 0x4FE0B8> _objectRepository;
+    // 0x004FE0B8
+    // Pre-allocated storage for all object types
+    // Each type has arrays for object pointers and extended headers
+    template<ObjectType Type>
+    struct ObjectStorage
+    {
+        static constexpr auto kCount = getMaxObjects(Type);
+        static inline std::array<Object*, kCount> objects = {};
+        static inline std::array<ObjectEntry2, kCount> objectEntryExtendeds = {};
+    };
+
+    // Helper to initialize repository item for a given type
+    template<ObjectType Type>
+    constexpr ObjectRepositoryItem makeRepositoryItem()
+    {
+        return ObjectRepositoryItem{
+            ObjectStorage<Type>::objects.data(),
+            ObjectStorage<Type>::objectEntryExtendeds.data()
+        };
+    }
+
+    // Generate repository initialization at compile time
+    template<size_t... Is>
+    constexpr std::array<ObjectRepositoryItem, kMaxObjectTypes> makeRepositoryArray(std::index_sequence<Is...>)
+    {
+        return { { makeRepositoryItem<static_cast<ObjectType>(Is)>()... } };
+    }
+
+    // Repository of loaded objects indexed by ObjectType
+    // Contains pointers to pre-allocated arrays of objects and their metadata
+    static std::array<ObjectRepositoryItem, kMaxObjectTypes> _objectRepository = makeRepositoryArray(std::make_index_sequence<kMaxObjectTypes>{});
 
     static loco_global<bool, 0x0050D161> _isPartialLoaded;
 
