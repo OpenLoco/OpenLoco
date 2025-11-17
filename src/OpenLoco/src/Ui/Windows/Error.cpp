@@ -139,7 +139,7 @@ namespace OpenLoco::Ui::Windows::Error
                 WindowType::error,
                 windowPosition,
                 { width, height },
-                WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::flag_7,
+                WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::ignoreInFindAt,
                 Common::getEvents());
 
             if (_errorCompetitorId != CompanyId::null)

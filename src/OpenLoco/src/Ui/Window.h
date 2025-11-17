@@ -49,7 +49,7 @@ namespace OpenLoco::Ui
         transparent = 1U << 4,
         noBackground = 1U << 5,
         framedWidgets = 1U << 6,
-        flag_7 = 1U << 7,
+        ignoreInFindAt = 1U << 7,
         flag_8 = 1U << 8,
         resizable = 1U << 9,
         noAutoClose = 1U << 10,

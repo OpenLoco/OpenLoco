@@ -218,7 +218,7 @@ namespace OpenLoco::Ui::WindowManager
                 continue;
             }
 
-            if (w.hasFlags(WindowFlags::flag_7))
+            if (w.hasFlags(WindowFlags::ignoreInFindAt))
             {
                 continue;
             }
