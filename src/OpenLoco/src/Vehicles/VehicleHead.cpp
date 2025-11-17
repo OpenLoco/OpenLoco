@@ -67,7 +67,6 @@ namespace OpenLoco::Vehicles
     static loco_global<VehicleBogie*, 0x01136128> _vehicleUpdate_backBogie;
     static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
     static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
-    static loco_global<uint32_t, 0x0112C30C> _vehicleUpdate_compatibleRoadStationTypes;
     static loco_global<uint8_t, 0x0113623B> _vehicleMangled_113623B; // This shouldn't be used as it will be mangled but it is
 
     static constexpr uint16_t kTrainOneWaySignalTimeout = 1920;
@@ -4150,12 +4149,8 @@ namespace OpenLoco::Vehicles
         }
     }
 
-    // 0x0047DA8D
-    static Sub4ACEE7Result sub_47DA8D(VehicleHead& head, uint32_t unk1, uint32_t var_113612C)
+    static uint32_t calculateCompatibleRoadStations(const VehicleHead& head)
     {
-        // ROAD only
-
-        // 0x0112C30C
         uint32_t compatibleStations = 0U;
         for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::roadStation); ++i)
         {
@@ -4184,7 +4179,16 @@ namespace OpenLoco::Vehicles
                 compatibleStations |= (1U << i);
             }
         }
-        _vehicleUpdate_compatibleRoadStationTypes = compatibleStations;
+        return compatibleStations;
+    }
+
+    // 0x0047DA8D
+    static Sub4ACEE7Result sub_47DA8D(VehicleHead& head, uint32_t unk1, uint32_t var_113612C)
+    {
+        // ROAD only
+
+        // 0x0112C30C
+        const auto compatibleStations = calculateCompatibleRoadStations(head);
 
         {
             auto routings = RoutingManager::RingView(head.routingHandle);
@@ -6113,7 +6117,7 @@ namespace OpenLoco::Vehicles
 
         const auto requiredMods = head.var_53;
         const auto queryMods = train.veh1->var_49;
-        const auto allowedStationTypes = *_vehicleUpdate_compatibleRoadStationTypes;
+        const auto compatibleStations = calculateCompatibleRoadStations(head);
         Sub4AC3D3State state{};
         {
             auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep), head.trackAndDirection.road.basicRad());
@@ -6123,7 +6127,7 @@ namespace OpenLoco::Vehicles
                 return false;
             }
 
-            roadPathing(head, nextPos, rc, requiredMods, queryMods, allowedStationTypes, false, state);
+            roadPathing(head, nextPos, rc, requiredMods, queryMods, compatibleStations, false, state);
         }
         {
             auto tailTaD = train.tail->trackAndDirection.road.basicRad();
@@ -6138,7 +6142,7 @@ namespace OpenLoco::Vehicles
                 return false;
             }
 
-            roadPathing(head, nextTailPos, tailRc, requiredMods, queryMods, allowedStationTypes, true, state);
+            roadPathing(head, nextTailPos, tailRc, requiredMods, queryMods, compatibleStations, true, state);
             return state.hadNewResult != 0;
         }
     }
