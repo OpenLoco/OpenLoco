@@ -61,7 +61,7 @@ namespace OpenLoco::Ui
         beingResized = 1U << 16,
         whiteBorderOne = 1U << 17,
         whiteBorderMask = whiteBorderOne | (1U << 18),
-        flag_31 = 1U << 31,
+        hasStoredState = 1U << 31,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(WindowFlags);
 

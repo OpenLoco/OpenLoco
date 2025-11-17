@@ -179,7 +179,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         Ui::getLastMapWindowAttributes().size = Ui::Size(self.width, self.height);
         Ui::getLastMapWindowAttributes().var88A = self.var_88A;
         Ui::getLastMapWindowAttributes().var88C = self.var_88C;
-        Ui::getLastMapWindowAttributes().flags = self.flags | WindowFlags::flag_31;
+        Ui::getLastMapWindowAttributes().flags = self.flags | WindowFlags::hasStoredState;
 
         free(_mapPixels);
     }
@@ -2427,7 +2427,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         {
             window->var_88A = Ui::getLastMapWindowAttributes().var88A;
             window->var_88C = Ui::getLastMapWindowAttributes().var88C;
-            window->flags |= (Ui::getLastMapWindowAttributes().flags & WindowFlags::beingResized);
+            window->flags |= (Ui::getLastMapWindowAttributes().flags & WindowFlags::beingResized); // ???
         }
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
