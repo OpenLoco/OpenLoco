@@ -604,7 +604,7 @@ strings:
   583: Nie można tego tutaj zbudować...
   584: '{DATE MY}'
   585: OpenLoco
-  586: Proszę włożyć płytę CD Locomotion do napędu:
+  586: 'Proszę włożyć płytę CD Locomotion do napędu:'
   587: '{COLOUR WINDOW_2}Wydatki/Przychody'
   588: Przychód z pociągów
   589: Koszt bieżący pociągów
@@ -1512,7 +1512,7 @@ strings:
   1482: '{COLOUR WINDOW_2}Rozłącz'
   1483: Wprowadź adres hosta
   1484: 'Wprowadź adres IP lub nazwę hosta komputera, z którym chcesz się połączyć, lub pozostaw puste by przeszukać sieć lokalną:'
-  1485: '{COLOUR RED}Ostrzeżenie: Podłączono do innej wersji Chris Sawyer's Locomotion i niezawodność gry dwuosobowej może być ograniczona'
+  1485: "{COLOUR RED}Ostrzeżenie: Podłączono do innej wersji Chris Sawyer's Locomotion i niezawodność gry dwuosobowej może być ograniczona"
 
   # Options
   1486: '{SMALLFONT}{COLOUR BLACK}Opcje wyświetlania'
@@ -2194,7 +2194,7 @@ strings:
   2139: "Wyjdź do menu"
   2140: "Zamknij OpenLoco"
   2141: "{COLOUR WINDOW_2}Wyłącz SI"
-  2142: "{SMALLFONT}{COLOUR BLACK}Zapobiega to "myśleniu" przez SI, powodując ich nieskuteczność.{NEWLINE}W nowych grach zapobiega to także powstawaniu nowych firm SI."
+  2142: '{SMALLFONT}{COLOUR BLACK}Zapobiega to "myśleniu" przez SI, powodując ich nieskuteczność.{NEWLINE}W nowych grach zapobiega to także powstawaniu nowych firm SI.'
   2143: "{COLOUR WINDOW_2}Ilość autozapisów:"
   2144: "{COLOUR WINDOW_2}Interwał autozapisów:"
   2145: "Nigdy"
@@ -2413,3 +2413,18 @@ strings:
   2358: "Przełącz narzędzie malowania"
   2359: "{SMALLFONT}{COLOUR BLACK}Przemaluj pojazdy: {POP16}{STRINGID}{NEWLINE}shift+klik, aby pomalować wszystkie{NEWLINE}ctrl+klik, aby pomalować podtyp pojazdu"
   2360: "Maluj wszystkie połączone"
+  2361: "Opcje - Renderowanie"
+  2362: "{SMALLFONT}{COLOUR BLACK}Opcje renderowania"
+  2363: "Potwierdź sprzedaż składnika"
+  2364: "Sprzedanie tego składnika w pojeździe spowoduje usunięcie ładunku z całego pojazdu. Kontynuować?"
+  2365: "Sprzedaj element"
+  2366: "Potwierdź montaż"
+  2367: "Zamontowanie tego elementu w pojeździe spowoduje usunięcie ładunku z całego pojazdu. Kontynuować?"
+  2368: "Zamontuj element"
+  2369: "{SMALLFONT}{COLOUR BLACK}Opcje audio"
+  2370: "Opcje - Audio"
+  2371: "Dźwięk"
+  2372: "Szafa grająca"
+  2373: "{COLOUR WINDOW_2}Głośność muzyki:"
+  2374: Pokaż planowane przez SI tory/drogi jako elementy przezroczyste
+  2375: "{SMALLFONT}{COLOUR BLACK}Pokazuje trasy planowanie przez przedsiębiorstwa SI jako przezroczyste elementy."
