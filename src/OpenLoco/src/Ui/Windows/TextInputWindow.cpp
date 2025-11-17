@@ -85,7 +85,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         auto window = WindowManager::createWindowCentred(
             WindowType::textInput,
             { 330, 90 },
-            WindowFlags::stickToFront | WindowFlags::flag_12,
+            WindowFlags::stickToFront | WindowFlags::playSoundOnOpen,
             getEvents());
         window->setWidgets(_widgets);
         window->initScrollWidgets();

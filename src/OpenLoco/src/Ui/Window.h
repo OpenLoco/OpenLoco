@@ -54,7 +54,7 @@ namespace OpenLoco::Ui
         resizable = 1U << 9,
         noAutoClose = 1U << 10,
         lighterFrame = 1U << 11,
-        flag_12 = 1U << 12,
+        playSoundOnOpen = 1U << 12,
         openQuietly = 1U << 13,
         notScrollView = 1U << 14,
         flag_15 = 1U << 15,
