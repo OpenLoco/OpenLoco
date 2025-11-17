@@ -57,7 +57,7 @@ namespace OpenLoco::Ui
         playSoundOnOpen = 1U << 12,
         openQuietly = 1U << 13,
         notScrollView = 1U << 14,
-        flag_15 = 1U << 15,
+        finishedResize = 1U << 15,
         flag_16 = 1U << 16,
         whiteBorderOne = 1U << 17,
         whiteBorderMask = whiteBorderOne | (1U << 18),

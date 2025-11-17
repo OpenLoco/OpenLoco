@@ -735,7 +735,7 @@ namespace OpenLoco::Input
                 Ui::ToolTip::setWindowType(_dragWindowType);
                 Ui::ToolTip::setWindowNumber(_dragWindowNumber);
 
-                if (w->hasFlags(Ui::WindowFlags::flag_15))
+                if (w->hasFlags(Ui::WindowFlags::finishedResize))
                 {
                     doDefault = true;
                     break;
@@ -797,14 +797,14 @@ namespace OpenLoco::Input
                 return;
             }
 
-            w->flags &= ~Ui::WindowFlags::flag_16;
+            w->flags &= ~Ui::WindowFlags::beingResized;
         }
 
         w->invalidate();
 
         w->width = std::clamp<uint16_t>(w->width + dx, w->minWidth, w->maxWidth);
         w->height = std::clamp<uint16_t>(w->height + dy, w->minHeight, w->maxHeight);
-        w->flags |= Ui::WindowFlags::flag_15;
+        w->flags |= Ui::WindowFlags::finishedResize;
         w->callOnResize();
         w->callPrepareDraw();
 
@@ -1458,7 +1458,7 @@ namespace OpenLoco::Input
         _dragLast.y = y;
         _dragWindowType = window->type;
         _dragWindowNumber = window->number;
-        window->flags &= ~Ui::WindowFlags::flag_15;
+        window->flags &= ~Ui::WindowFlags::finishedResize;
     }
 
 #pragma mark - Viewport dragging
