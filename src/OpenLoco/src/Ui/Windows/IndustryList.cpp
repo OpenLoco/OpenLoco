@@ -631,7 +631,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 WindowType::industryList,
                 origin,
                 IndustryList::kWindowSize,
-                WindowFlags::flag_8,
+                WindowFlags::viewportNoShiftPixels,
                 IndustryList::getEvents());
 
             window->number = 0;

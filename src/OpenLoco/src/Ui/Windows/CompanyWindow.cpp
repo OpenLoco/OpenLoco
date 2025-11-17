@@ -610,7 +610,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     // 0x004347D0
     static Window* create(CompanyId companyId)
     {
-        const WindowFlags newFlags = WindowFlags::flag_8 | WindowFlags::lighterFrame;
+        const WindowFlags newFlags = WindowFlags::viewportNoShiftPixels | WindowFlags::lighterFrame;
         auto window = WindowManager::createWindow(WindowType::company, Status::kWindowSize, newFlags, Status::getEvents());
         window->number = enumValue(companyId);
         window->owner = companyId;

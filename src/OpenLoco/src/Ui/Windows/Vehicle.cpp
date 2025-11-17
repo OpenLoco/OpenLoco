@@ -464,7 +464,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B60DC
         static Window* create(const EntityId head)
         {
-            auto* const self = WindowManager::createWindow(WindowType::vehicle, kWindowSize, WindowFlags::lighterFrame | WindowFlags::flag_8 | WindowFlags::resizable, Main::getEvents());
+            auto* const self = WindowManager::createWindow(WindowType::vehicle, kWindowSize, WindowFlags::lighterFrame | WindowFlags::viewportNoShiftPixels | WindowFlags::resizable, Main::getEvents());
             self->setWidgets(widgets);
             self->number = enumValue(head);
             const auto* vehicle = Common::getVehicle(*self);

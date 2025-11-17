@@ -209,7 +209,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        if (vp->hasFlags(ViewportFlags::seeThroughTracks | ViewportFlags::seeThroughScenery | ViewportFlags::seeThroughRoads | ViewportFlags::seeThroughBuildings | ViewportFlags::seeThroughTrees | ViewportFlags::seeThroughBridges) || w->hasFlags(WindowFlags::flag_8))
+        if (vp->hasFlags(ViewportFlags::seeThroughTracks | ViewportFlags::seeThroughScenery | ViewportFlags::seeThroughRoads | ViewportFlags::seeThroughBuildings | ViewportFlags::seeThroughTrees | ViewportFlags::seeThroughBridges) || w->hasFlags(WindowFlags::viewportNoShiftPixels))
         {
             auto rect = Ui::Rect(vp->x, vp->y, vp->width, vp->height);
             Gfx::render(rect);

@@ -50,7 +50,7 @@ namespace OpenLoco::Ui
         noBackground = 1U << 5,
         framedWidgets = 1U << 6,
         ignoreInFindAt = 1U << 7,
-        flag_8 = 1U << 8,
+        viewportNoShiftPixels = 1U << 8,
         resizable = 1U << 9,
         noAutoClose = 1U << 10,
         lighterFrame = 1U << 11,
