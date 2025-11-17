@@ -48,7 +48,7 @@ namespace OpenLoco::Ui
         scrollingToLocation = 1U << 3,
         transparent = 1U << 4,
         noBackground = 1U << 5,
-        flag_6 = 1U << 6,
+        framedWidgets = 1U << 6,
         flag_7 = 1U << 7,
         flag_8 = 1U << 8,
         resizable = 1U << 9,

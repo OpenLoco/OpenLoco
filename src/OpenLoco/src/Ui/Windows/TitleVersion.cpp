@@ -19,7 +19,7 @@ namespace OpenLoco::Ui::Windows::TitleVersion
             WindowType::openLocoVersion,
             { 8, Ui::height() - kHeight },
             { kWidth, kHeight },
-            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::framedWidgets,
             getEvents());
 
         return window;

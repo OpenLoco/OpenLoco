@@ -86,7 +86,7 @@ namespace OpenLoco::Ui::Widgets
             return;
         }
 
-        if (window->hasFlags(WindowFlags::flag_6))
+        if (window->hasFlags(WindowFlags::framedWidgets))
         {
             drawingCtx.fillRect(pos, size, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
         }
