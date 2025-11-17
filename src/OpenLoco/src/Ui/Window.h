@@ -58,7 +58,7 @@ namespace OpenLoco::Ui
         openQuietly = 1U << 13,
         notScrollView = 1U << 14,
         finishedResize = 1U << 15,
-        flag_16 = 1U << 16,
+        beingResized = 1U << 16,
         whiteBorderOne = 1U << 17,
         whiteBorderMask = whiteBorderOne | (1U << 18),
         flag_19 = 1U << 19,

@@ -1415,7 +1415,7 @@ namespace OpenLoco::Ui::Windows::Station
 
             self.currentTab = widgetIndex - widx::tab_station;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
             self.var_85C = -1;
 
             self.viewportRemove(0);

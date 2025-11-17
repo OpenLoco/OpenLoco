@@ -1736,7 +1736,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             self.currentTab = widgetIndex - widx::tab_town_list;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
 
             self.viewportRemove(0);
 

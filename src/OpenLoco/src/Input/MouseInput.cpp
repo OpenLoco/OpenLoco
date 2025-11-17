@@ -741,11 +741,11 @@ namespace OpenLoco::Input
                     break;
                 }
 
-                if (w->hasFlags(Ui::WindowFlags::flag_16))
+                if (w->hasFlags(Ui::WindowFlags::beingResized))
                 {
                     x = w->var_88A - w->width + _dragLast.x;
                     y = w->var_88C - w->height + _dragLast.y;
-                    w->flags &= ~Ui::WindowFlags::flag_16;
+                    w->flags &= ~Ui::WindowFlags::beingResized;
                     doDefault = true;
                     break;
                 }
@@ -754,7 +754,7 @@ namespace OpenLoco::Input
                 w->var_88C = w->height;
                 x = _dragLast.x - w->x - w->width + Ui::width();
                 y = _dragLast.y - w->y - w->height + Ui::height() - 27;
-                w->flags |= Ui::WindowFlags::flag_16;
+                w->flags |= Ui::WindowFlags::beingResized;
                 if (y >= Ui::height() - 2)
                 {
                     _dragLast.x = x;
