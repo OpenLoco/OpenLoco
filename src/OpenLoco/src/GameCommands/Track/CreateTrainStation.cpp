@@ -199,7 +199,7 @@ namespace OpenLoco::GameCommands
 
         auto& returnState = getLegacyReturnState();
         returnState.lastPlacedTrackRoadStationId = StationId::null;
-        returnState.lastConstructedAdjoiningStationPos= World::Pos2(-1, -1);
+        returnState.lastConstructedAdjoiningStationPos = World::Pos2(-1, -1);
         returnState.lastConstructedAdjoiningStation = StationId::null;
 
         auto* trackObj = ObjectManager::get<TrackObject>(args.trackObjectId);
