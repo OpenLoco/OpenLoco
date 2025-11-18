@@ -36,7 +36,7 @@ namespace OpenLoco::Ui::Windows::Construction
         uint32_t signalCost;    // 0x01135F4E
         uint32_t stationCost;   // 0x01135F6C
 
-        uint32_t constructingStationId;                 // 0x01135F70
+        StationId constructingStationId;                // 0x01135F70
         uint32_t constructingStationAcceptedCargoTypes; // 0x01135F74
         uint32_t constructingStationProducedCargoTypes; // 0x01135F78
         World::Pos2 stationMinPos;                      // 0x01135F7C

@@ -52,8 +52,6 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
     static loco_global<World::Pos3, 0x00F24942> _constructionArrowPos;
     static loco_global<uint8_t, 0x00F24948> _constructionArrowDirection;
-    static loco_global<uint32_t, 0x00112C734> _lastConstructedAdjoiningStationId;           // Can be 0xFFFF'FFFFU for no adjoining station
-    static loco_global<World::Pos2, 0x00112C792> _lastConstructedAdjoiningStationCentrePos; // Can be x = -1 for no adjoining station
 
     // TODO: move to ConstructionState when no longer a loco_global
     static bool _isDragging = false;
@@ -327,7 +325,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         cState.stationGhostType = (1U << 15);
 
         const auto cost = GameCommands::doCommand(*args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
-
+        const auto& legacyGCReturn = GameCommands::getLegacyReturnState();
         cState.stationCost = cost;
 
         Ui::WindowManager::invalidate(Ui::WindowType::construction);
@@ -339,11 +337,11 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         Common::setGhostVisibilityFlag(GhostVisibilityFlags::station);
         World::setMapSelectionFlags(World::MapSelectionFlags::catchmentArea);
-        cState.constructingStationId = _lastConstructedAdjoiningStationId;
+        cState.constructingStationId = legacyGCReturn.lastConstructedAdjoiningStation;
 
-        auto* station = _lastConstructedAdjoiningStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedAdjoiningStationId)) : nullptr;
+        auto* station = legacyGCReturn.lastConstructedAdjoiningStation != StationId::null ? StationManager::get(legacyGCReturn.lastConstructedAdjoiningStation) : nullptr;
         setCatchmentDisplay(station, CatchmentFlags::flag_0);
-        auto pos = *_lastConstructedAdjoiningStationCentrePos;
+        auto pos = legacyGCReturn.lastConstructedAdjoiningStationPos;
         if (pos.x == -1)
         {
             pos = args->pos;
@@ -391,6 +389,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         cState.stationGhostType = (1U << 14);
 
         const auto cost = GameCommands::doCommand(*args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+        const auto& legacyGCReturn = GameCommands::getLegacyReturnState();
 
         cState.stationCost = cost;
 
@@ -403,11 +402,11 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         Common::setGhostVisibilityFlag(GhostVisibilityFlags::station);
         World::setMapSelectionFlags(World::MapSelectionFlags::catchmentArea);
-        cState.constructingStationId = _lastConstructedAdjoiningStationId;
+        cState.constructingStationId = legacyGCReturn.lastConstructedAdjoiningStation;
 
-        auto* station = _lastConstructedAdjoiningStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedAdjoiningStationId)) : nullptr;
+        auto* station = legacyGCReturn.lastConstructedAdjoiningStation != StationId::null ? StationManager::get(legacyGCReturn.lastConstructedAdjoiningStation) : nullptr;
         setCatchmentDisplay(station, CatchmentFlags::flag_0);
-        auto pos = *_lastConstructedAdjoiningStationCentrePos;
+        auto pos = legacyGCReturn.lastConstructedAdjoiningStationPos;
         if (pos.x == -1)
         {
             pos = args->pos;
@@ -452,6 +451,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         cState.stationGhostType = args->roadObjectId | (1 << 7);
 
         const auto cost = GameCommands::doCommand(*args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+        const auto& legacyGCReturn = GameCommands::getLegacyReturnState();
 
         cState.stationCost = cost;
 
@@ -464,11 +464,11 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         Common::setGhostVisibilityFlag(GhostVisibilityFlags::station);
         World::setMapSelectionFlags(World::MapSelectionFlags::catchmentArea);
-        cState.constructingStationId = _lastConstructedAdjoiningStationId;
+        cState.constructingStationId = legacyGCReturn.lastConstructedAdjoiningStation;
 
-        auto* station = _lastConstructedAdjoiningStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedAdjoiningStationId)) : nullptr;
+        auto* station = legacyGCReturn.lastConstructedAdjoiningStation != StationId::null ? StationManager::get(legacyGCReturn.lastConstructedAdjoiningStation) : nullptr;
         setCatchmentDisplay(station, CatchmentFlags::flag_0);
-        auto pos = *_lastConstructedAdjoiningStationCentrePos;
+        auto pos = legacyGCReturn.lastConstructedAdjoiningStationPos;
         if (pos.x == -1)
         {
             pos = args->pos;
@@ -526,6 +526,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         cState.stationGhostType = args->trackObjectId;
 
         const auto cost = GameCommands::doCommand(*args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+        const auto& legacyGCReturn = GameCommands::getLegacyReturnState();
 
         cState.stationCost = cost;
 
@@ -538,11 +539,11 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         Common::setGhostVisibilityFlag(GhostVisibilityFlags::station);
         World::setMapSelectionFlags(World::MapSelectionFlags::catchmentArea);
-        cState.constructingStationId = _lastConstructedAdjoiningStationId;
+        cState.constructingStationId = legacyGCReturn.lastConstructedAdjoiningStation;
 
-        auto* station = _lastConstructedAdjoiningStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedAdjoiningStationId)) : nullptr;
+        auto* station = legacyGCReturn.lastConstructedAdjoiningStation != StationId::null ? StationManager::get(legacyGCReturn.lastConstructedAdjoiningStation) : nullptr;
         setCatchmentDisplay(station, CatchmentFlags::flag_0);
-        auto pos = *_lastConstructedAdjoiningStationCentrePos;
+        auto pos = legacyGCReturn.lastConstructedAdjoiningStationPos;
         if (pos.x == -1)
         {
             pos = args->pos;
@@ -1258,14 +1259,13 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         FormatArguments args{};
 
-        // Todo: change globals type to be StationId and make this StationId::null
-        if (cState.constructingStationId == 0xFFFFFFFF)
+        if (cState.constructingStationId == StationId::null)
         {
             args.push(StringIds::new_station);
         }
         else
         {
-            auto station = StationManager::get(StationId(cState.constructingStationId));
+            auto station = StationManager::get(cState.constructingStationId);
             args.push(station->name);
             args.push(station->town);
         }
@@ -1368,9 +1368,9 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         if (w != nullptr && w->currentTab == 1)
         {
             auto& cState = getConstructionState();
-            if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::station) && StationId(cState.constructingStationId) == id)
+            if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::station) && cState.constructingStationId == id)
             {
-                cState.constructingStationId = 0xFFFFFFFFU;
+                cState.constructingStationId = StationId::null;
                 w->invalidate();
             }
         }

@@ -20,10 +20,6 @@
 
 namespace OpenLoco::GameCommands
 {
-    static loco_global<StationId, 0x0112C744> _lastPlacedAirportStationId;
-    static loco_global<uint32_t, 0x00112C734> _lastConstructedAdjoiningStationId;           // Can be 0xFFFF'FFFFU for no adjoining station
-    static loco_global<World::Pos2, 0x00112C792> _lastConstructedAdjoiningStationCentrePos; // Can be x = -1 for no adjoining station
-
     // 0x00490372
     static StationManager::NearbyStation findNearbyStationAirport(World::Pos3 pos, uint8_t airportObjectId, uint8_t rotation)
     {
@@ -142,7 +138,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004930E1
-    static uint32_t createBuilding(const World::TilePos2 pos, const int16_t baseHeight, const uint8_t rotation, const uint8_t variation, const uint8_t airportObjectId, World::TileClearance::RemovedBuildings& removedBuildings, const uint8_t flags)
+    static uint32_t createBuilding(const StationId stationId, const World::TilePos2 pos, const int16_t baseHeight, const uint8_t rotation, const uint8_t variation, const uint8_t airportObjectId, World::TileClearance::RemovedBuildings& removedBuildings, const uint8_t flags)
     {
         auto* airportObj = ObjectManager::get<AirportObject>(airportObjectId);
 
@@ -281,7 +277,7 @@ namespace OpenLoco::GameCommands
                 elStation->setBuildingType(variation);
                 if (!(flags & Flags::ghost))
                 {
-                    elStation->setStationId(_lastPlacedAirportStationId);
+                    elStation->setStationId(stationId);
                 }
                 else
                 {
@@ -309,15 +305,15 @@ namespace OpenLoco::GameCommands
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3(16, 16, 0));
 
-        _lastPlacedAirportStationId = StationId::null;
+        auto& returnState = getLegacyReturnState();
+        returnState.lastPlacedAirport = StationId::null;
+        returnState.lastConstructedAdjoiningStation = StationId::null;
+        returnState.lastConstructedAdjoiningStationPos = World::Pos2(-1, -1);
 
         if ((flags & Flags::apply) && !(flags & Flags::aiAllocated))
         {
             companySetObservation(getUpdatingCompanyId(), ObservationStatus::buildingAirport, World::Pos2(args.pos) + World::Pos2{ 16, 16 }, EntityId::null, args.type);
         }
-
-        _lastConstructedAdjoiningStationCentrePos = World::Pos2(-1, -1);
-        _lastConstructedAdjoiningStationId = 0xFFFFFFFFU;
 
         if (!World::TileManager::checkFreeElementsAndReorganise())
         {
@@ -353,9 +349,9 @@ namespace OpenLoco::GameCommands
 
         if ((flags & Flags::ghost) && (flags & Flags::apply))
         {
-            _lastConstructedAdjoiningStationCentrePos = args.pos;
+            returnState.lastConstructedAdjoiningStationPos = args.pos;
             auto nearbyStation = findNearbyStationAirport(args.pos, args.type, args.rotation);
-            _lastConstructedAdjoiningStationId = static_cast<int16_t>(nearbyStation.id);
+            returnState.lastConstructedAdjoiningStation = nearbyStation.id;
         }
 
         auto* airportObj = ObjectManager::get<AirportObject>(args.type);
@@ -376,14 +372,14 @@ namespace OpenLoco::GameCommands
                         const auto newStationId = StationManager::allocateNewStation(args.pos, getUpdatingCompanyId(), nameMode);
                         if (newStationId != StationId::null)
                         {
-                            _lastPlacedAirportStationId = newStationId;
+                            returnState.lastPlacedAirport = newStationId;
                             auto* station = StationManager::get(newStationId);
                             station->updateLabel();
                         }
                     }
                     break;
                     case NearbyStationValidation::okay:
-                        _lastPlacedAirportStationId = nearbyStationId;
+                        returnState.lastPlacedAirport = nearbyStationId;
                         break;
                 }
             }
@@ -403,11 +399,11 @@ namespace OpenLoco::GameCommands
                             return FAILURE;
                         }
                         StationManager::deallocateStation(newStationId);
-                        // _lastPlacedAirportStationId not set but that's fine since this is the no apply side
+                        // returnState.lastPlacedAirport not set but that's fine since this is the no apply side
                     }
                     break;
                     case NearbyStationValidation::okay:
-                        _lastPlacedAirportStationId = nearbyStationId;
+                        returnState.lastPlacedAirport = nearbyStationId;
                         break;
                 }
             }
@@ -426,7 +422,7 @@ namespace OpenLoco::GameCommands
             }
 
             const auto buildingRotation = (args.rotation + buildingPosition.rotation) & 0x3;
-            const auto cost = createBuilding(buildingTilePos, args.pos.z, buildingRotation, buildingPosition.index, args.type, removedBuildings, flags);
+            const auto cost = createBuilding(returnState.lastPlacedAirport, buildingTilePos, args.pos.z, buildingRotation, buildingPosition.index, args.type, removedBuildings, flags);
             if (cost != FAILURE)
             {
                 totalCost += cost;
@@ -438,16 +434,16 @@ namespace OpenLoco::GameCommands
         }
         if (!(flags & Flags::ghost) && (flags & Flags::apply))
         {
-            addTileToStation(_lastPlacedAirportStationId, args.pos, args.rotation);
+            addTileToStation(returnState.lastPlacedAirport, args.pos, args.rotation);
 
-            auto* station = StationManager::get(_lastPlacedAirportStationId);
+            auto* station = StationManager::get(returnState.lastPlacedAirport);
             station->flags |= StationFlags::flag_6;
             station->airportStartPos = args.pos;
             station->airportRotation = args.rotation;
             station->airportMovementOccupiedEdges = 0;
             station->invalidate();
-            recalculateStationModes(_lastPlacedAirportStationId);
-            recalculateStationCenter(_lastPlacedAirportStationId);
+            recalculateStationModes(returnState.lastPlacedAirport);
+            recalculateStationCenter(returnState.lastPlacedAirport);
             station->updateLabel();
             station->invalidate();
             sub_48D794(*station);
