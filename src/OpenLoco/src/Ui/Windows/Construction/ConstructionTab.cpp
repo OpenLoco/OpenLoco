@@ -51,9 +51,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
     static loco_global<uint8_t, 0x00522095> _byte_522095;
 
-    static loco_global<World::Pos3, 0x00F24942> _constructionArrowPos;
-    static loco_global<uint8_t, 0x00F24948> _constructionArrowDirection;
-
     static loco_global<uint8_t, 0x0112C2E9> _alternateTrackObjectId; // set from GameCommands::createRoad
     static loco_global<uint8_t[18], 0x0050A006> _availableObjects;   // top toolbar
 
@@ -1946,8 +1943,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             cState.constructionArrowFrameNum = 5;
             Common::toggleGhostVisibilityFlag(GhostVisibilityFlags::constructArrow);
-            _constructionArrowPos = World::Pos3(cState.x, cState.y, cState.constructionZ);
-            _constructionArrowDirection = cState.constructionRotation;
+            setConstructionArrow({ World::Pos3(cState.x, cState.y, cState.constructionZ),
+                                   cState.constructionRotation });
             World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstructionArrow);
             if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::constructArrow))
             {
@@ -2542,8 +2539,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         World::setMapSelectionFlags(World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::enableConstructionArrow);
         World::resetMapSelectionFlag(World::MapSelectionFlags::unk_03);
 
-        _constructionArrowPos = World::Pos3(constructPos.x, constructPos.y, constructHeight);
-        _constructionArrowDirection = cState.constructionRotation;
+        World::setConstructionArrow({ World::Pos3(constructPos.x, constructPos.y, constructHeight), cState.constructionRotation });
         resetMapSelectionFreeFormTiles();
         addMapSelectionFreeFormTile(constructPos);
 
@@ -2564,7 +2560,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
 
         constructHeight -= getMinPieceHeight(trackPieces);
-        _constructionArrowPos->z = constructHeight;
+        World::setConstructionArrow({ World::Pos3(constructPos.x, constructPos.y, constructHeight), cState.constructionRotation });
         constructHeight -= 16;
         auto maxRetries = 2;
 
@@ -2572,7 +2568,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             maxRetries = 0x80000008;
             constructHeight -= 16;
-            _constructionArrowPos->z = constructHeight;
+            World::setConstructionArrow({ World::Pos3(constructPos.x, constructPos.y, constructHeight), cState.constructionRotation });
         }
         constructionGhostLoop({ constructPos.x, constructPos.y, constructHeight }, maxRetries, getPlacementArgs, placeGhost);
         World::mapInvalidateMapSelectionFreeFormTiles();
@@ -2859,15 +2855,13 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     void drawTrack(const World::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t direction, Gfx::DrawingContext& drawingCtx)
     {
         const auto backupSelectionFlags = World::getMapSelectionFlags();
-        const World::Pos3 backupConstructionArrowPos = _constructionArrowPos;
-        const uint8_t backupConstructionArrowDir = _constructionArrowDirection;
+        const auto backupConstructionArrow = getConstructionArrow();
 
         World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstructionArrow);
         if (_byte_522095 & (1 << 1))
         {
             World::setMapSelectionFlags(World::MapSelectionFlags::enableConstructionArrow);
-            _constructionArrowPos = pos;
-            _constructionArrowDirection = direction;
+            setConstructionArrow({ pos, direction });
         }
 
         const auto* trackObj = ObjectManager::get<TrackObject>(trackType);
@@ -2946,23 +2940,20 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         // setMapSelectionFlags OR's flags so reset them to zero to set the backup
         World::resetMapSelectionFlags();
         World::setMapSelectionFlags(backupSelectionFlags);
-        _constructionArrowPos = backupConstructionArrowPos;
-        _constructionArrowDirection = backupConstructionArrowDir;
+        setConstructionArrow(backupConstructionArrow);
     }
 
     // 0x00478F1F
     void drawRoad(const World::Pos3& pos, uint16_t selectedMods, uint8_t roadType, uint8_t roadPieceId, uint8_t direction, Gfx::DrawingContext& drawingCtx)
     {
         const auto backupSelectionFlags = World::getMapSelectionFlags();
-        const World::Pos3 backupConstructionArrowPos = _constructionArrowPos;
-        const uint8_t backupConstructionArrowDir = _constructionArrowDirection;
+        const auto backupConstructionArrow = getConstructionArrow();
 
         World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstructionArrow);
         if (_byte_522095 & (1 << 1))
         {
             World::setMapSelectionFlags(World::MapSelectionFlags::enableConstructionArrow);
-            _constructionArrowPos = pos;
-            _constructionArrowDirection = direction;
+            setConstructionArrow({ pos, direction });
         }
 
         const auto* roadObj = ObjectManager::get<RoadObject>(roadType);
@@ -3048,8 +3039,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         // setMapSelectionFlags OR's flags so reset them to zero to set the backup
         World::resetMapSelectionFlags();
         World::setMapSelectionFlags(backupSelectionFlags);
-        _constructionArrowPos = backupConstructionArrowPos;
-        _constructionArrowDirection = backupConstructionArrowDir;
+        setConstructionArrow(backupConstructionArrow);
     }
 
     // 0x0049D38A and 0x0049D16B

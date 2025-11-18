@@ -50,9 +50,6 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 {
     static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
 
-    static loco_global<World::Pos3, 0x00F24942> _constructionArrowPos;
-    static loco_global<uint8_t, 0x00F24948> _constructionArrowDirection;
-
     // TODO: move to ConstructionState when no longer a loco_global
     static bool _isDragging = false;
     static World::TilePos2 _toolPosDrag;
@@ -304,8 +301,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         World::setMapSelectionFlags(World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::enableConstructionArrow);
         World::resetMapSelectionFlag(World::MapSelectionFlags::unk_03);
-        _constructionArrowDirection = args->rotation;
-        _constructionArrowPos = args->pos;
+        World::setConstructionArrow({ args->pos, args->rotation });
 
         auto& cState = getConstructionState();
         setMapSelectedTilesFromRange(World::getClampedRange(cState.stationMinPos, cState.stationMaxPos));
@@ -368,8 +364,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         World::setMapSelectionFlags(World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::enableConstructionArrow);
         World::resetMapSelectionFlag(World::MapSelectionFlags::unk_03);
-        _constructionArrowDirection = args->rotation;
-        _constructionArrowPos = args->pos;
+        World::setConstructionArrow({ args->pos, args->rotation });
 
         auto& cState = getConstructionState();
         setMapSelectedTilesFromRange(World::getClampedRange(cState.stationMinPos, cState.stationMaxPos));
