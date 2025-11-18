@@ -29,7 +29,6 @@ namespace OpenLoco::GameCommands
 
     static uint32_t cloneVehicle(EntityId head, uint8_t flags)
     {
-        static loco_global<EntityId, 0x0113642A> _113642A;
         Vehicles::Vehicle existingTrain(head);
         Vehicles::VehicleHead* newHead = nullptr;
 
@@ -76,7 +75,7 @@ namespace OpenLoco::GameCommands
                 cost = doCommand(args, Flags::apply);
                 cargoType = car.body->primaryCargo.type;
 
-                auto* newVeh = EntityManager::get<Vehicles::VehicleBase>(_113642A);
+                auto* newVeh = EntityManager::get<Vehicles::VehicleBase>(getLegacyReturnState().lastCreatedVehicleId);
                 if (newVeh == nullptr)
                 {
                     return FAILURE;

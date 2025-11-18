@@ -298,8 +298,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
     static int32_t _buildTargetVehicle; // 0x011364E8; -1 for no target VehicleHead
 
-    static loco_global<EntityId, 0x0113642A> _113642A; // used by several windows/game commands/company ai
-
     static constexpr std::array<uint16_t, 6> kScrollRowHeight = { { 22, 22, 22, 22, 42, 30 } };
 
     static Ui::TextInput::InputSession inputSession;
@@ -1092,7 +1090,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         if (_buildTargetVehicle == -1)
         {
-            auto vehicle = EntityManager::get<Vehicles::VehicleBase>(_113642A);
+            auto vehicle = EntityManager::get<Vehicles::VehicleBase>(GameCommands::getLegacyReturnState().lastCreatedVehicleId);
             Vehicle::Details::open(vehicle);
         }
         sub_4B92A5(&window);

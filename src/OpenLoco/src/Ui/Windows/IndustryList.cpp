@@ -48,8 +48,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
     static uint8_t _industryGhostType;          // 0x00E0C3DA
     static IndustryId _industryGhostId;         // 0x00E0C3DB
 
-    static loco_global<IndustryId, 0x00E0C3C9> _industryLastPlacedId;
-
     namespace Common
     {
         enum widx
@@ -1103,7 +1101,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             }
             _industryGhostPos = placementArgs.pos;
             _industryGhostType = placementArgs.type;
-            _industryGhostId = _industryLastPlacedId;
+            _industryGhostId = GameCommands::getLegacyReturnState().lastPlacedIndustryId;
             _industryGhostPlaced = true;
             return res;
         }

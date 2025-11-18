@@ -39,8 +39,6 @@ namespace OpenLoco::GameCommands
     constexpr auto kNumVehicleComponentsInBase = 4;         // head unk_1 unk_2 tail
     constexpr auto kMaxNumVehicleComponentsInCar = kNumVehicleComponentsInCarComponent * kMaxNumCarComponentsInCar;
 
-    static loco_global<EntityId, 0x0113642A> _113642A; // used by build window and others
-
     // 0x004B1D96
     static bool aiIsBelowVehicleLimit()
     {
@@ -608,6 +606,8 @@ namespace OpenLoco::GameCommands
     // 0x004AE74E
     static uint32_t createNewVehicle(const uint8_t flags, const uint16_t vehicleTypeId)
     {
+        getLegacyReturnState().lastCreatedVehicleId = EntityId::null;
+
         setPosition({ Location::null, 0, 0 });
         if (!EntityManager::checkNumFreeEntities(kMaxNumVehicleComponentsInCar + kNumVehicleComponentsInBase))
         {
@@ -630,7 +630,7 @@ namespace OpenLoco::GameCommands
             }
 
             auto _head = *head;
-            _113642A = _head->id;
+            getLegacyReturnState().lastCreatedVehicleId = _head->id;
             if (createCar(_head, vehicleTypeId))
             {
                 // 0x004AE6DE
