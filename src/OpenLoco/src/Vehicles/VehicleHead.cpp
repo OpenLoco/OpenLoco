@@ -67,7 +67,7 @@ namespace OpenLoco::Vehicles
     static loco_global<VehicleBogie*, 0x01136128> _vehicleUpdate_backBogie;
     static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
     static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
-    static loco_global<uint8_t, 0x0113623B> _vehicleMangled_113623B; // This shouldn't be used as it will be mangled but it is
+    static loco_global<uint8_t, 0x0113623B> _vehicleMangled_113623B;    // This shouldn't be used as it will be mangled but it is
 
     static constexpr uint16_t kTrainOneWaySignalTimeout = 1920;
     static constexpr uint16_t kTrainTwoWaySignalTimeout = 640;
