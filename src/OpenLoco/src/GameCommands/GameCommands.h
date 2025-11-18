@@ -208,6 +208,11 @@ namespace OpenLoco::GameCommands
         uint8_t flags_1136073;                                  // 0x01136073
         World::MicroZ byte_1136074;                             // 0x01136074
         uint8_t byte_1136075;                                   // 0x01136075
+        StationId lastPlacedTrackRoadStationId;                 // 0x0112C730
+        StationId lastConstructedAdjoiningStation;              // 0x0112C734
+        StationId lastPlacedAirport;                            // 0x0112C744
+        StationId lastPlacedDock;                               // 0x0112C748
+        World::Pos2 lastConstructedAdjoiningStationPos;         // 0x0112C792 centre pos
     };
 
     // Note: this is deliberately a mutable ref

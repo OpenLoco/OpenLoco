@@ -26,8 +26,6 @@
 
 namespace OpenLoco::GameCommands
 {
-    static loco_global<StationId, 0x0112C730> _lastPlacedTrackStationId;
-
     namespace
     {
         struct ClearFunctionArgs
@@ -334,8 +332,9 @@ namespace OpenLoco::GameCommands
                 {
                     elStation->setAiAllocated(false);
                     World::TileManager::mapInvalidateTileFull(trackLoc);
-                    _lastPlacedTrackStationId = elStation->stationId();
-                    auto* station = StationManager::get(_lastPlacedTrackStationId);
+                    const auto stationId = elStation->stationId();
+                    getLegacyReturnState().lastPlacedTrackRoadStationId = stationId;
+                    auto* station = StationManager::get(stationId);
                     if ((station->flags & StationFlags::flag_5) != StationFlags::none)
                     {
                         station->flags &= ~StationFlags::flag_5;
@@ -344,8 +343,8 @@ namespace OpenLoco::GameCommands
                         Ui::WindowManager::invalidate(Ui::WindowType::town, enumValue(town->id()));
                     }
                     station->invalidate();
-                    recalculateStationModes(_lastPlacedTrackStationId);
-                    recalculateStationCenter(_lastPlacedTrackStationId);
+                    recalculateStationModes(stationId);
+                    recalculateStationCenter(stationId);
                     station->updateLabel();
                     station->invalidate();
                     sub_48D794(*station);
