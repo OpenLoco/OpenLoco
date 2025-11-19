@@ -92,8 +92,6 @@ using OpenLoco::GameCommands::VehicleChangeRunningModeArgs;
 
 namespace OpenLoco::Ui::Windows::Vehicle
 {
-    static loco_global<StationId, 0x00F252A4> _hoveredStationId;
-
     namespace Common
     {
         enum widx
@@ -3255,7 +3253,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return ViewportInteraction::kNoInteractionArg;
             }
 
-            _hoveredStationId = stationId;
+            Input::setHoveredStationId(stationId);
             World::setMapSelectionFlags(World::MapSelectionFlags::hoveringOverStation);
             ViewportManager::invalidate(station);
 

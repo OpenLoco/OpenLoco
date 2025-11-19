@@ -98,7 +98,7 @@ namespace OpenLoco::Input
 
     static bool _rightMouseButtonDown;
 
-    static loco_global<StationId, 0x00F252A4> _hoveredStationId;
+    static StationId _hoveredStationId = StationId::null; // 0x00F252A4
 
     static int32_t _cursorWheel;
 
@@ -318,6 +318,11 @@ namespace OpenLoco::Input
     StationId getHoveredStationId()
     {
         return _hoveredStationId;
+    }
+
+    void setHoveredStationId(StationId stationId)
+    {
+        _hoveredStationId = stationId;
     }
 
 #pragma mark - Mouse input

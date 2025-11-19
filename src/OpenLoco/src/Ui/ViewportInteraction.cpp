@@ -161,12 +161,10 @@ namespace OpenLoco::Ui::ViewportInteraction
         return getStationArguments(station->stationId());
     }
 
-    static loco_global<StationId, 0x00F252A4> _hoveredStationId;
-
     // 0x004CD9B0
     static bool getStationArguments(const StationId id)
     {
-        _hoveredStationId = id;
+        Input::setHoveredStationId(id);
 
         auto station = StationManager::get(id);
 
