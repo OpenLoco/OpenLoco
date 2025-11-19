@@ -12,9 +12,10 @@ namespace OpenLoco::World
     static coord_t _mapSelectionAY = 0;                                    // 0x00F2448A
     static coord_t _mapSelectionBY = 0;                                    // 0x00F2448C
     static MapSelectionType _mapSelectionType = MapSelectionType::corner0; // 0x00F2448E
+    static ConstructionArrow _constructionArrow;                           // 0x00F24942 & 0x00F24948
 
     constexpr uint16_t kMapSelectedFreeFormTilesSize = 300;
-    sfl::static_vector<Pos2, kMapSelectedFreeFormTilesSize> _mapSelectedFreeFormTiles;
+    static sfl::static_vector<Pos2, kMapSelectedFreeFormTilesSize> _mapSelectedFreeFormTiles;
 
     // TODO: Return std::optional
     uint16_t setMapSelectionTiles(const Pos2& loc, const MapSelectionType selectionType, uint16_t toolSizeA)
@@ -289,5 +290,15 @@ namespace OpenLoco::World
     void resetMapSelectionFlags()
     {
         _mapSelectionFlags = MapSelectionFlags::none;
+    }
+
+    const ConstructionArrow& getConstructionArrow()
+    {
+        return _constructionArrow;
+    }
+
+    void setConstructionArrow(const ConstructionArrow& arrow)
+    {
+        _constructionArrow = arrow;
     }
 }

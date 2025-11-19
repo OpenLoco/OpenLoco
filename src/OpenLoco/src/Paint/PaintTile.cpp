@@ -66,18 +66,17 @@ namespace OpenLoco::Paint
     // 0x00461EA7
     static void paintConstructionArrow(PaintSession& session, const World::Pos2& loc)
     {
-        static loco_global<World::Pos3, 0x00F24942> _constructionArrowLocation;
-        static loco_global<uint8_t, 0x00F24948> _constructionArrowDirection;
+        auto& arrow = getConstructionArrow();
         if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enableConstructionArrow))
         {
             return;
         }
-        if (session.getUnkPosition() != _constructionArrowLocation)
+        if (session.getUnkPosition() != arrow.pos)
         {
             return;
         }
         session.setEntityPosition(loc);
-        const auto dirIndex = (_constructionArrowDirection & 0xFC) | (((_constructionArrowDirection & 0x3) + session.getRotation()) & 0x3);
+        const auto dirIndex = (arrow.direction & 0xFC) | (((arrow.direction & 0x3) + session.getRotation()) & 0x3);
         constexpr std::array<uint32_t, 16> kConstructionArrowImages = {
             ImageIds::construction_arrow_north,
             ImageIds::construction_arrow_east,
@@ -98,7 +97,7 @@ namespace OpenLoco::Paint
         };
         const auto imageId = ImageId{ kConstructionArrowImages[dirIndex], Colour::yellow };
         session.setItemType(InteractionItem::noInteraction);
-        session.addToPlotListAsParent(imageId, { 0, 0, _constructionArrowLocation->z }, World::Pos3(0, 0, _constructionArrowLocation->z + 10), { 32, 32, -1 });
+        session.addToPlotListAsParent(imageId, { 0, 0, arrow.pos.z }, World::Pos3(0, 0, arrow.pos.z + 10), { 32, 32, -1 });
     }
 
     constexpr std::array<std::array<World::Pos3, 9>, 2> kSupportBoundingBoxOffsets = {
