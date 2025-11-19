@@ -29,7 +29,7 @@ Includes all git commit authors. Aliases are GitHub user names.
 * English (UK) - extracted from original game
 * English (US) - extracted from original game
 * French - extracted from original game
-* German - extracted from original game
+* German - Hans Koch (Hammster)
 * Italian - extracted from original game
 * Korean - (telk5093)
 * Polish - (Zcooger)
