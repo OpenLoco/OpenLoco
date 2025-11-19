@@ -511,7 +511,7 @@ namespace OpenLoco::Paint
         uint32_t _roadMergeExits{};
         int16_t _roadMergeHeight{};
         uint16_t _roadMergeStreetlightType{};
-        bool _isHitTest{};            // 0x0050BF68
+        bool _isHitTest{};             // 0x0050BF68
         bool _skipTrackRoadSurfaces{}; // 0x00522095 bit 0
 
         // From OpenRCT2 equivalent fields not found yet or new
