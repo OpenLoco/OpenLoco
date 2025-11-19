@@ -1135,7 +1135,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static void cloneVehicle(Window& self)
         {
-            static loco_global<EntityId, 0x0113642A> _113642A;
             auto head = Common::getVehicle(self);
             if (head == nullptr)
             {
@@ -1149,7 +1148,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
             {
-                auto* newVehicle = EntityManager::get<Vehicles::VehicleBase>(_113642A);
+                auto* newVehicle = EntityManager::get<Vehicles::VehicleBase>(GameCommands::getLegacyReturnState().lastCreatedVehicleId);
                 if (newVehicle != nullptr)
                 {
                     Windows::Vehicle::Details::open(newVehicle);
