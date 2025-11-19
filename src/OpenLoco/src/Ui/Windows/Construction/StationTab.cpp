@@ -48,8 +48,6 @@ using namespace OpenLoco::World::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction::Station
 {
-    static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
-
     // TODO: move to ConstructionState when no longer a loco_global
     static bool _isDragging = false;
     static World::TilePos2 _toolPosDrag;
@@ -1085,9 +1083,9 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 cState.constructionZ = height.landHeight;
 
                 // Try placing the station at this location, ignoring errors if they occur
-                _suppressErrorSound = true;
+                GameCommands::setErrorSound(false);
                 builtAnything |= constructPieceAtPosition(pos) != GameCommands::FAILURE;
-                _suppressErrorSound = false;
+                GameCommands::setErrorSound(true);
             }
         }
 
