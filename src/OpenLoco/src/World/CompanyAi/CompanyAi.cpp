@@ -83,8 +83,6 @@ namespace OpenLoco
 {
     static void removeEntityFromThought(AiThought& thought, size_t index);
 
-    static loco_global<EntityId, 0x0113642A> _lastCreatedVehicleId;
-
     enum class ThoughtTypeFlags : uint32_t
     {
         none = 0U,
@@ -261,11 +259,11 @@ namespace OpenLoco
             }
             if (trainHeadId == EntityId::null)
             {
-                trainHeadId = _lastCreatedVehicleId;
+                trainHeadId = GameCommands::getLegacyReturnState().lastCreatedVehicleId;
             }
             // There was some broken code that would try read the head as a body here
 
-            // auto* veh = EntityManager::get<Vehicles::VehicleBogie>(_lastCreatedVehicleId); lol no this wouldn't work
+            // auto* veh = EntityManager::get<Vehicles::VehicleBogie>(GameCommands::getLegacyReturnState().lastCreatedVehicleId); lol no this wouldn't work
             // auto train = Vehicles::Vehicle(veh->head);
             // auto car = [&train, veh]() {
             //     for (auto& car : train.cars)
