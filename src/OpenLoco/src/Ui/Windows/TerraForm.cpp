@@ -804,7 +804,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 args.push(treeObj->name);
 
                 auto point = Point(self.x + 3, self.y + self.height - 13);
-                auto width = self.width - 19 - point.x;
+                auto width = self.width - 19;
                 tr.drawStringLeftClipped(point, width, Colour::black, StringIds::black_stringid, args);
             }
         }
