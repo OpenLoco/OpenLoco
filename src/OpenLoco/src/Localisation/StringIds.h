@@ -2053,6 +2053,12 @@ namespace OpenLoco::StringIds
     constexpr StringId year_range_no_start_no_end = 2387;
     constexpr StringId status_music_tracks_selected_singular = 2388;
     constexpr StringId status_music_tracks_selected_plural = 2389;
+    constexpr StringId userInterfaceGroup = 2390;
+    constexpr StringId windowFrameStyle = 2391;
+    constexpr StringId windowFrameStyleTip = 2392;
+    constexpr StringId windowFrameStyleGradient = 2393;
+    constexpr StringId windowFrameStyleSolid = 2394;
+    constexpr StringId windowFrameStyleTranslucent = 2395;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

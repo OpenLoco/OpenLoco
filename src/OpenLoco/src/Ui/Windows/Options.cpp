@@ -551,7 +551,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Rendering
     {
-        static constexpr Ui::Size32 kWindowSize = { 400, 182 };
+        static constexpr Ui::Size32 kWindowSize = { 400, 218 };
 
         namespace Widx
         {
@@ -571,6 +571,11 @@ namespace OpenLoco::Ui::Windows::Options
                 gridlines_on_landscape,
                 cash_popup_rendering,
                 show_company_ai_planning,
+
+                frame_user_interface,
+                window_frame_style_label,
+                window_frame_style,
+                window_frame_style_btn,
             };
         }
 
@@ -590,7 +595,11 @@ namespace OpenLoco::Ui::Windows::Options
             Widgets::Checkbox({ 10, 110 }, { 346, 12 }, WindowColour::secondary, StringIds::landscape_smoothing, StringIds::landscape_smoothing_tip),
             Widgets::Checkbox({ 10, 126 }, { 346, 12 }, WindowColour::secondary, StringIds::gridlines_on_landscape, StringIds::gridlines_on_landscape_tip),
             Widgets::Checkbox({ 10, 142 }, { 346, 12 }, WindowColour::secondary, StringIds::cash_popup_rendering, StringIds::tooltip_cash_popup_rendering),
-            Widgets::Checkbox({ 10, 158 }, { 346, 12 }, WindowColour::secondary, StringIds::show_company_ai_planning, StringIds::show_company_ai_planning_tip)
+            Widgets::Checkbox({ 10, 158 }, { 346, 12 }, WindowColour::secondary, StringIds::show_company_ai_planning, StringIds::show_company_ai_planning_tip),
+
+            Widgets::GroupBox({ 4, 180 }, { 392, 32 }, WindowColour::secondary, StringIds::userInterfaceGroup),
+            Widgets::Label({ 10, 195 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::windowFrameStyle),
+            Widgets::dropdownWidgets({ 235, 194 }, { 154, 12 }, WindowColour::secondary, StringIds::empty, StringIds::windowFrameStyleTip)
 
         );
 
@@ -753,6 +762,35 @@ namespace OpenLoco::Ui::Windows::Options
             Gfx::invalidateScreen();
         }
 
+        static void windowFrameStyleMouseDown(Window* w, [[maybe_unused]] WidgetIndex_t wi)
+        {
+            Widget dropdown = w->widgets[Widx::window_frame_style];
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 3, 0x80);
+
+            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::windowFrameStyleGradient);
+            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::windowFrameStyleSolid);
+            Dropdown::add(2, StringIds::dropdown_stringid, StringIds::windowFrameStyleTranslucent);
+            Dropdown::setItemSelected(enumValue(Config::get().windowFrameStyle));
+        }
+
+        static void windowFrameStyleDropdown(int16_t selectedItem)
+        {
+            if (selectedItem == -1)
+            {
+                return;
+            }
+
+            if (selectedItem == enumValue(Config::get().windowFrameStyle))
+            {
+                return;
+            }
+
+            auto& cfg = OpenLoco::Config::get();
+            cfg.windowFrameStyle = OpenLoco::Config::WindowFrameStyle(selectedItem);
+            OpenLoco::Config::write();
+            Gfx::invalidateScreen();
+        }
+
         // 0x004BFBB7
         static void onMouseDown(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
@@ -766,6 +804,9 @@ namespace OpenLoco::Ui::Windows::Options
                     break;
                 case Widx::station_names_min_scale_btn:
                     stationNamesScaleMouseDown(&w, wi);
+                    break;
+                case Widx::window_frame_style_btn:
+                    windowFrameStyleMouseDown(&w, wi);
                     break;
             }
         }
@@ -783,6 +824,9 @@ namespace OpenLoco::Ui::Windows::Options
                     break;
                 case Widx::station_names_min_scale_btn:
                     stationNamesScaleDropdown(item_index);
+                    break;
+                case Widx::window_frame_style_btn:
+                    windowFrameStyleDropdown(item_index);
                     break;
             }
         }
@@ -820,6 +864,14 @@ namespace OpenLoco::Ui::Windows::Options
 
             w.widgets[Widx::vehicles_min_scale].text = kScaleStringIds[Config::get().vehiclesMinScale];
             w.widgets[Widx::station_names_min_scale].text = kScaleStringIds[Config::get().stationNamesMinScale];
+
+            static constexpr StringId kWindowStyleStringIds[] = {
+                StringIds::windowFrameStyleGradient,
+                StringIds::windowFrameStyleSolid,
+                StringIds::windowFrameStyleTranslucent,
+            };
+
+            w.widgets[Widx::window_frame_style].text = kWindowStyleStringIds[enumValue(Config::get().windowFrameStyle)];
 
             if (Config::get().landscapeSmoothing)
             {
