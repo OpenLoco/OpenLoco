@@ -465,14 +465,6 @@ namespace OpenLoco::Scenario
         args.push<uint16_t>(0);
     }
 
-    static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _inUseobjectSelection;
-    static loco_global<ObjectManager::ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
-
-    static std::span<ObjectManager::SelectedObjectsFlags> getInUseSelectedObjectFlags()
-    {
-        return std::span<ObjectManager::SelectedObjectsFlags>(*_inUseobjectSelection, ObjectManager::getNumInstalledObjects());
-    }
-
     static void loadPreferredCurrency()
     {
         const auto& preferredCurreny = Config::get().preferredCurrency;
@@ -482,8 +474,8 @@ namespace OpenLoco::Scenario
             return;
         }
 
-        ObjectManager::prepareSelectionList(true);
-        const auto oldCurrency = ObjectManager::getActiveObject(ObjectType::currency, getInUseSelectedObjectFlags());
+        auto& selection = ObjectManager::prepareSelectionList(true);
+        const auto oldCurrency = ObjectManager::getActiveObject(ObjectType::currency, selection.objectFlags);
         if (oldCurrency.index != ObjectManager::kNullObjectIndex)
         {
             if (oldCurrency.object._header == preferredCurreny)
@@ -491,17 +483,17 @@ namespace OpenLoco::Scenario
                 ObjectManager::freeSelectionList();
                 return;
             }
-            ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultDeselect, oldCurrency.object._header, getInUseSelectedObjectFlags(), _objectSelectionMeta);
+            selection.selectObject(ObjectManager::SelectObjectModes::defaultDeselect, oldCurrency.object._header);
         }
-        if (!ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultSelect, preferredCurreny, getInUseSelectedObjectFlags(), _objectSelectionMeta))
+        if (!selection.selectObject(ObjectManager::SelectObjectModes::defaultSelect, preferredCurreny))
         {
             // Failed so reselect the old currency and give up
-            ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultSelect, oldCurrency.object._header, getInUseSelectedObjectFlags(), _objectSelectionMeta);
+            selection.selectObject(ObjectManager::SelectObjectModes::defaultSelect, oldCurrency.object._header);
             ObjectManager::freeSelectionList();
             return;
         }
-        ObjectManager::unloadUnselectedSelectionListObjects(getInUseSelectedObjectFlags());
-        ObjectManager::loadSelectionListObjects(getInUseSelectedObjectFlags());
+        ObjectManager::unloadUnselectedSelectionListObjects(selection.objectFlags);
+        ObjectManager::loadSelectionListObjects(selection.objectFlags);
         ObjectManager::reloadAll();
         Gfx::loadCurrency();
         ObjectManager::freeSelectionList();

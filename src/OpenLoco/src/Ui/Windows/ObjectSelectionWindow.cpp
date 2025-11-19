@@ -211,13 +211,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         Visibility display;
     };
 
-    static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _objectSelection;
-
-    static std::span<ObjectManager::SelectedObjectsFlags> getSelectedObjectFlags()
-    {
-        return std::span<ObjectManager::SelectedObjectsFlags>(*_objectSelection, ObjectManager::getNumInstalledObjects());
-    }
-
     static std::vector<TabObjectEntry> _tabObjectList;
     static uint16_t _numVisibleObjectsListed;
     static bool _filterByVehicleType = false;
@@ -485,12 +478,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00472BBC
-    static ObjectManager::ObjIndexPair getFirstAvailableSelectedObject([[maybe_unused]] Window* self)
+    static ObjectManager::ObjIndexPair getFirstAvailableSelectedObject(const ObjectManager::ObjectIndexSeletion& selection)
     {
-        const auto selectionFlags = getSelectedObjectFlags();
         for (auto& entry : _tabObjectList)
         {
-            if ((selectionFlags[entry.index] & ObjectManager::SelectedObjectsFlags::selected) != ObjectManager::SelectedObjectsFlags::none)
+            if ((selection.objectFlags[entry.index] & ObjectManager::SelectedObjectsFlags::selected) != ObjectManager::SelectedObjectsFlags::none)
             {
                 return { static_cast<int16_t>(entry.index), entry.object };
             }
@@ -516,7 +508,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             return window;
         }
 
-        ObjectManager::prepareSelectionList(true);
+        auto& selection = ObjectManager::prepareSelectionList(true);
 
         window = WindowManager::createWindowCentred(WindowType::objectSelection, { kWindowSize }, WindowFlags::none, getEvents());
         window->setWidgets(widgets);
@@ -534,7 +526,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         ObjectManager::freeTemporaryObject();
 
-        auto objIndex = getFirstAvailableSelectedObject(window);
+        auto objIndex = getFirstAvailableSelectedObject(selection);
         if (objIndex.index != ObjectManager::kNullObjectIndex)
         {
             window->rowHover = objIndex.index;
@@ -630,8 +622,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             self.widgets[widx::scrollviewFrame].hidden = true;
         }
     }
-
-    static loco_global<ObjectManager::ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
 
     // 0x0047328D
     static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx)
@@ -1027,9 +1017,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         {
             type = currentTab.objectType;
         }
-
+        auto& selection = ObjectManager::getCurrentSelectionList();
         auto args = FormatArguments();
-        args.push(_objectSelectionMeta->numSelectedObjects[enumValue(type)]);
+        args.push(selection.selectionMetaData.numSelectedObjects[enumValue(type)]);
         args.push(ObjectManager::getMaxObjects(type));
 
         {
@@ -1111,7 +1101,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             return;
         }
 
-        const auto selectionFlags = getSelectedObjectFlags();
+        const auto& selection = ObjectManager::getCurrentSelectionList();
         int y = 0;
         for (auto& entry : _tabObjectList)
         {
@@ -1148,7 +1138,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
             using namespace ObjectManager;
 
-            if ((selectionFlags[entry.index] & SelectedObjectsFlags::selected) != SelectedObjectsFlags::none)
+            if ((selection.objectFlags[entry.index] & SelectedObjectsFlags::selected) != SelectedObjectsFlags::none)
             {
                 auto x = 2;
                 tr.setCurrentFont(Gfx::Font::m2);
@@ -1160,7 +1150,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
                 auto checkColour = self.getColour(WindowColour::secondary).opaque();
 
-                if ((selectionFlags[entry.index] & (SelectedObjectsFlags::inUse | SelectedObjectsFlags::requiredByAnother | SelectedObjectsFlags::alwaysRequired)) != ObjectManager::SelectedObjectsFlags::none)
+                if ((selection.objectFlags[entry.index] & (SelectedObjectsFlags::inUse | SelectedObjectsFlags::requiredByAnother | SelectedObjectsFlags::alwaysRequired)) != ObjectManager::SelectedObjectsFlags::none)
                 {
                     checkColour = checkColour.inset();
                 }
@@ -1239,7 +1229,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x00473A13
     bool tryCloseWindow()
     {
-        const auto res = ObjectManager::validateObjectSelection(getSelectedObjectFlags());
+        auto& selection = ObjectManager::getCurrentSelectionList();
+        const auto res = ObjectManager::validateObjectSelection(selection.objectFlags);
         if (!res.has_value())
         {
             // All okay selection is good!
@@ -1270,7 +1261,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 ObjectManager::freeTemporaryObject();
                 w->invalidate();
 
-                auto objIndex = getFirstAvailableSelectedObject(w);
+                auto objIndex = getFirstAvailableSelectedObject(selection);
                 if (objIndex.index != ObjectManager::kNullObjectIndex)
                 {
                     w->rowHover = objIndex.index;
@@ -1299,7 +1290,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         self.object = nullptr;
         self.scrollAreas[0].contentWidth = 0;
         ObjectManager::freeTemporaryObject();
-        auto objIndex = getFirstAvailableSelectedObject(&self);
+        auto& curSelection = ObjectManager::getCurrentSelectionList();
+        auto objIndex = getFirstAvailableSelectedObject(curSelection);
 
         if (objIndex.index != ObjectManager::kNullObjectIndex)
         {
@@ -1544,31 +1536,27 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         auto type = objIndex.object._header.getType();
 
-        const auto selectionFlags = getSelectedObjectFlags();
+        auto& curSelection = ObjectManager::getCurrentSelectionList();
         if (ObjectManager::getMaxObjects(type) == 1)
         {
-            if ((selectionFlags[index] & ObjectManager::SelectedObjectsFlags::selected) == ObjectManager::SelectedObjectsFlags::none)
+            if ((curSelection.objectFlags[index] & ObjectManager::SelectedObjectsFlags::selected) == ObjectManager::SelectedObjectsFlags::none)
             {
-                auto [oldIndex, oldObject] = ObjectManager::getActiveObject(type, selectionFlags);
+                auto [oldIndex, oldObject] = ObjectManager::getActiveObject(type, curSelection.objectFlags);
 
                 if (oldIndex != ObjectManager ::kNullObjectIndex)
                 {
-                    auto meta = *_objectSelectionMeta;
-                    ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultDeselect, oldObject._header, selectionFlags, meta);
-                    *_objectSelectionMeta = meta;
+                    curSelection.selectObject(ObjectManager::SelectObjectModes::defaultDeselect, oldObject._header);
                 }
             }
         }
 
         auto mode = ObjectManager::SelectObjectModes::defaultDeselect;
-        if ((selectionFlags[index] & ObjectManager::SelectedObjectsFlags::selected) == ObjectManager::SelectedObjectsFlags::none)
+        if ((curSelection.objectFlags[index] & ObjectManager::SelectedObjectsFlags::selected) == ObjectManager::SelectedObjectsFlags::none)
         {
             mode = ObjectManager::SelectObjectModes::defaultSelect;
         }
 
-        auto meta = *_objectSelectionMeta;
-        bool success = ObjectManager::selectObjectFromIndex(mode, object, selectionFlags, meta);
-        *_objectSelectionMeta = meta;
+        bool success = curSelection.selectObject(mode, object);
 
         if (success)
         {
@@ -1587,8 +1575,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x004739DD
     static void onClose([[maybe_unused]] Window& self)
     {
-        ObjectManager::unloadUnselectedSelectionListObjects(getSelectedObjectFlags());
-        ObjectManager::loadSelectionListObjects(getSelectedObjectFlags());
+        auto& selection = ObjectManager::getCurrentSelectionList();
+        ObjectManager::unloadUnselectedSelectionListObjects(selection.objectFlags);
+        ObjectManager::loadSelectionListObjects(selection.objectFlags);
         ObjectManager::reloadAll();
         ObjectManager::freeTemporaryObject();
 

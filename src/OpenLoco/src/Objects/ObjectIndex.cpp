@@ -52,8 +52,7 @@ namespace OpenLoco::ObjectManager
 
     static loco_global<bool, 0x0050D161> _isPartialLoaded;
     static loco_global<int32_t, 0x0050D148> _50D144refCount;
-    static loco_global<SelectedObjectsFlags*, 0x0050D144> _50D144;
-    static loco_global<ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
+    static ObjectIndexSeletion _objectIndexSelection{}; // 0x0050D144 & 0x0112C1C5
 
     static constexpr uint8_t kCurrentIndexVersion = 5;
     static constexpr uint32_t kMaxStringLength = 1024;
@@ -682,46 +681,46 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x00472C84
-    static void resetSelectedObjectCountsAndSize(std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData)
+    static void resetSelectedObjectCountsAndSize(ObjectIndexSeletion& selection)
     {
-        std::fill(std::begin(selectionMetaData.numSelectedObjects), std::end(selectionMetaData.numSelectedObjects), 0U);
+        std::fill(std::begin(selection.selectionMetaData.numSelectedObjects), std::end(selection.selectionMetaData.numSelectedObjects), 0U);
 
         uint32_t totalNumImages = 0;
         for (ObjectIndexId i = 0; i < static_cast<int16_t>(_installedObjectList.size()); i++)
         {
             auto& entry = _installedObjectList[i];
-            if ((objectFlags[i] & SelectedObjectsFlags::selected) == SelectedObjectsFlags::none)
+            if ((selection.objectFlags[i] & SelectedObjectsFlags::selected) == SelectedObjectsFlags::none)
             {
                 continue;
             }
 
-            selectionMetaData.numSelectedObjects[enumValue(entry._header.getType())]++;
+            selection.selectionMetaData.numSelectedObjects[enumValue(entry._header.getType())]++;
             totalNumImages += entry._displayData.numImages;
         }
 
-        selectionMetaData.numImages = totalNumImages;
+        selection.selectionMetaData.numImages = totalNumImages;
     }
 
-    static bool selectObjectFromIndexInternal(SelectObjectModes mode, bool isRecursed, const ObjectHeader& objHeader, std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData);
+    static bool selectObjectFromIndexInternal(SelectObjectModes mode, bool isRecursed, const ObjectHeader& objHeader, ObjectIndexSeletion& selection);
 
-    static bool selectObjectInternal(SelectObjectModes mode, bool isRecursed, const ObjectHeader& objHeader, std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData, ObjectIndexId index, const ObjectIndexEntry& entry)
+    static bool selectObjectInternal(SelectObjectModes mode, bool isRecursed, const ObjectHeader& objHeader, ObjectIndexSeletion& selection, ObjectIndexId index, const ObjectIndexEntry& entry)
     {
         if (!isRecursed)
         {
             if ((mode & SelectObjectModes::markAsAlwaysRequired) != SelectObjectModes::none)
             {
-                objectFlags[index] |= SelectedObjectsFlags::alwaysRequired;
+                selection.objectFlags[index] |= SelectedObjectsFlags::alwaysRequired;
             }
         }
 
         // Object already selected so skip
-        if ((objectFlags[index] & SelectedObjectsFlags::selected) != SelectedObjectsFlags::none)
+        if ((selection.objectFlags[index] & SelectedObjectsFlags::selected) != SelectedObjectsFlags::none)
         {
             return true;
         }
 
         // If this was selected too many objects would be selected
-        if (selectionMetaData.numSelectedObjects[enumValue(objHeader.getType())] >= getMaxObjects(objHeader.getType()))
+        if (selection.selectionMetaData.numSelectedObjects[enumValue(objHeader.getType())] >= getMaxObjects(objHeader.getType()))
         {
             GameCommands::setErrorText(StringIds::too_many_objects_of_this_type_selected);
             return false;
@@ -730,7 +729,7 @@ namespace OpenLoco::ObjectManager
         // All required objects must select if this selects
         for (const auto& header : entry._requiredObjects)
         {
-            if (!selectObjectFromIndexInternal(mode, true, header, objectFlags, selectionMetaData))
+            if (!selectObjectFromIndexInternal(mode, true, header, selection))
             {
                 return false;
             }
@@ -741,7 +740,7 @@ namespace OpenLoco::ObjectManager
         {
             if ((mode & SelectObjectModes::selectAlsoLoads) != SelectObjectModes::none)
             {
-                selectObjectFromIndexInternal(mode, true, header, objectFlags, selectionMetaData);
+                selectObjectFromIndexInternal(mode, true, header, selection);
             }
         }
 
@@ -758,42 +757,42 @@ namespace OpenLoco::ObjectManager
         }
 
         // If this object was selected too many images would be needed when loading
-        if (entry._displayData.numImages + selectionMetaData.numImages > Gfx::G1ExpectedCount::kObjects)
+        if (entry._displayData.numImages + selection.selectionMetaData.numImages > Gfx::G1ExpectedCount::kObjects)
         {
             GameCommands::setErrorText(StringIds::not_enough_space_for_graphics);
             return false;
         }
 
         // Its possible that we have loaded other objects so check again that we haven't exceeded object counts
-        if (selectionMetaData.numSelectedObjects[enumValue(objHeader.getType())] >= getMaxObjects(objHeader.getType()))
+        if (selection.selectionMetaData.numSelectedObjects[enumValue(objHeader.getType())] >= getMaxObjects(objHeader.getType()))
         {
             GameCommands::setErrorText(StringIds::too_many_objects_of_this_type_selected);
             return false;
         }
 
-        selectionMetaData.numImages += entry._displayData.numImages;
-        selectionMetaData.numSelectedObjects[enumValue(objHeader.getType())]++;
-        objectFlags[index] |= SelectedObjectsFlags::selected;
+        selection.selectionMetaData.numImages += entry._displayData.numImages;
+        selection.selectionMetaData.numSelectedObjects[enumValue(objHeader.getType())]++;
+        selection.objectFlags[index] |= SelectedObjectsFlags::selected;
         return true;
     }
 
-    static bool deselectObjectInternal(SelectObjectModes mode, const ObjectHeader& objHeader, std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData, ObjectIndexId index, const ObjectIndexEntry& entry)
+    static bool deselectObjectInternal(SelectObjectModes mode, const ObjectHeader& objHeader, ObjectIndexSeletion& selection, ObjectIndexId index, const ObjectIndexEntry& entry)
     {
         // Object already deselected
-        if ((objectFlags[index] & SelectedObjectsFlags::selected) == SelectedObjectsFlags::none)
+        if ((selection.objectFlags[index] & SelectedObjectsFlags::selected) == SelectedObjectsFlags::none)
         {
             return true;
         }
 
         // Can't deselect in use objects (placed on map)
-        if ((objectFlags[index] & SelectedObjectsFlags::inUse) != SelectedObjectsFlags::none)
+        if ((selection.objectFlags[index] & SelectedObjectsFlags::inUse) != SelectedObjectsFlags::none)
         {
             GameCommands::setErrorText(StringIds::this_object_is_currently_in_use);
             return false;
         }
 
         // Can't deselect objects required by others
-        if ((objectFlags[index] & SelectedObjectsFlags::requiredByAnother) != SelectedObjectsFlags::none)
+        if ((selection.objectFlags[index] & SelectedObjectsFlags::requiredByAnother) != SelectedObjectsFlags::none)
         {
             GameCommands::setErrorText(StringIds::this_object_is_required_by_another_object);
             return false;
@@ -801,7 +800,7 @@ namespace OpenLoco::ObjectManager
 
         // Can't deselect always required objects
         // Note: Not used in Locomotion (RCT2 only)
-        if ((objectFlags[index] & SelectedObjectsFlags::alwaysRequired) != SelectedObjectsFlags::none)
+        if ((selection.objectFlags[index] & SelectedObjectsFlags::alwaysRequired) != SelectedObjectsFlags::none)
         {
             GameCommands::setErrorText(StringIds::this_object_is_always_required);
             return false;
@@ -811,18 +810,18 @@ namespace OpenLoco::ObjectManager
         {
             if ((mode & SelectObjectModes::selectAlsoLoads) != SelectObjectModes::none)
             {
-                selectObjectFromIndexInternal(mode, true, header, objectFlags, selectionMetaData);
+                selectObjectFromIndexInternal(mode, true, header, selection);
             }
         }
 
-        selectionMetaData.numImages -= entry._displayData.numImages;
-        selectionMetaData.numSelectedObjects[enumValue(objHeader.getType())]--;
-        objectFlags[index] &= ~SelectedObjectsFlags::selected;
+        selection.selectionMetaData.numImages -= entry._displayData.numImages;
+        selection.selectionMetaData.numSelectedObjects[enumValue(objHeader.getType())]--;
+        selection.objectFlags[index] &= ~SelectedObjectsFlags::selected;
         return true;
     }
 
     // 0x00473D1D
-    static bool selectObjectFromIndexInternal(SelectObjectModes mode, bool isRecursed, const ObjectHeader& objHeader, std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData)
+    static bool selectObjectFromIndexInternal(SelectObjectModes mode, bool isRecursed, const ObjectHeader& objHeader, ObjectIndexSeletion& selection)
     {
         auto objIndexEntry = internalFindObjectInIndex(objHeader);
         if (!objIndexEntry.has_value())
@@ -833,7 +832,7 @@ namespace OpenLoco::ObjectManager
             GameCommands::setErrorText(StringIds::buffer_2040);
             if (isRecursed)
             {
-                resetSelectedObjectCountsAndSize(objectFlags, selectionMetaData);
+                resetSelectedObjectCountsAndSize(selection);
             }
             return false;
         }
@@ -841,29 +840,29 @@ namespace OpenLoco::ObjectManager
         auto& [index, entry] = *objIndexEntry;
 
         bool success = (mode & SelectObjectModes::select) != SelectObjectModes::none
-            ? selectObjectInternal(mode, isRecursed, objHeader, objectFlags, selectionMetaData, index, entry)
-            : deselectObjectInternal(mode, objHeader, objectFlags, selectionMetaData, index, entry);
+            ? selectObjectInternal(mode, isRecursed, objHeader, selection, index, entry)
+            : deselectObjectInternal(mode, objHeader, selection, index, entry);
 
         if (success)
         {
             if (!isRecursed)
             {
-                refreshRequiredByAnother(objectFlags);
+                refreshRequiredByAnother(selection.objectFlags);
             }
         }
         else
         {
             if (isRecursed)
             {
-                resetSelectedObjectCountsAndSize(objectFlags, selectionMetaData);
+                resetSelectedObjectCountsAndSize(selection);
             }
         }
         return success;
     }
 
-    bool selectObjectFromIndex(SelectObjectModes mode, const ObjectHeader& objHeader, std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData)
+    bool ObjectIndexSeletion::selectObject(SelectObjectModes mode, const ObjectHeader& objHeader)
     {
-        return selectObjectFromIndexInternal(mode, false, objHeader, objectFlags, selectionMetaData);
+        return selectObjectFromIndexInternal(mode, false, objHeader, *this);
     }
 
     // 0x00472DA1
@@ -1093,41 +1092,39 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x00472CFD
-    static void selectRequiredObjects(std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& meta)
+    static void selectRequiredObjects(ObjectIndexSeletion& selection)
     {
         for (const auto& header : std::array<ObjectHeader, 0>{})
         {
-            selectObjectFromIndex(SelectObjectModes::defaultSelect | SelectObjectModes::markAsAlwaysRequired, header, objectFlags, meta);
+            selection.selectObject(SelectObjectModes::defaultSelect | SelectObjectModes::markAsAlwaysRequired, header);
         }
     }
 
     constexpr std::array<ObjectHeader, 1> kDefaultObjects = { ObjectHeader{ static_cast<uint32_t>(enumValue(ObjectType::region)), { 'R', 'E', 'G', 'U', 'S', ' ', ' ', ' ' }, 0U } };
 
     // 0x00472D19
-    static void selectDefaultObjects(std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& meta)
+    static void selectDefaultObjects(ObjectIndexSeletion& selection)
     {
         for (const auto& header : kDefaultObjects)
         {
-            selectObjectFromIndex(SelectObjectModes::defaultSelect, header, objectFlags, meta);
+            selection.selectObject(SelectObjectModes::defaultSelect, header);
         }
     }
 
     // 0x00473A95
-    void prepareSelectionList(bool markInUse)
+    ObjectIndexSeletion& prepareSelectionList(bool markInUse)
     {
         _50D144refCount++;
         if (_50D144refCount != 1)
         {
             // All setup already
-            return;
+            return _objectIndexSelection;
         }
+        _objectIndexSelection = ObjectIndexSeletion{};
+        _objectIndexSelection.objectFlags.resize(_installedObjectList.size());
 
-        SelectedObjectsFlags* selectFlags = new SelectedObjectsFlags[_installedObjectList.size()]{};
-        _50D144 = selectFlags;
-        std::span<SelectedObjectsFlags> objectFlags{ selectFlags, _installedObjectList.size() };
-        // throw on nullptr?
+        std::span<SelectedObjectsFlags> objectFlags = _objectIndexSelection.objectFlags;
 
-        _objectSelectionMeta = ObjectSelectionMeta{};
         _numObjectsPerType = std::array<uint16_t, kMaxObjectTypes>{};
 
         for (auto& entry : _installedObjectList)
@@ -1138,22 +1135,24 @@ namespace OpenLoco::ObjectManager
         {
             markInUseObjects(objectFlags);
         }
-        resetSelectedObjectCountsAndSize(objectFlags, _objectSelectionMeta);
-        selectRequiredObjects(objectFlags, _objectSelectionMeta); // nop
-        selectDefaultObjects(objectFlags, _objectSelectionMeta);
+        resetSelectedObjectCountsAndSize(_objectIndexSelection);
+        selectRequiredObjects(_objectIndexSelection); // nop
+        selectDefaultObjects(_objectIndexSelection);
         refreshRequiredByAnother(objectFlags);
-        resetSelectedObjectCountsAndSize(objectFlags, _objectSelectionMeta);
+        resetSelectedObjectCountsAndSize(_objectIndexSelection);
+        return _objectIndexSelection;
+    }
+
+    ObjectIndexSeletion& getCurrentSelectionList()
+    {
+        assert(_50D144refCount > 0);
+        return _objectIndexSelection;
     }
 
     // 0x00473B91
     void freeSelectionList()
     {
         _50D144refCount--;
-        if (_50D144refCount == 0)
-        {
-            delete[] _50D144;
-            _50D144 = nullptr;
-        }
     }
 
     // 0x004BF935
