@@ -24,9 +24,6 @@
 using namespace OpenLoco::Diagnostics;
 namespace OpenLoco::Paint
 {
-    static Interop::loco_global<uint8_t, 0x00522095> _byte_522095;
-    static Interop::loco_global<uint8_t, 0x0050BF68> _byte_50BF68;
-
     struct RoadPaintCommon
     {
         ImageId roadBaseImageId;          // 0x0112C280 with colours and image index set to base of roadObject image table
@@ -330,7 +327,7 @@ namespace OpenLoco::Paint
             const auto heightOffset = World::Pos3{ 0,
                                                    0,
                                                    height };
-            if (_byte_50BF68 == 1)
+            if (session.isHitTest())
             {
                 session.addToPlotListTrackRoad(
                     ImageId(rpp.imageIndexOffsets[rotation]),
@@ -508,7 +505,7 @@ namespace OpenLoco::Paint
 
         RoadPaintCommon roadSession{ baseRoadImageColour.withIndex(roadObj->image), baseRoadImageColour, roadObj->tunnel };
 
-        if (!(*_byte_522095 & (1 << 0)))
+        if (!session.skipTrackRoadSurfaces())
         {
             auto& rpcp = kRoadPaintCommonParts[elRoad.roadId()][elRoad.sequenceIndex()];
             if (roadObj->paintStyle == 0)

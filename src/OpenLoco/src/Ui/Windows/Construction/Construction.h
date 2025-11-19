@@ -170,6 +170,13 @@ namespace OpenLoco::Ui::Windows::Construction
     namespace Construction
     {
         static constexpr Ui::Size32 kWindowSize = { 138, 276 };
+        enum class TrackRoadPreviewFlags : uint8_t
+        {
+            none = 0U,
+            skipTrackRoadSurfaces = 1U << 0,
+            displayConstructionArrow = 1U << 1,
+        };
+        OPENLOCO_ENABLE_ENUM_OPERATORS(TrackRoadPreviewFlags);
 
         enum widx
         {
@@ -235,8 +242,8 @@ namespace OpenLoco::Ui::Windows::Construction
         void reset();
         void activateSelectedConstructionWidgets();
         void tabReset(Window& self);
-        void drawTrack(const World::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t rotation, Gfx::DrawingContext& drawingCtx);
-        void drawRoad(const World::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t rotation, Gfx::DrawingContext& drawingCtx);
+        void drawTrack(const World::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t rotation, TrackRoadPreviewFlags flags, Gfx::DrawingContext& drawingCtx);
+        void drawRoad(const World::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t rotation, TrackRoadPreviewFlags flags,Gfx::DrawingContext& drawingCtx);
         void removeTrackGhosts();
         void previousTrackPiece(Window& self);
         void nextTrackPiece(Window& self);

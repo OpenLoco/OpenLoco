@@ -97,6 +97,7 @@ namespace OpenLoco::Input
     KeyModifier getKeyModifier();
 
     StationId getHoveredStationId();
+    void setHoveredStationId(StationId stationId);
 
     void handleKeyboard();
 
