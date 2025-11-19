@@ -6,6 +6,7 @@
 - Fix: [#3395] Text input windows no longer show character limits.
 - Fix: [#3401] The character limit label is using the wrong text colour.
 - Fix: [#3431] Marker-related config variables are not saved properly.
+- Fix: [#3455] The 'Plant Trees' status bar is not rendered correctly.
 
 25.11 (2025-11-05)
 ------------------------------------------------------------------------
