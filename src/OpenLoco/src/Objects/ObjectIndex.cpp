@@ -51,7 +51,7 @@ namespace OpenLoco::ObjectManager
     static std::array<uint16_t, kMaxObjectTypes> _numObjectsPerType{}; // 0x0112C181
 
     static loco_global<bool, 0x0050D161> _isPartialLoaded;
-    static loco_global<int32_t, 0x0050D148> _50D144refCount;
+    static int _objectIndexSelectionRefCount = 0;        // 0x0050D148
     static ObjectIndexSelection _objectIndexSelection{}; // 0x0050D144 & 0x0112C1C5
 
     static constexpr uint8_t kCurrentIndexVersion = 5;
@@ -1114,8 +1114,8 @@ namespace OpenLoco::ObjectManager
     // 0x00473A95
     ObjectIndexSelection& prepareSelectionList(bool markInUse)
     {
-        _50D144refCount++;
-        if (_50D144refCount != 1)
+        _objectIndexSelectionRefCount++;
+        if (_objectIndexSelectionRefCount != 1)
         {
             // All setup already
             return _objectIndexSelection;
@@ -1145,14 +1145,14 @@ namespace OpenLoco::ObjectManager
 
     ObjectIndexSelection& getCurrentSelectionList()
     {
-        assert(_50D144refCount > 0);
+        assert(_objectIndexSelectionRefCount > 0);
         return _objectIndexSelection;
     }
 
     // 0x00473B91
     void freeSelectionList()
     {
-        _50D144refCount--;
+        _objectIndexSelectionRefCount--;
     }
 
     // 0x004BF935
