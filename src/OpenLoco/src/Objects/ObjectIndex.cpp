@@ -52,7 +52,7 @@ namespace OpenLoco::ObjectManager
 
     static loco_global<bool, 0x0050D161> _isPartialLoaded;
     static loco_global<int32_t, 0x0050D148> _50D144refCount;
-    static ObjectIndexSeletion _objectIndexSelection{}; // 0x0050D144 & 0x0112C1C5
+    static ObjectIndexSelection _objectIndexSelection{}; // 0x0050D144 & 0x0112C1C5
 
     static constexpr uint8_t kCurrentIndexVersion = 5;
     static constexpr uint32_t kMaxStringLength = 1024;
@@ -681,7 +681,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x00472C84
-    static void resetSelectedObjectCountsAndSize(ObjectIndexSeletion& selection)
+    static void resetSelectedObjectCountsAndSize(ObjectIndexSelection& selection)
     {
         std::fill(std::begin(selection.selectionMetaData.numSelectedObjects), std::end(selection.selectionMetaData.numSelectedObjects), 0U);
 
@@ -701,9 +701,9 @@ namespace OpenLoco::ObjectManager
         selection.selectionMetaData.numImages = totalNumImages;
     }
 
-    static bool selectObjectFromIndexInternal(SelectObjectModes mode, bool isRecursed, const ObjectHeader& objHeader, ObjectIndexSeletion& selection);
+    static bool selectObjectFromIndexInternal(SelectObjectModes mode, bool isRecursed, const ObjectHeader& objHeader, ObjectIndexSelection& selection);
 
-    static bool selectObjectInternal(SelectObjectModes mode, bool isRecursed, const ObjectHeader& objHeader, ObjectIndexSeletion& selection, ObjectIndexId index, const ObjectIndexEntry& entry)
+    static bool selectObjectInternal(SelectObjectModes mode, bool isRecursed, const ObjectHeader& objHeader, ObjectIndexSelection& selection, ObjectIndexId index, const ObjectIndexEntry& entry)
     {
         if (!isRecursed)
         {
@@ -776,7 +776,7 @@ namespace OpenLoco::ObjectManager
         return true;
     }
 
-    static bool deselectObjectInternal(SelectObjectModes mode, const ObjectHeader& objHeader, ObjectIndexSeletion& selection, ObjectIndexId index, const ObjectIndexEntry& entry)
+    static bool deselectObjectInternal(SelectObjectModes mode, const ObjectHeader& objHeader, ObjectIndexSelection& selection, ObjectIndexId index, const ObjectIndexEntry& entry)
     {
         // Object already deselected
         if ((selection.objectFlags[index] & SelectedObjectsFlags::selected) == SelectedObjectsFlags::none)
@@ -821,7 +821,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x00473D1D
-    static bool selectObjectFromIndexInternal(SelectObjectModes mode, bool isRecursed, const ObjectHeader& objHeader, ObjectIndexSeletion& selection)
+    static bool selectObjectFromIndexInternal(SelectObjectModes mode, bool isRecursed, const ObjectHeader& objHeader, ObjectIndexSelection& selection)
     {
         auto objIndexEntry = internalFindObjectInIndex(objHeader);
         if (!objIndexEntry.has_value())
@@ -860,7 +860,7 @@ namespace OpenLoco::ObjectManager
         return success;
     }
 
-    bool ObjectIndexSeletion::selectObject(SelectObjectModes mode, const ObjectHeader& objHeader)
+    bool ObjectIndexSelection::selectObject(SelectObjectModes mode, const ObjectHeader& objHeader)
     {
         return selectObjectFromIndexInternal(mode, false, objHeader, *this);
     }
@@ -1092,7 +1092,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x00472CFD
-    static void selectRequiredObjects(ObjectIndexSeletion& selection)
+    static void selectRequiredObjects(ObjectIndexSelection& selection)
     {
         for (const auto& header : std::array<ObjectHeader, 0>{})
         {
@@ -1103,7 +1103,7 @@ namespace OpenLoco::ObjectManager
     constexpr std::array<ObjectHeader, 1> kDefaultObjects = { ObjectHeader{ static_cast<uint32_t>(enumValue(ObjectType::region)), { 'R', 'E', 'G', 'U', 'S', ' ', ' ', ' ' }, 0U } };
 
     // 0x00472D19
-    static void selectDefaultObjects(ObjectIndexSeletion& selection)
+    static void selectDefaultObjects(ObjectIndexSelection& selection)
     {
         for (const auto& header : kDefaultObjects)
         {
@@ -1112,7 +1112,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x00473A95
-    ObjectIndexSeletion& prepareSelectionList(bool markInUse)
+    ObjectIndexSelection& prepareSelectionList(bool markInUse)
     {
         _50D144refCount++;
         if (_50D144refCount != 1)
@@ -1120,7 +1120,7 @@ namespace OpenLoco::ObjectManager
             // All setup already
             return _objectIndexSelection;
         }
-        _objectIndexSelection = ObjectIndexSeletion{};
+        _objectIndexSelection = ObjectIndexSelection{};
         _objectIndexSelection.objectFlags.resize(_installedObjectList.size());
 
         std::span<SelectedObjectsFlags> objectFlags = _objectIndexSelection.objectFlags;
@@ -1143,7 +1143,7 @@ namespace OpenLoco::ObjectManager
         return _objectIndexSelection;
     }
 
-    ObjectIndexSeletion& getCurrentSelectionList()
+    ObjectIndexSelection& getCurrentSelectionList()
     {
         assert(_50D144refCount > 0);
         return _objectIndexSelection;

@@ -478,7 +478,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00472BBC
-    static ObjectManager::ObjIndexPair getFirstAvailableSelectedObject(const ObjectManager::ObjectIndexSeletion& selection)
+    static ObjectManager::ObjIndexPair getFirstAvailableSelectedObject(const ObjectManager::ObjectIndexSelection& selection)
     {
         for (auto& entry : _tabObjectList)
         {

@@ -79,15 +79,15 @@ namespace OpenLoco::ObjectManager
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(SelectObjectModes);
 
-    struct ObjectIndexSeletion
+    struct ObjectIndexSelection
     {
         ObjectSelectionMeta selectionMetaData;
         std::vector<SelectedObjectsFlags> objectFlags;
         bool selectObject(SelectObjectModes mode, const ObjectHeader& objHeader);
     };
 
-    ObjectIndexSeletion& prepareSelectionList(bool markInUse);
-    ObjectIndexSeletion& getCurrentSelectionList();
+    ObjectIndexSelection& prepareSelectionList(bool markInUse);
+    ObjectIndexSelection& getCurrentSelectionList();
     void freeSelectionList();
     void markOnlyLoadedObjects(std::span<SelectedObjectsFlags> objectFlags);
     void loadSelectionListObjects(std::span<SelectedObjectsFlags> objectFlags);
