@@ -223,7 +223,9 @@ namespace OpenLoco::Paint
         // If true we are under a hit test not a normal paint.
         // During a hit test road images are subtly changed so that
         // you can distinguish between overlapping roads.
-        bool isHitTest;
+        bool isHitTest = false;
+        // This is used when painting previews of track/road mods
+        bool skipTrackRoadSurfaces = false;
 
         constexpr bool hasFlags(Ui::ViewportFlags flagsToTest) const
         {
@@ -316,6 +318,7 @@ namespace OpenLoco::Paint
         PaintStruct* getLastPS() { return _lastPS; }
         void setLastPS(PaintStruct* ps) { _lastPS = ps; }
         bool isHitTest() const { return _isHitTest; }
+        bool skipTrackRoadSurfaces() const { return _skipTrackRoadSurfaces; }
 
         /*
          * @param amount    @<eax>
@@ -508,7 +511,8 @@ namespace OpenLoco::Paint
         uint32_t _roadMergeExits{};
         int16_t _roadMergeHeight{};
         uint16_t _roadMergeStreetlightType{};
-        bool _isHitTest{}; // 0x0050BF68
+        bool _isHitTest{};            // 0x0050BF68
+        bool _skipTrackRoadSurfaces{}; // 0x00522095 bit 0
 
         // From OpenRCT2 equivalent fields not found yet or new
         // AttachedPaintStruct* unkF1AD2C;              // no equivalent

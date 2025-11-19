@@ -38,8 +38,6 @@ using namespace OpenLoco::World::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction::Overhead
 {
-    static loco_global<uint8_t, 0x00522095> _byte_522095;
-
     static constexpr auto widgets = makeWidgets(
         Common::makeCommonWidgets(138, 192, StringIds::stringid_2),
         Widgets::Checkbox({ 3, 45 }, { 132, 12 }, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
@@ -538,18 +536,15 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
                 const auto previewPos = World::Pos3(256 * World::kTileSize, 256 * World::kTileSize, 116 * World::kSmallZStep);
 
-                _byte_522095 = _byte_522095 | (1 << 0);
-
                 if (cState.trackType & (1 << 7))
                 {
                     uint8_t trackType = cState.trackType & ~(1 << 7);
-                    Construction::drawRoad(previewPos, cState.lastSelectedMods, trackType, 0, WindowManager::getCurrentRotation(), drawingCtx);
+                    Construction::drawRoad(previewPos, cState.lastSelectedMods, trackType, 0, WindowManager::getCurrentRotation(), Construction::TrackRoadPreviewFlags::skipTrackRoadSurfaces, drawingCtx);
                 }
                 else
                 {
-                    Construction::drawTrack(previewPos, cState.lastSelectedMods, cState.trackType, 0, WindowManager::getCurrentRotation(), drawingCtx);
+                    Construction::drawTrack(previewPos, cState.lastSelectedMods, cState.trackType, 0, WindowManager::getCurrentRotation(), Construction::TrackRoadPreviewFlags::skipTrackRoadSurfaces, drawingCtx);
                 }
-                _byte_522095 = _byte_522095 & ~(1 << 0);
 
                 drawingCtx.popRenderTarget();
             }

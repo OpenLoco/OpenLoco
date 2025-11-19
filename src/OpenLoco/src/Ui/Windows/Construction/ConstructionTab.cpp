@@ -49,7 +49,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static uint8_t _ghostRemovalTrackObjectId; // 0x00522093
 
     static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
-    static loco_global<uint8_t, 0x00522095> _byte_522095;
 
     static loco_global<uint8_t, 0x0112C2E9> _alternateTrackObjectId; // set from GameCommands::createRoad
 
@@ -2850,13 +2849,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x004A0AE5
-    void drawTrack(const World::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t direction, Gfx::DrawingContext& drawingCtx)
+    // flags : 0x00522095
+    void drawTrack(const World::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t direction, TrackRoadPreviewFlags flags, Gfx::DrawingContext& drawingCtx)
     {
         const auto backupSelectionFlags = World::getMapSelectionFlags();
         const auto backupConstructionArrow = getConstructionArrow();
 
         World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstructionArrow);
-        if (_byte_522095 & (1 << 1))
+        if ((flags & TrackRoadPreviewFlags::displayConstructionArrow) != TrackRoadPreviewFlags::none)
         {
             World::setMapSelectionFlags(World::MapSelectionFlags::enableConstructionArrow);
             setConstructionArrow({ pos, direction });
@@ -2886,7 +2886,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         Paint::SessionOptions options{};
         options.rotation = WindowManager::getCurrentRotation();
-        options.isHitTest = false;
+        options.skipTrackRoadSurfaces = (flags & TrackRoadPreviewFlags::skipTrackRoadSurfaces) != TrackRoadPreviewFlags::none;
 
         auto session = Paint::PaintSession(drawingCtx.currentRenderTarget(), options);
 
@@ -2943,13 +2943,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x00478F1F
-    void drawRoad(const World::Pos3& pos, uint16_t selectedMods, uint8_t roadType, uint8_t roadPieceId, uint8_t direction, Gfx::DrawingContext& drawingCtx)
+    // flags : 0x00522095
+    void drawRoad(const World::Pos3& pos, uint16_t selectedMods, uint8_t roadType, uint8_t roadPieceId, uint8_t direction, TrackRoadPreviewFlags flags, Gfx::DrawingContext& drawingCtx)
     {
         const auto backupSelectionFlags = World::getMapSelectionFlags();
         const auto backupConstructionArrow = getConstructionArrow();
 
         World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstructionArrow);
-        if (_byte_522095 & (1 << 1))
+        if ((flags & TrackRoadPreviewFlags::displayConstructionArrow) != TrackRoadPreviewFlags::none)
         {
             World::setMapSelectionFlags(World::MapSelectionFlags::enableConstructionArrow);
             setConstructionArrow({ pos, direction });
@@ -2979,7 +2980,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         Paint::SessionOptions options{};
         options.rotation = WindowManager::getCurrentRotation();
-        options.isHitTest = false;
+        options.skipTrackRoadSurfaces = (flags & TrackRoadPreviewFlags::skipTrackRoadSurfaces) != TrackRoadPreviewFlags::none;
 
         auto session = Paint::PaintSession(drawingCtx.currentRenderTarget(), options);
 
@@ -3082,8 +3083,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         clipped->x += pos.x;
         clipped->y += pos.y;
 
-        _byte_522095 = _byte_522095 | (1 << 1);
-
         drawingCtx.pushRenderTarget(*clipped);
 
         auto& cState = getConstructionState();
@@ -3094,11 +3093,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             cState.byte_1136077,
             cState.lastSelectedTrackPieceId,
             cState.byte_1136078,
+            TrackRoadPreviewFlags::displayConstructionArrow,
             drawingCtx);
 
         drawingCtx.popRenderTarget();
-
-        _byte_522095 = _byte_522095 & ~(1 << 1);
 
         drawCostString(self, drawingCtx);
     }
@@ -3114,8 +3112,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         clipped->x += pos.x;
         clipped->y += pos.y;
 
-        _byte_522095 = _byte_522095 | (1 << 1);
-
         drawingCtx.pushRenderTarget(*clipped);
 
         auto& cState = getConstructionState();
@@ -3126,11 +3122,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             cState.byte_1136077,
             cState.lastSelectedTrackPieceId,
             cState.byte_1136078,
+            TrackRoadPreviewFlags::displayConstructionArrow,
             drawingCtx);
 
         drawingCtx.popRenderTarget();
-
-        _byte_522095 = _byte_522095 & ~(1 << 1);
 
         drawCostString(self, drawingCtx);
     }
