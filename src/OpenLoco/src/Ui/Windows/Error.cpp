@@ -16,17 +16,13 @@
 #include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::Error
 {
-    static loco_global<bool, 0x00508F09> _suppressErrorSound;
-
-    static char _errorText[512];         // 0x009C64B3
-    static uint16_t _linebreakCount;     // 0x009C66B3
-    static CompanyId _errorCompetitorId; // 0x009C68EC
+    static char _errorText[512];             // 0x009C64B3
+    static uint16_t _linebreakCount;         // 0x009C66B3
+    static CompanyId _errorCompetitorId;     // 0x009C68EC
+    static bool _suppressErrorSound = false; // 0x00508F09
 
     static constexpr auto kMinWidth = 70;
     static constexpr auto kMaxWidth = 250;

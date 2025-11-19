@@ -48,8 +48,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 {
     static uint8_t _ghostRemovalTrackObjectId; // 0x00522093
 
-    static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
-
     static loco_global<uint8_t, 0x0112C2E9> _alternateTrackObjectId; // set from GameCommands::createRoad
 
     // TODO: move to ConstructionState when no longer a loco_global?
@@ -2116,9 +2114,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             auto window = WindowManager::find(WindowType::construction);
 
             // Attempt to place track piece -- in silence
-            _suppressErrorSound = true;
+            GameCommands::setErrorSound(false);
             onMouseUp(*window, widx::construct, WidgetId::none);
-            _suppressErrorSound = false;
+            GameCommands::setErrorSound(true);
 
             if (cState.dword_1135F42 != 0x80000000)
             {
@@ -2734,9 +2732,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 cState.constructionZ = height.landHeight;
 
                 // Try placing the track at this location, ignoring errors if they occur
-                _suppressErrorSound = true;
+                GameCommands::setErrorSound(false);
                 constructTrackOrRoad(&self, widgetIndex);
-                _suppressErrorSound = false;
+                GameCommands::setErrorSound(true);
 
                 builtAnything |= cState.dword_1135F42 != GameCommands::FAILURE;
 

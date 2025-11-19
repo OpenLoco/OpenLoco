@@ -196,6 +196,7 @@ namespace OpenLoco::GameCommands
 
     const World::Pos3& getPosition();
     void setPosition(const World::Pos3& pos);
+    void setErrorSound(bool state);
     void setErrorText(const StringId message);
     StringId getErrorText();
     void setErrorTitle(const StringId title);

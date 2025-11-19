@@ -110,6 +110,7 @@ namespace OpenLoco::GameCommands
     static World::Pos3 _gGameCommandPosition;                                                 // 0x009C68E0
     static StringId _gGameCommandErrorText;                                                   // 0x009C68E6
     static StringId _gGameCommandErrorTitle;                                                  // 0x009C68E8
+    static bool _gGameCommandErrorSound = true;                                               // 0x00508F09
     static ExpenditureType _gGameCommandExpenditureType;                                      // 0x009C68EA
     static CompanyId _errorCompanyId;                                                         // 0x009C68EE
 
@@ -438,7 +439,8 @@ namespace OpenLoco::GameCommands
 
         if (_gGameCommandErrorText != 0xFFFE)
         {
-            Windows::Error::open(_gGameCommandErrorTitle, _gGameCommandErrorText);
+            auto openError = _gGameCommandErrorSound ? Windows::Error::open : Windows::Error::openQuiet;
+            openError(_gGameCommandErrorTitle, _gGameCommandErrorText);
             return GameCommands::FAILURE;
         }
 
@@ -549,6 +551,11 @@ namespace OpenLoco::GameCommands
     void setPosition(const World::Pos3& pos)
     {
         _gGameCommandPosition = pos;
+    }
+
+    void setErrorSound(bool state)
+    {
+        _gGameCommandErrorSound = state;
     }
 
     void setErrorText(const StringId message)
