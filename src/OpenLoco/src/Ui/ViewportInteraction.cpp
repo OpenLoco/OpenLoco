@@ -1471,15 +1471,11 @@ namespace OpenLoco::Ui::ViewportInteraction
     // 0x00459E54
     std::pair<ViewportInteraction::InteractionArg, Viewport*> getMapCoordinatesFromPos(int32_t screenX, int32_t screenY, InteractionItemFlags flags)
     {
-        static loco_global<uint8_t, 0x0050BF68> _50BF68; // If in get map coords
-
-        _50BF68 = 1;
         ViewportInteraction::InteractionArg interaction{};
         Ui::Point screenPos = { static_cast<int16_t>(screenX), static_cast<int16_t>(screenY) };
         auto w = WindowManager::findAt(screenPos);
         if (w == nullptr)
         {
-            _50BF68 = 0;
             return std::make_pair(interaction, nullptr);
         }
 
@@ -1514,6 +1510,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             Paint::SessionOptions options{};
             options.rotation = vp->getRotation();
             options.viewFlags = vp->flags;
+            options.isHitTest = true;
             // Todo: should this pass the cullHeight...
 
             auto session = Paint::PaintSession(_rt2, options);
@@ -1541,7 +1538,6 @@ namespace OpenLoco::Ui::ViewportInteraction
             }
             break;
         }
-        _50BF68 = 0;
         return std::make_pair(interaction, chosenV);
     }
 

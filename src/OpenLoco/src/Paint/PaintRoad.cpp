@@ -330,7 +330,7 @@ namespace OpenLoco::Paint
             const auto heightOffset = World::Pos3{ 0,
                                                    0,
                                                    height };
-            if (_byte_50BF68 == 1)
+            if (session.isHitTest())
             {
                 session.addToPlotListTrackRoad(
                     ImageId(rpp.imageIndexOffsets[rotation]),

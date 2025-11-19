@@ -176,6 +176,7 @@ namespace OpenLoco::Ui
         }
         options.rotation = getRotation();
         options.viewFlags = flags;
+        options.isHitTest = false;
 
         const uint32_t bitmask = 0xFFFFFFFF << zoom;
 

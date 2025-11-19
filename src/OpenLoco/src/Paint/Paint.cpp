@@ -42,6 +42,7 @@ namespace OpenLoco::Paint
 
         _viewFlags = options.viewFlags;
         currentRotation = options.rotation;
+        _isHitTest = options.isHitTest;
 
         // TODO: unused
         _foregroundCullingHeight = options.foregroundCullHeight;
