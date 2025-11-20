@@ -78,13 +78,11 @@
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Trigonometry.hpp>
 #include <map>
 #include <sfl/static_vector.hpp>
 #include <sstream>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 using namespace OpenLoco::Literals;
 
@@ -313,11 +311,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
         );
     }
 
-    static loco_global<int32_t, 0x01136264> _1136264;
-    static loco_global<uint8_t, 0x01136264> _ghostAirportNode;
-    static loco_global<World::Pos3, 0x0113625E> _ghostVehiclePos;
-    static loco_global<StationId, 0x0113625A> _ghostAirportStationId;
-    static loco_global<uint32_t, 0x0113625A> _ghostLandTrackAndDirection;
+    static int32_t _1136264;                     // 0x01136264
+    static uint8_t _ghostAirportNode;            // 0x01136264
+    static World::Pos3 _ghostVehiclePos;         // 0x0113625E
+    static StationId _ghostAirportStationId;     // 0x0113625A
+    static uint32_t _ghostLandTrackAndDirection; // 0x0113625A
 
     namespace Main
     {
@@ -4274,7 +4272,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            if (_1136264 == 0 && *_ghostVehiclePos == placementArgs->pos)
+            if (_1136264 == 0 && _ghostVehiclePos == placementArgs->pos)
             {
                 return;
             }
@@ -4421,7 +4419,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            if (_ghostAirportStationId != StationId::null && *_ghostAirportStationId == placementArgs->stationId && *_ghostAirportNode == placementArgs->airportNode)
+            if (_ghostAirportStationId != StationId::null && _ghostAirportStationId == placementArgs->stationId && _ghostAirportNode == placementArgs->airportNode)
             {
                 return;
             }
@@ -4657,7 +4655,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            if (_1136264 != -1 && *_ghostLandTrackAndDirection == placementArgs->trackAndDirection && *_ghostVehiclePos == placementArgs->pos && *_1136264 == placementArgs->trackProgress)
+            if (_1136264 != -1 && _ghostLandTrackAndDirection == placementArgs->trackAndDirection && _ghostVehiclePos == placementArgs->pos && _1136264 == placementArgs->trackProgress)
             {
                 return;
             }
@@ -4737,7 +4735,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            if (*_ghostAirportStationId == placementArgs->stationId && *_ghostAirportNode == placementArgs->airportNode)
+            if (_ghostAirportStationId == placementArgs->stationId && _ghostAirportNode == placementArgs->airportNode)
             {
                 if (head.tileX != -1 && head.has38Flags(Vehicles::Flags38::isGhost))
                 {
@@ -4769,7 +4767,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            if (_1136264 == 0 && *_ghostVehiclePos == placementArgs->pos)
+            if (_1136264 == 0 && _ghostVehiclePos == placementArgs->pos)
             {
                 if (head.tileX != -1 && head.has38Flags(Vehicles::Flags38::isGhost))
                 {
@@ -4802,7 +4800,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            if (*_ghostLandTrackAndDirection == placementArgs->trackAndDirection && *_ghostVehiclePos == placementArgs->pos && *_1136264 == placementArgs->trackProgress)
+            if (_ghostLandTrackAndDirection == placementArgs->trackAndDirection && _ghostVehiclePos == placementArgs->pos && _1136264 == placementArgs->trackProgress)
             {
                 if (head.tileX != -1 && head.has38Flags(Vehicles::Flags38::isGhost))
                 {
