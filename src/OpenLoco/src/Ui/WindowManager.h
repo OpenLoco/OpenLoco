@@ -112,6 +112,7 @@ namespace OpenLoco::Ui::WindowManager
 namespace OpenLoco::Vehicles
 {
     struct VehicleBase;
+    struct VehicleBogie;
     struct Car;
 }
 
@@ -182,6 +183,7 @@ namespace OpenLoco::Ui::Windows
     namespace DragVehiclePart
     {
         void open(Vehicles::Car& car);
+        Vehicles::VehicleBogie* getDragCarComponent();
     }
 
     namespace EditKeyboardShortcut
