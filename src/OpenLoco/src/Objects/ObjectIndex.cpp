@@ -51,7 +51,7 @@ namespace OpenLoco::ObjectManager
     static std::array<uint16_t, kMaxObjectTypes> _numObjectsPerType{}; // 0x0112C181
 
     static loco_global<bool, 0x0050D161> _isPartialLoaded;
-    static int _objectIndexSelectionRefCount = 0;        // 0x0050D148
+    static int32_t _objectIndexSelectionRefCount = 0;    // 0x0050D148
     static ObjectIndexSelection _objectIndexSelection{}; // 0x0050D144 & 0x0112C1C5
 
     static constexpr uint8_t kCurrentIndexVersion = 5;
