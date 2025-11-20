@@ -228,7 +228,7 @@ namespace OpenLoco::Vehicles
         const auto unk2 = std::max(_vehicleUpdate_var_113612C * 4, 0xCC48);
 
         distance1 = std::min(distance1, unk2);
-        const auto motionResult = updateTrackMotion(distance1, true);
+        const auto motionResult = updateTrackMotion(distance1, false);
         var_3C += distance1 - motionResult.remainingDistance;
 
         if (!motionResult.hasFlags(UpdateVar1136114Flags::noRouteFound))
@@ -814,7 +814,8 @@ namespace OpenLoco::Vehicles
                 }
                 else if (newPieceRes == RoadMotionNewPieceResult::performedLookahead)
                 {
-                    return {};
+                    result.remainingDistance = 0;
+                    return result;
                 }
                 else
                 {
