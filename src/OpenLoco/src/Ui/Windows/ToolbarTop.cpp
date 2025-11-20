@@ -41,7 +41,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 {
-    static loco_global<uint32_t, 0x009C86F8> _zoomTicks;
     static loco_global<uint8_t, 0x009C870C> _lastTownOption;
     static loco_global<uint8_t, 0x009C870D> _lastPortOption;
 
@@ -95,10 +94,6 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     // 0x00438B26
     void open()
     {
-        _zoomTicks = 0;
-        _lastTownOption = 0;
-        _lastPortOption = 0;
-
         auto window = WindowManager::createWindow(
             WindowType::topToolbar,
             { 0, 0 },
@@ -107,6 +102,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             getEvents());
         window->setWidgets(_widgets);
         window->initScrollWidgets();
+
+        Common::onOpen(*window);
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)

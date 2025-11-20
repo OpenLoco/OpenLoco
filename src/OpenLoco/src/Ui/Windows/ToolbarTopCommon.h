@@ -44,6 +44,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     void roadMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex);
     void townsMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex);
 
+    void onOpen(Window& window);
     void onUpdate(Window& window);
     void onResize(Window& window);
     void onMouseDown(Window* window, WidgetIndex_t widgetIndex);

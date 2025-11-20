@@ -78,6 +78,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
             getEvents());
         window->setWidgets(_widgets);
         window->initScrollWidgets();
+
+        Common::onOpen(*window);
+
         window->setColour(WindowColour::primary, Colour::grey);
         window->setColour(WindowColour::secondary, Colour::grey);
         window->setColour(WindowColour::tertiary, Colour::grey);

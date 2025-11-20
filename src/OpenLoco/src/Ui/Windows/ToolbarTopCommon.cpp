@@ -29,9 +29,10 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 {
-    static loco_global<uint32_t, 0x009C86F8> _zoomTicks;
+    static uint32_t _zoomTicks; // 0x009C86F8
 
     static loco_global<uint8_t, 0x009C870C> _lastTownOption;
+    static loco_global<uint8_t, 0x009C870D> _lastPortOption;
 
     // Temporary storage for road menu dropdown (populated in mouseDown, consumed in dropdown callback)
     static AvailableTracksAndRoads _roadMenuObjects;
@@ -536,6 +537,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
                 townsMenuMouseDown(window, widgetIndex);
                 break;
         }
+    }
+
+    void onOpen([[maybe_unused]] Window& window)
+    {
+        _zoomTicks = 0;
+        _lastTownOption = 0;
+        _lastPortOption = 0;
     }
 
     void onUpdate([[maybe_unused]] Window& window)
