@@ -35,8 +35,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
 {
-    static loco_global<uint8_t, 0x009C870C> _lastTownOption;
-
     namespace Widx
     {
         enum
@@ -345,14 +343,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         window.widgets[Widx::map_generation_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_cogwheels);
         window.widgets[Common::Widx::road_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque);
 
-        if (_lastTownOption == 0)
-        {
-            window.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_towns);
-        }
-        else
-        {
-            window.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_industries);
-        }
+        Common::prepareTownWidget(window);
     }
 
     static constexpr WindowEventList kEvents = {

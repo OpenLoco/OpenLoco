@@ -29,13 +29,26 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 {
-    static uint32_t _zoomTicks; // 0x009C86F8
+    static uint32_t _zoomTicks;     // 0x009C86F8
+    static uint8_t _lastTownOption; // 0x009C870C
 
-    static loco_global<uint8_t, 0x009C870C> _lastTownOption;
     static loco_global<uint8_t, 0x009C870D> _lastPortOption;
 
     // Temporary storage for road menu dropdown (populated in mouseDown, consumed in dropdown callback)
     static AvailableTracksAndRoads _roadMenuObjects;
+
+    void prepareTownWidget(Window& self)
+    {
+        auto interface = ObjectManager::get<InterfaceSkinObject>();
+        if (_lastTownOption == 0)
+        {
+            self.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_towns);
+        }
+        else
+        {
+            self.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_industries);
+        }
+    }
 
     // 0x00439DE4
     void draw(Window& self, Gfx::DrawingContext& drawingCtx)

@@ -28,6 +28,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         };
     }
 
+    void prepareTownWidget(Window& self);
+
     void draw(Window& window, Gfx::DrawingContext& drawingCtx);
 
     void zoomMenuMouseDown(Window* window, WidgetIndex_t widgetIndex);

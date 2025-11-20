@@ -41,7 +41,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 {
-    static loco_global<uint8_t, 0x009C870C> _lastTownOption;
     static loco_global<uint8_t, 0x009C870D> _lastPortOption;
 
     // Temporary storage for railroad menu dropdown (populated in mouseDown, consumed in dropdown callback)
@@ -964,14 +963,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         window.widgets[Common::Widx::vehicles_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque);
         window.widgets[Common::Widx::stations_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_stations);
 
-        if (_lastTownOption == 0)
-        {
-            window.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_towns);
-        }
-        else
-        {
-            window.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_industries);
-        }
+        Common::prepareTownWidget(window);
 
         if (_lastPortOption == 0)
         {
