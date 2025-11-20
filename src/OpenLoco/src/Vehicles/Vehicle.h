@@ -390,7 +390,6 @@ namespace OpenLoco::Vehicles
         VehicleBase* previousVehicleComponent();
         ColourScheme getColourScheme();
         void setColourScheme(ColourScheme colourScheme);
-        bool updateComponent();
         void explodeComponent();
         void destroyTrain();
         uint8_t sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied);
@@ -438,6 +437,13 @@ namespace OpenLoco::Vehicles
         uint32_t manhattanDistanceToStation = 0U; // 0x011360D0
         uint8_t targetYaw = 0U;                   // 0x0113646D
         bool isHeliTakeOffEnd = false;            // 0x00525BB0
+    };
+
+    struct CarUpdateState
+    {
+        VehicleBogie* frontBogie; // 0x01136124
+        VehicleBogie* backBogie;  // 0x01136128
+        bool hasBogieMoved;       // 0x01136237 has either of the bogies moved this tick
     };
 
     struct VehicleHead : VehicleBase
@@ -718,10 +724,10 @@ namespace OpenLoco::Vehicles
         uint8_t breakdownTimeout; // 0x6A (likely unused)
 
         const VehicleObject* getObject() const;
-        bool update();
-        void secondaryAnimationUpdate();
-        void updateSegmentCrashed();
-        void sub_4AAB0B();
+        bool update(const CarUpdateState& carState);
+        void secondaryAnimationUpdate(const CarUpdateState& carState);
+        void updateSegmentCrashed(const CarUpdateState& carState);
+        void sub_4AAB0B(const CarUpdateState& carState);
         void updateCargoSprite();
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
         {
@@ -730,12 +736,12 @@ namespace OpenLoco::Vehicles
         void sub_4AC255(VehicleBogie* backBogie, VehicleBogie* frontBogie);
 
     private:
-        void animationUpdate();
-        void steamPuffsAnimationUpdate(uint8_t num, int32_t var_05);
-        void dieselExhaust1AnimationUpdate(uint8_t num, int32_t var_05);
-        void dieselExhaust2AnimationUpdate(uint8_t num, int32_t var_05);
-        void electricSpark1AnimationUpdate(uint8_t num, int32_t var_05);
-        void electricSpark2AnimationUpdate(uint8_t num, int32_t var_05);
+        void animationUpdate(const CarUpdateState& carState);
+        void steamPuffsAnimationUpdate(const CarUpdateState& carState, uint8_t num, int32_t var_05);
+        void dieselExhaust1AnimationUpdate(const CarUpdateState& carState, uint8_t num, int32_t var_05);
+        void dieselExhaust2AnimationUpdate(const CarUpdateState& carState, uint8_t num, int32_t var_05);
+        void electricSpark1AnimationUpdate(const CarUpdateState& carState, uint8_t num, int32_t var_05);
+        void electricSpark2AnimationUpdate(const CarUpdateState& carState, uint8_t num, int32_t var_05);
         void shipWakeAnimationUpdate(uint8_t num, int32_t var_05);
         Pitch updateSpritePitchSteepSlopes(uint16_t xyOffset, int16_t zOffset);
         Pitch updateSpritePitch(uint16_t xyOffset, int16_t zOffset);

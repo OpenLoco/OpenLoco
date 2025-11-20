@@ -18,10 +18,6 @@ using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<VehicleBogie*, 0x01136124> _vehicleUpdate_frontBogie;
-    static loco_global<VehicleBogie*, 0x01136128> _vehicleUpdate_backBogie;
-    static loco_global<bool, 0x01136237> _vehicleUpdate_frontBogieHasMoved; // remainingDistance related?
-    static loco_global<bool, 0x01136238> _vehicleUpdate_backBogieHasMoved;  // remainingDistance related?
     static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C;     // Speed
     static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130;     // Speed
 
@@ -37,20 +33,12 @@ namespace OpenLoco::Vehicles
     // 0x004AA008
     bool VehicleBogie::update()
     {
-        _vehicleUpdate_frontBogie = _vehicleUpdate_backBogie;
-        _vehicleUpdate_backBogie = this;
-
         if (mode == TransportMode::air || mode == TransportMode::water)
         {
             return true;
         }
 
-        const auto oldPos = position;
         const auto motionResult = updateTrackMotion(_vehicleUpdate_var_113612C, false);
-
-        const auto hasMoved = oldPos != position;
-        _vehicleUpdate_backBogieHasMoved = _vehicleUpdate_frontBogieHasMoved;
-        _vehicleUpdate_frontBogieHasMoved = hasMoved;
 
         const int32_t stash1136130 = _vehicleUpdate_var_1136130;
         if (wheelSlipping != 0)
@@ -178,9 +166,6 @@ namespace OpenLoco::Vehicles
     // 0x004AA68E
     void VehicleBogie::updateSegmentCrashed()
     {
-        _vehicleUpdate_frontBogie = _vehicleUpdate_backBogie;
-        _vehicleUpdate_backBogie = this;
-
         Speed32 speed = Speed32(var_5A & 0x7FFFFFFF);
         bool isComponentDestroyed = this->var_5A & (1U << 31);
         speed = speed - (speed / 64);

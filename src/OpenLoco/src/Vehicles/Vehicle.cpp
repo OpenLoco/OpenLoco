@@ -640,29 +640,6 @@ namespace OpenLoco::Vehicles
         return trackType;
     }
 
-    bool VehicleBase::updateComponent()
-    {
-        switch (getSubType())
-        {
-            case VehicleEntityType::head:
-                return !asVehicleHead()->update();
-            case VehicleEntityType::vehicle_1:
-                return !asVehicle1()->update();
-            case VehicleEntityType::vehicle_2:
-                return !asVehicle2()->update();
-            case VehicleEntityType::bogie:
-                return !asVehicleBogie()->update();
-            case VehicleEntityType::body_start:
-            case VehicleEntityType::body_continued:
-                return !asVehicleBody()->update();
-            case VehicleEntityType::tail:
-                return !asVehicleTail()->update();
-            default:
-                break;
-        }
-        return false;
-    }
-
     CarComponent::CarComponent(VehicleBase*& component)
     {
         front = component->asVehicleBogie();
