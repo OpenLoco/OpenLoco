@@ -54,6 +54,15 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         _dragVehicleHead = EntityId::null;
     }
 
+    static void onUpdate(Window& self)
+    {
+        if (WindowManager::find(WindowType::vehicle, enumValue(_dragVehicleHead)) == nullptr)
+        {
+            // Parent window no longer exists; close ourselves
+            WindowManager::close(&self);
+        }
+    }
+
     // 0x004B62FE
     static Ui::CursorId cursor(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIdx, [[maybe_unused]] const WidgetId id, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y, [[maybe_unused]] const Ui::CursorId fallback)
     {
@@ -101,6 +110,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
 
     static constexpr WindowEventList kEvents = {
         .onClose = onClose,
+        .onUpdate = onUpdate,
         .cursor = cursor,
         .onMove = onMove,
         .draw = draw,
