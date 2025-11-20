@@ -108,17 +108,17 @@ namespace OpenLoco
         uint16_t numMessages;                                                    // 0x0013B6 (0x005271CE)
         MessageId activeMessageIndex;                                            // 0x0013B8 (0x005271D0)
         Message messages[Limits::kMaxMessages];                                  // 0x0013BA (0x005271D2)
-        uint8_t pad_B886[0xB94C - 0xB886];                                       // 0x00B886
-        uint8_t var_B94C;                                                        // 0x00B94C (0x00531774)
-        uint8_t pad_B94D[0xB950 - 0xB94D];                                       // 0x00B94D
-        uint8_t var_B950;                                                        // 0x00B950 (0x00531778)
-        uint8_t pad_B951;                                                        // 0x00B951
-        uint8_t var_B952;                                                        // 0x00B952 (0x0053177A)
-        uint8_t pad_B953;                                                        // 0x00B953
-        uint8_t var_B954;                                                        // 0x00B954 (0x0053177C)
-        uint8_t pad_B955;                                                        // 0x00B955
-        uint8_t var_B956;                                                        // 0x00B956 (0x0053177E)
-        uint8_t pad_B957[0xB968 - 0xB957];                                       // 0x00B957
+        uint8_t pad_B95A[0xB95C - 0xB95A];                                       // 0x00B95A
+        uint8_t var_B95C;                                                        // 0x00B95C (0x00531774)
+        uint8_t pad_B95D[0xB960 - 0xB95D];                                       // 0x00B95D
+        uint8_t var_B960;                                                        // 0x00B960 (0x00531778)
+        uint8_t pad_B961;                                                        // 0x00B961
+        uint8_t var_B962;                                                        // 0x00B962 (0x0053177A)
+        uint8_t pad_B963;                                                        // 0x00B963
+        uint8_t var_B964;                                                        // 0x00B964 (0x0053177C)
+        uint8_t pad_B965;                                                        // 0x00B965
+        uint8_t var_B966;                                                        // 0x00B966 (0x0053177E)
+        uint8_t pad_B967;                                                        // 0x00B967
         uint8_t currentRainLevel;                                                // 0x00B968 (0x00531780)
         uint8_t pad_B969[0xB96C - 0xB969];                                       // 0x00B969
         Company companies[Limits::kMaxCompanies];                                // 0x00B96C (0x00531784)

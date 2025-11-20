@@ -145,4 +145,6 @@ namespace OpenLoco::Scenario
 
     void loadPreferredCurrencyAlways();
     void loadPreferredCurrencyNewGame();
+
+    void drawScenarioMiniMapImage();
 }
