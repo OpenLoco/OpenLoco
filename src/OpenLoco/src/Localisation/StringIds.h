@@ -488,7 +488,7 @@ namespace OpenLoco::StringIds
     constexpr StringId error_cant_raise_water_here = 478;
     constexpr StringId audio_device_none = 479;
     constexpr StringId stringptr = 480;
-    constexpr StringId red_closed_hyphen_hyphen = UNUSED_STR(481); // leftover from RCT?
+    constexpr StringId red_closed_hyphen_hyphen = UNUSED_STR(481);    // leftover from RCT?
     constexpr StringId yellow_string_hyphen_hyphen = UNUSED_STR(482); // leftover from RCT?
     constexpr StringId land_slope_unsuitable = UNUSED_STR(483);
     constexpr StringId cant_build_this_underwater_duplicate = UNUSED_STR(484); // This is a duplicate and could be deleted
