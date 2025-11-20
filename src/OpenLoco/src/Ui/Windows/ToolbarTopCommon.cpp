@@ -213,12 +213,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
             Dropdown::setItemSelected(10);
         }
 
-        if ((current_viewport_flags & ViewportFlags::town_names_displayed) == ViewportFlags::none)
+        if ((current_viewport_flags & ViewportFlags::hideTownNames) == ViewportFlags::none)
         {
             Dropdown::setItemSelected(12);
         }
 
-        if ((current_viewport_flags & ViewportFlags::station_names_displayed) == ViewportFlags::none)
+        if ((current_viewport_flags & ViewportFlags::hideStationNames) == ViewportFlags::none)
         {
             Dropdown::setItemSelected(13);
         }
@@ -407,11 +407,11 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         }
         else if (itemIndex == 12)
         {
-            viewport->flags ^= ViewportFlags::town_names_displayed;
+            viewport->flags ^= ViewportFlags::hideTownNames;
         }
         else if (itemIndex == 13)
         {
-            viewport->flags ^= ViewportFlags::station_names_displayed;
+            viewport->flags ^= ViewportFlags::hideStationNames;
         }
 
         window->invalidate();

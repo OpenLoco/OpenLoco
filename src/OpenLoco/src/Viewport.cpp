@@ -242,14 +242,14 @@ namespace OpenLoco::Ui
 
                 if (!SceneManager::isTitleMode())
                 {
-                    if (!options.hasFlags(ViewportFlags::station_names_displayed))
+                    if (!options.hasFlags(ViewportFlags::hideStationNames))
                     {
                         if (columnRt.zoomLevel <= Config::get().stationNamesMinScale)
                         {
                             drawStationNames(drawingCtx);
                         }
                     }
-                    if (!options.hasFlags(ViewportFlags::town_names_displayed))
+                    if (!options.hasFlags(ViewportFlags::hideTownNames))
                     {
                         drawTownNames(drawingCtx);
                     }

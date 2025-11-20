@@ -255,7 +255,7 @@ namespace OpenLoco::Ui::Windows::Station
                 }
             }
             // Remove station names from viewport
-            flags |= ViewportFlags::station_names_displayed;
+            flags |= ViewportFlags::hideStationNames;
 
             self.savedView = view;
 

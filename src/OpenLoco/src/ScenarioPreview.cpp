@@ -23,7 +23,7 @@ namespace OpenLoco::Scenario
         saveVp.y = 0;
         saveVp.width = size.width;
         saveVp.height = size.height;
-        saveVp.flags = Ui::ViewportFlags::town_names_displayed | Ui::ViewportFlags::station_names_displayed;
+        saveVp.flags = Ui::ViewportFlags::hideTownNames | Ui::ViewportFlags::hideStationNames;
         saveVp.zoom = ZoomLevel::half;
         saveVp.viewWidth = size.width << saveVp.zoom;
         saveVp.viewHeight = size.height << saveVp.zoom;
