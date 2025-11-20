@@ -83,13 +83,6 @@ namespace OpenLoco::Title
     static TitleSequence::const_iterator _sequenceIterator;
     static uint16_t _waitCounter;
 
-    static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _objectSelection;
-
-    static std::span<ObjectManager::SelectedObjectsFlags> getSelectedObjectFlags()
-    {
-        return std::span<ObjectManager::SelectedObjectsFlags>(*_objectSelection, ObjectManager::getNumInstalledObjects());
-    }
-
     // 0x004442C4
     static void loadTitle()
     {
@@ -150,8 +143,8 @@ namespace OpenLoco::Title
         SceneManager::addSceneFlags(SceneManager::Flags::title);
         SceneManager::setGameSpeed(GameSpeed::Normal);
         ObjectManager::unloadAll();
-        ObjectManager::prepareSelectionList(false);
-        ObjectManager::loadSelectionListObjects(getSelectedObjectFlags());
+        auto& selection = ObjectManager::prepareSelectionList(false);
+        ObjectManager::loadSelectionListObjects(selection.objectFlags);
         ObjectManager::freeSelectionList();
         ObjectManager::reloadAll();
         Scenario::sub_4748D4();

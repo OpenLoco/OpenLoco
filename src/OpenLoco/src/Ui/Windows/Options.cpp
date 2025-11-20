@@ -50,8 +50,7 @@ namespace OpenLoco::Ui::Windows::Options
     static void disableTabsByCurrentScene(Window& w);
     static void setPreferredCurrencyNameBuffer();
 
-    // Pointer to an array of SelectedObjectsFlags
-    static loco_global<ObjectManager::SelectedObjectsFlags*, 0x011364A0> __11364A0;
+    std::vector<ObjectManager::SelectedObjectsFlags> _objectListSelection; // 0x011364A0
 
     // TODO: This shouldn't be required but its due to how the lifetime
     // of the string needs to exist beyond a prepare draw function and
@@ -67,11 +66,6 @@ namespace OpenLoco::Ui::Windows::Options
     };
     // We need to keep a copy due to lifetimes
     static sfl::small_vector<AvailableCurrency, 10> _availableCurrencies;
-
-    static std::span<ObjectManager::SelectedObjectsFlags> getLoadedSelectedObjectFlags()
-    {
-        return std::span<ObjectManager::SelectedObjectsFlags>(*__11364A0, ObjectManager::getNumInstalledObjects());
-    }
 
     static void populateAvailableCurrencies()
     {
@@ -213,7 +207,6 @@ namespace OpenLoco::Ui::Windows::Options
         static void onClose([[maybe_unused]] Window& w)
         {
             ObjectManager::freeTemporaryObject();
-            free(__11364A0);
         }
 
         static bool onMouseUp(Window& w, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
@@ -1548,8 +1541,6 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C0C73
         static void currencyMouseDown(Window* w)
         {
-            const auto selectedObjectFlags = getLoadedSelectedObjectFlags();
-
             auto& dropdown = w->widgets[Widx::currency];
             auto numItems = ObjectManager::getNumAvailableObjectsByType(ObjectType::currency);
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), numItems, 0x80);
@@ -1560,7 +1551,7 @@ namespace OpenLoco::Ui::Windows::Options
                 index++;
                 Dropdown::add(index, StringIds::dropdown_stringptr, object.name.c_str());
 
-                if ((selectedObjectFlags[object.index] & ObjectManager::SelectedObjectsFlags::selected) != ObjectManager::SelectedObjectsFlags::none)
+                if ((_objectListSelection[object.index] & ObjectManager::SelectedObjectsFlags::selected) != ObjectManager::SelectedObjectsFlags::none)
                 {
                     Dropdown::setItemSelected(index);
                 }
@@ -1576,15 +1567,13 @@ namespace OpenLoco::Ui::Windows::Options
                 return;
             }
 
-            const auto selectedObjectFlags = getLoadedSelectedObjectFlags();
-
             int index = -1;
             for (const auto& object : _availableCurrencies)
             {
                 index++;
                 if (index == ax)
                 {
-                    auto ebp = ObjectManager::getActiveObject(ObjectType::currency, selectedObjectFlags);
+                    auto ebp = ObjectManager::getActiveObject(ObjectType::currency, _objectListSelection);
 
                     if (ebp.index != ObjectManager::kNullObjectIndex)
                     {
@@ -1594,7 +1583,7 @@ namespace OpenLoco::Ui::Windows::Options
                     ObjectManager::load(object.header);
                     ObjectManager::reloadAll();
                     Gfx::loadCurrency();
-                    ObjectManager::markOnlyLoadedObjects(selectedObjectFlags);
+                    ObjectManager::markOnlyLoadedObjects(_objectListSelection);
 
                     break;
                 }
@@ -1645,7 +1634,7 @@ namespace OpenLoco::Ui::Windows::Options
                     setPreferredCurrencyNameBuffer();
                     Config::write();
                     Scenario::loadPreferredCurrencyAlways();
-                    ObjectManager::markOnlyLoadedObjects(getLoadedSelectedObjectFlags());
+                    ObjectManager::markOnlyLoadedObjects(_objectListSelection);
 
                     break;
                 }
@@ -1672,7 +1661,7 @@ namespace OpenLoco::Ui::Windows::Options
             Config::write();
 
             Scenario::loadPreferredCurrencyAlways();
-            ObjectManager::markOnlyLoadedObjects(getLoadedSelectedObjectFlags());
+            ObjectManager::markOnlyLoadedObjects(_objectListSelection);
 
             w->invalidate();
         }
@@ -2563,13 +2552,10 @@ namespace OpenLoco::Ui::Windows::Options
         }
     }
 
-    static void sub_4BF8CD()
+    static void prepareObjectSelectionList()
     {
-        auto ptr = static_cast<ObjectManager::SelectedObjectsFlags*>(malloc(ObjectManager::getNumInstalledObjects()));
-        // TODO: reimplement nullptr check?
-
-        __11364A0 = ptr;
-        ObjectManager::markOnlyLoadedObjects(getLoadedSelectedObjectFlags());
+        _objectListSelection.resize(ObjectManager::getNumInstalledObjects());
+        ObjectManager::markOnlyLoadedObjects(_objectListSelection);
     }
 
     static void disableTabsByCurrentScene(Window& w)
@@ -2624,7 +2610,7 @@ namespace OpenLoco::Ui::Windows::Options
         window->setColour(WindowColour::primary, interface->windowTitlebarColour);
         window->setColour(WindowColour::secondary, interface->windowOptionsColour);
 
-        sub_4BF8CD();
+        prepareObjectSelectionList();
         populateAvailableCurrencies();
         setPreferredCurrencyNameBuffer();
 
