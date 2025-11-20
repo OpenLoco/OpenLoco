@@ -481,8 +481,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self->maxHeight = kMaxWindowSize.height;
             self->var_85C = -1;
             WindowManager::close(WindowType::dragVehiclePart, 0);
-            _dragCarComponent = nullptr;
-            _dragVehicleHead = EntityId::null;
 
             const auto* skin = ObjectManager::get<InterfaceSkinObject>();
             self->setColour(WindowColour::secondary, skin->windowPlayerColor);

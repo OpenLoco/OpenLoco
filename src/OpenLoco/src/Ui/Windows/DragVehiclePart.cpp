@@ -52,6 +52,12 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         Input::windowPositionBegin(Ui::ToolTip::getTooltipMouseLocation().x, Ui::ToolTip::getTooltipMouseLocation().y, self, widx::frame);
     }
 
+    static void onClose([[maybe_unused]] Window& self)
+    {
+        _dragCarComponent = nullptr;
+        _dragVehicleHead = EntityId::null;
+    }
+
     // 0x004B62FE
     static Ui::CursorId cursor(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIdx, [[maybe_unused]] const WidgetId id, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y, [[maybe_unused]] const Ui::CursorId fallback)
     {
@@ -98,6 +104,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     }
 
     static constexpr WindowEventList kEvents = {
+        .onClose = onClose,
         .cursor = cursor,
         .onMove = onMove,
         .draw = draw,
