@@ -22,9 +22,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Vehicles
 {
-
-    static loco_global<UpdateVar1136114Flags, 0x01136114> _vehicleUpdate_var_1136114;
-    static loco_global<EntityId, 0x0113610E> _vehicleUpdate_collisionCarComponent;
     static constexpr int32_t kObjDistToHighPrecisionDistance = 2179;
 
 #pragma pack(push, 1)
@@ -254,7 +251,7 @@ namespace OpenLoco::Vehicles
         }
     }
 
-    static bool updateRoadMotionNewRoadPiece(VehicleCommon& component)
+    static bool updateRoadMotionNewRoadPiece(VehicleCommon& component, UpdateVar1136114Flags& flags, bool isVeh2UnkM15)
     {
         auto newRoutingHandle = component.routingHandle;
         auto newIndex = newRoutingHandle.getIndex() + 1;
@@ -263,11 +260,11 @@ namespace OpenLoco::Vehicles
         if (routing != RoutingManager::kAllocatedButFreeRouting)
         {
             Vehicle train(component.head);
-            if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m15))
+            if (isVeh2UnkM15)
             {
                 if (train.veh1->routingHandle == component.routingHandle)
                 {
-                    setUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m03);
+                    flags |= UpdateVar1136114Flags::unk_m03;
                     return false;
                 }
             }
@@ -287,7 +284,7 @@ namespace OpenLoco::Vehicles
             }
             if (!routingFound)
             {
-                setUpdateVar1136114Flags(UpdateVar1136114Flags::noRouteFound);
+                flags |= UpdateVar1136114Flags::noRouteFound;
                 return false;
             }
             component.routingHandle = newRoutingHandle;
@@ -308,7 +305,7 @@ namespace OpenLoco::Vehicles
         return false;
     }
 
-    static bool updateTrackMotionNewTrackPiece(VehicleCommon& component)
+    static bool updateTrackMotionNewTrackPiece(VehicleCommon& component, UpdateVar1136114Flags& flags, bool isVeh2UnkM15)
     {
         auto newRoutingHandle = component.routingHandle;
         auto newIndex = newRoutingHandle.getIndex() + 1;
@@ -317,11 +314,11 @@ namespace OpenLoco::Vehicles
         if (routing != RoutingManager::kAllocatedButFreeRouting)
         {
             Vehicle train(component.head);
-            if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m15))
+            if (isVeh2UnkM15)
             {
                 if (train.veh1->routingHandle == component.routingHandle)
                 {
-                    setUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m03);
+                    flags |= UpdateVar1136114Flags::unk_m03;
                     return false;
                 }
             }
@@ -331,7 +328,7 @@ namespace OpenLoco::Vehicles
             const auto tc = World::Track::getTrackConnections(nextPos, nextRot, component.owner, component.trackType, train.head->var_53, 0);
             if (tc.hasLevelCrossing)
             {
-                setUpdateVar1136114Flags(UpdateVar1136114Flags::approachingGradeCrossing);
+                flags |= UpdateVar1136114Flags::approachingGradeCrossing;
             }
             bool routingFound = false;
             for (auto& connection : tc.connections)
@@ -344,7 +341,7 @@ namespace OpenLoco::Vehicles
             }
             if (!routingFound)
             {
-                setUpdateVar1136114Flags(UpdateVar1136114Flags::noRouteFound);
+                flags |= UpdateVar1136114Flags::noRouteFound;
                 return false;
             }
             component.routingHandle = newRoutingHandle;
@@ -451,11 +448,11 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0047C7FA
-    static int32_t updateRoadMotion(VehicleCommon& component, int32_t distance)
+    static UpdateMotionResult updateRoadMotion(VehicleCommon& component, int32_t distance, bool isVeh2UnkM15)
     {
+        UpdateMotionResult result{};
         component.remainingDistance += distance;
         bool hasMoved = false;
-        auto returnValue = 0;
         auto intermediatePosition = component.position;
         while (component.remainingDistance >= 0x368A)
         {
@@ -465,11 +462,11 @@ namespace OpenLoco::Vehicles
             // This means we have moved forward by a road piece
             if (newSubPosition >= subPositionDataSize)
             {
-                if (!updateRoadMotionNewRoadPiece(component))
+                if (!updateRoadMotionNewRoadPiece(component, result.flags, isVeh2UnkM15))
                 {
-                    returnValue = component.remainingDistance - 0x3689;
+                    result.remainingDistance = component.remainingDistance - 0x3689;
                     component.remainingDistance = 0x3689;
-                    setUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00);
+                    result.flags |= UpdateVar1136114Flags::unk_m00;
                     break;
                 }
                 else
@@ -491,8 +488,8 @@ namespace OpenLoco::Vehicles
                 auto collideResult = checkForCollisions(*component.asVehicleBogie(), intermediatePosition);
                 if (collideResult != EntityId::null)
                 {
-                    setUpdateVar1136114Flags(UpdateVar1136114Flags::crashed);
-                    _vehicleUpdate_collisionCarComponent = collideResult;
+                    result.flags |= UpdateVar1136114Flags::crashed;
+                    result.collidedEntityId = collideResult;
                 }
             }
         }
@@ -502,20 +499,20 @@ namespace OpenLoco::Vehicles
             component.moveTo(intermediatePosition);
             Ui::ViewportManager::invalidate(&component, ZoomLevel::eighth);
         }
-        return returnValue;
+        return result;
     }
 
-    static int32_t updateTrackMotion(VehicleCommon& component, int32_t distance)
+    static UpdateMotionResult updateTrackMotion(VehicleCommon& component, int32_t distance, bool isVeh2UnkM15)
     {
         if (component.mode == TransportMode::road)
         {
-            return updateRoadMotion(component, distance);
+            return updateRoadMotion(component, distance, isVeh2UnkM15);
         }
         else if (component.mode == TransportMode::rail)
         {
+            UpdateMotionResult result{};
             component.remainingDistance += distance;
             bool hasMoved = false;
-            auto returnValue = 0;
             auto intermediatePosition = component.position;
             while (component.remainingDistance >= 0x368A)
             {
@@ -525,11 +522,11 @@ namespace OpenLoco::Vehicles
                 // This means we have moved forward by a track piece
                 if (newSubPosition >= subPositionDataSize)
                 {
-                    if (!updateTrackMotionNewTrackPiece(component))
+                    if (!updateTrackMotionNewTrackPiece(component, result.flags, isVeh2UnkM15))
                     {
-                        returnValue = component.remainingDistance - 0x3689;
+                        result.remainingDistance = component.remainingDistance - 0x3689;
                         component.remainingDistance = 0x3689;
-                        setUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00);
+                        result.flags |= UpdateVar1136114Flags::unk_m00;
                         break;
                     }
                     else
@@ -551,8 +548,8 @@ namespace OpenLoco::Vehicles
                     auto collideResult = checkForCollisions(*component.asVehicleBogie(), intermediatePosition);
                     if (collideResult != EntityId::null)
                     {
-                        setUpdateVar1136114Flags(UpdateVar1136114Flags::crashed);
-                        _vehicleUpdate_collisionCarComponent = collideResult;
+                        result.flags |= UpdateVar1136114Flags::crashed;
+                        result.collidedEntityId = collideResult;
                     }
                 }
             }
@@ -562,19 +559,19 @@ namespace OpenLoco::Vehicles
                 component.moveTo(intermediatePosition);
                 Ui::ViewportManager::invalidate(&component, ZoomLevel::eighth);
             }
-            return returnValue;
+            return result;
         }
         else
         {
             assert(false);
-            return 0;
+            return {};
         }
     }
 
     // 0x004B15FF
-    int32_t VehicleBase::updateTrackMotion(int32_t unk1)
+    UpdateMotionResult VehicleBase::updateTrackMotion(int32_t unk1, bool isVeh2UnkM15)
     {
-        return Vehicles::updateTrackMotion(*reinterpret_cast<VehicleCommon*>(this), unk1);
+        return Vehicles::updateTrackMotion(*reinterpret_cast<VehicleCommon*>(this), unk1, isVeh2UnkM15);
     }
 
     // 0x0047D959
@@ -1071,22 +1068,5 @@ namespace OpenLoco::Vehicles
         train.veh2->remainingDistance = negStartDistance;
         applyVehicleObjectLengthToBogies(train, negStartDistance);
         train.tail->remainingDistance = 0;
-    }
-
-    bool hasUpdateVar1136114Flags(UpdateVar1136114Flags flags)
-    {
-        return (*_vehicleUpdate_var_1136114 & flags) != UpdateVar1136114Flags::none;
-    }
-    void resetUpdateVar1136114Flags()
-    {
-        _vehicleUpdate_var_1136114 = UpdateVar1136114Flags::none;
-    }
-    void setUpdateVar1136114Flags(UpdateVar1136114Flags flags)
-    {
-        _vehicleUpdate_var_1136114 |= flags;
-    }
-    void unsetUpdateVar1136114Flags(UpdateVar1136114Flags flags)
-    {
-        _vehicleUpdate_var_1136114 &= ~flags;
     }
 }
