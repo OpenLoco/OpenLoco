@@ -222,6 +222,7 @@ namespace OpenLoco::GameCommands
         IndustryId lastPlacedIndustryId;                        // 0x00E0C3C9
         World::WallElement* lastPlacedWall;                     // 0x01136470
         EntityId lastCreatedVehicleId;                          // 0x0113642A
+        uint8_t alternateRoadObjectId;                          // 0x0112C2E9
     };
 
     // Note: this is deliberately a mutable ref
