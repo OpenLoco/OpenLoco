@@ -78,13 +78,11 @@
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Trigonometry.hpp>
 #include <map>
 #include <sfl/static_vector.hpp>
 #include <sstream>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 using namespace OpenLoco::Literals;
 
@@ -313,11 +311,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
         );
     }
 
-    static loco_global<int32_t, 0x01136264> _1136264;
-    static loco_global<uint8_t, 0x01136264> _ghostAirportNode;
-    static loco_global<World::Pos3, 0x0113625E> _ghostVehiclePos;
-    static loco_global<StationId, 0x0113625A> _ghostAirportStationId;
-    static loco_global<uint32_t, 0x0113625A> _ghostLandTrackAndDirection;
+    static int32_t _ghostTrackProgress;          // 0x01136264
+    static uint8_t _ghostAirportNode;            // 0x01136264
+    static World::Pos3 _ghostVehiclePos;         // 0x0113625E
+    static StationId _ghostAirportStationId;     // 0x0113625A
+    static uint32_t _ghostLandTrackAndDirection; // 0x0113625A
 
     namespace Main
     {
@@ -4260,7 +4258,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 auto flags = GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::ghost;
                 GameCommands::doCommand(gcArgs, flags);
             }
-            _1136264 = -1;
+            _ghostTrackProgress = -1;
         }
 
         // 0x004B2B9E
@@ -4274,7 +4272,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            if (_1136264 == 0 && *_ghostVehiclePos == placementArgs->pos)
+            if (_ghostTrackProgress == 0 && _ghostVehiclePos == placementArgs->pos)
             {
                 return;
             }
@@ -4282,7 +4280,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             removeBoatGhost(head);
             if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::ghost | GameCommands::Flags::noErrorWindow) != GameCommands::FAILURE)
             {
-                _1136264 = 0;
+                _ghostTrackProgress = 0;
             }
         }
 
@@ -4421,7 +4419,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            if (_ghostAirportStationId != StationId::null && *_ghostAirportStationId == placementArgs->stationId && *_ghostAirportNode == placementArgs->airportNode)
+            if (_ghostAirportStationId != StationId::null && _ghostAirportStationId == placementArgs->stationId && _ghostAirportNode == placementArgs->airportNode)
             {
                 return;
             }
@@ -4643,7 +4641,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 args.head = head.id;
                 GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::ghost);
             }
-            _1136264 = -1;
+            _ghostTrackProgress = -1;
         }
 
         // 0x004B2A1D
@@ -4657,7 +4655,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            if (_1136264 != -1 && *_ghostLandTrackAndDirection == placementArgs->trackAndDirection && *_ghostVehiclePos == placementArgs->pos && *_1136264 == placementArgs->trackProgress)
+            if (_ghostTrackProgress != -1 && _ghostLandTrackAndDirection == placementArgs->trackAndDirection && _ghostVehiclePos == placementArgs->pos && _ghostTrackProgress == placementArgs->trackProgress)
             {
                 return;
             }
@@ -4667,7 +4665,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 _ghostLandTrackAndDirection = placementArgs->trackAndDirection;
                 _ghostVehiclePos = placementArgs->pos;
-                _1136264 = placementArgs->trackProgress;
+                _ghostTrackProgress = placementArgs->trackProgress;
             }
         }
 
@@ -4737,7 +4735,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            if (*_ghostAirportStationId == placementArgs->stationId && *_ghostAirportNode == placementArgs->airportNode)
+            if (_ghostAirportStationId == placementArgs->stationId && _ghostAirportNode == placementArgs->airportNode)
             {
                 if (head.tileX != -1 && head.has38Flags(Vehicles::Flags38::isGhost))
                 {
@@ -4769,7 +4767,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            if (_1136264 == 0 && *_ghostVehiclePos == placementArgs->pos)
+            if (_ghostTrackProgress == 0 && _ghostVehiclePos == placementArgs->pos)
             {
                 if (head.tileX != -1 && head.has38Flags(Vehicles::Flags38::isGhost))
                 {
@@ -4802,7 +4800,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            if (*_ghostLandTrackAndDirection == placementArgs->trackAndDirection && *_ghostVehiclePos == placementArgs->pos && *_1136264 == placementArgs->trackProgress)
+            if (_ghostLandTrackAndDirection == placementArgs->trackAndDirection && _ghostVehiclePos == placementArgs->pos && _ghostTrackProgress == placementArgs->trackProgress)
             {
                 if (head.tileX != -1 && head.has38Flags(Vehicles::Flags38::isGhost))
                 {
@@ -4998,7 +4996,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 CursorId cursor = kTypeToToolCursor[static_cast<uint8_t>(head->vehicleType)][getGameState().pickupDirection != 0 ? 1 : 0];
                 if (ToolManager::toolSet(self, pickupWidx, cursor))
                 {
-                    _1136264 = -1;
+                    _ghostTrackProgress = -1;
                 }
                 return;
             }
