@@ -313,8 +313,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
         );
     }
 
-    static loco_global<Vehicles::VehicleBogie*, 0x0113614E> _dragCarComponent;
-    static loco_global<EntityId, 0x01136156> _dragVehicleHead;
     static loco_global<int32_t, 0x01136264> _1136264;
     static loco_global<uint8_t, 0x01136264> _ghostAirportNode;
     static loco_global<World::Pos3, 0x0113625E> _ghostVehiclePos;
@@ -1306,22 +1304,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // "Show <vehicle> design details and options" tab in vehicle window
         static void onUpdate(Window& self)
         {
-            if (EntityId(self.number) == _dragVehicleHead)
-            {
-                if (WindowManager::find(WindowType::dragVehiclePart) == nullptr)
-                {
-                    _dragVehicleHead = EntityId::null;
-                    _dragCarComponent = nullptr;
-                    self.invalidate();
-                }
-            }
-
             self.frameNo += 1;
             self.callPrepareDraw();
 
             WindowManager::invalidateWidget(WindowType::vehicle, self.number, Common::widx::tabDetails);
 
-            if (_dragVehicleHead == EntityId::null && self.isActivated(widx::remove))
+            if (WindowManager::find(WindowType::dragVehiclePart) == nullptr && self.isActivated(widx::remove))
             {
                 self.activatedWidgets &= ~(1ULL << widx::remove);
                 WindowManager::invalidateWidget(WindowType::vehicle, self.number, widx::remove);
@@ -1928,7 +1916,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                     int16_t top = pos.y;
                     int16_t bottom = pos.y + self.rowHeight - 1;
-                    if (_dragCarComponent != nullptr)
+                    if (DragVehiclePart::getDragCarComponent() != nullptr)
                     {
                         bottom = pos.y;
                         top = pos.y - 1;
@@ -1938,7 +1926,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
 
                 int16_t y = pos.y + (self.rowHeight - 22) / 2;
-                const auto disableColour = car.front == _dragCarComponent
+                const auto disableColour = car.front == DragVehiclePart::getDragCarComponent()
                     ? std::make_optional(self.getColour(WindowColour::secondary).c())
                     : std::nullopt;
                 drawVehicleInline(drawingCtx, car, { 0, y }, VehicleInlineMode::basic, VehiclePartsToDraw::bogies, disableColour);
@@ -1958,7 +1946,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 pos.y += self.rowHeight;
             }
 
-            if (EntityId(self.rowHover) == train.tail->id && _dragCarComponent != nullptr)
+            if (EntityId(self.rowHover) == train.tail->id && DragVehiclePart::getDragCarComponent() != nullptr)
             {
                 drawingCtx.fillRect(0, pos.y - 1, self.width, pos.y, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
             }
@@ -2079,7 +2067,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         void scrollDragEnd(const Ui::Point& pos)
         {
-            if (_dragCarComponent == nullptr)
+            if (DragVehiclePart::getDragCarComponent() == nullptr)
             {
                 return;
             }
@@ -2096,7 +2084,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case widx::remove:
                 {
                     GameCommands::VehicleSellArgs gcArgs{};
-                    gcArgs.car = (*_dragCarComponent)->id;
+                    gcArgs.car = DragVehiclePart::getDragCarComponent()->id;
 
                     if (Common::confirmComponentChange(gcArgs.car, StringIds::confirm_vehicle_component_sell_cargo_warning_title, StringIds::confirm_vehicle_component_sell_cargo_warning_message, StringIds::confirm_vehicle_component_sell_cargo_warning_confirm))
                     {
@@ -2112,7 +2100,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     if (car != nullptr)
                     {
                         GameCommands::VehicleRearrangeArgs args{};
-                        args.source = (*_dragCarComponent)->id;
+                        args.source = DragVehiclePart::getDragCarComponent()->id;
                         args.dest = car->id;
 
                         GameCommands::setErrorTitle(StringIds::cant_move_vehicle);
