@@ -34,16 +34,11 @@
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <map>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 {
-    static loco_global<uint32_t, 0x009C86F8> _zoomTicks;
-    static loco_global<uint8_t, 0x009C870C> _lastTownOption;
-    static loco_global<uint8_t, 0x009C870D> _lastPortOption;
+    static uint8_t _lastPortOption; // 0x009C870D
 
     // Temporary storage for railroad menu dropdown (populated in mouseDown, consumed in dropdown callback)
     static AvailableTracksAndRoads _railroadMenuObjects;
@@ -95,10 +90,6 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     // 0x00438B26
     void open()
     {
-        _zoomTicks = 0;
-        _lastTownOption = 0;
-        _lastPortOption = 0;
-
         auto window = WindowManager::createWindow(
             WindowType::topToolbar,
             { 0, 0 },
@@ -107,6 +98,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             getEvents());
         window->setWidgets(_widgets);
         window->initScrollWidgets();
+
+        Common::onOpen(*window);
+        _lastPortOption = 0;
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
@@ -967,14 +961,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         window.widgets[Common::Widx::vehicles_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque);
         window.widgets[Common::Widx::stations_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_stations);
 
-        if (_lastTownOption == 0)
-        {
-            window.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_towns);
-        }
-        else
-        {
-            window.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_industries);
-        }
+        Common::prepareTownWidget(window);
 
         if (_lastPortOption == 0)
         {

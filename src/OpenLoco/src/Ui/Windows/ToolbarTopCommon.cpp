@@ -22,19 +22,28 @@
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <map>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 {
-    static loco_global<uint32_t, 0x009C86F8> _zoomTicks;
-
-    static loco_global<uint8_t, 0x009C870C> _lastTownOption;
+    static uint32_t _zoomTicks;     // 0x009C86F8
+    static uint8_t _lastTownOption; // 0x009C870C
 
     // Temporary storage for road menu dropdown (populated in mouseDown, consumed in dropdown callback)
     static AvailableTracksAndRoads _roadMenuObjects;
+
+    void prepareTownWidget(Window& self)
+    {
+        auto interface = ObjectManager::get<InterfaceSkinObject>();
+        if (_lastTownOption == 0)
+        {
+            self.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_towns);
+        }
+        else
+        {
+            self.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_industries);
+        }
+    }
 
     // 0x00439DE4
     void draw(Window& self, Gfx::DrawingContext& drawingCtx)
@@ -536,6 +545,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
                 townsMenuMouseDown(window, widgetIndex);
                 break;
         }
+    }
+
+    void onOpen([[maybe_unused]] Window& window)
+    {
+        _zoomTicks = 0;
+        _lastTownOption = 0;
     }
 
     void onUpdate([[maybe_unused]] Window& window)
