@@ -71,7 +71,11 @@ using namespace OpenLoco::Diagnostics;
 namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 {
     static constexpr int kRowHeight = 12;
-    static constexpr Ui::Size32 kWindowSize = { 600, 398 };
+    static constexpr Ui::Size32 kWindowSizeMin = { 600, 398 };
+    static constexpr Ui::Size32 kWindowSizeMax = { 800, 800 }; // NB: frame background is only 800px :(
+    static constexpr Ui::Point kObjectPreviewOffset = { 56, 56 };
+    static constexpr Ui::Size32 kObjectPreviewSize = { 114, 114 };
+    static constexpr uint8_t kDescriptionRowHeight = 10;
 
     enum class ObjectTabFlags : uint8_t
     {
@@ -300,7 +304,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         // Scroll and preview areas
         Widgets::Panel({ 3, 83 }, { 290, 303 }, WindowColour::secondary),
         Widgets::ScrollView({ 4, 85 }, { 288, 300 }, WindowColour::secondary, Scrollbars::vertical),
-        Widgets::ImageButton({ 391, 45 }, { 114, 114 }, WindowColour::secondary)
+        Widgets::ImageButton({ 391, 45 }, kObjectPreviewSize, WindowColour::secondary)
 
     );
 
@@ -510,8 +514,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         auto& selection = ObjectManager::prepareSelectionList(true);
 
-        window = WindowManager::createWindowCentred(WindowType::objectSelection, { kWindowSize }, WindowFlags::none, getEvents());
+        window = WindowManager::createWindowCentred(WindowType::objectSelection, { kWindowSizeMin }, WindowFlags::resizable, getEvents());
         window->setWidgets(widgets);
+        window->setSize(kWindowSizeMin, kWindowSizeMax);
         window->initScrollWidgets();
         window->frameNo = 0;
         window->rowHover = -1;
@@ -559,6 +564,26 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x004733AC
     static void prepareDraw(Ui::Window& self)
     {
+        // Resize basic window
+        self.widgets[widx::frame].right = self.width - 1;
+        self.widgets[widx::frame].bottom = self.height - 1;
+        self.widgets[widx::panel].right = self.width - 1;
+        self.widgets[widx::panel].bottom = self.height - 1;
+        self.widgets[widx::caption].right = self.width - 2;
+        self.widgets[widx::closeButton].left = self.width - 15;
+        self.widgets[widx::closeButton].right = self.width - 3;
+
+        // Reposition filter label/dropdown
+        self.widgets[widx::filterLabel].right = self.width - 8;
+        self.widgets[widx::filterLabel].left = self.widgets[widx::filterLabel].right - 100;
+        self.widgets[widx::filterDropdown].right = self.widgets[widx::filterLabel].right - 1;
+        self.widgets[widx::filterDropdown].left = self.widgets[widx::filterDropdown].right - 12;
+
+        // Resize text input field and clear button
+        self.widgets[widx::textInput].right = self.width / 2 - 54;
+        self.widgets[widx::clearButton].left = self.widgets[widx::textInput].right + 4;
+        self.widgets[widx::clearButton].right = self.widgets[widx::clearButton].left + 38;
+
         self.activatedWidgets = (1 << widx::objectImage);
 
         self.widgets[widx::closeButton].hidden = false;
@@ -610,6 +635,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         Widget::leftAlignTabs(self, widx::secondaryTab1, widx::secondaryTab8, 30);
 
+        // Resize scroll view to take up the full window height, leaving room for a status line
+        self.widgets[widx::scrollview].bottom = self.height - 12;
+        self.widgets[widx::scrollview].right = self.width / 2 - 12;
+        self.widgets[widx::scrollviewFrame].bottom = self.widgets[widx::scrollview].bottom + 1;
+        self.widgets[widx::scrollviewFrame].right = self.widgets[widx::scrollview].right + 1;
+
+        // Secondary tabs reduce the amount of space for the scroll view
         if (showSecondaryTabs)
         {
             self.widgets[widx::scrollview].top = 62 + 28;
@@ -621,6 +653,10 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             self.widgets[widx::scrollview].top = 62;
             self.widgets[widx::scrollviewFrame].hidden = true;
         }
+
+        // Reposition preview area in the centre of the second half
+        self.widgets[widx::objectImage].left = self.width / 4 * 3 - kObjectPreviewSize.width / 2;
+        self.widgets[widx::objectImage].right = self.widgets[widx::objectImage].left + kObjectPreviewSize.width;
     }
 
     // 0x0047328D
@@ -672,10 +708,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
-    static constexpr Ui::Point kObjectPreviewOffset = { 56, 56 };
-    static constexpr Ui::Size kObjectPreviewSize = { 112, 112 };
-    static constexpr uint8_t kDescriptionRowHeight = 10;
-
     template<typename T>
     static void callDrawPreviewImage(Gfx::DrawingContext& drawingCtx, const Ui::Point& drawingOffset, const Object& objectPtr)
     {
@@ -691,7 +723,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         // Clip the draw area to simplify image draw
         Ui::Point drawAreaPos = Ui::Point{ x, y } - kObjectPreviewOffset;
         const auto& rt = drawingCtx.currentRenderTarget();
-        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(drawAreaPos.x, drawAreaPos.y, kObjectPreviewSize.width, kObjectPreviewSize.height));
+        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(drawAreaPos.x, drawAreaPos.y, kObjectPreviewSize.width - 2, kObjectPreviewSize.height - 2));
         if (!clipped)
         {
             return;
@@ -996,13 +1028,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         if (doDefault)
         {
-            auto widget = widgets[widx::objectImage];
+            auto widget = self.widgets[widx::objectImage];
             auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 5);
             drawingCtx.drawRect(self.x + widget.left, self.y + widget.top, widget.width(), widget.height(), colour, Gfx::RectFlags::none);
         }
         else
         {
-            auto widget = widgets[widx::objectImage];
+            auto widget = self.widgets[widx::objectImage];
             auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 0);
             drawingCtx.drawRect(self.x + widget.left + 1, self.y + widget.top + 1, widget.width() - 2, widget.height() - 2, colour, Gfx::RectFlags::none);
         }
@@ -1045,8 +1077,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             drawPreviewImage(
                 objectHeader,
                 drawingCtx,
-                widgets[widx::objectImage].midX() + 1 + self.x,
-                widgets[widx::objectImage].midY() + 1 + self.y,
+                self.widgets[widx::objectImage].midX() + self.x,
+                self.widgets[widx::objectImage].midY() + self.y,
                 *temporaryObject);
         }
 
