@@ -41,7 +41,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 {
-    static loco_global<uint8_t, 0x009C870D> _lastPortOption;
+    static uint8_t _lastPortOption; // 0x009C870D
 
     // Temporary storage for railroad menu dropdown (populated in mouseDown, consumed in dropdown callback)
     static AvailableTracksAndRoads _railroadMenuObjects;
@@ -103,6 +103,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         window->initScrollWidgets();
 
         Common::onOpen(*window);
+        _lastPortOption = 0;
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
