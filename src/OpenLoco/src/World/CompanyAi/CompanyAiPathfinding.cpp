@@ -49,9 +49,6 @@ namespace OpenLoco::CompanyAi
     static Interop::loco_global<uint16_t, 0x0112C4D4> _unkTad112C4D4;
     static Interop::loco_global<uint16_t, 0x0112C3CA> _unkTad112C3CA;
 
-    // Actual globals
-    static Interop::loco_global<uint8_t, 0x0112C2E9> _alternateTrackObjectId; // set from GameCommands::createRoad
-
     struct PlacementVars
     {
         uint8_t trackRoadObjId;             // 0x0112C519 1 << 7 if road
@@ -545,9 +542,9 @@ namespace OpenLoco::CompanyAi
             GameCommands::createRoad(regs);
             if (static_cast<uint32_t>(regs.ebx) == GameCommands::FAILURE)
             {
-                if ((_createTrackRoadCommandAiUnkFlags & (1U << 20)) && _alternateTrackObjectId != 0xFFU)
+                if ((_createTrackRoadCommandAiUnkFlags & (1U << 20)) && returnState.alternateRoadObjectId != 0xFFU)
                 {
-                    args.roadObjectId = _alternateTrackObjectId;
+                    args.roadObjectId = returnState.alternateRoadObjectId;
                 }
                 if (returnState.byte_1136075 != 0xFFU)
                 {
@@ -1129,9 +1126,9 @@ namespace OpenLoco::CompanyAi
                         {
                             argsUnk.bridge = returnState.byte_1136075;
                         }
-                        if (_createTrackRoadCommandAiUnkFlags & (1U << 20) && _alternateTrackObjectId != 0xFFU)
+                        if (_createTrackRoadCommandAiUnkFlags & (1U << 20) && returnState.alternateRoadObjectId != 0xFFU)
                         {
-                            argsUnk.roadObjectId = _alternateTrackObjectId;
+                            argsUnk.roadObjectId = returnState.alternateRoadObjectId;
                         }
                         res = GameCommands::doCommand(argsUnk, GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment | GameCommands::Flags::apply);
                         if (res == GameCommands::FAILURE)
