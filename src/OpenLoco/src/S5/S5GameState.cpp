@@ -127,7 +127,7 @@ namespace OpenLoco::S5
         dst.var_478 = src.var_478;
         dst.numMessages = src.numMessages;
         dst.activeMessageIndex = enumValue(src.activeMessageIndex);
-        for (auto i = 0U; i < std::size(src.messages); i++)
+        for (auto i = 0U; i < std::min<uint16_t>(std::size(src.messages), src.numMessages); i++)
         {
             dst.messages[i] = exportMessage(src.messages[i]);
         }
@@ -328,7 +328,7 @@ namespace OpenLoco::S5
         dst.var_478 = src.var_478;
         dst.numMessages = src.numMessages;
         dst.activeMessageIndex = static_cast<MessageId>(src.activeMessageIndex);
-        for (auto i = 0U; i < std::size(src.messages); i++)
+        for (auto i = 0U; i < std::min<uint16_t>(std::size(src.messages), dst.numMessages); i++)
         {
             dst.messages[i] = importMessage(src.messages[i]);
         }

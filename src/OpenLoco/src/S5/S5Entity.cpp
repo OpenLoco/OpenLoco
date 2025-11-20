@@ -333,6 +333,7 @@ namespace OpenLoco::S5
         dstBogie.trackType = src.trackType;
         dstBogie.routingHandle = src.routingHandle._data;
         dstBogie.var_38 = enumValue(src.var_38);
+        dstBogie.objectSpriteType = src.objectSpriteType;
         dstBogie.nextCarId = enumValue(src.nextCarId);
         dstBogie.var_3C = src.var_3C;
         dstBogie.objectId = src.objectId;
