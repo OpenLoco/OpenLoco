@@ -61,7 +61,6 @@ using namespace OpenLoco::World;
 namespace OpenLoco::Vehicles
 {
     static loco_global<VehicleHead*, 0x01136118> _vehicleUpdate_head;
-    static loco_global<Vehicle1*, 0x0113611C> _vehicleUpdate_1;
     static loco_global<Vehicle2*, 0x01136120> _vehicleUpdate_2;
     static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
     static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
@@ -182,7 +181,6 @@ namespace OpenLoco::Vehicles
     {
         Vehicle train(head);
         _vehicleUpdate_head = train.head;
-        _vehicleUpdate_1 = train.veh1;
         _vehicleUpdate_2 = train.veh2;
 
         const auto initialStatus = status;
@@ -1464,9 +1462,9 @@ namespace OpenLoco::Vehicles
     // 0x004A8CB6
     bool VehicleHead::sub_4A8CB6()
     {
-        Vehicle1* vehType1 = _vehicleUpdate_1;
+        Vehicle train(head);
 
-        if (position != vehType1->position)
+        if (position != train.veh1->position)
         {
             sub_4AD93A();
             if (status == Status::approaching)
@@ -1476,7 +1474,6 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        Vehicle train(head);
         auto* vehType2 = train.veh2;
         if (vehType2->routingHandle != routingHandle || vehType2->subPosition != subPosition)
         {
@@ -1484,7 +1481,6 @@ namespace OpenLoco::Vehicles
         }
 
         status = Status::stopped;
-        vehType2 = _vehicleUpdate_2;
 
         if (vehType2->has73Flags(Flags73::isBrokenDown))
         {
@@ -1780,7 +1776,7 @@ namespace OpenLoco::Vehicles
         auto [newStatus, targetSpeed] = airplaneGetNewStatus();
 
         status = newStatus;
-        Vehicle1* vehType1 = _vehicleUpdate_1;
+        Vehicle1* vehType1 = train.veh1;
         vehType1->targetSpeed = targetSpeed;
 
         advanceToNextRoutableOrder();
@@ -2118,9 +2114,9 @@ namespace OpenLoco::Vehicles
         {
             yaw = params.targetYaw;
         }
-
-        Vehicle1* vehType1 = _vehicleUpdate_1;
-        Vehicle2* vehType2 = _vehicleUpdate_2;
+        Vehicle train(*this);
+        Vehicle1* vehType1 = train.veh1;
+        Vehicle2* vehType2 = train.veh2;
 
         auto [veh1Loc, veh2Loc] = calculateNextPosition(
             yaw, position, vehType1, vehType2->currentSpeed);
@@ -2841,7 +2837,8 @@ namespace OpenLoco::Vehicles
     // bit 17 : reachedADestination
     WaterMotionFlags VehicleHead::updateWaterMotion(WaterMotionFlags flags)
     {
-        Vehicle2* veh2 = _vehicleUpdate_2;
+        Vehicle train(*this);
+        Vehicle2* veh2 = train.veh2;
 
         // updates the current boats position and sets flags about position
         auto tile = TileManager::get(veh2->position);
@@ -3008,7 +3005,7 @@ namespace OpenLoco::Vehicles
             veh2->spriteYaw &= 0x3F;
         }
 
-        Vehicle1* veh1 = _vehicleUpdate_1;
+        Vehicle1* veh1 = train.veh1;
         auto [newVeh1Pos, newVeh2Pos] = calculateNextPosition(veh2->spriteYaw, veh2->position, veh1, veh2->currentSpeed);
 
         veh1->var_4E = newVeh1Pos.x;
@@ -3314,12 +3311,10 @@ namespace OpenLoco::Vehicles
                 auto company = CompanyManager::get(owner);
                 company->aiThoughts[aiThoughtId].var_80 += cargoProfit;
             }
-            Vehicle2* veh2 = _vehicleUpdate_2;
-            veh2->curMonthRevenue += cargoProfit;
-            Vehicle1* veh1 = _vehicleUpdate_1;
+            train.veh2->curMonthRevenue += cargoProfit;
             if (cargoProfit != 0)
             {
-                veh1->var_48 |= Flags48::flag2;
+                train.veh1->var_48 |= Flags48::flag2;
             }
 
             CompanyManager::applyPaymentToCompany(owner, -cargoProfit, ExpenditureType(static_cast<uint8_t>(vehicleType) * 2));
@@ -4059,7 +4054,6 @@ namespace OpenLoco::Vehicles
         Vehicle train(head);
         _vehicleUpdate_head = this;
 
-        _vehicleUpdate_1 = train.veh1;
         _vehicleUpdate_2 = train.veh2;
     }
 
@@ -7138,7 +7132,6 @@ namespace OpenLoco::Vehicles
     bool positionVehicleOnTrack(VehicleHead& head, const bool isPlaceDown)
     {
         Vehicle train(head);
-        _vehicleUpdate_1 = train.veh1;
         _vehicleUpdate_2 = train.veh2;
         for (auto i = 0; i < 32; ++i)
         {
