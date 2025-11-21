@@ -60,7 +60,6 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<VehicleHead*, 0x01136118> _vehicleUpdate_head;
     static loco_global<Vehicle2*, 0x01136120> _vehicleUpdate_2;
     static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
     static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
@@ -180,7 +179,6 @@ namespace OpenLoco::Vehicles
     bool VehicleHead::update()
     {
         Vehicle train(head);
-        _vehicleUpdate_head = train.head;
         _vehicleUpdate_2 = train.veh2;
 
         const auto initialStatus = status;
@@ -4052,7 +4050,6 @@ namespace OpenLoco::Vehicles
     void VehicleHead::updateSegmentCrashed()
     {
         Vehicle train(head);
-        _vehicleUpdate_head = this;
 
         _vehicleUpdate_2 = train.veh2;
     }

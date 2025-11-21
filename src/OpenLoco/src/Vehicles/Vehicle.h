@@ -122,6 +122,7 @@ namespace OpenLoco::Vehicles
     struct VehicleBogie;
     struct VehicleBody;
     struct VehicleTail;
+    struct Vehicle;
 
     struct VehicleSoundPlayer;
 
@@ -725,7 +726,7 @@ namespace OpenLoco::Vehicles
 
         const VehicleObject* getObject() const;
         bool update(const CarUpdateState& carState);
-        void secondaryAnimationUpdate(const CarUpdateState& carState);
+        void secondaryAnimationUpdate(const Vehicle& train, const CarUpdateState& carState);
         void updateSegmentCrashed(const CarUpdateState& carState);
         void sub_4AAB0B(const CarUpdateState& carState);
         void updateCargoSprite();
@@ -737,12 +738,12 @@ namespace OpenLoco::Vehicles
 
     private:
         void animationUpdate(const CarUpdateState& carState);
-        void steamPuffsAnimationUpdate(const CarUpdateState& carState, uint8_t num, int32_t var_05);
-        void dieselExhaust1AnimationUpdate(const CarUpdateState& carState, uint8_t num, int32_t var_05);
-        void dieselExhaust2AnimationUpdate(const CarUpdateState& carState, uint8_t num, int32_t var_05);
-        void electricSpark1AnimationUpdate(const CarUpdateState& carState, uint8_t num, int32_t var_05);
-        void electricSpark2AnimationUpdate(const CarUpdateState& carState, uint8_t num, int32_t var_05);
-        void shipWakeAnimationUpdate(uint8_t num, int32_t var_05);
+        void steamPuffsAnimationUpdate(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t var_05);
+        void dieselExhaust1AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t var_05);
+        void dieselExhaust2AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t var_05);
+        void electricSpark1AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t var_05);
+        void electricSpark2AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t var_05);
+        void shipWakeAnimationUpdate(const Vehicle& train, uint8_t num, int32_t var_05);
         Pitch updateSpritePitchSteepSlopes(uint16_t xyOffset, int16_t zOffset);
         Pitch updateSpritePitch(uint16_t xyOffset, int16_t zOffset);
     };
