@@ -65,7 +65,7 @@ namespace OpenLoco::Ui
         }
 
         Gfx::RectInsetFlags widgetFlags = Gfx::RectInsetFlags::none;
-        if (windowColour == WindowColour::primary && window->hasFlags(WindowFlags::flag_11))
+        if (windowColour == WindowColour::primary && window->hasFlags(WindowFlags::lighterFrame))
         {
             widgetFlags = Gfx::RectInsetFlags::colourLight;
         }

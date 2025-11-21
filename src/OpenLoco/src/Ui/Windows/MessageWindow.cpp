@@ -338,7 +338,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                 WindowType::messages,
                 { x, y },
                 { 366, 217 },
-                WindowFlags::flag_11,
+                WindowFlags::lighterFrame,
                 Messages::getEvents());
 
             window->number = 0;

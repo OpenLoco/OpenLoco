@@ -20,6 +20,9 @@ namespace OpenLoco::Ui::Widgets
         }
 
         static void draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState);
+        static void drawBackground(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState);
+        static void drawSolid(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState);
+        static void drawTransparent(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState);
     };
 
 }

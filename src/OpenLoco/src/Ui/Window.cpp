@@ -87,6 +87,19 @@ namespace OpenLoco::Ui
         }
     }
 
+    bool Window::isVisible()
+    {
+        return true;
+    }
+
+    bool Window::isTranslucent()
+    {
+        const bool isTransparent = this->hasFlags(WindowFlags::transparent);
+        const bool isMainWindow = type == WindowType::main;
+        const bool hasTransparentFrame = Config::get().windowFrameStyle == Config::WindowFrameStyle::transparent;
+        return !isMainWindow && (hasTransparentFrame || isTransparent);
+    }
+
     bool Window::isEnabled(WidgetIndex_t widgetIndex)
     {
         return (this->disabledWidgets & (1ULL << widgetIndex)) == 0;
@@ -1242,7 +1255,7 @@ namespace OpenLoco::Ui
     // 0x004CA4DF
     void Window::draw(Gfx::DrawingContext& drawingCtx)
     {
-        if (this->hasFlags(WindowFlags::transparent) && !this->hasFlags(WindowFlags::noBackground))
+        if (this->isTranslucent() && !this->hasFlags(WindowFlags::noBackground))
         {
             drawingCtx.fillRect(this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
         }
