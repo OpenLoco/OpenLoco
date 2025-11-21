@@ -518,7 +518,6 @@ namespace OpenLoco::Vehicles
         uint32_t getCarCount() const;
         void applyBreakdownToTrain();
         void landCrashedUpdate();
-        void updateSegmentCrashed();
         void autoLayoutTrain();
         uint32_t getVehicleTotalLength() const;
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const

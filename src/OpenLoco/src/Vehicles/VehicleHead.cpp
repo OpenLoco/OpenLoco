@@ -60,7 +60,6 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<Vehicle2*, 0x01136120> _vehicleUpdate_2;
     static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
     static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
     static loco_global<uint8_t, 0x0113623B> _vehicleMangled_113623B;    // This shouldn't be used as it will be mangled but it is
@@ -179,7 +178,6 @@ namespace OpenLoco::Vehicles
     bool VehicleHead::update()
     {
         Vehicle train(head);
-        _vehicleUpdate_2 = train.veh2;
 
         const auto initialStatus = status;
         updateDrivingSounds();
@@ -1075,7 +1073,8 @@ namespace OpenLoco::Vehicles
     // 0x004A88F7
     void VehicleHead::updateDrivingSoundFriction(VehicleSoundPlayer* soundPlayer, const VehicleObjectFrictionSound* snd)
     {
-        Vehicle2* vehType2_2 = _vehicleUpdate_2;
+        Vehicle train(head);
+        Vehicle2* vehType2_2 = train.veh2;
         if (vehType2_2->currentSpeed < snd->minSpeed)
         {
             updateDrivingSoundNone(soundPlayer);
@@ -1295,7 +1294,8 @@ namespace OpenLoco::Vehicles
     // 0x004A8C11
     bool VehicleHead::updateLand()
     {
-        Vehicle2* vehType2 = _vehicleUpdate_2;
+        Vehicle train(head);
+        Vehicle2* vehType2 = train.veh2;
 
         // If don't have any running issue and is approaching
         if ((!vehType2->has73Flags(Flags73::isBrokenDown) || vehType2->has73Flags(Flags73::isStillPowered)) && status == Status::approaching)
@@ -1491,8 +1491,8 @@ namespace OpenLoco::Vehicles
     // 0x004A8C81
     bool VehicleHead::sub_4A8C81()
     {
-        Vehicle2* vehType2 = _vehicleUpdate_2;
-        if (vehType2->currentSpeed > 1.0_mph)
+        Vehicle train(head);
+        if (train.veh2->currentSpeed > 1.0_mph)
         {
             return landNormalMovementUpdate();
         }
@@ -2053,8 +2053,8 @@ namespace OpenLoco::Vehicles
         if (hasVehicleFlags(VehicleFlags::commandStop))
         {
             status = Status::stopped;
-            Vehicle2* vehType2 = _vehicleUpdate_2;
-            vehType2->currentSpeed = 0.0_mph;
+            Vehicle train(head);
+            train.veh2->currentSpeed = 0.0_mph;
         }
         else
         {
@@ -2068,9 +2068,9 @@ namespace OpenLoco::Vehicles
     // 0x004A95F5
     bool VehicleHead::airplaneLoadingUpdate()
     {
-        Vehicle2* vehType2 = _vehicleUpdate_2;
-        vehType2->currentSpeed = 0.0_mph;
-        vehType2->motorState = MotorState::stopped;
+        Vehicle train(head);
+        train.veh2->currentSpeed = 0.0_mph;
+        train.veh2->motorState = MotorState::stopped;
         if (updateLoadCargo())
         {
             return true;
@@ -4027,7 +4027,6 @@ namespace OpenLoco::Vehicles
     void VehicleHead::landCrashedUpdate()
     {
         Vehicle train(*this);
-        train.head->updateSegmentCrashed();
         for (auto& car : train.cars)
         {
             for (auto& carComponent : car)
@@ -4044,14 +4043,6 @@ namespace OpenLoco::Vehicles
                 carComponent.body->updateSegmentCrashed(carUpdateState);
             }
         }
-    }
-
-    // 0x004AA64B
-    void VehicleHead::updateSegmentCrashed()
-    {
-        Vehicle train(head);
-
-        _vehicleUpdate_2 = train.veh2;
     }
 
     // 0x004A3EF6
@@ -7129,7 +7120,6 @@ namespace OpenLoco::Vehicles
     bool positionVehicleOnTrack(VehicleHead& head, const bool isPlaceDown)
     {
         Vehicle train(head);
-        _vehicleUpdate_2 = train.veh2;
         for (auto i = 0; i < 32; ++i)
         {
             const auto res = head.sub_4ACEE7(0, 0, isPlaceDown);
