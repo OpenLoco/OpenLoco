@@ -1517,7 +1517,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             session.generate();
             session.arrangeStructs();
             interaction = session.getNormalInteractionInfo(flags);
-            if (!vp->hasFlags(ViewportFlags::station_names_displayed))
+            if (!vp->hasFlags(ViewportFlags::hideStationNames))
             {
                 if (_rt2.zoomLevel <= Config::get().stationNamesMinScale)
                 {
@@ -1528,7 +1528,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                     }
                 }
             }
-            if (!vp->hasFlags(ViewportFlags::town_names_displayed))
+            if (!vp->hasFlags(ViewportFlags::hideTownNames))
             {
                 auto townInteraction = session.getTownNameInteractionInfo(flags);
                 if (townInteraction.type != InteractionItem::noInteraction)

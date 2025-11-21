@@ -434,7 +434,10 @@ namespace OpenLoco
 
         recordTickStartPrng();
         World::TileManager::defragmentTilePeriodic();
-        addr<0x00F25374, uint8_t>() = Scenario::getOptions().madeAnyChanges;
+
+        // Back up the `madeAnyChanges` variable to ensure we only capture user changes
+        bool userMadeAnyChanges = Scenario::getOptions().madeAnyChanges;
+
         dateTick();
         World::TileManager::update();
         World::WaveManager::update();
@@ -449,7 +452,8 @@ namespace OpenLoco
         Audio::updateAmbientNoise();
         Title::update();
 
-        Scenario::getOptions().madeAnyChanges = addr<0x00F25374, uint8_t>();
+        Scenario::getOptions().madeAnyChanges = userMadeAnyChanges;
+
         if (_loadErrorCode != 0)
         {
             if (_loadErrorCode == -2)

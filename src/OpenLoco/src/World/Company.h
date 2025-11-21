@@ -87,9 +87,8 @@ namespace OpenLoco
 
     class OwnerStatus
     {
-        int16_t data[2];
-
     public:
+        int16_t data[2];
         OwnerStatus()
         {
             data[0] = -1;

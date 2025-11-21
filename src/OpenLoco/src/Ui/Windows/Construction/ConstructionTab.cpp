@@ -39,7 +39,6 @@
 #include "World/CompanyManager.h"
 #include "World/Station.h"
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 using namespace OpenLoco::World::TileManager;
 using namespace OpenLoco::Literals;
@@ -47,8 +46,6 @@ using namespace OpenLoco::Literals;
 namespace OpenLoco::Ui::Windows::Construction::Construction
 {
     static uint8_t _ghostRemovalTrackObjectId; // 0x00522093
-
-    static loco_global<uint8_t, 0x0112C2E9> _alternateTrackObjectId; // set from GameCommands::createRoad
 
     // TODO: move to ConstructionState when no longer a loco_global?
     static bool _isDragging = false;
@@ -158,21 +155,21 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x004A18D4
-    static void sub_4A18D4()
+    static void sub_4A18D4(const uint8_t alternateRoadObjId)
     {
-        if (_alternateTrackObjectId == 0xFF)
+        if (alternateRoadObjId == 0xFF)
         {
             return;
         }
 
         auto& cState = getConstructionState();
 
-        if ((_alternateTrackObjectId | (1 << 7)) == cState.trackType)
+        if ((alternateRoadObjId | (1 << 7)) == cState.trackType)
         {
             return;
         }
 
-        auto* alternativeRoadObj = ObjectManager::get<RoadObject>(_alternateTrackObjectId);
+        auto* alternativeRoadObj = ObjectManager::get<RoadObject>(alternateRoadObjId);
         if (!alternativeRoadObj->hasFlags(RoadObjectFlags::unk_03))
         {
             return;
@@ -185,7 +182,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         // Check if the alternate road object is available for the current company
         auto availableRoads = companyGetAvailableRoads(CompanyManager::getControllingId());
-        auto targetId = _alternateTrackObjectId | (1 << 7);
+        auto targetId = alternateRoadObjId | (1 << 7);
         for (const auto objId : availableRoads)
         {
             if (objId == targetId)
@@ -228,13 +225,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         cState.dword_1135F42 = GameCommands::doCommand(args, GameCommands::Flags::apply);
         if (cState.dword_1135F42 == GameCommands::FAILURE)
         {
+            const auto alternateRoadObjectId = GameCommands::getLegacyReturnState().alternateRoadObjectId;
             if (GameCommands::getErrorText() != StringIds::unable_to_cross_or_create_junction_with_string
-                || _alternateTrackObjectId == 0xFF)
+                || alternateRoadObjectId == 0xFF)
             {
                 return;
             }
 
-            sub_4A18D4();
+            sub_4A18D4(alternateRoadObjectId);
             roadPiece = getRoadPieceId(cState.lastSelectedTrackPiece, cState.lastSelectedTrackGradient, cState.constructionRotation);
             if (!roadPiece)
             {

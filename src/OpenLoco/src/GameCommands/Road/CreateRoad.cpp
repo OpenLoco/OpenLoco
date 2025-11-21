@@ -30,8 +30,6 @@ namespace OpenLoco::GameCommands
     using namespace World::TileManager;
     using namespace World::Track;
 
-    static loco_global<uint8_t, 0x0112C2E9> _alternateTrackObjectId; // used by ui
-
     // TODO: Identical to createTrack function
     static bool isBridgeRequired(const World::SmallZ baseZ, const World::SurfaceElement& elSurface, const World::TrackData::PreviewTrack& piece, const uint8_t unk)
     {
@@ -343,7 +341,7 @@ namespace OpenLoco::GameCommands
             res.levelCrossingObjId = elRoad.levelCrossingObjectId();
         }
 
-        _alternateTrackObjectId = elRoad.roadObjectId();
+        getLegacyReturnState().alternateRoadObjectId = elRoad.roadObjectId();
 
         if (elRoad.hasSignalElement())
         {
@@ -617,7 +615,7 @@ namespace OpenLoco::GameCommands
         returnState.flags_1136073 = 0; // Bridge related
         returnState.byte_1136074 = 0;
         returnState.byte_1136075 = 0xFFU;
-        _alternateTrackObjectId = 0xFFU;
+        returnState.alternateRoadObjectId = 0xFFU;
 
         const auto companyId = SceneManager::isEditorMode() ? CompanyId::neutral : getUpdatingCompanyId();
 

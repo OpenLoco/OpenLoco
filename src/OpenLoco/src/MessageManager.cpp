@@ -69,7 +69,7 @@ namespace OpenLoco::MessageManager
                 }
             }
         }
-        if (getNumMessages() > Limits::kMaxMessages)
+        if (getNumMessages() >= Limits::kMaxMessages)
         {
             MessageId oldestMessage = MessageId::null;
             int32_t oldest = -1;

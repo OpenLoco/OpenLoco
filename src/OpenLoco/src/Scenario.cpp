@@ -18,15 +18,18 @@
 #include "Localisation/StringIds.h"
 #include "Map/AnimationManager.h"
 #include "Map/MapGenerator/MapGenerator.h"
+#include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Map/WaveManager.h"
 #include "MessageManager.h"
 #include "MultiPlayer.h"
 #include "Objects/CargoObject.h"
 #include "Objects/ClimateObject.h"
+#include "Objects/LandObject.h"
 #include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/ScenarioTextObject.h"
+#include "Objects/WaterObject.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
 #include "ScenarioConstruction.h"
@@ -181,11 +184,11 @@ namespace OpenLoco::Scenario
     void sub_4969E0(uint8_t al)
     {
         auto& gameState = getGameState();
-        gameState.var_B94C = al;
-        gameState.var_B950 = 1;
-        gameState.var_B952 = 0;
-        gameState.var_B954 = 0;
-        gameState.var_B956 = 0;
+        gameState.var_B95C = al;
+        gameState.var_B960 = 1;
+        gameState.var_B962 = 0;
+        gameState.var_B964 = 0;
+        gameState.var_B966 = 0;
         gameState.currentRainLevel = 0;
     }
 
@@ -239,7 +242,6 @@ namespace OpenLoco::Scenario
         Ui::WindowManager::invalidate(Ui::WindowType::landscapeGeneration, 0);
         reset();
         Scenario::getOptions().madeAnyChanges = 0;
-        addr<0x00F25374, uint8_t>() = 0;
         Gfx::invalidateScreen();
     }
 
@@ -249,7 +251,6 @@ namespace OpenLoco::Scenario
         auto& options = Scenario::getOptions();
         MapGenerator::generate(options);
         options.madeAnyChanges = 0;
-        addr<0x00F25374, uint8_t>() = 0;
     }
 
     // 0x0049685C
@@ -465,14 +466,6 @@ namespace OpenLoco::Scenario
         args.push<uint16_t>(0);
     }
 
-    static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _inUseobjectSelection;
-    static loco_global<ObjectManager::ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
-
-    static std::span<ObjectManager::SelectedObjectsFlags> getInUseSelectedObjectFlags()
-    {
-        return std::span<ObjectManager::SelectedObjectsFlags>(*_inUseobjectSelection, ObjectManager::getNumInstalledObjects());
-    }
-
     static void loadPreferredCurrency()
     {
         const auto& preferredCurreny = Config::get().preferredCurrency;
@@ -482,8 +475,8 @@ namespace OpenLoco::Scenario
             return;
         }
 
-        ObjectManager::prepareSelectionList(true);
-        const auto oldCurrency = ObjectManager::getActiveObject(ObjectType::currency, getInUseSelectedObjectFlags());
+        auto& selection = ObjectManager::prepareSelectionList(true);
+        const auto oldCurrency = ObjectManager::getActiveObject(ObjectType::currency, selection.objectFlags);
         if (oldCurrency.index != ObjectManager::kNullObjectIndex)
         {
             if (oldCurrency.object._header == preferredCurreny)
@@ -491,17 +484,17 @@ namespace OpenLoco::Scenario
                 ObjectManager::freeSelectionList();
                 return;
             }
-            ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultDeselect, oldCurrency.object._header, getInUseSelectedObjectFlags(), _objectSelectionMeta);
+            selection.selectObject(ObjectManager::SelectObjectModes::defaultDeselect, oldCurrency.object._header);
         }
-        if (!ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultSelect, preferredCurreny, getInUseSelectedObjectFlags(), _objectSelectionMeta))
+        if (!selection.selectObject(ObjectManager::SelectObjectModes::defaultSelect, preferredCurreny))
         {
             // Failed so reselect the old currency and give up
-            ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultSelect, oldCurrency.object._header, getInUseSelectedObjectFlags(), _objectSelectionMeta);
+            selection.selectObject(ObjectManager::SelectObjectModes::defaultSelect, oldCurrency.object._header);
             ObjectManager::freeSelectionList();
             return;
         }
-        ObjectManager::unloadUnselectedSelectionListObjects(getInUseSelectedObjectFlags());
-        ObjectManager::loadSelectionListObjects(getInUseSelectedObjectFlags());
+        ObjectManager::unloadUnselectedSelectionListObjects(selection.objectFlags);
+        ObjectManager::loadSelectionListObjects(selection.objectFlags);
         ObjectManager::reloadAll();
         Gfx::loadCurrency();
         ObjectManager::freeSelectionList();
@@ -528,5 +521,77 @@ namespace OpenLoco::Scenario
         }
 
         loadPreferredCurrency();
+    }
+
+    static PaletteIndex_t getPreviewColourByTilePos(const TilePos2& pos)
+    {
+        PaletteIndex_t colour = PaletteIndex::transparent;
+        auto tile = TileManager::get(pos);
+
+        for (auto& el : tile)
+        {
+            switch (el.type())
+            {
+                case ElementType::surface:
+                {
+                    auto* surfaceEl = el.as<SurfaceElement>();
+                    if (surfaceEl == nullptr)
+                    {
+                        continue;
+                    }
+
+                    if (surfaceEl->water() == 0)
+                    {
+                        const auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
+                        const auto* landImage = Gfx::getG1Element(landObj->mapPixelImage);
+                        auto offset = surfaceEl->baseZ() / kMicroToSmallZStep * 2;
+                        colour = landImage->offset[offset];
+                    }
+                    else
+                    {
+                        const auto* waterObj = ObjectManager::get<WaterObject>();
+                        const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
+                        auto offset = (surfaceEl->water() * kMicroToSmallZStep - surfaceEl->baseZ()) / 2;
+                        colour = waterImage->offset[offset - 2];
+                    }
+                    break;
+                }
+
+                case ElementType::building:
+                case ElementType::road:
+                    colour = PaletteIndex::mutedDarkRed7;
+                    break;
+
+                case ElementType::industry:
+                    colour = PaletteIndex::mutedPurple7;
+                    break;
+
+                case ElementType::tree:
+                    colour = PaletteIndex::green6;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        return colour;
+    }
+
+    // 0x0046DB4C
+    void drawScenarioMiniMapImage()
+    {
+        auto& options = Scenario::getOptions();
+        const auto kPreviewSize = sizeof(options.preview[0]);
+        const auto kMapSkipFactor = kMapRows / kPreviewSize;
+
+        for (auto y = 0U; y < kPreviewSize; y++)
+        {
+            for (auto x = 0U; x < kPreviewSize; x++)
+            {
+                auto pos = TilePos2(kMapColumns - (x + 1) * kMapSkipFactor + 1, y * kMapSkipFactor + 1);
+                options.preview[y][x] = getPreviewColourByTilePos(pos);
+            }
+        }
     }
 }

@@ -96,11 +96,6 @@ namespace OpenLoco::Vehicles
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(UpdateVar1136114Flags);
 
-    bool hasUpdateVar1136114Flags(UpdateVar1136114Flags flags);
-    void resetUpdateVar1136114Flags();
-    void setUpdateVar1136114Flags(UpdateVar1136114Flags flags);
-    void unsetUpdateVar1136114Flags(UpdateVar1136114Flags flags);
-
     enum class Status : uint8_t
     {
         unk_0 = 0, // no position (not placed)
@@ -127,6 +122,7 @@ namespace OpenLoco::Vehicles
     struct VehicleBogie;
     struct VehicleBody;
     struct VehicleTail;
+    struct Vehicle;
 
     struct VehicleSoundPlayer;
 
@@ -308,6 +304,15 @@ namespace OpenLoco::Vehicles
     void playPickupSound(Vehicles::Vehicle2* veh2);
     void playPlacedownSound(const World::Pos3 pos);
 
+    struct UpdateMotionResult
+    {
+        int32_t remainingDistance;
+        UpdateVar1136114Flags flags; // 0x01136114
+        EntityId collidedEntityId;   // 0x0113610E
+
+        constexpr bool hasFlags(UpdateVar1136114Flags f) const { return (flags & f) != UpdateVar1136114Flags::none; }
+    };
+
     struct VehicleBase : EntityBase
     {
         static constexpr auto kBaseType = EntityBaseType::vehicle;
@@ -386,11 +391,10 @@ namespace OpenLoco::Vehicles
         VehicleBase* previousVehicleComponent();
         ColourScheme getColourScheme();
         void setColourScheme(ColourScheme colourScheme);
-        bool updateComponent();
         void explodeComponent();
         void destroyTrain();
         uint8_t sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied);
-        int32_t updateTrackMotion(int32_t unk1);
+        UpdateMotionResult updateTrackMotion(int32_t unk1, bool isVeh2UnkM15);
     };
 
     struct VehicleSoundPlayer : VehicleBase
@@ -434,6 +438,13 @@ namespace OpenLoco::Vehicles
         uint32_t manhattanDistanceToStation = 0U; // 0x011360D0
         uint8_t targetYaw = 0U;                   // 0x0113646D
         bool isHeliTakeOffEnd = false;            // 0x00525BB0
+    };
+
+    struct CarUpdateState
+    {
+        VehicleBogie* frontBogie; // 0x01136124
+        VehicleBogie* backBogie;  // 0x01136128
+        bool hasBogieMoved;       // 0x01136237 has either of the bogies moved this tick
     };
 
     struct VehicleHead : VehicleBase
@@ -507,7 +518,6 @@ namespace OpenLoco::Vehicles
         uint32_t getCarCount() const;
         void applyBreakdownToTrain();
         void landCrashedUpdate();
-        void updateSegmentCrashed();
         void autoLayoutTrain();
         uint32_t getVehicleTotalLength() const;
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
@@ -622,7 +632,7 @@ namespace OpenLoco::Vehicles
         bool update();
         bool updateRoad();
         bool updateRail();
-        int32_t updateRoadMotion(int32_t distance);
+        UpdateMotionResult updateRoadMotion(int32_t distance);
     };
     static_assert(sizeof(Vehicle1) == 0x7F); // Can't use offset_of change this to last field if more found
 
@@ -714,10 +724,10 @@ namespace OpenLoco::Vehicles
         uint8_t breakdownTimeout; // 0x6A (likely unused)
 
         const VehicleObject* getObject() const;
-        bool update();
-        void secondaryAnimationUpdate();
-        void updateSegmentCrashed();
-        void sub_4AAB0B();
+        bool update(const CarUpdateState& carState);
+        void secondaryAnimationUpdate(const Vehicle& train, const CarUpdateState& carState);
+        void updateSegmentCrashed(const CarUpdateState& carState);
+        void sub_4AAB0B(const CarUpdateState& carState);
         void updateCargoSprite();
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
         {
@@ -726,13 +736,13 @@ namespace OpenLoco::Vehicles
         void sub_4AC255(VehicleBogie* backBogie, VehicleBogie* frontBogie);
 
     private:
-        void animationUpdate();
-        void steamPuffsAnimationUpdate(uint8_t num, int32_t var_05);
-        void dieselExhaust1AnimationUpdate(uint8_t num, int32_t var_05);
-        void dieselExhaust2AnimationUpdate(uint8_t num, int32_t var_05);
-        void electricSpark1AnimationUpdate(uint8_t num, int32_t var_05);
-        void electricSpark2AnimationUpdate(uint8_t num, int32_t var_05);
-        void shipWakeAnimationUpdate(uint8_t num, int32_t var_05);
+        void animationUpdate(const CarUpdateState& carState);
+        void steamPuffsAnimationUpdate(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t var_05);
+        void dieselExhaust1AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t var_05);
+        void dieselExhaust2AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t var_05);
+        void electricSpark1AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t var_05);
+        void electricSpark2AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t var_05);
+        void shipWakeAnimationUpdate(const Vehicle& train, uint8_t num, int32_t var_05);
         Pitch updateSpritePitchSteepSlopes(uint16_t xyOffset, int16_t zOffset);
         Pitch updateSpritePitch(uint16_t xyOffset, int16_t zOffset);
     };
@@ -793,7 +803,7 @@ namespace OpenLoco::Vehicles
 
     private:
         void updateRoll();
-        void collision();
+        void collision(const EntityId collideEntityId);
     };
     static_assert(sizeof(VehicleBogie) == 0x6B); // Can't use offset_of change this to last field if more found
 
@@ -1067,6 +1077,9 @@ namespace OpenLoco::Vehicles
         {
         }
         Vehicle(EntityId _head);
+
+        // Call if the cars order may have changed
+        void refreshCars();
 
         template<typename TFunc>
         void applyToComponents(TFunc&& func) const

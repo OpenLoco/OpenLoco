@@ -15,7 +15,6 @@ namespace OpenLoco::Vehicles
     static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
     static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
     static loco_global<Speed32, 0x01136134> _vehicleUpdate_var_1136134; // Speed
-    static loco_global<VehicleHead*, 0x01136118> _vehicleUpdate_head;
 
     constexpr const uint8_t kBrakeLightTimeout = 7;
 
@@ -141,7 +140,8 @@ namespace OpenLoco::Vehicles
             return sub_4A9F20();
         }
 
-        if (!(*_vehicleUpdate_head)->hasVehicleFlags(VehicleFlags::manualControl))
+        Vehicle train(head);
+        if (!train.head->hasVehicleFlags(VehicleFlags::manualControl))
         {
             if (speedDiff >= -1.5_mph)
             {
@@ -153,7 +153,6 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        Vehicle train(head);
         train.cars.applyToComponents([](auto& component) {
             // If the vehicle is wheel slipping, then its wheel slipping value is incremented.
             if (component.wheelSlipping != 0)
@@ -291,18 +290,16 @@ namespace OpenLoco::Vehicles
     {
         Vehicle train(head);
 
-        resetUpdateVar1136114Flags();
-        setUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m15);
-        auto res = updateTrackMotion(_vehicleUpdate_var_113612C);
-        _vehicleUpdate_var_113612C = _vehicleUpdate_var_113612C - res;
-        _vehicleUpdate_var_1136130 = _vehicleUpdate_var_1136130 - res;
-        if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::noRouteFound))
+        auto res = updateTrackMotion(_vehicleUpdate_var_113612C, true);
+        _vehicleUpdate_var_113612C = _vehicleUpdate_var_113612C - res.remainingDistance;
+        _vehicleUpdate_var_1136130 = _vehicleUpdate_var_1136130 - res.remainingDistance;
+        if (res.hasFlags(UpdateVar1136114Flags::noRouteFound))
         {
             destroyTrain();
             return false;
         }
 
-        if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00))
+        if (res.hasFlags(UpdateVar1136114Flags::unk_m00))
         {
             if (!train.head->hasVehicleFlags(VehicleFlags::manualControl))
             {
