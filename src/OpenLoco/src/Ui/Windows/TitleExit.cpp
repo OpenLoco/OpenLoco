@@ -39,7 +39,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
             WindowType::titleExit,
             { Ui::width() - kWindowSize.width, Ui::height() - kWindowSize.height },
             kWindowSize,
-            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::framedWidgets,
             getEvents());
 
         window->setWidgets(_widgets);

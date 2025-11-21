@@ -50,7 +50,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
         auto window = WindowManager::createWindowCentred(
             WindowType::confirmationPrompt,
             { 280, 92 },
-            Ui::WindowFlags::flag_12 | Ui::WindowFlags::stickToFront,
+            Ui::WindowFlags::playSoundOnOpen | Ui::WindowFlags::stickToFront,
             getEvents());
 
         if (window == nullptr)

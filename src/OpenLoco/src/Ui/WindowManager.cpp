@@ -218,7 +218,7 @@ namespace OpenLoco::Ui::WindowManager
                 continue;
             }
 
-            if (w.hasFlags(WindowFlags::flag_7))
+            if (w.hasFlags(WindowFlags::ignoreInFindAt))
             {
                 continue;
             }
@@ -756,7 +756,7 @@ namespace OpenLoco::Ui::WindowManager
 
         bool stickToBack = (flags & WindowFlags::stickToBack) != WindowFlags::none;
         bool stickToFront = (flags & WindowFlags::stickToFront) != WindowFlags::none;
-        bool hasFlag12 = (flags & WindowFlags::flag_12) != WindowFlags::none;
+        bool playSoundOnOpen = (flags & WindowFlags::playSoundOnOpen) != WindowFlags::none;
         bool shouldOpenQuietly = (flags & WindowFlags::openQuietly) != WindowFlags::none;
 
         // Find right position to insert new window
@@ -790,7 +790,7 @@ namespace OpenLoco::Ui::WindowManager
         auto window = Ui::Window(origin, size);
         window.type = type;
         window.flags = flags;
-        if (hasFlag12 || (!stickToBack && !stickToFront && !shouldOpenQuietly))
+        if (playSoundOnOpen || (!stickToBack && !stickToFront && !shouldOpenQuietly))
         {
             window.flags |= WindowFlags::whiteBorderMask;
             Audio::playSound(Audio::SoundId::openWindow, origin.x + size.width / 2);

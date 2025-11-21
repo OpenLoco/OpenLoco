@@ -358,7 +358,7 @@ namespace OpenLoco::Ui::Windows::Town
         if (window == nullptr)
         {
             // 0x00499C0D start
-            const WindowFlags newFlags = WindowFlags::flag_8 | WindowFlags::resizable;
+            const WindowFlags newFlags = WindowFlags::viewportNoShiftPixels | WindowFlags::resizable;
             window = WindowManager::createWindow(WindowType::town, kWindowSize, newFlags, Town::getEvents());
             window->number = townId;
             window->minWidth = 192;
@@ -752,7 +752,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             self.currentTab = widgetIndex - widx::tab_town;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
             self.var_85C = -1;
 
             self.viewportRemove(0);

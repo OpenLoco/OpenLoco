@@ -121,7 +121,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             WindowType::scenarioSelect,
             { width() / 2 - kWindowSize.width / 2, std::max<int16_t>(height() / 2 - kWindowSize.height / 2, 28) },
             kWindowSize,
-            WindowFlags::stickToFront | WindowFlags::flag_12,
+            WindowFlags::stickToFront | WindowFlags::playSoundOnOpen,
             getEvents());
 
         self->setWidgets(_widgets);

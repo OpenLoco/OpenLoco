@@ -1521,7 +1521,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             self.currentTab = widgetIndex - widx::tab_company_list;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
 
             self.viewportRemove(0);
 

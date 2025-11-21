@@ -36,7 +36,7 @@ namespace OpenLoco::Ui::Windows::TitleOptions
             WindowType::titleOptions,
             { Ui::width() - kWindowSize.width, 0 },
             kWindowSize,
-            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::framedWidgets,
             getEvents());
 
         window->setWidgets(_widgets);

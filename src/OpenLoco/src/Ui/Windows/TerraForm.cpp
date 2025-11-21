@@ -919,7 +919,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 WindowType::terraform,
                 { Ui::width() - PlantTrees::kWindowSize.width, 30 },
                 PlantTrees::kWindowSize,
-                WindowFlags::flag_11,
+                WindowFlags::lighterFrame,
                 PlantTrees::getEvents());
 
             window->number = 0;

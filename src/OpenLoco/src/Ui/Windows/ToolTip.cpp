@@ -156,7 +156,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
             WindowType::tooltip,
             { x, y },
             { width, height },
-            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::flag_7,
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::ignoreInFindAt,
             getEvents());
         tooltip->setWidgets(_widgets);
         tooltip->widgets[widx::text].right = width;
