@@ -26,11 +26,7 @@ namespace OpenLoco::Vehicles
 {
     static loco_global<VehicleHead*, 0x01136118> _vehicleUpdate_head;
     static loco_global<Vehicle2*, 0x01136120> _vehicleUpdate_2;
-    static loco_global<VehicleBogie*, 0x01136124> _vehicleUpdate_frontBogie;
-    static loco_global<VehicleBogie*, 0x01136128> _vehicleUpdate_backBogie;
     static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
-    static loco_global<bool, 0x01136237> _vehicleUpdate_frontBogieHasMoved;
-    static loco_global<bool, 0x01136238> _vehicleUpdate_backBogieHasMoved;
 
     // 0x00503E5C
     static constexpr Pitch kVehicleBodyIndexToPitch[] = {
@@ -52,18 +48,18 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AA1D0
-    bool VehicleBody::update()
+    bool VehicleBody::update(const CarUpdateState& carState)
     {
         if (mode == TransportMode::air || mode == TransportMode::water)
         {
-            animationUpdate();
+            animationUpdate(carState);
             return true;
         }
 
-        if (_vehicleUpdate_frontBogieHasMoved || _vehicleUpdate_backBogieHasMoved)
+        if (carState.hasBogieMoved)
         {
             invalidateSprite();
-            sub_4AC255(_vehicleUpdate_backBogie, _vehicleUpdate_frontBogie);
+            sub_4AC255(carState.backBogie, carState.frontBogie);
             invalidateSprite();
         }
         uint32_t backup1136130 = _vehicleUpdate_var_1136130;
@@ -77,14 +73,14 @@ namespace OpenLoco::Vehicles
 
             _vehicleUpdate_var_1136130 += var_1136130 * 320 + 500;
         }
-        animationUpdate();
-        sub_4AAB0B();
+        animationUpdate(carState);
+        sub_4AAB0B(carState);
         _vehicleUpdate_var_1136130 = backup1136130;
         return true;
     }
 
     // 0x004AAC4E
-    void VehicleBody::animationUpdate()
+    void VehicleBody::animationUpdate(const CarUpdateState& carState)
     {
         if (has38Flags(Flags38::isGhost))
         {
@@ -113,19 +109,19 @@ namespace OpenLoco::Vehicles
             case EmitterAnimationType::steam_puff1:
             case EmitterAnimationType::steam_puff2:
             case EmitterAnimationType::steam_puff3:
-                steamPuffsAnimationUpdate(0, emitterHorizontalPos);
+                steamPuffsAnimationUpdate(carState, 0, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::diesel_exhaust1:
-                dieselExhaust1AnimationUpdate(0, emitterHorizontalPos);
+                dieselExhaust1AnimationUpdate(carState, 0, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::electric_spark1:
-                electricSpark1AnimationUpdate(0, emitterHorizontalPos);
+                electricSpark1AnimationUpdate(carState, 0, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::electric_spark2:
-                electricSpark2AnimationUpdate(0, emitterHorizontalPos);
+                electricSpark2AnimationUpdate(carState, 0, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::diesel_exhaust2:
-                dieselExhaust2AnimationUpdate(0, emitterHorizontalPos);
+                dieselExhaust2AnimationUpdate(carState, 0, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::ship_wake:
                 shipWakeAnimationUpdate(0, emitterHorizontalPos);
@@ -134,21 +130,21 @@ namespace OpenLoco::Vehicles
                 assert(false);
                 break;
         }
-        secondaryAnimationUpdate();
+        secondaryAnimationUpdate(carState);
     }
 
     // 0x004AA904
-    void VehicleBody::updateSegmentCrashed()
+    void VehicleBody::updateSegmentCrashed(const CarUpdateState& carState)
     {
         invalidateSprite();
-        sub_4AC255(_vehicleUpdate_backBogie, _vehicleUpdate_frontBogie);
+        sub_4AC255(carState.backBogie, carState.frontBogie);
         invalidateSprite();
-        animationUpdate();
-        sub_4AAB0B();
+        animationUpdate(carState);
+        sub_4AAB0B(carState);
         if (!hasVehicleFlags(VehicleFlags::unk_5))
         {
-            VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
-            VehicleBogie* backBogie = _vehicleUpdate_backBogie;
+            VehicleBogie* frontBogie = carState.frontBogie;
+            VehicleBogie* backBogie = carState.backBogie;
 
             if (frontBogie->hasVehicleFlags(VehicleFlags::unk_5)
                 || backBogie->hasVehicleFlags(VehicleFlags::unk_5))
@@ -160,7 +156,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AAB0B
-    void VehicleBody::sub_4AAB0B()
+    void VehicleBody::sub_4AAB0B(const CarUpdateState& carState)
     {
         int32_t eax = _vehicleUpdate_var_1136130 >> 3;
         if (has38Flags(Flags38::isReversed))
@@ -182,9 +178,9 @@ namespace OpenLoco::Vehicles
             targetAnimationFrame = veh3->currentSpeed / (vehicleObj->speed / vehicleObj->bodySprites[objectSpriteType].numAnimationFrames);
             targetAnimationFrame = std::min<uint8_t>(targetAnimationFrame, vehicleObj->bodySprites[objectSpriteType].numAnimationFrames - 1);
         }
-        else if (vehicleObj->bodySprites[objectSpriteType].numRollFrames != 1)
+        else if (vehicleObj->bodySprites[objectSpriteType].numRollFrames != 1 && mode == TransportMode::rail)
         {
-            VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
+            VehicleBogie* frontBogie = carState.frontBogie;
             Vehicle2* veh3 = _vehicleUpdate_2;
             targetAnimationFrame = animationFrame;
             int8_t targetTiltFrame = 0;
@@ -889,7 +885,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AB655
-    void VehicleBody::secondaryAnimationUpdate()
+    void VehicleBody::secondaryAnimationUpdate(const CarUpdateState& carState)
     {
         const auto* vehicleObject = getObject();
 
@@ -908,19 +904,19 @@ namespace OpenLoco::Vehicles
             case EmitterAnimationType::steam_puff1:
             case EmitterAnimationType::steam_puff2:
             case EmitterAnimationType::steam_puff3:
-                steamPuffsAnimationUpdate(1, emitterHorizontalPos);
+                steamPuffsAnimationUpdate(carState, 1, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::diesel_exhaust1:
-                dieselExhaust1AnimationUpdate(1, emitterHorizontalPos);
+                dieselExhaust1AnimationUpdate(carState, 1, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::electric_spark1:
-                electricSpark1AnimationUpdate(1, emitterHorizontalPos);
+                electricSpark1AnimationUpdate(carState, 1, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::electric_spark2:
-                electricSpark2AnimationUpdate(1, emitterHorizontalPos);
+                electricSpark2AnimationUpdate(carState, 1, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::diesel_exhaust2:
-                dieselExhaust2AnimationUpdate(1, emitterHorizontalPos);
+                dieselExhaust2AnimationUpdate(carState, 1, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::ship_wake:
                 shipWakeAnimationUpdate(1, emitterHorizontalPos);
@@ -932,11 +928,11 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AB688, 0x004AACA5
-    void VehicleBody::steamPuffsAnimationUpdate(uint8_t num, int32_t emitterHorizontalPos)
+    void VehicleBody::steamPuffsAnimationUpdate(const CarUpdateState& carState, uint8_t num, int32_t emitterHorizontalPos)
     {
         const auto* vehicleObject = getObject();
-        VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
-        VehicleBogie* backBogie = _vehicleUpdate_backBogie;
+        VehicleBogie* frontBogie = carState.frontBogie;
+        VehicleBogie* backBogie = carState.backBogie;
         if (frontBogie->hasBreakdownFlags(BreakdownFlags::brokenDown))
         {
             return;
@@ -1094,10 +1090,10 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AB9DD & 0x004AAFFA
-    void VehicleBody::dieselExhaust1AnimationUpdate(uint8_t num, int32_t emitterHorizontalPos)
+    void VehicleBody::dieselExhaust1AnimationUpdate(const CarUpdateState& carState, uint8_t num, int32_t emitterHorizontalPos)
     {
-        VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
-        VehicleBogie* backBogie = _vehicleUpdate_backBogie;
+        VehicleBogie* frontBogie = carState.frontBogie;
+        VehicleBogie* backBogie = carState.backBogie;
         if (frontBogie->hasBreakdownFlags(BreakdownFlags::brokenDown))
         {
             return;
@@ -1164,10 +1160,10 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004ABB5A & 0x004AB177
-    void VehicleBody::dieselExhaust2AnimationUpdate(uint8_t num, int32_t emitterHorizontalPos)
+    void VehicleBody::dieselExhaust2AnimationUpdate(const CarUpdateState& carState, uint8_t num, int32_t emitterHorizontalPos)
     {
-        VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
-        VehicleBogie* backBogie = _vehicleUpdate_backBogie;
+        VehicleBogie* frontBogie = carState.frontBogie;
+        VehicleBogie* backBogie = carState.backBogie;
         if (frontBogie->hasBreakdownFlags(BreakdownFlags::brokenDown))
         {
             return;
@@ -1220,10 +1216,10 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004ABDAD & 0x004AB3CA
-    void VehicleBody::electricSpark1AnimationUpdate(uint8_t num, int32_t emitterHorizontalPos)
+    void VehicleBody::electricSpark1AnimationUpdate(const CarUpdateState& carState, uint8_t num, int32_t emitterHorizontalPos)
     {
-        VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
-        VehicleBogie* backBogie = _vehicleUpdate_backBogie;
+        VehicleBogie* frontBogie = carState.frontBogie;
+        VehicleBogie* backBogie = carState.backBogie;
         if (frontBogie->hasBreakdownFlags(BreakdownFlags::brokenDown))
         {
             return;
@@ -1265,10 +1261,10 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004ABEC3 & 0x004AB4E0
-    void VehicleBody::electricSpark2AnimationUpdate(uint8_t num, int32_t emitterHorizontalPos)
+    void VehicleBody::electricSpark2AnimationUpdate(const CarUpdateState& carState, uint8_t num, int32_t emitterHorizontalPos)
     {
-        VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
-        VehicleBogie* backBogie = _vehicleUpdate_backBogie;
+        VehicleBogie* frontBogie = carState.frontBogie;
+        VehicleBogie* backBogie = carState.backBogie;
         if (frontBogie->hasBreakdownFlags(BreakdownFlags::brokenDown))
         {
             return;
