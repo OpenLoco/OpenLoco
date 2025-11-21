@@ -18,8 +18,8 @@ using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C;     // Speed
-    static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130;     // Speed
+    static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
+    static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
 
     template<typename T>
     void applyDestructionToComponent(T& component)
