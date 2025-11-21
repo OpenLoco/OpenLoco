@@ -186,7 +186,7 @@ namespace OpenLoco::Vehicles
         const auto initialStatus = status;
         updateDrivingSounds();
 
-        Vehicle2* veh2 = _vehicleUpdate_2;
+        Vehicle2* veh2 = train.veh2;
         _vehicleUpdate_var_113612C = veh2->currentSpeed.getRaw() >> 7;
         _vehicleUpdate_var_1136130 = veh2->currentSpeed.getRaw() >> 7;
 
@@ -1114,7 +1114,7 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        Vehicle2* vehType2_2 = _vehicleUpdate_2;
+        Vehicle2* vehType2_2 = train.veh2;
         uint16_t targetFrequency = snd->idleFrequency;
         uint8_t targetVolume = snd->idleVolume;
 
@@ -1187,7 +1187,7 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        Vehicle2* vehType2_2 = _vehicleUpdate_2;
+        Vehicle2* vehType2_2 = train.veh2;
         uint16_t targetFrequency = 0;
         uint8_t targetVolume = 0;
         bool transmissionInGear = vehType2_2->motorState == MotorState::accelerating;
@@ -1739,7 +1739,8 @@ namespace OpenLoco::Vehicles
     // 0x004A9051
     bool VehicleHead::updateAir()
     {
-        Vehicle2* vehType2 = _vehicleUpdate_2;
+        Vehicle train(head);
+        Vehicle2* vehType2 = train.veh2;
 
         if (vehType2->currentSpeed >= 20.0_mph)
         {
@@ -1750,7 +1751,6 @@ namespace OpenLoco::Vehicles
             _vehicleUpdate_var_1136130 = 0x2000;
         }
 
-        Vehicle train(head);
         train.cars.firstCar.body->sub_4AAB0B({});
 
         if (status == Status::stopped)
@@ -2274,7 +2274,8 @@ namespace OpenLoco::Vehicles
     // 0x004A9649
     bool VehicleHead::updateWater()
     {
-        Vehicle2* vehType2 = _vehicleUpdate_2;
+        Vehicle train(head);
+        Vehicle2* vehType2 = train.veh2;
         if (vehType2->currentSpeed >= 5.0_mph)
         {
             _vehicleUpdate_var_1136130 = 0x4000;
@@ -2284,7 +2285,6 @@ namespace OpenLoco::Vehicles
             _vehicleUpdate_var_1136130 = 0x2000;
         }
 
-        Vehicle train(head);
         train.cars.firstCar.body->sub_4AAB0B({});
 
         if (status == Status::stopped)
@@ -2669,7 +2669,7 @@ namespace OpenLoco::Vehicles
             }
             auto randSoundIndex = gPrng1().randNext(numSounds - 1);
             auto randSoundId = Audio::makeObjectSoundId(vehObj->startSounds[randSoundIndex]);
-            Vehicle2* veh2 = _vehicleUpdate_2;
+            Vehicle2* veh2 = train.veh2;
             auto tileHeight = TileManager::getHeight(veh2->position);
             auto volume = 0;
             if (veh2->position.z < tileHeight.landHeight)
@@ -3642,7 +3642,7 @@ namespace OpenLoco::Vehicles
         {
             auto randSoundIndex = gPrng1().randNext((vehObj->numStartSounds & NumStartSounds::kMask) - 1);
             auto randSoundId = Audio::makeObjectSoundId(vehObj->startSounds[randSoundIndex]);
-            Vehicle2* veh2 = _vehicleUpdate_2;
+            Vehicle2* veh2 = train.veh2;
             Audio::playSound(randSoundId, veh2->position + World::Pos3{ 0, 0, 22 }, 0, 22050);
         }
     }
@@ -3891,7 +3891,7 @@ namespace OpenLoco::Vehicles
             auto randSoundIndex = gPrng1().randNext((vehObj->numStartSounds & NumStartSounds::kMask) - 1);
             auto randSoundId = Audio::makeObjectSoundId(vehObj->startSounds[randSoundIndex]);
 
-            Vehicle2* veh2 = _vehicleUpdate_2;
+            Vehicle2* veh2 = train.veh2;
             Audio::playSound(randSoundId, veh2->position + World::Pos3{ 0, 0, 22 }, 0, 22050);
         }
     }
