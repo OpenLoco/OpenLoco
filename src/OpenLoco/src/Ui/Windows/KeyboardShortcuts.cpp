@@ -125,6 +125,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             { SDLK_KP_PLUS, StringIds::keyboard_numpad_plus },
             { SDLK_NUMLOCKCLEAR, StringIds::keyboard_numlock },
             { SDLK_SCROLLLOCK, StringIds::keyboard_scroll },
+            { SDLK_MENU, StringIds::keyboard_menu },
         } };
 
         auto match = keysToString.find(keyCode);
