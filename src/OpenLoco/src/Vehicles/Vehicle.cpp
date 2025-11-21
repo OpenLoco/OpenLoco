@@ -726,6 +726,23 @@ namespace OpenLoco::Vehicles
         tail = component->asVehicleTail();
     }
 
+    void Vehicle::refreshCars()
+    {
+        auto component = veh2->nextVehicleComponent();
+        if (component == nullptr)
+        {
+            throw Exception::RuntimeError("Bad vehicle structure");
+        }
+        if (component->getSubType() != VehicleEntityType::tail)
+        {
+            cars = Cars{ Car{ component } };
+        }
+        else
+        {
+            cars = Cars{};
+        }
+    }
+
     // 0x00426790
     AirportObjectFlags VehicleBogie::getCompatibleAirportType()
     {

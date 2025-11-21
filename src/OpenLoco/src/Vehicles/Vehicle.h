@@ -1078,6 +1078,9 @@ namespace OpenLoco::Vehicles
         }
         Vehicle(EntityId _head);
 
+        // Call if the cars order may have changed
+        void refreshCars();
+
         template<typename TFunc>
         void applyToComponents(TFunc&& func) const
         {

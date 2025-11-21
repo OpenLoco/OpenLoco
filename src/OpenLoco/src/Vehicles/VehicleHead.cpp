@@ -147,6 +147,8 @@ namespace OpenLoco::Vehicles
         {
             return;
         }
+        // The car order may have changed during the previous updates
+        train.refreshCars();
         for (auto& car : train.cars)
         {
             for (auto& carComponent : car)
