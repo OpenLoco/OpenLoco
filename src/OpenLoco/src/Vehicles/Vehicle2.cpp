@@ -291,18 +291,16 @@ namespace OpenLoco::Vehicles
     {
         Vehicle train(head);
 
-        resetUpdateVar1136114Flags();
-        setUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m15);
-        auto res = updateTrackMotion(_vehicleUpdate_var_113612C);
-        _vehicleUpdate_var_113612C = _vehicleUpdate_var_113612C - res;
-        _vehicleUpdate_var_1136130 = _vehicleUpdate_var_1136130 - res;
-        if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::noRouteFound))
+        auto res = updateTrackMotion(_vehicleUpdate_var_113612C, true);
+        _vehicleUpdate_var_113612C = _vehicleUpdate_var_113612C - res.remainingDistance;
+        _vehicleUpdate_var_1136130 = _vehicleUpdate_var_1136130 - res.remainingDistance;
+        if (res.hasFlags(UpdateVar1136114Flags::noRouteFound))
         {
             destroyTrain();
             return false;
         }
 
-        if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00))
+        if (res.hasFlags(UpdateVar1136114Flags::unk_m00))
         {
             if (!train.head->hasVehicleFlags(VehicleFlags::manualControl))
             {

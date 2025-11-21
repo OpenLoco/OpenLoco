@@ -4205,21 +4205,23 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        resetUpdateVar1136114Flags();
+        UpdateMotionResult motionResult{};
         if (head.var_52 == 1)
         {
-            head.remainingDistance += head.updateTrackMotion(0);
+            motionResult = head.updateTrackMotion(0, false);
+            head.remainingDistance += motionResult.remainingDistance;
         }
         else
         {
             const int32_t distance1 = unk1 - head.var_3C;
             const auto distance2 = std::max(var_113612C * 4, 0xCC48U);
             const auto distance = std::min<int32_t>(distance1, distance2);
-            head.var_3C += distance - head.updateTrackMotion(distance);
+            motionResult = head.updateTrackMotion(distance, false);
+            head.var_3C += distance - motionResult.remainingDistance;
         }
         // NOTE: head.routingHandle can be modified by updateTrackMotion
 
-        if (!hasUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00))
+        if (!motionResult.hasFlags(UpdateVar1136114Flags::unk_m00))
         {
             return Sub4ACEE7Result{ 0, 0, StationId::null };
         }
@@ -4443,21 +4445,23 @@ namespace OpenLoco::Vehicles
         }
 
         // Identical to ROAD
-        resetUpdateVar1136114Flags();
+        UpdateMotionResult motionResult{};
         if (head.var_52 == 1)
         {
-            head.remainingDistance += head.updateTrackMotion(0);
+            motionResult = head.updateTrackMotion(0, false);
+            head.remainingDistance += motionResult.remainingDistance;
         }
         else
         {
             const int32_t distance1 = unk1 - head.var_3C;
             const auto distance2 = std::max(var_113612C * 4, 0xCC48U);
             const auto distance = std::min<int32_t>(distance1, distance2);
-            head.var_3C += distance - head.updateTrackMotion(distance);
+            motionResult = head.updateTrackMotion(distance, false);
+            head.var_3C += distance - motionResult.remainingDistance;
         }
         // NOTE: head.routingHandle may have changed here due to updateTrackMotion
 
-        if (!hasUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00))
+        if (!motionResult.hasFlags(UpdateVar1136114Flags::unk_m00))
         {
             return Sub4ACEE7Result{ 0, 0, StationId::null };
         }
@@ -7139,23 +7143,22 @@ namespace OpenLoco::Vehicles
             }
             else
             {
-                resetUpdateVar1136114Flags();
-                int32_t remainingDistance = 0;
+                UpdateMotionResult motionResult{};
                 if (veh.isVehicle1() && veh.mode == TransportMode::road)
                 {
                     auto* veh1 = veh.asVehicle1();
-                    remainingDistance = veh1->updateRoadMotion(0);
+                    motionResult = veh1->updateRoadMotion(0);
                 }
                 else
                 {
-                    remainingDistance = veh.updateTrackMotion(0);
+                    motionResult = veh.updateTrackMotion(0, false);
                 }
 
                 if (!veh.isVehicleHead())
                 {
-                    if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00 | UpdateVar1136114Flags::unk_m03))
+                    if (motionResult.hasFlags(UpdateVar1136114Flags::unk_m00 | UpdateVar1136114Flags::unk_m03))
                     {
-                        if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m03) || remainingDistance >= 2454)
+                        if (motionResult.hasFlags(UpdateVar1136114Flags::unk_m03) || motionResult.remainingDistance >= 2454)
                         {
                             unkFlag = true;
                         }

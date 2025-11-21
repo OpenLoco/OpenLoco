@@ -96,11 +96,6 @@ namespace OpenLoco::Vehicles
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(UpdateVar1136114Flags);
 
-    bool hasUpdateVar1136114Flags(UpdateVar1136114Flags flags);
-    void resetUpdateVar1136114Flags();
-    void setUpdateVar1136114Flags(UpdateVar1136114Flags flags);
-    void unsetUpdateVar1136114Flags(UpdateVar1136114Flags flags);
-
     enum class Status : uint8_t
     {
         unk_0 = 0, // no position (not placed)
@@ -308,6 +303,15 @@ namespace OpenLoco::Vehicles
     void playPickupSound(Vehicles::Vehicle2* veh2);
     void playPlacedownSound(const World::Pos3 pos);
 
+    struct UpdateMotionResult
+    {
+        int32_t remainingDistance;
+        UpdateVar1136114Flags flags; // 0x01136114
+        EntityId collidedEntityId;   // 0x0113610E
+
+        constexpr bool hasFlags(UpdateVar1136114Flags f) const { return (flags & f) != UpdateVar1136114Flags::none; }
+    };
+
     struct VehicleBase : EntityBase
     {
         static constexpr auto kBaseType = EntityBaseType::vehicle;
@@ -390,7 +394,7 @@ namespace OpenLoco::Vehicles
         void explodeComponent();
         void destroyTrain();
         uint8_t sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied);
-        int32_t updateTrackMotion(int32_t unk1);
+        UpdateMotionResult updateTrackMotion(int32_t unk1, bool isVeh2UnkM15);
     };
 
     struct VehicleSoundPlayer : VehicleBase
@@ -622,7 +626,7 @@ namespace OpenLoco::Vehicles
         bool update();
         bool updateRoad();
         bool updateRail();
-        int32_t updateRoadMotion(int32_t distance);
+        UpdateMotionResult updateRoadMotion(int32_t distance);
     };
     static_assert(sizeof(Vehicle1) == 0x7F); // Can't use offset_of change this to last field if more found
 
@@ -793,7 +797,7 @@ namespace OpenLoco::Vehicles
 
     private:
         void updateRoll();
-        void collision();
+        void collision(const EntityId collideEntityId);
     };
     static_assert(sizeof(VehicleBogie) == 0x6B); // Can't use offset_of change this to last field if more found
 

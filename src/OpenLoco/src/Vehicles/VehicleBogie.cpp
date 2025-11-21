@@ -24,7 +24,6 @@ namespace OpenLoco::Vehicles
     static loco_global<bool, 0x01136238> _vehicleUpdate_backBogieHasMoved;  // remainingDistance related?
     static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C;     // Speed
     static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130;     // Speed
-    static loco_global<EntityId, 0x0113610E> _vehicleUpdate_collisionCarComponent;
 
     template<typename T>
     void applyDestructionToComponent(T& component)
@@ -47,8 +46,7 @@ namespace OpenLoco::Vehicles
         }
 
         const auto oldPos = position;
-        resetUpdateVar1136114Flags();
-        updateTrackMotion(_vehicleUpdate_var_113612C);
+        const auto motionResult = updateTrackMotion(_vehicleUpdate_var_113612C, false);
 
         const auto hasMoved = oldPos != position;
         _vehicleUpdate_backBogieHasMoved = _vehicleUpdate_frontBogieHasMoved;
@@ -67,17 +65,17 @@ namespace OpenLoco::Vehicles
 
         updateRoll();
         _vehicleUpdate_var_1136130 = stash1136130;
-        if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::noRouteFound))
+        if (motionResult.hasFlags(UpdateVar1136114Flags::noRouteFound))
         {
             destroyTrain();
             return false;
         }
-        else if (!hasUpdateVar1136114Flags(UpdateVar1136114Flags::crashed))
+        else if (!motionResult.hasFlags(UpdateVar1136114Flags::crashed))
         {
             return true;
         }
 
-        collision();
+        collision(motionResult.collidedEntityId);
         return false;
     }
 
@@ -301,11 +299,10 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            resetUpdateVar1136114Flags();
             if (this->mode != TransportMode::road)
             {
-                this->updateTrackMotion(_vehicleUpdate_var_113612C);
-                if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00 | UpdateVar1136114Flags::noRouteFound))
+                const auto motionResult = this->updateTrackMotion(_vehicleUpdate_var_113612C, false);
+                if (motionResult.hasFlags(UpdateVar1136114Flags::unk_m00 | UpdateVar1136114Flags::noRouteFound))
                 {
                     this->var_5A |= 1U << 31;
                 }
@@ -314,7 +311,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AA0DF
-    void VehicleBogie::collision()
+    void VehicleBogie::collision(const EntityId collideEntityId)
     {
         destroyTrain();
         applyDestructionToComponent(*this);
@@ -341,7 +338,7 @@ namespace OpenLoco::Vehicles
         }
 
         // Apply Collision to collided train
-        auto* collideEntity = EntityManager::get<EntityBase>(_vehicleUpdate_collisionCarComponent);
+        auto* collideEntity = EntityManager::get<EntityBase>(collideEntityId);
         auto* collideCarComponent = collideEntity->asBase<VehicleBase>();
         if (collideCarComponent != nullptr)
         {
