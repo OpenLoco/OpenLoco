@@ -47,7 +47,7 @@ namespace OpenLoco::Input
     static uint32_t _keyQueueLastWrite;
     static uint32_t _keyQueueReadIndex;
     static uint32_t _keyQueueWriteIndex;
-    static std::array<uint8_t, 256> _keyboardState;
+    static std::array<uint8_t, SDL_NUM_SCANCODES> _keyboardState;
     static bool _hasKeyboardState = false;
 
     static const std::pair<std::string, std::function<void()>> kCheats[] = {
