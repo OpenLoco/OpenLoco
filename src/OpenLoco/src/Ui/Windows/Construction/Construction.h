@@ -153,7 +153,7 @@ namespace OpenLoco::Ui::Windows::Construction
         void previousTab(Window* self);
         void nextTab(Window* self);
 
-        bool hasGhostVisibilityFlag(GhostVisibilityFlags flags);
+        [[nodiscard]] bool hasGhostVisibilityFlag(GhostVisibilityFlags flags);
         void setGhostVisibilityFlag(GhostVisibilityFlags flag);
         void toggleGhostVisibilityFlag(GhostVisibilityFlags flag);
         void unsetGhostVisibilityFlag(GhostVisibilityFlags flag);
