@@ -158,12 +158,21 @@ namespace OpenLoco::Interop
         typedef const type& const_reference;
 
     private:
-        pointer _Myptr;
+        alignas(T) unsigned char _storage[sizeof(T)];
+
+        T& value()
+        {
+            return *std::launder(reinterpret_cast<T*>(_storage));
+        }
+
+        const T& value() const
+        {
+            return *std::launder(reinterpret_cast<const T*>(_storage));
+        }
 
     public:
         loco_global()
         {
-            _Myptr = &(addr<TAddress, T>());
             GlobalStore::addAddressRange(TAddress, sizeof(T));
         }
 
@@ -171,81 +180,79 @@ namespace OpenLoco::Interop
 
         operator reference()
         {
-            return addr<TAddress, T>();
+            return value();
         }
 
         loco_global& operator=(const_reference v)
         {
-            addr<TAddress, T>() = v;
+            value() = v;
             return *this;
         }
 
         loco_global& operator+=(const_reference v)
         {
-            addr<TAddress, T>() += v;
+            value() += v;
             return *this;
         }
 
         loco_global& operator|=(const_reference v)
         {
-            addr<TAddress, T>() |= v;
+            value() |= v;
             return *this;
         }
 
         loco_global& operator&=(const_reference v)
         {
-            addr<TAddress, T>() &= v;
+            value() &= v;
             return *this;
         }
 
         loco_global& operator^=(const_reference v)
         {
-            addr<TAddress, T>() ^= v;
+            value() ^= v;
             return *this;
         }
 
         loco_global& operator-=(const_reference v)
         {
-            addr<TAddress, T>() -= v;
+            value() -= v;
             return *this;
         }
 
         loco_global& operator++()
         {
-            addr<TAddress, T>()++;
+            value()++;
             return *this;
         }
 
         T operator++(int)
         {
-            reference ref = addr<TAddress, T>();
-            T temp = ref;
-            ref++;
+            T temp = value();
+            value()++;
             return temp;
         }
 
         loco_global& operator--()
         {
-            addr<TAddress, T>()--;
+            value()--;
             return *this;
         }
 
         T operator--(int)
         {
-            reference ref = addr<TAddress, T>();
-            T temp = ref;
-            ref--;
+            T temp = value();
+            value()--;
             return temp;
         }
 
         reference operator*()
         {
-            return addr<TAddress, T>();
+            return value();
         }
 
         pointer operator->()
         {
-            return &(addr<TAddress, T>());
+            return &value();
         }
 
         constexpr size_t size() const
@@ -316,25 +323,22 @@ namespace OpenLoco::Interop
         static constexpr auto endAddress = TAddress + TCount * sizeof(type);
 
     private:
-        pointer _Myfirst;
-        pointer _Mylast;
+        alignas(T) unsigned char _storage[sizeof(T) * TCount];
 
     public:
         loco_global()
         {
-            _Myfirst = get();
-            _Mylast = _Myfirst + TCount;
             GlobalStore::addAddressRange(TAddress, TCount * sizeof(T));
+        }
+
+        pointer get() const
+        {
+            return const_cast<pointer>(std::launder(reinterpret_cast<const T*>(_storage)));
         }
 
         operator pointer()
         {
             return get();
-        }
-
-        pointer get() const
-        {
-            return reinterpret_cast<pointer>(&addr<TAddress, type>());
         }
 
         reference operator[](int idx)
@@ -356,13 +360,12 @@ namespace OpenLoco::Interop
 
         iterator begin() const
         {
-            return iterator(&addr<TAddress, T>());
+            return iterator(get());
         }
 
         iterator end() const
         {
-            const pointer ptrEnd = (&addr<TAddress, T>()) + TCount;
-            return iterator(ptrEnd);
+            return iterator(get() + TCount);
         }
     };
 }

@@ -784,7 +784,7 @@ else ()
             PRIVATE_FILES
                 ${OLOCO_SOURCES}
         )
-        add_dependencies(OpenLoco linkable_sections)
+        #add_dependencies(OpenLoco linkable_sections)
         # set_source_files_properties has to be set in the CMakeLists that uses them
         set_source_files_properties(
             ${LOCO_SECTIONS}
@@ -795,7 +795,6 @@ else ()
         target_sources(OpenLoco
             PRIVATE
                 ${LOCO_SECTIONS})
-        set_target_properties(OpenLoco PROPERTIES LINK_FLAGS ${LOCO_SEGMENT_LINKER_FLAGS})
 
         if (TARGET SDL2::SDL2main)
             target_link_libraries(OpenLoco SDL2::SDL2main)
@@ -824,10 +823,6 @@ if (WIN32)
     set_target_properties(OpenLoco PROPERTIES OUTPUT_NAME "openloco")
 endif ()
 
-if (NOT WIN32)
-    add_dependencies(OpenLoco segfiles)
-endif()
-
 if (MINGW)
     target_compile_definitions(OpenLoco
         PRIVATE
@@ -849,8 +844,7 @@ elseif (MSVC)
 else ()
     target_compile_definitions(OpenLoco
         PRIVATE
-            DEBUG=${DEBUG_LEVEL}
-            _NO_LOCO_WIN32_=1)
+            DEBUG=${DEBUG_LEVEL})
 endif()
 
 if (APPLE AND FALSE) # TODO: This is broken after moving resources into src/Resources
@@ -913,7 +907,7 @@ endif ()
 # Only valid for Clang for now:
 # - GCC 8 does not support -Wno-pragma-once-outside-header
 # - Other compilers status unknown
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     add_library(OpenLoco-headers-check OBJECT ${OLOCO_HEADERS})
     set_target_properties(OpenLoco-headers-check PROPERTIES LINKER_LANGUAGE CXX)
     set_source_files_properties(${OLOCO_HEADERS} PROPERTIES LANGUAGE CXX)
