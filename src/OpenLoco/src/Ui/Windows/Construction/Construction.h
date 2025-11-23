@@ -88,7 +88,7 @@ namespace OpenLoco::Ui::Windows::Construction
         uint8_t trackType;                                    // 0x01136062
         uint8_t byte_1136063;                                 // 0x01136063
         uint8_t constructionRotation;                         // 0x01136064
-        uint8_t byte_1136065;                                 // 0x01136065
+        uint8_t placeTrackPieceId;                            // 0x01136065
         uint8_t constructionArrowFrameNum;                    // 0x01136066
         uint8_t lastSelectedTrackPiece;                       // 0x01136067
         uint8_t lastSelectedTrackGradient;                    // 0x01136068

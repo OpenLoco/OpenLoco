@@ -2544,7 +2544,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             World::mapInvalidateMapSelectionFreeFormTiles();
             return;
         }
-        cState.byte_1136065 = pieceId->id;
+        cState.placeTrackPieceId = pieceId->id;
         const auto trackPieces = getPiece(pieceId->id);
         setMapSelectedTilesFromPiece(trackPieces, constructPos, cState.constructionRotation);
 
@@ -2647,7 +2647,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             return;
         }
 
-        cState.byte_1136065 = pieceId->id;
+        cState.placeTrackPieceId = pieceId->id;
 
         int16_t constructHeight = getMaxConstructHeightFromExistingSelection();
         cState.word_1136000 = constructHeight;
@@ -2679,7 +2679,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         auto maxRetries = 0;
         if (Input::hasKeyModifier(Input::KeyModifier::shift) || cState.makeJunction != 1)
         {
-            const auto piece = getPiece(cState.byte_1136065);
+            const auto piece = getPiece(cState.placeTrackPieceId);
 
             constructHeight -= getMinPieceHeight(piece);
             constructHeight -= 16;
