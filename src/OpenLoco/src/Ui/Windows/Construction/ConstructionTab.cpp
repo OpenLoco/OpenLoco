@@ -201,7 +201,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         auto& cState = getConstructionState();
         cState.trackCost = GameCommands::FAILURE;
         cState.byte_1136076 = 0;
-        cState.dword_1135F42 = GameCommands::FAILURE;
+        cState.roadCost = GameCommands::FAILURE;
         removeConstructionGhosts();
         auto roadPiece = getRoadPieceId(cState.lastSelectedTrackPiece, cState.lastSelectedTrackGradient, cState.constructionRotation);
         if (!roadPiece)
@@ -223,8 +223,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         args.roadObjectId = cState.trackType & ~(1 << 7);
         args.unkFlags = 0;
 
-        cState.dword_1135F42 = GameCommands::doCommand(args, GameCommands::Flags::apply);
-        if (cState.dword_1135F42 == GameCommands::FAILURE)
+        cState.roadCost = GameCommands::doCommand(args, GameCommands::Flags::apply);
+        if (cState.roadCost == GameCommands::FAILURE)
         {
             const auto alternateRoadObjectId = GameCommands::getLegacyReturnState().alternateRoadObjectId;
             if (GameCommands::getErrorText() != StringIds::unable_to_cross_or_create_junction_with_string
@@ -248,10 +248,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             args.bridge = cState.lastSelectedBridge;
             args.roadObjectId = cState.trackType & ~(1 << 7);
 
-            cState.dword_1135F42 = GameCommands::doCommand(args, GameCommands::Flags::apply);
+            cState.roadCost = GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 
-        if (cState.dword_1135F42 != GameCommands::FAILURE)
+        if (cState.roadCost != GameCommands::FAILURE)
         {
             const auto& trackSize = TrackData::getUnkRoad((args.roadId << 3) | (args.rotation & 0x3));
             const auto newPosition = args.pos + trackSize.pos;
@@ -274,17 +274,18 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         auto& cState = getConstructionState();
         cState.trackCost = GameCommands::FAILURE;
         cState.byte_1136076 = 0;
-        cState.dword_1135F42 = GameCommands::FAILURE;
+        cState.roadCost = GameCommands::FAILURE;
         removeConstructionGhosts();
         auto trackPiece = getTrackPieceId(cState.lastSelectedTrackPiece, cState.lastSelectedTrackGradient, cState.constructionRotation);
         if (!trackPiece)
         {
             return;
         }
-        auto* roadObj = ObjectManager::get<TrackObject>(cState.trackType);
+
+        auto* trackObj = ObjectManager::get<TrackObject>(cState.trackType);
         auto formatArgs = FormatArguments::common();
         formatArgs.skip(3 * sizeof(StringId));
-        formatArgs.push(roadObj->name);
+        formatArgs.push(trackObj->name);
         GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
 
         GameCommands::TrackPlacementArgs args;
@@ -297,9 +298,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         args.unk = cState.byte_113607E & (1 << 0);
         args.unkFlags = 0;
 
-        cState.dword_1135F42 = GameCommands::doCommand(args, GameCommands::Flags::apply);
-
-        if (cState.dword_1135F42 == GameCommands::FAILURE)
+        cState.trackCost = GameCommands::doCommand(args, GameCommands::Flags::apply);
+        if (cState.trackCost == GameCommands::FAILURE)
         {
             return;
         }
@@ -2093,7 +2093,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             onMouseUp(*window, widx::construct, WidgetId::none);
             GameCommands::setErrorSound(true);
 
-            if (cState.dword_1135F42 != GameCommands::FAILURE)
+            if (cState.roadCost != GameCommands::FAILURE)
             {
                 cState.byte_113607E = 1;
                 WindowManager::close(WindowType::error, 0);
@@ -2711,7 +2711,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 constructTrackOrRoad(&self, widgetIndex);
                 GameCommands::setErrorSound(true);
 
-                builtAnything |= cState.dword_1135F42 != GameCommands::FAILURE;
+                builtAnything |= cState.roadCost != GameCommands::FAILURE;
 
                 // Prevent automatic track advancement when constructing track
                 cState.constructionRotation = rotation;
