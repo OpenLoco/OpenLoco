@@ -198,9 +198,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static void constructRoad()
     {
         auto& cState = getConstructionState();
-        cState.trackCost = 0x80000000;
+        cState.trackCost = GameCommands::FAILURE;
         cState.byte_1136076 = 0;
-        cState.dword_1135F42 = 0x80000000;
+        cState.dword_1135F42 = GameCommands::FAILURE;
         removeConstructionGhosts();
         auto roadPiece = getRoadPieceId(cState.lastSelectedTrackPiece, cState.lastSelectedTrackGradient, cState.constructionRotation);
         if (!roadPiece)
@@ -271,9 +271,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static void constructTrack()
     {
         auto& cState = getConstructionState();
-        cState.trackCost = 0x80000000;
+        cState.trackCost = GameCommands::FAILURE;
         cState.byte_1136076 = 0;
-        cState.dword_1135F42 = 0x80000000;
+        cState.dword_1135F42 = GameCommands::FAILURE;
         removeConstructionGhosts();
         auto trackPiece = getTrackPieceId(cState.lastSelectedTrackPiece, cState.lastSelectedTrackGradient, cState.constructionRotation);
         if (!trackPiece)
@@ -336,7 +336,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static void removeTrack()
     {
         auto& cState = getConstructionState();
-        cState.trackCost = 0x80000000;
+        cState.trackCost = GameCommands::FAILURE;
         cState.byte_1136076 = 0;
         removeConstructionGhosts();
         if (cState.constructionHover != 0)
@@ -414,7 +414,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static void removeRoad()
     {
         auto& cState = getConstructionState();
-        cState.trackCost = 0x80000000;
+        cState.trackCost = GameCommands::FAILURE;
         cState.byte_1136076 = 0;
         removeConstructionGhosts();
         if (cState.constructionHover != 0)
@@ -536,7 +536,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 {
                     cState.constructionRotation++;
                     cState.constructionRotation = cState.constructionRotation & 3;
-                    cState.trackCost = 0x80000000;
+                    cState.trackCost = GameCommands::FAILURE;
                     activateSelectedConstructionWidgets();
                     break;
                 }
@@ -1693,7 +1693,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             cState.lastSelectedTrackPiece = trackPiece;
         }
 
-        cState.trackCost = 0x80000000;
+        cState.trackCost = GameCommands::FAILURE;
         activateSelectedConstructionWidgets();
     }
 
@@ -1812,7 +1812,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 cState.byte_113603A = 0xFF;
                 removeConstructionGhosts();
-                cState.trackCost = 0x80000000;
+                cState.trackCost = GameCommands::FAILURE;
 
                 if (self.widgets[widx::s_bend_dual_track_left].image == ImageIds::construction_s_bend_dual_track_left)
                 {
@@ -1835,7 +1835,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 cState.byte_113603A = 0xFF;
                 removeConstructionGhosts();
-                cState.trackCost = 0x80000000;
+                cState.trackCost = GameCommands::FAILURE;
 
                 if (self.widgets[widx::s_bend_dual_track_right].image == ImageIds::construction_s_bend_dual_track_right)
                 {
@@ -1915,7 +1915,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 // TODO: & ~(1 << 7) added to prevent crashing when selecting bridges for road/trams
                 Scenario::getConstruction().bridges[cState.trackType & ~(1 << 7)] = bridge;
                 removeConstructionGhosts();
-                cState.trackCost = 0x80000000;
+                cState.trackCost = GameCommands::FAILURE;
                 activateSelectedConstructionWidgets();
             }
         }
@@ -2115,7 +2115,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             onMouseUp(*window, widx::construct, WidgetId::none);
             GameCommands::setErrorSound(true);
 
-            if (cState.dword_1135F42 != 0x80000000)
+            if (cState.dword_1135F42 != GameCommands::FAILURE)
             {
                 cState.byte_113607E = 1;
                 WindowManager::close(WindowType::error, 0);
@@ -2471,7 +2471,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             cState.byte_1136076 = GameCommands::getLegacyReturnState().flags_1136073;
             sub_4A193B();
 
-            if (cState.trackCost == 0x80000000)
+            if (cState.trackCost == GameCommands::FAILURE)
             {
                 maxRetries--;
                 if (maxRetries != 0)
@@ -3056,7 +3056,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         y += 11;
 
-        if (cState.trackCost != 0x80000000)
+        if (cState.trackCost != GameCommands::FAILURE)
         {
             if (cState.trackCost != 0)
             {
