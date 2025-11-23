@@ -2117,7 +2117,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             onMouseUp(*window, widx::construct, WidgetId::none);
             GameCommands::setErrorSound(true);
 
-            if (cState.roadCost != GameCommands::FAILURE)
+            if (cState.trackCost != GameCommands::FAILURE || cState.roadCost != GameCommands::FAILURE)
             {
                 cState.byte_113607E = 1;
                 WindowManager::close(WindowType::error, 0);
@@ -2735,7 +2735,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 constructTrackOrRoad(&self, widgetIndex);
                 GameCommands::setErrorSound(true);
 
-                builtAnything |= cState.roadCost != GameCommands::FAILURE;
+                builtAnything |= cState.trackCost != GameCommands::FAILURE || cState.roadCost != GameCommands::FAILURE;
 
                 // Prevent automatic track advancement when constructing track
                 cState.constructionRotation = rotation;
@@ -3050,7 +3050,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         auto y = self->widgets[widx::construct].bottom + self->y - 23;
 
         auto& cState = getConstructionState();
-
         if (!cState.constructionHover)
         {
             tr.drawStringCentred(Point(x, y), Colour::black, StringIds::build_this);
@@ -3058,14 +3057,17 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         y += 11;
 
-        if (cState.trackCost != GameCommands::FAILURE)
+        if (cState.trackCost != GameCommands::FAILURE && cState.trackCost != 0)
         {
-            if (cState.trackCost != 0)
-            {
-                FormatArguments args{};
-                args.push<uint32_t>(cState.trackCost);
-                tr.drawStringCentred(Point(x, y), Colour::black, StringIds::build_cost, args);
-            }
+            FormatArguments args{};
+            args.push<uint32_t>(cState.trackCost);
+            tr.drawStringCentred(Point(x, y), Colour::black, StringIds::build_cost, args);
+        }
+        else if (cState.roadCost != GameCommands::FAILURE && cState.roadCost != 0)
+        {
+            FormatArguments args{};
+            args.push<uint32_t>(cState.roadCost);
+            tr.drawStringCentred(Point(x, y), Colour::black, StringIds::build_cost, args);
         }
     }
 
