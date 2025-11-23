@@ -2638,7 +2638,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             constructPos = World::toWorldSpace(junctionRes->first);
             cState.makeJunction = 1;
-            cState.word_1135FFE = junctionRes->second;
+            cState.constructionHeight = junctionRes->second;
         }
         else
         {
@@ -2672,7 +2672,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         else
         {
             maxRetries = 1;
-            constructHeight = cState.word_1135FFE;
+            constructHeight = cState.constructionHeight;
         }
 
         // Height should never go negative
