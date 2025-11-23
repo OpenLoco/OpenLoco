@@ -278,7 +278,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         cState.constructionHover = 0;
         cState.byte_113607E = 1;
-        cState.trackCost = 0x80000000;
+        cState.trackCost = GameCommands::FAILURE;
         cState.byte_1136076 = 0;
         cState.lastSelectedTrackModSection = Track::ModSection::single;
 
@@ -380,7 +380,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         cState.constructionHover = 0;
         cState.byte_113607E = 1;
-        cState.trackCost = 0x80000000;
+        cState.trackCost = GameCommands::FAILURE;
         cState.byte_1136076 = 0;
         cState.lastSelectedTrackModSection = Track::ModSection::single;
 
@@ -510,7 +510,7 @@ namespace OpenLoco::Ui::Windows::Construction
         cState.constructionRotation = 0;
         cState.constructionHover = 0;
         cState.byte_113607E = 1;
-        cState.trackCost = 0x80000000;
+        cState.trackCost = GameCommands::FAILURE;
         cState.byte_1136076 = 0;
         cState.lastSelectedTrackPiece = 0;
         cState.lastSelectedTrackGradient = 0;
@@ -872,10 +872,10 @@ namespace OpenLoco::Ui::Windows::Construction
             World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstruct);
 
             auto& cState = getConstructionState();
-            cState.trackCost = 0x80000000;
-            cState.signalCost = 0x80000000;
-            cState.stationCost = 0x80000000;
-            cState.modCost = 0x80000000;
+            cState.trackCost = GameCommands::FAILURE;
+            cState.signalCost = GameCommands::FAILURE;
+            cState.stationCost = GameCommands::FAILURE;
+            cState.modCost = GameCommands::FAILURE;
             cState.byte_1136076 = 0;
 
             if (ToolManager::isToolActive(self.type, self.number))
