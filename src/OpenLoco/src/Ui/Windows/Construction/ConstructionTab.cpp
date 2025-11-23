@@ -3068,7 +3068,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             World::Pos3(256 * World::kTileSize, 256 * World::kTileSize, 120 * World::kSmallZStep),
             cState.previewMods,
             cState.previewTrackType,
-            cState.lastSelectedTrackPieceId,
+            cState.previewTrackPieceId,
             cState.previewRotation,
             TrackRoadPreviewFlags::displayConstructionArrow,
             drawingCtx);
@@ -3097,7 +3097,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             World::Pos3(256 * World::kTileSize, 256 * World::kTileSize, 120 * World::kSmallZStep),
             cState.previewMods,
             cState.previewTrackType,
-            cState.lastSelectedTrackPieceId,
+            cState.previewTrackPieceId,
             cState.previewRotation,
             TrackRoadPreviewFlags::displayConstructionArrow,
             drawingCtx);
@@ -3151,7 +3151,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             cState.previewTrackType = cState.trackType & ~(1 << 7);
             cState.previewRotation = road->rotation;
             cState.lastSelectedTrackPieceId = road->id;
-            cState.word_1135FD6 = (cState.lastSelectedBridge << 8) & 0x1F;
+            cState.previewTrackPieceId = cState.lastSelectedTrackPieceId & 0x1F;
 
             auto x = self.x + self.widgets[widx::construct].left + 1;
             auto y = self.y + self.widgets[widx::construct].top + 1;
@@ -3204,7 +3204,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             cState.previewTrackType = cState.trackType;
             cState.previewRotation = track->rotation;
             cState.lastSelectedTrackPieceId = track->id;
-            cState.word_1135FD6 = (cState.lastSelectedBridge << 8) & 0x1F;
+            cState.previewTrackPieceId = cState.lastSelectedTrackPieceId & 0x1F;
 
             auto x = self.x + self.widgets[widx::construct].left + 1;
             auto y = self.y + self.widgets[widx::construct].top + 1;
