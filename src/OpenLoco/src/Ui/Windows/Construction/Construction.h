@@ -30,11 +30,11 @@ namespace OpenLoco::Ui::Windows::Construction
 
     struct ConstructionState
     {
-        uint32_t trackCost;     // 0x01135F3E
-        uint32_t dword_1135F42; // 0x01135F42
-        uint32_t modCost;       // 0x01135F46
-        uint32_t signalCost;    // 0x01135F4E
-        uint32_t stationCost;   // 0x01135F6C
+        uint32_t trackCost;   // 0x01135F3E
+        uint32_t roadCost;    // 0x01135F42
+        uint32_t modCost;     // 0x01135F46
+        uint32_t signalCost;  // 0x01135F4E
+        uint32_t stationCost; // 0x01135F6C
 
         StationId constructingStationId;                // 0x01135F70
         uint32_t constructingStationAcceptedCargoTypes; // 0x01135F74
