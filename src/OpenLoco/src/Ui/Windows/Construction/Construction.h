@@ -60,7 +60,7 @@ namespace OpenLoco::Ui::Windows::Construction
         uint16_t stationGhostType;      // 0x01135FEE
         World::Pos3 modGhostPos;        // 0x01135FF8
         uint16_t constructionHeight;    // 0x01135FFE
-        int16_t word_1136000;           // 0x01136000
+        int16_t constructionMaxHeight;  // 0x01136000
         uint16_t signalGhostSides;      // 0x01136002
         World::Pos3 signalGhostPos;     // 0x01136004
         uint16_t signalGhostTrackObjId; // 0x0113600A
