@@ -1959,7 +1959,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             return;
         }
-        if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::track))
+        if (!Common::hasGhostVisibilityFlag(GhostVisibilityFlags::track))
         {
             auto& returnState = GameCommands::getLegacyReturnState();
             if (cState.trackType & (1 << 7))
