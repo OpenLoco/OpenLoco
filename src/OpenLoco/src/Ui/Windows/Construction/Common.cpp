@@ -276,7 +276,7 @@ namespace OpenLoco::Ui::Windows::Construction
         cState.byte_1136063 = 0;
         Common::setTrackOptions(cState.trackType);
 
-        cState.constructionHover = 0;
+        cState.constructionHover = false;
         cState.byte_113607E = 1;
         cState.trackCost = GameCommands::FAILURE;
         cState.byte_1136076 = 0;
@@ -378,7 +378,7 @@ namespace OpenLoco::Ui::Windows::Construction
         cState.byte_1136063 = 0;
         Common::setTrackOptions(cState.trackType);
 
-        cState.constructionHover = 0;
+        cState.constructionHover = false;
         cState.byte_113607E = 1;
         cState.trackCost = GameCommands::FAILURE;
         cState.byte_1136076 = 0;
@@ -508,7 +508,7 @@ namespace OpenLoco::Ui::Windows::Construction
         cState.y = 0x1800;
         cState.constructionZ = 0x100;
         cState.constructionRotation = 0;
-        cState.constructionHover = 0;
+        cState.constructionHover = false;
         cState.byte_113607E = 1;
         cState.trackCost = GameCommands::FAILURE;
         cState.byte_1136076 = 0;

@@ -340,7 +340,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         cState.trackCost = GameCommands::FAILURE;
         cState.byte_1136076 = 0;
         removeConstructionGhosts();
-        if (cState.constructionHover != 0)
+        if (cState.constructionHover)
         {
             return;
         }
@@ -418,7 +418,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         cState.trackCost = GameCommands::FAILURE;
         cState.byte_1136076 = 0;
         removeConstructionGhosts();
-        if (cState.constructionHover != 0)
+        if (cState.constructionHover)
         {
             return;
         }
@@ -533,10 +533,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             case widx::rotate_90:
             {
-                if (cState.constructionHover == 1)
+                if (cState.constructionHover)
                 {
                     cState.constructionRotation++;
-                    cState.constructionRotation = cState.constructionRotation & 3;
+                    cState.constructionRotation &= 3;
                     cState.trackCost = GameCommands::FAILURE;
                     activateSelectedConstructionWidgets();
                     break;
@@ -546,9 +546,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 ToolManager::toolSet(self, widx::construct, CursorId::crosshair);
                 Input::setFlag(Input::Flags::flag6);
 
-                cState.constructionHover = 1;
+                cState.constructionHover = true;
                 cState.byte_113607E = 0;
-                cState.constructionRotation = cState.constructionRotation & 3;
+                cState.constructionRotation &= 3;
 
                 activateSelectedConstructionWidgets();
                 break;
@@ -784,7 +784,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         window->widgets[widx::bridge].hidden = false;
         window->widgets[widx::bridge_dropdown].hidden = false;
 
-        if (cState.lastSelectedBridge == 0xFF || (cState.constructionHover != 1 && !(cState.byte_1136076 & 1)))
+        if (cState.lastSelectedBridge == 0xFF || (!cState.constructionHover && !(cState.byte_1136076 & 1)))
         {
             window->widgets[widx::bridge].hidden = true;
             window->widgets[widx::bridge_dropdown].hidden = true;
@@ -797,7 +797,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         window->widgets[widx::remove].hidden = false;
         window->widgets[widx::rotate_90].hidden = true;
 
-        if (cState.constructionHover == 1)
+        if (cState.constructionHover)
         {
             // Previously turned to wt_6 which is same as Tab, when pressed increments image index and no background.
             window->widgets[widx::construct].hidden = false;
@@ -807,7 +807,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             window->widgets[widx::rotate_90].image = ImageIds::rotate_object;
             window->widgets[widx::rotate_90].tooltip = StringIds::rotate_90;
         }
-        else if (cState.constructionHover == 0)
+        else if (!cState.constructionHover)
         {
             // Previously turned to wt_3, draws background and image, no behavior when clicked.
             window->widgets[widx::construct].hidden = false;
@@ -816,7 +816,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             window->widgets[widx::rotate_90].image = ImageIds::construction_new_position;
             window->widgets[widx::rotate_90].tooltip = StringIds::new_construction_position;
         }
-        if (cState.constructionHover == 0 || cState.constructionHover == 1)
+
+        if (true)
         {
             if (cState.lastSelectedTrackPiece != TrackPiece::null)
             {
@@ -995,7 +996,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         window->widgets[widx::bridge].hidden = false;
         window->widgets[widx::bridge_dropdown].hidden = false;
 
-        if (cState.lastSelectedBridge == 0xFF || (cState.constructionHover != 1 && !(cState.byte_1136076 & 1)))
+        if (cState.lastSelectedBridge == 0xFF || (!cState.constructionHover && !(cState.byte_1136076 & 1)))
         {
             window->widgets[widx::bridge].hidden = true;
             window->widgets[widx::bridge_dropdown].hidden = true;
@@ -1008,7 +1009,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         window->widgets[widx::remove].hidden = false;
         window->widgets[widx::rotate_90].hidden = true;
 
-        if (cState.constructionHover == 1)
+        if (cState.constructionHover)
         {
             window->widgets[widx::construct].hidden = false;
             window->widgets[widx::construct].tooltip = StringIds::tooltip_start_construction;
@@ -1017,7 +1018,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             window->widgets[widx::rotate_90].image = ImageIds::rotate_object;
             window->widgets[widx::rotate_90].tooltip = StringIds::rotate_90;
         }
-        else if (cState.constructionHover == 0)
+        else if (!cState.constructionHover)
         {
             window->widgets[widx::construct].hidden = false;
             window->widgets[widx::construct].tooltip = StringIds::tooltip_construct;
@@ -1025,7 +1026,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             window->widgets[widx::rotate_90].image = ImageIds::construction_new_position;
             window->widgets[widx::rotate_90].tooltip = StringIds::new_construction_position;
         }
-        if (cState.constructionHover == 0 || cState.constructionHover == 1)
+
+        if (true)
         {
             if (cState.lastSelectedTrackPiece != TrackPiece::null)
             {
@@ -1593,7 +1595,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         auto disabledWidgets = self.disabledWidgets;
 
         auto& cState = getConstructionState();
-        if (cState.constructionHover != 1)
+        if (!cState.constructionHover)
         {
             disabledWidgets &= ~(1ULL << widx::construct);
         }
@@ -1932,7 +1934,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     {
         auto& cState = getConstructionState();
 
-        if (cState.constructionHover != 0)
+        if (cState.constructionHover)
         {
             return;
         }
@@ -1983,14 +1985,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         auto& cState = getConstructionState();
 
-        if (cState.constructionHover == 1)
+        if (cState.constructionHover)
         {
             if (!ToolManager::isToolActive(WindowType::construction, self.number) || ToolManager::getToolWidgetIndex() != widx::construct)
             {
                 WindowManager::close(&self);
             }
         }
-        if (cState.constructionHover == 0)
+        if (!cState.constructionHover)
         {
             if (ToolManager::isToolActive(WindowType::construction, self.number))
             {
@@ -2077,7 +2079,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         while (true)
         {
-            cState.constructionHover = 0;
+            cState.constructionHover = false;
             cState.byte_113607E = 0;
             cState.x = mapPos.x;
             cState.y = mapPos.y;
@@ -3027,7 +3029,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         auto& cState = getConstructionState();
 
-        if (cState.constructionHover != 1)
+        if (!cState.constructionHover)
         {
             tr.drawStringCentred(Point(x, y), Colour::black, StringIds::build_this);
         }
@@ -3244,9 +3246,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     void tabReset(Window& self)
     {
         auto& cState = getConstructionState();
-        if (cState.constructionHover != 0)
+        if (cState.constructionHover)
         {
-            cState.constructionHover = 0;
+            cState.constructionHover = false;
             cState.byte_113607E = 1;
             self.callOnMouseUp(widx::rotate_90, self.widgets[widx::rotate_90].id);
         }
@@ -3319,7 +3321,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
 
         auto& cState = getConstructionState();
-        if (cState.constructionHover == 0)
+        if (!cState.constructionHover)
         {
             self.callOnMouseUp(widx::construct, self.widgets[widx::construct].id);
         }
@@ -3341,7 +3343,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
 
         auto& cState = getConstructionState();
-        if (cState.constructionHover == 0)
+        if (!cState.constructionHover)
         {
             self.callOnMouseUp(widx::rotate_90, self.widgets[widx::rotate_90].id);
         }
