@@ -3067,7 +3067,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         drawTrack(
             World::Pos3(256 * World::kTileSize, 256 * World::kTileSize, 120 * World::kSmallZStep),
             cState.previewMods,
-            cState.byte_1136077,
+            cState.previewTrackType,
             cState.lastSelectedTrackPieceId,
             cState.byte_1136078,
             TrackRoadPreviewFlags::displayConstructionArrow,
@@ -3096,7 +3096,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         drawRoad(
             World::Pos3(256 * World::kTileSize, 256 * World::kTileSize, 120 * World::kSmallZStep),
             cState.previewMods,
-            cState.byte_1136077,
+            cState.previewTrackType,
             cState.lastSelectedTrackPieceId,
             cState.byte_1136078,
             TrackRoadPreviewFlags::displayConstructionArrow,
@@ -3148,7 +3148,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 return;
             }
 
-            cState.byte_1136077 = cState.trackType & ~(1 << 7);
+            cState.previewTrackType = cState.trackType & ~(1 << 7);
             cState.byte_1136078 = road->rotation;
             cState.lastSelectedTrackPieceId = road->id;
             cState.word_1135FD6 = (cState.lastSelectedBridge << 8) & 0x1F;
@@ -3201,7 +3201,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 return;
             }
 
-            cState.byte_1136077 = cState.trackType;
+            cState.previewTrackType = cState.trackType;
             cState.byte_1136078 = track->rotation;
             cState.lastSelectedTrackPieceId = track->id;
             cState.word_1135FD6 = (cState.lastSelectedBridge << 8) & 0x1F;
