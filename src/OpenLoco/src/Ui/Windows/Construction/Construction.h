@@ -100,7 +100,7 @@ namespace OpenLoco::Ui::Windows::Construction
         World::Track::ModSection lastSelectedTrackModSection; // 0x0113606E
 
         uint8_t byte_1136076;                 // 0x01136076
-        uint8_t byte_1136077;                 // 0x01136077
+        uint8_t previewTrackType;             // 0x01136077
         uint8_t byte_1136078;                 // 0x01136078
         uint8_t lastSelectedTrackPieceId;     // 0x01136079
         uint8_t byte_113607E;                 // 0x0113607E
