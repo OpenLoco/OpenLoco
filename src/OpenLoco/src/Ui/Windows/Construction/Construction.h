@@ -84,7 +84,7 @@ namespace OpenLoco::Ui::Windows::Construction
         uint8_t modGhostTileIndex; // 0x0113605A
         uint8_t makeJunction;      // 0x0113605D
 
-        uint8_t constructionHover;                            // 0x01136061
+        bool constructionHover;                               // 0x01136061
         uint8_t trackType;                                    // 0x01136062
         uint8_t byte_1136063;                                 // 0x01136063
         uint8_t constructionRotation;                         // 0x01136064
