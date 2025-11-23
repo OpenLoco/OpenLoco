@@ -3066,7 +3066,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         drawTrack(
             World::Pos3(256 * World::kTileSize, 256 * World::kTileSize, 120 * World::kSmallZStep),
-            cState.word_1135FD8,
+            cState.previewMods,
             cState.byte_1136077,
             cState.lastSelectedTrackPieceId,
             cState.byte_1136078,
@@ -3095,7 +3095,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         drawRoad(
             World::Pos3(256 * World::kTileSize, 256 * World::kTileSize, 120 * World::kSmallZStep),
-            cState.word_1135FD8,
+            cState.previewMods,
             cState.byte_1136077,
             cState.lastSelectedTrackPieceId,
             cState.byte_1136078,
@@ -3141,7 +3141,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             auto road = getRoadPieceId(cState.lastSelectedTrackPiece, cState.lastSelectedTrackGradient, cState.constructionRotation);
 
-            cState.word_1135FD8 = cState.lastSelectedMods;
+            cState.previewMods = cState.lastSelectedMods;
 
             if (!road)
             {
@@ -3194,7 +3194,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             auto track = getTrackPieceId(cState.lastSelectedTrackPiece, cState.lastSelectedTrackGradient, cState.constructionRotation);
 
-            cState.word_1135FD8 = cState.lastSelectedMods;
+            cState.previewMods = cState.lastSelectedMods;
 
             if (!track)
             {

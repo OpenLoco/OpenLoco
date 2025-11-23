@@ -53,7 +53,7 @@ namespace OpenLoco::Ui::Windows::Construction
         World::Pos3 previousTile;         // 0x01135FCE
         uint16_t previousTileRotation;    // 0x01135FD4
         uint16_t word_1135FD6;            // 0x01135FD6
-        uint16_t word_1135FD8;            // 0x01135FD8
+        uint16_t previewMods;             // 0x01135FD8
 
         uint16_t lastSelectedMods;      // 0x01135FE4
         World::Pos3 stationGhostPos;    // 0x01135FE6
