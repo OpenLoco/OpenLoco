@@ -2650,7 +2650,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         cState.placeTrackPieceId = pieceId->id;
 
         int16_t constructHeight = getMaxConstructHeightFromExistingSelection();
-        cState.word_1136000 = constructHeight;
+        cState.constructionMaxHeight = constructHeight;
 
         World::resetMapSelectionFlag(World::MapSelectionFlags::enable | World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::enableConstructionArrow);
 
@@ -2664,7 +2664,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
         else
         {
-            const auto constRes = getConstructionPos(x, y, cState.word_1136000);
+            const auto constRes = getConstructionPos(x, y, cState.constructionMaxHeight);
             if (!constRes)
             {
                 return;
