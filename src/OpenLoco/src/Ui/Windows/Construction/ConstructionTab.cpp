@@ -3091,7 +3091,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             cState.previewMods,
             cState.previewTrackType,
             cState.lastSelectedTrackPieceId,
-            cState.byte_1136078,
+            cState.previewRotation,
             TrackRoadPreviewFlags::displayConstructionArrow,
             drawingCtx);
 
@@ -3120,7 +3120,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             cState.previewMods,
             cState.previewTrackType,
             cState.lastSelectedTrackPieceId,
-            cState.byte_1136078,
+            cState.previewRotation,
             TrackRoadPreviewFlags::displayConstructionArrow,
             drawingCtx);
 
@@ -3171,7 +3171,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             }
 
             cState.previewTrackType = cState.trackType & ~(1 << 7);
-            cState.byte_1136078 = road->rotation;
+            cState.previewRotation = road->rotation;
             cState.lastSelectedTrackPieceId = road->id;
             cState.word_1135FD6 = (cState.lastSelectedBridge << 8) & 0x1F;
 
@@ -3195,7 +3195,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                     pos3D.y = 0;
                 }
 
-                auto rotatedPos = Math::Vector::rotate(pos3D, cState.byte_1136078 & 3);
+                auto rotatedPos = Math::Vector::rotate(pos3D, cState.previewRotation & 3);
                 pos3D.x = rotatedPos.x / 2;
                 pos3D.y = rotatedPos.y / 2;
                 pos3D.x += 0x2010;
@@ -3224,7 +3224,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             }
 
             cState.previewTrackType = cState.trackType;
-            cState.byte_1136078 = track->rotation;
+            cState.previewRotation = track->rotation;
             cState.lastSelectedTrackPieceId = track->id;
             cState.word_1135FD6 = (cState.lastSelectedBridge << 8) & 0x1F;
 
@@ -3248,7 +3248,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                     pos3D.y = 0;
                 }
 
-                auto rotatedPos = Math::Vector::rotate(pos3D, cState.byte_1136078 & 3);
+                auto rotatedPos = Math::Vector::rotate(pos3D, cState.previewRotation & 3);
                 pos3D.x = rotatedPos.x / 2;
                 pos3D.y = rotatedPos.y / 2;
                 pos3D.x += 0x2010;
