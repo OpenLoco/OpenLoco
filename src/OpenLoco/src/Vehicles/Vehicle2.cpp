@@ -140,7 +140,6 @@ namespace OpenLoco::Vehicles
             return sub_4A9F20();
         }
 
-        Vehicle train(head);
         if (!train.head->hasVehicleFlags(VehicleFlags::manualControl))
         {
             if (speedDiff >= -1.5_mph)
