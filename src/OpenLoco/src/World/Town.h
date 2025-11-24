@@ -52,7 +52,6 @@ namespace OpenLoco
         struct RenderTarget;
     }
 
-#pragma pack(push, 1)
     struct Town
     {
         StringId name;                // 0x00
@@ -91,6 +90,4 @@ namespace OpenLoco
         void grow(TownGrowFlags growFlags);
         StringId getTownSizeString() const;
     };
-    static_assert(sizeof(Town) == 0x270);
-#pragma pack(pop)
 }

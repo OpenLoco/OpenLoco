@@ -6,8 +6,6 @@ namespace OpenLoco
 {
     struct SteamObject;
 
-#pragma pack(push, 1)
-
     struct Exhaust : EffectEntity
     {
         uint8_t pad_24[0x26 - 0x24];
@@ -26,7 +24,4 @@ namespace OpenLoco
         static Exhaust* create(World::Pos3 loc, uint8_t type);
         bool isSubObjType1() const { return objectId & (1 << 7); } // Used for steam / steampuff
     };
-    static_assert(sizeof(Exhaust) == 0x4A);
-
-#pragma pack(pop)
 }

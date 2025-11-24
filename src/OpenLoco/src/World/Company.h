@@ -139,7 +139,6 @@ namespace OpenLoco
 
     constexpr size_t kExpenditureHistoryCapacity = 16;
 
-#pragma pack(push, 1)
     struct Company
     {
         struct Unk25C0HashTableEntry
@@ -299,14 +298,6 @@ namespace OpenLoco
 
         uint8_t getNewChallengeProgress() const;
     };
-#pragma pack(pop)
-
-    static_assert(sizeof(Company) == 0x8FA8);
-    static_assert(sizeof(Company::expenditures) == 0x440);
-    static_assert(offsetof(Company, companyValueHistory[0]) == 0x88CE);
-    static_assert(offsetof(Company, vehicleProfit) == 0x8B9E);
-    static_assert(offsetof(Company, challengeProgress) == 0x8C4E);
-    static_assert(offsetof(Company, activeEmotions) == 0x8BB0);
 
     StringId getCorporateRatingAsStringId(CorporateRating rating);
     constexpr CorporateRating performanceToRating(int16_t performanceIndex);

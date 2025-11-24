@@ -27,7 +27,6 @@ namespace OpenLoco
         smoke = 8 // Smoke from broken down train
     };
 
-#pragma pack(push, 1)
     struct EffectEntity : EntityBase
     {
         static constexpr auto kBaseType = EntityBaseType::effect;
@@ -53,5 +52,4 @@ namespace OpenLoco
         Smoke* asSmoke() const { return as<Smoke, EffectType::smoke>(); }
         void update();
     };
-#pragma pack(pop)
 }

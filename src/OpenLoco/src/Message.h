@@ -80,7 +80,6 @@ namespace OpenLoco
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(MessageTypeFlags);
 
-#pragma pack(push, 1)
     struct Message
     {
         static constexpr uint8_t kNumSubjects = 3;
@@ -119,7 +118,6 @@ namespace OpenLoco
             timeActive |= (1 << 15);
         }
     };
-#pragma pack(pop)
 
     struct MessageTypeDescriptor
     {

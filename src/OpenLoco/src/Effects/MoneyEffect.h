@@ -5,8 +5,6 @@
 
 namespace OpenLoco
 {
-#pragma pack(push, 1)
-
     struct MoneyEffect : EffectEntity
     {
         static constexpr uint32_t kLifetime = 160;        // windowCurrency
@@ -29,7 +27,4 @@ namespace OpenLoco
 
         static MoneyEffect* create(const World::Pos3& loc, const CompanyId company, const currency32_t amount);
     };
-    static_assert(sizeof(MoneyEffect) == 0x48);
-
-#pragma pack(pop)
 }

@@ -4,8 +4,6 @@
 
 namespace OpenLoco
 {
-#pragma pack(push, 1)
-
     struct VehicleCrashParticle : EffectEntity
     {
         uint8_t pad_24[0x02];       // 0x24
@@ -24,7 +22,4 @@ namespace OpenLoco
 
         static VehicleCrashParticle* create(const World::Pos3& loc, const ColourScheme colourScheme);
     };
-    static_assert(sizeof(VehicleCrashParticle) == 0x44);
-
-#pragma pack(pop)
 }

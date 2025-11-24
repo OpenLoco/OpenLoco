@@ -4,8 +4,6 @@
 
 namespace OpenLoco
 {
-#pragma pack(push, 1)
-
     struct ExplosionSmoke : EffectEntity
     {
         uint8_t pad_24[0x28 - 0x24];
@@ -15,7 +13,4 @@ namespace OpenLoco
 
         static ExplosionSmoke* create(const World::Pos3& loc);
     };
-    static_assert(sizeof(ExplosionSmoke) == 0x2A);
-
-#pragma pack(pop)
 }

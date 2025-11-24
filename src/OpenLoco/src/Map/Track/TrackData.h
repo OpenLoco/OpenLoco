@@ -50,7 +50,6 @@ namespace OpenLoco::World::TrackData
         };
     };
 
-#pragma pack(push, 1)
     // Pos is difference from the next first tile and the track first tile
     struct TrackCoordinates
     {
@@ -58,8 +57,6 @@ namespace OpenLoco::World::TrackData
         uint8_t rotationEnd;   // 0x01
         World::Pos3 pos;       // 0x02
     };
-    static_assert(sizeof(TrackCoordinates) == 0x8);
-#pragma pack(pop)
 
     const std::span<const PreviewTrack> getTrackPiece(size_t trackId);
     const std::span<const PreviewTrack> getRoadPiece(size_t trackId);

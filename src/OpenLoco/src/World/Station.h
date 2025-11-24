@@ -22,7 +22,7 @@ namespace OpenLoco
     {
         struct StationElement;
     }
-#pragma pack(push, 1)
+
     enum class StationCargoStatsFlags : uint8_t
     {
         none = 0U,
@@ -163,8 +163,6 @@ namespace OpenLoco
         void updateCargoAcceptance();
         void alertCargoAcceptanceChange(uint32_t oldCargoAcc, uint32_t newCargoAcc);
     };
-    static_assert(sizeof(Station) == 0x3D2);
-#pragma pack(pop)
 
     void setCatchmentDisplay(const Station* station, const CatchmentFlags flags);
     bool isWithinCatchmentDisplay(const World::Pos2 pos);

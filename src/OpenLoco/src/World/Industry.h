@@ -32,7 +32,6 @@ namespace OpenLoco
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(IndustryFlags);
 
-#pragma pack(push, 1)
     struct Industry
     {
         StringId name;
@@ -95,9 +94,6 @@ namespace OpenLoco
             return (flags & flagsToTest) != IndustryFlags::none;
         }
     };
-#pragma pack(pop)
-
-    static_assert(sizeof(Industry) == 0x453);
 
     bool claimSurfaceForIndustry(const World::TilePos2& pos, IndustryId industryId, uint8_t growthStage, uint8_t updateTimer);
 }

@@ -80,7 +80,6 @@ namespace OpenLoco
     constexpr auto kMaxAiThoughts = 60U;
     constexpr auto kAiThoughtIdNull = 0xFFU;
 
-#pragma pack(push, 1)
     struct AiThought
     {
         struct Station
@@ -132,8 +131,6 @@ namespace OpenLoco
         // Converts the TownId or IndustryId of destinationB into the center position of the destination.
         World::Pos2 getDestinationPositionB() const;
     };
-#pragma pack(pop)
-    static_assert(sizeof(AiThought) == 0x8C);
 
     void aiThink(CompanyId id);
 

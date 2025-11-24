@@ -47,7 +47,6 @@ namespace OpenLoco
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(VehicleFlags);
 
-#pragma pack(push, 1)
     struct EntityBase
     {
         EntityBaseType baseType;
@@ -106,6 +105,4 @@ namespace OpenLoco
     private:
         uint8_t pad_24[0x80 - 0x24];
     };
-    static_assert(sizeof(Entity) == 0x80);
-#pragma pack(pop)
 }
