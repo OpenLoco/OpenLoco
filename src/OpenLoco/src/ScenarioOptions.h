@@ -49,10 +49,8 @@ namespace OpenLoco::Scenario
         EditorController::Step editorStep;                    // 0x00
         uint8_t difficulty;                                   // 0x01
         uint16_t scenarioStartYear;                           // 0x02
-        uint8_t pad_4[2];                                     // 0x04
         ScenarioFlags scenarioFlags;                          // 0x06
         uint8_t madeAnyChanges;                               // 0x08
-        uint8_t pad_9[1];                                     // 0x09
         LandDistributionPattern landDistributionPatterns[32]; // 0x0A
         char scenarioName[64];                                // 0x2A
         char scenarioDetails[256];                            // 0x6A
@@ -86,8 +84,6 @@ namespace OpenLoco::Scenario
         uint8_t maxRiverWidth;
         uint8_t riverbankWidth;
         uint8_t riverMeanderRate;
-
-        std::byte pad_41BD[342];
     };
 
     Options& getOptions();

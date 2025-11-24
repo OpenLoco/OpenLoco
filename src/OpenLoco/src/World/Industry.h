@@ -68,7 +68,6 @@ namespace OpenLoco
         uint8_t producedCargoMonthlyHistory1[20 * 12];           // 0x1AB (20 years, 12 months)
         uint8_t producedCargoMonthlyHistory2[20 * 12];           // 0x29B
         int32_t history_min_production[2];                       // 0x38B
-        uint8_t pad_393[0x453 - 0x393];
 
         IndustryId id() const;
         const IndustryObject* getObject() const;
