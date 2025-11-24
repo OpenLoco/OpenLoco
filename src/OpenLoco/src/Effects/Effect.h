@@ -54,4 +54,5 @@ namespace OpenLoco
         Smoke* asSmoke() const { return as<Smoke, EffectType::smoke>(); }
         void update();
     };
+    static_assert(sizeof(EffectEntity) <= sizeof(Entity));
 }

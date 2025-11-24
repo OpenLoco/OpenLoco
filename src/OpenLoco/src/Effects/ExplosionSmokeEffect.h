@@ -12,4 +12,5 @@ namespace OpenLoco
 
         static ExplosionSmoke* create(const World::Pos3& loc);
     };
+    static_assert(sizeof(ExplosionSmoke) <= sizeof(Entity));
 }

@@ -25,4 +25,5 @@ namespace OpenLoco
 
         static MoneyEffect* create(const World::Pos3& loc, const CompanyId company, const currency32_t amount);
     };
+    static_assert(sizeof(MoneyEffect) <= sizeof(Entity));
 }

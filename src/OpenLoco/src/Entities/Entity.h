@@ -81,6 +81,7 @@ namespace OpenLoco
     struct Entity : EntityBase
     {
     private:
-        uint8_t pad_24[0x80 - 0x24];
+        uint8_t pad_24[0x80 - 0x22];
     };
+    static_assert(sizeof(Entity) == 0x80);
 }

@@ -338,8 +338,8 @@ namespace OpenLoco::Vehicles
         World::SmallZ tileBaseZ;             // 0x34
         uint8_t trackType;                   // 0x35 field same in all vehicles
         RoutingHandle routingHandle;         // 0x36 field same in all vehicles
-        Flags38 var_38;                      // 0x38
         EntityId nextCarId;                  // 0x3A
+        Flags38 var_38;                      // 0x38
         TransportMode mode;                  // 0x42 field same in all vehicles
 
     private:
@@ -411,6 +411,7 @@ namespace OpenLoco::Vehicles
         uint8_t sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection rad, const bool setOccupied);
         UpdateMotionResult updateTrackMotion(int32_t unk1, bool isVeh2UnkM15);
     };
+    static_assert(sizeof(VehicleBase) <= sizeof(Entity));
 
     struct VehicleSound
     {
@@ -455,6 +456,7 @@ namespace OpenLoco::Vehicles
         bool hasBogieMoved;       // 0x01136237 has either of the bogies moved this tick
     };
 
+    #pragma pack(push, 1)
     struct VehicleHead : VehicleBase
     {
         static constexpr auto kVehicleThingType = VehicleEntityType::head;
@@ -576,6 +578,8 @@ namespace OpenLoco::Vehicles
         void updateLastIncomeStats(uint8_t cargoType, uint16_t cargoQty, uint16_t cargoDist, uint8_t cargoAge, currency32_t profit);
         void calculateRefundCost();
     };
+#pragma pack(pop)
+    static_assert(sizeof(VehicleHead) <= sizeof(Entity));
 
     struct IncomeStats
     {
@@ -608,6 +612,7 @@ namespace OpenLoco::Vehicles
         bool updateRail();
         UpdateMotionResult updateRoadMotion(int32_t distance);
     };
+    static_assert(sizeof(Vehicle1) <= sizeof(Entity));
 
     struct Vehicle2 : VehicleBase
     {
@@ -636,6 +641,7 @@ namespace OpenLoco::Vehicles
             return profit[0] + profit[1] + profit[2] + profit[3];
         }
     };
+    static_assert(sizeof(Vehicle2) <= sizeof(Entity));
 
     struct VehicleBody : VehicleBase
     {
@@ -680,6 +686,7 @@ namespace OpenLoco::Vehicles
         Pitch updateSpritePitchSteepSlopes(uint16_t xyOffset, int16_t zOffset);
         Pitch updateSpritePitch(uint16_t xyOffset, int16_t zOffset);
     };
+    static_assert(sizeof(VehicleBody) <= sizeof(Entity));
 
     uint8_t calculateYaw0FromVector(int16_t xDiff, int16_t yDiff);
     uint8_t calculateYaw1FromVectorPlane(int16_t xDiff, int16_t yDiff);
@@ -724,6 +731,7 @@ namespace OpenLoco::Vehicles
         void updateRoll();
         void collision(const EntityId collideEntityId);
     };
+    static_assert(sizeof(VehicleBogie) <= sizeof(Entity));
 
     void sub_4BA873(VehicleBogie& vehBogie);
 
@@ -736,6 +744,7 @@ namespace OpenLoco::Vehicles
 
         bool update();
     };
+    static_assert(sizeof(VehicleTail) <= sizeof(Entity));
 
     void liftUpTail(VehicleTail& tail);
 

@@ -12,4 +12,5 @@ namespace OpenLoco
 
         static Splash* create(const World::Pos3& pos);
     };
+    static_assert(sizeof(Splash) <= sizeof(Entity));
 }

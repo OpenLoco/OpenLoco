@@ -10,4 +10,5 @@ namespace OpenLoco
 
         void update();
     };
+    static_assert(sizeof(Fireball) <= sizeof(Entity));
 }

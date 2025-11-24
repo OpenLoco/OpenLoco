@@ -20,4 +20,5 @@ namespace OpenLoco
 
         static VehicleCrashParticle* create(const World::Pos3& loc, const ColourScheme colourScheme);
     };
+    static_assert(sizeof(VehicleCrashParticle) <= sizeof(Entity));
 }

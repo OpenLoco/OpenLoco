@@ -12,4 +12,5 @@ namespace OpenLoco
 
         static ExplosionCloud* create(const World::Pos3& loc);
     };
+    static_assert(sizeof(ExplosionCloud) <= sizeof(Entity));
 }
