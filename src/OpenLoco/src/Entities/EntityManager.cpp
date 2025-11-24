@@ -255,7 +255,6 @@ namespace OpenLoco::EntityManager
         newEntity->spriteWidth = 16;
         newEntity->spriteHeightNegative = 20;
         newEntity->spriteHeightPositive = 8;
-        newEntity->vehicleFlags = VehicleFlags::none;
         newEntity->spriteLeft = Location::null;
 
         return newEntity;

@@ -34,33 +34,15 @@ namespace OpenLoco
         down20deg = 12,
     };
 
-    enum class VehicleFlags : uint16_t // commands?
-    {
-        none = 0U,
-        unk_0 = 1U << 0,
-        commandStop = 1U << 1, // commanded to stop??
-        unk_2 = 1U << 2,
-        sorted = 1U << 3, // vehicle list
-        unk_5 = 1U << 5,
-        manualControl = 1U << 6,
-        shuntCheat = 1U << 7,
-    };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(VehicleFlags);
-
     struct EntityBase
     {
-        EntityBaseType baseType;
-
-    private:
-        uint8_t type; // Use type specific getters/setters as this depends on baseType
-    public:
+        EntityBaseType baseType;      // 0x00
         EntityId nextQuadrantId;      // 0x02
         EntityId nextEntityId;        // 0x04
         EntityId llPreviousId;        // 0x06
         uint8_t linkedListOffset;     // 0x08
         uint8_t spriteHeightNegative; // 0x09
         EntityId id;                  // 0x0A
-        VehicleFlags vehicleFlags;    // 0x0C, Move these to VehicleBase after full reimplementation
         World::Pos3 position;         // 0x0E
         uint8_t spriteWidth;          // 0x14
         uint8_t spriteHeightPositive; // 0x15
@@ -93,10 +75,6 @@ namespace OpenLoco
             return isBase<BaseType>() ? reinterpret_cast<const BaseType*>(this) : nullptr;
         }
         bool empty() const;
-
-    protected:
-        constexpr uint8_t getSubType() const { return type; }
-        void setSubType(const uint8_t newType) { type = newType; }
     };
 
     // Max size of a Entity. Use when needing to know Entity size

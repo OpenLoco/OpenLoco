@@ -651,7 +651,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
 
                 uint16_t newHeight = self.height - 59;
-                if (head->hasVehicleFlags(VehicleFlags::manualControl) && head->owner == CompanyManager::getControllingId())
+                if (head->hasVehicleFlags(Vehicles::VehicleFlags::manualControl) && head->owner == CompanyManager::getControllingId())
                 {
                     newWidth -= 27;
                 }
@@ -699,11 +699,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 0);
 
             auto selected = 0; // Stop
-            if (!head->hasVehicleFlags(VehicleFlags::commandStop))
+            if (!head->hasVehicleFlags(Vehicles::VehicleFlags::commandStop))
             {
                 selected = 1; // Start
             }
-            if (head->hasVehicleFlags(VehicleFlags::manualControl))
+            if (head->hasVehicleFlags(Vehicles::VehicleFlags::manualControl))
             {
                 selected = 2; // Manual
             }
@@ -940,11 +940,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.push(head->ordinalNumber);
 
             uint32_t stopStartImage = ImageIds::red_flag;
-            if (head->hasVehicleFlags(VehicleFlags::manualControl))
+            if (head->hasVehicleFlags(Vehicles::VehicleFlags::manualControl))
             {
                 stopStartImage = ImageIds::yellow_flag;
             }
-            else if (head->hasVehicleFlags(VehicleFlags::commandStop))
+            else if (head->hasVehicleFlags(Vehicles::VehicleFlags::commandStop))
             {
                 stopStartImage = ImageIds::red_flag;
             }
@@ -969,7 +969,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.widgets[Common::widx::closeButton].right = self.width - 3;
 
             int viewportRight = self.width - 26;
-            if (head->hasVehicleFlags(VehicleFlags::manualControl))
+            if (head->hasVehicleFlags(Vehicles::VehicleFlags::manualControl))
             {
                 if (CompanyManager::isPlayerCompany(head->owner))
                 {

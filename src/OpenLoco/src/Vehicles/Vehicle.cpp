@@ -120,7 +120,6 @@ namespace OpenLoco::Vehicles
     // 0x004AA407
     void VehicleBase::explodeComponent()
     {
-        auto subType = getSubType();
         assert(subType == VehicleEntityType::bogie || subType == VehicleEntityType::body_start || subType == VehicleEntityType::body_continued);
 
         const auto pos = position + World::Pos3{ 0, 0, 22 };

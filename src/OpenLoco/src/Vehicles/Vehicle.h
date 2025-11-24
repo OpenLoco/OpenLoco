@@ -135,6 +135,19 @@ namespace OpenLoco::Vehicles
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(BreakdownFlags);
 
+    enum class VehicleFlags : uint16_t // commands?
+    {
+        none = 0U,
+        unk_0 = 1U << 0,
+        commandStop = 1U << 1, // commanded to stop??
+        unk_2 = 1U << 2,
+        sorted = 1U << 3, // vehicle list
+        unk_5 = 1U << 5,
+        manualControl = 1U << 6,
+        shuntCheat = 1U << 7,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(VehicleFlags);
+
     enum class VehicleEntityType : uint8_t
     {
         head = 0,
@@ -314,7 +327,8 @@ namespace OpenLoco::Vehicles
     struct VehicleBase : EntityBase
     {
         static constexpr auto kBaseType = EntityBaseType::vehicle;
-
+        VehicleEntityType subType;
+        VehicleFlags vehicleFlags;           // 0x0C, Move these to VehicleBase after full reimplementation
         EntityId head;                       // 0x26
         int32_t remainingDistance;           // 0x28
         TrackAndDirection trackAndDirection; // 0x2C
@@ -332,7 +346,7 @@ namespace OpenLoco::Vehicles
         template<VehicleEntityType SubType>
         bool is() const
         {
-            return getSubType() == SubType;
+            return subType == SubType;
         }
 
         template<typename TType, VehicleEntityType TClass>
@@ -353,8 +367,8 @@ namespace OpenLoco::Vehicles
         }
 
     public:
-        VehicleEntityType getSubType() const { return VehicleEntityType(EntityBase::getSubType()); }
-        void setSubType(const VehicleEntityType newType) { EntityBase::setSubType(static_cast<uint8_t>(newType)); }
+        VehicleEntityType getSubType() const { return subType; }
+        void setSubType(const VehicleEntityType newType) { subType = newType; }
         bool isVehicleHead() const { return is<VehicleEntityType::head>(); }
         VehicleHead* asVehicleHead() const { return as<VehicleHead>(); }
         bool isVehicle1() const { return is<VehicleEntityType::vehicle_1>(); }

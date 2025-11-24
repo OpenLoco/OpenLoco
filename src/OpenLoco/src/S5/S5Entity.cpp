@@ -25,7 +25,7 @@ namespace OpenLoco::S5
         return dst;
     }
 
-    static EntityBase exportEntityBase(const OpenLoco::EntityBase& src, const uint8_t type)
+    static EntityBase exportEntityBase(const OpenLoco::EntityBase& src, const uint8_t type, const uint16_t vehicleFlags)
     {
         EntityBase dst{};
         dst.baseType = enumValue(src.baseType);
@@ -36,7 +36,7 @@ namespace OpenLoco::S5
         dst.linkedListOffset = src.linkedListOffset;
         dst.spriteHeightNegative = src.spriteHeightNegative;
         dst.id = enumValue(src.id);
-        dst.vehicleFlags = enumValue(src.vehicleFlags);
+        dst.vehicleFlags = vehicleFlags;
         dst.position = src.position;
         dst.spriteWidth = src.spriteWidth;
         dst.spriteHeightPositive = src.spriteHeightPositive;
@@ -56,7 +56,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::Exhaust& dstExhaust = reinterpret_cast<S5::Exhaust&>(dst);
-        dstExhaust.base = exportEntityBase(src, enumValue(EffectType::exhaust));
+        dstExhaust.base = exportEntityBase(src, enumValue(EffectType::exhaust), 0);
         dstExhaust.frameNum = src.frameNum;
         dstExhaust.stationaryProgress = src.stationaryProgress;
         dstExhaust.windProgress = src.windProgress;
@@ -70,7 +70,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::MoneyEffect& dstMoney = reinterpret_cast<S5::MoneyEffect&>(dst);
-        dstMoney.base = exportEntityBase(src, enumValue(src.getSubType()));
+        dstMoney.base = exportEntityBase(src, enumValue(src.getSubType()), 0);
         dstMoney.amount = src.amount;
         dstMoney.frame = src.frame;
         dstMoney.numMovements = src.numMovements;
@@ -86,7 +86,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::VehicleCrashParticle& dstParticle = reinterpret_cast<S5::VehicleCrashParticle&>(dst);
-        dstParticle.base = exportEntityBase(src, enumValue(EffectType::vehicleCrashParticle));
+        dstParticle.base = exportEntityBase(src, enumValue(EffectType::vehicleCrashParticle), 0);
         dstParticle.timeToLive = src.timeToLive;
         dstParticle.frame = src.frame;
         dstParticle.colourSchemePrimary = enumValue(src.colourScheme.primary);
@@ -103,7 +103,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::ExplosionCloud& dstCloud = reinterpret_cast<S5::ExplosionCloud&>(dst);
-        dstCloud.base = exportEntityBase(src, enumValue(EffectType::explosionCloud));
+        dstCloud.base = exportEntityBase(src, enumValue(EffectType::explosionCloud), 0);
         dstCloud.frame = src.frame;
         return dst;
     }
@@ -112,7 +112,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::Splash& dstSplash = reinterpret_cast<S5::Splash&>(dst);
-        dstSplash.base = exportEntityBase(src, enumValue(EffectType::splash));
+        dstSplash.base = exportEntityBase(src, enumValue(EffectType::splash), 0);
         dstSplash.frame = src.frame;
         return dst;
     }
@@ -121,7 +121,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::Fireball& dstFireball = reinterpret_cast<S5::Fireball&>(dst);
-        dstFireball.base = exportEntityBase(src, enumValue(EffectType::fireball));
+        dstFireball.base = exportEntityBase(src, enumValue(EffectType::fireball), 0);
         dstFireball.frame = src.frame;
         return dst;
     }
@@ -130,7 +130,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::ExplosionSmoke& dstSmoke = reinterpret_cast<S5::ExplosionSmoke&>(dst);
-        dstSmoke.base = exportEntityBase(src, enumValue(EffectType::explosionSmoke));
+        dstSmoke.base = exportEntityBase(src, enumValue(EffectType::explosionSmoke), 0);
         dstSmoke.frame = src.frame;
         return dst;
     }
@@ -139,7 +139,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::Smoke& dstSmoke = reinterpret_cast<S5::Smoke&>(dst);
-        dstSmoke.base = exportEntityBase(src, enumValue(EffectType::smoke));
+        dstSmoke.base = exportEntityBase(src, enumValue(EffectType::smoke), 0);
         dstSmoke.frame = src.frame;
         return dst;
     }
@@ -174,7 +174,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::VehicleHead& dstHead = reinterpret_cast<S5::VehicleHead&>(dst);
-        dstHead.base = exportEntityBase(src, enumValue(src.getSubType()));
+        dstHead.base = exportEntityBase(src, enumValue(src.getSubType()),enumValue(src.vehicleFlags));
         dstHead.head = enumValue(src.head);
         dstHead.remainingDistance = src.remainingDistance;
         dstHead.trackAndDirection = src.trackAndDirection.track._data;
@@ -237,7 +237,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::Vehicle1& dstVehicle1 = reinterpret_cast<S5::Vehicle1&>(dst);
-        dstVehicle1.base = exportEntityBase(src, enumValue(src.getSubType()));
+        dstVehicle1.base = exportEntityBase(src, enumValue(src.getSubType()), enumValue(src.vehicleFlags));
         dstVehicle1.head = enumValue(src.head);
         dstVehicle1.remainingDistance = src.remainingDistance;
         dstVehicle1.trackAndDirection = src.trackAndDirection.track._data;
@@ -267,7 +267,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::Vehicle2& dstVehicle2 = reinterpret_cast<S5::Vehicle2&>(dst);
-        dstVehicle2.base = exportEntityBase(src, enumValue(src.getSubType()));
+        dstVehicle2.base = exportEntityBase(src, enumValue(src.getSubType()), enumValue(src.vehicleFlags));
         dstVehicle2.head = enumValue(src.head);
         dstVehicle2.remainingDistance = src.remainingDistance;
         dstVehicle2.trackAndDirection = src.trackAndDirection.track._data;
@@ -320,7 +320,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::VehicleBogie& dstBogie = reinterpret_cast<S5::VehicleBogie&>(dst);
-        dstBogie.base = exportEntityBase(src, enumValue(src.getSubType()));
+        dstBogie.base = exportEntityBase(src, enumValue(src.getSubType()), enumValue(src.vehicleFlags));
         dstBogie.colourSchemePrimary = enumValue(src.colourScheme.primary);
         dstBogie.colourSchemeSecondary = enumValue(src.colourScheme.secondary);
         dstBogie.head = enumValue(src.head);
@@ -362,7 +362,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::VehicleBody& dstBody = reinterpret_cast<S5::VehicleBody&>(dst);
-        dstBody.base = exportEntityBase(src, enumValue(src.getSubType()));
+        dstBody.base = exportEntityBase(src, enumValue(src.getSubType()), enumValue(src.vehicleFlags));
         dstBody.colourSchemePrimary = enumValue(src.colourScheme.primary);
         dstBody.colourSchemeSecondary = enumValue(src.colourScheme.secondary);
         dstBody.head = enumValue(src.head);
@@ -400,7 +400,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::VehicleTail& dstTail = reinterpret_cast<S5::VehicleTail&>(dst);
-        dstTail.base = exportEntityBase(src, enumValue(src.getSubType()));
+        dstTail.base = exportEntityBase(src, enumValue(src.getSubType()), enumValue(src.vehicleFlags));
         dstTail.head = enumValue(src.head);
         dstTail.remainingDistance = src.remainingDistance;
         dstTail.trackAndDirection = src.trackAndDirection.track._data;
@@ -484,7 +484,6 @@ namespace OpenLoco::S5
         dst.linkedListOffset = src.linkedListOffset;
         dst.spriteHeightNegative = src.spriteHeightNegative;
         dst.id = static_cast<EntityId>(src.id);
-        dst.vehicleFlags = static_cast<VehicleFlags>(src.vehicleFlags);
         dst.position = src.position;
         dst.spriteWidth = src.spriteWidth;
         dst.spriteHeightPositive = src.spriteHeightPositive;
@@ -829,6 +828,8 @@ namespace OpenLoco::S5
         const auto vehicleType = static_cast<OpenLoco::Vehicles::VehicleEntityType>(src.base.type);
         auto dst = importEntityBase(src.base);
         auto* vehicleEntity = dst.asBase<OpenLoco::Vehicles::VehicleBase>();
+
+        vehicleEntity->vehicleFlags = static_cast<Vehicles::VehicleFlags>(src.base.vehicleFlags);
         vehicleEntity->setSubType(vehicleType);
 
         switch (vehicleType)

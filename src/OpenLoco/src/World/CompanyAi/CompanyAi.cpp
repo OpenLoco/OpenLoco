@@ -6364,7 +6364,7 @@ namespace OpenLoco
                 continue;
             }
             head->breakdownFlags &= ~Vehicles::BreakdownFlags::breakdownPending;
-            if (!head->hasVehicleFlags(VehicleFlags::commandStop))
+            if (!head->hasVehicleFlags(Vehicles::VehicleFlags::commandStop))
             {
                 GameCommands::VehicleChangeRunningModeArgs args{};
                 args.head = head->head;

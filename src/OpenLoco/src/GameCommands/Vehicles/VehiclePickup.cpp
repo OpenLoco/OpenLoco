@@ -63,7 +63,7 @@ namespace OpenLoco::GameCommands
         // Clear ghost flag on primary vehicle pieces and all car components.
         train.applyToComponents([](auto& component) { component.var_38 &= ~Vehicles::Flags38::isGhost; });
 
-        head->vehicleFlags |= VehicleFlags::commandStop;
+        head->vehicleFlags |= Vehicles::VehicleFlags::commandStop;
 
         return 0;
     }

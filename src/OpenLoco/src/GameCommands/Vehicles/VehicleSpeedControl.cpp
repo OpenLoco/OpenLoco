@@ -30,7 +30,7 @@ namespace OpenLoco::GameCommands
 
         head->manualPower = args.speed;
 
-        if (head->hasVehicleFlags(VehicleFlags::commandStop))
+        if (head->hasVehicleFlags(Vehicles::VehicleFlags::commandStop))
         {
             if (head->status == Vehicles::Status::stuck || head->status == Vehicles::Status::crashed)
             {

@@ -161,7 +161,7 @@ namespace OpenLoco::GameCommands
 
             head->movePlaneTo(*placePos, reverseYaw, pitch);
             head->status = Vehicles::Status::stopped;
-            head->vehicleFlags |= VehicleFlags::commandStop;
+            head->vehicleFlags |= Vehicles::VehicleFlags::commandStop;
             head->stationId = args.stationId;
             head->airportMovementEdge = previousEdgeId;
 

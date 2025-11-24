@@ -125,7 +125,7 @@ namespace OpenLoco::GameCommands
             head->moveTo(boatPos + World::Pos3(0, 0, 32));
 
             head->status = Vehicles::Status::stopped;
-            head->vehicleFlags |= VehicleFlags::commandStop;
+            head->vehicleFlags |= Vehicles::VehicleFlags::commandStop;
             head->stationId = elStation->stationId();
             head->tileX = args.pos.x;
             head->tileY = args.pos.y;

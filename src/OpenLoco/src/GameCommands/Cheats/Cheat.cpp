@@ -278,7 +278,7 @@ namespace OpenLoco::GameCommands
         }
         if (flags & Flags::apply)
         {
-            veh->vehicleFlags |= VehicleFlags::shuntCheat;
+            veh->vehicleFlags |= Vehicles::VehicleFlags::shuntCheat;
         }
         return 0;
     }
