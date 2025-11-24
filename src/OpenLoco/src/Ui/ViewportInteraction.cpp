@@ -784,10 +784,6 @@ namespace OpenLoco::Ui::ViewportInteraction
             return false;
         }
 
-        if (!SceneManager::isEditorMode())
-        {
-            return false;
-        }
         auto* wallObj = ObjectManager::get<WallObject>(wall->wallObjectId());
         FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, wallObj->name);
         return true;
