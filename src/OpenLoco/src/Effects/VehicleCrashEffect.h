@@ -6,10 +6,8 @@ namespace OpenLoco
 {
     struct VehicleCrashParticle : EffectEntity
     {
-        uint8_t pad_24[0x02];       // 0x24
         uint16_t timeToLive;        // 0x26
         uint16_t frame;             // 0x28
-        uint8_t pad_2A[0x04];       // 0x2A
         ColourScheme colourScheme;  // 0x2E
         uint16_t crashedSpriteBase; // 0x30 crashed_sprite_base
         World::Pos3 velocity;       // 0x32

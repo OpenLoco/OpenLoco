@@ -123,8 +123,7 @@ namespace OpenLoco::Vehicles
     struct VehicleBody;
     struct VehicleTail;
     struct Vehicle;
-
-    struct VehicleSoundPlayer;
+    struct VehicleSound;
 
     enum class BreakdownFlags : uint8_t
     {
@@ -158,7 +157,6 @@ namespace OpenLoco::Vehicles
     constexpr uint8_t kAirportMovementNodeNull = 0xFF;
     constexpr uint8_t kAirportMovementNoValidEdge = 0xFE;
 
-#pragma pack(push, 1)
     struct TrackAndDirection
     {
         struct _TrackAndDirection
@@ -317,6 +315,19 @@ namespace OpenLoco::Vehicles
     {
         static constexpr auto kBaseType = EntityBaseType::vehicle;
 
+        EntityId head;                       // 0x26
+        int32_t remainingDistance;           // 0x28
+        TrackAndDirection trackAndDirection; // 0x2C
+        uint16_t subPosition;                // 0x2E
+        int16_t tileX;                       // 0x30
+        int16_t tileY;                       // 0x32
+        World::SmallZ tileBaseZ;             // 0x34
+        uint8_t trackType;                   // 0x35 field same in all vehicles
+        RoutingHandle routingHandle;         // 0x36 field same in all vehicles
+        Flags38 var_38;                      // 0x38
+        EntityId nextCarId;                  // 0x3A
+        TransportMode mode;                  // 0x42 field same in all vehicles
+
     private:
         template<VehicleEntityType SubType>
         bool is() const
@@ -363,15 +374,7 @@ namespace OpenLoco::Vehicles
             return as<VehicleBody, VehicleEntityType::body_continued>();
         }
         bool hasSoundPlayer() { return is<VehicleEntityType::vehicle_2>() || is<VehicleEntityType::tail>(); }
-        VehicleSoundPlayer* getSoundPlayer() const
-        {
-            if (is<VehicleEntityType::vehicle_2>())
-            {
-                return as<VehicleSoundPlayer, VehicleEntityType::vehicle_2>();
-            }
-
-            return as<VehicleSoundPlayer, VehicleEntityType::tail>();
-        }
+        VehicleSound* getVehicleSound();
         bool isVehicleTail() const { return is<VehicleEntityType::tail>(); }
         VehicleTail* asVehicleTail() const { return as<VehicleTail>(); }
         TransportMode getTransportMode() const;
@@ -389,17 +392,14 @@ namespace OpenLoco::Vehicles
         VehicleBase* nextVehicle();
         VehicleBase* nextVehicleComponent();
         VehicleBase* previousVehicleComponent();
-        ColourScheme getColourScheme();
-        void setColourScheme(ColourScheme colourScheme);
         void explodeComponent();
         void destroyTrain();
-        uint8_t sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied);
+        uint8_t sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection rad, const bool setOccupied);
         UpdateMotionResult updateTrackMotion(int32_t unk1, bool isVeh2UnkM15);
     };
 
-    struct VehicleSoundPlayer : VehicleBase
+    struct VehicleSound
     {
-        uint8_t pad_24[0x44 - 0x24];
         SoundObjectId_t drivingSoundId;       // 0x44
         uint8_t drivingSoundVolume;           // 0x45 channel attribute volume related
         uint16_t drivingSoundFrequency;       // 0x46 channel attribute frequency
@@ -407,12 +407,7 @@ namespace OpenLoco::Vehicles
         SoundFlags soundFlags;                // 0x4A
         Ui::WindowNumber_t soundWindowNumber; // 0x4C
         Ui::WindowType soundWindowType;       // 0x4E
-        uint8_t pad_4F[0x56 - 0x4F];
-        uint32_t var_56;
-        uint8_t pad_5A[0x73 - 0x5A];
-        uint8_t var_73;
     };
-    static_assert(sizeof(VehicleSoundPlayer) == 0x74); // Can't use offset_of change this to last field if more found
 
     struct VehicleCargo
     {
@@ -423,7 +418,6 @@ namespace OpenLoco::Vehicles
         uint8_t numDays;        // 0x50
         uint8_t qty;            // 0x51
     };
-    static_assert(sizeof(VehicleCargo) == 0xA);
 
     struct Sub4ACEE7Result
     {
@@ -450,23 +444,7 @@ namespace OpenLoco::Vehicles
     struct VehicleHead : VehicleBase
     {
         static constexpr auto kVehicleThingType = VehicleEntityType::head;
-        uint8_t pad_24[0x26 - 0x24];
-        EntityId head;                       // 0x26
-        int32_t remainingDistance;           // 0x28
-        TrackAndDirection trackAndDirection; // 0x2C
-        uint16_t subPosition;                // 0x2E
-        int16_t tileX;                       // 0x30
-        int16_t tileY;                       // 0x32
-        World::SmallZ tileBaseZ;             // 0x34
-        uint8_t trackType;                   // 0x35 field same in all vehicles
-        RoutingHandle routingHandle;         // 0x36 field same in all vehicles orderId * maxNumRoutingSteps
-        Flags38 var_38;
-        uint8_t pad_39;      // 0x39
-        EntityId nextCarId;  // 0x3A
-        int32_t var_3C;      // 0x3C
-        uint8_t pad_40[0x2]; // 0x40
-        TransportMode mode;  // 0x42 field same in all vehicles
-        uint8_t pad_43;
+        int32_t var_3C;                   // 0x3C
         int16_t ordinalNumber;            // 0x44
         uint32_t orderTableOffset;        // 0x46 offset into Order Table
         uint16_t currentOrder;            // 0x4A offset, combine with orderTableOffset
@@ -530,11 +508,11 @@ namespace OpenLoco::Vehicles
 
     private:
         void updateDrivingSounds();
-        void updateDrivingSound(VehicleSoundPlayer* soundPlayer);
-        void updateDrivingSoundNone(VehicleSoundPlayer* soundPlayer);
-        void updateDrivingSoundFriction(VehicleSoundPlayer* soundPlayer, const VehicleObjectFrictionSound* snd);
-        void updateSimpleMotorSound(VehicleSoundPlayer* soundPlayer, const VehicleSimpleMotorSound* snd);
-        void updateGearboxMotorSound(VehicleSoundPlayer* soundPlayer, const VehicleGearboxMotorSound* snd);
+        void updateDrivingSound(VehicleSound& sound, const bool isVeh2);
+        void updateDrivingSoundNone(VehicleSound& sound);
+        void updateDrivingSoundFriction(VehicleSound& sound, const VehicleObjectFrictionSound* snd);
+        void updateSimpleMotorSound(VehicleSound& sound, const bool isVeh2, const VehicleSimpleMotorSound* snd);
+        void updateGearboxMotorSound(VehicleSound& sound, const bool isVeh2, const VehicleGearboxMotorSound* snd);
         bool updateLand();
         bool sub_4A8DB7();
         bool tryReverse();
@@ -584,7 +562,6 @@ namespace OpenLoco::Vehicles
         void updateLastIncomeStats(uint8_t cargoType, uint16_t cargoQty, uint16_t cargoDist, uint8_t cargoAge, currency32_t profit);
         void calculateRefundCost();
     };
-    static_assert(sizeof(VehicleHead) == 0x7A); // Can't use offset_of change this to last field if more found
 
     struct IncomeStats
     {
@@ -597,28 +574,11 @@ namespace OpenLoco::Vehicles
         void beginNewIncome();
         bool addToStats(uint8_t cargoType, uint16_t cargoQty, uint16_t cargoDist, uint8_t cargoAge, currency32_t profit);
     };
-    static_assert(sizeof(IncomeStats) == 0x2C);
 
     struct Vehicle1 : VehicleBase
     {
         static constexpr auto kVehicleThingType = VehicleEntityType::vehicle_1;
-        uint8_t pad_24[0x26 - 0x24];
-        EntityId head;                       // 0x26
-        int32_t remainingDistance;           // 0x28
-        TrackAndDirection trackAndDirection; // 0x2C
-        uint16_t subPosition;                // 0x2E
-        int16_t tileX;                       // 0x30
-        int16_t tileY;                       // 0x32
-        World::SmallZ tileBaseZ;             // 0x34
-        uint8_t trackType;                   // 0x35 field same in all vehicles
-        RoutingHandle routingHandle;         // 0x36 field same in all vehicles
-        Flags38 var_38;
-        uint8_t pad_39;      // 0x39
-        EntityId nextCarId;  // 0x3A
-        int32_t var_3C;      // 0x3C
-        uint8_t pad_40[0x2]; // 0x40
-        TransportMode mode;  // 0x42 field same in all vehicles
-        uint8_t pad_43;
+        int32_t var_3C;        // 0x3C
         Speed16 targetSpeed;   // 0x44
         uint16_t timeAtSignal; // 0x46
         Flags48 var_48;
@@ -634,35 +594,12 @@ namespace OpenLoco::Vehicles
         bool updateRail();
         UpdateMotionResult updateRoadMotion(int32_t distance);
     };
-    static_assert(sizeof(Vehicle1) == 0x7F); // Can't use offset_of change this to last field if more found
 
     struct Vehicle2 : VehicleBase
     {
         static constexpr auto kVehicleThingType = VehicleEntityType::vehicle_2;
-        uint8_t pad_24[0x26 - 0x24];
-        EntityId head;                       // 0x26
-        int32_t remainingDistance;           // 0x28
-        TrackAndDirection trackAndDirection; // 0x2C
-        uint16_t subPosition;                // 0x2E
-        int16_t tileX;                       // 0x30
-        int16_t tileY;                       // 0x32
-        World::SmallZ tileBaseZ;             // 0x34
-        uint8_t trackType;                   // 0x35 field same in all vehicles
-        RoutingHandle routingHandle;         // 0x36 field same in all vehicles
-        Flags38 var_38;
-        uint8_t pad_39;              // 0x39
-        EntityId nextCarId;          // 0x3A
-        int32_t var_3C;              // 0x3C field same in all vehicles unread for veh2
-        uint8_t pad_40[0x42 - 0x40]; // 0x40
-        TransportMode mode;          // 0x42 field same in all vehicles
-        uint8_t pad_43;
-        SoundObjectId_t drivingSoundId;       // 0x44
-        uint8_t drivingSoundVolume;           // 0x45 channel attribute volume related
-        uint16_t drivingSoundFrequency;       // 0x46 channel attribute frequency
-        uint16_t objectId;                    // 0x48 vehicle object (used for sound)
-        SoundFlags soundFlags;                // 0x4A common with tail
-        Ui::WindowNumber_t soundWindowNumber; // 0x4C common with tail
-        Ui::WindowType soundWindowType;       // 0x4E common with tail
+        int32_t var_3C;     // 0x3C field same in all vehicles unread for veh2
+        VehicleSound sound; // 0x44
         int8_t var_4F;
         uint16_t totalPower;  // 0x50 maybe not used by aircraft and ship
         uint16_t totalWeight; // 0x52
@@ -685,43 +622,26 @@ namespace OpenLoco::Vehicles
             return profit[0] + profit[1] + profit[2] + profit[3];
         }
     };
-    static_assert(sizeof(Vehicle2) == 0x74); // Can't use offset_of change this to last field if more found
 
     struct VehicleBody : VehicleBase
     {
         static constexpr auto kVehicleThingType = VehicleEntityType::body_continued;
-        ColourScheme colourScheme;           // 0x24
-        EntityId head;                       // 0x26
-        int32_t remainingDistance;           // 0x28
-        TrackAndDirection trackAndDirection; // 0x2C
-        uint16_t subPosition;                // 0x2E
-        int16_t tileX;                       // 0x30
-        int16_t tileY;                       // 0x32
-        World::SmallZ tileBaseZ;             // 0x34
-        uint8_t trackType;                   // 0x35 field same in all vehicles
-        RoutingHandle routingHandle;         // 0x36 field same in all vehicles
-        Flags38 var_38;
-        uint8_t objectSpriteType; // 0x39
-        EntityId nextCarId;       // 0x3A
-        int32_t var_3C;           // 0x3C field same in all vehicles unread for body
-        uint16_t objectId;        // 0x40
-        TransportMode mode;       // 0x42
-        uint8_t pad_43;
+        ColourScheme colourScheme; // 0x24
+        uint8_t objectSpriteType;  // 0x39
+        int32_t var_3C;            // 0x3C field same in all vehicles unread for body
+        uint16_t objectId;         // 0x40
         int16_t var_44;
         uint8_t animationFrame;    // 0x46 roll/animation sprite index
         uint8_t cargoFrame;        // 0x47 cargo sprite index
         VehicleCargo primaryCargo; // 0x48
-        uint8_t pad_52[0x54 - 0x52];
-        uint8_t bodyIndex; // 0x54
+        uint8_t bodyIndex;         // 0x54
         int8_t chuffSoundIndex;
         uint32_t creationDay; // 0x56
         uint32_t var_5A;
         uint8_t wheelSlipping;         // 0x5E timeout that counts up
         BreakdownFlags breakdownFlags; // 0x5F
-        uint16_t pad_60;               // 0x60
         uint32_t refundCost;           // 0x62
-        uint8_t pad_66[0x6A - 0x66];
-        uint8_t breakdownTimeout; // 0x6A (likely unused)
+        uint8_t breakdownTimeout;      // 0x6A (likely unused)
 
         const VehicleObject* getObject() const;
         bool update(const CarUpdateState& carState);
@@ -746,7 +666,6 @@ namespace OpenLoco::Vehicles
         Pitch updateSpritePitchSteepSlopes(uint16_t xyOffset, int16_t zOffset);
         Pitch updateSpritePitch(uint16_t xyOffset, int16_t zOffset);
     };
-    static_assert(sizeof(VehicleBody) == 0x6B); // Can't use offset_of change this to last field if more found
 
     uint8_t calculateYaw0FromVector(int16_t xDiff, int16_t yDiff);
     uint8_t calculateYaw1FromVectorPlane(int16_t xDiff, int16_t yDiff);
@@ -756,31 +675,17 @@ namespace OpenLoco::Vehicles
     struct VehicleBogie : VehicleBase
     {
         static constexpr auto kVehicleThingType = VehicleEntityType::bogie;
-        ColourScheme colourScheme;           // 0x24
-        EntityId head;                       // 0x26
-        int32_t remainingDistance;           // 0x28
-        TrackAndDirection trackAndDirection; // 0x2C
-        uint16_t subPosition;                // 0x2E
-        int16_t tileX;                       // 0x30
-        int16_t tileY;                       // 0x32
-        World::SmallZ tileBaseZ;             // 0x34
-        uint8_t trackType;                   // 0x35 field same in all vehicles
-        RoutingHandle routingHandle;         // 0x36 field same in all vehicles
-        Flags38 var_38;
-        uint8_t objectSpriteType; // 0x39
-        EntityId nextCarId;       // 0x3A
-        int32_t var_3C;           // 0x3C field same in all vehicles unread for bogie
-        uint16_t objectId;        // 0x40
-        TransportMode mode;       // 0x42 field same in all vehicles
-        uint8_t pad_43;
+        ColourScheme colourScheme; // 0x24
+        uint8_t objectSpriteType;  // 0x39
+        int32_t var_3C;            // 0x3C field same in all vehicles unread for bogie
+        uint16_t objectId;         // 0x40
         uint16_t var_44;
         uint8_t animationIndex;      // 0x46 animation index
         uint8_t var_47;              // 0x47 cargo sprite index (unused)
         VehicleCargo secondaryCargo; // 0x48 Note back bogie cannot carry cargo always check type
         uint16_t totalCarWeight;     // 0x52 only valid for first bogie of car
         uint8_t bodyIndex;           // 0x54
-        uint8_t pad_55;
-        uint32_t creationDay; // 0x56
+        uint32_t creationDay;        // 0x56
         uint32_t var_5A;
         uint8_t wheelSlipping; // 0x5E timeout that counts up
         BreakdownFlags breakdownFlags;
@@ -805,46 +710,20 @@ namespace OpenLoco::Vehicles
         void updateRoll();
         void collision(const EntityId collideEntityId);
     };
-    static_assert(sizeof(VehicleBogie) == 0x6B); // Can't use offset_of change this to last field if more found
 
     void sub_4BA873(VehicleBogie& vehBogie);
 
     struct VehicleTail : VehicleBase
     {
         static constexpr auto kVehicleThingType = VehicleEntityType::tail;
-        uint8_t pad_24[0x26 - 0x24];
-        EntityId head;                       // 0x26
-        int32_t remainingDistance;           // 0x28
-        TrackAndDirection trackAndDirection; // 0x2C
-        uint16_t subPosition;                // 0x2E
-        int16_t tileX;                       // 0x30
-        int16_t tileY;                       // 0x32
-        World::SmallZ tileBaseZ;             // 0x34
-        uint8_t trackType;                   // 0x35 field same in all vehicles
-        RoutingHandle routingHandle;         // 0x36 field same in all vehicles
-        Flags38 var_38;
-        uint8_t pad_39;              // 0x39
-        EntityId nextCarId;          // 0x3A
-        int32_t var_3C;              // 0x3C field same in all vehicles unread for tail
-        uint8_t pad_40[0x42 - 0x40]; // 0x40
-        TransportMode mode;          // 0x42 field same in all vehicles
-        uint8_t pad_43;
-        SoundObjectId_t drivingSoundId;       // 0x44
-        uint8_t drivingSoundVolume;           // 0x45 channel attribute volume related
-        uint16_t drivingSoundFrequency;       // 0x46 channel attribute frequency
-        uint16_t objectId;                    // 0x48 vehicle object (used for sound)
-        SoundFlags soundFlags;                // 0x4A common with veh_2
-        Ui::WindowNumber_t soundWindowNumber; // 0x4C common with veh_2
-        Ui::WindowType soundWindowType;       // 0x4E common with veh_2
-        uint16_t trainDanglingTimeout;        // 0x4F counts up when no cars on train
+        int32_t var_3C;                // 0x3C field same in all vehicles unread for tail
+        VehicleSound sound;            // 0x44
+        uint16_t trainDanglingTimeout; // 0x4F counts up when no cars on train
 
         bool update();
     };
-    static_assert(sizeof(VehicleTail) == 0x51); // Can't use offset_of change this to last field if more found
 
     void liftUpTail(VehicleTail& tail);
-
-#pragma pack(pop)
 
     struct CarComponent
     {
