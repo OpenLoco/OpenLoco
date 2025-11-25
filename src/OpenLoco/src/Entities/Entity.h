@@ -36,25 +36,24 @@ namespace OpenLoco
 
     struct EntityBase
     {
-        EntityBaseType baseType;      // 0x00
-        EntityId nextQuadrantId;      // 0x02
-        EntityId nextEntityId;        // 0x04
-        EntityId llPreviousId;        // 0x06
-        uint8_t linkedListOffset;     // 0x08
-        uint8_t spriteHeightNegative; // 0x09
-        EntityId id;                  // 0x0A
-        World::Pos3 position;         // 0x0E
-        uint8_t spriteWidth;          // 0x14
-        uint8_t spriteHeightPositive; // 0x15
-        int16_t spriteLeft;           // 0x16
-        int16_t spriteTop;            // 0x18
-        int16_t spriteRight;          // 0x1A
-        int16_t spriteBottom;         // 0x1C
-        uint8_t spriteYaw;            // 0x1E
-        Pitch spritePitch;            // 0x1F
-        uint8_t pad_20;               // 0x20
-        CompanyId owner;              // 0x21
-        StringId name;                // 0x22, combined with ordinalNumber on vehicles
+        EntityBaseType baseType;
+        uint8_t linkedListOffset;
+        EntityId id;
+        EntityId nextQuadrantId;
+        EntityId nextEntityId;
+        EntityId llPreviousId;
+        World::Pos3 position;
+        CompanyId owner;
+        uint8_t spriteHeightNegative;
+        uint8_t spriteHeightPositive;
+        uint8_t spriteWidth;
+        uint8_t spriteYaw;
+        Pitch spritePitch;
+        int16_t spriteLeft;
+        int16_t spriteTop;
+        int16_t spriteRight;
+        int16_t spriteBottom;
+        StringId name; // combined with ordinalNumber on vehicles
 
         void moveTo(const World::Pos3& loc);
         void invalidateSprite();
@@ -81,7 +80,7 @@ namespace OpenLoco
     struct Entity : EntityBase
     {
     private:
-        uint8_t pad_24[0x80 - 0x22];
+        uint8_t pad_24[0x80 - 0x20];
     };
     static_assert(sizeof(Entity) == 0x80);
 }

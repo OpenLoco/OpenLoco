@@ -174,7 +174,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::VehicleHead& dstHead = reinterpret_cast<S5::VehicleHead&>(dst);
-        dstHead.base = exportEntityBase(src, enumValue(src.getSubType()),enumValue(src.vehicleFlags));
+        dstHead.base = exportEntityBase(src, enumValue(src.getSubType()), enumValue(src.vehicleFlags));
         dstHead.head = enumValue(src.head);
         dstHead.remainingDistance = src.remainingDistance;
         dstHead.trackAndDirection = src.trackAndDirection.track._data;

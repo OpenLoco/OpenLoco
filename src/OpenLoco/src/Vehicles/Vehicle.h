@@ -328,19 +328,19 @@ namespace OpenLoco::Vehicles
     {
         static constexpr auto kBaseType = EntityBaseType::vehicle;
         VehicleEntityType subType;
-        VehicleFlags vehicleFlags;           // 0x0C, Move these to VehicleBase after full reimplementation
-        EntityId head;                       // 0x26
-        int32_t remainingDistance;           // 0x28
-        TrackAndDirection trackAndDirection; // 0x2C
-        uint16_t subPosition;                // 0x2E
-        int16_t tileX;                       // 0x30
-        int16_t tileY;                       // 0x32
-        World::SmallZ tileBaseZ;             // 0x34
-        uint8_t trackType;                   // 0x35 field same in all vehicles
-        RoutingHandle routingHandle;         // 0x36 field same in all vehicles
-        EntityId nextCarId;                  // 0x3A
-        Flags38 var_38;                      // 0x38
-        TransportMode mode;                  // 0x42 field same in all vehicles
+        TransportMode mode;
+        VehicleFlags vehicleFlags;
+        EntityId head;
+        TrackAndDirection trackAndDirection;
+        uint16_t subPosition;
+        int16_t tileX;
+        int16_t tileY;
+        World::SmallZ tileBaseZ;
+        uint8_t trackType;
+        int32_t remainingDistance;
+        RoutingHandle routingHandle;
+        EntityId nextCarId;
+        Flags38 var_38;
 
     private:
         template<VehicleEntityType SubType>
@@ -415,23 +415,23 @@ namespace OpenLoco::Vehicles
 
     struct VehicleSound
     {
-        SoundObjectId_t drivingSoundId;       // 0x44
-        uint8_t drivingSoundVolume;           // 0x45 channel attribute volume related
-        uint16_t drivingSoundFrequency;       // 0x46 channel attribute frequency
-        uint16_t objectId;                    // 0x48 vehicle object (used for sound)
-        SoundFlags soundFlags;                // 0x4A
-        Ui::WindowNumber_t soundWindowNumber; // 0x4C
-        Ui::WindowType soundWindowType;       // 0x4E
+        SoundObjectId_t drivingSoundId;
+        uint8_t drivingSoundVolume;     // channel attribute volume related
+        uint16_t drivingSoundFrequency; // channel attribute frequency
+        uint16_t objectId;              // vehicle object (used for sound)
+        SoundFlags soundFlags;
+        Ui::WindowNumber_t soundWindowNumber;
+        Ui::WindowType soundWindowType;
     };
 
     struct VehicleCargo
     {
-        uint32_t acceptedTypes; // 0x48
-        uint8_t type;           // 0x4C
-        uint8_t maxQty;         // 0x4D
-        StationId townFrom;     // 0x4E
-        uint8_t numDays;        // 0x50
-        uint8_t qty;            // 0x51
+        uint32_t acceptedTypes;
+        uint8_t type;
+        uint8_t maxQty;
+        StationId townFrom;
+        uint8_t numDays;
+        uint8_t qty;
     };
 
     struct Sub4ACEE7Result
@@ -456,37 +456,36 @@ namespace OpenLoco::Vehicles
         bool hasBogieMoved;       // 0x01136237 has either of the bogies moved this tick
     };
 
-    #pragma pack(push, 1)
     struct VehicleHead : VehicleBase
     {
         static constexpr auto kVehicleThingType = VehicleEntityType::head;
-        int32_t var_3C;                   // 0x3C
-        int16_t ordinalNumber;            // 0x44
-        uint32_t orderTableOffset;        // 0x46 offset into Order Table
-        uint16_t currentOrder;            // 0x4A offset, combine with orderTableOffset
-        uint16_t sizeOfOrderTable;        // 0x4C size of Order Table
-        uint32_t trainAcceptedCargoTypes; // 0x4E
+        int32_t var_3C;
+        uint32_t orderTableOffset; // offset into Order Table
+        uint16_t currentOrder;     // offset, combine with orderTableOffset
+        uint16_t sizeOfOrderTable; // size of Order Table
+        uint32_t trainAcceptedCargoTypes;
+        int16_t ordinalNumber;
         uint8_t var_52;
-        uint8_t var_53;                // 0x53 mods?
-        StationId stationId;           // 0x54
-        uint16_t cargoTransferTimeout; // 0x56
+        uint8_t var_53; //  mods?
+        StationId stationId;
+        uint16_t cargoTransferTimeout;
         uint32_t var_58;
         uint8_t var_5C;
-        Status status;                     // 0x5D
-        VehicleType vehicleType;           // 0x5E
-        BreakdownFlags breakdownFlags;     // 0x5F
-        uint8_t aiThoughtId;               // 0x60 0xFFU for null
-        World::Pos2 aiPlacementPos;        // 0x61
-        uint16_t aiPlacementTaD;           // 0x65 for air/water this is just rotation
-        uint8_t aiPlacementBaseZ;          // 0x67
-        uint8_t airportMovementEdge;       // 0x68
-        uint32_t totalRefundCost;          // 0x69
-        uint8_t crashedTimeout;            // 0x6D
-        int8_t manualPower;                // 0x6E manual power control VehicleFlags::manualControl
-        World::Pos2 journeyStartPos;       // 0x6F journey start position
-        uint32_t journeyStartTicks;        // 0x73 ticks since journey start
-        Speed16 lastAverageSpeed;          // 0x77
-        uint8_t restartStoppedCarsTimeout; // 0x79 timeout before auto starting trams/buses
+        Status status;
+        VehicleType vehicleType;
+        BreakdownFlags breakdownFlags;
+        World::Pos2 aiPlacementPos;
+        uint8_t aiThoughtId; //  0xFFU for null
+        uint8_t airportMovementEdge;
+        uint16_t aiPlacementTaD; //  for air/water this is just rotation
+        uint8_t aiPlacementBaseZ;
+        uint8_t crashedTimeout;
+        Speed16 lastAverageSpeed;
+        uint32_t totalRefundCost;
+        World::Pos2 journeyStartPos;       //  journey start position
+        uint32_t journeyStartTicks;        //  ticks since journey start
+        int8_t manualPower;                //  manual power control VehicleFlags::manualControl
+        uint8_t restartStoppedCarsTimeout; //  timeout before auto starting trams/buses
 
     public:
         bool isVehicleTypeCompatible(const uint16_t vehicleTypeId);
@@ -578,17 +577,16 @@ namespace OpenLoco::Vehicles
         void updateLastIncomeStats(uint8_t cargoType, uint16_t cargoQty, uint16_t cargoDist, uint8_t cargoAge, currency32_t profit);
         void calculateRefundCost();
     };
-#pragma pack(pop)
     static_assert(sizeof(VehicleHead) <= sizeof(Entity));
 
     struct IncomeStats
     {
-        int32_t day;                  // 0x53
-        uint8_t cargoTypes[4];        // 0x57
-        uint16_t cargoQtys[4];        // 0x5B
-        uint16_t cargoDistances[4];   // 0x63
-        uint8_t cargoAges[4];         // 0x6B
-        currency32_t cargoProfits[4]; // 0x6F
+        int32_t day;
+        uint8_t cargoTypes[4];
+        uint16_t cargoQtys[4];
+        uint16_t cargoDistances[4];
+        uint8_t cargoAges[4];
+        currency32_t cargoProfits[4];
         void beginNewIncome();
         bool addToStats(uint8_t cargoType, uint16_t cargoQty, uint16_t cargoDist, uint8_t cargoAge, currency32_t profit);
     };
@@ -596,16 +594,16 @@ namespace OpenLoco::Vehicles
     struct Vehicle1 : VehicleBase
     {
         static constexpr auto kVehicleThingType = VehicleEntityType::vehicle_1;
-        int32_t var_3C;        // 0x3C
-        Speed16 targetSpeed;   // 0x44
-        uint16_t timeAtSignal; // 0x46
+        int32_t var_3C;
+        Speed16 targetSpeed;
+        uint16_t timeAtSignal;
         Flags48 var_48;
-        uint8_t var_49;      // 0x49 rackrail mod?
-        uint32_t dayCreated; // 0x4A
+        uint8_t var_49; // rackrail mod?
+        uint32_t dayCreated;
         uint16_t var_4E;
         uint16_t var_50;
         uint8_t var_52;
-        IncomeStats lastIncome; // 0x53
+        IncomeStats lastIncome;
 
         bool update();
         bool updateRoad();
@@ -617,20 +615,20 @@ namespace OpenLoco::Vehicles
     struct Vehicle2 : VehicleBase
     {
         static constexpr auto kVehicleThingType = VehicleEntityType::vehicle_2;
-        int32_t var_3C;     // 0x3C field same in all vehicles unread for veh2
-        VehicleSound sound; // 0x44
+        int32_t var_3C; // field same in all vehicles unread for veh2
+        VehicleSound sound;
         int8_t var_4F;
-        uint16_t totalPower;  // 0x50 maybe not used by aircraft and ship
-        uint16_t totalWeight; // 0x52
-        Speed16 maxSpeed;     // 0x54
-        Speed32 currentSpeed; // 0x56
+        uint16_t totalPower; // maybe not used by aircraft and ship
+        uint16_t totalWeight;
+        Speed16 maxSpeed;
+        Speed32 currentSpeed;
         MotorState motorState;
         uint8_t brakeLightTimeout;
-        Speed16 rackRailMaxSpeed;     // 0x5C
-        currency32_t curMonthRevenue; // 0x5E monthly revenue
-        currency32_t profit[4];       // 0x62 last 4 months net profit
-        uint8_t reliability;          // 0x72
-        Flags73 var_73;               // 0x73 (bit 0 = broken down, bit 1 = still powered)
+        Speed16 rackRailMaxSpeed;
+        currency32_t curMonthRevenue; // monthly revenue
+        currency32_t profit[4];       // last 4 months net profit
+        uint8_t reliability;
+        Flags73 var_73; // (bit 0 = broken down, bit 1 = still powered)
 
         bool has73Flags(Flags73 flagsToTest) const;
 
@@ -646,22 +644,22 @@ namespace OpenLoco::Vehicles
     struct VehicleBody : VehicleBase
     {
         static constexpr auto kVehicleThingType = VehicleEntityType::body_continued;
-        ColourScheme colourScheme; // 0x24
-        uint8_t objectSpriteType;  // 0x39
-        int32_t var_3C;            // 0x3C field same in all vehicles unread for body
-        uint16_t objectId;         // 0x40
+        ColourScheme colourScheme;
+        uint8_t objectSpriteType;
+        int32_t var_3C; //  field same in all vehicles unread for body
+        uint16_t objectId;
         int16_t var_44;
-        uint8_t animationFrame;    // 0x46 roll/animation sprite index
-        uint8_t cargoFrame;        // 0x47 cargo sprite index
-        VehicleCargo primaryCargo; // 0x48
-        uint8_t bodyIndex;         // 0x54
+        uint8_t animationFrame; //  roll/animation sprite index
+        uint8_t cargoFrame;     //  cargo sprite index
+        VehicleCargo primaryCargo;
+        uint8_t bodyIndex;
         int8_t chuffSoundIndex;
-        uint32_t creationDay; // 0x56
+        uint32_t creationDay;
         uint32_t var_5A;
-        uint8_t wheelSlipping;         // 0x5E timeout that counts up
-        BreakdownFlags breakdownFlags; // 0x5F
-        uint32_t refundCost;           // 0x62
-        uint8_t breakdownTimeout;      // 0x6A (likely unused)
+        uint8_t wheelSlipping; // timeout that counts up
+        BreakdownFlags breakdownFlags;
+        uint32_t refundCost;
+        uint8_t breakdownTimeout; // (likely unused)
 
         const VehicleObject* getObject() const;
         bool update(const CarUpdateState& carState);
@@ -696,26 +694,26 @@ namespace OpenLoco::Vehicles
     struct VehicleBogie : VehicleBase
     {
         static constexpr auto kVehicleThingType = VehicleEntityType::bogie;
-        ColourScheme colourScheme; // 0x24
-        uint8_t objectSpriteType;  // 0x39
-        int32_t var_3C;            // 0x3C field same in all vehicles unread for bogie
-        uint16_t objectId;         // 0x40
+        ColourScheme colourScheme;
+        uint8_t objectSpriteType;
+        int32_t var_3C; // field same in all vehicles unread for bogie
+        uint16_t objectId;
         uint16_t var_44;
-        uint8_t animationIndex;      // 0x46 animation index
-        uint8_t var_47;              // 0x47 cargo sprite index (unused)
-        VehicleCargo secondaryCargo; // 0x48 Note back bogie cannot carry cargo always check type
-        uint16_t totalCarWeight;     // 0x52 only valid for first bogie of car
-        uint8_t bodyIndex;           // 0x54
-        uint32_t creationDay;        // 0x56
+        uint8_t animationIndex;      // animation index
+        uint8_t var_47;              // cargo sprite index (unused)
+        VehicleCargo secondaryCargo; // Note back bogie cannot carry cargo always check type
+        uint16_t totalCarWeight;     // only valid for first bogie of car
+        uint8_t bodyIndex;
+        uint32_t creationDay;
         uint32_t var_5A;
-        uint8_t wheelSlipping; // 0x5E timeout that counts up
+        uint8_t wheelSlipping; // timeout that counts up
         BreakdownFlags breakdownFlags;
         uint8_t var_60;
         uint8_t var_61;
-        uint32_t refundCost;         // 0x62 front bogies only
-        uint16_t reliability;        // 0x66 front bogies only
-        uint16_t timeoutToBreakdown; // 0x68 front bogies only (days) counts down to the next breakdown 0xFFFFU disables this
-        uint8_t breakdownTimeout;    // 0x6A front bogies only (days)
+        uint32_t refundCost;         // front bogies only
+        uint16_t reliability;        // front bogies only
+        uint16_t timeoutToBreakdown; // front bogies only (days) counts down to the next breakdown 0xFFFFU disables this
+        uint8_t breakdownTimeout;    // front bogies only (days)
 
     public:
         AirportObjectFlags getCompatibleAirportType();
@@ -738,9 +736,9 @@ namespace OpenLoco::Vehicles
     struct VehicleTail : VehicleBase
     {
         static constexpr auto kVehicleThingType = VehicleEntityType::tail;
-        int32_t var_3C;                // 0x3C field same in all vehicles unread for tail
-        VehicleSound sound;            // 0x44
-        uint16_t trainDanglingTimeout; // 0x4F counts up when no cars on train
+        int32_t var_3C; // field same in all vehicles unread for tail
+        VehicleSound sound;
+        uint16_t trainDanglingTimeout; // counts up when no cars on train
 
         bool update();
     };

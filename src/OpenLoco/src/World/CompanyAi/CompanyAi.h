@@ -96,22 +96,22 @@ namespace OpenLoco
 
             constexpr bool hasFlags(AiThoughtStationFlags flags) const { return (var_02 & flags) != AiThoughtStationFlags::none; }
         };
-        AiThoughtType type;    // 0x00 0x4A8
-        uint8_t destinationA;  // 0x01 0x4A9 either a TownId or IndustryId
-        uint8_t destinationB;  // 0x02 0x4AA either a TownId or IndustryId
-        uint8_t numStations;   // 0x03 0x4AB size of stations
-        uint8_t stationLength; // 0x04 0x4AC station length
-        Station stations[4];  // 0x06 0x4AE Will lists stations created that vehicles will route to
-        uint8_t trackObjId;   // 0x3E 0x4E6 track or road (with high bit set)
-        uint8_t rackRailType; // 0x3F 0x4E7 Is 0xFFU for no rack rail
-        uint16_t mods;        // 0x40 0x4E8 track or road
-        uint8_t cargoType;    // 0x42 0x4EA
-        uint8_t var_43;       // 0x4EB
-        uint8_t numVehicles;  // 0x44 0x4EC size of var_66
-        uint8_t var_45;       // 0x4ED size of var_46
-        uint16_t var_46[16];  // 0x4EF array of uint16_t object id
-        EntityId vehicles[8]; // 0x66 0x50E see also numVehicles for current size
-        currency32_t var_76;  // 0x51E
+        AiThoughtType type;            // 0x00 0x4A8
+        uint8_t destinationA;          // 0x01 0x4A9 either a TownId or IndustryId
+        uint8_t destinationB;          // 0x02 0x4AA either a TownId or IndustryId
+        uint8_t numStations;           // 0x03 0x4AB size of stations
+        uint8_t stationLength;         // 0x04 0x4AC station length
+        Station stations[4];           // 0x06 0x4AE Will lists stations created that vehicles will route to
+        uint8_t trackObjId;            // 0x3E 0x4E6 track or road (with high bit set)
+        uint8_t rackRailType;          // 0x3F 0x4E7 Is 0xFFU for no rack rail
+        uint16_t mods;                 // 0x40 0x4E8 track or road
+        uint8_t cargoType;             // 0x42 0x4EA
+        uint8_t var_43;                // 0x4EB
+        uint8_t numVehicles;           // 0x44 0x4EC size of var_66
+        uint8_t var_45;                // 0x4ED size of var_46
+        uint16_t var_46[16];           // 0x4EF array of uint16_t object id
+        EntityId vehicles[8];          // 0x66 0x50E see also numVehicles for current size
+        currency32_t var_76;           // 0x51E
         currency32_t var_7C;           // 0x524
         currency32_t var_80;           // 0x528
         currency32_t var_84;           // 0x52C
