@@ -87,6 +87,7 @@ namespace OpenLoco::GameCommands
         auto* const base = EntityManager::createEntityVehicle();
         base->baseType = EntityBaseType::vehicle;
         auto* const vehicleBase = base->asBase<Vehicles::VehicleBase>();
+        vehicleBase->vehicleFlags = Vehicles::VehicleFlags::none;
         vehicleBase->setSubType(T::kVehicleThingType);
         return static_cast<T*>(vehicleBase);
     }
@@ -389,7 +390,7 @@ namespace OpenLoco::GameCommands
         EntityManager::moveEntityToList(newHead, EntityManager::EntityListType::vehicleHead);
         newHead->owner = getUpdatingCompanyId();
         newHead->head = newHead->id;
-        newHead->vehicleFlags |= VehicleFlags::commandStop;
+        newHead->vehicleFlags = VehicleFlags::commandStop;
         newHead->trackType = trackType;
         newHead->mode = mode;
         newHead->tileX = -1;

@@ -272,21 +272,17 @@ namespace OpenLoco::GameSaveCompare
         return effectSubTypeName;
     }
 
-    void logVehicleTypeAndSubType(int offset, const OpenLoco::Entity& entity)
+    void logVehicleTypeAndSubType(int offset, const S5::Entity& entity)
     {
         auto vehicleTypeName = "TYPE: ENTITY [" + std::to_string(offset) + "] VEHICLE";
-        char* entityBase = (char*)(&entity);
-        Vehicles::VehicleBase* vehicleBase = reinterpret_cast<Vehicles::VehicleBase*>(entityBase);
-        auto vechicleSubTypeName = getVehicleSubType(vehicleBase->getSubType());
+        auto vechicleSubTypeName = getVehicleSubType(static_cast<Vehicles::VehicleEntityType>(entity.base.type));
         Logging::info("{} {}", vehicleTypeName, vechicleSubTypeName);
     }
 
-    void logEffectType(int offset, const OpenLoco::Entity& entity)
+    void logEffectType(int offset, const S5::Entity& entity)
     {
         auto effectTypeName = "TYPE: ENTITY [" + std::to_string(offset) + "] EFFECT";
-        char* effect = (char*)(&entity);
-        EffectEntity* effectEntity = reinterpret_cast<EffectEntity*>(effect);
-        auto effectSubTYpeName = getEffectSubType(effectEntity->getSubType());
+        auto effectSubTYpeName = getEffectSubType(static_cast<EffectType>(entity.base.type));
         Logging::info("{} {}", effectTypeName, effectSubTYpeName);
     }
 
@@ -299,57 +295,51 @@ namespace OpenLoco::GameSaveCompare
                 Logging::info("DIVERGENCE");
             }
 
-            char* lhsEntityChar = (char*)(&lhs);
-            OpenLoco::Entity* lhsEntity = reinterpret_cast<OpenLoco::Entity*>(lhsEntityChar);
-
-            char* rhsEntityChar = (char*)(&rhs);
-            OpenLoco::Entity* rhsEntity = reinterpret_cast<OpenLoco::Entity*>(rhsEntityChar);
-
-            if (lhsEntity->baseType == EntityBaseType::vehicle)
+            if (lhs.base.baseType == enumValue(EntityBaseType::vehicle))
             {
                 if (displayAllDivergences || divergentBytesTotal == 0)
                 {
-                    logVehicleTypeAndSubType(offset, *lhsEntity);
+                    logVehicleTypeAndSubType(offset, lhs);
                 }
-                divergentBytesTotal += sizeof(lhsEntity->baseType);
+                divergentBytesTotal += sizeof(lhs.base.baseType);
             }
-            if (lhsEntity->baseType != rhsEntity->baseType)
+            if (lhs.base.baseType != rhs.base.baseType)
             {
-                if (rhsEntity->baseType == EntityBaseType::vehicle)
+                if (rhs.base.baseType == enumValue(EntityBaseType::vehicle))
                 {
                     if (displayAllDivergences || divergentBytesTotal)
                     {
-                        logVehicleTypeAndSubType(offset, *rhsEntity);
+                        logVehicleTypeAndSubType(offset, rhs);
                     }
-                    divergentBytesTotal += sizeof(rhsEntity);
+                    divergentBytesTotal += sizeof(rhs);
                 }
             }
-            if (lhsEntity->baseType == EntityBaseType::effect)
+            if (lhs.base.baseType == enumValue(EntityBaseType::effect))
             {
                 if (displayAllDivergences || divergentBytesTotal == 0)
                 {
-                    logEffectType(offset, *lhsEntity);
+                    logEffectType(offset, lhs);
                 }
                 else
                 {
-                    divergentBytesTotal += sizeof(lhsEntity->baseType);
+                    divergentBytesTotal += sizeof(lhs.base.baseType);
                 }
             }
-            if (lhsEntity->baseType != rhsEntity->baseType)
+            if (lhs.base.baseType != rhs.base.baseType)
             {
-                if (rhsEntity->baseType == EntityBaseType::effect)
+                if (rhs.base.baseType == enumValue(EntityBaseType::effect))
                 {
                     if (displayAllDivergences || divergentBytesTotal == 0)
                     {
-                        logEffectType(offset, *rhsEntity);
+                        logEffectType(offset, rhs);
                     }
                     else
                     {
-                        divergentBytesTotal += sizeof(rhsEntity);
+                        divergentBytesTotal += sizeof(rhs);
                     }
                 }
             }
-            if (lhsEntity->baseType == EntityBaseType::null)
+            if (lhs.base.baseType == enumValue(EntityBaseType::null))
             {
                 if (displayAllDivergences || divergentBytesTotal == 0)
                 {
@@ -357,16 +347,16 @@ namespace OpenLoco::GameSaveCompare
                 }
                 else
                 {
-                    divergentBytesTotal += sizeof(lhsEntity->baseType);
+                    divergentBytesTotal += sizeof(lhs.base.baseType);
                 }
             }
             else
             {
-                divergentBytesTotal += sizeof(lhsEntity->baseType);
+                divergentBytesTotal += sizeof(lhs.base.baseType);
             }
-            if (lhsEntity->baseType != rhsEntity->baseType)
+            if (lhs.base.baseType != rhs.base.baseType)
             {
-                if (rhsEntity->baseType == EntityBaseType::null)
+                if (rhs.base.baseType == enumValue(EntityBaseType::null))
                 {
 
                     if (displayAllDivergences || divergentBytesTotal == 0)
@@ -375,12 +365,12 @@ namespace OpenLoco::GameSaveCompare
                     }
                     else
                     {
-                        divergentBytesTotal += sizeof(lhsEntity->baseType);
+                        divergentBytesTotal += sizeof(lhs.base.baseType);
                     }
                 }
                 else
                 {
-                    divergentBytesTotal += sizeof(rhsEntity);
+                    divergentBytesTotal += sizeof(rhs);
                 }
             }
             divergentBytesTotal = bitWiseLogDivergence("", lhs, rhs, displayAllDivergences, divergentBytesTotal);
