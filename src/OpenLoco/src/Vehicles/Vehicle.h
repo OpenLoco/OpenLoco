@@ -615,7 +615,6 @@ namespace OpenLoco::Vehicles
     struct Vehicle2 : VehicleBase
     {
         static constexpr auto kVehicleThingType = VehicleEntityType::vehicle_2;
-        int32_t var_3C; // field same in all vehicles unread for veh2
         VehicleSound sound;
         int8_t var_4F;
         uint16_t totalPower; // maybe not used by aircraft and ship
@@ -646,7 +645,6 @@ namespace OpenLoco::Vehicles
         static constexpr auto kVehicleThingType = VehicleEntityType::body_continued;
         ColourScheme colourScheme;
         uint8_t objectSpriteType;
-        int32_t var_3C; //  field same in all vehicles unread for body
         uint16_t objectId;
         int16_t var_44;
         uint8_t animationFrame; //  roll/animation sprite index
@@ -696,7 +694,6 @@ namespace OpenLoco::Vehicles
         static constexpr auto kVehicleThingType = VehicleEntityType::bogie;
         ColourScheme colourScheme;
         uint8_t objectSpriteType;
-        int32_t var_3C; // field same in all vehicles unread for bogie
         uint16_t objectId;
         uint16_t var_44;
         uint8_t animationIndex;      // animation index
@@ -736,7 +733,6 @@ namespace OpenLoco::Vehicles
     struct VehicleTail : VehicleBase
     {
         static constexpr auto kVehicleThingType = VehicleEntityType::tail;
-        int32_t var_3C; // field same in all vehicles unread for tail
         VehicleSound sound;
         uint16_t trainDanglingTimeout; // counts up when no cars on train
 

@@ -279,7 +279,7 @@ namespace OpenLoco::S5
         dstVehicle2.routingHandle = src.routingHandle._data;
         dstVehicle2.var_38 = enumValue(src.var_38);
         dstVehicle2.nextCarId = enumValue(src.nextCarId);
-        dstVehicle2.var_3C = src.var_3C;
+        dstVehicle2.var_3C = 0;
         dstVehicle2.mode = enumValue(src.mode);
         dstVehicle2.drivingSoundId = src.sound.drivingSoundId;
         dstVehicle2.drivingSoundVolume = src.sound.drivingSoundVolume;
@@ -335,7 +335,7 @@ namespace OpenLoco::S5
         dstBogie.var_38 = enumValue(src.var_38);
         dstBogie.objectSpriteType = src.objectSpriteType;
         dstBogie.nextCarId = enumValue(src.nextCarId);
-        dstBogie.var_3C = src.var_3C;
+        dstBogie.var_3C = 0;
         dstBogie.objectId = src.objectId;
         dstBogie.mode = enumValue(src.mode);
         dstBogie.var_44 = src.var_44;
@@ -377,7 +377,7 @@ namespace OpenLoco::S5
         dstBody.var_38 = enumValue(src.var_38);
         dstBody.objectSpriteType = src.objectSpriteType;
         dstBody.nextCarId = enumValue(src.nextCarId);
-        dstBody.var_3C = src.var_3C;
+        dstBody.var_3C = 0;
         dstBody.objectId = src.objectId;
         dstBody.mode = enumValue(src.mode);
         dstBody.var_44 = src.var_44;
@@ -412,7 +412,7 @@ namespace OpenLoco::S5
         dstTail.routingHandle = src.routingHandle._data;
         dstTail.var_38 = enumValue(src.var_38);
         dstTail.nextCarId = enumValue(src.nextCarId);
-        dstTail.var_3C = src.var_3C;
+        dstTail.var_3C = 0;
         dstTail.mode = enumValue(src.mode);
         dstTail.drivingSoundId = src.sound.drivingSoundId;
         dstTail.drivingSoundVolume = src.sound.drivingSoundVolume;
@@ -693,7 +693,6 @@ namespace OpenLoco::S5
         dst.routingHandle._data = src.routingHandle;
         dst.var_38 = static_cast<Vehicles::Flags38>(src.var_38);
         dst.nextCarId = static_cast<EntityId>(src.nextCarId);
-        dst.var_3C = src.var_3C;
         dst.mode = static_cast<TransportMode>(src.mode);
         dst.sound.drivingSoundId = src.drivingSoundId;
         dst.sound.drivingSoundVolume = src.drivingSoundVolume;
@@ -744,7 +743,6 @@ namespace OpenLoco::S5
         dst.var_38 = static_cast<Vehicles::Flags38>(src.var_38);
         dst.objectSpriteType = src.objectSpriteType;
         dst.nextCarId = static_cast<EntityId>(src.nextCarId);
-        dst.var_3C = src.var_3C;
         dst.objectId = src.objectId;
         dst.mode = static_cast<TransportMode>(src.mode);
         dst.var_44 = src.var_44;
@@ -781,7 +779,6 @@ namespace OpenLoco::S5
         dst.var_38 = static_cast<Vehicles::Flags38>(src.var_38);
         dst.objectSpriteType = src.objectSpriteType;
         dst.nextCarId = static_cast<EntityId>(src.nextCarId);
-        dst.var_3C = src.var_3C;
         dst.objectId = src.objectId;
         dst.mode = static_cast<TransportMode>(src.mode);
         dst.var_44 = src.var_44;
@@ -811,7 +808,6 @@ namespace OpenLoco::S5
         dst.routingHandle._data = src.routingHandle;
         dst.var_38 = static_cast<Vehicles::Flags38>(src.var_38);
         dst.nextCarId = static_cast<EntityId>(src.nextCarId);
-        dst.var_3C = src.var_3C;
         dst.mode = static_cast<TransportMode>(src.mode);
         dst.sound.drivingSoundId = src.drivingSoundId;
         dst.sound.drivingSoundVolume = src.drivingSoundVolume;

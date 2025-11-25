@@ -237,9 +237,10 @@ namespace OpenLoco::VehicleManager
             component.subPosition = subPosition;
             component.trackAndDirection = reverseTad;
             component.remainingDistance = 0;
-            component.var_3C = 0;
             moveComponentToSubPosition(component);
         });
+        train.head->var_3C = 0;
+        train.veh1->var_3C = 0;
 
         Vehicles::applyVehicleObjectLength(train);
         auto oldVar52 = head->var_52;
