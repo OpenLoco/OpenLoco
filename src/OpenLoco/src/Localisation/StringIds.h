@@ -1102,12 +1102,12 @@ namespace OpenLoco::StringIds
     constexpr StringId sort_industry_status = 1376;
     constexpr StringId sort_industry_production_transported = 1377;
     constexpr StringId industry_table_header_status = 1378;
-    constexpr StringId industry_table_header_status_desc = 1379;
+    constexpr StringId industry_table_header_status_desc = UNUSED_STR(1379);
     constexpr StringId industry_table_header_production = 1380;
-    constexpr StringId industry_table_header_production_desc = 1381;
+    constexpr StringId industry_table_header_production_desc = UNUSED_STR(1381);
     constexpr StringId sort_industry_name = 1382;
     constexpr StringId industry_table_header = 1383;
-    constexpr StringId industry_table_header_desc = 1384;
+    constexpr StringId industry_table_header_desc = UNUSED_STR(1384);
     constexpr StringId no_industry_available = 1385;
     constexpr StringId tooltip_town = 1386;
     constexpr StringId tooltip_population_graph = 1387;

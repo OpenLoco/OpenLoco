@@ -97,10 +97,10 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(600, 197, StringIds::title_industries),
-            Widgets::TableHeader({ 4, 44 }, { 199, 11 }, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_name),
-            Widgets::TableHeader({ 204, 44 }, { 204, 11 }, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_status),
-            Widgets::TableHeader({ 444, 44 }, { 159, 11 }, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_production_transported),
-            Widgets::TableHeader({ 603, 44 }, { 159, 11 }, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_production_last_month),
+            Widgets::TableHeader({ 4, 44 }, { 199, 11 }, WindowColour::secondary, StringIds::industry_table_header, StringIds::sort_industry_name),
+            Widgets::TableHeader({ 204, 44 }, { 204, 11 }, WindowColour::secondary, StringIds::industry_table_header_status, StringIds::sort_industry_status),
+            Widgets::TableHeader({ 444, 44 }, { 159, 11 }, WindowColour::secondary, StringIds::industry_table_header_production, StringIds::sort_industry_production_transported),
+            Widgets::TableHeader({ 603, 44 }, { 159, 11 }, WindowColour::secondary, StringIds::industry_table_header_production_last_month, StringIds::sort_industry_production_last_month),
             Widgets::ScrollView({ 3, 56 }, { 593, 125 }, WindowColour::secondary, Scrollbars::vertical),
             Widgets::Label({ 4, kWindowSize.height - 17 }, { kWindowSize.width, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
 
@@ -133,12 +133,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             self.widgets[widx::sort_industry_production_last_month].left = std::min(self.width - 4, 603);
             self.widgets[widx::sort_industry_production_last_month].right = std::min(self.width - 4, 762);
-
-            // Set header button captions.
-            self.widgets[widx::sort_industry_name].text = self.sortMode == SortMode::Name ? StringIds::industry_table_header_desc : StringIds::industry_table_header;
-            self.widgets[widx::sort_industry_status].text = self.sortMode == SortMode::Status ? StringIds::industry_table_header_status_desc : StringIds::industry_table_header_status;
-            self.widgets[widx::sort_industry_production_transported].text = self.sortMode == SortMode::ProductionTransported ? StringIds::industry_table_header_production_desc : StringIds::industry_table_header_production;
-            self.widgets[widx::sort_industry_production_last_month].text = self.sortMode == SortMode::ProductionLastMonth ? StringIds::industry_table_header_production_last_month_desc : StringIds::industry_table_header_production_last_month;
 
             if (SceneManager::isEditorMode() || SceneManager::isSandboxMode())
             {
@@ -191,6 +185,10 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     {
                         return;
                     }
+
+                    // Set appropriate table header labels to display as descending
+                    self.widgets[self.sortMode + widx::sort_industry_name].styleData = enumValue(Widgets::TableHeader::Style::notSorted);
+                    self.widgets[widgetIndex].styleData = enumValue(Widgets::TableHeader::Style::sortedDescending);
 
                     self.sortMode = sortMode;
                     self.invalidate();
@@ -589,6 +587,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             self.var_83C = 0;
             self.rowHover = -1;
             Common::refreshIndustryList(&self);
+            self.widgets[self.sortMode + widx::sort_industry_name].styleData = enumValue(Widgets::TableHeader::Style::sortedDescending);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -661,6 +660,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             window->invalidate();
 
             window->setWidgets(IndustryList::widgets);
+            window->widgets[window->sortMode + IndustryList::widx::sort_industry_name].styleData = enumValue(Widgets::TableHeader::Style::sortedDescending);
             window->activatedWidgets = 0;
             window->holdableWidgets = 0;
 
