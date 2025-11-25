@@ -992,8 +992,6 @@ namespace OpenLoco::Vehicles
     uint32_t getNumUnitsForCargo(uint32_t maxPrimaryCargo, uint8_t primaryCargoId, uint8_t newCargoId);
     void removeAllCargo(CarComponent& carComponent);
 
-    struct VehicleCommon;
-
     /* flipCar
      * Reverses a Car in-place and returns the new front bogie
      * frontBogie: front bogie of the Car
