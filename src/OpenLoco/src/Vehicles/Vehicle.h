@@ -661,9 +661,9 @@ namespace OpenLoco::Vehicles
 
         const VehicleObject* getObject() const;
         bool update(const CarUpdateState& carState);
-        void secondaryAnimationUpdate(const Vehicle& train, const CarUpdateState& carState);
+        void secondaryAnimationUpdate(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance);
         void updateSegmentCrashed(const CarUpdateState& carState);
-        void sub_4AAB0B(const CarUpdateState& carState);
+        void sub_4AAB0B(const CarUpdateState& carState, const int32_t unkDistance);
         void updateCargoSprite();
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
         {
@@ -672,12 +672,12 @@ namespace OpenLoco::Vehicles
         void sub_4AC255(VehicleBogie* backBogie, VehicleBogie* frontBogie);
 
     private:
-        void animationUpdate(const CarUpdateState& carState);
-        void steamPuffsAnimationUpdate(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t var_05);
+        void animationUpdate(const CarUpdateState& carState, const int32_t unkDistance);
+        void steamPuffsAnimationUpdate(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance, uint8_t num, int32_t var_05);
         void dieselExhaust1AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t var_05);
         void dieselExhaust2AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t var_05);
-        void electricSpark1AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t var_05);
-        void electricSpark2AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t var_05);
+        void electricSpark1AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance, uint8_t num, int32_t var_05);
+        void electricSpark2AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance, uint8_t num, int32_t var_05);
         void shipWakeAnimationUpdate(const Vehicle& train, uint8_t num, int32_t var_05);
         Pitch updateSpritePitchSteepSlopes(uint16_t xyOffset, int16_t zOffset);
         Pitch updateSpritePitch(uint16_t xyOffset, int16_t zOffset);
@@ -723,7 +723,7 @@ namespace OpenLoco::Vehicles
         }
 
     private:
-        void updateRoll();
+        void updateRoll(const int32_t unkDistance);
         void collision(const EntityId collideEntityId);
     };
     static_assert(sizeof(VehicleBogie) <= sizeof(Entity));

@@ -40,7 +40,7 @@ namespace OpenLoco::Vehicles
 
         const auto motionResult = updateTrackMotion(_vehicleUpdate_var_113612C, false);
 
-        const int32_t stash1136130 = _vehicleUpdate_var_1136130;
+        int32_t unkDistance = _vehicleUpdate_var_1136130;
         if (wheelSlipping != 0)
         {
             auto unk = wheelSlipping;
@@ -48,11 +48,10 @@ namespace OpenLoco::Vehicles
             {
                 unk = kWheelSlippingDuration - unk;
             }
-            _vehicleUpdate_var_1136130 = 500 + unk * 320;
+            unkDistance = 500 + unk * 320;
         }
 
-        updateRoll();
-        _vehicleUpdate_var_1136130 = stash1136130;
+        updateRoll(unkDistance);
         if (motionResult.hasFlags(UpdateVar1136114Flags::noRouteFound))
         {
             destroyTrain();
@@ -68,9 +67,9 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AAC02
-    void VehicleBogie::updateRoll()
+    void VehicleBogie::updateRoll(const int32_t unkDistance)
     {
-        auto unk = _vehicleUpdate_var_1136130 / 8;
+        auto unk = unkDistance / 8;
         if (has38Flags(Flags38::isReversed))
         {
             unk = -unk;
@@ -178,7 +177,7 @@ namespace OpenLoco::Vehicles
         _vehicleUpdate_var_113612C = speed.getRaw() / 128;
         _vehicleUpdate_var_1136130 = speed.getRaw() / 128;
 
-        this->updateRoll();
+        this->updateRoll(_vehicleUpdate_var_1136130);
 
         if (isComponentDestroyed)
         {

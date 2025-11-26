@@ -48,9 +48,10 @@ namespace OpenLoco::Vehicles
     // 0x004AA1D0
     bool VehicleBody::update(const CarUpdateState& carState)
     {
+        int32_t unkDistance = _vehicleUpdate_var_1136130;
         if (mode == TransportMode::air || mode == TransportMode::water)
         {
-            animationUpdate(carState);
+            animationUpdate(carState, unkDistance);
             return true;
         }
 
@@ -60,7 +61,6 @@ namespace OpenLoco::Vehicles
             sub_4AC255(carState.backBogie, carState.frontBogie);
             invalidateSprite();
         }
-        uint32_t backup1136130 = _vehicleUpdate_var_1136130;
         if (wheelSlipping != 0)
         {
             int32_t var_1136130 = wheelSlipping;
@@ -69,16 +69,15 @@ namespace OpenLoco::Vehicles
                 var_1136130 = kWheelSlippingDuration - var_1136130;
             }
 
-            _vehicleUpdate_var_1136130 += var_1136130 * 320 + 500;
+            unkDistance += var_1136130 * 320 + 500;
         }
-        animationUpdate(carState);
-        sub_4AAB0B(carState);
-        _vehicleUpdate_var_1136130 = backup1136130;
+        animationUpdate(carState, unkDistance);
+        sub_4AAB0B(carState, unkDistance);
         return true;
     }
 
     // 0x004AAC4E
-    void VehicleBody::animationUpdate(const CarUpdateState& carState)
+    void VehicleBody::animationUpdate(const CarUpdateState& carState, const int32_t unkDistance)
     {
         if (has38Flags(Flags38::isGhost))
         {
@@ -106,16 +105,16 @@ namespace OpenLoco::Vehicles
             case EmitterAnimationType::steam_puff1:
             case EmitterAnimationType::steam_puff2:
             case EmitterAnimationType::steam_puff3:
-                steamPuffsAnimationUpdate(train, carState, 0, emitterHorizontalPos);
+                steamPuffsAnimationUpdate(train, carState, 0, emitterHorizontalPos, unkDistance);
                 break;
             case EmitterAnimationType::diesel_exhaust1:
                 dieselExhaust1AnimationUpdate(train, carState, 0, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::electric_spark1:
-                electricSpark1AnimationUpdate(train, carState, 0, emitterHorizontalPos);
+                electricSpark1AnimationUpdate(train, carState, 0, emitterHorizontalPos, unkDistance);
                 break;
             case EmitterAnimationType::electric_spark2:
-                electricSpark2AnimationUpdate(train, carState, 0, emitterHorizontalPos);
+                electricSpark2AnimationUpdate(train, carState, 0, emitterHorizontalPos, unkDistance);
                 break;
             case EmitterAnimationType::diesel_exhaust2:
                 dieselExhaust2AnimationUpdate(train, carState, 0, emitterHorizontalPos);
@@ -127,7 +126,7 @@ namespace OpenLoco::Vehicles
                 assert(false);
                 break;
         }
-        secondaryAnimationUpdate(train, carState);
+        secondaryAnimationUpdate(train, carState, unkDistance);
     }
 
     // 0x004AA904
@@ -136,8 +135,8 @@ namespace OpenLoco::Vehicles
         invalidateSprite();
         sub_4AC255(carState.backBogie, carState.frontBogie);
         invalidateSprite();
-        animationUpdate(carState);
-        sub_4AAB0B(carState);
+        animationUpdate(carState, _vehicleUpdate_var_1136130);
+        sub_4AAB0B(carState, _vehicleUpdate_var_1136130);
         if (!hasVehicleFlags(VehicleFlags::unk_5))
         {
             VehicleBogie* frontBogie = carState.frontBogie;
@@ -153,9 +152,9 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AAB0B
-    void VehicleBody::sub_4AAB0B(const CarUpdateState& carState)
+    void VehicleBody::sub_4AAB0B(const CarUpdateState& carState, const int32_t unkDistance)
     {
-        int32_t eax = _vehicleUpdate_var_1136130 >> 3;
+        int32_t eax = unkDistance >> 3;
         if (has38Flags(Flags38::isReversed))
         {
             eax = -eax;
@@ -883,7 +882,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AB655
-    void VehicleBody::secondaryAnimationUpdate(const Vehicle& train, const CarUpdateState& carState)
+    void VehicleBody::secondaryAnimationUpdate(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance)
     {
         const auto* vehicleObject = getObject();
 
@@ -902,16 +901,16 @@ namespace OpenLoco::Vehicles
             case EmitterAnimationType::steam_puff1:
             case EmitterAnimationType::steam_puff2:
             case EmitterAnimationType::steam_puff3:
-                steamPuffsAnimationUpdate(train, carState, 1, emitterHorizontalPos);
+                steamPuffsAnimationUpdate(train, carState, 1, emitterHorizontalPos, unkDistance);
                 break;
             case EmitterAnimationType::diesel_exhaust1:
                 dieselExhaust1AnimationUpdate(train, carState, 1, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::electric_spark1:
-                electricSpark1AnimationUpdate(train, carState, 1, emitterHorizontalPos);
+                electricSpark1AnimationUpdate(train, carState, 1, emitterHorizontalPos, unkDistance);
                 break;
             case EmitterAnimationType::electric_spark2:
-                electricSpark2AnimationUpdate(train, carState, 1, emitterHorizontalPos);
+                electricSpark2AnimationUpdate(train, carState, 1, emitterHorizontalPos, unkDistance);
                 break;
             case EmitterAnimationType::diesel_exhaust2:
                 dieselExhaust2AnimationUpdate(train, carState, 1, emitterHorizontalPos);
@@ -926,7 +925,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AB688, 0x004AACA5
-    void VehicleBody::steamPuffsAnimationUpdate(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t emitterHorizontalPos)
+    void VehicleBody::steamPuffsAnimationUpdate(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance, uint8_t num, int32_t emitterHorizontalPos)
     {
         const auto* vehicleObject = getObject();
         VehicleBogie* frontBogie = carState.frontBogie;
@@ -965,7 +964,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            if (_vehicleUpdate_var_1136130 + (uint16_t)(_var_44 * 8) < std::numeric_limits<uint16_t>::max())
+            if (unkDistance + (uint16_t)(_var_44 * 8) < std::numeric_limits<uint16_t>::max())
             {
                 return;
             }
@@ -1214,7 +1213,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004ABDAD & 0x004AB3CA
-    void VehicleBody::electricSpark1AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t emitterHorizontalPos)
+    void VehicleBody::electricSpark1AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance, uint8_t num, int32_t emitterHorizontalPos)
     {
         VehicleBogie* frontBogie = carState.frontBogie;
         VehicleBogie* backBogie = carState.backBogie;
@@ -1238,7 +1237,7 @@ namespace OpenLoco::Vehicles
             _var_44 = -var_44;
         }
 
-        if (((uint16_t)_vehicleUpdate_var_1136130) + ((uint16_t)_var_44 * 8) < std::numeric_limits<uint16_t>::max())
+        if (((uint16_t)unkDistance) + ((uint16_t)_var_44 * 8) < std::numeric_limits<uint16_t>::max())
         {
             return;
         }
@@ -1259,7 +1258,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004ABEC3 & 0x004AB4E0
-    void VehicleBody::electricSpark2AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t emitterHorizontalPos)
+    void VehicleBody::electricSpark2AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance, uint8_t num, int32_t emitterHorizontalPos)
     {
         VehicleBogie* frontBogie = carState.frontBogie;
         VehicleBogie* backBogie = carState.backBogie;
@@ -1283,7 +1282,7 @@ namespace OpenLoco::Vehicles
             _var_44 = -var_44;
         }
 
-        if (((uint16_t)_vehicleUpdate_var_1136130) + ((uint16_t)_var_44 * 8) < std::numeric_limits<uint16_t>::max())
+        if (((uint16_t)unkDistance) + ((uint16_t)_var_44 * 8) < std::numeric_limits<uint16_t>::max())
         {
             return;
         }
