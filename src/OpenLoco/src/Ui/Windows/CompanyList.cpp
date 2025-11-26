@@ -109,7 +109,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             Widgets::TableHeader({ 389, 43 }, { 145, 12 }, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_performance),
             Widgets::TableHeader({ 534, 43 }, { 100, 12 }, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_value),
             Widgets::ScrollView({ 3, 56 }, { 634, 201 }, WindowColour::secondary, Scrollbars::vertical),
-            Widgets::Label({ 3, kWindowSize.height - 17 }, { kWindowSize.width, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
+            Widgets::Label({ 3, kWindowSize.height - 17 }, { kWindowSize.width - kResizeHandleSize, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
 
         );
 
@@ -414,6 +414,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             self.widgets[widx::scrollview].right = self.width - 4;
             self.widgets[widx::scrollview].bottom = self.height - 14;
+            self.widgets[widx::status_bar].right = self.width - kResizeHandleSize - 1;
 
             // Reposition header buttons
             self.widgets[widx::sort_name].right = std::min(178, self.width - 8);
