@@ -32,7 +32,7 @@ namespace OpenLoco::Vehicles
     {
         none = 0,
 
-        unk1 = 1U << 1,
+        excludeReverseDirection = 1U << 1,
         unk2 = 1U << 2,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(TrackNetworkSearchFlags);
@@ -629,7 +629,7 @@ namespace OpenLoco::Vehicles
             _hasDeadEnd = *_hasDeadEnd | (1 << 0);
         }
 
-        if ((_findTrackNetworkFlags & TrackNetworkSearchFlags::unk1) == TrackNetworkSearchFlags::none)
+        if ((_findTrackNetworkFlags & TrackNetworkSearchFlags::excludeReverseDirection) == TrackNetworkSearchFlags::none)
         {
             // odd logic here clearing a flag in a branch that can never hit
             auto nextLoc = initialInterest.loc;
@@ -812,7 +812,7 @@ namespace OpenLoco::Vehicles
             _hasDeadEnd = *_hasDeadEnd | (1 << 0);
         }
 
-        if ((_findTrackNetworkFlags & TrackNetworkSearchFlags::unk1) == TrackNetworkSearchFlags::none)
+        if ((_findTrackNetworkFlags & TrackNetworkSearchFlags::excludeReverseDirection) == TrackNetworkSearchFlags::none)
         {
             // odd logic here clearing a flag in a branch that can never hit
             auto nextLoc = initialInterest.loc;
@@ -989,7 +989,7 @@ namespace OpenLoco::Vehicles
 
         findAllTracksFilterTransform(
             interestMap,
-            TrackNetworkSearchFlags::unk1,
+            TrackNetworkSearchFlags::excludeReverseDirection,
             loc,
             trackAndDirection,
             company,
