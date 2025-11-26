@@ -65,18 +65,18 @@ namespace OpenLoco::Audio
     }
 
     // 0x0048A590
-    static std::pair<SoundId, Channel::Attributes> getChannelAttributesFromVehicle(const Vehicles::VehicleSoundPlayer* v)
+    static std::pair<SoundId, Channel::Attributes> getChannelAttributesFromVehicle(const Vehicles::VehicleBase& base, const Vehicles::VehicleSound& soundParams)
     {
-        auto* w = Ui::WindowManager::find(v->soundWindowType, v->soundWindowNumber);
+        auto* w = Ui::WindowManager::find(soundParams.soundWindowType, soundParams.soundWindowNumber);
         auto* viewport = w->viewports[0];
-        const auto uiPoint = viewport->viewportToScreen({ v->spriteLeft, v->spriteTop });
+        const auto uiPoint = viewport->viewportToScreen({ base.spriteLeft, base.spriteTop });
 
         const auto zoomVolumeModifier = getZoomVolumeModifier(viewport->zoom);
 
         const auto panX = calculatePan(uiPoint.x, Ui::width());
         const auto panY = calculatePan(uiPoint.y, Ui::height());
 
-        const auto undergroundVolumeModifier = getUndergroundVolumeModifier(v->position);
+        const auto undergroundVolumeModifier = getUndergroundVolumeModifier(base.position);
 
         const auto xFalloffModifier = getFalloffModifier(panX);
         const auto yFalloffModifier = getFalloffModifier(panY);
@@ -86,9 +86,9 @@ namespace OpenLoco::Audio
         const auto overallVolumeModifier = std::max(falloffVolumeModifier + undergroundVolumeModifier + zoomVolumeModifier, 0);
 
         // volume is in hundredth decibels max decrease in volume is -100dB.
-        const auto volume = std::max(((v->drivingSoundVolume * overallVolumeModifier) / 8) + kVehicleVolumeCalcMin, kVolumeMin);
+        const auto volume = std::max(((soundParams.drivingSoundVolume * overallVolumeModifier) / 8) + kVehicleVolumeCalcMin, kVolumeMin);
 
-        return { makeObjectSoundId(v->drivingSoundId), { volume, panX, v->drivingSoundFrequency } };
+        return { makeObjectSoundId(soundParams.drivingSoundId), { volume, panX, soundParams.drivingSoundFrequency } };
     }
 
     void VehicleChannel::begin(EntityId vid)
@@ -98,13 +98,17 @@ namespace OpenLoco::Audio
         {
             return;
         }
-        auto* vSoundPlayer = v->getSoundPlayer();
-        if (vSoundPlayer == nullptr)
+        if (!v->hasSoundPlayer())
+        {
+            return;
+        }
+        auto* soundParams = v->getVehicleSound();
+        if (soundParams == nullptr)
         {
             return;
         }
 
-        auto [sid, sa] = getChannelAttributesFromVehicle(vSoundPlayer);
+        auto [sid, sa] = getChannelAttributesFromVehicle(*v, *soundParams);
         auto loop = Audio::shouldSoundLoop(sid);
         auto sample = Audio::getSoundSample(sid);
         if (sample)
@@ -139,21 +143,21 @@ namespace OpenLoco::Audio
             return;
         }
 
-        auto* vSoundPlayer = v->getSoundPlayer();
-        if (vSoundPlayer == nullptr || ((vSoundPlayer->soundFlags & Vehicles::SoundFlags::flag0) == Vehicles::SoundFlags::none))
+        auto* soundParams = v->getVehicleSound();
+        if (soundParams == nullptr || ((soundParams->soundFlags & Vehicles::SoundFlags::flag0) == Vehicles::SoundFlags::none))
         {
             stop();
             return;
         }
 
-        auto [sid, sa] = getChannelAttributesFromVehicle(vSoundPlayer);
+        auto [sid, sa] = getChannelAttributesFromVehicle(*v, *soundParams);
         if (_soundId != sid)
         {
             stop();
             return;
         }
 
-        vSoundPlayer->soundFlags &= ~Vehicles::SoundFlags::flag0;
+        soundParams->soundFlags &= ~Vehicles::SoundFlags::flag0;
         const auto& attributes = _channel.getAttributes();
         if (attributes.volume != sa.volume)
         {

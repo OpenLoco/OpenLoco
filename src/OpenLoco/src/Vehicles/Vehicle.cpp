@@ -24,41 +24,6 @@ namespace OpenLoco::Vehicles
 {
     static constexpr int32_t kObjDistToHighPrecisionDistance = 2179;
 
-#pragma pack(push, 1)
-    // There are some common elements in the vehicle components at various offsets these can be accessed via VehicleBase
-    struct VehicleCommon : VehicleBase
-    {
-        ColourScheme colourScheme;           // 0x24
-        EntityId head;                       // 0x26
-        int32_t remainingDistance;           // 0x28
-        TrackAndDirection trackAndDirection; // 0x2C
-        uint16_t subPosition;                // 0x2E
-        int16_t tileX;                       // 0x30
-        int16_t tileY;                       // 0x32
-        World::SmallZ tileBaseZ;             // 0x34
-        uint8_t trackType;                   // 0x35 field same in all vehicles
-        RoutingHandle routingHandle;         // 0x36 field same in all vehicles
-        Flags38 var_38;                      // 0x38
-        uint8_t pad_39;
-        EntityId nextCarId; // 0x3A
-        uint8_t pad_3C[0x42 - 0x3C];
-        TransportMode mode; // 0x42 field same in all vehicles
-    };
-    static_assert(sizeof(VehicleCommon) == 0x43); // Can't use offset_of change this to last field if more found
-#pragma pack(pop)
-
-    ColourScheme VehicleBase::getColourScheme()
-    {
-        auto* veh = reinterpret_cast<VehicleCommon*>(this);
-        return veh->colourScheme;
-    }
-
-    void VehicleBase::setColourScheme(ColourScheme colourScheme)
-    {
-        auto* veh = reinterpret_cast<VehicleCommon*>(this);
-        veh->colourScheme = colourScheme;
-    }
-
     VehicleBase* VehicleBase::nextVehicle()
     {
         return EntityManager::get<VehicleBase>(nextEntityId);
@@ -66,96 +31,95 @@ namespace OpenLoco::Vehicles
 
     VehicleBase* VehicleBase::nextVehicleComponent()
     {
-        auto* veh = reinterpret_cast<VehicleCommon*>(this);
-        return EntityManager::get<VehicleBase>(veh->nextCarId);
+        return EntityManager::get<VehicleBase>(nextCarId);
     }
 
     VehicleBase* VehicleBase::previousVehicleComponent()
     {
-        auto head = EntityManager::get<VehicleBase>(this->getHead());
-        while (head->nextVehicleComponent() != this)
+        auto component = EntityManager::get<VehicleBase>(this->getHead());
+        while (component->nextVehicleComponent() != this)
         {
-            head = head->nextVehicleComponent();
+            component = component->nextVehicleComponent();
         }
-        return head;
+        return component;
+    }
+
+    VehicleSound* VehicleBase::getVehicleSound()
+    {
+        if (is<VehicleEntityType::vehicle_2>())
+        {
+            return &as<Vehicle2>()->sound;
+        }
+        else if (is<VehicleEntityType::tail>())
+        {
+            return &as<VehicleTail>()->sound;
+        }
+        return nullptr;
     }
 
     TransportMode VehicleBase::getTransportMode() const
     {
-        const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
-        return veh->mode;
+        return mode;
     }
 
     Flags38 VehicleBase::getFlags38() const
     {
-        const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
-        return veh->var_38;
+        return var_38;
     }
 
     uint8_t VehicleBase::getTrackType() const
     {
-        const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
-        return veh->trackType;
+        return trackType;
     }
 
     World::Pos3 VehicleBase::getTrackLoc() const
     {
-        const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
-        return World::Pos3(veh->tileX, veh->tileY, veh->tileBaseZ * World::kSmallZStep);
+        return World::Pos3(tileX, tileY, tileBaseZ * World::kSmallZStep);
     }
 
     TrackAndDirection VehicleBase::getTrackAndDirection() const
     {
-        const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
-        return veh->trackAndDirection;
+        return trackAndDirection;
     }
 
     RoutingHandle VehicleBase::getRoutingHandle() const
     {
-        const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
-        return veh->routingHandle;
+        return routingHandle;
     }
 
     EntityId VehicleBase::getHead() const
     {
-        const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
-        return veh->head;
+        return head;
     }
 
     int32_t VehicleBase::getRemainingDistance() const
     {
-        const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
-        return veh->remainingDistance;
+        return remainingDistance;
     }
 
     void VehicleBase::setNextCar(const EntityId newNextCar)
     {
-        auto* veh = reinterpret_cast<VehicleCommon*>(this);
-        veh->nextCarId = newNextCar;
+        nextCarId = newNextCar;
     }
 
     EntityId VehicleBase::getNextCar() const
     {
-        const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
-        return veh->nextCarId;
+        return nextCarId;
     }
 
     bool VehicleBase::has38Flags(Flags38 flagsToTest) const
     {
-        const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
-        return (veh->var_38 & flagsToTest) != Flags38::none;
+        return (var_38 & flagsToTest) != Flags38::none;
     }
 
     bool VehicleBase::hasVehicleFlags(VehicleFlags flagsToTest) const
     {
-        const auto* ent = reinterpret_cast<const EntityBase*>(this);
-        return (ent->vehicleFlags & flagsToTest) != VehicleFlags::none;
+        return (vehicleFlags & flagsToTest) != VehicleFlags::none;
     }
 
     // 0x004AA407
     void VehicleBase::explodeComponent()
     {
-        auto subType = getSubType();
         assert(subType == VehicleEntityType::bogie || subType == VehicleEntityType::body_start || subType == VehicleEntityType::body_continued);
 
         const auto pos = position + World::Pos3{ 0, 0, 22 };
@@ -251,7 +215,7 @@ namespace OpenLoco::Vehicles
         }
     }
 
-    static bool updateRoadMotionNewRoadPiece(VehicleCommon& component, UpdateVar1136114Flags& flags, bool isVeh2UnkM15)
+    static bool updateRoadMotionNewRoadPiece(VehicleBase& component, UpdateVar1136114Flags& flags, bool isVeh2UnkM15)
     {
         auto newRoutingHandle = component.routingHandle;
         auto newIndex = newRoutingHandle.getIndex() + 1;
@@ -305,7 +269,7 @@ namespace OpenLoco::Vehicles
         return false;
     }
 
-    static bool updateTrackMotionNewTrackPiece(VehicleCommon& component, UpdateVar1136114Flags& flags, bool isVeh2UnkM15)
+    static bool updateTrackMotionNewTrackPiece(VehicleBase& component, UpdateVar1136114Flags& flags, bool isVeh2UnkM15)
     {
         auto newRoutingHandle = component.routingHandle;
         auto newIndex = newRoutingHandle.getIndex() + 1;
@@ -448,7 +412,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0047C7FA
-    static UpdateMotionResult updateRoadMotion(VehicleCommon& component, int32_t distance, bool isVeh2UnkM15)
+    static UpdateMotionResult updateRoadMotion(VehicleBase& component, int32_t distance, bool isVeh2UnkM15)
     {
         UpdateMotionResult result{};
         component.remainingDistance += distance;
@@ -502,7 +466,7 @@ namespace OpenLoco::Vehicles
         return result;
     }
 
-    static UpdateMotionResult updateTrackMotion(VehicleCommon& component, int32_t distance, bool isVeh2UnkM15)
+    static UpdateMotionResult updateTrackMotion(VehicleBase& component, int32_t distance, bool isVeh2UnkM15)
     {
         if (component.mode == TransportMode::road)
         {
@@ -571,7 +535,7 @@ namespace OpenLoco::Vehicles
     // 0x004B15FF
     UpdateMotionResult VehicleBase::updateTrackMotion(int32_t unk1, bool isVeh2UnkM15)
     {
-        return Vehicles::updateTrackMotion(*reinterpret_cast<VehicleCommon*>(this), unk1, isVeh2UnkM15);
+        return Vehicles::updateTrackMotion(*this, unk1, isVeh2UnkM15);
     }
 
     // 0x0047D959
@@ -581,9 +545,9 @@ namespace OpenLoco::Vehicles
     // bp : trackAndDirection
     // ebp : bp | (setOccupied << 31)
     // returns dh : trackType
-    uint8_t VehicleBase::sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied)
+    uint8_t VehicleBase::sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection rad, const bool setOccupied)
     {
-        auto trackType = getTrackType();
+        auto roadType = getTrackType();
         auto tile = World::TileManager::get(loc);
         for (auto& el : tile)
         {
@@ -599,12 +563,12 @@ namespace OpenLoco::Vehicles
                 continue;
             }
 
-            if (elRoad->rotation() != trackAndDirection.cardinalDirection())
+            if (elRoad->rotation() != rad.cardinalDirection())
             {
                 continue;
             }
 
-            if (elRoad->roadId() != trackAndDirection.id())
+            if (elRoad->roadId() != rad.id())
             {
                 continue;
             }
@@ -614,7 +578,7 @@ namespace OpenLoco::Vehicles
                 continue;
             }
 
-            const auto newUnk4u = World::TrackData::getRoadOccupationMask(trackAndDirection._data >> 2) >> 4;
+            const auto newUnk4u = World::TrackData::getRoadOccupationMask(rad._data >> 2) >> 4;
             if (setOccupied)
             {
                 elRoad->setUnk4u(elRoad->unk4u() | newUnk4u);
@@ -629,15 +593,15 @@ namespace OpenLoco::Vehicles
                 if (getGameState().roadObjectIdIsNotTram & (1 << elRoad->roadObjectId()))
                 {
                     elRoad->setUnk7_40(true);
-                    trackType = elRoad->roadObjectId();
+                    roadType = elRoad->roadObjectId();
                 }
             }
             else
             {
-                trackType = getTrackType();
+                roadType = getTrackType();
             }
         }
-        return trackType;
+        return roadType;
     }
 
     CarComponent::CarComponent(VehicleBase*& component)

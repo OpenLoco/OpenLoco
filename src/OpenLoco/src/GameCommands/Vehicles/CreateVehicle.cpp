@@ -87,6 +87,7 @@ namespace OpenLoco::GameCommands
         auto* const base = EntityManager::createEntityVehicle();
         base->baseType = EntityBaseType::vehicle;
         auto* const vehicleBase = base->asBase<Vehicles::VehicleBase>();
+        vehicleBase->vehicleFlags = Vehicles::VehicleFlags::none;
         vehicleBase->setSubType(T::kVehicleThingType);
         return static_cast<T*>(vehicleBase);
     }
@@ -389,7 +390,7 @@ namespace OpenLoco::GameCommands
         EntityManager::moveEntityToList(newHead, EntityManager::EntityListType::vehicleHead);
         newHead->owner = getUpdatingCompanyId();
         newHead->head = newHead->id;
-        newHead->vehicleFlags |= VehicleFlags::commandStop;
+        newHead->vehicleFlags = VehicleFlags::commandStop;
         newHead->trackType = trackType;
         newHead->mode = mode;
         newHead->tileX = -1;
@@ -475,9 +476,9 @@ namespace OpenLoco::GameCommands
         newVeh2->currentSpeed = 0.0_mph;
         newVeh2->motorState = MotorState::stopped;
         newVeh2->brakeLightTimeout = 0;
-        newVeh2->drivingSoundId = SoundObjectId::null;
-        newVeh2->objectId = 0xFFFFU;
-        newVeh2->soundFlags = Vehicles::SoundFlags::none;
+        newVeh2->sound.drivingSoundId = SoundObjectId::null;
+        newVeh2->sound.objectId = 0xFFFFU;
+        newVeh2->sound.soundFlags = Vehicles::SoundFlags::none;
         newVeh2->curMonthRevenue = 0;
         newVeh2->profit[0] = 0;
         newVeh2->profit[1] = 0;
@@ -508,9 +509,9 @@ namespace OpenLoco::GameCommands
         newTail->spriteHeightNegative = 0;
         newTail->spriteHeightPositive = 0;
         newTail->var_38 = Flags38::none;
-        newTail->drivingSoundId = SoundObjectId::null;
-        newTail->objectId = 0xFFFFU;
-        newTail->soundFlags = Vehicles::SoundFlags::none;
+        newTail->sound.drivingSoundId = SoundObjectId::null;
+        newTail->sound.objectId = 0xFFFFU;
+        newTail->sound.soundFlags = Vehicles::SoundFlags::none;
         newTail->trainDanglingTimeout = 0;
         lastVeh->setNextCar(newTail->id);
         newTail->nextCarId = EntityId::null;

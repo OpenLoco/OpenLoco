@@ -844,7 +844,7 @@ namespace OpenLoco::Ui::Windows::Station
                     continue;
                 }
 
-                vehicle->vehicleFlags &= ~VehicleFlags::sorted;
+                vehicle->vehicleFlags &= ~Vehicles::VehicleFlags::sorted;
             }
         }
 
@@ -879,7 +879,7 @@ namespace OpenLoco::Ui::Windows::Station
                     continue;
                 }
 
-                if (vehicle->hasVehicleFlags(VehicleFlags::sorted))
+                if (vehicle->hasVehicleFlags(Vehicles::VehicleFlags::sorted))
                 {
                     continue;
                 }
@@ -916,7 +916,7 @@ namespace OpenLoco::Ui::Windows::Station
                     refreshVehicleList(self);
                     return;
                 }
-                vehicle->vehicleFlags |= VehicleFlags::sorted;
+                vehicle->vehicleFlags |= Vehicles::VehicleFlags::sorted;
 
                 if (vehicle->id != EntityId(self->rowInfo[self->rowCount]))
                 {

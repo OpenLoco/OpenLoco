@@ -470,15 +470,15 @@ namespace OpenLoco::Audio
     }
 
     // 0x0048A4BF
-    void playSound(Vehicles::VehicleSoundPlayer* v)
+    static void playSound(EntityId id, Vehicles::VehicleSound& soundParams)
     {
-        if ((v->soundFlags & Vehicles::SoundFlags::flag0) != Vehicles::SoundFlags::none)
+        if ((soundParams.soundFlags & Vehicles::SoundFlags::flag0) != Vehicles::SoundFlags::none)
         {
-            Logging::verbose("playSound(vehicle #{})", enumValue(v->id));
+            Logging::verbose("playSound(vehicle #{})", enumValue(id));
             auto vc = getFreeVehicleChannel();
             if (vc != nullptr)
             {
-                vc->begin(v->id);
+                vc->begin(id);
             }
         }
     }
@@ -686,20 +686,15 @@ namespace OpenLoco::Audio
     }
 
     // 0x0048A268
-    static void triggerVehicleSoundIfInView(Vehicles::VehicleSoundPlayer* v)
+    static void triggerVehicleSoundIfInView(Vehicles::VehicleBase& v, Vehicles::VehicleSound& soundParams)
     {
-        if (v == nullptr)
-        {
-            return;
-        }
-
-        if (v->drivingSoundId == SoundObjectId::null)
+        if (soundParams.drivingSoundId == SoundObjectId::null)
         {
             return;
         }
 
         // TODO: left or top?
-        if (v->spriteLeft == Location::null)
+        if (v.spriteLeft == Location::null)
         {
             return;
         }
@@ -709,7 +704,7 @@ namespace OpenLoco::Audio
             return;
         }
 
-        auto spritePosition = viewport_pos(v->spriteLeft, v->spriteTop);
+        auto spritePosition = viewport_pos(v.spriteLeft, v.spriteTop);
 
         // First, check if vehicle appears in the main viewport
         auto main = WindowManager::getMainWindow();
@@ -729,9 +724,9 @@ namespace OpenLoco::Audio
             {
                 // jump + return
                 _numActiveVehicleSounds += 1;
-                v->soundFlags |= Vehicles::SoundFlags::flag0;
-                v->soundWindowType = main->type;
-                v->soundWindowNumber = main->number;
+                soundParams.soundFlags |= Vehicles::SoundFlags::flag0;
+                soundParams.soundWindowType = main->type;
+                soundParams.soundWindowNumber = main->number;
                 return;
             }
         }
@@ -765,39 +760,39 @@ namespace OpenLoco::Audio
             if (viewport->contains(spritePosition))
             {
                 _numActiveVehicleSounds += 1;
-                v->soundFlags |= Vehicles::SoundFlags::flag0;
-                v->soundWindowType = w->type;
-                v->soundWindowNumber = w->number;
+                soundParams.soundFlags |= Vehicles::SoundFlags::flag0;
+                soundParams.soundWindowType = w->type;
+                soundParams.soundWindowNumber = w->number;
                 return;
             }
         }
     }
 
     // 0x004FEB58
-    static void processVehicleForSound(Vehicles::VehicleSoundPlayer* v, int32_t step)
+    static void processVehicleForSound(Vehicles::VehicleBase& v, Vehicles::VehicleSound& soundParams, int32_t step)
     {
         switch (step)
         {
             case 0:
                 // 0x048A262
-                v->soundFlags &= ~Vehicles::SoundFlags::flag0;
+                soundParams.soundFlags &= ~Vehicles::SoundFlags::flag0;
                 break;
             case 1:
                 // 0x048A268
-                if ((v->soundFlags & Vehicles::SoundFlags::flag1) == Vehicles::SoundFlags::none)
+                if ((soundParams.soundFlags & Vehicles::SoundFlags::flag1) == Vehicles::SoundFlags::none)
                 {
-                    triggerVehicleSoundIfInView(v);
+                    triggerVehicleSoundIfInView(v, soundParams);
                 }
                 break;
             case 2:
                 // 0x048A395
-                if ((v->soundFlags & Vehicles::SoundFlags::flag1) != Vehicles::SoundFlags::none)
+                if ((soundParams.soundFlags & Vehicles::SoundFlags::flag1) != Vehicles::SoundFlags::none)
                 {
-                    triggerVehicleSoundIfInView(v);
+                    triggerVehicleSoundIfInView(v, soundParams);
                 }
                 break;
             case 3:
-                playSound(v);
+                playSound(v.id, soundParams);
                 break;
         }
     }
@@ -813,8 +808,8 @@ namespace OpenLoco::Audio
         for (auto* v : VehicleManager::VehicleList())
         {
             Vehicles::Vehicle train(*v);
-            processVehicleForSound(reinterpret_cast<Vehicles::VehicleSoundPlayer*>(train.veh2), step);
-            processVehicleForSound(reinterpret_cast<Vehicles::VehicleSoundPlayer*>(train.tail), step);
+            processVehicleForSound(*train.veh2, train.veh2->sound, step);
+            processVehicleForSound(*train.tail, train.tail->sound, step);
         }
     }
 

@@ -23,6 +23,7 @@ namespace OpenLoco::ScenarioManager
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(ScenarioIndexFlags);
 
+#pragma pack(push, 1)
     struct ScenarioIndexEntry
     {
         char filename[0x100];           // 0x000
@@ -45,6 +46,7 @@ namespace OpenLoco::ScenarioManager
             return (flags & flag) != ScenarioIndexFlags::none;
         }
     };
+#pragma pack(pop)
 
     static_assert(offsetof(ScenarioIndexEntry, category) == 0x100);
     static_assert(offsetof(ScenarioIndexEntry, flags) == 0x264);
