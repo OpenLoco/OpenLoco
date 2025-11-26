@@ -24,8 +24,6 @@ using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
-
     // 0x00503E5C
     static constexpr Pitch kVehicleBodyIndexToPitch[] = {
         Pitch::flat,
@@ -48,7 +46,7 @@ namespace OpenLoco::Vehicles
     // 0x004AA1D0
     bool VehicleBody::update(const CarUpdateState& carState)
     {
-        int32_t unkDistance = _vehicleUpdate_var_1136130;
+        int32_t unkDistance = getVehicleUpdateDistances().unkDistance2;
         if (mode == TransportMode::air || mode == TransportMode::water)
         {
             animationUpdate(carState, unkDistance);
@@ -135,8 +133,8 @@ namespace OpenLoco::Vehicles
         invalidateSprite();
         sub_4AC255(carState.backBogie, carState.frontBogie);
         invalidateSprite();
-        animationUpdate(carState, _vehicleUpdate_var_1136130);
-        sub_4AAB0B(carState, _vehicleUpdate_var_1136130);
+        animationUpdate(carState, getVehicleUpdateDistances().unkDistance2);
+        sub_4AAB0B(carState, getVehicleUpdateDistances().unkDistance2);
         if (!hasVehicleFlags(VehicleFlags::unk_5))
         {
             VehicleBogie* frontBogie = carState.frontBogie;

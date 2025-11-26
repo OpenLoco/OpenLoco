@@ -12,9 +12,6 @@ using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
-    static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
-
     constexpr const uint8_t kBrakeLightTimeout = 7;
 
     // values are pre *256 for maths
@@ -289,9 +286,10 @@ namespace OpenLoco::Vehicles
     {
         Vehicle train(head);
 
-        auto res = updateTrackMotion(_vehicleUpdate_var_113612C, true);
-        _vehicleUpdate_var_113612C = _vehicleUpdate_var_113612C - res.remainingDistance;
-        _vehicleUpdate_var_1136130 = _vehicleUpdate_var_1136130 - res.remainingDistance;
+        auto& distances = getVehicleUpdateDistances();
+        auto res = updateTrackMotion(distances.unkDistance1, true);
+        distances.unkDistance1 -= res.remainingDistance;
+        distances.unkDistance2 -= res.remainingDistance;
         if (res.hasFlags(UpdateVar1136114Flags::noRouteFound))
         {
             destroyTrain();
@@ -309,11 +307,11 @@ namespace OpenLoco::Vehicles
 
         if (motorState == MotorState::stoppedOnIncline)
         {
-            _vehicleUpdate_var_1136130 = _vehicleUpdate_var_113612C + 0x1388;
+            distances.unkDistance2 = distances.unkDistance1 + 0x1388;
         }
 
-        train.head->var_3C -= _vehicleUpdate_var_113612C;
-        train.veh1->var_3C -= _vehicleUpdate_var_113612C;
+        train.head->var_3C -= distances.unkDistance1;
+        train.veh1->var_3C -= distances.unkDistance1;
 
         if (motorState == MotorState::braking)
         {

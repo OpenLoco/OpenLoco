@@ -456,6 +456,15 @@ namespace OpenLoco::Vehicles
         bool hasBogieMoved;       // 0x01136237 has either of the bogies moved this tick
     };
 
+    struct VehicleUpdateDistances
+    {
+        int32_t unkDistance1; // 0x0113612C
+        int32_t unkDistance2; // 0x01136130
+    };
+
+    // Don't use outside of vehicle files
+    VehicleUpdateDistances& getVehicleUpdateDistances();
+
     struct VehicleHead : VehicleBase
     {
         static constexpr auto kVehicleThingType = VehicleEntityType::head;

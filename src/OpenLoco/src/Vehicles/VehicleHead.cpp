@@ -60,9 +60,7 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
-    static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
-    static uint8_t _vehicleMangled_113623B = 0;                         // 0x0113623B TODO: This shouldn't be used as it will be mangled but it is
+    static uint8_t _vehicleMangled_113623B = 0; // 0x0113623B TODO: This shouldn't be used as it will be mangled but it is
 
     static constexpr uint16_t kTrainOneWaySignalTimeout = 1920;
     static constexpr uint16_t kTrainTwoWaySignalTimeout = 640;
@@ -183,8 +181,9 @@ namespace OpenLoco::Vehicles
         updateDrivingSounds();
 
         Vehicle2* veh2 = train.veh2;
-        _vehicleUpdate_var_113612C = veh2->currentSpeed.getRaw() >> 7;
-        _vehicleUpdate_var_1136130 = veh2->currentSpeed.getRaw() >> 7;
+        auto& distances = getVehicleUpdateDistances();
+        distances.unkDistance1 = veh2->currentSpeed.getRaw() >> 7;
+        distances.unkDistance2 = veh2->currentSpeed.getRaw() >> 7;
 
         if (var_5C != 0)
         {
@@ -1564,7 +1563,7 @@ namespace OpenLoco::Vehicles
     bool VehicleHead::landNormalMovementUpdate()
     {
         advanceToNextRoutableOrder();
-        auto [al, flags, nextStation] = sub_4ACEE7(0xD4CB00, _vehicleUpdate_var_113612C, false);
+        auto [al, flags, nextStation] = sub_4ACEE7(0xD4CB00, getVehicleUpdateDistances().unkDistance1, false);
 
         if (mode == TransportMode::road)
         {
@@ -1742,14 +1741,14 @@ namespace OpenLoco::Vehicles
 
         if (vehType2->currentSpeed >= 20.0_mph)
         {
-            _vehicleUpdate_var_1136130 = 0x4000;
+            getVehicleUpdateDistances().unkDistance2 = 0x4000;
         }
         else
         {
-            _vehicleUpdate_var_1136130 = 0x2000;
+            getVehicleUpdateDistances().unkDistance2 = 0x2000;
         }
 
-        train.cars.firstCar.body->sub_4AAB0B({});
+        train.cars.firstCar.body->sub_4AAB0B({}, getVehicleUpdateDistances().unkDistance2);
 
         if (status == Status::stopped)
         {
@@ -2276,14 +2275,14 @@ namespace OpenLoco::Vehicles
         Vehicle2* vehType2 = train.veh2;
         if (vehType2->currentSpeed >= 5.0_mph)
         {
-            _vehicleUpdate_var_1136130 = 0x4000;
+            getVehicleUpdateDistances().unkDistance2 = 0x4000;
         }
         else
         {
-            _vehicleUpdate_var_1136130 = 0x2000;
+            getVehicleUpdateDistances().unkDistance2 = 0x2000;
         }
 
-        train.cars.firstCar.body->sub_4AAB0B({});
+        train.cars.firstCar.body->sub_4AAB0B({}, getVehicleUpdateDistances().unkDistance2);
 
         if (status == Status::stopped)
         {
