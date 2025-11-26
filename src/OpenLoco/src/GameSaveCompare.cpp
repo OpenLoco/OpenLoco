@@ -17,12 +17,6 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::GameSaveCompare
 {
-    std::string getVehicleSubType(const Vehicles::VehicleEntityType vehicleSubType);
-    std::string getEffectSubType(const EffectType effectSubType);
-    void logVehicleTypeAndSubType(int offset, const OpenLoco::Entity& entity);
-    void logEffectType(int offset, const OpenLoco::Entity& entity);
-    long logDivergentEntityOffset(const S5::Entity& lhs, const S5::Entity& rhs, int offset, bool displayAllDivergences, long divergentBytesTotal);
-    bool compareGameStates(S5::GameState& gameState1, S5::GameState& gameState2, bool displayAllDivergences);
     bool isLoggedDivergenceRoutings(OpenLoco::S5::GameState& gameState1, OpenLoco::S5::GameState& gameState2, bool displayAllDivergences);
     bool compareElements(const std::vector<S5::TileElement>& tileElements1, const std::vector<S5::TileElement>& tileElements2, bool displayAllDivergences);
 
@@ -200,7 +194,7 @@ namespace OpenLoco::GameSaveCompare
         return loggedDivergence;
     }
 
-    std::string getVehicleSubType(const Vehicles::VehicleEntityType vehicleSubType)
+    static std::string getVehicleSubType(const Vehicles::VehicleEntityType vehicleSubType)
     {
         auto vehicleSubTypeName = "";
         switch (vehicleSubType)
@@ -233,7 +227,7 @@ namespace OpenLoco::GameSaveCompare
         return vehicleSubTypeName;
     }
 
-    std::string getEffectSubType(const EffectType effectSubType)
+    static std::string getEffectSubType(const EffectType effectSubType)
     {
         auto effectSubTypeName = "effect";
         switch (effectSubType)
@@ -272,21 +266,21 @@ namespace OpenLoco::GameSaveCompare
         return effectSubTypeName;
     }
 
-    void logVehicleTypeAndSubType(int offset, const S5::Entity& entity)
+    static void logVehicleTypeAndSubType(int offset, const S5::Entity& entity)
     {
         auto vehicleTypeName = "TYPE: ENTITY [" + std::to_string(offset) + "] VEHICLE";
         auto vechicleSubTypeName = getVehicleSubType(static_cast<Vehicles::VehicleEntityType>(entity.base.type));
         Logging::info("{} {}", vehicleTypeName, vechicleSubTypeName);
     }
 
-    void logEffectType(int offset, const S5::Entity& entity)
+    static void logEffectType(int offset, const S5::Entity& entity)
     {
         auto effectTypeName = "TYPE: ENTITY [" + std::to_string(offset) + "] EFFECT";
         auto effectSubTYpeName = getEffectSubType(static_cast<EffectType>(entity.base.type));
         Logging::info("{} {}", effectTypeName, effectSubTYpeName);
     }
 
-    long logDivergentEntityOffset(const S5::Entity& lhs, const S5::Entity& rhs, int offset, bool displayAllDivergences, long divergentBytesTotal)
+    static long logDivergentEntityOffset(const S5::Entity& lhs, const S5::Entity& rhs, int offset, bool displayAllDivergences, long divergentBytesTotal)
     {
         if (!bitWiseEqual(lhs, rhs))
         {
@@ -393,7 +387,7 @@ namespace OpenLoco::GameSaveCompare
         return divergentBytesTotal > 0;
     }
 
-    bool compareGameStates(S5::GameState& gameState1, S5::GameState& gameState2, bool displayAllDivergences)
+    static bool compareGameStates(S5::GameState& gameState1, S5::GameState& gameState2, bool displayAllDivergences)
     {
         if (displayAllDivergences)
         {
