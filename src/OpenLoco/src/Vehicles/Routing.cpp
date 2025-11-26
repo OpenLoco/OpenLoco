@@ -180,11 +180,17 @@ namespace OpenLoco::Vehicles
     struct RoutingResults
     {
         LocationOfInterestHashSet reachableLocs;
-        bool hasDeadEnd;
+        bool hasDeadEnd; // 0x01136085
+
+        RoutingResults(uint16_t maxSize)
+            : reachableLocs(maxSize)
+            , hasDeadEnd(false)
+        {
+        }
     };
 
-    // using FilterFunction = bool (*)(const LocationOfInterest& interest);          // TODO C++20 make these concepts
-    // using TransformFunction = void (*)(const RoutingResults& results); // TODO C++20 make these concepts
+    // using FilterFunction = bool (*)(const LocationOfInterest& interest); // TODO C++20 make these concepts
+    // using TransformFunction = void (*)(const RoutingResults& results);   // TODO C++20 make these concepts
 
     constexpr auto kNullTransformFunction = [](const RoutingResults&) {};
 
@@ -631,7 +637,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            _hasDeadEnd = *_hasDeadEnd | (1 << 0);
+            results.hasDeadEnd = true;
         }
 
         if ((searchFlags & TrackNetworkSearchFlags::excludeReverseDirection) == TrackNetworkSearchFlags::none)
@@ -807,7 +813,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            _hasDeadEnd = *_hasDeadEnd | (1 << 0);
+            results.hasDeadEnd = true;
         }
 
         if ((searchFlags & TrackNetworkSearchFlags::excludeReverseDirection) == TrackNetworkSearchFlags::none)
@@ -973,7 +979,6 @@ namespace OpenLoco::Vehicles
     uint8_t sub_4A2A77(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
     {
         uint16_t routingTransformData = 0;
-        _hasDeadEnd = 0;
         auto filterFunction = [&routingTransformData](const LocationOfInterest& interest) { return sub_4A2AA1(interest, routingTransformData); };
 
         RoutingResults routingResults{ kSignalHashSetSize };
@@ -988,7 +993,7 @@ namespace OpenLoco::Vehicles
             filterFunction,
             [](RoutingResults&) {});
 
-        if (_hasDeadEnd & (1U << 0))
+        if (routingResults.hasDeadEnd)
         {
             routingTransformData |= (1U << 1);
         }
