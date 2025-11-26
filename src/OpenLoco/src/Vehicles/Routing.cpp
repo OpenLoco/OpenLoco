@@ -184,7 +184,7 @@ namespace OpenLoco::Vehicles
     constexpr auto kNullTransformFunction = [](const LocationOfInterestHashSet&) {};
 
     static loco_global<TrackNetworkSearchFlags, 0x01135FA6> _findTrackNetworkFlags;
-    static loco_global<uint8_t, 0x01136085> _1136085;
+    static loco_global<uint8_t, 0x01136085> _hasDeadEnd;
 
     static std::optional<std::pair<World::SignalElement*, World::TrackElement*>> findSignalOnTrack(const World::Pos3& signalLoc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, const uint8_t index)
     {
@@ -627,7 +627,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            _1136085 = *_1136085 | (1 << 0);
+            _hasDeadEnd = *_hasDeadEnd | (1 << 0);
         }
 
         if ((_findTrackNetworkFlags & TrackNetworkSearchFlags::unk1) == TrackNetworkSearchFlags::none)
@@ -810,7 +810,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            _1136085 = *_1136085 | (1 << 0);
+            _hasDeadEnd = *_hasDeadEnd | (1 << 0);
         }
 
         if ((_findTrackNetworkFlags & TrackNetworkSearchFlags::unk1) == TrackNetworkSearchFlags::none)
@@ -983,7 +983,7 @@ namespace OpenLoco::Vehicles
     uint8_t sub_4A2A77(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
     {
         uint16_t routingTransformData = 0;
-        _1136085 = 0;
+        _hasDeadEnd = 0;
         auto filterFunction = [&routingTransformData](const LocationOfInterest& interest) { return sub_4A2AA1(interest, routingTransformData); };
 
         LocationOfInterestHashSet interestMap{ kSignalHashSetSize };
@@ -998,7 +998,7 @@ namespace OpenLoco::Vehicles
             filterFunction,
             [](LocationOfInterestHashSet&) {});
 
-        if (_1136085 & (1U << 0))
+        if (_hasDeadEnd & (1U << 0))
         {
             routingTransformData |= (1U << 1);
         }
