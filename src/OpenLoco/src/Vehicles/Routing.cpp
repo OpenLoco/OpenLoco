@@ -32,7 +32,6 @@ namespace OpenLoco::Vehicles
     {
         none = 0,
 
-        unk0 = 1U << 0,
         unk1 = 1U << 1,
         unk2 = 1U << 2,
     };
@@ -876,7 +875,7 @@ namespace OpenLoco::Vehicles
 
         findAllTracksFilterTransform(
             interestMap,
-            TrackNetworkSearchFlags::unk0 | TrackNetworkSearchFlags::unk2,
+            TrackNetworkSearchFlags::unk2,
             loc,
             trackAndDirection,
             company,
@@ -897,7 +896,7 @@ namespace OpenLoco::Vehicles
 
         findAllTracksFilterTransform(
             interestMap,
-            TrackNetworkSearchFlags::unk0 | TrackNetworkSearchFlags::unk2,
+            TrackNetworkSearchFlags::unk2,
             loc,
             trackAndDirection,
             company,
@@ -928,7 +927,7 @@ namespace OpenLoco::Vehicles
 
         findAllTracksFilterTransform(
             interestMap,
-            TrackNetworkSearchFlags::unk0 | TrackNetworkSearchFlags::unk2,
+            TrackNetworkSearchFlags::unk2,
             loc,
             trackAndDirection,
             company,
@@ -947,7 +946,7 @@ namespace OpenLoco::Vehicles
 
         findAllTracksFilterTransform(
             interestMap,
-            TrackNetworkSearchFlags::unk0 | TrackNetworkSearchFlags::unk2,
+            TrackNetworkSearchFlags::unk2,
             loc,
             trackAndDirection,
             company,
@@ -990,7 +989,7 @@ namespace OpenLoco::Vehicles
 
         findAllTracksFilterTransform(
             interestMap,
-            TrackNetworkSearchFlags::unk0 | TrackNetworkSearchFlags::unk1,
+            TrackNetworkSearchFlags::unk1,
             loc,
             trackAndDirection,
             company,
@@ -1323,7 +1322,7 @@ namespace OpenLoco::Vehicles
         auto filterFunction = [flags, modSelection, trackType, trackModObjIds, &result, company, &interestHashSet](const LocationOfInterest& interest) {
             return applyTrackModToTrack(interest, flags, &interestHashSet, modSelection, trackType, trackModObjIds, result.cost, company, result.allPlacementsFailed);
         };
-        findAllTracksFilterTransform(interestHashSet, TrackNetworkSearchFlags::unk0, pos, trackAndDirection, company, trackType, filterFunction, kNullTransformFunction);
+        findAllTracksFilterTransform(interestHashSet, TrackNetworkSearchFlags::none, pos, trackAndDirection, company, trackType, filterFunction, kNullTransformFunction);
         result.networkTooComplex = interestHashSet.count >= interestHashSet.maxEntries;
         return result;
     }
@@ -1343,7 +1342,7 @@ namespace OpenLoco::Vehicles
         auto filterFunction = [flags, modSelection, trackType, trackModObjIds, &cost, company, &interestHashSet](const LocationOfInterest& interest) {
             return removeTrackModToTrack(interest, flags, &interestHashSet, modSelection, trackType, trackModObjIds, cost, company);
         };
-        findAllTracksFilterTransform(interestHashSet, TrackNetworkSearchFlags::unk0, pos, trackAndDirection, company, trackType, filterFunction, kNullTransformFunction);
+        findAllTracksFilterTransform(interestHashSet, TrackNetworkSearchFlags::none, pos, trackAndDirection, company, trackType, filterFunction, kNullTransformFunction);
         return cost;
     }
 
@@ -1528,7 +1527,7 @@ namespace OpenLoco::Vehicles
         auto filterFunction = [flags, modSelection, roadType, roadModObjIds, &result, company, &interestHashSet](const LocationOfInterest& interest) {
             return applyRoadModToRoad(interest, flags, &interestHashSet, modSelection, roadType, roadModObjIds, result.cost, company, result.allPlacementsFailed);
         };
-        findAllRoadsFilterTransform(interestHashSet, TrackNetworkSearchFlags::unk0, pos, roadAndDirection, company, roadType, filterFunction, kNullTransformFunction);
+        findAllRoadsFilterTransform(interestHashSet, TrackNetworkSearchFlags::none, pos, roadAndDirection, company, roadType, filterFunction, kNullTransformFunction);
         result.networkTooComplex = interestHashSet.count >= interestHashSet.maxEntries;
         return result;
     }
@@ -1685,7 +1684,7 @@ namespace OpenLoco::Vehicles
         auto filterFunction = [flags, modSelection, roadType, roadModObjIds, &cost, company, &interestHashSet](const LocationOfInterest& interest) {
             return removeRoadModToTrack(interest, flags, &interestHashSet, modSelection, roadType, roadModObjIds, cost, company);
         };
-        findAllRoadsFilterTransform(interestHashSet, TrackNetworkSearchFlags::unk0, pos, roadAndDirection, company, roadType, filterFunction, kNullTransformFunction);
+        findAllRoadsFilterTransform(interestHashSet, TrackNetworkSearchFlags::none, pos, roadAndDirection, company, roadType, filterFunction, kNullTransformFunction);
         return cost;
     }
 }
