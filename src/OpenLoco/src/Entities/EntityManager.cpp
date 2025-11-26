@@ -235,6 +235,8 @@ namespace OpenLoco::EntityManager
         entity.position = loc;
     }
 
+    static void zeroEntity(EntityBase* ent);
+
     static EntityBase* createEntity(EntityId id, EntityListType list)
     {
         auto* newEntity = get<EntityBase>(id);
@@ -243,6 +245,7 @@ namespace OpenLoco::EntityManager
             Logging::error("Tried to create invalid entity! id: {}, list: {}", enumValue(id), enumValue(list));
             return nullptr;
         }
+        zeroEntity(newEntity);
         moveEntityToList(newEntity, list);
 
         newEntity->position = { Location::null, Location::null, 0 };
