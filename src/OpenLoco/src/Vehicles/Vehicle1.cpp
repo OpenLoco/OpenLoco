@@ -18,7 +18,6 @@ using namespace OpenLoco::Literals;
 namespace OpenLoco::Vehicles
 {
     static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
-    static loco_global<Speed32, 0x01136134> _vehicleUpdate_var_1136134; // Speed
 
     // If distance travelled in one tick this is the speed
     constexpr Speed32 speedFromDistanceInATick(int32_t distance)
@@ -111,8 +110,6 @@ namespace OpenLoco::Vehicles
             }
         }
         targetSpeed = newTargetSpeed;
-
-        _vehicleUpdate_var_1136134 = newTargetSpeed;
         int32_t distance1 = distanceTraveledInATick(train.veh2->currentSpeed) - var_3C;
         const auto unk2 = std::max(_vehicleUpdate_var_113612C * 4, 0xCC48);
 
@@ -222,8 +219,6 @@ namespace OpenLoco::Vehicles
             }
         }
         targetSpeed = newTargetSpeed;
-
-        _vehicleUpdate_var_1136134 = newTargetSpeed;
         int32_t distance1 = distanceTraveledInATick(train.veh2->currentSpeed) - var_3C;
         const auto unk2 = std::max(_vehicleUpdate_var_113612C * 4, 0xCC48);
 

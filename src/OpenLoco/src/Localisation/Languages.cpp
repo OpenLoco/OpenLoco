@@ -32,7 +32,7 @@ namespace OpenLoco::Localisation
                 continue;
             }
 
-            std::fstream stream(filePath);
+            std::ifstream stream(filePath);
             if (!stream.is_open())
             {
                 continue;
