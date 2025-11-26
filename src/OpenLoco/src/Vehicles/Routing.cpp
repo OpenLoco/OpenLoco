@@ -194,8 +194,6 @@ namespace OpenLoco::Vehicles
 
     constexpr auto kNullTransformFunction = [](const RoutingResults&) {};
 
-    static loco_global<uint8_t, 0x01136085> _hasDeadEnd;
-
     static std::optional<std::pair<World::SignalElement*, World::TrackElement*>> findSignalOnTrack(const World::Pos3& signalLoc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, const uint8_t index)
     {
         auto tile = World::TileManager::get(signalLoc);
