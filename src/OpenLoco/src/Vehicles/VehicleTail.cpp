@@ -113,7 +113,7 @@ namespace OpenLoco::Vehicles
             }
             auto trackAndDirection2 = trackAndDir;
             trackAndDirection2.track.setReversed(!trackAndDirection2.track.isReversed());
-            sub_4A2AD7(nextTile, trackAndDirection2.track, owner, trackType);
+            updateSignalOccupiedInBlock(nextTile, trackAndDirection2.track, owner, trackType);
             leaveLevelCrossing(_oldTilePos, trackAndDir.track, 9);
         }
         return true;
@@ -152,7 +152,7 @@ namespace OpenLoco::Vehicles
                     pos -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
                 }
                 tad.setReversed(!tad.isReversed());
-                sub_4A2AD7(pos, tad, tail.owner, tail.trackType);
+                updateSignalOccupiedInBlock(pos, tad, tail.owner, tail.trackType);
             }
 
             auto pos = tailPos;
@@ -163,7 +163,7 @@ namespace OpenLoco::Vehicles
                 const auto routing = RoutingManager::getRouting(handle);
                 auto tad = TrackAndDirection::_TrackAndDirection(0, 0);
                 tad._data = routing & Track::AdditionalTaDFlags::basicTaDMask;
-                sub_4A2AD7(pos, tad, tail.owner, tail.trackType);
+                updateSignalOccupiedInBlock(pos, tad, tail.owner, tail.trackType);
 
                 if (routing & Track::AdditionalTaDFlags::hasSignal)
                 {
