@@ -125,7 +125,7 @@ namespace OpenLoco::ObjectManager
     // Contains pointers to pre-allocated arrays of objects and their metadata
     static std::array<ObjectRepositoryItem, kMaxObjectTypes> _objectRepository = makeRepositoryArray(std::make_index_sequence<kMaxObjectTypes>{});
 
-    static loco_global<bool, 0x0050D161> _isPartialLoaded;
+    static std::array<LandObjectFlags, getMaxObjects(ObjectType::land)> _landObjectFlags; // 0x00F003D3
 
     // 0x0050D160
     static bool _isTemporaryObject = false;
@@ -490,7 +490,6 @@ namespace OpenLoco::ObjectManager
         setTotalNumImages(Gfx::G1ExpectedCount::kDisc);
 
         _temporaryObject = preLoadObj->object;
-        _isPartialLoaded = true;
         _isTemporaryObject = true;
 
         DependentObjects dependencies;
@@ -502,11 +501,9 @@ namespace OpenLoco::ObjectManager
         {
             freeTemporaryObject();
             _isTemporaryObject = false;
-            _isPartialLoaded = false;
             return std::nullopt;
         }
         _isTemporaryObject = false;
-        _isPartialLoaded = false;
 
         const auto numImages = getTotalNumImages() - Gfx::G1ExpectedCount::kDisc;
         setTotalNumImages(oldNumImages);
@@ -565,10 +562,7 @@ namespace OpenLoco::ObjectManager
             preLoadObj->header, static_cast<uint32_t>(preLoadObj->objectData.size())
         };
 
-        if (!*_isPartialLoaded)
-        {
-            callObjectLoad({ preLoadObj->header.getType(), id }, *preLoadObj->object, preLoadObj->objectData);
-        }
+        callObjectLoad({ preLoadObj->header.getType(), id }, *preLoadObj->object, preLoadObj->objectData);
 
         return true;
     }
@@ -1081,9 +1075,6 @@ namespace OpenLoco::ObjectManager
         Ui::Windows::Construction::updateAvailableAirportAndDockOptions();
     }
 
-    // TODO: Refactor this, variable is also defined in PaintSurface.cpp.
-    static loco_global<LandObjectFlags[getMaxObjects(ObjectType::land)], 0x00F003D3> _landObjectFlags;
-
     // 0x004697A1
     static void updateLandObjectFlags()
     {
@@ -1099,6 +1090,11 @@ namespace OpenLoco::ObjectManager
                 _landObjectFlags[i] = LandObjectFlags::none;
             }
         }
+    }
+
+    const std::array<LandObjectFlags, getMaxObjects(ObjectType::land)>& getLandObjectFlagsCache()
+    {
+        return _landObjectFlags;
     }
 
     // 0x004C57A6

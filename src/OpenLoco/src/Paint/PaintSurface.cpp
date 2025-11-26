@@ -24,8 +24,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Paint
 {
-    static loco_global<LandObjectFlags[32], 0x00F003D3> _F003D3;
-
     //    T
     //   ---
     //  L---R
@@ -826,19 +824,19 @@ namespace OpenLoco::Paint
                 return;
             }
 
-            if ((_F003D3[self.landObjectId] & LandObjectFlags::unk4) != LandObjectFlags::none)
+            if ((ObjectManager::getLandObjectFlagsCache()[self.landObjectId] & LandObjectFlags::unk4) != LandObjectFlags::none)
             {
                 return;
             }
         }
         else
         {
-            if ((_F003D3[self.landObjectId] & LandObjectFlags::unk5) != LandObjectFlags::none)
+            if ((ObjectManager::getLandObjectFlagsCache()[self.landObjectId] & LandObjectFlags::unk5) != LandObjectFlags::none)
             {
                 return;
             }
 
-            if ((_F003D3[neighbour.landObjectId] & LandObjectFlags::unk5) != LandObjectFlags::none)
+            if ((ObjectManager::getLandObjectFlagsCache()[neighbour.landObjectId] & LandObjectFlags::unk5) != LandObjectFlags::none)
             {
                 return;
             }

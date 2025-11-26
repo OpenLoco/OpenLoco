@@ -3,6 +3,7 @@
 #include "Engine/Limits.h"
 #include "Object.h"
 #include <OpenLoco/Engine/Ui/Point.hpp>
+#include <array>
 #include <optional>
 #include <span>
 #include <vector>
@@ -58,6 +59,8 @@ namespace OpenLoco
      * a specific object type. DO NOT USE
      */
     using LoadedObjectIndex = size_t;
+
+    enum class LandObjectFlags : uint8_t;
 }
 
 namespace OpenLoco::ObjectManager
@@ -196,6 +199,8 @@ namespace OpenLoco::ObjectManager
 
     void updateTerraformObjects();
     void updateLastTrackTypeOption();
+
+    const std::array<LandObjectFlags, getMaxObjects(ObjectType::land)>& getLandObjectFlagsCache();
 
     // Calls function with the handle (LoadedObjectHandle) of each loaded object
     template<typename Function>
