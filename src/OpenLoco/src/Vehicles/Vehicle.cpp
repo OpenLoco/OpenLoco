@@ -119,7 +119,7 @@ namespace OpenLoco::Vehicles
         return (vehicleFlags & flagsToTest) != VehicleFlags::none;
     }
 
-    VehicleUpdateDistances& OpenLoco::Vehicles::getVehicleUpdateDistances()
+    VehicleUpdateDistances& getVehicleUpdateDistances()
     {
         return _vehicleUpdateDistances;
     }
