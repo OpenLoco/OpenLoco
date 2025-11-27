@@ -5,9 +5,7 @@
 #include "Tutorial.h"
 #include "Vehicle.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Vehicles

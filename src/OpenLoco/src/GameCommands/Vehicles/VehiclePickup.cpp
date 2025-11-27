@@ -7,9 +7,6 @@
 #include "Types.hpp"
 #include "Vehicles/Vehicle.h"
 #include <OpenLoco/Core/Prng.h>
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Vehicles
 {

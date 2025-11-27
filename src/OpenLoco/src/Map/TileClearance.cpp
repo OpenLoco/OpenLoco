@@ -510,7 +510,7 @@ namespace OpenLoco::World::TileClearance
         }
         GameCommands::BuildingRemovalArgs args{};
         args.pos = buildingStart;
-        Interop::registers regs = static_cast<Interop::registers>(args);
+        GameCommands::registers regs = static_cast<GameCommands::registers>(args);
         regs.bl = removeBuildingFlags;
         // We should probably call doCommand here but then it gets messy with the costs
         // look into changing this in the future.

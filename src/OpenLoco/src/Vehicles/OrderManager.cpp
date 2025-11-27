@@ -22,7 +22,6 @@
 #include "World/StationManager.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Diagnostics/Logging.h>
-
 #include <sfl/static_vector.hpp>
 #include <sstream>
 

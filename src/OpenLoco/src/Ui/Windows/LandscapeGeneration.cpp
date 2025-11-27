@@ -37,10 +37,8 @@
 #include "World/IndustryManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Diagnostics/Logging.h>
-#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Diagnostics;
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::LandscapeGeneration
 {

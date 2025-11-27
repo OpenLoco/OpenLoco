@@ -47,14 +47,13 @@
 #include "World/IndustryManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <OpenLoco/Math/Bound.hpp>
 #include <OpenLoco/Math/Trigonometry.hpp>
 #include <cassert>
 #include <numeric>
 #include <optional>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Literals;
 using namespace OpenLoco::World;
 
@@ -306,7 +305,7 @@ namespace OpenLoco::Vehicles
                             GameCommands::VehicleChangeRunningModeArgs args{};
                             args.head = head;
                             args.mode = GameCommands::VehicleChangeRunningModeArgs::Mode::startVehicle;
-                            auto regs = static_cast<Interop::registers>(args);
+                            auto regs = static_cast<GameCommands::registers>(args);
                             regs.bl = GameCommands::Flags::apply;
                             GameCommands::vehicleChangeRunningMode(regs);
                             if (static_cast<uint32_t>(regs.ebx) == GameCommands::FAILURE)

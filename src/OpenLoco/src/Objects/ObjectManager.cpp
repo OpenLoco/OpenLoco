@@ -60,11 +60,9 @@
 #include <OpenLoco/Core/Stream.hpp>
 #include <OpenLoco/Core/Timer.hpp>
 #include <OpenLoco/Core/Traits.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <bit>
 #include <vector>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::ObjectManager
@@ -82,14 +80,13 @@ namespace OpenLoco::ObjectManager
         }
     };
     static_assert(sizeof(ObjectEntry2) == 0x14);
+#pragma pack(pop)
 
     struct ObjectRepositoryItem
     {
         Object** objects;
         ObjectEntry2* objectEntryExtendeds;
     };
-    assert_struct_size(ObjectRepositoryItem, 8);
-#pragma pack(pop)
 
     static_assert(Traits::IsPOD<ObjectHeader>::value, "Object Header must be trivial for I/O purposes");
 

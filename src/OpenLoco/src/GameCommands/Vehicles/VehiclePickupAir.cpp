@@ -69,7 +69,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehiclePickupAir(Interop::registers& regs)
+    void vehiclePickupAir(registers& regs)
     {
         const VehiclePickupAirArgs args(regs);
         regs.ebx = vehiclePickupAir(args, regs.bl);

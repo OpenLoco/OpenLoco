@@ -16,9 +16,6 @@
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include <OpenLoco/Core/Exception.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Vehicles
 {

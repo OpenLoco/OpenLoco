@@ -20,7 +20,6 @@
 #include "World/TownManager.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 
 namespace OpenLoco::GameCommands

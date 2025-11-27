@@ -16,7 +16,6 @@
 #include "World/CompanyManager.h"
 #include "World/Station.h"
 #include "World/StationManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco::Paint
 {

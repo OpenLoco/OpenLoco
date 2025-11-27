@@ -2,13 +2,11 @@
 #include "Gfx.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "ImageIds.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <algorithm>
 #include <cassert>
 #include <cstring>
 #include <numeric>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Gfx::PaletteMap
 {

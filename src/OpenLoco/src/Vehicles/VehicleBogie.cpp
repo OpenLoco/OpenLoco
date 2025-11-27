@@ -9,11 +9,10 @@
 #include "Objects/TrackObject.h"
 #include "Random.h"
 #include "Vehicle.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <OpenLoco/Math/Trigonometry.hpp>
 #include <cstdint>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Vehicles

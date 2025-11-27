@@ -49,10 +49,8 @@
 #include "ViewportManager.h"
 #include "World/Company.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-#include <cmath>
 
-using namespace OpenLoco::Interop;
+#include <cmath>
 
 namespace OpenLoco::Ui::Windows::CompanyWindow
 {

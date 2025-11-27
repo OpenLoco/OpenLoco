@@ -19,7 +19,6 @@
 #include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Diagnostics;
 namespace OpenLoco::Paint

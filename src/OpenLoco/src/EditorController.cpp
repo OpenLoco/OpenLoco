@@ -30,10 +30,9 @@
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <span>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 
 namespace OpenLoco::EditorController

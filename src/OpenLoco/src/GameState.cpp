@@ -1,8 +1,5 @@
 #include "GameState.h"
 #include <OpenLoco/Core/Traits.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {

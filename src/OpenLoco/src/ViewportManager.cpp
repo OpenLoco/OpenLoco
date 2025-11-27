@@ -9,7 +9,7 @@
 #include "Ui/Window.h"
 #include "Ui/WindowManager.h"
 #include "World/Station.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <algorithm>
 #include <cassert>
 #include <memory>
@@ -17,7 +17,7 @@
 #include <sfl/static_vector.hpp>
 
 using namespace OpenLoco::Ui;
-using namespace OpenLoco::Interop;
+
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Ui::ViewportManager

@@ -8,7 +8,6 @@
 #include "Vehicle.h"
 #include "ViewportManager.h"
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Literals;
 using namespace OpenLoco::World;
 

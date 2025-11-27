@@ -13,12 +13,9 @@
 #include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
 #include <array>
 #include <cstring>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::PromptSaveWindow
 {

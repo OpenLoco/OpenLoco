@@ -15,11 +15,10 @@
 #include "Random.h"
 #include "ScenarioManager.h"
 #include "Vehicle.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <OpenLoco/Math/Trigonometry.hpp>
 #include <cassert>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Vehicles

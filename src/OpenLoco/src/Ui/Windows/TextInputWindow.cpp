@@ -19,10 +19,8 @@
 #include "Ui/Widgets/TextBoxWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-#include <SDL2/SDL.h>
 
-using namespace OpenLoco::Interop;
+#include <SDL2/SDL.h>
 
 namespace OpenLoco::Ui::Windows::TextInput
 {

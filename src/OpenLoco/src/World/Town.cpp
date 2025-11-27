@@ -32,11 +32,9 @@
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
 #include <bit>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 
 namespace OpenLoco

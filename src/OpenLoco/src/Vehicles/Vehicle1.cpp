@@ -10,9 +10,7 @@
 #include "RoutingManager.h"
 #include "Vehicle.h"
 #include "ViewportManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Vehicles

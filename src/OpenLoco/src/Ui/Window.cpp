@@ -17,12 +17,11 @@
 #include "ViewportManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Engine/Ui/Rect.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <cassert>
 #include <cinttypes>
 
 using namespace OpenLoco;
-using namespace OpenLoco::Interop;
+
 using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui

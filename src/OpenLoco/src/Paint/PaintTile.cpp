@@ -31,7 +31,6 @@
 #include "Ui/ViewportInteraction.h"
 #include "World/Station.h"
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;
 using namespace OpenLoco::World;
 

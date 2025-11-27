@@ -18,8 +18,6 @@
 #include "ViewportManager.h"
 #include "World/TownManager.h"
 
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::GameCommands
 {
     constexpr std::array<World::Pos2, 4> _quadrantCentreOffsets = {

@@ -8,8 +8,6 @@
 #include "Ui/WindowType.h"
 #include "World/CompanyManager.h"
 
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::GameCommands
 {
     // 0x0043483D

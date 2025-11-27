@@ -5,9 +5,8 @@
 #include "Ui.h"
 #include "Ui/ScrollView.h"
 #include "Ui/Window.h"
-#include <map>
-
 #include <SDL2/SDL.h>
+#include <map>
 #pragma warning(disable : 4121) // alignment of a member was sensitive to packing
 #include <SDL2/SDL_syswm.h>
 #pragma warning(default : 4121) // alignment of a member was sensitive to packing

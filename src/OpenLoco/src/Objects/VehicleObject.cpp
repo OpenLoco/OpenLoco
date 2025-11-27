@@ -15,7 +15,6 @@
 #include "Vehicles/VehicleDraw.h"
 #include <OpenLoco/Core/Numerics.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco

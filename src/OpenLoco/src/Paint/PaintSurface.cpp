@@ -20,8 +20,6 @@
 #include "World/Station.h"
 #include <OpenLoco/Core/Numerics.hpp>
 
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::Paint
 {
     //    T

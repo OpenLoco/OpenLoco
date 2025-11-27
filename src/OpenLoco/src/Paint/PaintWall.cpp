@@ -8,7 +8,6 @@
 #include "Ui/ViewportInteraction.h"
 #include <cassert>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;
 
 namespace OpenLoco::Paint

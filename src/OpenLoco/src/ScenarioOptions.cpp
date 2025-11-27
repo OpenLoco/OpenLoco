@@ -1,5 +1,4 @@
 #include "ScenarioOptions.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco::Scenario
 {
