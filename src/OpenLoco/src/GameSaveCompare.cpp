@@ -419,7 +419,7 @@ namespace OpenLoco::GameSaveCompare
         foundDivergence |= isLoggedDivergentGameStateField("scenarioTicks2", 0, gameState1.general.scenarioTicks2, gameState2.general.scenarioTicks2);
         foundDivergence |= isLoggedDivergentGameStateField("magicNumber", 0, gameState1.general.magicNumber, gameState2.general.magicNumber);
         foundDivergence |= isLoggedDivergentGameStateField("numMapAnimations", 0, gameState1.general.numMapAnimations, gameState2.general.numMapAnimations);
-        foundDivergence |= isLoggedDivergence("tileUpdateStartLocation", reinterpret_cast<uint16_t (&)[2]>(gameState1.general.tileUpdateStartLocation), reinterpret_cast<uint16_t (&)[2]>(gameState2.general.tileUpdateStartLocation), 2, displayAllDivergences);
+        foundDivergence |= isLoggedDivergence("tileUpdateStartLocation", reinterpret_cast<uint16_t(&)[2]>(gameState1.general.tileUpdateStartLocation), reinterpret_cast<uint16_t(&)[2]>(gameState2.general.tileUpdateStartLocation), 2, displayAllDivergences);
         foundDivergence |= isLoggedDivergence("scenarioConstruction.signals", gameState1.general.scenarioConstruction.signals, gameState2.general.scenarioConstruction.signals, 8, displayAllDivergences);
         foundDivergence |= isLoggedDivergence("scenarioConstruction.bridges", gameState1.general.scenarioConstruction.bridges, gameState2.general.scenarioConstruction.bridges, 8, displayAllDivergences);
         foundDivergence |= isLoggedDivergence("scenarioConstruction.trainStations", gameState1.general.scenarioConstruction.trainStations, gameState2.general.scenarioConstruction.trainStations, 8, displayAllDivergences);
