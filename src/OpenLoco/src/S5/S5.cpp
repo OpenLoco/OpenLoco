@@ -744,6 +744,11 @@ namespace OpenLoco::S5
                 throw GameException::Interrupt;
             }
 
+            _lastLoadError = LoadError{
+                .errorCode = 0,
+                .errorMessage = StringIds::empty,
+            };
+
             return true;
         }
         catch (const LoadException& e)
