@@ -103,16 +103,16 @@ namespace OpenLoco::Vehicles
             case EmitterAnimationType::steam_puff1:
             case EmitterAnimationType::steam_puff2:
             case EmitterAnimationType::steam_puff3:
-                steamPuffsAnimationUpdate(train, carState, 0, emitterHorizontalPos, unkDistance);
+                steamPuffsAnimationUpdate(train, carState, unkDistance, 0, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::diesel_exhaust1:
                 dieselExhaust1AnimationUpdate(train, carState, 0, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::electric_spark1:
-                electricSpark1AnimationUpdate(train, carState, 0, emitterHorizontalPos, unkDistance);
+                electricSpark1AnimationUpdate(train, carState, unkDistance, 0, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::electric_spark2:
-                electricSpark2AnimationUpdate(train, carState, 0, emitterHorizontalPos, unkDistance);
+                electricSpark2AnimationUpdate(train, carState, unkDistance, 0, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::diesel_exhaust2:
                 dieselExhaust2AnimationUpdate(train, carState, 0, emitterHorizontalPos);
@@ -899,16 +899,16 @@ namespace OpenLoco::Vehicles
             case EmitterAnimationType::steam_puff1:
             case EmitterAnimationType::steam_puff2:
             case EmitterAnimationType::steam_puff3:
-                steamPuffsAnimationUpdate(train, carState, 1, emitterHorizontalPos, unkDistance);
+                steamPuffsAnimationUpdate(train, carState, unkDistance, 1, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::diesel_exhaust1:
                 dieselExhaust1AnimationUpdate(train, carState, 1, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::electric_spark1:
-                electricSpark1AnimationUpdate(train, carState, 1, emitterHorizontalPos, unkDistance);
+                electricSpark1AnimationUpdate(train, carState, unkDistance, 1, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::electric_spark2:
-                electricSpark2AnimationUpdate(train, carState, 1, emitterHorizontalPos, unkDistance);
+                electricSpark2AnimationUpdate(train, carState, unkDistance, 1, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::diesel_exhaust2:
                 dieselExhaust2AnimationUpdate(train, carState, 1, emitterHorizontalPos);
