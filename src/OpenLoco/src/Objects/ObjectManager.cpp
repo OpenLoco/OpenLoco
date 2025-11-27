@@ -1092,7 +1092,7 @@ namespace OpenLoco::ObjectManager
         }
     }
 
-    const std::array<LandObjectFlags, getMaxObjects(ObjectType::land)>& getLandObjectFlagsCache()
+    std::span<LandObjectFlags> getLandObjectFlagsCache()
     {
         return _landObjectFlags;
     }

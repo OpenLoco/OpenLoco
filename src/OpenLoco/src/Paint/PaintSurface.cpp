@@ -813,8 +813,9 @@ namespace OpenLoco::Paint
                 break;
         }
 
-        auto selfObj = self.snowCoverage >= 4 ? 0xFFU : self.landObjectId;
-        auto neighbourObj = neighbour.snowCoverage >= 4 ? 0xFFU : neighbour.landObjectId;
+        const auto selfObj = self.snowCoverage >= 4 ? 0xFFU : self.landObjectId;
+        const auto neighbourObj = neighbour.snowCoverage >= 4 ? 0xFFU : neighbour.landObjectId;
+        const auto landObjectFlags = ObjectManager::getLandObjectFlagsCache();
 
         if (self.growthStage == neighbour.growthStage && selfObj == neighbourObj)
         {
@@ -824,19 +825,19 @@ namespace OpenLoco::Paint
                 return;
             }
 
-            if ((ObjectManager::getLandObjectFlagsCache()[self.landObjectId] & LandObjectFlags::unk4) != LandObjectFlags::none)
+            if ((landObjectFlags[self.landObjectId] & LandObjectFlags::unk4) != LandObjectFlags::none)
             {
                 return;
             }
         }
         else
         {
-            if ((ObjectManager::getLandObjectFlagsCache()[self.landObjectId] & LandObjectFlags::unk5) != LandObjectFlags::none)
+            if ((landObjectFlags[self.landObjectId] & LandObjectFlags::unk5) != LandObjectFlags::none)
             {
                 return;
             }
 
-            if ((ObjectManager::getLandObjectFlagsCache()[neighbour.landObjectId] & LandObjectFlags::unk5) != LandObjectFlags::none)
+            if ((landObjectFlags[neighbour.landObjectId] & LandObjectFlags::unk5) != LandObjectFlags::none)
             {
                 return;
             }
