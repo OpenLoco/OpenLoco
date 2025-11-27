@@ -17,6 +17,7 @@
 #include "World/CompanyManager.h"
 #include <Localisation/Conversion.h>
 #include <Localisation/Unicode.h>
+#include <OpenLoco/Core/BitSet.hpp>
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <SDL2/SDL_keyboard.h>
 #include <cstdint>
@@ -47,7 +48,7 @@ namespace OpenLoco::Input
     static uint32_t _keyQueueLastWrite;
     static uint32_t _keyQueueReadIndex;
     static uint32_t _keyQueueWriteIndex;
-    static std::array<uint8_t, 256> _keyboardState;
+    static BitSet<SDL_NUM_SCANCODES> _keyboardState;
     static bool _hasKeyboardState = false;
 
     static const std::pair<std::string, std::function<void()>> kCheats[] = {
@@ -164,7 +165,7 @@ namespace OpenLoco::Input
         _hasKeyboardState = false;
 
         // Reset state.
-        std::ranges::fill(_keyboardState, 0);
+        _keyboardState.reset();
 
         int numKeys;
         auto sdlKeyboardState = SDL_GetKeyboardState(&numKeys);
@@ -178,7 +179,7 @@ namespace OpenLoco::Input
                     continue;
                 }
 
-                _keyboardState[scanCode] = 0x80;
+                _keyboardState.set(scanCode, true);
             }
             _hasKeyboardState = 1;
         }
@@ -272,7 +273,7 @@ namespace OpenLoco::Input
     static void cheat()
     {
         // Used to handle INSERT cheat
-        if ((_keyboardState[SDL_SCANCODE_INSERT] & 0x80) != 0 || (_keyboardState[SDL_SCANCODE_LALT] & 0x80) != 0 || (_keyboardState[SDL_SCANCODE_RALT] & 0x80) != 0)
+        if (_keyboardState[SDL_SCANCODE_INSERT] || _keyboardState[SDL_SCANCODE_LALT] || _keyboardState[SDL_SCANCODE_RALT])
         {
             if (hasKeyModifier(KeyModifier::cheat))
             {
@@ -504,22 +505,22 @@ namespace OpenLoco::Input
 
         Ui::Point delta = { 0, 0 };
 
-        if (_keyboardState[SDL_SCANCODE_LEFT] & 0x80)
+        if (_keyboardState[SDL_SCANCODE_LEFT])
         {
             delta.x -= Config::get().edgeScrollingSpeed;
         }
 
-        if (_keyboardState[SDL_SCANCODE_UP] & 0x80)
+        if (_keyboardState[SDL_SCANCODE_UP])
         {
             delta.y -= Config::get().edgeScrollingSpeed;
         }
 
-        if (_keyboardState[SDL_SCANCODE_DOWN] & 0x80)
+        if (_keyboardState[SDL_SCANCODE_DOWN])
         {
             delta.y += Config::get().edgeScrollingSpeed;
         }
 
-        if (_keyboardState[SDL_SCANCODE_RIGHT] & 0x80)
+        if (_keyboardState[SDL_SCANCODE_RIGHT])
         {
             delta.x += Config::get().edgeScrollingSpeed;
         }
@@ -566,22 +567,22 @@ namespace OpenLoco::Input
             return;
         }
 
-        if (_keyboardState[SDL_SCANCODE_LSHIFT] & 0x80)
+        if (_keyboardState[SDL_SCANCODE_LSHIFT])
         {
             _keyModifier |= KeyModifier::shift;
         }
 
-        if (_keyboardState[SDL_SCANCODE_RSHIFT] & 0x80)
+        if (_keyboardState[SDL_SCANCODE_RSHIFT])
         {
             _keyModifier |= KeyModifier::shift;
         }
 
-        if (_keyboardState[SDL_SCANCODE_LCTRL] & 0x80)
+        if (_keyboardState[SDL_SCANCODE_LCTRL])
         {
             _keyModifier |= KeyModifier::control;
         }
 
-        if (_keyboardState[SDL_SCANCODE_RCTRL] & 0x80)
+        if (_keyboardState[SDL_SCANCODE_RCTRL])
         {
             _keyModifier |= KeyModifier::control;
         }
