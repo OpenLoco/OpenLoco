@@ -18,9 +18,6 @@ using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
-    static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
-
     template<typename T>
     void applyDestructionToComponent(T& component)
     {
@@ -38,9 +35,10 @@ namespace OpenLoco::Vehicles
             return true;
         }
 
-        const auto motionResult = updateTrackMotion(_vehicleUpdate_var_113612C, false);
+        auto& distances = getVehicleUpdateDistances();
+        const auto motionResult = updateTrackMotion(distances.unkDistance1, false);
 
-        const int32_t stash1136130 = _vehicleUpdate_var_1136130;
+        int32_t unkDistance = distances.unkDistance2;
         if (wheelSlipping != 0)
         {
             auto unk = wheelSlipping;
@@ -48,11 +46,10 @@ namespace OpenLoco::Vehicles
             {
                 unk = kWheelSlippingDuration - unk;
             }
-            _vehicleUpdate_var_1136130 = 500 + unk * 320;
+            unkDistance = 500 + unk * 320;
         }
 
-        updateRoll();
-        _vehicleUpdate_var_1136130 = stash1136130;
+        updateRoll(unkDistance);
         if (motionResult.hasFlags(UpdateVar1136114Flags::noRouteFound))
         {
             destroyTrain();
@@ -68,9 +65,9 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AAC02
-    void VehicleBogie::updateRoll()
+    void VehicleBogie::updateRoll(const int32_t unkDistance)
     {
-        auto unk = _vehicleUpdate_var_1136130 / 8;
+        auto unk = unkDistance / 8;
         if (has38Flags(Flags38::isReversed))
         {
             unk = -unk;
@@ -175,10 +172,12 @@ namespace OpenLoco::Vehicles
         }
 
         this->var_5A = speed.getRaw() | (isComponentDestroyed ? (1U << 31) : 0);
-        _vehicleUpdate_var_113612C = speed.getRaw() / 128;
-        _vehicleUpdate_var_1136130 = speed.getRaw() / 128;
 
-        this->updateRoll();
+        auto& distances = getVehicleUpdateDistances();
+        distances.unkDistance1 = speed.getRaw() / 128;
+        distances.unkDistance2 = speed.getRaw() / 128;
+
+        this->updateRoll(distances.unkDistance1);
 
         if (isComponentDestroyed)
         {
@@ -286,7 +285,7 @@ namespace OpenLoco::Vehicles
         {
             if (this->mode != TransportMode::road)
             {
-                const auto motionResult = this->updateTrackMotion(_vehicleUpdate_var_113612C, false);
+                const auto motionResult = this->updateTrackMotion(distances.unkDistance1, false);
                 if (motionResult.hasFlags(UpdateVar1136114Flags::unk_m00 | UpdateVar1136114Flags::noRouteFound))
                 {
                     this->var_5A |= 1U << 31;

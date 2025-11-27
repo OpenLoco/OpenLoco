@@ -23,6 +23,8 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Vehicles
 {
     static constexpr int32_t kObjDistToHighPrecisionDistance = 2179;
+    // TODO: Get rid of this global
+    static VehicleUpdateDistances _vehicleUpdateDistances = {};
 
     VehicleBase* VehicleBase::nextVehicle()
     {
@@ -115,6 +117,11 @@ namespace OpenLoco::Vehicles
     bool VehicleBase::hasVehicleFlags(VehicleFlags flagsToTest) const
     {
         return (vehicleFlags & flagsToTest) != VehicleFlags::none;
+    }
+
+    VehicleUpdateDistances& getVehicleUpdateDistances()
+    {
+        return _vehicleUpdateDistances;
     }
 
     // 0x004AA407

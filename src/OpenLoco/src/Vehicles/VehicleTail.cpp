@@ -14,8 +14,6 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
-
     // 0x004794BC
     // This is enter level crossing if unk==8 and leave level crossing if unk==9
     void leaveLevelCrossing(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint16_t unk)
@@ -77,7 +75,7 @@ namespace OpenLoco::Vehicles
         const auto _oldRoutingHandle = routingHandle;
         const World::Pos3 _oldTilePos = World::Pos3(tileX, tileY, tileBaseZ * World::kSmallZStep);
 
-        const auto motionResult = updateTrackMotion(*_vehicleUpdate_var_113612C, false);
+        const auto motionResult = updateTrackMotion(getVehicleUpdateDistances().unkDistance1, false);
 
         if (motionResult.hasFlags(UpdateVar1136114Flags::noRouteFound))
         {
