@@ -1936,8 +1936,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             cState.constructionArrowFrameNum = 5;
             Common::toggleGhostVisibilityFlag(GhostVisibilityFlags::constructArrow);
-            setConstructionArrow({ World::Pos3(cState.x, cState.y, cState.constructionZ),
-                                   cState.constructionRotation });
+            setConstructionArrow({ World::Pos3(cState.x, cState.y, cState.constructionZ), cState.constructionRotation });
             World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstructionArrow);
             if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::constructArrow))
             {

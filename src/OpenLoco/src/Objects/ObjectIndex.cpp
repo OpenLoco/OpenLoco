@@ -34,12 +34,11 @@
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Core/Timer.hpp>
 #include <OpenLoco/Diagnostics/Logging.h>
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <OpenLoco/Utility/String.hpp>
 #include <cstdint>
 #include <fstream>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::ObjectManager

@@ -84,7 +84,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehiclePickupWater(Interop::registers& regs)
+    void vehiclePickupWater(registers& regs)
     {
         regs.ebx = vehiclePickupWater(EntityId(regs.di), regs.bl);
     }

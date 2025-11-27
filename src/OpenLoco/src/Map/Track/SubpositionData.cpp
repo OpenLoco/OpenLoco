@@ -1,11 +1,9 @@
 #include "SubpositionData.h"
 #include "Entities/Entity.h"
 #include "GameState.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <array>
 #include <vector>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::World::TrackData
 {

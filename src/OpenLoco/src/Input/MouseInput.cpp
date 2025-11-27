@@ -28,11 +28,10 @@
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <map>
 #include <queue>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Ui::ScrollView;
 using namespace OpenLoco::Ui::ViewportInteraction;

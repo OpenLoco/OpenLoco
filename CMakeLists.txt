@@ -117,58 +117,6 @@ if (${OPENLOCO_BUILD_TESTS})
     enable_testing()
 endif()
 
-# Handle creating the rct2 text and data files on OS X and Linux
-if (UNIX)
-    set(OBJ_FORMAT "elf32-i386")
-    set(LINKER_SCRIPT "ld_script_i386.xc")
-
-    set(OLOCO_EXE ${CMAKE_CURRENT_SOURCE_DIR}/loco.exe)
-    set(OLOCO_TEXT ${CMAKE_BINARY_DIR}/openloco_text)
-    set(OLOCO_DATA ${CMAKE_BINARY_DIR}/openloco_data)
-
-    add_custom_command(
-            OUTPUT ${OLOCO_TEXT}
-            COMMAND dd if="${OLOCO_EXE}" of="${OLOCO_TEXT}" bs=4096 skip=1 count=214
-            DEPENDS ${OLOCO_EXE}
-    )
-    add_custom_command(
-            OUTPUT ${OLOCO_DATA}
-            COMMAND dd if="${OLOCO_EXE}" of="${OLOCO_DATA}" bs=4096 skip=215 count=78
-            COMMAND dd if=/dev/zero of="${OLOCO_DATA}" bs=4096 seek=78 count=3133 conv=notrunc
-            DEPENDS ${OLOCO_EXE}
-    )
-    add_custom_target(segfiles DEPENDS ${OLOCO_TEXT} ${OLOCO_DATA})
-    if (APPLE)
-        set(LOCO_SEGMENT_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -sectcreate loco_text __text \"${OLOCO_TEXT}\" -sectcreate loco_data __data ${OLOCO_DATA} -segaddr loco_data 0x4d7000 -segprot loco_data rwx rwx -segaddr loco_text 0x401000 -segprot loco_text rwx rwx -segaddr __TEXT 0x2000000 -read_only_relocs suppress")
-    else ()
-        # For Linux we have to use objcopy to wrap regular binaries into a linkable
-        # format. We use specific section names which are then referenced in a
-        # bespoke linker script so they can be placed at predefined VMAs.
-        add_custom_command(
-            OUTPUT openloco_text_section.o
-            COMMAND objcopy --input binary --output ${OBJ_FORMAT} --binary-architecture i386 \"${OLOCO_TEXT}\" openloco_text_section.o --rename-section .data=.loco_text,contents,alloc,load,readonly,code
-            DEPENDS segfiles
-            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        )
-        add_custom_command(
-            OUTPUT openloco_data_section.o
-            COMMAND objcopy --input binary --output ${OBJ_FORMAT} --binary-architecture i386 \"${OLOCO_DATA}\" openloco_data_section.o --rename-section .data=.loco_data,contents,alloc,load,readonly,data
-            DEPENDS segfiles
-            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        )
-        add_custom_target(linkable_sections DEPENDS openloco_text_section.o openloco_data_section.o)
-        set_source_files_properties(
-            openloco_text_section.o openloco_data_section.o
-            PROPERTIES
-            EXTERNAL_OBJECT true
-            GENERATED true
-        )
-        # can't use GLOB here, as the files don't exist yet at cmake-time
-        set(LOCO_SECTIONS "${CMAKE_BINARY_DIR}/openloco_data_section.o" "${CMAKE_BINARY_DIR}/openloco_text_section.o")
-        set(LOCO_SEGMENT_LINKER_FLAGS "-Wl,-T,\"${CMAKE_CURRENT_SOURCE_DIR}/distribution/linux/${LINKER_SCRIPT}\"")
-    endif ()
-endif()
-
 FetchContent_Declare(openloco_objects
             URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.5/objects.zip
             URL_HASH SHA256=fe8943fabad8eb07cebab5354589abd7e798a705f7993bb4d9dab2122b4fe96e)

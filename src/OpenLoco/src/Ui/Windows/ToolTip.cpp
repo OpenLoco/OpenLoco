@@ -13,11 +13,9 @@
 #include "Ui/Widget.h"
 #include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <algorithm>
 #include <cstring>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::ToolTip
 {

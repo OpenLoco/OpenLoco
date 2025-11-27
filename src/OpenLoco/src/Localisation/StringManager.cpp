@@ -3,12 +3,9 @@
 #include "GameState.h"
 #include "StringIds.h"
 #include <OpenLoco/Diagnostics/Logging.h>
-#include <OpenLoco/Interop/Interop.hpp>
 
 #include <cassert>
 #include <cstring>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::StringManager
 {

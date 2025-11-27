@@ -1,7 +1,5 @@
 #include "MultiPlayer.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
+#include <cstdint>
 
 namespace OpenLoco::MultiPlayer
 {

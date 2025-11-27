@@ -121,7 +121,7 @@ namespace OpenLoco::Network
         Logging::info("Player #{}: {}", static_cast<int>(client), message);
     }
 
-    void queueGameCommand(CompanyId company, const OpenLoco::Interop::registers& regs)
+    void queueGameCommand(CompanyId company, const OpenLoco::GameCommands::registers& regs)
     {
         // TEMP debug code
         if (regs.esi == 73)

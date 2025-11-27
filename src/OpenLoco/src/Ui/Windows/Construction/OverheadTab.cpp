@@ -32,7 +32,6 @@
 #include "Ui/Widgets/Wt3Widget.h"
 #include "World/CompanyManager.h"
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 using namespace OpenLoco::World::TileManager;
 

@@ -19,10 +19,6 @@
 #include "World/Company.h"
 #include "World/CompanyManager.h"
 
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::VehicleManager
 {
     // 0x004A8826
@@ -384,7 +380,7 @@ namespace OpenLoco::VehicleManager
                 // perhaps in the future this could be changed.
                 GameCommands::VehiclePickupAirArgs airArgs{};
                 airArgs.head = head.id;
-                registers regs = static_cast<registers>(airArgs);
+                GameCommands::registers regs = static_cast<GameCommands::registers>(airArgs);
                 regs.bl = GameCommands::Flags::apply;
                 GameCommands::vehiclePickupAir(regs);
                 break;
@@ -395,7 +391,7 @@ namespace OpenLoco::VehicleManager
                 // perhaps in the future this could be changed.
                 GameCommands::VehiclePickupWaterArgs waterArgs{};
                 waterArgs.head = head.id;
-                registers regs = static_cast<registers>(waterArgs);
+                GameCommands::registers regs = static_cast<GameCommands::registers>(waterArgs);
                 regs.bl = GameCommands::Flags::apply;
                 GameCommands::vehiclePickupWater(regs);
             }

@@ -22,14 +22,13 @@
 #include "Ui/Windows/Construction/Construction.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/VehicleManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <OpenLoco/Math/Vector.hpp>
 
 #include <bitset>
 #include <numeric>
 #include <sfl/static_vector.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::World;
 

@@ -9,10 +9,8 @@
 #include "Localisation/Formatting.h"
 #include "Ui/ScrollView.h"
 #include "Window.h"
-#include <OpenLoco/Interop/Interop.hpp>
-#include <cassert>
 
-using namespace OpenLoco::Interop;
+#include <cassert>
 
 namespace OpenLoco::Ui
 {

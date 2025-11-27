@@ -20,7 +20,6 @@
 #include <cstdarg>
 #include <limits>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Ui::Dropdown

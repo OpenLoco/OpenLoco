@@ -28,7 +28,7 @@
 #include "Ui/Widgets/TextBoxWidget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Core/FileSystem.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/Utility/String.hpp>
 
@@ -38,7 +38,6 @@
 #include <cstring>
 #include <string>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Ui::Windows::PromptBrowse

@@ -10,13 +10,12 @@
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Numerics.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <SDL2/SDL.h>
 #include <algorithm>
 #include <cassert>
 #include <stack>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Gfx;
 using namespace OpenLoco::Ui;
 

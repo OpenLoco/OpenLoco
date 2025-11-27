@@ -20,11 +20,9 @@ extern "C" __declspec(dllexport) int StartOpenLoco([[maybe_unused]] HINSTANCE hI
     return res;
 }
 #else
-#include "Interop/Hooks.h"
 
 int main(int argc, const char** argv)
 {
-    OpenLoco::Interop::loadSections();
     return OpenLoco::main(OpenLoco::Platform::getCmdLineVector(argc, argv));
 }
 #endif

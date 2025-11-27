@@ -20,7 +20,7 @@
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Core/Stream.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <algorithm>
 #include <cassert>
 #include <fstream>
@@ -28,7 +28,6 @@
 #include <memory>
 #include <numeric>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Utility;
 using namespace OpenLoco::Gfx;
 using namespace OpenLoco::Ui;

@@ -4,12 +4,10 @@
 #include <Message.h>
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <fstream>
 #include <locale>
 #include <yaml-cpp/yaml.h>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Config
 {

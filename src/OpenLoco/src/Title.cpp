@@ -19,12 +19,9 @@
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
 #include <variant>
 #include <vector>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Title
 {
@@ -131,7 +128,7 @@ namespace OpenLoco::Title
         GameCommands::setUpdatingCompanyId(CompanyManager::getControllingId());
         if (SceneManager::isPaused())
         {
-            registers regs;
+            GameCommands::registers regs;
             regs.bl = GameCommands::Flags::apply;
             GameCommands::togglePause(regs);
         }

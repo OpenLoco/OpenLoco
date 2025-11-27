@@ -9,14 +9,13 @@
 #include "Ui.h"
 #include "Unicode.h"
 #include <OpenLoco/Core/Exception.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <OpenLoco/Platform/Platform.h>
 #include <cassert>
 #include <iostream>
 #include <stdexcept>
 #include <yaml-cpp/yaml.h>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Localisation

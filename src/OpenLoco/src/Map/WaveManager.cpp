@@ -12,11 +12,10 @@
 #include "Wave.h"
 #include <OpenLoco/Core/LocoFixedVector.hpp>
 #include <OpenLoco/Core/Prng.h>
-#include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco::World::WaveManager
 {
-    using namespace OpenLoco::Interop;
+
     using namespace OpenLoco::Ui;
 
     const static Pos2 _offsets[4] = {

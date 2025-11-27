@@ -52,10 +52,9 @@
 #include "World/CompanyManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Engine/World.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <OpenLoco/Math/Trigonometry.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 using namespace OpenLoco::GameCommands;
 

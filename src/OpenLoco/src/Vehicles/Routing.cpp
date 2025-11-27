@@ -19,12 +19,12 @@
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Engine/World.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <sfl/static_vector.hpp>
 
 namespace OpenLoco::Vehicles
 {
-    using namespace OpenLoco::Interop;
+
     using namespace OpenLoco::World;
     using namespace OpenLoco::World::Track;
 

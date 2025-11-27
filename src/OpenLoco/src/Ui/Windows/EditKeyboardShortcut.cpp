@@ -15,10 +15,9 @@
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <SDL2/SDL_keyboard.h>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Input;
 
 namespace OpenLoco::Ui::Windows::EditKeyboardShortcut

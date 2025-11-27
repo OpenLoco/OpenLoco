@@ -7,7 +7,6 @@
 #include <numeric>
 
 using namespace OpenLoco::Environment;
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Jukebox
 {

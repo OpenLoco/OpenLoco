@@ -6,7 +6,7 @@
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Engine/Ui/Point.hpp>
 #include <OpenLoco/Engine/World.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <array>
 #include <sfl/static_vector.hpp>
 #include <span>
@@ -442,7 +442,6 @@ namespace OpenLoco::Paint
 
             PaintEntry() {}
         };
-        assert_struct_size(PaintEntry, 0x34);
 
         // Do not null-initialize this, its too expensive, this is storage.
         sfl::static_vector<PaintEntry, kMaxPaintEntries> _paintEntries;

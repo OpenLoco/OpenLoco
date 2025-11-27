@@ -24,5 +24,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void vehiclePickupWater(Interop::registers& regs);
+    void vehiclePickupWater(registers& regs);
 }

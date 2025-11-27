@@ -29,8 +29,6 @@
 #include "World/Company.h"
 #include "World/Station.h"
 
-#include <OpenLoco/Interop/Interop.hpp>
-
 namespace OpenLoco::CompanyAi
 {
     using ValidTrackRoadIds = sfl::static_vector<uint8_t, 64>;
@@ -396,7 +394,7 @@ namespace OpenLoco::CompanyAi
         args.unkFlags = _createTrackRoadCommandAiUnkFlags >> 20;
 
         {
-            auto regs = static_cast<Interop::registers>(args);
+            auto regs = static_cast<GameCommands::registers>(args);
             regs.bl = GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment;
             GameCommands::createTrack(regs);
             if (static_cast<uint32_t>(regs.ebx) == GameCommands::FAILURE)
@@ -538,7 +536,7 @@ namespace OpenLoco::CompanyAi
         auto& returnState = GameCommands::getLegacyReturnState();
 
         {
-            auto regs = static_cast<Interop::registers>(args);
+            auto regs = static_cast<GameCommands::registers>(args);
             regs.bl = GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment;
             GameCommands::createRoad(regs);
             if (static_cast<uint32_t>(regs.ebx) == GameCommands::FAILURE)
@@ -551,7 +549,7 @@ namespace OpenLoco::CompanyAi
                 {
                     args.bridge = returnState.byte_1136075;
                 }
-                regs = static_cast<Interop::registers>(args);
+                regs = static_cast<GameCommands::registers>(args);
                 regs.bl = GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment;
                 GameCommands::createRoad(regs);
                 if (static_cast<uint32_t>(regs.ebx) == GameCommands::FAILURE)
@@ -2180,7 +2178,7 @@ namespace OpenLoco::CompanyAi
                 args.trackId = trackId;
                 args.trackObjectId = trackObjId;
 
-                auto regs(static_cast<Interop::registers>(args));
+                auto regs(static_cast<GameCommands::registers>(args));
                 regs.bl = 0;
                 GameCommands::aiTrackReplacement(regs);
                 if (static_cast<uint32_t>(regs.ebx) != GameCommands::FAILURE)
