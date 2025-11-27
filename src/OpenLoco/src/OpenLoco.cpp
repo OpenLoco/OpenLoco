@@ -453,7 +453,7 @@ namespace OpenLoco
         auto& lastLoadError = S5::getLastLoadError();
         if (lastLoadError.errorCode != 0)
         {
-            if (lastLoadError.errorCode == -2)
+            if (lastLoadError.errorCode != -3)
             {
                 StringId title = lastLoadError.errorMessage;
                 StringId message = StringIds::null;
@@ -463,6 +463,7 @@ namespace OpenLoco
             {
                 Ui::Windows::ObjectLoadError::open(lastLoadError.objectList);
             }
+            S5::resetLastLoadError();
         }
     }
 

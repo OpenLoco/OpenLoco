@@ -423,23 +423,14 @@ namespace OpenLoco::S5
         return file;
     }
 
-    // 0x00444D76
-    static void setObjectError(const std::vector<ObjectHeader>& headers)
-    {
-        auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2040));
-        StringManager::formatString(buffer, 512, StringIds::missing_object_data_id_x);
-        objectCreateIdentifierName(strchr(buffer, 0), headers[0]);
-
-        _lastLoadError = LoadError{
-            .errorCode = -1,
-            .errorMessage = StringIds::buffer_2040,
-            .objectList = headers,
-        };
-    }
-
     const LoadError& getLastLoadError()
     {
         return _lastLoadError;
+    }
+
+    void resetLastLoadError()
+    {
+        _lastLoadError = {};
     }
 
     class LoadException : public std::runtime_error
@@ -601,7 +592,12 @@ namespace OpenLoco::S5
             auto loadObjectResult = ObjectManager::loadAll(file->requiredObjects);
             if (!loadObjectResult.success)
             {
-                setObjectError(loadObjectResult.problemObjects);
+                _lastLoadError = LoadError{
+                    .errorCode = -3,
+                    .errorMessage = StringIds::null,
+                    .objectList = loadObjectResult.problemObjects,
+                };
+
                 if (hasLoadFlags(flags, LoadFlags::twoPlayer))
                 {
                     CompanyManager::reset();
@@ -744,18 +740,13 @@ namespace OpenLoco::S5
                 throw GameException::Interrupt;
             }
 
-            _lastLoadError = LoadError{
-                .errorCode = 0,
-                .errorMessage = StringIds::empty,
-            };
-
             return true;
         }
         catch (const LoadException& e)
         {
             Logging::error("Unable to load S5: {}", e.what());
             _lastLoadError = LoadError{
-                .errorCode = -1,
+                .errorCode = -4,
                 .errorMessage = e.getLocalisedMessage(),
             };
             Ui::ProgressBar::end();
@@ -765,7 +756,7 @@ namespace OpenLoco::S5
         {
             Logging::error("Unable to load S5: {}", e.what());
             _lastLoadError = LoadError{
-                .errorCode = -1,
+                .errorCode = -5,
                 .errorMessage = StringIds::null,
             };
             Ui::ProgressBar::end();
