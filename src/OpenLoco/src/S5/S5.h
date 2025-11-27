@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Objects/Object.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/FileSystem.hpp>
@@ -11,7 +12,6 @@ namespace OpenLoco
 {
     enum class CompanyFlags : uint32_t;
     enum class GameStateFlags : uint32_t;
-    struct ObjectHeader;
     class Stream;
 }
 
