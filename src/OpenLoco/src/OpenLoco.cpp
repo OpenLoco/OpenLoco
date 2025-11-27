@@ -41,7 +41,6 @@
 #include "Gui.h"
 #include "Input.h"
 #include "Input/Shortcuts.h"
-#include "Interop/Hooks.h"
 #include "Intro.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/LanguageFiles.h"
@@ -417,9 +416,6 @@ namespace OpenLoco
         }
     }
 
-    static loco_global<int8_t, 0x0050C197> _loadErrorCode;
-    static loco_global<StringId, 0x0050C198> _loadErrorMessage;
-
     // 0x0046ABCB
     static void tickLogic()
     {
@@ -454,20 +450,20 @@ namespace OpenLoco
 
         Scenario::getOptions().madeAnyChanges = userMadeAnyChanges;
 
-        if (_loadErrorCode != 0)
+        auto& lastLoadError = S5::getLastLoadError();
+        if (lastLoadError.errorCode != 0)
         {
-            if (_loadErrorCode == -2)
+            if (lastLoadError.errorCode != -3)
             {
-                StringId title = _loadErrorMessage;
+                StringId title = lastLoadError.errorMessage;
                 StringId message = StringIds::null;
                 Ui::Windows::Error::open(title, message);
             }
             else
             {
-                auto objectList = S5::getObjectErrorList();
-                Ui::Windows::ObjectLoadError::open(objectList);
+                Ui::Windows::ObjectLoadError::open(lastLoadError.objectList);
             }
-            _loadErrorCode = 0;
+            S5::resetLastLoadError();
         }
     }
 

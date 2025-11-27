@@ -1750,7 +1750,7 @@ namespace OpenLoco::StringIds
     constexpr StringId object_company_owners = 2085;
     constexpr StringId object_scenario_descriptions = 2086;
     constexpr StringId tooltip_object_list = 2087;
-    constexpr StringId missing_object_data_id_x = 2088;
+    constexpr StringId missing_object_data_id_x = UNUSED_STR(2088);
     constexpr StringId export_plugin_objects = 2089;
     constexpr StringId export_plugin_objects_tip = 2090;
     constexpr StringId at_least_one_generic_dual_direction_road_type_must_be_selected = 2091;
