@@ -34,7 +34,6 @@
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Core/Timer.hpp>
 #include <OpenLoco/Diagnostics/Logging.h>
-
 #include <OpenLoco/Utility/String.hpp>
 #include <cstdint>
 #include <fstream>

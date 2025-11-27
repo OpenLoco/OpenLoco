@@ -16,7 +16,6 @@
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
-
 #include <array>
 #include <unordered_map>
 

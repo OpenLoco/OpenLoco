@@ -13,7 +13,6 @@
 #include "World/Company.h"
 #include "ZoomLevel.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
-
 #include <algorithm>
 #include <optional>
 #include <sfl/small_vector.hpp>

@@ -70,7 +70,6 @@
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Engine/World.hpp>
-
 #include <bit>
 #include <numeric>
 

@@ -3,11 +3,10 @@
 #include "Environment.h"
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Platform/Platform.h>
-#include <yaml-cpp/yaml.h>
-
 #include <algorithm>
 #include <fstream>
 #include <ranges>
+#include <yaml-cpp/yaml.h>
 
 namespace OpenLoco::Localisation
 {

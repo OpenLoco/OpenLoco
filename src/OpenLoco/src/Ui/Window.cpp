@@ -17,7 +17,6 @@
 #include "ViewportManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Engine/Ui/Rect.hpp>
-
 #include <cassert>
 #include <cinttypes>
 

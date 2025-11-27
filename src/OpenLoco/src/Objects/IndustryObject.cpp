@@ -9,7 +9,6 @@
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
 #include <OpenLoco/Core/Numerics.hpp>
-
 #include <algorithm>
 
 namespace OpenLoco

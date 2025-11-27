@@ -32,7 +32,6 @@
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
-
 #include <algorithm>
 #include <bit>
 

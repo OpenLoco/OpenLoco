@@ -24,7 +24,6 @@
 #include "Vehicles/VehicleManager.h"
 
 #include <OpenLoco/Math/Vector.hpp>
-
 #include <bitset>
 #include <numeric>
 #include <sfl/static_vector.hpp>

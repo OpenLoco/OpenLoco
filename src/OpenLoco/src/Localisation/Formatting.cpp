@@ -11,7 +11,6 @@
 #include "StringManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Core/Exception.hpp>
-
 #include <cassert>
 #include <cmath>
 #include <cstring>

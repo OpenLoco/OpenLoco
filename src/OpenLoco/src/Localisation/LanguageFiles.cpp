@@ -9,7 +9,6 @@
 #include "Ui.h"
 #include "Unicode.h"
 #include <OpenLoco/Core/Exception.hpp>
-
 #include <OpenLoco/Platform/Platform.h>
 #include <cassert>
 #include <iostream>

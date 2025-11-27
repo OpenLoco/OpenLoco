@@ -4,7 +4,6 @@
 #include <Message.h>
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
-
 #include <fstream>
 #include <locale>
 #include <yaml-cpp/yaml.h>

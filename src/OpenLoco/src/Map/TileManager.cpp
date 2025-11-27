@@ -39,7 +39,6 @@
 #include "World/TownManager.h"
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Engine/World.hpp>
-
 #include <set>
 
 using namespace OpenLoco::Diagnostics;

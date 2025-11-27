@@ -15,7 +15,6 @@
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
-
 #include <SDL2/SDL_keyboard.h>
 
 using namespace OpenLoco::Input;

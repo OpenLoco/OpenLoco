@@ -15,7 +15,6 @@
 #include "Window.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Core/Exception.hpp>
-
 #include <cassert>
 #include <cstdarg>
 #include <limits>

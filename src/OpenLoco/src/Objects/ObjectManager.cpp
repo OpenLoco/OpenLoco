@@ -60,7 +60,6 @@
 #include <OpenLoco/Core/Stream.hpp>
 #include <OpenLoco/Core/Timer.hpp>
 #include <OpenLoco/Core/Traits.hpp>
-
 #include <bit>
 #include <vector>
 

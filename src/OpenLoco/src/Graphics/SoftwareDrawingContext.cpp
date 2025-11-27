@@ -10,7 +10,6 @@
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Numerics.hpp>
-
 #include <SDL2/SDL.h>
 #include <algorithm>
 #include <cassert>

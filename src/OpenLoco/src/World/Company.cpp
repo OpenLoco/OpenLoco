@@ -30,7 +30,6 @@
 #include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
-
 #include <OpenLoco/Math/Bound.hpp>
 #include <algorithm>
 #include <array>

@@ -6,7 +6,6 @@
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Engine/Ui/Point.hpp>
 #include <OpenLoco/Engine/World.hpp>
-
 #include <array>
 #include <sfl/static_vector.hpp>
 #include <span>

@@ -20,7 +20,6 @@
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Core/Stream.hpp>
-
 #include <algorithm>
 #include <cassert>
 #include <fstream>

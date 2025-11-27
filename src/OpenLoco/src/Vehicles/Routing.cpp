@@ -19,7 +19,6 @@
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Engine/World.hpp>
-
 #include <sfl/static_vector.hpp>
 
 namespace OpenLoco::Vehicles

@@ -3,7 +3,6 @@
 #include "GameState.h"
 #include "StringIds.h"
 #include <OpenLoco/Diagnostics/Logging.h>
-
 #include <cassert>
 #include <cstring>
 

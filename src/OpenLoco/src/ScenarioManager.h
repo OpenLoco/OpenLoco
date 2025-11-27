@@ -3,7 +3,6 @@
 #include "Objects/Object.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
-
 #include <cstddef>
 #include <cstdint>
 
