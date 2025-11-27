@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <cstdint>
@@ -108,6 +109,13 @@ namespace OpenLoco::S5
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(SaveFlags);
 
+    struct LoadError
+    {
+        int8_t errorCode;      // 0x0050C197
+        StringId errorMessage; // 0x0050C198
+        std::vector<ObjectHeader> objectList{};
+    };
+
     constexpr uint32_t kMagicNumber = 0x62300;
 
     constexpr const char* extensionSC5 = ".SC5";
@@ -119,7 +127,7 @@ namespace OpenLoco::S5
     bool exportGameStateToFile(const fs::path& path, SaveFlags flags);
     bool exportGameStateToFile(Stream& stream, SaveFlags flags);
 
-    const std::vector<ObjectHeader>& getObjectErrorList();
+    const LoadError& getLastLoadError();
 
     std::unique_ptr<S5File> importSave(Stream& stream);
     bool importSaveToGameState(const fs::path& path, LoadFlags flags);
