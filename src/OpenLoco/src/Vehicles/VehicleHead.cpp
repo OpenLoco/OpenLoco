@@ -62,7 +62,7 @@ namespace OpenLoco::Vehicles
 {
     static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
     static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
-    static loco_global<uint8_t, 0x0113623B> _vehicleMangled_113623B;    // This shouldn't be used as it will be mangled but it is
+    static uint8_t _vehicleMangled_113623B = 0;                         // 0x0113623B TODO: This shouldn't be used as it will be mangled but it is
 
     static constexpr uint16_t kTrainOneWaySignalTimeout = 1920;
     static constexpr uint16_t kTrainTwoWaySignalTimeout = 640;
@@ -4633,7 +4633,7 @@ namespace OpenLoco::Vehicles
                         if (isBlockOccupied(nextPos, tad, head.owner, head.trackType))
                         {
                             setSignalState(nextPos, tad, head.trackType, 8);
-                            return Sub4ACEE7Result{ 3, *_vehicleMangled_113623B, StationId::null };
+                            return Sub4ACEE7Result{ 3, _vehicleMangled_113623B, StationId::null };
                         }
                     }
 
@@ -4642,19 +4642,19 @@ namespace OpenLoco::Vehicles
                         // 0x004AD490
                         if (train.veh1->var_52 != 0)
                         {
-                            _vehicleMangled_113623B = *_vehicleMangled_113623B | (1U << 7);
+                            _vehicleMangled_113623B = _vehicleMangled_113623B | (1U << 7);
                             train.veh1->var_52--;
 
-                            return Sub4ACEE7Result{ 3, *_vehicleMangled_113623B, StationId::null };
+                            return Sub4ACEE7Result{ 3, _vehicleMangled_113623B, StationId::null };
                         }
                         else
                         {
                             if (!(sub_4A2A77(nextPos, tad, head.owner, head.trackType) & ((1U << 0) | (1U << 1))))
                             {
-                                _vehicleMangled_113623B = *_vehicleMangled_113623B | (1U << 7);
+                                _vehicleMangled_113623B = _vehicleMangled_113623B | (1U << 7);
                                 train.veh1->var_52 = 55;
 
-                                return Sub4ACEE7Result{ 3, *_vehicleMangled_113623B, StationId::null };
+                                return Sub4ACEE7Result{ 3, _vehicleMangled_113623B, StationId::null };
                             }
                         }
                     }
