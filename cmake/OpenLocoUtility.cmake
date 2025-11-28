@@ -111,6 +111,7 @@ function(loco_target_compile_link_flags TARGET)
     )
 
     set(COMMON_COMPILE_OPTIONS
+        DEBUG=${DEBUG_LEVEL}
         $<$<CXX_COMPILER_ID:MSVC>:${COMMON_COMPILE_OPTIONS_MSVC}>
         $<$<CXX_COMPILER_ID:GNU>:${COMMON_COMPILE_OPTIONS_GNU}>
         $<$<CXX_COMPILER_ID:Clang>:${COMMON_COMPILE_OPTIONS_GNU}>

@@ -791,7 +791,6 @@ endif ()
 
 target_compile_definitions(OpenLoco
     PRIVATE
-        DEBUG=${DEBUG_LEVEL}
         SDL_MAIN_HANDLED
  )
 if (MINGW)
