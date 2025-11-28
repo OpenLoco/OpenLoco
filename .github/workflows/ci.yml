@@ -55,7 +55,7 @@ jobs:
       - name: Build OpenLoco
         shell: cmd
         run: |
-          cmake --preset windows-msvc
+          cmake --preset windows-msvc -DVCPKG_BUILD_TYPE=release
           cmake --build --preset windows-msvc-release
       - name: Build release
         run: |
@@ -174,7 +174,7 @@ jobs:
           vcpkgGitCommitId: 89dc8be6dbcf18482a5a1bf86a2f4615c939b0fb
       - name: Build OpenLoco
         run: |
-          cmake --preset linux-vcpkg-static
+          cmake --preset linux-vcpkg-static -DVCPKG_BUILD_TYPE=release
           cmake --build --preset linux-release-static
       # Static linkage means the binary should be fairly portable / distributable across distros!
       - name: Install to artifacts
