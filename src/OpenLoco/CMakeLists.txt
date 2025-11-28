@@ -771,7 +771,6 @@ loco_add_executable(OpenLoco
         ${OLOCO_HEADERS}
 )
 
-
 target_link_libraries(OpenLoco
     Core
     Diagnostics
@@ -793,27 +792,20 @@ if (WIN32)
     target_link_libraries(OpenLoco winmm ws2_32 Resources)
 endif ()
 
-if (MINGW)
-    target_compile_definitions(OpenLoco
+target_compile_definitions(OpenLoco
         PRIVATE
             DEBUG=${DEBUG_LEVEL}
-            SDL_MAIN_HANDLED=1)
-
-    target_link_libraries(OpenLoco imm32 winmm version)
+ )
+if (MINGW)
+    target_link_libraries(OpenLoco imm32 version)
 elseif (MSVC)
     target_compile_definitions(OpenLoco
         PRIVATE
-            DEBUG=${DEBUG_LEVEL}
             _WINDLL _MBCS DEBUG_WIN32=1
             _CRT_SECURE_NO_WARNINGS
             _CRT_NONSTDC_NO_DEPRECATE
             _USE_MATH_DEFINES
-            SDL_MAIN_HANDLED
             _WINSOCK_DEPRECATED_NO_WARNINGS)
-else ()
-    target_compile_definitions(OpenLoco
-        PRIVATE
-            DEBUG=${DEBUG_LEVEL})
 endif()
 
 if (APPLE)
