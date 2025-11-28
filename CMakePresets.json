@@ -105,18 +105,6 @@
                 "OPENLOCO_USE_CCACHE": {
                     "type": "BOOL",
                     "value": false
-                },
-                "PNG_LIBRARY": {
-                    "type": "FILEPATH",
-                    "value": "/opt/homebrew/lib/libpng16.dylib"
-                },
-                "PNG_PNG_INCLUDE_DIR": {
-                    "type": "PATH",
-                    "value": "/opt/homebrew/include"
-                },
-                "ZLIB_LIBRARY": {
-                    "type": "FILEPATH",
-                    "value": "/opt/homebrew/lib/libzip.dylib"
                 }
             }
         },
