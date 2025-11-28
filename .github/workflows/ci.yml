@@ -180,7 +180,7 @@ jobs:
       - name: Install to artifacts
         run: |
           mkdir -p artifacts
-          cmake --install artifacts
+          cmake --install build/linux-vcpkg-static --prefix ./artifacts
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
