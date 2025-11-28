@@ -823,19 +823,19 @@ namespace OpenLoco::Paint
                 return;
             }
 
-            if ((landObjectFlags[self.landObjectId] & LandObjectFlags::unk4) != LandObjectFlags::none)
+            if ((landObjectFlags[self.landObjectId] & LandObjectFlags::hasSharpSlopeTransition) != LandObjectFlags::none)
             {
                 return;
             }
         }
         else
         {
-            if ((landObjectFlags[self.landObjectId] & LandObjectFlags::unk5) != LandObjectFlags::none)
+            if ((landObjectFlags[self.landObjectId] & LandObjectFlags::disableSmoothTileTransition) != LandObjectFlags::none)
             {
                 return;
             }
 
-            if ((landObjectFlags[neighbour.landObjectId] & LandObjectFlags::unk5) != LandObjectFlags::none)
+            if ((landObjectFlags[neighbour.landObjectId] & LandObjectFlags::disableSmoothTileTransition) != LandObjectFlags::none)
             {
                 return;
             }
