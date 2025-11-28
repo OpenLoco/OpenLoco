@@ -88,6 +88,27 @@
             }
         },
         {
+            "name": "macos",
+            "displayName": "macOS with Homebrew",
+            "description": "Ninja configure environment for macOS",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "OPENLOCO_BUILD_TESTS": {
+                    "type": "BOOL",
+                    "value": false
+                },
+                "OPENLOCO_HEADER_CHECK": {
+                    "type": "BOOL",
+                    "value": false
+                },
+                "OPENLOCO_USE_CCACHE": {
+                    "type": "BOOL",
+                    "value": false
+                }
+            }
+        },
+        {
             "name": "mingw",
             "displayName": "MinGW32-ci",
             "description": "Ninja configure environment for MinGW32",
