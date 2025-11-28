@@ -55,7 +55,7 @@ jobs:
       - name: Build OpenLoco
         shell: cmd
         run: |
-          cmake --preset windows-msvc
+          cmake --preset windows-msvc -DVCPKG_BUILD_TYPE=release
           cmake --build --preset windows-msvc-release
       - name: Build release
         run: |
@@ -153,7 +153,7 @@ jobs:
           cmake --build --preset mingw-release
 
   linux-static:
-    name: Ubuntu noble g++ i686 vcpkg static linkage
+    name: Ubuntu noble g++ x64 vcpkg static linkage
     runs-on: ubuntu-latest
     needs: check-code-formatting
     container: ghcr.io/openloco/openloco:9-noble32vcpkg
@@ -174,17 +174,16 @@ jobs:
           vcpkgGitCommitId: 89dc8be6dbcf18482a5a1bf86a2f4615c939b0fb
       - name: Build OpenLoco
         run: |
-          cmake --preset linux-vcpkg-static
+          cmake --preset linux-vcpkg-static -DVCPKG_BUILD_TYPE=release
           cmake --build --preset linux-release-static
       # Static linkage means the binary should be fairly portable / distributable across distros!
-      - name: Build artifacts
+      - name: Install to artifacts
         run: |
           mkdir -p artifacts
-          cp CHANGELOG.md CONTRIBUTORS.md LICENSE artifacts/
-          cp build/linux-vcpkg-static/Release/* artifacts/
+          cmake --install build/linux-vcpkg-static --prefix ./artifacts
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: OpenLoco-linux-i686-glibc2.35
+          name: OpenLoco-linux-x64-glibc2.39
           path: artifacts
           if-no-files-found: error
