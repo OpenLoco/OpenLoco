@@ -1102,12 +1102,12 @@ namespace OpenLoco::StringIds
     constexpr StringId sort_industry_status = 1376;
     constexpr StringId sort_industry_production_transported = 1377;
     constexpr StringId industry_table_header_status = 1378;
-    constexpr StringId industry_table_header_status_desc = 1379;
+    constexpr StringId industry_table_header_status_desc = UNUSED_STR(1379);
     constexpr StringId industry_table_header_production = 1380;
-    constexpr StringId industry_table_header_production_desc = 1381;
+    constexpr StringId industry_table_header_production_desc = UNUSED_STR(1381);
     constexpr StringId sort_industry_name = 1382;
     constexpr StringId industry_table_header = 1383;
-    constexpr StringId industry_table_header_desc = 1384;
+    constexpr StringId industry_table_header_desc = UNUSED_STR(1384);
     constexpr StringId no_industry_available = 1385;
     constexpr StringId tooltip_town = 1386;
     constexpr StringId tooltip_population_graph = 1387;
@@ -2053,6 +2053,9 @@ namespace OpenLoco::StringIds
     constexpr StringId year_range_no_start_no_end = 2387;
     constexpr StringId status_music_tracks_selected_singular = 2388;
     constexpr StringId status_music_tracks_selected_plural = 2389;
+    constexpr StringId table_header = 2390;
+    constexpr StringId table_header_ascending = 2391;
+    constexpr StringId table_header_descending = 2392;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
