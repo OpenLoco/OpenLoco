@@ -52,7 +52,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
         auto window = WindowManager::createWindowCentred(
             WindowType::progressBar,
             kWindowSize,
-            WindowFlags::flag_11 | WindowFlags::stickToFront,
+            WindowFlags::lighterFrame | WindowFlags::stickToFront,
             getEvents());
 
         window->setWidgets(widgets);

@@ -458,7 +458,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B60DC
         static Window* create(const EntityId head)
         {
-            auto* const self = WindowManager::createWindow(WindowType::vehicle, kWindowSize, WindowFlags::flag_11 | WindowFlags::flag_8 | WindowFlags::resizable, Main::getEvents());
+            auto* const self = WindowManager::createWindow(WindowType::vehicle, kWindowSize, WindowFlags::lighterFrame | WindowFlags::viewportNoShiftPixels | WindowFlags::resizable, Main::getEvents());
             self->setWidgets(widgets);
             self->number = enumValue(head);
             const auto* vehicle = Common::getVehicle(*self);
@@ -4919,7 +4919,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             self.currentTab = widgetIndex - Common::widx::tabMain;
             self.frameNo = 0;
-            self.flags &= ~WindowFlags::flag_16;
+            self.flags &= ~WindowFlags::beingResized;
             self.var_85C = -1;
             self.viewportRemove(0);
 

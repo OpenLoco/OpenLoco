@@ -43,7 +43,7 @@ namespace OpenLoco::Ui::Widgets
         if (clipped)
         {
             uint32_t imageId = widget.image;
-            if (window->hasFlags(WindowFlags::flag_11))
+            if (window->hasFlags(WindowFlags::lighterFrame))
             {
                 imageId = Gfx::recolour(ImageIds::frame_background_image, widgetState.colour.c());
             }
@@ -58,7 +58,7 @@ namespace OpenLoco::Ui::Widgets
         }
 
         uint8_t shade;
-        if (window->hasFlags(WindowFlags::flag_11))
+        if (window->hasFlags(WindowFlags::lighterFrame))
         {
             shade = Colours::getShade(widgetState.colour.c(), 3);
         }

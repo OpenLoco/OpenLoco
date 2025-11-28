@@ -317,7 +317,7 @@ namespace OpenLoco::Ui::Windows::Station
         if (window == nullptr)
         {
             // 0x0048F29F start
-            const WindowFlags newFlags = WindowFlags::resizable | WindowFlags::flag_11;
+            const WindowFlags newFlags = WindowFlags::resizable | WindowFlags::lighterFrame;
             window = WindowManager::createWindow(WindowType::station, Station::kWindowSize, newFlags, Station::getEvents());
             window->number = enumValue(stationId);
             auto station = StationManager::get(stationId);
@@ -1415,7 +1415,7 @@ namespace OpenLoco::Ui::Windows::Station
 
             self.currentTab = widgetIndex - widx::tab_station;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
             self.var_85C = -1;
 
             self.viewportRemove(0);

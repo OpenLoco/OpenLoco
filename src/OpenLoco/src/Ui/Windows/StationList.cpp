@@ -320,7 +320,7 @@ namespace OpenLoco::Ui::Windows::StationList
             window = WindowManager::createWindow(
                 WindowType::stationList,
                 kWindowSize,
-                WindowFlags::flag_11,
+                WindowFlags::lighterFrame,
                 getEvents());
 
             window->number = enumValue(companyId);

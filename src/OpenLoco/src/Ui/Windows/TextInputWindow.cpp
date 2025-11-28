@@ -83,7 +83,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         auto window = WindowManager::createWindowCentred(
             WindowType::textInput,
             { 330, 90 },
-            WindowFlags::stickToFront | WindowFlags::flag_12,
+            WindowFlags::stickToFront | WindowFlags::playSoundOnOpen,
             getEvents());
         window->setWidgets(_widgets);
         window->initScrollWidgets();
@@ -121,7 +121,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         window->widgets[Widx::title].styleData = enumValue(Widgets::Caption::Style::whiteText);
         if (window->owner != CompanyId::null)
         {
-            window->flags |= WindowFlags::flag_11;
+            window->flags |= WindowFlags::lighterFrame;
             window->widgets[Widx::title].styleData = enumValue(Widgets::Caption::Style::colourText);
         }
 
