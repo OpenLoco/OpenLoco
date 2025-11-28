@@ -2,12 +2,78 @@
 #include "Config.h"
 #include "GameState.h"
 #include "Graphics/ImageIds.h"
-#include <OpenLoco/Interop/Interop.hpp>
+#include <array>
 
 namespace OpenLoco::Paint
 {
-    static Interop::loco_global<int8_t[2 * 44], 0x004F86B4> _4F86B4;
-    static Interop::loco_global<int8_t[2 * 10], 0x004F720C> _4F720C;
+    // Height offset pairs for decorations (height markers, direction arrows)
+    struct DecorationHeightOffsets
+    {
+        int8_t firstTile;
+        int8_t lastTile;
+    };
+
+    // 0x004F720C
+    static constexpr std::array<DecorationHeightOffsets, 10> kRoadDecorationHeightOffsets = { {
+        { 0, 0 },  // straight
+        { 0, 0 },  // leftCurveVerySmall
+        { 0, 0 },  // rightCurveVerySmall
+        { 0, 0 },  // leftCurveSmall
+        { 0, 0 },  // rightCurveSmall
+        { 0, 16 }, // straightSlopeUp
+        { 16, 0 }, // straightSlopeDown
+        { 0, 16 }, // straightSteepSlopeUp
+        { 16, 0 }, // straightSteepSlopeDown
+        { 0, 0 },  // turnaround
+    } };
+
+    // 0x004F86B4
+    static constexpr std::array<DecorationHeightOffsets, 44> kTrackDecorationHeightOffsets = { {
+        { 0, 0 },  // straight
+        { 0, 0 },  // diagonal
+        { 0, 0 },  // leftCurveVerySmall
+        { 0, 0 },  // rightCurveVerySmall
+        { 0, 0 },  // leftCurveSmall
+        { 0, 0 },  // rightCurveSmall
+        { 0, 0 },  // leftCurve
+        { 0, 0 },  // rightCurve
+        { 0, 0 },  // leftCurveLarge
+        { 0, 0 },  // rightCurveLarge
+        { 0, 0 },  // diagonalLeftCurveLarge
+        { 0, 0 },  // diagonalRightCurveLarge
+        { 0, 0 },  // sBendLeft
+        { 0, 0 },  // sBendRight
+        { 0, 16 }, // straightSlopeUp
+        { 16, 0 }, // straightSlopeDown
+        { 0, 16 }, // straightSteepSlopeUp
+        { 16, 0 }, // straightSteepSlopeDown
+        { 0, 16 }, // leftCurveSmallSlopeUp
+        { 0, 16 }, // rightCurveSmallSlopeUp
+        { 16, 0 }, // leftCurveSmallSlopeDown
+        { 16, 0 }, // rightCurveSmallSlopeDown
+        { 0, 16 }, // leftCurveSmallSteepSlopeUp
+        { 0, 16 }, // rightCurveSmallSteepSlopeUp
+        { 16, 0 }, // leftCurveSmallSteepSlopeDown
+        { 16, 0 }, // rightCurveSmallSteepSlopeDown
+        { 0, 0 },  // unkStraight1
+        { 0, 0 },  // unkStraight2
+        { 0, 0 },  // unkLeftCurveVerySmall1
+        { 0, 0 },  // unkLeftCurveVerySmall2
+        { 0, 0 },  // unkRightCurveVerySmall1
+        { 0, 0 },  // unkRightCurveVerySmall2
+        { 0, 0 },  // unkSBendRight
+        { 0, 0 },  // unkSBendLeft
+        { 0, 16 }, // unkStraightSteepSlopeUp1
+        { 0, 16 }, // unkStraightSteepSlopeUp2
+        { 16, 0 }, // unkStraightSteepSlopeDown1
+        { 16, 0 }, // unkStraightSteepSlopeDown2
+        { 0, 0 },  // sBendToDualTrack
+        { 0, 0 },  // sBendToSingleTrack
+        { 0, 0 },  // unkSBendToDualTrack
+        { 0, 0 },  // unkSBendToSingleTrack
+        { 0, 0 },  // turnaround
+        { 0, 0 },  // unkTurnaround
+    } };
 
     static constexpr std::array<std::array<uint32_t, 256>, 3> kHeightMarkerImages = {
         // MicroZ Units
@@ -791,26 +857,14 @@ namespace OpenLoco::Paint
 
     int8_t getTrackDecorationHeightOffset(const bool isFirstTile, const uint8_t trackId)
     {
-        if (isFirstTile)
-        {
-            return _4F86B4[trackId * 2];
-        }
-        else
-        {
-            return _4F86B4[trackId * 2 + 1];
-        }
+        const auto& offsets = kTrackDecorationHeightOffsets[trackId];
+        return isFirstTile ? offsets.firstTile : offsets.lastTile;
     }
 
     int8_t getRoadDecorationHeightOffset(const bool isFirstTile, const uint8_t roadId)
     {
-        if (isFirstTile)
-        {
-            return _4F720C[roadId * 2];
-        }
-        else
-        {
-            return _4F720C[roadId * 2 + 1];
-        }
+        const auto& offsets = kRoadDecorationHeightOffsets[roadId];
+        return isFirstTile ? offsets.firstTile : offsets.lastTile;
     }
 
     uint32_t getHeightMarkerImage(const coord_t height)

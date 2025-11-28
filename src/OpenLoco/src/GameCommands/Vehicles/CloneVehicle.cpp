@@ -9,27 +9,30 @@
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
-    static void copyVehicleColours(Vehicles::VehicleBase* source, Vehicles::VehicleBase* target)
+    static void copyVehicleColours(Vehicles::Vehicle& source, Vehicles::Vehicle& target)
     {
-        auto* sourceHead = source;
-        auto* targetHead = target;
-        while (sourceHead != nullptr && targetHead != nullptr)
+        auto srcIter = source.cars.begin();
+        auto tgtIter = target.cars.begin();
+        auto srcEnd = source.cars.end();
+        for (; srcIter != srcEnd; srcIter++, tgtIter++)
         {
-            targetHead->setColourScheme(sourceHead->getColourScheme());
-            sourceHead = sourceHead->nextVehicleComponent();
-            targetHead = targetHead->nextVehicleComponent();
+            auto srcCarIter = (*srcIter).begin();
+            auto tgtCarIter = (*tgtIter).begin();
+            auto srcCarEnd = (*srcIter).end();
+            for (; srcCarIter != srcCarEnd; srcCarIter++, tgtCarIter++)
+            {
+                (*tgtCarIter).body->colourScheme = (*srcCarIter).body->colourScheme;
+                (*tgtCarIter).front->colourScheme = (*srcCarIter).front->colourScheme;
+                (*tgtCarIter).back->colourScheme = (*srcCarIter).back->colourScheme;
+            }
         }
     }
 
     static uint32_t cloneVehicle(EntityId head, uint8_t flags)
     {
-        static loco_global<EntityId, 0x0113642A> _113642A;
         Vehicles::Vehicle existingTrain(head);
         Vehicles::VehicleHead* newHead = nullptr;
 
@@ -76,7 +79,7 @@ namespace OpenLoco::GameCommands
                 cost = doCommand(args, Flags::apply);
                 cargoType = car.body->primaryCargo.type;
 
-                auto* newVeh = EntityManager::get<Vehicles::VehicleBase>(_113642A);
+                auto* newVeh = EntityManager::get<Vehicles::VehicleBase>(getLegacyReturnState().lastCreatedVehicleId);
                 if (newVeh == nullptr)
                 {
                     return FAILURE;
@@ -106,7 +109,8 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        copyVehicleColours(existingTrain.head, newHead);
+        auto newTrain = Vehicles::Vehicle(*newHead);
+        copyVehicleColours(existingTrain, newTrain);
 
         // Copy orders
         std::vector<std::shared_ptr<Vehicles::Order>> clonedOrders;

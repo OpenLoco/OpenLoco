@@ -24,5 +24,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void sellVehicle(Interop::registers& regs);
+    void sellVehicle(registers& regs);
 }

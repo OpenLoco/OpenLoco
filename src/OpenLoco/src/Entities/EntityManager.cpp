@@ -6,9 +6,7 @@
 #include "Localisation/StringIds.h"
 #include "Logging.h"
 #include <OpenLoco/Core/LocoFixedVector.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::EntityManager
@@ -19,8 +17,8 @@ namespace OpenLoco::EntityManager
     static_assert(kSpatialEntityMapSize == 0x40001);
     static_assert(kEntitySpatialIndexNull == 0x40000);
 
-    loco_global<EntityId[kSpatialEntityMapSize], 0x01025A8C> _entitySpatialIndex;
-    loco_global<uint32_t, 0x01025A88> _entitySpatialCount;
+    static EntityId _entitySpatialIndex[kSpatialEntityMapSize]; // 0x01025A8C
+    static uint32_t _entitySpatialCount;                        // 0x01025A88
 
     static auto& rawEntities() { return getGameState().entities; }
     static auto entities() { return FixedVector(rawEntities()); }
@@ -237,6 +235,8 @@ namespace OpenLoco::EntityManager
         entity.position = loc;
     }
 
+    static void zeroEntity(EntityBase* ent);
+
     static EntityBase* createEntity(EntityId id, EntityListType list)
     {
         auto* newEntity = get<EntityBase>(id);
@@ -245,6 +245,7 @@ namespace OpenLoco::EntityManager
             Logging::error("Tried to create invalid entity! id: {}, list: {}", enumValue(id), enumValue(list));
             return nullptr;
         }
+        zeroEntity(newEntity);
         moveEntityToList(newEntity, list);
 
         newEntity->position = { Location::null, Location::null, 0 };
@@ -254,7 +255,6 @@ namespace OpenLoco::EntityManager
         newEntity->spriteWidth = 16;
         newEntity->spriteHeightNegative = 20;
         newEntity->spriteHeightPositive = 8;
-        newEntity->vehicleFlags = VehicleFlags::none;
         newEntity->spriteLeft = Location::null;
 
         return newEntity;

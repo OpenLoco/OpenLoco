@@ -16,11 +16,9 @@
 #include "Objects/SteamObject.h"
 #include "Paint.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <cassert>
 #include <unordered_map>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Paint
 {

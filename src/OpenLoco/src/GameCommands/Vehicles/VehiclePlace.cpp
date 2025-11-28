@@ -271,7 +271,7 @@ namespace OpenLoco::GameCommands
                     return FAILURE;
                 }
 
-                train.head->vehicleFlags |= VehicleFlags::commandStop;
+                train.head->vehicleFlags |= Vehicles::VehicleFlags::commandStop;
                 train.head->manualPower = -40;
                 if (flags & Flags::ghost)
                 {

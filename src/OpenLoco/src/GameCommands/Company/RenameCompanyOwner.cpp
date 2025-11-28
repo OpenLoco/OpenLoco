@@ -11,9 +11,6 @@
 #include "Objects/ObjectManager.h"
 #include "Types.hpp"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {

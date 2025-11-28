@@ -19,10 +19,8 @@
 #include "Ui/Widgets/TextBoxWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-#include <SDL2/SDL.h>
 
-using namespace OpenLoco::Interop;
+#include <SDL2/SDL.h>
 
 namespace OpenLoco::Ui::Windows::TextInput
 {
@@ -30,13 +28,11 @@ namespace OpenLoco::Ui::Windows::TextInput
     static WindowNumber_t _callingWindowNumber;
     static WindowType _callingWindowType;
 
-    static char _formatArgs[16];
+    static FormatArgumentsBuffer _formatArgs;
     static StringId _title;
     static StringId _message;
 
     static Ui::TextInput::InputSession inputSession;
-
-    static loco_global<char[16], 0x0112C826> _commonFormatArgs;
 
     namespace Widx
     {
@@ -72,7 +68,7 @@ namespace OpenLoco::Ui::Windows::TextInput
      * @param value @<cx>
      * @param callingWidget @<dx>
      */
-    void openTextInput(Ui::Window* caller, StringId title, StringId message, StringId value, int callingWidget, const void* valueArgs, uint32_t inputSize)
+    void openTextInput(Ui::Window* caller, StringId title, StringId message, StringId value, int callingWidget, FormatArgumentsView valueArgs, uint32_t inputSize)
     {
         _title = title;
         _message = message;
@@ -87,20 +83,18 @@ namespace OpenLoco::Ui::Windows::TextInput
         auto window = WindowManager::createWindowCentred(
             WindowType::textInput,
             { 330, 90 },
-            WindowFlags::stickToFront | WindowFlags::flag_12,
+            WindowFlags::stickToFront | WindowFlags::playSoundOnOpen,
             getEvents());
         window->setWidgets(_widgets);
         window->initScrollWidgets();
 
-        memcpy(_formatArgs, _commonFormatArgs, 16);
-
-        // FIXME: Make valueArgs a view.
-        auto args = FormatArguments{ const_cast<std::byte*>(static_cast<const std::byte*>(valueArgs)), 16 };
+        auto commonArgs = FormatArguments::common();
+        std::memcpy(_formatArgs.data(), commonArgs.getBufferStart(), commonArgs.getLength());
         char temp[200] = {};
-        StringManager::formatString(temp, value, args);
+        StringManager::formatString(temp, value, valueArgs);
 
         inputSession = Ui::TextInput::InputSession(temp, inputSize);
-        inputSession.calculateTextOffset(_widgets[Widx::input].width() - 2);
+        inputSession.calculateTextOffset(window->widgets[Widx::input].width() - 2);
 
         caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
 
@@ -127,7 +121,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         window->widgets[Widx::title].styleData = enumValue(Widgets::Caption::Style::whiteText);
         if (window->owner != CompanyId::null)
         {
-            window->flags |= WindowFlags::flag_11;
+            window->flags |= WindowFlags::lighterFrame;
             window->widgets[Widx::title].styleData = enumValue(Widgets::Caption::Style::colourText);
         }
 
@@ -189,7 +183,7 @@ namespace OpenLoco::Ui::Windows::TextInput
     static void prepareDraw(Ui::Window& window)
     {
         window.widgets[Widx::title].text = _title;
-        memcpy(window.widgets[Widx::title].textArgs.data(), _formatArgs, 16);
+        memcpy(window.widgets[Widx::title].textArgs.data(), _formatArgs.data(), 16);
     }
 
     /**
@@ -206,14 +200,16 @@ namespace OpenLoco::Ui::Windows::TextInput
         window.draw(drawingCtx);
 
         // FIXME: This is pretty horrible.
-        *((StringId*)(&_commonFormatArgs[0])) = _message;
-        memcpy(&_commonFormatArgs[2], _formatArgs + 8, 8);
+        // copy the existing args
+        FormatArgumentsBuffer formatArgsBuffer2 = _formatArgs;
+        auto args2 = FormatArguments(formatArgsBuffer2);
+        args2.push(_message);
 
         Ui::Point position = Point(window.x + window.width / 2, window.y + 30);
-        tr.drawStringCentredWrapped(position, window.width - 8, Colour::black, StringIds::wcolour2_stringid, FormatArguments::common());
+        tr.drawStringCentredWrapped(position, window.width - 8, Colour::black, StringIds::wcolour2_stringid, args2);
 
-        auto widget = &_widgets[Widx::input];
-        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(widget->left + 1 + window.x, widget->top + 1 + window.y, widget->width() - 2, widget->height() - 2));
+        auto& inputWidget = window.widgets[Widx::input];
+        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(inputWidget.left + 1 + window.x, inputWidget.top + 1 + window.y, inputWidget.width() - 2, inputWidget.height() - 2));
         if (!clipped)
         {
             return;
@@ -232,19 +228,6 @@ namespace OpenLoco::Ui::Windows::TextInput
             tr.drawStringLeft(position, Colour::black, StringIds::black_stringid, args);
         }
 
-        const uint16_t numCharacters = static_cast<uint16_t>(inputSession.cursorPosition);
-        const uint16_t maxNumCharacters = inputSession.inputLenLimit;
-
-        {
-            FormatArguments args{};
-            args.push<uint16_t>(numCharacters);
-            args.push<uint16_t>(maxNumCharacters);
-
-            widget = &_widgets[Widx::ok];
-            auto point = Point(window.x + widget->left - 5, window.y + widget->top + 1);
-            tr.drawStringRight(point, Colour::black, StringIds::num_characters_left_int_int, args);
-        }
-
         if ((inputSession.cursorFrame % 32) < 16)
         {
             strncpy(drawnBuffer, inputSession.buffer.c_str(), inputSession.cursorPosition);
@@ -259,6 +242,19 @@ namespace OpenLoco::Ui::Windows::TextInput
         }
 
         drawingCtx.popRenderTarget();
+
+        const uint16_t numCharacters = static_cast<uint16_t>(inputSession.buffer.length());
+        const uint16_t maxNumCharacters = inputSession.inputLenLimit;
+
+        {
+            FormatArguments args{};
+            args.push<uint16_t>(numCharacters);
+            args.push<uint16_t>(maxNumCharacters);
+
+            auto& buttonWidget = window.widgets[Widx::ok];
+            auto point = Point(window.x + buttonWidget.left - 5, window.y + buttonWidget.top + 1);
+            tr.drawStringRight(point, Colour::black, StringIds::num_characters_left_int_int, args);
+        }
     }
 
     // 0x004CE8B6
@@ -312,7 +308,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         WindowManager::invalidate(WindowType::textInput, 0);
         inputSession.cursorFrame = 0;
 
-        int containerWidth = _widgets[Widx::input].width() - 2;
+        int containerWidth = w.widgets[Widx::input].width() - 2;
         if (inputSession.needsReoffsetting(containerWidth))
         {
             inputSession.calculateTextOffset(containerWidth);

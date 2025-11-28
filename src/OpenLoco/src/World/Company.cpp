@@ -30,14 +30,11 @@
 #include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Bound.hpp>
 #include <algorithm>
 #include <array>
 #include <map>
 #include <sfl/static_unordered_set.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {

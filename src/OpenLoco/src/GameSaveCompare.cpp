@@ -2,12 +2,14 @@
 
 #include <string>
 
-#include "Effects/EffectsManager.h"
+#include "Effects/Effect.h"
 #include "GameState.h"
 #include "Logging.h"
 #include "OpenLoco.h"
 #include "S5/Limits.h"
 #include "S5/S5.h"
+#include "S5/S5File.h"
+#include "S5/S5Options.h"
 #include "Vehicles/Vehicle.h"
 #include <OpenLoco/Core/FileStream.h>
 
@@ -15,12 +17,6 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::GameSaveCompare
 {
-    std::string getVehicleSubType(const Vehicles::VehicleEntityType vehicleSubType);
-    std::string getEffectSubType(const EffectType effectSubType);
-    void logVehicleTypeAndSubType(int offset, const OpenLoco::Entity& entity);
-    void logEffectType(int offset, const OpenLoco::Entity& entity);
-    long logDivergentEntityOffset(const S5::Entity& lhs, const S5::Entity& rhs, int offset, bool displayAllDivergences, long divergentBytesTotal);
-    bool compareGameStates(S5::GameState& gameState1, S5::GameState& gameState2, bool displayAllDivergences);
     bool isLoggedDivergenceRoutings(OpenLoco::S5::GameState& gameState1, OpenLoco::S5::GameState& gameState2, bool displayAllDivergences);
     bool compareElements(const std::vector<S5::TileElement>& tileElements1, const std::vector<S5::TileElement>& tileElements2, bool displayAllDivergences);
 
@@ -198,7 +194,7 @@ namespace OpenLoco::GameSaveCompare
         return loggedDivergence;
     }
 
-    std::string getVehicleSubType(const Vehicles::VehicleEntityType vehicleSubType)
+    static std::string getVehicleSubType(const Vehicles::VehicleEntityType vehicleSubType)
     {
         auto vehicleSubTypeName = "";
         switch (vehicleSubType)
@@ -231,7 +227,7 @@ namespace OpenLoco::GameSaveCompare
         return vehicleSubTypeName;
     }
 
-    std::string getEffectSubType(const EffectType effectSubType)
+    static std::string getEffectSubType(const EffectType effectSubType)
     {
         auto effectSubTypeName = "effect";
         switch (effectSubType)
@@ -270,25 +266,21 @@ namespace OpenLoco::GameSaveCompare
         return effectSubTypeName;
     }
 
-    void logVehicleTypeAndSubType(int offset, const OpenLoco::Entity& entity)
+    static void logVehicleTypeAndSubType(int offset, const S5::Entity& entity)
     {
         auto vehicleTypeName = "TYPE: ENTITY [" + std::to_string(offset) + "] VEHICLE";
-        char* entityBase = (char*)(&entity);
-        Vehicles::VehicleBase* vehicleBase = reinterpret_cast<Vehicles::VehicleBase*>(entityBase);
-        auto vechicleSubTypeName = getVehicleSubType(vehicleBase->getSubType());
+        auto vechicleSubTypeName = getVehicleSubType(static_cast<Vehicles::VehicleEntityType>(entity.base.type));
         Logging::info("{} {}", vehicleTypeName, vechicleSubTypeName);
     }
 
-    void logEffectType(int offset, const OpenLoco::Entity& entity)
+    static void logEffectType(int offset, const S5::Entity& entity)
     {
         auto effectTypeName = "TYPE: ENTITY [" + std::to_string(offset) + "] EFFECT";
-        char* effect = (char*)(&entity);
-        EffectEntity* effectEntity = reinterpret_cast<EffectEntity*>(effect);
-        auto effectSubTYpeName = getEffectSubType(effectEntity->getSubType());
+        auto effectSubTYpeName = getEffectSubType(static_cast<EffectType>(entity.base.type));
         Logging::info("{} {}", effectTypeName, effectSubTYpeName);
     }
 
-    long logDivergentEntityOffset(const S5::Entity& lhs, const S5::Entity& rhs, int offset, bool displayAllDivergences, long divergentBytesTotal)
+    static long logDivergentEntityOffset(const S5::Entity& lhs, const S5::Entity& rhs, int offset, bool displayAllDivergences, long divergentBytesTotal)
     {
         if (!bitWiseEqual(lhs, rhs))
         {
@@ -297,57 +289,51 @@ namespace OpenLoco::GameSaveCompare
                 Logging::info("DIVERGENCE");
             }
 
-            char* lhsEntityChar = (char*)(&lhs);
-            OpenLoco::Entity* lhsEntity = reinterpret_cast<OpenLoco::Entity*>(lhsEntityChar);
-
-            char* rhsEntityChar = (char*)(&rhs);
-            OpenLoco::Entity* rhsEntity = reinterpret_cast<OpenLoco::Entity*>(rhsEntityChar);
-
-            if (lhsEntity->baseType == EntityBaseType::vehicle)
+            if (lhs.base.baseType == enumValue(EntityBaseType::vehicle))
             {
                 if (displayAllDivergences || divergentBytesTotal == 0)
                 {
-                    logVehicleTypeAndSubType(offset, *lhsEntity);
+                    logVehicleTypeAndSubType(offset, lhs);
                 }
-                divergentBytesTotal += sizeof(lhsEntity->baseType);
+                divergentBytesTotal += sizeof(lhs.base.baseType);
             }
-            if (lhsEntity->baseType != rhsEntity->baseType)
+            if (lhs.base.baseType != rhs.base.baseType)
             {
-                if (rhsEntity->baseType == EntityBaseType::vehicle)
+                if (rhs.base.baseType == enumValue(EntityBaseType::vehicle))
                 {
                     if (displayAllDivergences || divergentBytesTotal)
                     {
-                        logVehicleTypeAndSubType(offset, *rhsEntity);
+                        logVehicleTypeAndSubType(offset, rhs);
                     }
-                    divergentBytesTotal += sizeof(rhsEntity);
+                    divergentBytesTotal += sizeof(rhs);
                 }
             }
-            if (lhsEntity->baseType == EntityBaseType::effect)
+            if (lhs.base.baseType == enumValue(EntityBaseType::effect))
             {
                 if (displayAllDivergences || divergentBytesTotal == 0)
                 {
-                    logEffectType(offset, *lhsEntity);
+                    logEffectType(offset, lhs);
                 }
                 else
                 {
-                    divergentBytesTotal += sizeof(lhsEntity->baseType);
+                    divergentBytesTotal += sizeof(lhs.base.baseType);
                 }
             }
-            if (lhsEntity->baseType != rhsEntity->baseType)
+            if (lhs.base.baseType != rhs.base.baseType)
             {
-                if (rhsEntity->baseType == EntityBaseType::effect)
+                if (rhs.base.baseType == enumValue(EntityBaseType::effect))
                 {
                     if (displayAllDivergences || divergentBytesTotal == 0)
                     {
-                        logEffectType(offset, *rhsEntity);
+                        logEffectType(offset, rhs);
                     }
                     else
                     {
-                        divergentBytesTotal += sizeof(rhsEntity);
+                        divergentBytesTotal += sizeof(rhs);
                     }
                 }
             }
-            if (lhsEntity->baseType == EntityBaseType::null)
+            if (lhs.base.baseType == enumValue(EntityBaseType::null))
             {
                 if (displayAllDivergences || divergentBytesTotal == 0)
                 {
@@ -355,16 +341,16 @@ namespace OpenLoco::GameSaveCompare
                 }
                 else
                 {
-                    divergentBytesTotal += sizeof(lhsEntity->baseType);
+                    divergentBytesTotal += sizeof(lhs.base.baseType);
                 }
             }
             else
             {
-                divergentBytesTotal += sizeof(lhsEntity->baseType);
+                divergentBytesTotal += sizeof(lhs.base.baseType);
             }
-            if (lhsEntity->baseType != rhsEntity->baseType)
+            if (lhs.base.baseType != rhs.base.baseType)
             {
-                if (rhsEntity->baseType == EntityBaseType::null)
+                if (rhs.base.baseType == enumValue(EntityBaseType::null))
                 {
 
                     if (displayAllDivergences || divergentBytesTotal == 0)
@@ -373,12 +359,12 @@ namespace OpenLoco::GameSaveCompare
                     }
                     else
                     {
-                        divergentBytesTotal += sizeof(lhsEntity->baseType);
+                        divergentBytesTotal += sizeof(lhs.base.baseType);
                     }
                 }
                 else
                 {
-                    divergentBytesTotal += sizeof(rhsEntity);
+                    divergentBytesTotal += sizeof(rhs);
                 }
             }
             divergentBytesTotal = bitWiseLogDivergence("", lhs, rhs, displayAllDivergences, divergentBytesTotal);
@@ -401,7 +387,7 @@ namespace OpenLoco::GameSaveCompare
         return divergentBytesTotal > 0;
     }
 
-    bool compareGameStates(S5::GameState& gameState1, S5::GameState& gameState2, bool displayAllDivergences)
+    static bool compareGameStates(S5::GameState& gameState1, S5::GameState& gameState2, bool displayAllDivergences)
     {
         if (displayAllDivergences)
         {
@@ -410,124 +396,123 @@ namespace OpenLoco::GameSaveCompare
 
         bool foundDivergence = false;
 
-        foundDivergence |= isLoggedDivergence("rng", gameState1.rng, gameState2.rng, 2, displayAllDivergences);
-        foundDivergence |= isLoggedDivergence("unkRng", gameState1.unkRng, gameState2.unkRng, 2, displayAllDivergences);
-        foundDivergence |= isLoggedDivergentGameStateFlag("flags", gameState1.flags, gameState2.flags);
-        foundDivergence |= isLoggedDivergentGameStateField("currentDay", 0, gameState1.currentDay, gameState2.currentDay);
-        foundDivergence |= isLoggedDivergentGameStateField("dayCounter", 0, gameState1.dayCounter, gameState2.dayCounter);
-        foundDivergence |= isLoggedDivergentGameStateField("currentYear", 0, gameState1.currentYear, gameState2.currentYear);
-        foundDivergence |= isLoggedDivergentGameStateField("currentMonth", 0, gameState1.currentMonth, gameState2.currentMonth);
-        foundDivergence |= isLoggedDivergentGameStateField("currentDayOfMonth", 0, gameState1.currentDayOfMonth, gameState2.currentDayOfMonth);
-        foundDivergence |= isLoggedDivergentGameStateField("savedViewX", 0, gameState1.savedViewX, gameState2.savedViewX);
-        foundDivergence |= isLoggedDivergentGameStateField("savedViewY", 0, gameState1.savedViewY, gameState2.savedViewY);
-        foundDivergence |= isLoggedDivergentGameStateField("savedViewZoom", 0, gameState1.savedViewZoom, gameState2.savedViewZoom);
-        foundDivergence |= isLoggedDivergentGameStateField("savedViewRotation", 0, gameState1.savedViewRotation, gameState2.savedViewRotation);
-        foundDivergence |= isLoggedDivergence("playerCompanies", gameState1.playerCompanies, gameState2.playerCompanies, 2, displayAllDivergences);
-        foundDivergence |= isLoggedDivergence("entityListHeads", gameState1.entityListHeads, gameState2.entityListHeads, Limits::kNumEntityLists, displayAllDivergences);
-        foundDivergence |= isLoggedDivergence("entityListCounts", gameState1.entityListCounts, gameState2.entityListCounts, Limits::kNumEntityLists, displayAllDivergences);
-        foundDivergence |= isLoggedDivergence("pad_0042", gameState1.pad_0042, gameState2.pad_0042, 0x046 - 0x042, displayAllDivergences);
-        foundDivergence |= isLoggedDivergence("currencyMultiplicationFactor", gameState1.currencyMultiplicationFactor, gameState2.currencyMultiplicationFactor, 32, displayAllDivergences);
-        foundDivergence |= isLoggedDivergence("unusedCurrencyMultiplicationFactor[", gameState1.unusedCurrencyMultiplicationFactor, gameState2.unusedCurrencyMultiplicationFactor, 32, displayAllDivergences);
-        foundDivergence |= isLoggedDivergentGameStateField("scenarioTicks", 0, gameState1.scenarioTicks, gameState2.scenarioTicks);
-        foundDivergence |= isLoggedDivergentGameStateField("var_014A", 0, gameState1.var_014A, gameState2.var_014A);
-        foundDivergence |= isLoggedDivergentGameStateField("scenarioTicks2", 0, gameState1.scenarioTicks2, gameState2.scenarioTicks2);
-        foundDivergence |= isLoggedDivergentGameStateField("magicNumber", 0, gameState1.magicNumber, gameState2.magicNumber);
-        foundDivergence |= isLoggedDivergentGameStateField("numMapAnimations", 0, gameState1.numMapAnimations, gameState2.numMapAnimations);
-        foundDivergence |= isLoggedDivergence("tileUpdateStartLocation", gameState1.tileUpdateStartLocation, gameState2.tileUpdateStartLocation, 2, displayAllDivergences);
-        foundDivergence |= isLoggedDivergence("scenarioConstruction.signals", gameState1.scenarioConstruction.signals, gameState2.scenarioConstruction.signals, 8, displayAllDivergences);
-        foundDivergence |= isLoggedDivergence("scenarioConstruction.bridges", gameState1.scenarioConstruction.bridges, gameState2.scenarioConstruction.bridges, 8, displayAllDivergences);
-        foundDivergence |= isLoggedDivergence("scenarioConstruction.trainStations", gameState1.scenarioConstruction.trainStations, gameState2.scenarioConstruction.trainStations, 8, displayAllDivergences);
-        foundDivergence |= isLoggedDivergence("scenarioConstruction.trackMods", gameState1.scenarioConstruction.trackMods, gameState2.scenarioConstruction.trackMods, 8, displayAllDivergences);
-        foundDivergence |= isLoggedDivergence("scenarioConstruction.var_17A", gameState1.scenarioConstruction.var_17A, gameState2.scenarioConstruction.var_17A, 8, displayAllDivergences);
-        foundDivergence |= isLoggedDivergence("scenarioConstruction.roadStations", gameState1.scenarioConstruction.roadStations, gameState2.scenarioConstruction.roadStations, 8, displayAllDivergences);
-        foundDivergence |= isLoggedDivergence("scenarioConstruction.roadMods", gameState1.scenarioConstruction.roadMods, gameState2.scenarioConstruction.roadMods, 8, displayAllDivergences);
-        foundDivergence |= isLoggedDivergentGameStateField("lastRailroadOption", 0, gameState1.lastRailroadOption, gameState2.lastRailroadOption);
-        foundDivergence |= isLoggedDivergentGameStateField("lastRoadOption", 0, gameState1.lastRoadOption, gameState2.lastRoadOption);
-        foundDivergence |= isLoggedDivergentGameStateField("lastAirport", 0, gameState1.lastAirport, gameState2.lastAirport);
-        foundDivergence |= isLoggedDivergentGameStateField("lastShipPort", 0, gameState1.lastShipPort, gameState2.lastShipPort);
-        foundDivergence |= isLoggedDivergentGameStateField("trafficHandedness", 0, gameState1.trafficHandedness, gameState2.trafficHandedness);
-        foundDivergence |= isLoggedDivergentGameStateField("lastVehicleType", 0, gameState1.lastVehicleType, gameState2.lastVehicleType);
-        foundDivergence |= isLoggedDivergentGameStateField("pickupDirection", 0, gameState1.pickupDirection, gameState2.pickupDirection);
-        foundDivergence |= isLoggedDivergentGameStateField("lastTreeOption", 0, gameState1.lastTreeOption, gameState2.lastTreeOption);
-        foundDivergence |= isLoggedDivergentGameStateField("seaLevel", 0, gameState1.seaLevel, gameState2.seaLevel);
-        foundDivergence |= isLoggedDivergentGameStateField("currentSnowLine", 0, gameState1.currentSnowLine, gameState2.currentSnowLine);
-        foundDivergence |= isLoggedDivergentGameStateField("currentSeason", 0, gameState1.currentSeason, gameState2.currentSeason);
-        foundDivergence |= isLoggedDivergentGameStateField("lastLandOption", 0, gameState1.lastLandOption, gameState2.lastLandOption);
-        foundDivergence |= isLoggedDivergentGameStateField("maxCompetingCompanies", 0, gameState1.maxCompetingCompanies, gameState2.maxCompetingCompanies);
-        foundDivergence |= isLoggedDivergentGameStateField("orderTableLength", 0, gameState1.orderTableLength, gameState2.orderTableLength);
-        foundDivergence |= isLoggedDivergentGameStateField("roadObjectIdIsNotTram", 0, gameState1.roadObjectIdIsNotTram, gameState2.roadObjectIdIsNotTram);
-        foundDivergence |= isLoggedDivergentGameStateField("roadObjectIdIsFlag7", 0, gameState1.roadObjectIdIsFlag7, gameState2.roadObjectIdIsFlag7);
-        foundDivergence |= isLoggedDivergentGameStateField("currentDefaultLevelCrossingType", 0, gameState1.currentDefaultLevelCrossingType, gameState2.currentDefaultLevelCrossingType);
-        foundDivergence |= isLoggedDivergentGameStateField("lastTrackTypeOption", 0, gameState1.lastTrackTypeOption, gameState2.lastTrackTypeOption);
-        foundDivergence |= isLoggedDivergentGameStateField("loanInterestRate", 0, gameState1.loanInterestRate, gameState2.loanInterestRate);
-        foundDivergence |= isLoggedDivergentGameStateField("lastIndustryOption", 0, gameState1.lastIndustryOption, gameState2.lastIndustryOption);
-        foundDivergence |= isLoggedDivergentGameStateField("lastBuildingOption", 0, gameState1.lastBuildingOption, gameState2.lastBuildingOption);
-        foundDivergence |= isLoggedDivergentGameStateField("lastMiscBuildingOption", 0, gameState1.lastMiscBuildingOption, gameState2.lastMiscBuildingOption);
-        foundDivergence |= isLoggedDivergentGameStateField("lastWallOption", 0, gameState1.lastWallOption, gameState2.lastWallOption);
-        foundDivergence |= isLoggedDivergentGameStateField("produceAICompanyTimeout", 0, gameState1.produceAICompanyTimeout, gameState2.produceAICompanyTimeout);
-        foundDivergence |= isLoggedDivergence("tickStartPrngState", gameState1.tickStartPrngState, gameState2.tickStartPrngState, 2, displayAllDivergences);
-        foundDivergence |= isLoggedDivergence("scenarioFileName", gameState1.scenarioFileName, gameState2.scenarioFileName, 256, displayAllDivergences);
-        foundDivergence |= isLoggedDivergence("scenarioName", gameState1.scenarioName, gameState2.scenarioName, 64, displayAllDivergences);
-        foundDivergence |= isLoggedDivergence("scenarioDetails", gameState1.scenarioDetails, gameState2.scenarioDetails, 256, displayAllDivergences);
-        foundDivergence |= isLoggedDivergentGameStateField("competitorStartDelay", 0, gameState1.competitorStartDelay, gameState2.competitorStartDelay);
-        foundDivergence |= isLoggedDivergentGameStateField("preferredAIIntelligence", 0, gameState1.preferredAIIntelligence, gameState2.preferredAIIntelligence);
-        foundDivergence |= isLoggedDivergentGameStateField("preferredAIAggressiveness", 0, gameState1.preferredAIAggressiveness, gameState2.preferredAIAggressiveness);
-        foundDivergence |= isLoggedDivergentGameStateField("preferredAICompetitiveness", 0, gameState1.preferredAICompetitiveness, gameState2.preferredAICompetitiveness);
-        foundDivergence |= isLoggedDivergentGameStateField("startingLoanSize", 0, gameState1.startingLoanSize, gameState2.startingLoanSize);
-        foundDivergence |= isLoggedDivergentGameStateField("maxLoanSize", 0, gameState1.maxLoanSize, gameState2.maxLoanSize);
-        foundDivergence |= isLoggedDivergentGameStateField("var_404", 0, gameState1.var_404, gameState2.var_404);
-        foundDivergence |= isLoggedDivergentGameStateField("var_408", 0, gameState1.var_408, gameState2.var_408);
-        foundDivergence |= isLoggedDivergentGameStateField("var_40C", 0, gameState1.var_40C, gameState2.var_40C);
-        foundDivergence |= isLoggedDivergentGameStateField("var_410", 0, gameState1.var_410, gameState2.var_410);
-        foundDivergence |= isLoggedDivergentGameStateField("lastBuildVehiclesOption", 0, gameState1.lastBuildVehiclesOption, gameState2.lastBuildVehiclesOption);
-        foundDivergence |= isLoggedDivergentGameStateField("numberOfIndustries", 0, gameState1.numberOfIndustries, gameState2.numberOfIndustries);
-        foundDivergence |= isLoggedDivergentGameStateField("vehiclePreviewRotationFrame", 0, gameState1.vehiclePreviewRotationFrame, gameState2.vehiclePreviewRotationFrame);
-        foundDivergence |= isLoggedDivergentGameStateField("objectiveType", 0, gameState1.objectiveType, gameState2.objectiveType);
-        foundDivergence |= isLoggedDivergentGameStateField("objectiveFlags", 0, gameState1.objectiveFlags, gameState2.objectiveFlags);
-        foundDivergence |= isLoggedDivergentGameStateField("objectiveCompanyValue", 0, gameState1.objectiveCompanyValue, gameState2.objectiveCompanyValue);
-        foundDivergence |= isLoggedDivergentGameStateField("objectiveMonthlyVehicleProfit", 0, gameState1.objectiveMonthlyVehicleProfit, gameState2.objectiveMonthlyVehicleProfit);
-        foundDivergence |= isLoggedDivergentGameStateField("objectivePerformanceIndex", 0, gameState1.objectivePerformanceIndex, gameState2.objectivePerformanceIndex);
-        foundDivergence |= isLoggedDivergentGameStateField("objectiveDeliveredCargoType", 0, gameState1.objectiveDeliveredCargoType, gameState2.objectiveDeliveredCargoType);
-        foundDivergence |= isLoggedDivergentGameStateField("objectiveDeliveredCargoAmount", 0, gameState1.objectiveDeliveredCargoAmount, gameState2.objectiveDeliveredCargoAmount);
-        foundDivergence |= isLoggedDivergentGameStateField("objectiveTimeLimitUntilYear", 0, gameState1.objectiveTimeLimitUntilYear, gameState2.objectiveTimeLimitUntilYear);
-        foundDivergence |= isLoggedDivergentGameStateField("objectiveMonthsInChallenge", 0, gameState1.objectiveMonthsInChallenge, gameState2.objectiveMonthsInChallenge);
-        foundDivergence |= isLoggedDivergentGameStateField("objectiveCompletedChallengeInMonths", 0, gameState1.objectiveCompletedChallengeInMonths, gameState2.objectiveCompletedChallengeInMonths);
-        foundDivergence |= isLoggedDivergentGameStateField("industryFlags", 0, gameState1.industryFlags, gameState2.industryFlags);
-        foundDivergence |= isLoggedDivergentGameStateField("forbiddenVehiclesPlayers", 0, gameState1.forbiddenVehiclesPlayers, gameState2.forbiddenVehiclesPlayers);
-        foundDivergence |= isLoggedDivergentGameStateField("forbiddenVehiclesCompetitors", 0, gameState1.forbiddenVehiclesCompetitors, gameState2.forbiddenVehiclesCompetitors);
-        foundDivergence |= isLoggedDivergentGameStateFlag("fixFlags", gameState1.fixFlags, gameState2.fixFlags);
-        foundDivergence |= isLoggedDivergence("recordSpeed", gameState1.recordSpeed, gameState2.recordSpeed, 3, displayAllDivergences);
-        foundDivergence |= isLoggedDivergence("recordCompany", gameState1.recordCompany, gameState2.recordCompany, 4, displayAllDivergences);
-        foundDivergence |= isLoggedDivergence("recordDate", gameState1.recordDate, gameState2.recordDate, 3, displayAllDivergences);
-        foundDivergence |= isLoggedDivergentGameStateField("var_44C", 0, gameState1.var_44C, gameState2.var_44C);
-        foundDivergence |= isLoggedDivergentGameStateField("var_450", 0, gameState1.var_450, gameState2.var_450);
-        foundDivergence |= isLoggedDivergentGameStateField("var_454", 0, gameState1.var_454, gameState2.var_454);
-        foundDivergence |= isLoggedDivergentGameStateField("var_458", 0, gameState1.var_458, gameState2.var_458);
-        foundDivergence |= isLoggedDivergentGameStateField("var_460", 0, gameState1.var_460, gameState2.var_460);
-        foundDivergence |= isLoggedDivergentGameStateField("var_464", 0, gameState1.var_464, gameState2.var_464);
-        foundDivergence |= isLoggedDivergentGameStateField("var_468", 0, gameState1.var_468, gameState2.var_468);
-        foundDivergence |= isLoggedDivergentGameStateField("lastMapWindowFlags", 0, gameState1.lastMapWindowFlags, gameState2.lastMapWindowFlags);
-        foundDivergence |= isLoggedDivergence("lastMapWindowSize", gameState1.lastMapWindowSize, gameState2.lastMapWindowSize, 2, displayAllDivergences);
-        foundDivergence |= isLoggedDivergentGameStateField("lastMapWindowVar88A", 0, gameState1.lastMapWindowVar88A, gameState2.lastMapWindowVar88A);
-        foundDivergence |= isLoggedDivergentGameStateField("lastMapWindowVar88C", 0, gameState1.lastMapWindowVar88C, gameState2.lastMapWindowVar88C);
-        foundDivergence |= isLoggedDivergentGameStateField("var_478", 0, gameState1.var_478, gameState2.var_478);
-        foundDivergence |= isLoggedDivergence("pad_047C", gameState1.pad_047C, gameState2.pad_047C, 0x13B6 - 0x47C, displayAllDivergences);
-        foundDivergence |= isLoggedDivergentGameStateField("numMessages", 0, gameState1.numMessages, gameState2.numMessages);
-        foundDivergence |= isLoggedDivergentGameStateField("activeMessageIndex", 0, gameState1.activeMessageIndex, gameState2.activeMessageIndex);
-        foundDivergence |= isLoggedDivergence("messages", gameState1.messages, gameState2.messages, Limits::kMaxMessages, displayAllDivergences);
-        foundDivergence |= isLoggedDivergence("pad_B886", gameState1.pad_B886, gameState2.pad_B886, 0xB94C - 0xB886, displayAllDivergences);
-        foundDivergence |= isLoggedDivergentGameStateField("var_B94C", 0, gameState1.var_B94C, gameState2.var_B94C);
-        foundDivergence |= isLoggedDivergence("pad_B94D", gameState1.pad_B94D, gameState2.pad_B94D, 0xB950 - 0xB94D, displayAllDivergences);
-        foundDivergence |= isLoggedDivergentGameStateField("var_B950", 0, gameState1.var_B950, gameState2.var_B950);
-        foundDivergence |= isLoggedDivergentGameStateField("pad_B951", 0, gameState1.pad_B951, gameState2.pad_B951);
-        foundDivergence |= isLoggedDivergentGameStateField("var_B952", 0, gameState1.var_B952, gameState2.var_B952);
-        foundDivergence |= isLoggedDivergentGameStateField("pad_B953", 0, gameState1.pad_B953, gameState2.pad_B953);
-        foundDivergence |= isLoggedDivergentGameStateField("var_B954", 0, gameState1.var_B954, gameState2.var_B954);
-        foundDivergence |= isLoggedDivergentGameStateField("pad_B955", 0, gameState1.pad_B955, gameState2.pad_B955);
-        foundDivergence |= isLoggedDivergentGameStateField("var_B956", 0, gameState1.var_B956, gameState2.var_B956);
-        foundDivergence |= isLoggedDivergence("pad_B957", gameState1.pad_B957, gameState2.pad_B957, 0xB968 - 0xB957, displayAllDivergences);
-        foundDivergence |= isLoggedDivergentGameStateField("currentRainLevel", 0, gameState1.currentRainLevel, gameState2.currentRainLevel);
-        foundDivergence |= isLoggedDivergence("pad_B969", gameState1.pad_B969, gameState2.pad_B969, 0xB96C - 0xB969, displayAllDivergences);
+        foundDivergence |= isLoggedDivergence("rng", gameState1.general.rng, gameState2.general.rng, 2, displayAllDivergences);
+        foundDivergence |= isLoggedDivergence("unkRng", gameState1.general.unkRng, gameState2.general.unkRng, 2, displayAllDivergences);
+        foundDivergence |= isLoggedDivergentGameStateFlag("flags", gameState1.general.flags, gameState2.general.flags);
+        foundDivergence |= isLoggedDivergentGameStateField("currentDay", 0, gameState1.general.currentDay, gameState2.general.currentDay);
+        foundDivergence |= isLoggedDivergentGameStateField("dayCounter", 0, gameState1.general.dayCounter, gameState2.general.dayCounter);
+        foundDivergence |= isLoggedDivergentGameStateField("currentYear", 0, gameState1.general.currentYear, gameState2.general.currentYear);
+        foundDivergence |= isLoggedDivergentGameStateField("currentMonth", 0, gameState1.general.currentMonth, gameState2.general.currentMonth);
+        foundDivergence |= isLoggedDivergentGameStateField("currentDayOfMonth", 0, gameState1.general.currentDayOfMonth, gameState2.general.currentDayOfMonth);
+        foundDivergence |= isLoggedDivergentGameStateField("savedViewX", 0, gameState1.general.savedViewX, gameState2.general.savedViewX);
+        foundDivergence |= isLoggedDivergentGameStateField("savedViewY", 0, gameState1.general.savedViewY, gameState2.general.savedViewY);
+        foundDivergence |= isLoggedDivergentGameStateField("savedViewZoom", 0, gameState1.general.savedViewZoom, gameState2.general.savedViewZoom);
+        foundDivergence |= isLoggedDivergentGameStateField("savedViewRotation", 0, gameState1.general.savedViewRotation, gameState2.general.savedViewRotation);
+        foundDivergence |= isLoggedDivergence("playerCompanies", gameState1.general.playerCompanies, gameState2.general.playerCompanies, 2, displayAllDivergences);
+        foundDivergence |= isLoggedDivergence("entityListHeads", gameState1.general.entityListHeads, gameState2.general.entityListHeads, Limits::kNumEntityLists, displayAllDivergences);
+        foundDivergence |= isLoggedDivergence("entityListCounts", gameState1.general.entityListCounts, gameState2.general.entityListCounts, Limits::kNumEntityLists, displayAllDivergences);
+        foundDivergence |= isLoggedDivergence("pad_0042", gameState1.general.pad_0042, gameState2.general.pad_0042, 0x046 - 0x042, displayAllDivergences);
+        foundDivergence |= isLoggedDivergence("currencyMultiplicationFactor", gameState1.general.currencyMultiplicationFactor, gameState2.general.currencyMultiplicationFactor, 32, displayAllDivergences);
+        foundDivergence |= isLoggedDivergence("unusedCurrencyMultiplicationFactor[", gameState1.general.unusedCurrencyMultiplicationFactor, gameState2.general.unusedCurrencyMultiplicationFactor, 32, displayAllDivergences);
+        foundDivergence |= isLoggedDivergentGameStateField("scenarioTicks", 0, gameState1.general.scenarioTicks, gameState2.general.scenarioTicks);
+        foundDivergence |= isLoggedDivergentGameStateField("var_014A", 0, gameState1.general.var_014A, gameState2.general.var_014A);
+        foundDivergence |= isLoggedDivergentGameStateField("scenarioTicks2", 0, gameState1.general.scenarioTicks2, gameState2.general.scenarioTicks2);
+        foundDivergence |= isLoggedDivergentGameStateField("magicNumber", 0, gameState1.general.magicNumber, gameState2.general.magicNumber);
+        foundDivergence |= isLoggedDivergentGameStateField("numMapAnimations", 0, gameState1.general.numMapAnimations, gameState2.general.numMapAnimations);
+        foundDivergence |= isLoggedDivergence("tileUpdateStartLocation", reinterpret_cast<uint16_t(&)[2]>(gameState1.general.tileUpdateStartLocation), reinterpret_cast<uint16_t(&)[2]>(gameState2.general.tileUpdateStartLocation), 2, displayAllDivergences);
+        foundDivergence |= isLoggedDivergence("scenarioConstruction.signals", gameState1.general.scenarioConstruction.signals, gameState2.general.scenarioConstruction.signals, 8, displayAllDivergences);
+        foundDivergence |= isLoggedDivergence("scenarioConstruction.bridges", gameState1.general.scenarioConstruction.bridges, gameState2.general.scenarioConstruction.bridges, 8, displayAllDivergences);
+        foundDivergence |= isLoggedDivergence("scenarioConstruction.trainStations", gameState1.general.scenarioConstruction.trainStations, gameState2.general.scenarioConstruction.trainStations, 8, displayAllDivergences);
+        foundDivergence |= isLoggedDivergence("scenarioConstruction.trackMods", gameState1.general.scenarioConstruction.trackMods, gameState2.general.scenarioConstruction.trackMods, 8, displayAllDivergences);
+        foundDivergence |= isLoggedDivergence("scenarioConstruction.var_17A", gameState1.general.scenarioConstruction.var_17A, gameState2.general.scenarioConstruction.var_17A, 8, displayAllDivergences);
+        foundDivergence |= isLoggedDivergence("scenarioConstruction.roadStations", gameState1.general.scenarioConstruction.roadStations, gameState2.general.scenarioConstruction.roadStations, 8, displayAllDivergences);
+        foundDivergence |= isLoggedDivergence("scenarioConstruction.roadMods", gameState1.general.scenarioConstruction.roadMods, gameState2.general.scenarioConstruction.roadMods, 8, displayAllDivergences);
+        foundDivergence |= isLoggedDivergentGameStateField("lastRailroadOption", 0, gameState1.general.lastRailroadOption, gameState2.general.lastRailroadOption);
+        foundDivergence |= isLoggedDivergentGameStateField("lastRoadOption", 0, gameState1.general.lastRoadOption, gameState2.general.lastRoadOption);
+        foundDivergence |= isLoggedDivergentGameStateField("lastAirport", 0, gameState1.general.lastAirport, gameState2.general.lastAirport);
+        foundDivergence |= isLoggedDivergentGameStateField("lastShipPort", 0, gameState1.general.lastShipPort, gameState2.general.lastShipPort);
+        foundDivergence |= isLoggedDivergentGameStateField("trafficHandedness", 0, gameState1.general.trafficHandedness, gameState2.general.trafficHandedness);
+        foundDivergence |= isLoggedDivergentGameStateField("lastVehicleType", 0, gameState1.general.lastVehicleType, gameState2.general.lastVehicleType);
+        foundDivergence |= isLoggedDivergentGameStateField("pickupDirection", 0, gameState1.general.pickupDirection, gameState2.general.pickupDirection);
+        foundDivergence |= isLoggedDivergentGameStateField("lastTreeOption", 0, gameState1.general.lastTreeOption, gameState2.general.lastTreeOption);
+        foundDivergence |= isLoggedDivergentGameStateField("seaLevel", 0, gameState1.general.seaLevel, gameState2.general.seaLevel);
+        foundDivergence |= isLoggedDivergentGameStateField("currentSnowLine", 0, gameState1.general.currentSnowLine, gameState2.general.currentSnowLine);
+        foundDivergence |= isLoggedDivergentGameStateField("currentSeason", 0, gameState1.general.currentSeason, gameState2.general.currentSeason);
+        foundDivergence |= isLoggedDivergentGameStateField("lastLandOption", 0, gameState1.general.lastLandOption, gameState2.general.lastLandOption);
+        foundDivergence |= isLoggedDivergentGameStateField("maxCompetingCompanies", 0, gameState1.general.maxCompetingCompanies, gameState2.general.maxCompetingCompanies);
+        foundDivergence |= isLoggedDivergentGameStateField("orderTableLength", 0, gameState1.general.orderTableLength, gameState2.general.orderTableLength);
+        foundDivergence |= isLoggedDivergentGameStateField("roadObjectIdIsNotTram", 0, gameState1.general.roadObjectIdIsNotTram, gameState2.general.roadObjectIdIsNotTram);
+        foundDivergence |= isLoggedDivergentGameStateField("roadObjectIdIsFlag7", 0, gameState1.general.roadObjectIdIsFlag7, gameState2.general.roadObjectIdIsFlag7);
+        foundDivergence |= isLoggedDivergentGameStateField("currentDefaultLevelCrossingType", 0, gameState1.general.currentDefaultLevelCrossingType, gameState2.general.currentDefaultLevelCrossingType);
+        foundDivergence |= isLoggedDivergentGameStateField("lastTrackTypeOption", 0, gameState1.general.lastTrackTypeOption, gameState2.general.lastTrackTypeOption);
+        foundDivergence |= isLoggedDivergentGameStateField("loanInterestRate", 0, gameState1.general.loanInterestRate, gameState2.general.loanInterestRate);
+        foundDivergence |= isLoggedDivergentGameStateField("lastIndustryOption", 0, gameState1.general.lastIndustryOption, gameState2.general.lastIndustryOption);
+        foundDivergence |= isLoggedDivergentGameStateField("lastBuildingOption", 0, gameState1.general.lastBuildingOption, gameState2.general.lastBuildingOption);
+        foundDivergence |= isLoggedDivergentGameStateField("lastMiscBuildingOption", 0, gameState1.general.lastMiscBuildingOption, gameState2.general.lastMiscBuildingOption);
+        foundDivergence |= isLoggedDivergentGameStateField("lastWallOption", 0, gameState1.general.lastWallOption, gameState2.general.lastWallOption);
+        foundDivergence |= isLoggedDivergentGameStateField("produceAICompanyTimeout", 0, gameState1.general.produceAICompanyTimeout, gameState2.general.produceAICompanyTimeout);
+        foundDivergence |= isLoggedDivergence("tickStartPrngState", gameState1.general.tickStartPrngState, gameState2.general.tickStartPrngState, 2, displayAllDivergences);
+        foundDivergence |= isLoggedDivergence("scenarioFileName", gameState1.general.scenarioFileName, gameState2.general.scenarioFileName, 256, displayAllDivergences);
+        foundDivergence |= isLoggedDivergence("scenarioName", gameState1.general.scenarioName, gameState2.general.scenarioName, 64, displayAllDivergences);
+        foundDivergence |= isLoggedDivergence("scenarioDetails", gameState1.general.scenarioDetails, gameState2.general.scenarioDetails, 256, displayAllDivergences);
+        foundDivergence |= isLoggedDivergentGameStateField("competitorStartDelay", 0, gameState1.general.competitorStartDelay, gameState2.general.competitorStartDelay);
+        foundDivergence |= isLoggedDivergentGameStateField("preferredAIIntelligence", 0, gameState1.general.preferredAIIntelligence, gameState2.general.preferredAIIntelligence);
+        foundDivergence |= isLoggedDivergentGameStateField("preferredAIAggressiveness", 0, gameState1.general.preferredAIAggressiveness, gameState2.general.preferredAIAggressiveness);
+        foundDivergence |= isLoggedDivergentGameStateField("preferredAICompetitiveness", 0, gameState1.general.preferredAICompetitiveness, gameState2.general.preferredAICompetitiveness);
+        foundDivergence |= isLoggedDivergentGameStateField("startingLoanSize", 0, gameState1.general.startingLoanSize, gameState2.general.startingLoanSize);
+        foundDivergence |= isLoggedDivergentGameStateField("maxLoanSize", 0, gameState1.general.maxLoanSize, gameState2.general.maxLoanSize);
+        foundDivergence |= isLoggedDivergence("multiplayerPrng", gameState1.general.multiplayerPrng, gameState2.general.multiplayerPrng, 2, displayAllDivergences);
+        foundDivergence |= isLoggedDivergentGameStateField("var_40C", 0, gameState1.general.multiplayerChecksumA, gameState2.general.multiplayerChecksumA);
+        foundDivergence |= isLoggedDivergentGameStateField("var_410", 0, gameState1.general.multiplayerChecksumB, gameState2.general.multiplayerChecksumB);
+        foundDivergence |= isLoggedDivergentGameStateField("lastBuildVehiclesOption", 0, gameState1.general.lastBuildVehiclesOption, gameState2.general.lastBuildVehiclesOption);
+        foundDivergence |= isLoggedDivergentGameStateField("numberOfIndustries", 0, gameState1.general.numberOfIndustries, gameState2.general.numberOfIndustries);
+        foundDivergence |= isLoggedDivergentGameStateField("vehiclePreviewRotationFrame", 0, gameState1.general.vehiclePreviewRotationFrame, gameState2.general.vehiclePreviewRotationFrame);
+        foundDivergence |= isLoggedDivergentGameStateField("objectiveType", 0, gameState1.general.objectiveType, gameState2.general.objectiveType);
+        foundDivergence |= isLoggedDivergentGameStateField("objectiveFlags", 0, gameState1.general.objectiveFlags, gameState2.general.objectiveFlags);
+        foundDivergence |= isLoggedDivergentGameStateField("objectiveCompanyValue", 0, gameState1.general.objectiveCompanyValue, gameState2.general.objectiveCompanyValue);
+        foundDivergence |= isLoggedDivergentGameStateField("objectiveMonthlyVehicleProfit", 0, gameState1.general.objectiveMonthlyVehicleProfit, gameState2.general.objectiveMonthlyVehicleProfit);
+        foundDivergence |= isLoggedDivergentGameStateField("objectivePerformanceIndex", 0, gameState1.general.objectivePerformanceIndex, gameState2.general.objectivePerformanceIndex);
+        foundDivergence |= isLoggedDivergentGameStateField("objectiveDeliveredCargoType", 0, gameState1.general.objectiveDeliveredCargoType, gameState2.general.objectiveDeliveredCargoType);
+        foundDivergence |= isLoggedDivergentGameStateField("objectiveDeliveredCargoAmount", 0, gameState1.general.objectiveDeliveredCargoAmount, gameState2.general.objectiveDeliveredCargoAmount);
+        foundDivergence |= isLoggedDivergentGameStateField("objectiveTimeLimitUntilYear", 0, gameState1.general.objectiveTimeLimitUntilYear, gameState2.general.objectiveTimeLimitUntilYear);
+        foundDivergence |= isLoggedDivergentGameStateField("objectiveMonthsInChallenge", 0, gameState1.general.objectiveMonthsInChallenge, gameState2.general.objectiveMonthsInChallenge);
+        foundDivergence |= isLoggedDivergentGameStateField("objectiveCompletedChallengeInMonths", 0, gameState1.general.objectiveCompletedChallengeInMonths, gameState2.general.objectiveCompletedChallengeInMonths);
+        foundDivergence |= isLoggedDivergentGameStateField("industryFlags", 0, gameState1.general.industryFlags, gameState2.general.industryFlags);
+        foundDivergence |= isLoggedDivergentGameStateField("forbiddenVehiclesPlayers", 0, gameState1.general.forbiddenVehiclesPlayers, gameState2.general.forbiddenVehiclesPlayers);
+        foundDivergence |= isLoggedDivergentGameStateField("forbiddenVehiclesCompetitors", 0, gameState1.general.forbiddenVehiclesCompetitors, gameState2.general.forbiddenVehiclesCompetitors);
+        foundDivergence |= isLoggedDivergentGameStateFlag("fixFlags", gameState1.general.fixFlags, gameState2.general.fixFlags);
+        foundDivergence |= isLoggedDivergence("recordSpeed", gameState1.general.companyRecords.speed, gameState2.general.companyRecords.speed, 3, displayAllDivergences);
+        foundDivergence |= isLoggedDivergence("recordCompany", gameState1.general.companyRecords.company, gameState2.general.companyRecords.company, 4, displayAllDivergences);
+        foundDivergence |= isLoggedDivergence("recordDate", gameState1.general.companyRecords.date, gameState2.general.companyRecords.date, 3, displayAllDivergences);
+        foundDivergence |= isLoggedDivergentGameStateField("var_44C", 0, gameState1.general.var_44C, gameState2.general.var_44C);
+        foundDivergence |= isLoggedDivergentGameStateField("var_450", 0, gameState1.general.var_450, gameState2.general.var_450);
+        foundDivergence |= isLoggedDivergentGameStateField("var_454", 0, gameState1.general.var_454, gameState2.general.var_454);
+        foundDivergence |= isLoggedDivergentGameStateField("var_458", 0, gameState1.general.var_458, gameState2.general.var_458);
+        foundDivergence |= isLoggedDivergentGameStateField("var_460", 0, gameState1.general.var_460, gameState2.general.var_460);
+        foundDivergence |= isLoggedDivergentGameStateField("var_464", 0, gameState1.general.var_464, gameState2.general.var_464);
+        foundDivergence |= isLoggedDivergentGameStateField("var_468", 0, gameState1.general.var_468, gameState2.general.var_468);
+        foundDivergence |= isLoggedDivergentGameStateField("lastMapWindowFlags", 0, gameState1.general.lastMapWindowFlags, gameState2.general.lastMapWindowFlags);
+        foundDivergence |= isLoggedDivergence("lastMapWindowSize", gameState1.general.lastMapWindowSize, gameState2.general.lastMapWindowSize, 2, displayAllDivergences);
+        foundDivergence |= isLoggedDivergentGameStateField("lastMapWindowVar88A", 0, gameState1.general.lastMapWindowVar88A, gameState2.general.lastMapWindowVar88A);
+        foundDivergence |= isLoggedDivergentGameStateField("lastMapWindowVar88C", 0, gameState1.general.lastMapWindowVar88C, gameState2.general.lastMapWindowVar88C);
+        foundDivergence |= isLoggedDivergentGameStateField("var_478", 0, gameState1.general.var_478, gameState2.general.var_478);
+        foundDivergence |= isLoggedDivergence("pad_047C", gameState1.general.pad_047C, gameState2.general.pad_047C, 0x13B6 - 0x47C, displayAllDivergences);
+        foundDivergence |= isLoggedDivergentGameStateField("numMessages", 0, gameState1.general.numMessages, gameState2.general.numMessages);
+        foundDivergence |= isLoggedDivergentGameStateField("activeMessageIndex", 0, gameState1.general.activeMessageIndex, gameState2.general.activeMessageIndex);
+        foundDivergence |= isLoggedDivergence("messages", gameState1.general.messages, gameState2.general.messages, Limits::kMaxMessages, displayAllDivergences);
+        foundDivergence |= isLoggedDivergence("pad_B886", gameState1.general.pad_B95A, gameState2.general.pad_B95A, 0xB95C - 0xB95A, displayAllDivergences);
+        foundDivergence |= isLoggedDivergentGameStateField("var_B95C", 0, gameState1.general.var_B95C, gameState2.general.var_B95C);
+        foundDivergence |= isLoggedDivergence("pad_B94D", gameState1.general.pad_B95D, gameState2.general.pad_B95D, 0xB960 - 0xB95D, displayAllDivergences);
+        foundDivergence |= isLoggedDivergentGameStateField("var_B960", 0, gameState1.general.var_B960, gameState2.general.var_B960);
+        foundDivergence |= isLoggedDivergentGameStateField("pad_B961", 0, gameState1.general.pad_B961, gameState2.general.pad_B961);
+        foundDivergence |= isLoggedDivergentGameStateField("var_B962", 0, gameState1.general.var_B962, gameState2.general.var_B962);
+        foundDivergence |= isLoggedDivergentGameStateField("pad_B963", 0, gameState1.general.pad_B963, gameState2.general.pad_B963);
+        foundDivergence |= isLoggedDivergentGameStateField("var_B964", 0, gameState1.general.var_B964, gameState2.general.var_B964);
+        foundDivergence |= isLoggedDivergentGameStateField("pad_B965", 0, gameState1.general.pad_B965, gameState2.general.pad_B965);
+        foundDivergence |= isLoggedDivergentGameStateField("var_B966", 0, gameState1.general.var_B966, gameState2.general.var_B966);
+        foundDivergence |= isLoggedDivergentGameStateField("pad_B967", 0, gameState1.general.pad_B967, gameState2.general.pad_B967);
+        foundDivergence |= isLoggedDivergentGameStateField("currentRainLevel", 0, gameState1.general.currentRainLevel, gameState2.general.currentRainLevel);
+        foundDivergence |= isLoggedDivergence("pad_B969", gameState1.general.pad_B969, gameState2.general.pad_B969, 0xB96C - 0xB969, displayAllDivergences);
         foundDivergence |= isLoggedDivergence("companies", gameState1.companies, gameState2.companies, S5::Limits::kMaxCompanies, displayAllDivergences);
         foundDivergence |= isLoggedDivergence("towns", gameState1.towns, gameState2.towns, S5::Limits::kMaxTowns, displayAllDivergences);
         foundDivergence |= isLoggedDivergence("industries", gameState1.industries, gameState2.industries, S5::Limits::kMaxIndustries, displayAllDivergences);

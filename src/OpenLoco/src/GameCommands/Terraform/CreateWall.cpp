@@ -20,7 +20,6 @@
 #include "World/TownManager.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 
 namespace OpenLoco::GameCommands
@@ -134,6 +133,7 @@ namespace OpenLoco::GameCommands
     // 0x004C436C
     static uint32_t createWall(const WallPlacementArgs& args, const uint8_t flags)
     {
+        getLegacyReturnState().lastPlacedWall = nullptr;
         setExpenditureType(ExpenditureType::Construction);
 
         auto zPos = args.pos.z;
@@ -274,9 +274,7 @@ namespace OpenLoco::GameCommands
             wall->setGhost(true);
         }
 
-        // TODO: manager?
-        static loco_global<World::WallElement*, 0x01136470> _lastPlacedWall;
-        *_lastPlacedWall = wall;
+        getLegacyReturnState().lastPlacedWall = wall;
 
         Ui::ViewportManager::invalidate(args.pos, wall->baseHeight(), wall->baseHeight() + 72, ZoomLevel::half);
 

@@ -13,11 +13,9 @@
 #include "Ui/Widget.h"
 #include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <algorithm>
 #include <cstring>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::ToolTip
 {
@@ -156,7 +154,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
             WindowType::tooltip,
             { x, y },
             { width, height },
-            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::flag_7,
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::ignoreInFindAt,
             getEvents());
         tooltip->setWidgets(_widgets);
         tooltip->widgets[widx::text].right = width;

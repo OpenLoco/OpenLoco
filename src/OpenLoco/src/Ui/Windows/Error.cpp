@@ -16,14 +16,9 @@
 #include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::Error
 {
-    static loco_global<bool, 0x00508F09> _suppressErrorSound;
-
     static char _errorText[512];         // 0x009C64B3
     static uint16_t _linebreakCount;     // 0x009C66B3
     static CompanyId _errorCompetitorId; // 0x009C68EC
@@ -91,7 +86,7 @@ namespace OpenLoco::Ui::Windows::Error
         return ptr;
     }
 
-    static void createErrorWindow(StringId title, StringId message)
+    static void createErrorWindow(StringId title, StringId message, bool suppressErrorSound)
     {
         WindowManager::close(WindowType::error);
 
@@ -139,7 +134,7 @@ namespace OpenLoco::Ui::Windows::Error
                 WindowType::error,
                 windowPosition,
                 { width, height },
-                WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::flag_7,
+                WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::ignoreInFindAt,
                 Common::getEvents());
 
             if (_errorCompetitorId != CompanyId::null)
@@ -158,7 +153,7 @@ namespace OpenLoco::Ui::Windows::Error
             error->widgets[Error::widx::frame].bottom = frameHeight;
             error->var_846 = 0;
 
-            if (!_suppressErrorSound)
+            if (!suppressErrorSound)
             {
                 int32_t pan = (error->width / 2) + error->x;
                 Audio::playSound(Audio::SoundId::error, pan);
@@ -170,26 +165,20 @@ namespace OpenLoco::Ui::Windows::Error
     void open(StringId title, StringId message)
     {
         _errorCompetitorId = CompanyId::null;
-
-        createErrorWindow(title, message);
+        createErrorWindow(title, message, false);
     }
 
     void openQuiet(StringId title, StringId message)
     {
         _errorCompetitorId = CompanyId::null;
-        _suppressErrorSound = true;
-
-        createErrorWindow(title, message);
-
-        _suppressErrorSound = false;
+        createErrorWindow(title, message, true);
     }
 
     // 0x00431908
     void openWithCompetitor(StringId title, StringId message, CompanyId competitorId)
     {
         _errorCompetitorId = competitorId;
-
-        createErrorWindow(title, message);
+        createErrorWindow(title, message, false);
     }
 
     namespace Common

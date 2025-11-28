@@ -26,6 +26,7 @@
 #include "Map/TileManager.h"
 #include "Map/Tree.h"
 #include "Map/TreeElement.h"
+#include "Map/WallElement.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
@@ -51,10 +52,8 @@
 #include "World/CompanyManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Engine/World.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Trigonometry.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 using namespace OpenLoco::GameCommands;
 
@@ -107,10 +106,6 @@ namespace OpenLoco::Ui::Windows::Terraform
         OPENLOCO_ENABLE_ENUM_OPERATORS(GhostPlacedFlags);
     }
 
-    // These are still referred to in CreateWall and S5
-    static loco_global<World::TileElement*, 0x01136470> _lastPlacedWall;
-    static loco_global<uint8_t, 0x01136496> _treeRotation;
-
     static int16_t _adjustToolSize;                             // 0x0050A000
     static uint8_t _adjustLandToolSize;                         // 0x009C870E
     static uint8_t _clearAreaToolSize;                          // 0x009C870F
@@ -123,6 +118,7 @@ namespace OpenLoco::Ui::Windows::Terraform
     static World::Pos2 _terraformGhostPos;                      // 0x01136488
     static uint16_t _lastTreeColourFlag;                        // 0x01136490
     static uint16_t _terraformGhostTreeRotationFlag;            // 0x01136492
+    static uint8_t _treeRotation;                               // 0x01136496
     static Colour _treeColour;                                  // 0x01136497
     static uint8_t _terraformGhostBaseZ;                        // 0x01136499
     static Common::GhostPlacedFlags _terraformGhostPlacedFlags; // 0x0113649A
@@ -294,7 +290,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 case widx::rotate_object:
                 {
                     _treeRotation++;
-                    _treeRotation = _treeRotation & 3;
+                    _treeRotation &= 3;
                     self.invalidate();
                     break;
                 }
@@ -806,7 +802,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 args.push(treeObj->name);
 
                 auto point = Point(self.x + 3, self.y + self.height - 13);
-                auto width = self.width - 19 - point.x;
+                auto width = self.width - 19;
                 tr.drawStringLeftClipped(point, width, Colour::black, StringIds::black_stringid, args);
             }
         }
@@ -921,7 +917,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 WindowType::terraform,
                 { Ui::width() - PlantTrees::kWindowSize.width, 30 },
                 PlantTrees::kWindowSize,
-                WindowFlags::flag_11,
+                WindowFlags::lighterFrame,
                 PlantTrees::getEvents());
 
             window->number = 0;
@@ -934,7 +930,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             window->expandContentCounter = 0;
             _treeClusterType = PlantTrees::treeCluster::none;
 
-            WindowManager::sub_4CEE0B(*window);
+            WindowManager::moveOtherWindowsDown(*window);
 
             window->minWidth = PlantTrees::kWindowSize.width;
             window->minHeight = PlantTrees::kWindowSize.height;
@@ -2470,7 +2466,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 _terraformGhostRotation = placementArgs.rotation;
                 _terraformGhostTreeElementType = placementArgs.rotation; // Unsure why duplicated not used
                 _terraformGhostType = placementArgs.type;
-                _terraformGhostBaseZ = (*_lastPlacedWall)->baseZ();
+                _terraformGhostBaseZ = getLegacyReturnState().lastPlacedWall->baseZ();
                 _terraformGhostPlacedFlags |= Common::GhostPlacedFlags::wall;
             }
         }

@@ -17,14 +17,12 @@ namespace OpenLoco
         constexpr uint32_t MaxUpdates = 3;
     }
 
-    extern const char version[];
-    std::string getVersionInfo();
-
     void* hInstance();
     void initialiseViewports();
     void simulateGame(const fs::path& path, int32_t ticks);
 
     void sub_431695(uint16_t var_F253A0);
+    uint16_t getTimeSinceLastTick();
     int main(std::vector<std::string>&& argv);
     bool promptTickLoop(std::function<bool()> tickAction);
     [[noreturn]] void exitCleanly();

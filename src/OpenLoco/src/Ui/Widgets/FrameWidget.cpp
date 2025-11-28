@@ -24,7 +24,7 @@ namespace OpenLoco::Ui::Widgets
         const auto pos = window->position() + widget.position();
         const auto size = widget.size();
 
-        const auto resizeBarPos = pos + Ui::Point(size.width - 18, size.height - 18);
+        const auto resizeBarPos = pos + Ui::Point(size.width - kResizeHandleSize, size.height - kResizeHandleSize);
 
         uint32_t image = Gfx::recolour(ImageIds::window_resize_handle, colour.c());
         drawingCtx.drawImage(resizeBarPos, image);
@@ -43,7 +43,7 @@ namespace OpenLoco::Ui::Widgets
         if (clipped)
         {
             uint32_t imageId = widget.image;
-            if (window->hasFlags(WindowFlags::flag_11))
+            if (window->hasFlags(WindowFlags::lighterFrame))
             {
                 imageId = Gfx::recolour(ImageIds::frame_background_image, widgetState.colour.c());
             }
@@ -58,7 +58,7 @@ namespace OpenLoco::Ui::Widgets
         }
 
         uint8_t shade;
-        if (window->hasFlags(WindowFlags::flag_11))
+        if (window->hasFlags(WindowFlags::lighterFrame))
         {
             shade = Colours::getShade(widgetState.colour.c(), 3);
         }

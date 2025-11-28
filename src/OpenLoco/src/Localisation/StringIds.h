@@ -1194,14 +1194,14 @@ namespace OpenLoco::StringIds
     constexpr StringId enter_host_address_description = 1484;
 
     constexpr StringId tooltip_display_options = 1486;
-    constexpr StringId tooltip_sound_options = 1487;
-    constexpr StringId tooltip_music_options = 1488;
+    constexpr StringId tooltip_sound_options = UNUSED_STR(1487);
+    constexpr StringId tooltip_music_options = UNUSED_STR(1488);
     constexpr StringId tooltip_regional_options = 1489;
     constexpr StringId tooltip_control_options = 1490;
     constexpr StringId tooltip_miscellaneous_options = 1491;
     constexpr StringId options_title_display = 1492;
-    constexpr StringId options_title_sound = 1493;
-    constexpr StringId options_title_music = 1494;
+    constexpr StringId options_title_sound = UNUSED_STR(1493);
+    constexpr StringId options_title_music = UNUSED_STR(1494);
     constexpr StringId options_title_regional = 1495;
     constexpr StringId options_title_controls = 1496;
     constexpr StringId options_title_miscellaneous = 1497;
@@ -1254,8 +1254,8 @@ namespace OpenLoco::StringIds
     constexpr StringId music_selection_title = 1544;
     constexpr StringId music_selection_tooltip = 1545;
     constexpr StringId checkmark = 1546;
-    constexpr StringId volume = 1547;
-    constexpr StringId set_volume_tip = 1548;
+    constexpr StringId volume = UNUSED_STR(1547);
+    constexpr StringId set_music_volume_tip = 1548;
     constexpr StringId menu_music_options = 1549;
     constexpr StringId company_face_selection_title = 1550;
     constexpr StringId tooltip_company_face_selection = 1551;
@@ -1750,7 +1750,7 @@ namespace OpenLoco::StringIds
     constexpr StringId object_company_owners = 2085;
     constexpr StringId object_scenario_descriptions = 2086;
     constexpr StringId tooltip_object_list = 2087;
-    constexpr StringId missing_object_data_id_x = 2088;
+    constexpr StringId missing_object_data_id_x = UNUSED_STR(2088);
     constexpr StringId export_plugin_objects = 2089;
     constexpr StringId export_plugin_objects_tip = 2090;
     constexpr StringId at_least_one_generic_dual_direction_road_type_must_be_selected = 2091;
@@ -2032,6 +2032,27 @@ namespace OpenLoco::StringIds
     constexpr StringId confirm_vehicle_component_refit_cargo_warning_title = 2366;
     constexpr StringId confirm_vehicle_component_refit_cargo_warning_message = 2367;
     constexpr StringId confirm_vehicle_component_refit_cargo_warning_confirm = 2368;
+    constexpr StringId tooltip_audio_options = 2369;
+    constexpr StringId options_title_audio = 2370;
+    constexpr StringId frame_sound = 2371;
+    constexpr StringId frame_jukebox = 2372;
+    constexpr StringId music_volume = 2373;
+    constexpr StringId show_company_ai_planning = 2374;
+    constexpr StringId show_company_ai_planning_tip = 2375;
+    constexpr StringId table_header_title = 2376;
+    constexpr StringId table_header_title_asc = 2377;
+    constexpr StringId table_header_title_desc = 2378;
+    constexpr StringId table_header_years = 2379;
+    constexpr StringId table_header_years_asc = 2380;
+    constexpr StringId table_header_years_desc = 2381;
+    constexpr StringId tooltip_sort_by_track_title = 2382;
+    constexpr StringId tooltip_sort_by_music_years = 2383;
+    constexpr StringId year_range = 2384;
+    constexpr StringId year_range_no_end = 2385;
+    constexpr StringId year_range_no_start = 2386;
+    constexpr StringId year_range_no_start_no_end = 2387;
+    constexpr StringId status_music_tracks_selected_singular = 2388;
+    constexpr StringId status_music_tracks_selected_plural = 2389;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

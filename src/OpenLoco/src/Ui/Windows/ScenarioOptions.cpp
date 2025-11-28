@@ -1166,7 +1166,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     strncpy(buffer, Scenario::getOptions().scenarioName, 512);
                     auto inputSize = std::size(Scenario::getOptions().scenarioName) - 1;
 
-                    TextInput::openTextInput(&self, StringIds::scenario_name_title, StringIds::enter_name_for_scenario, StringIds::buffer_2039, widgetIndex, nullptr, inputSize);
+                    TextInput::openTextInput(&self, StringIds::scenario_name_title, StringIds::enter_name_for_scenario, StringIds::buffer_2039, widgetIndex, {}, inputSize);
                     break;
                 }
 
@@ -1176,7 +1176,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     strncpy(buffer, Scenario::getOptions().scenarioDetails, 512);
                     auto inputSize = std::size(Scenario::getOptions().scenarioDetails) - 1;
 
-                    TextInput::openTextInput(&self, StringIds::scenario_details_title, StringIds::enter_description_of_this_scenario, StringIds::buffer_2039, widgetIndex, nullptr, inputSize);
+                    TextInput::openTextInput(&self, StringIds::scenario_details_title, StringIds::enter_description_of_this_scenario, StringIds::buffer_2039, widgetIndex, {}, inputSize);
                     break;
                 }
             }
@@ -1295,7 +1295,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             self.currentTab = widgetIndex - widx::tab_challenge;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
             self.disabledWidgets = 0;
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_challenge];

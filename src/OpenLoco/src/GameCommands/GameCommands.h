@@ -5,15 +5,22 @@
 #include "Map/Tile.h"
 #include "Objects/Object.h"
 #include "World/Company.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
     enum ExpenditureType : uint8_t;
     enum class GameSpeed : uint8_t;
     enum class LoadOrQuitMode : uint16_t;
+}
+
+namespace OpenLoco::World
+{
+    struct WallElement;
+}
+
+namespace OpenLoco::World::TileManager
+{
+    enum class ElementPositionFlags : uint8_t;
 }
 
 namespace OpenLoco::Vehicles
@@ -124,6 +131,72 @@ namespace OpenLoco::GameCommands
         vehicleRepaint = 84,
     };
 
+    constexpr int32_t kDefaultRegValue = 0xCCCCCCCC;
+#pragma pack(push, 1)
+    /**
+     * x86 register structure, only used for easy interop to Locomotion code.
+     */
+    struct registers
+    {
+        union
+        {
+            int32_t eax{ kDefaultRegValue };
+            int16_t ax;
+            struct
+            {
+                int8_t al;
+                int8_t ah;
+            };
+        };
+        union
+        {
+            int32_t ebx{ kDefaultRegValue };
+            int16_t bx;
+            struct
+            {
+                int8_t bl;
+                int8_t bh;
+            };
+        };
+        union
+        {
+            int32_t ecx{ kDefaultRegValue };
+            int16_t cx;
+            struct
+            {
+                int8_t cl;
+                int8_t ch;
+            };
+        };
+        union
+        {
+            int32_t edx{ kDefaultRegValue };
+            int16_t dx;
+            struct
+            {
+                int8_t dl;
+                int8_t dh;
+            };
+        };
+        union
+        {
+            int32_t esi{ kDefaultRegValue };
+            int16_t si;
+        };
+        union
+        {
+            int32_t edi{ kDefaultRegValue };
+            int16_t di;
+        };
+        union
+        {
+            int32_t ebp{ kDefaultRegValue };
+            int16_t bp;
+        };
+    };
+    static_assert(sizeof(registers) == 7 * 4);
+#pragma pack(pop)
+
     constexpr uint32_t FAILURE = 0x80000000;
 
     uint32_t doCommand(GameCommand command, const registers& registers);
@@ -139,11 +212,12 @@ namespace OpenLoco::GameCommands
     }
 
     // Load multiplayer map
-    inline void do_67(const char* filename)
+    inline void do_67([[maybe_unused]] const char* filename)
     {
         registers regs;
         regs.bl = Flags::apply;
-        regs.ebp = X86Pointer(filename);
+        // This is commented out as it will not work on 64-bit builds
+        // regs.ebp = reinterpret_cast<uint32_t>(filename);
         doCommand(GameCommand::loadMultiplayerMap, regs);
     }
 
@@ -186,6 +260,7 @@ namespace OpenLoco::GameCommands
 
     const World::Pos3& getPosition();
     void setPosition(const World::Pos3& pos);
+    void setErrorSound(bool state);
     void setErrorText(const StringId message);
     StringId getErrorText();
     void setErrorTitle(const StringId title);
@@ -196,5 +271,27 @@ namespace OpenLoco::GameCommands
     uint8_t getCommandNestLevel();
     void resetCommandNestLevel();
 
+    // TODO: rework these
+    struct LegacyReturnState
+    {
+        World::TileManager::ElementPositionFlags flags_1136072; // 0x01136072
+        uint8_t flags_1136073;                                  // 0x01136073
+        World::MicroZ byte_1136074;                             // 0x01136074
+        uint8_t byte_1136075;                                   // 0x01136075
+        StationId lastPlacedTrackRoadStationId;                 // 0x0112C730
+        StationId lastConstructedAdjoiningStation;              // 0x0112C734
+        StationId lastPlacedAirport;                            // 0x0112C744
+        StationId lastPlacedDock;                               // 0x0112C748
+        World::Pos2 lastConstructedAdjoiningStationPos;         // 0x0112C792 centre pos
+        IndustryId lastPlacedIndustryId;                        // 0x00E0C3C9
+        World::WallElement* lastPlacedWall;                     // 0x01136470
+        EntityId lastCreatedVehicleId;                          // 0x0113642A
+        uint8_t alternateRoadObjectId;                          // 0x0112C2E9
+    };
+
+    // Note: this is deliberately a mutable ref
+    LegacyReturnState& getLegacyReturnState();
+
     void playConstructionPlacementSound(World::Pos3 pos);
+    bool shouldInvalidateTile(uint8_t flags);
 }

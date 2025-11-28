@@ -14,6 +14,7 @@
 #include "Map/TreeElement.h"
 #include "Map/WallElement.h"
 #include "Objects/ObjectManager.h"
+#include "OpenLoco.h"
 #include "SceneManager.h"
 #include "Tutorial.h"
 #include "Ui/Dropdown.h"
@@ -27,11 +28,10 @@
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <map>
 #include <queue>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Ui::ScrollView;
 using namespace OpenLoco::Ui::ViewportInteraction;
@@ -60,17 +60,12 @@ namespace OpenLoco::Input
 
 #pragma mark - Input
 
+    static bool _pendingMouseInputUpdate; // 0x00525324
     static MouseButton _lastKnownButtonState;
 
-    static loco_global<uint16_t, 0x0050C19C> _timeSinceLastTick;
-
     static Ui::Point _cursorPressed;
-
     static Ui::CursorId _52336C;
-
     static Ui::Point32 _cursor;
-
-    // TODO: name?
     static Ui::Point32 _cursor2;
 
     static Ui::WindowType _pressedWindowType;       // 0x0052336F
@@ -102,7 +97,7 @@ namespace OpenLoco::Input
 
     static bool _rightMouseButtonDown;
 
-    static loco_global<StationId, 0x00F252A4> _hoveredStationId;
+    static StationId _hoveredStationId = StationId::null; // 0x00F252A4
 
     static int32_t _cursorWheel;
 
@@ -322,6 +317,11 @@ namespace OpenLoco::Input
     StationId getHoveredStationId()
     {
         return _hoveredStationId;
+    }
+
+    void setHoveredStationId(StationId stationId)
+    {
+        _hoveredStationId = stationId;
     }
 
 #pragma mark - Mouse input
@@ -567,7 +567,7 @@ namespace OpenLoco::Input
             case MouseButton::released:
             {
                 // 4C74E4
-                _ticksSinceDragStart += _timeSinceLastTick;
+                _ticksSinceDragStart += getTimeSinceLastTick();
                 auto vp = window->viewports[0];
                 if (vp == nullptr)
                 {
@@ -680,7 +680,7 @@ namespace OpenLoco::Input
         {
             case MouseButton::released:
             {
-                _ticksSinceDragStart += _timeSinceLastTick;
+                _ticksSinceDragStart += getTimeSinceLastTick();
 
                 const Ui::Point dragOffset = getNextDragOffset();
                 if (dragOffset.x != 0 || dragOffset.y != 0)
@@ -739,17 +739,17 @@ namespace OpenLoco::Input
                 Ui::ToolTip::setWindowType(_dragWindowType);
                 Ui::ToolTip::setWindowNumber(_dragWindowNumber);
 
-                if (w->hasFlags(Ui::WindowFlags::flag_15))
+                if (w->hasFlags(Ui::WindowFlags::finishedResize))
                 {
                     doDefault = true;
                     break;
                 }
 
-                if (w->hasFlags(Ui::WindowFlags::flag_16))
+                if (w->hasFlags(Ui::WindowFlags::beingResized))
                 {
                     x = w->var_88A - w->width + _dragLast.x;
                     y = w->var_88C - w->height + _dragLast.y;
-                    w->flags &= ~Ui::WindowFlags::flag_16;
+                    w->flags &= ~Ui::WindowFlags::beingResized;
                     doDefault = true;
                     break;
                 }
@@ -758,7 +758,7 @@ namespace OpenLoco::Input
                 w->var_88C = w->height;
                 x = _dragLast.x - w->x - w->width + Ui::width();
                 y = _dragLast.y - w->y - w->height + Ui::height() - 27;
-                w->flags |= Ui::WindowFlags::flag_16;
+                w->flags |= Ui::WindowFlags::beingResized;
                 if (y >= Ui::height() - 2)
                 {
                     _dragLast.x = x;
@@ -801,14 +801,14 @@ namespace OpenLoco::Input
                 return;
             }
 
-            w->flags &= ~Ui::WindowFlags::flag_16;
+            w->flags &= ~Ui::WindowFlags::beingResized;
         }
 
         w->invalidate();
 
         w->width = std::clamp<uint16_t>(w->width + dx, w->minWidth, w->maxWidth);
         w->height = std::clamp<uint16_t>(w->height + dy, w->minHeight, w->maxHeight);
-        w->flags |= Ui::WindowFlags::flag_15;
+        w->flags |= Ui::WindowFlags::finishedResize;
         w->callOnResize();
         w->callPrepareDraw();
 
@@ -1196,7 +1196,7 @@ namespace OpenLoco::Input
             if (window != nullptr && Ui::ToolTip::getWindowType() == window->type && Ui::ToolTip::getWindowNumber() == window->number && Ui::ToolTip::getWidgetIndex() == widgetIndex)
             {
                 auto tooltipTimeout = Ui::ToolTip::getTooltipTimeout();
-                tooltipTimeout += _timeSinceLastTick;
+                tooltipTimeout += getTimeSinceLastTick();
                 Ui::ToolTip::setTooltipTimeout(tooltipTimeout);
 
                 if (tooltipTimeout >= 8000)
@@ -1217,7 +1217,7 @@ namespace OpenLoco::Input
         if (tooltipNotShownTicks < 500 || (x == tooltipMousePos.x && y == tooltipMousePos.y))
         {
             auto tooltipTimeout = Ui::ToolTip::getTooltipTimeout();
-            tooltipTimeout += _timeSinceLastTick;
+            tooltipTimeout += getTimeSinceLastTick();
             Ui::ToolTip::setTooltipTimeout(tooltipTimeout);
 
             int bp = 2000;
@@ -1296,7 +1296,7 @@ namespace OpenLoco::Input
             case Ui::WidgetType::panel:
             case Ui::WidgetType::newsPanel:
             case Ui::WidgetType::frame:
-                if (window->canResize() && (x >= (window->x + window->width - 19)) && (y >= (window->y + window->height - 19)))
+                if (window->canResize() && (x >= (window->x + window->width - kResizeHandleSize - 1)) && (y >= (window->y + window->height - kResizeHandleSize - 1)))
                 {
                     windowResizeBegin(x, y, window, widgetIndex);
                 }
@@ -1462,7 +1462,7 @@ namespace OpenLoco::Input
         _dragLast.y = y;
         _dragWindowType = window->type;
         _dragWindowNumber = window->number;
-        window->flags &= ~Ui::WindowFlags::flag_15;
+        window->flags &= ~Ui::WindowFlags::finishedResize;
     }
 
 #pragma mark - Viewport dragging
@@ -1931,5 +1931,20 @@ namespace OpenLoco::Input
     void setPressedWindowNumber(Ui::WindowNumber_t wndNumber)
     {
         _pressedWindowNumber = wndNumber;
+    }
+
+    bool hasPendingMouseInputUpdate()
+    {
+        return _pendingMouseInputUpdate;
+    }
+
+    void clearPendingMouseInputUpdate()
+    {
+        _pendingMouseInputUpdate = false;
+    }
+
+    void setPendingMouseInputUpdate()
+    {
+        _pendingMouseInputUpdate = true;
     }
 }

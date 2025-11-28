@@ -60,11 +60,9 @@
 #include <OpenLoco/Core/Stream.hpp>
 #include <OpenLoco/Core/Timer.hpp>
 #include <OpenLoco/Core/Traits.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <bit>
 #include <vector>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::ObjectManager
@@ -74,6 +72,7 @@ namespace OpenLoco::ObjectManager
     struct ObjectEntry2 : public ObjectHeader
     {
         uint32_t dataSize;
+        ObjectEntry2() = default;
         ObjectEntry2(ObjectHeader head, uint32_t size)
             : ObjectHeader(head)
             , dataSize(size)
@@ -81,20 +80,49 @@ namespace OpenLoco::ObjectManager
         }
     };
     static_assert(sizeof(ObjectEntry2) == 0x14);
+#pragma pack(pop)
 
     struct ObjectRepositoryItem
     {
         Object** objects;
         ObjectEntry2* objectEntryExtendeds;
     };
-    assert_struct_size(ObjectRepositoryItem, 8);
-#pragma pack(pop)
 
     static_assert(Traits::IsPOD<ObjectHeader>::value, "Object Header must be trivial for I/O purposes");
 
-    loco_global<ObjectRepositoryItem[kMaxObjectTypes], 0x4FE0B8> _objectRepository;
+    // 0x004FE0B8
+    // Pre-allocated storage for all object types
+    // Each type has arrays for object pointers and extended headers
+    template<ObjectType Type>
+    struct ObjectStorage
+    {
+        static constexpr auto kCount = getMaxObjects(Type);
+        static inline std::array<Object*, kCount> objects = {};
+        static inline std::array<ObjectEntry2, kCount> objectEntryExtendeds = {};
+    };
 
-    static loco_global<bool, 0x0050D161> _isPartialLoaded;
+    // Helper to initialize repository item for a given type
+    template<ObjectType Type>
+    constexpr ObjectRepositoryItem makeRepositoryItem()
+    {
+        return ObjectRepositoryItem{
+            ObjectStorage<Type>::objects.data(),
+            ObjectStorage<Type>::objectEntryExtendeds.data()
+        };
+    }
+
+    // Generate repository initialization at compile time
+    template<size_t... Is>
+    constexpr std::array<ObjectRepositoryItem, kMaxObjectTypes> makeRepositoryArray(std::index_sequence<Is...>)
+    {
+        return { { makeRepositoryItem<static_cast<ObjectType>(Is)>()... } };
+    }
+
+    // Repository of loaded objects indexed by ObjectType
+    // Contains pointers to pre-allocated arrays of objects and their metadata
+    static std::array<ObjectRepositoryItem, kMaxObjectTypes> _objectRepository = makeRepositoryArray(std::make_index_sequence<kMaxObjectTypes>{});
+
+    static std::array<LandObjectFlags, getMaxObjects(ObjectType::land)> _landObjectFlags; // 0x00F003D3
 
     // 0x0050D160
     static bool _isTemporaryObject = false;
@@ -459,7 +487,6 @@ namespace OpenLoco::ObjectManager
         setTotalNumImages(Gfx::G1ExpectedCount::kDisc);
 
         _temporaryObject = preLoadObj->object;
-        _isPartialLoaded = true;
         _isTemporaryObject = true;
 
         DependentObjects dependencies;
@@ -471,11 +498,9 @@ namespace OpenLoco::ObjectManager
         {
             freeTemporaryObject();
             _isTemporaryObject = false;
-            _isPartialLoaded = false;
             return std::nullopt;
         }
         _isTemporaryObject = false;
-        _isPartialLoaded = false;
 
         const auto numImages = getTotalNumImages() - Gfx::G1ExpectedCount::kDisc;
         setTotalNumImages(oldNumImages);
@@ -534,10 +559,7 @@ namespace OpenLoco::ObjectManager
             preLoadObj->header, static_cast<uint32_t>(preLoadObj->objectData.size())
         };
 
-        if (!*_isPartialLoaded)
-        {
-            callObjectLoad({ preLoadObj->header.getType(), id }, *preLoadObj->object, preLoadObj->objectData);
-        }
+        callObjectLoad({ preLoadObj->header.getType(), id }, *preLoadObj->object, preLoadObj->objectData);
 
         return true;
     }
@@ -926,8 +948,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x0047966E
-    // Set road object ID flags
-    void sub_47966E()
+    void updateRoadObjectIdFlags()
     {
         uint32_t roadObjectIdIsNotTram = 0;
         uint32_t roadObjectIdIsFlag7 = 0;
@@ -1051,9 +1072,6 @@ namespace OpenLoco::ObjectManager
         Ui::Windows::Construction::updateAvailableAirportAndDockOptions();
     }
 
-    // TODO: Refactor this, variable is also defined in PaintSurface.cpp.
-    static loco_global<LandObjectFlags[getMaxObjects(ObjectType::land)], 0x00F003D3> _landObjectFlags;
-
     // 0x004697A1
     static void updateLandObjectFlags()
     {
@@ -1069,6 +1087,11 @@ namespace OpenLoco::ObjectManager
                 _landObjectFlags[i] = LandObjectFlags::none;
             }
         }
+    }
+
+    std::span<LandObjectFlags> getLandObjectFlagsCache()
+    {
+        return _landObjectFlags;
     }
 
     // 0x004C57A6
@@ -1124,7 +1147,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x004748FA
-    void sub_4748FA()
+    void updateTerraformObjects()
     {
         updateLandObjectFlags();
         updateTrafficHandedness();
@@ -1133,8 +1156,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x0047AC05
-    // Initialise lastTrackTypeOption in game state
-    void sub_47AC05()
+    void updateLastTrackTypeOption()
     {
         static_assert(ObjectManager::getMaxObjects(ObjectType::road) <= 128); // protect against possible int8_t overflow in the future
         TownSize largestTownSize = TownSize::hamlet;

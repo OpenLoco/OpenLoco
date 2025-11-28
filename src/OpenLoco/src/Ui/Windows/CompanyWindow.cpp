@@ -49,10 +49,8 @@
 #include "ViewportManager.h"
 #include "World/Company.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-#include <cmath>
 
-using namespace OpenLoco::Interop;
+#include <cmath>
 
 namespace OpenLoco::Ui::Windows::CompanyWindow
 {
@@ -314,7 +312,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case widx::change_owner_name:
                 {
                     auto company = CompanyManager::get(CompanyId(self.number));
-                    TextInput::openTextInput(&self, StringIds::title_name_owner, StringIds::prompt_enter_new_name_for_owner, company->ownerName, widgetIndex, nullptr);
+                    TextInput::openTextInput(&self, StringIds::title_name_owner, StringIds::prompt_enter_new_name_for_owner, company->ownerName, widgetIndex, {});
                     break;
                 }
             }
@@ -610,7 +608,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     // 0x004347D0
     static Window* create(CompanyId companyId)
     {
-        const WindowFlags newFlags = WindowFlags::flag_8 | WindowFlags::flag_11;
+        const WindowFlags newFlags = WindowFlags::viewportNoShiftPixels | WindowFlags::lighterFrame;
         auto window = WindowManager::createWindow(WindowType::company, Status::kWindowSize, newFlags, Status::getEvents());
         window->number = enumValue(companyId);
         window->owner = companyId;
@@ -2736,7 +2734,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             self.currentTab = widgetIndex - widx::tab_status;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
 
             self.viewportRemove(0);
 
@@ -2777,7 +2775,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void renameCompanyPrompt(Window* self, WidgetIndex_t widgetIndex)
         {
             auto company = CompanyManager::get(CompanyId(self->number));
-            TextInput::openTextInput(self, StringIds::title_name_company, StringIds::prompt_enter_new_company_name, company->name, widgetIndex, nullptr);
+            TextInput::openTextInput(self, StringIds::title_name_company, StringIds::prompt_enter_new_company_name, company->name, widgetIndex, {});
         }
 
         // 0x0043254F

@@ -10,16 +10,11 @@
 #include "RoutingManager.h"
 #include "Vehicle.h"
 #include "ViewportManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
-    static loco_global<Speed32, 0x01136134> _vehicleUpdate_var_1136134; // Speed
-
     // If distance travelled in one tick this is the speed
     constexpr Speed32 speedFromDistanceInATick(int32_t distance)
     {
@@ -111,15 +106,14 @@ namespace OpenLoco::Vehicles
             }
         }
         targetSpeed = newTargetSpeed;
-
-        _vehicleUpdate_var_1136134 = newTargetSpeed;
         int32_t distance1 = distanceTraveledInATick(train.veh2->currentSpeed) - var_3C;
-        const auto unk2 = std::max(_vehicleUpdate_var_113612C * 4, 0xCC48);
+        const auto unk2 = std::max(getVehicleUpdateDistances().unkDistance1 * 4, 0xCC48);
 
         distance1 = std::min(distance1, unk2);
-        var_3C += distance1 - updateRoadMotion(distance1);
+        const auto motionResult = updateRoadMotion(distance1);
+        var_3C += distance1 - motionResult.remainingDistance;
 
-        if (!hasUpdateVar1136114Flags(UpdateVar1136114Flags::noRouteFound))
+        if (!motionResult.hasFlags(UpdateVar1136114Flags::noRouteFound))
         {
             return true;
         }
@@ -221,18 +215,16 @@ namespace OpenLoco::Vehicles
             }
         }
         targetSpeed = newTargetSpeed;
-
-        _vehicleUpdate_var_1136134 = newTargetSpeed;
         int32_t distance1 = distanceTraveledInATick(train.veh2->currentSpeed) - var_3C;
-        const auto unk2 = std::max(_vehicleUpdate_var_113612C * 4, 0xCC48);
+        const auto unk2 = std::max(getVehicleUpdateDistances().unkDistance1 * 4, 0xCC48);
 
         distance1 = std::min(distance1, unk2);
-        resetUpdateVar1136114Flags();
-        var_3C += distance1 - updateTrackMotion(distance1);
+        const auto motionResult = updateTrackMotion(distance1, false);
+        var_3C += distance1 - motionResult.remainingDistance;
 
-        if (!hasUpdateVar1136114Flags(UpdateVar1136114Flags::noRouteFound))
+        if (!motionResult.hasFlags(UpdateVar1136114Flags::noRouteFound))
         {
-            if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::approachingGradeCrossing))
+            if (motionResult.hasFlags(UpdateVar1136114Flags::approachingGradeCrossing))
             {
                 railProduceCrossingWhistle(*train.veh2);
             }
@@ -336,7 +328,7 @@ namespace OpenLoco::Vehicles
         auto newIndex = newRoutingHandle.getIndex() + 1;
         newRoutingHandle.setIndex(newIndex);
         const auto routing = RoutingManager::getRouting(newRoutingHandle);
-        if (routing == RoutingManager::kAllocatedButFreeRoutingStation)
+        if (routing == RoutingManager::kAllocatedButFreeRouting)
         {
             return false;
         }
@@ -406,7 +398,7 @@ namespace OpenLoco::Vehicles
         auto newIndex = handle.getIndex() + 1;
         handle.setIndex(newIndex);
         const auto routing = RoutingManager::getRouting(handle);
-        if (routing == RoutingManager::kAllocatedButFreeRoutingStation)
+        if (routing == RoutingManager::kAllocatedButFreeRouting)
         {
             return false;
         }
@@ -707,13 +699,13 @@ namespace OpenLoco::Vehicles
     };
 
     // 0x0047CABF
-    static RoadMotionNewPieceResult updateRoadMotionNewRoadPiece(Vehicle1& component)
+    static RoadMotionNewPieceResult updateRoadMotionNewRoadPiece(Vehicle1& component, UpdateVar1136114Flags& flags)
     {
         auto newRoutingHandle = component.routingHandle;
         auto newIndex = newRoutingHandle.getIndex() + 1;
         newRoutingHandle.setIndex(newIndex);
         const auto routing = RoutingManager::getRouting(newRoutingHandle);
-        if (routing == RoutingManager::kAllocatedButFreeRoutingStation)
+        if (routing == RoutingManager::kAllocatedButFreeRouting)
         {
             return RoadMotionNewPieceResult::noFurther;
         }
@@ -764,7 +756,7 @@ namespace OpenLoco::Vehicles
         }
         if (!routingFound)
         {
-            setUpdateVar1136114Flags(UpdateVar1136114Flags::noRouteFound);
+            flags |= UpdateVar1136114Flags::noRouteFound;
             return RoadMotionNewPieceResult::noFurther;
         }
 
@@ -788,13 +780,12 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0047CA71
-    int32_t Vehicle1::updateRoadMotion(const int32_t distance)
+    UpdateMotionResult Vehicle1::updateRoadMotion(const int32_t distance)
     {
-        resetUpdateVar1136114Flags();
+        UpdateMotionResult result{};
 
         this->remainingDistance += distance;
         bool hasMoved = false;
-        auto returnValue = 0;
         auto intermediatePosition = this->position;
         while (this->remainingDistance >= 0x368A)
         {
@@ -804,17 +795,18 @@ namespace OpenLoco::Vehicles
             // This means we have moved forward by a road piece
             if (newSubPosition >= subPositionDataSize)
             {
-                auto newPieceRes = updateRoadMotionNewRoadPiece(*this);
+                auto newPieceRes = updateRoadMotionNewRoadPiece(*this, result.flags);
                 if (newPieceRes == RoadMotionNewPieceResult::noFurther)
                 {
-                    returnValue = this->remainingDistance - 0x3689;
+                    result.remainingDistance = this->remainingDistance - 0x3689;
                     this->remainingDistance = 0x3689;
-                    setUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00);
+                    result.flags |= UpdateVar1136114Flags::unk_m00;
                     break;
                 }
                 else if (newPieceRes == RoadMotionNewPieceResult::performedLookahead)
                 {
-                    return 0;
+                    result.remainingDistance = 0;
+                    return result;
                 }
                 else
                 {
@@ -836,6 +828,6 @@ namespace OpenLoco::Vehicles
             this->moveTo(intermediatePosition);
             Ui::ViewportManager::invalidate(this, ZoomLevel::eighth);
         }
-        return returnValue;
+        return result;
     }
 }

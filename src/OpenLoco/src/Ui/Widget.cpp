@@ -9,10 +9,8 @@
 #include "Localisation/Formatting.h"
 #include "Ui/ScrollView.h"
 #include "Window.h"
-#include <OpenLoco/Interop/Interop.hpp>
-#include <cassert>
 
-using namespace OpenLoco::Interop;
+#include <cassert>
 
 namespace OpenLoco::Ui
 {
@@ -65,7 +63,7 @@ namespace OpenLoco::Ui
         }
 
         Gfx::RectInsetFlags widgetFlags = Gfx::RectInsetFlags::none;
-        if (windowColour == WindowColour::primary && window->hasFlags(WindowFlags::flag_11))
+        if (windowColour == WindowColour::primary && window->hasFlags(WindowFlags::lighterFrame))
         {
             widgetFlags = Gfx::RectInsetFlags::colourLight;
         }

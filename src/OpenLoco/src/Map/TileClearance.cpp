@@ -29,9 +29,7 @@ using OpenLoco::World::TileManager::ElementPositionFlags;
 
 namespace OpenLoco::World::TileClearance
 {
-    static loco_global<uint32_t, 0x00F00138> _F00138;
-    static loco_global<TileElement*, 0x00F0015C> _F0015C;
-    static loco_global<ElementPositionFlags, 0x00F00166> _constructAtElementPositionFlags;
+    static ElementPositionFlags _constructAtElementPositionFlags; // 0x00F00166
 
     // 0x00462C8E
     void setCollisionErrorMessage(const World::TileElement& el)
@@ -216,7 +214,6 @@ namespace OpenLoco::World::TileClearance
         {
             return ClearFuncResult::collision;
         }
-        _F0015C = nullptr;
         return clearFunc(el);
     };
 
@@ -242,15 +239,14 @@ namespace OpenLoco::World::TileClearance
         {
             if (clearZ > elSurface.clearZ() && baseZ < waterZ + 4)
             {
-                _constructAtElementPositionFlags = _constructAtElementPositionFlags | ElementPositionFlags::partiallyUnderwater;
+                _constructAtElementPositionFlags |= ElementPositionFlags::partiallyUnderwater;
                 if (baseZ < waterZ)
                 {
-                    _constructAtElementPositionFlags = _constructAtElementPositionFlags | ElementPositionFlags::underwater;
+                    _constructAtElementPositionFlags |= ElementPositionFlags::underwater;
                     if (clearZ > waterZ)
                     {
                         if (clearFunc)
                         {
-                            _F0015C = nullptr;
                             if (auto res = clearFunc(el); isCollisionResult(res))
                             {
                                 if (res == ClearFuncResult::collision)
@@ -276,8 +272,8 @@ namespace OpenLoco::World::TileClearance
 
         if (clearZ <= elSurface.baseZ())
         {
-            _constructAtElementPositionFlags = _constructAtElementPositionFlags | ElementPositionFlags::underground;
-            _constructAtElementPositionFlags = _constructAtElementPositionFlags & ~(ElementPositionFlags::aboveGround);
+            _constructAtElementPositionFlags |= ElementPositionFlags::underground;
+            _constructAtElementPositionFlags &= ~(ElementPositionFlags::aboveGround);
             return ClearFuncResult::noCollision;
         }
         else
@@ -374,7 +370,6 @@ namespace OpenLoco::World::TileClearance
         }
         if (clearFunc)
         {
-            _F0015C = nullptr;
             if (auto res = clearFunc(el);
                 !isCollisionResult(res))
             {
@@ -515,7 +510,7 @@ namespace OpenLoco::World::TileClearance
         }
         GameCommands::BuildingRemovalArgs args{};
         args.pos = buildingStart;
-        Interop::registers regs = static_cast<Interop::registers>(args);
+        GameCommands::registers regs = static_cast<GameCommands::registers>(args);
         regs.bl = removeBuildingFlags;
         // We should probably call doCommand here but then it gets messy with the costs
         // look into changing this in the future.
@@ -564,6 +559,6 @@ namespace OpenLoco::World::TileClearance
 
     ElementPositionFlags getPositionFlags()
     {
-        return *_constructAtElementPositionFlags;
+        return _constructAtElementPositionFlags;
     }
 }

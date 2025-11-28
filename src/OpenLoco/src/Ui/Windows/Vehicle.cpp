@@ -78,13 +78,11 @@
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Trigonometry.hpp>
 #include <map>
 #include <sfl/static_vector.hpp>
 #include <sstream>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 using namespace OpenLoco::Literals;
 
@@ -92,8 +90,6 @@ using OpenLoco::GameCommands::VehicleChangeRunningModeArgs;
 
 namespace OpenLoco::Ui::Windows::Vehicle
 {
-    static loco_global<StationId, 0x00F252A4> _hoveredStationId;
-
     namespace Common
     {
         enum widx
@@ -315,13 +311,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
         );
     }
 
-    static loco_global<Vehicles::VehicleBogie*, 0x0113614E> _dragCarComponent;
-    static loco_global<EntityId, 0x01136156> _dragVehicleHead;
-    static loco_global<int32_t, 0x01136264> _1136264;
-    static loco_global<uint8_t, 0x01136264> _ghostAirportNode;
-    static loco_global<World::Pos3, 0x0113625E> _ghostVehiclePos;
-    static loco_global<StationId, 0x0113625A> _ghostAirportStationId;
-    static loco_global<uint32_t, 0x0113625A> _ghostLandTrackAndDirection;
+    static int32_t _ghostTrackProgress;          // 0x01136264
+    static uint8_t _ghostAirportNode;            // 0x01136264
+    static World::Pos3 _ghostVehiclePos;         // 0x0113625E
+    static StationId _ghostAirportStationId;     // 0x0113625A
+    static uint32_t _ghostLandTrackAndDirection; // 0x0113625A
 
     namespace Main
     {
@@ -464,7 +458,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B60DC
         static Window* create(const EntityId head)
         {
-            auto* const self = WindowManager::createWindow(WindowType::vehicle, kWindowSize, WindowFlags::flag_11 | WindowFlags::flag_8 | WindowFlags::resizable, Main::getEvents());
+            auto* const self = WindowManager::createWindow(WindowType::vehicle, kWindowSize, WindowFlags::lighterFrame | WindowFlags::viewportNoShiftPixels | WindowFlags::resizable, Main::getEvents());
             self->setWidgets(widgets);
             self->number = enumValue(head);
             const auto* vehicle = Common::getVehicle(*self);
@@ -483,8 +477,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self->maxHeight = kMaxWindowSize.height;
             self->var_85C = -1;
             WindowManager::close(WindowType::dragVehiclePart, 0);
-            _dragCarComponent = nullptr;
-            _dragVehicleHead = EntityId::null;
 
             const auto* skin = ObjectManager::get<InterfaceSkinObject>();
             self->setColour(WindowColour::secondary, skin->windowPlayerColor);
@@ -659,7 +651,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
 
                 uint16_t newHeight = self.height - 59;
-                if (head->hasVehicleFlags(VehicleFlags::manualControl) && head->owner == CompanyManager::getControllingId())
+                if (head->hasVehicleFlags(Vehicles::VehicleFlags::manualControl) && head->owner == CompanyManager::getControllingId())
                 {
                     newWidth -= 27;
                 }
@@ -707,11 +699,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 0);
 
             auto selected = 0; // Stop
-            if (!head->hasVehicleFlags(VehicleFlags::commandStop))
+            if (!head->hasVehicleFlags(Vehicles::VehicleFlags::commandStop))
             {
                 selected = 1; // Start
             }
-            if (head->hasVehicleFlags(VehicleFlags::manualControl))
+            if (head->hasVehicleFlags(Vehicles::VehicleFlags::manualControl))
             {
                 selected = 2; // Manual
             }
@@ -948,11 +940,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.push(head->ordinalNumber);
 
             uint32_t stopStartImage = ImageIds::red_flag;
-            if (head->hasVehicleFlags(VehicleFlags::manualControl))
+            if (head->hasVehicleFlags(Vehicles::VehicleFlags::manualControl))
             {
                 stopStartImage = ImageIds::yellow_flag;
             }
-            else if (head->hasVehicleFlags(VehicleFlags::commandStop))
+            else if (head->hasVehicleFlags(Vehicles::VehicleFlags::commandStop))
             {
                 stopStartImage = ImageIds::red_flag;
             }
@@ -977,7 +969,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.widgets[Common::widx::closeButton].right = self.width - 3;
 
             int viewportRight = self.width - 26;
-            if (head->hasVehicleFlags(VehicleFlags::manualControl))
+            if (head->hasVehicleFlags(Vehicles::VehicleFlags::manualControl))
             {
                 if (CompanyManager::isPlayerCompany(head->owner))
                 {
@@ -1135,7 +1127,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static void cloneVehicle(Window& self)
         {
-            static loco_global<EntityId, 0x0113642A> _113642A;
             auto head = Common::getVehicle(self);
             if (head == nullptr)
             {
@@ -1149,7 +1140,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
             {
-                auto* newVehicle = EntityManager::get<Vehicles::VehicleBase>(_113642A);
+                auto* newVehicle = EntityManager::get<Vehicles::VehicleBase>(GameCommands::getLegacyReturnState().lastCreatedVehicleId);
                 if (newVehicle != nullptr)
                 {
                     Windows::Vehicle::Details::open(newVehicle);
@@ -1270,7 +1261,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 if (itemIndex <= 0)
                 {
-                    BuildVehicle::open(self.number, 0);
+                    BuildVehicle::openByVehicleId(EntityId(self.number));
                 }
                 else if (itemIndex == 1)
                 {
@@ -1311,22 +1302,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // "Show <vehicle> design details and options" tab in vehicle window
         static void onUpdate(Window& self)
         {
-            if (EntityId(self.number) == _dragVehicleHead)
-            {
-                if (WindowManager::find(WindowType::dragVehiclePart) == nullptr)
-                {
-                    _dragVehicleHead = EntityId::null;
-                    _dragCarComponent = nullptr;
-                    self.invalidate();
-                }
-            }
-
             self.frameNo += 1;
             self.callPrepareDraw();
 
             WindowManager::invalidateWidget(WindowType::vehicle, self.number, Common::widx::tabDetails);
 
-            if (_dragVehicleHead == EntityId::null && self.isActivated(widx::remove))
+            if (WindowManager::find(WindowType::dragVehiclePart) == nullptr && self.isActivated(widx::remove))
             {
                 self.activatedWidgets &= ~(1ULL << widx::remove);
                 WindowManager::invalidateWidget(WindowType::vehicle, self.number, widx::remove);
@@ -1933,7 +1914,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                     int16_t top = pos.y;
                     int16_t bottom = pos.y + self.rowHeight - 1;
-                    if (_dragCarComponent != nullptr)
+                    if (DragVehiclePart::getDragCarComponent() != nullptr)
                     {
                         bottom = pos.y;
                         top = pos.y - 1;
@@ -1943,7 +1924,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
 
                 int16_t y = pos.y + (self.rowHeight - 22) / 2;
-                const auto disableColour = car.front == _dragCarComponent
+                const auto disableColour = car.front == DragVehiclePart::getDragCarComponent()
                     ? std::make_optional(self.getColour(WindowColour::secondary).c())
                     : std::nullopt;
                 drawVehicleInline(drawingCtx, car, { 0, y }, VehicleInlineMode::basic, VehiclePartsToDraw::bogies, disableColour);
@@ -1963,7 +1944,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 pos.y += self.rowHeight;
             }
 
-            if (EntityId(self.rowHover) == train.tail->id && _dragCarComponent != nullptr)
+            if (EntityId(self.rowHover) == train.tail->id && DragVehiclePart::getDragCarComponent() != nullptr)
             {
                 drawingCtx.fillRect(0, pos.y - 1, self.width, pos.y, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
             }
@@ -2084,7 +2065,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         void scrollDragEnd(const Ui::Point& pos)
         {
-            if (_dragCarComponent == nullptr)
+            if (DragVehiclePart::getDragCarComponent() == nullptr)
             {
                 return;
             }
@@ -2101,7 +2082,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case widx::remove:
                 {
                     GameCommands::VehicleSellArgs gcArgs{};
-                    gcArgs.car = (*_dragCarComponent)->id;
+                    gcArgs.car = DragVehiclePart::getDragCarComponent()->id;
 
                     if (Common::confirmComponentChange(gcArgs.car, StringIds::confirm_vehicle_component_sell_cargo_warning_title, StringIds::confirm_vehicle_component_sell_cargo_warning_message, StringIds::confirm_vehicle_component_sell_cargo_warning_confirm))
                     {
@@ -2117,7 +2098,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     if (car != nullptr)
                     {
                         GameCommands::VehicleRearrangeArgs args{};
-                        args.source = (*_dragCarComponent)->id;
+                        args.source = DragVehiclePart::getDragCarComponent()->id;
                         args.dest = car->id;
 
                         GameCommands::setErrorTitle(StringIds::cant_move_vehicle);
@@ -3256,7 +3237,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return ViewportInteraction::kNoInteractionArg;
             }
 
-            _hoveredStationId = stationId;
+            Input::setHoveredStationId(stationId);
             World::setMapSelectionFlags(World::MapSelectionFlags::hoveringOverStation);
             ViewportManager::invalidate(station);
 
@@ -4277,7 +4258,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 auto flags = GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::ghost;
                 GameCommands::doCommand(gcArgs, flags);
             }
-            _1136264 = -1;
+            _ghostTrackProgress = -1;
         }
 
         // 0x004B2B9E
@@ -4291,7 +4272,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            if (_1136264 == 0 && *_ghostVehiclePos == placementArgs->pos)
+            if (_ghostTrackProgress == 0 && _ghostVehiclePos == placementArgs->pos)
             {
                 return;
             }
@@ -4299,7 +4280,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             removeBoatGhost(head);
             if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::ghost | GameCommands::Flags::noErrorWindow) != GameCommands::FAILURE)
             {
-                _1136264 = 0;
+                _ghostTrackProgress = 0;
             }
         }
 
@@ -4438,7 +4419,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            if (_ghostAirportStationId != StationId::null && *_ghostAirportStationId == placementArgs->stationId && *_ghostAirportNode == placementArgs->airportNode)
+            if (_ghostAirportStationId != StationId::null && _ghostAirportStationId == placementArgs->stationId && _ghostAirportNode == placementArgs->airportNode)
             {
                 return;
             }
@@ -4660,7 +4641,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 args.head = head.id;
                 GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::ghost);
             }
-            _1136264 = -1;
+            _ghostTrackProgress = -1;
         }
 
         // 0x004B2A1D
@@ -4674,7 +4655,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            if (_1136264 != -1 && *_ghostLandTrackAndDirection == placementArgs->trackAndDirection && *_ghostVehiclePos == placementArgs->pos && *_1136264 == placementArgs->trackProgress)
+            if (_ghostTrackProgress != -1 && _ghostLandTrackAndDirection == placementArgs->trackAndDirection && _ghostVehiclePos == placementArgs->pos && _ghostTrackProgress == placementArgs->trackProgress)
             {
                 return;
             }
@@ -4684,7 +4665,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 _ghostLandTrackAndDirection = placementArgs->trackAndDirection;
                 _ghostVehiclePos = placementArgs->pos;
-                _1136264 = placementArgs->trackProgress;
+                _ghostTrackProgress = placementArgs->trackProgress;
             }
         }
 
@@ -4754,7 +4735,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            if (*_ghostAirportStationId == placementArgs->stationId && *_ghostAirportNode == placementArgs->airportNode)
+            if (_ghostAirportStationId == placementArgs->stationId && _ghostAirportNode == placementArgs->airportNode)
             {
                 if (head.tileX != -1 && head.has38Flags(Vehicles::Flags38::isGhost))
                 {
@@ -4786,7 +4767,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            if (_1136264 == 0 && *_ghostVehiclePos == placementArgs->pos)
+            if (_ghostTrackProgress == 0 && _ghostVehiclePos == placementArgs->pos)
             {
                 if (head.tileX != -1 && head.has38Flags(Vehicles::Flags38::isGhost))
                 {
@@ -4819,7 +4800,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            if (*_ghostLandTrackAndDirection == placementArgs->trackAndDirection && *_ghostVehiclePos == placementArgs->pos && *_1136264 == placementArgs->trackProgress)
+            if (_ghostLandTrackAndDirection == placementArgs->trackAndDirection && _ghostVehiclePos == placementArgs->pos && _ghostTrackProgress == placementArgs->trackProgress)
             {
                 if (head.tileX != -1 && head.has38Flags(Vehicles::Flags38::isGhost))
                 {
@@ -4922,7 +4903,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 args.push(StringIds::getVehicleType(vehicle->vehicleType)); // 0
                 args.skip(6);
                 args.push(StringIds::getVehicleType(vehicle->vehicleType)); // 8
-                TextInput::openTextInput(&self, StringIds::title_name_vehicle, StringIds::prompt_enter_new_vehicle_name, vehicle->name, widgetIndex, &vehicle->ordinalNumber);
+
+                FormatArgumentsBuffer buffer{};
+                auto args2 = FormatArguments(buffer);
+                args2.push(vehicle->ordinalNumber);
+                TextInput::openTextInput(&self, StringIds::title_name_vehicle, StringIds::prompt_enter_new_vehicle_name, vehicle->name, widgetIndex, args2);
             }
         }
 
@@ -4934,7 +4919,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             self.currentTab = widgetIndex - Common::widx::tabMain;
             self.frameNo = 0;
-            self.flags &= ~WindowFlags::flag_16;
+            self.flags &= ~WindowFlags::beingResized;
             self.var_85C = -1;
             self.viewportRemove(0);
 
@@ -5011,7 +4996,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 CursorId cursor = kTypeToToolCursor[static_cast<uint8_t>(head->vehicleType)][getGameState().pickupDirection != 0 ? 1 : 0];
                 if (ToolManager::toolSet(self, pickupWidx, cursor))
                 {
-                    _1136264 = -1;
+                    _ghostTrackProgress = -1;
                 }
                 return;
             }

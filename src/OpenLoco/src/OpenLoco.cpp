@@ -5,7 +5,6 @@
 #include <chrono>
 #include <cstring>
 #include <iostream>
-#include <setjmp.h>
 #include <string>
 #include <thread>
 #include <vector>
@@ -42,7 +41,6 @@
 #include "Gui.h"
 #include "Input.h"
 #include "Input/Shortcuts.h"
-#include "Interop/Hooks.h"
 #include "Intro.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/LanguageFiles.h"
@@ -71,20 +69,17 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
+#include "Version.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
 #include "World/IndustryManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Crash.h>
 #include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/Utility/String.hpp>
 
-#pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non - portable
-
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Input;
 using namespace OpenLoco::Diagnostics;
@@ -98,8 +93,8 @@ namespace OpenLoco
     static Timepoint _lastUpdate = Clock::now();
     static CrashHandler::Handle _exHandler = nullptr;
 
-    static loco_global<uint16_t, 0x0050C19C> _time_since_last_tick;
-    static loco_global<uint32_t, 0x0050C19E> _last_tick_time;
+    static uint16_t _time_since_last_tick; // 0x0050C19C
+    static uint32_t _last_tick_time;       // 0x0050C19E
 
     static int32_t _monthsSinceLastAutosave;
 
@@ -107,11 +102,6 @@ namespace OpenLoco
     static void tickLogic(int32_t count);
     static void tickLogic();
     static void dateTick();
-
-    std::string getVersionInfo()
-    {
-        return version;
-    }
 
     // 0x004BE621
     [[noreturn]] void exitWithError(StringId titleStringId, StringId messageStringId)
@@ -246,25 +236,32 @@ namespace OpenLoco
     static void launchGameFromCmdLineOptions()
     {
         const auto& cmdLineOptions = getCommandLineOptions();
-        if (cmdLineOptions.action == CommandLineAction::host)
+        try
         {
-            Network::openServer();
-            loadFile(cmdLineOptions.path);
-        }
-        else if (cmdLineOptions.action == CommandLineAction::join)
-        {
-            if (cmdLineOptions.port)
+            if (cmdLineOptions.action == CommandLineAction::host)
             {
-                Network::joinServer(cmdLineOptions.address, *cmdLineOptions.port);
+                Network::openServer();
+                loadFile(cmdLineOptions.path);
             }
-            else
+            else if (cmdLineOptions.action == CommandLineAction::join)
             {
-                Network::joinServer(cmdLineOptions.address);
+                if (cmdLineOptions.port)
+                {
+                    Network::joinServer(cmdLineOptions.address, *cmdLineOptions.port);
+                }
+                else
+                {
+                    Network::joinServer(cmdLineOptions.address);
+                }
+            }
+            else if (!cmdLineOptions.path.empty())
+            {
+                loadFile(cmdLineOptions.path);
             }
         }
-        else if (!cmdLineOptions.path.empty())
+        catch (const std::exception& e)
         {
-            loadFile(cmdLineOptions.path);
+            Logging::error("Unable to load park: {}", e.what());
         }
     }
 
@@ -337,9 +334,9 @@ namespace OpenLoco
                     {
                         numUpdates = 1;
                     }
-                    if (addr<0x00525324, int32_t>() == 1)
+                    if (Input::hasPendingMouseInputUpdate())
                     {
-                        addr<0x00525324, int32_t>() = 0;
+                        Input::clearPendingMouseInputUpdate();
                         numUpdates = 1;
                     }
                     else
@@ -419,9 +416,6 @@ namespace OpenLoco
         }
     }
 
-    static loco_global<int8_t, 0x0050C197> _loadErrorCode;
-    static loco_global<StringId, 0x0050C198> _loadErrorMessage;
-
     // 0x0046ABCB
     static void tickLogic()
     {
@@ -436,7 +430,10 @@ namespace OpenLoco
 
         recordTickStartPrng();
         World::TileManager::defragmentTilePeriodic();
-        addr<0x00F25374, uint8_t>() = Scenario::getOptions().madeAnyChanges;
+
+        // Back up the `madeAnyChanges` variable to ensure we only capture user changes
+        bool userMadeAnyChanges = Scenario::getOptions().madeAnyChanges;
+
         dateTick();
         World::TileManager::update();
         World::WaveManager::update();
@@ -451,21 +448,22 @@ namespace OpenLoco
         Audio::updateAmbientNoise();
         Title::update();
 
-        Scenario::getOptions().madeAnyChanges = addr<0x00F25374, uint8_t>();
-        if (_loadErrorCode != 0)
+        Scenario::getOptions().madeAnyChanges = userMadeAnyChanges;
+
+        auto& lastLoadError = S5::getLastLoadError();
+        if (lastLoadError.errorCode != 0)
         {
-            if (_loadErrorCode == -2)
+            if (lastLoadError.errorCode != -3)
             {
-                StringId title = _loadErrorMessage;
+                StringId title = lastLoadError.errorMessage;
                 StringId message = StringIds::null;
                 Ui::Windows::Error::open(title, message);
             }
             else
             {
-                auto objectList = S5::getObjectErrorList();
-                Ui::Windows::ObjectLoadError::open(objectList);
+                Ui::Windows::ObjectLoadError::open(lastLoadError.objectList);
             }
-            _loadErrorCode = 0;
+            S5::resetLastLoadError();
         }
     }
 
@@ -742,6 +740,11 @@ namespace OpenLoco
 #endif
     }
 
+    uint16_t getTimeSinceLastTick()
+    {
+        return _time_since_last_tick;
+    }
+
     void simulateGame(const fs::path& savePath, int32_t ticks)
     {
         Config::read();
@@ -777,27 +780,15 @@ namespace OpenLoco
         tickLogic(ticks);
     }
 
-    // 0x004078FE
-    static void generateSystemStats()
-    {
-        // Vanilla would actually query the system for this and would
-        // also get the system computer name for default multiplayer name.
-        // But there isn't much point nowadays to do this so lets just
-        // set it to a large fixed value.
-        // The value is only used by config to decide how many sounds
-        // to have active at once.
-        static loco_global<uint32_t, 0x0113E21C> _totalPhysicalMemory;
-        _totalPhysicalMemory = 0xFFFFFFFFU;
-    }
-
     // 0x00406D13
     static int main(const CommandLineOptions& options)
     {
         // Bootstrap the logging system.
         Logging::initialize(options.logLevels);
 
-        // Always print the product name and version first.
+        // Always print the product name, version, and platform info first.
         Logging::info("{}", OpenLoco::getVersionInfo());
+        Logging::info("{}", OpenLoco::getPlatformInfo());
 
         Environment::setLocale();
 
@@ -830,7 +821,6 @@ namespace OpenLoco
             Environment::resolvePaths();
 
             Ui::createWindow(cfg.display);
-            generateSystemStats();
             Audio::initialiseDSound();
             run();
             exitCleanly();

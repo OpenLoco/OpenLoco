@@ -17,15 +17,11 @@
 #include "World/CompanyManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Engine/World.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Paint
 {
-    static loco_global<uint8_t, 0x00522095> _byte_522095;
-
     namespace Style0
     {
         static void paintTrackAdditionPPMergeable(PaintSession& session, const World::TrackElement& elTrack, const uint8_t rotation, const ImageId baseImageId, const TrackPaintAdditionPiece& tppa)
@@ -242,7 +238,7 @@ namespace OpenLoco::Paint
     // 0x0049B6BF
     void paintTrack(PaintSession& session, const World::TrackElement& elTrack)
     {
-        if (elTrack.isAiAllocated())
+        if (elTrack.isAiAllocated() && !showAiPlanningGhosts())
         {
             return;
         }
@@ -277,15 +273,17 @@ namespace OpenLoco::Paint
         // This is an ImageId but it has no image index set!
         auto baseTrackImageColour = ImageId(0, CompanyManager::getCompanyColour(elTrack.owner()));
 
-        if (elTrack.isGhost())
+        if (elTrack.isGhost() || elTrack.isAiAllocated())
         {
             session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
             baseTrackImageColour = Gfx::applyGhostToImage(0);
+
+            // TODO: apply company colour if playerCompanyID != elTrack.owner()?
         }
 
         TrackPaintCommon trackSession{ baseTrackImageColour.withIndex(trackObj->image), baseTrackImageColour, trackObj->tunnel };
 
-        if (!(*_byte_522095 & (1 << 0)))
+        if (!session.skipTrackRoadSurfaces())
         {
             if (elTrack.trackId() < kTrackPaintParts.size() && elTrack.sequenceIndex() < kTrackPaintParts[elTrack.trackId()].size())
             {

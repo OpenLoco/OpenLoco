@@ -16,6 +16,7 @@
 #include "CompanyAi/AiCreateRoadAndStation.h"
 #include "CompanyAi/AiCreateTrackAndStation.h"
 #include "CompanyAi/AiTrackReplacement.h"
+#include "Config.h"
 #include "Docks/CreatePort.h"
 #include "Docks/RemovePort.h"
 #include "General/LoadSaveQuit.h"
@@ -98,22 +99,22 @@
 #include <cassert>
 
 using namespace OpenLoco::Ui;
-using namespace OpenLoco::World;
 
 namespace OpenLoco::GameCommands
 {
-    static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
-    static loco_global<uint8_t, 0x00508F08> _gameCommandNestLevel;
-
     static uint16_t _gameCommandFlags;
+    static uint8_t _gameCommandNestLevel = 0; // 0x00508F08
 
-    static loco_global<const TileElement*, 0x009C68D0> _9C68D0;
+    static CompanyId _updatingCompanyId;                                                      // 0x009C68EB
+    static const World::TileElement* _errorTileElementPtr = World::TileManager::kInvalidTile; // 0x009C68D0
+    static World::Pos3 _gGameCommandPosition;                                                 // 0x009C68E0
+    static StringId _gGameCommandErrorText;                                                   // 0x009C68E6
+    static StringId _gGameCommandErrorTitle;                                                  // 0x009C68E8
+    static bool _gGameCommandErrorSound = true;                                               // 0x00508F09
+    static ExpenditureType _gGameCommandExpenditureType;                                      // 0x009C68EA
+    static CompanyId _errorCompanyId;                                                         // 0x009C68EE
 
-    static loco_global<Pos3, 0x009C68E0> _gGameCommandPosition;
-    static loco_global<StringId, 0x009C68E6> _gGameCommandErrorText;
-    static loco_global<StringId, 0x009C68E8> _gGameCommandErrorTitle;
-    static loco_global<uint8_t, 0x009C68EA> _gGameCommandExpenditureType; // pre-multiplied by 4
-    static loco_global<CompanyId, 0x009C68EE> _errorCompanyId;
+    static LegacyReturnState _legacyReturnState; // 0x01136072
 
     using GameCommandFunc = void (*)(registers& regs);
 
@@ -438,15 +439,17 @@ namespace OpenLoco::GameCommands
 
         if (_gGameCommandErrorText != 0xFFFE)
         {
-            Windows::Error::open(_gGameCommandErrorTitle, _gGameCommandErrorText);
+            auto openError = _gGameCommandErrorSound ? Windows::Error::open : Windows::Error::openQuiet;
+            openError(_gGameCommandErrorTitle, _gGameCommandErrorText);
             return GameCommands::FAILURE;
         }
 
         // advanced errors
-        if (_9C68D0 != World::TileManager::kInvalidTile)
+        if (_errorTileElementPtr != World::TileManager::kInvalidTile)
         {
-            auto tile = *_9C68D0;
+            using namespace OpenLoco::World;
 
+            auto* tile = _errorTileElementPtr;
             switch (tile->type())
             {
                 case ElementType::track: // 4
@@ -536,7 +539,7 @@ namespace OpenLoco::GameCommands
         }
         _gGameCommandErrorText = 0xFFFEU;
         _errorCompanyId = company;
-        _9C68D0 = tile == nullptr ? World::TileManager::kInvalidTile : tile;
+        _errorTileElementPtr = tile == nullptr ? World::TileManager::kInvalidTile : tile;
         return false;
     }
 
@@ -548,6 +551,11 @@ namespace OpenLoco::GameCommands
     void setPosition(const World::Pos3& pos)
     {
         _gGameCommandPosition = pos;
+    }
+
+    void setErrorSound(bool state)
+    {
+        _gGameCommandErrorSound = state;
     }
 
     void setErrorText(const StringId message)
@@ -567,12 +575,12 @@ namespace OpenLoco::GameCommands
 
     ExpenditureType getExpenditureType()
     {
-        return ExpenditureType(_gGameCommandExpenditureType / 4);
+        return _gGameCommandExpenditureType;
     }
 
     void setExpenditureType(const ExpenditureType type)
     {
-        _gGameCommandExpenditureType = static_cast<uint8_t>(type) * 4;
+        _gGameCommandExpenditureType = type;
     }
 
     CompanyId getUpdatingCompanyId()
@@ -595,11 +603,22 @@ namespace OpenLoco::GameCommands
         _gameCommandNestLevel = 0;
     }
 
+    LegacyReturnState& getLegacyReturnState()
+    {
+        return _legacyReturnState;
+    }
+
     // TODO: Maybe move this somewhere else used by multiple game commands
     // 0x0048B013
     void playConstructionPlacementSound(World::Pos3 pos)
     {
         const auto frequency = gPrng2().randNext(17955, 26146);
         Audio::playSound(Audio::SoundId::construct, pos, 0, frequency);
+    }
+
+    // TODO: Maybe move this somewhere else used by multiple game commands
+    bool shouldInvalidateTile(uint8_t flags)
+    {
+        return !(flags & Flags::aiAllocated) && Config::get().showAiPlanningAsGhosts;
     }
 }

@@ -332,7 +332,7 @@ void NetworkClient::sendChatMessage(std::string_view message)
     }
 }
 
-void NetworkClient::sendGameCommand(CompanyId company, const OpenLoco::Interop::registers& regs)
+void NetworkClient::sendGameCommand(CompanyId company, const OpenLoco::GameCommands::registers& regs)
 {
     if (_serverConnection != nullptr && _status == NetworkClientStatus::connected)
     {

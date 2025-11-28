@@ -38,9 +38,6 @@
 #include "Ui/WindowManager.h"
 #include "World/IndustryManager.h"
 #include <OpenLoco/Engine/World.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::IndustryList
 {
@@ -50,8 +47,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
     static World::Pos2 _industryGhostPos;       // 0x00E0C3C2
     static uint8_t _industryGhostType;          // 0x00E0C3DA
     static IndustryId _industryGhostId;         // 0x00E0C3DB
-
-    static loco_global<IndustryId, 0x00E0C3C9> _industryLastPlacedId;
 
     namespace Common
     {
@@ -107,7 +102,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             Widgets::TableHeader({ 444, 44 }, { 159, 11 }, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_production_transported),
             Widgets::TableHeader({ 603, 44 }, { 159, 11 }, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_production_last_month),
             Widgets::ScrollView({ 3, 56 }, { 593, 125 }, WindowColour::secondary, Scrollbars::vertical),
-            Widgets::Label({ 4, kWindowSize.height - 17 }, { kWindowSize.width, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
+            Widgets::Label({ 4, kWindowSize.height - 17 }, { kWindowSize.width - kResizeHandleSize, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
 
         );
 
@@ -126,6 +121,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             self.widgets[widx::scrollview].right = self.width - 4;
             self.widgets[widx::scrollview].bottom = self.height - 14;
+            self.widgets[widx::status_bar].right = self.width - kResizeHandleSize - 1;
 
             // Reposition header buttons.
             self.widgets[widx::sort_industry_name].right = std::min(self.width - 4, 203);
@@ -634,7 +630,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 WindowType::industryList,
                 origin,
                 IndustryList::kWindowSize,
-                WindowFlags::flag_8,
+                WindowFlags::viewportNoShiftPixels,
                 IndustryList::getEvents());
 
             window->number = 0;
@@ -646,7 +642,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             Common::refreshIndustryList(window);
 
-            WindowManager::sub_4CEE0B(*window);
+            WindowManager::moveOtherWindowsDown(*window);
 
             window->minWidth = IndustryList::kMinDimensions.width;
             window->minHeight = IndustryList::kMinDimensions.height;
@@ -1023,7 +1019,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
             auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 4);
             drawingCtx.clearSingle(shade);
 
-            loco_global<uint16_t, 0x00E0C3C6> _word_E0C3C6;
             uint16_t xPos = 0;
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < self.var_83C; i++)
@@ -1043,18 +1038,15 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     break;
                 }
 
-                _word_E0C3C6 = 0xFFFF;
                 if (self.rowInfo[i] != self.rowHover)
                 {
                     if (self.rowInfo[i] == self.var_846)
                     {
-                        _word_E0C3C6 = AdvancedColour::translucentFlag;
                         drawingCtx.drawRectInset(xPos, yPos, kRowHeight, kRowHeight, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::colourLight);
                     }
                 }
                 else
                 {
-                    _word_E0C3C6 = AdvancedColour::translucentFlag | AdvancedColour::outlineFlag;
                     drawingCtx.drawRectInset(xPos, yPos, kRowHeight, kRowHeight, self.getColour(WindowColour::secondary), (Gfx::RectInsetFlags::colourLight | Gfx::RectInsetFlags::borderInset));
                 }
 
@@ -1110,7 +1102,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             }
             _industryGhostPos = placementArgs.pos;
             _industryGhostType = placementArgs.type;
-            _industryGhostId = _industryLastPlacedId;
+            _industryGhostId = GameCommands::getLegacyReturnState().lastPlacedIndustryId;
             _industryGhostPlaced = true;
             return res;
         }
@@ -1410,7 +1402,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             self.currentTab = widgetIndex - widx::tab_industry_list;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
 
             self.viewportRemove(0);
 

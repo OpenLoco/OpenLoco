@@ -13,6 +13,7 @@ namespace OpenLoco
 
         ValueType value;
         constexpr ValueType getRaw() const { return value; }
+        constexpr SpeedTemplate() = default;
         constexpr explicit SpeedTemplate(ValueType val)
             : value(val)
         {

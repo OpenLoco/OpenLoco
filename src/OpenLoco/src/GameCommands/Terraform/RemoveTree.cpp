@@ -13,8 +13,6 @@
 #include "ViewportManager.h"
 #include "World/TownManager.h"
 
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::GameCommands
 {
     /**

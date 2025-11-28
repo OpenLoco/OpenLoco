@@ -2,8 +2,6 @@
 #include "GameCommands/GameCommands.h"
 #include "World/CompanyManager.h"
 
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::GameCommands
 {
     // 0x004383CA

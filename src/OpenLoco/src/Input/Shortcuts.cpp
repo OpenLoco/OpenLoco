@@ -16,11 +16,9 @@
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <array>
 #include <unordered_map>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 
 namespace OpenLoco::Input::Shortcuts
@@ -411,7 +409,7 @@ namespace OpenLoco::Input::Shortcuts
             return;
         }
 
-        Windows::BuildVehicle::open(enumValue(getGameState().lastBuildVehiclesOption), 1U << 31);
+        Windows::BuildVehicle::openByType(getGameState().lastBuildVehiclesOption);
     }
 
     // 0x004BF2D1

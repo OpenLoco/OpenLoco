@@ -22,7 +22,6 @@
 #include "World/StationManager.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Diagnostics/Logging.h>
-
 #include <sfl/static_vector.hpp>
 #include <sstream>
 
@@ -502,10 +501,10 @@ namespace OpenLoco::Vehicles::OrderManager
                     // Find the vehicle that has the order
                     for (auto* head : VehicleManager::VehicleList())
                     {
-                        if (head->orderTableOffset >= i
+                        if (head->orderTableOffset < i
                             && i < head->orderTableOffset + head->sizeOfOrderTable)
                         {
-                            deleteOrder(head, i);
+                            deleteOrder(head, i - head->orderTableOffset);
                             break;
                         }
                     }

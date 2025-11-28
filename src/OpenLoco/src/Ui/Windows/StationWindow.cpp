@@ -36,16 +36,13 @@
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/String.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui::Windows::Station
 {
-    static loco_global<uint8_t[kMapSize], 0x00F00484> _byte_F00484;
-    static loco_global<StationId, 0x00112C786> _lastSelectedStation;
+    static StationId _lastSelectedStation; // 0x0112C786
 
     using Vehicles::VehicleHead;
 
@@ -258,7 +255,7 @@ namespace OpenLoco::Ui::Windows::Station
                 }
             }
             // Remove station names from viewport
-            flags |= ViewportFlags::station_names_displayed;
+            flags |= ViewportFlags::hideStationNames;
 
             self.savedView = view;
 
@@ -320,7 +317,7 @@ namespace OpenLoco::Ui::Windows::Station
         if (window == nullptr)
         {
             // 0x0048F29F start
-            const WindowFlags newFlags = WindowFlags::resizable | WindowFlags::flag_11;
+            const WindowFlags newFlags = WindowFlags::resizable | WindowFlags::lighterFrame;
             window = WindowManager::createWindow(WindowType::station, Station::kWindowSize, newFlags, Station::getEvents());
             window->number = enumValue(stationId);
             auto station = StationManager::get(stationId);
@@ -847,7 +844,7 @@ namespace OpenLoco::Ui::Windows::Station
                     continue;
                 }
 
-                vehicle->vehicleFlags &= ~VehicleFlags::sorted;
+                vehicle->vehicleFlags &= ~Vehicles::VehicleFlags::sorted;
             }
         }
 
@@ -882,7 +879,7 @@ namespace OpenLoco::Ui::Windows::Station
                     continue;
                 }
 
-                if (vehicle->hasVehicleFlags(VehicleFlags::sorted))
+                if (vehicle->hasVehicleFlags(Vehicles::VehicleFlags::sorted))
                 {
                     continue;
                 }
@@ -919,7 +916,7 @@ namespace OpenLoco::Ui::Windows::Station
                     refreshVehicleList(self);
                     return;
                 }
-                vehicle->vehicleFlags |= VehicleFlags::sorted;
+                vehicle->vehicleFlags |= Vehicles::VehicleFlags::sorted;
 
                 if (vehicle->id != EntityId(self->rowInfo[self->rowCount]))
                 {
@@ -1209,7 +1206,7 @@ namespace OpenLoco::Ui::Windows::Station
 
         for (uint32_t posId = 0; posId < kMapSize; posId++)
         {
-            if (_byte_F00484[posId] & (1 << 0))
+            if (isWithinCatchmentDisplay(tileLoop.current()))
             {
                 TileManager::mapInvalidateTileFull(tileLoop.current());
             }
@@ -1392,7 +1389,10 @@ namespace OpenLoco::Ui::Windows::Station
             args.push(station->name);
             args.push(station->town);
 
-            TextInput::openTextInput(self, StringIds::title_station_name, StringIds::prompt_type_new_station_name, station->name, widgetIndex, &station->town);
+            FormatArgumentsBuffer buffer{};
+            auto args2 = FormatArguments(buffer);
+            args2.push(station->town);
+            TextInput::openTextInput(self, StringIds::title_station_name, StringIds::prompt_type_new_station_name, station->name, widgetIndex, args2);
         }
 
         // 0x0048E520
@@ -1415,7 +1415,7 @@ namespace OpenLoco::Ui::Windows::Station
 
             self.currentTab = widgetIndex - widx::tab_station;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
             self.var_85C = -1;
 
             self.viewportRemove(0);

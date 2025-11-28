@@ -49,7 +49,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
         auto window = WindowManager::createWindowCentred(
             WindowType::networkStatus,
             kWindowSize,
-            WindowFlags::flag_11 | WindowFlags::stickToFront,
+            WindowFlags::lighterFrame | WindowFlags::stickToFront,
             getEvents());
 
         window->setWidgets(widgets);

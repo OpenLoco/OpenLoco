@@ -15,9 +15,6 @@
 #include "World/IndustryManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::MessageManager
 {
@@ -69,7 +66,7 @@ namespace OpenLoco::MessageManager
                 }
             }
         }
-        if (getNumMessages() > Limits::kMaxMessages)
+        if (getNumMessages() >= Limits::kMaxMessages)
         {
             MessageId oldestMessage = MessageId::null;
             int32_t oldest = -1;

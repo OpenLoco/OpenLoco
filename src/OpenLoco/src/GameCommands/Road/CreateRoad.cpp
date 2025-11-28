@@ -30,12 +30,6 @@ namespace OpenLoco::GameCommands
     using namespace World::TileManager;
     using namespace World::Track;
 
-    static loco_global<uint8_t, 0x0112C2E9> _alternateTrackObjectId; // used by ui
-    static loco_global<ElementPositionFlags, 0x01136072> _byte_1136072;
-    static loco_global<uint8_t, 0x01136073> _byte_1136073;
-    static loco_global<World::MicroZ, 0x01136074> _byte_1136074;
-    static loco_global<uint8_t, 0x01136075> _byte_1136075; // bridgeType of any overlapping track
-
     // TODO: Identical to createTrack function
     static bool isBridgeRequired(const World::SmallZ baseZ, const World::SurfaceElement& elSurface, const World::TrackData::PreviewTrack& piece, const uint8_t unk)
     {
@@ -93,7 +87,7 @@ namespace OpenLoco::GameCommands
     {
         if (elTrack.hasBridge())
         {
-            _byte_1136075 = elTrack.bridge();
+            getLegacyReturnState().byte_1136075 = elTrack.bridge();
             auto* bridgeObj = ObjectManager::get<BridgeObject>(elTrack.bridge());
             if ((bridgeObj->disabledTrackCfg & CommonTraitFlags::junction) != CommonTraitFlags::none)
             {
@@ -145,7 +139,7 @@ namespace OpenLoco::GameCommands
 
         auto res = RoadClearFunctionResult(World::TileClearance::ClearFuncResult::noCollision);
         res.hasLevelCrossing = true;
-        _byte_1136073 = _byte_1136073 | (1U << 2);
+        getLegacyReturnState().flags_1136073 |= (1U << 2);
 
         if (!(args.flags & (Flags::aiAllocated | Flags::ghost))
             && (args.flags & Flags::apply))
@@ -263,12 +257,12 @@ namespace OpenLoco::GameCommands
     {
         if (!elRoad.isGhost() && !elRoad.isAiAllocated())
         {
-            _byte_1136073 = _byte_1136073 | (1U << 6);
+            getLegacyReturnState().flags_1136073 |= (1U << 6);
         }
 
         if (elRoad.hasBridge())
         {
-            _byte_1136075 = elRoad.bridge();
+            getLegacyReturnState().byte_1136075 = elRoad.bridge();
         }
 
         const auto& targetPiece = World::TrackData::getRoadPiece(elRoad.roadId())[elRoad.sequenceIndex()];
@@ -310,7 +304,7 @@ namespace OpenLoco::GameCommands
             {
                 if (isPotentialOverlayRoad(elRoad, args))
                 {
-                    _byte_1136073 = _byte_1136073 | (1U << 5);
+                    getLegacyReturnState().flags_1136073 |= (1U << 5);
                     if (elRoad.roadObjectId() != args.roadObjectId)
                     {
                         confirmedOverlay = true;
@@ -347,7 +341,7 @@ namespace OpenLoco::GameCommands
             res.levelCrossingObjId = elRoad.levelCrossingObjectId();
         }
 
-        _alternateTrackObjectId = elRoad.roadObjectId();
+        getLegacyReturnState().alternateRoadObjectId = elRoad.roadObjectId();
 
         if (elRoad.hasSignalElement())
         {
@@ -446,7 +440,7 @@ namespace OpenLoco::GameCommands
 
         if (isExactOverlay)
         {
-            _byte_1136073 = _byte_1136073 | (1U << 5);
+            getLegacyReturnState().flags_1136073 |= (1U << 5);
             if (elRoad.roadObjectId() == args.roadObjectId)
             {
                 // 0x004773BC
@@ -493,7 +487,7 @@ namespace OpenLoco::GameCommands
                 return res;
             }
             // 0x004773A5
-            _byte_1136073 = _byte_1136073 | (1U << 5);
+            getLegacyReturnState().flags_1136073 |= (1U << 5);
             if (elRoad.roadObjectId() == args.roadObjectId)
             {
                 // 0x004773BC
@@ -581,7 +575,7 @@ namespace OpenLoco::GameCommands
                 {
                     return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::noCollision);
                 }
-                _byte_1136073 = _byte_1136073 | (1U << 4);
+                getLegacyReturnState().flags_1136073 |= (1U << 4);
                 return RoadClearFunctionResult(World::TileClearance::clearBuildingCollision(*elBuilding, args.pos, removedBuildings, args.flags, totalCost));
             }
             case World::ElementType::tree:
@@ -615,11 +609,13 @@ namespace OpenLoco::GameCommands
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3{ 16, 16, 0 });
-        _byte_1136072 = ElementPositionFlags::none;
-        _byte_1136073 = 0; // Bridge related
-        _byte_1136074 = 0;
-        _byte_1136075 = 0xFFU;
-        _alternateTrackObjectId = 0xFFU;
+
+        auto& returnState = getLegacyReturnState();
+        returnState.flags_1136072 = ElementPositionFlags::none;
+        returnState.flags_1136073 = 0; // Bridge related
+        returnState.byte_1136074 = 0;
+        returnState.byte_1136075 = 0xFFU;
+        returnState.alternateRoadObjectId = 0xFFU;
 
         const auto companyId = SceneManager::isEditorMode() ? CompanyId::neutral : getUpdatingCompanyId();
 
@@ -696,7 +692,7 @@ namespace OpenLoco::GameCommands
 
             const auto baseZ = roadLoc.z / World::kSmallZStep;
             auto clearZ = baseZ + (piece.clearZ + 32) / World::kSmallZStep;
-            _byte_1136073 = _byte_1136073 & ~(1U << 1);
+            returnState.flags_1136073 &= ~(1U << 1);
 
             // Why aren't we just failing invalid???
             if (World::validCoords(roadLoc))
@@ -705,14 +701,14 @@ namespace OpenLoco::GameCommands
                 auto* elSurface = tile.surface();
                 if (elSurface->water())
                 {
-                    _byte_1136073 = _byte_1136073 | (1U << 7);
+                    returnState.flags_1136073 |= (1U << 7);
                 }
 
                 const bool requiresBridge = isBridgeRequired(baseZ, *elSurface, piece, unk);
                 if (requiresBridge)
                 {
                     // 0x004762CD
-                    _byte_1136073 = _byte_1136073 | (1U << 1) | (1U << 0);
+                    returnState.flags_1136073 |= (1U << 1) | (1U << 0);
                     World::MicroZ heightDiff = (baseZ - elSurface->baseZ()) / World::kMicroToSmallZStep;
                     if (args.bridge == 0xFFU)
                     {
@@ -725,7 +721,7 @@ namespace OpenLoco::GameCommands
                         setErrorText(StringIds::too_far_above_ground_for_bridge_type);
                         return FAILURE;
                     }
-                    _byte_1136074 = std::max(heightDiff, *_byte_1136074);
+                    returnState.byte_1136074 = std::max(heightDiff, returnState.byte_1136074);
                     if ((bridgeObj->disabledTrackCfg & World::TrackData::getRoadMiscData(args.roadId).flags) != CommonTraitFlags::none)
                     {
                         setErrorText(StringIds::bridge_type_unsuitable_for_this_configuration);
@@ -802,12 +798,12 @@ namespace OpenLoco::GameCommands
 
             // Abridged flags for just above/underground
             const auto newGroundFlags = posFlags & (ElementPositionFlags::aboveGround | ElementPositionFlags::underground);
-            if (_byte_1136072 != ElementPositionFlags::none && (*_byte_1136072 & newGroundFlags) == ElementPositionFlags::none)
+            if (returnState.flags_1136072 != ElementPositionFlags::none && (returnState.flags_1136072 & newGroundFlags) == ElementPositionFlags::none)
             {
                 setErrorText(StringIds::cant_build_partly_above_partly_below_ground);
                 return FAILURE;
             }
-            _byte_1136072 = newGroundFlags;
+            returnState.flags_1136072 = newGroundFlags;
 
             if ((posFlags & ElementPositionFlags::partiallyUnderwater) != ElementPositionFlags::none)
             {
@@ -858,7 +854,7 @@ namespace OpenLoco::GameCommands
                 newElRoad->setUnk7_40(true);
             }
             newElRoad->setBridgeObjectId(args.bridge);
-            newElRoad->setHasBridge(_byte_1136073 & (1U << 1));
+            newElRoad->setHasBridge(returnState.flags_1136073 & (1U << 1));
             if (hasLevelCrossing && !(flags & Flags::aiAllocated))
             {
                 newElRoad->setHasLevelCrossing(true);
@@ -873,7 +869,7 @@ namespace OpenLoco::GameCommands
             newElRoad->setFlag6(piece.index == (roadPieces.size() - 1));
             newElRoad->setGhost(flags & Flags::ghost);
             newElRoad->setAiAllocated(flags & Flags::aiAllocated);
-            if (!(flags & Flags::aiAllocated))
+            if (shouldInvalidateTile(flags))
             {
                 World::TileManager::mapInvalidateTileFull(roadLoc);
             }
@@ -927,7 +923,7 @@ namespace OpenLoco::GameCommands
                         }
                     }
                     newElRoad->setBridgeObjectId(args.bridge);
-                    newElRoad->setHasBridge(_byte_1136073 & (1U << 1));
+                    newElRoad->setHasBridge(getLegacyReturnState().flags_1136073 & (1U << 1));
 
                     newElRoad->setFlag6(true);
                     newElRoad->setGhost(flags & Flags::ghost);
@@ -1081,20 +1077,20 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        if ((_byte_1136073 & (1U << 0)) && !(_byte_1136073 & (1U << 6)))
+        if ((returnState.flags_1136073 & (1U << 0)) && !(returnState.flags_1136073 & (1U << 6)))
         {
             auto* bridgeObj = ObjectManager::get<BridgeObject>(args.bridge);
-            const auto heightCost = _byte_1136074 * bridgeObj->heightCostFactor;
+            const auto heightCost = returnState.byte_1136074 * bridgeObj->heightCostFactor;
             const auto bridgeBaseCost = Economy::getInflationAdjustedCost(bridgeObj->baseCostFactor + heightCost, bridgeObj->costIndex, 10);
             auto cost = (bridgeBaseCost * World::TrackData::getRoadMiscData(args.roadId).costFactor) / 256;
-            if (_byte_1136073 & (1U << 7))
+            if (returnState.flags_1136073 & (1U << 7))
             {
                 cost *= 2;
             }
             totalCost += cost;
         }
 
-        if (((_byte_1136072 & ElementPositionFlags::underground) != ElementPositionFlags::none) && !(_byte_1136073 & (1U << 6)))
+        if (((returnState.flags_1136072 & ElementPositionFlags::underground) != ElementPositionFlags::none) && !(returnState.flags_1136073 & (1U << 6)))
         {
             const auto tunnelBaseCost = Economy::getInflationAdjustedCost(roadObj->tunnelCostFactor, 2, 8);
             auto cost = (tunnelBaseCost * World::TrackData::getTrackMiscData(args.roadId).costFactor) / 256;

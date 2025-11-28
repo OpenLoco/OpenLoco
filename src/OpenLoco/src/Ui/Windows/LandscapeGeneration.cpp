@@ -37,10 +37,8 @@
 #include "World/IndustryManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Diagnostics/Logging.h>
-#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Diagnostics;
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::LandscapeGeneration
 {
@@ -514,10 +512,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 case widx::browseHeightmapFile:
                 {
-                    if (Game::loadHeightmapOpen())
+                    if (auto res = Game::loadHeightmapOpen())
                     {
-                        static loco_global<char[512], 0x0112CE04> _savePath;
-                        World::MapGenerator::setPngHeightmapPath(fs::u8path(&*_savePath));
+                        World::MapGenerator::setPngHeightmapPath(fs::u8path(*res));
                         window.invalidate();
                     }
                     break;
@@ -1622,7 +1619,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             self.currentTab = widgetIndex - widx::tab_options;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
             self.disabledWidgets = 0;
 
             static const uint64_t* holdableWidgetsByTab[] = {
