@@ -54,10 +54,18 @@ namespace OpenLoco::Localisation
         constexpr uint8_t s_acute = 248;  // 0xF8
         constexpr uint8_t z_dot = 253;    // 0xFD
         constexpr uint8_t z_acute = 254;  // 0xFE
+
+        // Fallback for unsupported characters
+        constexpr uint8_t replacement_character = '?';
     };
 
     namespace UnicodeChar
     {
+        constexpr utf32_t curly_bracket_open = 123;
+        constexpr utf32_t vertical_line = 124;
+        constexpr utf32_t curly_bracket_close = 125;
+        constexpr utf32_t tilde = 126;
+
         // Polish characters
         constexpr utf32_t a_ogonek_uc = 260;
         constexpr utf32_t a_ogonek = 261;
