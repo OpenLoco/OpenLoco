@@ -785,16 +785,14 @@ target_link_libraries(OpenLoco
     ${PNG_LIBRARY}
     ${OPENAL_LIBRARIES})
 
-if (TARGET SDL2::SDL2main)
-    target_link_libraries(OpenLoco SDL2::SDL2main)
-endif ()
 if (WIN32)
     target_link_libraries(OpenLoco winmm ws2_32 Resources)
 endif ()
 
 target_compile_definitions(OpenLoco
-        PRIVATE
-            DEBUG=${DEBUG_LEVEL}
+    PRIVATE
+        DEBUG=${DEBUG_LEVEL}
+        SDL_MAIN_HANDLED
  )
 if (MINGW)
     target_link_libraries(OpenLoco imm32 version)
