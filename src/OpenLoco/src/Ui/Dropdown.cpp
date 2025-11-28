@@ -15,12 +15,10 @@
 #include "Window.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Core/Exception.hpp>
-
 #include <cassert>
 #include <cstdarg>
 #include <limits>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Ui::Dropdown

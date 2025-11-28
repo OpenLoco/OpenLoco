@@ -18,7 +18,6 @@
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 
 namespace OpenLoco::GameCommands

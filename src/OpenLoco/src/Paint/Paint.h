@@ -6,7 +6,6 @@
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Engine/Ui/Point.hpp>
 #include <OpenLoco/Engine/World.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <array>
 #include <sfl/static_vector.hpp>
 #include <span>
@@ -152,7 +151,6 @@ namespace OpenLoco::Paint
         Ui::Point vpPos;
         World::Pos2 mapPos;
         uint16_t quadrantIndex;
-        uint16_t pad_2A;
         uint8_t modId; // used for track mods and signal sides
         PaintStructFlags flags;
         QuadrantFlags quadrantFlags;
@@ -181,8 +179,6 @@ namespace OpenLoco::Paint
     struct BridgeEntry
     {
         ImageId imageBase;     // 0x00525CF2
-        uint32_t padImage1;    // 0x00525CE8 used only in bridge paint here just to keep struct size
-        uint32_t padImage2;    // 0x00525CEC used only in bridge paint here just to keep struct size
         uint16_t subType;      // 0x00525CE6
         int16_t height;        // 0x00525CE4
         uint8_t edgesQuarters; // 0x00525CF0
@@ -191,8 +187,6 @@ namespace OpenLoco::Paint
         constexpr BridgeEntry() = default;
         constexpr BridgeEntry(coord_t _height, uint8_t _subType, uint8_t edges, uint8_t quarters, uint8_t _objectId, ImageId _imageBase)
             : imageBase(_imageBase)
-            , padImage1(0)
-            , padImage2(0)
             , subType(_subType)
             , height(_height)
             , edgesQuarters((edges << 4U) | quarters)
@@ -447,7 +441,6 @@ namespace OpenLoco::Paint
 
             PaintEntry() {}
         };
-        assert_struct_size(PaintEntry, 0x34);
 
         // Do not null-initialize this, its too expensive, this is storage.
         sfl::static_vector<PaintEntry, kMaxPaintEntries> _paintEntries;

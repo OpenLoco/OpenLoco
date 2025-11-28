@@ -19,10 +19,8 @@
 #include "Ui/Widgets/TextBoxWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-#include <SDL2/SDL.h>
 
-using namespace OpenLoco::Interop;
+#include <SDL2/SDL.h>
 
 namespace OpenLoco::Ui::Windows::TextInput
 {
@@ -85,7 +83,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         auto window = WindowManager::createWindowCentred(
             WindowType::textInput,
             { 330, 90 },
-            WindowFlags::stickToFront | WindowFlags::flag_12,
+            WindowFlags::stickToFront | WindowFlags::playSoundOnOpen,
             getEvents());
         window->setWidgets(_widgets);
         window->initScrollWidgets();
@@ -123,7 +121,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         window->widgets[Widx::title].styleData = enumValue(Widgets::Caption::Style::whiteText);
         if (window->owner != CompanyId::null)
         {
-            window->flags |= WindowFlags::flag_11;
+            window->flags |= WindowFlags::lighterFrame;
             window->widgets[Widx::title].styleData = enumValue(Widgets::Caption::Style::colourText);
         }
 

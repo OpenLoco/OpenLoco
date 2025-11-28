@@ -1936,8 +1936,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             cState.constructionArrowFrameNum = 5;
             Common::toggleGhostVisibilityFlag(GhostVisibilityFlags::constructArrow);
-            setConstructionArrow({ World::Pos3(cState.x, cState.y, cState.constructionZ),
-                                   cState.constructionRotation });
+            setConstructionArrow({ World::Pos3(cState.x, cState.y, cState.constructionZ), cState.constructionRotation });
             World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstructionArrow);
             if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::constructArrow))
             {
@@ -1959,7 +1958,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             return;
         }
-        if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::track))
+        if (!Common::hasGhostVisibilityFlag(GhostVisibilityFlags::track))
         {
             auto& returnState = GameCommands::getLegacyReturnState();
             if (cState.trackType & (1 << 7))

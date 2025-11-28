@@ -14,7 +14,6 @@
 #include "Objects/ObjectManager.h"
 #include "ScenarioOptions.h"
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 using namespace OpenLoco::World::SurfaceSlope;
 

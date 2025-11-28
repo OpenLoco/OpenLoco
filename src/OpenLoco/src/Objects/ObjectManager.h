@@ -58,6 +58,8 @@ namespace OpenLoco
      * a specific object type. DO NOT USE
      */
     using LoadedObjectIndex = size_t;
+
+    enum class LandObjectFlags : uint8_t;
 }
 
 namespace OpenLoco::ObjectManager
@@ -196,6 +198,8 @@ namespace OpenLoco::ObjectManager
 
     void updateTerraformObjects();
     void updateLastTrackTypeOption();
+
+    std::span<LandObjectFlags> getLandObjectFlagsCache();
 
     // Calls function with the handle (LoadedObjectHandle) of each loaded object
     template<typename Function>

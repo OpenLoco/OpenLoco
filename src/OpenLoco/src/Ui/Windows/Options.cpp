@@ -39,10 +39,8 @@
 #include "Ui/Widgets/StepperWidget.h"
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-#include <cassert>
 
-using namespace OpenLoco::Interop;
+#include <cassert>
 
 namespace OpenLoco::Ui::Windows::Options
 {
@@ -2664,7 +2662,7 @@ namespace OpenLoco::Ui::Windows::Options
         TextInput::sub_4CE6C9(w->type, w->number);
         w->currentTab = wi - Common::Widx::tab_display;
         w->frameNo = 0;
-        w->flags &= ~(WindowFlags::flag_16);
+        w->flags &= ~(WindowFlags::beingResized);
         w->disabledWidgets = 0;
         w->holdableWidgets = 0;
         w->activatedWidgets = 0;

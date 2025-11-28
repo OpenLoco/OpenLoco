@@ -10,7 +10,6 @@
 #include "World/CompanyManager.h"
 #include <OpenLoco/Math/Trigonometry.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Vehicles;
 
 namespace OpenLoco::Paint

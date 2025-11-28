@@ -24,7 +24,6 @@ target_link_libraries(Engine
         Core
         Diagnostics
         Utility
-        Interop
         Math
         Gfx
 )

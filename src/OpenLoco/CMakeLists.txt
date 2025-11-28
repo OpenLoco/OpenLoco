@@ -169,7 +169,6 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input/Keyboard.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input/MouseInput.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input/Shortcuts.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Interop/Hooks.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Intro.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Jukebox.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/Conversion.cpp"
@@ -549,7 +548,6 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Gui.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input/Shortcuts.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Interop/Hooks.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Intro.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Jukebox.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/LabelFrame.h"
@@ -784,18 +782,6 @@ else ()
             PRIVATE_FILES
                 ${OLOCO_SOURCES}
         )
-        add_dependencies(OpenLoco linkable_sections)
-        # set_source_files_properties has to be set in the CMakeLists that uses them
-        set_source_files_properties(
-            ${LOCO_SECTIONS}
-            PROPERTIES
-            EXTERNAL_OBJECT true
-            GENERATED true
-        )
-        target_sources(OpenLoco
-            PRIVATE
-                ${LOCO_SECTIONS})
-        set_target_properties(OpenLoco PROPERTIES LINK_FLAGS ${LOCO_SEGMENT_LINKER_FLAGS})
 
         if (TARGET SDL2::SDL2main)
             target_link_libraries(OpenLoco SDL2::SDL2main)
@@ -807,7 +793,6 @@ target_link_libraries(OpenLoco
     Core
     Diagnostics
     Platform
-    Interop
     Utility
     Math
     Engine
@@ -823,10 +808,6 @@ if (WIN32)
     # Loco.exe is looking for openloco.dll. Remove this when standalone.
     set_target_properties(OpenLoco PROPERTIES OUTPUT_NAME "openloco")
 endif ()
-
-if (NOT WIN32)
-    add_dependencies(OpenLoco segfiles)
-endif()
 
 if (MINGW)
     target_compile_definitions(OpenLoco
@@ -849,16 +830,15 @@ elseif (MSVC)
 else ()
     target_compile_definitions(OpenLoco
         PRIVATE
-            DEBUG=${DEBUG_LEVEL}
-            _NO_LOCO_WIN32_=1)
+            DEBUG=${DEBUG_LEVEL})
 endif()
 
-if (APPLE AND FALSE) # TODO: This is broken after moving resources into src/Resources
+if (APPLE)
     target_link_libraries(OpenLoco "-framework Cocoa")
 
     set_target_properties(OpenLoco PROPERTIES
         MACOSX_BUNDLE ON
-        MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/distribution/macos/Info.plist.in)
+        MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/distribution/macos/Info.plist.in)
 
     set(MACOSX_BUNDLE_BUNDLE_NAME "OpenLoco")
     set(MACOSX_BUNDLE_BUNDLE_VERSION "${OPENRCT2_COMMIT_SHA1_SHORT}")
@@ -876,10 +856,10 @@ if (APPLE AND FALSE) # TODO: This is broken after moving resources into src/Reso
 
     find_program(ICONUTIL iconutil)
     if (ICONUTIL)
-        file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/distribution/macos/AppIcon.iconset DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+        file(COPY ${CMAKE_SOURCE_DIR}/distribution/macos/AppIcon.iconset DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
         set(ICON_TARGET "${CMAKE_CURRENT_BINARY_DIR}/AppIcon.iconset")
         set(ICON_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/AppIcon.icns")
-        set(SOURCE_ICON_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources/logo")
+        set(SOURCE_ICON_DIR "${CMAKE_SOURCE_DIR}/src/Resources/src/logo")
         add_custom_command(OUTPUT ${ICON_OUTPUT}
                 COMMAND cp icon_x16.png ${ICON_TARGET}/icon_16x16.png
                 COMMAND cp icon_x32.png ${ICON_TARGET}/icon_16x16@2x.png
@@ -896,12 +876,12 @@ if (APPLE AND FALSE) # TODO: This is broken after moving resources into src/Reso
         list(APPEND BUNDLE_RESOURCES ${ICON_OUTPUT})
     endif ()
 
-    list(APPEND BUNDLE_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/CHANGELOG.md)
-    list(APPEND BUNDLE_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/CONTRIBUTORS.md)
+    list(APPEND BUNDLE_RESOURCES ${CMAKE_SOURCE_DIR}/CHANGELOG.md)
+    list(APPEND BUNDLE_RESOURCES ${CMAKE_SOURCE_DIR}/CONTRIBUTORS.md)
     set_target_properties(OpenLoco PROPERTIES RESOURCE "${BUNDLE_RESOURCES}")
     target_sources(OpenLoco PUBLIC ${BUNDLE_RESOURCES})
 
-    file(GLOB BUNDLE_LANGUAGES "${CMAKE_CURRENT_SOURCE_DIR}/data/language/*")
+    file(GLOB BUNDLE_LANGUAGES "${CMAKE_SOURCE_DIR}/data/language/*")
     target_sources(OpenLoco PUBLIC ${BUNDLE_LANGUAGES})
     set_property(
         SOURCE ${BUNDLE_LANGUAGES}
@@ -913,7 +893,7 @@ endif ()
 # Only valid for Clang for now:
 # - GCC 8 does not support -Wno-pragma-once-outside-header
 # - Other compilers status unknown
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     add_library(OpenLoco-headers-check OBJECT ${OLOCO_HEADERS})
     set_target_properties(OpenLoco-headers-check PROPERTIES LINKER_LANGUAGE CXX)
     set_source_files_properties(${OLOCO_HEADERS} PROPERTIES LANGUAGE CXX)
@@ -924,7 +904,6 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         Core
         Diagnostics
         Platform
-        Interop
         Utility
         Math
         Engine

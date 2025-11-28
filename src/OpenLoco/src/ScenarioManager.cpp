@@ -18,7 +18,6 @@
 #include "Ui/ProgressBar.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Core/Stream.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/String.hpp>
 #include <fstream>
 

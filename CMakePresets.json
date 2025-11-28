@@ -88,6 +88,27 @@
             }
         },
         {
+            "name": "macos",
+            "displayName": "macOS with Homebrew",
+            "description": "Ninja configure environment for macOS",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "OPENLOCO_BUILD_TESTS": {
+                    "type": "BOOL",
+                    "value": false
+                },
+                "OPENLOCO_HEADER_CHECK": {
+                    "type": "BOOL",
+                    "value": false
+                },
+                "OPENLOCO_USE_CCACHE": {
+                    "type": "BOOL",
+                    "value": false
+                }
+            }
+        },
+        {
             "name": "mingw",
             "displayName": "MinGW32-ci",
             "description": "Ninja configure environment for MinGW32",
@@ -119,7 +140,7 @@
             "description": "Ninja configure environment for linux (static linkage)",
             "generator": "Ninja Multi-Config",
             "binaryDir": "${sourceDir}/build/${presetName}",
-            "vendor": {"microsoft.com/VisualStudioSettings/CMake/1.0": {"intelliSenseMode": "linux-gcc-x86"}},
+            "vendor": { "microsoft.com/VisualStudioSettings/CMake/1.0": { "intelliSenseMode": "linux-gcc-x64" } },
             "condition": {
                 "type": "not",
                 "condition": {
@@ -139,23 +160,11 @@
                 },
                 "VCPKG_TARGET_TRIPLET": {
                     "type": "STRING",
-                    "value": "x86-linux"
+                    "value": "x64-linux"
                 },
                 "VCPKG_LIBRARY_LINKAGE": {
                     "type": "STRING",
                     "value": "static"
-                },
-                "CMAKE_C_FLAGS": {
-                    "type": "STRING",
-                    "value": "-m32"
-                },
-                "CMAKE_CXX_FLAGS": {
-                    "type": "STRING",
-                    "value": "-m32"
-                },
-                "CMAKE_SYSTEM_PROCESSOR": {
-                    "type": "STRING",
-                    "value": "i686"
                 },
                 "CMAKE_FIND_ROOT_PATH_MODE_LIBRARY": {
                     "type": "STRING",

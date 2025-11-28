@@ -53,9 +53,7 @@
 #include "World/IndustryManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui::ViewportInteraction
@@ -784,10 +782,6 @@ namespace OpenLoco::Ui::ViewportInteraction
             return false;
         }
 
-        if (!SceneManager::isEditorMode())
-        {
-            return false;
-        }
         auto* wallObj = ObjectManager::get<WallObject>(wall->wallObjectId());
         FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, wallObj->name);
         return true;

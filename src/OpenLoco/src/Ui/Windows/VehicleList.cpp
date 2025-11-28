@@ -87,7 +87,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         Widgets::TableHeader({ 414, 43 }, { 65, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_age),
         Widgets::TableHeader({ 479, 43 }, { 67, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_reliability),
         Widgets::ScrollView({ 3, 56 }, { 544, 138 }, WindowColour::secondary, Scrollbars::vertical),
-        Widgets::Label({ 3, kWindowSize.height - 13 }, { kWindowSize.width, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid),
+        Widgets::Label({ 3, kWindowSize.height - 13 }, { kWindowSize.width - kResizeHandleSize, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid),
         Widgets::dropdownWidgets({ 280 - 16, 200 }, { 120, 12 }, WindowColour::secondary, StringIds::wcolour2_stringid),
         Widgets::dropdownWidgets({ 402 - 16, 200 }, { 150, 12 }, WindowColour::secondary, StringIds::wcolour2_stringid)
 
@@ -174,7 +174,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 continue;
             }
 
-            vehicle->vehicleFlags &= ~VehicleFlags::sorted;
+            vehicle->vehicleFlags &= ~Vehicles::VehicleFlags::sorted;
         }
     }
 
@@ -262,7 +262,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 continue;
             }
 
-            if (vehicle->hasVehicleFlags(VehicleFlags::sorted))
+            if (vehicle->hasVehicleFlags(Vehicles::VehicleFlags::sorted))
             {
                 continue;
             }
@@ -299,7 +299,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 refreshVehicleList(self);
                 return;
             }
-            vehicle->vehicleFlags |= VehicleFlags::sorted;
+            vehicle->vehicleFlags |= Vehicles::VehicleFlags::sorted;
 
             if (vehicle->id != EntityId(self.rowInfo[self.rowCount]))
             {
@@ -426,7 +426,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         Window* self = WindowManager::createWindow(
             WindowType::vehicleList,
             kWindowSize,
-            WindowFlags::flag_11,
+            WindowFlags::lighterFrame,
             getEvents());
 
         self->setWidgets(_widgets);
@@ -550,6 +550,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         self.widgets[Widx::scrollview].right = self.width - 4;
         self.widgets[Widx::scrollview].bottom = self.height - 14;
+        self.widgets[Widx::status_bar].right = self.width - kResizeHandleSize - 1;
 
         // Reposition table headers
         self.widgets[Widx::sort_name].right = std::min(self.width - 4, 313);

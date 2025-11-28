@@ -1295,7 +1295,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             self.currentTab = widgetIndex - widx::tab_challenge;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
             self.disabledWidgets = 0;
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_challenge];

@@ -5,17 +5,11 @@
 #include "Tutorial.h"
 #include "Vehicle.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
-    static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
-    static loco_global<Speed32, 0x01136134> _vehicleUpdate_var_1136134; // Speed
-
     constexpr const uint8_t kBrakeLightTimeout = 7;
 
     // values are pre *256 for maths
@@ -129,18 +123,18 @@ namespace OpenLoco::Vehicles
         {
             return true;
         }
+        Vehicle train(head);
 
         motorState = MotorState::accelerating;
-        const auto speedDiff = currentSpeed - *_vehicleUpdate_var_1136134;
+        const auto speedDiff = currentSpeed - train.veh1->targetSpeed;
         if (speedDiff > 0.0_mph)
         {
             motorState = MotorState::braking;
             const auto newSpeed = currentSpeed - (currentSpeed / 64 + 0.18311_mph);
-            currentSpeed = std::max(newSpeed, std::max(*_vehicleUpdate_var_1136134, 5.0_mph));
+            currentSpeed = std::max(newSpeed, std::max<Speed32>(train.veh1->targetSpeed, 5.0_mph));
             return sub_4A9F20();
         }
 
-        Vehicle train(head);
         if (!train.head->hasVehicleFlags(VehicleFlags::manualControl))
         {
             if (speedDiff >= -1.5_mph)
@@ -270,14 +264,14 @@ namespace OpenLoco::Vehicles
         if (!train.head->hasVehicleFlags(VehicleFlags::manualControl))
         {
             // Vanilla did some funky maths that interpreted signed speeds as unsigned
-            // to behave similar we always take the vehicleUpdate_var_1136134 on negative speed
+            // to behave similar we always take the train.veh1->targetSpeed on negative speed
             if (newSpeed < 0.0_mph)
             {
-                newSpeed = *_vehicleUpdate_var_1136134;
+                newSpeed = train.veh1->targetSpeed;
             }
             else
             {
-                newSpeed = std::min(newSpeed, *_vehicleUpdate_var_1136134);
+                newSpeed = std::min<Speed32>(newSpeed, train.veh1->targetSpeed);
             }
         }
         currentSpeed = newSpeed;
@@ -290,9 +284,10 @@ namespace OpenLoco::Vehicles
     {
         Vehicle train(head);
 
-        auto res = updateTrackMotion(_vehicleUpdate_var_113612C, true);
-        _vehicleUpdate_var_113612C = _vehicleUpdate_var_113612C - res.remainingDistance;
-        _vehicleUpdate_var_1136130 = _vehicleUpdate_var_1136130 - res.remainingDistance;
+        auto& distances = getVehicleUpdateDistances();
+        auto res = updateTrackMotion(distances.unkDistance1, true);
+        distances.unkDistance1 -= res.remainingDistance;
+        distances.unkDistance2 -= res.remainingDistance;
         if (res.hasFlags(UpdateVar1136114Flags::noRouteFound))
         {
             destroyTrain();
@@ -310,11 +305,11 @@ namespace OpenLoco::Vehicles
 
         if (motorState == MotorState::stoppedOnIncline)
         {
-            _vehicleUpdate_var_1136130 = _vehicleUpdate_var_113612C + 0x1388;
+            distances.unkDistance2 = distances.unkDistance1 + 0x1388;
         }
 
-        train.head->var_3C -= _vehicleUpdate_var_113612C;
-        train.veh1->var_3C -= _vehicleUpdate_var_113612C;
+        train.head->var_3C -= distances.unkDistance1;
+        train.veh1->var_3C -= distances.unkDistance1;
 
         if (motorState == MotorState::braking)
         {

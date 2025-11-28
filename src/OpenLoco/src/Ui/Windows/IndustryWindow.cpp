@@ -325,7 +325,7 @@ namespace OpenLoco::Ui::Windows::Industry
         if (window == nullptr)
         {
             // 0x00456DBC start
-            const WindowFlags newFlags = WindowFlags::flag_8 | WindowFlags::resizable;
+            const WindowFlags newFlags = WindowFlags::viewportNoShiftPixels | WindowFlags::resizable;
             window = WindowManager::createWindow(WindowType::industry, Industry::kWindowSize, newFlags, Industry::getEvents());
             window->number = enumValue(industryId);
             window->minWidth = 192;
@@ -817,7 +817,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
             self.currentTab = widgetIndex - widx::tab_industry;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
             self.var_85C = -1;
 
             self.viewportRemove(0);

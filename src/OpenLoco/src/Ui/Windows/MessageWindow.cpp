@@ -338,7 +338,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                 WindowType::messages,
                 { x, y },
                 { 366, 217 },
-                WindowFlags::flag_11,
+                WindowFlags::lighterFrame,
                 Messages::getEvents());
 
             window->number = 0;
@@ -643,7 +643,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
             self.currentTab = widgetIndex - widx::tab_messages;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
 
             self.viewportRemove(0);
 

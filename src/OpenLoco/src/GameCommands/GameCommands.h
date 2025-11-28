@@ -5,9 +5,6 @@
 #include "Map/Tile.h"
 #include "Objects/Object.h"
 #include "World/Company.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
@@ -134,6 +131,72 @@ namespace OpenLoco::GameCommands
         vehicleRepaint = 84,
     };
 
+    constexpr int32_t kDefaultRegValue = 0xCCCCCCCC;
+#pragma pack(push, 1)
+    /**
+     * x86 register structure, only used for easy interop to Locomotion code.
+     */
+    struct registers
+    {
+        union
+        {
+            int32_t eax{ kDefaultRegValue };
+            int16_t ax;
+            struct
+            {
+                int8_t al;
+                int8_t ah;
+            };
+        };
+        union
+        {
+            int32_t ebx{ kDefaultRegValue };
+            int16_t bx;
+            struct
+            {
+                int8_t bl;
+                int8_t bh;
+            };
+        };
+        union
+        {
+            int32_t ecx{ kDefaultRegValue };
+            int16_t cx;
+            struct
+            {
+                int8_t cl;
+                int8_t ch;
+            };
+        };
+        union
+        {
+            int32_t edx{ kDefaultRegValue };
+            int16_t dx;
+            struct
+            {
+                int8_t dl;
+                int8_t dh;
+            };
+        };
+        union
+        {
+            int32_t esi{ kDefaultRegValue };
+            int16_t si;
+        };
+        union
+        {
+            int32_t edi{ kDefaultRegValue };
+            int16_t di;
+        };
+        union
+        {
+            int32_t ebp{ kDefaultRegValue };
+            int16_t bp;
+        };
+    };
+    static_assert(sizeof(registers) == 7 * 4);
+#pragma pack(pop)
+
     constexpr uint32_t FAILURE = 0x80000000;
 
     uint32_t doCommand(GameCommand command, const registers& registers);
@@ -149,11 +212,12 @@ namespace OpenLoco::GameCommands
     }
 
     // Load multiplayer map
-    inline void do_67(const char* filename)
+    inline void do_67([[maybe_unused]] const char* filename)
     {
         registers regs;
         regs.bl = Flags::apply;
-        regs.ebp = X86Pointer(filename);
+        // This is commented out as it will not work on 64-bit builds
+        // regs.ebp = reinterpret_cast<uint32_t>(filename);
         doCommand(GameCommand::loadMultiplayerMap, regs);
     }
 

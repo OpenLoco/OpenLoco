@@ -1,7 +1,6 @@
 #include "TrackData.h"
 #include "TrackEnum.h"
 #include <OpenLoco/Core/Numerics.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <array>
 #include <bit>
 #include <cassert>

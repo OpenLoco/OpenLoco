@@ -3,11 +3,8 @@
 #include "Graphics/TextRenderer.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
 #include <SDL2/SDL.h>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::TextInput
 {

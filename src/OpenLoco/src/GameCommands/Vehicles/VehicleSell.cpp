@@ -122,7 +122,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004AED34
-    void sellVehicle(Interop::registers& regs)
+    void sellVehicle(registers& regs)
     {
         regs.ebx = sellVehicle(EntityId(regs.dx), regs.bl);
     }

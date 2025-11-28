@@ -21,7 +21,6 @@
 #include "Ui/WindowManager.h"
 #include "Ui/WindowType.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco::Game
 {

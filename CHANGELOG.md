@@ -2,12 +2,15 @@
 ------------------------------------------------------------------------
 - Change: [#3384] Music selection window is now resizable, sortable, and displays the time period associated with each track.
 - Change: [#3402] Text input windows now show the total characters used rather than the current character position.
+- Change: [#3473] Fences can now be interacted with in viewports outside of the scenario editor as well.
 - Fix: [#2957] Bridge supports not being drawn under different corners than in vanilla.
 - Fix: [#3313] Vehicle orders not being deleted correctly when the station is deallocated.
 - Fix: [#3395] Text input windows no longer show character limits.
 - Fix: [#3401] The character limit label is using the wrong text colour.
+- Fix: [#3422] Window resize handles don't work properly in windows with status bars.
 - Fix: [#3431] Marker-related config variables are not saved properly.
 - Fix: [#3455] The 'Plant Trees' status bar is not rendered correctly.
+- Fix: [#3466] Game crashes if you press a multimedia key on your keyboard (e.g. 'next track').
 
 25.11 (2025-11-05)
 ------------------------------------------------------------------------

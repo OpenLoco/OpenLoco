@@ -111,7 +111,7 @@ namespace OpenLoco::Ui::Windows::TownList
             Widgets::TableHeader({ 284, 43 }, { 70, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_population),
             Widgets::TableHeader({ 354, 43 }, { 70, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_stations),
             Widgets::ScrollView({ 3, 56 }, { 594, 126 }, WindowColour::secondary, 2),
-            Widgets::Label({ 4, kWindowSize.height - 17 }, { kWindowSize.width, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
+            Widgets::Label({ 4, kWindowSize.height - 17 }, { kWindowSize.width - kResizeHandleSize, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
 
         );
 
@@ -130,6 +130,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             self.widgets[widx::scrollview].right = self.width - 4;
             self.widgets[widx::scrollview].bottom = self.height - 14;
+            self.widgets[widx::status_bar].right = self.width - kResizeHandleSize - 1;
 
             // Reposition header buttons
             self.widgets[widx::sort_town_name].right = std::min(203, self.width - 8);
@@ -1736,7 +1737,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             self.currentTab = widgetIndex - widx::tab_town_list;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
 
             self.viewportRemove(0);
 

@@ -9,7 +9,6 @@
 #include "Ui/ViewportInteraction.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco::Paint
 {

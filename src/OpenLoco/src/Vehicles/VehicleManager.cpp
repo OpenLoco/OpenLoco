@@ -19,10 +19,6 @@
 #include "World/Company.h"
 #include "World/CompanyManager.h"
 
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::VehicleManager
 {
     // 0x004A8826
@@ -237,9 +233,10 @@ namespace OpenLoco::VehicleManager
             component.subPosition = subPosition;
             component.trackAndDirection = reverseTad;
             component.remainingDistance = 0;
-            component.var_3C = 0;
             moveComponentToSubPosition(component);
         });
+        train.head->var_3C = 0;
+        train.veh1->var_3C = 0;
 
         Vehicles::applyVehicleObjectLength(train);
         auto oldVar52 = head->var_52;
@@ -383,7 +380,7 @@ namespace OpenLoco::VehicleManager
                 // perhaps in the future this could be changed.
                 GameCommands::VehiclePickupAirArgs airArgs{};
                 airArgs.head = head.id;
-                registers regs = static_cast<registers>(airArgs);
+                GameCommands::registers regs = static_cast<GameCommands::registers>(airArgs);
                 regs.bl = GameCommands::Flags::apply;
                 GameCommands::vehiclePickupAir(regs);
                 break;
@@ -394,7 +391,7 @@ namespace OpenLoco::VehicleManager
                 // perhaps in the future this could be changed.
                 GameCommands::VehiclePickupWaterArgs waterArgs{};
                 waterArgs.head = head.id;
-                registers regs = static_cast<registers>(waterArgs);
+                GameCommands::registers regs = static_cast<GameCommands::registers>(waterArgs);
                 regs.bl = GameCommands::Flags::apply;
                 GameCommands::vehiclePickupWater(regs);
             }

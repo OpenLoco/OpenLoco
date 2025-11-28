@@ -34,12 +34,10 @@
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Core/Timer.hpp>
 #include <OpenLoco/Diagnostics/Logging.h>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/String.hpp>
 #include <cstdint>
 #include <fstream>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::ObjectManager
@@ -50,7 +48,6 @@ namespace OpenLoco::ObjectManager
     static bool _isFirstTime = false;                                  // 0x0050AEAD
     static std::array<uint16_t, kMaxObjectTypes> _numObjectsPerType{}; // 0x0112C181
 
-    static loco_global<bool, 0x0050D161> _isPartialLoaded;
     static int32_t _objectIndexSelectionRefCount = 0;    // 0x0050D148
     static ObjectIndexSelection _objectIndexSelection{}; // 0x0050D144 & 0x0112C1C5
 
@@ -413,9 +410,7 @@ namespace OpenLoco::ObjectManager
         const auto partialNewEntry = createPartialNewEntry(objHeader, filepath);
         _installedObjectList.push_back(partialNewEntry);
 
-        _isPartialLoaded = true;
         const auto loadResult = loadTemporaryObject(objHeader);
-        _isPartialLoaded = false;
         _installedObjectList.pop_back();
 
         if (!loadResult.has_value())

@@ -9,8 +9,6 @@
 
 #pragma warning(disable : 4702)
 
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::GameCommands
 {
     // 0x0043BFCB

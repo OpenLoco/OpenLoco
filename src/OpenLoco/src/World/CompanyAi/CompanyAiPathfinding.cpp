@@ -29,25 +29,24 @@
 #include "World/Company.h"
 #include "World/Station.h"
 
-#include <OpenLoco/Interop/Interop.hpp>
-
 namespace OpenLoco::CompanyAi
 {
     using ValidTrackRoadIds = sfl::static_vector<uint8_t, 64>;
 
-    static Interop::loco_global<uint8_t, 0x0112C518> _pathFindUndoCount112C518;        // company 0x85EE
-    static Interop::loco_global<int32_t, 0x0112C398> _pathFindTotalTrackRoadWeighting; // company 0x85DE
-    static Interop::loco_global<World::Pos2, 0x0112C3C2> _unk1Pos112C3C2;
-    static Interop::loco_global<World::SmallZ, 0x0112C515> _unk1PosBaseZ112C515;
-    static Interop::loco_global<uint8_t, 0x0112C516> _unk1Rot112C516;
-    static Interop::loco_global<World::Pos2, 0x0112C3C6> _unk2Pos112C3C6;
-    static Interop::loco_global<World::SmallZ, 0x0112C517> _unk2PosBaseZ112C517;
-    static Interop::loco_global<World::Pos2, 0x0112C3CC> _unk3Pos112C3CC;
-    static Interop::loco_global<World::SmallZ, 0x0112C59C> _unk3PosBaseZ112C59C;
-    static Interop::loco_global<uint32_t, 0x0112C358> _maxTrackRoadWeightingLimit; // Limits the extent of the track/road placement search
-    static Interop::loco_global<uint32_t, 0x0112C374> _createTrackRoadCommandAiUnkFlags;
-    static Interop::loco_global<uint16_t, 0x0112C4D4> _unkTad112C4D4;
-    static Interop::loco_global<uint16_t, 0x0112C3CA> _unkTad112C3CA;
+    // TODO: Integrate these globals into the functions
+    static uint8_t _pathFindUndoCount112C518 = {};          // 0x0112C518 company 0x85EE
+    static int32_t _pathFindTotalTrackRoadWeighting = {};   // 0x0112C398 company 0x85DE
+    static World::Pos2 _unk1Pos112C3C2 = {};                // 0x0112C3C2
+    static World::SmallZ _unk1PosBaseZ112C515 = {};         // 0x0112C515
+    static uint8_t _unk1Rot112C516 = {};                    // 0x0112C516
+    static World::Pos2 _unk2Pos112C3C6 = {};                // 0x0112C3C6
+    static World::SmallZ _unk2PosBaseZ112C517 = {};         // 0x0112C517
+    static World::Pos2 _unk3Pos112C3CC = {};                // 0x0112C3CC
+    static World::SmallZ _unk3PosBaseZ112C59C = {};         // 0x0112C59C
+    static uint32_t _maxTrackRoadWeightingLimit = {};       // 0x0112C358 Limits the extent of the track/road placement search
+    static uint32_t _createTrackRoadCommandAiUnkFlags = {}; // 0x0112C374
+    static uint16_t _unkTad112C4D4 = {};                    // 0x0112C4D4
+    static uint16_t _unkTad112C3CA = {};                    // 0x0112C3CA
 
     struct PlacementVars
     {
@@ -122,33 +121,33 @@ namespace OpenLoco::CompanyAi
             // 0x00483BAF
             if (_unk2PosBaseZ112C517 == _unk3PosBaseZ112C59C)
             {
-                const auto diff = *_unk2Pos112C3C6 - *_unk3Pos112C3CC;
+                const auto diff = _unk2Pos112C3C6 - _unk3Pos112C3CC;
                 const auto absDiff = World::Pos2(std::abs(diff.x), std::abs(diff.y));
                 if (absDiff.x <= 3 * World::kTileSize && absDiff.y <= 3 * World::kTileSize)
                 {
-                    _createTrackRoadCommandAiUnkFlags = *_createTrackRoadCommandAiUnkFlags & ~(1U << 22);
+                    _createTrackRoadCommandAiUnkFlags = _createTrackRoadCommandAiUnkFlags & ~(1U << 22);
                 }
             }
             if (_unk2PosBaseZ112C517 == _unk1PosBaseZ112C515)
             {
-                const auto diff = *_unk2Pos112C3C6 - *_unk1Pos112C3C2;
+                const auto diff = _unk2Pos112C3C6 - _unk1Pos112C3C2;
                 const auto absDiff = World::Pos2(std::abs(diff.x), std::abs(diff.y));
                 if (absDiff.x <= 3 * World::kTileSize && absDiff.y <= 3 * World::kTileSize)
                 {
-                    _createTrackRoadCommandAiUnkFlags = *_createTrackRoadCommandAiUnkFlags & ~(1U << 22);
+                    _createTrackRoadCommandAiUnkFlags = _createTrackRoadCommandAiUnkFlags & ~(1U << 22);
                 }
             }
         }
 
         if (isRoad)
         {
-            _createTrackRoadCommandAiUnkFlags = *_createTrackRoadCommandAiUnkFlags & ~(1U << 22);
+            _createTrackRoadCommandAiUnkFlags = _createTrackRoadCommandAiUnkFlags & ~(1U << 22);
 
             auto* roadObj = ObjectManager::get<RoadObject>(thought.trackObjId & ~(1U << 7));
             _createTrackRoadCommandAiUnkFlags |= (1U << 21);
             if (roadObj->hasFlags(RoadObjectFlags::unk_03))
             {
-                _createTrackRoadCommandAiUnkFlags = *_createTrackRoadCommandAiUnkFlags & ~(1U << 21);
+                _createTrackRoadCommandAiUnkFlags = _createTrackRoadCommandAiUnkFlags & ~(1U << 21);
                 _createTrackRoadCommandAiUnkFlags |= (1U << 20);
             }
         }
@@ -338,7 +337,7 @@ namespace OpenLoco::CompanyAi
             return;
         }
 
-        _createTrackRoadCommandAiUnkFlags = *_createTrackRoadCommandAiUnkFlags | (1U << 22);
+        _createTrackRoadCommandAiUnkFlags = _createTrackRoadCommandAiUnkFlags | (1U << 22);
 
         if (company.var_85C3 & (1U << 3))
         {
@@ -347,11 +346,11 @@ namespace OpenLoco::CompanyAi
 
                 if (diffZ <= 4)
                 {
-                    const auto diffX = std::abs(_unk3Pos112C3CC->x - pos.x);
-                    const auto diffY = std::abs(_unk3Pos112C3CC->y - pos.y);
+                    const auto diffX = std::abs(_unk3Pos112C3CC.x - pos.x);
+                    const auto diffY = std::abs(_unk3Pos112C3CC.y - pos.y);
                     if (diffX <= 3 * World::kTileSize && diffY <= 3 * World::kTileSize)
                     {
-                        _createTrackRoadCommandAiUnkFlags = *_createTrackRoadCommandAiUnkFlags & ~(1U << 22);
+                        _createTrackRoadCommandAiUnkFlags = _createTrackRoadCommandAiUnkFlags & ~(1U << 22);
                     }
                 }
             }
@@ -360,11 +359,11 @@ namespace OpenLoco::CompanyAi
 
                 if (diffZ <= 4)
                 {
-                    const auto diffX = std::abs(_unk1Pos112C3C2->x - pos.x);
-                    const auto diffY = std::abs(_unk1Pos112C3C2->y - pos.y);
+                    const auto diffX = std::abs(_unk1Pos112C3C2.x - pos.x);
+                    const auto diffY = std::abs(_unk1Pos112C3C2.y - pos.y);
                     if (diffX <= 3 * World::kTileSize && diffY <= 3 * World::kTileSize)
                     {
-                        _createTrackRoadCommandAiUnkFlags = *_createTrackRoadCommandAiUnkFlags & ~(1U << 22);
+                        _createTrackRoadCommandAiUnkFlags = _createTrackRoadCommandAiUnkFlags & ~(1U << 22);
                     }
                 }
             }
@@ -392,10 +391,10 @@ namespace OpenLoco::CompanyAi
         args.pos = pos;
         args.mods = 0;
         args.unk = false;
-        args.unkFlags = *_createTrackRoadCommandAiUnkFlags >> 20;
+        args.unkFlags = _createTrackRoadCommandAiUnkFlags >> 20;
 
         {
-            auto regs = static_cast<Interop::registers>(args);
+            auto regs = static_cast<GameCommands::registers>(args);
             regs.bl = GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment;
             GameCommands::createTrack(regs);
             if (static_cast<uint32_t>(regs.ebx) == GameCommands::FAILURE)
@@ -429,8 +428,8 @@ namespace OpenLoco::CompanyAi
         const auto newUnkFlag = trackSize.rotationEnd >= 12;
         {
             const auto diffZ = std::abs(_unk3PosBaseZ112C59C - (nextPos.z / World::kSmallZStep));
-            const auto diffX = std::abs(_unk3Pos112C3CC->x - nextPos.x) / 8;
-            const auto diffY = std::abs(_unk3Pos112C3CC->y - nextPos.y) / 8;
+            const auto diffX = std::abs(_unk3Pos112C3CC.x - nextPos.x) / 8;
+            const auto diffY = std::abs(_unk3Pos112C3CC.y - nextPos.y) / 8;
 
             const auto squareHypot = diffX * diffX + diffY * diffY + diffZ * diffZ;
             const auto distScore = Math::Vector::fastSquareRoot(squareHypot);
@@ -532,12 +531,12 @@ namespace OpenLoco::CompanyAi
         args.bridge = placementVars.bridgeTypes[0];
         args.pos = pos;
         args.mods = 0;
-        args.unkFlags = *_createTrackRoadCommandAiUnkFlags >> 16;
+        args.unkFlags = _createTrackRoadCommandAiUnkFlags >> 16;
 
         auto& returnState = GameCommands::getLegacyReturnState();
 
         {
-            auto regs = static_cast<Interop::registers>(args);
+            auto regs = static_cast<GameCommands::registers>(args);
             regs.bl = GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment;
             GameCommands::createRoad(regs);
             if (static_cast<uint32_t>(regs.ebx) == GameCommands::FAILURE)
@@ -550,7 +549,7 @@ namespace OpenLoco::CompanyAi
                 {
                     args.bridge = returnState.byte_1136075;
                 }
-                regs = static_cast<Interop::registers>(args);
+                regs = static_cast<GameCommands::registers>(args);
                 regs.bl = GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment;
                 GameCommands::createRoad(regs);
                 if (static_cast<uint32_t>(regs.ebx) == GameCommands::FAILURE)
@@ -589,8 +588,8 @@ namespace OpenLoco::CompanyAi
         const auto nextRotation = roadSize.rotationEnd & 0x3U;
         {
             const auto diffZ = std::abs(_unk3PosBaseZ112C59C - (nextPos.z / World::kSmallZStep));
-            const auto diffX = std::abs(_unk3Pos112C3CC->x - nextPos.x) / 8;
-            const auto diffY = std::abs(_unk3Pos112C3CC->y - nextPos.y) / 8;
+            const auto diffX = std::abs(_unk3Pos112C3CC.x - nextPos.x) / 8;
+            const auto diffY = std::abs(_unk3Pos112C3CC.y - nextPos.y) / 8;
 
             const auto squareHypot = diffX * diffX + diffY * diffY + diffZ * diffZ;
             const auto distScore = Math::Vector::fastSquareRoot(squareHypot);
@@ -859,7 +858,7 @@ namespace OpenLoco::CompanyAi
                         args.bridge = placementVars.bridgeTypes[0];
                     }
                 }
-                args.unkFlags = *_createTrackRoadCommandAiUnkFlags >> 20;
+                args.unkFlags = _createTrackRoadCommandAiUnkFlags >> 20;
                 args.mods = placementVars.mods >> 16;
                 if ((World::TrackData::getTrackMiscData(args.trackId).flags & World::Track::CommonTraitFlags::steepSlope) != World::Track::CommonTraitFlags::none)
                 {
@@ -1103,7 +1102,7 @@ namespace OpenLoco::CompanyAi
                 {
                     args.bridge = placementVars.bridgeTypes[0];
                 }
-                args.unkFlags = *_createTrackRoadCommandAiUnkFlags >> 16;
+                args.unkFlags = _createTrackRoadCommandAiUnkFlags >> 16;
                 args.mods = placementVars.mods >> 16;
                 if ((World::TrackData::getRoadMiscData(args.roadId).flags & World::Track::CommonTraitFlags::steepSlope) != World::Track::CommonTraitFlags::none)
                 {
@@ -2179,7 +2178,7 @@ namespace OpenLoco::CompanyAi
                 args.trackId = trackId;
                 args.trackObjectId = trackObjId;
 
-                auto regs(static_cast<Interop::registers>(args));
+                auto regs(static_cast<GameCommands::registers>(args));
                 regs.bl = 0;
                 GameCommands::aiTrackReplacement(regs);
                 if (static_cast<uint32_t>(regs.ebx) != GameCommands::FAILURE)
@@ -2335,10 +2334,10 @@ namespace OpenLoco::CompanyAi
     // 0x00485B68
     static PathfindResult sub_485B68(const uint8_t trackRoadObjId)
     {
-        const auto startPos = World::Pos3{ _unk2Pos112C3C6->x, _unk2Pos112C3C6->y, _unk2PosBaseZ112C517 * World::kSmallZStep };
-        const auto startTad = *_unkTad112C3CA;
-        const auto targetPos = World::Pos3{ _unk1Pos112C3C2->x, _unk1Pos112C3C2->y, _unk1PosBaseZ112C515 * World::kSmallZStep };
-        const auto targetRot = *_unk1Rot112C516;
+        const auto startPos = World::Pos3{ _unk2Pos112C3C6.x, _unk2Pos112C3C6.y, _unk2PosBaseZ112C517 * World::kSmallZStep };
+        const auto startTad = _unkTad112C3CA;
+        const auto targetPos = World::Pos3{ _unk1Pos112C3C2.x, _unk1Pos112C3C2.y, _unk1PosBaseZ112C515 * World::kSmallZStep };
+        const auto targetRot = _unk1Rot112C516;
         const auto companyId = GameCommands::getUpdatingCompanyId();
         if (trackRoadObjId & (1U << 7))
         {
