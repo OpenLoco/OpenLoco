@@ -120,7 +120,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     {
         auto path = fs::u8path(szPath);
         auto directory = getDirectory(path);
-        auto baseName = getBasename(path);
+        auto baseNameUtf8 = getBasename(path);
+        auto baseNameLoco = Localisation::convertUnicodeToLoco(baseNameUtf8);
 
         TextInput::cancel();
 
@@ -138,7 +139,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         Utility::strlcpy(_filter, filter, std::size(_filter));
 
         changeDirectory(directory.make_preferred());
-        inputSession = Ui::TextInput::InputSession(OpenLoco::Localisation::convertUnicodeToLoco(baseName), 200);
+        inputSession = Ui::TextInput::InputSession(baseNameLoco, 200);
 
         auto window = WindowManager::createWindowCentred(
             WindowType::fileBrowserPrompt,
@@ -909,8 +910,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             {
                 // Copy directory and filename to buffer.
                 char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-                auto lococode_filename = OpenLoco::Localisation::convertUnicodeToLoco(path.stem().make_preferred().u8string());
-                strncpy(&buffer_2039[0], lococode_filename.c_str(), 512);
+                auto filenameUtf8 = path.stem().make_preferred().u8string();
+                auto filenameLoco = Localisation::convertUnicodeToLoco(filenameUtf8);
+                strncpy(&buffer_2039[0], filenameLoco.c_str(), 512);
 
                 // Arguments for description text in ok/cancel window.
                 FormatArguments args{};
@@ -970,8 +972,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         // Copy directory and filename to buffer.
         char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-        auto lococode_filename = OpenLoco::Localisation::convertUnicodeToLoco(path.stem().make_preferred().u8string());
-        strncpy(&buffer_2039[0], lococode_filename.c_str(), 512);
+        auto filenameUtf8 = path.stem().make_preferred().u8string();
+        auto filenameLoco = Localisation::convertUnicodeToLoco(filenameUtf8);
+        strncpy(&buffer_2039[0], filenameLoco.c_str(), 512);
 
         FormatArguments args{};
         args.push(StringIds::buffer_2039);
