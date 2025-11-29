@@ -54,19 +54,22 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui::Windows::MapWindow
 {
-    static constexpr uint16_t kMinimumWindowWidth = 229;  // Chosen so that the map cannot be smaller than its key
-    static constexpr uint16_t kMinimumWindowHeight = 176; // Chosen so that the minimum size makes the map square
-
     static constexpr int16_t kRenderedMapWidth = kMapColumns * 2;
     static constexpr int16_t kRenderedMapHeight = kRenderedMapWidth;
     static constexpr int32_t kRenderedMapSize = kRenderedMapWidth * kRenderedMapHeight;
 
+    // Chosen so that the map cannot be smaller than its key, and minimum size makes the map square
+    static constexpr Ui::Size32 kMinWindowSize = { 229, 176 };
+
+    // Chosen so the window cannot exceed map boundaries
+    static constexpr Ui::Size32 kMaxWindowSize = { kRenderedMapWidth + 120, kRenderedMapHeight + 60 };
+
     // 0x004FDC4C
     static std::array<Point, 4> kViewFrameOffsetsByRotation = { {
-        { kMapColumns - 8, 0 },
-        { kRenderedMapWidth - 8, kMapRows },
-        { kMapColumns - 8, kRenderedMapHeight },
-        { -8, kMapRows },
+        { kMapColumns, 0 },
+        { kRenderedMapWidth, kMapRows },
+        { kMapColumns, kRenderedMapHeight },
+        { 0, kMapRows },
     } };
 
     static constexpr std::array<PaletteIndex_t, 256> kFlashColours = []() {
@@ -170,7 +173,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         x /= kTileSize;
         y /= kTileSize;
 
-        return Point(-x + y + kMapColumns - 8, x + y - 8);
+        return Point(-x + y + kMapColumns, x + y);
     }
 
     // 0x0046B8E6
@@ -219,13 +222,21 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static void onResize(Window& self)
     {
         self.flags |= WindowFlags::resizable;
-        self.minWidth = kMinimumWindowWidth;
-        self.maxWidth = 800; // NB: frame background is only 800px :(
-        self.maxHeight = 800;
+        self.minWidth = kMinWindowSize.width;
 
-        Ui::Size32 kMinWindowSize = { self.minWidth, self.minHeight };
-        Ui::Size32 kMaxWindowSize = { self.maxWidth, self.maxHeight };
         self.setSize(kMinWindowSize, kMaxWindowSize);
+
+        auto& widget = self.widgets[widx::scrollview];
+        auto& map = self.scrollAreas[0];
+
+        if (map.contentOffsetX + widget.width() > map.contentWidth)
+        {
+            map.contentOffsetX = map.contentWidth - widget.width();
+        }
+        if (map.contentOffsetY + widget.height() > map.contentHeight)
+        {
+            map.contentOffsetY = map.contentHeight - widget.height();
+        }
     }
 
     // 0x0046C5E5
@@ -1695,7 +1706,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             y -= self.y;
             y += 14;
-            y = std::max(y, kMinimumWindowHeight);
+            y = std::max<uint16_t>(y, kMinWindowSize.height);
 
             self.minHeight = y;
         }
@@ -2162,8 +2173,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         Gfx::getG1Element(0)->offset = offset;
         Gfx::getG1Element(0)->width = kMapColumns * 2;
         Gfx::getG1Element(0)->height = kMapRows * 2;
-        Gfx::getG1Element(0)->xOffset = -8;
-        Gfx::getG1Element(0)->yOffset = -8;
+        Gfx::getG1Element(0)->xOffset = 0;
+        Gfx::getG1Element(0)->yOffset = 0;
         Gfx::getG1Element(0)->flags = Gfx::G1ElementFlags::none;
 
         drawingCtx.drawImage(0, 0, 0);
