@@ -3,10 +3,10 @@
 
 namespace OpenLoco::SceneManager
 {
-    static uint16_t _sceneAge;   // 0x00508F12
-    static Flags _sceneFlags;    // 0x00508F14
+    static uint16_t _sceneAge;      // 0x00508F12
+    static Flags _sceneFlags;       // 0x00508F14
     static PauseFlags _pausedState; // 0x00508F17
-    static GameSpeed _gameSpeed; // 0x00508F1A
+    static GameSpeed _gameSpeed;    // 0x00508F1A
 
     void resetSceneAge()
     {
