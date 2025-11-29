@@ -557,103 +557,105 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049DB71
-    static void disableUnusedPiecesRotation(uint64_t& disabledWidgets)
+    static uint64_t getUnusedPiecesRotation()
     {
+        auto unusedWidgets = 0U;
         auto& cState = getConstructionState();
+
         if (cState.constructionRotation < 12)
         {
             if (cState.constructionRotation >= 8)
             {
-                disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_small);
-                disabledWidgets |= (1 << widx::s_bend_right) | (1 << widx::slope_down) | (1 << widx::slope_up);
+                unusedWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_small);
+                unusedWidgets |= (1 << widx::s_bend_right) | (1 << widx::slope_down) | (1 << widx::slope_up);
             }
-            else
+            else if (cState.constructionRotation >= 4)
             {
-                if (cState.constructionRotation >= 4)
-                {
-                    disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_small);
-                    disabledWidgets |= (1 << widx::s_bend_left) | (1 << widx::slope_down) | (1 << widx::slope_up);
-                }
+                unusedWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_small);
+                unusedWidgets |= (1 << widx::s_bend_left) | (1 << widx::slope_down) | (1 << widx::slope_up);
             }
         }
         else
         {
-            disabledWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve_small) | (1 << widx::left_hand_curve) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small) | (1 << widx::right_hand_curve_small);
-            disabledWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right) | (1 << widx::steep_slope_down) | (1 << widx::slope_down) | (1 << widx::slope_up) | (1 << widx::steep_slope_up);
+            unusedWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve_small) | (1 << widx::left_hand_curve) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small) | (1 << widx::right_hand_curve_small);
+            unusedWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right) | (1 << widx::steep_slope_down) | (1 << widx::slope_down) | (1 << widx::slope_up) | (1 << widx::steep_slope_up);
         }
+
+        return unusedWidgets;
     }
 
     // 0x0049DBEC
-    static void disableUnusedRoadPieces(Window* self, uint64_t disabledWidgets)
+    static uint64_t getUnusedRoadPieces()
     {
+        auto unusedWidgets = 0U;
         auto& cState = getConstructionState();
 
         if (cState.lastSelectedTrackGradient == 2 || cState.lastSelectedTrackGradient == 6 || cState.lastSelectedTrackGradient == 4 || cState.lastSelectedTrackGradient == 8)
         {
-            disabledWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small);
-            disabledWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right);
-            disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::right_hand_curve_small);
+            unusedWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small);
+            unusedWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right);
+            unusedWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::right_hand_curve_small);
         }
 
-        disableUnusedPiecesRotation(disabledWidgets);
-
-        if (cState.constructionHover == 0)
+        if (!cState.constructionHover)
         {
             auto road = getRoadPieceId(cState.lastSelectedTrackPiece, cState.lastSelectedTrackGradient, cState.constructionRotation);
             if (!road)
             {
-                disabledWidgets |= (1 << widx::construct);
+                unusedWidgets |= (1 << widx::construct);
             }
         }
-        self->setDisabledWidgetsAndInvalidate(disabledWidgets);
+
+        return unusedWidgets;
     }
 
     // 0x0049DB1F
-    static void disableUnusedTrackPieces(Window* self, TrackObject trackObj, uint64_t disabledWidgets)
+    static uint64_t getUnusedTrackPieces(const TrackObject& trackObj)
     {
+        auto unusedWidgets = 0U;
         auto& cState = getConstructionState();
 
         if (cState.lastSelectedTrackGradient == 2 || cState.lastSelectedTrackGradient == 6 || cState.lastSelectedTrackGradient == 4 || cState.lastSelectedTrackGradient == 8)
         {
-            disabledWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small);
-            disabledWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right);
+            unusedWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small);
+            unusedWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right);
 
             if (!trackObj.hasTraitFlags(Track::TrackTraitFlags::slopedCurve))
             {
-                disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::right_hand_curve_small);
+                unusedWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::right_hand_curve_small);
             }
         }
 
-        disableUnusedPiecesRotation(disabledWidgets);
-
-        if (cState.constructionHover == 0)
+        if (!cState.constructionHover)
         {
             auto track = getTrackPieceId(cState.lastSelectedTrackPiece, cState.lastSelectedTrackGradient, cState.constructionRotation);
-
             if (!track)
             {
-                disabledWidgets |= (1 << widx::construct);
+                unusedWidgets |= (1 << widx::construct);
             }
         }
-        self->setDisabledWidgetsAndInvalidate(disabledWidgets);
+
+        return unusedWidgets;
     }
 
     // 0x0049DAF3
-    static void disableTrackSlopes(Window* self, TrackObject trackObj, uint64_t disabledWidgets)
+    static uint64_t getUnusedTrackSlopes(const TrackObject& trackObj)
     {
+        auto unusedWidgets = 0U;
+
         if (!trackObj.hasTraitFlags(Track::TrackTraitFlags::slope)
             && !trackObj.hasTraitFlags(Track::TrackTraitFlags::slopedCurve))
         {
-            disabledWidgets |= (1 << widx::slope_down) | (1 << widx::slope_up);
+            unusedWidgets |= (1 << widx::slope_down) | (1 << widx::slope_up);
         }
 
         if (!trackObj.hasTraitFlags(Track::TrackTraitFlags::steepSlope)
             && !trackObj.hasTraitFlags(Track::TrackTraitFlags::slopedCurve))
         {
-            disabledWidgets |= (1 << widx::steep_slope_down) | (1 << widx::steep_slope_up);
+            unusedWidgets |= (1 << widx::steep_slope_down) | (1 << widx::steep_slope_up);
         }
 
-        disableUnusedTrackPieces(self, trackObj, disabledWidgets);
+        return unusedWidgets;
     }
 
     static void setMapSelectedTilesFromPiece(const std::span<const TrackData::PreviewTrack> pieces, const World::Pos2& origin, const uint8_t rotation)
@@ -1606,8 +1608,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             if (cState.lastSelectedTrackPiece == TrackPiece::null)
             {
-                disableUnusedRoadPieces(&self, disabledWidgets);
-                return;
+                disabledWidgets |= getUnusedRoadPieces();
+                disabledWidgets |= getUnusedPiecesRotation();
             }
             switch (cState.lastSelectedTrackPiece)
             {
@@ -1621,7 +1623,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 case TrackPiece::s_bend_to_dual_track:
                 case TrackPiece::s_bend_to_single_track:
                 {
-                    disableUnusedRoadPieces(&self, disabledWidgets);
+                    disabledWidgets |= getUnusedRoadPieces();
+                    disabledWidgets |= getUnusedPiecesRotation();
                     break;
                 }
 
@@ -1632,23 +1635,25 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 case TrackPiece::turnaround:
                 {
                     disabledWidgets |= (1 << widx::steep_slope_down) | (1 << widx::slope_down) | (1 << widx::slope_up) | (1 << widx::steep_slope_up);
-                    disableUnusedRoadPieces(&self, disabledWidgets);
+                    disabledWidgets |= getUnusedRoadPieces();
+                    disabledWidgets |= getUnusedPiecesRotation();
                     break;
                 }
             }
         }
         else
         {
-            auto trackObj = ObjectManager::get<TrackObject>(trackType);
-            if (cState.lastSelectedTrackPiece == 0xFF)
+            auto* trackObj = ObjectManager::get<TrackObject>(trackType);
+            if (cState.lastSelectedTrackPiece == TrackPiece::null)
             {
-                disableUnusedTrackPieces(&self, *trackObj, disabledWidgets);
-                return;
+                disabledWidgets |= getUnusedTrackPieces(*trackObj);
+                disabledWidgets |= getUnusedPiecesRotation();
             }
             switch (cState.lastSelectedTrackPiece)
             {
                 case TrackPiece::straight:
-                    disableUnusedTrackPieces(&self, *trackObj, disabledWidgets);
+                    disabledWidgets |= getUnusedTrackPieces(*trackObj);
+                    disabledWidgets |= getUnusedPiecesRotation();
                     break;
 
                 case TrackPiece::left_hand_curve_very_small:
@@ -1664,18 +1669,23 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 case TrackPiece::turnaround:
                 {
                     disabledWidgets |= (1 << widx::steep_slope_down) | (1 << widx::slope_down) | (1 << widx::slope_up) | (1 << widx::steep_slope_up);
-                    disableUnusedTrackPieces(&self, *trackObj, disabledWidgets);
+                    disabledWidgets |= getUnusedTrackPieces(*trackObj);
+                    disabledWidgets |= getUnusedPiecesRotation();
                     break;
                 }
 
                 case TrackPiece::left_hand_curve_small:
                 case TrackPiece::right_hand_curve_small:
                 {
-                    disableTrackSlopes(&self, *trackObj, disabledWidgets);
+                    disabledWidgets |= getUnusedTrackSlopes(*trackObj);
+                    disabledWidgets |= getUnusedTrackPieces(*trackObj);
+                    disabledWidgets |= getUnusedPiecesRotation();
                     break;
                 }
             }
         }
+
+        self.setDisabledWidgetsAndInvalidate(disabledWidgets);
     }
 
     // 0x0049d600 (based on)
