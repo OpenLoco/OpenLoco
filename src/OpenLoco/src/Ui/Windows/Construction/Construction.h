@@ -71,7 +71,7 @@ namespace OpenLoco::Ui::Windows::Construction
         uint8_t isSignalBothDirections;  // 0x0113602F
         uint8_t bridgeList[9];           // 0x01136030
         uint8_t lastSelectedBridge;      // 0x01136039
-        uint8_t byte_113603A;            // 0x0113603A
+        uint8_t byte_113603A;            // 0x0113603A -- only 0 or 0xFF, bridge-related
         uint8_t stationList[17];         // 0x0113603B
         uint8_t lastSelectedStationType; // 0x0113604C
         uint8_t signalGhostRotation;     // 0x0113604D
