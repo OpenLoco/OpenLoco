@@ -116,8 +116,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     {
         auto path = fs::u8path(savePath);
         auto directory = getDirectory(path);
-        auto baseNameUtf8 = getBasename(path);
-        auto baseNameLoco = Localisation::convertUnicodeToLoco(baseNameUtf8);
 
         TextInput::cancel();
 
@@ -135,7 +133,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         Utility::strlcpy(_filter, filter, std::size(_filter));
 
         changeDirectory(directory.make_preferred());
-        inputSession = Ui::TextInput::InputSession(baseNameLoco, 200);
 
         auto window = WindowManager::createWindowCentred(
             WindowType::fileBrowserPrompt,
@@ -152,14 +149,21 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             window->rowHeight = 11;
             window->var_85A = -1;
 
-            auto& widget = window->widgets[widx::text_filename];
-            inputSession.calculateTextOffset(widget.width());
-
-            // Focus the textbox element
-            Input::setFocus(window->type, window->number, widx::text_filename);
-
             window->setColour(WindowColour::primary, Colour::black);
             window->setColour(WindowColour::secondary, Colour::mutedSeaGreen);
+
+            // Initialise and focus the filename textbox as needed
+            if (type == browse_type::save)
+            {
+                auto baseNameUtf8 = getBasename(path);
+                auto baseNameLoco = Localisation::convertUnicodeToLoco(baseNameUtf8);
+                inputSession = Ui::TextInput::InputSession(baseNameLoco, 200);
+
+                auto& widget = window->widgets[widx::text_filename];
+                inputSession.calculateTextOffset(widget.width());
+
+                Input::setFocus(window->type, window->number, widx::text_filename);
+            }
 
             WindowManager::setCurrentModalType(WindowType::fileBrowserPrompt);
             const bool success = promptTickLoop(
@@ -223,12 +227,17 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x004467E1
-    static void onUpdate(Ui::Window& window)
+    static void onUpdate(Window& self)
     {
+        if (!Input::isFocused(self.type, self.number, widx::text_filename))
+        {
+            return;
+        }
+
         inputSession.cursorFrame++;
         if ((inputSession.cursorFrame & 0x0F) == 0)
         {
-            window.invalidate();
+            self.invalidate();
         }
     }
 
