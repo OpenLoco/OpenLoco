@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Change: [#3384] Music selection window is now resizable, sortable, and displays the time period associated with each track.
 - Change: [#3402] Text input windows now show the total characters used rather than the current character position.
+- Change: [#3405] The object selection window is now resizeable, making room for longer object names.
 - Change: [#3413] The map window can now be resized to fit the entire game map.
 - Change: [#3473] Fences can now be interacted with in viewports outside of the scenario editor as well.
 - Fix: [#2957] Bridge supports not being drawn under different corners than in vanilla.
