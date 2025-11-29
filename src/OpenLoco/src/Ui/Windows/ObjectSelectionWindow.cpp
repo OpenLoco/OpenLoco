@@ -72,7 +72,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 {
     static constexpr int kRowHeight = 12;
     static constexpr Ui::Size32 kWindowSizeMin = { 600, 398 };
-    static constexpr Ui::Size32 kWindowSizeMax = { 800, 800 }; // NB: frame background is only 800px :(
+    static constexpr Ui::Size32 kWindowSizeMax = { 2000, 2000 };
     static constexpr Ui::Point kObjectPreviewOffset = { 56, 56 };
     static constexpr Ui::Size32 kObjectPreviewSize = { 114, 114 };
     static constexpr uint8_t kDescriptionRowHeight = 10;
