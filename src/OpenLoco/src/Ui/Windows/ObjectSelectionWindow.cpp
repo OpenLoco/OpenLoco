@@ -581,8 +581,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         return window;
     }
 
-    // 0x004733AC
-    static void prepareDraw(Ui::Window& self)
+    static void onResize(Window& self)
     {
         // Resize basic window
         self.widgets[widx::frame].right = self.width - 1;
@@ -604,6 +603,39 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         self.widgets[widx::clearButton].left = self.widgets[widx::textInput].right + 4;
         self.widgets[widx::clearButton].right = self.widgets[widx::clearButton].left + 38;
 
+        Widget::leftAlignTabs(self, widx::secondaryTab1, widx::secondaryTab8, 30);
+
+        // Resize scroll view to take up the full window height, leaving room for a status line
+        self.widgets[widx::scrollview].bottom = self.height - 12;
+        self.widgets[widx::scrollview].right = self.width / 2 - 12;
+        self.widgets[widx::scrollviewFrame].bottom = self.widgets[widx::scrollview].bottom + 1;
+        self.widgets[widx::scrollviewFrame].right = self.widgets[widx::scrollview].right + 1;
+
+        const auto& currentTab = kMainTabInfo[self.currentTab];
+        const auto& subTabs = currentTab.subTabs;
+        const bool showSecondaryTabs = !subTabs.empty() && FilterLevel(self.filterLevel) != FilterLevel::beginner;
+
+        // Secondary tabs reduce the amount of space for the scroll view
+        if (showSecondaryTabs)
+        {
+            self.widgets[widx::scrollview].top = 62 + 28;
+            self.widgets[widx::scrollviewFrame].hidden = false;
+            self.widgets[widx::scrollviewFrame].top = self.widgets[widx::scrollview].top - 2;
+        }
+        else
+        {
+            self.widgets[widx::scrollview].top = 62;
+            self.widgets[widx::scrollviewFrame].hidden = true;
+        }
+
+        // Reposition preview area in the centre of the second half
+        self.widgets[widx::objectImage].left = self.width / 4 * 3 - kObjectPreviewSize.width / 2;
+        self.widgets[widx::objectImage].right = self.widgets[widx::objectImage].left + kObjectPreviewSize.width;
+    }
+
+    // 0x004733AC
+    static void prepareDraw(Ui::Window& self)
+    {
         self.activatedWidgets = (1 << widx::objectImage);
 
         self.widgets[widx::closeButton].hidden = false;
@@ -652,31 +684,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 self.activatedWidgets &= ~(1ULL << widgetIndex);
             }
         }
-
-        Widget::leftAlignTabs(self, widx::secondaryTab1, widx::secondaryTab8, 30);
-
-        // Resize scroll view to take up the full window height, leaving room for a status line
-        self.widgets[widx::scrollview].bottom = self.height - 12;
-        self.widgets[widx::scrollview].right = self.width / 2 - 12;
-        self.widgets[widx::scrollviewFrame].bottom = self.widgets[widx::scrollview].bottom + 1;
-        self.widgets[widx::scrollviewFrame].right = self.widgets[widx::scrollview].right + 1;
-
-        // Secondary tabs reduce the amount of space for the scroll view
-        if (showSecondaryTabs)
-        {
-            self.widgets[widx::scrollview].top = 62 + 28;
-            self.widgets[widx::scrollviewFrame].hidden = false;
-            self.widgets[widx::scrollviewFrame].top = self.widgets[widx::scrollview].top - 2;
-        }
-        else
-        {
-            self.widgets[widx::scrollview].top = 62;
-            self.widgets[widx::scrollviewFrame].hidden = true;
-        }
-
-        // Reposition preview area in the centre of the second half
-        self.widgets[widx::objectImage].left = self.width / 4 * 3 - kObjectPreviewSize.width / 2;
-        self.widgets[widx::objectImage].right = self.widgets[widx::objectImage].left + kObjectPreviewSize.width;
     }
 
     // 0x0047328D
@@ -1695,6 +1702,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static constexpr WindowEventList kEvents = {
         .onClose = onClose,
+        .onResize = onResize,
         .onMouseUp = onMouseUp,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
