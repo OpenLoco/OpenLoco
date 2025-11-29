@@ -1590,44 +1590,30 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x0049DAA5
     static void onResize(Window& self)
     {
-        self.disabledWidgets |= (1ULL << widx::construct);
+        auto disabledWidgets = self.disabledWidgets;
 
         auto& cState = getConstructionState();
         if (cState.constructionHover != 1)
         {
-            self.disabledWidgets &= ~(1ULL << widx::construct);
+            disabledWidgets &= ~(1ULL << widx::construct);
+        }
+        else
+        {
+            disabledWidgets |= (1ULL << widx::construct);
         }
 
-        auto disabledWidgets = self.disabledWidgets;
         disabledWidgets &= (1 << Common::widx::tab_construction | 1 << Common::widx::tab_overhead | 1 << Common::widx::tab_signal | 1 << Common::widx::tab_station);
-        uint8_t trackType = cState.trackType;
+        disabledWidgets |= getUnusedPiecesRotation();
 
-        if (trackType & (1 << 7))
+        bool isRoadPiece = cState.trackType & (1 << 7);
+        uint8_t trackType = cState.trackType & ~(1 << 7);
+
+        if (isRoadPiece)
         {
-            trackType &= ~(1 << 7);
+            disabledWidgets |= getUnusedRoadPieces();
 
-            if (cState.lastSelectedTrackPiece == TrackPiece::null)
-            {
-                disabledWidgets |= getUnusedRoadPieces();
-                disabledWidgets |= getUnusedPiecesRotation();
-            }
             switch (cState.lastSelectedTrackPiece)
             {
-                case TrackPiece::straight:
-                case TrackPiece::left_hand_curve:
-                case TrackPiece::right_hand_curve:
-                case TrackPiece::left_hand_curve_large:
-                case TrackPiece::right_hand_curve_large:
-                case TrackPiece::s_bend_left:
-                case TrackPiece::s_bend_right:
-                case TrackPiece::s_bend_to_dual_track:
-                case TrackPiece::s_bend_to_single_track:
-                {
-                    disabledWidgets |= getUnusedRoadPieces();
-                    disabledWidgets |= getUnusedPiecesRotation();
-                    break;
-                }
-
                 case TrackPiece::left_hand_curve_very_small:
                 case TrackPiece::right_hand_curve_very_small:
                 case TrackPiece::left_hand_curve_small:
@@ -1635,53 +1621,34 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 case TrackPiece::turnaround:
                 {
                     disabledWidgets |= (1 << widx::steep_slope_down) | (1 << widx::slope_down) | (1 << widx::slope_up) | (1 << widx::steep_slope_up);
-                    disabledWidgets |= getUnusedRoadPieces();
-                    disabledWidgets |= getUnusedPiecesRotation();
                     break;
                 }
+
+                default:
+                    break;
             }
         }
         else
         {
             auto* trackObj = ObjectManager::get<TrackObject>(trackType);
-            if (cState.lastSelectedTrackPiece == TrackPiece::null)
-            {
-                disabledWidgets |= getUnusedTrackPieces(*trackObj);
-                disabledWidgets |= getUnusedPiecesRotation();
-            }
+            disabledWidgets |= getUnusedTrackPieces(*trackObj);
+
             switch (cState.lastSelectedTrackPiece)
             {
                 case TrackPiece::straight:
-                    disabledWidgets |= getUnusedTrackPieces(*trackObj);
-                    disabledWidgets |= getUnusedPiecesRotation();
-                    break;
-
-                case TrackPiece::left_hand_curve_very_small:
-                case TrackPiece::right_hand_curve_very_small:
-                case TrackPiece::left_hand_curve:
-                case TrackPiece::right_hand_curve:
-                case TrackPiece::left_hand_curve_large:
-                case TrackPiece::right_hand_curve_large:
-                case TrackPiece::s_bend_left:
-                case TrackPiece::s_bend_right:
-                case TrackPiece::s_bend_to_dual_track:
-                case TrackPiece::s_bend_to_single_track:
                 case TrackPiece::turnaround:
-                {
-                    disabledWidgets |= (1 << widx::steep_slope_down) | (1 << widx::slope_down) | (1 << widx::slope_up) | (1 << widx::steep_slope_up);
-                    disabledWidgets |= getUnusedTrackPieces(*trackObj);
-                    disabledWidgets |= getUnusedPiecesRotation();
+                case TrackPiece::null:
                     break;
-                }
 
                 case TrackPiece::left_hand_curve_small:
                 case TrackPiece::right_hand_curve_small:
-                {
                     disabledWidgets |= getUnusedTrackSlopes(*trackObj);
                     disabledWidgets |= getUnusedTrackPieces(*trackObj);
-                    disabledWidgets |= getUnusedPiecesRotation();
                     break;
-                }
+
+                default:
+                    disabledWidgets |= (1 << widx::steep_slope_down) | (1 << widx::slope_down) | (1 << widx::slope_up) | (1 << widx::steep_slope_up);
+                    break;
             }
         }
 
