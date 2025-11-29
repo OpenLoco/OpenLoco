@@ -237,7 +237,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         inputSession.cursorFrame++;
         if ((inputSession.cursorFrame & 0x0F) == 0)
         {
-            self.invalidate();
+            WindowManager::invalidateWidget(self.type, self.number, widx::text_filename);
         }
     }
 
