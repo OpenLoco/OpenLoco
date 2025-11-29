@@ -114,9 +114,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         const char* filter,
         StringId titleId)
     {
-        auto path = fs::u8path(savePath);
-        auto directory = getDirectory(path);
-
         TextInput::cancel();
 
         _type = type;
@@ -132,6 +129,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
         Utility::strlcpy(_filter, filter, std::size(_filter));
 
+        auto path = fs::u8path(savePath);
+        auto directory = getDirectory(path);
         changeDirectory(directory.make_preferred());
 
         auto window = WindowManager::createWindowCentred(
