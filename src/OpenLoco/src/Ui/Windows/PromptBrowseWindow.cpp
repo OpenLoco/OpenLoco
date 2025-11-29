@@ -96,6 +96,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void upOneLevel();
     static void changeDirectory(const fs::path& path);
     static void processFileForLoadSave(Window* window);
+    static void processFileForLoadSave(Window* window, fs::path& entry);
     static void processFileForDelete(Window* self, fs::path& entry);
     static void refreshDirectoryList();
     static void loadFileDetails(Window* self);
@@ -133,7 +134,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         Utility::strlcpy(_filter, filter, std::size(_filter));
 
         changeDirectory(directory.make_preferred());
-        inputSession = Ui::TextInput::InputSession(baseName, 200);
+        inputSession = Ui::TextInput::InputSession(OpenLoco::Localisation::convertUnicodeToLoco(baseName), 200);
 
         auto window = WindowManager::createWindowCentred(
             WindowType::fileBrowserPrompt,
@@ -262,13 +263,10 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         // Clicking a file, with left mouse button?
         if (Input::state() == Input::State::scrollLeft)
         {
-            // Copy the selected filename without extension to text input buffer.
-            inputSession.buffer = entry.stem().u8string();
-            inputSession.cursorPosition = inputSession.buffer.length();
             self.invalidate();
 
             // Continue processing for load/save.
-            processFileForLoadSave(&self);
+            processFileForLoadSave(&self, entry);
         }
         // Clicking a file, with right mouse button
         else
@@ -479,7 +477,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 drawingCtx.pushRenderTarget(*clipped);
 
                 bool showCaret = Input::isFocused(window.type, window.number, widx::text_filename) && (inputSession.cursorFrame & 0x10) == 0;
-                drawTextInput(&window, drawingCtx, inputSession.buffer.c_str(), inputSession.cursorPosition, showCaret);
+                drawTextInput(&window, drawingCtx, inputSession.getLocoString().c_str(), inputSession.cursorPosition, showCaret);
 
                 drawingCtx.popRenderTarget();
             }
@@ -836,7 +834,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static bool filenameContainsInvalidChars()
     {
         uint8_t numNonSpacesProcessed = 0;
-        for (const char chr : inputSession.buffer)
+        const auto buffer = inputSession.getLocoString();
+        for (const char chr : buffer)
         {
             if (chr != ' ')
             {
@@ -883,11 +882,16 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void processFileForLoadSave(Window* self)
     {
         // Create full path to target file.
-        fs::path path = _currentDirectory / inputSession.buffer;
+        fs::path path = _currentDirectory / inputSession.buffer32;
 
         // Append extension to filename.
         path += getExtensionFromFileType(_fileType);
 
+        processFileForLoadSave(self, path);
+    }
+
+    static void processFileForLoadSave(Window* self, fs::path& path)
+    {
         if (_type == browse_type::save)
         {
             if (filenameContainsInvalidChars())
@@ -901,7 +905,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             {
                 // Copy directory and filename to buffer.
                 char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-                strncpy(&buffer_2039[0], inputSession.buffer.c_str(), 512);
+                auto lococode_filename = OpenLoco::Localisation::convertUnicodeToLoco(path.stem().make_preferred().u8string());
+                strncpy(&buffer_2039[0], lococode_filename.c_str(), 512);
 
                 // Arguments for description text in ok/cancel window.
                 FormatArguments args{};
@@ -961,7 +966,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         // Copy directory and filename to buffer.
         char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-        strncpy(&buffer_2039[0], entry.stem().u8string().c_str(), 512);
+        auto lococode_filename = OpenLoco::Localisation::convertUnicodeToLoco(path.stem().make_preferred().u8string());
+        strncpy(&buffer_2039[0], lococode_filename.c_str(), 512);
 
         FormatArguments args{};
         args.push(StringIds::buffer_2039);
