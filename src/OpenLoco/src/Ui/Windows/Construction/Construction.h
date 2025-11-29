@@ -30,11 +30,11 @@ namespace OpenLoco::Ui::Windows::Construction
 
     struct ConstructionState
     {
-        uint32_t trackCost;     // 0x01135F3E
-        uint32_t dword_1135F42; // 0x01135F42
-        uint32_t modCost;       // 0x01135F46
-        uint32_t signalCost;    // 0x01135F4E
-        uint32_t stationCost;   // 0x01135F6C
+        uint32_t trackCost;   // 0x01135F3E
+        uint32_t roadCost;    // 0x01135F42
+        uint32_t modCost;     // 0x01135F46
+        uint32_t signalCost;  // 0x01135F4E
+        uint32_t stationCost; // 0x01135F6C
 
         StationId constructingStationId;                // 0x01135F70
         uint32_t constructingStationAcceptedCargoTypes; // 0x01135F74
@@ -52,15 +52,15 @@ namespace OpenLoco::Ui::Windows::Construction
         uint16_t nextTileRotation;        // 0x01135FCC
         World::Pos3 previousTile;         // 0x01135FCE
         uint16_t previousTileRotation;    // 0x01135FD4
-        uint16_t word_1135FD6;            // 0x01135FD6
-        uint16_t word_1135FD8;            // 0x01135FD8
+        uint16_t previewTrackPieceId;     // 0x01135FD6
+        uint16_t previewMods;             // 0x01135FD8
 
         uint16_t lastSelectedMods;      // 0x01135FE4
         World::Pos3 stationGhostPos;    // 0x01135FE6
         uint16_t stationGhostType;      // 0x01135FEE
         World::Pos3 modGhostPos;        // 0x01135FF8
-        uint16_t word_1135FFE;          // 0x01135FFE
-        int16_t word_1136000;           // 0x01136000
+        uint16_t constructionHeight;    // 0x01135FFE
+        int16_t constructionMaxHeight;  // 0x01136000
         uint16_t signalGhostSides;      // 0x01136002
         World::Pos3 signalGhostPos;     // 0x01136004
         uint16_t signalGhostTrackObjId; // 0x0113600A
@@ -71,7 +71,7 @@ namespace OpenLoco::Ui::Windows::Construction
         uint8_t isSignalBothDirections;  // 0x0113602F
         uint8_t bridgeList[9];           // 0x01136030
         uint8_t lastSelectedBridge;      // 0x01136039
-        uint8_t byte_113603A;            // 0x0113603A
+        uint8_t byte_113603A;            // 0x0113603A -- only 0 or 0xFF, bridge-related
         uint8_t stationList[17];         // 0x0113603B
         uint8_t lastSelectedStationType; // 0x0113604C
         uint8_t signalGhostRotation;     // 0x0113604D
@@ -84,11 +84,11 @@ namespace OpenLoco::Ui::Windows::Construction
         uint8_t modGhostTileIndex; // 0x0113605A
         uint8_t makeJunction;      // 0x0113605D
 
-        uint8_t constructionHover;                            // 0x01136061
+        bool constructionHover;                               // 0x01136061
         uint8_t trackType;                                    // 0x01136062
         uint8_t byte_1136063;                                 // 0x01136063
         uint8_t constructionRotation;                         // 0x01136064
-        uint8_t byte_1136065;                                 // 0x01136065
+        uint8_t placeTrackPieceId;                            // 0x01136065
         uint8_t constructionArrowFrameNum;                    // 0x01136066
         uint8_t lastSelectedTrackPiece;                       // 0x01136067
         uint8_t lastSelectedTrackGradient;                    // 0x01136068
@@ -100,8 +100,8 @@ namespace OpenLoco::Ui::Windows::Construction
         World::Track::ModSection lastSelectedTrackModSection; // 0x0113606E
 
         uint8_t byte_1136076;                 // 0x01136076
-        uint8_t byte_1136077;                 // 0x01136077
-        uint8_t byte_1136078;                 // 0x01136078
+        uint8_t previewTrackType;             // 0x01136077
+        uint8_t previewRotation;              // 0x01136078
         uint8_t lastSelectedTrackPieceId;     // 0x01136079
         uint8_t byte_113607E;                 // 0x0113607E
         uint8_t stationGhostTypeDockAirport;  // 0x01136089
