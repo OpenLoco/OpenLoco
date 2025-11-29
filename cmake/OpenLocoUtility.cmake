@@ -205,24 +205,10 @@ function(_loco_add_target TARGET TYPE)
                 "${CMAKE_CURRENT_SOURCE_DIR}/include")
     endif()
 
-    if (_PUBLIC_FILES AND OPENLOCO_HEADER_CHECK)
-        # Creates a source file for every public header and includes only that one header.
-        # This ensures that each header file is standalone.
-        # We also link the public interfaces of the target ensuring that they are available for the public headers.
-        foreach(hdr ${_PUBLIC_FILES})
-            cmake_path(RELATIVE_PATH hdr BASE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include" OUTPUT_VARIABLE hdr_rel)
-            cmake_path(GET hdr STEM hdr_base)
-            set(hdr_src "${CMAKE_CURRENT_BINARY_DIR}/${hdr_base}.cpp")
-            file(WRITE ${hdr_src} "#include <${hdr_rel}>")
-            list(APPEND hdr_srcs "${hdr_src}")
-        endforeach()
-        add_library(${TARGET}HdrCheck STATIC
-                ${hdr_srcs}
-                ${_PUBLIC_FILES})
-
-        target_link_libraries(${TARGET}HdrCheck PRIVATE ${TARGET})
-        # Group the targets nicely within IDEs
-        set_target_properties(${TARGET} ${TARGET}HdrCheck PROPERTIES FOLDER ${TARGET})
+    # Defer header check to after configure time
+    # This ensures all target properties and dependencies are fully set up
+    if (OPENLOCO_HEADER_CHECK)
+        cmake_language(EVAL CODE "cmake_language(DEFER CALL _loco_add_headers_check \"${TARGET}\")")
     endif()
 
     # Group the files nicely in IDEs into a tree view
@@ -267,4 +253,126 @@ endfunction()
 
 function(loco_add_executable TARGET)
     _loco_add_target(${TARGET} NULL ${ARGN} EXECUTABLE)
+endfunction()
+
+function(_loco_add_headers_check TARGET)
+    if (NOT TARGET all-headers-check)
+        add_custom_target(all-headers-check)
+    endif()
+    
+    if (NOT OPENLOCO_HEADER_CHECK OR NOT TARGET ${TARGET})
+        return()
+    endif()
+    
+    get_target_property(TARGET_SOURCES ${TARGET} SOURCES)
+    if (NOT TARGET_SOURCES OR TARGET_SOURCES STREQUAL "TARGET_SOURCES-NOTFOUND")
+        return()
+    endif()
+    
+    get_target_property(TARGET_INCLUDE_DIRS ${TARGET} INCLUDE_DIRECTORIES)
+    get_target_property(TARGET_INTERFACE_INCLUDE_DIRS ${TARGET} INTERFACE_INCLUDE_DIRECTORIES)
+    
+    # Separate headers into public/private
+    set(PUBLIC_HEADER_FILES)
+    set(PRIVATE_HEADER_FILES)
+    foreach(source_file ${TARGET_SOURCES})
+        if (source_file MATCHES "\\.(h|hpp|hxx)$")
+            get_filename_component(header_abs ${source_file} ABSOLUTE)
+            set(IS_PUBLIC NO)
+            if (TARGET_INTERFACE_INCLUDE_DIRS AND NOT TARGET_INTERFACE_INCLUDE_DIRS STREQUAL "TARGET_INTERFACE_INCLUDE_DIRS-NOTFOUND")
+                foreach(public_dir ${TARGET_INTERFACE_INCLUDE_DIRS})
+                    file(RELATIVE_PATH rel_path ${public_dir} ${header_abs})
+                    if (NOT rel_path MATCHES "^\\.\\.")
+                        set(IS_PUBLIC YES)
+                        break()
+                    endif()
+                endforeach()
+            endif()
+            if (IS_PUBLIC)
+                list(APPEND PUBLIC_HEADER_FILES ${header_abs})
+            else()
+                list(APPEND PRIVATE_HEADER_FILES ${header_abs})
+            endif()
+        endif()
+    endforeach()
+
+    list(LENGTH PUBLIC_HEADER_FILES PUBLIC_COUNT)
+    list(LENGTH PRIVATE_HEADER_FILES PRIVATE_COUNT)
+    if (PUBLIC_COUNT EQUAL 0 AND PRIVATE_COUNT EQUAL 0)
+        return()
+    endif()
+    
+    message(STATUS "Header check for ${TARGET}: ${PUBLIC_COUNT} public, ${PRIVATE_COUNT} private headers")
+
+    # Create wrapper files for public headers
+    if (PUBLIC_COUNT GREATER 0)
+        set(WRAPPER_DIR "${CMAKE_BINARY_DIR}/header-check/${TARGET}/public")
+        set(WRAPPER_FILES)
+        foreach(header_file ${PUBLIC_HEADER_FILES})
+            set(rel_path)
+            if (TARGET_INTERFACE_INCLUDE_DIRS AND NOT TARGET_INTERFACE_INCLUDE_DIRS STREQUAL "TARGET_INTERFACE_INCLUDE_DIRS-NOTFOUND")
+                foreach(dir ${TARGET_INTERFACE_INCLUDE_DIRS})
+                    file(RELATIVE_PATH temp_rel ${dir} ${header_file})
+                    if (NOT temp_rel MATCHES "^\\.\\.")
+                        set(rel_path ${temp_rel})
+                        break()
+                    endif()
+                endforeach()
+            endif()
+            if (NOT rel_path)
+                get_filename_component(rel_path ${header_file} NAME)
+            endif()
+            string(REGEX REPLACE "\\.[^.]*$" ".cpp" wrapper_rel ${rel_path})
+            set(wrapper_file "${WRAPPER_DIR}/${wrapper_rel}")
+            get_filename_component(wrapper_dir ${wrapper_file} DIRECTORY)
+            file(MAKE_DIRECTORY ${wrapper_dir})
+            file(WRITE ${wrapper_file} "#include \"${header_file}\"\n")
+            list(APPEND WRAPPER_FILES ${wrapper_file})
+        endforeach()
+        
+        add_library(${TARGET}-public-headers-check OBJECT ${WRAPPER_FILES})
+        set_target_properties(${TARGET}-public-headers-check PROPERTIES LINKER_LANGUAGE CXX)
+        target_include_directories(${TARGET}-public-headers-check PUBLIC
+            $<TARGET_PROPERTY:${TARGET},INTERFACE_INCLUDE_DIRECTORIES>)
+        target_link_libraries(${TARGET}-public-headers-check PUBLIC
+            $<TARGET_PROPERTY:${TARGET},INTERFACE_LINK_LIBRARIES>)
+        add_dependencies(all-headers-check ${TARGET}-public-headers-check)
+    endif()
+    
+    # Create wrapper files for private headers
+    if (PRIVATE_COUNT GREATER 0)
+        set(WRAPPER_DIR "${CMAKE_BINARY_DIR}/header-check/${TARGET}/private")
+        set(WRAPPER_FILES)
+        foreach(header_file ${PRIVATE_HEADER_FILES})
+            set(rel_path)
+            if (TARGET_INCLUDE_DIRS AND NOT TARGET_INCLUDE_DIRS STREQUAL "TARGET_INCLUDE_DIRS-NOTFOUND")
+                foreach(dir ${TARGET_INCLUDE_DIRS})
+                    file(RELATIVE_PATH temp_rel ${dir} ${header_file})
+                    if (NOT temp_rel MATCHES "^\\.\\.")
+                        set(rel_path ${temp_rel})
+                        break()
+                    endif()
+                endforeach()
+            endif()
+            if (NOT rel_path)
+                get_filename_component(rel_path ${header_file} NAME)
+            endif()
+            string(REGEX REPLACE "\\.[^.]*$" ".cpp" wrapper_rel ${rel_path})
+            set(wrapper_file "${WRAPPER_DIR}/${wrapper_rel}")
+            get_filename_component(wrapper_dir ${wrapper_file} DIRECTORY)
+            file(MAKE_DIRECTORY ${wrapper_dir})
+            file(WRITE ${wrapper_file} "#include \"${header_file}\"\n")
+            list(APPEND WRAPPER_FILES ${wrapper_file})
+        endforeach()
+        
+        add_library(${TARGET}-private-headers-check OBJECT ${WRAPPER_FILES})
+        set_target_properties(${TARGET}-private-headers-check PROPERTIES LINKER_LANGUAGE CXX)
+        target_include_directories(${TARGET}-private-headers-check PUBLIC
+            $<TARGET_PROPERTY:${TARGET},INCLUDE_DIRECTORIES>
+            $<TARGET_PROPERTY:${TARGET},INTERFACE_INCLUDE_DIRECTORIES>)
+        target_link_libraries(${TARGET}-private-headers-check PUBLIC
+            $<TARGET_PROPERTY:${TARGET},LINK_LIBRARIES>
+            $<TARGET_PROPERTY:${TARGET},INTERFACE_LINK_LIBRARIES>)
+        add_dependencies(all-headers-check ${TARGET}-private-headers-check)
+    endif()
 endfunction()

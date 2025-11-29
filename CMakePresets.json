@@ -65,10 +65,6 @@
                 }
             },
             "cacheVariables": {
-                "OPENLOCO_HEADER_CHECK": {
-                    "type": "BOOL",
-                    "value": true
-                },
                 "OPENLOCO_USE_CCACHE": {
                     "type": "BOOL",
                     "value": false
@@ -95,10 +91,6 @@
             "binaryDir": "${sourceDir}/build/${presetName}",
             "cacheVariables": {
                 "OPENLOCO_BUILD_TESTS": {
-                    "type": "BOOL",
-                    "value": false
-                },
-                "OPENLOCO_HEADER_CHECK": {
                     "type": "BOOL",
                     "value": false
                 },

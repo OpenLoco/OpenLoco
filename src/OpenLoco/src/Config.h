@@ -39,6 +39,13 @@ namespace OpenLoco::Config
         custom,
     };
 
+    enum class WindowFrameStyle : uint8_t
+    {
+        background,
+        solid,
+        transparent,
+    };
+
     struct Resolution
     {
         int32_t width{};
@@ -133,7 +140,9 @@ namespace OpenLoco::Config
         bool cashPopupRendering = true;
         bool edgeScrolling = true;
         int32_t edgeScrollingSpeed = 12;
+        WindowFrameStyle windowFrameStyle = WindowFrameStyle::background;
         bool zoomToCursor = true;
+
         NewsType newsSettings[kMessageCriticalityCount];
 
         int32_t autosaveAmount = 12;
