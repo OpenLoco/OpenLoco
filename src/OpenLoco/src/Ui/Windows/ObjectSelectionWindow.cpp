@@ -42,7 +42,6 @@
 #include "Objects/VehicleObject.h"
 #include "Objects/WallObject.h"
 #include "Objects/WaterObject.h"
-#include "OpenLoco.h"
 #include "SceneManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/TextInput.h"
