@@ -2279,7 +2279,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         const auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
         if (res == GameCommands::FAILURE)
         {
-            if (GameCommands::getErrorText() == StringIds::bridge_type_unsuitable_for_this_configuration)
+            if (cState.byte_113603A != 0 && GameCommands::getErrorText() == StringIds::bridge_type_unsuitable_for_this_configuration)
             {
                 cState.byte_113603A = 0;
                 for (const auto bridgeType : cState.bridgeList)
@@ -2336,7 +2336,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         const auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
         if (res == GameCommands::FAILURE)
         {
-            if (GameCommands::getErrorText() == StringIds::bridge_type_unsuitable_for_this_configuration)
+            if (cState.byte_113603A != 0 && GameCommands::getErrorText() == StringIds::bridge_type_unsuitable_for_this_configuration)
             {
                 cState.byte_113603A = 0;
                 for (const auto bridgeType : cState.bridgeList)
