@@ -1702,8 +1702,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static constexpr WindowEventList kEvents = {
         .onClose = onClose,
-        .onResize = onResize,
         .onMouseUp = onMouseUp,
+        .onResize = onResize,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
         .onUpdate = onUpdate,
