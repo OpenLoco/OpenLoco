@@ -768,7 +768,9 @@ set(OLOCO_HEADERS
 if (MINGW)
     loco_add_library(OpenLoco SHARED
         PRIVATE_FILES
-            ${OLOCO_SOURCES})
+            ${OLOCO_SOURCES}
+            ${OLOCO_HEADERS}
+        )
     target_link_libraries(OpenLoco winmm)
 else ()
     if (MSVC)
@@ -776,11 +778,13 @@ else ()
         loco_add_library(OpenLoco SHARED 
             PRIVATE_FILES
                 ${OLOCO_SOURCES}
-                ${OLOCO_HEADERS})
+                ${OLOCO_HEADERS}
+            )
     else ()
         loco_add_executable(OpenLoco 
             PRIVATE_FILES
                 ${OLOCO_SOURCES}
+                ${OLOCO_HEADERS}
         )
 
         if (TARGET SDL2::SDL2main)
@@ -887,30 +891,4 @@ if (APPLE)
         SOURCE ${BUNDLE_LANGUAGES}
         PROPERTY MACOSX_PACKAGE_LOCATION "Resources/language"
     )
-endif ()
-
-# Add headers check to verify all headers carry their dependencies.
-# Only valid for Clang for now:
-# - GCC 8 does not support -Wno-pragma-once-outside-header
-# - Other compilers status unknown
-if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-    add_library(OpenLoco-headers-check OBJECT ${OLOCO_HEADERS})
-    set_target_properties(OpenLoco-headers-check PROPERTIES LINKER_LANGUAGE CXX)
-    set_source_files_properties(${OLOCO_HEADERS} PROPERTIES LANGUAGE CXX)
-    loco_target_compile_link_flags(OpenLoco-headers-check)
-    target_compile_options(OpenLoco-headers-check PUBLIC -x c++ -Wno-pragma-once-outside-header -Wno-unused-const-variable)
-    target_include_directories(OpenLoco-headers-check PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
-    target_link_libraries(OpenLoco-headers-check PUBLIC
-        Core
-        Diagnostics
-        Platform
-        Utility
-        Math
-        Engine
-        ${SDL2_LIB} # These libraries are used in some of our headers try to minimize doing this
-        yaml-cpp
-        )
-else ()
-    # Dummy target to ease invocation
-    add_custom_target(OpenLoco-headers-check)
 endif ()

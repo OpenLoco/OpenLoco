@@ -16,4 +16,5 @@ loco_add_library(Utility STATIC
     PRIVATE_FILES
         ${private_files}
     TEST_FILES
-        ${test_files})
+        ${test_files}
+)

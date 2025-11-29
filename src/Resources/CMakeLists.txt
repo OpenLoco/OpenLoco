@@ -9,4 +9,5 @@ if (WIN32)
     loco_add_library(Resources OBJECT
         PUBLIC_FILES ${public_files}
         PRIVATE_FILES ${private_files})
+
 endif()

@@ -46,4 +46,3 @@ target_link_libraries(Core
         fmt::fmt
         sfl::sfl
 )
-
