@@ -3,10 +3,10 @@
 
 namespace OpenLoco::SceneManager
 {
-    static uint16_t _sceneAge;   // 0x00508F12
-    static Flags _sceneFlags;    // 0x00508F14
-    static uint8_t _pausedState; // 0x00508F17
-    static GameSpeed _gameSpeed; // 0x00508F1A
+    static uint16_t _sceneAge;      // 0x00508F12
+    static Flags _sceneFlags;       // 0x00508F14
+    static PauseFlags _pausedState; // 0x00508F17
+    static GameSpeed _gameSpeed;    // 0x00508F1A
 
     void resetSceneAge()
     {
@@ -100,20 +100,20 @@ namespace OpenLoco::SceneManager
 
     bool isPaused()
     {
-        return _pausedState != 0;
+        return _pausedState != PauseFlags::none;
     }
 
-    uint8_t getPauseFlags()
+    PauseFlags getPauseFlags()
     {
         return _pausedState;
     }
 
-    void setPauseFlag(uint8_t value)
+    void setPauseFlag(PauseFlags value)
     {
         _pausedState |= value;
     }
 
-    void unsetPauseFlag(uint8_t value)
+    void unsetPauseFlag(PauseFlags value)
     {
         _pausedState &= ~(value);
     }

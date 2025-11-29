@@ -32,7 +32,7 @@ namespace OpenLoco::Game
     static std::optional<std::string> openBrowsePrompt(std::string path, StringId titleId, browse_type type, const char* filter)
     {
         Audio::pauseSound();
-        SceneManager::setPauseFlag(1 << 2);
+        SceneManager::setPauseFlag(PauseFlags::browsePrompt);
         Gfx::invalidateScreen();
         Gfx::renderAndUpdate();
 
@@ -40,7 +40,7 @@ namespace OpenLoco::Game
 
         Audio::unpauseSound();
         Input::processMessagesMini();
-        SceneManager::unsetPauseFlag(1 << 2);
+        SceneManager::unsetPauseFlag(PauseFlags::browsePrompt);
         Gfx::invalidateScreen();
         Gfx::renderAndUpdate();
 
