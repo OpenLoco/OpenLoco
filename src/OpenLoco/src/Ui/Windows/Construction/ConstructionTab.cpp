@@ -70,6 +70,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             s_bend_to_dual_track,
             s_bend_to_single_track,
             turnaround,
+            null = 0xFF,
         };
     }
 
@@ -815,7 +816,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
         if (cState.constructionHover == 0 || cState.constructionHover == 1)
         {
-            if (cState.lastSelectedTrackPiece != 0xFF)
+            if (cState.lastSelectedTrackPiece != TrackPiece::null)
             {
                 auto trackPieceWidget = trackPieceWidgets[cState.lastSelectedTrackPiece];
                 activatedWidgets |= 1ULL << trackPieceWidget;
@@ -1024,7 +1025,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
         if (cState.constructionHover == 0 || cState.constructionHover == 1)
         {
-            if (cState.lastSelectedTrackPiece != 0xFF)
+            if (cState.lastSelectedTrackPiece != TrackPiece::null)
             {
                 auto trackPieceWidget = trackPieceWidgets[cState.lastSelectedTrackPiece];
                 activatedWidgets |= 1ULL << trackPieceWidget;
@@ -1088,7 +1089,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x004A0832
     static std::optional<TrackPieceId> getRoadPieceId(uint8_t trackPiece, uint8_t gradient, uint8_t rotation)
     {
-        if (trackPiece == 0xFF)
+        if (trackPiece == TrackPiece::null)
         {
             return std::nullopt;
         }
@@ -1214,7 +1215,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x004A04F8
     std::optional<TrackPieceId> getTrackPieceId(uint8_t trackPiece, uint8_t gradient, uint8_t rotation)
     {
-        if (trackPiece == 0xFF)
+        if (trackPiece == TrackPiece::null)
         {
             return std::nullopt;
         }
@@ -1603,7 +1604,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             trackType &= ~(1 << 7);
 
-            if (cState.lastSelectedTrackPiece == 0xFF)
+            if (cState.lastSelectedTrackPiece == TrackPiece::null)
             {
                 disableUnusedRoadPieces(&self, disabledWidgets);
                 return;
@@ -1681,7 +1682,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static void changeTrackPiece(uint8_t trackPiece, bool slope)
     {
         auto& cState = getConstructionState();
-        cState.byte_113603A = 0xFF;
+        cState.byte_113603A = TrackPiece::null;
         removeConstructionGhosts();
 
         if (slope)
