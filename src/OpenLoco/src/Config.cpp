@@ -151,6 +151,7 @@ namespace OpenLoco::Config
         _config.cashPopupRendering = config["cashPopupRendering"].as<bool>(true);
         _config.edgeScrolling = config["edgeScrolling"].as<bool>(true);
         _config.edgeScrollingSpeed = config["edgeScrollingSpeed"].as<int32_t>(12);
+        _config.windowFrameStyle = config["windowFrameStyle"].as<WindowFrameStyle>(WindowFrameStyle::background);
         _config.zoomToCursor = config["zoom_to_cursor"].as<bool>(true);
 
         // Saving and autosaves
@@ -277,6 +278,7 @@ namespace OpenLoco::Config
         node["cashPopupRendering"] = _config.cashPopupRendering;
         node["edgeScrolling"] = _config.edgeScrolling;
         node["edgeScrollingSpeed"] = _config.edgeScrollingSpeed;
+        node["windowFrameStyle"] = _config.windowFrameStyle;
         node["zoom_to_cursor"] = _config.zoomToCursor;
 
         // Saving and autosaves

@@ -1871,7 +1871,7 @@ namespace OpenLoco::Ui::WindowManager
             auto* v = get(index);
 
             // Don't draw overlapping opaque windows, they won't have changed
-            if (!v->hasFlags(WindowFlags::transparent))
+            if (!v->isTranslucent())
             {
                 continue;
             }
