@@ -19,6 +19,7 @@ namespace OpenLoco
         standard = 1 << 0,   // Used when the player toggles paused
         promptSave = 1 << 1, // Set when PromptSaveWindow is open
         browsePrompt = 1 << 2,
+        objectSelection = 1 << 3,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(PauseFlags);
 
