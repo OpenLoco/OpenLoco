@@ -1,9 +1,14 @@
+#include "Vehicle2.h"
 #include "MessageManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "Random.h"
 #include "Tutorial.h"
-#include "Vehicle.h"
+#include "Vehicle1.h"
+#include "VehicleBody.h"
+#include "VehicleBogie.h"
+#include "VehicleHead.h"
+#include "VehicleTail.h"
 #include "World/CompanyManager.h"
 
 using namespace OpenLoco::Literals;

@@ -8,6 +8,7 @@
 #include "Localisation/StringManager.h"
 #include "Types.hpp"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleHead.h"
 
 #include <array>
 #include <unordered_map>

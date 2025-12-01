@@ -4,6 +4,9 @@
 #include "GameCommands/GameCommands.h"
 #include "Types.hpp"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle1.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleHead.h"
 
 namespace OpenLoco::GameCommands
 {

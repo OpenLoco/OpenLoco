@@ -2,6 +2,12 @@
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle1.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
+#include "Vehicles/VehicleTail.h"
 #include "World/StationManager.h"
 
 using namespace OpenLoco::Vehicles;

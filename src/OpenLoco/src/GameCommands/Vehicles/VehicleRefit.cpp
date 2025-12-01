@@ -8,6 +8,8 @@
 #include "Types.hpp"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleHead.h"
 #include <OpenLoco/Core/Numerics.hpp>
 
 namespace OpenLoco::GameCommands

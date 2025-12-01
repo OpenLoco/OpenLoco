@@ -6,6 +6,7 @@
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleHead.h"
 #include "World/StationManager.h"
 
 using namespace OpenLoco::Vehicles;

@@ -7,6 +7,10 @@
 #include "Ui/WindowManager.h"
 #include "VehicleSell.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle1.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 

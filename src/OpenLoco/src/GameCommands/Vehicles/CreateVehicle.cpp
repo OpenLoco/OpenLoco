@@ -20,7 +20,13 @@
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/RoutingManager.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle1.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
+#include "Vehicles/VehicleTail.h"
 #include "World/CompanyManager.h"
 #include "World/Station.h"
 #include <numeric>

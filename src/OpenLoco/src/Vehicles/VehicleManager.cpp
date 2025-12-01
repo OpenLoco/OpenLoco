@@ -16,6 +16,12 @@
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicle.h"
+#include "Vehicle1.h"
+#include "Vehicle2.h"
+#include "VehicleBody.h"
+#include "VehicleBogie.h"
+#include "VehicleHead.h"
+#include "VehicleTail.h"
 #include "World/Company.h"
 #include "World/CompanyManager.h"
 

@@ -26,6 +26,8 @@
 #include "Ui.h"
 #include "Ui/ProgressBar.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
 #include "World/CompanyManager.h"
 #include "World/IndustryManager.h"
