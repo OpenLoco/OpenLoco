@@ -228,7 +228,7 @@ jobs:
       - name: Build OpenLoco
         run: |
           cmake --preset macos -DVCPKG_BUILD_TYPE=release -DOPENLOCO_USE_VCPKG=true -DVCPKG_TARGET_TRIPLET=arm64-osx -DVCPKG_LIBRARY_LINKAGE=static
-          cmake --build --preset linux-release-static
+          cmake --build --preset macos-release
       - name: Install to artifacts
         run: |
           mkdir -p artifacts
