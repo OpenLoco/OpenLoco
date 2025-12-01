@@ -232,6 +232,7 @@ jobs:
       - name: Build OpenLoco
         run: |
           export VCPKG_DEFAULT_BINARY_CACHE=${{ github.workspace }}/vcpkg-cache
+          mkdir $VCPKG_DEFAULT_BINARY_CACHE
           cmake --preset macos -DVCPKG_BUILD_TYPE=release -DOPENLOCO_USE_VCPKG=true -DVCPKG_TARGET_TRIPLET=arm64-osx -DVCPKG_LIBRARY_LINKAGE=static
           cmake --build --preset macos-release
       - name: Install to artifacts
