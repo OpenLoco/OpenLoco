@@ -225,12 +225,13 @@ jobs:
       - name: Set up binary cache
         uses: actions/cache@v4
         with:
-          path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
+          path: '${{ github.workspace }}/vcpkg-cache'
           key: ${{ runner.os }}-vcpkg-binary-cache-${{ hashFiles('vcpkg*.json') }}
           restore-keys: |
             ${{ runner.os }}-vcpkg-binary-cache-
       - name: Build OpenLoco
         run: |
+          export VCPKG_DEFAULT_BINARY_CACHE=${{ github.workspace }}/vcpkg-cache
           cmake --preset macos -DVCPKG_BUILD_TYPE=release -DOPENLOCO_USE_VCPKG=true -DVCPKG_TARGET_TRIPLET=arm64-osx -DVCPKG_LIBRARY_LINKAGE=static
           cmake --build --preset macos-release
       - name: Install to artifacts
