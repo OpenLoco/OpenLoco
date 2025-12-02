@@ -856,6 +856,8 @@ if (APPLE)
         set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${OPENLOCO_VERSION_TAG} ${OPENLOCO_BRANCH}")
     endif()
 
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "11.0" CACHE STRING "")
+
     set(BUNDLE_RESOURCES "")
 
     find_program(ICONUTIL iconutil)
