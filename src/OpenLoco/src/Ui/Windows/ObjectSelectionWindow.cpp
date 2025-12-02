@@ -1,4 +1,5 @@
 #include "Audio/Audio.h"
+#include "Config.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
@@ -1017,14 +1018,20 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x004733F5
     static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        auto tr = Gfx::TextRenderer(drawingCtx);
+        // Extend background frame with a solid colour
+        // TODO: this should not be needed
+        if (Config::get().windowFrameStyle == Config::WindowFrameStyle::background)
+        {
+            drawingCtx.fillRectInset(self.x, self.y + 20, self.x + self.width - 1, self.y + 20 + 60, self.getColour(WindowColour::primary), Gfx::RectInsetFlags::none);
+        }
 
-        drawingCtx.fillRectInset(self.x, self.y + 20, self.x + self.width - 1, self.y + 20 + 60, self.getColour(WindowColour::primary), Gfx::RectInsetFlags::none);
         self.draw(drawingCtx);
 
         drawTabs(self, drawingCtx);
         drawSecondaryTabs(self, drawingCtx);
         drawSearchBox(self, drawingCtx);
+
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         {
             static constexpr std::array<StringId, 3> levelStringIds = {
