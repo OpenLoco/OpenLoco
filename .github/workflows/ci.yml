@@ -3,7 +3,7 @@ on: [push, pull_request, workflow_dispatch]
 env:
   OPENLOCO_BUILD_SERVER: GitHub
   ASSETS_SSH_KEY: ${{ secrets.ASSETS_SSH_KEY }}
-  VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}/vcpkg-cache
+  VCPKG_DEFAULT_BINARY_CACHE: vcpkg-cache
 jobs:
   check-code-formatting:
     name: Check code formatting
