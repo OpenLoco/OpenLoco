@@ -200,7 +200,7 @@ jobs:
             ${{ runner.os }}-vcpkg-binary-cache-
       - name: Build OpenLoco
         run: |
-          cmake --preset linux-vcpkg-static -DVCPKG_BUILD_TYPE=release
+          cmake --preset linux-vcpkg-static -DVCPKG_BUILD_TYPE=release -DVCPKG_INSTALL_OPTIONS="--debug"
           cmake --build --preset linux-release-static
       # Static linkage means the binary should be fairly portable / distributable across distros!
       - name: Install to artifacts
