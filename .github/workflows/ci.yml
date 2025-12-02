@@ -3,7 +3,6 @@ on: [push, pull_request, workflow_dispatch]
 env:
   OPENLOCO_BUILD_SERVER: GitHub
   ASSETS_SSH_KEY: ${{ secrets.ASSETS_SSH_KEY }}
-  VCPKG_DEFAULT_BINARY_CACHE: vcpkg-cache
 jobs:
   check-code-formatting:
     name: Check code formatting
@@ -40,7 +39,9 @@ jobs:
           fetch-depth: 0
           submodules: true
       - name: Setup cache directories
-        run: mkdir ${{ env.VCPKG_DEFAULT_BINARY_CACHE }} | Out-Null
+        run: |
+          echo "VCPKG_DEFAULT_BINARY_CACHE=${{ github.workspace }}/vcpkg-cache" | Out-File -FilePath $env:GITHUB_ENV -Append
+          mkdir ${{ env.VCPKG_DEFAULT_BINARY_CACHE }} | Out-Null
       - name: Set up binary cache
         uses: actions/cache@v4
         with:
@@ -185,7 +186,9 @@ jobs:
       - name: Workaround git permissions issue
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - name: Setup cache directories
-        run: mkdir -p ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
+        run: |
+          echo "VCPKG_DEFAULT_BINARY_CACHE=/w/OpenLoco/OpenLoco/vcpkg-cache" >> "$GITHUB_ENV"
+          mkdir -p ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
       - name: Set up binary cache
         uses: actions/cache@v4
         with:
@@ -221,7 +224,9 @@ jobs:
       - name: Workaround git permissions issue
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - name: Setup cache directories
-        run: mkdir -p ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
+        run: |
+          echo "VCPKG_DEFAULT_BINARY_CACHE=$GITHUB_WORKSPACE/vcpkg-cache" >> "$GITHUB_ENV"
+          mkdir -p ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
       - name: Set up binary cache
         uses: actions/cache@v4
         with:
