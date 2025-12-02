@@ -109,7 +109,7 @@ FetchContent_MakeAvailable(openloco_objects)
 
 add_subdirectory(src)
 
-if (MSVC)
+if (NOT APPLE)
     if (${CMAKE_VERSION} VERSION_GREATER 3.26)
         # Uses the copy_directory_if_different to avoid copying objects/language every time (3.26 feature)
         add_custom_target(OpenLocoAssets ALL
@@ -126,9 +126,9 @@ if (MSVC)
             DEPENDS OpenLoco
         )
     endif()
-    
-    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenLoco)
 endif()
+
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenLoco)
 
 install(TARGETS OpenLoco
     RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
