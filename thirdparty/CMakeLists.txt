@@ -87,6 +87,7 @@ if ( NOT sfl_FOUND )
         GIT_REPOSITORY      https://github.com/slavenf/sfl-library
         GIT_TAG             2.0.2
         GIT_SHALLOW         ON
+        EXCLUDE_FROM_ALL
     )
     FetchContent_MakeAvailable(sfl)
 endif()
