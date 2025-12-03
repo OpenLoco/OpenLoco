@@ -7,7 +7,7 @@
 #include "Map/TileLoop.hpp"
 #include "Map/TileManager.h"
 #include "Objects/ObjectManager.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 
 using namespace OpenLoco::World;
 

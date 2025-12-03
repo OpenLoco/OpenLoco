@@ -6,7 +6,7 @@
 #include "Logging.h"
 #include "NetworkClient.h"
 #include "NetworkServer.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "SceneManager.h"
 #include "Socket.h"
 #include <cassert>

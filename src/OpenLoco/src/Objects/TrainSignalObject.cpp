@@ -5,7 +5,7 @@
 #include "ObjectImageTable.h"
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 
 namespace OpenLoco
 {

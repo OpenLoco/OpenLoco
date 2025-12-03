@@ -1,5 +1,5 @@
 #include "S5Options.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 #include <algorithm>
 
 namespace OpenLoco::S5

@@ -1,7 +1,7 @@
 #pragma once
 #include "EditorController.h"
 #include "Objects/Object.h"
-#include "ScenarioObjective.h"
+#include "Scenario/ScenarioObjective.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <cstddef>
 

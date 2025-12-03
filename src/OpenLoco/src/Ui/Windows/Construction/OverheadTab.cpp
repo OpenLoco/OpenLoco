@@ -21,7 +21,7 @@
 #include "Objects/RoadObject.h"
 #include "Objects/TrackExtraObject.h"
 #include "Objects/TrackObject.h"
-#include "ScenarioConstruction.h"
+#include "Scenario/ScenarioConstruction.h"
 #include "SceneManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"

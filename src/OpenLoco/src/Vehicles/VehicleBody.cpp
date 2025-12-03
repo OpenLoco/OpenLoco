@@ -13,7 +13,7 @@
 #include "Objects/SteamObject.h"
 #include "Objects/VehicleObject.h"
 #include "Random.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "Vehicle.h"
 
 #include <OpenLoco/Math/Trigonometry.hpp>

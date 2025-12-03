@@ -33,7 +33,7 @@
 #include "Objects/TreeObject.h"
 #include "Objects/WallObject.h"
 #include "Objects/WaterObject.h"
-#include "Scenario.h"
+#include "Scenario/Scenario.h"
 #include "SceneManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ScrollView.h"
