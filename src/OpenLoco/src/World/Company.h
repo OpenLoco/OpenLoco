@@ -87,9 +87,8 @@ namespace OpenLoco
 
     class OwnerStatus
     {
-        int16_t data[2];
-
     public:
+        int16_t data[2];
         OwnerStatus()
         {
             data[0] = -1;
@@ -140,7 +139,6 @@ namespace OpenLoco
 
     constexpr size_t kExpenditureHistoryCapacity = 16;
 
-#pragma pack(push, 1)
     struct Company
     {
         struct Unk25C0HashTableEntry
@@ -211,14 +209,11 @@ namespace OpenLoco
             uint32_t thoughtState2AiStationIdx;        // 0x257E Also used mostly for activeThoughtRevenueEstimate TODO: Don't do this
         };
         uint32_t var_2582;
-        uint8_t pad_2586[0x2596 - 0x2586];
         uint32_t var_2596;
         uint8_t var_259A;
         uint8_t var_259B;
         uint8_t var_259C;
-        uint8_t pad_259D;
         uint32_t aiPlaceVehicleIndex;
-        uint8_t pad_25A2[0x25BE - 0x25A2];
         AiThoughtType var_25BE;
         CorporateRating currentRating;          // 0x25BF
         Unk25C0HashTableEntry var_25C0[0x1000]; // 0x25C0 Hash table entries
@@ -263,14 +258,12 @@ namespace OpenLoco
         uint16_t observationObject;               // 0x8BC2;
         uint16_t observationTimeout;              // 0x8BC4
         OwnerStatus ownerStatus;                  // 0x8BC6
-        uint8_t pad_8BCA[0x8BCE - 0x8BCA];
-        uint32_t cargoDelivered[32];             // 0x8BCE;
-        uint8_t challengeProgress;               // 0x8C4E - percent completed on challenge
-        uint8_t numMonthsInTheRed;               // 0x8C4F
-        uint32_t cargoUnitsTotalDistance;        // 0x8C50
-        uint32_t cargoUnitsDistanceHistory[120]; // 0x8C54
-        uint16_t jailStatus;                     // 0x8E34
-        uint8_t pad_8E36[0x8FA8 - 0x8E36];
+        uint32_t cargoDelivered[32];              // 0x8BCE;
+        uint8_t challengeProgress;                // 0x8C4E - percent completed on challenge
+        uint8_t numMonthsInTheRed;                // 0x8C4F
+        uint32_t cargoUnitsTotalDistance;         // 0x8C50
+        uint32_t cargoUnitsDistanceHistory[120];  // 0x8C54
+        uint16_t jailStatus;                      // 0x8E34
 
         CompanyId id() const;
         bool empty() const;
@@ -300,14 +293,6 @@ namespace OpenLoco
 
         uint8_t getNewChallengeProgress() const;
     };
-#pragma pack(pop)
-
-    static_assert(sizeof(Company) == 0x8FA8);
-    static_assert(sizeof(Company::expenditures) == 0x440);
-    static_assert(offsetof(Company, companyValueHistory[0]) == 0x88CE);
-    static_assert(offsetof(Company, vehicleProfit) == 0x8B9E);
-    static_assert(offsetof(Company, challengeProgress) == 0x8C4E);
-    static_assert(offsetof(Company, activeEmotions) == 0x8BB0);
 
     StringId getCorporateRatingAsStringId(CorporateRating rating);
     constexpr CorporateRating performanceToRating(int16_t performanceIndex);

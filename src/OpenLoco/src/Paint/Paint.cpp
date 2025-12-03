@@ -1,4 +1,5 @@
 #include "Paint.h"
+#include "Config.h"
 #include "Game.h"
 #include "GameStateFlags.h"
 #include "Graphics/Gfx.h"
@@ -19,9 +20,7 @@
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;
 
 namespace OpenLoco::Paint
@@ -41,6 +40,8 @@ namespace OpenLoco::Paint
 
         _viewFlags = options.viewFlags;
         currentRotation = options.rotation;
+        _isHitTest = options.isHitTest;
+        _skipTrackRoadSurfaces = options.skipTrackRoadSurfaces;
 
         // TODO: unused
         _foregroundCullingHeight = options.foregroundCullHeight;
@@ -1214,22 +1215,14 @@ namespace OpenLoco::Paint
     // 0x00447A0E
     static bool isSpriteInteractedWith(const Gfx::RenderTarget* rt, ImageId imageId, const Ui::Point& coords)
     {
-        static loco_global<bool, 0x00E40114> _interactionResult;
-        static loco_global<uint32_t, 0x00E04324> _interactionFlags;
-        _interactionResult = false;
         auto paletteMap = Gfx::PaletteMap::getDefault();
         if (imageId.hasPrimary())
         {
-            _interactionFlags = Gfx::ImageIdFlags::remap;
             ExtColour index = imageId.hasSecondary() ? static_cast<ExtColour>(imageId.getPrimary()) : imageId.getRemap();
             if (auto pm = Gfx::PaletteMap::getForColour(index))
             {
                 paletteMap = *pm;
             }
-        }
-        else
-        {
-            _interactionFlags = 0;
         }
         return isSpriteInteractedWithPaletteSet(rt, imageId, coords, paletteMap);
     }
@@ -1523,4 +1516,8 @@ namespace OpenLoco::Paint
         return std::span<TunnelEntry>();
     }
 
+    bool showAiPlanningGhosts()
+    {
+        return Config::get().showAiPlanningAsGhosts;
+    }
 }

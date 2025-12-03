@@ -10,14 +10,18 @@
 
 namespace OpenLoco::Vehicles::RoutingManager
 {
-    constexpr uint16_t kAllocatedButFreeRoutingStation = 0xFFFEU; // Indicates that this array is allocated to a vehicle but no station has been set.
-    constexpr uint16_t kRoutingNull = 0xFFFFU;                    // Indicates that this array is unallocated to any vehicle.
+    constexpr uint16_t kAllocatedButFreeRouting = 0xFFFEU; // Indicates that this array entry is allocated to a vehicle but no routing has been set.
+    constexpr uint16_t kRoutingNull = 0xFFFFU;             // Indicates that this array entry is unallocated to any vehicle.
 
     std::optional<RoutingHandle> getAndAllocateFreeRoutingHandle();
     void freeRoutingHandle(const RoutingHandle handle);
+    // Returns a routing. Each routing represents a track/road piece that a train is on or has reserved
+    // See OpenLoco::World::Track::AdditionalTadFlags for bits of the routing
     uint16_t getRouting(const RoutingHandle handle);
     void setRouting(const RoutingHandle handle, uint16_t routing);
     void freeRouting(const RoutingHandle handle);
+    // Equivalent of calling freeRouting on all routings for a single vehicle
+    void resetRoutings(const RoutingHandle handle);
     bool isEmptyRoutingSlotAvailable();
     void resetRoutingTable();
 

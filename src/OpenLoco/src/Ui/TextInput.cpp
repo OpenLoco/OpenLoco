@@ -3,11 +3,8 @@
 #include "Graphics/TextRenderer.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
 #include <SDL2/SDL.h>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::TextInput
 {
@@ -18,7 +15,8 @@ namespace OpenLoco::Ui::TextInput
         {
             if (inputLenLimit > 0 && buffer.length() == inputLenLimit)
             {
-                return false;
+                // Limit reached but we need to consume this input.
+                return true;
             }
 
             if (cursorPosition == buffer.length())

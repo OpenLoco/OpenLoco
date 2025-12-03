@@ -109,7 +109,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             Widgets::TableHeader({ 389, 43 }, { 145, 12 }, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_performance),
             Widgets::TableHeader({ 534, 43 }, { 100, 12 }, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_value),
             Widgets::ScrollView({ 3, 56 }, { 634, 201 }, WindowColour::secondary, Scrollbars::vertical),
-            Widgets::Label({ 3, kWindowSize.height - 17 }, { kWindowSize.width, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
+            Widgets::Label({ 3, kWindowSize.height - 17 }, { kWindowSize.width - kResizeHandleSize, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
 
         );
 
@@ -337,9 +337,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00436321
-        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            *scrollHeight = self.var_83C * kRowHeight;
+            scrollHeight = self.var_83C * kRowHeight;
         }
 
         // 0x004363A0
@@ -414,6 +414,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             self.widgets[widx::scrollview].right = self.width - 4;
             self.widgets[widx::scrollview].bottom = self.height - 14;
+            self.widgets[widx::status_bar].right = self.width - kResizeHandleSize - 1;
 
             // Reposition header buttons
             self.widgets[widx::sort_name].right = std::min(178, self.width - 8);
@@ -682,8 +683,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self.draw(drawingCtx);
             Common::drawTabs(self, drawingCtx);
 
-            _graphSettings.left = 4;
-            _graphSettings.top = self.widgets[Common::widx::panel].top + 4;
+            _graphSettings.left = self.x + 4;
+            _graphSettings.top = self.y + self.widgets[Common::widx::panel].top + 4;
             _graphSettings.width = self.width - kLegendWidth - kLegendMargin - 2 * kWindowPadding;
             _graphSettings.height = self.height - self.widgets[Common::widx::panel].top - 2 * kWindowPadding;
             _graphSettings.yOffset = 17;
@@ -775,8 +776,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self.draw(drawingCtx);
             Common::drawTabs(self, drawingCtx);
 
-            _graphSettings.left = 4;
-            _graphSettings.top = self.widgets[Common::widx::panel].top + 4;
+            _graphSettings.left = self.x + 4;
+            _graphSettings.top = self.y + self.widgets[Common::widx::panel].top + 4;
             _graphSettings.width = self.width - kLegendWidth - kLegendMargin - 2 * kWindowPadding;
             _graphSettings.height = self.height - self.widgets[Common::widx::panel].top - 2 * kWindowPadding;
             _graphSettings.yOffset = 17;
@@ -868,8 +869,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self.draw(drawingCtx);
             Common::drawTabs(self, drawingCtx);
 
-            _graphSettings.left = 4;
-            _graphSettings.top = self.widgets[Common::widx::panel].top + 4;
+            _graphSettings.left = self.x + 4;
+            _graphSettings.top = self.y + self.widgets[Common::widx::panel].top + 4;
             _graphSettings.width = self.width - kLegendWidth - kLegendMargin - 2 * kWindowPadding;
             _graphSettings.height = self.height - self.widgets[Common::widx::panel].top - 2 * kWindowPadding;
             _graphSettings.yOffset = 17;
@@ -961,8 +962,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self.draw(drawingCtx);
             Common::drawTabs(self, drawingCtx);
 
-            _graphSettings.left = 4;
-            _graphSettings.top = self.widgets[Common::widx::panel].top + 4;
+            _graphSettings.left = self.x + 4;
+            _graphSettings.top = self.y + self.widgets[Common::widx::panel].top + 4;
             _graphSettings.width = self.width - kLegendWidth - kLegendMargin - 2 * kWindowPadding;
             _graphSettings.height = self.height - self.widgets[Common::widx::panel].top - 2 * kWindowPadding;
             _graphSettings.yOffset = 17;
@@ -1131,8 +1132,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self.draw(drawingCtx);
             Common::drawTabs(self, drawingCtx);
 
-            _graphSettings.left = 4;
-            _graphSettings.top = self.widgets[Common::widx::panel].top + 14;
+            _graphSettings.left = self.x + 4;
+            _graphSettings.top = self.y + self.widgets[Common::widx::panel].top + 14;
             _graphSettings.width = self.width - kLegendWidth - kLegendMargin - 2 * kWindowPadding;
             _graphSettings.height = self.height - self.widgets[Common::widx::panel].top - 20 - 2 * kWindowPadding;
             _graphSettings.yOffset = 17;
@@ -1198,8 +1199,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
             }
 
             {
-                auto x = self.width - kLegendWidth - kWindowPadding;
-                auto y = 52;
+                auto x = self.width + self.x - kLegendWidth - kWindowPadding;
+                auto y = self.y + 52;
 
                 drawGraphLegend(&self, drawingCtx, x, y);
             }
@@ -1208,7 +1209,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             // Chart title
             {
-                auto point = Point(canvasMidX, self.widgets[Common::widx::panel].top + 1);
+                auto point = Point(self.x + canvasMidX, self.widgets[Common::widx::panel].top + self.y + 1);
 
                 FormatArguments args{};
                 args.push<uint16_t>(100);
@@ -1219,7 +1220,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             // X axis label ("Transit time")
             {
-                auto point = Point(canvasMidX, self.height - 13);
+                auto point = Point(self.x + canvasMidX, self.height + self.y - 13);
 
                 tr.drawStringCentred(point, Colour::black, StringIds::cargo_transit_time);
             }
@@ -1316,7 +1317,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self.draw(drawingCtx);
             Common::drawTabs(self, drawingCtx);
 
-            auto y = 47;
+            auto y = self.y + 47;
 
             for (auto i = 0; i < 3; i++)
             {
@@ -1335,7 +1336,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                         StringIds::water_speed_record,
                     };
 
-                    auto point = Point(4, y);
+                    auto point = Point(self.x + 4, y);
                     tr.drawStringLeft(point, Colour::black, string[i], args);
                 }
                 y += 11;
@@ -1350,11 +1351,11 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     auto imageId = competitorObj->images[enumValue(company->ownerEmotion)];
                     imageId = Gfx::recolour(imageId, company->mainColours.primary);
 
-                    auto x = 4;
+                    auto x = self.x + 4;
                     drawingCtx.drawImage(x, y, imageId);
 
                     y += 7;
-                    auto point = Point(33, y);
+                    auto point = Point(self.x + 33, y);
 
                     FormatArguments args{};
                     args.push(company->name);
@@ -1521,7 +1522,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             self.currentTab = widgetIndex - widx::tab_company_list;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
 
             self.viewportRemove(0);
 
@@ -1692,7 +1693,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 if (!(self.isDisabled(widx::tab_values)))
                 {
                     auto& widget = self.widgets[widx::tab_values];
-                    auto point = Point(widget.left + 28, widget.top + 14 + 1);
+                    auto point = Point(widget.left + self.x + 28, widget.top + self.y + 14 + 1);
                     tr.drawStringRight(point, Colour::black, StringIds::currency_symbol);
                 }
             }
@@ -1708,7 +1709,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 if (!(self.isDisabled(widx::tab_payment_rates)))
                 {
                     auto& widget = self.widgets[widx::tab_payment_rates];
-                    auto point = Point(widget.left + 28, widget.top + 14 + 1);
+                    auto point = Point(widget.left + self.x + 28, widget.top + self.y + 14 + 1);
                     tr.drawStringRight(point, Colour::black, StringIds::currency_symbol);
                 }
             }
@@ -1801,9 +1802,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 Ui::drawGraph(_graphSettings, self, drawingCtx);
             }
 
-            auto x = self.width - kLegendWidth - kWindowPadding;
-            auto y = 52;
-
+            auto x = self.width + self.x - kLegendWidth - kWindowPadding;
+            auto y = self.y + 52;
             Common::drawGraphLegend(self, drawingCtx, x, y);
         }
     }

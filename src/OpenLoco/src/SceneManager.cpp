@@ -1,16 +1,13 @@
 #include "SceneManager.h"
 #include "Audio/Audio.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::SceneManager
 {
-    loco_global<uint16_t, 0x00508F12> _sceneAge;
-    loco_global<Flags, 0x00508F14> _sceneFlags;
-    loco_global<uint8_t, 0x00508F17> _pausedState;
-    loco_global<GameSpeed, 0x00508F1A> _gameSpeed;
+    static uint16_t _sceneAge;   // 0x00508F12
+    static Flags _sceneFlags;    // 0x00508F14
+    static uint8_t _pausedState; // 0x00508F17
+    static GameSpeed _gameSpeed; // 0x00508F1A
 
     void resetSceneAge()
     {
@@ -39,12 +36,12 @@ namespace OpenLoco::SceneManager
 
     void addSceneFlags(Flags value)
     {
-        *_sceneFlags |= value;
+        _sceneFlags |= value;
     }
 
     void removeSceneFlags(Flags value)
     {
-        *_sceneFlags &= ~value;
+        _sceneFlags &= ~value;
     }
 
     static inline bool hasSceneFlags(Flags value)
@@ -130,7 +127,7 @@ namespace OpenLoco::SceneManager
         {
             onPause();
         }
-        *_pausedState |= value;
+        _pausedState |= value;
     }
 
     void unsetPauseFlag(uint8_t value)
@@ -139,7 +136,7 @@ namespace OpenLoco::SceneManager
         {
             return;
         }
-        *_pausedState &= ~(value);
+        _pausedState &= ~(value);
         if (_pausedState == 0)
         {
             onUnpause();

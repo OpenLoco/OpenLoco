@@ -3,7 +3,6 @@
 #include "Objects/Object.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
-
 #include <cstddef>
 #include <cstdint>
 
@@ -23,6 +22,7 @@ namespace OpenLoco::ScenarioManager
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(ScenarioIndexFlags);
 
+#pragma pack(push, 1)
     struct ScenarioIndexEntry
     {
         char filename[0x100];           // 0x000
@@ -40,11 +40,12 @@ namespace OpenLoco::ScenarioManager
         ObjectHeader currency;          // 0x468
         uint8_t preview[128][128];      // 0x478
 
-        bool hasFlag(ScenarioIndexFlags flag)
+        constexpr bool hasFlag(ScenarioIndexFlags flag) const
         {
             return (flags & flag) != ScenarioIndexFlags::none;
         }
     };
+#pragma pack(pop)
 
     static_assert(offsetof(ScenarioIndexEntry, category) == 0x100);
     static_assert(offsetof(ScenarioIndexEntry, flags) == 0x264);

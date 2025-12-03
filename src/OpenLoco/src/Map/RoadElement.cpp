@@ -10,9 +10,6 @@
 #include "TileManager.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::World
 {

@@ -15,16 +15,15 @@
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
-#include <OpenLoco/Interop/Interop.hpp>
+#include <SDL2/SDL_keyboard.h>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Input;
 
 namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
 {
     static constexpr Ui::Size32 kWindowSize = { 280, 72 };
 
-    static loco_global<uint8_t, 0x011364A4> _editingShortcutIndex;
+    static uint8_t _editingShortcutIndex;
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
@@ -63,6 +62,59 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
         return window;
     }
 
+    static void editShortcut([[maybe_unused]] const uint32_t charCode, const uint32_t keyCode)
+    {
+        if (keyCode == SDLK_UP)
+        {
+            return;
+        }
+        if (keyCode == SDLK_DOWN)
+        {
+            return;
+        }
+        if (keyCode == SDLK_LEFT)
+        {
+            return;
+        }
+        if (keyCode == SDLK_RIGHT)
+        {
+            return;
+        }
+        if (keyCode == SDLK_NUMLOCKCLEAR)
+        {
+            return;
+        }
+        if (keyCode == SDLK_LGUI)
+        {
+            return;
+        }
+        if (keyCode == SDLK_RGUI)
+        {
+            return;
+        }
+
+        auto& cfg = Config::get();
+
+        // Unbind any shortcuts that may be using the current keycode.
+        for (auto& [id, shortcut] : cfg.shortcuts)
+        {
+            if (shortcut.keyCode == keyCode && shortcut.modifiers == Input::getKeyModifier())
+            {
+                shortcut.keyCode = 0xFFFFFFFF;
+                shortcut.modifiers = KeyModifier::invalid;
+            }
+        }
+
+        // Assign this keybinding to the shortcut we're currently rebinding.
+        auto& shortcut = cfg.shortcuts.at(static_cast<Input::Shortcut>(_editingShortcutIndex));
+        shortcut.keyCode = keyCode;
+        shortcut.modifiers = Input::getKeyModifier();
+
+        WindowManager::close(WindowType::editKeyboardShortcut);
+        WindowManager::invalidate(WindowType::keyboardShortcuts);
+        Config::write();
+    }
+
     // 0x004BE8DF
     static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
     {
@@ -71,8 +123,8 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
         self.draw(drawingCtx);
 
         FormatArguments args{};
-        args.push(ShortcutManager::getName(static_cast<Shortcut>(*_editingShortcutIndex)));
-        auto point = Ui::Point(140, 32);
+        args.push(ShortcutManager::getName(static_cast<Shortcut>(_editingShortcutIndex)));
+        auto point = Ui::Point(self.x + 140, self.y + 32);
         tr.drawStringCentredWrapped(point, 272, Colour::black, StringIds::change_keyboard_shortcut_desc, args);
     }
 
@@ -87,9 +139,17 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
         }
     }
 
+    static bool onKeyUp([[maybe_unused]] Window& self, const uint32_t charCode, const uint32_t keyCode)
+    {
+        editShortcut(charCode, keyCode);
+
+        return true;
+    }
+
     static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
         .draw = draw,
+        .keyUp = onKeyUp,
     };
 
     static const WindowEventList& getEvents()

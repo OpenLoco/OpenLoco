@@ -9,7 +9,6 @@
 #include "Objects/ObjectManager.h"
 #include "ScenarioOptions.h"
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 
 namespace OpenLoco::GameCommands

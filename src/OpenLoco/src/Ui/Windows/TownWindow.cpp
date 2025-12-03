@@ -148,7 +148,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             const auto& widget = self.widgets[widx::status_bar];
             const auto width = widget.width() - 1;
-            auto point = Point(widget.left - 1, widget.top - 1);
+            auto point = Point(self.x + widget.left - 1, self.y + widget.top - 1);
             tr.drawStringLeftClipped(point, width, Colour::black, StringIds::status_town_population, args);
         }
 
@@ -297,7 +297,7 @@ namespace OpenLoco::Ui::Windows::Town
             }
             else
             {
-                if (Config::get().hasFlags(Config::Flags::gridlinesOnLandscape))
+                if (Config::get().gridlinesOnLandscape)
                 {
                     flags |= ViewportFlags::gridlines_on_landscape;
                 }
@@ -310,7 +310,7 @@ namespace OpenLoco::Ui::Windows::Town
             {
                 auto widget = &self.widgets[widx::viewport];
                 auto tile = World::Pos3({ town->x, town->y, tileZ });
-                auto origin = Ui::Point(widget->left + 1, widget->top + 1);
+                auto origin = Ui::Point(widget->left + self.x + 1, widget->top + self.y + 1);
                 auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
                 ViewportManager::create(&self, 0, origin, size, self.savedView.zoomLevel, tile);
                 self.invalidate();
@@ -358,7 +358,7 @@ namespace OpenLoco::Ui::Windows::Town
         if (window == nullptr)
         {
             // 0x00499C0D start
-            const WindowFlags newFlags = WindowFlags::flag_8 | WindowFlags::resizable;
+            const WindowFlags newFlags = WindowFlags::viewportNoShiftPixels | WindowFlags::resizable;
             window = WindowManager::createWindow(WindowType::town, kWindowSize, newFlags, Town::getEvents());
             window->number = townId;
             window->minWidth = 192;
@@ -414,7 +414,7 @@ namespace OpenLoco::Ui::Windows::Town
             self.draw(drawingCtx);
             Common::drawTabs(self, drawingCtx);
 
-            auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(0, 44, self.width, self.height - 44));
+            auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(self.x, self.y + 44, self.width, self.height - 44));
             if (!clipped)
             {
                 return;
@@ -556,7 +556,7 @@ namespace OpenLoco::Ui::Windows::Town
             self.draw(drawingCtx);
             Common::drawTabs(self, drawingCtx);
 
-            auto point = Point(4, 46);
+            auto point = Point(self.x + 4, self.y + 46);
             tr.drawStringLeft(point, Colour::black, StringIds::local_authority_ratings_transport_companies);
 
             point.x += 4;
@@ -737,7 +737,7 @@ namespace OpenLoco::Ui::Windows::Town
             args.push(town->name);
             args.push(town->name);
 
-            TextInput::openTextInput(&self, StringIds::title_town_name, StringIds::prompt_type_new_town_name, town->name, widgetIndex, &args);
+            TextInput::openTextInput(&self, StringIds::title_town_name, StringIds::prompt_type_new_town_name, town->name, widgetIndex, args);
         }
 
         // 0x004991BC
@@ -752,7 +752,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             self.currentTab = widgetIndex - widx::tab_town;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
             self.var_85C = -1;
 
             self.viewportRemove(0);

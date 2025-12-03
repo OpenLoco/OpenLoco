@@ -17,6 +17,7 @@
 #include "Graphics/TextRenderer.h"
 #include "HillShapesObject.h"
 #include "IndustryObject.h"
+#include "Input.h"
 #include "InterfaceSkinObject.h"
 #include "LandObject.h"
 #include "LevelCrossingObject.h"
@@ -59,11 +60,9 @@
 #include <OpenLoco/Core/Stream.hpp>
 #include <OpenLoco/Core/Timer.hpp>
 #include <OpenLoco/Core/Traits.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <bit>
 #include <vector>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::ObjectManager
@@ -73,6 +72,7 @@ namespace OpenLoco::ObjectManager
     struct ObjectEntry2 : public ObjectHeader
     {
         uint32_t dataSize;
+        ObjectEntry2() = default;
         ObjectEntry2(ObjectHeader head, uint32_t size)
             : ObjectHeader(head)
             , dataSize(size)
@@ -80,24 +80,54 @@ namespace OpenLoco::ObjectManager
         }
     };
     static_assert(sizeof(ObjectEntry2) == 0x14);
+#pragma pack(pop)
 
     struct ObjectRepositoryItem
     {
         Object** objects;
         ObjectEntry2* objectEntryExtendeds;
     };
-    assert_struct_size(ObjectRepositoryItem, 8);
-#pragma pack(pop)
 
     static_assert(Traits::IsPOD<ObjectHeader>::value, "Object Header must be trivial for I/O purposes");
 
-    loco_global<ObjectRepositoryItem[kMaxObjectTypes], 0x4FE0B8> _objectRepository;
+    // 0x004FE0B8
+    // Pre-allocated storage for all object types
+    // Each type has arrays for object pointers and extended headers
+    template<ObjectType Type>
+    struct ObjectStorage
+    {
+        static constexpr auto kCount = getMaxObjects(Type);
+        static inline std::array<Object*, kCount> objects = {};
+        static inline std::array<ObjectEntry2, kCount> objectEntryExtendeds = {};
+    };
 
-    static loco_global<bool, 0x0050D161> _isPartialLoaded;
-    static loco_global<uint8_t, 0x0050D160> _isTemporaryObject; // 0xFF or 0
-    static loco_global<Object*, 0x0050D15C> _temporaryObject;
-    static loco_global<uint32_t, 0x009D9D52> _decodedSize; // return of loadTemporaryObject (badly named)
-    static loco_global<uint32_t, 0x0112A168> _numImages;   // return of loadTemporaryObject (badly named)
+    // Helper to initialize repository item for a given type
+    template<ObjectType Type>
+    constexpr ObjectRepositoryItem makeRepositoryItem()
+    {
+        return ObjectRepositoryItem{
+            ObjectStorage<Type>::objects.data(),
+            ObjectStorage<Type>::objectEntryExtendeds.data()
+        };
+    }
+
+    // Generate repository initialization at compile time
+    template<size_t... Is>
+    constexpr std::array<ObjectRepositoryItem, kMaxObjectTypes> makeRepositoryArray(std::index_sequence<Is...>)
+    {
+        return { { makeRepositoryItem<static_cast<ObjectType>(Is)>()... } };
+    }
+
+    // Repository of loaded objects indexed by ObjectType
+    // Contains pointers to pre-allocated arrays of objects and their metadata
+    static std::array<ObjectRepositoryItem, kMaxObjectTypes> _objectRepository = makeRepositoryArray(std::make_index_sequence<kMaxObjectTypes>{});
+
+    static std::array<LandObjectFlags, getMaxObjects(ObjectType::land)> _landObjectFlags; // 0x00F003D3
+
+    // 0x0050D160
+    static bool _isTemporaryObject = false;
+    // 0x0050D15C
+    static Object* _temporaryObject = nullptr;
 
     static ObjectRepositoryItem& getRepositoryItem(ObjectType type)
     {
@@ -367,11 +397,10 @@ namespace OpenLoco::ObjectManager
     // 0x00471B95
     void freeTemporaryObject()
     {
-        if (_temporaryObject != nullptr && _temporaryObject != reinterpret_cast<Object*>(-1))
+        if (_temporaryObject != nullptr)
         {
             free(_temporaryObject);
-            // For vanilla compatibility set as -1. Replace with nullptr when all users of temporaryObject implemented.
-            _temporaryObject = reinterpret_cast<Object*>(-1);
+            _temporaryObject = nullptr;
         }
     }
 
@@ -441,8 +470,6 @@ namespace OpenLoco::ObjectManager
             return std::nullopt;
         }
 
-        _decodedSize = preLoadObj.objectData.size();
-
         return preLoadObj;
     }
 
@@ -460,8 +487,7 @@ namespace OpenLoco::ObjectManager
         setTotalNumImages(Gfx::G1ExpectedCount::kDisc);
 
         _temporaryObject = preLoadObj->object;
-        _isPartialLoaded = true;
-        _isTemporaryObject = 0xFF;
+        _isTemporaryObject = true;
 
         DependentObjects dependencies;
         try
@@ -471,19 +497,17 @@ namespace OpenLoco::ObjectManager
         catch (Exception::OutOfRange&) // catches the ImageTable incorrectly sized which can cause bad crashes
         {
             freeTemporaryObject();
-            _isTemporaryObject = 0;
-            _isPartialLoaded = false;
+            _isTemporaryObject = false;
             return std::nullopt;
         }
-        _isTemporaryObject = 0;
-        _isPartialLoaded = false;
+        _isTemporaryObject = false;
 
-        _numImages = getTotalNumImages() - Gfx::G1ExpectedCount::kDisc;
+        const auto numImages = getTotalNumImages() - Gfx::G1ExpectedCount::kDisc;
         setTotalNumImages(oldNumImages);
 
         TempLoadMetaData result{};
         result.fileSizeHeader.decodedFileSize = preLoadObj->objectData.size();
-        result.displayData.numImages = _numImages;
+        result.displayData.numImages = numImages;
         result.dependentObjects = dependencies;
 
         if (header.getType() == ObjectType::competitor)
@@ -504,18 +528,13 @@ namespace OpenLoco::ObjectManager
 
     Object* getTemporaryObject()
     {
-        Object* obj = _temporaryObject;
-        if (obj == reinterpret_cast<Object*>(-1))
-        {
-            return nullptr;
-        }
-        return obj;
+        return _temporaryObject;
     }
 
     // TODO: Pass this through other means to users
     bool isTemporaryObjectLoad()
     {
-        return _isTemporaryObject == 0xFF;
+        return _isTemporaryObject;
     }
 
     // 0x00471BC5
@@ -540,10 +559,7 @@ namespace OpenLoco::ObjectManager
             preLoadObj->header, static_cast<uint32_t>(preLoadObj->objectData.size())
         };
 
-        if (!*_isPartialLoaded)
-        {
-            callObjectLoad({ preLoadObj->header.getType(), id }, *preLoadObj->object, preLoadObj->objectData);
-        }
+        callObjectLoad({ preLoadObj->header.getType(), id }, *preLoadObj->object, preLoadObj->objectData);
 
         return true;
     }
@@ -716,7 +732,7 @@ namespace OpenLoco::ObjectManager
         strcat(str, objectname.c_str());
         Ui::ProgressBar::begin(caption);
         Ui::ProgressBar::setProgress(50);
-        Ui::processMessagesMini();
+        Input::processMessagesMini();
 
         // Get new file path
         std::string filename = objectname;
@@ -932,8 +948,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x0047966E
-    // Set road object ID flags
-    void sub_47966E()
+    void updateRoadObjectIdFlags()
     {
         uint32_t roadObjectIdIsNotTram = 0;
         uint32_t roadObjectIdIsFlag7 = 0;
@@ -1057,9 +1072,6 @@ namespace OpenLoco::ObjectManager
         Ui::Windows::Construction::updateAvailableAirportAndDockOptions();
     }
 
-    // TODO: Refactor this, variable is also defined in PaintSurface.cpp.
-    static loco_global<LandObjectFlags[getMaxObjects(ObjectType::land)], 0x00F003D3> _landObjectFlags;
-
     // 0x004697A1
     static void updateLandObjectFlags()
     {
@@ -1075,6 +1087,11 @@ namespace OpenLoco::ObjectManager
                 _landObjectFlags[i] = LandObjectFlags::none;
             }
         }
+    }
+
+    std::span<LandObjectFlags> getLandObjectFlagsCache()
+    {
+        return _landObjectFlags;
     }
 
     // 0x004C57A6
@@ -1117,67 +1134,49 @@ namespace OpenLoco::ObjectManager
         getGameState().lastLandOption = 0xFFU;
     }
 
+    // 0x0047D9F2
+    static void updateTrafficHandedness()
+    {
+        getGameState().trafficHandedness = 0; // Default to left hand traffic
+
+        auto* regionObj = ObjectManager::get<RegionObject>();
+        if (regionObj != nullptr)
+        {
+            getGameState().trafficHandedness = (regionObj->flags & RegionObjectFlags::rightHandTraffic) != RegionObjectFlags::none;
+        }
+    }
+
     // 0x004748FA
-    void sub_4748FA()
+    void updateTerraformObjects()
     {
         updateLandObjectFlags();
-        // determine trafficHandedness
-        call(0x0047D9F2);
+        updateTrafficHandedness();
         updateWaterPalette();
         resetDefaultLandObject();
     }
 
     // 0x0047AC05
-    void sub_47AC05()
+    void updateLastTrackTypeOption()
     {
-        call(0x0047AC05);
-    }
+        static_assert(ObjectManager::getMaxObjects(ObjectType::road) <= 128); // protect against possible int8_t overflow in the future
+        TownSize largestTownSize = TownSize::hamlet;
+        uint8_t lastIndex = 255;
 
-    void registerHooks()
-    {
-        registerHook(
-            0x00472172,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                uint8_t index = regs.edx;
-                LoadedObjectHandle handle = { static_cast<ObjectType>(regs.ecx), static_cast<LoadedObjectId>(regs.ebx) };
-
-                // 0x2000 chosen as a large number
-                std::span<const std::byte> data(static_cast<const std::byte*>(X86Pointer<const std::byte>(regs.ebp)), 0x2000);
-                auto res = ObjectManager::loadStringTable(data, handle, index);
-
-                regs = backup;
-                regs.ebp += res.tableLength;
-                regs.eax = res.str;
-                return 0;
-            });
-
-        registerHook(
-            0x0047221F,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                // 0x20000 chosen as a large number
-                std::span<const std::byte> data(static_cast<const std::byte*>(X86Pointer<const std::byte>(regs.ebp)), 0x20000);
-                auto res = ObjectManager::loadImageTable(data);
-
-                regs = backup;
-                regs.ebp += res.tableLength;
-                regs.eax = res.imageOffset;
-                return 0;
-            });
-
-        registerHook(
-            0x00471BCE,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                ObjectHeader* header = X86Pointer<ObjectHeader>(regs.ebp);
-                auto res = load(*header);
-                regs = backup;
-
-                return res ? 0 : X86_FLAG_CARRY;
-            });
+        for (size_t index = 0; index < ObjectManager::getMaxObjects(ObjectType::road); ++index)
+        {
+            auto roadObject = ObjectManager::get<RoadObject>(index);
+            if (roadObject != nullptr)
+            {
+                if (roadObject->hasFlags(RoadObjectFlags::unk_03) && !roadObject->hasFlags(RoadObjectFlags::isOneWay))
+                {
+                    if (largestTownSize <= roadObject->targetTownSize)
+                    {
+                        largestTownSize = roadObject->targetTownSize;
+                        lastIndex = static_cast<uint8_t>(index);
+                    }
+                }
+            }
+        }
+        getGameState().lastTrackTypeOption = lastIndex;
     }
 }

@@ -22,18 +22,28 @@
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <map>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 {
-    static loco_global<uint32_t, 0x009C86F8> _zoomTicks;
+    static uint32_t _zoomTicks;     // 0x009C86F8
+    static uint8_t _lastTownOption; // 0x009C870C
 
-    static loco_global<uint8_t, 0x009C870C> _lastTownOption;
+    // Temporary storage for road menu dropdown (populated in mouseDown, consumed in dropdown callback)
+    static AvailableTracksAndRoads _roadMenuObjects;
 
-    static loco_global<uint8_t[18], 0x0050A006> _availableObjects;
+    void prepareTownWidget(Window& self)
+    {
+        auto interface = ObjectManager::get<InterfaceSkinObject>();
+        if (_lastTownOption == 0)
+        {
+            self.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_towns);
+        }
+        else
+        {
+            self.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_industries);
+        }
+    }
 
     // 0x00439DE4
     void draw(Window& self, Gfx::DrawingContext& drawingCtx)
@@ -47,8 +57,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
         if (!self.widgets[Widx::road_menu].hidden && lastRoadOption != 0xFF)
         {
-            uint32_t x = self.widgets[Widx::road_menu].left;
-            uint32_t y = self.widgets[Widx::road_menu].top;
+            uint32_t x = self.widgets[Widx::road_menu].left + self.x;
+            uint32_t y = self.widgets[Widx::road_menu].top + self.y;
             uint32_t fgImage = 0;
 
             // Figure out what icon to show on the button face.
@@ -76,7 +86,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
             drawingCtx.drawImage(x, y, fgImage);
 
-            y = self.widgets[Widx::road_menu].top;
+            y = self.widgets[Widx::road_menu].top + self.y;
             drawingCtx.drawImage(x, y, bgImage);
         }
     }
@@ -203,12 +213,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
             Dropdown::setItemSelected(10);
         }
 
-        if ((current_viewport_flags & ViewportFlags::town_names_displayed) == ViewportFlags::none)
+        if ((current_viewport_flags & ViewportFlags::hideTownNames) == ViewportFlags::none)
         {
             Dropdown::setItemSelected(12);
         }
 
-        if ((current_viewport_flags & ViewportFlags::station_names_displayed) == ViewportFlags::none)
+        if ((current_viewport_flags & ViewportFlags::hideStationNames) == ViewportFlags::none)
         {
             Dropdown::setItemSelected(13);
         }
@@ -235,12 +245,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     // 0x0043A19F
     void roadMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
-        const auto availableObjects = companyGetAvailableRoads(CompanyManager::getControllingId());
-        // Copy to global as its used in the dropdown event
-        std::copy(availableObjects.begin(), availableObjects.end(), _availableObjects.begin());
+        _roadMenuObjects = companyGetAvailableRoads(CompanyManager::getControllingId());
 
         // Sanity check: any objects available?
-        if (availableObjects.empty())
+        if (_roadMenuObjects.empty())
         {
             return;
         }
@@ -249,12 +257,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
         // Add available objects to Dropdown.
         uint16_t highlightedItem = 0;
-        for (auto i = 0U; i < std::size(availableObjects); i++)
+        for (auto i = 0U; i < _roadMenuObjects.size(); i++)
         {
             uint32_t objImage;
             StringId objStringId;
 
-            auto objIndex = availableObjects[i];
+            auto objIndex = _roadMenuObjects[i];
             if ((objIndex & (1 << 7)) != 0)
             {
                 auto road = ObjectManager::get<RoadObject>(objIndex & 0x7F);
@@ -276,7 +284,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
             }
         }
 
-        Dropdown::showBelow(window, widgetIndex, std::size(availableObjects), 25, (1 << 6));
+        Dropdown::showBelow(window, widgetIndex, _roadMenuObjects.size(), 25, (1 << 6));
         Dropdown::setHighlightedItem(highlightedItem);
     }
 
@@ -399,11 +407,11 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         }
         else if (itemIndex == 12)
         {
-            viewport->flags ^= ViewportFlags::town_names_displayed;
+            viewport->flags ^= ViewportFlags::hideTownNames;
         }
         else if (itemIndex == 13)
         {
-            viewport->flags ^= ViewportFlags::station_names_displayed;
+            viewport->flags ^= ViewportFlags::hideStationNames;
         }
 
         window->invalidate();
@@ -454,7 +462,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
             return;
         }
 
-        uint8_t objIndex = _availableObjects[itemIndex];
+        uint8_t objIndex = _roadMenuObjects[itemIndex];
         Construction::openWithFlags(objIndex);
     }
 
@@ -537,6 +545,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
                 townsMenuMouseDown(window, widgetIndex);
                 break;
         }
+    }
+
+    void onOpen([[maybe_unused]] Window& window)
+    {
+        _zoomTicks = 0;
+        _lastTownOption = 0;
     }
 
     void onUpdate([[maybe_unused]] Window& window)

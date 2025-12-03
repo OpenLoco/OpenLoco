@@ -17,6 +17,7 @@
 #include "OpenLoco.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
+#include "Ui/ToolTip.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/DropdownWidget.h"
@@ -86,7 +87,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         Widgets::TableHeader({ 414, 43 }, { 65, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_age),
         Widgets::TableHeader({ 479, 43 }, { 67, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_reliability),
         Widgets::ScrollView({ 3, 56 }, { 544, 138 }, WindowColour::secondary, Scrollbars::vertical),
-        Widgets::Label({ 3, kWindowSize.height - 13 }, { kWindowSize.width, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid),
+        Widgets::Label({ 3, kWindowSize.height - 13 }, { kWindowSize.width - kResizeHandleSize, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid),
         Widgets::dropdownWidgets({ 280 - 16, 200 }, { 120, 12 }, WindowColour::secondary, StringIds::wcolour2_stringid),
         Widgets::dropdownWidgets({ 402 - 16, 200 }, { 150, 12 }, WindowColour::secondary, StringIds::wcolour2_stringid)
 
@@ -173,7 +174,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 continue;
             }
 
-            vehicle->vehicleFlags &= ~VehicleFlags::sorted;
+            vehicle->vehicleFlags &= ~Vehicles::VehicleFlags::sorted;
         }
     }
 
@@ -261,7 +262,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 continue;
             }
 
-            if (vehicle->hasVehicleFlags(VehicleFlags::sorted))
+            if (vehicle->hasVehicleFlags(Vehicles::VehicleFlags::sorted))
             {
                 continue;
             }
@@ -298,7 +299,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 refreshVehicleList(self);
                 return;
             }
-            vehicle->vehicleFlags |= VehicleFlags::sorted;
+            vehicle->vehicleFlags |= Vehicles::VehicleFlags::sorted;
 
             if (vehicle->id != EntityId(self.rowInfo[self.rowCount]))
             {
@@ -425,7 +426,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         Window* self = WindowManager::createWindow(
             WindowType::vehicleList,
             kWindowSize,
-            WindowFlags::flag_11,
+            WindowFlags::lighterFrame,
             getEvents());
 
         self->setWidgets(_widgets);
@@ -549,6 +550,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         self.widgets[Widx::scrollview].right = self.width - 4;
         self.widgets[Widx::scrollview].bottom = self.height - 14;
+        self.widgets[Widx::status_bar].right = self.width - kResizeHandleSize - 1;
 
         // Reposition table headers
         self.widgets[Widx::sort_name].right = std::min(self.width - 4, 313);
@@ -673,8 +675,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto company = CompanyManager::get(CompanyId(self.number));
         auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitorId);
         uint32_t image = Gfx::recolour(competitorObj->images[enumValue(company->ownerEmotion)], company->mainColours.primary);
-        uint16_t x = self.widgets[Widx::company_select].left + 1;
-        uint16_t y = self.widgets[Widx::company_select].top + 1;
+        uint16_t x = self.x + self.widgets[Widx::company_select].left + 1;
+        uint16_t y = self.y + self.widgets[Widx::company_select].top + 1;
         drawingCtx.drawImage(x, y, image);
     }
 
@@ -1024,9 +1026,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C265B
-    static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
     {
-        *scrollHeight = self.var_83C * self.rowHeight;
+        scrollHeight = self.var_83C * self.rowHeight;
     }
 
     // 0x004C266D
@@ -1049,7 +1051,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C26A4
     static void onScrollMouseOver(Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
-        Input::setTooltipTimeout(2000);
+        Ui::ToolTip::setTooltipTimeout(2000);
 
         self.flags &= ~WindowFlags::notScrollView;
 

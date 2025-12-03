@@ -9,23 +9,14 @@
 #include "Objects/TrackObject.h"
 #include "Random.h"
 #include "Vehicle.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <OpenLoco/Math/Trigonometry.hpp>
 #include <cstdint>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<VehicleBogie*, 0x01136124> _vehicleUpdate_frontBogie;
-    static loco_global<VehicleBogie*, 0x01136128> _vehicleUpdate_backBogie;
-    static loco_global<bool, 0x01136237> _vehicleUpdate_frontBogieHasMoved; // remainingDistance related?
-    static loco_global<bool, 0x01136238> _vehicleUpdate_backBogieHasMoved;  // remainingDistance related?
-    static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C;     // Speed
-    static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130;     // Speed
-    static loco_global<EntityId, 0x0113610E> _vehicleUpdate_collisionCarComponent;
-
     template<typename T>
     void applyDestructionToComponent(T& component)
     {
@@ -38,23 +29,15 @@ namespace OpenLoco::Vehicles
     // 0x004AA008
     bool VehicleBogie::update()
     {
-        _vehicleUpdate_frontBogie = _vehicleUpdate_backBogie;
-        _vehicleUpdate_backBogie = this;
-
         if (mode == TransportMode::air || mode == TransportMode::water)
         {
             return true;
         }
 
-        const auto oldPos = position;
-        resetUpdateVar1136114Flags();
-        updateTrackMotion(_vehicleUpdate_var_113612C);
+        auto& distances = getVehicleUpdateDistances();
+        const auto motionResult = updateTrackMotion(distances.unkDistance1, false);
 
-        const auto hasMoved = oldPos != position;
-        _vehicleUpdate_backBogieHasMoved = _vehicleUpdate_frontBogieHasMoved;
-        _vehicleUpdate_frontBogieHasMoved = hasMoved;
-
-        const int32_t stash1136130 = _vehicleUpdate_var_1136130;
+        int32_t unkDistance = distances.unkDistance2;
         if (wheelSlipping != 0)
         {
             auto unk = wheelSlipping;
@@ -62,29 +45,28 @@ namespace OpenLoco::Vehicles
             {
                 unk = kWheelSlippingDuration - unk;
             }
-            _vehicleUpdate_var_1136130 = 500 + unk * 320;
+            unkDistance = 500 + unk * 320;
         }
 
-        updateRoll();
-        _vehicleUpdate_var_1136130 = stash1136130;
-        if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::noRouteFound))
+        updateRoll(unkDistance);
+        if (motionResult.hasFlags(UpdateVar1136114Flags::noRouteFound))
         {
             destroyTrain();
             return false;
         }
-        else if (!hasUpdateVar1136114Flags(UpdateVar1136114Flags::crashed))
+        else if (!motionResult.hasFlags(UpdateVar1136114Flags::crashed))
         {
             return true;
         }
 
-        collision();
+        collision(motionResult.collidedEntityId);
         return false;
     }
 
     // 0x004AAC02
-    void VehicleBogie::updateRoll()
+    void VehicleBogie::updateRoll(const int32_t unkDistance)
     {
-        auto unk = _vehicleUpdate_var_1136130 / 8;
+        auto unk = unkDistance / 8;
         if (has38Flags(Flags38::isReversed))
         {
             unk = -unk;
@@ -125,12 +107,61 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    // 0x00462893
+    static bool checkForTileCollision(const World::Pos3 pos)
+    {
+        const auto xNibble = pos.x & 0x1F;
+        const auto yNibble = pos.y & 0x1F;
+        uint8_t occupiedQuarter = 0U;
+        if (xNibble < 16)
+        {
+            occupiedQuarter = 1U << 2;
+            if (yNibble >= 16)
+            {
+                occupiedQuarter = 1U << 3;
+            }
+        }
+        else
+        {
+            occupiedQuarter = 1U << 0;
+            if (yNibble < 16)
+            {
+                occupiedQuarter = 1U << 1;
+            }
+        }
+
+        const auto tile = World::TileManager::get(pos);
+        for (auto& el : tile)
+        {
+            if (pos.z < el.baseHeight())
+            {
+                continue;
+            }
+            if (pos.z >= el.clearHeight())
+            {
+                continue;
+            }
+            if (el.occupiedQuarter() & occupiedQuarter)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 0x0004AA959
+    static bool destroyedBogieCheckForCollision(VehicleBogie& bogie, World::Pos3& pos)
+    {
+        if (checkForTileCollision(pos))
+        {
+            return true;
+        }
+        return checkForCollisions(bogie, pos) != EntityId::null;
+    }
+
     // 0x004AA68E
     void VehicleBogie::updateSegmentCrashed()
     {
-        _vehicleUpdate_frontBogie = _vehicleUpdate_backBogie;
-        _vehicleUpdate_backBogie = this;
-
         Speed32 speed = Speed32(var_5A & 0x7FFFFFFF);
         bool isComponentDestroyed = this->var_5A & (1U << 31);
         speed = speed - (speed / 64);
@@ -140,10 +171,12 @@ namespace OpenLoco::Vehicles
         }
 
         this->var_5A = speed.getRaw() | (isComponentDestroyed ? (1U << 31) : 0);
-        _vehicleUpdate_var_113612C = speed.getRaw() / 128;
-        _vehicleUpdate_var_1136130 = speed.getRaw() / 128;
 
-        this->updateRoll();
+        auto& distances = getVehicleUpdateDistances();
+        distances.unkDistance1 = speed.getRaw() / 128;
+        distances.unkDistance2 = speed.getRaw() / 128;
+
+        this->updateRoll(distances.unkDistance1);
 
         if (isComponentDestroyed)
         {
@@ -179,10 +212,10 @@ namespace OpenLoco::Vehicles
                 // Calculate new position - but don't update yet!! This is pushed to the stack.
                 World::Pos3 newPosition{ position + World::Pos3(distanceWorld, -zDistance) };
 
-                if (!sub_4AA959(this->position))
+                if (!destroyedBogieCheckForCollision(*this, position))
                 {
                     World::Pos3 positionToTest = { newPosition.x, newPosition.y, this->position.z };
-                    if (sub_4AA959(positionToTest))
+                    if (destroyedBogieCheckForCollision(*this, positionToTest))
                     {
                         newPosition.x = this->position.x;
                         newPosition.y = this->position.y;
@@ -195,7 +228,7 @@ namespace OpenLoco::Vehicles
                         this->var_5A = ((speed / 2).getRaw() | (1U << 31));
                     }
 
-                    if (sub_4AA959(newPosition))
+                    if (destroyedBogieCheckForCollision(*this, newPosition))
                     {
                         newPosition.z = this->position.z;
                         if (this->tileBaseZ >= 0x0A)
@@ -249,11 +282,10 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            resetUpdateVar1136114Flags();
             if (this->mode != TransportMode::road)
             {
-                this->updateTrackMotion(_vehicleUpdate_var_113612C);
-                if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00 | UpdateVar1136114Flags::noRouteFound))
+                const auto motionResult = this->updateTrackMotion(distances.unkDistance1, false);
+                if (motionResult.hasFlags(UpdateVar1136114Flags::unk_m00 | UpdateVar1136114Flags::noRouteFound))
                 {
                     this->var_5A |= 1U << 31;
                 }
@@ -262,7 +294,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AA0DF
-    void VehicleBogie::collision()
+    void VehicleBogie::collision(const EntityId collideEntityId)
     {
         destroyTrain();
         applyDestructionToComponent(*this);
@@ -289,7 +321,7 @@ namespace OpenLoco::Vehicles
         }
 
         // Apply Collision to collided train
-        auto* collideEntity = EntityManager::get<EntityBase>(_vehicleUpdate_collisionCarComponent);
+        auto* collideEntity = EntityManager::get<EntityBase>(collideEntityId);
         auto* collideCarComponent = collideEntity->asBase<VehicleBase>();
         if (collideCarComponent != nullptr)
         {
@@ -319,18 +351,6 @@ namespace OpenLoco::Vehicles
                 }
             }
         }
-    }
-
-    // 0x0004AA959
-    // Returns true when original subroutine sets carry flag (not yet reversed)
-    bool VehicleBogie::sub_4AA959(World::Pos3& pos)
-    {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.dx = pos.z;
-        return ((call(0x0004AA959, regs) & X86_FLAG_CARRY) == X86_FLAG_CARRY);
     }
 
     // 0x004AA984

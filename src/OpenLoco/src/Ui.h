@@ -15,7 +15,6 @@ namespace OpenLoco::Ui
 {
     struct Viewport;
 
-#pragma pack(push, 1)
     struct ScreenInfo
     {
         int16_t width;
@@ -25,8 +24,6 @@ namespace OpenLoco::Ui
         int16_t width_3;
         int16_t height_3;
     };
-    static_assert(sizeof(ScreenInfo) == 0xC);
-#pragma pack(pop)
 
     enum class CursorId : uint8_t
     {
@@ -111,8 +108,6 @@ namespace OpenLoco::Ui
     void update();
     void triggerResize();
     void render();
-    bool processMessages();
-    bool processMessagesMini();
     void showMessageBox(const std::string& title, const std::string& message);
     Config::Resolution getResolution();
     Config::Resolution getDesktopResolution();
@@ -126,4 +121,11 @@ namespace OpenLoco::Ui
     void setWindowScaling(float newScaleFactor);
     void adjustWindowScale(float adjust_by);
     bool hasInputFocus();
+
+    void windowPositionChanged(int32_t x, int32_t y);
+    void windowSizeChanged(int32_t width, int32_t height);
+
+#if !(defined(__APPLE__) && defined(__MACH__))
+    void toggleFullscreenDesktop();
+#endif
 }

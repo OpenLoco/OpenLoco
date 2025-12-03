@@ -41,9 +41,10 @@ namespace OpenLoco::Paint
         if (numSections != 0xF0)
         {
             int8_t sectionCount = numSections;
+            const auto partHeights = buildingObj.getBuildingPartHeights();
             for (const auto part : parts)
             {
-                totalSectionHeight += buildingObj.partHeights[part];
+                totalSectionHeight += partHeights[part];
                 sectionCount--;
                 if (sectionCount == -1)
                 {
@@ -66,6 +67,7 @@ namespace OpenLoco::Paint
             if (elBuilding.isGhost())
             {
                 baseScaffImage = Gfx::applyGhostToImage(baseScaffImageIdx);
+                // TODO: apply company colour if playerCompanyID != elTrack.owner()?
             }
             else
             {
@@ -81,13 +83,15 @@ namespace OpenLoco::Paint
 
         int8_t sectionCount = numSections;
         auto sectionImageOffset = imageOffset;
+        const auto partHeights = buildingObj.getBuildingPartHeights();
+        const auto partAnimations = buildingObj.getBuildingPartAnimations();
         for (const auto part : parts)
         {
             if (sectionCount == -1)
             {
                 break;
             }
-            const auto partAnimation = buildingObj.partAnimations[part];
+            const auto partAnimation = partAnimations[part];
             auto adjustedPart = part;
 
             auto frameMask = partAnimation.numFrames - 1;
@@ -101,7 +105,7 @@ namespace OpenLoco::Paint
             }
             adjustedPart += frameMask & tickThing;
 
-            const auto sectionHeight = buildingObj.partHeights[adjustedPart];
+            const auto sectionHeight = partHeights[adjustedPart];
             const uint32_t imageIdx = adjustedPart * 4 + buildingObj.image + rotation;
             ImageId image = baseColour.withIndex(imageIdx);
             if (sectionCount == 0 && !baseColour.isBlended())

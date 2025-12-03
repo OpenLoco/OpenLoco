@@ -102,7 +102,10 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Industries/RemoveIndustry.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Industries/RenameIndustry.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Road/CreateRoad.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Road/CreateRoadMod.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Road/CreateRoadStation.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Road/RemoveRoad.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Road/RemoveRoadMod.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Road/RemoveRoadStation.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Terraform/ChangeLandMaterial.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Terraform/ClearLand.cpp"
@@ -166,7 +169,6 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input/Keyboard.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input/MouseInput.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input/Shortcuts.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Interop/Hooks.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Intro.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Jukebox.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/Conversion.cpp"
@@ -274,12 +276,25 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintWall.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Random.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Animation.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Company.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Entity.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5GameState.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Industry.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5LabelFrame.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Message.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Options.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Station.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5TileElement.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Town.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Wave.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/SawyerStream.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Scenario.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ScenarioConstruction.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ScenarioManager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ScenarioObjective.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ScenarioOptions.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/ScenarioPreview.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/SceneManager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Title.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Tutorial.cpp"
@@ -533,7 +548,6 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Gui.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input/Shortcuts.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Interop/Hooks.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Intro.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Jukebox.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/LabelFrame.h"
@@ -664,12 +678,26 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Random.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/Limits.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Animation.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Company.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Entity.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5GameState.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5File.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Industry.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5LabelFrame.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Station.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Message.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Options.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5TileElement.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Town.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Wave.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/SawyerStream.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Scenario.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ScenarioConstruction.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ScenarioManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ScenarioObjective.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ScenarioOptions.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/ScenarioPreview.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/SceneManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Speed.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Title.h"
@@ -686,6 +714,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/ScrollView.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/TextInput.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/ToolManager.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/ToolTip.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/ViewportInteraction.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widget.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/ButtonWidget.h"
@@ -736,101 +765,52 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/World/TownManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ZoomLevel.hpp")
 
-if (MINGW)
-    loco_add_library(OpenLoco SHARED
-        PRIVATE_FILES
-            ${OLOCO_SOURCES})
-    target_link_libraries(OpenLoco winmm)
-else ()
-    if (MSVC)
-        # Headers added as well so that shown correctly in IDEs
-        loco_add_library(OpenLoco SHARED 
-            PRIVATE_FILES
-                ${OLOCO_SOURCES}
-                ${OLOCO_HEADERS})
-    else ()
-        loco_add_executable(OpenLoco 
-            PRIVATE_FILES
-                ${OLOCO_SOURCES}
-        )
-        add_dependencies(OpenLoco linkable_sections)
-        # set_source_files_properties has to be set in the CMakeLists that uses them
-        set_source_files_properties(
-            ${LOCO_SECTIONS}
-            PROPERTIES
-            EXTERNAL_OBJECT true
-            GENERATED true
-        )
-        target_sources(OpenLoco
-            PRIVATE
-                ${LOCO_SECTIONS})
-        set_target_properties(OpenLoco PROPERTIES LINK_FLAGS ${LOCO_SEGMENT_LINKER_FLAGS})
-
-        if (TARGET SDL2::SDL2main)
-            target_link_libraries(OpenLoco SDL2::SDL2main)
-        endif ()
-    endif ()
-endif ()
+loco_add_executable(OpenLoco 
+    PRIVATE_FILES
+        ${OLOCO_SOURCES}
+        ${OLOCO_HEADERS}
+)
 
 target_link_libraries(OpenLoco
     Core
     Diagnostics
     Platform
-    Interop
     Utility
     Math
     Engine
     ${SDL2_LIB}
     Threads::Threads
     yaml-cpp
+    ZLIB::ZLIB # This shouldn't be required but vcpkg seems to not map the dependencies correctly for png static
     ${PNG_LIBRARY}
     ${OPENAL_LIBRARIES})
 
 if (WIN32)
     target_link_libraries(OpenLoco winmm ws2_32 Resources)
-    # Loco.exe is looking for openloco.dll. Remove this when standalone.
-    set_target_properties(OpenLoco PROPERTIES OUTPUT_NAME "openloco")
 endif ()
 
-if (NOT WIN32)
-    add_dependencies(OpenLoco segfiles)
-endif()
-
+target_compile_definitions(OpenLoco
+    PRIVATE
+        SDL_MAIN_HANDLED
+ )
 if (MINGW)
-    target_compile_definitions(OpenLoco
-        PRIVATE
-            DEBUG=${DEBUG_LEVEL}
-            SDL_MAIN_HANDLED=1)
-
-    target_link_libraries(OpenLoco imm32 winmm version)
-    # newer GCC gets confused about our use of hardcoded address shenanigans
+    target_link_libraries(OpenLoco imm32 version)
 elseif (MSVC)
     target_compile_definitions(OpenLoco
         PRIVATE
-            DEBUG=${DEBUG_LEVEL}
             _WINDLL _MBCS DEBUG_WIN32=1
             _CRT_SECURE_NO_WARNINGS
             _CRT_NONSTDC_NO_DEPRECATE
             _USE_MATH_DEFINES
-            SDL_MAIN_HANDLED
             _WINSOCK_DEPRECATED_NO_WARNINGS)
-
-    target_link_libraries(OpenLoco
-        ZLIB::ZLIB) # This shouldn't be required but vcpkg seems to not map the dependencies correctly for png static
-
-else ()
-    target_compile_definitions(OpenLoco
-        PRIVATE
-            DEBUG=${DEBUG_LEVEL}
-            _NO_LOCO_WIN32_=1)
 endif()
 
-if (APPLE AND FALSE) # TODO: This is broken after moving resources into src/Resources
+if (APPLE)
     target_link_libraries(OpenLoco "-framework Cocoa")
 
     set_target_properties(OpenLoco PROPERTIES
         MACOSX_BUNDLE ON
-        MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/distribution/macos/Info.plist.in)
+        MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/distribution/macos/Info.plist.in)
 
     set(MACOSX_BUNDLE_BUNDLE_NAME "OpenLoco")
     set(MACOSX_BUNDLE_BUNDLE_VERSION "${OPENRCT2_COMMIT_SHA1_SHORT}")
@@ -848,10 +828,10 @@ if (APPLE AND FALSE) # TODO: This is broken after moving resources into src/Reso
 
     find_program(ICONUTIL iconutil)
     if (ICONUTIL)
-        file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/distribution/macos/AppIcon.iconset DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+        file(COPY ${CMAKE_SOURCE_DIR}/distribution/macos/AppIcon.iconset DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
         set(ICON_TARGET "${CMAKE_CURRENT_BINARY_DIR}/AppIcon.iconset")
         set(ICON_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/AppIcon.icns")
-        set(SOURCE_ICON_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources/logo")
+        set(SOURCE_ICON_DIR "${CMAKE_SOURCE_DIR}/src/Resources/src/logo")
         add_custom_command(OUTPUT ${ICON_OUTPUT}
                 COMMAND cp icon_x16.png ${ICON_TARGET}/icon_16x16.png
                 COMMAND cp icon_x32.png ${ICON_TARGET}/icon_16x16@2x.png
@@ -868,42 +848,15 @@ if (APPLE AND FALSE) # TODO: This is broken after moving resources into src/Reso
         list(APPEND BUNDLE_RESOURCES ${ICON_OUTPUT})
     endif ()
 
-    list(APPEND BUNDLE_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/CHANGELOG.md)
-    list(APPEND BUNDLE_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/CONTRIBUTORS.md)
+    list(APPEND BUNDLE_RESOURCES ${CMAKE_SOURCE_DIR}/CHANGELOG.md)
+    list(APPEND BUNDLE_RESOURCES ${CMAKE_SOURCE_DIR}/CONTRIBUTORS.md)
     set_target_properties(OpenLoco PROPERTIES RESOURCE "${BUNDLE_RESOURCES}")
     target_sources(OpenLoco PUBLIC ${BUNDLE_RESOURCES})
 
-    file(GLOB BUNDLE_LANGUAGES "${CMAKE_CURRENT_SOURCE_DIR}/data/language/*")
+    file(GLOB BUNDLE_LANGUAGES "${CMAKE_SOURCE_DIR}/data/language/*")
     target_sources(OpenLoco PUBLIC ${BUNDLE_LANGUAGES})
     set_property(
         SOURCE ${BUNDLE_LANGUAGES}
         PROPERTY MACOSX_PACKAGE_LOCATION "Resources/language"
     )
-endif ()
-
-# Add headers check to verify all headers carry their dependencies.
-# Only valid for Clang for now:
-# - GCC 8 does not support -Wno-pragma-once-outside-header
-# - Other compilers status unknown
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    add_library(OpenLoco-headers-check OBJECT ${OLOCO_HEADERS})
-    set_target_properties(OpenLoco-headers-check PROPERTIES LINKER_LANGUAGE CXX)
-    set_source_files_properties(${OLOCO_HEADERS} PROPERTIES LANGUAGE CXX)
-    loco_target_compile_link_flags(OpenLoco-headers-check)
-    target_compile_options(OpenLoco-headers-check PUBLIC -x c++ -Wno-pragma-once-outside-header -Wno-unused-const-variable)
-    target_include_directories(OpenLoco-headers-check PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
-    target_link_libraries(OpenLoco-headers-check PUBLIC
-        Core
-        Diagnostics
-        Platform
-        Interop
-        Utility
-        Math
-        Engine
-        ${SDL2_LIB} # These libraries are used in some of our headers try to minimize doing this
-        yaml-cpp
-        )
-else ()
-    # Dummy target to ease invocation
-    add_custom_target(OpenLoco-headers-check)
 endif ()

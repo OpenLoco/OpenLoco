@@ -90,7 +90,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         self.draw(drawingCtx);
 
         // Draw explanatory text
-        auto point = Point(3, 19);
+        auto point = Point(self.x + 3, self.y + 19);
         auto tr = Gfx::TextRenderer(drawingCtx);
         tr.drawStringLeftWrapped(point, self.width - 6, self.getColour(WindowColour::secondary), StringIds::objectErrorExplanation);
     }
@@ -243,9 +243,9 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         }
     }
 
-    static void getScrollSize(Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
     {
-        *scrollHeight = kRowHeight * window.rowCount;
+        scrollHeight = kRowHeight * window.rowCount;
     }
 
     static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)

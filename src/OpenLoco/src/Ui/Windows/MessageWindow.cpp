@@ -139,9 +139,9 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A871
-        static void getScrollSize([[maybe_unused]] Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize([[maybe_unused]] Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            *scrollHeight = MessageManager::getNumMessages() * messageHeight;
+            scrollHeight = MessageManager::getNumMessages() * messageHeight;
         }
 
         // 0x0042A8B9
@@ -338,7 +338,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                 WindowType::messages,
                 { x, y },
                 { 366, 217 },
-                WindowFlags::flag_11,
+                WindowFlags::lighterFrame,
                 Messages::getEvents());
 
             window->number = 0;
@@ -347,7 +347,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             window->rowHover = -1;
             window->disabledWidgets = 0;
 
-            WindowManager::sub_4CEE0B(*window);
+            WindowManager::moveOtherWindowsDown(*window);
 
             window->minWidth = Messages::kMinWindowSize.width;
             window->minHeight = Messages::kMinWindowSize.height;
@@ -375,8 +375,8 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         window->callPrepareDraw();
         window->initScrollWidgets();
 
-        uint16_t scrollHeight = 0;
-        window->callGetScrollSize(0, nullptr, &scrollHeight);
+        int32_t scrollWidth = 0, scrollHeight = 0;
+        window->callGetScrollSize(0, scrollWidth, scrollHeight);
 
         scrollHeight -= window->widgets[Messages::widx::scrollview].height();
 
@@ -508,7 +508,8 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     }
 
                     auto ddIndex = wIndex - widx::company_major_news;
-                    auto currentItem = Config::get().old.newsSettings[ddIndex / kNumWidgetsPerDropdown];
+                    auto currentItem = Config::get().newsSettings[ddIndex / kNumWidgetsPerDropdown];
+                    Config::write();
                     Dropdown::setItemSelected(static_cast<size_t>(currentItem));
                     break;
                 }
@@ -535,9 +536,9 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     auto dropdownIndex = (widgetIndex - widx::company_major_news) / kNumWidgetsPerDropdown;
                     auto newValue = static_cast<Config::NewsType>(itemIndex);
 
-                    if (newValue != Config::get().old.newsSettings[dropdownIndex])
+                    if (newValue != Config::get().newsSettings[dropdownIndex])
                     {
-                        Config::get().old.newsSettings[dropdownIndex] = newValue;
+                        Config::get().newsSettings[dropdownIndex] = newValue;
                         Config::write();
                         Gfx::invalidateScreen();
                     }
@@ -562,7 +563,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             for (auto i = 0; i < 6; i++)
             {
                 auto widgetIndex = widx::company_major_news + (kNumWidgetsPerDropdown * i);
-                auto setting = static_cast<uint8_t>(Config::get().old.newsSettings[i]);
+                auto setting = static_cast<uint8_t>(Config::get().newsSettings[i]);
                 self.widgets[widgetIndex].text = kNewsDropdownStringIds[setting];
             }
         }
@@ -642,7 +643,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
             self.currentTab = widgetIndex - widx::tab_messages;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
 
             self.viewportRemove(0);
 

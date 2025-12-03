@@ -18,15 +18,18 @@
 #include "Localisation/StringIds.h"
 #include "Map/AnimationManager.h"
 #include "Map/MapGenerator/MapGenerator.h"
+#include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Map/WaveManager.h"
 #include "MessageManager.h"
 #include "MultiPlayer.h"
 #include "Objects/CargoObject.h"
 #include "Objects/ClimateObject.h"
+#include "Objects/LandObject.h"
 #include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/ScenarioTextObject.h"
+#include "Objects/WaterObject.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
 #include "ScenarioConstruction.h"
@@ -44,25 +47,21 @@
 #include "World/IndustryManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <OpenLoco/Platform/Platform.h>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Scenario
 {
-    static loco_global<char[256], 0x0050B745> _currentScenarioFilename;
-    static loco_global<uint16_t, 0x0050C19A> _50C19A;
-
     // 0x0046115C
     void sub_46115C()
     {
         Game::setFlags(GameStateFlags::none);
         AnimationManager::reset();
-        addr<0x0052624C, S5::S5FixFlags>() = S5::S5FixFlags::fixFlag0 | S5::S5FixFlags::fixFlag1;
+        getGameState().fixFlags = enumValue(S5::S5FixFlags::fixFlag0 | S5::S5FixFlags::fixFlag1);
     }
 
     Season nextSeason(Season season)
@@ -184,11 +183,11 @@ namespace OpenLoco::Scenario
     void sub_4969E0(uint8_t al)
     {
         auto& gameState = getGameState();
-        gameState.var_B94C = al;
-        gameState.var_B950 = 1;
-        gameState.var_B952 = 0;
-        gameState.var_B954 = 0;
-        gameState.var_B956 = 0;
+        gameState.var_B95C = al;
+        gameState.var_B960 = 1;
+        gameState.var_B962 = 0;
+        gameState.var_B964 = 0;
+        gameState.var_B966 = 0;
         gameState.currentRainLevel = 0;
     }
 
@@ -226,12 +225,12 @@ namespace OpenLoco::Scenario
     // ?Set default types for building. Like the initial track type and vehicle type and such.?
     void sub_4748D4()
     {
-        ObjectManager::sub_47966E();
+        ObjectManager::updateRoadObjectIdFlags();
         ObjectManager::updateDefaultLevelCrossingType();
-        ObjectManager::sub_47AC05();
-        CompanyManager::sub_4A6DA9();
+        ObjectManager::updateLastTrackTypeOption();
+        CompanyManager::updatePlayerInfrastructureOptions();
         Gfx::invalidateScreen();
-        ObjectManager::sub_4748FA();
+        ObjectManager::updateTerraformObjects();
         Gfx::loadCurrency();
     }
 
@@ -242,7 +241,6 @@ namespace OpenLoco::Scenario
         Ui::WindowManager::invalidate(Ui::WindowType::landscapeGeneration, 0);
         reset();
         Scenario::getOptions().madeAnyChanges = 0;
-        addr<0x00F25374, uint8_t>() = 0;
         Gfx::invalidateScreen();
     }
 
@@ -252,7 +250,6 @@ namespace OpenLoco::Scenario
         auto& options = Scenario::getOptions();
         MapGenerator::generate(options);
         options.madeAnyChanges = 0;
-        addr<0x00F25374, uint8_t>() = 0;
     }
 
     // 0x0049685C
@@ -278,37 +275,7 @@ namespace OpenLoco::Scenario
 
         CompanyManager::determineAvailableVehicles();
 
-        Economy::sub_46E2C0(getCurrentYear());
-    }
-
-    void registerHooks()
-    {
-        registerHook(
-            0x0043C88C,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                reset();
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x0043C90C,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                generateLandscape();
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x0049685C,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                initialiseDate(regs.ax);
-                regs = backup;
-                return 0;
-            });
+        Economy::setInflationForYear(getCurrentYear());
     }
 
     // 0x00442837
@@ -326,8 +293,7 @@ namespace OpenLoco::Scenario
         }
 
         Audio::pauseSound();
-        static loco_global<char[512], 0x00112CE04> _scenarioFilename;
-        std::strncpy(&*_scenarioFilename, fullPath.u8string().c_str(), std::size(_scenarioFilename));
+
         auto result = S5::importSaveToGameState(fullPath, S5::LoadFlags::scenario);
         Audio::unpauseSound();
         return result;
@@ -365,7 +331,7 @@ namespace OpenLoco::Scenario
         }
 
         EntityManager::updateSpatialIndex();
-        addr<0x0052334E, uint16_t>() = 0; // _thousandthTickCounter
+        WindowManager::resetThousandthTickCounter();
         Ui::Windows::Terraform::resetLastSelections();
         MessageManager::reset();
 
@@ -382,7 +348,7 @@ namespace OpenLoco::Scenario
 
         auto savePath = Environment::getPath(Environment::PathId::save);
         savePath /= std::string(Scenario::getOptions().scenarioName) + S5::extensionSV5;
-        std::strncpy(_currentScenarioFilename, savePath.u8string().c_str(), std::size(_currentScenarioFilename));
+        Game::setActiveSavePath(savePath.u8string());
 
         loadPreferredCurrencyNewGame();
         Gfx::loadCurrency();
@@ -395,7 +361,7 @@ namespace OpenLoco::Scenario
         CompanyManager::setRecords(CompanyManager::kZeroRecords);
         getObjectiveProgress().timeLimitUntilYear = getObjective().timeLimitYears - 1 + gameState.currentYear;
         getObjectiveProgress().monthsInChallenge = 0;
-        call(0x0049B546);
+        initialiseDefaultTrackRoadMods();
         gameState.lastMapWindowAttributes.flags = WindowFlags::none;
 
         TownManager::updateLabels();
@@ -403,7 +369,6 @@ namespace OpenLoco::Scenario
         Gfx::loadDefaultPalette();
         Gfx::invalidateScreen();
         SceneManager::resetSceneAge();
-        _50C19A = 62000;
         MultiPlayer::setFlag(MultiPlayer::flags::flag_10);
         throw GameException::Interrupt;
     }
@@ -500,14 +465,6 @@ namespace OpenLoco::Scenario
         args.push<uint16_t>(0);
     }
 
-    static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _inUseobjectSelection;
-    static loco_global<ObjectManager::ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
-
-    static std::span<ObjectManager::SelectedObjectsFlags> getInUseSelectedObjectFlags()
-    {
-        return std::span<ObjectManager::SelectedObjectsFlags>(*_inUseobjectSelection, ObjectManager::getNumInstalledObjects());
-    }
-
     static void loadPreferredCurrency()
     {
         const auto& preferredCurreny = Config::get().preferredCurrency;
@@ -517,8 +474,8 @@ namespace OpenLoco::Scenario
             return;
         }
 
-        ObjectManager::prepareSelectionList(true);
-        const auto oldCurrency = ObjectManager::getActiveObject(ObjectType::currency, getInUseSelectedObjectFlags());
+        auto& selection = ObjectManager::prepareSelectionList(true);
+        const auto oldCurrency = ObjectManager::getActiveObject(ObjectType::currency, selection.objectFlags);
         if (oldCurrency.index != ObjectManager::kNullObjectIndex)
         {
             if (oldCurrency.object._header == preferredCurreny)
@@ -526,17 +483,17 @@ namespace OpenLoco::Scenario
                 ObjectManager::freeSelectionList();
                 return;
             }
-            ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultDeselect, oldCurrency.object._header, getInUseSelectedObjectFlags(), _objectSelectionMeta);
+            selection.selectObject(ObjectManager::SelectObjectModes::defaultDeselect, oldCurrency.object._header);
         }
-        if (!ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultSelect, preferredCurreny, getInUseSelectedObjectFlags(), _objectSelectionMeta))
+        if (!selection.selectObject(ObjectManager::SelectObjectModes::defaultSelect, preferredCurreny))
         {
             // Failed so reselect the old currency and give up
-            ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultSelect, oldCurrency.object._header, getInUseSelectedObjectFlags(), _objectSelectionMeta);
+            selection.selectObject(ObjectManager::SelectObjectModes::defaultSelect, oldCurrency.object._header);
             ObjectManager::freeSelectionList();
             return;
         }
-        ObjectManager::unloadUnselectedSelectionListObjects(getInUseSelectedObjectFlags());
-        ObjectManager::loadSelectionListObjects(getInUseSelectedObjectFlags());
+        ObjectManager::unloadUnselectedSelectionListObjects(selection.objectFlags);
+        ObjectManager::loadSelectionListObjects(selection.objectFlags);
         ObjectManager::reloadAll();
         Gfx::loadCurrency();
         ObjectManager::freeSelectionList();
@@ -563,5 +520,77 @@ namespace OpenLoco::Scenario
         }
 
         loadPreferredCurrency();
+    }
+
+    static PaletteIndex_t getPreviewColourByTilePos(const TilePos2& pos)
+    {
+        PaletteIndex_t colour = PaletteIndex::transparent;
+        auto tile = TileManager::get(pos);
+
+        for (auto& el : tile)
+        {
+            switch (el.type())
+            {
+                case ElementType::surface:
+                {
+                    auto* surfaceEl = el.as<SurfaceElement>();
+                    if (surfaceEl == nullptr)
+                    {
+                        continue;
+                    }
+
+                    if (surfaceEl->water() == 0)
+                    {
+                        const auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
+                        const auto* landImage = Gfx::getG1Element(landObj->mapPixelImage);
+                        auto offset = surfaceEl->baseZ() / kMicroToSmallZStep * 2;
+                        colour = landImage->offset[offset];
+                    }
+                    else
+                    {
+                        const auto* waterObj = ObjectManager::get<WaterObject>();
+                        const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
+                        auto offset = (surfaceEl->water() * kMicroToSmallZStep - surfaceEl->baseZ()) / 2;
+                        colour = waterImage->offset[offset - 2];
+                    }
+                    break;
+                }
+
+                case ElementType::building:
+                case ElementType::road:
+                    colour = PaletteIndex::mutedDarkRed7;
+                    break;
+
+                case ElementType::industry:
+                    colour = PaletteIndex::mutedPurple7;
+                    break;
+
+                case ElementType::tree:
+                    colour = PaletteIndex::green6;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        return colour;
+    }
+
+    // 0x0046DB4C
+    void drawScenarioMiniMapImage()
+    {
+        auto& options = Scenario::getOptions();
+        const auto kPreviewSize = sizeof(options.preview[0]);
+        const auto kMapSkipFactor = kMapRows / kPreviewSize;
+
+        for (auto y = 0U; y < kPreviewSize; y++)
+        {
+            for (auto x = 0U; x < kPreviewSize; x++)
+            {
+                auto pos = TilePos2(kMapColumns - (x + 1) * kMapSkipFactor + 1, y * kMapSkipFactor + 1);
+                options.preview[y][x] = getPreviewColourByTilePos(pos);
+            }
+        }
     }
 }

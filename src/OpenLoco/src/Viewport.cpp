@@ -22,9 +22,7 @@
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui
@@ -242,14 +240,14 @@ namespace OpenLoco::Ui
 
                 if (!SceneManager::isTitleMode())
                 {
-                    if (!options.hasFlags(ViewportFlags::station_names_displayed))
+                    if (!options.hasFlags(ViewportFlags::hideStationNames))
                     {
-                        if (columnRt.zoomLevel <= Config::get().old.stationNamesMinScale)
+                        if (columnRt.zoomLevel <= Config::get().stationNamesMinScale)
                         {
                             drawStationNames(drawingCtx);
                         }
                     }
-                    if (!options.hasFlags(ViewportFlags::town_names_displayed))
+                    if (!options.hasFlags(ViewportFlags::hideTownNames))
                     {
                         drawTownNames(drawingCtx);
                     }

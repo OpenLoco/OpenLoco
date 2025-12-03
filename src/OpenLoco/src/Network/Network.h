@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <string_view>
 
-namespace OpenLoco::Interop
+namespace OpenLoco::GameCommands
 {
     struct registers;
 }
@@ -27,7 +27,7 @@ namespace OpenLoco::Network
     void sendChatMessage(std::string_view message);
     void receiveChatMessage(client_id_t client, std::string_view message);
 
-    void queueGameCommand(CompanyId company, const OpenLoco::Interop::registers& regs);
+    void queueGameCommand(CompanyId company, const OpenLoco::GameCommands::registers& regs);
     bool shouldProcessTick(uint32_t tick);
     void processGameCommands(uint32_t tick);
 

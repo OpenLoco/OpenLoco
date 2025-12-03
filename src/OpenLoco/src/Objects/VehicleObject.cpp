@@ -15,7 +15,6 @@
 #include "Vehicles/VehicleDraw.h"
 #include <OpenLoco/Core/Numerics.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco
@@ -425,7 +424,7 @@ namespace OpenLoco
 
         for (auto& anim : animation)
         {
-            if (anim.type == SimpleAnimationType::none)
+            if (anim.type == EmitterAnimationType::none)
             {
                 continue;
             }
@@ -670,7 +669,7 @@ namespace OpenLoco
     uint32_t VehicleObject::getLength() const
     {
         auto length = 0;
-        for (auto i = 0; i < var_04; ++i)
+        for (auto i = 0; i < numCarComponents; ++i)
         {
             if (carComponents[i].bodySpriteInd == 0xFF)
             {

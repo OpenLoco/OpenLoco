@@ -1,3 +1,4 @@
+#include "Ui/ToolTip.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/SoftwareDrawingEngine.h"
@@ -12,26 +13,102 @@
 #include "Ui/Widget.h"
 #include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <algorithm>
 #include <cstring>
 
-using namespace OpenLoco::Interop;
+namespace OpenLoco::Ui::ToolTip
+{
+    static WindowType _tooltipWindowType;
+    static WindowNumber_t _tooltipWindowNumber;
+    static WidgetIndex_t _tooltipWidgetIndex;
+    static uint16_t _tooltipNotShownTicks;
+    static StringId _currentTooltipStringId;
+    static Ui::Point _tooltipCursor;
+    static uint16_t _tooltipTimeout;
+    static bool _52336E;
+
+    void setWindowType(WindowType wndType)
+    {
+        _tooltipWindowType = wndType;
+    }
+    WindowType getWindowType()
+    {
+        return _tooltipWindowType;
+    }
+
+    void setWindowNumber(WindowNumber_t wndNumber)
+    {
+        _tooltipWindowNumber = wndNumber;
+    }
+    WindowNumber_t getWindowNumber()
+    {
+        return _tooltipWindowNumber;
+    }
+
+    void setWidgetIndex(WidgetIndex_t widx)
+    {
+        _tooltipWidgetIndex = widx;
+    }
+    WidgetIndex_t getWidgetIndex()
+    {
+        return _tooltipWidgetIndex;
+    }
+
+    void setNotShownTicks(uint16_t ticks)
+    {
+        _tooltipNotShownTicks = ticks;
+    }
+    uint16_t getNotShownTicks()
+    {
+        return _tooltipNotShownTicks;
+    }
+
+    StringId getCurrentStringId()
+    {
+        return _currentTooltipStringId;
+    }
+    void setCurrentStringId(StringId stringId)
+    {
+        _currentTooltipStringId = stringId;
+    }
+
+    // 0x00439BB1
+    bool isTimeTooltip()
+    {
+        return _tooltipWindowType == WindowType::timeToolbar && _tooltipWidgetIndex == 3;
+    }
+
+    Ui::Point getTooltipMouseLocation()
+    {
+        return _tooltipCursor;
+    }
+
+    void setTooltipMouseLocation(const Ui::Point& loc)
+    {
+        _tooltipCursor = loc;
+    }
+
+    uint16_t getTooltipTimeout()
+    {
+        return _tooltipTimeout;
+    }
+
+    void setTooltipTimeout(uint16_t tooltipTimeout)
+    {
+        _tooltipTimeout = tooltipTimeout;
+    }
+
+    void set_52336E(bool value)
+    {
+        _52336E = value;
+    }
+}
 
 namespace OpenLoco::Ui::Windows::ToolTip
 {
-    static loco_global<bool, 0x0052336E> _52336E;
-
-    static loco_global<WindowType, 0x00523381> _tooltipWindowType;
-    static loco_global<WindowNumber_t, 0x00523382> _tooltipWindowNumber;
-    static loco_global<int16_t, 0x00523384> _tooltipWidgetIndex;
-
-    static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
-
     static char _text[512];          // 0x01136D90
     static uint16_t _lineBreakCount; // 0x01136F90
-
-    static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
 
     enum widx
     {
@@ -43,26 +120,6 @@ namespace OpenLoco::Ui::Windows::ToolTip
         Widgets::Wt3Widget({ 0, 0 }, { 200, 32 }, WindowColour::primary)
 
     );
-
-    void registerHooks()
-    {
-        registerHook(
-            0x004C906B,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Ui::Windows::ToolTip::open((Ui::Window*)regs.esi, regs.edx, regs.ax, regs.bx);
-                regs = backup;
-                return 0;
-            });
-        registerHook(
-            0x004C9216,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Ui::Windows::ToolTip::update((Ui::Window*)regs.esi, regs.edx, regs.di, regs.ax, regs.bx);
-                regs = backup;
-                return 0;
-            });
-    }
 
     static const WindowEventList& getEvents();
 
@@ -97,13 +154,13 @@ namespace OpenLoco::Ui::Windows::ToolTip
             WindowType::tooltip,
             { x, y },
             { width, height },
-            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::flag_7,
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::ignoreInFindAt,
             getEvents());
         tooltip->setWidgets(_widgets);
         tooltip->widgets[widx::text].right = width;
         tooltip->widgets[widx::text].bottom = height;
 
-        _tooltipNotShownTicks = 0;
+        Ui::ToolTip::setNotShownTicks(0);
     }
 
     // 0x004C906B
@@ -121,9 +178,9 @@ namespace OpenLoco::Ui::Windows::ToolTip
             return;
         }
 
-        _tooltipWindowType = window->type;
-        _tooltipWindowNumber = window->number;
-        _tooltipWidgetIndex = widgetIndex;
+        Ui::ToolTip::setWindowType(window->type);
+        Ui::ToolTip::setWindowNumber(window->number);
+        Ui::ToolTip::setWidgetIndex(widgetIndex);
 
         auto toolArgs = window->callTooltip(widgetIndex, window->widgets[widgetIndex].id);
         if (!toolArgs)
@@ -137,7 +194,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
             return;
         }
 
-        _currentTooltipStringId = -1;
+        Ui::ToolTip::setCurrentStringId(StringIds::null);
 
         common(window, widgetIndex, window->widgets[widgetIndex].tooltip, cursorX, cursorY, *toolArgs);
     }
@@ -147,9 +204,9 @@ namespace OpenLoco::Ui::Windows::ToolTip
     {
         WindowManager::close(WindowType::tooltip, 0);
 
-        _tooltipWindowType = window->type;
-        _tooltipWindowNumber = window->number;
-        _tooltipWidgetIndex = widgetIndex;
+        Ui::ToolTip::setWindowType(window->type);
+        Ui::ToolTip::setWindowNumber(window->number);
+        Ui::ToolTip::setWidgetIndex(widgetIndex);
 
         auto toolArgs = window->callTooltip(widgetIndex, window->widgets[widgetIndex].id);
         if (!toolArgs)
@@ -163,7 +220,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
             return;
         }
 
-        _currentTooltipStringId = stringId;
+        Ui::ToolTip::setCurrentStringId(stringId);
 
         common(window, widgetIndex, stringId, cursorX, cursorY, *toolArgs);
     }
@@ -173,23 +230,25 @@ namespace OpenLoco::Ui::Windows::ToolTip
     {
         auto tr = Gfx::TextRenderer(drawingCtx);
 
+        uint16_t x = window.x;
+        uint16_t y = window.y;
         uint16_t width = window.width;
         uint16_t height = window.height;
 
-        drawingCtx.drawRect(1, 1, width - 2, height - 2, enumValue(ExtColour::unk2D), Gfx::RectFlags::transparent);
-        drawingCtx.drawRect(1, 1, width - 2, height - 2, (enumValue(ExtColour::unk74) + enumValue(ObjectManager::get<InterfaceSkinObject>()->tooltipColour)), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(x + 1, y + 1, width - 2, height - 2, enumValue(ExtColour::unk2D), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(x + 1, y + 1, width - 2, height - 2, (enumValue(ExtColour::unk74) + enumValue(ObjectManager::get<InterfaceSkinObject>()->tooltipColour)), Gfx::RectFlags::transparent);
 
-        drawingCtx.drawRect(0, 2, 1, height - 4, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
-        drawingCtx.drawRect(0 + width - 1, 2, 1, height - 4, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
-        drawingCtx.drawRect(0 + 2, height - 1, width - 4, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
-        drawingCtx.drawRect(0 + 2, 0, width - 4, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(x, y + 2, 1, height - 4, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(x + width - 1, y + 2, 1, height - 4, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(x + 2, y + height - 1, width - 4, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(x + 2, y, width - 4, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
 
-        drawingCtx.drawRect(0 + 1, 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
-        drawingCtx.drawRect(0 + width - 1 - 1, 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
-        drawingCtx.drawRect(0 + 1, height - 1 - 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
-        drawingCtx.drawRect(0 + width - 1 - 1, height - 1 - 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(x + 1, y + 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(x + width - 1 - 1, y + 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(x + 1, y + height - 1 - 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(x + width - 1 - 1, y + height - 1 - 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
 
-        auto point = Point(((width + 1) / 2) - 1, 1);
+        auto point = Point(((width + 1) / 2) + x - 1, y + 1);
         tr.drawStringCentredRaw(point, _lineBreakCount, Colour::black, _text);
     }
 
@@ -203,31 +262,22 @@ namespace OpenLoco::Ui::Windows::ToolTip
     // 0x004C94FF
     static void update([[maybe_unused]] Ui::Window& window)
     {
-        if (_52336E == false)
+        if (Ui::ToolTip::_52336E == false)
         {
-            _tooltipNotShownTicks = 0;
+            Ui::ToolTip::setNotShownTicks(0);
         }
-    }
-
-    void set_52336E(bool value)
-    {
-        _52336E = value;
     }
 
     // 0x004C87B5
     void closeAndReset()
     {
         Ui::WindowManager::close(WindowType::tooltip, 0);
-        Input::setTooltipTimeout(0);
-        _tooltipWindowType = WindowType::undefined;
-        _currentTooltipStringId = StringIds::null;
-        set_52336E(false);
-    }
+        Ui::ToolTip::setTooltipTimeout(0);
 
-    // 0x00439BB1
-    bool isTimeTooltip()
-    {
-        return _tooltipWindowType == WindowType::timeToolbar && _tooltipWidgetIndex == 3;
+        Ui::ToolTip::setWindowType(WindowType::undefined);
+        Ui::ToolTip::setCurrentStringId(StringIds::null);
+
+        Ui::ToolTip::set_52336E(false);
     }
 
     static constexpr WindowEventList kEvents = {

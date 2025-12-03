@@ -24,6 +24,7 @@
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Ui/Dropdown.h"
+#include "Ui/ToolTip.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/WindowManager.h"
@@ -139,7 +140,6 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     static void sub_43910A();
     static void showMultiplayer(Window* window);
     static void multiplayerConnect(std::string_view host);
-    static void sub_46E328();
     static const WindowEventList& getEvents();
 
     Window* open()
@@ -148,7 +148,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             WindowType::titleMenu,
             { (Ui::width() - kWW) / 2, Ui::height() - kWH - 25 },
             { kWW, kWH },
-            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::framedWidgets,
             getEvents());
 
         window->setWidgets(_widgets);
@@ -208,8 +208,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
         if (!window.widgets[Widx::scenario_list_btn].hidden)
         {
-            int16_t x = window.widgets[Widx::scenario_list_btn].left;
-            int16_t y = window.widgets[Widx::scenario_list_btn].top;
+            int16_t x = window.widgets[Widx::scenario_list_btn].left + window.x;
+            int16_t y = window.widgets[Widx::scenario_list_btn].top + window.y;
 
             uint32_t image_id = ImageIds::title_menu_globe_spin_0;
             if (Input::isHovering(WindowType::titleMenu, 0, Widx::scenario_list_btn))
@@ -223,8 +223,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
         if (!window.widgets[Widx::load_game_btn].hidden)
         {
-            int16_t x = window.widgets[Widx::load_game_btn].left;
-            int16_t y = window.widgets[Widx::load_game_btn].top;
+            int16_t x = window.widgets[Widx::load_game_btn].left + window.x;
+            int16_t y = window.widgets[Widx::load_game_btn].top + window.y;
 
             uint32_t image_id = ImageIds::title_menu_globe_spin_0;
             if (Input::isHovering(WindowType::titleMenu, 0, Widx::load_game_btn))
@@ -238,8 +238,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
         if (!window.widgets[Widx::tutorial_btn].hidden)
         {
-            int16_t x = window.widgets[Widx::tutorial_btn].left;
-            int16_t y = window.widgets[Widx::tutorial_btn].top;
+            int16_t x = window.widgets[Widx::tutorial_btn].left + window.x;
+            int16_t y = window.widgets[Widx::tutorial_btn].top + window.y;
 
             uint32_t image_id = ImageIds::title_menu_globe_spin_0;
             if (Input::isHovering(WindowType::titleMenu, 0, Widx::tutorial_btn))
@@ -255,8 +255,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
         if (!window.widgets[Widx::scenario_editor_btn].hidden)
         {
-            int16_t x = window.widgets[Widx::scenario_editor_btn].left;
-            int16_t y = window.widgets[Widx::scenario_editor_btn].top;
+            int16_t x = window.widgets[Widx::scenario_editor_btn].left + window.x;
+            int16_t y = window.widgets[Widx::scenario_editor_btn].top + window.y;
 
             uint32_t image_id = ImageIds::title_menu_globe_construct_24;
             if (Input::isHovering(WindowType::titleMenu, 0, Widx::scenario_editor_btn))
@@ -270,8 +270,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         if (!window.widgets[Widx::multiplayer_toggle_btn].hidden)
         {
             auto& widget = window.widgets[Widx::multiplayer_toggle_btn];
-            auto point = Point(widget.top + 3, window.width / 2);
-
+            auto point = Point(widget.top + 3 + window.y, window.width / 2 + window.x);
             StringId string = StringIds::single_player_mode;
             FormatArguments args{};
 
@@ -300,8 +299,6 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             return;
         }
 
-        sub_46E328();
-
         switch (widgetIndex)
         {
             case Widx::scenario_list_btn:
@@ -326,7 +323,6 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     // 0x004390D1
     static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
-        sub_46E328();
         switch (widgetIndex)
         {
             case Widx::tutorial_btn:
@@ -338,7 +334,6 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     // 0x004390DD
     static void onDropdown([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
     {
-        sub_46E328();
         switch (widgetIndex)
         {
             case Widx::tutorial_btn:
@@ -365,23 +360,18 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     static Ui::CursorId onCursor([[maybe_unused]] Window& window, [[maybe_unused]] WidgetIndex_t widgetIdx, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, [[maybe_unused]] int16_t yPos, Ui::CursorId fallback)
     {
         // Reset tooltip timeout to keep tooltips open.
-        addr<0x0052338A, uint16_t>() = 2000;
+        Ui::ToolTip::setTooltipTimeout(2000);
         return fallback;
     }
 
     static void showMultiplayer(Window* window)
     {
-        auto& cfg = Config::get().old;
-        StringManager::setString(StringIds::buffer_2039, Utility::nullTerminatedView(cfg.lastHost));
-        TextInput::openTextInput(window, StringIds::enter_host_address, StringIds::enter_host_address_description, StringIds::buffer_2039, Widx::multiplayer_toggle_btn, nullptr);
+        StringManager::setString(StringIds::buffer_2039, "");
+        TextInput::openTextInput(window, StringIds::enter_host_address, StringIds::enter_host_address_description, StringIds::buffer_2039, Widx::multiplayer_toggle_btn, {});
     }
 
     static void multiplayerConnect(std::string_view host)
     {
-        auto& cfg = Config::get().old;
-        auto szHost = std::string(host);
-        Utility::strcpy_safe(cfg.lastHost, szHost.c_str());
-
         Network::joinServer(host);
     }
 
@@ -415,7 +405,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         args.push(StringIds::the_other_player);
 
         // TODO: convert this to a builder pattern, with chainable functions to set the different string ids and arguments
-        TextInput::openTextInput(&self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, Widx::chat_btn, &args);
+        TextInput::openTextInput(&self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, Widx::chat_btn, args);
     }
 
     static void sub_43918F(const char* string)
@@ -448,38 +438,15 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     static void sub_4391E2()
     {
         GameCommands::LoadSaveQuitGameArgs args{};
-        args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::save;
-        args.option2 = LoadOrQuitMode::loadGamePrompt;
+        args.loadQuitMode = LoadOrQuitMode::loadGamePrompt;
+        args.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::promptSave;
         GameCommands::doCommand(args, GameCommands::Flags::apply);
-    }
-
-    static void sub_46E328()
-    {
-        call(0x0046e328);
     }
 
     // 0x004391F9
     static void onUpdate(Window& window)
     {
         window.var_846++;
-
-        if (Intro::isActive())
-        {
-            window.invalidate();
-            return;
-        }
-
-        if (!MultiPlayer::hasFlag(MultiPlayer::flags::flag_8) && !MultiPlayer::hasFlag(MultiPlayer::flags::flag_9))
-        {
-            window.invalidate();
-            return;
-        }
-
-        if (addr<0x0050C1AE, int32_t>() < 20)
-        {
-            window.invalidate();
-            return;
-        }
 
         window.invalidate();
     }

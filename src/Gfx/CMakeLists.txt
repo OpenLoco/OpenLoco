@@ -19,4 +19,3 @@ target_link_libraries(Gfx
         Diagnostics
         ${PNG_LIBRARY}
 )
-

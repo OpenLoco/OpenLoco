@@ -19,7 +19,6 @@ namespace OpenLoco
 {
     enum class GameStateFlags : uint32_t;
 
-#pragma pack(push, 1)
     struct GameState
     {
         Core::Prng rng;                                                          // 0x000000 (0x00525E18)
@@ -37,7 +36,6 @@ namespace OpenLoco
         CompanyId playerCompanies[2];                                            // 0x000024 (0x00525E3C)
         EntityId entityListHeads[Limits::kNumEntityLists];                       // 0x000026 (0x00525E3E)
         uint16_t entityListCounts[Limits::kNumEntityLists];                      // 0x000034 (0x00525E4C)
-        uint8_t pad_0042[0x046 - 0x042];                                         // 0x000042
         uint32_t currencyMultiplicationFactor[32];                               // 0x000046 (0x00525E5E)
         uint32_t unusedCurrencyMultiplicationFactor[32];                         // 0x0000C6 (0x00525EDE)
         uint32_t scenarioTicks;                                                  // 0x000146 (0x00525F5E)
@@ -81,10 +79,9 @@ namespace OpenLoco
         uint8_t preferredAICompetitiveness;                                      // 0x0003FF (0x00526217)
         uint16_t startingLoanSize;                                               // 0x000400 (0x00526218)
         uint16_t maxLoanSize;                                                    // 0x000402 (0x0052621A)
-        uint32_t var_404;                                                        // 0x000404 (0x0052621C)
-        uint32_t var_408;                                                        // 0x000408 (0x00526220)
-        uint32_t var_40C;                                                        // 0x00040C (0x00526224)
-        uint32_t var_410;                                                        // 0x000410 (0x00526228)
+        Core::Prng multiplayerPrng;                                              // 0x000404 (0x0052621C)
+        uint32_t multiplayerChecksumA;                                           // 0x00040C (0x00526224) unused
+        uint32_t multiplayerChecksumB;                                           // 0x000410 (0x00526228) unused
         VehicleType lastBuildVehiclesOption;                                     // 0x000414 (0x0052622C)
         uint8_t numberOfIndustries;                                              // 0x000415 (0x0052622D)
         uint16_t vehiclePreviewRotationFrame;                                    // 0x000416 (0x0052622E)
@@ -105,23 +102,15 @@ namespace OpenLoco
         uint32_t var_468;                                                        // 0x000468 (0x00526280)
         Ui::LastMapWindowAttributes lastMapWindowAttributes;                     // 0x00046C (0x00526284)
         uint32_t var_478;                                                        // 0x000478 (0x00526290)
-        uint8_t pad_047C[0x13B6 - 0x47C];                                        // 0x00047C
         uint16_t numMessages;                                                    // 0x0013B6 (0x005271CE)
         MessageId activeMessageIndex;                                            // 0x0013B8 (0x005271D0)
         Message messages[Limits::kMaxMessages];                                  // 0x0013BA (0x005271D2)
-        uint8_t pad_B886[0xB94C - 0xB886];                                       // 0x00B886
-        uint8_t var_B94C;                                                        // 0x00B94C (0x00531774)
-        uint8_t pad_B94D[0xB950 - 0xB94D];                                       // 0x00B94D
-        uint8_t var_B950;                                                        // 0x00B950 (0x00531778)
-        uint8_t pad_B951;                                                        // 0x00B951
-        uint8_t var_B952;                                                        // 0x00B952 (0x0053177A)
-        uint8_t pad_B953;                                                        // 0x00B953
-        uint8_t var_B954;                                                        // 0x00B954 (0x0053177C)
-        uint8_t pad_B955;                                                        // 0x00B955
-        uint8_t var_B956;                                                        // 0x00B956 (0x0053177E)
-        uint8_t pad_B957[0xB968 - 0xB957];                                       // 0x00B957
+        uint8_t var_B95C;                                                        // 0x00B95C (0x00531774)
+        uint8_t var_B960;                                                        // 0x00B960 (0x00531778)
+        uint8_t var_B962;                                                        // 0x00B962 (0x0053177A)
+        uint8_t var_B964;                                                        // 0x00B964 (0x0053177C)
+        uint8_t var_B966;                                                        // 0x00B966 (0x0053177E)
         uint8_t currentRainLevel;                                                // 0x00B968 (0x00531780)
-        uint8_t pad_B969[0xB96C - 0xB969];                                       // 0x00B969
         Company companies[Limits::kMaxCompanies];                                // 0x00B96C (0x00531784)
         Town towns[Limits::kMaxTowns];                                           // 0x092444 (0x005B825C)
         Industry industries[Limits::kMaxIndustries];                             // 0x09E744 (0x005C455C)
@@ -133,8 +122,6 @@ namespace OpenLoco
         uint16_t routings[Limits::kMaxVehicles][Limits::kMaxRoutingsPerVehicle]; // 0x442A44 (0x0096885C)
         uint8_t orders[Limits::kMaxOrders];                                      // 0x461E44 (0x00987C5C)
     };
-#pragma pack(pop)
-    static_assert(sizeof(GameState) == 0x4A0644);
 
     GameState& getGameState();
 

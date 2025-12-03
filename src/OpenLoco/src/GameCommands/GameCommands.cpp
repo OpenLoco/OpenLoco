@@ -16,6 +16,7 @@
 #include "CompanyAi/AiCreateRoadAndStation.h"
 #include "CompanyAi/AiCreateTrackAndStation.h"
 #include "CompanyAi/AiTrackReplacement.h"
+#include "Config.h"
 #include "Docks/CreatePort.h"
 #include "Docks/RemovePort.h"
 #include "General/LoadSaveQuit.h"
@@ -27,6 +28,7 @@
 #include "Industries/RenameIndustry.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
+#include "Logging.h"
 #include "Map/RoadElement.h"
 #include "Map/StationElement.h"
 #include "Map/Tile.h"
@@ -97,22 +99,22 @@
 #include <cassert>
 
 using namespace OpenLoco::Ui;
-using namespace OpenLoco::World;
 
 namespace OpenLoco::GameCommands
 {
-    static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
-    static loco_global<uint8_t, 0x00508F08> _gameCommandNestLevel;
-
     static uint16_t _gameCommandFlags;
+    static uint8_t _gameCommandNestLevel = 0; // 0x00508F08
 
-    static loco_global<const TileElement*, 0x009C68D0> _9C68D0;
+    static CompanyId _updatingCompanyId;                                                      // 0x009C68EB
+    static const World::TileElement* _errorTileElementPtr = World::TileManager::kInvalidTile; // 0x009C68D0
+    static World::Pos3 _gGameCommandPosition;                                                 // 0x009C68E0
+    static StringId _gGameCommandErrorText;                                                   // 0x009C68E6
+    static StringId _gGameCommandErrorTitle;                                                  // 0x009C68E8
+    static bool _gGameCommandErrorSound = true;                                               // 0x00508F09
+    static ExpenditureType _gGameCommandExpenditureType;                                      // 0x009C68EA
+    static CompanyId _errorCompanyId;                                                         // 0x009C68EE
 
-    static loco_global<Pos3, 0x009C68E0> _gGameCommandPosition;
-    static loco_global<StringId, 0x009C68E6> _gGameCommandErrorText;
-    static loco_global<StringId, 0x009C68E8> _gGameCommandErrorTitle;
-    static loco_global<uint8_t, 0x009C68EA> _gGameCommandExpenditureType; // pre-multiplied by 4
-    static loco_global<CompanyId, 0x009C68EE> _errorCompanyId;
+    static LegacyReturnState _legacyReturnState; // 0x01136072
 
     using GameCommandFunc = void (*)(registers& regs);
 
@@ -165,9 +167,9 @@ namespace OpenLoco::GameCommands
         { GameCommand::vehicleOrderDelete,           vehicleOrderDelete,        0x0047057A, false },
         { GameCommand::vehicleOrderSkip,             vehicleOrderSkip,          0x0047071A, false },
         { GameCommand::createRoad,                   createRoad,                0x00475FBC, true  },
-        { GameCommand::removeRoad,                   nullptr,                   0x004775A5, true  },
-        { GameCommand::createRoadMod,                nullptr,                   0x0047A21E, true  },
-        { GameCommand::removeRoadMod,                nullptr,                   0x0047A42F, true  },
+        { GameCommand::removeRoad,                   removeRoad,                0x004775A5, true  },
+        { GameCommand::createRoadMod,                createRoadMod,             0x0047A21E, true  },
+        { GameCommand::removeRoadMod,                removeRoadMod,             0x0047A42F, true  },
         { GameCommand::createRoadStation,            createRoadStation,         0x0048C708, true  },
         { GameCommand::removeRoadStation,            removeRoadStation,         0x0048D2AC, true  },
         { GameCommand::createBuilding,               createBuilding,            0x0042D133, true  },
@@ -213,74 +215,6 @@ namespace OpenLoco::GameCommands
         { GameCommand::vehicleRepaint,               vehicleRepaint,            0,          false },
     };
     // clang-format on
-
-    void registerHooks()
-    {
-        registerHook(
-            0x00431315,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto ebx = doCommand(GameCommand(regs.esi), backup);
-
-                regs = backup;
-                regs.ebx = ebx;
-                return 0;
-            });
-
-        // Used by a number of functions instead of going via doCommand
-        registerHook(0x004BB138, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            registers backup = regs;
-            createTree(backup);
-
-            regs.ebx = backup.ebx;
-            return 0;
-        });
-
-        // Used by a aiCreateTrackAndStation instead of going via doCommand
-        registerHook(0x0048BB20, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            registers backup = regs;
-            createTrainStation(backup);
-
-            regs = backup;
-            return 0;
-        });
-
-        // Used by a aiCreateTrackAndStation and sub_4854B2 ai function instead of going via doCommand
-        registerHook(0x0049BB98, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            registers backup = regs;
-            createTrack(backup);
-
-            regs = backup;
-            return 0;
-        });
-
-        // Used by a aiCreateRoadAndStation instead of going via doCommand
-        registerHook(0x0048C708, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            registers backup = regs;
-            createRoadStation(backup);
-
-            regs = backup;
-            return 0;
-        });
-
-        // Used by a aiCreateRoadAndStation and queryRoadPlacementScore ai function instead of going via doCommand
-        registerHook(0x00475FBC, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            registers backup = regs;
-            createRoad(backup);
-
-            regs = backup;
-            return 0;
-        });
-
-        // Used by sub_485B68 ai function instead of going via doCommand
-        registerHook(0x004A734F, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            registers backup = regs;
-            aiTrackReplacement(backup);
-
-            regs = backup;
-            return 0;
-        });
-    }
 
     static uint32_t loc_4314EA();
     static uint32_t loc_4313C6(int esi, const registers& regs);
@@ -382,7 +316,7 @@ namespace OpenLoco::GameCommands
         else
         {
             auto addr = gameCommand.originalAddress;
-            call(addr, regs);
+            Diagnostics::Logging::error("Unimplemented game command called: id:{}, address:{}", static_cast<uint32_t>(gameCommand.id), addr);
         }
     }
 
@@ -503,15 +437,17 @@ namespace OpenLoco::GameCommands
 
         if (_gGameCommandErrorText != 0xFFFE)
         {
-            Windows::Error::open(_gGameCommandErrorTitle, _gGameCommandErrorText);
+            auto openError = _gGameCommandErrorSound ? Windows::Error::open : Windows::Error::openQuiet;
+            openError(_gGameCommandErrorTitle, _gGameCommandErrorText);
             return GameCommands::FAILURE;
         }
 
         // advanced errors
-        if (_9C68D0 != World::TileManager::kInvalidTile)
+        if (_errorTileElementPtr != World::TileManager::kInvalidTile)
         {
-            auto tile = *_9C68D0;
+            using namespace OpenLoco::World;
 
+            auto* tile = _errorTileElementPtr;
             switch (tile->type())
             {
                 case ElementType::track: // 4
@@ -582,7 +518,7 @@ namespace OpenLoco::GameCommands
         // fallback
         auto formatter = FormatArguments::common();
         formatter.push(CompanyManager::get(_errorCompanyId)->name);
-        Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_stringid_belongs_to, _errorCompanyId);
+        Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_belongs_to, _errorCompanyId);
         return GameCommands::FAILURE;
     }
 
@@ -601,7 +537,7 @@ namespace OpenLoco::GameCommands
         }
         _gGameCommandErrorText = 0xFFFEU;
         _errorCompanyId = company;
-        _9C68D0 = tile == nullptr ? World::TileManager::kInvalidTile : tile;
+        _errorTileElementPtr = tile == nullptr ? World::TileManager::kInvalidTile : tile;
         return false;
     }
 
@@ -613,6 +549,11 @@ namespace OpenLoco::GameCommands
     void setPosition(const World::Pos3& pos)
     {
         _gGameCommandPosition = pos;
+    }
+
+    void setErrorSound(bool state)
+    {
+        _gGameCommandErrorSound = state;
     }
 
     void setErrorText(const StringId message)
@@ -632,12 +573,12 @@ namespace OpenLoco::GameCommands
 
     ExpenditureType getExpenditureType()
     {
-        return ExpenditureType(_gGameCommandExpenditureType / 4);
+        return _gGameCommandExpenditureType;
     }
 
     void setExpenditureType(const ExpenditureType type)
     {
-        _gGameCommandExpenditureType = static_cast<uint8_t>(type) * 4;
+        _gGameCommandExpenditureType = type;
     }
 
     CompanyId getUpdatingCompanyId()
@@ -660,11 +601,22 @@ namespace OpenLoco::GameCommands
         _gameCommandNestLevel = 0;
     }
 
+    LegacyReturnState& getLegacyReturnState()
+    {
+        return _legacyReturnState;
+    }
+
     // TODO: Maybe move this somewhere else used by multiple game commands
     // 0x0048B013
     void playConstructionPlacementSound(World::Pos3 pos)
     {
         const auto frequency = gPrng2().randNext(17955, 26146);
         Audio::playSound(Audio::SoundId::construct, pos, 0, frequency);
+    }
+
+    // TODO: Maybe move this somewhere else used by multiple game commands
+    bool shouldInvalidateTile(uint8_t flags)
+    {
+        return !(flags & Flags::aiAllocated) && Config::get().showAiPlanningAsGhosts;
     }
 }

@@ -21,15 +21,11 @@
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Numerics.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 
 namespace OpenLoco::TownManager
 {
-    static loco_global<Town*, 0x01135C38> _dword_1135C38;
-
     // 0x0049B45F
     static uint32_t calcCargoInfluenceFlags(const Town& town)
     {
@@ -312,7 +308,6 @@ namespace OpenLoco::TownManager
     }
 
     // 0x00497DC1
-    // The return value of this function is also being returned via dword_1135C38.
     // esi population
     // edi capacity
     // ebp rating | (numBuildings << 16)
@@ -321,12 +316,10 @@ namespace OpenLoco::TownManager
         auto res = getClosestTownAndDensity(loc);
         if (res == std::nullopt)
         {
-            _dword_1135C38 = nullptr;
             return nullptr;
         }
         auto townId = res->first;
         auto town = get(townId);
-        _dword_1135C38 = town;
 
         if (town == nullptr)
         {
@@ -518,18 +511,6 @@ namespace OpenLoco::TownManager
         const auto unk = std::clamp((realDistance - town->numBuildings * 4 + 512) / 128, 0, 4);
         const uint8_t density = std::min(4 - unk, 3); // edx
         return { std::make_pair(town->id(), density) };
-    }
-
-    void registerHooks()
-    {
-        registerHook(
-            0x00497348,
-            []([[maybe_unused]] registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                resetBuildingsInfluence();
-                regs = backup;
-                return 0;
-            });
     }
 }
 

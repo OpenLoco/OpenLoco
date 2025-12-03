@@ -9,10 +9,7 @@
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
 #include <OpenLoco/Core/Numerics.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {

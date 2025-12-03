@@ -1,9 +1,68 @@
-25.07+ (???)
+25.11+ (???)
 ------------------------------------------------------------------------
+- Change: [#3384] Music selection window is now resizable, sortable, and displays the time period associated with each track.
+- Change: [#3402] Text input windows now show the total characters used rather than the current character position.
+- Change: [#3413] The map window can now be resized to fit the entire game map.
+- Change: [#3473] Fences can now be interacted with in viewports outside of the scenario editor as well.
+- Fix: [#2957] Bridge supports not being drawn under different corners than in vanilla.
+- Fix: [#3183] Sound and music being unpaused when the game is still paused in certain situations.
+- Fix: [#3313] Vehicle orders not being deleted correctly when the station is deallocated.
+- Fix: [#3395] Text input windows no longer show character limits.
+- Fix: [#3401] The character limit label is using the wrong text colour.
+- Fix: [#3422] Window resize handles don't work properly in windows with status bars.
+- Fix: [#3431] Marker-related config variables are not saved properly.
+- Fix: [#3455] The 'Plant Trees' status bar is not rendered correctly.
+- Fix: [#3466] Game crashes if you press a multimedia key on your keyboard (e.g. 'next track').
+
+25.11 (2025-11-05)
+------------------------------------------------------------------------
+- Feature: [#3270] Routes planned by AI companies can now be made visible via a checkbox in the rendering options tab.
+- Change: [#1625] The "Sound" and "Music" options have been merged into one "Audio" tab that is now always accessible.
+- Change: [#2914, #3179, #3369] Object Selection window is now modal when in play mode.
+- Change: [#3323] Refitting a vehicle or removing components from it now asks for confirmation if the vehicle contains any cargo.
+- Fix: [#2797] Single player scenario scores reset when adding a new scenario.
+- Fix: [#3032] Toggling "Play Music" from the top toolbar does not refresh the status in the options window.
+- Fix: [#3200] Certain formatting control codes can be typed in text boxes.
+- Fix: [#3281] Modifying the news options does not trigger a config file write, potentially losing the changes.
+- Fix: [#3314] Players can remove roads owned by other companies.
+- Fix: [#3315] Players can replace station elements owned by other companies.
+- Fix: [#3355] Text encoding issues with save/load file browse prompt when save file names have non-ASCII characters.
+
+25.10 (2025-10-10)
+------------------------------------------------------------------------
+- Fix: [#2741] Tree, fence, and wall ghosts can be left behind when using Terraform keyboard shortcuts (original bug).
+- Fix: [#3238] Vehicle positioning hint is shown even when there is a viewport present.
+- Fix: [#3279] Game crashes when the news window slides into view.
+- Fix: [#3294] Wrong error message when attempting to remove the headquarters of another company.
+- Fix: [#3301] Assigning keyboard shortcuts not working correctly, the function parameters were swapped.
+
+25.09 (2025-09-30)
+------------------------------------------------------------------------
+- Feature: [#3274] Add a button to rotate company headquarters when building them.
+- Feature: [#3284] Add tunnel, land, road station, streetlight, hill shape OpenGraphics objects.
+- Change: [#3227] The accuracy of cursor-relative zooming has been improved.
+- Change: [#3258] Current currency dropdown is now disabled when in the title screen.
+- Fix: [#3135] Follow vehicle on main view not working.
+- Fix: [#3232] Crash when moving vehicle window when a message is showing a vehicle.
+- Fix: [#3256] Preferred currency not being loaded from config.
+- Fix: [#3266] When text input reached the maximum length it can instead trigger shortcuts.
+
+25.08 (2025-08-26)
+------------------------------------------------------------------------
+- Change: [#1682, #3216] Scroll widgets now support much larger sizes.
 - Change: [#3104] Landscape generation confirmation prompts now prevent you from clicking other windows until a choice is made.
+- Change: [#3193] The minimum size of the map window was changed to accommodate all elements.
+- Fix: [#3019] Mouse getting stuck on edges of monitor when right mouse dragging scroll views.
+- Fix: [#3116] Visual artifacts when additional viewports are visible, most prominently with news message window.
+- Fix: [#3137] Viewport interaction is offset by window position.
 - Fix: [#3167] Dropdown for terrain type selection is displayed at the wrong position.
 - Fix: [#3171] Background of station labels have a visible gap due to being off by one pixel.
-- Fix: [#3183] Sound and music being unpaused when the game is still paused in certain situations.
+- Fix: [#3184] The minimum size of the map window is miscalculated when it is dragged past a certain point.
+- Fix: [#3190] The map window's minimap isn't centred correctly when it is first opened.
+- Fix: [#3195] In the Landscape Generation window, UI state is reset each frame, preventing scrolling the land type list.
+- Fix: [#3198] Cannot write non-English letters in text boxes.
+- Fix: [#3202] Company name being set incorrectly when using preferred owner name.
+- Fix: [#3212] Competitor owner portraits are not positioned correctly in error windows.
 
 25.07 (2025-07-15)
 ------------------------------------------------------------------------

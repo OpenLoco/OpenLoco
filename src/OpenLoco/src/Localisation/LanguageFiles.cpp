@@ -9,14 +9,12 @@
 #include "Ui.h"
 #include "Unicode.h"
 #include <OpenLoco/Core/Exception.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Platform.h>
 #include <cassert>
 #include <iostream>
 #include <stdexcept>
 #include <yaml-cpp/yaml.h>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Localisation
@@ -61,7 +59,7 @@ namespace OpenLoco::Localisation
         auto str = std::make_unique<char[]>(size + 1);
         char* out = str.get();
 
-        utf8_t* ptr = (utf8_t*)value;
+        const utf8_t* ptr = (utf8_t*)value;
         while (true)
         {
             utf32_t codepoint = readCodePoint(&ptr);
@@ -70,17 +68,16 @@ namespace OpenLoco::Localisation
                 continue;
             }
 
-            char readChar = convertUnicodeToLoco(codepoint);
-            if (readChar == '{')
+            if (codepoint == '{')
             {
                 std::vector<std::string_view> commands = {};
                 char* start = nullptr;
                 while (true)
                 {
                     char* pos = (char*)ptr;
-                    readChar = readCodePoint(&ptr);
+                    codepoint = readCodePoint(&ptr);
 
-                    if (readChar == ' ')
+                    if (codepoint == ' ')
                     {
                         if (start != nullptr)
                         {
@@ -90,7 +87,7 @@ namespace OpenLoco::Localisation
                         continue;
                     }
 
-                    if (readChar == '}')
+                    if (codepoint == '}')
                     {
                         if (start != nullptr)
                         {
@@ -218,11 +215,11 @@ namespace OpenLoco::Localisation
             }
             else
             {
-                *out = readChar;
+                *out = convertUnicodeToLoco(codepoint);
                 out++;
             }
 
-            if (readChar == '\0')
+            if (codepoint == '\0')
             {
                 break;
             }

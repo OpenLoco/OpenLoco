@@ -74,7 +74,7 @@ namespace OpenLoco::Ui::Windows::StationList
         Widgets::TableHeader({ 404, 43 }, { 90, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_total_units_waiting),
         Widgets::TableHeader({ 494, 43 }, { 120, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_cargo_accepted),
         Widgets::ScrollView({ 3, 56 }, { 594, 126 }, WindowColour::secondary, Scrollbars::vertical),
-        Widgets::Label({ 4, kWindowSize.height - 12 }, { kWindowSize.width, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
+        Widgets::Label({ 4, kWindowSize.height - 12 }, { kWindowSize.width - kResizeHandleSize, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
 
     );
 
@@ -320,7 +320,7 @@ namespace OpenLoco::Ui::Windows::StationList
             window = WindowManager::createWindow(
                 WindowType::stationList,
                 kWindowSize,
-                WindowFlags::flag_11,
+                WindowFlags::lighterFrame,
                 getEvents());
 
             window->number = enumValue(companyId);
@@ -442,6 +442,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
         window.widgets[widx::scrollview].right = window.width - 4;
         window.widgets[widx::scrollview].bottom = window.height - 14;
+        window.widgets[widx::status_bar].right = window.width - kResizeHandleSize - 1;
 
         // Reposition header buttons.
         window.widgets[widx::sort_name].right = std::min(203, window.width - 4);
@@ -612,8 +613,8 @@ namespace OpenLoco::Ui::Windows::StationList
         auto company = CompanyManager::get(CompanyId(self.number));
         auto competitor = ObjectManager::get<CompetitorObject>(company->competitorId);
         uint32_t image = Gfx::recolour(competitor->images[enumValue(company->ownerEmotion)], company->mainColours.primary);
-        uint16_t x = self.widgets[widx::company_select].left + 1;
-        uint16_t y = self.widgets[widx::company_select].top + 1;
+        uint16_t x = self.x + self.widgets[widx::company_select].left + 1;
+        uint16_t y = self.y + self.widgets[widx::company_select].top + 1;
         drawingCtx.drawImage(x, y, image);
     }
 
@@ -785,9 +786,9 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x00491999
-    static void getScrollSize(Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
     {
-        *scrollHeight = kRowHeight * window.var_83C;
+        scrollHeight = kRowHeight * window.var_83C;
     }
 
     // 0x00491841

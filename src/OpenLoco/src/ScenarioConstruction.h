@@ -4,7 +4,6 @@
 
 namespace OpenLoco::Scenario
 {
-#pragma pack(push, 1)
     struct Construction
     {
         uint8_t signals[8];       // 0x00015A (0x00525F72)
@@ -15,10 +14,10 @@ namespace OpenLoco::Scenario
         uint8_t roadStations[8];  // 0x000182 (0x00525F9A)
         uint8_t roadMods[8];      // 0x00018A (0x00525FA2)
     };
-#pragma pack(pop)
-    static_assert(sizeof(Construction) == 0x38);
 
     Construction& getConstruction();
     void resetRoadObjects();
     void resetTrackObjects();
+
+    void initialiseDefaultTrackRoadMods();
 }

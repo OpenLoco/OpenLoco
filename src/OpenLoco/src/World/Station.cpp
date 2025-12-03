@@ -34,12 +34,10 @@
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Bound.hpp>
 #include <algorithm>
 #include <cassert>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Literals;
@@ -50,39 +48,37 @@ namespace OpenLoco
     constexpr uint8_t kMaxCargoRating = 200;
     constexpr uint8_t catchmentSize = 4;
 
-    struct CargoSearchState
+    struct CargoMap
     {
-    private:
-        inline static loco_global<uint8_t[kMapSize], 0x00F00484> _map;
-        inline static loco_global<uint32_t, 0x0112C68C> _filter;
-        inline static loco_global<uint32_t[kMaxCargoStats], 0x0112C690> _score;
-        inline static loco_global<uint32_t, 0x0112C710> _producedCargoTypes;
-        inline static loco_global<IndustryId[kMaxCargoStats], 0x0112C7D2> _industry;
-        inline static loco_global<uint8_t, 0x0112C7F2> _byte_112C7F2;
+        std::array<uint8_t, kMapSize> data = {};
 
-    public:
+        void reset()
+        {
+            data.fill(0);
+        }
+
         bool mapHas1(const tile_coord_t x, const tile_coord_t y) const
         {
-            return (_map[y * kMapColumns + x] & (1 << enumValue(CatchmentFlags::flag_0))) != 0;
+            return (data[y * kMapColumns + x] & (1 << enumValue(CatchmentFlags::flag_0))) != 0;
         }
         bool mapHas2(const tile_coord_t x, const tile_coord_t y) const
         {
-            return (_map[y * kMapColumns + x] & (1 << enumValue(CatchmentFlags::flag_1))) != 0;
+            return (data[y * kMapColumns + x] & (1 << enumValue(CatchmentFlags::flag_1))) != 0;
         }
 
         void mapRemove2(const tile_coord_t x, const tile_coord_t y)
         {
-            _map[y * kMapColumns + x] &= ~(1 << enumValue(CatchmentFlags::flag_1));
+            data[y * kMapColumns + x] &= ~(1 << enumValue(CatchmentFlags::flag_1));
         }
 
         void setTile(const tile_coord_t x, const tile_coord_t y, const CatchmentFlags flag)
         {
-            _map[y * kMapColumns + x] |= (1 << enumValue(flag));
+            data[y * kMapColumns + x] |= (1 << enumValue(flag));
         }
 
         void resetTile(const tile_coord_t x, const tile_coord_t y, const CatchmentFlags flag)
         {
-            _map[y * kMapColumns + x] &= ~(1 << enumValue(flag));
+            data[y * kMapColumns + x] &= ~(1 << enumValue(flag));
         }
 
         void setTileRegion(tile_coord_t x, tile_coord_t y, int16_t xTileCount, int16_t yTileCount, const CatchmentFlags flag)
@@ -124,6 +120,24 @@ namespace OpenLoco
                 yTileCount--;
             }
         }
+    };
+
+    static CargoMap _cargoMap; // 0x00F00484
+
+    struct CargoSearchState
+    {
+    private:
+        uint32_t _filter = 0U;                            // 0x0112C68C
+        std::array<uint32_t, kMaxCargoStats> _score = {}; // 0x0112C690
+        uint32_t _producedCargoTypes = 0U;                // 0x0112C710
+        std::array<IndustryId, kMaxCargoStats> _industry; // 0x0112C7D2
+        uint8_t _byte_112C7F2 = 1;                        // 0x0112C7F2
+
+    public:
+        CargoSearchState()
+        {
+            _industry.fill(IndustryId::null);
+        }
 
         uint32_t filter() const
         {
@@ -137,7 +151,7 @@ namespace OpenLoco
 
         void resetScores()
         {
-            std::fill_n(_score.get(), kMaxCargoStats, 0);
+            _score.fill(0);
         }
 
         uint32_t score(const uint8_t cargo)
@@ -174,7 +188,7 @@ namespace OpenLoco
 
         void resetIndustryMap()
         {
-            std::fill_n(_industry.get(), kMaxCargoStats, IndustryId::null);
+            _industry.fill(IndustryId::null);
         }
 
         IndustryId getIndustry(const uint8_t cargo) const
@@ -299,7 +313,7 @@ namespace OpenLoco
         {
             for (tile_coord_t tx = 0; tx < kMapRows; tx++)
             {
-                if (cargoSearchState.mapHas2(tx, ty))
+                if (_cargoMap.mapHas2(tx, ty))
                 {
                     auto pos = Pos2(tx * kTileSize, ty * kTileSize);
                     auto tile = TileManager::get(pos);
@@ -391,10 +405,10 @@ namespace OpenLoco
                                     tile_coord_t xPos = (pos.x - World::kOffsets[index].x) / kTileSize;
                                     tile_coord_t yPos = (pos.y - World::kOffsets[index].y) / kTileSize;
 
-                                    cargoSearchState.mapRemove2(xPos + 0, yPos + 0);
-                                    cargoSearchState.mapRemove2(xPos + 0, yPos + 1);
-                                    cargoSearchState.mapRemove2(xPos + 1, yPos + 0);
-                                    cargoSearchState.mapRemove2(xPos + 1, yPos + 1);
+                                    _cargoMap.mapRemove2(xPos + 0, yPos + 0);
+                                    _cargoMap.mapRemove2(xPos + 0, yPos + 1);
+                                    _cargoMap.mapRemove2(xPos + 1, yPos + 0);
+                                    _cargoMap.mapRemove2(xPos + 1, yPos + 1);
                                 }
 
                                 break;
@@ -524,14 +538,13 @@ namespace OpenLoco
         return res;
     }
 
-    static void setStationCatchmentRegion(CargoSearchState& cargoSearchState, TilePos2 minPos, TilePos2 maxPos, const CatchmentFlags flags);
+    static void setStationCatchmentRegion(TilePos2 minPos, TilePos2 maxPos, const CatchmentFlags flags);
 
     // 0x00491D70
     // catchment flag should not be shifted (1, 2, 3, 4) and NOT (1 << 0, 1 << 1)
     void setCatchmentDisplay(const Station* station, const CatchmentFlags catchmentFlag)
     {
-        CargoSearchState cargoSearchState;
-        cargoSearchState.resetTileRegion(0, 0, kMapColumns, kMapRows, catchmentFlag);
+        _cargoMap.resetTileRegion(0, 0, kMapColumns, kMapRows, catchmentFlag);
 
         if (station == nullptr)
         {
@@ -568,7 +581,7 @@ namespace OpenLoco
                     maxPos.x += catchmentSize;
                     maxPos.y += catchmentSize;
 
-                    setStationCatchmentRegion(cargoSearchState, minPos, maxPos, catchmentFlag);
+                    setStationCatchmentRegion(minPos, maxPos, catchmentFlag);
                 }
                 break;
                 case StationType::docks:
@@ -582,7 +595,7 @@ namespace OpenLoco
                     maxPos.x += catchmentSize + 1;
                     maxPos.y += catchmentSize + 1;
 
-                    setStationCatchmentRegion(cargoSearchState, minPos, maxPos, catchmentFlag);
+                    setStationCatchmentRegion(minPos, maxPos, catchmentFlag);
                 }
                 break;
                 default:
@@ -595,7 +608,7 @@ namespace OpenLoco
                     maxPos.x += catchmentSize;
                     maxPos.y += catchmentSize;
 
-                    setStationCatchmentRegion(cargoSearchState, minPos, maxPos, catchmentFlag);
+                    setStationCatchmentRegion(minPos, maxPos, catchmentFlag);
                 }
             }
         }
@@ -603,9 +616,8 @@ namespace OpenLoco
 
     bool isWithinCatchmentDisplay(const World::Pos2 pos)
     {
-        CargoSearchState cargoSearchState;
         const auto tilePos = World::toTileSpace(pos);
-        return cargoSearchState.mapHas1(tilePos.x, tilePos.y);
+        return _cargoMap.mapHas1(tilePos.x, tilePos.y);
     }
 
     // 0x0049B4E0
@@ -819,8 +831,8 @@ namespace OpenLoco
                 {
                     newDensity = stationCargo.quantity / stationTileSize;
                     auto* cargoObj = ObjectManager::get<CargoObject>(i);
-                    newDensity += (1 << cargoObj->var_14) - 1;
-                    newDensity >>= cargoObj->var_14;
+                    newDensity += (1 << cargoObj->stationCargoDensity) - 1;
+                    newDensity >>= cargoObj->stationCargoDensity;
 
                     newDensity = std::min<int32_t>(newDensity, Limits::kMaxStationCargoDensity);
                 }
@@ -1025,7 +1037,7 @@ namespace OpenLoco
     }
 
     // 0x00491EDC
-    static void setStationCatchmentRegion(CargoSearchState& cargoSearchState, TilePos2 minPos, TilePos2 maxPos, const CatchmentFlags flag)
+    static void setStationCatchmentRegion(TilePos2 minPos, TilePos2 maxPos, const CatchmentFlags flag)
     {
         minPos.x = std::max(minPos.x, static_cast<coord_t>(0));
         minPos.y = std::max(minPos.y, static_cast<coord_t>(0));
@@ -1037,7 +1049,7 @@ namespace OpenLoco
         maxPos.x++;
         maxPos.y++;
 
-        cargoSearchState.setTileRegion(minPos.x, minPos.y, maxPos.x, maxPos.y, flag);
+        _cargoMap.setTileRegion(minPos.x, minPos.y, maxPos.x, maxPos.y, flag);
     }
 
     // 0x00491BF5
@@ -1050,9 +1062,7 @@ namespace OpenLoco
         minPos.x -= catchmentSize;
         minPos.y -= catchmentSize;
 
-        CargoSearchState cargoSearchState;
-
-        setStationCatchmentRegion(cargoSearchState, minPos, maxPos, flag);
+        setStationCatchmentRegion(minPos, maxPos, flag);
     }
 
     // 0x0048F716
@@ -1294,9 +1304,7 @@ namespace OpenLoco
         maxPos.x += catchmentSize;
         maxPos.y += catchmentSize;
 
-        CargoSearchState cargoSearchState;
-
-        setStationCatchmentRegion(cargoSearchState, minPos, maxPos, flag);
+        setStationCatchmentRegion(minPos, maxPos, flag);
     }
 
     // 0x00491D20
@@ -1309,9 +1317,7 @@ namespace OpenLoco
         minPos.x -= catchmentSize;
         minPos.y -= catchmentSize;
 
-        CargoSearchState cargoSearchState;
-
-        setStationCatchmentRegion(cargoSearchState, minPos, maxPos, flag);
+        setStationCatchmentRegion(minPos, maxPos, flag);
     }
 
     StringId getTransportIconsFromStationFlags(const StationFlags flags)
@@ -1368,7 +1374,9 @@ namespace OpenLoco
         }
 
         auto* airportObj = ObjectManager::get<AirportObject>(elStation->objectId());
-        const auto& movementNode = airportObj->movementNodes[node];
+        const auto movementNodes = airportObj->getMovementNodes();
+
+        const auto& movementNode = movementNodes[node];
         auto nodeOffset = Math::Vector::rotate(World::Pos2(movementNode.x, movementNode.y) - World::Pos2(16, 16), elStation->rotation()) + World::Pos2(16, 16);
         auto nodeLoc = World::Pos3{ nodeOffset.x, nodeOffset.y, movementNode.z } + station->airportStartPos;
         if (!movementNode.hasFlags(AirportMovementNodeFlags::taxiing))

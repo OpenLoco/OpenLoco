@@ -1,10 +1,8 @@
 #include "Date.h"
 #include "GameState.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <limits>
 #include <utility>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {

@@ -6,6 +6,10 @@ namespace OpenLoco::Ui::Widgets
 {
     static void sub_4CADE8(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
+        auto* window = widgetState.window;
+
+        const auto position = window->position() + widget.position();
+
         const bool isColourSet = widget.image & Widget::kImageIdColourSet;
         ImageId imageId = ImageId::fromUInt32(widget.image & ~Widget::kImageIdColourSet);
 
@@ -24,16 +28,16 @@ namespace OpenLoco::Ui::Widgets
             if (colour.isTranslucent())
             {
                 c = Colours::getShade(colour.c(), 4);
-                drawingCtx.drawImageSolid(Ui::Point{ 1, 1 }, pureImage, c);
+                drawingCtx.drawImageSolid(position + Ui::Point{ 1, 1 }, pureImage, c);
                 c = Colours::getShade(colour.c(), 2);
-                drawingCtx.drawImageSolid({}, pureImage, c);
+                drawingCtx.drawImageSolid(position, pureImage, c);
             }
             else
             {
                 c = Colours::getShade(colour.c(), 6);
-                drawingCtx.drawImageSolid(Ui::Point{ 1, 1 }, pureImage, c);
+                drawingCtx.drawImageSolid(position + Ui::Point{ 1, 1 }, pureImage, c);
                 c = Colours::getShade(colour.c(), 4);
-                drawingCtx.drawImageSolid({}, pureImage, c);
+                drawingCtx.drawImageSolid(position, pureImage, c);
             }
 
             return;
@@ -49,14 +53,21 @@ namespace OpenLoco::Ui::Widgets
             imageId = imageId.withPrimary(colour.c());
         }
 
-        drawingCtx.drawImage({}, imageId);
+        drawingCtx.drawImage(position, imageId);
     }
 
     void Wt3Widget::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
         auto* window = widgetState.window;
 
+        const auto position = window->position() + widget.position();
         const auto size = widget.size();
+
+        int16_t t, l, b, r;
+        t = window->y + widget.top;
+        l = window->x + widget.left;
+        r = window->x + widget.right;
+        b = window->y + widget.bottom;
 
         auto flags = widgetState.flags;
         if (widgetState.activated)
@@ -67,16 +78,16 @@ namespace OpenLoco::Ui::Widgets
         if (widget.content == Widget::kContentUnk)
         {
             flags |= Gfx::RectInsetFlags::fillNone;
-            drawingCtx.fillRectInset({}, size, widgetState.colour, flags);
+            drawingCtx.fillRectInset(position, size, widgetState.colour, flags);
             return;
         }
 
-        if (window->hasFlags(WindowFlags::flag_6))
+        if (window->hasFlags(WindowFlags::framedWidgets))
         {
-            drawingCtx.fillRect({}, size, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+            drawingCtx.fillRect(position, size, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
         }
 
-        drawingCtx.fillRectInset({ 0, 0 }, size, widgetState.colour, flags);
+        drawingCtx.fillRectInset(l, t, r, b, widgetState.colour, flags);
 
         if (widget.content == Widget::kContentNull)
         {

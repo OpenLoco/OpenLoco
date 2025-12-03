@@ -49,7 +49,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
         auto window = WindowManager::createWindowCentred(
             WindowType::networkStatus,
             kWindowSize,
-            WindowFlags::flag_11 | WindowFlags::stickToFront,
+            WindowFlags::lighterFrame | WindowFlags::stickToFront,
             getEvents());
 
         window->setWidgets(widgets);
@@ -108,7 +108,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
 
         self.draw(drawingCtx);
 
-        auto origin = Point((self.width / 2), (self.height / 2));
+        auto origin = Point(self.x + (self.width / 2), self.y + (self.height / 2));
         auto width = self.width;
 
         tr.drawStringCentredClipped(origin, width, Colour::black, StringIds::buffer_1250);

@@ -49,10 +49,8 @@
 #include "ViewportManager.h"
 #include "World/Company.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-#include <cmath>
 
-using namespace OpenLoco::Interop;
+#include <cmath>
 
 namespace OpenLoco::Ui::Windows::CompanyWindow
 {
@@ -220,7 +218,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             // Draw 'owner' label
             {
                 auto& widget = self.widgets[widx::face];
-                auto point = Point((widget.left + widget.right) / 2, widget.top - 12);
+                auto point = Point(self.x + (widget.left + widget.right) / 2, self.y + widget.top - 12);
                 tr.drawStringCentred(
                     point,
                     Colour::black,
@@ -230,8 +228,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             // Draw company owner image.
             {
                 const uint32_t image = Gfx::recolour(competitor->images[enumValue(company->ownerEmotion)] + 1, company->mainColours.primary);
-                const uint16_t x = self.widgets[widx::face].left + 1;
-                const uint16_t y = self.widgets[widx::face].top + 1;
+                const uint16_t x = self.x + self.widgets[widx::face].left + 1;
+                const uint16_t y = self.y + self.widgets[widx::face].top + 1;
                 drawingCtx.drawImage(x, y, image);
             }
 
@@ -239,8 +237,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             if (company->jailStatus != 0)
             {
                 const uint32_t image = ImageIds::owner_jailed;
-                const uint16_t x = self.widgets[widx::face].left + 1;
-                const uint16_t y = self.widgets[widx::face].top + 1;
+                const uint16_t x = self.x + self.widgets[widx::face].left + 1;
+                const uint16_t y = self.y + self.widgets[widx::face].top + 1;
                 drawingCtx.drawImage(x, y, image);
             }
 
@@ -250,7 +248,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 args.push(company->ownerName);
 
                 auto& widget = self.widgets[widx::change_owner_name];
-                auto origin = Ui::Point((widget.left + widget.right) / 2, widget.top + 5);
+                auto origin = Ui::Point(self.x + (widget.left + widget.right) / 2, self.y + widget.top + 5);
                 tr.drawStringCentredWrapped(
                     origin,
                     widget.right - widget.left,
@@ -271,7 +269,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 CompanyManager::getOwnerStatus(CompanyId(self.number), args);
 
                 auto& widget = self.widgets[widx::unk_11];
-                auto point = Point(widget.left - 1, widget.top - 1);
+                auto point = Point(self.x + widget.left - 1, self.y + widget.top - 1);
                 tr.drawStringLeftClipped(
                     point,
                     widget.right - widget.left,
@@ -314,7 +312,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case widx::change_owner_name:
                 {
                     auto company = CompanyManager::get(CompanyId(self.number));
-                    TextInput::openTextInput(&self, StringIds::title_name_owner, StringIds::prompt_enter_new_name_for_owner, company->ownerName, widgetIndex, nullptr);
+                    TextInput::openTextInput(&self, StringIds::title_name_owner, StringIds::prompt_enter_new_name_for_owner, company->ownerName, widgetIndex, {});
                     break;
                 }
             }
@@ -445,7 +443,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
 
             auto& widget = self->widgets[widx::viewport];
-            auto origin = Ui::Point(widget.left + 1, widget.top + 1);
+            auto origin = Ui::Point(widget.left + self->x + 1, widget.top + self->y + 1);
             auto size = Ui::Size(widget.width() - 2, widget.height() - 2);
             if (view.isEntityView())
             {
@@ -475,7 +473,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void noViewportPresent(Window* const self, const SavedView& view)
         {
             ViewportFlags vpFlags = ViewportFlags::none;
-            if (Config::get().hasFlags(Config::Flags::gridlinesOnLandscape))
+            if (Config::get().gridlinesOnLandscape)
             {
                 vpFlags |= ViewportFlags::gridlines_on_landscape;
             }
@@ -610,7 +608,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     // 0x004347D0
     static Window* create(CompanyId companyId)
     {
-        const WindowFlags newFlags = WindowFlags::flag_8 | WindowFlags::flag_11;
+        const WindowFlags newFlags = WindowFlags::viewportNoShiftPixels | WindowFlags::lighterFrame;
         auto window = WindowManager::createWindow(WindowType::company, Status::kWindowSize, newFlags, Status::getEvents());
         window->number = enumValue(companyId);
         window->owner = companyId;
@@ -680,10 +678,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     {
         static constexpr Ui::Size32 kWindowSize = { 340, 194 };
 
-        loco_global<World::Pos3, 0x009C68D6> _headquarterGhostPos;
-        loco_global<uint8_t, 0x009C68F0> _headquarterGhostRotation;
-        loco_global<uint8_t, 0x009C68F1> _headquarterGhostType;
-        loco_global<bool, 0x009C68EF> _headquarterGhostPlaced;
+        static std::optional<GameCommands::HeadquarterPlacementArgs> _headquarterGhost;
 
         // New in OpenLoco; not to be confused with rotation of already-placed HQ ghost
         static uint8_t _headquarterConstructionRotation;
@@ -692,6 +687,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             viewport = 11,
             build_hq,
+            rotate_hq,
             centre_on_viewport,
         };
 
@@ -699,6 +695,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::makeCommonWidgets(340, 194, StringIds::title_company_details),
             Widgets::Viewport({ 219, 54 }, { 96, 120 }, WindowColour::secondary, Widget::kContentUnk),
             Widgets::ImageButton({ 315, 92 }, { 24, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_build_or_move_headquarters),
+            Widgets::ImageButton({ 315, 92 + 26 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
             Widgets::ImageButton({ 0, 0 }, { 24, 24 }, WindowColour::secondary, ImageIds::centre_viewport, StringIds::move_main_view_to_show_this)
 
         );
@@ -742,6 +739,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.widgets[Common::widx::company_select].left = self.width - 28;
 
             self.widgets[widx::build_hq].hidden = CompanyId(self.number) != CompanyManager::getControllingId();
+            self.widgets[widx::rotate_hq].hidden = !ToolManager::isToolActive(self.type, self.number, build_hq);
 
             self.widgets[widx::centre_on_viewport].right = self.widgets[widx::viewport].right - 1;
             self.widgets[widx::centre_on_viewport].bottom = self.widgets[widx::viewport].bottom - 1;
@@ -806,8 +804,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::drawCompanySelect(&self, drawingCtx);
 
             auto company = CompanyManager::get(CompanyId(self.number));
-            auto x = 3;
-            auto y = 48;
+            auto x = self.x + 3;
+            auto y = self.y + 48;
             {
                 FormatArguments args{};
                 args.push(company->startedDate);
@@ -869,14 +867,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             {
                 auto& widget = self.widgets[widx::viewport];
-                auto point = Point(widget.midX(), widget.top - 12);
+                auto point = Point(self.x + widget.midX(), self.y + widget.top - 12);
                 tr.drawStringCentred(point, Colour::black, StringIds::wcolour2_headquarters);
             }
 
             if (company->headquartersX == -1)
             {
                 auto& widget = self.widgets[widx::viewport];
-                auto loc = Point(widget.midX(), widget.midY() - 5);
+                auto loc = Point(self.x + widget.midX(), self.y + widget.midY() - 5);
                 auto width = widget.width() - 2;
                 tr.drawStringCentredWrapped(loc, width, Colour::black, StringIds::not_yet_constructed);
             }
@@ -910,6 +908,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
         }
 
+        static void rotateHQGhost90Deg()
+        {
+            _headquarterConstructionRotation = (_headquarterConstructionRotation + 1) & 3;
+        }
+
         // 0x00432C08
         static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
@@ -922,6 +925,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case widx::build_hq:
                     ToolManager::toolSet(self, widgetIndex, CursorId::placeHQ);
                     Input::setFlag(Input::Flags::flag6);
+                    break;
+
+                case widx::rotate_hq:
+                    rotateHQGhost90Deg();
                     break;
             }
         }
@@ -940,11 +947,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             _headquarterConstructionRotation = (WindowManager::getCurrentRotation() + 2) & 3;
         }
 
-        static void rotateHQGhost90Deg()
-        {
-            _headquarterConstructionRotation = (_headquarterConstructionRotation + 1) & 3;
-        }
-
         // 0x00432C24
         static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
         {
@@ -957,13 +959,13 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00434E94
         static void removeHeadquarterGhost()
         {
-            if (_headquarterGhostPlaced)
+            if (_headquarterGhost.has_value())
             {
-                _headquarterGhostPlaced = false;
                 auto flags = GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost;
                 GameCommands::HeadquarterRemovalArgs args;
-                args.pos = _headquarterGhostPos;
+                args.pos = _headquarterGhost->pos;
                 GameCommands::doCommand(args, flags);
+                _headquarterGhost = std::nullopt;
             }
         }
 
@@ -974,10 +976,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto flags = GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost;
             if (GameCommands::doCommand(args, flags) != GameCommands::FAILURE)
             {
-                _headquarterGhostPlaced = true;
-                _headquarterGhostPos = args.pos;
-                _headquarterGhostRotation = args.rotation;
-                _headquarterGhostType = args.type;
+                _headquarterGhost = args;
             }
         }
 
@@ -1046,9 +1045,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             World::setMapSelectionArea(placementArgs->pos, posB);
             World::mapInvalidateSelectionRect();
 
-            if (_headquarterGhostPlaced)
+            if (_headquarterGhost.has_value())
             {
-                if (*_headquarterGhostPos == placementArgs->pos && _headquarterGhostRotation == placementArgs->rotation && _headquarterGhostType == placementArgs->type)
+                if (_headquarterGhost.value().pos == placementArgs->pos
+                    && _headquarterGhost.value().rotation == placementArgs->rotation
+                    && _headquarterGhost.value().type == placementArgs->type)
                 {
                     return;
                 }
@@ -1121,7 +1122,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
 
             auto& widget = self->widgets[widx::viewport];
-            auto origin = Ui::Point(widget.left + 1, widget.top + 1);
+            auto origin = Ui::Point(widget.left + self->x + 1, widget.top + self->y + 1);
             auto size = Ui::Size(widget.width() - 2, widget.height() - 2);
 
             ViewportManager::create(self, 0, origin, size, self->savedView.zoomLevel, view.getPos());
@@ -1164,7 +1165,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             ViewportFlags vpFlags = ViewportFlags::none;
             if (self.viewports[0] == nullptr)
             {
-                if (Config::get().hasFlags(Config::Flags::gridlinesOnLandscape))
+                if (Config::get().gridlinesOnLandscape)
                 {
                     vpFlags |= ViewportFlags::gridlines_on_landscape;
                 }
@@ -1438,7 +1439,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::drawCompanySelect(&self, drawingCtx);
 
             const auto& widget = self.widgets[widx::main_colour_scheme];
-            auto point = Point(6, widget.top + 3);
+            auto point = Point(self.x + 6, self.y + widget.top + 3);
 
             // 'Main colour scheme'
             tr.drawStringLeft(
@@ -1788,7 +1789,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Draw 'expenditure/income' label
             {
-                auto point = Point(5, 47);
+                auto point = Point(self.x + 5, self.y + 47);
                 tr.drawStringLeftUnderline(
                     point,
                     Colour::black,
@@ -1815,20 +1816,20 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 StringIds::miscellaneous,
             };
 
-            uint16_t y = 62;
+            uint16_t y = self.y + 62;
             for (uint8_t i = 0; i < static_cast<uint8_t>(std::size(ExpenditureLabels)); i++)
             {
                 // Add zebra stripes to even labels.
                 if (i % 2 == 0)
                 {
                     auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 6);
-                    drawingCtx.fillRect(4, y, 129, y + 9, colour, Gfx::RectFlags::crossHatching);
+                    drawingCtx.fillRect(self.x + 4, y, self.x + 129, y + 9, colour, Gfx::RectFlags::crossHatching);
                 }
 
                 FormatArguments args{};
                 args.push(ExpenditureLabels[i]);
 
-                auto point = Point(5, y - 1);
+                auto point = Point(self.x + 5, y - 1);
                 tr.drawStringLeft(
                     point,
                     Colour::black,
@@ -1840,7 +1841,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // 'Current loan' label
             {
-                auto point = Point(7, self.widgets[widx::currentLoan].top);
+                auto point = Point(self.x + 7, self.y + self.widgets[widx::currentLoan].top);
                 tr.drawStringLeft(
                     point,
                     Colour::black,
@@ -1853,7 +1854,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 args.push<uint16_t>(getGameState().loanInterestRate);
 
                 auto& widget = self.widgets[widx::currentLoan];
-                auto point = Point(widget.right + 3, widget.top + 1);
+                auto point = Point(self.x + widget.right + 3, self.y + widget.top + 1);
                 tr.drawStringLeft(
                     point,
                     Colour::black,
@@ -1872,12 +1873,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 {
                     cashFormat = StringIds::cash_bankrupt;
                 }
-                if (company->cash.var_04 < 0)
+                else if (company->cash.var_04 < 0)
                 {
                     cashFormat = StringIds::cash_negative;
                 }
 
-                auto point = Point(7, self.widgets[widx::currentLoan].top + 13);
+                auto point = Point(self.x + 7, self.y + self.widgets[widx::currentLoan].top + 13);
                 tr.drawStringLeft(
                     point,
                     Colour::black,
@@ -1891,7 +1892,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 FormatArguments args{};
                 args.push(company->companyValueHistory[0]);
 
-                auto point = Point(7, self.widgets[widx::currentLoan].top + 26);
+                auto point = Point(self.x + 7, self.y + self.widgets[widx::currentLoan].top + 26);
                 tr.drawStringLeft(
                     point,
                     Colour::black,
@@ -1905,7 +1906,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 FormatArguments args{};
                 args.push(company->vehicleProfit);
 
-                auto point = Point(7, self.widgets[widx::currentLoan].top + 39);
+                auto point = Point(self.x + 7, self.y + self.widgets[widx::currentLoan].top + 39);
                 tr.drawStringLeft(
                     point,
                     Colour::black,
@@ -2127,7 +2128,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto widgetWidth = widget.width() - 2;
             if (self.scrollAreas[0].hasFlags(ScrollFlags::vscrollbarVisible))
             {
-                widgetWidth -= ScrollView::barWidth;
+                widgetWidth -= ScrollView::kScrollbarSize;
             }
             // This gets the offset of the last full page (widgetWidth) of the scroll view
             const auto newOffset = std::max(0, self.scrollAreas[0].contentWidth - widgetWidth);
@@ -2147,10 +2148,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043386F
-        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, uint16_t* scrollWidth, [[maybe_unused]] uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, int32_t& scrollWidth, [[maybe_unused]] int32_t& scrollHeight)
         {
             const auto& company = CompanyManager::get(CompanyId(self.number));
-            *scrollWidth = company->numExpenditureYears * expenditureColumnWidth;
+            scrollWidth = company->numExpenditureYears * expenditureColumnWidth;
         }
 
         // 0x00433887
@@ -2273,11 +2274,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.draw(drawingCtx);
             Common::drawTabs(self, drawingCtx);
 
-            uint16_t y = 47;
+            uint16_t y = self.y + 47;
 
             // 'Cargo delivered'
             {
-                auto point = Point(5, y);
+                auto point = Point(self.x + 5, y);
                 tr.drawStringLeft(point, Colour::black, StringIds::cargo_delivered);
             }
 
@@ -2305,7 +2306,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 args.push(company->cargoDelivered[i]);
 
-                auto point = Point(10, y);
+                auto point = Point(self.x + 10, y);
                 tr.drawStringLeft(point, Colour::black, StringIds::black_stringid, args);
 
                 numPrinted++;
@@ -2315,7 +2316,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             // No cargo delivered yet?
             if (numPrinted == 0)
             {
-                auto point = Point(10, y);
+                auto point = Point(self.x + 10, y);
                 tr.drawStringLeft(point, Colour::black, StringIds::cargo_delivered_none);
             }
         }
@@ -2469,7 +2470,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             char* scenarioDetailsString = getGameState().scenarioDetails;
             StringManager::locoStrcpy(buffer_2039, scenarioDetailsString);
 
-            auto point = Point(5, 47);
+            auto point = Point(self.x + 5, self.y + 47);
 
             // for example: "Provide the transport services on this little island" for "Boulder Breakers" scenario
             point = tr.drawStringLeftWrapped(point, self.width - 10, Colour::black, StringIds::buffer_2039);
@@ -2733,7 +2734,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             self.currentTab = widgetIndex - widx::tab_status;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
 
             self.viewportRemove(0);
 
@@ -2774,7 +2775,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void renameCompanyPrompt(Window* self, WidgetIndex_t widgetIndex)
         {
             auto company = CompanyManager::get(CompanyId(self->number));
-            TextInput::openTextInput(self, StringIds::title_name_company, StringIds::prompt_enter_new_company_name, company->name, widgetIndex, nullptr);
+            TextInput::openTextInput(self, StringIds::title_name_company, StringIds::prompt_enter_new_company_name, company->name, widgetIndex, {});
         }
 
         // 0x0043254F
@@ -2811,8 +2812,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Draw company owner face.
             const uint32_t image = Gfx::recolour(competitor->images[enumValue(company->ownerEmotion)], company->mainColours.primary);
-            const uint16_t x = self->widgets[Common::widx::company_select].left + 1;
-            const uint16_t y = self->widgets[Common::widx::company_select].top + 1;
+            const uint16_t x = self->x + self->widgets[Common::widx::company_select].left + 1;
+            const uint16_t y = self->y + self->widgets[Common::widx::company_select].top + 1;
             drawingCtx.drawImage(x, y, image);
         }
 

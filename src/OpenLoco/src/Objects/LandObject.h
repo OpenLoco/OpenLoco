@@ -19,12 +19,12 @@ namespace OpenLoco
     enum class LandObjectFlags : uint8_t
     {
         none = 0U,
-        unk0 = 1U << 0,
-        unk1 = 1U << 1,
+        hasGrowthStages = 1U << 0,
+        hasReplacementLandHeader = 1U << 1,
         isDesert = 1U << 2,
         noTrees = 1U << 3,
-        unk4 = 1U << 4,
-        unk5 = 1U << 5,
+        hasSharpSlopeTransition = 1U << 4,
+        disableSmoothTileTransition = 1U << 5,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(LandObjectFlags);
 
@@ -38,8 +38,8 @@ namespace OpenLoco
         uint8_t numGrowthStages;          // 0x03 "Healing" animation after disturbing land
         uint8_t numImageAngles;           // 0x04 How many rotation angles the land has
         LandObjectFlags flags;            // 0x05
-        uint8_t cliffEdgeHeader1;         // 0x06
-        uint8_t cliffEdgeHeader2;         // 0x07
+        uint8_t cliffEdgeHeader;          // 0x06
+        uint8_t replacementLandHeader;    // 0x07
         int16_t costFactor;               // 0x08
         uint32_t image;                   // 0x0A calculated value
         uint32_t numImagesPerGrowthStage; // 0x0E calculated value

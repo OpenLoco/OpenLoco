@@ -44,11 +44,8 @@
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Engine/World.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Trigonometry.hpp>
 #include <algorithm>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::BuildVehicle
 {
@@ -289,14 +286,16 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static VehicleSortBy _vehicleSortBy = VehicleSortBy::designYear;
     static uint8_t _cargoSupportedFilter = 0xFF;
 
-    static loco_global<int16_t, 0x01136268> _numAvailableVehicles;
-    static loco_global<uint16_t[ObjectManager::getMaxObjects(ObjectType::vehicle)], 0x0113626A> _availableVehicles;
-    static loco_global<EntityId, 0x0113642A> _113642A;
-    static loco_global<int32_t, 0x011364E8> _buildTargetVehicle; // -1 for no target VehicleHead
-    static loco_global<uint32_t, 0x011364EC> _numTrackTypeTabs;
+    static uint32_t _numTrackTypeTabs;    // 0x011364EC
+    static int16_t _numAvailableVehicles; // 0x01136268
+
     // Array of types if 0xFF then no type, flag (1<<7) as well
-    static loco_global<uint8_t[widxToTrackTypeTab(widx::tab_track_type_7) + 1], 0x011364F0> _trackTypesForTab;
-    static std::array<uint16_t, 6> _scrollRowHeight = { { 22, 22, 22, 22, 42, 30 } };
+    static uint8_t _trackTypesForTab[widxToTrackTypeTab(widx::tab_track_type_7) + 1];      // 0x011364F0
+    static uint16_t _availableVehicles[ObjectManager::getMaxObjects(ObjectType::vehicle)]; // 0x0113626A
+
+    static int32_t _buildTargetVehicle; // 0x011364E8; -1 for no target VehicleHead
+
+    static constexpr std::array<uint16_t, 6> kScrollRowHeight = { { 22, 22, 22, 22, 42, 30 } };
 
     static Ui::TextInput::InputSession inputSession;
 
@@ -312,7 +311,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     // 0x4C1C64
     static Window* create(CompanyId company)
     {
-        auto window = WindowManager::createWindow(WindowType::buildVehicle, kWindowSize, WindowFlags::flag_11, getEvents());
+        auto window = WindowManager::createWindow(WindowType::buildVehicle, kWindowSize, WindowFlags::lighterFrame, getEvents());
         window->setWidgets(_widgets);
         window->number = enumValue(company);
         window->owner = CompanyManager::getControllingId();
@@ -326,19 +325,16 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         return window;
     }
 
-    /* 0x4C1AF7
-     * depending on flags (1<<31) vehicle is a tab id or a VehicleHead id
-     */
-    Window* open(uint32_t vehicle, uint32_t flags)
+    // 0x004C1AF7
+    static Window* open(uint32_t vehicleId, bool isTabId)
     {
         auto window = WindowManager::bringToFront(WindowType::buildVehicle, enumValue(CompanyManager::getControllingId()));
-        bool tabMode = flags & (1 << 31);
         if (window)
         {
             WidgetIndex_t tab = widx::tab_build_new_trains;
-            if (!tabMode)
+            if (!isTabId)
             {
-                auto veh = EntityManager::get<Vehicles::VehicleHead>(EntityId(vehicle));
+                auto veh = EntityManager::get<Vehicles::VehicleHead>(EntityId(vehicleId));
                 if (veh == nullptr)
                 {
                     return nullptr;
@@ -348,17 +344,17 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             else
             {
                 // Not a vehicle but a type
-                tab += vehicle;
+                tab += vehicleId;
             }
             window->callOnMouseUp(tab, window->widgets[tab].id);
 
-            if (tabMode)
+            if (isTabId)
             {
                 _buildTargetVehicle = -1;
             }
             else
             {
-                _buildTargetVehicle = vehicle;
+                _buildTargetVehicle = vehicleId;
             }
         }
         else
@@ -367,10 +363,10 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             window->width = kWindowSize.width;
             window->height = kWindowSize.height;
             _buildTargetVehicle = -1;
-            if (!tabMode)
+            if (!isTabId)
             {
-                _buildTargetVehicle = vehicle;
-                auto veh = EntityManager::get<Vehicles::VehicleHead>(EntityId(vehicle));
+                _buildTargetVehicle = vehicleId;
+                auto veh = EntityManager::get<Vehicles::VehicleHead>(EntityId(vehicleId));
                 if (veh == nullptr)
                 {
                     WindowManager::close(window);
@@ -380,10 +376,10 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             }
             else
             {
-                window->currentTab = vehicle;
+                window->currentTab = vehicleId;
             }
 
-            window->rowHeight = _scrollRowHeight[window->currentTab];
+            window->rowHeight = kScrollRowHeight[window->currentTab];
             window->rowCount = 0;
             window->var_83C = 0;
             window->rowHover = -1;
@@ -409,7 +405,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         {
             return window;
         }
-        auto veh = EntityManager::get<Vehicles::VehicleBase>(EntityId(*_buildTargetVehicle));
+        auto veh = EntityManager::get<Vehicles::VehicleBase>(EntityId(_buildTargetVehicle));
         if (veh == nullptr)
         {
             return window;
@@ -438,26 +434,43 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         return window;
     }
 
-    void registerHooks()
+    Window* openByVehicleId(EntityId vehicleId)
     {
-        registerHook(
-            0x004B92A5,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                sub_4B92A5((Ui::Window*)regs.esi);
-                regs = backup;
-                return 0;
-            });
+        return open(enumValue(vehicleId), false);
+    }
 
-        registerHook(
-            0x4C1AF7,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto window = open(regs.eax, regs.eax);
-                regs = backup;
-                regs.esi = X86Pointer(window);
-                return 0;
-            });
+    Window* openByType(VehicleType vehicleType)
+    {
+        return open(enumValue(vehicleType), true);
+    }
+
+    Window* openByVehicleObjectId(uint16_t vehicleObjectId)
+    {
+        auto* vehicleObj = ObjectManager::get<VehicleObject>(vehicleObjectId);
+
+        auto window = openByType(vehicleObj->type);
+        window->rowHover = vehicleObjectId;
+
+        if (vehicleObj->mode == TransportMode::rail || vehicleObj->mode == TransportMode::road)
+        {
+            if (vehicleObj->trackType != 0xFF)
+            {
+                for (uint8_t i = 0; i < _numTrackTypeTabs && i < std::size(_trackTypesForTab); ++i)
+                {
+                    if (vehicleObj->trackType == _trackTypesForTab[i])
+                    {
+                        window->currentSecondaryTab = i;
+                        return window;
+                    }
+                }
+            }
+        }
+
+        auto rowHover = window->rowHover;
+        sub_4B92A5(window);
+        window->rowHover = rowHover;
+
+        return window;
     }
 
     static bool contains(const std::string_view& a, const std::string_view& b)
@@ -694,7 +707,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         Vehicles::VehicleBase* veh = nullptr;
         if (_buildTargetVehicle != -1)
         {
-            veh = EntityManager::get<Vehicles::VehicleBase>(EntityId(*_buildTargetVehicle));
+            veh = EntityManager::get<Vehicles::VehicleBase>(EntityId(_buildTargetVehicle));
         }
 
         generateBuildableVehiclesArray(vehicleType, trackType, veh);
@@ -739,7 +752,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
                 auto newTab = widgetIndex - widx::tab_build_new_trains;
                 window.currentTab = newTab;
-                window.rowHeight = _scrollRowHeight[newTab];
+                window.rowHeight = kScrollRowHeight[newTab];
                 window.frameNo = 0;
                 window.currentSecondaryTab = 0;
                 if (newTab != enumValue(getGameState().lastBuildVehiclesOption))
@@ -1025,9 +1038,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C37B9
-    static void getScrollSize(Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
     {
-        *scrollHeight = window.var_83C * window.rowHeight;
+        scrollHeight = window.var_83C * window.rowHeight;
     }
 
     // 0x4C384B
@@ -1055,7 +1068,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         GameCommands::setErrorTitle(StringIds::cant_build_pop_5_string_id);
         if (_buildTargetVehicle != -1)
         {
-            auto vehicle = EntityManager::get<Vehicles::VehicleHead>(EntityId(*_buildTargetVehicle));
+            auto vehicle = EntityManager::get<Vehicles::VehicleHead>(EntityId(_buildTargetVehicle));
             if (vehicle != nullptr)
             {
                 args.push(vehicle->name);
@@ -1065,7 +1078,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         }
 
         GameCommands::VehicleCreateArgs gcArgs{};
-        gcArgs.vehicleId = EntityId(*_buildTargetVehicle);
+        gcArgs.vehicleId = EntityId(_buildTargetVehicle);
         gcArgs.vehicleType = item;
         if (GameCommands::doCommand(gcArgs, GameCommands::Flags::apply) == GameCommands::FAILURE)
         {
@@ -1074,7 +1087,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         if (_buildTargetVehicle == -1)
         {
-            auto vehicle = EntityManager::get<Vehicles::VehicleBase>(_113642A);
+            auto vehicle = EntityManager::get<Vehicles::VehicleBase>(GameCommands::getLegacyReturnState().lastCreatedVehicleId);
             Vehicle::Details::open(vehicle);
         }
         sub_4B92A5(&window);
@@ -1238,7 +1251,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         strncpy(textBuffer, inputSession.buffer.c_str(), 256);
 
         auto& widget = _widgets[widx::searchBox];
-        auto clipped = Gfx::clipRenderTarget(drawingCtx.currentRenderTarget(), Ui::Rect(widget.left, widget.top + 1, widget.width() - 2, widget.height() - 2));
+        auto clipped = Gfx::clipRenderTarget(drawingCtx.currentRenderTarget(), Ui::Rect(self.x + widget.left, widget.top + 1 + self.y, widget.width() - 2, widget.height() - 2));
         if (!clipped)
         {
             return;
@@ -1284,7 +1297,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             FormatArguments args{};
             if (_buildTargetVehicle != -1)
             {
-                auto vehicle = EntityManager::get<Vehicles::VehicleHead>(EntityId(*_buildTargetVehicle));
+                auto vehicle = EntityManager::get<Vehicles::VehicleHead>(EntityId(_buildTargetVehicle));
                 if (vehicle != nullptr)
                 {
                     args.push(vehicle->name);
@@ -1293,7 +1306,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 }
             }
 
-            auto point = Point(2, self.height - 13);
+            auto point = Point(self.x + 2, self.y + self.height - 13);
             tr.drawStringLeftClipped(point, self.width - 186, Colour::black, bottomLeftMessage, args);
         }
 
@@ -1307,7 +1320,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             args.push(cargoObj->unitInlineSprite);
 
             auto& widget = self.widgets[widx::cargoLabel];
-            auto point = Point(widget.left + 2, widget.top);
+            auto point = Point(self.x + widget.left + 2, self.y + widget.top);
             tr.drawStringLeftClipped(point, widget.width() - 15, Colour::black, StringIds::wcolour2_stringid, args);
         }
 
@@ -1432,8 +1445,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         vehicleObj->getCargoString(buffer);
 
-        auto x = self.widgets[widx::scrollview_vehicle_selection].right + 2;
-        auto y = self.widgets[widx::scrollview_vehicle_preview].bottom + 2;
+        auto x = self.widgets[widx::scrollview_vehicle_selection].right + self.x + 2;
+        auto y = self.widgets[widx::scrollview_vehicle_preview].bottom + self.y + 2;
         tr.drawStringLeftWrapped(Point(x, y), 180, Colour::black, StringIds::buffer_1250);
     }
 
@@ -1455,7 +1468,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                     FormatArguments args{};
                     if (_buildTargetVehicle != -1)
                     {
-                        auto vehicle = EntityManager::get<Vehicles::VehicleHead>(EntityId(*_buildTargetVehicle));
+                        auto vehicle = EntityManager::get<Vehicles::VehicleHead>(EntityId(_buildTargetVehicle));
                         if (vehicle != nullptr)
                         {
                             defaultMessage = StringIds::no_compatible_vehicles_available;
@@ -1744,14 +1757,14 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         auto companyColour = CompanyManager::getCompanyColour(CompanyId(window.number));
 
-        auto left = 0;
-        auto top = 69;
+        auto left = window.x;
+        auto top = window.y + 69;
         auto right = left + window.width - 187;
         auto bottom = top;
         drawingCtx.fillRect(left, top, right, bottom, Colours::getShade(window.getColour(WindowColour::secondary).c(), 7), Gfx::RectFlags::none);
 
-        left = window.width - 187;
-        top = 41;
+        left = window.x + window.width - 187;
+        top = window.y + 41;
         right = left;
         bottom = top + 27;
         drawingCtx.fillRect(left, top, right, bottom, Colours::getShade(window.getColour(WindowColour::secondary).c(), 7), Gfx::RectFlags::none);
@@ -1761,8 +1774,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             const auto widget = window.widgets[tab + widx::tab_track_type_0];
             if (window.currentSecondaryTab == tab)
             {
-                left = widget.left + 1;
-                top = widget.top + 26;
+                left = widget.left + window.x + 1;
+                top = widget.top + window.y + 26;
                 right = left + 29;
                 bottom = top;
                 drawingCtx.fillRect(left, top, right, bottom, Colours::getShade(window.getColour(WindowColour::secondary).c(), 5), Gfx::RectFlags::none);

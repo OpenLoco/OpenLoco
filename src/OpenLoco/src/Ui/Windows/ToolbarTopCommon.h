@@ -2,8 +2,6 @@
 
 #include "Ui/WindowManager.h"
 
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 {
     namespace Widx
@@ -30,6 +28,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         };
     }
 
+    void prepareTownWidget(Window& self);
+
     void draw(Window& window, Gfx::DrawingContext& drawingCtx);
 
     void zoomMenuMouseDown(Window* window, WidgetIndex_t widgetIndex);
@@ -46,6 +46,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     void roadMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex);
     void townsMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex);
 
+    void onOpen(Window& window);
     void onUpdate(Window& window);
     void onResize(Window& window);
     void onMouseDown(Window* window, WidgetIndex_t widgetIndex);

@@ -308,7 +308,7 @@ void NetworkServer::sendChatMessage(std::string_view message)
     _chatMessageQueue.push({ 0, std::string(message) });
 }
 
-void NetworkServer::sendGameCommand(uint32_t index, uint32_t tick, CompanyId company, const OpenLoco::Interop::registers& regs)
+void NetworkServer::sendGameCommand(uint32_t index, uint32_t tick, CompanyId company, const OpenLoco::GameCommands::registers& regs)
 {
     GameCommandPacket packet;
     packet.index = index;
@@ -318,7 +318,7 @@ void NetworkServer::sendGameCommand(uint32_t index, uint32_t tick, CompanyId com
     sendPacketToAll(packet);
 }
 
-void NetworkServer::queueGameCommand(CompanyId company, const OpenLoco::Interop::registers& regs)
+void NetworkServer::queueGameCommand(CompanyId company, const OpenLoco::GameCommands::registers& regs)
 {
     GameCommandPacket newPacket;
     newPacket.index = ++_gameCommandIndex;

@@ -22,7 +22,6 @@
 #include "World/StationManager.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Diagnostics/Logging.h>
-
 #include <sfl/static_vector.hpp>
 #include <sstream>
 
@@ -491,8 +490,27 @@ namespace OpenLoco::Vehicles::OrderManager
     // 0x0047062B
     void removeOrdersForStation(const StationId stationId)
     {
-        registers regs;
-        regs.ebx = enumValue(stationId);
-        call(0x0047062B, regs);
+        for (auto i = 0U; i < orderTableLength();)
+        {
+            auto& order = orders()[i];
+            auto* stationOrder = order.as<OrderStation>();
+            if (stationOrder != nullptr)
+            {
+                if (stationOrder->getStation() == stationId)
+                {
+                    // Find the vehicle that has the order
+                    for (auto* head : VehicleManager::VehicleList())
+                    {
+                        if (head->orderTableOffset < i
+                            && i < head->orderTableOffset + head->sizeOfOrderTable)
+                        {
+                            deleteOrder(head, i - head->orderTableOffset);
+                            break;
+                        }
+                    }
+                }
+            }
+            i += kOrderSizes[enumValue(order.getType())];
+        }
     }
 }

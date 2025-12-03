@@ -19,18 +19,19 @@
 #include "SceneManager.h"
 #include "Ui.h"
 #include "Ui/Dropdown.h"
+#include "Ui/ToolTip.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TimePanel
 {
     static constexpr Ui::Size32 kWindowSize = { 140, 27 };
+
+    // When paused, the time panel will alternate between displaying "* paused *" and the in-game date every this many ticks.
+    static constexpr auto kPausedStatusTextDuration = 30;
 
     namespace Widx
     {
@@ -60,7 +61,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         Widgets::ImageButton({ 58, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),
         Widgets::ImageButton({ 78, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_extra_fast_forward, StringIds::tooltip_speed_extra_fast_forward));
 
-    static loco_global<uint16_t, 0x0050A004> _50A004;
+    static bool redrawScheduled = false; // 0x0050A004 (2nd bit)
 
     static const WindowEventList& getEvents();
 
@@ -153,12 +154,12 @@ namespace OpenLoco::Ui::Windows::TimePanel
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         Widget& frame = self.widgets[Widx::outer_frame];
-        drawingCtx.drawRect(frame.left, frame.top, frame.width(), frame.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(self.x + frame.left, self.y + frame.top, frame.width(), frame.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
 
         // Draw widgets.
         self.draw(drawingCtx);
 
-        drawingCtx.drawRectInset(frame.left + 1, frame.top + 1, frame.width() - 2, frame.height() - 2, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
+        drawingCtx.drawRectInset(self.x + frame.left + 1, self.y + frame.top + 1, frame.width() - 2, frame.height() - 2, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
         FormatArguments args{};
         args.push<uint32_t>(getCurrentDay());
@@ -166,7 +167,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         StringId format = StringIds::date_daymonthyear;
         if (SceneManager::isPaused() && (SceneManager::getPauseFlags() & (1 << 2)) == 0)
         {
-            if (self.numTicksVisible >= 30)
+            if (self.numTicksVisible >= kPausedStatusTextDuration)
             {
                 format = StringIds::toolbar_status_paused;
             }
@@ -180,12 +181,12 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
         {
             auto& widget = _widgets[Widx::date_btn];
-            auto point = Point(widget.midX(), widget.top + 1);
+            auto point = Point(self.x + widget.midX(), self.y + widget.top + 1);
             tr.drawStringCentred(point, c, format, args);
         }
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        drawingCtx.drawImage(_widgets[Widx::map_chat_menu].left - 2, _widgets[Widx::map_chat_menu].top - 1, skin->img + map_sprites_by_rotation[WindowManager::getCurrentRotation()]);
+        drawingCtx.drawImage(self.x + _widgets[Widx::map_chat_menu].left - 2, self.y + _widgets[Widx::map_chat_menu].top - 1, skin->img + map_sprites_by_rotation[WindowManager::getCurrentRotation()]);
     }
 
     // 0x004398FB
@@ -238,7 +239,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         args.push(opponent->name);
 
         // TODO: convert this to a builder pattern, with chainable functions to set the different string ids and arguments
-        TextInput::openTextInput(&self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, Widx::map_chat_menu, &args);
+        TextInput::openTextInput(&self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, Widx::map_chat_menu, args);
     }
 
     // 0x0043A72F
@@ -300,7 +301,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         switch (widgetIdx)
         {
             case Widx::date_btn:
-                Input::setTooltipTimeout(2000);
+                Ui::ToolTip::setTooltipTimeout(2000);
                 break;
         }
 
@@ -378,7 +379,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
     void invalidateFrame()
     {
-        _50A004 = _50A004 | (1 << 1);
+        redrawScheduled = true;
     }
 
     // 0x00439AD9
@@ -391,19 +392,25 @@ namespace OpenLoco::Ui::Windows::TimePanel
         }
 
         w.numTicksVisible += 1;
-        if (w.numTicksVisible >= 60)
+        if (w.numTicksVisible >= kPausedStatusTextDuration * 2)
         {
             w.numTicksVisible = 0;
         }
 
-        if (_50A004 & (1 << 1))
+        // Determine if the text needs to be updated
+        if (SceneManager::isPaused() && (SceneManager::getPauseFlags() & (1 << 2)) == 0)
         {
-            _50A004 = _50A004 & ~(1 << 1);
-            WindowManager::invalidateWidget(WindowType::timeToolbar, 0, Widx::inner_frame);
+            if (w.numTicksVisible == 0 || w.numTicksVisible == kPausedStatusTextDuration)
+            {
+                redrawScheduled = true;
+            }
         }
 
-        if (SceneManager::isPaused())
+        if (redrawScheduled)
         {
+            redrawScheduled = false;
+
+            // Invalidating the inner frame widget effectively causes the entire time panel to be redrawn.
             WindowManager::invalidateWidget(WindowType::timeToolbar, 0, Widx::inner_frame);
         }
     }

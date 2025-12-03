@@ -13,16 +13,13 @@
 #include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
 #include <array>
 #include <cstring>
 
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::Ui::Windows::PromptSaveWindow
 {
-    static loco_global<LoadOrQuitMode, 0x0050A002> _savePromptType;
+    static LoadOrQuitMode _savePromptType; // 0x0050A002
 
     enum widx
     {
@@ -122,23 +119,23 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
             case widx::cancelButton:
             {
                 GameCommands::LoadSaveQuitGameArgs args{};
-                args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::closeSavePrompt;
-                args.option2 = LoadOrQuitMode::loadGamePrompt;
+                args.loadQuitMode = _savePromptType;
+                args.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::closeSavePrompt;
                 GameCommands::doCommand(args, GameCommands::Flags::apply);
                 break;
             }
 
             case widx::saveButton:
             {
-                Game::confirmSaveGame();
+                Game::confirmSaveGame(_savePromptType);
                 break;
             }
 
             case widx::dontSaveButton:
             {
                 GameCommands::LoadSaveQuitGameArgs args{};
-                args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::dontSave;
-                args.option2 = LoadOrQuitMode::loadGamePrompt;
+                args.loadQuitMode = _savePromptType;
+                args.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::dontSave;
                 GameCommands::doCommand(args, GameCommands::Flags::apply);
                 break;
             }

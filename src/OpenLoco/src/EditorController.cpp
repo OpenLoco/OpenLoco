@@ -30,25 +30,13 @@
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <span>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 
 namespace OpenLoco::EditorController
 {
-    static loco_global<char[267], 0x00050B745> _activeSavePath;
-    static loco_global<char[512], 0x00112CE04> _scenarioFilename;
-
-    static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _inUseobjectSelection;
-    static loco_global<ObjectManager::ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
-
-    static std::span<ObjectManager::SelectedObjectsFlags> getInUseSelectedObjectFlags()
-    {
-        return std::span<ObjectManager::SelectedObjectsFlags>(*_inUseobjectSelection, ObjectManager::getNumInstalledObjects());
-    }
-
     static void resetLandDistributionPatterns();
 
     // 0x0043D7DC
@@ -64,7 +52,6 @@ namespace OpenLoco::EditorController
         options.editorStep = Step::objectSelection;
         options.difficulty = 2;
         options.madeAnyChanges = 0;
-        addr<0x00F25374, uint8_t>() = 0; // ?? backup for madeAnyChanges?
         options.scenarioFlags = Scenario::ScenarioFlags::landscapeGenerationDone;
         gameState.lastLandOption = 0xFF;
         gameState.lastMapWindowAttributes.flags = WindowFlags::none;
@@ -75,8 +62,8 @@ namespace OpenLoco::EditorController
         Audio::pauseSound();
         Audio::unpauseSound();
         ObjectManager::unloadAll();
-        ObjectManager::prepareSelectionList(false);
-        ObjectManager::loadSelectionListObjects(getInUseSelectedObjectFlags());
+        auto& selection = ObjectManager::prepareSelectionList(false);
+        ObjectManager::loadSelectionListObjects(selection.objectFlags);
         ObjectManager::freeSelectionList();
         ObjectManager::reloadAll();
         Scenario::sub_4748D4();
@@ -207,7 +194,7 @@ namespace OpenLoco::EditorController
         if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
         {
             options.scenarioFlags |= Scenario::ScenarioFlags::landscapeGenerationDone;
-            S5::drawScenarioPreviewImage();
+            Scenario::drawScenarioMiniMapImage();
         }
 
         options.maxCompetingCompanies = CompanyManager::getMaxCompetingCompanies();
@@ -270,7 +257,7 @@ namespace OpenLoco::EditorController
             case Step::scenarioOptions:
                 // 0x0043D12C
                 WindowManager::closeAllFloatingWindows();
-                S5::sub_4BAEC4();
+                Windows::Terraform::resetLastSelections();
                 Scenario::getOptions().editorStep = Step::landscapeEditor;
                 Windows::LandscapeGeneration::open();
                 break;
@@ -309,6 +296,18 @@ namespace OpenLoco::EditorController
         return StringIds::null;
     }
 
+    // 0x0046F910
+    static void setupMultiplayerData()
+    {
+        auto& gameState = getGameState();
+
+        gameState.multiplayerPrng = gameState.rng;
+        // Vanilla would compute a checksum of the tile elements here
+        // but we don't bother as our multiplayer doesn't work the same
+        gameState.multiplayerChecksumA = 0;
+        gameState.multiplayerChecksumB = 0;
+    }
+
     // 0x0043D15D
     void goToNextStep()
     {
@@ -332,7 +331,7 @@ namespace OpenLoco::EditorController
                 }
                 Scenario::sub_4748D4();
                 Scenario::initialiseSnowLine();
-                S5::sub_4BAEC4();
+                Windows::Terraform::resetLastSelections();
                 Scenario::getOptions().editorStep = Step::landscapeEditor;
                 Windows::LandscapeGeneration::open();
                 if ((Scenario::getOptions().scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) != Scenario::ScenarioFlags::none)
@@ -380,19 +379,21 @@ namespace OpenLoco::EditorController
 
                 WindowManager::closeAllFloatingWindows();
 
-                if (!Game::saveScenarioOpen())
+                auto res = Game::saveScenarioOpen();
+                if (!res)
                 {
                     break;
                 }
 
                 Scenario::getOptions().editorStep = Step::null;
-                call(0x0046F910); // Sets up new multiplayer related rands
+                setupMultiplayerData();
 
-                auto path = fs::u8path(_scenarioFilename.get());
+                auto path = fs::u8path(*res);
                 path.replace_extension(S5::extensionSC5);
-                strncpy(_activeSavePath, path.u8string().c_str(), 257); // Or 256?
+                Game::setActiveSavePath(path.u8string());
+
                 S5::SaveFlags saveFlags = S5::SaveFlags::scenario;
-                if (Config::get().hasFlags(Config::Flags::exportObjectsWithSaves))
+                if (Config::get().exportObjectsWithSaves)
                 {
                     saveFlags |= S5::SaveFlags::packCustomObjects;
                 }

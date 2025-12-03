@@ -7,6 +7,8 @@
 #include "GameCommands/Vehicles/VehiclePickupWater.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
+#include "Map/Track/SubpositionData.h"
+#include "Map/Track/TrackData.h"
 #include "MessageManager.h"
 #include "OrderManager.h"
 #include "Orders.h"
@@ -16,10 +18,6 @@
 #include "Vehicle.h"
 #include "World/Company.h"
 #include "World/CompanyManager.h"
-
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::VehicleManager
 {
@@ -119,21 +117,145 @@ namespace OpenLoco::VehicleManager
         company.availableVehicles = determineAvailableVehicleTypes(company);
     }
 
-    // 0x004B05E4
-    PlaceDownResult placeDownVehicle(Vehicles::VehicleHead* const head, const coord_t x, const coord_t y, const uint8_t baseZ, const Vehicles::TrackAndDirection& unk1, const uint16_t unk2)
+    template<typename T>
+    static void moveComponentToSubPosition(T& base)
     {
-        registers regs{};
-        regs.esi = X86Pointer(head);
-        regs.ax = x;
-        regs.cx = y;
-        regs.bx = unk2;
-        regs.dl = baseZ;
-        regs.ebp = unk1.track._data;
-        bool hasFailed = call(0x004B05E4, regs) & X86_FLAG_CARRY;
-        if (hasFailed)
+        base.invalidateSprite();
+        if (base.getTransportMode() == TransportMode::road)
         {
-            return regs.al == 0 ? PlaceDownResult::Unk0 : PlaceDownResult::Unk1;
+            auto& moveInfo = World::TrackData::getRoadSubPositon(base.getTrackAndDirection().road._data)[base.subPosition];
+            const auto newPos = World::Pos3{ base.tileX, base.tileY, base.tileBaseZ * World::kSmallZStep } + moveInfo.loc;
+            base.spriteYaw = moveInfo.yaw;
+            base.spritePitch = moveInfo.pitch;
+            base.moveTo(newPos);
         }
+        else
+        {
+            auto& moveInfo = World::TrackData::getTrackSubPositon(base.getTrackAndDirection().track._data)[base.subPosition];
+            const auto newPos = World::Pos3{ base.tileX, base.tileY, base.tileBaseZ * World::kSmallZStep } + moveInfo.loc;
+            base.spriteYaw = moveInfo.yaw;
+            base.spritePitch = moveInfo.pitch;
+            base.moveTo(newPos);
+        }
+        base.invalidateSprite();
+    }
+
+    // 0x004B05E4
+    PlaceDownResult placeDownVehicle(Vehicles::VehicleHead* const head, const coord_t x, const coord_t y, const uint8_t baseZ, const Vehicles::TrackAndDirection& trackAndDirection, const uint16_t initialSubPosition)
+    {
+        const auto pos = World::Pos3{ x, y, baseZ * World::kSmallZStep };
+        if (head->tileX != -1)
+        {
+            return PlaceDownResult::Okay;
+        }
+
+        auto subPosition = 0;
+        World::Pos3 reversePos = pos;
+        Vehicles::TrackAndDirection reverseTad = trackAndDirection;
+        if (head->mode != TransportMode::road)
+        {
+            if (Vehicles::sub_4A2A58(pos, trackAndDirection.track, head->owner, head->trackType) & (1U << 0))
+            {
+                return PlaceDownResult::Unk1;
+            }
+
+            if (Vehicles::isBlockOccupied(pos, trackAndDirection.track, head->owner, head->trackType))
+            {
+                return PlaceDownResult::Unk1;
+            }
+
+            const auto subPositionLength = World::TrackData::getTrackSubPositon(trackAndDirection.track._data).size();
+            subPosition = subPositionLength - 1 - initialSubPosition;
+
+            const auto& trackSize = World::TrackData::getUnkTrack(trackAndDirection.track._data);
+            reversePos += trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                reversePos -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+            }
+            reverseTad.track.setReversed(!trackAndDirection.track.isReversed());
+        }
+        else
+        {
+
+            const auto subPositionLength = World::TrackData::getRoadSubPositon(trackAndDirection.road._data).size();
+            subPosition = subPositionLength - 1 - initialSubPosition;
+
+            const auto& roadSize = World::TrackData::getUnkRoad(trackAndDirection.road.basicRad());
+            reversePos += roadSize.pos;
+            if (roadSize.rotationEnd < 12)
+            {
+                reversePos -= World::Pos3{ World::kRotationOffset[roadSize.rotationEnd], 0 };
+            }
+            reverseTad.road.setReversed(!trackAndDirection.road.isReversed());
+            reverseTad.road._data ^= (1U << 7);
+            if (reverseTad.road.isChangingLane())
+            {
+                reverseTad.road._data ^= (1U << 7);
+                if (!reverseTad.road.isOvertaking())
+                {
+                    reverseTad.road._data ^= (1U << 8);
+                }
+            }
+        }
+
+        Vehicles::RoutingManager::resetRoutings(head->routingHandle);
+        Vehicles::RoutingManager::setRouting(head->routingHandle, reverseTad.track._data);
+
+        if (head->mode == TransportMode::road)
+        {
+            if ((Vehicles::getRoadOccupation(reversePos, reverseTad.road) & (Vehicles::RoadOccupationFlags::isLaneOccupied | Vehicles::RoadOccupationFlags::isLevelCrossingClosed)) != Vehicles::RoadOccupationFlags::none)
+            {
+                return PlaceDownResult::Unk1;
+            }
+        }
+        else
+        {
+            if (Vehicles::sub_4A2A58(reversePos, reverseTad.track, head->owner, head->trackType) & (1U << 0))
+            {
+                return PlaceDownResult::Unk1;
+            }
+
+            if (Vehicles::isBlockOccupied(reversePos, reverseTad.track, head->owner, head->trackType))
+            {
+                return PlaceDownResult::Unk1;
+            }
+        }
+
+        // 0x004B077E
+        auto train = Vehicles::Vehicle(*head);
+
+        train.applyToComponents([&reversePos, reverseTad, subPosition, head](auto& component) {
+            component.routingHandle = head->routingHandle;
+            component.tileX = reversePos.x;
+            component.tileY = reversePos.y;
+            component.tileBaseZ = reversePos.z / World::kSmallZStep;
+            component.subPosition = subPosition;
+            component.trackAndDirection = reverseTad;
+            component.remainingDistance = 0;
+            moveComponentToSubPosition(component);
+        });
+        train.head->var_3C = 0;
+        train.veh1->var_3C = 0;
+
+        Vehicles::applyVehicleObjectLength(train);
+        auto oldVar52 = head->var_52;
+        head->var_52 = 1;
+        const bool failure = Vehicles::positionVehicleOnTrack(*head, true);
+        head->var_52 = oldVar52;
+
+        if (failure)
+        {
+            head->liftUpVehicle();
+            return PlaceDownResult::Unk0;
+        }
+
+        head->var_52 = 1;
+        head->sub_4ADB47(true);
+        head->var_52 = oldVar52;
+        head->status = Vehicles::Status::stopped;
+        train.veh1->var_48 |= Vehicles::Flags48::flag2;
+
         return PlaceDownResult::Okay;
     }
 
@@ -225,9 +347,9 @@ namespace OpenLoco::VehicleManager
         Vehicles::Vehicle train(head);
         EntityId viewportFollowEntity = train.veh2->id;
         auto main = Ui::WindowManager::getMainWindow();
-        if (main->viewportIsFocusedOnEntity(viewportFollowEntity))
+        if (Ui::Windows::Main::viewportIsFocusedOnEntity(*main, viewportFollowEntity))
         {
-            main->viewportUnfocusFromEntity();
+            Ui::Windows::Main::viewportUnfocusFromEntity(*main);
         }
 
         Ui::WindowManager::close(Ui::WindowType::vehicle, enumValue(head.id));
@@ -258,7 +380,7 @@ namespace OpenLoco::VehicleManager
                 // perhaps in the future this could be changed.
                 GameCommands::VehiclePickupAirArgs airArgs{};
                 airArgs.head = head.id;
-                registers regs = static_cast<registers>(airArgs);
+                GameCommands::registers regs = static_cast<GameCommands::registers>(airArgs);
                 regs.bl = GameCommands::Flags::apply;
                 GameCommands::vehiclePickupAir(regs);
                 break;
@@ -269,7 +391,7 @@ namespace OpenLoco::VehicleManager
                 // perhaps in the future this could be changed.
                 GameCommands::VehiclePickupWaterArgs waterArgs{};
                 waterArgs.head = head.id;
-                registers regs = static_cast<registers>(waterArgs);
+                GameCommands::registers regs = static_cast<GameCommands::registers>(waterArgs);
                 regs.bl = GameCommands::Flags::apply;
                 GameCommands::vehiclePickupWater(regs);
             }

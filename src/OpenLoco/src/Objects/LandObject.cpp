@@ -6,7 +6,6 @@
 #include "ObjectImageTable.h"
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco
 {
@@ -50,32 +49,31 @@ namespace OpenLoco
         name = strRes.str;
         remainingData = remainingData.subspan(strRes.tableLength);
 
-        ObjectHeader cliffEdgeHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+        ObjectHeader cliffEdgeHeader_ = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
         if (dependencies != nullptr)
         {
-            dependencies->required.push_back(cliffEdgeHeader);
+            dependencies->required.push_back(cliffEdgeHeader_);
         }
-        auto res = ObjectManager::findObjectHandle(cliffEdgeHeader);
+        auto res = ObjectManager::findObjectHandle(cliffEdgeHeader_);
         if (res.has_value())
         {
-            cliffEdgeHeader1 = res->id;
-            const auto* cliffObj = ObjectManager::get<CliffEdgeObject>(cliffEdgeHeader1);
+            cliffEdgeHeader = res->id;
+            const auto* cliffObj = ObjectManager::get<CliffEdgeObject>(cliffEdgeHeader);
             cliffEdgeImage = cliffObj->image;
         }
         remainingData = remainingData.subspan(sizeof(ObjectHeader));
 
-        if (hasFlags(LandObjectFlags::unk1))
+        if (hasFlags(LandObjectFlags::hasReplacementLandHeader))
         {
-            // TBC
-            ObjectHeader cliffEdgeHeader2_ = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            ObjectHeader replacementLandHeader_ = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
             if (dependencies != nullptr)
             {
-                dependencies->required.push_back(cliffEdgeHeader2_);
+                dependencies->required.push_back(replacementLandHeader_);
             }
-            auto res2 = ObjectManager::findObjectHandle(cliffEdgeHeader2_);
+            auto res2 = ObjectManager::findObjectHandle(replacementLandHeader_);
             if (res2.has_value())
             {
-                cliffEdgeHeader2 = res2->id;
+                replacementLandHeader = res2->id;
             }
             remainingData = remainingData.subspan(sizeof(ObjectHeader));
         }
@@ -96,8 +94,8 @@ namespace OpenLoco
         image = 0;
         numImagesPerGrowthStage = 0;
         cliffEdgeImage = 0;
-        cliffEdgeHeader1 = 0;
-        cliffEdgeHeader2 = 0;
+        cliffEdgeHeader = 0;
+        replacementLandHeader = 0;
         mapPixelImage = 0;
     }
 

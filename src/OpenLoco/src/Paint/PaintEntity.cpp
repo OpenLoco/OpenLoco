@@ -9,9 +9,7 @@
 #include "PaintVehicle.h"
 #include "Ui/ViewportInteraction.h"
 #include "Vehicles/Vehicle.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;
 
 namespace OpenLoco::Paint
@@ -20,7 +18,7 @@ namespace OpenLoco::Paint
     static void paintEntitiesWithFilter(PaintSession& session, const World::Pos2& loc, FilterType&& filter)
     {
         auto* rt = session.getRenderTarget();
-        if (Config::get().old.vehiclesMinScale < rt->zoomLevel)
+        if (Config::get().vehiclesMinScale < rt->zoomLevel)
         {
             return;
         }

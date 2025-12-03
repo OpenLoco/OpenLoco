@@ -140,10 +140,11 @@ namespace OpenLoco::Scenario
      */
     [[noreturn]] void start();
 
-    void registerHooks();
     void formatChallengeArguments(const Objective& objective, const ObjectiveProgress& progress, FormatArguments& args);
     void sub_46115C();
 
     void loadPreferredCurrencyAlways();
     void loadPreferredCurrencyNewGame();
+
+    void drawScenarioMiniMapImage();
 }

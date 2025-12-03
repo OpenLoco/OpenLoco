@@ -210,7 +210,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             Common::draw(window, drawingCtx);
 
-            auto point = Point(5, widgets[widx::check_time_limit].bottom + 10);
+            auto point = Point(window.x + 5, window.y + widgets[widx::check_time_limit].bottom + 10);
             tr.drawStringLeft(point, Colour::black, StringIds::challenge_label);
 
             FormatArguments args{};
@@ -648,19 +648,19 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             Common::draw(window, drawingCtx);
 
-            auto point = Point(10, widgets[widx::max_competing_companies].top + 1);
+            auto point = Point(window.x + 10, window.y + widgets[widx::max_competing_companies].top + 1);
             tr.drawStringLeft(point, Colour::black, StringIds::max_competing_companies);
 
-            point.y = widgets[widx::delay_before_competing_companies_start].top + 1;
+            point.y = window.y + widgets[widx::delay_before_competing_companies_start].top + 1;
             tr.drawStringLeft(point, Colour::black, StringIds::delay_before_competing_companies_start);
 
-            point.y = widgets[widx::preferred_intelligence].top + 1;
+            point.y = window.y + widgets[widx::preferred_intelligence].top + 1;
             tr.drawStringLeft(point, Colour::black, StringIds::preferred_intelligence);
 
-            point.y = widgets[widx::preferred_aggressiveness].top + 1;
+            point.y = window.y + widgets[widx::preferred_aggressiveness].top + 1;
             tr.drawStringLeft(point, Colour::black, StringIds::preferred_aggressiveness);
 
-            point.y = widgets[widx::preferred_competitiveness].top + 1;
+            point.y = window.y + widgets[widx::preferred_competitiveness].top + 1;
             tr.drawStringLeft(point, Colour::black, StringIds::preferred_competitiveness);
         }
 
@@ -912,13 +912,13 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             Common::draw(window, drawingCtx);
 
-            auto point = Point(10, widgets[widx::starting_loan].top + 1);
+            auto point = Point(window.x + 10, window.y + widgets[widx::starting_loan].top + 1);
             tr.drawStringLeft(point, Colour::black, StringIds::starting_loan);
 
-            point.y = widgets[widx::max_loan_size].top + 1;
+            point.y = window.y + widgets[widx::max_loan_size].top + 1;
             tr.drawStringLeft(point, Colour::black, StringIds::max_loan_size);
 
-            point.y = widgets[widx::loan_interest_rate].top + 1;
+            point.y = window.y + widgets[widx::loan_interest_rate].top + 1;
             tr.drawStringLeft(point, Colour::black, StringIds::loan_interest_rate);
         }
 
@@ -1064,8 +1064,8 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     args.push(stex->name);
                 }
 
-                const int16_t xPos = 10;
-                int16_t yPos = widgets[widx::change_name_btn].top + 1;
+                const int16_t xPos = window.x + 10;
+                int16_t yPos = window.y + widgets[widx::change_name_btn].top + 1;
                 int16_t width = widgets[widx::change_name_btn].left - 20;
 
                 auto point = Point(xPos, yPos);
@@ -1073,16 +1073,16 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             }
 
             {
-                const int16_t xPos = 10;
-                int16_t yPos = widgets[widx::scenario_group].top + 1;
+                const int16_t xPos = window.x + 10;
+                int16_t yPos = window.y + widgets[widx::scenario_group].top + 1;
 
                 auto point = Point(xPos, yPos);
                 tr.drawStringLeft(point, Colour::black, StringIds::scenario_group);
             }
 
             {
-                const int16_t xPos = 10;
-                int16_t yPos = widgets[widx::change_details_btn].top + 1;
+                const int16_t xPos = window.x + 10;
+                int16_t yPos = window.y + widgets[widx::change_details_btn].top + 1;
 
                 auto point = Point(xPos, yPos);
                 tr.drawStringLeft(point, Colour::black, StringIds::scenario_details);
@@ -1104,7 +1104,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 }
 
                 auto& target = window.widgets[widx::change_details_btn];
-                auto point = Point(16, 12 + target.top);
+                auto point = Point(window.x + 16, window.y + 12 + target.top);
                 tr.drawStringLeftWrapped(point, target.left - 26, Colour::black, StringIds::black_stringid, args);
             }
         }
@@ -1166,7 +1166,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     strncpy(buffer, Scenario::getOptions().scenarioName, 512);
                     auto inputSize = std::size(Scenario::getOptions().scenarioName) - 1;
 
-                    TextInput::openTextInput(&self, StringIds::scenario_name_title, StringIds::enter_name_for_scenario, StringIds::buffer_2039, widgetIndex, nullptr, inputSize);
+                    TextInput::openTextInput(&self, StringIds::scenario_name_title, StringIds::enter_name_for_scenario, StringIds::buffer_2039, widgetIndex, {}, inputSize);
                     break;
                 }
 
@@ -1176,7 +1176,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     strncpy(buffer, Scenario::getOptions().scenarioDetails, 512);
                     auto inputSize = std::size(Scenario::getOptions().scenarioDetails) - 1;
 
-                    TextInput::openTextInput(&self, StringIds::scenario_details_title, StringIds::enter_description_of_this_scenario, StringIds::buffer_2039, widgetIndex, nullptr, inputSize);
+                    TextInput::openTextInput(&self, StringIds::scenario_details_title, StringIds::enter_description_of_this_scenario, StringIds::buffer_2039, widgetIndex, {}, inputSize);
                     break;
                 }
             }
@@ -1295,7 +1295,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             self.currentTab = widgetIndex - widx::tab_challenge;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
             self.disabledWidgets = 0;
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_challenge];

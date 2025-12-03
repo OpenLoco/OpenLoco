@@ -14,6 +14,10 @@ namespace OpenLoco::Localisation
     };
 
     static constexpr auto kUnicodeToLocoTable = std::to_array<EncodingConvertEntry>({
+        { UnicodeChar::curly_bracket_open, LocoChar::replacement_character }, // These four are replaced with formatting control codes in Loco
+        { UnicodeChar::vertical_line, LocoChar::replacement_character },
+        { UnicodeChar::curly_bracket_close, LocoChar::replacement_character },
+        { UnicodeChar::tilde, LocoChar::replacement_character },
         { UnicodeChar::a_ogonek_uc, LocoChar::a_ogonek_uc },
         { UnicodeChar::a_ogonek, LocoChar::a_ogonek },
         { UnicodeChar::c_acute_uc, LocoChar::c_acute_uc },
@@ -30,13 +34,17 @@ namespace OpenLoco::Localisation
         { UnicodeChar::z_acute, LocoChar::z_acute },
         { UnicodeChar::z_dot_uc, LocoChar::z_dot_uc },
         { UnicodeChar::z_dot, LocoChar::z_dot },
+        { UnicodeChar::single_quote_open, LocoChar::single_quote_open },
+        { UnicodeChar::single_quote_close, LocoChar::single_quote_close },
         { UnicodeChar::quote_open, LocoChar::quote_open },
         { UnicodeChar::quote_close, LocoChar::quote_close },
+        { UnicodeChar::bullet, LocoChar::bullet },
         { UnicodeChar::up, LocoChar::up },
         { UnicodeChar::small_up, LocoChar::small_up },
         { UnicodeChar::right, LocoChar::right },
         { UnicodeChar::down, LocoChar::down },
         { UnicodeChar::small_down, LocoChar::small_down },
+        { UnicodeChar::left, LocoChar::left },
         { UnicodeChar::air, LocoChar::air },
         { UnicodeChar::tick, LocoChar::tick },
         { UnicodeChar::cross, LocoChar::cross },
@@ -50,6 +58,12 @@ namespace OpenLoco::Localisation
 
     utf32_t convertLocoToUnicode(uint8_t locoCode)
     {
+        // Do not convert '?' character.
+        if (locoCode == LocoChar::replacement_character)
+        {
+            return LocoChar::replacement_character;
+        }
+
         // We can't do a binary search here, as the table is sorted by Unicode point, not Loco's internal encoding.
         for (const auto& entry : kUnicodeToLocoTable)
         {
@@ -79,13 +93,13 @@ namespace OpenLoco::Localisation
             return static_cast<uint8_t>(unicode);
         }
 
-        return '?';
+        return LocoChar::replacement_character;
     }
 
     std::string convertUnicodeToLoco(const std::string& unicodeString)
     {
         std::string out;
-        uint8_t* input = (uint8_t*)unicodeString.c_str();
+        const uint8_t* input = (uint8_t*)unicodeString.c_str();
         while (utf32_t unicodePoint = readCodePoint(&input))
         {
             out += convertUnicodeToLoco(unicodePoint);

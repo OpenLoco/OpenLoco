@@ -29,9 +29,7 @@ using OpenLoco::World::TileManager::ElementPositionFlags;
 
 namespace OpenLoco::World::TileClearance
 {
-    static loco_global<uint32_t, 0x00F00138> _F00138;
-    static loco_global<TileElement*, 0x00F0015C> _F0015C;
-    static loco_global<ElementPositionFlags, 0x00F00166> _constructAtElementPositionFlags;
+    static ElementPositionFlags _constructAtElementPositionFlags; // 0x00F00166
 
     // 0x00462C8E
     void setCollisionErrorMessage(const World::TileElement& el)
@@ -216,7 +214,6 @@ namespace OpenLoco::World::TileClearance
         {
             return ClearFuncResult::collision;
         }
-        _F0015C = nullptr;
         return clearFunc(el);
     };
 
@@ -242,15 +239,14 @@ namespace OpenLoco::World::TileClearance
         {
             if (clearZ > elSurface.clearZ() && baseZ < waterZ + 4)
             {
-                _constructAtElementPositionFlags = _constructAtElementPositionFlags | ElementPositionFlags::partiallyUnderwater;
+                _constructAtElementPositionFlags |= ElementPositionFlags::partiallyUnderwater;
                 if (baseZ < waterZ)
                 {
-                    _constructAtElementPositionFlags = _constructAtElementPositionFlags | ElementPositionFlags::underwater;
+                    _constructAtElementPositionFlags |= ElementPositionFlags::underwater;
                     if (clearZ > waterZ)
                     {
                         if (clearFunc)
                         {
-                            _F0015C = nullptr;
                             if (auto res = clearFunc(el); isCollisionResult(res))
                             {
                                 if (res == ClearFuncResult::collision)
@@ -276,8 +272,8 @@ namespace OpenLoco::World::TileClearance
 
         if (clearZ <= elSurface.baseZ())
         {
-            _constructAtElementPositionFlags = _constructAtElementPositionFlags | ElementPositionFlags::underground;
-            _constructAtElementPositionFlags = _constructAtElementPositionFlags & ~(ElementPositionFlags::aboveGround);
+            _constructAtElementPositionFlags |= ElementPositionFlags::underground;
+            _constructAtElementPositionFlags &= ~(ElementPositionFlags::aboveGround);
             return ClearFuncResult::noCollision;
         }
         else
@@ -374,7 +370,6 @@ namespace OpenLoco::World::TileClearance
         }
         if (clearFunc)
         {
-            _F0015C = nullptr;
             if (auto res = clearFunc(el);
                 !isCollisionResult(res))
             {
@@ -428,66 +423,13 @@ namespace OpenLoco::World::TileClearance
         return true;
     }
 
-    // 0x00462926
-    static bool canConstructAtWithClearLegacy(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, BuildingCollisionType flags, uintptr_t clearFunctionLegacy)
-    {
-        if (clearFunctionLegacy == 0xFFFFFFFFU)
-        {
-            return canConstructAtWithClear(pos, baseZ, clearZ, qt, flags, {});
-        }
-        // NOTE: When implementing a clear function you should ensure you follow all of this!
-        // especially the collisionRemoved/allCollisionsRemoved parts
-        auto functionWrapper = [clearFunctionLegacy](TileElement& el) -> ClearFuncResult {
-            registers regs{};
-            regs.esi = X86Pointer(&el);
-            bool hasCollision = call(clearFunctionLegacy, regs) & Interop::X86_FLAG_CARRY;
-            if (hasCollision)
-            {
-                if (regs.esi == -1)
-                {
-                    return ClearFuncResult::collisionErrorSet;
-                }
-                else
-                {
-                    return ClearFuncResult::collision;
-                }
-            }
-            else
-            {
-                if (_F0015C == nullptr)
-                {
-                    return ClearFuncResult::noCollision;
-                }
-                if (_F0015C == TileManager::kInvalidTile)
-                {
-                    // This is a no collision as it has removed all the collisions
-                    return ClearFuncResult::allCollisionsRemoved;
-                }
-                // reset tile iterator to _F0015C (its saying we have removed a tile so pointer is stale)
-                return ClearFuncResult::collisionRemoved;
-            }
-        };
-
-        return canConstructAtWithClear(pos, baseZ, clearZ, qt, flags, functionWrapper);
-    }
-
     // 0x00462908
-    bool applyClearAtAllHeights(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uintptr_t clearFunctionLegacy)
-    {
-        return canConstructAtWithClearLegacy(pos, baseZ, clearZ, qt, BuildingCollisionType::anyHeight, clearFunctionLegacy);
-    }
-
     bool applyClearAtAllHeights(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearFuncResult(TileElement& el)> clearFunc)
     {
         return canConstructAtWithClear(pos, baseZ, clearZ, qt, BuildingCollisionType::anyHeight, clearFunc);
     }
 
     // 0x00462917
-    bool applyClearAtStandardHeight(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uintptr_t clearFunctionLegacy)
-    {
-        return canConstructAtWithClearLegacy(pos, baseZ, clearZ, qt, BuildingCollisionType::standard, clearFunctionLegacy);
-    }
-
     bool applyClearAtStandardHeight(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearFuncResult(TileElement& el)> clearFunc)
     {
         return canConstructAtWithClear(pos, baseZ, clearZ, qt, BuildingCollisionType::standard, clearFunc);
@@ -568,7 +510,7 @@ namespace OpenLoco::World::TileClearance
         }
         GameCommands::BuildingRemovalArgs args{};
         args.pos = buildingStart;
-        Interop::registers regs = static_cast<Interop::registers>(args);
+        GameCommands::registers regs = static_cast<GameCommands::registers>(args);
         regs.bl = removeBuildingFlags;
         // We should probably call doCommand here but then it gets messy with the costs
         // look into changing this in the future.
@@ -617,21 +559,6 @@ namespace OpenLoco::World::TileClearance
 
     ElementPositionFlags getPositionFlags()
     {
-        return *_constructAtElementPositionFlags;
-    }
-
-    void registerHooks()
-    {
-        registerHook(
-            0x00462937,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backupRegs = regs;
-                QuarterTile qt{ static_cast<uint8_t>(regs.bl) };
-                const uint32_t legacyFunction = _F00138;
-                const auto flags = ((_constructAtElementPositionFlags & ElementPositionFlags::anyHeightBuildingCollisions) != ElementPositionFlags::none) ? BuildingCollisionType::anyHeight : BuildingCollisionType::standard;
-                auto res = canConstructAtWithClearLegacy({ regs.ax, regs.cx }, regs.dl, regs.dh, qt, flags, legacyFunction);
-                regs = backupRegs;
-                return res ? 0 : X86_FLAG_CARRY;
-            });
+        return _constructAtElementPositionFlags;
     }
 }

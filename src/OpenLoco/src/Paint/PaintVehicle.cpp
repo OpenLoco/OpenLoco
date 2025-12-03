@@ -10,7 +10,6 @@
 #include "World/CompanyManager.h"
 #include <OpenLoco/Math/Trigonometry.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Vehicles;
 
 namespace OpenLoco::Paint
@@ -31,6 +30,53 @@ namespace OpenLoco::Paint
         Pitch::down20deg,
         Pitch::up20deg,
     };
+
+    // Bounding box offset and size scaling factors indexed by yaw angle (0-31)
+    // These factors are multiplied by bodyLength and divided by 256
+    // Used in paintBody to calculate vehicle bounding boxes based on orientation
+    struct BoundingBoxFactors
+    {
+        int8_t xOffsetFactor;
+        int8_t yOffsetFactor;
+        int8_t xSizeFactor;
+        int8_t ySizeFactor;
+    };
+
+    // 0x005001B4
+    static constexpr std::array<BoundingBoxFactors, 32> kBoundingBoxFactorsByYaw = { {
+        { -30, -3, 60, 6 },
+        { -29, -4, 58, 8 },
+        { -28, -6, 56, 12 },
+        { -26, -6, 56, 12 },
+        { -24, -6, 56, 12 },
+        { -22, -11, 48, 24 },
+        { -20, -20, 40, 40 },
+        { -20, -20, 45, 45 },
+        { -16, -16, 46, 46 },
+        { -20, -20, 45, 45 },
+        { -20, -20, 40, 40 },
+        { -11, -22, 24, 48 },
+        { -6, -24, 12, 56 },
+        { -6, -26, 12, 56 },
+        { -6, -28, 12, 56 },
+        { -4, -29, 8, 58 },
+        { -3, -30, 6, 60 },
+        { -4, -29, 8, 58 },
+        { -5, -28, 10, 57 },
+        { -2, -28, 6, 54 },
+        { -2, -20, 8, 50 },
+        { -2, -20, 8, 45 },
+        { -4, -15, 12, 40 },
+        { -5, -12, 17, 32 },
+        { -5, -5, 25, 25 },
+        { -12, -5, 32, 17 },
+        { -15, -4, 40, 12 },
+        { -20, -2, 45, 8 },
+        { -20, -2, 50, 8 },
+        { -28, -2, 54, 6 },
+        { -28, -5, 57, 10 },
+        { -29, -4, 58, 8 },
+    } };
 
     // 0x004B0CFC
     static void paintBogie(PaintSession& session, VehicleBogie* bogie)
@@ -173,8 +219,6 @@ namespace OpenLoco::Paint
     // 0x004B103C
     static void paintBody(PaintSession& session, VehicleBody* body)
     {
-        static loco_global<int8_t[32 * 4], 0x005001B4> _5001B4; // array of 4 byte structures
-
         auto* vehObject = ObjectManager::get<VehicleObject>(body->objectId);
         if (body->objectSpriteType == SpriteIndex::null)
         {
@@ -227,12 +271,13 @@ namespace OpenLoco::Paint
             boundBoxOffsets.y = overhangOffset.y;
             const auto bodyLength = sprite.halfLength * 2 - 4;
             originalYaw &= 0x1F;
-            boundBoxOffsets.x += (_5001B4[originalYaw * 4] * bodyLength) >> 8;
-            boundBoxOffsets.y += (_5001B4[originalYaw * 4 + 1] * bodyLength) >> 8;
+            const auto& bboxFactors = kBoundingBoxFactorsByYaw[originalYaw];
+            boundBoxOffsets.x += (bboxFactors.xOffsetFactor * bodyLength) >> 8;
+            boundBoxOffsets.y += (bboxFactors.yOffsetFactor * bodyLength) >> 8;
             boundBoxOffsets.z = body->position.z + 11;
             boundBoxSize = {
-                static_cast<coord_t>((_5001B4[originalYaw * 4 + 2] * bodyLength) >> 8),
-                static_cast<coord_t>((_5001B4[originalYaw * 4 + 3] * bodyLength) >> 8),
+                static_cast<coord_t>((bboxFactors.xSizeFactor * bodyLength) >> 8),
+                static_cast<coord_t>((bboxFactors.ySizeFactor * bodyLength) >> 8),
                 15
             };
         }

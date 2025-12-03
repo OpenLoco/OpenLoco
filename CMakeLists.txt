@@ -26,15 +26,22 @@ endif (CCache_FOUND)
 
 include(FetchContent)
 
-# On windows VCPKG is used to get all dependencies other platforms can use it as well by specifying it
-# in the CMAKE_TOOLCHAIN_FILE
 if (WIN32)
+    set(OPENLOCO_USE_VCPKG_DEFAULT YES)
+else()
+    set(OPENLOCO_USE_VCPKG_DEFAULT NO)
+endif()
+option(OPENLOCO_USE_VCPKG "Use vcpkg for dependencies and toolchain" ${OPENLOCO_USE_VCPKG_DEFAULT})
+
+
+# On windows VCPKG is used to get all dependencies other platforms can use it as well by setting OPENLOCO_USE_VCPKG
+if (OPENLOCO_USE_VCPKG)
     if (EXISTS ${VCPKG_ROOT})
         set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
     else()
         # Provide a message for first time invocations
         if (NOT CMAKE_TOOLCHAIN_FILE)
-            message("VCPKG not installed on windows fetching and building VCPKG. Warning may take a while on slow connections.")
+            message("VCPKG not installed, fetching and building VCPKG. Warning may take a while on slow connections.")
         endif ()
         FetchContent_Declare(vcpkg
             GIT_REPOSITORY https://github.com/microsoft/vcpkg.git
@@ -46,7 +53,7 @@ if (WIN32)
     endif()
 endif ()
 
-project(${PROJECT} LANGUAGES CXX VERSION 25.07)
+project(${PROJECT} LANGUAGES CXX VERSION 25.11)
 
 # Enable IPO for all Release targets by default
 include(CheckIPOSupported)
@@ -62,13 +69,6 @@ endif()
 
 if (NOT CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 20)
-endif()
-
-if (APPLE)
-    # Detection of this variable seems to fail with CMake.
-    # Since we only support 32-bit builds at the moment, fix it this way.
-    # TODO: find out a proper fix for this.
-    set(CMAKE_SIZEOF_VOID_P 4)
 endif()
 
 if (CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR)
@@ -87,14 +87,6 @@ option(OPENLOCO_HEADER_CHECK "Verify all public interfaces are standalone" NO)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
 set(DEBUG_LEVEL 0 CACHE STRING "Select debug level for compilation. Use value in range 0–3.")
-list(APPEND COMMON_COMPILE_OPTIONS -DDEBUG=${DEBUG_LEVEL})
-
-if (MINGW)
-    # MingW32 does not at present compile OpenLoco.exe
-    # so we must ensure the .dll file has the same
-    # prefix on Windows and MingW32 i.e. none
-    set(CMAKE_SHARED_LIBRARY_PREFIX "")
-endif()
 
 # Display source files nicely in IDEs
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -110,88 +102,33 @@ if (${OPENLOCO_BUILD_TESTS})
     enable_testing()
 endif()
 
-# Handle creating the rct2 text and data files on OS X and Linux
-if (UNIX)
-    set(OBJ_FORMAT "elf32-i386")
-    set(LINKER_SCRIPT "ld_script_i386.xc")
-
-    set(OLOCO_EXE ${CMAKE_CURRENT_SOURCE_DIR}/loco.exe)
-    set(OLOCO_TEXT ${CMAKE_BINARY_DIR}/openloco_text)
-    set(OLOCO_DATA ${CMAKE_BINARY_DIR}/openloco_data)
-
-    add_custom_command(
-            OUTPUT ${OLOCO_TEXT}
-            COMMAND dd if="${OLOCO_EXE}" of="${OLOCO_TEXT}" bs=4096 skip=1 count=214
-            DEPENDS ${OLOCO_EXE}
-    )
-    add_custom_command(
-            OUTPUT ${OLOCO_DATA}
-            COMMAND dd if="${OLOCO_EXE}" of="${OLOCO_DATA}" bs=4096 skip=215 count=78
-            COMMAND dd if=/dev/zero of="${OLOCO_DATA}" bs=4096 seek=78 count=3133 conv=notrunc
-            DEPENDS ${OLOCO_EXE}
-    )
-    add_custom_target(segfiles DEPENDS ${OLOCO_TEXT} ${OLOCO_DATA})
-    if (APPLE)
-        set(LOCO_SEGMENT_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -sectcreate loco_text __text \"${OLOCO_TEXT}\" -sectcreate loco_data __data ${OLOCO_DATA} -segaddr loco_data 0x4d7000 -segprot loco_data rwx rwx -segaddr loco_text 0x401000 -segprot loco_text rwx rwx -segaddr __TEXT 0x2000000 -read_only_relocs suppress")
-    else ()
-        # For Linux we have to use objcopy to wrap regular binaries into a linkable
-        # format. We use specific section names which are then referenced in a
-        # bespoke linker script so they can be placed at predefined VMAs.
-        add_custom_command(
-            OUTPUT openloco_text_section.o
-            COMMAND objcopy --input binary --output ${OBJ_FORMAT} --binary-architecture i386 \"${OLOCO_TEXT}\" openloco_text_section.o --rename-section .data=.loco_text,contents,alloc,load,readonly,code
-            DEPENDS segfiles
-            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        )
-        add_custom_command(
-            OUTPUT openloco_data_section.o
-            COMMAND objcopy --input binary --output ${OBJ_FORMAT} --binary-architecture i386 \"${OLOCO_DATA}\" openloco_data_section.o --rename-section .data=.loco_data,contents,alloc,load,readonly,data
-            DEPENDS segfiles
-            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        )
-        add_custom_target(linkable_sections DEPENDS openloco_text_section.o openloco_data_section.o)
-        set_source_files_properties(
-            openloco_text_section.o openloco_data_section.o
-            PROPERTIES
-            EXTERNAL_OBJECT true
-            GENERATED true
-        )
-        # can't use GLOB here, as the files don't exist yet at cmake-time
-        set(LOCO_SECTIONS "${CMAKE_BINARY_DIR}/openloco_data_section.o" "${CMAKE_BINARY_DIR}/openloco_text_section.o")
-        set(LOCO_SEGMENT_LINKER_FLAGS "-Wl,-T,\"${CMAKE_CURRENT_SOURCE_DIR}/distribution/linux/${LINKER_SCRIPT}\"")
-    endif ()
-endif()
-
 FetchContent_Declare(openloco_objects
-            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.3/objects.zip
-            URL_HASH SHA256=c08937691b9d7a956305864b535c6e4537a84b81a9dc5d4c9016edff83dcceb6)
+            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.5/objects.zip
+            URL_HASH SHA256=fe8943fabad8eb07cebab5354589abd7e798a705f7993bb4d9dab2122b4fe96e)
 FetchContent_MakeAvailable(openloco_objects)
 
 add_subdirectory(src)
 
-if (MSVC)
+if (NOT APPLE)
     if (${CMAKE_VERSION} VERSION_GREATER 3.26)
         # Uses the copy_directory_if_different to avoid copying objects/language every time (3.26 feature)
-        add_custom_target(OpenLocoExe ALL
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/loco.exe" "$<TARGET_FILE_DIR:OpenLoco>/OpenLoco.exe"
+        add_custom_target(OpenLocoAssets ALL
             COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different "${CMAKE_CURRENT_SOURCE_DIR}/data" "$<TARGET_FILE_DIR:OpenLoco>/data"
             COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different "${openloco_objects_SOURCE_DIR}" "$<TARGET_FILE_DIR:OpenLoco>/data/objects"
-            COMMENT "Copying over data folder and executable"
+            COMMENT "Copying over data and objects folder"
             DEPENDS OpenLoco
         )
     else()
-        add_custom_target(OpenLocoExe ALL
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/loco.exe" "$<TARGET_FILE_DIR:OpenLoco>/OpenLoco.exe"
+        add_custom_target(OpenLocoAssets ALL
             COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/data" "$<TARGET_FILE_DIR:OpenLoco>/data"
             COMMAND ${CMAKE_COMMAND} -E copy_directory "${openloco_objects_SOURCE_DIR}" "$<TARGET_FILE_DIR:OpenLoco>/data/objects"
-            COMMENT "Copying over data folder and executable"
+            COMMENT "Copying over data and objects folder"
             DEPENDS OpenLoco
         )
     endif()
-    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenLocoExe)
-    set_property(TARGET OpenLocoExe PROPERTY VS_DEBUGGER_COMMAND $<TARGET_FILE_DIR:OpenLoco>/OpenLoco.exe)
-    set_property(TARGET OpenLocoExe PROPERTY VS_DEBUGGER_WORKING_DIRECTORY $<TARGET_FILE_DIR:OpenLoco>)
 endif()
+
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenLoco)
 
 install(TARGETS OpenLoco
     RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"

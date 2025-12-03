@@ -10,6 +10,7 @@
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Town/CreateTown.h"
 #include "GameState.h"
+#include "Input.h"
 #include "Localisation/StringIds.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/HillShapesObject.h"
@@ -44,7 +45,7 @@ namespace OpenLoco::World::MapGenerator
 
     static void updateProgress(uint8_t value)
     {
-        Ui::processMessagesMini();
+        Input::processMessagesMini();
         Ui::ProgressBar::setProgress(value);
     }
 
@@ -585,7 +586,7 @@ namespace OpenLoco::World::MapGenerator
             if (!surface->isIndustrial())
             {
                 auto* landObj = ObjectManager::get<LandObject>(surface->terrain());
-                if (landObj->hasFlags(LandObjectFlags::unk0))
+                if (landObj->hasFlags(LandObjectFlags::hasGrowthStages))
                 {
                     bool setVariation = false;
                     if (surface->water())
@@ -1074,7 +1075,7 @@ namespace OpenLoco::World::MapGenerator
     // 0x0043C90C
     void generate(const Scenario::Options& options)
     {
-        Ui::processMessagesMini();
+        Input::processMessagesMini();
 
         WindowManager::close(WindowType::town);
         WindowManager::close(WindowType::industry);

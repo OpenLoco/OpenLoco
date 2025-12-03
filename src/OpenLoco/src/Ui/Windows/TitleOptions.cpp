@@ -36,7 +36,7 @@ namespace OpenLoco::Ui::Windows::TitleOptions
             WindowType::titleOptions,
             { Ui::width() - kWindowSize.width, 0 },
             kWindowSize,
-            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::framedWidgets,
             getEvents());
 
         window->setWidgets(_widgets);
@@ -55,8 +55,8 @@ namespace OpenLoco::Ui::Windows::TitleOptions
         // Draw widgets.
         window.draw(drawingCtx);
 
-        int16_t x = window.width / 2;
-        int16_t y = window.widgets[Widx::options_button].top + 2;
+        int16_t x = window.x + window.width / 2;
+        int16_t y = window.y + window.widgets[Widx::options_button].top + 2;
         Ui::Point origin = { x, y };
 
         auto argsBuf = FormatArgumentsBuffer{};

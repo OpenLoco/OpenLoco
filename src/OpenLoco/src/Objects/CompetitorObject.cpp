@@ -7,14 +7,9 @@
 #include "Localisation/StringIds.h"
 #include "ObjectImageTable.h"
 #include "ObjectStringTable.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco
 {
-    static loco_global<uint8_t, 0x0112C211> _intelligence;    // return of loadTemporaryObject
-    static loco_global<uint8_t, 0x0112C212> _aggressiveness;  // return of loadTemporaryObject
-    static loco_global<uint8_t, 0x0112C213> _competitiveness; // return of loadTemporaryObject
-
     // TODO: Should only be defined in ObjectSelectionWindow
     static constexpr uint8_t kDescriptionRowHeight = 10;
     static constexpr Ui::Size kObjectPreviewSize = { 112, 112 };
@@ -90,7 +85,7 @@ namespace OpenLoco
         };
 
         loadString(name, 0);
-        loadString(lastName, 1);
+        loadString(availableNamePrefixes, 1);
 
         // Load images
         auto imageRes = ObjectManager::loadImageTable(remainingData);
@@ -107,19 +102,13 @@ namespace OpenLoco
 
         // Ensure we've loaded the entire object
         assert(remainingData.size() == imageRes.tableLength);
-
-        // Copy competitor stats to global
-        // TODO: Refactor to not pass by global!
-        _intelligence = intelligence;
-        _aggressiveness = aggressiveness;
-        _competitiveness = competitiveness;
     }
 
     // 0x00434D08
     void CompetitorObject::unload()
     {
         name = 0;
-        lastName = 0;
+        availableNamePrefixes = 0;
 
         std::fill(std::begin(images), std::end(images), 0);
     }

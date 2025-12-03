@@ -5,7 +5,6 @@
 #include "ObjectImageTable.h"
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco
 {
@@ -50,34 +49,33 @@ namespace OpenLoco
             remainingData = remainingData.subspan(strRes.tableLength);
         }
 
-        buildingPartHeights = reinterpret_cast<const uint8_t*>(remainingData.data());
+        buildingPartHeightsOffset = static_cast<uint32_t>(remainingData.data() - data.data());
         remainingData = remainingData.subspan(numSpriteSets * sizeof(uint8_t));
-        buildingPartAnimations = reinterpret_cast<const BuildingPartAnimation*>(remainingData.data());
-        remainingData = remainingData.subspan(numSpriteSets * sizeof(uint16_t));
+
+        buildingPartAnimationsOffset = static_cast<uint32_t>(remainingData.data() - data.data());
+        remainingData = remainingData.subspan(numSpriteSets * sizeof(BuildingPartAnimation));
 
         for (auto i = 0; i < numTiles; ++i)
         {
-            buildingVariationParts[i] = reinterpret_cast<const uint8_t*>(remainingData.data());
-            auto* ptr = buildingVariationParts[i];
-            while (*ptr++ != 0xFF)
+            buildingVariationPartOffsets[i] = remainingData.data() - data.data();
+            while (*remainingData.data() != static_cast<std::byte>(0xFF))
             {
-                ;
+                remainingData = remainingData.subspan(1);
             }
-            remainingData = remainingData.subspan(ptr - buildingVariationParts[i]);
+            remainingData = remainingData.subspan(1);
         }
 
-        buildingPositions = reinterpret_cast<const AirportBuilding*>(remainingData.data());
-        auto* ptr = reinterpret_cast<const uint8_t*>(remainingData.data());
-        while (*ptr != 0xFF)
+        buildingPositionsOffset = static_cast<uint32_t>(remainingData.data() - data.data());
+        while (*remainingData.data() != static_cast<std::byte>(0xFF))
         {
-            ptr += 4;
+            remainingData = remainingData.subspan(sizeof(AirportBuilding));
         }
-        ptr++;
-        remainingData = remainingData.subspan(ptr - reinterpret_cast<const uint8_t*>(buildingPositions));
+        remainingData = remainingData.subspan(1);
 
-        movementNodes = reinterpret_cast<const MovementNode*>(remainingData.data());
+        movementNodesOffset = static_cast<uint32_t>(remainingData.data() - data.data());
         remainingData = remainingData.subspan(numMovementNodes * sizeof(MovementNode));
-        movementEdges = reinterpret_cast<const MovementEdge*>(remainingData.data());
+
+        movementEdgesOffset = static_cast<uint32_t>(remainingData.data() - data.data());
         remainingData = remainingData.subspan(numMovementEdges * sizeof(MovementEdge));
 
         auto imgRes = ObjectManager::loadImageTable(remainingData);
@@ -99,12 +97,12 @@ namespace OpenLoco
         image = 0;
         buildingImage = 0;
 
-        std::fill(std::begin(buildingVariationParts), std::end(buildingVariationParts), nullptr);
+        std::fill(std::begin(buildingVariationPartOffsets), std::end(buildingVariationPartOffsets), 0);
 
-        buildingPositions = nullptr;
+        buildingPositionsOffset = 0;
 
-        movementNodes = nullptr;
-        movementEdges = nullptr;
+        movementNodesOffset = 0;
+        movementEdgesOffset = 0;
     }
 
     std::pair<World::TilePos2, World::TilePos2> AirportObject::getAirportExtents(const World::TilePos2& centrePos, const uint8_t rotation) const
@@ -132,6 +130,9 @@ namespace OpenLoco
 
     std::span<const AirportBuilding> AirportObject::getBuildingPositions() const
     {
+        const auto* base = reinterpret_cast<const uint8_t*>(this);
+        const auto* buildingPositions = reinterpret_cast<const AirportBuilding*>(base + buildingPositionsOffset);
+
         const auto* firstBuildingPtr = buildingPositions;
         auto* endBuildingPtr = firstBuildingPtr;
 
@@ -145,7 +146,9 @@ namespace OpenLoco
 
     std::span<const std::uint8_t> AirportObject::getBuildingParts(const uint8_t buildingType) const
     {
-        const auto* partsPointer = buildingVariationParts[buildingType];
+        const auto offset = buildingVariationPartOffsets[buildingType];
+
+        const auto* partsPointer = reinterpret_cast<const std::uint8_t*>(this) + offset;
         auto* end = partsPointer;
         while (*end != 0xFF)
         {
@@ -154,4 +157,32 @@ namespace OpenLoco
 
         return std::span<const std::uint8_t>(partsPointer, end);
     }
+
+    std::span<const uint8_t> AirportObject::getBuildingPartHeights() const
+    {
+        const auto* base = reinterpret_cast<const uint8_t*>(this);
+        return std::span<const std::uint8_t>(base + buildingPartHeightsOffset, numSpriteSets);
+    }
+
+    std::span<const BuildingPartAnimation> AirportObject::getBuildingPartAnimations() const
+    {
+        const auto* base = reinterpret_cast<const uint8_t*>(this);
+        const auto* ptr = reinterpret_cast<const BuildingPartAnimation*>(base + buildingPartAnimationsOffset);
+        return std::span<const BuildingPartAnimation>(ptr, numSpriteSets);
+    }
+
+    std::span<const AirportObject::MovementNode> AirportObject::getMovementNodes() const
+    {
+        const auto* base = reinterpret_cast<const uint8_t*>(this);
+        const auto* ptr = reinterpret_cast<const MovementNode*>(base + movementNodesOffset);
+        return std::span<const MovementNode>(ptr, numMovementNodes);
+    }
+
+    std::span<const AirportObject::MovementEdge> AirportObject::getMovementEdges() const
+    {
+        const auto* base = reinterpret_cast<const uint8_t*>(this);
+        const auto* ptr = reinterpret_cast<const MovementEdge*>(base + movementEdgesOffset);
+        return std::span<const MovementEdge>(ptr, numMovementEdges);
+    }
+
 }

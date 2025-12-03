@@ -3,6 +3,7 @@
 #include "Config.h"
 #include "Input.h"
 #include "Objects/Object.h"
+#include <OpenLoco/Engine/Types.hpp>
 #include <SDL2/SDL.h>
 #include <yaml-cpp/yaml.h>
 
@@ -160,6 +161,116 @@ namespace YAML
         }
     };
 
+    enum class PlaylistItem : uint8_t
+    {
+        chugginAlong,
+        longDustyRoad,
+        flyingHigh,
+        gettinOnTheGas,
+        jumpinTheRails,
+        smoothRunning,
+        trafficJam,
+        neverStopTilYouGetThere,
+        soaringAway,
+        technoTorture,
+        everlastingHighRise,
+        solace,
+        chrysanthemum,
+        eugenia,
+        theRagtimeDance,
+        easyWinners,
+        settingOff,
+        aTravellersSerenade,
+        latinoTrip,
+        aGoodHeadOfSteam,
+        hopToTheBop,
+        theCityLights,
+        steaminDownTown,
+        brightExpectations,
+        moStation,
+        farOut,
+        runningOnTime,
+        getMeToGladstoneBay,
+        sandyTrackBlues,
+    };
+
+    // Playlist
+    template<>
+    struct convert<Playlist>
+    {
+        static Node encode(const Playlist& rhs)
+        {
+            using namespace OpenLoco;
+            Node node;
+            node["chugginAlong"] = rhs[enumValue(PlaylistItem::chugginAlong)];
+            node["longDustyRoad"] = rhs[enumValue(PlaylistItem::longDustyRoad)];
+            node["flyingHigh"] = rhs[enumValue(PlaylistItem::flyingHigh)];
+            node["gettinOnTheGas"] = rhs[enumValue(PlaylistItem::gettinOnTheGas)];
+            node["jumpinTheRails"] = rhs[enumValue(PlaylistItem::jumpinTheRails)];
+            node["smoothRunning"] = rhs[enumValue(PlaylistItem::smoothRunning)];
+            node["trafficJam"] = rhs[enumValue(PlaylistItem::trafficJam)];
+            node["neverStopTilYouGetThere"] = rhs[enumValue(PlaylistItem::neverStopTilYouGetThere)];
+            node["soaringAway"] = rhs[enumValue(PlaylistItem::soaringAway)];
+            node["technoTorture"] = rhs[enumValue(PlaylistItem::technoTorture)];
+            node["everlastingHighRise"] = rhs[enumValue(PlaylistItem::everlastingHighRise)];
+            node["solace"] = rhs[enumValue(PlaylistItem::solace)];
+            node["chrysanthemum"] = rhs[enumValue(PlaylistItem::chrysanthemum)];
+            node["eugenia"] = rhs[enumValue(PlaylistItem::eugenia)];
+            node["theRagtimeDance"] = rhs[enumValue(PlaylistItem::theRagtimeDance)];
+            node["easyWinners"] = rhs[enumValue(PlaylistItem::easyWinners)];
+            node["settingOff"] = rhs[enumValue(PlaylistItem::settingOff)];
+            node["aTravellersSerenade"] = rhs[enumValue(PlaylistItem::aTravellersSerenade)];
+            node["latinoTrip"] = rhs[enumValue(PlaylistItem::latinoTrip)];
+            node["aGoodHeadOfSteam"] = rhs[enumValue(PlaylistItem::aGoodHeadOfSteam)];
+            node["hopToTheBop"] = rhs[enumValue(PlaylistItem::hopToTheBop)];
+            node["theCityLights"] = rhs[enumValue(PlaylistItem::theCityLights)];
+            node["steaminDownTown"] = rhs[enumValue(PlaylistItem::steaminDownTown)];
+            node["brightExpectations"] = rhs[enumValue(PlaylistItem::brightExpectations)];
+            node["moStation"] = rhs[enumValue(PlaylistItem::moStation)];
+            node["farOut"] = rhs[enumValue(PlaylistItem::farOut)];
+            node["runningOnTime"] = rhs[enumValue(PlaylistItem::runningOnTime)];
+            node["getMeToGladstoneBay"] = rhs[enumValue(PlaylistItem::getMeToGladstoneBay)];
+            node["sandyTrackBlues"] = rhs[enumValue(PlaylistItem::sandyTrackBlues)];
+            return node;
+        }
+
+        static bool decode(const Node& node, Playlist& rhs)
+        {
+            using namespace OpenLoco;
+            const bool enableAll = !node.IsMap();
+            rhs[enumValue(PlaylistItem::chugginAlong)] = enableAll || node["chugginAlong"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::longDustyRoad)] = enableAll || node["longDustyRoad"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::flyingHigh)] = enableAll || node["flyingHigh"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::gettinOnTheGas)] = enableAll || node["gettinOnTheGas"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::jumpinTheRails)] = enableAll || node["jumpinTheRails"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::smoothRunning)] = enableAll || node["smoothRunning"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::trafficJam)] = enableAll || node["trafficJam"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::neverStopTilYouGetThere)] = enableAll || node["neverStopTilYouGetThere"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::soaringAway)] = enableAll || node["soaringAway"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::technoTorture)] = enableAll || node["technoTorture"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::everlastingHighRise)] = enableAll || node["everlastingHighRise"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::solace)] = enableAll || node["solace"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::chrysanthemum)] = enableAll || node["chrysanthemum"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::eugenia)] = enableAll || node["eugenia"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::theRagtimeDance)] = enableAll || node["theRagtimeDance"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::easyWinners)] = enableAll || node["easyWinners"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::settingOff)] = enableAll || node["settingOff"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::aTravellersSerenade)] = enableAll || node["aTravellersSerenade"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::latinoTrip)] = enableAll || node["latinoTrip"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::aGoodHeadOfSteam)] = enableAll || node["aGoodHeadOfSteam"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::hopToTheBop)] = enableAll || node["hopToTheBop"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::theCityLights)] = enableAll || node["theCityLights"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::steaminDownTown)] = enableAll || node["steaminDownTown"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::brightExpectations)] = enableAll || node["brightExpectations"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::moStation)] = enableAll || node["moStation"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::farOut)] = enableAll || node["farOut"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::runningOnTime)] = enableAll || node["runningOnTime"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::getMeToGladstoneBay)] = enableAll || node["getMeToGladstoneBay"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::sandyTrackBlues)] = enableAll || node["sandyTrackBlues"].as<bool>(true);
+            return true;
+        }
+    };
+
     // Resolution
     template<>
     struct convert<Resolution>
@@ -184,8 +295,43 @@ namespace YAML
         }
     };
 
+    // MeasurementFormat
+    const convert_pair_vector<MeasurementFormat> kMeasurementFormatEntries = {
+        enum_def(MeasurementFormat, imperial),
+        enum_def(MeasurementFormat, metric),
+    };
+    template<>
+    struct convert<MeasurementFormat> : convert_enum_base<MeasurementFormat>
+    {
+        static const convert_pair_vector<MeasurementFormat>& getEntries() { return kMeasurementFormatEntries; }
+    };
+
+    // MusicPlaylistType
+    const convert_pair_vector<MusicPlaylistType> kMusicPlaylistTypes = {
+        enum_def(MusicPlaylistType, currentEra),
+        enum_def(MusicPlaylistType, all),
+        enum_def(MusicPlaylistType, custom),
+    };
+    template<>
+    struct convert<MusicPlaylistType> : convert_enum_base<MusicPlaylistType>
+    {
+        static const convert_pair_vector<MusicPlaylistType>& getEntries() { return kMusicPlaylistTypes; }
+    };
+
+    // NewsType
+    const convert_pair_vector<NewsType> kNewsTypeEntries = {
+        enum_def(NewsType, none),
+        enum_def(NewsType, ticker),
+        enum_def(NewsType, newsWindow),
+    };
+    template<>
+    struct convert<NewsType> : convert_enum_base<NewsType>
+    {
+        static const convert_pair_vector<NewsType>& getEntries() { return kNewsTypeEntries; }
+    };
+
     // ScreenMode
-    const convert_pair_vector<ScreenMode> screenModeEntries = {
+    const convert_pair_vector<ScreenMode> kScreenModeEntries = {
         enum_def(ScreenMode, window),
         enum_def(ScreenMode, fullscreen),
         enum_def(ScreenMode, fullscreenBorderless),
@@ -193,7 +339,19 @@ namespace YAML
     template<>
     struct convert<ScreenMode> : convert_enum_base<ScreenMode>
     {
-        static const convert_pair_vector<ScreenMode>& getEntries() { return screenModeEntries; }
+        static const convert_pair_vector<ScreenMode>& getEntries() { return kScreenModeEntries; }
+    };
+
+    // WindowFrameStyle
+    const convert_pair_vector<WindowFrameStyle> kWindowFrameStyleEntries = {
+        enum_def(WindowFrameStyle, background),
+        enum_def(WindowFrameStyle, solid),
+        enum_def(WindowFrameStyle, transparent),
+    };
+    template<>
+    struct convert<WindowFrameStyle> : convert_enum_base<WindowFrameStyle>
+    {
+        static const convert_pair_vector<WindowFrameStyle>& getEntries() { return kWindowFrameStyleEntries; }
     };
 }
 

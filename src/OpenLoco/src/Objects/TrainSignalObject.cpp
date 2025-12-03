@@ -6,7 +6,6 @@
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
 #include "ScenarioManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco
 {

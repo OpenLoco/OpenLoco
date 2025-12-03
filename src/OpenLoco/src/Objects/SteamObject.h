@@ -40,13 +40,13 @@ namespace OpenLoco
         uint8_t spriteHeightPositive; // 0x07
         SteamObjectFlags flags;       // 0x08
         uint32_t var_0A;
-        uint32_t baseImageId;                 // 0x0E
-        uint16_t totalNumFramesType0;         // 0x12
-        uint16_t totalNumFramesType1;         // 0x14
-        const ImageAndHeight* frameInfoType0; // 0x16
-        const ImageAndHeight* frameInfoType1; // 0x1A
-        uint8_t numSoundEffects;              // 0x1E
-        SoundObjectId_t soundEffects[9];      // 0x1F, size tbc, see https://github.com/OpenLoco/OpenLoco/pull/2405#discussion_r1555206249
+        uint32_t baseImageId;            // 0x0E
+        uint16_t totalNumFramesType0;    // 0x12
+        uint16_t totalNumFramesType1;    // 0x14
+        uint32_t frameInfoType0Offset;   // 0x16
+        uint32_t frameInfoType1Offset;   // 0x1A
+        uint8_t numSoundEffects;         // 0x1E
+        SoundObjectId_t soundEffects[9]; // 0x1F, size tbc, see https://github.com/OpenLoco/OpenLoco/pull/2405#discussion_r1555206249
 
         // 0x00440DDE
         bool validate() const { return true; }
@@ -60,13 +60,14 @@ namespace OpenLoco
 
         std::pair<uint16_t, const ImageAndHeight*> getFramesInfo(bool isType1) const
         {
+            const auto* base = reinterpret_cast<const std::byte*>(this);
             if (!isType1)
             {
-                return { totalNumFramesType0, frameInfoType0 };
+                return { totalNumFramesType0, reinterpret_cast<const ImageAndHeight*>(base + frameInfoType0Offset) };
             }
             else
             {
-                return { totalNumFramesType1, frameInfoType1 };
+                return { totalNumFramesType1, reinterpret_cast<const ImageAndHeight*>(base + frameInfoType1Offset) };
             }
         }
     };

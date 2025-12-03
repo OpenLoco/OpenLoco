@@ -9,7 +9,6 @@
 #include "Ui/ViewportInteraction.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco::Paint
 {
@@ -175,16 +174,18 @@ namespace OpenLoco::Paint
         ImageId imageIdbase{};            // 0x0112C720
         ImageId imageIdTranslucentBase{}; // 0x0112C724
 
-        if (elStation.isGhost())
+        if (elStation.isGhost() || elStation.isAiAllocated())
         {
             session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-            imageIdbase = Gfx::applyGhostToImage(stationObj->var_10[1]);
-            imageIdTranslucentBase = ImageId{ stationObj->var_10[1] }.withTranslucency(ExtColour::unk2F);
+            imageIdbase = Gfx::applyGhostToImage(stationObj->imageOffsets[1]);
+            imageIdTranslucentBase = ImageId{ stationObj->imageOffsets[1] }.withTranslucency(ExtColour::unk2F);
+
+            // TODO: apply company colour if playerCompanyID != elTrack.owner()?
         }
         else
         {
-            imageIdbase = ImageId{ stationObj->var_10[1], companyColour };
-            imageIdTranslucentBase = ImageId{ stationObj->var_10[1] }.withTranslucency(translucentColour);
+            imageIdbase = ImageId{ stationObj->imageOffsets[1], companyColour };
+            imageIdTranslucentBase = ImageId{ stationObj->imageOffsets[1] }.withTranslucency(translucentColour);
         }
 
         switch (stationObj->paintStyle)

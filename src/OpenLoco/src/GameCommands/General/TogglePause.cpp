@@ -6,8 +6,6 @@
 #include "Ui/WindowManager.h"
 #include "Ui/WindowType.h"
 
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::GameCommands
 {
     // 0x00431E32

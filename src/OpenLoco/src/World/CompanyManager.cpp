@@ -39,16 +39,15 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Bound.hpp>
+#include <array>
 #include <sfl/static_vector.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 
 namespace OpenLoco::CompanyManager
 {
-    static loco_global<Colour[Limits::kMaxCompanies + 1], 0x009C645C> _companyColours;
+    static std::array<Colour, Limits::kMaxCompanies + 1> _companyColours; // 0x009C645C
 
     static void produceCompanies();
 
@@ -345,8 +344,7 @@ namespace OpenLoco::CompanyManager
                 return kNullObjectId;
             }
 
-            ObjectManager::unload(ObjectManager::getHeader(LoadedObjectHandle{
-                ObjectType::competitor, id }));
+            ObjectManager::unload(ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::competitor, id }));
             ObjectManager::reloadAll();
             Ui::Dropdown::forceCloseCompanySelect();
         }
@@ -610,7 +608,7 @@ namespace OpenLoco::CompanyManager
                 sfl::static_vector<uint8_t, 32> availableNamePrefixes;
                 for (auto j = 0U; j < 32; ++j)
                 {
-                    if (competitorObj->var_04 & (1U << j))
+                    if (competitorObj->availablePlayStyles & (1U << j))
                     {
                         availableNamePrefixes.push_back(j);
                     }
@@ -701,7 +699,7 @@ namespace OpenLoco::CompanyManager
             }
 
             const auto stringId = kCompanyAiPlaystyleString[companyPlaystyle];
-            auto args = FormatArguments::common(kCompanyAiNamePrefixes[companyNamePrefix], competitorObj->lastName);
+            auto args = FormatArguments::common(kCompanyAiNamePrefixes[companyNamePrefix], competitorObj->availableNamePrefixes);
             if (company->aiPlaystyleTownId != 0xFFU)
             {
                 args.push(TownManager::get(static_cast<TownId>(company->aiPlaystyleTownId))->name);
@@ -783,7 +781,7 @@ namespace OpenLoco::CompanyManager
     }
 
     // 0x004A6DA9
-    void sub_4A6DA9()
+    void updatePlayerInfrastructureOptions()
     {
         auto* playerCompany = getPlayerCompany();
         auto& gameState = getGameState();
@@ -825,7 +823,7 @@ namespace OpenLoco::CompanyManager
         }
         gameState.playerCompanies[0] = createCompany(competitorId, true);
         gameState.playerCompanies[1] = CompanyId::null;
-        sub_4A6DA9();
+        updatePlayerInfrastructureOptions();
     }
 
     // 0x0042F9AC
@@ -1252,7 +1250,7 @@ namespace OpenLoco::CompanyManager
 
         // Temporarily store the preferred name in buffer string 2039.
         char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-        strncpy(buffer_2039, Config::get().old.preferredName, 256);
+        strncpy(buffer_2039, Config::get().preferredOwnerName.c_str(), 256);
 
         // Prepare '{NAME} Transport' in a buffer.
         {
@@ -1413,8 +1411,7 @@ namespace OpenLoco::CompanyManager
         // TODO: Change this when we want to diverge from vanilla
         // company->ownerName = StringIds::empty;
 
-        ObjectManager::unload(ObjectManager::getHeader(LoadedObjectHandle{
-            ObjectType::competitor, company->competitorId }));
+        ObjectManager::unload(ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::competitor, company->competitorId }));
         ObjectManager::reloadAll();
         Ui::Dropdown::forceCloseCompanySelect();
     }

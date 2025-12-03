@@ -40,21 +40,18 @@
 #include "World/Town.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TownList
 {
-    static loco_global<currency32_t, 0x01135C34> _dword_1135C34;
-    static loco_global<bool, 0x01135C60> _buildingGhostPlaced;
-    static loco_global<World::Pos3, 0x01135C50> _buildingGhostPos;
-    static loco_global<Colour, 0x01135C61> _buildingColour;
-    static loco_global<uint8_t, 0x01135C62> _buildingGhostType;
-    static loco_global<uint8_t, 0x01135C63> _buildingRotation;
-    static loco_global<uint8_t, 0x01135C64> _buildingGhostRotation;
-    static loco_global<uint8_t, 0x01135C65> _buildingVariation;
-    static loco_global<uint8_t, 0x01135C66> _townSize;
+    static currency32_t _buildingPlacementCost; // 0x01135C34
+    static World::Pos3 _buildingGhostPos;       // 0x01135C50
+    static bool _buildingGhostPlaced;           // 0x01135C60
+    static Colour _buildingColour;              // 0x01135C61
+    static uint8_t _buildingGhostType;          // 0x01135C62
+    static uint8_t _buildingRotation;           // 0x01135C63
+    static uint8_t _buildingGhostRotation;      // 0x01135C64
+    static uint8_t _buildingVariation;          // 0x01135C65
+    static uint8_t _townSize;                   // 0x01135C66
 
     namespace Common
     {
@@ -114,7 +111,7 @@ namespace OpenLoco::Ui::Windows::TownList
             Widgets::TableHeader({ 284, 43 }, { 70, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_population),
             Widgets::TableHeader({ 354, 43 }, { 70, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_stations),
             Widgets::ScrollView({ 3, 56 }, { 594, 126 }, WindowColour::secondary, 2),
-            Widgets::Label({ 4, kWindowSize.height - 17 }, { kWindowSize.width, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
+            Widgets::Label({ 4, kWindowSize.height - 17 }, { kWindowSize.width - kResizeHandleSize, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
 
         );
 
@@ -133,6 +130,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             self.widgets[widx::scrollview].right = self.width - 4;
             self.widgets[widx::scrollview].bottom = self.height - 14;
+            self.widgets[widx::status_bar].right = self.width - kResizeHandleSize - 1;
 
             // Reposition header buttons
             self.widgets[widx::sort_town_name].right = std::min(203, self.width - 8);
@@ -492,9 +490,9 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A4FA
-        static void getScrollSize(Ui::Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Ui::Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            *scrollHeight = kRowHeight * self.var_83C;
+            scrollHeight = kRowHeight * self.var_83C;
         }
 
         // 0x00491841
@@ -587,7 +585,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             Common::refreshTownList(*window);
 
-            WindowManager::sub_4CEE0B(*window);
+            WindowManager::moveOtherWindowsDown(*window);
 
             window->minWidth = TownList::kMinDimensions.width;
             window->minHeight = TownList::kMinDimensions.height;
@@ -698,10 +696,10 @@ namespace OpenLoco::Ui::Windows::TownList
             self.draw(drawingCtx);
             Common::drawTabs(self, drawingCtx);
 
-            auto point = Point(3, self.widgets[widx::current_size].top + 1);
+            auto point = Point(self.x + 3, self.y + self.widgets[widx::current_size].top + 1);
             tr.drawStringLeft(point, Colour::black, StringIds::town_size_label);
 
-            point = Point(3, self.height - 13);
+            point = Point(self.x + 3, self.y + self.height - 13);
             tr.drawStringLeft(point, Colour::black, StringIds::select_town_size);
         }
 
@@ -886,7 +884,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A8A6
         static void prepareDraw(Ui::Window& self)
         {
-            self.widgets[widx::object_colour].image = Widget::kImageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, *_buildingColour);
+            self.widgets[widx::object_colour].image = Widget::kImageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, _buildingColour);
             self.widgets[widx::object_colour].hidden = true;
 
             if (self.rowHover != -1)
@@ -943,7 +941,7 @@ namespace OpenLoco::Ui::Windows::TownList
             FormatArguments args{};
             args.push(buildingObj->name);
 
-            auto point = Point(3, self.height - 13);
+            auto point = Point(self.x + 3, self.y + self.height - 13);
             tr.drawStringLeftClipped(point, self.width - 19, Colour::black, StringIds::black_stringid, args);
         }
 
@@ -999,8 +997,8 @@ namespace OpenLoco::Ui::Windows::TownList
                         WidgetIndex_t activeWidget = self.findWidgetAt(xPos, yPos);
                         if (activeWidget > Common::widx::panel)
                         {
-                            self.savedView.mapX += 1;
-                            if (self.savedView.mapX >= 8)
+                            self.expandContentCounter += 1;
+                            if (self.expandContentCounter >= 8)
                             {
                                 auto y = std::min(self.scrollAreas[0].contentHeight - 1 + 60, 500);
                                 if (Ui::height() < 600)
@@ -1027,7 +1025,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 }
                 else
                 {
-                    self.savedView.mapX = 0;
+                    self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
                         self.minWidth = kWindowSize.width;
@@ -1124,7 +1122,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             GameCommands::BuildingPlacementArgs args;
             args.rotation = (_buildingRotation - WindowManager::getCurrentRotation()) & 0x3; // bh
-            args.colour = *_buildingColour;
+            args.colour = _buildingColour;
             auto tile = World::TileManager::get(*pos);
             const auto* surface = tile.surface();
             if (surface == nullptr)
@@ -1171,7 +1169,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             if (_buildingGhostPlaced)
             {
-                if (*_buildingGhostPos == placementArgs->pos && _buildingGhostRotation == placementArgs->rotation && _buildingGhostType == placementArgs->type)
+                if (_buildingGhostPos == placementArgs->pos && _buildingGhostRotation == placementArgs->rotation && _buildingGhostType == placementArgs->type)
                 {
                     return;
                 }
@@ -1179,9 +1177,9 @@ namespace OpenLoco::Ui::Windows::TownList
 
             removeBuildingGhost();
             auto cost = placeBuildingGhost(*placementArgs);
-            if (cost != _dword_1135C34)
+            if (cost != _buildingPlacementCost)
             {
-                _dword_1135C34 = cost;
+                _buildingPlacementCost = cost;
                 self.invalidate();
             }
         }
@@ -1223,8 +1221,8 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049B2B5
         static void updateActiveThumb(Window& self)
         {
-            uint16_t scrollHeight = 0;
-            self.callGetScrollSize(0, nullptr, &scrollHeight);
+            int32_t scrollWidth = 0, scrollHeight = 0;
+            self.callGetScrollSize(0, scrollWidth, scrollHeight);
             self.scrollAreas[0].contentHeight = scrollHeight;
 
             auto i = 0;
@@ -1262,14 +1260,14 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AE83
-        static void getScrollSize(Ui::Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Ui::Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            *scrollHeight = (4 + self.var_83C) / 5;
-            if (*scrollHeight == 0)
+            scrollHeight = (4 + self.var_83C) / 5;
+            if (scrollHeight == 0)
             {
-                *scrollHeight += 1;
+                scrollHeight += 1;
             }
-            *scrollHeight *= kRowHeight;
+            scrollHeight *= kRowHeight;
         }
 
         // 0x0049ABBB
@@ -1326,7 +1324,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 {
                     drawingCtx.pushRenderTarget(*clipped);
 
-                    auto colour = *_buildingColour;
+                    auto colour = _buildingColour;
                     if (self.rowHover != self.rowInfo[i])
                     {
                         auto bit = Numerics::bitScanReverse(buildingObj->colours);
@@ -1394,8 +1392,8 @@ namespace OpenLoco::Ui::Windows::TownList
 
                     int32_t pan = (self.width >> 1) + self.x;
                     Audio::playSound(Audio::SoundId::clickDown, pan);
-                    self.savedView.mapX = -16;
-                    _dword_1135C34 = GameCommands::FAILURE;
+                    self.expandContentCounter = -16;
+                    _buildingPlacementCost = GameCommands::FAILURE;
                     _buildingVariation = 0;
                     self.invalidate();
                     break;
@@ -1525,9 +1523,8 @@ namespace OpenLoco::Ui::Windows::TownList
             Input::setFlag(Input::Flags::flag6);
             Ui::Windows::Main::showGridlines();
 
-            static loco_global<uint8_t, 0x01135C60> _byte_1135C60;
-            _byte_1135C60 = 0;
-            _dword_1135C34 = GameCommands::FAILURE;
+            _buildingGhostPlaced = 0;
+            _buildingPlacementCost = GameCommands::FAILURE;
             self.var_83C = 0;
             self.rowHover = -1;
             self.var_846 = 0xFFFFU;
@@ -1740,7 +1737,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             self.currentTab = widgetIndex - widx::tab_town_list;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
 
             self.viewportRemove(0);
 

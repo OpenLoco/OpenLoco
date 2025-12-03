@@ -22,11 +22,6 @@
 
 namespace OpenLoco::GameCommands
 {
-    // Used by company ai
-    static loco_global<StationId, 0x0112C748> _lastPlacedDockStationId;
-    static loco_global<uint32_t, 0x00112C734> _lastConstructedAdjoiningStationId;           // Can be 0xFFFF'FFFFU for no adjoining station
-    static loco_global<World::Pos2, 0x00112C792> _lastConstructedAdjoiningStationCentrePos; // Can be x = -1 for no adjoining station
-
     // 0x0049060C
     static StationManager::NearbyStation findNearbyStationDocks(World::Pos3 pos)
     {
@@ -182,7 +177,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x00493F0E
-    static uint32_t createBuilding(const PortPlacementArgs& args, const uint8_t flags, World::TileClearance::RemovedBuildings& removedBuildings, const uint8_t buildingType)
+    static uint32_t createBuilding(const StationId stationId, const PortPlacementArgs& args, const uint8_t flags, World::TileClearance::RemovedBuildings& removedBuildings, const uint8_t buildingType)
     {
         // 0x00112C80B
         bool isWaterIndustryPort = false;
@@ -204,9 +199,10 @@ namespace OpenLoco::GameCommands
         // This is identical to createIndustry but with a DockObject
         // TODO: look into making some sort of common version
         auto clearHeight = 0;
+        const auto partHeights = dockObj->getBuildingPartHeights();
         for (auto part : dockObj->getBuildingParts(buildingType))
         {
-            clearHeight += dockObj->partHeights[part];
+            clearHeight += partHeights[part];
         }
         // ceil to 4
         clearHeight += 3;
@@ -321,12 +317,16 @@ namespace OpenLoco::GameCommands
                         }
                         else
                         {
-                            World::TileManager::mapInvalidateTileFull(World::toWorldSpace(tilePos));
                             surface->setBaseZ(args.pos.z / World::kSmallZStep);
                             surface->setClearZ(args.pos.z / World::kSmallZStep);
                             surface->setSlope(0);
                             surface->setSnowCoverage(0);
                             surface->setGrowthStage(0);
+                        }
+
+                        if (shouldInvalidateTile(flags))
+                        {
+                            World::TileManager::mapInvalidateTileFull(World::toWorldSpace(tilePos));
                         }
                     }
                 }
@@ -354,7 +354,7 @@ namespace OpenLoco::GameCommands
                 elStation->setBuildingType(buildingType);
                 if (!(flags & Flags::ghost))
                 {
-                    elStation->setStationId(_lastPlacedDockStationId);
+                    elStation->setStationId(stationId);
                 }
                 else
                 {
@@ -365,7 +365,7 @@ namespace OpenLoco::GameCommands
                 World::AnimationManager::createAnimation(8, World::toWorldSpace(tilePos), elStation->baseZ());
 
                 elStation->setAiAllocated(flags & Flags::aiAllocated);
-                if (!(flags & Flags::aiAllocated))
+                if (shouldInvalidateTile(flags))
                 {
                     World::TileManager::mapInvalidateTileFull(World::toWorldSpace(tilePos));
                 }
@@ -415,15 +415,15 @@ namespace OpenLoco::GameCommands
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3(16, 16, 0));
 
-        _lastPlacedDockStationId = StationId::null;
+        auto& returnState = getLegacyReturnState();
+        returnState.lastPlacedDock = StationId::null;
+        returnState.lastConstructedAdjoiningStationPos = World::Pos2(-1, -1);
+        returnState.lastConstructedAdjoiningStation = StationId::null;
 
         if ((flags & Flags::apply) && !(flags & Flags::aiAllocated))
         {
             companySetObservation(getUpdatingCompanyId(), ObservationStatus::buildingDock, World::Pos2(args.pos) + World::Pos2{ 16, 16 }, EntityId::null, args.type);
         }
-
-        _lastConstructedAdjoiningStationCentrePos = World::Pos2(-1, -1);
-        _lastConstructedAdjoiningStationId = 0xFFFFFFFFU;
 
         if (!World::TileManager::checkFreeElementsAndReorganise())
         {
@@ -442,9 +442,9 @@ namespace OpenLoco::GameCommands
 
         if ((flags & Flags::ghost) && (flags & Flags::apply))
         {
-            _lastConstructedAdjoiningStationCentrePos = args.pos;
+            returnState.lastConstructedAdjoiningStationPos = args.pos;
             auto nearbyStation = flags & Flags::aiAllocated ? findNearbyStationDocksAi(args.pos) : findNearbyStationDocks(args.pos);
-            _lastConstructedAdjoiningStationId = static_cast<int16_t>(nearbyStation.id);
+            returnState.lastConstructedAdjoiningStation = nearbyStation.id;
         }
 
         if (!(flags & Flags::ghost))
@@ -462,14 +462,14 @@ namespace OpenLoco::GameCommands
                         const auto newStationId = StationManager::allocateNewStation(args.pos, getUpdatingCompanyId(), 3);
                         if (newStationId != StationId::null)
                         {
-                            _lastPlacedDockStationId = newStationId;
+                            returnState.lastPlacedDock = newStationId;
                             auto* station = StationManager::get(newStationId);
                             station->updateLabel();
                         }
                     }
                     break;
                     case NearbyStationValidation::okay:
-                        _lastPlacedDockStationId = nearbyStationId;
+                        returnState.lastPlacedDock = nearbyStationId;
                         break;
                 }
             }
@@ -493,7 +493,7 @@ namespace OpenLoco::GameCommands
                     }
                     break;
                     case NearbyStationValidation::okay:
-                        _lastPlacedDockStationId = nearbyStationId;
+                        returnState.lastPlacedDock = nearbyStationId;
                         break;
                 }
             }
@@ -503,7 +503,7 @@ namespace OpenLoco::GameCommands
         currency32_t totalCost = Economy::getInflationAdjustedCost(dockObj->buildCostFactor, dockObj->costIndex, 7);
 
         World::TileClearance::RemovedBuildings removedBuildings{};
-        const auto buildingCost = createBuilding(args, flags, removedBuildings, 0);
+        const auto buildingCost = createBuilding(returnState.lastPlacedDock, args, flags, removedBuildings, 0);
         if (buildingCost == FAILURE)
         {
             return FAILURE;
@@ -512,12 +512,12 @@ namespace OpenLoco::GameCommands
 
         if (!(flags & Flags::ghost) && (flags & Flags::apply))
         {
-            addTileToStation(_lastPlacedDockStationId, args.pos, args.rotation);
+            addTileToStation(returnState.lastPlacedDock, args.pos, args.rotation);
 
-            auto* station = StationManager::get(_lastPlacedDockStationId);
+            auto* station = StationManager::get(returnState.lastPlacedDock);
             station->invalidate();
-            recalculateStationModes(_lastPlacedDockStationId);
-            recalculateStationCenter(_lastPlacedDockStationId);
+            recalculateStationModes(returnState.lastPlacedDock);
+            recalculateStationCenter(returnState.lastPlacedDock);
             station->updateLabel();
             station->invalidate();
             sub_48D794(*station);

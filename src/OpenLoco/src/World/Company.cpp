@@ -30,14 +30,11 @@
 #include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Bound.hpp>
 #include <algorithm>
 #include <array>
 #include <map>
-#include <sfl/static_unordered_flat_set.hpp>
-
-using namespace OpenLoco::Interop;
+#include <sfl/static_unordered_set.hpp>
 
 namespace OpenLoco
 {
@@ -345,7 +342,7 @@ namespace OpenLoco
     {
         AvailableTracksAndRoads result;
         const auto* company = CompanyManager::get(id);
-        sfl::static_unordered_flat_set<uint8_t, Limits::kMaxTrackObjects> tracks;
+        sfl::static_unordered_set<uint8_t, Limits::kMaxTrackObjects> tracks;
         for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
         {
             const auto* vehObj = ObjectManager::get<VehicleObject>(i);
@@ -365,7 +362,7 @@ namespace OpenLoco
             return !trackObj->hasFlags(TrackObjectFlags::unk_02);
         });
 
-        sfl::static_unordered_flat_set<uint8_t, Limits::kMaxRoadObjects> roads;
+        sfl::static_unordered_set<uint8_t, Limits::kMaxRoadObjects> roads;
         for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
         {
             const auto* vehObj = ObjectManager::get<VehicleObject>(i);
@@ -413,7 +410,7 @@ namespace OpenLoco
         AvailableTracksAndRoads result;
 
         const auto* company = CompanyManager::get(id);
-        sfl::static_unordered_flat_set<uint8_t, Limits::kMaxRoadObjects> roads;
+        sfl::static_unordered_set<uint8_t, Limits::kMaxRoadObjects> roads;
         for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
         {
             const auto* vehObj = ObjectManager::get<VehicleObject>(i);
@@ -447,7 +444,7 @@ namespace OpenLoco
             return !roadObj->hasFlags(RoadObjectFlags::unk_01);
         });
 
-        sfl::static_unordered_flat_set<uint8_t, Limits::kMaxTrackObjects> tracks;
+        sfl::static_unordered_set<uint8_t, Limits::kMaxTrackObjects> tracks;
         for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
         {
             const auto* vehObj = ObjectManager::get<VehicleObject>(i);
@@ -996,9 +993,10 @@ namespace OpenLoco
 
             const auto* buildingObj = elBuilding->getObject();
             auto totalHeight = 0;
+            const auto partHeights = buildingObj->getBuildingPartHeights();
             for (auto part : buildingObj->getBuildingParts(elBuilding->variation()))
             {
-                totalHeight += buildingObj->partHeights[part];
+                totalHeight += partHeights[part];
             }
             elBuilding->setClearZ((totalHeight / 4) + elBuilding->baseZ());
 

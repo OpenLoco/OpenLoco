@@ -8,8 +8,6 @@
 #include "Objects/ObjectManager.h"
 #include "ScenarioOptions.h"
 
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::GameCommands
 {
     // 0x00468EDD

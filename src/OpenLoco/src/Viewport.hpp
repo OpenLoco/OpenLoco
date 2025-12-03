@@ -57,8 +57,8 @@ namespace OpenLoco::Ui
         seeThroughScenery = 1U << 6,
         flag_7 = 1U << 7,
         flag_8 = 1U << 8,
-        town_names_displayed = 1U << 9,
-        station_names_displayed = 1U << 10,
+        hideTownNames = 1U << 9,
+        hideStationNames = 1U << 10,
         seeThroughRoads = 1U << 11,
         seeThroughBuildings = 1U << 12,
         seeThroughTrees = 1U << 13,
@@ -195,7 +195,6 @@ namespace OpenLoco::Ui
     private:
         void paint(Gfx::DrawingContext& drawingCtx, const Ui::Rect& rect);
     };
-    static_assert(sizeof(Viewport) == 0x14);
 
     struct ViewportConfig
     {

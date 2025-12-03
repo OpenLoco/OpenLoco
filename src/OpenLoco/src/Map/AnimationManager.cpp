@@ -8,10 +8,8 @@
 #include "RoadElement.h"
 #include "SignalElement.h"
 #include "StationElement.h"
-#include <OpenLoco/Interop/Interop.hpp>
-#include <array>
 
-using namespace OpenLoco::Interop;
+#include <array>
 
 namespace OpenLoco::World::AnimationManager
 {
@@ -115,17 +113,5 @@ namespace OpenLoco::World::AnimationManager
 
             numAnimations() = last;
         }
-    }
-
-    void registerHooks()
-    {
-        registerHook(
-            0x004612A6,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                createAnimation(regs.dh, { regs.ax, regs.cx }, regs.dl);
-                regs = backup;
-                return 0;
-            });
     }
 }

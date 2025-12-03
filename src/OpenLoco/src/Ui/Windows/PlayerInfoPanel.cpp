@@ -15,16 +15,14 @@
 #include "OpenLoco.h"
 #include "Ui.h"
 #include "Ui/Dropdown.h"
+#include "Ui/ToolTip.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
 #include "World/Company.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <map>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 {
@@ -59,8 +57,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 
     std::vector<const Company*> _sortedCompanies;
 
-    static loco_global<uint16_t, 0x0050A004> _50A004;
-    static loco_global<uint16_t, 0x0113DC78> _113DC78; // Dropdown flags?
+    static bool _redrawScheduled = false; // _50A004 (first bit)
 
     // 0x43AA4C
     static void playerMouseDown(Ui::Window* self, WidgetIndex_t widgetIndex)
@@ -126,7 +123,8 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         {
             Dropdown::setHighlightedItem(highlightIndex);
         }
-        _113DC78 = _113DC78 | (1 << 1);
+
+        Dropdown::setFlags(Dropdown::Flags::unk2);
     }
 
     // 0x43AB87
@@ -189,19 +187,19 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         Widget& frame = window.widgets[Widx::outer_frame];
-        drawingCtx.drawRect(frame.left, frame.top, frame.width(), frame.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(window.x + frame.left, window.y + frame.top, frame.width(), frame.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
 
         // Draw widgets.
         window.draw(drawingCtx);
 
-        drawingCtx.drawRectInset(frame.left + 1, frame.top + 1, frame.width() - 2, frame.height() - 2, window.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
+        drawingCtx.drawRectInset(window.x + frame.left + 1, window.y + frame.top + 1, frame.width() - 2, frame.height() - 2, window.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
         auto playerCompany = CompanyManager::get(CompanyManager::getControllingId());
         auto competitor = ObjectManager::get<CompetitorObject>(playerCompany->competitorId);
         auto image = Gfx::recolour(competitor->images[enumValue(playerCompany->ownerEmotion)], playerCompany->mainColours.primary);
-        drawingCtx.drawImage(frame.left + 2, frame.top + 2, image);
+        drawingCtx.drawImage(window.x + frame.left + 2, window.y + frame.top + 2, image);
 
-        auto x = frame.width() / 2 + 12;
+        auto x = window.x + frame.width() / 2 + 12;
         {
             auto companyValueString = StringIds::player_info_bankrupt;
             if ((playerCompany->challengeFlags & CompanyFlags::bankrupt) == CompanyFlags::none)
@@ -225,7 +223,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             args.push(playerCompany->cash.var_00);
             args.push(playerCompany->cash.var_04);
 
-            auto point = Point(x, frame.top + 2);
+            auto point = Point(x, window.y + frame.top + 2);
             tr.drawStringCentred(point, colour, companyValueString, args);
         }
 
@@ -250,7 +248,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             auto args = FormatArguments();
             args.push(playerCompany->performanceIndex);
 
-            auto point = Point(x, frame.top + 14);
+            auto point = Point(x, window.y + frame.top + 14);
             tr.drawStringCentred(point, colour, performanceString, args);
         }
     }
@@ -310,7 +308,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         {
             case Widx::company_value:
             case Widx::performanceIndex:
-                Input::setTooltipTimeout(2000);
+                Ui::ToolTip::setTooltipTimeout(2000);
                 break;
         }
         return fallback;
@@ -350,7 +348,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 
     void invalidateFrame()
     {
-        _50A004 = _50A004 | (1 << 0);
+        _redrawScheduled = true;
     }
 
     // 0x00439670
@@ -362,9 +360,9 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             w.var_854 = 0;
         }
 
-        if (_50A004 & (1 << 0))
+        if (_redrawScheduled)
         {
-            _50A004 = _50A004 & ~(1 << 0);
+            _redrawScheduled = false;
             WindowManager::invalidateWidget(WindowType::playerInfoToolbar, 0, Widx::inner_frame);
         }
     }

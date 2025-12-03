@@ -23,7 +23,6 @@
 #include "Vehicles/VehicleManager.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Core/FileStream.h>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <array>
 #include <cassert>
 #include <numeric>
@@ -34,7 +33,6 @@
 #endif
 
 using namespace OpenLoco::Environment;
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Utility;
 using namespace OpenLoco::Diagnostics;
@@ -48,15 +46,16 @@ namespace OpenLoco::Audio
         int32_t channels{};
     };
 
-    [[maybe_unused]] constexpr int32_t kPlayAtCentre = 0x8000;
-    [[maybe_unused]] constexpr int32_t kPlayAtLocation = 0x8001;
+    static constexpr uint8_t kMaxVehicleSounds = 16;
+    static constexpr int32_t kPlayAtCentre = 0x8000;
+    static constexpr int32_t kPlayAtLocation = 0x8001;
+
     [[maybe_unused]] constexpr int32_t kNumSoundChannels = 16;
 
-    static loco_global<uint32_t, 0x0050D1EC> _audioInitialised;
-    static loco_global<bool, 0x0050D554> _audioIsPaused;
-    static loco_global<bool, 0x0050D555> _audioIsEnabled;
-    // 0x0050D5B0
-    static std::optional<PathId> _chosenAmbientNoisePathId = std::nullopt;
+    static bool _audioIsInitialised = false;                               // 0x0050D1EC
+    static bool _audioIsPaused = false;                                    // 0x0050D554
+    static bool _audioIsEnabled = true;                                    // 0x0050D555
+    static std::optional<PathId> _chosenAmbientNoisePathId = std::nullopt; // 0x0050D5B0
 
     static uint8_t _numActiveVehicleSounds; // 0x0112C666
     static std::vector<std::string> _devices;
@@ -204,7 +203,7 @@ namespace OpenLoco::Audio
 
         auto css1path = Environment::getPath(Environment::PathId::css1);
         _samples = loadSoundsFromCSS(css1path);
-        _audioInitialised = 1;
+        _audioIsInitialised = true;
     }
 
     // 0x00404E58
@@ -215,13 +214,22 @@ namespace OpenLoco::Audio
         _sourceManager.dispose();
         _bufferManager.dispose();
         _device.close();
-        _audioInitialised = 0;
+        _audioIsInitialised = false;
     }
 
     // 0x00489BA1
     void close()
     {
-        call(0x00489BA1);
+        if (_audioIsInitialised)
+        {
+            stopAmbientNoise();
+            stopVehicleNoise();
+            stopMusic();
+            for (auto& channel : _soundFX)
+            {
+                channel.stop();
+            }
+        }
     }
 
 #ifdef __HAS_DEFAULT_DEVICE__
@@ -380,6 +388,17 @@ namespace OpenLoco::Audio
         return nullptr;
     }
 
+    // 0x004FEAB8
+    // Sound volume levels indexed by SoundId
+    static constexpr std::array<int32_t, 32> kSoundVolumeTable = { {
+        // clang-format off
+           0,    0,    0,    0,    0, -400,    0,    0,
+           0,    0,    0, -500,    0,    0,    0,    0,
+           0,    0,    0,    0,    0,    0, -1900,    0,
+           0,    0, -600, -600, -600, -600, -600, -600,
+        // clang-format on
+    } };
+
     static int32_t getVolumeForSoundId(SoundId id)
     {
         if (isObjectSoundId(id))
@@ -393,8 +412,7 @@ namespace OpenLoco::Audio
         }
         else
         {
-            loco_global<int32_t[32], 0x004FEAB8> _unk_4FEAB8;
-            return _unk_4FEAB8[(int32_t)id];
+            return kSoundVolumeTable[static_cast<int32_t>(id)];
         }
     }
 
@@ -442,28 +460,25 @@ namespace OpenLoco::Audio
 
     bool shouldSoundLoop(SoundId id)
     {
-        loco_global<uint8_t[64], 0x0050D514> _unk_50D514;
-        if (isObjectSoundId(id))
+        if (!isObjectSoundId(id))
         {
-            auto obj = getSoundObject(id);
-            return obj->var_06 != 0;
+            return false;
         }
-        else
-        {
-            return _unk_50D514[(int32_t)id * 2] != 0;
-        }
+
+        auto obj = getSoundObject(id);
+        return obj->shouldLoop != 0;
     }
 
     // 0x0048A4BF
-    void playSound(Vehicles::VehicleSoundPlayer* v)
+    static void playSound(EntityId id, Vehicles::VehicleSound& soundParams)
     {
-        if ((v->soundFlags & Vehicles::SoundFlags::flag0) != Vehicles::SoundFlags::none)
+        if ((soundParams.soundFlags & Vehicles::SoundFlags::flag0) != Vehicles::SoundFlags::none)
         {
-            Logging::verbose("playSound(vehicle #{})", enumValue(v->id));
+            Logging::verbose("playSound(vehicle #{})", enumValue(id));
             auto vc = getFreeVehicleChannel();
             if (vc != nullptr)
             {
-                vc->begin(v->id);
+                vc->begin(id);
             }
         }
     }
@@ -516,12 +531,7 @@ namespace OpenLoco::Audio
                 pan = 0;
             }
 
-            const auto& cfg = Config::get().old;
-            if (cfg.var_1E == 0)
-            {
-                pan = 0;
-            }
-            else if (pan != 0)
+            if (pan != 0)
             {
                 pan = calculatePan(pan, Ui::width());
             }
@@ -542,7 +552,8 @@ namespace OpenLoco::Audio
                 auto obj = getSoundObject(id);
                 if (obj != nullptr)
                 {
-                    auto* data = obj->data;
+                    const auto* data = obj->getData();
+                    assert(data != nullptr);
                     assert(data->offset == 8);
                     _objectSamples[static_cast<size_t>(id)] = loadSoundFromWaveMemory(data->pcmHeader, data->pcm(), data->length);
                     return _objectSamples[static_cast<size_t>(id)];
@@ -674,43 +685,28 @@ namespace OpenLoco::Audio
         }
     }
 
-    // 0x00401A05
-    static void stopChannel(ChannelId id)
+    // 0x0048A268
+    static void triggerVehicleSoundIfInView(Vehicles::VehicleBase& v, Vehicles::VehicleSound& soundParams)
     {
-        Logging::verbose("stopChannel({})", static_cast<int>(id));
-
-        auto channel = getChannel(id);
-        if (channel != nullptr)
-        {
-            channel->stop();
-        }
-    }
-
-    static void sub_48A274(Vehicles::VehicleSoundPlayer* v)
-    {
-        if (v == nullptr)
-        {
-            return;
-        }
-
-        if (v->drivingSoundId == SoundObjectId::null)
+        if (soundParams.drivingSoundId == SoundObjectId::null)
         {
             return;
         }
 
         // TODO: left or top?
-        if (v->spriteLeft == Location::null)
+        if (v.spriteLeft == Location::null)
         {
             return;
         }
 
-        if (_numActiveVehicleSounds >= Config::get().old.maxVehicleSounds)
+        if (_numActiveVehicleSounds >= kMaxVehicleSounds)
         {
             return;
         }
 
-        auto spritePosition = viewport_pos(v->spriteLeft, v->spriteTop);
+        auto spritePosition = viewport_pos(v.spriteLeft, v.spriteTop);
 
+        // First, check if vehicle appears in the main viewport
         auto main = WindowManager::getMainWindow();
         if (main != nullptr && main->viewports[0] != nullptr)
         {
@@ -728,9 +724,9 @@ namespace OpenLoco::Audio
             {
                 // jump + return
                 _numActiveVehicleSounds += 1;
-                v->soundFlags |= Vehicles::SoundFlags::flag0;
-                v->soundWindowType = main->type;
-                v->soundWindowNumber = main->number;
+                soundParams.soundFlags |= Vehicles::SoundFlags::flag0;
+                soundParams.soundWindowType = main->type;
+                soundParams.soundWindowNumber = main->number;
                 return;
             }
         }
@@ -740,6 +736,7 @@ namespace OpenLoco::Audio
             return;
         }
 
+        // Check if vehicle appears in any other (windowed) viewport
         for (auto i = (int32_t)WindowManager::count() - 1; i >= 0; i--)
         {
             auto w = WindowManager::get(i);
@@ -763,43 +760,47 @@ namespace OpenLoco::Audio
             if (viewport->contains(spritePosition))
             {
                 _numActiveVehicleSounds += 1;
-                v->soundFlags |= Vehicles::SoundFlags::flag0;
-                v->soundWindowType = w->type;
-                v->soundWindowNumber = w->number;
+                soundParams.soundFlags |= Vehicles::SoundFlags::flag0;
+                soundParams.soundWindowType = w->type;
+                soundParams.soundWindowNumber = w->number;
                 return;
             }
         }
     }
 
-    static void off_4FEB58(Vehicles::VehicleSoundPlayer* v, int32_t x)
+    // 0x004FEB58
+    static void processVehicleForSound(Vehicles::VehicleBase& v, Vehicles::VehicleSound& soundParams, int32_t step)
     {
-        switch (x)
+        switch (step)
         {
             case 0:
-                v->soundFlags &= ~Vehicles::SoundFlags::flag0;
+                // 0x048A262
+                soundParams.soundFlags &= ~Vehicles::SoundFlags::flag0;
                 break;
             case 1:
-                if ((v->soundFlags & Vehicles::SoundFlags::flag1) == Vehicles::SoundFlags::none)
+                // 0x048A268
+                if ((soundParams.soundFlags & Vehicles::SoundFlags::flag1) == Vehicles::SoundFlags::none)
                 {
-                    sub_48A274(v);
+                    triggerVehicleSoundIfInView(v, soundParams);
                 }
                 break;
             case 2:
-                if ((v->soundFlags & Vehicles::SoundFlags::flag1) != Vehicles::SoundFlags::none)
+                // 0x048A395
+                if ((soundParams.soundFlags & Vehicles::SoundFlags::flag1) != Vehicles::SoundFlags::none)
                 {
-                    sub_48A274(v);
+                    triggerVehicleSoundIfInView(v, soundParams);
                 }
                 break;
             case 3:
-                playSound(v);
+                playSound(v.id, soundParams);
                 break;
         }
     }
 
     // 0x0048A1FA
-    static void sub_48A1FA(int32_t x)
+    static void processVehicleSounds(int32_t step)
     {
-        if (x == 0)
+        if (step == 0)
         {
             _numActiveVehicleSounds = 0;
         }
@@ -807,8 +808,8 @@ namespace OpenLoco::Audio
         for (auto* v : VehicleManager::VehicleList())
         {
             Vehicles::Vehicle train(*v);
-            off_4FEB58(reinterpret_cast<Vehicles::VehicleSoundPlayer*>(train.veh2), x);
-            off_4FEB58(reinterpret_cast<Vehicles::VehicleSoundPlayer*>(train.tail), x);
+            processVehicleForSound(*train.veh2, train.veh2->sound, step);
+            processVehicleForSound(*train.tail, train.tail->sound, step);
         }
     }
 
@@ -819,14 +820,14 @@ namespace OpenLoco::Audio
         {
             if (!_audioIsPaused && _audioIsEnabled)
             {
-                sub_48A1FA(0);
-                sub_48A1FA(1);
-                sub_48A1FA(2);
+                processVehicleSounds(0);
+                processVehicleSounds(1);
+                processVehicleSounds(2);
                 for (auto& vc : _vehicleChannels)
                 {
                     vc.update();
                 }
-                sub_48A1FA(3);
+                processVehicleSounds(3);
             }
         }
     }
@@ -859,6 +860,7 @@ namespace OpenLoco::Audio
     static constexpr auto kAmbientNumTreeTilesForForest = 30;
     static constexpr auto kAmbientNumMountainTilesForWilderness = 60;
 
+    // 0x004FEAA6
     static constexpr int32_t getAmbientMaxVolume(uint8_t zoom)
     {
         constexpr int32_t _volumes[]{ -1200, -2000, -3000, -3000 };
@@ -868,7 +870,7 @@ namespace OpenLoco::Audio
     // 0x0048ACFD
     void updateAmbientNoise()
     {
-        if (!_audioInitialised || _audioIsPaused || !_audioIsEnabled)
+        if (!_audioIsInitialised || _audioIsPaused || !_audioIsEnabled)
         {
             return;
         }
@@ -987,29 +989,27 @@ namespace OpenLoco::Audio
     // 0x0048ABE3
     void stopAmbientNoise()
     {
-        loco_global<uint32_t, 0x0050D5AC> _50D5AC;
-        if (_audioInitialised && _50D5AC != 1)
+        auto* channel = getChannel(ChannelId::ambient);
+        if (_audioIsInitialised && channel != nullptr && channel->isPlaying())
         {
-            stopChannel(ChannelId::ambient);
-            _50D5AC = 1;
+            channel->stop();
         }
     }
 
     // 0x0048AA0C
     void revalidateCurrentTrack()
     {
-        using MusicPlaylistType = Config::MusicPlaylistType;
-        const auto& cfg = Config::get().old;
-
         const auto currentTrack = Jukebox::getCurrentTrack();
-
         if (currentTrack == Jukebox::kNoSong)
         {
             return;
         }
 
+        using Config::MusicPlaylistType;
+        const auto& cfg = Config::get();
+
         bool trackStillApplies = true;
-        switch (cfg.musicPlaylist)
+        switch (cfg.audio.playlist)
         {
             case MusicPlaylistType::currentEra:
             {
@@ -1026,7 +1026,7 @@ namespace OpenLoco::Audio
                 return;
 
             case MusicPlaylistType::custom:
-                if (!cfg.enabledMusic[currentTrack])
+                if (!cfg.audio.customJukebox[currentTrack])
                 {
                     trackStillApplies = false;
                 }
@@ -1043,8 +1043,8 @@ namespace OpenLoco::Audio
     // 0x0048A78D
     void playBackgroundMusic()
     {
-        auto& cfg = Config::get().old;
-        if (cfg.musicPlaying == 0 || SceneManager::isTitleMode() || SceneManager::isEditorMode() || SceneManager::isPaused())
+        auto& cfg = Config::get();
+        if (cfg.audio.playJukeboxMusic == 0 || SceneManager::isTitleMode() || SceneManager::isEditorMode() || SceneManager::isPaused())
         {
             return;
         }
@@ -1060,7 +1060,7 @@ namespace OpenLoco::Audio
             // Set the next song to play and load its info
             const auto& mi = Jukebox::changeTrack();
 
-            playMusic(mi.pathId, cfg.volume, false);
+            playMusic(mi.pathId, cfg.audio.mainVolume, false);
 
             WindowManager::invalidate(WindowType::options);
         }
@@ -1071,7 +1071,7 @@ namespace OpenLoco::Audio
     void playMusic(PathId sample, int32_t volume, bool loop)
     {
         auto* channel = getChannel(ChannelId::music);
-        if (!_audioInitialised || _audioIsPaused || !_audioIsEnabled || channel == nullptr)
+        if (!_audioIsInitialised || _audioIsPaused || !_audioIsEnabled || channel == nullptr)
         {
             return;
         }
@@ -1102,7 +1102,7 @@ namespace OpenLoco::Audio
     void stopMusic()
     {
         auto* channel = getChannel(ChannelId::music);
-        if (_audioInitialised && channel != nullptr && (channel->isPlaying() || channel->isPaused()))
+        if (_audioIsInitialised && channel != nullptr && (channel->isPlaying() || channel->isPaused()))
         {
             channel->stop();
         }
@@ -1111,7 +1111,7 @@ namespace OpenLoco::Audio
     void pauseMusic()
     {
         auto* channel = getChannel(ChannelId::music);
-        if (_audioInitialised && channel != nullptr && channel->isPlaying())
+        if (_audioIsInitialised && channel != nullptr && channel->isPlaying())
         {
             channel->pause();
         }
@@ -1120,7 +1120,7 @@ namespace OpenLoco::Audio
     void unpauseMusic()
     {
         auto* channel = getChannel(ChannelId::music);
-        if (_audioInitialised && channel != nullptr && channel->isPaused())
+        if (_audioIsInitialised && channel != nullptr && channel->isPaused())
         {
             channel->unpause();
         }
@@ -1143,13 +1143,13 @@ namespace OpenLoco::Audio
     // 0x0048AA67
     void setBgmVolume(int32_t volume)
     {
-        if (Config::get().old.volume == volume)
+        auto& cfg = Config::get().audio;
+        if (cfg.mainVolume == volume)
         {
             return;
         }
 
-        auto& cfg = Config::get().old;
-        cfg.volume = volume;
+        cfg.mainVolume = volume;
         Config::write();
 
         auto* channel = getChannel(ChannelId::music);
@@ -1157,7 +1157,7 @@ namespace OpenLoco::Audio
         {
             return;
         }
-        if (_audioInitialised && Jukebox::getCurrentTrack() != Jukebox::kNoSong)
+        if (_audioIsInitialised && Jukebox::getCurrentTrack() != Jukebox::kNoSong)
         {
             channel->setVolume(volume);
         }

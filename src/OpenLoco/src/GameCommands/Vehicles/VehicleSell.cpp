@@ -87,7 +87,8 @@ namespace OpenLoco::GameCommands
                 }
                 Vehicles::Car car(vehBase);
                 VehicleManager::deleteCar(car);
-                head->sub_4AF7A4();
+
+                head->autoLayoutTrain();
                 head->updateTrainProperties();
                 head->applyBreakdownToTrain();
                 if (placeArgs.has_value())
@@ -121,7 +122,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004AED34
-    void sellVehicle(Interop::registers& regs)
+    void sellVehicle(registers& regs)
     {
         regs.ebx = sellVehicle(EntityId(regs.dx), regs.bl);
     }

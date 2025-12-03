@@ -84,7 +84,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 }
             }
 
-            auto newsSettings = Config::get().old.newsSettings[static_cast<uint8_t>(messageSubType)];
+            auto newsSettings = Config::get().newsSettings[static_cast<uint8_t>(messageSubType)];
 
             if (newsSettings == Config::NewsType::none)
             {
@@ -95,7 +95,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             if (newsSettings == Config::NewsType::ticker)
             {
                 _nState.numCharsToDisplay = 0;
-                WindowFlags flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent | WindowFlags::flag_7;
+                WindowFlags flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent | WindowFlags::ignoreInFindAt;
 
                 auto window = WindowManager::createWindow(
                     WindowType::news,

@@ -19,16 +19,15 @@
 #include "TownManager.h"
 #include "Ui/Window.h"
 #include "Ui/WindowManager.h"
+#include "Ui/Windows/Construction/Construction.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/VehicleManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-#include <OpenLoco/Math/Vector.hpp>
 
+#include <OpenLoco/Math/Vector.hpp>
 #include <bitset>
 #include <numeric>
 #include <sfl/static_vector.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::World;
 
@@ -86,19 +85,6 @@ namespace OpenLoco::StationManager
         }
     }
 
-    static void sub_49E1F1(StationId id)
-    {
-        auto w = WindowManager::find(WindowType::construction);
-        if (w != nullptr && w->currentTab == 1)
-        {
-            if ((addr<0x00522096, uint8_t>() & 8) && StationId(addr<0x01135F70, int32_t>()) == id) // _constructingStationId
-            {
-                addr<0x01135F70, int32_t>() = -1;
-                w->invalidate();
-            }
-        }
-    }
-
     // 0x0048B244
     void updateDaily()
     {
@@ -118,7 +104,7 @@ namespace OpenLoco::StationManager
                 }
                 if (station.noTilesTimeout >= 10)
                 {
-                    sub_49E1F1(station.id());
+                    Ui::Windows::Construction::Station::sub_49E1F1(station.id());
                     station.invalidate();
                     deallocateStation(station.id());
                 }
@@ -805,21 +791,6 @@ namespace OpenLoco::StationManager
         {
             return NearbyStation{ minDistanceStation, isPhysicallyAttached };
         }
-    }
-
-    void registerHooks()
-    {
-        // Can be removed once the createStation function has been implemented (used by place.*Station game commands)
-        registerHook(
-            0x048F988,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto stationId = (reinterpret_cast<Station*>(regs.esi))->id();
-                const auto newName = generateNewStationName(stationId, TownId(regs.ebx), World::Pos3(regs.ax, regs.cx, regs.dh * World::kSmallZStep), regs.dl);
-                regs = backup;
-                regs.bx = newName;
-                return 0;
-            });
     }
 }
 

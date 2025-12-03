@@ -21,34 +21,24 @@
 #include "Ui/WindowManager.h"
 #include "Ui/WindowType.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco::Game
 {
-    static loco_global<LoadOrQuitMode, 0x0050A002> _savePromptType;
-
-    // TODO: make accessible from Environment
-    static loco_global<char[257], 0x0050B1CF> _pathSavesSinglePlayer;
-    static loco_global<char[257], 0x0050B2EC> _pathSavesTwoPlayer;
-    static loco_global<char[257], 0x0050B406> _pathScenarios;
-    static loco_global<char[257], 0x0050B518> _pathLandscapes;
-
-    static loco_global<char[256], 0x0050B745> _currentScenarioFilename;
-
-    static loco_global<char[512], 0x0112CE04> _savePath;
+    // TODO: move into GameState?
+    static std::string _activeSavePath; // 0x0050B745
 
     using Ui::Windows::PromptBrowse::browse_type;
 
-    static bool openBrowsePrompt(StringId titleId, browse_type type, const char* filter)
+    static std::optional<std::string> openBrowsePrompt(std::string path, StringId titleId, browse_type type, const char* filter)
     {
         Audio::pauseSound();
         SceneManager::setPauseFlag(1 << 2);
         Gfx::invalidateScreen();
         Gfx::renderAndUpdate();
 
-        bool confirm = Ui::Windows::PromptBrowse::open(type, &_savePath[0], filter, titleId);
+        auto confirm = Ui::Windows::PromptBrowse::open(type, path, filter, titleId);
 
-        Ui::processMessagesMini();
+        Input::processMessagesMini();
         SceneManager::unsetPauseFlag(1 << 2);
         Gfx::invalidateScreen();
         Gfx::renderAndUpdate();
@@ -57,90 +47,81 @@ namespace OpenLoco::Game
     }
 
     // 0x004416FF
-    bool loadSaveGameOpen()
+    [[nodiscard]] std::optional<std::string> loadSaveGameOpen()
     {
-        if (!SceneManager::isNetworked())
-        {
-            strncpy(&_savePath[0], &_pathSavesSinglePlayer[0], std::size(_savePath));
-        }
-        else
-        {
-            strncpy(&_savePath[0], &_pathSavesTwoPlayer[0], std::size(_savePath));
-        }
+        auto path = Environment::getPath(Environment::PathId::save).make_preferred().u8string();
 
-        return openBrowsePrompt(StringIds::title_prompt_load_game, browse_type::load, S5::filterSV5);
+        return openBrowsePrompt(path, StringIds::title_prompt_load_game, browse_type::load, S5::filterSV5);
     }
 
     // 0x004417A7
-    bool loadLandscapeOpen()
+    [[nodiscard]] std::optional<std::string> loadLandscapeOpen()
     {
-        strncpy(&_savePath[0], &_pathLandscapes[0], std::size(_savePath));
+        auto path = Environment::getPath(Environment::PathId::landscape).make_preferred().u8string();
 
-        return openBrowsePrompt(StringIds::title_prompt_load_landscape, browse_type::load, S5::filterSC5);
+        return openBrowsePrompt(path, StringIds::title_prompt_load_landscape, browse_type::load, S5::filterSC5);
     }
 
-    bool loadHeightmapOpen()
+    [[nodiscard]] std::optional<std::string> loadHeightmapOpen()
     {
         fs::path basePath = Environment::getPath(Environment::PathId::heightmap);
         Environment::autoCreateDirectory(basePath);
-        strncpy(&_savePath[0], basePath.make_preferred().u8string().c_str(), std::size(_savePath));
+        auto path = basePath.make_preferred().u8string();
 
         // TODO: make named constant for filter?
-        return openBrowsePrompt(StringIds::title_load_png_heightmap_file, browse_type::load, "*.png");
+        return openBrowsePrompt(path, StringIds::title_load_png_heightmap_file, browse_type::load, "*.png");
     }
 
     // 0x00441843
-    bool saveSaveGameOpen()
+    [[nodiscard]] std::optional<std::string> saveSaveGameOpen()
     {
-        strncpy(&_savePath[0], &_currentScenarioFilename[0], std::size(_savePath));
+        auto path = _activeSavePath;
 
-        return openBrowsePrompt(StringIds::title_prompt_save_game, browse_type::save, S5::filterSV5);
+        return openBrowsePrompt(path, StringIds::title_prompt_save_game, browse_type::save, S5::filterSV5);
     }
 
     // 0x004418DB
-    bool saveScenarioOpen()
+    [[nodiscard]] std::optional<std::string> saveScenarioOpen()
     {
-        auto path = fs::u8path(&_pathScenarios[0]).parent_path() / Scenario::getOptions().scenarioName;
-        strncpy(&_savePath[0], path.u8string().c_str(), std::size(_savePath));
-        strncat(&_savePath[0], S5::extensionSC5, std::size(_savePath));
+        auto path = Environment::getPath(Environment::PathId::scenarios) / Scenario::getOptions().scenarioName;
+        auto savePath = path.u8string() + S5::extensionSC5;
 
-        return openBrowsePrompt(StringIds::title_prompt_save_scenario, browse_type::save, S5::filterSC5);
+        return openBrowsePrompt(savePath, StringIds::title_prompt_save_scenario, browse_type::save, S5::filterSC5);
     }
 
     // 0x00441993
-    bool saveLandscapeOpen()
+    [[nodiscard]] std::optional<std::string> saveLandscapeOpen()
     {
         Scenario::getOptions().scenarioFlags &= ~Scenario::ScenarioFlags::landscapeGenerationDone;
         if (hasFlags(GameStateFlags::tileManagerLoaded))
         {
             Scenario::getOptions().scenarioFlags |= Scenario::ScenarioFlags::landscapeGenerationDone;
-            S5::drawScenarioPreviewImage();
+            Scenario::drawScenarioMiniMapImage();
         }
 
-        auto path = fs::u8path(&_pathLandscapes[0]).parent_path() / Scenario::getOptions().scenarioName;
-        strncpy(&_savePath[0], path.u8string().c_str(), std::size(_savePath));
-        strncat(&_savePath[0], S5::extensionSC5, std::size(_savePath));
+        auto path = Environment::getPath(Environment::PathId::landscape) / Scenario::getOptions().scenarioName;
+        auto savePath = path.u8string() + S5::extensionSC5;
 
-        return openBrowsePrompt(StringIds::title_prompt_save_landscape, browse_type::save, S5::filterSC5);
+        return openBrowsePrompt(savePath, StringIds::title_prompt_save_landscape, browse_type::save, S5::filterSC5);
     }
 
     // 0x0043BFF8
     void loadGame()
     {
         GameCommands::LoadSaveQuitGameArgs args{};
-        args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::closeSavePrompt;
-        args.option2 = LoadOrQuitMode::loadGamePrompt;
+        args.loadQuitMode = LoadOrQuitMode::loadGamePrompt;
+        args.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::closeSavePrompt;
         GameCommands::doCommand(args, GameCommands::Flags::apply);
 
         ToolManager::toolCancel();
 
         if (SceneManager::isEditorMode())
         {
-            if (Game::loadLandscapeOpen())
+            if (auto res = Game::loadLandscapeOpen())
             {
                 // 0x0043C087
-                auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSC5);
-                std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
+                auto path = fs::u8path(*res).replace_extension(S5::extensionSC5);
+                _activeSavePath = path.u8string();
 
                 // 0x004424CE
                 if (S5::importSaveToGameState(path, S5::LoadFlags::landscape))
@@ -152,11 +133,11 @@ namespace OpenLoco::Game
         }
         else if (!SceneManager::isNetworked())
         {
-            if (Game::loadSaveGameOpen())
+            if (auto res = Game::loadSaveGameOpen())
             {
                 // 0x0043C033
-                auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSV5);
-                std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
+                auto path = fs::u8path(*res).replace_extension(S5::extensionSV5);
+                _activeSavePath = path.u8string();
 
                 if (S5::importSaveToGameState(path, S5::LoadFlags::none))
                 {
@@ -201,10 +182,8 @@ namespace OpenLoco::Game
             if (playerCompanyId != previousUpdatingId)
             {
                 // 0x0043C1CD
-                addr<0x00F25428, uint32_t>() = 0;
                 SceneManager::removeSceneFlags(SceneManager::Flags::networked);
                 SceneManager::removeSceneFlags(SceneManager::Flags::networkHost);
-                addr<0x00508F0C, uint32_t>() = 0;
                 CompanyManager::setControllingId(CompanyId(0));
                 CompanyManager::setSecondaryPlayerId(CompanyId::null);
 
@@ -266,34 +245,34 @@ namespace OpenLoco::Game
     }
 
     // 0x0043C427
-    void confirmSaveGame()
+    void confirmSaveGame(LoadOrQuitMode promptSaveType)
     {
         ToolManager::toolCancel();
 
         if (SceneManager::isEditorMode())
         {
-            if (Game::saveLandscapeOpen())
+            if (auto res = Game::saveLandscapeOpen())
             {
-                if (saveLandscape())
+                if (saveLandscape(*res))
                 {
                     // load landscape
                     GameCommands::LoadSaveQuitGameArgs args{};
-                    args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::dontSave;
-                    args.option2 = LoadOrQuitMode::loadGamePrompt;
+                    args.loadQuitMode = LoadOrQuitMode::loadGamePrompt;
+                    args.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::dontSave;
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
                 }
             }
         }
         else if (!SceneManager::isNetworked())
         {
-            if (Game::saveSaveGameOpen())
+            if (auto res = Game::saveSaveGameOpen())
             {
                 // 0x0043C446
-                auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSV5);
-                std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
+                auto path = fs::u8path(*res).replace_extension(S5::extensionSV5);
+                _activeSavePath = path.u8string();
 
                 S5::SaveFlags flags = S5::SaveFlags::none;
-                if (Config::get().hasFlags(Config::Flags::exportObjectsWithSaves))
+                if (Config::get().exportObjectsWithSaves)
                 {
                     flags = S5::SaveFlags::packCustomObjects;
                 }
@@ -305,8 +284,8 @@ namespace OpenLoco::Game
                 else
                 {
                     GameCommands::LoadSaveQuitGameArgs args{};
-                    args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::dontSave;
-                    args.option2 = LoadOrQuitMode::loadGamePrompt;
+                    args.loadQuitMode = LoadOrQuitMode::loadGamePrompt;
+                    args.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::dontSave;
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
                 }
             }
@@ -317,7 +296,7 @@ namespace OpenLoco::Game
             GameCommands::do_72();
             MultiPlayer::setFlag(MultiPlayer::flags::flag_2);
 
-            switch (_savePromptType)
+            switch (promptSaveType)
             {
                 case LoadOrQuitMode::loadGamePrompt:
                     MultiPlayer::setFlag(MultiPlayer::flags::flag_13); // intend to load?
@@ -335,11 +314,11 @@ namespace OpenLoco::Game
         Gfx::invalidateScreen();
     }
 
-    bool saveLandscape()
+    bool saveLandscape(std::string filename)
     {
         // 0x0043C4B3
-        auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSC5);
-        std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
+        auto path = fs::u8path(filename).replace_extension(S5::extensionSC5);
+        _activeSavePath = path.u8string();
 
         bool saveResult = !S5::exportGameStateToFile(path, S5::SaveFlags::scenario);
         if (saveResult)
@@ -348,6 +327,16 @@ namespace OpenLoco::Game
         }
 
         return saveResult;
+    }
+
+    std::string getActiveSavePath()
+    {
+        return _activeSavePath;
+    }
+
+    void setActiveSavePath(std::string path)
+    {
+        _activeSavePath = path;
     }
 
     GameStateFlags getFlags()
