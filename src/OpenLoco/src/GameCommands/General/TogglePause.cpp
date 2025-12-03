@@ -21,13 +21,10 @@ namespace OpenLoco::GameCommands
         if (SceneManager::isPaused())
         {
             SceneManager::unsetPauseFlag(1 << 0);
-            Audio::unpauseSound();
         }
         else
         {
             SceneManager::setPauseFlag(1 << 0);
-            Audio::pauseSound();
-            Ui::Windows::TimePanel::invalidateFrame();
         }
 
         return 0;
