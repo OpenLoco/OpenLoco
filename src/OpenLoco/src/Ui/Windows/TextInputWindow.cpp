@@ -243,7 +243,7 @@ namespace OpenLoco::Ui::Windows::TextInput
 
         drawingCtx.popRenderTarget();
 
-        const uint16_t numCharacters = static_cast<uint16_t>(inputSession.buffer.length());
+        const uint16_t numCharacters = static_cast<uint16_t>(inputSession.buffer32.length());
         const uint16_t maxNumCharacters = inputSession.inputLenLimit;
 
         {
