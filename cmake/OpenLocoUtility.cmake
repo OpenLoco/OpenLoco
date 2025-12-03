@@ -140,6 +140,7 @@ function(loco_target_compile_link_flags TARGET)
     target_compile_options(${TARGET} PUBLIC ${COMMON_COMPILE_OPTIONS})
     target_link_options(${TARGET} PUBLIC ${COMMON_LINK_OPTIONS})
     target_compile_features(${TARGET} PUBLIC cxx_std_${CMAKE_CXX_STANDARD})
+    target_compile_definitions(${TARGET} PUBLIC DEBUG=${DEBUG_LEVEL})
     set_property(TARGET ${TARGET} PROPERTY
         MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>") # Statically link the MSVC++ Runtime
     set_property(TARGET ${TARGET} PROPERTY POSITION_INDEPENDENT_CODE OFF) # Due to the way the linking works we must have no pie (remove when fully implemented)

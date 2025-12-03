@@ -87,14 +87,6 @@ option(OPENLOCO_HEADER_CHECK "Verify all public interfaces are standalone" NO)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
 set(DEBUG_LEVEL 0 CACHE STRING "Select debug level for compilation. Use value in range 0–3.")
-list(APPEND COMMON_COMPILE_OPTIONS -DDEBUG=${DEBUG_LEVEL})
-
-if (MINGW)
-    # MingW32 does not at present compile OpenLoco.exe
-    # so we must ensure the .dll file has the same
-    # prefix on Windows and MingW32 i.e. none
-    set(CMAKE_SHARED_LIBRARY_PREFIX "")
-endif()
 
 # Display source files nicely in IDEs
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -117,29 +109,26 @@ FetchContent_MakeAvailable(openloco_objects)
 
 add_subdirectory(src)
 
-if (MSVC)
+if (NOT APPLE)
     if (${CMAKE_VERSION} VERSION_GREATER 3.26)
         # Uses the copy_directory_if_different to avoid copying objects/language every time (3.26 feature)
-        add_custom_target(OpenLocoExe ALL
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/loco.exe" "$<TARGET_FILE_DIR:OpenLoco>/OpenLoco.exe"
+        add_custom_target(OpenLocoAssets ALL
             COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different "${CMAKE_CURRENT_SOURCE_DIR}/data" "$<TARGET_FILE_DIR:OpenLoco>/data"
             COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different "${openloco_objects_SOURCE_DIR}" "$<TARGET_FILE_DIR:OpenLoco>/data/objects"
-            COMMENT "Copying over data folder and executable"
+            COMMENT "Copying over data and objects folder"
             DEPENDS OpenLoco
         )
     else()
-        add_custom_target(OpenLocoExe ALL
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/loco.exe" "$<TARGET_FILE_DIR:OpenLoco>/OpenLoco.exe"
+        add_custom_target(OpenLocoAssets ALL
             COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/data" "$<TARGET_FILE_DIR:OpenLoco>/data"
             COMMAND ${CMAKE_COMMAND} -E copy_directory "${openloco_objects_SOURCE_DIR}" "$<TARGET_FILE_DIR:OpenLoco>/data/objects"
-            COMMENT "Copying over data folder and executable"
+            COMMENT "Copying over data and objects folder"
             DEPENDS OpenLoco
         )
     endif()
-    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenLocoExe)
-    set_property(TARGET OpenLocoExe PROPERTY VS_DEBUGGER_COMMAND $<TARGET_FILE_DIR:OpenLoco>/OpenLoco.exe)
-    set_property(TARGET OpenLocoExe PROPERTY VS_DEBUGGER_WORKING_DIRECTORY $<TARGET_FILE_DIR:OpenLoco>)
 endif()
+
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenLoco)
 
 install(TARGETS OpenLoco
     RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"

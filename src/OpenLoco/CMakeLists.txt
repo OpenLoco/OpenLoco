@@ -765,33 +765,11 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/World/TownManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ZoomLevel.hpp")
 
-if (MINGW)
-    loco_add_library(OpenLoco SHARED
-        PRIVATE_FILES
-            ${OLOCO_SOURCES}
-            ${OLOCO_HEADERS}
-        )
-    target_link_libraries(OpenLoco winmm)
-else ()
-    if (MSVC)
-        # Headers added as well so that shown correctly in IDEs
-        loco_add_library(OpenLoco SHARED 
-            PRIVATE_FILES
-                ${OLOCO_SOURCES}
-                ${OLOCO_HEADERS}
-            )
-    else ()
-        loco_add_executable(OpenLoco 
-            PRIVATE_FILES
-                ${OLOCO_SOURCES}
-                ${OLOCO_HEADERS}
-        )
-
-        if (TARGET SDL2::SDL2main)
-            target_link_libraries(OpenLoco SDL2::SDL2main)
-        endif ()
-    endif ()
-endif ()
+loco_add_executable(OpenLoco 
+    PRIVATE_FILES
+        ${OLOCO_SOURCES}
+        ${OLOCO_HEADERS}
+)
 
 target_link_libraries(OpenLoco
     Core
@@ -809,32 +787,22 @@ target_link_libraries(OpenLoco
 
 if (WIN32)
     target_link_libraries(OpenLoco winmm ws2_32 Resources)
-    # Loco.exe is looking for openloco.dll. Remove this when standalone.
-    set_target_properties(OpenLoco PROPERTIES OUTPUT_NAME "openloco")
 endif ()
 
+target_compile_definitions(OpenLoco
+    PRIVATE
+        SDL_MAIN_HANDLED
+ )
 if (MINGW)
-    target_compile_definitions(OpenLoco
-        PRIVATE
-            DEBUG=${DEBUG_LEVEL}
-            SDL_MAIN_HANDLED=1)
-
-    target_link_libraries(OpenLoco imm32 winmm version)
-    # newer GCC gets confused about our use of hardcoded address shenanigans
+    target_link_libraries(OpenLoco imm32 version)
 elseif (MSVC)
     target_compile_definitions(OpenLoco
         PRIVATE
-            DEBUG=${DEBUG_LEVEL}
             _WINDLL _MBCS DEBUG_WIN32=1
             _CRT_SECURE_NO_WARNINGS
             _CRT_NONSTDC_NO_DEPRECATE
             _USE_MATH_DEFINES
-            SDL_MAIN_HANDLED
             _WINSOCK_DEPRECATED_NO_WARNINGS)
-else ()
-    target_compile_definitions(OpenLoco
-        PRIVATE
-            DEBUG=${DEBUG_LEVEL})
 endif()
 
 if (APPLE)
