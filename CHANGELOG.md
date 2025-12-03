@@ -12,6 +12,7 @@
 - Fix: [#3431] Marker-related config variables are not saved properly.
 - Fix: [#3455] The 'Plant Trees' status bar is not rendered correctly.
 - Fix: [#3466] Game crashes if you press a multimedia key on your keyboard (e.g. 'next track').
+- Fix: [#3467] Menu key name not being localised when editing keyboard shortcuts.
 
 25.11 (2025-11-05)
 ------------------------------------------------------------------------

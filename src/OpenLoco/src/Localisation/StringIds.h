@@ -701,6 +701,9 @@ namespace OpenLoco::StringIds
     constexpr StringId keyboard_down = 780;
     constexpr StringId keyboard_insert = 785;
     constexpr StringId keyboard_delete = 786;
+
+    constexpr StringId keyboard_menu = 833;
+
     constexpr StringId keyboard_numpad_0 = 836;
     constexpr StringId keyboard_numpad_1 = 837;
     constexpr StringId keyboard_numpad_2 = 838;
