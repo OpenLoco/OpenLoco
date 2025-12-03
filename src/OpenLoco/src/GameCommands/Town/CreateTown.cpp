@@ -11,7 +11,7 @@
 #include "Map/TileManager.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "World/IndustryManager.h"

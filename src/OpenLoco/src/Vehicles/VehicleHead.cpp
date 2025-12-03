@@ -35,7 +35,7 @@
 #include "Orders.h"
 #include "Random.h"
 #include "RoutingManager.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "SceneManager.h"
 #include "Tutorial.h"
 #include "Ui/WindowManager.h"

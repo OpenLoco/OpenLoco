@@ -22,7 +22,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/ScaffoldingObject.h"
 #include "Objects/TreeObject.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 #include "SceneManager.h"
 #include "ViewportManager.h"
 #include "World/IndustryManager.h"

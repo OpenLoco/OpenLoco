@@ -6,7 +6,7 @@
 #include "Map/TileManager.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 
 namespace OpenLoco::GameCommands
 {

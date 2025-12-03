@@ -4,7 +4,7 @@
 #include "Logging.h"
 #include "NetworkConnection.h"
 #include "S5/S5.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "SceneManager.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Core/MemoryStream.h>

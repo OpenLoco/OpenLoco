@@ -1,4 +1,4 @@
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 
 namespace OpenLoco::Scenario
 {

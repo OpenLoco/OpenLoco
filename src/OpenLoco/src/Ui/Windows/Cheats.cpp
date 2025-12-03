@@ -13,7 +13,7 @@
 #include "Localisation/StringManager.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
-#include "Scenario.h"
+#include "Scenario/Scenario.h"
 #include "Ui/Dropdown.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ButtonWidget.h"

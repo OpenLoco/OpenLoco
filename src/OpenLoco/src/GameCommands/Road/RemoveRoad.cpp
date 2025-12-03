@@ -13,7 +13,7 @@
 #include "Objects/RoadObject.h"
 #include "Random.h"
 #include "RemoveRoadStation.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 #include "SceneManager.h"
 #include "World/TownManager.h"
 

@@ -4,7 +4,7 @@
 #include "GameState.h"
 #include "Gui.h"
 #include "Localisation/StringIds.h"
-#include "Scenario.h"
+#include "Scenario/Scenario.h"
 #include "SceneManager.h"
 #include "Ui.h"
 

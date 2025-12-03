@@ -1,5 +1,5 @@
 #include "CommandLine.h"
-#include "Scenario.h"
+#include "Scenario/Scenario.h"
 #include <algorithm>
 #include <cassert>
 #include <chrono>
@@ -58,8 +58,8 @@
 #include "OpenLoco.h"
 #include "Random.h"
 #include "S5/S5.h"
-#include "ScenarioManager.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioManager.h"
+#include "Scenario/ScenarioOptions.h"
 #include "SceneManager.h"
 #include "Title.h"
 #include "Tutorial.h"

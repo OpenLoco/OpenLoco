@@ -7,7 +7,7 @@
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"
 #include "MessageManager.h"
-#include "Scenario.h"
+#include "Scenario/Scenario.h"
 #include "Types.hpp"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"

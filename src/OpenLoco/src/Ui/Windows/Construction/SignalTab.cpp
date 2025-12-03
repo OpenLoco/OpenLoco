@@ -16,7 +16,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/TrackObject.h"
 #include "Objects/TrainSignalObject.h"
-#include "ScenarioConstruction.h"
+#include "Scenario/ScenarioConstruction.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"

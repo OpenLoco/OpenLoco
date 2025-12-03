@@ -6,7 +6,7 @@
 #include "Map/SurfaceData.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 #include "Types.hpp"
 
 using namespace OpenLoco::World;

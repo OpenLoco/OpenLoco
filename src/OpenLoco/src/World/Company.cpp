@@ -21,7 +21,7 @@
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "Random.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "SceneManager.h"
 #include "StationManager.h"
 #include "TownManager.h"

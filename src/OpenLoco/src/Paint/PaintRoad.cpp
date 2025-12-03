@@ -15,7 +15,7 @@
 #include "PaintRoadStyle1Data.h"
 #include "PaintRoadStyle2Data.h"
 #include "PaintTileDecorations.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"

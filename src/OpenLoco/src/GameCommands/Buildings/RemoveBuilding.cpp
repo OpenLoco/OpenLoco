@@ -6,7 +6,7 @@
 #include "Map/BuildingElement.h"
 #include "Map/TileManager.h"
 #include "Objects/BuildingObject.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 #include "SceneManager.h"
 #include "World/CompanyManager.h"
 #include "World/Industry.h"

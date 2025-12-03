@@ -1,7 +1,7 @@
 #include "PngTerrainGenerator.h"
 #include "Logging.h"
 #include "MapGenerator.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Gfx/PngImage.h>
 #include <OpenLoco/Platform/Platform.h>

@@ -6,7 +6,7 @@
 #include "Objects/IndustryObject.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
-#include "Scenario.h"
+#include "Scenario/Scenario.h"
 #include "TileManager.h"
 #include "ViewportManager.h"
 #include "WallElement.h"
