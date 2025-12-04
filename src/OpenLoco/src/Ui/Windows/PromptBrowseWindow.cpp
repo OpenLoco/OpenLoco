@@ -486,7 +486,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 drawingCtx.pushRenderTarget(*clipped);
 
                 bool showCaret = Input::isFocused(window.type, window.number, widx::text_filename) && (inputSession.cursorFrame & 0x10) == 0;
-                drawTextInput(&window, drawingCtx, inputSession.buffer.c_str(), inputSession.cursorPosition, showCaret);
+                drawTextInput(&window, drawingCtx, inputSession.getLocoString().c_str(), inputSession.cursorPosition, showCaret);
 
                 drawingCtx.popRenderTarget();
             }
@@ -843,7 +843,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static bool filenameContainsInvalidChars()
     {
         uint8_t numNonSpacesProcessed = 0;
-        for (const char chr : inputSession.buffer)
+        const auto buffer = inputSession.getLocoString();
+        for (const char chr : buffer)
         {
             if (chr != ' ')
             {
@@ -890,7 +891,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void processFileForLoadSave(Window* self)
     {
         // Create full path to target file.
-        fs::path path = _currentDirectory / inputSession.buffer;
+        fs::path path = _currentDirectory / inputSession.buffer32;
 
         // Append extension to filename.
         path += getExtensionFromFileType(_fileType);

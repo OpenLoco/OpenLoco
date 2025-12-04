@@ -6,6 +6,7 @@
 - Change: [#3473] Fences can now be interacted with in viewports outside of the scenario editor as well.
 - Fix: [#2957] Bridge supports not being drawn under different corners than in vanilla.
 - Fix: [#3313] Vehicle orders not being deleted correctly when the station is deallocated.
+- Fix: [#3354] Characters can be added beyond the length limit when inputting text if the limit has already been exeeded.
 - Fix: [#3395] Text input windows no longer show character limits.
 - Fix: [#3401] The character limit label is using the wrong text colour.
 - Fix: [#3422] Window resize handles don't work properly in windows with status bars.
