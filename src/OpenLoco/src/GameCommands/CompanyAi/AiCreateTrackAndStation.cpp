@@ -1,4 +1,5 @@
 #include "AiCreateTrackAndStation.h"
+#include "Economy/Expenditures.h"
 #include "GameCommands/Track/CreateTrack.h"
 #include "GameCommands/Track/CreateTrainStation.h"
 #include "Map/BuildingElement.h"

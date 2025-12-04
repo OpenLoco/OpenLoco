@@ -1,10 +1,9 @@
 #pragma once
 
 #include "Economy/Currency.h"
-#include "Entities/Entity.h"
-#include "Map/Tile.h"
 #include "Objects/Object.h"
-#include "World/Company.h"
+#include "Types.hpp"
+#include <OpenLoco/Engine/World.hpp>
 
 namespace OpenLoco
 {
@@ -15,6 +14,7 @@ namespace OpenLoco
 
 namespace OpenLoco::World
 {
+    struct TileElement;
     struct WallElement;
 }
 
