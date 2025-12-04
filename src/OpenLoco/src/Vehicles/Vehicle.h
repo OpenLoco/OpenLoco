@@ -1,17 +1,12 @@
 #pragma once
 
-#include "Audio/Audio.h"
 #include "Entities/Entity.h"
 #include "Map/Track/TrackModSection.h"
-#include "Objects/AirportObject.h"
-#include "Objects/ObjectManager.h"
 #include "Objects/VehicleObject.h"
 #include "Routing.h"
 #include "Speed.hpp"
 #include "Types.hpp"
 #include "Ui/Window.h"
-#include "Ui/WindowType.h"
-#include "World/Company.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Exception.hpp>
 

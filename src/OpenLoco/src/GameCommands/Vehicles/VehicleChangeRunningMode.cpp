@@ -2,6 +2,7 @@
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
+#include "Objects/ObjectManager.h"
 #include "Speed.hpp"
 #include "Types.hpp"
 #include "Ui/WindowManager.h"

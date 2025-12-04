@@ -1,5 +1,6 @@
 #include "Vehicle2.h"
 #include "MessageManager.h"
+#include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "Random.h"

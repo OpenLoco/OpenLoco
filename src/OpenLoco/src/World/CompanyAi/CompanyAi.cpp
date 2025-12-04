@@ -43,6 +43,7 @@
 #include "Map/TrackElement.h"
 #include "Map/TreeElement.h"
 #include "MessageManager.h"
+#include "Objects/AirportObject.h"
 #include "Objects/BridgeObject.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/CargoObject.h"

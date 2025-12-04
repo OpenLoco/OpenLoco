@@ -1,4 +1,5 @@
 #include "VehicleManager.h"
+#include "Audio/Audio.h"
 #include "Date.h"
 #include "Entities/EntityManager.h"
 #include "Game.h"
@@ -10,6 +11,7 @@
 #include "Map/Track/SubpositionData.h"
 #include "Map/Track/TrackData.h"
 #include "MessageManager.h"
+#include "Objects/ObjectManager.h"
 #include "OrderManager.h"
 #include "Orders.h"
 #include "RoutingManager.h"
