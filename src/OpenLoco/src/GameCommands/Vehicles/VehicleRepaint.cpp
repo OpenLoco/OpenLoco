@@ -3,6 +3,8 @@
 #include "GameCommands/GameCommands.h"
 #include "Types.hpp"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
 
 namespace OpenLoco::GameCommands
 {

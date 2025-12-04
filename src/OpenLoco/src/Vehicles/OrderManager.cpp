@@ -18,6 +18,7 @@
 #include "Ui/WindowManager.h"
 #include "Vehicle.h"
 #include "Vehicles/OrderManager.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
 #include "World/StationManager.h"
 #include <OpenLoco/Core/Exception.hpp>

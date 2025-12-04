@@ -6,6 +6,7 @@
 #include "Ui/WindowManager.h"
 #include "VehicleSell.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleHead.h"
 
 namespace OpenLoco::GameCommands
 {

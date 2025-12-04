@@ -7,6 +7,7 @@
 #include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleBogie.h"
 #include "Vehicles/VehicleDraw.h"
 
 namespace OpenLoco::Ui::Windows::DragVehiclePart

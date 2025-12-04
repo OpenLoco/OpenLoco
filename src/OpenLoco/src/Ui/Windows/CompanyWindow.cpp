@@ -46,6 +46,7 @@
 #include "Ui/Widgets/ViewportWidget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleBody.h"
 #include "ViewportManager.h"
 #include "World/Company.h"
 #include "World/CompanyManager.h"

@@ -14,6 +14,12 @@
 #include "Objects/RoadObject.h"
 #include "RoutingManager.h"
 #include "Ui/WindowManager.h"
+#include "Vehicle1.h"
+#include "Vehicle2.h"
+#include "VehicleBody.h"
+#include "VehicleBogie.h"
+#include "VehicleHead.h"
+#include "VehicleTail.h"
 #include "ViewportManager.h"
 #include <OpenLoco/Core/Exception.hpp>
 
@@ -115,6 +121,28 @@ namespace OpenLoco::Vehicles
     {
         return (vehicleFlags & flagsToTest) != VehicleFlags::none;
     }
+
+    bool VehicleBase::isVehicleHead() const { return is<VehicleEntityType::head>(); }
+    VehicleHead* VehicleBase::asVehicleHead() const { return as<VehicleHead>(); }
+    bool VehicleBase::isVehicle1() const { return is<VehicleEntityType::vehicle_1>(); }
+    Vehicle1* VehicleBase::asVehicle1() const { return as<Vehicle1>(); }
+    bool VehicleBase::isVehicle2() const { return is<VehicleEntityType::vehicle_2>(); }
+    Vehicle2* VehicleBase::asVehicle2() const { return as<Vehicle2>(); }
+    bool VehicleBase::isVehicleBogie() const { return is<VehicleEntityType::bogie>(); }
+    VehicleBogie* VehicleBase::asVehicleBogie() const { return as<VehicleBogie>(); }
+    bool VehicleBase::isVehicleBody() const { return is<VehicleEntityType::body_start>() || is<VehicleEntityType::body_continued>(); }
+    VehicleBody* VehicleBase::asVehicleBody() const
+    {
+        if (is<VehicleEntityType::body_start>())
+        {
+            return as<VehicleBody, VehicleEntityType::body_start>();
+        }
+
+        return as<VehicleBody, VehicleEntityType::body_continued>();
+    }
+    bool VehicleBase::hasSoundPlayer() { return is<VehicleEntityType::vehicle_2>() || is<VehicleEntityType::tail>(); }
+    bool VehicleBase::isVehicleTail() const { return is<VehicleEntityType::tail>(); }
+    VehicleTail* VehicleBase::asVehicleTail() const { return as<VehicleTail>(); }
 
     VehicleUpdateDistances& getVehicleUpdateDistances()
     {
@@ -1030,5 +1058,76 @@ namespace OpenLoco::Vehicles
         train.veh2->remainingDistance = negStartDistance;
         applyVehicleObjectLengthToBogies(train, negStartDistance);
         train.tail->remainingDistance = 0;
+    }
+
+    Car::CarComponentIter::CarComponentIter(const CarComponent* carComponent)
+    {
+        if (carComponent == nullptr)
+        {
+            nextVehicleComponent = nullptr;
+            return;
+        }
+        current = *carComponent;
+        nextVehicleComponent = current.body->nextVehicleComponent();
+    }
+
+    Car::CarComponentIter& Car::CarComponentIter::operator++()
+    {
+        if (nextVehicleComponent == nullptr)
+        {
+            return *this;
+        }
+        if (nextVehicleComponent->getSubType() == VehicleEntityType::tail)
+        {
+            nextVehicleComponent = nullptr;
+            return *this;
+        }
+        CarComponent next{ nextVehicleComponent };
+        if (next.body == nullptr || next.body->getSubType() == VehicleEntityType::body_start)
+        {
+            nextVehicleComponent = nullptr;
+            return *this;
+        }
+        current = next;
+        return *this;
+    }
+
+    Vehicle::Cars::CarIter::CarIter(const Car* carComponent)
+    {
+        if (carComponent == nullptr || carComponent->body == nullptr)
+        {
+            nextVehicleComponent = nullptr;
+            return;
+        }
+        current = *carComponent;
+        nextVehicleComponent = current.body->nextVehicleComponent();
+    }
+
+    Vehicle::Cars::CarIter& Vehicle::Cars::CarIter::operator++()
+    {
+        if (nextVehicleComponent == nullptr)
+        {
+            return *this;
+        }
+        while (nextVehicleComponent->getSubType() != VehicleEntityType::tail)
+        {
+            Car next{ nextVehicleComponent };
+            if (next.body == nullptr)
+            {
+                break;
+            }
+            if (next.body->getSubType() == VehicleEntityType::body_start)
+            {
+                current = next;
+                return *this;
+            }
+        }
+        nextVehicleComponent = nullptr;
+        return *this;
+    }
+
+    Vehicle::Vehicle(const VehicleHead& _head)
+        : Vehicle(_head.id)
+    {
     }
 }

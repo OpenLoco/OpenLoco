@@ -9,6 +9,10 @@
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle1.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
 
 namespace OpenLoco::GameCommands
 {

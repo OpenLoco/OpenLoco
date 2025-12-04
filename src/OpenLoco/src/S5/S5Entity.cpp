@@ -9,6 +9,12 @@
 #include "Effects/VehicleCrashEffect.h"
 #include "Entities/Entity.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle1.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
+#include "Vehicles/VehicleTail.h"
 #include <algorithm>
 
 namespace OpenLoco::S5

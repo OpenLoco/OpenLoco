@@ -9,6 +9,12 @@
 #include "Objects/VehicleObject.h"
 #include "Random.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle1.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
+#include "Vehicles/VehicleTail.h"
 #include "ViewportManager.h"
 #include "World/StationManager.h"
 

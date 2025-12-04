@@ -1,3 +1,4 @@
+#include "VehicleBody.h"
 #include "Audio/Audio.h"
 #include "Config.h"
 #include "Effects/Effect.h"
@@ -14,8 +15,9 @@
 #include "Objects/VehicleObject.h"
 #include "Random.h"
 #include "Scenario/ScenarioManager.h"
-#include "Vehicle.h"
-
+#include "Vehicle2.h"
+#include "VehicleBogie.h"
+#include "VehicleHead.h"
 #include <OpenLoco/Math/Trigonometry.hpp>
 #include <cassert>
 

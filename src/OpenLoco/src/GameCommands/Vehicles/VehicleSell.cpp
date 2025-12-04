@@ -4,7 +4,11 @@
 #include "VehiclePickupAir.h"
 #include "VehiclePickupWater.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
+#include "Vehicles/VehicleTail.h"
 
 using namespace OpenLoco::Vehicles;
 

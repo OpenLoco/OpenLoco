@@ -10,7 +10,13 @@
 #include "Objects/TrackExtraObject.h"
 #include "Objects/TrackObject.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle1.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
+#include "Vehicles/VehicleTail.h"
 #include "ViewportManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
 

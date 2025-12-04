@@ -10,6 +10,7 @@
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleHead.h"
 #include "World/CompanyManager.h"
 #include "World/CompanyRecords.h"
 #include "World/IndustryManager.h"
