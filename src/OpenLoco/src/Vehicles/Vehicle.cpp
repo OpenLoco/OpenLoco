@@ -1,4 +1,5 @@
 #include "Vehicle.h"
+#include "Audio/Audio.h"
 #include "Effects/ExplosionEffect.h"
 #include "Effects/VehicleCrashEffect.h"
 #include "Entities/EntityManager.h"

@@ -7,6 +7,7 @@
 #include "Localisation/Formatting.h"
 #include "Objects/CargoObject.h"
 #include "Objects/IndustryObject.h"
+#include "Objects/ObjectManager.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"

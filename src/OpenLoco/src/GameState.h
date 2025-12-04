@@ -4,7 +4,6 @@
 #include "Map/Animation.h"
 #include "Map/Wave.h"
 #include "Message.h"
-#include "Scenario/Scenario.h"
 #include "Scenario/ScenarioConstruction.h"
 #include "Scenario/ScenarioObjective.h"
 #include "Ui/LastMapWindowAttributes.h"
@@ -17,6 +16,10 @@
 
 namespace OpenLoco
 {
+    namespace Scenario
+    {
+        enum class Season : uint8_t;
+    }
     enum class GameStateFlags : uint32_t;
 
     struct GameState

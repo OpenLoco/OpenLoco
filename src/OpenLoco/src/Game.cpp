@@ -13,6 +13,7 @@
 #include "Objects/ObjectIndex.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
+#include "Scenario/Scenario.h"
 #include "Scenario/ScenarioOptions.h"
 #include "SceneManager.h"
 #include "Title.h"

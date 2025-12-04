@@ -11,6 +11,8 @@
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
+#include "Objects/AirportObject.h"
+#include "Objects/ObjectManager.h"
 #include "Random.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleBody.h"

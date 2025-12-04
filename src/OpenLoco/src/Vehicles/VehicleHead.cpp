@@ -1737,6 +1737,64 @@ namespace OpenLoco::Vehicles
         return tryReverse();
     }
 
+    // 0x00426E26
+    static std::pair<AirportMovementNodeFlags, World::Pos3> airportGetMovementEdgeTarget(StationId targetStation, uint8_t curEdge)
+    {
+        auto station = StationManager::get(targetStation);
+
+        Pos3 stationLoc = station->airportStartPos;
+
+        auto tile = TileManager::get(stationLoc);
+
+        for (auto& el : tile)
+        {
+            auto* elStation = el.as<StationElement>();
+            if (elStation == nullptr)
+            {
+                continue;
+            }
+
+            if (elStation->baseZ() != stationLoc.z / 4)
+            {
+                continue;
+            }
+
+            auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
+            const auto movementNodes = airportObject->getMovementNodes();
+            const auto movementEdges = airportObject->getMovementEdges();
+
+            auto destinationNode = movementEdges[curEdge].nextNode;
+
+            Pos2 loc2 = {
+                static_cast<int16_t>(movementNodes[destinationNode].x - 16),
+                static_cast<int16_t>(movementNodes[destinationNode].y - 16)
+            };
+            loc2 = Math::Vector::rotate(loc2, elStation->rotation());
+            auto airportMovement = movementNodes[destinationNode];
+
+            loc2.x += 16 + stationLoc.x;
+            loc2.y += 16 + stationLoc.y;
+
+            Pos3 loc = { loc2.x, loc2.y, static_cast<int16_t>(movementNodes[destinationNode].z + stationLoc.z) };
+
+            if (!airportMovement.hasFlags(AirportMovementNodeFlags::taxiing))
+            {
+                loc.z = stationLoc.z + 255;
+                if (!airportMovement.hasFlags(AirportMovementNodeFlags::inFlight))
+                {
+                    loc.z = 960;
+                }
+            }
+
+            return std::make_pair(airportMovement.flags, loc);
+        }
+
+        // Tile not found. Todo: fail gracefully
+        assert(false);
+        // Flags, location
+        return std::make_pair(AirportMovementNodeFlags::none, World::Pos3{ 0, 0, 0 });
+    }
+
     // 0x004A9051
     bool VehicleHead::updateAir()
     {
@@ -2585,64 +2643,6 @@ namespace OpenLoco::Vehicles
         // Tile not found. Todo: fail gracefully
         assert(false);
         return kAirportMovementNodeNull;
-    }
-
-    // 0x00426E26
-    std::pair<AirportMovementNodeFlags, World::Pos3> VehicleHead::airportGetMovementEdgeTarget(StationId targetStation, uint8_t curEdge)
-    {
-        auto station = StationManager::get(targetStation);
-
-        Pos3 stationLoc = station->airportStartPos;
-
-        auto tile = TileManager::get(stationLoc);
-
-        for (auto& el : tile)
-        {
-            auto* elStation = el.as<StationElement>();
-            if (elStation == nullptr)
-            {
-                continue;
-            }
-
-            if (elStation->baseZ() != stationLoc.z / 4)
-            {
-                continue;
-            }
-
-            auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
-            const auto movementNodes = airportObject->getMovementNodes();
-            const auto movementEdges = airportObject->getMovementEdges();
-
-            auto destinationNode = movementEdges[curEdge].nextNode;
-
-            Pos2 loc2 = {
-                static_cast<int16_t>(movementNodes[destinationNode].x - 16),
-                static_cast<int16_t>(movementNodes[destinationNode].y - 16)
-            };
-            loc2 = Math::Vector::rotate(loc2, elStation->rotation());
-            auto airportMovement = movementNodes[destinationNode];
-
-            loc2.x += 16 + stationLoc.x;
-            loc2.y += 16 + stationLoc.y;
-
-            Pos3 loc = { loc2.x, loc2.y, static_cast<int16_t>(movementNodes[destinationNode].z + stationLoc.z) };
-
-            if (!airportMovement.hasFlags(AirportMovementNodeFlags::taxiing))
-            {
-                loc.z = stationLoc.z + 255;
-                if (!airportMovement.hasFlags(AirportMovementNodeFlags::inFlight))
-                {
-                    loc.z = 960;
-                }
-            }
-
-            return std::make_pair(airportMovement.flags, loc);
-        }
-
-        // Tile not found. Todo: fail gracefully
-        assert(false);
-        // Flags, location
-        return std::make_pair(AirportMovementNodeFlags::none, World::Pos3{ 0, 0, 0 });
     }
 
     // 0x004B980A

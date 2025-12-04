@@ -1,4 +1,5 @@
 #include "ChangeLandMaterial.h"
+#include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
 #include "Map/MapGenerator/MapGenerator.h"
 #include "Map/SurfaceElement.h"

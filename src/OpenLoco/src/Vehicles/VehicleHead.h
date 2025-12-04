@@ -3,7 +3,7 @@
 
 namespace OpenLoco::Vehicles
 {
-    using CargoTotalArray = std::array<uint32_t, ObjectManager::getMaxObjects(ObjectType::cargo)>;
+    using CargoTotalArray = std::array<uint32_t, Limits::kMaxCargoObjects>;
 
     enum class Status : uint8_t
     {
@@ -132,7 +132,6 @@ namespace OpenLoco::Vehicles
         std::pair<Status, Speed16> airplaneGetNewStatus();
         uint8_t airportGetNextMovementEdge(uint8_t curEdge);
         AirplaneApproachTargetParams sub_427122();
-        std::pair<AirportMovementNodeFlags, World::Pos3> airportGetMovementEdgeTarget(StationId targetStation, uint8_t curEdge);
         bool updateWater();
         void tryCreateInitialMovementSound(const Status initialStatus);
         void setStationVisitedTypes();

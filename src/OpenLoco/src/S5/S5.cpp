@@ -21,6 +21,7 @@
 #include "S5File.h"
 #include "S5Options.h"
 #include "SawyerStream.h"
+#include "Scenario/Scenario.h"
 #include "Scenario/ScenarioManager.h"
 #include "Scenario/ScenarioOptions.h"
 #include "Scenario/ScenarioPreview.h"

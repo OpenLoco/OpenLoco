@@ -1,4 +1,5 @@
 #include "VehicleBogie.h"
+#include "Audio/Audio.h"
 #include "Effects/ExplosionEffect.h"
 #include "Effects/SplashEffect.h"
 #include "Effects/VehicleCrashEffect.h"
@@ -6,6 +7,7 @@
 #include "Map/RoadElement.h"
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"
+#include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "Random.h"

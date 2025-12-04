@@ -5,6 +5,7 @@
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
+#include "Objects/ObjectManager.h"
 #include "Objects/RoadExtraObject.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackExtraObject.h"
