@@ -516,8 +516,6 @@ namespace OpenLoco::Ui::Windows::Construction
         cState.lastSelectedTrackGradient = 0;
         cState.lastSelectedTrackModSection = Track::ModSection::single;
 
-        Common::setTrackOptions(flags);
-
         if (flags & (1 << 31))
         {
             return createAirportConstructionWindow();
@@ -526,7 +524,10 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             return createDockConstructionWindow();
         }
-        else if (flags & (1 << 7))
+
+        Common::setTrackOptions(flags);
+
+        if (flags & (1 << 7))
         {
             return createRoadConstructionWindow();
         }
