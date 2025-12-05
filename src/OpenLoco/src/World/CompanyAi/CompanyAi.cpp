@@ -2186,7 +2186,11 @@ namespace OpenLoco
                         continue;
                     }
                     uint8_t quantity = buildingObj->var_A8[i];
-                    if (buildingObj->hasFlags(BuildingObjectFlags::largeTile))
+                    // We are doing a quick estimate of consumed cargo so
+                    // are counting all tiles of a multi tile building this
+                    // will inflate multitile buildings score by 4x so we
+                    // compensate for 1x1 buildings by multiplying by 4
+                    if (!buildingObj->hasFlags(BuildingObjectFlags::largeTile))
                     {
                         quantity *= 4;
                     }
