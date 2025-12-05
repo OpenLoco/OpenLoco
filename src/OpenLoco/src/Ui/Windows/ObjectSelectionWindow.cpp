@@ -271,7 +271,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         Widgets::Frame({ 0, 0 }, { 600, 398 }, WindowColour::primary),
         Widgets::Caption({ 1, 1 }, { 598, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::title_object_selection),
         Widgets::ImageButton({ 585, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        Widgets::Panel({ 0, 42 }, { 600, 356 }, WindowColour::secondary),
+        Widgets::Panel({ 0, 41 }, { 600, 357 }, WindowColour::secondary),
 
         // Primary tab area
         Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
