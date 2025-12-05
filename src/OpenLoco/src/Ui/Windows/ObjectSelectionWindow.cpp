@@ -288,7 +288,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         Widgets::Tab({ 344, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
 
         // Filter options
-        Widgets::dropdownWidgets({ 492, 20 }, { 100, 12 }, WindowColour::primary, StringIds::empty),
+        Widgets::dropdownWidgets({ 492, 20 }, { 100, 12 }, WindowColour::primary, StringIds::wcolour2_stringid),
         Widgets::TextBox({ 4, 45 }, { 246, 14 }, WindowColour::secondary),
         Widgets::Button({ 254, 45 }, { 38, 14 }, WindowColour::secondary, StringIds::clearInput),
 
@@ -649,6 +649,18 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         const auto& currentTab = kMainTabInfo[self.currentTab];
         const auto& subTabs = currentTab.subTabs;
         const bool showSecondaryTabs = !subTabs.empty() && FilterLevel(self.filterLevel) != FilterLevel::beginner;
+
+        static constexpr std::array<StringId, 3> kFilterLevelStringIds = {
+            StringIds::objSelectionFilterBeginner,
+            StringIds::objSelectionFilterAdvanced,
+            StringIds::objSelectionFilterExpert,
+        };
+
+        {
+            auto& widget = self.widgets[widx::filterLabel];
+            FormatArguments args{ widget.textArgs };
+            args.push(kFilterLevelStringIds[self.filterLevel]);
+        }
 
         // Update page title
         auto args = FormatArguments(self.widgets[widx::caption].textArgs);
@@ -1032,23 +1044,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         drawSearchBox(self, drawingCtx);
 
         auto tr = Gfx::TextRenderer(drawingCtx);
-
-        {
-            static constexpr std::array<StringId, 3> levelStringIds = {
-                StringIds::objSelectionFilterBeginner,
-                StringIds::objSelectionFilterAdvanced,
-                StringIds::objSelectionFilterExpert,
-            };
-
-            FormatArguments args{};
-            args.push(levelStringIds[self.filterLevel]);
-
-            auto& widget = self.widgets[widx::filterLabel];
-            auto point = Point(self.x + widget.left, self.y + widget.top);
-
-            // Draw current level on combobox
-            tr.drawStringLeftClipped(point, widget.width() - 15, Colour::black, StringIds::wcolour2_stringid, args);
-        }
 
         bool doDefault = true;
         if (self.object != nullptr)
