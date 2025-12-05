@@ -607,7 +607,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         Widget::leftAlignTabs(self, widx::secondaryTab1, widx::secondaryTab8, 30);
 
         // Resize scroll view to take up the full window height, leaving room for a status line
-        self.widgets[widx::scrollview].bottom = self.height - 12;
+        self.widgets[widx::scrollview].bottom = self.height - 14;
         self.widgets[widx::scrollview].right = self.width / 2 - 12;
         self.widgets[widx::scrollviewFrame].bottom = self.widgets[widx::scrollview].bottom + 1;
         self.widgets[widx::scrollviewFrame].right = self.widgets[widx::scrollview].right + 1;
