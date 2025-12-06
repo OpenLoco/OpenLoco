@@ -1,8 +1,8 @@
 ---
 header:
   locale: tr-TR
-  english_name: Türkçe (TR)
-  native_name: Türkçe (TR)
+  english_name: Turkish
+  native_name: Türkçe
   loco_original_id: 0
 strings:
   0: ""
