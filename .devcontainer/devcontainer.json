@@ -1,0 +1,32 @@
+{
+  "name": "OpenLoco Development Container",
+  "dockerFile": "../Dockerfile",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "ms-vscode.cmake-tools",
+        "twxs.cmake"
+      ],
+      "settings": {}
+    }
+  },
+  "workspaceMount": "source=${localWorkspaceFolder}/,target=/openloco,type=bind",
+  "workspaceFolder": "/openloco",
+  "remoteUser": "ubuntu",
+  "postCreateCommand": "",
+  "mounts": [
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.locomotion,target=/locomotion,type=bind"
+  ],
+  "runArgs": [
+    "--security-opt=label=disable",
+    "--device=/dev/dri",
+    "-e", "XDG_RUNTIME_DIR=/tmp",
+    "-e", "WAYLAND_DISPLAY=${env:WAYLAND_DISPLAY}",
+    "-v", "${env:XDG_RUNTIME_DIR}/${env:WAYLAND_DISPLAY}:/tmp/${env:WAYLAND_DISPLAY}"
+  ],
+  "containerEnv": {
+    "XDG_RUNTIME_DIR": "/tmp",
+    "WAYLAND_DISPLAY": "${env:WAYLAND_DISPLAY}"
+  }
+}
