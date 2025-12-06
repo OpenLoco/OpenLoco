@@ -202,8 +202,8 @@ namespace OpenLoco::Ui
         viewport.pad_11 = 0;
         viewport.flags = ViewportFlags::none;
 
-        const coord_t centreX = (World::kMapColumns / 2) * 32 + 16;
-        const coord_t centreY = (World::kMapRows / 2) * 32 + 16;
+        const coord_t centreX = (World::TileManager::getMapColumns() / 2) * 32 + 16;
+        const coord_t centreY = (World::TileManager::getMapRows() / 2) * 32 + 16;
         const coord_t z = World::TileManager::getHeight({ centreX, centreY }).landHeight;
 
         auto pos = viewport.centre2dCoordinates({ centreX, centreY, z });
@@ -218,8 +218,8 @@ namespace OpenLoco::Ui
         const auto& main = WindowManager::getMainWindow();
         const auto zoomLevel = main->viewports[0]->zoom;
 
-        const uint16_t resolutionWidth = ((World::kMapColumns * 32 * 2) >> zoomLevel) + 8;
-        const uint16_t resolutionHeight = ((World::kMapRows * 32 * 1) >> zoomLevel) + 128;
+        const uint16_t resolutionWidth = ((World::TileManager::getMapColumns() * 32 * 2) >> zoomLevel) + 8;
+        const uint16_t resolutionHeight = ((World::TileManager::getMapRows() * 32 * 1) >> zoomLevel) + 128;
 
         Ui::Viewport viewport = createGiantViewport(resolutionWidth, resolutionHeight, zoomLevel);
 
