@@ -249,6 +249,14 @@
             "description": "Build Release Ninja Configurations",
             "configuration": "Release",
             "nativeToolOptions": [ "-k0" ]
-        }
+        },
+        {
+            "name": "macos-release",
+            "configurePreset": "macos",
+            "displayName": "Release",
+            "description": "Build Release Ninja Configurations",
+            "configuration": "Release",
+            "nativeToolOptions": [ "-k0" ]
+	}
     ]
 }
