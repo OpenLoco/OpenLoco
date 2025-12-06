@@ -235,7 +235,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void paintToolDown(Window& self, const int16_t x, const int16_t y);
         static void paintToolAbort(Window& self);
         static void paintToolDownScroll(Window& self, Vehicles::Car car, const int16_t x);
-        static constexpr bool isPaintToolActive(Window& self);
+        static bool isPaintToolActive(Window& self);
         static ColourScheme getPaintToolColour(Window& self);
         static BodyItems getBodyItemsForVehicle(const VehicleObject& vehObject, const uint8_t yaw, const Vehicles::Car& car);
     }
@@ -1804,7 +1804,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.invalidate();
         }
 
-        static constexpr bool isPaintToolActive(Window& self)
+        static bool isPaintToolActive(Window& self)
         {
             return ToolManager::isToolActive(self.type, self.number, widx::paintBrush);
         }
