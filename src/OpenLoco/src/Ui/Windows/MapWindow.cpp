@@ -57,23 +57,40 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui::Windows::MapWindow
 {
-    static constexpr int16_t kRenderedMapWidth = kMapColumns * 2;
-    static constexpr int16_t kRenderedMapHeight = kRenderedMapWidth;
-    static constexpr int32_t kRenderedMapSize = kRenderedMapWidth * kRenderedMapHeight;
+    static int16_t getRenderedMapWidth()
+    {
+        return World::TileManager::getMapColumns() * 2;
+    }
+
+    static int16_t getRenderedMapHeight()
+    {
+        return World::TileManager::getMapRows() * 2;
+    }
+
+    static int32_t getRenderedMapSize()
+    {
+        return getRenderedMapWidth() * getRenderedMapHeight();
+    }
 
     // Chosen so that the map cannot be smaller than its key, and minimum size makes the map square
     static constexpr Ui::Size32 kMinWindowSize = { 229, 176 };
 
     // Chosen so the window cannot exceed map boundaries
-    static constexpr Ui::Size32 kMaxWindowSize = { kRenderedMapWidth + 120, kRenderedMapHeight + 60 };
+    static Ui::Size32 getMaxWindowSize()
+    {
+        return { getRenderedMapWidth() + 120, getRenderedMapHeight() + 60 };
+    }
 
     // 0x004FDC4C
-    static std::array<Point, 4> kViewFrameOffsetsByRotation = { {
-        { kMapColumns, 0 },
-        { kRenderedMapWidth, kMapRows },
-        { kMapColumns, kRenderedMapHeight },
-        { 0, kMapRows },
-    } };
+    static std::array<Point, 4> getViewFrameOffsetsByRotation()
+    {
+        return { {
+            { World::TileManager::getMapColumns(), 0 },
+            { getRenderedMapWidth(), World::TileManager::getMapRows() },
+            { World::TileManager::getMapColumns(), getRenderedMapHeight() },
+            { 0, World::TileManager::getMapRows() },
+        } };
+    }
 
     static constexpr std::array<PaletteIndex_t, 256> kFlashColours = []() {
         std::array<PaletteIndex_t, 256> colours;
@@ -129,7 +146,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
     static Pos2 mapWindowPosToLocation(Point pos)
     {
-        pos.x = ((pos.x + 8) - kMapColumns) / 2;
+        pos.x = ((pos.x + 8) - World::TileManager::getMapColumns()) / 2;
         pos.y = ((pos.y + 8)) / 2;
         Pos2 location = { static_cast<coord_t>(pos.y - pos.x), static_cast<coord_t>(pos.x + pos.y) };
         location.x *= kTileSize;
@@ -140,11 +157,11 @@ namespace OpenLoco::Ui::Windows::MapWindow
             case 0:
                 return location;
             case 1:
-                return { static_cast<coord_t>(kMapWidth - 1 - location.y), location.x };
+                return { static_cast<coord_t>(World::TileManager::getMapWidth() - 1 - location.y), location.x };
             case 2:
-                return { static_cast<coord_t>(kMapWidth - 1 - location.x), static_cast<coord_t>(kMapHeight - 1 - location.y) };
+                return { static_cast<coord_t>(World::TileManager::getMapWidth() - 1 - location.x), static_cast<coord_t>(World::TileManager::getMapHeight() - 1 - location.y) };
             case 3:
-                return { location.y, static_cast<coord_t>(kMapHeight - 1 - location.x) };
+                return { location.y, static_cast<coord_t>(World::TileManager::getMapHeight() - 1 - location.x) };
         }
 
         return { 0, 0 }; // unreachable
@@ -159,15 +176,15 @@ namespace OpenLoco::Ui::Windows::MapWindow
         {
             case 3:
                 std::swap(x, y);
-                x = kMapWidth - 1 - x;
+                x = World::TileManager::getMapWidth() - 1 - x;
                 break;
             case 2:
-                x = kMapWidth - 1 - x;
-                y = kMapHeight - 1 - y;
+                x = World::TileManager::getMapWidth() - 1 - x;
+                y = World::TileManager::getMapHeight() - 1 - y;
                 break;
             case 1:
                 std::swap(x, y);
-                y = kMapHeight - 1 - y;
+                y = World::TileManager::getMapHeight() - 1 - y;
                 break;
             case 0:
                 break;
@@ -176,7 +193,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         x /= kTileSize;
         y /= kTileSize;
 
-        return Point(-x + y + kMapColumns, x + y);
+        return Point(-x + y + World::TileManager::getMapColumns(), x + y);
     }
 
     // 0x0046B8E6
@@ -227,7 +244,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         self.flags |= WindowFlags::resizable;
         self.minWidth = kMinWindowSize.width;
 
-        self.setSize(kMinWindowSize, kMaxWindowSize);
+        self.setSize(getMaxWindowSize(), getMaxWindowSize());
 
         auto& widget = self.widgets[widx::scrollview];
         auto& map = self.scrollAreas[0];
@@ -245,14 +262,14 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046C5E5
     static void setMapPixelsOverall(PaletteIndex_t* mapPtr, PaletteIndex_t* mapAltPtr, Pos2 pos, Pos2 delta)
     {
-        for (auto rowCountLeft = kMapColumns; rowCountLeft > 0; rowCountLeft--)
+        for (auto rowCountLeft = World::TileManager::getMapColumns(); rowCountLeft > 0; rowCountLeft--)
         {
             // Coords shouldn't be at map edge
-            if (!(pos.x > 0 && pos.y > 0 && pos.x < kMapWidth - kTileSize && pos.y < kMapHeight - kTileSize))
+            if (!(pos.x > 0 && pos.y > 0 && pos.x < World::TileManager::getMapWidth() - kTileSize && pos.y < World::TileManager::getMapHeight() - kTileSize))
             {
                 pos += delta;
-                mapPtr += kRenderedMapWidth + 1;
-                mapAltPtr += kRenderedMapWidth + 1;
+                mapPtr += getRenderedMapWidth() + 1;
+                mapAltPtr += getRenderedMapWidth() + 1;
                 continue;
             }
 
@@ -420,12 +437,12 @@ namespace OpenLoco::Ui::Windows::MapWindow
             mapAltPtr[1] = colourFlash1;
 
             pos += delta;
-            mapPtr += kRenderedMapWidth + 1;
-            mapAltPtr += kRenderedMapWidth + 1;
+            mapPtr += getRenderedMapWidth() + 1;
+            mapAltPtr += getRenderedMapWidth() + 1;
         }
 
         _drawMapRowIndex++;
-        if (_drawMapRowIndex > kMapColumns)
+        if (_drawMapRowIndex > (uint32_t)World::TileManager::getMapColumns())
         {
             _drawMapRowIndex = 0;
         }
@@ -434,14 +451,14 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046C873
     static void setMapPixelsVehicles(PaletteIndex_t* mapPtr, PaletteIndex_t* mapAltPtr, Pos2 pos, Pos2 delta)
     {
-        for (auto rowCountLeft = kMapColumns; rowCountLeft > 0; rowCountLeft--)
+        for (auto rowCountLeft = World::TileManager::getMapColumns(); rowCountLeft > 0; rowCountLeft--)
         {
             // Coords shouldn't be at map edge
-            if (!(pos.x > 0 && pos.y > 0 && pos.x < kMapWidth - kTileSize && pos.y < kMapHeight - kTileSize))
+            if (!(pos.x > 0 && pos.y > 0 && pos.x < World::TileManager::getMapWidth() - kTileSize && pos.y < World::TileManager::getMapWidth() - kTileSize))
             {
                 pos += delta;
-                mapPtr += kRenderedMapWidth + 1;
-                mapAltPtr += kRenderedMapWidth + 1;
+                mapPtr += getRenderedMapWidth() + 1;
+                mapAltPtr += getRenderedMapWidth() + 1;
                 continue;
             }
 
@@ -508,12 +525,12 @@ namespace OpenLoco::Ui::Windows::MapWindow
             mapAltPtr[1] = colourFlash1;
 
             pos += delta;
-            mapPtr += kRenderedMapWidth + 1;
-            mapAltPtr += kRenderedMapWidth + 1;
+            mapPtr += getRenderedMapWidth() + 1;
+            mapAltPtr += getRenderedMapWidth() + 1;
         }
 
         _drawMapRowIndex++;
-        if (_drawMapRowIndex > kMapColumns)
+        if (_drawMapRowIndex > (uint32_t)World::TileManager::getMapColumns())
         {
             _drawMapRowIndex = 0;
         }
@@ -536,14 +553,14 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046C9A8
     static void setMapPixelsIndustries(PaletteIndex_t* mapPtr, PaletteIndex_t* mapAltPtr, Pos2 pos, Pos2 delta)
     {
-        for (auto rowCountLeft = kMapColumns; rowCountLeft > 0; rowCountLeft--)
+        for (auto rowCountLeft = World::TileManager::getMapColumns(); rowCountLeft > 0; rowCountLeft--)
         {
             // Coords shouldn't be at map edge
-            if (!(pos.x > 0 && pos.y > 0 && pos.x < kMapWidth - kTileSize && pos.y < kMapHeight - kTileSize))
+            if (!(pos.x > 0 && pos.y > 0 && pos.x < World::TileManager::getMapWidth() - kTileSize && pos.y < World::TileManager::getMapHeight() - kTileSize))
             {
                 pos += delta;
-                mapPtr += kRenderedMapWidth + 1;
-                mapAltPtr += kRenderedMapWidth + 1;
+                mapPtr += getRenderedMapWidth() + 1;
+                mapAltPtr += getRenderedMapWidth() + 1;
                 continue;
             }
 
@@ -644,12 +661,12 @@ namespace OpenLoco::Ui::Windows::MapWindow
             mapAltPtr[1] = colourFlash1;
 
             pos += delta;
-            mapPtr += kRenderedMapWidth + 1;
-            mapAltPtr += kRenderedMapWidth + 1;
+            mapPtr += getRenderedMapWidth() + 1;
+            mapAltPtr += getRenderedMapWidth() + 1;
         }
 
         _drawMapRowIndex++;
-        if (_drawMapRowIndex > kMapColumns)
+        if (_drawMapRowIndex > (uint32_t)World::TileManager::getMapColumns())
         {
             _drawMapRowIndex = 0;
         }
@@ -658,14 +675,14 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046CB68
     static void setMapPixelsRoutes(PaletteIndex_t* mapPtr, PaletteIndex_t* mapAltPtr, Pos2 pos, Pos2 delta)
     {
-        for (auto rowCountLeft = kMapColumns; rowCountLeft > 0; rowCountLeft--)
+        for (auto rowCountLeft = World::TileManager::getMapColumns(); rowCountLeft > 0; rowCountLeft--)
         {
             // Coords shouldn't be at map edge
-            if (!(pos.x > 0 && pos.y > 0 && pos.x < kMapWidth - kTileSize && pos.y < kMapHeight - kTileSize))
+            if (!(pos.x > 0 && pos.y > 0 && pos.x < World::TileManager::getMapWidth() - kTileSize && pos.y < World::TileManager::getMapHeight() - kTileSize))
             {
                 pos += delta;
-                mapPtr += kRenderedMapWidth + 1;
-                mapAltPtr += kRenderedMapWidth + 1;
+                mapPtr += getRenderedMapWidth() + 1;
+                mapAltPtr += getRenderedMapWidth() + 1;
                 continue;
             }
 
@@ -800,12 +817,12 @@ namespace OpenLoco::Ui::Windows::MapWindow
             mapAltPtr[1] = colourFlash1;
 
             pos += delta;
-            mapPtr += kRenderedMapWidth + 1;
-            mapAltPtr += kRenderedMapWidth + 1;
+            mapPtr += getRenderedMapWidth() + 1;
+            mapAltPtr += getRenderedMapWidth() + 1;
         }
 
         _drawMapRowIndex++;
-        if (_drawMapRowIndex > kMapColumns)
+        if (_drawMapRowIndex > (uint32_t)World::TileManager::getMapColumns())
         {
             _drawMapRowIndex = 0;
         }
@@ -814,14 +831,14 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046CD31
     static void setMapPixelsOwnership(PaletteIndex_t* mapPtr, PaletteIndex_t* mapAltPtr, Pos2 pos, Pos2 delta)
     {
-        for (auto rowCountLeft = kMapColumns; rowCountLeft > 0; rowCountLeft--)
+        for (auto rowCountLeft = World::TileManager::getMapColumns(); rowCountLeft > 0; rowCountLeft--)
         {
             // Coords shouldn't be at map edge
-            if (!(pos.x > 0 && pos.y > 0 && pos.x < kMapWidth - kTileSize && pos.y < kMapHeight - kTileSize))
+            if (!(pos.x > 0 && pos.y > 0 && pos.x < World::TileManager::getMapWidth() - kTileSize && pos.y < World::TileManager::getMapHeight() - kTileSize))
             {
                 pos += delta;
-                mapPtr += kRenderedMapWidth + 1;
-                mapAltPtr += kRenderedMapWidth + 1;
+                mapPtr += getRenderedMapWidth() + 1;
+                mapAltPtr += getRenderedMapWidth() + 1;
                 continue;
             }
 
@@ -905,6 +922,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                     }
 
                     case ElementType::building:
+                        [[fallthrough]];
                     case ElementType::industry:
                         // Vanilla omitted the ghost check
                         if (!el.isGhost())
@@ -924,12 +942,12 @@ namespace OpenLoco::Ui::Windows::MapWindow
             mapAltPtr[1] = colourFlash1;
 
             pos += delta;
-            mapPtr += kRenderedMapWidth + 1;
-            mapAltPtr += kRenderedMapWidth + 1;
+            mapPtr += getRenderedMapWidth() + 1;
+            mapAltPtr += getRenderedMapWidth() + 1;
         }
 
         _drawMapRowIndex++;
-        if (_drawMapRowIndex > kMapColumns)
+        if (_drawMapRowIndex > (uint32_t)World::TileManager::getMapColumns())
         {
             _drawMapRowIndex = 0;
         }
@@ -939,7 +957,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static void setMapPixels(const Window& self)
     {
         _flashingItems = self.var_854;
-        auto offset = _drawMapRowIndex * (kRenderedMapWidth - 1) + (kMapRows - 1);
+        auto offset = _drawMapRowIndex * (getRenderedMapWidth() - 1) + (World::TileManager::getMapRows() - 1);
         auto* mapPtr = &_mapPixels[offset];
         auto* mapAltPtr = &_mapAltPixels[offset];
 
@@ -952,15 +970,15 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 delta = { 0, kTileSize };
                 break;
             case 1:
-                pos = Pos2(kMapWidth - kTileSize, _drawMapRowIndex * kTileSize);
+                pos = Pos2(World::TileManager::getMapWidth() - kTileSize, _drawMapRowIndex * kTileSize);
                 delta = { -kTileSize, 0 };
                 break;
             case 2:
-                pos = Pos2((kMapColumns - 1 - _drawMapRowIndex) * kTileSize, kMapWidth - kTileSize);
+                pos = Pos2((World::TileManager::getMapColumns() - 1 - _drawMapRowIndex) * kTileSize, World::TileManager::getMapWidth() - kTileSize);
                 delta = { 0, -kTileSize };
                 break;
             case 3:
-                pos = Pos2(0, (kMapColumns - 1 - _drawMapRowIndex) * kTileSize);
+                pos = Pos2(0, (World::TileManager::getMapColumns() - 1 - _drawMapRowIndex) * kTileSize);
                 delta = { kTileSize, 0 };
                 break;
         }
@@ -1096,7 +1114,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046B69C
     static void clearMap()
     {
-        std::fill(_mapPixels, _mapPixels + kRenderedMapSize * 2, PaletteIndex::black0);
+        std::fill(_mapPixels, _mapPixels + getRenderedMapSize() * 2, PaletteIndex::black0);
     }
 
     // 0x00F2541D
@@ -1137,8 +1155,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046B9E7
     static void getScrollSize([[maybe_unused]] Window& self, [[maybe_unused]] uint32_t scrollIndex, int32_t& scrollWidth, int32_t& scrollHeight)
     {
-        scrollWidth = kRenderedMapWidth;
-        scrollHeight = kRenderedMapHeight;
+        scrollWidth = getRenderedMapWidth();
+        scrollHeight = getRenderedMapHeight();
     }
 
     // 0x0046B9D4
@@ -1962,10 +1980,10 @@ namespace OpenLoco::Ui::Windows::MapWindow
         top /= 16;
         right /= 32;
         bottom /= 16;
-        left += kViewFrameOffsetsByRotation[getCurrentRotation()].x;
-        top += kViewFrameOffsetsByRotation[getCurrentRotation()].y;
-        right += kViewFrameOffsetsByRotation[getCurrentRotation()].x;
-        bottom += kViewFrameOffsetsByRotation[getCurrentRotation()].y;
+        left += getViewFrameOffsetsByRotation()[getCurrentRotation()].x;
+        top += getViewFrameOffsetsByRotation()[getCurrentRotation()].y;
+        right += getViewFrameOffsetsByRotation()[getCurrentRotation()].x;
+        bottom += getViewFrameOffsetsByRotation()[getCurrentRotation()].y;
 
         const auto colour = PaletteIndex::black0;
 
@@ -1977,8 +1995,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
     {
         left /= 32;
         top /= 16;
-        left += kViewFrameOffsetsByRotation[getCurrentRotation()].x;
-        top += kViewFrameOffsetsByRotation[getCurrentRotation()].y;
+        left += getViewFrameOffsetsByRotation()[getCurrentRotation()].x;
+        top += getViewFrameOffsetsByRotation()[getCurrentRotation()].y;
         auto right = left;
         auto bottom = top;
         left += leftOffset;
@@ -2174,8 +2192,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
 
         Gfx::getG1Element(0)->offset = offset;
-        Gfx::getG1Element(0)->width = kMapColumns * 2;
-        Gfx::getG1Element(0)->height = kMapRows * 2;
+        Gfx::getG1Element(0)->width = World::TileManager::getMapColumns() * 2;
+        Gfx::getG1Element(0)->height = World::TileManager::getMapRows() * 2;
         Gfx::getG1Element(0)->xOffset = 0;
         Gfx::getG1Element(0)->yOffset = 0;
         Gfx::getG1Element(0)->flags = Gfx::G1ElementFlags::none;
@@ -2414,14 +2432,14 @@ namespace OpenLoco::Ui::Windows::MapWindow
             return;
         }
 
-        auto ptr = malloc(kRenderedMapSize * 2);
+        auto ptr = malloc(getRenderedMapSize() * 2);
         if (ptr == nullptr)
         {
             return;
         }
 
         _mapPixels = static_cast<PaletteIndex_t*>(ptr);
-        _mapAltPixels = &_mapPixels[kRenderedMapSize];
+        _mapAltPixels = &_mapPixels[getRenderedMapSize()];
 
         Ui::Size32 size = { 350, 272 };
 
@@ -2498,7 +2516,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         const int16_t visibleMapWidth = window->scrollAreas[0].contentWidth - miniMapWidth;
         const int16_t visibleMapHeight = window->scrollAreas[0].contentHeight - miniMapHeight;
 
-        auto& offset = kViewFrameOffsetsByRotation[getCurrentRotation()];
+        auto& offset = getViewFrameOffsetsByRotation()[getCurrentRotation()];
         int16_t centreX = std::max(vpCentreX + offset.x - (miniMapWidth / 2), 0);
         int16_t centreY = std::max(vpCentreY + offset.y - (miniMapHeight / 2), 0);
 

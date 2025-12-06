@@ -18,7 +18,7 @@ namespace OpenLoco::World
     // 0x004BDF19
     std::optional<uint8_t> getRandomTreeTypeFromSurface(const World::TilePos2& loc, bool unk)
     {
-        if (!World::validCoords(loc))
+        if (!World::TileManager::validCoords(loc))
         {
             return {};
         }

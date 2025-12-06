@@ -5,6 +5,7 @@
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Gfx/PngImage.h>
 #include <OpenLoco/Platform/Platform.h>
+#include "Map/TileManager.h"
 #include <png.h>
 
 using namespace OpenLoco::World;
@@ -32,8 +33,8 @@ namespace OpenLoco::World::MapGenerator
 
         std::fill_n(heightMap.data(), heightMap.size(), options.minLandHeight);
 
-        auto width = std::min<int>(World::kMapColumns, pngImage->width);
-        auto height = std::min<int>(World::kMapRows, pngImage->height);
+        auto width = std::min<int>(World::TileManager::getMapColumns(), pngImage->width);
+        auto height = std::min<int>(World::TileManager::getMapRows(), pngImage->height);
 
         for (int32_t y = 0; y < height; y++)
         {

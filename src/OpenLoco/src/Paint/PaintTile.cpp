@@ -294,7 +294,7 @@ namespace OpenLoco::Paint
     // 0x00461CF8
     void paintTileElements(PaintSession& session, const World::Pos2& loc)
     {
-        if (!World::drawableCoords(loc))
+        if (!World::TileManager::drawableCoords(loc))
         {
             paintVoid(session, loc);
             return;
@@ -376,7 +376,7 @@ namespace OpenLoco::Paint
     // 0x004617C6
     void paintTileElements2(PaintSession& session, const World::Pos2& loc)
     {
-        if (!World::drawableCoords(loc))
+        if (!World::TileManager::drawableCoords(loc))
         {
             return;
         }

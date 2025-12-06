@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Tile.h"
+#include "Map/TileManager.h"
 
 namespace OpenLoco::World
 {
@@ -20,11 +21,11 @@ namespace OpenLoco::World
         Pos2 next()
         {
             _pos.x += kTileSize;
-            if (_pos.x >= kMapWidth - 1)
+            if (_pos.x >= TileManager::getMapWidth() - 1)
             {
                 _pos.x = 0;
                 _pos.y += kTileSize;
-                if (_pos.y >= kMapHeight - 1)
+                if (_pos.y >= TileManager::getMapHeight() - 1)
                 {
                     _pos.y = 0;
                 }

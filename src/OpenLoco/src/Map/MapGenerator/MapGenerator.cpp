@@ -95,7 +95,7 @@ namespace OpenLoco::World::MapGenerator
                         pos = TilePos2(pos.y, pos.x);
                     }
 
-                    if (!validCoords(pos))
+                    if (!World::TileManager::validCoords(pos))
                     {
                         // We might meander back to a valid position later,
                         // so we're only breaking out of the inner loop.
@@ -414,14 +414,14 @@ namespace OpenLoco::World::MapGenerator
         {
             // TODO: could probably simplify / replace with two randNext(lo, hi) calls
             auto randPos = getGameState().rng.randNext();
-            auto xPos = ((randPos & 0xFFFF) * kMapColumns) >> 16;
-            auto yPos = ((randPos >> 16) * kMapRows) >> 16;
+            auto xPos = ((randPos & 0xFFFF) * World::TileManager::getMapColumns()) >> 16;
+            auto yPos = ((randPos >> 16) * World::TileManager::getMapRows()) >> 16;
 
             auto pos = World::toWorldSpace(TilePos2(xPos, yPos));
             auto numberOfTiles = getGameState().rng.randNext(minTiles, maxTiles - 1);
             for (auto j = 0; j < numberOfTiles; j++)
             {
-                if (validCoords(pos))
+                if (World::TileManager::validCoords(pos))
                 {
                     auto tile = TileManager::get(pos);
                     auto surface = tile.surface();
@@ -512,6 +512,8 @@ namespace OpenLoco::World::MapGenerator
     // 0x0046A021
     static void generateTerrain(HeightMap& heightMap)
     {
+        World::TileManager::setMapSize(heightMap.width, heightMap.height);
+
         const auto style = getEverywhereSurfaceStyle();
         if (!style.has_value())
         {
@@ -656,7 +658,7 @@ namespace OpenLoco::World::MapGenerator
         for (auto i = 0; i < options.numberOfForests; ++i)
         {
             const auto randRadius = ((gPrng1().randNext(255) * std::max(options.maxForestRadius - options.minForestRadius, 0)) / 255 + options.minForestRadius) * kTileSize;
-            const auto randLoc = World::TilePos2(gPrng1().randNext(kMapRows), gPrng1().randNext(kMapColumns));
+            const auto randLoc = World::TilePos2(gPrng1().randNext(World::TileManager::getMapRows()), gPrng1().randNext(World::TileManager::getMapColumns()));
             const auto randDensity = (gPrng1().randNext(15) * std::max(options.maxForestDensity - options.minForestDensity, 0)) / 15 + options.minForestDensity;
             placeTreeCluster(randLoc, randRadius, randDensity, std::nullopt);
 
@@ -669,7 +671,7 @@ namespace OpenLoco::World::MapGenerator
         // Place a number of random trees
         for (auto i = 0; i < options.numberRandomTrees; ++i)
         {
-            const auto randLoc = World::Pos2(gPrng1().randNext(kMapWidth), gPrng1().randNext(kMapHeight));
+            const auto randLoc = World::Pos2(gPrng1().randNext(World::TileManager::getMapWidth()), gPrng1().randNext(World::TileManager::getMapHeight()));
             placeRandomTree(randLoc, std::nullopt);
         }
 
@@ -870,8 +872,8 @@ namespace OpenLoco::World::MapGenerator
             for (auto attemptsLeft = 200; attemptsLeft > 0; attemptsLeft--)
             {
                 // NB: coordinate selection has been simplified compared to vanilla
-                auto randomX = getGameState().rng.randNext(2, kMapRows - 2);
-                auto randomY = getGameState().rng.randNext(2, kMapColumns - 2);
+                auto randomX = getGameState().rng.randNext(2, World::TileManager::getMapRows() - 2);
+                auto randomY = getGameState().rng.randNext(2, World::TileManager::getMapColumns() - 2);
 
                 auto tile = TileManager::get(TilePos2(randomX, randomY));
                 if (!predicate(tile))
@@ -928,7 +930,7 @@ namespace OpenLoco::World::MapGenerator
             // 0x0042E956
             auto offset = kRotationOffset[rotation] * numTilesBetween;
             targetPos += offset;
-            if (!drawableCoords(targetPos))
+            if (!World::TileManager::drawableCoords(targetPos))
             {
                 break;
             }
@@ -1093,7 +1095,10 @@ namespace OpenLoco::World::MapGenerator
         updateProgress(10);
 
         {
-            HeightMap heightMap(kMapColumns, kMapRows);
+            auto rows = 512;
+            auto cols = 512;
+            HeightMap heightMap(cols, rows);
+            //HeightMap heightMap(World::TileManager::getMapColumns(), World::TileManager::getMapRows());
 
             generateHeightMap(options, heightMap);
             updateProgress(25);
