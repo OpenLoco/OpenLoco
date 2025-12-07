@@ -1296,7 +1296,7 @@ namespace OpenLoco::Input
             case Ui::WidgetType::panel:
             case Ui::WidgetType::newsPanel:
             case Ui::WidgetType::frame:
-                if (window->canResize() && (x >= (window->x + window->width - kResizeHandleSize - 1)) && (y >= (window->y + window->height - kResizeHandleSize - 1)))
+                if (window->isMouseOverResizeHandle(x, y))
                 {
                     windowResizeBegin(x, y, window, widgetIndex);
                 }
@@ -1557,16 +1557,10 @@ namespace OpenLoco::Input
                     case Ui::WidgetType::panel:
                     case Ui::WidgetType::newsPanel:
                     case Ui::WidgetType::frame:
-                        if (window->hasFlags(Ui::WindowFlags::resizable))
+                        if (window->isMouseOverResizeHandle(x, y))
                         {
-                            if (window->minWidth != window->maxWidth || window->minHeight != window->maxHeight)
-                            {
-                                if (x >= window->x + window->width - 19 && y >= window->y + window->height - 19)
-                                {
-                                    cursorId = Ui::CursorId::diagonalArrows;
-                                    break;
-                                }
-                            }
+                            cursorId = Ui::CursorId::diagonalArrows;
+                            break;
                         }
                         [[fallthrough]];
                     default:

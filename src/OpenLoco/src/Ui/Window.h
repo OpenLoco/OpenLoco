@@ -318,7 +318,8 @@ namespace OpenLoco::Ui
         bool isDisabled(WidgetIndex_t widgetIndex);
         bool isActivated(WidgetIndex_t index);
         bool isHoldable(WidgetIndex_t index);
-        bool canResize();
+        bool canResize() const;
+        bool isMouseOverResizeHandle(int16_t x, int16_t y) const;
         void capSize(int32_t minWidth, int32_t minHeight, int32_t maxWidth, int32_t maxHeight);
         void viewportsUpdatePosition();
         void invalidatePressedImageButtons();

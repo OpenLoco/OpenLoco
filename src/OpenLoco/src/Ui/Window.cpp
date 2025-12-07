@@ -38,9 +38,14 @@ namespace OpenLoco::Ui
     {
     }
 
-    bool Window::canResize()
+    bool Window::canResize() const
     {
         return this->hasFlags(WindowFlags::resizable) && (this->minWidth != this->maxWidth || this->minHeight != this->maxHeight);
+    }
+
+    bool Window::isMouseOverResizeHandle(int16_t mouse_x, int16_t mouse_y) const
+    {
+        return this->canResize() && mouse_x >= this->x + this->width - kResizeHandleSize - 1 && mouse_y >= this->y + this->height - kResizeHandleSize - 1;
     }
 
     void Window::capSize(int32_t newMinWidth, int32_t newMinHeight, int32_t newMaxWidth, int32_t newMaxHeight)
