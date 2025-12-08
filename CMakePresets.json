@@ -30,14 +30,21 @@
             }
         },
         {
+            "name": "windows-ci",
+            "displayName": "x86-64",
+            "description": "CI configure environment for Windows x86-64",
+            "inherits": "windows",
+            "generator": "Ninja"
+        },
+        {
             "name": "windows-x86-32-ci",
             "displayName": "x86-32 CI",
             "description": "CI configure environment for Windows x86-32",
             "inherits": "windows-base",
-            "generator": "Ninja",
+            "generator": "Visual Studio 17 2022",
             "architecture": {
-                "strategy": "external",
-                "value": "x86"
+                "value": "host=x86",
+                "strategy": "external"
             },
             "cacheVariables": {
                 "VCPKG_TARGET_TRIPLET": {
@@ -188,6 +195,13 @@
             "configurePreset": "windows",
             "displayName": "Release",
             "description": "Build Release Configuration",
+            "configuration": "Release"
+        },
+        {
+            "name": "windows-ci",
+            "configurePreset": "windows-ci",
+            "displayName": "Release",
+            "description": "Build Release x86-64 CI Configuration",
             "configuration": "Release"
         },
         {
