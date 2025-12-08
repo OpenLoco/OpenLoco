@@ -214,6 +214,14 @@
             "nativeToolOptions": [ "-k0" ]
         },
         {
+            "name": "linux-x86-32-ci",
+            "configurePreset": "linux-x86-32-ci",
+            "displayName": "Release",
+            "description": "Build Release Configuration",
+            "configuration": "Release",
+            "nativeToolOptions": [ "-k0" ]
+        },
+        {
             "name": "linux-vcpkg-static",
             "configurePreset": "linux-vcpkg-static",
             "displayName": "Release",
