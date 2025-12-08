@@ -53,13 +53,13 @@ jobs:
       - name: Build OpenLoco
         shell: cmd
         run: |
-          cmake --preset windows-msvc -DVCPKG_BUILD_TYPE=release
-          cmake --build --preset windows-msvc-release
+          cmake --preset windows-x86-32-ci -DVCPKG_BUILD_TYPE=release
+          cmake --build --preset windows-x86-32-ci
       - name: Build release
         run: |
           mkdir artifacts | Out-Null
           Copy-Item CHANGELOG.md,CONTRIBUTORS.md,LICENSE artifacts
-          Copy-Item build\windows-msvc\Release\* artifacts -Recurse
+          Copy-Item build\windows-x86-32-ci\Release\* artifacts -Recurse
       - name: Upload release artifact
         uses: actions/upload-artifact@v4
         with:
@@ -95,12 +95,12 @@ jobs:
         shell: bash
         run: |
           set -e
-          ./build/windows-msvc/Release/OpenLoco.exe --locomotion_path "./LocomotionAssets" simulate "./TestData/Saves/MMTest.SV5" 100000 -o "result.sv5"
-          ./build/windows-msvc/Release/OpenLoco.exe --locomotion_path "./LocomotionAssets" compare "./TestData/Saves/MMTest100000_base.SV5" "result.sv5"
+          ./build/windows-x86-32-ci/Release/OpenLoco.exe --locomotion_path "./LocomotionAssets" simulate "./TestData/Saves/MMTest.SV5" 100000 -o "result.sv5"
+          ./build/windows-x86-32-ci/Release/OpenLoco.exe --locomotion_path "./LocomotionAssets" compare "./TestData/Saves/MMTest100000_base.SV5" "result.sv5"
       - name: Run Tests
         shell: cmd
         run: |
-          ctest --test-dir build\windows-msvc\ --output-on-failure
+          ctest --test-dir build\windows-x86-32-ci\ --output-on-failure
 
   ubuntu:
     name: Ubuntu ${{ matrix.distro }} ${{ matrix.compiler }} i686
@@ -122,11 +122,11 @@ jobs:
         uses: ammaraskar/gcc-problem-matcher@master
       - name: Build OpenLoco
         run: |
-          cmake --preset linux -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
-          cmake --build --preset linux-release
+          cmake --preset linux-x86-32-ci -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
+          cmake --build --preset linux-x86-32-ci
       - name: Run Tests
         run: |
-          ctest --test-dir build/linux/ --output-on-failure
+          ctest --test-dir build/linux-x86-32-ci/ --output-on-failure
 
   header-checks:
     name: Header checks ${{ matrix.distro }} ${{ matrix.compiler }}
@@ -146,8 +146,8 @@ jobs:
           submodules: true
       - name: Validate Headers
         run: |
-          cmake --preset linux -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} -DOPENLOCO_HEADER_CHECK=ON
-          cmake --build --preset linux-release --target all-headers-check
+          cmake --preset linux-x86-32-ci -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} -DOPENLOCO_HEADER_CHECK=ON
+          cmake --build --preset linux-x86-32-ci --target all-headers-check
 
   fedora:
     name: Fedora shared=${{ matrix.build_shared_libs }} i686 MinGW32
@@ -168,8 +168,8 @@ jobs:
         uses: ammaraskar/gcc-problem-matcher@master
       - name: Build OpenLoco
         run: |
-          cmake --preset mingw -DBUILD_SHARED_LIBS=${{ matrix.build_shared_libs }}
-          cmake --build --preset mingw-release
+          cmake --preset mingw32 -DBUILD_SHARED_LIBS=${{ matrix.build_shared_libs }}
+          cmake --build --preset mingw32
 
   linux-static:
     name: Ubuntu noble g++ x64 vcpkg static linkage
@@ -202,7 +202,7 @@ jobs:
       - name: Build OpenLoco
         run: |
           cmake --preset linux-vcpkg-static -DVCPKG_BUILD_TYPE=release
-          cmake --build --preset linux-release-static
+          cmake --build --preset linux-vcpkg-static
       # Static linkage means the binary should be fairly portable / distributable across distros!
       - name: Install to artifacts
         run: |
@@ -240,12 +240,12 @@ jobs:
             ${{ runner.os }}-vcpkg-binary-cache-
       - name: Build OpenLoco
         run: |
-          cmake --preset macos -DVCPKG_BUILD_TYPE=release -DOPENLOCO_USE_VCPKG=true -DVCPKG_TARGET_TRIPLET=arm64-osx -DVCPKG_LIBRARY_LINKAGE=static
-          cmake --build --preset macos-release
+          cmake --preset macos-vcpkg-static
+          cmake --build --preset macos-vcpkg-static
       - name: Install to artifacts
         run: |
           mkdir -p artifacts
-          cmake --install build/macos --prefix ./artifacts
+          cmake --install build/macos-vcpkg-static --prefix ./artifacts
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
