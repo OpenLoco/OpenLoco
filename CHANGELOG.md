@@ -13,6 +13,7 @@
 - Fix: [#3455] The 'Plant Trees' status bar is not rendered correctly.
 - Fix: [#3466] Game crashes if you press a multimedia key on your keyboard (e.g. 'next track').
 - Fix: [#3496] Incorrect (off by 1 quantity) building cargo tooltip displayed.
+- Fix: [#3524] Height of Plant Trees, Build Buildings, and Build Industries windows jittering in some circumstances.
 
 25.11 (2025-11-05)
 ------------------------------------------------------------------------

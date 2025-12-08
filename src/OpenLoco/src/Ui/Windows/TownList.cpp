@@ -1223,7 +1223,7 @@ namespace OpenLoco::Ui::Windows::TownList
         {
             int32_t scrollWidth = 0, scrollHeight = 0;
             self.callGetScrollSize(0, scrollWidth, scrollHeight);
-            self.scrollAreas[0].contentHeight = scrollHeight;
+            self.scrollAreas[0].contentHeight = scrollHeight + 1;
 
             auto i = 0;
             for (; i <= self.var_83C; i++)
