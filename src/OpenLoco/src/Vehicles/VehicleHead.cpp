@@ -6878,7 +6878,7 @@ namespace OpenLoco::Vehicles
             auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
             setTrainModFlags(train, *roadObj);
         }
-        else
+        else if (mode == TransportMode::rail)
         {
             // 0x004B7CCE
             auto* trackObj = ObjectManager::get<TrackObject>(trackType);
