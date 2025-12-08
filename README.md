@@ -35,7 +35,7 @@ Feel free to join our Discord server to talk about developing the game, or for h
 
 CSL was originally written in x86 assembly, building on top of the RollerCoaster Tycoon 2 engine. However, the engine has changed substantially enough that OpenLoco currently does not share its codebase with OpenRCT2.
 
-We have recently December 2025 completed reimplementing the game in C++. It is now our goal to get a solid multiplayer experience working in OpenLoco. It is also our goal to increase the map and vehicle limits. However, until creating a new save format (NSF), we are bound to the limits imposed by the CSL save format (SV5/SC5).
+As of December 2025, we have completed reimplementing the game in C++. It is now our goal to get a solid multiplayer experience working in OpenLoco. It is also our goal to increase the map and vehicle limits. However, until creating a new save format (NSF), we are bound to the limits imposed by the CSL save format (SV5/SC5).
 
 ---
 
