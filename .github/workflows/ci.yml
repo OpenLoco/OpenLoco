@@ -53,7 +53,7 @@ jobs:
       - name: Build OpenLoco
         shell: cmd
         run: |
-          cmake --preset windows-ci -DVCPKG_BUILD_TYPE=release
+          cmake --preset windows-ci -DVCPKG_BUILD_TYPE=release -DCMAKE_CXX_COMPILER=cl
           cmake --build --preset windows-ci
       - name: Build release
         run: |
