@@ -26,7 +26,7 @@ jobs:
       - name: Run check-changelog-formatting
         run: scripts/check-changelog-formatting
   windows:
-    name: Windows
+    name: Windows x64
     runs-on: windows-latest
     needs: check-code-formatting
     env:
@@ -47,9 +47,85 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
-          key: ${{ runner.os }}-vcpkg-binary-cache-${{ hashFiles('vcpkg*.json') }}
+          key: ${{ runner.os }}-64-vcpkg-binary-cache-${{ hashFiles('vcpkg*.json') }}
           restore-keys: |
-            ${{ runner.os }}-vcpkg-binary-cache-
+            ${{ runner.os }}-64-vcpkg-binary-cache-
+      - name: Build OpenLoco
+        shell: cmd
+        run: |
+          cmake --preset windows-ci -DVCPKG_BUILD_TYPE=release
+          cmake --build --preset windows-ci
+      - name: Build release
+        run: |
+          mkdir artifacts | Out-Null
+          Copy-Item CHANGELOG.md,CONTRIBUTORS.md,LICENSE artifacts
+          Copy-Item build\windows-ci\Release\* artifacts -Recurse
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenLoco-${{ runner.os }}-x64
+          path: |
+            artifacts/
+            !artifacts/*.pdb
+          if-no-files-found: error
+      - name: Upload symbols artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenLoco-${{ runner.os }}-x64-symbols
+          path: |
+            artifacts/*.pdb
+          if-no-files-found: warn
+      - name: Checkout Assets
+        if: ${{ github.repository == 'OpenLoco/OpenLoco' && env.ASSETS_SSH_KEY != null }}
+        uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ env.ASSETS_SSH_KEY }}
+          repository: OpenLoco/LocomotionAssets
+          ref: gog
+          path: LocomotionAssets
+      - name: Checkout Test Data
+        if: ${{ github.repository == 'OpenLoco/OpenLoco' && env.ASSETS_SSH_KEY != null }}
+        uses: actions/checkout@v4
+        with:
+          repository: OpenLoco/TestData
+          ref: f8058d5a84293f866de6c899d183ba269eed7d0a
+          path: TestData
+      - name: Run Simulate Test
+        if: ${{ github.repository == 'OpenLoco/OpenLoco' && env.ASSETS_SSH_KEY != null }}
+        shell: bash
+        run: |
+          set -e
+          ./build/windows-ci/Release/OpenLoco.exe --locomotion_path "./LocomotionAssets" simulate "./TestData/Saves/MMTest.SV5" 100000 -o "result.sv5"
+          ./build/windows-ci/Release/OpenLoco.exe --locomotion_path "./LocomotionAssets" compare "./TestData/Saves/MMTest100000_base.SV5" "result.sv5"
+      - name: Run Tests
+        shell: cmd
+        run: |
+          ctest --test-dir build\windows-ci\ --output-on-failure
+  windows32:
+    name: Windows Win32
+    runs-on: windows-latest
+    needs: check-code-formatting
+    env:
+      CONFIGURATION: Release
+      POWERSHELL_TELEMETRY_OPTOUT: 1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: true
+      - name: Setup cache env vars
+        run: |
+          echo "VCPKG_DEFAULT_BINARY_CACHE=${{ github.workspace }}/vcpkg-cache" | Out-File -FilePath $env:GITHUB_ENV -Append
+      - name: Setup cache directories
+        run: mkdir ${{ env.VCPKG_DEFAULT_BINARY_CACHE }} | Out-Null
+      - name: Set up binary cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
+          key: ${{ runner.os }}-32-vcpkg-binary-cache-${{ hashFiles('vcpkg*.json') }}
+          restore-keys: |
+            ${{ runner.os }}-32-vcpkg-binary-cache-
       - name: Build OpenLoco
         shell: cmd
         run: |
@@ -75,28 +151,6 @@ jobs:
           path: |
             artifacts/*.pdb
           if-no-files-found: warn
-      - name: Checkout Assets
-        if: ${{ github.repository == 'OpenLoco/OpenLoco' && env.ASSETS_SSH_KEY != null }}
-        uses: actions/checkout@v4
-        with:
-          ssh-key: ${{ env.ASSETS_SSH_KEY }}
-          repository: OpenLoco/LocomotionAssets
-          ref: gog
-          path: LocomotionAssets
-      - name: Checkout Test Data
-        if: ${{ github.repository == 'OpenLoco/OpenLoco' && env.ASSETS_SSH_KEY != null }}
-        uses: actions/checkout@v4
-        with:
-          repository: OpenLoco/TestData
-          ref: f8058d5a84293f866de6c899d183ba269eed7d0a
-          path: TestData
-      - name: Run Simulate Test
-        if: ${{ github.repository == 'OpenLoco/OpenLoco' && env.ASSETS_SSH_KEY != null }}
-        shell: bash
-        run: |
-          set -e
-          ./build/windows-x86-32-ci/Release/OpenLoco.exe --locomotion_path "./LocomotionAssets" simulate "./TestData/Saves/MMTest.SV5" 100000 -o "result.sv5"
-          ./build/windows-x86-32-ci/Release/OpenLoco.exe --locomotion_path "./LocomotionAssets" compare "./TestData/Saves/MMTest100000_base.SV5" "result.sv5"
       - name: Run Tests
         shell: cmd
         run: |
