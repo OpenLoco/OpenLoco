@@ -43,8 +43,8 @@
             "inherits": "windows-base",
             "generator": "Visual Studio 17 2022",
             "architecture": {
-                "value": "host=x86",
-                "strategy": "external"
+                "strategy": "set",
+                "value": "Win32"
             },
             "cacheVariables": {
                 "VCPKG_TARGET_TRIPLET": {
