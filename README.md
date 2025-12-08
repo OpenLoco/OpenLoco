@@ -64,7 +64,7 @@ You can use `clang-format` to apply these guidelines automatically.
 If you would like to contribute code to OpenLoco, please follow the instructions below to get started compiling the game.
 
 If you just want to play the game, you can just [download the latest release](https://github.com/OpenLoco/OpenLoco/releases) from GitHub.
-Releases are provided for Windows (32-bit only) / Linux (64-bit only) / MacOS (arm64 only).
+Releases are provided for Windows (64 & 32-bit) / Linux (64-bit only) / MacOS (arm64 only).
 
 ## 4.1 Building prerequisites
 
