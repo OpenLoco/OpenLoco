@@ -786,9 +786,9 @@ target_link_libraries(OpenLoco
     Engine
     ${SDL2_LIB}
     Threads::Threads
-    yaml-cpp
+    yaml-cpp::yaml-cpp
     ZLIB::ZLIB # This shouldn't be required but vcpkg seems to not map the dependencies correctly for png static
-    ${PNG_LIBRARY}
+    PNG::PNG
     ${OPENAL_LIBRARIES})
 
 if (WIN32)
