@@ -42,7 +42,7 @@ As of December 2025, we have completed reimplementing the game in C++. It is now
 # 2 Downloading the game (pre-built)
 
 The latest releases can be [downloaded from GitHub](https://github.com/OpenLoco/OpenLoco/releases). Releases are currently provided for Windows, Linux and MacOS.
-For BSD distributions, we currently do not provide any builds. Please refer to the next section to compile the game manually. For macOS the builds are unsigned and unnotarized this may mean that Gatekeeper blocks them.
+For BSD distributions, we currently do not provide any builds. Please refer to the next section to compile the game manually. For macOS the builds are unsigned and unnotarized. This means that Gatekeeper may block them.
 
 Please note that OpenLoco requires the asset files of the original Chris Sawyer's Locomotion to play the game.
 It can be bought at e.g. [Steam](https://store.steampowered.com/app/356430/) or [GOG.com](https://www.gog.com/game/chris_sawyers_locomotion).
