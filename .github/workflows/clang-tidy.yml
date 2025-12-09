@@ -10,4 +10,4 @@ jobs:
     - uses: ZehMatt/clang-tidy-annotations@v1
       with:
         build_dir: 'build'
-        cmake_args: '--preset linux -DCMAKE_CXX_COMPILER=clang++'
+        cmake_args: '--preset posix -DCMAKE_CXX_COMPILER=clang++'
