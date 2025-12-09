@@ -84,8 +84,8 @@ namespace OpenLoco::ObjectManager
 
     struct ObjectRepositoryItem
     {
-        Object** objects;
-        ObjectEntry2* objectEntryExtendeds;
+        std::span<Object*> objects;
+        std::span<ObjectEntry2> objectEntryExtendeds;
     };
 
     static_assert(Traits::IsPOD<ObjectHeader>::value, "Object Header must be trivial for I/O purposes");
@@ -106,8 +106,8 @@ namespace OpenLoco::ObjectManager
     constexpr ObjectRepositoryItem makeRepositoryItem()
     {
         return ObjectRepositoryItem{
-            ObjectStorage<Type>::objects.data(),
-            ObjectStorage<Type>::objectEntryExtendeds.data()
+            ObjectStorage<Type>::objects,
+            ObjectStorage<Type>::objectEntryExtendeds
         };
     }
 
