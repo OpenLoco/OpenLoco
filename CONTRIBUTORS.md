@@ -38,6 +38,7 @@ Includes all git commit authors. Aliases are GitHub user names.
 * Slovak - Peter Gaál (petergaal)
 * Spanish - extracted from original game
 * Swedish - (slicke)
+* Turkish - (erdikayaTR)
 * Chinese (Simplified) - (TransshipmentEnvoy)
 
 ## Graphics
