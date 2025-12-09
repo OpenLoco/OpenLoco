@@ -794,34 +794,38 @@ namespace OpenLoco::Input
             dx = x - _dragLast.x;
             dy = y - _dragLast.y;
 
-            // Do not resize if mouse is before the resize handle (assumes handle is the bottom-right pixel of the window)
-            if (dy > 0)
-            {
-                if (y < w->y + w->height)
-                {
-                    dy = 0;
-                }
-            }
-            else if (dy < 0)
-            {
-                if (y > w->y + w->height)
-                {
-                    dy = 0;
-                }
-            }
+            // Assume the resize handle position is the bottom-right pixel of the window.
+            auto handle_x = w->x + w->width;
+            auto handle_y = w->y + w->height;
 
+            // Do not resize if the mouse is moving towards the resize handle.
             if (dx > 0)
             {
-                if (x < w->x + w->width)
+                if (x < handle_x)
                 {
                     dx = 0;
                 }
             }
             else if (dx < 0)
             {
-                if (x > w->x + w->width)
+                if (x > handle_x)
                 {
                     dx = 0;
+                }
+            }
+
+            if (dy > 0)
+            {
+                if (y < handle_y)
+                {
+                    dy = 0;
+                }
+            }
+            else if (dy < 0)
+            {
+                if (y > handle_y)
+                {
+                    dy = 0;
                 }
             }
 
