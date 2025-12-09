@@ -30,13 +30,6 @@
             }
         },
         {
-            "name": "windows-ci",
-            "displayName": "x86-64",
-            "description": "CI configure environment for Windows x86-64",
-            "inherits": "windows",
-            "generator": "Ninja"
-        },
-        {
             "name": "windows-x86-32-ci",
             "displayName": "x86-32 CI",
             "description": "CI configure environment for Windows x86-32",
@@ -195,13 +188,6 @@
             "configurePreset": "windows",
             "displayName": "Release",
             "description": "Build Release Configuration",
-            "configuration": "Release"
-        },
-        {
-            "name": "windows-ci",
-            "configurePreset": "windows-ci",
-            "displayName": "Release",
-            "description": "Build Release x86-64 CI Configuration",
             "configuration": "Release"
         },
         {
