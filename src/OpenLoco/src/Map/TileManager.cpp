@@ -132,7 +132,7 @@ namespace OpenLoco::World::TileManager
 
     uint32_t numFreeElements()
     {
-        return kMaxElements - _elementsEnd;
+        return static_cast<uint32_t>(kMaxElements - _elementsEnd);
     }
 
     void setElements(std::span<TileElement> elements)

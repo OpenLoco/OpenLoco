@@ -794,7 +794,7 @@ namespace OpenLoco::Vehicles
     uint32_t VehicleHead::getCarCount() const
     {
         Vehicle train(head);
-        return train.cars.size();
+        return static_cast<uint32_t>(train.cars.size());
     }
 
     // 0x004B8FA2
@@ -6568,7 +6568,7 @@ namespace OpenLoco::Vehicles
         // Very similar to code in VehicleManager::placeDownVehicle
         if (mode == TransportMode::road)
         {
-            const auto subPositionLength = World::TrackData::getRoadSubPositon(newTad.road._data).size();
+            const auto subPositionLength = static_cast<uint32_t>(World::TrackData::getRoadSubPositon(newTad.road._data).size());
             newSubPos = subPositionLength - 1 - train.veh2->subPosition;
 
             const auto& roadSize = World::TrackData::getUnkRoad(newTad.road.basicRad());
@@ -6590,7 +6590,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            const auto subPositionLength = World::TrackData::getTrackSubPositon(newTad.track._data).size();
+            const auto subPositionLength = static_cast<uint32_t>(World::TrackData::getTrackSubPositon(newTad.track._data).size());
             newSubPos = subPositionLength - 1 - train.veh2->subPosition;
 
             const auto& trackSize = World::TrackData::getUnkTrack(newTad.track._data);

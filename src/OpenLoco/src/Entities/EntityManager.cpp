@@ -27,12 +27,12 @@ namespace OpenLoco::EntityManager
 
     constexpr uint8_t getLinkedListOffset(EntityListType list)
     {
-        return enumValue(list) * sizeof(uint16_t);
+        return enumValue(list) * static_cast<uint8_t>(sizeof(uint16_t));
     }
 
     constexpr size_t getLinkedListIndex(uint8_t offset)
     {
-        return offset / sizeof(uint16_t);
+        return offset / static_cast<uint8_t>(sizeof(uint16_t));
     }
 
     // 0x0046FDFD

@@ -1398,7 +1398,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x4B38FA
         static void getScrollSize(Ui::Window& self, [[maybe_unused]] const uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            scrollHeight = Common::getNumCars(self) * self.rowHeight;
+            scrollHeight = static_cast<int32_t>(Common::getNumCars(self) * self.rowHeight);
         }
 
         // 0x004B3B54
@@ -2493,7 +2493,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B4360
         static void getScrollSize(Ui::Window& self, [[maybe_unused]] const uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            scrollHeight = Common::getNumCars(self) * self.rowHeight;
+            scrollHeight = static_cast<int32_t>(Common::getNumCars(self) * self.rowHeight);
         }
 
         static char* generateCargoTooltipDetails(char* buffer, const StringId cargoFormat, const uint8_t cargoType, const uint8_t maxCargo, const uint32_t acceptedCargoTypes)

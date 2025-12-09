@@ -172,28 +172,28 @@ namespace OpenLoco::ObjectManager
         stream.writeValue(entry._header);
 
         // Filepath
-        stream.writeValue<uint32_t>(entry._filepath.size());
+        stream.writeValue<uint32_t>(static_cast<uint32_t>(entry._filepath.size()));
         stream.write(entry._filepath.data(), entry._filepath.size());
 
         // Header2
         stream.writeValue(entry._header2.decodedFileSize);
 
         // Name
-        stream.writeValue<uint32_t>(entry._name.size());
+        stream.writeValue<uint32_t>(static_cast<uint32_t>(entry._name.size()));
         stream.write(entry._name.data(), entry._name.size());
 
         // Header3
         stream.write(&entry._displayData, sizeof(entry._displayData));
 
         // ObjectList1
-        stream.writeValue<uint32_t>(entry._alsoLoadObjects.size());
+        stream.writeValue<uint32_t>(static_cast<uint32_t>(entry._alsoLoadObjects.size()));
         for (auto& alo : entry._alsoLoadObjects)
         {
             stream.writeValue(alo);
         }
 
         // ObjectList2
-        stream.writeValue<uint32_t>(entry._requiredObjects.size());
+        stream.writeValue<uint32_t>(static_cast<uint32_t>(entry._requiredObjects.size()));
         for (auto& ro : entry._requiredObjects)
         {
             stream.writeValue(ro);
@@ -206,7 +206,7 @@ namespace OpenLoco::ObjectManager
         stream.writeValue(ofs.totalFileSize);
         stream.writeValue(ofs.dateHash);
 
-        stream.writeValue<uint32_t>(ofs.basePath.size());
+        stream.writeValue<uint32_t>(static_cast<uint32_t>(ofs.basePath.size()));
         stream.write(ofs.basePath.data(), ofs.basePath.size());
     }
 
@@ -225,7 +225,7 @@ namespace OpenLoco::ObjectManager
     static void serialiseIndex(Stream& stream, const IndexHeader& header, const std::vector<ObjectIndexEntry>& entries)
     {
         serialiseHeader(stream, header);
-        stream.writeValue<uint32_t>(entries.size());
+        stream.writeValue<uint32_t>(static_cast<uint32_t>(entries.size()));
         for (auto& entry : entries)
         {
             serialiseEntry(stream, entry);
@@ -487,7 +487,7 @@ namespace OpenLoco::ObjectManager
         // New index creation completed. Reset and save result.
         reloadAll();
         header.fileSize = 0;
-        header.numObjects = _installedObjectList.size();
+        header.numObjects = static_cast<uint32_t>(_installedObjectList.size());
         header.state = currentState;
         saveIndex(header);
 
@@ -568,7 +568,7 @@ namespace OpenLoco::ObjectManager
 
     uint32_t getNumInstalledObjects()
     {
-        return _installedObjectList.size();
+        return static_cast<uint32_t>(_installedObjectList.size());
     }
 
     std::vector<ObjIndexPair> getAvailableObjects(ObjectType type)
@@ -1064,7 +1064,7 @@ namespace OpenLoco::ObjectManager
     {
         std::array<uint8_t, kMaxObjects> allLoadedObjectFlags{};
         std::array<std::span<uint8_t>, kMaxObjectTypes> loadedObjectFlags;
-        auto count = 0;
+        size_t count = 0U;
         for (uint8_t i = 0; i < kMaxObjectTypes; ++i)
         {
             const auto type = static_cast<ObjectType>(i);
@@ -1157,7 +1157,7 @@ namespace OpenLoco::ObjectManager
     {
         std::array<uint8_t, kMaxObjects> allLoadedObjectFlags{};
         std::array<std::span<uint8_t>, kMaxObjectTypes> loadedObjectFlags;
-        auto count = 0;
+        size_t count = 0U;
         for (uint8_t i = 0; i < kMaxObjectTypes; ++i)
         {
             const auto type = static_cast<ObjectType>(i);

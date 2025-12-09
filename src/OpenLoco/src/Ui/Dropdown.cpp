@@ -169,10 +169,10 @@ namespace OpenLoco::Ui::Dropdown
         add(index, title);
         std::byte* args = _dropdownItemArgs[index];
 
-        int32_t copyLength = std::min(fArgs.getLength(), sizeof(_dropdownItemArgs[index]));
+        int32_t copyLength = static_cast<int32_t>(std::min(fArgs.getLength(), sizeof(_dropdownItemArgs[index])));
 
         memcpy(args, fArgs.getBufferStart(), copyLength);
-        copyLength = std::min(fArgs.getLength() - sizeof(_dropdownItemArgs[index]), sizeof(_dropdownItemArgs2[index]));
+        copyLength = std::min(static_cast<int32_t>(fArgs.getLength() - sizeof(_dropdownItemArgs[index])), static_cast<int32_t>(sizeof(_dropdownItemArgs2[index])));
         if (copyLength > 0)
         {
             args = _dropdownItemArgs2[index];
@@ -530,7 +530,7 @@ namespace OpenLoco::Ui::Dropdown
 
         _dropdownItemCount = static_cast<uint16_t>(count);
         _dropdownRowCount = 0;
-        _dropdownRowCount = count;
+        _dropdownRowCount = static_cast<uint32_t>(count);
 
         int16_t dropdownHeight = (static_cast<int16_t>(count) * _dropdownItemHeight) + 3;
         common::widgets[0].bottom = dropdownHeight;
