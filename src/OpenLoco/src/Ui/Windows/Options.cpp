@@ -2775,7 +2775,7 @@ namespace OpenLoco::Ui::Windows::Options
         TextInput::sub_4CE6C9(self.type, self.number);
         self.currentTab = wi - Common::Widx::tab_display;
         self.frameNo = 0;
-        self.flags &= ~(WindowFlags::beingResized);
+        self.flags &= ~(WindowFlags::maximised);
         self.disabledWidgets = 0;
         self.holdableWidgets = 0;
         self.activatedWidgets = 0;
