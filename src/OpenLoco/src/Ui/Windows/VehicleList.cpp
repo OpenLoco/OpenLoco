@@ -538,57 +538,13 @@ namespace OpenLoco::Ui::Windows::VehicleList
             StringIds::stringid_ships,
         };
 
-        // Basic frame widget dimensions
-        self.widgets[Widx::frame].right = self.width - 1;
-        self.widgets[Widx::frame].bottom = self.height - 1;
-
-        self.widgets[Widx::panel].right = self.width - 1;
-        self.widgets[Widx::panel].bottom = self.height - 1;
-
-        self.widgets[Widx::caption].right = self.width - 2;
         self.widgets[Widx::caption].text = kTypeToCaption[self.currentTab];
-
-        self.widgets[Widx::close_button].left = self.width - 15;
-        self.widgets[Widx::close_button].right = self.width - 3;
-
-        self.widgets[Widx::scrollview].right = self.width - 4;
-        self.widgets[Widx::scrollview].bottom = self.height - 14;
-        self.widgets[Widx::status_bar].right = self.width - kResizeHandleSize - 1;
-
-        // Reposition table headers
-        self.widgets[Widx::sort_name].right = std::min(self.width - 4, 313);
-
-        self.widgets[Widx::sort_profit].left = std::min(self.width - 4, 314);
-        self.widgets[Widx::sort_profit].right = std::min(self.width - 4, 413);
-
-        self.widgets[Widx::sort_age].left = std::min(self.width - 4, 414);
-        self.widgets[Widx::sort_age].right = std::min(self.width - 4, 478);
-
-        self.widgets[Widx::sort_reliability].left = std::min(self.width - 4, 479);
-        self.widgets[Widx::sort_reliability].right = std::min(self.width - 4, 545);
-
-        // Reposition company selection
-        self.widgets[Widx::company_select].left = self.width - 28;
-        self.widgets[Widx::company_select].right = self.width - 3;
 
         // Set header button captions.
         self.widgets[Widx::sort_name].text = self.sortMode == SortMode::Name ? StringIds::table_header_name_desc : StringIds::table_header_name;
         self.widgets[Widx::sort_profit].text = self.sortMode == SortMode::Profit ? StringIds::table_header_monthly_profit_desc : StringIds::table_header_monthly_profit;
         self.widgets[Widx::sort_age].text = self.sortMode == SortMode::Age ? StringIds::table_header_age_desc : StringIds::table_header_age;
         self.widgets[Widx::sort_reliability].text = self.sortMode == SortMode::Reliability ? StringIds::table_header_reliability_desc : StringIds::table_header_reliability;
-
-        // Reposition filter dropdowns
-        self.widgets[Widx::filter_type].top = self.height - 13;
-        self.widgets[Widx::filter_type].bottom = self.height - 2;
-
-        self.widgets[Widx::filter_type_btn].top = self.height - 12;
-        self.widgets[Widx::filter_type_btn].bottom = self.height - 3;
-
-        self.widgets[Widx::cargo_type].top = self.height - 13;
-        self.widgets[Widx::cargo_type].bottom = self.height - 2;
-
-        self.widgets[Widx::cargo_type_btn].top = self.height - 12;
-        self.widgets[Widx::cargo_type_btn].bottom = self.height - 3;
 
         // Disable cargo dropdown if not applicable
         if (self.var_88A != FilterMode::transportingCargo)
@@ -1182,6 +1138,51 @@ namespace OpenLoco::Ui::Windows::VehicleList
             self.height = self.minHeight;
             self.invalidate();
         }
+
+        // Basic frame widget dimensions
+        self.widgets[Widx::frame].right = self.width - 1;
+        self.widgets[Widx::frame].bottom = self.height - 1;
+
+        self.widgets[Widx::panel].right = self.width - 1;
+        self.widgets[Widx::panel].bottom = self.height - 1;
+
+        self.widgets[Widx::caption].right = self.width - 2;
+
+        self.widgets[Widx::close_button].left = self.width - 15;
+        self.widgets[Widx::close_button].right = self.width - 3;
+
+        self.widgets[Widx::scrollview].right = self.width - 4;
+        self.widgets[Widx::scrollview].bottom = self.height - 14;
+        self.widgets[Widx::status_bar].right = self.width - kResizeHandleSize - 1;
+
+        // Reposition table headers
+        self.widgets[Widx::sort_name].right = std::min(self.width - 4, 313);
+
+        self.widgets[Widx::sort_profit].left = std::min(self.width - 4, 314);
+        self.widgets[Widx::sort_profit].right = std::min(self.width - 4, 413);
+
+        self.widgets[Widx::sort_age].left = std::min(self.width - 4, 414);
+        self.widgets[Widx::sort_age].right = std::min(self.width - 4, 478);
+
+        self.widgets[Widx::sort_reliability].left = std::min(self.width - 4, 479);
+        self.widgets[Widx::sort_reliability].right = std::min(self.width - 4, 545);
+
+        // Reposition company selection
+        self.widgets[Widx::company_select].left = self.width - 28;
+        self.widgets[Widx::company_select].right = self.width - 3;
+
+        // Reposition filter dropdowns
+        self.widgets[Widx::filter_type].top = self.height - 13;
+        self.widgets[Widx::filter_type].bottom = self.height - 2;
+
+        self.widgets[Widx::filter_type_btn].top = self.height - 12;
+        self.widgets[Widx::filter_type_btn].bottom = self.height - 3;
+
+        self.widgets[Widx::cargo_type].top = self.height - 13;
+        self.widgets[Widx::cargo_type].bottom = self.height - 2;
+
+        self.widgets[Widx::cargo_type_btn].top = self.height - 12;
+        self.widgets[Widx::cargo_type_btn].bottom = self.height - 3;
     }
 
     static constexpr WindowEventList kEvents = {
