@@ -78,6 +78,7 @@ endif()
 include(FindPkgConfig)
 include(CheckCXXCompilerFlag)
 include(GNUInstallDirs)
+include(OpenLocoCommon)
 include(OpenLocoUtility)
 
 option(STRICT "Build with warnings as errors" YES)
@@ -154,4 +155,3 @@ if (NOT APPLE)
     install(DIRECTORY "data/" DESTINATION "${CMAKE_INSTALL_BINDIR}/data")
     install(DIRECTORY "${openloco_objects_SOURCE_DIR}" DESTINATION "${CMAKE_INSTALL_BINDIR}/data/objects")
 endif()
-
