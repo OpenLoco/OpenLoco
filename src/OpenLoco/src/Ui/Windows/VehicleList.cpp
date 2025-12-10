@@ -1181,28 +1181,38 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self.widgets[Widx::company_select].left = self.width - 28;
         self.widgets[Widx::company_select].right = self.width - 3;
 
-        // Reposition filter/cargo dropdowns, starting from the right
-        auto cargoTypeWidth = _widgets[Widx::cargo_type].width();
-        self.widgets[Widx::cargo_type].top = self.height - 13;
-        self.widgets[Widx::cargo_type].bottom = self.height - 2;
-        self.widgets[Widx::cargo_type].right = self.width - kResizeHandleSize - 2;
-        self.widgets[Widx::cargo_type].left = self.widgets[Widx::cargo_type].right - cargoTypeWidth;
-
-        self.widgets[Widx::cargo_type_btn].top = self.height - 12;
-        self.widgets[Widx::cargo_type_btn].bottom = self.height - 3;
-        self.widgets[Widx::cargo_type_btn].right = self.widgets[Widx::cargo_type].right - 1;
-        self.widgets[Widx::cargo_type_btn].left = self.widgets[Widx::cargo_type].right - 10;
-
         auto filterWidth = _widgets[Widx::filter_type].width();
-        self.widgets[Widx::filter_type].top = self.height - 13;
-        self.widgets[Widx::filter_type].bottom = self.height - 2;
-        self.widgets[Widx::filter_type].right = self.widgets[Widx::cargo_type].left - 2;
-        self.widgets[Widx::filter_type].left = self.widgets[Widx::filter_type].right - filterWidth;
+        auto cargoTypeWidth = _widgets[Widx::cargo_type].width();
+        bool enoughSpaceForCargoFilters = self.width > cargoTypeWidth + filterWidth + 75;
 
-        self.widgets[Widx::filter_type_btn].top = self.height - 12;
-        self.widgets[Widx::filter_type_btn].bottom = self.height - 3;
-        self.widgets[Widx::filter_type_btn].right = self.widgets[Widx::filter_type].right - 1;
-        self.widgets[Widx::filter_type_btn].left = self.widgets[Widx::filter_type].right - 10;
+        self.widgets[Widx::cargo_type].hidden = !enoughSpaceForCargoFilters;
+        self.widgets[Widx::cargo_type_btn].hidden = !enoughSpaceForCargoFilters;
+        self.widgets[Widx::filter_type].hidden = !enoughSpaceForCargoFilters;
+        self.widgets[Widx::filter_type_btn].hidden = !enoughSpaceForCargoFilters;
+
+        // Reposition filter/cargo dropdowns, starting from the right
+        if (enoughSpaceForCargoFilters)
+        {
+            self.widgets[Widx::cargo_type].top = self.height - 13;
+            self.widgets[Widx::cargo_type].bottom = self.height - 2;
+            self.widgets[Widx::cargo_type].right = self.width - kResizeHandleSize - 2;
+            self.widgets[Widx::cargo_type].left = self.widgets[Widx::cargo_type].right - cargoTypeWidth;
+
+            self.widgets[Widx::cargo_type_btn].top = self.height - 12;
+            self.widgets[Widx::cargo_type_btn].bottom = self.height - 3;
+            self.widgets[Widx::cargo_type_btn].right = self.widgets[Widx::cargo_type].right - 1;
+            self.widgets[Widx::cargo_type_btn].left = self.widgets[Widx::cargo_type].right - 10;
+
+            self.widgets[Widx::filter_type].top = self.height - 13;
+            self.widgets[Widx::filter_type].bottom = self.height - 2;
+            self.widgets[Widx::filter_type].right = self.widgets[Widx::cargo_type].left - 2;
+            self.widgets[Widx::filter_type].left = self.widgets[Widx::filter_type].right - filterWidth;
+
+            self.widgets[Widx::filter_type_btn].top = self.height - 12;
+            self.widgets[Widx::filter_type_btn].bottom = self.height - 3;
+            self.widgets[Widx::filter_type_btn].right = self.widgets[Widx::filter_type].right - 1;
+            self.widgets[Widx::filter_type_btn].left = self.widgets[Widx::filter_type].right - 10;
+        }
 
         // Use remaining space for status bar
         self.widgets[Widx::status_bar].right = self.width - kResizeHandleSize - 1;
