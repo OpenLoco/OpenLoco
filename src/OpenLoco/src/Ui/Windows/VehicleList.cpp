@@ -681,6 +681,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             drawTrainInline(drawingCtx, vehicle, Ui::Point(0, yPos + (self.rowHeight - 28) / 2 + 6));
 
             // Draw vehicle status
+            auto& statusHeader = self.widgets[Widx::sort_name];
             {
                 // Prepare status for drawing
                 auto status = head->getStatus();
@@ -700,11 +701,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
                 // Draw status
                 yPos += 2;
-                auto point = Point(1, yPos);
-                tr.drawStringLeftClipped(point, 308, AdvancedColour(Colour::black).outline(), format, args);
+                auto point = Point(statusHeader.left + 1, yPos);
+                tr.drawStringLeftClipped(point, statusHeader.width() - 2, AdvancedColour(Colour::black).outline(), format, args);
             }
 
             // Vehicle profit
+            auto& profitHeader = self.widgets[Widx::sort_profit];
             {
                 StringId format = StringIds::vehicle_list_profit_pos;
                 currency32_t profit = vehicle.veh2->totalRecentProfit() / 4;
@@ -715,11 +717,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 }
 
                 auto args = FormatArguments::common(profit);
-                auto point = Point(310, yPos);
-                tr.drawStringLeftClipped(point, 98, AdvancedColour(Colour::black).outline(), format, args);
+                auto point = Point(profitHeader.left + 1, yPos);
+                tr.drawStringLeftClipped(point, profitHeader.width() - 2, AdvancedColour(Colour::black).outline(), format, args);
             }
 
             // Vehicle age
+            auto& ageHeader = self.widgets[Widx::sort_age];
             {
                 StringId format = StringIds::vehicle_list_age_years;
                 auto age = (getCurrentDay() - vehicle.veh1->dayCreated) / 365;
@@ -729,16 +732,17 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 }
 
                 auto args = FormatArguments::common(age);
-                auto point = Point(410, yPos);
-                tr.drawStringLeftClipped(point, 63, AdvancedColour(Colour::black).outline(), format, args);
+                auto point = Point(ageHeader.left + 1, yPos);
+                tr.drawStringLeftClipped(point, ageHeader.width() - 2, AdvancedColour(Colour::black).outline(), format, args);
             }
 
             // Vehicle reliability
+            auto& reliabilityHeader = self.widgets[Widx::sort_reliability];
             {
                 int16_t reliability = vehicle.veh2->reliability;
                 auto args = FormatArguments::common(reliability);
-                auto point = Point(475, yPos);
-                tr.drawStringLeftClipped(point, 65, AdvancedColour(Colour::black).outline(), StringIds::vehicle_list_reliability, args);
+                auto point = Point(reliabilityHeader.left + 1, yPos);
+                tr.drawStringLeftClipped(point, reliabilityHeader.width() - 2, AdvancedColour(Colour::black).outline(), StringIds::vehicle_list_reliability, args);
             }
 
             yPos += self.rowHeight - 2;
@@ -1154,17 +1158,24 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self.widgets[Widx::scrollview].right = self.width - 4;
         self.widgets[Widx::scrollview].bottom = self.height - 14;
 
+        auto nameHeaderWidth = _widgets[Widx::sort_name].width();
+        auto profitHeaderWidth = _widgets[Widx::sort_profit].width();
+        auto ageHeaderWidth = _widgets[Widx::sort_age].width();
+        auto reliabilityHeaderWidth = _widgets[Widx::sort_reliability].width();
+
+        nameHeaderWidth = std::max<uint16_t>(nameHeaderWidth, self.width - profitHeaderWidth - ageHeaderWidth - reliabilityHeaderWidth);
+
         // Reposition table headers
-        self.widgets[Widx::sort_name].right = std::min(self.width - 4, 313);
+        self.widgets[Widx::sort_name].right = std::min<uint16_t>(nameHeaderWidth, self.width - 4);
 
-        self.widgets[Widx::sort_profit].left = std::min(self.width - 4, 314);
-        self.widgets[Widx::sort_profit].right = std::min(self.width - 4, 413);
+        self.widgets[Widx::sort_profit].left = std::min<uint16_t>(self.widgets[Widx::sort_name].right + 1, self.width - 4);
+        self.widgets[Widx::sort_profit].right = std::min<uint16_t>(self.widgets[Widx::sort_profit].left + profitHeaderWidth, self.width - 4);
 
-        self.widgets[Widx::sort_age].left = std::min(self.width - 4, 414);
-        self.widgets[Widx::sort_age].right = std::min(self.width - 4, 478);
+        self.widgets[Widx::sort_age].left = std::min<uint16_t>(self.widgets[Widx::sort_profit].right + 1, self.width - 4);
+        self.widgets[Widx::sort_age].right = std::min<uint16_t>(self.widgets[Widx::sort_age].left + ageHeaderWidth, self.width - 4);
 
-        self.widgets[Widx::sort_reliability].left = std::min(self.width - 4, 479);
-        self.widgets[Widx::sort_reliability].right = std::min(self.width - 4, 545);
+        self.widgets[Widx::sort_reliability].left = std::min<uint16_t>(self.widgets[Widx::sort_age].right + 1, self.width - 4);
+        self.widgets[Widx::sort_reliability].right = std::min<uint16_t>(self.widgets[Widx::sort_reliability].left + reliabilityHeaderWidth, self.width - 4);
 
         // Reposition company selection
         self.widgets[Widx::company_select].left = self.width - 28;
