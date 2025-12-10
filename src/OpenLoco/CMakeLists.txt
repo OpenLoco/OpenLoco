@@ -1,54 +1,3 @@
-include(FindGit)
-
-find_package(Git)
-if (Git_FOUND)
-    # Describe current version in terms of closest tag
-    execute_process(
-        COMMAND ${GIT_EXECUTABLE} describe HEAD --always
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        OUTPUT_VARIABLE OPENLOCO_VERSION_TAG
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-        # ERROR_QUIET
-    )
-
-    if (OPENLOCO_VERSION_TAG)
-        # Use a platform agnostic sed equivalent to strip the commit hash from the version tag
-        # i.e. "v22.10-9-g8ff1d207" becomes "v22.10-9 "
-        string(REGEX REPLACE "-g.+$" " " OPENLOCO_VERSION_TAG ${OPENLOCO_VERSION_TAG})
-        # Has to be in two bits due to empty string not being possible to pass to REGEX REPLACE
-        string(STRIP ${OPENLOCO_VERSION_TAG} OPENLOCO_VERSION_TAG)
-    else()
-        # If a low fetch depth is used then nearest tag for git will fail
-        # so just use the project version in that case.
-        set(OPENLOCO_VERSION_TAG ${PROJECT_VERSION})
-    endif()
-    # Define current git branch
-    execute_process(
-        COMMAND ${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        OUTPUT_VARIABLE OPENLOCO_BRANCH
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-        ERROR_QUIET
-    )
-
-    # Define short commit hash
-    execute_process(
-        COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        OUTPUT_VARIABLE OPENLOCO_COMMIT_SHA1_SHORT
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-        ERROR_QUIET
-    )
-
-    # To avoid unnecessary rebuilds, set the current branch and short sha1 hash
-    # only for the one file that uses these definitions: Version.cpp
-    set_property(SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/src/Version.cpp"
-        PROPERTY COMPILE_DEFINITIONS
-        OPENLOCO_VERSION_TAG="${OPENLOCO_VERSION_TAG}"
-        OPENLOCO_BRANCH="${OPENLOCO_BRANCH}"
-        OPENLOCO_COMMIT_SHA1_SHORT="${OPENLOCO_COMMIT_SHA1_SHORT}")
-endif()
-
 # add source files Generated originally with: find src -type f -follow -name '*.cpp' -exec echo "\"\${CMAKE_CURRENT_SOURCE_DIR}/{}\"" \;
 set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/Audio.cpp"
@@ -404,7 +353,6 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/VehicleHead.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/VehicleManager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/VehicleTail.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Version.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Viewport.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ViewportManager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/World/CompanyAi/CompanyAi.cpp"
@@ -778,6 +726,7 @@ set(private_link_libraries
     Utility
     Math
     Engine
+    Version
     ${SDL2_LIB}
     Threads::Threads
     yaml-cpp::yaml-cpp
@@ -824,12 +773,12 @@ if (APPLE)
         MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/distribution/macos/Info.plist.in)
 
     set(MACOSX_BUNDLE_BUNDLE_NAME "OpenLoco")
-    set(MACOSX_BUNDLE_BUNDLE_VERSION "${OPENRCT2_COMMIT_SHA1_SHORT}")
+    set(MACOSX_BUNDLE_BUNDLE_VERSION "${OPENLOCO_COMMIT_SHA1_SHORT}")
     set(MACOSX_BUNDLE_COPYRIGHT "OpenLoco is licensed under the MIT License")
     set(MACOSX_BUNDLE_GUI_IDENTIFIER "io.openloco.OpenLoco")
     set(MACOSX_BUNDLE_ICON_FILE "AppIcon")
 
-    if(${OPENLOCO_BRANCH} EQUAL master)
+    if("${OPENLOCO_BRANCH}" STREQUAL "master")
         set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${OPENLOCO_VERSION_TAG}")
     else()
         set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${OPENLOCO_VERSION_TAG} ${OPENLOCO_BRANCH}")

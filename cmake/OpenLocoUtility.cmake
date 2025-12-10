@@ -261,7 +261,10 @@ function(_loco_add_target TARGET TYPE)
     endif()
     
     # Tell each target about the project directory.
-    target_compile_definitions(${TARGET} PRIVATE OPENLOCO_PROJECT_PATH="${OPENLOCO_PROJECT_PATH}")
+    # INTERFACE libraries can only have INTERFACE properties
+    if (NOT _INTERFACE)
+        target_compile_definitions(${TARGET} PRIVATE OPENLOCO_PROJECT_PATH="${OPENLOCO_PROJECT_PATH}")
+    endif()
 endfunction()
 
 function(loco_add_library TARGET TYPE)
