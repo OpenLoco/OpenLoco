@@ -740,29 +740,30 @@ set(private_link_libraries
     $<$<BOOL:${MINGW}>:version>
 )
 
+set(msvc_private_compile_definitions
+    _WINDLL
+    _MBCS
+    DEBUG_WIN32=1
+    _CRT_SECURE_NO_WARNINGS
+    _CRT_NONSTDC_NO_DEPRECATE
+    _USE_MATH_DEFINES
+    _WINSOCK_DEPRECATED_NO_WARNINGS
+)
+
+set(private_compile_definitions
+    SDL_MAIN_HANDLED
+    $<$<CXX_COMPILER_ID:MSVC>:${msvc_private_compile_definitions}>
+)
+
 loco_add_executable(OpenLoco 
     PRIVATE_FILES
         ${OLOCO_SOURCES}
         ${OLOCO_HEADERS}
     PRIVATE_LINK_LIBRARIES
         ${private_link_libraries}
+    PRIVATE_COMPILE_DEFINITIONS
+        ${private_compile_definitions}
 )
-
-target_compile_definitions(OpenLoco
-    PRIVATE
-        SDL_MAIN_HANDLED
- )
-if (MINGW)
-    # Already in private_link_libraries
-elseif (MSVC)
-    target_compile_definitions(OpenLoco
-        PRIVATE
-            _WINDLL _MBCS DEBUG_WIN32=1
-            _CRT_SECURE_NO_WARNINGS
-            _CRT_NONSTDC_NO_DEPRECATE
-            _USE_MATH_DEFINES
-            _WINSOCK_DEPRECATED_NO_WARNINGS)
-endif()
 
 if (APPLE)
     target_link_options(OpenLoco PRIVATE "-framework" "Cocoa")

@@ -147,7 +147,7 @@ function(loco_target_compile_link_flags TARGET)
 endfunction()
 
 function(_loco_add_target TARGET TYPE)
-    cmake_parse_arguments("" "LIBRARY;EXECUTABLE;INTERFACE" "" "PRIVATE_FILES;PUBLIC_FILES;TEST_FILES;PUBLIC_LINK_LIBRARIES;PRIVATE_LINK_LIBRARIES" ${ARGN})
+    cmake_parse_arguments("" "LIBRARY;EXECUTABLE;INTERFACE" "" "PRIVATE_FILES;PUBLIC_FILES;TEST_FILES;PUBLIC_LINK_LIBRARIES;PRIVATE_LINK_LIBRARIES;PUBLIC_COMPILE_DEFINITIONS;PRIVATE_COMPILE_DEFINITIONS" ${ARGN})
 
     if (${TYPE} STREQUAL "INTERFACE")
         set(_LIBRARY NO)
@@ -189,6 +189,15 @@ function(_loco_add_target TARGET TYPE)
         if (DEFINED _PRIVATE_LINK_LIBRARIES)
             target_link_libraries(${TARGET} PRIVATE ${_PRIVATE_LINK_LIBRARIES})
         endif()
+        
+        # Compile definitions
+        if (DEFINED _PUBLIC_COMPILE_DEFINITIONS)
+            target_compile_definitions(${TARGET} PUBLIC ${_PUBLIC_COMPILE_DEFINITIONS})
+        endif()
+        if (DEFINED _PRIVATE_COMPILE_DEFINITIONS)
+            target_compile_definitions(${TARGET} PRIVATE ${_PRIVATE_COMPILE_DEFINITIONS})
+        endif()
+        
         set_property(TARGET ${TARGET} PROPERTY RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
     elseif(_EXECUTABLE)
         add_executable(${TARGET}
@@ -209,6 +218,15 @@ function(_loco_add_target TARGET TYPE)
         if (DEFINED _PRIVATE_LINK_LIBRARIES)
             target_link_libraries(${TARGET} PRIVATE ${_PRIVATE_LINK_LIBRARIES})
         endif()
+        
+        # Compile definitions
+        if (DEFINED _PUBLIC_COMPILE_DEFINITIONS)
+            target_compile_definitions(${TARGET} PUBLIC ${_PUBLIC_COMPILE_DEFINITIONS})
+        endif()
+        if (DEFINED _PRIVATE_COMPILE_DEFINITIONS)
+            target_compile_definitions(${TARGET} PRIVATE ${_PRIVATE_COMPILE_DEFINITIONS})
+        endif()
+        
         set_property(TARGET ${TARGET} PROPERTY RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
     elseif(_INTERFACE)
         # We want to add the headers to the interface library so that it displays
