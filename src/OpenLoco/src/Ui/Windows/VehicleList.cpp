@@ -127,7 +127,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
     constexpr bool isCargoFilterActive(const Window& self, bool checkSelection = true)
     {
-        return self.var_88A == static_cast<int16_t>(FilterMode::transportingCargo) && (!checkSelection || self.var_88C != -1);
+        return self.var_850 == static_cast<uint16_t>(FilterMode::transportingCargo) && (!checkSelection || self.var_852 != 0xFFFF);
     }
 
     using Vehicles::VehicleHead;
@@ -172,7 +172,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 continue;
             }
 
-            if (isCargoFilterActive(self) && !vehicleIsTransportingCargo(vehicle, self.var_88C))
+            if (isCargoFilterActive(self) && !vehicleIsTransportingCargo(vehicle, self.var_852))
             {
                 continue;
             }
@@ -270,7 +270,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 continue;
             }
 
-            if (isCargoFilterActive(self) && !vehicleIsTransportingCargo(vehicle, self.var_88C))
+            if (isCargoFilterActive(self) && !vehicleIsTransportingCargo(vehicle, self.var_852))
             {
                 continue;
             }
@@ -466,8 +466,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->sortMode = 0;
         self->var_83C = 0;
         self->rowHover = -1;
-        self->var_88A = static_cast<int16_t>(FilterMode::allVehicles);
-        self->var_88C = -1;
+        self->var_850 = static_cast<int16_t>(FilterMode::allVehicles);
+        self->var_852 = 0xFFFF;
 
         refreshVehicleList(*self);
 
@@ -547,7 +547,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self.widgets[Widx::sort_reliability].text = self.sortMode == SortMode::Reliability ? StringIds::table_header_reliability_desc : StringIds::table_header_reliability;
 
         // Disable cargo dropdown if not applicable
-        if (self.var_88A != FilterMode::transportingCargo)
+        if (self.var_850 != FilterMode::transportingCargo)
         {
             self.disabledWidgets |= (1 << Widx::cargo_type) | (1 << Widx::cargo_type_btn);
         }
@@ -562,7 +562,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             StringIds::tooltip_open_station_window_to_filter,
             StringIds::tooltip_select_cargo_type,
         };
-        self.widgets[Widx::cargo_type_btn].tooltip = kFilterTooltipByType[self.var_88A];
+        self.widgets[Widx::cargo_type_btn].tooltip = kFilterTooltipByType[self.var_850];
 
         Widget::leftAlignTabs(self, Widx::tab_trains, Widx::tab_ships);
 
@@ -597,7 +597,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             // Set current filter type
             auto& widget = self.widgets[Widx::filter_type];
             FormatArguments args{ widget.textArgs };
-            args.push(kTypeToFilterStringIds[self.var_88A]);
+            args.push(kTypeToFilterStringIds[self.var_850]);
         }
 
         auto& widget = self.widgets[Widx::cargo_type];
@@ -607,10 +607,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
         if (isCargoFilterActive(self, false))
         {
             filterActive = true;
-            if (self.var_88C != -1)
+            if (self.var_852 != 0xFFFF)
             {
                 // Show current cargo
-                auto cargoObj = ObjectManager::get<CargoObject>(self.var_88C);
+                auto cargoObj = ObjectManager::get<CargoObject>(self.var_852);
                 args.push(StringIds::carrying_cargoid_sprite);
                 args.push(cargoObj->name);
                 args.push(cargoObj->unitInlineSprite);
@@ -848,7 +848,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::all_vehicles);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::transporting_cargo);
-            Dropdown::setItemSelected(self.var_88A);
+            Dropdown::setItemSelected(self.var_850);
         }
         else if (widgetIndex == Widx::cargo_type_btn)
         {
@@ -868,7 +868,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 args.push(cargoId);
                 Dropdown::add(index, StringIds::carrying_cargoid_sprite, args);
 
-                if (index == self.var_88C)
+                if (index == self.var_852)
                 {
                     selectedIndex = index;
                 }
@@ -935,16 +935,16 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         if (widgetIndex == filter_type_btn && itemIndex != -1)
         {
-            if (self.var_88A != itemIndex)
+            if (self.var_850 != itemIndex)
             {
-                self.var_88A = itemIndex;
-                self.var_88C = -1;
+                self.var_850 = itemIndex;
+                self.var_852 = 0xFFFF;
             }
         }
 
         else if (widgetIndex == cargo_type_btn && itemIndex != -1)
         {
-            self.var_88C = Dropdown::getItemArgument(itemIndex, 3);
+            self.var_852 = Dropdown::getItemArgument(itemIndex, 3);
         }
     }
 

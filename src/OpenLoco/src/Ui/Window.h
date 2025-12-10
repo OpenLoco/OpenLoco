@@ -208,8 +208,8 @@ namespace OpenLoco::Ui
         };
         uint16_t sortMode;
         uint16_t var_846 = 0;
-        uint16_t var_850 = 0;
-        uint16_t var_852 = 0;
+        uint16_t var_850 = 0; // vehicle list filter
+        uint16_t var_852 = 0; // vehicle list cargo; news ticks
         uint16_t var_854 = 0; // used to limit updates
         union
         {
@@ -220,8 +220,8 @@ namespace OpenLoco::Ui
         uint16_t currentTab = 0;
         uint16_t frameNo = 0;
         uint16_t currentSecondaryTab = 0;
-        int16_t var_88A;
-        int16_t var_88C;
+        int16_t var_88A; // map window orig width
+        int16_t var_88C; // map window orig height
         ViewportConfig viewportConfigurations[2];
         WindowType type;
         CompanyId owner = CompanyId::null;
