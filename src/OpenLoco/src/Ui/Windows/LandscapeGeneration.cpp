@@ -1619,7 +1619,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             self.currentTab = widgetIndex - widx::tab_options;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::beingResized);
+            self.flags &= ~(WindowFlags::maximised);
             self.disabledWidgets = 0;
 
             static const uint64_t* holdableWidgetsByTab[] = {

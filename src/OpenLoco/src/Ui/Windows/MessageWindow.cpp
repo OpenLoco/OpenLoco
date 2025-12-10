@@ -643,7 +643,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
             self.currentTab = widgetIndex - widx::tab_messages;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::beingResized);
+            self.flags &= ~(WindowFlags::maximised);
 
             self.viewportRemove(0);
 
