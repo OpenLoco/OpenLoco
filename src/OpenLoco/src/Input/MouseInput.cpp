@@ -798,35 +798,14 @@ namespace OpenLoco::Input
             auto handle_x = w->x + w->width;
             auto handle_y = w->y + w->height;
 
-            // Do not resize if the mouse is moving towards the resize handle.
-            if (dx > 0)
+            // Do not resize if the mouse is moving towards the resize handle, per axis.
+            if ((dx > 0) == (x < handle_x))
             {
-                if (x < handle_x)
-                {
-                    dx = 0;
-                }
+                dx = 0;
             }
-            else if (dx < 0)
+            if ((dy > 0) == (y < handle_y))
             {
-                if (x > handle_x)
-                {
-                    dx = 0;
-                }
-            }
-
-            if (dy > 0)
-            {
-                if (y < handle_y)
-                {
-                    dy = 0;
-                }
-            }
-            else if (dy < 0)
-            {
-                if (y > handle_y)
-                {
-                    dy = 0;
-                }
+                dy = 0;
             }
 
             if (dx == 0 && dy == 0)
