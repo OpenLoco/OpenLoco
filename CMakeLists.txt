@@ -87,8 +87,6 @@ option(OPENLOCO_HEADER_CHECK "Verify all public interfaces are standalone" NO)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
-set(DEBUG_LEVEL 0 CACHE STRING "Select debug level for compilation. Use value in range 0–3.")
-
 # Display source files nicely in IDEs
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 

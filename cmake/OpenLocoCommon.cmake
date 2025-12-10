@@ -81,4 +81,7 @@ target_link_options(OpenLocoCommonInterface INTERFACE
 )
 
 target_compile_features(OpenLocoCommonInterface INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
-target_compile_definitions(OpenLocoCommonInterface INTERFACE DEBUG=${DEBUG_LEVEL})
+target_compile_definitions(OpenLocoCommonInterface INTERFACE 
+    $<$<CONFIG:Debug>:DEBUG=1>
+    $<$<NOT:$<CONFIG:Debug>>:DEBUG=0>
+)
