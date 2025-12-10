@@ -738,7 +738,6 @@ set(private_link_libraries
     $<$<PLATFORM_ID:Windows>:Resources>
     $<$<BOOL:${MINGW}>:imm32>
     $<$<BOOL:${MINGW}>:version>
-    $<$<PLATFORM_ID:Darwin>:"-framework Cocoa">
 )
 
 loco_add_executable(OpenLoco 
@@ -766,7 +765,7 @@ elseif (MSVC)
 endif()
 
 if (APPLE)
-    # Already in private_link_libraries
+    target_link_options(OpenLoco PRIVATE "-framework" "Cocoa")
 
     set_target_properties(OpenLoco PROPERTIES
         MACOSX_BUNDLE ON
