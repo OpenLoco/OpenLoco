@@ -17,5 +17,5 @@ target_link_libraries(Gfx
     PUBLIC
         Core
         Diagnostics
-        ${PNG_LIBRARY}
+        PNG::PNG
 )

@@ -1866,7 +1866,7 @@ namespace OpenLoco::Ui::WindowManager
         // Draw the window in this region
         drawSingle(ctx, w, left, top, right, bottom);
 
-        for (uint32_t index = indexOf(*w) + 1; index < count(); index++)
+        for (auto index = indexOf(*w) + 1; index < count(); index++)
         {
             auto* v = get(index);
 

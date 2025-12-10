@@ -172,7 +172,7 @@ namespace OpenLoco::VehicleManager
                 return PlaceDownResult::Unk1;
             }
 
-            const auto subPositionLength = World::TrackData::getTrackSubPositon(trackAndDirection.track._data).size();
+            const auto subPositionLength = static_cast<uint32_t>(World::TrackData::getTrackSubPositon(trackAndDirection.track._data).size());
             subPosition = subPositionLength - 1 - initialSubPosition;
 
             const auto& trackSize = World::TrackData::getUnkTrack(trackAndDirection.track._data);
@@ -186,7 +186,7 @@ namespace OpenLoco::VehicleManager
         else
         {
 
-            const auto subPositionLength = World::TrackData::getRoadSubPositon(trackAndDirection.road._data).size();
+            const auto subPositionLength = static_cast<uint32_t>(World::TrackData::getRoadSubPositon(trackAndDirection.road._data).size());
             subPosition = subPositionLength - 1 - initialSubPosition;
 
             const auto& roadSize = World::TrackData::getUnkRoad(trackAndDirection.road.basicRad());

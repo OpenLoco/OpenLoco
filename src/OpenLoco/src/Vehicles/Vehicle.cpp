@@ -817,7 +817,7 @@ namespace OpenLoco::Vehicles
         }
         oldFirstComponent.body->setNextCar(newFirstComponent.body->nextCarId);
 
-        for (int i = components.size() - 2; i >= 0; i--)
+        for (auto i = static_cast<int32_t>(components.size()) - 2; i >= 0; i--)
         {
             components[i].body->setSubType(VehicleEntityType::body_continued);
             if (components[i + 1].body != nullptr)

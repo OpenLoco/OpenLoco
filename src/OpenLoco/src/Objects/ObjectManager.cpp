@@ -506,7 +506,7 @@ namespace OpenLoco::ObjectManager
         setTotalNumImages(oldNumImages);
 
         TempLoadMetaData result{};
-        result.fileSizeHeader.decodedFileSize = preLoadObj->objectData.size();
+        result.fileSizeHeader.decodedFileSize = static_cast<uint32_t>(preLoadObj->objectData.size());
         result.displayData.numImages = numImages;
         result.dependentObjects = dependencies;
 

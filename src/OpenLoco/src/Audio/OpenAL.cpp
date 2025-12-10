@@ -197,7 +197,7 @@ namespace OpenAL
                 format = AL_FORMAT_MONO16;
             }
         }
-        alBufferData(id, format, data.data(), data.size(), sampleRate);
+        alBufferData(id, format, data.data(), static_cast<ALsizei>(data.size()), sampleRate);
         return id;
     }
 
@@ -209,7 +209,7 @@ namespace OpenAL
 
     void BufferManager::dispose()
     {
-        alDeleteBuffers(_buffers.size(), _buffers.data());
+        alDeleteBuffers(static_cast<ALsizei>(_buffers.size()), _buffers.data());
         _buffers.clear();
     }
 
@@ -235,7 +235,7 @@ namespace OpenAL
 
     void SourceManager::dispose()
     {
-        alDeleteSources(_sources.size(), _sources.data());
+        alDeleteSources(static_cast<ALsizei>(_sources.size()), _sources.data());
         _sources.clear();
     }
 }

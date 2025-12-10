@@ -160,7 +160,7 @@ void NetworkServer::onReceiveStateRequestPacket(Client& client, const RequestSta
 
     RequestStateResponse response;
     response.cookie = request.cookie;
-    response.totalSize = ms.getLength();
+    response.totalSize = static_cast<uint32_t>(ms.getLength());
     response.numChunks = static_cast<uint16_t>((ms.getLength() + (kChunkSize - 1)) / kChunkSize);
     client.connection->sendPacket(response);
 

@@ -21,6 +21,12 @@ if ( NOT yaml-cpp_FOUND )
 
     # Group all the ThirdParty items under a ThirdParty folder in IDEs
     set_target_properties(yaml-cpp PROPERTIES FOLDER "ThirdParty")
+else()
+    if (NOT TARGET yaml-cpp::yaml-cpp)
+        # Some system versions of yaml-cpp don't have the proper target
+        # so we are defining it so we can follow yaml-cpp's conventions
+        add_library(yaml-cpp::yaml-cpp ALIAS yaml-cpp)
+    endif()
 endif()
 
 if (${OPENLOCO_BUILD_TESTS})

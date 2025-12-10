@@ -352,7 +352,7 @@ namespace OpenLoco::ScenarioManager
                 // This is a new entry so we will need to clear fields and add to the list
                 ScenarioIndexEntry entry{};
                 std::strcpy(entry.filename, u8FileName.c_str());
-                foundId = _scenarioList.size();
+                foundId = static_cast<uint32_t>(_scenarioList.size());
                 _scenarioList.push_back(entry);
                 _scenarioHeader.numScenarios++;
             }
