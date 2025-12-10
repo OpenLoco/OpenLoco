@@ -5,8 +5,8 @@ function(_loco_add_target TARGET TYPE)
         set(_LIBRARY NO)
         set(_INTERFACE YES)
     endif()
-    # Add public files to target so that source_group works
-    # (nice IDE layout)
+    
+    # Add public files to target so that source_group works (nice IDE layout)
     if (_LIBRARY)
         add_library(${TARGET} ${TYPE} 
             ${_PRIVATE_FILES}
@@ -32,30 +32,6 @@ function(_loco_add_target TARGET TYPE)
                 PRIVATE
                     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/${TARGET}")
         endif()
-        
-        # Link to common interface
-        target_link_libraries(${TARGET} PUBLIC OpenLocoCommonInterface)
-        
-        # Set target-specific properties that can't be in INTERFACE library
-        set_property(TARGET ${TARGET} PROPERTY POSITION_INDEPENDENT_CODE OFF) # Due to the way the linking works we must have no pie (remove when fully implemented)
-        
-        # Link libraries
-        if (DEFINED _PUBLIC_LINK_LIBRARIES)
-            target_link_libraries(${TARGET} PUBLIC ${_PUBLIC_LINK_LIBRARIES})
-        endif()
-        if (DEFINED _PRIVATE_LINK_LIBRARIES)
-            target_link_libraries(${TARGET} PRIVATE ${_PRIVATE_LINK_LIBRARIES})
-        endif()
-        
-        # Compile definitions
-        if (DEFINED _PUBLIC_COMPILE_DEFINITIONS)
-            target_compile_definitions(${TARGET} PUBLIC ${_PUBLIC_COMPILE_DEFINITIONS})
-        endif()
-        if (DEFINED _PRIVATE_COMPILE_DEFINITIONS)
-            target_compile_definitions(${TARGET} PRIVATE ${_PRIVATE_COMPILE_DEFINITIONS})
-        endif()
-        
-        set_property(TARGET ${TARGET} PROPERTY RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
     elseif(_EXECUTABLE)
         add_executable(${TARGET}
             ${_PRIVATE_FILES}
@@ -65,12 +41,21 @@ function(_loco_add_target TARGET TYPE)
         target_include_directories(${TARGET}
             PRIVATE
                 ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    elseif(_INTERFACE)
+        # We want to add the headers to the interface library so that it displays nicely within IDEs
+        add_library(${TARGET} ${TYPE}
+            ${_PUBLIC_FILES})
+        add_library(OpenLoco::${TARGET} ALIAS ${TARGET})
 
+        target_include_directories(${TARGET}
+            INTERFACE
+                "${CMAKE_CURRENT_SOURCE_DIR}/include")
+    endif()
+
+    # Common setup for LIBRARY and EXECUTABLE targets
+    if (_LIBRARY OR _EXECUTABLE)
         # Link to common interface
         target_link_libraries(${TARGET} PUBLIC OpenLocoCommonInterface)
-        
-        # Set target-specific properties that can't be in INTERFACE library
-        set_property(TARGET ${TARGET} PROPERTY POSITION_INDEPENDENT_CODE OFF) # Due to the way the linking works we must have no pie (remove when fully implemented)
         
         # Link libraries
         if (DEFINED _PUBLIC_LINK_LIBRARIES)
@@ -89,16 +74,6 @@ function(_loco_add_target TARGET TYPE)
         endif()
         
         set_property(TARGET ${TARGET} PROPERTY RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-    elseif(_INTERFACE)
-        # We want to add the headers to the interface library so that it displays
-        # nicely wihtin IDEs
-        add_library(${TARGET} ${TYPE}
-            ${_PUBLIC_FILES})
-        add_library(OpenLoco::${TARGET} ALIAS ${TARGET})
-
-        target_include_directories(${TARGET}
-            INTERFACE
-                "${CMAKE_CURRENT_SOURCE_DIR}/include")
     endif()
 
     # Defer header check to after configure time
@@ -139,9 +114,6 @@ function(_loco_add_target TARGET TYPE)
 
         # Link to common interface
         target_link_libraries(${TEST_TARGET} PUBLIC OpenLocoCommonInterface)
-        
-        # Set target-specific properties that can't be in INTERFACE library
-        set_property(TARGET ${TEST_TARGET} PROPERTY POSITION_INDEPENDENT_CODE OFF) # Due to the way the linking works we must have no pie (remove when fully implemented)
     endif()
     
     # Tell each target about the project directory.
