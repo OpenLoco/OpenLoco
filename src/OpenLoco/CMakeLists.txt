@@ -771,13 +771,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/World/TownManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ZoomLevel.hpp")
 
-loco_add_executable(OpenLoco 
-    PRIVATE_FILES
-        ${OLOCO_SOURCES}
-        ${OLOCO_HEADERS}
-)
-
-target_link_libraries(OpenLoco
+set(private_link_libraries
     Core
     Diagnostics
     Platform
@@ -789,18 +783,29 @@ target_link_libraries(OpenLoco
     yaml-cpp::yaml-cpp
     ZLIB::ZLIB # This shouldn't be required but vcpkg seems to not map the dependencies correctly for png static
     PNG::PNG
-    ${OPENAL_LIBRARIES})
+    ${OPENAL_LIBRARIES}
+    $<$<PLATFORM_ID:Windows>:winmm>
+    $<$<PLATFORM_ID:Windows>:ws2_32>
+    $<$<PLATFORM_ID:Windows>:Resources>
+    $<$<BOOL:${MINGW}>:imm32>
+    $<$<BOOL:${MINGW}>:version>
+    $<$<PLATFORM_ID:Darwin>:"-framework Cocoa">
+)
 
-if (WIN32)
-    target_link_libraries(OpenLoco winmm ws2_32 Resources)
-endif ()
+loco_add_executable(OpenLoco 
+    PRIVATE_FILES
+        ${OLOCO_SOURCES}
+        ${OLOCO_HEADERS}
+    PRIVATE_LINK_LIBRARIES
+        ${private_link_libraries}
+)
 
 target_compile_definitions(OpenLoco
     PRIVATE
         SDL_MAIN_HANDLED
  )
 if (MINGW)
-    target_link_libraries(OpenLoco imm32 version)
+    # Already in private_link_libraries
 elseif (MSVC)
     target_compile_definitions(OpenLoco
         PRIVATE
@@ -812,7 +817,7 @@ elseif (MSVC)
 endif()
 
 if (APPLE)
-    target_link_libraries(OpenLoco "-framework Cocoa")
+    # Already in private_link_libraries
 
     set_target_properties(OpenLoco PROPERTIES
         MACOSX_BUNDLE ON

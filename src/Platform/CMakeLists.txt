@@ -15,11 +15,22 @@ if (APPLE)
     set_source_files_properties(${private_files} PROPERTIES COMPILE_FLAGS "-x objective-c++")
 endif()
 
+set(public_link_libraries
+    Core
+    Utility
+)
+
+if (MSVC)
+    list(APPEND public_link_libraries ${BREAKPAD_LIBRARIES})
+endif()
+
 loco_add_library(Platform STATIC
     PUBLIC_FILES
         ${public_files}
     PRIVATE_FILES
         ${private_files}
+    PUBLIC_LINK_LIBRARIES
+        ${public_link_libraries}
 )
 
 if (MSVC)
@@ -27,12 +38,3 @@ if (MSVC)
         PRIVATE
             USE_BREAKPAD)
 endif()
-
-target_link_libraries(Platform PUBLIC
-    Core
-    Utility
-)
-
-if (MSVC)
-    target_link_libraries(Platform PUBLIC ${BREAKPAD_LIBRARIES})
-endif ()
