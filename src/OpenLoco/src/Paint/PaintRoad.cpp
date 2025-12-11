@@ -559,6 +559,10 @@ namespace OpenLoco::Paint
         const auto ghostMods = Ui::Windows::Construction::getLastSelectedMods();
         for (auto mod = 0; mod < 2; ++mod)
         {
+            if (roadObj->mods[mod] == 0xFF)
+            {
+                continue;
+            }
             const auto* roadExtraObj = ObjectManager::get<RoadExtraObject>(roadObj->mods[mod]);
             ImageId roadExtraBaseImage{};
             if (elRoad.hasMod(mod))

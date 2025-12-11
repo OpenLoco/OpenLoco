@@ -141,7 +141,16 @@ namespace OpenLoco::ObjectManager
 
     Object* getAny(const LoadedObjectHandle& handle)
     {
-        auto obj = getRepositoryItem(handle.type).objects[handle.id];
+        auto& ori = getRepositoryItem(handle.type);
+        if (handle.id >= ori.objects.size())
+        {
+            // We shouldn't get here but sometimes we pass null handles like 0xFF and
+            // accidentally get here. Ideally the call sites should be fixed so thats
+            // why we are asserting here.
+            assert(false);
+            return nullptr;
+        }
+        auto obj = ori.objects[handle.id];
         if (obj == (void*)-1)
         {
             obj = nullptr;
