@@ -1176,7 +1176,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         auto filterWidth = _widgets[Widx::filter_type].width();
         auto cargoTypeWidth = _widgets[Widx::cargo_type].width();
-        bool enoughSpaceForCargoFilters = self.width > cargoTypeWidth + filterWidth + 75;
+        bool enoughSpaceForCargoFilters = self.width > cargoTypeWidth + filterWidth + 50;
 
         self.widgets[Widx::cargo_type].hidden = !enoughSpaceForCargoFilters;
         self.widgets[Widx::cargo_type_btn].hidden = !enoughSpaceForCargoFilters;
