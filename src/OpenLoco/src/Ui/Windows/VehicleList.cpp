@@ -576,12 +576,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
         };
 
         {
-            // Reposition status bar
+            // Set status bar text
             auto& widget = self.widgets[Widx::status_bar];
-            widget.top = self.height - 13;
-            widget.bottom = self.height - 3;
-
-            // Set status bar
             FormatArguments args{ widget.textArgs };
             auto& footerStringPair = kTypeToFooterStringIds[self.currentTab];
             args.push(self.var_83C == 1 ? footerStringPair.first : footerStringPair.second);
@@ -1155,9 +1151,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self.widgets[Widx::close_button].left = self.width - 15;
         self.widgets[Widx::close_button].right = self.width - 3;
 
-        self.widgets[Widx::scrollview].right = self.width - 4;
-        self.widgets[Widx::scrollview].bottom = self.height - 14;
-
         auto nameHeaderWidth = _widgets[Widx::sort_name].width();
         auto profitHeaderWidth = _widgets[Widx::sort_profit].width();
         auto ageHeaderWidth = _widgets[Widx::sort_age].width();
@@ -1193,28 +1186,33 @@ namespace OpenLoco::Ui::Windows::VehicleList
         // Reposition filter/cargo dropdowns, starting from the right
         if (enoughSpaceForCargoFilters)
         {
-            self.widgets[Widx::cargo_type].top = self.height - 13;
-            self.widgets[Widx::cargo_type].bottom = self.height - 2;
+            self.widgets[Widx::cargo_type].top = self.height - 14;
+            self.widgets[Widx::cargo_type].bottom = self.height - 3;
             self.widgets[Widx::cargo_type].right = self.width - kResizeHandleSize - 2;
             self.widgets[Widx::cargo_type].left = self.widgets[Widx::cargo_type].right - cargoTypeWidth;
 
-            self.widgets[Widx::cargo_type_btn].top = self.height - 12;
-            self.widgets[Widx::cargo_type_btn].bottom = self.height - 3;
+            self.widgets[Widx::cargo_type_btn].top = self.height - 13;
+            self.widgets[Widx::cargo_type_btn].bottom = self.height - 4;
             self.widgets[Widx::cargo_type_btn].right = self.widgets[Widx::cargo_type].right - 1;
             self.widgets[Widx::cargo_type_btn].left = self.widgets[Widx::cargo_type].right - 10;
 
-            self.widgets[Widx::filter_type].top = self.height - 13;
-            self.widgets[Widx::filter_type].bottom = self.height - 2;
+            self.widgets[Widx::filter_type].top = self.height - 14;
+            self.widgets[Widx::filter_type].bottom = self.height - 3;
             self.widgets[Widx::filter_type].right = self.widgets[Widx::cargo_type].left - 2;
             self.widgets[Widx::filter_type].left = self.widgets[Widx::filter_type].right - filterWidth;
 
-            self.widgets[Widx::filter_type_btn].top = self.height - 12;
-            self.widgets[Widx::filter_type_btn].bottom = self.height - 3;
+            self.widgets[Widx::filter_type_btn].top = self.height - 13;
+            self.widgets[Widx::filter_type_btn].bottom = self.height - 4;
             self.widgets[Widx::filter_type_btn].right = self.widgets[Widx::filter_type].right - 1;
             self.widgets[Widx::filter_type_btn].left = self.widgets[Widx::filter_type].right - 10;
         }
 
+        self.widgets[Widx::scrollview].right = self.width - 4;
+        self.widgets[Widx::scrollview].bottom = self.height - 15;
+
         // Use remaining space for status bar
+        self.widgets[Widx::status_bar].top = self.height - 13;
+        self.widgets[Widx::status_bar].bottom = self.height - 4;
         self.widgets[Widx::status_bar].right = self.width - kResizeHandleSize - 1;
     }
 
