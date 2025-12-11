@@ -78,6 +78,7 @@ endif()
 include(FindPkgConfig)
 include(CheckCXXCompilerFlag)
 include(GNUInstallDirs)
+include(OpenLocoVersion)
 include(OpenLocoCommon)
 include(OpenLocoUtility)
 
