@@ -45,7 +45,7 @@
 namespace OpenLoco::Ui::Windows::VehicleList
 {
     static constexpr Ui::Size32 kWindowSize = { 550, 213 };
-    static constexpr Ui::Size kMaxDimensions = { 1200, 1200 };
+    static constexpr Ui::Size kMaxDimensions = { 1200, 2000 };
     static constexpr Ui::Size kMinDimensions = { 220, 160 };
 
     enum Widx
