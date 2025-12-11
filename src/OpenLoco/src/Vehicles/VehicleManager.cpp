@@ -63,16 +63,6 @@ namespace OpenLoco::VehicleManager
         }
     }
 
-    void honkAllTrains()
-    {
-        for (auto* head : VehicleList())
-        {
-            Vehicles::Vehicle train(*head);
-            // Vehicle2& vehType2_2 = train.veh2;
-            railProduceCrossingWhistle(*train.veh2);
-        }
-    }
-
     // 0x004C39D4
     uint16_t determineAvailableVehicleTypes(const Company& company)
     {

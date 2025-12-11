@@ -3,6 +3,7 @@
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/General/SetGameSpeed.h"
 #include "GameCommands/General/TogglePause.h"
+#include "GameCommands/Vehicles/HonkAllTrains.h"
 #include "GameState.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -707,7 +708,7 @@ namespace OpenLoco::Input::Shortcuts
 
     static void honkAllTrains()
     {
-        VehicleManager::honkAllTrains();
+        GameCommands::doCommand(GameCommands::HonkAllTrainsArgs{}, GameCommands::Flags::apply);
     }
 
     static void openDebugWindow()
