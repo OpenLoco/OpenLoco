@@ -78,6 +78,8 @@ endif()
 include(FindPkgConfig)
 include(CheckCXXCompilerFlag)
 include(GNUInstallDirs)
+include(OpenLocoVersion)
+include(OpenLocoCommon)
 include(OpenLocoUtility)
 
 option(STRICT "Build with warnings as errors" YES)
@@ -85,8 +87,6 @@ option(OPENLOCO_BUILD_TESTS "Build tests" YES)
 option(OPENLOCO_HEADER_CHECK "Verify all public interfaces are standalone" NO)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
-
-set(DEBUG_LEVEL 0 CACHE STRING "Select debug level for compilation. Use value in range 0–3.")
 
 # Display source files nicely in IDEs
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -154,4 +154,3 @@ if (NOT APPLE)
     install(DIRECTORY "data/" DESTINATION "${CMAKE_INSTALL_BINDIR}/data")
     install(DIRECTORY "${openloco_objects_SOURCE_DIR}" DESTINATION "${CMAKE_INSTALL_BINDIR}/data/objects")
 endif()
-

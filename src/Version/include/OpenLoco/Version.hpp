@@ -1,4 +1,6 @@
-#include "Version.h"
+#pragma once
+
+#include <string>
 
 // clang-format off
 
@@ -36,8 +38,24 @@
     #error "OPENLOCO_PLATFORM is undefined. Please add identification."
 #endif
 
-namespace OpenLoco
+namespace OpenLoco::Version
 {
+#ifndef OPENLOCO_VERSION_TAG
+#    define OPENLOCO_VERSION_TAG "unknown"
+#endif
+
+#ifndef OPENLOCO_BRANCH
+#    define OPENLOCO_BRANCH "unknown"
+#endif
+
+#ifndef OPENLOCO_COMMIT_SHA1_SHORT
+#    define OPENLOCO_COMMIT_SHA1_SHORT "unknown"
+#endif
+
+    constexpr const char* kVersionTag = OPENLOCO_VERSION_TAG;
+    constexpr const char* kBranch = OPENLOCO_BRANCH;
+    constexpr const char* kCommitSha1Short = OPENLOCO_COMMIT_SHA1_SHORT;
+
     static const char kVersion[] = OPENLOCO_NAME ", "
         #ifdef OPENLOCO_VERSION_TAG
             OPENLOCO_VERSION_TAG
@@ -65,12 +83,12 @@ namespace OpenLoco
     static const char kPlatform[] = OPENLOCO_PLATFORM " (" OPENLOCO_ARCHITECTURE ")";
     // clang-format on
 
-    std::string getVersionInfo()
+    inline std::string getVersionInfo()
     {
         return kVersion;
     }
 
-    std::string getPlatformInfo()
+    inline std::string getPlatformInfo()
     {
         return kPlatform;
     }

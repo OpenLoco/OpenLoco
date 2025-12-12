@@ -69,7 +69,6 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
-#include "Version.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
 #include "World/IndustryManager.h"
@@ -79,6 +78,7 @@
 #include <OpenLoco/Platform/Crash.h>
 #include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/Utility/String.hpp>
+#include <OpenLoco/Version.hpp>
 
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Input;
@@ -787,8 +787,8 @@ namespace OpenLoco
         Logging::initialize(options.logLevels);
 
         // Always print the product name, version, and platform info first.
-        Logging::info("{}", OpenLoco::getVersionInfo());
-        Logging::info("{}", OpenLoco::getPlatformInfo());
+        Logging::info("{}", Version::getVersionInfo());
+        Logging::info("{}", Version::getPlatformInfo());
 
         Environment::setLocale();
 
@@ -804,7 +804,7 @@ namespace OpenLoco
         {
             CrashHandler::AppInfo appInfo;
             appInfo.name = "OpenLoco";
-            appInfo.version = getVersionInfo();
+            appInfo.version = Version::getVersionInfo();
 
             _exHandler = CrashHandler::init(appInfo);
         }

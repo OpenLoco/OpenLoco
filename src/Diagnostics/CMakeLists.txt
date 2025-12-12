@@ -17,6 +17,11 @@ set(test_files
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/LoggingTests.cpp"
 )
 
+set(public_link_libraries
+    Core
+    Platform
+)
+
 loco_add_library(Diagnostics STATIC
     PUBLIC_FILES
         ${public_files}
@@ -24,10 +29,6 @@ loco_add_library(Diagnostics STATIC
         ${private_files}
     TEST_FILES
         ${test_files}
-)
-
-target_link_libraries(Diagnostics 
-    PUBLIC
-        Core
-        Platform
+    PUBLIC_LINK_LIBRARIES
+        ${public_link_libraries}
 )
