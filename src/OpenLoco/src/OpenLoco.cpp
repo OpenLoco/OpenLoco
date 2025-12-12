@@ -233,7 +233,7 @@ namespace OpenLoco
         loadFile(fs::u8path(path));
     }
 
-    static void launchGameFromCmdLineOptions()
+    static bool launchGameFromCmdLineOptions()
     {
         const auto& cmdLineOptions = getCommandLineOptions();
         try
@@ -242,6 +242,7 @@ namespace OpenLoco
             {
                 Network::openServer();
                 loadFile(cmdLineOptions.path);
+                return true;
             }
             else if (cmdLineOptions.action == CommandLineAction::join)
             {
@@ -253,16 +254,19 @@ namespace OpenLoco
                 {
                     Network::joinServer(cmdLineOptions.address);
                 }
+                return true;
             }
             else if (!cmdLineOptions.path.empty())
             {
                 loadFile(cmdLineOptions.path);
+                return true;
             }
         }
         catch (const std::exception& e)
         {
             Logging::error("Unable to load park: {}", e.what());
         }
+        return false;
     }
 
     void sub_431695(uint16_t var_F253A0)
@@ -318,9 +322,12 @@ namespace OpenLoco
                 if (Intro::isActive())
                 {
                     Intro::update();
-                    if (!Intro::isActive())
+                    if (Intro::state() == Intro::State::end2)
                     {
-                        launchGameFromCmdLineOptions();
+                        if (launchGameFromCmdLineOptions())
+                        {
+                            Intro::state(Intro::State::none);
+                        }
                     }
                 }
                 else
