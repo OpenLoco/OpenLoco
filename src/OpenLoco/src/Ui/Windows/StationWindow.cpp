@@ -49,9 +49,9 @@ namespace OpenLoco::Ui::Windows::Station
 
     namespace Common
     {
-        static constexpr Ui::Size32 kMinWindowSize = { 192, 136 };
+        static constexpr Ui::Size kMinWindowSize = { 192, 136 };
 
-        static constexpr Ui::Size32 kMaxWindowSize = { 600, 440 };
+        static constexpr Ui::Size kMaxWindowSize = { 600, 440 };
 
         enum widx
         {
@@ -112,7 +112,7 @@ namespace OpenLoco::Ui::Windows::Station
 
     namespace Station
     {
-        static constexpr Ui::Size32 kWindowSize = { 223, 136 };
+        static constexpr Ui::Size kWindowSize = { 223, 136 };
 
         enum widx
         {
@@ -616,9 +616,9 @@ namespace OpenLoco::Ui::Windows::Station
 
     namespace CargoRatings
     {
-        static constexpr Ui::Size32 kWindowSize = { 249, 136 };
+        static constexpr Ui::Size kWindowSize = { 249, 136 };
 
-        static constexpr Ui::Size32 kMaxWindowSize = { 249, 440 };
+        static constexpr Ui::Size kMaxWindowSize = { 249, 440 };
 
         enum widx
         {
@@ -777,9 +777,9 @@ namespace OpenLoco::Ui::Windows::Station
     // We should look into sharing some of these functions.
     namespace VehiclesStopping
     {
-        static constexpr Ui::Size32 kWindowSize = { 400, 200 };
+        static constexpr Ui::Size kWindowSize = { 400, 200 };
 
-        static constexpr Ui::Size32 kMaxWindowSize = { 600, 800 };
+        static constexpr Ui::Size kMaxWindowSize = { 600, 800 };
 
         enum widx
         {

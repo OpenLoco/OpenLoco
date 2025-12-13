@@ -169,7 +169,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
     namespace Construction
     {
-        static constexpr Ui::Size32 kWindowSize = { 138, 276 };
+        static constexpr Ui::Size kWindowSize = { 138, 276 };
         enum class TrackRoadPreviewFlags : uint8_t
         {
             none = 0U,

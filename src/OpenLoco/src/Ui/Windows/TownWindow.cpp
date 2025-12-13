@@ -37,7 +37,7 @@ using namespace OpenLoco::GameCommands;
 
 namespace OpenLoco::Ui::Windows::Town
 {
-    static constexpr Ui::Size32 kWindowSize = { 223, 161 };
+    static constexpr Ui::Size kWindowSize = { 223, 161 };
 
     namespace Common
     {

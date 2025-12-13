@@ -29,7 +29,7 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Ui::Windows::ScenarioSelect
 {
-    static constexpr Ui::Size32 kWindowSize = { 610, 412 };
+    static constexpr Ui::Size kWindowSize = { 610, 412 };
 
     namespace widx
     {

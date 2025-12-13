@@ -149,7 +149,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
     void open()
     {
         const auto origin = Ui::Point32(0, Ui::height() - kWindowHeight);
-        const auto windowSize = Ui::Size32(Ui::width(), kWindowHeight);
+        const auto windowSize = Ui::Size(Ui::width(), kWindowHeight);
 
         auto window = WindowManager::createWindow(
             WindowType::editorToolbar,

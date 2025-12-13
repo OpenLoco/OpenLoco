@@ -26,7 +26,7 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui
 {
-    Window::Window(Ui::Point32 position, Ui::Size32 size)
+    Window::Window(Ui::Point32 position, Ui::Size size)
         : x(static_cast<int16_t>(position.x))
         , y(static_cast<int16_t>(position.y))
         , width(static_cast<uint16_t>(size.width))
