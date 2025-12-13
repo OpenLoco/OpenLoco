@@ -97,7 +97,7 @@ namespace OpenLoco::World::TileManager
         return kMapPitch * getMapColumns();
     }
 
-    size_t getMaxElements()
+    uint32_t getMaxElements()
     {
         return 3 * getMapColumns() * getMapRows();
     }

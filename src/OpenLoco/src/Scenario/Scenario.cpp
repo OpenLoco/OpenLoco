@@ -582,7 +582,7 @@ namespace OpenLoco::Scenario
     {
         auto& options = Scenario::getOptions();
         const auto kPreviewSize = sizeof(options.preview[0]);
-        const auto kMapSkipFactor = World::TileManager::getMapRows() / kPreviewSize;
+        const coord_t kMapSkipFactor = World::TileManager::getMapRows() / kPreviewSize;
 
         for (auto y = 0U; y < kPreviewSize; y++)
         {
