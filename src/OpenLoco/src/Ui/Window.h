@@ -187,14 +187,14 @@ namespace OpenLoco::Ui
         bool showTownNames = false;       // Map window only
         WindowFlags flags;
         WindowNumber_t number = 0;
-        int16_t x;
-        int16_t y;
-        uint16_t width;
-        uint16_t height;
-        uint16_t minWidth;
-        uint16_t maxWidth;
-        uint16_t minHeight;
-        uint16_t maxHeight;
+        int32_t x;
+        int32_t y;
+        int32_t width;
+        int32_t height;
+        int32_t minWidth;
+        int32_t maxWidth;
+        int32_t minHeight;
+        int32_t maxHeight;
         ScrollArea scrollAreas[kMaxScrollAreas];
         int16_t rowInfo[1000];
         uint16_t rowCount;
