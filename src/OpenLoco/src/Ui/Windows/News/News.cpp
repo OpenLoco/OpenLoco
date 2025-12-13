@@ -150,7 +150,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         // 0x00429D2C
         static void onUpdate(Window& self)
         {
-            uint16_t height = _nState.slideInHeight + 4;
+            auto height = _nState.slideInHeight + 4;
 
             _nState.slideInHeight = std::min(height, self.height);
 

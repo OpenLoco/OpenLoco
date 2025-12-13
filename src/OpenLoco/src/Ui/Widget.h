@@ -145,7 +145,7 @@ namespace OpenLoco::Ui
         static constexpr uint32_t kContentNull = 0xFFFFFFFFU;
         static constexpr uint32_t kContentUnk = 0xFFFFFFFEU;
 
-        constexpr Widget(WidgetId widgetId, Ui::Point32 origin, Ui::Size32 size, WidgetType widgetType, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
+        constexpr Widget(WidgetId widgetId, Ui::Point origin, Ui::Size size, WidgetType widgetType, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
             : id{ widgetId }
             , content{ content }
             , left{ static_cast<int16_t>(origin.x) }
@@ -158,7 +158,7 @@ namespace OpenLoco::Ui
         {
         }
 
-        constexpr Widget(WidgetId widgetId, Ui::Point32 origin, Ui::Size32 size, WidgetType widgetType, WindowColour colour, StringId content, StringId tooltip = StringIds::null)
+        constexpr Widget(WidgetId widgetId, Ui::Point origin, Ui::Size size, WidgetType widgetType, WindowColour colour, StringId content, StringId tooltip = StringIds::null)
             : id{ widgetId }
             , text{ content }
             , left{ static_cast<int16_t>(origin.x) }
@@ -182,20 +182,20 @@ namespace OpenLoco::Ui
             StringId text;
             uint32_t content;
         };
-        int16_t left{};
-        int16_t right{};
-        int16_t top{};
-        int16_t bottom{};
+        int32_t left{};
+        int32_t right{};
+        int32_t top{};
+        int32_t bottom{};
         Gfx::Font font{ Gfx::Font::medium_bold };
         StringId tooltip{ StringIds::null };
         WidgetType type{};
         ContentAlign contentAlign{ ContentAlign::left };
         WindowColour windowColour{};
 
-        int16_t midX() const;
-        int16_t midY() const;
-        uint16_t width() const;
-        uint16_t height() const;
+        int32_t midX() const;
+        int32_t midY() const;
+        int32_t width() const;
+        int32_t height() const;
 
         // Custom widget attributes.
         uint32_t styleData{};
@@ -208,7 +208,7 @@ namespace OpenLoco::Ui
         // TODO: Remove this once position is a member.
         Ui::Point position() const
         {
-            return { static_cast<int16_t>(left), static_cast<int16_t>(top) };
+            return { left, top };
         }
 
         // TODO: Remove this once size is a member.
@@ -227,7 +227,7 @@ namespace OpenLoco::Ui
         void draw(Gfx::DrawingContext& drawingCtx, Window* window, const uint64_t pressedWidgets, const uint64_t toolWidgets, const uint64_t hoveredWidgets, uint8_t scrollviewIndex);
     };
 
-    constexpr Widget makeWidget(Ui::Point32 origin, Ui::Size32 size, WidgetType type, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
+    constexpr Widget makeWidget(Ui::Point origin, Ui::Size size, WidgetType type, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
     {
         Widget out{ WidgetId::none, origin, size, type, colour, content, tooltip };
         return out;

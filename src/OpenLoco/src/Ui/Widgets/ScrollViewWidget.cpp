@@ -210,7 +210,7 @@ namespace OpenLoco::Ui::Widgets
             cropped.bits += offset;
         }
 
-        int16_t bp = cropped.x + cropped.width - (contentPos.x + cropSize.width);
+        auto bp = cropped.x + cropped.width - (contentPos.x + cropSize.width);
         if (bp > 0)
         {
             cropped.width -= bp;

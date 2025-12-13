@@ -16,7 +16,7 @@
 
 namespace OpenLoco::Ui::Windows::About
 {
-    static constexpr Ui::Size32 kWindowSize = { 400, 260 };
+    static constexpr Ui::Size kWindowSize = { 400, 260 };
 
     namespace widx
     {
