@@ -794,6 +794,20 @@ namespace OpenLoco::Input
             dx = x - _dragLast.x;
             dy = y - _dragLast.y;
 
+            // Assume the resize handle position is the bottom-right pixel of the window.
+            auto handle_x = w->x + w->width;
+            auto handle_y = w->y + w->height;
+
+            // Do not resize if the mouse is moving towards the resize handle, per axis.
+            if ((dx > 0) == (x < handle_x))
+            {
+                dx = 0;
+            }
+            if ((dy > 0) == (y < handle_y))
+            {
+                dy = 0;
+            }
+
             if (dx == 0 && dy == 0)
             {
                 _dragLast.x = x;
@@ -1296,7 +1310,7 @@ namespace OpenLoco::Input
             case Ui::WidgetType::panel:
             case Ui::WidgetType::newsPanel:
             case Ui::WidgetType::frame:
-                if (window->canResize() && (x >= (window->x + window->width - kResizeHandleSize - 1)) && (y >= (window->y + window->height - kResizeHandleSize - 1)))
+                if (window->isMouseOverResizeHandle(x, y))
                 {
                     windowResizeBegin(x, y, window, widgetIndex);
                 }
@@ -1557,16 +1571,10 @@ namespace OpenLoco::Input
                     case Ui::WidgetType::panel:
                     case Ui::WidgetType::newsPanel:
                     case Ui::WidgetType::frame:
-                        if (window->hasFlags(Ui::WindowFlags::resizable))
+                        if (window->isMouseOverResizeHandle(x, y))
                         {
-                            if (window->minWidth != window->maxWidth || window->minHeight != window->maxHeight)
-                            {
-                                if (x >= window->x + window->width - 19 && y >= window->y + window->height - 19)
-                                {
-                                    cursorId = Ui::CursorId::diagonalArrows;
-                                    break;
-                                }
-                            }
+                            cursorId = Ui::CursorId::diagonalArrows;
+                            break;
                         }
                         [[fallthrough]];
                     default:
