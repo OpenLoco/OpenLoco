@@ -84,6 +84,8 @@ namespace OpenLoco::EditorController
         options.numberOfTowns = 55;
         options.maxTownSize = 3;
         options.numberOfIndustries = 1;
+        options.mapSizeX = World::TileManager::kMinMapDimension;
+        options.mapSizeY = World::TileManager::kMinMapDimension;
 
         resetLandDistributionPatterns();
         Scenario::reset();
