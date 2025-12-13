@@ -116,16 +116,16 @@ if (NOT APPLE)
             COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different "${CMAKE_CURRENT_SOURCE_DIR}/data" "$<TARGET_FILE_DIR:OpenLoco>/data"
             COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different "${openloco_objects_SOURCE_DIR}" "$<TARGET_FILE_DIR:OpenLoco>/data/objects"
             COMMENT "Copying over data and objects folder"
-            DEPENDS OpenLoco
         )
     else()
         add_custom_target(OpenLocoAssets ALL
             COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/data" "$<TARGET_FILE_DIR:OpenLoco>/data"
             COMMAND ${CMAKE_COMMAND} -E copy_directory "${openloco_objects_SOURCE_DIR}" "$<TARGET_FILE_DIR:OpenLoco>/data/objects"
             COMMENT "Copying over data and objects folder"
-            DEPENDS OpenLoco
         )
     endif()
+    add_dependencies(OpenLoco OpenLocoAssets)
+    set_target_properties(OpenLocoAssets PROPERTIES PROJECT_LABEL "Assets")
 endif()
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenLoco)
