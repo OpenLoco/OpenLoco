@@ -1095,10 +1095,7 @@ namespace OpenLoco::World::MapGenerator
         updateProgress(10);
 
         {
-            auto rows = 512;
-            auto cols = 512;
-            HeightMap heightMap(cols, rows);
-            //HeightMap heightMap(World::TileManager::getMapColumns(), World::TileManager::getMapRows());
+            HeightMap heightMap(options.mapSizeX, options.mapSizeY);
 
             generateHeightMap(options, heightMap);
             updateProgress(25);
