@@ -228,7 +228,7 @@ namespace OpenLoco::Ui
         uint8_t var_885 = 0xFF;
         AdvancedColour colours[enumValue(WindowColour::count)];
 
-        Window(Ui::Point32 position, Ui::Size size);
+        Window(Ui::Point position, Ui::Size size);
 
         // TODO: Remove this once position is a member.
         constexpr Ui::Point position() const

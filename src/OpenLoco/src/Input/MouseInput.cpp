@@ -65,8 +65,8 @@ namespace OpenLoco::Input
 
     static Ui::Point _cursorPressed;
     static Ui::CursorId _52336C;
-    static Ui::Point32 _cursor;
-    static Ui::Point32 _cursor2;
+    static Ui::Point _cursor;
+    static Ui::Point _cursor2;
 
     static Ui::WindowType _pressedWindowType;       // 0x0052336F
     static Ui::WindowNumber_t _pressedWindowNumber; // 0x00523370

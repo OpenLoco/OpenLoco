@@ -462,7 +462,7 @@ namespace OpenLoco::Ui::WindowManager
      * @param width @<bx>
      * @param height @<cx>
      */
-    static bool windowFitsWithinSpace(Ui::Point32 position, Ui::Size size)
+    static bool windowFitsWithinSpace(Ui::Point position, Ui::Size size)
     {
         if (position.x < 0)
         {
@@ -516,7 +516,7 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004C9F27
     static Window* createWindowOnScreen(
         WindowType type,
-        Ui::Point32 origin,
+        Ui::Point origin,
         Ui::Size size,
         Ui::WindowFlags flags,
         const WindowEventList& events)
@@ -528,7 +528,7 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004C9BA2
-    static bool windowFitsOnScreen(Ui::Point32 origin, Ui::Size size)
+    static bool windowFitsOnScreen(Ui::Point origin, Ui::Size size)
     {
         if (origin.x < -(size.width / 4))
         {
@@ -567,7 +567,7 @@ namespace OpenLoco::Ui::WindowManager
         Ui::WindowFlags flags,
         const WindowEventList& events)
     {
-        Ui::Point32 position{};
+        Ui::Point position{};
 
         position.x = 0;  // dx
         position.y = 30; // ax
@@ -725,7 +725,7 @@ namespace OpenLoco::Ui::WindowManager
      */
     Window* createWindow(
         WindowType type,
-        Ui::Point32 origin,
+        Ui::Point origin,
         Ui::Size size,
         WindowFlags flags,
         const WindowEventList& events)
