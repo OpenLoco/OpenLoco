@@ -211,7 +211,7 @@ namespace OpenLoco::Gfx
 
             dstLeft = dstLeft >> TZoomLevel;
 
-            return DrawSpritePosArgs{ Ui::Point32{ srcX, srcY }, Ui::Point32{ dstLeft, dstTop }, Ui::Size(width, height) };
+            return DrawSpritePosArgs{ Ui::Point{ srcX, srcY }, Ui::Point{ dstLeft, dstTop }, Ui::Size(width, height) };
         }
 
         template<uint8_t TZoomLevel, bool TIsRLE>
@@ -931,7 +931,7 @@ namespace OpenLoco::Gfx
             const auto yStep = a.y < b.y ? 1 : -1;
             auto y = a.y;
 
-            for (auto x = a.x, xStart = a.x, length = static_cast<int16_t>(1); x < b.x; ++x, ++length)
+            for (auto x = a.x, xStart = a.x, length = 1; x < b.x; ++x, ++length)
             {
                 // Vertical lines are drawn 1 pixel at a time
                 if (isSteep)

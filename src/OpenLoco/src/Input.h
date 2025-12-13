@@ -132,7 +132,7 @@ namespace OpenLoco::Input
 
     struct QueuedMouseInput
     {
-        Ui::Point32 pos;
+        Ui::Point pos;
         uint32_t button;
     };
     void enqueueMouseButton(const QueuedMouseInput& input);

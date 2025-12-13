@@ -281,7 +281,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x00407FCD
-    Point32 getCursorPosScaled()
+    Point getCursorPosScaled()
     {
         auto unscaledPos = getCursorPos();
 
@@ -292,7 +292,7 @@ namespace OpenLoco::Ui
         return { static_cast<int32_t>(std::round(x)), static_cast<int32_t>(std::round(y)) };
     }
 
-    Point32 getCursorPos()
+    Point getCursorPos()
     {
         int x = 0, y = 0;
         SDL_GetMouseState(&x, &y);

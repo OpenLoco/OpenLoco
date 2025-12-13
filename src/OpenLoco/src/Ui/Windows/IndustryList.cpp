@@ -624,7 +624,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         else
         {
             // 0x00457878
-            auto origin = Ui::Point32(Ui::width() - IndustryList::kWindowSize.width, 30);
+            auto origin = Ui::Point(Ui::width() - IndustryList::kWindowSize.width, 30);
 
             window = WindowManager::createWindow(
                 WindowType::industryList,

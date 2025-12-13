@@ -567,7 +567,7 @@ namespace OpenLoco::Ui::Windows::TownList
         else
         {
             // 0x00499CFC
-            auto origin = Ui::Point32(Ui::width() - TownList::kWindowSize.width, 30);
+            auto origin = Ui::Point(Ui::width() - TownList::kWindowSize.width, 30);
 
             window = WindowManager::createWindow(
                 WindowType::townList,
