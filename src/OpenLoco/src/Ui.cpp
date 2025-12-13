@@ -690,8 +690,8 @@ namespace OpenLoco::Ui
             WindowManager::invalidateAllWindowsAfterInput();
             Input::updateCursorPosition();
 
-            uint32_t x;
-            int16_t y;
+            int32_t x;
+            int32_t y;
             Input::MouseButton state;
             while ((state = Input::nextMouseInput(x, y)) != Input::MouseButton::released)
             {
@@ -716,8 +716,8 @@ namespace OpenLoco::Ui
             }
             else if (x != 0x80000000)
             {
-                x = std::clamp<int16_t>(x, 0, Ui::width() - 1);
-                y = std::clamp<int16_t>(y, 0, Ui::height() - 1);
+                x = std::clamp(x, 0, Ui::width() - 1);
+                y = std::clamp(y, 0, Ui::height() - 1);
 
                 Input::handleMouse(x, y, state);
                 Input::processMouseOver(x, y);
@@ -738,8 +738,8 @@ namespace OpenLoco::Ui
         WindowManager::invalidateAllWindowsAfterInput();
         Input::updateCursorPosition();
 
-        uint32_t x;
-        int16_t y;
+        int32_t x;
+        int32_t y;
         Input::MouseButton state;
         while ((state = Input::nextMouseInput(x, y)) != Input::MouseButton::released)
         {
@@ -752,8 +752,8 @@ namespace OpenLoco::Ui
         }
         else if (x != 0x80000000)
         {
-            x = std::clamp<int16_t>(x, 0, Ui::width() - 1);
-            y = std::clamp<int16_t>(y, 0, Ui::height() - 1);
+            x = std::clamp(x, 0, Ui::width() - 1);
+            y = std::clamp(y, 0, Ui::height() - 1);
 
             Input::handleMouse(x, y, state);
             Input::processMouseOver(x, y);
