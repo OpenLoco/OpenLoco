@@ -230,7 +230,7 @@ namespace OpenLoco::Ui::Windows::Options
             }
         }
 
-        static constexpr auto makeCommonWidgets(Ui::Size32 windowSize, StringId windowCaptionId)
+        static constexpr auto makeCommonWidgets(Ui::Size windowSize, StringId windowCaptionId)
         {
             constexpr auto kTabWidth = 31;
 
@@ -251,7 +251,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Display
     {
-        static constexpr Ui::Size32 kWindowSize = { 400, 151 };
+        static constexpr Ui::Size kWindowSize = { 400, 151 };
 
         namespace Widx
         {
@@ -551,7 +551,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Rendering
     {
-        static constexpr Ui::Size32 kWindowSize = { 400, 218 };
+        static constexpr Ui::Size kWindowSize = { 400, 218 };
 
         namespace Widx
         {
@@ -928,7 +928,7 @@ namespace OpenLoco::Ui::Windows::Options
         constexpr auto kMusicGroupLastItemOffset = 73;
         constexpr auto kMusicGroupHeight = kMusicGroupLastItemOffset + 19;
 
-        static constexpr Ui::Size32 kWindowSize = { 366, 49 + kSoundGroupHeight + 4 + kMusicGroupHeight + 4 };
+        static constexpr Ui::Size kWindowSize = { 366, 49 + kSoundGroupHeight + 4 + kMusicGroupHeight + 4 };
 
         namespace Widx
         {
@@ -1346,7 +1346,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Regional
     {
-        static constexpr Ui::Size32 kWindowSize = { 366, 167 };
+        static constexpr Ui::Size kWindowSize = { 366, 167 };
 
         namespace Widx
         {
@@ -1825,7 +1825,7 @@ namespace OpenLoco::Ui::Windows::Options
             };
         }
 
-        static constexpr Ui::Size32 kWindowSize = { 366, 114 };
+        static constexpr Ui::Size kWindowSize = { 366, 114 };
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_controls),
@@ -1954,7 +1954,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Company
     {
-        static constexpr Ui::Size32 kWindowSize = { 420, 134 };
+        static constexpr Ui::Size kWindowSize = { 420, 134 };
 
         namespace Widx
         {
@@ -2217,7 +2217,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Misc
     {
-        static constexpr Ui::Size32 kWindowSize = { 420, 266 };
+        static constexpr Ui::Size kWindowSize = { 420, 266 };
 
         namespace Widx
         {
@@ -2691,7 +2691,7 @@ namespace OpenLoco::Ui::Windows::Options
     {
         std::span<const Widget> widgets;
         const WindowEventList& events;
-        Ui::Size32 kWindowSize;
+        Ui::Size kWindowSize;
     };
 
     // clang-format off

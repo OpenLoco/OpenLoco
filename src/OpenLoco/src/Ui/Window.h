@@ -228,7 +228,7 @@ namespace OpenLoco::Ui
         uint8_t var_885 = 0xFF;
         AdvancedColour colours[enumValue(WindowColour::count)];
 
-        Window(Ui::Point32 position, Ui::Size32 size);
+        Window(Ui::Point32 position, Ui::Size size);
 
         // TODO: Remove this once position is a member.
         constexpr Ui::Point position() const
@@ -248,7 +248,7 @@ namespace OpenLoco::Ui
             widgets.insert(widgets.end(), newWidgets.begin(), newWidgets.end());
         }
 
-        constexpr bool setSize(Ui::Size32 minSize, Ui::Size32 maxSize)
+        constexpr bool setSize(Ui::Size minSize, Ui::Size maxSize)
         {
             bool hasResized = false;
 
@@ -286,7 +286,7 @@ namespace OpenLoco::Ui
             return hasResized;
         }
 
-        constexpr void setSize(Ui::Size32 size)
+        constexpr void setSize(Ui::Size size)
         {
             setSize(size, size);
         }

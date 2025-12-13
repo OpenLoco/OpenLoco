@@ -14,14 +14,14 @@ namespace OpenLoco::Ui::Widgets
             new_,
         };
 
-        constexpr NewsPanel(WidgetId id, Point32 origin, Size32 size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null, Style newsStyle = Style::old)
+        constexpr NewsPanel(WidgetId id, Point32 origin, Size size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null, Style newsStyle = Style::old)
             : Widget(id, origin, size, kWidgetType, colour, content, tooltip)
         {
             events.draw = &draw;
             styleData = enumValue(newsStyle);
         }
 
-        constexpr NewsPanel(Point32 origin, Size32 size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null, Style newsStyle = Style::old)
+        constexpr NewsPanel(Point32 origin, Size size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null, Style newsStyle = Style::old)
             : NewsPanel(WidgetId::none, origin, size, colour, content, tooltip, newsStyle)
         {
         }

@@ -16,14 +16,14 @@ namespace OpenLoco::Ui::Widgets
             whiteText,  // 25
         };
 
-        constexpr Caption(WidgetId id, Point32 origin, Size32 size, Style captionStyle, WindowColour colour, StringId content = StringIds::empty, StringId tooltip = StringIds::null)
+        constexpr Caption(WidgetId id, Point32 origin, Size size, Style captionStyle, WindowColour colour, StringId content = StringIds::empty, StringId tooltip = StringIds::null)
             : Widget(id, origin, size, kWidgetType, colour, content, tooltip)
         {
             events.draw = &draw;
             styleData = enumValue(captionStyle);
         }
 
-        constexpr Caption(Point32 origin, Size32 size, Style captionStyle, WindowColour colour, StringId content = StringIds::empty, StringId tooltip = StringIds::null)
+        constexpr Caption(Point32 origin, Size size, Style captionStyle, WindowColour colour, StringId content = StringIds::empty, StringId tooltip = StringIds::null)
             : Caption(WidgetId::none, origin, size, captionStyle, colour, content, tooltip)
         {
         }

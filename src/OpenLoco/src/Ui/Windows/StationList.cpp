@@ -32,7 +32,7 @@
 
 namespace OpenLoco::Ui::Windows::StationList
 {
-    static constexpr Ui::Size32 kWindowSize = { 600, 197 };
+    static constexpr Ui::Size kWindowSize = { 600, 197 };
     static constexpr Ui::Size kMaxDimensions = { 640, 1200 };
     static constexpr Ui::Size kMinDimensions = { 192, 100 };
 

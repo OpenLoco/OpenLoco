@@ -79,7 +79,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
     namespace IndustryList
     {
-        static constexpr Ui::Size32 kWindowSize = { 759, 197 };
+        static constexpr Ui::Size kWindowSize = { 759, 197 };
         static constexpr Ui::Size kMaxDimensions = { 759, 900 };
         static constexpr Ui::Size kMinDimensions = { 192, 100 };
 
@@ -701,7 +701,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
     namespace NewIndustries
     {
-        static constexpr Ui::Size32 kWindowSize = { 578, 172 };
+        static constexpr Ui::Size kWindowSize = { 578, 172 };
 
         static constexpr uint8_t kRowHeight = 112;
 
@@ -1326,8 +1326,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static void onResize(Window& self)
         {
             self.invalidate();
-            Ui::Size32 kMinWindowSize = { self.minWidth, self.minHeight };
-            Ui::Size32 kMaxWindowSize = { self.maxWidth, self.maxHeight };
+            Ui::Size kMinWindowSize = { self.minWidth, self.minHeight };
+            Ui::Size kMaxWindowSize = { self.maxWidth, self.maxHeight };
             bool hasResized = self.setSize(kMinWindowSize, kMaxWindowSize);
             if (hasResized)
             {

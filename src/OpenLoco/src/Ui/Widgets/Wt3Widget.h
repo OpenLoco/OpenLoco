@@ -9,13 +9,13 @@ namespace OpenLoco::Ui::Widgets
     {
         static constexpr auto kWidgetType = WidgetType::wt_3;
 
-        constexpr Wt3Widget(WidgetId id, Point32 origin, Size32 size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
+        constexpr Wt3Widget(WidgetId id, Point32 origin, Size size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
             : Widget(id, origin, size, kWidgetType, colour, content, tooltip)
         {
             events.draw = &draw;
         }
 
-        constexpr Wt3Widget(Point32 origin, Size32 size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
+        constexpr Wt3Widget(Point32 origin, Size size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
             : Wt3Widget(WidgetId::none, origin, size, colour, content, tooltip)
         {
         }

@@ -54,21 +54,21 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
     namespace News1
     {
-        static constexpr Ui::Size32 kWindowSize = { 360, 117 };
+        static constexpr Ui::Size kWindowSize = { 360, 117 };
 
         std::span<const Widget> getWidgets();
     }
 
     namespace News2
     {
-        static constexpr Ui::Size32 kWindowSize = { 360, 159 };
+        static constexpr Ui::Size kWindowSize = { 360, 159 };
 
         std::span<const Widget> getWidgets();
     }
 
     namespace Ticker
     {
-        static constexpr Ui::Size32 kWindowSize = { 111, 26 };
+        static constexpr Ui::Size kWindowSize = { 111, 26 };
 
         enum widx
         {

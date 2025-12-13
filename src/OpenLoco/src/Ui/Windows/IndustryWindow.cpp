@@ -78,11 +78,11 @@ namespace OpenLoco::Ui::Windows::Industry
 
     namespace Industry
     {
-        static constexpr Ui::Size32 kWindowSize = { 223, 137 };
+        static constexpr Ui::Size kWindowSize = { 223, 137 };
 
-        static constexpr Ui::Size32 kMinWindowSize = { 192, 137 };
+        static constexpr Ui::Size kMinWindowSize = { 192, 137 };
 
-        static constexpr Ui::Size32 kMaxWindowSize = { 600, 440 };
+        static constexpr Ui::Size kMaxWindowSize = { 600, 440 };
 
         enum widx
         {
@@ -363,9 +363,9 @@ namespace OpenLoco::Ui::Windows::Industry
     namespace Production
     {
 
-        static constexpr Ui::Size32 kMinWindowSize = { 299, 282 };
+        static constexpr Ui::Size kMinWindowSize = { 299, 282 };
 
-        static constexpr Ui::Size32 kMaxWindowSize = { 299, 337 };
+        static constexpr Ui::Size kMaxWindowSize = { 299, 337 };
 
         // 0x00455FD9
         static void prepareDraw(Window& self)
@@ -400,9 +400,9 @@ namespace OpenLoco::Ui::Windows::Industry
 
     namespace Production2
     {
-        static constexpr Ui::Size32 kMinWindowSize = { 299, 282 };
+        static constexpr Ui::Size kMinWindowSize = { 299, 282 };
 
-        static constexpr Ui::Size32 kMaxWindowSize = { 299, 337 };
+        static constexpr Ui::Size kMaxWindowSize = { 299, 337 };
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(222, 136, StringIds::title_industry_monthly_production)
@@ -442,7 +442,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
     namespace Transported
     {
-        static constexpr Ui::Size32 kWindowSize = { 300, 127 };
+        static constexpr Ui::Size kWindowSize = { 300, 127 };
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(300, 126, StringIds::title_statistics)
