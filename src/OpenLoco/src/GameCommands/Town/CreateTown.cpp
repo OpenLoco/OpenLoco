@@ -71,10 +71,10 @@ namespace OpenLoco::GameCommands
             for (auto attempts = 200; attempts > 0; attempts--)
             {
                 uint32_t rand = gameState.rng.randNext();
-                auto tilePos = TilePos2(((rand >> 16) * kMapColumns) >> 16, ((rand & 0xFFFF) * kMapRows) >> 16);
+                auto tilePos = TilePos2(((rand >> 16) * World::TileManager::getMapColumns()) >> 16, ((rand & 0xFFFF) * World::TileManager::getMapRows()) >> 16);
                 Pos2 attemptPos = toWorldSpace(tilePos);
 
-                if (attemptPos.x < 384 || attemptPos.y < 384 || attemptPos.x > 11904 || attemptPos.y > 11904)
+                if (attemptPos.x < World::TileManager::getMapColumns() || attemptPos.y < World::TileManager::getMapRows() || attemptPos.x > 11904 || attemptPos.y > 11904)
                 {
                     continue;
                 }

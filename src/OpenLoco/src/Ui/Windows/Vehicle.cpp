@@ -4203,7 +4203,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 for (tile_coord_t j = 0; j < 8; ++j)
                 {
                     const auto loc = initialPos + World::toWorldSpace(World::TilePos2{ i, j });
-                    if (!World::validCoords(loc))
+                    if (!World::TileManager::validCoords(loc))
                     {
                         continue;
                     }

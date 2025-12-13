@@ -77,7 +77,7 @@ namespace OpenLoco::GameCommands
         for (auto& offset : buildingFootprint)
         {
             const auto tilePos = World::toTileSpace(World::Pos2(args.pos) + offset.pos);
-            if (!World::validCoords(tilePos))
+            if (!World::TileManager::validCoords(tilePos))
             {
                 return FAILURE;
             }

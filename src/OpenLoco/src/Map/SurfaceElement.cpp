@@ -155,7 +155,7 @@ namespace OpenLoco::World
                     continue;
                 }
                 const auto nextLoc = loc + kRotationOffset[i];
-                if (!validCoords(nextLoc))
+                if (!World::TileManager::validCoords(nextLoc))
                 {
                     continue;
                 }
@@ -185,7 +185,7 @@ namespace OpenLoco::World
             else
             {
                 const auto nextLoc = loc + kRotationOffset[i];
-                if (!validCoords(nextLoc))
+                if (!World::TileManager::validCoords(nextLoc))
                 {
                     continue;
                 }
