@@ -4924,7 +4924,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             self.currentTab = widgetIndex - Common::widx::tabMain;
             self.frameNo = 0;
-            self.flags &= ~WindowFlags::beingResized;
+            self.flags &= ~WindowFlags::maximised;
             self.var_85C = -1;
             self.viewportRemove(0);
 

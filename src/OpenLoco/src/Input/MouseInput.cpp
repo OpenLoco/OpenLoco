@@ -724,12 +724,12 @@ namespace OpenLoco::Input
             return;
         }
 
-        bool doDefault = false;
+        bool notMaximised = false;
         int dx = 0, dy = 0;
         switch (button)
         {
             case MouseButton::released:
-                doDefault = true;
+                notMaximised = true;
                 break;
 
             case MouseButton::leftReleased:
@@ -739,26 +739,29 @@ namespace OpenLoco::Input
                 Ui::ToolTip::setWindowType(_dragWindowType);
                 Ui::ToolTip::setWindowNumber(_dragWindowNumber);
 
-                if (w->hasFlags(Ui::WindowFlags::finishedResize))
+                // Do not toggle maximised if the window has been resized.
+                if (w->hasFlags(Ui::WindowFlags::hasBeenResized))
                 {
-                    doDefault = true;
+                    notMaximised = true;
                     break;
                 }
 
-                if (w->hasFlags(Ui::WindowFlags::beingResized))
+                // Un-maximise window; restore previous window size.
+                if (w->hasFlags(Ui::WindowFlags::maximised))
                 {
                     x = w->var_88A - w->width + _dragLast.x;
                     y = w->var_88C - w->height + _dragLast.y;
-                    w->flags &= ~Ui::WindowFlags::beingResized;
-                    doDefault = true;
+                    w->flags &= ~Ui::WindowFlags::maximised;
+                    notMaximised = true;
                     break;
                 }
 
+                // Maximise window. Store previous window size.
                 w->var_88A = w->width;
                 w->var_88C = w->height;
                 x = _dragLast.x - w->x - w->width + Ui::width();
                 y = _dragLast.y - w->y - w->height + Ui::height() - 27;
-                w->flags |= Ui::WindowFlags::beingResized;
+                w->flags |= Ui::WindowFlags::maximised;
                 if (y >= Ui::height() - 2)
                 {
                     _dragLast.x = x;
@@ -782,7 +785,7 @@ namespace OpenLoco::Input
                 return;
         }
 
-        if (doDefault)
+        if (notMaximised)
         {
             if (y >= Ui::height() - 2)
             {
@@ -801,14 +804,14 @@ namespace OpenLoco::Input
                 return;
             }
 
-            w->flags &= ~Ui::WindowFlags::beingResized;
+            w->flags &= ~Ui::WindowFlags::maximised;
         }
 
         w->invalidate();
 
         w->width = std::clamp<uint16_t>(w->width + dx, w->minWidth, w->maxWidth);
         w->height = std::clamp<uint16_t>(w->height + dy, w->minHeight, w->maxHeight);
-        w->flags |= Ui::WindowFlags::finishedResize;
+        w->flags |= Ui::WindowFlags::hasBeenResized;
         w->callOnResize();
         w->callPrepareDraw();
 
@@ -1462,7 +1465,7 @@ namespace OpenLoco::Input
         _dragLast.y = y;
         _dragWindowType = window->type;
         _dragWindowNumber = window->number;
-        window->flags &= ~Ui::WindowFlags::finishedResize;
+        window->flags &= ~Ui::WindowFlags::hasBeenResized;
     }
 
 #pragma mark - Viewport dragging
