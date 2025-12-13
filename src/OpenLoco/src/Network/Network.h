@@ -19,8 +19,8 @@ namespace OpenLoco::Network
     constexpr uint16_t kNetworkVersion = 1;
 
     void openServer();
-    void joinServer(std::string_view host);
-    void joinServer(std::string_view host, port_t port);
+    bool joinServer(std::string_view host);
+    bool joinServer(std::string_view host, port_t port);
     void close();
     void update();
 

@@ -215,25 +215,25 @@ namespace OpenLoco
         Title::start();
     }
 
-    static void loadFile(const fs::path& path)
+    static bool loadFile(const fs::path& path)
     {
         auto extension = path.extension().u8string();
         if (Utility::iequals(extension, S5::extensionSC5))
         {
-            Scenario::loadAndStart(path);
+            return Scenario::loadAndStart(path);
         }
         else
         {
-            S5::importSaveToGameState(path, S5::LoadFlags::none);
+            return S5::importSaveToGameState(path, S5::LoadFlags::none);
         }
     }
 
-    static void loadFile(const std::string& path)
+    static bool loadFile(const std::string& path)
     {
-        loadFile(fs::u8path(path));
+        return loadFile(fs::u8path(path));
     }
 
-    static void launchGameFromCmdLineOptions()
+    static bool launchGameFromCmdLineOptions()
     {
         const auto& cmdLineOptions = getCommandLineOptions();
         try
@@ -241,28 +241,29 @@ namespace OpenLoco
             if (cmdLineOptions.action == CommandLineAction::host)
             {
                 Network::openServer();
-                loadFile(cmdLineOptions.path);
+                return loadFile(cmdLineOptions.path);
             }
             else if (cmdLineOptions.action == CommandLineAction::join)
             {
                 if (cmdLineOptions.port)
                 {
-                    Network::joinServer(cmdLineOptions.address, *cmdLineOptions.port);
+                    return Network::joinServer(cmdLineOptions.address, *cmdLineOptions.port);
                 }
                 else
                 {
-                    Network::joinServer(cmdLineOptions.address);
+                    return Network::joinServer(cmdLineOptions.address);
                 }
             }
             else if (!cmdLineOptions.path.empty())
             {
-                loadFile(cmdLineOptions.path);
+                return loadFile(cmdLineOptions.path);
             }
         }
         catch (const std::exception& e)
         {
             Logging::error("Unable to load park: {}", e.what());
         }
+        return false;
     }
 
     void sub_431695(uint16_t var_F253A0)
@@ -318,9 +319,12 @@ namespace OpenLoco
                 if (Intro::isActive())
                 {
                     Intro::update();
-                    if (!Intro::isActive())
+                    if (Intro::state() == Intro::State::end2)
                     {
-                        launchGameFromCmdLineOptions();
+                        if (launchGameFromCmdLineOptions())
+                        {
+                            Intro::state(Intro::State::none);
+                        }
                     }
                 }
                 else
