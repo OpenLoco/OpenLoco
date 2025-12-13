@@ -125,6 +125,7 @@ if (NOT APPLE)
         )
     endif()
     add_dependencies(OpenLoco OpenLocoAssets)
+    set_target_properties(OpenLocoAssets PROPERTIES PROJECT_LABEL "Assets")
 endif()
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenLoco)
