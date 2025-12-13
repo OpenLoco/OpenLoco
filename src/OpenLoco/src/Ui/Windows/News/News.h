@@ -12,7 +12,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     struct NewsState
     {
         SavedView savedView[2];
-        uint16_t slideInHeight;
+        int32_t slideInHeight;
         uint16_t numCharsToDisplay;
     };
 
