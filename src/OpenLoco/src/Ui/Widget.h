@@ -182,20 +182,20 @@ namespace OpenLoco::Ui
             StringId text;
             uint32_t content;
         };
-        int16_t left{};
-        int16_t right{};
-        int16_t top{};
-        int16_t bottom{};
+        int32_t left{};
+        int32_t right{};
+        int32_t top{};
+        int32_t bottom{};
         Gfx::Font font{ Gfx::Font::medium_bold };
         StringId tooltip{ StringIds::null };
         WidgetType type{};
         ContentAlign contentAlign{ ContentAlign::left };
         WindowColour windowColour{};
 
-        int16_t midX() const;
-        int16_t midY() const;
-        uint16_t width() const;
-        uint16_t height() const;
+        int32_t midX() const;
+        int32_t midY() const;
+        int32_t width() const;
+        int32_t height() const;
 
         // Custom widget attributes.
         uint32_t styleData{};
@@ -208,7 +208,7 @@ namespace OpenLoco::Ui
         // TODO: Remove this once position is a member.
         Ui::Point position() const
         {
-            return { static_cast<int16_t>(left), static_cast<int16_t>(top) };
+            return { left, top };
         }
 
         // TODO: Remove this once size is a member.
