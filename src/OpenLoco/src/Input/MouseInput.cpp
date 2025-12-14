@@ -1782,7 +1782,7 @@ namespace OpenLoco::Input
                 else
                 {
                     button = loc_4C6FCE(x, y);
-                    if (x == 0x80000000)
+                    if (x < 0)
                     {
                         return button;
                     }
@@ -1792,7 +1792,7 @@ namespace OpenLoco::Input
             else if (!input)
             {
                 button = loc_4C6FCE(x, y);
-                if (x == 0x80000000)
+                if (x < 0)
                 {
                     return button;
                 }

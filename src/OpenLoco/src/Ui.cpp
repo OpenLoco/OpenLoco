@@ -714,7 +714,7 @@ namespace OpenLoco::Ui
             {
                 Input::handleMouse(x, y, state);
             }
-            else if (x != 0x80000000)
+            else if (x >= 0)
             {
                 x = std::clamp(x, 0, Ui::width() - 1);
                 y = std::clamp(y, 0, Ui::height() - 1);
@@ -750,7 +750,7 @@ namespace OpenLoco::Ui
         {
             Input::handleMouse(x, y, state);
         }
-        else if (x != 0x80000000)
+        else if (x >= 0)
         {
             x = std::clamp(x, 0, Ui::width() - 1);
             y = std::clamp(y, 0, Ui::height() - 1);
