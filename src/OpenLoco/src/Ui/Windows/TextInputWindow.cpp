@@ -352,5 +352,5 @@ namespace OpenLoco::Ui::Windows::TextInput
     static const WindowEventList& getEvents()
     {
         return kEvents;
-    } 
+    }
 }
