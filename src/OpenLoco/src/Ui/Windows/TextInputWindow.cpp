@@ -66,13 +66,11 @@ namespace OpenLoco::Ui::Windows::TextInput
         const char* messageStr = StringManager::getString(message);
         char formattedMsg[512] = {};
         strncat(formattedMsg, messageStr, 511);
-
         char* colonPos = strchr(formattedMsg, ':');
         if (colonPos != nullptr)
         {
-            *(colonPos+1) = '\0';
+            *(colonPos + 1) = '\0';
         }
-
         strncat(formattedMsg, " ", 511 - strlen(formattedMsg));
         strncat(formattedMsg, temp, 511 - strlen(formattedMsg));
         StringManager::setString(message, formattedMsg);
