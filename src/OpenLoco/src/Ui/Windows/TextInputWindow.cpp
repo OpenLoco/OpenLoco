@@ -57,6 +57,28 @@ namespace OpenLoco::Ui::Windows::TextInput
 
     );
 
+    /**
+     * @param message
+     * @param temp
+     */
+    void formatAndAppendMessage(StringId message, const char* temp)
+    {
+        const char* messageStr = StringManager::getString(message);
+        char formattedMsg[512] = {};
+        strncat(formattedMsg, messageStr, 511);
+
+        char* colonPos = strchr(formattedMsg, ':');
+        if (colonPos != nullptr)
+        {
+            *(colonPos+1) = '\0';
+        }
+
+        strncat(formattedMsg, " ", 511 - strlen(formattedMsg));
+        strncat(formattedMsg, temp, 511 - strlen(formattedMsg));
+        StringManager::setString(message, formattedMsg);
+        _message = message;
+    }
+
     static const WindowEventList& getEvents();
 
     /**
@@ -92,6 +114,8 @@ namespace OpenLoco::Ui::Windows::TextInput
         std::memcpy(_formatArgs.data(), commonArgs.getBufferStart(), commonArgs.getLength());
         char temp[200] = {};
         StringManager::formatString(temp, value, valueArgs);
+
+        formatAndAppendMessage(message, temp);
 
         inputSession = Ui::TextInput::InputSession(temp, inputSize);
         inputSession.calculateTextOffset(window->widgets[Widx::input].width() - 2);
@@ -328,5 +352,5 @@ namespace OpenLoco::Ui::Windows::TextInput
     static const WindowEventList& getEvents()
     {
         return kEvents;
-    }
+    } 
 }
