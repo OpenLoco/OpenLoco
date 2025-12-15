@@ -1825,6 +1825,7 @@ namespace OpenLoco::Input
         }
         else // if (hasFlag(Flags::rightMousePressed))
         {
+            // First check, and first invocation of Tutorial::nextInput()
             if (Tutorial::state() == Tutorial::State::playing)
             {
                 auto button = MouseButton(Tutorial::nextInput());
@@ -1839,6 +1840,8 @@ namespace OpenLoco::Input
             }
 
             // 0x004C704E
+            // Note: seemingly repeats the above, but is another invocation of Tutorial::nextInput()!
+            // This is important, as it moves the playback along.
             if (Tutorial::state() == Tutorial::State::playing)
             {
                 auto next = Tutorial::nextInput();
@@ -1853,6 +1856,7 @@ namespace OpenLoco::Input
             }
 
             // 0x004C7085
+            // Note: two more invocations of Tutorial::nextInput(), moving playback along.
             if (Tutorial::state() == Tutorial::State::playing)
             {
                 x = Tutorial::nextInput();
