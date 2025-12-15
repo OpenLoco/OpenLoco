@@ -6,6 +6,7 @@
 - Change: [#3413] The map window can now be resized to fit the entire game map.
 - Change: [#3473] Fences can now be interacted with in viewports outside of the scenario editor as well.
 - Change: [#3531] The vehicle list window can now be resized more flexibly, allowing more vehicles to be listed.
+- Change: [#3535] Loading a save game from command line now skips loading the title scene.
 - Fix: [#2957] Bridge supports not being drawn under different corners than in vanilla.
 - Fix: [#3313] Vehicle orders not being deleted correctly when the station is deallocated.
 - Fix: [#3395] Text input windows no longer show character limits.
