@@ -1825,53 +1825,47 @@ namespace OpenLoco::Input
         }
         else // if (hasFlag(Flags::rightMousePressed))
         {
+            if (Tutorial::state() != Tutorial::State::playing)
+            {
+                if (!isRightMouseButtonDown())
+                {
+                    return rightMouseButtonReleased(x, y);
+                }
+
+                // 0x004C7085
+                x = _mousePosX;
+                y = _mousePosY;
+
+                // 0x004C709F, 0x004C70D8
+                _mousePosX = 0;
+                _mousePosY = 0;
+                return MouseButton::released;
+            }
+
             // First check, and first invocation of Tutorial::nextInput()
-            if (Tutorial::state() == Tutorial::State::playing)
+            else // if (Tutorial::state() == Tutorial::State::playing)
             {
                 auto button = MouseButton(Tutorial::nextInput());
                 if (button == MouseButton::released)
                 {
                     return rightMouseButtonReleased(x, y);
                 }
-            }
-            else if (isRightMouseButtonDown())
-            {
-                return rightMouseButtonReleased(x, y);
-            }
 
-            // 0x004C704E
-            // Note: seemingly repeats the above, but is another invocation of Tutorial::nextInput()!
-            // This is important, as it moves the playback along.
-            if (Tutorial::state() == Tutorial::State::playing)
-            {
+                // 0x004C704E
+                // Note: seemingly repeats the above, but is another invocation of Tutorial::nextInput()!
+                // This is important, as it moves the playback along.
                 auto next = Tutorial::nextInput();
                 if (!(next & 0x80))
                 {
                     return rightMouseButtonReleased(x, y);
                 }
-            }
-            else if (!isRightMouseButtonDown())
-            {
-                return rightMouseButtonReleased(x, y);
-            }
 
-            // 0x004C7085
-            // Note: two more invocations of Tutorial::nextInput(), moving playback along.
-            if (Tutorial::state() == Tutorial::State::playing)
-            {
+                // 0x004C7085
+                // Note: two more invocations of Tutorial::nextInput(), moving playback along.
                 x = Tutorial::nextInput();
                 y = Tutorial::nextInput();
+                return MouseButton::released;
             }
-            else
-            {
-                x = _mousePosX;
-                y = _mousePosY;
-            }
-
-            // 0x004C709F, 0x004C70D8
-            _mousePosX = 0;
-            _mousePosY = 0;
-            return MouseButton::released;
         }
     }
 
