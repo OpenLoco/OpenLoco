@@ -1823,7 +1823,7 @@ namespace OpenLoco::Input
             y = std::clamp<uint16_t>(y, 0, Ui::height() - 1);
             return button;
         }
-        else
+        else // if (hasFlag(Flags::rightMousePressed))
         {
             if (Tutorial::state() == Tutorial::State::playing)
             {
