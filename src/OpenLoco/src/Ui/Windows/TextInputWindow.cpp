@@ -89,7 +89,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         window->initScrollWidgets();
 
         auto commonArgs = FormatArguments::common();
-        std::memcpy(_formatArgs.data(), commonArgs.getBufferStart(), commonArgs.getLength());
+        std::memcpy(_formatArgs.data(), commonArgs.getBufferStart(), std::min(commonArgs.getCapacity(), _formatArgs.capacity()));
         char temp[200] = {};
         StringManager::formatString(temp, value, valueArgs);
 
@@ -200,10 +200,11 @@ namespace OpenLoco::Ui::Windows::TextInput
         window.draw(drawingCtx);
 
         // FIXME: This is pretty horrible.
-        // copy the existing args
-        FormatArgumentsBuffer formatArgsBuffer2 = _formatArgs;
-        auto args2 = FormatArguments(formatArgsBuffer2);
+        // copy and shuffle the existing args
+        auto args2 = FormatArguments{};
         args2.push(_message);
+        args2.push(*reinterpret_cast<uint32_t*>(_formatArgs.data() + 8));
+        args2.push(*reinterpret_cast<uint32_t*>(_formatArgs.data() + 12));
 
         Ui::Point position = Point(window.x + window.width / 2, window.y + 30);
         tr.drawStringCentredWrapped(position, window.width - 8, Colour::black, StringIds::wcolour2_stringid, args2);

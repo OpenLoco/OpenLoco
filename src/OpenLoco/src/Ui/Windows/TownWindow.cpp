@@ -733,7 +733,7 @@ namespace OpenLoco::Ui::Windows::Town
             auto town = TownManager::get(TownId(self.number));
 
             FormatArguments args{};
-            args.skip(4);
+            args.skip(8);
             args.push(town->name);
             args.push(town->name);
 
