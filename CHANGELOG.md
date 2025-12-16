@@ -18,6 +18,7 @@
 - Fix: [#3466] Game crashes if you press a multimedia key on your keyboard (e.g. 'next track').
 - Fix: [#3496] Incorrect (off by 1 quantity) building cargo tooltip displayed.
 - Fix: [#3503] Crash when placing airports or docks in a scenario with no track objects.
+- Fix: [#3544] Viewport panning (right-mouse click drag) is broken during tutorial playback.
 
 25.11 (2025-11-05)
 ------------------------------------------------------------------------

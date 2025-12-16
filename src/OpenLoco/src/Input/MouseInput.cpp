@@ -1825,36 +1825,40 @@ namespace OpenLoco::Input
         }
         else
         {
-            // 0x004C704E
-            if (Tutorial::state() == Tutorial::State::playing)
+            if (Tutorial::state() != Tutorial::State::playing)
             {
+                if (!isRightMouseButtonDown())
+                {
+                    return rightMouseButtonReleased(x, y);
+                }
+
+                x = _mousePosX;
+                y = _mousePosY;
+
+                _mousePosX = 0;
+                _mousePosY = 0;
+                return MouseButton::released;
+            }
+
+            else
+            {
+                auto button = MouseButton(Tutorial::nextInput());
+                if (button == MouseButton::released)
+                {
+                    return rightMouseButtonReleased(x, y);
+                }
+
+                // Note: seemingly repeats the above, but invoking Tutorial::nextInput() moves the script along!
                 auto next = Tutorial::nextInput();
                 if (!(next & 0x80))
                 {
                     return rightMouseButtonReleased(x, y);
                 }
-            }
-            else if (!isRightMouseButtonDown())
-            {
-                return rightMouseButtonReleased(x, y);
-            }
 
-            // 0x004C7085
-            if (Tutorial::state() == Tutorial::State::playing)
-            {
                 x = Tutorial::nextInput();
                 y = Tutorial::nextInput();
+                return MouseButton::released;
             }
-            else
-            {
-                x = _mousePosX;
-                y = _mousePosY;
-            }
-
-            // 0x004C709F, 0x004C70D8
-            _mousePosX = 0;
-            _mousePosY = 0;
-            return MouseButton::released;
         }
     }
 
