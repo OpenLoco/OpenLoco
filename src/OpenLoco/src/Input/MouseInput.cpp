@@ -1832,17 +1832,14 @@ namespace OpenLoco::Input
                     return rightMouseButtonReleased(x, y);
                 }
 
-                // 0x004C7085
                 x = _mousePosX;
                 y = _mousePosY;
 
-                // 0x004C709F, 0x004C70D8
                 _mousePosX = 0;
                 _mousePosY = 0;
                 return MouseButton::released;
             }
 
-            // First check, and first invocation of Tutorial::nextInput()
             else // if (Tutorial::state() == Tutorial::State::playing)
             {
                 auto button = MouseButton(Tutorial::nextInput());
@@ -1851,7 +1848,6 @@ namespace OpenLoco::Input
                     return rightMouseButtonReleased(x, y);
                 }
 
-                // 0x004C704E
                 // Note: seemingly repeats the above, but is another invocation of Tutorial::nextInput()!
                 // This is important, as it moves the playback along.
                 auto next = Tutorial::nextInput();
@@ -1860,7 +1856,6 @@ namespace OpenLoco::Input
                     return rightMouseButtonReleased(x, y);
                 }
 
-                // 0x004C7085
                 // Note: two more invocations of Tutorial::nextInput(), moving playback along.
                 x = Tutorial::nextInput();
                 y = Tutorial::nextInput();
