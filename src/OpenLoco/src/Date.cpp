@@ -132,14 +132,24 @@ namespace OpenLoco
         return result;
     }
 
+    constexpr auto kBaseYear = 1800;
+
+    uint32_t calcLeapDays(uint32_t year)
+    {
+        auto countLeaps = [](uint32_t y) -> uint32_t
+        {
+            return (y / 4) - (y / 100) + (y / 400);
+        };
+        return countLeaps(year - 1) - countLeaps(kBaseYear - 1);
+    }
+
     uint32_t calcDays(Date date)
     {
-        constexpr auto kBaseYear = 1800;
         constexpr auto kDaysInYear = 365;
 
         // adds years (365 for each year + 1 for leap years)
         auto yearDiff = date.year - kBaseYear;
-        uint32_t dayCount = (yearDiff * kDaysInYear) + (yearDiff / 4);
+        uint32_t dayCount = (yearDiff * kDaysInYear) + calcLeapDays(date.year);
 
         // add months
         for (int month = 0; month < static_cast<uint8_t>(date.month); ++month)
