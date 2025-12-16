@@ -61,20 +61,19 @@
                     "lhs": "${hostSystemName}",
                     "rhs": "Windows"
                 }
-            }
+            },
+            "generator": "Ninja Multi-Config"
         },
         {
             "name": "posix",
             "displayName": "POSIX",
             "description": "Ninja configure environment for POSIX",
-            "generator": "Ninja Multi-Config",
             "inherits": "posix-base"
         },
         {
             "name": "linux-x86-32-ci",
             "displayName": "Linux x86-32 CI",
             "description": "CI Ninja congfigure environment for Linux x86-32",
-            "generator": "Ninja",
             "inherits": "posix-base",
             "toolchainFile": "${sourceDir}/cmake/linux_x86_toolchain.cmake",
             "vendor": { "microsoft.com/VisualStudioSettings/CMake/1.0": { "intelliSenseMode": "linux-gcc-x86" } },
@@ -101,7 +100,6 @@
             "name": "mingw32",
             "displayName": "MinGW32-ci",
             "description": "Ninja configure environment for MinGW32",
-            "generator": "Ninja Multi-Config",
             "inherits": "posix-base",
             "toolchainFile": "${sourceDir}/cmake/mingw32_toolchain.cmake",
             "cacheVariables": {
@@ -119,7 +117,6 @@
             "name": "linux-vcpkg-static",
             "displayName": "Linux-vcpkg-static",
             "description": "Ninja configure environment for linux (static linkage)",
-            "generator": "Ninja",
             "inherits": "posix-base",
             "vendor": { "microsoft.com/VisualStudioSettings/CMake/1.0": { "intelliSenseMode": "linux-gcc-x64" } },
             "cacheVariables": {
@@ -149,7 +146,6 @@
             "name": "macos-vcpkg-static",
             "displayName": "MacOS arm64 VCPKG static",
             "description": "Ninja configure environment for MacOS (static linkage)",
-            "generator": "Ninja",
             "inherits": "posix-base",
             "cacheVariables": {
                 "OPENLOCO_USE_VCPKG": {
