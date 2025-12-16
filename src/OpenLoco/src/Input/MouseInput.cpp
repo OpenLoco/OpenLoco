@@ -1823,7 +1823,7 @@ namespace OpenLoco::Input
             y = std::clamp<uint16_t>(y, 0, Ui::height() - 1);
             return button;
         }
-        else // if (hasFlag(Flags::rightMousePressed))
+        else
         {
             if (Tutorial::state() != Tutorial::State::playing)
             {
@@ -1840,7 +1840,7 @@ namespace OpenLoco::Input
                 return MouseButton::released;
             }
 
-            else // if (Tutorial::state() == Tutorial::State::playing)
+            else
             {
                 auto button = MouseButton(Tutorial::nextInput());
                 if (button == MouseButton::released)
