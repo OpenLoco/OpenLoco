@@ -11,6 +11,7 @@
 - Fix: [#3313] Vehicle orders not being deleted correctly when the station is deallocated.
 - Fix: [#3395] Text input windows no longer show character limits.
 - Fix: [#3401] The character limit label is using the wrong text colour.
+- Fix: [#3403] Changing the town name displays an incorrect message prompt.
 - Fix: [#3422] Window resize handles don't work properly in windows with status bars.
 - Fix: [#3431] Marker-related config variables are not saved properly.
 - Fix: [#3455] The 'Plant Trees' status bar is not rendered correctly.
