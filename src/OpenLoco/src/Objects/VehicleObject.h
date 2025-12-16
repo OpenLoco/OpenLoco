@@ -3,7 +3,6 @@
 #include "Localisation/StringIds.h"
 #include "Object.h"
 #include "Speed.hpp"
-#include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <span>
 
@@ -38,6 +37,8 @@ namespace OpenLoco
         diesel_exhaust2,
         ship_wake
     };
+
+    enum class CompanyColourType : uint8_t;
 
     namespace SpriteIndex
     {

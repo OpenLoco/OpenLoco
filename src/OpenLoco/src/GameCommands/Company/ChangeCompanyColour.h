@@ -2,6 +2,11 @@
 
 #include "GameCommands/GameCommands.h"
 
+namespace OpenLoco
+{
+    enum class CompanyColourType : uint8_t;
+}
+
 namespace OpenLoco::GameCommands
 {
     struct ChangeCompanyColourSchemeArgs
