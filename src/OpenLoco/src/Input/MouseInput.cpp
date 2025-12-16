@@ -1848,7 +1848,7 @@ namespace OpenLoco::Input
                     return rightMouseButtonReleased(x, y);
                 }
 
-                // Note: seemingly repeats the above, invoking Tutorial::nextInput() moves the script along!
+                // Note: seemingly repeats the above, but invoking Tutorial::nextInput() moves the script along!
                 auto next = Tutorial::nextInput();
                 if (!(next & 0x80))
                 {
