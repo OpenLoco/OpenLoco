@@ -10,7 +10,7 @@ namespace OpenLoco
 
     bool isLeapYear(const int year)
     {
-        return year % 4 == 0;
+        return (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
     }
 
     uint32_t getCurrentDay()
@@ -92,43 +92,21 @@ namespace OpenLoco
     }
 
     // 0x00495C65
-    // eax: totalDays
-    // returns:
-    //    eax: year
-    //    ebx: month
-    //    edx: day
-    Date calcDate(const uint32_t totalDays)
+    Date calcDate(uint32_t totalDays)
     {
         constexpr auto kBaseYear = 1800;
-        constexpr auto kDaysInYear = 365;
-        constexpr auto kDaysInOlympiad = (365 * 4) + 1; // Useful because the calendar that Loco uses (Julian) has a 4-year cycle.
-        constexpr auto kFeb29 = 31 + 28;
-
-        int32_t years = ((totalDays / kDaysInOlympiad) & 0xFFFF) * 4;
-        int32_t day = totalDays % kDaysInOlympiad;
-
-        // Count the years and add an extra day for when there isn't leap year
-        if (day > kDaysInYear)
+        auto y = kBaseYear;
+        while (totalDays > 365)
         {
-            day -= kDaysInYear;
-            day -= 1;
-            do
-            {
-                years++;
-                day -= kDaysInYear;
-            } while (day >= 0);
-            day += kDaysInYear;
-            if (day >= kFeb29)
-            {
-                day++;
-            }
+            auto yd = isLeapYear(y) ? 366 : 365;
+            y++;
+            totalDays -= yd;
         }
+        totalDays--; // Make zero based for day of year
+        const auto monthDay = getMonthDay(totalDays);
 
-        const auto year = kBaseYear + years;
-        const auto monthDay = getMonthDay(day);
-
-        auto result = Date(year, monthDay.first, monthDay.second);
-        result.dayOfYear = day;
+        auto result = Date(y, monthDay.first, monthDay.second);
+        result.dayOfYear = totalDays;
         return result;
     }
 
@@ -148,8 +126,15 @@ namespace OpenLoco
         constexpr auto kDaysInYear = 365;
 
         // adds years (365 for each year + 1 for leap years)
-        auto yearDiff = date.year - kBaseYear;
-        uint32_t dayCount = (yearDiff * kDaysInYear) + calcLeapDays(date.year);
+        auto dayCount = 0;
+        for (auto i = kBaseYear; i < date.year; ++i)
+        {
+            date.day += kDaysInYear;
+            if (isLeapYear(i))
+            {
+                date.day += 1;
+            }
+        }
 
         // add months
         for (int month = 0; month < static_cast<uint8_t>(date.month); ++month)
@@ -552,6 +537,7 @@ namespace OpenLoco
             { MonthId::november, 30 },
             { MonthId::december, 31 },
         };
+
         bool extraDay = month == MonthId::february && isLeapYear(year);
         return month_table[(uint8_t)month].second + extraDay;
     }
