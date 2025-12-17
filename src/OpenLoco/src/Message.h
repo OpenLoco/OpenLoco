@@ -72,7 +72,7 @@ namespace OpenLoco
     enum class MessageTypeFlags : uint16_t
     {
         none = 0U,
-        unk0 = (1U << 0),
+        shouldDedup = (1U << 0),
         unk1 = (1U << 1),
         hasFirstItem = (1U << 2),
         hasSecondItem = (1U << 3),
