@@ -631,7 +631,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
             const auto& mtd = getMessageTypeDescriptor(news->type);
 
-            if (!mtd.hasFlag(MessageTypeFlags::unk5))
+            if (!mtd.hasFlag(MessageTypeFlags::smallerFont))
             {
                 tr.setCurrentFont(Gfx::Font::large);
             }
@@ -711,7 +711,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
             const auto& mtd = getMessageTypeDescriptor(news->type);
 
-            if (!mtd.hasFlag(MessageTypeFlags::unk5))
+            if (!mtd.hasFlag(MessageTypeFlags::smallerFont))
             {
                 tr.setCurrentFont(Gfx::Font::large);
             }

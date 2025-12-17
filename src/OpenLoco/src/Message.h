@@ -76,7 +76,7 @@ namespace OpenLoco
         unk1 = (1U << 1),
         hasFirstItem = (1U << 2),
         hasSecondItem = (1U << 3),
-        unk5 = (1U << 5), // Never set
+        smallerFont = (1U << 5), // Never set - but if it was, it results in font size of Gfx::Font::large not being set
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(MessageTypeFlags);
 
