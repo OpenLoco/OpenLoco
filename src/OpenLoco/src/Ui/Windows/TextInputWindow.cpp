@@ -15,6 +15,7 @@
 #include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/TextBoxWidget.h"
 #include "Ui/WindowManager.h"
@@ -43,6 +44,7 @@ namespace OpenLoco::Ui::Windows::TextInput
             close,
             panel,
             input,
+            charLimit,
             ok,
         };
     }
@@ -53,6 +55,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         Widgets::ImageButton({ 315, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { 330, 75 }, WindowColour::secondary),
         Widgets::TextBox({ 4, 58 }, { 322, 14 }, WindowColour::secondary),
+        Widgets::Label({ 150, 75 }, { 100, 10 }, WindowColour::secondary, ContentAlign::right, StringIds::num_characters_left_int_int),
         Widgets::Button({ 256, 74 }, { 70, 12 }, WindowColour::secondary, StringIds::label_button_ok)
 
     );
@@ -180,10 +183,17 @@ namespace OpenLoco::Ui::Windows::TextInput
      *
      * @param window @<esi>
      */
-    static void prepareDraw(Ui::Window& window)
+    static void prepareDraw(Ui::Window& self)
     {
-        window.widgets[Widx::title].text = _title;
-        memcpy(window.widgets[Widx::title].textArgs.data(), _formatArgs.data(), 16);
+        self.widgets[Widx::title].text = _title;
+        memcpy(self.widgets[Widx::title].textArgs.data(), _formatArgs.data(), 16);
+
+        const uint16_t numCharacters = static_cast<uint16_t>(inputSession.buffer.length());
+        const uint16_t maxNumCharacters = inputSession.inputLenLimit;
+
+        FormatArguments args{ self.widgets[Widx::charLimit].textArgs };
+        args.push<uint16_t>(numCharacters);
+        args.push<uint16_t>(maxNumCharacters);
     }
 
     /**
@@ -243,19 +253,6 @@ namespace OpenLoco::Ui::Windows::TextInput
         }
 
         drawingCtx.popRenderTarget();
-
-        const uint16_t numCharacters = static_cast<uint16_t>(inputSession.buffer.length());
-        const uint16_t maxNumCharacters = inputSession.inputLenLimit;
-
-        {
-            FormatArguments args{};
-            args.push<uint16_t>(numCharacters);
-            args.push<uint16_t>(maxNumCharacters);
-
-            auto& buttonWidget = window.widgets[Widx::ok];
-            auto point = Point(window.x + buttonWidget.left - 5, window.y + buttonWidget.top + 1);
-            tr.drawStringRight(point, Colour::black, StringIds::num_characters_left_int_int, args);
-        }
     }
 
     // 0x004CE8B6
