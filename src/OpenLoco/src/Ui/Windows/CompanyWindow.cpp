@@ -363,7 +363,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 args.bufferIndex = 0;
 
-                success = GameCommands::doCommand(args, GameCommands::Flags::apply);
+                success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE;
             }
 
             // No need to propagate the name if it could not be set.
