@@ -12,6 +12,7 @@
 - Fix: [#3395] Text input windows no longer show character limits.
 - Fix: [#3401] The character limit label is using the wrong text colour.
 - Fix: [#3403] Changing a town name displays an incorrect message prompt.
+- Fix: [#3410] Text Input window's character length/limit flickering when viewport behind the window is being invalidated.
 - Fix: [#3422] Window resize handles don't work properly in windows with status bars.
 - Fix: [#3431] Marker-related config variables are not saved properly.
 - Fix: [#3455] The 'Plant Trees' status bar is not rendered correctly.
