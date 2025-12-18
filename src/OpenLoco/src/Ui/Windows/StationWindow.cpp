@@ -125,7 +125,7 @@ namespace OpenLoco::Ui::Windows::Station
             // commonWidgets(kWindowSize.width, kWindowSize.height),
             Common::makeCommonWidgets(223, 136),
             Widgets::Viewport({ 3, 44 }, { 195, 80 }, WindowColour::secondary, Widget::kContentUnk),
-            Widgets::Label({ 3, 115 }, { 195, 21 }, WindowColour::secondary, ContentAlign::center),
+            Widgets::Label({ 3, 115 }, { 195, 21 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid),
             Widgets::ImageButton({ 0, 0 }, { 24, 24 }, WindowColour::secondary, ImageIds::centre_viewport, StringIds::move_main_view_to_show_this)
 
         );
@@ -142,6 +142,13 @@ namespace OpenLoco::Ui::Windows::Station
             self.widgets[widx::status_bar].bottom = self.height - 3;
             self.widgets[widx::status_bar].right = self.width - 14;
 
+            // Set station status
+            auto station = StationManager::get(StationId(self.number));
+            const char* buffer = StringManager::getString(StringIds::buffer_1250);
+            station->getStatusString((char*)buffer);
+            FormatArguments args{ self.widgets[widx::status_bar].textArgs };
+            args.push(StringIds::buffer_1250);
+
             self.widgets[widx::centre_on_viewport].right = self.widgets[widx::viewport].right - 1;
             self.widgets[widx::centre_on_viewport].bottom = self.widgets[widx::viewport].bottom - 1;
             self.widgets[widx::centre_on_viewport].left = self.widgets[widx::viewport].right - 24;
@@ -153,22 +160,8 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048E470
         static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
         {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
             self.draw(drawingCtx);
             Common::drawTabs(self, drawingCtx);
-
-            auto station = StationManager::get(StationId(self.number));
-            const char* buffer = StringManager::getString(StringIds::buffer_1250);
-            station->getStatusString((char*)buffer);
-
-            FormatArguments args{};
-            args.push(StringIds::buffer_1250);
-
-            const auto& widget = self.widgets[widx::status_bar];
-            const auto width = widget.width() - 1;
-            auto point = Point(self.x + widget.left - 1, self.y + widget.top - 1);
-            tr.drawStringLeftClipped(point, width, Colour::black, StringIds::black_stringid, args);
         }
 
         // 0x0048E4D4
