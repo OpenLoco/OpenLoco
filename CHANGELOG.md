@@ -22,6 +22,7 @@
 - Fix: [#3496] Incorrect (off by 1 quantity) building cargo tooltip displayed.
 - Fix: [#3503] Crash when placing airports or docks in a scenario with no track objects.
 - Fix: [#3544] Viewport panning (right-mouse click drag) is broken during tutorial playback.
+- Fix: [#3545] The initial company name is not set correctly when entering a custom name at scenario start.
 
 25.11 (2025-11-05)
 ------------------------------------------------------------------------
