@@ -42,8 +42,8 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Ui::Windows::LandscapeGeneration
 {
-    static constexpr Ui::Size32 kWindowSize = { 366, 217 };
-    static constexpr Ui::Size32 kLandTabSize = { 366, 252 };
+    static constexpr Ui::Size kWindowSize = { 366, 217 };
+    static constexpr Ui::Size kLandTabSize = { 366, 252 };
 
     static constexpr uint8_t kRowHeight = 22; // CJK: 22
 

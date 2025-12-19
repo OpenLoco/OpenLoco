@@ -155,7 +155,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
     namespace Finances
     {
-        static constexpr Ui::Size32 kWindowSize = { 250, 210 };
+        static constexpr Ui::Size kWindowSize = { 250, 210 };
 
         namespace Widx
         {
@@ -425,7 +425,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
     namespace Companies
     {
-        static constexpr Ui::Size32 kWindowSize = { 250, 188 };
+        static constexpr Ui::Size kWindowSize = { 250, 188 };
 
         namespace Widx
         {
@@ -613,7 +613,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
     namespace Vehicles
     {
-        static constexpr Ui::Size32 kWindowSize = { 250, 152 };
+        static constexpr Ui::Size kWindowSize = { 250, 152 };
 
         namespace Widx
         {
@@ -766,7 +766,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
     namespace Towns
     {
-        static constexpr Ui::Size32 kWindowSize = { 250, 103 };
+        static constexpr Ui::Size kWindowSize = { 250, 103 };
 
         namespace Widx
         {
@@ -923,7 +923,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             WidgetIndex_t widgetIndex;
             const WindowEventList& events;
             const uint64_t* holdableWidgets;
-            Ui::Size32 kWindowSize;
+            Ui::Size kWindowSize;
         };
 
         // clang-format off

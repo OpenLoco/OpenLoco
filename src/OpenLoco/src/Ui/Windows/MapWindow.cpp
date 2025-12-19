@@ -62,10 +62,10 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static constexpr int32_t kRenderedMapSize = kRenderedMapWidth * kRenderedMapHeight;
 
     // Chosen so that the map cannot be smaller than its key, and minimum size makes the map square
-    static constexpr Ui::Size32 kMinWindowSize = { 229, 176 };
+    static constexpr Ui::Size kMinWindowSize = { 229, 176 };
 
     // Chosen so the window cannot exceed map boundaries
-    static constexpr Ui::Size32 kMaxWindowSize = { kRenderedMapWidth + 120, kRenderedMapHeight + 60 };
+    static constexpr Ui::Size kMaxWindowSize = { kRenderedMapWidth + 120, kRenderedMapHeight + 60 };
 
     // 0x004FDC4C
     static std::array<Point, 4> kViewFrameOffsetsByRotation = { {
@@ -2423,7 +2423,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         _mapPixels = static_cast<PaletteIndex_t*>(ptr);
         _mapAltPixels = &_mapPixels[kRenderedMapSize];
 
-        Ui::Size32 size = { 350, 272 };
+        Ui::Size size = { 350, 272 };
 
         if (Ui::getLastMapWindowAttributes().flags != WindowFlags::none)
         {

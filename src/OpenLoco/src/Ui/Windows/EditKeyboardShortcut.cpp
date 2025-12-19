@@ -21,7 +21,7 @@ using namespace OpenLoco::Input;
 
 namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
 {
-    static constexpr Ui::Size32 kWindowSize = { 280, 72 };
+    static constexpr Ui::Size kWindowSize = { 280, 72 };
 
     static uint8_t _editingShortcutIndex;
 
