@@ -3898,7 +3898,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0047C722
-    static void sub_47C722(VehicleHead& head)
+    static void roadResetHead(VehicleHead& head)
     {
         head.var_38 |= Flags38::unk_2;
         auto train = Vehicle(head);
@@ -3935,7 +3935,7 @@ namespace OpenLoco::Vehicles
         if (mode == TransportMode::road)
         {
             // 0x0047C5B0
-            sub_47C722(*this);
+            roadResetHead(*this);
             var_38 |= Flags38::unk_2;
             veh1.var_38 |= Flags38::unk_2;
 
@@ -6173,7 +6173,7 @@ namespace OpenLoco::Vehicles
     {
         if (mode == TransportMode::road)
         {
-            sub_47C722(*this);
+            roadResetHead(*this);
             return;
         }
 
