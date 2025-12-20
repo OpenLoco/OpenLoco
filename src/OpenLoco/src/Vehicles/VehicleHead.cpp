@@ -1318,7 +1318,7 @@ namespace OpenLoco::Vehicles
 
             if (hasVehicleFlags(VehicleFlags::commandStop))
             {
-                return sub_4A8CB6();
+                return stoppingUpdate();
             }
             else if (hasVehicleFlags(VehicleFlags::manualControl))
             {
@@ -1365,7 +1365,7 @@ namespace OpenLoco::Vehicles
                     }
                     else
                     {
-                        return sub_4A8CB6();
+                        return stoppingUpdate();
                     }
                 }
                 else
@@ -1375,7 +1375,7 @@ namespace OpenLoco::Vehicles
             }
             else
             {
-                return sub_4A8CB6();
+                return stoppingUpdate();
             }
         }
     }
@@ -1461,7 +1461,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A8CB6
-    bool VehicleHead::sub_4A8CB6()
+    bool VehicleHead::stoppingUpdate()
     {
         Vehicle train(head);
 
@@ -1503,7 +1503,7 @@ namespace OpenLoco::Vehicles
         auto foundStationId = manualFindTrainStationAtLocation();
         if (foundStationId == StationId::null)
         {
-            return sub_4A8CB6();
+            return stoppingUpdate();
         }
         stationId = foundStationId;
         setStationVisitedTypes();
@@ -1511,7 +1511,7 @@ namespace OpenLoco::Vehicles
         updateLastJourneyAverageSpeed();
         beginUnloading();
 
-        return sub_4A8CB6();
+        return stoppingUpdate();
     }
 
     // 0x004A8FAC
