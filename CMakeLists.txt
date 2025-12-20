@@ -154,3 +154,9 @@ if (NOT APPLE)
     install(DIRECTORY "data/" DESTINATION "${CMAKE_INSTALL_BINDIR}/data")
     install(DIRECTORY "${openloco_objects_SOURCE_DIR}" DESTINATION "${CMAKE_INSTALL_BINDIR}/data/objects")
 endif()
+
+# Apple bundle is declared in OpenLoco subproject CMakeLists
+# TODO: rework
+if (APPLE)
+    install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}" DESTINATION "${CMAKE_INSTALL_BINDIR}")
+endif()
