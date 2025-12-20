@@ -4969,7 +4969,7 @@ namespace OpenLoco::Vehicles
                     }
 
                     const uint8_t lane = isBackToFront ^ isOverLap ? 0b10 : 0b01;
-                    if (!(elRoad->unk4u() & lane))
+                    if (!(elRoad->laneOccupation() & lane))
                     {
                         continue;
                     }
@@ -5029,7 +5029,7 @@ namespace OpenLoco::Vehicles
                             res |= RoadOccupationFlags::isLevelCrossingClosed;
                         }
                     }
-                    if (elRoad->unk4u() & 0b01)
+                    if (elRoad->laneOccupation() & 0b01)
                     {
                         res |= RoadOccupationFlags::isLaneOccupied;
                     }
@@ -5050,7 +5050,7 @@ namespace OpenLoco::Vehicles
                             res |= RoadOccupationFlags::isLevelCrossingClosed;
                         }
                     }
-                    if (elRoad->unk4u() & 0b10)
+                    if (elRoad->laneOccupation() & 0b10)
                     {
                         res |= RoadOccupationFlags::isLaneOccupied;
                     }

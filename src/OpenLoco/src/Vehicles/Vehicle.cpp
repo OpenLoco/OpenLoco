@@ -611,14 +611,14 @@ namespace OpenLoco::Vehicles
                 continue;
             }
 
-            const auto newUnk4u = World::TrackData::getRoadOccupationMask(rad._data >> 2) >> 4;
+            const auto newLaneOccupation = World::TrackData::getRoadOccupationMask(rad._data >> 2) >> 4;
             if (setOccupied)
             {
-                elRoad->setUnk4u(elRoad->unk4u() | newUnk4u);
+                elRoad->setLaneOccupation(elRoad->laneOccupation() | newLaneOccupation);
             }
             else
             {
-                elRoad->setUnk4u(elRoad->unk4u() & (~newUnk4u));
+                elRoad->setLaneOccupation(elRoad->laneOccupation() & (~newLaneOccupation));
             }
 
             if (getTrackType() == 0xFF)
