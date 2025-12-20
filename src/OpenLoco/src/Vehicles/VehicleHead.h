@@ -116,7 +116,7 @@ namespace OpenLoco::Vehicles
         bool updateLand();
         bool sub_4A8DB7();
         bool tryReverse();
-        bool sub_4A8CB6();
+        bool stoppingUpdate();
         bool sub_4A8C81();
         bool landTryBeginUnloading();
         bool landLoadingUpdate();
