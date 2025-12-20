@@ -1,4 +1,4 @@
-25.11+ (???)
+25.12 (2025-12-20)
 ------------------------------------------------------------------------
 - Feature: [#3288, #3523] Native, independent 64-bit architecture builds for Windows, Linux, and macOS.
 - Change: [#3384] Music selection window is now resizable, sortable, and displays the time period associated with each track.
