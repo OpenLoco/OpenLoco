@@ -1,5 +1,6 @@
 26.09+ (???)
 ------------------------------------------------------------------------
+- Feature: [#2624] Custom/optional shortcut to honk all vehicles' horns at once.
 - Change: [#4033] Objects marked with source OpenLoco (OpenGraphics) are no longer exported in scenario or save files.
 - Fix: [#2879] Crash when starting the game with an empty openloco.yaml file.
 - Fix: [#4027] Crash when starting the game with malformed YAML schema.
