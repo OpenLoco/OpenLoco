@@ -3950,7 +3950,7 @@ namespace OpenLoco::Vehicles
 
                 if (handle != veh2.routingHandle)
                 {
-                    veh2.sub_47D959(pos, tad, false);
+                    veh2.updateTileOccupancy(pos, tad, false);
                 }
 
                 pos += World::TrackData::getUnkRoad(tad.basicRad()).pos;
@@ -6403,7 +6403,7 @@ namespace OpenLoco::Vehicles
                 const auto routing = RoutingManager::getRouting(handle);
                 TrackAndDirection::_RoadAndDirection tad{ 0, 0 };
                 tad._data = routing & World::Track::AdditionalTaDFlags::basicTaDMask;
-                sub_47D959(routingPos, tad, false);
+                updateTileOccupancy(routingPos, tad, false);
                 routingPos += World::TrackData::getUnkRoad(tad.basicRad()).pos;
             }
 
@@ -6617,7 +6617,7 @@ namespace OpenLoco::Vehicles
         if (mode == TransportMode::road)
         {
             newTad.road._data &= World::Track::AdditionalTaDFlags::basicTaDMask;
-            sub_47D959(newPos, newTad.road, true);
+            updateTileOccupancy(newPos, newTad.road, true);
         }
 
         auto& moveInfo = mode == TransportMode::road ? World::TrackData::getRoadSubPositon(trackAndDirection.road._data)[subPosition]

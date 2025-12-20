@@ -344,7 +344,7 @@ namespace OpenLoco::Vehicles
 
         TrackAndDirection::_RoadAndDirection newRad(0, 0);
         newRad._data = routing & 0x1FFU;
-        veh1.sub_47D959(newPos, newRad, true);
+        veh1.updateTileOccupancy(newPos, newRad, true);
 
         veh1.routingHandle = newRoutingHandle;
         veh1.trackAndDirection.road = newRad;
@@ -773,7 +773,7 @@ namespace OpenLoco::Vehicles
             return RoadMotionNewPieceResult::noFurther;
         }
 
-        const auto newTrackType = component.sub_47D959(nextPos, newRad, true);
+        const auto newTrackType = component.updateTileOccupancy(nextPos, newRad, true);
 
         component.trackType = newTrackType;
         component.routingHandle = newRoutingHandle;
