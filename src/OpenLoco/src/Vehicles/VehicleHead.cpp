@@ -1305,12 +1305,12 @@ namespace OpenLoco::Vehicles
         {
             if (mode == TransportMode::road)
             {
-                uint8_t bl = sub_4AA36A();
-                if (bl == 1)
+                SignalTimeoutStatus bl = categorizeTimeElapsed();
+                if (bl == SignalTimeoutStatus::firstTimeout)
                 {
                     return sub_4A8DB7();
                 }
-                else if (bl == 2)
+                else if (bl == SignalTimeoutStatus::turnaroundAtSignalTimeout)
                 {
                     return tryReverse();
                 }
@@ -1384,13 +1384,13 @@ namespace OpenLoco::Vehicles
     // 0: None of the below
     // 1: reached first timeout at signal
     // 2: give up and reverse at signal
-    uint8_t VehicleHead::sub_4AA36A()
+    SignalTimeoutStatus VehicleHead::categorizeTimeElapsed()
     {
         Vehicle train(head);
         if (train.veh2->routingHandle != train.veh1->routingHandle || train.veh2->subPosition != train.veh1->subPosition)
         {
             train.veh1->timeAtSignal = 0;
-            return 0;
+            return SignalTimeoutStatus::ok;
         }
 
         auto param1 = 160;
@@ -1418,16 +1418,16 @@ namespace OpenLoco::Vehicles
         train.veh1->timeAtSignal++;
         if (train.veh1->timeAtSignal == param1)
         {
-            return 1;
+            return SignalTimeoutStatus::firstTimeout;
         }
 
         if (train.veh1->timeAtSignal == turnaroundAtSignalTimeout)
         {
             var_5C = 40;
-            return 2;
+            return SignalTimeoutStatus::turnaroundAtSignalTimeout;
         }
 
-        return 0;
+        return SignalTimeoutStatus::ok;
     }
 
     // 0x004A8DB7
@@ -1582,12 +1582,12 @@ namespace OpenLoco::Vehicles
     // 0x004A8D8F
     bool VehicleHead::roadNormalMovementUpdate(uint8_t al, StationId nextStation)
     {
-        uint8_t bl = sub_4AA36A();
-        if (bl == 1)
+        SignalTimeoutStatus bl = categorizeTimeElapsed();
+        if (bl == SignalTimeoutStatus::firstTimeout)
         {
             return sub_4A8DB7();
         }
-        else if (bl == 2)
+        else if (bl == SignalTimeoutStatus::turnaroundAtSignalTimeout)
         {
             return tryReverse();
         }

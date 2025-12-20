@@ -33,6 +33,13 @@ namespace OpenLoco::Vehicles
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(WaterMotionFlags);
 
+    enum class SignalTimeoutStatus : uint32_t
+    {
+        ok = 0U,
+        firstTimeout = 1U,
+        turnaroundAtSignalTimeout = 2U,
+    };
+
     struct VehicleStatus
     {
         StringId status1;
@@ -150,7 +157,7 @@ namespace OpenLoco::Vehicles
         Status sub_427BF2();
         void produceLeavingDockSound();
         void produceTouchdownAirportSound();
-        uint8_t sub_4AA36A();
+        SignalTimeoutStatus categorizeTimeElapsed();
         bool sub_4AC1C2();
         bool opposingTrainAtSignal();
         bool pathingShouldReverse();
