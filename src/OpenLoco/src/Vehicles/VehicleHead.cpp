@@ -4393,23 +4393,22 @@ namespace OpenLoco::Vehicles
 
         int8_t minCurvature = curvatures[0]; // cl
         int8_t maxCurvature = curvatures[0]; // ch
-        uint32_t iMinAbsCurvature = 0; // ebp
+        int8_t minAbsCurvature = curvatures[0]; // ah
         for (auto i = 1U; i < curvatures.size(); ++i)
         {
             const auto curvature = curvatures[i];
             minCurvature = std::min(minCurvature, curvature);
             maxCurvature = std::max(maxCurvature, curvature);
             const auto absCurvature = std::abs(curvature);
-            const auto currMinAbsCurvature = std::abs(curvatures[iMinAbsCurvature]);
+
+            // Note: this std::abs is not redundant, since minAbsCurvature stores both sign and value, not just magnitude
+            const auto currMinAbsCurvature = std::abs(minAbsCurvature);
             if (absCurvature < currMinAbsCurvature)
             {
-                iMinAbsCurvature = i;
+                minAbsCurvature = curvature;
             }
         }
-        
-        // Note: this is the actual curvature, not the absolute value of it
-        // Hence the index tracking above.
-        const auto minAbsCurvature = curvatures[iMinAbsCurvature]; // ah
+
         uint32_t lightStateFlags = 0x10;
         if (minAbsCurvature != minCurvature)
         {
