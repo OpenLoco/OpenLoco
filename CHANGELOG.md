@@ -1,5 +1,6 @@
 25.12+ (???)
 ------------------------------------------------------------------------
+- Feature: [#3568] Can now drag & drop files and folders into the game window to load them when using the browse prompt.
 
 25.12 (2025-12-20)
 ------------------------------------------------------------------------
