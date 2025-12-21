@@ -288,8 +288,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             mapSizeXDown,
             mapSizeXUp,
             mapSizeY,
-            mapSizeYDown,
-            mapSizeYUp,
+            //mapSizeYDown,
+            //mapSizeYUp,
             generate_when_game_starts,
 
             heightmapFileLabel,
@@ -303,9 +303,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             (1ULL << widx::terrainSmoothingNumUp) |
             (1ULL << widx::terrainSmoothingNumDown) |
             (1ULL << widx::mapSizeXUp) |
-            (1ULL << widx::mapSizeXDown) |
-            (1ULL << widx::mapSizeYUp) |
-            (1ULL << widx::mapSizeYDown);
+            (1ULL << widx::mapSizeXDown);
+            //(1ULL << widx::mapSizeYUp) |
+            //(1ULL << widx::mapSizeYDown);
         // clang-format on
 
         static constexpr auto widgets = makeWidgets(
@@ -327,10 +327,10 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             // Map size options
             Widgets::Label({ 10, 146 }, { 170, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::mapSize),                    // Map Size
-            Widgets::Label({ 10, 81 }, { 224 - 16, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::tile_inspector_x_coord), // X:
-            Widgets::stepperWidgets({ 224, 146 }, { 64, 12 }, WindowColour::secondary, StringIds::uint16_raw),                            // {mapSizeX}
-            Widgets::Label({ 10, 81 }, { 292 - 16, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::tile_inspector_y_coord), // Y:
-            Widgets::stepperWidgets({ 292, 146 }, { 64, 12 }, WindowColour::secondary, StringIds::uint16_raw),                            // {mapSizeY}
+            Widgets::Label({ 224 - 16, 146 }, { 48, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::tile_inspector_x_coord), // X:
+            Widgets::stepperWidgets({ 224, 146 }, { 48, 12 }, WindowColour::secondary, StringIds::uint16_raw),                            // {mapSizeX}
+            Widgets::Label({ 292 - 16, 146 }, { 48, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::tile_inspector_y_coord), // Y:
+            //Widgets::stepperWidgets({ 292, 146 }, { 48, 12 }, WindowColour::secondary, StringIds::uint16_raw),                            // {mapSizeY}
 
             Widgets::Checkbox({ 10, 162 }, { 346, 12 }, WindowColour::secondary, StringIds::label_generate_random_landscape_when_game_starts, StringIds::tooltip_generate_random_landscape_when_game_starts),
 
@@ -382,8 +382,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             self.widgets[widx::mapSizeXUp].hidden = isPngFile;
             self.widgets[widx::mapSizeXDown].hidden = isPngFile;
             self.widgets[widx::mapSizeY].hidden = isPngFile;
-            self.widgets[widx::mapSizeYUp].hidden = isPngFile;
-            self.widgets[widx::mapSizeYDown].hidden = isPngFile;
+            //self.widgets[widx::mapSizeYUp].hidden = isPngFile;
+            //self.widgets[widx::mapSizeYDown].hidden = isPngFile;
 
             self.widgets[widx::heightmapFileLabel].hidden = !isPngFile;
             self.widgets[widx::browseHeightmapFile].hidden = !isPngFile;
@@ -398,6 +398,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 self.disabledWidgets &= ~(1ULL << widx::change_heightmap_btn);
                 self.disabledWidgets |= ((1ULL << widx::terrainSmoothingNum) | (1ULL << widx::terrainSmoothingNumUp) | (1ULL << widx::terrainSmoothingNumDown));
+                self.disabledWidgets &= ~((1ULL << widx::mapSizeXDown) | (1ULL << widx::mapSizeXDown));
                 self.disabledWidgets |= (1ULL << widx::browseHeightmapFile);
             }
 
@@ -410,6 +411,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 self.disabledWidgets |= (1ULL << widx::change_heightmap_btn);
                 self.disabledWidgets &= ~((1ULL << widx::terrainSmoothingNum) | (1ULL << widx::terrainSmoothingNumUp) | (1ULL << widx::terrainSmoothingNumDown));
+                self.disabledWidgets &= ~((1ULL << widx::mapSizeXUp) | (1ULL << widx::mapSizeXDown));
                 self.disabledWidgets |= (1ULL << widx::browseHeightmapFile);
             }
             else if (isPngFile)
@@ -431,6 +433,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 self.disabledWidgets |= (1ULL << widx::change_heightmap_btn);
                 self.disabledWidgets |= ((1ULL << widx::terrainSmoothingNum) | (1ULL << widx::terrainSmoothingNumUp) | (1ULL << widx::terrainSmoothingNumDown));
+                self.disabledWidgets |= ((1ULL << widx::mapSizeXUp) | (1ULL << widx::mapSizeXDown));
                 self.disabledWidgets &= ~(1ULL << widx::browseHeightmapFile);
 
                 self.activatedWidgets &= ~(1ULL << widx::generate_when_game_starts);
@@ -507,36 +510,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 case widx::terrainSmoothingNumDown:
                     options.numTerrainSmoothingPasses = std::clamp(options.numTerrainSmoothingPasses - 1, 1, 5);
-                    window.invalidate();
-                    break;
-
-                case widx::mapSizeXUp:
-                    if (options.mapSizeX + 1 <= World::TileManager::kMinMapDimension)
-                    {
-                        options.mapSizeX += 1;
-                    }
-                    window.invalidate();
-                    break;
-                case widx::mapSizeXDown:
-                    if (options.mapSizeX - 1 >= World::TileManager::kMaxMapDimension)
-                    {
-                        options.mapSizeX -= 1;
-                    }
-                    window.invalidate();
-                    break;
-                case widx::mapSizeYUp:
-                    if (options.mapSizeY + 1 <= World::TileManager::kMinMapDimension)
-                    {
-                        options.mapSizeY += 1;
-                    }
-                    window.invalidate();
-                    break;
-
-                case widx::mapSizeYDown:
-                    if (options.mapSizeY - 1 >= World::TileManager::kMaxMapDimension)
-                    {
-                        options.mapSizeY -= 1;
-                    }
                     window.invalidate();
                     break;
 
