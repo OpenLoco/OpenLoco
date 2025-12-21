@@ -119,8 +119,6 @@ namespace OpenLoco::World::TileManager
     Pos2 clampCoords(const Pos2& coords);
 
     // drawing coordinates validation differs from general valid coordinate validation
-    //bool drawableCoord(const coord_t coord);
-    //bool drawableTileCoord(const tile_coord_t coord);
     bool drawableCoords(const Pos2& coords);
     bool drawableTileCoords(const TilePos2& coords);
 }
