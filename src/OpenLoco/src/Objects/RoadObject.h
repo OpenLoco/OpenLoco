@@ -32,7 +32,7 @@ namespace OpenLoco
         unk_05 = 1U << 5,
         isRoad = 1U << 6, // If not set this is tram track
         unk_07 = 1U << 7,
-        unk_08 = 1U << 8,
+        canHaveStreetLights = 1U << 8, // allow streets to have street lights added by towns
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(RoadObjectFlags);
 

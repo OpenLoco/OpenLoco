@@ -864,7 +864,7 @@ namespace OpenLoco
     static uint32_t getStreetLightStyle(uint8_t roadObjId, uint8_t townDensity)
     {
         auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
-        if (!roadObj->hasFlags(RoadObjectFlags::unk_08) || townDensity == 0)
+        if (!roadObj->hasFlags(RoadObjectFlags::canHaveStreetLights) || townDensity == 0)
         {
             return 0;
         }
