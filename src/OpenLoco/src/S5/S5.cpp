@@ -644,7 +644,8 @@ namespace OpenLoco::S5
 
             if (mapWidth < World::TileManager::kMinMapDimension || mapHeight < World::TileManager::kMinMapDimension || mapWidth > World::TileManager::kMaxMapDimension || mapHeight > World::TileManager::kMaxMapDimension)
             {
-                TileManager::setMapSize(World::TileManager::kDefaultMapDimension, World::TileManager::kDefaultMapDimension);
+                mapWidth = World::TileManager::kDefaultMapDimension;
+                mapHeight = World::TileManager::kDefaultMapDimension;
             }
             TileManager::setMapSize(mapWidth, mapHeight);
 
