@@ -21,7 +21,7 @@
 #include "Objects/RoadObject.h"
 #include "Objects/TrackExtraObject.h"
 #include "Objects/TrackObject.h"
-#include "ScenarioConstruction.h"
+#include "Scenario/ScenarioConstruction.h"
 #include "SceneManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
@@ -32,7 +32,6 @@
 #include "Ui/Widgets/Wt3Widget.h"
 #include "World/CompanyManager.h"
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 using namespace OpenLoco::World::TileManager;
 

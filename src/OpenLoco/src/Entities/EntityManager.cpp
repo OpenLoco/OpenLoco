@@ -27,12 +27,12 @@ namespace OpenLoco::EntityManager
 
     constexpr uint8_t getLinkedListOffset(EntityListType list)
     {
-        return enumValue(list) * sizeof(uint16_t);
+        return enumValue(list) * static_cast<uint8_t>(sizeof(uint16_t));
     }
 
     constexpr size_t getLinkedListIndex(uint8_t offset)
     {
-        return offset / sizeof(uint16_t);
+        return offset / static_cast<uint8_t>(sizeof(uint16_t));
     }
 
     // 0x0046FDFD
@@ -235,6 +235,8 @@ namespace OpenLoco::EntityManager
         entity.position = loc;
     }
 
+    static void zeroEntity(EntityBase* ent);
+
     static EntityBase* createEntity(EntityId id, EntityListType list)
     {
         auto* newEntity = get<EntityBase>(id);
@@ -243,6 +245,7 @@ namespace OpenLoco::EntityManager
             Logging::error("Tried to create invalid entity! id: {}, list: {}", enumValue(id), enumValue(list));
             return nullptr;
         }
+        zeroEntity(newEntity);
         moveEntityToList(newEntity, list);
 
         newEntity->position = { Location::null, Location::null, 0 };
@@ -252,7 +255,6 @@ namespace OpenLoco::EntityManager
         newEntity->spriteWidth = 16;
         newEntity->spriteHeightNegative = 20;
         newEntity->spriteHeightPositive = 8;
-        newEntity->vehicleFlags = VehicleFlags::none;
         newEntity->spriteLeft = Location::null;
 
         return newEntity;

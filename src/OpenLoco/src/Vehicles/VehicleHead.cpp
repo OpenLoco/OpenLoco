@@ -1,3 +1,4 @@
+#include "VehicleHead.h"
 #include "Audio/Audio.h"
 #include "Config.h"
 #include "Date.h"
@@ -35,34 +36,35 @@
 #include "Orders.h"
 #include "Random.h"
 #include "RoutingManager.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "SceneManager.h"
 #include "Tutorial.h"
 #include "Ui/WindowManager.h"
-#include "Vehicle.h"
+#include "Vehicle1.h"
+#include "Vehicle2.h"
+#include "VehicleBody.h"
+#include "VehicleBogie.h"
 #include "VehicleManager.h"
+#include "VehicleTail.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
 #include "World/CompanyRecords.h"
 #include "World/IndustryManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <OpenLoco/Math/Bound.hpp>
 #include <OpenLoco/Math/Trigonometry.hpp>
 #include <cassert>
 #include <numeric>
 #include <optional>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Literals;
 using namespace OpenLoco::World;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
-    static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
-    static loco_global<uint8_t, 0x0113623B> _vehicleMangled_113623B;    // This shouldn't be used as it will be mangled but it is
+    static uint8_t _vehicleMangled_113623B = 0; // 0x0113623B TODO: This shouldn't be used as it will be mangled but it is
 
     static constexpr uint16_t kTrainOneWaySignalTimeout = 1920;
     static constexpr uint16_t kTrainTwoWaySignalTimeout = 640;
@@ -183,8 +185,9 @@ namespace OpenLoco::Vehicles
         updateDrivingSounds();
 
         Vehicle2* veh2 = train.veh2;
-        _vehicleUpdate_var_113612C = veh2->currentSpeed.getRaw() >> 7;
-        _vehicleUpdate_var_1136130 = veh2->currentSpeed.getRaw() >> 7;
+        auto& distances = getVehicleUpdateDistances();
+        distances.unkDistance1 = veh2->currentSpeed.getRaw() >> 7;
+        distances.unkDistance2 = veh2->currentSpeed.getRaw() >> 7;
 
         if (var_5C != 0)
         {
@@ -307,7 +310,7 @@ namespace OpenLoco::Vehicles
                             GameCommands::VehicleChangeRunningModeArgs args{};
                             args.head = head;
                             args.mode = GameCommands::VehicleChangeRunningModeArgs::Mode::startVehicle;
-                            auto regs = static_cast<Interop::registers>(args);
+                            auto regs = static_cast<GameCommands::registers>(args);
                             regs.bl = GameCommands::Flags::apply;
                             GameCommands::vehicleChangeRunningMode(regs);
                             if (static_cast<uint32_t>(regs.ebx) == GameCommands::FAILURE)
@@ -791,7 +794,7 @@ namespace OpenLoco::Vehicles
     uint32_t VehicleHead::getCarCount() const
     {
         Vehicle train(head);
-        return train.cars.size();
+        return static_cast<uint32_t>(train.cars.size());
     }
 
     // 0x004B8FA2
@@ -1031,33 +1034,33 @@ namespace OpenLoco::Vehicles
     void VehicleHead::updateDrivingSounds()
     {
         Vehicle train(head);
-        updateDrivingSound(train.veh2->getSoundPlayer());
-        updateDrivingSound(train.tail->getSoundPlayer());
+        updateDrivingSound(train.veh2->sound, true);
+        updateDrivingSound(train.tail->sound, false);
     }
 
     // 0x004A88A6
-    void VehicleHead::updateDrivingSound(VehicleSoundPlayer* soundPlayer)
+    void VehicleHead::updateDrivingSound(VehicleSound& sound, const bool isVeh2)
     {
-        if (tileX == -1 || status == Status::crashed || status == Status::stuck || has38Flags(Flags38::isGhost) || soundPlayer->objectId == 0xFFFF)
+        if (tileX == -1 || status == Status::crashed || status == Status::stuck || has38Flags(Flags38::isGhost) || sound.objectId == 0xFFFF)
         {
-            updateDrivingSoundNone(soundPlayer);
+            updateDrivingSoundNone(sound);
             return;
         }
 
-        auto vehicleObject = ObjectManager::get<VehicleObject>(soundPlayer->objectId);
+        auto vehicleObject = ObjectManager::get<VehicleObject>(sound.objectId);
         switch (vehicleObject->drivingSoundType)
         {
             case DrivingSoundType::none:
-                updateDrivingSoundNone(soundPlayer);
+                updateDrivingSoundNone(sound);
                 break;
             case DrivingSoundType::friction:
-                updateDrivingSoundFriction(soundPlayer, &vehicleObject->sound.friction);
+                updateDrivingSoundFriction(sound, &vehicleObject->sound.friction);
                 break;
             case DrivingSoundType::simpleMotor:
-                updateSimpleMotorSound(soundPlayer, &vehicleObject->sound.simpleMotor);
+                updateSimpleMotorSound(sound, isVeh2, &vehicleObject->sound.simpleMotor);
                 break;
             case DrivingSoundType::gearboxMotor:
-                updateGearboxMotorSound(soundPlayer, &vehicleObject->sound.gearboxMotor);
+                updateGearboxMotorSound(sound, isVeh2, &vehicleObject->sound.gearboxMotor);
                 break;
             default:
                 break;
@@ -1065,36 +1068,36 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A8B7C
-    void VehicleHead::updateDrivingSoundNone(VehicleSoundPlayer* soundPlayer)
+    void VehicleHead::updateDrivingSoundNone(VehicleSound& sound)
     {
-        soundPlayer->drivingSoundId = 0xFF;
+        sound.drivingSoundId = 0xFF;
     }
 
     // 0x004A88F7
-    void VehicleHead::updateDrivingSoundFriction(VehicleSoundPlayer* soundPlayer, const VehicleObjectFrictionSound* snd)
+    void VehicleHead::updateDrivingSoundFriction(VehicleSound& sound, const VehicleObjectFrictionSound* snd)
     {
         Vehicle train(head);
         Vehicle2* vehType2_2 = train.veh2;
         if (vehType2_2->currentSpeed < snd->minSpeed)
         {
-            updateDrivingSoundNone(soundPlayer);
+            updateDrivingSoundNone(sound);
             return;
         }
 
         auto speedDiff = vehType2_2->currentSpeed - snd->minSpeed;
-        soundPlayer->drivingSoundFrequency = (speedDiff.getRaw() >> snd->speedFreqFactor) + snd->baseFrequency;
+        sound.drivingSoundFrequency = (speedDiff.getRaw() >> snd->speedFreqFactor) + snd->baseFrequency;
 
         auto volume = (speedDiff.getRaw() >> snd->speedVolumeFactor) + snd->baseVolume;
 
-        soundPlayer->drivingSoundVolume = std::min<uint8_t>(volume, snd->maxVolume);
-        soundPlayer->drivingSoundId = snd->soundObjectId;
+        sound.drivingSoundVolume = std::min<uint8_t>(volume, snd->maxVolume);
+        sound.drivingSoundId = snd->soundObjectId;
     }
 
     // 0x004A8937
-    void VehicleHead::updateSimpleMotorSound(VehicleSoundPlayer* soundPlayer, const VehicleSimpleMotorSound* snd)
+    void VehicleHead::updateSimpleMotorSound(VehicleSound& sound, const bool isVeh2, const VehicleSimpleMotorSound* snd)
     {
         Vehicle train(head);
-        if (soundPlayer->isVehicle2())
+        if (isVeh2)
         {
             if (vehicleType != VehicleType::ship && vehicleType != VehicleType::aircraft)
             {
@@ -1105,7 +1108,7 @@ namespace OpenLoco::Vehicles
                 }
                 if (train.cars.firstCar.front->hasBreakdownFlags(BreakdownFlags::brokenDown))
                 {
-                    updateDrivingSoundNone(soundPlayer);
+                    updateDrivingSoundNone(sound);
                     return;
                 }
             }
@@ -1115,7 +1118,7 @@ namespace OpenLoco::Vehicles
         uint16_t targetFrequency = snd->idleFrequency;
         uint8_t targetVolume = snd->idleVolume;
 
-        if (vehType2_2->motorState == MotorState::accelerating && (!(soundPlayer->isVehicle2()) || train.cars.firstCar.front->wheelSlipping == 0))
+        if (vehType2_2->motorState == MotorState::accelerating && (!isVeh2 || train.cars.firstCar.front->wheelSlipping == 0))
         {
             targetFrequency = snd->accelerationBaseFreq + (vehType2_2->currentSpeed.getRaw() >> snd->speedFreqFactor);
             targetVolume = snd->acclerationVolume;
@@ -1126,48 +1129,48 @@ namespace OpenLoco::Vehicles
             targetVolume = snd->coastingVolume;
         }
 
-        if (soundPlayer->drivingSoundId == 0xFF)
+        if (sound.drivingSoundId == 0xFF)
         {
             // Half
-            soundPlayer->drivingSoundVolume = snd->idleVolume >> 1;
+            sound.drivingSoundVolume = snd->idleVolume >> 1;
             // Quarter
-            soundPlayer->drivingSoundFrequency = snd->idleFrequency >> 2;
-            soundPlayer->drivingSoundId = snd->soundObjectId;
+            sound.drivingSoundFrequency = snd->idleFrequency >> 2;
+            sound.drivingSoundId = snd->soundObjectId;
             return;
         }
 
-        if (soundPlayer->drivingSoundFrequency != targetFrequency)
+        if (sound.drivingSoundFrequency != targetFrequency)
         {
-            if (soundPlayer->drivingSoundFrequency > targetFrequency)
+            if (sound.drivingSoundFrequency > targetFrequency)
             {
-                soundPlayer->drivingSoundFrequency = std::max<uint16_t>(targetFrequency, soundPlayer->drivingSoundFrequency - snd->freqDecreaseStep);
+                sound.drivingSoundFrequency = std::max<uint16_t>(targetFrequency, sound.drivingSoundFrequency - snd->freqDecreaseStep);
             }
             else
             {
-                soundPlayer->drivingSoundFrequency = std::min<uint16_t>(targetFrequency, soundPlayer->drivingSoundFrequency + snd->freqIncreaseStep);
+                sound.drivingSoundFrequency = std::min<uint16_t>(targetFrequency, sound.drivingSoundFrequency + snd->freqIncreaseStep);
             }
         }
 
-        if (soundPlayer->drivingSoundVolume != targetVolume)
+        if (sound.drivingSoundVolume != targetVolume)
         {
-            if (soundPlayer->drivingSoundVolume > targetVolume)
+            if (sound.drivingSoundVolume > targetVolume)
             {
-                soundPlayer->drivingSoundVolume = std::max<uint8_t>(targetVolume, soundPlayer->drivingSoundVolume - snd->volumeDecreaseStep);
+                sound.drivingSoundVolume = std::max<uint8_t>(targetVolume, sound.drivingSoundVolume - snd->volumeDecreaseStep);
             }
             else
             {
-                soundPlayer->drivingSoundVolume = std::min<uint8_t>(targetVolume, soundPlayer->drivingSoundVolume + snd->volumeIncreaseStep);
+                sound.drivingSoundVolume = std::min<uint8_t>(targetVolume, sound.drivingSoundVolume + snd->volumeIncreaseStep);
             }
         }
 
-        soundPlayer->drivingSoundId = snd->soundObjectId;
+        sound.drivingSoundId = snd->soundObjectId;
     }
 
     // 0x004A8A39
-    void VehicleHead::updateGearboxMotorSound(VehicleSoundPlayer* soundPlayer, const VehicleGearboxMotorSound* snd)
+    void VehicleHead::updateGearboxMotorSound(VehicleSound& sound, const bool isVeh2, const VehicleGearboxMotorSound* snd)
     {
         Vehicle train(head);
-        if (soundPlayer->isVehicle2())
+        if (isVeh2)
         {
             if (vehicleType != VehicleType::ship && vehicleType != VehicleType::aircraft)
             {
@@ -1178,7 +1181,7 @@ namespace OpenLoco::Vehicles
                 }
                 if (train.cars.firstCar.front->hasBreakdownFlags(BreakdownFlags::brokenDown))
                 {
-                    updateDrivingSoundNone(soundPlayer);
+                    updateDrivingSoundNone(sound);
                     return;
                 }
             }
@@ -1213,7 +1216,7 @@ namespace OpenLoco::Vehicles
 
         if (transmissionInGear == true)
         {
-            if (!(soundPlayer->isVehicle2()) || train.cars.firstCar.front->wheelSlipping == 0)
+            if (!isVeh2 || train.cars.firstCar.front->wheelSlipping == 0)
             {
                 auto speed = std::max(vehType2_2->currentSpeed, 7.0_mph);
 
@@ -1240,42 +1243,42 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if (soundPlayer->drivingSoundId == 0xFF)
+        if (sound.drivingSoundId == 0xFF)
         {
             // Half
-            soundPlayer->drivingSoundVolume = snd->idleVolume >> 1;
+            sound.drivingSoundVolume = snd->idleVolume >> 1;
             // Quarter
-            soundPlayer->drivingSoundFrequency = snd->idleFrequency >> 2;
-            soundPlayer->drivingSoundId = snd->soundObjectId;
+            sound.drivingSoundFrequency = snd->idleFrequency >> 2;
+            sound.drivingSoundId = snd->soundObjectId;
             return;
         }
 
-        if (soundPlayer->drivingSoundFrequency != targetFrequency)
+        if (sound.drivingSoundFrequency != targetFrequency)
         {
-            if (soundPlayer->drivingSoundFrequency > targetFrequency)
+            if (sound.drivingSoundFrequency > targetFrequency)
             {
                 targetVolume = snd->coastingVolume;
-                soundPlayer->drivingSoundFrequency = std::max<uint16_t>(targetFrequency, soundPlayer->drivingSoundFrequency - snd->freqDecreaseStep);
+                sound.drivingSoundFrequency = std::max<uint16_t>(targetFrequency, sound.drivingSoundFrequency - snd->freqDecreaseStep);
             }
             else
             {
-                soundPlayer->drivingSoundFrequency = std::min<uint16_t>(targetFrequency, soundPlayer->drivingSoundFrequency + snd->freqIncreaseStep);
+                sound.drivingSoundFrequency = std::min<uint16_t>(targetFrequency, sound.drivingSoundFrequency + snd->freqIncreaseStep);
             }
         }
 
-        if (soundPlayer->drivingSoundVolume != targetVolume)
+        if (sound.drivingSoundVolume != targetVolume)
         {
-            if (soundPlayer->drivingSoundVolume > targetVolume)
+            if (sound.drivingSoundVolume > targetVolume)
             {
-                soundPlayer->drivingSoundVolume = std::max<uint8_t>(targetVolume, soundPlayer->drivingSoundVolume - snd->volumeDecreaseStep);
+                sound.drivingSoundVolume = std::max<uint8_t>(targetVolume, sound.drivingSoundVolume - snd->volumeDecreaseStep);
             }
             else
             {
-                soundPlayer->drivingSoundVolume = std::min<uint8_t>(targetVolume, soundPlayer->drivingSoundVolume + snd->volumeIncreaseStep);
+                sound.drivingSoundVolume = std::min<uint8_t>(targetVolume, sound.drivingSoundVolume + snd->volumeIncreaseStep);
             }
         }
 
-        soundPlayer->drivingSoundId = snd->soundObjectId;
+        sound.drivingSoundId = snd->soundObjectId;
     }
 
     // Returns veh1, veh2 position
@@ -1564,7 +1567,7 @@ namespace OpenLoco::Vehicles
     bool VehicleHead::landNormalMovementUpdate()
     {
         advanceToNextRoutableOrder();
-        auto [al, flags, nextStation] = sub_4ACEE7(0xD4CB00, _vehicleUpdate_var_113612C, false);
+        auto [al, flags, nextStation] = sub_4ACEE7(0xD4CB00, getVehicleUpdateDistances().unkDistance1, false);
 
         if (mode == TransportMode::road)
         {
@@ -1734,6 +1737,64 @@ namespace OpenLoco::Vehicles
         return tryReverse();
     }
 
+    // 0x00426E26
+    static std::pair<AirportMovementNodeFlags, World::Pos3> airportGetMovementEdgeTarget(StationId targetStation, uint8_t curEdge)
+    {
+        auto station = StationManager::get(targetStation);
+
+        Pos3 stationLoc = station->airportStartPos;
+
+        auto tile = TileManager::get(stationLoc);
+
+        for (auto& el : tile)
+        {
+            auto* elStation = el.as<StationElement>();
+            if (elStation == nullptr)
+            {
+                continue;
+            }
+
+            if (elStation->baseZ() != stationLoc.z / 4)
+            {
+                continue;
+            }
+
+            auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
+            const auto movementNodes = airportObject->getMovementNodes();
+            const auto movementEdges = airportObject->getMovementEdges();
+
+            auto destinationNode = movementEdges[curEdge].nextNode;
+
+            Pos2 loc2 = {
+                static_cast<int16_t>(movementNodes[destinationNode].x - 16),
+                static_cast<int16_t>(movementNodes[destinationNode].y - 16)
+            };
+            loc2 = Math::Vector::rotate(loc2, elStation->rotation());
+            auto airportMovement = movementNodes[destinationNode];
+
+            loc2.x += 16 + stationLoc.x;
+            loc2.y += 16 + stationLoc.y;
+
+            Pos3 loc = { loc2.x, loc2.y, static_cast<int16_t>(movementNodes[destinationNode].z + stationLoc.z) };
+
+            if (!airportMovement.hasFlags(AirportMovementNodeFlags::taxiing))
+            {
+                loc.z = stationLoc.z + 255;
+                if (!airportMovement.hasFlags(AirportMovementNodeFlags::inFlight))
+                {
+                    loc.z = 960;
+                }
+            }
+
+            return std::make_pair(airportMovement.flags, loc);
+        }
+
+        // Tile not found. Todo: fail gracefully
+        assert(false);
+        // Flags, location
+        return std::make_pair(AirportMovementNodeFlags::none, World::Pos3{ 0, 0, 0 });
+    }
+
     // 0x004A9051
     bool VehicleHead::updateAir()
     {
@@ -1742,14 +1803,14 @@ namespace OpenLoco::Vehicles
 
         if (vehType2->currentSpeed >= 20.0_mph)
         {
-            _vehicleUpdate_var_1136130 = 0x4000;
+            getVehicleUpdateDistances().unkDistance2 = 0x4000;
         }
         else
         {
-            _vehicleUpdate_var_1136130 = 0x2000;
+            getVehicleUpdateDistances().unkDistance2 = 0x2000;
         }
 
-        train.cars.firstCar.body->sub_4AAB0B({});
+        train.cars.firstCar.body->sub_4AAB0B({}, getVehicleUpdateDistances().unkDistance2);
 
         if (status == Status::stopped)
         {
@@ -2276,14 +2337,14 @@ namespace OpenLoco::Vehicles
         Vehicle2* vehType2 = train.veh2;
         if (vehType2->currentSpeed >= 5.0_mph)
         {
-            _vehicleUpdate_var_1136130 = 0x4000;
+            getVehicleUpdateDistances().unkDistance2 = 0x4000;
         }
         else
         {
-            _vehicleUpdate_var_1136130 = 0x2000;
+            getVehicleUpdateDistances().unkDistance2 = 0x2000;
         }
 
-        train.cars.firstCar.body->sub_4AAB0B({});
+        train.cars.firstCar.body->sub_4AAB0B({}, getVehicleUpdateDistances().unkDistance2);
 
         if (status == Status::stopped)
         {
@@ -2584,64 +2645,6 @@ namespace OpenLoco::Vehicles
         return kAirportMovementNodeNull;
     }
 
-    // 0x00426E26
-    std::pair<AirportMovementNodeFlags, World::Pos3> VehicleHead::airportGetMovementEdgeTarget(StationId targetStation, uint8_t curEdge)
-    {
-        auto station = StationManager::get(targetStation);
-
-        Pos3 stationLoc = station->airportStartPos;
-
-        auto tile = TileManager::get(stationLoc);
-
-        for (auto& el : tile)
-        {
-            auto* elStation = el.as<StationElement>();
-            if (elStation == nullptr)
-            {
-                continue;
-            }
-
-            if (elStation->baseZ() != stationLoc.z / 4)
-            {
-                continue;
-            }
-
-            auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
-            const auto movementNodes = airportObject->getMovementNodes();
-            const auto movementEdges = airportObject->getMovementEdges();
-
-            auto destinationNode = movementEdges[curEdge].nextNode;
-
-            Pos2 loc2 = {
-                static_cast<int16_t>(movementNodes[destinationNode].x - 16),
-                static_cast<int16_t>(movementNodes[destinationNode].y - 16)
-            };
-            loc2 = Math::Vector::rotate(loc2, elStation->rotation());
-            auto airportMovement = movementNodes[destinationNode];
-
-            loc2.x += 16 + stationLoc.x;
-            loc2.y += 16 + stationLoc.y;
-
-            Pos3 loc = { loc2.x, loc2.y, static_cast<int16_t>(movementNodes[destinationNode].z + stationLoc.z) };
-
-            if (!airportMovement.hasFlags(AirportMovementNodeFlags::taxiing))
-            {
-                loc.z = stationLoc.z + 255;
-                if (!airportMovement.hasFlags(AirportMovementNodeFlags::inFlight))
-                {
-                    loc.z = 960;
-                }
-            }
-
-            return std::make_pair(airportMovement.flags, loc);
-        }
-
-        // Tile not found. Todo: fail gracefully
-        assert(false);
-        // Flags, location
-        return std::make_pair(AirportMovementNodeFlags::none, World::Pos3{ 0, 0, 0 });
-    }
-
     // 0x004B980A
     void VehicleHead::tryCreateInitialMovementSound(const Status initialStatus)
     {
@@ -2720,8 +2723,8 @@ namespace OpenLoco::Vehicles
 
         const auto timeInTicks = ScenarioManager::getScenarioTicks() - journeyStartTicks;
 
-        auto modeModifier = [](TransportMode mode) {
-            switch (mode)
+        auto modeModifier = [](TransportMode m) {
+            switch (m)
             {
                 default:
                 case TransportMode::rail:
@@ -2752,8 +2755,8 @@ namespace OpenLoco::Vehicles
 
         Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(head));
 
-        const auto recordType = [](TransportMode mode) {
-            switch (mode)
+        const auto recordType = [](TransportMode m) {
+            switch (m)
             {
                 default:
                 case TransportMode::rail:
@@ -4633,7 +4636,7 @@ namespace OpenLoco::Vehicles
                         if (isBlockOccupied(nextPos, tad, head.owner, head.trackType))
                         {
                             setSignalState(nextPos, tad, head.trackType, 8);
-                            return Sub4ACEE7Result{ 3, *_vehicleMangled_113623B, StationId::null };
+                            return Sub4ACEE7Result{ 3, _vehicleMangled_113623B, StationId::null };
                         }
                     }
 
@@ -4642,19 +4645,19 @@ namespace OpenLoco::Vehicles
                         // 0x004AD490
                         if (train.veh1->var_52 != 0)
                         {
-                            _vehicleMangled_113623B = *_vehicleMangled_113623B | (1U << 7);
+                            _vehicleMangled_113623B = _vehicleMangled_113623B | (1U << 7);
                             train.veh1->var_52--;
 
-                            return Sub4ACEE7Result{ 3, *_vehicleMangled_113623B, StationId::null };
+                            return Sub4ACEE7Result{ 3, _vehicleMangled_113623B, StationId::null };
                         }
                         else
                         {
                             if (!(sub_4A2A77(nextPos, tad, head.owner, head.trackType) & ((1U << 0) | (1U << 1))))
                             {
-                                _vehicleMangled_113623B = *_vehicleMangled_113623B | (1U << 7);
+                                _vehicleMangled_113623B = _vehicleMangled_113623B | (1U << 7);
                                 train.veh1->var_52 = 55;
 
-                                return Sub4ACEE7Result{ 3, *_vehicleMangled_113623B, StationId::null };
+                                return Sub4ACEE7Result{ 3, _vehicleMangled_113623B, StationId::null };
                             }
                         }
                     }
@@ -6565,7 +6568,7 @@ namespace OpenLoco::Vehicles
         // Very similar to code in VehicleManager::placeDownVehicle
         if (mode == TransportMode::road)
         {
-            const auto subPositionLength = World::TrackData::getRoadSubPositon(newTad.road._data).size();
+            const auto subPositionLength = static_cast<uint32_t>(World::TrackData::getRoadSubPositon(newTad.road._data).size());
             newSubPos = subPositionLength - 1 - train.veh2->subPosition;
 
             const auto& roadSize = World::TrackData::getUnkRoad(newTad.road.basicRad());
@@ -6587,7 +6590,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            const auto subPositionLength = World::TrackData::getTrackSubPositon(newTad.track._data).size();
+            const auto subPositionLength = static_cast<uint32_t>(World::TrackData::getTrackSubPositon(newTad.track._data).size());
             newSubPos = subPositionLength - 1 - train.veh2->subPosition;
 
             const auto& trackSize = World::TrackData::getUnkTrack(newTad.track._data);
@@ -6875,7 +6878,7 @@ namespace OpenLoco::Vehicles
             auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
             setTrainModFlags(train, *roadObj);
         }
-        else
+        else if (mode == TransportMode::rail)
         {
             // 0x004B7CCE
             auto* trackObj = ObjectManager::get<TrackObject>(trackType);
@@ -6978,16 +6981,16 @@ namespace OpenLoco::Vehicles
         }
 
         // This could happen if the train flips direction
-        if (frontSoundingObjId != train.veh2->objectId
-            && frontSoundingObjId == train.tail->objectId)
+        if (frontSoundingObjId != train.veh2->sound.objectId
+            && frontSoundingObjId == train.tail->sound.objectId)
         {
-            std::swap(train.veh2->drivingSoundId, train.tail->drivingSoundId);
-            std::swap(train.veh2->drivingSoundVolume, train.tail->drivingSoundVolume);
-            std::swap(train.veh2->drivingSoundFrequency, train.tail->drivingSoundFrequency);
-            std::swap(train.veh2->soundFlags, train.tail->soundFlags);
+            std::swap(train.veh2->sound.drivingSoundId, train.tail->sound.drivingSoundId);
+            std::swap(train.veh2->sound.drivingSoundVolume, train.tail->sound.drivingSoundVolume);
+            std::swap(train.veh2->sound.drivingSoundFrequency, train.tail->sound.drivingSoundFrequency);
+            std::swap(train.veh2->sound.soundFlags, train.tail->sound.soundFlags);
         }
-        train.veh2->objectId = frontSoundingObjId;
-        train.tail->objectId = backSoundingObjId;
+        train.veh2->sound.objectId = frontSoundingObjId;
+        train.tail->sound.objectId = backSoundingObjId;
 
         calculateRefundCost();
         recalculateTrainMinReliability(*this);

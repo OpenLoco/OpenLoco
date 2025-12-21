@@ -13,14 +13,13 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/WallObject.h"
 #include "OpenLoco.h"
-#include "Scenario.h"
-#include "ScenarioOptions.h"
+#include "Scenario/Scenario.h"
+#include "Scenario/ScenarioOptions.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 
 namespace OpenLoco::GameCommands

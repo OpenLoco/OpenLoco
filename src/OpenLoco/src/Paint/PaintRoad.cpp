@@ -15,11 +15,10 @@
 #include "PaintRoadStyle1Data.h"
 #include "PaintRoadStyle2Data.h"
 #include "PaintTileDecorations.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Diagnostics;
 namespace OpenLoco::Paint
@@ -560,6 +559,10 @@ namespace OpenLoco::Paint
         const auto ghostMods = Ui::Windows::Construction::getLastSelectedMods();
         for (auto mod = 0; mod < 2; ++mod)
         {
+            if (roadObj->mods[mod] == 0xFF)
+            {
+                continue;
+            }
             const auto* roadExtraObj = ObjectManager::get<RoadExtraObject>(roadObj->mods[mod]);
             ImageId roadExtraBaseImage{};
             if (elRoad.hasMod(mod))

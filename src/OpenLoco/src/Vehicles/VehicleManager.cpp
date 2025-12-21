@@ -1,4 +1,5 @@
 #include "VehicleManager.h"
+#include "Audio/Audio.h"
 #include "Date.h"
 #include "Entities/EntityManager.h"
 #include "Game.h"
@@ -10,18 +11,21 @@
 #include "Map/Track/SubpositionData.h"
 #include "Map/Track/TrackData.h"
 #include "MessageManager.h"
+#include "Objects/ObjectManager.h"
 #include "OrderManager.h"
 #include "Orders.h"
 #include "RoutingManager.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicle.h"
+#include "Vehicle1.h"
+#include "Vehicle2.h"
+#include "VehicleBody.h"
+#include "VehicleBogie.h"
+#include "VehicleHead.h"
+#include "VehicleTail.h"
 #include "World/Company.h"
 #include "World/CompanyManager.h"
-
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::VehicleManager
 {
@@ -168,7 +172,7 @@ namespace OpenLoco::VehicleManager
                 return PlaceDownResult::Unk1;
             }
 
-            const auto subPositionLength = World::TrackData::getTrackSubPositon(trackAndDirection.track._data).size();
+            const auto subPositionLength = static_cast<uint32_t>(World::TrackData::getTrackSubPositon(trackAndDirection.track._data).size());
             subPosition = subPositionLength - 1 - initialSubPosition;
 
             const auto& trackSize = World::TrackData::getUnkTrack(trackAndDirection.track._data);
@@ -182,7 +186,7 @@ namespace OpenLoco::VehicleManager
         else
         {
 
-            const auto subPositionLength = World::TrackData::getRoadSubPositon(trackAndDirection.road._data).size();
+            const auto subPositionLength = static_cast<uint32_t>(World::TrackData::getRoadSubPositon(trackAndDirection.road._data).size());
             subPosition = subPositionLength - 1 - initialSubPosition;
 
             const auto& roadSize = World::TrackData::getUnkRoad(trackAndDirection.road.basicRad());
@@ -237,9 +241,10 @@ namespace OpenLoco::VehicleManager
             component.subPosition = subPosition;
             component.trackAndDirection = reverseTad;
             component.remainingDistance = 0;
-            component.var_3C = 0;
             moveComponentToSubPosition(component);
         });
+        train.head->var_3C = 0;
+        train.veh1->var_3C = 0;
 
         Vehicles::applyVehicleObjectLength(train);
         auto oldVar52 = head->var_52;
@@ -383,7 +388,7 @@ namespace OpenLoco::VehicleManager
                 // perhaps in the future this could be changed.
                 GameCommands::VehiclePickupAirArgs airArgs{};
                 airArgs.head = head.id;
-                registers regs = static_cast<registers>(airArgs);
+                GameCommands::registers regs = static_cast<GameCommands::registers>(airArgs);
                 regs.bl = GameCommands::Flags::apply;
                 GameCommands::vehiclePickupAir(regs);
                 break;
@@ -394,7 +399,7 @@ namespace OpenLoco::VehicleManager
                 // perhaps in the future this could be changed.
                 GameCommands::VehiclePickupWaterArgs waterArgs{};
                 waterArgs.head = head.id;
-                registers regs = static_cast<registers>(waterArgs);
+                GameCommands::registers regs = static_cast<GameCommands::registers>(waterArgs);
                 regs.bl = GameCommands::Flags::apply;
                 GameCommands::vehiclePickupWater(regs);
             }

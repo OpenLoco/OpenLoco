@@ -20,7 +20,6 @@
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Core/Stream.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
 #include <cassert>
 #include <fstream>
@@ -28,7 +27,6 @@
 #include <memory>
 #include <numeric>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Utility;
 using namespace OpenLoco::Gfx;
 using namespace OpenLoco::Ui;
@@ -411,7 +409,7 @@ namespace OpenLoco::Gfx
         // Draw all the images on top of the one bitmap
         for (size_t i = 0; i < numImages; ++i)
         {
-            drawingCtx.drawImage({ 0, 0 }, baseImageId.withIndexOffset(i));
+            drawingCtx.drawImage({ 0, 0 }, baseImageId.withIndexOffset(static_cast<int32_t>(i)));
         }
 
         drawingCtx.popRenderTarget();

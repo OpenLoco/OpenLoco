@@ -62,9 +62,9 @@ namespace OpenLoco::Ui::WindowManager
     Viewport* getMainViewport();
     Window* find(WindowType type);
     Window* find(WindowType type, WindowNumber_t number);
-    Window* findAt(int16_t x, int16_t y);
+    Window* findAt(int32_t x, int32_t y);
     Window* findAt(Ui::Point point);
-    Window* findAtAlt(int16_t x, int16_t y);
+    Window* findAtAlt(int32_t x, int32_t y);
     Window* bringToFront(Window& window);
     Window* bringToFront(WindowType type, WindowNumber_t id = 0);
     void invalidate(WindowType type);
@@ -74,10 +74,10 @@ namespace OpenLoco::Ui::WindowManager
     void close(WindowType type);
     void close(WindowType type, WindowNumber_t id);
     void close(Window* window);
-    Window* createWindow(WindowType type, Ui::Size32 size, WindowFlags flags, const WindowEventList& events);
-    Window* createWindow(WindowType type, Ui::Point32 origin, Ui::Size32 size, WindowFlags flags, const WindowEventList& events);
-    Window* createWindowCentred(WindowType type, Ui::Size32 size, WindowFlags flags, const WindowEventList& events);
-    Window* createWindow(WindowType type, Ui::Size32 size, WindowFlags flags, const WindowEventList& events);
+    Window* createWindow(WindowType type, Ui::Size size, WindowFlags flags, const WindowEventList& events);
+    Window* createWindow(WindowType type, Ui::Point origin, Ui::Size size, WindowFlags flags, const WindowEventList& events);
+    Window* createWindowCentred(WindowType type, Ui::Size size, WindowFlags flags, const WindowEventList& events);
+    Window* createWindow(WindowType type, Ui::Size size, WindowFlags flags, const WindowEventList& events);
     void dispatchUpdateAll();
     void callEvent8OnAllWindows();
     void callEvent9OnAllWindows();
@@ -96,7 +96,7 @@ namespace OpenLoco::Ui::WindowManager
     int32_t getCurrentRotation();
     void setCurrentRotation(int32_t value);
 
-    void viewportShiftPixels(Ui::Window* window, Ui::Viewport* viewport, int16_t dX, int16_t dY);
+    void viewportShiftPixels(Ui::Window* window, Ui::Viewport* viewport, int32_t dX, int32_t dY);
     void viewportSetVisibility(ViewportVisibility flags);
 
     // 0x0052622E
@@ -436,8 +436,8 @@ namespace OpenLoco::Ui::Windows
 
     namespace ToolTip
     {
-        void open(Ui::Window* window, int32_t widgetIndex, int16_t x, int16_t y);
-        void update(Ui::Window* window, int32_t widgetIndex, StringId stringId, int16_t x, int16_t y);
+        void open(Ui::Window* window, int32_t widgetIndex, int32_t x, int32_t y);
+        void update(Ui::Window* window, int32_t widgetIndex, StringId stringId, int32_t x, int32_t y);
         void closeAndReset();
     }
 

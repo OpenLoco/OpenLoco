@@ -30,8 +30,8 @@
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "Random.h"
-#include "Scenario.h"
-#include "ScenarioManager.h"
+#include "Scenario/Scenario.h"
+#include "Scenario/ScenarioManager.h"
 #include "SceneManager.h"
 #include "TownManager.h"
 #include "Ui/Dropdown.h"
@@ -344,8 +344,7 @@ namespace OpenLoco::CompanyManager
                 return kNullObjectId;
             }
 
-            ObjectManager::unload(ObjectManager::getHeader(LoadedObjectHandle{
-                ObjectType::competitor, id }));
+            ObjectManager::unload(ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::competitor, id }));
             ObjectManager::reloadAll();
             Ui::Dropdown::forceCloseCompanySelect();
         }
@@ -1412,8 +1411,7 @@ namespace OpenLoco::CompanyManager
         // TODO: Change this when we want to diverge from vanilla
         // company->ownerName = StringIds::empty;
 
-        ObjectManager::unload(ObjectManager::getHeader(LoadedObjectHandle{
-            ObjectType::competitor, company->competitorId }));
+        ObjectManager::unload(ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::competitor, company->competitorId }));
         ObjectManager::reloadAll();
         Ui::Dropdown::forceCloseCompanySelect();
     }

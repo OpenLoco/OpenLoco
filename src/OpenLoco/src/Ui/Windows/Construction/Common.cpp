@@ -276,9 +276,9 @@ namespace OpenLoco::Ui::Windows::Construction
         cState.byte_1136063 = 0;
         Common::setTrackOptions(cState.trackType);
 
-        cState.constructionHover = 0;
+        cState.constructionHover = false;
         cState.byte_113607E = 1;
-        cState.trackCost = 0x80000000;
+        cState.trackCost = GameCommands::FAILURE;
         cState.byte_1136076 = 0;
         cState.lastSelectedTrackModSection = Track::ModSection::single;
 
@@ -378,9 +378,9 @@ namespace OpenLoco::Ui::Windows::Construction
         cState.byte_1136063 = 0;
         Common::setTrackOptions(cState.trackType);
 
-        cState.constructionHover = 0;
+        cState.constructionHover = false;
         cState.byte_113607E = 1;
-        cState.trackCost = 0x80000000;
+        cState.trackCost = GameCommands::FAILURE;
         cState.byte_1136076 = 0;
         cState.lastSelectedTrackModSection = Track::ModSection::single;
 
@@ -508,15 +508,13 @@ namespace OpenLoco::Ui::Windows::Construction
         cState.y = 0x1800;
         cState.constructionZ = 0x100;
         cState.constructionRotation = 0;
-        cState.constructionHover = 0;
+        cState.constructionHover = false;
         cState.byte_113607E = 1;
-        cState.trackCost = 0x80000000;
+        cState.trackCost = GameCommands::FAILURE;
         cState.byte_1136076 = 0;
         cState.lastSelectedTrackPiece = 0;
         cState.lastSelectedTrackGradient = 0;
         cState.lastSelectedTrackModSection = Track::ModSection::single;
-
-        Common::setTrackOptions(flags);
 
         if (flags & (1 << 31))
         {
@@ -526,7 +524,10 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             return createDockConstructionWindow();
         }
-        else if (flags & (1 << 7))
+
+        Common::setTrackOptions(flags);
+
+        if (flags & (1 << 7))
         {
             return createRoadConstructionWindow();
         }
@@ -872,10 +873,10 @@ namespace OpenLoco::Ui::Windows::Construction
             World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstruct);
 
             auto& cState = getConstructionState();
-            cState.trackCost = 0x80000000;
-            cState.signalCost = 0x80000000;
-            cState.stationCost = 0x80000000;
-            cState.modCost = 0x80000000;
+            cState.trackCost = GameCommands::FAILURE;
+            cState.signalCost = GameCommands::FAILURE;
+            cState.stationCost = GameCommands::FAILURE;
+            cState.modCost = GameCommands::FAILURE;
             cState.byte_1136076 = 0;
 
             if (ToolManager::isToolActive(self.type, self.number))
@@ -885,7 +886,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
             self.currentTab = widgetIndex - widx::tab_construction;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_construction];
 
@@ -920,6 +921,7 @@ namespace OpenLoco::Ui::Windows::Construction
             auto& cState = getConstructionState();
             auto roadObj = ObjectManager::get<RoadObject>(cState.trackType & ~(1 << 7));
             // Construction Tab
+            if (!self.isDisabled(widx::tab_construction))
             {
                 auto imageId = roadObj->image;
                 if (self.currentTab == widx::tab_construction - widx::tab_construction)
@@ -930,72 +932,92 @@ namespace OpenLoco::Ui::Windows::Construction
                 Widget::drawTab(self, drawingCtx, Gfx::recolour(imageId, companyColour), widx::tab_construction);
             }
             // Station Tab
+            if (!self.isDisabled(widx::tab_station))
             {
                 Widget::drawTab(self, drawingCtx, ImageIds::null, widx::tab_station);
-                if (!self.isDisabled(widx::tab_station))
+
+                auto x = self.widgets[widx::tab_station].left + self.x + 1;
+                auto y = self.widgets[widx::tab_station].top + self.y + 1;
+                auto width = 29;
+                auto height = 25;
+                if (self.currentTab == widx::tab_station - widx::tab_construction)
                 {
-                    auto x = self.widgets[widx::tab_station].left + self.x + 1;
-                    auto y = self.widgets[widx::tab_station].top + self.y + 1;
-                    auto width = 29;
-                    auto height = 25;
-                    if (self.currentTab == widx::tab_station - widx::tab_construction)
-                    {
-                        height++;
-                    }
-
-                    const auto& rt = drawingCtx.currentRenderTarget();
-                    auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(x, y, width, height));
-                    if (clipped)
-                    {
-                        clipped->zoomLevel = 1;
-                        clipped->width <<= 1;
-                        clipped->height <<= 1;
-                        clipped->x <<= 1;
-                        clipped->y <<= 1;
-
-                        drawingCtx.pushRenderTarget(*clipped);
-
-                        auto roadStationObj = ObjectManager::get<RoadStationObject>(cState.lastSelectedStationType);
-                        auto imageId = Gfx::recolour(roadStationObj->image, companyColour);
-                        drawingCtx.drawImage(-4, -10, imageId);
-                        auto colour = Colours::getTranslucent(companyColour);
-                        if (!roadStationObj->hasFlags(RoadStationFlags::recolourable))
-                        {
-                            colour = ExtColour::unk2E;
-                        }
-                        imageId = Gfx::recolourTranslucent(roadStationObj->image, colour) + 1;
-                        drawingCtx.drawImage(-4, -10, imageId);
-
-                        drawingCtx.popRenderTarget();
-                    }
-
-                    Widget::drawTab(self, drawingCtx, Widget::kContentUnk, widx::tab_station);
+                    height++;
                 }
+
+                const auto& rt = drawingCtx.currentRenderTarget();
+                auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(x, y, width, height));
+                if (clipped)
+                {
+                    clipped->zoomLevel = 1;
+                    clipped->width <<= 1;
+                    clipped->height <<= 1;
+                    clipped->x <<= 1;
+                    clipped->y <<= 1;
+
+                    drawingCtx.pushRenderTarget(*clipped);
+
+                    auto roadStationObj = ObjectManager::get<RoadStationObject>(cState.lastSelectedStationType);
+                    auto imageId = Gfx::recolour(roadStationObj->image, companyColour);
+                    drawingCtx.drawImage(-4, -10, imageId);
+                    auto colour = Colours::getTranslucent(companyColour);
+                    if (!roadStationObj->hasFlags(RoadStationFlags::recolourable))
+                    {
+                        colour = ExtColour::unk2E;
+                    }
+                    imageId = Gfx::recolourTranslucent(roadStationObj->image, colour) + 1;
+                    drawingCtx.drawImage(-4, -10, imageId);
+
+                    drawingCtx.popRenderTarget();
+                }
+
+                Widget::drawTab(self, drawingCtx, Widget::kContentUnk, widx::tab_station);
             }
             // Overhead tab
+            if (!self.isDisabled(widx::tab_overhead))
             {
                 Widget::drawTab(self, drawingCtx, ImageIds::null, widx::tab_overhead);
-                if (!self.isDisabled(widx::tab_overhead))
+
+                auto x = self.widgets[widx::tab_overhead].left + self.x + 2;
+                auto y = self.widgets[widx::tab_overhead].top + self.y + 2;
+
+                for (auto i = 0; i < 2; i++)
                 {
-                    auto x = self.widgets[widx::tab_overhead].left + self.x + 2;
-                    auto y = self.widgets[widx::tab_overhead].top + self.y + 2;
-
-                    for (auto i = 0; i < 2; i++)
+                    if (cState.modList[i] != 0xFF)
                     {
-                        if (cState.modList[i] != 0xFF)
+                        auto roadExtraObj = ObjectManager::get<RoadExtraObject>(cState.modList[i]);
+                        auto imageId = roadExtraObj->var_0E;
+                        if (self.currentTab == widx::tab_overhead - widx::tab_construction)
                         {
-                            auto roadExtraObj = ObjectManager::get<RoadExtraObject>(cState.modList[i]);
-                            auto imageId = roadExtraObj->var_0E;
-                            if (self.currentTab == widx::tab_overhead - widx::tab_construction)
-                            {
-                                imageId += (self.frameNo / 2) % 8;
-                            }
-                            drawingCtx.drawImage(x, y, imageId);
+                            imageId += (self.frameNo / 2) % 8;
                         }
+                        drawingCtx.drawImage(x, y, imageId);
                     }
-
-                    Widget::drawTab(self, drawingCtx, Widget::kContentUnk, widx::tab_overhead);
                 }
+
+                Widget::drawTab(self, drawingCtx, Widget::kContentUnk, widx::tab_overhead);
+            }
+        }
+
+        static void drawAirportTabs(Window& self, Gfx::DrawingContext& drawingCtx)
+        {
+            // Station Tab
+            if (!self.isDisabled(widx::tab_station))
+            {
+                auto imageId = ObjectManager::get<InterfaceSkinObject>()->img + InterfaceSkin::ImageIds::toolbar_menu_airport;
+
+                Widget::drawTab(self, drawingCtx, imageId, widx::tab_station);
+            }
+        }
+
+        static void drawDockTabs(Window& self, Gfx::DrawingContext& drawingCtx)
+        {
+            // Station Tab
+            if (!self.isDisabled(widx::tab_station))
+            {
+                auto imageId = ObjectManager::get<InterfaceSkinObject>()->img + InterfaceSkin::ImageIds::toolbar_menu_ship_port;
+
+                Widget::drawTab(self, drawingCtx, imageId, widx::tab_station);
             }
         }
 
@@ -1027,6 +1049,7 @@ namespace OpenLoco::Ui::Windows::Construction
             auto& cState = getConstructionState();
             auto trackObj = ObjectManager::get<TrackObject>(cState.trackType);
             // Construction Tab
+            if (!self.isDisabled(widx::tab_construction))
             {
                 auto imageId = trackObj->image;
                 if (self.currentTab == widx::tab_construction - widx::tab_construction)
@@ -1036,130 +1059,110 @@ namespace OpenLoco::Ui::Windows::Construction
 
                 Widget::drawTab(self, drawingCtx, Gfx::recolour(imageId, companyColour), widx::tab_construction);
             }
+
             // Station Tab
+            if (!self.isDisabled(widx::tab_station))
             {
-                if (cState.byte_1136063 & (1 << 7))
+                Widget::drawTab(self, drawingCtx, ImageIds::null, widx::tab_station);
+
+                auto x = self.widgets[widx::tab_station].left + self.x + 1;
+                auto y = self.widgets[widx::tab_station].top + self.y + 1;
+                auto width = 29;
+                auto height = 25;
+                if (self.currentTab == widx::tab_station - widx::tab_construction)
                 {
-                    auto imageId = ObjectManager::get<InterfaceSkinObject>()->img + InterfaceSkin::ImageIds::toolbar_menu_airport;
-
-                    Widget::drawTab(self, drawingCtx, imageId, widx::tab_station);
+                    height++;
                 }
-                else
+
+                const auto& rt = drawingCtx.currentRenderTarget();
+                auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(x, y, width, height));
+                if (clipped)
                 {
-                    if (cState.byte_1136063 & (1 << 6))
+                    clipped->zoomLevel = 1;
+                    clipped->width *= 2;
+                    clipped->height *= 2;
+                    clipped->x *= 2;
+                    clipped->y *= 2;
+
+                    drawingCtx.pushRenderTarget(*clipped);
+
+                    auto trainStationObj = ObjectManager::get<TrainStationObject>(cState.lastSelectedStationType);
+                    auto imageId = Gfx::recolour(trainStationObj->image + TrainStation::ImageIds::preview_image, companyColour);
+                    drawingCtx.drawImage(-4, -9, imageId);
+
+                    auto colour = Colours::getTranslucent(companyColour);
+                    if (!trainStationObj->hasFlags(TrainStationFlags::recolourable))
                     {
-                        auto imageId = ObjectManager::get<InterfaceSkinObject>()->img + InterfaceSkin::ImageIds::toolbar_menu_ship_port;
-
-                        Widget::drawTab(self, drawingCtx, imageId, widx::tab_station);
+                        colour = ExtColour::unk2E;
                     }
-                    else
-                    {
-                        Widget::drawTab(self, drawingCtx, ImageIds::null, widx::tab_station);
-                        if (!self.isDisabled(widx::tab_station))
-                        {
-                            auto x = self.widgets[widx::tab_station].left + self.x + 1;
-                            auto y = self.widgets[widx::tab_station].top + self.y + 1;
-                            auto width = 29;
-                            auto height = 25;
-                            if (self.currentTab == widx::tab_station - widx::tab_construction)
-                            {
-                                height++;
-                            }
+                    imageId = Gfx::recolourTranslucent(trainStationObj->image + TrainStation::ImageIds::preview_image_windows, colour);
+                    drawingCtx.drawImage(-4, -9, imageId);
 
-                            const auto& rt = drawingCtx.currentRenderTarget();
-                            auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(x, y, width, height));
-                            if (clipped)
-                            {
-                                clipped->zoomLevel = 1;
-                                clipped->width *= 2;
-                                clipped->height *= 2;
-                                clipped->x *= 2;
-                                clipped->y *= 2;
-
-                                drawingCtx.pushRenderTarget(*clipped);
-
-                                auto trainStationObj = ObjectManager::get<TrainStationObject>(cState.lastSelectedStationType);
-                                auto imageId = Gfx::recolour(trainStationObj->image + TrainStation::ImageIds::preview_image, companyColour);
-                                drawingCtx.drawImage(-4, -9, imageId);
-
-                                auto colour = Colours::getTranslucent(companyColour);
-                                if (!trainStationObj->hasFlags(TrainStationFlags::recolourable))
-                                {
-                                    colour = ExtColour::unk2E;
-                                }
-                                imageId = Gfx::recolourTranslucent(trainStationObj->image + TrainStation::ImageIds::preview_image_windows, colour);
-                                drawingCtx.drawImage(-4, -9, imageId);
-
-                                drawingCtx.popRenderTarget();
-                            }
-
-                            Widget::drawTab(self, drawingCtx, Widget::kContentUnk, widx::tab_station);
-                        }
-                    }
+                    drawingCtx.popRenderTarget();
                 }
+
+                Widget::drawTab(self, drawingCtx, Widget::kContentUnk, widx::tab_station);
             }
+
             // Signal Tab
+            if (!self.isDisabled(widx::tab_signal))
             {
                 Widget::drawTab(self, drawingCtx, ImageIds::null, widx::tab_signal);
-                if (!self.isDisabled(widx::tab_signal))
+                auto x = self.widgets[widx::tab_signal].left + self.x + 1;
+                auto y = self.widgets[widx::tab_signal].top + self.y + 1;
+                auto width = 29;
+                auto height = 25;
+                if (self.currentTab == widx::tab_station - widx::tab_construction)
                 {
-                    auto x = self.widgets[widx::tab_signal].left + self.x + 1;
-                    auto y = self.widgets[widx::tab_signal].top + self.y + 1;
-                    auto width = 29;
-                    auto height = 25;
-                    if (self.currentTab == widx::tab_station - widx::tab_construction)
-                    {
-                        height++;
-                    }
-
-                    const auto& rt = drawingCtx.currentRenderTarget();
-                    auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(x, y, width, height));
-                    if (clipped)
-                    {
-                        drawingCtx.pushRenderTarget(*clipped);
-
-                        auto trainSignalObject = ObjectManager::get<TrainSignalObject>(cState.lastSelectedSignal);
-                        auto imageId = trainSignalObject->image;
-                        if (self.currentTab == widx::tab_signal - widx::tab_construction)
-                        {
-                            auto frames = signalFrames[(((trainSignalObject->numFrames + 2) / 3) - 2)];
-                            auto frameCount = std::size(frames) - 1;
-                            frameCount &= (self.frameNo >> trainSignalObject->animationSpeed);
-                            auto frameIndex = frames[frameCount];
-                            frameIndex <<= 3;
-                            imageId += frameIndex;
-                        }
-                        drawingCtx.drawImage(15, 31, imageId);
-
-                        drawingCtx.popRenderTarget();
-                    }
-
-                    Widget::drawTab(self, drawingCtx, Widget::kContentUnk, widx::tab_signal);
+                    height++;
                 }
+
+                const auto& rt = drawingCtx.currentRenderTarget();
+                auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(x, y, width, height));
+                if (clipped)
+                {
+                    drawingCtx.pushRenderTarget(*clipped);
+
+                    auto trainSignalObject = ObjectManager::get<TrainSignalObject>(cState.lastSelectedSignal);
+                    auto imageId = trainSignalObject->image;
+                    if (self.currentTab == widx::tab_signal - widx::tab_construction)
+                    {
+                        auto frames = signalFrames[(((trainSignalObject->numFrames + 2) / 3) - 2)];
+                        auto frameCount = std::size(frames) - 1;
+                        frameCount &= (self.frameNo >> trainSignalObject->animationSpeed);
+                        auto frameIndex = frames[frameCount];
+                        frameIndex <<= 3;
+                        imageId += frameIndex;
+                    }
+                    drawingCtx.drawImage(15, 31, imageId);
+
+                    drawingCtx.popRenderTarget();
+                }
+
+                Widget::drawTab(self, drawingCtx, Widget::kContentUnk, widx::tab_signal);
             }
+
             // Overhead Tab
+            if (!self.isDisabled(widx::tab_overhead))
             {
                 Widget::drawTab(self, drawingCtx, ImageIds::null, widx::tab_overhead);
-                if (!self.isDisabled(widx::tab_overhead))
+                auto x = self.widgets[widx::tab_overhead].left + self.x + 2;
+                auto y = self.widgets[widx::tab_overhead].top + self.y + 2;
+                for (auto i = 0; i < 4; i++)
                 {
-                    auto x = self.widgets[widx::tab_overhead].left + self.x + 2;
-                    auto y = self.widgets[widx::tab_overhead].top + self.y + 2;
-                    for (auto i = 0; i < 4; i++)
+                    if (cState.modList[i] != 0xFF)
                     {
-                        if (cState.modList[i] != 0xFF)
+                        auto trackExtraObj = ObjectManager::get<TrackExtraObject>(cState.modList[i]);
+                        auto imageId = trackExtraObj->var_0E;
+                        if (self.currentTab == widx::tab_overhead - widx::tab_construction)
                         {
-                            auto trackExtraObj = ObjectManager::get<TrackExtraObject>(cState.modList[i]);
-                            auto imageId = trackExtraObj->var_0E;
-                            if (self.currentTab == widx::tab_overhead - widx::tab_construction)
-                            {
-                                imageId += (self.frameNo / 2) % 8;
-                            }
-                            drawingCtx.drawImage(x, y, imageId);
+                            imageId += (self.frameNo / 2) % 8;
                         }
+                        drawingCtx.drawImage(x, y, imageId);
                     }
-
-                    Widget::drawTab(self, drawingCtx, Widget::kContentUnk, widx::tab_overhead);
                 }
+
+                Widget::drawTab(self, drawingCtx, Widget::kContentUnk, widx::tab_overhead);
             }
         }
 
@@ -1167,7 +1170,15 @@ namespace OpenLoco::Ui::Windows::Construction
         void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx)
         {
             auto& cState = getConstructionState();
-            if (cState.trackType & (1 << 7))
+            if (cState.byte_1136063 & (1 << 7))
+            {
+                drawAirportTabs(self, drawingCtx);
+            }
+            else if (cState.byte_1136063 & (1 << 6))
+            {
+                drawDockTabs(self, drawingCtx);
+            }
+            else if (cState.trackType & (1 << 7))
             {
                 drawRoadTabs(self, drawingCtx);
             }
@@ -1315,7 +1326,7 @@ namespace OpenLoco::Ui::Windows::Construction
             auto window = WindowManager::createWindow(
                 WindowType::construction,
                 Construction::kWindowSize,
-                WindowFlags::flag_11 | WindowFlags::noAutoClose,
+                WindowFlags::lighterFrame | WindowFlags::noAutoClose,
                 Construction::getEvents());
 
             window->setWidgets(Construction::getWidgets());

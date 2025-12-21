@@ -79,7 +79,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
     namespace IndustryList
     {
-        static constexpr Ui::Size32 kWindowSize = { 759, 197 };
+        static constexpr Ui::Size kWindowSize = { 759, 197 };
         static constexpr Ui::Size kMaxDimensions = { 759, 900 };
         static constexpr Ui::Size kMinDimensions = { 192, 100 };
 
@@ -102,7 +102,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             Widgets::TableHeader({ 444, 44 }, { 159, 11 }, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_production_transported),
             Widgets::TableHeader({ 603, 44 }, { 159, 11 }, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_production_last_month),
             Widgets::ScrollView({ 3, 56 }, { 593, 125 }, WindowColour::secondary, Scrollbars::vertical),
-            Widgets::Label({ 4, kWindowSize.height - 17 }, { kWindowSize.width, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
+            Widgets::Label({ 4, kWindowSize.height - 17 }, { kWindowSize.width - kResizeHandleSize, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
 
         );
 
@@ -121,6 +121,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             self.widgets[widx::scrollview].right = self.width - 4;
             self.widgets[widx::scrollview].bottom = self.height - 14;
+            self.widgets[widx::status_bar].right = self.width - kResizeHandleSize - 1;
 
             // Reposition header buttons.
             self.widgets[widx::sort_industry_name].right = std::min(self.width - 4, 203);
@@ -623,13 +624,13 @@ namespace OpenLoco::Ui::Windows::IndustryList
         else
         {
             // 0x00457878
-            auto origin = Ui::Point32(Ui::width() - IndustryList::kWindowSize.width, 30);
+            auto origin = Ui::Point(Ui::width() - IndustryList::kWindowSize.width, 30);
 
             window = WindowManager::createWindow(
                 WindowType::industryList,
                 origin,
                 IndustryList::kWindowSize,
-                WindowFlags::flag_8,
+                WindowFlags::viewportNoShiftPixels,
                 IndustryList::getEvents());
 
             window->number = 0;
@@ -700,7 +701,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
     namespace NewIndustries
     {
-        static constexpr Ui::Size32 kWindowSize = { 578, 172 };
+        static constexpr Ui::Size kWindowSize = { 578, 172 };
 
         static constexpr uint8_t kRowHeight = 112;
 
@@ -1325,8 +1326,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static void onResize(Window& self)
         {
             self.invalidate();
-            Ui::Size32 kMinWindowSize = { self.minWidth, self.minHeight };
-            Ui::Size32 kMaxWindowSize = { self.maxWidth, self.maxHeight };
+            Ui::Size kMinWindowSize = { self.minWidth, self.minHeight };
+            Ui::Size kMaxWindowSize = { self.maxWidth, self.maxHeight };
             bool hasResized = self.setSize(kMinWindowSize, kMaxWindowSize);
             if (hasResized)
             {
@@ -1401,7 +1402,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             self.currentTab = widgetIndex - widx::tab_industry_list;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
 
             self.viewportRemove(0);
 

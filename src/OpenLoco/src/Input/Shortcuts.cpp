@@ -5,7 +5,7 @@
 #include "GameState.h"
 #include "Input.h"
 #include "Localisation/StringIds.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 #include "SceneManager.h"
 #include "Ui/Screenshot.h"
 #include "Ui/TextInput.h"
@@ -16,11 +16,9 @@
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <array>
 #include <unordered_map>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 
 namespace OpenLoco::Input::Shortcuts

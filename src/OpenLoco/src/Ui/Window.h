@@ -13,7 +13,6 @@
 #include "World/Company.h"
 #include "ZoomLevel.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
 #include <optional>
 #include <sfl/small_vector.hpp>
@@ -48,21 +47,20 @@ namespace OpenLoco::Ui
         scrollingToLocation = 1U << 3,
         transparent = 1U << 4,
         noBackground = 1U << 5,
-        flag_6 = 1U << 6,
-        flag_7 = 1U << 7,
-        flag_8 = 1U << 8,
+        framedWidgets = 1U << 6,
+        ignoreInFindAt = 1U << 7,
+        viewportNoShiftPixels = 1U << 8,
         resizable = 1U << 9,
         noAutoClose = 1U << 10,
-        flag_11 = 1U << 11,
-        flag_12 = 1U << 12,
+        lighterFrame = 1U << 11,
+        playSoundOnOpen = 1U << 12,
         openQuietly = 1U << 13,
         notScrollView = 1U << 14,
-        flag_15 = 1U << 15,
-        flag_16 = 1U << 16,
+        finishedResize = 1U << 15,
+        beingResized = 1U << 16,
         whiteBorderOne = 1U << 17,
         whiteBorderMask = whiteBorderOne | (1U << 18),
-        flag_19 = 1U << 19,
-        flag_31 = 1U << 31,
+        hasStoredState = 1U << 31,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(WindowFlags);
 
@@ -189,14 +187,14 @@ namespace OpenLoco::Ui
         bool showTownNames = false;       // Map window only
         WindowFlags flags;
         WindowNumber_t number = 0;
-        int16_t x;
-        int16_t y;
-        uint16_t width;
-        uint16_t height;
-        uint16_t minWidth;
-        uint16_t maxWidth;
-        uint16_t minHeight;
-        uint16_t maxHeight;
+        int32_t x;
+        int32_t y;
+        int32_t width;
+        int32_t height;
+        int32_t minWidth;
+        int32_t maxWidth;
+        int32_t minHeight;
+        int32_t maxHeight;
         ScrollArea scrollAreas[kMaxScrollAreas];
         int16_t rowInfo[1000];
         uint16_t rowCount;
@@ -210,8 +208,8 @@ namespace OpenLoco::Ui
         };
         uint16_t sortMode;
         uint16_t var_846 = 0;
-        uint16_t var_850 = 0;
-        uint16_t var_852 = 0;
+        uint16_t var_850 = 0; // vehicle list filter
+        uint16_t var_852 = 0; // vehicle list cargo; news ticks
         uint16_t var_854 = 0; // used to limit updates
         union
         {
@@ -222,15 +220,15 @@ namespace OpenLoco::Ui
         uint16_t currentTab = 0;
         uint16_t frameNo = 0;
         uint16_t currentSecondaryTab = 0;
-        int16_t var_88A;
-        int16_t var_88C;
+        int16_t var_88A; // map window orig width
+        int16_t var_88C; // map window orig height
         ViewportConfig viewportConfigurations[2];
         WindowType type;
         CompanyId owner = CompanyId::null;
         uint8_t var_885 = 0xFF;
         AdvancedColour colours[enumValue(WindowColour::count)];
 
-        Window(Ui::Point32 position, Ui::Size32 size);
+        Window(Ui::Point position, Ui::Size size);
 
         // TODO: Remove this once position is a member.
         constexpr Ui::Point position() const
@@ -250,7 +248,7 @@ namespace OpenLoco::Ui
             widgets.insert(widgets.end(), newWidgets.begin(), newWidgets.end());
         }
 
-        constexpr bool setSize(Ui::Size32 minSize, Ui::Size32 maxSize)
+        constexpr bool setSize(Ui::Size minSize, Ui::Size maxSize)
         {
             bool hasResized = false;
 
@@ -288,7 +286,7 @@ namespace OpenLoco::Ui
             return hasResized;
         }
 
-        constexpr void setSize(Ui::Size32 size)
+        constexpr void setSize(Ui::Size size)
         {
             setSize(size, size);
         }
@@ -314,16 +312,8 @@ namespace OpenLoco::Ui
             return (flags & flagsToTest) != WindowFlags::none;
         }
 
-        bool isVisible()
-        {
-            return true;
-        }
-
-        bool isTranslucent()
-        {
-            return this->hasFlags(WindowFlags::transparent);
-        }
-
+        bool isVisible();
+        bool isTranslucent();
         bool isEnabled(WidgetIndex_t widgetIndex);
         bool isDisabled(WidgetIndex_t widgetIndex);
         bool isActivated(WidgetIndex_t index);

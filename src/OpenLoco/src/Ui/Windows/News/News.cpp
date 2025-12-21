@@ -21,7 +21,10 @@
 #include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/Window.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBody.h"
 #include "Vehicles/VehicleDraw.h"
+#include "Vehicles/VehicleHead.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
 #include "World/IndustryManager.h"
@@ -147,7 +150,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         // 0x00429D2C
         static void onUpdate(Window& self)
         {
-            uint16_t height = _nState.slideInHeight + 4;
+            auto height = _nState.slideInHeight + 4;
 
             _nState.slideInHeight = std::min(height, self.height);
 

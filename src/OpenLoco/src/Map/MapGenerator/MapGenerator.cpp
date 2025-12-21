@@ -20,8 +20,8 @@
 #include "OriginalTerrainGenerator.h"
 #include "PngTerrainGenerator.h"
 #include "Random.h"
-#include "Scenario.h"
-#include "ScenarioOptions.h"
+#include "Scenario/Scenario.h"
+#include "Scenario/ScenarioOptions.h"
 #include "SimplexTerrainGenerator.h"
 #include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
@@ -586,7 +586,7 @@ namespace OpenLoco::World::MapGenerator
             if (!surface->isIndustrial())
             {
                 auto* landObj = ObjectManager::get<LandObject>(surface->terrain());
-                if (landObj->hasFlags(LandObjectFlags::unk0))
+                if (landObj->hasFlags(LandObjectFlags::hasGrowthStages))
                 {
                     bool setVariation = false;
                     if (surface->water())

@@ -10,6 +10,9 @@
 #include "Objects/TrackObject.h"
 #include "Objects/VehicleObject.h"
 #include "Vehicle.h"
+#include "Vehicle2.h"
+#include "VehicleBody.h"
+#include "VehicleBogie.h"
 #include "Viewport.hpp"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Engine/Ui/Point.hpp>

@@ -67,8 +67,8 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
     namespace Messages
     {
-        static constexpr Ui::Size32 kMinWindowSize = { 366, 217 };
-        static constexpr Ui::Size32 kMaxWindowSize = { 366, 1200 };
+        static constexpr Ui::Size kMinWindowSize = { 366, 217 };
+        static constexpr Ui::Size kMaxWindowSize = { 366, 1200 };
         static int8_t messageHeight = 39;
 
         enum widx
@@ -338,7 +338,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                 WindowType::messages,
                 { x, y },
                 { 366, 217 },
-                WindowFlags::flag_11,
+                WindowFlags::lighterFrame,
                 Messages::getEvents());
 
             window->number = 0;
@@ -392,7 +392,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
     namespace Settings
     {
-        static constexpr Ui::Size32 kWindowSize = { 366, 155 };
+        static constexpr Ui::Size kWindowSize = { 366, 155 };
 
         static constexpr auto kNumWidgetsPerDropdown = 3;
 
@@ -643,7 +643,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
             self.currentTab = widgetIndex - widx::tab_messages;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
 
             self.viewportRemove(0);
 

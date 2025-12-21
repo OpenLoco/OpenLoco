@@ -14,15 +14,15 @@
 #include "Objects/CargoObject.h"
 #include "Objects/ObjectManager.h"
 #include "S5/Limits.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 #include "Ui/WindowManager.h"
 #include "Vehicle.h"
 #include "Vehicles/OrderManager.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
 #include "World/StationManager.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Diagnostics/Logging.h>
-
 #include <sfl/static_vector.hpp>
 #include <sstream>
 

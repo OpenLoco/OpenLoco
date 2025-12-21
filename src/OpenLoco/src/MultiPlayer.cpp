@@ -1,11 +1,9 @@
 #include "MultiPlayer.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
+#include <cstdint>
 
 namespace OpenLoco::MultiPlayer
 {
-    static loco_global<uint16_t, 0x00508F10> _flags;
+    static uint16_t _flags = 0; // 0x00508F10
 
     bool hasFlag(flags flag)
     {
@@ -15,7 +13,7 @@ namespace OpenLoco::MultiPlayer
     bool setFlag(flags flag)
     {
         auto result = hasFlag(flag);
-        *_flags |= (1 << flag);
+        _flags |= (1 << flag);
         return result;
     }
 
@@ -23,7 +21,7 @@ namespace OpenLoco::MultiPlayer
     {
         bool val = (_flags & (1 << flag)) != 0;
 
-        *_flags &= ~(1 << flag);
+        _flags &= ~(1 << flag);
         return val;
     }
 }

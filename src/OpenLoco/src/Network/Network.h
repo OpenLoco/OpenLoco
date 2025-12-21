@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <string_view>
 
-namespace OpenLoco::Interop
+namespace OpenLoco::GameCommands
 {
     struct registers;
 }
@@ -19,15 +19,15 @@ namespace OpenLoco::Network
     constexpr uint16_t kNetworkVersion = 1;
 
     void openServer();
-    void joinServer(std::string_view host);
-    void joinServer(std::string_view host, port_t port);
+    bool joinServer(std::string_view host);
+    bool joinServer(std::string_view host, port_t port);
     void close();
     void update();
 
     void sendChatMessage(std::string_view message);
     void receiveChatMessage(client_id_t client, std::string_view message);
 
-    void queueGameCommand(CompanyId company, const OpenLoco::Interop::registers& regs);
+    void queueGameCommand(CompanyId company, const OpenLoco::GameCommands::registers& regs);
     bool shouldProcessTick(uint32_t tick);
     void processGameCommands(uint32_t tick);
 

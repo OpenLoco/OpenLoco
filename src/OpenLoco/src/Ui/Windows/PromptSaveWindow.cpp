@@ -13,12 +13,9 @@
 #include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
 #include <array>
 #include <cstring>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::PromptSaveWindow
 {
@@ -70,7 +67,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
             window->setColour(WindowColour::primary, AdvancedColour(Colour::mutedDarkRed).translucent());
             window->flags |= Ui::WindowFlags::transparent;
 
-            SceneManager::setPauseFlag(1 << 1);
+            SceneManager::setPauseFlag(PauseFlags::promptSave);
             Audio::pauseSound();
             WindowManager::invalidate(WindowType::timeToolbar);
         }
@@ -150,7 +147,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
     // 0x0043C577
     static void onClose([[maybe_unused]] Window& self)
     {
-        SceneManager::unsetPauseFlag(2);
+        SceneManager::unsetPauseFlag(PauseFlags::promptSave);
         Audio::unpauseSound();
         WindowManager::invalidate(WindowType::timeToolbar);
     }

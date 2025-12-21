@@ -1,4 +1,5 @@
 #include "Vehicles/Vehicle.h"
+#include "Audio/Audio.h"
 #include "Config.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
@@ -73,8 +74,14 @@
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle1.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
 #include "Vehicles/VehicleDraw.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
+#include "Vehicles/VehicleTail.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
@@ -181,9 +188,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Details
     {
-        static constexpr Ui::Size32 kMinWindowSize = { 192, 166 };
-        static constexpr Ui::Size32 kMinWindowSizeWithPaintEnabled = { 192, 182 };
-        static constexpr Ui::Size32 kMaxWindowSize = { 400, 440 };
+        static constexpr Ui::Size kMinWindowSize = { 192, 166 };
+        static constexpr Ui::Size kMinWindowSizeWithPaintEnabled = { 192, 182 };
+        static constexpr Ui::Size kMaxWindowSize = { 400, 440 };
 
         enum widx
         {
@@ -191,7 +198,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             pickup,
             remove,
             paintBrush,
-            paintBrushProxy, // hack until a better solution presents itself
             paintColourPrimary,
             paintColourSecondary,
             carList,
@@ -218,7 +224,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Widgets::ImageButton({ 240, 68 }, { 24, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_remove_from_track),
             Widgets::ImageButton({ 240, 96 }, { 24, 24 }, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::tooltip_sell_or_drag_vehicle),
             Widgets::ImageButton({ 240, 122 }, { 24, 24 }, WindowColour::secondary, ImageIds::paintbrush, StringIds::vehicleRepaintTooltip),
-            Widgets::Frame({ 0, 0 }, { 0, 0 }, WindowColour::secondary, Widget::kContentNull, StringIds::null),
             Widgets::ColourButton({ 240, 150 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
             Widgets::ColourButton({ 258, 150 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
             Widgets::ScrollView({ 3, 44 }, { 237, 110 }, WindowColour::secondary, Scrollbars::vertical)
@@ -230,15 +235,15 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void paintToolDown(Window& self, const int16_t x, const int16_t y);
         static void paintToolAbort(Window& self);
         static void paintToolDownScroll(Window& self, Vehicles::Car car, const int16_t x);
-        static constexpr bool isPaintToolActive(Window& self);
+        static bool isPaintToolActive(Window& self);
         static ColourScheme getPaintToolColour(Window& self);
         static BodyItems getBodyItemsForVehicle(const VehicleObject& vehObject, const uint8_t yaw, const Vehicles::Car& car);
     }
 
     namespace Cargo
     {
-        static constexpr Ui::Size32 kMinWindowSize = { 192, 142 };
-        static constexpr Ui::Size32 kMaxWindowSize = { 400, 440 };
+        static constexpr Ui::Size kMinWindowSize = { 192, 142 };
+        static constexpr Ui::Size kMaxWindowSize = { 400, 440 };
 
         enum widx
         {
@@ -258,8 +263,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Finances
     {
-        static constexpr Ui::Size32 kMinWindowSize = { 400, 202 };
-        static constexpr Ui::Size32 kMaxWindowSize = kMinWindowSize;
+        static constexpr Ui::Size kMinWindowSize = { 400, 202 };
+        static constexpr Ui::Size kMaxWindowSize = kMinWindowSize;
 
         constexpr uint64_t holdableWidgets = 0;
 
@@ -272,8 +277,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Route
     {
-        static constexpr Ui::Size32 kMinWindowSize = { 265, 202 };
-        static constexpr Ui::Size32 kMaxWindowSize = { 600, 440 };
+        static constexpr Ui::Size kMinWindowSize = { 265, 202 };
+        static constexpr Ui::Size kMaxWindowSize = { 600, 440 };
 
         enum widx
         {
@@ -319,9 +324,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Main
     {
-        static constexpr Ui::Size32 kWindowSize = { 265, 177 };
-        static constexpr Ui::Size32 kMinWindowSize = { 192, 177 };
-        static constexpr Ui::Size32 kMaxWindowSize = { 600, 440 };
+        static constexpr Ui::Size kWindowSize = { 265, 177 };
+        static constexpr Ui::Size kMinWindowSize = { 192, 177 };
+        static constexpr Ui::Size kMaxWindowSize = { 600, 440 };
 
         enum widx
         {
@@ -458,7 +463,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B60DC
         static Window* create(const EntityId head)
         {
-            auto* const self = WindowManager::createWindow(WindowType::vehicle, kWindowSize, WindowFlags::flag_11 | WindowFlags::flag_8 | WindowFlags::resizable, Main::getEvents());
+            auto* const self = WindowManager::createWindow(WindowType::vehicle, kWindowSize, WindowFlags::lighterFrame | WindowFlags::viewportNoShiftPixels | WindowFlags::resizable, Main::getEvents());
             self->setWidgets(widgets);
             self->number = enumValue(head);
             const auto* vehicle = Common::getVehicle(*self);
@@ -651,7 +656,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
 
                 uint16_t newHeight = self.height - 59;
-                if (head->hasVehicleFlags(VehicleFlags::manualControl) && head->owner == CompanyManager::getControllingId())
+                if (head->hasVehicleFlags(Vehicles::VehicleFlags::manualControl) && head->owner == CompanyManager::getControllingId())
                 {
                     newWidth -= 27;
                 }
@@ -699,11 +704,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 0);
 
             auto selected = 0; // Stop
-            if (!head->hasVehicleFlags(VehicleFlags::commandStop))
+            if (!head->hasVehicleFlags(Vehicles::VehicleFlags::commandStop))
             {
                 selected = 1; // Start
             }
-            if (head->hasVehicleFlags(VehicleFlags::manualControl))
+            if (head->hasVehicleFlags(Vehicles::VehicleFlags::manualControl))
             {
                 selected = 2; // Manual
             }
@@ -940,11 +945,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.push(head->ordinalNumber);
 
             uint32_t stopStartImage = ImageIds::red_flag;
-            if (head->hasVehicleFlags(VehicleFlags::manualControl))
+            if (head->hasVehicleFlags(Vehicles::VehicleFlags::manualControl))
             {
                 stopStartImage = ImageIds::yellow_flag;
             }
-            else if (head->hasVehicleFlags(VehicleFlags::commandStop))
+            else if (head->hasVehicleFlags(Vehicles::VehicleFlags::commandStop))
             {
                 stopStartImage = ImageIds::red_flag;
             }
@@ -969,7 +974,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.widgets[Common::widx::closeButton].right = self.width - 3;
 
             int viewportRight = self.width - 26;
-            if (head->hasVehicleFlags(VehicleFlags::manualControl))
+            if (head->hasVehicleFlags(Vehicles::VehicleFlags::manualControl))
             {
                 if (CompanyManager::isPlayerCompany(head->owner))
                 {
@@ -1393,7 +1398,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x4B38FA
         static void getScrollSize(Ui::Window& self, [[maybe_unused]] const uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            scrollHeight = Common::getNumCars(self) * self.rowHeight;
+            scrollHeight = static_cast<int32_t>(Common::getNumCars(self) * self.rowHeight);
         }
 
         // 0x004B3B54
@@ -1799,16 +1804,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.invalidate();
         }
 
-        static constexpr bool isPaintToolActive(Window& self)
+        static bool isPaintToolActive(Window& self)
         {
-            return self.activatedWidgets & (1U << widx::paintBrushProxy);
+            return ToolManager::isToolActive(self.type, self.number, widx::paintBrush);
         }
 
         static void paintToolBegin(Window& self)
         {
             bool active = ToolManager::toolSet(self, widx::paintBrush, CursorId::brush);
-            self.activatedWidgets &= ~(1U << widx::paintBrushProxy);
-            self.activatedWidgets |= (1U << widx::paintBrushProxy) * active;
+            self.activatedWidgets &= ~(1U << widx::paintBrush);
+            self.activatedWidgets |= (1U << widx::paintBrush) * active;
             self.invalidate();
         }
 
@@ -2488,7 +2493,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B4360
         static void getScrollSize(Ui::Window& self, [[maybe_unused]] const uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            scrollHeight = Common::getNumCars(self) * self.rowHeight;
+            scrollHeight = static_cast<int32_t>(Common::getNumCars(self) * self.rowHeight);
         }
 
         static char* generateCargoTooltipDetails(char* buffer, const StringId cargoFormat, const uint8_t cargoType, const uint8_t maxCargo, const uint32_t acceptedCargoTypes)
@@ -4919,7 +4924,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             self.currentTab = widgetIndex - Common::widx::tabMain;
             self.frameNo = 0;
-            self.flags &= ~WindowFlags::flag_16;
+            self.flags &= ~WindowFlags::beingResized;
             self.var_85C = -1;
             self.viewportRemove(0);
 

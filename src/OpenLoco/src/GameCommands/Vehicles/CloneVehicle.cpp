@@ -9,21 +9,29 @@
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
+#include "Vehicles/Vehicle1.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
 
 namespace OpenLoco::GameCommands
 {
-    static void copyVehicleColours(Vehicles::VehicleBase* source, Vehicles::VehicleBase* target)
+    static void copyVehicleColours(Vehicles::Vehicle& source, Vehicles::Vehicle& target)
     {
-        auto* sourceHead = source;
-        auto* targetHead = target;
-        while (sourceHead != nullptr && targetHead != nullptr)
+        auto srcIter = source.cars.begin();
+        auto tgtIter = target.cars.begin();
+        auto srcEnd = source.cars.end();
+        for (; srcIter != srcEnd; srcIter++, tgtIter++)
         {
-            targetHead->setColourScheme(sourceHead->getColourScheme());
-            sourceHead = sourceHead->nextVehicleComponent();
-            targetHead = targetHead->nextVehicleComponent();
+            auto srcCarIter = (*srcIter).begin();
+            auto tgtCarIter = (*tgtIter).begin();
+            auto srcCarEnd = (*srcIter).end();
+            for (; srcCarIter != srcCarEnd; srcCarIter++, tgtCarIter++)
+            {
+                (*tgtCarIter).body->colourScheme = (*srcCarIter).body->colourScheme;
+                (*tgtCarIter).front->colourScheme = (*srcCarIter).front->colourScheme;
+                (*tgtCarIter).back->colourScheme = (*srcCarIter).back->colourScheme;
+            }
         }
     }
 
@@ -105,7 +113,8 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        copyVehicleColours(existingTrain.head, newHead);
+        auto newTrain = Vehicles::Vehicle(*newHead);
+        copyVehicleColours(existingTrain, newTrain);
 
         // Copy orders
         std::vector<std::shared_ptr<Vehicles::Order>> clonedOrders;

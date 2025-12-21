@@ -20,7 +20,7 @@
 
 namespace OpenLoco::Ui::Windows::Debug
 {
-    static constexpr Ui::Size32 kWindowSize = { 400, 260 };
+    static constexpr Ui::Size kWindowSize = { 400, 260 };
     static constexpr int32_t kMargin = 2;
 
     static constexpr int32_t kTitlebarHeight = 13;

@@ -21,23 +21,24 @@
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "Random.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "SceneManager.h"
 #include "StationManager.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Bound.hpp>
 #include <algorithm>
 #include <array>
 #include <map>
 #include <sfl/static_unordered_set.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
@@ -1044,7 +1045,7 @@ namespace OpenLoco
                 // Reduces progress by 10% for each company outside of top 3 better performing than the player
                 // Caps out at 30% reduction
                 const auto multiplier = std::min(numCompaniesBetterPerforming - 2, 3U);
-                return std::max(progress - 10 * multiplier, 0U);
+                return static_cast<uint8_t>(std::max(progress - 10 * multiplier, 0U));
             }
             return progress;
         }

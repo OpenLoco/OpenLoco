@@ -4,9 +4,6 @@
 #include "Objects/ObjectManager.h"
 #include "Vehicles/OrderManager.h"
 #include "World/StationManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Vehicles
 {

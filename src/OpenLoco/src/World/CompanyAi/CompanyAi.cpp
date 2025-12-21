@@ -43,6 +43,7 @@
 #include "Map/TrackElement.h"
 #include "Map/TreeElement.h"
 #include "MessageManager.h"
+#include "Objects/AirportObject.h"
 #include "Objects/BridgeObject.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/CargoObject.h"
@@ -61,6 +62,9 @@
 #include "Random.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
 #include "World/Company.h"
 #include "World/CompanyManager.h"
@@ -70,11 +74,9 @@
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Engine/World.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <bit>
 #include <numeric>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 using namespace OpenLoco::Literals;
 using namespace OpenLoco::CompanyAi; // Eventually this will all be under this namespace
@@ -6364,7 +6366,7 @@ namespace OpenLoco
                 continue;
             }
             head->breakdownFlags &= ~Vehicles::BreakdownFlags::breakdownPending;
-            if (!head->hasVehicleFlags(VehicleFlags::commandStop))
+            if (!head->hasVehicleFlags(Vehicles::VehicleFlags::commandStop))
             {
                 GameCommands::VehicleChangeRunningModeArgs args{};
                 args.head = head->head;
@@ -6624,13 +6626,13 @@ namespace OpenLoco
 
         // Calling GC directly to match vanilla.
         // TODO change to use GameCommands::doCommand as this isn't handling costs
-        auto regs = static_cast<registers>(args);
+        auto regs = static_cast<GameCommands::registers>(args);
         regs.bl = GameCommands::Flags::apply;
         GameCommands::removeRoadStation(regs);
         if (static_cast<uint32_t>(regs.ebx) != GameCommands::FAILURE)
         {
             args.rotation ^= (1u << 1);
-            auto regs2 = static_cast<registers>(args);
+            auto regs2 = static_cast<GameCommands::registers>(args);
             regs2.bl = GameCommands::Flags::apply;
             GameCommands::removeRoadStation(regs2);
         }
@@ -6666,7 +6668,7 @@ namespace OpenLoco
             args.trackObjectId = trackObjId;
             // Calling GC directly to match vanilla.
             // TODO change to use GameCommands::doCommand as this isn't handling costs
-            auto regs = static_cast<registers>(args);
+            auto regs = static_cast<GameCommands::registers>(args);
             regs.bl = GameCommands::Flags::apply;
             GameCommands::removeTrack(regs);
 

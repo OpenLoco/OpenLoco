@@ -21,9 +21,10 @@
 #include "S5File.h"
 #include "S5Options.h"
 #include "SawyerStream.h"
-#include "ScenarioManager.h"
-#include "ScenarioOptions.h"
-#include "ScenarioPreview.h"
+#include "Scenario/Scenario.h"
+#include "Scenario/ScenarioManager.h"
+#include "Scenario/ScenarioOptions.h"
+#include "Scenario/ScenarioPreview.h"
 #include "SceneManager.h"
 #include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
@@ -35,11 +36,9 @@
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Core/Stream.hpp>
 #include <OpenLoco/Diagnostics/Logging.h>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <fstream>
 #include <iomanip>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Diagnostics;
@@ -48,11 +47,7 @@ namespace OpenLoco::S5
 {
     constexpr uint32_t kCurrentVersion = 0x62262;
 
-    static loco_global<int8_t, 0x0050C197> _loadErrorCode;      // 0x0050C197
-    static loco_global<StringId, 0x0050C198> _loadErrorMessage; // 0x0050C198
-
-    // TODO: move this?
-    static std::vector<ObjectHeader> _loadErrorObjectsList;
+    static LoadError _lastLoadError;
 
     static bool exportGameState(Stream& stream, const S5File& file, const std::vector<ObjectHeader>& packedObjects);
 
@@ -429,24 +424,14 @@ namespace OpenLoco::S5
         return file;
     }
 
-    // 0x00444D76
-    static void setObjectErrorMessage(const ObjectHeader& header)
+    const LoadError& getLastLoadError()
     {
-        auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2040));
-        StringManager::formatString(buffer, 512, StringIds::missing_object_data_id_x);
-        objectCreateIdentifierName(strchr(buffer, 0), header);
-        _loadErrorCode = -1;
-        _loadErrorMessage = StringIds::buffer_2040;
+        return _lastLoadError;
     }
 
-    static void setObjectErrorList(const std::vector<ObjectHeader>& list)
+    void resetLastLoadError()
     {
-        _loadErrorObjectsList = list;
-    }
-
-    const std::vector<ObjectHeader>& getObjectErrorList()
-    {
-        return _loadErrorObjectsList;
+        _lastLoadError = {};
     }
 
     class LoadException : public std::runtime_error
@@ -518,8 +503,10 @@ namespace OpenLoco::S5
             {
                 if (file->header.type != S5Type::scenario)
                 {
-                    _loadErrorCode = -1;
-                    _loadErrorMessage = StringIds::error_file_contains_invalid_data;
+                    _lastLoadError = LoadError{
+                        .errorCode = -1,
+                        .errorMessage = StringIds::error_file_contains_invalid_data,
+                    };
                     Ui::ProgressBar::end();
                     return false;
                 }
@@ -564,8 +551,11 @@ namespace OpenLoco::S5
             if (file->header.type == S5Type::objects)
             {
                 dst.var_014A = 0;
-                _loadErrorCode = -2;
-                _loadErrorMessage = StringIds::new_objects_installed_successfully;
+                _lastLoadError = LoadError{
+                    .errorCode = -2,
+                    .errorMessage = StringIds::new_objects_installed_successfully,
+                };
+
                 Ui::ProgressBar::end();
                 // Throws!
                 Game::returnToTitle();
@@ -603,8 +593,12 @@ namespace OpenLoco::S5
             auto loadObjectResult = ObjectManager::loadAll(file->requiredObjects);
             if (!loadObjectResult.success)
             {
-                setObjectErrorMessage(loadObjectResult.problemObjects[0]);
-                setObjectErrorList(loadObjectResult.problemObjects);
+                _lastLoadError = LoadError{
+                    .errorCode = -3,
+                    .errorMessage = StringIds::null,
+                    .objectList = loadObjectResult.problemObjects,
+                };
+
                 if (hasLoadFlags(flags, LoadFlags::twoPlayer))
                 {
                     CompanyManager::reset();
@@ -752,16 +746,20 @@ namespace OpenLoco::S5
         catch (const LoadException& e)
         {
             Logging::error("Unable to load S5: {}", e.what());
-            _loadErrorCode = -1;
-            _loadErrorMessage = e.getLocalisedMessage();
+            _lastLoadError = LoadError{
+                .errorCode = -4,
+                .errorMessage = e.getLocalisedMessage(),
+            };
             Ui::ProgressBar::end();
             return false;
         }
         catch (const std::exception& e)
         {
             Logging::error("Unable to load S5: {}", e.what());
-            _loadErrorCode = -1;
-            _loadErrorMessage = StringIds::null;
+            _lastLoadError = LoadError{
+                .errorCode = -5,
+                .errorMessage = StringIds::null,
+            };
             Ui::ProgressBar::end();
             return false;
         }

@@ -16,7 +16,6 @@
 #include "SceneManager.h"
 #include "ViewportManager.h"
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 
 namespace OpenLoco::GameCommands

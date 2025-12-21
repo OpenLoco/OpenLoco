@@ -1,4 +1,5 @@
 #include "Audio/Audio.h"
+#include "Config.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
@@ -71,7 +72,11 @@ using namespace OpenLoco::Diagnostics;
 namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 {
     static constexpr int kRowHeight = 12;
-    static constexpr Ui::Size32 kWindowSize = { 600, 398 };
+    static constexpr Ui::Size kWindowSizeMin = { 600, 398 };
+    static constexpr Ui::Size kWindowSizeMax = { 2000, 2000 };
+    static constexpr Ui::Point kObjectPreviewOffset = { 56, 56 };
+    static constexpr Ui::Size kObjectPreviewSize = { 114, 114 };
+    static constexpr uint8_t kDescriptionRowHeight = 10;
 
     enum class ObjectTabFlags : uint8_t
     {
@@ -266,7 +271,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         Widgets::Frame({ 0, 0 }, { 600, 398 }, WindowColour::primary),
         Widgets::Caption({ 1, 1 }, { 598, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::title_object_selection),
         Widgets::ImageButton({ 585, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        Widgets::Panel({ 0, 42 }, { 600, 356 }, WindowColour::secondary),
+        Widgets::Panel({ 0, 41 }, { 600, 357 }, WindowColour::secondary),
 
         // Primary tab area
         Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
@@ -283,7 +288,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         Widgets::Tab({ 344, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
 
         // Filter options
-        Widgets::dropdownWidgets({ 492, 20 }, { 100, 12 }, WindowColour::primary, StringIds::empty),
+        Widgets::dropdownWidgets({ 492, 20 }, { 100, 12 }, WindowColour::primary, StringIds::wcolour2_stringid),
         Widgets::TextBox({ 4, 45 }, { 246, 14 }, WindowColour::secondary),
         Widgets::Button({ 254, 45 }, { 38, 14 }, WindowColour::secondary, StringIds::clearInput),
 
@@ -300,7 +305,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         // Scroll and preview areas
         Widgets::Panel({ 3, 83 }, { 290, 303 }, WindowColour::secondary),
         Widgets::ScrollView({ 4, 85 }, { 288, 300 }, WindowColour::secondary, Scrollbars::vertical),
-        Widgets::ImageButton({ 391, 45 }, { 114, 114 }, WindowColour::secondary)
+        Widgets::ImageButton({ 391, 45 }, kObjectPreviewSize, WindowColour::secondary)
 
     );
 
@@ -497,9 +502,10 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     static const WindowEventList& getEvents();
+    static void switchPrimaryTab(Window& self, uint8_t tabIndex);
+    static void switchTabByObjectType(Window& self, ObjectType objectType);
 
-    // 0x00472A20
-    Ui::Window* open()
+    static Ui::Window* internalOpen(std::optional<ObjectType> optionalObjectType)
     {
         auto window = WindowManager::bringToFront(WindowType::objectSelection);
 
@@ -510,8 +516,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         auto& selection = ObjectManager::prepareSelectionList(true);
 
-        window = WindowManager::createWindowCentred(WindowType::objectSelection, { kWindowSize }, WindowFlags::none, getEvents());
+        window = WindowManager::createWindowCentred(WindowType::objectSelection, { kWindowSizeMin }, WindowFlags::resizable, getEvents());
         window->setWidgets(widgets);
+        window->setSize(kWindowSizeMin, kWindowSizeMax);
         window->initScrollWidgets();
         window->frameNo = 0;
         window->rowHover = -1;
@@ -541,19 +548,90 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         inputSession = Ui::TextInput::InputSession();
         inputSession.calculateTextOffset(widgets[widx::textInput].width());
 
+        if (optionalObjectType.has_value())
+        {
+            ObjectType objectType = optionalObjectType.value();
+
+            window->filterLevel = enumValue(FilterLevel::advanced);
+            assignTabPositions(window);
+            switchTabByObjectType(*window, objectType);
+        }
+
+        // If in play mode, the object selection window should be modal and pause the game to prevent issues.
+        if (!SceneManager::isEditorMode())
+        {
+            WindowManager::setCurrentModalType(WindowType::objectSelection);
+
+            SceneManager::setPauseFlag(PauseFlags::objectSelection);
+            WindowManager::invalidate(WindowType::timeToolbar);
+            Audio::pauseSound();
+        }
+
         return window;
     }
 
-    static void switchPrimaryTab(Window& self, uint8_t tabIndex);
-    static void switchTabByObjectType(Window& self, ObjectType objectType);
+    // 0x00472A20
+    Ui::Window* open()
+    {
+        return internalOpen({});
+    }
 
     Window& openInTab(ObjectType objectType)
     {
-        auto& window = *open();
-        window.filterLevel = enumValue(FilterLevel::advanced);
-        assignTabPositions(&window);
-        switchTabByObjectType(window, objectType);
+        auto& window = *internalOpen(objectType);
         return window;
+    }
+
+    static void onResize(Window& self)
+    {
+        // Resize basic window
+        self.widgets[widx::frame].right = self.width - 1;
+        self.widgets[widx::frame].bottom = self.height - 1;
+        self.widgets[widx::panel].right = self.width - 1;
+        self.widgets[widx::panel].bottom = self.height - 1;
+        self.widgets[widx::caption].right = self.width - 2;
+        self.widgets[widx::closeButton].left = self.width - 15;
+        self.widgets[widx::closeButton].right = self.width - 3;
+
+        // Reposition filter label/dropdown
+        self.widgets[widx::filterLabel].right = self.width - 8;
+        self.widgets[widx::filterLabel].left = self.widgets[widx::filterLabel].right - 100;
+        self.widgets[widx::filterDropdown].right = self.widgets[widx::filterLabel].right - 1;
+        self.widgets[widx::filterDropdown].left = self.widgets[widx::filterDropdown].right - 12;
+
+        // Resize text input field and clear button
+        self.widgets[widx::textInput].right = self.width / 2 - 54;
+        self.widgets[widx::clearButton].left = self.widgets[widx::textInput].right + 4;
+        self.widgets[widx::clearButton].right = self.widgets[widx::clearButton].left + 38;
+
+        Widget::leftAlignTabs(self, widx::secondaryTab1, widx::secondaryTab8, 30);
+
+        // Resize scroll view to take up the full window height, leaving room for a status line
+        self.widgets[widx::scrollview].bottom = self.height - 14;
+        self.widgets[widx::scrollview].right = self.width / 2 - 12;
+        self.widgets[widx::scrollviewFrame].bottom = self.widgets[widx::scrollview].bottom + 1;
+        self.widgets[widx::scrollviewFrame].right = self.widgets[widx::scrollview].right + 1;
+
+        const auto& currentTab = kMainTabInfo[self.currentTab];
+        const auto& subTabs = currentTab.subTabs;
+        const bool showSecondaryTabs = !subTabs.empty() && FilterLevel(self.filterLevel) != FilterLevel::beginner;
+
+        // Secondary tabs reduce the amount of space for the scroll view
+        if (showSecondaryTabs)
+        {
+            self.widgets[widx::scrollview].top = 62 + 28;
+            self.widgets[widx::scrollviewFrame].hidden = false;
+            self.widgets[widx::scrollviewFrame].top = self.widgets[widx::scrollview].top - 2;
+        }
+        else
+        {
+            self.widgets[widx::scrollview].top = 62;
+            self.widgets[widx::scrollviewFrame].hidden = true;
+        }
+
+        // Reposition preview area in the centre of the second half
+        self.widgets[widx::objectImage].left = self.width / 4 * 3 - kObjectPreviewSize.width / 2;
+        self.widgets[widx::objectImage].right = self.widgets[widx::objectImage].left + kObjectPreviewSize.width;
     }
 
     // 0x004733AC
@@ -571,6 +649,18 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         const auto& currentTab = kMainTabInfo[self.currentTab];
         const auto& subTabs = currentTab.subTabs;
         const bool showSecondaryTabs = !subTabs.empty() && FilterLevel(self.filterLevel) != FilterLevel::beginner;
+
+        static constexpr std::array<StringId, 3> kFilterLevelStringIds = {
+            StringIds::objSelectionFilterBeginner,
+            StringIds::objSelectionFilterAdvanced,
+            StringIds::objSelectionFilterExpert,
+        };
+
+        {
+            auto& widget = self.widgets[widx::filterLabel];
+            FormatArguments args{ widget.textArgs };
+            args.push(kFilterLevelStringIds[self.filterLevel]);
+        }
 
         // Update page title
         auto args = FormatArguments(self.widgets[widx::caption].textArgs);
@@ -606,20 +696,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             {
                 self.activatedWidgets &= ~(1ULL << widgetIndex);
             }
-        }
-
-        Widget::leftAlignTabs(self, widx::secondaryTab1, widx::secondaryTab8, 30);
-
-        if (showSecondaryTabs)
-        {
-            self.widgets[widx::scrollview].top = 62 + 28;
-            self.widgets[widx::scrollviewFrame].hidden = false;
-            self.widgets[widx::scrollviewFrame].top = self.widgets[widx::scrollview].top - 2;
-        }
-        else
-        {
-            self.widgets[widx::scrollview].top = 62;
-            self.widgets[widx::scrollviewFrame].hidden = true;
         }
     }
 
@@ -672,10 +748,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
-    static constexpr Ui::Point kObjectPreviewOffset = { 56, 56 };
-    static constexpr Ui::Size kObjectPreviewSize = { 112, 112 };
-    static constexpr uint8_t kDescriptionRowHeight = 10;
-
     template<typename T>
     static void callDrawPreviewImage(Gfx::DrawingContext& drawingCtx, const Ui::Point& drawingOffset, const Object& objectPtr)
     {
@@ -691,7 +763,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         // Clip the draw area to simplify image draw
         Ui::Point drawAreaPos = Ui::Point{ x, y } - kObjectPreviewOffset;
         const auto& rt = drawingCtx.currentRenderTarget();
-        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(drawAreaPos.x, drawAreaPos.y, kObjectPreviewSize.width, kObjectPreviewSize.height));
+        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(drawAreaPos.x, drawAreaPos.y, kObjectPreviewSize.width - 2, kObjectPreviewSize.height - 2));
         if (!clipped)
         {
             return;
@@ -958,31 +1030,20 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x004733F5
     static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        auto tr = Gfx::TextRenderer(drawingCtx);
+        // Extend background frame with a solid colour
+        // TODO: this should not be needed
+        if (Config::get().windowFrameStyle == Config::WindowFrameStyle::background)
+        {
+            drawingCtx.fillRectInset(self.x, self.y + 20, self.x + self.width - 1, self.y + 20 + 60, self.getColour(WindowColour::primary), Gfx::RectInsetFlags::none);
+        }
 
-        drawingCtx.fillRectInset(self.x, self.y + 20, self.x + self.width - 1, self.y + 20 + 60, self.getColour(WindowColour::primary), Gfx::RectInsetFlags::none);
         self.draw(drawingCtx);
 
         drawTabs(self, drawingCtx);
         drawSecondaryTabs(self, drawingCtx);
         drawSearchBox(self, drawingCtx);
 
-        {
-            static constexpr std::array<StringId, 3> levelStringIds = {
-                StringIds::objSelectionFilterBeginner,
-                StringIds::objSelectionFilterAdvanced,
-                StringIds::objSelectionFilterExpert,
-            };
-
-            FormatArguments args{};
-            args.push(levelStringIds[self.filterLevel]);
-
-            auto& widget = self.widgets[widx::filterLabel];
-            auto point = Point(self.x + widget.left, self.y + widget.top);
-
-            // Draw current level on combobox
-            tr.drawStringLeftClipped(point, widget.width() - 15, Colour::black, StringIds::wcolour2_stringid, args);
-        }
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         bool doDefault = true;
         if (self.object != nullptr)
@@ -996,13 +1057,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         if (doDefault)
         {
-            auto widget = widgets[widx::objectImage];
+            auto widget = self.widgets[widx::objectImage];
             auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 5);
             drawingCtx.drawRect(self.x + widget.left, self.y + widget.top, widget.width(), widget.height(), colour, Gfx::RectFlags::none);
         }
         else
         {
-            auto widget = widgets[widx::objectImage];
+            auto widget = self.widgets[widx::objectImage];
             auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 0);
             drawingCtx.drawRect(self.x + widget.left + 1, self.y + widget.top + 1, widget.width() - 2, widget.height() - 2, colour, Gfx::RectFlags::none);
         }
@@ -1045,8 +1106,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             drawPreviewImage(
                 objectHeader,
                 drawingCtx,
-                widgets[widx::objectImage].midX() + 1 + self.x,
-                widgets[widx::objectImage].midY() + 1 + self.y,
+                self.widgets[widx::objectImage].midX() + self.x,
+                self.widgets[widx::objectImage].midY() + self.y,
                 *temporaryObject);
         }
 
@@ -1591,6 +1652,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             Gfx::invalidateScreen();
             CompanyManager::determineAvailableVehicles();
             WindowManager::invalidate(WindowType::buildVehicle);
+
+            // Stop being modal and unpause game.
+            WindowManager::setCurrentModalType(WindowType::undefined);
+
+            SceneManager::unsetPauseFlag(PauseFlags::objectSelection);
+            WindowManager::invalidate(WindowType::timeToolbar);
+            Audio::unpauseSound();
         }
         ObjectManager::freeSelectionList();
     }
@@ -1637,6 +1705,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static constexpr WindowEventList kEvents = {
         .onClose = onClose,
         .onMouseUp = onMouseUp,
+        .onResize = onResize,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
         .onUpdate = onUpdate,

@@ -22,7 +22,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/ScaffoldingObject.h"
 #include "Objects/TreeObject.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 #include "SceneManager.h"
 #include "ViewportManager.h"
 #include "World/IndustryManager.h"
@@ -373,7 +373,7 @@ namespace OpenLoco::GameCommands
             return Colour::black;
         }
         // Note: Don't optimise for size 1 as randNext required to prevent divergence
-        return availableColours[prng.randNext(availableColours.size() - 1)];
+        return availableColours[prng.randNext(static_cast<int32_t>(availableColours.size()) - 1)];
     }
 
     struct RangeAndMinDistance

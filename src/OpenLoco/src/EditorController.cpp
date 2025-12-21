@@ -21,19 +21,18 @@
 #include "Objects/ScenarioTextObject.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
-#include "Scenario.h"
-#include "ScenarioManager.h"
-#include "ScenarioObjective.h"
-#include "ScenarioOptions.h"
+#include "Scenario/Scenario.h"
+#include "Scenario/ScenarioManager.h"
+#include "Scenario/ScenarioObjective.h"
+#include "Scenario/ScenarioOptions.h"
 #include "SceneManager.h"
 #include "Title.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <span>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 
 namespace OpenLoco::EditorController

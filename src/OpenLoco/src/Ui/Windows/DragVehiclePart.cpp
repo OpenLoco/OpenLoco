@@ -7,6 +7,7 @@
 #include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleBogie.h"
 #include "Vehicles/VehicleDraw.h"
 
 namespace OpenLoco::Ui::Windows::DragVehiclePart
@@ -39,7 +40,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         auto pos = Ui::ToolTip::getTooltipMouseLocation();
         pos.y -= 30;
         pos.x -= width / 2;
-        Ui::Size32 size = { width, 60 };
+        Ui::Size size = { width, 60 };
 
         auto self = WindowManager::createWindow(WindowType::dragVehiclePart, { pos.x, pos.y }, size, WindowFlags::transparent | WindowFlags::stickToFront, getEvents());
         self->setWidgets(widgets);

@@ -24,9 +24,9 @@
 
 namespace OpenLoco::Ui::Windows::MusicSelection
 {
-    static constexpr Ui::Size32 kWindowSizeMin = { 300, 100 };
-    static constexpr Ui::Size32 kWindowSizeMax = { 800, 800 };
-    static constexpr Ui::Size32 kWindowSizeDefault = { 360, 238 };
+    static constexpr Ui::Size kWindowSizeMin = { 300, 100 };
+    static constexpr Ui::Size kWindowSizeMax = { 800, 800 };
+    static constexpr Ui::Size kWindowSizeDefault = { 360, 238 };
 
     static constexpr auto kColumnYearsWidth = 75;
     static constexpr auto kStatusBarClearance = 13;
@@ -56,7 +56,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         Widgets::TableHeader({ kPadding + 1, 17 }, { kWindowSizeDefault.width - 2 * kPadding - kColumnYearsWidth - 1, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_track_title),
         Widgets::TableHeader({ kWindowSizeDefault.width - kPadding - kColumnYearsWidth, 17 }, { kColumnYearsWidth, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_music_years),
         Widgets::ScrollView({ kPadding, 30 }, { kWindowSizeDefault.width - 2 * kPadding, kWindowSizeDefault.height - kStatusBarClearance - 30 }, WindowColour::secondary, Scrollbars::vertical, StringIds::music_selection_tooltip),
-        Widgets::Label({ kPadding, kWindowSizeDefault.height - 12 }, { kWindowSizeMin.width - kPadding - 20, 11 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
+        Widgets::Label({ kPadding, kWindowSizeDefault.height - 12 }, { kWindowSizeMin.width - kResizeHandleSize - kPadding, 11 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
 
     );
 
@@ -170,6 +170,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         self.widgets[widx::scrollview].bottom = self.height - 1 - kStatusBarClearance;
         self.widgets[widx::status_bar].top = self.height - 12;
         self.widgets[widx::status_bar].bottom = self.height - 2;
+        self.widgets[widx::status_bar].right = self.width - kResizeHandleSize - kPadding;
     }
 
     // 0x004C165D

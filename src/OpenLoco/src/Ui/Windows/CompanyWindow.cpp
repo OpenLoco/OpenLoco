@@ -25,8 +25,8 @@
 #include "Objects/CompetitorObject.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
-#include "Scenario.h"
-#include "ScenarioObjective.h"
+#include "Scenario/Scenario.h"
+#include "Scenario/ScenarioObjective.h"
 #include "SceneManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ScrollView.h"
@@ -46,13 +46,12 @@
 #include "Ui/Widgets/ViewportWidget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleBody.h"
 #include "ViewportManager.h"
 #include "World/Company.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-#include <cmath>
 
-using namespace OpenLoco::Interop;
+#include <cmath>
 
 namespace OpenLoco::Ui::Windows::CompanyWindow
 {
@@ -124,7 +123,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Status
     {
-        static constexpr Ui::Size32 kWindowSize = { 270, 182 };
+        static constexpr Ui::Size kWindowSize = { 270, 182 };
 
         enum widx
         {
@@ -364,7 +363,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 args.bufferIndex = 0;
 
-                success = GameCommands::doCommand(args, GameCommands::Flags::apply);
+                success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE;
             }
 
             // No need to propagate the name if it could not be set.
@@ -610,7 +609,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     // 0x004347D0
     static Window* create(CompanyId companyId)
     {
-        const WindowFlags newFlags = WindowFlags::flag_8 | WindowFlags::flag_11;
+        const WindowFlags newFlags = WindowFlags::viewportNoShiftPixels | WindowFlags::lighterFrame;
         auto window = WindowManager::createWindow(WindowType::company, Status::kWindowSize, newFlags, Status::getEvents());
         window->number = enumValue(companyId);
         window->owner = companyId;
@@ -678,7 +677,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Details
     {
-        static constexpr Ui::Size32 kWindowSize = { 340, 194 };
+        static constexpr Ui::Size kWindowSize = { 340, 194 };
 
         static std::optional<GameCommands::HeadquarterPlacementArgs> _headquarterGhost;
 
@@ -1226,7 +1225,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace ColourScheme
     {
-        static constexpr Ui::Size32 kWindowSize = { 265, 252 };
+        static constexpr Ui::Size kWindowSize = { 265, 252 };
 
         enum widx
         {
@@ -1701,7 +1700,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Finances
     {
-        static constexpr Ui::Size32 kWindowSize = { 636, 319 };
+        static constexpr Ui::Size kWindowSize = { 636, 319 };
 
         enum widx
         {
@@ -2237,7 +2236,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace CargoDelivered
     {
-        static constexpr Ui::Size32 kWindowSize = { 240, 382 };
+        static constexpr Ui::Size kWindowSize = { 240, 382 };
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(240, 382, StringIds::title_company_cargo_delivered)
@@ -2424,7 +2423,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Challenge
     {
-        static constexpr Ui::Size32 kWindowSize = { 320, 182 };
+        static constexpr Ui::Size kWindowSize = { 320, 182 };
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(320, 182, StringIds::title_company_challenge)
@@ -2650,7 +2649,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
-            const Ui::Size32* kWindowSize;
+            const Ui::Size* kWindowSize;
         };
 
         // clang-format off
@@ -2736,7 +2735,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             self.currentTab = widgetIndex - widx::tab_status;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
 
             self.viewportRemove(0);
 

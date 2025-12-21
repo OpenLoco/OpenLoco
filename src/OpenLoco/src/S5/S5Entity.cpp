@@ -9,6 +9,12 @@
 #include "Effects/VehicleCrashEffect.h"
 #include "Entities/Entity.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle1.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
+#include "Vehicles/VehicleTail.h"
 #include <algorithm>
 
 namespace OpenLoco::S5
@@ -25,7 +31,7 @@ namespace OpenLoco::S5
         return dst;
     }
 
-    static EntityBase exportEntityBase(const OpenLoco::EntityBase& src, const uint8_t type)
+    static EntityBase exportEntityBase(const OpenLoco::EntityBase& src, const uint8_t type, const uint16_t vehicleFlags)
     {
         EntityBase dst{};
         dst.baseType = enumValue(src.baseType);
@@ -36,7 +42,7 @@ namespace OpenLoco::S5
         dst.linkedListOffset = src.linkedListOffset;
         dst.spriteHeightNegative = src.spriteHeightNegative;
         dst.id = enumValue(src.id);
-        dst.vehicleFlags = enumValue(src.vehicleFlags);
+        dst.vehicleFlags = vehicleFlags;
         dst.position = src.position;
         dst.spriteWidth = src.spriteWidth;
         dst.spriteHeightPositive = src.spriteHeightPositive;
@@ -56,7 +62,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::Exhaust& dstExhaust = reinterpret_cast<S5::Exhaust&>(dst);
-        dstExhaust.base = exportEntityBase(src, enumValue(EffectType::exhaust));
+        dstExhaust.base = exportEntityBase(src, enumValue(EffectType::exhaust), 0);
         dstExhaust.frameNum = src.frameNum;
         dstExhaust.stationaryProgress = src.stationaryProgress;
         dstExhaust.windProgress = src.windProgress;
@@ -70,7 +76,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::MoneyEffect& dstMoney = reinterpret_cast<S5::MoneyEffect&>(dst);
-        dstMoney.base = exportEntityBase(src, enumValue(src.getSubType()));
+        dstMoney.base = exportEntityBase(src, enumValue(src.getSubType()), 0);
         dstMoney.amount = src.amount;
         dstMoney.frame = src.frame;
         dstMoney.numMovements = src.numMovements;
@@ -86,7 +92,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::VehicleCrashParticle& dstParticle = reinterpret_cast<S5::VehicleCrashParticle&>(dst);
-        dstParticle.base = exportEntityBase(src, enumValue(EffectType::vehicleCrashParticle));
+        dstParticle.base = exportEntityBase(src, enumValue(EffectType::vehicleCrashParticle), 0);
         dstParticle.timeToLive = src.timeToLive;
         dstParticle.frame = src.frame;
         dstParticle.colourSchemePrimary = enumValue(src.colourScheme.primary);
@@ -103,7 +109,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::ExplosionCloud& dstCloud = reinterpret_cast<S5::ExplosionCloud&>(dst);
-        dstCloud.base = exportEntityBase(src, enumValue(EffectType::explosionCloud));
+        dstCloud.base = exportEntityBase(src, enumValue(EffectType::explosionCloud), 0);
         dstCloud.frame = src.frame;
         return dst;
     }
@@ -112,7 +118,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::Splash& dstSplash = reinterpret_cast<S5::Splash&>(dst);
-        dstSplash.base = exportEntityBase(src, enumValue(EffectType::splash));
+        dstSplash.base = exportEntityBase(src, enumValue(EffectType::splash), 0);
         dstSplash.frame = src.frame;
         return dst;
     }
@@ -121,7 +127,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::Fireball& dstFireball = reinterpret_cast<S5::Fireball&>(dst);
-        dstFireball.base = exportEntityBase(src, enumValue(EffectType::fireball));
+        dstFireball.base = exportEntityBase(src, enumValue(EffectType::fireball), 0);
         dstFireball.frame = src.frame;
         return dst;
     }
@@ -130,7 +136,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::ExplosionSmoke& dstSmoke = reinterpret_cast<S5::ExplosionSmoke&>(dst);
-        dstSmoke.base = exportEntityBase(src, enumValue(EffectType::explosionSmoke));
+        dstSmoke.base = exportEntityBase(src, enumValue(EffectType::explosionSmoke), 0);
         dstSmoke.frame = src.frame;
         return dst;
     }
@@ -139,7 +145,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::Smoke& dstSmoke = reinterpret_cast<S5::Smoke&>(dst);
-        dstSmoke.base = exportEntityBase(src, enumValue(EffectType::smoke));
+        dstSmoke.base = exportEntityBase(src, enumValue(EffectType::smoke), 0);
         dstSmoke.frame = src.frame;
         return dst;
     }
@@ -174,7 +180,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::VehicleHead& dstHead = reinterpret_cast<S5::VehicleHead&>(dst);
-        dstHead.base = exportEntityBase(src, enumValue(src.getSubType()));
+        dstHead.base = exportEntityBase(src, enumValue(src.getSubType()), enumValue(src.vehicleFlags));
         dstHead.head = enumValue(src.head);
         dstHead.remainingDistance = src.remainingDistance;
         dstHead.trackAndDirection = src.trackAndDirection.track._data;
@@ -237,7 +243,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::Vehicle1& dstVehicle1 = reinterpret_cast<S5::Vehicle1&>(dst);
-        dstVehicle1.base = exportEntityBase(src, enumValue(src.getSubType()));
+        dstVehicle1.base = exportEntityBase(src, enumValue(src.getSubType()), enumValue(src.vehicleFlags));
         dstVehicle1.head = enumValue(src.head);
         dstVehicle1.remainingDistance = src.remainingDistance;
         dstVehicle1.trackAndDirection = src.trackAndDirection.track._data;
@@ -267,7 +273,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::Vehicle2& dstVehicle2 = reinterpret_cast<S5::Vehicle2&>(dst);
-        dstVehicle2.base = exportEntityBase(src, enumValue(src.getSubType()));
+        dstVehicle2.base = exportEntityBase(src, enumValue(src.getSubType()), enumValue(src.vehicleFlags));
         dstVehicle2.head = enumValue(src.head);
         dstVehicle2.remainingDistance = src.remainingDistance;
         dstVehicle2.trackAndDirection = src.trackAndDirection.track._data;
@@ -279,15 +285,15 @@ namespace OpenLoco::S5
         dstVehicle2.routingHandle = src.routingHandle._data;
         dstVehicle2.var_38 = enumValue(src.var_38);
         dstVehicle2.nextCarId = enumValue(src.nextCarId);
-        dstVehicle2.var_3C = src.var_3C;
+        dstVehicle2.var_3C = 0;
         dstVehicle2.mode = enumValue(src.mode);
-        dstVehicle2.drivingSoundId = src.drivingSoundId;
-        dstVehicle2.drivingSoundVolume = src.drivingSoundVolume;
-        dstVehicle2.drivingSoundFrequency = src.drivingSoundFrequency;
-        dstVehicle2.objectId = src.objectId;
-        dstVehicle2.soundFlags = enumValue(src.soundFlags);
-        dstVehicle2.soundWindowNumber = src.soundWindowNumber;
-        dstVehicle2.soundWindowType = enumValue(src.soundWindowType);
+        dstVehicle2.drivingSoundId = src.sound.drivingSoundId;
+        dstVehicle2.drivingSoundVolume = src.sound.drivingSoundVolume;
+        dstVehicle2.drivingSoundFrequency = src.sound.drivingSoundFrequency;
+        dstVehicle2.objectId = src.sound.objectId;
+        dstVehicle2.soundFlags = enumValue(src.sound.soundFlags);
+        dstVehicle2.soundWindowNumber = src.sound.soundWindowNumber;
+        dstVehicle2.soundWindowType = enumValue(src.sound.soundWindowType);
         dstVehicle2.var_4F = src.var_4F;
         dstVehicle2.totalPower = src.totalPower;
         dstVehicle2.totalWeight = src.totalWeight;
@@ -320,7 +326,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::VehicleBogie& dstBogie = reinterpret_cast<S5::VehicleBogie&>(dst);
-        dstBogie.base = exportEntityBase(src, enumValue(src.getSubType()));
+        dstBogie.base = exportEntityBase(src, enumValue(src.getSubType()), enumValue(src.vehicleFlags));
         dstBogie.colourSchemePrimary = enumValue(src.colourScheme.primary);
         dstBogie.colourSchemeSecondary = enumValue(src.colourScheme.secondary);
         dstBogie.head = enumValue(src.head);
@@ -335,7 +341,7 @@ namespace OpenLoco::S5
         dstBogie.var_38 = enumValue(src.var_38);
         dstBogie.objectSpriteType = src.objectSpriteType;
         dstBogie.nextCarId = enumValue(src.nextCarId);
-        dstBogie.var_3C = src.var_3C;
+        dstBogie.var_3C = 0;
         dstBogie.objectId = src.objectId;
         dstBogie.mode = enumValue(src.mode);
         dstBogie.var_44 = src.var_44;
@@ -362,7 +368,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::VehicleBody& dstBody = reinterpret_cast<S5::VehicleBody&>(dst);
-        dstBody.base = exportEntityBase(src, enumValue(src.getSubType()));
+        dstBody.base = exportEntityBase(src, enumValue(src.getSubType()), enumValue(src.vehicleFlags));
         dstBody.colourSchemePrimary = enumValue(src.colourScheme.primary);
         dstBody.colourSchemeSecondary = enumValue(src.colourScheme.secondary);
         dstBody.head = enumValue(src.head);
@@ -377,7 +383,7 @@ namespace OpenLoco::S5
         dstBody.var_38 = enumValue(src.var_38);
         dstBody.objectSpriteType = src.objectSpriteType;
         dstBody.nextCarId = enumValue(src.nextCarId);
-        dstBody.var_3C = src.var_3C;
+        dstBody.var_3C = 0;
         dstBody.objectId = src.objectId;
         dstBody.mode = enumValue(src.mode);
         dstBody.var_44 = src.var_44;
@@ -400,7 +406,7 @@ namespace OpenLoco::S5
     {
         Entity dst{};
         S5::VehicleTail& dstTail = reinterpret_cast<S5::VehicleTail&>(dst);
-        dstTail.base = exportEntityBase(src, enumValue(src.getSubType()));
+        dstTail.base = exportEntityBase(src, enumValue(src.getSubType()), enumValue(src.vehicleFlags));
         dstTail.head = enumValue(src.head);
         dstTail.remainingDistance = src.remainingDistance;
         dstTail.trackAndDirection = src.trackAndDirection.track._data;
@@ -412,15 +418,15 @@ namespace OpenLoco::S5
         dstTail.routingHandle = src.routingHandle._data;
         dstTail.var_38 = enumValue(src.var_38);
         dstTail.nextCarId = enumValue(src.nextCarId);
-        dstTail.var_3C = src.var_3C;
+        dstTail.var_3C = 0;
         dstTail.mode = enumValue(src.mode);
-        dstTail.drivingSoundId = src.drivingSoundId;
-        dstTail.drivingSoundVolume = src.drivingSoundVolume;
-        dstTail.drivingSoundFrequency = src.drivingSoundFrequency;
-        dstTail.objectId = src.objectId;
-        dstTail.soundFlags = enumValue(src.soundFlags);
-        dstTail.soundWindowNumber = src.soundWindowNumber;
-        dstTail.soundWindowType = enumValue(src.soundWindowType);
+        dstTail.drivingSoundId = src.sound.drivingSoundId;
+        dstTail.drivingSoundVolume = src.sound.drivingSoundVolume;
+        dstTail.drivingSoundFrequency = src.sound.drivingSoundFrequency;
+        dstTail.objectId = src.sound.objectId;
+        dstTail.soundFlags = enumValue(src.sound.soundFlags);
+        dstTail.soundWindowNumber = src.sound.soundWindowNumber;
+        dstTail.soundWindowType = enumValue(src.sound.soundWindowType);
         dstTail.trainDanglingTimeout = src.trainDanglingTimeout;
 
         return dst;
@@ -484,7 +490,6 @@ namespace OpenLoco::S5
         dst.linkedListOffset = src.linkedListOffset;
         dst.spriteHeightNegative = src.spriteHeightNegative;
         dst.id = static_cast<EntityId>(src.id);
-        dst.vehicleFlags = static_cast<VehicleFlags>(src.vehicleFlags);
         dst.position = src.position;
         dst.spriteWidth = src.spriteWidth;
         dst.spriteHeightPositive = src.spriteHeightPositive;
@@ -694,15 +699,14 @@ namespace OpenLoco::S5
         dst.routingHandle._data = src.routingHandle;
         dst.var_38 = static_cast<Vehicles::Flags38>(src.var_38);
         dst.nextCarId = static_cast<EntityId>(src.nextCarId);
-        dst.var_3C = src.var_3C;
         dst.mode = static_cast<TransportMode>(src.mode);
-        dst.drivingSoundId = src.drivingSoundId;
-        dst.drivingSoundVolume = src.drivingSoundVolume;
-        dst.drivingSoundFrequency = src.drivingSoundFrequency;
-        dst.objectId = src.objectId;
-        dst.soundFlags = static_cast<Vehicles::SoundFlags>(src.soundFlags);
-        dst.soundWindowNumber = src.soundWindowNumber;
-        dst.soundWindowType = static_cast<Ui::WindowType>(src.soundWindowType);
+        dst.sound.drivingSoundId = src.drivingSoundId;
+        dst.sound.drivingSoundVolume = src.drivingSoundVolume;
+        dst.sound.drivingSoundFrequency = src.drivingSoundFrequency;
+        dst.sound.objectId = src.objectId;
+        dst.sound.soundFlags = static_cast<Vehicles::SoundFlags>(src.soundFlags);
+        dst.sound.soundWindowNumber = src.soundWindowNumber;
+        dst.sound.soundWindowType = static_cast<Ui::WindowType>(src.soundWindowType);
         dst.var_4F = src.var_4F;
         dst.totalPower = src.totalPower;
         dst.totalWeight = src.totalWeight;
@@ -745,7 +749,6 @@ namespace OpenLoco::S5
         dst.var_38 = static_cast<Vehicles::Flags38>(src.var_38);
         dst.objectSpriteType = src.objectSpriteType;
         dst.nextCarId = static_cast<EntityId>(src.nextCarId);
-        dst.var_3C = src.var_3C;
         dst.objectId = src.objectId;
         dst.mode = static_cast<TransportMode>(src.mode);
         dst.var_44 = src.var_44;
@@ -782,7 +785,6 @@ namespace OpenLoco::S5
         dst.var_38 = static_cast<Vehicles::Flags38>(src.var_38);
         dst.objectSpriteType = src.objectSpriteType;
         dst.nextCarId = static_cast<EntityId>(src.nextCarId);
-        dst.var_3C = src.var_3C;
         dst.objectId = src.objectId;
         dst.mode = static_cast<TransportMode>(src.mode);
         dst.var_44 = src.var_44;
@@ -812,15 +814,14 @@ namespace OpenLoco::S5
         dst.routingHandle._data = src.routingHandle;
         dst.var_38 = static_cast<Vehicles::Flags38>(src.var_38);
         dst.nextCarId = static_cast<EntityId>(src.nextCarId);
-        dst.var_3C = src.var_3C;
         dst.mode = static_cast<TransportMode>(src.mode);
-        dst.drivingSoundId = src.drivingSoundId;
-        dst.drivingSoundVolume = src.drivingSoundVolume;
-        dst.drivingSoundFrequency = src.drivingSoundFrequency;
-        dst.objectId = src.objectId;
-        dst.soundFlags = static_cast<Vehicles::SoundFlags>(src.soundFlags);
-        dst.soundWindowNumber = src.soundWindowNumber;
-        dst.soundWindowType = static_cast<Ui::WindowType>(src.soundWindowType);
+        dst.sound.drivingSoundId = src.drivingSoundId;
+        dst.sound.drivingSoundVolume = src.drivingSoundVolume;
+        dst.sound.drivingSoundFrequency = src.drivingSoundFrequency;
+        dst.sound.objectId = src.objectId;
+        dst.sound.soundFlags = static_cast<Vehicles::SoundFlags>(src.soundFlags);
+        dst.sound.soundWindowNumber = src.soundWindowNumber;
+        dst.sound.soundWindowType = static_cast<Ui::WindowType>(src.soundWindowType);
         dst.trainDanglingTimeout = src.trainDanglingTimeout;
     }
 
@@ -829,6 +830,8 @@ namespace OpenLoco::S5
         const auto vehicleType = static_cast<OpenLoco::Vehicles::VehicleEntityType>(src.base.type);
         auto dst = importEntityBase(src.base);
         auto* vehicleEntity = dst.asBase<OpenLoco::Vehicles::VehicleBase>();
+
+        vehicleEntity->vehicleFlags = static_cast<Vehicles::VehicleFlags>(src.base.vehicleFlags);
         vehicleEntity->setSubType(vehicleType);
 
         switch (vehicleType)

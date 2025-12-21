@@ -5,12 +5,19 @@
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
+#include "Objects/ObjectManager.h"
 #include "Objects/RoadExtraObject.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackExtraObject.h"
 #include "Objects/TrackObject.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle1.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
+#include "Vehicles/VehicleTail.h"
 #include "ViewportManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
 
@@ -271,7 +278,7 @@ namespace OpenLoco::GameCommands
                     return FAILURE;
                 }
 
-                train.head->vehicleFlags |= VehicleFlags::commandStop;
+                train.head->vehicleFlags |= Vehicles::VehicleFlags::commandStop;
                 train.head->manualPower = -40;
                 if (flags & Flags::ghost)
                 {

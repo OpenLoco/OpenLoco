@@ -15,7 +15,6 @@ namespace OpenLoco::Ui
 {
     struct Viewport;
 
-#pragma pack(push, 1)
     struct ScreenInfo
     {
         int16_t width;
@@ -25,8 +24,6 @@ namespace OpenLoco::Ui
         int16_t width_3;
         int16_t height_3;
     };
-    static_assert(sizeof(ScreenInfo) == 0xC);
-#pragma pack(pop)
 
     enum class CursorId : uint8_t
     {
@@ -102,8 +99,8 @@ namespace OpenLoco::Ui
     void disposeCursors();
     void setCursor(CursorId id);
     CursorId getCursor();
-    Point32 getCursorPosScaled();
-    Point32 getCursorPos();
+    Point getCursorPosScaled();
+    Point getCursorPos();
     void setCursorPosScaled(int32_t scaledX, int32_t scaledY);
     void setCursorPos(int32_t x, int32_t y);
     void hideCursor();

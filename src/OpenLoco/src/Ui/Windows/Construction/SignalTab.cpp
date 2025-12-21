@@ -16,7 +16,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/TrackObject.h"
 #include "Objects/TrainSignalObject.h"
-#include "ScenarioConstruction.h"
+#include "Scenario/ScenarioConstruction.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
@@ -188,7 +188,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
         if (res != GameCommands::FAILURE)
         {
-            Common::hasGhostVisibilityFlag(GhostVisibilityFlags::signal);
+            Common::setGhostVisibilityFlag(GhostVisibilityFlags::signal);
 
             auto& cState = getConstructionState();
             cState.signalGhostPos = args.pos;

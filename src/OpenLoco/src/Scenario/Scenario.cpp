@@ -1,4 +1,4 @@
-#include "Scenario.h"
+#include "Scenario/Scenario.h"
 #include "Audio/Audio.h"
 #include "Config.h"
 #include "Date.h"
@@ -32,10 +32,10 @@
 #include "Objects/WaterObject.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
-#include "ScenarioConstruction.h"
-#include "ScenarioManager.h"
-#include "ScenarioObjective.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioConstruction.h"
+#include "Scenario/ScenarioManager.h"
+#include "Scenario/ScenarioObjective.h"
+#include "Scenario/ScenarioOptions.h"
 #include "SceneManager.h"
 #include "Title.h"
 #include "Ui/WindowManager.h"
@@ -47,10 +47,9 @@
 #include "World/IndustryManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <OpenLoco/Platform/Platform.h>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Literals;

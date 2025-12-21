@@ -1,4 +1,4 @@
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 #include "Economy/Economy.h"
 #include "GameState.h"
 #include "Graphics/Colour.h"
@@ -12,8 +12,8 @@
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/ScenarioTextObject.h"
-#include "Scenario.h"
-#include "ScenarioObjective.h"
+#include "Scenario/Scenario.h"
+#include "Scenario/ScenarioObjective.h"
 #include "SceneManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
@@ -33,9 +33,9 @@
 
 namespace OpenLoco::Ui::Windows::ScenarioOptions
 {
-    static constexpr Ui::Size32 kChallengeWindowSize = { 366, 197 };
-    static constexpr Ui::Size32 kCompaniesWindowSize = { 366, 260 };
-    static constexpr Ui::Size32 kOtherWindowSize = { 366, 217 };
+    static constexpr Ui::Size kChallengeWindowSize = { 366, 197 };
+    static constexpr Ui::Size kCompaniesWindowSize = { 366, 260 };
+    static constexpr Ui::Size kOtherWindowSize = { 366, 217 };
 
     namespace Common
     {
@@ -1295,7 +1295,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             self.currentTab = widgetIndex - widx::tab_challenge;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
             self.disabledWidgets = 0;
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_challenge];

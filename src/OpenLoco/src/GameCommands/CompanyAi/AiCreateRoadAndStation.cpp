@@ -1,4 +1,5 @@
 #include "AiCreateRoadAndStation.h"
+#include "Economy/Expenditures.h"
 #include "GameCommands/Road/CreateRoad.h"
 #include "GameCommands/Road/CreateRoadStation.h"
 #include "Map/BuildingElement.h"

@@ -17,7 +17,7 @@
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "Objects/WaterObject.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 #include "ToolbarTopCommon.h"
 #include "Ui/Dropdown.h"
 #include "Ui/Screenshot.h"

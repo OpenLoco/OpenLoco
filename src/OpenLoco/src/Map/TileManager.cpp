@@ -39,10 +39,8 @@
 #include "World/TownManager.h"
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Engine/World.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <set>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::World::TileManager
@@ -134,7 +132,7 @@ namespace OpenLoco::World::TileManager
 
     uint32_t numFreeElements()
     {
-        return kMaxElements - _elementsEnd;
+        return static_cast<uint32_t>(kMaxElements - _elementsEnd);
     }
 
     void setElements(std::span<TileElement> elements)
