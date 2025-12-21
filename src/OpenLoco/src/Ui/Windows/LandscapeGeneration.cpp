@@ -306,6 +306,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             (1ULL << widx::mapSizeXDown);
             //(1ULL << widx::mapSizeYUp) |
             //(1ULL << widx::mapSizeYDown);
+
         // clang-format on
 
         static constexpr auto widgets = makeWidgets(
@@ -398,7 +399,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 self.disabledWidgets &= ~(1ULL << widx::change_heightmap_btn);
                 self.disabledWidgets |= ((1ULL << widx::terrainSmoothingNum) | (1ULL << widx::terrainSmoothingNumUp) | (1ULL << widx::terrainSmoothingNumDown));
-                self.disabledWidgets &= ~((1ULL << widx::mapSizeXDown) | (1ULL << widx::mapSizeXDown));
+                //self.disabledWidgets &= ~((1ULL << widx::mapSizeXUp) | (1ULL << widx::mapSizeXDown) | (1ULL << widx::mapSizeYUp) | (1ULL << widx::mapSizeYDown));
+                self.disabledWidgets &= ~((1ULL << widx::mapSizeXUp) | (1ULL << widx::mapSizeXDown));
                 self.disabledWidgets |= (1ULL << widx::browseHeightmapFile);
             }
 
@@ -411,6 +413,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 self.disabledWidgets |= (1ULL << widx::change_heightmap_btn);
                 self.disabledWidgets &= ~((1ULL << widx::terrainSmoothingNum) | (1ULL << widx::terrainSmoothingNumUp) | (1ULL << widx::terrainSmoothingNumDown));
+                //self.disabledWidgets &= ~((1ULL << widx::mapSizeXUp) | (1ULL << widx::mapSizeXDown) | (1ULL << widx::mapSizeYUp) | (1ULL << widx::mapSizeYDown));
                 self.disabledWidgets &= ~((1ULL << widx::mapSizeXUp) | (1ULL << widx::mapSizeXDown));
                 self.disabledWidgets |= (1ULL << widx::browseHeightmapFile);
             }
@@ -433,6 +436,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 self.disabledWidgets |= (1ULL << widx::change_heightmap_btn);
                 self.disabledWidgets |= ((1ULL << widx::terrainSmoothingNum) | (1ULL << widx::terrainSmoothingNumUp) | (1ULL << widx::terrainSmoothingNumDown));
+                //self.disabledWidgets |= ((1ULL << widx::mapSizeXUp) | (1ULL << widx::mapSizeXDown) | (1ULL << widx::mapSizeYUp) | (1ULL << widx::mapSizeYDown));
                 self.disabledWidgets |= ((1ULL << widx::mapSizeXUp) | (1ULL << widx::mapSizeXDown));
                 self.disabledWidgets &= ~(1ULL << widx::browseHeightmapFile);
 
