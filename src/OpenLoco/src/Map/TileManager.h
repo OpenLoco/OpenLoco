@@ -21,8 +21,8 @@ namespace OpenLoco::World::TileManager
 {
     const TileElement* const kInvalidTile = reinterpret_cast<const TileElement*>(static_cast<intptr_t>(-1));
 
-    const coord_t kMinMapDimension = 384;
-    const coord_t kMaxMapDimension = 512;
+    const uint16_t kMinMapDimension = 384;
+    const uint16_t kMaxMapDimension = 512;
 
     enum class ElementPositionFlags : uint8_t
     {
