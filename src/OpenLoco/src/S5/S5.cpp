@@ -626,7 +626,13 @@ namespace OpenLoco::S5
             // Copy scenario options
             if (hasLoadFlags(flags, LoadFlags::scenario | LoadFlags::landscape))
             {
-                Scenario::getOptions() = importOptions(*file->scenarioOptions);
+                auto& options = Scenario::getOptions();
+                options = importOptions(*file->scenarioOptions);
+                TileManager::setMapSize(options.mapSizeX, options.mapSizeY);
+            }
+            else
+            {
+                TileManager::setMapSize(384, 384);
             }
 
             // Copy tile elements
@@ -636,7 +642,6 @@ namespace OpenLoco::S5
             }
             else
             {
-                World::TileManager::initialise();
                 Scenario::sub_46115C();
             }
 

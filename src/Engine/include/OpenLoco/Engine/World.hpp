@@ -7,8 +7,7 @@
 namespace OpenLoco::World
 {
     constexpr coord_t kTileSize = 32;
-
-    constexpr coord_t kMapPitch = 1024;  // must be 512 until NSF
+    constexpr coord_t kMapPitch = 512;  // must be 512 until NSF
     constexpr int16_t kMicroZStep = 16;       // e.g. SurfaceElement::water is a microZ
     constexpr int16_t kMicroToSmallZStep = 4; // e.g. for comparisons between water and baseZ
     constexpr int16_t kSmallZStep = 4;        // e.g. TileElement::baseZ is a smallZ

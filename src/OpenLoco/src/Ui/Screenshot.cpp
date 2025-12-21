@@ -11,6 +11,7 @@
 #include "Ui.h"
 #include "WindowManager.h"
 #include <OpenLoco/Core/Exception.hpp>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Platform/Platform.h>
 #include <cstdint>
 #include <fstream>
@@ -58,8 +59,9 @@ namespace OpenLoco::Ui
                     FormatArguments::common(fileName.c_str());
                     Windows::Error::openQuiet(StringIds::screenshot_saved_as, StringIds::null);
                 }
-                catch (const std::exception&)
+                catch (const std::exception& ex)
                 {
+                    OpenLoco::Diagnostics::Logging::error("Saving screenshot failed", ex.what());
                     Windows::Error::open(StringIds::screenshot_failed);
                 }
             }
@@ -202,8 +204,8 @@ namespace OpenLoco::Ui
         viewport.pad_11 = 0;
         viewport.flags = ViewportFlags::none;
 
-        const coord_t centreX = (World::TileManager::getMapColumns() / 2) * 32 + 16;
-        const coord_t centreY = (World::TileManager::getMapRows() / 2) * 32 + 16;
+        const coord_t centreX = (World::TileManager::getMapWidth() / 2) + (World::kTileSize / 2);
+        const coord_t centreY = (World::TileManager::getMapHeight() / 2) + (World::kTileSize / 2);
         const coord_t z = World::TileManager::getHeight({ centreX, centreY }).landHeight;
 
         auto pos = viewport.centre2dCoordinates({ centreX, centreY, z });
@@ -218,8 +220,8 @@ namespace OpenLoco::Ui
         const auto& main = WindowManager::getMainWindow();
         const auto zoomLevel = main->viewports[0]->zoom;
 
-        const uint16_t resolutionWidth = ((World::TileManager::getMapColumns() * 32 * 2) >> zoomLevel) + 8;
-        const uint16_t resolutionHeight = ((World::TileManager::getMapRows() * 32 * 1) >> zoomLevel) + 128;
+        const uint16_t resolutionWidth = ((World::TileManager::getMapWidth() * 2) >> zoomLevel) + 8;
+        const uint16_t resolutionHeight = ((World::TileManager::getMapHeight() * 1) >> zoomLevel) + 8;
 
         Ui::Viewport viewport = createGiantViewport(resolutionWidth, resolutionHeight, zoomLevel);
 
