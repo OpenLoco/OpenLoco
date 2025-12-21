@@ -25,7 +25,7 @@ namespace OpenLoco
     {
         none = 0U,
         isOneWay = 1U << 0,
-        unk_01 = 1U << 1,
+        isRailTransport = 1U << 1, // controls if the object appears in the tracks menu instead of the road menu
         unk_02 = 1U << 2,
         unk_03 = 1U << 3, // Likely isTram
         unk_04 = 1U << 4,
