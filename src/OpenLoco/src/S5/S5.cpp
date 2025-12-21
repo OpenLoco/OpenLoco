@@ -349,7 +349,7 @@ namespace OpenLoco::S5
         if (file->header.hasFlags(HeaderFlags::hasSaveDetails))
         {
             file->saveDetails = std::make_unique<SaveDetails>();
-            fs.readChunk(file->saveDetails.get(), sizeof(*file->saveDetails));
+            fs.readChunk(file->saveDetails.get(), sizeof(SaveDetails));
         }
         if (file->header.type == S5Type::scenario)
         {
@@ -476,7 +476,6 @@ namespace OpenLoco::S5
             Ui::ProgressBar::begin(StringIds::loading);
             Ui::ProgressBar::setProgress(10);
 
-            
             World::TileManager::allocateMapElements();
             auto file = importSave(stream);
 
@@ -626,39 +625,28 @@ namespace OpenLoco::S5
             dst = *importGameState(src);
 
             // Copy scenario options
+            auto mapWidth = World::TileManager::kDefaultMapDimension;
+            auto mapHeight = World::TileManager::kDefaultMapDimension;
+
             if (hasLoadFlags(flags, LoadFlags::scenario | LoadFlags::landscape))
             {
                 auto& options = Scenario::getOptions();
                 options = importOptions(*file->scenarioOptions);
-
-                if (options.mapSizeX == 0 || options.mapSizeY == 0)
-                {
-                    TileManager::setMapSize(384, 384);
-                }
-                else
-                {
-                    TileManager::setMapSize(options.mapSizeX, options.mapSizeY);
-                }
+                mapWidth = options.mapSizeX;
+                mapHeight = options.mapSizeY;
             }
-            else
+            else if (file->saveDetails != nullptr)
             {
-                if (file-> saveDetails == nullptr)
-                {
-                    TileManager::setMapSize(384, 384);
-                }
-                else
-                {
-                    auto& options = *file->saveDetails;
-                    if (options.mapSizeX == 0 || options.mapSizeY == 0)
-                    {
-                        TileManager::setMapSize(384, 384);
-                    }
-                    else
-                    {
-                        TileManager::setMapSize(options.mapSizeX, options.mapSizeY);
-                    }
-                }
+                auto& options = *file->saveDetails;
+                mapWidth = options.mapSizeX;
+                mapHeight = options.mapSizeY;
             }
+
+            if (mapWidth < World::TileManager::kMinMapDimension || mapHeight < World::TileManager::kMinMapDimension || mapWidth > World::TileManager::kMaxMapDimension || mapHeight > World::TileManager::kMaxMapDimension)
+            {
+                TileManager::setMapSize(World::TileManager::kDefaultMapDimension, World::TileManager::kDefaultMapDimension);
+            }
+            TileManager::setMapSize(mapWidth, mapHeight);
 
             // Copy tile elements
             if ((dst.flags & GameStateFlags::tileManagerLoaded) != GameStateFlags::none)
@@ -826,7 +814,7 @@ namespace OpenLoco::S5
         {
             // 0x0050AEA8
             auto ret = std::make_unique<SaveDetails>();
-            fs.readChunk(ret.get(), sizeof(*ret));
+            fs.readChunk(ret.get(), sizeof(SaveDetails));
             return ret;
         }
         return nullptr;
