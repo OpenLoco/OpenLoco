@@ -274,7 +274,7 @@ namespace OpenLoco
             {
                 continue;
             }
-            if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+            if (!roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
             {
                 continue;
             }
@@ -842,7 +842,7 @@ namespace OpenLoco
                     continue;
                 }
                 auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
-                if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+                if (!roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
                 {
                     continue;
                 }
@@ -931,7 +931,7 @@ namespace OpenLoco
                 }
 
                 auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
-                if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+                if (!roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
                 {
                     continue;
                 }
@@ -1556,7 +1556,7 @@ namespace OpenLoco
                     continue;
                 }
                 auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
-                if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+                if (!roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
                 {
                     continue;
                 }

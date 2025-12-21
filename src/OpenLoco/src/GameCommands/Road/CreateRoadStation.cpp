@@ -455,7 +455,7 @@ namespace OpenLoco::GameCommands
                         setErrorText(StringIds::station_not_compatible_with_string_id);
                         return FAILURE;
                     }
-                    if (roadObj2->hasFlags(RoadObjectFlags::unk_03)
+                    if (roadObj2->hasFlags(RoadObjectFlags::anyRoadTypeCompatible)
                         || roadObj2->hasFlags(RoadObjectFlags::allowUseByAllCompanies)
                         || sub_431E6A(elRoad->owner(), &el))
                     {

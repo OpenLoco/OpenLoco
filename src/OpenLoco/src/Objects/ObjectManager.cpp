@@ -967,7 +967,7 @@ namespace OpenLoco::ObjectManager
             auto roadObject = ObjectManager::get<RoadObject>(index);
             if (roadObject != nullptr)
             {
-                if (roadObject->hasFlags(RoadObjectFlags::unk_03))
+                if (roadObject->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
                 {
                     roadObjectIdIsNotTram |= (1u << index);
                 }
@@ -1176,7 +1176,7 @@ namespace OpenLoco::ObjectManager
             auto roadObject = ObjectManager::get<RoadObject>(index);
             if (roadObject != nullptr)
             {
-                if (roadObject->hasFlags(RoadObjectFlags::unk_03) && !roadObject->hasFlags(RoadObjectFlags::isOneWay))
+                if (roadObject->hasFlags(RoadObjectFlags::anyRoadTypeCompatible) && !roadObject->hasFlags(RoadObjectFlags::isOneWay))
                 {
                     if (largestTownSize <= roadObject->targetTownSize)
                     {

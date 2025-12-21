@@ -493,7 +493,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         {
             auto trackIdx = trackType & ~(1 << 7);
             auto roadObj = ObjectManager::get<RoadObject>(trackIdx);
-            if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+            if (roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
             {
                 trackType = 0xFE;
             }
