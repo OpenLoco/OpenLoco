@@ -54,8 +54,8 @@ namespace OpenLoco::World::TileManager
 
     constexpr size_t kMaxElementsOnOneTile = 1024; // If you exceed this then the game may buffer overflow in certain situations
 
-    static coord_t mapRows = 384;
-    static coord_t mapColumns = 384;
+    static coord_t mapRows = kDefaultMapDimension;
+    static coord_t mapColumns = kDefaultMapDimension;
 
     void setMapSize(coord_t cols, coord_t rows)
     {
@@ -94,7 +94,7 @@ namespace OpenLoco::World::TileManager
 
     int32_t getNumTiles()
     {
-        return kMapPitch * getMapColumns();
+        return kMapPitch * getMapRows();
     }
 
     uint32_t getMaxElements()
@@ -107,55 +107,51 @@ namespace OpenLoco::World::TileManager
         return getMaxElements() - kMaxElementsOnOneTile;
     }
 
-    bool validCoord(const coord_t coord)
-    {
-        return (coord >= 0) && (coord < getMapWidth());
-    }
-
-    bool validTileCoord(const tile_coord_t coord)
-    {
-        return (coord >= 0) && (coord < getMapColumns());
-    }
-
     bool validCoords(const Pos2& coords)
     {
-        return validCoord(coords.x) && validCoord(coords.y);
+        return coords.x >= 0
+            && coords.x < getMapWidth()
+            && coords.y >= 0
+            && coords.y < getMapHeight();
     }
 
     bool validCoords(const TilePos2& coords)
     {
-        return validTileCoord(coords.x) && validTileCoord(coords.y);
+        return coords.x >= 0
+            && coords.x < getMapColumns()
+            && coords.y >= 0
+            && coords.y < getMapRows();
+    }
+
+    TilePos2 clampTileCoords(const TilePos2& coords)
+    {
+        return TilePos2(
+            std::clamp<coord_t>(coords.x, 0, World::TileManager::getMapColumns() - 1),
+            std::clamp<coord_t>(coords.y, 0, World::TileManager::getMapRows() - 1));
+    }
+
+    Pos2 clampCoords(const Pos2& coords)
+    {
+        return Pos2(
+            std::clamp<coord_t>(coords.x, 0, World::TileManager::getMapWidth() - 1),
+            std::clamp<coord_t>(coords.y, 0, World::TileManager::getMapHeight() - 1));
     }
 
     // drawing coordinates validation differs from general valid coordinate validation
-    bool drawableCoord(const coord_t coord)
-    {
-        return (coord >= kTileSize) && (coord < (getMapWidth() - kTileSize - 1));
-    }
-
-    bool drawableTileCoord(const tile_coord_t coord)
-    {
-        return (coord >= 1) && (coord < (World::TileManager::getMapColumns() - 2));
-    }
-
     bool drawableCoords(const Pos2& coords)
     {
-        return drawableCoord(coords.x) && drawableCoord(coords.y);
+        return coords.x >= kTileSize
+            && coords.x < (getMapWidth() - kTileSize - 1)
+            && coords.y >= kTileSize
+            && coords.y < (getMapHeight() - kTileSize - 1);
     }
 
-    bool drawableCoords(const TilePos2& coords)
+    bool drawableTileCoords(const TilePos2& coords)
     {
-        return drawableTileCoord(coords.x) && drawableTileCoord(coords.y);
-    }
-
-    coord_t clampTileCoord(coord_t coord)
-    {
-        return std::clamp<coord_t>(coord, 0, World::TileManager::getMapColumns() - 1);
-    }
-
-    coord_t clampCoord(coord_t coord)
-    {
-        return std::clamp<coord_t>(coord, 0, getMapWidth() - 1);
+        return coords.x >= kTileSize
+            && coords.x < (getMapColumns() - kTileSize - 1)
+            && coords.y >= kTileSize
+            && coords.y < (getMapRows() - kTileSize - 1);
     }
 
     void disablePeriodicDefrag()

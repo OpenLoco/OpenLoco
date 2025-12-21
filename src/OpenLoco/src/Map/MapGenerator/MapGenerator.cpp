@@ -512,8 +512,6 @@ namespace OpenLoco::World::MapGenerator
     // 0x0046A021
     static void generateTerrain(HeightMap& heightMap)
     {
-        World::TileManager::setMapSize(heightMap.width, heightMap.height);
-
         const auto style = getEverywhereSurfaceStyle();
         if (!style.has_value())
         {
@@ -872,8 +870,8 @@ namespace OpenLoco::World::MapGenerator
             for (auto attemptsLeft = 200; attemptsLeft > 0; attemptsLeft--)
             {
                 // NB: coordinate selection has been simplified compared to vanilla
-                auto randomX = getGameState().rng.randNext(2, World::TileManager::getMapRows() - 2);
-                auto randomY = getGameState().rng.randNext(2, World::TileManager::getMapColumns() - 2);
+                auto randomX = getGameState().rng.randNext(2, World::TileManager::getMapColumns() - 2);
+                auto randomY = getGameState().rng.randNext(2, World::TileManager::getMapRows() - 2);
 
                 auto tile = TileManager::get(TilePos2(randomX, randomY));
                 if (!predicate(tile))
@@ -1091,7 +1089,8 @@ namespace OpenLoco::World::MapGenerator
 
         Scenario::initialiseDate(options.scenarioStartYear);
         Scenario::initialiseSnowLine();
-        TileManager::initialise();
+        World::TileManager::setMapSize(options.mapSizeX, options.mapSizeY);
+
         updateProgress(10);
 
         {
