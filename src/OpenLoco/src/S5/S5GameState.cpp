@@ -67,7 +67,7 @@ namespace OpenLoco::S5
         dst.maxCompetingCompanies = src.maxCompetingCompanies;
         dst.orderTableLength = src.orderTableLength;
         dst.roadObjectIdIsNotTram = src.roadObjectIdIsNotTram;
-        dst.roadObjectIdIsFlag7 = src.roadObjectIdIsFlag7;
+        dst.roadObjectIdIsUsableByAllCompanies = src.roadObjectIdIsUsableByAllCompanies;
         dst.currentDefaultLevelCrossingType = src.currentDefaultLevelCrossingType;
         dst.lastTrackTypeOption = src.lastTrackTypeOption;
         dst.loanInterestRate = src.loanInterestRate;
@@ -271,7 +271,7 @@ namespace OpenLoco::S5
         dst.maxCompetingCompanies = src.maxCompetingCompanies;
         dst.orderTableLength = src.orderTableLength;
         dst.roadObjectIdIsNotTram = src.roadObjectIdIsNotTram;
-        dst.roadObjectIdIsFlag7 = src.roadObjectIdIsFlag7;
+        dst.roadObjectIdIsUsableByAllCompanies = src.roadObjectIdIsUsableByAllCompanies;
         dst.currentDefaultLevelCrossingType = src.currentDefaultLevelCrossingType;
         dst.lastTrackTypeOption = src.lastTrackTypeOption;
         dst.loanInterestRate = src.loanInterestRate;

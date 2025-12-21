@@ -960,7 +960,7 @@ namespace OpenLoco::ObjectManager
     void updateRoadObjectIdFlags()
     {
         uint32_t roadObjectIdIsNotTram = 0;
-        uint32_t roadObjectIdIsFlag7 = 0;
+        uint32_t roadObjectIdIsUsableByAllCompanies = 0;
 
         for (size_t index = 0; index < ObjectManager::getMaxObjects(ObjectType::road); ++index)
         {
@@ -971,14 +971,14 @@ namespace OpenLoco::ObjectManager
                 {
                     roadObjectIdIsNotTram |= (1u << index);
                 }
-                if (roadObject->hasFlags(RoadObjectFlags::unk_07))
+                if (roadObject->hasFlags(RoadObjectFlags::allowUseByAllCompanies))
                 {
-                    roadObjectIdIsFlag7 |= (1u << index);
+                    roadObjectIdIsUsableByAllCompanies |= (1u << index);
                 }
             }
         }
         getGameState().roadObjectIdIsNotTram = roadObjectIdIsNotTram;
-        getGameState().roadObjectIdIsFlag7 = roadObjectIdIsFlag7;
+        getGameState().roadObjectIdIsUsableByAllCompanies = roadObjectIdIsUsableByAllCompanies;
     }
 
     // 0x004796A9

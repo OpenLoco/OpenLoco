@@ -37,7 +37,7 @@ namespace OpenLoco::World::Track
                 continue;
             }
 
-            if (!(getGameState().roadObjectIdIsFlag7 & (1 << elRoad->roadObjectId())))
+            if (!(getGameState().roadObjectIdIsUsableByAllCompanies & (1 << elRoad->roadObjectId())))
             {
                 if (elRoad->owner() != company)
                 {

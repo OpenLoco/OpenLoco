@@ -287,8 +287,8 @@ namespace OpenLoco::GameCommands
         }
 
         const auto& gs = getGameState();
-        if (!(gs.roadObjectIdIsFlag7 & (1U << elRoad.roadObjectId()))
-            || !(gs.roadObjectIdIsFlag7 & (1U << args.roadObjectId)))
+        if (!(gs.roadObjectIdIsUsableByAllCompanies & (1U << elRoad.roadObjectId()))
+            || !(gs.roadObjectIdIsUsableByAllCompanies & (1U << args.roadObjectId)))
         {
             if (!sub_431E6A(elRoad.owner(), reinterpret_cast<const World::TileElement*>(&elRoad)))
             {

@@ -456,7 +456,7 @@ namespace OpenLoco::GameCommands
                         return FAILURE;
                     }
                     if (roadObj2->hasFlags(RoadObjectFlags::unk_03)
-                        || roadObj2->hasFlags(RoadObjectFlags::unk_07)
+                        || roadObj2->hasFlags(RoadObjectFlags::allowUseByAllCompanies)
                         || sub_431E6A(elRoad->owner(), &el))
                     {
                         unk112C7F4 = true;
