@@ -188,7 +188,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     {
         fs::path droppedPath = droppedFileDirectory;
 
-        // Did the user drag & drop a folder?
         if (fs::is_directory(droppedPath))
         {
             changeDirectory(droppedPath);
@@ -215,7 +214,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
             if (!Utility::iequals(extension, filterExtension))
             {
-                Error::open(StringIds::error_incorrect_file_type); // TODO: Is this a suitable error message?
+                Error::open(StringIds::error_incorrect_file_type);
                 return;
             }
         }
