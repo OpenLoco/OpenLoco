@@ -23,7 +23,7 @@ namespace OpenLoco::World::TileManager
 
     const uint16_t kMinMapDimension = 32;
     const uint16_t kDefaultMapDimension = 384;
-    const uint16_t kMaxMapDimension = 512;
+    const uint16_t kMaxMapDimension = World::kMapPitch;
 
     enum class ElementPositionFlags : uint8_t
     {

@@ -296,8 +296,7 @@ namespace OpenLoco::World::TileManager
 
     static constexpr size_t getTileIndex(const TilePos2& pos)
     {
-        // This is the same as (y * kMapPitch) + x
-        return (pos.y << 9) | pos.x;
+        return (pos.y * World::kMapPitch) + pos.x;
     }
 
     Tile get(TilePos2 pos)
