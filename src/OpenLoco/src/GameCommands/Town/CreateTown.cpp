@@ -74,7 +74,7 @@ namespace OpenLoco::GameCommands
                 auto tilePos = TilePos2(((rand >> 16) * World::TileManager::getMapColumns()) >> 16, ((rand & 0xFFFF) * World::TileManager::getMapRows()) >> 16);
                 Pos2 attemptPos = toWorldSpace(tilePos);
 
-                if (attemptPos.x < World::TileManager::getMapColumns() || attemptPos.y < World::TileManager::getMapRows() || attemptPos.x > 11904 || attemptPos.y > 11904)
+                if (attemptPos.x < World::TileManager::getMapColumns() || attemptPos.y < World::TileManager::getMapRows() || attemptPos.x > World::TileManager::getMapWidth() || attemptPos.y > World::TileManager::getMapHeight())
                 {
                     continue;
                 }
