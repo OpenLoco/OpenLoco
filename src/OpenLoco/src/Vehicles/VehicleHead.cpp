@@ -4382,43 +4382,47 @@ namespace OpenLoco::Vehicles
     {
         TrackAndDirection::_TrackAndDirection tad{ 0, 0 };
         tad._data = targetRouting & World::Track::AdditionalTaDFlags::basicTaDMask;
-        sfl::static_vector<int8_t, 16> unk113621F;
+        // unk113621F
+        sfl::static_vector<int8_t, 16> curvatures;
         for (const auto& otherConnection : tc.connections)
         {
-            unk113621F.push_back(TrackData::getCurvatureDegree((otherConnection & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2));
+            curvatures.push_back(TrackData::getCurvatureDegree((otherConnection & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2));
         }
 
         const auto curUnk = TrackData::getCurvatureDegree((newRouting & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2);
 
-        int8_t cl = unk113621F[0];
-        int8_t ch = unk113621F[0];
-        uint32_t ebp = 0;
-        for (auto i = 1U; i < unk113621F.size(); ++i)
+        int8_t minCurvature = curvatures[0]; // cl
+        int8_t maxCurvature = curvatures[0]; // ch
+        uint32_t iMinAbsCurvature = 0; // ebp
+        for (auto i = 1U; i < curvatures.size(); ++i)
         {
-            const auto unk = unk113621F[i];
-            cl = std::min(cl, unk);
-            ch = std::max(ch, unk);
-            const auto absUnk = std::abs(unk);
-            const auto absUnk2 = std::abs(unk113621F[ebp]);
-            if (absUnk < absUnk2)
+            const auto curvature = curvatures[i];
+            minCurvature = std::min(minCurvature, curvature);
+            maxCurvature = std::max(maxCurvature, curvature);
+            const auto absCurvature = std::abs(curvature);
+            const auto currMinAbsCurvature = std::abs(curvatures[iMinAbsCurvature]);
+            if (absCurvature < currMinAbsCurvature)
             {
-                ebp = i;
+                iMinAbsCurvature = i;
             }
         }
-        const auto ah = unk113621F[ebp];
+        
+        // Note: this is the actual curvature, not the absolute value of it
+        // Hence the index tracking above.
+        const auto minAbsCurvature = curvatures[iMinAbsCurvature]; // ah
         uint32_t lightStateFlags = 0x10;
-        if (ah != cl)
+        if (minAbsCurvature != minCurvature)
         {
             lightStateFlags |= 1U << 30;
-            if (curUnk < ah)
+            if (curUnk < minAbsCurvature)
             {
                 lightStateFlags |= 1U << 28;
             }
         }
-        if (ah != ch)
+        if (minAbsCurvature != maxCurvature)
         {
             lightStateFlags |= 1U << 29;
-            if (curUnk > ah)
+            if (curUnk > minAbsCurvature)
             {
                 lightStateFlags |= 1U << 27;
             }
