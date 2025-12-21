@@ -82,14 +82,16 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x004FDC4C
-    static std::array<Point, 4> getViewFrameOffsetsByRotation()
+    static Point getViewFrameOffsetsByRotation(uint8_t rotation)
     {
-        return { {
-            { World::TileManager::getMapColumns(), 0 },
-            { getRenderedMapWidth(), World::TileManager::getMapRows() },
-            { World::TileManager::getMapColumns(), getRenderedMapHeight() },
-            { 0, World::TileManager::getMapRows() },
-        } };
+        switch (rotation)
+        {
+            case 0: return Point{ World::TileManager::getMapColumns(), 0 };
+            case 1: return Point{ getRenderedMapWidth(), World::TileManager::getMapRows() };
+            case 2: return Point{ World::TileManager::getMapColumns(), getRenderedMapHeight() };
+            case 3:
+            default: return Point{ 0, World::TileManager::getMapRows() };
+        }
     }
 
     static constexpr std::array<PaletteIndex_t, 256> kFlashColours = []() {
@@ -1980,10 +1982,10 @@ namespace OpenLoco::Ui::Windows::MapWindow
         top /= 16;
         right /= 32;
         bottom /= 16;
-        left += getViewFrameOffsetsByRotation()[getCurrentRotation()].x;
-        top += getViewFrameOffsetsByRotation()[getCurrentRotation()].y;
-        right += getViewFrameOffsetsByRotation()[getCurrentRotation()].x;
-        bottom += getViewFrameOffsetsByRotation()[getCurrentRotation()].y;
+        left += getViewFrameOffsetsByRotation(getCurrentRotation()).x;
+        top += getViewFrameOffsetsByRotation(getCurrentRotation()).y;
+        right += getViewFrameOffsetsByRotation(getCurrentRotation()).x;
+        bottom += getViewFrameOffsetsByRotation(getCurrentRotation()).y;
 
         const auto colour = PaletteIndex::black0;
 
@@ -1995,8 +1997,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
     {
         left /= 32;
         top /= 16;
-        left += getViewFrameOffsetsByRotation()[getCurrentRotation()].x;
-        top += getViewFrameOffsetsByRotation()[getCurrentRotation()].y;
+        left += getViewFrameOffsetsByRotation(getCurrentRotation()).x;
+        top += getViewFrameOffsetsByRotation(getCurrentRotation()).y;
         auto right = left;
         auto bottom = top;
         left += leftOffset;
@@ -2516,7 +2518,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         const int16_t visibleMapWidth = window->scrollAreas[0].contentWidth - miniMapWidth;
         const int16_t visibleMapHeight = window->scrollAreas[0].contentHeight - miniMapHeight;
 
-        auto& offset = getViewFrameOffsetsByRotation()[getCurrentRotation()];
+        auto offset = getViewFrameOffsetsByRotation(getCurrentRotation());
         int16_t centreX = std::max(vpCentreX + offset.x - (miniMapWidth / 2), 0);
         int16_t centreY = std::max(vpCentreY + offset.y - (miniMapHeight / 2), 0);
 
