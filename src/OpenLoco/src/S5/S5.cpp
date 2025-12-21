@@ -349,7 +349,7 @@ namespace OpenLoco::S5
         if (file->header.hasFlags(HeaderFlags::hasSaveDetails))
         {
             file->saveDetails = std::make_unique<SaveDetails>();
-            fs.readChunk(file->saveDetails.get(), sizeof(file->saveDetails));
+            fs.readChunk(file->saveDetails.get(), sizeof(*file->saveDetails));
         }
         if (file->header.type == S5Type::scenario)
         {
