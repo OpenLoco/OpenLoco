@@ -21,7 +21,8 @@ namespace OpenLoco::World::TileManager
 {
     const TileElement* const kInvalidTile = reinterpret_cast<const TileElement*>(static_cast<intptr_t>(-1));
 
-    const uint16_t kMinMapDimension = 384;
+    const uint16_t kMinMapDimension = 32;
+    const uint16_t kDefaultMapDimension = 384;
     const uint16_t kMaxMapDimension = 512;
 
     enum class ElementPositionFlags : uint8_t
@@ -112,15 +113,14 @@ namespace OpenLoco::World::TileManager
     coord_t getMapWidth();
     uint32_t getMapSize();
 
-    bool validCoord(const coord_t coord);
-    bool validTileCoord(const tile_coord_t coord);
     bool validCoords(const Pos2& coords);
     bool validCoords(const TilePos2& coords);
+    TilePos2 clampTileCoords(const TilePos2& coords);
+    Pos2 clampCoords(const Pos2& coords);
+
     // drawing coordinates validation differs from general valid coordinate validation
-    bool drawableCoord(const coord_t coord);
-    bool drawableTileCoord(const tile_coord_t coord);
+    //bool drawableCoord(const coord_t coord);
+    //bool drawableTileCoord(const tile_coord_t coord);
     bool drawableCoords(const Pos2& coords);
-    bool drawableCoords(const TilePos2& coords);
-    coord_t clampTileCoord(coord_t coord);
-    coord_t clampCoord(coord_t coord);
+    bool drawableTileCoords(const TilePos2& coords);
 }

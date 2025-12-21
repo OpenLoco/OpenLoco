@@ -493,6 +493,27 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             auto& options = Scenario::getOptions();
 
+            // this should really be part of the stepper widget
+            uint16_t mapSizeAdjustmentStep{};
+            uint16_t clickRepeatTicks = Input::getClickRepeatTicks();
+
+            if (clickRepeatTicks < 50)
+            {
+                mapSizeAdjustmentStep = 1;
+            }
+            else if (clickRepeatTicks < 100)
+            {
+                mapSizeAdjustmentStep = 4;
+            }
+            else if (clickRepeatTicks < 150)
+            {
+                mapSizeAdjustmentStep = 8;
+            }
+            else
+            {
+                mapSizeAdjustmentStep = World::TileManager::kMinMapDimension >> 1;
+            }
+
             switch (widgetIndex)
             {
                 case widx::start_year_up:
@@ -521,6 +542,27 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     window.invalidate();
                     break;
 
+                
+                case widx::mapSizeXUp:
+                    options.mapSizeX = std::clamp(static_cast<uint16_t>(options.mapSizeX + mapSizeAdjustmentStep), World::TileManager::kMinMapDimension, World::TileManager::kMaxMapDimension);
+                    window.invalidate();
+                    break;
+
+                case widx::mapSizeXDown:
+                    options.mapSizeX = std::clamp(static_cast<uint16_t>(options.mapSizeX - mapSizeAdjustmentStep), World::TileManager::kMinMapDimension, World::TileManager::kMaxMapDimension);
+                    window.invalidate();
+                    break;
+
+                case widx::mapSizeYUp:
+                    options.mapSizeY = std::clamp(static_cast<uint16_t>(options.mapSizeY + mapSizeAdjustmentStep), World::TileManager::kMinMapDimension, World::TileManager::kMaxMapDimension);
+                    window.invalidate();
+                    break;
+
+                case widx::mapSizeYDown:
+                    options.mapSizeY = std::clamp(static_cast<uint16_t>(options.mapSizeY - mapSizeAdjustmentStep), World::TileManager::kMinMapDimension, World::TileManager::kMaxMapDimension);
+                    window.invalidate();
+                    break;
+
                 case widx::heightMapDropdown:
                 {
                     Widget& target = window.widgets[widx::heightMapBox];
@@ -540,8 +582,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043DC58
         static void onMouseUp(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
-            auto& options = Scenario::getOptions();
-
             switch (widgetIndex)
             {
                 case widx::generate_when_game_starts:
@@ -560,42 +600,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case widx::change_heightmap_btn:
                     EditorController::goToPreviousStep();
                     ObjectSelectionWindow::openInTab(ObjectType::hillShapes);
-                    break;
-
-                case widx::mapSizeXUp:
-                    if (options.mapSizeX + 1 < World::TileManager::kMaxMapDimension)
-                    {
-                        options.mapSizeX += 1;
-                        Scenario::generateLandscape();
-                    }
-                    window.invalidate();
-                    break;
-
-                case widx::mapSizeXDown:
-                    if (options.mapSizeX - 1 > World::TileManager::kMinMapDimension)
-                    {
-                        options.mapSizeX -= 1;
-                        Scenario::generateLandscape();
-                    }
-                    window.invalidate();
-                    break;
-
-                case widx::mapSizeYUp:
-                    if (options.mapSizeY + 1 < World::TileManager::kMaxMapDimension)
-                    {
-                        options.mapSizeY += 1;
-                        Scenario::generateLandscape();
-                    }
-                    window.invalidate();
-                    break;
-
-                case widx::mapSizeYDown:
-                    if (options.mapSizeY - 1 > World::TileManager::kMinMapDimension)
-                    {
-                        options.mapSizeY -= 1;
-                        Scenario::generateLandscape();
-                    }
-                    window.invalidate();
                     break;
 
                 case widx::browseHeightmapFile:
