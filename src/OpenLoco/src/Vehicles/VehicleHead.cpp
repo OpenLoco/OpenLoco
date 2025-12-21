@@ -4382,14 +4382,13 @@ namespace OpenLoco::Vehicles
     {
         TrackAndDirection::_TrackAndDirection tad{ 0, 0 };
         tad._data = targetRouting & World::Track::AdditionalTaDFlags::basicTaDMask;
-        // unk113621F
-        sfl::static_vector<int8_t, 16> curvatures;
+        sfl::static_vector<int8_t, 16> curvatures; // unk113621F
         for (const auto& otherConnection : tc.connections)
         {
             curvatures.push_back(TrackData::getCurvatureDegree((otherConnection & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2));
         }
 
-        const auto curUnk = TrackData::getCurvatureDegree((newRouting & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2);
+        const auto newRoutingCurvature = TrackData::getCurvatureDegree((newRouting & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2);
 
         int8_t minCurvature = curvatures[0]; // cl
         int8_t maxCurvature = curvatures[0]; // ch
@@ -4413,7 +4412,7 @@ namespace OpenLoco::Vehicles
         if (minAbsCurvature != minCurvature)
         {
             lightStateFlags |= 1U << 30;
-            if (curUnk < minAbsCurvature)
+            if (newRoutingCurvature < minAbsCurvature)
             {
                 lightStateFlags |= 1U << 28;
             }
@@ -4421,7 +4420,7 @@ namespace OpenLoco::Vehicles
         if (minAbsCurvature != maxCurvature)
         {
             lightStateFlags |= 1U << 29;
-            if (curUnk > minAbsCurvature)
+            if (newRoutingCurvature > minAbsCurvature)
             {
                 lightStateFlags |= 1U << 27;
             }
