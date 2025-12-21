@@ -4390,8 +4390,8 @@ namespace OpenLoco::Vehicles
 
         const auto newRoutingCurvature = TrackData::getCurvatureDegree((newRouting & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2);
 
-        int8_t minCurvature = curvatures[0]; // cl
-        int8_t maxCurvature = curvatures[0]; // ch
+        int8_t minCurvature = curvatures[0];    // cl
+        int8_t maxCurvature = curvatures[0];    // ch
         int8_t minAbsCurvature = curvatures[0]; // ah
         for (auto i = 1U; i < curvatures.size(); ++i)
         {
