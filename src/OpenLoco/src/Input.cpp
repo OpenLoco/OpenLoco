@@ -15,7 +15,7 @@ namespace OpenLoco::Input
 {
     static Flags _flags;
     static State _state;
-    static Ui::Point32 _cursorDragStart;
+    static Ui::Point _cursorDragStart;
     static uint32_t _cursorDragState;
     static bool _exitRequested = false;
 

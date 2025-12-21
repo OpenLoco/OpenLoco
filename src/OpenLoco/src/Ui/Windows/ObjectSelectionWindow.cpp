@@ -72,10 +72,10 @@ using namespace OpenLoco::Diagnostics;
 namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 {
     static constexpr int kRowHeight = 12;
-    static constexpr Ui::Size32 kWindowSizeMin = { 600, 398 };
-    static constexpr Ui::Size32 kWindowSizeMax = { 2000, 2000 };
+    static constexpr Ui::Size kWindowSizeMin = { 600, 398 };
+    static constexpr Ui::Size kWindowSizeMax = { 2000, 2000 };
     static constexpr Ui::Point kObjectPreviewOffset = { 56, 56 };
-    static constexpr Ui::Size32 kObjectPreviewSize = { 114, 114 };
+    static constexpr Ui::Size kObjectPreviewSize = { 114, 114 };
     static constexpr uint8_t kDescriptionRowHeight = 10;
 
     enum class ObjectTabFlags : uint8_t

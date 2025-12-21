@@ -56,7 +56,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 {
     static TilePos2 _currentPosition{};
 
-    static constexpr Ui::Size32 kWindowSize = { 350, 200 };
+    static constexpr Ui::Size kWindowSize = { 350, 200 };
 
     namespace widx
     {

@@ -141,9 +141,9 @@ namespace OpenLoco::Tutorial
     }
 
     // 0x0043C7A2
-    uint16_t nextInput()
+    int32_t nextInput()
     {
-        uint16_t next = *_tutorialIt;
+        int32_t next = static_cast<int32_t>(*_tutorialIt);
         _tutorialIt++;
 
         if (_tutorialIt == _tutorialData.end())

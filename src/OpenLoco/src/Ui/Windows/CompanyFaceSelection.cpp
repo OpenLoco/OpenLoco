@@ -35,7 +35,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 
     static WindowType _callingWindowType;
 
-    static constexpr Ui::Size32 kWindowSize = { 400, 272 };
+    static constexpr Ui::Size kWindowSize = { 400, 272 };
     static constexpr int16_t kRowHeight = 10;
 
     enum widx

@@ -8,14 +8,14 @@ namespace OpenLoco::Ui::Widgets
     {
         static constexpr auto kWidgetType = WidgetType::label;
 
-        constexpr Label(WidgetId id, Point32 origin, Size32 size, WindowColour colour, ContentAlign align, StringId content = StringIds::empty, StringId tooltip = StringIds::null)
+        constexpr Label(WidgetId id, Point origin, Size size, WindowColour colour, ContentAlign align, StringId content = StringIds::empty, StringId tooltip = StringIds::null)
             : Widget(id, origin, size, kWidgetType, colour, content, tooltip)
         {
             events.draw = &draw;
             contentAlign = align;
         }
 
-        constexpr Label(Point32 origin, Size32 size, WindowColour colour, ContentAlign align, StringId content = StringIds::empty, StringId tooltip = StringIds::null)
+        constexpr Label(Point origin, Size size, WindowColour colour, ContentAlign align, StringId content = StringIds::empty, StringId tooltip = StringIds::null)
             : Label(WidgetId::none, origin, size, colour, align, content, tooltip)
         {
         }

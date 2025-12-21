@@ -26,7 +26,7 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui
 {
-    Window::Window(Ui::Point32 position, Ui::Size32 size)
+    Window::Window(Ui::Point position, Ui::Size size)
         : x(static_cast<int16_t>(position.x))
         , y(static_cast<int16_t>(position.y))
         , width(static_cast<uint16_t>(size.width))
@@ -681,7 +681,7 @@ namespace OpenLoco::Ui
 
         if (toCursor && Config::get().zoomToCursor)
         {
-            const auto mouseCoords = Ui::getCursorPosScaled() - Point32(v->x, v->y);
+            const auto mouseCoords = Ui::getCursorPosScaled() - Point(v->x, v->y);
             const int32_t diffX = mouseCoords.x - ((v->viewWidth >> zoomLevel) / 2);
             const int32_t diffY = mouseCoords.y - ((v->viewHeight >> zoomLevel) / 2);
             if (previousZoomLevel > zoomLevel)

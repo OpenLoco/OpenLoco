@@ -14,22 +14,22 @@
 
 namespace OpenLoco::Ui
 {
-    int16_t Widget::midX() const
+    int32_t Widget::midX() const
     {
         return (this->left + this->right) / 2;
     }
 
-    int16_t Widget::midY() const
+    int32_t Widget::midY() const
     {
         return (this->top + this->bottom) / 2;
     }
 
-    uint16_t Widget::width() const
+    int32_t Widget::width() const
     {
         return (this->right - this->left) + 1;
     }
 
-    uint16_t Widget::height() const
+    int32_t Widget::height() const
     {
         return (this->bottom - this->top) + 1;
     }
