@@ -111,6 +111,8 @@ namespace OpenLoco::S5
         saveDetails->performanceIndex = playerCompany.performanceIndex;
         saveDetails->challengeProgress = playerCompany.challengeProgress;
         saveDetails->challengeFlags = playerCompany.challengeFlags;
+        saveDetails->mapSizeX = World::TileManager::getMapColumns();
+        saveDetails->mapSizeY = World::TileManager::getMapRows();
 
         std::strncpy(saveDetails->scenario, gameState.scenarioName, sizeof(saveDetails->scenario));
         Scenario::drawSavePreviewImage(saveDetails->image, { 250, 200 });
@@ -628,11 +630,34 @@ namespace OpenLoco::S5
             {
                 auto& options = Scenario::getOptions();
                 options = importOptions(*file->scenarioOptions);
-                TileManager::setMapSize(options.mapSizeX, options.mapSizeY);
+
+                if (options.mapSizeX == 0 || options.mapSizeY == 0)
+                {
+                    TileManager::setMapSize(384, 384);
+                }
+                else
+                {
+                    TileManager::setMapSize(options.mapSizeX, options.mapSizeY);
+                }
             }
             else
             {
-                TileManager::setMapSize(384, 384);
+                if (file-> saveDetails == nullptr)
+                {
+                    TileManager::setMapSize(384, 384);
+                }
+                else
+                {
+                    auto& options = *file->saveDetails;
+                    if (options.mapSizeX == 0 || options.mapSizeY == 0)
+                    {
+                        TileManager::setMapSize(384, 384);
+                    }
+                    else
+                    {
+                        TileManager::setMapSize(options.mapSizeX, options.mapSizeY);
+                    }
+                }
             }
 
             // Copy tile elements
