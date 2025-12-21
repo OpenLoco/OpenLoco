@@ -73,10 +73,10 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // Chosen so that the map cannot be smaller than its key, and minimum size makes the map square
-    static constexpr Ui::Size kMinWindowSize = { 229, 176 };
+    static constexpr Ui::Size kMinWindowSize = { 256, 192 };
 
     // Chosen so the window cannot exceed map boundaries
-    static Ui::Size32 getMaxWindowSize()
+    static Ui::Size getMaxWindowSize()
     {
         return { getRenderedMapWidth() + 120, getRenderedMapHeight() + 60 };
     }
