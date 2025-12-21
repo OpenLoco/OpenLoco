@@ -652,11 +652,6 @@ namespace OpenLoco::Vehicles
                 carData.begin(),
                 carData.end(),
                 [](auto& d) { return d.hasFlags(VehicleObjectFlags::centerPosition); });
-            
-            if (numMiddles == 0 || numMiddles >= carData.size())
-            {
-                return;
-            }
 
             // Places all cars with VehicleObjectFlags::centerPosition in the end of the train
             std::stable_partition(
