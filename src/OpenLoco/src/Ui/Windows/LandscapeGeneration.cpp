@@ -494,25 +494,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             auto& options = Scenario::getOptions();
 
             // this should really be part of the stepper widget
-            uint16_t mapSizeAdjustmentStep{};
             uint16_t clickRepeatTicks = Input::getClickRepeatTicks();
-
-            if (clickRepeatTicks < 50)
-            {
-                mapSizeAdjustmentStep = 1;
-            }
-            else if (clickRepeatTicks < 100)
-            {
-                mapSizeAdjustmentStep = 4;
-            }
-            else if (clickRepeatTicks < 150)
-            {
-                mapSizeAdjustmentStep = 8;
-            }
-            else
-            {
-                mapSizeAdjustmentStep = World::TileManager::kMinMapDimension >> 1;
-            }
+            uint16_t mapSizeAdjustmentStep = 1 + (clickRepeatTicks / 50 * 4);
 
             switch (widgetIndex)
             {
@@ -542,24 +525,23 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     window.invalidate();
                     break;
 
-                
                 case widx::mapSizeXUp:
-                    options.mapSizeX = std::clamp(static_cast<uint16_t>(options.mapSizeX + mapSizeAdjustmentStep), World::TileManager::kMinMapDimension, World::TileManager::kMaxMapDimension);
+                    options.mapSizeX = std::clamp<uint16_t>(options.mapSizeX + mapSizeAdjustmentStep, World::TileManager::kMinMapDimension, World::TileManager::kMaxMapDimension);
                     window.invalidate();
                     break;
 
                 case widx::mapSizeXDown:
-                    options.mapSizeX = std::clamp(static_cast<uint16_t>(options.mapSizeX - mapSizeAdjustmentStep), World::TileManager::kMinMapDimension, World::TileManager::kMaxMapDimension);
+                    options.mapSizeX = std::clamp<uint16_t>(options.mapSizeX - std::min<uint16_t>(mapSizeAdjustmentStep, World::TileManager::kMinMapDimension - 1), World::TileManager::kMinMapDimension, World::TileManager::kMaxMapDimension);
                     window.invalidate();
                     break;
 
                 case widx::mapSizeYUp:
-                    options.mapSizeY = std::clamp(static_cast<uint16_t>(options.mapSizeY + mapSizeAdjustmentStep), World::TileManager::kMinMapDimension, World::TileManager::kMaxMapDimension);
+                    options.mapSizeY = std::clamp<uint16_t>(options.mapSizeY + mapSizeAdjustmentStep, World::TileManager::kMinMapDimension, World::TileManager::kMaxMapDimension);
                     window.invalidate();
                     break;
 
                 case widx::mapSizeYDown:
-                    options.mapSizeY = std::clamp(static_cast<uint16_t>(options.mapSizeY - mapSizeAdjustmentStep), World::TileManager::kMinMapDimension, World::TileManager::kMaxMapDimension);
+                    options.mapSizeY = std::clamp<uint16_t>(options.mapSizeY - std::min<uint16_t>(mapSizeAdjustmentStep, World::TileManager::kMinMapDimension - 1), World::TileManager::kMinMapDimension, World::TileManager::kMaxMapDimension);
                     window.invalidate();
                     break;
 

@@ -79,12 +79,12 @@ namespace OpenLoco::World::TileManager
 
     coord_t getMapHeight()
     {
-        return getMapRows() * kTileSize;
+        return getMapRows() * World::kTileSize;
     }
 
     coord_t getMapWidth()
     {
-        return getMapColumns() * kTileSize;
+        return getMapColumns() * World::kTileSize;
     }
 
     uint32_t getMapSize()
@@ -126,32 +126,32 @@ namespace OpenLoco::World::TileManager
     TilePos2 clampTileCoords(const TilePos2& coords)
     {
         return TilePos2(
-            std::clamp<coord_t>(coords.x, 0, World::TileManager::getMapColumns() - 1),
-            std::clamp<coord_t>(coords.y, 0, World::TileManager::getMapRows() - 1));
+            std::clamp<coord_t>(coords.x, 0, getMapColumns() - 1),
+            std::clamp<coord_t>(coords.y, 0, getMapRows() - 1));
     }
 
     Pos2 clampCoords(const Pos2& coords)
     {
         return Pos2(
-            std::clamp<coord_t>(coords.x, 0, World::TileManager::getMapWidth() - 1),
-            std::clamp<coord_t>(coords.y, 0, World::TileManager::getMapHeight() - 1));
+            std::clamp<coord_t>(coords.x, 0, getMapWidth() - 1),
+            std::clamp<coord_t>(coords.y, 0, getMapHeight() - 1));
     }
 
     // drawing coordinates validation differs from general valid coordinate validation
     bool drawableCoords(const Pos2& coords)
     {
-        return coords.x >= kTileSize
-            && coords.x < (getMapWidth() - kTileSize - 1)
-            && coords.y >= kTileSize
-            && coords.y < (getMapHeight() - kTileSize - 1);
+        return coords.x >= World::kTileSize
+            && coords.x < (getMapWidth() - World::kTileSize - 1)
+            && coords.y >= World::kTileSize
+            && coords.y < (getMapHeight() - World::kTileSize - 1);
     }
 
     bool drawableTileCoords(const TilePos2& coords)
     {
-        return coords.x >= kTileSize
-            && coords.x < (getMapColumns() - kTileSize - 1)
-            && coords.y >= kTileSize
-            && coords.y < (getMapRows() - kTileSize - 1);
+        return coords.x >= World::kTileSize
+            && coords.x < (getMapColumns() - World::kTileSize - 1)
+            && coords.y >= World::kTileSize
+            && coords.y < (getMapRows() - World::kTileSize - 1);
     }
 
     void disablePeriodicDefrag()
@@ -173,7 +173,7 @@ namespace OpenLoco::World::TileManager
     // 0x0046908D
     void removeSurfaceIndustryAtHeight(const Pos3& pos)
     {
-        auto* elSurface = World::TileManager::get(pos).surface();
+        auto* elSurface = get(pos).surface();
         if (elSurface != nullptr)
         {
             // If underground
@@ -610,7 +610,7 @@ namespace OpenLoco::World::TileManager
     {
         TileHeight height{ 16, 0 };
         // Off the map
-        if (pos.x >= (World::TileManager::getMapWidth() - 1) || pos.y >= (World::TileManager::getMapHeight() - 1))
+        if (!validCoords(pos))
         {
             return height;
         }
@@ -736,9 +736,9 @@ namespace OpenLoco::World::TileManager
         clearTilePointers();
 
         auto el = _elements.begin();
-        for (tile_coord_t y = 0; y < World::TileManager::getMapRows(); y++)
+        for (tile_coord_t y = 0; y < getMapRows(); y++)
         {
-            for (tile_coord_t x = 0; x < World::TileManager::getMapColumns(); x++)
+            for (tile_coord_t x = 0; x < getMapColumns(); x++)
             {
                 set(TilePos2(x, y), &*el);
 
@@ -766,9 +766,9 @@ namespace OpenLoco::World::TileManager
             tempBuffer.resize(getMaxElements());
 
             size_t numElements = 0;
-            for (tile_coord_t y = 0; y < World::TileManager::getMapRows(); y++)
+            for (tile_coord_t y = 0; y < getMapRows(); y++)
             {
-                for (tile_coord_t x = 0; x < World::TileManager::getMapColumns(); x++)
+                for (tile_coord_t x = 0; x < getMapColumns(); x++)
                 {
                     auto tile = get(TilePos2(x, y));
                     for (const auto& element : tile)
@@ -964,7 +964,7 @@ namespace OpenLoco::World::TileManager
         auto range = getClampedRange(initialTilePos - TilePos2{ 5, 5 }, initialTilePos + TilePos2{ 5, 5 });
         for (auto& tilePos : range)
         {
-            auto tile = World::TileManager::get(tilePos);
+            auto tile = get(tilePos);
             auto* surface = tile.surface();
             auto height = surface->baseHeight();
             lowest = std::min(lowest, height);
@@ -1141,10 +1141,15 @@ namespace OpenLoco::World::TileManager
 
         GameCommands::setUpdatingCompanyId(CompanyId::neutral);
         auto pos = getGameState().tileUpdateStartLocation;
-        for (; pos.y < World::TileManager::getMapHeight(); pos.y += 16 * World::kTileSize)
+        for (; pos.y < getMapHeight(); pos.y += 16 * World::kTileSize)
         {
-            for (; pos.x < World::TileManager::getMapWidth(); pos.x += 16 * World::kTileSize)
+            for (; pos.x < getMapWidth(); pos.x += 16 * World::kTileSize)
             {
+                if (!validCoords(pos))
+                {
+                    continue;
+                }
+
                 auto tile = TileManager::get(pos);
                 for (auto& el : tile)
                 {
@@ -1160,9 +1165,9 @@ namespace OpenLoco::World::TileManager
                     }
                 }
             }
-            pos.x -= World::TileManager::getMapWidth();
+            pos.x -= getMapWidth();
         }
-        pos.y -= World::TileManager::getMapHeight();
+        pos.y -= getMapHeight();
 
         const auto tilePos = World::toTileSpace(pos);
         const uint8_t shift = (tilePos.y << 4) + tilePos.x + 9;
@@ -1205,7 +1210,7 @@ namespace OpenLoco::World::TileManager
         auto zMax = element.clearHeight();
         Ui::ViewportManager::invalidate(pos, zMin, zMax, ZoomLevel::eighth, 56);
 
-        World::TileManager::removeElement(*reinterpret_cast<World::TileElement*>(&element));
+        removeElement(*reinterpret_cast<World::TileElement*>(&element));
     }
 
     // 0x0048B0C7
@@ -1338,7 +1343,7 @@ namespace OpenLoco::World::TileManager
     void setLevelCrossingFlags(const World::Pos3 pos)
     {
         auto findLevelTrackAndRoad = [pos](auto&& trackFunction, auto&& roadFunction) {
-            auto tile = World::TileManager::get(pos);
+            auto tile = get(pos);
             for (auto& el : tile)
             {
                 if (el.baseHeight() != pos.z)
@@ -1389,7 +1394,7 @@ namespace OpenLoco::World::TileManager
     // 0x004690FC
     void setTerrainStyleAsCleared(const Pos2& pos)
     {
-        auto* surface = World::TileManager::get(pos).surface();
+        auto* surface = get(pos).surface();
         if (surface == nullptr)
         {
             return;
@@ -1400,7 +1405,7 @@ namespace OpenLoco::World::TileManager
     // 0x00469174
     void setTerrainStyleAsClearedAtHeight(const Pos3& pos)
     {
-        auto* elSurface = World::TileManager::get(pos).surface();
+        auto* elSurface = get(pos).surface();
         if (elSurface == nullptr)
         {
             return;
