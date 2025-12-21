@@ -184,6 +184,46 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         return std::nullopt;
     }
 
+    void onDropFile(Window& window, const char* droppedFileDirectory)
+    {
+        fs::path droppedPath = droppedFileDirectory;
+
+        // Did the user drag & drop a folder?
+        if (fs::is_directory(droppedPath))
+        {
+            changeDirectory(droppedPath);
+            return;
+        }
+
+        if (!fs::is_regular_file(droppedPath))
+        {
+            Error::open(StringIds::error_not_regular_file_nor_directory);
+            return;
+        }
+
+        // Check file extention against filter
+        {
+            auto extension = droppedPath.extension().u8string();
+
+            // All our filters are probably *.something so just truncate the *
+            // and treat as an extension filter
+            auto filterExtension = std::string(_filter);
+            if (filterExtension[0] == '*')
+            {
+                filterExtension = filterExtension.substr(1);
+            }
+
+            if (!Utility::iequals(extension, filterExtension))
+            {
+                Error::open(StringIds::error_incorrect_file_type); // TODO: Is this a suitable error message?
+                return;
+            }
+        }
+
+        changeDirectory(droppedPath.parent_path()); // Not necessary but is nice
+        processFileForLoadSave(&window, droppedPath);
+    }
+
     // 0x00447174
     static void freeFileDetails()
     {
