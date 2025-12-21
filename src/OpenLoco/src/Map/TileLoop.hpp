@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Tile.h"
 #include "Map/TileManager.h"
+#include "Tile.h"
 
 namespace OpenLoco::World
 {
