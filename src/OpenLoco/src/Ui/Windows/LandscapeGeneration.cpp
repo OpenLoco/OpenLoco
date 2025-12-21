@@ -284,12 +284,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             terrainSmoothingNumDown,
             terrainSmoothingNumUp,
             mapSizeLabel,
+            mapSizeXLabel,
             mapSizeX,
             mapSizeXDown,
             mapSizeXUp,
+            mapSizeYLabel,
             mapSizeY,
-            //mapSizeYDown,
-            //mapSizeYUp,
+            mapSizeYDown,
+            mapSizeYUp,
             generate_when_game_starts,
 
             heightmapFileLabel,
@@ -303,9 +305,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             (1ULL << widx::terrainSmoothingNumUp) |
             (1ULL << widx::terrainSmoothingNumDown) |
             (1ULL << widx::mapSizeXUp) |
-            (1ULL << widx::mapSizeXDown);
-            //(1ULL << widx::mapSizeYUp) |
-            //(1ULL << widx::mapSizeYDown);
+            (1ULL << widx::mapSizeXDown) |
+            (1ULL << widx::mapSizeYUp) |
+            (1ULL << widx::mapSizeYDown);
 
         // clang-format on
 
@@ -327,11 +329,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             Widgets::stepperWidgets({ 256, 130 }, { 100, 12 }, WindowColour::secondary, StringIds::uint16_raw),
 
             // Map size options
-            Widgets::Label({ 10, 146 }, { 170, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::mapSize),                    // Map Size
-            Widgets::Label({ 224 - 16, 146 }, { 48, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::tile_inspector_x_coord), // X:
-            Widgets::stepperWidgets({ 224, 146 }, { 48, 12 }, WindowColour::secondary, StringIds::uint16_raw),                            // {mapSizeX}
+            Widgets::Label({ 10, 146 }, { 170, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::mapSize),                     // Map Size
+            Widgets::Label({ 208 - 16, 146 }, { 48, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::tile_inspector_x_coord), // X:
+            Widgets::stepperWidgets({ 208, 146 }, { 64, 12 }, WindowColour::secondary, StringIds::uint16_raw),                             // {mapSizeX}
             Widgets::Label({ 292 - 16, 146 }, { 48, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::tile_inspector_y_coord), // Y:
-            //Widgets::stepperWidgets({ 292, 146 }, { 48, 12 }, WindowColour::secondary, StringIds::uint16_raw),                            // {mapSizeY}
+            Widgets::stepperWidgets({ 292, 146 }, { 64, 12 }, WindowColour::secondary, StringIds::uint16_raw),                             // {mapSizeY}
 
             Widgets::Checkbox({ 10, 162 }, { 346, 12 }, WindowColour::secondary, StringIds::label_generate_random_landscape_when_game_starts, StringIds::tooltip_generate_random_landscape_when_game_starts),
 
@@ -379,12 +381,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             self.widgets[widx::terrainSmoothingNumDown].hidden = !isSimplex;
 
             self.widgets[widx::mapSizeLabel].hidden = isPngFile;
+            self.widgets[widx::mapSizeXLabel].hidden = isPngFile;
             self.widgets[widx::mapSizeX].hidden = isPngFile;
             self.widgets[widx::mapSizeXUp].hidden = isPngFile;
             self.widgets[widx::mapSizeXDown].hidden = isPngFile;
+            self.widgets[widx::mapSizeYLabel].hidden = isPngFile;
             self.widgets[widx::mapSizeY].hidden = isPngFile;
-            //self.widgets[widx::mapSizeYUp].hidden = isPngFile;
-            //self.widgets[widx::mapSizeYDown].hidden = isPngFile;
+            self.widgets[widx::mapSizeYUp].hidden = isPngFile;
+            self.widgets[widx::mapSizeYDown].hidden = isPngFile;
 
             self.widgets[widx::heightmapFileLabel].hidden = !isPngFile;
             self.widgets[widx::browseHeightmapFile].hidden = !isPngFile;
@@ -399,7 +403,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 self.disabledWidgets &= ~(1ULL << widx::change_heightmap_btn);
                 self.disabledWidgets |= ((1ULL << widx::terrainSmoothingNum) | (1ULL << widx::terrainSmoothingNumUp) | (1ULL << widx::terrainSmoothingNumDown));
-                //self.disabledWidgets &= ~((1ULL << widx::mapSizeXUp) | (1ULL << widx::mapSizeXDown) | (1ULL << widx::mapSizeYUp) | (1ULL << widx::mapSizeYDown));
+                self.disabledWidgets &= ~((1ULL << widx::mapSizeXUp) | (1ULL << widx::mapSizeXDown) | (1ULL << widx::mapSizeYUp) | (1ULL << widx::mapSizeYDown));
                 self.disabledWidgets &= ~((1ULL << widx::mapSizeXUp) | (1ULL << widx::mapSizeXDown));
                 self.disabledWidgets |= (1ULL << widx::browseHeightmapFile);
             }
@@ -413,7 +417,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 self.disabledWidgets |= (1ULL << widx::change_heightmap_btn);
                 self.disabledWidgets &= ~((1ULL << widx::terrainSmoothingNum) | (1ULL << widx::terrainSmoothingNumUp) | (1ULL << widx::terrainSmoothingNumDown));
-                //self.disabledWidgets &= ~((1ULL << widx::mapSizeXUp) | (1ULL << widx::mapSizeXDown) | (1ULL << widx::mapSizeYUp) | (1ULL << widx::mapSizeYDown));
+                self.disabledWidgets &= ~((1ULL << widx::mapSizeXUp) | (1ULL << widx::mapSizeXDown) | (1ULL << widx::mapSizeYUp) | (1ULL << widx::mapSizeYDown));
                 self.disabledWidgets &= ~((1ULL << widx::mapSizeXUp) | (1ULL << widx::mapSizeXDown));
                 self.disabledWidgets |= (1ULL << widx::browseHeightmapFile);
             }
@@ -436,7 +440,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 self.disabledWidgets |= (1ULL << widx::change_heightmap_btn);
                 self.disabledWidgets |= ((1ULL << widx::terrainSmoothingNum) | (1ULL << widx::terrainSmoothingNumUp) | (1ULL << widx::terrainSmoothingNumDown));
-                //self.disabledWidgets |= ((1ULL << widx::mapSizeXUp) | (1ULL << widx::mapSizeXDown) | (1ULL << widx::mapSizeYUp) | (1ULL << widx::mapSizeYDown));
+                self.disabledWidgets |= ((1ULL << widx::mapSizeXUp) | (1ULL << widx::mapSizeXDown) | (1ULL << widx::mapSizeYUp) | (1ULL << widx::mapSizeYDown));
                 self.disabledWidgets |= ((1ULL << widx::mapSizeXUp) | (1ULL << widx::mapSizeXDown));
                 self.disabledWidgets &= ~(1ULL << widx::browseHeightmapFile);
 
@@ -536,6 +540,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043DC58
         static void onMouseUp(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
+            auto& options = Scenario::getOptions();
+
             switch (widgetIndex)
             {
                 case widx::generate_when_game_starts:
@@ -554,6 +560,42 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case widx::change_heightmap_btn:
                     EditorController::goToPreviousStep();
                     ObjectSelectionWindow::openInTab(ObjectType::hillShapes);
+                    break;
+
+                case widx::mapSizeXUp:
+                    if (options.mapSizeX + 1 < World::TileManager::kMaxMapDimension)
+                    {
+                        options.mapSizeX += 1;
+                        Scenario::generateLandscape();
+                    }
+                    window.invalidate();
+                    break;
+
+                case widx::mapSizeXDown:
+                    if (options.mapSizeX - 1 > World::TileManager::kMinMapDimension)
+                    {
+                        options.mapSizeX -= 1;
+                        Scenario::generateLandscape();
+                    }
+                    window.invalidate();
+                    break;
+
+                case widx::mapSizeYUp:
+                    if (options.mapSizeY + 1 < World::TileManager::kMaxMapDimension)
+                    {
+                        options.mapSizeY += 1;
+                        Scenario::generateLandscape();
+                    }
+                    window.invalidate();
+                    break;
+
+                case widx::mapSizeYDown:
+                    if (options.mapSizeY - 1 > World::TileManager::kMinMapDimension)
+                    {
+                        options.mapSizeY -= 1;
+                        Scenario::generateLandscape();
+                    }
+                    window.invalidate();
                     break;
 
                 case widx::browseHeightmapFile:
