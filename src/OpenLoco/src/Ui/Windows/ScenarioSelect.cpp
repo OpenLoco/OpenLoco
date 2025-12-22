@@ -364,7 +364,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             // Delayed start for competing companies
             args = FormatArguments();
             args.push<uint16_t>(scenarioInfo->competingCompanyDelay);
-            competitionStringId = scenarioInfo->numCompetingCompanies == 1 ? StringIds::competition_not_starting_for_month : StringIds::competition_not_starting_for_months;
+            competitionStringId = scenarioInfo->competingCompanyDelay == 1 ? StringIds::competition_not_starting_for_month : StringIds::competition_not_starting_for_months;
             tr.drawStringLeft(Point(x, y), Colour::black, competitionStringId, args);
         }
     }
