@@ -57,7 +57,7 @@ namespace OpenLoco::EditorController
         gameState.lastMapWindowAttributes.flags = WindowFlags::none;
 
         WindowManager::closeAllFloatingWindows();
-        initialiseViewports();
+        resetSubsystems();
         MessageManager::reset();
         Audio::pauseSound();
         Audio::unpauseSound();

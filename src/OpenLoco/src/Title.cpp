@@ -146,7 +146,7 @@ namespace OpenLoco::Title
         ObjectManager::reloadAll();
         Scenario::sub_4748D4();
         Scenario::reset();
-        initialiseViewports();
+        resetSubsystems();
         MessageManager::reset();
         Gui::init();
         reset();

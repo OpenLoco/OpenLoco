@@ -155,7 +155,7 @@ namespace OpenLoco
     }
 
     // 0x004C57C0
-    void initialiseViewports()
+    void resetSubsystems()
     {
         Ui::Windows::MapToolTip::reset();
 
@@ -193,7 +193,7 @@ namespace OpenLoco
 
         Ui::initialise();
         Ui::initialiseCursors();
-        initialiseViewports();
+        resetSubsystems();
         Gui::init();
 
         MessageManager::reset();
