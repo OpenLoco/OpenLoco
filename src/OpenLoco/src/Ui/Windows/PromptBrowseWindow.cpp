@@ -89,6 +89,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
     static fs::path getDirectory(const fs::path& path);
     static std::string getBasename(const fs::path& path);
+    static bool matchesFilter(fs::path path);
 
     static void drawSavePreview(Ui::Window& window, Gfx::DrawingContext& drawingCtx, int32_t x, int32_t y, int32_t width, int32_t height, const S5::SaveDetails& saveInfo);
     static void drawLandscapePreview(Ui::Window& window, Gfx::DrawingContext& drawingCtx, int32_t x, int32_t y, int32_t width, int32_t height);
@@ -200,23 +201,10 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             return;
         }
 
-        // Check file extension against filter
+        if (!matchesFilter(path))
         {
-            auto extension = path.extension().u8string();
-
-            // All our filters are probably *.something so just truncate the *
-            // and treat as an extension filter
-            auto filterExtension = std::string(_filter);
-            if (filterExtension[0] == '*')
-            {
-                filterExtension = filterExtension.substr(1);
-            }
-
-            if (!Utility::iequals(extension, filterExtension))
-            {
-                Error::open(StringIds::error_incorrect_file_type);
-                return;
-            }
+            Error::open(StringIds::error_incorrect_file_type);
+            return;
         }
 
         changeDirectory(path.parent_path()); // Not necessary but is nice
@@ -788,8 +776,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         return baseName;
     }
 
-    // 0x00446A93
-    static void refreshDirectoryList()
+    static bool matchesFilter(fs::path path)
     {
         // All our filters are probably *.something so just truncate the *
         // and treat as an extension filter
@@ -799,6 +786,14 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             filterExtension = filterExtension.substr(1);
         }
 
+        auto extension = path.extension().u8string();
+
+        return Utility::iequals(extension, filterExtension);
+    }
+
+    // 0x00446A93
+    static void refreshDirectoryList()
+    {
         _files.clear();
         if (_currentDirectory.empty())
         {
@@ -821,8 +816,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                     // Filter files by extension
                     if (file.is_regular_file())
                     {
-                        auto extension = file.path().extension().u8string();
-                        if (!Utility::iequals(extension, filterExtension))
+                        if (!matchesFilter(file.path()))
                         {
                             continue;
                         }
