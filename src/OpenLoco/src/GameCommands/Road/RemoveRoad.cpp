@@ -143,7 +143,7 @@ namespace OpenLoco::GameCommands
         }
 
         // Check mod removal costs
-        if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+        if (!roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
         {
             for (auto i = 0U; i < 2; i++)
             {

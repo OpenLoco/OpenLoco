@@ -171,12 +171,12 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
 
         auto* alternativeRoadObj = ObjectManager::get<RoadObject>(alternateRoadObjId);
-        if (!alternativeRoadObj->hasFlags(RoadObjectFlags::unk_03))
+        if (!alternativeRoadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
         {
             return;
         }
         auto* curRoadObj = ObjectManager::get<RoadObject>(cState.trackType & ~(1 << 7));
-        if (!curRoadObj->hasFlags(RoadObjectFlags::unk_03))
+        if (!curRoadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
         {
             return;
         }

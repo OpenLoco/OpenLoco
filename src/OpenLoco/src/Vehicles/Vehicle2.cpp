@@ -101,7 +101,7 @@ namespace OpenLoco::Vehicles
                 return false;
             }
             const auto* roadObj = ObjectManager::get<RoadObject>(frontBogie.trackType);
-            if (roadObj->hasFlags(RoadObjectFlags::unk_04))
+            if (roadObj->hasFlags(RoadObjectFlags::noSlipSurface))
             {
                 return false;
             }

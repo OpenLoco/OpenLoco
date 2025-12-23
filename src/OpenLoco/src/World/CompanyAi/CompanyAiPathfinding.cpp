@@ -145,7 +145,7 @@ namespace OpenLoco::CompanyAi
 
             auto* roadObj = ObjectManager::get<RoadObject>(thought.trackObjId & ~(1U << 7));
             _createTrackRoadCommandAiUnkFlags |= (1U << 21);
-            if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+            if (roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
             {
                 _createTrackRoadCommandAiUnkFlags = _createTrackRoadCommandAiUnkFlags & ~(1U << 21);
                 _createTrackRoadCommandAiUnkFlags |= (1U << 20);
@@ -995,7 +995,7 @@ namespace OpenLoco::CompanyAi
         const auto nextRot = World::kReverseRotation[rot];
         auto adjustedRoadObjId = roadObjId;
         auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
-        if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+        if (roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
         {
             adjustedRoadObjId = 0xFFU;
         }
@@ -1311,7 +1311,7 @@ namespace OpenLoco::CompanyAi
                 const auto cost = (roadBaseCost * roadIdCostFactor) / 256;
                 totalCost += cost;
             }
-            if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+            if (!roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
             {
                 for (auto i = 0U; i < 2; ++i)
                 {
@@ -2284,7 +2284,7 @@ namespace OpenLoco::CompanyAi
             const auto nextRot = World::kReverseRotation[rotationBegin];
             uint8_t matchRoadObjId = roadObjId;
             auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
-            if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+            if (roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
             {
                 matchRoadObjId = 0xFFU; // any road object
             }
