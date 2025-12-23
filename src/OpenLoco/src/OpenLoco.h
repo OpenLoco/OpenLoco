@@ -18,7 +18,7 @@ namespace OpenLoco
     }
 
     void* hInstance();
-    void initialiseViewports();
+    void resetSubsystems();
     void simulateGame(const fs::path& path, int32_t ticks);
 
     void sub_431695(uint16_t var_F253A0);

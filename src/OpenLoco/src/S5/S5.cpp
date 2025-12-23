@@ -686,7 +686,7 @@ namespace OpenLoco::S5
             if (!hasLoadFlags(flags, LoadFlags::titleSequence))
             {
                 SceneManager::removeSceneFlags(SceneManager::Flags::title);
-                initialiseViewports();
+                resetSubsystems();
                 Audio::resetMusic();
                 if (hasLoadFlags(flags, LoadFlags::landscape))
                 {

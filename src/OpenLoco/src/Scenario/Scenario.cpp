@@ -305,7 +305,7 @@ namespace OpenLoco::Scenario
         WindowManager::closeAllFloatingWindows();
 
         SceneManager::removeSceneFlags(SceneManager::Flags::title);
-        initialiseViewports();
+        resetSubsystems();
         Gui::init();
         Audio::resetMusic();
 

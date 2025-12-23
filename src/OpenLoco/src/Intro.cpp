@@ -45,7 +45,7 @@ namespace OpenLoco::Intro
         _state = State::none;
         Gfx::loadDefaultPalette();
         Gfx::invalidateScreen();
-        initialiseViewports();
+        resetSubsystems();
         Gui::init();
         Title::reset();
     }
