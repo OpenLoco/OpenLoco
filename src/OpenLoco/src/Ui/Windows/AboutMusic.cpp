@@ -25,20 +25,13 @@ namespace OpenLoco::Ui::Windows::AboutMusic
 
     namespace Widx
     {
-        enum
-        {
-            frame,
-            title,
-            close,
-            panel,
-            scrollview,
-        };
+        constexpr auto close = WidgetId("close");
     }
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
         Widgets::Caption({ 1, 1 }, { kWindowSize.width - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::music_acknowledgements_caption),
-        Widgets::ImageButton({ kWindowSize.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::ImageButton(Widx::close, { kWindowSize.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { kWindowSize.width, 297 }, WindowColour::secondary),
         Widgets::ScrollView({ 4, 18 }, { kWindowSize.width - 8, 289 }, WindowColour::secondary, Ui::Scrollbars::vertical));
 
@@ -67,9 +60,9 @@ namespace OpenLoco::Ui::Windows::AboutMusic
     }
 
     // 0x0043BFB0
-    static void onMouseUp(Ui::Window& window, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseUp(Ui::Window& window, [[maybe_unused]] const WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        switch (widgetIndex)
+        switch (id)
         {
             case Widx::close:
                 WindowManager::close(window.type);
@@ -101,7 +94,7 @@ namespace OpenLoco::Ui::Windows::AboutMusic
     // 0x0043B8BE
     static void drawScroll(Ui::Window&, Gfx::DrawingContext& drawingCtx, const uint32_t)
     {
-        static const std::pair<StringId, StringId> stringsToDraw[numSongs] = {
+        static constexpr std::pair<StringId, StringId> stringsToDraw[numSongs] = {
             { StringIds::locomotion_title, StringIds::locomotion_title_credit },
             { StringIds::long_dusty_road, StringIds::long_dusty_road_credit },
             { StringIds::flying_high, StringIds::flying_high_credit },
