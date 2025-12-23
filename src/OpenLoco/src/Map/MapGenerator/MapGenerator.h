@@ -40,7 +40,7 @@ namespace OpenLoco::World::MapGenerator
         TopographyFlags::hasMountains | TopographyFlags::hasHills,
     };
 
-    void generate(const Scenario::Options& options);
+    void generate(Scenario::Options& options);
     std::optional<uint8_t> getRandomTerrainVariation(const SurfaceElement& surface);
 
     void setPngHeightmapPath(const fs::path& path);

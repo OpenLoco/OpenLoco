@@ -13,28 +13,34 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::World::MapGenerator
 {
-    void PngTerrainGenerator::generate(const Scenario::Options& options, const fs::path& path, HeightMap& heightMap)
+    HeightMap PngTerrainGenerator::generate(Scenario::Options& options, const fs::path& path)
     {
         if (!fs::is_regular_file(path))
         {
             Logging::error("Can't find heightmap file ({})", path);
-            return;
+            return HeightMap(options.mapSizeX, options.mapSizeY);
         }
 
         auto pngImage = Gfx::PngImage::loadFromFile(path);
         if (pngImage == nullptr)
         {
             Logging::error("Can't load heightmap file ({})", path);
-            return;
+            return HeightMap(options.mapSizeX, options.mapSizeY);
         }
+
+        // set the map to the png size
+        auto width = std::max<coord_t>(World::TileManager::kMinMapDimension, std::min<coord_t>(World::TileManager::kMaxMapDimension, pngImage->width));
+        auto height = std::max<coord_t>(World::TileManager::kMinMapDimension, std::min<coord_t>(World::TileManager::kMaxMapDimension, pngImage->height));
+
+        World::TileManager::setMapSize(width, height);
+        HeightMap heightMap(width, height);
+        options.mapSizeX = width;
+        options.mapSizeY = width;
 
         const int maxHeightmapLevels = 40 - options.minLandHeight;
         const float scalingFactor = maxHeightmapLevels / 255.f;
 
         std::fill_n(heightMap.data(), heightMap.size(), options.minLandHeight);
-
-        auto width = std::min<int>(World::TileManager::getMapColumns(), pngImage->width);
-        auto height = std::min<int>(World::TileManager::getMapRows(), pngImage->height);
 
         for (int32_t y = 0; y < height; y++)
         {
@@ -46,5 +52,7 @@ namespace OpenLoco::World::MapGenerator
                 heightMap[{ TilePos2(y, x) }] += imgHeight * scalingFactor; // this must be { y, x } otherwise the heightmap is mirrored
             }
         }
+
+        return heightMap;
     }
 }

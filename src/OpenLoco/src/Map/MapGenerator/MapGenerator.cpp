@@ -50,22 +50,30 @@ namespace OpenLoco::World::MapGenerator
     }
 
     // 0x004624F0
-    static void generateHeightMap(const Scenario::Options& options, HeightMap& heightMap)
+    static HeightMap generateHeightMap(Scenario::Options& options)
     {
         if (options.generator == Scenario::LandGeneratorType::Original)
         {
+            World::TileManager::setMapSize(options.mapSizeX, options.mapSizeY);
+            HeightMap heightMap(options.mapSizeX, options.mapSizeY);
             OriginalTerrainGenerator generator;
             generator.generate(options, heightMap);
+            return heightMap;
         }
         else if (options.generator == Scenario::LandGeneratorType::Simplex)
         {
+            World::TileManager::setMapSize(options.mapSizeX, options.mapSizeY);
+            HeightMap heightMap(options.mapSizeX, options.mapSizeY);
             SimplexTerrainGenerator generator;
             generator.generate(options, heightMap, std::random_device{}());
+            return heightMap;
         }
         else
         {
             PngTerrainGenerator generator;
-            generator.generate(options, _pngHeightmapPath, heightMap);
+            auto heightMap = generator.generate(options, _pngHeightmapPath);
+            World::TileManager::setMapSize(heightMap.width, heightMap.height);
+            return heightMap;
         }
     }
 
@@ -1073,7 +1081,7 @@ namespace OpenLoco::World::MapGenerator
     }
 
     // 0x0043C90C
-    void generate(const Scenario::Options& options)
+    void generate(Scenario::Options& options)
     {
         Input::processMessagesMini();
 
@@ -1089,14 +1097,11 @@ namespace OpenLoco::World::MapGenerator
 
         Scenario::initialiseDate(options.scenarioStartYear);
         Scenario::initialiseSnowLine();
-        World::TileManager::setMapSize(options.mapSizeX, options.mapSizeY);
 
         updateProgress(10);
 
         {
-            HeightMap heightMap(options.mapSizeX, options.mapSizeY);
-
-            generateHeightMap(options, heightMap);
+            HeightMap heightMap = generateHeightMap(options);
             updateProgress(25);
 
             generateRivers(options, heightMap);
