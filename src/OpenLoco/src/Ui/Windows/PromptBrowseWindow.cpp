@@ -807,19 +807,10 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             {
                 for (const auto& file : fs::directory_iterator(_currentDirectory, fs::directory_options::skip_permission_denied))
                 {
-                    // Only list directories and normal files
-                    if (!(file.is_regular_file() || file.is_directory()))
+                    // Only list directories and normal files that match the filter of this browse prompt
+                    if (!(file.is_regular_file() && matchesFilter(file.path()) || file.is_directory()))
                     {
                         continue;
-                    }
-
-                    // Filter files by extension
-                    if (file.is_regular_file())
-                    {
-                        if (!matchesFilter(file.path()))
-                        {
-                            continue;
-                        }
                     }
 
                     _files.emplace_back(file.path());
