@@ -195,6 +195,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
 
         fs::path path;
+        fs::path parentPath;
+        bool isFolder = false;
+        bool isFile = false;
 
         try
         {
@@ -202,20 +205,12 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
             if (fs::is_directory(path))
             {
-                changeDirectory(path);
-                return;
+                isFolder = true;
             }
-
-            if (!fs::is_regular_file(path))
+            else if (fs::is_regular_file(path))
             {
-                Error::open(StringIds::error_not_regular_file_nor_directory);
-                return;
-            }
-
-            if (!matchesFilter(path))
-            {
-                Error::open(StringIds::error_incorrect_file_type);
-                return;
+                isFile = true;
+                parentPath = path.parent_path();
             }
         }
         catch (const fs::filesystem_error& err)
@@ -225,7 +220,26 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             return;
         }
 
-        changeDirectory(path.parent_path()); // Not necessary but is nice
+        // If a folder was dropped, enter it.
+        if (isFolder)
+        {
+            changeDirectory(path);
+            return;
+        }
+
+        // Otherwise, check if it is a file that matches the filter, and load/save it if so.
+        if (!isFile)
+        {
+            Error::open(StringIds::error_not_regular_file_nor_directory);
+            return;
+        }
+        if (!matchesFilter(path))
+        {
+            Error::open(StringIds::error_incorrect_file_type);
+            return;
+        }
+
+        changeDirectory(parentPath); // Not necessary but is nice
         processFileForLoadSave(&window, path);
     }
 
