@@ -2107,6 +2107,9 @@ namespace OpenLoco::StringIds
     constexpr StringId windowFrameStyleGradient = 2393;
     constexpr StringId windowFrameStyleSolid = 2394;
     constexpr StringId windowFrameStyleTranslucent = 2395;
+    constexpr StringId error_not_regular_file_nor_directory = 2396;
+    constexpr StringId error_incorrect_file_type = 2397;
+    constexpr StringId error_importing_file = 2398;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

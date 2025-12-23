@@ -315,6 +315,7 @@ namespace OpenLoco::Ui::Windows
             save = 2
         };
         std::optional<std::string> open(browse_type type, std::string_view path, const char* filter, StringId titleId);
+        void onDropFile(Window& window, const char* droppedFilePath);
     }
 
     namespace PromptOkCancel

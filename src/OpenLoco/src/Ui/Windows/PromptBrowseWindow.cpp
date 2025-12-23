@@ -89,6 +89,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
     static fs::path getDirectory(const fs::path& path);
     static std::string getBasename(const fs::path& path);
+    static bool matchesFilter(fs::path path);
 
     static void drawSavePreview(Ui::Window& window, Gfx::DrawingContext& drawingCtx, int32_t x, int32_t y, int32_t width, int32_t height, const S5::SaveDetails& saveInfo);
     static void drawLandscapePreview(Ui::Window& window, Gfx::DrawingContext& drawingCtx, int32_t x, int32_t y, int32_t width, int32_t height);
@@ -182,6 +183,64 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             return success ? _targetPath : std::nullopt;
         }
         return std::nullopt;
+    }
+
+    void onDropFile(Window& window, const char* droppedFilePath)
+    {
+        if (droppedFilePath == nullptr)
+        {
+            Logging::error("Dropped file path was nullptr in PromptBrowse::onDropFile.");
+            Error::open(StringIds::error_importing_file);
+            return;
+        }
+
+        fs::path path;
+        fs::path parentPath;
+        bool isFolder = false;
+        bool isFile = false;
+
+        try
+        {
+            path = fs::canonical(droppedFilePath);
+
+            if (fs::is_directory(path))
+            {
+                isFolder = true;
+            }
+            else if (fs::is_regular_file(path))
+            {
+                isFile = true;
+                parentPath = path.parent_path();
+            }
+        }
+        catch (const fs::filesystem_error& err)
+        {
+            Logging::error("Filesystem error in PromptBrowse::onDropFile: {}", err.what());
+            Error::open(StringIds::error_importing_file);
+            return;
+        }
+
+        // If a folder was dropped, enter it.
+        if (isFolder)
+        {
+            changeDirectory(path);
+            return;
+        }
+
+        // Otherwise, check if it is a file that matches the filter, and load/save it if so.
+        if (!isFile)
+        {
+            Error::open(StringIds::error_not_regular_file_nor_directory);
+            return;
+        }
+        if (!matchesFilter(path))
+        {
+            Error::open(StringIds::error_incorrect_file_type);
+            return;
+        }
+
+        changeDirectory(parentPath); // Not necessary but is nice
+        processFileForLoadSave(&window, path);
     }
 
     // 0x00447174
@@ -749,8 +808,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         return baseName;
     }
 
-    // 0x00446A93
-    static void refreshDirectoryList()
+    static bool matchesFilter(fs::path path)
     {
         // All our filters are probably *.something so just truncate the *
         // and treat as an extension filter
@@ -760,6 +818,14 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             filterExtension = filterExtension.substr(1);
         }
 
+        auto extension = path.extension().u8string();
+
+        return Utility::iequals(extension, filterExtension);
+    }
+
+    // 0x00446A93
+    static void refreshDirectoryList()
+    {
         _files.clear();
         if (_currentDirectory.empty())
         {
@@ -773,20 +839,10 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             {
                 for (const auto& file : fs::directory_iterator(_currentDirectory, fs::directory_options::skip_permission_denied))
                 {
-                    // Only list directories and normal files
-                    if (!(file.is_regular_file() || file.is_directory()))
+                    // Only list directories and normal files that match the filter of this browse prompt
+                    if (!(file.is_regular_file() && matchesFilter(file.path()) || file.is_directory()))
                     {
                         continue;
-                    }
-
-                    // Filter files by extension
-                    if (file.is_regular_file())
-                    {
-                        auto extension = file.path().extension().u8string();
-                        if (!Utility::iequals(extension, filterExtension))
-                        {
-                            continue;
-                        }
                     }
 
                     _files.emplace_back(file.path());
