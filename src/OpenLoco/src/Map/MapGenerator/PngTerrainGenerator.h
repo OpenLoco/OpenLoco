@@ -13,6 +13,6 @@ namespace OpenLoco::World::MapGenerator
     class PngTerrainGenerator
     {
     public:
-        void generate(const Scenario::Options& options, const fs::path& path, HeightMap& heightMap);
+        HeightMap generate(Scenario::Options& options, const fs::path& path);
     };
 }
