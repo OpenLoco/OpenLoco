@@ -184,25 +184,25 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         return std::nullopt;
     }
 
-    void onDropFile(Window& window, const char* droppedFileDirectory)
+    void onDropFile(Window& window, const char* droppedFilePath)
     {
-        fs::path droppedPath = droppedFileDirectory;
+        auto path = fs::canonical(droppedFilePath);
 
-        if (fs::is_directory(droppedPath))
+        if (fs::is_directory(path))
         {
-            changeDirectory(droppedPath);
+            changeDirectory(path);
             return;
         }
 
-        if (!fs::is_regular_file(droppedPath))
+        if (!fs::is_regular_file(path))
         {
             Error::open(StringIds::error_not_regular_file_nor_directory);
             return;
         }
 
-        // Check file extention against filter
+        // Check file extension against filter
         {
-            auto extension = droppedPath.extension().u8string();
+            auto extension = path.extension().u8string();
 
             // All our filters are probably *.something so just truncate the *
             // and treat as an extension filter
@@ -219,8 +219,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             }
         }
 
-        changeDirectory(droppedPath.parent_path()); // Not necessary but is nice
-        processFileForLoadSave(&window, droppedPath);
+        changeDirectory(path.parent_path()); // Not necessary but is nice
+        processFileForLoadSave(&window, path);
     }
 
     // 0x00447174

@@ -218,15 +218,15 @@ namespace OpenLoco::Input
 
                 case SDL_DROPFILE:
                 {
-                    auto droppedFileDir = e.drop.file;
+                    auto droppedFilePath = e.drop.file;
 
                     auto browsePromptWindow = Ui::WindowManager::find(Ui::WindowType::fileBrowserPrompt);
                     if (browsePromptWindow != nullptr)
                     {
-                        Ui::Windows::PromptBrowse::onDropFile(*browsePromptWindow, droppedFileDir);
+                        Ui::Windows::PromptBrowse::onDropFile(*browsePromptWindow, droppedFilePath);
                     }
 
-                    SDL_free(droppedFileDir);
+                    SDL_free(droppedFilePath);
                     break;
                 }
             }
