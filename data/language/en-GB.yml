@@ -2450,3 +2450,4 @@ strings:
   2395: 'Translucent colour'
   2396: "Error: not a regular file or directory"
   2397: "Error: incorrect file type"
+  2398: "Error importing file"

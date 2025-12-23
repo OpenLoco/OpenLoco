@@ -187,23 +187,41 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
     void onDropFile(Window& window, const char* droppedFilePath)
     {
-        auto path = fs::canonical(droppedFilePath);
-
-        if (fs::is_directory(path))
+        if (droppedFilePath == nullptr)
         {
-            changeDirectory(path);
+            Logging::error("Dropped file path was nullptr in PromptBrowse::onDropFile.");
+            Error::open(StringIds::error_importing_file);
             return;
         }
 
-        if (!fs::is_regular_file(path))
-        {
-            Error::open(StringIds::error_not_regular_file_nor_directory);
-            return;
-        }
+        fs::path path;
 
-        if (!matchesFilter(path))
+        try
         {
-            Error::open(StringIds::error_incorrect_file_type);
+            path = fs::canonical(droppedFilePath);
+
+            if (fs::is_directory(path))
+            {
+                changeDirectory(path);
+                return;
+            }
+
+            if (!fs::is_regular_file(path))
+            {
+                Error::open(StringIds::error_not_regular_file_nor_directory);
+                return;
+            }
+
+            if (!matchesFilter(path))
+            {
+                Error::open(StringIds::error_incorrect_file_type);
+                return;
+            }
+        }
+        catch (const fs::filesystem_error& err)
+        {
+            Logging::error("Filesystem error in PromptBrowse::onDropFile: {}", err.what());
+            Error::open(StringIds::error_importing_file);
             return;
         }
 
