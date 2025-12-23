@@ -2152,6 +2152,7 @@ namespace OpenLoco::StringIds
     constexpr StringId tooltip_keep_cargo_modify_pickup = 2436;
     constexpr StringId error_not_regular_file_nor_directory = 2437;
     constexpr StringId error_incorrect_file_type = 2438;
+    constexpr StringId error_importing_file = 2439;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
