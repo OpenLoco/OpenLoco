@@ -80,23 +80,33 @@ namespace OpenLoco::Gfx
 
             // Convert palette to RGB
             if (colorType == PNG_COLOR_TYPE_PALETTE)
+            {
                 png_set_palette_to_rgb(png);
+            }
 
             // Convert grayscale to RGB if less than 8 bits
             if (colorType == PNG_COLOR_TYPE_GRAY && bitDepth < 8)
+            {
                 png_set_expand_gray_1_2_4_to_8(png);
+            }
 
             // Add alpha channel if not present
             if (colorType == PNG_COLOR_TYPE_RGB || colorType == PNG_COLOR_TYPE_GRAY || colorType == PNG_COLOR_TYPE_PALETTE)
+            {
                 png_set_add_alpha(png, 0xFF, PNG_FILLER_AFTER);
+            }
 
             // Convert 16-bit to 8-bit
             if (bitDepth == 16)
+            {
                 png_set_strip_16(png);
+            }
 
             // Convert grayscale to RGB
             if (colorType == PNG_COLOR_TYPE_GRAY || colorType == PNG_COLOR_TYPE_GRAY_ALPHA)
+            {
                 png_set_gray_to_rgb(png);
+            }
 
             // Update info after transformations
             png_read_update_info(png, info);
