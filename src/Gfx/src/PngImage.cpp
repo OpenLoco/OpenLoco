@@ -24,7 +24,7 @@ namespace OpenLoco::Gfx
     Colour32 PngImage::getPixel(int x, int y)
     {
         const size_t index = (y * width + x) * channels;
-        assert(index + channels < imageData.size());
+        assert(index + channels <= imageData.size());
 
         // NOTE: It always assumes the image is in RGBA format, odd PNG files will cause
         // to read garbage data.
