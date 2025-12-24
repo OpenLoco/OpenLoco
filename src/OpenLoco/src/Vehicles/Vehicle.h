@@ -325,7 +325,7 @@ namespace OpenLoco::Vehicles
         VehicleBase* previousVehicleComponent();
         void explodeComponent();
         void destroyTrain();
-        uint8_t sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection rad, const bool setOccupied);
+        uint8_t updateTileOccupancy(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection rad, const bool setOccupied);
         UpdateMotionResult updateTrackMotion(int32_t unk1, bool isVeh2UnkM15);
     };
     static_assert(sizeof(VehicleBase) <= sizeof(Entity));
