@@ -27,8 +27,11 @@ namespace OpenLoco::World::MapGenerator
             return;
         }
 
-        const int maxLandHeight = 254 / kMicroToSmallZStep;
-        const int heightRange = maxLandHeight - options.minLandHeight;
+        // TODO: Move the constants to a more sensible place, values are taken from TileManager::adjustSurfaceHeight
+        constexpr int minLandHeight = 4 / kMicroToSmallZStep;
+        constexpr int maxLandHeight = 160 / kMicroToSmallZStep;
+
+        const int heightRange = maxLandHeight - std::max<int>(minLandHeight, options.minLandHeight);
 
         std::fill_n(heightMap.data(), heightMap.size(), options.minLandHeight);
 
