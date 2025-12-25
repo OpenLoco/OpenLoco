@@ -1,5 +1,7 @@
 25.12+ (???)
 ------------------------------------------------------------------------
+- Change: [#3577] PNG heightmaps of any size are now supported and use interpolation when the image size differs from the map size.
+- Fix: [#3577] Crash loading PNGs with unexpected color formats or channel configurations as heightmaps.
 
 25.12 (2025-12-20)
 ------------------------------------------------------------------------
