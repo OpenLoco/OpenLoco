@@ -26,8 +26,6 @@ namespace OpenLoco::Gfx
         const size_t index = (y * width + x) * channels;
         assert(index + channels <= imageData.size());
 
-        // NOTE: It always assumes the image is in RGBA format, odd PNG files will cause
-        // to read garbage data.
         return {
             imageData[index + 0],
             imageData[index + 1],
