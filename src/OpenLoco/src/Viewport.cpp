@@ -23,6 +23,8 @@
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 
+#include <execution>
+
 using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui
@@ -204,6 +206,7 @@ namespace OpenLoco::Ui
         auto alignedX = zoomViewRt.x & ~0x1F;
 
         // Drawing is performed in columns of 32 pixels (1 tile wide)
+        sfl::small_vector<Gfx::RenderTarget, 512> columns;
 
         // Generate and sort columns.
         for (auto columnX = alignedX; columnX < rightBorder; columnX += 32)
@@ -228,37 +231,39 @@ namespace OpenLoco::Ui
 
             columnRt.width = paintRight - columnRt.x;
 
-            drawingCtx.pushRenderTarget(columnRt);
+            columns.push_back(columnRt);
+        }
 
+        std::for_each(std::execution::par, columns.begin(), columns.end(), [&](const auto& columnRt) {
+            // TODO: This bypasses the interface currently, needs refactoring to create a new drawing context per thread.
+            Gfx::SoftwareDrawingContext columnDrawingCtx;
+            columnDrawingCtx.pushRenderTarget(columnRt);
+
+            columnDrawingCtx.clearSingle(fillColour);
+            auto sess = Paint::PaintSession(columnRt, options);
+            sess.generate();
+            sess.arrangeStructs();
+            sess.drawStructs(columnDrawingCtx);
+            // Climate code used to draw here.
+
+            if (!SceneManager::isTitleMode())
             {
-                drawingCtx.clearSingle(fillColour);
-                auto sess = Paint::PaintSession(columnRt, options);
-                sess.generate();
-                sess.arrangeStructs();
-                sess.drawStructs(drawingCtx);
-                // Climate code used to draw here.
-
-                if (!SceneManager::isTitleMode())
+                if (!options.hasFlags(ViewportFlags::hideStationNames))
                 {
-                    if (!options.hasFlags(ViewportFlags::hideStationNames))
+                    if (columnRt.zoomLevel <= Config::get().stationNamesMinScale)
                     {
-                        if (columnRt.zoomLevel <= Config::get().stationNamesMinScale)
-                        {
-                            drawStationNames(drawingCtx);
-                        }
-                    }
-                    if (!options.hasFlags(ViewportFlags::hideTownNames))
-                    {
-                        drawTownNames(drawingCtx);
+                        drawStationNames(columnDrawingCtx);
                     }
                 }
-
-                sess.drawStringStructs(drawingCtx);
-                drawRoutingNumbers(drawingCtx);
+                if (!options.hasFlags(ViewportFlags::hideTownNames))
+                {
+                    drawTownNames(columnDrawingCtx);
+                }
             }
 
-            drawingCtx.popRenderTarget();
-        }
+            sess.drawStringStructs(columnDrawingCtx);
+            drawRoutingNumbers(columnDrawingCtx);
+        });
     }
 
     // 0x004CA444
