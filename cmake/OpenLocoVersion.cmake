@@ -47,6 +47,11 @@ if (Git_FOUND)
     set(OPENLOCO_VERSION_TAG "${OPENLOCO_VERSION_TAG}")
     set(OPENLOCO_BRANCH "${OPENLOCO_BRANCH}")
     set(OPENLOCO_COMMIT_SHA1_SHORT "${OPENLOCO_COMMIT_SHA1_SHORT}")
+    
+    # Reconfigure when branch changes
+    if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/.git/HEAD")
+        set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/.git/HEAD")
+    endif()
 else()
     message(WARNING "Git not found, version information will be limited.")
 
