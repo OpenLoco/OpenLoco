@@ -582,14 +582,14 @@ namespace OpenLoco::Scenario
     {
         auto& options = Scenario::getOptions();
         const auto kPreviewSize = sizeof(options.preview[0]);
-        const int32_t kMapXSkipFactor = World::TileManager::getMapColumns() / kPreviewSize;
-        const int32_t kMapYSkipFactor = World::TileManager::getMapRows() / kPreviewSize;
+        const auto kStepSizeX = World::TileManager::getMapColumns() / static_cast<float>(kPreviewSize);
+        const auto kStepSizeY = World::TileManager::getMapRows() / static_cast<float>(kPreviewSize);
 
         for (auto y = 0U; y < kPreviewSize; y++)
         {
             for (auto x = 0U; x < kPreviewSize; x++)
             {
-                auto pos = TilePos2(x * kMapXSkipFactor + 1, y * kMapYSkipFactor + 1);
+                auto pos = TilePos2(static_cast<int32_t>(x * kStepSizeX), static_cast<int32_t>(y * kStepSizeY));
                 options.preview[y][x] = getPreviewColourByTilePos(pos);
             }
         }
