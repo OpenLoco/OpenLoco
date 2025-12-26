@@ -890,21 +890,21 @@ namespace OpenLoco::Ui::ViewportInteraction
                     }
                 }
             }
-            if (buildingObj->var_A6[0] != 0 || buildingObj->var_A6[1] != 0 || buildingObj->var_A8[0] != 0 || buildingObj->var_A8[1] != 0)
+            if (buildingObj->producedCargoQty[0] != 0 || buildingObj->producedCargoQty[1] != 0 || buildingObj->consumedCargoQty[0] != 0 || buildingObj->consumedCargoQty[1] != 0)
             {
                 buffer = StringManager::formatString(buffer, StringIds::accepts);
                 bool requiresComma = false;
                 for (auto i = 0; i < 2; ++i)
                 {
-                    if (buildingObj->var_A6[i] != 0)
+                    if (buildingObj->producedCargoQty[i] != 0)
                     {
                         if (requiresComma)
                         {
                             buffer = StringManager::formatString(buffer, StringIds::comma);
                         }
-                        if (buildingObj->var_A6[i] < 8)
+                        if (buildingObj->producedCargoQty[i] < 8)
                         {
-                            buffer = StringManager::formatString(buffer, kQuantityToString[buildingObj->var_A6[i] - 1]);
+                            buffer = StringManager::formatString(buffer, kQuantityToString[buildingObj->producedCargoQty[i] - 1]);
                         }
                         requiresComma = true;
                         auto* cargo = ObjectManager::get<CargoObject>(buildingObj->producedCargoType[i]);
@@ -913,18 +913,18 @@ namespace OpenLoco::Ui::ViewportInteraction
                 }
                 for (auto i = 0; i < 2; ++i)
                 {
-                    if (buildingObj->var_A8[i] != 0)
+                    if (buildingObj->consumedCargoQty[i] != 0)
                     {
                         if (requiresComma)
                         {
                             buffer = StringManager::formatString(buffer, StringIds::comma);
                         }
-                        if (buildingObj->var_A8[i] < 8)
+                        if (buildingObj->consumedCargoQty[i] < 8)
                         {
-                            buffer = StringManager::formatString(buffer, kQuantityToString[buildingObj->var_A8[i] - 1]);
+                            buffer = StringManager::formatString(buffer, kQuantityToString[buildingObj->consumedCargoQty[i] - 1]);
                         }
                         requiresComma = true;
-                        auto* cargo = ObjectManager::get<CargoObject>(buildingObj->requiredCargoType[i]);
+                        auto* cargo = ObjectManager::get<CargoObject>(buildingObj->consumedCargoType[i]);
                         buffer = StringManager::formatString(buffer, cargo->name);
                     }
                 }
