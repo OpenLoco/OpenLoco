@@ -50,31 +50,28 @@ namespace OpenLoco::World::MapGenerator
     }
 
     // 0x004624F0
-    static HeightMap generateHeightMap(Scenario::Options& options)
+    static HeightMap generateHeightMap(const Scenario::Options& options)
     {
+        World::TileManager::setMapSize(options.mapSizeX, options.mapSizeY);
+        HeightMap heightMap(options.mapSizeX, options.mapSizeY);
+
         if (options.generator == Scenario::LandGeneratorType::Original)
         {
-            World::TileManager::setMapSize(options.mapSizeX, options.mapSizeY);
-            HeightMap heightMap(options.mapSizeX, options.mapSizeY);
             OriginalTerrainGenerator generator;
             generator.generate(options, heightMap);
-            return heightMap;
         }
         else if (options.generator == Scenario::LandGeneratorType::Simplex)
         {
-            World::TileManager::setMapSize(options.mapSizeX, options.mapSizeY);
-            HeightMap heightMap(options.mapSizeX, options.mapSizeY);
             SimplexTerrainGenerator generator;
             generator.generate(options, heightMap, std::random_device{}());
-            return heightMap;
         }
         else
         {
             PngTerrainGenerator generator;
-            auto heightMap = generator.generate(options, _pngHeightmapPath);
-            World::TileManager::setMapSize(heightMap.width, heightMap.height);
-            return heightMap;
+            generator.generate(options, _pngHeightmapPath, heightMap);
         }
+
+        return heightMap;
     }
 
     static void generateRivers(const Scenario::Options& options, HeightMap& heightMap)

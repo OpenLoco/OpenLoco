@@ -13,19 +13,19 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::World::MapGenerator
 {
-    HeightMap PngTerrainGenerator::generate(Scenario::Options& options, const fs::path& path)
+    void PngTerrainGenerator::generate(const Scenario::Options& options, const fs::path& path, HeightMap& heightMap)
     {
         if (!fs::is_regular_file(path))
         {
             Logging::error("Can't find heightmap file ({})", path);
-            return HeightMap(options.mapSizeX, options.mapSizeY);
+            return;
         }
 
         auto pngImage = Gfx::PngImage::loadFromFile(path);
         if (pngImage == nullptr)
         {
             Logging::error("Can't load heightmap file ({})", path);
-            return HeightMap(options.mapSizeX, options.mapSizeY);
+            return;
         }
 
         // TODO: Move the constants to a more sensible place, values are taken from TileManager::adjustSurfaceHeight
@@ -76,7 +76,5 @@ namespace OpenLoco::World::MapGenerator
                 heightMap[{ TilePos2(y, x) }] = options.minLandHeight + (normalizedHeight * heightRange); // this must be { y, x } otherwise the heightmap is mirrored
             }
         }
-
-        return heightMap;
     }
 }
