@@ -78,7 +78,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // Chosen so the window cannot exceed map boundaries
     static Ui::Size getMaxWindowSize()
     {
-        return { getRenderedMapWidth() + 120, getRenderedMapHeight() + 60 };
+        return { std::clamp<int32_t>(getRenderedMapWidth() + 120, kMinWindowSize.width, 1920), std::clamp<int32_t>(getRenderedMapHeight() + 60, kMinWindowSize.height, 1080) };
     }
 
     // 0x004FDC4C
@@ -245,7 +245,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
     {
         self.flags |= WindowFlags::resizable;
         self.minWidth = kMinWindowSize.width;
-
         self.setSize(kMinWindowSize, getMaxWindowSize());
 
         auto& widget = self.widgets[widx::scrollview];
