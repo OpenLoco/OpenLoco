@@ -145,15 +145,50 @@ namespace OpenLoco::Ui::Windows::Debug
         }
     }
 
-    // 0x0043B2E4
+    // Basic prototype of requesting the user to click on stuff.
+    static void drawInteractionRequest(Gfx::DrawingContext& drawingCtx, const Widget& widget, WidgetState& state)
+    {
+        auto* window = state.window;
+
+        Ui::Point localPos = {};
+
+        // Center of widget.
+        localPos.x = widget.left + ((widget.right - widget.left) / 2);
+        localPos.y = widget.top + ((widget.bottom - widget.top) / 2);
+
+        auto radius = 4;
+        radius += (window->frameNo / 4) % 12;
+
+        Ui::Point windowPos = state.window->position();
+        drawingCtx.drawCircle(windowPos + localPos, radius, 2, PaletteIndex::red5);
+    }
+
+    static void onUpdate(Ui::Window& window)
+    {
+        window.frameNo++;
+
+        // Keep this going.
+        window.invalidate();
+    }
+
     static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
     {
         // Draw widgets.
         window.draw(drawingCtx);
+
+        // Draw interaction request on top of everything else.
+        for (const auto& widget : window.widgets)
+        {
+            WidgetState widgetState{};
+            widgetState.window = &window;
+
+            drawInteractionRequest(drawingCtx, widget, widgetState);
+        }
     }
 
     static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
+        .onUpdate = onUpdate,
         .draw = draw,
     };
 
