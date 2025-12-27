@@ -144,7 +144,7 @@ namespace OpenLoco::Ui
         {
             viewport_pos vpos = vp->screenToViewport(mouse);
             World::Pos2 position = viewportCoordToMapCoord(vpos.x, vpos.y, z, WindowManager::getCurrentRotation());
-            if (World::validCoords(position))
+            if (World::TileManager::validCoords(position))
             {
                 return position;
             }
@@ -323,14 +323,18 @@ namespace OpenLoco::Ui
                     mapCoord.y = -256;
                     atMapEdge = true;
                 }
-                if (mapCoord.x > 0x30FE)
+
+                auto xBounds = World::TileManager::getMapColumns() * 32;
+                if (mapCoord.x > xBounds)
                 {
-                    mapCoord.x = 0x30FE;
+                    mapCoord.x = xBounds;
                     atMapEdge = true;
                 }
-                if (mapCoord.y > 0x30FE)
+
+                auto yBounds = World::TileManager::getMapRows() * 32;
+                if (mapCoord.y > yBounds)
                 {
-                    mapCoord.y = 0x30FE;
+                    mapCoord.y = yBounds;
                     atMapEdge = true;
                 }
 

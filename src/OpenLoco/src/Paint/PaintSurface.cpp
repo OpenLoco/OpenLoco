@@ -1392,7 +1392,7 @@ namespace OpenLoco::Paint
             TileDescriptor& descriptor = tileDescriptors[i];
 
             descriptor.elSurface = nullptr;
-            if (!World::validCoords(position))
+            if (!World::TileManager::validCoords(position))
             {
                 continue;
             }

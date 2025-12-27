@@ -1198,7 +1198,7 @@ namespace OpenLoco::Ui::Windows::Station
     {
         TileLoop tileLoop;
 
-        for (uint32_t posId = 0; posId < kMapSize; posId++)
+        for (uint32_t posId = 0; posId < World::TileManager::getMapSize(); posId++)
         {
             if (isWithinCatchmentDisplay(tileLoop.current()))
             {

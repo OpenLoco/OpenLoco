@@ -291,7 +291,7 @@ namespace OpenLoco::World
             }
 
             const auto newTreePos = loc + randOffset;
-            if (!validCoords(newTreePos))
+            if (!World::TileManager::validCoords(newTreePos))
             {
                 return true;
             }

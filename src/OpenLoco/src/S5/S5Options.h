@@ -65,8 +65,10 @@ namespace OpenLoco::S5
         uint8_t maxRiverWidth;
         uint8_t riverbankWidth;
         uint8_t riverMeanderRate;
+        uint16_t mapSizeX;
+        uint16_t mapSizeY;
 
-        std::byte pad_41BD[342];
+        std::byte pad_41BD[338];
     };
 #pragma pack(pop)
     static_assert(sizeof(Options) == 0x431A);

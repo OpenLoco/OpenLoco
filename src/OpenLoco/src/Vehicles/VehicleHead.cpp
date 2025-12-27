@@ -3753,7 +3753,7 @@ namespace OpenLoco::Vehicles
     static PathFindingResult waterPathfindToTarget(const World::TilePos2 tilePos, const MicroZ waterMicroZ, const World::TilePos2 targetOrderPos, const NearbyBoats& nearbyVehicles, uint8_t cost, const PathFindingResult& bestResult)
     {
         PathFindingResult result = bestResult;
-        if (!validCoords(tilePos))
+        if (!World::TileManager::validCoords(tilePos))
         {
             return result;
         }

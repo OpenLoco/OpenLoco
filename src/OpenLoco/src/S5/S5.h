@@ -71,7 +71,9 @@ namespace OpenLoco::S5
         std::byte pad_247;                   // 0x247
         uint8_t image[250 * 200];            // 0x248
         CompanyFlags challengeFlags;         // 0xC598 (from [company.challenge_flags])
-        std::byte pad_C59C[0xC618 - 0xC59C]; // 0xC59C
+        uint16_t mapSizeX{};                 // 0xC59C // NEW
+        uint16_t mapSizeY{};                 // 0xC59E // NEW
+        std::byte pad_C59C[0xC618 - 0xC5A0]; // 0xC5A0
     };
 #pragma pack(pop)
     static_assert(sizeof(SaveDetails) == 0xC618);

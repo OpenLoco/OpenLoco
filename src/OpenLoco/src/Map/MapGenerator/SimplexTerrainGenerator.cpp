@@ -94,9 +94,9 @@ namespace OpenLoco::World::MapGenerator
         for (int32_t i = 0; i < iterations; i++)
         {
             auto copyHeight = heightMap;
-            for (int32_t y = 1; y < heightMap.width - 1; y++)
+            for (int32_t y = 1; y < heightMap.height - 1; y++)
             {
-                for (int32_t x = 1; x < heightMap.height - 1; x++)
+                for (int32_t x = 1; x < heightMap.width - 1; x++)
                 {
                     int32_t total = 0;
                     for (int32_t yy = -1; yy <= 1; yy++)
