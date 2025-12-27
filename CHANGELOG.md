@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Change: [#3577] PNG heightmaps of any size are now supported and use interpolation when the image size differs from the map size.
 - Fix: [#3577] Crash loading PNGs with unexpected color formats or channel configurations as heightmaps.
+- Fix: [#3584] First station of a vehicle's route not removed from vehicle orders when that station is deallocated.
 
 25.12 (2025-12-20)
 ------------------------------------------------------------------------
