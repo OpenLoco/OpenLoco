@@ -53,7 +53,7 @@ namespace OpenLoco::Localisation
         { UnicodeChar::railway, LocoChar::railway },
     });
 
-    static constexpr auto kUnicodeTemporayStrip = std::to_array<EncodingConvertEntry>({
+    static constexpr auto kUnicodeTemporaryStrip = std::to_array<EncodingConvertEntry>({
         { 0x00C6, 'A' }, // Æ
         { 0x00D0, 'D' }, // Ð
         { 0x00D8, 'O' }, // Ø
@@ -181,7 +181,7 @@ namespace OpenLoco::Localisation
 
     // Ensure that the table is sorted by Unicode point.
     static_assert(std::ranges::is_sorted(kUnicodeToLocoTable, {}, &EncodingConvertEntry::unicode));
-    static_assert(std::ranges::is_sorted(kUnicodeTemporayStrip, {}, &EncodingConvertEntry::unicode));
+    static_assert(std::ranges::is_sorted(kUnicodeTemporaryStrip, {}, &EncodingConvertEntry::unicode));
 
     utf32_t convertLocoToUnicode(uint8_t locoCode)
     {
@@ -204,7 +204,8 @@ namespace OpenLoco::Localisation
 
     uint8_t convertUnicodeToLoco(utf32_t unicode)
     {
-        const auto it = std::ranges::lower_bound(
+        // Extended Latin characters that are supported by Locomotion as-is
+        auto it = std::ranges::lower_bound(
             kUnicodeToLocoTable,
             unicode,
             {},
@@ -215,17 +216,19 @@ namespace OpenLoco::Localisation
             return it->locoCode;
         }
 
-        const auto it2 = std::ranges::lower_bound(
-            kUnicodeTemporayStrip,
+        // Remove diacritics from letters that don't have an associated glyph yet
+        it = std::ranges::lower_bound(
+            kUnicodeTemporaryStrip,
             unicode,
             {},
             &EncodingConvertEntry::unicode);
 
-        if (it2 != kUnicodeTemporayStrip.end() && it2->unicode == unicode)
+        if (it != kUnicodeTemporaryStrip.end() && it->unicode == unicode)
         {
-            return it2->locoCode;
+            return it->locoCode;
         }
 
+        // Basic Latin characters
         if (unicode < 256)
         {
             return static_cast<uint8_t>(unicode);
