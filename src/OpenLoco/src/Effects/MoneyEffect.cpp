@@ -1,6 +1,5 @@
 #include "MoneyEffect.h"
 #include "Entities/EntityManager.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"

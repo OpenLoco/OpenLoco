@@ -1,5 +1,4 @@
 #include "ViewportWidget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "TextBoxWidget.h"
 #include "Ui/Window.h"

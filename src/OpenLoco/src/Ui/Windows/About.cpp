@@ -1,7 +1,7 @@
 #include "Graphics/Colour.h"
+#include "Graphics/DrawingContext.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Localisation/StringIds.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"

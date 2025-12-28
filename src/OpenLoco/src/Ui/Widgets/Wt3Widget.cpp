@@ -1,5 +1,5 @@
 #include "Wt3Widget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/DrawingContext.h"
 #include "Ui/Window.h"
 
 namespace OpenLoco::Ui::Widgets

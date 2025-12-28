@@ -4,6 +4,7 @@
 #include "Environment.h"
 #include "Font.h"
 #include "Graphics/DrawSprite.h"
+#include "Graphics/DrawingContext.h"
 #include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "ImageIds.h"

@@ -1,5 +1,4 @@
 #include "Graphics/Colour.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Ui.h"
 #include "Ui/Widget.h"
