@@ -1,6 +1,7 @@
 25.12+ (???)
 ------------------------------------------------------------------------
 - Feature: [#2825] Drawing the viewport canvas now uses parallel processing where possible.
+- Feature: [#3588] Optionally limit the frame rate to the display's vsync.
 - Change: [#3577] PNG heightmaps of any size are now supported and use interpolation when the image size differs from the map size.
 - Fix: [#3577] Crash loading PNGs with unexpected color formats or channel configurations as heightmaps.
 
