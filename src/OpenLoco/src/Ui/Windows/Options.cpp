@@ -320,7 +320,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
 #if !(defined(__APPLE__) && defined(__MACH__))
-        static void screenModeToggleEnabled(const Window& self)
+        static void screenModeToggleEnabled(Window& self)
         {
             if (Config::get().display.mode == Config::ScreenMode::fullscreen)
             {
