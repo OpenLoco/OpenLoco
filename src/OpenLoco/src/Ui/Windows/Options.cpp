@@ -337,7 +337,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void screenModeMouseDown(Window* w, [[maybe_unused]] WidgetIndex_t wi)
         {
-            Widget dropdown = w->widgets[Widx::screen_mode];
+            auto& dropdown = w->widgets[Widx::screen_mode];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 3, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::options_mode_windowed);
@@ -373,7 +373,7 @@ namespace OpenLoco::Ui::Windows::Options
         {
             std::vector<Resolution> resolutions = getFullscreenResolutions();
 
-            Widget dropdown = w->widgets[Widx::display_resolution];
+            auto& dropdown = w->widgets[Widx::display_resolution];
             Dropdown::showText2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->getColour(WindowColour::secondary), resolutions.size(), 0x80);
 
             auto& cfg = Config::get();
@@ -666,7 +666,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004BFE2E
         static void constructionMarkerMouseDown(Window* w, [[maybe_unused]] WidgetIndex_t wi)
         {
-            Widget dropdown = w->widgets[Widx::construction_marker];
+            auto& dropdown = w->widgets[Widx::construction_marker];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 2, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::white);
@@ -698,7 +698,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004BFEBE
         static void vehicleZoomMouseDown(Window* w, [[maybe_unused]] WidgetIndex_t wi)
         {
-            Widget dropdown = w->widgets[Widx::vehicles_min_scale];
+            auto& dropdown = w->widgets[Widx::vehicles_min_scale];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 4, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::full_scale);
@@ -732,7 +732,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004BFF72
         static void stationNamesScaleMouseDown(Window* w, [[maybe_unused]] WidgetIndex_t wi)
         {
-            Widget dropdown = w->widgets[Widx::station_names_min_scale];
+            auto& dropdown = w->widgets[Widx::station_names_min_scale];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 4, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::full_scale);
@@ -763,7 +763,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void windowFrameStyleMouseDown(Window* w, [[maybe_unused]] WidgetIndex_t wi)
         {
-            Widget dropdown = w->widgets[Widx::window_frame_style];
+            auto& dropdown = w->widgets[Widx::window_frame_style];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 3, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::windowFrameStyleGradient);
@@ -1152,7 +1152,7 @@ namespace OpenLoco::Ui::Windows::Options
             const auto& devices = Audio::getDevices();
             if (devices.size() != 0)
             {
-                Widget dropdown = w->widgets[Widx::audio_device];
+                auto& dropdown = w->widgets[Widx::audio_device];
                 Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), devices.size(), 0x80);
                 for (size_t i = 0; i < devices.size(); i++)
                 {
@@ -1213,7 +1213,7 @@ namespace OpenLoco::Ui::Windows::Options
         {
             auto tracks = Jukebox::makeSelectedPlaylist();
 
-            Widget dropdown = w->widgets[Widx::currently_playing];
+            auto& dropdown = w->widgets[Widx::currently_playing];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), tracks.size(), 0x80);
 
             int index = -1;
@@ -1287,7 +1287,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C07E4
         static void musicPlaylistMouseDown(Window* w)
         {
-            Widget dropdown = w->widgets[Widx::music_playlist];
+            auto& dropdown = w->widgets[Widx::music_playlist];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 3, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::play_only_music_from_current_era);
@@ -1549,7 +1549,7 @@ namespace OpenLoco::Ui::Windows::Options
             const auto lds = Localisation::getLanguageDescriptors();
             uint8_t numLanguages = static_cast<uint8_t>(lds.size());
 
-            Widget dropdown = w->widgets[Widx::language];
+            auto& dropdown = w->widgets[Widx::language];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), numLanguages - 1, 0x80);
 
             std::string& current_language = Config::get().language;
@@ -1718,7 +1718,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C0F49
         static void distanceSpeedMouseDown(Window* w)
         {
-            Widget dropdown = w->widgets[Widx::distance_speed];
+            auto& dropdown = w->widgets[Widx::distance_speed];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 2, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::imperial);
@@ -1751,7 +1751,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C0FFA
         static void heightsLabelsMouseDown(Window* w)
         {
-            Widget dropdown = w->widgets[Widx::heights];
+            auto& dropdown = w->widgets[Widx::heights];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 2, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::height_units);
