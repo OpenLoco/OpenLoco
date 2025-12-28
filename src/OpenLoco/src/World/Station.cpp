@@ -4,7 +4,6 @@
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingContext.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "IndustryManager.h"
 #include "Localisation/FormatArguments.hpp"

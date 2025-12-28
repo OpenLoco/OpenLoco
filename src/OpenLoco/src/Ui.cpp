@@ -1,5 +1,4 @@
 #include "GameStateFlags.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Ui/Cursor.h"
 #include <algorithm>
 #include <cmath>
@@ -34,6 +33,7 @@
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/General/LoadSaveQuit.h"
 #include "Graphics/Gfx.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Gui.h"
 #include "Input.h"
 #include "Intro.h"

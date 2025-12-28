@@ -1,7 +1,6 @@
 #include "Tutorial.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"

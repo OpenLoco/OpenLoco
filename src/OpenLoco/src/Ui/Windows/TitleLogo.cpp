@@ -1,6 +1,6 @@
 #include "Graphics/Colour.h"
+#include "Graphics/DrawingContext.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "OpenLoco.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/Wt3Widget.h"

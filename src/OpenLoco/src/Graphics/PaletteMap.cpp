@@ -1,6 +1,5 @@
 #include "PaletteMap.h"
 #include "Gfx.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "ImageIds.h"
 
 #include <algorithm>

@@ -1,5 +1,4 @@
 #include "Ui/TextInput.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringManager.h"

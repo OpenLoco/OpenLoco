@@ -1,7 +1,6 @@
 #include "NewsPanelWidget.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Ui/Window.h"
 #include <cassert>

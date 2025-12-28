@@ -2,7 +2,7 @@
 #include "Config.h"
 #include "Entities/EntityManager.h"
 #include "Graphics/Colour.h"
-#include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/DrawingContext.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
