@@ -2107,6 +2107,10 @@ namespace OpenLoco::StringIds
     constexpr StringId windowFrameStyleGradient = 2393;
     constexpr StringId windowFrameStyleSolid = 2394;
     constexpr StringId windowFrameStyleTranslucent = 2395;
+    constexpr StringId frameRateLimitLabel = 2396;
+    constexpr StringId frameRateLimitInternal = 2397;
+    constexpr StringId frameRateLimitVsync = 2398;
+    constexpr StringId frameRateLimitUnrestricted = 2399;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

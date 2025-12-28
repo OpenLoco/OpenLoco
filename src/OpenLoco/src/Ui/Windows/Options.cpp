@@ -5,6 +5,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Jukebox.h"
@@ -267,7 +268,9 @@ namespace OpenLoco::Ui::Windows::Options
                 display_scale,
                 display_scale_down_btn,
                 display_scale_up_btn,
-                uncap_fps,
+                frame_limit_label,
+                frame_limit,
+                frame_limit_btn,
                 show_fps,
             };
         }
@@ -285,7 +288,9 @@ namespace OpenLoco::Ui::Windows::Options
             Widgets::Label({ 10, 95 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::window_scale_factor),
             Widgets::stepperWidgets({ 235, 95 }, { 154, 12 }, WindowColour::secondary, StringIds::scale_formatted),
 
-            Widgets::Checkbox({ 10, 111 }, { 174, 12 }, WindowColour::secondary, StringIds::option_uncap_fps, StringIds::option_uncap_fps_tooltip),
+            Widgets::Label({ 10, 111 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::frameRateLimitLabel),
+            Widgets::dropdownWidgets({ 235, 111 }, { 154, 12 }, WindowColour::secondary, StringIds::empty),
+
             Widgets::Checkbox({ 10, 127 }, { 174, 12 }, WindowColour::secondary, StringIds::option_show_fps_counter, StringIds::option_show_fps_counter_tooltip)
 
         );
@@ -304,14 +309,6 @@ namespace OpenLoco::Ui::Windows::Options
                 {
                     auto& cfg = OpenLoco::Config::get();
                     cfg.showFPS ^= 1;
-                    OpenLoco::Config::write();
-                    Gfx::invalidateScreen();
-                    return;
-                }
-                case Widx::uncap_fps:
-                {
-                    auto& cfg = OpenLoco::Config::get();
-                    cfg.uncapFPS ^= 1;
                     OpenLoco::Config::write();
                     Gfx::invalidateScreen();
                     return;
@@ -366,7 +363,7 @@ namespace OpenLoco::Ui::Windows::Options
 #endif
         }
 
-#pragma mark - Resolution dropdown (Widget 11)
+#pragma mark - Resolution dropdown
 
         // 0x004C0026
         static void resolutionMouseDown(const Window& self, [[maybe_unused]] WidgetIndex_t wi)
@@ -398,6 +395,50 @@ namespace OpenLoco::Ui::Windows::Options
             Ui::setDisplayMode(Config::ScreenMode::fullscreen, { resolutions[index].width, resolutions[index].height });
         }
 
+#pragma mark - Frame limit dropdown
+
+        static void frameLimitMouseDown(const Window& self, [[maybe_unused]] WidgetIndex_t wi)
+        {
+            auto& dropdown = self.widgets[Widx::frame_limit];
+            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width(), dropdown.height(), self.getColour(WindowColour::secondary), 3, 0x80);
+
+            Dropdown::add(0, StringIds::frameRateLimitInternal);
+            Dropdown::add(1, StringIds::frameRateLimitVsync);
+            Dropdown::add(2, StringIds::frameRateLimitUnrestricted);
+        }
+
+        static void frameLimitDropdown(const Window& self, int16_t itemIndex)
+        {
+            if (itemIndex == -1)
+            {
+                return;
+            }
+
+            auto& config = Config::get();
+            switch (itemIndex)
+            {
+                case 0: // vanilla
+                    config.uncapFPS = 0;
+                    config.display.vsync = 0;
+                    break;
+                case 1: // vsync
+                    config.uncapFPS = 1;
+                    config.display.vsync = 1;
+                    break;
+                case 2: // uncapped
+                    config.uncapFPS = 1;
+                    config.display.vsync = 0;
+                    break;
+            }
+
+            auto& drawingEngine = Gfx::getDrawingEngine();
+            if (drawingEngine.setVSync(config.display.vsync))
+            {
+                Config::write();
+                WindowManager::invalidateWidget(self.type, self.number, Widx::frame_limit);
+            }
+        }
+
 #pragma mark -
 
         static void displayScaleMouseDown([[maybe_unused]] const Window& self, [[maybe_unused]] WidgetIndex_t wi, float adjust_by)
@@ -422,6 +463,9 @@ namespace OpenLoco::Ui::Windows::Options
                 case Widx::display_scale_up_btn:
                     displayScaleMouseDown(self, wi, OpenLoco::Ui::ScaleFactor::step);
                     break;
+                case Widx::frame_limit_btn:
+                    frameLimitMouseDown(self, wi);
+                    break;
             }
         }
 
@@ -435,6 +479,9 @@ namespace OpenLoco::Ui::Windows::Options
                     break;
                 case Widx::display_resolution_btn:
                     resolutionDropdown(self, item_index);
+                    break;
+                case Widx::frame_limit_btn:
+                    frameLimitDropdown(self, item_index);
                     break;
             }
         }
@@ -483,14 +530,23 @@ namespace OpenLoco::Ui::Windows::Options
                 args.push<int32_t>(Config::get().scaleFactor * 100);
             }
 
+            StringId frameLimitStringId = StringIds::frameRateLimitInternal;
+            if (Config::get().uncapFPS)
+            {
+                if (Config::get().display.vsync)
+                {
+                    frameLimitStringId = StringIds::frameRateLimitVsync;
+                }
+                else
+                {
+                    frameLimitStringId = StringIds::frameRateLimitUnrestricted;
+                }
+            }
+            self.widgets[Widx::frame_limit].text = frameLimitStringId;
+
             if (Config::get().showFPS)
             {
                 self.activatedWidgets |= (1ULL << Widx::show_fps);
-            }
-
-            if (Config::get().uncapFPS)
-            {
-                self.activatedWidgets |= (1ULL << Widx::uncap_fps);
             }
 
             if (Config::get().scaleFactor <= OpenLoco::Ui::ScaleFactor::min)

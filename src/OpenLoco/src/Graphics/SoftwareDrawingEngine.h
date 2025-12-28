@@ -66,7 +66,7 @@ namespace OpenLoco::Gfx
 
         const Ui::ScreenInfo& getScreenInfo() const;
 
-        void setVSync(bool state);
+        bool setVSync(bool state);
 
     private:
         void renderDirtyRegions();
