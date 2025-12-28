@@ -1,5 +1,6 @@
 #include "Viewport.hpp"
 #include "Config.h"
+#include "Graphics/DrawingContext.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
