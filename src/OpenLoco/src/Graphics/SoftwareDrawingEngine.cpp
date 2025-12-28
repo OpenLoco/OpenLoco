@@ -414,4 +414,16 @@ namespace OpenLoco::Gfx
         return _screenInfo;
     }
 
+    void SoftwareDrawingEngine::setVSync(bool state)
+    {
+        if (_vsync == state)
+        {
+            return;
+        }
+
+        if (SDL_RenderSetVSync(_renderer, state ? 1 : 0) == 0)
+        {
+            _vsync = state;
+        }
+    }
 }

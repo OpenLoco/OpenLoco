@@ -66,10 +66,11 @@ namespace OpenLoco::Gfx
 
         const Ui::ScreenInfo& getScreenInfo() const;
 
+        void setVSync(bool state);
+
     private:
         void renderDirtyRegions();
 
-    private:
         SDL_Renderer* _renderer{};
         SDL_Window* _window{};
         SDL_Palette* _palette{};
@@ -84,5 +85,7 @@ namespace OpenLoco::Gfx
 
         SoftwareDrawingContext _ctx;
         InvalidationGrid _invalidationGrid;
+
+        bool _vsync = false;
     };
 }
