@@ -402,9 +402,17 @@ namespace OpenLoco::Ui::Windows::Options
             auto& dropdown = self.widgets[Widx::frame_limit];
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width(), dropdown.height(), self.getColour(WindowColour::secondary), 3, 0x80);
 
-            Dropdown::add(0, StringIds::frameRateLimitInternal);
-            Dropdown::add(1, StringIds::frameRateLimitVsync);
-            Dropdown::add(2, StringIds::frameRateLimitUnrestricted);
+            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::frameRateLimitInternal);
+            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::frameRateLimitVsync);
+            Dropdown::add(2, StringIds::dropdown_stringid, StringIds::frameRateLimitUnrestricted);
+
+            auto activeItem = 0U;
+            if (Config::get().uncapFPS)
+            {
+                activeItem = Config::get().display.vsync ? 1 : 2;
+            }
+
+            Dropdown::setItemSelected(activeItem);
         }
 
         static void frameLimitDropdown(const Window& self, int16_t itemIndex)
