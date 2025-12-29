@@ -18,7 +18,7 @@ namespace OpenLoco::Vehicles
     enum class Flags38 : uint8_t
     {
         none = 0U,
-        unk_0 = 1U << 0,
+        isBody = 1U << 0,
         isReversed = 1U << 1,
         unk_2 = 1U << 2,
         jacobsBogieAvailable = 1U << 3,
