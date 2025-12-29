@@ -33,7 +33,7 @@ namespace OpenLoco::Vehicles
         none = 0,
 
         excludeReverseDirection = 1U << 1,
-        unk2 = 1U << 2,
+        includeConnected = 1U << 2,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(TrackNetworkSearchFlags);
 
@@ -518,7 +518,7 @@ namespace OpenLoco::Vehicles
     template<typename FilterFunction>
     static void findAllUsableTrackPieces(LocationOfInterestQueue& additionalTrackToCheck, const TrackNetworkSearchFlags searchFlags, const LocationOfInterest& interest, FilterFunction&& filterFunction, RoutingResults& results)
     {
-        if ((searchFlags & TrackNetworkSearchFlags::unk2) == TrackNetworkSearchFlags::none)
+        if ((searchFlags & TrackNetworkSearchFlags::includeConnected) == TrackNetworkSearchFlags::none)
         {
             return;
         }
@@ -694,7 +694,7 @@ namespace OpenLoco::Vehicles
     template<typename FilterFunction>
     static void findAllUsableRoadPieces(LocationOfInterestQueue& additionalRoadToCheck, const TrackNetworkSearchFlags searchFlags, const LocationOfInterest& interest, FilterFunction&& filterFunction, RoutingResults& results)
     {
-        if ((searchFlags & TrackNetworkSearchFlags::unk2) == TrackNetworkSearchFlags::none)
+        if ((searchFlags & TrackNetworkSearchFlags::includeConnected) == TrackNetworkSearchFlags::none)
         {
             return;
         }
@@ -870,7 +870,7 @@ namespace OpenLoco::Vehicles
 
         findAllTracksFilterTransform(
             interestMap,
-            TrackNetworkSearchFlags::unk2,
+            TrackNetworkSearchFlags::includeConnected,
             loc,
             trackAndDirection,
             company,
@@ -891,7 +891,7 @@ namespace OpenLoco::Vehicles
 
         findAllTracksFilterTransform(
             interestMap,
-            TrackNetworkSearchFlags::unk2,
+            TrackNetworkSearchFlags::includeConnected,
             loc,
             trackAndDirection,
             company,
@@ -922,7 +922,7 @@ namespace OpenLoco::Vehicles
 
         findAllTracksFilterTransform(
             interestMap,
-            TrackNetworkSearchFlags::unk2,
+            TrackNetworkSearchFlags::includeConnected,
             loc,
             trackAndDirection,
             company,
@@ -941,7 +941,7 @@ namespace OpenLoco::Vehicles
 
         findAllTracksFilterTransform(
             interestMap,
-            TrackNetworkSearchFlags::unk2,
+            TrackNetworkSearchFlags::includeConnected,
             loc,
             trackAndDirection,
             company,
