@@ -4,11 +4,23 @@
 #include <cstdlib>
 #include <limits.h>
 #include <mach-o/dyld.h>
-
+#include <unistd.h>
 #import <Cocoa/Cocoa.h>
 
 namespace OpenLoco::Platform
 {
+    uint32_t getTime()
+    {
+        struct timespec spec;
+        clock_gettime(CLOCK_REALTIME, &spec);
+        return (spec.tv_sec * 1000) + spec.tv_nsec / 1000000;
+    }
+
+    std::vector<fs::path> getDrives()
+    {
+        return {};
+    }
+
     fs::path getUserDirectory()
     {
         @autoreleasepool
@@ -20,7 +32,7 @@ namespace OpenLoco::Platform
         }
     }
 
-    fs::path promptDirectory(const std::string &title, [[maybe_unused]] void* hwnd)
+    fs::path promptDirectory([[maybe_unused]] const std::string &title, [[maybe_unused]] void* hwnd)
     {
         @autoreleasepool
         {
@@ -77,6 +89,11 @@ namespace OpenLoco::Platform
         return result == nullptr ? std::string() : result;
     }
 
+    bool isRunningInWine()
+    {
+        return false;
+    }
+
     bool isStdOutRedirected()
     {
         // TODO: Implement me
@@ -103,6 +120,23 @@ namespace OpenLoco::Platform
         if (!hasTerminalVT100Support())
             return false;
 
+        return true;
+    }
+
+    std::vector<std::string> getCmdLineVector(int argc, const char** argv)
+    {
+        std::vector<std::string> argvStrs;
+        argvStrs.resize(argc);
+        for (auto i = 0; i < argc; ++i)
+        {
+            argvStrs[i] = argv[i];
+        }
+        return argvStrs;
+    }
+
+    bool lockSingleInstance()
+    {
+        // TODO: stub!
         return true;
     }
 }

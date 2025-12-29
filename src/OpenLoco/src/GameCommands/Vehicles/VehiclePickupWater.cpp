@@ -4,6 +4,12 @@
 #include "Map/StationElement.h"
 #include "Map/TileManager.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle1.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
+#include "Vehicles/VehicleTail.h"
 
 using namespace OpenLoco::Vehicles;
 
@@ -84,7 +90,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehiclePickupWater(Interop::registers& regs)
+    void vehiclePickupWater(registers& regs)
     {
         regs.ebx = vehiclePickupWater(EntityId(regs.di), regs.bl);
     }

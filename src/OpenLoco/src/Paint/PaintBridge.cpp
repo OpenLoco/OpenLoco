@@ -986,7 +986,7 @@ namespace OpenLoco::Paint
         }
 
         const auto supportLengths = [&session, &bridgeEntry, &bridgeObj, pillarSpacing, supportLength, slope]() -> std::optional<SupportLengths> {
-            if ((bridgeEntry.edgesQuarters & ((1U << 5) | (1U << 4))) == ((1U << 5) | (1U << 4)))
+            if ((bridgeEntry.edgesQuarters & ((1U << 6) | (1U << 5))) == ((1U << 6) | (1U << 5)))
             {
                 return std::nullopt;
             }

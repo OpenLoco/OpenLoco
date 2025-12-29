@@ -4,6 +4,7 @@
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
+#include "Objects/ObjectManager.h"
 #include "Objects/TrainSignalObject.h"
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"

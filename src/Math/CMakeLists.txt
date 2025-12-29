@@ -22,4 +22,3 @@ loco_add_library(Math STATIC
     TEST_FILES
         ${test_files}
 )
-

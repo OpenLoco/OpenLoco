@@ -1,4 +1,5 @@
 #include "Vehicle.h"
+#include "Audio/Audio.h"
 #include "Effects/ExplosionEffect.h"
 #include "Effects/VehicleCrashEffect.h"
 #include "Entities/EntityManager.h"
@@ -14,53 +15,20 @@
 #include "Objects/RoadObject.h"
 #include "RoutingManager.h"
 #include "Ui/WindowManager.h"
+#include "Vehicle1.h"
+#include "Vehicle2.h"
+#include "VehicleBody.h"
+#include "VehicleBogie.h"
+#include "VehicleHead.h"
+#include "VehicleTail.h"
 #include "ViewportManager.h"
 #include <OpenLoco/Core/Exception.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Vehicles
 {
-
-    static loco_global<UpdateVar1136114Flags, 0x01136114> _vehicleUpdate_var_1136114;
-    static loco_global<EntityId, 0x0113610E> _vehicleUpdate_collisionCarComponent;
     static constexpr int32_t kObjDistToHighPrecisionDistance = 2179;
-
-#pragma pack(push, 1)
-    // There are some common elements in the vehicle components at various offsets these can be accessed via VehicleBase
-    struct VehicleCommon : VehicleBase
-    {
-        ColourScheme colourScheme;           // 0x24
-        EntityId head;                       // 0x26
-        int32_t remainingDistance;           // 0x28
-        TrackAndDirection trackAndDirection; // 0x2C
-        uint16_t subPosition;                // 0x2E
-        int16_t tileX;                       // 0x30
-        int16_t tileY;                       // 0x32
-        World::SmallZ tileBaseZ;             // 0x34
-        uint8_t trackType;                   // 0x35 field same in all vehicles
-        RoutingHandle routingHandle;         // 0x36 field same in all vehicles
-        Flags38 var_38;                      // 0x38
-        uint8_t pad_39;
-        EntityId nextCarId; // 0x3A
-        uint8_t pad_3C[0x42 - 0x3C];
-        TransportMode mode; // 0x42 field same in all vehicles
-    };
-    static_assert(sizeof(VehicleCommon) == 0x43); // Can't use offset_of change this to last field if more found
-#pragma pack(pop)
-
-    ColourScheme VehicleBase::getColourScheme()
-    {
-        auto* veh = reinterpret_cast<VehicleCommon*>(this);
-        return veh->colourScheme;
-    }
-
-    void VehicleBase::setColourScheme(ColourScheme colourScheme)
-    {
-        auto* veh = reinterpret_cast<VehicleCommon*>(this);
-        veh->colourScheme = colourScheme;
-    }
+    // TODO: Get rid of this global
+    static VehicleUpdateDistances _vehicleUpdateDistances = {};
 
     VehicleBase* VehicleBase::nextVehicle()
     {
@@ -69,96 +37,122 @@ namespace OpenLoco::Vehicles
 
     VehicleBase* VehicleBase::nextVehicleComponent()
     {
-        auto* veh = reinterpret_cast<VehicleCommon*>(this);
-        return EntityManager::get<VehicleBase>(veh->nextCarId);
+        return EntityManager::get<VehicleBase>(nextCarId);
     }
 
     VehicleBase* VehicleBase::previousVehicleComponent()
     {
-        auto head = EntityManager::get<VehicleBase>(this->getHead());
-        while (head->nextVehicleComponent() != this)
+        auto component = EntityManager::get<VehicleBase>(this->getHead());
+        while (component->nextVehicleComponent() != this)
         {
-            head = head->nextVehicleComponent();
+            component = component->nextVehicleComponent();
         }
-        return head;
+        return component;
+    }
+
+    VehicleSound* VehicleBase::getVehicleSound()
+    {
+        if (is<VehicleEntityType::vehicle_2>())
+        {
+            return &as<Vehicle2>()->sound;
+        }
+        else if (is<VehicleEntityType::tail>())
+        {
+            return &as<VehicleTail>()->sound;
+        }
+        return nullptr;
     }
 
     TransportMode VehicleBase::getTransportMode() const
     {
-        const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
-        return veh->mode;
+        return mode;
     }
 
     Flags38 VehicleBase::getFlags38() const
     {
-        const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
-        return veh->var_38;
+        return var_38;
     }
 
     uint8_t VehicleBase::getTrackType() const
     {
-        const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
-        return veh->trackType;
+        return trackType;
     }
 
     World::Pos3 VehicleBase::getTrackLoc() const
     {
-        const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
-        return World::Pos3(veh->tileX, veh->tileY, veh->tileBaseZ * World::kSmallZStep);
+        return World::Pos3(tileX, tileY, tileBaseZ * World::kSmallZStep);
     }
 
     TrackAndDirection VehicleBase::getTrackAndDirection() const
     {
-        const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
-        return veh->trackAndDirection;
+        return trackAndDirection;
     }
 
     RoutingHandle VehicleBase::getRoutingHandle() const
     {
-        const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
-        return veh->routingHandle;
+        return routingHandle;
     }
 
     EntityId VehicleBase::getHead() const
     {
-        const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
-        return veh->head;
+        return head;
     }
 
     int32_t VehicleBase::getRemainingDistance() const
     {
-        const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
-        return veh->remainingDistance;
+        return remainingDistance;
     }
 
     void VehicleBase::setNextCar(const EntityId newNextCar)
     {
-        auto* veh = reinterpret_cast<VehicleCommon*>(this);
-        veh->nextCarId = newNextCar;
+        nextCarId = newNextCar;
     }
 
     EntityId VehicleBase::getNextCar() const
     {
-        const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
-        return veh->nextCarId;
+        return nextCarId;
     }
 
     bool VehicleBase::has38Flags(Flags38 flagsToTest) const
     {
-        const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
-        return (veh->var_38 & flagsToTest) != Flags38::none;
+        return (var_38 & flagsToTest) != Flags38::none;
     }
 
     bool VehicleBase::hasVehicleFlags(VehicleFlags flagsToTest) const
     {
-        const auto* ent = reinterpret_cast<const EntityBase*>(this);
-        return (ent->vehicleFlags & flagsToTest) != VehicleFlags::none;
+        return (vehicleFlags & flagsToTest) != VehicleFlags::none;
+    }
+
+    bool VehicleBase::isVehicleHead() const { return is<VehicleEntityType::head>(); }
+    VehicleHead* VehicleBase::asVehicleHead() const { return as<VehicleHead>(); }
+    bool VehicleBase::isVehicle1() const { return is<VehicleEntityType::vehicle_1>(); }
+    Vehicle1* VehicleBase::asVehicle1() const { return as<Vehicle1>(); }
+    bool VehicleBase::isVehicle2() const { return is<VehicleEntityType::vehicle_2>(); }
+    Vehicle2* VehicleBase::asVehicle2() const { return as<Vehicle2>(); }
+    bool VehicleBase::isVehicleBogie() const { return is<VehicleEntityType::bogie>(); }
+    VehicleBogie* VehicleBase::asVehicleBogie() const { return as<VehicleBogie>(); }
+    bool VehicleBase::isVehicleBody() const { return is<VehicleEntityType::body_start>() || is<VehicleEntityType::body_continued>(); }
+    VehicleBody* VehicleBase::asVehicleBody() const
+    {
+        if (is<VehicleEntityType::body_start>())
+        {
+            return as<VehicleBody, VehicleEntityType::body_start>();
+        }
+
+        return as<VehicleBody, VehicleEntityType::body_continued>();
+    }
+    bool VehicleBase::hasSoundPlayer() { return is<VehicleEntityType::vehicle_2>() || is<VehicleEntityType::tail>(); }
+    bool VehicleBase::isVehicleTail() const { return is<VehicleEntityType::tail>(); }
+    VehicleTail* VehicleBase::asVehicleTail() const { return as<VehicleTail>(); }
+
+    VehicleUpdateDistances& getVehicleUpdateDistances()
+    {
+        return _vehicleUpdateDistances;
     }
 
     // 0x004AA407
     void VehicleBase::explodeComponent()
     {
-        auto subType = getSubType();
         assert(subType == VehicleEntityType::bogie || subType == VehicleEntityType::body_start || subType == VehicleEntityType::body_continued);
 
         const auto pos = position + World::Pos3{ 0, 0, 22 };
@@ -254,20 +248,20 @@ namespace OpenLoco::Vehicles
         }
     }
 
-    static bool updateRoadMotionNewRoadPiece(VehicleCommon& component)
+    static bool updateRoadMotionNewRoadPiece(VehicleBase& component, UpdateVar1136114Flags& flags, bool isVeh2UnkM15)
     {
         auto newRoutingHandle = component.routingHandle;
         auto newIndex = newRoutingHandle.getIndex() + 1;
         newRoutingHandle.setIndex(newIndex);
         const auto routing = RoutingManager::getRouting(newRoutingHandle);
-        if (routing != RoutingManager::kAllocatedButFreeRoutingStation)
+        if (routing != RoutingManager::kAllocatedButFreeRouting)
         {
             Vehicle train(component.head);
-            if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m15))
+            if (isVeh2UnkM15)
             {
                 if (train.veh1->routingHandle == component.routingHandle)
                 {
-                    setUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m03);
+                    flags |= UpdateVar1136114Flags::unk_m03;
                     return false;
                 }
             }
@@ -287,7 +281,7 @@ namespace OpenLoco::Vehicles
             }
             if (!routingFound)
             {
-                setUpdateVar1136114Flags(UpdateVar1136114Flags::noRouteFound);
+                flags |= UpdateVar1136114Flags::noRouteFound;
                 return false;
             }
             component.routingHandle = newRoutingHandle;
@@ -308,20 +302,20 @@ namespace OpenLoco::Vehicles
         return false;
     }
 
-    static bool updateTrackMotionNewTrackPiece(VehicleCommon& component)
+    static bool updateTrackMotionNewTrackPiece(VehicleBase& component, UpdateVar1136114Flags& flags, bool isVeh2UnkM15)
     {
         auto newRoutingHandle = component.routingHandle;
         auto newIndex = newRoutingHandle.getIndex() + 1;
         newRoutingHandle.setIndex(newIndex);
         const auto routing = RoutingManager::getRouting(newRoutingHandle);
-        if (routing != RoutingManager::kAllocatedButFreeRoutingStation)
+        if (routing != RoutingManager::kAllocatedButFreeRouting)
         {
             Vehicle train(component.head);
-            if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m15))
+            if (isVeh2UnkM15)
             {
                 if (train.veh1->routingHandle == component.routingHandle)
                 {
-                    setUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m03);
+                    flags |= UpdateVar1136114Flags::unk_m03;
                     return false;
                 }
             }
@@ -331,7 +325,7 @@ namespace OpenLoco::Vehicles
             const auto tc = World::Track::getTrackConnections(nextPos, nextRot, component.owner, component.trackType, train.head->var_53, 0);
             if (tc.hasLevelCrossing)
             {
-                setUpdateVar1136114Flags(UpdateVar1136114Flags::approachingGradeCrossing);
+                flags |= UpdateVar1136114Flags::approachingGradeCrossing;
             }
             bool routingFound = false;
             for (auto& connection : tc.connections)
@@ -344,7 +338,7 @@ namespace OpenLoco::Vehicles
             }
             if (!routingFound)
             {
-                setUpdateVar1136114Flags(UpdateVar1136114Flags::noRouteFound);
+                flags |= UpdateVar1136114Flags::noRouteFound;
                 return false;
             }
             component.routingHandle = newRoutingHandle;
@@ -451,11 +445,11 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0047C7FA
-    static int32_t updateRoadMotion(VehicleCommon& component, int32_t distance)
+    static UpdateMotionResult updateRoadMotion(VehicleBase& component, int32_t distance, bool isVeh2UnkM15)
     {
+        UpdateMotionResult result{};
         component.remainingDistance += distance;
         bool hasMoved = false;
-        auto returnValue = 0;
         auto intermediatePosition = component.position;
         while (component.remainingDistance >= 0x368A)
         {
@@ -465,11 +459,11 @@ namespace OpenLoco::Vehicles
             // This means we have moved forward by a road piece
             if (newSubPosition >= subPositionDataSize)
             {
-                if (!updateRoadMotionNewRoadPiece(component))
+                if (!updateRoadMotionNewRoadPiece(component, result.flags, isVeh2UnkM15))
                 {
-                    returnValue = component.remainingDistance - 0x3689;
+                    result.remainingDistance = component.remainingDistance - 0x3689;
                     component.remainingDistance = 0x3689;
-                    setUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00);
+                    result.flags |= UpdateVar1136114Flags::unk_m00;
                     break;
                 }
                 else
@@ -491,8 +485,8 @@ namespace OpenLoco::Vehicles
                 auto collideResult = checkForCollisions(*component.asVehicleBogie(), intermediatePosition);
                 if (collideResult != EntityId::null)
                 {
-                    setUpdateVar1136114Flags(UpdateVar1136114Flags::crashed);
-                    _vehicleUpdate_collisionCarComponent = collideResult;
+                    result.flags |= UpdateVar1136114Flags::crashed;
+                    result.collidedEntityId = collideResult;
                 }
             }
         }
@@ -502,20 +496,20 @@ namespace OpenLoco::Vehicles
             component.moveTo(intermediatePosition);
             Ui::ViewportManager::invalidate(&component, ZoomLevel::eighth);
         }
-        return returnValue;
+        return result;
     }
 
-    static int32_t updateTrackMotion(VehicleCommon& component, int32_t distance)
+    static UpdateMotionResult updateTrackMotion(VehicleBase& component, int32_t distance, bool isVeh2UnkM15)
     {
         if (component.mode == TransportMode::road)
         {
-            return updateRoadMotion(component, distance);
+            return updateRoadMotion(component, distance, isVeh2UnkM15);
         }
         else if (component.mode == TransportMode::rail)
         {
+            UpdateMotionResult result{};
             component.remainingDistance += distance;
             bool hasMoved = false;
-            auto returnValue = 0;
             auto intermediatePosition = component.position;
             while (component.remainingDistance >= 0x368A)
             {
@@ -525,11 +519,11 @@ namespace OpenLoco::Vehicles
                 // This means we have moved forward by a track piece
                 if (newSubPosition >= subPositionDataSize)
                 {
-                    if (!updateTrackMotionNewTrackPiece(component))
+                    if (!updateTrackMotionNewTrackPiece(component, result.flags, isVeh2UnkM15))
                     {
-                        returnValue = component.remainingDistance - 0x3689;
+                        result.remainingDistance = component.remainingDistance - 0x3689;
                         component.remainingDistance = 0x3689;
-                        setUpdateVar1136114Flags(UpdateVar1136114Flags::unk_m00);
+                        result.flags |= UpdateVar1136114Flags::unk_m00;
                         break;
                     }
                     else
@@ -551,8 +545,8 @@ namespace OpenLoco::Vehicles
                     auto collideResult = checkForCollisions(*component.asVehicleBogie(), intermediatePosition);
                     if (collideResult != EntityId::null)
                     {
-                        setUpdateVar1136114Flags(UpdateVar1136114Flags::crashed);
-                        _vehicleUpdate_collisionCarComponent = collideResult;
+                        result.flags |= UpdateVar1136114Flags::crashed;
+                        result.collidedEntityId = collideResult;
                     }
                 }
             }
@@ -562,19 +556,19 @@ namespace OpenLoco::Vehicles
                 component.moveTo(intermediatePosition);
                 Ui::ViewportManager::invalidate(&component, ZoomLevel::eighth);
             }
-            return returnValue;
+            return result;
         }
         else
         {
             assert(false);
-            return 0;
+            return {};
         }
     }
 
     // 0x004B15FF
-    int32_t VehicleBase::updateTrackMotion(int32_t unk1)
+    UpdateMotionResult VehicleBase::updateTrackMotion(int32_t unk1, bool isVeh2UnkM15)
     {
-        return Vehicles::updateTrackMotion(*reinterpret_cast<VehicleCommon*>(this), unk1);
+        return Vehicles::updateTrackMotion(*this, unk1, isVeh2UnkM15);
     }
 
     // 0x0047D959
@@ -584,9 +578,9 @@ namespace OpenLoco::Vehicles
     // bp : trackAndDirection
     // ebp : bp | (setOccupied << 31)
     // returns dh : trackType
-    uint8_t VehicleBase::sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied)
+    uint8_t VehicleBase::sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection rad, const bool setOccupied)
     {
-        auto trackType = getTrackType();
+        auto roadType = getTrackType();
         auto tile = World::TileManager::get(loc);
         for (auto& el : tile)
         {
@@ -602,12 +596,12 @@ namespace OpenLoco::Vehicles
                 continue;
             }
 
-            if (elRoad->rotation() != trackAndDirection.cardinalDirection())
+            if (elRoad->rotation() != rad.cardinalDirection())
             {
                 continue;
             }
 
-            if (elRoad->roadId() != trackAndDirection.id())
+            if (elRoad->roadId() != rad.id())
             {
                 continue;
             }
@@ -617,7 +611,7 @@ namespace OpenLoco::Vehicles
                 continue;
             }
 
-            const auto newUnk4u = World::TrackData::getRoadOccupationMask(trackAndDirection._data >> 2) >> 4;
+            const auto newUnk4u = World::TrackData::getRoadOccupationMask(rad._data >> 2) >> 4;
             if (setOccupied)
             {
                 elRoad->setUnk4u(elRoad->unk4u() | newUnk4u);
@@ -632,38 +626,15 @@ namespace OpenLoco::Vehicles
                 if (getGameState().roadObjectIdIsNotTram & (1 << elRoad->roadObjectId()))
                 {
                     elRoad->setUnk7_40(true);
-                    trackType = elRoad->roadObjectId();
+                    roadType = elRoad->roadObjectId();
                 }
             }
             else
             {
-                trackType = getTrackType();
+                roadType = getTrackType();
             }
         }
-        return trackType;
-    }
-
-    bool VehicleBase::updateComponent()
-    {
-        switch (getSubType())
-        {
-            case VehicleEntityType::head:
-                return !asVehicleHead()->update();
-            case VehicleEntityType::vehicle_1:
-                return !asVehicle1()->update();
-            case VehicleEntityType::vehicle_2:
-                return !asVehicle2()->update();
-            case VehicleEntityType::bogie:
-                return !asVehicleBogie()->update();
-            case VehicleEntityType::body_start:
-            case VehicleEntityType::body_continued:
-                return !asVehicleBody()->update();
-            case VehicleEntityType::tail:
-                return !asVehicleTail()->update();
-            default:
-                break;
-        }
-        return false;
+        return roadType;
     }
 
     CarComponent::CarComponent(VehicleBase*& component)
@@ -752,6 +723,23 @@ namespace OpenLoco::Vehicles
         tail = component->asVehicleTail();
     }
 
+    void Vehicle::refreshCars()
+    {
+        auto component = veh2->nextVehicleComponent();
+        if (component == nullptr)
+        {
+            throw Exception::RuntimeError("Bad vehicle structure");
+        }
+        if (component->getSubType() != VehicleEntityType::tail)
+        {
+            cars = Cars{ Car{ component } };
+        }
+        else
+        {
+            cars = Cars{};
+        }
+    }
+
     // 0x00426790
     AirportObjectFlags VehicleBogie::getCompatibleAirportType()
     {
@@ -829,7 +817,7 @@ namespace OpenLoco::Vehicles
         }
         oldFirstComponent.body->setNextCar(newFirstComponent.body->nextCarId);
 
-        for (int i = components.size() - 2; i >= 0; i--)
+        for (auto i = static_cast<int32_t>(components.size()) - 2; i >= 0; i--)
         {
             components[i].body->setSubType(VehicleEntityType::body_continued);
             if (components[i + 1].body != nullptr)
@@ -1073,20 +1061,74 @@ namespace OpenLoco::Vehicles
         train.tail->remainingDistance = 0;
     }
 
-    bool hasUpdateVar1136114Flags(UpdateVar1136114Flags flags)
+    Car::CarComponentIter::CarComponentIter(const CarComponent* carComponent)
     {
-        return (*_vehicleUpdate_var_1136114 & flags) != UpdateVar1136114Flags::none;
+        if (carComponent == nullptr)
+        {
+            nextVehicleComponent = nullptr;
+            return;
+        }
+        current = *carComponent;
+        nextVehicleComponent = current.body->nextVehicleComponent();
     }
-    void resetUpdateVar1136114Flags()
+
+    Car::CarComponentIter& Car::CarComponentIter::operator++()
     {
-        _vehicleUpdate_var_1136114 = UpdateVar1136114Flags::none;
+        if (nextVehicleComponent == nullptr)
+        {
+            return *this;
+        }
+        if (nextVehicleComponent->getSubType() == VehicleEntityType::tail)
+        {
+            nextVehicleComponent = nullptr;
+            return *this;
+        }
+        CarComponent next{ nextVehicleComponent };
+        if (next.body == nullptr || next.body->getSubType() == VehicleEntityType::body_start)
+        {
+            nextVehicleComponent = nullptr;
+            return *this;
+        }
+        current = next;
+        return *this;
     }
-    void setUpdateVar1136114Flags(UpdateVar1136114Flags flags)
+
+    Vehicle::Cars::CarIter::CarIter(const Car* carComponent)
     {
-        _vehicleUpdate_var_1136114 |= flags;
+        if (carComponent == nullptr || carComponent->body == nullptr)
+        {
+            nextVehicleComponent = nullptr;
+            return;
+        }
+        current = *carComponent;
+        nextVehicleComponent = current.body->nextVehicleComponent();
     }
-    void unsetUpdateVar1136114Flags(UpdateVar1136114Flags flags)
+
+    Vehicle::Cars::CarIter& Vehicle::Cars::CarIter::operator++()
     {
-        _vehicleUpdate_var_1136114 &= ~flags;
+        if (nextVehicleComponent == nullptr)
+        {
+            return *this;
+        }
+        while (nextVehicleComponent->getSubType() != VehicleEntityType::tail)
+        {
+            Car next{ nextVehicleComponent };
+            if (next.body == nullptr)
+            {
+                break;
+            }
+            if (next.body->getSubType() == VehicleEntityType::body_start)
+            {
+                current = next;
+                return *this;
+            }
+        }
+        nextVehicleComponent = nullptr;
+        return *this;
+    }
+
+    Vehicle::Vehicle(const VehicleHead& _head)
+        : Vehicle(_head.id)
+    {
     }
 }

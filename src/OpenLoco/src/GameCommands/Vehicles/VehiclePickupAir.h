@@ -24,5 +24,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void vehiclePickupAir(Interop::registers& regs);
+    void vehiclePickupAir(registers& regs);
 }

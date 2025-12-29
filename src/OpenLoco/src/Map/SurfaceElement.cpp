@@ -6,7 +6,7 @@
 #include "Objects/IndustryObject.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
-#include "Scenario.h"
+#include "Scenario/Scenario.h"
 #include "TileManager.h"
 #include "ViewportManager.h"
 #include "WallElement.h"
@@ -32,7 +32,7 @@ namespace OpenLoco::World
     static void updateNonIndustrialSurface(SurfaceElement& elSurface, const World::Pos2 loc)
     {
         auto* landObj = ObjectManager::get<LandObject>(elSurface.terrain());
-        if (!landObj->hasFlags(LandObjectFlags::unk0))
+        if (!landObj->hasFlags(LandObjectFlags::hasGrowthStages))
         {
             return;
         }

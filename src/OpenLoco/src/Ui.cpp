@@ -1,5 +1,4 @@
 #include "GameStateFlags.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Ui/Cursor.h"
 #include <algorithm>
 #include <cmath>
@@ -34,6 +33,7 @@
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/General/LoadSaveQuit.h"
 #include "Graphics/Gfx.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Gui.h"
 #include "Input.h"
 #include "Intro.h"
@@ -281,7 +281,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x00407FCD
-    Point32 getCursorPosScaled()
+    Point getCursorPosScaled()
     {
         auto unscaledPos = getCursorPos();
 
@@ -292,7 +292,7 @@ namespace OpenLoco::Ui
         return { static_cast<int32_t>(std::round(x)), static_cast<int32_t>(std::round(y)) };
     }
 
-    Point32 getCursorPos()
+    Point getCursorPos()
     {
         int x = 0, y = 0;
         SDL_GetMouseState(&x, &y);
@@ -642,8 +642,8 @@ namespace OpenLoco::Ui
         if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_5))
         {
             GameCommands::LoadSaveQuitGameArgs args{};
-            args.option1 = LoadSaveQuitGameArgs::Options::dontSave;
-            args.option2 = LoadOrQuitMode::returnToTitlePrompt;
+            args.loadQuitMode = LoadOrQuitMode::returnToTitlePrompt;
+            args.saveMode = LoadSaveQuitGameArgs::SaveMode::dontSave;
             GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 
@@ -678,8 +678,8 @@ namespace OpenLoco::Ui
         if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_1))
         {
             GameCommands::LoadSaveQuitGameArgs args{};
-            args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::save;
-            args.option2 = LoadOrQuitMode::quitGamePrompt;
+            args.loadQuitMode = LoadOrQuitMode::quitGamePrompt;
+            args.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::promptSave;
             GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 
@@ -690,8 +690,8 @@ namespace OpenLoco::Ui
             WindowManager::invalidateAllWindowsAfterInput();
             Input::updateCursorPosition();
 
-            uint32_t x;
-            int16_t y;
+            int32_t x;
+            int32_t y;
             Input::MouseButton state;
             while ((state = Input::nextMouseInput(x, y)) != Input::MouseButton::released)
             {
@@ -714,10 +714,10 @@ namespace OpenLoco::Ui
             {
                 Input::handleMouse(x, y, state);
             }
-            else if (x != 0x80000000)
+            else if (x >= 0)
             {
-                x = std::clamp<int16_t>(x, 0, Ui::width() - 1);
-                y = std::clamp<int16_t>(y, 0, Ui::height() - 1);
+                x = std::clamp(x, 0, Ui::width() - 1);
+                y = std::clamp(y, 0, Ui::height() - 1);
 
                 Input::handleMouse(x, y, state);
                 Input::processMouseOver(x, y);
@@ -738,8 +738,8 @@ namespace OpenLoco::Ui
         WindowManager::invalidateAllWindowsAfterInput();
         Input::updateCursorPosition();
 
-        uint32_t x;
-        int16_t y;
+        int32_t x;
+        int32_t y;
         Input::MouseButton state;
         while ((state = Input::nextMouseInput(x, y)) != Input::MouseButton::released)
         {
@@ -750,10 +750,10 @@ namespace OpenLoco::Ui
         {
             Input::handleMouse(x, y, state);
         }
-        else if (x != 0x80000000)
+        else if (x >= 0)
         {
-            x = std::clamp<int16_t>(x, 0, Ui::width() - 1);
-            y = std::clamp<int16_t>(y, 0, Ui::height() - 1);
+            x = std::clamp(x, 0, Ui::width() - 1);
+            y = std::clamp(y, 0, Ui::height() - 1);
 
             Input::handleMouse(x, y, state);
             Input::processMouseOver(x, y);

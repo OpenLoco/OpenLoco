@@ -7,7 +7,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/TreeObject.h"
 #include "Random.h"
-#include "Scenario.h"
+#include "Scenario/Scenario.h"
 #include "SurfaceElement.h"
 #include "TileManager.h"
 #include "Ui/ViewportInteraction.h"

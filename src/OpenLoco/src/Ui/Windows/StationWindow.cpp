@@ -6,7 +6,6 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -32,28 +31,26 @@
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleDraw.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/String.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui::Windows::Station
 {
-    static loco_global<uint8_t[kMapSize], 0x00F00484> _byte_F00484;
-    static loco_global<StationId, 0x00112C786> _lastSelectedStation;
+    static StationId _lastSelectedStation; // 0x0112C786
 
     using Vehicles::VehicleHead;
 
     namespace Common
     {
-        static constexpr Ui::Size32 kMinWindowSize = { 192, 136 };
+        static constexpr Ui::Size kMinWindowSize = { 192, 136 };
 
-        static constexpr Ui::Size32 kMaxWindowSize = { 600, 440 };
+        static constexpr Ui::Size kMaxWindowSize = { 600, 440 };
 
         enum widx
         {
@@ -114,7 +111,7 @@ namespace OpenLoco::Ui::Windows::Station
 
     namespace Station
     {
-        static constexpr Ui::Size32 kWindowSize = { 223, 136 };
+        static constexpr Ui::Size kWindowSize = { 223, 136 };
 
         enum widx
         {
@@ -127,7 +124,7 @@ namespace OpenLoco::Ui::Windows::Station
             // commonWidgets(kWindowSize.width, kWindowSize.height),
             Common::makeCommonWidgets(223, 136),
             Widgets::Viewport({ 3, 44 }, { 195, 80 }, WindowColour::secondary, Widget::kContentUnk),
-            Widgets::Label({ 3, 115 }, { 195, 21 }, WindowColour::secondary, ContentAlign::center),
+            Widgets::Label({ 3, 115 }, { 195, 21 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid),
             Widgets::ImageButton({ 0, 0 }, { 24, 24 }, WindowColour::secondary, ImageIds::centre_viewport, StringIds::move_main_view_to_show_this)
 
         );
@@ -144,6 +141,13 @@ namespace OpenLoco::Ui::Windows::Station
             self.widgets[widx::status_bar].bottom = self.height - 3;
             self.widgets[widx::status_bar].right = self.width - 14;
 
+            // Set station status
+            auto station = StationManager::get(StationId(self.number));
+            const char* buffer = StringManager::getString(StringIds::buffer_1250);
+            station->getStatusString((char*)buffer);
+            FormatArguments args{ self.widgets[widx::status_bar].textArgs };
+            args.push(StringIds::buffer_1250);
+
             self.widgets[widx::centre_on_viewport].right = self.widgets[widx::viewport].right - 1;
             self.widgets[widx::centre_on_viewport].bottom = self.widgets[widx::viewport].bottom - 1;
             self.widgets[widx::centre_on_viewport].left = self.widgets[widx::viewport].right - 24;
@@ -155,22 +159,8 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048E470
         static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
         {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
             self.draw(drawingCtx);
             Common::drawTabs(self, drawingCtx);
-
-            auto station = StationManager::get(StationId(self.number));
-            const char* buffer = StringManager::getString(StringIds::buffer_1250);
-            station->getStatusString((char*)buffer);
-
-            FormatArguments args{};
-            args.push(StringIds::buffer_1250);
-
-            const auto& widget = self.widgets[widx::status_bar];
-            const auto width = widget.width() - 1;
-            auto point = Point(self.x + widget.left - 1, self.y + widget.top - 1);
-            tr.drawStringLeftClipped(point, width, Colour::black, StringIds::black_stringid, args);
         }
 
         // 0x0048E4D4
@@ -258,7 +248,7 @@ namespace OpenLoco::Ui::Windows::Station
                 }
             }
             // Remove station names from viewport
-            flags |= ViewportFlags::station_names_displayed;
+            flags |= ViewportFlags::hideStationNames;
 
             self.savedView = view;
 
@@ -320,7 +310,7 @@ namespace OpenLoco::Ui::Windows::Station
         if (window == nullptr)
         {
             // 0x0048F29F start
-            const WindowFlags newFlags = WindowFlags::resizable | WindowFlags::flag_11;
+            const WindowFlags newFlags = WindowFlags::resizable | WindowFlags::lighterFrame;
             window = WindowManager::createWindow(WindowType::station, Station::kWindowSize, newFlags, Station::getEvents());
             window->number = enumValue(stationId);
             auto station = StationManager::get(stationId);
@@ -625,9 +615,9 @@ namespace OpenLoco::Ui::Windows::Station
 
     namespace CargoRatings
     {
-        static constexpr Ui::Size32 kWindowSize = { 249, 136 };
+        static constexpr Ui::Size kWindowSize = { 249, 136 };
 
-        static constexpr Ui::Size32 kMaxWindowSize = { 249, 440 };
+        static constexpr Ui::Size kMaxWindowSize = { 249, 440 };
 
         enum widx
         {
@@ -786,9 +776,9 @@ namespace OpenLoco::Ui::Windows::Station
     // We should look into sharing some of these functions.
     namespace VehiclesStopping
     {
-        static constexpr Ui::Size32 kWindowSize = { 400, 200 };
+        static constexpr Ui::Size kWindowSize = { 400, 200 };
 
-        static constexpr Ui::Size32 kMaxWindowSize = { 600, 800 };
+        static constexpr Ui::Size kMaxWindowSize = { 600, 800 };
 
         enum widx
         {
@@ -847,7 +837,7 @@ namespace OpenLoco::Ui::Windows::Station
                     continue;
                 }
 
-                vehicle->vehicleFlags &= ~VehicleFlags::sorted;
+                vehicle->vehicleFlags &= ~Vehicles::VehicleFlags::sorted;
             }
         }
 
@@ -882,7 +872,7 @@ namespace OpenLoco::Ui::Windows::Station
                     continue;
                 }
 
-                if (vehicle->hasVehicleFlags(VehicleFlags::sorted))
+                if (vehicle->hasVehicleFlags(Vehicles::VehicleFlags::sorted))
                 {
                     continue;
                 }
@@ -919,7 +909,7 @@ namespace OpenLoco::Ui::Windows::Station
                     refreshVehicleList(self);
                     return;
                 }
-                vehicle->vehicleFlags |= VehicleFlags::sorted;
+                vehicle->vehicleFlags |= Vehicles::VehicleFlags::sorted;
 
                 if (vehicle->id != EntityId(self->rowInfo[self->rowCount]))
                 {
@@ -1209,7 +1199,7 @@ namespace OpenLoco::Ui::Windows::Station
 
         for (uint32_t posId = 0; posId < kMapSize; posId++)
         {
-            if (_byte_F00484[posId] & (1 << 0))
+            if (isWithinCatchmentDisplay(tileLoop.current()))
             {
                 TileManager::mapInvalidateTileFull(tileLoop.current());
             }
@@ -1392,7 +1382,10 @@ namespace OpenLoco::Ui::Windows::Station
             args.push(station->name);
             args.push(station->town);
 
-            TextInput::openTextInput(self, StringIds::title_station_name, StringIds::prompt_type_new_station_name, station->name, widgetIndex, &station->town);
+            FormatArgumentsBuffer buffer{};
+            auto args2 = FormatArguments(buffer);
+            args2.push(station->town);
+            TextInput::openTextInput(self, StringIds::title_station_name, StringIds::prompt_type_new_station_name, station->name, widgetIndex, args2);
         }
 
         // 0x0048E520
@@ -1415,7 +1408,7 @@ namespace OpenLoco::Ui::Windows::Station
 
             self.currentTab = widgetIndex - widx::tab_station;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
             self.var_85C = -1;
 
             self.viewportRemove(0);

@@ -1,7 +1,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/StringIds.h"
 #include "Objects/InterfaceSkinObject.h"
@@ -20,7 +19,7 @@
 
 namespace OpenLoco::Ui::Windows::Debug
 {
-    static constexpr Ui::Size32 kWindowSize = { 400, 260 };
+    static constexpr Ui::Size kWindowSize = { 400, 260 };
     static constexpr int32_t kMargin = 2;
 
     static constexpr int32_t kTitlebarHeight = 13;

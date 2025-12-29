@@ -1,4 +1,5 @@
 #include "RemoveTrack.h"
+#include "Audio/Audio.h"
 #include "Economy/Economy.h"
 #include "Map/RoadElement.h"
 #include "Map/SignalElement.h"
@@ -6,6 +7,7 @@
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
 #include "Objects/BridgeObject.h"
+#include "Objects/ObjectManager.h"
 #include "Objects/TrackExtraObject.h"
 #include "Objects/TrackObject.h"
 #include "Random.h"
@@ -198,7 +200,7 @@ namespace OpenLoco::GameCommands
         {
             const auto trackLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
 
-            if (!(flags & Flags::aiAllocated))
+            if (shouldInvalidateTile(flags))
             {
                 World::TileManager::mapInvalidateTileFull(trackLoc);
             }

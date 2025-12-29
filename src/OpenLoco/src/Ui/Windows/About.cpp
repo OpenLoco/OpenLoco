@@ -1,7 +1,7 @@
 #include "Graphics/Colour.h"
+#include "Graphics/DrawingContext.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Localisation/StringIds.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
@@ -16,7 +16,7 @@
 
 namespace OpenLoco::Ui::Windows::About
 {
-    static constexpr Ui::Size32 kWindowSize = { 400, 260 };
+    static constexpr Ui::Size kWindowSize = { 400, 260 };
 
     namespace widx
     {

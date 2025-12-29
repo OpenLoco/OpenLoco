@@ -11,8 +11,17 @@ set(private_files
 
 if (APPLE)
     list(APPEND private_files 
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/Platform.Macos.mm")
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform.Macos.mm")
     set_source_files_properties(${private_files} PROPERTIES COMPILE_FLAGS "-x objective-c++")
+endif()
+
+set(public_link_libraries
+    Core
+    Utility
+)
+
+if (MSVC)
+    list(APPEND public_link_libraries ${BREAKPAD_LIBRARIES})
 endif()
 
 loco_add_library(Platform STATIC
@@ -20,6 +29,8 @@ loco_add_library(Platform STATIC
         ${public_files}
     PRIVATE_FILES
         ${private_files}
+    PUBLIC_LINK_LIBRARIES
+        ${public_link_libraries}
 )
 
 if (MSVC)
@@ -27,12 +38,3 @@ if (MSVC)
         PRIVATE
             USE_BREAKPAD)
 endif()
-
-target_link_libraries(Platform PUBLIC
-    Core
-    Utility
-)
-
-if (MSVC)
-    target_link_libraries(Platform PUBLIC ${BREAKPAD_LIBRARIES})
-endif ()

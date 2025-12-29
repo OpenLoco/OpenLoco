@@ -5,9 +5,8 @@
 #include "Ui.h"
 #include "Ui/ScrollView.h"
 #include "Ui/Window.h"
-#include <map>
-
 #include <SDL2/SDL.h>
+#include <map>
 #pragma warning(disable : 4121) // alignment of a member was sensitive to packing
 #include <SDL2/SDL_syswm.h>
 #pragma warning(default : 4121) // alignment of a member was sensitive to packing
@@ -16,7 +15,7 @@ namespace OpenLoco::Input
 {
     static Flags _flags;
     static State _state;
-    static Ui::Point32 _cursorDragStart;
+    static Ui::Point _cursorDragStart;
     static uint32_t _cursorDragState;
     static bool _exitRequested = false;
 
@@ -162,7 +161,7 @@ namespace OpenLoco::Input
                     auto scaleFactor = Config::get().scaleFactor;
                     const auto x = static_cast<int32_t>(e.button.x / scaleFactor);
                     const auto y = static_cast<int32_t>(e.button.y / scaleFactor);
-                    addr<0x00525324, int32_t>() = 1;
+                    setPendingMouseInputUpdate();
                     switch (e.button.button)
                     {
                         case SDL_BUTTON_LEFT:
@@ -180,7 +179,7 @@ namespace OpenLoco::Input
                     auto scaleFactor = Config::get().scaleFactor;
                     const auto x = static_cast<int32_t>(e.button.x / scaleFactor);
                     const auto y = static_cast<int32_t>(e.button.y / scaleFactor);
-                    addr<0x00525324, int32_t>() = 1;
+                    setPendingMouseInputUpdate();
                     switch (e.button.button)
                     {
                         case SDL_BUTTON_LEFT:
@@ -222,5 +221,4 @@ namespace OpenLoco::Input
         readKeyboardState();
         return true;
     }
-
 }

@@ -7,7 +7,6 @@
 #include <numeric>
 
 using namespace OpenLoco::Environment;
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Jukebox
 {
@@ -24,14 +23,14 @@ namespace OpenLoco::Jukebox
         { PathId::music_smooth_running, StringIds::music_smooth_running, 1976, 1984 },
         { PathId::music_traffic_jam, StringIds::music_traffic_jam, 1973, 1981 },
         { PathId::music_never_stop_til_you_get_there, StringIds::music_never_stop_til_you_get_there, 1970, 1978 },
-        { PathId::music_soaring_away, StringIds::music_soaring_away, 1990, 9999 },
-        { PathId::music_techno_torture, StringIds::music_techno_torture, 1993, 9999 },
-        { PathId::music_everlasting_high_rise, StringIds::music_everlasting_high_rise, 1996, 9999 },
+        { PathId::music_soaring_away, StringIds::music_soaring_away, 1990, kNoEndYear },
+        { PathId::music_techno_torture, StringIds::music_techno_torture, 1993, kNoEndYear },
+        { PathId::music_everlasting_high_rise, StringIds::music_everlasting_high_rise, 1996, kNoEndYear },
         { PathId::music_solace, StringIds::music_solace, 1912, 1920 },
-        { PathId::music_chrysanthemum, StringIds::music_chrysanthemum, 0, 1911 },
-        { PathId::music_eugenia, StringIds::music_eugenia, 0, 1908 },
+        { PathId::music_chrysanthemum, StringIds::music_chrysanthemum, kNoStartYear, 1911 },
+        { PathId::music_eugenia, StringIds::music_eugenia, kNoStartYear, 1908 },
         { PathId::music_the_ragtime_dance, StringIds::music_the_ragtime_dance, 1909, 1917 },
-        { PathId::music_easy_winners, StringIds::music_easy_winners, 0, 1914 },
+        { PathId::music_easy_winners, StringIds::music_easy_winners, kNoStartYear, 1914 },
         { PathId::music_setting_off, StringIds::music_setting_off, 1929, 1937 },
         { PathId::music_a_travellers_serenade, StringIds::music_a_travellers_serenade, 1940, 1948 },
         { PathId::music_latino_trip, StringIds::music_latino_trip, 1943, 1951 },
@@ -74,10 +73,67 @@ namespace OpenLoco::Jukebox
         return kMusicInfo[selectedTrack].titleId;
     }
 
-    static std::vector<MusicId> makeAllMusicPlaylist()
+    static void sortPlaylistByTitle(std::vector<uint8_t>& playlist, bool reversed = false)
+    {
+        // Sort alphabetically using lambda expression that compares localised music titles
+        std::sort(playlist.begin(), playlist.end(), [reversed](int a, int b) {
+            const char* aTitle = StringManager::getString(kMusicInfo[a].titleId);
+            const char* bTitle = StringManager::getString(kMusicInfo[b].titleId);
+
+            return !(strcoll(aTitle, bTitle) < 0) != !reversed;
+        });
+    }
+
+    static void sortPlaylistByYear(std::vector<uint8_t>& playlist, bool reversed = false)
+    {
+        std::sort(playlist.begin(), playlist.end(), [reversed](int a, int b) {
+            auto aStartYear = kMusicInfo[a].startYear;
+            auto bStartYear = kMusicInfo[b].startYear;
+            if (aStartYear != bStartYear)
+            {
+                return (aStartYear < bStartYear) != reversed;
+            }
+            auto aEndYear = kMusicInfo[a].endYear;
+            auto bEndYear = kMusicInfo[b].endYear;
+            return (aEndYear < bEndYear) != reversed;
+        });
+    }
+
+    static void sortPlaylist(std::vector<uint8_t>& playlist, MusicSortMode mode)
+    {
+        switch (mode)
+        {
+            case MusicSortMode::original:
+                // Assume it is already in this order.
+                assert(std::is_sorted(playlist.cbegin(), playlist.cend()));
+                break;
+
+            case MusicSortMode::titleAscending:
+                sortPlaylistByTitle(playlist);
+                break;
+
+            case MusicSortMode::titleDescending:
+                sortPlaylistByTitle(playlist, true);
+                break;
+
+            case MusicSortMode::yearsAscending:
+                sortPlaylistByYear(playlist);
+                break;
+
+            case MusicSortMode::yearsDescending:
+                sortPlaylistByYear(playlist, true);
+                break;
+
+            default:
+                throw Exception::RuntimeError("Unknown MusicSortMode");
+        }
+    }
+
+    std::vector<MusicId> makeAllMusicPlaylist(MusicSortMode ordering)
     {
         std::vector<MusicId> playlist(kNumMusicTracks);
         std::iota(playlist.begin(), playlist.end(), 0);
+        sortPlaylist(playlist, ordering);
         return playlist;
     }
 

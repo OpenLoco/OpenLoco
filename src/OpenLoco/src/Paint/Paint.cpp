@@ -1,10 +1,10 @@
 #include "Paint.h"
+#include "Config.h"
 #include "Game.h"
 #include "GameStateFlags.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/PaletteMap.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringManager.h"
@@ -19,9 +19,7 @@
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;
 
 namespace OpenLoco::Paint
@@ -41,6 +39,8 @@ namespace OpenLoco::Paint
 
         _viewFlags = options.viewFlags;
         currentRotation = options.rotation;
+        _isHitTest = options.isHitTest;
+        _skipTrackRoadSurfaces = options.skipTrackRoadSurfaces;
 
         // TODO: unused
         _foregroundCullingHeight = options.foregroundCullHeight;
@@ -1515,4 +1515,8 @@ namespace OpenLoco::Paint
         return std::span<TunnelEntry>();
     }
 
+    bool showAiPlanningGhosts()
+    {
+        return Config::get().showAiPlanningAsGhosts;
+    }
 }

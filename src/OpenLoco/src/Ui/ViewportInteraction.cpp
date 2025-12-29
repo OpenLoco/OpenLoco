@@ -1,4 +1,5 @@
 #include "ViewportInteraction.h"
+#include "Audio/Audio.h"
 #include "Config.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/Airports/RemoveAirport.h"
@@ -45,6 +46,10 @@
 #include "Ui/ScrollView.h"
 #include "Ui/ToolManager.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
 #include "Window.h"
@@ -53,9 +58,7 @@
 #include "World/IndustryManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui::ViewportInteraction
@@ -161,12 +164,10 @@ namespace OpenLoco::Ui::ViewportInteraction
         return getStationArguments(station->stationId());
     }
 
-    static loco_global<StationId, 0x00F252A4> _hoveredStationId;
-
     // 0x004CD9B0
     static bool getStationArguments(const StationId id)
     {
-        _hoveredStationId = id;
+        Input::setHoveredStationId(id);
 
         auto station = StationManager::get(id);
 
@@ -786,10 +787,6 @@ namespace OpenLoco::Ui::ViewportInteraction
             return false;
         }
 
-        if (!SceneManager::isEditorMode())
-        {
-            return false;
-        }
         auto* wallObj = ObjectManager::get<WallObject>(wall->wallObjectId());
         FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, wallObj->name);
         return true;
@@ -839,7 +836,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         return false;
     }
 
-    constexpr std::array<StringId, 7> quantityToString = {
+    constexpr std::array<StringId, 7> kQuantityToString = {
         StringIds::quantity_eigth,
         StringIds::quantity_quarter,
         StringIds::quantity_three_eigths,
@@ -907,7 +904,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                         }
                         if (buildingObj->var_A6[i] < 8)
                         {
-                            buffer = StringManager::formatString(buffer, quantityToString[buildingObj->var_A6[i]]);
+                            buffer = StringManager::formatString(buffer, kQuantityToString[buildingObj->var_A6[i] - 1]);
                         }
                         requiresComma = true;
                         auto* cargo = ObjectManager::get<CargoObject>(buildingObj->producedCargoType[i]);
@@ -924,7 +921,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                         }
                         if (buildingObj->var_A8[i] < 8)
                         {
-                            buffer = StringManager::formatString(buffer, quantityToString[buildingObj->var_A8[i]]);
+                            buffer = StringManager::formatString(buffer, kQuantityToString[buildingObj->var_A8[i] - 1]);
                         }
                         requiresComma = true;
                         auto* cargo = ObjectManager::get<CargoObject>(buildingObj->requiredCargoType[i]);
@@ -1473,17 +1470,11 @@ namespace OpenLoco::Ui::ViewportInteraction
     // 0x00459E54
     std::pair<ViewportInteraction::InteractionArg, Viewport*> getMapCoordinatesFromPos(int32_t screenX, int32_t screenY, InteractionItemFlags flags)
     {
-        static loco_global<uint8_t, 0x0050BF68> _50BF68; // If in get map coords
-        static loco_global<Gfx::RenderTarget, 0x00E0C3E4> _rt1;
-        static loco_global<Gfx::RenderTarget, 0x00E0C3F4> _rt2;
-
-        _50BF68 = 1;
         ViewportInteraction::InteractionArg interaction{};
         Ui::Point screenPos = { static_cast<int16_t>(screenX), static_cast<int16_t>(screenY) };
         auto w = WindowManager::findAt(screenPos);
         if (w == nullptr)
         {
-            _50BF68 = 0;
             return std::make_pair(interaction, nullptr);
         }
 
@@ -1502,27 +1493,32 @@ namespace OpenLoco::Ui::ViewportInteraction
 
             chosenV = vp;
             auto vpPos = vp->screenToViewport({ screenPos.x, screenPos.y });
-            _rt1->zoomLevel = vp->zoom;
-            _rt1->x = (0xFFFF << vp->zoom) & vpPos.x;
-            _rt1->y = (0xFFFF << vp->zoom) & vpPos.y;
-            _rt2->x = _rt1->x;
-            _rt2->y = _rt1->y;
-            _rt2->width = 1;
-            _rt2->height = 1;
-            _rt2->zoomLevel = _rt1->zoomLevel;
+
+            Gfx::RenderTarget _rt1; // 0x00E0C3E4
+            _rt1.zoomLevel = vp->zoom;
+            _rt1.x = (0xFFFF << vp->zoom) & vpPos.x;
+            _rt1.y = (0xFFFF << vp->zoom) & vpPos.y;
+
+            Gfx::RenderTarget _rt2; // 0x00E0C3F4
+            _rt2.x = _rt1.x;
+            _rt2.y = _rt1.y;
+            _rt2.width = 1;
+            _rt2.height = 1;
+            _rt2.zoomLevel = _rt1.zoomLevel;
 
             Paint::SessionOptions options{};
             options.rotation = vp->getRotation();
             options.viewFlags = vp->flags;
+            options.isHitTest = true;
             // Todo: should this pass the cullHeight...
 
             auto session = Paint::PaintSession(_rt2, options);
             session.generate();
             session.arrangeStructs();
             interaction = session.getNormalInteractionInfo(flags);
-            if (!vp->hasFlags(ViewportFlags::station_names_displayed))
+            if (!vp->hasFlags(ViewportFlags::hideStationNames))
             {
-                if (_rt2->zoomLevel <= Config::get().stationNamesMinScale)
+                if (_rt2.zoomLevel <= Config::get().stationNamesMinScale)
                 {
                     auto stationInteraction = session.getStationNameInteractionInfo(flags);
                     if (stationInteraction.type != InteractionItem::noInteraction)
@@ -1531,7 +1527,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                     }
                 }
             }
-            if (!vp->hasFlags(ViewportFlags::town_names_displayed))
+            if (!vp->hasFlags(ViewportFlags::hideTownNames))
             {
                 auto townInteraction = session.getTownNameInteractionInfo(flags);
                 if (townInteraction.type != InteractionItem::noInteraction)
@@ -1541,7 +1537,6 @@ namespace OpenLoco::Ui::ViewportInteraction
             }
             break;
         }
-        _50BF68 = 0;
         return std::make_pair(interaction, chosenV);
     }
 

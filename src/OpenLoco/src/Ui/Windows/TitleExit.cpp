@@ -3,7 +3,6 @@
 #include "GameCommands/General/LoadSaveQuit.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Intro.h"
 #include "Localisation/Formatting.h"
@@ -16,7 +15,7 @@
 
 namespace OpenLoco::Ui::Windows::TitleExit
 {
-    static constexpr Ui::Size32 kWindowSize = { 40, 28 };
+    static constexpr Ui::Size kWindowSize = { 40, 28 };
 
     namespace Widx
     {
@@ -39,7 +38,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
             WindowType::titleExit,
             { Ui::width() - kWindowSize.width, Ui::height() - kWindowSize.height },
             kWindowSize,
-            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::framedWidgets,
             getEvents());
 
         window->setWidgets(_widgets);
@@ -87,8 +86,8 @@ namespace OpenLoco::Ui::Windows::TitleExit
             case Widx::exit_button:
                 // Exit to desktop
                 GameCommands::LoadSaveQuitGameArgs args{};
-                args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::save;
-                args.option2 = LoadOrQuitMode::quitGamePrompt;
+                args.loadQuitMode = LoadOrQuitMode::quitGamePrompt;
+                args.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::promptSave;
                 GameCommands::doCommand(args, GameCommands::Flags::apply);
                 break;
         }

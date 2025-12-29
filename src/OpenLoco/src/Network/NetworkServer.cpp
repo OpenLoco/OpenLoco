@@ -4,7 +4,7 @@
 #include "Logging.h"
 #include "NetworkConnection.h"
 #include "S5/S5.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "SceneManager.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Core/MemoryStream.h>
@@ -160,7 +160,7 @@ void NetworkServer::onReceiveStateRequestPacket(Client& client, const RequestSta
 
     RequestStateResponse response;
     response.cookie = request.cookie;
-    response.totalSize = ms.getLength();
+    response.totalSize = static_cast<uint32_t>(ms.getLength());
     response.numChunks = static_cast<uint16_t>((ms.getLength() + (kChunkSize - 1)) / kChunkSize);
     client.connection->sendPacket(response);
 
@@ -308,7 +308,7 @@ void NetworkServer::sendChatMessage(std::string_view message)
     _chatMessageQueue.push({ 0, std::string(message) });
 }
 
-void NetworkServer::sendGameCommand(uint32_t index, uint32_t tick, CompanyId company, const OpenLoco::Interop::registers& regs)
+void NetworkServer::sendGameCommand(uint32_t index, uint32_t tick, CompanyId company, const OpenLoco::GameCommands::registers& regs)
 {
     GameCommandPacket packet;
     packet.index = index;
@@ -318,7 +318,7 @@ void NetworkServer::sendGameCommand(uint32_t index, uint32_t tick, CompanyId com
     sendPacketToAll(packet);
 }
 
-void NetworkServer::queueGameCommand(CompanyId company, const OpenLoco::Interop::registers& regs)
+void NetworkServer::queueGameCommand(CompanyId company, const OpenLoco::GameCommands::registers& regs)
 {
     GameCommandPacket newPacket;
     newPacket.index = ++_gameCommandIndex;

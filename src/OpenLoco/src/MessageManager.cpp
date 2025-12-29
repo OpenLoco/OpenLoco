@@ -7,17 +7,16 @@
 #include "Localisation/Formatting.h"
 #include "Objects/CargoObject.h"
 #include "Objects/IndustryObject.h"
+#include "Objects/ObjectManager.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleHead.h"
 #include "World/CompanyManager.h"
 #include "World/CompanyRecords.h"
 #include "World/IndustryManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::MessageManager
 {
@@ -69,7 +68,7 @@ namespace OpenLoco::MessageManager
                 }
             }
         }
-        if (getNumMessages() > Limits::kMaxMessages)
+        if (getNumMessages() >= Limits::kMaxMessages)
         {
             MessageId oldestMessage = MessageId::null;
             int32_t oldest = -1;

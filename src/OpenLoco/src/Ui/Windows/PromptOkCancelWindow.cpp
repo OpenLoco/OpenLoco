@@ -1,6 +1,5 @@
 #include "Audio/Audio.h"
 #include "Graphics/Colour.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -50,7 +49,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
         auto window = WindowManager::createWindowCentred(
             WindowType::confirmationPrompt,
             { 280, 92 },
-            Ui::WindowFlags::flag_12 | Ui::WindowFlags::stickToFront,
+            Ui::WindowFlags::playSoundOnOpen | Ui::WindowFlags::stickToFront,
             getEvents());
 
         if (window == nullptr)

@@ -4,12 +4,9 @@
 #include <Message.h>
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <fstream>
 #include <locale>
 #include <yaml-cpp/yaml.h>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Config
 {
@@ -108,7 +105,7 @@ namespace OpenLoco::Config
 
         // Regional
         _config.language = config["language"].as<std::string>("en-GB");
-        _config.measurementFormat = config["measurementFormat"].as<MeasurementFormat>(MeasurementFormat::metric);
+        _config.measurementFormat = config["measurementFormat"].as<MeasurementFormat>(MeasurementFormat::imperial);
         _config.preferredCurrency = config["preferredCurrency"].as<ObjectHeader>(kDefaultPreferredCurrency);
         _config.usePreferredCurrencyForNewGames = config["usePreferredCurrencyForNewGames"].as<bool>(false);
         _config.usePreferredCurrencyAlways = config["usePreferredCurrencyAlways"].as<bool>(false);
@@ -154,6 +151,7 @@ namespace OpenLoco::Config
         _config.cashPopupRendering = config["cashPopupRendering"].as<bool>(true);
         _config.edgeScrolling = config["edgeScrolling"].as<bool>(true);
         _config.edgeScrollingSpeed = config["edgeScrollingSpeed"].as<int32_t>(12);
+        _config.windowFrameStyle = config["windowFrameStyle"].as<WindowFrameStyle>(WindowFrameStyle::background);
         _config.zoomToCursor = config["zoom_to_cursor"].as<bool>(true);
 
         // Saving and autosaves
@@ -172,6 +170,7 @@ namespace OpenLoco::Config
         _config.townGrowthDisabled = config["townGrowthDisabled"].as<bool>(false);
         _config.trainsReverseAtSignals = config["trainsReverseAtSignals"].as<bool>(false);
         _config.disableStationSizeLimit = config["disableStationSizeLimit"].as<bool>(false);
+        _config.showAiPlanningAsGhosts = config["showAiPlanningAsGhosts"].as<bool>(false);
 
         // Preferred owner
         _config.preferredOwnerName = config["preferredOwnerName"].as<std::string>("");
@@ -255,7 +254,6 @@ namespace OpenLoco::Config
         node["uncapFPS"] = _config.uncapFPS;
 
         // Rendering
-
         node["constructionMarker"] = _config.constructionMarker;
         node["gridlinesOnLandscape"] = _config.gridlinesOnLandscape;
         node["heightMarkerOffset"] = _config.heightMarkerOffset;
@@ -280,6 +278,7 @@ namespace OpenLoco::Config
         node["cashPopupRendering"] = _config.cashPopupRendering;
         node["edgeScrolling"] = _config.edgeScrolling;
         node["edgeScrollingSpeed"] = _config.edgeScrollingSpeed;
+        node["windowFrameStyle"] = _config.windowFrameStyle;
         node["zoom_to_cursor"] = _config.zoomToCursor;
 
         // Saving and autosaves
@@ -298,6 +297,7 @@ namespace OpenLoco::Config
         node["townGrowthDisabled"] = _config.townGrowthDisabled;
         node["trainsReverseAtSignals"] = _config.trainsReverseAtSignals;
         node["disableStationSizeLimit"] = _config.disableStationSizeLimit;
+        node["showAiPlanningAsGhosts"] = _config.showAiPlanningAsGhosts;
 
         // Preferred owner
         node["preferredOwnerName"] = _config.preferredOwnerName;

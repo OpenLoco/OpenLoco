@@ -8,10 +8,8 @@
 #include "RoadElement.h"
 #include "SignalElement.h"
 #include "StationElement.h"
-#include <OpenLoco/Interop/Interop.hpp>
-#include <array>
 
-using namespace OpenLoco::Interop;
+#include <array>
 
 namespace OpenLoco::World::AnimationManager
 {

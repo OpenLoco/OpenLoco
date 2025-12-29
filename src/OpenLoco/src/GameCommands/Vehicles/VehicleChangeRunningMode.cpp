@@ -2,16 +2,19 @@
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
+#include "Objects/ObjectManager.h"
 #include "Speed.hpp"
 #include "Types.hpp"
 #include "Ui/WindowManager.h"
 #include "VehicleSell.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle1.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Literals;
 
 namespace OpenLoco::GameCommands
@@ -32,7 +35,7 @@ namespace OpenLoco::GameCommands
             return false;
         }
 
-        if (!train.head->hasVehicleFlags(VehicleFlags::manualControl))
+        if (!train.head->hasVehicleFlags(Vehicles::VehicleFlags::manualControl))
         {
             auto* vehicleObj = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
             if (!vehicleObj->hasFlags(VehicleObjectFlags::topAndTailPosition))
@@ -49,7 +52,7 @@ namespace OpenLoco::GameCommands
             GameCommands::setErrorText(StringIds::train_needs_a_locomotive_or_power_car);
             return false;
         }
-        if (!train.head->hasVehicleFlags(VehicleFlags::manualControl))
+        if (!train.head->hasVehicleFlags(Vehicles::VehicleFlags::manualControl))
         {
             uint16_t pairObjectId = 0xFFFFU;
             uint16_t pairCount = 0U;
@@ -112,13 +115,13 @@ namespace OpenLoco::GameCommands
         }
 
         // Stopping this vehicle, but vehicle is already stopped?
-        if (!startVehicle && train.head->hasVehicleFlags(VehicleFlags::commandStop))
+        if (!startVehicle && train.head->hasVehicleFlags(Vehicles::VehicleFlags::commandStop))
         {
             return 0;
         }
 
         // Starting this vehicle, but vehicle is already travelling?
-        if (startVehicle && !train.head->hasVehicleFlags(VehicleFlags::commandStop))
+        if (startVehicle && !train.head->hasVehicleFlags(Vehicles::VehicleFlags::commandStop))
         {
             return 0;
         }
@@ -128,13 +131,13 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        train.head->vehicleFlags ^= VehicleFlags::commandStop;
-        if (train.head->hasVehicleFlags(VehicleFlags::commandStop))
+        train.head->vehicleFlags ^= Vehicles::VehicleFlags::commandStop;
+        if (train.head->hasVehicleFlags(Vehicles::VehicleFlags::commandStop))
         {
-            train.head->vehicleFlags &= ~VehicleFlags::manualControl;
+            train.head->vehicleFlags &= ~Vehicles::VehicleFlags::manualControl;
         }
 
-        if (!train.head->hasVehicleFlags(VehicleFlags::commandStop)
+        if (!train.head->hasVehicleFlags(Vehicles::VehicleFlags::commandStop)
             && CompanyManager::isPlayerCompany(getUpdatingCompanyId()))
         {
             auto madeProfit = train.veh2->profit[0] | train.veh2->profit[1] | train.veh2->profit[2] | train.veh2->profit[3];
@@ -162,16 +165,16 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        train.head->vehicleFlags ^= VehicleFlags::manualControl;
+        train.head->vehicleFlags ^= Vehicles::VehicleFlags::manualControl;
         train.head->manualPower = -40;
 
-        if ((train.head->vehicleFlags & VehicleFlags::manualControl) != VehicleFlags::none)
+        if ((train.head->vehicleFlags & Vehicles::VehicleFlags::manualControl) != Vehicles::VehicleFlags::none)
         {
-            train.head->vehicleFlags &= ~VehicleFlags::commandStop;
+            train.head->vehicleFlags &= ~Vehicles::VehicleFlags::commandStop;
         }
         else
         {
-            train.head->vehicleFlags |= VehicleFlags::commandStop;
+            train.head->vehicleFlags |= Vehicles::VehicleFlags::commandStop;
         }
 
         if (train.head->status == Vehicles::Status::approaching)

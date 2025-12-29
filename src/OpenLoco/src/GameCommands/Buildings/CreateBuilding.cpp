@@ -16,7 +16,7 @@
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/ScaffoldingObject.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 #include "ViewportManager.h"
 #include "World/Industry.h"
 #include "World/Station.h"

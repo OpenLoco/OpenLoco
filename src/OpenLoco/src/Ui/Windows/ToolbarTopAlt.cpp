@@ -17,7 +17,7 @@
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "Objects/WaterObject.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 #include "ToolbarTopCommon.h"
 #include "Ui/Dropdown.h"
 #include "Ui/Screenshot.h"
@@ -29,14 +29,9 @@
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
 {
-    static loco_global<uint8_t, 0x009C870C> _lastTownOption;
-
     namespace Widx
     {
         enum
@@ -78,6 +73,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
             getEvents());
         window->setWidgets(_widgets);
         window->initScrollWidgets();
+
+        Common::onOpen(*window);
+
         window->setColour(WindowColour::primary, Colour::grey);
         window->setColour(WindowColour::secondary, Colour::grey);
         window->setColour(WindowColour::tertiary, Colour::grey);
@@ -124,8 +122,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
                 // Load Landscape
                 {
                     GameCommands::LoadSaveQuitGameArgs args{};
-                    args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::save;
-                    args.option2 = LoadOrQuitMode::loadGamePrompt;
+                    args.loadQuitMode = LoadOrQuitMode::loadGamePrompt;
+                    args.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::promptSave;
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
                 }
                 break;
@@ -144,9 +142,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
                 ToolManager::toolCancel();
 
                 // Save Landscape
-                if (OpenLoco::Game::saveLandscapeOpen())
+                if (auto res = OpenLoco::Game::saveLandscapeOpen())
                 {
-                    OpenLoco::Game::saveLandscape();
+                    OpenLoco::Game::saveLandscape(*res);
                     Gfx::invalidateScreen();
                 }
                 break;
@@ -172,8 +170,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
                 // Return to title screen
                 {
                     GameCommands::LoadSaveQuitGameArgs quitToMenuArgs{};
-                    quitToMenuArgs.option1 = GameCommands::LoadSaveQuitGameArgs::Options::save;
-                    quitToMenuArgs.option2 = LoadOrQuitMode::returnToTitlePrompt;
+                    quitToMenuArgs.loadQuitMode = LoadOrQuitMode::returnToTitlePrompt;
+                    quitToMenuArgs.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::promptSave;
                     GameCommands::doCommand(quitToMenuArgs, GameCommands::Flags::apply);
                 }
                 break;
@@ -182,8 +180,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
                 // Exit to desktop
                 {
                     GameCommands::LoadSaveQuitGameArgs quitToDesktopArgs{};
-                    quitToDesktopArgs.option1 = GameCommands::LoadSaveQuitGameArgs::Options::save;
-                    quitToDesktopArgs.option2 = LoadOrQuitMode::quitGamePrompt;
+                    quitToDesktopArgs.loadQuitMode = LoadOrQuitMode::quitGamePrompt;
+                    quitToDesktopArgs.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::promptSave;
                     GameCommands::doCommand(quitToDesktopArgs, GameCommands::Flags::apply);
                 }
                 break;
@@ -342,14 +340,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         window.widgets[Widx::map_generation_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_cogwheels);
         window.widgets[Common::Widx::road_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque);
 
-        if (_lastTownOption == 0)
-        {
-            window.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_towns);
-        }
-        else
-        {
-            window.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_industries);
-        }
+        Common::prepareTownWidget(window);
     }
 
     static constexpr WindowEventList kEvents = {

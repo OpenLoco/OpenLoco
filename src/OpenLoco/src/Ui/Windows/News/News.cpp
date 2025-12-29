@@ -4,7 +4,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -21,21 +20,18 @@
 #include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/Window.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBody.h"
 #include "Vehicles/VehicleDraw.h"
+#include "Vehicles/VehicleHead.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
 #include "World/IndustryManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::NewsWindow
 {
-    static loco_global<uint32_t, 0x011364EC> _numTrackTypeTabs;
-    static loco_global<int8_t[8], 0x011364F0> _trackTypesForTab;
-
     namespace News1
     {
         static constexpr auto widgets = makeWidgets(
@@ -142,29 +138,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                                 break;
 
                             case MessageItemArgumentType::vehicleTab:
-                                auto vehicleObj = ObjectManager::get<VehicleObject>(itemId);
-                                auto window = Ui::Windows::BuildVehicle::open(static_cast<uint32_t>(vehicleObj->type), (1U << 31));
-                                window->rowHover = itemId;
-                                if (vehicleObj->mode == TransportMode::rail || vehicleObj->mode == TransportMode::road)
-                                {
-                                    if (vehicleObj->trackType != 0xFF)
-                                    {
-                                        for (uint8_t i = 0; i < _numTrackTypeTabs && i < std::size(_trackTypesForTab); ++i)
-                                        {
-                                            if (vehicleObj->trackType == _trackTypesForTab[i])
-                                            {
-                                                window->currentSecondaryTab = i;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
-
-                                auto rowHover = window->rowHover;
-
-                                Ui::Windows::BuildVehicle::sub_4B92A5(window);
-
-                                window->rowHover = rowHover;
+                                Ui::Windows::BuildVehicle::openByVehicleObjectId(itemId);
                                 break;
                         }
                     }
@@ -175,7 +149,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         // 0x00429D2C
         static void onUpdate(Window& self)
         {
-            uint16_t height = _nState.slideInHeight + 4;
+            auto height = _nState.slideInHeight + 4;
 
             _nState.slideInHeight = std::min(height, self.height);
 

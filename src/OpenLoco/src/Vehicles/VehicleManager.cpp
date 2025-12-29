@@ -1,4 +1,5 @@
 #include "VehicleManager.h"
+#include "Audio/Audio.h"
 #include "Date.h"
 #include "Entities/EntityManager.h"
 #include "Game.h"
@@ -10,23 +11,24 @@
 #include "Map/Track/SubpositionData.h"
 #include "Map/Track/TrackData.h"
 #include "MessageManager.h"
+#include "Objects/ObjectManager.h"
 #include "OrderManager.h"
 #include "Orders.h"
 #include "RoutingManager.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicle.h"
+#include "Vehicle1.h"
+#include "Vehicle2.h"
+#include "VehicleBody.h"
+#include "VehicleBogie.h"
+#include "VehicleHead.h"
+#include "VehicleTail.h"
 #include "World/Company.h"
 #include "World/CompanyManager.h"
 
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::VehicleManager
 {
-    static loco_global<Vehicles::SignalStateFlags, 0x005220BC> _vehicleManagerIgnoreSignalFlagsMasks;
-
     // 0x004A8826
     void update()
     {
@@ -147,7 +149,7 @@ namespace OpenLoco::VehicleManager
     }
 
     // 0x004B05E4
-    PlaceDownResult placeDownVehicle(Vehicles::VehicleHead* const head, const coord_t x, const coord_t y, const uint8_t baseZ, const Vehicles::TrackAndDirection& unk1, const uint16_t unk2)
+    PlaceDownResult placeDownVehicle(Vehicles::VehicleHead* const head, const coord_t x, const coord_t y, const uint8_t baseZ, const Vehicles::TrackAndDirection& trackAndDirection, const uint16_t initialSubPosition)
     {
         const auto pos = World::Pos3{ x, y, baseZ * World::kSmallZStep };
         if (head->tileX != -1)
@@ -157,43 +159,43 @@ namespace OpenLoco::VehicleManager
 
         auto subPosition = 0;
         World::Pos3 reversePos = pos;
-        Vehicles::TrackAndDirection reverseTad = unk1;
+        Vehicles::TrackAndDirection reverseTad = trackAndDirection;
         if (head->mode != TransportMode::road)
         {
-            if (Vehicles::sub_4A2A58(pos, unk1.track, head->owner, head->trackType) & (1U << 0))
+            if (Vehicles::sub_4A2A58(pos, trackAndDirection.track, head->owner, head->trackType) & (1U << 0))
             {
                 return PlaceDownResult::Unk1;
             }
 
-            if (Vehicles::isBlockOccupied(pos, unk1.track, head->owner, head->trackType))
+            if (Vehicles::isBlockOccupied(pos, trackAndDirection.track, head->owner, head->trackType))
             {
                 return PlaceDownResult::Unk1;
             }
 
-            const auto subPositionLength = World::TrackData::getTrackSubPositon(unk1.track._data).size();
-            subPosition = subPositionLength - 1 - unk2;
+            const auto subPositionLength = static_cast<uint32_t>(World::TrackData::getTrackSubPositon(trackAndDirection.track._data).size());
+            subPosition = subPositionLength - 1 - initialSubPosition;
 
-            const auto& trackSize = World::TrackData::getUnkTrack(unk1.track._data);
+            const auto& trackSize = World::TrackData::getUnkTrack(trackAndDirection.track._data);
             reversePos += trackSize.pos;
             if (trackSize.rotationEnd < 12)
             {
                 reversePos -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
             }
-            reverseTad.track.setReversed(!unk1.track.isReversed());
+            reverseTad.track.setReversed(!trackAndDirection.track.isReversed());
         }
         else
         {
 
-            const auto subPositionLength = World::TrackData::getRoadSubPositon(unk1.road._data).size();
-            subPosition = subPositionLength - 1 - unk2;
+            const auto subPositionLength = static_cast<uint32_t>(World::TrackData::getRoadSubPositon(trackAndDirection.road._data).size());
+            subPosition = subPositionLength - 1 - initialSubPosition;
 
-            const auto& roadSize = World::TrackData::getUnkRoad(unk1.road.basicRad());
+            const auto& roadSize = World::TrackData::getUnkRoad(trackAndDirection.road.basicRad());
             reversePos += roadSize.pos;
             if (roadSize.rotationEnd < 12)
             {
                 reversePos -= World::Pos3{ World::kRotationOffset[roadSize.rotationEnd], 0 };
             }
-            reverseTad.road.setReversed(!unk1.road.isReversed());
+            reverseTad.road.setReversed(!trackAndDirection.road.isReversed());
             reverseTad.road._data ^= (1U << 7);
             if (reverseTad.road.isChangingLane())
             {
@@ -239,17 +241,16 @@ namespace OpenLoco::VehicleManager
             component.subPosition = subPosition;
             component.trackAndDirection = reverseTad;
             component.remainingDistance = 0;
-            component.var_3C = 0;
             moveComponentToSubPosition(component);
         });
+        train.head->var_3C = 0;
+        train.veh1->var_3C = 0;
 
-        _vehicleManagerIgnoreSignalFlagsMasks &= ~(Vehicles::SignalStateFlags::occupiedOneWay | Vehicles::SignalStateFlags::blockedNoRoute);
         Vehicles::applyVehicleObjectLength(train);
         auto oldVar52 = head->var_52;
         head->var_52 = 1;
-        const bool failure = Vehicles::positionVehicleOnTrack(*head);
+        const bool failure = Vehicles::positionVehicleOnTrack(*head, true);
         head->var_52 = oldVar52;
-        _vehicleManagerIgnoreSignalFlagsMasks |= (Vehicles::SignalStateFlags::occupiedOneWay | Vehicles::SignalStateFlags::blockedNoRoute);
 
         if (failure)
         {
@@ -387,7 +388,7 @@ namespace OpenLoco::VehicleManager
                 // perhaps in the future this could be changed.
                 GameCommands::VehiclePickupAirArgs airArgs{};
                 airArgs.head = head.id;
-                registers regs = static_cast<registers>(airArgs);
+                GameCommands::registers regs = static_cast<GameCommands::registers>(airArgs);
                 regs.bl = GameCommands::Flags::apply;
                 GameCommands::vehiclePickupAir(regs);
                 break;
@@ -398,7 +399,7 @@ namespace OpenLoco::VehicleManager
                 // perhaps in the future this could be changed.
                 GameCommands::VehiclePickupWaterArgs waterArgs{};
                 waterArgs.head = head.id;
-                registers regs = static_cast<registers>(waterArgs);
+                GameCommands::registers regs = static_cast<GameCommands::registers>(waterArgs);
                 regs.bl = GameCommands::Flags::apply;
                 GameCommands::vehiclePickupWater(regs);
             }

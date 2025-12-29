@@ -22,7 +22,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/ScaffoldingObject.h"
 #include "Objects/TreeObject.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 #include "SceneManager.h"
 #include "ViewportManager.h"
 #include "World/IndustryManager.h"
@@ -31,8 +31,6 @@
 
 namespace OpenLoco::GameCommands
 {
-    static loco_global<IndustryId, 0x00E0C3C9> _industryLastPlacedId;
-
     // Convert the cargo id's into a bitset
     static uint32_t getProducedCargoBitSet(const IndustryObject& indObj)
     {
@@ -375,7 +373,7 @@ namespace OpenLoco::GameCommands
             return Colour::black;
         }
         // Note: Don't optimise for size 1 as randNext required to prevent divergence
-        return availableColours[prng.randNext(availableColours.size() - 1)];
+        return availableColours[prng.randNext(static_cast<int32_t>(availableColours.size()) - 1)];
     }
 
     struct RangeAndMinDistance
@@ -416,6 +414,7 @@ namespace OpenLoco::GameCommands
     // 0x0045436B
     static currency32_t createIndustry(const IndustryPlacementArgs& args, const uint8_t flags)
     {
+        getLegacyReturnState().lastPlacedIndustryId = IndustryId::null;
         GameCommands::setExpenditureType(ExpenditureType::Miscellaneous);
         {
             const auto centrePos = World::Pos2(args.pos.x + 16, args.pos.y + 16);
@@ -430,7 +429,7 @@ namespace OpenLoco::GameCommands
         {
             return FAILURE;
         }
-        _industryLastPlacedId = newIndustryId;
+        getLegacyReturnState().lastPlacedIndustryId = newIndustryId;
         auto* newIndustry = IndustryManager::get(newIndustryId);
         auto* indObj = newIndustry->getObject();
         if (args.buildImmediately)

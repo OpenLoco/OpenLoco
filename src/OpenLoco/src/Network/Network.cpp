@@ -6,7 +6,7 @@
 #include "Logging.h"
 #include "NetworkClient.h"
 #include "NetworkServer.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "SceneManager.h"
 #include "Socket.h"
 #include <cassert>
@@ -65,12 +65,12 @@ namespace OpenLoco::Network
         }
     }
 
-    void joinServer(std::string_view host)
+    bool joinServer(std::string_view host)
     {
-        joinServer(host, kDefaultPort);
+        return joinServer(host, kDefaultPort);
     }
 
-    void joinServer(std::string_view host, port_t port)
+    bool joinServer(std::string_view host, port_t port)
     {
         assert(_mode == NetworkMode::none);
 
@@ -79,6 +79,7 @@ namespace OpenLoco::Network
             _client = std::make_unique<NetworkClient>();
             _client->connect(host, port);
             _mode = NetworkMode::client;
+            return true;
         }
         catch (...)
         {
@@ -121,7 +122,7 @@ namespace OpenLoco::Network
         Logging::info("Player #{}: {}", static_cast<int>(client), message);
     }
 
-    void queueGameCommand(CompanyId company, const OpenLoco::Interop::registers& regs)
+    void queueGameCommand(CompanyId company, const OpenLoco::GameCommands::registers& regs)
     {
         // TEMP debug code
         if (regs.esi == 73)

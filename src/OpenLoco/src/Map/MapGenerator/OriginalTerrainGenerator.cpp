@@ -4,7 +4,7 @@
 #include "MapGenerator.h"
 #include "Objects/HillShapesObject.h"
 #include "Objects/ObjectManager.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 
 namespace OpenLoco::World::MapGenerator
 {

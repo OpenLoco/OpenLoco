@@ -43,6 +43,7 @@
 #include "Map/TrackElement.h"
 #include "Map/TreeElement.h"
 #include "MessageManager.h"
+#include "Objects/AirportObject.h"
 #include "Objects/BridgeObject.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/CargoObject.h"
@@ -61,6 +62,9 @@
 #include "Random.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
 #include "World/Company.h"
 #include "World/CompanyManager.h"
@@ -70,11 +74,9 @@
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Engine/World.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <bit>
 #include <numeric>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 using namespace OpenLoco::Literals;
 using namespace OpenLoco::CompanyAi; // Eventually this will all be under this namespace
@@ -82,11 +84,6 @@ using namespace OpenLoco::CompanyAi; // Eventually this will all be under this n
 namespace OpenLoco
 {
     static void removeEntityFromThought(AiThought& thought, size_t index);
-
-    static loco_global<StationId, 0x0112C730> _lastPlacedTrackStationId;
-    static loco_global<StationId, 0x0112C744> _lastPlacedAirportStationId;
-    static loco_global<StationId, 0x0112C748> _lastPlacedPortStationId;
-    static loco_global<EntityId, 0x0113642A> _lastCreatedVehicleId;
 
     enum class ThoughtTypeFlags : uint32_t
     {
@@ -264,11 +261,11 @@ namespace OpenLoco
             }
             if (trainHeadId == EntityId::null)
             {
-                trainHeadId = _lastCreatedVehicleId;
+                trainHeadId = GameCommands::getLegacyReturnState().lastCreatedVehicleId;
             }
             // There was some broken code that would try read the head as a body here
 
-            // auto* veh = EntityManager::get<Vehicles::VehicleBogie>(_lastCreatedVehicleId); lol no this wouldn't work
+            // auto* veh = EntityManager::get<Vehicles::VehicleBogie>(GameCommands::getLegacyReturnState().lastCreatedVehicleId); lol no this wouldn't work
             // auto train = Vehicles::Vehicle(veh->head);
             // auto car = [&train, veh]() {
             //     for (auto& car : train.cars)
@@ -5943,6 +5940,7 @@ namespace OpenLoco
             return 1;
         }
 
+        auto& legacyGCReturn = GameCommands::getLegacyReturnState();
         auto& aiStation = thought.stations[i];
         const auto pos = World::Pos3(aiStation.pos, aiStation.baseZ * World::kSmallZStep);
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
@@ -5966,9 +5964,9 @@ namespace OpenLoco
                 }
             }
 
-            if (_lastPlacedAirportStationId != StationId::null)
+            if (legacyGCReturn.lastPlacedAirport != StationId::null)
             {
-                aiStation.id = _lastPlacedAirportStationId;
+                aiStation.id = legacyGCReturn.lastPlacedAirport;
             }
         }
         else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
@@ -5992,9 +5990,9 @@ namespace OpenLoco
                 }
             }
 
-            if (_lastPlacedPortStationId != StationId::null)
+            if (legacyGCReturn.lastPlacedDock != StationId::null)
             {
-                aiStation.id = _lastPlacedPortStationId;
+                aiStation.id = legacyGCReturn.lastPlacedDock;
             }
         }
         else
@@ -6009,9 +6007,9 @@ namespace OpenLoco
                     return 2;
                 }
 
-                if (_lastPlacedTrackStationId != StationId::null)
+                if (legacyGCReturn.lastPlacedTrackRoadStationId != StationId::null)
                 {
-                    aiStation.id = _lastPlacedTrackStationId;
+                    aiStation.id = legacyGCReturn.lastPlacedTrackRoadStationId;
                 }
             }
             else
@@ -6034,9 +6032,9 @@ namespace OpenLoco
                         }
                     }
 
-                    if (_lastPlacedTrackStationId != StationId::null)
+                    if (legacyGCReturn.lastPlacedTrackRoadStationId != StationId::null)
                     {
-                        aiStation.id = _lastPlacedTrackStationId;
+                        aiStation.id = legacyGCReturn.lastPlacedTrackRoadStationId;
                     }
                     placeArgs.pos += World::Pos3{ kRotationOffset[placeArgs.rotation], 0 };
                 }
@@ -6368,7 +6366,7 @@ namespace OpenLoco
                 continue;
             }
             head->breakdownFlags &= ~Vehicles::BreakdownFlags::breakdownPending;
-            if (!head->hasVehicleFlags(VehicleFlags::commandStop))
+            if (!head->hasVehicleFlags(Vehicles::VehicleFlags::commandStop))
             {
                 GameCommands::VehicleChangeRunningModeArgs args{};
                 args.head = head->head;
@@ -6628,13 +6626,13 @@ namespace OpenLoco
 
         // Calling GC directly to match vanilla.
         // TODO change to use GameCommands::doCommand as this isn't handling costs
-        auto regs = static_cast<registers>(args);
+        auto regs = static_cast<GameCommands::registers>(args);
         regs.bl = GameCommands::Flags::apply;
         GameCommands::removeRoadStation(regs);
         if (static_cast<uint32_t>(regs.ebx) != GameCommands::FAILURE)
         {
             args.rotation ^= (1u << 1);
-            auto regs2 = static_cast<registers>(args);
+            auto regs2 = static_cast<GameCommands::registers>(args);
             regs2.bl = GameCommands::Flags::apply;
             GameCommands::removeRoadStation(regs2);
         }
@@ -6670,7 +6668,7 @@ namespace OpenLoco
             args.trackObjectId = trackObjId;
             // Calling GC directly to match vanilla.
             // TODO change to use GameCommands::doCommand as this isn't handling costs
-            auto regs = static_cast<registers>(args);
+            auto regs = static_cast<GameCommands::registers>(args);
             regs.bl = GameCommands::Flags::apply;
             GameCommands::removeTrack(regs);
 

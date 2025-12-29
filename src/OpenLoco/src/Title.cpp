@@ -15,16 +15,13 @@
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
-#include "Scenario.h"
+#include "Scenario/Scenario.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
 #include <variant>
 #include <vector>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Title
 {
@@ -83,13 +80,6 @@ namespace OpenLoco::Title
     static TitleSequence::const_iterator _sequenceIterator;
     static uint16_t _waitCounter;
 
-    static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _objectSelection;
-
-    static std::span<ObjectManager::SelectedObjectsFlags> getSelectedObjectFlags()
-    {
-        return std::span<ObjectManager::SelectedObjectsFlags>(*_objectSelection, ObjectManager::getNumInstalledObjects());
-    }
-
     // 0x004442C4
     static void loadTitle()
     {
@@ -138,7 +128,7 @@ namespace OpenLoco::Title
         GameCommands::setUpdatingCompanyId(CompanyManager::getControllingId());
         if (SceneManager::isPaused())
         {
-            registers regs;
+            GameCommands::registers regs;
             regs.bl = GameCommands::Flags::apply;
             GameCommands::togglePause(regs);
         }
@@ -150,13 +140,13 @@ namespace OpenLoco::Title
         SceneManager::addSceneFlags(SceneManager::Flags::title);
         SceneManager::setGameSpeed(GameSpeed::Normal);
         ObjectManager::unloadAll();
-        ObjectManager::prepareSelectionList(false);
-        ObjectManager::loadSelectionListObjects(getSelectedObjectFlags());
+        auto& selection = ObjectManager::prepareSelectionList(false);
+        ObjectManager::loadSelectionListObjects(selection.objectFlags);
         ObjectManager::freeSelectionList();
         ObjectManager::reloadAll();
         Scenario::sub_4748D4();
         Scenario::reset();
-        initialiseViewports();
+        resetSubsystems();
         MessageManager::reset();
         Gui::init();
         reset();

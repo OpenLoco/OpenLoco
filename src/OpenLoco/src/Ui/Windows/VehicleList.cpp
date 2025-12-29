@@ -4,7 +4,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -32,7 +31,10 @@
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle1.h"
+#include "Vehicles/Vehicle2.h"
 #include "Vehicles/VehicleDraw.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Utility/String.hpp>
@@ -41,8 +43,8 @@
 
 namespace OpenLoco::Ui::Windows::VehicleList
 {
-    static constexpr Ui::Size32 kWindowSize = { 550, 213 };
-    static constexpr Ui::Size kMaxDimensions = { 550, 1200 };
+    static constexpr Ui::Size kWindowSize = { 550, 213 };
+    static constexpr Ui::Size kMaxDimensions = { 1200, 2000 };
     static constexpr Ui::Size kMinDimensions = { 220, 160 };
 
     enum Widx
@@ -87,7 +89,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         Widgets::TableHeader({ 414, 43 }, { 65, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_age),
         Widgets::TableHeader({ 479, 43 }, { 67, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_reliability),
         Widgets::ScrollView({ 3, 56 }, { 544, 138 }, WindowColour::secondary, Scrollbars::vertical),
-        Widgets::Label({ 3, kWindowSize.height - 13 }, { kWindowSize.width, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid),
+        Widgets::Label({ 3, kWindowSize.height - 13 }, { kWindowSize.width - kResizeHandleSize, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid),
         Widgets::dropdownWidgets({ 280 - 16, 200 }, { 120, 12 }, WindowColour::secondary, StringIds::wcolour2_stringid),
         Widgets::dropdownWidgets({ 402 - 16, 200 }, { 150, 12 }, WindowColour::secondary, StringIds::wcolour2_stringid)
 
@@ -124,7 +126,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
     constexpr bool isCargoFilterActive(const Window& self, bool checkSelection = true)
     {
-        return self.var_88A == static_cast<int16_t>(FilterMode::transportingCargo) && (!checkSelection || self.var_88C != -1);
+        return self.var_850 == static_cast<uint16_t>(FilterMode::transportingCargo) && (!checkSelection || self.var_852 != 0xFFFF);
     }
 
     using Vehicles::VehicleHead;
@@ -169,12 +171,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 continue;
             }
 
-            if (isCargoFilterActive(self) && !vehicleIsTransportingCargo(vehicle, self.var_88C))
+            if (isCargoFilterActive(self) && !vehicleIsTransportingCargo(vehicle, self.var_852))
             {
                 continue;
             }
 
-            vehicle->vehicleFlags &= ~VehicleFlags::sorted;
+            vehicle->vehicleFlags &= ~Vehicles::VehicleFlags::sorted;
         }
     }
 
@@ -262,12 +264,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 continue;
             }
 
-            if (vehicle->hasVehicleFlags(VehicleFlags::sorted))
+            if (vehicle->hasVehicleFlags(Vehicles::VehicleFlags::sorted))
             {
                 continue;
             }
 
-            if (isCargoFilterActive(self) && !vehicleIsTransportingCargo(vehicle, self.var_88C))
+            if (isCargoFilterActive(self) && !vehicleIsTransportingCargo(vehicle, self.var_852))
             {
                 continue;
             }
@@ -299,7 +301,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 refreshVehicleList(self);
                 return;
             }
-            vehicle->vehicleFlags |= VehicleFlags::sorted;
+            vehicle->vehicleFlags |= Vehicles::VehicleFlags::sorted;
 
             if (vehicle->id != EntityId(self.rowInfo[self.rowCount]))
             {
@@ -426,7 +428,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         Window* self = WindowManager::createWindow(
             WindowType::vehicleList,
             kWindowSize,
-            WindowFlags::flag_11,
+            WindowFlags::lighterFrame,
             getEvents());
 
         self->setWidgets(_widgets);
@@ -463,8 +465,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->sortMode = 0;
         self->var_83C = 0;
         self->rowHover = -1;
-        self->var_88A = static_cast<int16_t>(FilterMode::allVehicles);
-        self->var_88C = -1;
+        self->var_850 = static_cast<int16_t>(FilterMode::allVehicles);
+        self->var_852 = 0xFFFF;
 
         refreshVehicleList(*self);
 
@@ -535,37 +537,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             StringIds::stringid_ships,
         };
 
-        // Basic frame widget dimensions
-        self.widgets[Widx::frame].right = self.width - 1;
-        self.widgets[Widx::frame].bottom = self.height - 1;
-
-        self.widgets[Widx::panel].right = self.width - 1;
-        self.widgets[Widx::panel].bottom = self.height - 1;
-
-        self.widgets[Widx::caption].right = self.width - 2;
         self.widgets[Widx::caption].text = kTypeToCaption[self.currentTab];
-
-        self.widgets[Widx::close_button].left = self.width - 15;
-        self.widgets[Widx::close_button].right = self.width - 3;
-
-        self.widgets[Widx::scrollview].right = self.width - 4;
-        self.widgets[Widx::scrollview].bottom = self.height - 14;
-
-        // Reposition table headers
-        self.widgets[Widx::sort_name].right = std::min(self.width - 4, 313);
-
-        self.widgets[Widx::sort_profit].left = std::min(self.width - 4, 314);
-        self.widgets[Widx::sort_profit].right = std::min(self.width - 4, 413);
-
-        self.widgets[Widx::sort_age].left = std::min(self.width - 4, 414);
-        self.widgets[Widx::sort_age].right = std::min(self.width - 4, 478);
-
-        self.widgets[Widx::sort_reliability].left = std::min(self.width - 4, 479);
-        self.widgets[Widx::sort_reliability].right = std::min(self.width - 4, 545);
-
-        // Reposition company selection
-        self.widgets[Widx::company_select].left = self.width - 28;
-        self.widgets[Widx::company_select].right = self.width - 3;
 
         // Set header button captions.
         self.widgets[Widx::sort_name].text = self.sortMode == SortMode::Name ? StringIds::table_header_name_desc : StringIds::table_header_name;
@@ -573,21 +545,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self.widgets[Widx::sort_age].text = self.sortMode == SortMode::Age ? StringIds::table_header_age_desc : StringIds::table_header_age;
         self.widgets[Widx::sort_reliability].text = self.sortMode == SortMode::Reliability ? StringIds::table_header_reliability_desc : StringIds::table_header_reliability;
 
-        // Reposition filter dropdowns
-        self.widgets[Widx::filter_type].top = self.height - 13;
-        self.widgets[Widx::filter_type].bottom = self.height - 2;
-
-        self.widgets[Widx::filter_type_btn].top = self.height - 12;
-        self.widgets[Widx::filter_type_btn].bottom = self.height - 3;
-
-        self.widgets[Widx::cargo_type].top = self.height - 13;
-        self.widgets[Widx::cargo_type].bottom = self.height - 2;
-
-        self.widgets[Widx::cargo_type_btn].top = self.height - 12;
-        self.widgets[Widx::cargo_type_btn].bottom = self.height - 3;
-
         // Disable cargo dropdown if not applicable
-        if (self.var_88A != FilterMode::transportingCargo)
+        if (self.var_850 != FilterMode::transportingCargo)
         {
             self.disabledWidgets |= (1 << Widx::cargo_type) | (1 << Widx::cargo_type_btn);
         }
@@ -602,7 +561,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             StringIds::tooltip_open_station_window_to_filter,
             StringIds::tooltip_select_cargo_type,
         };
-        self.widgets[Widx::cargo_type_btn].tooltip = kFilterTooltipByType[self.var_88A];
+        self.widgets[Widx::cargo_type_btn].tooltip = kFilterTooltipByType[self.var_850];
 
         Widget::leftAlignTabs(self, Widx::tab_trains, Widx::tab_ships);
 
@@ -616,12 +575,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
         };
 
         {
-            // Reposition status bar
+            // Set status bar text
             auto& widget = self.widgets[Widx::status_bar];
-            widget.top = self.height - 13;
-            widget.bottom = self.height - 3;
-
-            // Set status bar
             FormatArguments args{ widget.textArgs };
             auto& footerStringPair = kTypeToFooterStringIds[self.currentTab];
             args.push(self.var_83C == 1 ? footerStringPair.first : footerStringPair.second);
@@ -637,7 +592,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             // Set current filter type
             auto& widget = self.widgets[Widx::filter_type];
             FormatArguments args{ widget.textArgs };
-            args.push(kTypeToFilterStringIds[self.var_88A]);
+            args.push(kTypeToFilterStringIds[self.var_850]);
         }
 
         auto& widget = self.widgets[Widx::cargo_type];
@@ -647,10 +602,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
         if (isCargoFilterActive(self, false))
         {
             filterActive = true;
-            if (self.var_88C != -1)
+            if (self.var_852 != 0xFFFF)
             {
                 // Show current cargo
-                auto cargoObj = ObjectManager::get<CargoObject>(self.var_88C);
+                auto cargoObj = ObjectManager::get<CargoObject>(self.var_852);
                 args.push(StringIds::carrying_cargoid_sprite);
                 args.push(cargoObj->name);
                 args.push(cargoObj->unitInlineSprite);
@@ -721,6 +676,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             drawTrainInline(drawingCtx, vehicle, Ui::Point(0, yPos + (self.rowHeight - 28) / 2 + 6));
 
             // Draw vehicle status
+            auto& statusHeader = self.widgets[Widx::sort_name];
             {
                 // Prepare status for drawing
                 auto status = head->getStatus();
@@ -740,11 +696,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
                 // Draw status
                 yPos += 2;
-                auto point = Point(1, yPos);
-                tr.drawStringLeftClipped(point, 308, AdvancedColour(Colour::black).outline(), format, args);
+                auto point = Point(statusHeader.left + 1, yPos);
+                tr.drawStringLeftClipped(point, statusHeader.width() - 2, AdvancedColour(Colour::black).outline(), format, args);
             }
 
             // Vehicle profit
+            auto& profitHeader = self.widgets[Widx::sort_profit];
             {
                 StringId format = StringIds::vehicle_list_profit_pos;
                 currency32_t profit = vehicle.veh2->totalRecentProfit() / 4;
@@ -755,11 +712,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 }
 
                 auto args = FormatArguments::common(profit);
-                auto point = Point(310, yPos);
-                tr.drawStringLeftClipped(point, 98, AdvancedColour(Colour::black).outline(), format, args);
+                auto point = Point(profitHeader.left + 1, yPos);
+                tr.drawStringLeftClipped(point, profitHeader.width() - 2, AdvancedColour(Colour::black).outline(), format, args);
             }
 
             // Vehicle age
+            auto& ageHeader = self.widgets[Widx::sort_age];
             {
                 StringId format = StringIds::vehicle_list_age_years;
                 auto age = (getCurrentDay() - vehicle.veh1->dayCreated) / 365;
@@ -769,16 +727,17 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 }
 
                 auto args = FormatArguments::common(age);
-                auto point = Point(410, yPos);
-                tr.drawStringLeftClipped(point, 63, AdvancedColour(Colour::black).outline(), format, args);
+                auto point = Point(ageHeader.left + 1, yPos);
+                tr.drawStringLeftClipped(point, ageHeader.width() - 2, AdvancedColour(Colour::black).outline(), format, args);
             }
 
             // Vehicle reliability
+            auto& reliabilityHeader = self.widgets[Widx::sort_reliability];
             {
                 int16_t reliability = vehicle.veh2->reliability;
                 auto args = FormatArguments::common(reliability);
-                auto point = Point(475, yPos);
-                tr.drawStringLeftClipped(point, 65, AdvancedColour(Colour::black).outline(), StringIds::vehicle_list_reliability, args);
+                auto point = Point(reliabilityHeader.left + 1, yPos);
+                tr.drawStringLeftClipped(point, reliabilityHeader.width() - 2, AdvancedColour(Colour::black).outline(), StringIds::vehicle_list_reliability, args);
             }
 
             yPos += self.rowHeight - 2;
@@ -884,7 +843,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::all_vehicles);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::transporting_cargo);
-            Dropdown::setItemSelected(self.var_88A);
+            Dropdown::setItemSelected(self.var_850);
         }
         else if (widgetIndex == Widx::cargo_type_btn)
         {
@@ -904,7 +863,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 args.push(cargoId);
                 Dropdown::add(index, StringIds::carrying_cargoid_sprite, args);
 
-                if (index == self.var_88C)
+                if (index == self.var_852)
                 {
                     selectedIndex = index;
                 }
@@ -971,16 +930,16 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         if (widgetIndex == filter_type_btn && itemIndex != -1)
         {
-            if (self.var_88A != itemIndex)
+            if (self.var_850 != itemIndex)
             {
-                self.var_88A = itemIndex;
-                self.var_88C = -1;
+                self.var_850 = itemIndex;
+                self.var_852 = 0xFFFF;
             }
         }
 
         else if (widgetIndex == cargo_type_btn && itemIndex != -1)
         {
-            self.var_88C = Dropdown::getItemArgument(itemIndex, 3);
+            self.var_852 = Dropdown::getItemArgument(itemIndex, 3);
         }
     }
 
@@ -1178,6 +1137,82 @@ namespace OpenLoco::Ui::Windows::VehicleList
             self.height = self.minHeight;
             self.invalidate();
         }
+
+        // Basic frame widget dimensions
+        self.widgets[Widx::frame].right = self.width - 1;
+        self.widgets[Widx::frame].bottom = self.height - 1;
+
+        self.widgets[Widx::panel].right = self.width - 1;
+        self.widgets[Widx::panel].bottom = self.height - 1;
+
+        self.widgets[Widx::caption].right = self.width - 2;
+
+        self.widgets[Widx::close_button].left = self.width - 15;
+        self.widgets[Widx::close_button].right = self.width - 3;
+
+        auto nameHeaderWidth = _widgets[Widx::sort_name].width();
+        auto profitHeaderWidth = _widgets[Widx::sort_profit].width();
+        auto ageHeaderWidth = _widgets[Widx::sort_age].width();
+        auto reliabilityHeaderWidth = _widgets[Widx::sort_reliability].width();
+
+        nameHeaderWidth = std::max<uint16_t>(nameHeaderWidth, self.width - profitHeaderWidth - ageHeaderWidth - reliabilityHeaderWidth);
+
+        // Reposition table headers
+        self.widgets[Widx::sort_name].right = std::min<uint16_t>(nameHeaderWidth, self.width - 4);
+
+        self.widgets[Widx::sort_profit].left = std::min<uint16_t>(self.widgets[Widx::sort_name].right + 1, self.width - 4);
+        self.widgets[Widx::sort_profit].right = std::min<uint16_t>(self.widgets[Widx::sort_profit].left + profitHeaderWidth, self.width - 4);
+
+        self.widgets[Widx::sort_age].left = std::min<uint16_t>(self.widgets[Widx::sort_profit].right + 1, self.width - 4);
+        self.widgets[Widx::sort_age].right = std::min<uint16_t>(self.widgets[Widx::sort_age].left + ageHeaderWidth, self.width - 4);
+
+        self.widgets[Widx::sort_reliability].left = std::min<uint16_t>(self.widgets[Widx::sort_age].right + 1, self.width - 4);
+        self.widgets[Widx::sort_reliability].right = std::min<uint16_t>(self.widgets[Widx::sort_reliability].left + reliabilityHeaderWidth, self.width - 4);
+
+        // Reposition company selection
+        self.widgets[Widx::company_select].left = self.width - 28;
+        self.widgets[Widx::company_select].right = self.width - 3;
+
+        auto filterWidth = _widgets[Widx::filter_type].width();
+        auto cargoTypeWidth = _widgets[Widx::cargo_type].width();
+        bool enoughSpaceForCargoFilters = self.width > cargoTypeWidth + filterWidth + 50;
+
+        self.widgets[Widx::cargo_type].hidden = !enoughSpaceForCargoFilters;
+        self.widgets[Widx::cargo_type_btn].hidden = !enoughSpaceForCargoFilters;
+        self.widgets[Widx::filter_type].hidden = !enoughSpaceForCargoFilters;
+        self.widgets[Widx::filter_type_btn].hidden = !enoughSpaceForCargoFilters;
+
+        // Reposition filter/cargo dropdowns, starting from the right
+        if (enoughSpaceForCargoFilters)
+        {
+            self.widgets[Widx::cargo_type].top = self.height - 14;
+            self.widgets[Widx::cargo_type].bottom = self.height - 3;
+            self.widgets[Widx::cargo_type].right = self.width - kResizeHandleSize - 2;
+            self.widgets[Widx::cargo_type].left = self.widgets[Widx::cargo_type].right - cargoTypeWidth;
+
+            self.widgets[Widx::cargo_type_btn].top = self.height - 13;
+            self.widgets[Widx::cargo_type_btn].bottom = self.height - 4;
+            self.widgets[Widx::cargo_type_btn].right = self.widgets[Widx::cargo_type].right - 1;
+            self.widgets[Widx::cargo_type_btn].left = self.widgets[Widx::cargo_type].right - 10;
+
+            self.widgets[Widx::filter_type].top = self.height - 14;
+            self.widgets[Widx::filter_type].bottom = self.height - 3;
+            self.widgets[Widx::filter_type].right = self.widgets[Widx::cargo_type].left - 2;
+            self.widgets[Widx::filter_type].left = self.widgets[Widx::filter_type].right - filterWidth;
+
+            self.widgets[Widx::filter_type_btn].top = self.height - 13;
+            self.widgets[Widx::filter_type_btn].bottom = self.height - 4;
+            self.widgets[Widx::filter_type_btn].right = self.widgets[Widx::filter_type].right - 1;
+            self.widgets[Widx::filter_type_btn].left = self.widgets[Widx::filter_type].right - 10;
+        }
+
+        self.widgets[Widx::scrollview].right = self.width - 4;
+        self.widgets[Widx::scrollview].bottom = self.height - 15;
+
+        // Use remaining space for status bar
+        self.widgets[Widx::status_bar].top = self.height - 13;
+        self.widgets[Widx::status_bar].bottom = self.height - 4;
+        self.widgets[Widx::status_bar].right = self.width - kResizeHandleSize - 1;
     }
 
     static constexpr WindowEventList kEvents = {

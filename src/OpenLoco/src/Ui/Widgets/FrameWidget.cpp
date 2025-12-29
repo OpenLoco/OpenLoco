@@ -1,8 +1,8 @@
 #include "FrameWidget.h"
+#include "Config.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Ui/Window.h"
 
@@ -24,7 +24,7 @@ namespace OpenLoco::Ui::Widgets
         const auto pos = window->position() + widget.position();
         const auto size = widget.size();
 
-        const auto resizeBarPos = pos + Ui::Point(size.width - 18, size.height - 18);
+        const auto resizeBarPos = pos + Ui::Point(size.width - kResizeHandleSize, size.height - kResizeHandleSize);
 
         uint32_t image = Gfx::recolour(ImageIds::window_resize_handle, colour.c());
         drawingCtx.drawImage(resizeBarPos, image);
@@ -33,32 +33,22 @@ namespace OpenLoco::Ui::Widgets
     // 0x004CAAB9
     void Frame::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
-        auto* window = widgetState.window;
-
-        const auto pos = window->position() + widget.position();
-        const auto size = widget.size();
-
-        const auto& rt = drawingCtx.currentRenderTarget();
-        const auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(pos.x, pos.y, size.width, 41));
-        if (clipped)
+        switch (Config::get().windowFrameStyle)
         {
-            uint32_t imageId = widget.image;
-            if (window->hasFlags(WindowFlags::flag_11))
-            {
-                imageId = Gfx::recolour(ImageIds::frame_background_image, widgetState.colour.c());
-            }
-            else
-            {
-                imageId = Gfx::recolour(ImageIds::frame_background_image_alt, widgetState.colour.c());
-            }
-
-            drawingCtx.pushRenderTarget(*clipped);
-            drawingCtx.drawImage(0, 0, imageId);
-            drawingCtx.popRenderTarget();
+            case Config::WindowFrameStyle::background:
+                Frame::drawBackground(drawingCtx, widget, widgetState);
+                break;
+            case Config::WindowFrameStyle::solid:
+                Frame::drawSolid(drawingCtx, widget, widgetState);
+                break;
+            case Config::WindowFrameStyle::transparent:
+                Frame::drawTransparent(drawingCtx, widget, widgetState);
+                break;
         }
 
         uint8_t shade;
-        if (window->hasFlags(WindowFlags::flag_11))
+        const auto* window = widgetState.window;
+        if (window->hasFlags(WindowFlags::lighterFrame))
         {
             shade = Colours::getShade(widgetState.colour.c(), 3);
         }
@@ -66,6 +56,9 @@ namespace OpenLoco::Ui::Widgets
         {
             shade = Colours::getShade(widgetState.colour.c(), 1);
         }
+
+        const auto pos = window->position() + widget.position();
+        const auto size = widget.size();
 
         // Shadow at the right side.
         drawingCtx.fillRect(
@@ -75,5 +68,58 @@ namespace OpenLoco::Ui::Widgets
             Gfx::RectFlags::none);
 
         drawResizeHandle(drawingCtx, window, widget, widgetState.colour);
+    }
+
+    void Frame::drawBackground(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
+    {
+        const auto* window = widgetState.window;
+        const auto pos = window->position() + widget.position();
+        const auto size = widget.size();
+
+        const auto& rt = drawingCtx.currentRenderTarget();
+        const auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(pos.x, pos.y, size.width, 41));
+        if (clipped)
+        {
+            uint32_t imageId = widget.image;
+            if (window->hasFlags(WindowFlags::lighterFrame))
+            {
+                imageId = Gfx::recolour(ImageIds::frame_background_image, widgetState.colour.c());
+            }
+            else
+            {
+                imageId = Gfx::recolour(ImageIds::frame_background_image_alt, widgetState.colour.c());
+            }
+
+            drawingCtx.pushRenderTarget(*clipped);
+
+            // Derive the number of background images to paint
+            const auto backgroundImageWidth = Gfx::getG1Element(imageId)->width;
+            const auto numPassesNeeded = (widget.width() + backgroundImageWidth - 1) / backgroundImageWidth;
+
+            // Draw background image repeatedly to account for large windows
+            // NB: starting on the right side to counter the border on the left side of the sprite
+            for (auto i = numPassesNeeded; i >= 0; i--)
+            {
+                drawingCtx.drawImage(i * (backgroundImageWidth - 1), 0, imageId);
+            }
+
+            drawingCtx.popRenderTarget();
+        }
+    }
+
+    void Frame::drawSolid(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
+    {
+        const auto flags = widgetState.flags;
+        const auto colour = widgetState.colour;
+        const auto* window = widgetState.window;
+        drawingCtx.fillRectInset(window->position() + widget.position(), widget.size(), colour, flags);
+    }
+
+    void Frame::drawTransparent(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
+    {
+        const auto flags = widgetState.flags;
+        const auto colour = widgetState.colour.translucent();
+        const auto* window = widgetState.window;
+        drawingCtx.fillRectInset(window->position() + widget.position(), widget.size(), colour, flags);
     }
 }

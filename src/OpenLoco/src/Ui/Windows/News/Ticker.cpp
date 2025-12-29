@@ -1,7 +1,6 @@
 #include "Audio/Audio.h"
 #include "Graphics/Colour.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/Formatting.h"
@@ -167,7 +166,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
             return;
         }
 
-        if (SceneManager::getPauseFlags() & (1 << 2))
+        if ((SceneManager::getPauseFlags() & PauseFlags::browsePrompt) != PauseFlags::none)
         {
             return;
         }

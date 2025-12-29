@@ -3,7 +3,6 @@
 #include "Ui.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Diagnostics/Logging.h>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/Utility/String.hpp>
 #include <cstring>
@@ -11,7 +10,6 @@
 #include <iostream>
 #include <locale>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Environment
@@ -164,14 +162,14 @@ namespace OpenLoco::Environment
             auto similarResult = findSimilarFile(result);
             if (similarResult.empty())
             {
-                Logging::error("Warning: file {} could not be not found", result.u8string());
+                Logging::error("Warning: file {} could not be found", result.u8string());
             }
             else
             {
                 result = similarResult;
             }
 #else
-            Logging::error("Warning: file {} could not be not found", result.u8string());
+            Logging::error("Warning: file {} could not be found", result.u8string());
 #endif
         }
         return result;

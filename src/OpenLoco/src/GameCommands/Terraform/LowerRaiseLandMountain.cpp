@@ -1,26 +1,23 @@
 #include "LowerRaiseLandMountain.h"
 #include "Audio/Audio.h"
+#include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Terraform/LowerLand.h"
 #include "GameCommands/Terraform/RaiseLand.h"
 #include "Map/SurfaceData.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 #include "Types.hpp"
-#include <OpenLoco/Diagnostics/Logging.h>
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Diagnostics;
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 
 namespace OpenLoco::GameCommands
 {
-    static loco_global<uint32_t, 0x00F0014E> _mtnToolCost;
-    static loco_global<uint8_t, 0x00F00154> _mtnToolGCFlags;
-    static loco_global<uint8_t, 0x00F00155> _mtnToolHeightDiff;
-    static loco_global<int8_t, 0x00F00156> _mtnToolOuterLoopIndex;
+    static uint32_t _mtnToolCost;         // 0x00F0014E
+    static uint8_t _mtnToolGCFlags;       // 0x00F00154
+    static uint8_t _mtnToolHeightDiff;    // 0x00F00155
+    static int8_t _mtnToolOuterLoopIndex; // 0x00F00156
 
     static void adjustSurfaceSlope(Pos2 pos, int8_t targetBaseZ, uint8_t targetCorner, uint8_t referenceCornerFlag, World::TileClearance::RemovedBuildings& removedBuildings)
     {
@@ -139,14 +136,14 @@ namespace OpenLoco::GameCommands
         auto height = TileManager::getSurfaceCornerDownHeight(*surface, SurfaceSlope::CornerUp::south);
         adjustSurfaceSlopeEast(targetPos, height, removedBuildings);
 
-        *_mtnToolHeightDiff -= kSmallZStep;
+        _mtnToolHeightDiff -= kSmallZStep;
 
         if (targetPos.y >= args.pointA.y)
         {
-            *_mtnToolHeightDiff += kSmallZStep;
+            _mtnToolHeightDiff += kSmallZStep;
             if (targetPos.y > args.pointB.y)
             {
-                *_mtnToolHeightDiff += kSmallZStep;
+                _mtnToolHeightDiff += kSmallZStep;
             }
         }
 
@@ -162,14 +159,14 @@ namespace OpenLoco::GameCommands
         auto height = TileManager::getSurfaceCornerDownHeight(*surface, SurfaceSlope::CornerUp::west);
         adjustSurfaceSlopeSouth(targetPos, height, removedBuildings);
 
-        *_mtnToolHeightDiff -= kSmallZStep;
+        _mtnToolHeightDiff -= kSmallZStep;
 
         if (targetPos.x >= args.pointA.x)
         {
-            *_mtnToolHeightDiff += kSmallZStep;
+            _mtnToolHeightDiff += kSmallZStep;
             if (targetPos.x > args.pointB.x)
             {
-                *_mtnToolHeightDiff += kSmallZStep;
+                _mtnToolHeightDiff += kSmallZStep;
             }
         }
 
@@ -185,14 +182,14 @@ namespace OpenLoco::GameCommands
         auto height = TileManager::getSurfaceCornerDownHeight(*surface, SurfaceSlope::CornerUp::north);
         adjustSurfaceSlopeWest(targetPos, height, removedBuildings);
 
-        *_mtnToolHeightDiff -= kSmallZStep;
+        _mtnToolHeightDiff -= kSmallZStep;
 
         if (targetPos.y <= args.pointB.y)
         {
-            *_mtnToolHeightDiff += kSmallZStep;
+            _mtnToolHeightDiff += kSmallZStep;
             if (targetPos.y < args.pointA.y)
             {
-                *_mtnToolHeightDiff += kSmallZStep;
+                _mtnToolHeightDiff += kSmallZStep;
             }
         }
 
@@ -208,14 +205,14 @@ namespace OpenLoco::GameCommands
         auto height = TileManager::getSurfaceCornerDownHeight(*surface, SurfaceSlope::CornerUp::east);
         adjustSurfaceSlopeNorth(targetPos, height, removedBuildings);
 
-        *_mtnToolHeightDiff -= kSmallZStep;
+        _mtnToolHeightDiff -= kSmallZStep;
 
         if (targetPos.x <= args.pointB.x)
         {
-            *_mtnToolHeightDiff += kSmallZStep;
+            _mtnToolHeightDiff += kSmallZStep;
             if (targetPos.x < args.pointA.x)
             {
-                *_mtnToolHeightDiff += kSmallZStep;
+                _mtnToolHeightDiff += kSmallZStep;
             }
         }
 
@@ -257,7 +254,7 @@ namespace OpenLoco::GameCommands
             auto result = adjustMountainCentre(args, removedBuildings, flags);
             if (result != FAILURE)
             {
-                _mtnToolCost = *_mtnToolCost + result;
+                _mtnToolCost += result;
             }
         }
 
@@ -269,7 +266,7 @@ namespace OpenLoco::GameCommands
             auto result = adjustMountainCentre(args, removedBuildings, flags);
             if (result != FAILURE)
             {
-                _mtnToolCost = *_mtnToolCost + result;
+                _mtnToolCost += result;
             }
 
             // Verify that the slope is now gone. Abort if not.
@@ -297,7 +294,7 @@ namespace OpenLoco::GameCommands
 
         while (true)
         {
-            *_mtnToolOuterLoopIndex += 4;
+            _mtnToolOuterLoopIndex += 4;
             radius += 2;
             basePos -= Pos2{ kTileSize, kTileSize };
 
@@ -306,7 +303,7 @@ namespace OpenLoco::GameCommands
                 break;
             }
 
-            *_mtnToolHeightDiff = _mtnToolOuterLoopIndex * 2;
+            _mtnToolHeightDiff = _mtnToolOuterLoopIndex * 2;
 
             {
                 auto tile = TileManager::get(args.pointA);

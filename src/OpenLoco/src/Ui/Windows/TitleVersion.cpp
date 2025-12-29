@@ -1,11 +1,10 @@
 #include "Graphics/Colour.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
-#include "OpenLoco.h"
 #include "Ui.h"
 #include "Ui/Widget.h"
 #include "Ui/Window.h"
 #include "Ui/WindowManager.h"
+#include <OpenLoco/Version.hpp>
 
 namespace OpenLoco::Ui::Windows::TitleVersion
 {
@@ -13,13 +12,13 @@ namespace OpenLoco::Ui::Windows::TitleVersion
 
     Window* open()
     {
-        auto width = 512;
-        auto height = 16;
+        const auto kWidth = 512;
+        const auto kHeight = 30;
         auto window = OpenLoco::Ui::WindowManager::createWindow(
             WindowType::openLocoVersion,
-            { 8, Ui::height() - height },
-            { width, height },
-            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
+            { 8, Ui::height() - kHeight },
+            { kWidth, kHeight },
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::framedWidgets,
             getEvents());
 
         return window;
@@ -30,9 +29,13 @@ namespace OpenLoco::Ui::Windows::TitleVersion
     {
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        auto versionInfo = getVersionInfo();
+        auto versionInfo = Version::getVersionInfo();
         auto point = Point(window.x, window.y);
         tr.drawString(point, AdvancedColour(Colour::white).outline(), versionInfo.c_str());
+
+        auto platformInfo = Version::getPlatformInfo();
+        point.y += 12;
+        tr.drawString(point, AdvancedColour(Colour::white).outline(), platformInfo.c_str());
     }
 
     static constexpr WindowEventList kEvents = {

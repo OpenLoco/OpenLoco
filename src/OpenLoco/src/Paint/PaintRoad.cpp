@@ -15,18 +15,14 @@
 #include "PaintRoadStyle1Data.h"
 #include "PaintRoadStyle2Data.h"
 #include "PaintTileDecorations.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Diagnostics;
 namespace OpenLoco::Paint
 {
-    static Interop::loco_global<uint8_t, 0x00522095> _byte_522095;
-    static Interop::loco_global<uint8_t, 0x0050BF68> _byte_50BF68;
-
     struct RoadPaintCommon
     {
         ImageId roadBaseImageId;          // 0x0112C280 with colours and image index set to base of roadObject image table
@@ -330,7 +326,7 @@ namespace OpenLoco::Paint
             const auto heightOffset = World::Pos3{ 0,
                                                    0,
                                                    height };
-            if (_byte_50BF68 == 1)
+            if (session.isHitTest())
             {
                 session.addToPlotListTrackRoad(
                     ImageId(rpp.imageIndexOffsets[rotation]),
@@ -444,7 +440,7 @@ namespace OpenLoco::Paint
     // 0x004759A6
     void paintRoad(PaintSession& session, const World::RoadElement& elRoad)
     {
-        if (elRoad.isAiAllocated())
+        if (elRoad.isAiAllocated() && !showAiPlanningGhosts())
         {
             return;
         }
@@ -498,15 +494,17 @@ namespace OpenLoco::Paint
         // This is an ImageId but it has no image index set!
         auto baseRoadImageColour = ImageId(0, CompanyManager::getCompanyColour(elRoad.owner()));
 
-        if (elRoad.isGhost())
+        if (elRoad.isGhost() || elRoad.isAiAllocated())
         {
             session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
             baseRoadImageColour = Gfx::applyGhostToImage(0);
+
+            // TODO: apply company colour if playerCompanyID != elTrack.owner()?
         }
 
         RoadPaintCommon roadSession{ baseRoadImageColour.withIndex(roadObj->image), baseRoadImageColour, roadObj->tunnel };
 
-        if (!(*_byte_522095 & (1 << 0)))
+        if (!session.skipTrackRoadSurfaces())
         {
             auto& rpcp = kRoadPaintCommonParts[elRoad.roadId()][elRoad.sequenceIndex()];
             if (roadObj->paintStyle == 0)
@@ -561,6 +559,10 @@ namespace OpenLoco::Paint
         const auto ghostMods = Ui::Windows::Construction::getLastSelectedMods();
         for (auto mod = 0; mod < 2; ++mod)
         {
+            if (roadObj->mods[mod] == 0xFF)
+            {
+                continue;
+            }
             const auto* roadExtraObj = ObjectManager::get<RoadExtraObject>(roadObj->mods[mod]);
             ImageId roadExtraBaseImage{};
             if (elRoad.hasMod(mod))

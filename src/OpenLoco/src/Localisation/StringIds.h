@@ -67,6 +67,9 @@ namespace OpenLoco::StringIds
     constexpr StringId not_enough_cash_requires_currency32 = 59;
     constexpr StringId tooltip_close_window = 60;
     constexpr StringId game_init_failure = 61;
+    constexpr StringId unable_to_start_minimized = UNUSED_STR(62);
+    constexpr StringId unable_to_initialize_graphics = UNUSED_STR(63);
+    constexpr StringId invalid_cd_code_please_reinstall = UNUSED_STR(64);
 
     constexpr StringId display_resolution_dropdown_format = 65;
     constexpr StringId display_resolution_label_format = 66;
@@ -100,7 +103,7 @@ namespace OpenLoco::StringIds
     constexpr StringId arg18_stringid = 94;
     constexpr StringId arg20_stringid = 95;
     constexpr StringId dropdown = 96;
-
+    constexpr StringId unused_small_black_string = UNUSED_STR(97); // May have been for a tooltip
     constexpr StringId error_too_low = 98;
     constexpr StringId error_too_high = 99;
     constexpr StringId error_cant_lower_land_here = 100;
@@ -149,9 +152,7 @@ namespace OpenLoco::StringIds
     constexpr StringId cant_build_pop3_string = 143;
     constexpr StringId raise_or_lower_land_first = 144;
     constexpr StringId menu_underground_view = 145;
-
-    // String below is unused
-    constexpr StringId menu_hide_foreground_tracks_roads = 146;
+    constexpr StringId menu_hide_foreground_tracks_roads = UNUSED_STR(146);
     constexpr StringId station_type_can_only_be_built_at_road_ends = 147;
     constexpr StringId wrong_type_of_station_for_string_id = 148;
     constexpr StringId station_not_compatible_with_string_id = 149;
@@ -375,9 +376,8 @@ namespace OpenLoco::StringIds
     constexpr StringId format_openloco_scenario = 368;
     constexpr StringId format_openloco_landscape = 369;
     constexpr StringId error_game_save_failed = 370;
-
-    // String below is unused
-    constexpr StringId menu_hide_foreground_scenery_buildings = 372;
+    constexpr StringId error_failed_to_load_saved_game_file_contains_invalid_data = UNUSED_STR(371); // Similar to 1082 and 1083 but as one string
+    constexpr StringId menu_hide_foreground_scenery_buildings = UNUSED_STR(372);
     constexpr StringId can_only_be_built_on_water = 373;
     constexpr StringId can_only_be_built_on_water_next_to_water_based_industry = 374;
     constexpr StringId title_name_vehicle = 375;
@@ -391,6 +391,7 @@ namespace OpenLoco::StringIds
     constexpr StringId title_station_name = 383;
     constexpr StringId prompt_type_new_station_name = 384;
     constexpr StringId error_cant_rename_station = 385;
+    constexpr StringId invalid_name_for_station = UNUSED_STR(386);
 
     constexpr StringId cant_move_vehicle = 387;
     constexpr StringId cant_reverse_train = 388;
@@ -431,7 +432,7 @@ namespace OpenLoco::StringIds
     constexpr StringId dropdown_stringid_selected = 422;
     constexpr StringId dropdown_company_select = 423;
     constexpr StringId dropdown_stringptr = 424;
-
+    constexpr StringId dropdown_stringptr_selected = UNUSED_STR(425); // unused through string id addition
     constexpr StringId menu_height_marks_on_tracks_roads = 426;
     constexpr StringId menu_height_marks_on_land = 427;
     constexpr StringId menu_one_way_direction_arrows = 428;
@@ -454,12 +455,11 @@ namespace OpenLoco::StringIds
     constexpr StringId error_cant_remove_this = 445;
     constexpr StringId title_build_walls = 446;
     constexpr StringId title_plant_trees = 447;
-
+    constexpr StringId cant_position_this_here = UNUSED_STR(448); // leftover from RCT?
     constexpr StringId cant_plant_this_here = 449;
     constexpr StringId outlined_wcolour2_stringid = 450;
     constexpr StringId stringid_right_click_to_modify = 451;
     constexpr StringId stringid_right_click_to_remove = 452;
-
     constexpr StringId black_tiny_font = 453;
     constexpr StringId red_stringid = 454;
     constexpr StringId black_stringid = 455;
@@ -488,11 +488,13 @@ namespace OpenLoco::StringIds
     constexpr StringId error_cant_raise_water_here = 478;
     constexpr StringId audio_device_none = 479;
     constexpr StringId stringptr = 480;
-
-    constexpr StringId cant_build_this_underwater_duplicate = 484; // This is a duplicate and could be deleted
+    constexpr StringId red_closed_hyphen_hyphen = UNUSED_STR(481);    // leftover from RCT?
+    constexpr StringId yellow_string_hyphen_hyphen = UNUSED_STR(482); // leftover from RCT?
+    constexpr StringId land_slope_unsuitable = UNUSED_STR(483);
+    constexpr StringId cant_build_this_underwater_duplicate = UNUSED_STR(484); // This is a duplicate and could be deleted
     constexpr StringId land_type_not_suitable = 485;
-    constexpr StringId spinner_up = 486;
-    constexpr StringId spinner_down = 487;
+    constexpr StringId spinner_up = UNUSED_STR(486); // For original version of stepper widget
+    constexpr StringId spinner_down = UNUSED_STR(487);
 
     constexpr StringId status_num_stations_singular = 520;
     constexpr StringId status_num_stations_plural = 521;
@@ -507,9 +509,8 @@ namespace OpenLoco::StringIds
     constexpr StringId status_num_industries_plural = 563;
 
     constexpr StringId rotate_object_90 = 565;
-
+    constexpr StringId level_land_required = UNUSED_STR(566);
     constexpr StringId error_cant_change_land_type = 567;
-
     constexpr StringId format_currency_income_green = 568;
     constexpr StringId format_currency_expense_red_negative = 569;
     constexpr StringId format_currency_income_in_company_colour = 570;
@@ -524,11 +525,11 @@ namespace OpenLoco::StringIds
     constexpr StringId new_construction_position = 579;
     constexpr StringId rotate_90 = 580;
     constexpr StringId string_id_in_the_way = 581;
-
+    constexpr StringId unused_currency32 = UNUSED_STR(582);
     constexpr StringId error_cant_build_this_here = 583;
     constexpr StringId date_monthyear = 584;
     constexpr StringId openloco = 585;
-
+    constexpr StringId please_insert_cd_in_following_drive = UNUSED_STR(586);
     constexpr StringId expenditure_income = 587;
     constexpr StringId train_income = 588;
     constexpr StringId train_running_costs = 589;
@@ -681,15 +682,21 @@ namespace OpenLoco::StringIds
     constexpr StringId shortcut_screenshot = 737;
     constexpr StringId shortcut_toggle_last_announcement = 738;
     constexpr StringId shortcut_send_message = 739;
-    constexpr StringId shortcut_key_base = 740;
+
+    // 740 to 995 are virtual key codes
+    constexpr StringId shortcut_key_base = UNUSED_STR(740);
 
     constexpr StringId keyboard_backspace = 748;
     constexpr StringId keyboard_tab = 749;
+
     constexpr StringId keyboard_return = 753;
+
     constexpr StringId keyboard_alt_menu = 758;
     constexpr StringId keyboard_pause = 759;
     constexpr StringId keyboard_caps = 760;
+
     constexpr StringId keyboard_escape = 767;
+
     constexpr StringId keyboard_spacebar = 772;
     constexpr StringId keyboard_pageup = 773;
     constexpr StringId keyboard_pagedown = 774;
@@ -699,8 +706,10 @@ namespace OpenLoco::StringIds
     constexpr StringId keyboard_up = 778;
     constexpr StringId keyboard_right = 779;
     constexpr StringId keyboard_down = 780;
+
     constexpr StringId keyboard_insert = 785;
     constexpr StringId keyboard_delete = 786;
+
     constexpr StringId keyboard_numpad_0 = 836;
     constexpr StringId keyboard_numpad_1 = 837;
     constexpr StringId keyboard_numpad_2 = 838;
@@ -717,6 +726,7 @@ namespace OpenLoco::StringIds
     constexpr StringId keyboard_numpad_minus = 849;
     constexpr StringId keyboard_numpad_period = 850;
     constexpr StringId keyboard_numpad_divide = 851;
+
     constexpr StringId keyboard_numlock = 884;
     constexpr StringId keyboard_scroll = 885;
 
@@ -923,7 +933,6 @@ namespace OpenLoco::StringIds
     constexpr StringId tooltip_trams = 1197;
     constexpr StringId tooltip_aircraft = 1198;
     constexpr StringId tooltip_ships = 1199;
-
     constexpr StringId tooltip_all_stations = 1200;
     constexpr StringId tooltip_rail_stations = 1201;
     constexpr StringId tooltip_road_stations = 1202;
@@ -1026,7 +1035,8 @@ namespace OpenLoco::StringIds
     constexpr StringId table_header_stations = 1299;
     constexpr StringId table_header_stations_desc = 1300;
     constexpr StringId tooltip_sort_stations = 1301;
-
+    constexpr StringId table_header_town = UNUSED_STR(1302);
+    constexpr StringId table_header_town_desc = UNUSED_STR(1303);
     constexpr StringId town_size_and_population = 1304;
     constexpr StringId tooltip_sort_town_type = 1305;
     constexpr StringId table_header_town_type = 1306;
@@ -1194,14 +1204,14 @@ namespace OpenLoco::StringIds
     constexpr StringId enter_host_address_description = 1484;
 
     constexpr StringId tooltip_display_options = 1486;
-    constexpr StringId tooltip_sound_options = 1487;
-    constexpr StringId tooltip_music_options = 1488;
+    constexpr StringId tooltip_sound_options = UNUSED_STR(1487);
+    constexpr StringId tooltip_music_options = UNUSED_STR(1488);
     constexpr StringId tooltip_regional_options = 1489;
     constexpr StringId tooltip_control_options = 1490;
     constexpr StringId tooltip_miscellaneous_options = 1491;
     constexpr StringId options_title_display = 1492;
-    constexpr StringId options_title_sound = 1493;
-    constexpr StringId options_title_music = 1494;
+    constexpr StringId options_title_sound = UNUSED_STR(1493);
+    constexpr StringId options_title_music = UNUSED_STR(1494);
     constexpr StringId options_title_regional = 1495;
     constexpr StringId options_title_controls = 1496;
     constexpr StringId options_title_miscellaneous = 1497;
@@ -1254,8 +1264,8 @@ namespace OpenLoco::StringIds
     constexpr StringId music_selection_title = 1544;
     constexpr StringId music_selection_tooltip = 1545;
     constexpr StringId checkmark = 1546;
-    constexpr StringId volume = 1547;
-    constexpr StringId set_volume_tip = 1548;
+    constexpr StringId volume = UNUSED_STR(1547);
+    constexpr StringId set_music_volume_tip = 1548;
     constexpr StringId menu_music_options = 1549;
     constexpr StringId company_face_selection_title = 1550;
     constexpr StringId tooltip_company_face_selection = 1551;
@@ -1291,7 +1301,6 @@ namespace OpenLoco::StringIds
     constexpr StringId load_landscape = 1581;
     constexpr StringId save_landscape = 1582;
     constexpr StringId generating_landscape = 1583;
-
     constexpr StringId error_cant_clear_entire_area = 1584;
     constexpr StringId title_landscape_generation_options = 1585;
     constexpr StringId title_landscape_generation_land = 1586;
@@ -1630,7 +1639,7 @@ namespace OpenLoco::StringIds
     constexpr StringId tiny_brake = 1925;
     constexpr StringId tooltip_route_move_order_up = 1926;
     constexpr StringId tooltip_route_move_order_down = 1927;
-
+    constexpr StringId unable_to_run_from_read_only_media = UNUSED_STR(1928);
     constexpr StringId atari_inc_credits_btn = UNUSED_STR(1929);
     constexpr StringId licenced_to_atari_inc = 1930;
     constexpr StringId atari_inc_credits_caption = UNUSED_STR(1931);
@@ -1647,6 +1656,46 @@ namespace OpenLoco::StringIds
     constexpr StringId intro_vehicle_notice_4 = 1942;
 
     // String ids 1943--1982 (some blank) were used in the Atari credits screen, but are now unused.
+    constexpr StringId atari_credits_1943 = UNUSED_STR(1943);
+    constexpr StringId atari_credits_1944 = UNUSED_STR(1944);
+    constexpr StringId atari_credits_1945 = UNUSED_STR(1945);
+    constexpr StringId atari_credits_1946 = UNUSED_STR(1946);
+    constexpr StringId atari_credits_1947 = UNUSED_STR(1947);
+    constexpr StringId atari_credits_1948 = UNUSED_STR(1948);
+    constexpr StringId atari_credits_1949 = UNUSED_STR(1949);
+    constexpr StringId atari_credits_1950 = UNUSED_STR(1950);
+    constexpr StringId atari_credits_1951 = UNUSED_STR(1951);
+    constexpr StringId atari_credits_1952 = UNUSED_STR(1952);
+    constexpr StringId atari_credits_1953 = UNUSED_STR(1953);
+    constexpr StringId atari_credits_1954 = UNUSED_STR(1954);
+    constexpr StringId atari_credits_1955 = UNUSED_STR(1955);
+    constexpr StringId atari_credits_1956 = UNUSED_STR(1956);
+    constexpr StringId atari_credits_1957 = UNUSED_STR(1957);
+    constexpr StringId atari_credits_1958 = UNUSED_STR(1958);
+    constexpr StringId atari_credits_1959 = UNUSED_STR(1959);
+    constexpr StringId atari_credits_1960 = UNUSED_STR(1960);
+    constexpr StringId atari_credits_1961 = UNUSED_STR(1961);
+    constexpr StringId atari_credits_1962 = UNUSED_STR(1962);
+    constexpr StringId atari_credits_1963 = UNUSED_STR(1963);
+    constexpr StringId atari_credits_1964 = UNUSED_STR(1964);
+    constexpr StringId atari_credits_1965 = UNUSED_STR(1965);
+    constexpr StringId atari_credits_1966 = UNUSED_STR(1966);
+    constexpr StringId atari_credits_1967 = UNUSED_STR(1967);
+    constexpr StringId atari_credits_1968 = UNUSED_STR(1968);
+    constexpr StringId atari_credits_1969 = UNUSED_STR(1969);
+    constexpr StringId atari_credits_1970 = UNUSED_STR(1970);
+    constexpr StringId atari_credits_1971 = UNUSED_STR(1971);
+    constexpr StringId atari_credits_1972 = UNUSED_STR(1972);
+    constexpr StringId atari_credits_1973 = UNUSED_STR(1973);
+    constexpr StringId atari_credits_1974 = UNUSED_STR(1974);
+    constexpr StringId atari_credits_1975 = UNUSED_STR(1975);
+    constexpr StringId atari_credits_1976 = UNUSED_STR(1976);
+    constexpr StringId atari_credits_1977 = UNUSED_STR(1977);
+    constexpr StringId atari_credits_1978 = UNUSED_STR(1978);
+    constexpr StringId atari_credits_1979 = UNUSED_STR(1979);
+    constexpr StringId atari_credits_1980 = UNUSED_STR(1980);
+    constexpr StringId atari_credits_1981 = UNUSED_STR(1981);
+    constexpr StringId atari_credits_1982 = UNUSED_STR(1982);
     constexpr StringId title_cargo_distance_graphs = 1983;
     constexpr StringId tab_cargo_distance_graphs = 1984;
     constexpr StringId last_journey_average_speed = 1985;
@@ -1750,14 +1799,13 @@ namespace OpenLoco::StringIds
     constexpr StringId object_company_owners = 2085;
     constexpr StringId object_scenario_descriptions = 2086;
     constexpr StringId tooltip_object_list = 2087;
-    constexpr StringId missing_object_data_id_x = 2088;
+    constexpr StringId missing_object_data_id_x = UNUSED_STR(2088);
     constexpr StringId export_plugin_objects = 2089;
     constexpr StringId export_plugin_objects_tip = 2090;
     constexpr StringId at_least_one_generic_dual_direction_road_type_must_be_selected = 2091;
     constexpr StringId scaffolding_type_must_be_selected = 2092;
-    // Two unused strings below
-    constexpr StringId object_selection_advanced = 2093;
-    constexpr StringId object_selection_advanced_tooltip = 2094;
+    constexpr StringId object_selection_advanced = UNUSED_STR(2093);
+    constexpr StringId object_selection_advanced_tooltip = UNUSED_STR(2094);
     constexpr StringId object_currency_big_font = 2095;
     constexpr StringId new_objects_installed_successfully = 2096;
     constexpr StringId industry_type_must_be_selected = 2097;
@@ -1778,11 +1826,11 @@ namespace OpenLoco::StringIds
     constexpr StringId region_type_must_be_selected = 2112;
     constexpr StringId unit_mph = 2113;
     constexpr StringId unit_kmh = 2114;
-    constexpr StringId unit_hour = 2115;
-    constexpr StringId unit_hours = 2116;
-    constexpr StringId unit_mins = 2117;
-    constexpr StringId unit_min = 2118;
-    constexpr StringId unit_secs = 2119;
+    constexpr StringId unit_hour = UNUSED_STR(2115);
+    constexpr StringId unit_hours = UNUSED_STR(2116);
+    constexpr StringId unit_mins = UNUSED_STR(2117);
+    constexpr StringId unit_min = UNUSED_STR(2118);
+    constexpr StringId unit_secs = UNUSED_STR(2119);
     constexpr StringId unit_units = 2120;
     constexpr StringId unit_ft = 2121;
     constexpr StringId unit_m = 2122;
@@ -2032,6 +2080,33 @@ namespace OpenLoco::StringIds
     constexpr StringId confirm_vehicle_component_refit_cargo_warning_title = 2366;
     constexpr StringId confirm_vehicle_component_refit_cargo_warning_message = 2367;
     constexpr StringId confirm_vehicle_component_refit_cargo_warning_confirm = 2368;
+    constexpr StringId tooltip_audio_options = 2369;
+    constexpr StringId options_title_audio = 2370;
+    constexpr StringId frame_sound = 2371;
+    constexpr StringId frame_jukebox = 2372;
+    constexpr StringId music_volume = 2373;
+    constexpr StringId show_company_ai_planning = 2374;
+    constexpr StringId show_company_ai_planning_tip = 2375;
+    constexpr StringId table_header_title = 2376;
+    constexpr StringId table_header_title_asc = 2377;
+    constexpr StringId table_header_title_desc = 2378;
+    constexpr StringId table_header_years = 2379;
+    constexpr StringId table_header_years_asc = 2380;
+    constexpr StringId table_header_years_desc = 2381;
+    constexpr StringId tooltip_sort_by_track_title = 2382;
+    constexpr StringId tooltip_sort_by_music_years = 2383;
+    constexpr StringId year_range = 2384;
+    constexpr StringId year_range_no_end = 2385;
+    constexpr StringId year_range_no_start = 2386;
+    constexpr StringId year_range_no_start_no_end = 2387;
+    constexpr StringId status_music_tracks_selected_singular = 2388;
+    constexpr StringId status_music_tracks_selected_plural = 2389;
+    constexpr StringId userInterfaceGroup = 2390;
+    constexpr StringId windowFrameStyle = 2391;
+    constexpr StringId windowFrameStyleTip = 2392;
+    constexpr StringId windowFrameStyleGradient = 2393;
+    constexpr StringId windowFrameStyleSolid = 2394;
+    constexpr StringId windowFrameStyleTranslucent = 2395;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

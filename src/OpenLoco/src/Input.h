@@ -97,10 +97,11 @@ namespace OpenLoco::Input
     KeyModifier getKeyModifier();
 
     StationId getHoveredStationId();
+    void setHoveredStationId(StationId stationId);
 
     void handleKeyboard();
 
-    void handleMouse(int16_t x, int16_t y, MouseButton button);
+    void handleMouse(int32_t x, int32_t y, MouseButton button);
     MouseButton getLastKnownButtonState();
     // Sets the current coordinates of the mouse position and accumulates the relative movement.
     void moveMouse(int32_t x, int32_t y, int32_t relX, int32_t relY);
@@ -113,10 +114,10 @@ namespace OpenLoco::Input
     void startCursorDrag();
     void stopCursorDrag();
     Ui::Point getNextDragOffset();
-    void processMouseOver(int16_t x, int16_t y);
+    void processMouseOver(int32_t x, int32_t y);
     void processKeyboardInput();
 
-    void windowPositionBegin(int16_t x, int16_t y, Ui::Window* window, Ui::WidgetIndex_t widgetIndex);
+    void windowPositionBegin(int32_t x, int32_t y, Ui::Window* window, Ui::WidgetIndex_t widgetIndex);
 
     Ui::Point getScrollLastLocation();
     Ui::Point getCursorPressedLocation();
@@ -131,15 +132,19 @@ namespace OpenLoco::Input
 
     struct QueuedMouseInput
     {
-        Ui::Point32 pos;
+        Ui::Point pos;
         uint32_t button;
     };
     void enqueueMouseButton(const QueuedMouseInput& input);
-    MouseButton nextMouseInput(uint32_t& x, int16_t& y);
+    MouseButton nextMouseInput(int32_t& x, int32_t& y);
 
     Ui::WindowType getPressedWindowType();
     void setPressedWindowType(Ui::WindowType wndType);
 
     Ui::WindowNumber_t getPressedWindowNumber();
     void setPressedWindowNumber(Ui::WindowNumber_t wndNumber);
+
+    bool hasPendingMouseInputUpdate();
+    void clearPendingMouseInputUpdate();
+    void setPendingMouseInputUpdate();
 }

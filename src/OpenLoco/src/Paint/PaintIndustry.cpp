@@ -5,7 +5,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/ScaffoldingObject.h"
 #include "Paint.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "Ui.h"
 #include "Ui/ViewportInteraction.h"
 #include "World/Industry.h"
@@ -76,6 +76,7 @@ namespace OpenLoco::Paint
             if (elIndustry.isGhost())
             {
                 baseScaffImage = Gfx::applyGhostToImage(baseScaffImageIdx);
+                // TODO: apply company colour if playerCompanyID != elTrack.owner()?
             }
             else
             {

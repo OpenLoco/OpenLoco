@@ -39,6 +39,13 @@ namespace OpenLoco::Config
         custom,
     };
 
+    enum class WindowFrameStyle : uint8_t
+    {
+        background,
+        solid,
+        transparent,
+    };
+
     struct Resolution
     {
         int32_t width{};
@@ -101,6 +108,7 @@ namespace OpenLoco::Config
 
     constexpr auto kMessageCriticalityCount = 6;
 
+    // NB: int32_t is used for all numeric config variables for easier serialisation with yaml-cpp
     struct Config
     {
         Display display;
@@ -120,19 +128,21 @@ namespace OpenLoco::Config
         bool showFPS = false;
         bool uncapFPS = false;
 
-        uint8_t constructionMarker;
+        int32_t constructionMarker;
         bool gridlinesOnLandscape = false;
-        uint8_t heightMarkerOffset;
+        int32_t heightMarkerOffset;
         bool landscapeSmoothing = true;
         bool showHeightAsUnits = false;
-        uint8_t stationNamesMinScale = 2;
-        uint8_t vehiclesMinScale = 2;
+        int32_t stationNamesMinScale = 2;
+        int32_t vehiclesMinScale = 2;
 
         bool allowMultipleInstances = false;
         bool cashPopupRendering = true;
         bool edgeScrolling = true;
         int32_t edgeScrollingSpeed = 12;
+        WindowFrameStyle windowFrameStyle = WindowFrameStyle::background;
         bool zoomToCursor = true;
+
         NewsType newsSettings[kMessageCriticalityCount];
 
         int32_t autosaveAmount = 12;
@@ -149,13 +159,14 @@ namespace OpenLoco::Config
         bool townGrowthDisabled = false;
         bool trainsReverseAtSignals = true;
         bool disableStationSizeLimit = false;
+        bool showAiPlanningAsGhosts = false;
 
         bool usePreferredOwnerName = false;
         std::string preferredOwnerName;
         bool usePreferredOwnerFace;
         ObjectHeader preferredOwnerFace;
 
-        uint8_t scenarioSelectedTab;
+        int32_t scenarioSelectedTab;
 
         std::map<Input::Shortcut, KeyboardShortcut> shortcuts;
     };

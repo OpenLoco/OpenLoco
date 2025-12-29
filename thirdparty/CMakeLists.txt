@@ -17,10 +17,15 @@ if ( NOT yaml-cpp_FOUND )
         GIT_TAG             c2680200486572baf8221ba052ef50b58ecd816e # 0.8.0 + cmake fix patch 
     )
     FetchContent_MakeAvailable(yaml-cpp)
-    loco_thirdparty_target_compile_link_flags(yaml-cpp)
 
     # Group all the ThirdParty items under a ThirdParty folder in IDEs
     set_target_properties(yaml-cpp PROPERTIES FOLDER "ThirdParty")
+else()
+    if (NOT TARGET yaml-cpp::yaml-cpp)
+        # Some system versions of yaml-cpp don't have the proper target
+        # so we are defining it so we can follow yaml-cpp's conventions
+        add_library(yaml-cpp::yaml-cpp ALIAS yaml-cpp)
+    endif()
 endif()
 
 if (${OPENLOCO_BUILD_TESTS})
@@ -73,8 +78,6 @@ if ( NOT fmt_FOUND )
     )	
     FetchContent_MakeAvailable(fmt)	
 
-    loco_thirdparty_target_compile_link_flags(fmt)	
-
     # Group all the ThirdParty items under a ThirdParty folder in IDEs	
     set_target_properties(fmt PROPERTIES FOLDER "ThirdParty")	
 endif()
@@ -85,8 +88,9 @@ if ( NOT sfl_FOUND )
     FetchContent_Declare(
         sfl
         GIT_REPOSITORY      https://github.com/slavenf/sfl-library
-        GIT_TAG             2.0.2
+        GIT_TAG             2.1.1
         GIT_SHALLOW         ON
+        EXCLUDE_FROM_ALL
     )
     FetchContent_MakeAvailable(sfl)
 endif()

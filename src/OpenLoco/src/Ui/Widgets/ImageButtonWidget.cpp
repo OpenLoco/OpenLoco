@@ -1,7 +1,6 @@
 #include "ImageButtonWidget.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "LabelWidget.h"
 #include "Ui/Window.h"
@@ -86,7 +85,7 @@ namespace OpenLoco::Ui::Widgets
             return;
         }
 
-        if (window->hasFlags(WindowFlags::flag_6))
+        if (window->hasFlags(WindowFlags::framedWidgets))
         {
             drawingCtx.fillRect(pos, size, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
         }

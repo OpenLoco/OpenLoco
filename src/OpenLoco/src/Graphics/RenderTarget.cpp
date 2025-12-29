@@ -1,7 +1,4 @@
 #include "RenderTarget.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Gfx
 {

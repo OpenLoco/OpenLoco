@@ -23,7 +23,8 @@ namespace OpenLoco::Diagnostics::Logging
 
     static std::string getLogFileName()
     {
-        return fmt::format("openloco_{:%Y-%m-%d_%H_%M_%S}.log", fmt::localtime(std::time(nullptr)));
+        auto now = std::chrono::system_clock::now();
+        return fmt::format("openloco_{:%Y-%m-%d_%H_%M_%S}.log", std::chrono::floor<std::chrono::seconds>(now));
     }
 
     static void cleanupLogFiles(const fs::path& logsFolderPath)
@@ -53,7 +54,7 @@ namespace OpenLoco::Diagnostics::Logging
         // Delete oldest log files
         if (logFiles.size() > kMaxLogFiles)
         {
-            int numFilesToDelete = logFiles.size() - kMaxLogFiles;
+            int numFilesToDelete = static_cast<int>(logFiles.size()) - kMaxLogFiles;
             for (int i = 0; i < numFilesToDelete; i++)
             {
                 fs::remove(logFiles[i]);
