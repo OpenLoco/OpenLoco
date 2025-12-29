@@ -1448,7 +1448,7 @@ namespace OpenLoco::Vehicles
         {
             auto temp = var_52;
             var_52 = 1;
-            sub_4ADB47(false);
+            resetStateOnPlacementOrReverse(false);
             var_52 = temp;
             return true;
         }
@@ -6375,7 +6375,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004ADB47
-    void VehicleHead::sub_4ADB47(bool goingForward)
+    void VehicleHead::resetStateOnPlacementOrReverse(bool goingForward)
     {
         Vehicle train(*this);
         for (auto& car : train.cars)
