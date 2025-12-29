@@ -6378,7 +6378,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004ADB47
-    void VehicleHead::sub_4ADB47(bool unk)
+    void VehicleHead::sub_4ADB47(bool goingForward)
     {
         Vehicle train(*this);
         for (auto& car : train.cars)
@@ -6508,7 +6508,7 @@ namespace OpenLoco::Vehicles
 
         // 0x4ADDBE
 
-        if (!unk)
+        if (!goingForward)
         {
             VehicleBody* lastBody = nullptr;
             for (auto& car : train.cars)

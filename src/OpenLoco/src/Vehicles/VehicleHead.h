@@ -99,7 +99,7 @@ namespace OpenLoco::Vehicles
         currency32_t calculateRunningCost() const;
         void sub_4AD778();
         void sub_4AD93A();
-        void sub_4ADB47(bool unk);
+        void sub_4ADB47(bool goingForward);
         uint32_t getCarCount() const;
         void applyBreakdownToTrain();
         void landCrashedUpdate();
