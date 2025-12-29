@@ -7145,7 +7145,7 @@ namespace OpenLoco::Vehicles
                     throw std::runtime_error("Expected body component");
                 }
                 auto* vehBody = veh.asVehicleBody();
-                vehBody->sub_4AC255(backBogie, frontBogie);
+                vehBody->recalculatePositionAndSprites(backBogie, frontBogie);
             }
             else
             {

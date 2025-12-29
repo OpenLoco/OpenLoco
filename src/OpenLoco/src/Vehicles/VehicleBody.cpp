@@ -57,7 +57,7 @@ namespace OpenLoco::Vehicles
         if (carState.hasBogieMoved)
         {
             invalidateSprite();
-            sub_4AC255(carState.backBogie, carState.frontBogie);
+            recalculatePositionAndSprites(carState.backBogie, carState.frontBogie);
             invalidateSprite();
         }
         if (wheelSlipping != 0)
@@ -132,7 +132,7 @@ namespace OpenLoco::Vehicles
     void VehicleBody::updateSegmentCrashed(const CarUpdateState& carState)
     {
         invalidateSprite();
-        sub_4AC255(carState.backBogie, carState.frontBogie);
+        recalculatePositionAndSprites(carState.backBogie, carState.frontBogie);
         invalidateSprite();
         animationUpdate(carState, getVehicleUpdateDistances().unkDistance2);
         sub_4AAB0B(carState, getVehicleUpdateDistances().unkDistance2);
@@ -256,7 +256,7 @@ namespace OpenLoco::Vehicles
     static uint8_t calculateYaw3FromVector(int16_t xDiff, int16_t yDiff);
 
     // 0x004AC255
-    void VehicleBody::sub_4AC255(VehicleBogie* back_bogie, VehicleBogie* front_bogie)
+    void VehicleBody::recalculatePositionAndSprites(VehicleBogie* back_bogie, VehicleBogie* front_bogie)
     {
         auto midPoint = (front_bogie->position + back_bogie->position) / 2;
         moveTo(midPoint);
