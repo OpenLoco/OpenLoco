@@ -3900,7 +3900,7 @@ namespace OpenLoco::Vehicles
     // 0x0047C722
     static void roadResetHead(VehicleHead& head)
     {
-        head.var_38 |= Flags38::unk_2;
+        head.var_38 |= Flags38::isSelf;
         auto train = Vehicle(head);
         auto& veh1 = *train.veh1;
 
@@ -3920,7 +3920,7 @@ namespace OpenLoco::Vehicles
         head.routingHandle = veh1.routingHandle;
         head.remainingDistance = veh1.remainingDistance;
         head.var_3C = veh1.var_3C;
-        head.var_38 &= ~Flags38::unk_2;
+        head.var_38 &= ~Flags38::isSelf;
         head.subPosition = veh1.subPosition;
         head.trackAndDirection = veh1.trackAndDirection;
         head.moveTo(veh1.position);
@@ -3936,8 +3936,8 @@ namespace OpenLoco::Vehicles
         {
             // 0x0047C5B0
             roadResetHead(*this);
-            var_38 |= Flags38::unk_2;
-            veh1.var_38 |= Flags38::unk_2;
+            var_38 |= Flags38::isSelf;
+            veh1.var_38 |= Flags38::isSelf;
 
             auto pos = World::Pos3(veh2.tileX, veh2.tileY, veh2.tileBaseZ * World::kSmallZStep);
             auto ring = RoutingManager::RingView(veh2.routingHandle);
@@ -3963,8 +3963,8 @@ namespace OpenLoco::Vehicles
         else
         {
             // 0x004AD782
-            var_38 |= Flags38::unk_2;
-            veh1.var_38 |= Flags38::unk_2;
+            var_38 |= Flags38::isSelf;
+            veh1.var_38 |= Flags38::isSelf;
 
             const auto companyId = veh2.owner;
             const auto trackObjId = veh2.trackType;
@@ -4009,7 +4009,7 @@ namespace OpenLoco::Vehicles
         routingHandle = veh2.routingHandle;
         remainingDistance = veh2.remainingDistance;
         var_3C = 0;
-        var_38 &= ~(Flags38::unk_2);
+        var_38 &= ~(Flags38::isSelf);
         trackAndDirection = veh2.trackAndDirection;
         subPosition = veh2.subPosition;
         moveTo(veh2.position);
@@ -4020,7 +4020,7 @@ namespace OpenLoco::Vehicles
         veh1.routingHandle = veh2.routingHandle;
         veh1.remainingDistance = veh2.remainingDistance;
         veh1.var_3C = 0;
-        veh1.var_38 &= ~(Flags38::unk_2);
+        veh1.var_38 &= ~(Flags38::isSelf);
         veh1.trackAndDirection = veh2.trackAndDirection;
         veh1.subPosition = veh2.subPosition;
         veh1.moveTo(veh2.position);
@@ -6176,7 +6176,7 @@ namespace OpenLoco::Vehicles
             return;
         }
 
-        var_38 |= Flags38::unk_2;
+        var_38 |= Flags38::isSelf;
         auto train = Vehicle(*this);
         auto& veh1 = *train.veh1;
 
@@ -6224,7 +6224,7 @@ namespace OpenLoco::Vehicles
         routingHandle = veh1.routingHandle;
         remainingDistance = veh1.remainingDistance;
         var_3C = veh1.var_3C;
-        var_38 &= ~Flags38::unk_2;
+        var_38 &= ~Flags38::isSelf;
         subPosition = veh1.subPosition;
         trackAndDirection = veh1.trackAndDirection;
         moveTo(veh1.position);
@@ -7076,14 +7076,14 @@ namespace OpenLoco::Vehicles
         sub_4AD778();
         Vehicle train(head);
         train.applyToComponents([](auto& vehicle) {
-            vehicle.var_38 |= Flags38::unk_2;
+            vehicle.var_38 |= Flags38::isSelf;
         });
 
         liftUpTail(*train.tail);
 
         // 0x004B0A9A
         train.applyToComponents([](auto& veh) {
-            veh.var_38 &= ~Flags38::unk_2;
+            veh.var_38 &= ~Flags38::isSelf;
             veh.tileX = -1;
             veh.moveTo(World::Pos3(static_cast<int16_t>(0x8000), 0, 0));
         });
