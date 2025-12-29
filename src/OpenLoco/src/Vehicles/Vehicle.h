@@ -92,6 +92,14 @@ namespace OpenLoco::Vehicles
         tail,
     };
 
+    enum class FindNearbySignalOccupationFlags : uint8_t
+    {
+        none = 0,
+        foundOccupiedSignal = 1U << 0,
+        foundFreeSignal = 1U << 1,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(FindNearbySignalOccupationFlags);
+
     constexpr uint8_t kAirportMovementNodeNull = 0xFF;
     constexpr uint8_t kAirportMovementNoValidEdge = 0xFE;
 
@@ -210,7 +218,7 @@ namespace OpenLoco::Vehicles
     void updateSignalOccupancyBasedOnBlockOccupancy(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
     void setReverseSignalOccupiedInBlock(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
     bool isBlockOccupied(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
-    uint8_t findNearbySignalState(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
+    FindNearbySignalOccupationFlags findNearbySignalOccupation(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
     uint8_t sub_4A2A77(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
     struct ApplyTrackModsResult
     {
