@@ -158,7 +158,7 @@ namespace OpenLoco::GameCommands
             reliability += 255;
         }
         newBogie->reliability = reliability;
-        sub_4BA873(*newBogie);
+        calculateTimeoutToBreakdown(*newBogie);
 
         // Calculate refund cost == 7/8 * cost
         auto cost = Economy::getInflationAdjustedCost(vehObject.costFactor, vehObject.costIndex, 6);

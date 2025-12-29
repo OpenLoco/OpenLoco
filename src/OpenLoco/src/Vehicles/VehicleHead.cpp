@@ -417,7 +417,7 @@ namespace OpenLoco::Vehicles
 
                 if (front.timeoutToBreakdown == 0)
                 {
-                    sub_4BA873(front);
+                    calculateTimeoutToBreakdown(front);
                     front.breakdownFlags |= BreakdownFlags::breakdownPending;
                 }
             }
