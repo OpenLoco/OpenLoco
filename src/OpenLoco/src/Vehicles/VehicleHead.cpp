@@ -1885,7 +1885,7 @@ namespace OpenLoco::Vehicles
             vehType2->currentSpeed = type2speed;
         }
 
-        const auto airportApproachParams = sub_427122();
+        const auto airportApproachParams = airplanePathfind();
 
         uint8_t targetYaw = airportApproachParams.targetYaw;
         // Helicopter
@@ -2431,7 +2431,7 @@ namespace OpenLoco::Vehicles
      *  targetYaw = regs.bl
      *  airportFlags = _vehicleUpdate_var_525BB0
      */
-    AirplaneApproachTargetParams VehicleHead::sub_427122()
+    AirplaneApproachTargetParams VehicleHead::airplanePathfind()
     {
         AirplaneApproachTargetParams res{};
 

@@ -138,7 +138,7 @@ namespace OpenLoco::Vehicles
         bool airplaneApproachTarget(const AirplaneApproachTargetParams& params);
         std::pair<Status, Speed16> airplaneGetNewStatus();
         uint8_t airportGetNextMovementEdge(uint8_t curEdge);
-        AirplaneApproachTargetParams sub_427122();
+        AirplaneApproachTargetParams airplanePathfind();
         bool updateWater();
         void tryCreateInitialMovementSound(const Status initialStatus);
         void setStationVisitedTypes();
