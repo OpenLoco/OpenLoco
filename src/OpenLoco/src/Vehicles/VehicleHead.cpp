@@ -1991,7 +1991,7 @@ namespace OpenLoco::Vehicles
 
             if ((flags & AirportMovementNodeFlags::terminal) != AirportMovementNodeFlags::none)
             {
-                return sub_4A95CB();
+                return airplaneReachStation();
             }
         }
 
@@ -2109,7 +2109,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A95CB
-    bool VehicleHead::sub_4A95CB()
+    bool VehicleHead::airplaneReachStation()
     {
         if (hasVehicleFlags(VehicleFlags::commandStop))
         {
