@@ -498,6 +498,7 @@ namespace OpenLoco::Vehicles
 
         if ((getSignalState(interest.loc, interest.tad(), interest.trackType, (1ULL << 31)) & SignalStateFlags::occupied) != SignalStateFlags::none)
         {
+            // Occupied
             unk |= (1 << 0);
         }
         else
@@ -807,6 +808,7 @@ namespace OpenLoco::Vehicles
                         additionalRoadToCheck.push_back(interest);
                     }
                 }
+
             }
         }
         else
