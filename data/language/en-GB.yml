@@ -2448,3 +2448,6 @@ strings:
   2393: 'Gradient (default)'
   2394: 'Solid colour'
   2395: 'Translucent colour'
+  2396: 'Vehicle cargo'
+  2397: 'Keep vehicle cargo on modify or pickup'
+  2398: '{SMALLFONT}{COLOUR BLACK}When enabled, cargo will not be cleared from the entire vehicle when picking it up or modifying its cars'

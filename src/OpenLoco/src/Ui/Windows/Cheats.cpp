@@ -612,7 +612,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
     namespace Vehicles
     {
-        static constexpr Ui::Size kWindowSize = { 250, 152 };
+        static constexpr Ui::Size kWindowSize = { 250, 188 };
 
         namespace Widx
         {
@@ -624,6 +624,8 @@ namespace OpenLoco::Ui::Windows::Cheats
                 vehicle_locked_group,
                 checkbox_display_locked_vehicles,
                 checkbox_build_locked_vehicles,
+                vehicle_cargo_group,
+                checkbox_keep_cargo_modify_pickup,
             };
         }
 
@@ -634,8 +636,9 @@ namespace OpenLoco::Ui::Windows::Cheats
             Widgets::Button({ 10, 78 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_reliability_hundred),
             Widgets::GroupBox({ 4, 102 }, { kWindowSize.width - 8, 45 }, WindowColour::secondary, StringIds::cheat_build_vehicle_window),
             Widgets::Checkbox({ 10, 116 }, { 200, 12 }, WindowColour::secondary, StringIds::display_locked_vehicles, StringIds::tooltip_display_locked_vehicles),
-            Widgets::Checkbox({ 25, 130 }, { 200, 12 }, WindowColour::secondary, StringIds::allow_building_locked_vehicles, StringIds::tooltip_build_locked_vehicles)
-
+            Widgets::Checkbox({ 25, 130 }, { 200, 12 }, WindowColour::secondary, StringIds::allow_building_locked_vehicles, StringIds::tooltip_build_locked_vehicles),
+            Widgets::GroupBox({ 4, 152 }, { kWindowSize.width - 8, 30 }, WindowColour::secondary, StringIds::cheat_vehicle_cargo),
+            Widgets::Checkbox({ 10, 166 }, { 200, 12 }, WindowColour::secondary, StringIds::cheat_keep_cargo_modify_pickup, StringIds::tooltip_keep_cargo_modify_pickup)
         );
 
         static void prepareDraw(Window& self)
@@ -660,6 +663,15 @@ namespace OpenLoco::Ui::Windows::Cheats
             else
             {
                 self.activatedWidgets &= ~(1 << Widx::checkbox_build_locked_vehicles);
+            }
+
+            if (Config::get().keepCargoModifyPickup)
+            {
+                self.activatedWidgets |= (1 << Widx::checkbox_keep_cargo_modify_pickup);
+            }
+            else
+            {
+                self.activatedWidgets &= ~(1 << Widx::checkbox_keep_cargo_modify_pickup);
             }
         }
 
@@ -724,6 +736,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                         self.disabledWidgets |= (1 << Widx::checkbox_build_locked_vehicles);
                     }
 
+                    Config::write();
                     WindowManager::invalidateWidget(self.type, self.number, Widx::checkbox_build_locked_vehicles);
                     WindowManager::invalidateWidget(self.type, self.number, Widx::checkbox_display_locked_vehicles);
                     WindowManager::invalidate(WindowType::buildVehicle);
@@ -735,9 +748,18 @@ namespace OpenLoco::Ui::Windows::Cheats
                     if (Config::get().displayLockedVehicles)
                     {
                         Config::get().buildLockedVehicles = !Config::get().buildLockedVehicles;
+                        Config::write();
                         WindowManager::invalidateWidget(self.type, self.number, Widx::checkbox_build_locked_vehicles);
                         WindowManager::invalidate(WindowType::buildVehicle);
                     }
+                    break;
+                }
+
+                case Widx::checkbox_keep_cargo_modify_pickup:
+                {
+                    Config::get().keepCargoModifyPickup = !Config::get().keepCargoModifyPickup;
+                    Config::write();
+                    WindowManager::invalidateWidget(self.type, self.number, Widx::checkbox_keep_cargo_modify_pickup);
                     break;
                 }
             }

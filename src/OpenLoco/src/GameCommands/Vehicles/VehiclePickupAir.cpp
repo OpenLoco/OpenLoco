@@ -1,3 +1,4 @@
+#include "Config.h"
 #include "VehiclePickupAir.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
@@ -64,11 +65,14 @@ namespace OpenLoco::GameCommands
             component.var_38 &= ~(Vehicles::Flags38::isGhost);
         });
 
-        for (auto& car : train.cars)
+        if (!Config::get().keepCargoModifyPickup)
         {
-            for (auto& component : car)
+            for (auto& car : train.cars)
             {
-                removeAllCargo(component);
+                for (auto& component : car)
+                {
+                    removeAllCargo(component);
+                }
             }
         }
 
