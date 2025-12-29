@@ -227,7 +227,7 @@ namespace OpenLoco::GameCommands
         newBody->subPosition = 0;
         newBody->trackAndDirection = TrackAndDirection(0, 0);
         newBody->routingHandle = lastVeh->getRoutingHandle();
-        newBody->var_38 = Flags38::unk_0; // different to create bogie
+        newBody->var_38 = Flags38::isBody; // different to create bogie
         newBody->objectId = vehicleTypeId;
 
         auto& prng = gPrng1();

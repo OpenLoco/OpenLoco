@@ -7138,7 +7138,7 @@ namespace OpenLoco::Vehicles
         VehicleBogie* frontBogie = nullptr;
         VehicleBogie* backBogie = nullptr;
         train.applyToComponents([&unkFlag, &frontBogie, &backBogie](auto& veh) {
-            if ((veh.var_38 & Flags38::unk_0) != Flags38::none)
+            if ((veh.var_38 & Flags38::isBody) != Flags38::none)
             {
                 if (!veh.isVehicleBody())
                 {
