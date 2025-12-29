@@ -934,7 +934,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A2A58
-    uint8_t sub_4A2A58(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
+    uint8_t findNearbySignalState(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
     {
         // 0x001135F88
         uint16_t unk = 0;

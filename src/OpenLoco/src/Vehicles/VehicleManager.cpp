@@ -162,7 +162,7 @@ namespace OpenLoco::VehicleManager
         Vehicles::TrackAndDirection reverseTad = trackAndDirection;
         if (head->mode != TransportMode::road)
         {
-            if (Vehicles::sub_4A2A58(pos, trackAndDirection.track, head->owner, head->trackType) & (1U << 0))
+            if (Vehicles::findNearbySignalState(pos, trackAndDirection.track, head->owner, head->trackType) & (1U << 0))
             {
                 return PlaceDownResult::VehicleApproachingOrInWay;
             }
@@ -219,7 +219,7 @@ namespace OpenLoco::VehicleManager
         }
         else
         {
-            if (Vehicles::sub_4A2A58(reversePos, reverseTad.track, head->owner, head->trackType) & (1U << 0))
+            if (Vehicles::findNearbySignalState(reversePos, reverseTad.track, head->owner, head->trackType) & (1U << 0))
             {
                 return PlaceDownResult::VehicleApproachingOrInWay;
             }
