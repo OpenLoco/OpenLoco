@@ -93,7 +93,7 @@ namespace OpenLoco::Vehicles
 
         if (mode == TransportMode::road)
         {
-            updateTileOccupancy(_oldTilePos, trackAndDir.road, false);
+            updateRoadTileOccupancy(_oldTilePos, trackAndDir.road, false);
         }
         else
         {
@@ -131,7 +131,7 @@ namespace OpenLoco::Vehicles
                 const auto routing = RoutingManager::getRouting(handle);
                 auto tad = TrackAndDirection::_RoadAndDirection(0, 0);
                 tad._data = routing & Track::AdditionalTaDFlags::basicTaDMask;
-                tail.updateTileOccupancy(pos, tad, false);
+                tail.updateRoadTileOccupancy(pos, tad, false);
 
                 pos += World::TrackData::getUnkRoad(tad.basicRad()).pos;
             }
