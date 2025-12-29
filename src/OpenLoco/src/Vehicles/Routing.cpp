@@ -859,7 +859,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A2AD7
-    void sub_4A2AD7(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
+    void updateSignalOccupancyBasedOnBlockOccupancy(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
     {
         // 0x001135F88
         uint16_t routingTransformData = 0;
