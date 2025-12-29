@@ -489,7 +489,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A2D4C
-    static bool filterSignalState(const LocationOfInterest& interest, uint16_t& unk)
+    static bool filterSignalState(const LocationOfInterest& interest, FindNearbySignalOccupationFlags& foundSignalFlags)
     {
         if (!(interest.trackAndDirection & World::Track::AdditionalTaDFlags::hasSignal))
         {
@@ -498,12 +498,11 @@ namespace OpenLoco::Vehicles
 
         if ((getSignalState(interest.loc, interest.tad(), interest.trackType, (1ULL << 31)) & SignalStateFlags::occupied) != SignalStateFlags::none)
         {
-            // Occupied
-            unk |= (1 << 0);
+            foundSignalFlags |= FindNearbySignalOccupationFlags::foundOccupiedSignal;
         }
         else
         {
-            unk |= (1 << 1);
+            foundSignalFlags |= FindNearbySignalOccupationFlags::foundFreeSignal;
         }
         return true;
     }
@@ -934,12 +933,12 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A2A58
-    uint8_t findNearbySignalState(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
+    FindNearbySignalOccupationFlags findNearbySignalOccupation(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
     {
         // 0x001135F88
-        uint16_t unk = 0;
+        FindNearbySignalOccupationFlags foundSignalFlags = FindNearbySignalOccupationFlags::none;
         RoutingResults interestMap{ kSignalHashSetSize };
-        auto filterFunction = [&unk](const LocationOfInterest& interest) { return filterSignalState(interest, unk); };
+        auto filterFunction = [&foundSignalFlags](const LocationOfInterest& interest) { return filterSignalState(interest, foundSignalFlags); };
 
         findAllTracksFilterTransform(
             interestMap,
@@ -951,7 +950,7 @@ namespace OpenLoco::Vehicles
             filterFunction,
             kNullTransformFunction);
 
-        return unk;
+        return foundSignalFlags;
     }
 
     // 0x004A2AA1

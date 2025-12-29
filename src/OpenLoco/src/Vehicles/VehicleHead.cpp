@@ -4753,7 +4753,7 @@ namespace OpenLoco::Vehicles
             return false;
         }
         TrackAndDirection::_TrackAndDirection tad((tc.connections.front() & World::Track::AdditionalTaDFlags::basicTaDMask) >> 3, tc.connections.front() & 0x7);
-        return findNearbySignalState(nextPos, tad, owner, trackType) & (1 << 1);
+        return (findNearbySignalOccupation(nextPos, tad, owner, trackType) & FindNearbySignalOccupationFlags::foundFreeSignal) != FindNearbySignalOccupationFlags::none;
     }
 
     // 0x004AC0A3
