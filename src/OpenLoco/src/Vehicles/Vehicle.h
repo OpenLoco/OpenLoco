@@ -20,7 +20,7 @@ namespace OpenLoco::Vehicles
         none = 0U,
         isBody = 1U << 0,
         isReversed = 1U << 1,
-        unk_2 = 1U << 2,
+        isSelf = 1U << 2, // Seems to be used to temporarily ignore "current vehicle" while pathfinding??
         jacobsBogieAvailable = 1U << 3,
         isGhost = 1U << 4,
         fasterAroundCurves = 1U << 5,

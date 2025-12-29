@@ -451,7 +451,7 @@ namespace OpenLoco::Vehicles
                     continue;
                 }
 
-                if (vehicle->has38Flags(Vehicles::Flags38::isBody | Vehicles::Flags38::unk_2))
+                if (vehicle->has38Flags(Vehicles::Flags38::isBody | Vehicles::Flags38::isSelf))
                 {
                     continue;
                 }
