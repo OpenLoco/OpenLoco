@@ -263,7 +263,7 @@ namespace OpenLoco::VehicleManager
         }
 
         head->var_52 = 1;
-        head->sub_4ADB47(true);
+        head->resetStateOnPlacementOrReverse(true);
         head->var_52 = oldVar52;
         head->status = Vehicles::Status::stopped;
         train.veh1->var_48 |= Vehicles::Flags48::flag2;
