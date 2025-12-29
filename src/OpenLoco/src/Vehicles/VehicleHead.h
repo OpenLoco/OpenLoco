@@ -133,7 +133,7 @@ namespace OpenLoco::Vehicles
         bool landReverseFromSignal();
         bool updateAir();
         bool airplaneLoadingUpdate();
-        bool sub_4A95CB();
+        bool airplaneReachStation();
         bool sub_4A9348(uint8_t newMovementEdge, const AirplaneApproachTargetParams& approachParams);
         bool airplaneApproachTarget(const AirplaneApproachTargetParams& params);
         std::pair<Status, Speed16> airplaneGetNewStatus();
