@@ -2003,7 +2003,7 @@ namespace OpenLoco::Vehicles
 
         auto newMovementEdge = airportGetNextMovementEdge(movementEdge);
 
-        if (newMovementEdge != static_cast<uint8_t>(-2))
+        if (newMovementEdge != kAirportMovementNoValidEdge)
         {
             return sub_4A9348(newMovementEdge, airportApproachParams);
         }
@@ -2149,7 +2149,7 @@ namespace OpenLoco::Vehicles
 
         auto newMovementEdge = airportGetNextMovementEdge(movementEdge);
 
-        if (newMovementEdge != static_cast<uint8_t>(-2))
+        if (newMovementEdge != kAirportMovementNoValidEdge)
         {
             // Strangely the original would enter this function with an
             // uninitialised params. We will fix this by passing in a
