@@ -205,21 +205,24 @@ namespace OpenLoco::Localisation
     uint8_t convertUnicodeToLoco(utf32_t unicode)
     {
         auto tableLookup = [unicode](auto&& table) {
-            return std::ranges::lower_bound(
+            auto it = std::ranges::lower_bound(
                 table,
                 unicode,
                 {},
                 &EncodingConvertEntry::unicode);
+
+            // Handle edge case where iterator is valid, but mismatches the input
+            return it != table.end() && it->unicode == unicode ? it : table.end();
         };
 
         // Extended Latin characters that are supported by Locomotion as-is
-        if (auto it = tableLookup(kUnicodeToLocoTable); it != kUnicodeToLocoTable.end() && it->unicode == unicode)
+        if (auto it = tableLookup(kUnicodeToLocoTable); it != kUnicodeToLocoTable.end())
         {
             return it->locoCode;
         }
 
         // Remove diacritics from letters that don't have an associated glyph yet
-        if (auto it = tableLookup(kUnicodeTemporaryStrip); it != kUnicodeTemporaryStrip.end() && it->unicode == unicode)
+        if (auto it = tableLookup(kUnicodeTemporaryStrip); it != kUnicodeTemporaryStrip.end())
         {
             return it->locoCode;
         }
