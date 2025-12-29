@@ -4187,7 +4187,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0047DA8D
-    static Sub4ACEE7Result sub_47DA8D(VehicleHead& head, uint32_t unk1, uint32_t var_113612C)
+    static Sub4ACEE7Result tryPositionRoadVehicle(VehicleHead& head, uint32_t unk1, uint32_t var_113612C)
     {
         // ROAD only
 
@@ -4735,7 +4735,7 @@ namespace OpenLoco::Vehicles
     {
         if (mode == TransportMode::road)
         {
-            return sub_47DA8D(*this, unk1, var_113612C);
+            return tryPositionRoadVehicle(*this, unk1, var_113612C);
         }
         else
         {
