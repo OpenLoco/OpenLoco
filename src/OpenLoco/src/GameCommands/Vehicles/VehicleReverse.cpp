@@ -42,7 +42,7 @@ namespace OpenLoco::GameCommands
 
         uint8_t var_52_backup = head->var_52;
         head->var_52 = 1;
-        head->sub_4ADB47(0);
+        head->sub_4ADB47(false);
         head->var_52 = var_52_backup;
         setPosition(head->position);
 
