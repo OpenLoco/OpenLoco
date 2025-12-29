@@ -489,7 +489,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A2D4C
-    static bool sub_4A2D4C(const LocationOfInterest& interest, uint16_t& unk)
+    static bool filterSignalState(const LocationOfInterest& interest, uint16_t& unk)
     {
         if (!(interest.trackAndDirection & World::Track::AdditionalTaDFlags::hasSignal))
         {
@@ -939,7 +939,7 @@ namespace OpenLoco::Vehicles
         // 0x001135F88
         uint16_t unk = 0;
         RoutingResults interestMap{ kSignalHashSetSize };
-        auto filterFunction = [&unk](const LocationOfInterest& interest) { return sub_4A2D4C(interest, unk); };
+        auto filterFunction = [&unk](const LocationOfInterest& interest) { return filterSignalState(interest, unk); };
 
         findAllTracksFilterTransform(
             interestMap,
