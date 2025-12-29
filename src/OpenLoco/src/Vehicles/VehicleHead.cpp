@@ -1810,7 +1810,7 @@ namespace OpenLoco::Vehicles
             getVehicleUpdateDistances().unkDistance2 = 0x2000;
         }
 
-        train.cars.firstCar.body->sub_4AAB0B({}, getVehicleUpdateDistances().unkDistance2);
+        train.cars.firstCar.body->updateAnimationFrame({}, getVehicleUpdateDistances().unkDistance2);
 
         if (status == Status::stopped)
         {
@@ -2344,7 +2344,7 @@ namespace OpenLoco::Vehicles
             getVehicleUpdateDistances().unkDistance2 = 0x2000;
         }
 
-        train.cars.firstCar.body->sub_4AAB0B({}, getVehicleUpdateDistances().unkDistance2);
+        train.cars.firstCar.body->updateAnimationFrame({}, getVehicleUpdateDistances().unkDistance2);
 
         if (status == Status::stopped)
         {

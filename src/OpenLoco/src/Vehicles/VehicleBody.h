@@ -26,7 +26,7 @@ namespace OpenLoco::Vehicles
         bool update(const CarUpdateState& carState);
         void secondaryAnimationUpdate(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance);
         void updateSegmentCrashed(const CarUpdateState& carState);
-        void sub_4AAB0B(const CarUpdateState& carState, const int32_t unkDistance);
+        void updateAnimationFrame(const CarUpdateState& carState, const int32_t unkDistance);
         void updateCargoSprite();
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
         {
