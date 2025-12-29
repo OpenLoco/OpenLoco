@@ -1656,7 +1656,7 @@ namespace OpenLoco::Vehicles
                         return landReverseFromSignal();
                     }
 
-                    if (sub_4AC1C2())
+                    if (shouldPassSignal())
                     {
                         var_5C = 2;
                         vehType1->var_48 |= Flags48::passSignal;
@@ -1674,7 +1674,7 @@ namespace OpenLoco::Vehicles
                 {
                     if (!(flags & (1 << 7)))
                     {
-                        if (sub_4AC1C2())
+                        if (shouldPassSignal())
                         {
                             var_5C = 2;
                             vehType1->var_48 |= Flags48::passSignal;
@@ -4744,7 +4744,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AC1C2
-    bool VehicleHead::sub_4AC1C2()
+    bool VehicleHead::shouldPassSignal()
     {
         const auto [nextPos, rotation] = World::Track::getTrackConnectionEnd(getTrackLoc(), trackAndDirection.track._data);
         auto tc = World::Track::getTrackConnections(nextPos, rotation, owner, trackType, 0, 0);
