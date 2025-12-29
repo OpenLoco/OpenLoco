@@ -387,7 +387,7 @@ namespace OpenLoco::Vehicles
     uint8_t calculateYaw1FromVector(int16_t xDiff, int16_t yDiff);
     uint8_t calculateYaw4FromVector(int16_t xOffset, int16_t yOffset);
 
-    void sub_4BA873(VehicleBogie& vehBogie);
+    void calculateTimeoutToBreakdown(VehicleBogie& vehBogie);
 
     void liftUpTail(VehicleTail& tail);
 
