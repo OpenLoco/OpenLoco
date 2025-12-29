@@ -2392,7 +2392,7 @@ namespace OpenLoco::Vehicles
             beginNewJourney();
             advanceToNextRoutableOrder();
             status = Status::travelling;
-            status = sub_427BF2();
+            status = approachingIfStationElseTraveling();
             updateWaterMotion(WaterMotionFlags::isLeavingDock);
             produceLeavingDockSound();
             return true;
@@ -2400,7 +2400,7 @@ namespace OpenLoco::Vehicles
         else
         {
             status = Status::travelling;
-            status = sub_427BF2();
+            status = approachingIfStationElseTraveling();
             advanceToNextRoutableOrder();
             if ((updateWaterMotion(WaterMotionFlags::none) & WaterMotionFlags::hasReachedDock) == WaterMotionFlags::none)
             {
@@ -3629,7 +3629,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x00427BF2
-    Status VehicleHead::sub_427BF2()
+    Status VehicleHead::approachingIfStationElseTraveling()
     {
         return stationId == StationId::null ? Status::travelling : Status::approaching;
     }

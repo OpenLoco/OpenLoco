@@ -154,7 +154,7 @@ namespace OpenLoco::Vehicles
         bool updateLoadCargo();
         void beginNewJourney();
         void advanceToNextRoutableOrder();
-        Status sub_427BF2();
+        Status approachingIfStationElseTraveling();
         void produceLeavingDockSound();
         void produceTouchdownAirportSound();
         SignalTimeoutStatus categoriseTimeElapsed();
