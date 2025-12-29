@@ -121,7 +121,7 @@ namespace OpenLoco::Vehicles
         void updateSimpleMotorSound(VehicleSound& sound, const bool isVeh2, const VehicleSimpleMotorSound* snd);
         void updateGearboxMotorSound(VehicleSound& sound, const bool isVeh2, const VehicleGearboxMotorSound* snd);
         bool updateLand();
-        bool sub_4A8DB7();
+        bool roadHandleFirstTimeout();
         bool tryReverse();
         bool stoppingUpdate();
         bool manualStoppingUpdate();

@@ -1308,7 +1308,7 @@ namespace OpenLoco::Vehicles
                 auto timeoutStatus = categoriseTimeElapsed(); // bl
                 if (timeoutStatus == SignalTimeoutStatus::firstTimeout)
                 {
-                    return sub_4A8DB7();
+                    return roadHandleFirstTimeout();
                 }
                 else if (timeoutStatus == SignalTimeoutStatus::turnaroundAtSignalTimeout)
                 {
@@ -1431,7 +1431,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A8DB7
-    bool VehicleHead::sub_4A8DB7()
+    bool VehicleHead::roadHandleFirstTimeout()
     {
         sub_4AD778();
         if (status == Status::approaching)
@@ -1585,7 +1585,7 @@ namespace OpenLoco::Vehicles
         auto timeoutStatus = categoriseTimeElapsed(); // bl
         if (timeoutStatus == SignalTimeoutStatus::firstTimeout)
         {
-            return sub_4A8DB7();
+            return roadHandleFirstTimeout();
         }
         else if (timeoutStatus == SignalTimeoutStatus::turnaroundAtSignalTimeout)
         {
