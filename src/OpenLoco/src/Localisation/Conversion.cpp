@@ -217,15 +217,15 @@ namespace OpenLoco::Localisation
         }
 
         // Remove diacritics from letters that don't have an associated glyph yet
-        it = std::ranges::lower_bound(
+        auto it2 = std::ranges::lower_bound(
             kUnicodeTemporaryStrip,
             unicode,
             {},
             &EncodingConvertEntry::unicode);
 
-        if (it != kUnicodeTemporaryStrip.end() && it->unicode == unicode)
+        if (it2 != kUnicodeTemporaryStrip.end() && it2->unicode == unicode)
         {
-            return it->locoCode;
+            return it2->locoCode;
         }
 
         // Basic Latin characters
