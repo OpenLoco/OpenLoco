@@ -32,7 +32,7 @@ namespace OpenLoco::Vehicles
         {
             return (breakdownFlags & flagsToTest) != BreakdownFlags::none;
         }
-        void sub_4AC255(VehicleBogie* backBogie, VehicleBogie* frontBogie);
+        void recalculatePositionAndSprites(VehicleBogie* backBogie, VehicleBogie* frontBogie);
 
     private:
         void animationUpdate(const CarUpdateState& carState, const int32_t unkDistance);
