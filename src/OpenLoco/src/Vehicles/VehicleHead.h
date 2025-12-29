@@ -98,7 +98,7 @@ namespace OpenLoco::Vehicles
         void updateTrainProperties();
         currency32_t calculateRunningCost() const;
         void sub_4AD778();
-        void sub_4AD93A();
+        void handlePositionUpdate();
         void resetStateOnPlacementOrReverse(bool goingForward);
         uint32_t getCarCount() const;
         void applyBreakdownToTrain();
