@@ -1324,7 +1324,7 @@ namespace OpenLoco::Vehicles
             {
                 if (manualPower <= -20)
                 {
-                    return sub_4A8C81();
+                    return manualStoppingUpdate();
                 }
             }
 
@@ -1370,7 +1370,7 @@ namespace OpenLoco::Vehicles
                 }
                 else
                 {
-                    return sub_4A8C81();
+                    return manualStoppingUpdate();
                 }
             }
             else
@@ -1492,7 +1492,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A8C81
-    bool VehicleHead::sub_4A8C81()
+    bool VehicleHead::manualStoppingUpdate()
     {
         Vehicle train(head);
         if (train.veh2->currentSpeed > 1.0_mph)
