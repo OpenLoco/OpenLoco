@@ -2005,7 +2005,7 @@ namespace OpenLoco::Vehicles
 
         if (newMovementEdge != kAirportMovementNoValidEdge)
         {
-            return sub_4A9348(newMovementEdge, airportApproachParams);
+            return handleAirportMovementEdgeTransition(newMovementEdge, airportApproachParams);
         }
 
         if (vehType2->currentSpeed > 30.0_mph)
@@ -2157,7 +2157,7 @@ namespace OpenLoco::Vehicles
             // most likely to not cause issues.
             AirplaneApproachTargetParams approachParams{};
             approachParams.targetZ = position.z;
-            return sub_4A9348(newMovementEdge, approachParams);
+            return handleAirportMovementEdgeTransition(newMovementEdge, approachParams);
         }
 
         status = Status::loading;
@@ -2229,7 +2229,7 @@ namespace OpenLoco::Vehicles
         return true;
     }
 
-    bool VehicleHead::sub_4A9348(uint8_t newMovementEdge, const AirplaneApproachTargetParams& approachParams)
+    bool VehicleHead::handleAirportMovementEdgeTransition(uint8_t newMovementEdge, const AirplaneApproachTargetParams& approachParams)
     {
         if (stationId != StationId::null && airportMovementEdge != kAirportMovementNodeNull)
         {
