@@ -164,12 +164,12 @@ namespace OpenLoco::VehicleManager
         {
             if (Vehicles::sub_4A2A58(pos, trackAndDirection.track, head->owner, head->trackType) & (1U << 0))
             {
-                return PlaceDownResult::Unk1;
+                return PlaceDownResult::VehicleApproachingOrInWay;
             }
 
             if (Vehicles::isBlockOccupied(pos, trackAndDirection.track, head->owner, head->trackType))
             {
-                return PlaceDownResult::Unk1;
+                return PlaceDownResult::VehicleApproachingOrInWay;
             }
 
             const auto subPositionLength = static_cast<uint32_t>(World::TrackData::getTrackSubPositon(trackAndDirection.track._data).size());
@@ -214,19 +214,19 @@ namespace OpenLoco::VehicleManager
         {
             if ((Vehicles::getRoadOccupation(reversePos, reverseTad.road) & (Vehicles::RoadOccupationFlags::isLaneOccupied | Vehicles::RoadOccupationFlags::isLevelCrossingClosed)) != Vehicles::RoadOccupationFlags::none)
             {
-                return PlaceDownResult::Unk1;
+                return PlaceDownResult::VehicleApproachingOrInWay;
             }
         }
         else
         {
             if (Vehicles::sub_4A2A58(reversePos, reverseTad.track, head->owner, head->trackType) & (1U << 0))
             {
-                return PlaceDownResult::Unk1;
+                return PlaceDownResult::VehicleApproachingOrInWay;
             }
 
             if (Vehicles::isBlockOccupied(reversePos, reverseTad.track, head->owner, head->trackType))
             {
-                return PlaceDownResult::Unk1;
+                return PlaceDownResult::VehicleApproachingOrInWay;
             }
         }
 
@@ -255,7 +255,7 @@ namespace OpenLoco::VehicleManager
         if (failure)
         {
             head->liftUpVehicle();
-            return PlaceDownResult::Unk0;
+            return PlaceDownResult::NotEnoughSpaceOrVehicleInWay;
         }
 
         head->var_52 = 1;
