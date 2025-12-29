@@ -111,7 +111,7 @@ namespace OpenLoco::Vehicles
         }
         void movePlaneTo(const World::Pos3& newLoc, const uint8_t newYaw, const Pitch newPitch);
         void moveBoatTo(const World::Pos3& loc, const uint8_t yaw, const Pitch pitch);
-        Sub4ACEE7Result sub_4ACEE7(uint32_t unk1, uint32_t var_113612C, bool isPlaceDown);
+        Sub4ACEE7Result tryPositionVehicle(uint32_t unk1, uint32_t var_113612C, bool isPlaceDown);
 
     private:
         void updateDrivingSounds();

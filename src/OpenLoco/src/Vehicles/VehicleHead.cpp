@@ -1567,7 +1567,7 @@ namespace OpenLoco::Vehicles
     bool VehicleHead::landNormalMovementUpdate()
     {
         advanceToNextRoutableOrder();
-        auto [al, flags, nextStation] = sub_4ACEE7(0xD4CB00, getVehicleUpdateDistances().unkDistance1, false);
+        auto [al, flags, nextStation] = tryPositionVehicle(0xD4CB00, getVehicleUpdateDistances().unkDistance1, false);
 
         if (mode == TransportMode::road)
         {
@@ -4731,7 +4731,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004ACEE7
-    Sub4ACEE7Result VehicleHead::sub_4ACEE7(uint32_t unk1, uint32_t var_113612C, bool isPlaceDown)
+    Sub4ACEE7Result VehicleHead::tryPositionVehicle(uint32_t unk1, uint32_t var_113612C, bool isPlaceDown)
     {
         if (mode == TransportMode::road)
         {
@@ -7124,7 +7124,7 @@ namespace OpenLoco::Vehicles
         Vehicle train(head);
         for (auto i = 0; i < 32; ++i)
         {
-            const auto res = head.sub_4ACEE7(0, 0, isPlaceDown);
+            const auto res = head.tryPositionVehicle(0, 0, isPlaceDown);
             if (res.status != 0)
             {
                 break;
