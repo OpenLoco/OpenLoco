@@ -124,7 +124,7 @@ namespace OpenLoco::Vehicles
             return true;
         }
 
-        train.head->sub_4AD93A();
+        train.head->handlePositionUpdate();
         if (train.head->status == Status::approaching)
         {
             train.head->status = Status::travelling;
@@ -237,7 +237,7 @@ namespace OpenLoco::Vehicles
             return true;
         }
 
-        train.head->sub_4AD93A();
+        train.head->handlePositionUpdate();
         if (train.head->status == Status::approaching)
         {
             train.head->status = Status::travelling;

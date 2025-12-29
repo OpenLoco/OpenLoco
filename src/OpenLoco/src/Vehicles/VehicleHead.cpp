@@ -1467,7 +1467,7 @@ namespace OpenLoco::Vehicles
 
         if (position != train.veh1->position)
         {
-            sub_4AD93A();
+            handlePositionUpdate();
             if (status == Status::approaching)
             {
                 stationId = StationId::null;
@@ -6168,7 +6168,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AD93A
-    void VehicleHead::sub_4AD93A()
+    void VehicleHead::handlePositionUpdate()
     {
         if (mode == TransportMode::road)
         {
