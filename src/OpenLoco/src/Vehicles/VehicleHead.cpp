@@ -4430,7 +4430,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004ACEF1
-    static Sub4ACEE7Result sub_4ACEF1(VehicleHead& head, uint32_t unk1, uint32_t var_113612C, bool isPlaceDown)
+    static Sub4ACEE7Result tryPositionRailVehicle(VehicleHead& head, uint32_t unk1, uint32_t var_113612C, bool isPlaceDown)
     {
         // TRACK only
 
@@ -4742,7 +4742,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            return sub_4ACEF1(*this, unk1, var_113612C, isPlaceDown);
+            return tryPositionRailVehicle(*this, unk1, var_113612C, isPlaceDown);
         }
     }
 
