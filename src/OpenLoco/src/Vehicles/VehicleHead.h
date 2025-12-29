@@ -124,7 +124,7 @@ namespace OpenLoco::Vehicles
         bool sub_4A8DB7();
         bool tryReverse();
         bool stoppingUpdate();
-        bool sub_4A8C81();
+        bool manualStoppingUpdate();
         bool landTryBeginUnloading();
         bool landLoadingUpdate();
         bool landNormalMovementUpdate();
