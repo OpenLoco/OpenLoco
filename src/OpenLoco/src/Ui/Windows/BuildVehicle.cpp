@@ -635,27 +635,30 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         }
 
         std::sort(buildableVehicles.begin(), buildableVehicles.end(), [](const BuildableVehicle& item1, const BuildableVehicle& item2) {
+            const auto& itemA = _vehicleSortAscending ? item1 : item2;
+            const auto& itemB = _vehicleSortAscending ? item2 : item1;
+
             switch (_vehicleSortBy)
             {
                 case VehicleSortBy::designYear:
                 default:
-                    return _vehicleSortAscending ? item1.designed < item2.designed : item1.designed > item2.designed;
+                    return itemA.designed < itemB.designed;
                 case VehicleSortBy::name:
                 {
-                    const std::string_view str1 = StringManager::getString(item1.name);
-                    const std::string_view str2 = StringManager::getString(item2.name);
-                    return _vehicleSortAscending ? str1 < str2 : str1 > str2;
+                    const std::string_view str1 = StringManager::getString(itemA.name);
+                    const std::string_view str2 = StringManager::getString(itemB.name);
+                    return str1 < str2;
                 }
                 case VehicleSortBy::cost:
-                    return _vehicleSortAscending ? item1.cost < item2.cost : item1.cost > item2.cost;
+                    return itemA.cost < itemB.cost;
                 case VehicleSortBy::power:
-                    return _vehicleSortAscending ? item1.power < item2.power : item1.power > item2.power;
+                    return itemA.power < itemB.power;
                 case VehicleSortBy::maxSpeed:
-                    return _vehicleSortAscending ? item1.maxSpeed < item2.maxSpeed : item1.maxSpeed > item2.maxSpeed;
+                    return itemA.maxSpeed < itemB.maxSpeed;
                 case VehicleSortBy::weight:
-                    return _vehicleSortAscending ? item1.weight < item2.weight : item1.weight > item2.weight;
+                    return itemA.weight < itemB.weight;
                 case VehicleSortBy::length:
-                    return _vehicleSortAscending ? item1.length < item2.length : item1.length > item2.length;
+                    return itemA.length < itemB.length;
             }
         });
 
