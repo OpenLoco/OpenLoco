@@ -66,7 +66,7 @@ namespace OpenLoco::S5
         dst.lastLandOption = src.lastLandOption;
         dst.maxCompetingCompanies = src.maxCompetingCompanies;
         dst.orderTableLength = src.orderTableLength;
-        dst.roadObjectIdIsNotTram = src.roadObjectIdIsNotTram;
+        dst.roadObjectIdIsAnyRoadTypeCompatible = src.roadObjectIdIsAnyRoadTypeCompatible;
         dst.roadObjectIdIsUsableByAllCompanies = src.roadObjectIdIsUsableByAllCompanies;
         dst.currentDefaultLevelCrossingType = src.currentDefaultLevelCrossingType;
         dst.lastTrackTypeOption = src.lastTrackTypeOption;
@@ -270,7 +270,7 @@ namespace OpenLoco::S5
         dst.lastLandOption = src.lastLandOption;
         dst.maxCompetingCompanies = src.maxCompetingCompanies;
         dst.orderTableLength = src.orderTableLength;
-        dst.roadObjectIdIsNotTram = src.roadObjectIdIsNotTram;
+        dst.roadObjectIdIsAnyRoadTypeCompatible = src.roadObjectIdIsAnyRoadTypeCompatible;
         dst.roadObjectIdIsUsableByAllCompanies = src.roadObjectIdIsUsableByAllCompanies;
         dst.currentDefaultLevelCrossingType = src.currentDefaultLevelCrossingType;
         dst.lastTrackTypeOption = src.lastTrackTypeOption;

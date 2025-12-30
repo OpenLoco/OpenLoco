@@ -51,7 +51,7 @@ namespace OpenLoco::World::Track
                 {
                     continue;
                 }
-                if (!(getGameState().roadObjectIdIsNotTram & (1 << elRoad->roadObjectId())))
+                if (!(getGameState().roadObjectIdIsAnyRoadTypeCompatible & (1 << elRoad->roadObjectId())))
                 {
                     continue;
                 }

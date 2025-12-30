@@ -849,7 +849,7 @@ namespace OpenLoco::GameCommands
                     newElRoad->setMod(i, true);
                 }
             }
-            if ((getGameState().roadObjectIdIsNotTram & (1U << args.roadObjectId)) && companyId != CompanyId::neutral)
+            if ((getGameState().roadObjectIdIsAnyRoadTypeCompatible & (1U << args.roadObjectId)) && companyId != CompanyId::neutral)
             {
                 newElRoad->setUnk7_40(true);
             }

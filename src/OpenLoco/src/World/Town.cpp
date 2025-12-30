@@ -351,7 +351,7 @@ namespace OpenLoco
             {
                 continue;
             }
-            if (!(getGameState().roadObjectIdIsNotTram & (1U << elRoad->roadObjectId())))
+            if (!(getGameState().roadObjectIdIsAnyRoadTypeCompatible & (1U << elRoad->roadObjectId())))
             {
                 continue;
             }
@@ -540,7 +540,7 @@ namespace OpenLoco
             {
                 continue;
             }
-            if (!(getGameState().roadObjectIdIsNotTram & (1U << elRoad->roadObjectId())))
+            if (!(getGameState().roadObjectIdIsAnyRoadTypeCompatible & (1U << elRoad->roadObjectId())))
             {
                 continue;
             }

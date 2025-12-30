@@ -1606,18 +1606,18 @@ namespace OpenLoco
                         auto* elRoad = el.as<World::RoadElement>();
                         if (elRoad != nullptr)
                         {
-                            const bool targetIsNotTram = getGameState().roadObjectIdIsNotTram & (1U << (thought.trackObjId & ~(1U << 7)));
-                            const bool elIsNotTram = getGameState().roadObjectIdIsNotTram & (1U << elRoad->roadObjectId());
-                            if (targetIsNotTram)
+                            const bool targetIsAnyRoadTypeCompatible = getGameState().roadObjectIdIsAnyRoadTypeCompatible & (1U << (thought.trackObjId & ~(1U << 7)));
+                            const bool elIsAnyRoadTypeCompatible = getGameState().roadObjectIdIsAnyRoadTypeCompatible & (1U << elRoad->roadObjectId());
+                            if (targetIsAnyRoadTypeCompatible)
                             {
-                                if (!elIsNotTram)
+                                if (!elIsAnyRoadTypeCompatible)
                                 {
                                     continue;
                                 }
                             }
                             else
                             {
-                                if (elIsNotTram)
+                                if (elIsAnyRoadTypeCompatible)
                                 {
                                     continue;
                                 }
