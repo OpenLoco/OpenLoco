@@ -1305,7 +1305,7 @@ namespace OpenLoco::Vehicles
         {
             if (mode == TransportMode::road)
             {
-               auto bl = categoriseTimeElapsed();
+                auto bl = categoriseTimeElapsed();
                 if (bl == SignalTimeoutStatus::firstTimeout)
                 {
                     return sub_4A8DB7();
@@ -4390,34 +4390,34 @@ namespace OpenLoco::Vehicles
 
         const auto newRoutingCurvature = TrackData::getCurvatureDegree((newRouting & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2);
 
-        int8_t minCurvature = curvatures[0];    // cl
-        int8_t maxCurvature = curvatures[0];    // ch
-        int8_t minAbsCurvature = curvatures[0]; // ah
+        int8_t minCurvature = curvatures[0];            // cl
+        int8_t maxCurvature = curvatures[0];            // ch
+        int8_t leastMagnitudeCurvature = curvatures[0]; // ah
         for (auto i = 1U; i < curvatures.size(); ++i)
         {
             const auto curvature = curvatures[i];
             minCurvature = std::min(minCurvature, curvature);
             maxCurvature = std::max(maxCurvature, curvature);
 
-            if (std::abs(curvature) < std::abs(minAbsCurvature))
+            if (std::abs(curvature) < std::abs(leastMagnitudeCurvature))
             {
-                minAbsCurvature = curvature;
+                leastMagnitudeCurvature = curvature;
             }
         }
 
         uint32_t lightStateFlags = 0x10;
-        if (minAbsCurvature != minCurvature)
+        if (leastMagnitudeCurvature != minCurvature)
         {
             lightStateFlags |= 1U << 30;
-            if (newRoutingCurvature < minAbsCurvature)
+            if (newRoutingCurvature < leastMagnitudeCurvature)
             {
                 lightStateFlags |= 1U << 28;
             }
         }
-        if (minAbsCurvature != maxCurvature)
+        if (leastMagnitudeCurvature != maxCurvature)
         {
             lightStateFlags |= 1U << 29;
-            if (newRoutingCurvature > minAbsCurvature)
+            if (newRoutingCurvature > leastMagnitudeCurvature)
             {
                 lightStateFlags |= 1U << 27;
             }
