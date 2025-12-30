@@ -2107,6 +2107,15 @@ namespace OpenLoco::StringIds
     constexpr StringId windowFrameStyleGradient = 2393;
     constexpr StringId windowFrameStyleSolid = 2394;
     constexpr StringId windowFrameStyleTranslucent = 2395;
+    constexpr StringId sortByCost = 2403;
+    constexpr StringId sortByPower = 2404;
+    constexpr StringId sortByMaxSpeed = 2405;
+    constexpr StringId sortByWeight = 2406;
+    constexpr StringId sortByLength = 2407;
+    constexpr StringId sortAscendingOrder = 2408;
+    constexpr StringId sortDescendingOrder = 2409;
+    constexpr StringId sortByCapacity = 2410;
+    constexpr StringId sortByObsolete = 2411;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

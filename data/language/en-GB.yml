@@ -2448,3 +2448,12 @@ strings:
   2393: 'Gradient (default)'
   2394: 'Solid colour'
   2395: 'Translucent colour'
+  2403: "Sort by cost"
+  2404: "Sort by power"
+  2405: "Sort by max. speed"
+  2406: "Sort by weight"
+  2407: "Sort by length"
+  2408: "Ascending order"
+  2409: "Descending order"
+  2410: "Sort by capacity"
+  2411: "Sort by obsolescence"
