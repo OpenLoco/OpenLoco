@@ -279,6 +279,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     {
         designYear = 0,
         name = 1,
+        cost = 2,
+        power = 3,
+        maxSpeed = 4,
+        weight = 5,
+        length = 6,
     };
 
     static bool _lastDisplayLockedVehiclesState;
@@ -286,6 +291,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static VehicleFilterFlags _vehicleFilterFlags = kMaskPoweredUnpowered | kMaskLockedUnlocked;
     static VehicleSortBy _vehicleSortBy = VehicleSortBy::designYear;
     static uint8_t _cargoSupportedFilter = 0xFF;
+    static bool _vehicleSortAscending = true;
 
     static uint32_t _numTrackTypeTabs;    // 0x011364EC
     static int16_t _numAvailableVehicles; // 0x01136268
@@ -511,6 +517,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             StringId name;
             bool isPowered;
             uint16_t designed;
+            currency32_t cost;
+            uint16_t power;
+            Speed16 maxSpeed;
+            uint16_t weight;
+            uint32_t length;
         };
 
         _numAvailableVehicles = 0;
@@ -614,22 +625,39 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 continue;
             }
 
-            buildableVehicles.push_back({ vehicleObjIndex, vehicleObj->name, isPowered, vehicleObj->designed });
+            const currency32_t cost = Economy::getInflationAdjustedCost(vehicleObj->costFactor, vehicleObj->costIndex, 10);
+            const uint16_t power = vehicleObj->power;
+            const Speed16 maxSpeed = vehicleObj->speed;
+            const uint16_t weight = vehicleObj->weight;
+            const uint32_t length = vehicleObj->getLength();
+
+            buildableVehicles.push_back({ vehicleObjIndex, vehicleObj->name, isPowered, vehicleObj->designed, cost, power, maxSpeed, weight, length });
         }
 
-        // Sort by name or design year
-        if (_vehicleSortBy == VehicleSortBy::name)
-        {
-            std::sort(buildableVehicles.begin(), buildableVehicles.end(), [](const BuildableVehicle& item1, const BuildableVehicle& item2) {
-                const std::string_view str1 = StringManager::getString(item1.name);
-                const std::string_view str2 = StringManager::getString(item2.name);
-                return str1 < str2;
-            });
-        }
-        else if (_vehicleSortBy == VehicleSortBy::designYear)
-        {
-            std::sort(buildableVehicles.begin(), buildableVehicles.end(), [](const BuildableVehicle& item1, const BuildableVehicle& item2) { return item1.designed < item2.designed; });
-        }
+        std::sort(buildableVehicles.begin(), buildableVehicles.end(), [](const BuildableVehicle& item1, const BuildableVehicle& item2) {
+            switch (_vehicleSortBy)
+            {
+                case VehicleSortBy::designYear:
+                default:
+                    return _vehicleSortAscending ? item1.designed < item2.designed : item1.designed > item2.designed;
+                case VehicleSortBy::name:
+                {
+                    const std::string_view str1 = StringManager::getString(item1.name);
+                    const std::string_view str2 = StringManager::getString(item2.name);
+                    return _vehicleSortAscending ? str1 < str2 : str1 > str2;
+                }
+                case VehicleSortBy::cost:
+                    return _vehicleSortAscending ? item1.cost < item2.cost : item1.cost > item2.cost;
+                case VehicleSortBy::power:
+                    return _vehicleSortAscending ? item1.power < item2.power : item1.power > item2.power;
+                case VehicleSortBy::maxSpeed:
+                    return _vehicleSortAscending ? item1.maxSpeed < item2.maxSpeed : item1.maxSpeed > item2.maxSpeed;
+                case VehicleSortBy::weight:
+                    return _vehicleSortAscending ? item1.weight < item2.weight : item1.weight > item2.weight;
+                case VehicleSortBy::length:
+                    return _vehicleSortAscending ? item1.length < item2.length : item1.length > item2.length;
+            }
+        });
 
         // Group powered vehicles, if were not leaving (un)powered out
         if ((_vehicleFilterFlags & kMaskPoweredUnpowered) == kMaskPoweredUnpowered)
@@ -835,46 +863,64 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         if (widgetIndex == widx::filterDropdown)
         {
             auto& dropdown = self.widgets[widx::filterLabel];
-            auto numItems = Config::get().displayLockedVehicles ? 7 : 5;
-            Dropdown::showText(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), numItems, 0x80);
+            auto numItems = Config::get().displayLockedVehicles ? 15 : 13;
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::sortByDesignYear);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::sortByName);
-            Dropdown::add(2, 0);
-            Dropdown::add(3, StringIds::dropdown_without_checkmark, StringIds::componentUnpowered);
-            Dropdown::add(4, StringIds::dropdown_without_checkmark, StringIds::componentPowered);
+            Dropdown::add(2, StringIds::dropdown_stringid, StringIds::sortByCost);
+            Dropdown::add(3, StringIds::dropdown_stringid, StringIds::sortByPower);
+            Dropdown::add(4, StringIds::dropdown_stringid, StringIds::sortByMaxSpeed);
+            Dropdown::add(5, StringIds::dropdown_stringid, StringIds::sortByWeight);
+            Dropdown::add(6, StringIds::dropdown_stringid, StringIds::sortByLength);
+            Dropdown::add(7, 0);
+            Dropdown::add(8, StringIds::dropdown_stringid, StringIds::sortAscendingOrder);
+            Dropdown::add(9, StringIds::dropdown_stringid, StringIds::sortDescendingOrder);
+            Dropdown::add(10, 0);
+            Dropdown::add(11, StringIds::dropdown_without_checkmark, StringIds::componentUnpowered);
+            Dropdown::add(12, StringIds::dropdown_without_checkmark, StringIds::componentPowered);
 
             if (Config::get().displayLockedVehicles)
             {
-                Dropdown::add(5, StringIds::dropdown_without_checkmark, StringIds::componentUnlocked);
-                Dropdown::add(6, StringIds::dropdown_without_checkmark, StringIds::componentLocked);
+                Dropdown::add(13, StringIds::dropdown_without_checkmark, StringIds::componentUnlocked);
+                Dropdown::add(14, StringIds::dropdown_without_checkmark, StringIds::componentLocked);
             }
+
+            Dropdown::showText(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), numItems, 0x80);
 
             // Mark current sort order
             Dropdown::setItemSelected(enumValue(_vehicleSortBy));
 
+            if (_vehicleSortAscending)
+            {
+                Dropdown::setItemSelected(8);
+            }
+            else
+            {
+                Dropdown::setItemSelected(9);
+            }
+
             // Show unpowered vehicles?
             if ((_vehicleFilterFlags & VehicleFilterFlags::unpowered) != VehicleFilterFlags::none)
             {
-                Dropdown::setItemSelected(3);
+                Dropdown::setItemSelected(11);
             }
 
             // Show powered vehicles?
             if ((_vehicleFilterFlags & VehicleFilterFlags::powered) != VehicleFilterFlags::none)
             {
-                Dropdown::setItemSelected(4);
+                Dropdown::setItemSelected(12);
             }
 
             // Show unlocked vehicles?
             if ((_vehicleFilterFlags & VehicleFilterFlags::unlocked) != VehicleFilterFlags::none)
             {
-                Dropdown::setItemSelected(5);
+                Dropdown::setItemSelected(13);
             }
 
             // Show locked vehicles?
             if ((_vehicleFilterFlags & VehicleFilterFlags::locked) != VehicleFilterFlags::none)
             {
-                Dropdown::setItemSelected(6);
+                Dropdown::setItemSelected(14);
             }
         }
         else if (widgetIndex == widx::cargoDropdown)
@@ -943,19 +989,47 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             {
                 _vehicleSortBy = VehicleSortBy::name;
             }
+            else if (itemIndex == 2)
+            {
+                _vehicleSortBy = VehicleSortBy::cost;
+            }
             else if (itemIndex == 3)
             {
-                _vehicleFilterFlags ^= VehicleFilterFlags::unpowered;
+                _vehicleSortBy = VehicleSortBy::power;
             }
             else if (itemIndex == 4)
             {
-                _vehicleFilterFlags ^= VehicleFilterFlags::powered;
+                _vehicleSortBy = VehicleSortBy::maxSpeed;
             }
             else if (itemIndex == 5)
             {
-                _vehicleFilterFlags ^= VehicleFilterFlags::unlocked;
+                _vehicleSortBy = VehicleSortBy::weight;
             }
             else if (itemIndex == 6)
+            {
+                _vehicleSortBy = VehicleSortBy::length;
+            }
+            else if (itemIndex == 8)
+            {
+                _vehicleSortAscending = true;
+            }
+            else if (itemIndex == 9)
+            {
+                _vehicleSortAscending = false;
+            }
+            else if (itemIndex == 11)
+            {
+                _vehicleFilterFlags ^= VehicleFilterFlags::unpowered;
+            }
+            else if (itemIndex == 12)
+            {
+                _vehicleFilterFlags ^= VehicleFilterFlags::powered;
+            }
+            else if (itemIndex == 13)
+            {
+                _vehicleFilterFlags ^= VehicleFilterFlags::unlocked;
+            }
+            else if (itemIndex == 14)
             {
                 _vehicleFilterFlags ^= VehicleFilterFlags::locked;
             }
