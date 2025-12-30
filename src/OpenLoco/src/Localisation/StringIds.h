@@ -2136,6 +2136,13 @@ namespace OpenLoco::StringIds
     constexpr StringId menu_open_audio_options = 2422;
     constexpr StringId menu_open_jukebox = 2423;
     constexpr StringId shortcut_show_jukebox_window = 2424;
+    constexpr StringId sortByCost = 2425;
+    constexpr StringId sortByPower = 2426;
+    constexpr StringId sortByMaxSpeed = 2427;
+    constexpr StringId sortByWeight = 2428;
+    constexpr StringId sortByLength = 2429;
+    constexpr StringId sortAscendingOrder = 2430;
+    constexpr StringId sortDescendingOrder = 2431;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
