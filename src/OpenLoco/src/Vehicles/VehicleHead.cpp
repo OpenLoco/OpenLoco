@@ -1305,7 +1305,7 @@ namespace OpenLoco::Vehicles
         {
             if (mode == TransportMode::road)
             {
-                SignalTimeoutStatus bl = categoriseTimeElapsed();
+               auto bl = categoriseTimeElapsed();
                 if (bl == SignalTimeoutStatus::firstTimeout)
                 {
                     return sub_4A8DB7();
@@ -1582,7 +1582,7 @@ namespace OpenLoco::Vehicles
     // 0x004A8D8F
     bool VehicleHead::roadNormalMovementUpdate(uint8_t al, StationId nextStation)
     {
-        SignalTimeoutStatus bl = categoriseTimeElapsed();
+        auto bl = categoriseTimeElapsed();
         if (bl == SignalTimeoutStatus::firstTimeout)
         {
             return sub_4A8DB7();
