@@ -1305,7 +1305,7 @@ namespace OpenLoco::Vehicles
         {
             if (mode == TransportMode::road)
             {
-                SignalTimeoutStatus bl = categorizeTimeElapsed();
+                SignalTimeoutStatus bl = categoriseTimeElapsed();
                 if (bl == SignalTimeoutStatus::firstTimeout)
                 {
                     return sub_4A8DB7();
@@ -1384,7 +1384,7 @@ namespace OpenLoco::Vehicles
     // 0: None of the below
     // 1: reached first timeout at signal
     // 2: give up and reverse at signal
-    SignalTimeoutStatus VehicleHead::categorizeTimeElapsed()
+    SignalTimeoutStatus VehicleHead::categoriseTimeElapsed()
     {
         Vehicle train(head);
         if (train.veh2->routingHandle != train.veh1->routingHandle || train.veh2->subPosition != train.veh1->subPosition)
@@ -1582,7 +1582,7 @@ namespace OpenLoco::Vehicles
     // 0x004A8D8F
     bool VehicleHead::roadNormalMovementUpdate(uint8_t al, StationId nextStation)
     {
-        SignalTimeoutStatus bl = categorizeTimeElapsed();
+        SignalTimeoutStatus bl = categoriseTimeElapsed();
         if (bl == SignalTimeoutStatus::firstTimeout)
         {
             return sub_4A8DB7();

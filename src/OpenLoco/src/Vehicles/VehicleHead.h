@@ -157,7 +157,7 @@ namespace OpenLoco::Vehicles
         Status sub_427BF2();
         void produceLeavingDockSound();
         void produceTouchdownAirportSound();
-        SignalTimeoutStatus categorizeTimeElapsed();
+        SignalTimeoutStatus categoriseTimeElapsed();
         bool sub_4AC1C2();
         bool opposingTrainAtSignal();
         bool pathingShouldReverse();
