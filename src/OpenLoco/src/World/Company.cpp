@@ -399,7 +399,7 @@ namespace OpenLoco
 
         std::copy_if(std::begin(roads), std::end(roads), std::back_inserter(result), [](uint8_t trackIdx) {
             const auto* trackObj = ObjectManager::get<RoadObject>(trackIdx & ~(1 << 7));
-            return trackObj->hasFlags(RoadObjectFlags::isRailTransport);
+            return trackObj->hasFlags(RoadObjectFlags::isRail);
         });
 
         return result;
@@ -445,7 +445,7 @@ namespace OpenLoco
 
         std::copy_if(std::begin(roads), std::end(roads), std::back_inserter(result), [](uint8_t roadId) {
             const auto* roadObj = ObjectManager::get<RoadObject>(roadId & ~(1U << 7));
-            return !roadObj->hasFlags(RoadObjectFlags::isRailTransport);
+            return !roadObj->hasFlags(RoadObjectFlags::isRail);
         });
 
         sfl::static_unordered_set<uint8_t, Limits::kMaxTrackObjects> tracks;

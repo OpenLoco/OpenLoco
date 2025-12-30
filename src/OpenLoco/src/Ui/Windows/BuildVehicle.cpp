@@ -1708,7 +1708,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         if (isRoad)
         {
             auto road_obj = ObjectManager::get<RoadObject>(trackType);
-            if (road_obj && road_obj->hasFlags(RoadObjectFlags::isRailTransport))
+            if (road_obj && road_obj->hasFlags(RoadObjectFlags::isRail))
             {
                 setRail = true;
             }

@@ -1262,7 +1262,7 @@ namespace OpenLoco::Ui::Windows::Construction
             {
                 newTrackType &= ~(1 << 7);
                 auto roadObj = ObjectManager::get<RoadObject>(newTrackType);
-                if (!roadObj->hasFlags(RoadObjectFlags::isRailTransport))
+                if (!roadObj->hasFlags(RoadObjectFlags::isRail))
                 {
                     getGameState().lastRoadOption = trackType;
                 }
