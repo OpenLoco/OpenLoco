@@ -2143,6 +2143,8 @@ namespace OpenLoco::StringIds
     constexpr StringId sortByLength = 2429;
     constexpr StringId sortAscendingOrder = 2430;
     constexpr StringId sortDescendingOrder = 2431;
+    constexpr StringId sortByCapacity = 2432;
+    constexpr StringId sortByObsolete = 2433;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

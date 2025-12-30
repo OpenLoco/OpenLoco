@@ -2484,3 +2484,5 @@ strings:
   2429: "Sort by length"
   2430: "Ascending order"
   2431: "Descending order"
+  2432: "Sort by capacity"
+  2433: "Sort by obsolescence"
