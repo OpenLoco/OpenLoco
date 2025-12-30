@@ -4398,11 +4398,8 @@ namespace OpenLoco::Vehicles
             const auto curvature = curvatures[i];
             minCurvature = std::min(minCurvature, curvature);
             maxCurvature = std::max(maxCurvature, curvature);
-            const auto absCurvature = std::abs(curvature);
 
-            // Note: this std::abs is not redundant, since minAbsCurvature stores both sign and value, not just magnitude
-            const auto currMinAbsCurvature = std::abs(minAbsCurvature);
-            if (absCurvature < currMinAbsCurvature)
+            if (std::abs(curvature) < std::abs(minAbsCurvature))
             {
                 minAbsCurvature = curvature;
             }
