@@ -92,12 +92,20 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     // 0x00447125
     static bool keyUp(Window& w, [[maybe_unused]] uint32_t charCode, uint32_t keyCode)
     {
-        if (keyCode == SDLK_ESCAPE)
+        switch (keyCode)
         {
-            w.callOnMouseUp(widx::closeButton, w.widgets[widx::closeButton].id);
-            return true;
+            case SDLK_ESCAPE:
+                w.callOnMouseUp(widx::closeButton, w.widgets[widx::closeButton].id);
+                return true;
+
+            case SDLK_RETURN:
+            case SDLK_KP_ENTER:
+                w.callOnMouseUp(widx::okButton, w.widgets[widx::okButton].id);
+                return true;
+
+            default:
+                return false;
         }
-        return false;
     }
 
     // 0x00447093
