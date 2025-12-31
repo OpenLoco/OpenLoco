@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Feature: [#2825] Drawing the viewport canvas now uses parallel processing where possible.
 - Change: [#3577] PNG heightmaps of any size are now supported and use interpolation when the image size differs from the map size.
+- Change: [#3596] Confirmation prompts can now be confirmed with return/enter keys.
 - Fix: [#3577] Crash loading PNGs with unexpected color formats or channel configurations as heightmaps.
 - Fix: [#3581] Remove sprite drawing limit that caused visual artifacts on high resolution displays and complex maps.
 
