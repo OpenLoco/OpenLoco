@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Graphics/ImageId.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Types.hpp"
@@ -7,7 +8,7 @@
 #include <OpenLoco/Engine/Ui/Point.hpp>
 #include <OpenLoco/Engine/World.hpp>
 #include <array>
-#include <sfl/static_vector.hpp>
+#include <sfl/segmented_vector.hpp>
 #include <span>
 
 namespace OpenLoco::World
@@ -227,7 +228,6 @@ namespace OpenLoco::Paint
         }
     };
 
-    static constexpr auto kMaxPaintEntries = 4000U;
     static constexpr auto kMaxPaintQuadrants = 1024;
 
     struct PaintSession
@@ -442,8 +442,7 @@ namespace OpenLoco::Paint
             PaintEntry() {}
         };
 
-        // Do not null-initialize this, its too expensive, this is storage.
-        sfl::static_vector<PaintEntry, kMaxPaintEntries> _paintEntries;
+        sfl::segmented_vector<PaintEntry, 128> _paintEntries;
 
         const Gfx::RenderTarget* _renderTarget{};
         PaintStruct* _paintHead{};
@@ -520,11 +519,6 @@ namespace OpenLoco::Paint
         T* allocatePaintStruct()
         {
             static_assert(std::same_as<T, PaintStruct> || std::same_as<T, AttachedPaintStruct> || std::same_as<T, PaintStringStruct>);
-
-            if (_paintEntries.full())
-            {
-                return nullptr;
-            }
 
             auto& ps = _paintEntries.emplace_back();
 
