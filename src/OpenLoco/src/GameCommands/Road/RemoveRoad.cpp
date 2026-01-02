@@ -293,7 +293,7 @@ namespace OpenLoco::GameCommands
         // 0x00477A10
         totalRemovalCost += pieceRemovalCost;
 
-        // Add on bridge refund if applicable
+        // Add on bridge refund if applicable (Absent from vanilla)
         if (removeRoadBridge && roadOwner != CompanyId::neutral)
         {
             const auto* bridgeObj = ObjectManager::get<BridgeObject>(roadBridgeId);
