@@ -52,7 +52,7 @@ namespace OpenLoco
         {
             return false;
         }
-        if (hasFlags(RoadObjectFlags::unk_03))
+        if (hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
         {
             return numMods == 0;
         }

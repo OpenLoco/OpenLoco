@@ -63,7 +63,7 @@ namespace OpenLoco::GameCommands
                     {
                         continue;
                     }
-                    if (!(getGameState().roadObjectIdIsNotTram & (1 << elRoad->roadObjectId())))
+                    if (!(getGameState().roadObjectIdIsAnyRoadTypeCompatible & (1 << elRoad->roadObjectId())))
                     {
                         continue;
                     }
@@ -96,7 +96,7 @@ namespace OpenLoco::GameCommands
             return false;
         }
 
-        if (!(getGameState().roadObjectIdIsFlag7 & (1 << elRoad->roadObjectId())))
+        if (!(getGameState().roadObjectIdIsUsableByAllCompanies & (1 << elRoad->roadObjectId())))
         {
             if (!sub_431E6A(elRoad->owner(), reinterpret_cast<const World::TileElement*>(elRoad)))
             {
