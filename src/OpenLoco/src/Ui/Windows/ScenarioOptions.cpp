@@ -29,6 +29,7 @@
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
+#include <OpenLoco/Math/Bound.hpp>
 
 namespace OpenLoco::Ui::Windows::ScenarioOptions
 {
@@ -273,14 +274,38 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                 case widx::objective_value_down:
                 {
+                    uint32_t stepSize{};
+                    uint16_t clickRepeatTicks = Input::getClickRepeatTicks();
+                    if (clickRepeatTicks < 100)
+                    {
+                        stepSize = 1;
+                    }
+                    else if (clickRepeatTicks < 200)
+                    {
+                        stepSize = 10;
+                    }
+                    else if (clickRepeatTicks < 300)
+                    {
+                        stepSize = 100;
+                    }
+                    else if (clickRepeatTicks < 400)
+                    {
+                        stepSize = 1'000;
+                    }
+                    else if (clickRepeatTicks >= 400)
+                    {
+                        stepSize = 10'000;
+                    }
+
                     switch (Scenario::getObjective().type)
                     {
                         case Scenario::ObjectiveType::companyValue:
-                            Scenario::getObjective().companyValue = std::max<uint32_t>(Scenario::getObjective().companyValue - 100000, Scenario::kMinObjectiveCompanyValue);
+
+                            Scenario::getObjective().companyValue = std::max<uint32_t>(Math::Bound::sub(Scenario::getObjective().companyValue, 100000 * stepSize), Scenario::kMinObjectiveCompanyValue);
                             break;
 
                         case Scenario::ObjectiveType::vehicleProfit:
-                            Scenario::getObjective().monthlyVehicleProfit = std::max<uint32_t>(Scenario::getObjective().monthlyVehicleProfit - 1000, Scenario::kMinObjectiveMonthlyProfitFromVehicles);
+                            Scenario::getObjective().monthlyVehicleProfit = std::max<uint32_t>(Math::Bound::sub(Scenario::getObjective().monthlyVehicleProfit, 1000 * stepSize), Scenario::kMinObjectiveMonthlyProfitFromVehicles);
                             break;
 
                         case Scenario::ObjectiveType::performanceIndex:
@@ -289,23 +314,10 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                         case Scenario::ObjectiveType::cargoDelivery:
                         {
-                            uint16_t stepSize{};
-                            uint16_t clickRepeatTicks = Input::getClickRepeatTicks();
-                            if (clickRepeatTicks < 100)
-                            {
-                                stepSize = 100;
-                            }
-                            else if (clickRepeatTicks >= 100)
-                            {
-                                stepSize = 1000;
-                            }
-                            else if (clickRepeatTicks >= 200)
-                            {
-                                stepSize = 10000;
-                            }
+                            stepSize *= 100;
 
                             // Round off cargo to the nearest multiple of the step size.
-                            uint16_t cargoFactor = (Scenario::getObjective().deliveredCargoAmount - stepSize) / stepSize;
+                            uint32_t cargoFactor = Math::Bound::sub(Scenario::getObjective().deliveredCargoAmount, stepSize) / stepSize;
                             uint32_t newDeliveredCargoAmount = cargoFactor * stepSize;
 
                             Scenario::getObjective().deliveredCargoAmount = std::max<uint32_t>(newDeliveredCargoAmount, Scenario::kMinObjectiveDeliveredCargo);
@@ -319,14 +331,37 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                 case widx::objective_value_up:
                 {
+                    uint32_t stepSize{};
+                    uint16_t clickRepeatTicks = Input::getClickRepeatTicks();
+                    if (clickRepeatTicks < 100)
+                    {
+                        stepSize = 1;
+                    }
+                    else if (clickRepeatTicks < 200)
+                    {
+                        stepSize = 10;
+                    }
+                    else if (clickRepeatTicks < 300)
+                    {
+                        stepSize = 100;
+                    }
+                    else if (clickRepeatTicks < 400)
+                    {
+                        stepSize = 1'000;
+                    }
+                    else if (clickRepeatTicks >= 400)
+                    {
+                        stepSize = 10'000;
+                    }
+
                     switch (Scenario::getObjective().type)
                     {
                         case Scenario::ObjectiveType::companyValue:
-                            Scenario::getObjective().companyValue = std::min<uint32_t>(Scenario::getObjective().companyValue + 100000, Scenario::kMaxObjectiveCompanyValue);
+                            Scenario::getObjective().companyValue = std::min<uint32_t>(Math::Bound::add(Scenario::getObjective().companyValue, 100000 * stepSize), Scenario::kMaxObjectiveCompanyValue);
                             break;
 
                         case Scenario::ObjectiveType::vehicleProfit:
-                            Scenario::getObjective().monthlyVehicleProfit = std::min<uint32_t>(Scenario::getObjective().monthlyVehicleProfit + 1000, Scenario::kMaxObjectiveMonthlyProfitFromVehicles);
+                            Scenario::getObjective().monthlyVehicleProfit = std::min<uint32_t>(Math::Bound::add(Scenario::getObjective().monthlyVehicleProfit, 1000 * stepSize), Scenario::kMaxObjectiveMonthlyProfitFromVehicles);
                             break;
 
                         case Scenario::ObjectiveType::performanceIndex:
@@ -335,26 +370,13 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                         case Scenario::ObjectiveType::cargoDelivery:
                         {
-                            uint16_t stepSize{};
-                            uint16_t clickRepeatTicks = Input::getClickRepeatTicks();
-                            if (clickRepeatTicks < 100)
-                            {
-                                stepSize = 100;
-                            }
-                            else if (clickRepeatTicks >= 100)
-                            {
-                                stepSize = 1000;
-                            }
-                            else if (clickRepeatTicks >= 200)
-                            {
-                                stepSize = 10000;
-                            }
+                            stepSize *= 100;
 
                             // Round off cargo to the nearest multiple of the step size.
-                            uint16_t cargoFactor = (Scenario::getObjective().deliveredCargoAmount + stepSize) / stepSize;
+                            uint32_t cargoFactor = Math::Bound::add(Scenario::getObjective().deliveredCargoAmount, stepSize) / stepSize;
                             uint32_t newDeliveredCargoAmount = cargoFactor * stepSize;
 
-                            Scenario::getObjective().deliveredCargoAmount = std::max<uint32_t>(newDeliveredCargoAmount, Scenario::kMinObjectiveDeliveredCargo);
+                            Scenario::getObjective().deliveredCargoAmount = std::min<uint32_t>(newDeliveredCargoAmount, Scenario::kMaxObjectiveDeliveredCargo);
                             break;
                         }
                     }
