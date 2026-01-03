@@ -1125,7 +1125,7 @@ namespace OpenLoco
                         break;
                     }
                     auto* trackObj = ObjectManager::get<TrackObject>(elTrack->trackObjectId());
-                    station->flags |= trackObj->hasFlags(TrackObjectFlags::unk_02)
+                    station->flags |= trackObj->hasFlags(TrackObjectFlags::isRoad)
                         ? StationFlags::transportModeRoad
                         : StationFlags::transportModeRail;
                     acceptedCargoTypes = ~0U;

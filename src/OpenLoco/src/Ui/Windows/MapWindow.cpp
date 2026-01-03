@@ -301,7 +301,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                             }
 
                             auto* trackObj = ObjectManager::get<TrackObject>(trackEl->trackObjectId());
-                            if (trackObj->hasFlags(TrackObjectFlags::unk_02))
+                            if (trackObj->hasFlags(TrackObjectFlags::isRoad))
                             {
                                 colour0 = colourFlash0 = PaletteIndex::black2;
                                 if (_flashingItems & (1 << 2))
