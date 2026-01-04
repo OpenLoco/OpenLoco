@@ -665,7 +665,7 @@ namespace OpenLoco::Vehicles
 
             // Determine the position where the "middle" cars (with VehicleObjectFlags::centerPosition)
             // should be inserted so that they are centered among the non-middle cars.
-            // If the number of non-middle cars is odd, the insert possition biases to before the middle.
+            // If the number of non-middle cars is odd, the middle moves towards the end by one.
             const auto insertionPosition = carData.begin() + (middleOffset / 2 + middleOffset % 2);
 
             // Places cars with VehicleObjectFlags::centerPosition into the middle
