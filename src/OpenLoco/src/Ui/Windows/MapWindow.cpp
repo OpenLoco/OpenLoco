@@ -376,7 +376,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                             }
 
                             auto* roadObj = ObjectManager::get<RoadObject>(roadEl->roadObjectId());
-                            if (roadObj->hasFlags(RoadObjectFlags::unk_01))
+                            if (roadObj->hasFlags(RoadObjectFlags::isRail))
                             {
                                 colour0 = colourFlash0 = PaletteIndex::black7;
                                 if (_flashingItems & (1 << 3))

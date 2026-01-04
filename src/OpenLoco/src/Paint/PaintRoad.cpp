@@ -551,7 +551,7 @@ namespace OpenLoco::Paint
             paintLevelCrossing(session, baseRoadImageColour, elRoad, rotation);
         }
 
-        if (session.getRenderTarget()->zoomLevel > 0 || roadObj->hasFlags(RoadObjectFlags::unk_03))
+        if (session.getRenderTarget()->zoomLevel > 0 || roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
         {
             return;
         }

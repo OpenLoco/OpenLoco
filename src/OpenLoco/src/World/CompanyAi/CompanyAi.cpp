@@ -757,7 +757,7 @@ namespace OpenLoco
             trackType &= ~(1U << 7);
             mode = TransportMode::road;
             auto* roadObj = ObjectManager::get<RoadObject>(trackType);
-            if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+            if (roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
             {
                 trackType = 0xFFU;
             }
@@ -1606,18 +1606,18 @@ namespace OpenLoco
                         auto* elRoad = el.as<World::RoadElement>();
                         if (elRoad != nullptr)
                         {
-                            const bool targetIsNotTram = getGameState().roadObjectIdIsNotTram & (1U << (thought.trackObjId & ~(1U << 7)));
-                            const bool elIsNotTram = getGameState().roadObjectIdIsNotTram & (1U << elRoad->roadObjectId());
-                            if (targetIsNotTram)
+                            const bool targetIsAnyRoadTypeCompatible = getGameState().roadObjectIdIsAnyRoadTypeCompatible & (1U << (thought.trackObjId & ~(1U << 7)));
+                            const bool elIsAnyRoadTypeCompatible = getGameState().roadObjectIdIsAnyRoadTypeCompatible & (1U << elRoad->roadObjectId());
+                            if (targetIsAnyRoadTypeCompatible)
                             {
-                                if (!elIsNotTram)
+                                if (!elIsAnyRoadTypeCompatible)
                                 {
                                     continue;
                                 }
                             }
                             else
                             {
-                                if (elIsNotTram)
+                                if (elIsAnyRoadTypeCompatible)
                                 {
                                     continue;
                                 }
@@ -1628,7 +1628,7 @@ namespace OpenLoco
                             }
                             existingMods = 0U;
                             auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
-                            if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+                            if (!roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
                             {
                                 for (auto i = 0U; i < 2; ++i)
                                 {
@@ -3541,7 +3541,7 @@ namespace OpenLoco
 
             auto* roadObj = ObjectManager::get<RoadObject>(roadObjId & ~(1U << 7));
             using enum RoadObjectFlags;
-            if ((roadObj->flags & (unk_07 | isRoad | unk_03 | unk_02)) != (unk_07 | isRoad | unk_03 | unk_02))
+            if ((roadObj->flags & (allowUseByAllCompanies | isRoad | anyRoadTypeCompatible | unk_02)) != (allowUseByAllCompanies | isRoad | anyRoadTypeCompatible | unk_02))
             {
                 continue;
             }
@@ -3583,7 +3583,7 @@ namespace OpenLoco
 
             auto* roadObj = ObjectManager::get<RoadObject>(roadObjId & ~(1U << 7));
             using enum RoadObjectFlags;
-            if (roadObj->hasFlags(unk_07 | isRoad | unk_03 | isOneWay))
+            if (roadObj->hasFlags(allowUseByAllCompanies | isRoad | anyRoadTypeCompatible | isOneWay))
             {
                 continue;
             }
@@ -4660,7 +4660,7 @@ namespace OpenLoco
         }
 
         bool isTram = false;
-        if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+        if (!roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
         {
             isTram = true;
             if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
@@ -5756,11 +5756,11 @@ namespace OpenLoco
                 if (elRoad->roadObjectId() != roadObjectId)
                 {
                     auto* existingRoadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
-                    if (!existingRoadObj->hasFlags(RoadObjectFlags::unk_03))
+                    if (!existingRoadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
                     {
                         continue;
                     }
-                    if (!newRoadObj->hasFlags(RoadObjectFlags::unk_03))
+                    if (!newRoadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
                     {
                         continue;
                     }
@@ -5818,7 +5818,7 @@ namespace OpenLoco
         const auto existingRoadObjId = elRoad->roadObjectId();
         auto* existingRoadObj = ObjectManager::get<RoadObject>(existingRoadObjId);
         uint8_t mods = 0;
-        if (!existingRoadObj->hasFlags(RoadObjectFlags::unk_03))
+        if (!existingRoadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
         {
             mods = elRoad->mods();
         }
@@ -6172,7 +6172,7 @@ namespace OpenLoco
                 const auto requiredMods = 0U;
                 const auto roadObjId = thought.trackObjId & ~(1U << 7);
                 auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
-                auto compatRoadObjId = roadObj->hasFlags(RoadObjectFlags::unk_03) ? 0xFFU : roadObjId;
+                auto compatRoadObjId = roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible) ? 0xFFU : roadObjId;
 
                 auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(pos, tad);
                 auto rc = Track::getRoadConnectionsAiAllocated(nextPos, nextRotation, company.id(), compatRoadObjId, requiredMods, queryMods);
@@ -6448,7 +6448,7 @@ namespace OpenLoco
     {
         using enum TrackRoadRemoveQueryFlags;
         auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
-        if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+        if (roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
         {
             return roadTypeShouldNotBeRemoved;
         }
@@ -6638,7 +6638,7 @@ namespace OpenLoco
         }
 
         auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
-        if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+        if (!roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
         {
             using enum TrackRoadRemoveQueryFlags;
             if ((queryRoadForRemoval(pos, (0 << 3) | rotation, roadObjId, companyId) & (malformed | roadTypeShouldNotBeRemoved)) == none)
