@@ -765,6 +765,9 @@ loco_add_executable(OpenLoco
 )
 
 if (APPLE)
+    # Enable the use of e.g. std::execution::par
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexperimental-library")
+
     target_link_options(OpenLoco PRIVATE "-framework" "Cocoa")
 
     set_target_properties(OpenLoco PROPERTIES

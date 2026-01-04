@@ -4,7 +4,6 @@
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingContext.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "IndustryManager.h"
 #include "Localisation/FormatArguments.hpp"
@@ -1156,7 +1155,7 @@ namespace OpenLoco
                             continue;
                         }
                         auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
-                        station->flags |= roadObj->hasFlags(RoadObjectFlags::unk_01)
+                        station->flags |= roadObj->hasFlags(RoadObjectFlags::isRail)
                             ? StationFlags::transportModeRail
                             : StationFlags::transportModeRoad;
                     }

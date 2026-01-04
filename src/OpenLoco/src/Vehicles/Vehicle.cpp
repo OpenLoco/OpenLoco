@@ -623,7 +623,7 @@ namespace OpenLoco::Vehicles
 
             if (getTrackType() == 0xFF)
             {
-                if (getGameState().roadObjectIdIsNotTram & (1 << elRoad->roadObjectId()))
+                if (getGameState().roadObjectIdIsAnyRoadTypeCompatible & (1 << elRoad->roadObjectId()))
                 {
                     elRoad->setUnk7_40(true);
                     roadType = elRoad->roadObjectId();

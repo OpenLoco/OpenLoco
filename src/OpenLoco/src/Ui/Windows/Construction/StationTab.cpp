@@ -11,7 +11,6 @@
 #include "GameCommands/Track/RemoveTrainStation.h"
 #include "GameState.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"

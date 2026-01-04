@@ -3,7 +3,6 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageId.h"
 #include "Graphics/SoftwareDrawingContext.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Map/Tile.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"

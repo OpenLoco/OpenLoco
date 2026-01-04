@@ -12,8 +12,8 @@
 #include "Environment.h"
 #include "GameState.h"
 #include "Graphics/Colour.h"
+#include "Graphics/DrawingContext.h"
 #include "Graphics/Gfx.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "HillShapesObject.h"
 #include "IndustryObject.h"
@@ -959,26 +959,26 @@ namespace OpenLoco::ObjectManager
     // 0x0047966E
     void updateRoadObjectIdFlags()
     {
-        uint32_t roadObjectIdIsNotTram = 0;
-        uint32_t roadObjectIdIsFlag7 = 0;
+        uint32_t roadObjectIdIsAnyRoadTypeCompatible = 0;
+        uint32_t roadObjectIdIsUsableByAllCompanies = 0;
 
         for (size_t index = 0; index < ObjectManager::getMaxObjects(ObjectType::road); ++index)
         {
             auto roadObject = ObjectManager::get<RoadObject>(index);
             if (roadObject != nullptr)
             {
-                if (roadObject->hasFlags(RoadObjectFlags::unk_03))
+                if (roadObject->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
                 {
-                    roadObjectIdIsNotTram |= (1u << index);
+                    roadObjectIdIsAnyRoadTypeCompatible |= (1u << index);
                 }
-                if (roadObject->hasFlags(RoadObjectFlags::unk_07))
+                if (roadObject->hasFlags(RoadObjectFlags::allowUseByAllCompanies))
                 {
-                    roadObjectIdIsFlag7 |= (1u << index);
+                    roadObjectIdIsUsableByAllCompanies |= (1u << index);
                 }
             }
         }
-        getGameState().roadObjectIdIsNotTram = roadObjectIdIsNotTram;
-        getGameState().roadObjectIdIsFlag7 = roadObjectIdIsFlag7;
+        getGameState().roadObjectIdIsAnyRoadTypeCompatible = roadObjectIdIsAnyRoadTypeCompatible;
+        getGameState().roadObjectIdIsUsableByAllCompanies = roadObjectIdIsUsableByAllCompanies;
     }
 
     // 0x004796A9
@@ -1176,7 +1176,7 @@ namespace OpenLoco::ObjectManager
             auto roadObject = ObjectManager::get<RoadObject>(index);
             if (roadObject != nullptr)
             {
-                if (roadObject->hasFlags(RoadObjectFlags::unk_03) && !roadObject->hasFlags(RoadObjectFlags::isOneWay))
+                if (roadObject->hasFlags(RoadObjectFlags::anyRoadTypeCompatible) && !roadObject->hasFlags(RoadObjectFlags::isOneWay))
                 {
                     if (largestTownSize <= roadObject->targetTownSize)
                     {

@@ -3,7 +3,6 @@
 #include "GameCommands/General/LoadSaveQuit.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Intro.h"
 #include "Localisation/Formatting.h"

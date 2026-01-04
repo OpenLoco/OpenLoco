@@ -9,7 +9,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -493,7 +492,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         {
             auto trackIdx = trackType & ~(1 << 7);
             auto roadObj = ObjectManager::get<RoadObject>(trackIdx);
-            if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+            if (roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
             {
                 trackType = 0xFE;
             }
@@ -1708,7 +1707,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         if (isRoad)
         {
             auto road_obj = ObjectManager::get<RoadObject>(trackType);
-            if (road_obj && road_obj->hasFlags(RoadObjectFlags::unk_01))
+            if (road_obj && road_obj->hasFlags(RoadObjectFlags::isRail))
             {
                 setRail = true;
             }
