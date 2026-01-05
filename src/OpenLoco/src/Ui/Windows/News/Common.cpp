@@ -136,7 +136,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             }
         }
 
-        if (mtd.hasFlag(MessageTypeFlags::renderNewspaper))
+        if (mtd.hasFlag(MessageTypeFlags::isGeneralNews))
         {
             WindowFlags flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent | WindowFlags::noBackground;
 

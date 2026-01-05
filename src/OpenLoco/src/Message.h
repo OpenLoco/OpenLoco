@@ -73,7 +73,7 @@ namespace OpenLoco
     {
         none = 0U,
         shouldDedup = (1U << 0),
-        renderNewspaper = (1U << 1), // If set, renders newspaper style dialogue appropriate to time period. If not set, renders red error dialogue
+        isGeneralNews = (1U << 1), // If set, renders newspaper style dialogue appropriate to time period. If not set, renders red error dialogue
         hasFirstItem = (1U << 2),
         hasSecondItem = (1U << 3),
         smallerFont = (1U << 5), // Never set - but if it was, it results in font size of Gfx::Font::large not being set
