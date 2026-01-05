@@ -522,7 +522,7 @@ namespace OpenLoco
             if (bodySprite.hasFlags(BodySpriteFlags::hasGentleSprites))
             {
                 bodySprite.gentleImageId = offset + imgRes.imageOffset;
-                const auto numGentleTransitionFrames = (bodySprite.numFramesPerRotation * 4) * 2; // transition frames up/down deg6
+                const auto numGentleTransitionFrames = bodySprite.numFramesPerRotation * (4 * 2); // gentle transition frames, 4 directions, up/down, deg6
                 offset += numGentleTransitionFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
 
                 bodySprite.slopedYawAccuracy = getYawAccuracySloped(bodySprite.numSlopedRotationFrames);
@@ -532,7 +532,7 @@ namespace OpenLoco
                 if (bodySprite.hasFlags(BodySpriteFlags::hasSteepSprites))
                 {
                     bodySprite.steepImageId = offset + imgRes.imageOffset;
-                    const auto numSteepTransitionFrames = (bodySprite.numFramesPerRotation * 4) * 2; // transition frames up/down deg18
+                    const auto numSteepTransitionFrames = bodySprite.numFramesPerRotation * (4 * 2); // steep transition frames, 4 directions, up/down, deg18
                     offset += numSteepTransitionFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
                     // TODO: add these two together??
                     const auto numSteepFrames = bodySprite.numSlopedRotationFrames * bodySprite.numFramesPerRotation * 2; // up/down deg25
@@ -574,13 +574,13 @@ namespace OpenLoco
             if (bogieSprite.hasFlags(BogieSpriteFlags::hasGentleSprites))
             {
                 bogieSprite.gentleImageIds = offset + imgRes.imageOffset;
-                const auto numGentleFrames = (bogieSprite.numFramesPerRotation * 32) * 2; // up and down 12 deg
+                const auto numGentleFrames = (bogieSprite.numFramesPerRotation * 8) * (4 * 2); // 4 directions, up/down, 12 deg
                 offset += numGentleFrames / (bogieSprite.hasFlags(BogieSpriteFlags::rotationalSymmetry) ? 2 : 1);
 
                 if (bogieSprite.hasFlags(BogieSpriteFlags::hasSteepSprites))
                 {
                     bogieSprite.steepImageIds = offset + imgRes.imageOffset;
-                    const auto numSteepFrames = (bogieSprite.numFramesPerRotation * 32) * 2; // up and down 25 deg
+                    const auto numSteepFrames = (bogieSprite.numFramesPerRotation * 8) * (4 * 2); // 4 directions, up/down, 25 deg
                     offset += numSteepFrames / (bogieSprite.hasFlags(BogieSpriteFlags::rotationalSymmetry) ? 2 : 1);
                 }
             }
