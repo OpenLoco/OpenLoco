@@ -5015,7 +5015,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             GameCommands::setErrorTitle(StringIds::cant_remove_string_id);
             FormatArguments args{};
-            args.skip(10);
+            args.skip(6);
             args.push(head->name);
             args.push(head->ordinalNumber);
 
