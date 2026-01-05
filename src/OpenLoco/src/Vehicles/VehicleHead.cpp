@@ -1305,12 +1305,12 @@ namespace OpenLoco::Vehicles
         {
             if (mode == TransportMode::road)
             {
-                auto bl = categoriseTimeElapsed();
-                if (bl == SignalTimeoutStatus::firstTimeout)
+                auto timeoutStatus = categoriseTimeElapsed(); // bl
+                if (timeoutStatus == SignalTimeoutStatus::firstTimeout)
                 {
                     return sub_4A8DB7();
                 }
-                else if (bl == SignalTimeoutStatus::turnaroundAtSignalTimeout)
+                else if (timeoutStatus == SignalTimeoutStatus::turnaroundAtSignalTimeout)
                 {
                     return tryReverse();
                 }
@@ -1582,12 +1582,12 @@ namespace OpenLoco::Vehicles
     // 0x004A8D8F
     bool VehicleHead::roadNormalMovementUpdate(uint8_t al, StationId nextStation)
     {
-        auto bl = categoriseTimeElapsed();
-        if (bl == SignalTimeoutStatus::firstTimeout)
+        auto timeoutStatus = categoriseTimeElapsed(); // bl
+        if (timeoutStatus == SignalTimeoutStatus::firstTimeout)
         {
             return sub_4A8DB7();
         }
-        else if (bl == SignalTimeoutStatus::turnaroundAtSignalTimeout)
+        else if (timeoutStatus == SignalTimeoutStatus::turnaroundAtSignalTimeout)
         {
             return tryReverse();
         }
