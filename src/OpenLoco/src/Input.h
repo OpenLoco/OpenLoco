@@ -125,6 +125,8 @@ namespace OpenLoco::Input
     void setDragLastLocation(Ui::Point pos);
 
     uint16_t getClickRepeatTicks();
+    // As a button is held the step size grows exponentially
+    uint32_t getClickRepeatStepSize();
     void setClickRepeatTicks(uint16_t ticks);
 
     bool isRightMouseButtonDown();

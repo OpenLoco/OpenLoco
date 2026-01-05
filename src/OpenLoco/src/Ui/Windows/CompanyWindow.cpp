@@ -49,6 +49,7 @@
 #include "ViewportManager.h"
 #include "World/Company.h"
 #include "World/CompanyManager.h"
+#include <OpenLoco/Math/Bound.hpp>
 
 #include <cmath>
 
@@ -2060,11 +2061,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
         }
 
-        static inline currency32_t calculateStepSize(uint16_t repeatTicks)
-        {
-            return 1000 * std::pow(10, repeatTicks / 100);
-        }
-
         // 0x0043383E
         static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
@@ -2083,7 +2079,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     }
 
                     GameCommands::ChangeLoanArgs args{};
-                    args.newLoan = std::max<currency32_t>(0, company->currentLoan - calculateStepSize(Input::getClickRepeatTicks()));
+                    args.newLoan = Math::Bound::sub(company->currentLoan, Input::getClickRepeatStepSize() * 1000);
 
                     GameCommands::setErrorTitle(StringIds::cant_pay_back_loan);
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
@@ -2092,8 +2088,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 case widx::loan_increase:
                 {
+                    auto company = CompanyManager::get(CompanyId(self.number));
+
                     GameCommands::ChangeLoanArgs args{};
-                    args.newLoan = CompanyManager::get(CompanyId(self.number))->currentLoan + calculateStepSize(Input::getClickRepeatTicks());
+                    args.newLoan = Math::Bound::add(company->currentLoan, Input::getClickRepeatStepSize() * 1000);
 
                     GameCommands::setErrorTitle(StringIds::cant_borrow_any_more_money);
                     GameCommands::doCommand(args, GameCommands::Flags::apply);

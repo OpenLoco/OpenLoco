@@ -274,28 +274,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                 case widx::objective_value_down:
                 {
-                    uint32_t stepSize{};
-                    uint16_t clickRepeatTicks = Input::getClickRepeatTicks();
-                    if (clickRepeatTicks < 100)
-                    {
-                        stepSize = 1;
-                    }
-                    else if (clickRepeatTicks < 200)
-                    {
-                        stepSize = 10;
-                    }
-                    else if (clickRepeatTicks < 300)
-                    {
-                        stepSize = 100;
-                    }
-                    else if (clickRepeatTicks < 400)
-                    {
-                        stepSize = 1'000;
-                    }
-                    else if (clickRepeatTicks >= 400)
-                    {
-                        stepSize = 10'000;
-                    }
+                    uint32_t stepSize = Input::getClickRepeatStepSize();
 
                     switch (Scenario::getObjective().type)
                     {
@@ -331,28 +310,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                 case widx::objective_value_up:
                 {
-                    uint32_t stepSize{};
-                    uint16_t clickRepeatTicks = Input::getClickRepeatTicks();
-                    if (clickRepeatTicks < 100)
-                    {
-                        stepSize = 1;
-                    }
-                    else if (clickRepeatTicks < 200)
-                    {
-                        stepSize = 10;
-                    }
-                    else if (clickRepeatTicks < 300)
-                    {
-                        stepSize = 100;
-                    }
-                    else if (clickRepeatTicks < 400)
-                    {
-                        stepSize = 1'000;
-                    }
-                    else if (clickRepeatTicks >= 400)
-                    {
-                        stepSize = 10'000;
-                    }
+                    uint32_t stepSize = Input::getClickRepeatStepSize();
 
                     switch (Scenario::getObjective().type)
                     {
