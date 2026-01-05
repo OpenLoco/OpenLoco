@@ -7,6 +7,7 @@
 - Fix: [#3577] Crash loading PNGs with unexpected color formats or channel configurations as heightmaps.
 - Fix: [#3581] Remove sprite drawing limit that caused visual artifacts on high resolution displays and complex maps.
 - Fix: [#3584] First station of a vehicle's route not removed from vehicle orders when that station is deallocated.
+- Fix: [#3603] Error popup for trying to pick up a broken down or crashed vehicle shows missing string.
 
 25.12 (2025-12-20)
 ------------------------------------------------------------------------
