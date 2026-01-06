@@ -2263,6 +2263,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.widgets[Common::widx::close_button].left = self.width - 15;
             self.widgets[Common::widx::close_button].right = self.width - 3;
 
+            self.widgets[Common::widx::company_select].right = self.width - 3;
+            self.widgets[Common::widx::company_select].left = self.width - 28;
+
             Widget::leftAlignTabs(self, Common::widx::tab_status, Common::widx::tab_challenge);
         }
 
@@ -2273,6 +2276,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             self.draw(drawingCtx);
             Common::drawTabs(self, drawingCtx);
+            Common::drawCompanySelect(&self, drawingCtx);
 
             uint16_t y = self.y + 47;
 
