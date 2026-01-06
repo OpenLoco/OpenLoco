@@ -1,6 +1,7 @@
 26.03.1+ (???)
 ------------------------------------------------------------------------
 - Feature: [#1438] Add basic blueprint feature for copy, paste and rotate railroad track.
+- Feature: [#3591] Cheat to keep cargo when picking up a vehicle or modifying a vehicle's components.
 - Feature: [#3639] The Locomotion title screen music can now be listened to during scenario play.
 - Change: [#3594] More sorting options when building vehicles.
 - Change: [#3702, #3703, #3704, #3705] Improved performance for vehicle, industry, town, station, and company lists.
