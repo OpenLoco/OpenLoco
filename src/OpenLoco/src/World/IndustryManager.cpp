@@ -266,13 +266,13 @@ namespace OpenLoco::IndustryManager
         {
             // Replace the below with this after validating the function
             // Map::Pos2 randomPos{
-            //     Map::TilePos2(gPrng1().randNext(Map::kMapRows), gPrng1().randNext(Map::kMapColumns))
+            //     Map::TilePos2(gPrng1().randNext(Map::World::TileManager::getMapRows()), gPrng1().randNext(Map::World::TileManager::getMapColumns()))
             // };
             const auto randomNum = gPrng1().randNext();
 
             const auto randomPos = World::toWorldSpace(World::TilePos2(
-                (((randomNum >> 16) * World::kMapRows) >> 16),
-                (((randomNum & 0xFFFF) * World::kMapColumns) >> 16)));
+                (((randomNum >> 16) * World::TileManager::getMapRows()) >> 16),
+                (((randomNum & 0xFFFF) * World::TileManager::getMapColumns()) >> 16)));
 
             if (isTooCloseToNearbyIndustries(randomPos))
             {

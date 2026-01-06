@@ -276,24 +276,37 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             heightMapDropdown,
 
             groupGenerator,
+            mapSizeLabel,
+            mapSizeXLabel,
+            mapSizeX,
+            mapSizeXDown,
+            mapSizeXUp,
+            mapSizeYLabel,
+            mapSizeY,
+            mapSizeYDown,
+            mapSizeYUp,
             hillObjectLabel,
             change_heightmap_btn,
             terrainSmoothingLabel,
             terrainSmoothingNum,
             terrainSmoothingNumDown,
             terrainSmoothingNumUp,
-            generate_when_game_starts,
-
             heightmapFileLabel,
             browseHeightmapFile,
+            generate_when_game_starts,
         };
 
         // clang-format off
         const uint64_t holdable_widgets =
-            (1 << widx::start_year_up) |
-            (1 << widx::start_year_down) |
-            (1 << widx::terrainSmoothingNumUp) |
-            (1 << widx::terrainSmoothingNumDown);
+            (1ULL << widx::start_year_up) |
+            (1ULL << widx::start_year_down) |
+            (1ULL << widx::terrainSmoothingNumUp) |
+            (1ULL << widx::terrainSmoothingNumDown) |
+            (1ULL << widx::mapSizeXUp) |
+            (1ULL << widx::mapSizeXDown) |
+            (1ULL << widx::mapSizeYUp) |
+            (1ULL << widx::mapSizeYDown);
+
         // clang-format on
 
         static constexpr auto widgets = makeWidgets(
@@ -307,17 +320,29 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             Widgets::dropdownWidgets({ 176, 81 }, { 180, 12 }, WindowColour::secondary),
 
             // Generator options
-            Widgets::GroupBox({ 4, 105 }, { 358, 50 }, WindowColour::secondary, StringIds::landscapeOptionsGroupGenerator),
-            Widgets::Label({ 10, 120 }, { 260, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::landscapeOptionsCurrentHillObject),
-            Widgets::Button({ 280, 120 }, { 75, 12 }, WindowColour::secondary, StringIds::change),
-            Widgets::Label({ 10, 120 }, { 260, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::landscapeOptionsSmoothingPasses),
-            Widgets::stepperWidgets({ 256, 120 }, { 100, 12 }, WindowColour::secondary, StringIds::uint16_raw),
-            Widgets::Checkbox({ 10, 136 }, { 346, 12 }, WindowColour::secondary, StringIds::label_generate_random_landscape_when_game_starts, StringIds::tooltip_generate_random_landscape_when_game_starts),
+            Widgets::GroupBox({ 4, 114 }, { 358, 68 }, WindowColour::secondary, StringIds::landscapeOptionsGroupGenerator),
 
-            // PNG browser
-            Widgets::Label({ 10, 120 }, { 260, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::currentHeightmapFile),
-            Widgets::Button({ 280, 120 }, { 75, 12 }, WindowColour::secondary, StringIds::button_browse)
+            // Map size options
+            Widgets::Label({ 10, 130 }, { 170, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::mapSize),                     // Map Size
+            Widgets::Label({ 208 - 16, 130 }, { 48, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::tile_inspector_x_coord), // X:
+            Widgets::stepperWidgets({ 208, 130 }, { 64, 12 }, WindowColour::secondary, StringIds::uint16_raw),                             // {mapSizeX}
+            Widgets::Label({ 292 - 16, 130 }, { 48, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::tile_inspector_y_coord), // Y:
+            Widgets::stepperWidgets({ 292, 130 }, { 64, 12 }, WindowColour::secondary, StringIds::uint16_raw),                             // {mapSizeY}
 
+            // Original generator options
+            Widgets::Label({ 10, 146 }, { 260, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::landscapeOptionsCurrentHillObject),
+            Widgets::Button({ 280, 146 }, { 75, 12 }, WindowColour::secondary, StringIds::change),
+
+            // Simplex generator options
+            Widgets::Label({ 10, 146 }, { 260, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::landscapeOptionsSmoothingPasses),
+            Widgets::stepperWidgets({ 256, 146 }, { 100, 12 }, WindowColour::secondary, StringIds::uint16_raw),
+
+            // Heightmap generator options
+            Widgets::Label({ 10, 146 }, { 260, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::currentHeightmapFile),
+            Widgets::Button({ 280, 146 }, { 75, 12 }, WindowColour::secondary, StringIds::button_browse),
+
+            // Original+simplex
+            Widgets::Checkbox({ 10, 162 }, { 346, 12 }, WindowColour::secondary, StringIds::label_generate_random_landscape_when_game_starts, StringIds::tooltip_generate_random_landscape_when_game_starts)
         );
 
         static constexpr StringId generatorIds[] = {
@@ -368,9 +393,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 auto* obj = ObjectManager::get<HillShapesObject>();
                 args.push(obj->name);
 
-                self.disabledWidgets &= ~(1 << widx::change_heightmap_btn);
-                self.disabledWidgets |= ((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
-                self.disabledWidgets |= (1 << widx::browseHeightmapFile);
+                self.disabledWidgets &= ~(1ULL << widx::change_heightmap_btn);
+                self.disabledWidgets |= ((1ULL << widx::terrainSmoothingNum) | (1ULL << widx::terrainSmoothingNumUp) | (1ULL << widx::terrainSmoothingNumDown));
+                self.disabledWidgets |= (1ULL << widx::browseHeightmapFile);
             }
 
             else if (isSimplex)
@@ -380,11 +405,10 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 FormatArguments args{ widget.textArgs };
                 args.push<uint16_t>(options.numTerrainSmoothingPasses);
 
-                self.disabledWidgets |= (1 << widx::change_heightmap_btn);
-                self.disabledWidgets &= ~((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
-                self.disabledWidgets |= (1 << widx::browseHeightmapFile);
+                self.disabledWidgets |= (1ULL << widx::change_heightmap_btn);
+                self.disabledWidgets &= ~((1ULL << widx::terrainSmoothingNum) | (1ULL << widx::terrainSmoothingNumUp) | (1ULL << widx::terrainSmoothingNumDown));
+                self.disabledWidgets |= (1ULL << widx::browseHeightmapFile);
             }
-
             else if (isPngFile)
             {
                 // Prepare filename label
@@ -402,23 +426,33 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     args.push(StringManager::getString(StringIds::noneSelected));
                 }
 
-                self.disabledWidgets |= (1 << widx::change_heightmap_btn);
-                self.disabledWidgets |= ((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
-                self.disabledWidgets &= ~(1 << widx::browseHeightmapFile);
+                self.disabledWidgets |= (1ULL << widx::change_heightmap_btn);
+                self.disabledWidgets |= ((1ULL << widx::terrainSmoothingNum) | (1ULL << widx::terrainSmoothingNumUp) | (1ULL << widx::terrainSmoothingNumDown));
+                self.disabledWidgets &= ~(1ULL << widx::browseHeightmapFile);
 
-                self.activatedWidgets &= ~(1 << widx::generate_when_game_starts);
-                self.disabledWidgets |= (1 << widx::generate_when_game_starts);
+                self.activatedWidgets &= ~(1ULL << widx::generate_when_game_starts);
+                self.disabledWidgets |= (1ULL << widx::generate_when_game_starts);
+            }
+
+            // Map size info
+            {
+                auto args = FormatArguments(self.widgets[widx::mapSizeX].textArgs);
+                args.push<uint16_t>(options.mapSizeX);
+            }
+            {
+                auto args = FormatArguments(self.widgets[widx::mapSizeY].textArgs);
+                args.push<uint16_t>(options.mapSizeY);
             }
 
             // Enable/disable the 'generate when game starts' checkbox
             if ((options.scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none)
             {
-                self.activatedWidgets |= (1 << widx::generate_when_game_starts);
-                self.disabledWidgets &= ~(1 << widx::generate_when_game_starts);
+                self.activatedWidgets |= (1ULL << widx::generate_when_game_starts);
+                self.disabledWidgets &= ~(1ULL << widx::generate_when_game_starts);
             }
             else
             {
-                self.activatedWidgets &= ~(1 << widx::generate_when_game_starts);
+                self.activatedWidgets &= ~(1ULL << widx::generate_when_game_starts);
             }
         }
 
@@ -441,6 +475,10 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static void onMouseDown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             auto& options = Scenario::getOptions();
+
+            // this should really be part of the stepper widget
+            uint16_t clickRepeatTicks = Input::getClickRepeatTicks();
+            uint16_t mapSizeAdjustmentStep = 1 + (clickRepeatTicks / 50 * 4);
 
             switch (widgetIndex)
             {
@@ -467,6 +505,26 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 case widx::terrainSmoothingNumDown:
                     options.numTerrainSmoothingPasses = std::clamp(options.numTerrainSmoothingPasses - 1, 1, 5);
+                    window.invalidate();
+                    break;
+
+                case widx::mapSizeXUp:
+                    options.mapSizeX = std::clamp<uint16_t>(options.mapSizeX + mapSizeAdjustmentStep, World::TileManager::kMinMapDimension, World::TileManager::kMaxMapDimension);
+                    window.invalidate();
+                    break;
+
+                case widx::mapSizeXDown:
+                    options.mapSizeX = std::clamp<uint16_t>(options.mapSizeX - std::min<uint16_t>(mapSizeAdjustmentStep, World::TileManager::kMinMapDimension - 1), World::TileManager::kMinMapDimension, World::TileManager::kMaxMapDimension);
+                    window.invalidate();
+                    break;
+
+                case widx::mapSizeYUp:
+                    options.mapSizeY = std::clamp<uint16_t>(options.mapSizeY + mapSizeAdjustmentStep, World::TileManager::kMinMapDimension, World::TileManager::kMaxMapDimension);
+                    window.invalidate();
+                    break;
+
+                case widx::mapSizeYDown:
+                    options.mapSizeY = std::clamp<uint16_t>(options.mapSizeY - std::min<uint16_t>(mapSizeAdjustmentStep, World::TileManager::kMinMapDimension - 1), World::TileManager::kMinMapDimension, World::TileManager::kMaxMapDimension);
                     window.invalidate();
                     break;
 

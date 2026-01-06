@@ -19,10 +19,11 @@ namespace OpenLoco::World
 
 namespace OpenLoco::World::TileManager
 {
-    constexpr size_t kMaxElements = 3 * kMapColumns * kMapRows;
-    constexpr size_t kMaxElementsOnOneTile = 1024; // If you exceed this then the game may buffer overflow in certain situations
-    constexpr size_t kMaxUsableElements = kMaxElements - kMaxElementsOnOneTile;
     const TileElement* const kInvalidTile = reinterpret_cast<const TileElement*>(static_cast<intptr_t>(-1));
+
+    const uint16_t kMinMapDimension = 32;
+    const uint16_t kDefaultMapDimension = 384;
+    const uint16_t kMaxMapDimension = World::kMapPitch;
 
     enum class ElementPositionFlags : uint8_t
     {
@@ -104,4 +105,20 @@ namespace OpenLoco::World::TileManager
     void setTerrainStyleAsClearedAtHeight(const Pos3& pos);
     uint32_t adjustSurfaceHeight(World::Pos2 pos, SmallZ targetBaseZ, uint8_t slopeFlags, World::TileClearance::RemovedBuildings& removedBuildings, uint8_t flags);
     uint32_t adjustWaterHeight(World::Pos2 pos, SmallZ targetHeight, World::TileClearance::RemovedBuildings& removedBuildings, uint8_t flags);
+
+    void setMapSize(coord_t cols, coord_t rows);
+    coord_t getMapRows();
+    coord_t getMapColumns();
+    coord_t getMapHeight();
+    coord_t getMapWidth();
+    uint32_t getMapSize();
+
+    bool validCoords(const Pos2& coords);
+    bool validCoords(const TilePos2& coords);
+    TilePos2 clampTileCoords(const TilePos2& coords);
+    Pos2 clampCoords(const Pos2& coords);
+
+    // drawing coordinates validation differs from general valid coordinate validation
+    bool drawableCoords(const Pos2& coords);
+    bool drawableTileCoords(const TilePos2& coords);
 }

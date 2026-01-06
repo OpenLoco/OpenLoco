@@ -111,6 +111,8 @@ namespace OpenLoco::S5
         saveDetails->performanceIndex = playerCompany.performanceIndex;
         saveDetails->challengeProgress = playerCompany.challengeProgress;
         saveDetails->challengeFlags = playerCompany.challengeFlags;
+        saveDetails->mapSizeX = World::TileManager::getMapColumns();
+        saveDetails->mapSizeY = World::TileManager::getMapRows();
 
         std::strncpy(saveDetails->scenario, gameState.scenarioName, sizeof(saveDetails->scenario));
         Scenario::drawSavePreviewImage(saveDetails->image, { 250, 200 });
@@ -474,6 +476,7 @@ namespace OpenLoco::S5
             Ui::ProgressBar::begin(StringIds::loading);
             Ui::ProgressBar::setProgress(10);
 
+            World::TileManager::allocateMapElements();
             auto file = importSave(stream);
 
             Ui::ProgressBar::setProgress(90);
@@ -622,10 +625,29 @@ namespace OpenLoco::S5
             dst = *importGameState(src);
 
             // Copy scenario options
+            auto mapWidth = World::TileManager::kDefaultMapDimension;
+            auto mapHeight = World::TileManager::kDefaultMapDimension;
+
             if (hasLoadFlags(flags, LoadFlags::scenario | LoadFlags::landscape))
             {
-                Scenario::getOptions() = importOptions(*file->scenarioOptions);
+                auto& options = Scenario::getOptions();
+                options = importOptions(*file->scenarioOptions);
+                mapWidth = options.mapSizeX;
+                mapHeight = options.mapSizeY;
             }
+            else if (file->saveDetails != nullptr)
+            {
+                auto& options = *file->saveDetails;
+                mapWidth = options.mapSizeX;
+                mapHeight = options.mapSizeY;
+            }
+
+            if (mapWidth < World::TileManager::kMinMapDimension || mapHeight < World::TileManager::kMinMapDimension || mapWidth > World::TileManager::kMaxMapDimension || mapHeight > World::TileManager::kMaxMapDimension)
+            {
+                mapWidth = World::TileManager::kDefaultMapDimension;
+                mapHeight = World::TileManager::kDefaultMapDimension;
+            }
+            TileManager::setMapSize(mapWidth, mapHeight);
 
             // Copy tile elements
             if ((dst.flags & GameStateFlags::tileManagerLoaded) != GameStateFlags::none)
@@ -634,7 +656,6 @@ namespace OpenLoco::S5
             }
             else
             {
-                World::TileManager::initialise();
                 Scenario::sub_46115C();
             }
 
@@ -794,7 +815,7 @@ namespace OpenLoco::S5
         {
             // 0x0050AEA8
             auto ret = std::make_unique<SaveDetails>();
-            fs.readChunk(ret.get(), sizeof(*ret));
+            fs.readChunk(ret.get(), sizeof(SaveDetails));
             return ret;
         }
         return nullptr;

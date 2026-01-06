@@ -1,5 +1,6 @@
 #include "PngTerrainGenerator.h"
 #include "Logging.h"
+#include "Map/TileManager.h"
 #include "MapGenerator.h"
 #include "Scenario/ScenarioOptions.h"
 #include <OpenLoco/Engine/World.hpp>
@@ -36,13 +37,13 @@ namespace OpenLoco::World::MapGenerator
         std::fill_n(heightMap.data(), heightMap.size(), options.minLandHeight);
 
         // Map the entire map area to the image with interpolation
-        for (int32_t y = 0; y < World::kMapRows; y++)
+        for (int32_t y = 0; y < World::TileManager::getMapRows(); y++)
         {
-            for (int32_t x = 0; x < World::kMapColumns; x++)
+            for (int32_t x = 0; x < World::TileManager::getMapColumns(); x++)
             {
                 // Map from map coordinates to image coordinates
-                const float imgX = (x * pngImage->width) / static_cast<float>(World::kMapColumns);
-                const float imgY = (y * pngImage->height) / static_cast<float>(World::kMapRows);
+                const float imgX = (x * pngImage->width) / static_cast<float>(World::TileManager::getMapColumns());
+                const float imgY = (y * pngImage->height) / static_cast<float>(World::TileManager::getMapRows());
 
                 // Bilinear interpolation coordinates
                 const int x0 = static_cast<int>(imgX);

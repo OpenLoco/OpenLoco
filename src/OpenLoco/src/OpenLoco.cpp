@@ -182,7 +182,6 @@ namespace OpenLoco
 
         std::srand(std::time(nullptr));
 
-        World::TileManager::allocateMapElements();
         Environment::resolvePaths();
         Localisation::enumerateLanguages();
         Localisation::loadLanguageFile();
