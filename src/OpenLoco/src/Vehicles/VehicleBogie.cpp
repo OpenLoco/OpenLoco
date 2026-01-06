@@ -361,7 +361,7 @@ namespace OpenLoco::Vehicles
     static bool isOnRackRailRail(const VehicleBogie& bogie)
     {
         auto* trackObj = ObjectManager::get<TrackObject>(bogie.trackType);
-        if (!trackObj->hasFlags(TrackObjectFlags::unk_00))
+        if (!trackObj->hasFlags(TrackObjectFlags::hasRackRail))
         {
             return true;
         }
@@ -414,7 +414,7 @@ namespace OpenLoco::Vehicles
             return true;
         }
         auto* roadObj = ObjectManager::get<RoadObject>(bogie.trackType);
-        if (!roadObj->hasFlags(RoadObjectFlags::unk_05))
+        if (!roadObj->hasFlags(RoadObjectFlags::hasRackRail))
         {
             return true;
         }

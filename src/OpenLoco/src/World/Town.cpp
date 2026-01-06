@@ -274,7 +274,7 @@ namespace OpenLoco
             {
                 continue;
             }
-            if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+            if (!roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
             {
                 continue;
             }
@@ -351,7 +351,7 @@ namespace OpenLoco
             {
                 continue;
             }
-            if (!(getGameState().roadObjectIdIsNotTram & (1U << elRoad->roadObjectId())))
+            if (!(getGameState().roadObjectIdIsAnyRoadTypeCompatible & (1U << elRoad->roadObjectId())))
             {
                 continue;
             }
@@ -540,7 +540,7 @@ namespace OpenLoco
             {
                 continue;
             }
-            if (!(getGameState().roadObjectIdIsNotTram & (1U << elRoad->roadObjectId())))
+            if (!(getGameState().roadObjectIdIsAnyRoadTypeCompatible & (1U << elRoad->roadObjectId())))
             {
                 continue;
             }
@@ -842,7 +842,7 @@ namespace OpenLoco
                     continue;
                 }
                 auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
-                if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+                if (!roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
                 {
                     continue;
                 }
@@ -864,7 +864,7 @@ namespace OpenLoco
     static uint32_t getStreetLightStyle(uint8_t roadObjId, uint8_t townDensity)
     {
         auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
-        if (!roadObj->hasFlags(RoadObjectFlags::unk_08) || townDensity == 0)
+        if (!roadObj->hasFlags(RoadObjectFlags::canHaveStreetLights) || townDensity == 0)
         {
             return 0;
         }
@@ -931,7 +931,7 @@ namespace OpenLoco
                 }
 
                 auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
-                if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+                if (!roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
                 {
                     continue;
                 }
@@ -1556,7 +1556,7 @@ namespace OpenLoco
                     continue;
                 }
                 auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
-                if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+                if (!roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
                 {
                     continue;
                 }
