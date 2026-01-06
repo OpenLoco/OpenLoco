@@ -41,7 +41,7 @@ namespace OpenLoco::Jukebox
     std::vector<MusicId> makeAllMusicPlaylist(MusicSortMode ordering = MusicSortMode::original);
     std::vector<MusicId> makeSelectedPlaylist();
 
-    const MusicInfo& changeTrack();
+    const MusicInfo& consumeTrack();
     bool requestTrack(MusicId track);
     bool skipCurrentTrack();
     bool disableMusic();
