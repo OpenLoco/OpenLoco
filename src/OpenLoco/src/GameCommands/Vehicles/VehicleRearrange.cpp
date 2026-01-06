@@ -1,5 +1,5 @@
-#include "Config.h"
 #include "VehicleRearrange.h"
+#include "Config.h"
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "VehiclePickupAir.h"
