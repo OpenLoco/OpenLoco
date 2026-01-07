@@ -1682,6 +1682,12 @@ namespace OpenLoco::Input
         return _clickRepeatTicks;
     }
 
+    uint32_t getClickRepeatStepSize()
+    {
+        // Each 100 ticks increases step size by a factor of 10
+        return static_cast<uint32_t>(std::pow(10, getClickRepeatTicks() / 100));
+    }
+
     void setClickRepeatTicks(uint16_t ticks)
     {
         _clickRepeatTicks = ticks;
