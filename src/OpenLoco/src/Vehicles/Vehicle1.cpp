@@ -124,7 +124,7 @@ namespace OpenLoco::Vehicles
             return true;
         }
 
-        train.head->sub_4AD93A();
+        train.head->handlePositionUpdate();
         if (train.head->status == Status::approaching)
         {
             train.head->status = Status::travelling;
@@ -237,7 +237,7 @@ namespace OpenLoco::Vehicles
             return true;
         }
 
-        train.head->sub_4AD93A();
+        train.head->handlePositionUpdate();
         if (train.head->status == Status::approaching)
         {
             train.head->status = Status::travelling;
@@ -344,7 +344,7 @@ namespace OpenLoco::Vehicles
 
         TrackAndDirection::_RoadAndDirection newRad(0, 0);
         newRad._data = routing & 0x1FFU;
-        veh1.sub_47D959(newPos, newRad, true);
+        veh1.updateRoadTileOccupancy(newPos, newRad, true);
 
         veh1.routingHandle = newRoutingHandle;
         veh1.trackAndDirection.road = newRad;
@@ -773,7 +773,7 @@ namespace OpenLoco::Vehicles
             return RoadMotionNewPieceResult::noFurther;
         }
 
-        const auto newTrackType = component.sub_47D959(nextPos, newRad, true);
+        const auto newTrackType = component.updateRoadTileOccupancy(nextPos, newRad, true);
 
         component.trackType = newTrackType;
         component.routingHandle = newRoutingHandle;
