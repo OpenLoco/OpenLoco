@@ -2072,14 +2072,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 case widx::loan_decrease:
                 {
-                    auto company = CompanyManager::get(CompanyId(self.number));
+                    auto* company = CompanyManager::get(CompanyId(self.number));
                     if (company->currentLoan == 0)
                     {
                         return;
                     }
 
                     GameCommands::ChangeLoanArgs args{};
-                    args.newLoan = Math::Bound::sub(company->currentLoan, Input::getClickRepeatStepSize() * 1000);
+                    args.newLoan = Math::Bound::sub(company->currentLoan, Input::getClickRepeatStepSize() * 1'000);
 
                     GameCommands::setErrorTitle(StringIds::cant_pay_back_loan);
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
@@ -2088,10 +2088,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 case widx::loan_increase:
                 {
-                    auto company = CompanyManager::get(CompanyId(self.number));
+                    auto* company = CompanyManager::get(CompanyId(self.number));
 
                     GameCommands::ChangeLoanArgs args{};
-                    args.newLoan = Math::Bound::add(company->currentLoan, Input::getClickRepeatStepSize() * 1000);
+                    args.newLoan = Math::Bound::add(company->currentLoan, Input::getClickRepeatStepSize() * 1'000);
 
                     GameCommands::setErrorTitle(StringIds::cant_borrow_any_more_money);
                     GameCommands::doCommand(args, GameCommands::Flags::apply);

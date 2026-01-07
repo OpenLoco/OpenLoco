@@ -280,11 +280,11 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     {
                         case Scenario::ObjectiveType::companyValue:
 
-                            Scenario::getObjective().companyValue = std::max<uint32_t>(Math::Bound::sub(Scenario::getObjective().companyValue, 100000 * stepSize), Scenario::kMinObjectiveCompanyValue);
+                            Scenario::getObjective().companyValue = std::max<uint32_t>(Math::Bound::sub(Scenario::getObjective().companyValue, 100'000 * stepSize), Scenario::kMinObjectiveCompanyValue);
                             break;
 
                         case Scenario::ObjectiveType::vehicleProfit:
-                            Scenario::getObjective().monthlyVehicleProfit = std::max<uint32_t>(Math::Bound::sub(Scenario::getObjective().monthlyVehicleProfit, 1000 * stepSize), Scenario::kMinObjectiveMonthlyProfitFromVehicles);
+                            Scenario::getObjective().monthlyVehicleProfit = std::max<uint32_t>(Math::Bound::sub(Scenario::getObjective().monthlyVehicleProfit, 1'000 * stepSize), Scenario::kMinObjectiveMonthlyProfitFromVehicles);
                             break;
 
                         case Scenario::ObjectiveType::performanceIndex:
@@ -315,11 +315,11 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     switch (Scenario::getObjective().type)
                     {
                         case Scenario::ObjectiveType::companyValue:
-                            Scenario::getObjective().companyValue = std::min<uint32_t>(Math::Bound::add(Scenario::getObjective().companyValue, 100000 * stepSize), Scenario::kMaxObjectiveCompanyValue);
+                            Scenario::getObjective().companyValue = std::min<uint32_t>(Math::Bound::add(Scenario::getObjective().companyValue, 100'000 * stepSize), Scenario::kMaxObjectiveCompanyValue);
                             break;
 
                         case Scenario::ObjectiveType::vehicleProfit:
-                            Scenario::getObjective().monthlyVehicleProfit = std::min<uint32_t>(Math::Bound::add(Scenario::getObjective().monthlyVehicleProfit, 1000 * stepSize), Scenario::kMaxObjectiveMonthlyProfitFromVehicles);
+                            Scenario::getObjective().monthlyVehicleProfit = std::min<uint32_t>(Math::Bound::add(Scenario::getObjective().monthlyVehicleProfit, 1'000 * stepSize), Scenario::kMaxObjectiveMonthlyProfitFromVehicles);
                             break;
 
                         case Scenario::ObjectiveType::performanceIndex:
