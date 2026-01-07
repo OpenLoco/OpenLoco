@@ -57,7 +57,9 @@ namespace OpenLoco::MessageManager
         newMessage.itemSubjects[1] = subjectIdB;
         newMessage.itemSubjects[2] = subjectIdC;
 
-        if (getMessageTypeDescriptor(type).hasFlag(MessageTypeFlags::unk0))
+        // Don't add the message if a seemingly identical message is present
+        // Note that Message::operator== isn't quite structural equality, company id is ignored
+        if (getMessageTypeDescriptor(type).hasFlag(MessageTypeFlags::shouldDedup))
         {
             for (auto i = 0; i < getNumMessages(); ++i)
             {
@@ -68,6 +70,7 @@ namespace OpenLoco::MessageManager
                 }
             }
         }
+
         if (getNumMessages() >= Limits::kMaxMessages)
         {
             MessageId oldestMessage = MessageId::null;
