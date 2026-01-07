@@ -156,6 +156,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return true;
             }
 
+            if (Config::get().keepCargoModifyPickup)
+            {
+                return true;
+            }
+
             if (head->getCarCount() > 0 && CompanyManager::getControllingId() == head->owner)
             {
 
