@@ -2448,3 +2448,7 @@ strings:
   2393: 'Gradient (default)'
   2394: 'Solid colour'
   2395: 'Translucent colour'
+  2396: 'Frame rate limit:'
+  2397: 'Internal speed (default)'
+  2398: 'Vertical sync'
+  2399: 'Unrestricted'
