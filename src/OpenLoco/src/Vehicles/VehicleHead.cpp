@@ -2057,23 +2057,23 @@ namespace OpenLoco::Vehicles
             auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
             const auto movementEdges = airportObject->getMovementEdges();
 
-            uint8_t al = movementEdges[airportMovementEdge].var_03;
-            uint8_t cl = movementEdges[airportMovementEdge].var_00;
+            const auto subType = movementEdges[airportMovementEdge].subType;
+            const auto type = movementEdges[airportMovementEdge].type;
 
             auto veh2 = train.veh2;
-            if (al != 0)
+            if (subType != AirportMovementEdgeSubType::unk0)
             {
-                if (cl == 1 || al != 2)
+                if (type == AirportMovementEdgeType::flying || subType != AirportMovementEdgeSubType::unk2)
                 {
-                    if (al == 1)
+                    if (subType == AirportMovementEdgeSubType::unk1)
                     {
                         return std::make_pair(Status::landing, veh2->rackRailMaxSpeed);
                     }
-                    else if (al == 3)
+                    else if (subType == AirportMovementEdgeSubType::unk3)
                     {
                         return std::make_pair(Status::landing, 0_mph);
                     }
-                    else if (al == 4)
+                    else if (subType == AirportMovementEdgeSubType::unk4)
                     {
                         return std::make_pair(Status::taxiing1, 20_mph);
                     }
@@ -2084,7 +2084,7 @@ namespace OpenLoco::Vehicles
                 }
             }
 
-            if (cl == 2)
+            if (type == AirportMovementEdgeType::takingOff)
             {
                 auto targetSpeed = veh2->maxSpeed;
                 if (veh2->has73Flags(Flags73::isBrokenDown))
@@ -2093,7 +2093,7 @@ namespace OpenLoco::Vehicles
                 }
                 return std::make_pair(Status::takingOff, targetSpeed);
             }
-            else if (cl == 3)
+            else if (type == AirportMovementEdgeType::startTakeoff)
             {
                 return std::make_pair(Status::takingOff, 0_mph);
             }

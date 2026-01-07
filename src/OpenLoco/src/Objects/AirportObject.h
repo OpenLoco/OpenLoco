@@ -45,6 +45,24 @@ namespace OpenLoco
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(AirportObjectFlags);
 
+    enum class AirportMovementEdgeType : uint8_t
+    {
+        wheelsDown = 0,
+        flying = 1,
+        takingOff = 2,
+        startTakeoff = 3,
+    };
+
+    enum class AirportMovementEdgeSubType : uint8_t
+    {
+        unk0 = 0,
+        unk1 = 1,
+        unk2 = 2,
+        unk3 = 3,
+        unk4 = 4,
+        unk5 = 5,
+    };
+
     struct AirportBuilding
     {
         uint8_t index;    // 0x00
@@ -72,12 +90,12 @@ namespace OpenLoco
 
         struct MovementEdge
         {
-            uint8_t var_00;
-            uint8_t curNode;  // 0x01
-            uint8_t nextNode; // 0x02
-            uint8_t var_03;
-            uint32_t mustBeClearEdges;     // 0x04 Which edges must be clear to use the transition edge
-            uint32_t atLeastOneClearEdges; // 0x08 Which edges must have at least one clear to use transition edge
+            AirportMovementEdgeType type;      // 0x00
+            uint8_t curNode;                   // 0x01
+            uint8_t nextNode;                  // 0x02
+            AirportMovementEdgeSubType subType; // 0x03
+            uint32_t mustBeClearEdges;         // 0x04 Which edges must be clear to use the transition edge
+            uint32_t atLeastOneClearEdges;     // 0x08 Which edges must have at least one clear to use transition edge
         };
 
         StringId name;
