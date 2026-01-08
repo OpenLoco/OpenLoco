@@ -94,3 +94,7 @@ if ( NOT sfl_FOUND )
     )
     FetchContent_MakeAvailable(sfl)
 endif()
+
+if (HAS_LIBSTDCPP)
+    find_package(TBB REQUIRED)
+endif()

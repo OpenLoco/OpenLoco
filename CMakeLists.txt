@@ -67,6 +67,14 @@ else()
     message(WARNING "IPO/LTO not supported: ${ipo_error}")
 endif()
 
+# libstdc++ doesn't have standalone <execution> support so if using libstdc++ we need to
+# link against TBB
+include(CheckCXXSymbolExists)
+check_cxx_symbol_exists(__GLIBCXX__  version HAS_LIBSTDCPP)
+if (HAS_LIBSTDCPP)
+    message(STATUS "libstdc++ detected will require linking with TBB")
+endif()
+
 if (NOT CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 20)
 endif()
