@@ -38,6 +38,8 @@ namespace OpenLoco
         ship_wake
     };
 
+    enum class CompanyColourType : uint8_t;
+
     namespace SpriteIndex
     {
         constexpr uint8_t null = 0xFF;
@@ -245,7 +247,7 @@ namespace OpenLoco
         uint8_t reliability;                                  // 0x0A
         uint8_t runCostIndex;                                 // 0x0B
         int16_t runCostFactor;                                // 0x0C
-        uint8_t colourType;                                   // 0x0E
+        CompanyColourType companyColourType;                  // 0x0E
         uint8_t numCompatibleVehicles;                        // 0x0F
         uint16_t compatibleVehicles[8];                       // 0x10 array of compatible vehicle_types
         uint8_t requiredTrackExtras[4];                       // 0x20
