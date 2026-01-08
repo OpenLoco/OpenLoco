@@ -156,11 +156,11 @@ jobs:
         run: |
           ctest --test-dir build\windows-x86-32-ci\ --output-on-failure
 
-  ubuntu:
+  ubuntu32:
     name: Ubuntu ${{ matrix.distro }} ${{ matrix.compiler }} i686
     runs-on: ubuntu-latest
     needs: check-code-formatting
-    container: ghcr.io/openloco/openloco:9-${{ matrix.distro }}32
+    container: ghcr.io/openloco/openloco:10-${{ matrix.distro }}32
     strategy:
       fail-fast: false
       matrix:
@@ -181,12 +181,37 @@ jobs:
       - name: Run Tests
         run: |
           ctest --test-dir build/linux-x86-32-ci/ --output-on-failure
+  ubuntu:
+    name: Ubuntu ${{ matrix.distro }} ${{ matrix.compiler }} x64
+    runs-on: ubuntu-latest
+    needs: check-code-formatting
+    container: ghcr.io/openloco/openloco:10-${{ matrix.distro }}
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [g++, clang++]
+        distro: [jammy, noble]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: true
+      - name: Install GCC problem matcher
+        uses: ammaraskar/gcc-problem-matcher@master
+      - name: Build OpenLoco
+        run: |
+          cmake --preset posix -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
+          cmake --build --preset posix-release
+      - name: Run Tests
+        run: |
+          ctest --test-dir build/posix/ --output-on-failure
 
   header-checks:
     name: Header checks ${{ matrix.distro }} ${{ matrix.compiler }}
     runs-on: ubuntu-latest
     needs: check-code-formatting
-    container: ghcr.io/openloco/openloco:9-${{ matrix.distro }}32
+    container: ghcr.io/openloco/openloco:10-${{ matrix.distro }}
     strategy:
       fail-fast: false
       matrix:
@@ -200,14 +225,14 @@ jobs:
           submodules: true
       - name: Validate Headers
         run: |
-          cmake --preset linux-x86-32-ci -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} -DOPENLOCO_HEADER_CHECK=ON
-          cmake --build --preset linux-x86-32-ci --target all-headers-check
+          cmake --preset posix -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} -DOPENLOCO_HEADER_CHECK=ON
+          cmake --build --preset posix-release --target all-headers-check
 
   fedora:
     name: Fedora shared=${{ matrix.build_shared_libs }} i686 MinGW32
     runs-on: ubuntu-latest
     needs: check-code-formatting
-    container: ghcr.io/openloco/openloco:9-mingw32
+    container: ghcr.io/openloco/openloco:10-mingw32
     strategy:
       fail-fast: false
       matrix:
@@ -229,7 +254,7 @@ jobs:
     name: Ubuntu noble g++ x64 vcpkg static linkage
     runs-on: ubuntu-latest
     needs: check-code-formatting
-    container: ghcr.io/openloco/openloco:9-noble32vcpkg
+    container: ghcr.io/openloco/openloco:10-noblevcpkg
     steps:
       - name: Checkout
         uses: actions/checkout@v4
