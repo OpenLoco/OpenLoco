@@ -207,11 +207,6 @@ namespace OpenLoco::Input
 
     bool isPressed(Ui::WindowType type, Ui::WindowNumber_t number)
     {
-        if (state() != State::widgetPressed)
-        {
-            return false;
-        }
-
         if (_pressedWindowType != type)
         {
             return false;
