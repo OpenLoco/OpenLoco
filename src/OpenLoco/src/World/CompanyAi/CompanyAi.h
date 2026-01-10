@@ -17,7 +17,7 @@ namespace OpenLoco
         unk5,
         // Undo's partial actions from other states removing partial vehicle purchases,
         // tracks/roads and ai allocated assets from company.
-        // 
+        //
         // Will progress through the following sub states:
         //  0 Sell vehicles
         //  1 Sell stations (excluding ports/airports), road, track
@@ -26,7 +26,7 @@ namespace OpenLoco
         //  4 Clear the thought
         // Can start from any of the sub states above
         // Failure state, thought will be cleared after completion of state
-        undoPartialAction, 
+        undoPartialAction,
         unk7,
         unk8,
         unk9,

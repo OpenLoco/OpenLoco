@@ -82,13 +82,13 @@ using namespace OpenLoco::World;
 using namespace OpenLoco::Literals;
 using namespace OpenLoco::CompanyAi; // Eventually this will all be under this namespace
 
-//#define DEBUG_AI_CODE
+// #define DEBUG_AI_CODE
 
 namespace OpenLoco
 {
     static void logAiAction([[maybe_unused]] const CompanyId companyId, [[maybe_unused]] std::string_view message)
     {
-#ifdef  DEBUG_AI_CODE
+#ifdef DEBUG_AI_CODE
         Diagnostics::Logging::info("[Ai Company {}] {}", enumValue(companyId), message);
 #endif //  DEBUG_AI_CODE
     }
