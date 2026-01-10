@@ -2452,3 +2452,7 @@ strings:
   2397: 'Internal speed (default)'
   2398: 'Vertical sync'
   2399: 'Unrestricted'
+  2400: "Confirm move component"
+  2401: "Move component"
+  2402: "Moving this vehicle component will remove all cargo aboard the entire vehicle. Continue?"
+  2403: "Moving this vehicle component will remove all cargo aboard both vehicles. Continue?"
