@@ -32,6 +32,7 @@
 #include "GameCommands/Vehicles/VehicleRefit.h"
 #include "GameCommands/Vehicles/VehicleSell.h"
 #include "GameState.h"
+#include "Logging.h"
 #include "Map/BuildingElement.h"
 #include "Map/IndustryElement.h"
 #include "Map/RoadElement.h"
@@ -81,8 +82,17 @@ using namespace OpenLoco::World;
 using namespace OpenLoco::Literals;
 using namespace OpenLoco::CompanyAi; // Eventually this will all be under this namespace
 
+//#define DEBUG_AI_CODE
+
 namespace OpenLoco
 {
+    static void logAiAction([[maybe_unused]] const CompanyId companyId, [[maybe_unused]] std::string_view message)
+    {
+#ifdef  DEBUG_AI_CODE
+        Diagnostics::Logging::info("[Ai Company {}] {}", enumValue(companyId), message);
+#endif //  DEBUG_AI_CODE
+    }
+
     static void removeEntityFromThought(AiThought& thought, size_t index);
 
     enum class ThoughtTypeFlags : uint32_t
@@ -563,6 +573,8 @@ namespace OpenLoco
             company.var_4A5 = 0;
             return;
         }
+
+        logAiAction(company.id(), "Entering end thought state selling off assets");
 
         if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
         {
@@ -5096,7 +5108,8 @@ namespace OpenLoco
     {
         if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
         {
-            company.var_4A4 = AiThinkState::unk6;
+            logAiAction(company.id(), "Undo partial action: due to clearance issue");
+            company.var_4A4 = AiThinkState::undoPartialAction;
             company.var_4A5 = 3;
         }
         else
@@ -5104,7 +5117,8 @@ namespace OpenLoco
             switch (sub_48259F(company, thought))
             {
                 case 1:
-                    company.var_4A4 = AiThinkState::unk6;
+                    logAiAction(company.id(), "Undo partial action: due to sub_48259F");
+                    company.var_4A4 = AiThinkState::undoPartialAction;
                     company.var_4A5 = 3;
                     break;
                 case 2:
@@ -5272,7 +5286,8 @@ namespace OpenLoco
     {
         if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
         {
-            company.var_4A4 = AiThinkState::unk6;
+            logAiAction(company.id(), "Undo partial action: due to clearance");
+            company.var_4A4 = AiThinkState::undoPartialAction;
             company.var_4A5 = 2;
             company.var_85C4 = World::Pos2(0, 0);
             return;
@@ -5282,7 +5297,8 @@ namespace OpenLoco
         {
             if (aiPathfind(company, thought))
             {
-                company.var_4A4 = AiThinkState::unk6;
+                logAiAction(company.id(), "Undo partial action: due to aiPathfind");
+                company.var_4A4 = AiThinkState::undoPartialAction;
                 company.var_4A5 = 2;
                 company.var_85C4 = World::Pos2(0, 0);
             }
@@ -5294,7 +5310,8 @@ namespace OpenLoco
                 company.var_4A5 = 2;
                 if (sub_486324(company, thought))
                 {
-                    company.var_4A4 = AiThinkState::unk6;
+                    logAiAction(company.id(), "Undo partial action: due to sub_486324");
+                    company.var_4A4 = AiThinkState::undoPartialAction;
                     company.var_4A5 = 2;
                     company.var_85C4 = World::Pos2(0, 0);
                 }
@@ -5446,7 +5463,8 @@ namespace OpenLoco
 
         if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
         {
-            company.var_4A4 = AiThinkState::unk6;
+            logAiAction(company.id(), "Undo partial action: due to clearance");
+            company.var_4A4 = AiThinkState::undoPartialAction;
             company.var_4A5 = 2;
             company.var_85C4 = World::Pos2{ 0, 0 };
             return;
@@ -5555,7 +5573,8 @@ namespace OpenLoco
         // Decide if station placement attempt
         if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
         {
-            company.var_4A4 = AiThinkState::unk6;
+            logAiAction(company.id(), "Undo partial action: due to clearance");
+            company.var_4A4 = AiThinkState::undoPartialAction;
             company.var_4A5 = 2;
             company.var_85C4 = World::Pos2{ 0, 0 };
             return;
@@ -5563,7 +5582,8 @@ namespace OpenLoco
         auto res = sub_4865B4(thought);
         if (res == 1)
         {
-            company.var_4A4 = AiThinkState::unk6;
+            logAiAction(company.id(), "Undo partial action: due to sub_4865B4");
+            company.var_4A4 = AiThinkState::undoPartialAction;
             company.var_4A5 = 2;
             company.var_85C4 = World::Pos2{ 0, 0 };
         }
@@ -5586,7 +5606,8 @@ namespace OpenLoco
         // Calculate station cost?
         if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
         {
-            company.var_4A4 = AiThinkState::unk6;
+            logAiAction(company.id(), "Undo partial action: due to clearance");
+            company.var_4A4 = AiThinkState::undoPartialAction;
             company.var_4A5 = 2;
             company.var_85C4 = World::Pos2{ 0, 0 };
             return;
@@ -5629,7 +5650,8 @@ namespace OpenLoco
     {
         if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
         {
-            company.var_4A4 = AiThinkState::unk6;
+            logAiAction(company.id(), "Undo partial action: due to clearance");
+            company.var_4A4 = AiThinkState::undoPartialAction;
             company.var_4A5 = 2;
             company.var_85C4 = World::Pos2{ 0, 0 };
             return;
@@ -5638,7 +5660,8 @@ namespace OpenLoco
         const auto res = shouldConvertAiAllocated(company, thought);
         if (res == 1)
         {
-            company.var_4A4 = AiThinkState::unk6;
+            logAiAction(company.id(), "Undo partial action: due to shouldConvertAiAllocated");
+            company.var_4A4 = AiThinkState::undoPartialAction;
             company.var_4A5 = 2;
             company.var_85C4 = World::Pos2{ 0, 0 };
         }
@@ -6064,7 +6087,8 @@ namespace OpenLoco
         const auto res = replaceAiAllocatedStation(company, thought);
         if (res == 2)
         {
-            company.var_4A4 = AiThinkState::unk6;
+            logAiAction(company.id(), "Undo partial action: due to replaceAiAllocatedStation");
+            company.var_4A4 = AiThinkState::undoPartialAction;
             company.var_4A5 = 1;
             sub_487144(company);
         }
@@ -6293,7 +6317,8 @@ namespace OpenLoco
         const auto res = replaceAiAllocatedTrackRoad(company, thought);
         if (res == 2)
         {
-            company.var_4A4 = AiThinkState::unk6;
+            logAiAction(company.id(), "Undo partial action: due to replaceAiAllocatedTrackRoad");
+            company.var_4A4 = AiThinkState::undoPartialAction;
             company.var_4A5 = 1;
             sub_487144(company);
         }
@@ -6309,7 +6334,8 @@ namespace OpenLoco
         const auto res = purchaseVehicle(company, thought);
         if (res == PurchaseVehicleResult::failure)
         {
-            company.var_4A4 = AiThinkState::unk6;
+            logAiAction(company.id(), "Undo partial action: due to purchaseVehicle failure");
+            company.var_4A4 = AiThinkState::undoPartialAction;
             company.var_4A5 = 0;
         }
         else if (res == PurchaseVehicleResult::allVehiclesPurchased)
@@ -7310,7 +7336,7 @@ namespace OpenLoco
     }
 
     // 0x004F9510
-    static constexpr std::array<AiThinkState4Function, 5> kFuncs4F9510 = {
+    static constexpr std::array<AiThinkState4Function, 5> kUndoPartialActionSubStateFuncs = {
         sub_43112D,
         sub_431142,
         sub_431164,
@@ -7319,12 +7345,10 @@ namespace OpenLoco
     };
 
     // 0x00431104
-    static void aiThinkState6(Company& company)
+    static void aiThinkUndoPartialAction(Company& company)
     {
-        // try sell a vehicle?
-
         company.var_85F6++;
-        kFuncs4F9510[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
+        kUndoPartialActionSubStateFuncs[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
     }
 
     // 0x004311CA
@@ -7658,7 +7682,7 @@ namespace OpenLoco
         aiThinkState3,
         aiThinkState4,
         nullsub_3,
-        aiThinkState6,
+        aiThinkUndoPartialAction,
         aiThinkState7,
         aiThinkState8,
         nullsub_4,
