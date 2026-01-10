@@ -737,6 +737,7 @@ set(private_link_libraries
     $<$<PLATFORM_ID:Windows>:Resources>
     $<$<BOOL:${MINGW}>:imm32>
     $<$<BOOL:${MINGW}>:version>
+    $<$<AND:$<BOOL:${HAS_LIBSTDCPP}>,$<BOOL:${TBB_FOUND}>>:TBB::tbb> # libstdc++ does not support <execution> without tbb
 )
 
 set(msvc_private_compile_definitions
