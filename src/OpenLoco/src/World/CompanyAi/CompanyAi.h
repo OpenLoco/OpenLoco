@@ -13,8 +13,16 @@ namespace OpenLoco
         unk1,
         unk2,
         unk3,
-        unk4,
-        unk5,
+        // Converts AI allocated assets to real owned assets and purchases vehicles
+        //
+        // Will progress through the following sub states:
+        //  0 Convert AI allocated stations (including ports/airports)
+        //  1 Convert AI allocated road/track
+        //  2 Purchase vehicles
+        //  3 Prepare vehicles for placement
+        // On completion will set to state 0 for further thinking
+        convertAiAllocated,
+        unk5, // Unused
         // Undo's partial actions from other states removing partial vehicle purchases,
         // tracks/roads and ai allocated assets from company.
         //
@@ -27,9 +35,16 @@ namespace OpenLoco
         // Can start from any of the sub states above
         // Failure state, thought will be cleared after completion of state
         undoPartialAction,
-        unk7,
+        // Sells off all land based assets of the thought
+        //
+        // Will progress through the following sub states:
+        //  0 Sell vehicles
+        //  1 Sell stations (excluding ports/airports), road, track
+        //  2 Clear the thought
+        // Failure state, thought will be cleared after completion of state
+        sellOffLandAssets,
         unk8,
-        unk9,
+        unk9, // Unused
         endCompany,
     };
 

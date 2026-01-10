@@ -1753,6 +1753,7 @@ namespace OpenLoco
     static void aiThinkState1(Company& company)
     {
         company.activeThoughtId++;
+
         if (company.activeThoughtId < kMaxAiThoughts)
         {
             auto& thought = company.aiThoughts[company.activeThoughtId];
@@ -1761,10 +1762,12 @@ namespace OpenLoco
                 aiThinkState1(company);
                 return;
             }
+            logAiAction(company.id(), "Advance to next thought id");
 
             if (sub_487F8D(company, thought))
             {
-                company.var_4A4 = AiThinkState::unk7;
+                logAiAction(company.id(), "Sell off land assets: due to sub_487F8D");
+                company.var_4A4 = AiThinkState::sellOffLandAssets;
                 company.var_4A5 = 0;
                 companyEmotionEvent(company.id(), Emotion::disgusted);
                 return;
@@ -1777,7 +1780,7 @@ namespace OpenLoco
             }
             return;
         }
-        if (((company.challengeFlags & CompanyFlags::unk0) != CompanyFlags::none)
+        if (((company.challengeFlags & CompanyFlags::aiHasStarted) != CompanyFlags::none)
             || (getCurrentDay() - company.startedDate <= 42))
         {
             company.var_4A4 = AiThinkState::unk2;
@@ -5667,15 +5670,16 @@ namespace OpenLoco
         }
         else if (res == 2)
         {
+            logAiAction(company.id(), "Convert allocated Ai assets: due to shouldConvertAiAllocated");
             // Go to converting the aiAllocated items into real items
-            company.var_4A4 = AiThinkState::unk4;
+            company.var_4A4 = AiThinkState::convertAiAllocated;
             company.var_4A5 = 0;
             company.challengeFlags |= CompanyFlags::unk2;
-            if ((company.challengeFlags & CompanyFlags::unk0) != CompanyFlags::none)
+            if ((company.challengeFlags & CompanyFlags::aiHasStarted) != CompanyFlags::none)
             {
                 return;
             }
-            company.challengeFlags |= CompanyFlags::unk0;
+            company.challengeFlags |= CompanyFlags::aiHasStarted;
 
             auto townId = static_cast<TownId>(thought.destinationA);
             if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationAIsIndustry))
@@ -6356,7 +6360,8 @@ namespace OpenLoco
 
     using AiThinkState4Function = void (*)(Company&, AiThought&);
 
-    static constexpr std::array<AiThinkState4Function, 4> _funcs_4F9500 = {
+    // 0x004F9500
+    static constexpr std::array<AiThinkState4Function, 4> kConvertAiAllocatedSubStateFuncs = {
         sub_43106B,
         sub_43109A,
         sub_4310C4,
@@ -6364,12 +6369,12 @@ namespace OpenLoco
     };
 
     // 0x00431035
-    static void aiThinkState4(Company& company)
+    static void aiThinkConvertAiAllocated(Company& company)
     {
         companyEmotionEvent(company.id(), Emotion::thinking);
         company.var_85F6++;
 
-        _funcs_4F9500[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
+        kConvertAiAllocatedSubStateFuncs[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
     }
 
     static void nullsub_3([[maybe_unused]] Company& company)
@@ -7369,16 +7374,17 @@ namespace OpenLoco
 
     using AiThinkState7Function = void (*)(Company&, AiThought&);
 
-    static constexpr std::array<AiThinkState7Function, 3> _funcs_4F9524 = {
+    // 0x004F9524
+    static constexpr std::array<AiThinkState7Function, 3> kSellOffLandAssetsSubStateFuncs = {
         sub_4311B5,
         sub_4311CA,
         sub_4311DA,
     };
 
     // 0x00431193
-    static void aiThinkState7(Company& company)
+    static void aiThinkSellOffLandAssets(Company& company)
     {
-        _funcs_4F9524[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
+        kSellOffLandAssetsSubStateFuncs[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
     }
 
     // 0x00487DAD
@@ -7537,7 +7543,8 @@ namespace OpenLoco
         const auto res = purchaseVehicle(company, thought);
         if (res == PurchaseVehicleResult::failure)
         {
-            company.var_4A4 = AiThinkState::unk7;
+            logAiAction(company.id(), "Sell off land assets: due to purchaseVehicle failure");
+            company.var_4A4 = AiThinkState::sellOffLandAssets;
             company.var_4A5 = 0;
         }
         else if (res == PurchaseVehicleResult::allVehiclesPurchased)
@@ -7680,10 +7687,10 @@ namespace OpenLoco
         aiThinkState1,
         aiThinkState2,
         aiThinkState3,
-        aiThinkState4,
+        aiThinkConvertAiAllocated,
         nullsub_3,
         aiThinkUndoPartialAction,
-        aiThinkState7,
+        aiThinkSellOffLandAssets,
         aiThinkState8,
         nullsub_4,
         aiThinkEndCompany,
@@ -7712,7 +7719,7 @@ namespace OpenLoco
 
         processVehiclePlaceStateMachine(*company);
 
-        if (company->headquartersX != -1 || (company->challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none || (company->challengeFlags & CompanyFlags::unk0) == CompanyFlags::none)
+        if (company->headquartersX != -1 || (company->challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none || (company->challengeFlags & CompanyFlags::aiHasStarted) == CompanyFlags::none)
         {
             return;
         }
