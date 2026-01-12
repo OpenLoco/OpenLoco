@@ -39,7 +39,6 @@ namespace OpenLoco::Game
 
         auto confirm = Ui::Windows::PromptBrowse::open(type, path, filter, titleId);
 
-        Audio::unpauseSound();
         Input::processMessagesMini();
         SceneManager::unsetPauseFlag(PauseFlags::browsePrompt);
         Gfx::invalidateScreen();
