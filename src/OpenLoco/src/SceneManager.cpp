@@ -123,7 +123,7 @@ namespace OpenLoco::SceneManager
 
     void setPauseFlag(PauseFlags value)
     {
-        if (_pausedState == 0)
+        if (_pausedState == PauseFlags::none)
         {
             onPause();
         }
@@ -132,12 +132,9 @@ namespace OpenLoco::SceneManager
 
     void unsetPauseFlag(PauseFlags value)
     {
-        if (_pausedState == 0)
-        {
-            return;
-        }
+        assert(_pausedState != PauseFlags::none);
         _pausedState &= ~(value);
-        if (_pausedState == 0)
+        if (_pausedState == PauseFlags::none)
         {
             onUnpause();
         }
