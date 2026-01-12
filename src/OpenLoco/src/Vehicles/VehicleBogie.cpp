@@ -1,3 +1,5 @@
+#include "VehicleBogie.h"
+#include "Audio/Audio.h"
 #include "Effects/ExplosionEffect.h"
 #include "Effects/SplashEffect.h"
 #include "Effects/VehicleCrashEffect.h"
@@ -5,10 +7,12 @@
 #include "Map/RoadElement.h"
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"
+#include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "Random.h"
-#include "Vehicle.h"
+#include "VehicleBody.h"
+#include "VehicleHead.h"
 
 #include <OpenLoco/Math/Trigonometry.hpp>
 #include <cstdint>
@@ -357,7 +361,7 @@ namespace OpenLoco::Vehicles
     static bool isOnRackRailRail(const VehicleBogie& bogie)
     {
         auto* trackObj = ObjectManager::get<TrackObject>(bogie.trackType);
-        if (!trackObj->hasFlags(TrackObjectFlags::unk_00))
+        if (!trackObj->hasFlags(TrackObjectFlags::hasRackRail))
         {
             return true;
         }
@@ -410,7 +414,7 @@ namespace OpenLoco::Vehicles
             return true;
         }
         auto* roadObj = ObjectManager::get<RoadObject>(bogie.trackType);
-        if (!roadObj->hasFlags(RoadObjectFlags::unk_05))
+        if (!roadObj->hasFlags(RoadObjectFlags::hasRackRail))
         {
             return true;
         }

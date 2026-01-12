@@ -4,7 +4,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/Conversion.h"
@@ -16,8 +15,8 @@
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/WaterObject.h"
-#include "Scenario.h"
-#include "ScenarioOptions.h"
+#include "Scenario/Scenario.h"
+#include "Scenario/ScenarioOptions.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
@@ -42,8 +41,8 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Ui::Windows::LandscapeGeneration
 {
-    static constexpr Ui::Size32 kWindowSize = { 366, 217 };
-    static constexpr Ui::Size32 kLandTabSize = { 366, 252 };
+    static constexpr Ui::Size kWindowSize = { 366, 217 };
+    static constexpr Ui::Size kLandTabSize = { 366, 252 };
 
     static constexpr uint8_t kRowHeight = 22; // CJK: 22
 

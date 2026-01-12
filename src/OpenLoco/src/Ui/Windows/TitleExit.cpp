@@ -3,7 +3,6 @@
 #include "GameCommands/General/LoadSaveQuit.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Intro.h"
 #include "Localisation/Formatting.h"
@@ -16,7 +15,7 @@
 
 namespace OpenLoco::Ui::Windows::TitleExit
 {
-    static constexpr Ui::Size32 kWindowSize = { 40, 28 };
+    static constexpr Ui::Size kWindowSize = { 40, 28 };
 
     namespace Widx
     {

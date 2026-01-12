@@ -25,6 +25,7 @@ Includes all git commit authors. Aliases are GitHub user names.
 * Soham Roy (sohamroy19)
 
 ## Translations
+* Czech - Ríša Szlachta (tygrysek90)
 * Dutch - Michael Steenbeek (Gymnasiast)
 * English (UK) - extracted from original game
 * English (US) - extracted from original game
@@ -37,6 +38,7 @@ Includes all git commit authors. Aliases are GitHub user names.
 * Slovak - Peter Gaál (petergaal)
 * Spanish - extracted from original game
 * Swedish - (slicke)
+* Turkish - (erdikayaTR)
 * Chinese (Simplified) - (TransshipmentEnvoy)
 
 ## Graphics

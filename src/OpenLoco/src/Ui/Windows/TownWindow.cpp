@@ -8,7 +8,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -37,7 +36,7 @@ using namespace OpenLoco::GameCommands;
 
 namespace OpenLoco::Ui::Windows::Town
 {
-    static constexpr Ui::Size32 kWindowSize = { 223, 161 };
+    static constexpr Ui::Size kWindowSize = { 223, 161 };
 
     namespace Common
     {
@@ -733,7 +732,7 @@ namespace OpenLoco::Ui::Windows::Town
             auto town = TownManager::get(TownId(self.number));
 
             FormatArguments args{};
-            args.skip(4);
+            args.skip(8);
             args.push(town->name);
             args.push(town->name);
 

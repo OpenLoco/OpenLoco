@@ -1,41 +1,19 @@
 #pragma once
 
-#include "Audio/Audio.h"
 #include "Entities/Entity.h"
 #include "Map/Track/TrackModSection.h"
-#include "Objects/AirportObject.h"
-#include "Objects/ObjectManager.h"
 #include "Objects/VehicleObject.h"
 #include "Routing.h"
 #include "Speed.hpp"
 #include "Types.hpp"
 #include "Ui/Window.h"
-#include "Ui/WindowType.h"
-#include "World/Company.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Exception.hpp>
 
-namespace OpenLoco
-{
-    enum class AirportObjectFlags : uint16_t;
-}
-
 namespace OpenLoco::Vehicles
 {
-    using CargoTotalArray = std::array<uint32_t, ObjectManager::getMaxObjects(ObjectType::cargo)>;
-
     constexpr auto kMaxRoadVehicleLength = 176;    // TODO: Units?
     constexpr uint8_t kWheelSlippingDuration = 64; // In ticks
-
-    enum class MotorState : uint8_t
-    {
-        stopped = 0,
-        accelerating = 1,
-        coasting = 2,
-        braking = 3,
-        stoppedOnIncline = 4,
-        airplaneAtTaxiSpeed = 5,
-    };
 
     enum class Flags38 : uint8_t
     {
@@ -48,33 +26,6 @@ namespace OpenLoco::Vehicles
         fasterAroundCurves = 1U << 5,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(Flags38);
-
-    enum class Flags48 : uint8_t // veh1 Signal flags?
-    {
-        none = 0U,
-        passSignal = 1U << 0,
-        expressMode = 1U << 1,
-        flag2 = 1U << 2 // cargo related?
-    };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(Flags48);
-
-    enum class Flags73 : uint8_t // veh2 Train breakdown flags
-    {
-        none = 0U,
-        isBrokenDown = 1U << 0,
-        isStillPowered = 1U << 1
-    };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(Flags73);
-
-    enum class WaterMotionFlags : uint32_t
-    {
-        none = 0U,
-        isStopping = 1U << 0,
-        isLeavingDock = 1U << 1,
-        hasReachedDock = 1U << 16,
-        hasReachedADestination = 1U << 17,
-    };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(WaterMotionFlags);
 
     enum class SoundFlags : uint16_t
     {
@@ -95,24 +46,6 @@ namespace OpenLoco::Vehicles
         unk_m15 = (1U << 15),
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(UpdateVar1136114Flags);
-
-    enum class Status : uint8_t
-    {
-        unk_0 = 0, // no position (not placed)
-        stopped = 1,
-        travelling = 2,
-        waitingAtSignal = 3,
-        approaching = 4,
-        unloading = 5,
-        loading = 6,
-        brokenDown = 7,
-        crashed = 8,
-        stuck = 9,
-        landing = 10,
-        taxiing1 = 11,
-        taxiing2 = 12,
-        takingOff = 13,
-    };
 
     struct OrderRingView;
 
@@ -157,14 +90,6 @@ namespace OpenLoco::Vehicles
         body_start,
         body_continued,
         tail,
-    };
-
-    struct VehicleStatus
-    {
-        StringId status1;
-        uint32_t status1Args;
-        StringId status2;
-        uint32_t status2Args;
     };
 
     constexpr uint8_t kAirportMovementNodeNull = 0xFF;
@@ -369,28 +294,20 @@ namespace OpenLoco::Vehicles
     public:
         VehicleEntityType getSubType() const { return subType; }
         void setSubType(const VehicleEntityType newType) { subType = newType; }
-        bool isVehicleHead() const { return is<VehicleEntityType::head>(); }
-        VehicleHead* asVehicleHead() const { return as<VehicleHead>(); }
-        bool isVehicle1() const { return is<VehicleEntityType::vehicle_1>(); }
-        Vehicle1* asVehicle1() const { return as<Vehicle1>(); }
-        bool isVehicle2() const { return is<VehicleEntityType::vehicle_2>(); }
-        Vehicle2* asVehicle2() const { return as<Vehicle2>(); }
-        bool isVehicleBogie() const { return is<VehicleEntityType::bogie>(); }
-        VehicleBogie* asVehicleBogie() const { return as<VehicleBogie>(); }
-        bool isVehicleBody() const { return is<VehicleEntityType::body_start>() || is<VehicleEntityType::body_continued>(); }
-        VehicleBody* asVehicleBody() const
-        {
-            if (is<VehicleEntityType::body_start>())
-            {
-                return as<VehicleBody, VehicleEntityType::body_start>();
-            }
-
-            return as<VehicleBody, VehicleEntityType::body_continued>();
-        }
-        bool hasSoundPlayer() { return is<VehicleEntityType::vehicle_2>() || is<VehicleEntityType::tail>(); }
+        bool isVehicleHead() const;
+        VehicleHead* asVehicleHead() const;
+        bool isVehicle1() const;
+        Vehicle1* asVehicle1() const;
+        bool isVehicle2() const;
+        Vehicle2* asVehicle2() const;
+        bool isVehicleBogie() const;
+        VehicleBogie* asVehicleBogie() const;
+        bool isVehicleBody() const;
+        VehicleBody* asVehicleBody() const;
+        bool hasSoundPlayer();
         VehicleSound* getVehicleSound();
-        bool isVehicleTail() const { return is<VehicleEntityType::tail>(); }
-        VehicleTail* asVehicleTail() const { return as<VehicleTail>(); }
+        bool isVehicleTail() const;
+        VehicleTail* asVehicleTail() const;
         TransportMode getTransportMode() const;
         Flags38 getFlags38() const;
         uint8_t getTrackType() const;
@@ -408,7 +325,7 @@ namespace OpenLoco::Vehicles
         VehicleBase* previousVehicleComponent();
         void explodeComponent();
         void destroyTrain();
-        uint8_t sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection rad, const bool setOccupied);
+        uint8_t updateRoadTileOccupancy(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection rad, const bool setOccupied);
         UpdateMotionResult updateTrackMotion(int32_t unk1, bool isVeh2UnkM15);
     };
     static_assert(sizeof(VehicleBase) <= sizeof(Entity));
@@ -465,289 +382,12 @@ namespace OpenLoco::Vehicles
     // Don't use outside of vehicle files
     VehicleUpdateDistances& getVehicleUpdateDistances();
 
-    struct VehicleHead : VehicleBase
-    {
-        static constexpr auto kVehicleThingType = VehicleEntityType::head;
-        int32_t var_3C;
-        uint32_t orderTableOffset; // offset into Order Table
-        uint16_t currentOrder;     // offset, combine with orderTableOffset
-        uint16_t sizeOfOrderTable; // size of Order Table
-        uint32_t trainAcceptedCargoTypes;
-        int16_t ordinalNumber;
-        uint8_t var_52;
-        uint8_t var_53; //  mods?
-        StationId stationId;
-        uint16_t cargoTransferTimeout;
-        uint32_t var_58;
-        uint8_t var_5C;
-        Status status;
-        VehicleType vehicleType;
-        BreakdownFlags breakdownFlags;
-        World::Pos2 aiPlacementPos;
-        uint8_t aiThoughtId; //  0xFFU for null
-        uint8_t airportMovementEdge;
-        uint16_t aiPlacementTaD; //  for air/water this is just rotation
-        uint8_t aiPlacementBaseZ;
-        uint8_t crashedTimeout;
-        Speed16 lastAverageSpeed;
-        uint32_t totalRefundCost;
-        World::Pos2 journeyStartPos;       //  journey start position
-        uint32_t journeyStartTicks;        //  ticks since journey start
-        int8_t manualPower;                //  manual power control VehicleFlags::manualControl
-        uint8_t restartStoppedCarsTimeout; //  timeout before auto starting trams/buses
-
-    public:
-        bool isVehicleTypeCompatible(const uint16_t vehicleTypeId);
-        void updateBreakdown();
-        void updateVehicle();
-        bool update();
-        void updateMonthly();
-        void updateDaily();
-        VehicleStatus getStatus() const;
-        OrderRingView getCurrentOrders() const;
-        bool isPlaced() const { return tileX != -1 && !has38Flags(Flags38::isGhost); }
-        bool hasAnyCargo();
-        char* generateCargoTotalString(char* buffer);
-        char* generateCargoCapacityString(char* buffer);
-        char* cargoLUTToString(CargoTotalArray& cargoTotals, char* buffer);
-        bool canBeModified() const;
-        void liftUpVehicle();
-        void updateTrainProperties();
-        currency32_t calculateRunningCost() const;
-        void sub_4AD778();
-        void sub_4AD93A();
-        void sub_4ADB47(bool unk);
-        uint32_t getCarCount() const;
-        void applyBreakdownToTrain();
-        void landCrashedUpdate();
-        void autoLayoutTrain();
-        uint32_t getVehicleTotalLength() const;
-        constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
-        {
-            return (breakdownFlags & flagsToTest) != BreakdownFlags::none;
-        }
-        void movePlaneTo(const World::Pos3& newLoc, const uint8_t newYaw, const Pitch newPitch);
-        void moveBoatTo(const World::Pos3& loc, const uint8_t yaw, const Pitch pitch);
-        Sub4ACEE7Result sub_4ACEE7(uint32_t unk1, uint32_t var_113612C, bool isPlaceDown);
-
-    private:
-        void updateDrivingSounds();
-        void updateDrivingSound(VehicleSound& sound, const bool isVeh2);
-        void updateDrivingSoundNone(VehicleSound& sound);
-        void updateDrivingSoundFriction(VehicleSound& sound, const VehicleObjectFrictionSound* snd);
-        void updateSimpleMotorSound(VehicleSound& sound, const bool isVeh2, const VehicleSimpleMotorSound* snd);
-        void updateGearboxMotorSound(VehicleSound& sound, const bool isVeh2, const VehicleGearboxMotorSound* snd);
-        bool updateLand();
-        bool sub_4A8DB7();
-        bool tryReverse();
-        bool sub_4A8CB6();
-        bool sub_4A8C81();
-        bool landTryBeginUnloading();
-        bool landLoadingUpdate();
-        bool landNormalMovementUpdate();
-        bool trainNormalMovementUpdate(uint8_t al, uint8_t flags, StationId nextStation);
-        bool roadNormalMovementUpdate(uint8_t al, StationId nextStation);
-        bool landReverseFromSignal();
-        bool updateAir();
-        bool airplaneLoadingUpdate();
-        bool sub_4A95CB();
-        bool sub_4A9348(uint8_t newMovementEdge, const AirplaneApproachTargetParams& approachParams);
-        bool airplaneApproachTarget(const AirplaneApproachTargetParams& params);
-        std::pair<Status, Speed16> airplaneGetNewStatus();
-        uint8_t airportGetNextMovementEdge(uint8_t curEdge);
-        AirplaneApproachTargetParams sub_427122();
-        std::pair<AirportMovementNodeFlags, World::Pos3> airportGetMovementEdgeTarget(StationId targetStation, uint8_t curEdge);
-        bool updateWater();
-        void tryCreateInitialMovementSound(const Status initialStatus);
-        void setStationVisitedTypes();
-        void checkIfAtOrderStation();
-        void updateLastJourneyAverageSpeed();
-        void beginUnloading();
-        void beginLoading();
-        WaterMotionFlags updateWaterMotion(WaterMotionFlags flags);
-        uint8_t getLoadingModifier(const VehicleBogie* bogie);
-        bool updateUnloadCargoComponent(VehicleCargo& cargo, VehicleBogie* bogie);
-        void updateUnloadCargo();
-        bool updateLoadCargoComponent(VehicleCargo& cargo, VehicleBogie* bogie);
-        bool updateLoadCargo();
-        void beginNewJourney();
-        void advanceToNextRoutableOrder();
-        Status sub_427BF2();
-        void produceLeavingDockSound();
-        void produceTouchdownAirportSound();
-        uint8_t sub_4AA36A();
-        bool sub_4AC1C2();
-        bool opposingTrainAtSignal();
-        bool pathingShouldReverse();
-        StationId manualFindTrainStationAtLocation();
-        bool isOnExpectedRoadOrTrack();
-        VehicleStatus getStatusTravelling() const;
-        void getSecondStatus(VehicleStatus& vehStatus) const;
-        void updateLastIncomeStats(uint8_t cargoType, uint16_t cargoQty, uint16_t cargoDist, uint8_t cargoAge, currency32_t profit);
-        void calculateRefundCost();
-    };
-    static_assert(sizeof(VehicleHead) <= sizeof(Entity));
-
-    struct IncomeStats
-    {
-        int32_t day;
-        uint8_t cargoTypes[4];
-        uint16_t cargoQtys[4];
-        uint16_t cargoDistances[4];
-        uint8_t cargoAges[4];
-        currency32_t cargoProfits[4];
-        void beginNewIncome();
-        bool addToStats(uint8_t cargoType, uint16_t cargoQty, uint16_t cargoDist, uint8_t cargoAge, currency32_t profit);
-    };
-
-    struct Vehicle1 : VehicleBase
-    {
-        static constexpr auto kVehicleThingType = VehicleEntityType::vehicle_1;
-        int32_t var_3C;
-        Speed16 targetSpeed;
-        uint16_t timeAtSignal;
-        Flags48 var_48;
-        uint8_t var_49; // rackrail mod?
-        uint32_t dayCreated;
-        uint16_t var_4E;
-        uint16_t var_50;
-        uint8_t var_52;
-        IncomeStats lastIncome;
-
-        bool update();
-        bool updateRoad();
-        bool updateRail();
-        UpdateMotionResult updateRoadMotion(int32_t distance);
-    };
-    static_assert(sizeof(Vehicle1) <= sizeof(Entity));
-
-    struct Vehicle2 : VehicleBase
-    {
-        static constexpr auto kVehicleThingType = VehicleEntityType::vehicle_2;
-        VehicleSound sound;
-        int8_t var_4F;
-        uint16_t totalPower; // maybe not used by aircraft and ship
-        uint16_t totalWeight;
-        Speed16 maxSpeed;
-        Speed32 currentSpeed;
-        MotorState motorState;
-        uint8_t brakeLightTimeout;
-        Speed16 rackRailMaxSpeed;
-        currency32_t curMonthRevenue; // monthly revenue
-        currency32_t profit[4];       // last 4 months net profit
-        uint8_t reliability;
-        Flags73 var_73; // (bit 0 = broken down, bit 1 = still powered)
-
-        bool has73Flags(Flags73 flagsToTest) const;
-
-        bool update();
-        bool sub_4A9F20();
-        currency32_t totalRecentProfit() const
-        {
-            return profit[0] + profit[1] + profit[2] + profit[3];
-        }
-    };
-    static_assert(sizeof(Vehicle2) <= sizeof(Entity));
-
-    struct VehicleBody : VehicleBase
-    {
-        static constexpr auto kVehicleThingType = VehicleEntityType::body_continued;
-        ColourScheme colourScheme;
-        uint8_t objectSpriteType;
-        uint16_t objectId;
-        int16_t var_44;
-        uint8_t animationFrame; //  roll/animation sprite index
-        uint8_t cargoFrame;     //  cargo sprite index
-        VehicleCargo primaryCargo;
-        uint8_t bodyIndex;
-        int8_t chuffSoundIndex;
-        uint32_t creationDay;
-        uint32_t var_5A;
-        uint8_t wheelSlipping; // timeout that counts up
-        BreakdownFlags breakdownFlags;
-        uint32_t refundCost;
-        uint8_t breakdownTimeout; // (likely unused)
-
-        const VehicleObject* getObject() const;
-        bool update(const CarUpdateState& carState);
-        void secondaryAnimationUpdate(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance);
-        void updateSegmentCrashed(const CarUpdateState& carState);
-        void sub_4AAB0B(const CarUpdateState& carState, const int32_t unkDistance);
-        void updateCargoSprite();
-        constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
-        {
-            return (breakdownFlags & flagsToTest) != BreakdownFlags::none;
-        }
-        void sub_4AC255(VehicleBogie* backBogie, VehicleBogie* frontBogie);
-
-    private:
-        void animationUpdate(const CarUpdateState& carState, const int32_t unkDistance);
-        void steamPuffsAnimationUpdate(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance, uint8_t num, int32_t var_05);
-        void dieselExhaust1AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t var_05);
-        void dieselExhaust2AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t var_05);
-        void electricSpark1AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance, uint8_t num, int32_t var_05);
-        void electricSpark2AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance, uint8_t num, int32_t var_05);
-        void shipWakeAnimationUpdate(const Vehicle& train, uint8_t num, int32_t var_05);
-        Pitch updateSpritePitchSteepSlopes(uint16_t xyOffset, int16_t zOffset);
-        Pitch updateSpritePitch(uint16_t xyOffset, int16_t zOffset);
-    };
-    static_assert(sizeof(VehicleBody) <= sizeof(Entity));
-
     uint8_t calculateYaw0FromVector(int16_t xDiff, int16_t yDiff);
     uint8_t calculateYaw1FromVectorPlane(int16_t xDiff, int16_t yDiff);
     uint8_t calculateYaw1FromVector(int16_t xDiff, int16_t yDiff);
     uint8_t calculateYaw4FromVector(int16_t xOffset, int16_t yOffset);
 
-    struct VehicleBogie : VehicleBase
-    {
-        static constexpr auto kVehicleThingType = VehicleEntityType::bogie;
-        ColourScheme colourScheme;
-        uint8_t objectSpriteType;
-        uint16_t objectId;
-        uint16_t var_44;
-        uint8_t animationIndex;      // animation index
-        uint8_t var_47;              // cargo sprite index (unused)
-        VehicleCargo secondaryCargo; // Note back bogie cannot carry cargo always check type
-        uint16_t totalCarWeight;     // only valid for first bogie of car
-        uint8_t bodyIndex;
-        uint32_t creationDay;
-        uint32_t var_5A;
-        uint8_t wheelSlipping; // timeout that counts up
-        BreakdownFlags breakdownFlags;
-        uint8_t var_60;
-        uint8_t var_61;
-        uint32_t refundCost;         // front bogies only
-        uint16_t reliability;        // front bogies only
-        uint16_t timeoutToBreakdown; // front bogies only (days) counts down to the next breakdown 0xFFFFU disables this
-        uint8_t breakdownTimeout;    // front bogies only (days)
-
-    public:
-        AirportObjectFlags getCompatibleAirportType();
-        bool update();
-        void updateSegmentCrashed();
-        bool isOnRackRail();
-        constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
-        {
-            return (breakdownFlags & flagsToTest) != BreakdownFlags::none;
-        }
-
-    private:
-        void updateRoll(const int32_t unkDistance);
-        void collision(const EntityId collideEntityId);
-    };
-    static_assert(sizeof(VehicleBogie) <= sizeof(Entity));
-
     void sub_4BA873(VehicleBogie& vehBogie);
-
-    struct VehicleTail : VehicleBase
-    {
-        static constexpr auto kVehicleThingType = VehicleEntityType::tail;
-        VehicleSound sound;
-        uint16_t trainDanglingTimeout; // counts up when no cars on train
-
-        bool update();
-    };
-    static_assert(sizeof(VehicleTail) <= sizeof(Entity));
 
     void liftUpTail(VehicleTail& tail);
 
@@ -777,37 +417,9 @@ namespace OpenLoco::Vehicles
             VehicleBase* nextVehicleComponent = nullptr;
 
         public:
-            CarComponentIter(const CarComponent* carComponent)
-            {
-                if (carComponent == nullptr)
-                {
-                    nextVehicleComponent = nullptr;
-                    return;
-                }
-                current = *carComponent;
-                nextVehicleComponent = current.body->nextVehicleComponent();
-            }
+            CarComponentIter(const CarComponent* carComponent);
 
-            CarComponentIter& operator++()
-            {
-                if (nextVehicleComponent == nullptr)
-                {
-                    return *this;
-                }
-                if (nextVehicleComponent->getSubType() == VehicleEntityType::tail)
-                {
-                    nextVehicleComponent = nullptr;
-                    return *this;
-                }
-                CarComponent next{ nextVehicleComponent };
-                if (next.body == nullptr || next.body->getSubType() == VehicleEntityType::body_start)
-                {
-                    nextVehicleComponent = nullptr;
-                    return *this;
-                }
-                current = next;
-                return *this;
-            }
+            CarComponentIter& operator++();
 
             CarComponentIter operator++(int)
             {
@@ -870,39 +482,9 @@ namespace OpenLoco::Vehicles
                 VehicleBase* nextVehicleComponent = nullptr;
 
             public:
-                CarIter(const Car* carComponent)
-                {
-                    if (carComponent == nullptr || carComponent->body == nullptr)
-                    {
-                        nextVehicleComponent = nullptr;
-                        return;
-                    }
-                    current = *carComponent;
-                    nextVehicleComponent = current.body->nextVehicleComponent();
-                }
+                CarIter(const Car* carComponent);
 
-                CarIter& operator++()
-                {
-                    if (nextVehicleComponent == nullptr)
-                    {
-                        return *this;
-                    }
-                    while (nextVehicleComponent->getSubType() != VehicleEntityType::tail)
-                    {
-                        Car next{ nextVehicleComponent };
-                        if (next.body == nullptr)
-                        {
-                            break;
-                        }
-                        if (next.body->getSubType() == VehicleEntityType::body_start)
-                        {
-                            current = next;
-                            return *this;
-                        }
-                    }
-                    nextVehicleComponent = nullptr;
-                    return *this;
-                }
+                CarIter& operator++();
 
                 CarIter operator++(int)
                 {
@@ -977,10 +559,7 @@ namespace OpenLoco::Vehicles
         VehicleTail* tail;
         Cars cars;
 
-        Vehicle(const VehicleHead& _head)
-            : Vehicle(_head.id)
-        {
-        }
+        Vehicle(const VehicleHead& _head);
         Vehicle(EntityId _head);
 
         // Call if the cars order may have changed

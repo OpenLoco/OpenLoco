@@ -11,7 +11,6 @@
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -25,8 +24,8 @@
 #include "Objects/CompetitorObject.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
-#include "Scenario.h"
-#include "ScenarioObjective.h"
+#include "Scenario/Scenario.h"
+#include "Scenario/ScenarioObjective.h"
 #include "SceneManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ScrollView.h"
@@ -46,9 +45,11 @@
 #include "Ui/Widgets/ViewportWidget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleBody.h"
 #include "ViewportManager.h"
 #include "World/Company.h"
 #include "World/CompanyManager.h"
+#include <OpenLoco/Math/Bound.hpp>
 
 #include <cmath>
 
@@ -122,7 +123,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Status
     {
-        static constexpr Ui::Size32 kWindowSize = { 270, 182 };
+        static constexpr Ui::Size kWindowSize = { 270, 182 };
 
         enum widx
         {
@@ -362,7 +363,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 args.bufferIndex = 0;
 
-                success = GameCommands::doCommand(args, GameCommands::Flags::apply);
+                success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE;
             }
 
             // No need to propagate the name if it could not be set.
@@ -676,7 +677,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Details
     {
-        static constexpr Ui::Size32 kWindowSize = { 340, 194 };
+        static constexpr Ui::Size kWindowSize = { 340, 194 };
 
         static std::optional<GameCommands::HeadquarterPlacementArgs> _headquarterGhost;
 
@@ -1224,7 +1225,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace ColourScheme
     {
-        static constexpr Ui::Size32 kWindowSize = { 265, 252 };
+        static constexpr Ui::Size kWindowSize = { 265, 252 };
 
         enum widx
         {
@@ -1699,7 +1700,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Finances
     {
-        static constexpr Ui::Size32 kWindowSize = { 636, 319 };
+        static constexpr Ui::Size kWindowSize = { 636, 319 };
 
         enum widx
         {
@@ -2060,11 +2061,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
         }
 
-        static inline currency32_t calculateStepSize(uint16_t repeatTicks)
-        {
-            return 1000 * std::pow(10, repeatTicks / 100);
-        }
-
         // 0x0043383E
         static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
@@ -2076,14 +2072,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 case widx::loan_decrease:
                 {
-                    auto company = CompanyManager::get(CompanyId(self.number));
+                    auto* company = CompanyManager::get(CompanyId(self.number));
                     if (company->currentLoan == 0)
                     {
                         return;
                     }
 
                     GameCommands::ChangeLoanArgs args{};
-                    args.newLoan = std::max<currency32_t>(0, company->currentLoan - calculateStepSize(Input::getClickRepeatTicks()));
+                    args.newLoan = Math::Bound::sub(company->currentLoan, Input::getClickRepeatStepSize() * 1'000);
 
                     GameCommands::setErrorTitle(StringIds::cant_pay_back_loan);
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
@@ -2092,8 +2088,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 case widx::loan_increase:
                 {
+                    auto* company = CompanyManager::get(CompanyId(self.number));
+
                     GameCommands::ChangeLoanArgs args{};
-                    args.newLoan = CompanyManager::get(CompanyId(self.number))->currentLoan + calculateStepSize(Input::getClickRepeatTicks());
+                    args.newLoan = Math::Bound::add(company->currentLoan, Input::getClickRepeatStepSize() * 1'000);
 
                     GameCommands::setErrorTitle(StringIds::cant_borrow_any_more_money);
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
@@ -2235,7 +2233,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace CargoDelivered
     {
-        static constexpr Ui::Size32 kWindowSize = { 240, 382 };
+        static constexpr Ui::Size kWindowSize = { 240, 382 };
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(240, 382, StringIds::title_company_cargo_delivered)
@@ -2263,6 +2261,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.widgets[Common::widx::close_button].left = self.width - 15;
             self.widgets[Common::widx::close_button].right = self.width - 3;
 
+            self.widgets[Common::widx::company_select].right = self.width - 3;
+            self.widgets[Common::widx::company_select].left = self.width - 28;
+
             Widget::leftAlignTabs(self, Common::widx::tab_status, Common::widx::tab_challenge);
         }
 
@@ -2273,6 +2274,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             self.draw(drawingCtx);
             Common::drawTabs(self, drawingCtx);
+            Common::drawCompanySelect(&self, drawingCtx);
 
             uint16_t y = self.y + 47;
 
@@ -2422,7 +2424,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Challenge
     {
-        static constexpr Ui::Size32 kWindowSize = { 320, 182 };
+        static constexpr Ui::Size kWindowSize = { 320, 182 };
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(320, 182, StringIds::title_company_challenge)
@@ -2648,7 +2650,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
-            const Ui::Size32* kWindowSize;
+            const Ui::Size* kWindowSize;
         };
 
         // clang-format off

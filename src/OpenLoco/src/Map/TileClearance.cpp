@@ -13,7 +13,7 @@
 #include "Objects/TrackObject.h"
 #include "Objects/TreeObject.h"
 #include "RoadElement.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 #include "SignalElement.h"
 #include "StationElement.h"
 #include "SurfaceElement.h"

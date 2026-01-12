@@ -1,14 +1,20 @@
+#include "Vehicle1.h"
+#include "Audio/Audio.h"
 #include "Entities/EntityManager.h"
 #include "Map/TileManager.h"
 #include "Map/Track/SubpositionData.h"
 #include "Map/Track/Track.h"
 #include "Map/Track/TrackData.h"
 #include "Objects/BridgeObject.h"
+#include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "Random.h"
 #include "RoutingManager.h"
-#include "Vehicle.h"
+#include "Vehicle2.h"
+#include "VehicleBogie.h"
+#include "VehicleHead.h"
+#include "VehicleTail.h"
 #include "ViewportManager.h"
 
 using namespace OpenLoco::Literals;
@@ -338,7 +344,7 @@ namespace OpenLoco::Vehicles
 
         TrackAndDirection::_RoadAndDirection newRad(0, 0);
         newRad._data = routing & 0x1FFU;
-        veh1.sub_47D959(newPos, newRad, true);
+        veh1.updateRoadTileOccupancy(newPos, newRad, true);
 
         veh1.routingHandle = newRoutingHandle;
         veh1.trackAndDirection.road = newRad;
@@ -767,7 +773,7 @@ namespace OpenLoco::Vehicles
             return RoadMotionNewPieceResult::noFurther;
         }
 
-        const auto newTrackType = component.sub_47D959(nextPos, newRad, true);
+        const auto newTrackType = component.updateRoadTileOccupancy(nextPos, newRad, true);
 
         component.trackType = newTrackType;
         component.routingHandle = newRoutingHandle;

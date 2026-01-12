@@ -1,18 +1,43 @@
-25.11+ (???)
+25.12+ (???)
 ------------------------------------------------------------------------
+- Feature: [#2825] Drawing the viewport canvas now uses parallel processing where possible.
+- Feature: [#3588] Optionally limit the frame rate to the display's vsync.
+- Change: [#3577] PNG heightmaps of any size are now supported and use interpolation when the image size differs from the map size.
+- Change: [#3596] Confirmation prompts can now be confirmed with return/enter keys.
+- Fix: [#2875] Select Company widget placed and displayed incorrectly in the Cargo Delivered tab.
+- Fix: [#3028] Odd stepper behaviour when adjusting cargo scenario objective target. 
+- Fix: [#3268] Removing bridges built by towns gives you a refund.
+- Fix: [#3577] Crash loading PNGs with unexpected color formats or channel configurations as heightmaps.
+- Fix: [#3581] Remove sprite drawing limit that caused visual artifacts on high resolution displays and complex maps.
+- Fix: [#3584] First station of a vehicle's route not removed from vehicle orders when that station is deallocated.
+- Fix: [#3603] Error popup for trying to pick up a broken down or crashed vehicle shows missing string.
+
+25.12 (2025-12-20)
+------------------------------------------------------------------------
+- Feature: [#3288, #3523] Native, independent 64-bit architecture builds for Windows, Linux, and macOS.
 - Change: [#3384] Music selection window is now resizable, sortable, and displays the time period associated with each track.
 - Change: [#3402] Text input windows now show the total characters used rather than the current character position.
+- Change: [#3405] The object selection window is now resizeable, making room for longer object names.
 - Change: [#3413] The map window can now be resized to fit the entire game map.
 - Change: [#3473] Fences can now be interacted with in viewports outside of the scenario editor as well.
+- Change: [#3531] The vehicle list window can now be resized more flexibly, allowing more vehicles to be listed.
+- Change: [#3535] Loading a save game from command line now skips loading the title scene.
 - Fix: [#2957] Bridge supports not being drawn under different corners than in vanilla.
 - Fix: [#3183] Sound and music being unpaused when the game is still paused in certain situations.
 - Fix: [#3313] Vehicle orders not being deleted correctly when the station is deallocated.
+- Fix: [#3354] Overly long strings make it possible to bypass text input limits.
 - Fix: [#3395] Text input windows no longer show character limits.
 - Fix: [#3401] The character limit label is using the wrong text colour.
+- Fix: [#3403] Changing a town name displays an incorrect message prompt.
+- Fix: [#3410] Text Input window's character length/limit flickering when viewport behind the window is being invalidated.
 - Fix: [#3422] Window resize handles don't work properly in windows with status bars.
 - Fix: [#3431] Marker-related config variables are not saved properly.
 - Fix: [#3455] The 'Plant Trees' status bar is not rendered correctly.
 - Fix: [#3466] Game crashes if you press a multimedia key on your keyboard (e.g. 'next track').
+- Fix: [#3496] Incorrect (off by 1 quantity) building cargo tooltip displayed.
+- Fix: [#3503] Crash when placing airports or docks in a scenario with no track objects.
+- Fix: [#3544] Viewport panning (right-mouse click drag) is broken during tutorial playback.
+- Fix: [#3545] The initial company name is not set correctly when entering a custom name at scenario start.
 
 25.11 (2025-11-05)
 ------------------------------------------------------------------------

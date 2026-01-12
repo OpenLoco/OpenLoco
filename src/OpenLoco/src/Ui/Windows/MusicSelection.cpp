@@ -3,7 +3,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Jukebox.h"
 #include "Localisation/FormatArguments.hpp"
@@ -24,9 +23,9 @@
 
 namespace OpenLoco::Ui::Windows::MusicSelection
 {
-    static constexpr Ui::Size32 kWindowSizeMin = { 300, 100 };
-    static constexpr Ui::Size32 kWindowSizeMax = { 800, 800 };
-    static constexpr Ui::Size32 kWindowSizeDefault = { 360, 238 };
+    static constexpr Ui::Size kWindowSizeMin = { 300, 100 };
+    static constexpr Ui::Size kWindowSizeMax = { 800, 800 };
+    static constexpr Ui::Size kWindowSizeDefault = { 360, 238 };
 
     static constexpr auto kColumnYearsWidth = 75;
     static constexpr auto kStatusBarClearance = 13;

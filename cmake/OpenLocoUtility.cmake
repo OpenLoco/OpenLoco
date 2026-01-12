@@ -1,160 +1,12 @@
-function(loco_thirdparty_target_compile_link_flags TARGET)
-    # Set some compiler options
-
-    # MSVC
-    set(COMMON_COMPILE_OPTIONS_MSVC
-        /MP                                 # Multithreaded compilation
-        $<$<CONFIG:Debug>:/ZI>              # Debug Edit and Continue (Hot reload)
-        $<$<CONFIG:Release>:/Zi>            # Debug information in release
-        $<$<CONFIG:Release>:/Oi>            # Intrinsics
-        $<$<CONFIG:RelWithDebInfo>:/Oi>     # Intrinsics
-        /Zc:char8_t-                        # Enable char8_t<->char conversion :(
-        /Zc:__cplusplus                     # Enable correct reporting for __cplusplus
-    )
-
-    # GNU/CLANG
-    set(COMMON_COMPILE_OPTIONS_GNU
-        -fno-char8_t             # Enable char8_t<->char conversion :(
-    )
-
-    set(COMMON_COMPILE_OPTIONS
-        $<$<CXX_COMPILER_ID:MSVC>:${COMMON_COMPILE_OPTIONS_MSVC}>
-        $<$<CXX_COMPILER_ID:GNU>:${COMMON_COMPILE_OPTIONS_GNU}>
-        $<$<CXX_COMPILER_ID:Clang>:${COMMON_COMPILE_OPTIONS_GNU}>
-        $<$<CXX_COMPILER_ID:AppleClang>:${COMMON_COMPILE_OPTIONS_GNU}>
-    )
-
-    # Set common link options
-
-    # MSVC
-    set(COMMON_LINK_OPTIONS_MSVC
-        $<$<CONFIG:Release>:/DEBUG>             # Generate debug symbols even in release
-        $<$<CONFIG:Debug>:/INCREMENTAL>         # Incremental linking required for hot reload
-        /SAFESEH:NO                             # No safeseh linking required for hot reload and also crashes loading when enabled
-        $<$<CONFIG:Release>:/OPT:ICF>           # COMDAT folding
-        $<$<CONFIG:Release>:/OPT:REF>           # Eliminate unreferenced code/data
-        $<$<CONFIG:RelWithDebInfo>:/OPT:ICF>    # COMDAT folding
-        $<$<CONFIG:RelWithDebInfo>:/OPT:REF>    # Eliminate unreferenced code/data
-    )
-
-    # GNU/CLANG
-    set(COMMON_LINK_OPTIONS_GNU
-    )
-
-    set(COMMON_LINK_OPTIONS
-        $<$<CXX_COMPILER_ID:MSVC>:${COMMON_LINK_OPTIONS_MSVC}>
-        $<$<CXX_COMPILER_ID:GNU>:${COMMON_LINK_OPTIONS_GNU}>
-        $<$<CXX_COMPILER_ID:Clang>:${COMMON_LINK_OPTIONS_GNU}>
-        $<$<CXX_COMPILER_ID:AppleClang>:${COMMON_LINK_OPTIONS_GNU}>
-    )
-
-    target_compile_options(${TARGET} PUBLIC ${COMMON_COMPILE_OPTIONS})
-    target_link_options(${TARGET} PUBLIC ${COMMON_LINK_OPTIONS})
-    target_compile_features(${TARGET} PUBLIC cxx_std_${CMAKE_CXX_STANDARD})
-    set_property(TARGET ${TARGET} PROPERTY
-        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>") # Statically link the MSVC++ Runtime
-    set_property(TARGET ${TARGET} PROPERTY POSITION_INDEPENDENT_CODE OFF) # Due to the way the linking works we must have no pie (remove when fully implemented)
-endfunction()
-
-function(loco_target_compile_link_flags TARGET)
-    # Set some compiler options
-
-    # MSVC
-    set(COMMON_COMPILE_OPTIONS_MSVC
-        /MP                      # Multithreaded compilation
-        $<$<CONFIG:Debug>:/ZI>   # Debug Edit and Continue (Hot reload)
-        $<$<CONFIG:Release>:/Zi> # Debug information in release
-
-        $<$<BOOL:${STRICT}>:/WX> # Warnings are errors (STRICT ONLY)
-        /W4                      # Warning level 4
-                                 # Poke holes in W4 due to our interop code
-        /wd4068                  #   4068: unknown pragma
-        /wd4200                  #   4200: nonstandard extension used : zero-sized array in struct/union
-        /wd4201                  #   4201: nonstandard extension used : nameless struct/union
-        /wd4244                  #   4244: 'argument' : conversion from 'type1' to 'type2', possible loss of data
-        /Zc:char8_t-             # Enable char8_t<->char conversion :(
-        /utf-8
-    )
-
-    # GNU/CLANG
-    set(COMMON_COMPILE_OPTIONS_GNU
-        -fstrict-aliasing
-        -Wall
-        -Wextra
-        -Wtype-limits
-        $<$<BOOL:${STRICT}>:-Werror>         # Warnings are errors (STRICT ONLY)
-
-        # Poke some holes in -Wall:
-        -Wno-unknown-pragmas
-        -Wno-unused-private-field
-        -Waddress
-        # -Warray-bounds
-        # compilers often get confused about our memory access patterns, disable some of the warnings
-        -Wno-array-bounds
-        $<$<CXX_COMPILER_ID:GNU>:-Wno-stringop-overflow> # clang does not understand following options and errors with -Wunknown-warning-option
-        $<$<CXX_COMPILER_ID:GNU>:-Wno-stringop-overread>
-        $<$<CXX_COMPILER_ID:GNU>:-Wno-stringop-truncation>
-        -Wchar-subscripts
-        -Wenum-compare
-        -Wformat
-        -Wignored-qualifiers
-        -Winit-self
-        -Wmissing-declarations
-        -Wnon-virtual-dtor
-        -Wnull-dereference
-        -Wstrict-aliasing
-        -Wstrict-overflow=1
-        -Wundef
-        -Wunreachable-code
-        -fno-char8_t             # Enable char8_t<->char conversion :(
-        -Wno-deprecated-declarations
-    )
-
-    set(COMMON_COMPILE_OPTIONS
-        $<$<CXX_COMPILER_ID:MSVC>:${COMMON_COMPILE_OPTIONS_MSVC}>
-        $<$<CXX_COMPILER_ID:GNU>:${COMMON_COMPILE_OPTIONS_GNU}>
-        $<$<CXX_COMPILER_ID:Clang>:${COMMON_COMPILE_OPTIONS_GNU}>
-        $<$<CXX_COMPILER_ID:AppleClang>:${COMMON_COMPILE_OPTIONS_GNU}>
-    )
-
-    # Set common link options
-
-    # MSVC
-    set(COMMON_LINK_OPTIONS_MSVC
-        $<$<CONFIG:Release>:/DEBUG>         # Generate debug symbols even in release
-        $<$<CONFIG:Debug>:/INCREMENTAL>     # Incremental linking required for hot reload
-        $<$<CONFIG:Debug>:/SAFESEH:NO>      # No safeseh linking required for hot reload
-    )
-
-    # GNU/CLANG
-    set(COMMON_LINK_OPTIONS_GNU
-    )
-
-    set(COMMON_LINK_OPTIONS
-        $<$<CXX_COMPILER_ID:MSVC>:${COMMON_LINK_OPTIONS_MSVC}>
-        $<$<CXX_COMPILER_ID:GNU>:${COMMON_LINK_OPTIONS_GNU}>
-        $<$<CXX_COMPILER_ID:Clang>:${COMMON_LINK_OPTIONS_GNU}>
-        $<$<CXX_COMPILER_ID:AppleClang>:${COMMON_LINK_OPTIONS_GNU}>
-    )
-
-    target_compile_options(${TARGET} PUBLIC ${COMMON_COMPILE_OPTIONS})
-    target_link_options(${TARGET} PUBLIC ${COMMON_LINK_OPTIONS})
-    target_compile_features(${TARGET} PUBLIC cxx_std_${CMAKE_CXX_STANDARD})
-    target_compile_definitions(${TARGET} PUBLIC DEBUG=${DEBUG_LEVEL})
-    set_property(TARGET ${TARGET} PROPERTY
-        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>") # Statically link the MSVC++ Runtime
-    set_property(TARGET ${TARGET} PROPERTY POSITION_INDEPENDENT_CODE OFF) # Due to the way the linking works we must have no pie (remove when fully implemented)
-endfunction()
-
 function(_loco_add_target TARGET TYPE)
-    cmake_parse_arguments("" "LIBRARY;EXECUTABLE;INTERFACE" "" "PRIVATE_FILES;PUBLIC_FILES;TEST_FILES;" ${ARGN})
+    cmake_parse_arguments("" "LIBRARY;EXECUTABLE;INTERFACE" "" "PRIVATE_FILES;PUBLIC_FILES;TEST_FILES;PUBLIC_LINK_LIBRARIES;PRIVATE_LINK_LIBRARIES;PUBLIC_COMPILE_DEFINITIONS;PRIVATE_COMPILE_DEFINITIONS" ${ARGN})
 
     if (${TYPE} STREQUAL "INTERFACE")
         set(_LIBRARY NO)
         set(_INTERFACE YES)
     endif()
-    # Add public files to target so that source_group works
-    # (nice IDE layout)
+    
+    # Add public files to target so that source_group works (nice IDE layout)
     if (_LIBRARY)
         add_library(${TARGET} ${TYPE} 
             ${_PRIVATE_FILES}
@@ -180,8 +32,6 @@ function(_loco_add_target TARGET TYPE)
                 PRIVATE
                     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/${TARGET}")
         endif()
-        loco_target_compile_link_flags(${TARGET})
-        set_property(TARGET ${TARGET} PROPERTY RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
     elseif(_EXECUTABLE)
         add_executable(${TARGET}
             ${_PRIVATE_FILES}
@@ -191,12 +41,8 @@ function(_loco_add_target TARGET TYPE)
         target_include_directories(${TARGET}
             PRIVATE
                 ${CMAKE_CURRENT_SOURCE_DIR}/src)
-
-        loco_target_compile_link_flags(${TARGET})
-        set_property(TARGET ${TARGET} PROPERTY RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
     elseif(_INTERFACE)
-        # We want to add the headers to the interface library so that it displays
-        # nicely wihtin IDEs
+        # We want to add the headers to the interface library so that it displays nicely within IDEs
         add_library(${TARGET} ${TYPE}
             ${_PUBLIC_FILES})
         add_library(OpenLoco::${TARGET} ALIAS ${TARGET})
@@ -204,6 +50,30 @@ function(_loco_add_target TARGET TYPE)
         target_include_directories(${TARGET}
             INTERFACE
                 "${CMAKE_CURRENT_SOURCE_DIR}/include")
+    endif()
+
+    # Common setup for LIBRARY and EXECUTABLE targets
+    if (_LIBRARY OR _EXECUTABLE)
+        # Link to common interface
+        target_link_libraries(${TARGET} PUBLIC OpenLocoCommonInterface)
+        
+        # Link libraries
+        if (DEFINED _PUBLIC_LINK_LIBRARIES)
+            target_link_libraries(${TARGET} PUBLIC ${_PUBLIC_LINK_LIBRARIES})
+        endif()
+        if (DEFINED _PRIVATE_LINK_LIBRARIES)
+            target_link_libraries(${TARGET} PRIVATE ${_PRIVATE_LINK_LIBRARIES})
+        endif()
+        
+        # Compile definitions
+        if (DEFINED _PUBLIC_COMPILE_DEFINITIONS)
+            target_compile_definitions(${TARGET} PUBLIC ${_PUBLIC_COMPILE_DEFINITIONS})
+        endif()
+        if (DEFINED _PRIVATE_COMPILE_DEFINITIONS)
+            target_compile_definitions(${TARGET} PRIVATE ${_PRIVATE_COMPILE_DEFINITIONS})
+        endif()
+        
+        set_property(TARGET ${TARGET} PROPERTY RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
     endif()
 
     # Defer header check to after configure time
@@ -226,8 +96,9 @@ function(_loco_add_target TARGET TYPE)
         add_executable(OpenLoco::${TEST_TARGET} ALIAS ${TEST_TARGET})
 
         target_link_libraries(${TEST_TARGET}
-            $<$<BOOL:${_LIBRARY}>:${TARGET}>
-            GTest::gtest_main)
+            PRIVATE
+                $<$<BOOL:${_LIBRARY}>:${TARGET}>
+                GTest::gtest_main)
 
         include(GoogleTest)
 
@@ -241,11 +112,15 @@ function(_loco_add_target TARGET TYPE)
         # Tell each target about the project directory.
         target_compile_definitions(${TEST_TARGET} PRIVATE OPENLOCO_PROJECT_PATH="${OPENLOCO_PROJECT_PATH}")
 
-        loco_target_compile_link_flags(${TEST_TARGET})
+        # Link to common interface
+        target_link_libraries(${TEST_TARGET} PUBLIC OpenLocoCommonInterface)
     endif()
     
     # Tell each target about the project directory.
-    target_compile_definitions(${TARGET} PRIVATE OPENLOCO_PROJECT_PATH="${OPENLOCO_PROJECT_PATH}")
+    # INTERFACE libraries can only have INTERFACE properties
+    if (NOT _INTERFACE)
+        target_compile_definitions(${TARGET} PRIVATE OPENLOCO_PROJECT_PATH="${OPENLOCO_PROJECT_PATH}")
+    endif()
 endfunction()
 
 function(loco_add_library TARGET TYPE)
@@ -336,7 +211,7 @@ function(_loco_add_headers_check TARGET)
         target_include_directories(${TARGET}-public-headers-check PUBLIC
             $<TARGET_PROPERTY:${TARGET},INTERFACE_INCLUDE_DIRECTORIES>)
         target_link_libraries(${TARGET}-public-headers-check PUBLIC
-            $<TARGET_PROPERTY:${TARGET},INTERFACE_LINK_LIBRARIES>)
+            $<GENEX_EVAL:$<TARGET_PROPERTY:${TARGET},INTERFACE_LINK_LIBRARIES>>)
         add_dependencies(all-headers-check ${TARGET}-public-headers-check)
     endif()
     
@@ -372,8 +247,8 @@ function(_loco_add_headers_check TARGET)
             $<TARGET_PROPERTY:${TARGET},INCLUDE_DIRECTORIES>
             $<TARGET_PROPERTY:${TARGET},INTERFACE_INCLUDE_DIRECTORIES>)
         target_link_libraries(${TARGET}-private-headers-check PUBLIC
-            $<TARGET_PROPERTY:${TARGET},LINK_LIBRARIES>
-            $<TARGET_PROPERTY:${TARGET},INTERFACE_LINK_LIBRARIES>)
+            $<GENEX_EVAL:$<TARGET_PROPERTY:${TARGET},LINK_LIBRARIES>>
+            $<GENEX_EVAL:$<TARGET_PROPERTY:${TARGET},INTERFACE_LINK_LIBRARIES>>)
         add_dependencies(all-headers-check ${TARGET}-private-headers-check)
     endif()
 endfunction()

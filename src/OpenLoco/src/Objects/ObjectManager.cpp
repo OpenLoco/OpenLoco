@@ -12,8 +12,8 @@
 #include "Environment.h"
 #include "GameState.h"
 #include "Graphics/Colour.h"
+#include "Graphics/DrawingContext.h"
 #include "Graphics/Gfx.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "HillShapesObject.h"
 #include "IndustryObject.h"
@@ -84,8 +84,8 @@ namespace OpenLoco::ObjectManager
 
     struct ObjectRepositoryItem
     {
-        Object** objects;
-        ObjectEntry2* objectEntryExtendeds;
+        std::span<Object*> objects;
+        std::span<ObjectEntry2> objectEntryExtendeds;
     };
 
     static_assert(Traits::IsPOD<ObjectHeader>::value, "Object Header must be trivial for I/O purposes");
@@ -106,8 +106,8 @@ namespace OpenLoco::ObjectManager
     constexpr ObjectRepositoryItem makeRepositoryItem()
     {
         return ObjectRepositoryItem{
-            ObjectStorage<Type>::objects.data(),
-            ObjectStorage<Type>::objectEntryExtendeds.data()
+            ObjectStorage<Type>::objects,
+            ObjectStorage<Type>::objectEntryExtendeds
         };
     }
 
@@ -141,7 +141,16 @@ namespace OpenLoco::ObjectManager
 
     Object* getAny(const LoadedObjectHandle& handle)
     {
-        auto obj = getRepositoryItem(handle.type).objects[handle.id];
+        auto& ori = getRepositoryItem(handle.type);
+        if (handle.id >= ori.objects.size())
+        {
+            // We shouldn't get here but sometimes we pass null handles like 0xFF and
+            // accidentally get here. Ideally the call sites should be fixed so thats
+            // why we are asserting here.
+            assert(false);
+            return nullptr;
+        }
+        auto obj = ori.objects[handle.id];
         if (obj == (void*)-1)
         {
             obj = nullptr;
@@ -506,7 +515,7 @@ namespace OpenLoco::ObjectManager
         setTotalNumImages(oldNumImages);
 
         TempLoadMetaData result{};
-        result.fileSizeHeader.decodedFileSize = preLoadObj->objectData.size();
+        result.fileSizeHeader.decodedFileSize = static_cast<uint32_t>(preLoadObj->objectData.size());
         result.displayData.numImages = numImages;
         result.dependentObjects = dependencies;
 
@@ -950,26 +959,26 @@ namespace OpenLoco::ObjectManager
     // 0x0047966E
     void updateRoadObjectIdFlags()
     {
-        uint32_t roadObjectIdIsNotTram = 0;
-        uint32_t roadObjectIdIsFlag7 = 0;
+        uint32_t roadObjectIdIsAnyRoadTypeCompatible = 0;
+        uint32_t roadObjectIdIsUsableByAllCompanies = 0;
 
         for (size_t index = 0; index < ObjectManager::getMaxObjects(ObjectType::road); ++index)
         {
             auto roadObject = ObjectManager::get<RoadObject>(index);
             if (roadObject != nullptr)
             {
-                if (roadObject->hasFlags(RoadObjectFlags::unk_03))
+                if (roadObject->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
                 {
-                    roadObjectIdIsNotTram |= (1u << index);
+                    roadObjectIdIsAnyRoadTypeCompatible |= (1u << index);
                 }
-                if (roadObject->hasFlags(RoadObjectFlags::unk_07))
+                if (roadObject->hasFlags(RoadObjectFlags::allowUseByAllCompanies))
                 {
-                    roadObjectIdIsFlag7 |= (1u << index);
+                    roadObjectIdIsUsableByAllCompanies |= (1u << index);
                 }
             }
         }
-        getGameState().roadObjectIdIsNotTram = roadObjectIdIsNotTram;
-        getGameState().roadObjectIdIsFlag7 = roadObjectIdIsFlag7;
+        getGameState().roadObjectIdIsAnyRoadTypeCompatible = roadObjectIdIsAnyRoadTypeCompatible;
+        getGameState().roadObjectIdIsUsableByAllCompanies = roadObjectIdIsUsableByAllCompanies;
     }
 
     // 0x004796A9
@@ -1167,7 +1176,7 @@ namespace OpenLoco::ObjectManager
             auto roadObject = ObjectManager::get<RoadObject>(index);
             if (roadObject != nullptr)
             {
-                if (roadObject->hasFlags(RoadObjectFlags::unk_03) && !roadObject->hasFlags(RoadObjectFlags::isOneWay))
+                if (roadObject->hasFlags(RoadObjectFlags::anyRoadTypeCompatible) && !roadObject->hasFlags(RoadObjectFlags::isOneWay))
                 {
                     if (largestTownSize <= roadObject->targetTownSize)
                     {

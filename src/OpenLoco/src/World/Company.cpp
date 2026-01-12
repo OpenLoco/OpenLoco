@@ -21,12 +21,16 @@
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "Random.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "SceneManager.h"
 #include "StationManager.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
@@ -359,7 +363,7 @@ namespace OpenLoco
 
         std::copy_if(std::begin(tracks), std::end(tracks), std::back_inserter(result), [](uint8_t trackIdx) {
             const auto* trackObj = ObjectManager::get<TrackObject>(trackIdx);
-            return !trackObj->hasFlags(TrackObjectFlags::unk_02);
+            return !trackObj->hasFlags(TrackObjectFlags::isRoad);
         });
 
         sfl::static_unordered_set<uint8_t, Limits::kMaxRoadObjects> roads;
@@ -387,7 +391,7 @@ namespace OpenLoco
                 continue;
             }
 
-            if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+            if (roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
             {
                 roads.insert(i | (1 << 7));
             }
@@ -395,7 +399,7 @@ namespace OpenLoco
 
         std::copy_if(std::begin(roads), std::end(roads), std::back_inserter(result), [](uint8_t trackIdx) {
             const auto* trackObj = ObjectManager::get<RoadObject>(trackIdx & ~(1 << 7));
-            return trackObj->hasFlags(RoadObjectFlags::unk_01);
+            return trackObj->hasFlags(RoadObjectFlags::isRail);
         });
 
         return result;
@@ -433,7 +437,7 @@ namespace OpenLoco
                 continue;
             }
 
-            if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+            if (roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
             {
                 roads.insert(i | (1U << 7));
             }
@@ -441,7 +445,7 @@ namespace OpenLoco
 
         std::copy_if(std::begin(roads), std::end(roads), std::back_inserter(result), [](uint8_t roadId) {
             const auto* roadObj = ObjectManager::get<RoadObject>(roadId & ~(1U << 7));
-            return !roadObj->hasFlags(RoadObjectFlags::unk_01);
+            return !roadObj->hasFlags(RoadObjectFlags::isRail);
         });
 
         sfl::static_unordered_set<uint8_t, Limits::kMaxTrackObjects> tracks;
@@ -461,7 +465,7 @@ namespace OpenLoco
 
         std::copy_if(std::begin(tracks), std::end(tracks), std::back_inserter(result), [](uint8_t trackIdx) {
             const auto* trackObj = ObjectManager::get<TrackObject>(trackIdx);
-            return trackObj->hasFlags(TrackObjectFlags::unk_02);
+            return trackObj->hasFlags(TrackObjectFlags::isRoad);
         });
 
         return result;
@@ -1041,7 +1045,7 @@ namespace OpenLoco
                 // Reduces progress by 10% for each company outside of top 3 better performing than the player
                 // Caps out at 30% reduction
                 const auto multiplier = std::min(numCompaniesBetterPerforming - 2, 3U);
-                return std::max(progress - 10 * multiplier, 0U);
+                return static_cast<uint8_t>(std::max(progress - 10 * multiplier, 0U));
             }
             return progress;
         }

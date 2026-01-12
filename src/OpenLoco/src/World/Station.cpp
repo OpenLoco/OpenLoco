@@ -4,7 +4,6 @@
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingContext.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "IndustryManager.h"
 #include "Localisation/FormatArguments.hpp"
@@ -748,44 +747,44 @@ namespace OpenLoco
         int32_t rating = 0;
 
         // Bonus if cargo is fresh
-        if (cargo.age <= 45)
+        if (cargo.age <= 7)
+        {
+            rating += 165; // 40 + 45 + 45 + 35
+        }
+        else if (cargo.age <= 15)
+        {
+            rating += 130; // 40 + 45 + 45
+        }
+        else if (cargo.age <= 30)
+        {
+            rating += 85; // 40 + 45
+        }
+        else if (cargo.age <= 45)
         {
             rating += 40;
-            if (cargo.age <= 30)
-            {
-                rating += 45;
-                if (cargo.age <= 15)
-                {
-                    rating += 45;
-                    if (cargo.age <= 7)
-                    {
-                        rating += 35;
-                    }
-                }
-            }
         }
 
         // Penalty if lots of cargo waiting
         rating -= 130;
-        if (cargo.quantity <= 1000)
+        if (cargo.quantity <= 100)
+        {
+            rating += 130; // 30 + 30 + 30 + 20 + 20
+        }
+        else if (cargo.quantity <= 200)
+        {
+            rating += 110; // 30 + 30 + 30 + 20
+        }
+        else if (cargo.quantity <= 300)
+        {
+            rating += 90; // 30 + 30 + 30
+        }
+        else if (cargo.quantity <= 500)
+        {
+            rating += 60; // 30 + 30
+        }
+        else if (cargo.quantity <= 1000)
         {
             rating += 30;
-            if (cargo.quantity <= 500)
-            {
-                rating += 30;
-                if (cargo.quantity <= 300)
-                {
-                    rating += 30;
-                    if (cargo.quantity <= 200)
-                    {
-                        rating += 20;
-                        if (cargo.quantity <= 100)
-                        {
-                            rating += 20;
-                        }
-                    }
-                }
-            }
         }
 
         if ((flags & (StationFlags::flag_7 | StationFlags::flag_8)) == StationFlags::none && !CompanyManager::isPlayerCompany(owner))
@@ -799,17 +798,17 @@ namespace OpenLoco
             rating += ((vehicleSpeed - 35_mph).getRaw()) / 4;
         }
 
-        if (cargo.vehicleAge < 4)
+        if (cargo.vehicleAge < 1)
+        {
+            rating += 33; // 10 + 10 + 13
+        }
+        else if (cargo.vehicleAge < 2)
+        {
+            rating += 20; // 10 + 10
+        }
+        else if (cargo.vehicleAge < 4)
         {
             rating += 10;
-            if (cargo.vehicleAge < 2)
-            {
-                rating += 10;
-                if (cargo.vehicleAge < 1)
-                {
-                    rating += 13;
-                }
-            }
         }
 
         return std::clamp<int32_t>(rating, kMinCargoRating, kMaxCargoRating);
@@ -1126,7 +1125,7 @@ namespace OpenLoco
                         break;
                     }
                     auto* trackObj = ObjectManager::get<TrackObject>(elTrack->trackObjectId());
-                    station->flags |= trackObj->hasFlags(TrackObjectFlags::unk_02)
+                    station->flags |= trackObj->hasFlags(TrackObjectFlags::isRoad)
                         ? StationFlags::transportModeRoad
                         : StationFlags::transportModeRail;
                     acceptedCargoTypes = ~0U;
@@ -1156,7 +1155,7 @@ namespace OpenLoco
                             continue;
                         }
                         auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
-                        station->flags |= roadObj->hasFlags(RoadObjectFlags::unk_01)
+                        station->flags |= roadObj->hasFlags(RoadObjectFlags::isRail)
                             ? StationFlags::transportModeRail
                             : StationFlags::transportModeRoad;
                     }

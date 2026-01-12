@@ -6,9 +6,9 @@
 #include "GameCommands/General/LoadSaveQuit.h"
 #include "GameState.h"
 #include "Graphics/Colour.h"
+#include "Graphics/DrawingContext.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "Jukebox.h"
 #include "Localisation/StringIds.h"
@@ -30,6 +30,7 @@
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
@@ -922,22 +923,19 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             window.widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_active, window.getColour(WindowColour::primary).c());
         }
 
-        if (Config::get().cheatsMenuEnabled)
-        {
-            window.widgets[Widx::cheats_menu].hidden = false;
-            auto& baseWidget = window.widgets[Widx::cheats_menu];
-            window.widgets[Common::Widx::zoom_menu].left = baseWidget.left + 14 + (baseWidget.width() * 1);
-            window.widgets[Common::Widx::rotate_menu].left = baseWidget.left + 14 + (baseWidget.width() * 2);
-            window.widgets[Common::Widx::view_menu].left = baseWidget.left + 14 + (baseWidget.width() * 3);
-        }
-        else
-        {
-            window.widgets[Widx::cheats_menu].hidden = true;
-            auto& baseWidget = window.widgets[Common::Widx::audio_menu];
-            window.widgets[Common::Widx::zoom_menu].left = baseWidget.left + 14 + (baseWidget.width() * 1);
-            window.widgets[Common::Widx::rotate_menu].left = baseWidget.left + 14 + (baseWidget.width() * 2);
-            window.widgets[Common::Widx::view_menu].left = baseWidget.left + 14 + (baseWidget.width() * 3);
-        }
+        const bool cheatsOn = Config::get().cheatsMenuEnabled;
+        window.widgets[Widx::cheats_menu].hidden = !cheatsOn;
+
+        const auto& refWidget = window.widgets[cheatsOn ? enumValue(Widx::cheats_menu) : enumValue(Common::Widx::audio_menu)];
+        const auto offsetWidget = [&window, refWidget](uint8_t widgetIndex, uint8_t index) {
+            auto& widget = window.widgets[widgetIndex];
+            widget.left = refWidget.left + 14 + (refWidget.width() * index);
+            widget.right = widget.left + refWidget.width() - 1;
+        };
+
+        offsetWidget(Common::Widx::zoom_menu, 1);
+        offsetWidget(Common::Widx::rotate_menu, 2);
+        offsetWidget(Common::Widx::view_menu, 3);
 
         if (_lastPortOption == 0
             && getGameState().lastAirport == 0xFF

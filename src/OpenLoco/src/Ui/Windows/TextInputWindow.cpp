@@ -1,7 +1,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -15,6 +14,7 @@
 #include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/TextBoxWidget.h"
 #include "Ui/WindowManager.h"
@@ -43,6 +43,7 @@ namespace OpenLoco::Ui::Windows::TextInput
             close,
             panel,
             input,
+            charLimit,
             ok,
         };
     }
@@ -53,6 +54,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         Widgets::ImageButton({ 315, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { 330, 75 }, WindowColour::secondary),
         Widgets::TextBox({ 4, 58 }, { 322, 14 }, WindowColour::secondary),
+        Widgets::Label({ 150, 75 }, { 100, 10 }, WindowColour::secondary, ContentAlign::right, StringIds::num_characters_left_int_int),
         Widgets::Button({ 256, 74 }, { 70, 12 }, WindowColour::secondary, StringIds::label_button_ok)
 
     );
@@ -89,7 +91,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         window->initScrollWidgets();
 
         auto commonArgs = FormatArguments::common();
-        std::memcpy(_formatArgs.data(), commonArgs.getBufferStart(), commonArgs.getLength());
+        std::memcpy(_formatArgs.data(), commonArgs.getBufferStart(), std::min(commonArgs.getCapacity(), _formatArgs.capacity()));
         char temp[200] = {};
         StringManager::formatString(temp, value, valueArgs);
 
@@ -180,10 +182,17 @@ namespace OpenLoco::Ui::Windows::TextInput
      *
      * @param window @<esi>
      */
-    static void prepareDraw(Ui::Window& window)
+    static void prepareDraw(Ui::Window& self)
     {
-        window.widgets[Widx::title].text = _title;
-        memcpy(window.widgets[Widx::title].textArgs.data(), _formatArgs.data(), 16);
+        self.widgets[Widx::title].text = _title;
+        memcpy(self.widgets[Widx::title].textArgs.data(), _formatArgs.data(), 16);
+
+        const uint16_t numCharacters = static_cast<uint16_t>(inputSession.buffer.length());
+        const uint16_t maxNumCharacters = inputSession.inputLenLimit;
+
+        FormatArguments args{ self.widgets[Widx::charLimit].textArgs };
+        args.push<uint16_t>(numCharacters);
+        args.push<uint16_t>(maxNumCharacters);
     }
 
     /**
@@ -200,10 +209,11 @@ namespace OpenLoco::Ui::Windows::TextInput
         window.draw(drawingCtx);
 
         // FIXME: This is pretty horrible.
-        // copy the existing args
-        FormatArgumentsBuffer formatArgsBuffer2 = _formatArgs;
-        auto args2 = FormatArguments(formatArgsBuffer2);
+        // copy and shuffle the existing args
+        auto args2 = FormatArguments{};
         args2.push(_message);
+        args2.push(*reinterpret_cast<uint32_t*>(_formatArgs.data() + 8));
+        args2.push(*reinterpret_cast<uint32_t*>(_formatArgs.data() + 12));
 
         Ui::Point position = Point(window.x + window.width / 2, window.y + 30);
         tr.drawStringCentredWrapped(position, window.width - 8, Colour::black, StringIds::wcolour2_stringid, args2);
@@ -242,19 +252,6 @@ namespace OpenLoco::Ui::Windows::TextInput
         }
 
         drawingCtx.popRenderTarget();
-
-        const uint16_t numCharacters = static_cast<uint16_t>(inputSession.buffer.length());
-        const uint16_t maxNumCharacters = inputSession.inputLenLimit;
-
-        {
-            FormatArguments args{};
-            args.push<uint16_t>(numCharacters);
-            args.push<uint16_t>(maxNumCharacters);
-
-            auto& buttonWidget = window.widgets[Widx::ok];
-            auto point = Point(window.x + buttonWidget.left - 5, window.y + buttonWidget.top + 1);
-            tr.drawStringRight(point, Colour::black, StringIds::num_characters_left_int_int, args);
-        }
     }
 
     // 0x004CE8B6

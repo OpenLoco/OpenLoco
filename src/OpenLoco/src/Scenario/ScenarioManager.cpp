@@ -1,4 +1,4 @@
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "EditorController.h"
 #include "Environment.h"
 #include "GameState.h"
@@ -12,7 +12,8 @@
 #include "Objects/ScenarioTextObject.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
-#include "ScenarioOptions.h"
+#include "Scenario/Scenario.h"
+#include "Scenario/ScenarioOptions.h"
 #include "SceneManager.h"
 #include "Ui.h"
 #include "Ui/ProgressBar.h"
@@ -351,7 +352,7 @@ namespace OpenLoco::ScenarioManager
                 // This is a new entry so we will need to clear fields and add to the list
                 ScenarioIndexEntry entry{};
                 std::strcpy(entry.filename, u8FileName.c_str());
-                foundId = _scenarioList.size();
+                foundId = static_cast<uint32_t>(_scenarioList.size());
                 _scenarioList.push_back(entry);
                 _scenarioHeader.numScenarios++;
             }

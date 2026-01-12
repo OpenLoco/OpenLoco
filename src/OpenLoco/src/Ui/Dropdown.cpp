@@ -1,7 +1,6 @@
 #include "Dropdown.h"
 #include "Engine/Limits.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -169,10 +168,10 @@ namespace OpenLoco::Ui::Dropdown
         add(index, title);
         std::byte* args = _dropdownItemArgs[index];
 
-        int32_t copyLength = std::min(fArgs.getLength(), sizeof(_dropdownItemArgs[index]));
+        int32_t copyLength = static_cast<int32_t>(std::min(fArgs.getLength(), sizeof(_dropdownItemArgs[index])));
 
         memcpy(args, fArgs.getBufferStart(), copyLength);
-        copyLength = std::min(fArgs.getLength() - sizeof(_dropdownItemArgs[index]), sizeof(_dropdownItemArgs2[index]));
+        copyLength = std::min(static_cast<int32_t>(fArgs.getLength() - sizeof(_dropdownItemArgs[index])), static_cast<int32_t>(sizeof(_dropdownItemArgs2[index])));
         if (copyLength > 0)
         {
             args = _dropdownItemArgs2[index];
@@ -365,7 +364,7 @@ namespace OpenLoco::Ui::Dropdown
         }
 
         // 0x004CCF1E
-        static void open(Ui::Point32 origin, Ui::Size32 size, AdvancedColour colour)
+        static void open(Ui::Point origin, Ui::Size size, AdvancedColour colour)
         {
             auto window = WindowManager::createWindow(WindowType::dropdown, origin, size, WindowFlags::stickToFront, common::events);
 
@@ -443,8 +442,8 @@ namespace OpenLoco::Ui::Dropdown
             widgets[0].bottom = dropdownHeight;
             dropdownHeight++;
 
-            Ui::Size32 size = { static_cast<int32_t>(_dropdownItemWidth), dropdownHeight };
-            Ui::Point32 origin = { x, y };
+            Ui::Size size = { static_cast<int32_t>(_dropdownItemWidth), dropdownHeight };
+            Ui::Point origin = { x, y };
             origin.y += height;
 
             if ((size.height + origin.y) > Ui::height() || origin.y < 0)
@@ -530,13 +529,13 @@ namespace OpenLoco::Ui::Dropdown
 
         _dropdownItemCount = static_cast<uint16_t>(count);
         _dropdownRowCount = 0;
-        _dropdownRowCount = count;
+        _dropdownRowCount = static_cast<uint32_t>(count);
 
         int16_t dropdownHeight = (static_cast<int16_t>(count) * _dropdownItemHeight) + 3;
         common::widgets[0].bottom = dropdownHeight;
         dropdownHeight++;
-        Ui::Size32 size = { width, height };
-        Ui::Point32 origin = { x, y };
+        Ui::Size size = { width, height };
+        Ui::Point origin = { x, y };
         origin.y += height;
 
         size.height = dropdownHeight;
@@ -636,8 +635,8 @@ namespace OpenLoco::Ui::Dropdown
         common::widgets[0].bottom = dropdownHeight;
         dropdownHeight++;
 
-        Ui::Size32 size = { dropdownWidth, dropdownHeight };
-        Ui::Point32 origin = { x, y };
+        Ui::Size size = { dropdownWidth, dropdownHeight };
+        Ui::Point origin = { x, y };
         origin.y += heightOffset;
 
         size.height = dropdownHeight;
@@ -802,8 +801,8 @@ namespace OpenLoco::Ui::Dropdown
         common::widgets[0].bottom = dropdownHeight;
         dropdownHeight++;
 
-        Ui::Size32 size = { static_cast<uint16_t>(width), static_cast<uint16_t>(height) };
-        Ui::Point32 origin = { x, y };
+        Ui::Size size = { static_cast<uint16_t>(width), static_cast<uint16_t>(height) };
+        Ui::Point origin = { x, y };
         origin.y += height;
 
         size.height = dropdownHeight;

@@ -7,7 +7,6 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Intro.h"
@@ -47,7 +46,7 @@ namespace OpenLoco::Ui::WindowManager
 
     static std::array<AdvancedColour, enumValue(WindowColour::count)> _windowColours;
 
-    static void viewportRedrawAfterShift(Window* window, Viewport* viewport, int16_t x, int16_t y);
+    static void viewportRedrawAfterShift(Window* window, Viewport* viewport, int32_t x, int32_t y);
 
     void init()
     {
@@ -194,7 +193,7 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004C9A95
-    Window* findAt(int16_t x, int16_t y)
+    Window* findAt(int32_t x, int32_t y)
     {
         for (auto it = _windows.rbegin(); it != _windows.rend(); ++it)
         {
@@ -248,7 +247,7 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004C9AFA
-    Window* findAtAlt(int16_t x, int16_t y)
+    Window* findAtAlt(int32_t x, int32_t y)
     {
         for (auto it = _windows.rbegin(); it != _windows.rend(); ++it)
         {
@@ -462,7 +461,7 @@ namespace OpenLoco::Ui::WindowManager
      * @param width @<bx>
      * @param height @<cx>
      */
-    static bool windowFitsWithinSpace(Ui::Point32 position, Ui::Size32 size)
+    static bool windowFitsWithinSpace(Ui::Point position, Ui::Size size)
     {
         if (position.x < 0)
         {
@@ -516,8 +515,8 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004C9F27
     static Window* createWindowOnScreen(
         WindowType type,
-        Ui::Point32 origin,
-        Ui::Size32 size,
+        Ui::Point origin,
+        Ui::Size size,
         Ui::WindowFlags flags,
         const WindowEventList& events)
     {
@@ -528,7 +527,7 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004C9BA2
-    static bool windowFitsOnScreen(Ui::Point32 origin, Ui::Size32 size)
+    static bool windowFitsOnScreen(Ui::Point origin, Ui::Size size)
     {
         if (origin.x < -(size.width / 4))
         {
@@ -563,11 +562,11 @@ namespace OpenLoco::Ui::WindowManager
      */
     Window* createWindow(
         WindowType type,
-        Ui::Size32 size,
+        Ui::Size size,
         Ui::WindowFlags flags,
         const WindowEventList& events)
     {
-        Ui::Point32 position{};
+        Ui::Point position{};
 
         position.x = 0;  // dx
         position.y = 30; // ax
@@ -725,8 +724,8 @@ namespace OpenLoco::Ui::WindowManager
      */
     Window* createWindow(
         WindowType type,
-        Ui::Point32 origin,
-        Ui::Size32 size,
+        Ui::Point origin,
+        Ui::Size size,
         WindowFlags flags,
         const WindowEventList& events)
     {
@@ -806,7 +805,7 @@ namespace OpenLoco::Ui::WindowManager
         return newWindow;
     }
 
-    Window* createWindowCentred(WindowType type, Ui::Size32 size, WindowFlags flags, const WindowEventList& events)
+    Window* createWindowCentred(WindowType type, Ui::Size size, WindowFlags flags, const WindowEventList& events)
     {
         auto x = (Ui::width() / 2) - (size.width / 2);
         auto y = std::max(28, (Ui::height() / 2) - (size.height / 2));
@@ -976,7 +975,7 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004CD296
     void relocateWindows()
     {
-        int16_t newLocation = 8;
+        auto newLocation = 8;
         for (auto& w : _windows)
         {
             // Work out if the window requires moving
@@ -991,8 +990,8 @@ namespace OpenLoco::Ui::WindowManager
             if (extendsX || extendsY)
             {
                 // Calculate the new locations
-                int16_t oldX = w.x;
-                int16_t oldY = w.y;
+                auto oldX = w.x;
+                auto oldY = w.y;
                 w.x = newLocation;
                 w.y = newLocation + 28;
 
@@ -1427,7 +1426,7 @@ namespace OpenLoco::Ui::WindowManager
      * @param window @<edi>
      * @param viewport @<esi>
      */
-    void viewportShiftPixels(Ui::Window* window, Ui::Viewport* viewport, int16_t dX, int16_t dY)
+    void viewportShiftPixels(Ui::Window* window, Ui::Viewport* viewport, int32_t dX, int32_t dY)
     {
         const auto index = indexOf(*window);
         for (auto it = _windows.begin() + index; it != _windows.end(); it++)
@@ -1468,15 +1467,13 @@ namespace OpenLoco::Ui::WindowManager
                 continue;
             }
 
-            int16_t left, top, right, bottom, cx;
-
-            left = w.x;
-            top = w.y;
-            right = w.x + w.width;
-            bottom = w.y + w.height;
+            auto left = w.x;
+            auto top = w.y;
+            auto right = w.x + w.width;
+            auto bottom = w.y + w.height;
 
             // TODO: replace these with min/max
-            cx = viewport->x;
+            auto cx = viewport->x;
             if (left < cx)
             {
                 left = cx;
@@ -1517,7 +1514,7 @@ namespace OpenLoco::Ui::WindowManager
      * @param y @<bp>
      * @param viewport @<esi>
      */
-    void viewportRedrawAfterShift(Window* window, Viewport* viewport, int16_t x, int16_t y)
+    void viewportRedrawAfterShift(Window* window, Viewport* viewport, int32_t x, int32_t y)
     {
         while (window != nullptr)
         {
@@ -1591,10 +1588,10 @@ namespace OpenLoco::Ui::WindowManager
             return;
         }
 
-        int16_t left = viewport->x;
-        int16_t top = viewport->y;
-        int16_t right = left + viewport->width;
-        int16_t bottom = top + viewport->height;
+        auto left = viewport->x;
+        auto top = viewport->y;
+        auto right = left + viewport->width;
+        auto bottom = top + viewport->height;
 
         // if moved more than the viewport size
         if (std::abs(x) >= viewport->width || std::abs(y) >= viewport->height)
@@ -1610,14 +1607,14 @@ namespace OpenLoco::Ui::WindowManager
             if (x > 0)
             {
                 // draw left
-                int16_t _right = left + x;
+                auto _right = left + x;
                 Gfx::render(left, top, _right, bottom);
                 left += x;
             }
             else if (x < 0)
             {
                 // draw right
-                int16_t _left = right + x;
+                auto _left = right + x;
                 Gfx::render(_left, top, right, bottom);
                 right += x;
             }
@@ -1824,8 +1821,8 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     static void windowDraw(Gfx::DrawingContext& ctx, Ui::Window* w, Rect rect);
-    static void windowDraw(Gfx::DrawingContext& ctx, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
-    static bool windowDrawSplit(Gfx::DrawingContext& ctx, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
+    static void windowDraw(Gfx::DrawingContext& ctx, Ui::Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
+    static bool windowDrawSplit(Gfx::DrawingContext& ctx, Ui::Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
 
     /**
      * 0x004C5EA9
@@ -1836,7 +1833,7 @@ namespace OpenLoco::Ui::WindowManager
      * @param right @<dx>
      * @param bottom @<bp>
      */
-    static void windowDraw(Gfx::DrawingContext& ctx, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
+    static void windowDraw(Gfx::DrawingContext& ctx, Ui::Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom)
     {
         if (!w->isVisible())
         {
@@ -1852,8 +1849,8 @@ namespace OpenLoco::Ui::WindowManager
         // Clamp region
         left = std::max(left, w->x);
         top = std::max(top, w->y);
-        right = std::min<int16_t>(right, w->x + w->width);
-        bottom = std::min<int16_t>(bottom, w->y + w->height);
+        right = std::min(right, w->x + w->width);
+        bottom = std::min(bottom, w->y + w->height);
         if (left >= right)
         {
             return;
@@ -1866,7 +1863,7 @@ namespace OpenLoco::Ui::WindowManager
         // Draw the window in this region
         drawSingle(ctx, w, left, top, right, bottom);
 
-        for (uint32_t index = indexOf(*w) + 1; index < count(); index++)
+        for (auto index = indexOf(*w) + 1; index < count(); index++)
         {
             auto* v = get(index);
 
@@ -1896,7 +1893,7 @@ namespace OpenLoco::Ui::WindowManager
      * @param bottom @<bp>
      * @return
      */
-    static bool windowDrawSplit(Gfx::DrawingContext& ctx, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
+    static bool windowDrawSplit(Gfx::DrawingContext& ctx, Ui::Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom)
     {
         // Divide the draws up for only the visible regions of the window recursively
         for (size_t index = indexOf(*w) + 1; index < count(); index++)

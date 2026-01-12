@@ -54,7 +54,7 @@ namespace OpenLoco::Diagnostics::Logging
         // Delete oldest log files
         if (logFiles.size() > kMaxLogFiles)
         {
-            int numFilesToDelete = logFiles.size() - kMaxLogFiles;
+            int numFilesToDelete = static_cast<int>(logFiles.size()) - kMaxLogFiles;
             for (int i = 0; i < numFilesToDelete; i++)
             {
                 fs::remove(logFiles[i]);

@@ -67,9 +67,7 @@ namespace OpenLoco::World
 
     TileElement* Tile::operator[](size_t i)
     {
-#if DEBUG
         assert(i < size());
-#endif
         return &_data[i];
     }
 

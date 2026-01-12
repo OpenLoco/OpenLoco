@@ -14,7 +14,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 {
     NewsState _nState{};
 
-    static void createNewsWindow(Ui::Size32 kWindowSize, std::span<const Widget> widgets, AdvancedColour colour, bool isOld, WindowFlags flags)
+    static void createNewsWindow(Ui::Size kWindowSize, std::span<const Widget> widgets, AdvancedColour colour, bool isOld, WindowFlags flags)
     {
         _nState.slideInHeight = 5;
 
@@ -136,7 +136,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             }
         }
 
-        if (mtd.hasFlag(MessageTypeFlags::unk1))
+        if (mtd.hasFlag(MessageTypeFlags::isGeneralNews))
         {
             WindowFlags flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent | WindowFlags::noBackground;
 

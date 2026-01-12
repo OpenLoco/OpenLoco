@@ -20,7 +20,10 @@
 #include "Ui/WindowManager.h"
 #include "VehicleChannel.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
+#include "Vehicles/VehicleTail.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Core/FileStream.h>
 #include <array>

@@ -9,7 +9,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -79,7 +78,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
     namespace IndustryList
     {
-        static constexpr Ui::Size32 kWindowSize = { 759, 197 };
+        static constexpr Ui::Size kWindowSize = { 759, 197 };
         static constexpr Ui::Size kMaxDimensions = { 759, 900 };
         static constexpr Ui::Size kMinDimensions = { 192, 100 };
 
@@ -624,7 +623,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         else
         {
             // 0x00457878
-            auto origin = Ui::Point32(Ui::width() - IndustryList::kWindowSize.width, 30);
+            auto origin = Ui::Point(Ui::width() - IndustryList::kWindowSize.width, 30);
 
             window = WindowManager::createWindow(
                 WindowType::industryList,
@@ -701,7 +700,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
     namespace NewIndustries
     {
-        static constexpr Ui::Size32 kWindowSize = { 578, 172 };
+        static constexpr Ui::Size kWindowSize = { 578, 172 };
 
         static constexpr uint8_t kRowHeight = 112;
 
@@ -1326,8 +1325,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static void onResize(Window& self)
         {
             self.invalidate();
-            Ui::Size32 kMinWindowSize = { self.minWidth, self.minHeight };
-            Ui::Size32 kMaxWindowSize = { self.maxWidth, self.maxHeight };
+            Ui::Size kMinWindowSize = { self.minWidth, self.minHeight };
+            Ui::Size kMaxWindowSize = { self.maxWidth, self.maxHeight };
             bool hasResized = self.setSize(kMinWindowSize, kMaxWindowSize);
             if (hasResized)
             {

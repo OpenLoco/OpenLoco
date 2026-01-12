@@ -5,15 +5,14 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Logging.h"
 #include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
-#include "Scenario.h"
-#include "ScenarioManager.h"
+#include "Scenario/Scenario.h"
+#include "Scenario/ScenarioManager.h"
 #include "SceneManager.h"
 #include "Ui/ScrollView.h"
 #include "Ui/Widget.h"
@@ -29,7 +28,7 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Ui::Windows::ScenarioSelect
 {
-    static constexpr Ui::Size32 kWindowSize = { 610, 412 };
+    static constexpr Ui::Size kWindowSize = { 610, 412 };
 
     namespace widx
     {
@@ -364,7 +363,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             // Delayed start for competing companies
             args = FormatArguments();
             args.push<uint16_t>(scenarioInfo->competingCompanyDelay);
-            competitionStringId = scenarioInfo->numCompetingCompanies == 1 ? StringIds::competition_not_starting_for_month : StringIds::competition_not_starting_for_months;
+            competitionStringId = scenarioInfo->competingCompanyDelay == 1 ? StringIds::competition_not_starting_for_month : StringIds::competition_not_starting_for_months;
             tr.drawStringLeft(Point(x, y), Colour::black, competitionStringId, args);
         }
     }

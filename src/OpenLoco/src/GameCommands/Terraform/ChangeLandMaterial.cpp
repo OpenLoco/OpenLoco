@@ -1,4 +1,5 @@
 #include "ChangeLandMaterial.h"
+#include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
 #include "Map/MapGenerator/MapGenerator.h"
 #include "Map/SurfaceElement.h"
@@ -6,7 +7,7 @@
 #include "Map/TileManager.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 
 namespace OpenLoco::GameCommands
 {

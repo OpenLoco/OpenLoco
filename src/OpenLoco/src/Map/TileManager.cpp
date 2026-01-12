@@ -132,7 +132,7 @@ namespace OpenLoco::World::TileManager
 
     uint32_t numFreeElements()
     {
-        return kMaxElements - _elementsEnd;
+        return static_cast<uint32_t>(kMaxElements - _elementsEnd);
     }
 
     void setElements(std::span<TileElement> elements)
@@ -1584,7 +1584,7 @@ namespace OpenLoco::World::TileManager
     // 0x0047AB9B
     void updateYearly()
     {
-        const auto isObjectNotTram = getGameState().roadObjectIdIsNotTram;
+        const auto isObjectAnyRoadTypeCompatible = getGameState().roadObjectIdIsAnyRoadTypeCompatible;
         for (const auto& tilePos : getWorldRange())
         {
             auto tile = get(tilePos);
@@ -1601,7 +1601,7 @@ namespace OpenLoco::World::TileManager
                 }
                 // This is a much cheaper tram checker
                 // compared to getting the object
-                if (isObjectNotTram & (1U << elRoad->roadObjectId()))
+                if (isObjectAnyRoadTypeCompatible & (1U << elRoad->roadObjectId()))
                 {
                     elRoad->setUnk7_80(elRoad->hasUnk7_40());
                     elRoad->setUnk7_40(false);

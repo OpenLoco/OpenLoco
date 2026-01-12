@@ -4,7 +4,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/Conversion.h"
@@ -14,8 +13,8 @@
 #include "Logging.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
-#include "Scenario.h"
-#include "ScenarioOptions.h"
+#include "Scenario/Scenario.h"
+#include "Scenario/ScenarioOptions.h"
 #include "Ui.h"
 #include "Ui/TextInput.h"
 #include "Ui/Widget.h"
@@ -243,7 +242,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     // 0x004464A1
     static void getScrollSize(Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
     {
-        scrollHeight = window.rowHeight * _files.size();
+        scrollHeight = static_cast<int32_t>(window.rowHeight * _files.size());
     }
 
     // 0x004464F7
@@ -486,7 +485,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 drawingCtx.pushRenderTarget(*clipped);
 
                 bool showCaret = Input::isFocused(window.type, window.number, widx::text_filename) && (inputSession.cursorFrame & 0x10) == 0;
-                drawTextInput(&window, drawingCtx, inputSession.buffer.c_str(), inputSession.cursorPosition, showCaret);
+                drawTextInput(&window, drawingCtx, inputSession.buffer.c_str(), static_cast<int32_t>(inputSession.cursorPosition), showCaret);
 
                 drawingCtx.popRenderTarget();
             }

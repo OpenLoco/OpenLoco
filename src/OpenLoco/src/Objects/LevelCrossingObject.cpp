@@ -1,10 +1,10 @@
 #include "LevelCrossingObject.h"
+#include "Graphics/DrawingContext.h"
 #include "Graphics/Gfx.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "ObjectImageTable.h"
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 
 #include <cassert>
 

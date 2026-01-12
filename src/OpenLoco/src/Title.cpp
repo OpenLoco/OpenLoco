@@ -15,7 +15,7 @@
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
-#include "Scenario.h"
+#include "Scenario/Scenario.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
@@ -146,7 +146,7 @@ namespace OpenLoco::Title
         ObjectManager::reloadAll();
         Scenario::sub_4748D4();
         Scenario::reset();
-        initialiseViewports();
+        resetSubsystems();
         MessageManager::reset();
         Gui::init();
         reset();

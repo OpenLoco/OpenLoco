@@ -53,7 +53,7 @@ if (OPENLOCO_USE_VCPKG)
     endif()
 endif ()
 
-project(${PROJECT} LANGUAGES CXX VERSION 25.11)
+project(${PROJECT} LANGUAGES CXX VERSION 25.12)
 
 # Enable IPO for all Release targets by default
 include(CheckIPOSupported)
@@ -67,6 +67,14 @@ else()
     message(WARNING "IPO/LTO not supported: ${ipo_error}")
 endif()
 
+# libstdc++ doesn't have standalone <execution> support so if using libstdc++ we need to
+# link against TBB
+include(CheckCXXSymbolExists)
+check_cxx_symbol_exists(__GLIBCXX__  version HAS_LIBSTDCPP)
+if (HAS_LIBSTDCPP)
+    message(STATUS "libstdc++ detected will require linking with TBB")
+endif()
+
 if (NOT CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 20)
 endif()
@@ -78,6 +86,8 @@ endif()
 include(FindPkgConfig)
 include(CheckCXXCompilerFlag)
 include(GNUInstallDirs)
+include(OpenLocoVersion)
+include(OpenLocoCommon)
 include(OpenLocoUtility)
 
 option(STRICT "Build with warnings as errors" YES)
@@ -85,8 +95,6 @@ option(OPENLOCO_BUILD_TESTS "Build tests" YES)
 option(OPENLOCO_HEADER_CHECK "Verify all public interfaces are standalone" NO)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
-
-set(DEBUG_LEVEL 0 CACHE STRING "Select debug level for compilation. Use value in range 0–3.")
 
 # Display source files nicely in IDEs
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -103,8 +111,8 @@ if (${OPENLOCO_BUILD_TESTS})
 endif()
 
 FetchContent_Declare(openloco_objects
-            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.5/objects.zip
-            URL_HASH SHA256=fe8943fabad8eb07cebab5354589abd7e798a705f7993bb4d9dab2122b4fe96e)
+            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.6/objects.zip
+            URL_HASH SHA256=4cea1ab77131650b5475b489445ce65c275b3a23b921456afda4d9c5c83e580c)
 FetchContent_MakeAvailable(openloco_objects)
 
 add_subdirectory(src)
@@ -116,16 +124,16 @@ if (NOT APPLE)
             COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different "${CMAKE_CURRENT_SOURCE_DIR}/data" "$<TARGET_FILE_DIR:OpenLoco>/data"
             COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different "${openloco_objects_SOURCE_DIR}" "$<TARGET_FILE_DIR:OpenLoco>/data/objects"
             COMMENT "Copying over data and objects folder"
-            DEPENDS OpenLoco
         )
     else()
         add_custom_target(OpenLocoAssets ALL
             COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/data" "$<TARGET_FILE_DIR:OpenLoco>/data"
             COMMAND ${CMAKE_COMMAND} -E copy_directory "${openloco_objects_SOURCE_DIR}" "$<TARGET_FILE_DIR:OpenLoco>/data/objects"
             COMMENT "Copying over data and objects folder"
-            DEPENDS OpenLoco
         )
     endif()
+    add_dependencies(OpenLoco OpenLocoAssets)
+    set_target_properties(OpenLocoAssets PROPERTIES PROJECT_LABEL "Assets")
 endif()
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenLoco)
@@ -133,17 +141,30 @@ set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT O
 install(TARGETS OpenLoco
     RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
     BUNDLE DESTINATION "${CMAKE_INSTALL_BINDIR}")
-install(FILES "CHANGELOG.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
-install(FILES "CONTRIBUTORS.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
-install(FILES "LICENSE" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
-install(FILES "README.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
-install(FILES "distribution/linux/openloco.desktop" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
-install(FILES "src/Resources/src/logo/icon_x16.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/16x16/apps" RENAME "openloco.png")
-install(FILES "src/Resources/src/logo/icon_x32.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/32x32/apps" RENAME "openloco.png")
-install(FILES "src/Resources/src/logo/icon_x64.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/64x64/apps" RENAME "openloco.png")
-install(FILES "src/Resources/src/logo/icon_x128.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/128x128/apps" RENAME "openloco.png")
-install(FILES "src/Resources/src/logo/icon_x256.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/256x256/apps" RENAME "openloco.png")
-install(FILES "src/Resources/src/logo/icon_x512.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/512x512/apps" RENAME "openloco.png")
-install(FILES "src/Resources/src/logo/icon_steam.svg" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/scalable/apps" RENAME "openloco.svg")
-install(DIRECTORY "data/" DESTINATION "${CMAKE_INSTALL_BINDIR}/data")
-install(DIRECTORY "${openloco_objects_SOURCE_DIR}" DESTINATION "${CMAKE_INSTALL_BINDIR}/data/objects")
+
+if (UNIX AND NOT APPLE)
+    install(FILES "CHANGELOG.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
+    install(FILES "CONTRIBUTORS.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
+    install(FILES "LICENSE" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
+    install(FILES "README.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
+
+    install(FILES "distribution/linux/openloco.desktop" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
+    install(FILES "src/Resources/src/logo/icon_x16.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/16x16/apps" RENAME "openloco.png")
+    install(FILES "src/Resources/src/logo/icon_x32.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/32x32/apps" RENAME "openloco.png")
+    install(FILES "src/Resources/src/logo/icon_x64.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/64x64/apps" RENAME "openloco.png")
+    install(FILES "src/Resources/src/logo/icon_x128.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/128x128/apps" RENAME "openloco.png")
+    install(FILES "src/Resources/src/logo/icon_x256.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/256x256/apps" RENAME "openloco.png")
+    install(FILES "src/Resources/src/logo/icon_x512.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/512x512/apps" RENAME "openloco.png")
+    install(FILES "src/Resources/src/logo/icon_steam.svg" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/scalable/apps" RENAME "openloco.svg")
+endif()
+
+if (NOT APPLE)
+    install(DIRECTORY "data/" DESTINATION "${CMAKE_INSTALL_BINDIR}/data")
+    install(DIRECTORY "${openloco_objects_SOURCE_DIR}" DESTINATION "${CMAKE_INSTALL_BINDIR}/data/objects")
+endif()
+
+# Apple bundle is declared in OpenLoco subproject CMakeLists
+# TODO: rework
+if (APPLE)
+    install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}" DESTINATION "${CMAKE_INSTALL_BINDIR}")
+endif()

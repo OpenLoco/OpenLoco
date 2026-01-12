@@ -1,11 +1,10 @@
 #include "Graphics/Colour.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Ui.h"
 #include "Ui/Widget.h"
 #include "Ui/Window.h"
 #include "Ui/WindowManager.h"
-#include "Version.h"
+#include <OpenLoco/Version.hpp>
 
 namespace OpenLoco::Ui::Windows::TitleVersion
 {
@@ -30,11 +29,11 @@ namespace OpenLoco::Ui::Windows::TitleVersion
     {
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        auto versionInfo = getVersionInfo();
+        auto versionInfo = Version::getVersionInfo();
         auto point = Point(window.x, window.y);
         tr.drawString(point, AdvancedColour(Colour::white).outline(), versionInfo.c_str());
 
-        auto platformInfo = getPlatformInfo();
+        auto platformInfo = Version::getPlatformInfo();
         point.y += 12;
         tr.drawString(point, AdvancedColour(Colour::white).outline(), platformInfo.c_str());
     }

@@ -1,4 +1,5 @@
 #include "Vehicle.h"
+#include "Audio/Audio.h"
 #include "Effects/ExplosionEffect.h"
 #include "Effects/VehicleCrashEffect.h"
 #include "Entities/EntityManager.h"
@@ -14,6 +15,12 @@
 #include "Objects/RoadObject.h"
 #include "RoutingManager.h"
 #include "Ui/WindowManager.h"
+#include "Vehicle1.h"
+#include "Vehicle2.h"
+#include "VehicleBody.h"
+#include "VehicleBogie.h"
+#include "VehicleHead.h"
+#include "VehicleTail.h"
 #include "ViewportManager.h"
 #include <OpenLoco/Core/Exception.hpp>
 
@@ -115,6 +122,28 @@ namespace OpenLoco::Vehicles
     {
         return (vehicleFlags & flagsToTest) != VehicleFlags::none;
     }
+
+    bool VehicleBase::isVehicleHead() const { return is<VehicleEntityType::head>(); }
+    VehicleHead* VehicleBase::asVehicleHead() const { return as<VehicleHead>(); }
+    bool VehicleBase::isVehicle1() const { return is<VehicleEntityType::vehicle_1>(); }
+    Vehicle1* VehicleBase::asVehicle1() const { return as<Vehicle1>(); }
+    bool VehicleBase::isVehicle2() const { return is<VehicleEntityType::vehicle_2>(); }
+    Vehicle2* VehicleBase::asVehicle2() const { return as<Vehicle2>(); }
+    bool VehicleBase::isVehicleBogie() const { return is<VehicleEntityType::bogie>(); }
+    VehicleBogie* VehicleBase::asVehicleBogie() const { return as<VehicleBogie>(); }
+    bool VehicleBase::isVehicleBody() const { return is<VehicleEntityType::body_start>() || is<VehicleEntityType::body_continued>(); }
+    VehicleBody* VehicleBase::asVehicleBody() const
+    {
+        if (is<VehicleEntityType::body_start>())
+        {
+            return as<VehicleBody, VehicleEntityType::body_start>();
+        }
+
+        return as<VehicleBody, VehicleEntityType::body_continued>();
+    }
+    bool VehicleBase::hasSoundPlayer() { return is<VehicleEntityType::vehicle_2>() || is<VehicleEntityType::tail>(); }
+    bool VehicleBase::isVehicleTail() const { return is<VehicleEntityType::tail>(); }
+    VehicleTail* VehicleBase::asVehicleTail() const { return as<VehicleTail>(); }
 
     VehicleUpdateDistances& getVehicleUpdateDistances()
     {
@@ -549,7 +578,7 @@ namespace OpenLoco::Vehicles
     // bp : trackAndDirection
     // ebp : bp | (setOccupied << 31)
     // returns dh : trackType
-    uint8_t VehicleBase::sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection rad, const bool setOccupied)
+    uint8_t VehicleBase::updateRoadTileOccupancy(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection rad, const bool setOccupied)
     {
         auto roadType = getTrackType();
         auto tile = World::TileManager::get(loc);
@@ -582,19 +611,19 @@ namespace OpenLoco::Vehicles
                 continue;
             }
 
-            const auto newUnk4u = World::TrackData::getRoadOccupationMask(rad._data >> 2) >> 4;
+            const auto newLaneOccupation = World::TrackData::getRoadOccupationMask(rad._data >> 2) >> 4;
             if (setOccupied)
             {
-                elRoad->setUnk4u(elRoad->unk4u() | newUnk4u);
+                elRoad->setLaneOccupation(elRoad->laneOccupation() | newLaneOccupation);
             }
             else
             {
-                elRoad->setUnk4u(elRoad->unk4u() & (~newUnk4u));
+                elRoad->setLaneOccupation(elRoad->laneOccupation() & (~newLaneOccupation));
             }
 
             if (getTrackType() == 0xFF)
             {
-                if (getGameState().roadObjectIdIsNotTram & (1 << elRoad->roadObjectId()))
+                if (getGameState().roadObjectIdIsAnyRoadTypeCompatible & (1 << elRoad->roadObjectId()))
                 {
                     elRoad->setUnk7_40(true);
                     roadType = elRoad->roadObjectId();
@@ -788,7 +817,7 @@ namespace OpenLoco::Vehicles
         }
         oldFirstComponent.body->setNextCar(newFirstComponent.body->nextCarId);
 
-        for (int i = components.size() - 2; i >= 0; i--)
+        for (auto i = static_cast<int32_t>(components.size()) - 2; i >= 0; i--)
         {
             components[i].body->setSubType(VehicleEntityType::body_continued);
             if (components[i + 1].body != nullptr)
@@ -1030,5 +1059,76 @@ namespace OpenLoco::Vehicles
         train.veh2->remainingDistance = negStartDistance;
         applyVehicleObjectLengthToBogies(train, negStartDistance);
         train.tail->remainingDistance = 0;
+    }
+
+    Car::CarComponentIter::CarComponentIter(const CarComponent* carComponent)
+    {
+        if (carComponent == nullptr)
+        {
+            nextVehicleComponent = nullptr;
+            return;
+        }
+        current = *carComponent;
+        nextVehicleComponent = current.body->nextVehicleComponent();
+    }
+
+    Car::CarComponentIter& Car::CarComponentIter::operator++()
+    {
+        if (nextVehicleComponent == nullptr)
+        {
+            return *this;
+        }
+        if (nextVehicleComponent->getSubType() == VehicleEntityType::tail)
+        {
+            nextVehicleComponent = nullptr;
+            return *this;
+        }
+        CarComponent next{ nextVehicleComponent };
+        if (next.body == nullptr || next.body->getSubType() == VehicleEntityType::body_start)
+        {
+            nextVehicleComponent = nullptr;
+            return *this;
+        }
+        current = next;
+        return *this;
+    }
+
+    Vehicle::Cars::CarIter::CarIter(const Car* carComponent)
+    {
+        if (carComponent == nullptr || carComponent->body == nullptr)
+        {
+            nextVehicleComponent = nullptr;
+            return;
+        }
+        current = *carComponent;
+        nextVehicleComponent = current.body->nextVehicleComponent();
+    }
+
+    Vehicle::Cars::CarIter& Vehicle::Cars::CarIter::operator++()
+    {
+        if (nextVehicleComponent == nullptr)
+        {
+            return *this;
+        }
+        while (nextVehicleComponent->getSubType() != VehicleEntityType::tail)
+        {
+            Car next{ nextVehicleComponent };
+            if (next.body == nullptr)
+            {
+                break;
+            }
+            if (next.body->getSubType() == VehicleEntityType::body_start)
+            {
+                current = next;
+                return *this;
+            }
+        }
+        nextVehicleComponent = nullptr;
+        return *this;
+    }
+
+    Vehicle::Vehicle(const VehicleHead& _head)
+        : Vehicle(_head.id)
+    {
     }
 }

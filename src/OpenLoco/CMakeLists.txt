@@ -1,55 +1,3 @@
-include(FindGit)
-
-find_package(Git)
-if (Git_FOUND)
-    # Describe current version in terms of closest tag
-    execute_process(
-        COMMAND ${GIT_EXECUTABLE} describe HEAD --always
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        OUTPUT_VARIABLE OPENLOCO_VERSION_TAG
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-        # ERROR_QUIET
-    )
-
-    if (OPENLOCO_VERSION_TAG)
-        # Use a platform agnostic sed equivalent to strip the commit hash from the version tag
-        # i.e. "v22.10-9-g8ff1d207" becomes "v22.10-9 "
-        string(REGEX REPLACE "-g.+$" " " OPENLOCO_VERSION_TAG ${OPENLOCO_VERSION_TAG})
-        # Has to be in two bits due to empty string not being possible to pass to REGEX REPLACE
-        string(STRIP ${OPENLOCO_VERSION_TAG} OPENLOCO_VERSION_TAG)
-    else()
-        # If a low fetch depth is used then nearest tag for git will fail
-        # so just use the project version in that case.
-        set(OPENLOCO_VERSION_TAG ${PROJECT_VERSION})
-    endif()
-    # Define current git branch
-    execute_process(
-        COMMAND ${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        OUTPUT_VARIABLE OPENLOCO_BRANCH
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-        ERROR_QUIET
-    )
-
-    # Define short commit hash
-    execute_process(
-        COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        OUTPUT_VARIABLE OPENLOCO_COMMIT_SHA1_SHORT
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-        ERROR_QUIET
-    )
-
-    # To avoid unnecessary rebuilds, set the current branch and short sha1 hash
-    # only for the one file that uses these definitions: Version.cpp
-    set_property(SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/src/Version.cpp"
-        PROPERTY COMPILE_DEFINITIONS
-        OPENLOCO_VERSION_TAG="${OPENLOCO_VERSION_TAG}"
-        OPENLOCO_BRANCH="${OPENLOCO_BRANCH}"
-        OPENLOCO_COMMIT_SHA1_SHORT="${OPENLOCO_COMMIT_SHA1_SHORT}")
-endif()
-
-# add source files Generated originally with: find src -type f -follow -name '*.cpp' -exec echo "\"\${CMAKE_CURRENT_SOURCE_DIR}/{}\"" \;
 set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/Audio.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/Channel.cpp"
@@ -289,12 +237,12 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Town.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Wave.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/SawyerStream.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Scenario.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/ScenarioConstruction.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/ScenarioManager.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/ScenarioObjective.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/ScenarioOptions.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/ScenarioPreview.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Scenario/Scenario.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Scenario/ScenarioConstruction.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Scenario/ScenarioManager.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Scenario/ScenarioObjective.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Scenario/ScenarioOptions.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Scenario/ScenarioPreview.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/SceneManager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Title.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Tutorial.cpp"
@@ -404,7 +352,6 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/VehicleHead.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/VehicleManager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/VehicleTail.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Version.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Viewport.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ViewportManager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/World/CompanyAi/CompanyAi.cpp"
@@ -692,12 +639,12 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Town.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Wave.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/SawyerStream.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Scenario.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/ScenarioConstruction.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/ScenarioManager.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/ScenarioObjective.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/ScenarioOptions.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/ScenarioPreview.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Scenario/Scenario.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Scenario/ScenarioConstruction.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Scenario/ScenarioManager.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Scenario/ScenarioObjective.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Scenario/ScenarioOptions.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Scenario/ScenarioPreview.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/SceneManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Speed.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Title.h"
@@ -747,6 +694,12 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/Routing.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/RoutingManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/Vehicle.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/Vehicle1.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/Vehicle2.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/VehicleBody.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/VehicleBogie.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/VehicleHead.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/VehicleTail.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/VehicleDraw.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/VehicleManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Viewport.hpp"
@@ -765,64 +718,76 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/World/TownManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ZoomLevel.hpp")
 
-loco_add_executable(OpenLoco 
-    PRIVATE_FILES
-        ${OLOCO_SOURCES}
-        ${OLOCO_HEADERS}
-)
-
-target_link_libraries(OpenLoco
+set(private_link_libraries
     Core
     Diagnostics
     Platform
     Utility
     Math
     Engine
+    Version
     ${SDL2_LIB}
     Threads::Threads
-    yaml-cpp
+    yaml-cpp::yaml-cpp
     ZLIB::ZLIB # This shouldn't be required but vcpkg seems to not map the dependencies correctly for png static
-    ${PNG_LIBRARY}
-    ${OPENAL_LIBRARIES})
+    PNG::PNG
+    ${OPENAL_LIBRARIES}
+    $<$<PLATFORM_ID:Windows>:winmm>
+    $<$<PLATFORM_ID:Windows>:ws2_32>
+    $<$<PLATFORM_ID:Windows>:Resources>
+    $<$<BOOL:${MINGW}>:imm32>
+    $<$<BOOL:${MINGW}>:version>
+    $<$<AND:$<BOOL:${HAS_LIBSTDCPP}>,$<BOOL:${TBB_FOUND}>>:TBB::tbb> # libstdc++ does not support <execution> without tbb
+)
 
-if (WIN32)
-    target_link_libraries(OpenLoco winmm ws2_32 Resources)
-endif ()
+set(msvc_private_compile_definitions
+    _WINDLL
+    _MBCS
+    DEBUG_WIN32=1
+    _CRT_SECURE_NO_WARNINGS
+    _CRT_NONSTDC_NO_DEPRECATE
+    _USE_MATH_DEFINES
+    _WINSOCK_DEPRECATED_NO_WARNINGS
+)
 
-target_compile_definitions(OpenLoco
-    PRIVATE
-        SDL_MAIN_HANDLED
- )
-if (MINGW)
-    target_link_libraries(OpenLoco imm32 version)
-elseif (MSVC)
-    target_compile_definitions(OpenLoco
-        PRIVATE
-            _WINDLL _MBCS DEBUG_WIN32=1
-            _CRT_SECURE_NO_WARNINGS
-            _CRT_NONSTDC_NO_DEPRECATE
-            _USE_MATH_DEFINES
-            _WINSOCK_DEPRECATED_NO_WARNINGS)
-endif()
+set(private_compile_definitions
+    SDL_MAIN_HANDLED
+    $<$<CXX_COMPILER_ID:MSVC>:${msvc_private_compile_definitions}>
+)
+
+loco_add_executable(OpenLoco 
+    PRIVATE_FILES
+        ${OLOCO_SOURCES}
+        ${OLOCO_HEADERS}
+    PRIVATE_LINK_LIBRARIES
+        ${private_link_libraries}
+    PRIVATE_COMPILE_DEFINITIONS
+        ${private_compile_definitions}
+)
 
 if (APPLE)
-    target_link_libraries(OpenLoco "-framework Cocoa")
+    # Enable the use of e.g. std::execution::par
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexperimental-library")
+
+    target_link_options(OpenLoco PRIVATE "-framework" "Cocoa")
 
     set_target_properties(OpenLoco PROPERTIES
         MACOSX_BUNDLE ON
         MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/distribution/macos/Info.plist.in)
 
     set(MACOSX_BUNDLE_BUNDLE_NAME "OpenLoco")
-    set(MACOSX_BUNDLE_BUNDLE_VERSION "${OPENRCT2_COMMIT_SHA1_SHORT}")
+    set(MACOSX_BUNDLE_BUNDLE_VERSION "${OPENLOCO_COMMIT_SHA1_SHORT}")
     set(MACOSX_BUNDLE_COPYRIGHT "OpenLoco is licensed under the MIT License")
     set(MACOSX_BUNDLE_GUI_IDENTIFIER "io.openloco.OpenLoco")
     set(MACOSX_BUNDLE_ICON_FILE "AppIcon")
 
-    if(${OPENLOCO_BRANCH} EQUAL master)
+    if("${OPENLOCO_BRANCH}" STREQUAL "master")
         set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${OPENLOCO_VERSION_TAG}")
     else()
         set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${OPENLOCO_VERSION_TAG} ${OPENLOCO_BRANCH}")
     endif()
+
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "11.0" CACHE STRING "")
 
     set(BUNDLE_RESOURCES "")
 

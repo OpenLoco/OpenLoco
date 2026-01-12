@@ -1,3 +1,4 @@
+#include "VehicleHead.h"
 #include "Audio/Audio.h"
 #include "Config.h"
 #include "Date.h"
@@ -35,12 +36,16 @@
 #include "Orders.h"
 #include "Random.h"
 #include "RoutingManager.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "SceneManager.h"
 #include "Tutorial.h"
 #include "Ui/WindowManager.h"
-#include "Vehicle.h"
+#include "Vehicle1.h"
+#include "Vehicle2.h"
+#include "VehicleBody.h"
+#include "VehicleBogie.h"
 #include "VehicleManager.h"
+#include "VehicleTail.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
 #include "World/CompanyRecords.h"
@@ -789,7 +794,7 @@ namespace OpenLoco::Vehicles
     uint32_t VehicleHead::getCarCount() const
     {
         Vehicle train(head);
-        return train.cars.size();
+        return static_cast<uint32_t>(train.cars.size());
     }
 
     // 0x004B8FA2
@@ -1300,12 +1305,12 @@ namespace OpenLoco::Vehicles
         {
             if (mode == TransportMode::road)
             {
-                uint8_t bl = sub_4AA36A();
-                if (bl == 1)
+                auto timeoutStatus = categoriseTimeElapsed(); // bl
+                if (timeoutStatus == SignalTimeoutStatus::firstTimeout)
                 {
                     return sub_4A8DB7();
                 }
-                else if (bl == 2)
+                else if (timeoutStatus == SignalTimeoutStatus::turnaroundAtSignalTimeout)
                 {
                     return tryReverse();
                 }
@@ -1313,7 +1318,7 @@ namespace OpenLoco::Vehicles
 
             if (hasVehicleFlags(VehicleFlags::commandStop))
             {
-                return sub_4A8CB6();
+                return stoppingUpdate();
             }
             else if (hasVehicleFlags(VehicleFlags::manualControl))
             {
@@ -1360,7 +1365,7 @@ namespace OpenLoco::Vehicles
                     }
                     else
                     {
-                        return sub_4A8CB6();
+                        return stoppingUpdate();
                     }
                 }
                 else
@@ -1370,7 +1375,7 @@ namespace OpenLoco::Vehicles
             }
             else
             {
-                return sub_4A8CB6();
+                return stoppingUpdate();
             }
         }
     }
@@ -1379,13 +1384,13 @@ namespace OpenLoco::Vehicles
     // 0: None of the below
     // 1: reached first timeout at signal
     // 2: give up and reverse at signal
-    uint8_t VehicleHead::sub_4AA36A()
+    SignalTimeoutStatus VehicleHead::categoriseTimeElapsed()
     {
         Vehicle train(head);
         if (train.veh2->routingHandle != train.veh1->routingHandle || train.veh2->subPosition != train.veh1->subPosition)
         {
             train.veh1->timeAtSignal = 0;
-            return 0;
+            return SignalTimeoutStatus::ok;
         }
 
         auto param1 = 160;
@@ -1413,16 +1418,16 @@ namespace OpenLoco::Vehicles
         train.veh1->timeAtSignal++;
         if (train.veh1->timeAtSignal == param1)
         {
-            return 1;
+            return SignalTimeoutStatus::firstTimeout;
         }
 
         if (train.veh1->timeAtSignal == turnaroundAtSignalTimeout)
         {
             var_5C = 40;
-            return 2;
+            return SignalTimeoutStatus::turnaroundAtSignalTimeout;
         }
 
-        return 0;
+        return SignalTimeoutStatus::ok;
     }
 
     // 0x004A8DB7
@@ -1456,7 +1461,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A8CB6
-    bool VehicleHead::sub_4A8CB6()
+    bool VehicleHead::stoppingUpdate()
     {
         Vehicle train(head);
 
@@ -1498,7 +1503,7 @@ namespace OpenLoco::Vehicles
         auto foundStationId = manualFindTrainStationAtLocation();
         if (foundStationId == StationId::null)
         {
-            return sub_4A8CB6();
+            return stoppingUpdate();
         }
         stationId = foundStationId;
         setStationVisitedTypes();
@@ -1506,7 +1511,7 @@ namespace OpenLoco::Vehicles
         updateLastJourneyAverageSpeed();
         beginUnloading();
 
-        return sub_4A8CB6();
+        return stoppingUpdate();
     }
 
     // 0x004A8FAC
@@ -1577,12 +1582,12 @@ namespace OpenLoco::Vehicles
     // 0x004A8D8F
     bool VehicleHead::roadNormalMovementUpdate(uint8_t al, StationId nextStation)
     {
-        uint8_t bl = sub_4AA36A();
-        if (bl == 1)
+        auto timeoutStatus = categoriseTimeElapsed(); // bl
+        if (timeoutStatus == SignalTimeoutStatus::firstTimeout)
         {
             return sub_4A8DB7();
         }
-        else if (bl == 2)
+        else if (timeoutStatus == SignalTimeoutStatus::turnaroundAtSignalTimeout)
         {
             return tryReverse();
         }
@@ -1730,6 +1735,64 @@ namespace OpenLoco::Vehicles
             return true;
         }
         return tryReverse();
+    }
+
+    // 0x00426E26
+    static std::pair<AirportMovementNodeFlags, World::Pos3> airportGetMovementEdgeTarget(StationId targetStation, uint8_t curEdge)
+    {
+        auto station = StationManager::get(targetStation);
+
+        Pos3 stationLoc = station->airportStartPos;
+
+        auto tile = TileManager::get(stationLoc);
+
+        for (auto& el : tile)
+        {
+            auto* elStation = el.as<StationElement>();
+            if (elStation == nullptr)
+            {
+                continue;
+            }
+
+            if (elStation->baseZ() != stationLoc.z / 4)
+            {
+                continue;
+            }
+
+            auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
+            const auto movementNodes = airportObject->getMovementNodes();
+            const auto movementEdges = airportObject->getMovementEdges();
+
+            auto destinationNode = movementEdges[curEdge].nextNode;
+
+            Pos2 loc2 = {
+                static_cast<int16_t>(movementNodes[destinationNode].x - 16),
+                static_cast<int16_t>(movementNodes[destinationNode].y - 16)
+            };
+            loc2 = Math::Vector::rotate(loc2, elStation->rotation());
+            auto airportMovement = movementNodes[destinationNode];
+
+            loc2.x += 16 + stationLoc.x;
+            loc2.y += 16 + stationLoc.y;
+
+            Pos3 loc = { loc2.x, loc2.y, static_cast<int16_t>(movementNodes[destinationNode].z + stationLoc.z) };
+
+            if (!airportMovement.hasFlags(AirportMovementNodeFlags::taxiing))
+            {
+                loc.z = stationLoc.z + 255;
+                if (!airportMovement.hasFlags(AirportMovementNodeFlags::inFlight))
+                {
+                    loc.z = 960;
+                }
+            }
+
+            return std::make_pair(airportMovement.flags, loc);
+        }
+
+        // Tile not found. Todo: fail gracefully
+        assert(false);
+        // Flags, location
+        return std::make_pair(AirportMovementNodeFlags::none, World::Pos3{ 0, 0, 0 });
     }
 
     // 0x004A9051
@@ -2580,64 +2643,6 @@ namespace OpenLoco::Vehicles
         // Tile not found. Todo: fail gracefully
         assert(false);
         return kAirportMovementNodeNull;
-    }
-
-    // 0x00426E26
-    std::pair<AirportMovementNodeFlags, World::Pos3> VehicleHead::airportGetMovementEdgeTarget(StationId targetStation, uint8_t curEdge)
-    {
-        auto station = StationManager::get(targetStation);
-
-        Pos3 stationLoc = station->airportStartPos;
-
-        auto tile = TileManager::get(stationLoc);
-
-        for (auto& el : tile)
-        {
-            auto* elStation = el.as<StationElement>();
-            if (elStation == nullptr)
-            {
-                continue;
-            }
-
-            if (elStation->baseZ() != stationLoc.z / 4)
-            {
-                continue;
-            }
-
-            auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
-            const auto movementNodes = airportObject->getMovementNodes();
-            const auto movementEdges = airportObject->getMovementEdges();
-
-            auto destinationNode = movementEdges[curEdge].nextNode;
-
-            Pos2 loc2 = {
-                static_cast<int16_t>(movementNodes[destinationNode].x - 16),
-                static_cast<int16_t>(movementNodes[destinationNode].y - 16)
-            };
-            loc2 = Math::Vector::rotate(loc2, elStation->rotation());
-            auto airportMovement = movementNodes[destinationNode];
-
-            loc2.x += 16 + stationLoc.x;
-            loc2.y += 16 + stationLoc.y;
-
-            Pos3 loc = { loc2.x, loc2.y, static_cast<int16_t>(movementNodes[destinationNode].z + stationLoc.z) };
-
-            if (!airportMovement.hasFlags(AirportMovementNodeFlags::taxiing))
-            {
-                loc.z = stationLoc.z + 255;
-                if (!airportMovement.hasFlags(AirportMovementNodeFlags::inFlight))
-                {
-                    loc.z = 960;
-                }
-            }
-
-            return std::make_pair(airportMovement.flags, loc);
-        }
-
-        // Tile not found. Todo: fail gracefully
-        assert(false);
-        // Flags, location
-        return std::make_pair(AirportMovementNodeFlags::none, World::Pos3{ 0, 0, 0 });
     }
 
     // 0x004B980A
@@ -3893,7 +3898,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0047C722
-    static void sub_47C722(VehicleHead& head)
+    static void roadResetHead(VehicleHead& head)
     {
         head.var_38 |= Flags38::unk_2;
         auto train = Vehicle(head);
@@ -3930,7 +3935,7 @@ namespace OpenLoco::Vehicles
         if (mode == TransportMode::road)
         {
             // 0x0047C5B0
-            sub_47C722(*this);
+            roadResetHead(*this);
             var_38 |= Flags38::unk_2;
             veh1.var_38 |= Flags38::unk_2;
 
@@ -3945,7 +3950,7 @@ namespace OpenLoco::Vehicles
 
                 if (handle != veh2.routingHandle)
                 {
-                    veh2.sub_47D959(pos, tad, false);
+                    veh2.updateRoadTileOccupancy(pos, tad, false);
                 }
 
                 pos += World::TrackData::getUnkRoad(tad.basicRad()).pos;
@@ -4377,43 +4382,42 @@ namespace OpenLoco::Vehicles
     {
         TrackAndDirection::_TrackAndDirection tad{ 0, 0 };
         tad._data = targetRouting & World::Track::AdditionalTaDFlags::basicTaDMask;
-        sfl::static_vector<int8_t, 16> unk113621F;
+        sfl::static_vector<int8_t, 16> curvatures; // unk113621F
         for (const auto& otherConnection : tc.connections)
         {
-            unk113621F.push_back(TrackData::getCurvatureDegree((otherConnection & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2));
+            curvatures.push_back(TrackData::getCurvatureDegree((otherConnection & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2));
         }
 
-        const auto curUnk = TrackData::getCurvatureDegree((newRouting & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2);
+        const auto newRoutingCurvature = TrackData::getCurvatureDegree((newRouting & World::Track::AdditionalTaDFlags::basicTaDMask) >> 2);
 
-        int8_t cl = unk113621F[0];
-        int8_t ch = unk113621F[0];
-        uint32_t ebp = 0;
-        for (auto i = 1U; i < unk113621F.size(); ++i)
+        int8_t minCurvature = curvatures[0];            // cl
+        int8_t maxCurvature = curvatures[0];            // ch
+        int8_t leastMagnitudeCurvature = curvatures[0]; // ah
+        for (auto i = 1U; i < curvatures.size(); ++i)
         {
-            const auto unk = unk113621F[i];
-            cl = std::min(cl, unk);
-            ch = std::max(ch, unk);
-            const auto absUnk = std::abs(unk);
-            const auto absUnk2 = std::abs(unk113621F[ebp]);
-            if (absUnk < absUnk2)
+            const auto curvature = curvatures[i];
+            minCurvature = std::min(minCurvature, curvature);
+            maxCurvature = std::max(maxCurvature, curvature);
+
+            if (std::abs(curvature) < std::abs(leastMagnitudeCurvature))
             {
-                ebp = i;
+                leastMagnitudeCurvature = curvature;
             }
         }
-        const auto ah = unk113621F[ebp];
+
         uint32_t lightStateFlags = 0x10;
-        if (ah != cl)
+        if (leastMagnitudeCurvature != minCurvature)
         {
             lightStateFlags |= 1U << 30;
-            if (curUnk < ah)
+            if (newRoutingCurvature < leastMagnitudeCurvature)
             {
                 lightStateFlags |= 1U << 28;
             }
         }
-        if (ah != ch)
+        if (leastMagnitudeCurvature != maxCurvature)
         {
             lightStateFlags |= 1U << 29;
-            if (curUnk > ah)
+            if (newRoutingCurvature > leastMagnitudeCurvature)
             {
                 lightStateFlags |= 1U << 27;
             }
@@ -4964,7 +4968,7 @@ namespace OpenLoco::Vehicles
                     }
 
                     const uint8_t lane = isBackToFront ^ isOverLap ? 0b10 : 0b01;
-                    if (!(elRoad->unk4u() & lane))
+                    if (!(elRoad->laneOccupation() & lane))
                     {
                         continue;
                     }
@@ -5024,7 +5028,7 @@ namespace OpenLoco::Vehicles
                             res |= RoadOccupationFlags::isLevelCrossingClosed;
                         }
                     }
-                    if (elRoad->unk4u() & 0b01)
+                    if (elRoad->laneOccupation() & 0b01)
                     {
                         res |= RoadOccupationFlags::isLaneOccupied;
                     }
@@ -5045,7 +5049,7 @@ namespace OpenLoco::Vehicles
                             res |= RoadOccupationFlags::isLevelCrossingClosed;
                         }
                     }
-                    if (elRoad->unk4u() & 0b10)
+                    if (elRoad->laneOccupation() & 0b10)
                     {
                         res |= RoadOccupationFlags::isLaneOccupied;
                     }
@@ -6168,7 +6172,7 @@ namespace OpenLoco::Vehicles
     {
         if (mode == TransportMode::road)
         {
-            sub_47C722(*this);
+            roadResetHead(*this);
             return;
         }
 
@@ -6398,7 +6402,7 @@ namespace OpenLoco::Vehicles
                 const auto routing = RoutingManager::getRouting(handle);
                 TrackAndDirection::_RoadAndDirection tad{ 0, 0 };
                 tad._data = routing & World::Track::AdditionalTaDFlags::basicTaDMask;
-                sub_47D959(routingPos, tad, false);
+                updateRoadTileOccupancy(routingPos, tad, false);
                 routingPos += World::TrackData::getUnkRoad(tad.basicRad()).pos;
             }
 
@@ -6563,7 +6567,7 @@ namespace OpenLoco::Vehicles
         // Very similar to code in VehicleManager::placeDownVehicle
         if (mode == TransportMode::road)
         {
-            const auto subPositionLength = World::TrackData::getRoadSubPositon(newTad.road._data).size();
+            const auto subPositionLength = static_cast<uint32_t>(World::TrackData::getRoadSubPositon(newTad.road._data).size());
             newSubPos = subPositionLength - 1 - train.veh2->subPosition;
 
             const auto& roadSize = World::TrackData::getUnkRoad(newTad.road.basicRad());
@@ -6585,7 +6589,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            const auto subPositionLength = World::TrackData::getTrackSubPositon(newTad.track._data).size();
+            const auto subPositionLength = static_cast<uint32_t>(World::TrackData::getTrackSubPositon(newTad.track._data).size());
             newSubPos = subPositionLength - 1 - train.veh2->subPosition;
 
             const auto& trackSize = World::TrackData::getUnkTrack(newTad.track._data);
@@ -6612,7 +6616,7 @@ namespace OpenLoco::Vehicles
         if (mode == TransportMode::road)
         {
             newTad.road._data &= World::Track::AdditionalTaDFlags::basicTaDMask;
-            sub_47D959(newPos, newTad.road, true);
+            updateRoadTileOccupancy(newPos, newTad.road, true);
         }
 
         auto& moveInfo = mode == TransportMode::road ? World::TrackData::getRoadSubPositon(trackAndDirection.road._data)[subPosition]
@@ -6873,7 +6877,7 @@ namespace OpenLoco::Vehicles
             auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
             setTrainModFlags(train, *roadObj);
         }
-        else
+        else if (mode == TransportMode::rail)
         {
             // 0x004B7CCE
             auto* trackObj = ObjectManager::get<TrackObject>(trackType);

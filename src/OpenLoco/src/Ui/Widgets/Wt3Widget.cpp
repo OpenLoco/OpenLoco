@@ -1,5 +1,5 @@
 #include "Wt3Widget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/DrawingContext.h"
 #include "Ui/Window.h"
 
 namespace OpenLoco::Ui::Widgets
@@ -63,11 +63,10 @@ namespace OpenLoco::Ui::Widgets
         const auto position = window->position() + widget.position();
         const auto size = widget.size();
 
-        int16_t t, l, b, r;
-        t = window->y + widget.top;
-        l = window->x + widget.left;
-        r = window->x + widget.right;
-        b = window->y + widget.bottom;
+        const auto t = window->y + widget.top;
+        const auto l = window->x + widget.left;
+        const auto r = window->x + widget.right;
+        const auto b = window->y + widget.bottom;
 
         auto flags = widgetState.flags;
         if (widgetState.activated)

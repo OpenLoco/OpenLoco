@@ -19,7 +19,7 @@
 #include "Objects/RoadObject.h"
 #include "Objects/RoadStationObject.h"
 #include "Objects/TrackObject.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 #include "SceneManager.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
@@ -287,8 +287,8 @@ namespace OpenLoco::GameCommands
         }
 
         const auto& gs = getGameState();
-        if (!(gs.roadObjectIdIsFlag7 & (1U << elRoad.roadObjectId()))
-            || !(gs.roadObjectIdIsFlag7 & (1U << args.roadObjectId)))
+        if (!(gs.roadObjectIdIsUsableByAllCompanies & (1U << elRoad.roadObjectId()))
+            || !(gs.roadObjectIdIsUsableByAllCompanies & (1U << args.roadObjectId)))
         {
             if (!sub_431E6A(elRoad.owner(), reinterpret_cast<const World::TileElement*>(&elRoad)))
             {
@@ -849,7 +849,7 @@ namespace OpenLoco::GameCommands
                     newElRoad->setMod(i, true);
                 }
             }
-            if ((getGameState().roadObjectIdIsNotTram & (1U << args.roadObjectId)) && companyId != CompanyId::neutral)
+            if ((getGameState().roadObjectIdIsAnyRoadTypeCompatible & (1U << args.roadObjectId)) && companyId != CompanyId::neutral)
             {
                 newElRoad->setUnk7_40(true);
             }

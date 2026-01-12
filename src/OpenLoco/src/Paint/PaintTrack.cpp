@@ -307,6 +307,10 @@ namespace OpenLoco::Paint
         const auto ghostMods = Ui::Windows::Construction::getLastSelectedMods();
         for (auto mod = 0; mod < 4; ++mod)
         {
+            if (trackObj->mods[mod] == 0xFF)
+            {
+                continue;
+            }
             const auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[mod]);
             ImageId trackExtraBaseImage{};
             if (elTrack.hasMod(mod))

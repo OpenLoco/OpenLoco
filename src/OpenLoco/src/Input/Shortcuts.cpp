@@ -5,7 +5,7 @@
 #include "GameState.h"
 #include "Input.h"
 #include "Localisation/StringIds.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 #include "SceneManager.h"
 #include "Ui/Screenshot.h"
 #include "Ui/TextInput.h"

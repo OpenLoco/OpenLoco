@@ -1,7 +1,6 @@
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Intro.h"
 #include "Localisation/StringIds.h"
@@ -13,7 +12,7 @@
 
 namespace OpenLoco::Ui::Windows::TitleOptions
 {
-    static constexpr Ui::Size32 kWindowSize = { 60, 15 };
+    static constexpr Ui::Size kWindowSize = { 60, 15 };
 
     namespace Widx
     {

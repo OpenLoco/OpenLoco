@@ -21,9 +21,10 @@
 #include "S5File.h"
 #include "S5Options.h"
 #include "SawyerStream.h"
-#include "ScenarioManager.h"
-#include "ScenarioOptions.h"
-#include "ScenarioPreview.h"
+#include "Scenario/Scenario.h"
+#include "Scenario/ScenarioManager.h"
+#include "Scenario/ScenarioOptions.h"
+#include "Scenario/ScenarioPreview.h"
 #include "SceneManager.h"
 #include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
@@ -346,7 +347,7 @@ namespace OpenLoco::S5
         if (file->header.hasFlags(HeaderFlags::hasSaveDetails))
         {
             file->saveDetails = std::make_unique<SaveDetails>();
-            fs.readChunk(file->saveDetails.get(), sizeof(file->saveDetails));
+            fs.readChunk(file->saveDetails.get(), sizeof(SaveDetails));
         }
         if (file->header.type == S5Type::scenario)
         {
@@ -685,7 +686,7 @@ namespace OpenLoco::S5
             if (!hasLoadFlags(flags, LoadFlags::titleSequence))
             {
                 SceneManager::removeSceneFlags(SceneManager::Flags::title);
-                initialiseViewports();
+                resetSubsystems();
                 Audio::resetMusic();
                 if (hasLoadFlags(flags, LoadFlags::landscape))
                 {

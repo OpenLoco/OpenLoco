@@ -5,12 +5,19 @@
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
+#include "Objects/ObjectManager.h"
 #include "Objects/RoadExtraObject.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackExtraObject.h"
 #include "Objects/TrackObject.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle1.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
+#include "Vehicles/VehicleTail.h"
 #include "ViewportManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
 
@@ -56,7 +63,7 @@ namespace OpenLoco::GameCommands
                     {
                         continue;
                     }
-                    if (!(getGameState().roadObjectIdIsNotTram & (1 << elRoad->roadObjectId())))
+                    if (!(getGameState().roadObjectIdIsAnyRoadTypeCompatible & (1 << elRoad->roadObjectId())))
                     {
                         continue;
                     }
@@ -89,7 +96,7 @@ namespace OpenLoco::GameCommands
             return false;
         }
 
-        if (!(getGameState().roadObjectIdIsFlag7 & (1 << elRoad->roadObjectId())))
+        if (!(getGameState().roadObjectIdIsUsableByAllCompanies & (1 << elRoad->roadObjectId())))
         {
             if (!sub_431E6A(elRoad->owner(), reinterpret_cast<const World::TileElement*>(elRoad)))
             {

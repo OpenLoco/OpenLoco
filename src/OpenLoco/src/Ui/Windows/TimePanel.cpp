@@ -5,7 +5,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Intro.h"
@@ -14,8 +13,8 @@
 #include "Network/Network.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
-#include "Scenario.h"
-#include "ScenarioObjective.h"
+#include "Scenario/Scenario.h"
+#include "Scenario/ScenarioObjective.h"
 #include "SceneManager.h"
 #include "Ui.h"
 #include "Ui/Dropdown.h"
@@ -28,7 +27,7 @@
 
 namespace OpenLoco::Ui::Windows::TimePanel
 {
-    static constexpr Ui::Size32 kWindowSize = { 140, 27 };
+    static constexpr Ui::Size kWindowSize = { 140, 27 };
 
     // When paused, the time panel will alternate between displaying "* paused *" and the in-game date every this many ticks.
     static constexpr auto kPausedStatusTextDuration = 30;
@@ -164,8 +163,9 @@ namespace OpenLoco::Ui::Windows::TimePanel
         FormatArguments args{};
         args.push<uint32_t>(getCurrentDay());
 
+        // Show "* Paused *" instead of the date half the time when paused, unless the browse prompt is pausing the game.
         StringId format = StringIds::date_daymonthyear;
-        if (SceneManager::isPaused() && (SceneManager::getPauseFlags() & (1 << 2)) == 0)
+        if (SceneManager::isPaused() && (SceneManager::getPauseFlags() & PauseFlags::browsePrompt) == PauseFlags::none)
         {
             if (self.numTicksVisible >= kPausedStatusTextDuration)
             {
@@ -398,7 +398,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         }
 
         // Determine if the text needs to be updated
-        if (SceneManager::isPaused() && (SceneManager::getPauseFlags() & (1 << 2)) == 0)
+        if (SceneManager::isPaused() && (SceneManager::getPauseFlags() & PauseFlags::browsePrompt) == PauseFlags::none)
         {
             if (w.numTicksVisible == 0 || w.numTicksVisible == kPausedStatusTextDuration)
             {

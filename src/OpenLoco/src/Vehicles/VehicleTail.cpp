@@ -1,3 +1,4 @@
+#include "VehicleTail.h"
 #include "Entities/EntityManager.h"
 #include "Map/AnimationManager.h"
 #include "Map/RoadElement.h"
@@ -5,7 +6,6 @@
 #include "Map/Track/Track.h"
 #include "Map/Track/TrackData.h"
 #include "RoutingManager.h"
-#include "Vehicle.h"
 #include "ViewportManager.h"
 
 using namespace OpenLoco::Literals;
@@ -93,7 +93,7 @@ namespace OpenLoco::Vehicles
 
         if (mode == TransportMode::road)
         {
-            sub_47D959(_oldTilePos, trackAndDir.road, false);
+            updateRoadTileOccupancy(_oldTilePos, trackAndDir.road, false);
         }
         else
         {
@@ -131,7 +131,7 @@ namespace OpenLoco::Vehicles
                 const auto routing = RoutingManager::getRouting(handle);
                 auto tad = TrackAndDirection::_RoadAndDirection(0, 0);
                 tad._data = routing & Track::AdditionalTaDFlags::basicTaDMask;
-                tail.sub_47D959(pos, tad, false);
+                tail.updateRoadTileOccupancy(pos, tad, false);
 
                 pos += World::TrackData::getUnkRoad(tad.basicRad()).pos;
             }

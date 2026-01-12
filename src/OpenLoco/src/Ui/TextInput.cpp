@@ -1,5 +1,4 @@
 #include "Ui/TextInput.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringManager.h"
@@ -13,7 +12,7 @@ namespace OpenLoco::Ui::TextInput
     {
         if ((charCode >= SDLK_SPACE && charCode < SDLK_DELETE) || (charCode >= 159 && charCode <= 255))
         {
-            if (inputLenLimit > 0 && buffer.length() == inputLenLimit)
+            if (inputLenLimit > 0 && buffer.length() >= inputLenLimit)
             {
                 // Limit reached but we need to consume this input.
                 return true;

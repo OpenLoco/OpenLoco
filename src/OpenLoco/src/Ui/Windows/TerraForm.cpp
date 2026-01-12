@@ -16,7 +16,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -33,7 +32,7 @@
 #include "Objects/TreeObject.h"
 #include "Objects/WallObject.h"
 #include "Objects/WaterObject.h"
-#include "Scenario.h"
+#include "Scenario/Scenario.h"
 #include "SceneManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ScrollView.h"
@@ -132,7 +131,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
     namespace PlantTrees
     {
-        static constexpr Ui::Size32 kWindowSize = { 634, 162 };
+        static constexpr Ui::Size kWindowSize = { 634, 162 };
 
         static constexpr uint8_t kRowHeight = 102;
         static constexpr uint8_t kColumnWidth = 66;
@@ -328,8 +327,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onResize(Window& self)
         {
             self.invalidate();
-            Ui::Size32 kMinWindowSize = { self.minWidth, self.minHeight };
-            Ui::Size32 kMaxWindowSize = { self.maxWidth, self.maxHeight };
+            Ui::Size kMinWindowSize = { self.minWidth, self.minHeight };
+            Ui::Size kMaxWindowSize = { self.maxWidth, self.maxHeight };
             bool hasResized = self.setSize(kMinWindowSize, kMaxWindowSize);
             if (hasResized)
             {
@@ -2238,7 +2237,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
     namespace BuildWalls
     {
-        static constexpr Ui::Size32 kWindowSize = { 418, 108 };
+        static constexpr Ui::Size kWindowSize = { 418, 108 };
 
         static constexpr uint8_t kRowHeight = 48;
 
@@ -2346,8 +2345,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onResize(Window& self)
         {
             self.invalidate();
-            Ui::Size32 kMinWindowSize = { self.minWidth, self.minHeight };
-            Ui::Size32 kMaxWindowSize = { self.maxWidth, self.maxHeight };
+            Ui::Size kMinWindowSize = { self.minWidth, self.minHeight };
+            Ui::Size kMaxWindowSize = { self.maxWidth, self.maxHeight };
             bool hasResized = self.setSize(kMinWindowSize, kMaxWindowSize);
             if (hasResized)
             {
@@ -2773,7 +2772,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             // CHANGE: width set to 161 to include building walls tab
             uint16_t width = 161;
-            Ui::Size32 kWindowSize = { width, height };
+            Ui::Size kWindowSize = { width, height };
             self.setSize(kWindowSize, kWindowSize);
         }
 

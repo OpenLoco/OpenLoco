@@ -6,6 +6,9 @@
 #include "Paint.h"
 #include "Ui/ViewportInteraction.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
 #include "Vehicles/VehicleDraw.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Math/Trigonometry.hpp>

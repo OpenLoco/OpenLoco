@@ -1,4 +1,5 @@
 #include "ViewportInteraction.h"
+#include "Audio/Audio.h"
 #include "Config.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/Airports/RemoveAirport.h"
@@ -45,6 +46,10 @@
 #include "Ui/ScrollView.h"
 #include "Ui/ToolManager.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
 #include "Window.h"
@@ -831,7 +836,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         return false;
     }
 
-    constexpr std::array<StringId, 7> quantityToString = {
+    constexpr std::array<StringId, 7> kQuantityToString = {
         StringIds::quantity_eigth,
         StringIds::quantity_quarter,
         StringIds::quantity_three_eigths,
@@ -899,7 +904,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                         }
                         if (buildingObj->var_A6[i] < 8)
                         {
-                            buffer = StringManager::formatString(buffer, quantityToString[buildingObj->var_A6[i]]);
+                            buffer = StringManager::formatString(buffer, kQuantityToString[buildingObj->var_A6[i] - 1]);
                         }
                         requiresComma = true;
                         auto* cargo = ObjectManager::get<CargoObject>(buildingObj->producedCargoType[i]);
@@ -916,7 +921,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                         }
                         if (buildingObj->var_A8[i] < 8)
                         {
-                            buffer = StringManager::formatString(buffer, quantityToString[buildingObj->var_A8[i]]);
+                            buffer = StringManager::formatString(buffer, kQuantityToString[buildingObj->var_A8[i] - 1]);
                         }
                         requiresComma = true;
                         auto* cargo = ObjectManager::get<CargoObject>(buildingObj->requiredCargoType[i]);
@@ -1349,7 +1354,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                     auto owner = road->owner();
 
                     auto roadObject = ObjectManager::get<RoadObject>(road->roadObjectId());
-                    if (owner == CompanyManager::getControllingId() || owner == CompanyId::neutral || roadObject->hasFlags(RoadObjectFlags::unk_03))
+                    if (owner == CompanyManager::getControllingId() || owner == CompanyId::neutral || roadObject->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
                     {
                         Ui::Windows::Construction::openAtRoad(*window, road, interaction.pos);
                     }

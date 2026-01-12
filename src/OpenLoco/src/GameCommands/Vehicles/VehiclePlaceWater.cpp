@@ -1,4 +1,5 @@
 #include "VehiclePlaceWater.h"
+#include "Audio/Audio.h"
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "Localisation/StringIds.h"
@@ -8,6 +9,12 @@
 #include "Objects/ObjectManager.h"
 #include "Random.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle1.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
+#include "Vehicles/VehicleTail.h"
 #include "ViewportManager.h"
 #include "World/StationManager.h"
 

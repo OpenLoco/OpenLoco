@@ -1,3 +1,4 @@
+#include "Audio/Audio.h"
 #include "Config.h"
 #include "Date.h"
 #include "Economy/Economy.h"
@@ -8,7 +9,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -40,6 +40,7 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleDraw.h"
+#include "Vehicles/VehicleHead.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Numerics.hpp>
@@ -49,7 +50,7 @@
 
 namespace OpenLoco::Ui::Windows::BuildVehicle
 {
-    static constexpr Ui::Size32 kWindowSize = { 400, 305 };
+    static constexpr Ui::Size kWindowSize = { 400, 305 };
 
     enum widx
     {
@@ -491,7 +492,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         {
             auto trackIdx = trackType & ~(1 << 7);
             auto roadObj = ObjectManager::get<RoadObject>(trackIdx);
-            if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+            if (roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
             {
                 trackType = 0xFE;
             }
@@ -1706,7 +1707,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         if (isRoad)
         {
             auto road_obj = ObjectManager::get<RoadObject>(trackType);
-            if (road_obj && road_obj->hasFlags(RoadObjectFlags::unk_01))
+            if (road_obj && road_obj->hasFlags(RoadObjectFlags::isRail))
             {
                 setRail = true;
             }
@@ -1714,7 +1715,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         else
         {
             auto rail_obj = ObjectManager::get<TrackObject>(trackType);
-            if (rail_obj && !rail_obj->hasFlags(TrackObjectFlags::unk_02))
+            if (rail_obj && !rail_obj->hasFlags(TrackObjectFlags::isRoad))
             {
                 setRail = true;
             }

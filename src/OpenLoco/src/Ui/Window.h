@@ -187,14 +187,14 @@ namespace OpenLoco::Ui
         bool showTownNames = false;       // Map window only
         WindowFlags flags;
         WindowNumber_t number = 0;
-        int16_t x;
-        int16_t y;
-        uint16_t width;
-        uint16_t height;
-        uint16_t minWidth;
-        uint16_t maxWidth;
-        uint16_t minHeight;
-        uint16_t maxHeight;
+        int32_t x;
+        int32_t y;
+        int32_t width;
+        int32_t height;
+        int32_t minWidth;
+        int32_t maxWidth;
+        int32_t minHeight;
+        int32_t maxHeight;
         ScrollArea scrollAreas[kMaxScrollAreas];
         int16_t rowInfo[1000];
         uint16_t rowCount;
@@ -208,8 +208,8 @@ namespace OpenLoco::Ui
         };
         uint16_t sortMode;
         uint16_t var_846 = 0;
-        uint16_t var_850 = 0;
-        uint16_t var_852 = 0;
+        uint16_t var_850 = 0; // vehicle list filter
+        uint16_t var_852 = 0; // vehicle list cargo; news ticks
         uint16_t var_854 = 0; // used to limit updates
         union
         {
@@ -220,15 +220,15 @@ namespace OpenLoco::Ui
         uint16_t currentTab = 0;
         uint16_t frameNo = 0;
         uint16_t currentSecondaryTab = 0;
-        int16_t var_88A;
-        int16_t var_88C;
+        int16_t var_88A; // map window orig width
+        int16_t var_88C; // map window orig height
         ViewportConfig viewportConfigurations[2];
         WindowType type;
         CompanyId owner = CompanyId::null;
         uint8_t var_885 = 0xFF;
         AdvancedColour colours[enumValue(WindowColour::count)];
 
-        Window(Ui::Point32 position, Ui::Size32 size);
+        Window(Ui::Point position, Ui::Size size);
 
         // TODO: Remove this once position is a member.
         constexpr Ui::Point position() const
@@ -248,7 +248,7 @@ namespace OpenLoco::Ui
             widgets.insert(widgets.end(), newWidgets.begin(), newWidgets.end());
         }
 
-        constexpr bool setSize(Ui::Size32 minSize, Ui::Size32 maxSize)
+        constexpr bool setSize(Ui::Size minSize, Ui::Size maxSize)
         {
             bool hasResized = false;
 
@@ -286,7 +286,7 @@ namespace OpenLoco::Ui
             return hasResized;
         }
 
-        constexpr void setSize(Ui::Size32 size)
+        constexpr void setSize(Ui::Size size)
         {
             setSize(size, size);
         }

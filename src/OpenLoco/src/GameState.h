@@ -4,9 +4,8 @@
 #include "Map/Animation.h"
 #include "Map/Wave.h"
 #include "Message.h"
-#include "Scenario.h"
-#include "ScenarioConstruction.h"
-#include "ScenarioObjective.h"
+#include "Scenario/ScenarioConstruction.h"
+#include "Scenario/ScenarioObjective.h"
 #include "Ui/LastMapWindowAttributes.h"
 #include "World/Company.h"
 #include "World/CompanyRecords.h"
@@ -17,6 +16,10 @@
 
 namespace OpenLoco
 {
+    namespace Scenario
+    {
+        enum class Season : uint8_t;
+    }
     enum class GameStateFlags : uint32_t;
 
     struct GameState
@@ -59,8 +62,8 @@ namespace OpenLoco
         uint8_t lastLandOption;                                                  // 0x00019E (0x00525FB6)
         uint8_t maxCompetingCompanies;                                           // 0x00019F (0x00525FB7)
         uint32_t orderTableLength;                                               // 0x0001A0 (0x00525FB8)
-        uint32_t roadObjectIdIsNotTram;                                          // 0x0001A4 (0x00525FBC)
-        uint32_t roadObjectIdIsFlag7;                                            // 0x0001A8 (0x00525FC0)
+        uint32_t roadObjectIdIsAnyRoadTypeCompatible;                            // 0x0001A4 (0x00525FBC)
+        uint32_t roadObjectIdIsUsableByAllCompanies;                             // 0x0001A8 (0x00525FC0)
         uint8_t currentDefaultLevelCrossingType;                                 // 0x0001AC (0x00525FC4)
         uint8_t lastTrackTypeOption;                                             // 0x0001AD (0x00525FC5)
         uint8_t loanInterestRate;                                                // 0x0001AE (0x00525FC6)

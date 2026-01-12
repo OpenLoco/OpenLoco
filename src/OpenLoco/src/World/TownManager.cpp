@@ -16,7 +16,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/RegionObject.h"
 #include "Objects/TownNamesObject.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Core/EnumFlags.hpp>

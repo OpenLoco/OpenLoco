@@ -1,5 +1,5 @@
 #include "CommandLine.h"
-#include "Scenario.h"
+#include "Scenario/Scenario.h"
 #include <algorithm>
 #include <cassert>
 #include <chrono>
@@ -58,8 +58,8 @@
 #include "OpenLoco.h"
 #include "Random.h"
 #include "S5/S5.h"
-#include "ScenarioManager.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioManager.h"
+#include "Scenario/ScenarioOptions.h"
 #include "SceneManager.h"
 #include "Title.h"
 #include "Tutorial.h"
@@ -69,7 +69,6 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
-#include "Version.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
 #include "World/IndustryManager.h"
@@ -79,6 +78,7 @@
 #include <OpenLoco/Platform/Crash.h>
 #include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/Utility/String.hpp>
+#include <OpenLoco/Version.hpp>
 
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Input;
@@ -155,7 +155,7 @@ namespace OpenLoco
     }
 
     // 0x004C57C0
-    void initialiseViewports()
+    void resetSubsystems()
     {
         Ui::Windows::MapToolTip::reset();
 
@@ -193,7 +193,7 @@ namespace OpenLoco
 
         Ui::initialise();
         Ui::initialiseCursors();
-        initialiseViewports();
+        resetSubsystems();
         Gui::init();
 
         MessageManager::reset();
@@ -215,25 +215,25 @@ namespace OpenLoco
         Title::start();
     }
 
-    static void loadFile(const fs::path& path)
+    static bool loadFile(const fs::path& path)
     {
         auto extension = path.extension().u8string();
         if (Utility::iequals(extension, S5::extensionSC5))
         {
-            Scenario::loadAndStart(path);
+            return Scenario::loadAndStart(path);
         }
         else
         {
-            S5::importSaveToGameState(path, S5::LoadFlags::none);
+            return S5::importSaveToGameState(path, S5::LoadFlags::none);
         }
     }
 
-    static void loadFile(const std::string& path)
+    static bool loadFile(const std::string& path)
     {
-        loadFile(fs::u8path(path));
+        return loadFile(fs::u8path(path));
     }
 
-    static void launchGameFromCmdLineOptions()
+    static bool launchGameFromCmdLineOptions()
     {
         const auto& cmdLineOptions = getCommandLineOptions();
         try
@@ -241,28 +241,29 @@ namespace OpenLoco
             if (cmdLineOptions.action == CommandLineAction::host)
             {
                 Network::openServer();
-                loadFile(cmdLineOptions.path);
+                return loadFile(cmdLineOptions.path);
             }
             else if (cmdLineOptions.action == CommandLineAction::join)
             {
                 if (cmdLineOptions.port)
                 {
-                    Network::joinServer(cmdLineOptions.address, *cmdLineOptions.port);
+                    return Network::joinServer(cmdLineOptions.address, *cmdLineOptions.port);
                 }
                 else
                 {
-                    Network::joinServer(cmdLineOptions.address);
+                    return Network::joinServer(cmdLineOptions.address);
                 }
             }
             else if (!cmdLineOptions.path.empty())
             {
-                loadFile(cmdLineOptions.path);
+                return loadFile(cmdLineOptions.path);
             }
         }
         catch (const std::exception& e)
         {
             Logging::error("Unable to load park: {}", e.what());
         }
+        return false;
     }
 
     void sub_431695(uint16_t var_F253A0)
@@ -318,9 +319,12 @@ namespace OpenLoco
                 if (Intro::isActive())
                 {
                     Intro::update();
-                    if (!Intro::isActive())
+                    if (Intro::state() == Intro::State::end2)
                     {
-                        launchGameFromCmdLineOptions();
+                        if (launchGameFromCmdLineOptions())
+                        {
+                            Intro::state(Intro::State::none);
+                        }
                     }
                 }
                 else
@@ -787,8 +791,8 @@ namespace OpenLoco
         Logging::initialize(options.logLevels);
 
         // Always print the product name, version, and platform info first.
-        Logging::info("{}", OpenLoco::getVersionInfo());
-        Logging::info("{}", OpenLoco::getPlatformInfo());
+        Logging::info("{}", Version::getVersionInfo());
+        Logging::info("{}", Version::getPlatformInfo());
 
         Environment::setLocale();
 
@@ -804,7 +808,7 @@ namespace OpenLoco
         {
             CrashHandler::AppInfo appInfo;
             appInfo.name = "OpenLoco";
-            appInfo.version = getVersionInfo();
+            appInfo.version = Version::getVersionInfo();
 
             _exHandler = CrashHandler::init(appInfo);
         }

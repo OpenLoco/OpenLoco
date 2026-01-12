@@ -3,7 +3,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Intro.h"
@@ -26,7 +25,7 @@
 
 namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 {
-    static constexpr Ui::Size32 kWindowSize = { 140, 27 };
+    static constexpr Ui::Size kWindowSize = { 140, 27 };
 
     namespace Widx
     {

@@ -66,6 +66,7 @@ namespace OpenLoco::Config
             displayConfig.index = displayNode["index"].as<int32_t>(0);
             displayConfig.windowResolution = displayNode["window_resolution"].as<Resolution>(Resolution{ 800, 600 });
             displayConfig.fullscreenResolution = displayNode["fullscreen_resolution"].as<Resolution>(Resolution{ 1920, 1080 });
+            displayConfig.vsync = displayNode["vsync"].as<bool>(false);
         }
 
         // Audio settings

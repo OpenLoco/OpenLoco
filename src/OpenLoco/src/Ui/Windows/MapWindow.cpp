@@ -7,7 +7,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -42,6 +41,9 @@
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
 #include "World/CompanyManager.h"
 #include "World/IndustryManager.h"
@@ -59,10 +61,10 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static constexpr int32_t kRenderedMapSize = kRenderedMapWidth * kRenderedMapHeight;
 
     // Chosen so that the map cannot be smaller than its key, and minimum size makes the map square
-    static constexpr Ui::Size32 kMinWindowSize = { 229, 176 };
+    static constexpr Ui::Size kMinWindowSize = { 229, 176 };
 
     // Chosen so the window cannot exceed map boundaries
-    static constexpr Ui::Size32 kMaxWindowSize = { kRenderedMapWidth + 120, kRenderedMapHeight + 60 };
+    static constexpr Ui::Size kMaxWindowSize = { kRenderedMapWidth + 120, kRenderedMapHeight + 60 };
 
     // 0x004FDC4C
     static std::array<Point, 4> kViewFrameOffsetsByRotation = { {
@@ -299,7 +301,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                             }
 
                             auto* trackObj = ObjectManager::get<TrackObject>(trackEl->trackObjectId());
-                            if (trackObj->hasFlags(TrackObjectFlags::unk_02))
+                            if (trackObj->hasFlags(TrackObjectFlags::isRoad))
                             {
                                 colour0 = colourFlash0 = PaletteIndex::black2;
                                 if (_flashingItems & (1 << 2))
@@ -374,7 +376,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                             }
 
                             auto* roadObj = ObjectManager::get<RoadObject>(roadEl->roadObjectId());
-                            if (roadObj->hasFlags(RoadObjectFlags::unk_01))
+                            if (roadObj->hasFlags(RoadObjectFlags::isRail))
                             {
                                 colour0 = colourFlash0 = PaletteIndex::black7;
                                 if (_flashingItems & (1 << 3))
@@ -2420,7 +2422,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         _mapPixels = static_cast<PaletteIndex_t*>(ptr);
         _mapAltPixels = &_mapPixels[kRenderedMapSize];
 
-        Ui::Size32 size = { 350, 272 };
+        Ui::Size size = { 350, 272 };
 
         if (Ui::getLastMapWindowAttributes().flags != WindowFlags::none)
         {

@@ -1,7 +1,6 @@
 #include "Audio/Audio.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -126,7 +125,7 @@ namespace OpenLoco::Ui::Windows::Error
 
             // Position error message around the cursor
             auto mousePos = Input::getMouseLocation();
-            Ui::Point32 windowPosition = Ui::Point32{ mousePos.x, mousePos.y } + Ui::Point32(-width / 2, 26);
+            Ui::Point windowPosition = Ui::Point{ mousePos.x, mousePos.y } + Ui::Point(-width / 2, 26);
             windowPosition.x = std::clamp<int32_t>(windowPosition.x, 0, Ui::width() - width - 40);
             windowPosition.y = std::clamp<int32_t>(windowPosition.y, 22, Ui::height() - height - 40);
 

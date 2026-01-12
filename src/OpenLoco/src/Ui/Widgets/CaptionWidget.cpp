@@ -1,7 +1,6 @@
 #include "CaptionWidget.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/Formatting.h"
 #include "Ui/Window.h"
@@ -31,8 +30,8 @@ namespace OpenLoco::Ui::Widgets
             enumValue(ExtColour::unk2E),
             Gfx::RectFlags::transparent);
 
-        int16_t width = size.width - 4 - 10;
-        auto centerPos = pos + Point(2 + (width / 2), 1);
+        const auto width = size.width - 4 - 10;
+        const auto centerPos = pos + Point(2 + (width / 2), 1);
 
         auto formatArgs = FormatArguments(widget.textArgs);
         tr.drawStringCentredClipped(
@@ -80,7 +79,7 @@ namespace OpenLoco::Ui::Widgets
         const auto pos = window->position() + widget.position();
         const auto size = widget.size();
 
-        int16_t width = size.width - 4 - 14;
+        const auto width = size.width - 4 - 14;
 
         auto stationNamePos = pos + Ui::Point(2 + (width / 2), 1);
 

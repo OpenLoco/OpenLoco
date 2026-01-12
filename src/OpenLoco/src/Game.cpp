@@ -13,7 +13,8 @@
 #include "Objects/ObjectIndex.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
-#include "ScenarioOptions.h"
+#include "Scenario/Scenario.h"
+#include "Scenario/ScenarioOptions.h"
 #include "SceneManager.h"
 #include "Title.h"
 #include "Ui/ProgressBar.h"
@@ -32,14 +33,14 @@ namespace OpenLoco::Game
     static std::optional<std::string> openBrowsePrompt(std::string path, StringId titleId, browse_type type, const char* filter)
     {
         Audio::pauseSound();
-        SceneManager::setPauseFlag(1 << 2);
+        SceneManager::setPauseFlag(PauseFlags::browsePrompt);
         Gfx::invalidateScreen();
         Gfx::renderAndUpdate();
 
         auto confirm = Ui::Windows::PromptBrowse::open(type, path, filter, titleId);
 
         Input::processMessagesMini();
-        SceneManager::unsetPauseFlag(1 << 2);
+        SceneManager::unsetPauseFlag(PauseFlags::browsePrompt);
         Gfx::invalidateScreen();
         Gfx::renderAndUpdate();
 

@@ -15,7 +15,7 @@
 #include "PaintRoadStyle1Data.h"
 #include "PaintRoadStyle2Data.h"
 #include "PaintTileDecorations.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
@@ -551,7 +551,7 @@ namespace OpenLoco::Paint
             paintLevelCrossing(session, baseRoadImageColour, elRoad, rotation);
         }
 
-        if (session.getRenderTarget()->zoomLevel > 0 || roadObj->hasFlags(RoadObjectFlags::unk_03))
+        if (session.getRenderTarget()->zoomLevel > 0 || roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
         {
             return;
         }
@@ -559,6 +559,10 @@ namespace OpenLoco::Paint
         const auto ghostMods = Ui::Windows::Construction::getLastSelectedMods();
         for (auto mod = 0; mod < 2; ++mod)
         {
+            if (roadObj->mods[mod] == 0xFF)
+            {
+                continue;
+            }
             const auto* roadExtraObj = ObjectManager::get<RoadExtraObject>(roadObj->mods[mod]);
             ImageId roadExtraBaseImage{};
             if (elRoad.hasMod(mod))

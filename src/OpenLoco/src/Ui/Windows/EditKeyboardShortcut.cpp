@@ -1,7 +1,6 @@
 #include "Config.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input/Shortcuts.h"
 #include "Localisation/FormatArguments.hpp"
@@ -21,7 +20,7 @@ using namespace OpenLoco::Input;
 
 namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
 {
-    static constexpr Ui::Size32 kWindowSize = { 280, 72 };
+    static constexpr Ui::Size kWindowSize = { 280, 72 };
 
     static uint8_t _editingShortcutIndex;
 

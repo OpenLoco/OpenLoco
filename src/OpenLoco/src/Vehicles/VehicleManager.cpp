@@ -1,4 +1,5 @@
 #include "VehicleManager.h"
+#include "Audio/Audio.h"
 #include "Date.h"
 #include "Entities/EntityManager.h"
 #include "Game.h"
@@ -10,12 +11,19 @@
 #include "Map/Track/SubpositionData.h"
 #include "Map/Track/TrackData.h"
 #include "MessageManager.h"
+#include "Objects/ObjectManager.h"
 #include "OrderManager.h"
 #include "Orders.h"
 #include "RoutingManager.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicle.h"
+#include "Vehicle1.h"
+#include "Vehicle2.h"
+#include "VehicleBody.h"
+#include "VehicleBogie.h"
+#include "VehicleHead.h"
+#include "VehicleTail.h"
 #include "World/Company.h"
 #include "World/CompanyManager.h"
 
@@ -164,7 +172,7 @@ namespace OpenLoco::VehicleManager
                 return PlaceDownResult::Unk1;
             }
 
-            const auto subPositionLength = World::TrackData::getTrackSubPositon(trackAndDirection.track._data).size();
+            const auto subPositionLength = static_cast<uint32_t>(World::TrackData::getTrackSubPositon(trackAndDirection.track._data).size());
             subPosition = subPositionLength - 1 - initialSubPosition;
 
             const auto& trackSize = World::TrackData::getUnkTrack(trackAndDirection.track._data);
@@ -178,7 +186,7 @@ namespace OpenLoco::VehicleManager
         else
         {
 
-            const auto subPositionLength = World::TrackData::getRoadSubPositon(trackAndDirection.road._data).size();
+            const auto subPositionLength = static_cast<uint32_t>(World::TrackData::getRoadSubPositon(trackAndDirection.road._data).size());
             subPosition = subPositionLength - 1 - initialSubPosition;
 
             const auto& roadSize = World::TrackData::getUnkRoad(trackAndDirection.road.basicRad());
