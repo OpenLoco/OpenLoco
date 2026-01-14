@@ -127,10 +127,8 @@ namespace OpenLoco::ObjectManager
 
     // Calls function for each loaded object of type T
     // Function signature can be:
-    //   void(const T&)           - just the object
-    //   void(T&)                 - mutable object reference
-    //   void(LoadedObjectId, const T&) - index and object
-    //   void(LoadedObjectId, T&) - index and mutable object
+    //   void(const T&)                  - just the object
+    //   void(LoadedObjectId, const T&)  - index and object
     template<typename T, typename Function>
     void forEachLoaded(Function&& func)
     {
@@ -139,17 +137,9 @@ namespace OpenLoco::ObjectManager
             auto* obj = get<T>(i);
             if (obj != nullptr)
             {
-                if constexpr (std::is_invocable_v<Function, LoadedObjectId, T&>)
-                {
-                    func(i, *const_cast<T*>(obj));
-                }
-                else if constexpr (std::is_invocable_v<Function, LoadedObjectId, const T&>)
+                if constexpr (std::is_invocable_v<Function, LoadedObjectId, const T&>)
                 {
                     func(i, *obj);
-                }
-                else if constexpr (std::is_invocable_v<Function, T&>)
-                {
-                    func(*const_cast<T*>(obj));
                 }
                 else
                 {
