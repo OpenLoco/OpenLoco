@@ -62,11 +62,6 @@ namespace OpenLoco::Ui::Widgets
             imageId = ImageId::fromUInt32(Gfx::recolour(imageId.getIndex(), colour.c()));
         }
 
-        if (widgetState.activated && widget.type == WidgetType::toolbarTab)
-        {
-            imageId = imageId.withIndexOffset(1);
-        }
-
         drawingCtx.drawImage(pos, imageId);
     }
 
