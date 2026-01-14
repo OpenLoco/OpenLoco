@@ -1266,7 +1266,6 @@ namespace OpenLoco::Ui
             {
                 const WidgetIndex_t widgetIndex = Input::getPressedWidgetIndex();
                 pressedWidget = 1ULL << widgetIndex;
-                printf("pressedWidget = %d\n", widgetIndex);
             }
         }
 
