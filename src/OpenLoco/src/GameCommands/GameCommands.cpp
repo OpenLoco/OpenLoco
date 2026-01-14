@@ -369,7 +369,7 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        if ((flags & 1) == 0)
+        if ((flags & Flags::apply) == 0)
         {
             _gameCommandNestLevel--;
             return ebx;
