@@ -11,6 +11,7 @@
 - Fix: [#3581] Remove sprite drawing limit that caused visual artifacts on high resolution displays and complex maps.
 - Fix: [#3584] First station of a vehicle's route not removed from vehicle orders when that station is deallocated.
 - Fix: [#3603] Error popup for trying to pick up a broken down or crashed vehicle shows missing string.
+- Fix: [#3610] AI companies unable to cheat expenditures.
 
 25.12 (2025-12-20)
 ------------------------------------------------------------------------
