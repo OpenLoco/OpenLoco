@@ -2181,16 +2181,20 @@ namespace OpenLoco
                 auto* buildingObj = ObjectManager::get<BuildingObject>(elBuilding->objectId());
                 for (auto i = 0U; i < 2; ++i)
                 {
-                    if (buildingObj->requiredCargoType[i] == 0xFFU)
+                    if (buildingObj->consumedCargoType[i] == 0xFFU)
                     {
                         continue;
                     }
-                    uint8_t quantity = buildingObj->var_A8[i];
-                    if (buildingObj->hasFlags(BuildingObjectFlags::largeTile))
+                    uint8_t quantity = buildingObj->consumedCargoQty[i];
+                    // We are doing a quick estimate of consumed cargo so
+                    // are counting all tiles of a multi tile building this
+                    // will inflate multitile buildings score by 4x so we
+                    // compensate for 1x1 buildings by multiplying by 4
+                    if (!buildingObj->hasFlags(BuildingObjectFlags::largeTile))
                     {
                         quantity *= 4;
                     }
-                    scores[buildingObj->requiredCargoType[i]] += quantity;
+                    scores[buildingObj->consumedCargoType[i]] += quantity;
                 }
             }
         }
