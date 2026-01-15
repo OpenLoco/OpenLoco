@@ -21,7 +21,7 @@ namespace OpenLoco
             requires std::is_array_v<T> && std::is_integral_v<std::remove_extent_t<T>>
         void encode(const T& src)
         {
-            _stream.write(&src, sizeof(src) * sizeof(src[0]));
+            _stream.write(&src, sizeof(src));
         }
         template<typename T>
         void encode(const T& src);
@@ -36,7 +36,7 @@ namespace OpenLoco
             requires std::is_array_v<T> && std::is_integral_v<std::remove_extent_t<T>>
         void decode(T& dest)
         {
-            _stream.read(&dest, sizeof(dest) * sizeof(dest[0]));
+            _stream.read(&dest, sizeof(dest));
         }
         template<typename T>
         void decode(T& dest);
