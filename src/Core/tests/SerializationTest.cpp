@@ -27,61 +27,65 @@ struct ArrayStruct
     uint16_t arr[5];
 };
 
-template<>
-struct DataSerialization<TestStruct>
+namespace OpenLoco
 {
-    static void encode(const TestStruct& src, DataSerilizer& ds)
-    {
-        ds.encode(src.a);
-        ds.encode(src.b);
-        ds.encode(src.c);
-        ds.encode(src.d);
-        ds.encode(src.e);
-        ds.encode(src.f);
-        ds.encode(src.g);
-    }
 
-    static void decode(TestStruct& dest, DataSerilizer& ds)
+    template<>
+    struct DataSerialization<TestStruct>
     {
-        ds.decode(dest.a);
-        ds.decode(dest.b);
-        ds.decode(dest.c);
-        ds.decode(dest.d);
-        ds.decode(dest.e);
-        ds.decode(dest.f);
-        ds.decode(dest.g);
-    }
-};
+        static void encode(const TestStruct& src, DataSerilizer& ds)
+        {
+            ds.encode(src.a);
+            ds.encode(src.b);
+            ds.encode(src.c);
+            ds.encode(src.d);
+            ds.encode(src.e);
+            ds.encode(src.f);
+            ds.encode(src.g);
+        }
 
-template<>
-struct DataSerialization<NestedStruct>
-{
-    static void encode(const NestedStruct& src, DataSerilizer& ds)
-    {
-        ds.encode(src.a);
-        ds.encode(src.b);
-    }
+        static void decode(TestStruct& dest, DataSerilizer& ds)
+        {
+            ds.decode(dest.a);
+            ds.decode(dest.b);
+            ds.decode(dest.c);
+            ds.decode(dest.d);
+            ds.decode(dest.e);
+            ds.decode(dest.f);
+            ds.decode(dest.g);
+        }
+    };
 
-    static void decode(NestedStruct& dest, DataSerilizer& ds)
+    template<>
+    struct DataSerialization<NestedStruct>
     {
-        ds.decode(dest.a);
-        ds.decode(dest.b);
-    }
-};
+        static void encode(const NestedStruct& src, DataSerilizer& ds)
+        {
+            ds.encode(src.a);
+            ds.encode(src.b);
+        }
 
-template<>
-struct DataSerialization<ArrayStruct>
-{
-    static void encode(const ArrayStruct& src, DataSerilizer& ds)
-    {
-        ds.encode(src.arr);
-    }
+        static void decode(NestedStruct& dest, DataSerilizer& ds)
+        {
+            ds.decode(dest.a);
+            ds.decode(dest.b);
+        }
+    };
 
-    static void decode(ArrayStruct& dest, DataSerilizer& ds)
+    template<>
+    struct DataSerialization<ArrayStruct>
     {
-        ds.decode(dest.arr);
-    }
-};
+        static void encode(const ArrayStruct& src, DataSerilizer& ds)
+        {
+            ds.encode(src.arr);
+        }
+
+        static void decode(ArrayStruct& dest, DataSerilizer& ds)
+        {
+            ds.decode(dest.arr);
+        }
+    };
+}
 
 TEST(SerializationTest, misc)
 {
@@ -141,7 +145,7 @@ TEST(SerializationTest, array)
     bs.setPosition(0);
     ds.decode(dest);
 
-    for (auto i = 0; i < std::size(src.arr); ++i)
+    for (size_t i = 0; i < std::size(src.arr); ++i)
     {
         EXPECT_EQ(src.arr[i], dest.arr[i]);
     }
