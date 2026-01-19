@@ -13,6 +13,7 @@
 - Fix: [#3584] First station of a vehicle's route not removed from vehicle orders when that station is deallocated.
 - Fix: [#3603] Error popup for trying to pick up a broken down or crashed vehicle shows missing string.
 - Fix: [#3605] Some widgets don't appear pressed when clicked.
+- Fix: [#3609] Vehicle details window for ships and planes shows length info outside the window.
 - Fix: [#3610] AI companies unable to cheat expenditures.
 
 25.12 (2025-12-20)
