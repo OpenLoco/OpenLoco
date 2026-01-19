@@ -1,5 +1,6 @@
 #include "CloneVehicle.h"
 #include "CreateVehicle.h"
+#include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Ui/WindowManager.h"
@@ -37,6 +38,8 @@ namespace OpenLoco::GameCommands
 
     static uint32_t cloneVehicle(EntityId head, uint8_t flags)
     {
+        setExpenditureType(ExpenditureType::VehiclePurchases);
+
         Vehicles::Vehicle existingTrain(head);
         Vehicles::VehicleHead* newHead = nullptr;
 
