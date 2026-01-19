@@ -1592,13 +1592,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         constexpr auto kVehicleDetailsOffset = 2;
         constexpr auto kVehicleDetailsLineHeight = 12;
-        constexpr auto kVehicleDetailsTextHeight2Lines = kVehicleDetailsOffset + kVehicleDetailsLineHeight * 2;
-        constexpr auto kVehicleDetailsTextHeight3Lines = kVehicleDetailsOffset + kVehicleDetailsLineHeight * 3;
-
-        static auto getVehicleDetailsHeight(const OpenLoco::TransportMode transportMode)
-        {
-            return transportMode == TransportMode::rail || transportMode == TransportMode::road ? kVehicleDetailsTextHeight3Lines : kVehicleDetailsTextHeight2Lines;
-        }
+        constexpr auto kVehicleDetailsTextHeight = kVehicleDetailsOffset + kVehicleDetailsLineHeight * 3;
 
         static void alignToRightBar(Window& self, widx widget)
         {
@@ -1634,7 +1628,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Widget::leftAlignTabs(self, Common::widx::tabMain, Common::widx::tabRoute);
 
             self.widgets[widx::carList].right = self.width - 26;
-            self.widgets[widx::carList].bottom = self.height - getVehicleDetailsHeight(head->getTransportMode());
+            self.widgets[widx::carList].bottom = self.height - kVehicleDetailsTextHeight;
             alignToRightBar(self, widx::buildNew);
             alignToRightBar(self, widx::pickup);
             alignToRightBar(self, widx::remove);
@@ -1643,7 +1637,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (isPaintToolActive(self))
             {
                 self.activatedWidgets |= (1U << widx::paintBrush);
-                self.widgets[widx::carList].bottom = self.height - kVehicleDetailsTextHeight3Lines;
+                self.widgets[widx::carList].bottom = self.height - kVehicleDetailsTextHeight;
 
                 self.widgets[widx::paintColourPrimary].hidden = false;
                 self.widgets[widx::paintColourPrimary].right = self.width - 23;
@@ -1672,7 +1666,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
             if (head->owner != CompanyManager::getControllingId())
             {
-                self.widgets[widx::carList].bottom = self.height - getVehicleDetailsHeight(head->getTransportMode());
+                self.widgets[widx::carList].bottom = self.height - kVehicleDetailsTextHeight;
                 self.widgets[Details::widx::paintColourPrimary].hidden = true;
                 self.widgets[Details::widx::paintColourSecondary].hidden = true;
 
@@ -1690,8 +1684,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 self.widgets[widx::pickup].hidden = false;
                 self.widgets[widx::remove].hidden = false;
 
-                self.widgets[widx::paintBrush].bottom = self.height - kVehicleDetailsTextHeight3Lines;
-                self.widgets[widx::paintBrush].top = self.height - kVehicleDetailsTextHeight3Lines - 24;
+                self.widgets[widx::paintBrush].bottom = self.height - kVehicleDetailsTextHeight;
+                self.widgets[widx::paintBrush].top = self.height - kVehicleDetailsTextHeight - 24;
             }
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
@@ -1853,7 +1847,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            Ui::Point pos = { self.x + 3, self.y + self.height - getVehicleDetailsHeight(head->getTransportMode()) + kVehicleDetailsOffset };
+            Ui::Point pos = { self.x + 3, self.y + self.height - kVehicleDetailsTextHeight + kVehicleDetailsOffset };
             Vehicles::Vehicle train{ *head };
 
             // Draw power and weight
