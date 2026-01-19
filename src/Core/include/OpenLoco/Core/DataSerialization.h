@@ -12,6 +12,12 @@ namespace OpenLoco
         }
 
         template<typename T>
+            requires std::is_enum_v<T>
+        void encode(const T& src)
+        {
+            _stream.writeValue(static_cast<std::underlying_type_t<T>>(src));
+        }
+        template<typename T>
             requires std::is_integral_v<T>
         void encode(const T& src)
         {
@@ -27,6 +33,12 @@ namespace OpenLoco
         void encode(const T& src);
 
         template<typename T>
+            requires std::is_enum_v<T>
+        void decode(T& dest)
+        {
+            dest = static_cast<T>(_stream.readValue<std::underlying_type_t<T>>());
+        }
+        template<typename T>
             requires std::is_integral_v<T>
         void decode(T& dest)
         {
@@ -40,6 +52,17 @@ namespace OpenLoco
         }
         template<typename T>
         void decode(T& dest);
+
+        template<typename... Args>
+        void encodeAll(const Args&... args)
+        {
+            (encode(args), ...);
+        }
+        template<typename... Args>
+        void decodeAll(Args&... args)
+        {
+            (decode(args), ...);
+        }
 
     private:
         Stream& _stream;

@@ -27,6 +27,18 @@ struct ArrayStruct
     uint16_t arr[5];
 };
 
+enum class TestEnum : uint8_t
+{
+    Value1 = 0,
+    Value2 = 1,
+    Value3 = 2
+};
+
+struct EnumStruct
+{
+    TestEnum a;
+};
+
 namespace OpenLoco
 {
 
@@ -35,24 +47,12 @@ namespace OpenLoco
     {
         static void encode(const TestStruct& src, DataSerilizer& ds)
         {
-            ds.encode(src.a);
-            ds.encode(src.b);
-            ds.encode(src.c);
-            ds.encode(src.d);
-            ds.encode(src.e);
-            ds.encode(src.f);
-            ds.encode(src.g);
+            ds.encodeAll(src.a, src.b, src.c, src.d, src.e, src.f, src.g);
         }
 
         static void decode(TestStruct& dest, DataSerilizer& ds)
         {
-            ds.decode(dest.a);
-            ds.decode(dest.b);
-            ds.decode(dest.c);
-            ds.decode(dest.d);
-            ds.decode(dest.e);
-            ds.decode(dest.f);
-            ds.decode(dest.g);
+            ds.decodeAll(dest.a, dest.b, dest.c, dest.d, dest.e, dest.f, dest.g);
         }
     };
 
@@ -61,14 +61,12 @@ namespace OpenLoco
     {
         static void encode(const NestedStruct& src, DataSerilizer& ds)
         {
-            ds.encode(src.a);
-            ds.encode(src.b);
+            ds.encodeAll(src.a, src.b);
         }
 
         static void decode(NestedStruct& dest, DataSerilizer& ds)
         {
-            ds.decode(dest.a);
-            ds.decode(dest.b);
+            ds.decodeAll(dest.a, dest.b);
         }
     };
 
@@ -83,6 +81,20 @@ namespace OpenLoco
         static void decode(ArrayStruct& dest, DataSerilizer& ds)
         {
             ds.decode(dest.arr);
+        }
+    };
+
+    template<>
+    struct DataSerialization<EnumStruct>
+    {
+        static void encode(const EnumStruct& src, DataSerilizer& ds)
+        {
+            ds.encode(src.a);
+        }
+
+        static void decode(EnumStruct& dest, DataSerilizer& ds)
+        {
+            ds.decode(dest.a);
         }
     };
 }
@@ -149,4 +161,20 @@ TEST(SerializationTest, array)
     {
         EXPECT_EQ(src.arr[i], dest.arr[i]);
     }
+}
+
+TEST(SerializationTest, enums)
+{
+    EnumStruct src{ TestEnum::Value2 };
+    EnumStruct dest{};
+
+    std::array<uint8_t, 128> buffer{};
+    auto bs = BinaryStream(buffer.data(), std::size(buffer));
+    auto ds = DataSerilizer(bs);
+
+    ds.encode(src);
+    bs.setPosition(0);
+    ds.decode(dest);
+
+    EXPECT_EQ(src.a, dest.a);
 }
