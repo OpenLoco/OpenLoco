@@ -1852,13 +1852,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            OpenLoco::Vehicles::Vehicle train{ *head };
-            Ui::Point pos = { static_cast<int16_t>(self.x + 3), static_cast<int16_t>(self.y + self.height - getVehicleDetailsHeight(head->getTransportMode()) + kVehicleDetailsOffset) };
 
+            Ui::Point pos = { self.x + 3, self.y + self.height - getVehicleDetailsHeight(head->getTransportMode()) + kVehicleDetailsOffset };
+            Vehicles::Vehicle train{ *head };
+
+            // Draw power and weight
             {
                 FormatArguments args{};
                 args.push(train.veh2->totalPower);
                 args.push<uint32_t>(train.veh2->totalWeight);
+
                 StringId str = StringIds::vehicle_details_weight;
                 if (train.veh2->mode == TransportMode::rail || train.veh2->mode == TransportMode::road)
                 {
@@ -1867,12 +1870,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 tr.drawStringLeftClipped(pos, std::min<uint16_t>(self.width - 6, textRightEdge), Colour::black, str, args);
             }
 
+            // Draw max (rack rail) speed and reliability
             {
                 pos.y += kVehicleDetailsLineHeight;
                 FormatArguments args{};
                 args.push<uint16_t>(train.veh2->maxSpeed == kSpeed16Null ? 0 : train.veh2->maxSpeed.getRaw());
                 args.push<uint16_t>(train.veh2->rackRailMaxSpeed == kSpeed16Null ? 0 : train.veh2->rackRailMaxSpeed.getRaw());
                 args.push<uint16_t>(train.veh2->reliability == 0 ? 64 : train.veh2->reliability);
+
                 StringId str = StringIds::vehicle_details_max_speed_and_reliability;
                 if (train.veh1->var_49 != 0)
                 {
@@ -1881,8 +1886,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 tr.drawStringLeftClipped(pos, std::min<uint16_t>(self.width - 16, textRightEdge), Colour::black, str, args);
             }
 
+            // Draw car count and vehicle length
             {
-                // Draw car count and vehicle length
                 pos.y += kVehicleDetailsLineHeight;
                 FormatArguments args = {};
                 StringId str = StringIds::vehicle_length;
