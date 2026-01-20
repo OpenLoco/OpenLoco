@@ -38,8 +38,6 @@ namespace OpenLoco::GameCommands
 
     static uint32_t cloneVehicle(EntityId head, uint8_t flags)
     {
-        setExpenditureType(ExpenditureType::VehiclePurchases);
-
         Vehicles::Vehicle existingTrain(head);
         Vehicles::VehicleHead* newHead = nullptr;
 
@@ -155,6 +153,10 @@ namespace OpenLoco::GameCommands
             args.cargoType = cargoType;
             doCommand(args, Flags::apply);
         }
+
+        // Finally, set the expenditure type
+        // Note we explicitly set this *after* running all the sub commands!
+        setExpenditureType(ExpenditureType::VehiclePurchases);
 
         return totalCost;
     }
