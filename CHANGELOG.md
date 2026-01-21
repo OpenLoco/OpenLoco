@@ -4,6 +4,7 @@
 - Feature: [#3588] Optionally limit the frame rate to the display's vsync.
 - Change: [#3577] PNG heightmaps of any size are now supported and use interpolation when the image size differs from the map size.
 - Change: [#3596] Confirmation prompts can now be confirmed with return/enter keys.
+- Change: [#3617] Cloning a vehicle is now always classified as a vehicle purchase.
 - Fix: [#2863] The top toolbar widgets don't visually 'activate' when the mouse pointer is hovering over them.
 - Fix: [#2875] Select Company widget placed and displayed incorrectly in the Cargo Delivered tab.
 - Fix: [#3028] Odd stepper behaviour when adjusting cargo scenario objective target.
