@@ -61,7 +61,11 @@ namespace OpenLoco::Vehicles
     enum class BreakdownFlags : uint8_t
     {
         none = 0U,
-        unk_0 = 1U << 0,
+
+        // Indicates a vehicle component is waiting for a cargo transfer.
+        // When placed on the VehicleHead component it indicates that the vehicle
+        // cannot wait at the station for further loading. (TODO: Introduce a different flag for that)
+        awaitingCargoTransfer = 1U << 0,
         breakdownPending = 1U << 1,
         brokenDown = 1U << 2,
         journeyStarted = 1U << 3, // The journey start meta data has been filled in
