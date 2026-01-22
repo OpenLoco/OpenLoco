@@ -807,7 +807,6 @@ namespace OpenLoco::Vehicles
                         additionalRoadToCheck.push_back(interest);
                     }
                 }
-
             }
         }
         else
