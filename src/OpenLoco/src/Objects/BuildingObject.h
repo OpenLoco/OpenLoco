@@ -42,22 +42,25 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::building;
 
-        StringId name;                             // 0x0
-        uint32_t image;                            // 0x2
-        uint8_t numParts;                          // 0x6
-        uint8_t numVariations;                     // 0x7
-        uint32_t partHeightsOffset;                // 0x8
-        uint32_t partAnimationsOffset;             // 0xC
-        uint32_t variationPartsOffset[32];         // 0x10 Access with getBuildingParts helper method
-        uint32_t colours;                          // 0x90
-        uint16_t designedYear;                     // 0x94
-        uint16_t obsoleteYear;                     // 0x96
-        BuildingObjectFlags flags;                 // 0x98
-        uint8_t clearCostIndex;                    // 0x99
-        uint16_t clearCostFactor;                  // 0x9A
-        uint8_t scaffoldingSegmentType;            // 0x9C
-        Colour scaffoldingColour;                  // 0x9D
-        uint8_t generatorFunction;                 // 0x9E
+        StringId name;                     // 0x0
+        uint32_t image;                    // 0x2
+        uint8_t numParts;                  // 0x6
+        uint8_t numVariations;             // 0x7
+        uint32_t partHeightsOffset;        // 0x8
+        uint32_t partAnimationsOffset;     // 0xC
+        uint32_t variationPartsOffset[32]; // 0x10 Access with getBuildingParts helper method
+        uint32_t colours;                  // 0x90
+        uint16_t designedYear;             // 0x94
+        uint16_t obsoleteYear;             // 0x96
+        BuildingObjectFlags flags;         // 0x98
+        uint8_t clearCostIndex;            // 0x99
+        uint16_t clearCostFactor;          // 0x9A
+        uint8_t scaffoldingSegmentType;    // 0x9C
+        Colour scaffoldingColour;          // 0x9D
+
+        // 0x9E for misc buildings generator function, otherwise its a set of flags representing
+        // town densities the building can be built in
+        uint8_t generatorFunction;
         uint8_t averageNumberOnMap;                // 0x9F
         uint8_t producedQuantity[2];               // 0xA0
         uint8_t producedCargoType[2];              // 0xA2
