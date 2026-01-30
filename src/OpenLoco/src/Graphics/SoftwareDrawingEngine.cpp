@@ -122,8 +122,14 @@ namespace OpenLoco::Gfx
             return;
         }
 
-        SDL_SetSurfaceBlendMode(_screenRGBASurface, SDL_BLENDMODE_NONE);
-        SDL_SetSurfacePalette(_screenSurface, _palette);
+        if (!SDL_SetSurfaceBlendMode(_screenRGBASurface, SDL_BLENDMODE_NONE))
+        {
+            Logging::error("SDL_SetSurfaceBlendMode (_screenRGBASurface) failed: {}", SDL_GetError());
+        }
+        if (!SDL_SetSurfacePalette(_screenSurface, _palette))
+        {
+            Logging::error("SDL_SetSurfacePalette (_screenSurface) failed: {}", SDL_GetError());
+        }
 
         const auto* wndSurface = SDL_GetWindowSurface(_window);
 
@@ -134,7 +140,10 @@ namespace OpenLoco::Gfx
             return;
         }
 
-        SDL_SetTextureScaleMode(_screenTexture, SDL_SCALEMODE_LINEAR);
+        if (!SDL_SetTextureScaleMode(_screenTexture, SDL_SCALEMODE_LINEAR))
+        {
+            Logging::error("SDL_SetTextureScaleMode (_screenTexture) failed: {}", SDL_GetError());
+        }
 
         if (scaleFactor > 1.0f)
         {
@@ -146,7 +155,11 @@ namespace OpenLoco::Gfx
                 Logging::error("SDL_CreateTexture (_scaledScreenTexture) failed: {}", SDL_GetError());
                 return;
             }
-            SDL_SetTextureScaleMode(_scaledScreenTexture, SDL_SCALEMODE_LINEAR);
+
+            if (!SDL_SetTextureScaleMode(_scaledScreenTexture, SDL_SCALEMODE_LINEAR))
+            {
+                Logging::error("SDL_SetTextureScaleMode (_scaledScreenTexture) failed: {}", SDL_GetError());
+            }
         }
 
         int32_t pitch = _screenSurface->pitch;
@@ -223,7 +236,11 @@ namespace OpenLoco::Gfx
             basePtr->b = entryPtr->b;
             basePtr->a = 0;
         }
-        SDL_SetPaletteColors(_palette, &base[index], index, count);
+
+        if (!SDL_SetPaletteColors(_palette, &base[index], index, count))
+        {
+            Logging::error("SDL_SetPaletteColors failed: {}", SDL_GetError());
+        }
     }
 
     // 0x004C5CFA
@@ -304,7 +321,7 @@ namespace OpenLoco::Gfx
         }
 
         // Convert colours via palette mapping onto the RGBA surface.
-        if (SDL_BlitSurface(_screenSurface, nullptr, _screenRGBASurface, nullptr))
+        if (!SDL_BlitSurface(_screenSurface, nullptr, _screenRGBASurface, nullptr))
         {
             Logging::error("SDL_BlitSurface {}", SDL_GetError());
             return;
@@ -404,7 +421,7 @@ namespace OpenLoco::Gfx
             return true;
         }
 
-        if (SDL_SetRenderVSync(_renderer, state ? 1 : 0) == 0)
+        if (SDL_SetRenderVSync(_renderer, state ? 1 : 0))
         {
             _vsync = state;
             return true;
