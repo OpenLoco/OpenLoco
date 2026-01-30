@@ -29,7 +29,7 @@
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/Utility/String.hpp>
-#include <SDL2/SDL.h>
+#include <SDL3/SDL_keycode.h>
 #include <algorithm>
 #include <cstring>
 #include <string>

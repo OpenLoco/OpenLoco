@@ -1,6 +1,6 @@
 #include "OpenLoco.h"
 #include <OpenLoco/Platform/Platform.h>
-#include <SDL2/SDL_main.h>
+#include <SDL3/SDL_main.h>
 
 int main(int argc, const char** argv)
 {
