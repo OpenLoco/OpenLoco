@@ -77,7 +77,7 @@ namespace OpenLoco::Config
     struct Display
     {
         ScreenMode mode;
-        int32_t index{};
+        uint32_t index{};
         Resolution windowResolution = { 800, 600 };
         Resolution fullscreenResolution;
         bool vsync = false;
