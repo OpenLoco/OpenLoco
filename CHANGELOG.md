@@ -1,4 +1,4 @@
-25.12+ (???)
+26.01 (2026-01-30)
 ------------------------------------------------------------------------
 - Feature: [#2825] Drawing the viewport canvas now uses parallel processing where possible.
 - Feature: [#3588] Optionally limit the frame rate to the display's vsync.

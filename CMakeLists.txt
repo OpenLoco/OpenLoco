@@ -53,7 +53,7 @@ if (OPENLOCO_USE_VCPKG)
     endif()
 endif ()
 
-project(${PROJECT} LANGUAGES CXX VERSION 25.12)
+project(${PROJECT} LANGUAGES CXX VERSION 26.01)
 
 # Enable IPO for all Release targets by default
 include(CheckIPOSupported)
