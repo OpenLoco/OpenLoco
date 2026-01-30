@@ -61,9 +61,9 @@ namespace OpenLoco
         uint8_t averageNumberOnMap;                // 0x9F
         uint8_t producedQuantity[2];               // 0xA0
         uint8_t producedCargoType[2];              // 0xA2
-        uint8_t requiredCargoType[2];              // 0xA4
-        uint8_t var_A6[2];                         // 0xA6
-        uint8_t var_A8[2];                         // 0xA8
+        uint8_t consumedCargoType[2];              // 0xA4
+        uint8_t producedCargoQty[2];               // 0xA6 For passenger cargo this is the population of the building
+        uint8_t consumedCargoQty[2];               // 0xA8 Qty in eighths of a unit
         int16_t demolishRatingReduction;           // 0XAA
         uint8_t var_AC;                            // 0xAC
         uint8_t numElevatorSequences;              // 0XAD

@@ -275,6 +275,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/TabWidget.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/TableHeaderWidget.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/TextBoxWidget.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/ToolbarButtonWidget.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/ViewportWidget.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/Wt3Widget.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Window.cpp"
@@ -681,6 +682,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/TabWidget.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/TableHeaderWidget.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/TextBoxWidget.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/ToolbarButtonWidget.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/ViewportWidget.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/Wt3Widget.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Window.h"
@@ -737,6 +739,7 @@ set(private_link_libraries
     $<$<PLATFORM_ID:Windows>:Resources>
     $<$<BOOL:${MINGW}>:imm32>
     $<$<BOOL:${MINGW}>:version>
+    $<$<AND:$<BOOL:${HAS_LIBSTDCPP}>,$<BOOL:${TBB_FOUND}>>:TBB::tbb> # libstdc++ does not support <execution> without tbb
 )
 
 set(msvc_private_compile_definitions

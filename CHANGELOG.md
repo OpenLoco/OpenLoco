@@ -5,13 +5,18 @@
 - Change: [#3577] PNG heightmaps of any size are now supported and use interpolation when the image size differs from the map size.
 - Change: [#3596] Confirmation prompts can now be confirmed with return/enter keys.
 - Change: [#3607] Moving a component within a vehicle (or between vehicles) now asks for confirmation if the vehicle contains any cargo.
+- Change: [#3617] Cloning a vehicle is now always classified as a vehicle purchase.
+- Fix: [#2863] The top toolbar widgets don't visually 'activate' when the mouse pointer is hovering over them.
 - Fix: [#2875] Select Company widget placed and displayed incorrectly in the Cargo Delivered tab.
-- Fix: [#3028] Odd stepper behaviour when adjusting cargo scenario objective target. 
+- Fix: [#3028] Odd stepper behaviour when adjusting cargo scenario objective target.
 - Fix: [#3268] Removing bridges built by towns gives you a refund.
 - Fix: [#3577] Crash loading PNGs with unexpected color formats or channel configurations as heightmaps.
 - Fix: [#3581] Remove sprite drawing limit that caused visual artifacts on high resolution displays and complex maps.
 - Fix: [#3584] First station of a vehicle's route not removed from vehicle orders when that station is deallocated.
 - Fix: [#3603] Error popup for trying to pick up a broken down or crashed vehicle shows missing string.
+- Fix: [#3605] Some widgets don't appear pressed when clicked.
+- Fix: [#3609] Vehicle details window for ships and planes shows length info outside the window.
+- Fix: [#3610] AI companies unable to cheat expenditures.
 
 25.12 (2025-12-20)
 ------------------------------------------------------------------------

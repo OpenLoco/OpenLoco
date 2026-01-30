@@ -345,7 +345,7 @@ namespace OpenLoco::GameCommands
             if (_gameCommandNestLevel == 1)
             {
                 if ((_gameCommandFlags & Flags::allowNegativeCashFlow) == 0
-                    && (_gameCommandFlags & Flags::ghost) == 0
+                    && (_gameCommandFlags & Flags::noPayment) == 0
                     && ebx != 0)
                 {
                     if (!CompanyManager::ensureCompanyFunding(getUpdatingCompanyId(), ebx))
@@ -369,7 +369,7 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        if ((flags & 1) == 0)
+        if ((flags & Flags::apply) == 0)
         {
             _gameCommandNestLevel--;
             return ebx;
