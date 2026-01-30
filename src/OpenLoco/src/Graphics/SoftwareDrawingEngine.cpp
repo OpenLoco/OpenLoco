@@ -107,6 +107,8 @@ namespace OpenLoco::Gfx
             _scaledScreenTexture = nullptr;
         }
 
+        const auto* wndSurface = SDL_GetWindowSurface(_window);
+
         // Surfaces.
         _screenSurface = SDL_CreateSurface(scaledWidth, scaledHeight, SDL_PIXELFORMAT_INDEX8);
         if (_screenSurface == nullptr)
@@ -115,7 +117,7 @@ namespace OpenLoco::Gfx
             return;
         }
 
-        _screenRGBASurface = SDL_CreateSurface(scaledWidth, scaledHeight, SDL_PIXELFORMAT_RGBA32);
+        _screenRGBASurface = SDL_CreateSurface(scaledWidth, scaledHeight, wndSurface->format);
         if (_screenRGBASurface == nullptr)
         {
             Logging::error("SDL_CreateRGBSurface (_screenRGBASurface) failed: {}", SDL_GetError());
@@ -130,8 +132,6 @@ namespace OpenLoco::Gfx
         {
             Logging::error("SDL_SetSurfacePalette (_screenSurface) failed: {}", SDL_GetError());
         }
-
-        const auto* wndSurface = SDL_GetWindowSurface(_window);
 
         _screenTexture = SDL_CreateTexture(_renderer, wndSurface->format, SDL_TEXTUREACCESS_STREAMING, scaledWidth, scaledHeight);
         if (_screenTexture == nullptr)
