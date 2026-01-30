@@ -19,7 +19,7 @@
 #include <Localisation/Unicode.h>
 #include <OpenLoco/Core/BitSet.hpp>
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
-#include <SDL2/SDL_keyboard.h>
+#include <SDL3/SDL_keyboard.h>
 #include <cstdint>
 #include <functional>
 #include <optional>
@@ -48,7 +48,7 @@ namespace OpenLoco::Input
     static uint32_t _keyQueueLastWrite;
     static uint32_t _keyQueueReadIndex;
     static uint32_t _keyQueueWriteIndex;
-    static BitSet<SDL_NUM_SCANCODES> _keyboardState;
+    static BitSet<SDL_SCANCODE_COUNT> _keyboardState;
     static bool _hasKeyboardState = false;
 
     static const std::pair<std::string, std::function<void()>> kCheats[] = {

@@ -5,11 +5,8 @@
 #include "Ui.h"
 #include "Ui/ScrollView.h"
 #include "Ui/Window.h"
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 #include <map>
-#pragma warning(disable : 4121) // alignment of a member was sensitive to packing
-#include <SDL2/SDL_syswm.h>
-#pragma warning(default : 4121) // alignment of a member was sensitive to packing
 
 namespace OpenLoco::Input
 {
@@ -96,18 +93,13 @@ namespace OpenLoco::Input
         {
             switch (e.type)
             {
-                case SDL_QUIT:
+                case SDL_EVENT_QUIT:
                     return false;
-                case SDL_WINDOWEVENT:
-                    switch (e.window.event)
-                    {
-                        case SDL_WINDOWEVENT_MOVED:
-                            Ui::windowPositionChanged(e.window.data1, e.window.data2);
-                            break;
-                        case SDL_WINDOWEVENT_SIZE_CHANGED:
-                            Ui::windowSizeChanged(e.window.data1, e.window.data2);
-                            break;
-                    }
+                case SDL_EVENT_WINDOW_MOVED:
+                    Ui::windowPositionChanged(e.window.data1, e.window.data2);
+                    break;
+                case SDL_EVENT_WINDOW_RESIZED:
+                    Ui::windowSizeChanged(e.window.data1, e.window.data2);
                     break;
             }
         }
@@ -129,21 +121,18 @@ namespace OpenLoco::Input
         {
             switch (e.type)
             {
-                case SDL_QUIT:
+                case SDL_EVENT_QUIT:
                     _exitRequested = true;
                     return false;
-                case SDL_WINDOWEVENT:
-                    switch (e.window.event)
-                    {
-                        case SDL_WINDOWEVENT_MOVED:
-                            Ui::windowPositionChanged(e.window.data1, e.window.data2);
-                            break;
-                        case SDL_WINDOWEVENT_SIZE_CHANGED:
-                            Ui::windowSizeChanged(e.window.data1, e.window.data2);
-                            break;
-                    }
+
+                case SDL_EVENT_WINDOW_MOVED:
+                    Ui::windowPositionChanged(e.window.data1, e.window.data2);
                     break;
-                case SDL_MOUSEMOTION:
+                case SDL_EVENT_WINDOW_RESIZED:
+                    Ui::windowSizeChanged(e.window.data1, e.window.data2);
+                    break;
+
+                case SDL_EVENT_MOUSE_MOTION:
                 {
                     auto scaleFactor = Config::get().scaleFactor;
                     auto x = static_cast<int32_t>(e.motion.x / scaleFactor);
@@ -153,10 +142,10 @@ namespace OpenLoco::Input
                     moveMouse(x, y, xrel, yrel);
                     break;
                 }
-                case SDL_MOUSEWHEEL:
+                case SDL_EVENT_MOUSE_WHEEL:
                     mouseWheel(e.wheel.y);
                     break;
-                case SDL_MOUSEBUTTONDOWN:
+                case SDL_EVENT_MOUSE_BUTTON_DOWN:
                 {
                     auto scaleFactor = Config::get().scaleFactor;
                     const auto x = static_cast<int32_t>(e.button.x / scaleFactor);
@@ -174,7 +163,7 @@ namespace OpenLoco::Input
                     }
                     break;
                 }
-                case SDL_MOUSEBUTTONUP:
+                case SDL_EVENT_MOUSE_BUTTON_UP:
                 {
                     auto scaleFactor = Config::get().scaleFactor;
                     const auto x = static_cast<int32_t>(e.button.x / scaleFactor);
@@ -192,15 +181,15 @@ namespace OpenLoco::Input
                     }
                     break;
                 }
-                case SDL_KEYDOWN:
+                case SDL_EVENT_KEY_DOWN:
                 {
-                    auto keycode = e.key.keysym.sym;
+                    auto keycode = e.key.key;
 
 #if !(defined(__APPLE__) && defined(__MACH__))
                     // Toggle fullscreen when ALT+RETURN is pressed
                     if (keycode == SDLK_RETURN)
                     {
-                        if ((e.key.keysym.mod & KMOD_LALT) || (e.key.keysym.mod & KMOD_RALT))
+                        if ((e.key.mod & SDL_KMOD_LALT) || (e.key.mod & SDL_KMOD_RALT))
                         {
                             Ui::toggleFullscreenDesktop();
                         }
@@ -210,9 +199,9 @@ namespace OpenLoco::Input
                     handleKeyInput(keycode);
                     break;
                 }
-                case SDL_KEYUP:
+                case SDL_EVENT_KEY_UP:
                     break;
-                case SDL_TEXTINPUT:
+                case SDL_EVENT_TEXT_INPUT:
                     enqueueText(e.text.text);
                     break;
             }
