@@ -7,11 +7,6 @@
 #include <string>
 #include <vector>
 
-namespace OpenLoco::Vehicles
-{
-    struct VehicleSoundPlayer;
-}
-
 namespace OpenLoco::Environment
 {
     enum class PathId : uint8_t;

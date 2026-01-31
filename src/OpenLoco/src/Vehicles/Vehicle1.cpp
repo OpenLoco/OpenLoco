@@ -132,28 +132,6 @@ namespace OpenLoco::Vehicles
         return true;
     }
 
-    // 0x004B98DA
-    static void railProduceCrossingWhistle(const Vehicle2& veh2)
-    {
-        Vehicle train{ veh2.head };
-        auto* vehObj = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
-
-        if (vehObj->numStartSounds == 0)
-        {
-            return;
-        }
-
-        gPrng1().randNext(); // TODO: Remove when we can diverge from vanilla
-
-        const auto soundNum = (vehObj->numStartSounds & NumStartSounds::kMask) - 1;
-        const auto soundObjId = vehObj->startSounds[soundNum];
-
-        const auto height = World::TileManager::getHeight(veh2.position);
-        const auto volume = veh2.position.z < height.landHeight ? -1500 : 0;
-
-        Audio::playSound(Audio::makeObjectSoundId(soundObjId), veh2.position + World::Pos3{ 0, 0, 22 }, volume, 22050);
-    }
-
     // 0x004A97A6
     bool Vehicle1::updateRail()
     {
