@@ -298,7 +298,7 @@ namespace OpenLoco::GameCommands
                     {
                         Vehicles::TrackAndDirection::_TrackAndDirection tad2{ 0, 0 };
                         tad2._data = tc.connections.front() & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
-                        Vehicles::sub_4A2AD7(nextLoc, tad2, getUpdatingCompanyId(), args.trackObjType);
+                        Vehicles::updateSignalOccupancyBasedOnBlockOccupancy(nextLoc, tad2, getUpdatingCompanyId(), args.trackObjType);
                     }
                 }
 
@@ -314,7 +314,7 @@ namespace OpenLoco::GameCommands
                 {
                     Vehicles::TrackAndDirection::_TrackAndDirection tad2{ 0, 0 };
                     tad2._data = tc.connections.front() & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
-                    Vehicles::sub_4A2AD7(nextTrackStart, tad2, getUpdatingCompanyId(), args.trackObjType);
+                    Vehicles::updateSignalOccupancyBasedOnBlockOccupancy(nextTrackStart, tad2, getUpdatingCompanyId(), args.trackObjType);
                 }
             }
         }
