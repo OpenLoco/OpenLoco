@@ -1,5 +1,6 @@
 26.01+ (???)
 ------------------------------------------------------------------------
+- Change: [#3517] Letters with unsupported diacritics/accents are temporarily replaced with regular letters to keep e.g. Czech, Slovak readable.
 
 26.01 (2026-01-30)
 ------------------------------------------------------------------------
