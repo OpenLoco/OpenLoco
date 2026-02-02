@@ -817,13 +817,21 @@ if (APPLE)
 
     list(APPEND BUNDLE_RESOURCES ${CMAKE_SOURCE_DIR}/CHANGELOG.md)
     list(APPEND BUNDLE_RESOURCES ${CMAKE_SOURCE_DIR}/CONTRIBUTORS.md)
-    set_target_properties(OpenLoco PROPERTIES RESOURCE "${BUNDLE_RESOURCES}")
-    target_sources(OpenLoco PUBLIC ${BUNDLE_RESOURCES})
 
     file(GLOB BUNDLE_LANGUAGES "${CMAKE_SOURCE_DIR}/data/language/*")
-    target_sources(OpenLoco PUBLIC ${BUNDLE_LANGUAGES})
+    file(GLOB BUNDLE_OBJECTS "${openloco_objects_SOURCE_DIR}/*")
+
+    target_sources(OpenLoco PUBLIC "${BUNDLE_RESOURCES}" "${BUNDLE_LANGUAGES}" "${BUNDLE_OBJECTS}")
+
+    set_target_properties(OpenLoco PROPERTIES RESOURCE "${BUNDLE_RESOURCES}" "${BUNDLE_LANGUAGES}" "${BUNDLE_OBJECTS}")
+
     set_property(
         SOURCE ${BUNDLE_LANGUAGES}
         PROPERTY MACOSX_PACKAGE_LOCATION "Resources/language"
+    )
+
+    set_property(
+        SOURCE ${BUNDLE_OBJECTS}
+        PROPERTY MACOSX_PACKAGE_LOCATION "Resources/objects"
     )
 endif ()

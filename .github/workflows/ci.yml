@@ -319,12 +319,14 @@ jobs:
             ${{ runner.os }}-vcpkg-binary-cache-
       - name: Build OpenLoco
         run: |
-          cmake --preset macos-vcpkg-static
-          cmake --build --preset macos-vcpkg-static
+          mkdir build
+          cd build
+          cmake .. -G "Ninja Multi-Config" -DOPENLOCO_USE_VCPKG=ON -DVCPKG_TARGET_TRIPLET=arm64-osx -DVCPKG_LIBRARY_LINKAGE=static -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=only -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=only
+          cmake --build . --config Release
       - name: Install to artifacts
         run: |
           mkdir -p artifacts
-          cmake --install build/macos-vcpkg-static --prefix ./artifacts
+          cmake --install build --prefix ./artifacts
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
