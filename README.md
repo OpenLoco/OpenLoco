@@ -77,6 +77,7 @@ The following libraries/dependencies are used:
 - [fmt](https://github.com/fmtlib/fmt) (fetched during CMake generation)
 - [sfl](https://github.com/slavenf/sfl-library) (fetched during CMake generation)
 - [breakpad](https://github.com/google/breakpad) (only required on Windows)
+- [tbb](https://www.intel.com/content/www/us/en/developer/tools/oneapi/onetbb.html) (only required if using libstdc++)
 
 ### Windows
 - 10 / 11

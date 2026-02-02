@@ -2448,6 +2448,14 @@ strings:
   2393: 'Gradient (default)'
   2394: 'Solid colour'
   2395: 'Translucent colour'
-  2396: 'Vehicle cargo'
-  2397: 'Keep vehicle cargo on modify or pickup'
-  2398: '{SMALLFONT}{COLOUR BLACK}When enabled, cargo will not be cleared from the entire vehicle when adding cars, moving cars or picking up the vehicle'
+  2396: 'Frame rate limit:'
+  2397: 'Internal speed (default)'
+  2398: 'Vertical sync'
+  2399: 'Unrestricted'
+  2400: "Confirm move component"
+  2401: "Move component"
+  2402: "Moving this vehicle component will remove all cargo aboard the entire vehicle. Continue?"
+  2403: "Moving this vehicle component will remove all cargo aboard both vehicles. Continue?"
+  2404: 'Vehicle cargo'
+  2405: 'Keep vehicle cargo on modify or pickup'
+  2406: '{SMALLFONT}{COLOUR BLACK}When enabled, cargo will not be cleared from the entire vehicle when adding cars, moving cars or picking up the vehicle'

@@ -80,6 +80,7 @@ namespace OpenLoco::Config
         int32_t index{};
         Resolution windowResolution = { 800, 600 };
         Resolution fullscreenResolution;
+        bool vsync = false;
     };
 
     using Playlist = std::array<bool, 29>;

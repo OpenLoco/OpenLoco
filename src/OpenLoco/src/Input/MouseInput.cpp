@@ -207,11 +207,6 @@ namespace OpenLoco::Input
 
     bool isPressed(Ui::WindowType type, Ui::WindowNumber_t number)
     {
-        if (state() != State::widgetPressed)
-        {
-            return false;
-        }
-
         if (_pressedWindowType != type)
         {
             return false;
@@ -1680,6 +1675,12 @@ namespace OpenLoco::Input
     uint16_t getClickRepeatTicks()
     {
         return _clickRepeatTicks;
+    }
+
+    uint32_t getClickRepeatStepSize()
+    {
+        // Each 100 ticks increases step size by a factor of 10
+        return static_cast<uint32_t>(std::pow(10, getClickRepeatTicks() / 100));
     }
 
     void setClickRepeatTicks(uint16_t ticks)

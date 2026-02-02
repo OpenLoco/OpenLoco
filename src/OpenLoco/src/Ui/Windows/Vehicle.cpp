@@ -136,24 +136,23 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return veh;
         }
 
-        static bool confirmComponentChange(const EntityId id, const OpenLoco::StringId windowTitle, const OpenLoco::StringId windowMessage, const OpenLoco::StringId windowConfirm)
+        static bool needsComponentChangeConfirm(EntityId id)
         {
             auto* vehBase = EntityManager::get<Vehicles::VehicleBase>(id);
             if (vehBase == nullptr)
             {
-                // Should still run GameCommand so code path is identical to vanilla
-                return true;
+                return false;
             }
 
             auto* head = EntityManager::get<Vehicles::VehicleHead>(vehBase->getHead());
             if (head == nullptr)
             {
-                return true;
+                return false;
             }
 
             if (!head->hasAnyCargo())
             {
-                return true;
+                return false;
             }
 
             if (Config::get().keepCargoModifyPickup)
@@ -163,12 +162,32 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (head->getCarCount() > 0 && CompanyManager::getControllingId() == head->owner)
             {
-
-                auto format = FormatArguments{};
-                return Windows::PromptOkCancel::open(windowTitle, windowMessage, format, windowConfirm);
+                return true;
             }
 
             return false;
+        }
+
+        static bool confirmComponentChange(const EntityId id, const OpenLoco::StringId windowTitle, const OpenLoco::StringId windowMessage, const OpenLoco::StringId windowConfirm)
+        {
+            if (!needsComponentChangeConfirm(id))
+            {
+                return true;
+            }
+
+            auto format = FormatArguments{};
+            return Windows::PromptOkCancel::open(windowTitle, windowMessage, format, windowConfirm);
+        }
+
+        static bool confirmComponentChange(const EntityId srcId, const EntityId destId, const OpenLoco::StringId windowTitle, const OpenLoco::StringId windowMessage, const OpenLoco::StringId windowConfirm)
+        {
+            if (!needsComponentChangeConfirm(srcId) && !needsComponentChangeConfirm(destId))
+            {
+                return true;
+            }
+
+            auto format = FormatArguments{};
+            return Windows::PromptOkCancel::open(windowTitle, windowMessage, format, windowConfirm);
         }
 
         static void onClose(Window& self);
@@ -1597,13 +1616,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         constexpr auto kVehicleDetailsOffset = 2;
         constexpr auto kVehicleDetailsLineHeight = 12;
-        constexpr auto kVehicleDetailsTextHeight2Lines = kVehicleDetailsOffset + kVehicleDetailsLineHeight * 2;
-        constexpr auto kVehicleDetailsTextHeight3Lines = kVehicleDetailsOffset + kVehicleDetailsLineHeight * 3;
-
-        static auto getVehicleDetailsHeight(const OpenLoco::TransportMode transportMode)
-        {
-            return transportMode == TransportMode::rail || transportMode == TransportMode::road ? kVehicleDetailsTextHeight3Lines : kVehicleDetailsTextHeight2Lines;
-        }
+        constexpr auto kVehicleDetailsTextHeight = kVehicleDetailsOffset + kVehicleDetailsLineHeight * 3;
 
         static void alignToRightBar(Window& self, widx widget)
         {
@@ -1639,7 +1652,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Widget::leftAlignTabs(self, Common::widx::tabMain, Common::widx::tabRoute);
 
             self.widgets[widx::carList].right = self.width - 26;
-            self.widgets[widx::carList].bottom = self.height - getVehicleDetailsHeight(head->getTransportMode());
+            self.widgets[widx::carList].bottom = self.height - kVehicleDetailsTextHeight;
             alignToRightBar(self, widx::buildNew);
             alignToRightBar(self, widx::pickup);
             alignToRightBar(self, widx::remove);
@@ -1648,7 +1661,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (isPaintToolActive(self))
             {
                 self.activatedWidgets |= (1U << widx::paintBrush);
-                self.widgets[widx::carList].bottom = self.height - kVehicleDetailsTextHeight3Lines;
+                self.widgets[widx::carList].bottom = self.height - kVehicleDetailsTextHeight;
 
                 self.widgets[widx::paintColourPrimary].hidden = false;
                 self.widgets[widx::paintColourPrimary].right = self.width - 23;
@@ -1677,7 +1690,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
             if (head->owner != CompanyManager::getControllingId())
             {
-                self.widgets[widx::carList].bottom = self.height - getVehicleDetailsHeight(head->getTransportMode());
+                self.widgets[widx::carList].bottom = self.height - kVehicleDetailsTextHeight;
                 self.widgets[Details::widx::paintColourPrimary].hidden = true;
                 self.widgets[Details::widx::paintColourSecondary].hidden = true;
 
@@ -1695,8 +1708,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 self.widgets[widx::pickup].hidden = false;
                 self.widgets[widx::remove].hidden = false;
 
-                self.widgets[widx::paintBrush].bottom = self.height - kVehicleDetailsTextHeight3Lines;
-                self.widgets[widx::paintBrush].top = self.height - kVehicleDetailsTextHeight3Lines - 24;
+                self.widgets[widx::paintBrush].bottom = self.height - kVehicleDetailsTextHeight;
+                self.widgets[widx::paintBrush].top = self.height - kVehicleDetailsTextHeight - 24;
             }
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
@@ -1857,13 +1870,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            OpenLoco::Vehicles::Vehicle train{ *head };
-            Ui::Point pos = { static_cast<int16_t>(self.x + 3), static_cast<int16_t>(self.y + self.height - getVehicleDetailsHeight(head->getTransportMode()) + kVehicleDetailsOffset) };
 
+            Ui::Point pos = { self.x + 3, self.y + self.height - kVehicleDetailsTextHeight + kVehicleDetailsOffset };
+            Vehicles::Vehicle train{ *head };
+
+            // Draw power and weight
             {
                 FormatArguments args{};
                 args.push(train.veh2->totalPower);
                 args.push<uint32_t>(train.veh2->totalWeight);
+
                 StringId str = StringIds::vehicle_details_weight;
                 if (train.veh2->mode == TransportMode::rail || train.veh2->mode == TransportMode::road)
                 {
@@ -1872,12 +1888,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 tr.drawStringLeftClipped(pos, std::min<uint16_t>(self.width - 6, textRightEdge), Colour::black, str, args);
             }
 
+            // Draw max (rack rail) speed and reliability
             {
                 pos.y += kVehicleDetailsLineHeight;
                 FormatArguments args{};
                 args.push<uint16_t>(train.veh2->maxSpeed == kSpeed16Null ? 0 : train.veh2->maxSpeed.getRaw());
                 args.push<uint16_t>(train.veh2->rackRailMaxSpeed == kSpeed16Null ? 0 : train.veh2->rackRailMaxSpeed.getRaw());
                 args.push<uint16_t>(train.veh2->reliability == 0 ? 64 : train.veh2->reliability);
+
                 StringId str = StringIds::vehicle_details_max_speed_and_reliability;
                 if (train.veh1->var_49 != 0)
                 {
@@ -1886,8 +1904,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 tr.drawStringLeftClipped(pos, std::min<uint16_t>(self.width - 16, textRightEdge), Colour::black, str, args);
             }
 
+            // Draw car count and vehicle length
             {
-                // Draw car count and vehicle length
                 pos.y += kVehicleDetailsLineHeight;
                 FormatArguments args = {};
                 StringId str = StringIds::vehicle_length;
@@ -2110,8 +2128,18 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         args.source = DragVehiclePart::getDragCarComponent()->id;
                         args.dest = car->id;
 
-                        GameCommands::setErrorTitle(StringIds::cant_move_vehicle);
-                        GameCommands::doCommand(args, GameCommands::Flags::apply);
+                        auto* srcVehicle = EntityManager::get<Vehicles::VehicleBase>(args.source);
+                        auto* destVehicle = EntityManager::get<Vehicles::VehicleBase>(args.dest);
+
+                        bool sameHead = srcVehicle == nullptr || destVehicle == nullptr || srcVehicle->head == destVehicle->head;
+
+                        const StringId warningMessage = sameHead ? StringIds::confirm_vehicle_component_move_cargo_warning_message : StringIds::confirm_vehicle_component_move_cargo_multiple_vehicles_warning_message;
+
+                        if (Common::confirmComponentChange(args.source, args.dest, StringIds::confirm_vehicle_component_move_cargo_warning_title, warningMessage, StringIds::confirm_vehicle_component_move_cargo_warning_confirm))
+                        {
+                            GameCommands::setErrorTitle(StringIds::cant_move_vehicle);
+                            GameCommands::doCommand(args, GameCommands::Flags::apply);
+                        }
                     }
                     break;
                 }
@@ -5020,7 +5048,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             GameCommands::setErrorTitle(StringIds::cant_remove_string_id);
             FormatArguments args{};
-            args.skip(10);
+            args.skip(6);
             args.push(head->name);
             args.push(head->ordinalNumber);
 

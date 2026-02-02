@@ -330,45 +330,24 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
-            currency32_t cashStepSize{};
-            int32_t timeStepSize{};
-            uint16_t clickRepeatTicks = Input::getClickRepeatTicks();
-
-            if (clickRepeatTicks < 100)
-            {
-                cashStepSize = 1'000;
-                timeStepSize = 1;
-            }
-            else if (clickRepeatTicks < 200)
-            {
-                cashStepSize = 10'000;
-                timeStepSize = 10;
-            }
-            else if (clickRepeatTicks < 300)
-            {
-                cashStepSize = 100'000;
-                timeStepSize = 100;
-            }
-            else
-            {
-                cashStepSize = 1'000'000;
-                timeStepSize = 1'000;
-            }
+            const auto stepSize = Input::getClickRepeatStepSize();
+            const auto cashStepSize = stepSize * 1'000;
+            const auto timeStepSize = stepSize;
 
             switch (widgetIndex)
             {
                 case Widx::cash_step_decrease:
-                    _cashIncreaseStep = std::max<currency32_t>(_cashIncreaseStep - cashStepSize, 0);
+                    _cashIncreaseStep = std::max<currency32_t>(Math::Bound::sub(_cashIncreaseStep, cashStepSize), 0);
                     WindowManager::invalidateWidget(self.type, self.number, Widx::cash_step_value);
                     break;
 
                 case Widx::cash_step_increase:
-                    _cashIncreaseStep = std::max<currency32_t>(_cashIncreaseStep + cashStepSize, 0);
+                    _cashIncreaseStep = std::max<currency32_t>(Math::Bound::add(_cashIncreaseStep, cashStepSize), 0);
                     WindowManager::invalidateWidget(self.type, self.number, Widx::cash_step_value);
                     break;
 
                 case Widx::year_step_decrease:
-                    _date.year = std::max<int32_t>(OpenLoco::Scenario::kMinYear, _date.year - timeStepSize);
+                    _date.year = std::max<int32_t>(OpenLoco::Scenario::kMinYear, Math::Bound::sub(_date.year, timeStepSize));
                     break;
 
                 case Widx::year_step_increase:
@@ -376,19 +355,19 @@ namespace OpenLoco::Ui::Windows::Cheats
                     break;
 
                 case Widx::month_step_decrease:
-                    _date.month = static_cast<MonthId>(std::max<int8_t>(0, (static_cast<int8_t>(_date.month) - timeStepSize)));
+                    _date.month = static_cast<MonthId>(std::max<int8_t>(0, Math::Bound::sub(static_cast<int8_t>(_date.month), timeStepSize)));
                     break;
 
                 case Widx::month_step_increase:
-                    _date.month = static_cast<MonthId>(std::min<int8_t>(11, (static_cast<int8_t>(_date.month) + timeStepSize)));
+                    _date.month = static_cast<MonthId>(std::min<int8_t>(11, Math::Bound::add(static_cast<int8_t>(_date.month), timeStepSize)));
                     break;
 
                 case Widx::day_step_decrease:
-                    _date.day = std::max<int32_t>(0, _date.day - timeStepSize);
+                    _date.day = std::max<int32_t>(0, Math::Bound::sub(_date.day, timeStepSize));
                     break;
 
                 case Widx::day_step_increase:
-                    _date.day = std::min<int32_t>(getMonthTotalDay(_date.year, _date.month) - 1, _date.day + timeStepSize);
+                    _date.day = std::min<int32_t>(getMonthTotalDay(_date.year, _date.month) - 1, Math::Bound::add(_date.day, timeStepSize));
                     break;
             }
 

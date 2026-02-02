@@ -53,7 +53,7 @@ if (OPENLOCO_USE_VCPKG)
     endif()
 endif ()
 
-project(${PROJECT} LANGUAGES CXX VERSION 25.12)
+project(${PROJECT} LANGUAGES CXX VERSION 26.01)
 
 # Enable IPO for all Release targets by default
 include(CheckIPOSupported)
@@ -65,6 +65,14 @@ if(ipo_supported)
     message(STATUS "IPO/LTO enabled for all Release targets.")
 else()
     message(WARNING "IPO/LTO not supported: ${ipo_error}")
+endif()
+
+# libstdc++ doesn't have standalone <execution> support so if using libstdc++ we need to
+# link against TBB
+include(CheckCXXSymbolExists)
+check_cxx_symbol_exists(__GLIBCXX__  version HAS_LIBSTDCPP)
+if (HAS_LIBSTDCPP)
+    message(STATUS "libstdc++ detected will require linking with TBB")
 endif()
 
 if (NOT CMAKE_CXX_STANDARD)
@@ -103,8 +111,8 @@ if (${OPENLOCO_BUILD_TESTS})
 endif()
 
 FetchContent_Declare(openloco_objects
-            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.6/objects.zip
-            URL_HASH SHA256=4cea1ab77131650b5475b489445ce65c275b3a23b921456afda4d9c5c83e580c)
+            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.7/objects.zip
+            URL_HASH SHA256=f4ef6e3bb59d0644d6269409c4e3c00b71b21bcdeafc4506b4d16390210be1ee)
 FetchContent_MakeAvailable(openloco_objects)
 
 add_subdirectory(src)

@@ -167,6 +167,7 @@ namespace OpenLoco::Ui
         auto& drawingEngine = Gfx::getDrawingEngine();
         drawingEngine.initialize(_window);
         drawingEngine.resize(desc.width, desc.height);
+        drawingEngine.setVSync(cfg.vsync);
     }
 
     static void setWindowIcon()

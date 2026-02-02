@@ -27,7 +27,7 @@
 #include "Ui/Screenshot.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
-#include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/ToolbarButtonWidget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleHead.h"
@@ -53,23 +53,23 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     static constexpr auto _widgets = makeWidgets(
-        Widgets::ImageButton({ 0, 0 }, { 30, 28 }, WindowColour::primary),
-        Widgets::ImageButton({ 30, 0 }, { 30, 28 }, WindowColour::primary),
-        Widgets::ImageButton({ 60, 0 }, { 30, 28 }, WindowColour::primary),
+        Widgets::ToolbarButton({ 0, 0 }, { 30, 28 }, WindowColour::primary),
+        Widgets::ToolbarButton({ 30, 0 }, { 30, 28 }, WindowColour::primary),
+        Widgets::ToolbarButton({ 60, 0 }, { 30, 28 }, WindowColour::primary),
 
-        Widgets::ImageButton({ 104, 0 }, { 30, 28 }, WindowColour::secondary),
-        Widgets::ImageButton({ 134, 0 }, { 30, 28 }, WindowColour::secondary),
-        Widgets::ImageButton({ 164, 0 }, { 30, 28 }, WindowColour::secondary),
+        Widgets::ToolbarButton({ 104, 0 }, { 30, 28 }, WindowColour::secondary),
+        Widgets::ToolbarButton({ 134, 0 }, { 30, 28 }, WindowColour::secondary),
+        Widgets::ToolbarButton({ 164, 0 }, { 30, 28 }, WindowColour::secondary),
 
-        Widgets::ImageButton({ 267, 0 }, { 30, 28 }, WindowColour::tertiary),
-        Widgets::ImageButton({ 387, 0 }, { 30, 28 }, WindowColour::tertiary),
-        Widgets::ImageButton({ 357, 0 }, { 30, 28 }, WindowColour::tertiary),
-        Widgets::ImageButton({ 417, 0 }, { 30, 28 }, WindowColour::tertiary),
-        Widgets::ImageButton({ 417, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ToolbarButton({ 267, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ToolbarButton({ 387, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ToolbarButton({ 357, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ToolbarButton({ 417, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ToolbarButton({ 417, 0 }, { 30, 28 }, WindowColour::tertiary),
 
-        Widgets::ImageButton({ 490, 0 }, { 30, 28 }, WindowColour::quaternary),
-        Widgets::ImageButton({ 520, 0 }, { 30, 28 }, WindowColour::quaternary),
-        Widgets::ImageButton({ 460, 0 }, { 30, 28 }, WindowColour::quaternary)
+        Widgets::ToolbarButton({ 490, 0 }, { 30, 28 }, WindowColour::quaternary),
+        Widgets::ToolbarButton({ 520, 0 }, { 30, 28 }, WindowColour::quaternary),
+        Widgets::ToolbarButton({ 460, 0 }, { 30, 28 }, WindowColour::quaternary)
 
     );
 
@@ -923,22 +923,19 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             window.widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_active, window.getColour(WindowColour::primary).c());
         }
 
-        if (Config::get().cheatsMenuEnabled)
-        {
-            window.widgets[Widx::cheats_menu].hidden = false;
-            auto& baseWidget = window.widgets[Widx::cheats_menu];
-            window.widgets[Common::Widx::zoom_menu].left = baseWidget.left + 14 + (baseWidget.width() * 1);
-            window.widgets[Common::Widx::rotate_menu].left = baseWidget.left + 14 + (baseWidget.width() * 2);
-            window.widgets[Common::Widx::view_menu].left = baseWidget.left + 14 + (baseWidget.width() * 3);
-        }
-        else
-        {
-            window.widgets[Widx::cheats_menu].hidden = true;
-            auto& baseWidget = window.widgets[Common::Widx::audio_menu];
-            window.widgets[Common::Widx::zoom_menu].left = baseWidget.left + 14 + (baseWidget.width() * 1);
-            window.widgets[Common::Widx::rotate_menu].left = baseWidget.left + 14 + (baseWidget.width() * 2);
-            window.widgets[Common::Widx::view_menu].left = baseWidget.left + 14 + (baseWidget.width() * 3);
-        }
+        const bool cheatsOn = Config::get().cheatsMenuEnabled;
+        window.widgets[Widx::cheats_menu].hidden = !cheatsOn;
+
+        const auto& refWidget = window.widgets[cheatsOn ? enumValue(Widx::cheats_menu) : enumValue(Common::Widx::audio_menu)];
+        const auto offsetWidget = [&window, refWidget](uint8_t widgetIndex, uint8_t index) {
+            auto& widget = window.widgets[widgetIndex];
+            widget.left = refWidget.left + 14 + (refWidget.width() * index);
+            widget.right = widget.left + refWidget.width() - 1;
+        };
+
+        offsetWidget(Common::Widx::zoom_menu, 1);
+        offsetWidget(Common::Widx::rotate_menu, 2);
+        offsetWidget(Common::Widx::view_menu, 3);
 
         if (_lastPortOption == 0
             && getGameState().lastAirport == 0xFF

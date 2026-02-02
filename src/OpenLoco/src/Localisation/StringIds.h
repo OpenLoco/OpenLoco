@@ -1874,8 +1874,8 @@ namespace OpenLoco::StringIds
     constexpr StringId cheat_allow_building_while_paused = 2160;
     constexpr StringId option_show_fps_counter = 2161;
     constexpr StringId option_show_fps_counter_tooltip = 2162;
-    constexpr StringId option_uncap_fps = 2163;
-    constexpr StringId option_uncap_fps_tooltip = 2164;
+    constexpr StringId option_uncap_fps = UNUSED_STR(2163);
+    constexpr StringId option_uncap_fps_tooltip = UNUSED_STR(2164);
     constexpr StringId frame_hardware = 2165;
     constexpr StringId frame_map_rendering = 2166;
     constexpr StringId tile_inspector = 2167;
@@ -2107,9 +2107,17 @@ namespace OpenLoco::StringIds
     constexpr StringId windowFrameStyleGradient = 2393;
     constexpr StringId windowFrameStyleSolid = 2394;
     constexpr StringId windowFrameStyleTranslucent = 2395;
-    constexpr StringId cheat_vehicle_cargo = 2396;
-    constexpr StringId cheat_keep_cargo_modify_pickup = 2397;
-    constexpr StringId tooltip_keep_cargo_modify_pickup = 2398;
+    constexpr StringId frameRateLimitLabel = 2396;
+    constexpr StringId frameRateLimitInternal = 2397;
+    constexpr StringId frameRateLimitVsync = 2398;
+    constexpr StringId frameRateLimitUnrestricted = 2399;
+    constexpr StringId confirm_vehicle_component_move_cargo_warning_title = 2400;
+    constexpr StringId confirm_vehicle_component_move_cargo_warning_confirm = 2401;
+    constexpr StringId confirm_vehicle_component_move_cargo_warning_message = 2402;
+    constexpr StringId confirm_vehicle_component_move_cargo_multiple_vehicles_warning_message = 2403;
+    constexpr StringId cheat_vehicle_cargo = 2404;
+    constexpr StringId cheat_keep_cargo_modify_pickup = 2405;
+    constexpr StringId tooltip_keep_cargo_modify_pickup = 2406;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
