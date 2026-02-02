@@ -178,6 +178,11 @@ namespace OpenLoco::Ui
         drawingEngine.initialize(_window);
         drawingEngine.resize(width, height);
 
+        // SDL2 always activated text input by default on desktop platforms, SDL3 does not.
+        // TODO: Do this properly and activate/deactivate depending on textbox focus, we should also
+        // set the input rectangle to avoid IME issues.
+        SDL_StartTextInput(_window);
+
         SDL_DestroyProperties(props);
     }
 
