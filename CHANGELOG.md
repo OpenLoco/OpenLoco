@@ -1,5 +1,6 @@
 26.01+ (???)
 ------------------------------------------------------------------------
+- Feature: [#3591] Cheat to keep cargo when picking up a vehicle or modifying a vehicle's components.
 - Fix: [#3626] The vsync setting is not saved correctly.
 
 26.01 (2026-01-30)
