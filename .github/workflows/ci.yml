@@ -296,6 +296,7 @@ jobs:
   macos:
     name: macOS Sequoia ARM64 vcpkg
     runs-on: macos-15
+    needs: check-code-formatting
     steps:
       - name: Checkout
         uses: actions/checkout@v4
