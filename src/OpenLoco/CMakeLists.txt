@@ -819,7 +819,7 @@ if (APPLE)
     list(APPEND BUNDLE_RESOURCES ${CMAKE_SOURCE_DIR}/CONTRIBUTORS.md)
 
     file(GLOB BUNDLE_LANGUAGES "${CMAKE_SOURCE_DIR}/data/language/*")
-    file(GLOB BUNDLE_OBJECTS "${openloco_objects_SOURCE_DIR}/*")
+    file(GLOB_RECURSE  BUNDLE_OBJECTS "${openloco_objects_SOURCE_DIR}/*")
 
     target_sources(OpenLoco PUBLIC "${BUNDLE_RESOURCES}" "${BUNDLE_LANGUAGES}" "${BUNDLE_OBJECTS}")
 
