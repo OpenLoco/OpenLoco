@@ -1345,6 +1345,68 @@ namespace OpenLoco::Paint
         paintSurfaceCliffEdgeImpl(session, edge, waterHeight, edgeHeight, cliffEdgeImageBase);
     }
 
+    template<std::size_t TDirection>
+    static inline TileDescriptor getTileDescriptor(PaintSession& session, const uint8_t rotation, const CornerHeight& selfCornerHeight)
+    {
+        TileDescriptor descriptor;
+
+        const auto& offset = kNeighbourOffsets[rotation][TDirection];
+        const auto position = session.getSpritePosition() + offset;
+
+        descriptor.elSurface = nullptr;
+        if (!World::validCoords(position))
+        {
+            return {};
+        }
+
+        descriptor.elSurface = World::TileManager::get(position).surface();
+        if (descriptor.elSurface == nullptr)
+        {
+            return {};
+        }
+
+        const uint32_t surfaceSlope = getRotatedSlope(descriptor.elSurface->slope(), rotation);
+
+        const uint8_t microZ = descriptor.elSurface->baseZ() / kMicroToSmallZStep;
+        const CornerHeight& ch = kCornerHeights[surfaceSlope];
+
+        descriptor.pos = position;
+        descriptor.landObjectId = descriptor.elSurface->isIndustrial() ? static_cast<uint8_t>(0xFFU) : descriptor.elSurface->terrain();
+        descriptor.slope = surfaceSlope;
+        if constexpr (TDirection == 0) // SW edge
+        {
+            descriptor.edgeHeight.self0 = selfCornerHeight.left;
+            descriptor.edgeHeight.neighbour0 = microZ + ch.top;
+            descriptor.edgeHeight.self1 = selfCornerHeight.bottom;
+            descriptor.edgeHeight.neighbour1 = microZ + ch.right;
+        }
+        else if constexpr (TDirection == 1) // SE edge
+        {
+            descriptor.edgeHeight.self0 = selfCornerHeight.right;
+            descriptor.edgeHeight.neighbour0 = microZ + ch.top;
+            descriptor.edgeHeight.self1 = selfCornerHeight.bottom;
+            descriptor.edgeHeight.neighbour1 = microZ + ch.left;
+        }
+        else if constexpr (TDirection == 2) // NW edge
+        {
+            descriptor.edgeHeight.self0 = selfCornerHeight.top;
+            descriptor.edgeHeight.neighbour0 = microZ + ch.right;
+            descriptor.edgeHeight.self1 = selfCornerHeight.left;
+            descriptor.edgeHeight.neighbour1 = microZ + ch.bottom;
+        }
+        else if constexpr (TDirection == 3) // NE edge
+        {
+            descriptor.edgeHeight.self0 = selfCornerHeight.top;
+            descriptor.edgeHeight.neighbour0 = microZ + ch.left;
+            descriptor.edgeHeight.self1 = selfCornerHeight.right;
+            descriptor.edgeHeight.neighbour1 = microZ + ch.bottom;
+        }
+        descriptor.snowCoverage = descriptor.elSurface->snowCoverage();
+        descriptor.growthStage = descriptor.elSurface->getGrowthStage();
+
+        return descriptor;
+    }
+
     // 0x004656BF
     void paintSurface(PaintSession& session, World::SurfaceElement& elSurface)
     {
@@ -1353,7 +1415,7 @@ namespace OpenLoco::Paint
         session.setDidPassSurface(true);
 
         // 0x00F252B0 / 0x00F252B4 but if 0x00F252B0 == -2 that means industrial
-        [[maybe_unused]] uint8_t landObjId = elSurface.terrain();
+        const auto landObjId = elSurface.terrain();
         const auto* landObj = ObjectManager::get<LandObject>(landObjId);
 
         const auto rotation = session.getRotation();
@@ -1382,66 +1444,12 @@ namespace OpenLoco::Paint
             static_cast<uint8_t>(selfMicroZ + kCornerHeights[rotatedSlope].left),
         };
 
-        std::array<TileDescriptor, 4> tileDescriptors{};
-
-        for (std::size_t i = 0; i < std::size(tileDescriptors); i++)
-        {
-            const auto& offset = kNeighbourOffsets[rotation][i];
-            const auto position = session.getSpritePosition() + offset;
-
-            TileDescriptor& descriptor = tileDescriptors[i];
-
-            descriptor.elSurface = nullptr;
-            if (!World::validCoords(position))
-            {
-                continue;
-            }
-
-            descriptor.elSurface = World::TileManager::get(position).surface();
-            if (descriptor.elSurface == nullptr)
-            {
-                continue;
-            }
-
-            const uint32_t surfaceSlope = getRotatedSlope(descriptor.elSurface->slope(), rotation);
-
-            const uint8_t microZ = descriptor.elSurface->baseZ() / kMicroToSmallZStep;
-            const CornerHeight& ch = kCornerHeights[surfaceSlope];
-
-            descriptor.pos = position;
-            descriptor.landObjectId = descriptor.elSurface->isIndustrial() ? static_cast<uint8_t>(0xFFU) : descriptor.elSurface->terrain();
-            descriptor.slope = surfaceSlope;
-            if (i == 0) // SW edge
-            {
-                descriptor.edgeHeight.self0 = selfCornerHeight.left;
-                descriptor.edgeHeight.neighbour0 = microZ + ch.top;
-                descriptor.edgeHeight.self1 = selfCornerHeight.bottom;
-                descriptor.edgeHeight.neighbour1 = microZ + ch.right;
-            }
-            else if (i == 1) // SE edge
-            {
-                descriptor.edgeHeight.self0 = selfCornerHeight.right;
-                descriptor.edgeHeight.neighbour0 = microZ + ch.top;
-                descriptor.edgeHeight.self1 = selfCornerHeight.bottom;
-                descriptor.edgeHeight.neighbour1 = microZ + ch.left;
-            }
-            else if (i == 2) // NW edge
-            {
-                descriptor.edgeHeight.self0 = selfCornerHeight.top;
-                descriptor.edgeHeight.neighbour0 = microZ + ch.right;
-                descriptor.edgeHeight.self1 = selfCornerHeight.left;
-                descriptor.edgeHeight.neighbour1 = microZ + ch.bottom;
-            }
-            else if (i == 3) // NE edge
-            {
-                descriptor.edgeHeight.self0 = selfCornerHeight.top;
-                descriptor.edgeHeight.neighbour0 = microZ + ch.left;
-                descriptor.edgeHeight.self1 = selfCornerHeight.right;
-                descriptor.edgeHeight.neighbour1 = microZ + ch.bottom;
-            }
-            descriptor.snowCoverage = descriptor.elSurface->snowCoverage();
-            descriptor.growthStage = descriptor.elSurface->getGrowthStage();
-        }
+        const std::array tileDescriptors = {
+            getTileDescriptor<0>(session, rotation, selfCornerHeight), // SW
+            getTileDescriptor<1>(session, rotation, selfCornerHeight), // SE
+            getTileDescriptor<2>(session, rotation, selfCornerHeight), // NW
+            getTileDescriptor<3>(session, rotation, selfCornerHeight), // NE
+        };
 
         if (((session.getViewFlags() & Ui::ViewportFlags::height_marks_on_land) != Ui::ViewportFlags::none)
             && zoomLevel == 0)
