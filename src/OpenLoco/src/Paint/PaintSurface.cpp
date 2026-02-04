@@ -1346,7 +1346,7 @@ namespace OpenLoco::Paint
     }
 
     template<std::size_t TDirection>
-    static inline TileDescriptor getTileDescriptor(PaintSession& session, const uint8_t rotation, const CornerHeight& selfCornerHeight)
+    static inline TileDescriptor getTileDescriptor(const PaintSession& session, const uint8_t rotation, const CornerHeight& selfCornerHeight)
     {
         const auto& offset = kNeighbourOffsets[rotation][TDirection];
         const auto position = session.getSpritePosition() + offset;

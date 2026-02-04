@@ -1287,7 +1287,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x0045ED91
-    [[nodiscard]] InteractionArg PaintSession::getNormalInteractionInfo(const InteractionItemFlags flags)
+    [[nodiscard]] InteractionArg PaintSession::getNormalInteractionInfo(const InteractionItemFlags flags) const
     {
         InteractionArg info{};
 
@@ -1331,7 +1331,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x0048DDE4
-    [[nodiscard]] InteractionArg PaintSession::getStationNameInteractionInfo(const InteractionItemFlags flags)
+    [[nodiscard]] InteractionArg PaintSession::getStationNameInteractionInfo(const InteractionItemFlags flags) const
     {
         InteractionArg interaction{};
 
@@ -1363,7 +1363,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x0049773D
-    [[nodiscard]] InteractionArg PaintSession::getTownNameInteractionInfo(const InteractionItemFlags flags)
+    [[nodiscard]] InteractionArg PaintSession::getTownNameInteractionInfo(const InteractionItemFlags flags) const
     {
         InteractionArg interaction{};
 
@@ -1512,7 +1512,7 @@ namespace OpenLoco::Paint
             case 3:
                 return _tunnels3;
         }
-        return std::span<TunnelEntry>();
+        return {};
     }
 
     bool showAiPlanningGhosts()
