@@ -736,6 +736,12 @@ namespace OpenLoco
 
         while (Input::processMessages())
         {
+
+            if (Input::isLostFocusPaused())
+            {
+                continue;
+            }
+
             update();
         }
 
