@@ -106,6 +106,8 @@ namespace OpenLoco::Audio
 
     void resetSoundObjects();
 
+    void toggleAudioLostFocus(bool pause);
+
     std::optional<BufferId> loadMusicSample(Environment::PathId asset);
 
     int32_t calculatePan(const coord_t coord, const int32_t screenSize);

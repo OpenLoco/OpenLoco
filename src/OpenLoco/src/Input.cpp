@@ -53,6 +53,7 @@ namespace OpenLoco::Input
         // TODO check config
 
         _isLostFocusPaused = true;
+        Audio::toggleAudioLostFocus(true);
     }
 
     static void focusGained()
@@ -63,6 +64,7 @@ namespace OpenLoco::Input
         }
 
         _isLostFocusPaused = false;
+        Audio::toggleAudioLostFocus(false);
     }
 
     bool isLostFocusPaused()
