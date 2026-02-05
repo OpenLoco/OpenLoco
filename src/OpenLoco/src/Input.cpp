@@ -18,6 +18,7 @@ namespace OpenLoco::Input
     static Ui::Point _cursorDragStart;
     static uint32_t _cursorDragState;
     static bool _exitRequested = false;
+    static bool _isLostFocusPaused = false;
 
     void init()
     {
@@ -48,6 +49,28 @@ namespace OpenLoco::Input
     void state(State state)
     {
         _state = state;
+    }
+
+    static void focusLost()
+    {
+        // TODO check config
+
+        _isLostFocusPaused = true;
+    }
+
+    static void focusGained()
+    {
+        if (!_isLostFocusPaused)
+        {
+            return;
+        }
+
+        _isLostFocusPaused = false;
+    }
+
+    bool isLostFocusPaused()
+    {
+        return _isLostFocusPaused;
     }
 
     // 0x00407218
@@ -140,6 +163,12 @@ namespace OpenLoco::Input
                             break;
                         case SDL_WINDOWEVENT_SIZE_CHANGED:
                             Ui::windowSizeChanged(e.window.data1, e.window.data2);
+                            break;
+                        case SDL_WINDOWEVENT_FOCUS_LOST:
+                            focusLost();
+                            break;
+                        case SDL_WINDOWEVENT_FOCUS_GAINED:
+                            focusGained();
                             break;
                     }
                     break;
