@@ -50,7 +50,10 @@ namespace OpenLoco::Input
 
     static void focusLost()
     {
-        // TODO check config
+        if (!Config::get().pauseOnLostFocus)
+        {
+            return;
+        }
 
         _isLostFocusPaused = true;
         Audio::toggleAudioLostFocus(true);

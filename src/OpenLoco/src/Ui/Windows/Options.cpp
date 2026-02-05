@@ -2177,7 +2177,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Misc
     {
-        static constexpr Ui::Size kWindowSize = { 420, 266 };
+        static constexpr Ui::Size kWindowSize = { 420, 281 };
 
         namespace Widx
         {
@@ -2203,6 +2203,8 @@ namespace OpenLoco::Ui::Windows::Options
                 autosave_amount_down_btn,
                 autosave_amount_up_btn,
                 export_plugin_objects,
+
+                pauseOnLostFocus,
             };
         }
 
@@ -2231,7 +2233,9 @@ namespace OpenLoco::Ui::Windows::Options
             Widgets::Label({ 10, 226 }, { 200, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::autosave_amount),
             Widgets::stepperWidgets({ 250, 226 }, { 156, 12 }, WindowColour::secondary, StringIds::empty),
 
-            Widgets::Checkbox({ 10, 241 }, { 400, 12 }, WindowColour::secondary, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip)
+            Widgets::Checkbox({ 10, 241 }, { 400, 12 }, WindowColour::secondary, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip),
+
+            Widgets::Checkbox({ 10, 266 }, { 400, 12 }, WindowColour::secondary, StringIds::pause_on_lost_focus, StringIds::pause_on_lost_focus_tip)
 
         );
 
@@ -2241,6 +2245,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void disableAICompaniesMouseUp(Window& self);
         static void disableTownExpansionMouseUp(Window& self);
         static void exportPluginObjectsMouseUp(Window& self);
+        static void pauseOnLostFocus(Window& self);
 
         // 0x004C11B7
         static void prepareDraw(Window& self)
@@ -2290,6 +2295,11 @@ namespace OpenLoco::Ui::Windows::Options
             }
 
             self.widgets[Widx::export_plugin_objects].hidden = !ObjectManager::getCustomObjectsInIndexStatus();
+
+            if (Config::get().pauseOnLostFocus)
+            {
+                self.activatedWidgets |= (1ULL << Widx::pauseOnLostFocus);
+            }
         }
 
         static void drawDropdownContent(const Window& self, Gfx::DrawingContext& drawingCtx, WidgetIndex_t widgetIndex, StringId stringId, int32_t value)
@@ -2459,6 +2469,10 @@ namespace OpenLoco::Ui::Windows::Options
                 case Widx::export_plugin_objects:
                     exportPluginObjectsMouseUp(self);
                     break;
+
+                case Widx::pauseOnLostFocus:
+                    pauseOnLostFocus(self);
+                    break;
             }
         }
 
@@ -2533,6 +2547,15 @@ namespace OpenLoco::Ui::Windows::Options
         {
             auto& cfg = Config::get();
             cfg.exportObjectsWithSaves ^= true;
+            Config::write();
+
+            self.invalidate();
+        }
+
+        static void pauseOnLostFocus(Window& self)
+        {
+            auto& cfg = Config::get();
+            cfg.pauseOnLostFocus ^= true;
             Config::write();
 
             self.invalidate();
