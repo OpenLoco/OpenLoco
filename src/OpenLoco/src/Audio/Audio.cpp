@@ -1159,4 +1159,42 @@ namespace OpenLoco::Audio
             channel->setVolume(volume);
         }
     }
+
+    void toggleAudioLostFocus(bool pause)
+    {
+        static bool soundsWerePlaying = false;
+        static bool musicWasPlaying = false;
+
+        if (pause)
+        {
+            // Pause audio
+
+            soundsWerePlaying = !_audioIsPaused;
+            if (soundsWerePlaying)
+            {
+                pauseSound();
+            }
+
+            auto* channel = getChannel(ChannelId::music);
+            musicWasPlaying = (_audioIsInitialised && channel != nullptr && channel->isPlaying());
+            if (musicWasPlaying)
+            {
+                pauseMusic();
+            }
+        }
+        else
+        {
+            // Unpause audio
+
+            if (soundsWerePlaying)
+            {
+                unpauseSound();
+            }
+
+            if (musicWasPlaying)
+            {
+                unpauseMusic();
+            }
+        }
+    }
 }

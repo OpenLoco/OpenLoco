@@ -108,6 +108,8 @@ namespace OpenLoco::Audio
 
     void setBgmVolume(int32_t volume);
 
+    void toggleAudioLostFocus(bool pause);
+
     void updateVehicleNoise();
     void stopVehicleNoise();
     void stopVehicleNoise(EntityId head);
