@@ -343,18 +343,12 @@ namespace OpenLoco::Audio
         _audioIsPaused = true;
         stopVehicleNoise();
         stopAmbientNoise();
-        // Do not stop title screen music
-        if (!SceneManager::isTitleMode())
-        {
-            pauseMusic();
-        }
     }
 
     // 0x00489C58
     void unpauseSound()
     {
         _audioIsPaused = false;
-        unpauseMusic();
     }
 
     static const SoundObject* getSoundObject(SoundId id)

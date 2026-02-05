@@ -112,12 +112,18 @@ namespace OpenLoco::SceneManager
     static void onPause()
     {
         Audio::pauseSound();
+        // Do not pause title screen music
+        if (!isTitleMode())
+        {
+            Audio::pauseMusic();
+        }
         Ui::Windows::TimePanel::invalidateFrame();
     }
 
     static void onUnpause()
     {
         Audio::unpauseSound();
+        Audio::unpauseMusic();
         Ui::Windows::TimePanel::invalidateFrame();
     }
 
