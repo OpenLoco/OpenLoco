@@ -170,6 +170,8 @@ namespace OpenLoco::Config
         int32_t scenarioSelectedTab;
 
         std::map<Input::Shortcut, KeyboardShortcut> shortcuts;
+
+        bool pauseOnLostFocus;
     };
 
     Config& get();

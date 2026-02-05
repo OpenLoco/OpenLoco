@@ -2456,3 +2456,5 @@ strings:
   2401: "Move component"
   2402: "Moving this vehicle component will remove all cargo aboard the entire vehicle. Continue?"
   2403: "Moving this vehicle component will remove all cargo aboard both vehicles. Continue?"
+  2404: "Pause on lost focus"
+  2405: "{SMALLFONT}{COLOUR BLACK}Suspends game updates and pauses audio when the OpenLoo window loses focus."
