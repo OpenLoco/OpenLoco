@@ -53,7 +53,7 @@ if (OPENLOCO_USE_VCPKG)
     endif()
 endif ()
 
-project(${PROJECT} LANGUAGES CXX VERSION 25.12)
+project(${PROJECT} LANGUAGES CXX VERSION 26.01)
 
 # Enable IPO for all Release targets by default
 include(CheckIPOSupported)
@@ -111,8 +111,8 @@ if (${OPENLOCO_BUILD_TESTS})
 endif()
 
 FetchContent_Declare(openloco_objects
-            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.6/objects.zip
-            URL_HASH SHA256=4cea1ab77131650b5475b489445ce65c275b3a23b921456afda4d9c5c83e580c)
+            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.7/objects.zip
+            URL_HASH SHA256=f4ef6e3bb59d0644d6269409c4e3c00b71b21bcdeafc4506b4d16390210be1ee)
 FetchContent_MakeAvailable(openloco_objects)
 
 add_subdirectory(src)
@@ -140,7 +140,7 @@ set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT O
 
 install(TARGETS OpenLoco
     RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
-    BUNDLE DESTINATION "${CMAKE_INSTALL_BINDIR}")
+    BUNDLE DESTINATION ".")
 
 if (UNIX AND NOT APPLE)
     install(FILES "CHANGELOG.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
@@ -161,10 +161,4 @@ endif()
 if (NOT APPLE)
     install(DIRECTORY "data/" DESTINATION "${CMAKE_INSTALL_BINDIR}/data")
     install(DIRECTORY "${openloco_objects_SOURCE_DIR}" DESTINATION "${CMAKE_INSTALL_BINDIR}/data/objects")
-endif()
-
-# Apple bundle is declared in OpenLoco subproject CMakeLists
-# TODO: rework
-if (APPLE)
-    install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}" DESTINATION "${CMAKE_INSTALL_BINDIR}")
 endif()

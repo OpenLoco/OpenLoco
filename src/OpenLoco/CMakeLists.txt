@@ -275,6 +275,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/TabWidget.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/TableHeaderWidget.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/TextBoxWidget.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/ToolbarButtonWidget.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/ViewportWidget.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/Wt3Widget.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Window.cpp"
@@ -681,6 +682,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/TabWidget.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/TableHeaderWidget.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/TextBoxWidget.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/ToolbarButtonWidget.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/ViewportWidget.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/Wt3Widget.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Window.h"
@@ -815,13 +817,21 @@ if (APPLE)
 
     list(APPEND BUNDLE_RESOURCES ${CMAKE_SOURCE_DIR}/CHANGELOG.md)
     list(APPEND BUNDLE_RESOURCES ${CMAKE_SOURCE_DIR}/CONTRIBUTORS.md)
-    set_target_properties(OpenLoco PROPERTIES RESOURCE "${BUNDLE_RESOURCES}")
-    target_sources(OpenLoco PUBLIC ${BUNDLE_RESOURCES})
 
     file(GLOB BUNDLE_LANGUAGES "${CMAKE_SOURCE_DIR}/data/language/*")
-    target_sources(OpenLoco PUBLIC ${BUNDLE_LANGUAGES})
+    file(GLOB_RECURSE  BUNDLE_OBJECTS "${openloco_objects_SOURCE_DIR}/*")
+
+    target_sources(OpenLoco PUBLIC "${BUNDLE_RESOURCES}" "${BUNDLE_LANGUAGES}" "${BUNDLE_OBJECTS}")
+
+    set_target_properties(OpenLoco PROPERTIES RESOURCE "${BUNDLE_RESOURCES}" "${BUNDLE_LANGUAGES}" "${BUNDLE_OBJECTS}")
+
     set_property(
         SOURCE ${BUNDLE_LANGUAGES}
         PROPERTY MACOSX_PACKAGE_LOCATION "Resources/language"
+    )
+
+    set_property(
+        SOURCE ${BUNDLE_OBJECTS}
+        PROPERTY MACOSX_PACKAGE_LOCATION "Resources/objects"
     )
 endif ()
