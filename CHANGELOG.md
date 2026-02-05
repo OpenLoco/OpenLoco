@@ -1,5 +1,6 @@
 26.01+ (???)
 ------------------------------------------------------------------------
+- Fix: [#3183] Sound and music being unpaused when the game is still paused in certain situations.
 - Fix: [#3626] The vsync setting is not saved correctly.
 - Fix: [#3627] Race condition on secondary palette map causing constant alternating colors on vehicles and other things.
 - Fix: [#3629] MacOS builds are missing open graphics objects.
