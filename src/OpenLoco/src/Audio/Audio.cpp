@@ -335,15 +335,10 @@ namespace OpenLoco::Audio
     {
         stopVehicleNoise();
         stopAmbientNoise();
-        if (!SceneManager::isTitleMode())
-        {
-            pauseMusic();
-        }
     }
 
     void unpauseSound()
     {
-        unpauseMusic();
     }
 
     static const SoundObject* getSoundObject(SoundId id)
