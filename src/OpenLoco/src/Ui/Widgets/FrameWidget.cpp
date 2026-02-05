@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Widgets
         // Shadow at the right side.
         drawingCtx.fillRect(
             pos + Point{ size.width - 1, 0 },
-            Ui::Size{ 1, 40u },
+            Ui::Size{ 1, 41u },
             shade,
             Gfx::RectFlags::none);
 
