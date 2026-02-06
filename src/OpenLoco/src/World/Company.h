@@ -139,6 +139,22 @@ namespace OpenLoco
 
     constexpr size_t kExpenditureHistoryCapacity = 16;
 
+    enum class CompanyColourType : uint8_t
+    {
+        company = 0,
+        steamLoco = 1,
+        dieselLoco = 2,
+        electricLoco = 3,
+        multipleUnit = 4,
+        passengerRailcar = 5,
+        freightRailcar = 6,
+        busAndTram = 7,
+        freightTruck = 8,
+        airplane = 9,
+        ship = 10,
+        count = 11,
+    };
+
     struct Company
     {
         struct Unk25C0HashTableEntry
@@ -282,6 +298,11 @@ namespace OpenLoco
         void updateVehicleColours();
         void updateHeadquartersColour();
         void updateOwnerEmotion();
+        Colour getPrimaryColour() const;
+        ColourScheme getColourScheme(CompanyColourType colourType) const;
+        bool usingColourScheme(CompanyColourType colourType) const;
+        void setUsingColourScheme(CompanyColourType colourType);
+        void unsetUsingColourScheme(CompanyColourType colourType);
         uint8_t getHeadquarterPerformanceVariation() const;
 
         bool hashTableContains(const Unk25C0HashTableEntry& entry) const;
