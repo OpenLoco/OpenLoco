@@ -78,6 +78,8 @@ namespace OpenLoco::Gfx
 
         virtual void drawLine(const Ui::Point& a, const Ui::Point& b, PaletteIndex_t colour) = 0;
 
+        virtual void drawCircle(const Ui::Point& centre, int32_t radius, int32_t lineWidth, PaletteIndex_t colour) = 0;
+
         virtual void drawImage(int16_t x, int16_t y, uint32_t image) = 0;
 
         void drawImage(const Ui::Point& pos, uint32_t image)
