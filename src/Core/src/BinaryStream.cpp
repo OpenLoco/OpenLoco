@@ -36,8 +36,14 @@ namespace OpenLoco
         _index += len;
     }
 
-    void BinaryStream::write([[maybe_unused]] const void* buffer, [[maybe_unused]] size_t len)
+    void BinaryStream::write(const void* buffer, size_t len)
     {
-        throw Exception::InvalidOperation("Can not write");
+        auto maxWriteLen = _len - _index;
+        if (len > maxWriteLen)
+        {
+            throw Exception::RuntimeError("Failed to write data");
+        }
+        std::memcpy(reinterpret_cast<void*>(reinterpret_cast<size_t>(_data) + _index), buffer, len);
+        _index += len;
     }
 }
