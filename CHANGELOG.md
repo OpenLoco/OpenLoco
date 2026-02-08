@@ -1,5 +1,6 @@
 26.01+ (???)
 ------------------------------------------------------------------------
+- Feature: [#3639] The title screen music can now be listened to during scenario play.
 - Fix: [#3626] The vsync setting is not saved correctly.
 - Fix: [#3627] Race condition on secondary palette map causing constant alternating colors on vehicles and other things.
 - Fix: [#3629] MacOS builds are missing open graphics objects.
