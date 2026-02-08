@@ -12,7 +12,7 @@ namespace OpenLoco::Jukebox
 {
     using MusicId = uint8_t;
 
-    constexpr int32_t kNumMusicTracks = 29;
+    constexpr int32_t kNumMusicTracks = 30;
     static constexpr MusicId kNoSong = 0xFF;
     static constexpr uint16_t kNoStartYear = 0;
     static constexpr uint16_t kNoEndYear = 9999;
