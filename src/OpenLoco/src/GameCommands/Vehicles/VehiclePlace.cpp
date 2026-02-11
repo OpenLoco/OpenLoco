@@ -272,7 +272,7 @@ namespace OpenLoco::GameCommands
                 if (res != VehicleManager::PlaceDownResult::Okay)
                 {
                     setErrorText(
-                        res == VehicleManager::PlaceDownResult::Unk0
+                        res == VehicleManager::PlaceDownResult::NotEnoughSpaceOrVehicleInWay
                             ? StringIds::not_enough_space_or_vehicle_in_the_way
                             : StringIds::vehicle_approaching_or_in_the_way);
                     return FAILURE;

@@ -57,7 +57,7 @@ namespace OpenLoco::Vehicles
         if (carState.hasBogieMoved)
         {
             invalidateSprite();
-            sub_4AC255(carState.backBogie, carState.frontBogie);
+            recalculatePositionAndSprites(carState.backBogie, carState.frontBogie);
             invalidateSprite();
         }
         if (wheelSlipping != 0)
@@ -71,7 +71,7 @@ namespace OpenLoco::Vehicles
             unkDistance += var_1136130 * 320 + 500;
         }
         animationUpdate(carState, unkDistance);
-        sub_4AAB0B(carState, unkDistance);
+        updateAnimationFrame(carState, unkDistance);
         return true;
     }
 
@@ -132,10 +132,10 @@ namespace OpenLoco::Vehicles
     void VehicleBody::updateSegmentCrashed(const CarUpdateState& carState)
     {
         invalidateSprite();
-        sub_4AC255(carState.backBogie, carState.frontBogie);
+        recalculatePositionAndSprites(carState.backBogie, carState.frontBogie);
         invalidateSprite();
         animationUpdate(carState, getVehicleUpdateDistances().unkDistance2);
-        sub_4AAB0B(carState, getVehicleUpdateDistances().unkDistance2);
+        updateAnimationFrame(carState, getVehicleUpdateDistances().unkDistance2);
         if (!hasVehicleFlags(VehicleFlags::unk_5))
         {
             VehicleBogie* frontBogie = carState.frontBogie;
@@ -151,7 +151,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AAB0B
-    void VehicleBody::sub_4AAB0B(const CarUpdateState& carState, const int32_t unkDistance)
+    void VehicleBody::updateAnimationFrame(const CarUpdateState& carState, const int32_t unkDistance)
     {
         int32_t eax = unkDistance >> 3;
         if (has38Flags(Flags38::isReversed))
@@ -256,7 +256,7 @@ namespace OpenLoco::Vehicles
     static uint8_t calculateYaw3FromVector(int16_t xDiff, int16_t yDiff);
 
     // 0x004AC255
-    void VehicleBody::sub_4AC255(VehicleBogie* back_bogie, VehicleBogie* front_bogie)
+    void VehicleBody::recalculatePositionAndSprites(VehicleBogie* back_bogie, VehicleBogie* front_bogie)
     {
         auto midPoint = (front_bogie->position + back_bogie->position) / 2;
         moveTo(midPoint);
