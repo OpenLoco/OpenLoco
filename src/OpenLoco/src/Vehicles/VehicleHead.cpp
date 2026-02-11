@@ -7088,11 +7088,14 @@ namespace OpenLoco::Vehicles
             veh.moveTo(World::Pos3(static_cast<int16_t>(0x8000), 0, 0));
         });
 
-        for (auto& car : train.cars)
+        if (!Config::get().keepCargoModifyPickup)
         {
-            for (auto& component : car)
+            for (auto& car : train.cars)
             {
-                removeAllCargo(component);
+                for (auto& component : car)
+                {
+                    removeAllCargo(component);
+                }
             }
         }
 

@@ -1,5 +1,6 @@
 26.01+ (???)
 ------------------------------------------------------------------------
+- Feature: [#3591] Cheat to keep cargo when picking up a vehicle or modifying a vehicle's components.
 - Fix: [#3626] The vsync setting is not saved correctly.
 - Fix: [#3627] Race condition on secondary palette map causing constant alternating colors on vehicles and other things.
 - Fix: [#3629] MacOS builds are missing open graphics objects.

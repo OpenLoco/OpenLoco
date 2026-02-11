@@ -2456,3 +2456,6 @@ strings:
   2401: "Move component"
   2402: "Moving this vehicle component will remove all cargo aboard the entire vehicle. Continue?"
   2403: "Moving this vehicle component will remove all cargo aboard both vehicles. Continue?"
+  2404: 'Vehicle cargo'
+  2405: 'Keep vehicle cargo on modify or pickup'
+  2406: '{SMALLFONT}{COLOUR BLACK}When enabled, cargo will not be cleared from the entire vehicle when adding cars, moving cars or picking up the vehicle'
