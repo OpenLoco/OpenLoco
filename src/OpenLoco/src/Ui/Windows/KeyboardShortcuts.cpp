@@ -17,7 +17,7 @@
 #include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
-#include <SDL2/SDL.h>
+#include <SDL3/SDL_keyboard.h>
 #include <unordered_map>
 
 using namespace OpenLoco::Input;

@@ -160,12 +160,12 @@ jobs:
     name: Ubuntu ${{ matrix.distro }} ${{ matrix.compiler }} i686
     runs-on: ubuntu-latest
     needs: check-code-formatting
-    container: ghcr.io/openloco/openloco:10-${{ matrix.distro }}32
+    container: ghcr.io/openloco/openloco:11-ubuntu${{ matrix.distro }}.32
     strategy:
       fail-fast: false
       matrix:
         compiler: [g++, clang++]
-        distro: [jammy, noble]
+        distro: [26.04]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -185,12 +185,12 @@ jobs:
     name: Ubuntu ${{ matrix.distro }} ${{ matrix.compiler }} x64
     runs-on: ubuntu-latest
     needs: check-code-formatting
-    container: ghcr.io/openloco/openloco:10-${{ matrix.distro }}
+    container: ghcr.io/openloco/openloco:11-ubuntu${{ matrix.distro }}
     strategy:
       fail-fast: false
       matrix:
         compiler: [g++, clang++]
-        distro: [jammy, noble]
+        distro: [26.04]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -211,12 +211,12 @@ jobs:
     name: Header checks ${{ matrix.distro }} ${{ matrix.compiler }}
     runs-on: ubuntu-latest
     needs: check-code-formatting
-    container: ghcr.io/openloco/openloco:10-${{ matrix.distro }}
+    container: ghcr.io/openloco/openloco:11-ubuntu${{ matrix.distro }}
     strategy:
       fail-fast: false
       matrix:
         compiler: [clang++]
-        distro: [noble]
+        distro: [26.04]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -232,7 +232,7 @@ jobs:
     name: Fedora shared=${{ matrix.build_shared_libs }} i686 MinGW32
     runs-on: ubuntu-latest
     needs: check-code-formatting
-    container: ghcr.io/openloco/openloco:10-mingw32
+    container: ghcr.io/openloco/openloco:11-mingw32
     strategy:
       fail-fast: false
       matrix:
@@ -251,10 +251,10 @@ jobs:
           cmake --build --preset mingw32
 
   linux-static:
-    name: Ubuntu noble g++ x64 vcpkg static linkage
+    name: Ubuntu 26.04 g++ x64 vcpkg static linkage
     runs-on: ubuntu-latest
     needs: check-code-formatting
-    container: ghcr.io/openloco/openloco:10-noblevcpkg
+    container: ghcr.io/openloco/openloco:11-ubuntu26.04.vcpkg
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -290,7 +290,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: OpenLoco-linux-x64-glibc2.39
+          name: OpenLoco-linux-x64-glibc2.42
           path: artifacts
           if-no-files-found: error
   macos:

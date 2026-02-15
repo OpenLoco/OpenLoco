@@ -6,7 +6,7 @@
 #include "Ui.h"
 #include "Ui/WindowManager.h"
 
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 #include <algorithm>
 #include <cstdlib>
 
@@ -34,7 +34,7 @@ namespace OpenLoco::Gfx
     {
         if (_palette != nullptr)
         {
-            SDL_FreePalette(_palette);
+            SDL_DestroyPalette(_palette);
             _palette = nullptr;
         }
         if (_screenTexture != nullptr)
@@ -47,29 +47,33 @@ namespace OpenLoco::Gfx
             SDL_DestroyTexture(_scaledScreenTexture);
             _screenTexture = nullptr;
         }
-        if (_screenTextureFormat != nullptr)
-        {
-            SDL_FreeFormat(_screenTextureFormat);
-            _screenTextureFormat = nullptr;
-        }
     }
 
     void SoftwareDrawingEngine::initialize(SDL_Window* window)
     {
         SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
 
-        _renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+        _renderer = SDL_CreateRenderer(window, nullptr);
         if (_renderer == nullptr)
         {
             // Try to fallback to software renderer.
             Logging::warn("Hardware acceleration not available, falling back to software renderer.");
-            _renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+
+            auto* wndSurface = SDL_GetWindowSurface(window);
+            if (wndSurface == nullptr)
+            {
+                Logging::error("Unable to get window surface: {}", SDL_GetError());
+                std::abort();
+            }
+
+            _renderer = SDL_CreateSoftwareRenderer(wndSurface);
             if (_renderer == nullptr)
             {
-                Logging::error("Unable to create hardware or software renderer: {}", SDL_GetError());
+                Logging::error("Unable to create software renderer: {}", SDL_GetError());
                 std::abort();
             }
         }
+
         _window = window;
         createPalette();
     }
@@ -84,11 +88,11 @@ namespace OpenLoco::Gfx
         // Release old resources.
         if (_screenSurface != nullptr)
         {
-            SDL_FreeSurface(_screenSurface);
+            SDL_DestroySurface(_screenSurface);
         }
         if (_screenRGBASurface != nullptr)
         {
-            SDL_FreeSurface(_screenRGBASurface);
+            SDL_DestroySurface(_screenRGBASurface);
         }
 
         if (_screenTexture != nullptr)
@@ -103,73 +107,60 @@ namespace OpenLoco::Gfx
             _scaledScreenTexture = nullptr;
         }
 
-        if (_screenTextureFormat != nullptr)
-        {
-            SDL_FreeFormat(_screenTextureFormat);
-            _screenTextureFormat = nullptr;
-        }
+        const auto* wndSurface = SDL_GetWindowSurface(_window);
 
         // Surfaces.
-        _screenSurface = SDL_CreateRGBSurface(0, scaledWidth, scaledHeight, 8, 0, 0, 0, 0);
+        _screenSurface = SDL_CreateSurface(scaledWidth, scaledHeight, SDL_PIXELFORMAT_INDEX8);
         if (_screenSurface == nullptr)
         {
             Logging::error("SDL_CreateRGBSurface (_screenSurface) failed: {}", SDL_GetError());
             return;
         }
 
-        _screenRGBASurface = SDL_CreateRGBSurface(0, scaledWidth, scaledHeight, 32, 0, 0, 0, 0);
+        _screenRGBASurface = SDL_CreateSurface(scaledWidth, scaledHeight, wndSurface->format);
         if (_screenRGBASurface == nullptr)
         {
             Logging::error("SDL_CreateRGBSurface (_screenRGBASurface) failed: {}", SDL_GetError());
             return;
         }
 
-        SDL_SetSurfaceBlendMode(_screenRGBASurface, SDL_BLENDMODE_NONE);
-        SDL_SetSurfacePalette(_screenSurface, _palette);
-
-        SDL_RendererInfo rendererInfo{};
-        int32_t result = SDL_GetRendererInfo(_renderer, &rendererInfo);
-        if (result < 0)
+        if (!SDL_SetSurfaceBlendMode(_screenRGBASurface, SDL_BLENDMODE_NONE))
         {
-            Logging::error("HWDisplayDrawingEngine::Resize error: {}", SDL_GetError());
-            return;
+            Logging::error("SDL_SetSurfaceBlendMode (_screenRGBASurface) failed: {}", SDL_GetError());
+        }
+        if (!SDL_SetSurfacePalette(_screenSurface, _palette))
+        {
+            Logging::error("SDL_SetSurfacePalette (_screenSurface) failed: {}", SDL_GetError());
         }
 
-        uint32_t pixelFormat = SDL_PIXELFORMAT_UNKNOWN;
-        for (uint32_t i = 0; i < rendererInfo.num_texture_formats; i++)
-        {
-            uint32_t format = rendererInfo.texture_formats[i];
-            if (!SDL_ISPIXELFORMAT_FOURCC(format) && !SDL_ISPIXELFORMAT_INDEXED(format)
-                && (pixelFormat == SDL_PIXELFORMAT_UNKNOWN || SDL_BYTESPERPIXEL(format) < SDL_BYTESPERPIXEL(pixelFormat)))
-            {
-                pixelFormat = format;
-            }
-        }
-
-        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
-        _screenTexture = SDL_CreateTexture(_renderer, pixelFormat, SDL_TEXTUREACCESS_STREAMING, scaledWidth, scaledHeight);
+        _screenTexture = SDL_CreateTexture(_renderer, wndSurface->format, SDL_TEXTUREACCESS_STREAMING, scaledWidth, scaledHeight);
         if (_screenTexture == nullptr)
         {
             Logging::error("SDL_CreateTexture (_screenTexture) failed: {}", SDL_GetError());
             return;
         }
 
+        if (!SDL_SetTextureScaleMode(_screenTexture, SDL_SCALEMODE_LINEAR))
+        {
+            Logging::error("SDL_SetTextureScaleMode (_screenTexture) failed: {}", SDL_GetError());
+        }
+
         if (scaleFactor > 1.0f)
         {
             const auto scale = std::ceil(scaleFactor);
-            // We only need this texture when we have a scale above 1x, this texture uses the actual canvas size.
-            SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-            _scaledScreenTexture = SDL_CreateTexture(_renderer, pixelFormat, SDL_TEXTUREACCESS_TARGET, width * scale, height * scale);
+
+            _scaledScreenTexture = SDL_CreateTexture(_renderer, wndSurface->format, SDL_TEXTUREACCESS_TARGET, width * scale, height * scale);
             if (_scaledScreenTexture == nullptr)
             {
                 Logging::error("SDL_CreateTexture (_scaledScreenTexture) failed: {}", SDL_GetError());
                 return;
             }
-        }
 
-        uint32_t format;
-        SDL_QueryTexture(_screenTexture, &format, nullptr, nullptr, nullptr);
-        _screenTextureFormat = SDL_AllocFormat(format);
+            if (!SDL_SetTextureScaleMode(_scaledScreenTexture, SDL_SCALEMODE_LINEAR))
+            {
+                Logging::error("SDL_SetTextureScaleMode (_scaledScreenTexture) failed: {}", SDL_GetError());
+            }
+        }
 
         int32_t pitch = _screenSurface->pitch;
 
@@ -223,7 +214,12 @@ namespace OpenLoco::Gfx
     void SoftwareDrawingEngine::createPalette()
     {
         // Create a palette for the window
-        _palette = SDL_AllocPalette(256);
+        _palette = SDL_CreatePalette(256);
+        if (_palette == nullptr)
+        {
+            Logging::error("SDL_CreatePalette failed: {}", SDL_GetError());
+            return;
+        }
     }
 
     void SoftwareDrawingEngine::updatePalette(const PaletteEntry* entries, int32_t index, int32_t count)
@@ -240,7 +236,11 @@ namespace OpenLoco::Gfx
             basePtr->b = entryPtr->b;
             basePtr->a = 0;
         }
-        SDL_SetPaletteColors(_palette, &base[index], index, count);
+
+        if (!SDL_SetPaletteColors(_palette, &base[index], index, count))
+        {
+            Logging::error("SDL_SetPaletteColors failed: {}", SDL_GetError());
+        }
     }
 
     // 0x004C5CFA
@@ -301,7 +301,7 @@ namespace OpenLoco::Gfx
         // Lock the surface before setting its pixels
         if (SDL_MUSTLOCK(_screenSurface))
         {
-            if (SDL_LockSurface(_screenSurface) < 0)
+            if (!SDL_LockSurface(_screenSurface))
             {
                 return;
             }
@@ -321,7 +321,7 @@ namespace OpenLoco::Gfx
         }
 
         // Convert colours via palette mapping onto the RGBA surface.
-        if (SDL_BlitSurface(_screenSurface, nullptr, _screenRGBASurface, nullptr))
+        if (!SDL_BlitSurface(_screenSurface, nullptr, _screenRGBASurface, nullptr))
         {
             Logging::error("SDL_BlitSurface {}", SDL_GetError());
             return;
@@ -335,15 +335,15 @@ namespace OpenLoco::Gfx
         {
             // Copy screen texture to the scaled texture.
             SDL_SetRenderTarget(_renderer, _scaledScreenTexture);
-            SDL_RenderCopy(_renderer, _screenTexture, nullptr, nullptr);
+            SDL_RenderTexture(_renderer, _screenTexture, nullptr, nullptr);
 
             // Copy scaled texture to primary render target.
             SDL_SetRenderTarget(_renderer, nullptr);
-            SDL_RenderCopy(_renderer, _scaledScreenTexture, nullptr, nullptr);
+            SDL_RenderTexture(_renderer, _scaledScreenTexture, nullptr, nullptr);
         }
         else
         {
-            SDL_RenderCopy(_renderer, _screenTexture, nullptr, nullptr);
+            SDL_RenderTexture(_renderer, _screenTexture, nullptr, nullptr);
         }
 
         // Display buffers.
@@ -421,7 +421,7 @@ namespace OpenLoco::Gfx
             return true;
         }
 
-        if (SDL_RenderSetVSync(_renderer, state ? 1 : 0) == 0)
+        if (SDL_SetRenderVSync(_renderer, state ? 1 : 0))
         {
             _vsync = state;
             return true;

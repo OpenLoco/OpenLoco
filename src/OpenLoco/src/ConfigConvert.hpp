@@ -4,7 +4,7 @@
 #include "Input.h"
 #include "Objects/Object.h"
 #include <OpenLoco/Engine/Types.hpp>
-#include <SDL2/SDL.h>
+#include <SDL3/SDL_keyboard.h>
 #include <yaml-cpp/yaml.h>
 
 #define enum_def(x, y) \

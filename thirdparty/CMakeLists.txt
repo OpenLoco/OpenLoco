@@ -32,19 +32,19 @@ if (${OPENLOCO_BUILD_TESTS})
     find_package(GTest REQUIRED)
 endif()
 
-find_package(SDL2 REQUIRED CONFIG)
-if (TARGET SDL2::SDL2-static)
-    set(SDL2_LIB SDL2::SDL2-static)
-elseif (TARGET SDL2::SDL2)
-    set(SDL2_LIB SDL2::SDL2)
+find_package(SDL3 REQUIRED CONFIG)
+if (TARGET SDL3::SDL3-static)
+    set(SDL3_LIB SDL3::SDL3-static)
+elseif (TARGET SDL3::SDL3)
+    set(SDL3_LIB SDL3::SDL3)
 else ()
     # Even though we asked for SDL2 from a configure mode which would have SDL2 targets
     # it appears we have been given a raw module mode SDL2 so create a wrapper library
     # then we can treat it just like a normal configure mode target
-    add_library(SDL2_WRAPPER INTERFACE)
-    target_link_libraries(SDL2_WRAPPER INTERFACE ${SDL2_LIBRARIES})
-    target_include_directories(SDL2_WRAPPER INTERFACE ${SDL2_INCLUDE_DIRS})
-    set(SDL2_LIB SDL2_WRAPPER)
+    add_library(SDL3_WRAPPER INTERFACE)
+    target_link_libraries(SDL3_WRAPPER INTERFACE ${SDL3_LIBRARIES})
+    target_include_directories(SDL3_WRAPPER INTERFACE ${SDL3_INCLUDE_DIRS})
+    set(SDL3_LIB SDL3_WRAPPER)
 endif()
 
 find_package(PNG REQUIRED)
