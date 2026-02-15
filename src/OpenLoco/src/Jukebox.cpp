@@ -44,7 +44,8 @@ namespace OpenLoco::Jukebox
         { PathId::music_far_out, StringIds::music_far_out, 1966, 1974 },
         { PathId::music_running_on_time, StringIds::music_running_on_time, 1986, 1994 },
         { PathId::music_get_me_to_gladstone_bay, StringIds::music_get_me_to_gladstone_bay, 1918, 1926 },
-        { PathId::music_sandy_track_blues, StringIds::music_sandy_track_blues, 1921, 1929 }
+        { PathId::music_sandy_track_blues, StringIds::music_sandy_track_blues, 1921, 1929 },
+        { PathId::css5, StringIds::music_locomotion_title, kNoEndYear, kNoStartYear }
     };
 
     const MusicInfo& getMusicInfo(MusicId track)

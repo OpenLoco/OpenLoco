@@ -83,7 +83,7 @@ namespace OpenLoco::Config
         bool vsync = false;
     };
 
-    using Playlist = std::array<bool, 29>;
+    using Playlist = std::array<bool, 30>;
 
     struct Audio
     {

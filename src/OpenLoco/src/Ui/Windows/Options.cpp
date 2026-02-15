@@ -1081,7 +1081,7 @@ namespace OpenLoco::Ui::Windows::Options
                     auto& cfg = Config::get();
                     if (cfg.audio.playTitleMusic)
                     {
-                        songName = StringIds::locomotion_title; // Name of the title screen music
+                        songName = StringIds::music_locomotion_title;
                     }
                 }
                 auto args = FormatArguments(self.widgets[Widx::currently_playing].textArgs);
