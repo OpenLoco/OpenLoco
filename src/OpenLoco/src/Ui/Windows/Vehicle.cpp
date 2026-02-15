@@ -3284,19 +3284,22 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 uint32_t targetOffset = 0U;
                 Vehicles::OrderRingView orders(head.orderTableOffset);
                 auto lastOrder = orders.begin();
-                if (orderTableIndex < 0)
+                if (lastOrder != orders.end())
                 {
-                    while ((lastOrder + 1) != orders.end())
+                    if (orderTableIndex < 0)
                     {
-                        lastOrder++;
+                        while ((lastOrder + 1) != orders.end())
+                        {
+                            lastOrder++;
+                        }
                     }
-                }
-                else
-                {
-                    while ((lastOrder + 1) != orders.end() && orderTableIndex != 0)
+                    else
                     {
-                        lastOrder++;
-                        orderTableIndex--;
+                        while ((lastOrder + 1) != orders.end() && orderTableIndex != 0)
+                        {
+                            lastOrder++;
+                            orderTableIndex--;
+                        }
                     }
                 }
                 targetOffset = lastOrder->getOffset();
