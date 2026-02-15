@@ -4,6 +4,7 @@
 - Fix: [#3626] The vsync setting is not saved correctly.
 - Fix: [#3627] Race condition on secondary palette map causing constant alternating colors on vehicles and other things.
 - Fix: [#3629] MacOS builds are missing open graphics objects.
+- Fix: [#3638] Loan can be negative.
 
 26.01 (2026-01-30)
 ------------------------------------------------------------------------
