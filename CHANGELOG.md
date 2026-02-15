@@ -1,5 +1,6 @@
 26.01+ (???)
 ------------------------------------------------------------------------
+- Fix: [#2205] Crash when hovering over stations with the order tab open.
 - Fix: [#3626] The vsync setting is not saved correctly.
 - Fix: [#3629] MacOS builds are missing open graphics objects.
 
