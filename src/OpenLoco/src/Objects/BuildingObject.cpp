@@ -47,6 +47,21 @@ namespace OpenLoco
         {
             return false;
         }
+        if (hasFlags(BuildingObjectFlags::miscBuilding))
+        {
+            if (generatorFunction >= 4)
+            {
+                return false;
+            }
+        }
+        if (var_AC != 0xFF)
+        {
+            // Max of 8 different building categories
+            if (var_AC >= 8)
+            {
+                return false;
+            }
+        }
         return (numVariations != 0) && (numVariations <= 31);
     }
 
