@@ -560,10 +560,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         if (!SceneManager::isEditorMode())
         {
             WindowManager::setCurrentModalType(WindowType::objectSelection);
-
             SceneManager::setPauseFlag(PauseFlags::objectSelection);
-            WindowManager::invalidate(WindowType::timeToolbar);
-            Audio::pauseSound();
         }
 
         return window;
@@ -1654,10 +1651,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
             // Stop being modal and unpause game.
             WindowManager::setCurrentModalType(WindowType::undefined);
-
             SceneManager::unsetPauseFlag(PauseFlags::objectSelection);
-            WindowManager::invalidate(WindowType::timeToolbar);
-            Audio::unpauseSound();
         }
         ObjectManager::freeSelectionList();
     }

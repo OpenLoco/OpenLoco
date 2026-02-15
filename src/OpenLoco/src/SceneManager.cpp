@@ -1,4 +1,5 @@
 #include "SceneManager.h"
+#include "Audio/Audio.h"
 #include "Ui/WindowManager.h"
 
 namespace OpenLoco::SceneManager
@@ -108,14 +109,41 @@ namespace OpenLoco::SceneManager
         return _pausedState;
     }
 
+    static void onPause()
+    {
+        Audio::pauseSound();
+        // Do not pause title screen music
+        if (!isTitleMode())
+        {
+            Audio::pauseMusic();
+        }
+        Ui::Windows::TimePanel::invalidateFrame();
+    }
+
+    static void onUnpause()
+    {
+        Audio::unpauseSound();
+        Audio::unpauseMusic();
+        Ui::Windows::TimePanel::invalidateFrame();
+    }
+
     void setPauseFlag(PauseFlags value)
     {
+        if (_pausedState == PauseFlags::none)
+        {
+            onPause();
+        }
         _pausedState |= value;
     }
 
     void unsetPauseFlag(PauseFlags value)
     {
+        assert(_pausedState != PauseFlags::none);
         _pausedState &= ~(value);
+        if (_pausedState == PauseFlags::none)
+        {
+            onUnpause();
+        }
     }
 
     GameSpeed getGameSpeed()

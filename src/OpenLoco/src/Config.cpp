@@ -154,6 +154,7 @@ namespace OpenLoco::Config
         _config.edgeScrollingSpeed = config["edgeScrollingSpeed"].as<int32_t>(12);
         _config.windowFrameStyle = config["windowFrameStyle"].as<WindowFrameStyle>(WindowFrameStyle::background);
         _config.zoomToCursor = config["zoom_to_cursor"].as<bool>(true);
+        _config.pauseOnLostFocus = config["pauseOnLostFocus"].as<bool>(false);
 
         // Saving and autosaves
         _config.autosaveAmount = config["autosave_amount"].as<int32_t>(12);
@@ -282,6 +283,7 @@ namespace OpenLoco::Config
         node["edgeScrollingSpeed"] = _config.edgeScrollingSpeed;
         node["windowFrameStyle"] = _config.windowFrameStyle;
         node["zoom_to_cursor"] = _config.zoomToCursor;
+        node["pauseOnLostFocus"] = _config.pauseOnLostFocus;
 
         // Saving and autosaves
         node["autosave_amount"] = _config.autosaveAmount;

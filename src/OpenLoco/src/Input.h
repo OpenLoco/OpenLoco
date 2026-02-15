@@ -67,6 +67,8 @@ namespace OpenLoco::Input
     bool processMessages();
     bool processMessagesMini();
 
+    bool isLostFocusPaused();
+
     Ui::Point getMouseLocation();
     Ui::Point getMouseLocation2();
     bool isHovering(Ui::WindowType);

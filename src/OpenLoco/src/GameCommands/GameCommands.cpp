@@ -280,8 +280,6 @@ namespace OpenLoco::GameCommands
             if ((SceneManager::getPauseFlags() & PauseFlags::player) != PauseFlags::none)
             {
                 SceneManager::unsetPauseFlag(PauseFlags::player);
-                WindowManager::invalidate(WindowType::timeToolbar);
-                Audio::unpauseSound();
                 Ui::Windows::PlayerInfoPanel::invalidateFrame();
             }
 

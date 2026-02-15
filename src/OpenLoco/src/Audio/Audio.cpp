@@ -343,18 +343,12 @@ namespace OpenLoco::Audio
         _audioIsPaused = true;
         stopVehicleNoise();
         stopAmbientNoise();
-        // Do not stop title screen music
-        if (!SceneManager::isTitleMode())
-        {
-            pauseMusic();
-        }
     }
 
     // 0x00489C58
     void unpauseSound()
     {
         _audioIsPaused = false;
-        unpauseMusic();
     }
 
     static const SoundObject* getSoundObject(SoundId id)
@@ -1163,6 +1157,44 @@ namespace OpenLoco::Audio
         if (_audioIsInitialised && Jukebox::getCurrentTrack() != Jukebox::kNoSong)
         {
             channel->setVolume(volume);
+        }
+    }
+
+    void toggleAudioLostFocus(bool pause)
+    {
+        static bool soundsWerePlaying = false;
+        static bool musicWasPlaying = false;
+
+        if (pause)
+        {
+            // Pause audio
+
+            soundsWerePlaying = !_audioIsPaused;
+            if (soundsWerePlaying)
+            {
+                pauseSound();
+            }
+
+            auto* channel = getChannel(ChannelId::music);
+            musicWasPlaying = (_audioIsInitialised && channel != nullptr && channel->isPlaying());
+            if (musicWasPlaying)
+            {
+                pauseMusic();
+            }
+        }
+        else
+        {
+            // Unpause audio
+
+            if (soundsWerePlaying)
+            {
+                unpauseSound();
+            }
+
+            if (musicWasPlaying)
+            {
+                unpauseMusic();
+            }
         }
     }
 }
