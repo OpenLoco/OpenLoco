@@ -48,7 +48,7 @@ namespace OpenLoco::Ui::Widgets
 
         uint8_t shade;
         const auto* window = widgetState.window;
-        if (window->hasFlags(WindowFlags::lighterFrame))
+        if (!window->hasFlags(WindowFlags::lighterFrame))
         {
             shade = Colours::getShade(widgetState.colour.c(), 3);
         }
@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Widgets
         // Shadow at the right side.
         drawingCtx.fillRect(
             pos + Point{ size.width - 1, 0 },
-            Ui::Size{ 1, 40u },
+            Ui::Size{ 1, 41u },
             shade,
             Gfx::RectFlags::none);
 
