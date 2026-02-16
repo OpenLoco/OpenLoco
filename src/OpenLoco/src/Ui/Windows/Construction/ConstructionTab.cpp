@@ -2795,6 +2795,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             }
         }
 
+        // TODO: Need to find the smallest coord and offset everything by that
+        // that will then become the pivot for construction.
+        // Ghost would then be placed at tool position and place at tool position
+
         GameCommands::setErrorSound(false);
         const auto shiftPos = World::toWorldSpace(World::TilePos2{ 8, 8 });
         for (auto& args : trackArgsToPlace)
