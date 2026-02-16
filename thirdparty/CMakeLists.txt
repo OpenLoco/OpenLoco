@@ -33,19 +33,6 @@ if (${OPENLOCO_BUILD_TESTS})
 endif()
 
 find_package(SDL3 REQUIRED CONFIG)
-if (TARGET SDL3::SDL3-static)
-    set(SDL3_LIB SDL3::SDL3-static)
-elseif (TARGET SDL3::SDL3)
-    set(SDL3_LIB SDL3::SDL3)
-else ()
-    # Even though we asked for SDL2 from a configure mode which would have SDL2 targets
-    # it appears we have been given a raw module mode SDL2 so create a wrapper library
-    # then we can treat it just like a normal configure mode target
-    add_library(SDL3_WRAPPER INTERFACE)
-    target_link_libraries(SDL3_WRAPPER INTERFACE ${SDL3_LIBRARIES})
-    target_include_directories(SDL3_WRAPPER INTERFACE ${SDL3_INCLUDE_DIRS})
-    set(SDL3_LIB SDL3_WRAPPER)
-endif()
 
 find_package(PNG REQUIRED)
 find_package(ZLIB REQUIRED) # Dependency of PNG not really required but vcpkg not mapping static png dependencies
