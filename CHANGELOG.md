@@ -295,7 +295,7 @@
 
 24.03 (2024-03-30)
 ------------------------------------------------------------------------
-- Feature: [#126] Station size limitations can now be disabled (though still max 80 tiles per station).
+- Feature: [#358] Station size limitations can now be disabled (though still max 80 tiles per station).
 - Feature: [#1941] Landscapes can now be generated directly from 384x384 PNG images.
 - Feature: [#2331] Allow setting a preferred owner face to be used for new games.
 - Change: [#2324] Loading and saving landscapes now defaults to the OpenLoco user folder.
