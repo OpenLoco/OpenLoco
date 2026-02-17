@@ -55,6 +55,15 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static World::TilePos2 _toolPosDrag;
     static World::TilePos2 _toolPosInitial;
 
+    struct CopiedTrack
+    {
+        std::vector<GameCommands::TrackPlacementArgs> trackArgs;
+        std::vector<GameCommands::SignalPlacementArgs> signalArgs;
+        std::vector<GameCommands::TrainStationPlacementArgs> stationArgs;
+    };
+
+    static std::optional<CopiedTrack> _copiedTrack;
+
     namespace TrackPiece
     {
         enum
@@ -118,7 +127,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         Widgets::dropdownWidgets({ 40, 123 }, { 58, 20 }, WindowColour::secondary, StringIds::empty, StringIds::tooltip_bridge_stats),
         Widgets::Wt3Widget({ 3, 145 }, { 132, 100 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_construct),
         Widgets::ImageButton({ 6, 248 }, { 46, 24 }, WindowColour::secondary, ImageIds::construction_remove, StringIds::tooltip_remove),
-        Widgets::ImageButton({ 57, 248 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_90));
+        Widgets::ImageButton({ 57, 248 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_90),
+        Widgets::Caption({ 3, 248 }, { 24, 24 }, Widgets::Caption::Style::boxed, WindowColour::secondary),
+        Widgets::Caption({ 30, 248 }, { 24, 24 }, Widgets::Caption::Style::boxed, WindowColour::secondary));
 
     std::span<const Widget> getWidgets()
     {
@@ -554,6 +565,17 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 cState.constructionRotation &= 3;
 
                 activateSelectedConstructionWidgets();
+                break;
+            }
+
+            case widx::copy:
+            {
+                _copiedTrack = std::nullopt;
+                removeConstructionGhosts();
+                WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::overgroundView);
+                ToolManager::toolSet(self, widx::copy, CursorId::crosshair);
+                Input::setFlag(Input::Flags::flag6);
+                cState.constructionHover = true;
                 break;
             }
         }
@@ -1990,7 +2012,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (cState.constructionHover)
         {
-            if (!ToolManager::isToolActive(WindowType::construction, self.number) || ToolManager::getToolWidgetIndex() != widx::construct)
+            if (!ToolManager::isToolActive(WindowType::construction, self.number, widx::construct)
+                && !ToolManager::isToolActive(WindowType::construction, self.number, widx::copy)
+                && !ToolManager::isToolActive(WindowType::construction, self.number, widx::paste))
             {
                 WindowManager::close(&self);
             }
@@ -2836,24 +2860,185 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x0049DC97
     static void onToolUp(Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
     {
-        if (widgetIndex != widx::construct)
+        if (widgetIndex == widx::construct)
         {
-            return;
-        }
+            auto& cState = getConstructionState();
 
-        auto& cState = getConstructionState();
+            if (_isDragging)
+            {
+                onToolUpMultiple(self, widgetIndex);
+            }
+            else if (cState.trackType & (1 << 7))
+            {
+                onToolUpSingle(x, y, getRoadPieceId, tryMakeRoadJunctionAtLoc, TrackData::getRoadPiece);
+            }
+            else
+            {
+                onToolUpSingle(x, y, getTrackPieceId, tryMakeTrackJunctionAtLoc, TrackData::getTrackPiece);
+            }
+        }
+        else if (widgetIndex == widx::copy)
+        {
+            mapInvalidateSelectionRect();
+            removeConstructionGhosts();
+            World::resetMapSelectionFlags();
 
-        if (_isDragging)
-        {
-            onToolUpMultiple(self, widgetIndex);
+            auto dirX = _toolPosDrag.x - _toolPosInitial.x > 0 ? 1 : -1;
+            auto dirY = _toolPosDrag.y - _toolPosInitial.y > 0 ? 1 : -1;
+
+            CopiedTrack copiedTrack{};
+            for (auto yPos = _toolPosInitial.y; yPos != _toolPosDrag.y + dirY; yPos += dirY)
+            {
+                for (auto xPos = _toolPosInitial.x; xPos != _toolPosDrag.x + dirX; xPos += dirX)
+                {
+                    auto pos = World::toWorldSpace({ xPos, yPos });
+
+                    auto tile = TileManager::get(pos);
+                    TrackElement* elProcessedTrack = nullptr;
+                    for (auto& el : tile)
+                    {
+                        auto* elTrack = el.as<TrackElement>();
+                        auto* elSignal = el.as<SignalElement>();
+                        auto* elStation = el.as<StationElement>();
+                        if (elTrack != nullptr)
+                        {
+                            if (elTrack->owner() != CompanyManager::getControllingId())
+                            {
+                                elProcessedTrack = nullptr;
+                                continue;
+                            }
+                            if (elTrack->sequenceIndex() != 0)
+                            {
+                                elProcessedTrack = nullptr;
+                                continue;
+                            }
+                            GameCommands::TrackPlacementArgs args{};
+                            auto& trackPiece0 = TrackData::getTrackPiece(elTrack->trackId())[0];
+                            args.pos = World::Pos3(pos.x, pos.y, elTrack->baseHeight()) - World::Pos3(trackPiece0.x, trackPiece0.y, trackPiece0.z);
+                            args.trackId = elTrack->trackId();
+                            args.rotation = elTrack->rotation();
+                            args.trackObjectId = elTrack->trackObjectId();
+                            args.bridge = elTrack->hasBridge() ? elTrack->bridge() : 0xFFU;
+                            args.unk = false;
+                            args.mods = elTrack->mods();
+                            copiedTrack.trackArgs.push_back(args);
+                            elProcessedTrack = elTrack;
+                        }
+                        else if (elSignal != nullptr && elProcessedTrack != nullptr)
+                        {
+                            GameCommands::SignalPlacementArgs args{};
+                            auto& trackPiece0 = TrackData::getTrackPiece(elProcessedTrack->trackId())[0];
+                            args.pos = World::Pos3(pos.x, pos.y, elSignal->baseHeight()) - World::Pos3(trackPiece0.x, trackPiece0.y, trackPiece0.z);
+                            args.index = 0;
+                            args.rotation = elSignal->rotation();
+                            args.trackId = elProcessedTrack->trackId();
+                            args.trackObjType = elProcessedTrack->trackObjectId();
+                            args.type = elSignal->getLeft().signalObjectId();
+                            uint16_t sideFlags = 0U;
+                            if (elSignal->getLeft().hasSignal())
+                            {
+                                sideFlags |= 0x4000U;
+                            }
+                            if (elSignal->getRight().hasSignal())
+                            {
+                                sideFlags |= 0x8000U;
+                            }
+                            args.sides = sideFlags;
+                            copiedTrack.signalArgs.push_back(args);
+                        }
+                        else if (elStation != nullptr && elProcessedTrack != nullptr)
+                        {
+                            GameCommands::TrainStationPlacementArgs args{};
+                            auto& trackPiece0 = TrackData::getTrackPiece(elProcessedTrack->trackId())[0];
+                            args.pos = World::Pos3(pos.x, pos.y, elStation->baseHeight()) - World::Pos3(trackPiece0.x, trackPiece0.y, trackPiece0.z);
+                            args.rotation = elStation->rotation();
+                            args.trackId = elProcessedTrack->trackId();
+                            args.index = 0;
+                            args.trackObjectId = elProcessedTrack->trackObjectId();
+                            args.type = elStation->objectId();
+                            copiedTrack.stationArgs.push_back(args);
+                        }
+                    }
+                }
+            }
+            auto minPos2 = World::toWorldSpace(_toolPosDrag);
+            for (const auto& args : copiedTrack.trackArgs)
+            {
+                minPos2.x = std::min(minPos2.x, args.pos.x);
+                minPos2.y = std::min(minPos2.y, args.pos.y);
+            }
+            auto minPos = World::Pos3(minPos2, TileManager::get(minPos2).surface()->baseHeight());
+
+            for (auto& args : copiedTrack.trackArgs)
+            {
+                args.pos -= minPos;
+            }
+            for (auto& args : copiedTrack.signalArgs)
+            {
+                args.pos -= minPos;
+            }
+            for (auto& args : copiedTrack.stationArgs)
+            {
+                args.pos -= minPos;
+            }
+
+            _copiedTrack = std::move(copiedTrack);
+            removeConstructionGhosts();
+            WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::overgroundView);
+            ToolManager::toolSet(self, widx::paste, CursorId::crosshair);
+            self.widgets[widx::paste].activated = 1;
+            Input::setFlag(Input::Flags::flag6);
+
+            // TODO: Need to find the smallest coord and offset everything by that
+            // that will then become the pivot for construction.
+            // Ghost would then be placed at tool position and place at tool position
         }
-        else if (cState.trackType & (1 << 7))
+        else if (widgetIndex == widx::paste)
         {
-            onToolUpSingle(x, y, getRoadPieceId, tryMakeRoadJunctionAtLoc, TrackData::getRoadPiece);
-        }
-        else
-        {
-            onToolUpSingle(x, y, getTrackPieceId, tryMakeTrackJunctionAtLoc, TrackData::getTrackPiece);
+            auto constructPos = getConstructionPos(x, y);
+            if (!constructPos.has_value() || !_copiedTrack.has_value())
+            {
+                return;
+            }
+
+            // Duplicate as we need to adjust the position
+            auto pasteArgs = CopiedTrack(_copiedTrack.value());
+            const auto pos = World::Pos3(World::toWorldSpace(constructPos->first), constructPos->second);
+            for (auto& args : pasteArgs.trackArgs)
+            {
+                args.pos += pos;
+            }
+            for (auto& args : pasteArgs.signalArgs)
+            {
+                args.pos += pos;
+            }
+            for (auto& args : pasteArgs.stationArgs)
+            {
+                args.pos += pos;
+            }
+            GameCommands::setErrorSound(false);
+            bool builtAnything = false;
+            for (auto& args : pasteArgs.trackArgs)
+            {
+                auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
+                builtAnything |= res != GameCommands::FAILURE;
+            }
+            for (auto& args : pasteArgs.signalArgs)
+            {
+                auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
+                builtAnything |= res != GameCommands::FAILURE;
+            }
+            for (auto& args : pasteArgs.stationArgs)
+            {
+                auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
+                builtAnything |= res != GameCommands::FAILURE;
+            }
+            GameCommands::setErrorSound(true);
+
+            if (builtAnything)
+            {
+                WindowManager::close(WindowType::error);
+            }
         }
     }
 

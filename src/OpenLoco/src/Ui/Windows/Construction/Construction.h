@@ -203,6 +203,8 @@ namespace OpenLoco::Ui::Windows::Construction
             construct,
             remove,
             rotate_90,
+            copy,
+            paste,
         };
 
         // clang-format off
@@ -224,7 +226,7 @@ namespace OpenLoco::Ui::Windows::Construction
             (1ULL << widx::slope_down) |
             (1ULL << widx::level) |
             (1ULL << widx::slope_up) |
-            (1ULL << widx::steep_slope_up)
+            (1ULL << widx::steep_slope_up) | (1ULL << widx::copy) | (1ULL << widx::paste)
             };
 
         constexpr uint64_t allConstruction = {
