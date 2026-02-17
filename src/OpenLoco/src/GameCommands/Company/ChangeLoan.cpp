@@ -5,6 +5,8 @@
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 
+#include <algorithm>
+
 namespace OpenLoco::GameCommands
 {
     // 0x0046DE88
@@ -12,10 +14,13 @@ namespace OpenLoco::GameCommands
     {
         GameCommands::setExpenditureType(ExpenditureType::LoanInterest);
 
+        const auto maxLoan = Economy::getInflationAdjustedCost(CompanyManager::getMaxLoanSize(), 0, 8) / 100 * 100;
         auto* company = CompanyManager::get(GameCommands::getUpdatingCompanyId());
-        const currency32_t loanDifference = company->currentLoan - newLoan;
 
-        if (company->currentLoan > newLoan)
+        const currency32_t clampedNewLoan = std::clamp<currency32_t>(newLoan, 0, maxLoan);
+        const currency32_t loanDifference = company->currentLoan - clampedNewLoan;
+
+        if (company->currentLoan > clampedNewLoan)
         {
             if (company->cash < loanDifference)
             {
@@ -25,8 +30,7 @@ namespace OpenLoco::GameCommands
         }
         else
         {
-            const auto maxLoan = Economy::getInflationAdjustedCost(CompanyManager::getMaxLoanSize(), 0, 8);
-            if (newLoan > maxLoan)
+            if (company->currentLoan >= maxLoan)
             {
                 GameCommands::setErrorText(StringIds::bank_refuses_to_increase_loan);
                 return FAILURE;
@@ -35,7 +39,7 @@ namespace OpenLoco::GameCommands
 
         if (flags & Flags::apply)
         {
-            company->currentLoan = newLoan;
+            company->currentLoan = clampedNewLoan;
             company->cash -= loanDifference;
             Ui::WindowManager::invalidate(Ui::WindowType::company, static_cast<uint16_t>(GameCommands::getUpdatingCompanyId()));
             if (CompanyManager::getControllingId() == GameCommands::getUpdatingCompanyId())
