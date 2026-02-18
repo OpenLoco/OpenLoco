@@ -108,6 +108,11 @@ namespace OpenLoco::Gfx
         }
 
         const auto* wndSurface = SDL_GetWindowSurface(_window);
+        if (wndSurface == nullptr)
+        {
+            Logging::error("SDL_GetWindowSurface (_window) failed: {}", SDL_GetError());
+            return;
+        }
 
         // Surfaces.
         _screenSurface = SDL_CreateSurface(scaledWidth, scaledHeight, SDL_PIXELFORMAT_INDEX8);

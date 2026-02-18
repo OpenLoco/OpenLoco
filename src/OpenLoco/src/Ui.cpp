@@ -117,9 +117,9 @@ namespace OpenLoco::Ui
         int32_t y = SDL_WINDOWPOS_CENTERED_DISPLAY(cfg.index);
         int32_t width = std::max(640, cfg.windowResolution.width);
         int32_t height = std::max(480, cfg.windowResolution.height);
-        uint32_t flags = SDL_WINDOW_RESIZABLE;
 
 #if !(defined(__APPLE__) && defined(__MACH__))
+        uint32_t flags = SDL_WINDOW_RESIZABLE;
         switch (cfg.mode)
         {
             case Config::ScreenMode::window:
