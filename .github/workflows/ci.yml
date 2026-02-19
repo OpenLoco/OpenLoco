@@ -184,6 +184,10 @@ jobs:
           submodules: true
       - name: Install GCC problem matcher
         uses: ammaraskar/gcc-problem-matcher@master
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1.2.20
+        with:
+          key: ${{ matrix.distro }}-${{ matrix.arch }}-${{ matrix.compiler }}
       - name: Build OpenLoco
         run: |
           cmake --preset ${{ matrix.preset }} -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
