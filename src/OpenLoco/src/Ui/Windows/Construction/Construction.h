@@ -25,6 +25,7 @@ namespace OpenLoco::Ui::Windows::Construction
         signal = 1U << 2,
         station = 1U << 3,
         overhead = 1U << 4,
+        blueprint = 1U << 5,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(GhostVisibilityFlags);
 
