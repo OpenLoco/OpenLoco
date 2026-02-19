@@ -107,10 +107,10 @@ namespace OpenLoco::Gfx
             _scaledScreenTexture = nullptr;
         }
 
-        const auto* wndSurface = SDL_GetWindowSurface(_window);
-        if (wndSurface == nullptr)
+        SDL_PixelFormat outputFormat = SDL_GetWindowPixelFormat(_window);
+        if (outputFormat == SDL_PIXELFORMAT_UNKNOWN)
         {
-            Logging::error("SDL_GetWindowSurface (_window) failed: {}", SDL_GetError());
+            Logging::error("SDL_GetWindowPixelFormat failed: {}", SDL_GetError());
             return;
         }
 
@@ -122,7 +122,7 @@ namespace OpenLoco::Gfx
             return;
         }
 
-        _screenRGBASurface = SDL_CreateSurface(scaledWidth, scaledHeight, wndSurface->format);
+        _screenRGBASurface = SDL_CreateSurface(scaledWidth, scaledHeight, outputFormat);
         if (_screenRGBASurface == nullptr)
         {
             Logging::error("SDL_CreateRGBSurface (_screenRGBASurface) failed: {}", SDL_GetError());
@@ -138,7 +138,7 @@ namespace OpenLoco::Gfx
             Logging::error("SDL_SetSurfacePalette (_screenSurface) failed: {}", SDL_GetError());
         }
 
-        _screenTexture = SDL_CreateTexture(_renderer, wndSurface->format, SDL_TEXTUREACCESS_STREAMING, scaledWidth, scaledHeight);
+        _screenTexture = SDL_CreateTexture(_renderer, outputFormat, SDL_TEXTUREACCESS_STREAMING, scaledWidth, scaledHeight);
         if (_screenTexture == nullptr)
         {
             Logging::error("SDL_CreateTexture (_screenTexture) failed: {}", SDL_GetError());
@@ -154,7 +154,7 @@ namespace OpenLoco::Gfx
         {
             const auto scale = std::ceil(scaleFactor);
 
-            _scaledScreenTexture = SDL_CreateTexture(_renderer, wndSurface->format, SDL_TEXTUREACCESS_TARGET, width * scale, height * scale);
+            _scaledScreenTexture = SDL_CreateTexture(_renderer, outputFormat, SDL_TEXTUREACCESS_TARGET, width * scale, height * scale);
             if (_scaledScreenTexture == nullptr)
             {
                 Logging::error("SDL_CreateTexture (_scaledScreenTexture) failed: {}", SDL_GetError());
