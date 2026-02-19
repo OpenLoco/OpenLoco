@@ -51,22 +51,13 @@ namespace OpenLoco::Gfx
 
     void SoftwareDrawingEngine::initialize(SDL_Window* window)
     {
-        SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
-
         _renderer = SDL_CreateRenderer(window, nullptr);
         if (_renderer == nullptr)
         {
             // Try to fallback to software renderer.
             Logging::warn("Hardware acceleration not available, falling back to software renderer.");
 
-            auto* wndSurface = SDL_GetWindowSurface(window);
-            if (wndSurface == nullptr)
-            {
-                Logging::error("Unable to get window surface: {}", SDL_GetError());
-                std::abort();
-            }
-
-            _renderer = SDL_CreateSoftwareRenderer(wndSurface);
+             _renderer = SDL_CreateRenderer(window, "software");
             if (_renderer == nullptr)
             {
                 Logging::error("Unable to create software renderer: {}", SDL_GetError());

@@ -141,6 +141,7 @@ namespace OpenLoco::Ui
         SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_Y_NUMBER, y);
         SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, width);
         SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, height);
+        SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_HIDDEN_BOOLEAN, true);
 
         return props;
     }
@@ -184,6 +185,8 @@ namespace OpenLoco::Ui
         SDL_StartTextInput(_window);
 
         SDL_DestroyProperties(props);
+
+        SDL_ShowWindow(_window);
     }
 
     static void setWindowIcon()
