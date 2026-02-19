@@ -6,7 +6,9 @@
 #include "GameCommands/Track/CreateSignal.h"
 #include "GameCommands/Track/CreateTrack.h"
 #include "GameCommands/Track/CreateTrainStation.h"
+#include "GameCommands/Track/RemoveSignal.h"
 #include "GameCommands/Track/RemoveTrack.h"
+#include "GameCommands/Track/RemoveTrainStation.h"
 #include "GameState.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
@@ -2297,6 +2299,106 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
     }
 
+    static void removeBlueprintGhosts()
+    {
+        if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::blueprint) && _copiedTrack.has_value())
+        {
+            auto& cState = getConstructionState();
+            const auto ghostBPPos = cState.ghostRemovalTrackPos;
+
+            currency32_t res = 0;
+            for (auto& stationArg : _copiedTrack->stationArgs)
+            {
+                GameCommands::TrainStationRemovalArgs args;
+                args.pos = World::Pos3(stationArg.pos.x + ghostBPPos.x, stationArg.pos.y + ghostBPPos.y, ghostBPPos.z);
+                args.rotation = stationArg.rotation & 3;
+                args.index = 0;
+                args.trackId = stationArg.trackId;
+                args.type = stationArg.type;
+                res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+            }
+
+            for (auto& signalArg : _copiedTrack->signalArgs)
+            {
+                GameCommands::SignalRemovalArgs args;
+                args.pos = World::Pos3(signalArg.pos.x + ghostBPPos.x, signalArg.pos.y + ghostBPPos.y, ghostBPPos.z);
+                args.rotation = signalArg.rotation & 3;
+                args.index = 0;
+                args.trackId = signalArg.trackId;
+                args.trackObjType = signalArg.trackObjType;
+                args.flags = signalArg.sides;
+                res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+            }
+
+            for (auto& trackArg : _copiedTrack->trackArgs)
+            {
+                GameCommands::TrackRemovalArgs args;
+                args.pos = World::Pos3(trackArg.pos.x + ghostBPPos.x, trackArg.pos.y + ghostBPPos.y, ghostBPPos.z);
+                args.rotation = trackArg.rotation & 3;
+                args.index = 0;
+                args.trackId = trackArg.trackId;
+                args.trackObjectId = trackArg.trackObjectId;
+                res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+                res = res;
+            }
+            Common::unsetGhostVisibilityFlag(GhostVisibilityFlags::blueprint);
+        }
+    }
+
+    static void placeBlueprintGhost(const World::Pos3& ghostBPPos)
+    {
+        removeBlueprintGhosts();
+        if (!_copiedTrack.has_value())
+        {
+            return;
+        }
+        auto& cState = getConstructionState();
+
+        // Duplicate as we need to adjust the position
+        auto copiedTrack = CopiedTrack(_copiedTrack.value());
+        currency32_t result = 0;
+        // First we do a trial placement of track (can't do signals and stations as they would need the track already down)
+        for (auto& trackArgs : copiedTrack.trackArgs)
+        {
+            trackArgs.pos += ghostBPPos;
+            result = GameCommands::doCommand(trackArgs, GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+            if (result == GameCommands::FAILURE)
+            {
+                return;
+            }
+        }
+        // Now we do the actual placement
+        result = 0;
+        for (auto& trackArgs : copiedTrack.trackArgs)
+        {
+            const auto res = GameCommands::doCommand(trackArgs, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+            if (res != GameCommands::FAILURE)
+            {
+                result += res;
+            }
+        }
+        for (auto& signalArgs : copiedTrack.signalArgs)
+        {
+            signalArgs.pos += ghostBPPos;
+            const auto res = GameCommands::doCommand(signalArgs, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+            if (res != GameCommands::FAILURE)
+            {
+                result += res;
+            }
+        }
+        for (auto& stationArgs : copiedTrack.stationArgs)
+        {
+            stationArgs.pos += ghostBPPos;
+            const auto res = GameCommands::doCommand(stationArgs, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+            if (res != GameCommands::FAILURE)
+            {
+                result += res;
+            }
+        }
+        cState.ghostRemovalTrackPos = ghostBPPos;
+        Common::setGhostVisibilityFlag(GhostVisibilityFlags::blueprint);
+    }
+
     // 0x0049FB63
     static uint32_t placeTrackGhost(const GameCommands::TrackPlacementArgs& args)
     {
@@ -2576,26 +2678,39 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x0049DC8C
     static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
     {
-        if (widgetIndex != widx::construct)
+        if (widgetIndex == widx::construct)
         {
-            return;
-        }
 
-        if (_isDragging)
-        {
-            mapInvalidateMapSelectionFreeFormTiles();
-            removeConstructionGhosts();
-            return;
-        }
+            if (_isDragging)
+            {
+                mapInvalidateMapSelectionFreeFormTiles();
+                removeConstructionGhosts();
+                return;
+            }
 
-        auto& cState = getConstructionState();
-        if (cState.trackType & (1 << 7))
-        {
-            onToolUpdateSingle(x, y, getRoadPieceId, tryMakeRoadJunctionAtLoc, TrackData::getRoadPiece, getRoadPlacementArgs, placeRoadGhost);
+            auto& cState = getConstructionState();
+            if (cState.trackType & (1 << 7))
+            {
+                onToolUpdateSingle(x, y, getRoadPieceId, tryMakeRoadJunctionAtLoc, TrackData::getRoadPiece, getRoadPlacementArgs, placeRoadGhost);
+            }
+            else
+            {
+                onToolUpdateSingle(x, y, getTrackPieceId, tryMakeTrackJunctionAtLoc, TrackData::getTrackPiece, getTrackPlacementArgs, placeTrackGhost);
+            }
         }
-        else
+        else if (widgetIndex == widx::paste)
         {
-            onToolUpdateSingle(x, y, getTrackPieceId, tryMakeTrackJunctionAtLoc, TrackData::getTrackPiece, getTrackPlacementArgs, placeTrackGhost);
+            auto constructPos = getConstructionPos(x, y);
+            if (!constructPos.has_value() || !_copiedTrack.has_value())
+            {
+                return;
+            }
+            const auto pos = World::Pos3(World::toWorldSpace(constructPos->first), constructPos->second);
+            auto& cState = getConstructionState();
+            if (pos != cState.ghostRemovalTrackPos || !Common::hasGhostVisibilityFlag(GhostVisibilityFlags::blueprint))
+            {
+                placeBlueprintGhost(pos);
+            }
         }
     }
 
@@ -2937,11 +3052,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                             uint16_t sideFlags = 0U;
                             if (elSignal->getLeft().hasSignal())
                             {
-                                sideFlags |= 0x4000U;
+                                sideFlags |= 0x8000U;
                             }
                             if (elSignal->getRight().hasSignal())
                             {
-                                sideFlags |= 0x8000U;
+                                sideFlags |= 0x4000U;
                             }
                             args.sides = sideFlags;
                             copiedTrack.signalArgs.push_back(args);
@@ -3000,7 +3115,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 return;
             }
-
+            removeBlueprintGhosts();
             // Duplicate as we need to adjust the position
             auto pasteArgs = CopiedTrack(_copiedTrack.value());
             const auto pos = World::Pos3(World::toWorldSpace(constructPos->first), constructPos->second);
