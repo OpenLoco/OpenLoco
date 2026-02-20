@@ -248,6 +248,7 @@ namespace OpenLoco::Ui::Windows::Construction
         void drawTrack(const World::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t rotation, TrackRoadPreviewFlags flags, Gfx::DrawingContext& drawingCtx);
         void drawRoad(const World::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t rotation, TrackRoadPreviewFlags flags,Gfx::DrawingContext& drawingCtx);
         void removeTrackGhosts();
+        void removeBlueprintGhosts();
         void previousTrackPiece(Window& self);
         void nextTrackPiece(Window& self);
         void previousSlope(Window& self);
