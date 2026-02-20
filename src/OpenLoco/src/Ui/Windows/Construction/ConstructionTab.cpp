@@ -580,6 +580,16 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 cState.constructionHover = true;
                 break;
             }
+
+            case widx::paste:
+            {
+                removeConstructionGhosts();
+                WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::overgroundView);
+                ToolManager::toolSet(self, widx::paste, CursorId::crosshair);
+                self.widgets[widx::paste].activated = 1;
+                Input::setFlag(Input::Flags::flag6);
+                break;
+            }
         }
     }
 
@@ -2299,7 +2309,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
     }
 
-    static void removeBlueprintGhosts()
+    void removeBlueprintGhosts()
     {
         if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::blueprint) && _copiedTrack.has_value())
         {
@@ -3017,6 +3027,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                         auto* elStation = el.as<StationElement>();
                         if (elTrack != nullptr)
                         {
+                            if (elTrack->isGhost() || elTrack->isAiAllocated())
+                            {
+                                elProcessedTrack = nullptr;
+                                continue;
+                            }
                             if (elTrack->owner() != CompanyManager::getControllingId())
                             {
                                 elProcessedTrack = nullptr;
@@ -3041,6 +3056,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                         }
                         else if (elSignal != nullptr && elProcessedTrack != nullptr)
                         {
+                            if (elSignal->isGhost() || elSignal->isAiAllocated())
+                            {
+                                continue;
+                            }
                             GameCommands::SignalPlacementArgs args{};
                             auto& trackPiece0 = TrackData::getTrackPiece(elProcessedTrack->trackId())[0];
                             args.pos = World::Pos3(pos.x, pos.y, elSignal->baseHeight()) - World::Pos3(trackPiece0.x, trackPiece0.y, trackPiece0.z);
@@ -3050,11 +3069,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                             args.trackObjType = elProcessedTrack->trackObjectId();
                             args.type = elSignal->getLeft().signalObjectId();
                             uint16_t sideFlags = 0U;
-                            if (elSignal->getLeft().hasSignal())
+                            if (elSignal->getLeft().hasSignal() && !elSignal->isLeftGhost())
                             {
                                 sideFlags |= 0x8000U;
                             }
-                            if (elSignal->getRight().hasSignal())
+                            if (elSignal->getRight().hasSignal() && !elSignal->isRightGhost())
                             {
                                 sideFlags |= 0x4000U;
                             }
@@ -3063,6 +3082,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                         }
                         else if (elStation != nullptr && elProcessedTrack != nullptr)
                         {
+                            if (elStation->isGhost() || elStation->isAiAllocated())
+                            {
+                                continue;
+                            }
                             GameCommands::TrainStationPlacementArgs args{};
                             auto& trackPiece0 = TrackData::getTrackPiece(elProcessedTrack->trackId())[0];
                             args.pos = World::Pos3(pos.x, pos.y, elStation->baseHeight()) - World::Pos3(trackPiece0.x, trackPiece0.y, trackPiece0.z);
@@ -3159,12 +3182,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     static void onToolAbort([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
-        if (widgetIndex != widx::construct)
+        if (widgetIndex == widx::construct)
         {
-            return;
+            _isDragging = false;
         }
-
-        _isDragging = false;
     }
 
     // 0x0049D4F5
