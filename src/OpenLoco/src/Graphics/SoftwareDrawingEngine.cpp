@@ -57,7 +57,7 @@ namespace OpenLoco::Gfx
             // Try to fallback to software renderer.
             Logging::warn("Hardware acceleration not available, falling back to software renderer.");
 
-             _renderer = SDL_CreateRenderer(window, "software");
+            _renderer = SDL_CreateRenderer(window, "software");
             if (_renderer == nullptr)
             {
                 Logging::error("Unable to create software renderer: {}", SDL_GetError());
@@ -324,26 +324,53 @@ namespace OpenLoco::Gfx
         }
 
         // Copy the RGBA pixels into screen texture.
-        SDL_UpdateTexture(_screenTexture, nullptr, _screenRGBASurface->pixels, _screenRGBASurface->pitch);
+        if (!SDL_UpdateTexture(_screenTexture, nullptr, _screenRGBASurface->pixels, _screenRGBASurface->pitch))
+        {
+            Logging::error("SDL_UpdateTexture {}", SDL_GetError());
+            return;
+        }
 
         const auto scaleFactor = Config::get().scaleFactor;
         if (scaleFactor > 1.0f)
         {
             // Copy screen texture to the scaled texture.
-            SDL_SetRenderTarget(_renderer, _scaledScreenTexture);
-            SDL_RenderTexture(_renderer, _screenTexture, nullptr, nullptr);
+            if (!SDL_SetRenderTarget(_renderer, _scaledScreenTexture))
+            {
+                Logging::error("SDL_SetRenderTarget (_scaledScreenTexture) failed: {}", SDL_GetError());
+                return;
+            }
+            if (!SDL_RenderTexture(_renderer, _screenTexture, nullptr, nullptr))
+            {
+                Logging::error("SDL_RenderTexture (_screenTexture) failed: {}", SDL_GetError());
+                return;
+            }
 
             // Copy scaled texture to primary render target.
-            SDL_SetRenderTarget(_renderer, nullptr);
-            SDL_RenderTexture(_renderer, _scaledScreenTexture, nullptr, nullptr);
+            if (!SDL_SetRenderTarget(_renderer, nullptr))
+            {
+                Logging::error("SDL_SetRenderTarget (nullptr) failed: {}", SDL_GetError());
+                return;
+            }
+            if (!SDL_RenderTexture(_renderer, _scaledScreenTexture, nullptr, nullptr))
+            {
+                Logging::error("SDL_RenderTexture (_scaledScreenTexture) failed: {}", SDL_GetError());
+                return;
+            }
         }
         else
         {
-            SDL_RenderTexture(_renderer, _screenTexture, nullptr, nullptr);
+            if (!SDL_RenderTexture(_renderer, _screenTexture, nullptr, nullptr))
+            {
+                Logging::error("SDL_RenderTexture (_screenTexture) failed: {}", SDL_GetError());
+                return;
+            }
         }
 
         // Display buffers.
-        SDL_RenderPresent(_renderer);
+        if (!SDL_RenderPresent(_renderer))
+        {
+            Logging::error("SDL_RenderPresent failed: {}", SDL_GetError());
+        }
     }
 
     DrawingContext& SoftwareDrawingEngine::getDrawingContext()
