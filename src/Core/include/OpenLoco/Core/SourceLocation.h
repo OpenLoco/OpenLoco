@@ -9,8 +9,7 @@ namespace OpenLoco
 {
     namespace Detail
     {
-        // TODO: Make this consteval for C++20
-        constexpr std::string_view sanitizePath(std::string_view path)
+        consteval std::string_view sanitizePath(std::string_view path)
         {
 #if defined(OPENLOCO_PROJECT_PATH)
             constexpr std::string_view projectPath = OPENLOCO_PROJECT_PATH;
@@ -22,7 +21,7 @@ namespace OpenLoco
         }
     }
 
-    // Something like std::source_location except this works prior to C++20.
+    // Something like std::source_location except it uses relative paths when possible.
     class SourceLocation
     {
         std::string _function;
