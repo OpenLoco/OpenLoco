@@ -1,4 +1,5 @@
 set(public_files
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Diagnostics/Assert.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Diagnostics/LogFile.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Diagnostics/LogLevel.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Diagnostics/LogSink.h"
@@ -14,6 +15,7 @@ set(private_files
 )
 
 set(test_files
+    "${CMAKE_CURRENT_SOURCE_DIR}/tests/AssertionTests.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/LoggingTests.cpp"
 )
 

@@ -1,5 +1,6 @@
 set(public_files
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Platform/Crash.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Platform/Debug.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Platform/Platform.h"
 )
 
