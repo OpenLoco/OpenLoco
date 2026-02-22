@@ -2,8 +2,10 @@
 
 // Redefine the macro to ensure it calls std::abort() instead of platform-specific debug break,
 // so that it can be properly caught by GTests death tests.
+// NOLINTBEGIN(cppcoreguidelines-macro-usage)
 #undef OPENLOCO_DEBUG_BREAK
 #define OPENLOCO_DEBUG_BREAK() std::abort()
+// NOLINTEND(cppcoreguidelines-macro-usage)
 
 #include <OpenLoco/Diagnostics/Assert.h>
 #include <cstdlib>
