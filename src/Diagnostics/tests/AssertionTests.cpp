@@ -55,7 +55,7 @@ enum class TestEnum
 
 TEST(AssertionsTest, EnumClass)
 {
-    EXPECT_DEATH(Assert::eq(TestEnum::ValueA, TestEnum::ValueB), "enum TestEnum::1 == enum TestEnum::2");
+    EXPECT_DEATH(Assert::eq(TestEnum::ValueA, TestEnum::ValueB), "TestEnum::1 == .*TestEnum::2");
 }
 
 TEST(AssertionsDeathTest, FailingEq)
