@@ -7,8 +7,6 @@
 #include "Vehicles/Vehicle.h"
 #include <OpenLoco/Math/Vector.hpp>
 
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::GameCommands
 {
     // 0x0047A42F

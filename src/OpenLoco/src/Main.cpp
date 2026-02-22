@@ -1,30 +1,13 @@
 #include "OpenLoco.h"
 #include <OpenLoco/Platform/Platform.h>
-
-#ifdef _WIN32
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif
-#include <windows.h>
-
-/**
- * The function that is called directly from the host application (loco.exe)'s WinMain. This will be removed when OpenLoco can
- * be built as a stand alone application.
- */
-// Hack to trick mingw into thinking we forward-declared this function.
-extern "C" __declspec(dllexport) int StartOpenLoco(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow);
-extern "C" __declspec(dllexport) int StartOpenLoco([[maybe_unused]] HINSTANCE hInstance, [[maybe_unused]] HINSTANCE hPrevInstance, [[maybe_unused]] LPSTR lpCmdLine, [[maybe_unused]] int nCmdShow)
-{
-    const auto res = OpenLoco::main(OpenLoco::Platform::getCmdLineVector(0, nullptr));
-
-    return res;
-}
-#else
-#include "Interop/Hooks.h"
+#include <SDL2/SDL_main.h>
 
 int main(int argc, const char** argv)
 {
-    OpenLoco::Interop::loadSections();
+#ifdef WIN32
+    // Ensures that assert dialogs allow for ignoring them (not the default behaviour for console subsystem)
+    _set_error_mode(_OUT_TO_MSGBOX);
+#endif
+    SDL_SetMainReady();
     return OpenLoco::main(OpenLoco::Platform::getCmdLineVector(argc, argv));
 }
-#endif

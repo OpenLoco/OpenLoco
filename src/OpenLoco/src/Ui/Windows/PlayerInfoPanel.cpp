@@ -3,7 +3,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Intro.h"
@@ -22,14 +21,11 @@
 #include "Ui/WindowManager.h"
 #include "World/Company.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <map>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 {
-    static constexpr Ui::Size32 kWindowSize = { 140, 27 };
+    static constexpr Ui::Size kWindowSize = { 140, 27 };
 
     namespace Widx
     {
@@ -60,8 +56,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 
     std::vector<const Company*> _sortedCompanies;
 
-    static loco_global<uint16_t, 0x0050A004> _50A004;
-    static loco_global<uint16_t, 0x0113DC78> _113DC78; // Dropdown flags?
+    static bool _redrawScheduled = false; // _50A004 (first bit)
 
     // 0x43AA4C
     static void playerMouseDown(Ui::Window* self, WidgetIndex_t widgetIndex)
@@ -127,7 +122,8 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         {
             Dropdown::setHighlightedItem(highlightIndex);
         }
-        _113DC78 = _113DC78 | (1 << 1);
+
+        Dropdown::setFlags(Dropdown::Flags::unk2);
     }
 
     // 0x43AB87
@@ -351,7 +347,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 
     void invalidateFrame()
     {
-        _50A004 = _50A004 | (1 << 0);
+        _redrawScheduled = true;
     }
 
     // 0x00439670
@@ -363,9 +359,9 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             w.var_854 = 0;
         }
 
-        if (_50A004 & (1 << 0))
+        if (_redrawScheduled)
         {
-            _50A004 = _50A004 & ~(1 << 0);
+            _redrawScheduled = false;
             WindowManager::invalidateWidget(WindowType::playerInfoToolbar, 0, Widx::inner_frame);
         }
     }

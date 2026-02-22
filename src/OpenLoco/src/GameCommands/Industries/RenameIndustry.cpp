@@ -10,9 +10,6 @@
 #include "Types.hpp"
 #include "World/Industry.h"
 #include "World/IndustryManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {

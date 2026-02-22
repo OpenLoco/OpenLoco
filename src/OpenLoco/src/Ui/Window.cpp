@@ -2,7 +2,7 @@
 #include "Config.h"
 #include "Entities/EntityManager.h"
 #include "Graphics/Colour.h"
-#include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/DrawingContext.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
@@ -17,17 +17,16 @@
 #include "ViewportManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Engine/Ui/Rect.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <cassert>
 #include <cinttypes>
 
 using namespace OpenLoco;
-using namespace OpenLoco::Interop;
+
 using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui
 {
-    Window::Window(Ui::Point32 position, Ui::Size32 size)
+    Window::Window(Ui::Point position, Ui::Size size)
         : x(static_cast<int16_t>(position.x))
         , y(static_cast<int16_t>(position.y))
         , width(static_cast<uint16_t>(size.width))
@@ -85,6 +84,19 @@ namespace OpenLoco::Ui
         {
             invalidate();
         }
+    }
+
+    bool Window::isVisible()
+    {
+        return true;
+    }
+
+    bool Window::isTranslucent()
+    {
+        const bool isTransparent = this->hasFlags(WindowFlags::transparent);
+        const bool isMainWindow = type == WindowType::main;
+        const bool hasTransparentFrame = Config::get().windowFrameStyle == Config::WindowFrameStyle::transparent;
+        return !isMainWindow && (hasTransparentFrame || isTransparent);
     }
 
     bool Window::isEnabled(WidgetIndex_t widgetIndex)
@@ -209,7 +221,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        if (vp->hasFlags(ViewportFlags::seeThroughTracks | ViewportFlags::seeThroughScenery | ViewportFlags::seeThroughRoads | ViewportFlags::seeThroughBuildings | ViewportFlags::seeThroughTrees | ViewportFlags::seeThroughBridges) || w->hasFlags(WindowFlags::flag_8))
+        if (vp->hasFlags(ViewportFlags::seeThroughTracks | ViewportFlags::seeThroughScenery | ViewportFlags::seeThroughRoads | ViewportFlags::seeThroughBuildings | ViewportFlags::seeThroughTrees | ViewportFlags::seeThroughBridges) || w->hasFlags(WindowFlags::viewportNoShiftPixels))
         {
             auto rect = Ui::Rect(vp->x, vp->y, vp->width, vp->height);
             Gfx::render(rect);
@@ -665,7 +677,7 @@ namespace OpenLoco::Ui
 
         if (toCursor && Config::get().zoomToCursor)
         {
-            const auto mouseCoords = Ui::getCursorPosScaled() - Point32(v->x, v->y);
+            const auto mouseCoords = Ui::getCursorPosScaled() - Point(v->x, v->y);
             const int32_t diffX = mouseCoords.x - ((v->viewWidth >> zoomLevel) / 2);
             const int32_t diffY = mouseCoords.y - ((v->viewHeight >> zoomLevel) / 2);
             if (previousZoomLevel > zoomLevel)
@@ -1242,7 +1254,7 @@ namespace OpenLoco::Ui
     // 0x004CA4DF
     void Window::draw(Gfx::DrawingContext& drawingCtx)
     {
-        if (this->hasFlags(WindowFlags::transparent) && !this->hasFlags(WindowFlags::noBackground))
+        if (this->isTranslucent() && !this->hasFlags(WindowFlags::noBackground))
         {
             drawingCtx.fillRect(this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
         }

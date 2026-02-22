@@ -1,14 +1,11 @@
 #include "PaletteMap.h"
 #include "Gfx.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "ImageIds.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <algorithm>
 #include <cassert>
 #include <cstring>
 #include <numeric>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Gfx::PaletteMap
 {
@@ -172,8 +169,8 @@ namespace OpenLoco::Gfx::PaletteMap
     }();
 
     // This buffer is used when sprites are drawn with a secondary palette.
-    // TODO: Make this thread safe via thread_local if multi-threading is implemented.
-    static auto _secondaryPaletteMapBuffer = _defaultPaletteMapBuffer;
+    // TODO: Move this into the drawing context.
+    static thread_local auto _secondaryPaletteMapBuffer = _defaultPaletteMapBuffer;
 
     View getDefault()
     {

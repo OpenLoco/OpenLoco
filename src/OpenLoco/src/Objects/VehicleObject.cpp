@@ -1,8 +1,8 @@
 #include "VehicleObject.h"
 #include "CargoObject.h"
 #include "Graphics/Colour.h"
+#include "Graphics/DrawingContext.h"
 #include "Graphics/Gfx.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -15,7 +15,6 @@
 #include "Vehicles/VehicleDraw.h"
 #include <OpenLoco/Core/Numerics.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco

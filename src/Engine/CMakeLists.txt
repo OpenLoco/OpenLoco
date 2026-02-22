@@ -12,19 +12,19 @@ set(private_files
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input/ShortcutManager.cpp"
 )
 
+set(public_link_libraries
+    Core
+    Diagnostics
+    Utility
+    Math
+    Gfx
+)
+
 loco_add_library(Engine STATIC
     PUBLIC_FILES
         ${public_files}
     PRIVATE_FILES
         ${private_files}
-)
-
-target_link_libraries(Engine 
-    PUBLIC
-        Core
-        Diagnostics
-        Utility
-        Interop
-        Math
-        Gfx
+    PUBLIC_LINK_LIBRARIES
+        ${public_link_libraries}
 )

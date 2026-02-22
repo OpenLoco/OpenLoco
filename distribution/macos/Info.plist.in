@@ -6,9 +6,6 @@
 	<key>CFBundleExecutable</key>
 	<string>${MACOSX_BUNDLE_EXECUTABLE_NAME}</string>
 
-	<key>CFBundleGetInfoString</key>
-	<string>${MACOSX_BUNDLE_INFO_STRING}</string>
-
 	<!-- Icon file -->
 	<key>CFBundleIconFile</key>
 	<string>${MACOSX_BUNDLE_ICON_FILE}</string>
@@ -34,11 +31,10 @@
 	<string>${MACOSX_BUNDLE_SHORT_VERSION_STRING}</string>
 
 	<key>CFBundleSignature</key>
-	<string>????</string>
+	<string>LOCO</string>
 
-	<!-- Bundle version -->
-	<key>CFBundleVersion</key>
-	<string>${MACOSX_BUNDLE_BUNDLE_VERSION}</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>${MACOSX_DEPLOYMENT_TARGET}</string>
 
 	<!-- Resources should be file-mapped -->
 	<key>CSResourcesFileMapped</key>

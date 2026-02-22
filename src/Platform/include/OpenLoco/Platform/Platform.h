@@ -1,10 +1,9 @@
 #pragma once
 
+#include <OpenLoco/Core/FileSystem.hpp>
 #include <cstdint>
 #include <string>
 #include <vector>
-
-#include <OpenLoco/Core/FileSystem.hpp>
 
 namespace OpenLoco::Platform
 {

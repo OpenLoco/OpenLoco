@@ -1,18 +1,16 @@
 #include "CurrencyObject.h"
 #include "Graphics/Colour.h"
+#include "Graphics/DrawingContext.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "ObjectImageTable.h"
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
-#include <OpenLoco/Interop/Interop.hpp>
-#include <cassert>
 
-using namespace OpenLoco::Interop;
+#include <cassert>
 
 namespace OpenLoco
 {

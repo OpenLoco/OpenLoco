@@ -4,7 +4,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/Conversion.h"
@@ -14,8 +13,8 @@
 #include "Logging.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
-#include "Scenario.h"
-#include "ScenarioOptions.h"
+#include "Scenario/Scenario.h"
+#include "Scenario/ScenarioOptions.h"
 #include "Ui.h"
 #include "Ui/TextInput.h"
 #include "Ui/Widget.h"
@@ -28,17 +27,13 @@
 #include "Ui/Widgets/TextBoxWidget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Core/FileSystem.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/Utility/String.hpp>
-
 #include <SDL2/SDL.h>
-
 #include <algorithm>
 #include <cstring>
 #include <string>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Ui::Windows::PromptBrowse
@@ -79,8 +74,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static char _displayFolderBuffer[512]; // 0x009DA084
     static char _filter[32];               // 0x009D9E64
 
-    static loco_global<char[512], 0x0112CE04> _savePath;
-
+    // 0x0112CE04
+    static std::optional<std::string> _targetPath;
     // 0x0050AEA8
     static std::unique_ptr<S5::SaveDetails> _previewSaveDetails;
     // 0x009CCA54
@@ -100,6 +95,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void upOneLevel();
     static void changeDirectory(const fs::path& path);
     static void processFileForLoadSave(Window* window);
+    static void processFileForLoadSave(Window* window, fs::path& entry);
     static void processFileForDelete(Window* self, fs::path& entry);
     static void refreshDirectoryList();
     static void loadFileDetails(Window* self);
@@ -111,16 +107,12 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     // edx: filter
     // ebx: title
     // eax: {return}
-    bool open(
+    std::optional<std::string> open(
         browse_type type,
-        char* szPath,
+        std::string_view savePath,
         const char* filter,
         StringId titleId)
     {
-        auto path = fs::u8path(szPath);
-        auto directory = getDirectory(path);
-        auto baseName = getBasename(path);
-
         TextInput::cancel();
 
         _type = type;
@@ -136,13 +128,14 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
         Utility::strlcpy(_filter, filter, std::size(_filter));
 
+        auto path = fs::u8path(savePath);
+        auto directory = getDirectory(path);
         changeDirectory(directory.make_preferred());
-        inputSession = Ui::TextInput::InputSession(baseName, 200);
 
         auto window = WindowManager::createWindowCentred(
             WindowType::fileBrowserPrompt,
             { 500, 380 },
-            Ui::WindowFlags::stickToFront | Ui::WindowFlags::resizable | Ui::WindowFlags::flag_12,
+            Ui::WindowFlags::stickToFront | Ui::WindowFlags::resizable | Ui::WindowFlags::playSoundOnOpen,
             getEvents());
 
         if (window != nullptr)
@@ -154,14 +147,21 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             window->rowHeight = 11;
             window->var_85A = -1;
 
-            auto& widget = window->widgets[widx::text_filename];
-            inputSession.calculateTextOffset(widget.width());
-
-            // Focus the textbox element
-            Input::setFocus(window->type, window->number, widx::text_filename);
-
             window->setColour(WindowColour::primary, Colour::black);
             window->setColour(WindowColour::secondary, Colour::mutedSeaGreen);
+
+            // Initialise and focus the filename textbox as needed
+            if (type == browse_type::save)
+            {
+                auto baseNameUtf8 = getBasename(path);
+                auto baseNameLoco = Localisation::convertUnicodeToLoco(baseNameUtf8);
+                inputSession = Ui::TextInput::InputSession(baseNameLoco, 200);
+
+                auto& widget = window->widgets[widx::text_filename];
+                inputSession.calculateTextOffset(widget.width());
+
+                Input::setFocus(window->type, window->number, widx::text_filename);
+            }
 
             WindowManager::setCurrentModalType(WindowType::fileBrowserPrompt);
             const bool success = promptTickLoop(
@@ -178,10 +178,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 });
             WindowManager::setCurrentModalType(WindowType::undefined);
 
-            // TODO: return std::optional instead
-            return success && _savePath[0] != '\0';
+            return success ? _targetPath : std::nullopt;
         }
-        return false;
+        return std::nullopt;
     }
 
     // 0x00447174
@@ -210,7 +209,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         {
             case widx::close_button:
                 _currentDirectory.clear();
-                _savePath[0] = '\0';
+                _targetPath = std::nullopt;
                 WindowManager::close(&window);
                 break;
             case widx::parent_button:
@@ -226,19 +225,24 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x004467E1
-    static void onUpdate(Ui::Window& window)
+    static void onUpdate(Window& self)
     {
+        if (!Input::isFocused(self.type, self.number, widx::text_filename))
+        {
+            return;
+        }
+
         inputSession.cursorFrame++;
         if ((inputSession.cursorFrame & 0x0F) == 0)
         {
-            window.invalidate();
+            WindowManager::invalidateWidget(self.type, self.number, widx::text_filename);
         }
     }
 
     // 0x004464A1
     static void getScrollSize(Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
     {
-        scrollHeight = window.rowHeight * _files.size();
+        scrollHeight = static_cast<int32_t>(window.rowHeight * _files.size());
     }
 
     // 0x004464F7
@@ -267,13 +271,10 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         // Clicking a file, with left mouse button?
         if (Input::state() == Input::State::scrollLeft)
         {
-            // Copy the selected filename without extension to text input buffer.
-            inputSession.buffer = entry.stem().u8string();
-            inputSession.cursorPosition = inputSession.buffer.length();
             self.invalidate();
 
             // Continue processing for load/save.
-            processFileForLoadSave(&self);
+            processFileForLoadSave(&self, entry);
         }
         // Clicking a file, with right mouse button
         else
@@ -484,7 +485,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 drawingCtx.pushRenderTarget(*clipped);
 
                 bool showCaret = Input::isFocused(window.type, window.number, widx::text_filename) && (inputSession.cursorFrame & 0x10) == 0;
-                drawTextInput(&window, drawingCtx, inputSession.buffer.c_str(), inputSession.cursorPosition, showCaret);
+                drawTextInput(&window, drawingCtx, inputSession.buffer.c_str(), static_cast<int32_t>(inputSession.cursorPosition), showCaret);
 
                 drawingCtx.popRenderTarget();
             }
@@ -893,6 +894,11 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         // Append extension to filename.
         path += getExtensionFromFileType(_fileType);
 
+        processFileForLoadSave(self, path);
+    }
+
+    static void processFileForLoadSave(Window* self, fs::path& path)
+    {
         if (_type == browse_type::save)
         {
             if (filenameContainsInvalidChars())
@@ -906,7 +912,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             {
                 // Copy directory and filename to buffer.
                 char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-                strncpy(&buffer_2039[0], inputSession.buffer.c_str(), 512);
+                auto filenameUtf8 = path.stem().make_preferred().u8string();
+                auto filenameLoco = Localisation::convertUnicodeToLoco(filenameUtf8);
+                strncpy(&buffer_2039[0], filenameLoco.c_str(), 512);
 
                 // Arguments for description text in ok/cancel window.
                 FormatArguments args{};
@@ -922,7 +930,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
 
         // Copy directory and filename to buffer.
-        strncpy(_savePath.get(), path.u8string().c_str(), std::size(_savePath));
+        _targetPath = path.u8string();
 
         // Remember the current path for saved games
         if (_fileType == BrowseFileType::savedGame)
@@ -966,7 +974,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         // Copy directory and filename to buffer.
         char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-        strncpy(&buffer_2039[0], entry.stem().u8string().c_str(), 512);
+        auto filenameUtf8 = path.stem().make_preferred().u8string();
+        auto filenameLoco = Localisation::convertUnicodeToLoco(filenameUtf8);
+        strncpy(&buffer_2039[0], filenameLoco.c_str(), 512);
 
         FormatArguments args{};
         args.push(StringIds::buffer_2039);

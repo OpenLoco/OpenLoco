@@ -64,5 +64,5 @@ namespace OpenLoco::CompanyManager
     std::vector<uint32_t> findAllOtherInUseCompetitors(const CompanyId id);
 
     void aiDestroy(const CompanyId id);
-    void sub_4A6DA9();
+    void updatePlayerInfrastructureOptions();
 }

@@ -9,7 +9,7 @@
 #include "MessageManager.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "World/Industry.h"

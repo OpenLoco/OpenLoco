@@ -38,6 +38,12 @@ namespace OpenLoco::World
         edge3,
     };
 
+    struct ConstructionArrow
+    {
+        World::Pos3 pos;
+        uint8_t direction;
+    };
+
     uint16_t setMapSelectionTiles(const Pos2& loc, const MapSelectionType selectionType, uint16_t toolSize);
     uint16_t setMapSelectionSingleTile(const Pos2& loc, bool setQuadrant = false);
     void mapInvalidateSelectionRect();
@@ -62,4 +68,7 @@ namespace OpenLoco::World
     void setMapSelectionFlags(MapSelectionFlags flags);
     void resetMapSelectionFlag(MapSelectionFlags flags);
     void resetMapSelectionFlags();
+
+    const ConstructionArrow& getConstructionArrow();
+    void setConstructionArrow(const ConstructionArrow& arrow);
 }

@@ -20,11 +20,9 @@
 #include "StationManager.h"
 #include "ViewportManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Bound.hpp>
 #include <algorithm>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 
 namespace OpenLoco

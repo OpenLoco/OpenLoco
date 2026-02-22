@@ -2,6 +2,7 @@
 
 #include "GameCommands/GameCommands.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <array>
 
 namespace OpenLoco::GameCommands
 {

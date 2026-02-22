@@ -4,11 +4,10 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/WallObject.h"
 #include "Paint.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "Ui/ViewportInteraction.h"
 #include <cassert>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;
 
 namespace OpenLoco::Paint

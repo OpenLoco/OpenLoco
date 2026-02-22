@@ -7,10 +7,8 @@
 #include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleBogie.h"
 #include "Vehicles/VehicleDraw.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::DragVehiclePart
 {
@@ -25,9 +23,8 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
 
     );
 
-    // TODO: make vehicles versions of these call into this global, ?make Entity::id instead?
-    static loco_global<Vehicles::VehicleBogie*, 0x0113614E> _dragCarComponent;
-    static loco_global<EntityId, 0x01136156> _dragVehicleHead;
+    static Vehicles::VehicleBogie* _dragCarComponent = nullptr; // 0x0113614E
+    static EntityId _dragVehicleHead = EntityId::null;          // 0x01136156
 
     static const WindowEventList& getEvents();
 
@@ -43,13 +40,28 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         auto pos = Ui::ToolTip::getTooltipMouseLocation();
         pos.y -= 30;
         pos.x -= width / 2;
-        Ui::Size32 size = { width, 60 };
+        Ui::Size size = { width, 60 };
 
         auto self = WindowManager::createWindow(WindowType::dragVehiclePart, { pos.x, pos.y }, size, WindowFlags::transparent | WindowFlags::stickToFront, getEvents());
         self->setWidgets(widgets);
         self->widgets[widx::frame].right = width - 1;
 
         Input::windowPositionBegin(Ui::ToolTip::getTooltipMouseLocation().x, Ui::ToolTip::getTooltipMouseLocation().y, self, widx::frame);
+    }
+
+    static void onClose([[maybe_unused]] Window& self)
+    {
+        _dragCarComponent = nullptr;
+        _dragVehicleHead = EntityId::null;
+    }
+
+    static void onUpdate(Window& self)
+    {
+        if (WindowManager::find(WindowType::vehicle, enumValue(_dragVehicleHead)) == nullptr)
+        {
+            // Parent window no longer exists; close ourselves
+            WindowManager::close(&self);
+        }
     }
 
     // 0x004B62FE
@@ -69,9 +81,9 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         Vehicle::Details::scrollDragEnd(Input::getScrollLastLocation());
         // Reset the height so that invalidation works correctly
         self.height = height;
+
+        WindowManager::invalidate(WindowType::vehicle, enumValue(_dragVehicleHead));
         WindowManager::close(&self);
-        _dragCarComponent = nullptr;
-        WindowManager::invalidate(WindowType::vehicle, enumValue(*_dragVehicleHead));
     }
 
     // 0x004B6197
@@ -98,6 +110,8 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     }
 
     static constexpr WindowEventList kEvents = {
+        .onClose = onClose,
+        .onUpdate = onUpdate,
         .cursor = cursor,
         .onMove = onMove,
         .draw = draw,
@@ -106,5 +120,10 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     static const WindowEventList& getEvents()
     {
         return kEvents;
+    }
+
+    Vehicles::VehicleBogie* getDragCarComponent()
+    {
+        return _dragCarComponent;
     }
 }

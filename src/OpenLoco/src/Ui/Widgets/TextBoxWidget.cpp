@@ -1,5 +1,4 @@
 #include "TextBoxWidget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Ui/Window.h"
 

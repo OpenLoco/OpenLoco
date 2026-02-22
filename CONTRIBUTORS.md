@@ -25,11 +25,12 @@ Includes all git commit authors. Aliases are GitHub user names.
 * Soham Roy (sohamroy19)
 
 ## Translations
+* Czech - Ríša Szlachta (tygrysek90)
 * Dutch - Michael Steenbeek (Gymnasiast)
 * English (UK) - extracted from original game
 * English (US) - extracted from original game
 * French - extracted from original game
-* German - extracted from original game
+* German - Hans Koch (Hammster)
 * Italian - extracted from original game
 * Korean - (telk5093)
 * Polish - (Zcooger)
@@ -37,10 +38,16 @@ Includes all git commit authors. Aliases are GitHub user names.
 * Slovak - Peter Gaál (petergaal)
 * Spanish - extracted from original game
 * Swedish - (slicke)
+* Turkish - (erdikayaTR)
 * Chinese (Simplified) - (TransshipmentEnvoy)
 
 ## Graphics
-* OpenLoco Logo - Zcooger (zcooger)
+* Zcooger (zcooger) - OpenLoco Logo
+* SteveEmfore
+* Phosphorus551
+* shusaura85
+* glenjimen
+* hibiii
 
 ## Chris Sawyer's Locomotion credits
 Design and programming by Chris Sawyer

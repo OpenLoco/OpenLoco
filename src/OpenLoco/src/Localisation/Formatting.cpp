@@ -11,8 +11,6 @@
 #include "StringManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Core/Exception.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
-
 #include <cassert>
 #include <cmath>
 #include <cstring>
@@ -20,7 +18,6 @@
 #include <map>
 #include <stdexcept>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::StringManager

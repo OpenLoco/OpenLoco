@@ -1,10 +1,10 @@
 #include "Paint.h"
+#include "Config.h"
 #include "Game.h"
 #include "GameStateFlags.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/PaletteMap.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringManager.h"
@@ -19,9 +19,7 @@
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;
 
 namespace OpenLoco::Paint
@@ -41,6 +39,8 @@ namespace OpenLoco::Paint
 
         _viewFlags = options.viewFlags;
         currentRotation = options.rotation;
+        _isHitTest = options.isHitTest;
+        _skipTrackRoadSurfaces = options.skipTrackRoadSurfaces;
 
         // TODO: unused
         _foregroundCullingHeight = options.foregroundCullHeight;
@@ -1287,7 +1287,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x0045ED91
-    [[nodiscard]] InteractionArg PaintSession::getNormalInteractionInfo(const InteractionItemFlags flags)
+    [[nodiscard]] InteractionArg PaintSession::getNormalInteractionInfo(const InteractionItemFlags flags) const
     {
         InteractionArg info{};
 
@@ -1331,7 +1331,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x0048DDE4
-    [[nodiscard]] InteractionArg PaintSession::getStationNameInteractionInfo(const InteractionItemFlags flags)
+    [[nodiscard]] InteractionArg PaintSession::getStationNameInteractionInfo(const InteractionItemFlags flags) const
     {
         InteractionArg interaction{};
 
@@ -1363,7 +1363,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x0049773D
-    [[nodiscard]] InteractionArg PaintSession::getTownNameInteractionInfo(const InteractionItemFlags flags)
+    [[nodiscard]] InteractionArg PaintSession::getTownNameInteractionInfo(const InteractionItemFlags flags) const
     {
         InteractionArg interaction{};
 
@@ -1512,7 +1512,11 @@ namespace OpenLoco::Paint
             case 3:
                 return _tunnels3;
         }
-        return std::span<TunnelEntry>();
+        return {};
     }
 
+    bool showAiPlanningGhosts()
+    {
+        return Config::get().showAiPlanningAsGhosts;
+    }
 }

@@ -341,6 +341,18 @@ namespace YAML
     {
         static const convert_pair_vector<ScreenMode>& getEntries() { return kScreenModeEntries; }
     };
+
+    // WindowFrameStyle
+    const convert_pair_vector<WindowFrameStyle> kWindowFrameStyleEntries = {
+        enum_def(WindowFrameStyle, background),
+        enum_def(WindowFrameStyle, solid),
+        enum_def(WindowFrameStyle, transparent),
+    };
+    template<>
+    struct convert<WindowFrameStyle> : convert_enum_base<WindowFrameStyle>
+    {
+        static const convert_pair_vector<WindowFrameStyle>& getEntries() { return kWindowFrameStyleEntries; }
+    };
 }
 
 #undef enum_def

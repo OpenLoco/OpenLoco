@@ -32,6 +32,11 @@ set(test_files
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/TraitsTest.cpp"
 )
 
+set(public_link_libraries
+    fmt::fmt
+    sfl::sfl
+)
+
 loco_add_library(Core STATIC
     PUBLIC_FILES
         ${public_files}
@@ -39,11 +44,6 @@ loco_add_library(Core STATIC
         ${private_files}
     TEST_FILES
         ${test_files}
+    PUBLIC_LINK_LIBRARIES
+        ${public_link_libraries}
 )
-
-target_link_libraries(Core
-    PUBLIC
-        fmt::fmt
-        sfl::sfl
-)
-

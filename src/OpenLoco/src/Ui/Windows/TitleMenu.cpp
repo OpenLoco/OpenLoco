@@ -6,7 +6,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Gui.h"
 #include "Input.h"
@@ -148,7 +147,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             WindowType::titleMenu,
             { (Ui::width() - kWW) / 2, Ui::height() - kWH - 25 },
             { kWW, kWH },
-            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::framedWidgets,
             getEvents());
 
         window->setWidgets(_widgets);
@@ -367,7 +366,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     static void showMultiplayer(Window* window)
     {
         StringManager::setString(StringIds::buffer_2039, "");
-        TextInput::openTextInput(window, StringIds::enter_host_address, StringIds::enter_host_address_description, StringIds::buffer_2039, Widx::multiplayer_toggle_btn, nullptr);
+        TextInput::openTextInput(window, StringIds::enter_host_address, StringIds::enter_host_address_description, StringIds::buffer_2039, Widx::multiplayer_toggle_btn, {});
     }
 
     static void multiplayerConnect(std::string_view host)
@@ -405,7 +404,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         args.push(StringIds::the_other_player);
 
         // TODO: convert this to a builder pattern, with chainable functions to set the different string ids and arguments
-        TextInput::openTextInput(&self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, Widx::chat_btn, &args);
+        TextInput::openTextInput(&self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, Widx::chat_btn, args);
     }
 
     static void sub_43918F(const char* string)
@@ -438,8 +437,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     static void sub_4391E2()
     {
         GameCommands::LoadSaveQuitGameArgs args{};
-        args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::save;
-        args.option2 = LoadOrQuitMode::loadGamePrompt;
+        args.loadQuitMode = LoadOrQuitMode::loadGamePrompt;
+        args.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::promptSave;
         GameCommands::doCommand(args, GameCommands::Flags::apply);
     }
 

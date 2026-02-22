@@ -25,6 +25,10 @@
           "platform": "linux"
         }
       ]
+    },
+    {
+        "name": "tbb",
+        "platform": "linux"
     }
   ]
 }

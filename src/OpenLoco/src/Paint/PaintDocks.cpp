@@ -4,7 +4,7 @@
 #include "Objects/DockObject.h"
 #include "Objects/ObjectManager.h"
 #include "Paint.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "World/CompanyManager.h"
 
@@ -62,6 +62,8 @@ namespace OpenLoco::Paint
         {
             session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
             baseColour = Gfx::applyGhostToImage(0);
+
+            // TODO: apply company colour if playerCompanyID != elTrack.owner()?s
         }
 
         // Combine this with any imageId

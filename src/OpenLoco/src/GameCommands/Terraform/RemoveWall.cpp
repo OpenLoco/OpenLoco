@@ -3,10 +3,9 @@
 #include "GameCommands/GameCommands.h"
 #include "Map/TileManager.h"
 #include "Map/WallElement.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 #include "ViewportManager.h"
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 
 namespace OpenLoco::GameCommands

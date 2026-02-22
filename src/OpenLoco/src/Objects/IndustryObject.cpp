@@ -1,18 +1,15 @@
 #include "IndustryObject.h"
 #include "CargoObject.h"
 #include "Graphics/Colour.h"
+#include "Graphics/DrawingContext.h"
 #include "Graphics/Gfx.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "ObjectImageTable.h"
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
 #include <OpenLoco/Core/Numerics.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {

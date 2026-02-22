@@ -17,10 +17,6 @@
 
 namespace OpenLoco::GameCommands
 {
-    static loco_global<StationId, 0x0112C730> _lastPlacedTrackStationId;
-    static loco_global<uint32_t, 0x00112C734> _lastConstructedAdjoiningStationId;           // Can be 0xFFFF'FFFFU for no adjoining station
-    static loco_global<World::Pos2, 0x00112C792> _lastConstructedAdjoiningStationCentrePos; // Can be x = -1 for no adjoining station
-
     // 0x0048FF36
     static StationManager::NearbyStation findNearbyStationOnTrack(World::Pos3 pos, uint16_t tad, uint8_t trackObjectId)
     {
@@ -201,9 +197,10 @@ namespace OpenLoco::GameCommands
         setPosition(args.pos + World::Pos3(16, 16, 0));
         bool updateStationTileRegistration = false;
 
-        _lastPlacedTrackStationId = StationId::null;
-        _lastConstructedAdjoiningStationCentrePos = World::Pos2(-1, -1);
-        _lastConstructedAdjoiningStationId = 0xFFFFFFFFU;
+        auto& returnState = getLegacyReturnState();
+        returnState.lastPlacedTrackRoadStationId = StationId::null;
+        returnState.lastConstructedAdjoiningStationPos = World::Pos2(-1, -1);
+        returnState.lastConstructedAdjoiningStation = StationId::null;
 
         auto* trackObj = ObjectManager::get<TrackObject>(args.trackObjectId);
         auto* stationObj = ObjectManager::get<TrainStationObject>(args.type);
@@ -251,10 +248,10 @@ namespace OpenLoco::GameCommands
 
         if ((flags & Flags::ghost) && (flags & Flags::apply))
         {
-            _lastConstructedAdjoiningStationCentrePos = trackStart;
+            returnState.lastConstructedAdjoiningStationPos = trackStart;
             uint16_t tad = (args.trackId << 3) | args.rotation;
             auto nearbyStation = findNearbyStationOnTrack(trackStart, tad, args.trackObjectId);
-            _lastConstructedAdjoiningStationId = static_cast<int16_t>(nearbyStation.id);
+            returnState.lastConstructedAdjoiningStation = nearbyStation.id;
         }
 
         if (!(flags & Flags::ghost))
@@ -272,14 +269,14 @@ namespace OpenLoco::GameCommands
                         const auto newStationId = StationManager::allocateNewStation(trackStart, getUpdatingCompanyId(), 0);
                         if (newStationId != StationId::null)
                         {
-                            _lastPlacedTrackStationId = newStationId;
+                            returnState.lastPlacedTrackRoadStationId = newStationId;
                             auto* station = StationManager::get(newStationId);
                             station->updateLabel();
                         }
                     }
                     break;
                     case NearbyStationValidation::okay:
-                        _lastPlacedTrackStationId = nearbyStationId;
+                        returnState.lastPlacedTrackRoadStationId = nearbyStationId;
                         break;
                 }
                 updateStationTileRegistration = true;
@@ -300,11 +297,11 @@ namespace OpenLoco::GameCommands
                             return FAILURE;
                         }
                         StationManager::deallocateStation(newStationId);
-                        // _lastPlacedTrackStationId not set but that's fine since this is the no apply side
+                        //  returnState.lastPlacedTrackRoadStationId not set but that's fine since this is the no apply side
                     }
                     break;
                     case NearbyStationValidation::okay:
-                        _lastPlacedTrackStationId = nearbyStationId;
+                        returnState.lastPlacedTrackRoadStationId = nearbyStationId;
                         break;
                 }
             }
@@ -504,7 +501,7 @@ namespace OpenLoco::GameCommands
                     newStationElement->setBuildingType(0);
                     if (!(flags & Flags::ghost))
                     {
-                        newStationElement->setStationId(_lastPlacedTrackStationId);
+                        newStationElement->setStationId(returnState.lastPlacedTrackRoadStationId);
                     }
                     else
                     {
@@ -524,12 +521,12 @@ namespace OpenLoco::GameCommands
         {
             if (updateStationTileRegistration)
             {
-                addTileToStation(_lastPlacedTrackStationId, trackStart, args.rotation);
+                addTileToStation(returnState.lastPlacedTrackRoadStationId, trackStart, args.rotation);
             }
-            auto* station = StationManager::get(_lastPlacedTrackStationId);
+            auto* station = StationManager::get(returnState.lastPlacedTrackRoadStationId);
             station->invalidate();
-            recalculateStationModes(_lastPlacedTrackStationId);
-            recalculateStationCenter(_lastPlacedTrackStationId);
+            recalculateStationModes(returnState.lastPlacedTrackRoadStationId);
+            recalculateStationCenter(returnState.lastPlacedTrackRoadStationId);
             station->updateLabel();
             station->invalidate();
             sub_48D794(*station);

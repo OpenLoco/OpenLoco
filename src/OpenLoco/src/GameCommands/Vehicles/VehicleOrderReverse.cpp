@@ -4,9 +4,7 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Vehicle.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
+#include "Vehicles/VehicleHead.h"
 
 namespace OpenLoco::GameCommands
 {
@@ -24,7 +22,7 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        Ui::WindowManager::sub_4B93A5(enumValue(head->id));
+        Ui::WindowManager::invalidateOrderPageByVehicleNumber(enumValue(head->id));
 
         head->currentOrder = Vehicles::OrderManager::reverseVehicleOrderTable(head->orderTableOffset, head->currentOrder);
 

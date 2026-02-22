@@ -12,13 +12,11 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/TreeObject.h"
 #include "OpenLoco.h"
-#include "Scenario.h"
-#include "ScenarioOptions.h"
+#include "Scenario/Scenario.h"
+#include "Scenario/ScenarioOptions.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "World/TownManager.h"
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {

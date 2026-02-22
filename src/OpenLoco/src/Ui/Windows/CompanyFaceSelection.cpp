@@ -5,7 +5,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -35,7 +34,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 
     static WindowType _callingWindowType;
 
-    static constexpr Ui::Size32 kWindowSize = { 400, 272 };
+    static constexpr Ui::Size kWindowSize = { 400, 272 };
     static constexpr int16_t kRowHeight = 10;
 
     enum widx
@@ -144,7 +143,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     // 0x4352BB
     static void getScrollSize([[maybe_unused]] Window& self, [[maybe_unused]] const uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
     {
-        scrollHeight = _competitorList.size() * kRowHeight;
+        scrollHeight = static_cast<int32_t>(_competitorList.size()) * kRowHeight;
     }
 
     static bool isInUseCompetitor(const uint32_t objIndex)

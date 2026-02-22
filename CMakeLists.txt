@@ -53,7 +53,7 @@ if (OPENLOCO_USE_VCPKG)
     endif()
 endif ()
 
-project(${PROJECT} LANGUAGES CXX VERSION 25.10)
+project(${PROJECT} LANGUAGES CXX VERSION 26.01)
 
 # Enable IPO for all Release targets by default
 include(CheckIPOSupported)
@@ -67,15 +67,16 @@ else()
     message(WARNING "IPO/LTO not supported: ${ipo_error}")
 endif()
 
-if (NOT CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 20)
+# libstdc++ doesn't have standalone <execution> support so if using libstdc++ we need to
+# link against TBB
+include(CheckCXXSymbolExists)
+check_cxx_symbol_exists(__GLIBCXX__  version HAS_LIBSTDCPP)
+if (HAS_LIBSTDCPP)
+    message(STATUS "libstdc++ detected will require linking with TBB")
 endif()
 
-if (APPLE)
-    # Detection of this variable seems to fail with CMake.
-    # Since we only support 32-bit builds at the moment, fix it this way.
-    # TODO: find out a proper fix for this.
-    set(CMAKE_SIZEOF_VOID_P 4)
+if (NOT CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 20)
 endif()
 
 if (CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR)
@@ -85,6 +86,8 @@ endif()
 include(FindPkgConfig)
 include(CheckCXXCompilerFlag)
 include(GNUInstallDirs)
+include(OpenLocoVersion)
+include(OpenLocoCommon)
 include(OpenLocoUtility)
 
 option(STRICT "Build with warnings as errors" YES)
@@ -92,16 +95,6 @@ option(OPENLOCO_BUILD_TESTS "Build tests" YES)
 option(OPENLOCO_HEADER_CHECK "Verify all public interfaces are standalone" NO)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
-
-set(DEBUG_LEVEL 0 CACHE STRING "Select debug level for compilation. Use value in range 0–3.")
-list(APPEND COMMON_COMPILE_OPTIONS -DDEBUG=${DEBUG_LEVEL})
-
-if (MINGW)
-    # MingW32 does not at present compile OpenLoco.exe
-    # so we must ensure the .dll file has the same
-    # prefix on Windows and MingW32 i.e. none
-    set(CMAKE_SHARED_LIBRARY_PREFIX "")
-endif()
 
 # Display source files nicely in IDEs
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -117,103 +110,55 @@ if (${OPENLOCO_BUILD_TESTS})
     enable_testing()
 endif()
 
-# Handle creating the rct2 text and data files on OS X and Linux
-if (UNIX)
-    set(OBJ_FORMAT "elf32-i386")
-    set(LINKER_SCRIPT "ld_script_i386.xc")
-
-    set(OLOCO_EXE ${CMAKE_CURRENT_SOURCE_DIR}/loco.exe)
-    set(OLOCO_TEXT ${CMAKE_BINARY_DIR}/openloco_text)
-    set(OLOCO_DATA ${CMAKE_BINARY_DIR}/openloco_data)
-
-    add_custom_command(
-            OUTPUT ${OLOCO_TEXT}
-            COMMAND dd if="${OLOCO_EXE}" of="${OLOCO_TEXT}" bs=4096 skip=1 count=214
-            DEPENDS ${OLOCO_EXE}
-    )
-    add_custom_command(
-            OUTPUT ${OLOCO_DATA}
-            COMMAND dd if="${OLOCO_EXE}" of="${OLOCO_DATA}" bs=4096 skip=215 count=78
-            COMMAND dd if=/dev/zero of="${OLOCO_DATA}" bs=4096 seek=78 count=3133 conv=notrunc
-            DEPENDS ${OLOCO_EXE}
-    )
-    add_custom_target(segfiles DEPENDS ${OLOCO_TEXT} ${OLOCO_DATA})
-    if (APPLE)
-        set(LOCO_SEGMENT_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -sectcreate loco_text __text \"${OLOCO_TEXT}\" -sectcreate loco_data __data ${OLOCO_DATA} -segaddr loco_data 0x4d7000 -segprot loco_data rwx rwx -segaddr loco_text 0x401000 -segprot loco_text rwx rwx -segaddr __TEXT 0x2000000 -read_only_relocs suppress")
-    else ()
-        # For Linux we have to use objcopy to wrap regular binaries into a linkable
-        # format. We use specific section names which are then referenced in a
-        # bespoke linker script so they can be placed at predefined VMAs.
-        add_custom_command(
-            OUTPUT openloco_text_section.o
-            COMMAND objcopy --input binary --output ${OBJ_FORMAT} --binary-architecture i386 \"${OLOCO_TEXT}\" openloco_text_section.o --rename-section .data=.loco_text,contents,alloc,load,readonly,code
-            DEPENDS segfiles
-            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        )
-        add_custom_command(
-            OUTPUT openloco_data_section.o
-            COMMAND objcopy --input binary --output ${OBJ_FORMAT} --binary-architecture i386 \"${OLOCO_DATA}\" openloco_data_section.o --rename-section .data=.loco_data,contents,alloc,load,readonly,data
-            DEPENDS segfiles
-            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        )
-        add_custom_target(linkable_sections DEPENDS openloco_text_section.o openloco_data_section.o)
-        set_source_files_properties(
-            openloco_text_section.o openloco_data_section.o
-            PROPERTIES
-            EXTERNAL_OBJECT true
-            GENERATED true
-        )
-        # can't use GLOB here, as the files don't exist yet at cmake-time
-        set(LOCO_SECTIONS "${CMAKE_BINARY_DIR}/openloco_data_section.o" "${CMAKE_BINARY_DIR}/openloco_text_section.o")
-        set(LOCO_SEGMENT_LINKER_FLAGS "-Wl,-T,\"${CMAKE_CURRENT_SOURCE_DIR}/distribution/linux/${LINKER_SCRIPT}\"")
-    endif ()
-endif()
-
 FetchContent_Declare(openloco_objects
-            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.4/objects.zip
-            URL_HASH SHA256=37283c621c36fff6035079a04af1e1fa6f2b314cddb65f8f3e0451867917776a)
+            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.7/objects.zip
+            URL_HASH SHA256=f4ef6e3bb59d0644d6269409c4e3c00b71b21bcdeafc4506b4d16390210be1ee)
 FetchContent_MakeAvailable(openloco_objects)
 
 add_subdirectory(src)
 
-if (MSVC)
+if (NOT APPLE)
     if (${CMAKE_VERSION} VERSION_GREATER 3.26)
         # Uses the copy_directory_if_different to avoid copying objects/language every time (3.26 feature)
-        add_custom_target(OpenLocoExe ALL
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/loco.exe" "$<TARGET_FILE_DIR:OpenLoco>/OpenLoco.exe"
+        add_custom_target(OpenLocoAssets ALL
             COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different "${CMAKE_CURRENT_SOURCE_DIR}/data" "$<TARGET_FILE_DIR:OpenLoco>/data"
             COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different "${openloco_objects_SOURCE_DIR}" "$<TARGET_FILE_DIR:OpenLoco>/data/objects"
-            COMMENT "Copying over data folder and executable"
-            DEPENDS OpenLoco
+            COMMENT "Copying over data and objects folder"
         )
     else()
-        add_custom_target(OpenLocoExe ALL
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/loco.exe" "$<TARGET_FILE_DIR:OpenLoco>/OpenLoco.exe"
+        add_custom_target(OpenLocoAssets ALL
             COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/data" "$<TARGET_FILE_DIR:OpenLoco>/data"
             COMMAND ${CMAKE_COMMAND} -E copy_directory "${openloco_objects_SOURCE_DIR}" "$<TARGET_FILE_DIR:OpenLoco>/data/objects"
-            COMMENT "Copying over data folder and executable"
-            DEPENDS OpenLoco
+            COMMENT "Copying over data and objects folder"
         )
     endif()
-    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenLocoExe)
-    set_property(TARGET OpenLocoExe PROPERTY VS_DEBUGGER_COMMAND $<TARGET_FILE_DIR:OpenLoco>/OpenLoco.exe)
-    set_property(TARGET OpenLocoExe PROPERTY VS_DEBUGGER_WORKING_DIRECTORY $<TARGET_FILE_DIR:OpenLoco>)
+    add_dependencies(OpenLoco OpenLocoAssets)
+    set_target_properties(OpenLocoAssets PROPERTIES PROJECT_LABEL "Assets")
 endif()
+
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenLoco)
 
 install(TARGETS OpenLoco
     RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
-    BUNDLE DESTINATION "${CMAKE_INSTALL_BINDIR}")
-install(FILES "CHANGELOG.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
-install(FILES "CONTRIBUTORS.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
-install(FILES "LICENSE" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
-install(FILES "README.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
-install(FILES "distribution/linux/openloco.desktop" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
-install(FILES "src/Resources/src/logo/icon_x16.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/16x16/apps" RENAME "openloco.png")
-install(FILES "src/Resources/src/logo/icon_x32.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/32x32/apps" RENAME "openloco.png")
-install(FILES "src/Resources/src/logo/icon_x64.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/64x64/apps" RENAME "openloco.png")
-install(FILES "src/Resources/src/logo/icon_x128.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/128x128/apps" RENAME "openloco.png")
-install(FILES "src/Resources/src/logo/icon_x256.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/256x256/apps" RENAME "openloco.png")
-install(FILES "src/Resources/src/logo/icon_x512.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/512x512/apps" RENAME "openloco.png")
-install(FILES "src/Resources/src/logo/icon_steam.svg" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/scalable/apps" RENAME "openloco.svg")
-install(DIRECTORY "data/" DESTINATION "${CMAKE_INSTALL_BINDIR}/data")
-install(DIRECTORY "${openloco_objects_SOURCE_DIR}" DESTINATION "${CMAKE_INSTALL_BINDIR}/data/objects")
+    BUNDLE DESTINATION ".")
+
+if (UNIX AND NOT APPLE)
+    install(FILES "CHANGELOG.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
+    install(FILES "CONTRIBUTORS.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
+    install(FILES "LICENSE" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
+    install(FILES "README.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
+
+    install(FILES "distribution/linux/openloco.desktop" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
+    install(FILES "src/Resources/src/logo/icon_x16.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/16x16/apps" RENAME "openloco.png")
+    install(FILES "src/Resources/src/logo/icon_x32.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/32x32/apps" RENAME "openloco.png")
+    install(FILES "src/Resources/src/logo/icon_x64.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/64x64/apps" RENAME "openloco.png")
+    install(FILES "src/Resources/src/logo/icon_x128.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/128x128/apps" RENAME "openloco.png")
+    install(FILES "src/Resources/src/logo/icon_x256.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/256x256/apps" RENAME "openloco.png")
+    install(FILES "src/Resources/src/logo/icon_x512.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/512x512/apps" RENAME "openloco.png")
+    install(FILES "src/Resources/src/logo/icon_steam.svg" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/scalable/apps" RENAME "openloco.svg")
+endif()
+
+if (NOT APPLE)
+    install(DIRECTORY "data/" DESTINATION "${CMAKE_INSTALL_BINDIR}/data")
+    install(DIRECTORY "${openloco_objects_SOURCE_DIR}" DESTINATION "${CMAKE_INSTALL_BINDIR}/data/objects")
+endif()

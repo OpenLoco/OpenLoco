@@ -9,6 +9,7 @@
 #include "Objects/AirportObject.h"
 #include "Objects/ObjectManager.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
 #include "World/Industry.h"

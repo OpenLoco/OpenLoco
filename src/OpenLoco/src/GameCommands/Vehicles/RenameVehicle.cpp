@@ -8,11 +8,10 @@
 #include "Localisation/StringManager.h"
 #include "Types.hpp"
 #include "Vehicles/Vehicle.h"
-#include <OpenLoco/Interop/Interop.hpp>
+#include "Vehicles/VehicleHead.h"
+
 #include <array>
 #include <unordered_map>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
@@ -39,10 +38,10 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        static loco_global<EntityId, 0x0113621D> _headId_113621D;
+        static EntityId targetVehicleHeadId{}; // 0x0113621D
         if (args.i == 1)
         {
-            _headId_113621D = args.head;
+            targetVehicleHeadId = args.head;
         }
 
         static char staticRenameBuffer[37]{};
@@ -59,7 +58,7 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        EntityId vehicleHeadId = _headId_113621D;
+        EntityId vehicleHeadId = targetVehicleHeadId;
         Vehicles::VehicleHead* vehicleHead = EntityManager::get<Vehicles::VehicleHead>(vehicleHeadId);
 
         if (vehicleHead == nullptr)

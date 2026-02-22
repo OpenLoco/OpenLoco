@@ -16,6 +16,7 @@
 #include "CompanyAi/AiCreateRoadAndStation.h"
 #include "CompanyAi/AiCreateTrackAndStation.h"
 #include "CompanyAi/AiTrackReplacement.h"
+#include "Config.h"
 #include "Docks/CreatePort.h"
 #include "Docks/RemovePort.h"
 #include "General/LoadSaveQuit.h"
@@ -102,14 +103,18 @@ using namespace OpenLoco::Ui;
 namespace OpenLoco::GameCommands
 {
     static uint16_t _gameCommandFlags;
-    static uint8_t _gameCommandNestLevel = 0;                                                 // 0x00508F08
+    static uint8_t _gameCommandNestLevel = 0; // 0x00508F08
+
     static CompanyId _updatingCompanyId;                                                      // 0x009C68EB
     static const World::TileElement* _errorTileElementPtr = World::TileManager::kInvalidTile; // 0x009C68D0
     static World::Pos3 _gGameCommandPosition;                                                 // 0x009C68E0
     static StringId _gGameCommandErrorText;                                                   // 0x009C68E6
     static StringId _gGameCommandErrorTitle;                                                  // 0x009C68E8
+    static bool _gGameCommandErrorSound = true;                                               // 0x00508F09
     static ExpenditureType _gGameCommandExpenditureType;                                      // 0x009C68EA
     static CompanyId _errorCompanyId;                                                         // 0x009C68EE
+
+    static LegacyReturnState _legacyReturnState; // 0x01136072
 
     using GameCommandFunc = void (*)(registers& regs);
 
@@ -272,9 +277,9 @@ namespace OpenLoco::GameCommands
 
         if (commandRequiresUnpausingGame(command, flags) && _updatingCompanyId == CompanyManager::getControllingId())
         {
-            if (SceneManager::getPauseFlags() & 1)
+            if ((SceneManager::getPauseFlags() & PauseFlags::player) != PauseFlags::none)
             {
-                SceneManager::unsetPauseFlag(1);
+                SceneManager::unsetPauseFlag(PauseFlags::player);
                 WindowManager::invalidate(WindowType::timeToolbar);
                 Audio::unpauseSound();
                 Ui::Windows::PlayerInfoPanel::invalidateFrame();
@@ -340,7 +345,7 @@ namespace OpenLoco::GameCommands
             if (_gameCommandNestLevel == 1)
             {
                 if ((_gameCommandFlags & Flags::allowNegativeCashFlow) == 0
-                    && (_gameCommandFlags & Flags::ghost) == 0
+                    && (_gameCommandFlags & Flags::noPayment) == 0
                     && ebx != 0)
                 {
                     if (!CompanyManager::ensureCompanyFunding(getUpdatingCompanyId(), ebx))
@@ -364,7 +369,7 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        if ((flags & 1) == 0)
+        if ((flags & Flags::apply) == 0)
         {
             _gameCommandNestLevel--;
             return ebx;
@@ -434,7 +439,8 @@ namespace OpenLoco::GameCommands
 
         if (_gGameCommandErrorText != 0xFFFE)
         {
-            Windows::Error::open(_gGameCommandErrorTitle, _gGameCommandErrorText);
+            auto openError = _gGameCommandErrorSound ? Windows::Error::open : Windows::Error::openQuiet;
+            openError(_gGameCommandErrorTitle, _gGameCommandErrorText);
             return GameCommands::FAILURE;
         }
 
@@ -547,6 +553,11 @@ namespace OpenLoco::GameCommands
         _gGameCommandPosition = pos;
     }
 
+    void setErrorSound(bool state)
+    {
+        _gGameCommandErrorSound = state;
+    }
+
     void setErrorText(const StringId message)
     {
         _gGameCommandErrorText = message;
@@ -592,11 +603,22 @@ namespace OpenLoco::GameCommands
         _gameCommandNestLevel = 0;
     }
 
+    LegacyReturnState& getLegacyReturnState()
+    {
+        return _legacyReturnState;
+    }
+
     // TODO: Maybe move this somewhere else used by multiple game commands
     // 0x0048B013
     void playConstructionPlacementSound(World::Pos3 pos)
     {
         const auto frequency = gPrng2().randNext(17955, 26146);
         Audio::playSound(Audio::SoundId::construct, pos, 0, frequency);
+    }
+
+    // TODO: Maybe move this somewhere else used by multiple game commands
+    bool shouldInvalidateTile(uint8_t flags)
+    {
+        return !(flags & Flags::aiAllocated) && Config::get().showAiPlanningAsGhosts;
     }
 }

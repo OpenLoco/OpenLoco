@@ -14,7 +14,7 @@
 #include "Map/TileManager.h"
 #include "MessageManager.h"
 #include "Objects/IndustryObject.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "SceneManager.h"
 #include "TownManager.h"
 #include "Ui/Window.h"
@@ -22,14 +22,12 @@
 #include "Ui/Windows/Construction/Construction.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/VehicleManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-#include <OpenLoco/Math/Vector.hpp>
 
+#include <OpenLoco/Math/Vector.hpp>
 #include <bitset>
 #include <numeric>
 #include <sfl/static_vector.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::World;
 

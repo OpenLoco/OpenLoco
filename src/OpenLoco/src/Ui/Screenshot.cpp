@@ -1,17 +1,16 @@
 #include "Screenshot.h"
 #include "Entities/EntityManager.h"
 #include "Environment.h"
+#include "GameState.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/TileManager.h"
-#include "ScenarioOptions.h"
 #include "Ui.h"
 #include "WindowManager.h"
 #include <OpenLoco/Core/Exception.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Platform.h>
 #include <cstdint>
 #include <fstream>
@@ -20,12 +19,11 @@
 
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non-portable
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 
 namespace OpenLoco::Ui
 {
-    static loco_global<int8_t, 0x00508F16> _screenshotCountdown;
+    static int8_t _screenshotCountdown = 0; // 0x00508F16
 
     static ScreenshotType _screenshotType = ScreenshotType::regular;
 
@@ -152,8 +150,8 @@ namespace OpenLoco::Ui
     {
         auto screenshotsFolderPath = Environment::getPathNoWarning(Environment::PathId::screenshots);
         Environment::autoCreateDirectory(screenshotsFolderPath);
-        std::string scenarioName = Scenario::getOptions().scenarioName;
 
+        std::string scenarioName = getGameState().scenarioName;
         if (scenarioName.length() == 0)
         {
             scenarioName = StringManager::getString(StringIds::screenshot_filename_template);

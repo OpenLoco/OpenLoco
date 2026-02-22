@@ -1,4 +1,5 @@
 #include "AiCreateTrackAndStation.h"
+#include "Economy/Expenditures.h"
 #include "GameCommands/Track/CreateTrack.h"
 #include "GameCommands/Track/CreateTrainStation.h"
 #include "Map/BuildingElement.h"
@@ -9,8 +10,6 @@
 
 namespace OpenLoco::GameCommands
 {
-    static loco_global<uint8_t, 0x01136073> _byte_1136073;
-
     // 0x004A7328
     static World::TileClearance::ClearFuncResult clearNearbyArea(World::TileElement& el)
     {
@@ -100,7 +99,7 @@ namespace OpenLoco::GameCommands
                     }
 
                     // There is a level crossing or track overlay so we can't place a station
-                    if (_byte_1136073 & ((1U << 2) | (1U << 3)))
+                    if (getLegacyReturnState().flags_1136073 & ((1U << 2) | (1U << 3)))
                     {
                         return GameCommands::FAILURE;
                     }

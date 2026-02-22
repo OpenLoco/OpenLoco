@@ -3,7 +3,7 @@
 #include "AnimationManager.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "StationElement.h"
 #include "TileLoop.hpp"
 #include "TileManager.h"

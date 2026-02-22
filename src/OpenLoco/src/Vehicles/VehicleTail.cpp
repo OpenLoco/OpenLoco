@@ -1,3 +1,4 @@
+#include "VehicleTail.h"
 #include "Entities/EntityManager.h"
 #include "Map/AnimationManager.h"
 #include "Map/RoadElement.h"
@@ -5,17 +6,13 @@
 #include "Map/Track/Track.h"
 #include "Map/Track/TrackData.h"
 #include "RoutingManager.h"
-#include "Vehicle.h"
 #include "ViewportManager.h"
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Literals;
 using namespace OpenLoco::World;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
-
     // 0x004794BC
     // This is enter level crossing if unk==8 and leave level crossing if unk==9
     void leaveLevelCrossing(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint16_t unk)
@@ -77,10 +74,9 @@ namespace OpenLoco::Vehicles
         const auto _oldRoutingHandle = routingHandle;
         const World::Pos3 _oldTilePos = World::Pos3(tileX, tileY, tileBaseZ * World::kSmallZStep);
 
-        resetUpdateVar1136114Flags();
-        updateTrackMotion(*_vehicleUpdate_var_113612C);
+        const auto motionResult = updateTrackMotion(getVehicleUpdateDistances().unkDistance1, false);
 
-        if (hasUpdateVar1136114Flags(UpdateVar1136114Flags::noRouteFound))
+        if (motionResult.hasFlags(UpdateVar1136114Flags::noRouteFound))
         {
             destroyTrain();
             return false;
@@ -97,7 +93,7 @@ namespace OpenLoco::Vehicles
 
         if (mode == TransportMode::road)
         {
-            sub_47D959(_oldTilePos, trackAndDir.road, false);
+            updateRoadTileOccupancy(_oldTilePos, trackAndDir.road, false);
         }
         else
         {
@@ -135,7 +131,7 @@ namespace OpenLoco::Vehicles
                 const auto routing = RoutingManager::getRouting(handle);
                 auto tad = TrackAndDirection::_RoadAndDirection(0, 0);
                 tad._data = routing & Track::AdditionalTaDFlags::basicTaDMask;
-                tail.sub_47D959(pos, tad, false);
+                tail.updateRoadTileOccupancy(pos, tad, false);
 
                 pos += World::TrackData::getUnkRoad(tad.basicRad()).pos;
             }

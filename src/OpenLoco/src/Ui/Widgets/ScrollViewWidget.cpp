@@ -2,7 +2,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Ui/ScrollView.h"
 #include "Ui/Window.h"
@@ -210,7 +209,7 @@ namespace OpenLoco::Ui::Widgets
             cropped.bits += offset;
         }
 
-        int16_t bp = cropped.x + cropped.width - (contentPos.x + cropSize.width);
+        auto bp = cropped.x + cropped.width - (contentPos.x + cropSize.width);
         if (bp > 0)
         {
             cropped.width -= bp;

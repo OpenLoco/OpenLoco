@@ -4,7 +4,7 @@
 #include "GameState.h"
 #include "Gui.h"
 #include "Localisation/StringIds.h"
-#include "Scenario.h"
+#include "Scenario/Scenario.h"
 #include "SceneManager.h"
 #include "Ui.h"
 
@@ -141,9 +141,9 @@ namespace OpenLoco::Tutorial
     }
 
     // 0x0043C7A2
-    uint16_t nextInput()
+    int32_t nextInput()
     {
-        uint16_t next = *_tutorialIt;
+        int32_t next = static_cast<int32_t>(*_tutorialIt);
         _tutorialIt++;
 
         if (_tutorialIt == _tutorialData.end())

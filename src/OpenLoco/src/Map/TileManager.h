@@ -39,9 +39,7 @@ namespace OpenLoco::World::TileManager
     void allocateMapElements();
     void initialise();
     std::span<TileElement> getElements();
-    TileElement* getElementsEnd();
     uint32_t numFreeElements();
-    TileElement** getElementIndex();
     Tile get(TilePos2 pos);
     Tile get(Pos2 pos);
     Tile get(coord_t x, coord_t y);

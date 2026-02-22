@@ -6,10 +6,13 @@
 #include "Random.h"
 #include "Types.hpp"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle1.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
+#include "Vehicles/VehicleTail.h"
 #include <OpenLoco/Core/Prng.h>
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Vehicles
 {
@@ -63,7 +66,7 @@ namespace OpenLoco::GameCommands
         // Clear ghost flag on primary vehicle pieces and all car components.
         train.applyToComponents([](auto& component) { component.var_38 &= ~Vehicles::Flags38::isGhost; });
 
-        head->vehicleFlags |= VehicleFlags::commandStop;
+        head->vehicleFlags |= Vehicles::VehicleFlags::commandStop;
 
         return 0;
     }

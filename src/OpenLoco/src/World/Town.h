@@ -52,7 +52,6 @@ namespace OpenLoco
         struct RenderTarget;
     }
 
-#pragma pack(push, 1)
     struct Town
     {
         StringId name;                // 0x00
@@ -78,7 +77,6 @@ namespace OpenLoco
         uint8_t numberOfAirports; // 0x1A5
         uint16_t numStations;     // 0x1A6
         uint32_t var_1A8;
-        uint8_t pad_1AC[0x270 - 0x1AC];
 
         bool empty() const;
         TownId id() const;
@@ -91,6 +89,4 @@ namespace OpenLoco
         void grow(TownGrowFlags growFlags);
         StringId getTownSizeString() const;
     };
-    static_assert(sizeof(Town) == 0x270);
-#pragma pack(pop)
 }

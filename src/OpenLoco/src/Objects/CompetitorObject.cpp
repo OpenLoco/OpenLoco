@@ -1,13 +1,12 @@
 #include "CompetitorObject.h"
 #include "Graphics/Colour.h"
+#include "Graphics/DrawingContext.h"
 #include "Graphics/Gfx.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "ObjectImageTable.h"
 #include "ObjectStringTable.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco
 {

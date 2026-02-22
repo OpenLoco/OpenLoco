@@ -2267,7 +2267,7 @@ strings:
   2260: '{COLOUR WINDOW_2} Längd: {COLOUR BLACK}{INT32_2DP} ruta(or)'
   2261: '{NEWLINE}{COLOUR WINDOW_2} Längd: {COLOUR BLACK}{INT32_2DP} ruta(or)'
   2262: '{NEWLINE}Längd:  {INT32_2DP} ruta(or)'
-  2263: '{COLOUR WINDOW_2}{UINT16}/{UINT16}'
+  2263: '{COLOUR BLACK}{UINT16}/{UINT16}'
   2264: Jätteskärmdump
   2265: '{COLOUR WINDOW_2} Filnamn: {COLOUR BLACK}{STRINGID}'
   2266: Scenarioalternativ

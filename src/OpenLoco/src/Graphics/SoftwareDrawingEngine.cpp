@@ -5,12 +5,11 @@
 #include "RenderTarget.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <SDL2/SDL.h>
 #include <algorithm>
 #include <cstdlib>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Gfx;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Diagnostics;
@@ -415,4 +414,19 @@ namespace OpenLoco::Gfx
         return _screenInfo;
     }
 
+    bool SoftwareDrawingEngine::setVSync(bool state)
+    {
+        if (_vsync == state)
+        {
+            return true;
+        }
+
+        if (SDL_RenderSetVSync(_renderer, state ? 1 : 0) == 0)
+        {
+            _vsync = state;
+            return true;
+        }
+
+        return false;
+    }
 }

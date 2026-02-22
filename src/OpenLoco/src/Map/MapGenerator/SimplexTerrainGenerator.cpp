@@ -1,5 +1,5 @@
 #include "SimplexTerrainGenerator.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 #include "Ui/ProgressBar.h"
 #include <algorithm>
 

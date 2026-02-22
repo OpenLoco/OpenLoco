@@ -9,9 +9,7 @@
 #include "PaintVehicle.h"
 #include "Ui/ViewportInteraction.h"
 #include "Vehicles/Vehicle.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;
 
 namespace OpenLoco::Paint

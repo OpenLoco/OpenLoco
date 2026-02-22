@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameCommands/GameCommands.h"
+#include <array>
 
 namespace OpenLoco::GameCommands
 {

@@ -4,7 +4,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/Conversion.h"
@@ -16,8 +15,8 @@
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/WaterObject.h"
-#include "Scenario.h"
-#include "ScenarioOptions.h"
+#include "Scenario/Scenario.h"
+#include "Scenario/ScenarioOptions.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
@@ -37,15 +36,13 @@
 #include "World/IndustryManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Diagnostics/Logging.h>
-#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Diagnostics;
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::LandscapeGeneration
 {
-    static constexpr Ui::Size32 kWindowSize = { 366, 217 };
-    static constexpr Ui::Size32 kLandTabSize = { 366, 252 };
+    static constexpr Ui::Size kWindowSize = { 366, 217 };
+    static constexpr Ui::Size kLandTabSize = { 366, 252 };
 
     static constexpr uint8_t kRowHeight = 22; // CJK: 22
 
@@ -514,10 +511,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 case widx::browseHeightmapFile:
                 {
-                    if (Game::loadHeightmapOpen())
+                    if (auto res = Game::loadHeightmapOpen())
                     {
-                        static loco_global<char[512], 0x0112CE04> _savePath;
-                        World::MapGenerator::setPngHeightmapPath(fs::u8path(&*_savePath));
+                        World::MapGenerator::setPngHeightmapPath(fs::u8path(*res));
                         window.invalidate();
                     }
                     break;
@@ -1622,7 +1618,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             self.currentTab = widgetIndex - widx::tab_options;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::beingResized);
             self.disabledWidgets = 0;
 
             static const uint64_t* holdableWidgetsByTab[] = {

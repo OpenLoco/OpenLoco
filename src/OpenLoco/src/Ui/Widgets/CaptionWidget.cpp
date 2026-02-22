@@ -1,7 +1,6 @@
 #include "CaptionWidget.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/Formatting.h"
 #include "Ui/Window.h"
@@ -31,8 +30,8 @@ namespace OpenLoco::Ui::Widgets
             enumValue(ExtColour::unk2E),
             Gfx::RectFlags::transparent);
 
-        int16_t width = size.width - 4 - 10;
-        auto centerPos = pos + Point(2 + (width / 2), 1);
+        const auto width = size.width - 4 - 10;
+        const auto centerPos = pos + Point(2 + (width / 2), 1);
 
         auto formatArgs = FormatArguments(widget.textArgs);
         tr.drawStringCentredClipped(
@@ -48,7 +47,7 @@ namespace OpenLoco::Ui::Widgets
     {
         drawingCtx.drawImage(origin - Ui::Point{ 4, 0 }, Gfx::recolour(ImageIds::curved_border_left_medium, colour.c()));
         drawingCtx.drawImage(origin + Ui::Point(width, 0), Gfx::recolour(ImageIds::curved_border_right_medium, colour.c()));
-        drawingCtx.fillRect(origin, Ui::Size{ width, 11 } - Ui::Size{ 1, 0 }, Colours::getShade(colour.c(), 5), Gfx::RectFlags::none);
+        drawingCtx.fillRect(origin, Ui::Size{ width, 11 }, Colours::getShade(colour.c(), 5), Gfx::RectFlags::none);
     }
 
     static void drawSimple(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState, const Caption::Style captionStyle)
@@ -80,7 +79,7 @@ namespace OpenLoco::Ui::Widgets
         const auto pos = window->position() + widget.position();
         const auto size = widget.size();
 
-        int16_t width = size.width - 4 - 14;
+        const auto width = size.width - 4 - 14;
 
         auto stationNamePos = pos + Ui::Point(2 + (width / 2), 1);
 

@@ -1,5 +1,4 @@
 #include "SliderWidget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "TabWidget.h"
 
 namespace OpenLoco::Ui::Widgets

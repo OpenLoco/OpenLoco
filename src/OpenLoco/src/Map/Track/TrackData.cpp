@@ -1,7 +1,6 @@
 #include "TrackData.h"
 #include "TrackEnum.h"
 #include <OpenLoco/Core/Numerics.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <array>
 #include <bit>
 #include <cassert>
@@ -331,17 +330,560 @@ namespace OpenLoco::World::TrackData
         return roadPieces[trackId];
     }
 
-    static Interop::loco_global<TrackCoordinates[80], 0x004F6F8C> _4F6F8C;
-    static Interop::loco_global<TrackCoordinates[352], 0x004F7B5C> _4F7B5C;
+    // 0x4F6F8C
+    static constexpr std::array<TrackCoordinates, 80> kRoadCoordinates = { {
+        // straight
+        { 0, 0, { -32, 0, 0 } },
+        { 1, 1, { 0, 32, 0 } },
+        { 2, 2, { 32, 0, 0 } },
+        { 3, 3, { 0, -32, 0 } },
+        { 2, 2, { 32, 0, 0 } },
+        { 3, 3, { 0, -32, 0 } },
+        { 0, 0, { -32, 0, 0 } },
+        { 1, 1, { 0, 32, 0 } },
+
+        // leftCurveVerySmall
+        { 0, 3, { 0, -32, 0 } },
+        { 1, 0, { -32, 0, 0 } },
+        { 2, 1, { 0, 32, 0 } },
+        { 3, 2, { 32, 0, 0 } },
+        { 1, 2, { 32, 0, 0 } },
+        { 2, 3, { 0, -32, 0 } },
+        { 3, 0, { -32, 0, 0 } },
+        { 0, 1, { 0, 32, 0 } },
+
+        // rightCurveVerySmall
+        { 0, 1, { 0, 32, 0 } },
+        { 1, 2, { 32, 0, 0 } },
+        { 2, 3, { 0, -32, 0 } },
+        { 3, 0, { -32, 0, 0 } },
+        { 3, 2, { 32, 0, 0 } },
+        { 0, 3, { 0, -32, 0 } },
+        { 1, 0, { -32, 0, 0 } },
+        { 2, 1, { 0, 32, 0 } },
+
+        // leftCurveSmall
+        { 0, 3, { -32, -64, 0 } },
+        { 1, 0, { -64, 32, 0 } },
+        { 2, 1, { 32, 64, 0 } },
+        { 3, 2, { 64, -32, 0 } },
+        { 1, 2, { 64, 32, 0 } },
+        { 2, 3, { 32, -64, 0 } },
+        { 3, 0, { -64, -32, 0 } },
+        { 0, 1, { -32, 64, 0 } },
+
+        // rightCurveSmall
+        { 0, 1, { -32, 64, 0 } },
+        { 1, 2, { 64, 32, 0 } },
+        { 2, 3, { 32, -64, 0 } },
+        { 3, 0, { -64, -32, 0 } },
+        { 3, 2, { 64, -32, 0 } },
+        { 0, 3, { -32, -64, 0 } },
+        { 1, 0, { -64, 32, 0 } },
+        { 2, 1, { 32, 64, 0 } },
+
+        // straightSlopeUp
+        { 0, 0, { -64, 0, 16 } },
+        { 1, 1, { 0, 64, 16 } },
+        { 2, 2, { 64, 0, 16 } },
+        { 3, 3, { 0, -64, 16 } },
+        { 2, 2, { 64, 0, -16 } },
+        { 3, 3, { 0, -64, -16 } },
+        { 0, 0, { -64, 0, -16 } },
+        { 1, 1, { 0, 64, -16 } },
+
+        // straightSlopeDown
+        { 0, 0, { -64, 0, -16 } },
+        { 1, 1, { 0, 64, -16 } },
+        { 2, 2, { 64, 0, -16 } },
+        { 3, 3, { 0, -64, -16 } },
+        { 2, 2, { 64, 0, 16 } },
+        { 3, 3, { 0, -64, 16 } },
+        { 0, 0, { -64, 0, 16 } },
+        { 1, 1, { 0, 64, 16 } },
+
+        // straightSteepSlopeUp
+        { 0, 0, { -32, 0, 16 } },
+        { 1, 1, { 0, 32, 16 } },
+        { 2, 2, { 32, 0, 16 } },
+        { 3, 3, { 0, -32, 16 } },
+        { 2, 2, { 32, 0, -16 } },
+        { 3, 3, { 0, -32, -16 } },
+        { 0, 0, { -32, 0, -16 } },
+        { 1, 1, { 0, 32, -16 } },
+
+        // straightSteepSlopeDown
+        { 0, 0, { -32, 0, -16 } },
+        { 1, 1, { 0, 32, -16 } },
+        { 2, 2, { 32, 0, -16 } },
+        { 3, 3, { 0, -32, -16 } },
+        { 2, 2, { 32, 0, 16 } },
+        { 3, 3, { 0, -32, 16 } },
+        { 0, 0, { -32, 0, 16 } },
+        { 1, 1, { 0, 32, 16 } },
+
+        // turnaround
+        { 0, 2, { 32, 0, 0 } },
+        { 1, 3, { 0, -32, 0 } },
+        { 2, 0, { -32, 0, 0 } },
+        { 3, 1, { 0, 32, 0 } },
+        { 0, 2, { 32, 0, 0 } },
+        { 1, 3, { 0, -32, 0 } },
+        { 2, 0, { -32, 0, 0 } },
+        { 3, 1, { 0, 32, 0 } },
+    } };
+
+    // 0x4F7B5C
+    static constexpr std::array<TrackCoordinates, 352> kTrackCoordinates = { {
+        // straight
+        { 0, 0, { -32, 0, 0 } },
+        { 1, 1, { 0, 32, 0 } },
+        { 2, 2, { 32, 0, 0 } },
+        { 3, 3, { 0, -32, 0 } },
+        { 2, 2, { 32, 0, 0 } },
+        { 3, 3, { 0, -32, 0 } },
+        { 0, 0, { -32, 0, 0 } },
+        { 1, 1, { 0, 32, 0 } },
+
+        // diagonal
+        { 12, 12, { -32, 32, 0 } },
+        { 13, 13, { 32, 32, 0 } },
+        { 14, 14, { 32, -32, 0 } },
+        { 15, 15, { -32, -32, 0 } },
+        { 14, 14, { 32, -32, 0 } },
+        { 15, 15, { -32, -32, 0 } },
+        { 12, 12, { -32, 32, 0 } },
+        { 13, 13, { 32, 32, 0 } },
+
+        // leftCurveVerySmall
+        { 0, 3, { 0, -32, 0 } },
+        { 1, 0, { -32, 0, 0 } },
+        { 2, 1, { 0, 32, 0 } },
+        { 3, 2, { 32, 0, 0 } },
+        { 1, 2, { 32, 0, 0 } },
+        { 2, 3, { 0, -32, 0 } },
+        { 3, 0, { -32, 0, 0 } },
+        { 0, 1, { 0, 32, 0 } },
+
+        // rightCurveVerySmall
+        { 0, 1, { 0, 32, 0 } },
+        { 1, 2, { 32, 0, 0 } },
+        { 2, 3, { 0, -32, 0 } },
+        { 3, 0, { -32, 0, 0 } },
+        { 3, 2, { 32, 0, 0 } },
+        { 0, 3, { 0, -32, 0 } },
+        { 1, 0, { -32, 0, 0 } },
+        { 2, 1, { 0, 32, 0 } },
+
+        // leftCurveSmall
+        { 0, 3, { -32, -64, 0 } },
+        { 1, 0, { -64, 32, 0 } },
+        { 2, 1, { 32, 64, 0 } },
+        { 3, 2, { 64, -32, 0 } },
+        { 1, 2, { 64, 32, 0 } },
+        { 2, 3, { 32, -64, 0 } },
+        { 3, 0, { -64, -32, 0 } },
+        { 0, 1, { -32, 64, 0 } },
+
+        // rightCurveSmall
+        { 0, 1, { -32, 64, 0 } },
+        { 1, 2, { 64, 32, 0 } },
+        { 2, 3, { 32, -64, 0 } },
+        { 3, 0, { -64, -32, 0 } },
+        { 3, 2, { 64, -32, 0 } },
+        { 0, 3, { -32, -64, 0 } },
+        { 1, 0, { -64, 32, 0 } },
+        { 2, 1, { 32, 64, 0 } },
+
+        // leftCurve
+        { 0, 3, { -64, -96, 0 } },
+        { 1, 0, { -96, 64, 0 } },
+        { 2, 1, { 64, 96, 0 } },
+        { 3, 2, { 96, -64, 0 } },
+        { 1, 2, { 96, 64, 0 } },
+        { 2, 3, { 64, -96, 0 } },
+        { 3, 0, { -96, -64, 0 } },
+        { 0, 1, { -64, 96, 0 } },
+
+        // rightCurve
+        { 0, 1, { -64, 96, 0 } },
+        { 1, 2, { 96, 64, 0 } },
+        { 2, 3, { 64, -96, 0 } },
+        { 3, 0, { -96, -64, 0 } },
+        { 3, 2, { 96, -64, 0 } },
+        { 0, 3, { -64, -96, 0 } },
+        { 1, 0, { -96, 64, 0 } },
+        { 2, 1, { 64, 96, 0 } },
+
+        // leftCurveLarge
+        { 0, 15, { -64, -32, 0 } },
+        { 1, 12, { -32, 64, 0 } },
+        { 2, 13, { 64, 32, 0 } },
+        { 3, 14, { 32, -64, 0 } },
+        { 13, 2, { 96, 32, 0 } },
+        { 14, 3, { 32, -96, 0 } },
+        { 15, 0, { -96, -32, 0 } },
+        { 12, 1, { -32, 96, 0 } },
+
+        // rightCurveLarge
+        { 0, 12, { -64, 32, 0 } },
+        { 1, 13, { 32, 64, 0 } },
+        { 2, 14, { 64, -32, 0 } },
+        { 3, 15, { -32, -64, 0 } },
+        { 14, 2, { 96, -32, 0 } },
+        { 15, 3, { -32, -96, 0 } },
+        { 12, 0, { -96, 32, 0 } },
+        { 13, 1, { 32, 96, 0 } },
+
+        // diagonalLeftCurveLarge
+        { 12, 0, { -96, 32, 0 } },
+        { 13, 1, { 32, 96, 0 } },
+        { 14, 2, { 96, -32, 0 } },
+        { 15, 3, { -32, -96, 0 } },
+        { 2, 14, { 64, -32, 0 } },
+        { 3, 15, { -32, -64, 0 } },
+        { 0, 12, { -64, 32, 0 } },
+        { 1, 13, { 32, 64, 0 } },
+
+        // diagonalRightCurveLarge
+        { 12, 1, { -32, 96, 0 } },
+        { 13, 2, { 96, 32, 0 } },
+        { 14, 3, { 32, -96, 0 } },
+        { 15, 0, { -96, -32, 0 } },
+        { 3, 14, { 32, -64, 0 } },
+        { 0, 15, { -64, -32, 0 } },
+        { 1, 12, { -32, 64, 0 } },
+        { 2, 13, { 64, 32, 0 } },
+
+        // sBendLeft
+        { 0, 0, { -96, -32, 0 } },
+        { 1, 1, { -32, 96, 0 } },
+        { 2, 2, { 96, 32, 0 } },
+        { 3, 3, { 32, -96, 0 } },
+        { 2, 2, { 96, 32, 0 } },
+        { 3, 3, { 32, -96, 0 } },
+        { 0, 0, { -96, -32, 0 } },
+        { 1, 1, { -32, 96, 0 } },
+
+        // sBendRight
+        { 0, 0, { -96, 32, 0 } },
+        { 1, 1, { 32, 96, 0 } },
+        { 2, 2, { 96, -32, 0 } },
+        { 3, 3, { -32, -96, 0 } },
+        { 2, 2, { 96, -32, 0 } },
+        { 3, 3, { -32, -96, 0 } },
+        { 0, 0, { -96, 32, 0 } },
+        { 1, 1, { 32, 96, 0 } },
+
+        // straightSlopeUp
+        { 0, 0, { -64, 0, 16 } },
+        { 1, 1, { 0, 64, 16 } },
+        { 2, 2, { 64, 0, 16 } },
+        { 3, 3, { 0, -64, 16 } },
+        { 2, 2, { 64, 0, -16 } },
+        { 3, 3, { 0, -64, -16 } },
+        { 0, 0, { -64, 0, -16 } },
+        { 1, 1, { 0, 64, -16 } },
+
+        // straightSlopeDown
+        { 0, 0, { -64, 0, -16 } },
+        { 1, 1, { 0, 64, -16 } },
+        { 2, 2, { 64, 0, -16 } },
+        { 3, 3, { 0, -64, -16 } },
+        { 2, 2, { 64, 0, 16 } },
+        { 3, 3, { 0, -64, 16 } },
+        { 0, 0, { -64, 0, 16 } },
+        { 1, 1, { 0, 64, 16 } },
+
+        // straightSteepSlopeUp
+        { 0, 0, { -32, 0, 16 } },
+        { 1, 1, { 0, 32, 16 } },
+        { 2, 2, { 32, 0, 16 } },
+        { 3, 3, { 0, -32, 16 } },
+        { 2, 2, { 32, 0, -16 } },
+        { 3, 3, { 0, -32, -16 } },
+        { 0, 0, { -32, 0, -16 } },
+        { 1, 1, { 0, 32, -16 } },
+
+        // straightSteepSlopeDown
+        { 0, 0, { -32, 0, -16 } },
+        { 1, 1, { 0, 32, -16 } },
+        { 2, 2, { 32, 0, -16 } },
+        { 3, 3, { 0, -32, -16 } },
+        { 2, 2, { 32, 0, 16 } },
+        { 3, 3, { 0, -32, 16 } },
+        { 0, 0, { -32, 0, 16 } },
+        { 1, 1, { 0, 32, 16 } },
+
+        // leftCurveSmallSlopeUp
+        { 0, 3, { -32, -64, 16 } },
+        { 1, 0, { -64, 32, 16 } },
+        { 2, 1, { 32, 64, 16 } },
+        { 3, 2, { 64, -32, 16 } },
+        { 1, 2, { 64, 32, -16 } },
+        { 2, 3, { 32, -64, -16 } },
+        { 3, 0, { -64, -32, -16 } },
+        { 0, 1, { -32, 64, -16 } },
+
+        // rightCurveSmallSlopeUp
+        { 0, 1, { -32, 64, 16 } },
+        { 1, 2, { 64, 32, 16 } },
+        { 2, 3, { 32, -64, 16 } },
+        { 3, 0, { -64, -32, 16 } },
+        { 3, 2, { 64, -32, -16 } },
+        { 0, 3, { -32, -64, -16 } },
+        { 1, 0, { -64, 32, -16 } },
+        { 2, 1, { 32, 64, -16 } },
+
+        // leftCurveSmallSlopeDown
+        { 0, 3, { -32, -64, -16 } },
+        { 1, 0, { -64, 32, -16 } },
+        { 2, 1, { 32, 64, -16 } },
+        { 3, 2, { 64, -32, -16 } },
+        { 1, 2, { 64, 32, 16 } },
+        { 2, 3, { 32, -64, 16 } },
+        { 3, 0, { -64, -32, 16 } },
+        { 0, 1, { -32, 64, 16 } },
+
+        // rightCurveSmallSlopeDown
+        { 0, 1, { -32, 64, -16 } },
+        { 1, 2, { 64, 32, -16 } },
+        { 2, 3, { 32, -64, -16 } },
+        { 3, 0, { -64, -32, -16 } },
+        { 3, 2, { 64, -32, 16 } },
+        { 0, 3, { -32, -64, 16 } },
+        { 1, 0, { -64, 32, 16 } },
+        { 2, 1, { 32, 64, 16 } },
+
+        // leftCurveSmallSteepSlopeUp
+        { 0, 3, { -32, -64, 32 } },
+        { 1, 0, { -64, 32, 32 } },
+        { 2, 1, { 32, 64, 32 } },
+        { 3, 2, { 64, -32, 32 } },
+        { 1, 2, { 64, 32, -32 } },
+        { 2, 3, { 32, -64, -32 } },
+        { 3, 0, { -64, -32, -32 } },
+        { 0, 1, { -32, 64, -32 } },
+
+        // rightCurveSmallSteepSlopeUp
+        { 0, 1, { -32, 64, 32 } },
+        { 1, 2, { 64, 32, 32 } },
+        { 2, 3, { 32, -64, 32 } },
+        { 3, 0, { -64, -32, 32 } },
+        { 3, 2, { 64, -32, -32 } },
+        { 0, 3, { -32, -64, -32 } },
+        { 1, 0, { -64, 32, -32 } },
+        { 2, 1, { 32, 64, -32 } },
+
+        // leftCurveSmallSteepSlopeDown
+        { 0, 3, { -32, -64, -32 } },
+        { 1, 0, { -64, 32, -32 } },
+        { 2, 1, { 32, 64, -32 } },
+        { 3, 2, { 64, -32, -32 } },
+        { 1, 2, { 64, 32, 32 } },
+        { 2, 3, { 32, -64, 32 } },
+        { 3, 0, { -64, -32, 32 } },
+        { 0, 1, { -32, 64, 32 } },
+
+        // rightCurveSmallSteepSlopeDown
+        { 0, 1, { -32, 64, -32 } },
+        { 1, 2, { 64, 32, -32 } },
+        { 2, 3, { 32, -64, -32 } },
+        { 3, 0, { -64, -32, -32 } },
+        { 3, 2, { 64, -32, 32 } },
+        { 0, 3, { -32, -64, 32 } },
+        { 1, 0, { -64, 32, 32 } },
+        { 2, 1, { 32, 64, 32 } },
+
+        // unkStraight1
+        { 4, 4, { -32, 0, 0 } },
+        { 5, 5, { 0, 32, 0 } },
+        { 6, 6, { 32, 0, 0 } },
+        { 7, 7, { 0, -32, 0 } },
+        { 10, 10, { 32, 0, 0 } },
+        { 11, 11, { 0, -32, 0 } },
+        { 8, 8, { -32, 0, 0 } },
+        { 9, 9, { 0, 32, 0 } },
+
+        // unkStraight2
+        { 8, 8, { -32, 0, 0 } },
+        { 9, 9, { 0, 32, 0 } },
+        { 10, 10, { 32, 0, 0 } },
+        { 11, 11, { 0, -32, 0 } },
+        { 6, 6, { 32, 0, 0 } },
+        { 7, 7, { 0, -32, 0 } },
+        { 4, 4, { -32, 0, 0 } },
+        { 5, 5, { 0, 32, 0 } },
+
+        // unkLeftCurveVerySmall1
+        { 4, 7, { 0, -32, 0 } },
+        { 5, 4, { -32, 0, 0 } },
+        { 6, 5, { 0, 32, 0 } },
+        { 7, 6, { 32, 0, 0 } },
+        { 9, 10, { 32, 0, 0 } },
+        { 10, 11, { 0, -32, 0 } },
+        { 11, 8, { -32, 0, 0 } },
+        { 8, 9, { 0, 32, 0 } },
+
+        // unkLeftCurveVerySmall2
+        { 8, 11, { 0, -32, 0 } },
+        { 9, 8, { -32, 0, 0 } },
+        { 10, 9, { 0, 32, 0 } },
+        { 11, 10, { 32, 0, 0 } },
+        { 5, 6, { 32, 0, 0 } },
+        { 6, 7, { 0, -32, 0 } },
+        { 7, 4, { -32, 0, 0 } },
+        { 4, 5, { 0, 32, 0 } },
+
+        // unkRightCurveVerySmall1
+        { 4, 5, { 0, 32, 0 } },
+        { 5, 6, { 32, 0, 0 } },
+        { 6, 7, { 0, -32, 0 } },
+        { 7, 4, { -32, 0, 0 } },
+        { 11, 10, { 32, 0, 0 } },
+        { 8, 11, { 0, -32, 0 } },
+        { 9, 8, { -32, 0, 0 } },
+        { 10, 9, { 0, 32, 0 } },
+
+        // unkRightCurveVerySmall2
+        { 8, 9, { 0, 32, 0 } },
+        { 9, 10, { 32, 0, 0 } },
+        { 10, 11, { 0, -32, 0 } },
+        { 11, 8, { -32, 0, 0 } },
+        { 7, 6, { 32, 0, 0 } },
+        { 4, 7, { 0, -32, 0 } },
+        { 5, 4, { -32, 0, 0 } },
+        { 6, 5, { 0, 32, 0 } },
+
+        // unkSBendRight
+        { 4, 8, { -32, 0, 0 } },
+        { 5, 9, { 0, 32, 0 } },
+        { 6, 10, { 32, 0, 0 } },
+        { 7, 11, { 0, -32, 0 } },
+        { 6, 10, { 32, 0, 0 } },
+        { 7, 11, { 0, -32, 0 } },
+        { 4, 8, { -32, 0, 0 } },
+        { 5, 9, { 0, 32, 0 } },
+
+        // unkSBendLeft
+        { 8, 4, { -32, 0, 0 } },
+        { 9, 5, { 0, 32, 0 } },
+        { 10, 6, { 32, 0, 0 } },
+        { 11, 7, { 0, -32, 0 } },
+        { 10, 6, { 32, 0, 0 } },
+        { 11, 7, { 0, -32, 0 } },
+        { 8, 4, { -32, 0, 0 } },
+        { 9, 5, { 0, 32, 0 } },
+
+        // unkStraightSteepSlopeUp1
+        { 4, 4, { -32, 0, 16 } },
+        { 5, 5, { 0, 32, 16 } },
+        { 6, 6, { 32, 0, 16 } },
+        { 7, 7, { 0, -32, 16 } },
+        { 10, 10, { 32, 0, -16 } },
+        { 11, 11, { 0, -32, -16 } },
+        { 8, 8, { -32, 0, -16 } },
+        { 9, 9, { 0, 32, -16 } },
+
+        // unkStraightSteepSlopeUp2
+        { 8, 8, { -32, 0, 16 } },
+        { 9, 9, { 0, 32, 16 } },
+        { 10, 10, { 32, 0, 16 } },
+        { 11, 11, { 0, -32, 16 } },
+        { 6, 6, { 32, 0, -16 } },
+        { 7, 7, { 0, -32, -16 } },
+        { 4, 4, { -32, 0, -16 } },
+        { 5, 5, { 0, 32, -16 } },
+
+        // unkStraightSteepSlopeDown1
+        { 4, 4, { -32, 0, -16 } },
+        { 5, 5, { 0, 32, -16 } },
+        { 6, 6, { 32, 0, -16 } },
+        { 7, 7, { 0, -32, -16 } },
+        { 10, 10, { 32, 0, 16 } },
+        { 11, 11, { 0, -32, 16 } },
+        { 8, 8, { -32, 0, 16 } },
+        { 9, 9, { 0, 32, 16 } },
+
+        // unkStraightSteepSlopeDown2
+        { 8, 8, { -32, 0, -16 } },
+        { 9, 9, { 0, 32, -16 } },
+        { 10, 10, { 32, 0, -16 } },
+        { 11, 11, { 0, -32, -16 } },
+        { 6, 6, { 32, 0, 16 } },
+        { 7, 7, { 0, -32, 16 } },
+        { 4, 4, { -32, 0, 16 } },
+        { 5, 5, { 0, 32, 16 } },
+
+        // sBendToDualTrack
+        { 0, 4, { -32, 0, 0 } },
+        { 1, 5, { 0, 32, 0 } },
+        { 2, 6, { 32, 0, 0 } },
+        { 3, 7, { 0, -32, 0 } },
+        { 10, 2, { 32, 0, 0 } },
+        { 11, 3, { 0, -32, 0 } },
+        { 8, 0, { -32, 0, 0 } },
+        { 9, 1, { 0, 32, 0 } },
+
+        // sBendToSingleTrack
+        { 0, 8, { -32, 0, 0 } },
+        { 1, 9, { 0, 32, 0 } },
+        { 2, 10, { 32, 0, 0 } },
+        { 3, 11, { 0, -32, 0 } },
+        { 6, 2, { 32, 0, 0 } },
+        { 7, 3, { 0, -32, 0 } },
+        { 4, 0, { -32, 0, 0 } },
+        { 5, 1, { 0, 32, 0 } },
+
+        // unkSBendToDualTrack
+        { 4, 0, { -32, 0, 0 } },
+        { 5, 1, { 0, 32, 0 } },
+        { 6, 2, { 32, 0, 0 } },
+        { 7, 3, { 0, -32, 0 } },
+        { 2, 10, { 32, 0, 0 } },
+        { 3, 11, { 0, -32, 0 } },
+        { 0, 8, { -32, 0, 0 } },
+        { 1, 9, { 0, 32, 0 } },
+
+        // unkSBendToSingleTrack
+        { 8, 0, { -32, 0, 0 } },
+        { 9, 1, { 0, 32, 0 } },
+        { 10, 2, { 32, 0, 0 } },
+        { 11, 3, { 0, -32, 0 } },
+        { 2, 6, { 32, 0, 0 } },
+        { 3, 7, { 0, -32, 0 } },
+        { 0, 4, { -32, 0, 0 } },
+        { 1, 5, { 0, 32, 0 } },
+
+        // turnaround
+        { 4, 6, { 32, 0, 0 } },
+        { 5, 7, { 0, -32, 0 } },
+        { 6, 4, { -32, 0, 0 } },
+        { 7, 5, { 0, 32, 0 } },
+        { 8, 10, { 32, 0, 0 } },
+        { 9, 11, { 0, -32, 0 } },
+        { 10, 8, { -32, 0, 0 } },
+        { 11, 9, { 0, 32, 0 } },
+
+        // unkTurnaround
+        { 8, 10, { 32, 0, 0 } },
+        { 9, 11, { 0, -32, 0 } },
+        { 10, 8, { -32, 0, 0 } },
+        { 11, 9, { 0, 32, 0 } },
+        { 4, 6, { 32, 0, 0 } },
+        { 5, 7, { 0, -32, 0 } },
+        { 6, 4, { -32, 0, 0 } },
+        { 7, 5, { 0, 32, 0 } },
+    } };
 
     const TrackCoordinates& getUnkTrack(uint16_t trackAndDirection)
     {
-        return _4F7B5C[trackAndDirection];
+        return kTrackCoordinates[trackAndDirection];
     }
 
     const TrackCoordinates& getUnkRoad(uint16_t trackAndDirection)
     {
-        return _4F6F8C[trackAndDirection];
+        return kRoadCoordinates[trackAndDirection];
     }
 
     constexpr std::array<TrackMiscData, 44> _miscData = {
@@ -1286,5 +1828,107 @@ namespace OpenLoco::World::TrackData
     {
         assert(index < kRoadOccupationMasks.size());
         return kRoadOccupationMasks[index];
+    }
+
+    // 0x004F865C
+    static constexpr std::array<int8_t, 88> kCurvatureDegrees = { {
+        0,   // straight
+        0,   // straight, reversed
+        0,   // diagonal
+        0,   // diagonal, reversed
+        -60, // leftCurveVerySmall
+        60,  // leftCurveVerySmall, reversed
+        61,  // rightCurveVerySmall
+        -61, // rightCurveVerySmall, reversed
+        -50, // leftCurveSmall
+        50,  // leftCurveSmall, reversed
+        51,  // rightCurveSmall
+        -51, // rightCurveSmall, reversed
+        -40, // leftCurve
+        40,  // leftCurve, reversed
+        41,  // rightCurve
+        -41, // rightCurve, reversed
+        -30, // leftCurveLarge
+        30,  // leftCurveLarge, reversed
+        31,  // rightCurveLarge
+        -31, // rightCurveLarge, reversed
+        -32, // diagonalLeftCurveLarge
+        32,  // diagonalLeftCurveLarge, reversed
+        33,  // diagonalRightCurveLarge
+        -33, // diagonalRightCurveLarge, reversed
+        -20, // sBendLeft
+        -20, // sBendLeft, reversed
+        21,  // sBendRight
+        21,  // sBendRight, reversed
+        0,   // straightSlopeUp
+        0,   // straightSlopeUp, reversed
+        0,   // straightSlopeDown
+        0,   // straightSlopeDown, reversed
+        0,   // straightSteepSlopeUp
+        0,   // straightSteepSlopeUp, reversed
+        0,   // straightSteepSlopeDown
+        0,   // straightSteepSlopeDown, reversed
+        -50, // leftCurveSmallSlopeUp
+        50,  // leftCurveSmallSlopeUp, reversed
+        50,  // rightCurveSmallSlopeUp
+        -50, // rightCurveSmallSlopeUp, reversed
+        -50, // leftCurveSmallSlopeDown
+        50,  // leftCurveSmallSlopeDown, reversed
+        50,  // rightCurveSmallSlopeDown
+        -50, // rightCurveSmallSlopeDown, reversed
+        -50, // leftCurveSmallSteepSlopeUp
+        50,  // leftCurveSmallSteepSlopeUp, reversed
+        50,  // rightCurveSmallSteepSlopeUp
+        -50, // rightCurveSmallSteepSlopeUp, reversed
+        -50, // leftCurveSmallSteepSlopeDown
+        50,  // leftCurveSmallSteepSlopeDown, reversed
+        50,  // rightCurveSmallSteepSlopeDown
+        -50, // rightCurveSmallSteepSlopeDown, reversed
+        0,   // unkStraight1
+        0,   // unkStraight1, reversed
+        0,   // unkStraight2
+        0,   // unkStraight2, reversed
+        -60, // unkLeftCurveVerySmall1
+        60,  // unkLeftCurveVerySmall1, reversed
+        -61, // unkLeftCurveVerySmall2
+        61,  // unkLeftCurveVerySmall2, reversed
+        62,  // unkRightCurveVerySmall1
+        -62, // unkRightCurveVerySmall1, reversed
+        63,  // unkRightCurveVerySmall2
+        -63, // unkRightCurveVerySmall2, reversed
+        22,  // unkSBendRight
+        22,  // unkSBendRight, reversed
+        -23, // unkSBendLeft
+        -23, // unkSBendLeft, reversed
+        0,   // unkStraightSteepSlopeUp1
+        0,   // unkStraightSteepSlopeUp1, reversed
+        0,   // unkStraightSteepSlopeUp2
+        0,   // unkStraightSteepSlopeUp2, reversed
+        0,   // unkStraightSteepSlopeDown1
+        0,   // unkStraightSteepSlopeDown1, reversed
+        0,   // unkStraightSteepSlopeDown2
+        0,   // unkStraightSteepSlopeDown2, reversed
+        -10, // sBendToDualTrack
+        -10, // sBendToDualTrack, reversed
+        11,  // sBendToSingleTrack
+        11,  // sBendToSingleTrack, reversed
+        12,  // unkSBendToDualTrack
+        12,  // unkSBendToDualTrack, reversed
+        -13, // unkSBendToSingleTrack
+        -13, // unkSBendToSingleTrack, reversed
+        70,  // turnaround
+        -70, // turnaround, reversed
+        -71, // unkTurnaround
+        71,  // unkTurnaround, reversed
+    } };
+
+    // 0x004F865C
+    // The index is (trackAndDirection._track.data >> 2), which encodes:
+    // - reversed (bit 0)
+    // - track id (bit 1-6)
+    int8_t getCurvatureDegree(uint8_t index)
+    {
+        assert(index < kCurvatureDegrees.size());
+        return kCurvatureDegrees[index];
     }
 }

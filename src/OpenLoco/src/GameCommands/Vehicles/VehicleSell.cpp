@@ -4,7 +4,11 @@
 #include "VehiclePickupAir.h"
 #include "VehiclePickupWater.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
+#include "Vehicles/VehicleTail.h"
 
 using namespace OpenLoco::Vehicles;
 
@@ -122,7 +126,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004AED34
-    void sellVehicle(Interop::registers& regs)
+    void sellVehicle(registers& regs)
     {
         regs.ebx = sellVehicle(EntityId(regs.dx), regs.bl);
     }

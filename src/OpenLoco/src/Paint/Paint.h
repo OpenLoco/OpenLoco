@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Graphics/ImageId.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Types.hpp"
@@ -6,9 +7,8 @@
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Engine/Ui/Point.hpp>
 #include <OpenLoco/Engine/World.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <array>
-#include <sfl/static_vector.hpp>
+#include <sfl/segmented_vector.hpp>
 #include <span>
 
 namespace OpenLoco::World
@@ -152,7 +152,6 @@ namespace OpenLoco::Paint
         Ui::Point vpPos;
         World::Pos2 mapPos;
         uint16_t quadrantIndex;
-        uint16_t pad_2A;
         uint8_t modId; // used for track mods and signal sides
         PaintStructFlags flags;
         QuadrantFlags quadrantFlags;
@@ -181,8 +180,6 @@ namespace OpenLoco::Paint
     struct BridgeEntry
     {
         ImageId imageBase;     // 0x00525CF2
-        uint32_t padImage1;    // 0x00525CE8 used only in bridge paint here just to keep struct size
-        uint32_t padImage2;    // 0x00525CEC used only in bridge paint here just to keep struct size
         uint16_t subType;      // 0x00525CE6
         int16_t height;        // 0x00525CE4
         uint8_t edgesQuarters; // 0x00525CF0
@@ -191,8 +188,6 @@ namespace OpenLoco::Paint
         constexpr BridgeEntry() = default;
         constexpr BridgeEntry(coord_t _height, uint8_t _subType, uint8_t edges, uint8_t quarters, uint8_t _objectId, ImageId _imageBase)
             : imageBase(_imageBase)
-            , padImage1(0)
-            , padImage2(0)
             , subType(_subType)
             , height(_height)
             , edgesQuarters((edges << 4U) | quarters)
@@ -220,6 +215,12 @@ namespace OpenLoco::Paint
         uint8_t rotation;
         int16_t foregroundCullHeight;
         Ui::ViewportFlags viewFlags;
+        // If true we are under a hit test not a normal paint.
+        // During a hit test road images are subtly changed so that
+        // you can distinguish between overlapping roads.
+        bool isHitTest = false;
+        // This is used when painting previews of track/road mods
+        bool skipTrackRoadSurfaces = false;
 
         constexpr bool hasFlags(Ui::ViewportFlags flagsToTest) const
         {
@@ -227,7 +228,6 @@ namespace OpenLoco::Paint
         }
     };
 
-    static constexpr auto kMaxPaintEntries = 4000U;
     static constexpr auto kMaxPaintQuadrants = 1024;
 
     struct PaintSession
@@ -240,47 +240,47 @@ namespace OpenLoco::Paint
         void drawStructs(Gfx::DrawingContext& drawingCtx);
         void drawStringStructs(Gfx::DrawingContext& drawingCtx);
 
-        [[nodiscard]] Ui::ViewportInteraction::InteractionArg getNormalInteractionInfo(const Ui::ViewportInteraction::InteractionItemFlags flags);
-        [[nodiscard]] Ui::ViewportInteraction::InteractionArg getStationNameInteractionInfo(const Ui::ViewportInteraction::InteractionItemFlags flags);
-        [[nodiscard]] Ui::ViewportInteraction::InteractionArg getTownNameInteractionInfo(const Ui::ViewportInteraction::InteractionItemFlags flags);
-        const Gfx::RenderTarget* getRenderTarget() { return _renderTarget; }
-        uint8_t getRotation() { return currentRotation; }
+        [[nodiscard]] Ui::ViewportInteraction::InteractionArg getNormalInteractionInfo(const Ui::ViewportInteraction::InteractionItemFlags flags) const;
+        [[nodiscard]] Ui::ViewportInteraction::InteractionArg getStationNameInteractionInfo(const Ui::ViewportInteraction::InteractionItemFlags flags) const;
+        [[nodiscard]] Ui::ViewportInteraction::InteractionArg getTownNameInteractionInfo(const Ui::ViewportInteraction::InteractionItemFlags flags) const;
+        const Gfx::RenderTarget* getRenderTarget() const { return _renderTarget; }
+        uint8_t getRotation() const { return currentRotation; }
         void setRotation(uint8_t rotation) { currentRotation = rotation; }
-        int16_t getMaxHeight() { return _maxHeight; }
-        uint32_t getRoadExits() { return _roadMergeExits; }
+        int16_t getMaxHeight() const { return _maxHeight; }
+        uint32_t getRoadExits() const { return _roadMergeExits; }
         void setRoadExits(uint32_t value) { _roadMergeExits = value; }
-        uint32_t getMergeRoadBaseImage() { return _roadMergeBaseImage; }
+        uint32_t getMergeRoadBaseImage() const { return _roadMergeBaseImage; }
         void setMergeRoadBaseImage(uint32_t value) { _roadMergeBaseImage = value; }
-        int16_t getMergeRoadHeight() { return _roadMergeHeight; }
+        int16_t getMergeRoadHeight() const { return _roadMergeHeight; }
         void setMergeRoadHeight(int16_t value) { _roadMergeHeight = value; }
-        uint16_t getMergeRoadStreetlight() { return _roadMergeStreetlightType; }
+        uint16_t getMergeRoadStreetlight() const { return _roadMergeStreetlightType; }
         void setMergeRoadStreetlight(uint16_t value) { _roadMergeStreetlightType = value; }
-        int16_t getAdditionSupportHeight() { return _trackRoadAdditionSupports.height; }
-        const TrackRoadAdditionSupports& getAdditionSupport() { return _trackRoadAdditionSupports; }
+        int16_t getAdditionSupportHeight() const { return _trackRoadAdditionSupports.height; }
+        const TrackRoadAdditionSupports& getAdditionSupport() const { return _trackRoadAdditionSupports; }
         void setAdditionSupport(const TrackRoadAdditionSupports& newValue) { _trackRoadAdditionSupports = newValue; }
-        const SupportHeight& getGeneralSupportHeight() { return _support; }
-        const SupportHeight& getSupportHeight(uint8_t segment) { return _supportSegments[segment]; }
-        const BridgeEntry& getBridgeEntry() { return _bridgeEntry; }
-        SegmentFlags get525CF8() { return _525CF8; }
-        int16_t getWaterHeight() { return _waterHeight; }
-        int16_t getWaterHeight2() { return _waterHeight2; }
-        int16_t getSurfaceHeight() { return _surfaceHeight; }
-        uint8_t getSurfaceSlope() { return _surfaceSlope; }
-        SegmentFlags getOccupiedAdditionSupportSegments() { return _trackRoadAdditionSupports.occupiedSegments; }
-        World::Pos2 getUnkPosition()
+        const SupportHeight& getGeneralSupportHeight() const { return _support; }
+        const SupportHeight& getSupportHeight(uint8_t segment) const { return _supportSegments[segment]; }
+        const BridgeEntry& getBridgeEntry() const { return _bridgeEntry; }
+        SegmentFlags get525CF8() const { return _525CF8; }
+        int16_t getWaterHeight() const { return _waterHeight; }
+        int16_t getWaterHeight2() const { return _waterHeight2; }
+        int16_t getSurfaceHeight() const { return _surfaceHeight; }
+        uint8_t getSurfaceSlope() const { return _surfaceSlope; }
+        SegmentFlags getOccupiedAdditionSupportSegments() const { return _trackRoadAdditionSupports.occupiedSegments; }
+        World::Pos2 getUnkPosition() const
         {
             return World::Pos2{ _unkPositionX, _unkPositionY };
         }
-        World::Pos2 getSpritePosition()
+        World::Pos2 getSpritePosition() const
         {
             return World::Pos2{ _spritePositionX, _spritePositionY };
         }
-        Ui::ViewportFlags getViewFlags() { return _viewFlags; }
+        Ui::ViewportFlags getViewFlags() const { return _viewFlags; }
         // TileElement or Entity
         void setCurrentItem(void* item) { _currentItem = item; }
-        void* getCurrentItem() { return _currentItem; }
+        void* getCurrentItem() const { return _currentItem; }
         void setItemType(const Ui::ViewportInteraction::InteractionItem type) { _itemType = type; }
-        Ui::ViewportInteraction::InteractionItem getItemType() { return _itemType; }
+        Ui::ViewportInteraction::InteractionItem getItemType() const { return _itemType; }
         void setTrackModId(const uint8_t mod) { _trackModId = mod; }
         void setEntityPosition(const World::Pos2& pos);
         void setMapPosition(const World::Pos2& pos);
@@ -311,6 +311,8 @@ namespace OpenLoco::Paint
         void setWaterHeight2(int16_t height) { _waterHeight2 = height; }
         PaintStruct* getLastPS() { return _lastPS; }
         void setLastPS(PaintStruct* ps) { _lastPS = ps; }
+        bool isHitTest() const { return _isHitTest; }
+        bool skipTrackRoadSurfaces() const { return _skipTrackRoadSurfaces; }
 
         /*
          * @param amount    @<eax>
@@ -439,10 +441,8 @@ namespace OpenLoco::Paint
 
             PaintEntry() {}
         };
-        assert_struct_size(PaintEntry, 0x34);
 
-        // Do not null-initialize this, its too expensive, this is storage.
-        sfl::static_vector<PaintEntry, kMaxPaintEntries> _paintEntries;
+        sfl::segmented_vector<PaintEntry, 128> _paintEntries;
 
         const Gfx::RenderTarget* _renderTarget{};
         PaintStruct* _paintHead{};
@@ -503,6 +503,8 @@ namespace OpenLoco::Paint
         uint32_t _roadMergeExits{};
         int16_t _roadMergeHeight{};
         uint16_t _roadMergeStreetlightType{};
+        bool _isHitTest{};             // 0x0050BF68
+        bool _skipTrackRoadSurfaces{}; // 0x00522095 bit 0
 
         // From OpenRCT2 equivalent fields not found yet or new
         // AttachedPaintStruct* unkF1AD2C;              // no equivalent
@@ -518,11 +520,6 @@ namespace OpenLoco::Paint
         {
             static_assert(std::same_as<T, PaintStruct> || std::same_as<T, AttachedPaintStruct> || std::same_as<T, PaintStringStruct>);
 
-            if (_paintEntries.full())
-            {
-                return nullptr;
-            }
-
             auto& ps = _paintEntries.emplace_back();
 
             auto* specificPs = reinterpret_cast<T*>(&ps);
@@ -534,4 +531,6 @@ namespace OpenLoco::Paint
         void addPSToQuadrant(PaintStruct& ps);
         PaintStruct* createNormalPaintStruct(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize);
     };
+
+    bool showAiPlanningGhosts();
 }

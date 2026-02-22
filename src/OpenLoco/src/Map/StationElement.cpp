@@ -3,7 +3,7 @@
 #include "Objects/AirportObject.h"
 #include "Objects/DockObject.h"
 #include "Objects/ObjectManager.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "TileManager.h"
 #include "ViewportManager.h"
 #include "World/Station.h"

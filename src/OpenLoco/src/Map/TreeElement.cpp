@@ -5,7 +5,7 @@
 #include "Objects/TreeObject.h"
 #include "Random.h"
 #include "RoadElement.h"
-#include "Scenario.h"
+#include "Scenario/Scenario.h"
 #include "SceneManager.h"
 #include "SurfaceElement.h"
 #include "TileClearance.h"

@@ -1,7 +1,6 @@
 #include "Ui/ToolTip.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -13,11 +12,9 @@
 #include "Ui/Widget.h"
 #include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <algorithm>
 #include <cstring>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::ToolTip
 {
@@ -156,7 +153,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
             WindowType::tooltip,
             { x, y },
             { width, height },
-            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::flag_7,
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::ignoreInFindAt,
             getEvents());
         tooltip->setWidgets(_widgets);
         tooltip->widgets[widx::text].right = width;
@@ -166,7 +163,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
     }
 
     // 0x004C906B
-    void open(Ui::Window* window, int32_t widgetIndex, int16_t cursorX, int16_t cursorY)
+    void open(Ui::Window* window, int32_t widgetIndex, int32_t cursorX, int32_t cursorY)
     {
         WindowManager::close(WindowType::tooltip, 0);
         if (window == nullptr || widgetIndex == kWidgetIndexNull)
@@ -202,7 +199,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
     }
 
     // 0x004C9216
-    void update(Ui::Window* window, int32_t widgetIndex, StringId stringId, int16_t cursorX, int16_t cursorY)
+    void update(Ui::Window* window, int32_t widgetIndex, StringId stringId, int32_t cursorX, int32_t cursorY)
     {
         WindowManager::close(WindowType::tooltip, 0);
 
@@ -232,10 +229,10 @@ namespace OpenLoco::Ui::Windows::ToolTip
     {
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        uint16_t x = window.x;
-        uint16_t y = window.y;
-        uint16_t width = window.width;
-        uint16_t height = window.height;
+        const auto x = window.x;
+        const auto y = window.y;
+        const auto width = window.width;
+        const auto height = window.height;
 
         drawingCtx.drawRect(x + 1, y + 1, width - 2, height - 2, enumValue(ExtColour::unk2D), Gfx::RectFlags::transparent);
         drawingCtx.drawRect(x + 1, y + 1, width - 2, height - 2, (enumValue(ExtColour::unk74) + enumValue(ObjectManager::get<InterfaceSkinObject>()->tooltipColour)), Gfx::RectFlags::transparent);

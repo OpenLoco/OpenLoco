@@ -5,10 +5,6 @@
 #include "Random.h"
 #include "SplashEffect.h"
 
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco
 {
     // There are a total of 12 sprites for this effect, the paint code divides this by 256.

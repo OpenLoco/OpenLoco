@@ -18,14 +18,14 @@ namespace OpenLoco::Ui
 
     struct viewport_pos
     {
-        int16_t x{};
-        int16_t y{};
+        int32_t x{};
+        int32_t y{};
 
         viewport_pos()
             : viewport_pos(0, 0)
         {
         }
-        viewport_pos(int16_t _x, int16_t _y)
+        viewport_pos(int32_t _x, int32_t _y)
             : x(_x)
             , y(_y)
         {
@@ -34,10 +34,10 @@ namespace OpenLoco::Ui
 
     struct ViewportRect
     {
-        int16_t left = 0;
-        int16_t top = 0;
-        int16_t bottom = 0;
-        int16_t right = 0;
+        int32_t left = 0;
+        int32_t top = 0;
+        int32_t bottom = 0;
+        int32_t right = 0;
 
         constexpr bool contains(const viewport_pos& vpos)
         {
@@ -57,8 +57,8 @@ namespace OpenLoco::Ui
         seeThroughScenery = 1U << 6,
         flag_7 = 1U << 7,
         flag_8 = 1U << 8,
-        town_names_displayed = 1U << 9,
-        station_names_displayed = 1U << 10,
+        hideTownNames = 1U << 9,
+        hideStationNames = 1U << 10,
         seeThroughRoads = 1U << 11,
         seeThroughBuildings = 1U << 12,
         seeThroughTrees = 1U << 13,
@@ -80,14 +80,14 @@ namespace OpenLoco::Ui
 
     struct Viewport
     {
-        int16_t width;       // 0x00
-        int16_t height;      // 0x02
-        int16_t x;           // 0x04
-        int16_t y;           // 0x06
-        int16_t viewX;       // 0x08
-        int16_t viewY;       // 0x0A
-        int16_t viewWidth;   // 0x0C
-        int16_t viewHeight;  // 0x0E
+        int32_t width;       // 0x00
+        int32_t height;      // 0x02
+        int32_t x;           // 0x04
+        int32_t y;           // 0x06
+        int32_t viewX;       // 0x08
+        int32_t viewY;       // 0x0A
+        int32_t viewWidth;   // 0x0C
+        int32_t viewHeight;  // 0x0E
         uint8_t zoom;        // 0x10
         uint8_t pad_11;      // 0x11
         ViewportFlags flags; // 0x12
@@ -136,9 +136,9 @@ namespace OpenLoco::Ui
         {
             auto out = ViewportRect();
             out.left = std::max(rect.left, viewX);
-            out.right = std::min<int16_t>(rect.right, viewX + viewWidth);
+            out.right = std::min(rect.right, viewX + viewWidth);
             out.top = std::max(rect.top, viewY);
-            out.bottom = std::min<int16_t>(rect.bottom, viewY + viewHeight);
+            out.bottom = std::min(rect.bottom, viewY + viewHeight);
 
             return out;
         }
@@ -199,8 +199,8 @@ namespace OpenLoco::Ui
     struct ViewportConfig
     {
         EntityId viewportTargetSprite; // 0x0
-        int16_t savedViewX;            // 0x2
-        int16_t savedViewY;            // 0x4
+        int32_t savedViewX;            // 0x2
+        int32_t savedViewY;            // 0x4
     };
 
     namespace ScreenToViewport

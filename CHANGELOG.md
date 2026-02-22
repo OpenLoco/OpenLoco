@@ -1,13 +1,70 @@
-25.10+ (???)
+26.01+ (???)
 ------------------------------------------------------------------------
-- Change: [#1625] Music options can now be accessed from the title screen.
+- Fix: [#2205] Crash when hovering over stations with the order tab open.
+- Fix: [#3320] False potitive duplicate name detection when renaming vehicles (original bug).
+- Fix: [#3626] The vsync setting is not saved correctly.
+- Fix: [#3627] Race condition on secondary palette map causing constant alternating colors on vehicles and other things.
+- Fix: [#3629] MacOS builds are missing open graphics objects.
+
+26.01 (2026-01-30)
+------------------------------------------------------------------------
+- Feature: [#2825] Drawing the viewport canvas now uses parallel processing where possible.
+- Feature: [#3588] Optionally limit the frame rate to the display's vsync.
+- Change: [#3577] PNG heightmaps of any size are now supported and use interpolation when the image size differs from the map size.
+- Change: [#3596] Confirmation prompts can now be confirmed with return/enter keys.
+- Change: [#3607] Moving a component within a vehicle (or between vehicles) now asks for confirmation if the vehicle contains any cargo.
+- Change: [#3617] Cloning a vehicle is now always classified as a vehicle purchase.
+- Fix: [#2863] The top toolbar widgets don't visually 'activate' when the mouse pointer is hovering over them.
+- Fix: [#2875] Select Company widget placed and displayed incorrectly in the Cargo Delivered tab.
+- Fix: [#3028] Odd stepper behaviour when adjusting cargo scenario objective target.
+- Fix: [#3268] Removing bridges built by towns gives you a refund.
+- Fix: [#3577] Crash loading PNGs with unexpected color formats or channel configurations as heightmaps.
+- Fix: [#3581] Remove sprite drawing limit that caused visual artifacts on high resolution displays and complex maps.
+- Fix: [#3584] First station of a vehicle's route not removed from vehicle orders when that station is deallocated.
+- Fix: [#3603] Error popup for trying to pick up a broken down or crashed vehicle shows missing string.
+- Fix: [#3605] Some widgets don't appear pressed when clicked.
+- Fix: [#3609] Vehicle details window for ships and planes shows length info outside the window.
+- Fix: [#3610] AI companies unable to cheat expenditures.
+
+25.12 (2025-12-20)
+------------------------------------------------------------------------
+- Feature: [#3288, #3523] Native, independent 64-bit architecture builds for Windows, Linux, and macOS.
+- Change: [#3384] Music selection window is now resizable, sortable, and displays the time period associated with each track.
+- Change: [#3402] Text input windows now show the total characters used rather than the current character position.
+- Change: [#3405] The object selection window is now resizeable, making room for longer object names.
+- Change: [#3413] The map window can now be resized to fit the entire game map.
+- Change: [#3473] Fences can now be interacted with in viewports outside of the scenario editor as well.
+- Change: [#3531] The vehicle list window can now be resized more flexibly, allowing more vehicles to be listed.
+- Change: [#3535] Loading a save game from command line now skips loading the title scene.
+- Fix: [#2957] Bridge supports not being drawn under different corners than in vanilla.
+- Fix: [#3313] Vehicle orders not being deleted correctly when the station is deallocated.
+- Fix: [#3354] Overly long strings make it possible to bypass text input limits.
+- Fix: [#3395] Text input windows no longer show character limits.
+- Fix: [#3401] The character limit label is using the wrong text colour.
+- Fix: [#3403] Changing a town name displays an incorrect message prompt.
+- Fix: [#3410] Text Input window's character length/limit flickering when viewport behind the window is being invalidated.
+- Fix: [#3422] Window resize handles don't work properly in windows with status bars.
+- Fix: [#3431] Marker-related config variables are not saved properly.
+- Fix: [#3455] The 'Plant Trees' status bar is not rendered correctly.
+- Fix: [#3466] Game crashes if you press a multimedia key on your keyboard (e.g. 'next track').
+- Fix: [#3496] Incorrect (off by 1 quantity) building cargo tooltip displayed.
+- Fix: [#3503] Crash when placing airports or docks in a scenario with no track objects.
+- Fix: [#3544] Viewport panning (right-mouse click drag) is broken during tutorial playback.
+- Fix: [#3545] The initial company name is not set correctly when entering a custom name at scenario start.
+
+25.11 (2025-11-05)
+------------------------------------------------------------------------
+- Feature: [#3270] Routes planned by AI companies can now be made visible via a checkbox in the rendering options tab.
+- Change: [#1625] The "Sound" and "Music" options have been merged into one "Audio" tab that is now always accessible.
+- Change: [#2914, #3179, #3369] Object Selection window is now modal when in play mode.
 - Change: [#3323] Refitting a vehicle or removing components from it now asks for confirmation if the vehicle contains any cargo.
 - Fix: [#2797] Single player scenario scores reset when adding a new scenario.
-- Fix: [#3032] Toggling "Play Music" from the top toolbar does not refresh the status in the options window.
+- Fix: [#3032] Toggling "Play Music" from the top toolbar does not refresh the status in the options window (original bug).
+- Fix: [#3200] Certain formatting control codes can be typed in text boxes.
 - Fix: [#3281] Modifying the news options does not trigger a config file write, potentially losing the changes.
 - Fix: [#3314] Players can remove roads owned by other companies.
 - Fix: [#3315] Players can replace station elements owned by other companies.
-- Fix: [#3320] False potitive duplicate name detection when renaming vehicles (original bug).
+- Fix: [#3355] Text encoding issues with save/load file browse prompt when save file names have non-ASCII characters.
 
 25.10 (2025-10-10)
 ------------------------------------------------------------------------
@@ -31,6 +88,7 @@
 25.08 (2025-08-26)
 ------------------------------------------------------------------------
 - Change: [#1682, #3216] Scroll widgets now support much larger sizes.
+- Change: [#3052] Add refund for removing bridges.
 - Change: [#3104] Landscape generation confirmation prompts now prevent you from clicking other windows until a choice is made.
 - Change: [#3193] The minimum size of the map window was changed to accommodate all elements.
 - Fix: [#3019] Mouse getting stuck on edges of monitor when right mouse dragging scroll views.
@@ -238,7 +296,7 @@
 
 24.03 (2024-03-30)
 ------------------------------------------------------------------------
-- Feature: [#126] Station size limitations can now be disabled (though still max 80 tiles per station).
+- Feature: [#358] Station size limitations can now be disabled (though still max 80 tiles per station).
 - Feature: [#1941] Landscapes can now be generated directly from 384x384 PNG images.
 - Feature: [#2331] Allow setting a preferred owner face to be used for new games.
 - Change: [#2324] Loading and saving landscapes now defaults to the OpenLoco user folder.

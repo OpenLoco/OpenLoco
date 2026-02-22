@@ -7,7 +7,7 @@ output=$(node scripts/format-changelog.js CHANGELOG.md)
 if [ $? -eq 0 ]; then
     echo "Script ran successfully. Running diff..."
     # Run diff on the original file and the output
-    git diff --color --ignore-space-change --no-index <(echo "$output") CHANGELOG.md
+    git diff --color --no-index <(echo "$output") CHANGELOG.md
     # If diff finds differences, inform the user and exit with a non-zero status
     if [ $? -ne 0 ]; then
         echo -e "\nDifferences found. You can apply the changes locally with:"

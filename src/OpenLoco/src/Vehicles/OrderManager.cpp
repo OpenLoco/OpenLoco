@@ -1,7 +1,6 @@
 #include "OrderManager.h"
 #include "GameState.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -14,15 +13,15 @@
 #include "Objects/CargoObject.h"
 #include "Objects/ObjectManager.h"
 #include "S5/Limits.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 #include "Ui/WindowManager.h"
 #include "Vehicle.h"
 #include "Vehicles/OrderManager.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
 #include "World/StationManager.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Diagnostics/Logging.h>
-
 #include <sfl/static_vector.hpp>
 #include <sstream>
 
@@ -72,6 +71,12 @@ namespace OpenLoco::Vehicles
         if (enumValue(_currentOrder->getType()) >= std::size(kOrderSizes))
         {
             throw Exception::RuntimeError("Invalid order type!");
+        }
+        if (_currentOrder->getType() == OrderType::End && _currentOrder == _beginOrderTable)
+        {
+            // If you incremented an end iterator you might get here.
+            // Although you shouldn't really be incrementing without first checking if you are an end iterator.
+            return *this;
         }
         auto* newOrders = reinterpret_cast<uint8_t*>(_currentOrder) + kOrderSizes[static_cast<uint8_t>(_currentOrder->getType())];
         _currentOrder = reinterpret_cast<Order*>(newOrders);
@@ -502,10 +507,10 @@ namespace OpenLoco::Vehicles::OrderManager
                     // Find the vehicle that has the order
                     for (auto* head : VehicleManager::VehicleList())
                     {
-                        if (head->orderTableOffset >= i
+                        if (head->orderTableOffset <= i
                             && i < head->orderTableOffset + head->sizeOfOrderTable)
                         {
-                            deleteOrder(head, i);
+                            deleteOrder(head, i - head->orderTableOffset);
                             break;
                         }
                     }

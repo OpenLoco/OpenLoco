@@ -1,7 +1,6 @@
 #include "ButtonWidget.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "LabelWidget.h"
 #include "Ui/Window.h"

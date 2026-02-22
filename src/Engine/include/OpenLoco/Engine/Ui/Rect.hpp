@@ -12,14 +12,14 @@ namespace OpenLoco::Ui
     {
     public:
         Ui::Size size;
-        Ui::Point32 origin;
-        Rect(int16_t x, int16_t y, uint16_t width, uint16_t height)
-            : size(Ui::Size(width, height))
-            , origin(Ui::Point32(x, y))
+        Ui::Point origin;
+        Rect(int32_t x, int32_t y, int32_t width, int32_t height)
+            : size{ width, height }
+            , origin{ x, y }
         {
         }
 
-        static Rect fromLTRB(int16_t left, int16_t top, int16_t right, int16_t bottom)
+        static Rect fromLTRB(int32_t left, int32_t top, int32_t right, int32_t bottom)
         {
             return Rect(left, top, right - left, bottom - top);
         }
@@ -55,12 +55,12 @@ namespace OpenLoco::Ui
             return Rect(left, top, right - left, bottom - top);
         }
 
-        uint16_t width() const
+        int32_t width() const
         {
             return this->size.width;
         }
 
-        uint16_t height() const
+        int32_t height() const
         {
             return this->size.height;
         }
