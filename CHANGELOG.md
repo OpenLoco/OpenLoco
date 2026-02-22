@@ -4,7 +4,7 @@
 - Fix: [#3626] The vsync setting is not saved correctly.
 - Fix: [#3627] Race condition on secondary palette map causing constant alternating colors on vehicles and other things.
 - Fix: [#3629] MacOS builds are missing open graphics objects.
-- Fix: [#3652] Off-by-one in Town and Industry list scroll click handling, clicking past the last entry no longer opens a window with bad state.
+- Fix: [#3652] Can click beyond last item in town and industry list windows, opening invalid windows.
 
 26.01 (2026-01-30)
 ------------------------------------------------------------------------
