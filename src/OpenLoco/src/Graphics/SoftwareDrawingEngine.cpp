@@ -230,7 +230,7 @@ namespace OpenLoco::Gfx
             basePtr->r = entryPtr->r;
             basePtr->g = entryPtr->g;
             basePtr->b = entryPtr->b;
-            basePtr->a = 0;
+            basePtr->a = 255;
         }
 
         if (!SDL_SetPaletteColors(_palette, &base[index], index, count))
