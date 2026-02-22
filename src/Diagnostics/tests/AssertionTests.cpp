@@ -7,7 +7,7 @@
 #define OPENLOCO_DEBUG_BREAK() std::abort()
 // NOLINTEND(cppcoreguidelines-macro-usage)
 
-#include <OpenLoco/Diagnostics/Assert.h>
+#include <OpenLoco/Diagnostics/Assertion.h>
 #include <cstdlib>
 #include <gtest/gtest.h>
 
