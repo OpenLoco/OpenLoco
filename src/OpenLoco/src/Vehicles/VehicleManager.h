@@ -30,8 +30,8 @@ namespace OpenLoco::VehicleManager
     enum class PlaceDownResult
     {
         Okay,
-        Unk0,
-        Unk1
+        NotEnoughSpaceOrVehicleInWay,
+        VehicleApproachingOrInWay
     };
 
     PlaceDownResult placeDownVehicle(Vehicles::VehicleHead* const head, const coord_t x, const coord_t y, const uint8_t baseZ, const Vehicles::TrackAndDirection& trackAndDirection, const uint16_t initialSubPosition);
