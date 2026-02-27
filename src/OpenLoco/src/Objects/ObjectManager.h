@@ -5,6 +5,7 @@
 #include <OpenLoco/Engine/Ui/Point.hpp>
 #include <optional>
 #include <span>
+#include <type_traits>
 #include <vector>
 
 namespace OpenLoco
@@ -122,6 +123,30 @@ namespace OpenLoco::ObjectManager
     {
         static_assert(getMaxObjects(T::kObjectType) != 1);
         return reinterpret_cast<T*>(getAny({ T::kObjectType, static_cast<LoadedObjectId>(id) }));
+    }
+
+    // Calls function for each loaded object of type T
+    // Function signature can be:
+    //   void(const T&)                  - just the object
+    //   void(LoadedObjectId, const T&)  - index and object
+    template<typename T, typename Function>
+    void forEachLoaded(Function&& func)
+    {
+        for (LoadedObjectId i = 0U; i < getMaxObjects(T::kObjectType); ++i)
+        {
+            auto* obj = get<T>(i);
+            if (obj != nullptr)
+            {
+                if constexpr (std::is_invocable_v<Function, LoadedObjectId, const T&>)
+                {
+                    func(i, *obj);
+                }
+                else
+                {
+                    func(*obj);
+                }
+            }
+        }
     }
 
 #pragma pack(push, 1)
