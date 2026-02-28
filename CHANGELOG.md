@@ -1,4 +1,4 @@
-26.01+ (???)
+26.02 (2026-02-28)
 ------------------------------------------------------------------------
 - Fix: [#2205] Crash when hovering over stations with the order tab open.
 - Fix: [#3626] The vsync setting is not saved correctly.
