@@ -1,5 +1,6 @@
 set(public_files
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Platform/Crash.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Platform/Debug.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Platform/Platform.h"
 )
 
@@ -22,6 +23,7 @@ set(public_link_libraries
 
 if (MSVC)
     list(APPEND public_link_libraries ${BREAKPAD_LIBRARIES})
+    list(APPEND public_link_libraries "Winmm.lib")
 endif()
 
 loco_add_library(Platform STATIC
