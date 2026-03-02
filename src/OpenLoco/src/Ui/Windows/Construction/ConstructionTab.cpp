@@ -1,4 +1,5 @@
 #include "Audio/Audio.h"
+#include "Blueprints.h"
 #include "Construction.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Road/CreateRoad.h"
@@ -56,13 +57,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static bool _isDragging = false;
     static World::TilePos2 _toolPosDrag;
     static World::TilePos2 _toolPosInitial;
-
-    struct CopiedTrack
-    {
-        std::vector<GameCommands::TrackPlacementArgs> trackArgs;
-        std::vector<GameCommands::SignalPlacementArgs> signalArgs;
-        std::vector<GameCommands::TrainStationPlacementArgs> stationArgs;
-    };
 
     static std::optional<CopiedTrack> _copiedTrack;
 
@@ -2276,6 +2270,18 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
     }
 
+    void removeBlueprintGhosts()
+    {
+        if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::blueprint) && _copiedTrack.has_value())
+        {
+            auto& cState = getConstructionState();
+            const auto ghostBPPos = cState.ghostRemovalTrackPos;
+
+            removeBlueprint(_copiedTrack.value(), ghostBPPos);
+            Common::unsetGhostVisibilityFlag(GhostVisibilityFlags::blueprint);
+        }
+    }
+
     // 0x004A006C
     void removeTrackGhosts()
     {
@@ -2307,106 +2313,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             }
             Common::unsetGhostVisibilityFlag(GhostVisibilityFlags::track);
         }
-    }
-
-    void removeBlueprintGhosts()
-    {
-        if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::blueprint) && _copiedTrack.has_value())
-        {
-            auto& cState = getConstructionState();
-            const auto ghostBPPos = cState.ghostRemovalTrackPos;
-
-            currency32_t res = 0;
-            for (auto& stationArg : _copiedTrack->stationArgs)
-            {
-                GameCommands::TrainStationRemovalArgs args;
-                args.pos = World::Pos3(stationArg.pos.x + ghostBPPos.x, stationArg.pos.y + ghostBPPos.y, ghostBPPos.z);
-                args.rotation = stationArg.rotation & 3;
-                args.index = 0;
-                args.trackId = stationArg.trackId;
-                args.type = stationArg.type;
-                res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
-            }
-
-            for (auto& signalArg : _copiedTrack->signalArgs)
-            {
-                GameCommands::SignalRemovalArgs args;
-                args.pos = World::Pos3(signalArg.pos.x + ghostBPPos.x, signalArg.pos.y + ghostBPPos.y, ghostBPPos.z);
-                args.rotation = signalArg.rotation & 3;
-                args.index = 0;
-                args.trackId = signalArg.trackId;
-                args.trackObjType = signalArg.trackObjType;
-                args.flags = signalArg.sides;
-                res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
-            }
-
-            for (auto& trackArg : _copiedTrack->trackArgs)
-            {
-                GameCommands::TrackRemovalArgs args;
-                args.pos = World::Pos3(trackArg.pos.x + ghostBPPos.x, trackArg.pos.y + ghostBPPos.y, ghostBPPos.z);
-                args.rotation = trackArg.rotation & 3;
-                args.index = 0;
-                args.trackId = trackArg.trackId;
-                args.trackObjectId = trackArg.trackObjectId;
-                res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
-                res = res;
-            }
-            Common::unsetGhostVisibilityFlag(GhostVisibilityFlags::blueprint);
-        }
-    }
-
-    static void placeBlueprintGhost(const World::Pos3& ghostBPPos)
-    {
-        removeBlueprintGhosts();
-        if (!_copiedTrack.has_value())
-        {
-            return;
-        }
-        auto& cState = getConstructionState();
-
-        // Duplicate as we need to adjust the position
-        auto copiedTrack = CopiedTrack(_copiedTrack.value());
-        currency32_t result = 0;
-        // First we do a trial placement of track (can't do signals and stations as they would need the track already down)
-        for (auto& trackArgs : copiedTrack.trackArgs)
-        {
-            trackArgs.pos += ghostBPPos;
-            result = GameCommands::doCommand(trackArgs, GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
-            if (result == GameCommands::FAILURE)
-            {
-                return;
-            }
-        }
-        // Now we do the actual placement
-        result = 0;
-        for (auto& trackArgs : copiedTrack.trackArgs)
-        {
-            const auto res = GameCommands::doCommand(trackArgs, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
-            if (res != GameCommands::FAILURE)
-            {
-                result += res;
-            }
-        }
-        for (auto& signalArgs : copiedTrack.signalArgs)
-        {
-            signalArgs.pos += ghostBPPos;
-            const auto res = GameCommands::doCommand(signalArgs, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
-            if (res != GameCommands::FAILURE)
-            {
-                result += res;
-            }
-        }
-        for (auto& stationArgs : copiedTrack.stationArgs)
-        {
-            stationArgs.pos += ghostBPPos;
-            const auto res = GameCommands::doCommand(stationArgs, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
-            if (res != GameCommands::FAILURE)
-            {
-                result += res;
-            }
-        }
-        cState.ghostRemovalTrackPos = ghostBPPos;
-        Common::setGhostVisibilityFlag(GhostVisibilityFlags::blueprint);
     }
 
     // 0x0049FB63
@@ -2719,7 +2625,19 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             auto& cState = getConstructionState();
             if (pos != cState.ghostRemovalTrackPos || !Common::hasGhostVisibilityFlag(GhostVisibilityFlags::blueprint))
             {
-                placeBlueprintGhost(pos);
+                removeBlueprintGhosts();
+                if (!_copiedTrack.has_value())
+                {
+                    return;
+                }
+                auto& cState = getConstructionState();
+
+                auto res = placeBlueprintGhost(_copiedTrack.value(), pos);
+                if (res != GameCommands::FAILURE)
+                {
+                    cState.ghostRemovalTrackPos = pos;
+                    Common::setGhostVisibilityFlag(GhostVisibilityFlags::blueprint);
+                }
             }
         }
     }
@@ -3011,116 +2929,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             auto dirX = _toolPosDrag.x - _toolPosInitial.x > 0 ? 1 : -1;
             auto dirY = _toolPosDrag.y - _toolPosInitial.y > 0 ? 1 : -1;
 
-            CopiedTrack copiedTrack{};
-            for (auto yPos = _toolPosInitial.y; yPos != _toolPosDrag.y + dirY; yPos += dirY)
-            {
-                for (auto xPos = _toolPosInitial.x; xPos != _toolPosDrag.x + dirX; xPos += dirX)
-                {
-                    auto pos = World::toWorldSpace({ xPos, yPos });
-
-                    auto tile = TileManager::get(pos);
-                    TrackElement* elProcessedTrack = nullptr;
-                    for (auto& el : tile)
-                    {
-                        auto* elTrack = el.as<TrackElement>();
-                        auto* elSignal = el.as<SignalElement>();
-                        auto* elStation = el.as<StationElement>();
-                        if (elTrack != nullptr)
-                        {
-                            if (elTrack->isGhost() || elTrack->isAiAllocated())
-                            {
-                                elProcessedTrack = nullptr;
-                                continue;
-                            }
-                            if (elTrack->owner() != CompanyManager::getControllingId())
-                            {
-                                elProcessedTrack = nullptr;
-                                continue;
-                            }
-                            if (elTrack->sequenceIndex() != 0)
-                            {
-                                elProcessedTrack = nullptr;
-                                continue;
-                            }
-                            GameCommands::TrackPlacementArgs args{};
-                            auto& trackPiece0 = TrackData::getTrackPiece(elTrack->trackId())[0];
-                            args.pos = World::Pos3(pos.x, pos.y, elTrack->baseHeight()) - World::Pos3(trackPiece0.x, trackPiece0.y, trackPiece0.z);
-                            args.trackId = elTrack->trackId();
-                            args.rotation = elTrack->rotation();
-                            args.trackObjectId = elTrack->trackObjectId();
-                            args.bridge = elTrack->hasBridge() ? elTrack->bridge() : 0xFFU;
-                            args.unk = false;
-                            args.mods = elTrack->mods();
-                            copiedTrack.trackArgs.push_back(args);
-                            elProcessedTrack = elTrack;
-                        }
-                        else if (elSignal != nullptr && elProcessedTrack != nullptr)
-                        {
-                            if (elSignal->isGhost() || elSignal->isAiAllocated())
-                            {
-                                continue;
-                            }
-                            GameCommands::SignalPlacementArgs args{};
-                            auto& trackPiece0 = TrackData::getTrackPiece(elProcessedTrack->trackId())[0];
-                            args.pos = World::Pos3(pos.x, pos.y, elSignal->baseHeight()) - World::Pos3(trackPiece0.x, trackPiece0.y, trackPiece0.z);
-                            args.index = 0;
-                            args.rotation = elSignal->rotation();
-                            args.trackId = elProcessedTrack->trackId();
-                            args.trackObjType = elProcessedTrack->trackObjectId();
-                            args.type = elSignal->getLeft().signalObjectId();
-                            uint16_t sideFlags = 0U;
-                            if (elSignal->getLeft().hasSignal() && !elSignal->isLeftGhost())
-                            {
-                                sideFlags |= 0x8000U;
-                            }
-                            if (elSignal->getRight().hasSignal() && !elSignal->isRightGhost())
-                            {
-                                sideFlags |= 0x4000U;
-                            }
-                            args.sides = sideFlags;
-                            copiedTrack.signalArgs.push_back(args);
-                        }
-                        else if (elStation != nullptr && elProcessedTrack != nullptr)
-                        {
-                            if (elStation->isGhost() || elStation->isAiAllocated())
-                            {
-                                continue;
-                            }
-                            GameCommands::TrainStationPlacementArgs args{};
-                            auto& trackPiece0 = TrackData::getTrackPiece(elProcessedTrack->trackId())[0];
-                            args.pos = World::Pos3(pos.x, pos.y, elStation->baseHeight()) - World::Pos3(trackPiece0.x, trackPiece0.y, trackPiece0.z);
-                            args.rotation = elStation->rotation();
-                            args.trackId = elProcessedTrack->trackId();
-                            args.index = 0;
-                            args.trackObjectId = elProcessedTrack->trackObjectId();
-                            args.type = elStation->objectId();
-                            copiedTrack.stationArgs.push_back(args);
-                        }
-                    }
-                }
-            }
-            auto minPos2 = World::toWorldSpace(_toolPosDrag);
-            for (const auto& args : copiedTrack.trackArgs)
-            {
-                minPos2.x = std::min(minPos2.x, args.pos.x);
-                minPos2.y = std::min(minPos2.y, args.pos.y);
-            }
-            auto minPos = World::Pos3(minPos2, TileManager::get(minPos2).surface()->baseHeight());
-
-            for (auto& args : copiedTrack.trackArgs)
-            {
-                args.pos -= minPos;
-            }
-            for (auto& args : copiedTrack.signalArgs)
-            {
-                args.pos -= minPos;
-            }
-            for (auto& args : copiedTrack.stationArgs)
-            {
-                args.pos -= minPos;
-            }
-
-            _copiedTrack = std::move(copiedTrack);
+            _copiedTrack = copyTrackToBlueprint(_toolPosInitial, _toolPosDrag);
             removeConstructionGhosts();
             WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::overgroundView);
             ToolManager::toolSet(self, widx::paste, CursorId::crosshair);
@@ -3139,44 +2948,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 return;
             }
             removeBlueprintGhosts();
-            // Duplicate as we need to adjust the position
-            auto pasteArgs = CopiedTrack(_copiedTrack.value());
             const auto pos = World::Pos3(World::toWorldSpace(constructPos->first), constructPos->second);
-            for (auto& args : pasteArgs.trackArgs)
-            {
-                args.pos += pos;
-            }
-            for (auto& args : pasteArgs.signalArgs)
-            {
-                args.pos += pos;
-            }
-            for (auto& args : pasteArgs.stationArgs)
-            {
-                args.pos += pos;
-            }
-            GameCommands::setErrorSound(false);
-            bool builtAnything = false;
-            for (auto& args : pasteArgs.trackArgs)
-            {
-                auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
-                builtAnything |= res != GameCommands::FAILURE;
-            }
-            for (auto& args : pasteArgs.signalArgs)
-            {
-                auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
-                builtAnything |= res != GameCommands::FAILURE;
-            }
-            for (auto& args : pasteArgs.stationArgs)
-            {
-                auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
-                builtAnything |= res != GameCommands::FAILURE;
-            }
-            GameCommands::setErrorSound(true);
-
-            if (builtAnything)
-            {
-                WindowManager::close(WindowType::error);
-            }
+            placeBlueprint(_copiedTrack, pos);
         }
     }
 
