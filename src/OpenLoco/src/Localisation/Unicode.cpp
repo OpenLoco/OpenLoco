@@ -33,4 +33,37 @@ namespace OpenLoco::Localisation
 
         return read;
     }
+
+    std::string codepointToUtf8(utf32_t codepoint)
+    {
+        std::string string;
+        if (codepoint < 0x80)
+        {
+            string += codepoint;
+        }
+        else if (codepoint < 0x800)
+        {
+            string += 0b11000000 + ((codepoint & 0b111111000000) >> 6);
+            string += 0b10000000 + (codepoint & 0b111111);
+        }
+        else if (codepoint < 0x10000)
+        {
+            string += 0b11100000 + ((codepoint & 0b1111000000000000) >> 12);
+            string += 0b10000000 + ((codepoint & 0b1111111000000) >> 6);
+            string += 0b10000000 + (codepoint & 0b111111);
+        }
+        else if (codepoint < 110000)
+        {
+            string += 0b11100000 + ((codepoint & 0b111000000000000000000) >> 18);
+            string += 0b10000000 + ((codepoint & 0b111111000000000000) >> 12);
+            string += 0b10000000 + ((codepoint & 0b1111111000000) >> 6);
+            string += 0b10000000 + (codepoint & 0b111111);
+        }
+        else
+        {
+            // Invalid
+            string += "�";
+        }
+        return string;
+    }
 }
