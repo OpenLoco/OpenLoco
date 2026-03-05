@@ -10,4 +10,7 @@ namespace OpenLoco::Localisation
 
     utf32_t readCodePoint(const utf8_t** string);
     std::string codepointToUtf8(utf32_t codepoint);
+    size_t utf8Length(const std::string& string);
+    void utf8Insert(std::string& stringToModify, size_t characterPosition, const std::string& insertion);
+    void utf8Delete(std::string& stringToModify, size_t characterPosition);
 }
