@@ -193,7 +193,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         self.widgets[widx::title].text = _title;
         memcpy(self.widgets[widx::title].textArgs.data(), _formatArgs.data(), 16);
 
-        const uint16_t numCharacters = static_cast<uint16_t>(inputSession.buffer.length());
+        const uint16_t numCharacters = static_cast<uint16_t>(inputSession.length());
         const uint16_t maxNumCharacters = inputSession.inputLenLimit;
 
         FormatArguments args{ self.widgets[widx::charLimit].textArgs };
@@ -227,7 +227,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         if (drawingCtx.pushClip(Ui::Rect(inputWidget.left + 1, inputWidget.top + 1, inputWidget.width() - 2, inputWidget.height() - 2)))
         {
             char* drawnBuffer = (char*)StringManager::getString(StringIds::buffer_2039);
-            strcpy(drawnBuffer, inputSession.buffer.c_str());
+            strcpy(drawnBuffer, inputSession.loco().c_str());
 
             {
                 FormatArguments args{};
@@ -239,7 +239,7 @@ namespace OpenLoco::Ui::Windows::TextInput
 
             if ((inputSession.cursorFrame % 32) < 16)
             {
-                strncpy(drawnBuffer, inputSession.buffer.c_str(), inputSession.cursorPosition);
+                strncpy(drawnBuffer, inputSession.loco().c_str(), inputSession.cursorPosition);
                 drawnBuffer[inputSession.cursorPosition] = '\0';
 
                 if (Input::isFocused(window.type, window.number, widx::input))
@@ -263,11 +263,40 @@ namespace OpenLoco::Ui::Windows::TextInput
                 WindowManager::close(&window);
                 break;
             case Widx::kOk:
-                inputSession.sanitizeInput();
+                auto buffer = inputSession.loco();
+                buffer.erase(
+                    std::remove_if(
+                        buffer.begin(),
+                        buffer.end(),
+                        [](uint32_t chr) {
+                            if (chr < ' ')
+                            {
+                                return true;
+                            }
+                            else if (chr <= 'z')
+                            {
+                                return false;
+                            }
+                            else if (chr == 171)
+                            {
+                                return false;
+                            }
+                            else if (chr == 187)
+                            {
+                                return false;
+                            }
+                            else if (chr >= 191)
+                            {
+                                return false;
+                            }
+
+                            return true;
+                        }),
+                    buffer.end());
                 auto caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
                 if (caller != nullptr)
                 {
-                    caller->callTextInput(_callingWidget, caller->widgets[_callingWidget].id, inputSession.buffer.c_str());
+                    caller->callTextInput(_callingWidget, caller->widgets[_callingWidget].id, buffer.c_str());
                 }
                 WindowManager::close(&window);
                 break;
