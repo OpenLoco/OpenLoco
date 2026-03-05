@@ -615,7 +615,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 continue;
             }
 
-            std::string_view pattern = inputSession.buffer;
+            const auto locoString = inputSession.loco();
+            std::string_view pattern = locoString;
 
             if (!pattern.empty())
             {
@@ -1419,7 +1420,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static void drawSearchBox(Window& self, Gfx::DrawingContext& drawingCtx)
     {
         char* textBuffer = (char*)StringManager::getString(StringIds::buffer_2039);
-        strncpy(textBuffer, inputSession.buffer.c_str(), 256);
+        strncpy(textBuffer, inputSession.loco().c_str(), 256);
 
         auto& widget = _widgets[widx::searchBox];
         if (!drawingCtx.pushClip(Ui::Rect(widget.left, widget.top + 1, widget.width() - 2, widget.height() - 2)))
