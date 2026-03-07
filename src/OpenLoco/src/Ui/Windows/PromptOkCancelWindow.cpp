@@ -13,7 +13,7 @@
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 
-#include <SDL2/SDL.h>
+#include <SDL3/SDL_keycode.h>
 #include <cstring>
 
 namespace OpenLoco::Ui::Windows::PromptOkCancel

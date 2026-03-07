@@ -4,7 +4,7 @@ on: [pull_request]
 jobs:
   clang-tidy-check:
     runs-on: ubuntu-latest
-    container: ghcr.io/openloco/openloco:8-noble32
+    container: ghcr.io/openloco/openloco:11-ubuntu26.04.32
     steps:
     - uses: actions/checkout@v4
     - uses: ZehMatt/clang-tidy-annotations@v1

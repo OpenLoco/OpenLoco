@@ -728,7 +728,7 @@ set(private_link_libraries
     Math
     Engine
     Version
-    ${SDL2_LIB}
+    SDL3::SDL3
     Threads::Threads
     yaml-cpp::yaml-cpp
     ZLIB::ZLIB # This shouldn't be required but vcpkg seems to not map the dependencies correctly for png static
