@@ -1,6 +1,6 @@
 #include "Unicode.h"
-#include <cstdint>
 #include <OpenLoco/Core/Exception.hpp>
+#include <cstdint>
 
 namespace OpenLoco::Localisation
 {
