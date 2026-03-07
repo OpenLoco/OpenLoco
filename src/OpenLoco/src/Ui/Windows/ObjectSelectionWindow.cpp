@@ -410,7 +410,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static void applyFilterToObjectList(FilterFlags filterFlags)
     {
-        std::string_view pattern = inputSession.buffer;
+        const auto locoString = inputSession.loco();
+        std::string_view pattern = locoString;
         _numVisibleObjectsListed = 0;
         for (auto& entry : _tabObjectList)
         {
@@ -992,7 +993,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static void drawSearchBox(Window& self, Gfx::DrawingContext& drawingCtx)
     {
         char* textBuffer = (char*)StringManager::getString(StringIds::buffer_2039);
-        strncpy(textBuffer, inputSession.buffer.c_str(), 256);
+        strncpy(textBuffer, inputSession.loco().c_str(), 256);
 
         auto& widget = widgets[widx::textInput];
         const auto& rt = drawingCtx.currentRenderTarget();

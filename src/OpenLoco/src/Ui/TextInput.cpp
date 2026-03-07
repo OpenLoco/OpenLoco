@@ -2,6 +2,7 @@
 #include "Graphics/TextRenderer.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringManager.h"
+#include "Localisation/Unicode.h"
 
 #include <SDL2/SDL.h>
 
@@ -10,21 +11,23 @@ namespace OpenLoco::Ui::TextInput
     // Common code from 0x0044685C, 0x004CE910
     bool InputSession::handleInput(uint32_t charCode, uint32_t keyCode)
     {
-        if ((charCode >= SDLK_SPACE && charCode < SDLK_DELETE) || (charCode >= 159 && charCode <= 255))
+        if ((charCode >= SDLK_SPACE && charCode < SDLK_DELETE) || (charCode >= 159))
         {
-            if (inputLenLimit > 0 && buffer.length() >= inputLenLimit)
+            if (inputLenLimit > 0 && length() >= inputLenLimit)
             {
                 // Limit reached but we need to consume this input.
                 return true;
             }
 
-            if (cursorPosition == buffer.length())
+            auto character = Localisation::codepointToUtf8(charCode);
+
+            if (cursorPosition == length())
             {
-                buffer.append(1, (char)charCode);
+                buffer.append(character);
             }
             else
             {
-                buffer.insert(cursorPosition, 1, (char)charCode);
+                Localisation::utf8Insert(buffer, cursorPosition, character);
             }
             cursorPosition += 1;
         }
@@ -36,18 +39,18 @@ namespace OpenLoco::Ui::TextInput
                 return true;
             }
 
-            buffer.erase(cursorPosition - 1, 1);
+            Localisation::utf8Delete(buffer, cursorPosition - 1);
             cursorPosition -= 1;
         }
         else if (keyCode == SDLK_DELETE)
         {
-            if (cursorPosition == buffer.length())
+            if (cursorPosition == length())
             {
                 // Cursor is at end. No change required, but consume input
                 return true;
             }
 
-            buffer.erase(cursorPosition, 1);
+            Localisation::utf8Delete(buffer, cursorPosition);
         }
         else if (keyCode == SDLK_HOME)
         {
@@ -55,7 +58,7 @@ namespace OpenLoco::Ui::TextInput
         }
         else if (keyCode == SDLK_END)
         {
-            cursorPosition = buffer.length();
+            cursorPosition = length();
         }
         else if (keyCode == SDLK_LEFT)
         {
@@ -69,7 +72,7 @@ namespace OpenLoco::Ui::TextInput
         }
         else if (keyCode == SDLK_RIGHT)
         {
-            if (cursorPosition == buffer.length())
+            if (cursorPosition == length())
             {
                 // Cursor is at end. No change required, but consume input
                 return true;
@@ -84,10 +87,11 @@ namespace OpenLoco::Ui::TextInput
 
     bool InputSession::needsReoffsetting(int16_t containerWidth)
     {
-        std::string cursorStr = buffer.substr(0, cursorPosition);
+        const auto locoString = loco();
+        std::string cursorStr = locoString.substr(0, cursorPosition);
 
         const auto font = Gfx::Font::medium_bold;
-        const auto stringWidth = Gfx::TextRenderer::getStringWidth(font, buffer.c_str());
+        const auto stringWidth = Gfx::TextRenderer::getStringWidth(font, locoString.c_str());
         const auto cursorX = Gfx::TextRenderer::getStringWidth(font, cursorStr.c_str());
 
         const int x = xOffset + cursorX;
@@ -117,10 +121,11 @@ namespace OpenLoco::Ui::TextInput
      */
     void InputSession::calculateTextOffset(int16_t containerWidth)
     {
-        std::string cursorStr = buffer.substr(0, cursorPosition);
+        const auto locoString = loco();
+        std::string cursorStr = locoString.substr(0, cursorPosition);
 
         const auto font = Gfx::Font::medium_bold;
-        const auto stringWidth = Gfx::TextRenderer::getStringWidth(font, buffer.c_str());
+        const auto stringWidth = Gfx::TextRenderer::getStringWidth(font, locoString.c_str());
         const auto cursorX = Gfx::TextRenderer::getStringWidth(font, cursorStr.c_str());
 
         const auto midX = containerWidth / 2;
@@ -148,37 +153,18 @@ namespace OpenLoco::Ui::TextInput
         xOffset = 0;
     }
 
-    // 0x004CEBFB
-    void InputSession::sanitizeInput()
+    std::string InputSession::loco() const
     {
-        buffer.erase(
-            std::remove_if(
-                buffer.begin(),
-                buffer.end(),
-                [](unsigned char chr) {
-                    if (chr < ' ')
-                    {
-                        return true;
-                    }
-                    else if (chr <= 'z')
-                    {
-                        return false;
-                    }
-                    else if (chr == 171)
-                    {
-                        return false;
-                    }
-                    else if (chr == 187)
-                    {
-                        return false;
-                    }
-                    else if (chr >= 191)
-                    {
-                        return false;
-                    }
+        return Localisation::convertUnicodeToLoco(buffer);
+    }
 
-                    return true;
-                }),
-            buffer.end());
+    std::string InputSession::utf8() const
+    {
+        return buffer;
+    }
+
+    size_t InputSession::length() const
+    {
+        return Localisation::utf8Length(buffer);
     }
 }
