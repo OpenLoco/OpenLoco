@@ -2,6 +2,7 @@
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/General/SetGameSpeed.h"
 #include "GameCommands/General/TogglePause.h"
+#include "GameCommands/Vehicles/HonkAllTrains.h"
 #include "GameState.h"
 #include "Input.h"
 #include "Localisation/StringIds.h"
@@ -12,6 +13,7 @@
 #include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "Ui/Windows/Construction/Construction.h"
+#include "Vehicles/VehicleManager.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
@@ -672,6 +674,11 @@ namespace OpenLoco::Input::Shortcuts
         GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::ExtraFastForward }, GameCommands::Flags::apply);
     }
 
+    static void honkAllTrains()
+    {
+        GameCommands::doCommand(GameCommands::HonkAllTrainsArgs{}, GameCommands::Flags::apply);
+    }
+
     static void openDebugWindow()
     {
         Windows::Debug::open();
@@ -720,6 +727,7 @@ namespace OpenLoco::Input::Shortcuts
         ShortcutManager::add(Shortcut::screenshot,                      StringIds::shortcut_screenshot,                         makeScreenshot,                 "makeScreenshot",                   "Left Ctrl+S");
         ShortcutManager::add(Shortcut::toggleLastAnnouncement,          StringIds::shortcut_toggle_last_announcement,           toggleLastAnnouncement,         "toggleLastAnnouncement",           "Space");
         ShortcutManager::add(Shortcut::sendMessage,                     StringIds::shortcut_send_message,                       sendMessage,                    "sendMessage",                      "F1");
+        ShortcutManager::add(Shortcut::honkAllTrains,                   StringIds::shortcut_game_speed_extra_fast_forward,      honkAllTrains,                  "honkAllTrains",                    "H");
         ShortcutManager::add(Shortcut::constructionPreviousTab,         StringIds::shortcut_construction_previous_tab,          constructionPreviousTab,        "constructionPreviousTab",          "");
         ShortcutManager::add(Shortcut::constructionNextTab,             StringIds::shortcut_construction_next_tab,              constructionNextTab,            "constructionNextTab",              "");
         ShortcutManager::add(Shortcut::constructionPreviousTrackPiece,  StringIds::shortcut_construction_previous_track_piece,  constructionPreviousTrackPiece, "constructionPreviousTrackPiece",   "");
