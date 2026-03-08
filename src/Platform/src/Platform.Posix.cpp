@@ -108,7 +108,7 @@ namespace OpenLoco::Platform
         std::cout << "Type your Locomotion path: ";
         std::cin >> input;
 
-        auto path = fs::absolute(input);
+        auto path = fs::canonical(input);
         return path;
     }
 #endif // !(defined(__APPLE__) && defined(__MACH__))
