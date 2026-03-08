@@ -107,7 +107,6 @@ namespace OpenLoco::Environment
         // FIXME: Instead of passing the hwnd we should have a function to bring the window to the front after
         // this call.
         path = Platform::promptDirectory("Locate original Locomotion game files", Ui::hwnd());
-        path = fs::absolute(path);
         if (validateLocoInstallPath(path))
         {
             cfg.locoInstallPath = path.make_preferred().u8string();
