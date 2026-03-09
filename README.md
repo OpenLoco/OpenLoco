@@ -1,6 +1,9 @@
 # OpenLoco
 An open source re-implementation of Chris Sawyer's Locomotion. A construction and management simulation video game that simulates running a transport company.
 
+# Why have i forked the original project
+I wanted to experiment using [Room](https://github.com/knoxio/room) for multi-agent development and since Locomotion is one of my favourite games, this would be a good opportunity. Also since a lot of people have strong opinions agains AI coding on game dev, I opted to fork the project and explore freely.
+
 ---
 
 ![](https://user-images.githubusercontent.com/604665/55420349-1a2aea00-5577-11e9-87da-78fe5cdb09e1.png)
