@@ -144,7 +144,14 @@ namespace OpenLoco::Config
         WindowFrameStyle windowFrameStyle = WindowFrameStyle::background;
         bool zoomToCursor = true;
 
-        NewsType newsSettings[kMessageCriticalityCount];
+        NewsType newsSettings[kMessageCriticalityCount] = {
+            NewsType::newsWindow,
+            NewsType::newsWindow,
+            NewsType::newsWindow,
+            NewsType::newsWindow,
+            NewsType::newsWindow,
+            NewsType::newsWindow
+        };
 
         int32_t autosaveAmount = 12;
         int32_t autosaveFrequency = 1;
