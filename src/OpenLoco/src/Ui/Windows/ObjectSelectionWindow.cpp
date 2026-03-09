@@ -1650,6 +1650,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             Gfx::loadDefaultPalette();
             Gfx::invalidateScreen();
             CompanyManager::determineAvailableVehicles();
+            CompanyManager::updatePlayerInfrastructureOptions();
             WindowManager::invalidate(WindowType::buildVehicle);
 
             // Stop being modal and unpause game.
