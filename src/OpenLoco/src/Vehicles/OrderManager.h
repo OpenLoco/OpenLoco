@@ -27,8 +27,9 @@ namespace OpenLoco::Vehicles
                 : _beginOrderTable(beginOrderTable)
                 , _currentOrder(currentOrder)
             {
-                // Prevent empty tables looping
-                if (_currentOrder->getType() == OrderType::End)
+                // Prevent empty or corrupt tables from looping
+                if (_currentOrder->getType() == OrderType::End
+                    || static_cast<uint8_t>(_currentOrder->getType()) > static_cast<uint8_t>(OrderType::WaitFor))
                 {
                     _hasLooped = true;
                 }

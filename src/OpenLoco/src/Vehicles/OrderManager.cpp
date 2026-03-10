@@ -466,7 +466,8 @@ namespace OpenLoco::Vehicles::OrderManager
             auto orderType = rawOrder & 0x7;
             if (orderType >= std::size(kOrderSizes))
             {
-                throw Exception::OutOfRange("Order type is greater than the order size table");
+                Logging::warn("reverseVehicleOrderTable: skipping corrupt order with type {}.", orderType);
+                continue;
             }
             auto orderLength = kOrderSizes[orderType];
             std::memcpy(dest, &rawOrder, orderLength);
@@ -551,13 +552,13 @@ namespace OpenLoco::Vehicles::OrderManager
                 if (typeIndex >= std::size(kOrderSizes))
                 {
                     Logging::warn("fixCorruptWaypointOrders: vehicle at orderTableOffset {} has corrupt order at offset {} (type {}). Replacing with End marker.", head->orderTableOffset, offset, typeIndex);
-                    // Overwrite the corrupt byte with an End order to terminate the table
-                    order = OrderEnd{};
+                    // Zero the byte to create a clean End order (type 0 = End)
+                    order._type = 0;
                     // Shrink the order table to end here
-                    auto removedSize = head->sizeOfOrderTable - offset - kOrderSizes[enumValue(OrderType::End)];
-                    if (removedSize > 0)
+                    auto newSize = static_cast<uint16_t>(offset + kOrderSizes[enumValue(OrderType::End)]);
+                    if (newSize < head->sizeOfOrderTable)
                     {
-                        head->sizeOfOrderTable = offset + kOrderSizes[enumValue(OrderType::End)];
+                        head->sizeOfOrderTable = newSize;
                     }
                     corrupted = true;
                     break;
