@@ -329,24 +329,24 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 self.widgets[Common::widx::viewport1Button].hidden = false;
             }
 
+            self.widgets[Common::widx::viewport1].left = 6;
+            self.widgets[Common::widx::viewport1].right = 353;
+            self.widgets[Common::widx::viewport1Button].left = 4;
+            self.widgets[Common::widx::viewport1Button].right = 355;
+
+            if (mtd.hasFlag(MessageTypeFlags::hasSecondItem))
+            {
+                self.widgets[Common::widx::viewport1].left = 6;
+                self.widgets[Common::widx::viewport1].right = 173;
+                self.widgets[Common::widx::viewport1Button].left = 4;
+                self.widgets[Common::widx::viewport1Button].right = 175;
+            }
+
             if (_nState.savedView[0] != view)
             {
                 _nState.savedView[0] = view;
                 self.viewportRemove(0);
                 self.invalidate();
-
-                self.widgets[Common::widx::viewport1].left = 6;
-                self.widgets[Common::widx::viewport1].right = 353;
-                self.widgets[Common::widx::viewport1Button].left = 4;
-                self.widgets[Common::widx::viewport1Button].right = 355;
-
-                if (mtd.hasFlag(MessageTypeFlags::hasSecondItem))
-                {
-                    self.widgets[Common::widx::viewport1].left = 6;
-                    self.widgets[Common::widx::viewport1].right = 173;
-                    self.widgets[Common::widx::viewport1Button].left = 4;
-                    self.widgets[Common::widx::viewport1Button].right = 175;
-                }
 
                 if (!view.isEmpty())
                 {
@@ -424,16 +424,16 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 self.widgets[Common::widx::viewport2Button].hidden = false;
             }
 
+            self.widgets[Common::widx::viewport2].left = 186;
+            self.widgets[Common::widx::viewport2].right = 353;
+            self.widgets[Common::widx::viewport2Button].left = 184;
+            self.widgets[Common::widx::viewport2Button].right = 355;
+
             if (_nState.savedView[1] != view)
             {
                 _nState.savedView[1] = view;
                 self.viewportRemove(1);
                 self.invalidate();
-
-                self.widgets[Common::widx::viewport2].left = 186;
-                self.widgets[Common::widx::viewport2].right = 353;
-                self.widgets[Common::widx::viewport2Button].left = 184;
-                self.widgets[Common::widx::viewport2Button].right = 355;
 
                 if (!view.isEmpty())
                 {
