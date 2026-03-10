@@ -651,6 +651,7 @@ namespace OpenLoco::S5
 
             Audio::stopVehicleNoise();
             EntityManager::resetSpatialIndex();
+            Vehicles::OrderManager::fixCorruptWaypointOrders();
             CompanyManager::updateColours();
             ObjectManager::updateTerraformObjects();
             TileManager::resetSurfaceClearance();

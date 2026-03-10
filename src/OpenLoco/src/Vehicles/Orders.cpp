@@ -19,7 +19,12 @@ namespace OpenLoco::Vehicles
 
     bool Order::hasFlags(const OrderFlags flag) const
     {
-        return (kOrderFlags[static_cast<uint8_t>(getType())] & flag) != OrderFlags::none;
+        auto typeIndex = static_cast<uint8_t>(getType());
+        if (typeIndex >= std::size(kOrderFlags))
+        {
+            return false;
+        }
+        return (kOrderFlags[typeIndex] & flag) != OrderFlags::none;
     }
 
     template<typename T>

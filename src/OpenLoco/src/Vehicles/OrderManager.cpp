@@ -70,7 +70,9 @@ namespace OpenLoco::Vehicles
     {
         if (enumValue(_currentOrder->getType()) >= std::size(kOrderSizes))
         {
-            throw Exception::RuntimeError("Invalid order type!");
+            Logging::warn("OrderRingView: encountered corrupt order with invalid type {}. Stopping iteration.", enumValue(_currentOrder->getType()));
+            _hasLooped = true;
+            return *this;
         }
         if (_currentOrder->getType() == OrderType::End && _currentOrder == _beginOrderTable)
         {
@@ -80,7 +82,13 @@ namespace OpenLoco::Vehicles
         }
         auto* newOrders = reinterpret_cast<uint8_t*>(_currentOrder) + kOrderSizes[static_cast<uint8_t>(_currentOrder->getType())];
         _currentOrder = reinterpret_cast<Order*>(newOrders);
-        if (_currentOrder->getType() == OrderType::End)
+        if (enumValue(_currentOrder->getType()) >= std::size(kOrderSizes))
+        {
+            Logging::warn("OrderRingView: next order has invalid type {}. Wrapping to table start.", enumValue(_currentOrder->getType()));
+            _currentOrder = _beginOrderTable;
+            _hasLooped = true;
+        }
+        else if (_currentOrder->getType() == OrderType::End)
         {
             _currentOrder = _beginOrderTable;
             _hasLooped = true;
@@ -516,7 +524,55 @@ namespace OpenLoco::Vehicles::OrderManager
                     }
                 }
             }
-            i += kOrderSizes[enumValue(order.getType())];
+            auto typeIndex = enumValue(order.getType());
+            if (typeIndex >= std::size(kOrderSizes))
+            {
+                Logging::warn("removeOrdersForStation: corrupt order at offset {} with invalid type {}. Skipping byte.", i, typeIndex);
+                i++;
+                continue;
+            }
+            i += kOrderSizes[typeIndex];
+        }
+    }
+
+    // Scan the global order table and remove any orders with invalid types.
+    // This handles save files that contain corrupted order data which would
+    // otherwise cause crashes in OrderRingView iteration.
+    void fixCorruptWaypointOrders()
+    {
+        for (auto* head : VehicleManager::VehicleList())
+        {
+            bool corrupted = false;
+            uint16_t offset = 0;
+            while (offset < head->sizeOfOrderTable)
+            {
+                auto& order = orders()[head->orderTableOffset + offset];
+                auto typeIndex = enumValue(order.getType());
+                if (typeIndex >= std::size(kOrderSizes))
+                {
+                    Logging::warn("fixCorruptWaypointOrders: vehicle at orderTableOffset {} has corrupt order at offset {} (type {}). Replacing with End marker.", head->orderTableOffset, offset, typeIndex);
+                    // Overwrite the corrupt byte with an End order to terminate the table
+                    order = OrderEnd{};
+                    // Shrink the order table to end here
+                    auto removedSize = head->sizeOfOrderTable - offset - kOrderSizes[enumValue(OrderType::End)];
+                    if (removedSize > 0)
+                    {
+                        head->sizeOfOrderTable = offset + kOrderSizes[enumValue(OrderType::End)];
+                    }
+                    corrupted = true;
+                    break;
+                }
+                if (order.getType() == OrderType::End)
+                {
+                    break;
+                }
+                offset += kOrderSizes[typeIndex];
+            }
+            if (corrupted)
+            {
+                // Reset current order to 0 to avoid pointing into removed data
+                head->currentOrder = 0;
+            }
         }
     }
 }
