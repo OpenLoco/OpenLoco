@@ -177,6 +177,7 @@ namespace OpenLoco::Ui
         // Create a palette for the window
         auto& drawingEngine = Gfx::getDrawingEngine();
         drawingEngine.initialize(_window);
+        drawingEngine.setVSync(cfg.vsync);
         drawingEngine.resize(width, height);
 
         // SDL2 always activated text input by default on desktop platforms, SDL3 does not.
