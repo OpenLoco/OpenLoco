@@ -1,5 +1,6 @@
 26.02+ (???)
 ------------------------------------------------------------------------
+- Fix: [#2768] Infinite loop at startup when a required object file is corrupt or missing.
 - Fix: [#3657] All news settings default to disabled instead of newspaper style.
 - Fix: [#3659] Using relative paths as Locomotion path causes certain data not to load.
 
