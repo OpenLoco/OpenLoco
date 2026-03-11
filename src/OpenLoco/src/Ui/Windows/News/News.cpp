@@ -342,11 +342,12 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 self.widgets[Common::widx::viewport1Button].right = 175;
             }
 
+            self.invalidate();
+
             if (_nState.savedView[0] != view)
             {
                 _nState.savedView[0] = view;
                 self.viewportRemove(0);
-                self.invalidate();
 
                 if (!view.isEmpty())
                 {
@@ -429,11 +430,12 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             self.widgets[Common::widx::viewport2Button].left = 184;
             self.widgets[Common::widx::viewport2Button].right = 355;
 
+            self.invalidate();
+
             if (_nState.savedView[1] != view)
             {
                 _nState.savedView[1] = view;
                 self.viewportRemove(1);
-                self.invalidate();
 
                 if (!view.isEmpty())
                 {
