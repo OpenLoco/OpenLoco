@@ -1,7 +1,7 @@
 26.02+ (???)
 ------------------------------------------------------------------------
-- Fix: [#3657] All news settings default to disabled instead of newspaper style.
 - Fix: [#3597] Single-image newspaper not staying centered when viewing consecutive news items.
+- Fix: [#3657] All news settings default to disabled instead of newspaper style.
 - Fix: [#3659] Using relative paths as Locomotion path causes certain data not to load.
 
 26.02 (2026-02-28)
