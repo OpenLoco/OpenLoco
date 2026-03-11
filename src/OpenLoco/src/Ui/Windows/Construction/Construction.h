@@ -25,6 +25,7 @@ namespace OpenLoco::Ui::Windows::Construction
         signal = 1U << 2,
         station = 1U << 3,
         overhead = 1U << 4,
+        blueprint = 1U << 5,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(GhostVisibilityFlags);
 
@@ -203,6 +204,8 @@ namespace OpenLoco::Ui::Windows::Construction
             construct,
             remove,
             rotate_90,
+            copy,
+            paste,
         };
 
         // clang-format off
@@ -224,7 +227,7 @@ namespace OpenLoco::Ui::Windows::Construction
             (1ULL << widx::slope_down) |
             (1ULL << widx::level) |
             (1ULL << widx::slope_up) |
-            (1ULL << widx::steep_slope_up)
+            (1ULL << widx::steep_slope_up) | (1ULL << widx::copy) | (1ULL << widx::paste)
             };
 
         constexpr uint64_t allConstruction = {
@@ -245,6 +248,7 @@ namespace OpenLoco::Ui::Windows::Construction
         void drawTrack(const World::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t rotation, TrackRoadPreviewFlags flags, Gfx::DrawingContext& drawingCtx);
         void drawRoad(const World::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t rotation, TrackRoadPreviewFlags flags,Gfx::DrawingContext& drawingCtx);
         void removeTrackGhosts();
+        void removeBlueprintGhosts();
         void previousTrackPiece(Window& self);
         void nextTrackPiece(Window& self);
         void previousSlope(Window& self);

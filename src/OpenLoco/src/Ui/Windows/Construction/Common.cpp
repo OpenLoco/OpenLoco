@@ -716,6 +716,7 @@ namespace OpenLoco::Ui::Windows::Construction
             _ghostVisibilityFlags = _ghostVisibilityFlags & ~GhostVisibilityFlags::constructArrow;
         }
         Construction::removeTrackGhosts();
+        Construction::removeBlueprintGhosts();
         Signal::removeSignalGhost();
         Station::removeStationGhost();
         Overhead::removeTrackModsGhost();
