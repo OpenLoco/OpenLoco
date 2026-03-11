@@ -868,7 +868,7 @@ namespace OpenLoco::Input
                     auto dragWindow = WindowManager::find(_dragWindowType, _dragWindowNumber);
                     if (dragWindow != nullptr)
                     {
-                        if (dragWindow->isEnabled(_pressedWidgetIndex))
+                        if (dragWindow->isEnabled(_pressedWidgetIndex) && _pressedWidgetIndex >= 0 && size_t(_pressedWidgetIndex) < dragWindow->widgets.size())
                         {
                             auto pressedWidget = &dragWindow->widgets[_pressedWidgetIndex];
 
