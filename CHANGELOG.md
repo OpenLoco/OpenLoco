@@ -1,6 +1,7 @@
 26.02+ (???)
 ------------------------------------------------------------------------
 - Fix: [#3657] All news settings default to disabled instead of newspaper style.
+- Fix: [#3034] Crash when deselecting last built track/road type in Object Selection.
 - Fix: [#3659] Using relative paths as Locomotion path causes certain data not to load.
 
 26.02 (2026-02-28)
