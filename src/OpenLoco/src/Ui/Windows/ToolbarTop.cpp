@@ -827,19 +827,11 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             {
                 ebx = ebx & ~(1 << 7);
                 auto obj = ObjectManager::get<RoadObject>(ebx);
-                if (obj == nullptr)
-                {
-                    return;
-                }
                 fg_image = Gfx::recolour(obj->image, companyColour);
             }
             else
             {
                 auto obj = ObjectManager::get<TrackObject>(ebx);
-                if (obj == nullptr)
-                {
-                    return;
-                }
                 fg_image = Gfx::recolour(obj->image + TrackObj::ImageIds::kUiPreviewImage0, companyColour);
             }
 

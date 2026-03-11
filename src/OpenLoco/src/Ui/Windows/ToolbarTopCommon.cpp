@@ -66,19 +66,11 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
             if (isRoad)
             {
                 auto obj = ObjectManager::get<RoadObject>(lastRoadOption & ~(1 << 7));
-                if (obj == nullptr)
-                {
-                    return;
-                }
                 fgImage = Gfx::recolour(obj->image, companyColour);
             }
             else
             {
                 auto obj = ObjectManager::get<TrackObject>(lastRoadOption);
-                if (obj == nullptr)
-                {
-                    return;
-                }
                 fgImage = Gfx::recolour(obj->image + TrackObj::ImageIds::kUiPreviewImage0, companyColour);
             }
 
