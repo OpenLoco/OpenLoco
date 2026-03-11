@@ -26,6 +26,7 @@
 #include "Scenario/ScenarioOptions.h"
 #include "Scenario/ScenarioPreview.h"
 #include "SceneManager.h"
+#include "Ui.h"
 #include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
@@ -605,6 +606,29 @@ namespace OpenLoco::S5
                     dst.var_014A = 0;
                     Ui::ProgressBar::end();
                     return false;
+                }
+                else if (hasLoadFlags(flags, LoadFlags::titleSequence))
+                {
+                    // Do not call returnToTitle() here — we are already loading
+                    // the title scenario. Calling returnToTitle() would restart
+                    // Title::start() and re-enter this path, causing an infinite loop
+                    // when a required object (e.g. a corrupt .DAT file) cannot be loaded.
+                    std::string objectNames;
+                    for (const auto& obj : loadObjectResult.problemObjects)
+                    {
+                        if (!objectNames.empty())
+                        {
+                            objectNames += ", ";
+                        }
+                        objectNames += obj.getName();
+                    }
+                    Logging::error("Failed to load required objects for title sequence: {}", objectNames);
+                    Ui::ProgressBar::end();
+                    Ui::showMessageBox("OpenLoco", "Unable to load the title screen.\n\n"
+                                                   "The following required object(s) could not be loaded:\n"
+                                           + objectNames + "\n\nThe .DAT file(s) may be missing or corrupt.\n"
+                                                           "Please verify the game files or reinstall Locomotion.");
+                    exitCleanly();
                 }
                 else
                 {
