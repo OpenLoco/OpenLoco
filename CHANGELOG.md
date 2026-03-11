@@ -6,6 +6,7 @@
 26.02 (2026-02-28)
 ------------------------------------------------------------------------
 - Fix: [#2205] Crash when hovering over stations with the order tab open.
+- Fix: [#3320] False potitive duplicate name detection when renaming vehicles (original bug).
 - Fix: [#3626] The vsync setting is not saved correctly.
 - Fix: [#3627] Race condition on secondary palette map causing constant alternating colors on vehicles and other things.
 - Fix: [#3629] MacOS builds are missing open graphics objects.
