@@ -8,7 +8,7 @@
 namespace OpenLoco::Ui::Widgets
 {
     // 0x004CADE8
-    static void drawImage(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
+    static void drawImage(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState, int32_t indexOffset = 0)
     {
         auto* window = widgetState.window;
 
@@ -16,6 +16,10 @@ namespace OpenLoco::Ui::Widgets
 
         const bool isColourSet = widget.image & Widget::kImageIdColourSet;
         ImageId imageId = ImageId::fromUInt32(widget.image & ~Widget::kImageIdColourSet);
+        if (indexOffset != 0)
+        {
+            imageId = imageId.withIndexOffset(indexOffset);
+        }
 
         auto colour = widgetState.colour;
         if (widgetState.disabled)
@@ -85,13 +89,25 @@ namespace OpenLoco::Ui::Widgets
             return;
         }
 
+        if (!widget.hoverInset)
+        {
+            // No hover effect — draw image normally, with pressed sprite on click.
+            if (widget.content == Widget::kContentNull)
+            {
+                return;
+            }
+
+            drawImage(drawingCtx, widget, widgetState, widgetState.activated ? 1 : 0);
+            return;
+        }
+
         if (window->hasFlags(WindowFlags::framedWidgets))
         {
             drawingCtx.fillRect(pos, size, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
         }
 
-        // TODO: Add a setting to decide if it should be translucent or not, for now it seems all ImageButton's require this.
-        drawingCtx.fillRectInset(pos, size, widgetState.colour.translucent(), flags);
+        const auto colour = widget.hoverTranslucent ? widgetState.colour.translucent() : widgetState.colour;
+        drawingCtx.fillRectInset(pos, size, colour, flags);
 
         if (widget.content == Widget::kContentNull)
         {

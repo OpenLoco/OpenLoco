@@ -20,6 +20,20 @@ namespace OpenLoco::Ui::Widgets
         {
         }
 
+        constexpr ImageButton withHoverTranslucent() const
+        {
+            ImageButton copy = *this;
+            copy.hoverTranslucent = true;
+            return copy;
+        }
+
+        constexpr ImageButton withNoHoverInset() const
+        {
+            ImageButton copy = *this;
+            copy.hoverInset = false;
+            return copy;
+        }
+
         static void draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState);
     };
 
