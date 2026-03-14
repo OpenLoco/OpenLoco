@@ -75,12 +75,13 @@ namespace OpenLoco::Ui
 
     static void setWindowIcon();
     static Config::Resolution getDisplayResolutionByMode(Config::ScreenMode mode);
-    static Config::Resolution getDesktopResolution(uint32_t displayPreference);
-    static SDL_DisplayID getDisplayIdFromConfig(uint32_t displayPreference);
-    static Point getCenteredPositionOnDisplay(uint32_t displayPreference, int32_t width, int32_t height);
-    static void centerWindowOnDisplay(SDL_Window* window, uint32_t displayPreference, int32_t width, int32_t height);
+    static Config::Resolution getDesktopResolution(uint32_t displayIndex);
+    static SDL_DisplayID getDisplayIdFromIndex(uint32_t displayIndex);
+    static uint32_t getDisplayIndex(SDL_DisplayID displayId);
+    static Point getCenteredPositionOnDisplay(uint32_t displayIndex, int32_t width, int32_t height);
+    static void centerWindowOnDisplay(SDL_Window* window, uint32_t displayIndex, int32_t width, int32_t height);
 
-    static SDL_DisplayID getDisplayIdFromConfig(uint32_t displayPreference)
+    static SDL_DisplayID getDisplayIdFromIndex(uint32_t displayIndex)
     {
         int32_t numDisplays = 0;
         auto displayIds = SDL_GetDisplays(&numDisplays);
@@ -89,30 +90,38 @@ namespace OpenLoco::Ui
             return SDL_GetPrimaryDisplay();
         }
 
-        SDL_DisplayID displayId = 0;
-        for (int32_t i = 0; i < numDisplays; i++)
-        {
-            if (displayIds[i] == displayPreference)
-            {
-                displayId = displayIds[i];
-                break;
-            }
-        }
-
-        // Backwards compatibility for configs that stored a display index instead of an SDL display ID.
-        if (displayId == 0)
-        {
-            const auto clampedIndex = std::clamp(static_cast<int32_t>(displayPreference), 0, numDisplays - 1);
-            displayId = displayIds[clampedIndex];
-        }
-
+        const auto clampedIndex = std::clamp(static_cast<int32_t>(displayIndex), 0, numDisplays - 1);
+        const auto displayId = displayIds[clampedIndex];
         SDL_free(displayIds);
         return displayId;
     }
 
-    static Config::Resolution getSaneWindowedResolution(uint32_t displayPreference, Config::Resolution preferredResolution)
+    static uint32_t getDisplayIndex(SDL_DisplayID displayId)
     {
-        const auto desktopResolution = getDesktopResolution(displayPreference);
+        int32_t numDisplays = 0;
+        auto displayIds = SDL_GetDisplays(&numDisplays);
+        if (displayIds == nullptr || numDisplays <= 0)
+        {
+            return 0;
+        }
+
+        uint32_t displayIndex = 0;
+        for (int32_t i = 0; i < numDisplays; i++)
+        {
+            if (displayIds[i] == displayId)
+            {
+                displayIndex = i;
+                break;
+            }
+        }
+
+        SDL_free(displayIds);
+        return displayIndex;
+    }
+
+    static Config::Resolution getSaneWindowedResolution(uint32_t displayIndex, Config::Resolution preferredResolution)
+    {
+        const auto desktopResolution = getDesktopResolution(displayIndex);
         constexpr int32_t kMinWidth = 640;
         constexpr int32_t kMinHeight = 480;
         constexpr int32_t kWindowMargin = 160;
@@ -136,10 +145,10 @@ namespace OpenLoco::Ui
         };
     }
 
-    static Point getCenteredPositionOnDisplay(uint32_t displayPreference, int32_t width, int32_t height)
+    static Point getCenteredPositionOnDisplay(uint32_t displayIndex, int32_t width, int32_t height)
     {
         SDL_Rect displayBounds{};
-        const auto displayId = getDisplayIdFromConfig(displayPreference);
+        const auto displayId = getDisplayIdFromIndex(displayIndex);
         if (!SDL_GetDisplayUsableBounds(displayId, &displayBounds))
         {
             displayBounds = { 0, 0, width, height };
@@ -150,9 +159,9 @@ namespace OpenLoco::Ui
         return { x, y };
     }
 
-    static void centerWindowOnDisplay(SDL_Window* window, uint32_t displayPreference, int32_t width, int32_t height)
+    static void centerWindowOnDisplay(SDL_Window* window, uint32_t displayIndex, int32_t width, int32_t height)
     {
-        const auto pos = getCenteredPositionOnDisplay(displayPreference, width, height);
+        const auto pos = getCenteredPositionOnDisplay(displayIndex, width, height);
         SDL_SetWindowPosition(window, pos.x, pos.y);
     }
 
@@ -436,11 +445,12 @@ namespace OpenLoco::Ui
     void windowPositionChanged([[maybe_unused]] int32_t x, [[maybe_unused]] int32_t y)
     {
         const auto displayId = SDL_GetDisplayForWindow(_window);
+        const auto displayIndex = getDisplayIndex(displayId);
 
         auto& cfg = Config::get().display;
-        if (cfg.index != displayId)
+        if (cfg.index != displayIndex)
         {
-            cfg.index = displayId;
+            cfg.index = displayIndex;
             Config::write();
         }
     }
@@ -545,13 +555,13 @@ namespace OpenLoco::Ui
 
     Config::Resolution getDesktopResolution()
     {
-        const auto displayPreference = _window != nullptr ? SDL_GetDisplayForWindow(_window) : Config::get().display.index;
-        return getDesktopResolution(displayPreference);
+        const auto displayIndex = _window != nullptr ? getDisplayIndex(SDL_GetDisplayForWindow(_window)) : Config::get().display.index;
+        return getDesktopResolution(displayIndex);
     }
 
-    static Config::Resolution getDesktopResolution(uint32_t displayPreference)
+    static Config::Resolution getDesktopResolution(uint32_t displayIndex)
     {
-        const auto displayId = getDisplayIdFromConfig(displayPreference);
+        const auto displayId = getDisplayIdFromIndex(displayIndex);
         const SDL_DisplayMode* desktopDisplayMode = SDL_GetDesktopDisplayMode(displayId);
         if (desktopDisplayMode == nullptr)
         {
