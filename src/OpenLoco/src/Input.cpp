@@ -99,7 +99,9 @@ namespace OpenLoco::Input
                     Ui::windowPositionChanged(e.window.data1, e.window.data2);
                     break;
                 case SDL_EVENT_WINDOW_RESIZED:
-                    Ui::windowSizeChanged(e.window.data1, e.window.data2);
+                case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
+                case SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED:
+                    Ui::triggerResize();
                     break;
             }
         }
@@ -129,7 +131,9 @@ namespace OpenLoco::Input
                     Ui::windowPositionChanged(e.window.data1, e.window.data2);
                     break;
                 case SDL_EVENT_WINDOW_RESIZED:
-                    Ui::windowSizeChanged(e.window.data1, e.window.data2);
+                case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
+                case SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED:
+                    Ui::triggerResize();
                     break;
 
                 case SDL_EVENT_MOUSE_MOTION:

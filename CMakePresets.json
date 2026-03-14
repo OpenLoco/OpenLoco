@@ -30,6 +30,19 @@
             }
         },
         {
+            "name": "windows-vs2026",
+            "displayName": "x86-64 VS 2026",
+            "description": "Configure environment for Windows x86-64 with Visual Studio 2026",
+            "inherits": "windows-base",
+            "generator": "Visual Studio 18 2026",
+            "cacheVariables": {
+                "VCPKG_TARGET_TRIPLET": {
+                    "type": "STRING",
+                    "value": "x64-windows-static"
+                }
+            }
+        },
+        {
             "name": "windows-x86-32-ci",
             "displayName": "x86-32 CI",
             "description": "CI configure environment for Windows x86-32",
@@ -184,6 +197,20 @@
             "configurePreset": "windows",
             "displayName": "Release",
             "description": "Build Release Configuration",
+            "configuration": "Release"
+        },
+        {
+            "name": "windows-vs2026-debug",
+            "configurePreset": "windows-vs2026",
+            "displayName": "Debug VS 2026",
+            "description": "Build Debug MSVC Configuration with Visual Studio 2026",
+            "configuration": "Debug"
+        },
+        {
+            "name": "windows-vs2026-release",
+            "configurePreset": "windows-vs2026",
+            "displayName": "Release VS 2026",
+            "description": "Build Release Configuration with Visual Studio 2026",
             "configuration": "Release"
         },
         {

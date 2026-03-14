@@ -136,7 +136,8 @@ namespace OpenLoco::Gfx
             return;
         }
 
-        if (!SDL_SetTextureScaleMode(_screenTexture, SDL_SCALEMODE_LINEAR))
+        // Keep the palette buffer crisp when scaling the software-rendered frame.
+        if (!SDL_SetTextureScaleMode(_screenTexture, SDL_SCALEMODE_NEAREST))
         {
             Logging::error("SDL_SetTextureScaleMode (_screenTexture) failed: {}", SDL_GetError());
         }
