@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Fix: [#3657] All news settings default to disabled instead of newspaper style.
 - Fix: [#3659] Using relative paths as Locomotion path causes certain data not to load.
+- Fix: [#3672] Crash when a vehicle arrives at the location of a station that was deallocated whilst the vehicle was approaching it.
 
 26.02 (2026-02-28)
 ------------------------------------------------------------------------
