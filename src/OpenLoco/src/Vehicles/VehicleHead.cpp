@@ -2684,6 +2684,10 @@ namespace OpenLoco::Vehicles
     // 0x004B996F
     void VehicleHead::setStationVisitedTypes()
     {
+        if (stationId == StationId::null)
+        {
+            return;
+        }
         auto station = StationManager::get(stationId);
         station->var_3B2 |= (1 << static_cast<uint8_t>(vehicleType));
     }
