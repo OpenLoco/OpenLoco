@@ -1,11 +1,15 @@
 #include "OpenAL.h"
 #include <AL/al.h>
 #include <AL/alc.h>
+#include <AL/alext.h>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <algorithm>
 #include <cmath>
 
 namespace OpenAL
 {
+    using namespace OpenLoco::Diagnostics;
+
     void Device::open(const std::string& name)
     {
         if (_isOpen)
@@ -17,11 +21,21 @@ namespace OpenAL
         {
             // Open default device
             _device = alcOpenDevice(nullptr);
+            if (_device == nullptr)
+            {
+                Logging::error("Failed to open default OpenAL device");
+                return;
+            }
         }
         else
         {
             // requires c string so cant make name string_view
             _device = alcOpenDevice(name.c_str());
+            if (_device == nullptr)
+            {
+                Logging::error("Failed to open OpenAL device '{}'", name);
+                return;
+            }
         }
         _context.open(_device);
         _isOpen = true;
@@ -61,9 +75,33 @@ namespace OpenAL
 
     void Context::open(ALCdevice* device)
     {
-        _context = alcCreateContext(device, nullptr);
+        constexpr ALCint attrs[] = {
+            ALC_HRTF_SOFT, ALC_FALSE,
+            0 // Terminator
+        };
+
+        _context = alcCreateContext(device, attrs);
+        if (_context == nullptr)
+        {
+            Logging::error("Failed to create OpenAL context");
+            return;
+        }
+
         // OpenLoco only ever needs the one context so make this one current for lifetime
-        alcMakeContextCurrent(_context);
+        if (!alcMakeContextCurrent(_context))
+        {
+            Logging::error("Failed to make OpenAL context current");
+            alcDestroyContext(_context);
+            _context = nullptr;
+            return;
+        }
+
+        const ALchar* version = alGetString(AL_VERSION);
+        const ALchar* vendor = alGetString(AL_VENDOR);
+        const ALchar* renderer = alGetString(AL_RENDERER);
+
+        Logging::info("OpenAL {}, Vendor: {}, Renderer: {}, initialized.", version, vendor, renderer);
+
         _isOpen = true;
     }
 
