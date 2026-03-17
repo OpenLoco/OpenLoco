@@ -1,11 +1,26 @@
 #include "Blueprints.h"
 #include "Construction.h"
+#include "GameCommands/Track/CreateSignal.h"
+#include "GameCommands/Track/CreateTrack.h"
+#include "GameCommands/Track/CreateTrainStation.h"
+#include "GameCommands/Track/RemoveSignal.h"
+#include "GameCommands/Track/RemoveTrack.h"
+#include "GameCommands/Track/RemoveTrainStation.h"
+#include "Map/RoadElement.h"
+#include "Map/SignalElement.h"
+#include "Map/StationElement.h"
+#include "Map/SurfaceElement.h"
+#include "Map/TileManager.h"
+#include "Map/Track/TrackData.h"
+#include "Map/TrackElement.h"
+#include "Ui/WindowManager.h"
+#include "World/CompanyManager.h"
 
-namespace OpenLoco::Ui::Windows::Construction::Construction
+namespace OpenLoco
 {
-    currency32_t removeBlueprint(const CopiedTrack& copiedTrack, const World::Pos3& ghostBPPos)
+    currency32_t removeBlueprint(const CopiedTrack& copiedTrack, const World::Pos3& ghostBPPos, const uint8_t flags)
     {
-        currency32_t res = 0;
+        currency32_t totalRes = 0;
         for (auto& stationArg : copiedTrack.stationArgs)
         {
             GameCommands::TrainStationRemovalArgs args;
@@ -14,7 +29,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             args.index = 0;
             args.trackId = stationArg.trackId;
             args.type = stationArg.type;
-            res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+            const auto res = GameCommands::doCommand(args, flags);
+            if (res != GameCommands::FAILURE)
+            {
+                totalRes += res;
+            }
         }
 
         for (auto& signalArg : copiedTrack.signalArgs)
@@ -26,7 +45,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             args.trackId = signalArg.trackId;
             args.trackObjType = signalArg.trackObjType;
             args.flags = signalArg.sides;
-            res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+            const auto res = GameCommands::doCommand(args, flags);
+            if (res != GameCommands::FAILURE)
+            {
+                totalRes += res;
+            }
         }
 
         for (auto& trackArg : copiedTrack.trackArgs)
@@ -37,53 +60,72 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             args.index = 0;
             args.trackId = trackArg.trackId;
             args.trackObjectId = trackArg.trackObjectId;
-            res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
-            res = res;
+            const auto res = GameCommands::doCommand(args, flags);
+            if (res != GameCommands::FAILURE)
+            {
+                totalRes += res;
+            }
         }
+        return totalRes;
     }
 
-    currency32_t placeBlueprintGhost(const CopiedTrack& _copiedTrack, const World::Pos3& ghostBPPos)
+    currency32_t placeBlueprint(const CopiedTrack& _copiedTrack, const World::Pos3& ghostBPPos, const uint8_t flags)
     {
         // Duplicate as we need to adjust the position
         auto copiedTrack = CopiedTrack(_copiedTrack);
         currency32_t result = 0;
         // First we do a trial placement of track (can't do signals and stations as they would need the track already down)
+        const auto noApplyFlags = flags & ~GameCommands::Flags::apply;
         for (auto& trackArgs : copiedTrack.trackArgs)
         {
             trackArgs.pos += ghostBPPos;
-            result = GameCommands::doCommand(trackArgs, GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+            result = GameCommands::doCommand(trackArgs, noApplyFlags);
             if (result == GameCommands::FAILURE)
             {
-                return;
+                return GameCommands::FAILURE;
             }
         }
         // Now we do the actual placement
+
+        GameCommands::setErrorSound(false);
+        bool builtAnything = false;
+
         result = 0;
         for (auto& trackArgs : copiedTrack.trackArgs)
         {
-            const auto res = GameCommands::doCommand(trackArgs, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+            const auto res = GameCommands::doCommand(trackArgs, flags);
             if (res != GameCommands::FAILURE)
             {
+                builtAnything = true;
                 result += res;
             }
         }
         for (auto& signalArgs : copiedTrack.signalArgs)
         {
             signalArgs.pos += ghostBPPos;
-            const auto res = GameCommands::doCommand(signalArgs, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+            const auto res = GameCommands::doCommand(signalArgs, flags);
             if (res != GameCommands::FAILURE)
             {
+                builtAnything = true;
                 result += res;
             }
         }
         for (auto& stationArgs : copiedTrack.stationArgs)
         {
             stationArgs.pos += ghostBPPos;
-            const auto res = GameCommands::doCommand(stationArgs, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+            const auto res = GameCommands::doCommand(stationArgs, flags);
             if (res != GameCommands::FAILURE)
             {
+                builtAnything = true;
                 result += res;
             }
+        }
+
+        GameCommands::setErrorSound(true);
+
+        if (builtAnything)
+        {
+            Ui::WindowManager::close(Ui::WindowType::error);
         }
         return result;
     }
@@ -100,13 +142,13 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 auto pos = World::toWorldSpace({ xPos, yPos });
 
-                auto tile = TileManager::get(pos);
-                TrackElement* elProcessedTrack = nullptr;
+                auto tile = World::TileManager::get(pos);
+                World::TrackElement* elProcessedTrack = nullptr;
                 for (auto& el : tile)
                 {
-                    auto* elTrack = el.as<TrackElement>();
-                    auto* elSignal = el.as<SignalElement>();
-                    auto* elStation = el.as<StationElement>();
+                    auto* elTrack = el.as<World::TrackElement>();
+                    auto* elSignal = el.as<World::SignalElement>();
+                    auto* elStation = el.as<World::StationElement>();
                     if (elTrack != nullptr)
                     {
                         if (elTrack->isGhost() || elTrack->isAiAllocated())
@@ -125,7 +167,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                             continue;
                         }
                         GameCommands::TrackPlacementArgs args{};
-                        auto& trackPiece0 = TrackData::getTrackPiece(elTrack->trackId())[0];
+                        auto& trackPiece0 = World::TrackData::getTrackPiece(elTrack->trackId())[0];
                         args.pos = World::Pos3(pos.x, pos.y, elTrack->baseHeight()) - World::Pos3(trackPiece0.x, trackPiece0.y, trackPiece0.z);
                         args.trackId = elTrack->trackId();
                         args.rotation = elTrack->rotation();
@@ -143,7 +185,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                             continue;
                         }
                         GameCommands::SignalPlacementArgs args{};
-                        auto& trackPiece0 = TrackData::getTrackPiece(elProcessedTrack->trackId())[0];
+                        auto& trackPiece0 = World::TrackData::getTrackPiece(elProcessedTrack->trackId())[0];
                         args.pos = World::Pos3(pos.x, pos.y, elSignal->baseHeight()) - World::Pos3(trackPiece0.x, trackPiece0.y, trackPiece0.z);
                         args.index = 0;
                         args.rotation = elSignal->rotation();
@@ -169,7 +211,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                             continue;
                         }
                         GameCommands::TrainStationPlacementArgs args{};
-                        auto& trackPiece0 = TrackData::getTrackPiece(elProcessedTrack->trackId())[0];
+                        auto& trackPiece0 = World::TrackData::getTrackPiece(elProcessedTrack->trackId())[0];
                         args.pos = World::Pos3(pos.x, pos.y, elStation->baseHeight()) - World::Pos3(trackPiece0.x, trackPiece0.y, trackPiece0.z);
                         args.rotation = elStation->rotation();
                         args.trackId = elProcessedTrack->trackId();
@@ -203,46 +245,5 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
 
         return copiedTrack;
-    }
-
-    void placeBlueprint(const CopiedTrack& copiedTrack, const World::Pos3& pos)
-    {
-        // Duplicate as we need to adjust the position
-        auto pasteArgs = CopiedTrack(copiedTrack.value());
-        for (auto& args : pasteArgs.trackArgs)
-        {
-            args.pos += pos;
-        }
-        for (auto& args : pasteArgs.signalArgs)
-        {
-            args.pos += pos;
-        }
-        for (auto& args : pasteArgs.stationArgs)
-        {
-            args.pos += pos;
-        }
-        GameCommands::setErrorSound(false);
-        bool builtAnything = false;
-        for (auto& args : pasteArgs.trackArgs)
-        {
-            auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
-            builtAnything |= res != GameCommands::FAILURE;
-        }
-        for (auto& args : pasteArgs.signalArgs)
-        {
-            auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
-            builtAnything |= res != GameCommands::FAILURE;
-        }
-        for (auto& args : pasteArgs.stationArgs)
-        {
-            auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
-            builtAnything |= res != GameCommands::FAILURE;
-        }
-        GameCommands::setErrorSound(true);
-
-        if (builtAnything)
-        {
-            WindowManager::close(WindowType::error);
-        }
     }
 }

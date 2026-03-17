@@ -566,8 +566,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             case widx::copy:
             {
-                _copiedTrack = std::nullopt;
                 removeConstructionGhosts();
+                _copiedTrack = std::nullopt;
                 WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::overgroundView);
                 ToolManager::toolSet(self, widx::copy, CursorId::crosshair);
                 Input::setFlag(Input::Flags::flag6);
@@ -2277,7 +2277,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             auto& cState = getConstructionState();
             const auto ghostBPPos = cState.ghostRemovalTrackPos;
 
-            removeBlueprint(_copiedTrack.value(), ghostBPPos);
+            removeBlueprint(_copiedTrack.value(), ghostBPPos, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             Common::unsetGhostVisibilityFlag(GhostVisibilityFlags::blueprint);
         }
     }
@@ -2630,9 +2630,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 {
                     return;
                 }
-                auto& cState = getConstructionState();
 
-                auto res = placeBlueprintGhost(_copiedTrack.value(), pos);
+                auto res = placeBlueprint(_copiedTrack.value(), pos, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
                 if (res != GameCommands::FAILURE)
                 {
                     cState.ghostRemovalTrackPos = pos;
@@ -2926,9 +2925,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             removeConstructionGhosts();
             World::resetMapSelectionFlags();
 
-            auto dirX = _toolPosDrag.x - _toolPosInitial.x > 0 ? 1 : -1;
-            auto dirY = _toolPosDrag.y - _toolPosInitial.y > 0 ? 1 : -1;
-
             _copiedTrack = copyTrackToBlueprint(_toolPosInitial, _toolPosDrag);
             removeConstructionGhosts();
             WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::overgroundView);
@@ -2949,7 +2945,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             }
             removeBlueprintGhosts();
             const auto pos = World::Pos3(World::toWorldSpace(constructPos->first), constructPos->second);
-            placeBlueprint(_copiedTrack, pos);
+            placeBlueprint(_copiedTrack.value(), pos, GameCommands::Flags::apply);
         }
     }
 
