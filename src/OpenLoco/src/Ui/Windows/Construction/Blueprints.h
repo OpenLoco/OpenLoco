@@ -1,17 +1,13 @@
 #pragma once
 #include "Economy/Currency.h"
+#include "GameCommands/Track/CreateSignal.h"
+#include "GameCommands/Track/CreateTrack.h"
+#include "GameCommands/Track/CreateTrainStation.h"
 #include <OpenLoco/Engine/World.hpp>
 #include <vector>
 
 namespace OpenLoco
 {
-    namespace GameCommands
-    {
-        struct TrackPlacementArgs;
-        struct SignalPlacementArgs;
-        struct TrainStationPlacementArgs;
-    }
-
     struct CopiedTrack
     {
         std::vector<GameCommands::TrackPlacementArgs> trackArgs;
