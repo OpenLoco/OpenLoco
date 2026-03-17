@@ -4,12 +4,8 @@
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Road/CreateRoad.h"
 #include "GameCommands/Road/RemoveRoad.h"
-#include "GameCommands/Track/CreateSignal.h"
 #include "GameCommands/Track/CreateTrack.h"
-#include "GameCommands/Track/CreateTrainStation.h"
-#include "GameCommands/Track/RemoveSignal.h"
 #include "GameCommands/Track/RemoveTrack.h"
-#include "GameCommands/Track/RemoveTrainStation.h"
 #include "GameState.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
@@ -19,8 +15,6 @@
 #include "Localisation/StringIds.h"
 #include "Map/MapSelection.h"
 #include "Map/RoadElement.h"
-#include "Map/SignalElement.h"
-#include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Map/Track/Track.h"
@@ -2750,145 +2744,45 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         constructionLoop(constructPos, maxRetries, constructHeight);
     }
 
-    static void onToolUpMultiple(Window&, const WidgetIndex_t)
+    static void onToolUpMultiple(Window& self, const WidgetIndex_t widgetIndex)
     {
         mapInvalidateSelectionRect();
         removeConstructionGhosts();
         World::resetMapSelectionFlags();
 
-        // auto& cState = getConstructionState();
+        auto& cState = getConstructionState();
 
-        // auto rotation = cState.constructionRotation;
-        // auto piece = cState.lastSelectedTrackPiece;
+        auto rotation = cState.constructionRotation;
+        auto piece = cState.lastSelectedTrackPiece;
 
         auto dirX = _toolPosDrag.x - _toolPosInitial.x > 0 ? 1 : -1;
         auto dirY = _toolPosDrag.y - _toolPosInitial.y > 0 ? 1 : -1;
 
         bool builtAnything = false;
 
-        std::vector<GameCommands::TrackPlacementArgs> trackArgsToPlace;
-        std::vector<GameCommands::SignalPlacementArgs> signalArgsToPlace;
-        std::vector<GameCommands::TrainStationPlacementArgs> stationArgsToPlace;
         for (auto yPos = _toolPosInitial.y; yPos != _toolPosDrag.y + dirY; yPos += dirY)
         {
             for (auto xPos = _toolPosInitial.x; xPos != _toolPosDrag.x + dirX; xPos += dirX)
             {
                 auto pos = World::toWorldSpace({ xPos, yPos });
+                cState.x = pos.x;
+                cState.y = pos.y;
 
-                auto tile = TileManager::get(pos);
-                TrackElement* elProcessedTrack = nullptr;
-                for (auto& el : tile)
-                {
-                    auto* elTrack = el.as<TrackElement>();
-                    auto* elSignal = el.as<SignalElement>();
-                    auto* elStation = el.as<StationElement>();
-                    if (elTrack != nullptr)
-                    {
-                        if (elTrack->owner() != CompanyManager::getControllingId())
-                        {
-                            elProcessedTrack = nullptr;
-                            continue;
-                        }
-                        if (elTrack->sequenceIndex() != 0)
-                        {
-                            elProcessedTrack = nullptr;
-                            continue;
-                        }
-                        GameCommands::TrackPlacementArgs args{};
-                        auto& trackPiece0 = TrackData::getTrackPiece(elTrack->trackId())[0];
-                        args.pos = World::Pos3(pos.x, pos.y, elTrack->baseHeight()) - World::Pos3(trackPiece0.x, trackPiece0.y, trackPiece0.z);
-                        args.trackId = elTrack->trackId();
-                        args.rotation = elTrack->rotation();
-                        args.trackObjectId = elTrack->trackObjectId();
-                        args.bridge = elTrack->hasBridge() ? elTrack->bridge() : 0xFFU;
-                        args.unk = false;
-                        args.mods = elTrack->mods();
-                        trackArgsToPlace.push_back(args);
-                        elProcessedTrack = elTrack;
-                    }
-                    else if (elSignal != nullptr && elProcessedTrack != nullptr)
-                    {
-                        GameCommands::SignalPlacementArgs args{};
-                        auto& trackPiece0 = TrackData::getTrackPiece(elProcessedTrack->trackId())[0];
-                        args.pos = World::Pos3(pos.x, pos.y, elSignal->baseHeight()) - World::Pos3(trackPiece0.x, trackPiece0.y, trackPiece0.z);
-                        args.index = 0;
-                        args.rotation = elSignal->rotation();
-                        args.trackId = elProcessedTrack->trackId();
-                        args.trackObjType = elProcessedTrack->trackObjectId();
-                        args.type = elSignal->getLeft().signalObjectId();
-                        uint16_t sideFlags = 0U;
-                        if (elSignal->getLeft().hasSignal())
-                        {
-                            sideFlags |= 0x4000U;
-                        }
-                        if (elSignal->getRight().hasSignal())
-                        {
-                            sideFlags |= 0x8000U;
-                        }
-                        args.sides = sideFlags;
-                        signalArgsToPlace.push_back(args);
-                    }
-                    else if (elStation != nullptr && elProcessedTrack != nullptr)
-                    {
-                        GameCommands::TrainStationPlacementArgs args{};
-                        auto& trackPiece0 = TrackData::getTrackPiece(elProcessedTrack->trackId())[0];
-                        args.pos = World::Pos3(pos.x, pos.y, elStation->baseHeight()) - World::Pos3(trackPiece0.x, trackPiece0.y, trackPiece0.z);
-                        args.rotation = elStation->rotation();
-                        args.trackId = elProcessedTrack->trackId();
-                        args.index = 0;
-                        args.trackObjectId = elProcessedTrack->trackObjectId();
-                        args.type = elStation->objectId();
-                        stationArgsToPlace.push_back(args);
-                    }
-                }
+                auto height = TileManager::getHeight(pos);
+                cState.constructionZ = height.landHeight;
 
-                // cState.x = pos.x;
-                // cState.y = pos.y;
+                // Try placing the track at this location, ignoring errors if they occur
+                GameCommands::setErrorSound(false);
+                constructTrackOrRoad(&self, widgetIndex);
+                GameCommands::setErrorSound(true);
 
-                // auto height = TileManager::getHeight(pos);
-                // cState.constructionZ = height.landHeight;
+                builtAnything |= cState.trackCost != GameCommands::FAILURE || cState.roadCost != GameCommands::FAILURE;
 
-                //// Try placing the track at this location, ignoring errors if they occur
-                // GameCommands::setErrorSound(false);
-                // constructTrackOrRoad(&self, widgetIndex);
-                // GameCommands::setErrorSound(true);
-
-                // builtAnything |= cState.trackCost != GameCommands::FAILURE || cState.roadCost != GameCommands::FAILURE;
-
-                //// Prevent automatic track advancement when constructing track
-                // cState.constructionRotation = rotation;
-                // cState.lastSelectedTrackPiece = piece;
+                // Prevent automatic track advancement when constructing track
+                cState.constructionRotation = rotation;
+                cState.lastSelectedTrackPiece = piece;
             }
         }
-
-        // TODO: Need to find the smallest coord and offset everything by that
-        // that will then become the pivot for construction.
-        // Ghost would then be placed at tool position and place at tool position
-
-        GameCommands::setErrorSound(false);
-        const auto shiftPos = World::toWorldSpace(World::TilePos2{ 8, 8 });
-        for (auto& args : trackArgsToPlace)
-        {
-            args.pos.x += shiftPos.x;
-            args.pos.y += shiftPos.y;
-            auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
-            builtAnything |= res != GameCommands::FAILURE;
-        }
-        for (auto& args : signalArgsToPlace)
-        {
-            args.pos.x += shiftPos.x;
-            args.pos.y += shiftPos.y;
-            auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
-            builtAnything |= res != GameCommands::FAILURE;
-        }
-        for (auto& args : stationArgsToPlace)
-        {
-            args.pos.x += shiftPos.x;
-            args.pos.y += shiftPos.y;
-            auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
-            builtAnything |= res != GameCommands::FAILURE;
-        }
-        GameCommands::setErrorSound(true);
 
         if (builtAnything)
         {
