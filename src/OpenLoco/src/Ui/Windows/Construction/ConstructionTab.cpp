@@ -118,8 +118,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         Widgets::Wt3Widget({ 3, 145 }, { 132, 100 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_construct),
         Widgets::ImageButton({ 6, 248 }, { 46, 24 }, WindowColour::secondary, ImageIds::construction_remove, StringIds::tooltip_remove),
         Widgets::ImageButton({ 57, 248 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_90),
-        Widgets::Caption({ 3, 248 }, { 24, 24 }, Widgets::Caption::Style::boxed, WindowColour::secondary),
-        Widgets::Caption({ 30, 248 }, { 24, 24 }, Widgets::Caption::Style::boxed, WindowColour::secondary));
+        Widgets::Button({ 3, 248 }, { 24, 24 }, WindowColour::secondary, StringIds::construction_copy, StringIds::construction_copy_tooltip),
+        Widgets::Button({ 30, 248 }, { 24, 24 }, WindowColour::secondary, StringIds::construction_paste, StringIds::construction_paste_tooltip)
+
+    );
 
     std::span<const Widget> getWidgets()
     {
