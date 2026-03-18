@@ -2,6 +2,7 @@
 
 ## Scope
 These instructions apply to all automated edits in this repository.
+Refer to `README.md` for additional game information, context, and build instructions.
 
 ## Primary Goal
 Preserve game correctness and compatibility while making minimal, targeted changes.
