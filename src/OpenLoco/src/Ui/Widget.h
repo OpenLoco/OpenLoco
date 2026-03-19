@@ -191,6 +191,8 @@ namespace OpenLoco::Ui
         WidgetType type{};
         ContentAlign contentAlign{ ContentAlign::left };
         WindowColour windowColour{};
+        bool hoverTranslucent{};
+        bool hoverInset{ true };
 
         int32_t midX() const;
         int32_t midY() const;

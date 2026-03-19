@@ -138,7 +138,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::makeCommonWidgets(270, 182, StringIds::title_company),
             Widgets::Label({ 3, 160 }, { 242, 21 }, WindowColour::secondary, ContentAlign::center),
             Widgets::Viewport({ 3, 44 }, { 96, 120 }, WindowColour::secondary, Widget::kContentUnk),
-            Widgets::ImageButton({ 0, 0 }, { 24, 24 }, WindowColour::secondary, ImageIds::centre_viewport, StringIds::move_main_view_to_show_this),
+            Widgets::ImageButton({ 0, 0 }, { 24, 24 }, WindowColour::secondary, ImageIds::centre_viewport, StringIds::move_main_view_to_show_this).withHoverTranslucent(),
             Widgets::ImageButton({ 178, 57 }, { 66, 66 }, WindowColour::secondary, Widget::kContentNull),
             Widgets::ImageButton({ 154, 124 }, { 112, 22 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_change_owner_name)
 
@@ -697,7 +697,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Widgets::Viewport({ 219, 54 }, { 96, 120 }, WindowColour::secondary, Widget::kContentUnk),
             Widgets::ImageButton({ 315, 92 }, { 24, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_build_or_move_headquarters),
             Widgets::ImageButton({ 315, 92 + 26 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
-            Widgets::ImageButton({ 0, 0 }, { 24, 24 }, WindowColour::secondary, ImageIds::centre_viewport, StringIds::move_main_view_to_show_this)
+            Widgets::ImageButton({ 0, 0 }, { 24, 24 }, WindowColour::secondary, ImageIds::centre_viewport, StringIds::move_main_view_to_show_this).withHoverTranslucent()
 
         );
 

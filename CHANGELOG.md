@@ -1,5 +1,6 @@
 26.02+ (???)
 ------------------------------------------------------------------------
+- Fix: [#2983] Terraform tool size +/- buttons show incorrect hover highlight and scroll wheel does not work.
 - Fix: [#3657] All news settings default to disabled instead of newspaper style.
 - Fix: [#3659] Using relative paths as Locomotion path causes certain data not to load.
 

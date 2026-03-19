@@ -1210,6 +1210,11 @@ namespace OpenLoco::Ui::WindowManager
                 return reverseIndex;
             }
 
+            if (isStepperGroup(w, reverseIndex, WidgetType::buttonWithImage))
+            {
+                return reverseIndex;
+            }
+
             if (isStepperGroup(w, reverseIndex, WidgetType::button))
             {
                 return reverseIndex;
