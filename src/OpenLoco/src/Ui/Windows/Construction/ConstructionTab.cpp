@@ -574,10 +574,16 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             case widx::paste:
             {
                 removeConstructionGhosts();
+                if (ToolManager::isToolActive(self.type, 0, widx::paste))
+                {
+                    ToolManager::toolCancel();
+                    break;
+                }
                 WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::overgroundView);
                 ToolManager::toolSet(self, widx::paste, CursorId::crosshair);
-                self.widgets[widx::paste].activated = 1;
                 Input::setFlag(Input::Flags::flag6);
+                cState.constructionHover = true;
+                self.widgets[widx::paste].activated = 1;
                 break;
             }
         }
@@ -2847,9 +2853,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     static void onToolAbort([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
-        if (widgetIndex == widx::construct)
+        _isDragging = false;
+        if (widgetIndex == widx::paste)
         {
-            _isDragging = false;
+            self.widgets[widx::paste].activated = 0;
+            getConstructionState().constructionHover = false;
         }
     }
 
