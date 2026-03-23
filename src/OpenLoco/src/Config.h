@@ -118,6 +118,7 @@ namespace OpenLoco::Config
         std::string locoInstallPath;
         std::string lastSavePath;
         std::string lastLandscapePath;
+        std::string lastScenarioPath;
 
         std::string language = "en-GB";
         MeasurementFormat measurementFormat;

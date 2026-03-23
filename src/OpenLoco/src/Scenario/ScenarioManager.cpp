@@ -149,15 +149,17 @@ namespace OpenLoco::ScenarioManager
     static ScenarioFolderState getCurrentScenarioFolderState()
     {
         ScenarioFolderState currentState;
-        const auto scenarioPath = Environment::getPathNoWarning(Environment::PathId::scenarios);
-        for (const auto& file : fs::directory_iterator(scenarioPath, fs::directory_options::skip_permission_denied))
+        for (const auto& scenarioPath : Environment::getAllScenarioPaths())
         {
-            if (!file.is_regular_file())
+            for (const auto& file : fs::directory_iterator(scenarioPath, fs::directory_options::skip_permission_denied))
             {
-                continue;
+                if (!file.is_regular_file())
+                {
+                    continue;
+                }
+                currentState.numFiles++;
+                currentState.totalFileSize += file.file_size();
             }
-            currentState.numFiles++;
-            currentState.totalFileSize += file.file_size();
         }
         return currentState;
     }
@@ -287,6 +289,29 @@ namespace OpenLoco::ScenarioManager
         return std::nullopt;
     }
 
+    std::optional<fs::path> resolveScenarioPath(const fs::path& path)
+    {
+        if (path.has_root_path())
+        {
+            if (fs::exists(path))
+            {
+                return path;
+            }
+            return std::nullopt;
+        }
+
+        for (const auto& scenarioPath : Environment::getAllScenarioPaths())
+        {
+            auto fullPath = (scenarioPath / path).lexically_normal();
+            if (fs::exists(fullPath))
+            {
+                return fullPath;
+            }
+        }
+
+        return std::nullopt;
+    }
+
     // 0x004447DF
     static void createIndex(const ScenarioFolderState& currentState)
     {
@@ -301,78 +326,84 @@ namespace OpenLoco::ScenarioManager
             entry.flags &= ~ScenarioIndexFlags::flag_0;
         }
 
-        const auto scenarioPath = Environment::getPathNoWarning(Environment::PathId::scenarios);
+        const auto scenarioPaths = Environment::getAllScenarioPaths();
         auto numScenariosDetected = 0;
-        for (const auto& file : fs::directory_iterator(scenarioPath, fs::directory_options::skip_permission_denied))
+        for (const auto& scenarioPath : scenarioPaths)
         {
-            if (!file.is_regular_file())
+            for (const auto& file : fs::directory_iterator(scenarioPath, fs::directory_options::skip_permission_denied))
             {
-                continue;
-            }
-            if (!Utility::iequals(file.path().extension().u8string(), ".sc5"))
-            {
-                continue;
-            }
+                if (!file.is_regular_file())
+                {
+                    continue;
+                }
+                if (!Utility::iequals(file.path().extension().u8string(), ".sc5"))
+                {
+                    continue;
+                }
 
-            numScenariosDetected++;
+                numScenariosDetected++;
+            }
         }
 
         auto currentScenarioOffset = 0;
-        for (const auto& file : fs::directory_iterator(scenarioPath, fs::directory_options::skip_permission_denied))
+        for (const auto& scenarioPath : scenarioPaths)
         {
-            if (!file.is_regular_file())
+            for (const auto& file : fs::directory_iterator(scenarioPath, fs::directory_options::skip_permission_denied))
             {
-                continue;
-            }
-            if (!Utility::iequals(file.path().extension().u8string(), ".sc5"))
-            {
-                continue;
-            }
+                if (!file.is_regular_file())
+                {
+                    continue;
+                }
+                if (!Utility::iequals(file.path().extension().u8string(), ".sc5"))
+                {
+                    continue;
+                }
 
-            Input::processMessagesMini();
+                Input::processMessagesMini();
 
-            currentScenarioOffset++;
-            auto currentScenarioProgress = currentScenarioOffset * 225 / numScenariosDetected;
-            Ui::ProgressBar::setProgress(currentScenarioProgress);
+                currentScenarioOffset++;
+                auto currentScenarioProgress = currentScenarioOffset * 225 / numScenariosDetected;
+                Ui::ProgressBar::setProgress(currentScenarioProgress);
 
-            const auto u8FileName = file.path().filename().u8string();
-            auto foundId = findScenario(u8FileName);
+                const auto u8FileName = file.path().filename().u8string();
+                auto foundId = findScenario(u8FileName);
 
-            const auto options = S5::readScenarioOptions(file.path());
-            if (options == nullptr)
-            {
-                continue;
+                const auto options = S5::readScenarioOptions(file.path());
+                if (options == nullptr)
+                {
+                    continue;
+                }
+                if (options->editorStep != EditorController::Step::null)
+                {
+                    continue;
+                }
+                if (!foundId.has_value())
+                {
+                    // This is a new entry so we will need to clear fields and add to the list
+                    ScenarioIndexEntry entry{};
+                    std::strcpy(entry.filename, u8FileName.c_str());
+                    foundId = static_cast<uint32_t>(_scenarioList.size());
+                    _scenarioList.push_back(entry);
+                    _scenarioHeader.numScenarios++;
+                }
+                ScenarioIndexEntry& entry = _scenarioList[foundId.value()];
+
+                entry.flags |= ScenarioIndexFlags::flag_0;
+                entry.category = options->difficulty;
+                entry.flags &= ~ScenarioIndexFlags::hasPreviewImage;
+                if ((options->scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) != Scenario::ScenarioFlags::none)
+                {
+                    entry.flags |= ScenarioIndexFlags::hasPreviewImage;
+                    std::copy(&options->preview[0][0], &options->preview[0][0] + sizeof(options->preview), &entry.preview[0][0]);
+                }
+                entry.startYear = options->scenarioStartYear;
+                entry.numCompetingCompanies = options->maxCompetingCompanies;
+                entry.competingCompanyDelay = options->competitorStartDelay;
+                entry.currency = options->currency;
+
+                loadScenarioProgress(entry, *options);
+                loadScenarioDetails(entry, *options);
             }
-            if (options->editorStep != EditorController::Step::null)
-            {
-                continue;
-            }
-            if (!foundId.has_value())
-            {
-                // This is a new entry so we will need to clear fields and add to the list
-                ScenarioIndexEntry entry{};
-                std::strcpy(entry.filename, u8FileName.c_str());
-                foundId = static_cast<uint32_t>(_scenarioList.size());
-                _scenarioList.push_back(entry);
-                _scenarioHeader.numScenarios++;
-            }
-            ScenarioIndexEntry& entry = _scenarioList[foundId.value()];
-
-            entry.flags |= ScenarioIndexFlags::flag_0;
-            entry.category = options->difficulty;
-            entry.flags &= ~ScenarioIndexFlags::hasPreviewImage;
-            if ((options->scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) != Scenario::ScenarioFlags::none)
-            {
-                entry.flags |= ScenarioIndexFlags::hasPreviewImage;
-                std::copy(&options->preview[0][0], &options->preview[0][0] + sizeof(options->preview), &entry.preview[0][0]);
-            }
-            entry.startYear = options->scenarioStartYear;
-            entry.numCompetingCompanies = options->maxCompetingCompanies;
-            entry.competingCompanyDelay = options->competitorStartDelay;
-            entry.currency = options->currency;
-
-            loadScenarioProgress(entry, *options);
-            loadScenarioDetails(entry, *options);
         }
 
         std::ranges::sort(_scenarioList, [](const ScenarioIndexEntry& lhs, const ScenarioIndexEntry& rhs) {

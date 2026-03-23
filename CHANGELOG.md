@@ -1,5 +1,6 @@
 26.02+ (???)
 ------------------------------------------------------------------------
+- Feature: [#3677] Scenarios can be placed in sub folders in new custom scenario folder.
 - Fix: [#3657] All news settings default to disabled instead of newspaper style.
 - Fix: [#3659] Using relative paths as Locomotion path causes certain data not to load.
 

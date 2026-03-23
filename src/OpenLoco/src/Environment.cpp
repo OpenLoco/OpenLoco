@@ -19,6 +19,7 @@ namespace OpenLoco::Environment
         fs::path install;
         fs::path saves;
         fs::path landscapes;
+        fs::path scenarios;
     };
 
     static ConfigurablePaths _configurablePaths;
@@ -193,6 +194,10 @@ namespace OpenLoco::Environment
         {
             return _configurablePaths.landscapes;
         }
+        else if (id == PathId::customScenarios)
+        {
+            return _configurablePaths.scenarios;
+        }
         else
         {
             return getDefaultPathNoWarning(id);
@@ -266,7 +271,12 @@ namespace OpenLoco::Environment
         auto configLastLandscapePath = fs::u8path(Config::get().lastLandscapePath);
         _configurablePaths.landscapes = tryPathOrDefault(configLastLandscapePath, PathId::landscape);
 
+        // Figure out what scenario directory to default to
+        auto configLastScenarioPath = fs::u8path(Config::get().lastScenarioPath);
+        _configurablePaths.scenarios = tryPathOrDefault(configLastScenarioPath, PathId::customScenarios);
+
         autoCreateDirectory(getPath(PathId::customObjects));
+        autoCreateDirectory(getPath(PathId::customScenarios));
     }
 
     class ThousandsSepFacet : public std::numpunct<char>
@@ -307,6 +317,7 @@ namespace OpenLoco::Environment
             case PathId::landscape:
             case PathId::heightmap:
             case PathId::customObjects:
+            case PathId::customScenarios:
             case PathId::screenshots:
                 return Platform::getUserDirectory();
             case PathId::languageFiles:
@@ -323,7 +334,7 @@ namespace OpenLoco::Environment
 
     static fs::path getSubPath(PathId id)
     {
-        static constexpr std::array<const char*, 60> kPaths = {
+        static constexpr std::array<const char*, 61> kPaths = {
             "Data/g1.DAT",
             "plugin.dat",
             "plugin2.dat",
@@ -384,6 +395,7 @@ namespace OpenLoco::Environment
             "objects",
             "objects",
             "screenshots",
+            "scenarios",
         };
 
         size_t index = (size_t)id;
@@ -392,5 +404,26 @@ namespace OpenLoco::Environment
             throw Exception::RuntimeError("Invalid PathId: " + std::to_string((int32_t)id));
         }
         return kPaths[(size_t)id];
+    }
+
+    std::vector<fs::path> getAllScenarioPaths()
+    {
+        std::vector<fs::path> paths;
+
+        // User configurable scenarios path
+        const auto& userPath = _configurablePaths.scenarios;
+        if (fs::is_directory(userPath))
+        {
+            paths.push_back(userPath);
+        }
+
+        // Install path scenarios
+        auto installPath = (_configurablePaths.install / getSubPath(PathId::vanillaScenarios)).lexically_normal();
+        if (fs::is_directory(installPath) && installPath != userPath)
+        {
+            paths.push_back(installPath);
+        }
+
+        return paths;
     }
 }

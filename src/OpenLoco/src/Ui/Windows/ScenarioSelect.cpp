@@ -23,6 +23,7 @@
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
+#include <OpenLoco/Core/FileSystem.hpp>
 
 using namespace OpenLoco::Diagnostics;
 
@@ -314,57 +315,102 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             x = baseX;
             y = baseY + 150;
 
-            // Description
-            auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-            strncpy(str, scenarioInfo->description, std::size(scenarioInfo->description));
-
+            char* str{};
             FormatArguments args{};
-            args.push(StringIds::buffer_2039);
+            constexpr const int kSpacing = 10;
 
-            auto point = tr.drawStringLeftWrapped(Point(x, y), 170, Colour::black, StringIds::black_stringid, args);
-            y = point.y;
+            // Description
+            {
+                str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+                strncpy(str, scenarioInfo->description, std::size(scenarioInfo->description));
+                args.push(StringIds::buffer_2039);
+
+                auto point = tr.drawStringLeftWrapped(Point(x, y), 170, Colour::black, StringIds::black_stringid, args);
+                y = point.y;
+            }
+            y += kSpacing;
 
             // Challenge header
-            y += 5;
-            tr.drawStringLeft(Point(x, y), Colour::black, StringIds::challenge_label);
+            {
+                auto point = tr.drawStringLeft(Point(x, y), Colour::black, StringIds::challenge_label);
+                y = point.y;
+            }
+            y += kSpacing;
 
-            // Challenge text
-            str = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
-            strncpy(str, scenarioInfo->objective, std::size(scenarioInfo->objective));
+            // Challenge description
+            {
+                str = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
+                strncpy(str, scenarioInfo->objective, std::size(scenarioInfo->objective));
 
-            y += 10;
-            args = FormatArguments();
-            args.push(StringIds::buffer_1250);
+                args = FormatArguments();
+                args.push(StringIds::buffer_1250);
 
-            point = tr.drawStringLeftWrapped(Point(x, y), 170, Colour::black, StringIds::challenge_value, args);
-            y = point.y;
+                auto point = tr.drawStringLeftWrapped(Point(x, y), 170, Colour::black, StringIds::challenge_value, args);
+                y = point.y;
+            }
+            y += kSpacing;
 
             // Start year
-            y += 5;
-            args = FormatArguments();
-            args.push(scenarioInfo->startYear);
+            {
+                args = FormatArguments();
+                args.push(scenarioInfo->startYear);
 
-            tr.drawStringLeft(Point(x, y), Colour::black, StringIds::challenge_start_date, args);
+                auto point = tr.drawStringLeft(Point(x, y), Colour::black, StringIds::challenge_start_date, args);
+                y = point.y;
+                y += kSpacing; // no idea why this second spacing is needed, but it is
+            }
+            y += kSpacing;
 
             // Competing companies
-            y += 10;
-            args = FormatArguments();
-            args.push<uint16_t>(scenarioInfo->numCompetingCompanies);
-            StringId competitionStringId = scenarioInfo->numCompetingCompanies == 0 ? StringIds::challenge_competing_companies_none : StringIds::challenge_competing_companies_up_to;
-
-            point = tr.drawStringLeftWrapped(Point(x, y), 170, Colour::black, competitionStringId, args);
-            y = point.y;
-
-            if (scenarioInfo->numCompetingCompanies == 0 || scenarioInfo->competingCompanyDelay == 0)
+            if (scenarioInfo->numCompetingCompanies > 0)
             {
-                return;
-            }
+                {
+                    args = FormatArguments();
+                    args.push<uint16_t>(scenarioInfo->numCompetingCompanies);
+                    StringId competitionStringId = scenarioInfo->numCompetingCompanies == 0 ? StringIds::challenge_competing_companies_none : StringIds::challenge_competing_companies_up_to;
 
-            // Delayed start for competing companies
-            args = FormatArguments();
-            args.push<uint16_t>(scenarioInfo->competingCompanyDelay);
-            competitionStringId = scenarioInfo->competingCompanyDelay == 1 ? StringIds::competition_not_starting_for_month : StringIds::competition_not_starting_for_months;
-            tr.drawStringLeft(Point(x, y), Colour::black, competitionStringId, args);
+                    auto point = tr.drawStringLeftWrapped(Point(x, y), 170, Colour::black, competitionStringId, args);
+                    y = point.y;
+                }
+
+                // Delayed start for competing companies
+                if (scenarioInfo->competingCompanyDelay > 0)
+                {
+                    args = FormatArguments();
+                    args.push<uint16_t>(scenarioInfo->competingCompanyDelay);
+                    StringId competitionStringId = scenarioInfo->competingCompanyDelay == 1 ? StringIds::competition_not_starting_for_month : StringIds::competition_not_starting_for_months;
+
+                    auto point = tr.drawStringLeft(Point(x, y), Colour::black, competitionStringId, args);
+                    y = point.y;
+                    y += kSpacing;
+                }
+            }
+            y += kSpacing;
+
+            // Filename
+            {
+                const auto fullScenarioPath = ScenarioManager::resolveScenarioPath(fs::u8path(scenarioInfo->filename));
+                std::string filename;
+                if (fullScenarioPath.has_value())
+                {
+                    auto preferredPath = *fullScenarioPath;
+                    filename = preferredPath.make_preferred().u8string();
+                }
+                else
+                {
+                    filename = scenarioInfo->filename;
+                }
+
+                auto filenameStr = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
+                strncpy(filenameStr, filename.c_str(), filename.length() + 1);
+
+                args = FormatArguments();
+                args.push<StringId>(StringIds::buffer_1250);
+
+                auto point = tr.drawStringLeftWrapped(Point(x, y), 170, Colour::black, StringIds::scenario_selection_filename, args);
+                y = point.y;
+            }
+            y += kSpacing;
         }
     }
 

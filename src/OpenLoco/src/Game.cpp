@@ -85,7 +85,7 @@ namespace OpenLoco::Game
     // 0x004418DB
     [[nodiscard]] std::optional<std::string> saveScenarioOpen()
     {
-        auto path = Environment::getPath(Environment::PathId::scenarios) / Scenario::getOptions().scenarioName;
+        auto path = Environment::getPath(Environment::PathId::customScenarios) / Scenario::getOptions().scenarioName;
         auto savePath = path.u8string() + S5::extensionSC5;
 
         return openBrowsePrompt(savePath, StringIds::title_prompt_save_scenario, browse_type::save, S5::filterSC5);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <OpenLoco/Core/FileSystem.hpp>
+#include <vector>
 
 namespace OpenLoco::Environment
 {
@@ -61,16 +62,18 @@ namespace OpenLoco::Environment
         landscape,
         _1tmp,
         vanillaObjects,
-        scenarios,
+        vanillaScenarios,
         heightmap,
         customObjects,
         objects,
         screenshots,
+        customScenarios,
     };
 
     void autoCreateDirectory(const fs::path& path);
     fs::path getPath(PathId id);
     fs::path getPathNoWarning(PathId id);
+    std::vector<fs::path> getAllScenarioPaths();
     void resolvePaths();
     void setLocale();
 }
