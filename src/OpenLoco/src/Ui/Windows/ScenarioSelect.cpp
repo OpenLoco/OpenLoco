@@ -23,6 +23,7 @@
 #include "Ui/Widgets/TabWidget.h"
 #include "Ui/Widgets/Wt3Widget.h"
 #include "Ui/WindowManager.h"
+#include <OpenLoco/Core/FileSystem.hpp>
 
 using namespace OpenLoco::Diagnostics;
 
@@ -388,8 +389,20 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
             // Filename
             {
+                const auto fullScenarioPath = ScenarioManager::resolveScenarioPath(fs::u8path(scenarioInfo->filename));
+                std::string filename;
+                if (fullScenarioPath.has_value())
+                {
+                    auto preferredPath = *fullScenarioPath;
+                    filename = preferredPath.make_preferred().u8string();
+                }
+                else
+                {
+                    filename = scenarioInfo->filename;
+                }
+
                 auto filenameStr = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
-                strncpy(filenameStr, scenarioInfo->filename, std::size(scenarioInfo->filename));
+                strncpy(filenameStr, filename.c_str(), filename.length() + 1);
 
                 args = FormatArguments();
                 args.push<StringId>(StringIds::buffer_1250);

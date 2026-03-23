@@ -289,6 +289,29 @@ namespace OpenLoco::ScenarioManager
         return std::nullopt;
     }
 
+    std::optional<fs::path> resolveScenarioPath(const fs::path& path)
+    {
+        if (path.has_root_path())
+        {
+            if (fs::exists(path))
+            {
+                return path;
+            }
+            return std::nullopt;
+        }
+
+        for (const auto& scenarioPath : Environment::getAllScenarioPaths())
+        {
+            auto fullPath = (scenarioPath / path).lexically_normal();
+            if (fs::exists(fullPath))
+            {
+                return fullPath;
+            }
+        }
+
+        return std::nullopt;
+    }
+
     // 0x004447DF
     static void createIndex(const ScenarioFolderState& currentState)
     {

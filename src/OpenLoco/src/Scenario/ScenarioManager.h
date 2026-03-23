@@ -2,9 +2,11 @@
 
 #include "Objects/Object.h"
 #include "Types.hpp"
+#include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <cstddef>
 #include <cstdint>
+#include <optional>
 
 namespace OpenLoco::Scenario
 {
@@ -55,6 +57,7 @@ namespace OpenLoco::ScenarioManager
     bool hasScenarioInCategory(uint8_t category, ScenarioIndexEntry* scenario);
     uint16_t getScenarioCountByCategory(uint8_t category);
     ScenarioIndexEntry* getNthScenarioFromCategory(uint8_t category, uint8_t index);
+    std::optional<fs::path> resolveScenarioPath(const fs::path& path);
     void loadIndex(const bool forceReload = false);
     void saveNewScore(Scenario::ObjectiveProgress& progress, const CompanyId companyId);
 

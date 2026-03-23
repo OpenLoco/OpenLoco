@@ -284,13 +284,7 @@ namespace OpenLoco::Scenario
         WindowManager::closeConstructionWindows();
         WindowManager::closeAllFloatingWindows();
 
-        // Resolve filenames to base game scenario directory
-        fs::path fullPath = path;
-        if (!fullPath.has_root_path())
-        {
-            auto scenarioPath = Environment::getPath(Environment::PathId::vanillaScenarios);
-            fullPath = scenarioPath / path;
-        }
+        auto fullPath = ScenarioManager::resolveScenarioPath(path).value_or(path);
 
         Audio::pauseSound();
 
