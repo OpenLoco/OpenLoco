@@ -2,8 +2,8 @@
 
 #include "Objects/Object.h"
 #include "Types.hpp"
-#include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <OpenLoco/Core/FileSystem.hpp>
 #include <cstddef>
 #include <cstdint>
 #include <optional>
