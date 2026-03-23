@@ -288,7 +288,7 @@ namespace OpenLoco::Scenario
         fs::path fullPath = path;
         if (!fullPath.has_root_path())
         {
-            auto scenarioPath = Environment::getPath(Environment::PathId::scenarios);
+            auto scenarioPath = Environment::getPath(Environment::PathId::vanillaScenarios);
             fullPath = scenarioPath / path;
         }
 

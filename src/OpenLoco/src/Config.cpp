@@ -103,6 +103,7 @@ namespace OpenLoco::Config
         _config.locoInstallPath = config["loco_install_path"].as<std::string>("");
         _config.lastSavePath = config["last_save_path"].as<std::string>("");
         _config.lastLandscapePath = config["last_landscape_path"].as<std::string>("");
+        _config.lastScenarioPath = config["last_scenario_path"].as<std::string>("");
 
         // Regional
         _config.language = config["language"].as<std::string>("en-GB");
@@ -242,6 +243,7 @@ namespace OpenLoco::Config
         node["loco_install_path"] = _config.locoInstallPath;
         node["last_save_path"] = _config.lastSavePath;
         node["last_landscape_path"] = _config.lastLandscapePath;
+        node["last_scenario_path"] = _config.lastScenarioPath;
 
         // Regional
         node["language"] = _config.language;
