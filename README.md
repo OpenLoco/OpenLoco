@@ -45,7 +45,7 @@ As of December 2025, we have completed reimplementing the game in C++. It is now
 # 2 Downloading the game (pre-built)
 
 The latest releases can be [downloaded from GitHub](https://github.com/OpenLoco/OpenLoco/releases). Releases are currently provided for Windows, Linux and MacOS.
-For BSD distributions, we currently do not provide any builds. Please refer to the next section to compile the game manually. For macOS the builds are unsigned and unnotarized. This means that Gatekeeper may block them.
+For BSD distributions, we currently do not provide any builds. Please refer to the next section to compile the game manually. For macOS the builds are unsigned and unnotarised. This means that Gatekeeper may block them.
 
 Please note that OpenLoco requires the asset files of the original Chris Sawyer's Locomotion to play the game.
 It can be bought at e.g. [Steam](https://store.steampowered.com/app/356430/) or [GOG.com](https://www.gog.com/game/chris_sawyers_locomotion).
@@ -61,6 +61,7 @@ For code contributions, please stick to our [code style](https://github.com/Open
 You can use `clang-format` to apply these guidelines automatically.
 
 In addition to the code style guide, please keep changes small and behaviour-preserving. The OpenLoco project is reverse-engineered from x86 assembly, so unusual patterns may be intentional and tied to compatibility with the original game.
+Repository prose, comments, and documentation should use British English spellings where practical.
 
 ## 3.1 Development workflow
 
@@ -71,7 +72,7 @@ For routine code changes:
 - run the relevant automated tests where possible
 - preserve compatibility with legacy `.sc5` / `.sv5` save files and `.dat` objects
 
-If a proposed change appears to require changing a binary format, serialized layout, or engine limit tied to the legacy save format, prefer a compatibility-safe runtime alternative instead, or postpone the change until we have finished developing the New-Object-Format and New-Save-Format.
+If a proposed change appears to require changing a binary format, serialised layout, or engine limit tied to the legacy save format, prefer a compatibility-safe runtime alternative instead, or postpone the change until we have finished developing the New-Object-Format and New-Save-Format.
 
 ## 3.2 Project architecture and reverse-engineered design
 

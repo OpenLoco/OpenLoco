@@ -52,7 +52,7 @@ POSIX:
 ## Operations Requiring Human Intervention
 
 - Acquiring or validating original game asset files requires human action
-- Release signing, notarization, publishing, and credentialed release operations require human-managed credentials/processes
+- Release signing, notarisation, publishing, and credentialled release operations require human-managed credentials/processes
 - Any change that would alter `.sc5`, `.sv5`, or `.dat` compatibility is banned
 
 ## Agent-Specific API Endpoints or Service Configuration
@@ -69,4 +69,5 @@ POSIX:
 
 - Use `README.md` for repository architecture, reverse-engineered engine patterns, coding conventions, build instructions, and development workflow
 - Prefer non-interactive commands when validating changes
+- Use British English spellings in repository prose and documentation unless quoting external names or proper nouns
 - Keep changes minimal and preserve legacy compatibility unless the user explicitly requests otherwise
