@@ -6981,6 +6981,8 @@ namespace OpenLoco::Vehicles
             std::swap(train.veh2->sound.drivingSoundVolume, train.tail->sound.drivingSoundVolume);
             std::swap(train.veh2->sound.drivingSoundFrequency, train.tail->sound.drivingSoundFrequency);
             std::swap(train.veh2->sound.soundFlags, train.tail->sound.soundFlags);
+            std::swap(train.veh2->sound.audioHandle, train.tail->sound.audioHandle);
+            std::swap(train.veh2->sound.activeSoundId, train.tail->sound.activeSoundId);
         }
         train.veh2->sound.objectId = frontSoundingObjId;
         train.tail->sound.objectId = backSoundingObjId;

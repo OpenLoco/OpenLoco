@@ -2,6 +2,7 @@
 
 #include "Entities/Entity.h"
 #include "Map/Track/TrackModSection.h"
+#include <OpenLoco/Audio/AudioHandle.h>
 #include "Objects/VehicleObject.h"
 #include "Routing.h"
 #include "Speed.hpp"
@@ -339,6 +340,8 @@ namespace OpenLoco::Vehicles
         SoundFlags soundFlags;
         Ui::WindowNumber_t soundWindowNumber;
         Ui::WindowType soundWindowType;
+        Audio::AudioHandle audioHandle;
+        SoundObjectId_t activeSoundId;
     };
 
     struct VehicleCargo

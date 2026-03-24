@@ -14,25 +14,14 @@
 #include "Vehicles/VehicleManager.h"
 #include "Vehicles/VehicleTail.h"
 #include <OpenLoco/Audio/AudioEngine.h>
-#include <array>
 
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Audio
 {
-    struct VehicleChannelState
-    {
-        AudioHandle handle = AudioHandle::null;
-        EntityId vehicleId = EntityId::null;
-        SoundId soundId{};
-        AudioAttributes attribs{};
-    };
-
-    static constexpr int32_t kNumVehicleChannels = 10;
     static constexpr uint8_t kMaxVehicleSounds = 16;
 
-    static std::array<VehicleChannelState, kNumVehicleChannels> _vehicleChannels{};
     static uint8_t _numActiveVehicleSounds;
 
     constexpr int8_t kVolumeModifierZoomIncrement = -35;
@@ -81,7 +70,7 @@ namespace OpenLoco::Audio
         return falloffModifier;
     }
 
-    static std::pair<SoundId, AudioAttributes> getVehicleAudioAttributes(const Vehicles::VehicleBase& base, const Vehicles::VehicleSound& soundParams)
+    static AudioAttributes getVehicleAudioAttributes(const Vehicles::VehicleBase& base, const Vehicles::VehicleSound& soundParams)
     {
         auto* w = WindowManager::find(soundParams.soundWindowType, soundParams.soundWindowNumber);
         auto* viewport = w->viewports[0];
@@ -107,106 +96,65 @@ namespace OpenLoco::Audio
         attribs.volume = volume;
         attribs.pan = panX;
         attribs.frequency = soundParams.drivingSoundFrequency;
-        return { makeObjectSoundId(soundParams.drivingSoundId), attribs };
+        return attribs;
     }
 
-    static VehicleChannelState* getFreeVehicleChannel()
+    static void stopVehicleSound(Vehicles::VehicleSound& sound)
     {
-        for (auto& vc : _vehicleChannels)
+        if (sound.audioHandle != AudioHandle::null)
         {
-            if (vc.vehicleId == EntityId::null)
-            {
-                return &vc;
-            }
+            destroy(sound.audioHandle);
+            sound.audioHandle = AudioHandle::null;
         }
-        return nullptr;
+        sound.activeSoundId = SoundObjectId::null;
     }
 
-    static void vehicleChannelBegin(VehicleChannelState& vc, EntityId vid)
+    static void beginVehicleSound(Vehicles::VehicleBase& base, Vehicles::VehicleSound& sound)
     {
-        auto v = EntityManager::get<Vehicles::VehicleBase>(vid);
-        if (v == nullptr || !v->hasSoundPlayer())
-        {
-            return;
-        }
-        auto* soundParams = v->getVehicleSound();
-        if (soundParams == nullptr)
-        {
-            return;
-        }
+        auto sid = makeObjectSoundId(sound.drivingSoundId);
+        auto attribs = getVehicleAudioAttributes(base, sound);
+        attribs.loop = shouldSoundLoop(sid);
 
-        auto [sid, attribs] = getVehicleAudioAttributes(*v, *soundParams);
-        auto loop = shouldSoundLoop(sid);
         auto buffer = getSoundBuffer(sid);
         if (buffer)
         {
-            vc.vehicleId = vid;
-            vc.soundId = sid;
-            vc.attribs = attribs;
-
-            attribs.loop = loop;
-            vc.handle = create(*buffer, ChannelId::vehicles, attribs);
-            Audio::play(vc.handle);
+            sound.activeSoundId = sound.drivingSoundId;
+            sound.audioHandle = create(*buffer, ChannelId::vehicles, attribs);
+            Audio::play(sound.audioHandle);
         }
     }
 
-    static void vehicleChannelUpdate(VehicleChannelState& vc)
+    static void updateVehicleSound(Vehicles::VehicleBase& base, Vehicles::VehicleSound& sound)
     {
-        if (vc.vehicleId == EntityId::null)
+        if (sound.audioHandle == AudioHandle::null)
         {
             return;
         }
-        auto v = EntityManager::get<Vehicles::VehicleBase>(vc.vehicleId);
-        if (v == nullptr || !v->hasSoundPlayer())
+
+        if (!base.hasSoundPlayer())
         {
-            destroy(vc.handle);
-            vc.handle = AudioHandle::null;
-            vc.vehicleId = EntityId::null;
+            stopVehicleSound(sound);
             return;
         }
 
-        auto* soundParams = v->getVehicleSound();
-        if (soundParams == nullptr || ((soundParams->soundFlags & Vehicles::SoundFlags::flag0) == Vehicles::SoundFlags::none))
+        if ((sound.soundFlags & Vehicles::SoundFlags::flag0) == Vehicles::SoundFlags::none)
         {
-            destroy(vc.handle);
-            vc.handle = AudioHandle::null;
-            vc.vehicleId = EntityId::null;
+            stopVehicleSound(sound);
             return;
         }
 
-        auto [sid, attribs] = getVehicleAudioAttributes(*v, *soundParams);
-        if (vc.soundId != sid)
+        if (sound.drivingSoundId != sound.activeSoundId)
         {
-            destroy(vc.handle);
-            vc.handle = AudioHandle::null;
-            vc.vehicleId = EntityId::null;
+            stopVehicleSound(sound);
             return;
         }
 
-        soundParams->soundFlags &= ~Vehicles::SoundFlags::flag0;
-        if (vc.attribs.volume != attribs.volume)
-        {
-            setVolume(vc.handle, attribs.volume);
-        }
-        if (vc.attribs.pan != attribs.pan)
-        {
-            setPan(vc.handle, attribs.pan);
-        }
-        if (vc.attribs.frequency != attribs.frequency)
-        {
-            setPitch(vc.handle, attribs.frequency);
-        }
-        vc.attribs = attribs;
-    }
+        auto attribs = getVehicleAudioAttributes(base, sound);
+        sound.soundFlags &= ~Vehicles::SoundFlags::flag0;
 
-    static void vehicleChannelStop(VehicleChannelState& vc)
-    {
-        if (vc.handle != AudioHandle::null)
-        {
-            destroy(vc.handle);
-            vc.handle = AudioHandle::null;
-        }
-        vc.vehicleId = EntityId::null;
+        setVolume(sound.audioHandle, attribs.volume);
+        setPan(sound.audioHandle, attribs.pan);
+        setPitch(sound.audioHandle, attribs.frequency);
     }
 
     static void triggerVehicleSoundIfInView(Vehicles::VehicleBase& v, Vehicles::VehicleSound& soundParams)
@@ -287,16 +235,12 @@ namespace OpenLoco::Audio
         }
     }
 
-    static void playVehicleSound(EntityId id, Vehicles::VehicleSound& soundParams)
+    static void tryBeginVehicleSound(Vehicles::VehicleBase& v, Vehicles::VehicleSound& sound)
     {
-        if ((soundParams.soundFlags & Vehicles::SoundFlags::flag0) != Vehicles::SoundFlags::none)
+        if ((sound.soundFlags & Vehicles::SoundFlags::flag0) != Vehicles::SoundFlags::none
+            && sound.audioHandle == AudioHandle::null)
         {
-            Logging::verbose("playSound(vehicle #{})", enumValue(id));
-            auto vc = getFreeVehicleChannel();
-            if (vc != nullptr)
-            {
-                vehicleChannelBegin(*vc, id);
-            }
+            beginVehicleSound(v, sound);
         }
     }
 
@@ -320,7 +264,7 @@ namespace OpenLoco::Audio
                 }
                 break;
             case 3:
-                playVehicleSound(v.id, soundParams);
+                tryBeginVehicleSound(v, soundParams);
                 break;
         }
     }
@@ -354,30 +298,31 @@ namespace OpenLoco::Audio
         processVehicleSounds(0);
         processVehicleSounds(1);
         processVehicleSounds(2);
-        for (auto& vc : _vehicleChannels)
+
+        for (auto* v : VehicleManager::VehicleList())
         {
-            vehicleChannelUpdate(vc);
+            Vehicles::Vehicle train(*v);
+            updateVehicleSound(*train.veh2, train.veh2->sound);
+            updateVehicleSound(*train.tail, train.tail->sound);
         }
+
         processVehicleSounds(3);
     }
 
     void stopVehicleNoise()
     {
-        for (auto& vc : _vehicleChannels)
+        for (auto* v : VehicleManager::VehicleList())
         {
-            vehicleChannelStop(vc);
+            Vehicles::Vehicle train(*v);
+            stopVehicleSound(train.veh2->sound);
+            stopVehicleSound(train.tail->sound);
         }
     }
 
     void stopVehicleNoise(EntityId head)
     {
         Vehicles::Vehicle train(head);
-        for (auto& vc : _vehicleChannels)
-        {
-            if (vc.vehicleId == train.veh2->id || vc.vehicleId == train.tail->id)
-            {
-                vehicleChannelStop(vc);
-            }
-        }
+        stopVehicleSound(train.veh2->sound);
+        stopVehicleSound(train.tail->sound);
     }
 }
