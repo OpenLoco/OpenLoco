@@ -15,6 +15,10 @@ set(public_link_libraries
     Diagnostics
 )
 
+set(private_link_libraries
+    ${OPENAL_LIBRARIES}
+)
+
 loco_add_library(Audio STATIC
     PUBLIC_FILES
         ${public_files}
@@ -22,4 +26,6 @@ loco_add_library(Audio STATIC
         ${private_files}
     PUBLIC_LINK_LIBRARIES
         ${public_link_libraries}
+    PRIVATE_LINK_LIBRARIES
+        ${private_link_libraries}
 )
