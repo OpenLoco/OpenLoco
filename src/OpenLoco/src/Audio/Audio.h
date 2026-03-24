@@ -105,5 +105,7 @@ namespace OpenLoco::Audio
 
     void resetSoundObjects();
 
+    std::optional<BufferId> loadMusicSample(Environment::PathId asset);
+
     int32_t calculatePan(const coord_t coord, const int32_t screenSize);
 }
