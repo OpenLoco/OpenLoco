@@ -167,7 +167,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             const bool success = promptTickLoop(
                 []() {
                     Input::handleKeyboard();
-                    Audio::updateSounds();
+                    Audio::update();
                     WindowManager::dispatchUpdateAll();
                     Input::processKeyboardInput();
                     Input::processMouseWheel();

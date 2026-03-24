@@ -19,15 +19,11 @@ namespace OpenLoco::Audio
         bool loop = false;
     };
 
-    // Device management
-    const std::vector<std::string>& getDevices();
-    const char* getCurrentDeviceName();
-    size_t getCurrentDevice();
-    void setDevice(size_t index);
-
-    // Lifecycle
     void initialize();
     void shutdown();
+    bool openDevice(const std::string& name);
+    void closeDevice();
+    std::vector<std::string> getAvailableDevices();
 
     // Buffer management
     BufferId loadBuffer(std::span<const uint8_t> pcmData, const AudioFormat& format);

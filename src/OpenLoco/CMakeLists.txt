@@ -1,8 +1,5 @@
 set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/Audio.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/Channel.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/OpenAL.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/VehicleChannel.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/CommandLine.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Config.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Date.cpp"
@@ -369,9 +366,6 @@ set(OLOCO_SOURCES
 
 set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/Audio.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/Channel.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/OpenAL.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/VehicleChannel.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/CommandLine.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Config.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ConfigConvert.hpp"
@@ -721,6 +715,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ZoomLevel.hpp")
 
 set(private_link_libraries
+    Audio
     Core
     Diagnostics
     Platform
@@ -733,7 +728,6 @@ set(private_link_libraries
     yaml-cpp::yaml-cpp
     ZLIB::ZLIB # This shouldn't be required but vcpkg seems to not map the dependencies correctly for png static
     PNG::PNG
-    ${OPENAL_LIBRARIES}
     $<$<PLATFORM_ID:Windows>:winmm>
     $<$<PLATFORM_ID:Windows>:ws2_32>
     $<$<PLATFORM_ID:Windows>:Resources>

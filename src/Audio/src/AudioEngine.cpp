@@ -25,8 +25,6 @@ namespace OpenLoco::Audio
     static std::vector<uint32_t> _alSources;
     static std::vector<uint32_t> _alBuffers;
 
-    static std::vector<std::string> _devices;
-    static size_t _currentDevice = 0;
     static bool _isInitialised = false;
     static bool _isPaused = false;
 
@@ -94,8 +92,10 @@ namespace OpenLoco::Audio
         alSource3f(sourceId, AL_POSITION, p, 0.0f, -std::sqrt(1.0f - p * p));
     }
 
-    static bool openDevice(const std::string& name)
+    bool openDevice(const std::string& name)
     {
+        closeDevice();
+
         _alcDevice = name.empty() ? alcOpenDevice(nullptr) : alcOpenDevice(name.c_str());
         if (_alcDevice == nullptr)
         {
@@ -133,7 +133,7 @@ namespace OpenLoco::Audio
         return true;
     }
 
-    static void closeDevice()
+    void closeDevice()
     {
         if (_alcContext != nullptr)
         {
@@ -148,54 +148,18 @@ namespace OpenLoco::Audio
         }
     }
 
-    // Device management
-
-    const std::vector<std::string>& getDevices()
+    std::vector<std::string> getAvailableDevices()
     {
-        _devices.clear();
+        std::vector<std::string> result;
         const ALCchar* devices = alcGetString(nullptr, ALC_ALL_DEVICES_SPECIFIER);
         const char* ptr = devices;
         do
         {
-            _devices.push_back(std::string(ptr));
-            ptr += _devices.back().size() + 1;
+            result.push_back(std::string(ptr));
+            ptr += result.back().size() + 1;
         } while (*ptr != '\0');
-        return _devices;
+        return result;
     }
-
-    const char* getCurrentDeviceName()
-    {
-        if (_currentDevice < _devices.size())
-        {
-            return _devices[_currentDevice].c_str();
-        }
-        return "";
-    }
-
-    size_t getCurrentDevice()
-    {
-        return _currentDevice;
-    }
-
-    void setDevice(size_t index)
-    {
-        if (index >= _devices.size())
-        {
-            return;
-        }
-
-        alDeleteSources(static_cast<ALsizei>(_alSources.size()), _alSources.data());
-        _alSources.clear();
-        alDeleteBuffers(static_cast<ALsizei>(_alBuffers.size()), _alBuffers.data());
-        _alBuffers.clear();
-        closeDevice();
-
-        _currentDevice = index;
-        openDevice(_devices[index]);
-        _isInitialised = true;
-    }
-
-    // Lifecycle
 
     void initialize()
     {

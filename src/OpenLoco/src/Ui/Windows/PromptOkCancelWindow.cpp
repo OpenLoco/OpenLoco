@@ -76,7 +76,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
         promptTickLoop(
             []() {
                 Input::handleKeyboard();
-                Audio::updateSounds();
+                Audio::update();
                 WindowManager::dispatchUpdateAll();
                 Input::processKeyboardInput();
                 WindowManager::update();

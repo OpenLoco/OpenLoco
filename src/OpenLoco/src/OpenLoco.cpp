@@ -312,7 +312,7 @@ namespace OpenLoco
 
                 Input::handleKeyboard();
                 Input::processMouseMovement();
-                Audio::updateSounds();
+                Audio::update();
 
                 Network::update();
 
@@ -448,8 +448,7 @@ namespace OpenLoco
         EffectsManager::update();
         CompanyManager::update();
         World::AnimationManager::update();
-        Audio::updateVehicleNoise();
-        Audio::updateAmbientNoise();
+        Audio::update();
         Title::update();
 
         Scenario::getOptions().madeAnyChanges = userMadeAnyChanges;
