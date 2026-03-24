@@ -252,11 +252,32 @@ namespace OpenLoco::Audio
                 idx = i;
                 break;
             }
+
+            int32_t state = 0;
+            alGetSourcei(_instances[i].sourceId, AL_SOURCE_STATE, &state);
+            if (state == AL_STOPPED || state == AL_INITIAL)
+            {
+                alSourcei(_instances[i].sourceId, AL_BUFFER, 0);
+                if (_reverbAvailable)
+                {
+                    alSource3i(_instances[i].sourceId, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, 0, AL_FILTER_NULL);
+                }
+                _instances[i].active = false;
+                idx = i;
+                break;
+            }
         }
 
         uint32_t sourceId = 0;
-        alGenSources(1, &sourceId);
-        _alSources.push_back(sourceId);
+        if (idx < _instances.size() && !_instances[idx].active)
+        {
+            sourceId = _instances[idx].sourceId;
+        }
+        else
+        {
+            alGenSources(1, &sourceId);
+            _alSources.push_back(sourceId);
+        }
         alSourcei(sourceId, AL_BUFFER, static_cast<ALint>(buffer));
 
         AudioInstance inst{};
