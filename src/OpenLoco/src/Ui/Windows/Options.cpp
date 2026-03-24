@@ -982,16 +982,21 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace AudioTab
     {
-        // Some widget positions in pixels
         constexpr auto kSoundGroupOffset = 49;
-        constexpr auto kSoundGroupLastItemOffset = 30;
-        constexpr auto kSoundGroupHeight = kSoundGroupLastItemOffset + 19;
+        constexpr auto kSliderRowHeight = 18;
+        constexpr auto kDeviceRowOffset = 14;
+        constexpr auto kCheckboxRowOffset = kDeviceRowOffset + 16;
+        constexpr auto kVolumeGroupOffset = kCheckboxRowOffset + 20;
+        constexpr auto kVolumeFirstSliderOffset = 16;
+        constexpr auto kNumVolumeSliders = 5;
+        constexpr auto kVolumeGroupHeight = kVolumeFirstSliderOffset + kNumVolumeSliders * kSliderRowHeight + 4;
+        constexpr auto kSoundGroupHeight = kVolumeGroupOffset + kVolumeGroupHeight + 4;
 
         constexpr auto kMusicGroupOffset = kSoundGroupOffset + kSoundGroupHeight + 4;
         constexpr auto kMusicGroupLastItemOffset = 73;
         constexpr auto kMusicGroupHeight = kMusicGroupLastItemOffset + 19;
 
-        static constexpr Ui::Size kWindowSize = { 366, 49 + kSoundGroupHeight + 4 + kMusicGroupHeight + 4 };
+        static constexpr Ui::Size kWindowSize = { 366, kSoundGroupOffset + kSoundGroupHeight + 4 + kMusicGroupHeight + 4 };
 
         namespace Widx
         {
@@ -1002,6 +1007,18 @@ namespace OpenLoco::Ui::Windows::Options
                 audio_device_btn,
                 play_title_music,
 
+                frame_volume,
+                volume_master_label,
+                volume_master,
+                volume_music_label,
+                volume_music,
+                volume_effects_label,
+                volume_effects,
+                volume_vehicles_label,
+                volume_vehicles,
+                volume_ui_label,
+                volume_ui,
+
                 frame_jukebox,
                 currently_playing_label,
                 currently_playing,
@@ -1009,30 +1026,42 @@ namespace OpenLoco::Ui::Windows::Options
                 music_controls_stop,
                 music_controls_play,
                 music_controls_next,
-                music_volume_label,
-                music_volume,
                 music_playlist,
                 music_playlist_btn,
                 edit_selection
             };
         }
 
+        constexpr auto kSliderLabelX = 12;
+        constexpr auto kSliderX = 160;
+        constexpr auto kSliderWidth = 196;
+
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_audio),
 
             Widgets::GroupBox({ 4, kSoundGroupOffset }, { kWindowSize.width - 8, kSoundGroupHeight }, WindowColour::secondary, StringIds::frame_sound),
-            Widgets::dropdownWidgets({ 10, kSoundGroupOffset + 14 }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
-            Widgets::Checkbox({ 10, kSoundGroupOffset + kSoundGroupLastItemOffset }, { 346, 12 }, WindowColour::secondary, StringIds::play_title_music),
+            Widgets::dropdownWidgets({ 10, kSoundGroupOffset + kDeviceRowOffset }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
+            Widgets::Checkbox({ 10, kSoundGroupOffset + kCheckboxRowOffset }, { 346, 12 }, WindowColour::secondary, StringIds::play_title_music),
+
+            Widgets::GroupBox({ 6, kSoundGroupOffset + kVolumeGroupOffset }, { kWindowSize.width - 12, kVolumeGroupHeight }, WindowColour::secondary, StringIds::frame_volume),
+            Widgets::Label({ kSliderLabelX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 0 }, { 145, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::master_volume),
+            Widgets::Slider({ kSliderX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 0 - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_master_volume_tip),
+            Widgets::Label({ kSliderLabelX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 1 }, { 145, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::music_channel_volume),
+            Widgets::Slider({ kSliderX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 1 - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_music_channel_volume_tip),
+            Widgets::Label({ kSliderLabelX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 2 }, { 145, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::effects_volume),
+            Widgets::Slider({ kSliderX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 2 - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_effects_volume_tip),
+            Widgets::Label({ kSliderLabelX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 3 }, { 145, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::vehicles_volume),
+            Widgets::Slider({ kSliderX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 3 - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_vehicles_volume_tip),
+            Widgets::Label({ kSliderLabelX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 4 }, { 145, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::ui_volume),
+            Widgets::Slider({ kSliderX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 4 - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_ui_volume_tip),
 
             Widgets::GroupBox({ 4, kMusicGroupOffset }, { kWindowSize.width - 8, kMusicGroupHeight }, WindowColour::secondary, StringIds::frame_jukebox),
-            Widgets::Label({ 10, kMusicGroupOffset + 14 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::currently_playing),
+            Widgets::Label({ 10, kMusicGroupOffset + 14 }, { 145, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::currently_playing),
             Widgets::dropdownWidgets({ 160, kMusicGroupOffset + 14 }, { 196, 12 }, WindowColour::secondary, StringIds::stringid),
             Widgets::ImageButton({ 10, kMusicGroupOffset + 29 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_stop, StringIds::music_controls_stop_tip),
             Widgets::ImageButton({ 34, kMusicGroupOffset + 29 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_play, StringIds::music_controls_play_tip),
             Widgets::ImageButton({ 58, kMusicGroupOffset + 29 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_next, StringIds::music_controls_next_tip),
-            Widgets::Label({ 160, kMusicGroupOffset + 35 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::music_volume),
-            Widgets::Slider({ 256, kMusicGroupOffset + 35 - 6 }, { 109, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_music_volume_tip),
-            Widgets::dropdownWidgets({ 10, kMusicGroupOffset + 58 }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
+            Widgets::dropdownWidgets({ 10, kMusicGroupOffset + 56 }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
             Widgets::Button({ 183, kMusicGroupOffset + kMusicGroupLastItemOffset }, { 173, 12 }, WindowColour::secondary, StringIds::edit_music_selection, StringIds::edit_music_selection_tip));
 
         static void audioDeviceMouseDown(const Window& self);
@@ -1043,7 +1072,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void stopMusic(Window& self);
         static void playMusic(Window& self);
         static void playNextSong(Window& self);
-        static void volumeMouseDown(Window& self);
+        static void volumeSliderMouseDown(Window& self, WidgetIndex_t wi);
         static void musicPlaylistMouseDown(const Window& self);
         static void musicPlaylistDropdown(Window& self, int16_t itemIndex);
 
@@ -1131,17 +1160,23 @@ namespace OpenLoco::Ui::Windows::Options
             }
         }
 
-        // 0x004C02F5, 0x004C05F9
+        static void drawVolumeSlider(Window& self, Gfx::DrawingContext& drawingCtx, WidgetIndex_t widx, int32_t volume)
+        {
+            auto& widget = self.widgets[widx];
+            drawingCtx.drawImage(self.x + widget.left, self.y + widget.top, Gfx::recolour(ImageIds::volume_slider_track, self.getColour(WindowColour::secondary).c()));
+            int16_t x = 90 + (volume / 32);
+            drawingCtx.drawImage(self.x + widget.left + x, self.y + widget.top, Gfx::recolour(ImageIds::volume_slider_thumb, self.getColour(WindowColour::secondary).c()));
+        }
+
         static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
         {
-            // Draw widgets.
             self.draw(drawingCtx);
 
-            // TODO: Move this in Slider widget.
-            drawingCtx.drawImage(self.x + self.widgets[Widx::music_volume].left, self.y + self.widgets[Widx::music_volume].top, Gfx::recolour(ImageIds::volume_slider_track, self.getColour(WindowColour::secondary).c()));
-
-            int16_t x = 90 + (Config::get().audio.mainVolume / 32);
-            drawingCtx.drawImage(self.x + self.widgets[Widx::music_volume].left + x, self.y + self.widgets[Widx::music_volume].top, Gfx::recolour(ImageIds::volume_slider_thumb, self.getColour(WindowColour::secondary).c()));
+            drawVolumeSlider(self, drawingCtx, Widx::volume_master, Audio::getChannelVolume(Audio::ChannelId::master));
+            drawVolumeSlider(self, drawingCtx, Widx::volume_music, Audio::getChannelVolume(Audio::ChannelId::music));
+            drawVolumeSlider(self, drawingCtx, Widx::volume_effects, Audio::getChannelVolume(Audio::ChannelId::effects));
+            drawVolumeSlider(self, drawingCtx, Widx::volume_vehicles, Audio::getChannelVolume(Audio::ChannelId::vehicles));
+            drawVolumeSlider(self, drawingCtx, Widx::volume_ui, Audio::getChannelVolume(Audio::ChannelId::ui));
         }
 
         static void onMouseUp(Window& self, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
@@ -1188,8 +1223,12 @@ namespace OpenLoco::Ui::Windows::Options
                 case Widx::currently_playing_btn:
                     currentlyPlayingMouseDown(self);
                     break;
-                case Widx::music_volume:
-                    volumeMouseDown(self);
+                case Widx::volume_master:
+                case Widx::volume_music:
+                case Widx::volume_effects:
+                case Widx::volume_vehicles:
+                case Widx::volume_ui:
+                    volumeSliderMouseDown(self, wi);
                     break;
             }
         }
@@ -1334,16 +1373,63 @@ namespace OpenLoco::Ui::Windows::Options
             }
         }
 
-        // 0x004C072A
-        static void volumeMouseDown(Window& self)
+        static Audio::ChannelId widgetToChannelId(WidgetIndex_t wi)
+        {
+            switch (wi)
+            {
+                case Widx::volume_master:
+                    return Audio::ChannelId::master;
+                case Widx::volume_music:
+                    return Audio::ChannelId::music;
+                case Widx::volume_effects:
+                    return Audio::ChannelId::effects;
+                case Widx::volume_vehicles:
+                    return Audio::ChannelId::vehicles;
+                case Widx::volume_ui:
+                    return Audio::ChannelId::ui;
+                default:
+                    return Audio::ChannelId::master;
+            }
+        }
+
+        static void saveChannelVolumeToConfig(Audio::ChannelId channel, int32_t volume)
+        {
+            auto& cfg = Config::get().audio;
+            switch (channel)
+            {
+                case Audio::ChannelId::master:
+                    cfg.masterVolume = volume;
+                    break;
+                case Audio::ChannelId::music:
+                    cfg.musicVolume = volume;
+                    break;
+                case Audio::ChannelId::effects:
+                    cfg.effectsVolume = volume;
+                    break;
+                case Audio::ChannelId::vehicles:
+                    cfg.vehiclesVolume = volume;
+                    break;
+                case Audio::ChannelId::ui:
+                    cfg.uiVolume = volume;
+                    break;
+                default:
+                    break;
+            }
+            Config::write();
+        }
+
+        static void volumeSliderMouseDown(Window& self, WidgetIndex_t wi)
         {
             Input::setClickRepeatTicks(31);
 
             auto mousePos = Input::getScrollLastLocation();
-            int x = mousePos.x - self.x - self.widgets[Widx::music_volume].left - 10;
+            int x = mousePos.x - self.x - self.widgets[wi].left - 10;
             x = std::clamp(x, 0, 80);
 
-            Audio::setBgmVolume((x * 32) - 2560);
+            auto volume = (x * 32) - 2560;
+            auto channel = widgetToChannelId(wi);
+            Audio::setChannelVolume(channel, volume);
+            saveChannelVolumeToConfig(channel, volume);
 
             self.invalidate();
         }
@@ -2795,7 +2881,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         else if ((Common::tab)self.currentTab == Common::tab::audio)
         {
-            self.holdableWidgets = (1ULL << AudioTab::Widx::music_volume);
+            self.holdableWidgets = (1ULL << AudioTab::Widx::volume_master) | (1ULL << AudioTab::Widx::volume_music) | (1ULL << AudioTab::Widx::volume_effects) | (1ULL << AudioTab::Widx::volume_vehicles) | (1ULL << AudioTab::Widx::volume_ui);
         }
 
         self.callOnResize();
