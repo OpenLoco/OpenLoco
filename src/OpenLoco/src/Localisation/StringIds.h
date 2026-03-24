@@ -2116,6 +2116,18 @@ namespace OpenLoco::StringIds
     constexpr StringId confirm_vehicle_component_move_cargo_warning_message = 2402;
     constexpr StringId confirm_vehicle_component_move_cargo_multiple_vehicles_warning_message = 2403;
 
+    constexpr StringId master_volume = 2404;
+    constexpr StringId set_master_volume_tip = 2405;
+    constexpr StringId effects_volume = 2406;
+    constexpr StringId set_effects_volume_tip = 2407;
+    constexpr StringId vehicles_volume = 2408;
+    constexpr StringId set_vehicles_volume_tip = 2409;
+    constexpr StringId ui_volume = 2410;
+    constexpr StringId set_ui_volume_tip = 2411;
+    constexpr StringId set_music_channel_volume_tip = 2412;
+    constexpr StringId frame_volume = 2413;
+    constexpr StringId music_channel_volume = 2414;
+
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
     constexpr StringId temporary_object_load_str_2 = 8194;

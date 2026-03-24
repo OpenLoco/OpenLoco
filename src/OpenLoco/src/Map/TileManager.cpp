@@ -1077,7 +1077,7 @@ namespace OpenLoco::World::TileManager
     static void playDemolishTreeSound(const World::Pos3& loc)
     {
         const auto frequency = gPrng2().randNext(20003, 24098);
-        Audio::playSound(Audio::SoundId::demolishTree, loc, -1100, frequency);
+        Audio::playSound(Audio::SoundId::demolishTree, Audio::ChannelId::effects, loc, -1100, frequency);
     }
 
     // 0x004BB432
@@ -1113,7 +1113,7 @@ namespace OpenLoco::World::TileManager
     {
         ExplosionSmoke::create(pos + World::Pos3{ 0, 0, 13 });
         const auto randFreq = gPrng2().randNext(20'003, 24'098);
-        Audio::playSound(Audio::SoundId::demolishBuilding, pos, -1400, randFreq);
+        Audio::playSound(Audio::SoundId::demolishBuilding, Audio::ChannelId::effects, pos, -1400, randFreq);
     }
 
     // 0x0042D8FF

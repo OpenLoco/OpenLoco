@@ -275,7 +275,7 @@ namespace OpenLoco::Vehicles
                     {
                         World::Pos3 splashPos{ this->position.x, this->position.y, newTileHeight.waterHeight };
                         Splash::create(splashPos);
-                        Audio::playSound(Audio::SoundId::splash2, splashPos);
+                        Audio::playSound(Audio::SoundId::splash2, Audio::ChannelId::vehicles, splashPos);
                         this->vehicleFlags |= VehicleFlags::unk_5;
                     }
                 }

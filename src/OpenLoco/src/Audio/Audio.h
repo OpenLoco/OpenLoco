@@ -77,10 +77,10 @@ namespace OpenLoco::Audio
     void unpauseSound();
     bool isAudioEnabled();
 
-    void playSound(SoundId id, const World::Pos3& loc);
-    void playSound(SoundId id, const World::Pos3& loc, int32_t pan);
-    void playSound(SoundId id, int32_t pan);
-    void playSound(SoundId id, const World::Pos3& loc, int32_t volume, int32_t frequency);
+    void playSound(SoundId id, ChannelId channel, const World::Pos3& loc);
+    void playSound(SoundId id, ChannelId channel, const World::Pos3& loc, int32_t pan);
+    void playSound(SoundId id, ChannelId channel, int32_t pan);
+    void playSound(SoundId id, ChannelId channel, const World::Pos3& loc, int32_t volume, int32_t frequency);
 
     std::optional<BufferId> getSoundBuffer(SoundId id);
     bool shouldSoundLoop(SoundId id);

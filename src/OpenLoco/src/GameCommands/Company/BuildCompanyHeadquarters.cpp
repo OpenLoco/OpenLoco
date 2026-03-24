@@ -63,7 +63,7 @@ namespace OpenLoco::GameCommands
 
         if ((flags & Flags::apply) && !(flags & (Flags::aiAllocated | Flags::ghost)))
         {
-            Audio::playSound(Audio::SoundId::construct, args.pos);
+            Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, args.pos);
         }
 
         return totalCost;

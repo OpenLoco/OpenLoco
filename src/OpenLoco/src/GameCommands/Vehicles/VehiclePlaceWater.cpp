@@ -26,7 +26,7 @@ namespace OpenLoco::GameCommands
     static void playWaterPlacedownSound(const World::Pos3 pos)
     {
         const auto frequency = gPrng2().randNext(20003, 24095);
-        Audio::playSound(Audio::SoundId::constructShip, pos, -600, frequency);
+        Audio::playSound(Audio::SoundId::constructShip, Audio::ChannelId::effects, pos, -600, frequency);
     }
 
     // 0x004267BE

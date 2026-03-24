@@ -2120,7 +2120,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             // Failed to place track piece -- rotate and make error sound
             onMouseUp(*window, widx::rotate_90, WidgetId::none);
-            Audio::playSound(Audio::SoundId::error, int32_t(Input::getMouseLocation().x));
+            Audio::playSound(Audio::SoundId::error, Audio::ChannelId::ui, int32_t(Input::getMouseLocation().x));
             return;
         }
     }

@@ -89,6 +89,11 @@ namespace OpenLoco::Config
     {
         std::string device;
         int32_t mainVolume = -1100;
+        int32_t masterVolume = 0;
+        int32_t musicVolume = 0;
+        int32_t effectsVolume = 0;
+        int32_t vehiclesVolume = 0;
+        int32_t uiVolume = 0;
         bool playJukeboxMusic = true;
         bool playTitleMusic = true;
         bool playNewsSounds = true;

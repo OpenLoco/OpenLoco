@@ -792,7 +792,7 @@ namespace OpenLoco::Ui::WindowManager
         if (playSoundOnOpen || (!stickToBack && !stickToFront && !shouldOpenQuietly))
         {
             window.flags |= WindowFlags::whiteBorderMask;
-            Audio::playSound(Audio::SoundId::openWindow, origin.x + size.width / 2);
+            Audio::playSound(Audio::SoundId::openWindow, Audio::ChannelId::ui, origin.x + size.width / 2);
         }
 
         window.eventHandlers = &events;

@@ -1592,7 +1592,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
 
         self.invalidate();
-        Audio::playSound(Audio::SoundId::clickDown, Input::getMouseLocation().x);
+        Audio::playSound(Audio::SoundId::clickDown, Audio::ChannelId::ui, Input::getMouseLocation().x);
 
         auto type = objIndex.object._header.getType();
 

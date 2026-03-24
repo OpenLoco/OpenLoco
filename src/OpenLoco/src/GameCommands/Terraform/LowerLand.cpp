@@ -29,7 +29,7 @@ namespace OpenLoco::GameCommands
             if (getCommandNestLevel() == 1 && getUpdatingCompanyId() != CompanyId::neutral)
             {
                 const auto height = TileManager::getHeight(args.centre).landHeight;
-                Audio::playSound(Audio::SoundId::construct, World::Pos3(args.centre.x, args.centre.y, height));
+                Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, World::Pos3(args.centre.x, args.centre.y, height));
             }
         }
 

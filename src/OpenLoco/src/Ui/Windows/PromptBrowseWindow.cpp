@@ -254,7 +254,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             return;
         }
 
-        Audio::playSound(Audio::SoundId::clickDown, self.x + (self.width / 2));
+        Audio::playSound(Audio::SoundId::clickDown, Audio::ChannelId::ui, self.x + (self.width / 2));
 
         auto& entry = _files[index];
 

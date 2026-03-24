@@ -72,7 +72,7 @@ namespace OpenLoco::Input
     {
         SceneManager::addSceneFlags(SceneManager::Flags::driverCheatEnabled);
 
-        Audio::playSound(Audio::SoundId::clickPress, Ui::width() / 2);
+        Audio::playSound(Audio::SoundId::clickPress, Audio::ChannelId::ui, Ui::width() / 2);
     }
 
     static void loc_4BED04()
@@ -111,7 +111,7 @@ namespace OpenLoco::Input
             GameCommands::VehicleApplyShuntCheatArgs args;
             args.head = EntityId(w->number);
             GameCommands::doCommand(args, GameCommands::Flags::apply);
-            Audio::playSound(Audio::SoundId::clickPress, Ui::width() / 2);
+            Audio::playSound(Audio::SoundId::clickPress, Audio::ChannelId::ui, Ui::width() / 2);
 
             return;
         }
@@ -121,7 +121,7 @@ namespace OpenLoco::Input
     {
         GameCommands::doCommand(GameCommands::ApplyFreeCashCheatArgs(), GameCommands::Flags::apply);
 
-        Audio::playSound(Audio::SoundId::clickPress, Ui::width() / 2);
+        Audio::playSound(Audio::SoundId::clickPress, Audio::ChannelId::ui, Ui::width() / 2);
     }
 
     static void loc_4BEFEF()

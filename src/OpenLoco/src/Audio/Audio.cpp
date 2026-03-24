@@ -41,7 +41,7 @@ namespace OpenLoco::Audio
     void updateVehicleNoise();
     void updateAmbientNoise();
 
-    static void playSound(SoundId id, const World::Pos3& loc, int32_t volume, int32_t pan, int32_t frequency);
+    static void playSound(SoundId id, ChannelId channel, const World::Pos3& loc, int32_t volume, int32_t pan, int32_t frequency);
 
     static BufferId loadSoundFromWaveMemory(const WAVEFORMATEX& format, const void* pcm, size_t pcmLen)
     {
@@ -215,6 +215,12 @@ namespace OpenLoco::Audio
         const auto& cfg = Config::get();
         openDevice(cfg.audio.device);
         initialize();
+
+        setChannelVolume(ChannelId::master, cfg.audio.masterVolume);
+        setChannelVolume(ChannelId::music, cfg.audio.musicVolume);
+        setChannelVolume(ChannelId::effects, cfg.audio.effectsVolume);
+        setChannelVolume(ChannelId::vehicles, cfg.audio.vehiclesVolume);
+        setChannelVolume(ChannelId::ui, cfg.audio.uiVolume);
 
         auto css1path = Environment::getPath(Environment::PathId::css1);
         _samples = loadSoundsFromCSS(css1path);
@@ -421,14 +427,14 @@ namespace OpenLoco::Audio
         return volume;
     }
 
-    void playSound(SoundId id, const World::Pos3& loc)
+    void playSound(SoundId id, ChannelId channel, const World::Pos3& loc)
     {
-        playSound(id, loc, kPlayAtLocation);
+        playSound(id, channel, loc, kPlayAtLocation);
     }
 
-    void playSound(SoundId id, int32_t pan)
+    void playSound(SoundId id, ChannelId channel, int32_t pan)
     {
-        playSound(id, {}, pan);
+        playSound(id, channel, {}, pan);
     }
 
     bool shouldSoundLoop(SoundId id)
@@ -442,14 +448,14 @@ namespace OpenLoco::Audio
         return obj->shouldLoop != 0;
     }
 
-    void playSound(SoundId id, const World::Pos3& loc, int32_t volume, int32_t frequency)
+    void playSound(SoundId id, ChannelId channel, const World::Pos3& loc, int32_t volume, int32_t frequency)
     {
-        playSound(id, loc, volume, kPlayAtLocation, frequency);
+        playSound(id, channel, loc, volume, kPlayAtLocation, frequency);
     }
 
-    void playSound(SoundId id, const World::Pos3& loc, int32_t pan)
+    void playSound(SoundId id, ChannelId channel, const World::Pos3& loc, int32_t pan)
     {
-        playSound(id, loc, 0, pan, 22050);
+        playSound(id, channel, loc, 0, pan, 22050);
     }
 
     constexpr int32_t kVpSizeMin = 64;
@@ -460,7 +466,7 @@ namespace OpenLoco::Audio
         return (relativePosition - (1 << 15)) / 16;
     }
 
-    void playSound(SoundId id, const World::Pos3& loc, int32_t volume, int32_t pan, int32_t frequency)
+    void playSound(SoundId id, ChannelId channel, const World::Pos3& loc, int32_t volume, int32_t pan, int32_t frequency)
     {
         if (!_audioIsEnabled)
         {
@@ -502,7 +508,7 @@ namespace OpenLoco::Audio
             attribs.pan = pan;
             attribs.frequency = frequency;
             attribs.loop = false;
-            auto handle = create(*buffer, ChannelId::effects, attribs);
+            auto handle = create(*buffer, channel, attribs);
             Audio::play(handle);
         }
     }

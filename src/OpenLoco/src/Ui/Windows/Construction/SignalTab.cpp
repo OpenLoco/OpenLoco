@@ -298,7 +298,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         {
             return;
         }
-        Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+        Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, GameCommands::getPosition());
     }
 
     // 0x0049E499

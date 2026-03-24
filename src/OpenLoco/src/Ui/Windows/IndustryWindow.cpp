@@ -191,7 +191,7 @@ namespace OpenLoco::Ui::Windows::Industry
                         break;
                     }
 
-                    Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+                    Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
                     break;
                 }
             }

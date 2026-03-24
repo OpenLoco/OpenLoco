@@ -476,7 +476,7 @@ namespace OpenLoco::Vehicles
                     applyBreakdownToTrain();
 
                     auto soundId = (Audio::SoundId)gPrng1().randNext(26, 26 + 5);
-                    Audio::playSound(soundId, car.body->position + World::Pos3{ 0, 0, 22 });
+                    Audio::playSound(soundId, Audio::ChannelId::vehicles, car.body->position + World::Pos3{ 0, 0, 22 });
                 }
             }
         }
@@ -2677,7 +2677,7 @@ namespace OpenLoco::Vehicles
             {
                 volume = -1500;
             }
-            Audio::playSound(randSoundId, veh2->position + World::Pos3{ 0, 0, 22 }, volume, 22050);
+            Audio::playSound(randSoundId, Audio::ChannelId::vehicles, veh2->position + World::Pos3{ 0, 0, 22 }, volume, 22050);
         }
     }
 
@@ -3317,7 +3317,7 @@ namespace OpenLoco::Vehicles
             auto loc = train.cars.firstCar.body->position + World::Pos3{ 0, 0, 28 };
             CompanyManager::spendMoneyEffect(loc, owner, -cargoProfit);
 
-            Audio::playSound(Audio::SoundId::income, loc);
+            Audio::playSound(Audio::SoundId::income, Audio::ChannelId::ui, loc);
         }
 
         beginLoading();
@@ -3638,7 +3638,7 @@ namespace OpenLoco::Vehicles
             auto randSoundIndex = gPrng1().randNext((vehObj->numStartSounds & NumStartSounds::kMask) - 1);
             auto randSoundId = Audio::makeObjectSoundId(vehObj->startSounds[randSoundIndex]);
             Vehicle2* veh2 = train.veh2;
-            Audio::playSound(randSoundId, veh2->position + World::Pos3{ 0, 0, 22 }, 0, 22050);
+            Audio::playSound(randSoundId, Audio::ChannelId::vehicles, veh2->position + World::Pos3{ 0, 0, 22 }, 0, 22050);
         }
     }
 
@@ -3887,7 +3887,7 @@ namespace OpenLoco::Vehicles
             auto randSoundId = Audio::makeObjectSoundId(vehObj->startSounds[randSoundIndex]);
 
             Vehicle2* veh2 = train.veh2;
-            Audio::playSound(randSoundId, veh2->position + World::Pos3{ 0, 0, 22 }, 0, 22050);
+            Audio::playSound(randSoundId, Audio::ChannelId::vehicles, veh2->position + World::Pos3{ 0, 0, 22 }, 0, 22050);
         }
     }
 

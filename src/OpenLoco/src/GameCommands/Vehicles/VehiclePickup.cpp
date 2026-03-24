@@ -20,7 +20,7 @@ namespace OpenLoco::Vehicles
     void playPickupSound(Vehicles::Vehicle2* veh2)
     {
         const auto frequency = gPrng2().randNext(20003, 24098);
-        Audio::playSound(Audio::SoundId::vehiclePickup, veh2->position, -1000, frequency);
+        Audio::playSound(Audio::SoundId::vehiclePickup, Audio::ChannelId::ui, veh2->position, -1000, frequency);
     }
 }
 
