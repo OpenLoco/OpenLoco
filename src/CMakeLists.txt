@@ -1,3 +1,4 @@
+add_subdirectory(Audio)
 add_subdirectory(Core)
 add_subdirectory(Diagnostics)
 add_subdirectory(Engine)
