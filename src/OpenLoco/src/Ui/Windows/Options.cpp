@@ -988,7 +988,7 @@ namespace OpenLoco::Ui::Windows::Options
         constexpr auto kCheckboxRowOffset = kDeviceRowOffset + 16;
         constexpr auto kVolumeGroupOffset = kCheckboxRowOffset + 20;
         constexpr auto kVolumeFirstSliderOffset = 16;
-        constexpr auto kNumVolumeSliders = 5;
+        constexpr auto kNumVolumeSliders = 6;
         constexpr auto kVolumeGroupHeight = kVolumeFirstSliderOffset + kNumVolumeSliders * kSliderRowHeight + 4;
         constexpr auto kSoundGroupHeight = kVolumeGroupOffset + kVolumeGroupHeight + 4;
 
@@ -1018,6 +1018,8 @@ namespace OpenLoco::Ui::Windows::Options
                 volume_vehicles,
                 volume_ui_label,
                 volume_ui,
+                volume_ambient_label,
+                volume_ambient,
 
                 frame_jukebox,
                 currently_playing_label,
@@ -1054,6 +1056,8 @@ namespace OpenLoco::Ui::Windows::Options
             Widgets::Slider({ kSliderX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 3 - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_vehicles_volume_tip),
             Widgets::Label({ kSliderLabelX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 4 }, { 145, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::ui_volume),
             Widgets::Slider({ kSliderX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 4 - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_ui_volume_tip),
+            Widgets::Label({ kSliderLabelX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 5 }, { 145, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::ambient_volume),
+            Widgets::Slider({ kSliderX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 5 - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_ambient_volume_tip),
 
             Widgets::GroupBox({ 4, kMusicGroupOffset }, { kWindowSize.width - 8, kMusicGroupHeight }, WindowColour::secondary, StringIds::frame_jukebox),
             Widgets::Label({ 10, kMusicGroupOffset + 14 }, { 145, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::currently_playing),
@@ -1177,6 +1181,7 @@ namespace OpenLoco::Ui::Windows::Options
             drawVolumeSlider(self, drawingCtx, Widx::volume_effects, Audio::getChannelVolume(Audio::ChannelId::effects));
             drawVolumeSlider(self, drawingCtx, Widx::volume_vehicles, Audio::getChannelVolume(Audio::ChannelId::vehicles));
             drawVolumeSlider(self, drawingCtx, Widx::volume_ui, Audio::getChannelVolume(Audio::ChannelId::ui));
+            drawVolumeSlider(self, drawingCtx, Widx::volume_ambient, Audio::getChannelVolume(Audio::ChannelId::ambient));
         }
 
         static void onMouseUp(Window& self, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
@@ -1228,6 +1233,7 @@ namespace OpenLoco::Ui::Windows::Options
                 case Widx::volume_effects:
                 case Widx::volume_vehicles:
                 case Widx::volume_ui:
+                case Widx::volume_ambient:
                     volumeSliderMouseDown(self, wi);
                     break;
             }
@@ -1387,6 +1393,8 @@ namespace OpenLoco::Ui::Windows::Options
                     return Audio::ChannelId::vehicles;
                 case Widx::volume_ui:
                     return Audio::ChannelId::ui;
+                case Widx::volume_ambient:
+                    return Audio::ChannelId::ambient;
                 default:
                     return Audio::ChannelId::master;
             }
@@ -1411,6 +1419,9 @@ namespace OpenLoco::Ui::Windows::Options
                     break;
                 case Audio::ChannelId::ui:
                     cfg.uiVolume = volume;
+                    break;
+                case Audio::ChannelId::ambient:
+                    cfg.ambientVolume = volume;
                     break;
                 default:
                     break;
@@ -2881,7 +2892,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         else if ((Common::tab)self.currentTab == Common::tab::audio)
         {
-            self.holdableWidgets = (1ULL << AudioTab::Widx::volume_master) | (1ULL << AudioTab::Widx::volume_music) | (1ULL << AudioTab::Widx::volume_effects) | (1ULL << AudioTab::Widx::volume_vehicles) | (1ULL << AudioTab::Widx::volume_ui);
+            self.holdableWidgets = (1ULL << AudioTab::Widx::volume_master) | (1ULL << AudioTab::Widx::volume_music) | (1ULL << AudioTab::Widx::volume_effects) | (1ULL << AudioTab::Widx::volume_vehicles) | (1ULL << AudioTab::Widx::volume_ui) | (1ULL << AudioTab::Widx::volume_ambient);
         }
 
         self.callOnResize();

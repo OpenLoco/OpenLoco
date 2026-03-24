@@ -171,14 +171,10 @@ namespace OpenLoco::Audio
 
     void shutdown()
     {
-        for (auto& inst : _instances)
+        for (auto& sourceId : _alSources)
         {
-            if (inst.active)
-            {
-                alSourceStop(inst.sourceId);
-                alSourcei(inst.sourceId, AL_BUFFER, 0);
-                inst.active = false;
-            }
+            alSourceStop(sourceId);
+            alSourcei(sourceId, AL_BUFFER, 0);
         }
         _instances.clear();
 

@@ -2467,3 +2467,5 @@ strings:
   2412: "{SMALLFONT}{COLOUR WHITE}Adjust the music volume"
   2413: "Volume"
   2414: "Music"
+  2415: "Ambient"
+  2416: "{SMALLFONT}{COLOUR WHITE}Adjust the ambient volume"

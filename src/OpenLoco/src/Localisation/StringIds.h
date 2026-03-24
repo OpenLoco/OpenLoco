@@ -2127,6 +2127,8 @@ namespace OpenLoco::StringIds
     constexpr StringId set_music_channel_volume_tip = 2412;
     constexpr StringId frame_volume = 2413;
     constexpr StringId music_channel_volume = 2414;
+    constexpr StringId ambient_volume = 2415;
+    constexpr StringId set_ambient_volume_tip = 2416;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

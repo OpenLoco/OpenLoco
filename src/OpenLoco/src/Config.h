@@ -94,6 +94,7 @@ namespace OpenLoco::Config
         int32_t effectsVolume = 0;
         int32_t vehiclesVolume = 0;
         int32_t uiVolume = 0;
+        int32_t ambientVolume = 0;
         bool playJukeboxMusic = true;
         bool playTitleMusic = true;
         bool playNewsSounds = true;

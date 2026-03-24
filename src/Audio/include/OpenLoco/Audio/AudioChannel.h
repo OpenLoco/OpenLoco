@@ -11,6 +11,7 @@ namespace OpenLoco::Audio
         effects,
         vehicles,
         ui,
+        ambient,
         count
     };
 }

@@ -144,7 +144,7 @@ namespace OpenLoco::Audio
                 AudioAttributes attribs{};
                 attribs.volume = kAmbientMinVolume;
                 attribs.loop = true;
-                _ambientHandle = create(*musicBuffer, ChannelId::effects, attribs);
+                _ambientHandle = create(*musicBuffer, ChannelId::ambient, attribs);
                 Audio::play(_ambientHandle);
                 _ambientVolume = kAmbientMinVolume;
                 _chosenAmbientNoisePathId = *newAmbientSound;
