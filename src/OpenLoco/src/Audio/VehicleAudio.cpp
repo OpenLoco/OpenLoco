@@ -37,19 +37,37 @@ namespace OpenLoco::Audio
         return std::min<uint8_t>(zoom, 2) * kVolumeModifierZoomIncrement;
     }
 
-    static int8_t getUndergroundVolumeModifier(const World::Pos3& pos)
+    static bool isUnderground(const World::Pos3& pos)
     {
         if (pos.x == Location::null || !World::validCoords(pos))
         {
-            return 0;
+            return false;
         }
         auto* surface = World::TileManager::get(pos).surface();
-        if (surface->baseHeight() > pos.z)
-        {
-            return kVolumeModifierUnderground;
-        }
-        return 0;
+        return surface->baseHeight() > pos.z;
     }
+
+    static int8_t getUndergroundVolumeModifier(const World::Pos3& pos)
+    {
+        return isUnderground(pos) ? kVolumeModifierUnderground : 0;
+    }
+
+    static constexpr ReverbParams kTunnelReverb = {
+        .density = 0.8f,
+        .diffusion = 0.5f,
+        .gain = 0.6f,
+        .gainHF = 0.7f,
+        .decayTime = 2.5f,
+        .decayHFRatio = 0.65f,
+        .reflectionsGain = 0.2f,
+        .reflectionsDelay = 0.015f,
+        .lateReverbGain = 1.5f,
+        .lateReverbDelay = 0.02f,
+    };
+
+    static constexpr ReverbParams kNoReverb = {
+        .gain = 0.0f,
+    };
 
     static uint8_t getFalloffModifier(int32_t pan)
     {
@@ -120,6 +138,7 @@ namespace OpenLoco::Audio
         {
             sound.activeSoundId = sound.drivingSoundId;
             sound.audioHandle = create(*buffer, ChannelId::vehicles, attribs);
+            setReverb(sound.audioHandle, isUnderground(base.position) ? kTunnelReverb : kNoReverb);
             Audio::play(sound.audioHandle);
         }
     }
@@ -155,6 +174,7 @@ namespace OpenLoco::Audio
         setVolume(sound.audioHandle, attribs.volume);
         setPan(sound.audioHandle, attribs.pan);
         setPitch(sound.audioHandle, attribs.frequency);
+        setReverb(sound.audioHandle, isUnderground(base.position) ? kTunnelReverb : kNoReverb);
     }
 
     static void triggerVehicleSoundIfInView(Vehicles::VehicleBase& v, Vehicles::VehicleSound& soundParams)
