@@ -52,10 +52,7 @@ namespace OpenLoco::Audio
     int32_t getChannelVolume(ChannelId channel);
 
     // Effects
-    void addEffect(AudioHandle handle, EffectType type);
-    void removeEffect(AudioHandle handle, EffectType type);
-    void setReverbParams(AudioHandle handle, const ReverbParams& params);
-    void setDopplerParams(AudioHandle handle, const DopplerParams& params);
+    void setReverb(AudioHandle handle, const ReverbParams& params);
 
     // Global control
     void pauseAll();

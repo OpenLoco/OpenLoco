@@ -1,6 +1,8 @@
+#define AL_ALEXT_PROTOTYPES
 #include <AL/al.h>
 #include <AL/alc.h>
 #include <AL/alext.h>
+#include <AL/efx.h>
 #include <OpenLoco/Audio/AudioEngine.h>
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <algorithm>
@@ -30,6 +32,10 @@ namespace OpenLoco::Audio
 
     static std::vector<AudioInstance> _instances;
     static std::array<int32_t, static_cast<size_t>(ChannelId::count)> _channelVolumes{};
+
+    static ALuint _reverbEffect = 0;
+    static ALuint _reverbSlot = 0;
+    static bool _reverbAvailable = false;
 
     // Conversion helpers
 
@@ -130,11 +136,31 @@ namespace OpenLoco::Audio
         Logging::info("OpenAL {}, Vendor: {}, Renderer: {}, initialized.",
             alGetString(AL_VERSION), alGetString(AL_VENDOR), alGetString(AL_RENDERER));
 
+        _reverbAvailable = alcIsExtensionPresent(_alcDevice, "ALC_EXT_EFX") == ALC_TRUE;
+        if (_reverbAvailable)
+        {
+            alGenEffects(1, &_reverbEffect);
+            alEffecti(_reverbEffect, AL_EFFECT_TYPE, AL_EFFECT_REVERB);
+
+            alGenAuxiliaryEffectSlots(1, &_reverbSlot);
+            alAuxiliaryEffectSloti(_reverbSlot, AL_EFFECTSLOT_EFFECT, static_cast<ALint>(_reverbEffect));
+
+            Logging::info("OpenAL EFX reverb initialized.");
+        }
+
         return true;
     }
 
     void closeDevice()
     {
+        if (_reverbAvailable)
+        {
+            alDeleteAuxiliaryEffectSlots(1, &_reverbSlot);
+            alDeleteEffects(1, &_reverbEffect);
+            _reverbSlot = 0;
+            _reverbEffect = 0;
+            _reverbAvailable = false;
+        }
         if (_alcContext != nullptr)
         {
             alcMakeContextCurrent(nullptr);
@@ -403,20 +429,38 @@ namespace OpenLoco::Audio
 
     // Effects
 
-    void addEffect([[maybe_unused]] AudioHandle handle, [[maybe_unused]] EffectType type)
+    void setReverb(AudioHandle handle, const ReverbParams& params)
     {
-    }
+        if (!_reverbAvailable)
+        {
+            return;
+        }
 
-    void removeEffect([[maybe_unused]] AudioHandle handle, [[maybe_unused]] EffectType type)
-    {
-    }
+        auto* inst = getInstance(handle);
+        if (inst == nullptr)
+        {
+            return;
+        }
 
-    void setReverbParams([[maybe_unused]] AudioHandle handle, [[maybe_unused]] const ReverbParams& params)
-    {
-    }
-
-    void setDopplerParams([[maybe_unused]] AudioHandle handle, [[maybe_unused]] const DopplerParams& params)
-    {
+        if (params.gain > 0.0f)
+        {
+            alEffectf(_reverbEffect, AL_REVERB_DENSITY, params.density);
+            alEffectf(_reverbEffect, AL_REVERB_DIFFUSION, params.diffusion);
+            alEffectf(_reverbEffect, AL_REVERB_GAIN, params.gain);
+            alEffectf(_reverbEffect, AL_REVERB_GAINHF, params.gainHF);
+            alEffectf(_reverbEffect, AL_REVERB_DECAY_TIME, params.decayTime);
+            alEffectf(_reverbEffect, AL_REVERB_DECAY_HFRATIO, params.decayHFRatio);
+            alEffectf(_reverbEffect, AL_REVERB_REFLECTIONS_GAIN, params.reflectionsGain);
+            alEffectf(_reverbEffect, AL_REVERB_REFLECTIONS_DELAY, params.reflectionsDelay);
+            alEffectf(_reverbEffect, AL_REVERB_LATE_REVERB_GAIN, params.lateReverbGain);
+            alEffectf(_reverbEffect, AL_REVERB_LATE_REVERB_DELAY, params.lateReverbDelay);
+            alAuxiliaryEffectSloti(_reverbSlot, AL_EFFECTSLOT_EFFECT, static_cast<ALint>(_reverbEffect));
+            alSource3i(inst->sourceId, AL_AUXILIARY_SEND_FILTER, static_cast<ALint>(_reverbSlot), 0, AL_FILTER_NULL);
+        }
+        else
+        {
+            alSource3i(inst->sourceId, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, 0, AL_FILTER_NULL);
+        }
     }
 
     // Global control
