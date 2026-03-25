@@ -110,8 +110,7 @@ namespace OpenLoco::Audio
         }
 
         constexpr ALCint attrs[] = {
-            ALC_HRTF_SOFT, ALC_FALSE,
-            0
+            ALC_HRTF_SOFT, ALC_FALSE, 0
         };
 
         _alcContext = alcCreateContext(_alcDevice, attrs);
@@ -133,8 +132,7 @@ namespace OpenLoco::Audio
             return false;
         }
 
-        Logging::info("OpenAL {}, Vendor: {}, Renderer: {}, initialized.",
-            alGetString(AL_VERSION), alGetString(AL_VENDOR), alGetString(AL_RENDERER));
+        Logging::info("OpenAL {}, Vendor: {}, Renderer: {}, initialized.", alGetString(AL_VERSION), alGetString(AL_VENDOR), alGetString(AL_RENDERER));
 
         _reverbAvailable = alcIsExtensionPresent(_alcDevice, "ALC_EXT_EFX") == ALC_TRUE;
         if (_reverbAvailable)

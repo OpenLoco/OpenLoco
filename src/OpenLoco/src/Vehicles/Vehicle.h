@@ -2,12 +2,12 @@
 
 #include "Entities/Entity.h"
 #include "Map/Track/TrackModSection.h"
-#include <OpenLoco/Audio/AudioHandle.h>
 #include "Objects/VehicleObject.h"
 #include "Routing.h"
 #include "Speed.hpp"
 #include "Types.hpp"
 #include "Ui/Window.h"
+#include <OpenLoco/Audio/AudioHandle.h>
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Exception.hpp>
 
