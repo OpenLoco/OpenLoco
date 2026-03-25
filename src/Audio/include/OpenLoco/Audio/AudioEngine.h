@@ -54,6 +54,8 @@ namespace OpenLoco::Audio
     // Effects
     void setReverb(AudioHandle handle, const ReverbParams& params);
 
+    void reclaimFinishedInstances();
+
     // Global control
     void pauseAll();
     void unpauseAll();

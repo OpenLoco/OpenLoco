@@ -557,6 +557,7 @@ namespace OpenLoco::Audio
 
     void update()
     {
+        reclaimFinishedInstances();
         updateVehicleNoise();
         updateAmbientNoise();
     }

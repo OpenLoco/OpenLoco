@@ -242,6 +242,28 @@ namespace OpenLoco::Audio
 
     // Handle management
 
+    void reclaimFinishedInstances()
+    {
+        for (auto& inst : _instances)
+        {
+            if (!inst.active)
+            {
+                continue;
+            }
+            int32_t state = 0;
+            alGetSourcei(inst.sourceId, AL_SOURCE_STATE, &state);
+            if (state == AL_STOPPED || state == AL_INITIAL)
+            {
+                alSourcei(inst.sourceId, AL_BUFFER, 0);
+                if (_reverbAvailable)
+                {
+                    alSource3i(inst.sourceId, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, 0, AL_FILTER_NULL);
+                }
+                inst.active = false;
+            }
+        }
+    }
+
     AudioHandle create(BufferId buffer, ChannelId channel, const AudioAttributes& attribs)
     {
         uint32_t idx = static_cast<uint32_t>(_instances.size());
@@ -252,24 +274,10 @@ namespace OpenLoco::Audio
                 idx = i;
                 break;
             }
-
-            int32_t state = 0;
-            alGetSourcei(_instances[i].sourceId, AL_SOURCE_STATE, &state);
-            if (state == AL_STOPPED || state == AL_INITIAL)
-            {
-                alSourcei(_instances[i].sourceId, AL_BUFFER, 0);
-                if (_reverbAvailable)
-                {
-                    alSource3i(_instances[i].sourceId, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, 0, AL_FILTER_NULL);
-                }
-                _instances[i].active = false;
-                idx = i;
-                break;
-            }
         }
 
         uint32_t sourceId = 0;
-        if (idx < _instances.size() && !_instances[idx].active)
+        if (idx < _instances.size())
         {
             sourceId = _instances[idx].sourceId;
         }
@@ -312,8 +320,10 @@ namespace OpenLoco::Audio
         }
         alSourceStop(inst->sourceId);
         alSourcei(inst->sourceId, AL_BUFFER, 0);
-        alDeleteSources(1, &inst->sourceId);
-        _alSources.erase(std::remove(_alSources.begin(), _alSources.end(), inst->sourceId), _alSources.end());
+        if (_reverbAvailable)
+        {
+            alSource3i(inst->sourceId, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, 0, AL_FILTER_NULL);
+        }
         inst->active = false;
     }
 
