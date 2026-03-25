@@ -983,7 +983,7 @@ namespace OpenLoco::Ui::Windows::Options
     namespace AudioTab
     {
         constexpr auto kSoundGroupOffset = 49;
-        constexpr auto kSliderRowHeight = 18;
+        constexpr auto kSliderRowHeight = 24;
         constexpr auto kDeviceRowOffset = 14;
         constexpr auto kCheckboxRowOffset = kDeviceRowOffset + 16;
         constexpr auto kVolumeGroupOffset = kCheckboxRowOffset + 20;
