@@ -20,10 +20,6 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Audio
 {
-    static constexpr uint8_t kMaxVehicleSounds = 16;
-
-    static uint8_t _numActiveVehicleSounds;
-
     constexpr int8_t kVolumeModifierZoomIncrement = -35;
     constexpr int8_t kVolumeModifierUnderground = -28;
     constexpr uint8_t kVolumeModifierMax = 255;
@@ -45,11 +41,6 @@ namespace OpenLoco::Audio
         }
         auto* surface = World::TileManager::get(pos).surface();
         return surface->baseHeight() > pos.z;
-    }
-
-    static int8_t getUndergroundVolumeModifier(const World::Pos3& pos)
-    {
-        return isUnderground(pos) ? kVolumeModifierUnderground : 0;
     }
 
     static constexpr ReverbParams kTunnelReverb = {
@@ -88,25 +79,54 @@ namespace OpenLoco::Audio
         return falloffModifier;
     }
 
-    static AudioAttributes getVehicleAudioAttributes(const Vehicles::VehicleBase& base, const Vehicles::VehicleSound& soundParams)
+    static Viewport* findBestViewportForEntity(const World::Pos3& position)
     {
-        auto* w = WindowManager::find(soundParams.soundWindowType, soundParams.soundWindowNumber);
-        auto* viewport = w->viewports[0];
-        const auto uiPoint = viewport->viewportToScreen({ base.spriteLeft, base.spriteTop });
+        auto vpPos = World::gameToScreen(position, WindowManager::getCurrentRotation());
 
-        const auto zoomVolumeModifier = getZoomVolumeModifier(viewport->zoom);
+        auto main = WindowManager::getMainWindow();
+        if (main != nullptr && main->viewports[0] != nullptr)
+        {
+            if (main->viewports[0]->contains(vpPos))
+            {
+                return main->viewports[0];
+            }
+        }
+
+        for (size_t i = 0; i < WindowManager::count(); i++)
+        {
+            auto w = WindowManager::get(i);
+            if (w->type == WindowType::main || w->type == WindowType::news)
+            {
+                continue;
+            }
+            auto viewport = w->viewports[0];
+            if (viewport != nullptr && viewport->contains(vpPos))
+            {
+                return viewport;
+            }
+        }
+
+        return nullptr;
+    }
+
+    static AudioAttributes getVehicleAudioAttributes(const Vehicles::VehicleBase& base, const Vehicles::VehicleSound& soundParams, const Viewport& viewport)
+    {
+        auto vpPos = World::gameToScreen(base.position, WindowManager::getCurrentRotation());
+        const auto uiPoint = viewport.viewportToScreen(vpPos);
+
+        const auto zoomVolumeModifier = getZoomVolumeModifier(viewport.zoom);
 
         const auto panX = calculatePan(uiPoint.x, Ui::width());
         const auto panY = calculatePan(uiPoint.y, Ui::height());
 
-        const auto undergroundVolumeModifier = getUndergroundVolumeModifier(base.position);
+        const auto undergroundModifier = isUnderground(base.position) ? kVolumeModifierUnderground : 0;
 
         const auto xFalloffModifier = getFalloffModifier(panX);
         const auto yFalloffModifier = getFalloffModifier(panY);
 
         const auto falloffVolumeModifier = std::min(xFalloffModifier, yFalloffModifier);
 
-        const auto overallVolumeModifier = std::max(falloffVolumeModifier + undergroundVolumeModifier + zoomVolumeModifier, 0);
+        const auto overallVolumeModifier = std::max(falloffVolumeModifier + undergroundModifier + zoomVolumeModifier, 0);
 
         const auto volume = std::max(((soundParams.drivingSoundVolume * overallVolumeModifier) / 8) + kVehicleVolumeCalcMin, kVolumeMin);
 
@@ -127,38 +147,41 @@ namespace OpenLoco::Audio
         sound.activeSoundId = SoundObjectId::null;
     }
 
-    static void beginVehicleSound(Vehicles::VehicleBase& base, Vehicles::VehicleSound& sound)
+    static void updateSingleVehicleSound(Vehicles::VehicleBase& base, Vehicles::VehicleSound& sound)
     {
-        auto sid = makeObjectSoundId(sound.drivingSoundId);
-        auto attribs = getVehicleAudioAttributes(base, sound);
-        attribs.loop = shouldSoundLoop(sid);
-
-        auto buffer = getSoundBuffer(sid);
-        if (buffer)
+        if (sound.drivingSoundId == SoundObjectId::null)
         {
-            sound.activeSoundId = sound.drivingSoundId;
-            sound.audioHandle = create(*buffer, ChannelId::vehicles, attribs);
-            setReverb(sound.audioHandle, isUnderground(base.position) ? kTunnelReverb : kNoReverb);
-            Audio::play(sound.audioHandle);
+            if (sound.audioHandle != AudioHandle::null)
+            {
+                stopVehicleSound(sound);
+            }
+            return;
         }
-    }
 
-    static void updateVehicleSound(Vehicles::VehicleBase& base, Vehicles::VehicleSound& sound)
-    {
+        auto* viewport = findBestViewportForEntity(base.position);
+        if (viewport == nullptr)
+        {
+            if (sound.audioHandle != AudioHandle::null)
+            {
+                stopVehicleSound(sound);
+            }
+            return;
+        }
+
+        auto sid = makeObjectSoundId(sound.drivingSoundId);
+        auto attribs = getVehicleAudioAttributes(base, sound, *viewport);
+
         if (sound.audioHandle == AudioHandle::null)
         {
-            return;
-        }
-
-        if (!base.hasSoundPlayer())
-        {
-            stopVehicleSound(sound);
-            return;
-        }
-
-        if ((sound.soundFlags & Vehicles::SoundFlags::flag0) == Vehicles::SoundFlags::none)
-        {
-            stopVehicleSound(sound);
+            attribs.loop = shouldSoundLoop(sid);
+            auto buffer = getSoundBuffer(sid);
+            if (buffer)
+            {
+                sound.activeSoundId = sound.drivingSoundId;
+                sound.audioHandle = create(*buffer, ChannelId::vehicles, attribs);
+                setReverb(sound.audioHandle, isUnderground(base.position) ? kTunnelReverb : kNoReverb);
+                Audio::play(sound.audioHandle);
+            }
             return;
         }
 
@@ -168,140 +191,10 @@ namespace OpenLoco::Audio
             return;
         }
 
-        auto attribs = getVehicleAudioAttributes(base, sound);
-        sound.soundFlags &= ~Vehicles::SoundFlags::flag0;
-
         setVolume(sound.audioHandle, attribs.volume);
         setPan(sound.audioHandle, attribs.pan);
         setPitch(sound.audioHandle, attribs.frequency);
         setReverb(sound.audioHandle, isUnderground(base.position) ? kTunnelReverb : kNoReverb);
-    }
-
-    static void triggerVehicleSoundIfInView(Vehicles::VehicleBase& v, Vehicles::VehicleSound& soundParams)
-    {
-        if (soundParams.drivingSoundId == SoundObjectId::null)
-        {
-            return;
-        }
-
-        if (v.spriteLeft == Location::null)
-        {
-            return;
-        }
-
-        if (_numActiveVehicleSounds >= kMaxVehicleSounds)
-        {
-            return;
-        }
-
-        auto spritePosition = viewport_pos(v.spriteLeft, v.spriteTop);
-
-        auto main = WindowManager::getMainWindow();
-        if (main != nullptr && main->viewports[0] != nullptr)
-        {
-            auto viewport = main->viewports[0];
-            ViewportRect extendedViewport = {};
-
-            auto quarterWidth = viewport->viewWidth / 4;
-            auto quarterHeight = viewport->viewHeight / 4;
-            extendedViewport.left = viewport->viewX - quarterWidth;
-            extendedViewport.top = viewport->viewY - quarterHeight;
-            extendedViewport.right = viewport->viewX + viewport->viewWidth + quarterWidth;
-            extendedViewport.bottom = viewport->viewY + viewport->viewHeight + quarterHeight;
-
-            if (extendedViewport.contains(spritePosition))
-            {
-                _numActiveVehicleSounds += 1;
-                soundParams.soundFlags |= Vehicles::SoundFlags::flag0;
-                soundParams.soundWindowType = main->type;
-                soundParams.soundWindowNumber = main->number;
-                return;
-            }
-        }
-
-        if (WindowManager::count() == 0)
-        {
-            return;
-        }
-
-        for (auto i = (int32_t)WindowManager::count() - 1; i >= 0; i--)
-        {
-            auto w = WindowManager::get(i);
-
-            if (w->type == WindowType::main)
-            {
-                continue;
-            }
-
-            if (w->type == WindowType::news)
-            {
-                continue;
-            }
-
-            auto viewport = w->viewports[0];
-            if (viewport == nullptr)
-            {
-                continue;
-            }
-
-            if (viewport->contains(spritePosition))
-            {
-                _numActiveVehicleSounds += 1;
-                soundParams.soundFlags |= Vehicles::SoundFlags::flag0;
-                soundParams.soundWindowType = w->type;
-                soundParams.soundWindowNumber = w->number;
-                return;
-            }
-        }
-    }
-
-    static void tryBeginVehicleSound(Vehicles::VehicleBase& v, Vehicles::VehicleSound& sound)
-    {
-        if ((sound.soundFlags & Vehicles::SoundFlags::flag0) != Vehicles::SoundFlags::none
-            && sound.audioHandle == AudioHandle::null)
-        {
-            beginVehicleSound(v, sound);
-        }
-    }
-
-    static void processVehicleForSound(Vehicles::VehicleBase& v, Vehicles::VehicleSound& soundParams, int32_t step)
-    {
-        switch (step)
-        {
-            case 0:
-                soundParams.soundFlags &= ~Vehicles::SoundFlags::flag0;
-                break;
-            case 1:
-                if ((soundParams.soundFlags & Vehicles::SoundFlags::flag1) == Vehicles::SoundFlags::none)
-                {
-                    triggerVehicleSoundIfInView(v, soundParams);
-                }
-                break;
-            case 2:
-                if ((soundParams.soundFlags & Vehicles::SoundFlags::flag1) != Vehicles::SoundFlags::none)
-                {
-                    triggerVehicleSoundIfInView(v, soundParams);
-                }
-                break;
-            case 3:
-                tryBeginVehicleSound(v, soundParams);
-                break;
-        }
-    }
-
-    static void processVehicleSounds(int32_t step)
-    {
-        if (step == 0)
-        {
-            _numActiveVehicleSounds = 0;
-        }
-
-        for (auto* v : VehicleManager::VehicleList())
-        {
-            Vehicles::Vehicle train(*v);
-            processVehicleForSound(*train.veh2, train.veh2->sound, step);
-            processVehicleForSound(*train.tail, train.tail->sound, step);
-        }
     }
 
     void updateVehicleNoise()
@@ -315,18 +208,12 @@ namespace OpenLoco::Audio
             return;
         }
 
-        processVehicleSounds(0);
-        processVehicleSounds(1);
-        processVehicleSounds(2);
-
         for (auto* v : VehicleManager::VehicleList())
         {
             Vehicles::Vehicle train(*v);
-            updateVehicleSound(*train.veh2, train.veh2->sound);
-            updateVehicleSound(*train.tail, train.tail->sound);
+            updateSingleVehicleSound(*train.veh2, train.veh2->sound);
+            updateSingleVehicleSound(*train.tail, train.tail->sound);
         }
-
-        processVehicleSounds(3);
     }
 
     void stopVehicleNoise()
