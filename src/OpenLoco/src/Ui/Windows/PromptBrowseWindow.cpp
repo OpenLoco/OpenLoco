@@ -164,10 +164,11 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             }
 
             WindowManager::setCurrentModalType(WindowType::fileBrowserPrompt);
+            Audio::stopVehicleNoise();
+            Audio::stopAmbientNoise();
             const bool success = promptTickLoop(
                 []() {
                     Input::handleKeyboard();
-                    Audio::update();
                     WindowManager::dispatchUpdateAll();
                     Input::processKeyboardInput();
                     Input::processMouseWheel();

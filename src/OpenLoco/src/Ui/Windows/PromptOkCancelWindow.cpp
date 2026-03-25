@@ -73,10 +73,11 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
 
         auto originalModal = WindowManager::getCurrentModalType();
         WindowManager::setCurrentModalType(WindowType::confirmationPrompt);
+        Audio::stopVehicleNoise();
+        Audio::stopAmbientNoise();
         promptTickLoop(
             []() {
                 Input::handleKeyboard();
-                Audio::update();
                 WindowManager::dispatchUpdateAll();
                 Input::processKeyboardInput();
                 WindowManager::update();
