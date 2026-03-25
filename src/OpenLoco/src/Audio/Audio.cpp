@@ -238,9 +238,7 @@ namespace OpenLoco::Audio
 
     void close()
     {
-        stopAmbientNoise();
-        stopVehicleNoise();
-        stopMusic();
+        stopAll();
     }
 
 #ifdef __HAS_DEFAULT_DEVICE__
@@ -560,6 +558,14 @@ namespace OpenLoco::Audio
         reclaimFinishedInstances();
         updateVehicleNoise();
         updateAmbientNoise();
+    }
+
+    void stopAll()
+    {
+        stopVehicleNoise();
+        stopAmbientNoise();
+        stopMusic();
+        reclaimFinishedInstances();
     }
 
     void resetSoundObjects()

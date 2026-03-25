@@ -649,7 +649,7 @@ namespace OpenLoco::S5
                 EntityManager::reset();
             }
 
-            Audio::stopVehicleNoise();
+            Audio::stopAll();
             EntityManager::resetSpatialIndex();
             CompanyManager::updateColours();
             ObjectManager::updateTerraformObjects();
