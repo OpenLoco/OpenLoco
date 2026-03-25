@@ -134,7 +134,14 @@ namespace OpenLoco::Audio
 
         Logging::info("OpenAL {}, Vendor: {}, Renderer: {}, initialized.", alGetString(AL_VERSION), alGetString(AL_VENDOR), alGetString(AL_RENDERER));
 
+        // Need to disable this for debug builds, there is a bug in OpenAL that triggers an iterator check, but no release has been made yet.
+        // https://github.com/kcat/openal-soft/issues/1238
+        // It is functional for release builds so we just skip it for debug. Once a fixed version of OpenAL is released we can remove this workaround.
+#ifdef NDEBUG
         _reverbAvailable = alcIsExtensionPresent(_alcDevice, "ALC_EXT_EFX") == ALC_TRUE;
+#else
+        _reverbAvailable = false;
+#endif
         if (_reverbAvailable)
         {
             alGenEffects(1, &_reverbEffect);
