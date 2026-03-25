@@ -4,6 +4,7 @@
 #include "Types.hpp"
 #include <OpenLoco/Audio/AudioEngine.h>
 #include <OpenLoco/Engine/World.hpp>
+#include <cmath>
 #include <optional>
 #include <string>
 #include <vector>
@@ -108,4 +109,32 @@ namespace OpenLoco::Audio
     std::optional<BufferId> loadMusicSample(Environment::PathId asset);
 
     int32_t calculatePan(const coord_t coord, const int32_t screenSize);
+
+    constexpr int32_t kVolumeDbMin = -6000;
+
+    inline int32_t percentToDb(int32_t percent)
+    {
+        if (percent <= 0)
+        {
+            return kVolumeDbMin;
+        }
+        if (percent >= 100)
+        {
+            return 0;
+        }
+        return static_cast<int32_t>(2000.0f * std::log10(static_cast<float>(percent) / 100.0f));
+    }
+
+    inline int32_t dbToPercent(int32_t db)
+    {
+        if (db <= kVolumeDbMin)
+        {
+            return 0;
+        }
+        if (db >= 0)
+        {
+            return 100;
+        }
+        return static_cast<int32_t>(100.0f * std::pow(10.0f, static_cast<float>(db) / 2000.0f));
+    }
 }

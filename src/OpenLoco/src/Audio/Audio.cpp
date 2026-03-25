@@ -216,12 +216,12 @@ namespace OpenLoco::Audio
         openDevice(cfg.audio.device);
         initialize();
 
-        setChannelVolume(ChannelId::master, cfg.audio.masterVolume);
-        setChannelVolume(ChannelId::music, cfg.audio.musicVolume);
-        setChannelVolume(ChannelId::effects, cfg.audio.effectsVolume);
-        setChannelVolume(ChannelId::vehicles, cfg.audio.vehiclesVolume);
-        setChannelVolume(ChannelId::ui, cfg.audio.uiVolume);
-        setChannelVolume(ChannelId::ambient, cfg.audio.ambientVolume);
+        setChannelVolume(ChannelId::master, percentToDb(cfg.audio.masterVolume));
+        setChannelVolume(ChannelId::music, percentToDb(cfg.audio.musicVolume));
+        setChannelVolume(ChannelId::effects, percentToDb(cfg.audio.effectsVolume));
+        setChannelVolume(ChannelId::vehicles, percentToDb(cfg.audio.vehiclesVolume));
+        setChannelVolume(ChannelId::ui, percentToDb(cfg.audio.uiVolume));
+        setChannelVolume(ChannelId::ambient, percentToDb(cfg.audio.ambientVolume));
 
         auto css1path = Environment::getPath(Environment::PathId::css1);
         _samples = loadSoundsFromCSS(css1path);

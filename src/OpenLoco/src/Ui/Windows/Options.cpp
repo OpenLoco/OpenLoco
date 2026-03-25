@@ -1164,11 +1164,14 @@ namespace OpenLoco::Ui::Windows::Options
             }
         }
 
+        static constexpr int32_t kSliderPixelRange = 80;
+        static constexpr int32_t kThumbHalfWidth = 10;
+
         static void drawVolumeSlider(Window& self, Gfx::DrawingContext& drawingCtx, WidgetIndex_t widx, int32_t volume)
         {
             auto& widget = self.widgets[widx];
             drawingCtx.drawImage(self.x + widget.left, self.y + widget.top, Gfx::recolour(ImageIds::volume_slider_track, self.getColour(WindowColour::secondary).c()));
-            int16_t x = 90 + (volume / 32);
+            int16_t x = kThumbHalfWidth + Audio::dbToPercent(volume) * kSliderPixelRange / 100;
             drawingCtx.drawImage(self.x + widget.left + x, self.y + widget.top, Gfx::recolour(ImageIds::volume_slider_thumb, self.getColour(WindowColour::secondary).c()));
         }
 
@@ -1434,13 +1437,12 @@ namespace OpenLoco::Ui::Windows::Options
             Input::setClickRepeatTicks(31);
 
             auto mousePos = Input::getScrollLastLocation();
-            int x = mousePos.x - self.x - self.widgets[wi].left - 10;
-            x = std::clamp(x, 0, 80);
+            int x = mousePos.x - self.x - self.widgets[wi].left - kThumbHalfWidth;
+            auto percent = std::clamp(x * 100 / kSliderPixelRange, 0, 100);
 
-            auto volume = (x * 32) - 2560;
             auto channel = widgetToChannelId(wi);
-            Audio::setChannelVolume(channel, volume);
-            saveChannelVolumeToConfig(channel, volume);
+            Audio::setChannelVolume(channel, Audio::percentToDb(percent));
+            saveChannelVolumeToConfig(channel, percent);
 
             self.invalidate();
         }
