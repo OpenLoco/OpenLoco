@@ -79,13 +79,17 @@ namespace OpenLoco::Audio
         return falloffModifier;
     }
 
-    static Viewport* findBestViewportForEntity(const World::Pos3& position)
+    static Viewport* findBestViewportForEntity(const World::Pos3& position, EntityId headId)
     {
         auto vpPos = World::gameToScreen(position, WindowManager::getCurrentRotation());
 
         auto main = WindowManager::getMainWindow();
         if (main != nullptr && main->viewports[0] != nullptr)
         {
+            if (main->savedView.isEntityView() && main->savedView.entityId == headId)
+            {
+                return main->viewports[0];
+            }
             if (main->viewports[0]->contains(vpPos))
             {
                 return main->viewports[0];
@@ -100,7 +104,15 @@ namespace OpenLoco::Audio
                 continue;
             }
             auto viewport = w->viewports[0];
-            if (viewport != nullptr && viewport->contains(vpPos))
+            if (viewport == nullptr)
+            {
+                continue;
+            }
+            if (w->savedView.isEntityView() && w->savedView.entityId == headId)
+            {
+                return viewport;
+            }
+            if (viewport->contains(vpPos))
             {
                 return viewport;
             }
@@ -147,7 +159,7 @@ namespace OpenLoco::Audio
         sound.activeSoundId = SoundObjectId::null;
     }
 
-    static void updateSingleVehicleSound(Vehicles::VehicleBase& base, Vehicles::VehicleSound& sound)
+    static void updateSingleVehicleSound(Vehicles::VehicleBase& base, Vehicles::VehicleSound& sound, EntityId headId)
     {
         if (sound.drivingSoundId == SoundObjectId::null)
         {
@@ -158,7 +170,7 @@ namespace OpenLoco::Audio
             return;
         }
 
-        auto* viewport = findBestViewportForEntity(base.position);
+        auto* viewport = findBestViewportForEntity(base.position, headId);
         if (viewport == nullptr)
         {
             if (sound.audioHandle != AudioHandle::null)
@@ -211,8 +223,9 @@ namespace OpenLoco::Audio
         for (auto* v : VehicleManager::VehicleList())
         {
             Vehicles::Vehicle train(*v);
-            updateSingleVehicleSound(*train.veh2, train.veh2->sound);
-            updateSingleVehicleSound(*train.tail, train.tail->sound);
+            auto headId = v->id;
+            updateSingleVehicleSound(*train.veh2, train.veh2->sound, headId);
+            updateSingleVehicleSound(*train.tail, train.tail->sound, headId);
         }
     }
 
