@@ -53,16 +53,16 @@ namespace OpenLoco::Audio
     }
 
     static constexpr ReverbParams kTunnelReverb = {
-        .density = 0.8f,
-        .diffusion = 0.5f,
-        .gain = 0.6f,
-        .gainHF = 0.7f,
-        .decayTime = 2.5f,
-        .decayHFRatio = 0.65f,
-        .reflectionsGain = 0.2f,
-        .reflectionsDelay = 0.015f,
-        .lateReverbGain = 1.5f,
-        .lateReverbDelay = 0.02f,
+        .density = 1.0f,
+        .diffusion = 0.7f,
+        .gain = 0.9f,
+        .gainHF = 0.6f,
+        .decayTime = 4.0f,
+        .decayHFRatio = 0.5f,
+        .reflectionsGain = 0.4f,
+        .reflectionsDelay = 0.01f,
+        .lateReverbGain = 2.0f,
+        .lateReverbDelay = 0.025f,
     };
 
     static constexpr ReverbParams kNoReverb = {
