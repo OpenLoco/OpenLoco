@@ -57,6 +57,7 @@ namespace OpenLoco::Audio
     void reclaimFinishedInstances();
 
     // Global control
+    void stopAll();
     void pauseAll();
     void unpauseAll();
     bool isEnabled();

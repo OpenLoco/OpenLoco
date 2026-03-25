@@ -87,7 +87,6 @@ namespace OpenLoco::Audio
     AudioHandle play(SoundId id, ChannelId channel, const AudioAttributes& attribs = {});
 
     void update();
-    void stopAll();
 
     void setBgmVolume(int32_t volume);
 

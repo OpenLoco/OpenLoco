@@ -560,14 +560,6 @@ namespace OpenLoco::Audio
         updateAmbientNoise();
     }
 
-    void stopAll()
-    {
-        stopVehicleNoise();
-        stopAmbientNoise();
-        stopMusic();
-        reclaimFinishedInstances();
-    }
-
     void resetSoundObjects()
     {
         for (auto& [_, buf] : _objectSamples)

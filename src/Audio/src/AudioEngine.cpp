@@ -496,6 +496,23 @@ namespace OpenLoco::Audio
 
     // Global control
 
+    void stopAll()
+    {
+        for (auto& inst : _instances)
+        {
+            if (inst.active)
+            {
+                alSourceStop(inst.sourceId);
+                alSourcei(inst.sourceId, AL_BUFFER, 0);
+                if (_reverbAvailable)
+                {
+                    alSource3i(inst.sourceId, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, 0, AL_FILTER_NULL);
+                }
+                inst.active = false;
+            }
+        }
+    }
+
     void pauseAll()
     {
         _isPaused = true;
