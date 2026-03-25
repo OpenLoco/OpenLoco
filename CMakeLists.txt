@@ -45,7 +45,8 @@ if (OPENLOCO_USE_VCPKG)
         endif ()
         FetchContent_Declare(vcpkg
             GIT_REPOSITORY https://github.com/microsoft/vcpkg.git
-            GIT_TAG 66c0373dc7fca549e5803087b9487edfe3aca0a1)
+            GIT_TAG 2026.02.27
+        )
         FetchContent_MakeAvailable(vcpkg)
 
         set(CMAKE_TOOLCHAIN_FILE "${vcpkg_SOURCE_DIR}/scripts/buildsystems/vcpkg.cmake"
