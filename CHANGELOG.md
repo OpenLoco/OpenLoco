@@ -1,5 +1,6 @@
 26.02+ (???)
 ------------------------------------------------------------------------
+- Change: [#2882, #3671] Migrate to SDL3.
 - Fix: [#3657] All news settings default to disabled instead of newspaper style.
 - Fix: [#3659] Using relative paths as Locomotion path causes certain data not to load.
 
