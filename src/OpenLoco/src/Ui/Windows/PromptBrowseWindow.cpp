@@ -22,6 +22,7 @@
 #include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/Widgets/TextBoxWidget.h"
@@ -51,6 +52,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         caption,
         close_button,
         panel,
+        folder_path,
         parent_button,
         text_filename,
         ok_button,
@@ -62,10 +64,11 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         Widgets::Caption({ 1, 1 }, { 498, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::empty),
         Widgets::ImageButton({ 485, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { 500, 365 }, WindowColour::secondary),
-        Widgets::ImageButton({ 473, 18 }, { 24, 24 }, WindowColour::secondary, ImageIds::icon_parent_folder, StringIds::window_browse_parent_folder_tooltip),
+        Widgets::Label({ 3, 18 }, { 494, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::window_browse_folder),
+        Widgets::ImageButton({ 3, 31 }, { 24, 24 }, WindowColour::secondary, ImageIds::icon_parent_folder, StringIds::window_browse_parent_folder_tooltip),
         Widgets::TextBox({ 88, 348 }, { 408, 14 }, WindowColour::secondary),
         Widgets::Button({ 426, 364 }, { 70, 12 }, WindowColour::secondary, StringIds::label_button_ok),
-        Widgets::ScrollView({ 3, 45 }, { 494, 323 }, WindowColour::secondary, Scrollbars::vertical)
+        Widgets::ScrollView({ 3, 57 }, { 494, 311 }, WindowColour::secondary, Scrollbars::vertical)
 
     );
 
@@ -358,8 +361,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             self.widgets[widx::scrollview].right += 122;
         }
 
-        self.widgets[widx::parent_button].left = self.width - 26;
-        self.widgets[widx::parent_button].right = self.width - 3;
+        self.widgets[widx::folder_path].right = self.width - 3;
 
         // Get width of the base 'Folder:' string
         char folderBuffer[256]{};
@@ -369,8 +371,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         const auto folderLabelWidth = Gfx::TextRenderer::getStringWidth(Gfx::Font::medium_bold, folderBuffer);
 
-        // We'll ensure the folder width does not reach the parent button.
-        const uint16_t maxWidth = self.widgets[widx::parent_button].left - folderLabelWidth - 10;
+        const uint16_t maxWidth = self.widgets[widx::folder_path].width() - folderLabelWidth;
         auto nameBuffer = _currentDirectory.u8string();
         nameBuffer = Localisation::convertUnicodeToLoco(nameBuffer);
         strncpy(&_displayFolderBuffer[0], nameBuffer.c_str(), 512);
@@ -422,9 +423,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         {
             auto folder = &_displayFolderBuffer[0];
-            auto args = getStringPtrFormatArgs(folder);
-            auto point = Point(window.x + 3, window.y + window.widgets[widx::parent_button].top + 6);
-            tr.drawStringLeft(point, Colour::black, StringIds::window_browse_folder, args);
+            FormatArguments args{ window.widgets[widx::folder_path].textArgs };
+            args.push(StringIds::stringptr);
+            args.push(folder);
         }
 
         auto selectedIndex = window.var_85A;
