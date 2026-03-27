@@ -54,6 +54,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         panel,
         folder_path,
         parent_button,
+        home_button,
         text_filename,
         ok_button,
         scrollview,
@@ -66,6 +67,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         Widgets::Panel({ 0, 15 }, { 500, 365 }, WindowColour::secondary),
         Widgets::Label({ 3, 18 }, { 494, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::window_browse_folder),
         Widgets::ImageButton({ 3, 31 }, { 24, 24 }, WindowColour::secondary, ImageIds::icon_parent_folder, StringIds::window_browse_parent_folder_tooltip),
+        Widgets::Button({ 3 + 24, 31 }, { 48, 24 }, WindowColour::secondary, StringIds::keyboard_home, StringIds::window_browse_home_folder_tooltip), // TODO use ImageButton instead of button. Currently using incorrect StringId for its label.
         Widgets::TextBox({ 88, 348 }, { 408, 14 }, WindowColour::secondary),
         Widgets::Button({ 426, 364 }, { 70, 12 }, WindowColour::secondary, StringIds::label_button_ok),
         Widgets::ScrollView({ 3, 57 }, { 494, 311 }, WindowColour::secondary, Scrollbars::vertical)
@@ -96,6 +98,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void drawLandscapePreview(Ui::Window& window, Gfx::DrawingContext& drawingCtx, int32_t x, int32_t y, int32_t width, int32_t height);
     static void drawTextInput(Ui::Window* window, Gfx::DrawingContext& drawingCtx, const char* text, int32_t caret, bool showCaret);
     static void upOneLevel();
+    static void defaultDirectory();
     static void changeDirectory(const fs::path& path);
     static void processFileForLoadSave(Window* window);
     static void processFileForLoadSave(Window* window, fs::path& entry);
@@ -217,6 +220,12 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 break;
             case widx::parent_button:
                 upOneLevel();
+                window.var_85A = -1;
+                window.initScrollWidgets();
+                window.invalidate();
+                break;
+            case widx::home_button:
+                defaultDirectory();
                 window.var_85A = -1;
                 window.initScrollWidgets();
                 window.invalidate();
@@ -830,6 +839,27 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 #endif
         // Going up one level (compensating for trailing slashes).
         changeDirectory(_currentDirectory.parent_path().parent_path());
+    }
+
+    static void defaultDirectory()
+    {
+        Environment::PathId pathId;
+        switch (_fileType)
+        {
+            case savedGame:
+                pathId = Environment::PathId::save;
+                break;
+            case landscape:
+                pathId = Environment::PathId::landscape;
+                break;
+            case heightmap:
+                pathId = Environment::PathId::heightmap;
+                break;
+            default:
+                throw Exception::RuntimeError("Unknown BrowseFileType.");
+        }
+        auto path = getDefaultPathNoWarning(pathId);
+        changeDirectory(path);
     }
 
     // 0x00446E62
