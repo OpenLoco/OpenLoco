@@ -7,6 +7,7 @@
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Objects/SoundObject.h"
+#include "SceneManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/Vehicle2.h"
@@ -216,6 +217,10 @@ namespace OpenLoco::Audio
             return;
         }
         if (!isAudioEnabled())
+        {
+            return;
+        }
+        if (SceneManager::isPaused())
         {
             return;
         }

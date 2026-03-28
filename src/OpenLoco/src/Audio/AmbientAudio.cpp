@@ -8,6 +8,7 @@
 #include "Map/TreeElement.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/TreeObject.h"
+#include "SceneManager.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Audio/AudioEngine.h>
 #include <optional>
@@ -35,6 +36,10 @@ namespace OpenLoco::Audio
     void updateAmbientNoise()
     {
         if (!isAudioEnabled())
+        {
+            return;
+        }
+        if (SceneManager::isPaused())
         {
             return;
         }
