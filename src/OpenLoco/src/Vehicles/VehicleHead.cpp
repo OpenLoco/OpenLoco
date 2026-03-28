@@ -2812,21 +2812,17 @@ namespace OpenLoco::Vehicles
 
         // The first bogie of the plane is the shadow of the plane
         auto* shadow = train.cars.firstCar.front;
-        shadow->invalidateSprite();
         auto height = coord_t{ TileManager::getHeight(newLoc) };
         shadow->moveTo({ newLoc.x, newLoc.y, height });
         shadow->spriteYaw = newYaw;
         shadow->spritePitch = Pitch::flat;
         shadow->tileX = 0;
-        shadow->invalidateSprite();
 
         auto* body = train.cars.firstCar.body;
-        body->invalidateSprite();
         body->moveTo({ newLoc.x, newLoc.y, newLoc.z });
         body->spriteYaw = newYaw;
         body->spritePitch = newPitch;
         body->tileX = 0;
-        body->invalidateSprite();
     }
 
     // 0x00427C05
@@ -3026,12 +3022,10 @@ namespace OpenLoco::Vehicles
         train.veh1->tileX = 0;
         train.veh2->moveTo({ newLoc.x, newLoc.y, newLoc.z });
         train.veh2->tileX = 0;
-        train.cars.firstCar.body->invalidateSprite();
         train.cars.firstCar.body->moveTo({ newLoc.x, newLoc.y, newLoc.z });
         train.cars.firstCar.body->spriteYaw = yaw;
         train.cars.firstCar.body->spritePitch = pitch;
         train.cars.firstCar.body->tileX = 0;
-        train.cars.firstCar.body->invalidateSprite();
     }
 
     uint8_t VehicleHead::getLoadingModifier(const VehicleBogie* bogie)

@@ -68,7 +68,6 @@ namespace OpenLoco::GameCommands
 
         train.applyToComponents([](auto& component) {
             component.tileX = -1;
-            component.invalidateSprite();
             component.moveTo({ static_cast<int16_t>(0x8000), 0, 0 });
         });
 

@@ -28,9 +28,7 @@ namespace OpenLoco
             newPos.x += res / (std::numeric_limits<uint16_t>::max() + 1);
             if (newPos.x != position.x)
             {
-                invalidateSprite();
                 moveTo(newPos);
-                invalidateSprite();
             }
         }
         stationaryProgress++;
@@ -52,9 +50,7 @@ namespace OpenLoco
 
         auto newPos = position;
         newPos.z += frameInfo[frameNum].height;
-        invalidateSprite();
         moveTo(newPos);
-        invalidateSprite();
 
         if (!steamObj->hasFlags(SteamObjectFlags::disperseOnCollision))
         {
@@ -147,7 +143,6 @@ namespace OpenLoco
         if (_exhaust != nullptr)
         {
             _exhaust->baseType = EntityBaseType::effect;
-            _exhaust->moveTo(loc);
             _exhaust->objectId = type;
             const auto* obj = _exhaust->getObject();
             _exhaust->spriteWidth = obj->spriteWidth;
@@ -159,6 +154,7 @@ namespace OpenLoco
             _exhaust->windProgress = 0;
             _exhaust->var_34 = 0;
             _exhaust->var_36 = 0;
+            _exhaust->moveTo(loc);
         }
         return _exhaust;
     }

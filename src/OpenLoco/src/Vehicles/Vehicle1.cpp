@@ -830,9 +830,7 @@ namespace OpenLoco::Vehicles
         }
         if (hasMoved)
         {
-            Ui::ViewportManager::invalidate(this, ZoomLevel::eighth);
             this->moveTo(intermediatePosition);
-            Ui::ViewportManager::invalidate(this, ZoomLevel::eighth);
         }
         return result;
     }

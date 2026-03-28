@@ -70,7 +70,6 @@ namespace OpenLoco
         }
 
         moveTo(newLoc);
-        invalidateSprite();
 
         frame += kAnimationSpeed;
         if (frame >= kMaxSplashFrames)

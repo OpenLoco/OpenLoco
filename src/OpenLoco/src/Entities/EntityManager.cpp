@@ -232,7 +232,6 @@ namespace OpenLoco::EntityManager
             }
             insertToSpatialIndex(entity, newIndex);
         }
-        entity.position = loc;
     }
 
     static void zeroEntity(EntityBase* ent);
