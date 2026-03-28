@@ -302,6 +302,8 @@ namespace OpenLoco::EntityManager
     // 0x0047024A
     void freeEntity(EntityBase* const entity)
     {
+        entity->invalidateSprite();
+
         EntityTweener::get().removeEntity(entity);
 
         auto list = enumValue(entity->id) < 19800 ? EntityListType::null : EntityListType::nullMoney;

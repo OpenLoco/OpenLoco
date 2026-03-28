@@ -43,7 +43,6 @@ namespace OpenLoco
 
         if (frameNum >= totalNumFrames)
         {
-            invalidateSprite();
             EntityManager::freeEntity(this);
             return;
         }
@@ -68,7 +67,6 @@ namespace OpenLoco
             }
             if (lowZ < el.baseZ() && highZ > el.baseZ())
             {
-                invalidateSprite();
                 EntityManager::freeEntity(this);
                 return;
             }
@@ -113,7 +111,6 @@ namespace OpenLoco
                 continue;
             }
 
-            invalidateSprite();
             EntityManager::freeEntity(this);
             return;
         }
