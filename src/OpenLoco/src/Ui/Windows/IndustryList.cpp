@@ -1401,7 +1401,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             self.currentTab = widgetIndex - widx::tab_industry_list;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::beingResized);
+            self.flags &= ~(WindowFlags::maximised);
 
             self.viewportRemove(0);
 
