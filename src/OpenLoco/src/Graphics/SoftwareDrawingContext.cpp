@@ -898,6 +898,61 @@ namespace OpenLoco::Gfx
             std::fill_n(buffer, length, colour);
         }
 
+        // Bresenham's circle algorithm.
+        static void drawCircle(const RenderTarget& rt, const Ui::Point& centre, int32_t radius, int32_t lineWidth, const PaletteIndex_t colour)
+        {
+            if (radius <= 0 || lineWidth <= 0)
+            {
+                return;
+            }
+
+            // Check if circle is completely outside the render target
+            const auto rtRect = rt.getUiRect();
+            const auto outerRadius = radius + lineWidth - 1;
+            if (centre.x + outerRadius < rtRect.left()
+                || centre.x - outerRadius >= rtRect.right()
+                || centre.y + outerRadius < rtRect.top()
+                || centre.y - outerRadius >= rtRect.bottom())
+            {
+                return;
+            }
+
+            const auto innerRadius = std::max(0, radius - lineWidth + 1);
+            for (auto currentRadius = innerRadius; currentRadius <= radius; ++currentRadius)
+            {
+                int16_t x = 0;
+                int16_t y = currentRadius;
+                int16_t decision = 1 - currentRadius;
+
+                const auto drawCirclePoints = [&](int16_t offsetX, int16_t offsetY) {
+                    drawHorizontalLine(rt, colour, { centre.x + offsetX, centre.y + offsetY }, 1);
+                    drawHorizontalLine(rt, colour, { centre.x - offsetX, centre.y + offsetY }, 1);
+                    drawHorizontalLine(rt, colour, { centre.x + offsetX, centre.y - offsetY }, 1);
+                    drawHorizontalLine(rt, colour, { centre.x - offsetX, centre.y - offsetY }, 1);
+                    drawHorizontalLine(rt, colour, { centre.x + offsetY, centre.y + offsetX }, 1);
+                    drawHorizontalLine(rt, colour, { centre.x - offsetY, centre.y + offsetX }, 1);
+                    drawHorizontalLine(rt, colour, { centre.x + offsetY, centre.y - offsetX }, 1);
+                    drawHorizontalLine(rt, colour, { centre.x - offsetY, centre.y - offsetX }, 1);
+                };
+
+                while (x <= y)
+                {
+                    drawCirclePoints(x, y);
+
+                    if (decision < 0)
+                    {
+                        decision += 2 * x + 3;
+                    }
+                    else
+                    {
+                        decision += 2 * (x - y) + 5;
+                        y--;
+                    }
+                    x++;
+                }
+            }
+        }
+
         // 0x00452DA4
         static void drawLine(const RenderTarget& rt, Ui::Point a, Ui::Point b, const PaletteIndex_t colour)
         {
@@ -1014,6 +1069,12 @@ namespace OpenLoco::Gfx
     {
         auto& rt = currentRenderTarget();
         return Impl::drawLine(rt, a, b, colour);
+    }
+
+    void SoftwareDrawingContext::drawCircle(const Ui::Point& centre, int32_t radius, int32_t lineWidth, PaletteIndex_t colour)
+    {
+        auto& rt = currentRenderTarget();
+        return Impl::drawCircle(rt, centre, radius, lineWidth, colour);
     }
 
     void SoftwareDrawingContext::drawImage(int16_t x, int16_t y, uint32_t image)
