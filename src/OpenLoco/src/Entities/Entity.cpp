@@ -13,7 +13,22 @@ namespace OpenLoco
     // 0x0046FC83
     void EntityBase::moveTo(const World::Pos3& loc)
     {
+        if (position == loc)
+        {
+            // No-op.
+            return;
+        }
+
+        // Pre invalidation.
+        if (position.x != Location::null)
+        {
+            invalidateSprite();
+        }
+
         EntityManager::moveSpatialEntry(*this, loc);
+
+        // Update position
+        position = loc;
 
         // Update sprite boundaries
         if (position.x == Location::null)
@@ -27,6 +42,9 @@ namespace OpenLoco
         spriteRight = vpPos.x + spriteWidth;
         spriteTop = vpPos.y - spriteHeightNegative;
         spriteBottom = vpPos.y + spriteHeightPositive;
+
+        // Post invalidation.
+        invalidateSprite();
     }
 
     // 0x004CBB01

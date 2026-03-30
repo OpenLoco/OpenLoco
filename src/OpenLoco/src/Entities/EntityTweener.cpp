@@ -104,7 +104,6 @@ namespace OpenLoco
             }
 
             ent->moveTo(newPos);
-            ent->invalidateSprite();
         }
     }
 
@@ -126,7 +125,6 @@ namespace OpenLoco
             }
 
             ent->moveTo(newPos);
-            ent->invalidateSprite();
         }
     }
 

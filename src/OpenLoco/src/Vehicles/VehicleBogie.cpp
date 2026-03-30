@@ -281,7 +281,6 @@ namespace OpenLoco::Vehicles
                 }
 
                 this->moveTo(newPosition);
-                this->invalidateSprite();
             }
         }
         else
