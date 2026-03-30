@@ -24,13 +24,13 @@ namespace OpenLoco::Ui::Windows::AboutMusic
 
     namespace Widx
     {
-        constexpr auto close = WidgetId("close");
+        constexpr WidgetId kClose{ "close" };
     }
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
         Widgets::Caption({ 1, 1 }, { kWindowSize.width - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::music_acknowledgements_caption),
-        Widgets::ImageButton(Widx::close, { kWindowSize.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::ImageButton(Widx::kClose, { kWindowSize.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { kWindowSize.width, 297 }, WindowColour::secondary),
         Widgets::ScrollView({ 4, 18 }, { kWindowSize.width - 8, 289 }, WindowColour::secondary, Ui::Scrollbars::vertical));
 
@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows::AboutMusic
     {
         switch (id)
         {
-            case Widx::close:
+            case Widx::kClose:
                 WindowManager::close(window.type);
                 break;
         }

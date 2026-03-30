@@ -20,16 +20,16 @@ namespace OpenLoco::Ui::Windows::About
 
     namespace Widx
     {
-        constexpr auto close = WidgetId("close");
-        constexpr auto music_acknowledgements_btn = WidgetId("music_acknowledgements_btn");
+        constexpr WidgetId kClose{ "close" };
+        constexpr WidgetId kMusicAcknowledgementsBtn{ "music_acknowledgements_btn" };
     }
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
         Widgets::Caption({ 1, 1 }, { kWindowSize.width - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::about_locomotion_caption),
-        Widgets::ImageButton(Widx::close, { kWindowSize.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::ImageButton(Widx::kClose, { kWindowSize.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { kWindowSize.width, 245 }, WindowColour::secondary),
-        Widgets::Button(Widx::music_acknowledgements_btn, { 100, 234 }, { kWindowSize.width / 2, 12 }, WindowColour::secondary, StringIds::music_acknowledgements_btn),
+        Widgets::Button(Widx::kMusicAcknowledgementsBtn, { 100, 234 }, { kWindowSize.width / 2, 12 }, WindowColour::secondary, StringIds::music_acknowledgements_btn),
         Widgets::Label({ 10, 25 }, { kWindowSize.width - 20, 10 }, WindowColour::secondary, ContentAlign::center, StringIds::about_locomotion_69),
         Widgets::Label({ 10, 35 }, { kWindowSize.width - 20, 10 }, WindowColour::secondary, ContentAlign::center, StringIds::about_locomotion_70),
         Widgets::Label({ 10, 114 }, { kWindowSize.width - 20, 10 }, WindowColour::secondary, ContentAlign::center, StringIds::about_locomotion_71),
@@ -72,11 +72,11 @@ namespace OpenLoco::Ui::Windows::About
     {
         switch (id)
         {
-            case Widx::close:
+            case Widx::kClose:
                 WindowManager::close(window.type);
                 break;
 
-            case Widx::music_acknowledgements_btn:
+            case Widx::kMusicAcknowledgementsBtn:
                 AboutMusic::open();
                 break;
         }
