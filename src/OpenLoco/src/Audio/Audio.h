@@ -2,15 +2,12 @@
 
 #include "Location.hpp"
 #include "Types.hpp"
+#include <OpenLoco/Audio/AudioEngine.h>
 #include <OpenLoco/Engine/World.hpp>
+#include <cmath>
 #include <optional>
 #include <string>
 #include <vector>
-
-namespace OpenLoco::Vehicles
-{
-    struct VehicleSoundPlayer;
-}
 
 namespace OpenLoco::Environment
 {
@@ -19,7 +16,6 @@ namespace OpenLoco::Environment
 
 namespace OpenLoco::Audio
 {
-    // TODO: This should only be a byte needs to be split off from sound object
     enum class SoundId : uint16_t
     {
         clickDown = 0,
@@ -58,76 +54,6 @@ namespace OpenLoco::Audio
         null = 0xFF
     };
 
-    enum class ChannelId
-    {
-        music,
-        unk_1,
-        ambient,
-        title_deprecated,
-        vehicle_0, // * 10
-    };
-    constexpr int32_t kNumReservedChannels = 4 + 10;
-
-#pragma pack(push, 1)
-    struct WAVEFORMATEX
-    {
-        int16_t wFormatTag;
-        int16_t nChannels;
-        int32_t nSamplesPerSec;
-        int32_t nAvgBytesPerSec;
-        int16_t nBlockAlign;
-        int16_t wBitsPerSample;
-        int16_t cbSize;
-    };
-#pragma pack(pop)
-
-    void initialiseDSound();
-    void disposeDSound();
-    void close();
-
-    const std::vector<std::string>& getDevices();
-    const char* getCurrentDeviceName();
-    size_t getCurrentDevice();
-    void setDevice(size_t index);
-
-    std::optional<uint32_t> getSoundSample(SoundId id);
-    bool shouldSoundLoop(SoundId id);
-
-    void toggleSound();
-    void pauseSound();
-    void unpauseSound();
-    void playSound(SoundId id, const World::Pos3& loc);
-
-    // FOR HOOKS ONLY DO NOT USE THIS FUNCTION FOR OPENLOCO CODE
-    // INSTEAD USE playSound(SoundId id, const Map::Pos3& loc) OR playSound(SoundId id, int32_t pan)
-    void playSound(SoundId id, const World::Pos3& loc, int32_t pan);
-
-    void playSound(SoundId id, int32_t pan);
-    void playSound(SoundId id, const World::Pos3& loc, int32_t volume, int32_t frequency);
-    void updateSounds();
-
-    void setBgmVolume(int32_t volume);
-
-    void updateVehicleNoise();
-    void stopVehicleNoise();
-    void stopVehicleNoise(EntityId head);
-
-    void updateAmbientNoise();
-    void stopAmbientNoise();
-
-    void revalidateCurrentTrack();
-
-    void resetMusic();
-    void playBackgroundMusic();
-    void stopMusic();
-    void pauseMusic();
-    void unpauseMusic();
-    void playMusic(Environment::PathId sample, int32_t volume, bool loop);
-
-    void resetSoundObjects();
-
-    bool isAudioEnabled();
-
     constexpr bool isObjectSoundId(SoundId id)
     {
         return static_cast<int32_t>(id) & 0x8000;
@@ -138,5 +64,77 @@ namespace OpenLoco::Audio
         return static_cast<SoundId>((static_cast<int32_t>(id) | 0x8000));
     }
 
+    void initialiseDSound();
+    void disposeDSound();
+    void close();
+
+    const std::vector<std::string>& getDevices();
+    const char* getCurrentDeviceName();
+    size_t getCurrentDevice();
+    void setDevice(size_t index);
+
+    void toggleSound();
+    void pauseSound();
+    void unpauseSound();
+    bool isAudioEnabled();
+
+    void playSound(SoundId id, ChannelId channel, const World::Pos3& loc);
+    void playSound(SoundId id, ChannelId channel, const World::Pos3& loc, int32_t pan);
+    void playSound(SoundId id, ChannelId channel, int32_t pan);
+    void playSound(SoundId id, ChannelId channel, const World::Pos3& loc, int32_t volume, int32_t frequency);
+
+    std::optional<BufferId> getSoundBuffer(SoundId id);
+    bool shouldSoundLoop(SoundId id);
+    AudioHandle play(SoundId id, ChannelId channel, const AudioAttributes& attribs = {});
+
+    void update();
+
+    void setBgmVolume(int32_t volume);
+
+    void stopVehicleNoise();
+    void stopVehicleNoise(EntityId head);
+
+    void stopAmbientNoise();
+
+    void revalidateCurrentTrack();
+    void resetMusic();
+    void playBackgroundMusic();
+    void stopMusic();
+    void pauseMusic();
+    void unpauseMusic();
+    void playMusic(Environment::PathId sample, int32_t volume, bool loop);
+
+    void resetSoundObjects();
+
+    std::optional<BufferId> loadMusicSample(Environment::PathId asset);
+
     int32_t calculatePan(const coord_t coord, const int32_t screenSize);
+
+    constexpr int32_t kVolumeDbMin = -6000;
+
+    inline int32_t percentToDb(int32_t percent)
+    {
+        if (percent <= 0)
+        {
+            return kVolumeDbMin;
+        }
+        if (percent >= 100)
+        {
+            return 0;
+        }
+        return static_cast<int32_t>(2000.0f * std::log10(static_cast<float>(percent) / 100.0f));
+    }
+
+    inline int32_t dbToPercent(int32_t db)
+    {
+        if (db <= kVolumeDbMin)
+        {
+            return 0;
+        }
+        if (db >= 0)
+        {
+            return 100;
+        }
+        return static_cast<int32_t>(100.0f * std::pow(10.0f, static_cast<float>(db) / 2000.0f));
+    }
 }

@@ -1,6 +1,8 @@
 26.02+ (???)
 ------------------------------------------------------------------------
+- Feature: [#3678] Audio volume can now be set separately by channel.
 - Change: [#2882, #3671] Migrate to SDL3.
+- Change: [#3678] Vehicle sounds now use reverb when entering or leaving a tunnel.
 - Fix: [#3312] Dragging around vehicles leaves pixels on-screen from the preview.
 - Fix: [#3657] All news settings default to disabled instead of newspaper style.
 - Fix: [#3659] Using relative paths as Locomotion path causes certain data not to load.

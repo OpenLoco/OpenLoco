@@ -3544,7 +3544,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     height -= trackPart.z;
 
                     Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, trackElement->rotation(), trackId);
-                    Audio::playSound(Audio::SoundId::waypoint, Input::getDragLastLocation().x);
+                    Audio::playSound(Audio::SoundId::waypoint, Audio::ChannelId::ui, Input::getDragLastLocation().x);
                     addNewOrder(self, waypoint);
                     break;
                 }
@@ -3557,7 +3557,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     {
                         height = heights.waterHeight;
                     }
-                    Audio::playSound(Audio::SoundId::waypoint, Input::getDragLastLocation().x);
+                    Audio::playSound(Audio::SoundId::waypoint, Audio::ChannelId::ui, Input::getDragLastLocation().x);
 
                     const auto tPos = World::toTileSpace(args.pos);
                     Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, 0, 0);
@@ -3566,7 +3566,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
                 case Ui::ViewportInteraction::InteractionItem::stationLabel:
                 {
-                    Audio::playSound(Audio::SoundId::waypoint, Input::getDragLastLocation().x);
+                    Audio::playSound(Audio::SoundId::waypoint, Audio::ChannelId::ui, Input::getDragLastLocation().x);
                     const auto stationId = StationId(args.value);
                     Vehicles::OrderStopAt station(stationId);
                     addNewOrder(self, station);
@@ -3592,7 +3592,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     height -= roadPart.z;
 
                     Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, roadElement->rotation(), roadId);
-                    Audio::playSound(Audio::SoundId::waypoint, Input::getDragLastLocation().x);
+                    Audio::playSound(Audio::SoundId::waypoint, Audio::ChannelId::ui, Input::getDragLastLocation().x);
                     addNewOrder(self, waypoint);
                     break;
                 }
@@ -3650,7 +3650,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 if (item == -1)
                 {
                     // Copy complete order list
-                    Audio::playSound(Audio::SoundId::waypoint, Input::getDragLastLocation().x);
+                    Audio::playSound(Audio::SoundId::waypoint, Audio::ChannelId::ui, Input::getDragLastLocation().x);
                     std::vector<std::shared_ptr<Vehicles::Order>> clonedOrders;
                     for (auto& existingOrders : getOrderTable(head))
                     {
@@ -3665,7 +3665,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 else
                 {
                     // Copy a single entry on the order list
-                    Audio::playSound(Audio::SoundId::waypoint, Input::getDragLastLocation().x);
+                    Audio::playSound(Audio::SoundId::waypoint, Audio::ChannelId::ui, Input::getDragLastLocation().x);
                     auto clonedOrder = selectedOrder->clone();
                     addNewOrder(*toolWindow, *clonedOrder);
                     WindowManager::bringToFront(*toolWindow);

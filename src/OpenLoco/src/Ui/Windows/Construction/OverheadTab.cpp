@@ -380,7 +380,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             {
                 return;
             }
-            Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+            Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, GameCommands::getPosition());
         }
         else
         {
@@ -401,7 +401,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             {
                 return;
             }
-            Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+            Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, GameCommands::getPosition());
         }
     }
 

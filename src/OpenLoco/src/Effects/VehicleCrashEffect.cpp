@@ -55,7 +55,7 @@ namespace OpenLoco
             // We hit the water surface, create a splash effect.
             const auto splashPos = World::Pos3{ position.x, position.y, waterZ };
 
-            Audio::playSound(Audio::SoundId::splash2, splashPos);
+            Audio::playSound(Audio::SoundId::splash2, Audio::ChannelId::vehicles, splashPos);
             Splash::create({ position.x, position.y, waterZ });
 
             EntityManager::freeEntity(this);

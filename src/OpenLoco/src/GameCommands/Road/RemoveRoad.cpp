@@ -25,7 +25,7 @@ namespace OpenLoco::GameCommands
     static void playRoadRemovalSound(const World::Pos3 pos)
     {
         const auto frequency = gPrng2().randNext(17955, 26146);
-        Audio::playSound(Audio::SoundId::demolish, pos, 0, frequency);
+        Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, pos, 0, frequency);
     }
 
     struct OverlapRoads

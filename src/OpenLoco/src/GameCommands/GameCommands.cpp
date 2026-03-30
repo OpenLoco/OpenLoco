@@ -613,7 +613,7 @@ namespace OpenLoco::GameCommands
     void playConstructionPlacementSound(World::Pos3 pos)
     {
         const auto frequency = gPrng2().randNext(17955, 26146);
-        Audio::playSound(Audio::SoundId::construct, pos, 0, frequency);
+        Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, pos, 0, frequency);
     }
 
     // TODO: Maybe move this somewhere else used by multiple game commands

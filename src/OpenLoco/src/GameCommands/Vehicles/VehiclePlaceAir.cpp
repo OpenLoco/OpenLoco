@@ -28,7 +28,7 @@ namespace OpenLoco::Vehicles
     void playPlacedownSound(const World::Pos3 pos)
     {
         const auto frequency = gPrng2().randNext(20003, 24095);
-        Audio::playSound(Audio::SoundId::vehiclePlace, pos, -600, frequency);
+        Audio::playSound(Audio::SoundId::vehiclePlace, Audio::ChannelId::ui, pos, -600, frequency);
     }
 }
 namespace OpenLoco::GameCommands

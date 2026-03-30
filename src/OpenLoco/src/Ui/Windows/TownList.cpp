@@ -781,7 +781,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 placementArgs.size = _townSize;
                 if (GameCommands::doCommand(placementArgs, GameCommands::Flags::apply) != GameCommands::FAILURE)
                 {
-                    Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+                    Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, GameCommands::getPosition());
                 }
             }
         }
@@ -1194,7 +1194,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
                 if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing) != GameCommands::FAILURE)
                 {
-                    Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+                    Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, GameCommands::getPosition());
                 }
             }
 
@@ -1390,7 +1390,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     updateBuildingColours(self);
 
                     int32_t pan = (self.width >> 1) + self.x;
-                    Audio::playSound(Audio::SoundId::clickDown, pan);
+                    Audio::playSound(Audio::SoundId::clickDown, Audio::ChannelId::ui, pan);
                     self.expandContentCounter = -16;
                     _buildingPlacementCost = GameCommands::FAILURE;
                     _buildingVariation = 0;

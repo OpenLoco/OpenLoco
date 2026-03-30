@@ -519,7 +519,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         }
 
         // Mouse click sound
-        Audio::playSound(Audio::SoundId::clickDown, self.x + (self.width / 2));
+        Audio::playSound(Audio::SoundId::clickDown, Audio::ChannelId::ui, self.x + (self.width / 2));
 
         if (SceneManager::isNetworked())
         {

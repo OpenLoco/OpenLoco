@@ -7,6 +7,7 @@
 #include "Speed.hpp"
 #include "Types.hpp"
 #include "Ui/Window.h"
+#include <OpenLoco/Audio/AudioHandle.h>
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Exception.hpp>
 
@@ -339,6 +340,8 @@ namespace OpenLoco::Vehicles
         SoundFlags soundFlags;
         Ui::WindowNumber_t soundWindowNumber;
         Ui::WindowType soundWindowType;
+        Audio::AudioHandle audioHandle;
+        SoundObjectId_t activeSoundId;
     };
 
     struct VehicleCargo

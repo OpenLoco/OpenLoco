@@ -617,6 +617,9 @@ namespace OpenLoco::S5
             ObjectManager::reloadAll();
             Ui::ProgressBar::setProgress(200);
 
+            Audio::stopVehicleNoise();
+            Audio::stopAmbientNoise();
+
             // Copy the S5 gamestate contents to the destination gamestate, field by field
             auto& src = file->gameState;
             dst = *importGameState(src);
@@ -649,7 +652,6 @@ namespace OpenLoco::S5
                 EntityManager::reset();
             }
 
-            Audio::stopVehicleNoise();
             EntityManager::resetSpatialIndex();
             CompanyManager::updateColours();
             ObjectManager::updateTerraformObjects();

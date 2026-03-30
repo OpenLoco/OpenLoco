@@ -88,7 +88,7 @@ namespace OpenLoco::GameCommands
         {
             auto centre = (args.pointA + args.pointB) / 2;
             auto tileHeight = World::TileManager::getHeight(centre);
-            Audio::playSound(Audio::SoundId::water, World::Pos3(centre.x, centre.y, tileHeight.waterHeight));
+            Audio::playSound(Audio::SoundId::water, Audio::ChannelId::effects, World::Pos3(centre.x, centre.y, tileHeight.waterHeight));
         }
 
         return totalCost;

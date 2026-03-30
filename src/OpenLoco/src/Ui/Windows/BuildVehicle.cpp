@@ -1059,7 +1059,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         }
 
         auto pan = window.width / 2 + window.x;
-        Audio::playSound(Audio::SoundId::clickDown, pan);
+        Audio::playSound(Audio::SoundId::clickDown, Audio::ChannelId::ui, pan);
         auto item = window.rowInfo[scrollItem];
         auto vehicleObj = ObjectManager::get<VehicleObject>(item);
         auto args = FormatArguments::common();

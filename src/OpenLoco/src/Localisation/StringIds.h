@@ -1265,7 +1265,7 @@ namespace OpenLoco::StringIds
     constexpr StringId music_selection_tooltip = 1545;
     constexpr StringId checkmark = 1546;
     constexpr StringId volume = UNUSED_STR(1547);
-    constexpr StringId set_music_volume_tip = 1548;
+    constexpr StringId set_music_volume_tip = UNUSED_STR(1548);
     constexpr StringId menu_music_options = 1549;
     constexpr StringId company_face_selection_title = 1550;
     constexpr StringId tooltip_company_face_selection = 1551;
@@ -2084,7 +2084,7 @@ namespace OpenLoco::StringIds
     constexpr StringId options_title_audio = 2370;
     constexpr StringId frame_sound = 2371;
     constexpr StringId frame_jukebox = 2372;
-    constexpr StringId music_volume = 2373;
+    constexpr StringId music_volume = UNUSED_STR(2373);
     constexpr StringId show_company_ai_planning = 2374;
     constexpr StringId show_company_ai_planning_tip = 2375;
     constexpr StringId table_header_title = 2376;
@@ -2115,6 +2115,20 @@ namespace OpenLoco::StringIds
     constexpr StringId confirm_vehicle_component_move_cargo_warning_confirm = 2401;
     constexpr StringId confirm_vehicle_component_move_cargo_warning_message = 2402;
     constexpr StringId confirm_vehicle_component_move_cargo_multiple_vehicles_warning_message = 2403;
+
+    constexpr StringId master_volume = 2404;
+    constexpr StringId set_master_volume_tip = 2405;
+    constexpr StringId effects_volume = 2406;
+    constexpr StringId set_effects_volume_tip = 2407;
+    constexpr StringId vehicles_volume = 2408;
+    constexpr StringId set_vehicles_volume_tip = 2409;
+    constexpr StringId ui_volume = 2410;
+    constexpr StringId set_ui_volume_tip = 2411;
+    constexpr StringId set_music_channel_volume_tip = 2412;
+    constexpr StringId frame_volume = 2413;
+    constexpr StringId music_channel_volume = 2414;
+    constexpr StringId ambient_volume = 2415;
+    constexpr StringId set_ambient_volume_tip = 2416;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

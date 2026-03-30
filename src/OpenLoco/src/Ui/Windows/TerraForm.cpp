@@ -572,7 +572,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     case treeCluster::none:
                         if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply) != GameCommands::FAILURE)
                         {
-                            Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+                            Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, GameCommands::getPosition());
                         }
                         break;
                     case treeCluster::selected:
@@ -586,7 +586,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                         if (World::placeTreeCluster(World::toTileSpace(placementArgs->pos), 320, 3, placementArgs->type))
                         {
                             auto height = TileManager::getHeight(placementArgs->pos);
-                            Audio::playSound(Audio::SoundId::construct, World::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
+                            Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, World::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
                         }
                         else
                         {
@@ -609,7 +609,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                         if (World::placeTreeCluster(World::toTileSpace(placementArgs->pos), 384, 4, std::nullopt))
                         {
                             auto height = TileManager::getHeight(placementArgs->pos);
-                            Audio::playSound(Audio::SoundId::construct, World::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
+                            Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, World::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
                         }
                         else
                         {
@@ -663,7 +663,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     updateTreeColours(self);
 
                     int32_t pan = (self.width >> 1) + self.x;
-                    Audio::playSound(Audio::SoundId::clickDown, pan);
+                    Audio::playSound(Audio::SoundId::clickDown, Audio::ChannelId::ui, pan);
                     self.expandContentCounter = -16;
                     _lastTreeCost = 0x80000000;
                     self.invalidate();
@@ -2550,7 +2550,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
                 if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply) != GameCommands::FAILURE)
                 {
-                    Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+                    Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, GameCommands::getPosition());
                 }
             }
         }
@@ -2591,7 +2591,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     getGameState().lastWallOption = static_cast<uint8_t>(rowInfo);
 
                     int32_t pan = (self.width >> 1) + self.x;
-                    Audio::playSound(Audio::SoundId::clickDown, pan);
+                    Audio::playSound(Audio::SoundId::clickDown, Audio::ChannelId::ui, pan);
                     self.expandContentCounter = -16;
                     self.invalidate();
                     break;

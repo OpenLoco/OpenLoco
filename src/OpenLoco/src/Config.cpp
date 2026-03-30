@@ -76,6 +76,12 @@ namespace OpenLoco::Config
             auto& audioConfig = _config.audio;
             audioConfig.device = audioNode["device"].as<std::string>("");
             audioConfig.mainVolume = audioNode["mainVolume"].as<int32_t>(-1100);
+            audioConfig.masterVolume = audioNode["masterVolume"].as<int32_t>(100);
+            audioConfig.musicVolume = audioNode["musicVolume"].as<int32_t>(100);
+            audioConfig.effectsVolume = audioNode["effectsVolume"].as<int32_t>(100);
+            audioConfig.vehiclesVolume = audioNode["vehiclesVolume"].as<int32_t>(100);
+            audioConfig.uiVolume = audioNode["uiVolume"].as<int32_t>(100);
+            audioConfig.ambientVolume = audioNode["ambientVolume"].as<int32_t>(100);
             audioConfig.playJukeboxMusic = audioNode["playJukeboxMusic"].as<bool>(true);
             audioConfig.playTitleMusic = audioNode["play_title_music"].as<bool>(true);
             audioConfig.playNewsSounds = audioNode["play_news_sounds"].as<bool>(true);
@@ -225,6 +231,12 @@ namespace OpenLoco::Config
             audioNode.remove("device");
         }
         audioNode["mainVolume"] = audioConfig.mainVolume;
+        audioNode["masterVolume"] = audioConfig.masterVolume;
+        audioNode["musicVolume"] = audioConfig.musicVolume;
+        audioNode["effectsVolume"] = audioConfig.effectsVolume;
+        audioNode["vehiclesVolume"] = audioConfig.vehiclesVolume;
+        audioNode["uiVolume"] = audioConfig.uiVolume;
+        audioNode["ambientVolume"] = audioConfig.ambientVolume;
         audioNode["playJukeboxMusic"] = audioConfig.playJukeboxMusic;
         audioNode["play_title_music"] = audioConfig.playTitleMusic;
         audioNode["playNewsSounds"] = audioConfig.playNewsSounds;

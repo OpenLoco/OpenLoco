@@ -349,7 +349,7 @@ namespace OpenLoco::Input
                     if (button == MouseButton::leftPressed)
                     {
                         WindowManager::bringToFront(modalType);
-                        Audio::playSound(Audio::SoundId::error, x);
+                        Audio::playSound(Audio::SoundId::error, Audio::ChannelId::ui, x);
                         return;
                     }
 
@@ -875,7 +875,7 @@ namespace OpenLoco::Input
                         {
                             auto pressedWidget = &dragWindow->widgets[_pressedWidgetIndex];
 
-                            Audio::playSound(Audio::SoundId::clickPress, dragWindow->x + pressedWidget->midX());
+                            Audio::playSound(Audio::SoundId::clickPress, Audio::ChannelId::ui, dragWindow->x + pressedWidget->midX());
                             dragWindow->callOnMouseUp(_pressedWidgetIndex, pressedWidget->id);
                         }
                     }
@@ -1002,7 +1002,7 @@ namespace OpenLoco::Input
                     if (window != nullptr && widgetIndex != kWidgetIndexNull)
                     {
                         auto buttonWidget = &window->widgets[widgetIndex];
-                        Audio::playSound(Audio::SoundId::clickUp, window->x + buttonWidget->midX());
+                        Audio::playSound(Audio::SoundId::clickUp, Audio::ChannelId::ui, window->x + buttonWidget->midX());
                     }
                 }
                 return;
@@ -1075,7 +1075,7 @@ namespace OpenLoco::Input
 
             if (window != nullptr)
             {
-                Audio::playSound(Audio::SoundId::clickUp, window->x + widget->midX());
+                Audio::playSound(Audio::SoundId::clickUp, Audio::ChannelId::ui, window->x + widget->midX());
             }
 
             if (window != nullptr && window->type == _pressedWindowType && window->number == _pressedWindowNumber && widgetIndex == _pressedWidgetIndex && !window->isDisabled(widgetIndex))
@@ -1334,7 +1334,7 @@ namespace OpenLoco::Input
             default:
                 if (window->isEnabled(widgetIndex) && !window->isDisabled(widgetIndex))
                 {
-                    Audio::playSound(Audio::SoundId::clickDown, window->x + widget->midX());
+                    Audio::playSound(Audio::SoundId::clickDown, Audio::ChannelId::ui, window->x + widget->midX());
 
                     // Set new cursor down widget
                     _pressedWidgetIndex = widgetIndex;

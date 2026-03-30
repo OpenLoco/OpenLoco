@@ -1095,7 +1095,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         GameCommands::setErrorTitle(StringIds::cant_remove_signal);
         if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
-            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+            Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
         }
     }
 
@@ -1117,7 +1117,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         args.type = track->trackObjectId();
         if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
-            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+            Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
         }
     }
 
@@ -1139,7 +1139,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         args.roadObjectId = road->roadObjectId();
         if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
-            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+            Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
         }
     }
 
@@ -1156,7 +1156,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         args.pos = Pos3(pos.x, pos.y, station->baseHeight());
         if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
-            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+            Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
         }
     }
 
@@ -1174,7 +1174,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         args.pos = Pos3(firstTile.x, firstTile.y, station->baseHeight());
         if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
-            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+            Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
         }
     }
 
@@ -1247,7 +1247,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
-            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+            Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
         }
     }
 
@@ -1279,7 +1279,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
-            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+            Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
         }
     }
 

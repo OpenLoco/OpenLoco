@@ -836,7 +836,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     getGameState().lastIndustryOption = rowInfo;
 
                     int32_t pan = (self.width >> 1) + self.x;
-                    Audio::playSound(Audio::SoundId::clickDown, pan);
+                    Audio::playSound(Audio::SoundId::clickDown, Audio::ChannelId::ui, pan);
                     self.expandContentCounter = -16;
                     _industryPlacementCost = 0x80000000;
                     self.invalidate();
@@ -1190,7 +1190,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
                 if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply) != GameCommands::FAILURE)
                 {
-                    Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+                    Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, GameCommands::getPosition());
                 }
             }
 

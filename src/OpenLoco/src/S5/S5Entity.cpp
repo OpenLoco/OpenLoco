@@ -707,6 +707,7 @@ namespace OpenLoco::S5
         dst.sound.soundFlags = static_cast<Vehicles::SoundFlags>(src.soundFlags);
         dst.sound.soundWindowNumber = src.soundWindowNumber;
         dst.sound.soundWindowType = static_cast<Ui::WindowType>(src.soundWindowType);
+        dst.sound.audioHandle = Audio::AudioHandle::null;
         dst.var_4F = src.var_4F;
         dst.totalPower = src.totalPower;
         dst.totalWeight = src.totalWeight;
@@ -822,6 +823,7 @@ namespace OpenLoco::S5
         dst.sound.soundFlags = static_cast<Vehicles::SoundFlags>(src.soundFlags);
         dst.sound.soundWindowNumber = src.soundWindowNumber;
         dst.sound.soundWindowType = static_cast<Ui::WindowType>(src.soundWindowType);
+        dst.sound.audioHandle = Audio::AudioHandle::null;
         dst.trainDanglingTimeout = src.trainDanglingTimeout;
     }
 
