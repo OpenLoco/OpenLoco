@@ -983,20 +983,28 @@ namespace OpenLoco::Ui::Windows::Options
     namespace AudioTab
     {
         constexpr auto kSoundGroupOffset = 49;
-        constexpr auto kSliderRowHeight = 24;
         constexpr auto kDeviceRowOffset = 14;
-        constexpr auto kCheckboxRowOffset = kDeviceRowOffset + 16;
-        constexpr auto kVolumeGroupOffset = kCheckboxRowOffset + 20;
-        constexpr auto kVolumeFirstSliderOffset = 16;
-        constexpr auto kNumVolumeSliders = 6;
-        constexpr auto kVolumeGroupHeight = kVolumeFirstSliderOffset + kNumVolumeSliders * kSliderRowHeight + 4;
-        constexpr auto kSoundGroupHeight = kVolumeGroupOffset + kVolumeGroupHeight + 4;
+        constexpr auto kCheckboxRowOffset = kDeviceRowOffset + 18;
+        constexpr auto kSoundGroupHeight = kDeviceRowOffset + kCheckboxRowOffset + 4;
 
-        constexpr auto kMusicGroupOffset = kSoundGroupOffset + kSoundGroupHeight + 4;
+        constexpr auto kVolumeGroupOffset = kSoundGroupOffset + kSoundGroupHeight + 4;
+        constexpr auto kVolumeFirstSliderYOffset = 16;
+        constexpr auto kNumVolumeSliders = 6;
+        constexpr auto kNumVolumeColumns = 2;
+        constexpr auto kSliderRowHeight = 26;
+        constexpr auto kSliderPrimaryLabelX = 12;
+        constexpr auto kSliderPrimaryX = 82;
+        constexpr auto kSliderSecondaryLabelX = 190;
+        constexpr auto kSliderSecondaryX = 260;
+        constexpr auto kSliderLabelWidth = 70;
+        constexpr auto kSliderWidth = 196;
+        constexpr auto kVolumeGroupHeight = kVolumeFirstSliderYOffset + (kNumVolumeSliders / kNumVolumeColumns) * kSliderRowHeight;
+
+        constexpr auto kMusicGroupOffset = kVolumeGroupOffset + kVolumeGroupHeight + 4;
         constexpr auto kMusicGroupLastItemOffset = 73;
         constexpr auto kMusicGroupHeight = kMusicGroupLastItemOffset + 19;
 
-        static constexpr Ui::Size kWindowSize = { 366, kSoundGroupOffset + kSoundGroupHeight + 4 + kMusicGroupHeight + 4 };
+        static constexpr Ui::Size kWindowSize = { 366, kMusicGroupOffset + kMusicGroupHeight + 4 };
 
         namespace Widx
         {
@@ -1034,10 +1042,6 @@ namespace OpenLoco::Ui::Windows::Options
             };
         }
 
-        constexpr auto kSliderLabelX = 12;
-        constexpr auto kSliderX = 160;
-        constexpr auto kSliderWidth = 196;
-
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_audio),
 
@@ -1045,19 +1049,19 @@ namespace OpenLoco::Ui::Windows::Options
             Widgets::dropdownWidgets({ 10, kSoundGroupOffset + kDeviceRowOffset }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
             Widgets::Checkbox({ 10, kSoundGroupOffset + kCheckboxRowOffset }, { 346, 12 }, WindowColour::secondary, StringIds::play_title_music),
 
-            Widgets::GroupBox({ 6, kSoundGroupOffset + kVolumeGroupOffset }, { kWindowSize.width - 12, kVolumeGroupHeight }, WindowColour::secondary, StringIds::frame_volume),
-            Widgets::Label({ kSliderLabelX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 0 + 3 }, { 145, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::master_volume),
-            Widgets::Slider({ kSliderX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 0 - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_master_volume_tip),
-            Widgets::Label({ kSliderLabelX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 1 + 3 }, { 145, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::music_channel_volume),
-            Widgets::Slider({ kSliderX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 1 - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_music_channel_volume_tip),
-            Widgets::Label({ kSliderLabelX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 2 + 3 }, { 145, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::effects_volume),
-            Widgets::Slider({ kSliderX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 2 - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_effects_volume_tip),
-            Widgets::Label({ kSliderLabelX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 3 + 3 }, { 145, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::vehicles_volume),
-            Widgets::Slider({ kSliderX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 3 - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_vehicles_volume_tip),
-            Widgets::Label({ kSliderLabelX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 4 + 3 }, { 145, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::ui_volume),
-            Widgets::Slider({ kSliderX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 4 - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_ui_volume_tip),
-            Widgets::Label({ kSliderLabelX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 5 + 3 }, { 145, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::ambient_volume),
-            Widgets::Slider({ kSliderX, kSoundGroupOffset + kVolumeGroupOffset + kVolumeFirstSliderOffset + kSliderRowHeight * 5 - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_ambient_volume_tip),
+            Widgets::GroupBox({ 4, kVolumeGroupOffset }, { kWindowSize.width - 8, kVolumeGroupHeight }, WindowColour::secondary, StringIds::frame_volume),
+            Widgets::Label({ kSliderPrimaryLabelX, kVolumeGroupOffset + kVolumeFirstSliderYOffset + kSliderRowHeight * 0 + 3 }, { kSliderLabelWidth, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::master_volume),
+            Widgets::Slider({ kSliderPrimaryX, kVolumeGroupOffset + kVolumeFirstSliderYOffset + kSliderRowHeight * 0 - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_master_volume_tip),
+            Widgets::Label({ kSliderSecondaryLabelX, kVolumeGroupOffset + kVolumeFirstSliderYOffset + kSliderRowHeight * 0 + 3 }, { kSliderLabelWidth, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::music_channel_volume),
+            Widgets::Slider({ kSliderSecondaryX, kVolumeGroupOffset + kVolumeFirstSliderYOffset + kSliderRowHeight * 0 - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_music_channel_volume_tip),
+            Widgets::Label({ kSliderPrimaryLabelX, kVolumeGroupOffset + kVolumeFirstSliderYOffset + kSliderRowHeight * 1 + 3 }, { kSliderLabelWidth, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::effects_volume),
+            Widgets::Slider({ kSliderPrimaryX, kVolumeGroupOffset + kVolumeFirstSliderYOffset + kSliderRowHeight * 1 - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_effects_volume_tip),
+            Widgets::Label({ kSliderSecondaryLabelX, kVolumeGroupOffset + kVolumeFirstSliderYOffset + kSliderRowHeight * 1 + 3 }, { kSliderLabelWidth, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::vehicles_volume),
+            Widgets::Slider({ kSliderSecondaryX, kVolumeGroupOffset + kVolumeFirstSliderYOffset + kSliderRowHeight * 1 - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_vehicles_volume_tip),
+            Widgets::Label({ kSliderPrimaryLabelX, kVolumeGroupOffset + kVolumeFirstSliderYOffset + kSliderRowHeight * 2 + 3 }, { kSliderLabelWidth, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::ui_volume),
+            Widgets::Slider({ kSliderPrimaryX, kVolumeGroupOffset + kVolumeFirstSliderYOffset + kSliderRowHeight * 2 - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_ui_volume_tip),
+            Widgets::Label({ kSliderSecondaryLabelX, kVolumeGroupOffset + kVolumeFirstSliderYOffset + kSliderRowHeight * 2 + 3 }, { kSliderLabelWidth, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::ambient_volume),
+            Widgets::Slider({ kSliderSecondaryX, kVolumeGroupOffset + kVolumeFirstSliderYOffset + kSliderRowHeight * 2 - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_ambient_volume_tip),
 
             Widgets::GroupBox({ 4, kMusicGroupOffset }, { kWindowSize.width - 8, kMusicGroupHeight }, WindowColour::secondary, StringIds::frame_jukebox),
             Widgets::Label({ 10, kMusicGroupOffset + 14 }, { 145, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::currently_playing),
@@ -1066,7 +1070,9 @@ namespace OpenLoco::Ui::Windows::Options
             Widgets::ImageButton({ 34, kMusicGroupOffset + 29 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_play, StringIds::music_controls_play_tip),
             Widgets::ImageButton({ 58, kMusicGroupOffset + 29 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_next, StringIds::music_controls_next_tip),
             Widgets::dropdownWidgets({ 10, kMusicGroupOffset + 56 }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
-            Widgets::Button({ 183, kMusicGroupOffset + kMusicGroupLastItemOffset }, { 173, 12 }, WindowColour::secondary, StringIds::edit_music_selection, StringIds::edit_music_selection_tip));
+            Widgets::Button({ 183, kMusicGroupOffset + kMusicGroupLastItemOffset }, { 173, 12 }, WindowColour::secondary, StringIds::edit_music_selection, StringIds::edit_music_selection_tip)
+
+        );
 
         static void audioDeviceMouseDown(const Window& self);
         static void audioDeviceDropdown(const Window& self, int16_t itemIndex);
