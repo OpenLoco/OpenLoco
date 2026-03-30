@@ -918,34 +918,34 @@ namespace OpenLoco::Gfx
             }
 
             const auto innerRadius = std::max(0, radius - lineWidth + 1);
-            for (auto r = innerRadius; r <= radius; ++r)
+            for (auto currentRadius = innerRadius; currentRadius <= radius; ++currentRadius)
             {
                 int16_t x = 0;
-                int16_t y = r;
-                int16_t d = 1 - r;
+                int16_t y = currentRadius;
+                int16_t decision = 1 - currentRadius;
 
-                const auto drawCirclePoints = [&](int16_t cx, int16_t cy) {
-                    drawHorizontalLine(rt, colour, { centre.x + cx, centre.y + cy }, 1);
-                    drawHorizontalLine(rt, colour, { centre.x - cx, centre.y + cy }, 1);
-                    drawHorizontalLine(rt, colour, { centre.x + cx, centre.y - cy }, 1);
-                    drawHorizontalLine(rt, colour, { centre.x - cx, centre.y - cy }, 1);
-                    drawHorizontalLine(rt, colour, { centre.x + cy, centre.y + cx }, 1);
-                    drawHorizontalLine(rt, colour, { centre.x - cy, centre.y + cx }, 1);
-                    drawHorizontalLine(rt, colour, { centre.x + cy, centre.y - cx }, 1);
-                    drawHorizontalLine(rt, colour, { centre.x - cy, centre.y - cx }, 1);
+                const auto drawCirclePoints = [&](int16_t offsetX, int16_t offsetY) {
+                    drawHorizontalLine(rt, colour, { centre.x + offsetX, centre.y + offsetY }, 1);
+                    drawHorizontalLine(rt, colour, { centre.x - offsetX, centre.y + offsetY }, 1);
+                    drawHorizontalLine(rt, colour, { centre.x + offsetX, centre.y - offsetY }, 1);
+                    drawHorizontalLine(rt, colour, { centre.x - offsetX, centre.y - offsetY }, 1);
+                    drawHorizontalLine(rt, colour, { centre.x + offsetY, centre.y + offsetX }, 1);
+                    drawHorizontalLine(rt, colour, { centre.x - offsetY, centre.y + offsetX }, 1);
+                    drawHorizontalLine(rt, colour, { centre.x + offsetY, centre.y - offsetX }, 1);
+                    drawHorizontalLine(rt, colour, { centre.x - offsetY, centre.y - offsetX }, 1);
                 };
 
                 while (x <= y)
                 {
                     drawCirclePoints(x, y);
 
-                    if (d < 0)
+                    if (decision < 0)
                     {
-                        d += 2 * x + 3;
+                        decision += 2 * x + 3;
                     }
                     else
                     {
-                        d += 2 * (x - y) + 5;
+                        decision += 2 * (x - y) + 5;
                         y--;
                     }
                     x++;
