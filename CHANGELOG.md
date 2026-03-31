@@ -1,4 +1,4 @@
-26.02+ (???)
+26.03 (2026-03-31)
 ------------------------------------------------------------------------
 - Feature: [#3678] Audio volume can now be set separately by channel.
 - Change: [#2882, #3671] Migrate to SDL3.
