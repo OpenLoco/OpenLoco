@@ -13,12 +13,6 @@ namespace OpenLoco
     // 0x0046FC83
     void EntityBase::moveTo(const World::Pos3& loc)
     {
-        if (position == loc)
-        {
-            // No-op.
-            return;
-        }
-
         // Pre invalidation.
         if (position.x != Location::null)
         {
