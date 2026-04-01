@@ -1,4 +1,4 @@
-26.03+ (???)
+26.03.1 (2026-04-01)
 ------------------------------------------------------------------------
 - Fix: [#3684] Rotating the camera can make entities such as vehicles disappear if they don't move.
 
