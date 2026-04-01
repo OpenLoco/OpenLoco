@@ -11,7 +11,7 @@ jobs:
       image: openrct2/openrct2-build:17-format
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Run clang-format
         run: scripts/check-code-formatting.sh
   check-changelog-formatting:
@@ -22,7 +22,7 @@ jobs:
         shell: bash
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Run check-changelog-formatting
         run: scripts/check-changelog-formatting
   windows:
@@ -34,7 +34,7 @@ jobs:
       POWERSHELL_TELEMETRY_OPTOUT: 1
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: true
@@ -77,7 +77,7 @@ jobs:
           if-no-files-found: warn
       - name: Checkout Assets
         if: ${{ github.repository == 'OpenLoco/OpenLoco' && env.ASSETS_SSH_KEY != null }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ssh-key: ${{ env.ASSETS_SSH_KEY }}
           repository: OpenLoco/LocomotionAssets
@@ -85,7 +85,7 @@ jobs:
           path: LocomotionAssets
       - name: Checkout Test Data
         if: ${{ github.repository == 'OpenLoco/OpenLoco' && env.ASSETS_SSH_KEY != null }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: OpenLoco/TestData
           ref: b21e716f7158f5f6a3dad6df6905ad5a376501b9
@@ -110,7 +110,7 @@ jobs:
       POWERSHELL_TELEMETRY_OPTOUT: 1
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: true
@@ -168,7 +168,7 @@ jobs:
         distro: [26.04]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: true
@@ -193,7 +193,7 @@ jobs:
         distro: [26.04]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: true
@@ -219,7 +219,7 @@ jobs:
         distro: [26.04]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: true
@@ -239,7 +239,7 @@ jobs:
         build_shared_libs: [on, off]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: true
@@ -257,7 +257,7 @@ jobs:
     container: ghcr.io/openloco/openloco:11-ubuntu26.04.vcpkg
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: true
@@ -299,7 +299,7 @@ jobs:
     needs: check-code-formatting
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: true
