@@ -44,7 +44,7 @@ jobs:
       - name: Setup cache directories
         run: mkdir ${{ env.VCPKG_DEFAULT_BINARY_CACHE }} | Out-Null
       - name: Set up binary cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
           key: ${{ runner.os }}-64-vcpkg-binary-cache-${{ hashFiles('vcpkg*.json') }}
@@ -120,7 +120,7 @@ jobs:
       - name: Setup cache directories
         run: mkdir ${{ env.VCPKG_DEFAULT_BINARY_CACHE }} | Out-Null
       - name: Set up binary cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
           key: ${{ runner.os }}-32-vcpkg-binary-cache-${{ hashFiles('vcpkg*.json') }}
@@ -271,7 +271,7 @@ jobs:
       - name: Setup cache directories
         run: mkdir -p ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
       - name: Set up binary cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
           key: ${{ runner.os }}-vcpkg-binary-cache-${{ hashFiles('vcpkg*.json') }}
@@ -311,7 +311,7 @@ jobs:
       - name: Setup cache directories
         run: mkdir -p ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
       - name: Set up binary cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
           key: ${{ runner.os }}-vcpkg-binary-cache-${{ hashFiles('vcpkg*.json') }}
