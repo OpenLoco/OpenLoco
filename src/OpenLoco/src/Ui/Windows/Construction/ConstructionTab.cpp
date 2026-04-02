@@ -2858,7 +2858,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             }
             removeBlueprintGhosts();
             const auto pos = World::Pos3(World::toWorldSpace(constructPos->first), constructPos->second);
-            placeBlueprint(_copiedTrack.value(), pos, GameCommands::Flags::apply);
+            const auto res = placeBlueprint(_copiedTrack.value(), pos, GameCommands::Flags::apply);
+            if (res == GameCommands::FAILURE)
+            {
+                Windows::Error::open(StringIds::error_cant_build_this_here, GameCommands::getErrorText());
+            }
         }
     }
 
