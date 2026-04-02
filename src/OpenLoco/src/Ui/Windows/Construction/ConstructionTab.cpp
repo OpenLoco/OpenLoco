@@ -541,6 +541,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 if (cState.constructionHover)
                 {
+                    if (_copiedTrack.has_value())
+                    {
+                        removeConstructionGhosts();
+                        rotateBlueprint(*_copiedTrack, 1);
+                    }
                     cState.constructionRotation++;
                     cState.constructionRotation &= 3;
                     cState.trackCost = GameCommands::FAILURE;
@@ -568,6 +573,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 ToolManager::toolSet(self, widx::copy, CursorId::crosshair);
                 Input::setFlag(Input::Flags::flag6);
                 cState.constructionHover = true;
+                activateSelectedConstructionWidgets();
                 break;
             }
 
@@ -584,6 +590,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 Input::setFlag(Input::Flags::flag6);
                 cState.constructionHover = true;
                 self.widgets[widx::paste].activated = 1;
+                activateSelectedConstructionWidgets();
                 break;
             }
         }
@@ -2658,6 +2665,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     static void onToolDrag([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
     {
+        if (widgetIndex == widx::paste)
+        {
+            return;
+        }
         mapInvalidateSelectionRect();
         removeConstructionGhosts();
 

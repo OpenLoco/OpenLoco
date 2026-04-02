@@ -24,7 +24,8 @@ namespace OpenLoco
         for (auto& stationArg : copiedTrack.stationArgs)
         {
             GameCommands::TrainStationRemovalArgs args;
-            args.pos = World::Pos3(stationArg.pos.x + ghostBPPos.x, stationArg.pos.y + ghostBPPos.y, ghostBPPos.z);
+            auto& trackPiece0 = World::TrackData::getTrackPiece(stationArg.trackId)[0];
+            args.pos = stationArg.pos + ghostBPPos + World::Pos3(trackPiece0.x, trackPiece0.y, trackPiece0.z);
             args.rotation = stationArg.rotation & 3;
             args.index = 0;
             args.trackId = stationArg.trackId;
@@ -39,7 +40,8 @@ namespace OpenLoco
         for (auto& signalArg : copiedTrack.signalArgs)
         {
             GameCommands::SignalRemovalArgs args;
-            args.pos = World::Pos3(signalArg.pos.x + ghostBPPos.x, signalArg.pos.y + ghostBPPos.y, ghostBPPos.z);
+            auto& trackPiece0 = World::TrackData::getTrackPiece(signalArg.trackId)[0];
+            args.pos = signalArg.pos + ghostBPPos + World::Pos3(trackPiece0.x, trackPiece0.y, trackPiece0.z);
             args.rotation = signalArg.rotation & 3;
             args.index = 0;
             args.trackId = signalArg.trackId;
@@ -55,7 +57,8 @@ namespace OpenLoco
         for (auto& trackArg : copiedTrack.trackArgs)
         {
             GameCommands::TrackRemovalArgs args;
-            args.pos = World::Pos3(trackArg.pos.x + ghostBPPos.x, trackArg.pos.y + ghostBPPos.y, ghostBPPos.z);
+            auto& trackPiece0 = World::TrackData::getTrackPiece(trackArg.trackId)[0];
+            args.pos = trackArg.pos + ghostBPPos + World::Pos3(trackPiece0.x, trackPiece0.y, trackPiece0.z);
             args.rotation = trackArg.rotation & 3;
             args.index = 0;
             args.trackId = trackArg.trackId;
@@ -245,5 +248,24 @@ namespace OpenLoco
         }
 
         return copiedTrack;
+    }
+
+    void rotateBlueprint(CopiedTrack& copiedTrack, const uint8_t rotation)
+    {
+        for (auto& args : copiedTrack.trackArgs)
+        {
+            args.rotation = (args.rotation + rotation) & 3;
+            args.pos = World::Pos3(Math::Vector::rotate(args.pos, rotation), args.pos.z);
+        }
+        for (auto& args : copiedTrack.signalArgs)
+        {
+            args.rotation = (args.rotation + rotation) & 3;
+            args.pos = World::Pos3(Math::Vector::rotate(args.pos, rotation), args.pos.z);
+        }
+        for (auto& args : copiedTrack.stationArgs)
+        {
+            args.rotation = (args.rotation + rotation) & 3;
+            args.pos = World::Pos3(Math::Vector::rotate(args.pos, rotation), args.pos.z);
+        }
     }
 }

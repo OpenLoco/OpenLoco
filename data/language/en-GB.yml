@@ -2470,7 +2470,7 @@ strings:
   2415: "Ambient:"
   2416: "{SMALLFONT}{COLOUR BLACK}Adjust the ambient volume"
   2417: "Locomotion Title"
-  2418: Copy
-  2419: Allows selecting an area of track elements to copy
-  2420: Paste
-  2421: Allows pasting an area of copied track elements to the map
+  2418: "Copy"
+  2419: "{SMALLFONT}{COLOUR BLACK}Allows selecting an area of track elements to copy"
+  2420: "Paste"
+  2421: "{SMALLFONT}{COLOUR BLACK}Allows pasting an area of copied track elements to the map"

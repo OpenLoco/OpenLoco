@@ -18,4 +18,6 @@ namespace OpenLoco
     currency32_t removeBlueprint(const CopiedTrack& copiedTrack, const World::Pos3& ghostBPPos, const uint8_t flags);
     currency32_t placeBlueprint(const CopiedTrack& _copiedTrack, const World::Pos3& ghostBPPos, const uint8_t flags);
     CopiedTrack copyTrackToBlueprint(const World::TilePos2 posA, const World::TilePos2 posB);
+
+    void rotateBlueprint(CopiedTrack& copiedTrack, const uint8_t rotation);
 }
