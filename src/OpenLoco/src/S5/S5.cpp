@@ -421,6 +421,15 @@ namespace OpenLoco::S5
             std::memcpy(file->tileElements.data(), tileElements.data(), numTileElements * sizeof(TileElement));
         }
 
+        // Reset fields that don't affect the simulation, but would cause issues when comparing game states.
+        for (auto& ent : file->gameState.entities)
+        {
+            ent.base.spriteLeft = Location::null;
+            ent.base.spriteTop = Location::null;
+            ent.base.spriteRight = Location::null;
+            ent.base.spriteBottom = Location::null;
+        }
+
         return file;
     }
 
