@@ -1146,9 +1146,9 @@ namespace OpenLoco::World::TileManager
                         auto* town = TownManager::updateTownInfo(pos, removedPopulation, buildingCapacity, ratingReduction, -1);
                         if (town != nullptr)
                         {
-                            if (buildingObj->var_AC != 0xFF)
+                            if (buildingObj->townAmenityCategory != TownAmenityCategory::none)
                             {
-                                town->var_150[buildingObj->var_AC] -= 1;
+                                town->amenityCounts[enumValue(buildingObj->townAmenityCategory)] -= 1;
                             }
                         }
                     }

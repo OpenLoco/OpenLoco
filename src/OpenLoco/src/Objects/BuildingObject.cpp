@@ -54,10 +54,10 @@ namespace OpenLoco
                 return false;
             }
         }
-        if (var_AC != 0xFF)
+        if (townAmenityCategory != TownAmenityCategory::none)
         {
             // Max of 8 different building categories
-            if (var_AC >= 8)
+            if (enumValue(townAmenityCategory) > enumValue(TownAmenityCategory::unk7))
             {
                 return false;
             }

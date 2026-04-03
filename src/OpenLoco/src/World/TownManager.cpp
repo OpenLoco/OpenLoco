@@ -264,7 +264,7 @@ namespace OpenLoco::TownManager
         town->history[0] = 0;
         town->historyMinPopulation = 0;
 
-        std::fill_n(&town->var_150[0], std::size(town->var_150), 0);
+        std::fill_n(&town->amenityCounts[0], std::size(town->amenityCounts), 0);
 
         town->var_19C[0][0] = 0;
         town->var_19C[0][1] = 0;
@@ -363,7 +363,7 @@ namespace OpenLoco::TownManager
             town.numBuildings = 0;
             town.population = 0;
             town.populationCapacity = 0;
-            std::fill(std::begin(town.var_150), std::end(town.var_150), 0);
+            std::fill(std::begin(town.amenityCounts), std::end(town.amenityCounts), 0);
         }
 
         for (const auto& tilePos : World::getWorldRange())
@@ -407,9 +407,9 @@ namespace OpenLoco::TownManager
                 auto* town = updateTownInfo(World::toWorldSpace(tilePos), population, producedQuantity, 0, 1);
                 if (town != nullptr)
                 {
-                    if (buildingObj->var_AC != 0xFF)
+                    if (buildingObj->townAmenityCategory != TownAmenityCategory::none)
                     {
-                        town->var_150[buildingObj->var_AC] += 1;
+                        town->amenityCounts[enumValue(buildingObj->townAmenityCategory)] += 1;
                     }
                 }
             }

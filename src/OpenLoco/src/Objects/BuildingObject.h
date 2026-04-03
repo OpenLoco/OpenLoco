@@ -29,6 +29,19 @@ namespace OpenLoco
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(BuildingObjectFlags);
 
+    enum class TownAmenityCategory : uint8_t
+    {
+        religious = 0U,
+        unk1 = 1U, // No vanilla object uses this category
+        hotel = 2U,
+        park = 3U,
+        courthouse = 4U,
+        landmark = 5U, // e.g. a fountain
+        unk6 = 6U,     // No vanilla object uses this category
+        unk7 = 7U,     // No vanilla object uses this category
+        none = 0xFFU,  // Most buildings will have this category
+    };
+
 #pragma pack(push, 1)
     // Todo this is the same as industry obj
     struct PartAnimation
@@ -68,7 +81,7 @@ namespace OpenLoco
         uint8_t producedCargoQty[2];               // 0xA6 For passenger cargo this is the population of the building
         uint8_t consumedCargoQty[2];               // 0xA8 Qty in eighths of a unit
         int16_t demolishRatingReduction;           // 0XAA
-        uint8_t var_AC;                            // 0xAC
+        TownAmenityCategory townAmenityCategory;   // 0xAC
         uint8_t numElevatorSequences;              // 0XAD
         uint32_t elevatorHeightSequencesOffset[4]; // 0XAE Access with getElevatorHeightSequence helper method
 
