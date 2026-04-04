@@ -249,9 +249,9 @@ namespace OpenLoco::Ui::Windows::MusicSelection
                 auto point = Point(columnYearsOffset, y);
                 auto argsBuf = FormatArgumentsBuffer{};
                 auto args = FormatArguments{ argsBuf };
-                bool neverPlays = musicInfo.startYear == Jukebox::kNoEndYear;
-                bool hasStart = !(musicInfo.startYear == Jukebox::kNoStartYear || neverPlays);
-                bool hasEnd = !(musicInfo.endYear == Jukebox::kNoEndYear || neverPlays);
+                bool neverPlays = (musicInfo.startYear > musicInfo.endYear);
+                bool hasStart = !(musicInfo.startYear == Jukebox::kBeginningOfTime || neverPlays);
+                bool hasEnd = !(musicInfo.endYear == Jukebox::kEndOfTime || neverPlays);
                 if (hasStart && hasEnd)
                 {
                     args.push(StringIds::year_range);

@@ -14,8 +14,8 @@ namespace OpenLoco::Jukebox
 
     constexpr int32_t kNumMusicTracks = 30;
     static constexpr MusicId kNoSong = 0xFF;
-    static constexpr uint16_t kNoStartYear = 0;
-    static constexpr uint16_t kNoEndYear = 9999;
+    static constexpr uint16_t kBeginningOfTime = 0;
+    static constexpr uint16_t kEndOfTime = 9999;
 
     struct MusicInfo
     {
