@@ -94,6 +94,7 @@ namespace OpenLoco::Config
             else
             {
                 std::fill(audioConfig.customJukebox.begin(), audioConfig.customJukebox.end(), true);
+                audioConfig.customJukebox[enumValue(PlaylistItem::locomotionTitle)] = false;
             }
         }
 
