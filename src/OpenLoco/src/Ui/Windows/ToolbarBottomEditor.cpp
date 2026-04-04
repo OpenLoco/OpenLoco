@@ -7,7 +7,8 @@
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/Wt3Widget.h"
-#include <map>
+
+#include <OpenLoco/Utility/LookupTable.hpp>
 
 namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 {
@@ -29,12 +30,12 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 
     );
 
-    static std::map<EditorController::Step, StringId> _stepNames = {
+    static constexpr auto kStepNames = Utility::buildLookupTable<EditorController::Step, StringId>({
         { EditorController::Step::objectSelection, StringIds::editor_step_object_selection },
         { EditorController::Step::landscapeEditor, StringIds::editor_step_landscape },
         { EditorController::Step::scenarioOptions, StringIds::editor_step_options },
         { EditorController::Step::saveScenario, StringIds::editor_step_save },
-    };
+    });
 
     // 0x0043CE21
     static void prepareDraw(Window& self)
@@ -83,7 +84,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         drawingCtx.drawRectInset(next.left + self.x + 1, next.top + self.y + 1, next.width() - 2, next.height() - 2, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
         auto point = Point((previous.right + next.left) / 2 + self.x, self.y + self.height - 12);
-        tr.drawStringCentred(point, self.getColour(WindowColour::tertiary).opaque().outline(), _stepNames[EditorController::getCurrentStep()]);
+        tr.drawStringCentred(point, self.getColour(WindowColour::tertiary).opaque().outline(), kStepNames.at(EditorController::getCurrentStep()));
 
         if (EditorController::canGoBack())
         {
@@ -100,7 +101,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
             tr.drawStringCentred(point, textColour, StringIds::editor_previous_step);
 
             point = Point(self.x + x, self.y + y + 10);
-            tr.drawStringCentred(point, textColour, _stepNames[EditorController::getPreviousStep()]);
+            tr.drawStringCentred(point, textColour, kStepNames.at(EditorController::getPreviousStep()));
         }
         drawingCtx.drawImage(self.x + next.right - 29, self.y + next.top + 4, ImageIds::step_forward);
         int x = next.left + (next.width() - 31) / 2;
@@ -115,7 +116,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         tr.drawStringCentred(point, textColour, StringIds::editor_next_step);
 
         point = Point(self.x + x, self.y + y + 10);
-        tr.drawStringCentred(point, textColour, _stepNames[EditorController::getNextStep()]);
+        tr.drawStringCentred(point, textColour, kStepNames.at(EditorController::getNextStep()));
     }
 
     // 0x0043D0ED
