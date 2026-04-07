@@ -2788,13 +2788,15 @@ namespace OpenLoco::Vehicles
     // 0x004B99E1
     void VehicleHead::beginUnloading()
     {
-        breakdownFlags &= ~BreakdownFlags::unk_0;
+        // See note on flag
+        breakdownFlags &= ~BreakdownFlags::awaitingCargoTransfer;
+
         status = Status::unloading;
         cargoTransferTimeout = 10;
         var_58 = 0;
 
         Vehicle train(head);
-        train.cars.applyToComponents([](auto& component) { component.breakdownFlags |= BreakdownFlags::unk_0; });
+        train.cars.applyToComponents([](auto& component) { component.breakdownFlags |= BreakdownFlags::awaitingCargoTransfer; });
     }
 
     // 0x00426CA4
@@ -3085,7 +3087,8 @@ namespace OpenLoco::Vehicles
                     auto* roadStationObj = ObjectManager::get<RoadStationObject>(elStation->objectId());
                     if (!roadStationObj->hasFlags(RoadStationFlags::roadEnd))
                     {
-                        breakdownFlags |= BreakdownFlags::unk_0;
+                        // Set on the vehicleHead awaitingCargoTransfer see note on flag
+                        breakdownFlags |= BreakdownFlags::awaitingCargoTransfer;
                     }
                     loadingModifier = kMinVehiclePastStationPenalty;
                 }
@@ -3250,7 +3253,7 @@ namespace OpenLoco::Vehicles
         cargoTransferTimeout = 10;
 
         Vehicle train(head);
-        train.cars.applyToComponents([](auto& component) { component.breakdownFlags |= BreakdownFlags::unk_0; });
+        train.cars.applyToComponents([](auto& component) { component.breakdownFlags |= BreakdownFlags::awaitingCargoTransfer; });
     }
     // 0x004B9A2A
     void VehicleHead::updateUnloadCargo()
@@ -3266,9 +3269,9 @@ namespace OpenLoco::Vehicles
         {
             for (auto& carComponent : car)
             {
-                if (carComponent.front->hasBreakdownFlags(BreakdownFlags::unk_0))
+                if (carComponent.front->hasBreakdownFlags(BreakdownFlags::awaitingCargoTransfer))
                 {
-                    carComponent.front->breakdownFlags &= ~BreakdownFlags::unk_0;
+                    carComponent.front->breakdownFlags &= ~BreakdownFlags::awaitingCargoTransfer;
                     if (carComponent.front->secondaryCargo.type == 0xFF)
                     {
                         return;
@@ -3276,14 +3279,14 @@ namespace OpenLoco::Vehicles
                     updateUnloadCargoComponent(carComponent.front->secondaryCargo, carComponent.front);
                     return;
                 }
-                else if (carComponent.back->hasBreakdownFlags(BreakdownFlags::unk_0))
+                else if (carComponent.back->hasBreakdownFlags(BreakdownFlags::awaitingCargoTransfer))
                 {
-                    carComponent.back->breakdownFlags &= ~BreakdownFlags::unk_0;
+                    carComponent.back->breakdownFlags &= ~BreakdownFlags::awaitingCargoTransfer;
                     return;
                 }
-                else if (carComponent.body->hasBreakdownFlags(BreakdownFlags::unk_0))
+                else if (carComponent.body->hasBreakdownFlags(BreakdownFlags::awaitingCargoTransfer))
                 {
-                    carComponent.body->breakdownFlags &= ~BreakdownFlags::unk_0;
+                    carComponent.body->breakdownFlags &= ~BreakdownFlags::awaitingCargoTransfer;
                     if (carComponent.body->primaryCargo.type == 0xFF)
                     {
                         return;
@@ -3500,9 +3503,9 @@ namespace OpenLoco::Vehicles
         {
             for (auto& carComponent : car)
             {
-                if (carComponent.front->hasBreakdownFlags(BreakdownFlags::unk_0))
+                if (carComponent.front->hasBreakdownFlags(BreakdownFlags::awaitingCargoTransfer))
                 {
-                    carComponent.front->breakdownFlags &= ~BreakdownFlags::unk_0;
+                    carComponent.front->breakdownFlags &= ~BreakdownFlags::awaitingCargoTransfer;
                     if (carComponent.front->secondaryCargo.type == 0xFF)
                     {
                         return true;
@@ -3510,14 +3513,14 @@ namespace OpenLoco::Vehicles
                     updateLoadCargoComponent(carComponent.front->secondaryCargo, carComponent.front);
                     return true;
                 }
-                else if (carComponent.back->hasBreakdownFlags(BreakdownFlags::unk_0))
+                else if (carComponent.back->hasBreakdownFlags(BreakdownFlags::awaitingCargoTransfer))
                 {
-                    carComponent.back->breakdownFlags &= ~BreakdownFlags::unk_0;
+                    carComponent.back->breakdownFlags &= ~BreakdownFlags::awaitingCargoTransfer;
                     return true;
                 }
-                else if (carComponent.body->hasBreakdownFlags(BreakdownFlags::unk_0))
+                else if (carComponent.body->hasBreakdownFlags(BreakdownFlags::awaitingCargoTransfer))
                 {
-                    carComponent.body->breakdownFlags &= ~BreakdownFlags::unk_0;
+                    carComponent.body->breakdownFlags &= ~BreakdownFlags::awaitingCargoTransfer;
                     if (carComponent.body->primaryCargo.type == 0xFF)
                     {
                         return true;
@@ -3553,7 +3556,8 @@ namespace OpenLoco::Vehicles
                 {
                     if (carComponent.front->secondaryCargo.type == waitFor->getCargo() && carComponent.front->secondaryCargo.maxQty != carComponent.front->secondaryCargo.qty)
                     {
-                        if (!hasBreakdownFlags(BreakdownFlags::unk_0))
+                        // Look at the vehicleHead awaitingCargoTransfer see note on flag
+                        if (!hasBreakdownFlags(BreakdownFlags::awaitingCargoTransfer))
                         {
                             beginLoading();
                             return true;
@@ -3567,7 +3571,8 @@ namespace OpenLoco::Vehicles
                     }
                     if (carComponent.body->primaryCargo.type == waitFor->getCargo() && carComponent.body->primaryCargo.maxQty != carComponent.body->primaryCargo.qty)
                     {
-                        if (!hasBreakdownFlags(BreakdownFlags::unk_0))
+                        // Look at the vehicleHead awaitingCargoTransfer see note on flag
+                        if (!hasBreakdownFlags(BreakdownFlags::awaitingCargoTransfer))
                         {
                             beginLoading();
                             return true;
