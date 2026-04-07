@@ -194,14 +194,27 @@ namespace OpenLoco
                         args.rotation = elSignal->rotation();
                         args.trackId = elProcessedTrack->trackId();
                         args.trackObjType = elProcessedTrack->trackObjectId();
-                        args.type = elSignal->getLeft().signalObjectId();
+                        args.type = 0xFFU;
                         uint16_t sideFlags = 0U;
                         if (elSignal->getLeft().hasSignal() && !elSignal->isLeftGhost())
                         {
+                            args.type = elSignal->getLeft().signalObjectId();
                             sideFlags |= 0x8000U;
                         }
                         if (elSignal->getRight().hasSignal() && !elSignal->isRightGhost())
                         {
+                            // If there is a signal on both sides and the signal object
+                            // type is different then we will need to make two separate
+                            // signal args
+                            if (sideFlags != 0 && args.type != elSignal->getRight().signalObjectId())
+                            {
+                                GameCommands::SignalPlacementArgs args2 = args;
+                                args2.sides = sideFlags;
+                                copiedTrack.signalArgs.push_back(args2);
+
+                                sideFlags = 0U;
+                            }
+                            args.type = elSignal->getRight().signalObjectId();
                             sideFlags |= 0x4000U;
                         }
                         args.sides = sideFlags;
