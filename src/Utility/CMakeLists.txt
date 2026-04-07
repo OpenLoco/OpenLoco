@@ -8,11 +8,11 @@ set(private_files
 )
 
 set(test_files
+    "${CMAKE_CURRENT_SOURCE_DIR}/tests/LookupTableTests.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/StringTests.cpp"
 )
 
 set(public_link_libraries
-    sfl::sfl
 )
 
 loco_add_library(Utility STATIC
