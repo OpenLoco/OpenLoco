@@ -68,32 +68,50 @@ namespace OpenLoco::Localisation
         return string;
     }
 
+    static size_t utf8CharacterLength(const std::string& string, size_t cursor = 0)
+    {
+        if ((string[cursor] & 0b1000'0000) == 0)
+        {
+            return 1;
+        }
+        else if ((string[cursor] & 0b1110'0000) == 0b1100'0000)
+        {
+            return 2;
+        }
+        else if ((string[cursor] & 0b1111'0000) == 0b1110'0000)
+        {
+            return 3;
+        }
+        else if ((string[cursor] & 0b1111'1000) == 0b1111'0000)
+        {
+            return 4;
+        }
+        throw Exception::RuntimeError("Invalid UTF-8 string");
+    }
+
+    static size_t nextUtf8CodePointPosition(const std::string& string, size_t cursor)
+    {
+        return cursor + utf8CharacterLength(string, cursor);
+    }
+
+    static size_t utf8CharacterPosition(const std::string& str, size_t characterPosition)
+    {
+        size_t cursor = 0;
+        for (size_t i = 0; i < characterPosition; i++)
+        {
+            cursor = nextUtf8CodePointPosition(str, cursor);
+        }
+        return cursor;
+    }
+
     size_t utf8Length(const std::string& string)
     {
         size_t count = 0;
-        size_t i = 0;
-        while (i < string.length())
+        size_t cursor = 0;
+
+        while (cursor < string.length())
         {
-            if ((string[i] & 0b1000'0000) == 0)
-            {
-                i += 1;
-            }
-            else if ((string[i] & 0b1110'0000) == 0b1100'0000)
-            {
-                i += 2;
-            }
-            else if ((string[i] & 0b1111'0000) == 0b1110'0000)
-            {
-                i += 3;
-            }
-            else if ((string[i] & 0b1111'1000) == 0b1111'0000)
-            {
-                i += 4;
-            }
-            else
-            {
-                throw Exception::RuntimeError("Invalid UTF-8 string");
-            }
+            cursor = nextUtf8CodePointPosition(string, cursor);
             count++;
         }
         return count;
@@ -101,82 +119,14 @@ namespace OpenLoco::Localisation
 
     void utf8Insert(std::string& stringToModify, size_t characterPosition, const std::string& insertion)
     {
-        // Get byte position
-        size_t i = 0;
-        for (size_t j = 0; j < characterPosition; j++)
-        {
-            if ((stringToModify[i] & 0b1000'0000) == 0)
-            {
-                i += 1;
-            }
-            else if ((stringToModify[i] & 0b1110'0000) == 0b1100'0000)
-            {
-                i += 2;
-            }
-            else if ((stringToModify[i] & 0b1111'0000) == 0b1110'0000)
-            {
-                i += 3;
-            }
-            else if ((stringToModify[i] & 0b1111'1000) == 0b1111'0000)
-            {
-                i += 4;
-            }
-            else
-            {
-                throw Exception::RuntimeError("Invalid UTF-8 string");
-            }
-        }
-
-        stringToModify.insert(i, insertion);
+        auto cursor = utf8CharacterPosition(stringToModify, characterPosition);
+        stringToModify.insert(cursor, insertion);
     }
 
     void utf8Delete(std::string& stringToModify, size_t characterPosition)
     {
-        // Get byte position
-        size_t i = 0;
-        for (size_t j = 0; j < characterPosition; j++)
-        {
-            if ((stringToModify[i] & 0b1000'0000) == 0)
-            {
-                i += 1;
-            }
-            else if ((stringToModify[i] & 0b1110'0000) == 0b1100'0000)
-            {
-                i += 2;
-            }
-            else if ((stringToModify[i] & 0b1111'0000) == 0b1110'0000)
-            {
-                i += 3;
-            }
-            else if ((stringToModify[i] & 0b1111'1000) == 0b1111'0000)
-            {
-                i += 4;
-            }
-            else
-            {
-                throw Exception::RuntimeError("Invalid UTF-8 string");
-            }
-        }
-
-        // Get length of target character
-        uint8_t bytes = 0;
-        if ((stringToModify[i] & 0b1000'0000) == 0)
-        {
-            bytes = 1;
-        }
-        else if ((stringToModify[i] & 0b1110'0000) == 0b1100'0000)
-        {
-            bytes = 2;
-        }
-        else if ((stringToModify[i] & 0b1111'0000) == 0b1110'0000)
-        {
-            bytes = 3;
-        }
-        else if ((stringToModify[i] & 0b1111'1000) == 0b1111'0000)
-        {
-            bytes = 4;
-        }
-
-        stringToModify.erase(i, bytes);
+        auto cursor = utf8CharacterPosition(stringToModify, characterPosition);
+        auto length = utf8CharacterLength(stringToModify, cursor);
+        stringToModify.erase(cursor, length);
     }
 }
