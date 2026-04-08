@@ -35,10 +35,8 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Gfx
 {
-    constexpr uint32_t kG1CountTemporary = 0x1000;
-
     // 0x009E2424
-    static std::array<G1Element, G1ExpectedCount::kDisc + kG1CountTemporary + G1ExpectedCount::kObjects> _g1Elements;
+    static std::array<G1Element, G1ExpectedCount::kDisc + G1ExpectedCount::kTemporaryObjects + G1ExpectedCount::kObjects> _g1Elements;
 
     static std::unique_ptr<std::byte[]> _g1Buffer;
 

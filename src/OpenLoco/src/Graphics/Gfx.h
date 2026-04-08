@@ -29,8 +29,14 @@ namespace OpenLoco::Gfx
     namespace G1ExpectedCount
     {
         constexpr uint32_t kDisc = 0x101A; // And GOG
+        constexpr uint32_t kTemporaryObjects = 0x1000;
         constexpr uint32_t kSteam = 0x0F38;
-        constexpr uint32_t kObjects = 0x40000;
+        constexpr uint32_t kObjects = 0x40000 - kTemporaryObjects;
+
+        // After loading a save we have the following images expected:
+        // 0x00000-0x01019: Disc (or GOG or Steam) images (Note: Steam is missing some images but will be padded up to the disc count during load)
+        // 0x0101A-0x02019: Temporary objects (used during loading and for object selection windows)
+        // 0x0201A-0x41019: Regular objects (loaded from object files)
     }
 #pragma pack(push, 1)
 
