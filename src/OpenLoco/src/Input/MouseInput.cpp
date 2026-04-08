@@ -29,7 +29,7 @@
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 
-#include <map>
+#include <OpenLoco/Utility/LookupTable.hpp>
 #include <queue>
 
 using namespace OpenLoco::Ui;
@@ -101,7 +101,7 @@ namespace OpenLoco::Input
 
     static int32_t _cursorWheel;
 
-    static const std::map<Ui::ScrollPart, StringId> kScrollWidgetTooltips = {
+    static constexpr auto kScrollWidgetTooltips = Utility::buildLookupTable<Ui::ScrollPart, StringId>({
         { Ui::ScrollPart::hscrollbarButtonLeft, StringIds::tooltip_scroll_left },
         { Ui::ScrollPart::hscrollbarButtonRight, StringIds::tooltip_scroll_right },
         { Ui::ScrollPart::hscrollbarTrackLeft, StringIds::tooltip_scroll_left_fast },
@@ -112,7 +112,7 @@ namespace OpenLoco::Input
         { Ui::ScrollPart::vscrollbarTrackTop, StringIds::tooltip_scroll_up_fast },
         { Ui::ScrollPart::vscrollbarTrackBottom, StringIds::tooltip_scroll_down_fast },
         { Ui::ScrollPart::vscrollbarThumb, StringIds::tooltip_scroll_up_down },
-    };
+    });
 
     constexpr int32_t kDropdownItemUndefined = -1;
 

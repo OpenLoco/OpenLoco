@@ -84,8 +84,9 @@
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
+
 #include <OpenLoco/Math/Trigonometry.hpp>
-#include <map>
+#include <OpenLoco/Utility/LookupTable.hpp>
 #include <sfl/static_vector.hpp>
 #include <sstream>
 
@@ -1600,14 +1601,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return CursorId::openHand;
         }
 
-        static const std::map<VehicleType, uint32_t> additionalVehicleButtonByVehicleType{
+        static constexpr auto kAdditionalVehicleButtonByVehicleType = Utility::buildLookupTable<VehicleType, uint32_t>({
             { VehicleType::train, InterfaceSkin::ImageIds::build_additional_train },
             { VehicleType::bus, InterfaceSkin::ImageIds::build_additional_bus },
             { VehicleType::truck, InterfaceSkin::ImageIds::build_additional_truck },
             { VehicleType::tram, InterfaceSkin::ImageIds::build_additional_tram },
             { VehicleType::aircraft, InterfaceSkin::ImageIds::build_additional_aircraft },
             { VehicleType::ship, InterfaceSkin::ImageIds::build_additional_ship },
-        };
+        });
 
         constexpr auto kVehicleDetailsOffset = 2;
         constexpr auto kVehicleDetailsLineHeight = 12;
@@ -1708,7 +1709,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
-            auto buildImage = skin->img + additionalVehicleButtonByVehicleType.at(head->vehicleType);
+            auto buildImage = skin->img + kAdditionalVehicleButtonByVehicleType.at(head->vehicleType);
 
             self.widgets[widx::buildNew].image = Gfx::recolour(buildImage, CompanyManager::getCompanyColour(self.owner)) | Widget::kImageIdColourSet;
 
@@ -5127,14 +5128,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
             uint8_t frameSpeed;
         };
 
-        static const std::map<VehicleType, TabIcons> tabIconByVehicleType{
+        static constexpr auto kTabIconByVehicleType = Utility::buildLookupTable<VehicleType, TabIcons>({
             { VehicleType::train, { InterfaceSkin::ImageIds::tab_vehicle_train_frame0, 1 } },
             { VehicleType::bus, { InterfaceSkin::ImageIds::tab_vehicle_bus_frame0, 1 } },
             { VehicleType::truck, { InterfaceSkin::ImageIds::tab_vehicle_truck_frame0, 1 } },
             { VehicleType::tram, { InterfaceSkin::ImageIds::tab_vehicle_tram_frame0, 1 } },
             { VehicleType::aircraft, { InterfaceSkin::ImageIds::tab_vehicle_aircraft_frame0, 2 } },
             { VehicleType::ship, { InterfaceSkin::ImageIds::tab_vehicle_ship_frame0, 3 } },
-        };
+        });
 
         // 0x004B5F0D
         static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx)
@@ -5148,7 +5149,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
             auto vehicleType = vehicle->vehicleType;
 
-            auto mainTab = tabIconByVehicleType.at(vehicleType);
+            auto mainTab = kTabIconByVehicleType.at(vehicleType);
             int frame = 0;
             if (self.currentTab == 0)
             {
