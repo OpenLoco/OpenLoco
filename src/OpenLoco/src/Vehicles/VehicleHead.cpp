@@ -648,28 +648,13 @@ namespace OpenLoco::Vehicles
         // 0x004AFBC0
         if (!hasVehicleFlags(VehicleFlags::shuntCheat))
         {
-            const auto numMiddles = std::count_if(
-                carData.begin(),
-                carData.end(),
-                [](auto& d) { return d.hasFlags(VehicleObjectFlags::centerPosition); });
+            // Places all cars with VehicleObjectFlags::centerPosition in the middle of the train
 
-            // Places all cars with VehicleObjectFlags::centerPosition in the end of the train
-            std::stable_partition(
-                carData.begin(),
-                carData.end(),
-                [](auto& a) { return !a.hasFlags(VehicleObjectFlags::centerPosition); });
-
-            const auto middleStart = carData.end() - numMiddles;
-            const auto middleEnd = carData.end();
-            const auto middleOffset = carData.size() - numMiddles;
-
-            // Determine the position where the "middle" cars (with VehicleObjectFlags::centerPosition)
-            // should be inserted so that they are centered among the non-middle cars.
-            // If the number of non-middle cars is odd, the middle moves towards the end by one.
-            const auto insertionPosition = carData.begin() + (middleOffset / 2 + middleOffset % 2);
-
-            // Places cars with VehicleObjectFlags::centerPosition into the middle
-            std::rotate(insertionPosition, middleStart, middleEnd);
+            // Partition such that the middle cars are at the end of the carData
+            auto centreIter = std::stable_partition(carData.begin(), carData.end(), [](auto& a) { return !a.hasFlags(VehicleObjectFlags::centerPosition); });
+            const auto numNonMiddles = std::distance(carData.begin(), centreIter);
+            // Rotate the middle cars to the middle of the train biased towards the back if odd
+            std::rotate(carData.begin() + numNonMiddles / 2 + numNonMiddles % 2, centreIter, carData.end());
         }
 
         if (!hasVehicleFlags(VehicleFlags::shuntCheat))
