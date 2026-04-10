@@ -94,6 +94,8 @@ namespace OpenLoco::Config
             else
             {
                 std::fill(audioConfig.customJukebox.begin(), audioConfig.customJukebox.end(), true);
+
+                // "Locomotion Title" was originally not available for the custom playlist, so we disable it by default to match historical behaviour.
                 audioConfig.customJukebox[enumValue(PlaylistItem::locomotionTitle)] = false;
             }
         }
