@@ -249,8 +249,9 @@ namespace OpenLoco::Ui::Windows::MusicSelection
                 auto point = Point(columnYearsOffset, y);
                 auto argsBuf = FormatArgumentsBuffer{};
                 auto args = FormatArguments{ argsBuf };
-                bool hasStart = musicInfo.startYear != Jukebox::kNoStartYear;
-                bool hasEnd = musicInfo.endYear != Jukebox::kNoEndYear;
+                bool neverPlays = (musicInfo.startYear > musicInfo.endYear);
+                bool hasStart = !(musicInfo.startYear == Jukebox::kBeginningOfTime || neverPlays);
+                bool hasEnd = !(musicInfo.endYear == Jukebox::kEndOfTime || neverPlays);
                 if (hasStart && hasEnd)
                 {
                     args.push(StringIds::year_range);
@@ -273,6 +274,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
                 }
                 else
                 {
+                    // TODO differentiate tracks that play on all years vs tracks that play on no years, if the former ever comes up
                     args.push(StringIds::year_range_no_start_no_end);
                     tr.drawStringLeft(point, window.getColour(WindowColour::secondary), textColour, args);
                 }

@@ -161,39 +161,6 @@ namespace YAML
         }
     };
 
-    enum class PlaylistItem : uint8_t
-    {
-        chugginAlong,
-        longDustyRoad,
-        flyingHigh,
-        gettinOnTheGas,
-        jumpinTheRails,
-        smoothRunning,
-        trafficJam,
-        neverStopTilYouGetThere,
-        soaringAway,
-        technoTorture,
-        everlastingHighRise,
-        solace,
-        chrysanthemum,
-        eugenia,
-        theRagtimeDance,
-        easyWinners,
-        settingOff,
-        aTravellersSerenade,
-        latinoTrip,
-        aGoodHeadOfSteam,
-        hopToTheBop,
-        theCityLights,
-        steaminDownTown,
-        brightExpectations,
-        moStation,
-        farOut,
-        runningOnTime,
-        getMeToGladstoneBay,
-        sandyTrackBlues,
-    };
-
     // Playlist
     template<>
     struct convert<Playlist>
@@ -231,6 +198,7 @@ namespace YAML
             node["runningOnTime"] = rhs[enumValue(PlaylistItem::runningOnTime)];
             node["getMeToGladstoneBay"] = rhs[enumValue(PlaylistItem::getMeToGladstoneBay)];
             node["sandyTrackBlues"] = rhs[enumValue(PlaylistItem::sandyTrackBlues)];
+            node["locomotionTitle"] = rhs[enumValue(PlaylistItem::locomotionTitle)];
             return node;
         }
 
@@ -267,6 +235,7 @@ namespace YAML
             rhs[enumValue(PlaylistItem::runningOnTime)] = enableAll || node["runningOnTime"].as<bool>(true);
             rhs[enumValue(PlaylistItem::getMeToGladstoneBay)] = enableAll || node["getMeToGladstoneBay"].as<bool>(true);
             rhs[enumValue(PlaylistItem::sandyTrackBlues)] = enableAll || node["sandyTrackBlues"].as<bool>(true);
+            rhs[enumValue(PlaylistItem::locomotionTitle)] = enableAll || node["locomotionTitle"].as<bool>(false);
             return true;
         }
     };

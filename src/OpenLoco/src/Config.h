@@ -83,7 +83,41 @@ namespace OpenLoco::Config
         bool vsync = false;
     };
 
-    using Playlist = std::array<bool, 29>;
+    using Playlist = std::array<bool, 30>;
+
+    enum class PlaylistItem : uint8_t
+    {
+        chugginAlong,
+        longDustyRoad,
+        flyingHigh,
+        gettinOnTheGas,
+        jumpinTheRails,
+        smoothRunning,
+        trafficJam,
+        neverStopTilYouGetThere,
+        soaringAway,
+        technoTorture,
+        everlastingHighRise,
+        solace,
+        chrysanthemum,
+        eugenia,
+        theRagtimeDance,
+        easyWinners,
+        settingOff,
+        aTravellersSerenade,
+        latinoTrip,
+        aGoodHeadOfSteam,
+        hopToTheBop,
+        theCityLights,
+        steaminDownTown,
+        brightExpectations,
+        moStation,
+        farOut,
+        runningOnTime,
+        getMeToGladstoneBay,
+        sandyTrackBlues,
+        locomotionTitle,
+    };
 
     struct Audio
     {
