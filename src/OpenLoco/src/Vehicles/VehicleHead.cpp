@@ -649,15 +649,12 @@ namespace OpenLoco::Vehicles
         if (!hasVehicleFlags(VehicleFlags::shuntCheat))
         {
             // Places all cars with VehicleObjectFlags::centerPosition in the middle of the train
-            const auto numMiddles = std::count_if(carData.begin(), carData.end(), [](auto& d) { return d.hasFlags(VehicleObjectFlags::centerPosition); });
-            const auto middle = (carData.size() / 2) + 1;
-            if (middle < carData.size())
-            {
-                std::stable_partition(carData.begin(), carData.end(), [](auto& a) { return !a.hasFlags(VehicleObjectFlags::centerPosition); });
-                const auto middleStart = middle - numMiddles / 2;
-                const auto middleEnd = middleStart + numMiddles;
-                std::rotate(carData.begin() + middleStart, carData.begin() + middleEnd, carData.end());
-            }
+
+            // Partition such that the middle cars are at the end of the carData
+            auto centreIter = std::stable_partition(carData.begin(), carData.end(), [](auto& a) { return !a.hasFlags(VehicleObjectFlags::centerPosition); });
+            const auto numNonMiddles = std::distance(carData.begin(), centreIter);
+            // Rotate the middle cars to the middle of the train biased towards the back if odd
+            std::rotate(carData.begin() + numNonMiddles / 2 + numNonMiddles % 2, centreIter, carData.end());
         }
 
         if (!hasVehicleFlags(VehicleFlags::shuntCheat))

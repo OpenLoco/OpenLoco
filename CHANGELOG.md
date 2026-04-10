@@ -1,5 +1,6 @@
 26.03.1+ (???)
 ------------------------------------------------------------------------
+- Fix: [#3334] Auto order of cars with centrePosition flag incorrectly calculated.
 - Fix: [#3638] Loan can go negative.
 
 26.03.1 (2026-04-01)
