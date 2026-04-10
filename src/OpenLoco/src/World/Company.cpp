@@ -33,11 +33,12 @@
 #include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
+
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Math/Bound.hpp>
+#include <OpenLoco/Utility/LookupTable.hpp>
 #include <algorithm>
 #include <array>
-#include <map>
 #include <sfl/static_unordered_set.hpp>
 
 namespace OpenLoco
@@ -231,7 +232,7 @@ namespace OpenLoco
         return static_cast<CorporateRating>(std::min(9, performanceIndex / 100));
     }
 
-    static std::map<CorporateRating, StringId> _ratingNames = {
+    static constexpr auto kRatingNames = Utility::buildLookupTable<CorporateRating, StringId>({
         { CorporateRating::platelayer, StringIds::corporate_rating_platelayer },
         { CorporateRating::engineer, StringIds::corporate_rating_engineer },
         { CorporateRating::trafficManager, StringIds::corporate_rating_traffic_manager },
@@ -242,12 +243,12 @@ namespace OpenLoco
         { CorporateRating::chairman, StringIds::corporate_rating_chairman },
         { CorporateRating::president, StringIds::corporate_rating_president },
         { CorporateRating::tycoon, StringIds::corporate_rating_tycoon },
-    };
+    });
 
     StringId getCorporateRatingAsStringId(CorporateRating rating)
     {
-        auto it = _ratingNames.find(rating);
-        if (it != _ratingNames.end())
+        auto it = kRatingNames.find(rating);
+        if (it != kRatingNames.end())
         {
             return it->second;
         }

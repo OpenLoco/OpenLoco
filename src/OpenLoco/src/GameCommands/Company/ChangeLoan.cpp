@@ -15,6 +15,11 @@ namespace OpenLoco::GameCommands
         auto* company = CompanyManager::get(GameCommands::getUpdatingCompanyId());
         const currency32_t loanDifference = company->currentLoan - newLoan;
 
+        if (newLoan < 0)
+        {
+            // TODO: Error message loan cannot be negative
+            return FAILURE;
+        }
         if (company->currentLoan > newLoan)
         {
             if (company->cash < loanDifference)

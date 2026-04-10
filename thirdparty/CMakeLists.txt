@@ -75,7 +75,7 @@ if ( NOT sfl_FOUND )
     FetchContent_Declare(
         sfl
         GIT_REPOSITORY      https://github.com/slavenf/sfl-library
-        GIT_TAG             2.1.1
+        GIT_TAG             2.2.0
         GIT_SHALLOW         ON
         EXCLUDE_FROM_ALL
     )

@@ -2079,7 +2079,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     }
 
                     GameCommands::ChangeLoanArgs args{};
-                    args.newLoan = Math::Bound::sub(company->currentLoan, Input::getClickRepeatStepSize() * 1'000);
+                    args.newLoan = std::max(Math::Bound::sub(company->currentLoan, Input::getClickRepeatStepSize() * 1'000), 0);
 
                     GameCommands::setErrorTitle(StringIds::cant_pay_back_loan);
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
