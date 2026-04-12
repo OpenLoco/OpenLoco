@@ -49,13 +49,17 @@ namespace OpenLoco::Gfx
     // 0x004FFAE8
     ImageId applyGhostToImage(uint32_t imageIndex)
     {
-        if (Config::get().constructionMarker)
+        using Config::ConstructionMarkerStyle;
+        switch (Config::get().constructionMarker)
         {
-            return ImageId(imageIndex).withTranslucency(ExtColour::unk31);
-        }
-        else
-        {
-            return ImageId(imageIndex, ExtColour::unk2C);
+            case ConstructionMarkerStyle::white:
+                return ImageId(imageIndex, ExtColour::unk2C);
+
+            case ConstructionMarkerStyle::translucent:
+                return ImageId(imageIndex).withTranslucency(ExtColour::unk31);
+
+            default:
+                throw Exception::RuntimeError("Unknown ConstructionMarkerStyle");
         }
     }
 
