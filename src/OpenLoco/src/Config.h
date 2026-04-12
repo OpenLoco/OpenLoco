@@ -46,6 +46,12 @@ namespace OpenLoco::Config
         transparent,
     };
 
+    enum class ConstructionMarkerStyle : uint8_t
+    {
+        white = 0,
+        translucent = 1,
+    };
+
     struct Resolution
     {
         int32_t width{};
@@ -169,7 +175,7 @@ namespace OpenLoco::Config
         bool showFPS = false;
         bool uncapFPS = false;
 
-        int32_t constructionMarker;
+        ConstructionMarkerStyle constructionMarker;
         bool gridlinesOnLandscape = false;
         int32_t heightMarkerOffset;
         bool landscapeSmoothing = true;

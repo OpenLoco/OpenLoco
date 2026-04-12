@@ -735,7 +735,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::white);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::translucent);
-            Dropdown::setItemSelected(Config::get().constructionMarker);
+            Dropdown::setItemSelected(enumValue(Config::get().constructionMarker));
         }
 
         // 0x004BFE98
@@ -746,13 +746,15 @@ namespace OpenLoco::Ui::Windows::Options
                 return;
             }
 
-            if (ax == Config::get().constructionMarker)
+            auto style = Config::ConstructionMarkerStyle(ax);
+
+            if (style == Config::get().constructionMarker)
             {
                 return;
             }
 
             auto& cfg = OpenLoco::Config::get();
-            cfg.constructionMarker = ax;
+            cfg.constructionMarker = style;
             OpenLoco::Config::write();
             Gfx::invalidateScreen();
         }
@@ -908,14 +910,20 @@ namespace OpenLoco::Ui::Windows::Options
             assert(self.currentTab == Common::tab::rendering);
 
             Common::prepareDraw(self);
+            
+            using Config::ConstructionMarkerStyle;
+            switch (Config::get().constructionMarker)
+            {
+                case ConstructionMarkerStyle::white:
+                    self.widgets[Widx::construction_marker].text = StringIds::white;
+                    break;
 
-            if (Config::get().constructionMarker)
-            {
-                self.widgets[Widx::construction_marker].text = StringIds::translucent;
-            }
-            else
-            {
-                self.widgets[Widx::construction_marker].text = StringIds::white;
+                case ConstructionMarkerStyle::translucent:
+                    self.widgets[Widx::construction_marker].text = StringIds::translucent;
+                    break;
+
+                default:
+                    throw Exception::RuntimeError("Unknown ConstructionMarkerStyle");
             }
 
             static constexpr StringId kScaleStringIds[] = {
