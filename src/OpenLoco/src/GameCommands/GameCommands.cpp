@@ -619,6 +619,6 @@ namespace OpenLoco::GameCommands
     // TODO: Maybe move this somewhere else used by multiple game commands
     bool shouldInvalidateTile(uint8_t flags)
     {
-        return !(flags & Flags::aiAllocated) && Config::get().showAiPlanningAsGhosts;
+        return !(flags & Flags::aiAllocated) || Config::get().showAiPlanningAsGhosts;
     }
 }

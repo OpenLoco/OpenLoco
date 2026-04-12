@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Feature: [#3639] The Locomotion title screen music can now be listened to during scenario play.
 - Fix: [#3334] Auto order of cars with centrePosition flag incorrectly calculated.
+- Fix: [#3634] Invalidation issue when show AI planning is turned off.
 - Fix: [#3638] Loan can go negative.
 
 26.03.1 (2026-04-01)
