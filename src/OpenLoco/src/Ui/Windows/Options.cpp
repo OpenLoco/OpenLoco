@@ -908,21 +908,8 @@ namespace OpenLoco::Ui::Windows::Options
             assert(self.currentTab == Common::tab::rendering);
 
             Common::prepareDraw(self);
-            
-            using Config::ConstructionMarkerStyle;
-            switch (Config::get().constructionMarker)
-            {
-                case ConstructionMarkerStyle::white:
-                    self.widgets[Widx::construction_marker].text = StringIds::white;
-                    break;
 
-                case ConstructionMarkerStyle::translucent:
-                    self.widgets[Widx::construction_marker].text = StringIds::translucent;
-                    break;
-
-                default:
-                    throw Exception::RuntimeError("Unknown ConstructionMarkerStyle");
-            }
+            self.widgets[Widx::construction_marker].text = kConstructionMarkerStyleStringIds[enumValue(Config::get().constructionMarker)];
 
             static constexpr StringId kScaleStringIds[] = {
                 StringIds::full_scale,
