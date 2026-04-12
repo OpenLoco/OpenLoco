@@ -727,14 +727,21 @@ namespace OpenLoco::Ui::Windows::Options
 
 #pragma mark - Construction Marker (Widget 19)
 
+        static constexpr StringId kConstructionMarkerStyleStringIds[] = {
+            StringIds::white,
+            StringIds::translucent,
+            StringIds::translucent, // TODO
+        };
+
         // 0x004BFE2E
         static void constructionMarkerMouseDown(const Window& self, [[maybe_unused]] WidgetIndex_t wi)
         {
             auto& dropdown = self.widgets[Widx::construction_marker];
-            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 2, 0x80);
+            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 3, 0x80);
 
-            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::white);
-            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::translucent);
+            Dropdown::add(0, StringIds::dropdown_stringid, kConstructionMarkerStyleStringIds[0]);
+            Dropdown::add(1, StringIds::dropdown_stringid, kConstructionMarkerStyleStringIds[1]);
+            Dropdown::add(2, StringIds::dropdown_stringid, kConstructionMarkerStyleStringIds[2]);
             Dropdown::setItemSelected(enumValue(Config::get().constructionMarker));
         }
 
@@ -911,20 +918,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             Common::prepareDraw(self);
             
-            using Config::ConstructionMarkerStyle;
-            switch (Config::get().constructionMarker)
-            {
-                case ConstructionMarkerStyle::white:
-                    self.widgets[Widx::construction_marker].text = StringIds::white;
-                    break;
-
-                case ConstructionMarkerStyle::translucent:
-                    self.widgets[Widx::construction_marker].text = StringIds::translucent;
-                    break;
-
-                default:
-                    throw Exception::RuntimeError("Unknown ConstructionMarkerStyle");
-            }
+            self.widgets[Widx::construction_marker].text = kConstructionMarkerStyleStringIds[enumValue(Config::get().constructionMarker)];
 
             static constexpr StringId kScaleStringIds[] = {
                 StringIds::full_scale,

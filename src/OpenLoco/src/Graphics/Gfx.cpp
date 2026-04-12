@@ -58,6 +58,9 @@ namespace OpenLoco::Gfx
             case ConstructionMarkerStyle::translucent:
                 return ImageId(imageIndex).withTranslucency(ExtColour::unk31);
 
+            case ConstructionMarkerStyle::translucentWhite:
+                return ImageId(imageIndex).withTranslucency(ExtColour::unk2C);
+
             default:
                 throw Exception::RuntimeError("Unknown ConstructionMarkerStyle");
         }

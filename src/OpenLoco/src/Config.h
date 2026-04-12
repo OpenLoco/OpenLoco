@@ -50,6 +50,7 @@ namespace OpenLoco::Config
     {
         white = 0,
         translucent = 1,
+        translucentWhite,
     };
 
     struct Resolution
