@@ -2130,6 +2130,11 @@ namespace OpenLoco::StringIds
     constexpr StringId set_ambient_volume_tip = 2416;
     constexpr StringId music_locomotion_title = 2417;
 
+    constexpr StringId construction_copy = 2418;
+    constexpr StringId construction_copy_tooltip = 2419;
+    constexpr StringId construction_paste = 2420;
+    constexpr StringId construction_paste_tooltip = 2421;
+
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
     constexpr StringId temporary_object_load_str_2 = 8194;

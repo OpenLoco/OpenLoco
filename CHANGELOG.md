@@ -1,5 +1,6 @@
 26.03.1+ (???)
 ------------------------------------------------------------------------
+- Feature: [#1438] Add basic blueprint feature for copy, paste and rotate railroad track.
 - Feature: [#3639] The Locomotion title screen music can now be listened to during scenario play.
 - Fix: [#3334] Auto order of cars with centrePosition flag incorrectly calculated.
 - Fix: [#3634] Invalidation issue when show AI planning is turned off.
