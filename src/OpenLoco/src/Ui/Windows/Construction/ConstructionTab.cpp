@@ -2641,7 +2641,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 }
 
                 auto res = placeBlueprint(_copiedTrack.value(), pos, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
-                if (res != GameCommands::FAILURE)
+                if (static_cast<uint32_t>(res) != GameCommands::FAILURE)
                 {
                     cState.ghostRemovalTrackPos = pos;
                     Common::setGhostVisibilityFlag(GhostVisibilityFlags::blueprint);
@@ -2859,7 +2859,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             removeBlueprintGhosts();
             const auto pos = World::Pos3(World::toWorldSpace(constructPos->first), constructPos->second);
             const auto res = placeBlueprint(_copiedTrack.value(), pos, GameCommands::Flags::apply);
-            if (res == GameCommands::FAILURE)
+            if (static_cast<uint32_t>(res) == GameCommands::FAILURE)
             {
                 Windows::Error::open(StringIds::error_cant_build_this_here, GameCommands::getErrorText());
             }

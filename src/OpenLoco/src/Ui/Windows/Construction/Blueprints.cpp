@@ -76,14 +76,13 @@ namespace OpenLoco
     {
         // Duplicate as we need to adjust the position
         auto copiedTrack = CopiedTrack(_copiedTrack);
-        currency32_t result = 0;
         // First we do a trial placement of track (can't do signals and stations as they would need the track already down)
         const auto noApplyFlags = flags & ~GameCommands::Flags::apply;
         for (auto& trackArgs : copiedTrack.trackArgs)
         {
             trackArgs.pos += ghostBPPos;
-            result = GameCommands::doCommand(trackArgs, noApplyFlags);
-            if (result == GameCommands::FAILURE)
+            const auto res = GameCommands::doCommand(trackArgs, noApplyFlags);
+            if (res == GameCommands::FAILURE)
             {
                 return GameCommands::FAILURE;
             }
@@ -93,7 +92,7 @@ namespace OpenLoco
         GameCommands::setErrorSound(false);
         bool builtAnything = false;
 
-        result = 0;
+        currency32_t result = 0;
         for (auto& trackArgs : copiedTrack.trackArgs)
         {
             const auto res = GameCommands::doCommand(trackArgs, flags);
