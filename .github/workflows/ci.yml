@@ -320,7 +320,7 @@ jobs:
       - name: Build OpenLoco
         run: |
           mkdir -p artifacts
-          cmake --preset macos-vcpkg-static -DCMAKE_INSTALL_PREFIX=./artifacts
+          cmake --preset macos-vcpkg-static -DCMAKE_INSTALL_PREFIX=./artifacts -DVCPKG_INSTALL_OPTIONS="--debug"
           cmake --build --preset macos-vcpkg-static
       - name: Install to artifacts
         run: |
