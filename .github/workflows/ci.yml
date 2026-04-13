@@ -47,9 +47,9 @@ jobs:
         uses: actions/cache@v5
         with:
           path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
-          key: ${{ runner.os }}-64-vcpkg-binary-cache-${{ hashFiles('vcpkg*.json') }}
+          key: ${{ runner.os }}-64-vcpkg-${{ env.ImageVersion }}-${{ hashFiles('vcpkg*.json') }}
           restore-keys: |
-            ${{ runner.os }}-64-vcpkg-binary-cache-
+            ${{ runner.os }}-64-vcpkg-${{ env.ImageVersion }}-
       - name: Build OpenLoco
         shell: cmd
         run: |
@@ -123,9 +123,9 @@ jobs:
         uses: actions/cache@v5
         with:
           path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
-          key: ${{ runner.os }}-32-vcpkg-binary-cache-${{ hashFiles('vcpkg*.json') }}
+          key: ${{ runner.os }}-32-vcpkg-${{ env.ImageVersion }}-${{ hashFiles('vcpkg*.json') }}
           restore-keys: |
-            ${{ runner.os }}-32-vcpkg-binary-cache-
+            ${{ runner.os }}-32-vcpkg-${{ env.ImageVersion }}-
       - name: Build OpenLoco
         shell: cmd
         run: |
@@ -274,9 +274,9 @@ jobs:
         uses: actions/cache@v5
         with:
           path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
-          key: ${{ runner.os }}-vcpkg-binary-cache-${{ hashFiles('vcpkg*.json') }}
+          key: ${{ runner.os }}-vcpkg-ubuntu26.04.vcpkg-${{ hashFiles('vcpkg*.json') }}
           restore-keys: |
-            ${{ runner.os }}-vcpkg-binary-cache-
+            ${{ runner.os }}-vcpkg-ubuntu26.04.vcpkg-
           # Cache currently broken as docker image does not include unzip
       - name: Build OpenLoco
         run: |
@@ -314,13 +314,13 @@ jobs:
         uses: actions/cache@v5
         with:
           path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
-          key: ${{ runner.os }}-vcpkg-binary-cache-${{ hashFiles('vcpkg*.json') }}
+          key: ${{ runner.os }}-vcpkg-${{ env.ImageVersion }}-${{ hashFiles('vcpkg*.json') }}
           restore-keys: |
-            ${{ runner.os }}-vcpkg-binary-cache-
+            ${{ runner.os }}-vcpkg-${{ env.ImageVersion }}-
       - name: Build OpenLoco
         run: |
           mkdir -p artifacts
-          cmake --preset macos-vcpkg-static -DCMAKE_INSTALL_PREFIX=./artifacts -DVCPKG_INSTALL_OPTIONS="--debug"
+          cmake --preset macos-vcpkg-static -DCMAKE_INSTALL_PREFIX=./artifacts
           cmake --build --preset macos-vcpkg-static
       - name: Install to artifacts
         run: |
