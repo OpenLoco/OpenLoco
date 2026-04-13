@@ -634,10 +634,17 @@ namespace OpenLoco::Vehicles
                 }
             }
             // 0x0047CFB5
-            const auto& roadObj = ObjectManager::get<RoadObject>(veh1.trackType);
-            if (!roadObj->hasFlags(RoadObjectFlags::isRoad))
+            // Note: Vanilla would not perform this check leading to
+            // invalid memory access. Unsure if we should perform something
+            // different but this should at least be safe to do (its not like
+            // you would have track type of 0xff unless you were on a road)
+            if (veh1.trackType != 0xFFU)
             {
-                return LookaheadResult{ LookaheadType::none, 0 };
+                const auto& roadObj = ObjectManager::get<RoadObject>(veh1.trackType);
+                if (!roadObj->hasFlags(RoadObjectFlags::isRoad))
+                {
+                    return LookaheadResult{ LookaheadType::none, 0 };
+                }
             }
             if (tad.isChangingLane() || tad.isOvertaking())
             {
