@@ -155,10 +155,14 @@ namespace OpenLoco::Ui::Windows::VehicleList
         return false;
     }
 
+    static void sortVehicleList(Window& self);
+
     // 0x004C1D4F
-    static void refreshVehicleList(Window& self)
+    static void populateVehicleList(Window& self)
     {
         self.rowCount = 0;
+
+        // Populate vehicle list with relevant entity ids
         for (auto* vehicle : VehicleManager::VehicleList())
         {
             if (vehicle->vehicleType != static_cast<VehicleType>(self.currentTab))
@@ -176,8 +180,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 continue;
             }
 
-            vehicle->vehicleFlags &= ~Vehicles::VehicleFlags::sorted;
+            self.rowInfo[self.rowCount++] = enumValue(vehicle->head);
         }
+
+        sortVehicleList(self);
     }
 
     // 0x004C1E4F
@@ -248,82 +254,15 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C1D92
-    static void updateVehicleList(Window& self)
+    static void sortVehicleList(Window& self)
     {
-        EntityId insertId = EntityId::null;
+        auto list = std::span<EntityId>(reinterpret_cast<EntityId*>(self.rowInfo), self.rowCount);
 
-        for (auto* vehicle : VehicleManager::VehicleList())
-        {
-            if (vehicle->vehicleType != static_cast<VehicleType>(self.currentTab))
-            {
-                continue;
-            }
-
-            if (vehicle->owner != CompanyId(self.number))
-            {
-                continue;
-            }
-
-            if (vehicle->hasVehicleFlags(Vehicles::VehicleFlags::sorted))
-            {
-                continue;
-            }
-
-            if (isCargoFilterActive(self) && !vehicleIsTransportingCargo(vehicle, self.var_852))
-            {
-                continue;
-            }
-
-            if (insertId == EntityId::null)
-            {
-                insertId = vehicle->id;
-                continue;
-            }
-
-            auto* insertVehicle = EntityManager::get<VehicleHead>(insertId);
-            if (insertVehicle == nullptr)
-            {
-                continue;
-            }
-            if (getOrder(SortMode(self.sortMode), *vehicle, *insertVehicle))
-            {
-                insertId = vehicle->id;
-                continue;
-            }
-        }
-
-        if (insertId != EntityId::null)
-        {
-            auto vehicle = EntityManager::get<VehicleHead>(insertId);
-            if (vehicle == nullptr)
-            {
-                self.var_83C = self.rowCount;
-                refreshVehicleList(self);
-                return;
-            }
-            vehicle->vehicleFlags |= Vehicles::VehicleFlags::sorted;
-
-            if (vehicle->id != EntityId(self.rowInfo[self.rowCount]))
-            {
-                self.rowInfo[self.rowCount] = enumValue(vehicle->id);
-            }
-
-            self.rowCount++;
-
-            if (self.rowCount > self.var_83C)
-            {
-                self.var_83C = self.rowCount;
-            }
-        }
-        else
-        {
-            if (self.var_83C != self.rowCount)
-            {
-                self.var_83C = self.rowCount;
-            }
-
-            refreshVehicleList(self);
-        }
+        std::sort(list.begin(), list.end(), [self](EntityId lhs, EntityId rhs) {
+            auto* lhsVehicle = EntityManager::get<VehicleHead>(lhs);
+            auto* rhsVehicle = EntityManager::get<VehicleHead>(rhs);
+            return getOrder(SortMode(self.sortMode), *lhsVehicle, *rhsVehicle);
+        });
     }
 
     // 0x004C2A6E
@@ -463,12 +402,11 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->width = kWindowSize.width;
         self->height = kWindowSize.height;
         self->sortMode = 0;
-        self->var_83C = 0;
         self->rowHover = -1;
         self->var_850 = static_cast<int16_t>(FilterMode::allVehicles);
         self->var_852 = 0xFFFF;
 
-        refreshVehicleList(*self);
+        populateVehicleList(*self);
 
         self->invalidate();
 
@@ -482,12 +420,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C1D19
     void removeTrainFromList(Window& self, EntityId head)
     {
-        for (auto i = 0; i < self.var_83C; ++i)
+        for (auto i = 0; i < self.rowCount; ++i)
         {
-            auto& entry = self.rowInfo[i];
-            if (entry == enumValue(head))
+            auto entryId = EntityId(self.rowInfo[i]);
+            if (entryId == head)
             {
-                entry = enumValue(EntityId::null);
+                self.rowInfo[i] = enumValue(EntityId::null);
             }
         }
     }
@@ -579,8 +517,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
             auto& widget = self.widgets[Widx::status_bar];
             FormatArguments args{ widget.textArgs };
             auto& footerStringPair = kTypeToFooterStringIds[self.currentTab];
-            args.push(self.var_83C == 1 ? footerStringPair.first : footerStringPair.second);
-            args.push(self.var_83C);
+            args.push(self.rowCount == 1 ? footerStringPair.first : footerStringPair.second);
+            args.push(self.rowCount);
         }
 
         static constexpr std::array<StringId, 2> kTypeToFilterStringIds{
@@ -645,7 +583,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         drawingCtx.clearSingle(shade);
 
         auto yPos = 0;
-        for (auto i = 0; i < self.var_83C; i++)
+        for (auto i = 0; i < self.rowCount; i++)
         {
             const auto vehicleId = EntityId(self.rowInfo[i]);
 
@@ -775,9 +713,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
         }
 
         self.rowCount = 0;
-        refreshVehicleList(self);
+        populateVehicleList(self);
 
-        self.var_83C = 0;
         self.rowHover = -1;
 
         self.callOnResize();
@@ -822,7 +759,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
                 self.sortMode = sortMode;
                 self.invalidate();
-                refreshVehicleList(self);
+                populateVehicleList(self);
                 break;
             }
         }
@@ -910,9 +847,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
         disableUnavailableVehicleTypes(self);
 
         self.rowCount = 0;
-        refreshVehicleList(self);
+        populateVehicleList(self);
 
-        self.var_83C = 0;
         self.rowHover = -1;
 
         self.callOnResize();
@@ -960,10 +896,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto widgetIndex = getTabFromType(static_cast<VehicleType>(self.currentTab));
         WindowManager::invalidateWidget(WindowType::vehicleList, self.number, widgetIndex);
 
-        // It adds 3 vehicles per update, this is not an accident.
-        updateVehicleList(self);
-        updateVehicleList(self);
-        updateVehicleList(self);
+        sortVehicleList(self);
 
         self.invalidate();
     }
@@ -986,7 +919,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C265B
     static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
     {
-        scrollHeight = self.var_83C * self.rowHeight;
+        scrollHeight = self.rowCount * self.rowHeight;
     }
 
     // 0x004C266D
@@ -998,7 +931,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         }
 
         uint16_t currentIndex = yPos / self.rowHeight;
-        if (currentIndex < self.var_83C && self.rowInfo[currentIndex] != -1)
+        if (currentIndex < self.rowCount && EntityId(self.rowInfo[currentIndex]) != EntityId::null)
         {
             return CursorId::handPointer;
         }
@@ -1014,7 +947,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self.flags &= ~WindowFlags::notScrollView;
 
         uint16_t currentRow = y / self.rowHeight;
-        if (currentRow < self.var_83C)
+        if (currentRow < self.rowCount)
         {
             self.rowHover = self.rowInfo[currentRow];
         }
@@ -1088,7 +1021,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     static void onScrollMouseDown(Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
         uint16_t currentRow = y / self.rowHeight;
-        if (currentRow >= self.var_83C)
+        if (currentRow >= self.rowCount)
         {
             return;
         }

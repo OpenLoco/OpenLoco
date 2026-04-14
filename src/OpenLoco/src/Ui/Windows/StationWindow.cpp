@@ -820,25 +820,7 @@ namespace OpenLoco::Ui::Windows::Station
 
         static void refreshVehicleList(Window* self)
         {
-            auto currentVehicleType = getCurrentVehicleType(self);
             self->rowCount = 0;
-
-            for (auto* vehicle : VehicleManager::VehicleList())
-            {
-                if (!vehicleStopsAtActiveStation(vehicle, StationId(self->number)))
-                {
-                    continue;
-                }
-
-                Common::setVehicleTypeAvailable(*self, vehicle->vehicleType);
-
-                if (vehicle->vehicleType != currentVehicleType)
-                {
-                    continue;
-                }
-
-                vehicle->vehicleFlags &= ~Vehicles::VehicleFlags::sorted;
-            }
         }
 
         static bool orderByName(const VehicleHead& lhs, const VehicleHead& rhs)
@@ -865,6 +847,7 @@ namespace OpenLoco::Ui::Windows::Station
             auto currentVehicleType = getCurrentVehicleType(self);
             EntityId insertId = EntityId::null;
 
+            auto vehicleRowId = 0U;
             for (auto* vehicle : VehicleManager::VehicleList())
             {
                 if (vehicle->vehicleType != currentVehicleType)
@@ -872,7 +855,7 @@ namespace OpenLoco::Ui::Windows::Station
                     continue;
                 }
 
-                if (vehicle->hasVehicleFlags(Vehicles::VehicleFlags::sorted))
+                if (self->rowInfo[vehicleRowId])
                 {
                     continue;
                 }
@@ -909,7 +892,7 @@ namespace OpenLoco::Ui::Windows::Station
                     refreshVehicleList(self);
                     return;
                 }
-                vehicle->vehicleFlags |= Vehicles::VehicleFlags::sorted;
+                self->rowInfo[vehicleRowId] = true;
 
                 if (vehicle->id != EntityId(self->rowInfo[self->rowCount]))
                 {
