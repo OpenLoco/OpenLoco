@@ -6,6 +6,7 @@
 - Fix: [#3634] Invalidation issue when show AI planning is turned off.
 - Fix: [#3638] Loan can go negative.
 - Fix: [#3655] Incorrect scaffolding preview image in object selection window.
+- Fix: [#3694] Crash when starting bus/truck immediately behind another bus/truck (original bug).
 
 26.03.1 (2026-04-01)
 ------------------------------------------------------------------------
