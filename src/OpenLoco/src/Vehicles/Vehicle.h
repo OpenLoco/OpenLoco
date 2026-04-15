@@ -79,7 +79,8 @@ namespace OpenLoco::Vehicles
         unk_0 = 1U << 0,
         commandStop = 1U << 1, // commanded to stop??
         unk_2 = 1U << 2,
-        sorted = 1U << 3, // vehicle list
+        sorted = 1U << 3, // unused; previously used by vehicle list
+        unk_4 = 1U << 4,  // unused
         unk_5 = 1U << 5,
         manualControl = 1U << 6,
         shuntCheat = 1U << 7,
