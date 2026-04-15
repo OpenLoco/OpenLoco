@@ -263,6 +263,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
             auto* rhsVehicle = EntityManager::get<VehicleHead>(rhs);
             return getOrder(SortMode(self.sortMode), *lhsVehicle, *rhsVehicle);
         });
+
+        self.invalidate();
     }
 
     // 0x004C2A6E
@@ -897,8 +899,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
         WindowManager::invalidateWidget(WindowType::vehicleList, self.number, widgetIndex);
 
         sortVehicleList(self);
-
-        self.invalidate();
     }
 
     // 0x004C2640

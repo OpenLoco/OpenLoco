@@ -873,6 +873,8 @@ namespace OpenLoco::Ui::Windows::Station
                 auto* rhsVehicle = EntityManager::get<VehicleHead>(rhs);
                 return orderByName(*lhsVehicle, *rhsVehicle);
             });
+
+            self.invalidate();
         }
 
         void removeTrainFromList(Window& self, EntityId head)
@@ -1019,8 +1021,6 @@ namespace OpenLoco::Ui::Windows::Station
             self.callPrepareDraw();
 
             sortVehicleList(self);
-
-            self.invalidate();
         }
 
         static void event_08(Window& self)
