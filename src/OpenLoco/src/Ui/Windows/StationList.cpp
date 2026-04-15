@@ -102,16 +102,29 @@ namespace OpenLoco::Ui::Windows::StationList
     };
 
     // 0x004910E8
-    static void refreshStationList(Window* window)
+    static void populateStationList(Window& self)
     {
-        window->rowCount = 0;
+        self.rowCount = 0;
 
         for (auto& station : StationManager::stations())
         {
-            if (station.owner == CompanyId(window->number))
+            if (station.owner != CompanyId(self.number))
             {
-                station.flags &= ~StationFlags::flag_4;
+                continue;
             }
+
+            if ((station.flags & StationFlags::flag_5) != StationFlags::none)
+            {
+                continue;
+            }
+
+            const StationFlags mask = tabInformationByType[self.currentTab].stationMask;
+            if ((station.flags & mask) == StationFlags::none)
+            {
+                continue;
+            }
+
+            self.rowInfo[self.rowCount++] = enumValue(station.id());
         }
     }
 
@@ -203,80 +216,17 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x0049111A
-    static void updateStationList(Window* window)
+    static void sortStationList(Window& self)
     {
-        StationId edi = StationId::null;
+        auto list = std::span<StationId>(reinterpret_cast<StationId*>(self.rowInfo), self.rowCount);
 
-        for (auto& station : StationManager::stations())
-        {
-            if (station.owner != CompanyId(window->number))
-            {
-                continue;
-            }
+        std::stable_sort(list.begin(), list.end(), [self](StationId lhs, StationId rhs) {
+            auto* lhsStation = StationManager::get(lhs);
+            auto* rhsStation = StationManager::get(rhs);
+            return getOrder(SortMode(self.sortMode), *lhsStation, *rhsStation);
+        });
 
-            if ((station.flags & StationFlags::flag_5) != StationFlags::none)
-            {
-                continue;
-            }
-
-            const StationFlags mask = tabInformationByType[window->currentTab].stationMask;
-            if ((station.flags & mask) == StationFlags::none)
-            {
-                continue;
-            }
-
-            if ((station.flags & StationFlags::flag_4) != StationFlags::none)
-            {
-                continue;
-            }
-
-            if (edi == StationId::null)
-            {
-                edi = station.id();
-                continue;
-            }
-
-            if (getOrder(SortMode(window->sortMode), station, *StationManager::get(edi)))
-            {
-                edi = station.id();
-            }
-        }
-
-        if (edi != StationId::null)
-        {
-            bool dl = false;
-
-            StationManager::get(edi)->flags |= StationFlags::flag_4;
-
-            auto ebp = window->rowCount;
-            if (edi != StationId(window->rowInfo[ebp]))
-            {
-                window->rowInfo[ebp] = enumValue(edi);
-                dl = true;
-            }
-
-            window->rowCount += 1;
-            if (window->rowCount > window->var_83C)
-            {
-                window->var_83C = window->rowCount;
-                dl = true;
-            }
-
-            if (dl)
-            {
-                window->invalidate();
-            }
-        }
-        else
-        {
-            if (window->var_83C != window->rowCount)
-            {
-                window->var_83C = window->rowCount;
-                window->invalidate();
-            }
-
-            refreshStationList(window);
-        }
+        self.invalidate();
     }
 
     // 0x004910AB
@@ -286,7 +236,7 @@ namespace OpenLoco::Ui::Windows::StationList
         auto* window = WindowManager::find(WindowType::stationList, enumValue(station->owner));
         if (window != nullptr)
         {
-            for (uint16_t i = 0; i < window->var_83C; i++)
+            for (uint16_t i = 0; i < window->rowCount; i++)
             {
                 if (stationId == StationId(window->rowInfo[i]))
                 {
@@ -327,10 +277,10 @@ namespace OpenLoco::Ui::Windows::StationList
             window->currentTab = 0;
             window->frameNo = 0;
             window->sortMode = 0;
-            window->var_83C = 0;
+            window->rowCount = 0;
             window->rowHover = -1;
 
-            refreshStationList(window);
+            populateStationList(*window);
 
             window->minWidth = kMinDimensions.width;
             window->minHeight = kMinDimensions.height;
@@ -379,7 +329,7 @@ namespace OpenLoco::Ui::Windows::StationList
         }
 
         uint16_t currentIndex = yPos / kRowHeight;
-        if (currentIndex < window.var_83C && window.rowInfo[currentIndex] != -1)
+        if (currentIndex < window.rowCount && window.rowInfo[currentIndex] != -1)
         {
             return CursorId::handPointer;
         }
@@ -475,8 +425,8 @@ namespace OpenLoco::Ui::Windows::StationList
 
         // TODO: locale-based pluralisation.
         auto args = FormatArguments{ widget.textArgs };
-        args.push(window.var_83C == 1 ? StringIds::status_num_stations_singular : StringIds::status_num_stations_plural);
-        args.push<uint16_t>(window.var_83C);
+        args.push(window.rowCount == 1 ? StringIds::status_num_stations_singular : StringIds::status_num_stations_plural);
+        args.push<uint16_t>(window.rowCount);
     }
 
     // 0x0049157F
@@ -489,7 +439,7 @@ namespace OpenLoco::Ui::Windows::StationList
         drawingCtx.clearSingle(shade);
 
         uint16_t yPos = 0;
-        for (uint16_t i = 0; i < window.var_83C; i++)
+        for (uint16_t i = 0; i < window.rowCount; i++)
         {
             auto stationId = StationId(window.rowInfo[i]);
 
@@ -651,9 +601,9 @@ namespace OpenLoco::Ui::Windows::StationList
         window.sortMode = 0;
         window.rowCount = 0;
 
-        refreshStationList(&window);
+        populateStationList(window);
 
-        window.var_83C = 0;
+        window.rowCount = 0;
         window.rowHover = -1;
 
         window.callOnResize();
@@ -696,10 +646,10 @@ namespace OpenLoco::Ui::Windows::StationList
 
                 window.invalidate();
 
-                window.var_83C = 0;
+                window.rowCount = 0;
                 window.rowHover = -1;
 
-                refreshStationList(&window);
+                populateStationList(window);
 
                 window.callOnResize();
                 window.callPrepareDraw();
@@ -721,10 +671,10 @@ namespace OpenLoco::Ui::Windows::StationList
 
                 window.sortMode = sortMode;
                 window.invalidate();
-                window.var_83C = 0;
+                window.rowCount = 0;
                 window.rowHover = -1;
 
-                refreshStationList(&window);
+                populateStationList(window);
                 break;
             }
         }
@@ -734,7 +684,7 @@ namespace OpenLoco::Ui::Windows::StationList
     static void onScrollMouseDown(Ui::Window& window, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
         uint16_t currentRow = y / kRowHeight;
-        if (currentRow > window.var_83C)
+        if (currentRow > window.rowCount)
         {
             return;
         }
@@ -756,7 +706,7 @@ namespace OpenLoco::Ui::Windows::StationList
         uint16_t currentRow = y / kRowHeight;
         int16_t currentStation = -1;
 
-        if (currentRow < window.var_83C)
+        if (currentRow < window.rowCount)
         {
             currentStation = window.rowInfo[currentRow];
         }
@@ -778,16 +728,13 @@ namespace OpenLoco::Ui::Windows::StationList
         window.callPrepareDraw();
         WindowManager::invalidateWidget(WindowType::stationList, window.number, window.currentTab + 4);
 
-        // Add three stations every tick.
-        updateStationList(&window);
-        updateStationList(&window);
-        updateStationList(&window);
+        sortStationList(window);
     }
 
     // 0x00491999
     static void getScrollSize(Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
     {
-        scrollHeight = kRowHeight * window.var_83C;
+        scrollHeight = kRowHeight * window.rowCount;
     }
 
     // 0x00491841
