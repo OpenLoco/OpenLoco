@@ -402,6 +402,8 @@ namespace OpenLoco::Ui::Windows::TownList
                 auto* rhsTown = TownManager::get(rhs);
                 return getOrder(SortMode(self.sortMode), *lhsTown, *rhsTown);
             });
+
+            self.invalidate();
         }
 
         // 0x0049A4A0
