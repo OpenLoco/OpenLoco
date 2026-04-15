@@ -82,7 +82,7 @@ namespace OpenLoco::Ui::Windows::TownList
         static void prepareDraw(Window& self);
         static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx);
         static void switchTab(Window& self, WidgetIndex_t widgetIndex);
-        static void refreshTownList(Window& self);
+        static void populateTownList(Window& self);
     }
 
     namespace TownList
@@ -158,8 +158,8 @@ namespace OpenLoco::Ui::Windows::TownList
 
             // Set status bar text
             FormatArguments args{ widget.textArgs };
-            args.push(self.var_83C == 1 ? StringIds::status_towns_singular : StringIds::status_towns_plural);
-            args.push(self.var_83C);
+            args.push(self.rowCount == 1 ? StringIds::status_towns_singular : StringIds::status_towns_plural);
+            args.push(self.rowCount);
         }
 
         // 0x0049A0F8
@@ -173,7 +173,7 @@ namespace OpenLoco::Ui::Windows::TownList
             drawingCtx.clearSingle(shade);
 
             uint16_t yPos = 0;
-            for (uint16_t i = 0; i < self.var_83C; i++)
+            for (uint16_t i = 0; i < self.rowCount; i++)
             {
                 const auto townId = TownId(self.rowInfo[i]);
 
@@ -273,10 +273,10 @@ namespace OpenLoco::Ui::Windows::TownList
 
                     self.sortMode = sortMode;
                     self.invalidate();
-                    self.var_83C = 0;
+                    self.rowCount = 0;
                     self.rowHover = -1;
 
-                    Common::refreshTownList(self);
+                    Common::populateTownList(self);
                     break;
                 }
             }
@@ -286,7 +286,7 @@ namespace OpenLoco::Ui::Windows::TownList
         static void onScrollMouseDown(Ui::Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
         {
             uint16_t currentRow = y / kRowHeight;
-            if (currentRow >= self.var_83C)
+            if (currentRow >= self.rowCount)
             {
                 return;
             }
@@ -308,7 +308,7 @@ namespace OpenLoco::Ui::Windows::TownList
             uint16_t currentRow = y / kRowHeight;
             int16_t currentTown = -1;
 
-            if (currentRow < self.var_83C)
+            if (currentRow < self.rowCount)
             {
                 currentTown = self.rowInfo[currentRow];
             }
@@ -393,62 +393,15 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x00499E0B
-        static void updateTownList(Window& self)
+        static void sortTownList(Window& self)
         {
-            TownId chosenTown = TownId::null;
-            for (auto& town : TownManager::towns())
-            {
-                if ((town.flags & TownFlags::sorted) != TownFlags::none)
-                {
-                    continue;
-                }
+            auto list = std::span<TownId>(reinterpret_cast<TownId*>(self.rowInfo), self.rowCount);
 
-                if (chosenTown == TownId::null)
-                {
-                    chosenTown = town.id();
-                    continue;
-                }
-
-                if (getOrder(SortMode(self.sortMode), town, *TownManager::get(chosenTown)))
-                {
-                    chosenTown = town.id();
-                }
-            }
-
-            if (chosenTown != TownId::null)
-            {
-                bool shouldInvalidate = false;
-
-                TownManager::get(chosenTown)->flags |= TownFlags::sorted;
-
-                if (chosenTown != TownId(self.rowInfo[self.rowCount]))
-                {
-                    self.rowInfo[self.rowCount] = enumValue(chosenTown);
-                    shouldInvalidate = true;
-                }
-
-                self.rowCount += 1;
-                if (self.rowCount > self.var_83C)
-                {
-                    self.var_83C = self.rowCount;
-                    shouldInvalidate = true;
-                }
-
-                if (shouldInvalidate)
-                {
-                    self.invalidate();
-                }
-            }
-            else
-            {
-                if (self.var_83C != self.rowCount)
-                {
-                    self.var_83C = self.rowCount;
-                    self.invalidate();
-                }
-
-                Common::refreshTownList(self);
-            }
+            std::sort(list.begin(), list.end(), [self](TownId lhs, TownId rhs) {
+                auto* lhsTown = TownManager::get(lhs);
+                auto* rhsTown = TownManager::get(rhs);
+                return getOrder(SortMode(self.sortMode), *lhsTown, *rhsTown);
+            });
         }
 
         // 0x0049A4A0
@@ -459,10 +412,7 @@ namespace OpenLoco::Ui::Windows::TownList
             self.callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::townList, self.number, self.currentTab + Common::widx::tab_town_list);
 
-            // Add three towns every tick.
-            updateTownList(self);
-            updateTownList(self);
-            updateTownList(self);
+            sortTownList(self);
         }
 
         // 0x0049A4D0
@@ -491,7 +441,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A4FA
         static void getScrollSize(Ui::Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            scrollHeight = kRowHeight * self.var_83C;
+            scrollHeight = kRowHeight * self.rowCount;
         }
 
         // 0x00491841
@@ -511,7 +461,7 @@ namespace OpenLoco::Ui::Windows::TownList
             }
 
             uint16_t currentIndex = yPos / kRowHeight;
-            if (currentIndex < self.var_83C && self.rowInfo[currentIndex] != -1)
+            if (currentIndex < self.rowCount && self.rowInfo[currentIndex] != -1)
             {
                 return CursorId::handPointer;
             }
@@ -528,10 +478,10 @@ namespace OpenLoco::Ui::Windows::TownList
             self.maxHeight = kMaxDimensions.height;
             self.width = kWindowSize.width;
             self.height = kWindowSize.height;
-            self.var_83C = 0;
+            self.rowCount = 0;
             self.rowHover = -1;
 
-            Common::refreshTownList(self);
+            Common::populateTownList(self);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -579,10 +529,10 @@ namespace OpenLoco::Ui::Windows::TownList
             window->currentTab = 0;
             window->frameNo = 0;
             window->sortMode = 0;
-            window->var_83C = 0;
+            window->rowCount = 0;
             window->rowHover = -1;
 
-            Common::refreshTownList(*window);
+            Common::populateTownList(*window);
 
             WindowManager::moveOtherWindowsDown(*window);
 
@@ -641,7 +591,7 @@ namespace OpenLoco::Ui::Windows::TownList
             return;
         }
 
-        for (auto i = 0; i < window->var_83C; i++)
+        for (auto i = 0; i < window->rowCount; i++)
         {
             if (window->rowInfo[i] == enumValue(townId))
             {
@@ -1225,7 +1175,7 @@ namespace OpenLoco::Ui::Windows::TownList
             self.scrollAreas[0].contentHeight = scrollHeight;
 
             auto i = 0;
-            for (; i <= self.var_83C; i++)
+            for (; i <= self.rowCount; i++)
             {
                 if (self.rowInfo[i] == self.rowHover)
                 {
@@ -1233,7 +1183,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 }
             }
 
-            if (i >= self.var_83C)
+            if (i >= self.rowCount)
             {
                 i = 0;
             }
@@ -1261,7 +1211,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049AE83
         static void getScrollSize(Ui::Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            scrollHeight = (4 + self.var_83C) / 5;
+            scrollHeight = (4 + self.rowCount) / 5;
             if (scrollHeight == 0)
             {
                 scrollHeight += 1;
@@ -1287,7 +1237,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             uint16_t xPos = 0;
             uint16_t yPos = 0;
-            for (uint16_t i = 0; i < self.var_83C; i++)
+            for (uint16_t i = 0; i < self.rowCount; i++)
             {
                 if (yPos + kRowHeight < rt.y)
                 {
@@ -1370,7 +1320,7 @@ namespace OpenLoco::Ui::Windows::TownList
         {
             auto index = getRowIndex(x, y);
 
-            for (auto i = 0; i < self.var_83C; i++)
+            for (auto i = 0; i < self.rowCount; i++)
             {
                 auto rowInfo = self.rowInfo[i];
                 index--;
@@ -1406,7 +1356,7 @@ namespace OpenLoco::Ui::Windows::TownList
             auto index = getRowIndex(x, y);
             uint16_t rowInfo = y;
             auto i = 0;
-            for (; i < self.var_83C; i++)
+            for (; i < self.rowCount; i++)
             {
                 rowInfo = self.rowInfo[i];
                 index--;
@@ -1471,7 +1421,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 buildingCount++;
             }
 
-            self.var_83C = buildingCount;
+            self.rowCount = buildingCount;
             auto rowHover = -1;
 
             auto lastSelectedBuilding = getGameState().lastBuildingOption;
@@ -1482,7 +1432,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             if (lastSelectedBuilding != 0xFF)
             {
-                for (auto i = 0; i <= self.var_83C; i++)
+                for (auto i = 0; i <= self.rowCount; i++)
                 {
                     if (lastSelectedBuilding == self.rowInfo[i])
                     {
@@ -1492,7 +1442,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 }
             }
 
-            if (rowHover == -1 && self.var_83C != 0)
+            if (rowHover == -1 && self.rowCount != 0)
             {
                 rowHover = self.rowInfo[0];
             }
@@ -1524,7 +1474,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             _buildingGhostPlaced = 0;
             _buildingPlacementCost = GameCommands::FAILURE;
-            self.var_83C = 0;
+            self.rowCount = 0;
             self.rowHover = -1;
             self.var_846 = 0xFFFFU;
 
@@ -1779,14 +1729,16 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x00499DDE
-        static void refreshTownList(Window& self)
+        static void populateTownList(Window& self)
         {
             self.rowCount = 0;
 
             for (auto& town : TownManager::towns())
             {
-                town.flags &= ~TownFlags::sorted;
+                self.rowInfo[self.rowCount++] = enumValue(town.id());
             }
+
+            TownList::sortTownList(self);
         }
     }
 }
