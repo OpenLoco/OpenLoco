@@ -258,7 +258,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     {
         auto list = std::span<EntityId>(reinterpret_cast<EntityId*>(self.rowInfo), self.rowCount);
 
-        std::sort(list.begin(), list.end(), [self](EntityId lhs, EntityId rhs) {
+        std::stable_sort(list.begin(), list.end(), [self](EntityId lhs, EntityId rhs) {
             auto* lhsVehicle = EntityManager::get<VehicleHead>(lhs);
             auto* rhsVehicle = EntityManager::get<VehicleHead>(rhs);
             return getOrder(SortMode(self.sortMode), *lhsVehicle, *rhsVehicle);
