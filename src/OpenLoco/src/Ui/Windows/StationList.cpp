@@ -220,7 +220,7 @@ namespace OpenLoco::Ui::Windows::StationList
     {
         auto list = std::span<StationId>(reinterpret_cast<StationId*>(self.rowInfo), self.rowCount);
 
-        std::sort(list.begin(), list.end(), [self](StationId lhs, StationId rhs) {
+        std::stable_sort(list.begin(), list.end(), [self](StationId lhs, StationId rhs) {
             auto* lhsStation = StationManager::get(lhs);
             auto* rhsStation = StationManager::get(rhs);
             return getOrder(SortMode(self.sortMode), *lhsStation, *rhsStation);
