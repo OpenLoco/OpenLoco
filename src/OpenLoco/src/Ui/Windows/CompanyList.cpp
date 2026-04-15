@@ -1681,11 +1681,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             for (auto& company : CompanyManager::companies())
             {
-                if ((company.challengeFlags & CompanyFlags::sorted) != CompanyFlags::none)
-                {
-                    continue;
-                }
-
                 self.rowInfo[self.rowCount++] = enumValue(company.id());
             }
 
