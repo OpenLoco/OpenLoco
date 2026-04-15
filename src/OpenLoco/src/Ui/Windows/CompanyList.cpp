@@ -81,7 +81,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static void onUpdate(Window& self);
         static void prepareDraw(Window& self);
         static void switchTab(Window& self, WidgetIndex_t widgetIndex);
-        static void refreshCompanyList(Window& self);
+        static void populateCompanyList(Window& self);
         static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx);
         static void drawGraphAndLegend(Window& self, Gfx::DrawingContext& drawingCtx);
     }
@@ -153,10 +153,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                     self.sortMode = sortMode;
                     self.invalidate();
-                    self.var_83C = 0;
+                    self.rowCount = 0;
                     self.rowHover = -1;
 
-                    Common::refreshCompanyList(self);
+                    Common::populateCompanyList(self);
                     break;
                 }
             }
@@ -238,63 +238,15 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00437AE2
-        static void updateCompanyList(Window& self)
+        static void sortCompanyList(Window& self)
         {
-            CompanyId chosenCompany = CompanyId::null;
+            auto list = std::span<uint16_t>(reinterpret_cast<uint16_t*>(self.rowInfo), self.rowCount);
 
-            for (auto& company : CompanyManager::companies())
-            {
-                if ((company.challengeFlags & CompanyFlags::sorted) != CompanyFlags::none)
-                {
-                    continue;
-                }
-
-                if (chosenCompany == CompanyId::null)
-                {
-                    chosenCompany = company.id();
-                    continue;
-                }
-
-                if (getOrder(SortMode(self.sortMode), company, *CompanyManager::get(chosenCompany)))
-                {
-                    chosenCompany = company.id();
-                }
-            }
-
-            if (chosenCompany != CompanyId::null)
-            {
-                bool shouldInvalidate = false;
-
-                CompanyManager::get(chosenCompany)->challengeFlags |= CompanyFlags::sorted;
-
-                if (chosenCompany != CompanyId(self.rowInfo[self.rowCount]))
-                {
-                    self.rowInfo[self.rowCount] = enumValue(chosenCompany);
-                    shouldInvalidate = true;
-                }
-
-                self.rowCount++;
-                if (self.rowCount > self.var_83C)
-                {
-                    self.var_83C = self.rowCount;
-                    shouldInvalidate = true;
-                }
-
-                if (shouldInvalidate)
-                {
-                    self.invalidate();
-                }
-            }
-            else
-            {
-                if (self.var_83C != self.rowCount)
-                {
-                    self.var_83C = self.rowCount;
-                    self.invalidate();
-                }
-
-                Common::refreshCompanyList(self);
-            }
+            std::stable_sort(list.begin(), list.end(), [self](uint16_t lhs, uint16_t rhs) {
+                auto* lhsCompany = CompanyManager::get(static_cast<CompanyId>(lhs));
+                auto* rhsCompany = CompanyManager::get(static_cast<CompanyId>(rhs));
+                return getOrder(SortMode(self.sortMode), *lhsCompany, *rhsCompany);
+            });
         }
 
         // 0x004362C0
@@ -307,10 +259,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             _hoverItemTicks++;
 
-            // Add three companies every tick.
-            updateCompanyList(self);
-            updateCompanyList(self);
-            updateCompanyList(self);
+            sortCompanyList(self);
         }
 
         // 0x004362F7
@@ -339,14 +288,14 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00436321
         static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            scrollHeight = self.var_83C * kRowHeight;
+            scrollHeight = self.rowCount * kRowHeight;
         }
 
         // 0x004363A0
         static void onScrollMouseDown(Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
         {
             uint16_t currentRow = y / kRowHeight;
-            if (currentRow > self.var_83C)
+            if (currentRow > self.rowCount)
             {
                 return;
             }
@@ -368,7 +317,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             uint16_t currentRow = y / kRowHeight;
             int16_t currentCompany = -1;
 
-            if (currentRow < self.var_83C)
+            if (currentRow < self.rowCount)
             {
                 currentCompany = self.rowInfo[currentRow];
             }
@@ -399,7 +348,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             }
 
             uint16_t currentIndex = yPos / kRowHeight;
-            if (currentIndex < self.var_83C && self.rowInfo[currentIndex] != -1)
+            if (currentIndex < self.rowCount && self.rowInfo[currentIndex] != -1)
             {
                 return CursorId::handPointer;
             }
@@ -441,8 +390,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             // Set status bar text
             FormatArguments args{ widget.textArgs };
-            args.push(self.var_83C == 1 ? StringIds::company_singular : StringIds::companies_plural);
-            args.push(self.var_83C);
+            args.push(self.rowCount == 1 ? StringIds::company_singular : StringIds::companies_plural);
+            args.push(self.rowCount);
         }
 
         // 0x00435E56
@@ -462,7 +411,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             drawingCtx.clearSingle(colour);
 
             auto yBottom = 0;
-            for (auto i = 0; i < self.var_83C; i++, yBottom += 25)
+            for (auto i = 0; i < self.rowCount; i++, yBottom += 25)
             {
                 auto yTop = yBottom + 25;
                 if (yTop <= rt.y)
@@ -559,9 +508,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self.maxHeight = Common::kMaxWindowSize.height;
             self.width = kWindowSize.width;
             self.height = kWindowSize.height;
-            self.var_83C = 0;
+            self.rowCount = 0;
             self.rowHover = -1;
-            Common::refreshCompanyList(self);
+            Common::populateCompanyList(self);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -610,10 +559,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
             window->savedView.clear();
             window->flags |= WindowFlags::resizable;
             window->sortMode = 2;
-            window->var_83C = 0;
+            window->rowCount = 0;
             window->rowHover = -1;
 
-            Common::refreshCompanyList(*window);
+            Common::populateCompanyList(*window);
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::primary, skin->windowTitlebarColour);
@@ -644,7 +593,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         auto* w = WindowManager::find(WindowType::companyList);
         if (w != nullptr)
         {
-            for (auto i = 0; i < w->var_83C; i++)
+            for (auto i = 0; i < w->rowCount; i++)
             {
                 if (static_cast<CompanyId>(w->rowInfo[i]) == id)
                 {
@@ -1726,14 +1675,21 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00437AB6
-        static void refreshCompanyList(Window& self)
+        static void populateCompanyList(Window& self)
         {
             self.rowCount = 0;
 
             for (auto& company : CompanyManager::companies())
             {
-                company.challengeFlags &= ~CompanyFlags::sorted;
+                if ((company.challengeFlags & CompanyFlags::sorted) != CompanyFlags::none)
+                {
+                    continue;
+                }
+
+                self.rowInfo[self.rowCount++] = enumValue(company.id());
             }
+
+            CompanyList::sortCompanyList(self);
         }
 
         // 0x00437810
