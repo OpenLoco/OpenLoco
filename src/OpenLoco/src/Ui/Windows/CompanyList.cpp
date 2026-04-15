@@ -247,6 +247,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 auto* rhsCompany = CompanyManager::get(static_cast<CompanyId>(rhs));
                 return getOrder(SortMode(self.sortMode), *lhsCompany, *rhsCompany);
             });
+
+            self.invalidate();
         }
 
         // 0x004362C0
@@ -255,7 +257,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self.frameNo++;
 
             self.callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::companyList, self.number, self.currentTab + Common::widx::tab_company_list);
 
             _hoverItemTicks++;
 
