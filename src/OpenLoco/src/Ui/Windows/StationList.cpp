@@ -225,6 +225,8 @@ namespace OpenLoco::Ui::Windows::StationList
             auto* rhsStation = StationManager::get(rhs);
             return getOrder(SortMode(self.sortMode), *lhsStation, *rhsStation);
         });
+
+        self.invalidate();
     }
 
     // 0x004910AB
