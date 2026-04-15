@@ -367,6 +367,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 auto* rhsIndustry = IndustryManager::get(static_cast<IndustryId>(rhs));
                 return getOrder(SortMode(self.sortMode), *lhsIndustry, *rhsIndustry);
             });
+
+            self.invalidate();
         }
 
         // 0x004580AE
