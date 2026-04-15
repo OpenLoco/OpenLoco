@@ -292,7 +292,7 @@ namespace OpenLoco::GameCommands
             {
                 const uint16_t tad = args.rotation | (args.trackId << 3);
                 {
-                    auto [nextLoc, nextRotation] = World::Track::getTrackConnectionEnd(args.pos, tad);
+                    auto [nextLoc, nextRotation] = World::Track::getTrackConnectionEnd(trackStart, tad);
                     auto tc = World::Track::getTrackConnections(nextLoc, nextRotation, getUpdatingCompanyId(), args.trackObjType, 0, 0);
                     if (!tc.connections.empty())
                     {
@@ -303,7 +303,7 @@ namespace OpenLoco::GameCommands
                 }
 
                 auto& trackSize = World::TrackData::getUnkTrack(tad);
-                auto nextTrackStart = args.pos + trackSize.pos;
+                auto nextTrackStart = trackStart + trackSize.pos;
                 if (trackSize.rotationEnd < 12)
                 {
                     nextTrackStart -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
