@@ -397,7 +397,7 @@ namespace OpenLoco::Ui::Windows::TownList
         {
             auto list = std::span<TownId>(reinterpret_cast<TownId*>(self.rowInfo), self.rowCount);
 
-            std::sort(list.begin(), list.end(), [self](TownId lhs, TownId rhs) {
+            std::stable_sort(list.begin(), list.end(), [self](TownId lhs, TownId rhs) {
                 auto* lhsTown = TownManager::get(lhs);
                 auto* rhsTown = TownManager::get(rhs);
                 return getOrder(SortMode(self.sortMode), *lhsTown, *rhsTown);
