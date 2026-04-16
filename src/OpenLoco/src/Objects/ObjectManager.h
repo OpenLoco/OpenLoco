@@ -185,6 +185,8 @@ namespace OpenLoco::ObjectManager
     // Unloads and frees the entry
     void unload(const ObjectHeader& header);
     bool load(const ObjectHeader& header);
+    void loadIntrinsicInterfaceGraphics();
+    void unloadIntrinsicInterfaceGraphics();
 
     bool tryInstallObject(const ObjectHeader& object, std::span<const std::byte> data);
 

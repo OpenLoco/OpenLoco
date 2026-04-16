@@ -122,6 +122,7 @@ namespace OpenLoco
         Audio::disposeDSound();
         Ui::disposeCursors();
         Localisation::unloadLanguageFile();
+        ObjectManager::unloadIntrinsicInterfaceGraphics();
 
         auto tempFilePath = Environment::getPathNoWarning(Environment::PathId::_1tmp);
         if (fs::exists(tempFilePath))
@@ -189,6 +190,7 @@ namespace OpenLoco
         startupChecks();
 
         Gfx::loadG1();
+        ObjectManager::loadIntrinsicInterfaceGraphics();
         Gfx::initialise();
 
         Ui::initialise();
