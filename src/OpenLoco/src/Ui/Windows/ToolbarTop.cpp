@@ -279,8 +279,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         Dropdown::add(0, StringIds::dropdown_without_checkmark, StringIds::menu_mute);
         Dropdown::add(1, StringIds::dropdown_without_checkmark, StringIds::menu_play_music);
         Dropdown::add(2, 0);
-        Dropdown::add(3, StringIds::menu_music_options);
-        Dropdown::showBelow(window, widgetIndex, 4, 0);
+        Dropdown::add(3, StringIds::menu_open_audio_options);
+        Dropdown::add(4, StringIds::menu_open_jukebox);
+        Dropdown::showBelow(window, widgetIndex, 5, 0);
 
         if (!Audio::isAudioEnabled())
         {
@@ -321,12 +322,16 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                     Jukebox::enableMusic();
                 }
 
-                WindowManager::invalidate(WindowType::options);
+                WindowManager::invalidate(WindowType::musicSelection);
                 break;
             }
 
             case 3:
-                Options::openMusicSettings();
+                Options::openAudioSettings();
+                break;
+
+            case 4:
+                MusicJukebox::open();
                 break;
         }
     }

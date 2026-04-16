@@ -2474,3 +2474,6 @@ strings:
   2419: "{SMALLFONT}{COLOUR BLACK}Allows selecting an area of track elements to copy"
   2420: "Paste"
   2421: "{SMALLFONT}{COLOUR BLACK}Allows pasting an area of copied track elements to the map"
+  2422: "Open audio options"
+  2423: "Open jukebox"
+  2424: "Show jukebox window"
