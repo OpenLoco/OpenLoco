@@ -305,6 +305,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/MapToolTip.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/MapWindow.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/MessageWindow.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/MusicJukebox.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/MusicSelection.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/NetworkStatus.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/News/Common.cpp"

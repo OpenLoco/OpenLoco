@@ -1266,7 +1266,7 @@ namespace OpenLoco::StringIds
     constexpr StringId checkmark = 1546;
     constexpr StringId volume = UNUSED_STR(1547);
     constexpr StringId set_music_volume_tip = UNUSED_STR(1548);
-    constexpr StringId menu_music_options = 1549;
+    constexpr StringId menu_music_options = UNUSED_STR(1549);
     constexpr StringId company_face_selection_title = 1550;
     constexpr StringId tooltip_company_face_selection = 1551;
     constexpr StringId already_selected_for_another_company = 1552;
@@ -2083,7 +2083,7 @@ namespace OpenLoco::StringIds
     constexpr StringId tooltip_audio_options = 2369;
     constexpr StringId options_title_audio = 2370;
     constexpr StringId frame_sound = 2371;
-    constexpr StringId frame_jukebox = 2372;
+    constexpr StringId jukebox_window_title = 2372;
     constexpr StringId music_volume = UNUSED_STR(2373);
     constexpr StringId show_company_ai_planning = 2374;
     constexpr StringId show_company_ai_planning_tip = 2375;
@@ -2129,11 +2129,13 @@ namespace OpenLoco::StringIds
     constexpr StringId ambient_volume = 2415;
     constexpr StringId set_ambient_volume_tip = 2416;
     constexpr StringId music_locomotion_title = 2417;
-
     constexpr StringId construction_copy = 2418;
     constexpr StringId construction_copy_tooltip = 2419;
     constexpr StringId construction_paste = 2420;
     constexpr StringId construction_paste_tooltip = 2421;
+    constexpr StringId menu_open_audio_options = 2422;
+    constexpr StringId menu_open_jukebox = 2423;
+    constexpr StringId shortcut_show_jukebox_window = 2424;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

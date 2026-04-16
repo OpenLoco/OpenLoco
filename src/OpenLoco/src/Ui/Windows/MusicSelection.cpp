@@ -353,8 +353,8 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     // 0x004C17E3
     static void onUpdate(Window& window)
     {
-        auto optionsWindow = WindowManager::find(WindowType::options);
-        if (optionsWindow == nullptr || optionsWindow->currentTab != Options::kTabOffsetMusic)
+        auto jukeboxWindow = WindowManager::find(WindowType::musicJukebox);
+        if (jukeboxWindow == nullptr)
         {
             WindowManager::close(&window);
             return;

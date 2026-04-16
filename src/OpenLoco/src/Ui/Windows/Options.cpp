@@ -94,8 +94,6 @@ namespace OpenLoco::Ui::Windows::Options
             };
         }
 
-        static_assert(Widx::tab_audio == Widx::tab_display + kTabOffsetMusic);
-
         enum tab
         {
             display,
@@ -1000,11 +998,7 @@ namespace OpenLoco::Ui::Windows::Options
         constexpr auto kSliderWidth = 196;
         constexpr auto kVolumeGroupHeight = kVolumeFirstSliderYOffset + (kNumVolumeSliders / kNumVolumeColumns) * kSliderRowHeight;
 
-        constexpr auto kMusicGroupOffset = kVolumeGroupOffset + kVolumeGroupHeight + 4;
-        constexpr auto kMusicGroupLastItemOffset = 73;
-        constexpr auto kMusicGroupHeight = kMusicGroupLastItemOffset + 19;
-
-        static constexpr Ui::Size kWindowSize = { 366, kMusicGroupOffset + kMusicGroupHeight + 4 };
+        static constexpr Ui::Size kWindowSize = { 366, kVolumeGroupOffset + kVolumeGroupHeight + 4 };
 
         namespace Widx
         {
@@ -1028,17 +1022,6 @@ namespace OpenLoco::Ui::Windows::Options
                 volume_ui,
                 volume_ambient_label,
                 volume_ambient,
-
-                frame_jukebox,
-                currently_playing_label,
-                currently_playing,
-                currently_playing_btn,
-                music_controls_stop,
-                music_controls_play,
-                music_controls_next,
-                music_playlist,
-                music_playlist_btn,
-                edit_selection
             };
         }
 
@@ -1066,30 +1049,14 @@ namespace OpenLoco::Ui::Windows::Options
             Widgets::Label({ kSliderPrimaryLabelX, getSliderRowY(4) + 3 }, { kSliderLabelWidth, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::ui_volume),
             Widgets::Slider({ kSliderPrimaryX, getSliderRowY(4) - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_ui_volume_tip),
             Widgets::Label({ kSliderSecondaryLabelX, getSliderRowY(5) + 3 }, { kSliderLabelWidth, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::ambient_volume),
-            Widgets::Slider({ kSliderSecondaryX, getSliderRowY(5) - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_ambient_volume_tip),
-
-            Widgets::GroupBox({ 4, kMusicGroupOffset }, { kWindowSize.width - 8, kMusicGroupHeight }, WindowColour::secondary, StringIds::frame_jukebox),
-            Widgets::Label({ 10, kMusicGroupOffset + 14 }, { 145, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::currently_playing),
-            Widgets::dropdownWidgets({ 160, kMusicGroupOffset + 14 }, { 196, 12 }, WindowColour::secondary, StringIds::stringid),
-            Widgets::ImageButton({ 10, kMusicGroupOffset + 29 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_stop, StringIds::music_controls_stop_tip),
-            Widgets::ImageButton({ 34, kMusicGroupOffset + 29 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_play, StringIds::music_controls_play_tip),
-            Widgets::ImageButton({ 58, kMusicGroupOffset + 29 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_next, StringIds::music_controls_next_tip),
-            Widgets::dropdownWidgets({ 10, kMusicGroupOffset + 56 }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
-            Widgets::Button({ 183, kMusicGroupOffset + kMusicGroupLastItemOffset }, { 173, 12 }, WindowColour::secondary, StringIds::edit_music_selection, StringIds::edit_music_selection_tip)
+            Widgets::Slider({ kSliderSecondaryX, getSliderRowY(5) - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_ambient_volume_tip)
 
         );
 
         static void audioDeviceMouseDown(const Window& self);
         static void audioDeviceDropdown(const Window& self, int16_t itemIndex);
         static void playTitleMusicOnMouseUp(Window& self);
-        static void currentlyPlayingMouseDown(const Window& self);
-        static void currentlyPlayingDropdown(Window& self, int16_t itemIndex);
-        static void stopMusic(Window& self);
-        static void playMusic(Window& self);
-        static void playNextSong(Window& self);
         static void volumeSliderMouseDown(Window& self, WidgetIndex_t wi);
-        static void musicPlaylistMouseDown(const Window& self);
-        static void musicPlaylistDropdown(Window& self, int16_t itemIndex);
 
         // 0x004C0217, 0x004C0217
         static void prepareDraw(Window& self)
@@ -1111,61 +1078,6 @@ namespace OpenLoco::Ui::Windows::Options
                 {
                     args.push(StringIds::audio_device_none);
                 }
-            }
-
-            // Currently playing music track
-            {
-                StringId songName = StringIds::music_none;
-                if (SceneManager::isPlayMode())
-                {
-                    songName = Jukebox::getSelectedTrackTitleId();
-                }
-                else if (SceneManager::isTitleMode())
-                {
-                    auto& cfg = Config::get();
-                    if (cfg.audio.playTitleMusic)
-                    {
-                        songName = StringIds::music_locomotion_title;
-                    }
-                }
-                auto args = FormatArguments(self.widgets[Widx::currently_playing].textArgs);
-                args.push(songName);
-            }
-
-            // Jukebox controls (stop/play/skip)
-            if (!SceneManager::isPlayMode())
-            {
-                self.disabledWidgets |= (1ULL << Widx::currently_playing) | (1ULL << Widx::currently_playing_btn) | (1ULL << Widx::music_controls_play) | (1ULL << Widx::music_controls_stop) | (1ULL << Widx::music_controls_next);
-            }
-            else if (Jukebox::isMusicPlaying())
-            {
-                // Play button appears pressed
-                self.activatedWidgets |= (1ULL << Widx::music_controls_play);
-            }
-            else
-            {
-                // Stop button appears pressed
-                self.activatedWidgets |= (1ULL << Widx::music_controls_stop);
-            }
-
-            // Selected playlist
-            {
-                static constexpr StringId playlist_string_ids[] = {
-                    StringIds::play_only_music_from_current_era,
-                    StringIds::play_all_music,
-                    StringIds::play_custom_music_selection,
-                };
-
-                auto args = FormatArguments(self.widgets[Widx::music_playlist].textArgs);
-
-                StringId selectedPlaylistStringId = playlist_string_ids[enumValue(Config::get().audio.playlist)];
-                args.push(selectedPlaylistStringId);
-            }
-
-            // Edit custom playlist music selection button
-            if (Config::get().audio.playlist != Config::MusicPlaylistType::custom)
-            {
-                self.disabledWidgets |= (1ULL << Widx::edit_selection);
             }
 
             // Play title music checkbox
@@ -1210,22 +1122,6 @@ namespace OpenLoco::Ui::Windows::Options
                 case Widx::play_title_music:
                     playTitleMusicOnMouseUp(self);
                     return;
-
-                case Widx::music_controls_stop:
-                    stopMusic(self);
-                    return;
-
-                case Widx::music_controls_play:
-                    playMusic(self);
-                    return;
-
-                case Widx::music_controls_next:
-                    playNextSong(self);
-                    return;
-
-                case Widx::edit_selection:
-                    MusicSelection::open();
-                    return;
             }
         }
 
@@ -1235,12 +1131,6 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 case Widx::audio_device_btn:
                     audioDeviceMouseDown(self);
-                    break;
-                case Widx::music_playlist_btn:
-                    musicPlaylistMouseDown(self);
-                    break;
-                case Widx::currently_playing_btn:
-                    currentlyPlayingMouseDown(self);
                     break;
                 case Widx::volume_master:
                 case Widx::volume_music:
@@ -1259,12 +1149,6 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 case Widx::audio_device_btn:
                     audioDeviceDropdown(self, itemIndex);
-                    break;
-                case Widx::music_playlist_btn:
-                    musicPlaylistDropdown(self, itemIndex);
-                    break;
-                case Widx::currently_playing_btn:
-                    currentlyPlayingDropdown(self, itemIndex);
                     break;
             }
         }
@@ -1331,68 +1215,6 @@ namespace OpenLoco::Ui::Windows::Options
             }
         }
 
-        // 0x004C0875
-        static void currentlyPlayingMouseDown(const Window& self)
-        {
-            auto tracks = Jukebox::makeSelectedPlaylist();
-
-            auto& dropdown = self.widgets[Widx::currently_playing];
-            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), tracks.size(), 0x80);
-
-            int index = -1;
-            for (auto track : tracks)
-            {
-                index++;
-                Dropdown::add(index, StringIds::dropdown_stringid, Jukebox::getMusicInfo(track).titleId);
-                if (track == Jukebox::getCurrentTrack())
-                {
-                    Dropdown::setItemSelected(index);
-                }
-            }
-        }
-
-        // 0x004C09F8
-        static void currentlyPlayingDropdown(Window& self, int16_t ax)
-        {
-            if (ax == -1)
-            {
-                return;
-            }
-
-            auto track = Jukebox::makeSelectedPlaylist().at(ax);
-            if (Jukebox::requestTrack(track))
-            {
-                self.invalidate();
-            }
-        }
-
-        // 0x004C0778
-        static void stopMusic(Window& self)
-        {
-            if (Jukebox::disableMusic())
-            {
-                self.invalidate();
-            }
-        }
-
-        // 0x004C07A4
-        static void playMusic(Window& self)
-        {
-            if (Jukebox::enableMusic())
-            {
-                self.invalidate();
-            }
-        }
-
-        // 0x004C07C4
-        static void playNextSong(Window& self)
-        {
-            if (Jukebox::skipCurrentTrack())
-            {
-                self.invalidate();
-            }
-        }
-
         static Audio::ChannelId widgetToChannelId(WidgetIndex_t wi)
         {
             switch (wi)
@@ -1456,41 +1278,6 @@ namespace OpenLoco::Ui::Windows::Options
             saveChannelVolumeToConfig(channel, percent);
 
             self.invalidate();
-        }
-
-        // 0x004C07E4
-        static void musicPlaylistMouseDown(const Window& self)
-        {
-            auto& dropdown = self.widgets[Widx::music_playlist];
-            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 3, 0x80);
-
-            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::play_only_music_from_current_era);
-            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::play_all_music);
-            Dropdown::add(2, StringIds::dropdown_stringid, StringIds::play_custom_music_selection);
-
-            Dropdown::setItemSelected(enumValue(Config::get().audio.playlist));
-        }
-
-        // 0x004C084A
-        static void musicPlaylistDropdown(Window& self, int16_t index)
-        {
-            if (index == -1)
-            {
-                return;
-            }
-
-            auto& cfg = Config::get().audio;
-            cfg.playlist = Config::MusicPlaylistType(index);
-            Config::write();
-
-            self.invalidate();
-
-            if (!SceneManager::isTitleMode()) // Prevents title music from stopping
-            {
-                Audio::revalidateCurrentTrack();
-            }
-
-            WindowManager::close(WindowType::musicSelection);
         }
 
         // 0x004C04E0, 0x004C0A37
@@ -2849,7 +2636,7 @@ namespace OpenLoco::Ui::Windows::Options
     }
 
     // 0x004BF823
-    Window* openMusicSettings()
+    Window* openAudioSettings()
     {
         auto* window = open();
 

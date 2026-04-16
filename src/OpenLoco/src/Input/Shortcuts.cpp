@@ -511,6 +511,11 @@ namespace OpenLoco::Input::Shortcuts
         Windows::MessageWindow::open();
     }
 
+    static void showJukeboxWindow()
+    {
+        Windows::MusicJukebox::open();
+    }
+
     static void showOptionsWindow()
     {
         Windows::Options::open();
@@ -684,7 +689,6 @@ namespace OpenLoco::Input::Shortcuts
         ShortcutManager::add(Shortcut::closeAllFloatingWindows,         StringIds::shortcut_close_all_floating_windows,         closeAllFloatingWindows,        "closeAllFloatingWindows",          "Left Shift+Backspace");
         ShortcutManager::add(Shortcut::cancelConstructionMode,          StringIds::shortcut_cancel_construction_mode,           cancelConstructionMode,         "cancelConstructionMode",           "Escape");
         ShortcutManager::add(Shortcut::pauseUnpauseGame,                StringIds::shortcut_pause_unpause_game,                 pauseUnpauseGame,               "pauseUnpauseGame",                 "Pause");
-        ShortcutManager::add(Shortcut::showOptionsWindow,               StringIds::shortcut_show_options_window,                showOptionsWindow,              "showOptionsWindow",                "");
         ShortcutManager::add(Shortcut::zoomViewOut,                     StringIds::shortcut_zoom_view_out,                      zoomViewOut,                    "zoomViewOut",                      "PageUp");
         ShortcutManager::add(Shortcut::zoomViewIn,                      StringIds::shortcut_zoom_view_in,                       zoomViewIn,                     "zoomViewIn",                       "PageDown");
         ShortcutManager::add(Shortcut::rotateView,                      StringIds::shortcut_rotate_view,                        rotateView,                     "rotateView",                       "Return");
@@ -717,6 +721,8 @@ namespace OpenLoco::Input::Shortcuts
         ShortcutManager::add(Shortcut::showCompanyInformation,          StringIds::shortcut_show_company_information,           showCompanyInformation,         "showCompanyInformation",           "Q");
         ShortcutManager::add(Shortcut::showFinances,                    StringIds::shortcut_show_finances,                      showFinances,                   "showFinances",                     "F");
         ShortcutManager::add(Shortcut::showAnnouncementsList,           StringIds::shortcut_show_announcements_list,            showAnnouncementsList,          "showAnnouncementsList",            "Tab");
+        ShortcutManager::add(Shortcut::showOptionsWindow,               StringIds::shortcut_show_options_window,                showOptionsWindow,              "showOptionsWindow",                "");
+        ShortcutManager::add(Shortcut::showJukeboxWindow,               StringIds::shortcut_show_jukebox_window,                showJukeboxWindow,              "showJukeboxWindow",                "");
         ShortcutManager::add(Shortcut::screenshot,                      StringIds::shortcut_screenshot,                         makeScreenshot,                 "makeScreenshot",                   "Left Ctrl+S");
         ShortcutManager::add(Shortcut::toggleLastAnnouncement,          StringIds::shortcut_toggle_last_announcement,           toggleLastAnnouncement,         "toggleLastAnnouncement",           "Space");
         ShortcutManager::add(Shortcut::sendMessage,                     StringIds::shortcut_send_message,                       sendMessage,                    "sendMessage",                      "F1");
