@@ -50,7 +50,7 @@
 
 namespace OpenLoco::Ui::Windows::BuildVehicle
 {
-    static constexpr Ui::Size kWindowSize = { 400, 305 };
+    static constexpr Ui::Size kWindowSize = { 500, 400 };
 
     enum widx
     {
