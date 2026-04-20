@@ -760,18 +760,14 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         generateBuildableVehiclesArray(vehicleType, trackType, veh);
 
-        int numRows = _numAvailableVehicles;
-        uint16_t* src = _availableVehicles;
-        int16_t* dest = window->rowInfo;
-        window->var_83C = numRows;
+        window->var_83C = _numAvailableVehicles;
         window->rowCount = 0;
-        while (numRows != 0)
+
+        for (auto i = 0; i < _numAvailableVehicles; i++)
         {
-            *dest = *src;
-            dest++;
-            src++;
-            numRows--;
+            window->rowInfo[i] = _availableVehicles[i];
         }
+
         window->rowHover = -1;
         window->invalidate();
     }
