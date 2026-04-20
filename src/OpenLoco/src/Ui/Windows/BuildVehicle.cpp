@@ -58,6 +58,12 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         caption = 1,
         close_button = 2,
         panel = 3,
+        searchBox,
+        searchClearButton,
+        filterLabel,
+        filterDropdown,
+        cargoLabel,
+        cargoDropdown,
         tab_build_new_trains,
         tab_build_new_buses,
         tab_build_new_trucks,
@@ -74,12 +80,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         tab_track_type_7,
         scrollview_vehicle_selection,
         scrollview_vehicle_preview,
-        searchBox,
-        searchClearButton,
-        filterLabel,
-        filterDropdown,
-        cargoLabel,
-        cargoDropdown
     };
 
     enum scrollIdx
@@ -225,6 +225,12 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         Widgets::ImageButton({ 365, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 41 }, { 380, 192 }, WindowColour::secondary),
 
+        // Filter options
+        Widgets::TextBox({ 4, 72 }, { 246, 14 }, WindowColour::secondary),
+        Widgets::Button({ 50, 72 }, { 38, 14 }, WindowColour::secondary, StringIds::clearInput),
+        Widgets::dropdownWidgets({ 3, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterComponents),
+        Widgets::dropdownWidgets({ 48, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterCargoSupported),
+
         // Primary tabs
         Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_train_vehicles),
         Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_buses),
@@ -245,15 +251,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         // Scroll and preview areas
         Widgets::ScrollView({ 3, 102 }, { 374, 146 }, WindowColour::secondary, Scrollbars::vertical),
-        Widgets::ScrollView({ 250, 44 }, { 180, 66 }, WindowColour::secondary, Scrollbars::none),
-
-        // Filter options
-        // NB: deliberately defined after scrollview definitions to keep enums the same as original
-        // TODO: can be moved after drawVehicleOverview has been implemented
-        Widgets::TextBox({ 4, 72 }, { 246, 14 }, WindowColour::secondary),
-        Widgets::Button({ 50, 72 }, { 38, 14 }, WindowColour::secondary, StringIds::clearInput),
-        Widgets::dropdownWidgets({ 3, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterComponents),
-        Widgets::dropdownWidgets({ 48, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterCargoSupported)
+        Widgets::ScrollView({ 250, 44 }, { 180, 66 }, WindowColour::secondary, Scrollbars::none)
 
     );
 
