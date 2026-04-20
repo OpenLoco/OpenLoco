@@ -875,15 +875,16 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         if (widgetIndex == widx::filterDropdown)
         {
             auto& dropdown = self.widgets[widx::filterLabel];
-            auto numItems = Config::get().displayLockedVehicles ? 4 : 2;
+            auto numItems = Config::get().displayLockedVehicles ? 5 : 2;
 
             Dropdown::add(0, StringIds::dropdown_without_checkmark, StringIds::componentUnpowered);
             Dropdown::add(1, StringIds::dropdown_without_checkmark, StringIds::componentPowered);
 
             if (Config::get().displayLockedVehicles)
             {
-                Dropdown::add(2, StringIds::dropdown_without_checkmark, StringIds::componentUnlocked);
-                Dropdown::add(3, StringIds::dropdown_without_checkmark, StringIds::componentLocked);
+                Dropdown::add(2, 0);
+                Dropdown::add(3, StringIds::dropdown_without_checkmark, StringIds::componentUnlocked);
+                Dropdown::add(4, StringIds::dropdown_without_checkmark, StringIds::componentLocked);
             }
 
             Dropdown::showText(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), numItems, 0x80);
@@ -1010,11 +1011,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             {
                 _vehicleFilterFlags ^= VehicleFilterFlags::powered;
             }
-            if (itemIndex == 2)
+            if (itemIndex == 3)
             {
                 _vehicleFilterFlags ^= VehicleFilterFlags::unlocked;
             }
-            if (itemIndex == 3)
+            if (itemIndex == 4)
             {
                 _vehicleFilterFlags ^= VehicleFilterFlags::locked;
             }
