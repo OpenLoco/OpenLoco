@@ -2147,9 +2147,11 @@ namespace OpenLoco::StringIds
     constexpr StringId sortDescendingOrder = 2431;
     constexpr StringId sortByCapacity = 2432;
     constexpr StringId sortByObsolete = 2433;
+<<<<<<< HEAD
     constexpr StringId cheat_vehicle_cargo = 2434;
     constexpr StringId cheat_keep_cargo_modify_pickup = 2435;
     constexpr StringId tooltip_keep_cargo_modify_pickup = 2436;
+    constexpr StringId sortComponents = 2437;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

@@ -65,6 +65,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         filterDropdown,
         cargoLabel,
         cargoDropdown,
+        sortLabel,
+        sortDropdown,
         tab_build_new_trains,
         tab_build_new_buses,
         tab_build_new_trucks,
@@ -231,6 +233,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         Widgets::Button({ 50, 72 }, { 38, 14 }, WindowColour::secondary, StringIds::clearInput),
         Widgets::dropdownWidgets({ 3, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterComponents),
         Widgets::dropdownWidgets({ 48, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterCargoSupported),
+        Widgets::dropdownWidgets({ 93, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::sortComponents),
 
         // Primary tabs
         Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_train_vehicles),
@@ -872,7 +875,47 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         if (widgetIndex == widx::filterDropdown)
         {
             auto& dropdown = self.widgets[widx::filterLabel];
-            auto numItems = Config::get().displayLockedVehicles ? 17 : 15;
+            auto numItems = Config::get().displayLockedVehicles ? 4 : 2;
+
+            Dropdown::add(0, StringIds::dropdown_without_checkmark, StringIds::componentUnpowered);
+            Dropdown::add(1, StringIds::dropdown_without_checkmark, StringIds::componentPowered);
+
+            if (Config::get().displayLockedVehicles)
+            {
+                Dropdown::add(2, StringIds::dropdown_without_checkmark, StringIds::componentUnlocked);
+                Dropdown::add(3, StringIds::dropdown_without_checkmark, StringIds::componentLocked);
+            }
+
+            Dropdown::showText(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), numItems, 0x80);
+
+            // Show unpowered vehicles?
+            if ((_vehicleFilterFlags & VehicleFilterFlags::unpowered) != VehicleFilterFlags::none)
+            {
+                Dropdown::setItemSelected(0);
+            }
+
+            // Show powered vehicles?
+            if ((_vehicleFilterFlags & VehicleFilterFlags::powered) != VehicleFilterFlags::none)
+            {
+                Dropdown::setItemSelected(1);
+            }
+
+            // Show unlocked vehicles?
+            if ((_vehicleFilterFlags & VehicleFilterFlags::unlocked) != VehicleFilterFlags::none)
+            {
+                Dropdown::setItemSelected(2);
+            }
+
+            // Show locked vehicles?
+            if ((_vehicleFilterFlags & VehicleFilterFlags::locked) != VehicleFilterFlags::none)
+            {
+                Dropdown::setItemSelected(3);
+            }
+        }
+        else if (widgetIndex == widx::sortDropdown)
+        {
+            auto& dropdown = self.widgets[widx::sortLabel];
+            auto numItems = 12;
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::sortByDesignYear);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::sortByName);
@@ -886,15 +929,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             Dropdown::add(9, 0);
             Dropdown::add(10, StringIds::dropdown_stringid, StringIds::sortAscendingOrder);
             Dropdown::add(11, StringIds::dropdown_stringid, StringIds::sortDescendingOrder);
-            Dropdown::add(12, 0);
-            Dropdown::add(13, StringIds::dropdown_without_checkmark, StringIds::componentUnpowered);
-            Dropdown::add(14, StringIds::dropdown_without_checkmark, StringIds::componentPowered);
-
-            if (Config::get().displayLockedVehicles)
-            {
-                Dropdown::add(15, StringIds::dropdown_without_checkmark, StringIds::componentUnlocked);
-                Dropdown::add(16, StringIds::dropdown_without_checkmark, StringIds::componentLocked);
-            }
 
             Dropdown::showText(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), numItems, 0x80);
 
@@ -908,30 +942,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             else
             {
                 Dropdown::setItemSelected(11);
-            }
-
-            // Show unpowered vehicles?
-            if ((_vehicleFilterFlags & VehicleFilterFlags::unpowered) != VehicleFilterFlags::none)
-            {
-                Dropdown::setItemSelected(13);
-            }
-
-            // Show powered vehicles?
-            if ((_vehicleFilterFlags & VehicleFilterFlags::powered) != VehicleFilterFlags::none)
-            {
-                Dropdown::setItemSelected(14);
-            }
-
-            // Show unlocked vehicles?
-            if ((_vehicleFilterFlags & VehicleFilterFlags::unlocked) != VehicleFilterFlags::none)
-            {
-                Dropdown::setItemSelected(15);
-            }
-
-            // Show locked vehicles?
-            if ((_vehicleFilterFlags & VehicleFilterFlags::locked) != VehicleFilterFlags::none)
-            {
-                Dropdown::setItemSelected(16);
             }
         }
         else if (widgetIndex == widx::cargoDropdown)
@@ -994,6 +1004,25 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         {
             if (itemIndex == 0)
             {
+                _vehicleFilterFlags ^= VehicleFilterFlags::unpowered;
+            }
+            if (itemIndex == 1)
+            {
+                _vehicleFilterFlags ^= VehicleFilterFlags::powered;
+            }
+            if (itemIndex == 2)
+            {
+                _vehicleFilterFlags ^= VehicleFilterFlags::unlocked;
+            }
+            if (itemIndex == 3)
+            {
+                _vehicleFilterFlags ^= VehicleFilterFlags::locked;
+            }
+        }
+        else if (widgetIndex == widx::sortDropdown)
+        {
+            if (itemIndex == 0)
+            {
                 _vehicleSortBy = VehicleSortBy::designYear;
             }
             else if (itemIndex == 1)
@@ -1035,22 +1064,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             else if (itemIndex == 11)
             {
                 _vehicleSortAscending = false;
-            }
-            else if (itemIndex == 13)
-            {
-                _vehicleFilterFlags ^= VehicleFilterFlags::unpowered;
-            }
-            else if (itemIndex == 14)
-            {
-                _vehicleFilterFlags ^= VehicleFilterFlags::powered;
-            }
-            else if (itemIndex == 15)
-            {
-                _vehicleFilterFlags ^= VehicleFilterFlags::unlocked;
-            }
-            else if (itemIndex == 16)
-            {
-                _vehicleFilterFlags ^= VehicleFilterFlags::locked;
             }
         }
         else if (widgetIndex == widx::cargoDropdown)
@@ -1314,10 +1327,16 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         window.widgets[widx::searchClearButton].left = selectionList.right - 40;
         window.widgets[widx::searchBox].right = selectionList.right - 42;
 
-        window.widgets[widx::cargoLabel].right = selectionList.right;
-        window.widgets[widx::cargoLabel].left = selectionList.right - (selectionList.width() / 2);
-        window.widgets[widx::cargoDropdown].right = selectionList.right;
-        window.widgets[widx::cargoDropdown].left = selectionList.right - 12;
+        window.widgets[widx::sortLabel].right = selectionList.right - 1;
+        window.widgets[widx::sortLabel].left = selectionList.right - (selectionList.width() / 3);
+        window.widgets[widx::sortDropdown].right = selectionList.right - 2;
+        window.widgets[widx::sortDropdown].left = selectionList.right - 12;
+
+        auto& sortLabel = window.widgets[widx::sortLabel];
+        window.widgets[widx::cargoLabel].right = sortLabel.left - 1;
+        window.widgets[widx::cargoLabel].left = sortLabel.left - (selectionList.width() / 3);
+        window.widgets[widx::cargoDropdown].right = sortLabel.left - 2;
+        window.widgets[widx::cargoDropdown].left = sortLabel.left - 12;
 
         if (_cargoSupportedFilter == 0xFF)
         {
