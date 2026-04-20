@@ -306,7 +306,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
     static Ui::TextInput::InputSession inputSession;
 
-    static void setDisabledTransportTabs(Ui::Window* window);
+    static void setDisabledTransportTabs(Window& window);
     static void setTrackTypeTabs(Ui::Window* window);
     static void resetTrackTypeTabSelection(Ui::Window* window);
     static void setTopToolbarLastTrack(uint8_t trackType, bool isRoad);
@@ -328,7 +328,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         {
             window->setColour(WindowColour::secondary, skin->windowPlayerColor);
         }
-        setDisabledTransportTabs(window);
+        setDisabledTransportTabs(*window);
         return window;
     }
 
@@ -394,7 +394,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             window->holdableWidgets = 0;
             window->eventHandlers = &getEvents();
             window->activatedWidgets = 0;
-            setDisabledTransportTabs(window);
+            setDisabledTransportTabs(*window);
             setTrackTypeTabs(window);
             resetTrackTypeTabSelection(window);
             sub_4B92A5(window);
@@ -810,7 +810,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 window.holdableWidgets = 0;
                 window.eventHandlers = &getEvents();
                 window.setWidgets(_widgets);
-                setDisabledTransportTabs(&window);
+                setDisabledTransportTabs(window);
                 window.invalidate();
                 _buildTargetVehicle = -1;
                 setTrackTypeTabs(&window);
@@ -1276,7 +1276,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     // 0x4C2E5C
     static void prepareDraw(Ui::Window& window)
     {
-        setDisabledTransportTabs(&window);
+        setDisabledTransportTabs(window);
 
         // Mask off all the tabs
         auto activeWidgets = window.activatedWidgets & ((1 << frame) | (1 << caption) | (1 << close_button) | (1 << panel) | (1 << scrollview_vehicle_selection) | (1 << scrollview_vehicle_preview));
@@ -1681,12 +1681,13 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C28D2
-    static void setDisabledTransportTabs(Ui::Window* window)
+    static void setDisabledTransportTabs(Window& self)
     {
-        auto availableVehicles = CompanyManager::get(CompanyId(window->number))->availableVehicles;
-        // By shifting by 4 the available_vehicles flags align with the tabs flags
-        auto disabledTabs = (availableVehicles << 4) ^ ((1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships));
-        window->disabledWidgets = disabledTabs;
+        auto availableVehicles = CompanyManager::get(CompanyId(self.number))->availableVehicles;
+        auto availableVehiclesTabMask = availableVehicles << widx::tab_build_new_trains;
+
+        auto disabledTabs = availableVehiclesTabMask ^ ((1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships));
+        self.disabledWidgets = disabledTabs;
     }
 
     // 0x4C2D8A
