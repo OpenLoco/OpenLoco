@@ -51,6 +51,7 @@
 namespace OpenLoco::Ui::Windows::BuildVehicle
 {
     static constexpr Ui::Size kWindowSize = { 500, 400 };
+    static constexpr Ui::Size kMaxWindowSize = { 700, 600 };
 
     enum widx
     {
@@ -1078,7 +1079,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         window.flags |= WindowFlags::resizable;
 
         auto minWidth = std::max<uint16_t>(_numTrackTypeTabs * 31 + 195, 380);
-        window.setSize({ minWidth, 233 }, { 520, 600 });
+        window.setSize({ minWidth, 233 }, kMaxWindowSize);
 
         auto& scrollArea = window.scrollAreas[scrollIdx::vehicle_selection];
         auto& scrollWidget = window.widgets[widx::scrollview_vehicle_selection];
