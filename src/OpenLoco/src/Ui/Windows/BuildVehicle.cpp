@@ -876,6 +876,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         {
             auto& dropdown = self.widgets[widx::filterLabel];
             auto numItems = Config::get().displayLockedVehicles ? 5 : 2;
+            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 3, dropdown.height(), self.getColour(WindowColour::secondary), numItems, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_without_checkmark, StringIds::componentUnpowered);
             Dropdown::add(1, StringIds::dropdown_without_checkmark, StringIds::componentPowered);
@@ -886,8 +887,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 Dropdown::add(3, StringIds::dropdown_without_checkmark, StringIds::componentUnlocked);
                 Dropdown::add(4, StringIds::dropdown_without_checkmark, StringIds::componentLocked);
             }
-
-            Dropdown::showText(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), numItems, 0x80);
 
             // Show unpowered vehicles?
             if ((_vehicleFilterFlags & VehicleFilterFlags::unpowered) != VehicleFilterFlags::none)
@@ -917,6 +916,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         {
             auto& dropdown = self.widgets[widx::sortLabel];
             auto numItems = 12;
+            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 3, dropdown.height(), self.getColour(WindowColour::secondary), numItems, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::sortByDesignYear);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::sortByName);
@@ -930,8 +930,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             Dropdown::add(9, 0);
             Dropdown::add(10, StringIds::dropdown_stringid, StringIds::sortAscendingOrder);
             Dropdown::add(11, StringIds::dropdown_stringid, StringIds::sortDescendingOrder);
-
-            Dropdown::showText(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), numItems, 0x80);
 
             // Mark current sort order
             Dropdown::setItemSelected(enumValue(_vehicleSortBy));
@@ -947,6 +945,18 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         }
         else if (widgetIndex == widx::cargoDropdown)
         {
+            auto& dropdown = self.widgets[widx::cargoLabel];
+            auto numItems = 2U;
+            for (uint16_t cargoId = 0; cargoId < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoId)
+            {
+                auto* cargoObj = ObjectManager::get<CargoObject>(cargoId);
+                if (cargoObj != nullptr)
+                {
+                    numItems++;
+                }
+            }
+            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 3, dropdown.height(), self.getColour(WindowColour::secondary), numItems, 0x80);
+
             auto index = 0U;
             auto selectedIndex = -1;
 
@@ -983,9 +993,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
                 index++;
             }
-
-            Widget dropdown = self.widgets[widx::cargoLabel];
-            Dropdown::showText(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), index, 0x80);
 
             if (selectedIndex != -1)
             {
