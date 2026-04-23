@@ -390,7 +390,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
             window->rowHeight = kScrollRowHeight[window->currentTab];
             window->rowCount = 0;
-            window->var_83C = 0;
             window->rowHover = -1;
             window->invalidate();
             window->setWidgets(_widgets);
@@ -745,7 +744,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         if (_buildTargetVehicle != vehicleId)
         {
             _buildTargetVehicle = vehicleId;
-            window->var_83C = 0;
+            window->rowCount = 0;
             window->invalidate();
         }
 
@@ -760,18 +759,12 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         generateBuildableVehiclesArray(vehicleType, trackType, veh);
 
-        int numRows = _numAvailableVehicles;
-        uint16_t* src = _availableVehicles;
-        int16_t* dest = window->rowInfo;
-        window->var_83C = numRows;
-        window->rowCount = 0;
-        while (numRows != 0)
+        for (auto i = 0; i < _numAvailableVehicles; i++)
         {
-            *dest = *src;
-            dest++;
-            src++;
-            numRows--;
+            window->rowInfo[i] = _availableVehicles[i];
         }
+
+        window->rowCount = _numAvailableVehicles;
         window->rowHover = -1;
         window->invalidate();
     }
@@ -825,7 +818,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 setTrackTypeTabs(&window);
                 resetTrackTypeTabSelection(&window);
                 window.rowCount = 0;
-                window.var_83C = 0;
                 window.rowHover = -1;
                 sub_4B92A5(&window);
                 window.callOnResize();
@@ -855,7 +847,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 setTopToolbarLastTrack(_trackTypesForTab[tab] & ~(1 << 7), _trackTypesForTab[tab] & (1 << 7));
                 _buildTargetVehicle = -1;
                 window.rowCount = 0;
-                window.var_83C = 0;
                 window.rowHover = -1;
                 sub_4B92A5(&window);
                 window.callOnResize();
@@ -1106,7 +1097,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             return;
         }
 
-        if (window.var_83C == 0)
+        if (window.rowCount == 0)
         {
             return;
         }
@@ -1144,7 +1135,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     // 0x4C37B9
     static void getScrollSize(Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
     {
-        scrollHeight = window.var_83C * window.rowHeight;
+        scrollHeight = window.rowCount * window.rowHeight;
     }
 
     // 0x4C384B
@@ -1156,7 +1147,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         }
 
         auto scrollItem = y / window.rowHeight;
-        if (scrollItem >= window.var_83C)
+        if (scrollItem >= window.rowCount)
         {
             return;
         }
@@ -1207,7 +1198,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         auto scrollItem = y / window.rowHeight;
         int16_t item = -1;
-        if (scrollItem < window.var_83C)
+        if (scrollItem < window.rowCount)
         {
             item = window.rowInfo[scrollItem];
         }
@@ -1271,7 +1262,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         }
 
         auto scrollItem = yPos / window.rowHeight;
-        if (scrollItem >= window.var_83C)
+        if (scrollItem >= window.rowCount)
         {
             return fallback;
         }
@@ -1566,7 +1557,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             {
                 auto colour = Colours::getShade(window.getColour(WindowColour::secondary).c(), 4);
                 drawingCtx.clear(colour * 0x01010101);
-                if (window.var_83C == 0)
+                if (window.rowCount == 0)
                 {
                     auto defaultMessage = StringIds::no_vehicles_available;
                     FormatArguments args{};
@@ -1589,7 +1580,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 else
                 {
                     int16_t y = 0;
-                    for (auto i = 0; i < window.var_83C; ++i, y += window.rowHeight)
+                    for (auto i = 0; i < window.rowCount; ++i, y += window.rowHeight)
                     {
                         if (y + window.rowHeight + 30 <= rt.y)
                         {

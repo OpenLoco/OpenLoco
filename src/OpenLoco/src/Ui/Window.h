@@ -198,7 +198,7 @@ namespace OpenLoco::Ui
         ScrollArea scrollAreas[kMaxScrollAreas];
         int16_t rowInfo[1000];
         uint16_t rowCount;
-        uint16_t var_83C;
+        uint16_t var_83C; // unused
         uint16_t rowHeight;
         int16_t rowHover = -1;
         union
