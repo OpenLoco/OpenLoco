@@ -17,41 +17,6 @@ namespace OpenLoco
     }
 
     struct Object;
-    struct ObjectEntryExtended;
-    struct CargoObject;
-    struct InterfaceSkinObject;
-    struct SoundObject;
-    struct CurrencyObject;
-    struct SteamObject;
-    struct CliffEdgeObject;
-    struct WaterObject;
-    struct LandObject;
-    struct TownNamesObject;
-    struct WallObject;
-    struct TrainSignalObject;
-    struct LevelCrossingObject;
-    struct StreetLightObject;
-    struct TunnelObject;
-    struct BridgeObject;
-    struct TrainStationObject;
-    struct TrackExtraObject;
-    struct TrackObject;
-    struct RoadStationObject;
-    struct RoadExtraObject;
-    struct RoadObject;
-    struct AirportObject;
-    struct DockObject;
-    struct VehicleObject;
-    struct TreeObject;
-    struct SnowObject;
-    struct ClimateObject;
-    struct HillShapesObject;
-    struct BuildingObject;
-    struct ScaffoldingObject;
-    struct IndustryObject;
-    struct RegionObject;
-    struct CompetitorObject;
-    struct ScenarioTextObject;
 
     /**
      * Represents an index into the entire loaded object array. Not an index for
