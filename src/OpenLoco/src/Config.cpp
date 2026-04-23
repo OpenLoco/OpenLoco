@@ -126,7 +126,7 @@ namespace OpenLoco::Config
         _config.uncapFPS = config["uncapFPS"].as<bool>(false);
 
         // Rendering
-        _config.constructionMarker = config["constructionMarker"].as<int32_t>(0);
+        _config.constructionMarker = config["constructionMarker"].as<ConstructionMarkerStyle>(ConstructionMarkerStyle::white);
         _config.gridlinesOnLandscape = config["gridlinesOnLandscape"].as<bool>(false);
         _config.heightMarkerOffset = config["heightMarkerOffset"].as<int32_t>(1);
         _config.landscapeSmoothing = config["landscapeSmoothing"].as<bool>(true);
