@@ -78,7 +78,7 @@ namespace OpenLoco
     bool updateDayCounter()
     {
         bool result = false;
-        constexpr uint16_t kIncrement = 682; // ~17s
+        constexpr uint16_t kIncrement = 682; // Results in a day length of ~96.09 updates (~2.4 seconds).
 
         // Check if counter is going to wrap
         if (getGameState().dayCounter + kIncrement > std::numeric_limits<uint16_t>::max())

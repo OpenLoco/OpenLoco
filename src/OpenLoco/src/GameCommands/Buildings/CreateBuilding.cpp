@@ -276,9 +276,9 @@ namespace OpenLoco::GameCommands
             auto* town = TownManager::updateTownInfo(args.pos, population, populationCapacity, 0, 1);
             if (town != nullptr)
             {
-                if (buildingObj->var_AC != 0xFF)
+                if (buildingObj->townAmenityCategory != TownAmenityCategory::none)
                 {
-                    town->var_150[buildingObj->var_AC]++;
+                    town->amenityCounts[enumValue(buildingObj->townAmenityCategory)]++;
                 }
             }
         }

@@ -20,7 +20,7 @@
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 
-#include <SDL2/SDL.h>
+#include <SDL3/SDL_keycode.h>
 
 namespace OpenLoco::Ui::Windows::TextInput
 {

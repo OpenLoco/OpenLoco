@@ -132,7 +132,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             if (soundId != Audio::SoundId::null)
             {
                 int32_t pan = Ui::width() / 2;
-                Audio::playSound(soundId, pan);
+                Audio::playSound(soundId, Audio::ChannelId::ui, pan);
             }
         }
 

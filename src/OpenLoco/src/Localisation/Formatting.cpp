@@ -10,7 +10,9 @@
 #include "StringIds.h"
 #include "StringManager.h"
 #include "World/TownManager.h"
+
 #include <OpenLoco/Core/Exception.hpp>
+#include <OpenLoco/Utility/LookupTable.hpp>
 #include <cassert>
 #include <cmath>
 #include <cstring>
@@ -22,7 +24,7 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::StringManager
 {
-    static const std::map<int32_t, StringId> kDayToString = {
+    static constexpr auto kDayToString = Utility::buildLookupTable<int32_t, StringId>({
         { 1, StringIds::day_1st },
         { 2, StringIds::day_2nd },
         { 3, StringIds::day_3rd },
@@ -54,9 +56,9 @@ namespace OpenLoco::StringManager
         { 29, StringIds::day_29th },
         { 30, StringIds::day_30th },
         { 31, StringIds::day_31st },
-    };
+    });
 
-    static const std::map<MonthId, std::pair<StringId, StringId>> kMonthToStringMap = {
+    static constexpr auto kMonthToStringMap = Utility::buildLookupTable<MonthId, std::pair<StringId, StringId>>({
         { MonthId::january, { StringIds::month_short_january, StringIds::month_long_january } },
         { MonthId::february, { StringIds::month_short_february, StringIds::month_long_february } },
         { MonthId::march, { StringIds::month_short_march, StringIds::month_long_march } },
@@ -69,7 +71,7 @@ namespace OpenLoco::StringManager
         { MonthId::october, { StringIds::month_short_october, StringIds::month_long_october } },
         { MonthId::november, { StringIds::month_short_november, StringIds::month_long_november } },
         { MonthId::december, { StringIds::month_short_december, StringIds::month_long_december } },
-    };
+    });
 
     std::pair<StringId, StringId> monthToString(MonthId month)
     {

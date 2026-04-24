@@ -1,8 +1,8 @@
 set(OLOCO_SOURCES
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/AmbientAudio.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/Audio.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/Channel.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/OpenAL.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/VehicleChannel.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/Music.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/VehicleAudio.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/CommandLine.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Config.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Date.cpp"
@@ -287,6 +287,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/CompanyFaceSelection.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/CompanyList.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/CompanyWindow.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/Construction/Blueprints.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/Construction/Common.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/Construction/ConstructionTab.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/Construction/OverheadTab.cpp"
@@ -304,6 +305,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/MapToolTip.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/MapWindow.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/MessageWindow.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/MusicJukebox.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/MusicSelection.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/NetworkStatus.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/News/Common.cpp"
@@ -369,9 +371,6 @@ set(OLOCO_SOURCES
 
 set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/Audio.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/Channel.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/OpenAL.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/VehicleChannel.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/CommandLine.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Config.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ConfigConvert.hpp"
@@ -688,6 +687,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Window.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/WindowManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/WindowType.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/Construction/Blueprints.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/Construction/Construction.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/News/News.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/ToolbarTopCommon.h"
@@ -721,6 +721,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ZoomLevel.hpp")
 
 set(private_link_libraries
+    Audio
     Core
     Diagnostics
     Platform
@@ -728,12 +729,11 @@ set(private_link_libraries
     Math
     Engine
     Version
-    ${SDL2_LIB}
+    SDL3::SDL3
     Threads::Threads
     yaml-cpp::yaml-cpp
     ZLIB::ZLIB # This shouldn't be required but vcpkg seems to not map the dependencies correctly for png static
     PNG::PNG
-    ${OPENAL_LIBRARIES}
     $<$<PLATFORM_ID:Windows>:winmm>
     $<$<PLATFORM_ID:Windows>:ws2_32>
     $<$<PLATFORM_ID:Windows>:Resources>

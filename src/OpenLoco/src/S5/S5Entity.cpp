@@ -46,10 +46,10 @@ namespace OpenLoco::S5
         dst.position = src.position;
         dst.spriteWidth = src.spriteWidth;
         dst.spriteHeightPositive = src.spriteHeightPositive;
-        dst.spriteLeft = src.spriteLeft;
-        dst.spriteTop = src.spriteTop;
-        dst.spriteRight = src.spriteRight;
-        dst.spriteBottom = src.spriteBottom;
+        dst.spriteLeft = Location::null;
+        dst.spriteTop = Location::null;
+        dst.spriteRight = Location::null;
+        dst.spriteBottom = Location::null;
         dst.spriteYaw = src.spriteYaw;
         dst.spritePitch = enumValue(src.spritePitch);
         dst.owner = enumValue(src.owner);
@@ -493,10 +493,10 @@ namespace OpenLoco::S5
         dst.position = src.position;
         dst.spriteWidth = src.spriteWidth;
         dst.spriteHeightPositive = src.spriteHeightPositive;
-        dst.spriteLeft = src.spriteLeft;
-        dst.spriteTop = src.spriteTop;
-        dst.spriteRight = src.spriteRight;
-        dst.spriteBottom = src.spriteBottom;
+        dst.spriteLeft = Location::null;
+        dst.spriteTop = Location::null;
+        dst.spriteRight = Location::null;
+        dst.spriteBottom = Location::null;
         dst.spriteYaw = src.spriteYaw;
         dst.spritePitch = static_cast<Pitch>(src.spritePitch);
         dst.owner = static_cast<CompanyId>(src.owner);
@@ -707,6 +707,7 @@ namespace OpenLoco::S5
         dst.sound.soundFlags = static_cast<Vehicles::SoundFlags>(src.soundFlags);
         dst.sound.soundWindowNumber = src.soundWindowNumber;
         dst.sound.soundWindowType = static_cast<Ui::WindowType>(src.soundWindowType);
+        dst.sound.audioHandle = Audio::AudioHandle::null;
         dst.var_4F = src.var_4F;
         dst.totalPower = src.totalPower;
         dst.totalWeight = src.totalWeight;
@@ -822,6 +823,7 @@ namespace OpenLoco::S5
         dst.sound.soundFlags = static_cast<Vehicles::SoundFlags>(src.soundFlags);
         dst.sound.soundWindowNumber = src.soundWindowNumber;
         dst.sound.soundWindowType = static_cast<Ui::WindowType>(src.soundWindowType);
+        dst.sound.audioHandle = Audio::AudioHandle::null;
         dst.trainDanglingTimeout = src.trainDanglingTimeout;
     }
 

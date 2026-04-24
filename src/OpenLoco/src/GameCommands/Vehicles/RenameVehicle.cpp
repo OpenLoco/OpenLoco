@@ -10,8 +10,8 @@
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleHead.h"
 
+#include <OpenLoco/Utility/LookupTable.hpp>
 #include <array>
-#include <unordered_map>
 
 namespace OpenLoco::GameCommands
 {
@@ -94,14 +94,14 @@ namespace OpenLoco::GameCommands
                 return 0;
             }
 
-            static const std::unordered_map<VehicleType, StringId> defaultVehicleStringIdMap = {
+            static constexpr auto defaultVehicleStringIdMap = Utility::buildLookupTable<VehicleType, StringId>({
                 { VehicleType::train, StringIds::train_number },
                 { VehicleType::bus, StringIds::bus_number },
                 { VehicleType::truck, StringIds::truck_number },
                 { VehicleType::tram, StringIds::tram_number },
                 { VehicleType::aircraft, StringIds::aircraft_number },
-                { VehicleType::ship, StringIds::ship_number }
-            };
+                { VehicleType::ship, StringIds::ship_number },
+            });
             allocatedStringId = defaultVehicleStringIdMap.at(vehicleHead->vehicleType);
         }
 

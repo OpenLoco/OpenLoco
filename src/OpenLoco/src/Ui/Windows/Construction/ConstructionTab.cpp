@@ -1,4 +1,5 @@
 #include "Audio/Audio.h"
+#include "Blueprints.h"
 #include "Construction.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Road/CreateRoad.h"
@@ -50,6 +51,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static bool _isDragging = false;
     static World::TilePos2 _toolPosDrag;
     static World::TilePos2 _toolPosInitial;
+
+    static std::optional<CopiedTrack> _copiedTrack;
 
     namespace TrackPiece
     {
@@ -113,8 +116,12 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         Widgets::ImageButton({ 105, 96 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_steep_slope_up, StringIds::tooltip_steep_slope_up),
         Widgets::dropdownWidgets({ 40, 123 }, { 58, 20 }, WindowColour::secondary, StringIds::empty, StringIds::tooltip_bridge_stats),
         Widgets::Wt3Widget({ 3, 145 }, { 132, 100 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_construct),
-        Widgets::ImageButton({ 6, 248 }, { 46, 24 }, WindowColour::secondary, ImageIds::construction_remove, StringIds::tooltip_remove),
-        Widgets::ImageButton({ 57, 248 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_90));
+        Widgets::ImageButton({ 72, 248 }, { 39, 24 }, WindowColour::secondary, ImageIds::construction_remove, StringIds::tooltip_remove),
+        Widgets::ImageButton({ 111, 248 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_90),
+        Widgets::Button({ 3, 248 }, { 33, 24 }, WindowColour::secondary, StringIds::construction_copy, StringIds::construction_copy_tooltip),
+        Widgets::Button({ 36, 248 }, { 37, 24 }, WindowColour::secondary, StringIds::construction_paste, StringIds::construction_paste_tooltip)
+
+    );
 
     std::span<const Widget> getWidgets()
     {
@@ -534,6 +541,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 if (cState.constructionHover)
                 {
+                    if (_copiedTrack.has_value())
+                    {
+                        removeConstructionGhosts();
+                        rotateBlueprint(*_copiedTrack, 1);
+                    }
                     cState.constructionRotation++;
                     cState.constructionRotation &= 3;
                     cState.trackCost = GameCommands::FAILURE;
@@ -549,6 +561,35 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 cState.byte_113607E = 0;
                 cState.constructionRotation &= 3;
 
+                activateSelectedConstructionWidgets();
+                break;
+            }
+
+            case widx::copy:
+            {
+                removeConstructionGhosts();
+                _copiedTrack = std::nullopt;
+                WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::overgroundView);
+                ToolManager::toolSet(self, widx::copy, CursorId::crosshair);
+                Input::setFlag(Input::Flags::flag6);
+                cState.constructionHover = true;
+                activateSelectedConstructionWidgets();
+                break;
+            }
+
+            case widx::paste:
+            {
+                removeConstructionGhosts();
+                if (ToolManager::isToolActive(self.type, 0, widx::paste))
+                {
+                    ToolManager::toolCancel();
+                    break;
+                }
+                WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::overgroundView);
+                ToolManager::toolSet(self, widx::paste, CursorId::crosshair);
+                Input::setFlag(Input::Flags::flag6);
+                cState.constructionHover = true;
+                self.widgets[widx::paste].activated = 1;
                 activateSelectedConstructionWidgets();
                 break;
             }
@@ -1986,7 +2027,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (cState.constructionHover)
         {
-            if (!ToolManager::isToolActive(WindowType::construction, self.number) || ToolManager::getToolWidgetIndex() != widx::construct)
+            if (!ToolManager::isToolActive(WindowType::construction, self.number, widx::construct)
+                && !ToolManager::isToolActive(WindowType::construction, self.number, widx::copy)
+                && !ToolManager::isToolActive(WindowType::construction, self.number, widx::paste))
             {
                 WindowManager::close(&self);
             }
@@ -2120,7 +2163,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             // Failed to place track piece -- rotate and make error sound
             onMouseUp(*window, widx::rotate_90, WidgetId::none);
-            Audio::playSound(Audio::SoundId::error, int32_t(Input::getMouseLocation().x));
+            Audio::playSound(Audio::SoundId::error, Audio::ChannelId::ui, int32_t(Input::getMouseLocation().x));
             return;
         }
     }
@@ -2233,6 +2276,18 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 cState.lastSelectedBridge = bridgeType;
                 return;
             }
+        }
+    }
+
+    void removeBlueprintGhosts()
+    {
+        if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::blueprint) && _copiedTrack.has_value())
+        {
+            auto& cState = getConstructionState();
+            const auto ghostBPPos = cState.ghostRemovalTrackPos;
+
+            removeBlueprint(_copiedTrack.value(), ghostBPPos, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+            Common::unsetGhostVisibilityFlag(GhostVisibilityFlags::blueprint);
         }
     }
 
@@ -2548,26 +2603,50 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x0049DC8C
     static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
     {
-        if (widgetIndex != widx::construct)
+        if (widgetIndex == widx::construct)
         {
-            return;
-        }
 
-        if (_isDragging)
-        {
-            mapInvalidateMapSelectionFreeFormTiles();
-            removeConstructionGhosts();
-            return;
-        }
+            if (_isDragging)
+            {
+                mapInvalidateMapSelectionFreeFormTiles();
+                removeConstructionGhosts();
+                return;
+            }
 
-        auto& cState = getConstructionState();
-        if (cState.trackType & (1 << 7))
-        {
-            onToolUpdateSingle(x, y, getRoadPieceId, tryMakeRoadJunctionAtLoc, TrackData::getRoadPiece, getRoadPlacementArgs, placeRoadGhost);
+            auto& cState = getConstructionState();
+            if (cState.trackType & (1 << 7))
+            {
+                onToolUpdateSingle(x, y, getRoadPieceId, tryMakeRoadJunctionAtLoc, TrackData::getRoadPiece, getRoadPlacementArgs, placeRoadGhost);
+            }
+            else
+            {
+                onToolUpdateSingle(x, y, getTrackPieceId, tryMakeTrackJunctionAtLoc, TrackData::getTrackPiece, getTrackPlacementArgs, placeTrackGhost);
+            }
         }
-        else
+        else if (widgetIndex == widx::paste)
         {
-            onToolUpdateSingle(x, y, getTrackPieceId, tryMakeTrackJunctionAtLoc, TrackData::getTrackPiece, getTrackPlacementArgs, placeTrackGhost);
+            auto constructPos = getConstructionPos(x, y);
+            if (!constructPos.has_value() || !_copiedTrack.has_value())
+            {
+                return;
+            }
+            const auto pos = World::Pos3(World::toWorldSpace(constructPos->first), constructPos->second);
+            auto& cState = getConstructionState();
+            if (pos != cState.ghostRemovalTrackPos || !Common::hasGhostVisibilityFlag(GhostVisibilityFlags::blueprint))
+            {
+                removeBlueprintGhosts();
+                if (!_copiedTrack.has_value())
+                {
+                    return;
+                }
+
+                auto res = placeBlueprint(_copiedTrack.value(), pos, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+                if (static_cast<uint32_t>(res) != GameCommands::FAILURE)
+                {
+                    cState.ghostRemovalTrackPos = pos;
+                    Common::setGhostVisibilityFlag(GhostVisibilityFlags::blueprint);
+                }
+            }
         }
     }
 
@@ -2586,6 +2665,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     static void onToolDrag([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
     {
+        if (widgetIndex == widx::paste)
+        {
+            return;
+        }
         mapInvalidateSelectionRect();
         removeConstructionGhosts();
 
@@ -2732,35 +2815,65 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x0049DC97
     static void onToolUp(Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
     {
-        if (widgetIndex != widx::construct)
+        if (widgetIndex == widx::construct)
         {
-            return;
-        }
+            auto& cState = getConstructionState();
 
-        auto& cState = getConstructionState();
+            if (_isDragging)
+            {
+                onToolUpMultiple(self, widgetIndex);
+            }
+            else if (cState.trackType & (1 << 7))
+            {
+                onToolUpSingle(x, y, getRoadPieceId, tryMakeRoadJunctionAtLoc, TrackData::getRoadPiece);
+            }
+            else
+            {
+                onToolUpSingle(x, y, getTrackPieceId, tryMakeTrackJunctionAtLoc, TrackData::getTrackPiece);
+            }
+        }
+        else if (widgetIndex == widx::copy)
+        {
+            mapInvalidateSelectionRect();
+            removeConstructionGhosts();
+            World::resetMapSelectionFlags();
 
-        if (_isDragging)
-        {
-            onToolUpMultiple(self, widgetIndex);
+            _copiedTrack = copyTrackToBlueprint(_toolPosInitial, _toolPosDrag);
+            removeConstructionGhosts();
+            WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::overgroundView);
+            ToolManager::toolSet(self, widx::paste, CursorId::crosshair);
+            self.widgets[widx::paste].activated = 1;
+            Input::setFlag(Input::Flags::flag6);
+
+            // TODO: Need to find the smallest coord and offset everything by that
+            // that will then become the pivot for construction.
+            // Ghost would then be placed at tool position and place at tool position
         }
-        else if (cState.trackType & (1 << 7))
+        else if (widgetIndex == widx::paste)
         {
-            onToolUpSingle(x, y, getRoadPieceId, tryMakeRoadJunctionAtLoc, TrackData::getRoadPiece);
-        }
-        else
-        {
-            onToolUpSingle(x, y, getTrackPieceId, tryMakeTrackJunctionAtLoc, TrackData::getTrackPiece);
+            auto constructPos = getConstructionPos(x, y);
+            if (!constructPos.has_value() || !_copiedTrack.has_value())
+            {
+                return;
+            }
+            removeBlueprintGhosts();
+            const auto pos = World::Pos3(World::toWorldSpace(constructPos->first), constructPos->second);
+            const auto res = placeBlueprint(_copiedTrack.value(), pos, GameCommands::Flags::apply);
+            if (static_cast<uint32_t>(res) == GameCommands::FAILURE)
+            {
+                Windows::Error::open(StringIds::error_cant_build_this_here, GameCommands::getErrorText());
+            }
         }
     }
 
     static void onToolAbort([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
-        if (widgetIndex != widx::construct)
-        {
-            return;
-        }
-
         _isDragging = false;
+        if (widgetIndex == widx::paste)
+        {
+            self.widgets[widx::paste].activated = 0;
+            getConstructionState().constructionHover = false;
+        }
     }
 
     // 0x0049D4F5

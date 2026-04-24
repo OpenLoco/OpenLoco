@@ -24,14 +24,14 @@ namespace OpenLoco::Jukebox
         { PathId::music_smooth_running, StringIds::music_smooth_running, 1976, 1984 },
         { PathId::music_traffic_jam, StringIds::music_traffic_jam, 1973, 1981 },
         { PathId::music_never_stop_til_you_get_there, StringIds::music_never_stop_til_you_get_there, 1970, 1978 },
-        { PathId::music_soaring_away, StringIds::music_soaring_away, 1990, kNoEndYear },
-        { PathId::music_techno_torture, StringIds::music_techno_torture, 1993, kNoEndYear },
-        { PathId::music_everlasting_high_rise, StringIds::music_everlasting_high_rise, 1996, kNoEndYear },
+        { PathId::music_soaring_away, StringIds::music_soaring_away, 1990, kEndOfTime },
+        { PathId::music_techno_torture, StringIds::music_techno_torture, 1993, kEndOfTime },
+        { PathId::music_everlasting_high_rise, StringIds::music_everlasting_high_rise, 1996, kEndOfTime },
         { PathId::music_solace, StringIds::music_solace, 1912, 1920 },
-        { PathId::music_chrysanthemum, StringIds::music_chrysanthemum, kNoStartYear, 1911 },
-        { PathId::music_eugenia, StringIds::music_eugenia, kNoStartYear, 1908 },
+        { PathId::music_chrysanthemum, StringIds::music_chrysanthemum, kBeginningOfTime, 1911 },
+        { PathId::music_eugenia, StringIds::music_eugenia, kBeginningOfTime, 1908 },
         { PathId::music_the_ragtime_dance, StringIds::music_the_ragtime_dance, 1909, 1917 },
-        { PathId::music_easy_winners, StringIds::music_easy_winners, kNoStartYear, 1914 },
+        { PathId::music_easy_winners, StringIds::music_easy_winners, kBeginningOfTime, 1914 },
         { PathId::music_setting_off, StringIds::music_setting_off, 1929, 1937 },
         { PathId::music_a_travellers_serenade, StringIds::music_a_travellers_serenade, 1940, 1948 },
         { PathId::music_latino_trip, StringIds::music_latino_trip, 1943, 1951 },
@@ -44,7 +44,8 @@ namespace OpenLoco::Jukebox
         { PathId::music_far_out, StringIds::music_far_out, 1966, 1974 },
         { PathId::music_running_on_time, StringIds::music_running_on_time, 1986, 1994 },
         { PathId::music_get_me_to_gladstone_bay, StringIds::music_get_me_to_gladstone_bay, 1918, 1926 },
-        { PathId::music_sandy_track_blues, StringIds::music_sandy_track_blues, 1921, 1929 }
+        { PathId::music_sandy_track_blues, StringIds::music_sandy_track_blues, 1921, 1929 },
+        { PathId::css5, StringIds::music_locomotion_title, kEndOfTime, kBeginningOfTime }
     };
 
     const MusicInfo& getMusicInfo(MusicId track)

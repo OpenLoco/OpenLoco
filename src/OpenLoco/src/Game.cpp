@@ -230,8 +230,7 @@ namespace OpenLoco::Game
         Ui::WindowManager::close(Ui::WindowType::saveGamePrompt);
 
         SceneManager::removeSceneFlags(SceneManager::Flags::editor);
-        Audio::pauseSound();
-        Audio::unpauseSound();
+        Audio::stopAll();
 
         if (Input::hasFlag(Input::Flags::rightMousePressed))
         {

@@ -1,4 +1,5 @@
 #include "VehicleRearrange.h"
+#include "Config.h"
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "VehiclePickupAir.h"
@@ -83,16 +84,16 @@ namespace OpenLoco::GameCommands
             Vehicles::Vehicle sourceTrain(*sourceHead);
             Vehicles::Vehicle destTrain(*destHead);
 
-            if (sourceHead != destHead)
+            if (sourceHead != destHead && !Config::get().keepCargoModifyPickup)
             {
                 [&train = sourceTrain, &targetBogie = *sourceBogie]() {
                     for (auto& car : train.cars)
                     {
-                        for (auto& carComponet : car)
+                        for (auto& carComponent : car)
                         {
-                            if (carComponet.front == &targetBogie)
+                            if (carComponent.front == &targetBogie)
                             {
-                                Vehicles::removeAllCargo(carComponet);
+                                Vehicles::removeAllCargo(carComponent);
                                 return;
                             }
                         }

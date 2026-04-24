@@ -484,6 +484,8 @@ namespace OpenLoco::GameCommands
         newVeh2->sound.drivingSoundId = SoundObjectId::null;
         newVeh2->sound.objectId = 0xFFFFU;
         newVeh2->sound.soundFlags = Vehicles::SoundFlags::none;
+        newVeh2->sound.audioHandle = Audio::AudioHandle::null;
+        newVeh2->sound.activeSoundId = SoundObjectId::null;
         newVeh2->curMonthRevenue = 0;
         newVeh2->profit[0] = 0;
         newVeh2->profit[1] = 0;
@@ -517,6 +519,8 @@ namespace OpenLoco::GameCommands
         newTail->sound.drivingSoundId = SoundObjectId::null;
         newTail->sound.objectId = 0xFFFFU;
         newTail->sound.soundFlags = Vehicles::SoundFlags::none;
+        newTail->sound.audioHandle = Audio::AudioHandle::null;
+        newTail->sound.activeSoundId = SoundObjectId::null;
         newTail->trainDanglingTimeout = 0;
         lastVeh->setNextCar(newTail->id);
         newTail->nextCarId = EntityId::null;

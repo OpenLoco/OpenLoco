@@ -7,6 +7,7 @@
 #include "Speed.hpp"
 #include "Types.hpp"
 #include "Ui/Window.h"
+#include <OpenLoco/Audio/AudioHandle.h>
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Exception.hpp>
 
@@ -61,7 +62,11 @@ namespace OpenLoco::Vehicles
     enum class BreakdownFlags : uint8_t
     {
         none = 0U,
-        unk_0 = 1U << 0,
+
+        // Indicates a vehicle component is waiting for a cargo transfer.
+        // When placed on the VehicleHead component it indicates that the vehicle
+        // cannot wait at the station for further loading. (TODO: Introduce a different flag for that)
+        awaitingCargoTransfer = 1U << 0,
         breakdownPending = 1U << 1,
         brokenDown = 1U << 2,
         journeyStarted = 1U << 3, // The journey start meta data has been filled in
@@ -74,7 +79,8 @@ namespace OpenLoco::Vehicles
         unk_0 = 1U << 0,
         commandStop = 1U << 1, // commanded to stop??
         unk_2 = 1U << 2,
-        sorted = 1U << 3, // vehicle list
+        sorted = 1U << 3, // unused; previously used by vehicle list
+        unk_4 = 1U << 4,  // unused
         unk_5 = 1U << 5,
         manualControl = 1U << 6,
         shuntCheat = 1U << 7,
@@ -339,6 +345,8 @@ namespace OpenLoco::Vehicles
         SoundFlags soundFlags;
         Ui::WindowNumber_t soundWindowNumber;
         Ui::WindowType soundWindowType;
+        Audio::AudioHandle audioHandle;
+        SoundObjectId_t activeSoundId;
     };
 
     struct VehicleCargo

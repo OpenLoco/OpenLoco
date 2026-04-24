@@ -187,7 +187,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             self.scrollAreas[0].contentHeight = scrollHeight;
 
             auto i = 0;
-            for (; i <= self.var_83C; i++)
+            for (; i <= self.rowCount; i++)
             {
                 if (self.rowInfo[i] == self.rowHover)
                 {
@@ -195,7 +195,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
             }
 
-            if (i >= self.var_83C)
+            if (i >= self.rowCount)
             {
                 i = 0;
             }
@@ -221,12 +221,12 @@ namespace OpenLoco::Ui::Windows::Terraform
                 treeCount++;
             }
 
-            self.var_83C = treeCount;
+            self.rowCount = treeCount;
             auto rowHover = -1;
 
             if (getGameState().lastTreeOption != 0xFF)
             {
-                for (auto i = 0; i < self.var_83C; i++)
+                for (auto i = 0; i < self.rowCount; i++)
                 {
                     if (getGameState().lastTreeOption == self.rowInfo[i])
                     {
@@ -236,7 +236,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
             }
 
-            if (rowHover == -1 && self.var_83C != 0)
+            if (rowHover == -1 && self.rowCount != 0)
             {
                 rowHover = self.rowInfo[0];
             }
@@ -263,7 +263,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             Input::setFlag(Input::Flags::flag6);
             _terraformGhostPlacedFlags = Common::GhostPlacedFlags::none;
             _lastTreeCost = 0x80000000;
-            self.var_83C = 0;
+            self.rowCount = 0;
             self.rowHover = -1;
             refreshTreeList(self);
             updateTreeColours(self);
@@ -572,7 +572,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     case treeCluster::none:
                         if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply) != GameCommands::FAILURE)
                         {
-                            Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+                            Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, GameCommands::getPosition());
                         }
                         break;
                     case treeCluster::selected:
@@ -586,7 +586,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                         if (World::placeTreeCluster(World::toTileSpace(placementArgs->pos), 320, 3, placementArgs->type))
                         {
                             auto height = TileManager::getHeight(placementArgs->pos);
-                            Audio::playSound(Audio::SoundId::construct, World::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
+                            Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, World::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
                         }
                         else
                         {
@@ -609,7 +609,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                         if (World::placeTreeCluster(World::toTileSpace(placementArgs->pos), 384, 4, std::nullopt))
                         {
                             auto height = TileManager::getHeight(placementArgs->pos);
-                            Audio::playSound(Audio::SoundId::construct, World::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
+                            Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, World::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
                         }
                         else
                         {
@@ -633,7 +633,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBEC1
         static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            scrollHeight = (self.var_83C + 8) / 9;
+            scrollHeight = (self.rowCount + 8) / 9;
             if (scrollHeight == 0)
             {
                 scrollHeight += 1;
@@ -651,7 +651,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             auto index = getRowIndex(x, y);
 
-            for (auto i = 0; i < self.var_83C; i++)
+            for (auto i = 0; i < self.rowCount; i++)
             {
                 auto rowInfo = self.rowInfo[i];
                 index--;
@@ -663,7 +663,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     updateTreeColours(self);
 
                     int32_t pan = (self.width >> 1) + self.x;
-                    Audio::playSound(Audio::SoundId::clickDown, pan);
+                    Audio::playSound(Audio::SoundId::clickDown, Audio::ChannelId::ui, pan);
                     self.expandContentCounter = -16;
                     _lastTreeCost = 0x80000000;
                     self.invalidate();
@@ -678,7 +678,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto index = getRowIndex(x, y);
             uint16_t rowInfo = y;
             auto i = 0;
-            for (; i < self.var_83C; i++)
+            for (; i < self.rowCount; i++)
             {
                 rowInfo = self.rowInfo[i];
                 index--;
@@ -837,7 +837,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             uint16_t xPos = 0;
             uint16_t yPos = 0;
-            for (uint16_t i = 0; i < self.var_83C; i++)
+            for (uint16_t i = 0; i < self.rowCount; i++)
             {
                 _lastTreeColourFlag = 0xFFFF;
                 if (self.rowInfo[i] != self.rowHover)
@@ -956,7 +956,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             window->callPrepareDraw();
             window->initScrollWidgets();
 
-            window->var_83C = 0;
+            window->rowCount = 0;
             window->rowHover = -1;
 
             PlantTrees::refreshTreeList(*window);
@@ -2262,7 +2262,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             self.scrollAreas[0].contentHeight = scrollHeight;
 
             auto i = 0;
-            for (; i <= self.var_83C; i++)
+            for (; i <= self.rowCount; i++)
             {
                 if (self.rowInfo[i] == self.rowHover)
                 {
@@ -2270,7 +2270,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
             }
 
-            if (i >= self.var_83C)
+            if (i >= self.rowCount)
             {
                 i = 0;
             }
@@ -2296,12 +2296,12 @@ namespace OpenLoco::Ui::Windows::Terraform
                 wallCount++;
             }
 
-            self.var_83C = wallCount;
+            self.rowCount = wallCount;
             auto rowHover = -1;
 
             if (getGameState().lastWallOption != 0xFF)
             {
-                for (auto i = 0; i < self.var_83C; i++)
+                for (auto i = 0; i < self.rowCount; i++)
                 {
                     if (getGameState().lastWallOption == self.rowInfo[i])
                     {
@@ -2311,7 +2311,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
             }
 
-            if (rowHover == -1 && self.var_83C != 0)
+            if (rowHover == -1 && self.rowCount != 0)
             {
                 rowHover = self.rowInfo[0];
             }
@@ -2336,7 +2336,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             ToolManager::toolSet(self, Common::widx::panel, CursorId::placeFence);
             Input::setFlag(Input::Flags::flag6);
             _terraformGhostPlacedFlags = Common::GhostPlacedFlags::none;
-            self.var_83C = 0;
+            self.rowCount = 0;
             self.rowHover = -1;
             refreshWallList(self);
         }
@@ -2550,7 +2550,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
                 if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply) != GameCommands::FAILURE)
                 {
-                    Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+                    Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, GameCommands::getPosition());
                 }
             }
         }
@@ -2563,7 +2563,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC359
         static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            scrollHeight = (self.var_83C + 9) / 10;
+            scrollHeight = (self.rowCount + 9) / 10;
             if (scrollHeight == 0)
             {
                 scrollHeight += 1;
@@ -2581,7 +2581,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             auto index = getRowIndex(x, y);
 
-            for (auto i = 0; i < self.var_83C; i++)
+            for (auto i = 0; i < self.rowCount; i++)
             {
                 auto rowInfo = self.rowInfo[i];
                 index--;
@@ -2591,7 +2591,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     getGameState().lastWallOption = static_cast<uint8_t>(rowInfo);
 
                     int32_t pan = (self.width >> 1) + self.x;
-                    Audio::playSound(Audio::SoundId::clickDown, pan);
+                    Audio::playSound(Audio::SoundId::clickDown, Audio::ChannelId::ui, pan);
                     self.expandContentCounter = -16;
                     self.invalidate();
                     break;
@@ -2606,7 +2606,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             uint16_t rowInfo = 0xFFFF;
             auto i = 0;
 
-            for (; i < self.var_83C; i++)
+            for (; i < self.rowCount; i++)
             {
                 rowInfo = self.rowInfo[i];
                 index--;
@@ -2615,7 +2615,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     break;
                 }
             }
-            if (i >= self.var_83C)
+            if (i >= self.rowCount)
             {
                 rowInfo = 0xFFFF;
             }
@@ -2682,7 +2682,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             uint16_t xPos = 0;
             uint16_t yPos = 0;
-            for (uint16_t i = 0; i < self.var_83C; i++)
+            for (uint16_t i = 0; i < self.rowCount; i++)
             {
                 if (self.rowInfo[i] != self.rowHover)
                 {

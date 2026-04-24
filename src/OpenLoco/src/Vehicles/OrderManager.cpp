@@ -72,6 +72,12 @@ namespace OpenLoco::Vehicles
         {
             throw Exception::RuntimeError("Invalid order type!");
         }
+        if (_currentOrder->getType() == OrderType::End && _currentOrder == _beginOrderTable)
+        {
+            // If you incremented an end iterator you might get here.
+            // Although you shouldn't really be incrementing without first checking if you are an end iterator.
+            return *this;
+        }
         auto* newOrders = reinterpret_cast<uint8_t*>(_currentOrder) + kOrderSizes[static_cast<uint8_t>(_currentOrder->getType())];
         _currentOrder = reinterpret_cast<Order*>(newOrders);
         if (_currentOrder->getType() == OrderType::End)

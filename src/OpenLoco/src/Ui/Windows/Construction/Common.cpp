@@ -716,6 +716,7 @@ namespace OpenLoco::Ui::Windows::Construction
             _ghostVisibilityFlags = _ghostVisibilityFlags & ~GhostVisibilityFlags::constructArrow;
         }
         Construction::removeTrackGhosts();
+        Construction::removeBlueprintGhosts();
         Signal::removeSignalGhost();
         Station::removeStationGhost();
         Overhead::removeTrackModsGhost();
@@ -886,7 +887,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
             self.currentTab = widgetIndex - widx::tab_construction;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::beingResized);
+            self.flags &= ~(WindowFlags::maximised);
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_construction];
 

@@ -240,47 +240,47 @@ namespace OpenLoco::Paint
         void drawStructs(Gfx::DrawingContext& drawingCtx);
         void drawStringStructs(Gfx::DrawingContext& drawingCtx);
 
-        [[nodiscard]] Ui::ViewportInteraction::InteractionArg getNormalInteractionInfo(const Ui::ViewportInteraction::InteractionItemFlags flags);
-        [[nodiscard]] Ui::ViewportInteraction::InteractionArg getStationNameInteractionInfo(const Ui::ViewportInteraction::InteractionItemFlags flags);
-        [[nodiscard]] Ui::ViewportInteraction::InteractionArg getTownNameInteractionInfo(const Ui::ViewportInteraction::InteractionItemFlags flags);
-        const Gfx::RenderTarget* getRenderTarget() { return _renderTarget; }
-        uint8_t getRotation() { return currentRotation; }
+        [[nodiscard]] Ui::ViewportInteraction::InteractionArg getNormalInteractionInfo(const Ui::ViewportInteraction::InteractionItemFlags flags) const;
+        [[nodiscard]] Ui::ViewportInteraction::InteractionArg getStationNameInteractionInfo(const Ui::ViewportInteraction::InteractionItemFlags flags) const;
+        [[nodiscard]] Ui::ViewportInteraction::InteractionArg getTownNameInteractionInfo(const Ui::ViewportInteraction::InteractionItemFlags flags) const;
+        const Gfx::RenderTarget* getRenderTarget() const { return _renderTarget; }
+        uint8_t getRotation() const { return currentRotation; }
         void setRotation(uint8_t rotation) { currentRotation = rotation; }
-        int16_t getMaxHeight() { return _maxHeight; }
-        uint32_t getRoadExits() { return _roadMergeExits; }
+        int16_t getMaxHeight() const { return _maxHeight; }
+        uint32_t getRoadExits() const { return _roadMergeExits; }
         void setRoadExits(uint32_t value) { _roadMergeExits = value; }
-        uint32_t getMergeRoadBaseImage() { return _roadMergeBaseImage; }
+        uint32_t getMergeRoadBaseImage() const { return _roadMergeBaseImage; }
         void setMergeRoadBaseImage(uint32_t value) { _roadMergeBaseImage = value; }
-        int16_t getMergeRoadHeight() { return _roadMergeHeight; }
+        int16_t getMergeRoadHeight() const { return _roadMergeHeight; }
         void setMergeRoadHeight(int16_t value) { _roadMergeHeight = value; }
-        uint16_t getMergeRoadStreetlight() { return _roadMergeStreetlightType; }
+        uint16_t getMergeRoadStreetlight() const { return _roadMergeStreetlightType; }
         void setMergeRoadStreetlight(uint16_t value) { _roadMergeStreetlightType = value; }
-        int16_t getAdditionSupportHeight() { return _trackRoadAdditionSupports.height; }
-        const TrackRoadAdditionSupports& getAdditionSupport() { return _trackRoadAdditionSupports; }
+        int16_t getAdditionSupportHeight() const { return _trackRoadAdditionSupports.height; }
+        const TrackRoadAdditionSupports& getAdditionSupport() const { return _trackRoadAdditionSupports; }
         void setAdditionSupport(const TrackRoadAdditionSupports& newValue) { _trackRoadAdditionSupports = newValue; }
-        const SupportHeight& getGeneralSupportHeight() { return _support; }
-        const SupportHeight& getSupportHeight(uint8_t segment) { return _supportSegments[segment]; }
-        const BridgeEntry& getBridgeEntry() { return _bridgeEntry; }
-        SegmentFlags get525CF8() { return _525CF8; }
-        int16_t getWaterHeight() { return _waterHeight; }
-        int16_t getWaterHeight2() { return _waterHeight2; }
-        int16_t getSurfaceHeight() { return _surfaceHeight; }
-        uint8_t getSurfaceSlope() { return _surfaceSlope; }
-        SegmentFlags getOccupiedAdditionSupportSegments() { return _trackRoadAdditionSupports.occupiedSegments; }
-        World::Pos2 getUnkPosition()
+        const SupportHeight& getGeneralSupportHeight() const { return _support; }
+        const SupportHeight& getSupportHeight(uint8_t segment) const { return _supportSegments[segment]; }
+        const BridgeEntry& getBridgeEntry() const { return _bridgeEntry; }
+        SegmentFlags get525CF8() const { return _525CF8; }
+        int16_t getWaterHeight() const { return _waterHeight; }
+        int16_t getWaterHeight2() const { return _waterHeight2; }
+        int16_t getSurfaceHeight() const { return _surfaceHeight; }
+        uint8_t getSurfaceSlope() const { return _surfaceSlope; }
+        SegmentFlags getOccupiedAdditionSupportSegments() const { return _trackRoadAdditionSupports.occupiedSegments; }
+        World::Pos2 getUnkPosition() const
         {
             return World::Pos2{ _unkPositionX, _unkPositionY };
         }
-        World::Pos2 getSpritePosition()
+        World::Pos2 getSpritePosition() const
         {
             return World::Pos2{ _spritePositionX, _spritePositionY };
         }
-        Ui::ViewportFlags getViewFlags() { return _viewFlags; }
+        Ui::ViewportFlags getViewFlags() const { return _viewFlags; }
         // TileElement or Entity
         void setCurrentItem(void* item) { _currentItem = item; }
-        void* getCurrentItem() { return _currentItem; }
+        void* getCurrentItem() const { return _currentItem; }
         void setItemType(const Ui::ViewportInteraction::InteractionItem type) { _itemType = type; }
-        Ui::ViewportInteraction::InteractionItem getItemType() { return _itemType; }
+        Ui::ViewportInteraction::InteractionItem getItemType() const { return _itemType; }
         void setTrackModId(const uint8_t mod) { _trackModId = mod; }
         void setEntityPosition(const World::Pos2& pos);
         void setMapPosition(const World::Pos2& pos);

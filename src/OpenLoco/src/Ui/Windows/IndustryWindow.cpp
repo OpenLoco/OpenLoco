@@ -191,7 +191,7 @@ namespace OpenLoco::Ui::Windows::Industry
                         break;
                     }
 
-                    Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+                    Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
                     break;
                 }
             }
@@ -816,7 +816,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
             self.currentTab = widgetIndex - widx::tab_industry;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::beingResized);
+            self.flags &= ~(WindowFlags::maximised);
             self.var_85C = -1;
 
             self.viewportRemove(0);

@@ -77,18 +77,58 @@ namespace OpenLoco::Config
     struct Display
     {
         ScreenMode mode;
-        int32_t index{};
+        uint32_t index{};
         Resolution windowResolution = { 800, 600 };
         Resolution fullscreenResolution;
         bool vsync = false;
     };
 
-    using Playlist = std::array<bool, 29>;
+    using Playlist = std::array<bool, 30>;
+
+    enum class PlaylistItem : uint8_t
+    {
+        chugginAlong,
+        longDustyRoad,
+        flyingHigh,
+        gettinOnTheGas,
+        jumpinTheRails,
+        smoothRunning,
+        trafficJam,
+        neverStopTilYouGetThere,
+        soaringAway,
+        technoTorture,
+        everlastingHighRise,
+        solace,
+        chrysanthemum,
+        eugenia,
+        theRagtimeDance,
+        easyWinners,
+        settingOff,
+        aTravellersSerenade,
+        latinoTrip,
+        aGoodHeadOfSteam,
+        hopToTheBop,
+        theCityLights,
+        steaminDownTown,
+        brightExpectations,
+        moStation,
+        farOut,
+        runningOnTime,
+        getMeToGladstoneBay,
+        sandyTrackBlues,
+        locomotionTitle,
+    };
 
     struct Audio
     {
         std::string device;
         int32_t mainVolume = -1100;
+        int32_t masterVolume = 100;
+        int32_t musicVolume = 100;
+        int32_t effectsVolume = 100;
+        int32_t vehiclesVolume = 100;
+        int32_t uiVolume = 100;
+        int32_t ambientVolume = 100;
         bool playJukeboxMusic = true;
         bool playTitleMusic = true;
         bool playNewsSounds = true;
@@ -144,7 +184,14 @@ namespace OpenLoco::Config
         WindowFrameStyle windowFrameStyle = WindowFrameStyle::background;
         bool zoomToCursor = true;
 
-        NewsType newsSettings[kMessageCriticalityCount];
+        NewsType newsSettings[kMessageCriticalityCount] = {
+            NewsType::newsWindow,
+            NewsType::newsWindow,
+            NewsType::newsWindow,
+            NewsType::newsWindow,
+            NewsType::newsWindow,
+            NewsType::newsWindow
+        };
 
         int32_t autosaveAmount = 12;
         int32_t autosaveFrequency = 1;
@@ -161,6 +208,7 @@ namespace OpenLoco::Config
         bool trainsReverseAtSignals = true;
         bool disableStationSizeLimit = false;
         bool showAiPlanningAsGhosts = false;
+        bool keepCargoModifyPickup = false;
 
         bool usePreferredOwnerName = false;
         std::string preferredOwnerName;

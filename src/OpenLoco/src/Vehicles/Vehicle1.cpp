@@ -151,7 +151,7 @@ namespace OpenLoco::Vehicles
         const auto height = World::TileManager::getHeight(veh2.position);
         const auto volume = veh2.position.z < height.landHeight ? -1500 : 0;
 
-        Audio::playSound(Audio::makeObjectSoundId(soundObjId), veh2.position + World::Pos3{ 0, 0, 22 }, volume, 22050);
+        Audio::playSound(Audio::makeObjectSoundId(soundObjId), Audio::ChannelId::vehicles, veh2.position + World::Pos3{ 0, 0, 22 }, volume, 22050);
     }
 
     // 0x004A97A6
@@ -634,10 +634,17 @@ namespace OpenLoco::Vehicles
                 }
             }
             // 0x0047CFB5
-            const auto& roadObj = ObjectManager::get<RoadObject>(veh1.trackType);
-            if (!roadObj->hasFlags(RoadObjectFlags::isRoad))
+            // Note: Vanilla would not perform this check leading to
+            // invalid memory access. Unsure if we should perform something
+            // different but this should at least be safe to do (its not like
+            // you would have track type of 0xff unless you were on a road)
+            if (veh1.trackType != 0xFFU)
             {
-                return LookaheadResult{ LookaheadType::none, 0 };
+                const auto& roadObj = ObjectManager::get<RoadObject>(veh1.trackType);
+                if (!roadObj->hasFlags(RoadObjectFlags::isRoad))
+                {
+                    return LookaheadResult{ LookaheadType::none, 0 };
+                }
             }
             if (tad.isChangingLane() || tad.isOvertaking())
             {
@@ -830,9 +837,7 @@ namespace OpenLoco::Vehicles
         }
         if (hasMoved)
         {
-            Ui::ViewportManager::invalidate(this, ZoomLevel::eighth);
             this->moveTo(intermediatePosition);
-            Ui::ViewportManager::invalidate(this, ZoomLevel::eighth);
         }
         return result;
     }

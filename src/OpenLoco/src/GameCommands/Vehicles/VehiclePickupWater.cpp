@@ -1,4 +1,5 @@
 #include "VehiclePickupWater.h"
+#include "Config.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Map/StationElement.h"
@@ -68,7 +69,6 @@ namespace OpenLoco::GameCommands
 
         train.applyToComponents([](auto& component) {
             component.tileX = -1;
-            component.invalidateSprite();
             component.moveTo({ static_cast<int16_t>(0x8000), 0, 0 });
         });
 
@@ -80,11 +80,14 @@ namespace OpenLoco::GameCommands
         });
 
         train.head->vehicleFlags |= VehicleFlags::commandStop;
-        for (auto& car : train.cars)
+        if (!Config::get().keepCargoModifyPickup)
         {
-            for (auto& component : car)
+            for (auto& car : train.cars)
             {
-                removeAllCargo(component);
+                for (auto& component : car)
+                {
+                    removeAllCargo(component);
+                }
             }
         }
         return 0;

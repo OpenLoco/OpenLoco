@@ -361,7 +361,7 @@ namespace OpenLoco::ObjectManager
         Core::Timer reloadTimer;
         size_t loadedObjects{};
 
-        setTotalNumImages(0x201A); // TODO: Why this value?
+        setTotalNumImages(Gfx::G1ExpectedCount::kDisc + Gfx::G1ExpectedCount::kTemporaryObjects);
 
         forEachLoadedObject([&loadedObjects](const LoadedObjectHandle& handle) {
             auto* obj = getAny(handle);
@@ -555,7 +555,7 @@ namespace OpenLoco::ObjectManager
             return false;
         }
 
-        if (getTotalNumImages() >= Gfx::G1ExpectedCount::kObjects + Gfx::G1ExpectedCount::kDisc)
+        if (getTotalNumImages() >= Gfx::G1ExpectedCount::kObjects + Gfx::G1ExpectedCount::kTemporaryObjects + Gfx::G1ExpectedCount::kDisc)
         {
             free(preLoadObj->object);
             // Too many objects loaded and no free image space
@@ -782,7 +782,7 @@ namespace OpenLoco::ObjectManager
             return false;
         }
 
-        if (getTotalNumImages() >= Gfx::G1ExpectedCount::kObjects + Gfx::G1ExpectedCount::kDisc)
+        if (getTotalNumImages() >= Gfx::G1ExpectedCount::kObjects + Gfx::G1ExpectedCount::kTemporaryObjects + Gfx::G1ExpectedCount::kDisc)
         {
             // Free objectData?
             return false;

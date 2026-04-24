@@ -76,6 +76,12 @@ namespace OpenLoco::Config
             auto& audioConfig = _config.audio;
             audioConfig.device = audioNode["device"].as<std::string>("");
             audioConfig.mainVolume = audioNode["mainVolume"].as<int32_t>(-1100);
+            audioConfig.masterVolume = audioNode["masterVolume"].as<int32_t>(100);
+            audioConfig.musicVolume = audioNode["musicVolume"].as<int32_t>(100);
+            audioConfig.effectsVolume = audioNode["effectsVolume"].as<int32_t>(100);
+            audioConfig.vehiclesVolume = audioNode["vehiclesVolume"].as<int32_t>(100);
+            audioConfig.uiVolume = audioNode["uiVolume"].as<int32_t>(100);
+            audioConfig.ambientVolume = audioNode["ambientVolume"].as<int32_t>(100);
             audioConfig.playJukeboxMusic = audioNode["playJukeboxMusic"].as<bool>(true);
             audioConfig.playTitleMusic = audioNode["play_title_music"].as<bool>(true);
             audioConfig.playNewsSounds = audioNode["play_news_sounds"].as<bool>(true);
@@ -88,6 +94,9 @@ namespace OpenLoco::Config
             else
             {
                 std::fill(audioConfig.customJukebox.begin(), audioConfig.customJukebox.end(), true);
+
+                // "Locomotion Title" was originally not available for the custom playlist, so we disable it by default to match historical behaviour.
+                audioConfig.customJukebox[enumValue(PlaylistItem::locomotionTitle)] = false;
             }
         }
 
@@ -172,6 +181,7 @@ namespace OpenLoco::Config
         _config.trainsReverseAtSignals = config["trainsReverseAtSignals"].as<bool>(false);
         _config.disableStationSizeLimit = config["disableStationSizeLimit"].as<bool>(false);
         _config.showAiPlanningAsGhosts = config["showAiPlanningAsGhosts"].as<bool>(false);
+        _config.keepCargoModifyPickup = config["keepCargoModifyPickup"].as<bool>(false);
 
         // Preferred owner
         _config.preferredOwnerName = config["preferredOwnerName"].as<std::string>("");
@@ -225,6 +235,12 @@ namespace OpenLoco::Config
             audioNode.remove("device");
         }
         audioNode["mainVolume"] = audioConfig.mainVolume;
+        audioNode["masterVolume"] = audioConfig.masterVolume;
+        audioNode["musicVolume"] = audioConfig.musicVolume;
+        audioNode["effectsVolume"] = audioConfig.effectsVolume;
+        audioNode["vehiclesVolume"] = audioConfig.vehiclesVolume;
+        audioNode["uiVolume"] = audioConfig.uiVolume;
+        audioNode["ambientVolume"] = audioConfig.ambientVolume;
         audioNode["playJukeboxMusic"] = audioConfig.playJukeboxMusic;
         audioNode["play_title_music"] = audioConfig.playTitleMusic;
         audioNode["playNewsSounds"] = audioConfig.playNewsSounds;
@@ -300,6 +316,7 @@ namespace OpenLoco::Config
         node["trainsReverseAtSignals"] = _config.trainsReverseAtSignals;
         node["disableStationSizeLimit"] = _config.disableStationSizeLimit;
         node["showAiPlanningAsGhosts"] = _config.showAiPlanningAsGhosts;
+        node["keepCargoModifyPickup"] = _config.keepCargoModifyPickup;
 
         // Preferred owner
         node["preferredOwnerName"] = _config.preferredOwnerName;

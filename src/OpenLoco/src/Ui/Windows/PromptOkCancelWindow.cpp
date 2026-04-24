@@ -13,7 +13,7 @@
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/WindowManager.h"
 
-#include <SDL2/SDL.h>
+#include <SDL3/SDL_keycode.h>
 #include <cstring>
 
 namespace OpenLoco::Ui::Windows::PromptOkCancel
@@ -73,10 +73,11 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
 
         auto originalModal = WindowManager::getCurrentModalType();
         WindowManager::setCurrentModalType(WindowType::confirmationPrompt);
+        Audio::stopVehicleNoise();
+        Audio::stopAmbientNoise();
         promptTickLoop(
             []() {
                 Input::handleKeyboard();
-                Audio::updateSounds();
                 WindowManager::dispatchUpdateAll();
                 Input::processKeyboardInput();
                 WindowManager::update();

@@ -29,6 +29,19 @@ namespace OpenLoco
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(BuildingObjectFlags);
 
+    enum class TownAmenityCategory : uint8_t
+    {
+        religious = 0U,
+        unk1 = 1U, // No vanilla object uses this category
+        hotel = 2U,
+        park = 3U,
+        courthouse = 4U,
+        landmark = 5U, // e.g. a fountain
+        unk6 = 6U,     // No vanilla object uses this category
+        unk7 = 7U,     // No vanilla object uses this category
+        none = 0xFFU,  // Most buildings will have this category
+    };
+
 #pragma pack(push, 1)
     // Todo this is the same as industry obj
     struct PartAnimation
@@ -42,22 +55,25 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::building;
 
-        StringId name;                             // 0x0
-        uint32_t image;                            // 0x2
-        uint8_t numParts;                          // 0x6
-        uint8_t numVariations;                     // 0x7
-        uint32_t partHeightsOffset;                // 0x8
-        uint32_t partAnimationsOffset;             // 0xC
-        uint32_t variationPartsOffset[32];         // 0x10 Access with getBuildingParts helper method
-        uint32_t colours;                          // 0x90
-        uint16_t designedYear;                     // 0x94
-        uint16_t obsoleteYear;                     // 0x96
-        BuildingObjectFlags flags;                 // 0x98
-        uint8_t clearCostIndex;                    // 0x99
-        uint16_t clearCostFactor;                  // 0x9A
-        uint8_t scaffoldingSegmentType;            // 0x9C
-        Colour scaffoldingColour;                  // 0x9D
-        uint8_t generatorFunction;                 // 0x9E
+        StringId name;                     // 0x0
+        uint32_t image;                    // 0x2
+        uint8_t numParts;                  // 0x6
+        uint8_t numVariations;             // 0x7
+        uint32_t partHeightsOffset;        // 0x8
+        uint32_t partAnimationsOffset;     // 0xC
+        uint32_t variationPartsOffset[32]; // 0x10 Access with getBuildingParts helper method
+        uint32_t colours;                  // 0x90
+        uint16_t designedYear;             // 0x94
+        uint16_t obsoleteYear;             // 0x96
+        BuildingObjectFlags flags;         // 0x98
+        uint8_t clearCostIndex;            // 0x99
+        uint16_t clearCostFactor;          // 0x9A
+        uint8_t scaffoldingSegmentType;    // 0x9C
+        Colour scaffoldingColour;          // 0x9D
+
+        // 0x9E for misc buildings generator function, otherwise its a set of flags representing
+        // town densities the building can be built in
+        uint8_t generatorFunction;
         uint8_t averageNumberOnMap;                // 0x9F
         uint8_t producedQuantity[2];               // 0xA0
         uint8_t producedCargoType[2];              // 0xA2
@@ -65,7 +81,7 @@ namespace OpenLoco
         uint8_t producedCargoQty[2];               // 0xA6 For passenger cargo this is the population of the building
         uint8_t consumedCargoQty[2];               // 0xA8 Qty in eighths of a unit
         int16_t demolishRatingReduction;           // 0XAA
-        uint8_t var_AC;                            // 0xAC
+        TownAmenityCategory townAmenityCategory;   // 0xAC
         uint8_t numElevatorSequences;              // 0XAD
         uint32_t elevatorHeightSequencesOffset[4]; // 0XAE Access with getElevatorHeightSequence helper method
 

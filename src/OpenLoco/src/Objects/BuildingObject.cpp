@@ -47,6 +47,21 @@ namespace OpenLoco
         {
             return false;
         }
+        if (hasFlags(BuildingObjectFlags::miscBuilding))
+        {
+            if (generatorFunction >= 4)
+            {
+                return false;
+            }
+        }
+        if (townAmenityCategory != TownAmenityCategory::none)
+        {
+            // Max of 8 different building categories
+            if (enumValue(townAmenityCategory) > enumValue(TownAmenityCategory::unk7))
+            {
+                return false;
+            }
+        }
         return (numVariations != 0) && (numVariations <= 31);
     }
 

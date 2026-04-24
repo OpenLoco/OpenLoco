@@ -141,7 +141,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
                     {
                         if (newsStringChar != 0)
                         {
-                            Audio::playSound(Audio::SoundId::ticker, Ui::width());
+                            Audio::playSound(Audio::SoundId::ticker, Audio::ChannelId::ui, Ui::width());
                         }
                     }
                 }

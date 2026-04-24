@@ -156,7 +156,7 @@ namespace OpenLoco::Vehicles
         assert(subType == VehicleEntityType::bogie || subType == VehicleEntityType::body_start || subType == VehicleEntityType::body_continued);
 
         const auto pos = position + World::Pos3{ 0, 0, 22 };
-        Audio::playSound(Audio::SoundId::crash, pos);
+        Audio::playSound(Audio::SoundId::crash, Audio::ChannelId::vehicles, pos);
 
         ExplosionCloud::create(pos);
 
@@ -492,9 +492,7 @@ namespace OpenLoco::Vehicles
         }
         if (hasMoved)
         {
-            Ui::ViewportManager::invalidate(&component, ZoomLevel::eighth);
             component.moveTo(intermediatePosition);
-            Ui::ViewportManager::invalidate(&component, ZoomLevel::eighth);
         }
         return result;
     }
@@ -552,9 +550,7 @@ namespace OpenLoco::Vehicles
             }
             if (hasMoved)
             {
-                Ui::ViewportManager::invalidate(&component, ZoomLevel::eighth);
                 component.moveTo(intermediatePosition);
-                Ui::ViewportManager::invalidate(&component, ZoomLevel::eighth);
             }
             return result;
         }

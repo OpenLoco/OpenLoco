@@ -84,8 +84,9 @@
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
+
 #include <OpenLoco/Math/Trigonometry.hpp>
-#include <map>
+#include <OpenLoco/Utility/LookupTable.hpp>
 #include <sfl/static_vector.hpp>
 #include <sstream>
 
@@ -136,7 +137,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return veh;
         }
 
-        static bool needsComponentChangeConfirm(EntityId id)
+        static bool needsComponentChangeConfirm(EntityId id, const bool checkKeepCargoCheat)
         {
             auto* vehBase = EntityManager::get<Vehicles::VehicleBase>(id);
             if (vehBase == nullptr)
@@ -155,6 +156,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return false;
             }
 
+            if (checkKeepCargoCheat && Config::get().keepCargoModifyPickup)
+            {
+                return false;
+            }
+
             if (head->getCarCount() > 0 && CompanyManager::getControllingId() == head->owner)
             {
                 return true;
@@ -163,9 +169,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return false;
         }
 
-        static bool confirmComponentChange(const EntityId id, const OpenLoco::StringId windowTitle, const OpenLoco::StringId windowMessage, const OpenLoco::StringId windowConfirm)
+        static bool confirmComponentChange(const EntityId id, const OpenLoco::StringId windowTitle, const OpenLoco::StringId windowMessage, const OpenLoco::StringId windowConfirm, const bool checkKeepCargoCheat = true)
         {
-            if (!needsComponentChangeConfirm(id))
+            if (!needsComponentChangeConfirm(id, checkKeepCargoCheat))
             {
                 return true;
             }
@@ -174,9 +180,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return Windows::PromptOkCancel::open(windowTitle, windowMessage, format, windowConfirm);
         }
 
-        static bool confirmComponentChange(const EntityId srcId, const EntityId destId, const OpenLoco::StringId windowTitle, const OpenLoco::StringId windowMessage, const OpenLoco::StringId windowConfirm)
+        static bool confirmComponentChange(const EntityId srcId, const EntityId destId, const OpenLoco::StringId windowTitle, const OpenLoco::StringId windowMessage, const OpenLoco::StringId windowConfirm, const bool checkKeepCargoCheat = true)
         {
-            if (!needsComponentChangeConfirm(srcId) && !needsComponentChangeConfirm(destId))
+            if (!needsComponentChangeConfirm(srcId, checkKeepCargoCheat) && !needsComponentChangeConfirm(destId, checkKeepCargoCheat))
             {
                 return true;
             }
@@ -1600,14 +1606,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return CursorId::openHand;
         }
 
-        static const std::map<VehicleType, uint32_t> additionalVehicleButtonByVehicleType{
+        static constexpr auto kAdditionalVehicleButtonByVehicleType = Utility::buildLookupTable<VehicleType, uint32_t>({
             { VehicleType::train, InterfaceSkin::ImageIds::build_additional_train },
             { VehicleType::bus, InterfaceSkin::ImageIds::build_additional_bus },
             { VehicleType::truck, InterfaceSkin::ImageIds::build_additional_truck },
             { VehicleType::tram, InterfaceSkin::ImageIds::build_additional_tram },
             { VehicleType::aircraft, InterfaceSkin::ImageIds::build_additional_aircraft },
             { VehicleType::ship, InterfaceSkin::ImageIds::build_additional_ship },
-        };
+        });
 
         constexpr auto kVehicleDetailsOffset = 2;
         constexpr auto kVehicleDetailsLineHeight = 12;
@@ -1708,7 +1714,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
-            auto buildImage = skin->img + additionalVehicleButtonByVehicleType.at(head->vehicleType);
+            auto buildImage = skin->img + kAdditionalVehicleButtonByVehicleType.at(head->vehicleType);
 
             self.widgets[widx::buildNew].image = Gfx::recolour(buildImage, CompanyManager::getCompanyColour(self.owner)) | Widget::kImageIdColourSet;
 
@@ -2438,7 +2444,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     args.head = static_cast<EntityId>(self.number);
                     args.cargoType = Dropdown::getItemArgument(dropdownIndex, 3);
 
-                    if (Common::confirmComponentChange(args.head, StringIds::confirm_vehicle_component_refit_cargo_warning_title, StringIds::confirm_vehicle_component_refit_cargo_warning_message, StringIds::confirm_vehicle_component_refit_cargo_warning_confirm))
+                    if (Common::confirmComponentChange(args.head, StringIds::confirm_vehicle_component_refit_cargo_warning_title, StringIds::confirm_vehicle_component_refit_cargo_warning_message, StringIds::confirm_vehicle_component_refit_cargo_warning_confirm, false))
                     {
                         GameCommands::setErrorTitle(StringIds::cant_refit_vehicle);
                         GameCommands::doCommand(args, GameCommands::Flags::apply);
@@ -3284,19 +3290,22 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 uint32_t targetOffset = 0U;
                 Vehicles::OrderRingView orders(head.orderTableOffset);
                 auto lastOrder = orders.begin();
-                if (orderTableIndex < 0)
+                if (lastOrder != orders.end())
                 {
-                    while ((lastOrder + 1) != orders.end())
+                    if (orderTableIndex < 0)
                     {
-                        lastOrder++;
+                        while ((lastOrder + 1) != orders.end())
+                        {
+                            lastOrder++;
+                        }
                     }
-                }
-                else
-                {
-                    while ((lastOrder + 1) != orders.end() && orderTableIndex != 0)
+                    else
                     {
-                        lastOrder++;
-                        orderTableIndex--;
+                        while ((lastOrder + 1) != orders.end() && orderTableIndex != 0)
+                        {
+                            lastOrder++;
+                            orderTableIndex--;
+                        }
                     }
                 }
                 targetOffset = lastOrder->getOffset();
@@ -3541,7 +3550,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     height -= trackPart.z;
 
                     Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, trackElement->rotation(), trackId);
-                    Audio::playSound(Audio::SoundId::waypoint, Input::getDragLastLocation().x);
+                    Audio::playSound(Audio::SoundId::waypoint, Audio::ChannelId::ui, Input::getDragLastLocation().x);
                     addNewOrder(self, waypoint);
                     break;
                 }
@@ -3554,7 +3563,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     {
                         height = heights.waterHeight;
                     }
-                    Audio::playSound(Audio::SoundId::waypoint, Input::getDragLastLocation().x);
+                    Audio::playSound(Audio::SoundId::waypoint, Audio::ChannelId::ui, Input::getDragLastLocation().x);
 
                     const auto tPos = World::toTileSpace(args.pos);
                     Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, 0, 0);
@@ -3563,7 +3572,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
                 case Ui::ViewportInteraction::InteractionItem::stationLabel:
                 {
-                    Audio::playSound(Audio::SoundId::waypoint, Input::getDragLastLocation().x);
+                    Audio::playSound(Audio::SoundId::waypoint, Audio::ChannelId::ui, Input::getDragLastLocation().x);
                     const auto stationId = StationId(args.value);
                     Vehicles::OrderStopAt station(stationId);
                     addNewOrder(self, station);
@@ -3589,7 +3598,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     height -= roadPart.z;
 
                     Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, roadElement->rotation(), roadId);
-                    Audio::playSound(Audio::SoundId::waypoint, Input::getDragLastLocation().x);
+                    Audio::playSound(Audio::SoundId::waypoint, Audio::ChannelId::ui, Input::getDragLastLocation().x);
                     addNewOrder(self, waypoint);
                     break;
                 }
@@ -3647,7 +3656,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 if (item == -1)
                 {
                     // Copy complete order list
-                    Audio::playSound(Audio::SoundId::waypoint, Input::getDragLastLocation().x);
+                    Audio::playSound(Audio::SoundId::waypoint, Audio::ChannelId::ui, Input::getDragLastLocation().x);
                     std::vector<std::shared_ptr<Vehicles::Order>> clonedOrders;
                     for (auto& existingOrders : getOrderTable(head))
                     {
@@ -3662,7 +3671,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 else
                 {
                     // Copy a single entry on the order list
-                    Audio::playSound(Audio::SoundId::waypoint, Input::getDragLastLocation().x);
+                    Audio::playSound(Audio::SoundId::waypoint, Audio::ChannelId::ui, Input::getDragLastLocation().x);
                     auto clonedOrder = selectedOrder->clone();
                     addNewOrder(*toolWindow, *clonedOrder);
                     WindowManager::bringToFront(*toolWindow);
@@ -4951,7 +4960,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             self.currentTab = widgetIndex - Common::widx::tabMain;
             self.frameNo = 0;
-            self.flags &= ~WindowFlags::beingResized;
+            self.flags &= ~WindowFlags::maximised;
             self.var_85C = -1;
             self.viewportRemove(0);
 
@@ -5124,14 +5133,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
             uint8_t frameSpeed;
         };
 
-        static const std::map<VehicleType, TabIcons> tabIconByVehicleType{
+        static constexpr auto kTabIconByVehicleType = Utility::buildLookupTable<VehicleType, TabIcons>({
             { VehicleType::train, { InterfaceSkin::ImageIds::tab_vehicle_train_frame0, 1 } },
             { VehicleType::bus, { InterfaceSkin::ImageIds::tab_vehicle_bus_frame0, 1 } },
             { VehicleType::truck, { InterfaceSkin::ImageIds::tab_vehicle_truck_frame0, 1 } },
             { VehicleType::tram, { InterfaceSkin::ImageIds::tab_vehicle_tram_frame0, 1 } },
             { VehicleType::aircraft, { InterfaceSkin::ImageIds::tab_vehicle_aircraft_frame0, 2 } },
             { VehicleType::ship, { InterfaceSkin::ImageIds::tab_vehicle_ship_frame0, 3 } },
-        };
+        });
 
         // 0x004B5F0D
         static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx)
@@ -5145,7 +5154,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
             auto vehicleType = vehicle->vehicleType;
 
-            auto mainTab = tabIconByVehicleType.at(vehicleType);
+            auto mainTab = kTabIconByVehicleType.at(vehicleType);
             int frame = 0;
             if (self.currentTab == 0)
             {

@@ -253,6 +253,11 @@ namespace OpenLoco::Ui::Windows
         void open();
     }
 
+    namespace MusicJukebox
+    {
+        Window* open();
+    }
+
     namespace MusicSelection
     {
         Window* open();
@@ -290,8 +295,7 @@ namespace OpenLoco::Ui::Windows
     namespace Options
     {
         Window* open();
-        Window* openMusicSettings();
-        constexpr uint8_t kTabOffsetMusic = 2;
+        Window* openAudioSettings();
     }
 
     namespace PlayerInfoPanel
