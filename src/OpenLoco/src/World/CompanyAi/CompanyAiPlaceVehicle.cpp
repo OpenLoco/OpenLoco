@@ -114,7 +114,7 @@ namespace OpenLoco::CompanyAi
             }
             if (roadObjectId == 0xFFU)
             {
-                if (!(getGameState().roadObjectIdIsNotTram & (1U << elRoad->roadObjectId())))
+                if (!(getGameState().roadObjectIdIsAnyRoadTypeCompatible & (1U << elRoad->roadObjectId())))
                 {
                     continue;
                 }
@@ -193,7 +193,7 @@ namespace OpenLoco::CompanyAi
                     }
                     if (elRoad->roadObjectId() != roadObjectId)
                     {
-                        if (!(getGameState().roadObjectIdIsNotTram & (1U << elRoad->roadObjectId())))
+                        if (!(getGameState().roadObjectIdIsAnyRoadTypeCompatible & (1U << elRoad->roadObjectId())))
                         {
                             continue;
                         }

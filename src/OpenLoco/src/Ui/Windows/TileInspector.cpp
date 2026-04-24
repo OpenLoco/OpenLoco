@@ -47,6 +47,8 @@
 #include "World/CompanyManager.h"
 #include "World/Industry.h"
 #include "World/Station.h"
+
+#include <OpenLoco/Utility/LookupTable.hpp>
 #include <map>
 
 using namespace OpenLoco::World;
@@ -205,7 +207,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
     static StringId getElementTypeName(const TileElement& element)
     {
-        static const std::map<ElementType, StringId> typeToString = {
+        static constexpr auto kTypeToString = Utility::buildLookupTable<ElementType, StringId>({
             { ElementType::surface, StringIds::tile_inspector_element_type_surface },
             { ElementType::track, StringIds::tile_inspector_element_type_track },
             { ElementType::station, StringIds::tile_inspector_element_type_station },
@@ -215,9 +217,9 @@ namespace OpenLoco::Ui::Windows::TileInspector
             { ElementType::wall, StringIds::tile_inspector_element_type_wall },
             { ElementType::road, StringIds::tile_inspector_element_type_road },
             { ElementType::industry, StringIds::tile_inspector_element_type_industry },
-        };
+        });
 
-        return typeToString.at(element.type());
+        return kTypeToString.at(element.type());
     }
 
     static StringId getObjectName(const TileElement& element)

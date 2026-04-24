@@ -275,13 +275,12 @@ namespace OpenLoco::Vehicles
                     {
                         World::Pos3 splashPos{ this->position.x, this->position.y, newTileHeight.waterHeight };
                         Splash::create(splashPos);
-                        Audio::playSound(Audio::SoundId::splash2, splashPos);
+                        Audio::playSound(Audio::SoundId::splash2, Audio::ChannelId::vehicles, splashPos);
                         this->vehicleFlags |= VehicleFlags::unk_5;
                     }
                 }
 
                 this->moveTo(newPosition);
-                this->invalidateSprite();
             }
         }
         else
@@ -361,7 +360,7 @@ namespace OpenLoco::Vehicles
     static bool isOnRackRailRail(const VehicleBogie& bogie)
     {
         auto* trackObj = ObjectManager::get<TrackObject>(bogie.trackType);
-        if (!trackObj->hasFlags(TrackObjectFlags::unk_00))
+        if (!trackObj->hasFlags(TrackObjectFlags::hasRackRail))
         {
             return true;
         }
@@ -414,7 +413,7 @@ namespace OpenLoco::Vehicles
             return true;
         }
         auto* roadObj = ObjectManager::get<RoadObject>(bogie.trackType);
-        if (!roadObj->hasFlags(RoadObjectFlags::unk_05))
+        if (!roadObj->hasFlags(RoadObjectFlags::hasRackRail))
         {
             return true;
         }

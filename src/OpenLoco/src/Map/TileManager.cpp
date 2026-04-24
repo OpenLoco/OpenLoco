@@ -1077,7 +1077,7 @@ namespace OpenLoco::World::TileManager
     static void playDemolishTreeSound(const World::Pos3& loc)
     {
         const auto frequency = gPrng2().randNext(20003, 24098);
-        Audio::playSound(Audio::SoundId::demolishTree, loc, -1100, frequency);
+        Audio::playSound(Audio::SoundId::demolishTree, Audio::ChannelId::effects, loc, -1100, frequency);
     }
 
     // 0x004BB432
@@ -1113,7 +1113,7 @@ namespace OpenLoco::World::TileManager
     {
         ExplosionSmoke::create(pos + World::Pos3{ 0, 0, 13 });
         const auto randFreq = gPrng2().randNext(20'003, 24'098);
-        Audio::playSound(Audio::SoundId::demolishBuilding, pos, -1400, randFreq);
+        Audio::playSound(Audio::SoundId::demolishBuilding, Audio::ChannelId::effects, pos, -1400, randFreq);
     }
 
     // 0x0042D8FF
@@ -1146,9 +1146,9 @@ namespace OpenLoco::World::TileManager
                         auto* town = TownManager::updateTownInfo(pos, removedPopulation, buildingCapacity, ratingReduction, -1);
                         if (town != nullptr)
                         {
-                            if (buildingObj->var_AC != 0xFF)
+                            if (buildingObj->townAmenityCategory != TownAmenityCategory::none)
                             {
-                                town->var_150[buildingObj->var_AC] -= 1;
+                                town->amenityCounts[enumValue(buildingObj->townAmenityCategory)] -= 1;
                             }
                         }
                     }
@@ -1584,7 +1584,7 @@ namespace OpenLoco::World::TileManager
     // 0x0047AB9B
     void updateYearly()
     {
-        const auto isObjectNotTram = getGameState().roadObjectIdIsNotTram;
+        const auto isObjectAnyRoadTypeCompatible = getGameState().roadObjectIdIsAnyRoadTypeCompatible;
         for (const auto& tilePos : getWorldRange())
         {
             auto tile = get(tilePos);
@@ -1601,7 +1601,7 @@ namespace OpenLoco::World::TileManager
                 }
                 // This is a much cheaper tram checker
                 // compared to getting the object
-                if (isObjectNotTram & (1U << elRoad->roadObjectId()))
+                if (isObjectAnyRoadTypeCompatible & (1U << elRoad->roadObjectId()))
                 {
                     elRoad->setUnk7_80(elRoad->hasUnk7_40());
                     elRoad->setUnk7_40(false);

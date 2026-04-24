@@ -29,7 +29,7 @@
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/Utility/String.hpp>
-#include <SDL2/SDL.h>
+#include <SDL3/SDL_keycode.h>
 #include <algorithm>
 #include <cstring>
 #include <string>
@@ -164,10 +164,11 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             }
 
             WindowManager::setCurrentModalType(WindowType::fileBrowserPrompt);
+            Audio::stopVehicleNoise();
+            Audio::stopAmbientNoise();
             const bool success = promptTickLoop(
                 []() {
                     Input::handleKeyboard();
-                    Audio::updateSounds();
                     WindowManager::dispatchUpdateAll();
                     Input::processKeyboardInput();
                     Input::processMouseWheel();
@@ -254,7 +255,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             return;
         }
 
-        Audio::playSound(Audio::SoundId::clickDown, self.x + (self.width / 2));
+        Audio::playSound(Audio::SoundId::clickDown, Audio::ChannelId::ui, self.x + (self.width / 2));
 
         auto& entry = _files[index];
 

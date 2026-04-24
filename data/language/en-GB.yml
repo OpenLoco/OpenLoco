@@ -2448,3 +2448,44 @@ strings:
   2393: 'Gradient (default)'
   2394: 'Solid colour'
   2395: 'Translucent colour'
+  2396: 'Frame rate limit:'
+  2397: 'Internal speed (default)'
+  2398: 'Vertical sync'
+  2399: 'Unrestricted'
+  2400: "Confirm move component"
+  2401: "Move component"
+  2402: "Moving this vehicle component will remove all cargo aboard the entire vehicle. Continue?"
+  2403: "Moving this vehicle component will remove all cargo aboard both vehicles. Continue?"
+  2404: "Master:"
+  2405: "{SMALLFONT}{COLOUR BLACK}Adjust the master volume"
+  2406: "Effects:"
+  2407: "{SMALLFONT}{COLOUR BLACK}Adjust the effects volume"
+  2408: "Vehicles:"
+  2409: "{SMALLFONT}{COLOUR BLACK}Adjust the vehicles volume"
+  2410: "Interface:"
+  2411: "{SMALLFONT}{COLOUR BLACK}Adjust the user interface volume"
+  2412: "{SMALLFONT}{COLOUR BLACK}Adjust the music volume"
+  2413: "Volume"
+  2414: "Music:"
+  2415: "Ambient:"
+  2416: "{SMALLFONT}{COLOUR BLACK}Adjust the ambient volume"
+  2417: "Locomotion Title"
+  2418: "Copy"
+  2419: "{SMALLFONT}{COLOUR BLACK}Allows selecting an area of track elements to copy"
+  2420: "Paste"
+  2421: "{SMALLFONT}{COLOUR BLACK}Allows pasting an area of copied track elements to the map"
+  2422: "Open audio options"
+  2423: "Open jukebox"
+  2424: "Show jukebox window"
+  2425: "Sort by cost"
+  2426: "Sort by power"
+  2427: "Sort by max. speed"
+  2428: "Sort by weight"
+  2429: "Sort by length"
+  2430: "Ascending order"
+  2431: "Descending order"
+  2432: "Sort by capacity"
+  2433: "Sort by obsolescence"
+  2434: 'Vehicle cargo'
+  2435: 'Keep vehicle cargo on modify or pickup'
+  2436: '{SMALLFONT}{COLOUR BLACK}When enabled, cargo will not be cleared from the entire vehicle when adding cars, moving cars or picking up the vehicle'

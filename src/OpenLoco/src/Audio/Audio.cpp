@@ -1,29 +1,15 @@
 #include "Audio.h"
-#include "Channel.h"
 #include "Config.h"
-#include "Date.h"
-#include "Entities/EntityManager.h"
 #include "Environment.h"
-#include "Game.h"
-#include "GameStateFlags.h"
-#include "Jukebox.h"
 #include "Localisation/StringIds.h"
 #include "Logging.h"
 #include "Map/SurfaceElement.h"
-#include "Map/TileLoop.hpp"
 #include "Map/TileManager.h"
-#include "Map/TreeElement.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/SoundObject.h"
-#include "Objects/TreeObject.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
-#include "VehicleChannel.h"
-#include "Vehicles/Vehicle.h"
-#include "Vehicles/Vehicle2.h"
-#include "Vehicles/VehicleHead.h"
-#include "Vehicles/VehicleManager.h"
-#include "Vehicles/VehicleTail.h"
+#include <OpenLoco/Audio/AudioEngine.h>
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Core/FileStream.h>
 #include <array>
@@ -42,64 +28,37 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Audio
 {
-    struct AudioFormat
-    {
-        int32_t frequency{};
-        int32_t format{};
-        int32_t channels{};
-    };
-
-    static constexpr uint8_t kMaxVehicleSounds = 16;
     static constexpr int32_t kPlayAtCentre = 0x8000;
     static constexpr int32_t kPlayAtLocation = 0x8001;
 
-    [[maybe_unused]] constexpr int32_t kNumSoundChannels = 16;
-
-    static bool _audioIsInitialised = false;                               // 0x0050D1EC
-    static bool _audioIsPaused = false;                                    // 0x0050D554
-    static bool _audioIsEnabled = true;                                    // 0x0050D555
-    static std::optional<PathId> _chosenAmbientNoisePathId = std::nullopt; // 0x0050D5B0
-
-    static uint8_t _numActiveVehicleSounds; // 0x0112C666
+    static bool _audioIsEnabled = true;
     static std::vector<std::string> _devices;
-    static std::vector<Channel> _channels;
-    static std::vector<VehicleChannel> _vehicleChannels;
-    static std::vector<Channel> _soundFX;
 
-    static std::vector<uint32_t> _samples;
-    static std::unordered_map<uint16_t, uint32_t> _objectSamples;
-    static std::unordered_map<PathId, uint32_t> _musicSamples;
+    static std::vector<BufferId> _samples;
+    static std::unordered_map<uint16_t, BufferId> _objectSamples;
+    static std::unordered_map<PathId, BufferId> _musicSamples;
 
-    static OpenAL::Device _device;
-    static OpenAL::SourceManager _sourceManager;
-    static OpenAL::BufferManager _bufferManager;
+    void updateVehicleNoise();
+    void updateAmbientNoise();
 
-    static void playSound(SoundId id, const World::Pos3& loc, int32_t volume, int32_t pan, int32_t frequency);
-    static void mixSound(SoundId id, bool loop, int32_t volume, int32_t pan, int32_t freq);
+    static void playSound(SoundId id, ChannelId channel, const World::Pos3& loc, int32_t volume, int32_t pan, int32_t frequency);
 
-    static Channel* getChannel(ChannelId id)
+    static BufferId loadSoundFromWaveMemory(const WAVEFORMATEX& format, const void* pcm, size_t pcmLen)
     {
-        auto index = static_cast<size_t>(id);
-        if (index < _channels.size())
-        {
-            return &_channels[index];
-        }
-        return nullptr;
+        AudioFormat fmt{};
+        fmt.sampleRate = format.nSamplesPerSec;
+        fmt.channels = format.nChannels;
+        fmt.bitsPerSample = format.wBitsPerSample;
+        return loadBuffer(std::span<const uint8_t>(reinterpret_cast<const uint8_t*>(pcm), pcmLen), fmt);
     }
 
-    static uint32_t loadSoundFromWaveMemory(const WAVEFORMATEX& format, const void* pcm, size_t pcmLen)
-    {
-        const auto id = _bufferManager.allocate(std::span<const uint8_t>(reinterpret_cast<const uint8_t*>(pcm), pcmLen), format.nSamplesPerSec, format.nChannels == 2, format.wBitsPerSample);
-        return id;
-    }
-
-    static std::vector<uint32_t> loadSoundsFromCSS(const fs::path& path)
+    static std::vector<BufferId> loadSoundsFromCSS(const fs::path& path)
     {
         Logging::verbose("loadSoundsFromCSS({})", path.string());
 
         try
         {
-            std::vector<uint32_t> results;
+            std::vector<BufferId> results;
 
             FileStream fs(path, StreamMode::read);
             auto numSounds = fs.readValue<uint32_t>();
@@ -110,10 +69,8 @@ namespace OpenLoco::Audio
             std::vector<std::byte> pcm;
             for (uint32_t i = 0; i < numSounds; i++)
             {
-                // Navigate to beginning of wave data
                 fs.setPosition(soundOffsets[i]);
 
-                // Read length of wave data and load it into the pcm buffer
                 auto pcmLen = fs.readValue<uint32_t>();
                 auto format = fs.readValue<WAVEFORMATEX>();
 
@@ -132,18 +89,99 @@ namespace OpenLoco::Audio
         }
     }
 
-    static void disposeSamples()
+    std::optional<BufferId> loadMusicSample(PathId asset)
     {
-        _samples.clear();
-        _objectSamples.clear();
-        _musicSamples.clear();
+        auto res = _musicSamples.find(asset);
+        if (res != std::end(_musicSamples))
+        {
+            return res->second;
+        }
+
+        const auto path = Environment::getPath(asset);
+        try
+        {
+            FileStream fs(path, StreamMode::read);
+
+            const auto sig = fs.readValue<uint32_t>();
+            if (sig != 0x46464952)
+            {
+                throw Exception::RuntimeError("Invalid signature.");
+            }
+
+            fs.readValue<uint32_t>();
+
+            const auto riffType = fs.readValue<uint32_t>();
+            if (riffType != 0x45564157)
+            {
+                throw Exception::RuntimeError("Invalid format.");
+            }
+
+            const auto fmtMarker = fs.readValue<uint32_t>();
+            if (fmtMarker != 0x20746d66 && fmtMarker != 0x00746d66)
+            {
+                throw Exception::RuntimeError("Invalid format marker.");
+            }
+
+            fs.readValue<uint32_t>();
+
+            const auto typeFormat = fs.readValue<uint16_t>();
+            if (typeFormat != 1)
+            {
+                throw Exception::RuntimeError("Invalid format type, expected PCM.");
+            }
+
+            const auto channels = fs.readValue<uint16_t>();
+            const auto sampleRate = fs.readValue<uint32_t>();
+
+            fs.readValue<uint32_t>();
+            fs.readValue<uint16_t>();
+
+            const auto bits = fs.readValue<uint16_t>();
+
+            const auto dataMarker = fs.readValue<uint32_t>();
+            if (dataMarker != 0x61746164)
+            {
+                throw Exception::RuntimeError("Invalid data marker.");
+            }
+
+            const auto pcmLen = fs.readValue<uint32_t>();
+
+            std::vector<std::uint8_t> pcm(pcmLen);
+            fs.read(pcm.data(), pcmLen);
+
+            AudioFormat fmt{};
+            fmt.sampleRate = sampleRate;
+            fmt.channels = channels;
+            fmt.bitsPerSample = bits;
+            auto id = loadBuffer(std::span<const uint8_t>(pcm.data(), pcmLen), fmt);
+            _musicSamples[asset] = id;
+
+            return id;
+        }
+        catch (const std::exception& ex)
+        {
+            Logging::error("Unable to load music sample '{}': {}", path, ex.what());
+            return std::nullopt;
+        }
     }
 
-    static void disposeChannels()
+    static void disposeSamples()
     {
-        _channels.clear();
-        _vehicleChannels.clear();
-        _soundFX.clear();
+        for (auto& buf : _samples)
+        {
+            unloadBuffer(buf);
+        }
+        _samples.clear();
+        for (auto& [_, buf] : _objectSamples)
+        {
+            unloadBuffer(buf);
+        }
+        _objectSamples.clear();
+        for (auto& [_, buf] : _musicSamples)
+        {
+            unloadBuffer(buf);
+        }
+        _musicSamples.clear();
     }
 
     static void reinitialise()
@@ -159,80 +197,48 @@ namespace OpenLoco::Audio
             return 0;
         }
 
-        const auto& devices = _devices;
-        if (devices.empty())
+        if (_devices.empty())
         {
             getDevices();
         }
 
-        auto fr = std::find(devices.begin(), devices.end(), deviceName);
-        if (fr != devices.end())
+        auto fr = std::find(_devices.begin(), _devices.end(), deviceName);
+        if (fr != _devices.end())
         {
-            return fr - devices.begin();
+            return fr - _devices.begin();
         }
         return std::numeric_limits<size_t>().max();
     }
 
-    // 0x00404E53
     void initialiseDSound()
     {
-        if (_devices.empty())
-        {
-            _devices = getDevices();
-        }
-        std::string deviceName{};
         const auto& cfg = Config::get();
-        if (!cfg.audio.device.empty())
-        {
-            if (std::find(std::begin(_devices), std::end(_devices), cfg.audio.device) != std::end(_devices))
-            {
-                deviceName = cfg.audio.device;
-            }
-        }
+        openDevice(cfg.audio.device);
+        initialize();
 
-        _device.open(deviceName);
-        _channels.clear();
-        for (auto i = 0; i < 4; ++i)
-        {
-            const auto sourceId = _sourceManager.allocate();
-            _channels.push_back(Channel(sourceId));
-        }
-        _vehicleChannels.clear();
-        for (auto i = 0; i < 10; ++i)
-        {
-            const auto sourceId = _sourceManager.allocate();
-            _vehicleChannels.push_back(Channel(sourceId));
-        }
+        setChannelVolume(ChannelId::master, percentToDb(cfg.audio.masterVolume));
+        setChannelVolume(ChannelId::music, percentToDb(cfg.audio.musicVolume));
+        setChannelVolume(ChannelId::effects, percentToDb(cfg.audio.effectsVolume));
+        setChannelVolume(ChannelId::vehicles, percentToDb(cfg.audio.vehiclesVolume));
+        setChannelVolume(ChannelId::ui, percentToDb(cfg.audio.uiVolume));
+        setChannelVolume(ChannelId::ambient, percentToDb(cfg.audio.ambientVolume));
 
         auto css1path = Environment::getPath(Environment::PathId::css1);
         _samples = loadSoundsFromCSS(css1path);
-        _audioIsInitialised = true;
     }
 
-    // 0x00404E58
     void disposeDSound()
     {
-        disposeChannels();
+        stopVehicleNoise();
+        stopAmbientNoise();
+        stopMusic();
         disposeSamples();
-        _sourceManager.dispose();
-        _bufferManager.dispose();
-        _device.close();
-        _audioIsInitialised = false;
+        shutdown();
     }
 
-    // 0x00489BA1
     void close()
     {
-        if (_audioIsInitialised)
-        {
-            stopAmbientNoise();
-            stopVehicleNoise();
-            stopMusic();
-            for (auto& channel : _soundFX)
-            {
-                channel.stop();
-            }
-        }
+        stopAll();
     }
 
 #ifdef __HAS_DEFAULT_DEVICE__
@@ -253,7 +259,7 @@ namespace OpenLoco::Audio
             _devices.push_back(getDefaultDeviceName());
         }
 #endif
-        auto newDevices = _device.getAvailableDeviceNames();
+        auto newDevices = getAvailableDevices();
         for (auto& device : newDevices)
         {
 #ifdef __HAS_DEFAULT_DEVICE__
@@ -274,15 +280,9 @@ namespace OpenLoco::Audio
 #ifdef __HAS_DEFAULT_DEVICE__
             return getDefaultDeviceName();
 #else
-            const auto& devices = _devices;
-            if (devices.empty())
+            if (!_devices.empty())
             {
-                getDevices();
-            }
-
-            if (!devices.empty())
-            {
-                return devices[0].c_str();
+                return _devices[0].c_str();
             }
 #endif
         }
@@ -317,7 +317,6 @@ namespace OpenLoco::Audio
         }
     }
 
-    // 0x00489C0A
     void toggleSound()
     {
         _audioIsEnabled = !_audioIsEnabled;
@@ -332,28 +331,18 @@ namespace OpenLoco::Audio
         Config::write();
     }
 
-    // 0x00489C34
     void pauseSound()
     {
-        if (_audioIsPaused)
-        {
-            return;
-        }
-
-        _audioIsPaused = true;
         stopVehicleNoise();
         stopAmbientNoise();
-        // Do not stop title screen music
         if (!SceneManager::isTitleMode())
         {
             pauseMusic();
         }
     }
 
-    // 0x00489C58
     void unpauseSound()
     {
-        _audioIsPaused = false;
         unpauseMusic();
     }
 
@@ -391,8 +380,6 @@ namespace OpenLoco::Audio
         return nullptr;
     }
 
-    // 0x004FEAB8
-    // Sound volume levels indexed by SoundId
     static constexpr std::array<int32_t, 32> kSoundVolumeTable = { {
         // clang-format off
            0,    0,    0,    0,    0, -400,    0,    0,
@@ -439,26 +426,14 @@ namespace OpenLoco::Audio
         return volume;
     }
 
-    void playSound(SoundId id, const World::Pos3& loc)
+    void playSound(SoundId id, ChannelId channel, const World::Pos3& loc)
     {
-        playSound(id, loc, kPlayAtLocation);
+        playSound(id, channel, loc, kPlayAtLocation);
     }
 
-    void playSound(SoundId id, int32_t pan)
+    void playSound(SoundId id, ChannelId channel, int32_t pan)
     {
-        playSound(id, {}, pan);
-    }
-
-    static VehicleChannel* getFreeVehicleChannel()
-    {
-        for (auto& vc : _vehicleChannels)
-        {
-            if (vc.isFree())
-            {
-                return &vc;
-            }
-        }
-        return nullptr;
+        playSound(id, channel, {}, pan);
     }
 
     bool shouldSoundLoop(SoundId id)
@@ -472,33 +447,17 @@ namespace OpenLoco::Audio
         return obj->shouldLoop != 0;
     }
 
-    // 0x0048A4BF
-    static void playSound(EntityId id, Vehicles::VehicleSound& soundParams)
+    void playSound(SoundId id, ChannelId channel, const World::Pos3& loc, int32_t volume, int32_t frequency)
     {
-        if ((soundParams.soundFlags & Vehicles::SoundFlags::flag0) != Vehicles::SoundFlags::none)
-        {
-            Logging::verbose("playSound(vehicle #{})", enumValue(id));
-            auto vc = getFreeVehicleChannel();
-            if (vc != nullptr)
-            {
-                vc->begin(id);
-            }
-        }
+        playSound(id, channel, loc, volume, kPlayAtLocation, frequency);
     }
 
-    // 0x00489F1B
-    void playSound(SoundId id, const World::Pos3& loc, int32_t volume, int32_t frequency)
+    void playSound(SoundId id, ChannelId channel, const World::Pos3& loc, int32_t pan)
     {
-        playSound(id, loc, volume, kPlayAtLocation, frequency);
+        playSound(id, channel, loc, 0, pan, 22050);
     }
 
-    // 0x00489CB5
-    void playSound(SoundId id, const World::Pos3& loc, int32_t pan)
-    {
-        playSound(id, loc, 0, pan, 22050);
-    }
-
-    constexpr int32_t kVpSizeMin = 64; // Note check if defined in viewport.hpp
+    constexpr int32_t kVpSizeMin = 64;
 
     int32_t calculatePan(const coord_t coord, const int32_t screenSize)
     {
@@ -506,49 +465,57 @@ namespace OpenLoco::Audio
         return (relativePosition - (1 << 15)) / 16;
     }
 
-    // 0x00489CB5 / 0x00489F1B
-    // pan is in UI pixels or known constant
-    void playSound(SoundId id, const World::Pos3& loc, int32_t volume, int32_t pan, int32_t frequency)
+    void playSound(SoundId id, ChannelId channel, const World::Pos3& loc, int32_t volume, int32_t pan, int32_t frequency)
     {
-        if (_audioIsEnabled)
+        if (!_audioIsEnabled)
         {
-            volume += getVolumeForSoundId(id);
-            if (pan == kPlayAtLocation)
-            {
-                auto vpos = World::gameToScreen(loc, WindowManager::getCurrentRotation());
-                auto viewport = findBestViewportForSound(vpos);
-                if (viewport == nullptr)
-                {
-                    return;
-                }
+            return;
+        }
 
-                volume += calculateVolumeFromViewport(id, loc, *viewport);
-                pan = viewport->viewportToScreen(vpos).x;
-                if (volume < -10000)
-                {
-                    return;
-                }
-            }
-            else if (pan == kPlayAtCentre)
+        volume += getVolumeForSoundId(id);
+        if (pan == kPlayAtLocation)
+        {
+            auto vpos = World::gameToScreen(loc, WindowManager::getCurrentRotation());
+            auto viewport = findBestViewportForSound(vpos);
+            if (viewport == nullptr)
             {
-                pan = 0;
+                return;
             }
 
-            if (pan != 0)
+            volume += calculateVolumeFromViewport(id, loc, *viewport);
+            pan = viewport->viewportToScreen(vpos).x;
+            if (volume < -10000)
             {
-                pan = calculatePan(pan, Ui::width());
+                return;
             }
+        }
+        else if (pan == kPlayAtCentre)
+        {
+            pan = 0;
+        }
 
-            mixSound(id, 0, volume, pan, frequency);
+        if (pan != 0)
+        {
+            pan = calculatePan(pan, Ui::width());
+        }
+
+        auto buffer = getSoundBuffer(id);
+        if (buffer)
+        {
+            AudioAttributes attribs{};
+            attribs.volume = volume;
+            attribs.pan = pan;
+            attribs.frequency = frequency;
+            attribs.loop = false;
+            auto handle = create(*buffer, channel, attribs);
+            Audio::play(handle);
         }
     }
 
-    std::optional<uint32_t> getSoundSample(SoundId id)
+    std::optional<BufferId> getSoundBuffer(SoundId id)
     {
         if (isObjectSoundId(id))
         {
-            // TODO this is not getting deallocated when sound objects unloaded
-            // TODO use a LRU queue for object samples
             auto sr = _objectSamples.find((uint16_t)id);
             if (sr == _objectSamples.end())
             {
@@ -574,566 +541,30 @@ namespace OpenLoco::Audio
         return std::nullopt;
     }
 
-    static void mixSound(SoundId id, bool loop, int32_t volume, int32_t pan, int32_t freq)
+    AudioHandle play(SoundId id, ChannelId channel, const AudioAttributes& attribs)
     {
-        Logging::verbose("mixSound({}, {}, {}, {}, {})", enumValue(id), loop ? "true" : "false", volume, pan, freq);
-        auto sample = getSoundSample(id);
-        if (sample)
+        auto buffer = getSoundBuffer(id);
+        if (!buffer)
         {
-            auto freeChannel = std::find_if(std::begin(_soundFX), std::end(_soundFX), [](auto& channel) { return !channel.isPlaying(); });
-            Channel* channel = nullptr;
-            if (freeChannel == std::end(_soundFX))
-            {
-                _soundFX.push_back(Channel(_sourceManager.allocate()));
-                channel = &_soundFX.back();
-            }
-            else
-            {
-                channel = &*freeChannel;
-            }
-            channel->load(*sample);
-            channel->setVolume(volume);
-            channel->setFrequency(freq);
-            channel->setPan(pan);
-            channel->play(loop);
+            return AudioHandle::null;
         }
+        auto handle = create(*buffer, channel, attribs);
+        Audio::play(handle);
+        return handle;
     }
 
-    // 0x0048A18C
-    void updateSounds()
+    void update()
     {
-        if (_soundFX.empty())
-        {
-            return;
-        }
-        for (auto& channel : _soundFX)
-        {
-            if (!channel.isPlaying())
-            {
-                channel.stop(); // This forces deallocation of buffer
-            }
-        }
-    }
-
-    static std::optional<uint32_t> loadMusicSample(PathId asset)
-    {
-        auto res = _musicSamples.find(asset);
-        if (res != std::end(_musicSamples))
-        {
-            return res->second;
-        }
-
-        const auto path = Environment::getPath(asset);
-        try
-        {
-            FileStream fs(path, StreamMode::read);
-
-            const auto sig = fs.readValue<uint32_t>();
-            if (sig != 0x46464952) // RIFF
-            {
-                throw Exception::RuntimeError("Invalid signature.");
-            }
-
-            fs.readValue<uint32_t>(); // size
-
-            const auto riffType = fs.readValue<uint32_t>();
-            if (riffType != 0x45564157) // WAVE
-            {
-                throw Exception::RuntimeError("Invalid format.");
-            }
-
-            const auto fmtMarker = fs.readValue<uint32_t>();
-            // This can be 'fmt\0' or 'fmt '
-            if (fmtMarker != 0x20746d66 && fmtMarker != 0x00746d66)
-            {
-                throw Exception::RuntimeError("Invalid format marker.");
-            }
-
-            fs.readValue<uint32_t>(); // header size
-
-            const auto typeFormat = fs.readValue<uint16_t>();
-            if (typeFormat != 1)
-            {
-                throw Exception::RuntimeError("Invalid format type, expected PCM.");
-            }
-
-            const auto channels = fs.readValue<uint16_t>();
-            const auto sampleRate = fs.readValue<uint32_t>();
-
-            fs.readValue<uint32_t>();
-            fs.readValue<uint16_t>();
-
-            const auto bits = fs.readValue<uint16_t>();
-
-            const auto dataMarker = fs.readValue<uint32_t>();
-            if (dataMarker != 0x61746164) // data
-            {
-                throw Exception::RuntimeError("Invalid data marker.");
-            }
-
-            const auto pcmLen = fs.readValue<uint32_t>();
-
-            std::vector<std::uint8_t> pcm(pcmLen);
-            fs.read(pcm.data(), pcmLen);
-
-            const auto id = _bufferManager.allocate(std::span<const uint8_t>(pcm.data(), pcmLen), sampleRate, channels == 2, bits);
-            _musicSamples[asset] = id;
-
-            return id;
-        }
-        catch (const std::exception& ex)
-        {
-            Logging::error("Unable to load music sample '{}': {}", path, ex.what());
-            return std::nullopt;
-        }
-    }
-
-    // 0x0048A268
-    static void triggerVehicleSoundIfInView(Vehicles::VehicleBase& v, Vehicles::VehicleSound& soundParams)
-    {
-        if (soundParams.drivingSoundId == SoundObjectId::null)
-        {
-            return;
-        }
-
-        // TODO: left or top?
-        if (v.spriteLeft == Location::null)
-        {
-            return;
-        }
-
-        if (_numActiveVehicleSounds >= kMaxVehicleSounds)
-        {
-            return;
-        }
-
-        auto spritePosition = viewport_pos(v.spriteLeft, v.spriteTop);
-
-        // First, check if vehicle appears in the main viewport
-        auto main = WindowManager::getMainWindow();
-        if (main != nullptr && main->viewports[0] != nullptr)
-        {
-            auto viewport = main->viewports[0];
-            ViewportRect extendedViewport = {};
-
-            auto quarterWidth = viewport->viewWidth / 4;
-            auto quarterHeight = viewport->viewHeight / 4;
-            extendedViewport.left = viewport->viewX - quarterWidth;
-            extendedViewport.top = viewport->viewY - quarterHeight;
-            extendedViewport.right = viewport->viewX + viewport->viewWidth + quarterWidth;
-            extendedViewport.bottom = viewport->viewY + viewport->viewHeight + quarterHeight;
-
-            if (extendedViewport.contains(spritePosition))
-            {
-                // jump + return
-                _numActiveVehicleSounds += 1;
-                soundParams.soundFlags |= Vehicles::SoundFlags::flag0;
-                soundParams.soundWindowType = main->type;
-                soundParams.soundWindowNumber = main->number;
-                return;
-            }
-        }
-
-        if (WindowManager::count() == 0)
-        {
-            return;
-        }
-
-        // Check if vehicle appears in any other (windowed) viewport
-        for (auto i = (int32_t)WindowManager::count() - 1; i >= 0; i--)
-        {
-            auto w = WindowManager::get(i);
-
-            if (w->type == WindowType::main)
-            {
-                continue;
-            }
-
-            if (w->type == WindowType::news)
-            {
-                continue;
-            }
-
-            auto viewport = w->viewports[0];
-            if (viewport == nullptr)
-            {
-                continue;
-            }
-
-            if (viewport->contains(spritePosition))
-            {
-                _numActiveVehicleSounds += 1;
-                soundParams.soundFlags |= Vehicles::SoundFlags::flag0;
-                soundParams.soundWindowType = w->type;
-                soundParams.soundWindowNumber = w->number;
-                return;
-            }
-        }
-    }
-
-    // 0x004FEB58
-    static void processVehicleForSound(Vehicles::VehicleBase& v, Vehicles::VehicleSound& soundParams, int32_t step)
-    {
-        switch (step)
-        {
-            case 0:
-                // 0x048A262
-                soundParams.soundFlags &= ~Vehicles::SoundFlags::flag0;
-                break;
-            case 1:
-                // 0x048A268
-                if ((soundParams.soundFlags & Vehicles::SoundFlags::flag1) == Vehicles::SoundFlags::none)
-                {
-                    triggerVehicleSoundIfInView(v, soundParams);
-                }
-                break;
-            case 2:
-                // 0x048A395
-                if ((soundParams.soundFlags & Vehicles::SoundFlags::flag1) != Vehicles::SoundFlags::none)
-                {
-                    triggerVehicleSoundIfInView(v, soundParams);
-                }
-                break;
-            case 3:
-                playSound(v.id, soundParams);
-                break;
-        }
-    }
-
-    // 0x0048A1FA
-    static void processVehicleSounds(int32_t step)
-    {
-        if (step == 0)
-        {
-            _numActiveVehicleSounds = 0;
-        }
-
-        for (auto* v : VehicleManager::VehicleList())
-        {
-            Vehicles::Vehicle train(*v);
-            processVehicleForSound(*train.veh2, train.veh2->sound, step);
-            processVehicleForSound(*train.tail, train.tail->sound, step);
-        }
-    }
-
-    // 0x48A73B
-    void updateVehicleNoise()
-    {
-        if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
-        {
-            if (!_audioIsPaused && _audioIsEnabled)
-            {
-                processVehicleSounds(0);
-                processVehicleSounds(1);
-                processVehicleSounds(2);
-                for (auto& vc : _vehicleChannels)
-                {
-                    vc.update();
-                }
-                processVehicleSounds(3);
-            }
-        }
-    }
-
-    // 0x00489C6A
-    void stopVehicleNoise()
-    {
-        for (auto& vc : _vehicleChannels)
-        {
-            vc.stop();
-        }
-    }
-
-    void stopVehicleNoise(EntityId head)
-    {
-        Vehicles::Vehicle train(head);
-        for (auto& vc : _vehicleChannels)
-        {
-            if (vc.getId() == train.veh2->id
-                || vc.getId() == train.tail->id)
-            {
-                vc.stop();
-            }
-        }
-    }
-
-    static constexpr auto kAmbientMinVolume = -3500;
-    static constexpr auto kAmbientVolumeChangePerTick = 100;
-    static constexpr auto kAmbientNumWaterTilesForOcean = 60;
-    static constexpr auto kAmbientNumTreeTilesForForest = 30;
-    static constexpr auto kAmbientNumMountainTilesForWilderness = 60;
-
-    // 0x004FEAA6
-    static constexpr int32_t getAmbientMaxVolume(uint8_t zoom)
-    {
-        constexpr int32_t _volumes[]{ -1200, -2000, -3000, -3000 };
-        return _volumes[zoom];
-    }
-
-    // 0x0048ACFD
-    void updateAmbientNoise()
-    {
-        if (!_audioIsInitialised || _audioIsPaused || !_audioIsEnabled)
-        {
-            return;
-        }
-
-        auto* mainViewport = WindowManager::getMainViewport();
-        std::optional<PathId> newAmbientSound = std::nullopt;
-        int32_t maxVolume = kAmbientMinVolume;
-
-        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && mainViewport != nullptr)
-        {
-            maxVolume = getAmbientMaxVolume(mainViewport->zoom);
-            const auto centre = mainViewport->getCentreMapPosition();
-            const auto topLeft = World::toTileSpace(centre) - World::TilePos2{ 5, 5 };
-            const auto bottomRight = topLeft + World::TilePos2{ 11, 11 };
-            const auto searchRange = World::getClampedRange(topLeft, bottomRight);
-
-            size_t waterCount = 0;      // bl
-            size_t wildernessCount = 0; // bh
-            size_t treeCount = 0;       // cx
-            for (auto& tilePos : searchRange)
-            {
-                const auto tile = World::TileManager::get(tilePos);
-                bool passedSurface = false;
-                for (const auto& el : tile)
-                {
-                    auto* elSurface = el.as<World::SurfaceElement>();
-                    if (elSurface != nullptr)
-                    {
-                        passedSurface = true;
-                        if (elSurface->water() != 0)
-                        {
-                            waterCount++;
-                            break;
-                        }
-                        else if (elSurface->snowCoverage() && elSurface->isLast())
-                        {
-                            wildernessCount++;
-                            break;
-                        }
-                        else if (elSurface->baseZ() >= 64 && elSurface->isLast())
-                        {
-                            wildernessCount++;
-                            break;
-                        }
-                        continue;
-                    }
-                    auto* elTree = el.as<World::TreeElement>();
-                    if (passedSurface && elTree != nullptr)
-                    {
-                        const auto* treeObj = ObjectManager::get<TreeObject>(elTree->treeObjectId());
-                        if (!treeObj->hasFlags(TreeObjectFlags::droughtResistant))
-                        {
-                            treeCount++;
-                        }
-                    }
-                }
-            }
-
-            if (waterCount > kAmbientNumWaterTilesForOcean)
-            {
-                newAmbientSound = PathId::css3;
-            }
-            else if (wildernessCount > kAmbientNumMountainTilesForWilderness)
-            {
-                newAmbientSound = PathId::css2;
-            }
-            else if (treeCount > kAmbientNumTreeTilesForForest)
-            {
-                newAmbientSound = PathId::css4;
-            }
-        }
-        auto* channel = getChannel(ChannelId::ambient);
-        if (channel == nullptr)
-        {
-            return;
-        }
-
-        // TODO: Consider changing this so that we ask if the channel is playing a certain
-        // buffer instead of storing what buffer is playing indirectly through the global
-        // variable _chosenAmbientNoisePathId
-
-        // In these situations quieten until channel stopped
-        if (!newAmbientSound.has_value() || (channel->isPlaying() && _chosenAmbientNoisePathId != *newAmbientSound))
-        {
-            const auto newVolume = channel->getAttributes().volume - kAmbientVolumeChangePerTick;
-            if (newVolume < kAmbientMinVolume)
-            {
-                _chosenAmbientNoisePathId = std::nullopt;
-                channel->stop();
-            }
-            else
-            {
-                channel->setVolume(newVolume);
-            }
-            return;
-        }
-
-        if (_chosenAmbientNoisePathId != *newAmbientSound)
-        {
-            auto musicBuffer = loadMusicSample(*newAmbientSound);
-            if (musicBuffer.has_value())
-            {
-                channel->load(*musicBuffer);
-                channel->setVolume(kAmbientMinVolume);
-                channel->play(true);
-                _chosenAmbientNoisePathId = *newAmbientSound;
-            }
-        }
-        else
-        {
-            auto newVolume = std::min(channel->getAttributes().volume + kAmbientVolumeChangePerTick, maxVolume);
-            channel->setVolume(newVolume);
-        }
-    }
-
-    // 0x0048ABE3
-    void stopAmbientNoise()
-    {
-        auto* channel = getChannel(ChannelId::ambient);
-        if (_audioIsInitialised && channel != nullptr && channel->isPlaying())
-        {
-            channel->stop();
-        }
-    }
-
-    // 0x0048AA0C
-    void revalidateCurrentTrack()
-    {
-        const auto currentTrack = Jukebox::getCurrentTrack();
-        if (currentTrack == Jukebox::kNoSong)
-        {
-            return;
-        }
-
-        using Config::MusicPlaylistType;
-        const auto& cfg = Config::get();
-
-        bool trackStillApplies = true;
-        switch (cfg.audio.playlist)
-        {
-            case MusicPlaylistType::currentEra:
-            {
-                auto currentYear = getCurrentYear();
-                const auto& info = Jukebox::getMusicInfo(currentTrack);
-                if (currentYear < info.startYear || currentYear > info.endYear)
-                {
-                    trackStillApplies = false;
-                }
-                break;
-            }
-
-            case MusicPlaylistType::all:
-                return;
-
-            case MusicPlaylistType::custom:
-                if (!cfg.audio.customJukebox[currentTrack])
-                {
-                    trackStillApplies = false;
-                }
-                break;
-        }
-
-        if (!trackStillApplies)
-        {
-            stopMusic();
-            Jukebox::resetJukebox();
-        }
-    }
-
-    // 0x0048A78D
-    void playBackgroundMusic()
-    {
-        auto& cfg = Config::get();
-        if (cfg.audio.playJukeboxMusic == 0 || SceneManager::isTitleMode() || SceneManager::isEditorMode() || SceneManager::isPaused())
-        {
-            return;
-        }
-
-        auto* channel = getChannel(ChannelId::music);
-        if (channel == nullptr)
-        {
-            return;
-        }
-
-        if (!channel->isPlaying())
-        {
-            // Set the next song to play and load its info
-            const auto& mi = Jukebox::consumeTrack();
-
-            playMusic(mi.pathId, cfg.audio.mainVolume, false);
-
-            WindowManager::invalidate(WindowType::options);
-        }
-    }
-
-    // 0x0048AC66
-    // previously called void playTitleScreenMusic()
-    void playMusic(PathId sample, int32_t volume, bool loop)
-    {
-        auto* channel = getChannel(ChannelId::music);
-        if (!_audioIsInitialised || _audioIsPaused || !_audioIsEnabled || channel == nullptr)
-        {
-            return;
-        }
-
-        channel->stop();
-
-        auto musicSample = loadMusicSample(sample);
-        if (channel->load(*musicSample))
-        {
-            channel->setVolume(volume);
-            channel->play(loop);
-        }
-    }
-
-    // 0x0048AAD2
-    void resetMusic()
-    {
-        stopMusic();
-        Jukebox::resetJukebox();
-    }
-
-    // 0x0048AAE8
-    // void stopBackgroundMusic()
-    // merged into Audio::stopMusic
-
-    // 0x0048AC2B
-    // previously called void stopTitleMusic()
-    void stopMusic()
-    {
-        auto* channel = getChannel(ChannelId::music);
-        if (_audioIsInitialised && channel != nullptr && (channel->isPlaying() || channel->isPaused()))
-        {
-            channel->stop();
-        }
-    }
-
-    void pauseMusic()
-    {
-        auto* channel = getChannel(ChannelId::music);
-        if (_audioIsInitialised && channel != nullptr && channel->isPlaying())
-        {
-            channel->pause();
-        }
-    }
-
-    void unpauseMusic()
-    {
-        auto* channel = getChannel(ChannelId::music);
-        if (_audioIsInitialised && channel != nullptr && channel->isPaused())
-        {
-            channel->unpause();
-        }
+        reclaimFinishedInstances();
+        updateVehicleNoise();
+        updateAmbientNoise();
     }
 
     void resetSoundObjects()
     {
-        for (auto& sample : _objectSamples)
+        for (auto& [_, buf] : _objectSamples)
         {
-            _bufferManager.deAllocate(sample.second);
+            unloadBuffer(buf);
         }
         _objectSamples.clear();
     }
@@ -1141,28 +572,5 @@ namespace OpenLoco::Audio
     bool isAudioEnabled()
     {
         return _audioIsEnabled;
-    }
-
-    // 0x0048AA67
-    void setBgmVolume(int32_t volume)
-    {
-        auto& cfg = Config::get().audio;
-        if (cfg.mainVolume == volume)
-        {
-            return;
-        }
-
-        cfg.mainVolume = volume;
-        Config::write();
-
-        auto* channel = getChannel(ChannelId::music);
-        if (channel == nullptr)
-        {
-            return;
-        }
-        if (_audioIsInitialised && Jukebox::getCurrentTrack() != Jukebox::kNoSong)
-        {
-            channel->setVolume(volume);
-        }
     }
 }

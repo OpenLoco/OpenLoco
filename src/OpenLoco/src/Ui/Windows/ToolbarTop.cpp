@@ -27,7 +27,7 @@
 #include "Ui/Screenshot.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
-#include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/ToolbarButtonWidget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleHead.h"
@@ -35,7 +35,8 @@
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <map>
+
+#include <OpenLoco/Utility/LookupTable.hpp>
 
 namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 {
@@ -53,23 +54,23 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     static constexpr auto _widgets = makeWidgets(
-        Widgets::ImageButton({ 0, 0 }, { 30, 28 }, WindowColour::primary),
-        Widgets::ImageButton({ 30, 0 }, { 30, 28 }, WindowColour::primary),
-        Widgets::ImageButton({ 60, 0 }, { 30, 28 }, WindowColour::primary),
+        Widgets::ToolbarButton({ 0, 0 }, { 30, 28 }, WindowColour::primary),
+        Widgets::ToolbarButton({ 30, 0 }, { 30, 28 }, WindowColour::primary),
+        Widgets::ToolbarButton({ 60, 0 }, { 30, 28 }, WindowColour::primary),
 
-        Widgets::ImageButton({ 104, 0 }, { 30, 28 }, WindowColour::secondary),
-        Widgets::ImageButton({ 134, 0 }, { 30, 28 }, WindowColour::secondary),
-        Widgets::ImageButton({ 164, 0 }, { 30, 28 }, WindowColour::secondary),
+        Widgets::ToolbarButton({ 104, 0 }, { 30, 28 }, WindowColour::secondary),
+        Widgets::ToolbarButton({ 134, 0 }, { 30, 28 }, WindowColour::secondary),
+        Widgets::ToolbarButton({ 164, 0 }, { 30, 28 }, WindowColour::secondary),
 
-        Widgets::ImageButton({ 267, 0 }, { 30, 28 }, WindowColour::tertiary),
-        Widgets::ImageButton({ 387, 0 }, { 30, 28 }, WindowColour::tertiary),
-        Widgets::ImageButton({ 357, 0 }, { 30, 28 }, WindowColour::tertiary),
-        Widgets::ImageButton({ 417, 0 }, { 30, 28 }, WindowColour::tertiary),
-        Widgets::ImageButton({ 417, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ToolbarButton({ 267, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ToolbarButton({ 387, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ToolbarButton({ 357, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ToolbarButton({ 417, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ToolbarButton({ 417, 0 }, { 30, 28 }, WindowColour::tertiary),
 
-        Widgets::ImageButton({ 490, 0 }, { 30, 28 }, WindowColour::quaternary),
-        Widgets::ImageButton({ 520, 0 }, { 30, 28 }, WindowColour::quaternary),
-        Widgets::ImageButton({ 460, 0 }, { 30, 28 }, WindowColour::quaternary)
+        Widgets::ToolbarButton({ 490, 0 }, { 30, 28 }, WindowColour::quaternary),
+        Widgets::ToolbarButton({ 520, 0 }, { 30, 28 }, WindowColour::quaternary),
+        Widgets::ToolbarButton({ 460, 0 }, { 30, 28 }, WindowColour::quaternary)
 
     );
 
@@ -278,8 +279,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         Dropdown::add(0, StringIds::dropdown_without_checkmark, StringIds::menu_mute);
         Dropdown::add(1, StringIds::dropdown_without_checkmark, StringIds::menu_play_music);
         Dropdown::add(2, 0);
-        Dropdown::add(3, StringIds::menu_music_options);
-        Dropdown::showBelow(window, widgetIndex, 4, 0);
+        Dropdown::add(3, StringIds::menu_open_audio_options);
+        Dropdown::add(4, StringIds::menu_open_jukebox);
+        Dropdown::showBelow(window, widgetIndex, 5, 0);
 
         if (!Audio::isAudioEnabled())
         {
@@ -320,12 +322,16 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                     Jukebox::enableMusic();
                 }
 
-                WindowManager::invalidate(WindowType::options);
+                WindowManager::invalidate(WindowType::musicSelection);
                 break;
             }
 
             case 3:
-                Options::openMusicSettings();
+                Options::openAudioSettings();
+                break;
+
+            case 4:
+                MusicJukebox::open();
                 break;
         }
     }
@@ -548,14 +554,14 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     };
 
     // clang-format off
-    static const std::map<VehicleType, VehicleTypeInterfaceParam> VehicleTypeInterfaceParameters{
+    static constexpr auto kVehicleTypeInterfaceParameters = Utility::buildLookupTable<VehicleType, VehicleTypeInterfaceParam>({
         { VehicleType::bus,      { InterfaceSkin::ImageIds::vehicle_buses_frame_0,      InterfaceSkin::ImageIds::build_vehicle_bus_frame_0,      StringIds::build_buses,    StringIds::num_buses_singular,     StringIds::num_buses_plural } },
         { VehicleType::aircraft, { InterfaceSkin::ImageIds::vehicle_aircraft_frame_0, InterfaceSkin::ImageIds::build_vehicle_aircraft_frame_0, StringIds::build_aircraft, StringIds::num_aircrafts_singular, StringIds::num_aircrafts_plural } },
         { VehicleType::ship,     { InterfaceSkin::ImageIds::vehicle_ships_frame_0,     InterfaceSkin::ImageIds::build_vehicle_ship_frame_0,     StringIds::build_ships,    StringIds::num_ships_singular,     StringIds::num_ships_plural } },
         { VehicleType::train,    { InterfaceSkin::ImageIds::vehicle_train_frame_0,    InterfaceSkin::ImageIds::build_vehicle_train_frame_0,    StringIds::build_trains,   StringIds::num_trains_singular,    StringIds::num_trains_plural } },
         { VehicleType::tram,     { InterfaceSkin::ImageIds::vehicle_trams_frame_0,     InterfaceSkin::ImageIds::build_vehicle_tram_frame_0,     StringIds::build_trams,    StringIds::num_trams_singular,     StringIds::num_trams_plural } },
         { VehicleType::truck,    { InterfaceSkin::ImageIds::vehicle_trucks_frame_0,    InterfaceSkin::ImageIds::build_vehicle_truck_frame_0,    StringIds::build_trucks,   StringIds::num_trucks_singular,    StringIds::num_trucks_plural } },
-    };
+    });
     // clang-format on
 
     // 0x0043AD1F
@@ -575,7 +581,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 continue;
             }
 
-            auto& interface_param = VehicleTypeInterfaceParameters.at(static_cast<VehicleType>(vehicleType));
+            auto& interface_param = kVehicleTypeInterfaceParameters.at(static_cast<VehicleType>(vehicleType));
 
             uint32_t vehicle_image = Gfx::recolour(interface_param.buildImage, companyColour);
 
@@ -643,7 +649,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 continue;
             }
 
-            auto& interfaceParam = VehicleTypeInterfaceParameters.at(static_cast<VehicleType>(vehicleType));
+            auto& interfaceParam = kVehicleTypeInterfaceParameters.at(static_cast<VehicleType>(vehicleType));
 
             uint32_t vehicleImage = Gfx::recolour(interfaceParam.image, companyColour);
             uint16_t vehicle_count = vehicle_counts[vehicleType];
@@ -923,22 +929,19 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             window.widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_active, window.getColour(WindowColour::primary).c());
         }
 
-        if (Config::get().cheatsMenuEnabled)
-        {
-            window.widgets[Widx::cheats_menu].hidden = false;
-            auto& baseWidget = window.widgets[Widx::cheats_menu];
-            window.widgets[Common::Widx::zoom_menu].left = baseWidget.left + 14 + (baseWidget.width() * 1);
-            window.widgets[Common::Widx::rotate_menu].left = baseWidget.left + 14 + (baseWidget.width() * 2);
-            window.widgets[Common::Widx::view_menu].left = baseWidget.left + 14 + (baseWidget.width() * 3);
-        }
-        else
-        {
-            window.widgets[Widx::cheats_menu].hidden = true;
-            auto& baseWidget = window.widgets[Common::Widx::audio_menu];
-            window.widgets[Common::Widx::zoom_menu].left = baseWidget.left + 14 + (baseWidget.width() * 1);
-            window.widgets[Common::Widx::rotate_menu].left = baseWidget.left + 14 + (baseWidget.width() * 2);
-            window.widgets[Common::Widx::view_menu].left = baseWidget.left + 14 + (baseWidget.width() * 3);
-        }
+        const bool cheatsOn = Config::get().cheatsMenuEnabled;
+        window.widgets[Widx::cheats_menu].hidden = !cheatsOn;
+
+        const auto& refWidget = window.widgets[cheatsOn ? enumValue(Widx::cheats_menu) : enumValue(Common::Widx::audio_menu)];
+        const auto offsetWidget = [&window, refWidget](uint8_t widgetIndex, uint8_t index) {
+            auto& widget = window.widgets[widgetIndex];
+            widget.left = refWidget.left + 14 + (refWidget.width() * index);
+            widget.right = widget.left + refWidget.width() - 1;
+        };
+
+        offsetWidget(Common::Widx::zoom_menu, 1);
+        offsetWidget(Common::Widx::rotate_menu, 2);
+        offsetWidget(Common::Widx::view_menu, 3);
 
         if (_lastPortOption == 0
             && getGameState().lastAirport == 0xFF

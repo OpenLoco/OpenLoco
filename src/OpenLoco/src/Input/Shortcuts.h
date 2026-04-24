@@ -43,6 +43,7 @@ namespace OpenLoco::Input
         showFinances,
         showAnnouncementsList,
         showOptionsWindow,
+        showJukeboxWindow,
         screenshot,
         toggleLastAnnouncement,
         sendMessage,

@@ -358,7 +358,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     uint16_t viewportHeight = 62;
                     Ui::Size viewportSize = { viewportWidth, viewportHeight };
 
-                    if (mtd.hasFlag(MessageTypeFlags::unk1))
+                    if (mtd.hasFlag(MessageTypeFlags::isGeneralNews))
                     {
                         x = self.widgets[Common::widx::viewport1].left + self.x;
                         y = self.widgets[Common::widx::viewport1].top + self.y;
@@ -445,7 +445,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     uint16_t viewportHeight = 62;
                     Ui::Size viewportSize = { viewportWidth, viewportHeight };
 
-                    if (mtd.hasFlag(MessageTypeFlags::unk1))
+                    if (mtd.hasFlag(MessageTypeFlags::isGeneralNews))
                     {
                         x = self.widgets[Common::widx::viewport2].left + self.x;
                         y = self.widgets[Common::widx::viewport2].top + self.y;
@@ -630,7 +630,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
             const auto& mtd = getMessageTypeDescriptor(news->type);
 
-            if (!mtd.hasFlag(MessageTypeFlags::unk5))
+            if (!mtd.hasFlag(MessageTypeFlags::smallerFont))
             {
                 tr.setCurrentFont(Gfx::Font::large);
             }
@@ -664,7 +664,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             const auto& mtd = getMessageTypeDescriptor(news->type);
             if (mtd.hasFlag(MessageTypeFlags::hasFirstItem))
             {
-                if (mtd.hasFlag(MessageTypeFlags::unk1))
+                if (mtd.hasFlag(MessageTypeFlags::isGeneralNews))
                 {
                     if (news->itemSubjects[0] != 0xFFFF)
                     {
@@ -681,7 +681,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             if (mtd.hasFlag(MessageTypeFlags::hasSecondItem))
             {
-                if (mtd.hasFlag(MessageTypeFlags::unk1))
+                if (mtd.hasFlag(MessageTypeFlags::isGeneralNews))
                 {
                     if (news->itemSubjects[1] != 0xFFFF)
                     {
@@ -710,7 +710,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
             const auto& mtd = getMessageTypeDescriptor(news->type);
 
-            if (!mtd.hasFlag(MessageTypeFlags::unk5))
+            if (!mtd.hasFlag(MessageTypeFlags::smallerFont))
             {
                 tr.setCurrentFont(Gfx::Font::large);
             }
@@ -776,7 +776,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             const auto& mtd = getMessageTypeDescriptor(news->type);
             if (mtd.hasFlag(MessageTypeFlags::hasFirstItem))
             {
-                if (mtd.hasFlag(MessageTypeFlags::unk1))
+                if (mtd.hasFlag(MessageTypeFlags::isGeneralNews))
                 {
                     if (news->itemSubjects[0] != 0xFFFF)
                     {
@@ -792,7 +792,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             if (mtd.hasFlag(MessageTypeFlags::hasSecondItem))
             {
-                if (mtd.hasFlag(MessageTypeFlags::unk1))
+                if (mtd.hasFlag(MessageTypeFlags::isGeneralNews))
                 {
                     if (news->itemSubjects[1] != 0xFFFF)
                     {
@@ -813,7 +813,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             auto news = MessageManager::get(MessageManager::getActiveIndex());
             const auto& mtd = getMessageTypeDescriptor(news->type);
 
-            if (mtd.hasFlag(MessageTypeFlags::unk1))
+            if (mtd.hasFlag(MessageTypeFlags::isGeneralNews))
             {
                 if (calcDate(news->date).year >= 1945)
                 {

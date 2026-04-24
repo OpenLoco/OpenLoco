@@ -1,5 +1,6 @@
 #include "CloneVehicle.h"
 #include "CreateVehicle.h"
+#include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Ui/WindowManager.h"
@@ -152,6 +153,10 @@ namespace OpenLoco::GameCommands
             args.cargoType = cargoType;
             doCommand(args, Flags::apply);
         }
+
+        // Finally, set the expenditure type
+        // Note we explicitly set this *after* running all the sub commands!
+        setExpenditureType(ExpenditureType::VehiclePurchases);
 
         return totalCost;
     }

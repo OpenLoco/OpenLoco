@@ -42,9 +42,10 @@ namespace OpenLoco
     // 0x0044063E
     void MoneyEffect::update()
     {
+        invalidateSprite();
+
         if (getSubType() == EffectType::windowCurrency)
         {
-            invalidateSprite();
             if (wiggle == 0)
             {
                 wiggle = 21;
@@ -66,7 +67,6 @@ namespace OpenLoco
         }
         else
         {
-            invalidateSprite();
             if (wiggle == 22)
             {
                 wiggle = 0;
@@ -112,10 +112,10 @@ namespace OpenLoco
             m->spriteHeightPositive = 30;
             m->baseType = EntityBaseType::effect;
             m->var_2E = company;
-            m->moveTo(loc);
             m->setSubType(EffectType::windowCurrency);
             m->frame = 0;
             m->numMovements = 0;
+            m->moveTo(loc);
 
             StringId strFormat = (amount < 0) ? StringIds::format_currency_expense_red_negative : StringIds::format_currency_income_green;
             char buffer[255] = {};

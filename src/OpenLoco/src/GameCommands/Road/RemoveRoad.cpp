@@ -25,7 +25,7 @@ namespace OpenLoco::GameCommands
     static void playRoadRemovalSound(const World::Pos3 pos)
     {
         const auto frequency = gPrng2().randNext(17955, 26146);
-        Audio::playSound(Audio::SoundId::demolish, pos, 0, frequency);
+        Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, pos, 0, frequency);
     }
 
     struct OverlapRoads
@@ -143,7 +143,7 @@ namespace OpenLoco::GameCommands
         }
 
         // Check mod removal costs
-        if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+        if (!roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
         {
             for (auto i = 0U; i < 2; i++)
             {
@@ -172,7 +172,9 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        if (!sub_431E6A(roadEl->owner(), reinterpret_cast<const World::TileElement*>(roadEl)))
+        const CompanyId roadOwner = roadEl->owner();
+
+        if (!sub_431E6A(roadOwner, reinterpret_cast<const World::TileElement*>(roadEl)))
         {
             return FAILURE;
         }
@@ -291,8 +293,8 @@ namespace OpenLoco::GameCommands
         // 0x00477A10
         totalRemovalCost += pieceRemovalCost;
 
-        // Seems to have been forgotten in vanilla
-        if (removeRoadBridge)
+        // Add on bridge refund if applicable (Absent from vanilla)
+        if (removeRoadBridge && roadOwner != CompanyId::neutral)
         {
             const auto* bridgeObj = ObjectManager::get<BridgeObject>(roadBridgeId);
             const auto bridgeBaseCost = Economy::getInflationAdjustedCost(bridgeObj->sellCostFactor, bridgeObj->costIndex, 10);

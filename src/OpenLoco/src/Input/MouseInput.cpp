@@ -29,7 +29,7 @@
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 
-#include <map>
+#include <OpenLoco/Utility/LookupTable.hpp>
 #include <queue>
 
 using namespace OpenLoco::Ui;
@@ -101,7 +101,7 @@ namespace OpenLoco::Input
 
     static int32_t _cursorWheel;
 
-    static const std::map<Ui::ScrollPart, StringId> kScrollWidgetTooltips = {
+    static constexpr auto kScrollWidgetTooltips = Utility::buildLookupTable<Ui::ScrollPart, StringId>({
         { Ui::ScrollPart::hscrollbarButtonLeft, StringIds::tooltip_scroll_left },
         { Ui::ScrollPart::hscrollbarButtonRight, StringIds::tooltip_scroll_right },
         { Ui::ScrollPart::hscrollbarTrackLeft, StringIds::tooltip_scroll_left_fast },
@@ -112,7 +112,7 @@ namespace OpenLoco::Input
         { Ui::ScrollPart::vscrollbarTrackTop, StringIds::tooltip_scroll_up_fast },
         { Ui::ScrollPart::vscrollbarTrackBottom, StringIds::tooltip_scroll_down_fast },
         { Ui::ScrollPart::vscrollbarThumb, StringIds::tooltip_scroll_up_down },
-    };
+    });
 
     constexpr int32_t kDropdownItemUndefined = -1;
 
@@ -207,11 +207,6 @@ namespace OpenLoco::Input
 
     bool isPressed(Ui::WindowType type, Ui::WindowNumber_t number)
     {
-        if (state() != State::widgetPressed)
-        {
-            return false;
-        }
-
         if (_pressedWindowType != type)
         {
             return false;
@@ -354,7 +349,7 @@ namespace OpenLoco::Input
                     if (button == MouseButton::leftPressed)
                     {
                         WindowManager::bringToFront(modalType);
-                        Audio::playSound(Audio::SoundId::error, x);
+                        Audio::playSound(Audio::SoundId::error, Audio::ChannelId::ui, x);
                         return;
                     }
 
@@ -724,12 +719,12 @@ namespace OpenLoco::Input
             return;
         }
 
-        bool doDefault = false;
+        bool notMaximised = false;
         int dx = 0, dy = 0;
         switch (button)
         {
             case MouseButton::released:
-                doDefault = true;
+                notMaximised = true;
                 break;
 
             case MouseButton::leftReleased:
@@ -739,26 +734,29 @@ namespace OpenLoco::Input
                 Ui::ToolTip::setWindowType(_dragWindowType);
                 Ui::ToolTip::setWindowNumber(_dragWindowNumber);
 
-                if (w->hasFlags(Ui::WindowFlags::finishedResize))
+                // Do not toggle maximised if the window has been resized.
+                if (w->hasFlags(Ui::WindowFlags::hasBeenResized))
                 {
-                    doDefault = true;
+                    notMaximised = true;
                     break;
                 }
 
-                if (w->hasFlags(Ui::WindowFlags::beingResized))
+                // Un-maximise window; restore previous window size.
+                if (w->hasFlags(Ui::WindowFlags::maximised))
                 {
                     x = w->var_88A - w->width + _dragLast.x;
                     y = w->var_88C - w->height + _dragLast.y;
-                    w->flags &= ~Ui::WindowFlags::beingResized;
-                    doDefault = true;
+                    w->flags &= ~Ui::WindowFlags::maximised;
+                    notMaximised = true;
                     break;
                 }
 
+                // Maximise window. Store previous window size.
                 w->var_88A = w->width;
                 w->var_88C = w->height;
                 x = _dragLast.x - w->x - w->width + Ui::width();
                 y = _dragLast.y - w->y - w->height + Ui::height() - 27;
-                w->flags |= Ui::WindowFlags::beingResized;
+                w->flags |= Ui::WindowFlags::maximised;
                 if (y >= Ui::height() - 2)
                 {
                     _dragLast.x = x;
@@ -782,7 +780,7 @@ namespace OpenLoco::Input
                 return;
         }
 
-        if (doDefault)
+        if (notMaximised)
         {
             if (y >= Ui::height() - 2)
             {
@@ -801,14 +799,14 @@ namespace OpenLoco::Input
                 return;
             }
 
-            w->flags &= ~Ui::WindowFlags::beingResized;
+            w->flags &= ~Ui::WindowFlags::maximised;
         }
 
         w->invalidate();
 
         w->width = std::clamp(w->width + dx, w->minWidth, w->maxWidth);
         w->height = std::clamp(w->height + dy, w->minHeight, w->maxHeight);
-        w->flags |= Ui::WindowFlags::finishedResize;
+        w->flags |= Ui::WindowFlags::hasBeenResized;
         w->callOnResize();
         w->callPrepareDraw();
 
@@ -877,7 +875,7 @@ namespace OpenLoco::Input
                         {
                             auto pressedWidget = &dragWindow->widgets[_pressedWidgetIndex];
 
-                            Audio::playSound(Audio::SoundId::clickPress, dragWindow->x + pressedWidget->midX());
+                            Audio::playSound(Audio::SoundId::clickPress, Audio::ChannelId::ui, dragWindow->x + pressedWidget->midX());
                             dragWindow->callOnMouseUp(_pressedWidgetIndex, pressedWidget->id);
                         }
                     }
@@ -1004,7 +1002,7 @@ namespace OpenLoco::Input
                     if (window != nullptr && widgetIndex != kWidgetIndexNull)
                     {
                         auto buttonWidget = &window->widgets[widgetIndex];
-                        Audio::playSound(Audio::SoundId::clickUp, window->x + buttonWidget->midX());
+                        Audio::playSound(Audio::SoundId::clickUp, Audio::ChannelId::ui, window->x + buttonWidget->midX());
                     }
                 }
                 return;
@@ -1077,7 +1075,7 @@ namespace OpenLoco::Input
 
             if (window != nullptr)
             {
-                Audio::playSound(Audio::SoundId::clickUp, window->x + widget->midX());
+                Audio::playSound(Audio::SoundId::clickUp, Audio::ChannelId::ui, window->x + widget->midX());
             }
 
             if (window != nullptr && window->type == _pressedWindowType && window->number == _pressedWindowNumber && widgetIndex == _pressedWidgetIndex && !window->isDisabled(widgetIndex))
@@ -1336,7 +1334,7 @@ namespace OpenLoco::Input
             default:
                 if (window->isEnabled(widgetIndex) && !window->isDisabled(widgetIndex))
                 {
-                    Audio::playSound(Audio::SoundId::clickDown, window->x + widget->midX());
+                    Audio::playSound(Audio::SoundId::clickDown, Audio::ChannelId::ui, window->x + widget->midX());
 
                     // Set new cursor down widget
                     _pressedWidgetIndex = widgetIndex;
@@ -1462,7 +1460,7 @@ namespace OpenLoco::Input
         _dragLast.y = y;
         _dragWindowType = window->type;
         _dragWindowNumber = window->number;
-        window->flags &= ~Ui::WindowFlags::finishedResize;
+        window->flags &= ~Ui::WindowFlags::hasBeenResized;
     }
 
 #pragma mark - Viewport dragging
@@ -1680,6 +1678,12 @@ namespace OpenLoco::Input
     uint16_t getClickRepeatTicks()
     {
         return _clickRepeatTicks;
+    }
+
+    uint32_t getClickRepeatStepSize()
+    {
+        // Each 100 ticks increases step size by a factor of 10
+        return static_cast<uint32_t>(std::pow(10, getClickRepeatTicks() / 100));
     }
 
     void setClickRepeatTicks(uint16_t ticks)

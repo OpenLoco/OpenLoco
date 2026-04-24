@@ -330,45 +330,24 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
-            currency32_t cashStepSize{};
-            int32_t timeStepSize{};
-            uint16_t clickRepeatTicks = Input::getClickRepeatTicks();
-
-            if (clickRepeatTicks < 100)
-            {
-                cashStepSize = 1'000;
-                timeStepSize = 1;
-            }
-            else if (clickRepeatTicks < 200)
-            {
-                cashStepSize = 10'000;
-                timeStepSize = 10;
-            }
-            else if (clickRepeatTicks < 300)
-            {
-                cashStepSize = 100'000;
-                timeStepSize = 100;
-            }
-            else
-            {
-                cashStepSize = 1'000'000;
-                timeStepSize = 1'000;
-            }
+            const auto stepSize = Input::getClickRepeatStepSize();
+            const auto cashStepSize = stepSize * 1'000;
+            const auto timeStepSize = stepSize;
 
             switch (widgetIndex)
             {
                 case Widx::cash_step_decrease:
-                    _cashIncreaseStep = std::max<currency32_t>(_cashIncreaseStep - cashStepSize, 0);
+                    _cashIncreaseStep = std::max<currency32_t>(Math::Bound::sub(_cashIncreaseStep, cashStepSize), 0);
                     WindowManager::invalidateWidget(self.type, self.number, Widx::cash_step_value);
                     break;
 
                 case Widx::cash_step_increase:
-                    _cashIncreaseStep = std::max<currency32_t>(_cashIncreaseStep + cashStepSize, 0);
+                    _cashIncreaseStep = std::max<currency32_t>(Math::Bound::add(_cashIncreaseStep, cashStepSize), 0);
                     WindowManager::invalidateWidget(self.type, self.number, Widx::cash_step_value);
                     break;
 
                 case Widx::year_step_decrease:
-                    _date.year = std::max<int32_t>(OpenLoco::Scenario::kMinYear, _date.year - timeStepSize);
+                    _date.year = std::max<int32_t>(OpenLoco::Scenario::kMinYear, Math::Bound::sub(_date.year, timeStepSize));
                     break;
 
                 case Widx::year_step_increase:
@@ -376,19 +355,19 @@ namespace OpenLoco::Ui::Windows::Cheats
                     break;
 
                 case Widx::month_step_decrease:
-                    _date.month = static_cast<MonthId>(std::max<int8_t>(0, (static_cast<int8_t>(_date.month) - timeStepSize)));
+                    _date.month = static_cast<MonthId>(std::max<int8_t>(0, Math::Bound::sub(static_cast<int8_t>(_date.month), timeStepSize)));
                     break;
 
                 case Widx::month_step_increase:
-                    _date.month = static_cast<MonthId>(std::min<int8_t>(11, (static_cast<int8_t>(_date.month) + timeStepSize)));
+                    _date.month = static_cast<MonthId>(std::min<int8_t>(11, Math::Bound::add(static_cast<int8_t>(_date.month), timeStepSize)));
                     break;
 
                 case Widx::day_step_decrease:
-                    _date.day = std::max<int32_t>(0, _date.day - timeStepSize);
+                    _date.day = std::max<int32_t>(0, Math::Bound::sub(_date.day, timeStepSize));
                     break;
 
                 case Widx::day_step_increase:
-                    _date.day = std::min<int32_t>(getMonthTotalDay(_date.year, _date.month) - 1, _date.day + timeStepSize);
+                    _date.day = std::min<int32_t>(getMonthTotalDay(_date.year, _date.month) - 1, Math::Bound::add(_date.day, timeStepSize));
                     break;
             }
 
@@ -612,7 +591,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
     namespace Vehicles
     {
-        static constexpr Ui::Size kWindowSize = { 250, 152 };
+        static constexpr Ui::Size kWindowSize = { 250, 188 };
 
         namespace Widx
         {
@@ -624,6 +603,8 @@ namespace OpenLoco::Ui::Windows::Cheats
                 vehicle_locked_group,
                 checkbox_display_locked_vehicles,
                 checkbox_build_locked_vehicles,
+                vehicle_cargo_group,
+                checkbox_keep_cargo_modify_pickup,
             };
         }
 
@@ -634,9 +615,9 @@ namespace OpenLoco::Ui::Windows::Cheats
             Widgets::Button({ 10, 78 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_reliability_hundred),
             Widgets::GroupBox({ 4, 102 }, { kWindowSize.width - 8, 45 }, WindowColour::secondary, StringIds::cheat_build_vehicle_window),
             Widgets::Checkbox({ 10, 116 }, { 200, 12 }, WindowColour::secondary, StringIds::display_locked_vehicles, StringIds::tooltip_display_locked_vehicles),
-            Widgets::Checkbox({ 25, 130 }, { 200, 12 }, WindowColour::secondary, StringIds::allow_building_locked_vehicles, StringIds::tooltip_build_locked_vehicles)
-
-        );
+            Widgets::Checkbox({ 25, 130 }, { 200, 12 }, WindowColour::secondary, StringIds::allow_building_locked_vehicles, StringIds::tooltip_build_locked_vehicles),
+            Widgets::GroupBox({ 4, 152 }, { kWindowSize.width - 8, 30 }, WindowColour::secondary, StringIds::cheat_vehicle_cargo),
+            Widgets::Checkbox({ 10, 166 }, { 200, 12 }, WindowColour::secondary, StringIds::cheat_keep_cargo_modify_pickup, StringIds::tooltip_keep_cargo_modify_pickup));
 
         static void prepareDraw(Window& self)
         {
@@ -660,6 +641,15 @@ namespace OpenLoco::Ui::Windows::Cheats
             else
             {
                 self.activatedWidgets &= ~(1 << Widx::checkbox_build_locked_vehicles);
+            }
+
+            if (Config::get().keepCargoModifyPickup)
+            {
+                self.activatedWidgets |= (1 << Widx::checkbox_keep_cargo_modify_pickup);
+            }
+            else
+            {
+                self.activatedWidgets &= ~(1 << Widx::checkbox_keep_cargo_modify_pickup);
             }
         }
 
@@ -724,6 +714,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                         self.disabledWidgets |= (1 << Widx::checkbox_build_locked_vehicles);
                     }
 
+                    Config::write();
                     WindowManager::invalidateWidget(self.type, self.number, Widx::checkbox_build_locked_vehicles);
                     WindowManager::invalidateWidget(self.type, self.number, Widx::checkbox_display_locked_vehicles);
                     WindowManager::invalidate(WindowType::buildVehicle);
@@ -735,9 +726,18 @@ namespace OpenLoco::Ui::Windows::Cheats
                     if (Config::get().displayLockedVehicles)
                     {
                         Config::get().buildLockedVehicles = !Config::get().buildLockedVehicles;
+                        Config::write();
                         WindowManager::invalidateWidget(self.type, self.number, Widx::checkbox_build_locked_vehicles);
                         WindowManager::invalidate(WindowType::buildVehicle);
                     }
+                    break;
+                }
+
+                case Widx::checkbox_keep_cargo_modify_pickup:
+                {
+                    Config::get().keepCargoModifyPickup = !Config::get().keepCargoModifyPickup;
+                    Config::write();
+                    WindowManager::invalidateWidget(self.type, self.number, Widx::checkbox_keep_cargo_modify_pickup);
                     break;
                 }
             }

@@ -19,10 +19,10 @@ namespace OpenLoco
     enum class CompanyFlags : uint32_t
     {
         none = 0U,
-        unk0 = (1U << 0),                      // 0x01
+        aiHasStarted = (1U << 0),              // 0x01 Set when an AI starts converting its first ai allocated to real assets
         unk1 = (1U << 1),                      // 0x02
         unk2 = (1U << 2),                      // 0x04
-        sorted = (1U << 3),                    // 0x08
+        sorted = (1U << 3),                    // 0x08; unused; previously used by the compnay list
         increasedPerformance = (1U << 4),      // 0x10
         decreasedPerformance = (1U << 5),      // 0x20
         challengeCompleted = (1U << 6),        // 0x40

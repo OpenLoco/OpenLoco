@@ -3,7 +3,7 @@
 #include "Localisation/Formatting.h"
 #include "Localisation/StringManager.h"
 
-#include <SDL2/SDL.h>
+#include <SDL3/SDL_keycode.h>
 
 namespace OpenLoco::Ui::TextInput
 {

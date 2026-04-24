@@ -33,11 +33,12 @@
 #include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
+
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Math/Bound.hpp>
+#include <OpenLoco/Utility/LookupTable.hpp>
 #include <algorithm>
 #include <array>
-#include <map>
 #include <sfl/static_unordered_set.hpp>
 
 namespace OpenLoco
@@ -231,7 +232,7 @@ namespace OpenLoco
         return static_cast<CorporateRating>(std::min(9, performanceIndex / 100));
     }
 
-    static std::map<CorporateRating, StringId> _ratingNames = {
+    static constexpr auto kRatingNames = Utility::buildLookupTable<CorporateRating, StringId>({
         { CorporateRating::platelayer, StringIds::corporate_rating_platelayer },
         { CorporateRating::engineer, StringIds::corporate_rating_engineer },
         { CorporateRating::trafficManager, StringIds::corporate_rating_traffic_manager },
@@ -242,12 +243,12 @@ namespace OpenLoco
         { CorporateRating::chairman, StringIds::corporate_rating_chairman },
         { CorporateRating::president, StringIds::corporate_rating_president },
         { CorporateRating::tycoon, StringIds::corporate_rating_tycoon },
-    };
+    });
 
     StringId getCorporateRatingAsStringId(CorporateRating rating)
     {
-        auto it = _ratingNames.find(rating);
-        if (it != _ratingNames.end())
+        auto it = kRatingNames.find(rating);
+        if (it != kRatingNames.end())
         {
             return it->second;
         }
@@ -363,7 +364,7 @@ namespace OpenLoco
 
         std::copy_if(std::begin(tracks), std::end(tracks), std::back_inserter(result), [](uint8_t trackIdx) {
             const auto* trackObj = ObjectManager::get<TrackObject>(trackIdx);
-            return !trackObj->hasFlags(TrackObjectFlags::unk_02);
+            return !trackObj->hasFlags(TrackObjectFlags::isRoad);
         });
 
         sfl::static_unordered_set<uint8_t, Limits::kMaxRoadObjects> roads;
@@ -391,7 +392,7 @@ namespace OpenLoco
                 continue;
             }
 
-            if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+            if (roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
             {
                 roads.insert(i | (1 << 7));
             }
@@ -399,7 +400,7 @@ namespace OpenLoco
 
         std::copy_if(std::begin(roads), std::end(roads), std::back_inserter(result), [](uint8_t trackIdx) {
             const auto* trackObj = ObjectManager::get<RoadObject>(trackIdx & ~(1 << 7));
-            return trackObj->hasFlags(RoadObjectFlags::unk_01);
+            return trackObj->hasFlags(RoadObjectFlags::isRail);
         });
 
         return result;
@@ -437,7 +438,7 @@ namespace OpenLoco
                 continue;
             }
 
-            if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+            if (roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
             {
                 roads.insert(i | (1U << 7));
             }
@@ -445,7 +446,7 @@ namespace OpenLoco
 
         std::copy_if(std::begin(roads), std::end(roads), std::back_inserter(result), [](uint8_t roadId) {
             const auto* roadObj = ObjectManager::get<RoadObject>(roadId & ~(1U << 7));
-            return !roadObj->hasFlags(RoadObjectFlags::unk_01);
+            return !roadObj->hasFlags(RoadObjectFlags::isRail);
         });
 
         sfl::static_unordered_set<uint8_t, Limits::kMaxTrackObjects> tracks;
@@ -465,7 +466,7 @@ namespace OpenLoco
 
         std::copy_if(std::begin(tracks), std::end(tracks), std::back_inserter(result), [](uint8_t trackIdx) {
             const auto* trackObj = ObjectManager::get<TrackObject>(trackIdx);
-            return trackObj->hasFlags(TrackObjectFlags::unk_02);
+            return trackObj->hasFlags(TrackObjectFlags::isRoad);
         });
 
         return result;

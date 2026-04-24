@@ -56,8 +56,8 @@ namespace OpenLoco::Ui
         playSoundOnOpen = 1U << 12,
         openQuietly = 1U << 13,
         notScrollView = 1U << 14,
-        finishedResize = 1U << 15,
-        beingResized = 1U << 16,
+        hasBeenResized = 1U << 15,
+        maximised = 1U << 16,
         whiteBorderOne = 1U << 17,
         whiteBorderMask = whiteBorderOne | (1U << 18),
         hasStoredState = 1U << 31,
@@ -198,7 +198,7 @@ namespace OpenLoco::Ui
         ScrollArea scrollAreas[kMaxScrollAreas];
         int16_t rowInfo[1000];
         uint16_t rowCount;
-        uint16_t var_83C;
+        uint16_t var_83C; // unused
         uint16_t rowHeight;
         int16_t rowHover = -1;
         union

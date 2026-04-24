@@ -23,7 +23,7 @@ namespace OpenLoco::S5
         dst.historySize = src.historySize;
         std::ranges::copy(src.history, dst.history);
         dst.historyMinPopulation = src.historyMinPopulation;
-        std::ranges::copy(src.var_150, dst.var_150);
+        std::ranges::copy(src.amenityCounts, dst.amenityCounts);
         std::ranges::copy(src.monthlyCargoDelivered, dst.monthlyCargoDelivered);
         dst.cargoInfluenceFlags = src.cargoInfluenceFlags;
         std::memcpy(dst.var_19C, src.var_19C, sizeof(dst.var_19C));
@@ -52,7 +52,7 @@ namespace OpenLoco::S5
         dst.historySize = src.historySize;
         std::ranges::copy(src.history, dst.history);
         dst.historyMinPopulation = src.historyMinPopulation;
-        std::ranges::copy(src.var_150, dst.var_150);
+        std::ranges::copy(src.amenityCounts, dst.amenityCounts);
         std::ranges::copy(src.monthlyCargoDelivered, dst.monthlyCargoDelivered);
         dst.cargoInfluenceFlags = src.cargoInfluenceFlags;
         std::memcpy(dst.var_19C, src.var_19C, sizeof(dst.var_19C));

@@ -890,21 +890,21 @@ namespace OpenLoco::Ui::ViewportInteraction
                     }
                 }
             }
-            if (buildingObj->var_A6[0] != 0 || buildingObj->var_A6[1] != 0 || buildingObj->var_A8[0] != 0 || buildingObj->var_A8[1] != 0)
+            if (buildingObj->producedCargoQty[0] != 0 || buildingObj->producedCargoQty[1] != 0 || buildingObj->consumedCargoQty[0] != 0 || buildingObj->consumedCargoQty[1] != 0)
             {
                 buffer = StringManager::formatString(buffer, StringIds::accepts);
                 bool requiresComma = false;
                 for (auto i = 0; i < 2; ++i)
                 {
-                    if (buildingObj->var_A6[i] != 0)
+                    if (buildingObj->producedCargoQty[i] != 0)
                     {
                         if (requiresComma)
                         {
                             buffer = StringManager::formatString(buffer, StringIds::comma);
                         }
-                        if (buildingObj->var_A6[i] < 8)
+                        if (buildingObj->producedCargoQty[i] < 8)
                         {
-                            buffer = StringManager::formatString(buffer, kQuantityToString[buildingObj->var_A6[i] - 1]);
+                            buffer = StringManager::formatString(buffer, kQuantityToString[buildingObj->producedCargoQty[i] - 1]);
                         }
                         requiresComma = true;
                         auto* cargo = ObjectManager::get<CargoObject>(buildingObj->producedCargoType[i]);
@@ -913,18 +913,18 @@ namespace OpenLoco::Ui::ViewportInteraction
                 }
                 for (auto i = 0; i < 2; ++i)
                 {
-                    if (buildingObj->var_A8[i] != 0)
+                    if (buildingObj->consumedCargoQty[i] != 0)
                     {
                         if (requiresComma)
                         {
                             buffer = StringManager::formatString(buffer, StringIds::comma);
                         }
-                        if (buildingObj->var_A8[i] < 8)
+                        if (buildingObj->consumedCargoQty[i] < 8)
                         {
-                            buffer = StringManager::formatString(buffer, kQuantityToString[buildingObj->var_A8[i] - 1]);
+                            buffer = StringManager::formatString(buffer, kQuantityToString[buildingObj->consumedCargoQty[i] - 1]);
                         }
                         requiresComma = true;
-                        auto* cargo = ObjectManager::get<CargoObject>(buildingObj->requiredCargoType[i]);
+                        auto* cargo = ObjectManager::get<CargoObject>(buildingObj->consumedCargoType[i]);
                         buffer = StringManager::formatString(buffer, cargo->name);
                     }
                 }
@@ -1095,7 +1095,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         GameCommands::setErrorTitle(StringIds::cant_remove_signal);
         if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
-            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+            Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
         }
     }
 
@@ -1117,7 +1117,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         args.type = track->trackObjectId();
         if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
-            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+            Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
         }
     }
 
@@ -1139,7 +1139,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         args.roadObjectId = road->roadObjectId();
         if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
-            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+            Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
         }
     }
 
@@ -1156,7 +1156,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         args.pos = Pos3(pos.x, pos.y, station->baseHeight());
         if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
-            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+            Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
         }
     }
 
@@ -1174,7 +1174,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         args.pos = Pos3(firstTile.x, firstTile.y, station->baseHeight());
         if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
-            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+            Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
         }
     }
 
@@ -1247,7 +1247,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
-            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+            Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
         }
     }
 
@@ -1279,7 +1279,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
-            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+            Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
         }
     }
 
@@ -1354,7 +1354,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                     auto owner = road->owner();
 
                     auto roadObject = ObjectManager::get<RoadObject>(road->roadObjectId());
-                    if (owner == CompanyManager::getControllingId() || owner == CompanyId::neutral || roadObject->hasFlags(RoadObjectFlags::unk_03))
+                    if (owner == CompanyManager::getControllingId() || owner == CompanyId::neutral || roadObject->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
                     {
                         Ui::Windows::Construction::openAtRoad(*window, road, interaction.pos);
                     }

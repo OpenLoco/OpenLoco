@@ -32,20 +32,7 @@ if (${OPENLOCO_BUILD_TESTS})
     find_package(GTest REQUIRED)
 endif()
 
-find_package(SDL2 REQUIRED CONFIG)
-if (TARGET SDL2::SDL2-static)
-    set(SDL2_LIB SDL2::SDL2-static)
-elseif (TARGET SDL2::SDL2)
-    set(SDL2_LIB SDL2::SDL2)
-else ()
-    # Even though we asked for SDL2 from a configure mode which would have SDL2 targets
-    # it appears we have been given a raw module mode SDL2 so create a wrapper library
-    # then we can treat it just like a normal configure mode target
-    add_library(SDL2_WRAPPER INTERFACE)
-    target_link_libraries(SDL2_WRAPPER INTERFACE ${SDL2_LIBRARIES})
-    target_include_directories(SDL2_WRAPPER INTERFACE ${SDL2_INCLUDE_DIRS})
-    set(SDL2_LIB SDL2_WRAPPER)
-endif()
+find_package(SDL3 REQUIRED CONFIG)
 
 find_package(PNG REQUIRED)
 find_package(ZLIB REQUIRED) # Dependency of PNG not really required but vcpkg not mapping static png dependencies
@@ -88,9 +75,16 @@ if ( NOT sfl_FOUND )
     FetchContent_Declare(
         sfl
         GIT_REPOSITORY      https://github.com/slavenf/sfl-library
-        GIT_TAG             2.1.1
+        GIT_TAG             2.2.0
         GIT_SHALLOW         ON
         EXCLUDE_FROM_ALL
     )
     FetchContent_MakeAvailable(sfl)
+endif()
+
+if (HAS_LIBSTDCPP)
+    find_package(TBB)
+    if (NOT TBB_FOUND )
+        message(WARNING "TBB could not be found but using libstdc++ multithreding may be broken")
+    endif()
 endif()

@@ -47,6 +47,21 @@ namespace OpenLoco
         {
             return false;
         }
+        if (hasFlags(BuildingObjectFlags::miscBuilding))
+        {
+            if (generatorFunction >= 4)
+            {
+                return false;
+            }
+        }
+        if (townAmenityCategory != TownAmenityCategory::none)
+        {
+            // Max of 8 different building categories
+            if (enumValue(townAmenityCategory) > enumValue(TownAmenityCategory::unk7))
+            {
+                return false;
+            }
+        }
         return (numVariations != 0) && (numVariations <= 31);
     }
 
@@ -102,8 +117,8 @@ namespace OpenLoco
             remainingData = remainingData.subspan(sizeof(ObjectHeader));
         }
 
-        // Load Required Cargo
-        for (auto& cargo : requiredCargoType)
+        // Load Consumed Cargo
+        for (auto& cargo : consumedCargoType)
         {
             cargo = 0xFF;
             if (*remainingData.data() != static_cast<std::byte>(0xFF))
@@ -146,7 +161,7 @@ namespace OpenLoco
         partAnimationsOffset = 0;
         std::fill(std::begin(variationPartsOffset), std::end(variationPartsOffset), 0);
         std::fill(std::begin(producedCargoType), std::end(producedCargoType), 0);
-        std::fill(std::begin(requiredCargoType), std::end(requiredCargoType), 0);
+        std::fill(std::begin(consumedCargoType), std::end(consumedCargoType), 0);
         std::fill(std::begin(elevatorHeightSequencesOffset), std::end(elevatorHeightSequencesOffset), 0);
     }
 

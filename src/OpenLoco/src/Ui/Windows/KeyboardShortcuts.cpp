@@ -17,7 +17,8 @@
 #include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
-#include <SDL2/SDL.h>
+#include <OpenLoco/Utility/LookupTable.hpp>
+#include <SDL3/SDL_keyboard.h>
 #include <unordered_map>
 
 using namespace OpenLoco::Input;
@@ -88,7 +89,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 
     static void getBindingString(uint32_t keyCode, char* buffer, const size_t bufferLength)
     {
-        static const std::unordered_map<uint32_t, StringId> keysToString = { {
+        static constexpr auto keysToString = Utility::buildLookupTable<uint32_t, StringId>({
             { SDLK_BACKSPACE, StringIds::keyboard_backspace },
             { SDLK_TAB, StringIds::keyboard_tab },
             { SDLK_RETURN, StringIds::keyboard_return },
@@ -124,7 +125,8 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             { SDLK_KP_PLUS, StringIds::keyboard_numpad_plus },
             { SDLK_NUMLOCKCLEAR, StringIds::keyboard_numlock },
             { SDLK_SCROLLLOCK, StringIds::keyboard_scroll },
-        } };
+            { SDLK_MENU, StringIds::keyboard_menu },
+        });
 
         auto match = keysToString.find(keyCode);
         if (match != keysToString.end())

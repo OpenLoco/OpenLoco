@@ -843,7 +843,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             window.rowHover = landIndex;
 
-            Audio::playSound(Audio::SoundId::clickDown, window.widgets[widx::scrollview].right);
+            Audio::playSound(Audio::SoundId::clickDown, Audio::ChannelId::ui, window.widgets[widx::scrollview].right);
 
             const Widget& target = window.widgets[widx::scrollview];
             const int16_t dropdownX = window.x + target.left + kLandDropdownLeft + 1;
@@ -1618,7 +1618,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             self.currentTab = widgetIndex - widx::tab_options;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::beingResized);
+            self.flags &= ~(WindowFlags::maximised);
             self.disabledWidgets = 0;
 
             static const uint64_t* holdableWidgetsByTab[] = {

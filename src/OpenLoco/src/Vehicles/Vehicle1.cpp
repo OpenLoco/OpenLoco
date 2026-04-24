@@ -151,7 +151,7 @@ namespace OpenLoco::Vehicles
         const auto height = World::TileManager::getHeight(veh2.position);
         const auto volume = veh2.position.z < height.landHeight ? -1500 : 0;
 
-        Audio::playSound(Audio::makeObjectSoundId(soundObjId), veh2.position + World::Pos3{ 0, 0, 22 }, volume, 22050);
+        Audio::playSound(Audio::makeObjectSoundId(soundObjId), Audio::ChannelId::vehicles, veh2.position + World::Pos3{ 0, 0, 22 }, volume, 22050);
     }
 
     // 0x004A97A6
@@ -344,7 +344,7 @@ namespace OpenLoco::Vehicles
 
         TrackAndDirection::_RoadAndDirection newRad(0, 0);
         newRad._data = routing & 0x1FFU;
-        veh1.sub_47D959(newPos, newRad, true);
+        veh1.updateRoadTileOccupancy(newPos, newRad, true);
 
         veh1.routingHandle = newRoutingHandle;
         veh1.trackAndDirection.road = newRad;
@@ -634,10 +634,17 @@ namespace OpenLoco::Vehicles
                 }
             }
             // 0x0047CFB5
-            const auto& roadObj = ObjectManager::get<RoadObject>(veh1.trackType);
-            if (!roadObj->hasFlags(RoadObjectFlags::isRoad))
+            // Note: Vanilla would not perform this check leading to
+            // invalid memory access. Unsure if we should perform something
+            // different but this should at least be safe to do (its not like
+            // you would have track type of 0xff unless you were on a road)
+            if (veh1.trackType != 0xFFU)
             {
-                return LookaheadResult{ LookaheadType::none, 0 };
+                const auto& roadObj = ObjectManager::get<RoadObject>(veh1.trackType);
+                if (!roadObj->hasFlags(RoadObjectFlags::isRoad))
+                {
+                    return LookaheadResult{ LookaheadType::none, 0 };
+                }
             }
             if (tad.isChangingLane() || tad.isOvertaking())
             {
@@ -773,7 +780,7 @@ namespace OpenLoco::Vehicles
             return RoadMotionNewPieceResult::noFurther;
         }
 
-        const auto newTrackType = component.sub_47D959(nextPos, newRad, true);
+        const auto newTrackType = component.updateRoadTileOccupancy(nextPos, newRad, true);
 
         component.trackType = newTrackType;
         component.routingHandle = newRoutingHandle;
@@ -830,9 +837,7 @@ namespace OpenLoco::Vehicles
         }
         if (hasMoved)
         {
-            Ui::ViewportManager::invalidate(this, ZoomLevel::eighth);
             this->moveTo(intermediatePosition);
-            Ui::ViewportManager::invalidate(this, ZoomLevel::eighth);
         }
         return result;
     }

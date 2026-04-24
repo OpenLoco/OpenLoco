@@ -156,7 +156,7 @@ namespace OpenLoco::Vehicles
         assert(subType == VehicleEntityType::bogie || subType == VehicleEntityType::body_start || subType == VehicleEntityType::body_continued);
 
         const auto pos = position + World::Pos3{ 0, 0, 22 };
-        Audio::playSound(Audio::SoundId::crash, pos);
+        Audio::playSound(Audio::SoundId::crash, Audio::ChannelId::vehicles, pos);
 
         ExplosionCloud::create(pos);
 
@@ -492,9 +492,7 @@ namespace OpenLoco::Vehicles
         }
         if (hasMoved)
         {
-            Ui::ViewportManager::invalidate(&component, ZoomLevel::eighth);
             component.moveTo(intermediatePosition);
-            Ui::ViewportManager::invalidate(&component, ZoomLevel::eighth);
         }
         return result;
     }
@@ -552,9 +550,7 @@ namespace OpenLoco::Vehicles
             }
             if (hasMoved)
             {
-                Ui::ViewportManager::invalidate(&component, ZoomLevel::eighth);
                 component.moveTo(intermediatePosition);
-                Ui::ViewportManager::invalidate(&component, ZoomLevel::eighth);
             }
             return result;
         }
@@ -578,7 +574,7 @@ namespace OpenLoco::Vehicles
     // bp : trackAndDirection
     // ebp : bp | (setOccupied << 31)
     // returns dh : trackType
-    uint8_t VehicleBase::sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection rad, const bool setOccupied)
+    uint8_t VehicleBase::updateRoadTileOccupancy(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection rad, const bool setOccupied)
     {
         auto roadType = getTrackType();
         auto tile = World::TileManager::get(loc);
@@ -611,19 +607,19 @@ namespace OpenLoco::Vehicles
                 continue;
             }
 
-            const auto newUnk4u = World::TrackData::getRoadOccupationMask(rad._data >> 2) >> 4;
+            const auto newLaneOccupation = World::TrackData::getRoadOccupationMask(rad._data >> 2) >> 4;
             if (setOccupied)
             {
-                elRoad->setUnk4u(elRoad->unk4u() | newUnk4u);
+                elRoad->setLaneOccupation(elRoad->laneOccupation() | newLaneOccupation);
             }
             else
             {
-                elRoad->setUnk4u(elRoad->unk4u() & (~newUnk4u));
+                elRoad->setLaneOccupation(elRoad->laneOccupation() & (~newLaneOccupation));
             }
 
             if (getTrackType() == 0xFF)
             {
-                if (getGameState().roadObjectIdIsNotTram & (1 << elRoad->roadObjectId()))
+                if (getGameState().roadObjectIdIsAnyRoadTypeCompatible & (1 << elRoad->roadObjectId()))
                 {
                     elRoad->setUnk7_40(true);
                     roadType = elRoad->roadObjectId();

@@ -11,7 +11,7 @@ jobs:
       image: openrct2/openrct2-build:17-format
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Run clang-format
         run: scripts/check-code-formatting.sh
   check-changelog-formatting:
@@ -22,7 +22,7 @@ jobs:
         shell: bash
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Run check-changelog-formatting
         run: scripts/check-changelog-formatting
   windows:
@@ -34,7 +34,7 @@ jobs:
       POWERSHELL_TELEMETRY_OPTOUT: 1
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: true
@@ -44,12 +44,12 @@ jobs:
       - name: Setup cache directories
         run: mkdir ${{ env.VCPKG_DEFAULT_BINARY_CACHE }} | Out-Null
       - name: Set up binary cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
-          key: ${{ runner.os }}-64-vcpkg-binary-cache-${{ hashFiles('vcpkg*.json') }}
+          key: ${{ runner.os }}-64-vcpkg-${{ env.ImageVersion }}-${{ hashFiles('vcpkg*.json') }}
           restore-keys: |
-            ${{ runner.os }}-64-vcpkg-binary-cache-
+            ${{ runner.os }}-64-vcpkg-${{ env.ImageVersion }}-
       - name: Build OpenLoco
         shell: cmd
         run: |
@@ -77,7 +77,7 @@ jobs:
           if-no-files-found: warn
       - name: Checkout Assets
         if: ${{ github.repository == 'OpenLoco/OpenLoco' && env.ASSETS_SSH_KEY != null }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ssh-key: ${{ env.ASSETS_SSH_KEY }}
           repository: OpenLoco/LocomotionAssets
@@ -85,10 +85,10 @@ jobs:
           path: LocomotionAssets
       - name: Checkout Test Data
         if: ${{ github.repository == 'OpenLoco/OpenLoco' && env.ASSETS_SSH_KEY != null }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: OpenLoco/TestData
-          ref: f8058d5a84293f866de6c899d183ba269eed7d0a
+          ref: b21e716f7158f5f6a3dad6df6905ad5a376501b9
           path: TestData
       - name: Run Simulate Test
         if: ${{ github.repository == 'OpenLoco/OpenLoco' && env.ASSETS_SSH_KEY != null }}
@@ -110,7 +110,7 @@ jobs:
       POWERSHELL_TELEMETRY_OPTOUT: 1
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: true
@@ -120,12 +120,12 @@ jobs:
       - name: Setup cache directories
         run: mkdir ${{ env.VCPKG_DEFAULT_BINARY_CACHE }} | Out-Null
       - name: Set up binary cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
-          key: ${{ runner.os }}-32-vcpkg-binary-cache-${{ hashFiles('vcpkg*.json') }}
+          key: ${{ runner.os }}-32-vcpkg-${{ env.ImageVersion }}-${{ hashFiles('vcpkg*.json') }}
           restore-keys: |
-            ${{ runner.os }}-32-vcpkg-binary-cache-
+            ${{ runner.os }}-32-vcpkg-${{ env.ImageVersion }}-
       - name: Build OpenLoco
         shell: cmd
         run: |
@@ -156,19 +156,19 @@ jobs:
         run: |
           ctest --test-dir build\windows-x86-32-ci\ --output-on-failure
 
-  ubuntu:
+  ubuntu32:
     name: Ubuntu ${{ matrix.distro }} ${{ matrix.compiler }} i686
     runs-on: ubuntu-latest
     needs: check-code-formatting
-    container: ghcr.io/openloco/openloco:9-${{ matrix.distro }}32
+    container: ghcr.io/openloco/openloco:11-ubuntu${{ matrix.distro }}.32
     strategy:
       fail-fast: false
       matrix:
         compiler: [g++, clang++]
-        distro: [jammy, noble]
+        distro: [26.04]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: true
@@ -181,40 +181,65 @@ jobs:
       - name: Run Tests
         run: |
           ctest --test-dir build/linux-x86-32-ci/ --output-on-failure
+  ubuntu:
+    name: Ubuntu ${{ matrix.distro }} ${{ matrix.compiler }} x64
+    runs-on: ubuntu-latest
+    needs: check-code-formatting
+    container: ghcr.io/openloco/openloco:11-ubuntu${{ matrix.distro }}
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [g++, clang++]
+        distro: [26.04]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: true
+      - name: Install GCC problem matcher
+        uses: ammaraskar/gcc-problem-matcher@master
+      - name: Build OpenLoco
+        run: |
+          cmake --preset posix -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
+          cmake --build --preset posix-release
+      - name: Run Tests
+        run: |
+          ctest --test-dir build/posix/ --output-on-failure
 
   header-checks:
     name: Header checks ${{ matrix.distro }} ${{ matrix.compiler }}
     runs-on: ubuntu-latest
     needs: check-code-formatting
-    container: ghcr.io/openloco/openloco:9-${{ matrix.distro }}32
+    container: ghcr.io/openloco/openloco:11-ubuntu${{ matrix.distro }}
     strategy:
       fail-fast: false
       matrix:
         compiler: [clang++]
-        distro: [noble]
+        distro: [26.04]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: true
       - name: Validate Headers
         run: |
-          cmake --preset linux-x86-32-ci -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} -DOPENLOCO_HEADER_CHECK=ON
-          cmake --build --preset linux-x86-32-ci --target all-headers-check
+          cmake --preset posix -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} -DOPENLOCO_HEADER_CHECK=ON
+          cmake --build --preset posix-release --target all-headers-check
 
   fedora:
     name: Fedora shared=${{ matrix.build_shared_libs }} i686 MinGW32
     runs-on: ubuntu-latest
     needs: check-code-formatting
-    container: ghcr.io/openloco/openloco:9-mingw32
+    container: ghcr.io/openloco/openloco:11-mingw32
     strategy:
       fail-fast: false
       matrix:
         build_shared_libs: [on, off]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: true
@@ -226,13 +251,13 @@ jobs:
           cmake --build --preset mingw32
 
   linux-static:
-    name: Ubuntu noble g++ x64 vcpkg static linkage
+    name: Ubuntu 26.04 g++ x64 vcpkg static linkage
     runs-on: ubuntu-latest
     needs: check-code-formatting
-    container: ghcr.io/openloco/openloco:9-noble32vcpkg
+    container: ghcr.io/openloco/openloco:11-ubuntu26.04.vcpkg
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: true
@@ -246,12 +271,12 @@ jobs:
       - name: Setup cache directories
         run: mkdir -p ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
       - name: Set up binary cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
-          key: ${{ runner.os }}-vcpkg-binary-cache-${{ hashFiles('vcpkg*.json') }}
+          key: ${{ runner.os }}-vcpkg-ubuntu26.04.vcpkg-${{ hashFiles('vcpkg*.json') }}
           restore-keys: |
-            ${{ runner.os }}-vcpkg-binary-cache-
+            ${{ runner.os }}-vcpkg-ubuntu26.04.vcpkg-
           # Cache currently broken as docker image does not include unzip
       - name: Build OpenLoco
         run: |
@@ -265,7 +290,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: OpenLoco-linux-x64-glibc2.39
+          name: OpenLoco-linux-x64-glibc2.42
           path: artifacts
           if-no-files-found: error
   macos:
@@ -274,7 +299,7 @@ jobs:
     needs: check-code-formatting
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: true
@@ -286,20 +311,20 @@ jobs:
       - name: Setup cache directories
         run: mkdir -p ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
       - name: Set up binary cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
-          key: ${{ runner.os }}-vcpkg-binary-cache-${{ hashFiles('vcpkg*.json') }}
+          key: ${{ runner.os }}-vcpkg-${{ env.ImageVersion }}-${{ hashFiles('vcpkg*.json') }}
           restore-keys: |
-            ${{ runner.os }}-vcpkg-binary-cache-
+            ${{ runner.os }}-vcpkg-${{ env.ImageVersion }}-
       - name: Build OpenLoco
         run: |
-          cmake --preset macos-vcpkg-static
+          mkdir -p artifacts
+          cmake --preset macos-vcpkg-static -DCMAKE_INSTALL_PREFIX=./artifacts
           cmake --build --preset macos-vcpkg-static
       - name: Install to artifacts
         run: |
-          mkdir -p artifacts
-          cmake --install build/macos-vcpkg-static --prefix ./artifacts
+          cmake --build --preset macos-vcpkg-static --target install
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:

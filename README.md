@@ -72,11 +72,12 @@ The following libraries/dependencies are used:
 - [libpng](http://www.libpng.org/pub/png/libpng.html)
 - [libzip](https://libzip.org)
 - [OpenAL](https://www.openal.org/)
-- [SDL2](https://www.libsdl.org/download-2.0.php)
+- [SDL3](https://github.com/libsdl-org/SDL/releases)
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp) (fetched during CMake generation)
 - [fmt](https://github.com/fmtlib/fmt) (fetched during CMake generation)
 - [sfl](https://github.com/slavenf/sfl-library) (fetched during CMake generation)
 - [breakpad](https://github.com/google/breakpad) (only required on Windows)
+- [tbb](https://www.intel.com/content/www/us/en/developer/tools/oneapi/onetbb.html) (only required if using libstdc++)
 
 ### Windows
 - 10 / 11

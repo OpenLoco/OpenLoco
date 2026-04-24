@@ -431,7 +431,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         cState.lastSelectedMods = 0;
         auto* roadObj = ObjectManager::get<RoadObject>(cState.trackType & ~(1ULL << 7));
-        if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+        if (!roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
         {
             cState.lastSelectedMods = copyElement->mods();
         }
@@ -468,14 +468,14 @@ namespace OpenLoco::Ui::Windows::Construction
                 auto trackType = flags & ~(1 << 7);
                 auto roadObj = ObjectManager::get<RoadObject>(trackType);
 
-                if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+                if (roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
                 {
                     if (cState.trackType & (1 << 7))
                     {
                         trackType = cState.trackType & ~(1 << 7);
                         roadObj = ObjectManager::get<RoadObject>(trackType);
 
-                        if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+                        if (roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
                         {
                             cState.trackType = static_cast<uint8_t>(flags);
 
@@ -716,6 +716,7 @@ namespace OpenLoco::Ui::Windows::Construction
             _ghostVisibilityFlags = _ghostVisibilityFlags & ~GhostVisibilityFlags::constructArrow;
         }
         Construction::removeTrackGhosts();
+        Construction::removeBlueprintGhosts();
         Signal::removeSignalGhost();
         Station::removeStationGhost();
         Overhead::removeTrackModsGhost();
@@ -886,7 +887,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
             self.currentTab = widgetIndex - widx::tab_construction;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::beingResized);
+            self.flags &= ~(WindowFlags::maximised);
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_construction];
 
@@ -1262,7 +1263,7 @@ namespace OpenLoco::Ui::Windows::Construction
             {
                 newTrackType &= ~(1 << 7);
                 auto roadObj = ObjectManager::get<RoadObject>(newTrackType);
-                if (!roadObj->hasFlags(RoadObjectFlags::unk_01))
+                if (!roadObj->hasFlags(RoadObjectFlags::isRail))
                 {
                     getGameState().lastRoadOption = trackType;
                 }
@@ -1274,7 +1275,7 @@ namespace OpenLoco::Ui::Windows::Construction
             else
             {
                 auto trackObj = ObjectManager::get<TrackObject>(newTrackType);
-                if (!trackObj->hasFlags(TrackObjectFlags::unk_02))
+                if (!trackObj->hasFlags(TrackObjectFlags::isRoad))
                 {
                     getGameState().lastRailroadOption = trackType;
                 }

@@ -1054,7 +1054,7 @@ namespace OpenLoco::Vehicles
                 volume -= 1500;
             }
 
-            Audio::playSound(Audio::makeObjectSoundId(soundId), smokeLoc, volume, 22050);
+            Audio::playSound(Audio::makeObjectSoundId(soundId), Audio::ChannelId::vehicles, smokeLoc, volume, 22050);
         }
         else
         {
@@ -1081,7 +1081,7 @@ namespace OpenLoco::Vehicles
                 volume = -400;
             }
 
-            Audio::playSound(Audio::makeObjectSoundId(soundId), smokeLoc, volume, 22050);
+            Audio::playSound(Audio::makeObjectSoundId(soundId), Audio::ChannelId::vehicles, smokeLoc, volume, 22050);
         }
     }
 

@@ -141,7 +141,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
                     {
                         if (newsStringChar != 0)
                         {
-                            Audio::playSound(Audio::SoundId::ticker, Ui::width());
+                            Audio::playSound(Audio::SoundId::ticker, Audio::ChannelId::ui, Ui::width());
                         }
                     }
                 }
@@ -191,7 +191,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         auto colour = Colours::getShade(Colour::white, 5);
         const auto& mtd = getMessageTypeDescriptor(news->type);
 
-        if (!mtd.hasFlag(MessageTypeFlags::unk1))
+        if (!mtd.hasFlag(MessageTypeFlags::isGeneralNews))
         {
             colour = Colours::getShade(Colour::mutedDarkRed, 5);
         }

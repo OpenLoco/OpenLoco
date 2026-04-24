@@ -280,8 +280,6 @@ namespace OpenLoco::GameCommands
             if ((SceneManager::getPauseFlags() & PauseFlags::player) != PauseFlags::none)
             {
                 SceneManager::unsetPauseFlag(PauseFlags::player);
-                WindowManager::invalidate(WindowType::timeToolbar);
-                Audio::unpauseSound();
                 Ui::Windows::PlayerInfoPanel::invalidateFrame();
             }
 
@@ -345,7 +343,7 @@ namespace OpenLoco::GameCommands
             if (_gameCommandNestLevel == 1)
             {
                 if ((_gameCommandFlags & Flags::allowNegativeCashFlow) == 0
-                    && (_gameCommandFlags & Flags::ghost) == 0
+                    && (_gameCommandFlags & Flags::noPayment) == 0
                     && ebx != 0)
                 {
                     if (!CompanyManager::ensureCompanyFunding(getUpdatingCompanyId(), ebx))
@@ -369,7 +367,7 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        if ((flags & 1) == 0)
+        if ((flags & Flags::apply) == 0)
         {
             _gameCommandNestLevel--;
             return ebx;
@@ -613,12 +611,12 @@ namespace OpenLoco::GameCommands
     void playConstructionPlacementSound(World::Pos3 pos)
     {
         const auto frequency = gPrng2().randNext(17955, 26146);
-        Audio::playSound(Audio::SoundId::construct, pos, 0, frequency);
+        Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, pos, 0, frequency);
     }
 
     // TODO: Maybe move this somewhere else used by multiple game commands
     bool shouldInvalidateTile(uint8_t flags)
     {
-        return !(flags & Flags::aiAllocated) && Config::get().showAiPlanningAsGhosts;
+        return !(flags & Flags::aiAllocated) || Config::get().showAiPlanningAsGhosts;
     }
 }

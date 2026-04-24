@@ -45,7 +45,8 @@ if (OPENLOCO_USE_VCPKG)
         endif ()
         FetchContent_Declare(vcpkg
             GIT_REPOSITORY https://github.com/microsoft/vcpkg.git
-            GIT_TAG 89dc8be6dbcf18482a5a1bf86a2f4615c939b0fb)
+            GIT_TAG 2026.02.27
+        )
         FetchContent_MakeAvailable(vcpkg)
 
         set(CMAKE_TOOLCHAIN_FILE "${vcpkg_SOURCE_DIR}/scripts/buildsystems/vcpkg.cmake"
@@ -53,7 +54,7 @@ if (OPENLOCO_USE_VCPKG)
     endif()
 endif ()
 
-project(${PROJECT} LANGUAGES CXX VERSION 25.12)
+project(${PROJECT} LANGUAGES CXX VERSION 26.03)
 
 # Enable IPO for all Release targets by default
 include(CheckIPOSupported)
@@ -65,6 +66,14 @@ if(ipo_supported)
     message(STATUS "IPO/LTO enabled for all Release targets.")
 else()
     message(WARNING "IPO/LTO not supported: ${ipo_error}")
+endif()
+
+# libstdc++ doesn't have standalone <execution> support so if using libstdc++ we need to
+# link against TBB
+include(CheckCXXSymbolExists)
+check_cxx_symbol_exists(__GLIBCXX__  version HAS_LIBSTDCPP)
+if (HAS_LIBSTDCPP)
+    message(STATUS "libstdc++ detected will require linking with TBB")
 endif()
 
 if (NOT CMAKE_CXX_STANDARD)
@@ -103,8 +112,8 @@ if (${OPENLOCO_BUILD_TESTS})
 endif()
 
 FetchContent_Declare(openloco_objects
-            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.6/objects.zip
-            URL_HASH SHA256=4cea1ab77131650b5475b489445ce65c275b3a23b921456afda4d9c5c83e580c)
+            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.8/objects.zip
+            URL_HASH SHA256=658891d94a46040b7bf71dfd7f01bbc1dda6470712cb3dc07482931feb5013c7)
 FetchContent_MakeAvailable(openloco_objects)
 
 add_subdirectory(src)
@@ -132,7 +141,7 @@ set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT O
 
 install(TARGETS OpenLoco
     RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
-    BUNDLE DESTINATION "${CMAKE_INSTALL_BINDIR}")
+    BUNDLE DESTINATION ".")
 
 if (UNIX AND NOT APPLE)
     install(FILES "CHANGELOG.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
@@ -153,10 +162,4 @@ endif()
 if (NOT APPLE)
     install(DIRECTORY "data/" DESTINATION "${CMAKE_INSTALL_BINDIR}/data")
     install(DIRECTORY "${openloco_objects_SOURCE_DIR}" DESTINATION "${CMAKE_INSTALL_BINDIR}/data/objects")
-endif()
-
-# Apple bundle is declared in OpenLoco subproject CMakeLists
-# TODO: rework
-if (APPLE)
-    install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}" DESTINATION "${CMAKE_INSTALL_BINDIR}")
 endif()

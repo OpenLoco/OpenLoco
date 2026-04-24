@@ -421,6 +421,15 @@ namespace OpenLoco::S5
             std::memcpy(file->tileElements.data(), tileElements.data(), numTileElements * sizeof(TileElement));
         }
 
+        // Reset fields that don't affect the simulation, but would cause issues when comparing game states.
+        for (auto& ent : file->gameState.entities)
+        {
+            ent.base.spriteLeft = Location::null;
+            ent.base.spriteTop = Location::null;
+            ent.base.spriteRight = Location::null;
+            ent.base.spriteBottom = Location::null;
+        }
+
         return file;
     }
 
@@ -617,6 +626,9 @@ namespace OpenLoco::S5
             ObjectManager::reloadAll();
             Ui::ProgressBar::setProgress(200);
 
+            Audio::stopVehicleNoise();
+            Audio::stopAmbientNoise();
+
             // Copy the S5 gamestate contents to the destination gamestate, field by field
             auto& src = file->gameState;
             dst = *importGameState(src);
@@ -649,7 +661,6 @@ namespace OpenLoco::S5
                 EntityManager::reset();
             }
 
-            Audio::stopVehicleNoise();
             EntityManager::resetSpatialIndex();
             CompanyManager::updateColours();
             ObjectManager::updateTerraformObjects();

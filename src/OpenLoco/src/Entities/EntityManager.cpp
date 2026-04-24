@@ -232,7 +232,6 @@ namespace OpenLoco::EntityManager
             }
             insertToSpatialIndex(entity, newIndex);
         }
-        entity.position = loc;
     }
 
     static void zeroEntity(EntityBase* ent);
@@ -303,6 +302,8 @@ namespace OpenLoco::EntityManager
     // 0x0047024A
     void freeEntity(EntityBase* const entity)
     {
+        entity->invalidateSprite();
+
         EntityTweener::get().removeEntity(entity);
 
         auto list = enumValue(entity->id) < 19800 ? EntityListType::null : EntityListType::nullMoney;

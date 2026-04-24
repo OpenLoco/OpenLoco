@@ -913,7 +913,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
         if (GameCommands::doCommand(*args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
-            Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+            Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, GameCommands::getPosition());
         }
     }
 
@@ -996,7 +996,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
         if (GameCommands::doCommand(*args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
-            Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+            Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, GameCommands::getPosition());
         }
     }
 

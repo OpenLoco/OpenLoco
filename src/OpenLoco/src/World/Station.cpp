@@ -380,7 +380,7 @@ namespace OpenLoco
                                     const auto cargoId = obj->producedCargoType[i];
                                     if (cargoId != 0xFF && (cargoSearchState.filter() & (1 << cargoId)))
                                     {
-                                        cargoSearchState.addScore(cargoId, obj->var_A6[i]);
+                                        cargoSearchState.addScore(cargoId, obj->producedCargoQty[i]);
 
                                         if (obj->producedQuantity[i] != 0)
                                         {
@@ -391,9 +391,9 @@ namespace OpenLoco
 
                                 for (int i = 0; i < 2; i++)
                                 {
-                                    if (obj->requiredCargoType[i] != 0xFF && (cargoSearchState.filter() & (1 << obj->requiredCargoType[i])))
+                                    if (obj->consumedCargoType[i] != 0xFF && (cargoSearchState.filter() & (1 << obj->consumedCargoType[i])))
                                     {
-                                        cargoSearchState.addScore(obj->requiredCargoType[i], obj->var_A8[i]);
+                                        cargoSearchState.addScore(obj->consumedCargoType[i], obj->consumedCargoQty[i]);
                                     }
                                 }
 
@@ -1125,7 +1125,7 @@ namespace OpenLoco
                         break;
                     }
                     auto* trackObj = ObjectManager::get<TrackObject>(elTrack->trackObjectId());
-                    station->flags |= trackObj->hasFlags(TrackObjectFlags::unk_02)
+                    station->flags |= trackObj->hasFlags(TrackObjectFlags::isRoad)
                         ? StationFlags::transportModeRoad
                         : StationFlags::transportModeRail;
                     acceptedCargoTypes = ~0U;
@@ -1155,7 +1155,7 @@ namespace OpenLoco
                             continue;
                         }
                         auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
-                        station->flags |= roadObj->hasFlags(RoadObjectFlags::unk_01)
+                        station->flags |= roadObj->hasFlags(RoadObjectFlags::isRail)
                             ? StationFlags::transportModeRail
                             : StationFlags::transportModeRoad;
                     }

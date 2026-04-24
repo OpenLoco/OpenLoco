@@ -82,7 +82,7 @@ namespace OpenLoco
         transportModeRoad = (1U << 1),
         transportModeAir = (1U << 2),
         transportModeWater = (1U << 3),
-        flag_4 = (1U << 4),
+        sorted = (1U << 4), // unused; used to be used by the station list
         flag_5 = (1U << 5), // isNotFullyCreated ?? like ghost will never have this set
         flag_6 = (1U << 6),
         flag_7 = (1U << 7),

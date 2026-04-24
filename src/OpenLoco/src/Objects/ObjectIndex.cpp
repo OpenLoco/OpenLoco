@@ -970,7 +970,7 @@ namespace OpenLoco::ObjectManager
                     }
 
                     auto* roadObj = get<RoadObject>(elRoad->roadObjectId());
-                    if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+                    if (!roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
                     {
                         for (auto i = 0U; i < 2; ++i)
                         {
@@ -1261,7 +1261,7 @@ namespace OpenLoco::ObjectManager
                         return false;
                     }
                     auto* roadObj = reinterpret_cast<RoadObject*>(getTemporaryObject());
-                    if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+                    if (!roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
                     {
                         freeTemporaryObject();
                         return false;

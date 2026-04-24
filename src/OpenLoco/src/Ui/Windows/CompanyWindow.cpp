@@ -49,6 +49,7 @@
 #include "ViewportManager.h"
 #include "World/Company.h"
 #include "World/CompanyManager.h"
+#include <OpenLoco/Math/Bound.hpp>
 
 #include <cmath>
 
@@ -2060,11 +2061,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
         }
 
-        static inline currency32_t calculateStepSize(uint16_t repeatTicks)
-        {
-            return 1000 * std::pow(10, repeatTicks / 100);
-        }
-
         // 0x0043383E
         static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
@@ -2076,14 +2072,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 case widx::loan_decrease:
                 {
-                    auto company = CompanyManager::get(CompanyId(self.number));
+                    auto* company = CompanyManager::get(CompanyId(self.number));
                     if (company->currentLoan == 0)
                     {
                         return;
                     }
 
                     GameCommands::ChangeLoanArgs args{};
-                    args.newLoan = std::max<currency32_t>(0, company->currentLoan - calculateStepSize(Input::getClickRepeatTicks()));
+                    args.newLoan = std::max(Math::Bound::sub(company->currentLoan, Input::getClickRepeatStepSize() * 1'000), 0);
 
                     GameCommands::setErrorTitle(StringIds::cant_pay_back_loan);
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
@@ -2092,8 +2088,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 case widx::loan_increase:
                 {
+                    auto* company = CompanyManager::get(CompanyId(self.number));
+
                     GameCommands::ChangeLoanArgs args{};
-                    args.newLoan = CompanyManager::get(CompanyId(self.number))->currentLoan + calculateStepSize(Input::getClickRepeatTicks());
+                    args.newLoan = Math::Bound::add(company->currentLoan, Input::getClickRepeatStepSize() * 1'000);
 
                     GameCommands::setErrorTitle(StringIds::cant_borrow_any_more_money);
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
@@ -2263,6 +2261,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.widgets[Common::widx::close_button].left = self.width - 15;
             self.widgets[Common::widx::close_button].right = self.width - 3;
 
+            self.widgets[Common::widx::company_select].right = self.width - 3;
+            self.widgets[Common::widx::company_select].left = self.width - 28;
+
             Widget::leftAlignTabs(self, Common::widx::tab_status, Common::widx::tab_challenge);
         }
 
@@ -2273,6 +2274,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             self.draw(drawingCtx);
             Common::drawTabs(self, drawingCtx);
+            Common::drawCompanySelect(&self, drawingCtx);
 
             uint16_t y = self.y + 47;
 
@@ -2734,7 +2736,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             self.currentTab = widgetIndex - widx::tab_status;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::beingResized);
+            self.flags &= ~(WindowFlags::maximised);
 
             self.viewportRemove(0);
 

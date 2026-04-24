@@ -180,7 +180,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         self.invalidate();
 
         auto mousePos = Input::getMouseLocation();
-        Audio::playSound(Audio::SoundId::clickDown, mousePos.x);
+        Audio::playSound(Audio::SoundId::clickDown, Audio::ChannelId::ui, mousePos.x);
 
         if (_callingWindowType == WindowType::company)
         {

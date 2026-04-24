@@ -1,8 +1,8 @@
 set(OLOCO_SOURCES
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/AmbientAudio.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/Audio.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/Channel.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/OpenAL.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/VehicleChannel.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/Music.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/VehicleAudio.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/CommandLine.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Config.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Date.cpp"
@@ -275,6 +275,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/TabWidget.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/TableHeaderWidget.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/TextBoxWidget.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/ToolbarButtonWidget.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/ViewportWidget.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/Wt3Widget.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Window.cpp"
@@ -286,6 +287,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/CompanyFaceSelection.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/CompanyList.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/CompanyWindow.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/Construction/Blueprints.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/Construction/Common.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/Construction/ConstructionTab.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/Construction/OverheadTab.cpp"
@@ -303,6 +305,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/MapToolTip.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/MapWindow.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/MessageWindow.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/MusicJukebox.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/MusicSelection.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/NetworkStatus.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/News/Common.cpp"
@@ -368,9 +371,6 @@ set(OLOCO_SOURCES
 
 set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/Audio.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/Channel.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/OpenAL.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/VehicleChannel.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/CommandLine.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Config.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ConfigConvert.hpp"
@@ -681,11 +681,13 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/TabWidget.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/TableHeaderWidget.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/TextBoxWidget.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/ToolbarButtonWidget.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/ViewportWidget.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Widgets/Wt3Widget.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Window.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/WindowManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/WindowType.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/Construction/Blueprints.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/Construction/Construction.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/News/News.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/ToolbarTopCommon.h"
@@ -719,6 +721,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ZoomLevel.hpp")
 
 set(private_link_libraries
+    Audio
     Core
     Diagnostics
     Platform
@@ -726,17 +729,17 @@ set(private_link_libraries
     Math
     Engine
     Version
-    ${SDL2_LIB}
+    SDL3::SDL3
     Threads::Threads
     yaml-cpp::yaml-cpp
     ZLIB::ZLIB # This shouldn't be required but vcpkg seems to not map the dependencies correctly for png static
     PNG::PNG
-    ${OPENAL_LIBRARIES}
     $<$<PLATFORM_ID:Windows>:winmm>
     $<$<PLATFORM_ID:Windows>:ws2_32>
     $<$<PLATFORM_ID:Windows>:Resources>
     $<$<BOOL:${MINGW}>:imm32>
     $<$<BOOL:${MINGW}>:version>
+    $<$<AND:$<BOOL:${HAS_LIBSTDCPP}>,$<BOOL:${TBB_FOUND}>>:TBB::tbb> # libstdc++ does not support <execution> without tbb
 )
 
 set(msvc_private_compile_definitions
@@ -814,13 +817,21 @@ if (APPLE)
 
     list(APPEND BUNDLE_RESOURCES ${CMAKE_SOURCE_DIR}/CHANGELOG.md)
     list(APPEND BUNDLE_RESOURCES ${CMAKE_SOURCE_DIR}/CONTRIBUTORS.md)
-    set_target_properties(OpenLoco PROPERTIES RESOURCE "${BUNDLE_RESOURCES}")
-    target_sources(OpenLoco PUBLIC ${BUNDLE_RESOURCES})
 
     file(GLOB BUNDLE_LANGUAGES "${CMAKE_SOURCE_DIR}/data/language/*")
-    target_sources(OpenLoco PUBLIC ${BUNDLE_LANGUAGES})
+    file(GLOB_RECURSE  BUNDLE_OBJECTS "${openloco_objects_SOURCE_DIR}/*")
+
+    target_sources(OpenLoco PUBLIC "${BUNDLE_RESOURCES}" "${BUNDLE_LANGUAGES}" "${BUNDLE_OBJECTS}")
+
+    set_target_properties(OpenLoco PROPERTIES RESOURCE "${BUNDLE_RESOURCES}" "${BUNDLE_LANGUAGES}" "${BUNDLE_OBJECTS}")
+
     set_property(
         SOURCE ${BUNDLE_LANGUAGES}
         PROPERTY MACOSX_PACKAGE_LOCATION "Resources/language"
+    )
+
+    set_property(
+        SOURCE ${BUNDLE_OBJECTS}
+        PROPERTY MACOSX_PACKAGE_LOCATION "Resources/objects"
     )
 endif ()

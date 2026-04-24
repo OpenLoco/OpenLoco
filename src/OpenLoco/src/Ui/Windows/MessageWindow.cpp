@@ -176,7 +176,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             NewsWindow::open(MessageId(messageIndex));
 
             int32_t pan = self.width / 2 + self.x;
-            Audio::playSound(Audio::SoundId::clickDown, pan);
+            Audio::playSound(Audio::SoundId::clickDown, Audio::ChannelId::ui, pan);
         }
 
         // 0x0042A87C
@@ -642,7 +642,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
             self.currentTab = widgetIndex - widx::tab_messages;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::beingResized);
+            self.flags &= ~(WindowFlags::maximised);
 
             self.viewportRemove(0);
 
