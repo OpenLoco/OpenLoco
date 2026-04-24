@@ -95,6 +95,9 @@ namespace OpenLoco::Ui::Windows::MusicJukebox
             args.push(songName);
         }
 
+        self.activatedWidgets = 0;
+        self.disabledWidgets = 0;
+
         // Jukebox controls (stop/play/skip)
         if (!SceneManager::isPlayMode())
         {
