@@ -208,6 +208,7 @@ namespace OpenLoco::Config
         bool trainsReverseAtSignals = true;
         bool disableStationSizeLimit = false;
         bool showAiPlanningAsGhosts = false;
+        bool keepCargoModifyPickup = false;
 
         bool usePreferredOwnerName = false;
         std::string preferredOwnerName;
