@@ -10,7 +10,7 @@ using namespace OpenLoco::Environment;
 
 namespace OpenLoco::Jukebox
 {
-    static MusicId selectedTrack; // 0x0050D434
+    static MusicId selectedTrack;
     static bool selectedTrackNotPlayedYet;
 
     // 0x004FE910
@@ -53,8 +53,8 @@ namespace OpenLoco::Jukebox
         return kMusicInfo[track];
     }
 
-    // Note: this counts paused as playing
-    // TODO: there is no reason to check for kNoSong. Then this function can be deleted as it would be needless.
+    // Note that this counts paused as playing.
+    // This might be unnecessary as kNoSong shouldn't be selected when playing is enabled.
     bool isMusicPlaying()
     {
         return (selectedTrack != kNoSong && Config::get().audio.playJukeboxMusic);
@@ -195,13 +195,14 @@ namespace OpenLoco::Jukebox
     {
         auto playlist = makeSelectedPlaylist();
 
-        // Fallback playlists (TODO: does this even make sense? Surely the only danger to look out for is someone config editing their custom playlist)
+        // Fallback in case the all or custom playlist is empty (which shouldn't be possible?)
         const auto& cfg = Config::get();
         if (playlist.empty() && cfg.audio.playlist != Config::MusicPlaylistType::currentEra)
         {
             playlist = makeCurrentEraPlaylist();
         }
 
+        // This only happens after year kEndOfTime (year 9999)
         if (playlist.empty())
         {
             playlist = makeAllMusicPlaylist();
@@ -218,10 +219,8 @@ namespace OpenLoco::Jukebox
             }
         }
 
-        // And pick a song!
         auto r = std::rand() % playlist.size();
         selectedTrack = playlist[r];
-
         selectedTrackNotPlayedYet = true;
     }
 
@@ -241,7 +240,8 @@ namespace OpenLoco::Jukebox
     // The player manually selects a song from the drop-down in the music options.
     bool requestTrack(MusicId track)
     {
-        assert(track < kNumMusicTracks); // Also catches kNoSong ("[None]"), which is impossible to request.
+        assert(track != kNoSong);
+        assert(track < kNumMusicTracks);
 
         if (track == selectedTrack)
         {
