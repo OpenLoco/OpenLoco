@@ -335,15 +335,10 @@ namespace OpenLoco::Audio
     {
         stopVehicleNoise();
         stopAmbientNoise();
-        if (!SceneManager::isTitleMode())
-        {
-            pauseMusic();
-        }
     }
 
     void unpauseSound()
     {
-        unpauseMusic();
     }
 
     static const SoundObject* getSoundObject(SoundId id)
@@ -572,5 +567,43 @@ namespace OpenLoco::Audio
     bool isAudioEnabled()
     {
         return _audioIsEnabled;
+    }
+
+    void toggleAudioLostFocus(bool pause)
+    {
+        static bool soundsWerePlaying = false;
+        static bool musicWasPlaying = false;
+
+        if (pause)
+        {
+            // Pause audio
+
+            soundsWerePlaying = !_audioIsPaused;
+            if (soundsWerePlaying)
+            {
+                pauseSound();
+            }
+
+            auto* channel = getChannel(ChannelId::music);
+            musicWasPlaying = (_audioIsInitialised && channel != nullptr && channel->isPlaying());
+            if (musicWasPlaying)
+            {
+                pauseMusic();
+            }
+        }
+        else
+        {
+            // Unpause audio
+
+            if (soundsWerePlaying)
+            {
+                unpauseSound();
+            }
+
+            if (musicWasPlaying)
+            {
+                unpauseMusic();
+            }
+        }
     }
 }
