@@ -67,7 +67,7 @@ strings:
   55: Yeterli bellek ayrilamadi
   56: "{COLOUR BLACK}❌"
   57: Seçilen ad zaten kullanimda
-  58: Çok fazla tanimli isim var
+  58: Çok fazla tanimli ad var
   59: Yetersiz para - gereken {CURRENCY32}
   60: "{SMALLFONT}{COLOUR BLACK}Pencereyi kapat"
   61: Oyun Baslatilamadi
@@ -219,9 +219,9 @@ strings:
   202: agaç listesi
   203: emir listesi
   204: istasyon listesi
-  205: sehir listesi
-  206: sanayi listesi
-  207: yeni sanayi listesi
+  205: yerlesimler listesi
+  206: fabrika listesi
+  207: yeni fabrika listesi
   208: bina listesi
   209: duvar listesi
   210: puanlama listesi
@@ -240,8 +240,8 @@ strings:
   222: Renk paleti degistirilemiyor...
   223: Yakinlastir
   224: Uzaklastir
-  225: Sehirler
-  226: Sanayiler
+  225: Yerlesimler
+  226: Fabrikalar
   227: Havalimani
   228: Liman
   229: Arazi Olusturma Seçenekleri
@@ -263,7 +263,7 @@ strings:
   245: 🛤🛣️☁️🌊
   246: "{STRINGID}"
   247: "{STRINGID} - Detaylar"
-  248: "{STRINGID} - Finans"
+  248: "{STRINGID} - Mali"
   249: "{STRINGID} - Teslim Edilen Yük"
   250: "{STRINGID} - Renk Paleti"
   251: "{STRINGID} - Meydan Okuma"
@@ -389,7 +389,7 @@ strings:
   371: Kayitli oyun yüklenemedi...{NEWLINE}Dosya geçersiz veri içeriyor!
   372: On plandaki peyzaj ve binalari gizle
   373: Sadece su üzerinde insa edilebilir!
-  374: Sadece su bazli bir sanayinin yaninda ise su üzerinde insa edilebilir!
+  374: Sadece su bazli bir fabrikanin yaninda ise su üzerinde insa edilebilir!
   375: "{STRINGID} Adi"
   376: "Bu {STRINGID} için yeni bir ad girin:"
   377: Bu araç yeniden adlandirilamiyor...
@@ -448,8 +448,8 @@ strings:
   426: Raylar ve yollardaki yükseklik isaretleri
   427: Arazi üzerindeki yükseklik isaretleri
   428: Tek yön oklari
-  429: Sehir isimleri gösteriliyor
-  430: Istasyon isimleri gösteriliyor
+  429: Yerlesim adlari gösteriliyor
+  430: Istasyon adlari gösteriliyor
   431: "{NEWLINE}{COLOUR WINDOW_3}Kabul eder: "
   432: "1/8 "
   433: "1/4 "
@@ -570,20 +570,20 @@ strings:
   548: "{INT16} gemi"
   549: "{INT16} gemiler"
   550: Gemi {INT16}
-  551: sehir
-  552: sehirler
-  553: Sehir
-  554: Sehirler
-  555: "{INT16} sehir"
-  556: "{INT16} sehirler"
-  557: Sehir {INT16}
-  558: sanayi
-  559: sanayiler
-  560: Sanayi
-  561: Sanayiler
-  562: "{INT16} sanayi"
-  563: "{INT16} sanayiler"
-  564: Sanayi {INT16}
+  551: yerlesim
+  552: yerlesimler
+  553: Yerlesim
+  554: Yerlesimler
+  555: "{INT16} yerlesim"
+  556: "{INT16} yerlesimler"
+  557: Yerlesim {INT16}
+  558: fabrika
+  559: fabrika
+  560: Fabrika
+  561: Fabrikalar
+  562: "{INT16} fabrika"
+  563: "{INT16} fabrika"
+  564: Fabrika {INT16}
   565: "{SMALLFONT}{COLOUR BLACK}Nesneleri 90° döndür"
   566: Düz zemin gerekli
   567: Arazi türü degistirilemiyor...
@@ -684,9 +684,9 @@ strings:
   660: Birimler
   661: Gerçek Degerler
   662: "{COLOUR WINDOW_2}Ekran Çözünürlügü:"
-  663: Arazi Yumusatma
+  663: Arazi yumusatma uygula
   664: "{SMALLFONT}{COLOUR BLACK}Arazi karosu kenar yumusatmasini aç/kapat"
-  665: Arazi Uzerinde Izgara Çizgileri
+  665: Arazi üzerinde izgara çizgilerini göster
   666: "{SMALLFONT}{COLOUR BLACK}Arazi üzerinde izgara çizgilerini aç/kapat"
   667: Banka kredinizi artirmayi reddetti!
   668: "{SMALLFONT}{COLOUR BLACK}Agaçlari ve binalari silmek için araziye tiklayin"
@@ -708,8 +708,8 @@ strings:
   684: Duvar Insa Et
   685: "{STRINGID} - Araç Detaylari"
   686: "{STRINGID} - Yük"
-  687: "{STRINGID} - Rota"
-  688: "{STRINGID} - Finans"
+  687: "{STRINGID} - Güzergah"
+  688: "{STRINGID} - Mali"
   689: "{COLOUR WINDOW_2}Trenler: {COLOUR BLACK}{INT16}"
   690: "{COLOUR WINDOW_2}Otobüsler: {COLOUR BLACK}{INT16}"
   691: "{COLOUR WINDOW_2}Kamyonlar: {COLOUR BLACK}{INT16}"
@@ -751,12 +751,12 @@ strings:
   727: Yeni Araçlar Insa Et
   728: Araç Listesini Göster
   729: Istasyon Listesini Göster
-  730: Sehirler Listesini Göster
-  731: Endüstriler Listesini Göster
+  730: Yerlesimler Listesini Göster
+  731: Fabrikalar Listesini Göster
   732: Haritayi Göster
   733: Sirketler Listesini Göster
   734: Sirket Bilgilerini Göster
-  735: Finansal Durumu Göster
+  735: Mali Durumu Göster
   736: Duyurular Listesini Göster
   737: Ekran Görüntüsü Al
   738: Son Duyuruyu Iptal Et veya Göster
@@ -1031,7 +1031,7 @@ strings:
   1004: "{SMALLFONT}{COLOUR BLACK}Kontrol tusu atamalarini görüntüle veya degistir"
   1005: Harita
   1006: Harita - Araçlar
-  1007: Harita - Endüstriler
+  1007: Harita - Fabrikalar
   1008: Harita - Tasima Güzergahlari
   1009: Harita - Sirketler
   1010: Zorunlu Yazilim Ara Bellek Karistirmasi
@@ -1121,50 +1121,50 @@ strings:
   1091: Saydam
   1092: "{COLOUR WINDOW_2}Insaat Isareti:"
   1093: "{COLOUR WINDOW_2}Araç asgari gösterim ölçegi:"
-  1094: "{COLOUR WINDOW_2}Istasyon isimleri asgari gösterim ölçegi:"
+  1094: "{COLOUR WINDOW_2}Istasyon adlari asgari gösterim ölçegi:"
   1095: Tam ölçek
   1096: Yarim ölçek
   1097: Çeyrek ölçek
   1098: Sekizde bir ölçek
   1099: "{SMALLFONT}{COLOUR BLACK}Araçlarin gösterilmesi için asgari görünüm ölçegini seçin"
-  1100: "{SMALLFONT}{COLOUR BLACK}Istasyon isimlerinin gösterilmesi için asgari görünüm ölçegini seçin"
+  1100: "{SMALLFONT}{COLOUR BLACK}Istasyon adlarinin gösterilmesi için asgari görünüm ölçegini seçin"
 
-  1101: "{COLOUR WINDOW_2}Ana renk paleti:"  
-  1102: "{COLOUR BLACK}Buharli Lokomotifler:"  
-  1103: "{COLOUR BLACK}Dizel Lokomotifler:"  
-  1104: "{COLOUR BLACK}Elektrikli Lokomotifler:"  
-  1105: "{COLOUR BLACK}Elektrikli Çoklu Birimler:"  
-  1106: "{COLOUR BLACK}Yolcu Araçlari:"  
-  1107: "{COLOUR BLACK}Yük Araçlari:"  
-  1108: "{COLOUR BLACK}Otobüsler:"  
-  1109: "{COLOUR BLACK}Kamyonlar:"  
-  1110: "{COLOUR BLACK}Uçaklar:"  
-  1111: "{COLOUR BLACK}Gemi ve Tekneler:"  
-  1112: "{SMALLFONT}{COLOUR BLACK}Sirket merkezi ve detaylari"  
-  1113: "{SMALLFONT}{COLOUR BLACK}Sirket sahibi ve durumu"  
-  1114: "{SMALLFONT}{COLOUR BLACK}Sirket finansmani"  
-  1115: "{SMALLFONT}{COLOUR BLACK}Teslim edilen yükler"  
-  1116: "{SMALLFONT}{COLOUR BLACK}Sirket renk paleti"  
-  1117: "{SMALLFONT}{COLOUR BLACK}Bu oyun için sirket görevi"  
-  1118: "{COLOUR WINDOW_2}Asagidaki araç türlerinde kullanilan özel renk semalari:"  
-  1119: "{SMALLFONT}{COLOUR BLACK}Ana renk seç"  
-  1120: '{SMALLFONT}{COLOUR BLACK}Ikincil renk seç (sadece bazi araç türlerinde kullanilir)'  
-  1121: '{SMALLFONT}{COLOUR BLACK}Bu araç türü için farkli bir renk paleti kullanilsin mi?'  
-  1122: "{STRINGID} - Trenler"  
-  1123: "{STRINGID} - Otobüsler"  
-  1124: "{STRINGID} - Kamyonlar"  
-  1125: "{STRINGID} - Tramvaylar"  
-  1126: "{STRINGID} - Uçaklar"  
-  1127: "{STRINGID} - Gemi ve tekneler"  
-  1128: "{STRINGID} - Tüm Istasyonlar"  
-  1129: "{STRINGID} - Demiryolu Istasyonlari"  
-  1130: "{STRINGID} - Karayolu Istasyonlari"  
-  1131: "{STRINGID} - Havalimanlari"  
+  1101: "{COLOUR WINDOW_2}Ana renk paleti:"
+  1102: "{COLOUR BLACK}Buharli Lokomotifler:"
+  1103: "{COLOUR BLACK}Dizel Lokomotifler:"
+  1104: "{COLOUR BLACK}Elektrikli Lokomotifler:"
+  1105: "{COLOUR BLACK}Elektrikli Çoklu Birimler:"
+  1106: "{COLOUR BLACK}Yolcu Araçlari:"
+  1107: "{COLOUR BLACK}Yük Araçlari:"
+  1108: "{COLOUR BLACK}Otobüsler:"
+  1109: "{COLOUR BLACK}Kamyonlar:"
+  1110: "{COLOUR BLACK}Uçaklar:"
+  1111: "{COLOUR BLACK}Gemi ve Tekneler:"
+  1112: "{SMALLFONT}{COLOUR BLACK}Sirket merkezi ve detaylari"
+  1113: "{SMALLFONT}{COLOUR BLACK}Sirket sahibi ve durumu"
+  1114: "{SMALLFONT}{COLOUR BLACK}Sirket maliyesi"
+  1115: "{SMALLFONT}{COLOUR BLACK}Teslim edilen yükler"
+  1116: "{SMALLFONT}{COLOUR BLACK}Sirket renk paleti"
+  1117: "{SMALLFONT}{COLOUR BLACK}Bu oyun için sirket görevi"
+  1118: "{COLOUR WINDOW_2}Asagidaki araç türlerinde kullanilan özel renkler:"
+  1119: "{SMALLFONT}{COLOUR BLACK}Ana renk seç"
+  1120: '{SMALLFONT}{COLOUR BLACK}Ikincil renk seç (sadece bazi araç türlerinde kullanilir)'
+  1121: '{SMALLFONT}{COLOUR BLACK}Bu araç türü için farkli bir renk paleti kullanilsin mi?'
+  1122: "{STRINGID} - Trenler"
+  1123: "{STRINGID} - Otobüsler"
+  1124: "{STRINGID} - Kamyonlar"
+  1125: "{STRINGID} - Tramvaylar"
+  1126: "{STRINGID} - Uçaklar"
+  1127: "{STRINGID} - Gemi ve tekneler"
+  1128: "{STRINGID} - Tüm Istasyonlar"
+  1129: "{STRINGID} - Demiryolu Istasyonlari"
+  1130: "{STRINGID} - Karayolu Duraklari"
+  1131: "{STRINGID} - Havalimanlari"
   1132: "{STRINGID} - Limanlar"
-  1133: Tüm Istasyonlar 
-  1134: Demiryolu Istasyonlari 
-  1135: Karayolu Istasyonlari  
-  1136: Havalimanlari  
+  1133: Tüm Istasyonlar
+  1134: Demiryolu Istasyonlari
+  1135: Karayolu Duraklari
+  1136: Havalimanlari
   1137: Limanlar
   1138: "{COLOUR WINDOW_2}{STRINGID} - {STRINGID}"
   1139: "{COLOUR WINDOW_2}{STRINGID} - {STRINGID} {STRINGID}"
@@ -1173,48 +1173,48 @@ strings:
   1142: "{COLOUR WINDOW_2}{INT16} yil"
   1143: "{COLOUR WINDOW_2}{INT16} yil"
   1144: "{COLOUR WINDOW_2}{INT16}%"
-  1145: "{COLOUR BLACK}Isim"
-  1146: "{COLOUR BLACK}Isim ▼"
+  1145: "{COLOUR BLACK}Ad"
+  1146: "{COLOUR BLACK}Ad ▼"
   1147: "{COLOUR BLACK}Aylik Kar"
   1148: "{COLOUR BLACK}Aylik Kar ▼"
   1149: "{COLOUR BLACK}Yas"
   1150: "{COLOUR BLACK}Yas ▼"
   1151: "{COLOUR BLACK}Güvenilirlik"
   1152: "{COLOUR BLACK}Güvenilirlik ▼"
-  1153: "{SMALLFONT}{COLOUR BLACK}Listeyi ada göre sirala"  
-  1154: "{SMALLFONT}{COLOUR BLACK}Listeyi kara göre sirala"  
-  1155: "{SMALLFONT}{COLOUR BLACK}Listeyi yasa göre sirala"  
-  1156: "{SMALLFONT}{COLOUR BLACK}Listeyi güvenilirlige göre sirala"  
-  1157: Araç önce durdurulmali!  
-  1158: Araç kaza yapti!  
-  1159: Araç bozuldu!  
-  1160: Araç takildi!  
-  1161: Yeterli alan yok yada araç yolda  
+  1153: "{SMALLFONT}{COLOUR BLACK}Listeyi ada göre sirala"
+  1154: "{SMALLFONT}{COLOUR BLACK}Listeyi kara göre sirala"
+  1155: "{SMALLFONT}{COLOUR BLACK}Listeyi yasa göre sirala"
+  1156: "{SMALLFONT}{COLOUR BLACK}Listeyi güvenilirlige göre sirala"
+  1157: Araç önce durdurulmali!
+  1158: Araç kaza yapti!
+  1159: Araç bozuldu!
+  1160: Araç takildi!
+  1161: Yeterli alan yok yada araç yolda
   1162: Araç yaklasiyor yada yolda
-  1163: "Buraya {POP16}{POP16}{POP16}{STRINGID} yerlestirilemiyor..."  
-  1164: "{POP16}{POP16}{POP16}{STRINGID} kaldirilamiyor..."  
-  1165: Sinyalde durulamiyor...  
-  1166: Bu araç için {STRINGID} gerekiyor  
-  1167: Trende araç yok!  
-  1168: Trende sürücü kabini yok  
-  1169: Trene lokomotif veya güç araci lazim  
+  1163: "Buraya {POP16}{POP16}{POP16}{STRINGID} yerlestirilemiyor..."
+  1164: "{POP16}{POP16}{POP16}{STRINGID} kaldirilamiyor..."
+  1165: Sinyalde durulamiyor...
+  1166: Bu araç için {STRINGID} gerekiyor
+  1167: Trende araç yok!
+  1168: Trende sürücü kabini yok
+  1169: Trene lokomotif veya güç araci lazim
   1170: "{STRINGID} den {STRINGID}"
   1171: Bos
   1172: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
   1173: "{NEWLINE}Kapasite:  {STRINGID}"
   1174: "{NEWLINE}+ {STRINGID}"
-  1175: Oyunda çok fazla istasyon var!  
-  1176: Istasyon çok büyük!  
-  1177: Once kasaba insa edilmeli! 
-  1178: "{SMALLFONT}{COLOUR BLACK}Genel haritayi göster"  
-  1179: "{SMALLFONT}{COLOUR BLACK}Haritada araç türlerini göster"  
-  1180: "{SMALLFONT}{COLOUR BLACK}Haritada sanayi türlerini göster"  
-  1181: "{SMALLFONT}{COLOUR BLACK}Haritada araç güzergahlarini göster"  
-  1182: "{SMALLFONT}{COLOUR BLACK}Haritada sirket sahipligini göster"  
-  1183: Istasyon çok daginik!  
-  1184: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID} {STRINGID} eklenemiyor..."  
-  1185: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID} insa edilemiyor..." 
-  1186: "{COLOUR BLACK}Select new vehicle"
+  1175: Oyunda çok fazla istasyon var!
+  1176: Istasyon çok büyük!
+  1177: Once yerlesim insa edilmeli!
+  1178: "{SMALLFONT}{COLOUR BLACK}Genel haritayi göster"
+  1179: "{SMALLFONT}{COLOUR BLACK}Haritada araç türlerini göster"
+  1180: "{SMALLFONT}{COLOUR BLACK}Haritada fabrika türlerini göster"
+  1181: "{SMALLFONT}{COLOUR BLACK}Haritada araç güzergahlarini göster"
+  1182: "{SMALLFONT}{COLOUR BLACK}Haritada sirket sahipligini göster"
+  1183: Istasyon çok daginik!
+  1184: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID} {STRINGID} eklenemiyor..."
+  1185: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID} insa edilemiyor..."
+  1186: "{COLOUR BLACK}Yeni arac sec"
   1187: "{COLOUR BLACK}Eklenecek araci seç {STRINGID}"
   1188: "{SMALLFONT}{COLOUR BLACK}Yeni tren araci olustur"
   1189: "{SMALLFONT}{COLOUR BLACK}Yeni otobüs olustur"
@@ -1242,42 +1242,42 @@ strings:
   1211: "{COLOUR WINDOW_2}{STRINGID}"
   1212: "{COLOUR WINDOW_2}{STRINGID} (yolda"
   1213: "{COLOUR WINDOW_2}{STRINGID})"
-  1214: Daha fazla araç emri için yer yok!  
-  1215: Bu araç için çok fazla emir var!  
-  1216: "Yerel"  
-  1217: "Ekspres" 
-  1218: "{COLOUR BLACK}- - Güzergah tanimlanmadi - -"  
-  1219: "{COLOUR BLACK}- - Güzergah listesi sonu - -"  
-  1220: "{STRINGID} duraginda dur"  
-  1221: "{STRINGID} üzerinden güzergah"  
-  1222: Ara nokta üzerinden güzergah  
-  1223: Tüm {STRINGID} {SPRITE} bosalt  
-  1224: Tüm {STRINGID} {SPRITE} dolana kadar bekle  
-  1225: Tüm {STRINGID} {SPRITE} bosalt  
-  1226: Tüm {STRINGID} {SPRITE} dolana kadar bekle  
+  1214: Daha fazla araç emri için yer yok!
+  1215: Bu araç için çok fazla emir var!
+  1216: "Yerel"
+  1217: "Ekspres"
+  1218: "{COLOUR BLACK}- - Güzergah tanimlanmadi - -"
+  1219: "{COLOUR BLACK}- - Güzergah listesi sonu - -"
+  1220: "{STRINGID} duraginda dur"
+  1221: "{STRINGID} üzerinden güzergah"
+  1222: Ara nokta üzerinden güzergah
+  1223: Tüm {STRINGID} {SPRITE} bosalt
+  1224: Tüm {STRINGID} {SPRITE} dolana kadar bekle
+  1225: Tüm {STRINGID} {SPRITE} bosalt
+  1226: Tüm {STRINGID} {SPRITE} dolana kadar bekle
   1227: "{COLOUR WINDOW_2}▶"
   1228: Emir eklenemiyor...
-  1229: "{COLOUR WINDOW_3}Yeni emir eklemek için tiklayin{NEWLINE}buradaki ara nokta üzerinden güzergah"  
-  1230: "{COLOUR WINDOW_3}Yeni emir eklemek için tiklayin{NEWLINE}{STRINGID} duraginda dur"  
-  1231: "{COLOUR WINDOW_3}Son emri degistirmek için tekrar tiklayin{NEWLINE}{STRINGID} üzerinden güzergah"  
+  1229: "{COLOUR WINDOW_3}Yeni emir eklemek için tiklayin{NEWLINE}buradaki ara nokta üzerinden güzergah"
+  1230: "{COLOUR WINDOW_3}Yeni emir eklemek için tiklayin{NEWLINE}{STRINGID} duraginda dur"
+  1231: "{COLOUR WINDOW_3}Son emri degistirmek için tekrar tiklayin{NEWLINE}{STRINGID} üzerinden güzergah"
   1232: "{SMALLFONT}{COLOUR BLACK}Tam yük için bekleme emri ekle"
-  1233: "{SMALLFONT}{COLOUR BLACK}Yük bosaltmayi zorunlu kilan emir ekle, istasyon kabul etmese bile"  
-  1234: "{SMALLFONT}{COLOUR BLACK}Listedeki sonraki emre geç"  
-  1235: "{SMALLFONT}{COLOUR BLACK}Son yada seçili emri sil"  
-  1236: "{COLOUR BLACK}Güzergah ayarlamak için istasyon yada ara noktaya tikla"  
-  1237: "{SMALLFONT}{COLOUR BLACK}Emre tiklayarak seç, istasyon/ara noktayi göstermek için iki kere tikla"  
-  1238: "{SMALLFONT}{COLOUR BLACK}Emre tiklayarak seçili araca kopyala"  
+  1233: "{SMALLFONT}{COLOUR BLACK}Yük bosaltmayi zorunlu kilan emir ekle, istasyon kabul etmese bile"
+  1234: "{SMALLFONT}{COLOUR BLACK}Listedeki sonraki emre geç"
+  1235: "{SMALLFONT}{COLOUR BLACK}Son yada seçili emri sil"
+  1236: "{COLOUR BLACK}Güzergah ayarlamak için istasyon yada ara noktaya tikla"
+  1237: "{SMALLFONT}{COLOUR BLACK}Emre tiklayarak seç, istasyon/ara noktayi göstermek için iki kere tikla"
+  1238: "{SMALLFONT}{COLOUR BLACK}Emre tiklayarak seçili araca kopyala"
   1239: "{STRINGID} {STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}"
   1240: Tren Satin Al
   1241: Otobüs Satin Al
   1242: Kamyon Satin Al
-  1243: Tramvay Satin Al  
+  1243: Tramvay Satin Al
   1244: Uçak Satin Al
   1245: Gemi Satin Al
-  1246: Sadece {STRINGID} üzerine yerlestirilebilir...  
-  1247: Yol  
-  1248: "{COLOUR BLACK}Uygun araç yok"  
-  1249: "{COLOUR BLACK}{STRINGID} için uyumlu araç yok" 
+  1246: Sadece {STRINGID} üzerine yerlestirilebilir...
+  1247: Yol
+  1248: "{COLOUR BLACK}Uygun araç yok"
+  1249: "{COLOUR BLACK}{STRINGID} için uyumlu araç yok"
   1250: ""
   1251: "{COLOUR WINDOW_2} Maliyet: {COLOUR BLACK}{CURRENCY32}"
   1252: "{NEWLINE}{COLOUR WINDOW_2} Gereksinimler: {COLOUR BLACK}"
@@ -1287,75 +1287,75 @@ strings:
   1256: "{NEWLINE}{COLOUR WINDOW_2} Tasarim Yili: {COLOUR BLACK}{UINT16 RAW}"
   1257: "{NEWLINE}{COLOUR WINDOW_2} Kapasite: {COLOUR BLACK}{STRINGID}"
   1258: " + {STRINGID}"
-  1259: " (dik yokuslar için + {STRINGID})"  
-  1260: " ({VELOCITY} {STRINGID} üzerinde)"  
+  1259: " (dik yokuslar için + {STRINGID})"
+  1260: " ({VELOCITY} {STRINGID} üzerinde)"
   1261: veya {STRINGID}
   1262: "{NEWLINE}{COLOUR WINDOW_2} Isletme Maliyeti: {COLOUR BLACK}{CURRENCY32}/ay"
   1263: " (yeniden donatilabilir)"
-  1264: "{INT16} tren"  
-  1265: "{INT16} otobüs"  
-  1266: "{INT16} kamyon"  
-  1267: "{INT16} tramvay"  
-  1268: "{INT16} uçak"  
-  1269: "{INT16} gemi"  
-  1270: Trenlerim  
-  1271: Otobüslerim  
-  1272: Kamyonlarim 
-  1273: Tramvaylarim  
-  1274: Uçaklarim  
-  1275: Gemilerim 
-  1276: tren  
-  1277: otobüs  
-  1278: kamyon  
-  1279: tramvay  
-  1280: uçak  
-  1281: gemi 
+  1264: "{INT16} tren"
+  1265: "{INT16} otobüs"
+  1266: "{INT16} kamyon"
+  1267: "{INT16} tramvay"
+  1268: "{INT16} uçak"
+  1269: "{INT16} gemi"
+  1270: Trenlerim
+  1271: Otobüslerim
+  1272: Kamyonlarim
+  1273: Tramvaylarim
+  1274: Uçaklarim
+  1275: Gemilerim
+  1276: tren
+  1277: otobüs
+  1278: kamyon
+  1279: tramvay
+  1280: uçak
+  1281: gemi
   1282: "{COLOUR WINDOW_2}Toplam: {COLOUR BLACK}{STRINGID}"
   1283: Bos
   1284: "{SMALLFONT}{COLOUR BLACK}Yük: "
-  1285: Ekstra {STRINGID} gerektirir  
-  1286: "{SMALLFONT}{COLOUR BLACK}{STRINGID} için araçlar"  
-  1287: "{SPRITE}{NEWLINE 31 8} {STRINGID}"  
-  1288: "{POP16}{POP16}{NEWLINE 31 8} {STRINGID}"  
-  1289: "{SPRITE}{NEWLINE 31 8} {STRINGID} Insa Et"  
+  1285: Ekstra {STRINGID} gerektirir
+  1286: "{SMALLFONT}{COLOUR BLACK}{STRINGID} için araçlar"
+  1287: "{SPRITE}{NEWLINE 31 8} {STRINGID}"
+  1288: "{POP16}{POP16}{NEWLINE 31 8} {STRINGID}"
+  1289: "{SPRITE}{NEWLINE 31 8} {STRINGID} Insa Et"
   1290: "{STRINGID} yerel yönetimi izin vermedi!"
-  1291: Kasabalar  
-  1292: Yeni Kasabalar Insa Et  
-  1293: Bireysel Kasaba Binalari Insa Et  
-  1294: Çesitli Binalar Insa Et  
+  1291: Yerlesimler
+  1292: Yeni Yerlesim Insa Et
+  1293: Bagimsiz Binalar Insa Et
+  1294: Çesitli Yapilar Insa Et
   1295: "{COLOUR BLACK}Nüfus"
   1296: "{COLOUR BLACK}Nüfus ▼"
-  1297: "{SMALLFONT}{COLOUR BLACK}Listeyi nüfusa göre sirala" 
+  1297: "{SMALLFONT}{COLOUR BLACK}Listeyi nüfusa göre sirala"
   1298: "{INT32}"
   1299: "{COLOUR BLACK}Istasyonlar"
   1300: "{COLOUR BLACK}Istasyonlar ▼"
-  1301: "{SMALLFONT}{COLOUR BLACK}Listeyi istasyon sayisina göre sirala"  
-  1302: "{COLOUR BLACK}Kasaba"
-  1303: "{COLOUR BLACK}Kasaba ▼"
+  1301: "{SMALLFONT}{COLOUR BLACK}Listeyi istasyon sayisina göre sirala"
+  1302: "{COLOUR BLACK}Yerlesim"
+  1303: "{COLOUR BLACK}Yerlesim ▼"
   1304: "{STRINGID} Nüfus {INT32}"
-  1305: "{SMALLFONT}{COLOUR BLACK}Listeyi kasaba türüne göre sirala"  
-  1306: "{COLOUR BLACK}Tür" 
+  1305: "{SMALLFONT}{COLOUR BLACK}Listeyi yerlesim türüne göre sirala"
+  1306: "{COLOUR BLACK}Tür"
   1307: "{COLOUR BLACK}Tür ▼"
-  1308: Kasaba Adi
-  1309: "{STRINGID} için yeni isim yaz:"  
+  1308: Yerlesim Adi
+  1309: "{STRINGID} için yeni ad girin:"
   1310: "{COLOUR BLACK}{STRINGID} nüfusu {INT32}"
-  1311: Kasaba adi degistirilemiyor...  
-  1312: Yeni Istasyon 
+  1311: Yerlesim adi degistirilemiyor...
+  1312: Yeni Istasyon
   1313: "{COLOUR BLACK}({STRINGID})"
   1314: "{COLOUR WINDOW_2}Hizmet Alani{NEWLINE}  Kabul Edilenler: "
   1315: "{COLOUR WINDOW_2}  Uretilenler: "
   1316: "{COLOUR BLACK}Hiçbiri"
-  1317: Çok fazla sanayi  
-  1318: Sanayiler  
-  1319: Yeni Sanayiler Fonla  
-  1320: Sanayiler Insa Et 
-  1321: "{SMALLFONT}{COLOUR BLACK}Kasaba listesi"  
-  1322: "{SMALLFONT}{COLOUR BLACK}Kasabalar insa et"  
-  1323: "{SMALLFONT}{COLOUR BLACK}Bireysel kasaba binalari insa et"  
-  1324: "{SMALLFONT}{COLOUR BLACK}Çesitli binalar insa et"  
-  1325: "{SMALLFONT}{COLOUR BLACK}Sanayi Listesi"  
-  1326: "{SMALLFONT}{COLOUR BLACK}Yeni sanayiler fonla"  
-  1327: "{SMALLFONT}{COLOUR BLACK}Sanayiler insa et" 
+  1317: Çok fazla fabrika
+  1318: Fabrikalar
+  1319: Yeni Fabrikalar Insa Et
+  1320: Fabrikalar Insa Et
+  1321: "{SMALLFONT}{COLOUR BLACK}Yerlesim listesi"
+  1322: "{SMALLFONT}{COLOUR BLACK}Yerlesim insa et"
+  1323: "{SMALLFONT}{COLOUR BLACK}Bagimsiz binalar insa et"
+  1324: "{SMALLFONT}{COLOUR BLACK}Çesitli yapilar insa et"
+  1325: "{SMALLFONT}{COLOUR BLACK}Fabrika Listesi"
+  1326: "{SMALLFONT}{COLOUR BLACK}Yeni fabrilar fonla"
+  1327: "{SMALLFONT}{COLOUR BLACK}Fabrikalar insa et"
   1328: Abanoz
   1329: Gümüs
   1330: Fildisi
@@ -1393,40 +1393,40 @@ strings:
   1362: "{STRINGID} - Aylik Uretim"
   1363: "{STRINGID} - Istatistikler"
   1364: "{STRINGID} {STRINGID}"
-  1365: "{SMALLFONT}{COLOUR BLACK}Bu sanayiyi yik"
+  1365: "{SMALLFONT}{COLOUR BLACK}Bu fabrikayi yik"
   1366: Insaat altinda
   1367: "Uretiyor "
   1368: "Uretir "
   1369: "Uret "
-  1370: " gerekiyor üretmek için  "
+  1370: " gerekir > Uretmek için "
   1371: ""
   1372: ""
   1373: " ve "
   1374: " veya "
   1375: ", "
-  1376: "{SMALLFONT}{COLOUR BLACK}Listeyi sanayi durumuna göre sirala"
+  1376: "{SMALLFONT}{COLOUR BLACK}Listeyi fabrika durumuna göre sirala"
   1377: "{SMALLFONT}{COLOUR BLACK}Listeyi tasinan üretim yüzdesine göre sirala"
   1378: "{COLOUR BLACK}Durum"
   1379: "{COLOUR BLACK}Durum ▼"
   1380: "{COLOUR BLACK}Tasinan Uretim"
   1381: "{COLOUR BLACK}Tasinan Uretim ▼"
-  1382: "{SMALLFONT}{COLOUR BLACK}Listeyi sanayi adina göre sirala"
-  1383: "{COLOUR BLACK}Sanayi"
-  1384: "{COLOUR BLACK}Sanayi ▼"
-  1385: "{COLOUR BLACK}Sanayi yok"
-  1386: "{SMALLFONT}{COLOUR BLACK}Kasaba"
+  1382: "{SMALLFONT}{COLOUR BLACK}Listeyi fabrika adina göre sirala"
+  1383: "{COLOUR BLACK}Fabrika"
+  1384: "{COLOUR BLACK}Fabrika ▼"
+  1385: "{COLOUR BLACK}Fabrika yok"
+  1386: "{SMALLFONT}{COLOUR BLACK}Yerlesim"
   1387: "{SMALLFONT}{COLOUR BLACK}Nüfus grafigi"
-  1388: "{SMALLFONT}{COLOUR BLACK}Kasabanin her sirkete puani"
-  1389: "{SMALLFONT}{COLOUR BLACK}Sanayi"
+  1388: "{SMALLFONT}{COLOUR BLACK}Yerlesimin her sirkete puani"
+  1389: "{SMALLFONT}{COLOUR BLACK}Fabrika"
   1390: "{SMALLFONT}{COLOUR BLACK}Uretim grafigi"
   1391: "{COLOUR BLACK}{SMALLFONT}({STRINGID})"
-  1392: "{SMALLFONT}{COLOUR BLACK}Bu kasabayi (ve yakinindaki sanayileri) tamamen yik"
-  1393: Kasaba kaldirilamiyor...
-  1394: Bu kasaba yakinindaki tüm istasyonlar önce kaldirilmali
-  1395: Diger kasabaya çok yakin
-  1396: Çok fazla kasaba
-  1397: Diger kasabaya çok yakin veya konum uygun degil
-  1398: "{SMALLFONT}{COLOUR BLACK}Insa edilecek kasaba boyutunu seç"
+  1392: "{SMALLFONT}{COLOUR BLACK}Bu yerlesimi (ve yakinindaki fabrikalari) tamamen yik"
+  1393: Yerlesim kaldirilamiyor...
+  1394: Bu yerlesim yakinindaki tüm istasyonlar önce kaldirilmali
+  1395: Diger yerlesime çok yakin
+  1396: Çok fazla yerlesim
+  1397: Diger yerlesime çok yakin veya konum uygun degil
+  1398: "{SMALLFONT}{COLOUR BLACK}Insa edilecek yerlesim boyutunu seç"
   1399: 1 (küçük)
   1400: "2"
   1401: 3 (orta)
@@ -1435,11 +1435,11 @@ strings:
   1404: 6 (büyük)
   1405: "7"
   1406: 8 (devasa)
-  1407: "{COLOUR BLACK}Ksaba büyüklügü:"
-  1408: "{COLOUR BLACK}(Yeni kasaba insa etmek için araziye tiklayin)"
-  1409: "{SMALLFONT}{COLOUR BLACK}Bu kasabayi genislet"
-  1410: Diger bir sanayiye çok yakin
-  1411: Once yakinda kasaba insa edilmeli
+  1407: "{COLOUR BLACK}Azami büyüklük:"
+  1408: "{COLOUR BLACK}(Yerlesim kurmak için araziye tiklayin)"
+  1409: "{SMALLFONT}{COLOUR BLACK}Bu yerlesimi genislet"
+  1410: Diger bir fabrikaya çok yakin
+  1411: Once yakinda bir yerlesim insa edilmeli
   1412: "{SMALLFONT}{COLOUR BLACK}Seçilen agaç türünden bir küme dik"
   1413: "{SMALLFONT}{COLOUR BLACK}Rastgele agaç kümeleri dik"
   1414: "{SMALLFONT}{COLOUR BLACK}Istatistikler"
@@ -1485,10 +1485,10 @@ strings:
   1454: "{SMALLFONT}{COLOUR BLACK}Kimlik adini degistir"
   1455: "{COLOUR BLACK}(henüz insa edilmedi)"
   1456: Sirket Adi
-  1457: "Yeni sirket adi girin:"
+  1457: "Yeni sirket ismi girin:"
   1458: Bu sirketin adi degistirilemiyor...
   1459: Kimlik Adi
-  1460: "Yeni kimlik adi girin:"
+  1460: "Yeni kimlik ismi girin:"
   1461: Kimlik adi degistirilemiyor...
   1462: Merkez Binasi
   1463: "{STRINGID} Merkez Binasi"
@@ -1575,13 +1575,13 @@ strings:
   1538: "{SMALLFONT}{COLOUR BLACK}Sonraki müzik parçasi"
   1539: Sadece mevcut döneme ait müzikleri çal
   1540: Tüm müzikleri çal
-  1541: Ozellestirilmis müzik seçimi çal
+  1541: Ozellestirilmis müzik seçimini çal
   1542: Seçimi düzenle...
   1543: "{SMALLFONT}{COLOUR BLACK}Müzik parça seçim listesini düzenle"
   1544: Müzik Seçimini Düzenle
   1545: "{SMALLFONT}{COLOUR BLACK}Müzik parçasina tiklayarak seçimi aç/kapa"
   1546: ✓
-  1547: "{COLOUR WINDOW_2}Ses seviyesi:"
+  1547: "{COLOUR WINDOW_2}Ses Seviyesi:"
   1548: "{SMALLFONT}{COLOUR BLACK}Müzik ses seviyesini ayarla"
   1549: Müzik Seçenekleri
   1550: "{STRINGID} Için Kimlik Yüzü Seç"
@@ -1622,13 +1622,13 @@ strings:
   1585: Peyzaj Olusturma - Seçenekler
   1586: Peyzaj Olusturma - Arazi
   1587: Peyzaj Olusturma - Ormanlar
-  1588: Peyzaj Olusturma - Kasabalar
-  1589: Peyzaj Olusturma - Sanayi
+  1588: Peyzaj Olusturma - Yerlesimler
+  1589: Peyzaj Olusturma - Fabrikalar
   1590: "{SMALLFONT}{COLOUR BLACK}Peyzaj olusturma genel seçenekleri"
   1591: "{SMALLFONT}{COLOUR BLACK}Arazi olusturma seçenekleri"
   1592: "{SMALLFONT}{COLOUR BLACK}Orman olusturma seçenekleri"
-  1593: "{SMALLFONT}{COLOUR BLACK}Kasaba olusturma seçenekleri"
-  1594: "{SMALLFONT}{COLOUR BLACK}Sanayi olusturma seçenekleri"
+  1593: "{SMALLFONT}{COLOUR BLACK}Yerlesim olusturma seçenekleri"
+  1594: "{SMALLFONT}{COLOUR BLACK}Fabrika olusturma seçenekleri"
 
   1595: "[Yok]"
   1596: Chuggin' Along
@@ -1663,7 +1663,7 @@ strings:
 
   1625: "{UINT16 RAW}"
   1626: "{COLOUR WINDOW_2}Baslangiç yili:"
-  1627: Oyun baslarken sadece rastgele peyzaj olustur
+  1627: Oyun baslarken rastgele peyzaj olustur
   1628: "{SMALLFONT}{COLOUR BLACK}Her yeni oyun baslatildiginda rastgele peyzaj olustur"
   1629: Yeni peyzaj olustur
   1630: "{SMALLFONT}{COLOUR BLACK}Yeni rastgele bir peyzaj olustur (mevcut peyzaj kaybolacak)"
@@ -1700,14 +1700,14 @@ strings:
   1661: Yarisi Dag, Yarisi Düzlük
   1662: "{COLOUR WINDOW_2}Tepe Yogunlugu:"
   1663: "{INT16}%"
-  1664: "{COLOUR WINDOW_2}Kasaba sayisi:"
+  1664: "{COLOUR WINDOW_2}Yerlesim sayisi:"
   1665: "{INT16}"
-  1666: "{COLOUR WINDOW_2}Azami kasaba büyüklügü:"
+  1666: "{COLOUR WINDOW_2}Azami yerlesim büyüklügü:"
   1667: Düsük
   1668: Orta
   1669: Yüksek
-  1670: "{COLOUR WINDOW_2}Sanayi sayisi:"
-  1671: En az bir kasaba insa edilmeli
+  1670: "{COLOUR WINDOW_2}Fabrika sayisi:"
+  1671: En az bir yerlesim insa edilmeli
   1672: Sonraki düzenleyici asamasina gecilemiyor...
   1673: Senaryo henüz kaydedilemiyor...
   1674: "{SMALLFONT}{COLOUR BLACK}Senaryo seçenekleri"
@@ -1741,7 +1741,7 @@ strings:
   1702: "{COLOUR WINDOW_2}Senaryo Grubu:"
   1703: "{COLOUR WINDOW_2}Senaryo Detaylari:"
   1704: Senaryo Adi
-  1705: Senaryo için isim girin:-
+  1705: Senaryo için ad girin:-
   1706: Senaryo Detaylari
   1707: Bu senaryonun açiklamasini girin:-
   1708: Henüz detay yok
@@ -1812,12 +1812,12 @@ strings:
   1773: Mühendis
   1774: Trafik Müdürü
   1775: Ulasim Koordinatörü
-  1776: Rota Sorumlusu
-  1777: Direktör
+  1776: Güzergah Sorumlusu
+  1777: Müdür
   1778: Genel Müdür
-  1779: Yönetim Kurulu Baskani
-  1780: Baskan
-  1781: Tasimacilik Devi
+  1779: Baskan
+  1780: Yönetim Kurulu Baskani
+  1781: Kodaman
   1782: "{INT16} sirket"
   1783: "{INT16} sirket"
   1784: "{RAWDATE MY SHORT}"
@@ -1838,14 +1838,14 @@ strings:
   1799: "{SMALLFONT}{COLOUR BLACK}Tasima süresi"
   1800: "*  Duraklatildi  *"
   1801: Belediye burada baska bir havalimani yapilmasina izin vermiyor
-  1802: Kasabalar
-  1803: Sanayiler
+  1802: Yerlesim Yerleri
+  1803: Fabrikalar
   1804: Yollar
   1805: Demiryollari
   1806: Istasyonlar
   1807: Bitki Ortüsü
-  1808: Uçak Rotalari
-  1809: Gemi Rotalari
+  1808: Uçak Güzergahlari
+  1809: Gemi Güzergahlari
   1810: ""
   1811: "{STRINGID}, {STRINGID} yakininda insa ediliyor"
   1812: "{STRINGID}, {STRINGID} yakininda insa ediliyor"
@@ -1909,8 +1909,8 @@ strings:
   1869: "{OUTLINE}{COLOUR WINDOW_2}Oyunu{NEWLINE}Kapat"
 
   1870: Sirket iflas etti!
-  1871: Oyun sirasinda endüstrilerin kapanmasina izin ver
-  1872: Oyun sirasinda yeni endüstrilerin açilmasina izin ver
+  1871: Oyun sirasinda fabrikalarin kapanmasina izin ver
+  1872: Oyun sirasinda yeni fabrikalarin açilmasina izin ver
   1873: Diger sirket/kimlik yüzlerini paylas
   1874: "{SMALLFONT}{COLOUR BLACK}Baglanti sürecinde özellestirilmis sirket/kimlik yüzü veri dosyalarinin diger bilgisayara gönderilmesini seçin"
   1875: "{COLOUR WINDOW_2}Rakip sirketlerin kullanmasini yasakla"
@@ -1918,50 +1918,50 @@ strings:
   1877: "{NEWLINE}Duraklar: {STRINGID}"
   1878: ", {STRINGID}"
 
-  1879: "Egitim 1: Sehir içinde otobüs servisi baslatma"
-  1880: "Egitim 2: Iki sehir arasinda otobüs servisi kurma"
-  1881: "Egitim 3: Iki sehir arasinda tren hatti kurma"
+  1879: "Egitim 1: Yerlesim içinde otobüs servisi baslatma"
+  1880: "Egitim 2: Iki yerlesim arasinda otobüs servisi kurma"
+  1881: "Egitim 3: Iki yerlesim arasinda tren hatti kurma"
 
   # Egitim 1
-  1882: "{SMALLFONT}{COLOUR BLACK}Bir sehir içinde yolcu tasimak için otobüs servisi kuracagiz; ilk adim olarak bir sehir seçmeliyiz..."
-  1883: "{SMALLFONT}{COLOUR BLACK}Görünümü kaydirmak için sag fare tusuna basili tutarak fareyi hareket ettirin ve sehirleri inceleyin..."
-  1884: "{SMALLFONT}{COLOUR BLACK}Boulders Bay en büyük sehir, bu yüzden en fazla yolcuyu üretir. Fare tekerlegini ya da yakinlastirma ikonunu kullanarak yakinlastirin..."
+  1882: "{SMALLFONT}{COLOUR BLACK}Bir yerlesim içinde yolcu tasimak için otobüs servisi kuracagiz; ilk adim olarak bir yerlesim seçmeliyiz..."
+  1883: "{SMALLFONT}{COLOUR BLACK}Görünümü kaydirmak için sag fare tusuna basili tutarak fareyi hareket ettirin ve yerlesimleri inceleyin..."
+  1884: "{SMALLFONT}{COLOUR BLACK}Boulders Bay en büyük yerlesim, bu yüzden en fazla yolcuyu üretir. Fare tekerlegini ya da yakinlastirma ikonunu kullanarak yakinlastirin..."
   1885: "{SMALLFONT}{COLOUR BLACK}Yol bazli tüm insaatlar yol insaati penceresinden yapilir..."
-  1886: "{SMALLFONT}{COLOUR BLACK}Otobüs servisi için yeni yollara gerek yok, sadece otobüs duragi istasyonlari yeterli..."
-  1887: "{SMALLFONT}{COLOUR BLACK}Otobüsümüz sehirde bir uçtan diger uca gidecek..."
-  1888: "{SMALLFONT}{COLOUR BLACK}Mavi ile vurgulanan alan istasyonun kapsama alanidir. Kapsama alanindaki bina sayisi arttikça daha fazla yolcu istasyonu kullanir..."
-  1889: "{SMALLFONT}{COLOUR BLACK}Istasyonun yolcu kabul edip etmedigini kontrol edin, aksi takdirde yolculari indiremezsiniz ve ödeme alamazsiniz. Insaat penceresinin altindaki “Kapsama Alani” yazisina dikkat edin..."
-  1890: "{SMALLFONT}{COLOUR BLACK}Konumdan memnunsaniz, istasyonu insa etmek için sol fare tusuna tiklayin..."
-  1891: "{SMALLFONT}{COLOUR BLACK}Ikinci istasyonu sehrin karsi tarafina insa edecegiz..."
+  1886: "{SMALLFONT}{COLOUR BLACK}Otobüs servisi için yeni yollara gerek yok, sadece otobüs duragi yeterli..."
+  1887: "{SMALLFONT}{COLOUR BLACK}Otobüsümüz bu yerlesimde bir uçtan diger uca gidecek..."
+  1888: "{SMALLFONT}{COLOUR BLACK}Mavi ile vurgulanan alan duragin kapsama alanidir. Kapsama alanindaki bina sayisi arttikça duragi daha fazla yolcu kullanir..."
+  1889: "{SMALLFONT}{COLOUR BLACK}Duragin yolcu kabul edip etmedigini kontrol edin, aksi takdirde yolculari indiremezsiniz ve ödeme alamazsiniz. Insaat penceresinin altindaki “Kapsama Alani” yazisina dikkat edin..."
+  1890: "{SMALLFONT}{COLOUR BLACK}Konumdan memnunsaniz, duragi insa etmek için sol fare tusuna tiklayin..."
+  1891: "{SMALLFONT}{COLOUR BLACK}Ikinci duragi yerlesimin karsi tarafina insa edecegiz..."
   1892: "{SMALLFONT}{COLOUR BLACK}Simdi bir otobüs satin almamiz gerekiyor..."
   1893: "{SMALLFONT}{COLOUR BLACK}Iki otobüs tipi arasindan seçim yapabiliriz. Daha fazla yolcu tasiyan yeni tasarimi seçelim..."
   1894: "{SMALLFONT}{COLOUR BLACK}Otobüsü yola yerlestirmek için fare imlecini konumlandirin ve sol tiklayin..."
-  1895: "{SMALLFONT}{COLOUR BLACK}Otobüsü çalistirmadan önce nereye gidecegini bilmesi gerekiyor. Araç penceresindeki rota sekmesini seçin..."
-  1896: "{SMALLFONT}{COLOUR BLACK}Rotayi ayarlamak için sadece görünümdeki istasyonlara tiklayin..."
+  1895: "{SMALLFONT}{COLOUR BLACK}Otobüsü çalistirmadan önce nereye gidecegini bilmesi gerekiyor. Araç penceresindeki güzergah sekmesini seçin..."
+  1896: "{SMALLFONT}{COLOUR BLACK}Güzergahi ayarlamak için sadece görünümdeki duraklara tiklayin..."
   1897: "{SMALLFONT}{COLOUR BLACK}Artik otobüsü çalistirabiliriz..."
   1898: "{SMALLFONT}{COLOUR BLACK}Ilk yolcularini almasini izleyelim..."
 
   # Egitim 2
-  1899: "{SMALLFONT}{COLOUR BLACK}Boulder Bay ve Breakers Bridge arasinda yolcu tasimak için bir otobüs servisi kuracagiz. Sehirler arasinda yol olmadigindan bir yol insa etmemiz gerekiyor..."
+  1899: "{SMALLFONT}{COLOUR BLACK}Boulder Bay ve Breakers Bridge arasinda yolcu tasimak için bir otobüs servisi kuracagiz. Yerlesimler arasinda yol olmadigindan bir yol insa etmemiz gerekiyor..."
   1900: "{SMALLFONT}{COLOUR BLACK}Yeni yol kesitinin yönünü seçin ve insaata baslamak için görünümde bir noktaya tiklayin..."
   1901: "{SMALLFONT}{COLOUR BLACK}'Bunu insa et' simgesine tiklamak ayni türden daha fazla yol kesiti ekler..."
   1902: "{SMALLFONT}{COLOUR BLACK}Devam etmeden önce, yol insaatina baslamanin daha hizli bir yolunu gösterelim..."
   1903: "{SMALLFONT}{COLOUR BLACK}Uzatmak istediginiz yolun sonuna sag tiklayin..."
   1904: "{SMALLFONT}{COLOUR BLACK}Burada sola dönmemiz gerekiyor, bu yüzden sol dönüs egrisini seçin..."
   1905: "{SMALLFONT}{COLOUR BLACK}Simdi tekrar düz yol insa ediyoruz..."
-  1906: "{SMALLFONT}{COLOUR BLACK}Yol tamamlandi, simdi istasyonlar kurulmali..."
+  1906: "{SMALLFONT}{COLOUR BLACK}Yol tamamlandi, simdi duraklar kurulmali..."
   1907: "{SMALLFONT}{COLOUR BLACK}Son olarak bir otobüs satin alip çalistiracagiz..."
   1908: "{SMALLFONT}{COLOUR BLACK}Bu hat oldukça yogun olabilir, bu yüzden ikinci bir otobüs daha alacagiz..."
-  1909: "{SMALLFONT}{COLOUR BLACK}Otobüs 2'ye Otobüs 1'in tüm rotasini kopyalamak için sadece Otobüs 1'in 'rota sonu' yazisina tiklayin..."
+  1909: "{SMALLFONT}{COLOUR BLACK}Otobüs 2'ye Otobüs 1'in tüm güzergahini kopyalamak için sadece Otobüs 1'in 'güzergah sonu' yazisina tiklayin..."
 
   # Egitim 3
-  1910: "{SMALLFONT}{COLOUR BLACK}Iki büyük sehir arasinda yolcu tasimak için tren servisi kurarak baslayalim..."
+  1910: "{SMALLFONT}{COLOUR BLACK}Iki büyük yerlesim arasinda yolcu tasimak için tren servisi kurarak baslayalim..."
   1911: "{SMALLFONT}{COLOUR BLACK}Tren istasyonlari sadece düz raylara kurulabilir ve trenimizin uzunluguna uygun olmalidir – Birkaç dakika içinde buraya bir istasyon kuracagiz..."
   1912: "{SMALLFONT}{COLOUR BLACK}Simdi istasyonlari insa ediyoruz..."
   1913: "{SMALLFONT}{COLOUR BLACK}Simdi treni insa edecegiz. Lokomotif ve yolcu vagonlarina ihtiyacimiz olacak..."
-  1914: "{SMALLFONT}{COLOUR BLACK}Ray hatti tek yönlü oldugundan rota belirlemeye gerek yok – Sadece treni baslatin..."
-  1915: "{SMALLFONT}{COLOUR BLACK}Rayi üçüncü sehre gidecek sekilde bir kavsakla uzatalim. Ray üzerine sag tiklamak, kavsak insa penceresini açar..."
-  1916: "{SMALLFONT}{COLOUR BLACK}Artik ray düzeni basit olmadigindan trenimize bir rota vermemiz gerekiyor..."
+  1914: "{SMALLFONT}{COLOUR BLACK}Ray hatti tek yönlü oldugundan güzergah belirlemeye gerek yok – Sadece treni baslatin..."
+  1915: "{SMALLFONT}{COLOUR BLACK}Rayi üçüncü yerlesime gidecek sekilde bir kavsakla uzatalim. Ray üzerine sag tiklamak, kavsak insa penceresini açar..."
+  1916: "{SMALLFONT}{COLOUR BLACK}Artik ray düzeni basit olmadigindan trenimize bir güzergah vermemiz gerekiyor..."
   1917: "{SMALLFONT}{COLOUR BLACK}Simdi ikinci bir tren ekleyebiliriz ama önce tren çarpismalarini önlemek için sinyaller kurmamiz gerekiyor..."
   1918: "{SMALLFONT}{COLOUR BLACK}Sinyaller rayi 3 ayri 'blok bölgesine' ayirir ve her seferinde sadece bir tren her bloga girebilir..."
 
@@ -1970,7 +1970,7 @@ strings:
   1920: "{SMALLFONT}{COLOUR BLACK}Her yeni oyuna basladiginizda ayni sirket sahibi adini kullanmak için bu seçenegi isaretleyin"
   1921: "{COLOUR WINDOW_2}Tercih edilen kimlik adi: {COLOUR BLACK}{STRINGID}"
   1922: Tercih Edilen Kimlik Adi
-  1923: "Tercih edilen kimlik adini girin:"
+  1923: "Tercih edilen kimlik ismini girin:"
 
   1924: "{COLOUR BLACK}{TINYFONT}Güç"
   1925: "{COLOUR BLACK}{TINYFONT}Fren"
@@ -2070,9 +2070,9 @@ strings:
   2014: "Dosya silinsin mi: “{STRINGID}”?"
   2015: Sil
   2016: "Hata: Geçersiz dosya adi"
-  2017: Endüstri Adi
-  2018: "{STRINGID} için yeni isim girin:"
-  2019: Endüstri adi degistirilemiyor...
+  2017: Fabrika Adi
+  2018: "{STRINGID} için yeni ad girin:"
+  2019: Fabrika adi degistirilemiyor...
   2020: "{NEWLINE 0 1}{SPRITE}{SMALLFONT}{NEWLINE 45 1}Azami hiz: {STRINGID}{NEWLINE 45 11}Yükseklik siniri: {HEIGHT}"
   2021: Çift CD Anahtari bulundu - Baglanilamiyor!
   2022: "{COLOUR BLACK}{SMALLFONT}(Bilgisayar Adi = {STRINGID})"
@@ -2113,7 +2113,7 @@ strings:
   2057: Arazi Dikey Yüzeyleri
   2058: Su
   2059: Arazi
-  2060: Sehir Isimleri
+  2060: Yerlesim Adlari
   2061: Yük
   2062: Duvarlar
   2063: Sinyaller
@@ -2136,7 +2136,7 @@ strings:
   2080: Harita Olusturma Verisi
   2081: Binalar
   2082: Iskeleler
-  2083: Endüstriler
+  2083: Fabrikalar
   2084: Dünya Bölgesi
   2085: Sirket Sahipleri
   2086: Senaryo Açiklamalari
@@ -2150,16 +2150,16 @@ strings:
   2094: "{SMALLFONT}{COLOUR BLACK}Tek tek ögelerin daha gelismis seçimine izin ver"
   2095: "{COLOUR WHITE}{BIGFONT}₺"
   2096: Yeni nesneler basariyla yüklendi
-  2097: En az bir endüstri seçilmelidir
-  2098: En az bir sehir binasi seçilmelidir
+  2097: En az bir fabrika türü seçilmelidir
+  2098: En az bir bina türü seçilmelidir
   2099: Bir sirket merkez binasi türü seçilmelidir
-  2100: Yalnizca bir sirket merkez binasi bina türü seçilmelidir
+  2100: Yalnizca bir sirket merkez binasi türü seçilmelidir
   2101: Bir arayüz türü seçilmelidir
   2102: En az bir araç türü seçilmelidir
   2103: En az bir arazi türü seçilmelidir
   2104: Bir para birimi türü seçilmelidir
   2105: Bir su türü seçilmelidir
-  2106: Bir sehir ismi stili seçilmelidir
+  2106: Bir yerlesim ismi stili seçilmelidir
   2107: En az bir hemzemin geçit türü seçilmelidir
   2108: Bir sokak lambasi türü seçilmelidir
   2109: Bir kar türü seçilmelidir (gerekli olmasa bile)
@@ -2190,7 +2190,7 @@ strings:
   2134: "{COLOUR BLACK}-"
   2135: "{COLOUR BLACK}{INT32_2DP}"
   2136: "{COLOUR WINDOW_2}Yakinlastirmayi imleç konumuna dogru yap"
-  2137: "{SMALLFONT}{COLOUR BLACK}Etkinlestirildiginde, yakinlastirma ekranin merkezi yerine imlecin etrafinda gerçekleşir."
+  2137: "{SMALLFONT}{COLOUR BLACK}Etkinlestirildiginde, yakinlastirma ekranin merkezi yerine imlecin etrafinda gerçeklesir."
   2138: "{COLOUR WINDOW_2}Giris ekrani müzigini çal"
   2139: "Menüye dön"
   2140: "OpenLoco dan çik"
@@ -2207,10 +2207,10 @@ strings:
   2151: "Araci degistir"
   2152: "Araci kopyala"
   2153: "Araç kopyalanamiyor..."
-  2154: "Aracı ana görünümde bul"
-  2155: "Aracı ana görünümde takip et"
+  2154: "Araci ana görünümde bul"
+  2155: "Araci ana görünümde takip et"
   2156: "Hileler/hata ayiklama araç çubugu menüsünü etkinlestir"
-  2157: "{SMALLFONT}{COLOUR BLACK}Bu, oyunun araç çubuguna ekstra bir dügme ekler ve bazı hilelere ve hata ayiklama seçeneklerine kolay erisim saglar."
+  2157: "{SMALLFONT}{COLOUR BLACK}Bu, oyunun araç çubuguna ekstra bir dügme ekler ve bazi hilelere ve hata ayiklama seçeneklerine kolay erisim saglar."
   2158: "Kum havuzu modunu etkinlestir"
   2159: "Manuel sürüse izin ver"
   2160: "Duraklatilmisken insaata izin ver"
@@ -2219,8 +2219,8 @@ strings:
   2163: "Kare hizi sinirini kaldir"
   2164: "{SMALLFONT}{COLOUR BLACK}40Hz’de render sinirlamasini kaldirir."
   2165: "Donanim"
-  2166: "Harita isleme"
-  2167: "Karoyu inceleyici"
+  2166: "Harita Isleme"
+  2167: "Karo detayini incele"
   2168: "{SMALLFONT}{COLOUR BLACK}Incelemek için haritada bir karo seçmek amaciyla etkinlestirin."
   2169: "Yüzey"
   2170: "Ray"
@@ -2230,7 +2230,7 @@ strings:
   2174: "Agaç"
   2175: "Duvar"
   2176: "Yol"
-  2177: "Endüstri"
+  2177: "Fabrika"
   2178: "{COLOUR WINDOW_2} {STRINGID} ({STRINGID})"
   2179: "{COLOUR WINDOW_2} {STRINGID} - {STRINGID} ({STRINGID})"
   2180: "X:"
@@ -2238,10 +2238,10 @@ strings:
   2182: "{COLOUR WINDOW_2}{INT16}"
   2183: "Karo öge verisi"
   2184: "Hileler"
-  2185: "Finansal hileler"
+  2185: "Mali hileler"
   2186: "Sirket hileleri"
   2187: "Araç hileleri"
-  2188: "Kasaba hileleri"
+  2188: "Yerlesim hileleri"
   2189: "Krediyi temizle"
   2190: "Temizle"
   2191: "{COLOUR BLACK}{CURRENCY32}"
@@ -2280,7 +2280,7 @@ strings:
   2224: "Insaat: Geçerli konumda insa et"
   2225: "Insaat: Geçerli konumda kaldir"
   2226: "Insaat: Konum seç"
-  2227: "Trenler sinyallerde geri döner"
+  2227: "Trenler, sinyal kapaliysa beklemek yerine geri döner"
   2228: "Otomatik ödeme"
   2229: "{SMALLFONT}{COLOUR BLACK}Günde bir kez, mevcut fonlariniz varsa kredinizi ödemek için kullanilir."
   2230: "{COLOUR WINDOW_2}Yil:"
@@ -2307,7 +2307,7 @@ strings:
   2251: "Sag fare sürüklemesini ters çevir"
   2252: "{SMALLFONT}{COLOUR BLACK}Etkinlestirildiginde, ana oyun görünümünü kaydirma hareketi tersine döner"
   2253: "Nakit açilir pencerelerini göster"
-  2254: "{SMALLFONT}{COLOUR BLACK}Insaat ve araçlardan gelen nakit açilir pencerelerinin görünürlüğünü aç/kapat"
+  2254: "{SMALLFONT}{COLOUR BLACK}Insaat ve araçlardan gelen nakit açilir pencerelerinin görünürlügünü aç/kapat"
   2255: "Sunucu Baslat"
   2256: "Sunucu Kapat"
   2257: "Baglantiyi kes"
@@ -2321,21 +2321,21 @@ strings:
   2265: "{COLOUR WINDOW_2} Dosya adi: {COLOUR BLACK}{STRINGID}"
   2266: "Senaryo seçenekleri"
   2267: "Nesne seçimi"
-  2268: "Oynanis ayarlari"
-  2269: "Tercih edilen sahip"
-  2270: "Otomatik kayit tercihleri"
-  2271: "Kasaba genislemesini devre disi birak"
-  2272: "{SMALLFONT}{COLOUR BLACK}Etkinlestirildiginde, kasabalar zamanla yenilenmez veya genislemez"
+  2268: "Oynanis Ayarlari"
+  2269: "Tercih Edilen Sahip"
+  2270: "Otomatik Kayit Tercihleri"
+  2271: "Yerlesim genislemesini devre disi birak"
+  2272: "{SMALLFONT}{COLOUR BLACK}Etkinlestirildiginde, yerlesimler zamanla yenilenmez veya genislemez"
   2273: "Senaryo görevini tamamla"
   2274: "Temizle"
   2275: "Nesneler yüklenirken hata"
-  2276: "{COLOUR BLACK}Dosya yüklenemedi çünkü içindeki bazı nesneler eksik veya bozuk. Bu nesnelerin listesi asağıda verilmistir."
+  2276: "{COLOUR BLACK}Dosya yüklenemedi çünkü içindeki bazi nesneler eksik veya bozuk. Bu nesnelerin listesi asagida verilmistir."
   2277: "{COLOUR BLACK}Nesne Kimligi"
   2278: "{COLOUR BLACK}Tür"
   2279: "{COLOUR BLACK}Saglama toplami"
   2280: "Yeni mesajlar için ses efektleri çal"
   2281: "{SMALLFONT}{COLOUR BLACK}Etkinlestirildiginde, yeni mesajlara uygun bir kalabalik tezahürati sesi eslik eder."
-  2282: "{SMALLFONT}{COLOUR BLACK}Rota sirasi tablosunu ters çevir"
+  2282: "{SMALLFONT}{COLOUR BLACK}Güzergah sirasi tablosunu ters çevir"
   2283: "Ad ve tür"
   2284: "BH"
   2285: "CH"
@@ -2365,7 +2365,7 @@ strings:
   2309: "{COLOUR BLACK}{STRINGID} {SPRITE}"
   2310: "Yüksüz"
   2311: "Araç yükleme cezasini devre disi birak"
-  2312: "{SMALLFONT}{COLOUR BLACK}Etkinlestirildiginde, araç uzunluğu istasyon uzunlugunu astiğinda uygulanan yükleme hizi cezasini devre disi birakir"
+  2312: "{SMALLFONT}{COLOUR BLACK}Etkinlestirildiginde, araç uzunlugu istasyon uzunlugunu astiginda uygulanan yükleme hizi cezasini devre disi birakir"
   2313: "Binalari saydam göster"
   2314: "Yollari saydam göster"
   2315: "Manzarayi saydam göster"
@@ -2377,16 +2377,16 @@ strings:
   2321: "Raylari saydam gösterme geçisi"
   2322: "Agaçlari saydam gösterme geçisi"
   2323: "{SMALLFONT}{COLOUR BLACK}Kaldirilan arazinin dis kenarlarini yumusatmak için etkinlestirin. Dag olusturmak için kullanislidir."
-  2324: "Araç/ray davranisi"
+  2324: "Araç/Ray Davranisi"
   2325: "{SMALLFONT}{COLOUR BLACK}Sirket seçenekleri"
   2326: "Seçenekler - Sirket"
   2327: "Tercih edilen sirket yüzü"
-  2328: "Yeni bir oyun baslatirken tercih edilen sirket yüzünü kullan"
+  2328: "Yeni bir oyun baslatirken tercih edilen kimlik yüzünü kullan"
   2329: "{SMALLFONT}{COLOUR BLACK}Seçildiginde, yeni bir senaryo baslatirken tercih edilen sirket yüzü kullanilir."
   2330: "{COLOUR WINDOW_2}Tercih edilen sahip yüzü: {COLOUR BLACK}{STRINGID}"
   2331: "Tercih edilen sirket sahibi yüzünü seç"
   2332: "{COLOUR WINDOW_2}Istasyon boyut sinirlamalarini devre disi birak"
-  2333: "{SMALLFONT}{COLOUR BLACK}Etkinlestirildiginde, demiryolu istasyonları için azami uzunluk artik 16 karo ile sinirli degildir. Ancak, istasyonlar toplamda 80 karodan fazla olamaz."
+  2333: "{SMALLFONT}{COLOUR BLACK}Etkinlestirildiginde, demiryolu istasyonlari için azami uzunluk artik 16 karo ile sinirli degildir. Ancak, istasyonlar toplamda 80 karodan fazla olamaz."
   2334: "Arazi Olusturma - Su"
   2335: "{SMALLFONT}{COLOUR BLACK}Su olusturma seçenekleri"
   2336: "Genel"
@@ -2394,7 +2394,7 @@ strings:
   2338: "{COLOUR WINDOW_2}Geçerli tepe nesnesi: {COLOUR BLACK}{STRINGID}"
   2339: "{COLOUR WINDOW_2}Arazi yumusatma geçis sayisi:"
   2340: "PNG yükseklik haritasi dosyasi"
-  2341: "PNG yükseklik haritası dosyasi yükle"
+  2341: "PNG yükseklik haritasi dosyasi yükle"
   2342: "Gözat..."
   2343: "{COLOUR WINDOW_2}Geçerli yükseklik haritasi dosyasi: {COLOUR BLACK}{STRING}"
   2344: "(hiçbiri seçilmedi)"
@@ -2413,19 +2413,77 @@ strings:
   2357: "OpenLoco"
   2358: "Boya aracini aç/kapat"
   2359: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID} araçlarini yeniden boya{NEWLINE}shift+tikla tümünü boya{NEWLINE}ctrl+tikla alt araçlari boya"
-  2360: "Baglı olanlarin hepsini boya"
+  2360: "Bagli olanlarin hepsini boya"
   2361: "Seçenekler - Görsellestirme"
   2362: "{SMALLFONT}{COLOUR BLACK}Görsellestirme seçenekleri"
-  2363: "Bileşen satışını onayla"
-  2364: "Bu araç bileşenini satmak, aracın içindeki tüm yükü kaldıracaktır. Devam edilsin mi?"
-  2365: "Bileşeni sat"
-  2366: "Bileşeni yeniden donatmayı onayla"
-  2367: "Bu araç bileşenini yeniden donatmak, aracın içindeki tüm yükü kaldıracaktır. Devam edilsin mi?"
-  2368: "Bileşeni yeniden donat"
+  2363: "Bilesen satisini onayla"
+  2364: "Bu araç bilesenini satmak, aracin içindeki tüm yükü kaldiracaktir. Devam edilsin mi?"
+  2365: "Bileseni sat"
+  2366: "Bileseni yeniden donatmayi onayla"
+  2367: "Bu araç bilesenini yeniden donatmak, aracin içindeki tüm yükü kaldiracaktir. Devam edilsin mi?"
+  2368: "Bileseni yeniden donat"
   2369: "{SMALLFONT}{COLOUR BLACK}Ses seçenekleri"
   2370: "Seçenekler - Ses"
   2371: "Ses"
-  2372: "Müzik kutusu"
+  2372: "Müzik Kutusu"
   2373: "{COLOUR WINDOW_2}Müzik sesi:"
-  2374: Planlanan yapay zekâ ray/yolunu hayalet olarak göster
-  2375: "{SMALLFONT}{COLOUR BLACK}Bu, yapay zekâ şirketleri tarafından planlanan güzergâhları hayalet öğeler olarak gösterir."
+  2374: Planlanan yapay zeka ray/yolunu hayalet olarak göster
+  2375: "{SMALLFONT}{COLOUR BLACK}Bu, yapay zeka sirketleri tarafindan planlanan güzergahlari hayalet ögeler olarak gösterir."
+  2376: "{MOVE_X 15}{COLOUR BLACK}Baslik"
+  2377: "{MOVE_X 15}{COLOUR BLACK}Baslik ▲"
+  2378: "{MOVE_X 15}{COLOUR BLACK}Baslik ▼"
+  2379: "{COLOUR BLACK}Yillar"
+  2380: "{COLOUR BLACK}Yillar ▲"
+  2381: "{COLOUR BLACK}Yillar ▼"
+  2382: "{SMALLFONT}{COLOUR BLACK}Listeyi parça basligina göre sirala"
+  2383: "{SMALLFONT}{COLOUR BLACK}Listeyi, 'mevcut dönem' modunda her parçanin çaldigi yillara göre sirala"
+  2384: "{UINT16}-{UINT16}"
+  2385: "{UINT16}-"
+  2386: "-{UINT16}"
+  2387: "-"
+  2388: "{UINT16} müzik parçasi seçildi"
+  2389: "{UINT16} müzik parçasi seçildi"
+  2390: "Kullanici Arayüzü"
+  2391: "Pencere çerçeve stili:"
+  2392: "{SMALLFONT}{COLOUR BLACK}Bu, pencereleri süslemek için kullanilan stildir."
+  2393: "Gradyan (varsayilan)"
+  2394: "Düz renk"
+  2395: "Yari saydam renk"
+  2396: "Kare hizi siniri:"
+  2397: "Dahili hiz (varsayilan)"
+  2398: "Dikey senkronizasyon"
+  2399: "Sinirsiz"
+  2400: "Bileseni tasima onayi"
+  2401: "Bileseni tasi"
+  2402: "Bu araç bilesenini tasimak, araçtaki tüm yükün bosaltilmasina neden olacaktir. Devam edilsin mi?"
+  2403: "Bu araç bilesenini tasimak, her iki araçtaki tüm yükün bosaltilmasina neden olacaktir. Devam edilsin mi?"
+  2404: "Ana ses:"
+  2405: "{SMALLFONT}{COLOUR BLACK}Ana ses seviyesini ayarla"
+  2406: "Efektler:"
+  2407: "{SMALLFONT}{COLOUR BLACK}Efekt ses seviyesini ayarla"
+  2408: "Araçlar:"
+  2409: "{SMALLFONT}{COLOUR BLACK}Araç ses seviyesini ayarla"
+  2410: "Arayüz:"
+  2411: "{SMALLFONT}{COLOUR BLACK}Arayüz ses seviyesini ayarla"
+  2412: "{SMALLFONT}{COLOUR BLACK}Müzik ses seviyesini ayarla"
+  2413: "Ses seviyesi"
+  2414: "Müzik:"
+  2415: "Ortam:"
+  2416: "{SMALLFONT}{COLOUR BLACK}Ortam ses seviyesini ayarla"
+  2417: "Locomotion Baslıği"
+  2418: "Kopyala"
+  2419: "{SMALLFONT}{COLOUR BLACK}Kopyalanacak ray ögeleri alani seçmenizi saglar"
+  2420: "Yapistir"
+  2421: "{SMALLFONT}{COLOUR BLACK}Kopyalanmis ray ögeleri alanini haritaya yapistirmanizi saglar"
+  2422: "Ses seçeneklerini aç"
+  2423: "Müzik kutusunu aç"
+  2424: "Müzik kutusu penceresini göster"
+  2425: "Maliyete göre sirala"
+  2426: "Güce göre sirala"
+  2427: "Azami hiza göre sirala"
+  2428: "Agirliga göre sirala"
+  2429: "Uzunluga göre sirala"
+  2430: "Artan siralama"
+  2431: "Azalan siralama"
+  2432: "Kapasiteye göre sirala"
+  2433: "Eskime durumuna göre sirala"
