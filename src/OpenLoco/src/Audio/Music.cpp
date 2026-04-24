@@ -66,7 +66,7 @@ namespace OpenLoco::Audio
         bool musicPlaying = _musicHandle != AudioHandle::null && isPlaying(_musicHandle);
         if (!musicPlaying)
         {
-            const auto& mi = Jukebox::changeTrack();
+            const auto& mi = Jukebox::consumeTrack();
             playMusic(mi.pathId, cfg.audio.mainVolume, false);
             Ui::WindowManager::invalidate(Ui::WindowType::options);
         }

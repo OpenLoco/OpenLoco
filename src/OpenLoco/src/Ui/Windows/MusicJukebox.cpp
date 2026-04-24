@@ -100,7 +100,7 @@ namespace OpenLoco::Ui::Windows::MusicJukebox
         {
             self.disabledWidgets |= (1ULL << Widx::currently_playing) | (1ULL << Widx::currently_playing_btn) | (1ULL << Widx::music_controls_play) | (1ULL << Widx::music_controls_stop) | (1ULL << Widx::music_controls_next);
         }
-        else if (Jukebox::isMusicPlaying())
+        else if (Config::get().audio.playJukeboxMusic)
         {
             // Play button appears pressed
             self.activatedWidgets |= (1ULL << Widx::music_controls_play);
