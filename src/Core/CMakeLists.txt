@@ -13,6 +13,7 @@ set(public_files
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/Stream.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/Timer.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/Traits.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/DataSerialization.h"
 )
 
 set(private_files
@@ -31,6 +32,7 @@ set(test_files
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/PrngTests.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/TimerTest.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/TraitsTest.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/tests/SerializationTest.cpp"
 )
 
 set(public_link_libraries
