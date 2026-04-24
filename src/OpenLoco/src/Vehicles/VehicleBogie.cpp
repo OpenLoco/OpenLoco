@@ -479,7 +479,7 @@ namespace OpenLoco::Vehicles
 
     // 0x004BA873
     // esi : vehBogie
-    void sub_4BA873(VehicleBogie& vehBogie)
+    void calculateTimeoutToBreakdown(VehicleBogie& vehBogie)
     {
         vehBogie.timeoutToBreakdown = 0xFFFF;
         if (vehBogie.reliability != 0)
