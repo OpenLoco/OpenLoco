@@ -68,7 +68,7 @@ namespace OpenLoco::Audio
         {
             const auto& mi = Jukebox::changeTrack();
             playMusic(mi.pathId, cfg.audio.mainVolume, false);
-            Ui::WindowManager::invalidate(Ui::WindowType::options);
+            Ui::WindowManager::invalidate(Ui::WindowType::musicJukebox);
         }
     }
 
