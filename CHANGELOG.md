@@ -8,6 +8,7 @@
 - Change: [#3707] The music jukebox has been moved from the options window to its own, with an optional keyboard shortcut.
 - Fix: [#2248, #3681] Newly placed signals can incorrectly update track network.
 - Fix: [#3173] Having multiple (station) vehicle lists open at once may cause duplicates and/or flashing listings.
+- Fix: [#3183] Sound and music being unpaused when the game is still paused in certain situations.
 - Fix: [#3334] Auto order of cars with centrePosition flag incorrectly calculated.
 - Fix: [#3467] 'Menu' key is not localised in the keyboard shortcuts list.
 - Fix: [#3634] Invalidation issue when show AI planning is turned off.
