@@ -88,6 +88,13 @@ namespace OpenLoco::ObjectManager
         std::span<ObjectEntry2> objectEntryExtendeds;
     };
 
+    struct PreLoadedObject
+    {
+        std::span<std::byte> objectData;
+        Object* object; // Owning pointer!
+        ObjectHeader header;
+    };
+
     static_assert(Traits::IsPOD<ObjectHeader>::value, "Object Header must be trivial for I/O purposes");
 
     // 0x004FE0B8
@@ -128,6 +135,8 @@ namespace OpenLoco::ObjectManager
     static bool _isTemporaryObject = false;
     // 0x0050D15C
     static Object* _temporaryObject = nullptr;
+
+    static PreLoadedObject _intrinsicInterfaceObject = {};
 
     static ObjectRepositoryItem& getRepositoryItem(ObjectType type)
     {
@@ -361,7 +370,7 @@ namespace OpenLoco::ObjectManager
         Core::Timer reloadTimer;
         size_t loadedObjects{};
 
-        setTotalNumImages(Gfx::G1ExpectedCount::kDisc + Gfx::G1ExpectedCount::kTemporaryObjects);
+        setTotalNumImages(Gfx::G1ExpectedCount::kDisc + Gfx::G1ExpectedCount::kTemporaryObjects + Gfx::G1ExpectedCount::kIntrinsicInterface);
 
         forEachLoadedObject([&loadedObjects](const LoadedObjectHandle& handle) {
             auto* obj = getAny(handle);
@@ -412,13 +421,6 @@ namespace OpenLoco::ObjectManager
             _temporaryObject = nullptr;
         }
     }
-
-    struct PreLoadedObject
-    {
-        std::span<std::byte> objectData;
-        Object* object; // Owning pointer!
-        ObjectHeader header;
-    };
 
     static std::optional<PreLoadedObject> findAndPreLoadObject(const ObjectHeader& header)
     {
@@ -480,6 +482,39 @@ namespace OpenLoco::ObjectManager
         }
 
         return preLoadObj;
+    }
+
+    void loadIntrinsicInterfaceGraphics()
+    {
+        const auto filePath = Environment::getPath(Environment::PathId::objects) / "InterfaceSkin" / "OG_INTERDEF.dat";
+        FileStream fs(filePath, StreamMode::read);
+        SawyerStreamReader stream(fs);
+        stream.read(&_intrinsicInterfaceObject.header, sizeof(_intrinsicInterfaceObject.header));
+        if (_intrinsicInterfaceObject.header.getType() != ObjectType::interfaceSkin && _intrinsicInterfaceObject.header.getName() != "OG_INTERDEF")
+        {
+            // Something wrong has happened and installed object does not match index
+            Logging::error("Mismatch between installed object header and object file header for intrinsic interface graphics!");
+            return;
+        }
+        std::span<const std::byte> data;
+        data = stream.readChunk();
+        _intrinsicInterfaceObject.object = reinterpret_cast<Object*>(malloc(data.size()));
+        std::copy(std::begin(data), std::end(data), reinterpret_cast<std::byte*>(_intrinsicInterfaceObject.object));
+        _intrinsicInterfaceObject.objectData = std::span<std::byte>(reinterpret_cast<std::byte*>(_intrinsicInterfaceObject.object), data.size());
+
+        const auto oldNumImages = getTotalNumImages();
+        setTotalNumImages(Gfx::G1ExpectedCount::kDisc + Gfx::G1ExpectedCount::kTemporaryObjects);
+        callObjectLoad({ ObjectType::interfaceSkin, 0 }, *_intrinsicInterfaceObject.object, _intrinsicInterfaceObject.objectData);
+        setTotalNumImages(oldNumImages);
+    }
+
+    void unloadIntrinsicInterfaceGraphics()
+    {
+        if (_intrinsicInterfaceObject.object != nullptr)
+        {
+            free(_intrinsicInterfaceObject.object);
+            _intrinsicInterfaceObject.object = nullptr;
+        }
     }
 
     // 0x0047176D
@@ -555,7 +590,7 @@ namespace OpenLoco::ObjectManager
             return false;
         }
 
-        if (getTotalNumImages() >= Gfx::G1ExpectedCount::kObjects + Gfx::G1ExpectedCount::kTemporaryObjects + Gfx::G1ExpectedCount::kDisc)
+        if (getTotalNumImages() >= Gfx::G1ExpectedCount::kObjects + Gfx::G1ExpectedCount::kTemporaryObjects + Gfx::G1ExpectedCount::kDisc + Gfx::G1ExpectedCount::kIntrinsicInterface)
         {
             free(preLoadObj->object);
             // Too many objects loaded and no free image space
@@ -782,7 +817,7 @@ namespace OpenLoco::ObjectManager
             return false;
         }
 
-        if (getTotalNumImages() >= Gfx::G1ExpectedCount::kObjects + Gfx::G1ExpectedCount::kTemporaryObjects + Gfx::G1ExpectedCount::kDisc)
+        if (getTotalNumImages() >= Gfx::G1ExpectedCount::kObjects + Gfx::G1ExpectedCount::kTemporaryObjects + Gfx::G1ExpectedCount::kDisc + Gfx::G1ExpectedCount::kIntrinsicInterface)
         {
             // Free objectData?
             return false;
