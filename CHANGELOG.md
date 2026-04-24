@@ -7,7 +7,7 @@
 - Change: [#3702, #3703, #3704, #3705] Improved performance for vehicle, industry, town, station, and company lists.
 - Change: [#3707] The music jukebox has been moved from the options window to its own, with an optional keyboard shortcut.
 - Fix: [#2248, #3681] Newly placed signals can incorrectly update track network.
-- Fix: [#3029] Game tries to play music even when Mute is enabled.
+- Fix: [#3029] Even when audio is muted, the game continues to advance the jukebox playlist.
 - Fix: [#3173] Having multiple (station) vehicle lists open at once may cause duplicates and/or flashing listings.
 - Fix: [#3183] Sound and music being unpaused when the game is still paused in certain situations.
 - Fix: [#3334] Auto order of cars with centrePosition flag incorrectly calculated.
