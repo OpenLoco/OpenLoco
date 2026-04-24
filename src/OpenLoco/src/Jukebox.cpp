@@ -53,13 +53,6 @@ namespace OpenLoco::Jukebox
         return kMusicInfo[track];
     }
 
-    // Note that this counts paused as playing.
-    // This might be unnecessary as kNoSong shouldn't be selected when playing is enabled.
-    bool isMusicPlaying()
-    {
-        return (selectedTrack != kNoSong && Config::get().audio.playJukeboxMusic);
-    }
-
     MusicId getCurrentTrack()
     {
         return selectedTrack;

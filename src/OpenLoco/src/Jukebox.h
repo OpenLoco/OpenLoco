@@ -35,7 +35,6 @@ namespace OpenLoco::Jukebox
     };
 
     const MusicInfo& getMusicInfo(MusicId track);
-    bool isMusicPlaying();
     MusicId getCurrentTrack();
     StringId getSelectedTrackTitleId();
     std::vector<MusicId> makeAllMusicPlaylist(MusicSortMode ordering = MusicSortMode::original);
