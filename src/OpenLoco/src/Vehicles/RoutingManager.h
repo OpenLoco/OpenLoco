@@ -63,12 +63,7 @@ namespace OpenLoco::Vehicles::RoutingManager
 
             bool operator==(const Iterator& other) const;
 
-            RoutingHandle& operator*()
-            {
-                return _current;
-            }
-
-            const RoutingHandle& operator*() const
+            RoutingHandle operator*() const
             {
                 return _current;
             }
