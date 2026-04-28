@@ -189,6 +189,10 @@ namespace OpenLoco::Config
         _config.preferredOwnerFace = config["preferredOwnerFace"].as<ObjectHeader>(kEmptyObjectHeader);
         _config.usePreferredOwnerFace = config["usePreferredOwnerFace"].as<bool>(false);
 
+        // Preferred comapny
+        _config.preferredCompanyName = config["preferredCompanyName"].as<std::string>("");
+        _config.usePreferredCompanyName = config["usePreferredCompanyName"].as<bool>(false);
+
         // Misc settings
         _config.scenarioSelectedTab = config["scenarioSelectedTab"].as<int32_t>(2);
 
