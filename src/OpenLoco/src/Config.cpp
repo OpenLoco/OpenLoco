@@ -328,6 +328,10 @@ namespace OpenLoco::Config
         node["preferredOwnerFace"] = _config.preferredOwnerFace;
         node["usePreferredOwnerFace"] = _config.usePreferredOwnerFace;
 
+        // Preferred company
+        node["preferredCompanyName"] = _config.preferredCompanyName;
+        node["usePreferredCompanyName"] = _config.usePreferredCompanyName;
+
         // Shortcuts
         const auto& shortcuts = _config.shortcuts;
         const auto& shortcutDefs = Input::ShortcutManager::getList();
