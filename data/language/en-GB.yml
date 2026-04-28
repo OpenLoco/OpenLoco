@@ -2489,3 +2489,10 @@ strings:
   2434: 'Vehicle cargo'
   2435: 'Keep vehicle cargo on modify or pickup'
   2436: '{SMALLFONT}{COLOUR BLACK}When enabled, cargo will not be cleared from the entire vehicle when adding cars, moving cars or picking up the vehicle'
+  2437: 'Preferred company'
+  2438: Use preferred company name when starting a new game
+  2439: "{SMALLFONT}{COLOUR BLACK}Select this option to use the same company name every time you start a new game"
+  2440: "{COLOUR WINDOW_2}Preferred company name: {COLOUR BLACK}{STRINGID}"
+  2441: Preferred Company Name
+  2442: "Enter the preferred company name:"
+  2443: ""

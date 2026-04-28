@@ -2150,6 +2150,13 @@ namespace OpenLoco::StringIds
     constexpr StringId cheat_vehicle_cargo = 2434;
     constexpr StringId cheat_keep_cargo_modify_pickup = 2435;
     constexpr StringId tooltip_keep_cargo_modify_pickup = 2436;
+    constexpr StringId preferred_company_name = 2437;
+    constexpr StringId use_preferred_company_name = 2438;
+    constexpr StringId use_preferred_company_name_tip = 2439;
+    constexpr StringId wcolour2_preferred_company_name = 2440;
+    constexpr StringId title_preferred_company_name = 2441;
+    constexpr StringId enter_preferred_company_name = 2442;
+    constexpr StringId buffer_company = 2443;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

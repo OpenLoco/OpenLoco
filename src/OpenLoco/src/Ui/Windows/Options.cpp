@@ -1914,7 +1914,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Company
     {
-        static constexpr Ui::Size kWindowSize = { 420, 134 };
+        static constexpr Ui::Size kWindowSize = { 420, 187 };
 
         namespace Widx
         {
@@ -1931,6 +1931,11 @@ namespace OpenLoco::Ui::Windows::Options
                 labelPreferredOwnerName,
 
                 ownerFacePreview,
+
+                groupPreferredCompany,
+                usePreferredCompanyName,
+                changeCompanyNameBtn,
+                labelPreferredCompanyName,
             };
         }
 
@@ -1951,7 +1956,17 @@ namespace OpenLoco::Ui::Windows::Options
             Widgets::Label({ 24, 112 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::wcolour2_preferred_owner_name),
 
             // Preferred owner preview
-            Widgets::ImageButton({ 345, 59 }, { 66, 66 }, WindowColour::secondary, Widget::kContentNull)
+            Widgets::ImageButton({ 345, 59 }, { 66, 66 }, WindowColour::secondary, Widget::kContentNull),
+
+            // Preferred company group
+            Widgets::GroupBox({ 4, 135 }, { 412, 47 }, WindowColour::secondary, StringIds::preferred_company_name),
+
+            //Preferred company name
+            Widgets::Checkbox({ 10, 149 }, { 400, 12 }, WindowColour::secondary, StringIds::use_preferred_company_name, StringIds::use_preferred_company_name_tip),
+            Widgets::Button({ 265, 164 }, { 75, 12 }, WindowColour::secondary, StringIds::change),
+            Widgets::Label({ 24, 164 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::wcolour2_preferred_company_name)
+
+            //TODO: default colours?
 
         );
 
@@ -2021,6 +2036,15 @@ namespace OpenLoco::Ui::Windows::Options
                 self.object = nullptr;
             }
 
+            if (Config::get().usePreferredCompanyName)
+            {
+                self.activatedWidgets |= (1ULL << Widx::usePreferredCompanyName);
+            }
+            else
+            {
+                self.disabledWidgets |= (1ULL << Widx::changeCompanyNameBtn);
+            }
+
             // Set preferred owner name.
             {
                 // TODO: Do not share this buffer, also unsafe, we should change the localisation to use a string pointer.
@@ -2047,6 +2071,18 @@ namespace OpenLoco::Ui::Windows::Options
             }
 
             loadPreferredFace(self);
+
+            // Set preferred company nam
+            {
+                // TODO: Do not share this buffer, also unsafe, we should change the localisation to use a string pointer.
+                auto buffer = (char*)StringManager::getString(StringIds::buffer_company);
+                const char* companyName = Config::get().preferredCompanyName.c_str();
+                strcpy(buffer, companyName);
+                buffer[strlen(companyName)] = '\0';
+
+                FormatArguments args{ self.widgets[Widx::labelPreferredCompanyName].textArgs };
+                args.push(StringIds::buffer_company);
+            }
         }
 
         static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
@@ -2099,6 +2135,30 @@ namespace OpenLoco::Ui::Windows::Options
             }
         }
 
+        static void changePreferredCompany(Window& self)
+        {
+            auto buffer = (char*)StringManager::getString(StringIds::buffer_company);
+            const char* companyName = Config::get().preferredCompanyName.c_str();
+            strcpy(buffer, companyName);
+            buffer[strlen(companyName)] = '\0';
+
+            TextInput::openTextInput(&self, StringIds::preferred_company_name, StringIds::enter_preferred_company_name, StringIds::buffer_company, Widx::usePreferredCompanyName, {});
+        }
+
+        static void usePreferredCompanyNameMouseUp(Window& self)
+        {
+            auto& cfg = Config::get();
+            cfg.usePreferredCompanyName ^= true;
+            Config::write();
+
+            self.invalidate();
+
+            if (cfg.usePreferredCompanyName && cfg.preferredCompanyName.empty())
+            {
+                changePreferredCompany(self);
+            }
+        }
+
         static void onMouseUp(Window& self, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
             if (Common::onMouseUp(self, wi, id))
@@ -2124,6 +2184,14 @@ namespace OpenLoco::Ui::Windows::Options
                 case Widx::ownerFacePreview:
                     changePreferredFace(self);
                     break;
+
+                case Widx::usePreferredCompanyName:
+                    usePreferredCompanyNameMouseUp(self);
+                    break;
+
+                case Widx::changeCompanyNameBtn:
+                    changePreferredCompany(self);
+                    break;
             }
         }
 
@@ -2141,6 +2209,19 @@ namespace OpenLoco::Ui::Windows::Options
             self.invalidate();
         }
 
+        static void setPreferredCompany(Window& self, const char* str)
+        {
+            auto& cfg = Config::get();
+            cfg.preferredCompanyName = str;
+            if (cfg.preferredCompanyName.empty())
+            {
+                cfg.usePreferredCompanyName = false;
+            }
+
+            Config::write();
+            self.invalidate();
+        }
+
         // 0x004C1304
         static void textInput(Window& self, WidgetIndex_t i, [[maybe_unused]] const WidgetId id, const char* str)
         {
@@ -2148,6 +2229,10 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 case Widx::usePreferredOwnerName:
                     setPreferredName(self, str);
+                    break;
+
+                case Widx::usePreferredCompanyName:
+                    setPreferredCompany(self, str);
                     break;
             }
         }

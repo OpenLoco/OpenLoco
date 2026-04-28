@@ -214,6 +214,8 @@ namespace OpenLoco::Config
         std::string preferredOwnerName;
         bool usePreferredOwnerFace;
         ObjectHeader preferredOwnerFace;
+        bool usePreferredCompanyName = false;
+        std::string preferredCompanyName;
 
         int32_t scenarioSelectedTab;
 
