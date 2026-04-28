@@ -3902,7 +3902,7 @@ namespace OpenLoco::Vehicles
 
         // Clear out all routings after the first one
         RoutingManager::RingView ring(veh1.routingHandle);
-        for (auto& handle : ring)
+        for (auto handle : ring)
         {
             if (handle != veh1.routingHandle)
             {
@@ -3937,7 +3937,7 @@ namespace OpenLoco::Vehicles
 
             auto pos = World::Pos3(veh2.tileX, veh2.tileY, veh2.tileBaseZ * World::kSmallZStep);
             auto ring = RoutingManager::RingView(veh2.routingHandle);
-            for (auto& handle : ring)
+            for (auto handle : ring)
             {
                 const auto routing = RoutingManager::getRouting(handle);
 
@@ -3967,7 +3967,7 @@ namespace OpenLoco::Vehicles
             auto pos = World::Pos3(veh2.tileX, veh2.tileY, veh2.tileBaseZ * World::kSmallZStep);
 
             RoutingManager::RingView ring(veh2.routingHandle);
-            for (auto& handle : ring)
+            for (auto handle : ring)
             {
                 const auto routing = RoutingManager::getRouting(handle);
 
@@ -4334,7 +4334,7 @@ namespace OpenLoco::Vehicles
         }
         // 0x0047DDFB
         auto routings = RoutingManager::RingView(head.routingHandle);
-        const auto& nextHandle = *++(routings.begin());
+        const auto nextHandle = *++(routings.begin());
         RoutingManager::setRouting(nextHandle, connection);
 
         if (head.var_52 == 1)
@@ -6182,7 +6182,7 @@ namespace OpenLoco::Vehicles
 
         bool unk = false;
         RoutingManager::RingView ring(veh1.routingHandle);
-        for (auto& handle : ring)
+        for (auto handle : ring)
         {
             const auto routing = RoutingManager::getRouting(handle);
 
@@ -6393,7 +6393,7 @@ namespace OpenLoco::Vehicles
         {
             auto routingPos = World::Pos3{ train.tail->tileX, train.tail->tileY, train.tail->tileBaseZ * World::kSmallZStep };
             auto routingRing = RoutingManager::RingView(train.tail->routingHandle);
-            for (auto& handle : routingRing)
+            for (auto handle : routingRing)
             {
                 const auto routing = RoutingManager::getRouting(handle);
                 TrackAndDirection::_RoadAndDirection tad{ 0, 0 };
@@ -6449,7 +6449,7 @@ namespace OpenLoco::Vehicles
             // 0x4ADB84
             auto routingPos = World::Pos3{ train.tail->tileX, train.tail->tileY, train.tail->tileBaseZ * World::kSmallZStep };
             auto routingRing = RoutingManager::RingView(train.tail->routingHandle);
-            for (auto& handle : routingRing)
+            for (auto handle : routingRing)
             {
                 const auto routing = RoutingManager::getRouting(handle);
 
