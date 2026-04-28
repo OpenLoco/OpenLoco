@@ -638,7 +638,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             *buffer = ControlCodes::Colour::black;
             buffer++;
 
-            strncpy(buffer, newsString, 512);
+            strncpy(buffer, newsString, 511);
 
             int16_t x = (self.width / 2) + self.x;
             int16_t y = self.y + 38;
@@ -718,7 +718,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             *buffer = ControlCodes::Colour::black;
             buffer++;
 
-            strncpy(buffer, newsString, 512);
+            strncpy(buffer, newsString, 511);
 
             int16_t x = (self.width / 2) + self.x;
             int16_t y = self.y + 38;
@@ -765,7 +765,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             *buffer = ControlCodes::Colour::black;
             buffer++;
 
-            strncpy(buffer, newsString, 512);
+            strncpy(buffer, newsString, 511);
 
             int16_t x = (self.width / 2) + self.x;
             int16_t y = self.y + 17;
