@@ -1961,12 +1961,12 @@ namespace OpenLoco::Ui::Windows::Options
             // Preferred company group
             Widgets::GroupBox({ 4, 135 }, { 412, 47 }, WindowColour::secondary, StringIds::preferred_company_name),
 
-            //Preferred company name
+            // Preferred company name
             Widgets::Checkbox({ 10, 149 }, { 400, 12 }, WindowColour::secondary, StringIds::use_preferred_company_name, StringIds::use_preferred_company_name_tip),
             Widgets::Button({ 265, 164 }, { 75, 12 }, WindowColour::secondary, StringIds::change),
             Widgets::Label({ 24, 164 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::wcolour2_preferred_company_name)
 
-            //TODO: default colours?
+            // TODO: default colours?
 
         );
 

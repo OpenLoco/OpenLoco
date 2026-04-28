@@ -1251,36 +1251,36 @@ namespace OpenLoco::CompanyManager
             {
                 return;
             }
-    
+
             // Temporarily store the preferred name in buffer string 2039.
             char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
             strncpy(buffer_2039, Config::get().preferredOwnerName.c_str(), 256);
-    
+
             // Prepare '{NAME} Transport' in a buffer.
             {
                 char companyName[256] = { 0 };
                 FormatArguments args{};
                 args.push(StringIds::buffer_2039);
                 StringManager::formatString(companyName, StringIds::company_owner_name_transport, args);
-    
+
                 // Now, set the company name.
-    
+
                 GameCommands::setErrorTitle(StringIds::cannot_rename_this_company);
-    
+
                 GameCommands::ChangeCompanyNameArgs changeCompanyNameArgs{};
-    
+
                 changeCompanyNameArgs.companyId = GameCommands::getUpdatingCompanyId();
                 changeCompanyNameArgs.bufferIndex = 1;
                 std::memcpy(changeCompanyNameArgs.buffer, companyName, 36);
-    
+
                 GameCommands::doCommand(changeCompanyNameArgs, GameCommands::Flags::apply);
-    
+
                 changeCompanyNameArgs.bufferIndex = 2;
-    
+
                 GameCommands::doCommand(changeCompanyNameArgs, GameCommands::Flags::apply);
-    
+
                 changeCompanyNameArgs.bufferIndex = 0;
-    
+
                 GameCommands::doCommand(changeCompanyNameArgs, GameCommands::Flags::apply);
             }
         }
