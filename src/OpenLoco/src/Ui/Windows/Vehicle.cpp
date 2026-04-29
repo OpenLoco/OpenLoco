@@ -2018,7 +2018,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static Vehicles::VehicleBase* getCarFromScrollViewPos(Ui::Window& self, const Ui::Point& pos)
         {
-            Input::setPressedWidgetIndex(widx::carList);
             auto res = Ui::ScrollView::getPart(self, &self.widgets[widx::carList], pos.x, pos.y);
             if (res.area != ScrollPart::view)
             {
