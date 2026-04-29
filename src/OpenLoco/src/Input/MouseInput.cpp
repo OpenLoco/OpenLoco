@@ -64,7 +64,7 @@ namespace OpenLoco::Input
     static MouseButton _lastKnownButtonState;
 
     static Ui::Point _cursorPressed;
-    static Ui::CursorId _52336C;
+    static Ui::CursorId _lastCursorId; // 0x0052336C
     static Ui::Point _cursor;
     static Ui::Point _cursor2;
 
@@ -1638,9 +1638,9 @@ namespace OpenLoco::Input
             cursorId = Ui::CursorId::diagonalArrows;
         }
 
-        if (cursorId != _52336C)
+        if (cursorId != _lastCursorId)
         {
-            _52336C = cursorId;
+            _lastCursorId = cursorId;
             Ui::setCursor(cursorId);
         }
     }
@@ -1740,7 +1740,7 @@ namespace OpenLoco::Input
     {
         stopCursorDrag();
         resetFlag(Flags::rightMousePressed);
-        Ui::setCursor(_52336C);
+        Ui::setCursor(_lastCursorId);
 
         if (Tutorial::state() == Tutorial::State::playing)
         {
