@@ -64,7 +64,7 @@ namespace OpenLoco::Input
     static MouseButton _lastKnownButtonState;
 
     static Ui::Point _cursorPressed;
-    static Ui::CursorId _52336C;
+    static Ui::CursorId _lastCursorId; // 0x0052336C
     static Ui::Point _cursor;
     static Ui::Point _cursor2;
 
@@ -80,9 +80,9 @@ namespace OpenLoco::Input
 
     static uint16_t _ticksSinceDragStart; // 0x0052338E
 
-    static Ui::Point _scrollLast;           // 0x005233A4
-    static Ui::WindowType _hoverWindowType; // 0x005233A8
-    static uint8_t _5233A9;
+    static Ui::Point _scrollLast;                 // 0x005233A4
+    static Ui::WindowType _hoverWindowType;       // 0x005233A8
+    static bool _windowMoved;                     // 0x005233A9
     static Ui::WindowNumber_t _hoverWindowNumber; // 0x005233AA
     static Ui::WidgetIndex_t _hoverWidgetIdx;     // 0x005233AC
 
@@ -842,7 +842,7 @@ namespace OpenLoco::Input
 
                 if (w->move(dx, dy))
                 {
-                    _5233A9 = true;
+                    _windowMoved = true;
                 }
 
                 _dragLast.x = x;
@@ -860,13 +860,13 @@ namespace OpenLoco::Input
                 int dy = y - _dragLast.y;
                 if (w->move(dx, dy))
                 {
-                    _5233A9 = true;
+                    _windowMoved = true;
                 }
 
                 _dragLast.x = x;
                 _dragLast.y = y;
 
-                if (_5233A9 == false)
+                if (_windowMoved == false)
                 {
                     auto dragWindow = WindowManager::find(_dragWindowType, _dragWindowNumber);
                     if (dragWindow != nullptr)
@@ -1437,7 +1437,7 @@ namespace OpenLoco::Input
         _dragLast.y = y;
         _dragWindowType = window->type;
         _dragWindowNumber = window->number;
-        _5233A9 = false;
+        _windowMoved = false;
     }
 
     static void windowPositionEnd()
@@ -1638,9 +1638,9 @@ namespace OpenLoco::Input
             cursorId = Ui::CursorId::diagonalArrows;
         }
 
-        if (cursorId != _52336C)
+        if (cursorId != _lastCursorId)
         {
-            _52336C = cursorId;
+            _lastCursorId = cursorId;
             Ui::setCursor(cursorId);
         }
     }
@@ -1740,7 +1740,7 @@ namespace OpenLoco::Input
     {
         stopCursorDrag();
         resetFlag(Flags::rightMousePressed);
-        Ui::setCursor(_52336C);
+        Ui::setCursor(_lastCursorId);
 
         if (Tutorial::state() == Tutorial::State::playing)
         {

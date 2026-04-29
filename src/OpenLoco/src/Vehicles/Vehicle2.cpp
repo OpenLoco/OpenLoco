@@ -20,7 +20,7 @@ namespace OpenLoco::Vehicles
 
     // values are pre *256 for maths
     // Lateral force due to gravity due to Pitch possibly SIN(angle) * 256 * 256
-    static constexpr std::array<int32_t, 13> _500170{
+    static constexpr std::array<int32_t, 13> kPitchLateralGravity{
         0,
         -6645,
         -13223,
@@ -182,7 +182,7 @@ namespace OpenLoco::Vehicles
             {
                 isWheelSlipping = true;
             }
-            if (_500170[enumValue(frontBogie->spritePitch)] <= -19182)
+            if (kPitchLateralGravity[enumValue(frontBogie->spritePitch)] <= -19182)
             {
                 const auto* vehObject = ObjectManager::get<VehicleObject>(frontBogie->objectId);
                 if (vehObject->power != 0)
@@ -190,7 +190,7 @@ namespace OpenLoco::Vehicles
                     isOnRackRail &= frontBogie->isOnRackRail();
                 }
             }
-            ebp += (frontBogie->totalCarWeight * _500170[enumValue(frontBogie->spritePitch)]) >> 8;
+            ebp += (frontBogie->totalCarWeight * kPitchLateralGravity[enumValue(frontBogie->spritePitch)]) >> 8;
         }
 
         if (!isOnRackRail)
