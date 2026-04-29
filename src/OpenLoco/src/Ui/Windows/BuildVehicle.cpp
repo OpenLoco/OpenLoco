@@ -50,7 +50,8 @@
 
 namespace OpenLoco::Ui::Windows::BuildVehicle
 {
-    static constexpr Ui::Size kWindowSize = { 400, 305 };
+    static constexpr Ui::Size kWindowSize = { 500, 400 };
+    static constexpr Ui::Size kMaxWindowSize = { 700, 600 };
 
     enum widx
     {
@@ -58,6 +59,14 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         caption = 1,
         close_button = 2,
         panel = 3,
+        searchBox,
+        searchClearButton,
+        filterLabel,
+        filterDropdown,
+        cargoLabel,
+        cargoDropdown,
+        sortLabel,
+        sortDropdown,
         tab_build_new_trains,
         tab_build_new_buses,
         tab_build_new_trucks,
@@ -74,12 +83,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         tab_track_type_7,
         scrollview_vehicle_selection,
         scrollview_vehicle_preview,
-        searchBox,
-        searchClearButton,
-        filterLabel,
-        filterDropdown,
-        cargoLabel,
-        cargoDropdown
     };
 
     enum scrollIdx
@@ -225,6 +228,13 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         Widgets::ImageButton({ 365, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 41 }, { 380, 192 }, WindowColour::secondary),
 
+        // Filter options
+        Widgets::TextBox({ 4, 72 }, { 246, 14 }, WindowColour::secondary),
+        Widgets::Button({ 50, 72 }, { 38, 14 }, WindowColour::secondary, StringIds::clearInput),
+        Widgets::dropdownWidgets({ 3, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterComponents),
+        Widgets::dropdownWidgets({ 48, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterCargoSupported),
+        Widgets::dropdownWidgets({ 93, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::sortComponents),
+
         // Primary tabs
         Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_train_vehicles),
         Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_buses),
@@ -245,15 +255,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         // Scroll and preview areas
         Widgets::ScrollView({ 3, 102 }, { 374, 146 }, WindowColour::secondary, Scrollbars::vertical),
-        Widgets::ScrollView({ 250, 44 }, { 180, 66 }, WindowColour::secondary, Scrollbars::none),
-
-        // Filter options
-        // NB: deliberately defined after scrollview definitions to keep enums the same as original
-        // TODO: can be moved after drawVehicleOverview has been implemented
-        Widgets::TextBox({ 4, 72 }, { 246, 14 }, WindowColour::secondary),
-        Widgets::Button({ 50, 72 }, { 38, 14 }, WindowColour::secondary, StringIds::clearInput),
-        Widgets::dropdownWidgets({ 3, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterComponents),
-        Widgets::dropdownWidgets({ 48, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterCargoSupported)
+        Widgets::ScrollView({ 250, 44 }, { 180, 66 }, WindowColour::secondary, Scrollbars::none)
 
     );
 
@@ -308,7 +310,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
     static Ui::TextInput::InputSession inputSession;
 
-    static void setDisabledTransportTabs(Ui::Window* window);
+    static void setDisabledTransportTabs(Window& window);
     static void setTrackTypeTabs(Ui::Window* window);
     static void resetTrackTypeTabSelection(Ui::Window* window);
     static void setTopToolbarLastTrack(uint8_t trackType, bool isRoad);
@@ -330,7 +332,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         {
             window->setColour(WindowColour::secondary, skin->windowPlayerColor);
         }
-        setDisabledTransportTabs(window);
+        setDisabledTransportTabs(*window);
         return window;
     }
 
@@ -396,7 +398,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             window->holdableWidgets = 0;
             window->eventHandlers = &getEvents();
             window->activatedWidgets = 0;
-            setDisabledTransportTabs(window);
+            setDisabledTransportTabs(*window);
             setTrackTypeTabs(window);
             resetTrackTypeTabSelection(window);
             sub_4B92A5(window);
@@ -812,7 +814,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 window.holdableWidgets = 0;
                 window.eventHandlers = &getEvents();
                 window.setWidgets(_widgets);
-                setDisabledTransportTabs(&window);
+                setDisabledTransportTabs(window);
                 window.invalidate();
                 _buildTargetVehicle = -1;
                 setTrackTypeTabs(&window);
@@ -873,7 +875,48 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         if (widgetIndex == widx::filterDropdown)
         {
             auto& dropdown = self.widgets[widx::filterLabel];
-            auto numItems = Config::get().displayLockedVehicles ? 17 : 15;
+            auto numItems = Config::get().displayLockedVehicles ? 5 : 2;
+            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 3, dropdown.height(), self.getColour(WindowColour::secondary), numItems, 0x80);
+
+            Dropdown::add(0, StringIds::dropdown_without_checkmark, StringIds::componentUnpowered);
+            Dropdown::add(1, StringIds::dropdown_without_checkmark, StringIds::componentPowered);
+
+            if (Config::get().displayLockedVehicles)
+            {
+                Dropdown::add(2, 0);
+                Dropdown::add(3, StringIds::dropdown_without_checkmark, StringIds::componentUnlocked);
+                Dropdown::add(4, StringIds::dropdown_without_checkmark, StringIds::componentLocked);
+            }
+
+            // Show unpowered vehicles?
+            if ((_vehicleFilterFlags & VehicleFilterFlags::unpowered) != VehicleFilterFlags::none)
+            {
+                Dropdown::setItemSelected(0);
+            }
+
+            // Show powered vehicles?
+            if ((_vehicleFilterFlags & VehicleFilterFlags::powered) != VehicleFilterFlags::none)
+            {
+                Dropdown::setItemSelected(1);
+            }
+
+            // Show unlocked vehicles?
+            if ((_vehicleFilterFlags & VehicleFilterFlags::unlocked) != VehicleFilterFlags::none)
+            {
+                Dropdown::setItemSelected(2);
+            }
+
+            // Show locked vehicles?
+            if ((_vehicleFilterFlags & VehicleFilterFlags::locked) != VehicleFilterFlags::none)
+            {
+                Dropdown::setItemSelected(3);
+            }
+        }
+        else if (widgetIndex == widx::sortDropdown)
+        {
+            auto& dropdown = self.widgets[widx::sortLabel];
+            auto numItems = 12;
+            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 3, dropdown.height(), self.getColour(WindowColour::secondary), numItems, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::sortByDesignYear);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::sortByName);
@@ -887,17 +930,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             Dropdown::add(9, 0);
             Dropdown::add(10, StringIds::dropdown_stringid, StringIds::sortAscendingOrder);
             Dropdown::add(11, StringIds::dropdown_stringid, StringIds::sortDescendingOrder);
-            Dropdown::add(12, 0);
-            Dropdown::add(13, StringIds::dropdown_without_checkmark, StringIds::componentUnpowered);
-            Dropdown::add(14, StringIds::dropdown_without_checkmark, StringIds::componentPowered);
-
-            if (Config::get().displayLockedVehicles)
-            {
-                Dropdown::add(15, StringIds::dropdown_without_checkmark, StringIds::componentUnlocked);
-                Dropdown::add(16, StringIds::dropdown_without_checkmark, StringIds::componentLocked);
-            }
-
-            Dropdown::showText(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), numItems, 0x80);
 
             // Mark current sort order
             Dropdown::setItemSelected(enumValue(_vehicleSortBy));
@@ -910,33 +942,21 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             {
                 Dropdown::setItemSelected(11);
             }
-
-            // Show unpowered vehicles?
-            if ((_vehicleFilterFlags & VehicleFilterFlags::unpowered) != VehicleFilterFlags::none)
-            {
-                Dropdown::setItemSelected(13);
-            }
-
-            // Show powered vehicles?
-            if ((_vehicleFilterFlags & VehicleFilterFlags::powered) != VehicleFilterFlags::none)
-            {
-                Dropdown::setItemSelected(14);
-            }
-
-            // Show unlocked vehicles?
-            if ((_vehicleFilterFlags & VehicleFilterFlags::unlocked) != VehicleFilterFlags::none)
-            {
-                Dropdown::setItemSelected(15);
-            }
-
-            // Show locked vehicles?
-            if ((_vehicleFilterFlags & VehicleFilterFlags::locked) != VehicleFilterFlags::none)
-            {
-                Dropdown::setItemSelected(16);
-            }
         }
         else if (widgetIndex == widx::cargoDropdown)
         {
+            auto& dropdown = self.widgets[widx::cargoLabel];
+            auto numItems = 2U;
+            for (uint16_t cargoId = 0; cargoId < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoId)
+            {
+                auto* cargoObj = ObjectManager::get<CargoObject>(cargoId);
+                if (cargoObj != nullptr)
+                {
+                    numItems++;
+                }
+            }
+            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 3, dropdown.height(), self.getColour(WindowColour::secondary), numItems, 0x80);
+
             auto index = 0U;
             auto selectedIndex = -1;
 
@@ -974,9 +994,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 index++;
             }
 
-            Widget dropdown = self.widgets[widx::cargoLabel];
-            Dropdown::showText(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), index, 0x80);
-
             if (selectedIndex != -1)
             {
                 Dropdown::setItemSelected(selectedIndex);
@@ -992,6 +1009,25 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         }
 
         if (widgetIndex == widx::filterDropdown)
+        {
+            if (itemIndex == 0)
+            {
+                _vehicleFilterFlags ^= VehicleFilterFlags::unpowered;
+            }
+            if (itemIndex == 1)
+            {
+                _vehicleFilterFlags ^= VehicleFilterFlags::powered;
+            }
+            if (itemIndex == 3)
+            {
+                _vehicleFilterFlags ^= VehicleFilterFlags::unlocked;
+            }
+            if (itemIndex == 4)
+            {
+                _vehicleFilterFlags ^= VehicleFilterFlags::locked;
+            }
+        }
+        else if (widgetIndex == widx::sortDropdown)
         {
             if (itemIndex == 0)
             {
@@ -1037,22 +1073,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             {
                 _vehicleSortAscending = false;
             }
-            else if (itemIndex == 13)
-            {
-                _vehicleFilterFlags ^= VehicleFilterFlags::unpowered;
-            }
-            else if (itemIndex == 14)
-            {
-                _vehicleFilterFlags ^= VehicleFilterFlags::powered;
-            }
-            else if (itemIndex == 15)
-            {
-                _vehicleFilterFlags ^= VehicleFilterFlags::unlocked;
-            }
-            else if (itemIndex == 16)
-            {
-                _vehicleFilterFlags ^= VehicleFilterFlags::locked;
-            }
         }
         else if (widgetIndex == widx::cargoDropdown)
         {
@@ -1080,7 +1100,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         window.flags |= WindowFlags::resizable;
 
         auto minWidth = std::max<uint16_t>(_numTrackTypeTabs * 31 + 195, 380);
-        window.setSize({ minWidth, 233 }, { 520, 600 });
+        window.setSize({ minWidth, 233 }, kMaxWindowSize);
 
         auto& scrollArea = window.scrollAreas[scrollIdx::vehicle_selection];
         auto& scrollWidget = window.widgets[widx::scrollview_vehicle_selection];
@@ -1278,7 +1298,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     // 0x4C2E5C
     static void prepareDraw(Ui::Window& window)
     {
-        setDisabledTransportTabs(&window);
+        setDisabledTransportTabs(window);
 
         // Mask off all the tabs
         auto activeWidgets = window.activatedWidgets & ((1 << frame) | (1 << caption) | (1 << close_button) | (1 << panel) | (1 << scrollview_vehicle_selection) | (1 << scrollview_vehicle_preview));
@@ -1315,10 +1335,16 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         window.widgets[widx::searchClearButton].left = selectionList.right - 40;
         window.widgets[widx::searchBox].right = selectionList.right - 42;
 
-        window.widgets[widx::cargoLabel].right = selectionList.right;
-        window.widgets[widx::cargoLabel].left = selectionList.right - (selectionList.width() / 2);
-        window.widgets[widx::cargoDropdown].right = selectionList.right;
-        window.widgets[widx::cargoDropdown].left = selectionList.right - 12;
+        window.widgets[widx::sortLabel].right = selectionList.right - 1;
+        window.widgets[widx::sortLabel].left = selectionList.right - (selectionList.width() / 3);
+        window.widgets[widx::sortDropdown].right = selectionList.right - 2;
+        window.widgets[widx::sortDropdown].left = selectionList.right - 12;
+
+        auto& sortLabel = window.widgets[widx::sortLabel];
+        window.widgets[widx::cargoLabel].right = sortLabel.left - 1;
+        window.widgets[widx::cargoLabel].left = sortLabel.left - (selectionList.width() / 3);
+        window.widgets[widx::cargoDropdown].right = sortLabel.left - 2;
+        window.widgets[widx::cargoDropdown].left = sortLabel.left - 12;
 
         if (_cargoSupportedFilter == 0xFF)
         {
@@ -1683,12 +1709,13 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C28D2
-    static void setDisabledTransportTabs(Ui::Window* window)
+    static void setDisabledTransportTabs(Window& self)
     {
-        auto availableVehicles = CompanyManager::get(CompanyId(window->number))->availableVehicles;
-        // By shifting by 4 the available_vehicles flags align with the tabs flags
-        auto disabledTabs = (availableVehicles << 4) ^ ((1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships));
-        window->disabledWidgets = disabledTabs;
+        auto availableVehicles = CompanyManager::get(CompanyId(self.number))->availableVehicles;
+        auto availableVehiclesTabMask = availableVehicles << widx::tab_build_new_trains;
+
+        auto disabledTabs = availableVehiclesTabMask ^ ((1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships));
+        self.disabledWidgets = disabledTabs;
     }
 
     // 0x4C2D8A
