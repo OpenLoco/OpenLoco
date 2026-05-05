@@ -725,15 +725,22 @@ namespace OpenLoco::Ui::Windows::Options
 
 #pragma mark - Construction Marker (Widget 19)
 
+        static constexpr StringId kConstructionMarkerStyleStringIds[] = {
+            StringIds::white,
+            StringIds::translucent,
+            StringIds::translucent, // TODO
+        };
+
         // 0x004BFE2E
         static void constructionMarkerMouseDown(const Window& self, [[maybe_unused]] WidgetIndex_t wi)
         {
             auto& dropdown = self.widgets[Widx::construction_marker];
-            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 2, 0x80);
+            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 3, 0x80);
 
-            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::white);
-            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::translucent);
-            Dropdown::setItemSelected(Config::get().constructionMarker);
+            Dropdown::add(0, StringIds::dropdown_stringid, kConstructionMarkerStyleStringIds[0]);
+            Dropdown::add(1, StringIds::dropdown_stringid, kConstructionMarkerStyleStringIds[1]);
+            Dropdown::add(2, StringIds::dropdown_stringid, kConstructionMarkerStyleStringIds[2]);
+            Dropdown::setItemSelected(enumValue(Config::get().constructionMarker));
         }
 
         // 0x004BFE98
@@ -744,13 +751,15 @@ namespace OpenLoco::Ui::Windows::Options
                 return;
             }
 
-            if (ax == Config::get().constructionMarker)
+            auto style = Config::ConstructionMarkerStyle(ax);
+
+            if (style == Config::get().constructionMarker)
             {
                 return;
             }
 
             auto& cfg = OpenLoco::Config::get();
-            cfg.constructionMarker = ax;
+            cfg.constructionMarker = style;
             OpenLoco::Config::write();
             Gfx::invalidateScreen();
         }
@@ -906,15 +915,8 @@ namespace OpenLoco::Ui::Windows::Options
             assert(self.currentTab == Common::tab::rendering);
 
             Common::prepareDraw(self);
-
-            if (Config::get().constructionMarker)
-            {
-                self.widgets[Widx::construction_marker].text = StringIds::translucent;
-            }
-            else
-            {
-                self.widgets[Widx::construction_marker].text = StringIds::white;
-            }
+            
+            self.widgets[Widx::construction_marker].text = kConstructionMarkerStyleStringIds[enumValue(Config::get().constructionMarker)];
 
             static constexpr StringId kScaleStringIds[] = {
                 StringIds::full_scale,
