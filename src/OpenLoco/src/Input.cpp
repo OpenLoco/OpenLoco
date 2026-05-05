@@ -208,6 +208,18 @@ namespace OpenLoco::Input
                 case SDL_EVENT_TEXT_INPUT:
                     enqueueText(e.text.text);
                     break;
+
+                case SDL_EVENT_DROP_FILE:
+                {
+                    auto droppedFilePath = e.drop.data;
+
+                    auto browsePromptWindow = Ui::WindowManager::find(Ui::WindowType::fileBrowserPrompt);
+                    if (browsePromptWindow != nullptr)
+                    {
+                        Ui::Windows::PromptBrowse::onDropFile(*browsePromptWindow, droppedFilePath);
+                    }
+                    break;
+                }
             }
         }
 
