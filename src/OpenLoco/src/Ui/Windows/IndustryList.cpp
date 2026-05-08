@@ -634,12 +634,14 @@ namespace OpenLoco::Ui::Windows::IndustryList
             return;
         }
 
-        for (auto i = 0; i < wnd->rowCount; ++i)
+        auto list = std::span<IndustryId>(reinterpret_cast<IndustryId*>(wnd->rowInfo), wnd->rowCount);
+
+        auto newEnd = std::remove_if(list.begin(), list.end(), [id](IndustryId el) { return el == id; });
+        auto numRemoved = std::distance(newEnd, list.end());
+
+        if (numRemoved > 0)
         {
-            if (static_cast<IndustryId>(wnd->rowInfo[i]) == id)
-            {
-                wnd->rowInfo[i] = enumValue(IndustryId::null);
-            }
+            wnd->rowCount -= numRemoved;
         }
     }
 
