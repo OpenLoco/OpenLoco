@@ -441,7 +441,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     stringId = StringIds::wcolour2_stringid;
                 }
 
-                auto company = CompanyManager::get(CompanyId(rowItem));
+                auto* company = CompanyManager::get(CompanyId(rowItem));
+                if (company == nullptr || company->empty())
+                {
+                    removeCompany(CompanyId(rowItem));
+                    continue;
+                }
+
                 auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitorId);
                 auto imageId = Gfx::recolour(competitorObj->images[enumValue(company->ownerEmotion)], company->mainColours.primary);
 
