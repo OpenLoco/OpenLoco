@@ -593,12 +593,14 @@ namespace OpenLoco::Ui::Windows::TownList
             return;
         }
 
-        for (auto i = 0; i < window->rowCount; i++)
+        auto list = std::span<TownId>(reinterpret_cast<TownId*>(window->rowInfo), window->rowCount);
+
+        auto newEnd = std::remove_if(list.begin(), list.end(), [townId](TownId el) { return el == townId; });
+        auto numRemoved = std::distance(newEnd, list.end());
+
+        if (numRemoved > 0)
         {
-            if (window->rowInfo[i] == enumValue(townId))
-            {
-                window->rowInfo[i] = -1;
-            }
+            window->rowCount -= numRemoved;
         }
     }
 
