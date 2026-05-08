@@ -193,11 +193,12 @@ namespace OpenLoco::Ui::Windows::TownList
                     text_colour_id = StringIds::wcolour2_stringid;
                 }
 
-                if (townId == TownId::null)
+                auto* town = TownManager::get(townId);
+                if (town == nullptr || town->empty())
                 {
+                    removeTown(townId);
                     continue;
                 }
-                auto town = TownManager::get(townId);
 
                 // Town Name
                 {
