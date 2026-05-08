@@ -467,7 +467,12 @@ namespace OpenLoco::Ui::Windows::StationList
                 text_colour_id = StringIds::wcolour2_stringid;
             }
 
-            auto station = StationManager::get(stationId);
+            auto* station = StationManager::get(stationId);
+            if (station == nullptr || station->empty())
+            {
+                removeStationFromList(stationId);
+                continue;
+            }
 
             // First, draw the town name.
             {
