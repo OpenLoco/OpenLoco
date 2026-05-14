@@ -64,9 +64,9 @@ namespace OpenLoco::GameCommands
             }
 
             auto cost = TileManager::adjustSurfaceHeight(toWorldSpace(tilePos), targetBaseZ, slopeFlags, removedBuildings, flags);
-            if (cost == FAILURE)
+            if (cost == kFailure)
             {
-                return FAILURE;
+                return kFailure;
             }
             else
             {

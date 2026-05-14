@@ -190,7 +190,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             args.companyId = self.owner;
             args.objHeader = objRow.object._header;
 
-            const auto result = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE;
+            const auto result = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure;
             if (result)
             {
                 WindowManager::close(&self);

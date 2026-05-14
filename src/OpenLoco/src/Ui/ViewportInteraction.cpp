@@ -1093,7 +1093,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
 
         GameCommands::setErrorTitle(StringIds::cant_remove_signal);
-        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure)
         {
             Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
         }
@@ -1115,7 +1115,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         args.trackId = track->trackId();
         args.index = track->sequenceIndex();
         args.type = track->trackObjectId();
-        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure)
         {
             Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
         }
@@ -1137,7 +1137,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         args.roadId = road->roadId();
         args.index = road->sequenceIndex();
         args.roadObjectId = road->roadObjectId();
-        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure)
         {
             Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
         }
@@ -1154,7 +1154,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         GameCommands::setErrorTitle(StringIds::cant_remove_airport);
         GameCommands::AirportRemovalArgs args;
         args.pos = Pos3(pos.x, pos.y, station->baseHeight());
-        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure)
         {
             Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
         }
@@ -1172,7 +1172,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         GameCommands::PortRemovalArgs args;
         Pos2 firstTile = pos - World::kOffsets[station->sequenceIndex()];
         args.pos = Pos3(firstTile.x, firstTile.y, station->baseHeight());
-        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure)
         {
             Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
         }
@@ -1245,7 +1245,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         fArgs.push(trackExtraObj->name);
         GameCommands::setErrorTitle(StringIds::cant_remove_pop3_string);
 
-        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure)
         {
             Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
         }
@@ -1277,7 +1277,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         fArgs.push(roadExtraObj->name);
         GameCommands::setErrorTitle(StringIds::cant_remove_pop3_string);
 
-        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure)
         {
             Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
         }

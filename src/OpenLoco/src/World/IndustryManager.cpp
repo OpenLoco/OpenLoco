@@ -470,7 +470,7 @@ namespace OpenLoco::IndustryManager
                 args.srand1 = gPrng1().srand_1();
 
                 auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
-                if (res != GameCommands::FAILURE)
+                if (res != GameCommands::kFailure)
                 {
                     break;
                 }

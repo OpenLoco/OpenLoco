@@ -260,11 +260,11 @@ namespace OpenLoco
             createArgs.vehicleId = trainHeadId;
             createArgs.vehicleType = thought.var_46[i];
             auto res = GameCommands::doCommand(createArgs, GameCommands::Flags::apply);
-            if (res == GameCommands::FAILURE)
+            if (res == GameCommands::kFailure)
             {
                 // If we can't create a vehicle try create a free vehicle!
                 res = GameCommands::doCommand(createArgs, GameCommands::Flags::apply | GameCommands::Flags::noPayment);
-                if (res == GameCommands::FAILURE)
+                if (res == GameCommands::kFailure)
                 {
                     return PurchaseVehicleResult::failure;
                 }
@@ -353,7 +353,7 @@ namespace OpenLoco
             insertArgs.rawOrder = stopAt.getRaw();
             auto insertRes = GameCommands::doCommand(insertArgs, GameCommands::Flags::apply);
             // Fix vanilla bug
-            if (insertRes != GameCommands::FAILURE)
+            if (insertRes != GameCommands::kFailure)
             {
                 orderOffset += sizeof(stopAt);
             }
@@ -372,7 +372,7 @@ namespace OpenLoco
                 insertArgs2.rawOrder = waitFor.getRaw();
                 auto insert2Res = GameCommands::doCommand(insertArgs2, GameCommands::Flags::apply);
                 // Fix vanilla bug
-                if (insert2Res != GameCommands::FAILURE)
+                if (insert2Res != GameCommands::kFailure)
                 {
                     orderOffset += sizeof(waitFor);
                 }
@@ -4363,7 +4363,7 @@ namespace OpenLoco
         args.rotation = aiStation.rotation;
         args.type = thought.stationObjId;
         const auto res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
-        if (res == GameCommands::FAILURE)
+        if (res == GameCommands::kFailure)
         {
             return true;
         }
@@ -4629,7 +4629,7 @@ namespace OpenLoco
         args.rotation = direction;
         args.type = thought.stationObjId;
         const auto res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
-        if (res == GameCommands::FAILURE)
+        if (res == GameCommands::kFailure)
         {
             return true;
         }
@@ -4690,7 +4690,7 @@ namespace OpenLoco
         if (doBasicPlacement)
         {
             const auto res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
-            if (res == GameCommands::FAILURE)
+            if (res == GameCommands::kFailure)
             {
                 return true;
             }
@@ -4722,7 +4722,7 @@ namespace OpenLoco
             {
                 args.rotation = elRoad->rotation();
                 const auto res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
-                if (res == GameCommands::FAILURE)
+                if (res == GameCommands::kFailure)
                 {
                     continue;
                 }
@@ -4743,7 +4743,7 @@ namespace OpenLoco
                 args2.rotation = args.rotation;
                 args2.type = args.stationObjectId;
                 const auto res = GameCommands::doCommand(args2, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
-                if (res == GameCommands::FAILURE)
+                if (res == GameCommands::kFailure)
                 {
                     continue;
                 }
@@ -4824,7 +4824,7 @@ namespace OpenLoco
 
         const auto res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
 
-        if (res == GameCommands::FAILURE)
+        if (res == GameCommands::kFailure)
         {
             return true;
         }
@@ -5386,7 +5386,7 @@ namespace OpenLoco
             args.type = signalType;
 
             const auto res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
-            if (res != GameCommands::FAILURE)
+            if (res != GameCommands::kFailure)
             {
                 distanceFromSignal = 0;
             }
@@ -5827,7 +5827,7 @@ namespace OpenLoco
         auto [elRoad, elStation] = getRoadAndAiStationElements(pos, rotation, roadObjectId, roadId, sequenceIndex, noStations, companyId);
         if (elRoad == nullptr || (!elRoad->isAiAllocated() && elStation == nullptr))
         {
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
         uint8_t _112C2F4 = 0;
         uint8_t roadStationObjId = 0xFFU;
@@ -5841,7 +5841,7 @@ namespace OpenLoco
             roadStationObjId = elStation->objectId();
             if (noStations)
             {
-                return GameCommands::FAILURE;
+                return GameCommands::kFailure;
             }
         }
 
@@ -5898,11 +5898,11 @@ namespace OpenLoco
             args.roadObjectId = roadObjectId;
             args.rotation = rotation;
             auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_7);
-            if (res == GameCommands::FAILURE)
+            if (res == GameCommands::kFailure)
             {
                 res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noPayment | GameCommands::Flags::flag_7);
             }
-            if (res != GameCommands::FAILURE)
+            if (res != GameCommands::kFailure)
             {
                 totalCost += res;
             }
@@ -5918,17 +5918,17 @@ namespace OpenLoco
             args.index = sequenceIndex;
             args.type = roadStationObjId;
             auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_7);
-            if (res == GameCommands::FAILURE)
+            if (res == GameCommands::kFailure)
             {
                 res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noPayment | GameCommands::Flags::flag_7);
             }
-            if (res != GameCommands::FAILURE)
+            if (res != GameCommands::kFailure)
             {
                 totalCost += res;
             }
             else
             {
-                return GameCommands::FAILURE;
+                return GameCommands::kFailure;
             }
         }
 
@@ -5987,9 +5987,9 @@ namespace OpenLoco
             placeArgs.rotation = aiStation.rotation;
             placeArgs.type = thought.stationObjId;
 
-            if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply) == GameCommands::FAILURE)
+            if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply) == GameCommands::kFailure)
             {
-                if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply | GameCommands::Flags::noPayment) == GameCommands::FAILURE)
+                if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply | GameCommands::Flags::noPayment) == GameCommands::kFailure)
                 {
                     return 2;
                 }
@@ -6013,9 +6013,9 @@ namespace OpenLoco
             placeArgs.rotation = aiStation.rotation;
             placeArgs.type = thought.stationObjId;
 
-            if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply) == GameCommands::FAILURE)
+            if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply) == GameCommands::kFailure)
             {
-                if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply | GameCommands::Flags::noPayment) == GameCommands::FAILURE)
+                if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply | GameCommands::Flags::noPayment) == GameCommands::kFailure)
                 {
                     return 2;
                 }
@@ -6033,7 +6033,7 @@ namespace OpenLoco
                 // Road
 
                 // TODO: Vanilla bug passes rotation for flags???
-                if (replaceAiAllocatedRoad(pos, aiStation.rotation, thought.trackObjId & ~(1U << 7), 0, 0, false, aiStation.rotation) == GameCommands::FAILURE)
+                if (replaceAiAllocatedRoad(pos, aiStation.rotation, thought.trackObjId & ~(1U << 7), 0, 0, false, aiStation.rotation) == GameCommands::kFailure)
                 {
                     return 2;
                 }
@@ -6055,9 +6055,9 @@ namespace OpenLoco
 
                 for (auto j = 0U; j < thought.stationLength; ++j)
                 {
-                    if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply) == GameCommands::FAILURE)
+                    if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply) == GameCommands::kFailure)
                     {
-                        if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply | GameCommands::Flags::noPayment) == GameCommands::FAILURE)
+                        if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply | GameCommands::Flags::noPayment) == GameCommands::kFailure)
                         {
                             return 2;
                         }
@@ -6244,7 +6244,7 @@ namespace OpenLoco
                     replacePos.z += TrackData::getRoadPiece(roadId)[0].z;
                     const auto noStations = true;
 
-                    const auto success = replaceAiAllocatedRoad(replacePos, rotation, roadObjId, roadId, 0, noStations, flags) != GameCommands::FAILURE;
+                    const auto success = replaceAiAllocatedRoad(replacePos, rotation, roadObjId, roadId, 0, noStations, flags) != GameCommands::kFailure;
                     return success ? 0 : 2;
                 }
             }
@@ -6305,10 +6305,10 @@ namespace OpenLoco
                     args.trackId = trackId;
                     args.sequenceIndex = 0;
 
-                    const auto success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE;
+                    const auto success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure;
                     if (!success)
                     {
-                        if (GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noPayment) == GameCommands::FAILURE)
+                        if (GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noPayment) == GameCommands::kFailure)
                         {
                             return 2;
                         }
@@ -6446,7 +6446,7 @@ namespace OpenLoco
             GameCommands::VehicleSellArgs args{};
             args.car = head->id;
             auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
-            if (res == GameCommands::FAILURE)
+            if (res == GameCommands::kFailure)
             {
                 continue;
             }
@@ -6664,7 +6664,7 @@ namespace OpenLoco
         auto regs = static_cast<GameCommands::registers>(args);
         regs.bl = GameCommands::Flags::apply;
         GameCommands::removeRoadStation(regs);
-        if (static_cast<uint32_t>(regs.ebx) != GameCommands::FAILURE)
+        if (static_cast<uint32_t>(regs.ebx) != GameCommands::kFailure)
         {
             args.rotation ^= (1u << 1);
             auto regs2 = static_cast<GameCommands::registers>(args);
@@ -6811,7 +6811,7 @@ namespace OpenLoco
                 args.roadId = roadId;
                 args.rotation = rotation;
                 args.sequenceIndex = 0;
-                const auto success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE;
+                const auto success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure;
                 // If we fail for some reason or we are at the end of the road
                 // we progress to the next phase of road removal
                 if (!success || rc.connections.empty())
@@ -6929,7 +6929,7 @@ namespace OpenLoco
                 args.trackId = trackId;
                 args.rotation = rotation;
                 args.index = 0;
-                const auto success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE;
+                const auto success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure;
                 // If we fail for some reason or we are at the end of the track
                 // we progress to the next phase of track removal
                 if (!success || tc.connections.empty())
@@ -7068,7 +7068,7 @@ namespace OpenLoco
                     args.rotation = elRoad->rotation();
                     args.sequenceIndex = elRoad->sequenceIndex();
                     auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
-                    if (res != GameCommands::FAILURE)
+                    if (res != GameCommands::kFailure)
                     {
                         recheck = true;
                         break;
@@ -7092,7 +7092,7 @@ namespace OpenLoco
                     args.rotation = elTrack->rotation();
                     args.index = elTrack->sequenceIndex();
                     auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
-                    if (res != GameCommands::FAILURE)
+                    if (res != GameCommands::kFailure)
                     {
                         recheck = true;
                         break;
@@ -7165,7 +7165,7 @@ namespace OpenLoco
             args.index = 0;
 
             auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
-            if (res == GameCommands::FAILURE)
+            if (res == GameCommands::kFailure)
             {
                 // Try remove facing the opposite rotation
                 args.rotation ^= (1U << 1);
@@ -7405,7 +7405,7 @@ namespace OpenLoco
             args.roadId = 0;
             args.type = thought.mods;
             const auto cost = GameCommands::doCommand(args, flags);
-            if (cost != GameCommands::FAILURE)
+            if (cost != GameCommands::kFailure)
             {
                 return cost;
             }
@@ -7422,7 +7422,7 @@ namespace OpenLoco
             args.trackId = 0;
             args.type = thought.mods;
             const auto cost = GameCommands::doCommand(args, flags);
-            if (cost != GameCommands::FAILURE)
+            if (cost != GameCommands::kFailure)
             {
                 return cost;
             }
@@ -7503,7 +7503,7 @@ namespace OpenLoco
             return false;
         }
 
-        return tryPlaceTrackOrRoadMods(thought, GameCommands::Flags::apply) == GameCommands::FAILURE;
+        return tryPlaceTrackOrRoadMods(thought, GameCommands::Flags::apply) == GameCommands::kFailure;
     }
 
     // 0x0043122D

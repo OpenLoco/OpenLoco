@@ -57,12 +57,12 @@ namespace OpenLoco::GameCommands
 
         if (elTrack == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!sub_431E6A(elTrack->owner(), reinterpret_cast<const World::TileElement*>(elTrack)))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         const auto& piece = World::TrackData::getTrackPiece(elTrack->trackId())[elTrack->sequenceIndex()];

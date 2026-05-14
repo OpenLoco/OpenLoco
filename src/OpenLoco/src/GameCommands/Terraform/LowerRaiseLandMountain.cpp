@@ -70,7 +70,7 @@ namespace OpenLoco::GameCommands
         }
 
         auto result = TileManager::adjustSurfaceHeight(pos, targetBaseZ, slopeFlags, removedBuildings, _mtnToolGCFlags);
-        if (result != FAILURE)
+        if (result != kFailure)
         {
             _mtnToolCost += result;
         }
@@ -103,7 +103,7 @@ namespace OpenLoco::GameCommands
     static uint32_t adjustMountainCentre(const LowerRaiseLandMountainArgs& args, World::TileClearance::RemovedBuildings& removedBuildings, const uint8_t flags)
     {
         // Prepare parameters for raise/lower land tool
-        uint32_t result = FAILURE;
+        uint32_t result = kFailure;
         if (args.adjustment == 1)
         {
             RaiseLandArgs raiseArgs;
@@ -246,13 +246,13 @@ namespace OpenLoco::GameCommands
 
         if (!validCoords(args.pointA) || !validCoords(args.pointB))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         // First, raise/lower the mountain's centre tile
         {
             auto result = adjustMountainCentre(args, removedBuildings, flags);
-            if (result != FAILURE)
+            if (result != kFailure)
             {
                 _mtnToolCost += result;
             }
@@ -264,7 +264,7 @@ namespace OpenLoco::GameCommands
         if (preSurface->slope() != 0)
         {
             auto result = adjustMountainCentre(args, removedBuildings, flags);
-            if (result != FAILURE)
+            if (result != kFailure)
             {
                 _mtnToolCost += result;
             }

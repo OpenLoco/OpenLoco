@@ -1326,20 +1326,20 @@ namespace OpenLoco::World::TileManager
         if (!validCoords(pos))
         {
             GameCommands::setErrorText(StringIds::off_edge_of_map);
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
 
         if (targetBaseZ < 4)
         {
             GameCommands::setErrorText(StringIds::error_too_low);
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
         if (targetBaseZ > 160
             || (targetBaseZ == 160 && (slopeFlags & 0x1F) != 0)
             || (targetBaseZ == 156 && (slopeFlags & 0x10) != 0))
         {
             GameCommands::setErrorText(StringIds::error_too_high);
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
 
         currency32_t totalCost = 0;
@@ -1381,7 +1381,7 @@ namespace OpenLoco::World::TileManager
             if (waterHeight < targetClearZ)
             {
                 GameCommands::setErrorText(StringIds::water_channel_currently_needed_by_ships);
-                return GameCommands::FAILURE;
+                return GameCommands::kFailure;
             }
         }
 
@@ -1393,7 +1393,7 @@ namespace OpenLoco::World::TileManager
         QuarterTile qt(0xF, 0);
         if (!TileClearance::applyClearAtAllHeights(pos, targetBaseZ, targetClearZ, qt, clearFunc))
         {
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
 
         // Check bridge requirements for track and road elements
@@ -1427,7 +1427,7 @@ namespace OpenLoco::World::TileManager
                         if (height > bridgeObj->maxHeight * kMicroToSmallZStep)
                         {
                             GameCommands::setErrorText(StringIds::bridge_already_at_maximum_height);
-                            return GameCommands::FAILURE;
+                            return GameCommands::kFailure;
                         }
                     }
                     else
@@ -1436,7 +1436,7 @@ namespace OpenLoco::World::TileManager
                         auto args = FormatArguments::common();
                         args.push(trackObj->name);
                         GameCommands::setErrorText(StringIds::stringid_requires_a_bridge);
-                        return GameCommands::FAILURE;
+                        return GameCommands::kFailure;
                     }
                 }
             }
@@ -1451,7 +1451,7 @@ namespace OpenLoco::World::TileManager
                         if (height > bridgeObj->maxHeight * kMicroToSmallZStep)
                         {
                             GameCommands::setErrorText(StringIds::bridge_already_at_maximum_height);
-                            return GameCommands::FAILURE;
+                            return GameCommands::kFailure;
                         }
                     }
                     else
@@ -1460,7 +1460,7 @@ namespace OpenLoco::World::TileManager
                         auto args = FormatArguments::common();
                         args.push(roadObj->name);
                         GameCommands::setErrorText(StringIds::stringid_requires_a_bridge);
-                        return GameCommands::FAILURE;
+                        return GameCommands::kFailure;
                     }
                 }
             }
@@ -1506,13 +1506,13 @@ namespace OpenLoco::World::TileManager
         if (targetHeight < 4)
         {
             GameCommands::setErrorText(StringIds::error_too_low);
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
 
         if (targetHeight >= 116)
         {
             GameCommands::setErrorText(StringIds::error_too_high);
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
 
         currency32_t totalCost = 0;
@@ -1551,13 +1551,13 @@ namespace OpenLoco::World::TileManager
         QuarterTile qt(0xF, 0);
         if (!TileClearance::applyClearAtAllHeights(pos, baseTargetZ, clearTargetZ, qt, clearFunc))
         {
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
 
         if (surface->hasType6Flag())
         {
             GameCommands::setErrorText(StringIds::water_channel_currently_needed_by_ships);
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
 
         auto* waterObj = ObjectManager::get<WaterObject>();

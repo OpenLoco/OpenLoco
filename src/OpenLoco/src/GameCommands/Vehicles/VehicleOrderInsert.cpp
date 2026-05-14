@@ -19,7 +19,7 @@ namespace OpenLoco::GameCommands
         auto* head = EntityManager::get<VehicleHead>(args.head);
         if (head == nullptr)
         {
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
 
         GameCommands::setPosition(head->position);
@@ -36,7 +36,7 @@ namespace OpenLoco::GameCommands
                 if (station->owner != head->owner)
                 {
                     setErrorText(StringIds::stationOwnedByAnotherCompany);
-                    return FAILURE;
+                    return kFailure;
                 }
             }
         }
@@ -48,13 +48,13 @@ namespace OpenLoco::GameCommands
             if (head->mode == TransportMode::water && order->is<OrderRouteThrough>())
             {
                 setErrorText(StringIds::orderTypeNotValidForShips);
-                return FAILURE;
+                return kFailure;
             }
             // Aircraft can't have either order
             else if (head->mode == TransportMode::air)
             {
                 setErrorText(StringIds::orderTypeNotValidForAircraft);
-                return FAILURE;
+                return kFailure;
             }
         }
 
@@ -62,17 +62,17 @@ namespace OpenLoco::GameCommands
         if (!OrderManager::spaceLeftInGlobalOrderTableForOrder(order))
         {
             setErrorText(StringIds::no_space_for_more_vehicle_orders);
-            return FAILURE;
+            return kFailure;
         }
         if (!OrderManager::spaceLeftInVehicleOrderTable(head))
         {
             setErrorText(StringIds::tooManyOrdersForThisVehicle);
-            return FAILURE;
+            return kFailure;
         }
 
         if (args.orderOffset > head->sizeOfOrderTable)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!(flags & GameCommands::Flags::apply))

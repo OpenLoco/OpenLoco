@@ -397,7 +397,7 @@ namespace OpenLoco::CompanyAi
             auto regs = static_cast<GameCommands::registers>(args);
             regs.bl = GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment;
             GameCommands::createTrack(regs);
-            if (static_cast<uint32_t>(regs.ebx) == GameCommands::FAILURE)
+            if (static_cast<uint32_t>(regs.ebx) == GameCommands::kFailure)
             {
                 return;
             }
@@ -539,7 +539,7 @@ namespace OpenLoco::CompanyAi
             auto regs = static_cast<GameCommands::registers>(args);
             regs.bl = GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment;
             GameCommands::createRoad(regs);
-            if (static_cast<uint32_t>(regs.ebx) == GameCommands::FAILURE)
+            if (static_cast<uint32_t>(regs.ebx) == GameCommands::kFailure)
             {
                 if ((_createTrackRoadCommandAiUnkFlags & (1U << 20)) && returnState.alternateRoadObjectId != 0xFFU)
                 {
@@ -552,7 +552,7 @@ namespace OpenLoco::CompanyAi
                 regs = static_cast<GameCommands::registers>(args);
                 regs.bl = GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment;
                 GameCommands::createRoad(regs);
-                if (static_cast<uint32_t>(regs.ebx) == GameCommands::FAILURE)
+                if (static_cast<uint32_t>(regs.ebx) == GameCommands::kFailure)
                 {
                     return;
                 }
@@ -868,11 +868,11 @@ namespace OpenLoco::CompanyAi
                 auto argsNoBridge = args;
                 argsNoBridge.bridge = 0xFFU; // no bridge
                 auto res = GameCommands::doCommand(argsNoBridge, GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment | GameCommands::Flags::apply);
-                if (res == GameCommands::FAILURE)
+                if (res == GameCommands::kFailure)
                 {
                     // Try with bridge
                     res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment | GameCommands::Flags::apply);
-                    if (res == GameCommands::FAILURE)
+                    if (res == GameCommands::kFailure)
                     {
                         // 0x00484AB6
                         const auto entry = Company::Unk25C0HashTableEntry(args.pos, args.trackId, args.rotation & 0x3);
@@ -1111,11 +1111,11 @@ namespace OpenLoco::CompanyAi
                 auto argsNoBridge = args;
                 argsNoBridge.bridge = 0xFFU; // no bridge
                 auto res = GameCommands::doCommand(argsNoBridge, GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment | GameCommands::Flags::apply);
-                if (res == GameCommands::FAILURE)
+                if (res == GameCommands::kFailure)
                 {
                     // Try with bridge
                     res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment | GameCommands::Flags::apply);
-                    if (res == GameCommands::FAILURE)
+                    if (res == GameCommands::kFailure)
                     {
                         auto argsUnk = args;
                         argsUnk.bridge = 0xFFU;
@@ -1130,7 +1130,7 @@ namespace OpenLoco::CompanyAi
                             argsUnk.roadObjectId = returnState.alternateRoadObjectId;
                         }
                         res = GameCommands::doCommand(argsUnk, GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment | GameCommands::Flags::apply);
-                        if (res == GameCommands::FAILURE)
+                        if (res == GameCommands::kFailure)
                         {
                             // 0x004851DD
                             const auto entry = Company::Unk25C0HashTableEntry(args.pos, args.roadId, args.rotation & 0x3);
@@ -2181,7 +2181,7 @@ namespace OpenLoco::CompanyAi
                 auto regs(static_cast<GameCommands::registers>(args));
                 regs.bl = 0;
                 GameCommands::aiTrackReplacement(regs);
-                if (static_cast<uint32_t>(regs.ebx) != GameCommands::FAILURE)
+                if (static_cast<uint32_t>(regs.ebx) != GameCommands::kFailure)
                 {
                     result.totalCost += static_cast<uint32_t>(regs.ebx);
                 }

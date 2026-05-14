@@ -313,7 +313,7 @@ namespace OpenLoco::Vehicles
                             auto regs = static_cast<GameCommands::registers>(args);
                             regs.bl = GameCommands::Flags::apply;
                             GameCommands::vehicleChangeRunningMode(regs);
-                            if (static_cast<uint32_t>(regs.ebx) == GameCommands::FAILURE)
+                            if (static_cast<uint32_t>(regs.ebx) == GameCommands::kFailure)
                             {
                                 liftUpVehicle();
                             }

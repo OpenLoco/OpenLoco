@@ -33,7 +33,7 @@ namespace OpenLoco::GameCommands
             if (station.town == args.townId)
             {
                 setErrorText(StringIds::all_stations_near_this_town_must_be_removed_first);
-                return FAILURE;
+                return kFailure;
             }
         }
 
@@ -88,7 +88,7 @@ namespace OpenLoco::GameCommands
 
                         BuildingRemovalArgs rmArgs{};
                         rmArgs.pos = Pos3(worldPos.x, worldPos.y, buildingEl->baseHeight());
-                        if (doCommand(rmArgs, flags) != FAILURE)
+                        if (doCommand(rmArgs, flags) != kFailure)
                         {
                             resetTileLoop = true;
                             break;
@@ -122,7 +122,7 @@ namespace OpenLoco::GameCommands
                         rmArgs.roadId = roadEl->roadId();
                         rmArgs.sequenceIndex = roadEl->sequenceIndex();
                         rmArgs.objectId = roadEl->roadObjectId();
-                        if (doCommand(rmArgs, flags) != FAILURE)
+                        if (doCommand(rmArgs, flags) != kFailure)
                         {
                             resetTileLoop = true;
                             break;

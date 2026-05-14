@@ -52,9 +52,9 @@ namespace OpenLoco::GameCommands
                 args.vehicleType = car.front->objectId;
 
                 const auto cost = doCommand(args, 0);
-                if (cost == FAILURE)
+                if (cost == kFailure)
                 {
-                    totalCost = FAILURE;
+                    totalCost = kFailure;
                     break;
                 }
                 else
@@ -63,9 +63,9 @@ namespace OpenLoco::GameCommands
                 }
             }
 
-            if (totalCost == FAILURE)
+            if (totalCost == kFailure)
             {
-                return FAILURE;
+                return kFailure;
             }
             return totalCost;
         }
@@ -87,7 +87,7 @@ namespace OpenLoco::GameCommands
                 auto* newVeh = EntityManager::get<Vehicles::VehicleBase>(getLegacyReturnState().lastCreatedVehicleId);
                 if (newVeh == nullptr)
                 {
-                    return FAILURE;
+                    return kFailure;
                 }
                 newHead = EntityManager::get<Vehicles::VehicleHead>(newVeh->getHead());
             }
@@ -99,9 +99,9 @@ namespace OpenLoco::GameCommands
 
                 cost = doCommand(args, Flags::apply);
             }
-            if (cost == FAILURE)
+            if (cost == kFailure)
             {
-                totalCost = FAILURE;
+                totalCost = kFailure;
                 break;
             }
             else
@@ -109,9 +109,9 @@ namespace OpenLoco::GameCommands
                 totalCost += cost;
             }
         }
-        if (totalCost == FAILURE || newHead == nullptr)
+        if (totalCost == kFailure || newHead == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         auto newTrain = Vehicles::Vehicle(*newHead);

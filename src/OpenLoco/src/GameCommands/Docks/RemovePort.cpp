@@ -84,7 +84,7 @@ namespace OpenLoco::GameCommands
         auto* stationEl = getStationEl(args.pos);
         if (stationEl == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         StationId stationId = StationId::null;
@@ -100,7 +100,7 @@ namespace OpenLoco::GameCommands
         if (stationEl->isFlag6())
         {
             GameCommands::setErrorText(StringIds::currently_in_use_by_at_least_one_vehicle);
-            return FAILURE;
+            return kFailure;
         }
 
         // Calculate base removal cost
@@ -110,7 +110,7 @@ namespace OpenLoco::GameCommands
         // Remove the actual tile elements associated with the port
         if (!removePortTileElements(args.pos, flags))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         // Should we update the station meta data?

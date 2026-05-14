@@ -169,14 +169,14 @@ namespace OpenLoco::GameCommands
         auto* roadEl = getRoadElement(args.pos, args, args.sequenceIndex, flags);
         if (roadEl == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         const CompanyId roadOwner = roadEl->owner();
 
         if (!sub_431E6A(roadOwner, reinterpret_cast<const World::TileElement*>(roadEl)))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         /*
@@ -195,7 +195,7 @@ namespace OpenLoco::GameCommands
                 FormatArguments::common(town->name);
                 setErrorText(StringIds::stringid_local_authority_wont_allow_removal_in_use);
             }
-            return FAILURE;
+            return kFailure;
         }
         */
 
@@ -230,9 +230,9 @@ namespace OpenLoco::GameCommands
                     srArgs.roadObjectId = args.objectId;
 
                     auto stationRemovalRes = GameCommands::doCommand(srArgs, flags);
-                    if (stationRemovalRes == FAILURE)
+                    if (stationRemovalRes == kFailure)
                     {
-                        return FAILURE;
+                        return kFailure;
                     }
 
                     totalRemovalCost += stationRemovalRes;

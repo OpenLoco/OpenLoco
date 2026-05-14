@@ -146,13 +146,13 @@ namespace OpenLoco::GameCommands
 
         if (!World::validCoords(args.pos))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         auto* surface = World::TileManager::get(args.pos).surface();
         if (surface == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         auto slopeFlags = EdgeSlope::none;
@@ -174,13 +174,13 @@ namespace OpenLoco::GameCommands
         if (surface->water() && targetBaseZ < surface->water() * kMicroToSmallZStep)
         {
             setErrorText(StringIds::cant_build_this_underwater);
-            return FAILURE;
+            return kFailure;
         }
 
         if (targetBaseZ < surface->baseZ())
         {
             setErrorText(StringIds::error_can_only_build_above_ground);
-            return FAILURE;
+            return kFailure;
         }
 
         if ((slopeFlags & (EdgeSlope::upwards | EdgeSlope::downwards)) == EdgeSlope::none)
@@ -196,7 +196,7 @@ namespace OpenLoco::GameCommands
                     if (targetBaseZ < testHeight)
                     {
                         setErrorText(StringIds::error_can_only_build_above_ground);
-                        return FAILURE;
+                        return kFailure;
                     }
 
                     if (surface->isSlopeDoubleHeight())
@@ -210,7 +210,7 @@ namespace OpenLoco::GameCommands
                                 if (targetBaseZ < testHeight + kSmallZStep)
                                 {
                                     setErrorText(StringIds::error_can_only_build_above_ground);
-                                    return FAILURE;
+                                    return kFailure;
                                 }
                             }
                         }
@@ -228,7 +228,7 @@ namespace OpenLoco::GameCommands
             if ((wallObj->flags & WallObjectFlags::onlyOnLevelLand) != WallObjectFlags::none)
             {
                 setErrorText(StringIds::can_only_build_this_on_level_land);
-                return FAILURE;
+                return kFailure;
             }
 
             clearZ += kSmallZStep;
@@ -237,13 +237,13 @@ namespace OpenLoco::GameCommands
 
         if (!canConstructWall(args.pos, targetBaseZ, clearZ, args.rotation))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!TileManager::checkFreeElementsAndReorganise())
         {
             // Error message set in checkFreeElementsAndReorganise
-            return FAILURE;
+            return kFailure;
         }
 
         if (!(flags & Flags::apply))
@@ -254,7 +254,7 @@ namespace OpenLoco::GameCommands
         auto* wall = TileManager::insertElement<WallElement>(args.pos, targetBaseZ, 0);
         if (wall == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         wall->setClearZ(clearZ);

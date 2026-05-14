@@ -18,14 +18,14 @@ namespace OpenLoco::GameCommands
         if (newLoan < 0)
         {
             // TODO: Error message loan cannot be negative
-            return FAILURE;
+            return kFailure;
         }
         if (company->currentLoan > newLoan)
         {
             if (company->cash < loanDifference)
             {
                 GameCommands::setErrorText(StringIds::not_enough_cash_available);
-                return FAILURE;
+                return kFailure;
             }
         }
         else
@@ -34,7 +34,7 @@ namespace OpenLoco::GameCommands
             if (newLoan > maxLoan)
             {
                 GameCommands::setErrorText(StringIds::bank_refuses_to_increase_loan);
-                return FAILURE;
+                return kFailure;
             }
         }
 

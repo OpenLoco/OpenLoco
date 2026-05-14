@@ -59,12 +59,12 @@ namespace OpenLoco::GameCommands
         auto* initialElTrack = getElTrack(args.pos, args.rotation, args.type, args.trackId, args.index);
         if (initialElTrack == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!sub_431E6A(initialElTrack->owner(), reinterpret_cast<const World::TileElement*>(initialElTrack)))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         const auto& trackPieces = World::TrackData::getTrackPiece(args.trackId);
@@ -81,14 +81,14 @@ namespace OpenLoco::GameCommands
             auto* elTrack = getElTrack(trackLoc, args.rotation, args.type, args.trackId, piece.index);
             if (elTrack == nullptr)
             {
-                return FAILURE;
+                return kFailure;
             }
 
             auto* nextEl = elTrack->next();
             auto* stationEl = nextEl->as<World::StationElement>();
             if (stationEl == nullptr)
             {
-                return FAILURE;
+                return kFailure;
             }
 
             if (stationEl->isGhost())

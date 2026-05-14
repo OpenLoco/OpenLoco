@@ -119,12 +119,12 @@ namespace OpenLoco::GameCommands
         auto* elTrack = getElTrackAt(args, flags, args.pos, args.index);
         if (elTrack == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if ((flags & Flags::ghost) == 0 && !sub_431E6A(elTrack->owner(), reinterpret_cast<World::TileElement*>(elTrack)))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (elTrack->hasSignal())
@@ -150,13 +150,13 @@ namespace OpenLoco::GameCommands
                 }
             }
 
-            if (auto cost = GameCommands::doCommand(srArgs, flags); cost != FAILURE)
+            if (auto cost = GameCommands::doCommand(srArgs, flags); cost != kFailure)
             {
                 totalRemovalCost += cost;
             }
             else
             {
-                return FAILURE;
+                return kFailure;
             }
         }
 
@@ -172,13 +172,13 @@ namespace OpenLoco::GameCommands
             tsArgs.index = args.index;
             tsArgs.type = args.trackObjectId;
 
-            if (auto cost = GameCommands::doCommand(tsArgs, flags); cost != FAILURE)
+            if (auto cost = GameCommands::doCommand(tsArgs, flags); cost != kFailure)
             {
                 totalRemovalCost += cost;
             }
             else
             {
-                return FAILURE;
+                return kFailure;
             }
         }
 
@@ -208,7 +208,7 @@ namespace OpenLoco::GameCommands
             auto* pieceElTrack = getElTrackAt(args, flags, trackLoc, piece.index);
             if (pieceElTrack == nullptr)
             {
-                return FAILURE;
+                return kFailure;
             }
 
             if (pieceElTrack->hasBridge())

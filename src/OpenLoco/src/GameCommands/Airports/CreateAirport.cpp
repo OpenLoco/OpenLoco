@@ -166,7 +166,7 @@ namespace OpenLoco::GameCommands
             if (!World::validCoords(tilePos))
             {
                 setErrorText(StringIds::off_edge_of_map);
-                return FAILURE;
+                return kFailure;
             }
 
             if ((flags & Flags::apply) && !(flags & Flags::ghost) && !(flags & Flags::aiAllocated))
@@ -216,7 +216,7 @@ namespace OpenLoco::GameCommands
                 World::QuarterTile qt(0xF, 0xF);
                 if (!World::TileClearance::applyClearAtStandardHeight(World::toWorldSpace(tilePos), baseZ, clearZ, qt, clearFunc))
                 {
-                    return FAILURE;
+                    return kFailure;
                 }
             }
 
@@ -266,7 +266,7 @@ namespace OpenLoco::GameCommands
                 auto* elStation = World::TileManager::insertElement<World::StationElement>(World::toWorldSpace(tilePos), baseHeight / World::kSmallZStep, 0xF);
                 if (elStation == nullptr)
                 {
-                    return FAILURE;
+                    return kFailure;
                 }
                 elStation->setClearZ((clearHeight / World::kSmallZStep) + elStation->baseZ());
                 elStation->setRotation(rotation);
@@ -317,20 +317,20 @@ namespace OpenLoco::GameCommands
 
         if (!World::TileManager::checkFreeElementsAndReorganise())
         {
-            return FAILURE;
+            return kFailure;
         }
 
         const auto closestTown = TownManager::getClosestTownAndDensity(args.pos);
         if (!closestTown.has_value())
         {
-            return FAILURE;
+            return kFailure;
         }
 
         auto* town = TownManager::get(closestTown->first);
         if (town->numberOfAirports >= 4)
         {
             setErrorText(StringIds::town_will_not_allow_airport_to_be_built_here);
-            return FAILURE;
+            return kFailure;
         }
 
         if (!CompanyManager::isPlayerCompany(getUpdatingCompanyId()))
@@ -338,7 +338,7 @@ namespace OpenLoco::GameCommands
             if (town->numberOfAirports >= 2)
             {
                 setErrorText(StringIds::town_will_not_allow_airport_to_be_built_here);
-                return FAILURE;
+                return kFailure;
             }
         }
 
@@ -390,13 +390,13 @@ namespace OpenLoco::GameCommands
                 switch (result)
                 {
                     case NearbyStationValidation::failure:
-                        return FAILURE;
+                        return kFailure;
                     case NearbyStationValidation::requiresNewStation:
                     {
                         const auto newStationId = StationManager::allocateNewStation(args.pos, getUpdatingCompanyId(), nameMode);
                         if (newStationId == StationId::null)
                         {
-                            return FAILURE;
+                            return kFailure;
                         }
                         StationManager::deallocateStation(newStationId);
                         // returnState.lastPlacedAirport not set but that's fine since this is the no apply side
@@ -423,13 +423,13 @@ namespace OpenLoco::GameCommands
 
             const auto buildingRotation = (args.rotation + buildingPosition.rotation) & 0x3;
             const auto cost = createBuilding(returnState.lastPlacedAirport, buildingTilePos, args.pos.z, buildingRotation, buildingPosition.index, args.type, removedBuildings, flags);
-            if (cost != FAILURE)
+            if (cost != kFailure)
             {
                 totalCost += cost;
             }
             else
             {
-                return FAILURE;
+                return kFailure;
             }
         }
         if (!(flags & Flags::ghost) && (flags & Flags::apply))

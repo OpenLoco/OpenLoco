@@ -39,7 +39,7 @@ namespace OpenLoco::GameCommands
 
                 if (!sub_431E6A(company.id(), nullptr))
                 {
-                    return GameCommands::FAILURE;
+                    return GameCommands::kFailure;
                 }
 
                 targetCompanyId = company.id();
@@ -49,13 +49,13 @@ namespace OpenLoco::GameCommands
 
         BuildingRemovalArgs args{};
         args.pos = pos;
-        if (auto cost = GameCommands::doCommand(args, flags); cost != FAILURE)
+        if (auto cost = GameCommands::doCommand(args, flags); cost != kFailure)
         {
             totalCost += cost;
         }
         else
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if ((flags & Flags::apply) && !(flags & Flags::ghost))

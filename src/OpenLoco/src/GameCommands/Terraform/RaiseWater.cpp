@@ -74,9 +74,9 @@ namespace OpenLoco::GameCommands
             }
 
             auto cost = TileManager::adjustWaterHeight(toWorldSpace(tilePos), waterHeight, removedBuildings, flags);
-            if (cost == FAILURE)
+            if (cost == kFailure)
             {
-                return FAILURE;
+                return kFailure;
             }
             else
             {

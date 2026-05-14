@@ -23,12 +23,12 @@ namespace OpenLoco::GameCommands
             auto& head = train.head;
             if (!sub_431E6A(head->owner))
             {
-                return FAILURE;
+                return kFailure;
             }
 
             if (!head->canBeModified())
             {
-                return FAILURE;
+                return kFailure;
             }
 
             if (!(flags & Flags::apply))
@@ -47,7 +47,7 @@ namespace OpenLoco::GameCommands
         }
         catch (std::runtime_error&)
         {
-            return FAILURE;
+            return kFailure;
         }
     }
 

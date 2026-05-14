@@ -898,7 +898,7 @@ namespace OpenLoco::World::MapGenerator
                 args.colour = Colour::black;
                 args.buildImmediately = true;
 
-                if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+                if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure)
                 {
                     break;
                 }

@@ -65,7 +65,7 @@ namespace OpenLoco::GameCommands
         {
             if (!sub_431E6A(args.companyId, nullptr))
             {
-                return GameCommands::FAILURE;
+                return GameCommands::kFailure;
             }
 
             if (args.setColourMode || args.colourType > 0 || !args.isPrimary)
@@ -78,7 +78,7 @@ namespace OpenLoco::GameCommands
             if (unavailableColours & (1 << args.value))
             {
                 setErrorText(StringIds::empty);
-                return GameCommands::FAILURE;
+                return GameCommands::kFailure;
             }
         }
 

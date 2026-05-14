@@ -621,12 +621,12 @@ namespace OpenLoco::GameCommands
         setPosition({ Location::null, 0, 0 });
         if (!EntityManager::checkNumFreeEntities(kMaxNumVehicleComponentsInCar + kNumVehicleComponentsInBase))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!isEmptyVehicleSlotAvailable())
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (flags & Flags::apply)
@@ -636,7 +636,7 @@ namespace OpenLoco::GameCommands
             auto head = createBaseVehicle(vehObject->mode, vehObject->type, vehObject->trackType);
             if (!head)
             {
-                return FAILURE;
+                return kFailure;
             }
 
             auto _head = *head;
@@ -668,7 +668,7 @@ namespace OpenLoco::GameCommands
                 EntityManager::freeEntity(veh1);
                 EntityManager::freeEntity(veh2);
                 EntityManager::freeEntity(tail);
-                return FAILURE;
+                return kFailure;
             }
         }
         // 0x4AE733
@@ -685,22 +685,22 @@ namespace OpenLoco::GameCommands
 
         if (!sub_431E6A(train.head->owner))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!train.head->canBeModified())
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!train.head->isVehicleTypeCompatible(vehicleTypeId))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!EntityManager::checkNumFreeEntities(kMaxNumVehicleComponentsInCar))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (flags & Flags::apply)
@@ -723,7 +723,7 @@ namespace OpenLoco::GameCommands
 
                 if (!placement.has_value())
                 {
-                    return FAILURE;
+                    return kFailure;
                 }
 
                 VehicleHead* veh0backup = placement->head;
@@ -733,7 +733,7 @@ namespace OpenLoco::GameCommands
                 {
                     VehicleManager::placeDownVehicle(placement->head, placement->x, placement->y, placement->tileBaseZ, placement->trackAndDirection, placement->subPosition);
                 }
-                return FAILURE;
+                return kFailure;
             }
         }
         // 0x4AE733
@@ -753,7 +753,7 @@ namespace OpenLoco::GameCommands
         if (vehicleIsLocked && !Config::get().buildLockedVehicles)
         {
             setErrorText(StringIds::vehicle_is_locked);
-            return FAILURE;
+            return kFailure;
         }
 
         if (headId == EntityId::null)

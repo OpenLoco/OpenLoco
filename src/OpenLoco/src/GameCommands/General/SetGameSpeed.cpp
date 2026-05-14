@@ -8,7 +8,7 @@ namespace OpenLoco::GameCommands
     {
         if (speed > GameSpeed::MAX)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         SceneManager::setGameSpeed(speed);

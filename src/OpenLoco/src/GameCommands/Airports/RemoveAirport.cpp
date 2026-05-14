@@ -121,7 +121,7 @@ namespace OpenLoco::GameCommands
         {
             if (isAirportInUseByVehicle(stationId))
             {
-                return FAILURE;
+                return kFailure;
             }
         }
 
@@ -159,7 +159,7 @@ namespace OpenLoco::GameCommands
 
             if (!removeAirportTileElement(worldPos, airportObj, building.index, flags))
             {
-                return FAILURE;
+                return kFailure;
             }
         }
 
@@ -192,7 +192,7 @@ namespace OpenLoco::GameCommands
         auto* stationEl = getStationEl(args.pos);
         if (stationEl == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         StationId stationId = StationId::null;
@@ -223,7 +223,7 @@ namespace OpenLoco::GameCommands
             stationEl = getStationEl(tilePos);
             if (stationEl == nullptr)
             {
-                return FAILURE;
+                return kFailure;
             }
 
             // 0x0049364C
@@ -269,7 +269,7 @@ namespace OpenLoco::GameCommands
 
         if (foundStationEl == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         // 0x00493719

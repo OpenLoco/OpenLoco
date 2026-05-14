@@ -99,13 +99,13 @@ namespace OpenLoco::GameCommands
         auto* initialElRoad = getElRoad(args.pos, args.rotation, args.roadObjectId, args.roadId, args.index);
         if (initialElRoad == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         // No station element on this road?
         if (!initialElRoad->hasStationElement())
         {
-            return FAILURE;
+            return kFailure;
         }
 
         // Find the station element for an ownership check
@@ -114,19 +114,19 @@ namespace OpenLoco::GameCommands
             const auto roadRange = getRoadElementsRange(args.pos);
             if (roadRange.begin == nullptr || roadRange.end == nullptr)
             {
-                return FAILURE;
+                return kFailure;
             }
             World::StationElement* stationEl = roadRange.end->as<World::StationElement>();
 
             if (stationEl == nullptr)
             {
-                return FAILURE;
+                return kFailure;
             }
 
             // NB: vanilla would query owner from station struct, not the station element
             if (!sub_431E6A(stationEl->owner(), reinterpret_cast<const World::TileElement*>(stationEl)))
             {
-                return FAILURE;
+                return kFailure;
             }
         }
 
@@ -144,12 +144,12 @@ namespace OpenLoco::GameCommands
             const auto roadRange = getRoadElementsRange(args.pos);
             if (roadRange.begin == nullptr || roadRange.end == nullptr)
             {
-                return FAILURE;
+                return kFailure;
             }
             World::StationElement* stationEl = roadRange.end->as<World::StationElement>();
             if (stationEl == nullptr)
             {
-                return FAILURE;
+                return kFailure;
             }
 
             if (stationEl->isGhost())

@@ -86,7 +86,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             case widx::rotate:
                 cState.constructionRotation++;
                 cState.constructionRotation = cState.constructionRotation & 3;
-                cState.stationCost = 0x80000000;
+                cState.stationCost = GameCommands::kFailure;
                 self.invalidate();
                 break;
         }
@@ -277,9 +277,9 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         auto& cState = getConstructionState();
 
         removeConstructionGhosts();
-        if (cState.stationCost != 0x80000000U)
+        if (cState.stationCost != GameCommands::kFailure)
         {
-            cState.stationCost = 0x80000000U;
+            cState.stationCost = GameCommands::kFailure;
             Ui::WindowManager::invalidate(Ui::WindowType::construction);
         }
     }
@@ -323,7 +323,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         Ui::WindowManager::invalidate(Ui::WindowType::construction);
 
-        if (cost == GameCommands::FAILURE)
+        if (cost == GameCommands::kFailure)
         {
             return;
         }
@@ -387,7 +387,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         Ui::WindowManager::invalidate(Ui::WindowType::construction);
 
-        if (cost == GameCommands::FAILURE)
+        if (cost == GameCommands::kFailure)
         {
             return;
         }
@@ -449,7 +449,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         Ui::WindowManager::invalidate(Ui::WindowType::construction);
 
-        if (cost == GameCommands::FAILURE)
+        if (cost == GameCommands::kFailure)
         {
             return;
         }
@@ -524,7 +524,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         Ui::WindowManager::invalidate(Ui::WindowType::construction);
 
-        if (cost == GameCommands::FAILURE)
+        if (cost == GameCommands::kFailure)
         {
             return;
         }
@@ -911,7 +911,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         formatArgs.skip(3 * sizeof(StringId));
         formatArgs.push(roadStationObject->name);
         GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
-        if (GameCommands::doCommand(*args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+        if (GameCommands::doCommand(*args, GameCommands::Flags::apply) != GameCommands::kFailure)
         {
             Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, GameCommands::getPosition());
         }
@@ -994,7 +994,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             Error::open(StringIds::null, StringIds::wrong_type_of_track_road);
             return;
         }
-        if (GameCommands::doCommand(*args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+        if (GameCommands::doCommand(*args, GameCommands::Flags::apply) != GameCommands::kFailure)
         {
             Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, GameCommands::getPosition());
         }
@@ -1054,7 +1054,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 return GameCommands::doCommand(*args, GameCommands::Flags::apply);
             }
         }
-        return GameCommands::FAILURE;
+        return GameCommands::kFailure;
     }
 
     static void onToolUpMultiple()
@@ -1083,7 +1083,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
                 // Try placing the station at this location, ignoring errors if they occur
                 GameCommands::setErrorSound(false);
-                builtAnything |= constructPieceAtPosition(pos) != GameCommands::FAILURE;
+                builtAnything |= constructPieceAtPosition(pos) != GameCommands::kFailure;
                 GameCommands::setErrorSound(true);
             }
         }
@@ -1227,7 +1227,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             drawingCtx.drawImage(xPos, yPos, imageId);
         }
 
-        if (cState.stationCost != 0x80000000 && cState.stationCost != 0)
+        if (cState.stationCost != GameCommands::kFailure && cState.stationCost != 0)
         {
             auto& widget = self.widgets[widx::image];
             auto point = Point(self.x + 69, widget.bottom + self.y + 4);

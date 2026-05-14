@@ -190,7 +190,7 @@ namespace OpenLoco::GameCommands
                 if (!isWaterIndustryPort)
                 {
                     setErrorText(StringIds::can_only_be_built_on_water_next_to_water_based_industry);
-                    return FAILURE;
+                    return kFailure;
                 }
             }
         }
@@ -216,7 +216,7 @@ namespace OpenLoco::GameCommands
             if (!World::validCoords(tilePos))
             {
                 setErrorText(StringIds::off_edge_of_map);
-                return FAILURE;
+                return kFailure;
             }
 
             if ((flags & Flags::apply) && !(flags & Flags::ghost) && !(flags & Flags::aiAllocated))
@@ -260,12 +260,12 @@ namespace OpenLoco::GameCommands
                 {
                     // TODO: Give a better message
                     setErrorText(StringIds::empty);
-                    return FAILURE;
+                    return kFailure;
                 }
                 if (surface->hasType6Flag())
                 {
                     setErrorText(StringIds::water_channel_currently_needed_by_ships);
-                    return FAILURE;
+                    return kFailure;
                 }
                 const auto baseZ = args.pos.z / World::kSmallZStep;
                 const auto clearZ = (args.pos.z + clearHeight) / World::kSmallZStep;
@@ -273,7 +273,7 @@ namespace OpenLoco::GameCommands
                 World::QuarterTile qt(0xF, 0xF);
                 if (!World::TileClearance::applyClearAtStandardHeight(World::toWorldSpace(tilePos), baseZ, clearZ, qt, clearFunc))
                 {
-                    return FAILURE;
+                    return kFailure;
                 }
             }
             else
@@ -290,7 +290,7 @@ namespace OpenLoco::GameCommands
                 World::QuarterTile qt(0xF, 0xF);
                 if (!World::TileClearance::applyClearAtStandardHeight(World::toWorldSpace(tilePos), baseZ, clearZ, qt, clearFunc))
                 {
-                    return FAILURE;
+                    return kFailure;
                 }
             }
 
@@ -343,7 +343,7 @@ namespace OpenLoco::GameCommands
                 auto* elStation = World::TileManager::insertElement<World::StationElement>(World::toWorldSpace(tilePos), args.pos.z / World::kSmallZStep, 0xF);
                 if (elStation == nullptr)
                 {
-                    return FAILURE;
+                    return kFailure;
                 }
                 elStation->setClearZ((clearHeight / World::kSmallZStep) + elStation->baseZ());
                 elStation->setRotation(args.rotation);
@@ -427,7 +427,7 @@ namespace OpenLoco::GameCommands
 
         if (!World::TileManager::checkFreeElementsAndReorganise())
         {
-            return FAILURE;
+            return kFailure;
         }
 
         for (auto& frontTile : kRotationToBuildingFront[args.rotation])
@@ -436,7 +436,7 @@ namespace OpenLoco::GameCommands
             if (!tileHasWater(frontPos))
             {
                 setErrorText(StringIds::requires_water_in_front_of_dock);
-                return FAILURE;
+                return kFailure;
             }
         }
 
@@ -480,13 +480,13 @@ namespace OpenLoco::GameCommands
                 switch (result)
                 {
                     case NearbyStationValidation::failure:
-                        return FAILURE;
+                        return kFailure;
                     case NearbyStationValidation::requiresNewStation:
                     {
                         const auto newStationId = StationManager::allocateNewStation(args.pos, getUpdatingCompanyId(), 3);
                         if (newStationId == StationId::null)
                         {
-                            return FAILURE;
+                            return kFailure;
                         }
                         StationManager::deallocateStation(newStationId);
                         // _lastPlacedDockStationId not set but that's fine since this is the no apply side
@@ -504,9 +504,9 @@ namespace OpenLoco::GameCommands
 
         World::TileClearance::RemovedBuildings removedBuildings{};
         const auto buildingCost = createBuilding(returnState.lastPlacedDock, args, flags, removedBuildings, 0);
-        if (buildingCost == FAILURE)
+        if (buildingCost == kFailure)
         {
-            return FAILURE;
+            return kFailure;
         }
         totalCost += buildingCost;
 

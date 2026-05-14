@@ -27,7 +27,7 @@ namespace OpenLoco::GameCommands
         if (!World::validCoords(pos))
         {
             GameCommands::setErrorText(StringIds::off_edge_of_map);
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
 
         if (flags & GameCommands::Flags::apply)
@@ -56,7 +56,7 @@ namespace OpenLoco::GameCommands
         }
         else
         {
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
     }
 
@@ -74,9 +74,9 @@ namespace OpenLoco::GameCommands
         for (const auto& tilePos : tileLoop)
         {
             uint32_t tileRes = clearTile(World::toWorldSpace(tilePos), removedBuildings, flags);
-            if (tileRes == GameCommands::FAILURE)
+            if (tileRes == GameCommands::kFailure)
             {
-                return GameCommands::FAILURE;
+                return GameCommands::kFailure;
             }
             else
             {

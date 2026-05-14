@@ -43,7 +43,7 @@ namespace OpenLoco::GameCommands
         GameCommands::setExpenditureType(ExpenditureType::Construction);
         if (!World::TileManager::checkFreeElementsAndReorganise())
         {
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
         currency32_t totalCost = 0;
         {
@@ -62,15 +62,15 @@ namespace OpenLoco::GameCommands
             const auto roadRes = static_cast<currency32_t>(roadRegs.ebx);
             if (!(flags & GameCommands::Flags::apply))
             {
-                if (static_cast<uint32_t>(roadRes) == GameCommands::FAILURE)
+                if (static_cast<uint32_t>(roadRes) == GameCommands::kFailure)
                 {
-                    return GameCommands::FAILURE;
+                    return GameCommands::kFailure;
                 }
 
                 // There is a level crossing so we can't place a station
                 if (getLegacyReturnState().flags_1136073 & (1U << 2))
                 {
-                    return GameCommands::FAILURE;
+                    return GameCommands::kFailure;
                 }
             }
             totalCost += roadRes;
@@ -90,9 +90,9 @@ namespace OpenLoco::GameCommands
             const auto stationRes = static_cast<currency32_t>(stationRegs.ebx);
             if (!(flags & GameCommands::Flags::apply))
             {
-                if (static_cast<uint32_t>(stationRes) == GameCommands::FAILURE)
+                if (static_cast<uint32_t>(stationRes) == GameCommands::kFailure)
                 {
-                    return GameCommands::FAILURE;
+                    return GameCommands::kFailure;
                 }
             }
             totalCost += stationRes;
@@ -104,7 +104,7 @@ namespace OpenLoco::GameCommands
             const auto baseZ = args.pos.z / World::kSmallZStep;
             if (!World::TileClearance::applyClearAtStandardHeight(pos, baseZ, baseZ + 12, World::QuarterTile{ 0xF, 0 }, clearNearbyArea))
             {
-                return GameCommands::FAILURE;
+                return GameCommands::kFailure;
             }
         }
 
@@ -114,7 +114,7 @@ namespace OpenLoco::GameCommands
             const auto baseZ = args.pos.z / World::kSmallZStep;
             if (!World::TileClearance::applyClearAtStandardHeight(pos, baseZ, baseZ + 12, World::QuarterTile{ 0xF, 0 }, clearNearbyArea))
             {
-                return GameCommands::FAILURE;
+                return GameCommands::kFailure;
             }
         }
         return totalCost;

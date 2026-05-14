@@ -238,7 +238,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     static uint32_t placeRoadModGhost(const GameCommands::RoadModsPlacementArgs& args)
     {
         auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
-        if (res != GameCommands::FAILURE)
+        if (res != GameCommands::kFailure)
         {
             Common::setGhostVisibilityFlag(GhostVisibilityFlags::overhead);
 
@@ -255,7 +255,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     static uint32_t placeTrackModGhost(const GameCommands::TrackModsPlacementArgs& args)
     {
         auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
-        if (res != GameCommands::FAILURE)
+        if (res != GameCommands::kFailure)
         {
             Common::setGhostVisibilityFlag(GhostVisibilityFlags::overhead);
 
@@ -284,9 +284,9 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             if (!placementArgs || ((placementArgs->roadObjType | (1 << 7)) != cState.trackType))
             {
                 removeConstructionGhosts();
-                if (cState.modCost != 0x80000000)
+                if (cState.modCost != GameCommands::kFailure)
                 {
-                    cState.modCost = 0x80000000;
+                    cState.modCost = GameCommands::kFailure;
                     self.invalidate();
                 }
                 return;
@@ -319,9 +319,9 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             if (!placementArgs || (placementArgs->trackObjType != cState.trackType))
             {
                 removeConstructionGhosts();
-                if (cState.modCost != 0x80000000)
+                if (cState.modCost != GameCommands::kFailure)
                 {
-                    cState.modCost = 0x80000000;
+                    cState.modCost = GameCommands::kFailure;
                     self.invalidate();
                 }
                 return;
@@ -376,7 +376,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             }
             GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
             auto res = GameCommands::doCommand(*args, GameCommands::Flags::apply);
-            if (res == GameCommands::FAILURE || res == 0)
+            if (res == GameCommands::kFailure || res == 0)
             {
                 return;
             }
@@ -397,7 +397,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             }
             GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
             auto res = GameCommands::doCommand(*args, GameCommands::Flags::apply);
-            if (res == GameCommands::FAILURE || res == 0)
+            if (res == GameCommands::kFailure || res == 0)
             {
                 return;
             }
@@ -548,7 +548,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             }
         }
 
-        if (cState.modCost != 0x80000000 && cState.modCost != 0)
+        if (cState.modCost != GameCommands::kFailure && cState.modCost != 0)
         {
             FormatArguments args{};
             args.push<uint32_t>(cState.modCost);

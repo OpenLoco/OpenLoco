@@ -210,12 +210,12 @@ namespace OpenLoco::GameCommands
         if (compatibleTrack != trackIdCompatFlags)
         {
             setErrorText(StringIds::track_road_unsuitable_for_station);
-            return FAILURE;
+            return kFailure;
         }
 
         if (!World::TileManager::checkFreeElementsAndReorganise())
         {
-            return FAILURE;
+            return kFailure;
         }
 
         auto* initialElTrack = getElTrack(args.pos, args.rotation, args.trackObjectId, args.trackId, args.index);
@@ -226,11 +226,11 @@ namespace OpenLoco::GameCommands
         {
             if (flags & Flags::apply)
             {
-                return FAILURE;
+                return kFailure;
             }
             if (!(flags & Flags::aiAllocated))
             {
-                return FAILURE;
+                return kFailure;
             }
             // Why???
             index = 0;
@@ -239,7 +239,7 @@ namespace OpenLoco::GameCommands
         {
             if (!sub_431E6A(initialElTrack->owner(), reinterpret_cast<World::TileElement*>(initialElTrack)))
             {
-                return FAILURE;
+                return kFailure;
             }
         }
         auto& trackPieces = World::TrackData::getTrackPiece(args.trackId);
@@ -288,13 +288,13 @@ namespace OpenLoco::GameCommands
                 switch (result)
                 {
                     case NearbyStationValidation::failure:
-                        return FAILURE;
+                        return kFailure;
                     case NearbyStationValidation::requiresNewStation:
                     {
                         const auto newStationId = StationManager::allocateNewStation(trackStart, getUpdatingCompanyId(), 0);
                         if (newStationId == StationId::null)
                         {
-                            return FAILURE;
+                            return kFailure;
                         }
                         StationManager::deallocateStation(newStationId);
                         //  returnState.lastPlacedTrackRoadStationId not set but that's fine since this is the no apply side
@@ -346,7 +346,7 @@ namespace OpenLoco::GameCommands
 
                 if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, qt, clearFuncCollideWithSurface))
                 {
-                    return FAILURE;
+                    return kFailure;
                 }
                 continue;
             }
@@ -355,12 +355,12 @@ namespace OpenLoco::GameCommands
                 if (elTrack->hasSignal())
                 {
                     setErrorText(StringIds::signal_in_the_way);
-                    return FAILURE;
+                    return kFailure;
                 }
                 if (elTrack->hasLevelCrossing())
                 {
                     setErrorText(StringIds::level_crossing_in_the_way);
-                    return FAILURE;
+                    return kFailure;
                 }
                 // Connect flags validation
                 const auto connectFlags = piece.connectFlags[elTrack->rotation()];
@@ -388,7 +388,7 @@ namespace OpenLoco::GameCommands
                     if (connectFlags & connectPiece.connectFlags[elConnectTrack->rotation()])
                     {
                         setErrorText(StringIds::station_cannot_be_built_on_a_junction);
-                        return FAILURE;
+                        return kFailure;
                     }
                 }
 
@@ -403,7 +403,7 @@ namespace OpenLoco::GameCommands
                         auto* elStation = elTrack->next()->as<World::StationElement>();
                         if (elStation == nullptr)
                         {
-                            return FAILURE;
+                            return kFailure;
                         }
                         if (elStation->objectId() == args.type)
                         {
@@ -437,12 +437,12 @@ namespace OpenLoco::GameCommands
                     };
                     if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ + 8, clearZ, qt, clearFunc))
                     {
-                        return FAILURE;
+                        return kFailure;
                     }
                 }
                 if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, qt, clearFuncCollideWithSurface))
                 {
-                    return FAILURE;
+                    return kFailure;
                 }
 
                 // elTrack is still valid as applyClearAtStandardHeight set to not remove anything
@@ -451,7 +451,7 @@ namespace OpenLoco::GameCommands
                 {
                     // ?????
                     setErrorText(StringIds::empty);
-                    return FAILURE;
+                    return kFailure;
                 }
 
                 if (!(flags & Flags::apply))
@@ -466,7 +466,7 @@ namespace OpenLoco::GameCommands
                     auto* elStation = elTrack->next()->as<World::StationElement>();
                     if (elStation == nullptr)
                     {
-                        return FAILURE;
+                        return kFailure;
                     }
                     auto* oldStationObj = ObjectManager::get<TrainStationObject>(elStation->objectId());
                     elTrack->setClearZ(elTrack->clearZ() - oldStationObj->height / World::kSmallZStep);
@@ -485,12 +485,12 @@ namespace OpenLoco::GameCommands
                         elTrack->occupiedQuarter());
                     if (newStationElement == nullptr)
                     {
-                        return FAILURE;
+                        return kFailure;
                     }
                     elTrack = newStationElement->prev()->as<World::TrackElement>();
                     if (elTrack == nullptr)
                     {
-                        return FAILURE;
+                        return kFailure;
                     }
                     newStationElement->setRotation(elTrack->rotation());
                     newStationElement->setGhost(flags & Flags::ghost);

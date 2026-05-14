@@ -217,7 +217,7 @@ namespace OpenLoco::Ui::Windows::Town
                     GameCommands::TownRemovalArgs args{};
                     args.townId = static_cast<TownId>(self.number);
 
-                    if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+                    if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure)
                     {
                         Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
                     }

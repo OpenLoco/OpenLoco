@@ -716,7 +716,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 industryCost = _industryPlacementCost;
             }
 
-            if ((self.var_846 == 0xFFFF && _industryPlacementCost == static_cast<currency32_t>(0x80000000)) || self.var_846 != 0xFFFF)
+            if ((self.var_846 == 0xFFFF && _industryPlacementCost == static_cast<currency32_t>(GameCommands::kFailure)) || self.var_846 != 0xFFFF)
             {
                 industryCost = Economy::getInflationAdjustedCost(industryObj->costFactor, industryObj->costIndex, 3);
             }
@@ -783,7 +783,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     int32_t pan = (self.width >> 1) + self.x;
                     Audio::playSound(Audio::SoundId::clickDown, Audio::ChannelId::ui, pan);
                     self.expandContentCounter = -16;
-                    _industryPlacementCost = 0x80000000;
+                    _industryPlacementCost = GameCommands::kFailure;
                     self.invalidate();
                     break;
                 }
@@ -1040,7 +1040,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static currency32_t placeIndustryGhost(const GameCommands::IndustryPlacementArgs& placementArgs)
         {
             auto res = GameCommands::doCommand(placementArgs, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
-            if (res == GameCommands::FAILURE)
+            if (res == GameCommands::kFailure)
             {
                 return res;
             }
@@ -1133,7 +1133,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             if (placementArgs)
             {
                 GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
-                if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply) != GameCommands::FAILURE)
+                if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply) != GameCommands::kFailure)
                 {
                     Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, GameCommands::getPosition());
                 }
@@ -1254,7 +1254,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             Input::setFlag(Input::Flags::flag6);
             Ui::Windows::Main::showGridlines();
             _industryGhostPlaced = false;
-            _industryPlacementCost = 0x80000000;
+            _industryPlacementCost = GameCommands::kFailure;
 
             self.rowCount = 0;
             self.rowHover = -1;

@@ -64,7 +64,7 @@ namespace OpenLoco::GameCommands
                     if (!(SceneManager::isSandboxMode() && isPlayerCompany) && buildingObj->hasFlags(BuildingObjectFlags::indestructible))
                     {
                         GameCommands::setErrorText(StringIds::demolition_not_allowed);
-                        return GameCommands::FAILURE;
+                        return GameCommands::kFailure;
                     }
 
                     if (!buildingObj->hasFlags(BuildingObjectFlags::miscBuilding))
@@ -77,7 +77,7 @@ namespace OpenLoco::GameCommands
                             auto formatArgs = FormatArguments::common();
                             formatArgs.push(town->name);
                             GameCommands::setErrorText(StringIds::local_authority_refuses_permission);
-                            return GameCommands::FAILURE;
+                            return GameCommands::kFailure;
                         }
                     }
                 }
@@ -111,7 +111,7 @@ namespace OpenLoco::GameCommands
             }
             return Economy::getInflationAdjustedCost(buildingObj->clearCostFactor, buildingObj->clearCostIndex, 8);
         }
-        return GameCommands::FAILURE;
+        return GameCommands::kFailure;
     }
 
     void removeBuilding(registers& regs)

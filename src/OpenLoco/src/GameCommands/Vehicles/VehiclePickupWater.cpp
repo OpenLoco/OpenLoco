@@ -24,12 +24,12 @@ namespace OpenLoco::GameCommands
         setPosition(train.veh2->position);
         if (!sub_431E6A(train.head->owner))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!train.head->canBeModified())
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!(flags & Flags::apply))

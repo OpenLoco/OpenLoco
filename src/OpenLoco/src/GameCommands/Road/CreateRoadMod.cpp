@@ -52,7 +52,7 @@ namespace OpenLoco::GameCommands
         auto* roadEl = getRoadElement(args);
         if (roadEl == nullptr || !sub_431E6A(roadEl->owner(), reinterpret_cast<const World::TileElement*>(roadEl)))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         auto& piece = World::TrackData::getRoadPiece(args.roadId)[roadEl->sequenceIndex()];
@@ -66,7 +66,7 @@ namespace OpenLoco::GameCommands
         if (result.allPlacementsFailed)
         {
             setErrorText(StringIds::track_road_unsuitable);
-            return FAILURE;
+            return kFailure;
         }
         if (result.networkTooComplex && (flags & Flags::apply) && !(flags & Flags::ghost))
         {

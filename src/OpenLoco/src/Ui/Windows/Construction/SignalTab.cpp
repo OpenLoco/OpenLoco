@@ -185,7 +185,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     static uint32_t placeSignalGhost(const GameCommands::SignalPlacementArgs& args)
     {
         auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
-        if (res != GameCommands::FAILURE)
+        if (res != GameCommands::kFailure)
         {
             Common::setGhostVisibilityFlag(GhostVisibilityFlags::signal);
 
@@ -236,9 +236,9 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         if (!placementArgs || (placementArgs->trackObjType != cState.trackType))
         {
             removeConstructionGhosts();
-            if (cState.signalCost != 0x80000000)
+            if (cState.signalCost != GameCommands::kFailure)
             {
-                cState.signalCost = 0x80000000;
+                cState.signalCost = GameCommands::kFailure;
                 self.invalidate();
             }
             return;
@@ -294,7 +294,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
         GameCommands::setErrorTitle(isBothDirections ? StringIds::cant_build_signals_here : StringIds::cant_build_signal_here);
         auto res = GameCommands::doCommand(*args, GameCommands::Flags::apply);
-        if (res == GameCommands::FAILURE)
+        if (res == GameCommands::kFailure)
         {
             return;
         }
@@ -356,7 +356,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
         drawingCtx.drawImage(xPos, yPos, imageId);
 
-        if (cState.signalCost != 0x80000000 && cState.signalCost != 0)
+        if (cState.signalCost != GameCommands::kFailure && cState.signalCost != 0)
         {
             FormatArguments args{};
             args.push<uint32_t>(cState.signalCost);
