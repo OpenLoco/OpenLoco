@@ -27,7 +27,7 @@ namespace OpenLoco::GameCommands
      * @param type @<dh>
      * @param elementType @<bh>
      * @param flags @<bl>
-     * @return @<ebx> - returns the remove cost if successful; otherwise GameCommands::FAILURE (in the assembly code we never get into failure path)
+     * @return @<ebx> - returns the remove cost if successful; otherwise GameCommands::kFailure (in the assembly code we never get into failure path)
      */
     static uint32_t removeTree(const World::Pos3& pos, const uint8_t type, const uint8_t elementType, const uint8_t flags)
     {
@@ -75,7 +75,7 @@ namespace OpenLoco::GameCommands
             return removalCost;
         }
 
-        return FAILURE;
+        return kFailure;
     }
 
     void removeTree(registers& regs)

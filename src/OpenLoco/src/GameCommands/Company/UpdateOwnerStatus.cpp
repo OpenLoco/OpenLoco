@@ -13,7 +13,7 @@ namespace OpenLoco::GameCommands
             auto* company = CompanyManager::get(companyId);
             if (company == nullptr)
             {
-                return FAILURE;
+                return kFailure;
             }
             company->ownerStatus = ownerStatus;
         }

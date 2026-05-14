@@ -262,7 +262,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             ToolManager::toolSet(self, Common::widx::panel, CursorId::plantTree);
             Input::setFlag(Input::Flags::flag6);
             _terraformGhostPlacedFlags = Common::GhostPlacedFlags::none;
-            _lastTreeCost = GameCommands::FAILURE;
+            _lastTreeCost = GameCommands::kFailure;
             self.rowCount = 0;
             self.rowHover = -1;
             refreshTreeList(self);
@@ -468,7 +468,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             removeTreeGhost();
 
             auto res = GameCommands::doCommand(placementArgs, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
-            if (res != GameCommands::FAILURE)
+            if (res != GameCommands::kFailure)
             {
                 _terraformGhostPos = placementArgs.pos;
                 _terraformGhostTreeElementType = (_lastPlacedTree)->rawData()[0];
@@ -570,7 +570,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 switch (_treeClusterType)
                 {
                     case treeCluster::none:
-                        if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply) != GameCommands::FAILURE)
+                        if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply) != GameCommands::kFailure)
                         {
                             Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, GameCommands::getPosition());
                         }
@@ -665,7 +665,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     int32_t pan = (self.width >> 1) + self.x;
                     Audio::playSound(Audio::SoundId::clickDown, Audio::ChannelId::ui, pan);
                     self.expandContentCounter = -16;
-                    _lastTreeCost = GameCommands::FAILURE;
+                    _lastTreeCost = GameCommands::kFailure;
                     self.invalidate();
                     break;
                 }
@@ -773,11 +773,11 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             auto treeObj = ObjectManager::get<TreeObject>(treeId);
 
-            uint32_t treeCost = GameCommands::FAILURE;
+            uint32_t treeCost = GameCommands::kFailure;
             if (self.var_846 == 0xFFFF)
             {
                 treeCost = _lastTreeCost;
-                if (treeCost == GameCommands::FAILURE)
+                if (treeCost == GameCommands::kFailure)
                 {
                     treeCost = Economy::getInflationAdjustedCost(treeObj->buildCostFactor, treeObj->costIndex, 12);
                 }
@@ -923,7 +923,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             window->currentTab = Common::widx::tab_plant_trees - Common::widx::tab_clear_area;
             window->frameNo = 0;
             _terraformGhostPlacedFlags = Common::GhostPlacedFlags::none;
-            _lastTreeCost = GameCommands::FAILURE;
+            _lastTreeCost = GameCommands::kFailure;
             window->owner = CompanyManager::getControllingId();
             window->var_846 = 0xFFFF;
             window->expandContentCounter = 0;
@@ -998,7 +998,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             ToolManager::toolSet(self, Common::widx::panel, CursorId::bulldozerTool);
             Input::setFlag(Input::Flags::flag6);
-            _raiseLandCost = GameCommands::FAILURE;
+            _raiseLandCost = GameCommands::kFailure;
             _adjustToolSize = _clearAreaToolSize;
         }
 
@@ -1045,7 +1045,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             World::mapInvalidateSelectionRect();
             World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
 
-            uint32_t cost = GameCommands::FAILURE;
+            uint32_t cost = GameCommands::kFailure;
             auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
             if (res)
             {
@@ -1162,7 +1162,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 tr.drawStringCentred(point, Colour::black, StringIds::tile_inspector_coord, args);
             }
 
-            if (_raiseLandCost == GameCommands::FAILURE)
+            if (_raiseLandCost == GameCommands::kFailure)
             {
                 return;
             }
@@ -1263,8 +1263,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
 
                 _lastSelectedLand = i;
-                _raiseLandCost = GameCommands::FAILURE;
-                _lowerLandCost = GameCommands::FAILURE;
+                _raiseLandCost = GameCommands::kFailure;
+                _lowerLandCost = GameCommands::kFailure;
                 _adjustToolSize = _adjustLandToolSize;
                 break;
             }
@@ -1506,7 +1506,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             World::mapInvalidateSelectionRect();
             World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
 
-            uint32_t cost = GameCommands::FAILURE;
+            uint32_t cost = GameCommands::kFailure;
             auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
             if (res)
             {
@@ -1580,8 +1580,8 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             if (SceneManager::isEditorMode() || xPos == 0x8000)
             {
-                raiseCost = GameCommands::FAILURE;
-                lowerCost = GameCommands::FAILURE;
+                raiseCost = GameCommands::kFailure;
+                lowerCost = GameCommands::kFailure;
             }
             else
             {
@@ -1716,8 +1716,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                         Input::setDragLastLocation(Input::getDragLastLocation() + Ui::Point{ 0, dY });
                         lowerLand(flags);
                     }
-                    _raiseLandCost = GameCommands::FAILURE;
-                    _lowerLandCost = GameCommands::FAILURE;
+                    _raiseLandCost = GameCommands::kFailure;
+                    _lowerLandCost = GameCommands::kFailure;
                     break;
                 }
             }
@@ -1842,7 +1842,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto xPos = toolArea.midX() + self.x;
             auto yPos = toolArea.bottom + self.y + 28;
 
-            if (_raiseLandCost != GameCommands::FAILURE)
+            if (_raiseLandCost != GameCommands::kFailure)
             {
                 if (_raiseLandCost != 0)
                 {
@@ -1856,7 +1856,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             yPos += 10;
 
-            if (_lowerLandCost != GameCommands::FAILURE)
+            if (_lowerLandCost != GameCommands::kFailure)
             {
                 if (_lowerLandCost != 0)
                 {
@@ -1920,8 +1920,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             ToolManager::toolSet(self, Common::widx::panel, CursorId::waterTool);
             Input::setFlag(Input::Flags::flag6);
-            _raiseWaterCost = GameCommands::FAILURE;
-            _lowerWaterCost = GameCommands::FAILURE;
+            _raiseWaterCost = GameCommands::kFailure;
+            _lowerWaterCost = GameCommands::kFailure;
             _adjustToolSize = _adjustWaterToolSize;
         }
 
@@ -1998,7 +1998,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 auto& interaction = res.first;
                 if (interaction.type == ViewportInteraction::InteractionItem::noInteraction)
                 {
-                    setAdjustCost(GameCommands::FAILURE, GameCommands::FAILURE);
+                    setAdjustCost(GameCommands::kFailure, GameCommands::kFailure);
                     return;
                 }
                 if (!setMapSelectionTiles(interaction.pos + World::Pos2(16, 16), MapSelectionType::fullWater, _adjustToolSize))
@@ -2017,7 +2017,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             if (SceneManager::isEditorMode())
             {
-                setAdjustCost(GameCommands::FAILURE, GameCommands::FAILURE);
+                setAdjustCost(GameCommands::kFailure, GameCommands::kFailure);
             }
             else
             {
@@ -2128,8 +2128,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                 Input::setDragLastLocation(Input::getDragLastLocation() + Ui::Point{ 0, dY });
                 lowerWater(flags);
             }
-            _raiseWaterCost = GameCommands::FAILURE;
-            _lowerWaterCost = GameCommands::FAILURE;
+            _raiseWaterCost = GameCommands::kFailure;
+            _lowerWaterCost = GameCommands::kFailure;
         }
 
         // 0x004BCDE8
@@ -2188,7 +2188,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto xPos = toolArea.midX() + self.x;
             auto yPos = toolArea.bottom + self.y + 5;
 
-            if (_raiseWaterCost != GameCommands::FAILURE)
+            if (_raiseWaterCost != GameCommands::kFailure)
             {
                 if (_raiseWaterCost != 0)
                 {
@@ -2202,7 +2202,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             yPos += 10;
 
-            if (_lowerWaterCost != GameCommands::FAILURE)
+            if (_lowerWaterCost != GameCommands::kFailure)
             {
                 if (_lowerWaterCost != 0)
                 {
@@ -2459,7 +2459,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             removeWallGhost();
 
-            if (GameCommands::doCommand(placementArgs, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost) != GameCommands::FAILURE)
+            if (GameCommands::doCommand(placementArgs, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost) != GameCommands::kFailure)
             {
                 _terraformGhostPos = placementArgs.pos;
                 _terraformGhostRotation = placementArgs.rotation;
@@ -2548,7 +2548,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (placementArgs)
             {
                 GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
-                if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply) != GameCommands::FAILURE)
+                if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply) != GameCommands::kFailure)
                 {
                     Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, GameCommands::getPosition());
                 }

@@ -363,7 +363,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 args.bufferIndex = 0;
 
-                success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE;
+                success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure;
             }
 
             // No need to propagate the name if it could not be set.
@@ -975,7 +975,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             removeHeadquarterGhost();
             auto flags = GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost;
-            if (GameCommands::doCommand(args, flags) != GameCommands::FAILURE)
+            if (GameCommands::doCommand(args, flags) != GameCommands::kFailure)
             {
                 _headquarterGhost = args;
             }
@@ -1078,7 +1078,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
             uint8_t flags = GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing;
             auto commandResult = GameCommands::doCommand(*placementArgs, flags);
-            if (commandResult != GameCommands::FAILURE)
+            if (commandResult != GameCommands::kFailure)
             {
                 ToolManager::toolCancel();
             }

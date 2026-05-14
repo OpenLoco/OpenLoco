@@ -280,7 +280,7 @@ namespace OpenLoco::GameCommands
         auto* veh = EntityManager::get<Vehicles::VehicleHead>(head);
         if (veh == nullptr)
         {
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
         if (flags & Flags::apply)
         {

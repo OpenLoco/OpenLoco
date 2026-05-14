@@ -1195,7 +1195,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         GameCommands::VehicleCreateArgs gcArgs{};
         gcArgs.vehicleId = EntityId(_buildTargetVehicle);
         gcArgs.vehicleType = item;
-        if (GameCommands::doCommand(gcArgs, GameCommands::Flags::apply) == GameCommands::FAILURE)
+        if (GameCommands::doCommand(gcArgs, GameCommands::Flags::apply) == GameCommands::kFailure)
         {
             return;
         }

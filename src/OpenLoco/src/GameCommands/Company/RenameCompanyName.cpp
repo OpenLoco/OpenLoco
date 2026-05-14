@@ -80,7 +80,7 @@ namespace OpenLoco::GameCommands
             if (strcmp(rivalCompanyName, renameStringBuffer) == 0)
             {
                 GameCommands::setErrorText(StringIds::chosen_name_in_use);
-                return GameCommands::FAILURE;
+                return GameCommands::kFailure;
             }
         }
 
@@ -88,7 +88,7 @@ namespace OpenLoco::GameCommands
         StringId allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, false);
         if (allocatedStringId == StringIds::empty)
         {
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
 
         // Bailing out early?

@@ -26,7 +26,7 @@ namespace OpenLoco::GameCommands
      * @param buffer0 @<edx> - First group of 4 characters of a 12 character update buffer
      * @param buffer1 @<dx> - Second group of 4 characters of a 12 character update buffer
      * @param buffer2 @<bp> - Third group of 4 characters of a 12 character update buffer
-     * @return @<ebx> - if rename is successful, return 0, if failed, return FAILURE
+     * @return @<ebx> - if rename is successful, return 0, if failed, return kFailure
      */
     static uint32_t renameVehicle(const VehicleRenameArgs& args, const uint8_t flags)
     {
@@ -57,7 +57,7 @@ namespace OpenLoco::GameCommands
 
         if (vehicleHead == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
         char renameStringBuffer[37] = "";
         memcpy(renameStringBuffer, staticRenameBuffer, sizeof(staticRenameBuffer));
@@ -79,7 +79,7 @@ namespace OpenLoco::GameCommands
             allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, true);
             if (allocatedStringId == StringIds::empty)
             {
-                return FAILURE;
+                return kFailure;
             }
             if ((flags & Flags::apply) == 0)
             {

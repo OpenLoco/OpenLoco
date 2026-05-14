@@ -125,12 +125,12 @@ namespace OpenLoco::GameCommands
         auto* industry = IndustryManager::get(id);
         if (industry == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
         auto* indObj = industry->getObject();
         if (indObj == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         const auto height = World::TileManager::getHeight(World::Pos2{ industry->x, industry->y } + World::Pos2{ 16, 16 });

@@ -89,7 +89,7 @@ namespace OpenLoco::GameCommands
 
             if (!foundPos)
             {
-                return FAILURE;
+                return kFailure;
             }
         }
         else
@@ -132,7 +132,7 @@ namespace OpenLoco::GameCommands
 
             if (!foundPos)
             {
-                return FAILURE;
+                return kFailure;
             }
         }
 
@@ -140,7 +140,7 @@ namespace OpenLoco::GameCommands
         if (!newTown)
         {
             setErrorText(StringIds::too_many_towns);
-            return FAILURE;
+            return kFailure;
         }
 
         if (!(flags & Flags::apply))

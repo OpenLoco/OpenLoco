@@ -292,7 +292,7 @@ namespace OpenLoco::GameCommands
             if (SceneManager::isPaused())
             {
                 _gGameCommandErrorText = StringIds::empty;
-                return GameCommands::FAILURE;
+                return GameCommands::kFailure;
             }
         }
 
@@ -333,7 +333,7 @@ namespace OpenLoco::GameCommands
         int32_t ebx = fnRegs1.ebx;
         _gameCommandFlags = flagsBackup;
 
-        if (ebx != static_cast<int32_t>(GameCommands::FAILURE))
+        if (ebx != static_cast<int32_t>(GameCommands::kFailure))
         {
             if (SceneManager::isEditorMode())
             {
@@ -348,13 +348,13 @@ namespace OpenLoco::GameCommands
                 {
                     if (!CompanyManager::ensureCompanyFunding(getUpdatingCompanyId(), ebx))
                     {
-                        ebx = GameCommands::FAILURE;
+                        ebx = GameCommands::kFailure;
                     }
                 }
             }
         }
 
-        if (ebx == static_cast<int32_t>(GameCommands::FAILURE))
+        if (ebx == static_cast<int32_t>(GameCommands::kFailure))
         {
             if (flags & Flags::apply)
             {
@@ -379,7 +379,7 @@ namespace OpenLoco::GameCommands
         int32_t ebx2 = fnRegs2.ebx;
         _gameCommandFlags = flagsBackup2;
 
-        if (ebx2 == static_cast<int32_t>(GameCommands::FAILURE))
+        if (ebx2 == static_cast<int32_t>(GameCommands::kFailure))
         {
             return loc_4314EA();
         }
@@ -422,24 +422,24 @@ namespace OpenLoco::GameCommands
         _gameCommandNestLevel--;
         if (_gameCommandNestLevel != 0)
         {
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
 
         if (_updatingCompanyId != CompanyManager::getControllingId())
         {
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
 
         if (_gameCommandFlags & Flags::noErrorWindow)
         {
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
 
         if (_gGameCommandErrorText != 0xFFFE)
         {
             auto openError = _gGameCommandErrorSound ? Windows::Error::open : Windows::Error::openQuiet;
             openError(_gGameCommandErrorTitle, _gGameCommandErrorText);
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
 
         // advanced errors
@@ -464,7 +464,7 @@ namespace OpenLoco::GameCommands
                     formatter.push(pObject->name);
                     formatter.push(CompanyManager::get(_errorCompanyId)->name);
                     Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_stringid_belongs_to, _errorCompanyId);
-                    return GameCommands::FAILURE;
+                    return GameCommands::kFailure;
                 }
 
                 case ElementType::road: // 0x1C
@@ -481,7 +481,7 @@ namespace OpenLoco::GameCommands
                     formatter.push(pObject->name);
                     formatter.push(CompanyManager::get(_errorCompanyId)->name);
                     Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_stringid_belongs_to, _errorCompanyId);
-                    return GameCommands::FAILURE;
+                    return GameCommands::kFailure;
                 }
 
                 case ElementType::station: // 8
@@ -499,7 +499,7 @@ namespace OpenLoco::GameCommands
                     formatter.push(pStation->town);
                     formatter.push(CompanyManager::get(_errorCompanyId)->name);
                     Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_stringid_belongs_to, _errorCompanyId);
-                    return GameCommands::FAILURE;
+                    return GameCommands::kFailure;
                 }
 
                 case ElementType::signal: // 0x0C
@@ -507,7 +507,7 @@ namespace OpenLoco::GameCommands
                     auto formatter = FormatArguments::common();
                     formatter.push(CompanyManager::get(_errorCompanyId)->name);
                     Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_signal_belongs_to, _errorCompanyId);
-                    return GameCommands::FAILURE;
+                    return GameCommands::kFailure;
                 }
 
                 default:
@@ -519,7 +519,7 @@ namespace OpenLoco::GameCommands
         auto formatter = FormatArguments::common();
         formatter.push(CompanyManager::get(_errorCompanyId)->name);
         Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_belongs_to, _errorCompanyId);
-        return GameCommands::FAILURE;
+        return GameCommands::kFailure;
     }
 
     // 0x00431E6A

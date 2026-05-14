@@ -15,7 +15,7 @@ namespace OpenLoco::GameCommands
         auto* head = EntityManager::get<Vehicles::VehicleHead>(args.head);
         if (head == nullptr)
         {
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
 
         GameCommands::setPosition(head->position);
@@ -26,7 +26,7 @@ namespace OpenLoco::GameCommands
 
         if (args.orderOffset > head->sizeOfOrderTable)
         {
-            return FAILURE;
+            return kFailure;
         }
         Ui::WindowManager::invalidateOrderPageByVehicleNumber(enumValue(head->id));
 

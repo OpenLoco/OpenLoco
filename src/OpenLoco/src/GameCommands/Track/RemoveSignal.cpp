@@ -63,7 +63,7 @@ namespace OpenLoco::GameCommands
         auto* elSignal = pieceElTrack->next()->as<World::SignalElement>();
         if (elSignal == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         currency32_t totalCost = 0;
@@ -90,12 +90,12 @@ namespace OpenLoco::GameCommands
 
         if (elTrack == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!sub_431E6A(elTrack->owner(), reinterpret_cast<World::TileElement*>(elTrack)))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         const auto trackPieces = World::TrackData::getTrackPiece(args.trackId);
@@ -105,9 +105,9 @@ namespace OpenLoco::GameCommands
 
         currency32_t cost = signalRemoveCost(args, trackPieces[0], trackStart);
 
-        if (static_cast<uint32_t>(cost) == FAILURE)
+        if (static_cast<uint32_t>(cost) == kFailure)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         for (auto& piece : trackPieces)
@@ -116,7 +116,7 @@ namespace OpenLoco::GameCommands
             auto* pieceElTrack = getElTrackAt(args, trackLoc, piece.index);
             if (pieceElTrack == nullptr)
             {
-                return FAILURE;
+                return kFailure;
             }
 
             if (!(flags & Flags::apply))
@@ -132,7 +132,7 @@ namespace OpenLoco::GameCommands
             auto* elSignal = pieceElTrack->next()->as<World::SignalElement>();
             if (elSignal == nullptr)
             {
-                return FAILURE;
+                return kFailure;
             }
 
             if (args.flags & (1U << 15))

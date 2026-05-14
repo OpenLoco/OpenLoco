@@ -1167,7 +1167,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             GameCommands::VehicleCloneArgs args{};
             args.vehicleHeadId = head->head;
 
-            if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+            if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure)
             {
                 auto* newVehicle = EntityManager::get<Vehicles::VehicleBase>(GameCommands::getLegacyReturnState().lastCreatedVehicleId);
                 if (newVehicle != nullptr)
@@ -2921,7 +2921,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto result = GameCommands::doCommand(args, GameCommands::Flags::apply);
 
             Vehicles::OrderManager::generateNumDisplayFrames(head); // Note: order changed, check if this matters.
-            return result != GameCommands::FAILURE;
+            return result != GameCommands::kFailure;
         }
 
         // 0x004B4CCB based on
@@ -2935,7 +2935,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto result = GameCommands::doCommand(args, GameCommands::Flags::apply);
 
             Vehicles::OrderManager::generateNumDisplayFrames(head); // Note: order changed, check if this matters.
-            return result != GameCommands::FAILURE;
+            return result != GameCommands::kFailure;
         }
 
         static bool orderReverseCommand(Vehicles::VehicleHead* const head)
@@ -2947,7 +2947,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto result = GameCommands::doCommand(args, GameCommands::Flags::apply);
 
             Vehicles::OrderManager::generateNumDisplayFrames(head);
-            return result != GameCommands::FAILURE;
+            return result != GameCommands::kFailure;
         }
 
         // 0x004B4BC1 / 0x004B4C78 based on
@@ -4318,7 +4318,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
             _ghostVehiclePos = placementArgs->pos;
             removeBoatGhost(head);
-            if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::ghost | GameCommands::Flags::noErrorWindow) != GameCommands::FAILURE)
+            if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::ghost | GameCommands::Flags::noErrorWindow) != GameCommands::kFailure)
             {
                 _ghostTrackProgress = 0;
             }
@@ -4465,7 +4465,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             removeAirplaneGhost(head);
-            if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::ghost | GameCommands::Flags::noErrorWindow) != GameCommands::FAILURE)
+            if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::ghost | GameCommands::Flags::noErrorWindow) != GameCommands::kFailure)
             {
                 _ghostAirportNode = placementArgs->airportNode;
                 _ghostAirportStationId = placementArgs->stationId;
@@ -4701,7 +4701,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             removeLandGhost(head);
-            if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::ghost | GameCommands::Flags::noErrorWindow) != GameCommands::FAILURE)
+            if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::ghost | GameCommands::Flags::noErrorWindow) != GameCommands::kFailure)
             {
                 _ghostLandTrackAndDirection = placementArgs->trackAndDirection;
                 _ghostVehiclePos = placementArgs->pos;
@@ -4748,7 +4748,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static void pickupToolPlacementCommandCallback(uint32_t gameCommandResult, Window& self, EntityId vehicleHead)
         {
-            if (gameCommandResult == GameCommands::FAILURE)
+            if (gameCommandResult == GameCommands::kFailure)
             {
                 return;
             }
@@ -5063,21 +5063,21 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     GameCommands::VehiclePickupArgs gcArgs{};
                     gcArgs.head = head->id;
-                    success = GameCommands::doCommand(gcArgs, GameCommands::Flags::apply) != GameCommands::FAILURE;
+                    success = GameCommands::doCommand(gcArgs, GameCommands::Flags::apply) != GameCommands::kFailure;
                     break;
                 }
                 case TransportMode::air:
                 {
                     GameCommands::VehiclePickupAirArgs gcArgs{};
                     gcArgs.head = head->id;
-                    success = GameCommands::doCommand(gcArgs, GameCommands::Flags::apply) != GameCommands::FAILURE;
+                    success = GameCommands::doCommand(gcArgs, GameCommands::Flags::apply) != GameCommands::kFailure;
                     break;
                 }
                 case TransportMode::water:
                 {
                     GameCommands::VehiclePickupWaterArgs gcArgs{};
                     gcArgs.head = head->id;
-                    success = GameCommands::doCommand(gcArgs, GameCommands::Flags::apply) != GameCommands::FAILURE;
+                    success = GameCommands::doCommand(gcArgs, GameCommands::Flags::apply) != GameCommands::kFailure;
                     break;
                 }
             }

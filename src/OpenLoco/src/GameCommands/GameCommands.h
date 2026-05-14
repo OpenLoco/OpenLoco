@@ -197,7 +197,7 @@ namespace OpenLoco::GameCommands
     static_assert(sizeof(registers) == 7 * 4);
 #pragma pack(pop)
 
-    constexpr uint32_t FAILURE = 0x80000000;
+    constexpr uint32_t kFailure = 0x80000000;
 
     uint32_t doCommand(GameCommand command, const registers& registers);
     uint32_t doCommandForReal(GameCommand command, CompanyId company, const registers& registers);

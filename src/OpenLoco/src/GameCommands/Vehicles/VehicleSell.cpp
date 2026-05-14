@@ -22,13 +22,13 @@ namespace OpenLoco::GameCommands
         auto* vehBase = EntityManager::get<VehicleBase>(id);
         if (vehBase == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         auto* head = EntityManager::get<VehicleHead>(vehBase->getHead());
         if (head == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
         Vehicle train(*head);
         if (head == vehBase)
@@ -43,7 +43,7 @@ namespace OpenLoco::GameCommands
             auto* bogie = vehBase->asVehicleBogie();
             if (bogie == nullptr)
             {
-                return FAILURE;
+                return kFailure;
             }
             refundCost = bogie->refundCost;
         }
@@ -113,12 +113,12 @@ namespace OpenLoco::GameCommands
         {
             if (!sub_431E6A(vehBase->owner))
             {
-                return FAILURE;
+                return kFailure;
             }
             if (!head->canBeModified())
             {
                 // Error message set by canBeModified
-                return FAILURE;
+                return kFailure;
             }
             setPosition(head->position);
         }

@@ -200,7 +200,7 @@ namespace OpenLoco::GameCommands
     {
         if (args.head == EntityId::null)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         try
@@ -220,19 +220,19 @@ namespace OpenLoco::GameCommands
 
             if (!sub_431E6A(train.head->owner))
             {
-                return FAILURE;
+                return kFailure;
             }
             if (!args.convertGhost)
             {
                 if (train.head->tileX != -1)
                 {
                     setErrorText(StringIds::empty);
-                    return FAILURE;
+                    return kFailure;
                 }
                 if (train.cars.empty())
                 {
                     setErrorText(StringIds::empty);
-                    return FAILURE;
+                    return kFailure;
                 }
             }
 
@@ -256,14 +256,14 @@ namespace OpenLoco::GameCommands
                 {
                     if (!validateRoadPlacement(pos, args.trackAndDirection, *train.head))
                     {
-                        return FAILURE;
+                        return kFailure;
                     }
                 }
                 else
                 {
                     if (!validateTrackPlacement(pos, args.trackAndDirection, *train.head))
                     {
-                        return FAILURE;
+                        return kFailure;
                     }
                 }
                 Vehicles::TrackAndDirection tad(0, 0);
@@ -275,7 +275,7 @@ namespace OpenLoco::GameCommands
                         res == VehicleManager::PlaceDownResult::Unk0
                             ? StringIds::not_enough_space_or_vehicle_in_the_way
                             : StringIds::vehicle_approaching_or_in_the_way);
-                    return FAILURE;
+                    return kFailure;
                 }
 
                 train.head->vehicleFlags |= Vehicles::VehicleFlags::commandStop;
@@ -290,7 +290,7 @@ namespace OpenLoco::GameCommands
         }
         catch (Exception::RuntimeError&)
         {
-            return FAILURE;
+            return kFailure;
         }
         if ((flags & Flags::apply) && !(flags & Flags::ghost))
         {

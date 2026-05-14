@@ -26,7 +26,7 @@ namespace OpenLoco::GameCommands
      * @param buffer0 @<edx> - First part (4 chars) of the 12 update buffer
      * @param buffer1 @<dx> - Second part (4 chars) of the 12 update buffer
      * @param buffer2 @<bp> - Third part (4 chars) of the 12 update buffer
-     * @return @<ebx> - returns 0 if rename is successful; otherwise GameCommands::FAILURE
+     * @return @<ebx> - returns 0 if rename is successful; otherwise GameCommands::kFailure
      */
     static uint32_t renameStation(const GameCommands::RenameStationArgs& args, const uint8_t flags)
     {
@@ -91,7 +91,7 @@ namespace OpenLoco::GameCommands
             StringId allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, true);
             if (allocatedStringId == StringIds::empty)
             {
-                return GameCommands::FAILURE;
+                return GameCommands::kFailure;
             }
 
             // Are we bailing out early?

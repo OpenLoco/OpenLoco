@@ -37,7 +37,7 @@ namespace OpenLoco::GameCommands
 
         if (!World::TileManager::checkFreeElementsAndReorganise())
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!buildingObj->hasFlags(BuildingObjectFlags::miscBuilding))
@@ -46,7 +46,7 @@ namespace OpenLoco::GameCommands
             if (!nearest.has_value())
             {
                 setErrorText(StringIds::town_must_be_built_first);
-                return FAILURE;
+                return kFailure;
             }
         }
 
@@ -79,7 +79,7 @@ namespace OpenLoco::GameCommands
             const auto tilePos = World::toTileSpace(World::Pos2(args.pos) + offset.pos);
             if (!World::validCoords(tilePos))
             {
-                return FAILURE;
+                return kFailure;
             }
 
             if ((flags & Flags::apply) && !(flags & Flags::ghost))
@@ -95,7 +95,7 @@ namespace OpenLoco::GameCommands
                 if (surface->water())
                 {
                     setErrorText(StringIds::cant_build_this_underwater);
-                    return FAILURE;
+                    return kFailure;
                 }
 
                 const auto baseZ = std::min<World::SmallZ>(surface->baseZ(), (args.pos.z / World::kSmallZStep));
@@ -137,7 +137,7 @@ namespace OpenLoco::GameCommands
                 };
                 if (!World::TileClearance::applyClearAtStandardHeight(World::toWorldSpace(tilePos), baseZ, clearZ, qt, clearFunc))
                 {
-                    return FAILURE;
+                    return kFailure;
                 }
                 // TODO: This is dangerous pointer might be invalid?
                 if (surface->slope() || surface->baseHeight() != args.pos.z)
@@ -178,32 +178,32 @@ namespace OpenLoco::GameCommands
                                 if (elTrack != nullptr && !elTrack->isGhost() && !elTrack->hasBridge())
                                 {
                                     setErrorText(StringIds::empty);
-                                    return FAILURE;
+                                    return kFailure;
                                 }
                                 else if (elRoad != nullptr && !elRoad->isGhost() && !elRoad->hasBridge())
                                 {
                                     setErrorText(StringIds::empty);
-                                    return FAILURE;
+                                    return kFailure;
                                 }
                                 else if (elStation != nullptr && elStation->stationType() == StationType::airport)
                                 {
                                     setErrorText(StringIds::empty);
-                                    return FAILURE;
+                                    return kFailure;
                                 }
                                 else if (elBuilding != nullptr)
                                 {
                                     setErrorText(StringIds::empty);
-                                    return FAILURE;
+                                    return kFailure;
                                 }
                                 else if (elIndustry != nullptr)
                                 {
                                     setErrorText(StringIds::empty);
-                                    return FAILURE;
+                                    return kFailure;
                                 }
                                 else if (elTree != nullptr && args.pos.z + clearHeight <= elTree->baseHeight())
                                 {
                                     setErrorText(StringIds::empty);
-                                    return FAILURE;
+                                    return kFailure;
                                 }
                             }
                         }
@@ -231,7 +231,7 @@ namespace OpenLoco::GameCommands
                 auto* elBuilding = World::TileManager::insertElement<World::BuildingElement>(World::toWorldSpace(tilePos), args.pos.z / World::kSmallZStep, 0xF);
                 if (elBuilding == nullptr)
                 {
-                    return FAILURE;
+                    return kFailure;
                 }
                 elBuilding->setClearZ((clearHeight / World::kSmallZStep) + elBuilding->baseZ());
                 elBuilding->setRotation(args.rotation);

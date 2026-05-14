@@ -1122,7 +1122,7 @@ namespace OpenLoco
                 args.roadId = 0;
                 args.roadObjectId = roadObjectId;
                 args.rotation = rotation;
-                if (GameCommands::doCommand(args, 0) != GameCommands::FAILURE)
+                if (GameCommands::doCommand(args, 0) != GameCommands::kFailure)
                 {
                     iterationValidBridgeTypes.push_back(bridgeObjId);
                 }
@@ -1625,7 +1625,7 @@ namespace OpenLoco
             args.bridge = 0xFF;
             args.roadObjectId = roadObjId.value();
             args.unkFlags = 0;
-            return GameCommands::doCommand(args, GameCommands::Flags::apply) == GameCommands::FAILURE;
+            return GameCommands::doCommand(args, GameCommands::Flags::apply) == GameCommands::kFailure;
         };
         squareSearch({ town.x, town.y }, 9, placeRoadAtTile);
     }

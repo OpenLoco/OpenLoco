@@ -23,7 +23,7 @@ namespace OpenLoco::GameCommands
         auto* head = EntityManager::get<Vehicles::VehicleHead>(args.head);
         if (head == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         head->manualPower = args.speed;

@@ -15,7 +15,7 @@ namespace OpenLoco::GameCommands
         auto* head = EntityManager::get<Vehicles::VehicleHead>(headId);
         if (head == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         setPosition(head->position);

@@ -626,7 +626,7 @@ namespace OpenLoco::GameCommands
 
         if (!World::TileManager::checkFreeElementsAndReorganise())
         {
-            return FAILURE;
+            return kFailure;
         }
 
         auto* roadObj = ObjectManager::get<RoadObject>(args.roadObjectId);
@@ -647,7 +647,7 @@ namespace OpenLoco::GameCommands
 
         if (args.pos.z & 0xF)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         currency32_t totalCost = 0;
@@ -687,7 +687,7 @@ namespace OpenLoco::GameCommands
             if (roadLoc.z < 16)
             {
                 setErrorText(StringIds::error_too_low);
-                return FAILURE;
+                return kFailure;
             }
 
             const auto baseZ = roadLoc.z / World::kSmallZStep;
@@ -713,19 +713,19 @@ namespace OpenLoco::GameCommands
                     if (args.bridge == 0xFFU)
                     {
                         setErrorText(StringIds::bridge_needed);
-                        return FAILURE;
+                        return kFailure;
                     }
                     auto* bridgeObj = ObjectManager::get<BridgeObject>(args.bridge);
                     if (heightDiff > bridgeObj->maxHeight)
                     {
                         setErrorText(StringIds::too_far_above_ground_for_bridge_type);
-                        return FAILURE;
+                        return kFailure;
                     }
                     returnState.byte_1136074 = std::max(heightDiff, returnState.byte_1136074);
                     if ((bridgeObj->disabledTrackCfg & World::TrackData::getRoadMiscData(args.roadId).flags) != CommonTraitFlags::none)
                     {
                         setErrorText(StringIds::bridge_type_unsuitable_for_this_configuration);
-                        return FAILURE;
+                        return kFailure;
                     }
                     clearZ += bridgeObj->clearHeight / World::kSmallZStep;
                 }
@@ -735,7 +735,7 @@ namespace OpenLoco::GameCommands
             if (clearZ > 236)
             {
                 setErrorText(StringIds::error_too_high);
-                return FAILURE;
+                return kFailure;
             }
 
             // 0x0113C2E2
@@ -775,7 +775,7 @@ namespace OpenLoco::GameCommands
 
             if (!World::TileClearance::applyClearAtStandardHeight(roadLoc, baseZ, clearZ, quarterTile, clearFunc))
             {
-                return FAILURE;
+                return kFailure;
             }
 
             if (levelCrossingObjId == 0xFFU)
@@ -801,19 +801,19 @@ namespace OpenLoco::GameCommands
             if (returnState.flags_1136072 != ElementPositionFlags::none && (returnState.flags_1136072 & newGroundFlags) == ElementPositionFlags::none)
             {
                 setErrorText(StringIds::cant_build_partly_above_partly_below_ground);
-                return FAILURE;
+                return kFailure;
             }
             returnState.flags_1136072 = newGroundFlags;
 
             if ((posFlags & ElementPositionFlags::partiallyUnderwater) != ElementPositionFlags::none)
             {
                 setErrorText(StringIds::cant_build_this_underwater);
-                return FAILURE;
+                return kFailure;
             }
             if ((posFlags & ElementPositionFlags::underwater) != ElementPositionFlags::none)
             {
                 setErrorText(StringIds::too_close_to_water_surface);
-                return FAILURE;
+                return kFailure;
             }
 
             if (!(flags & Flags::apply))
@@ -834,7 +834,7 @@ namespace OpenLoco::GameCommands
             auto* newElRoad = World::TileManager::insertElementRoad(roadLoc, baseZ, quarterTile.getBaseQuarterOccupied());
             if (newElRoad == nullptr)
             {
-                return FAILURE;
+                return kFailure;
             }
             newElRoad->setClearZ(clearZ);
             newElRoad->setRotation(args.rotation);

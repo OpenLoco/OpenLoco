@@ -731,7 +731,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 GameCommands::TownPlacementArgs placementArgs;
                 placementArgs.pos = *mapPos;
                 placementArgs.size = _townSize;
-                if (GameCommands::doCommand(placementArgs, GameCommands::Flags::apply) != GameCommands::FAILURE)
+                if (GameCommands::doCommand(placementArgs, GameCommands::Flags::apply) != GameCommands::kFailure)
                 {
                     Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, GameCommands::getPosition());
                 }
@@ -1036,7 +1036,7 @@ namespace OpenLoco::Ui::Windows::TownList
         {
             removeBuildingGhost();
             auto res = GameCommands::doCommand(placementArgs, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
-            if (res != GameCommands::FAILURE)
+            if (res != GameCommands::kFailure)
             {
                 _buildingGhostPos = placementArgs.pos;
                 _buildingGhostType = placementArgs.type;
@@ -1144,7 +1144,7 @@ namespace OpenLoco::Ui::Windows::TownList
             {
                 GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
 
-                if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing) != GameCommands::FAILURE)
+                if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing) != GameCommands::kFailure)
                 {
                     Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, GameCommands::getPosition());
                 }
@@ -1344,7 +1344,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     int32_t pan = (self.width >> 1) + self.x;
                     Audio::playSound(Audio::SoundId::clickDown, Audio::ChannelId::ui, pan);
                     self.expandContentCounter = -16;
-                    _buildingPlacementCost = GameCommands::FAILURE;
+                    _buildingPlacementCost = GameCommands::kFailure;
                     _buildingVariation = 0;
                     self.invalidate();
                     break;
@@ -1475,7 +1475,7 @@ namespace OpenLoco::Ui::Windows::TownList
             Ui::Windows::Main::showGridlines();
 
             _buildingGhostPlaced = 0;
-            _buildingPlacementCost = GameCommands::FAILURE;
+            _buildingPlacementCost = GameCommands::kFailure;
             self.rowCount = 0;
             self.rowHover = -1;
             self.var_846 = 0xFFFFU;

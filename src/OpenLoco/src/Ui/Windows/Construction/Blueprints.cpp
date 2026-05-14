@@ -31,7 +31,7 @@ namespace OpenLoco
             args.trackId = stationArg.trackId;
             args.type = stationArg.type;
             const auto res = GameCommands::doCommand(args, flags);
-            if (res != GameCommands::FAILURE)
+            if (res != GameCommands::kFailure)
             {
                 totalRes += res;
             }
@@ -48,7 +48,7 @@ namespace OpenLoco
             args.trackObjType = signalArg.trackObjType;
             args.flags = signalArg.sides;
             const auto res = GameCommands::doCommand(args, flags);
-            if (res != GameCommands::FAILURE)
+            if (res != GameCommands::kFailure)
             {
                 totalRes += res;
             }
@@ -64,7 +64,7 @@ namespace OpenLoco
             args.trackId = trackArg.trackId;
             args.trackObjectId = trackArg.trackObjectId;
             const auto res = GameCommands::doCommand(args, flags);
-            if (res != GameCommands::FAILURE)
+            if (res != GameCommands::kFailure)
             {
                 totalRes += res;
             }
@@ -82,9 +82,9 @@ namespace OpenLoco
         {
             trackArgs.pos += ghostBPPos;
             const auto res = GameCommands::doCommand(trackArgs, noApplyFlags);
-            if (res == GameCommands::FAILURE)
+            if (res == GameCommands::kFailure)
             {
-                return GameCommands::FAILURE;
+                return GameCommands::kFailure;
             }
         }
         // Now we do the actual placement
@@ -96,7 +96,7 @@ namespace OpenLoco
         for (auto& trackArgs : copiedTrack.trackArgs)
         {
             const auto res = GameCommands::doCommand(trackArgs, flags);
-            if (res != GameCommands::FAILURE)
+            if (res != GameCommands::kFailure)
             {
                 builtAnything = true;
                 result += res;
@@ -106,7 +106,7 @@ namespace OpenLoco
         {
             signalArgs.pos += ghostBPPos;
             const auto res = GameCommands::doCommand(signalArgs, flags);
-            if (res != GameCommands::FAILURE)
+            if (res != GameCommands::kFailure)
             {
                 builtAnything = true;
                 result += res;
@@ -116,7 +116,7 @@ namespace OpenLoco
         {
             stationArgs.pos += ghostBPPos;
             const auto res = GameCommands::doCommand(stationArgs, flags);
-            if (res != GameCommands::FAILURE)
+            if (res != GameCommands::kFailure)
             {
                 builtAnything = true;
                 result += res;

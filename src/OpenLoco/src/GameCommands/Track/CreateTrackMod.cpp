@@ -57,12 +57,12 @@ namespace OpenLoco::GameCommands
 
         if (elTrack == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!sub_431E6A(elTrack->owner(), reinterpret_cast<const World::TileElement*>(elTrack)))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         const auto& piece = World::TrackData::getTrackPiece(elTrack->trackId())[elTrack->sequenceIndex()];
@@ -77,7 +77,7 @@ namespace OpenLoco::GameCommands
         if (result.allPlacementsFailed)
         {
             setErrorText(StringIds::track_road_unsuitable);
-            return FAILURE;
+            return kFailure;
         }
         if (result.networkTooComplex && (flags & Flags::apply) && !(flags & Flags::ghost))
         {

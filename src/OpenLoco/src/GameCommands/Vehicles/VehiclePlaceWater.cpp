@@ -38,12 +38,12 @@ namespace OpenLoco::GameCommands
         auto* head = EntityManager::get<Vehicles::VehicleHead>(args.head);
         if (head == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!sub_431E6A(head->owner))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         Vehicles::Vehicle train(head->id);
@@ -53,12 +53,12 @@ namespace OpenLoco::GameCommands
             if (head->tileX != -1)
             {
                 setErrorText(StringIds::empty);
-                return FAILURE;
+                return kFailure;
             }
             if (train.cars.empty())
             {
                 setErrorText(StringIds::empty);
-                return FAILURE;
+                return kFailure;
             }
         }
 
@@ -90,24 +90,24 @@ namespace OpenLoco::GameCommands
             }();
             if (elStation == nullptr)
             {
-                return FAILURE;
+                return kFailure;
             }
             if (elStation->isGhost() || elStation->isAiAllocated())
             {
-                return FAILURE;
+                return kFailure;
             }
 
             auto* station = StationManager::get(elStation->stationId());
 
             if (!sub_431E6A(station->owner))
             {
-                return FAILURE;
+                return kFailure;
             }
 
             if (elStation->isFlag6())
             {
                 setErrorText(StringIds::vehicle_approaching_or_in_the_way);
-                return FAILURE;
+                return kFailure;
             }
 
             auto* dockObj = ObjectManager::get<DockObject>(elStation->objectId());
@@ -118,7 +118,7 @@ namespace OpenLoco::GameCommands
             if (waterHeight == 0)
             {
                 setErrorText(StringIds::noWater);
-                return FAILURE;
+                return kFailure;
             }
 
             if (!(flags & Flags::apply))

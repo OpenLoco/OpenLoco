@@ -516,7 +516,7 @@ namespace OpenLoco::World::TileClearance
         // look into changing this in the future.
         GameCommands::removeBuilding(regs);
         const auto buildingCost = static_cast<currency32_t>(regs.ebx);
-        if (static_cast<uint32_t>(buildingCost) == GameCommands::FAILURE)
+        if (static_cast<uint32_t>(buildingCost) == GameCommands::kFailure)
         {
             return ClearFuncResult::collisionErrorSet;
         }

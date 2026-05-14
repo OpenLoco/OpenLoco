@@ -41,12 +41,12 @@ namespace OpenLoco::GameCommands
         auto veh = entity->asBase<Vehicles::VehicleBase>();
         if (veh == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!sub_431E6A(veh->owner))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!(flags & Flags::apply))

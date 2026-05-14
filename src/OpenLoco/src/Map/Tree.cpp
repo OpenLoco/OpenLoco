@@ -125,7 +125,7 @@ namespace OpenLoco::World
 
         // First query if we can place a tree at this location; skip if we can't.
         auto queryRes = doCommand(args, 0);
-        if (queryRes == GameCommands::FAILURE)
+        if (queryRes == GameCommands::kFailure)
         {
             return false;
         }

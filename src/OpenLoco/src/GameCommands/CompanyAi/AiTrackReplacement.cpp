@@ -218,7 +218,7 @@ namespace OpenLoco::GameCommands
 
         if (elTrackSeq == nullptr)
         {
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
 
         auto* trackObj = ObjectManager::get<TrackObject>(args.trackObjectId);
@@ -365,7 +365,7 @@ namespace OpenLoco::GameCommands
             };
             if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, elTrack->baseZ(), elTrack->clearZ(), World::QuarterTile(elTrack->occupiedQuarter(), 0), clearFunc))
             {
-                return GameCommands::FAILURE;
+                return GameCommands::kFailure;
             }
 
             const auto posFlags = World::TileClearance::getPositionFlags();

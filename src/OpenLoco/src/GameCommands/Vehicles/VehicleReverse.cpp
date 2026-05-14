@@ -16,23 +16,23 @@ namespace OpenLoco::GameCommands
         auto* head = EntityManager::get<Vehicles::VehicleHead>(headId);
         if (head == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!sub_431E6A(head->owner))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!head->canBeModified())
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (head->tileX == -1)
         {
             setErrorText(StringIds::empty);
-            return FAILURE;
+            return kFailure;
         }
 
         if (!(flags & Flags::apply))

@@ -57,12 +57,12 @@ namespace OpenLoco::GameCommands
 
         if (elRoad == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!sub_431E6A(elRoad->owner(), reinterpret_cast<const World::TileElement*>(elRoad)))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         const auto& piece = World::TrackData::getRoadPiece(elRoad->roadId())[elRoad->sequenceIndex()];

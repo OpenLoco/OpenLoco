@@ -25,13 +25,13 @@ namespace OpenLoco::GameCommands
             rmArgs.pos = World::Pos3(company->headquartersX, company->headquartersY, company->headquartersZ * World::kSmallZStep);
 
             auto rmCost = doCommand(rmArgs, flags);
-            if (rmCost != FAILURE)
+            if (rmCost != kFailure)
             {
                 totalCost += rmCost;
             }
             else
             {
-                return FAILURE;
+                return kFailure;
             }
         }
 
@@ -44,13 +44,13 @@ namespace OpenLoco::GameCommands
         buildArgs.buildImmediately = args.buildImmediately;
 
         auto buildCost = doCommand(buildArgs, flags);
-        if (buildCost != FAILURE)
+        if (buildCost != kFailure)
         {
             totalCost += buildCost;
         }
         else
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if ((flags & Flags::apply) && !(flags & Flags::ghost))

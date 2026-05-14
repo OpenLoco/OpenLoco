@@ -36,38 +36,38 @@ namespace OpenLoco::GameCommands
         {
             if (!sub_431E6A(sourceVehicle->owner))
             {
-                return FAILURE;
+                return kFailure;
             }
             if (!sub_431E6A(destVehicle->owner))
             {
-                return FAILURE;
+                return kFailure;
             }
 
             if (!sourceHead->canBeModified())
             {
-                return FAILURE;
+                return kFailure;
             }
             if (!destHead->canBeModified())
             {
-                return FAILURE;
+                return kFailure;
             }
 
             if (sourceVehicle->getTrackType() != destVehicle->getTrackType())
             {
                 setErrorText(StringIds::incompatible_vehicle);
-                return FAILURE;
+                return kFailure;
             }
 
             // Pretty sure this needs to be true but not 100% (openloco addition)
             auto* sourceBogie = sourceVehicle->asVehicleBogie();
             if (sourceBogie == nullptr)
             {
-                return FAILURE;
+                return kFailure;
             }
 
             if (!destHead->isVehicleTypeCompatible(sourceBogie->objectId))
             {
-                return FAILURE;
+                return kFailure;
             }
 
             setPosition(destVehicle->position);
@@ -78,7 +78,7 @@ namespace OpenLoco::GameCommands
             auto* sourceBogie = sourceVehicle->asVehicleBogie();
             if (sourceBogie == nullptr)
             {
-                return FAILURE;
+                return kFailure;
             }
 
             Vehicles::Vehicle sourceTrain(*sourceHead);

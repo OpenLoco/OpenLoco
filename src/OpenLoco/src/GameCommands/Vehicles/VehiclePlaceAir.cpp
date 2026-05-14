@@ -41,7 +41,7 @@ namespace OpenLoco::GameCommands
         auto* station = StationManager::get(args.stationId);
         if (station == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         const auto pos = station->airportStartPos;
@@ -50,12 +50,12 @@ namespace OpenLoco::GameCommands
         auto* head = EntityManager::get<Vehicles::VehicleHead>(args.head);
         if (head == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!sub_431E6A(head->owner))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         Vehicles::Vehicle train(head->id);
@@ -65,12 +65,12 @@ namespace OpenLoco::GameCommands
             if (head->tileX != -1)
             {
                 setErrorText(StringIds::empty);
-                return FAILURE;
+                return kFailure;
             }
             if (train.cars.empty())
             {
                 setErrorText(StringIds::empty);
-                return FAILURE;
+                return kFailure;
             }
         }
 
@@ -102,11 +102,11 @@ namespace OpenLoco::GameCommands
             }();
             if (elStation == nullptr)
             {
-                return FAILURE;
+                return kFailure;
             }
             if (elStation->isGhost() || elStation->isAiAllocated())
             {
-                return FAILURE;
+                return kFailure;
             }
 
             auto* airportObj = ObjectManager::get<AirportObject>(elStation->objectId());
@@ -121,32 +121,32 @@ namespace OpenLoco::GameCommands
             }
             if (previousEdgeId == airportObj->numMovementEdges)
             {
-                return FAILURE;
+                return kFailure;
             }
 
             auto& previousMovEdge = movementEdges[previousEdgeId];
             if (station->airportMovementOccupiedEdges & previousMovEdge.mustBeClearEdges)
             {
                 setErrorText(StringIds::vehicle_approaching_or_in_the_way);
-                return FAILURE;
+                return kFailure;
             }
 
             if (station->airportMovementOccupiedEdges & airportObj->var_B6)
             {
                 setErrorText(StringIds::vehicle_approaching_or_in_the_way);
-                return FAILURE;
+                return kFailure;
             }
 
             if (!sub_431E6A(station->owner))
             {
-                return FAILURE;
+                return kFailure;
             }
 
             if ((airportObj->flags & train.cars.firstCar.front->getCompatibleAirportType()) == AirportObjectFlags::none)
             {
 
                 setErrorText(StringIds::airport_type_not_suitable_for_aircraft);
-                return FAILURE;
+                return kFailure;
             }
 
             if (!(flags & Flags::apply))
@@ -158,7 +158,7 @@ namespace OpenLoco::GameCommands
             const auto previousNodePos = getAirportMovementNodeLoc(args.stationId, previousMovEdge.curNode);
             if (!placePos.has_value() || !previousNodePos.has_value())
             {
-                return FAILURE;
+                return kFailure;
             }
             auto yaw = Vehicles::calculateYaw1FromVector(placePos->x - previousNodePos->x, placePos->y - previousNodePos->y);
             auto reverseYaw = yaw ^ (1U << 5);

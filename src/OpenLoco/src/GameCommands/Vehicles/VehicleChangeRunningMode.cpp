@@ -111,7 +111,7 @@ namespace OpenLoco::GameCommands
         // Starting this vehicle -- can we?
         if (startVehicle && !canVehicleBeStarted(train))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         // Stopping this vehicle, but vehicle is already stopped?
@@ -157,7 +157,7 @@ namespace OpenLoco::GameCommands
         // Can we change driving modes?
         if (!canVehicleBeStarted(train))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!(flags & Flags::apply))
@@ -232,7 +232,7 @@ namespace OpenLoco::GameCommands
         }
         catch (std::runtime_error&)
         {
-            return FAILURE;
+            return kFailure;
         }
     }
 

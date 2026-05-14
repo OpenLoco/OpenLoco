@@ -184,7 +184,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 {
                     GameCommands::IndustryRemovalArgs args;
                     args.industryId = static_cast<IndustryId>(self.number);
-                    bool success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE;
+                    bool success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure;
 
                     if (!success)
                     {
