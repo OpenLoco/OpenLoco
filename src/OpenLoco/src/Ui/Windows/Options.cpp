@@ -289,7 +289,7 @@ namespace OpenLoco::Ui::Windows::Options
             Widgets::Label({ 10, 111 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::frameRateLimitLabel),
             Widgets::dropdownWidgets({ 235, 111 }, { 154, 12 }, WindowColour::secondary, StringIds::empty),
 
-            Widgets::Checkbox({ 10, 127 }, { 174, 12 }, WindowColour::secondary, StringIds::option_show_fps_counter, StringIds::option_show_fps_counter_tooltip)
+            Widgets::Checkbox({ 10, 127 }, { 380, 12 }, WindowColour::secondary, StringIds::option_show_fps_counter, StringIds::option_show_fps_counter_tooltip)
 
         );
 
