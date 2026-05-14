@@ -2218,8 +2218,8 @@ namespace OpenLoco::Ui::Windows::Options
             // Vehicle behaviour
             Widgets::GroupBox({ 4, 115 }, { 412, 77 }, WindowColour::secondary, StringIds::vehicleTrackBehaviour),
             Widgets::Checkbox({ 10, 130 }, { 400, 12 }, WindowColour::secondary, StringIds::disable_vehicle_breakdowns),
-            Widgets::Checkbox({ 10, 145 }, { 200, 12 }, WindowColour::secondary, StringIds::disableVehicleLoadingPenalty, StringIds::disableVehicleLoadingPenaltyTip),
-            Widgets::Checkbox({ 10, 160 }, { 200, 12 }, WindowColour::secondary, StringIds::disableStationSizeLimitLabel, StringIds::disableStationSizeLimitTooltip),
+            Widgets::Checkbox({ 10, 145 }, { 400, 12 }, WindowColour::secondary, StringIds::disableVehicleLoadingPenalty, StringIds::disableVehicleLoadingPenaltyTip),
+            Widgets::Checkbox({ 10, 160 }, { 400, 12 }, WindowColour::secondary, StringIds::disableStationSizeLimitLabel, StringIds::disableStationSizeLimitTooltip),
             Widgets::Checkbox({ 10, 175 }, { 400, 12 }, WindowColour::secondary, StringIds::trainsReverseAtSignals),
 
             // Save options group
