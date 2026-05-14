@@ -284,9 +284,9 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             if (!placementArgs || ((placementArgs->roadObjType | (1 << 7)) != cState.trackType))
             {
                 removeConstructionGhosts();
-                if (cState.modCost != 0x80000000)
+                if (cState.modCost != GameCommands::FAILURE)
                 {
-                    cState.modCost = 0x80000000;
+                    cState.modCost = GameCommands::FAILURE;
                     self.invalidate();
                 }
                 return;
@@ -319,9 +319,9 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             if (!placementArgs || (placementArgs->trackObjType != cState.trackType))
             {
                 removeConstructionGhosts();
-                if (cState.modCost != 0x80000000)
+                if (cState.modCost != GameCommands::FAILURE)
                 {
-                    cState.modCost = 0x80000000;
+                    cState.modCost = GameCommands::FAILURE;
                     self.invalidate();
                 }
                 return;
@@ -548,7 +548,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             }
         }
 
-        if (cState.modCost != 0x80000000 && cState.modCost != 0)
+        if (cState.modCost != GameCommands::FAILURE && cState.modCost != 0)
         {
             FormatArguments args{};
             args.push<uint32_t>(cState.modCost);

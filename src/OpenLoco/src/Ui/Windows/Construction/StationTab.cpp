@@ -86,7 +86,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             case widx::rotate:
                 cState.constructionRotation++;
                 cState.constructionRotation = cState.constructionRotation & 3;
-                cState.stationCost = 0x80000000;
+                cState.stationCost = GameCommands::FAILURE;
                 self.invalidate();
                 break;
         }
@@ -277,9 +277,9 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         auto& cState = getConstructionState();
 
         removeConstructionGhosts();
-        if (cState.stationCost != 0x80000000U)
+        if (cState.stationCost != GameCommands::FAILUREU)
         {
-            cState.stationCost = 0x80000000U;
+            cState.stationCost = GameCommands::FAILUREU;
             Ui::WindowManager::invalidate(Ui::WindowType::construction);
         }
     }
@@ -1227,7 +1227,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             drawingCtx.drawImage(xPos, yPos, imageId);
         }
 
-        if (cState.stationCost != 0x80000000 && cState.stationCost != 0)
+        if (cState.stationCost != GameCommands::FAILURE && cState.stationCost != 0)
         {
             auto& widget = self.widgets[widx::image];
             auto point = Point(self.x + 69, widget.bottom + self.y + 4);

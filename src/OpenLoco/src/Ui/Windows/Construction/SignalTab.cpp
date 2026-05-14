@@ -236,9 +236,9 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         if (!placementArgs || (placementArgs->trackObjType != cState.trackType))
         {
             removeConstructionGhosts();
-            if (cState.signalCost != 0x80000000)
+            if (cState.signalCost != GameCommands::FAILURE)
             {
-                cState.signalCost = 0x80000000;
+                cState.signalCost = GameCommands::FAILURE;
                 self.invalidate();
             }
             return;
@@ -356,7 +356,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
         drawingCtx.drawImage(xPos, yPos, imageId);
 
-        if (cState.signalCost != 0x80000000 && cState.signalCost != 0)
+        if (cState.signalCost != GameCommands::FAILURE && cState.signalCost != 0)
         {
             FormatArguments args{};
             args.push<uint32_t>(cState.signalCost);
