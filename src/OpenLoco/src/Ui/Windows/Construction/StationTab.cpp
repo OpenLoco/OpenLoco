@@ -52,7 +52,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     static World::TilePos2 _toolPosDrag;
     static World::TilePos2 _toolPosInitial;
 
-    static constexpr auto widgets = makeWidgets(
+    static constexpr auto kWidgets = makeWidgets(
         Common::makeCommonWidgets(138, 190, StringIds::stringid_2),
         Widgets::dropdownWidgets({ 3, 45 }, { 132, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_station_type),
         Widgets::Wt3Widget({ 35, 60 }, { 68, 68 }, WindowColour::secondary),
@@ -60,7 +60,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
     std::span<const Widget> getWidgets()
     {
-        return widgets;
+        return kWidgets;
     }
 
     WindowEventList events;
@@ -1165,6 +1165,24 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
 
         Common::repositionTabs(&self);
+
+        // Following information is only calculated when a ghost has been placed
+        if (!Common::hasGhostVisibilityFlag(GhostVisibilityFlags::station))
+        {
+            return;
+        }
+
+        // Scan number of cargo types accepted and produced
+        auto numAcceptedCargoTypes = std::max(1, std::popcount(cState.constructingStationAcceptedCargoTypes));
+        auto numProducedCargoTypes = std::max(1, std::popcount(cState.constructingStationProducedCargoTypes));
+
+        auto& baseFrame = kWidgets[Common::widx::frame];
+        auto newHeight = baseFrame.height() + 1 + (numAcceptedCargoTypes + numProducedCargoTypes) * 11;
+        auto newSize = Size{ baseFrame.width(), newHeight };
+        self.setSize(newSize, newSize);
+
+        self.widgets[Common::widx::frame].bottom = self.height - 1;
+        self.widgets[Common::widx::panel].bottom = self.height - 1;
     }
 
     // 0x0049DE40
@@ -1251,6 +1269,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         FormatArguments args{};
 
+        // Prepare (new) station name
         if (cState.constructingStationId == StationId::null)
         {
             args.push(StringIds::new_station);
@@ -1265,6 +1284,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         xPos = self.x + 69;
         yPos = self.widgets[widx::image].bottom + self.y + 18;
 
+        // Draw new station name
         auto origin = Point(xPos, yPos);
         width = self.width - 4;
         tr.drawStringCentredClipped(origin, width, Colour::black, StringIds::new_station_buffer, args);
@@ -1272,59 +1292,60 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         xPos = self.x + 2;
         yPos = self.widgets[widx::image].bottom + self.y + 29;
 
+        // Catchment area cargo acceptance list
         origin = Point(xPos, yPos);
         origin = tr.drawStringLeft(origin, Colour::black, StringIds::catchment_area_accepts);
 
+        // Indent cargo list compared to the header
+        origin.x = self.x + 14;
+        origin.y += 11;
+
+        auto drawCargoList = [&origin, &drawingCtx, &tr, &self](uint32_t cargoTypes) {
+            for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::cargo); i++)
+            {
+                if (!(cargoTypes & (1 << i)))
+                {
+                    continue;
+                }
+
+                auto* cargoObj = ObjectManager::get<CargoObject>(i);
+                drawingCtx.drawImage(origin.x, origin.y, cargoObj->unitInlineSprite);
+
+                FormatArguments args{};
+                args.push(cargoObj->name);
+
+                auto width = self.width - 12 - 10;
+                tr.drawStringLeftClipped(origin + Point{ 12, 1 }, width, Colour::black, StringIds::black_stringid, args);
+                origin.y += 11;
+            }
+        };
+
         if (cState.constructingStationAcceptedCargoTypes == 0)
         {
-            origin = tr.drawStringLeft(origin, Colour::black, StringIds::catchment_area_nothing);
+            tr.drawStringLeft(origin, Colour::black, StringIds::catchment_area_nothing);
+            origin.y += 11;
         }
         else
         {
-            yPos--;
-            for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::cargo); i++)
-            {
-                if (cState.constructingStationAcceptedCargoTypes & (1 << i))
-                {
-                    auto xPosMax = self.x + self.width - 12;
-                    if (origin.x <= xPosMax)
-                    {
-                        auto cargoObj = ObjectManager::get<CargoObject>(i);
-
-                        drawingCtx.drawImage(origin.x, origin.y, cargoObj->unitInlineSprite);
-                        origin.x += 10;
-                    }
-                }
-            }
+            drawCargoList(cState.constructingStationAcceptedCargoTypes);
         }
 
-        xPos = self.x + 2;
-        yPos = self.widgets[widx::image].bottom + self.y + 49;
-        origin = Point(xPos, yPos);
-
+        // Catchment area cargo production list
+        origin.x = self.x + 2;
         origin = tr.drawStringLeft(origin, Colour::black, StringIds::catchment_area_produces);
+
+        // Indent cargo list compared to the header
+        origin.x = self.x + 14;
+        origin.y += 11;
 
         if (cState.constructingStationProducedCargoTypes == 0)
         {
-            origin = tr.drawStringLeft(origin, Colour::black, StringIds::catchment_area_nothing);
+            tr.drawStringLeft(origin, Colour::black, StringIds::catchment_area_nothing);
+            origin.y = 11;
         }
         else
         {
-            yPos--;
-            for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::cargo); i++)
-            {
-                if (cState.constructingStationProducedCargoTypes & (1 << i))
-                {
-                    auto xPosMax = self.x + self.width - 12;
-                    if (origin.x <= xPosMax)
-                    {
-                        auto cargoObj = ObjectManager::get<CargoObject>(i);
-
-                        drawingCtx.drawImage(origin.x, origin.y, cargoObj->unitInlineSprite);
-                        origin.x += 10;
-                    }
-                }
-            }
+            drawCargoList(cState.constructingStationProducedCargoTypes);
         }
     }
 

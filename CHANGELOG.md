@@ -1,6 +1,7 @@
 26.04+ (???)
 ------------------------------------------------------------------------
 - Change: [#3710] The Build Vehicle window is now wider by default, moving the sorting options to a dedicated dropdown.
+- Change: [#3734] The Station Construction tab now lists accepted and produced cargo in full, with labels along the icons.
 
 26.04 (2026-04-29)
 ------------------------------------------------------------------------
