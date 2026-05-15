@@ -1078,7 +1078,10 @@ namespace OpenLoco::World::MapGenerator
         Input::processMessagesMini();
 
         WindowManager::close(WindowType::town);
+        WindowManager::close(WindowType::townList);
         WindowManager::close(WindowType::industry);
+        WindowManager::close(WindowType::industryList);
+
         Ui::ProgressBar::begin(StringIds::generating_landscape);
 
         auto rotation = WindowManager::getCurrentRotation();
