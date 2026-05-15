@@ -1295,19 +1295,15 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         // Catchment area cargo acceptance list
         origin = Point(xPos, yPos);
         origin = tr.drawStringLeft(origin, Colour::black, StringIds::catchment_area_accepts);
-        origin.x = 14;
+
+        // Indent cargo list compared to the header
+        origin.x = self.x + 14;
         origin.y += 11;
 
-        if (cState.constructingStationAcceptedCargoTypes == 0)
-        {
-            tr.drawStringLeft(origin, Colour::black, StringIds::catchment_area_nothing);
-            origin.y += 11;
-        }
-        else
-        {
+        auto drawCargoList = [&origin, &drawingCtx, &tr, &self](uint32_t cargoTypes) {
             for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::cargo); i++)
             {
-                if (!(cState.constructingStationAcceptedCargoTypes & (1 << i)))
+                if (!(cargoTypes & (1 << i)))
                 {
                     continue;
                 }
@@ -1322,12 +1318,24 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 tr.drawStringLeftClipped(origin + Point{ 12, 1 }, width, Colour::black, StringIds::wcolour2_stringid, args);
                 origin.y += 11;
             }
+        };
+
+        if (cState.constructingStationAcceptedCargoTypes == 0)
+        {
+            tr.drawStringLeft(origin, Colour::black, StringIds::catchment_area_nothing);
+            origin.y += 11;
+        }
+        else
+        {
+            drawCargoList(cState.constructingStationAcceptedCargoTypes);
         }
 
         // Catchment area cargo production list
         origin.x = self.x + 2;
         origin = tr.drawStringLeft(origin, Colour::black, StringIds::catchment_area_produces);
-        origin.x = 14;
+
+        // Indent cargo list compared to the header
+        origin.x = self.x + 14;
         origin.y += 11;
 
         if (cState.constructingStationProducedCargoTypes == 0)
@@ -1337,23 +1345,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
         else
         {
-            for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::cargo); i++)
-            {
-                if (!(cState.constructingStationProducedCargoTypes & (1 << i)))
-                {
-                    continue;
-                }
-
-                auto* cargoObj = ObjectManager::get<CargoObject>(i);
-                drawingCtx.drawImage(origin.x, origin.y, cargoObj->unitInlineSprite);
-
-                FormatArguments args{};
-                args.push(cargoObj->name);
-
-                auto width = self.width - 12 - 10;
-                tr.drawStringLeftClipped(origin + Point{ 12, 1 }, width, Colour::black, StringIds::wcolour2_stringid, args);
-                origin.y += 11;
-            }
+            drawCargoList(cState.constructingStationProducedCargoTypes);
         }
     }
 
