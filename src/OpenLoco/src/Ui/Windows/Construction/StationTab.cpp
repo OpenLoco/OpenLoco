@@ -1182,7 +1182,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         self.setSize(newSize, newSize);
 
         self.widgets[Common::widx::frame].bottom = self.height - 1;
-        self.widgets[Common::widx::panel].bottom = self.height - 2;
+        self.widgets[Common::widx::panel].bottom = self.height - 1;
     }
 
     // 0x0049DE40
