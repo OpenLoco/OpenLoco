@@ -362,7 +362,7 @@ namespace OpenLoco::Ui::Windows::Station
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(223, 136),
             Widgets::ScrollView({ 3, 44 }, { 217, 80 }, WindowColour::secondary, 2),
-            Widgets::Label({ 3, 125 }, { 195, 10 }, WindowColour::secondary, ContentAlign::center),
+            Widgets::Label({ 3, 125 }, { 195, 10 }, WindowColour::secondary, ContentAlign::center, StringIds::empty, StringIds::unused_small_black_string),
             Widgets::ImageButton({ 198, 44 }, { 24, 24 }, WindowColour::secondary, ImageIds::show_station_catchment, StringIds::station_catchment)
 
         );
@@ -484,10 +484,55 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EB4F
-        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static std::optional<FormatArguments> tooltip(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
             FormatArguments args{};
-            args.push(StringIds::tooltip_scroll_cargo_list);
+
+            if (widgetIndex == widx::scrollview)
+            {
+                args.push(StringIds::tooltip_scroll_cargo_list);
+            }
+            else if (widgetIndex == widx::status_bar)
+            {
+                // First, find out how wide the 'Accepted:' label is
+                const char* acceptedLabel = StringManager::getString(StringIds::accepted_cargo_separator);
+                const auto font = Gfx::Font::medium_bold;
+                const int16_t labelWidth = Gfx::TextRenderer::getStringWidthNewLined(font, acceptedLabel);
+
+                // Now find out where we're pointing relative to the label
+                const auto mousePos = Input::getMouseLocation();
+                const auto startPos = self.position() + self.widgets[widx::status_bar].position();
+                const auto relPos = mousePos - startPos;
+
+                // Find out which cargo icon we must be pointing at, if any
+                const auto cargoPointedAt = (relPos.x - labelWidth) / 12;
+
+                // Find cargo at this position
+                auto* station = StationManager::get(StationId(self.number));
+                auto cargoIndex = 0;
+                for (uint32_t cargoId = 0; cargoId < kMaxCargoStats; cargoId++)
+                {
+                    auto& stats = station->cargoStats[cargoId];
+
+                    if (!stats.isAccepted())
+                    {
+                        continue;
+                    }
+
+                    if (cargoIndex != cargoPointedAt)
+                    {
+                        cargoIndex++;
+                        continue;
+                    }
+
+                    auto* cargoObj = ObjectManager::get<CargoObject>(cargoId);
+                    args.push(cargoObj->name);
+                    return args;
+                }
+
+                return std::nullopt;
+            }
+
             return args;
         }
 
