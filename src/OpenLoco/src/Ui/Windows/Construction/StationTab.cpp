@@ -1315,7 +1315,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 args.push(cargoObj->name);
 
                 auto width = self.width - 12 - 10;
-                tr.drawStringLeftClipped(origin + Point{ 12, 1 }, width, Colour::black, StringIds::wcolour2_stringid, args);
+                tr.drawStringLeftClipped(origin + Point{ 12, 1 }, width, Colour::black, StringIds::black_stringid, args);
                 origin.y += 11;
             }
         };
