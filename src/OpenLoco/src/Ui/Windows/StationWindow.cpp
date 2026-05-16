@@ -423,7 +423,9 @@ namespace OpenLoco::Ui::Windows::Station
 
             if (cargoTypeCount == 0)
             {
-                tr.drawStringLeft(origin, Colour::black, StringIds::cargo_nothing_accepted);
+                FormatArguments args{};
+                args.push(StringIds::cargo_nothing_accepted);
+                tr.drawStringLeft(origin + Point{ 0, 1 }, Colour::black, StringIds::black_stringid, args);
             }
         }
 
