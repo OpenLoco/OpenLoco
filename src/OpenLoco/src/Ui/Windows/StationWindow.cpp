@@ -401,7 +401,7 @@ namespace OpenLoco::Ui::Windows::Station
 
             const char* acceptedLabel = StringManager::getString(StringIds::accepted_cargo_separator);
             auto labelWidth = tr.getStringWidth(acceptedLabel);
-            auto origin = self.position() + self.widgets[widx::status_bar].position() + Point{ labelWidth, -1 };
+            auto origin = self.position() + self.widgets[widx::status_bar].position() + Point{ labelWidth + 2, -1 };
 
             auto station = StationManager::get(StationId(self.number));
             uint8_t cargoTypeCount = 0;
@@ -492,7 +492,7 @@ namespace OpenLoco::Ui::Windows::Station
 
                 // Now find out where we're pointing relative to the label
                 const auto mousePos = Input::getMouseLocation();
-                const auto startPos = self.position() + self.widgets[widx::status_bar].position();
+                const auto startPos = self.position() + self.widgets[widx::status_bar].position() + Point{ 2, -1 };
                 const auto relPos = mousePos - startPos;
 
                 // Find out which cargo icon we must be pointing at, if any
