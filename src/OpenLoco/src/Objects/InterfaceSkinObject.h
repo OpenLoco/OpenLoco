@@ -522,5 +522,9 @@ namespace OpenLoco
         constexpr uint32_t toolbar_menu_map_west = 467;
         constexpr uint32_t toolbar_menu_map_south = 468;
         constexpr uint32_t toolbar_menu_map_east = 469;
+
+        constexpr uint32_t kNewImageStart = 470;
+        constexpr uint32_t kOpenLocoLogo = 470;
+        constexpr uint32_t kNewImageEnd = 471;
     }
 }

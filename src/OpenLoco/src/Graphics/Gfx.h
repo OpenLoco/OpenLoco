@@ -30,8 +30,9 @@ namespace OpenLoco::Gfx
     {
         constexpr uint32_t kDisc = 0x101A; // And GOG
         constexpr uint32_t kTemporaryObjects = 0x1000;
+        constexpr uint32_t kIntrinsicInterface = 0x500;
         constexpr uint32_t kSteam = 0x0F38;
-        constexpr uint32_t kObjects = 0x40000 - kTemporaryObjects;
+        constexpr uint32_t kObjects = 0x40000 - kTemporaryObjects - kIntrinsicInterface;
 
         // After loading a save we have the following images expected:
         // 0x00000-0x01019: Disc (or GOG or Steam) images (Note: Steam is missing some images but will be padded up to the disc count during load)

@@ -1,6 +1,8 @@
 #include "Graphics/Colour.h"
 #include "Graphics/DrawingContext.h"
 #include "Graphics/ImageIds.h"
+#include "Objects/InterfaceSkinObject.h"
+#include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/Wt3Widget.h"
@@ -46,7 +48,9 @@ namespace OpenLoco::Ui::Windows::TitleLogo
     // 0x00439298
     static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
     {
-        drawingCtx.drawImage(window.x, window.y, ImageIds::locomotion_logo);
+        auto* interface = ObjectManager::get<InterfaceSkinObject>();
+
+        drawingCtx.drawImage(window.x, window.y, interface->img + InterfaceSkin::ImageIds::kOpenLocoLogo);
     }
 
     // 0x004392AD
