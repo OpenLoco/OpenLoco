@@ -499,14 +499,11 @@ namespace OpenLoco::Ui::Windows::Station
 
                 // Find out which cargo icon we must be pointing at, if any
                 const auto cargoPointedAt = (relPos.x - labelWidth) / 12;
-
-                // Find cargo at this position
                 auto* station = StationManager::get(StationId(self.number));
                 auto cargoIndex = 0;
                 for (uint32_t cargoId = 0; cargoId < kMaxCargoStats; cargoId++)
                 {
                     auto& stats = station->cargoStats[cargoId];
-
                     if (!stats.isAccepted())
                     {
                         continue;
