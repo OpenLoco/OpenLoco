@@ -362,7 +362,7 @@ namespace OpenLoco::Ui::Windows::Station
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(223, 136),
             Widgets::ScrollView({ 3, 44 }, { 217, 80 }, WindowColour::secondary, 2),
-            Widgets::Label({ 3, 125 }, { 195, 10 }, WindowColour::secondary, ContentAlign::center, StringIds::empty, StringIds::unused_small_black_string),
+            Widgets::Label({ 3, 125 }, { 195, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::accepted_cargo_separator, StringIds::small_black_string),
             Widgets::ImageButton({ 198, 44 }, { 24, 24 }, WindowColour::secondary, ImageIds::show_station_catchment, StringIds::station_catchment)
 
         );
@@ -399,8 +399,9 @@ namespace OpenLoco::Ui::Windows::Station
             self.draw(drawingCtx);
             Common::drawTabs(self, drawingCtx);
 
-            auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
-            buffer = StringManager::formatString(buffer, StringIds::accepted_cargo_separator);
+            const char* acceptedLabel = StringManager::getString(StringIds::accepted_cargo_separator);
+            auto labelWidth = tr.getStringWidth(acceptedLabel);
+            auto origin = self.position() + self.widgets[widx::status_bar].position() + Point{ labelWidth, -1 };
 
             auto station = StationManager::get(StationId(self.number));
             uint8_t cargoTypeCount = 0;
@@ -408,32 +409,22 @@ namespace OpenLoco::Ui::Windows::Station
             for (uint32_t cargoId = 0; cargoId < kMaxCargoStats; cargoId++)
             {
                 auto& stats = station->cargoStats[cargoId];
-
                 if (!stats.isAccepted())
                 {
                     continue;
                 }
 
-                *buffer++ = ' ';
-                *buffer++ = ControlCodes::inlineSpriteStr;
-                *(reinterpret_cast<uint32_t*>(buffer)) = ObjectManager::get<CargoObject>(cargoId)->unitInlineSprite;
-                buffer += 4;
+                auto* cargoObj = ObjectManager::get<CargoObject>(cargoId);
+                drawingCtx.drawImage(origin, cargoObj->unitInlineSprite);
+                origin.x += 12;
 
                 cargoTypeCount++;
             }
 
             if (cargoTypeCount == 0)
             {
-                buffer = StringManager::formatString(buffer, StringIds::cargo_nothing_accepted);
+                tr.drawStringLeft(origin, Colour::black, StringIds::cargo_nothing_accepted);
             }
-
-            *buffer++ = '\0';
-
-            const auto& widget = self.widgets[widx::status_bar];
-            const auto width = widget.width();
-            auto point = Point(self.x + widget.left - 1, self.y + widget.top - 1);
-
-            tr.drawStringLeftClipped(point, width, Colour::black, StringIds::buffer_1250);
         }
 
         // 0x0048EB0B
