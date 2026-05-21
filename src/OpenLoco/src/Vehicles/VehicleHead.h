@@ -98,8 +98,8 @@ namespace OpenLoco::Vehicles
         void updateTrainProperties();
         currency32_t calculateRunningCost() const;
         void sub_4AD778();
-        void sub_4AD93A();
-        void sub_4ADB47(bool unk);
+        void handlePositionUpdate();
+        void resetStateOnPlacementOrReverse(bool goingForward);
         uint32_t getCarCount() const;
         void applyBreakdownToTrain();
         void landCrashedUpdate();
@@ -111,7 +111,7 @@ namespace OpenLoco::Vehicles
         }
         void movePlaneTo(const World::Pos3& newLoc, const uint8_t newYaw, const Pitch newPitch);
         void moveBoatTo(const World::Pos3& loc, const uint8_t yaw, const Pitch pitch);
-        Sub4ACEE7Result sub_4ACEE7(uint32_t unk1, uint32_t var_113612C, bool isPlaceDown);
+        Sub4ACEE7Result tryPositionVehicle(uint32_t unk1, uint32_t var_113612C, bool isPlaceDown);
 
     private:
         void updateDrivingSounds();
@@ -121,10 +121,10 @@ namespace OpenLoco::Vehicles
         void updateSimpleMotorSound(VehicleSound& sound, const bool isVeh2, const VehicleSimpleMotorSound* snd);
         void updateGearboxMotorSound(VehicleSound& sound, const bool isVeh2, const VehicleGearboxMotorSound* snd);
         bool updateLand();
-        bool sub_4A8DB7();
+        bool roadHandleFirstTimeout();
         bool tryReverse();
         bool stoppingUpdate();
-        bool sub_4A8C81();
+        bool manualStoppingUpdate();
         bool landTryBeginUnloading();
         bool landLoadingUpdate();
         bool landNormalMovementUpdate();
@@ -133,12 +133,12 @@ namespace OpenLoco::Vehicles
         bool landReverseFromSignal();
         bool updateAir();
         bool airplaneLoadingUpdate();
-        bool sub_4A95CB();
-        bool sub_4A9348(uint8_t newMovementEdge, const AirplaneApproachTargetParams& approachParams);
+        bool airplaneReachStation();
+        bool handleAirportMovementEdgeTransition(uint8_t newMovementEdge, const AirplaneApproachTargetParams& approachParams);
         bool airplaneApproachTarget(const AirplaneApproachTargetParams& params);
         std::pair<Status, Speed16> airplaneGetNewStatus();
         uint8_t airportGetNextMovementEdge(uint8_t curEdge);
-        AirplaneApproachTargetParams sub_427122();
+        AirplaneApproachTargetParams airplanePathfind();
         bool updateWater();
         void tryCreateInitialMovementSound(const Status initialStatus);
         void setStationVisitedTypes();
@@ -154,11 +154,11 @@ namespace OpenLoco::Vehicles
         bool updateLoadCargo();
         void beginNewJourney();
         void advanceToNextRoutableOrder();
-        Status sub_427BF2();
+        Status approachingIfStationElseTraveling();
         void produceLeavingDockSound();
         void produceTouchdownAirportSound();
         SignalTimeoutStatus categoriseTimeElapsed();
-        bool sub_4AC1C2();
+        bool shouldPassSignal();
         bool opposingTrainAtSignal();
         bool pathingShouldReverse();
         StationId manualFindTrainStationAtLocation();

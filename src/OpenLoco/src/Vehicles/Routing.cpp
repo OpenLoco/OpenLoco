@@ -33,7 +33,7 @@ namespace OpenLoco::Vehicles
         none = 0,
 
         excludeReverseDirection = 1U << 1,
-        unk2 = 1U << 2,
+        includeConnected = 1U << 2,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(TrackNetworkSearchFlags);
 
@@ -451,7 +451,7 @@ namespace OpenLoco::Vehicles
                     continue;
                 }
 
-                if (vehicle->has38Flags(Vehicles::Flags38::unk_0 | Vehicles::Flags38::unk_2))
+                if (vehicle->has38Flags(Vehicles::Flags38::isBody | Vehicles::Flags38::isSelf))
                 {
                     continue;
                 }
@@ -489,7 +489,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A2D4C
-    static bool sub_4A2D4C(const LocationOfInterest& interest, uint16_t& unk)
+    static bool filterSignalState(const LocationOfInterest& interest, FindNearbySignalOccupationFlags& foundSignalFlags)
     {
         if (!(interest.trackAndDirection & World::Track::AdditionalTaDFlags::hasSignal))
         {
@@ -498,11 +498,11 @@ namespace OpenLoco::Vehicles
 
         if ((getSignalState(interest.loc, interest.tad(), interest.trackType, (1ULL << 31)) & SignalStateFlags::occupied) != SignalStateFlags::none)
         {
-            unk |= (1 << 0);
+            foundSignalFlags |= FindNearbySignalOccupationFlags::foundOccupiedSignal;
         }
         else
         {
-            unk |= (1 << 1);
+            foundSignalFlags |= FindNearbySignalOccupationFlags::foundFreeSignal;
         }
         return true;
     }
@@ -518,7 +518,7 @@ namespace OpenLoco::Vehicles
     template<typename FilterFunction>
     static void findAllUsableTrackPieces(LocationOfInterestQueue& additionalTrackToCheck, const TrackNetworkSearchFlags searchFlags, const LocationOfInterest& interest, FilterFunction&& filterFunction, RoutingResults& results)
     {
-        if ((searchFlags & TrackNetworkSearchFlags::unk2) == TrackNetworkSearchFlags::none)
+        if ((searchFlags & TrackNetworkSearchFlags::includeConnected) == TrackNetworkSearchFlags::none)
         {
             return;
         }
@@ -694,7 +694,7 @@ namespace OpenLoco::Vehicles
     template<typename FilterFunction>
     static void findAllUsableRoadPieces(LocationOfInterestQueue& additionalRoadToCheck, const TrackNetworkSearchFlags searchFlags, const LocationOfInterest& interest, FilterFunction&& filterFunction, RoutingResults& results)
     {
-        if ((searchFlags & TrackNetworkSearchFlags::unk2) == TrackNetworkSearchFlags::none)
+        if ((searchFlags & TrackNetworkSearchFlags::includeConnected) == TrackNetworkSearchFlags::none)
         {
             return;
         }
@@ -859,7 +859,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A2AD7
-    void sub_4A2AD7(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
+    void updateSignalOccupancyBasedOnBlockOccupancy(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
     {
         // 0x001135F88
         uint16_t routingTransformData = 0;
@@ -870,7 +870,7 @@ namespace OpenLoco::Vehicles
 
         findAllTracksFilterTransform(
             interestMap,
-            TrackNetworkSearchFlags::unk2,
+            TrackNetworkSearchFlags::includeConnected,
             loc,
             trackAndDirection,
             company,
@@ -891,7 +891,7 @@ namespace OpenLoco::Vehicles
 
         findAllTracksFilterTransform(
             interestMap,
-            TrackNetworkSearchFlags::unk2,
+            TrackNetworkSearchFlags::includeConnected,
             loc,
             trackAndDirection,
             company,
@@ -922,7 +922,7 @@ namespace OpenLoco::Vehicles
 
         findAllTracksFilterTransform(
             interestMap,
-            TrackNetworkSearchFlags::unk2,
+            TrackNetworkSearchFlags::includeConnected,
             loc,
             trackAndDirection,
             company,
@@ -932,16 +932,16 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A2A58
-    uint8_t sub_4A2A58(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
+    FindNearbySignalOccupationFlags findNearbySignalOccupation(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
     {
         // 0x001135F88
-        uint16_t unk = 0;
+        FindNearbySignalOccupationFlags foundSignalFlags = FindNearbySignalOccupationFlags::none;
         RoutingResults interestMap{ kSignalHashSetSize };
-        auto filterFunction = [&unk](const LocationOfInterest& interest) { return sub_4A2D4C(interest, unk); };
+        auto filterFunction = [&foundSignalFlags](const LocationOfInterest& interest) { return filterSignalState(interest, foundSignalFlags); };
 
         findAllTracksFilterTransform(
             interestMap,
-            TrackNetworkSearchFlags::unk2,
+            TrackNetworkSearchFlags::includeConnected,
             loc,
             trackAndDirection,
             company,
@@ -949,7 +949,7 @@ namespace OpenLoco::Vehicles
             filterFunction,
             kNullTransformFunction);
 
-        return unk;
+        return foundSignalFlags;
     }
 
     // 0x004A2AA1
