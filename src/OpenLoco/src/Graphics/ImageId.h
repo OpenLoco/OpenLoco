@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Colour.h"
+#include "ImageIds.h"
 #include <cassert>
 
 namespace OpenLoco
@@ -80,6 +81,13 @@ namespace OpenLoco
         constexpr ImageId(uint32_t index, ColourScheme scheme)
             : ImageId(index, scheme.primary, scheme.secondary)
         {
+        }
+
+        static ImageId ColourSwatch(Colour colour)
+        {
+            auto imageId = ImageId(ImageIds::colour_swatch_recolourable, colour);
+            imageId._index |= kFlagBlend;
+            return imageId;
         }
 
         [[nodiscard]] constexpr uint32_t toUInt32() const
