@@ -75,6 +75,16 @@ namespace OpenLoco::Localisation
         return locoCode;
     }
 
+    std::string convertLocoToUnicode(const std::string& locoString)
+    {
+        std::string out;
+        for (uint8_t locoCode : locoString)
+        {
+            out += codepointToUtf8(convertLocoToUnicode(locoCode));
+        }
+        return out;
+    }
+
     uint8_t convertUnicodeToLoco(utf32_t unicode)
     {
         const auto it = std::ranges::lower_bound(
