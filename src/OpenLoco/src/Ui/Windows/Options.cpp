@@ -2209,7 +2209,7 @@ namespace OpenLoco::Ui::Windows::Options
             self.invalidate();
         }
 
-        static void setPreferredCompany(Window& self, const char* str)
+        static void setPreferredCompanyName(Window& self, const char* str)
         {
             auto& cfg = Config::get();
             cfg.preferredCompanyName = str;
@@ -2232,7 +2232,7 @@ namespace OpenLoco::Ui::Windows::Options
                     break;
 
                 case Widx::usePreferredCompanyName:
-                    setPreferredCompany(self, str);
+                    setPreferredCompanyName(self, str);
                     break;
             }
         }

@@ -1288,7 +1288,7 @@ namespace OpenLoco::CompanyManager
         }
     }
 
-    void setPreferredCompany()
+    void setPreferredCompanyName()
     {
         if (!Config::get().usePreferredCompanyName)
         {

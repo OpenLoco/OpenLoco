@@ -861,7 +861,7 @@ namespace OpenLoco::Ui
             {
                 if (Tutorial::state() == Tutorial::State::none)
                 {
-                    CompanyManager::setPreferredCompany();
+                    CompanyManager::setPreferredCompanyName();
                 }
             }
             Game::removeFlags(GameStateFlags::preferredCompanyName);
