@@ -130,7 +130,7 @@ namespace OpenLoco::S5
     const LoadError& getLastLoadError();
     void resetLastLoadError();
 
-    std::unique_ptr<S5File> importSave(Stream& stream);
+    std::unique_ptr<S5File> loadSave(Stream& stream);
     bool importSaveToGameState(const fs::path& path, LoadFlags flags);
     bool importSaveToGameState(Stream& stream, LoadFlags flags);
     std::unique_ptr<SaveDetails> readSaveDetails(const fs::path& path);

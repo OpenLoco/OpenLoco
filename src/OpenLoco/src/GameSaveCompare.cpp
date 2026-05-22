@@ -674,7 +674,7 @@ namespace OpenLoco::GameSaveCompare
         S5::GameState* currentS5GameState = reinterpret_cast<S5::GameState*>(gameStateChar);
         Logging::info("Comparing reference file {} to current GameState frame", path);
         FileStream referenceFile(path, StreamMode::read);
-        auto referenceGameState = S5::importSave(referenceFile);
+        auto referenceGameState = S5::loadSave(referenceFile);
         return compareGameStates(*currentS5GameState, referenceGameState->gameState, false);
     }
 
@@ -685,9 +685,9 @@ namespace OpenLoco::GameSaveCompare
         Logging::info("   file2: {}", path2);
 
         FileStream file1(path1, StreamMode::read);
-        auto state1 = S5::importSave(file1);
+        auto state1 = S5::loadSave(file1);
         FileStream file2(path2, StreamMode::read);
-        auto state2 = S5::importSave(file2);
+        auto state2 = S5::loadSave(file2);
         auto match = compareGameStates(state1->gameState, state2->gameState, displayAllDivergences);
         match &= compareElements(state1->tileElements, state2->tileElements, displayAllDivergences);
         return match;
