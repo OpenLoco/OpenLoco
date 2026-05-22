@@ -1243,46 +1243,48 @@ namespace OpenLoco::CompanyManager
         }
 
         // Don't clobber if there's a preferred name
-        if (!Config::get().usePreferredCompanyName)
+        if (Config::get().usePreferredCompanyName)
         {
-            // Only continue if we've not set a custom company name yet.
-            auto* company = get(GameCommands::getUpdatingCompanyId());
-            if (company == nullptr || company->name != StringIds::new_company)
-            {
-                return;
-            }
+            return;
+        }
 
-            // Temporarily store the preferred name in buffer string 2039.
-            char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-            strncpy(buffer_2039, Config::get().preferredOwnerName.c_str(), 256);
+        // Only continue if we've not set a custom company name yet.
+        auto* company = get(GameCommands::getUpdatingCompanyId());
+        if (company == nullptr || company->name != StringIds::new_company)
+        {
+            return;
+        }
 
-            // Prepare '{NAME} Transport' in a buffer.
-            {
-                char companyName[256] = { 0 };
-                FormatArguments args{};
-                args.push(StringIds::buffer_2039);
-                StringManager::formatString(companyName, StringIds::company_owner_name_transport, args);
+        // Temporarily store the preferred name in buffer string 2039.
+        char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+        strncpy(buffer_2039, Config::get().preferredOwnerName.c_str(), 256);
 
-                // Now, set the company name.
+        // Prepare '{NAME} Transport' in a buffer.
+        {
+            char companyName[256] = { 0 };
+            FormatArguments args{};
+            args.push(StringIds::buffer_2039);
+            StringManager::formatString(companyName, StringIds::company_owner_name_transport, args);
 
-                GameCommands::setErrorTitle(StringIds::cannot_rename_this_company);
+            // Now, set the company name.
 
-                GameCommands::ChangeCompanyNameArgs changeCompanyNameArgs{};
+            GameCommands::setErrorTitle(StringIds::cannot_rename_this_company);
 
-                changeCompanyNameArgs.companyId = GameCommands::getUpdatingCompanyId();
-                changeCompanyNameArgs.bufferIndex = 1;
-                std::memcpy(changeCompanyNameArgs.buffer, companyName, 36);
+            GameCommands::ChangeCompanyNameArgs changeCompanyNameArgs{};
 
-                GameCommands::doCommand(changeCompanyNameArgs, GameCommands::Flags::apply);
+            changeCompanyNameArgs.companyId = GameCommands::getUpdatingCompanyId();
+            changeCompanyNameArgs.bufferIndex = 1;
+            std::memcpy(changeCompanyNameArgs.buffer, companyName, 36);
 
-                changeCompanyNameArgs.bufferIndex = 2;
+            GameCommands::doCommand(changeCompanyNameArgs, GameCommands::Flags::apply);
 
-                GameCommands::doCommand(changeCompanyNameArgs, GameCommands::Flags::apply);
+            changeCompanyNameArgs.bufferIndex = 2;
 
-                changeCompanyNameArgs.bufferIndex = 0;
+            GameCommands::doCommand(changeCompanyNameArgs, GameCommands::Flags::apply);
 
-                GameCommands::doCommand(changeCompanyNameArgs, GameCommands::Flags::apply);
-            }
+            changeCompanyNameArgs.bufferIndex = 0;
+
+            GameCommands::doCommand(changeCompanyNameArgs, GameCommands::Flags::apply);
         }
     }
 
