@@ -630,18 +630,28 @@ namespace OpenLoco::StationManager
                 stats.quantity = 0;
                 stats.origin = StationId::null;
                 stats.flags = StationCargoStatsFlags::none;
+                stats.age = 0;
                 stats.rating = 150;
+                stats.enrouteAge = 0;
+                stats.vehicleSpeed = {};
+                stats.vehicleAge = 0;
+                stats.industryId = IndustryId::null;
                 stats.densityPerTile = 0;
             }
 
             station.x = pos.x;
             station.y = pos.y;
             station.z = pos.z;
+            station.labelFrame = {};
             station.flags = StationFlags::flag_5;
             station.stationTileSize = 0;
             station.noTilesTimeout = 0;
             station.var_3B0 = 0;
             station.var_3B1 = 0;
+            station.var_3B2 = 0;
+            station.airportRotation = 0;
+            station.airportStartPos = {};
+            station.airportMovementOccupiedEdges = 0;
 
             return station.id();
         }

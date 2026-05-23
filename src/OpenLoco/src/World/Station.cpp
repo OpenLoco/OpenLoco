@@ -1264,9 +1264,9 @@ namespace OpenLoco
         }
 
         // Remove tile by moving the remaining tiles over the one to remove
-        // NB: erasing is handled by StationManager::zeroUnused; not calling std::erase due to type mismatches
         std::rotate(foundTilePos, foundTilePos + 1, std::end(station->stationTiles));
         station->stationTileSize--;
+        station->stationTiles[std::size(station->stationTiles) - 1] = World::Pos3{};
     }
 
     // 0x0048F482
