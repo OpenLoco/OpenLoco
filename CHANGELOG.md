@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Change: [#3710] The Build Vehicle window is now wider by default, moving the sorting options to a dedicated dropdown.
 - Change: [#3734] The Station Construction tab now lists accepted and produced cargo in full, with labels along the icons.
+- Change: [#3735] The Station window now shows a tooltip for accepted cargo types when pointing at their icons.
 - Fix: [#3651] Industry and town lists are not cleared immediately when generating a new landscape in the editor.
 - Fix: [#3727] Removing a vehicle/station/industry/town while the respective list window is open can crash the game.
 - Fix: [#3730] Checkbox widget labels are not limited to their designated width.
