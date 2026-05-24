@@ -614,10 +614,10 @@ namespace OpenLoco::Ui::Windows::Cheats
             Widgets::Button({ 10, 62 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_reliability_zero),
             Widgets::Button({ 10, 78 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_reliability_hundred),
             Widgets::GroupBox({ 4, 102 }, { kWindowSize.width - 8, 45 }, WindowColour::secondary, StringIds::cheat_build_vehicle_window),
-            Widgets::Checkbox({ 10, 116 }, { 200, 12 }, WindowColour::secondary, StringIds::display_locked_vehicles, StringIds::tooltip_display_locked_vehicles),
-            Widgets::Checkbox({ 25, 130 }, { 200, 12 }, WindowColour::secondary, StringIds::allow_building_locked_vehicles, StringIds::tooltip_build_locked_vehicles),
+            Widgets::Checkbox({ 10, 116 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::display_locked_vehicles, StringIds::tooltip_display_locked_vehicles),
+            Widgets::Checkbox({ 25, 130 }, { kWindowSize.width - 35, 12 }, WindowColour::secondary, StringIds::allow_building_locked_vehicles, StringIds::tooltip_build_locked_vehicles),
             Widgets::GroupBox({ 4, 152 }, { kWindowSize.width - 8, 30 }, WindowColour::secondary, StringIds::cheat_vehicle_cargo),
-            Widgets::Checkbox({ 10, 166 }, { 200, 12 }, WindowColour::secondary, StringIds::cheat_keep_cargo_modify_pickup, StringIds::tooltip_keep_cargo_modify_pickup));
+            Widgets::Checkbox({ 10, 166 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_keep_cargo_modify_pickup, StringIds::tooltip_keep_cargo_modify_pickup));
 
         static void prepareDraw(Window& self)
         {

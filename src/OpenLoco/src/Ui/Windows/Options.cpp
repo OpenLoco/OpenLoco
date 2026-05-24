@@ -289,7 +289,7 @@ namespace OpenLoco::Ui::Windows::Options
             Widgets::Label({ 10, 111 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::frameRateLimitLabel),
             Widgets::dropdownWidgets({ 235, 111 }, { 154, 12 }, WindowColour::secondary, StringIds::empty),
 
-            Widgets::Checkbox({ 10, 127 }, { 174, 12 }, WindowColour::secondary, StringIds::option_show_fps_counter, StringIds::option_show_fps_counter_tooltip)
+            Widgets::Checkbox({ 10, 127 }, { 380, 12 }, WindowColour::secondary, StringIds::option_show_fps_counter, StringIds::option_show_fps_counter_tooltip)
 
         );
 
@@ -2218,8 +2218,8 @@ namespace OpenLoco::Ui::Windows::Options
             // Vehicle behaviour
             Widgets::GroupBox({ 4, 115 }, { 412, 77 }, WindowColour::secondary, StringIds::vehicleTrackBehaviour),
             Widgets::Checkbox({ 10, 130 }, { 400, 12 }, WindowColour::secondary, StringIds::disable_vehicle_breakdowns),
-            Widgets::Checkbox({ 10, 145 }, { 200, 12 }, WindowColour::secondary, StringIds::disableVehicleLoadingPenalty, StringIds::disableVehicleLoadingPenaltyTip),
-            Widgets::Checkbox({ 10, 160 }, { 200, 12 }, WindowColour::secondary, StringIds::disableStationSizeLimitLabel, StringIds::disableStationSizeLimitTooltip),
+            Widgets::Checkbox({ 10, 145 }, { 400, 12 }, WindowColour::secondary, StringIds::disableVehicleLoadingPenalty, StringIds::disableVehicleLoadingPenaltyTip),
+            Widgets::Checkbox({ 10, 160 }, { 400, 12 }, WindowColour::secondary, StringIds::disableStationSizeLimitLabel, StringIds::disableStationSizeLimitTooltip),
             Widgets::Checkbox({ 10, 175 }, { 400, 12 }, WindowColour::secondary, StringIds::trainsReverseAtSignals),
 
             // Save options group

@@ -60,7 +60,8 @@ namespace OpenLoco::Ui::Widgets
         tr.setCurrentFont(widget.font);
 
         const auto pos = window->position() + widget.position();
-        tr.drawStringLeft(pos + Point{ kCheckMarkSize.width + kLabelMarginLeft, 0 }, colour, widget.text, formatArgs);
+        const auto width = widget.width() - kCheckMarkSize.width - kLabelMarginLeft;
+        tr.drawStringLeftClipped(pos + Point{ kCheckMarkSize.width + kLabelMarginLeft, 0 }, width, colour, widget.text, formatArgs);
     }
 
     void Checkbox::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
