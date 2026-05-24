@@ -314,7 +314,7 @@ namespace OpenLoco::Paint
         bool isHitTest() const { return _isHitTest; }
         bool skipTrackRoadSurfaces() const { return _skipTrackRoadSurfaces; }
         void setMaxClipHeight(const int16_t height) { _maxClipHeight = height; }
-        void setMinClipHeight(const int16_t  height) { _minClipHeight = height; }
+        void setMinClipHeight(const int16_t height) { _minClipHeight = height; }
         int16_t getMaxClipHeight() const { return _maxClipHeight; }
         int16_t getMinClipHeight() const { return _minClipHeight; }
         /*
