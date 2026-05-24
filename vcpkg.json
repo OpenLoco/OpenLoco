@@ -10,8 +10,10 @@
     "gtest",
     "libpng",
     "openal-soft",
+    "yaml-cpp",
+    "fmt",
     {
-      "name": "sdl2",
+      "name": "sdl3",
       "default-features": false,
       "features": [
         {
@@ -23,6 +25,10 @@
           "platform": "linux"
         }
       ]
+    },
+    {
+        "name": "tbb",
+        "platform": "linux"
     }
   ]
 }

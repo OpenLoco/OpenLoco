@@ -12,9 +12,8 @@
 #include "Map/TrackElement.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 using namespace OpenLoco::World::SurfaceSlope;
 
@@ -30,7 +29,7 @@ namespace OpenLoco::GameCommands
             if (getCommandNestLevel() == 1 && getUpdatingCompanyId() != CompanyId::neutral)
             {
                 const auto height = TileManager::getHeight(args.centre).landHeight;
-                Audio::playSound(Audio::SoundId::construct, World::Pos3(args.centre.x, args.centre.y, height));
+                Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, World::Pos3(args.centre.x, args.centre.y, height));
             }
         }
 
@@ -65,9 +64,9 @@ namespace OpenLoco::GameCommands
             }
 
             auto cost = TileManager::adjustSurfaceHeight(toWorldSpace(tilePos), targetBaseZ, slopeFlags, removedBuildings, flags);
-            if (cost == FAILURE)
+            if (cost == kFailure)
             {
-                return FAILURE;
+                return kFailure;
             }
             else
             {

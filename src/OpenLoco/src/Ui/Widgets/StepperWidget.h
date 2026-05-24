@@ -6,7 +6,7 @@
 
 namespace OpenLoco::Ui::Widgets
 {
-    constexpr Button makeStepperDecreaseWidget(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, [[maybe_unused]] uint32_t content = Widget::kContentNull, [[maybe_unused]] StringId tooltip = StringIds::null)
+    constexpr Button makeStepperDecreaseWidget(Ui::Point origin, Ui::Size size, WindowColour colour, [[maybe_unused]] uint32_t content = Widget::kContentNull, [[maybe_unused]] StringId tooltip = StringIds::null)
     {
         const int16_t xPos = origin.x + size.width - 26;
         const int16_t yPos = origin.y + 1;
@@ -16,7 +16,7 @@ namespace OpenLoco::Ui::Widgets
         return Button({ xPos, yPos }, { width, height }, colour, StringIds::stepper_minus, tooltip);
     }
 
-    constexpr Button makeStepperIncreaseWidget(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, [[maybe_unused]] uint32_t content = Widget::kContentNull, [[maybe_unused]] StringId tooltip = StringIds::null)
+    constexpr Button makeStepperIncreaseWidget(Ui::Point origin, Ui::Size size, WindowColour colour, [[maybe_unused]] uint32_t content = Widget::kContentNull, [[maybe_unused]] StringId tooltip = StringIds::null)
     {
         const int16_t xPos = origin.x + size.width - 13;
         const int16_t yPos = origin.y + 1;
@@ -27,7 +27,7 @@ namespace OpenLoco::Ui::Widgets
     }
 
     // TODO: Make this a single widget.
-    constexpr auto stepperWidgets(Ui::Point32 origin, Ui::Size32 size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
+    constexpr auto stepperWidgets(Ui::Point origin, Ui::Size size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
     {
         return makeWidgets(
             TextBox(origin, size, colour, content, tooltip),

@@ -12,13 +12,11 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/TreeObject.h"
 #include "OpenLoco.h"
-#include "Scenario.h"
-#include "ScenarioOptions.h"
+#include "Scenario/Scenario.h"
+#include "Scenario/ScenarioOptions.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "World/TownManager.h"
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
@@ -46,12 +44,12 @@ namespace OpenLoco::GameCommands
         if (!World::TileManager::checkFreeElementsAndReorganise())
         {
             // Error message set in checkFreeElementsAndReorganise
-            return FAILURE;
+            return kFailure;
         }
 
         if (!World::validCoords(args.pos))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         const auto* treeObj = ObjectManager::get<TreeObject>(args.type);
@@ -60,7 +58,7 @@ namespace OpenLoco::GameCommands
         auto* elSurface = World::TileManager::get(args.pos).surface();
         if (elSurface == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (elSurface->water())
@@ -68,7 +66,7 @@ namespace OpenLoco::GameCommands
             if (elSurface->waterHeight() - 1 > quadrantHeight.landHeight)
             {
                 setErrorText(StringIds::cant_build_this_underwater);
-                return FAILURE;
+                return kFailure;
             }
         }
 
@@ -76,7 +74,7 @@ namespace OpenLoco::GameCommands
         if (landObj->hasFlags(LandObjectFlags::noTrees))
         {
             setErrorText(StringIds::land_type_not_suitable);
-            return FAILURE;
+            return kFailure;
         }
 
         const auto baseZ = quadrantHeight.landHeight / World::kSmallZStep;
@@ -90,7 +88,7 @@ namespace OpenLoco::GameCommands
         if (!World::TileClearance::canConstructAt(args.pos, baseZ, clearanceZ, qt))
         {
             // Error message set in canConstructAt
-            return FAILURE;
+            return kFailure;
         }
 
         if (flags & Flags::apply)
@@ -98,7 +96,7 @@ namespace OpenLoco::GameCommands
             auto* elTree = World::TileManager::insertElement<World::TreeElement>(args.pos, baseZ, qt.getBaseQuarterOccupied());
             if (elTree == nullptr)
             {
-                return FAILURE;
+                return kFailure;
             }
             Ui::Windows::Terraform::setLastPlacedTree(elTree);
             elTree->setRotation(args.rotation);
@@ -109,7 +107,7 @@ namespace OpenLoco::GameCommands
             elTree->setColour(args.colour);
             elTree->setIsDying(false);
             elTree->setSnow(false);
-            elTree->setSeason(treeObj->var_3E);
+            elTree->setSeason(treeObj->currentSeason);
             elTree->setUnk7l(7);
             elTree->setClearZ(treeObj->initialHeight / World::kSmallZStep + elTree->baseZ());
             Scenario::getOptions().madeAnyChanges = 1;

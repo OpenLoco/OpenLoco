@@ -30,9 +30,7 @@ namespace OpenLoco::World::TileClearance
 
     void setCollisionErrorMessage(const World::TileElement& el);
 
-    bool applyClearAtAllHeights(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uintptr_t clearFunctionLegacy);
     bool applyClearAtAllHeights(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearFuncResult(TileElement& el)> clearFunc);
-    bool applyClearAtStandardHeight(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uintptr_t clearFunctionLegacy);
     bool applyClearAtStandardHeight(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearFuncResult(TileElement& el)> clearFunc);
     bool canConstructAt(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt);
 
@@ -49,6 +47,4 @@ namespace OpenLoco::World::TileClearance
 
     // These are an additional return variable from the applyClear functions
     TileManager::ElementPositionFlags getPositionFlags();
-
-    void registerHooks();
 }

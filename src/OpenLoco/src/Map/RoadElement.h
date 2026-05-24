@@ -45,11 +45,11 @@ namespace OpenLoco::World
             _4 &= ~0x80;
             _4 |= hasBridge ? 0x80 : 0;
         }
-        uint8_t unk4u() const { return (_4 & 0x30) >> 4; }
-        void setUnk4u(uint8_t newUnk4u)
+        uint8_t laneOccupation() const { return (_4 & 0x30) >> 4; }
+        void setLaneOccupation(uint8_t newLaneOccupation)
         {
             _4 &= ~(0x30);
-            _4 |= (newUnk4u & 0x3) << 4;
+            _4 |= (newLaneOccupation & 0x3) << 4;
         }
         uint8_t roadObjectId() const { return _5 >> 4; } // _5u
         void setRoadObjectId(uint8_t objectId)

@@ -39,9 +39,7 @@ namespace OpenLoco::World::TileManager
     void allocateMapElements();
     void initialise();
     std::span<TileElement> getElements();
-    TileElement* getElementsEnd();
     uint32_t numFreeElements();
-    TileElement** getElementIndex();
     Tile get(TilePos2 pos);
     Tile get(Pos2 pos);
     Tile get(coord_t x, coord_t y);
@@ -94,7 +92,6 @@ namespace OpenLoco::World::TileManager
     uint16_t countNearbyWaterTiles(Pos2 pos);
     void update();
     void updateYearly();
-    void registerHooks();
     void removeSurfaceIndustry(const Pos2& pos);
     void removeSurfaceIndustryAtHeight(const Pos3& pos);
     void createDestructExplosion(const World::Pos3& pos);

@@ -98,7 +98,7 @@ namespace OpenLoco::Utility
     std::string toUtf8(const std::wstring_view& src)
     {
 #ifdef _WIN32
-        int srcLen = src.size();
+        int srcLen = static_cast<int>(src.size());
         int sizeReq = WideCharToMultiByte(CP_UTF8, 0, src.data(), srcLen, nullptr, 0, nullptr, nullptr);
         auto result = std::string(sizeReq, 0);
         WideCharToMultiByte(CP_UTF8, 0, src.data(), srcLen, result.data(), sizeReq, nullptr, nullptr);
@@ -116,7 +116,7 @@ namespace OpenLoco::Utility
     std::wstring toUtf16([[maybe_unused]] const std::string_view& src)
     {
 #ifdef _WIN32
-        int srcLen = src.size();
+        int srcLen = static_cast<int>(src.size());
         int sizeReq = MultiByteToWideChar(CP_ACP, 0, src.data(), srcLen, nullptr, 0);
         auto result = std::wstring(sizeReq, 0);
         MultiByteToWideChar(CP_ACP, 0, src.data(), srcLen, result.data(), sizeReq);

@@ -10,6 +10,7 @@
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Town/CreateTown.h"
 #include "GameState.h"
+#include "Input.h"
 #include "Localisation/StringIds.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/HillShapesObject.h"
@@ -19,8 +20,8 @@
 #include "OriginalTerrainGenerator.h"
 #include "PngTerrainGenerator.h"
 #include "Random.h"
-#include "Scenario.h"
-#include "ScenarioOptions.h"
+#include "Scenario/Scenario.h"
+#include "Scenario/ScenarioOptions.h"
 #include "SimplexTerrainGenerator.h"
 #include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
@@ -44,7 +45,7 @@ namespace OpenLoco::World::MapGenerator
 
     static void updateProgress(uint8_t value)
     {
-        Ui::processMessagesMini();
+        Input::processMessagesMini();
         Ui::ProgressBar::setProgress(value);
     }
 
@@ -585,7 +586,7 @@ namespace OpenLoco::World::MapGenerator
             if (!surface->isIndustrial())
             {
                 auto* landObj = ObjectManager::get<LandObject>(surface->terrain());
-                if (landObj->hasFlags(LandObjectFlags::unk0))
+                if (landObj->hasFlags(LandObjectFlags::hasGrowthStages))
                 {
                     bool setVariation = false;
                     if (surface->water())
@@ -897,7 +898,7 @@ namespace OpenLoco::World::MapGenerator
                 args.colour = Colour::black;
                 args.buildImmediately = true;
 
-                if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+                if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure)
                 {
                     break;
                 }
@@ -1074,10 +1075,11 @@ namespace OpenLoco::World::MapGenerator
     // 0x0043C90C
     void generate(const Scenario::Options& options)
     {
-        Ui::processMessagesMini();
+        Input::processMessagesMini();
 
         WindowManager::close(WindowType::town);
         WindowManager::close(WindowType::industry);
+
         Ui::ProgressBar::begin(StringIds::generating_landscape);
 
         auto rotation = WindowManager::getCurrentRotation();
@@ -1131,6 +1133,9 @@ namespace OpenLoco::World::MapGenerator
         Scenario::sub_4969E0(0);
         Scenario::sub_4748D4();
         Ui::ProgressBar::end();
+
+        Ui::Windows::IndustryList::refreshList();
+        Ui::Windows::TownList::refreshList();
     }
 
     void setPngHeightmapPath(const fs::path& path)

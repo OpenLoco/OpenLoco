@@ -5,7 +5,6 @@
 
 namespace OpenLoco::World
 {
-#pragma pack(push, 1)
     struct Wave
     {
         World::Pos2 loc; // 0x00
@@ -15,5 +14,4 @@ namespace OpenLoco::World
             return loc.x == Location::null;
         }
     };
-#pragma pack(pop)
 }

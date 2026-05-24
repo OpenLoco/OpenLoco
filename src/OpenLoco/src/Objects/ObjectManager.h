@@ -17,47 +17,14 @@ namespace OpenLoco
     }
 
     struct Object;
-    struct ObjectEntryExtended;
-    struct CargoObject;
-    struct InterfaceSkinObject;
-    struct SoundObject;
-    struct CurrencyObject;
-    struct SteamObject;
-    struct CliffEdgeObject;
-    struct WaterObject;
-    struct LandObject;
-    struct TownNamesObject;
-    struct WallObject;
-    struct TrainSignalObject;
-    struct LevelCrossingObject;
-    struct StreetLightObject;
-    struct TunnelObject;
-    struct BridgeObject;
-    struct TrainStationObject;
-    struct TrackExtraObject;
-    struct TrackObject;
-    struct RoadStationObject;
-    struct RoadExtraObject;
-    struct RoadObject;
-    struct AirportObject;
-    struct DockObject;
-    struct VehicleObject;
-    struct TreeObject;
-    struct SnowObject;
-    struct ClimateObject;
-    struct HillShapesObject;
-    struct BuildingObject;
-    struct ScaffoldingObject;
-    struct IndustryObject;
-    struct RegionObject;
-    struct CompetitorObject;
-    struct ScenarioTextObject;
 
     /**
      * Represents an index into the entire loaded object array. Not an index for
      * a specific object type. DO NOT USE
      */
     using LoadedObjectIndex = size_t;
+
+    enum class LandObjectFlags : uint8_t;
 }
 
 namespace OpenLoco::ObjectManager
@@ -190,14 +157,14 @@ namespace OpenLoco::ObjectManager
 
     void drawGenericDescription(Gfx::DrawingContext& drawingCtx, Ui::Point& rowPosition, const uint16_t designed, const uint16_t obsolete);
 
-    void sub_47966E();
+    void updateRoadObjectIdFlags();
     void updateDefaultLevelCrossingType();
     void updateYearly2();
 
-    void sub_4748FA();
-    void sub_47AC05();
+    void updateTerraformObjects();
+    void updateLastTrackTypeOption();
 
-    void registerHooks();
+    std::span<LandObjectFlags> getLandObjectFlagsCache();
 
     // Calls function with the handle (LoadedObjectHandle) of each loaded object
     template<typename Function>

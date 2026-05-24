@@ -50,7 +50,6 @@ namespace OpenLoco::World::TrackData
         };
     };
 
-#pragma pack(push, 1)
     // Pos is difference from the next first tile and the track first tile
     struct TrackCoordinates
     {
@@ -58,8 +57,6 @@ namespace OpenLoco::World::TrackData
         uint8_t rotationEnd;   // 0x01
         World::Pos3 pos;       // 0x02
     };
-    static_assert(sizeof(TrackCoordinates) == 0x8);
-#pragma pack(pop)
 
     const std::span<const PreviewTrack> getTrackPiece(size_t trackId);
     const std::span<const PreviewTrack> getRoadPiece(size_t trackId);
@@ -101,4 +98,20 @@ namespace OpenLoco::World::TrackData
         uint8_t rotation; // 0x03
     };
     std::span<const RoadUnkNextTo> getRoadUnkNextTo(uint16_t trackAndDirection);
+
+    // 0x004F7358
+    // Returns the lane occupation mask for a given road trackAndDirection value.
+    // The index is (trackAndDirection._data >> 2), which encodes:
+    // - roadId (track piece identifier)
+    // - isBackwards (direction of travel)
+    // - isOvertakeLane (which lane the vehicle is in)
+    // - isChangingLane (whether the vehicle is in the process of changing lanes)
+    // The returned value's upper nibble (>> 4) contains a 2-bit lane occupation mask.
+    uint8_t getRoadOccupationMask(uint8_t index);
+
+    // 0x004F865C
+    // The index is (trackAndDirection._track.data >> 2), which encodes:
+    // - reversed (bit 0)
+    // - track id (bit 1-6)
+    int8_t getCurvatureDegree(uint8_t index);
 }

@@ -45,11 +45,13 @@ namespace OpenLoco::ObjectManager
         ObjectIndexEntry object;
     };
 
+    bool getCustomObjectsInIndexStatus();
     uint32_t getNumInstalledObjects();
 
     void loadIndex();
 
     std::vector<ObjIndexPair> getAvailableObjects(ObjectType type);
+    uint16_t getNumAvailableObjectsByType(ObjectType type);
     bool isObjectInstalled(const ObjectHeader& objectHeader);
     std::optional<ObjectIndexEntry> findObjectInIndex(const ObjectHeader& objectHeader);
     const ObjectIndexEntry& getObjectInIndex(ObjectIndexId index);
@@ -76,8 +78,16 @@ namespace OpenLoco::ObjectManager
         defaultSelect = defaultDeselect | select,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(SelectObjectModes);
-    bool selectObjectFromIndex(SelectObjectModes mode, const ObjectHeader& objHeader, std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData);
-    void prepareSelectionList(bool markInUse);
+
+    struct ObjectIndexSelection
+    {
+        ObjectSelectionMeta selectionMetaData;
+        std::vector<SelectedObjectsFlags> objectFlags;
+        bool selectObject(SelectObjectModes mode, const ObjectHeader& objHeader);
+    };
+
+    ObjectIndexSelection& prepareSelectionList(bool markInUse);
+    ObjectIndexSelection& getCurrentSelectionList();
     void freeSelectionList();
     void markOnlyLoadedObjects(std::span<SelectedObjectsFlags> objectFlags);
     void loadSelectionListObjects(std::span<SelectedObjectsFlags> objectFlags);

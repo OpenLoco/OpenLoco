@@ -1,11 +1,10 @@
 #pragma once
 
+#include "GameCommands/GameCommands.h"
+#include "Network.h"
 #include <cstdint>
 #include <cstdlib>
 #include <string_view>
-
-#include "Network.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco::Network
 {
@@ -172,7 +171,7 @@ namespace OpenLoco::Network
         uint32_t index{};
         uint32_t tick{};
         CompanyId company{};
-        OpenLoco::Interop::registers regs;
+        OpenLoco::GameCommands::registers regs;
     };
 #pragma pack(pop)
 }

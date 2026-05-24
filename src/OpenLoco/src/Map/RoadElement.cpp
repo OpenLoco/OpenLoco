@@ -5,14 +5,11 @@
 #include "Objects/LevelCrossingObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "Tile.h"
 #include "TileManager.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::World
 {
@@ -37,7 +34,7 @@ namespace OpenLoco::World
             return true;
         }
 
-        if (!(getGameState().roadObjectIdIsNotTram & (1 << roadObjectId())))
+        if (!(getGameState().roadObjectIdIsAnyRoadTypeCompatible & (1 << roadObjectId())))
         {
             return true;
         }
@@ -83,7 +80,7 @@ namespace OpenLoco::World
                 continue;
             }
 
-            if (!(getGameState().roadObjectIdIsNotTram & (1 << roadEl->roadObjectId())))
+            if (!(getGameState().roadObjectIdIsAnyRoadTypeCompatible & (1 << roadEl->roadObjectId())))
             {
                 continue;
             }

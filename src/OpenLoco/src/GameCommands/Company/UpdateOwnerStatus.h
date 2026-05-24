@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameCommands/GameCommands.h"
+#include "World/Company.h"
 
 namespace OpenLoco::GameCommands
 {

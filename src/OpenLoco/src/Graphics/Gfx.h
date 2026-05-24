@@ -8,6 +8,7 @@
 #include <array>
 #include <cstdint>
 #include <optional>
+#include <span>
 
 namespace OpenLoco
 {
@@ -28,8 +29,14 @@ namespace OpenLoco::Gfx
     namespace G1ExpectedCount
     {
         constexpr uint32_t kDisc = 0x101A; // And GOG
+        constexpr uint32_t kTemporaryObjects = 0x1000;
         constexpr uint32_t kSteam = 0x0F38;
-        constexpr uint32_t kObjects = 0x40000;
+        constexpr uint32_t kObjects = 0x40000 - kTemporaryObjects;
+
+        // After loading a save we have the following images expected:
+        // 0x00000-0x01019: Disc (or GOG or Steam) images (Note: Steam is missing some images but will be padded up to the disc count during load)
+        // 0x0101A-0x02019: Temporary objects (used during loading and for object selection windows)
+        // 0x0201A-0x41019: Regular objects (loaded from object files)
     }
 #pragma pack(push, 1)
 
@@ -92,6 +99,13 @@ namespace OpenLoco::Gfx
         }
     };
 
+    struct PaletteEntry
+    {
+        uint8_t b;
+        uint8_t g;
+        uint8_t r;
+        uint8_t a;
+    };
 #pragma pack(pop)
 
     struct ImageExtents
@@ -170,6 +184,7 @@ namespace OpenLoco::Gfx
     void loadCurrency();
     void loadDefaultPalette();
     void loadPalette(uint32_t imageIndex, uint8_t modifier);
+    std::span<const PaletteEntry> getRgbaPalette();
 
     ImageExtents getImagesMaxExtent(const ImageId baseImageId, const size_t numImages);
 

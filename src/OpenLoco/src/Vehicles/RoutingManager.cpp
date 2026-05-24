@@ -17,6 +17,12 @@ namespace OpenLoco::Vehicles::RoutingManager
         return std::distance(std::begin(routingArr), res);
     }
 
+    void resetRoutings(const RoutingHandle handle)
+    {
+        auto& vehRoutingArr = routings()[handle.getVehicleRef()];
+        std::fill(std::begin(vehRoutingArr), std::end(vehRoutingArr), kAllocatedButFreeRouting);
+    }
+
     bool isEmptyRoutingSlotAvailable()
     {
         return findFreeRoutingVehicleRef().has_value();
@@ -29,7 +35,7 @@ namespace OpenLoco::Vehicles::RoutingManager
         if (vehicleRef.has_value())
         {
             auto& vehRoutingArr = routings()[*vehicleRef];
-            std::fill(std::begin(vehRoutingArr), std::end(vehRoutingArr), kAllocatedButFreeRoutingStation);
+            std::fill(std::begin(vehRoutingArr), std::end(vehRoutingArr), kAllocatedButFreeRouting);
             return { RoutingHandle(*vehicleRef, 0) };
         }
         return std::nullopt;
@@ -47,7 +53,7 @@ namespace OpenLoco::Vehicles::RoutingManager
 
     void freeRouting(const RoutingHandle handle)
     {
-        setRouting(handle, kAllocatedButFreeRoutingStation);
+        setRouting(handle, kAllocatedButFreeRouting);
     }
 
     // 0x004B1E77
@@ -68,7 +74,7 @@ namespace OpenLoco::Vehicles::RoutingManager
         , _isEnd(isEnd)
         , _direction(direction)
     {
-        if (routings()[_current.getVehicleRef()][_current.getIndex()] == kAllocatedButFreeRoutingStation)
+        if (routings()[_current.getVehicleRef()][_current.getIndex()] == kAllocatedButFreeRouting)
         {
             _hasLooped = true;
         }
@@ -106,14 +112,14 @@ namespace OpenLoco::Vehicles::RoutingManager
         {
             return true;
         }
-        // If this is an end iterator then its value is implied to be kAllocatedButFreeRoutingStation
+        // If this is an end iterator then its value is implied to be kAllocatedButFreeRouting
         if (_isEnd)
         {
-            return routings()[other._current.getVehicleRef()][other._current.getIndex()] == kAllocatedButFreeRoutingStation;
+            return routings()[other._current.getVehicleRef()][other._current.getIndex()] == kAllocatedButFreeRouting;
         }
         if (other._isEnd)
         {
-            return routings()[_current.getVehicleRef()][_current.getIndex()] == kAllocatedButFreeRoutingStation;
+            return routings()[_current.getVehicleRef()][_current.getIndex()] == kAllocatedButFreeRouting;
         }
         return false;
     }

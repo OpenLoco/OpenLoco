@@ -1,4 +1,5 @@
 #include "VehiclePlaceWater.h"
+#include "Audio/Audio.h"
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "Localisation/StringIds.h"
@@ -8,6 +9,12 @@
 #include "Objects/ObjectManager.h"
 #include "Random.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle1.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
+#include "Vehicles/VehicleTail.h"
 #include "ViewportManager.h"
 #include "World/StationManager.h"
 
@@ -19,7 +26,7 @@ namespace OpenLoco::GameCommands
     static void playWaterPlacedownSound(const World::Pos3 pos)
     {
         const auto frequency = gPrng2().randNext(20003, 24095);
-        Audio::playSound(Audio::SoundId::constructShip, pos, -600, frequency);
+        Audio::playSound(Audio::SoundId::constructShip, Audio::ChannelId::effects, pos, -600, frequency);
     }
 
     // 0x004267BE
@@ -31,12 +38,12 @@ namespace OpenLoco::GameCommands
         auto* head = EntityManager::get<Vehicles::VehicleHead>(args.head);
         if (head == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!sub_431E6A(head->owner))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         Vehicles::Vehicle train(head->id);
@@ -46,12 +53,12 @@ namespace OpenLoco::GameCommands
             if (head->tileX != -1)
             {
                 setErrorText(StringIds::empty);
-                return FAILURE;
+                return kFailure;
             }
             if (train.cars.empty())
             {
                 setErrorText(StringIds::empty);
-                return FAILURE;
+                return kFailure;
             }
         }
 
@@ -83,24 +90,24 @@ namespace OpenLoco::GameCommands
             }();
             if (elStation == nullptr)
             {
-                return FAILURE;
+                return kFailure;
             }
             if (elStation->isGhost() || elStation->isAiAllocated())
             {
-                return FAILURE;
+                return kFailure;
             }
 
             auto* station = StationManager::get(elStation->stationId());
 
             if (!sub_431E6A(station->owner))
             {
-                return FAILURE;
+                return kFailure;
             }
 
             if (elStation->isFlag6())
             {
                 setErrorText(StringIds::vehicle_approaching_or_in_the_way);
-                return FAILURE;
+                return kFailure;
             }
 
             auto* dockObj = ObjectManager::get<DockObject>(elStation->objectId());
@@ -111,7 +118,7 @@ namespace OpenLoco::GameCommands
             if (waterHeight == 0)
             {
                 setErrorText(StringIds::noWater);
-                return FAILURE;
+                return kFailure;
             }
 
             if (!(flags & Flags::apply))
@@ -125,7 +132,7 @@ namespace OpenLoco::GameCommands
             head->moveTo(boatPos + World::Pos3(0, 0, 32));
 
             head->status = Vehicles::Status::stopped;
-            head->vehicleFlags |= VehicleFlags::commandStop;
+            head->vehicleFlags |= Vehicles::VehicleFlags::commandStop;
             head->stationId = elStation->stationId();
             head->tileX = args.pos.x;
             head->tileY = args.pos.y;

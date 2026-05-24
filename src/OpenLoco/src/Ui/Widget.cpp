@@ -2,36 +2,33 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Ui/ScrollView.h"
 #include "Window.h"
-#include <OpenLoco/Interop/Interop.hpp>
-#include <cassert>
 
-using namespace OpenLoco::Interop;
+#include <cassert>
 
 namespace OpenLoco::Ui
 {
-    int16_t Widget::midX() const
+    int32_t Widget::midX() const
     {
         return (this->left + this->right) / 2;
     }
 
-    int16_t Widget::midY() const
+    int32_t Widget::midY() const
     {
         return (this->top + this->bottom) / 2;
     }
 
-    uint16_t Widget::width() const
+    int32_t Widget::width() const
     {
         return (this->right - this->left) + 1;
     }
 
-    uint16_t Widget::height() const
+    int32_t Widget::height() const
     {
         return (this->bottom - this->top) + 1;
     }
@@ -65,7 +62,7 @@ namespace OpenLoco::Ui
         }
 
         Gfx::RectInsetFlags widgetFlags = Gfx::RectInsetFlags::none;
-        if (windowColour == WindowColour::primary && window->hasFlags(WindowFlags::flag_11))
+        if (windowColour == WindowColour::primary && window->hasFlags(WindowFlags::lighterFrame))
         {
             widgetFlags = Gfx::RectInsetFlags::colourLight;
         }
@@ -85,24 +82,14 @@ namespace OpenLoco::Ui
         widgetState.hovered = (hoveredWidgets & (1ULL << widgetIndex)) != 0;
         widgetState.scrollviewIndex = scrollviewIndex;
 
-        auto clippedRT = clipRenderTarget(drawingCtx.currentRenderTarget(), Rect{ left, top, width(), height() });
-        if (!clippedRT)
-        {
-            // Widget position is outside the windows canvas which is the current clipped RT.
-            return;
-        }
-
-        drawingCtx.pushRenderTarget(*clippedRT);
-
         // With the only exception of WidgetType::empty everything else should implement it.
         assert(events.draw != nullptr);
 
         if (events.draw != nullptr)
         {
             events.draw(drawingCtx, *this, widgetState);
+            return;
         }
-
-        drawingCtx.popRenderTarget();
     }
 
     // 0x004CF194
@@ -111,8 +98,8 @@ namespace OpenLoco::Ui
         auto& widget = w.widgets[index];
 
         Ui::Point pos = {};
-        pos.x = widget.left;
-        pos.y = widget.top;
+        pos.x = widget.left + w.x;
+        pos.y = widget.top + w.y;
 
         if (w.isDisabled(index))
         {

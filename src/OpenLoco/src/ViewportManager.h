@@ -13,7 +13,6 @@ namespace OpenLoco::Ui::ViewportManager
     constexpr int16_t viewportsPerWindow = 2;
 
     void init();
-    void registerHooks();
     Viewport* create(Window* window, int viewportIndex, Ui::Point origin, Ui::Size size, ZoomLevel zoom, EntityId entityId);
     Viewport* create(Window* window, int viewportIndex, Ui::Point origin, Ui::Size size, ZoomLevel zoom, World::Pos3 tile);
     void destroy(Viewport* vp);

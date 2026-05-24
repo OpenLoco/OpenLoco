@@ -9,12 +9,8 @@
 
 #pragma warning(disable : 4702)
 
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::GameCommands
 {
-    static loco_global<LoadOrQuitMode, 0x0050A002> _savePromptType;
-
     // 0x0043BFCB
     static uint32_t loadSaveQuit(const LoadSaveQuitGameArgs& args, const uint8_t flags)
     {
@@ -23,17 +19,18 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        if (args.option1 == LoadSaveQuitGameArgs::Options::closeSavePrompt)
+        if (args.saveMode == LoadSaveQuitGameArgs::SaveMode::closeSavePrompt)
         {
             Ui::WindowManager::close(Ui::WindowType::saveGamePrompt);
             return 0;
         }
 
-        if (args.option1 == LoadSaveQuitGameArgs::Options::save)
+        auto loadOrQuitMode = args.loadQuitMode;
+
+        if (args.saveMode == LoadSaveQuitGameArgs::SaveMode::promptSave)
         {
-            _savePromptType = args.option2;
             Ui::Windows::TextInput::cancel();
-            Ui::Windows::PromptSaveWindow::open(args.option2);
+            Ui::Windows::PromptSaveWindow::open(loadOrQuitMode);
 
             if (!SceneManager::isTitleMode())
             {
@@ -43,12 +40,12 @@ namespace OpenLoco::GameCommands
                 {
                     Tutorial::stop();
                 }
-                else if (!SceneManager::isNetworked() || _savePromptType != LoadOrQuitMode::quitGamePrompt)
+                else if (!SceneManager::isNetworked() || loadOrQuitMode != LoadOrQuitMode::quitGamePrompt)
                 {
                     if (SceneManager::getSceneAge() >= 0xF00)
                     {
                         auto window = Ui::WindowManager::bringToFront(Ui::WindowType::saveGamePrompt);
-                        Audio::playSound(Audio::SoundId::openWindow, window->x + (window->width / 2));
+                        Audio::playSound(Audio::SoundId::openWindow, Audio::ChannelId::ui, window->x + (window->width / 2));
                         return 0;
                     }
                 }
@@ -56,7 +53,7 @@ namespace OpenLoco::GameCommands
         }
 
         // 0x0043BFE3
-        switch (_savePromptType)
+        switch (loadOrQuitMode)
         {
             case LoadOrQuitMode::loadGamePrompt:
                 Game::loadGame();

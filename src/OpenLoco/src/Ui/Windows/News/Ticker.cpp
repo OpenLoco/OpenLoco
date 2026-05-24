@@ -1,7 +1,6 @@
 #include "Audio/Audio.h"
 #include "Graphics/Colour.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/Formatting.h"
@@ -142,7 +141,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
                     {
                         if (newsStringChar != 0)
                         {
-                            Audio::playSound(Audio::SoundId::ticker, Ui::width());
+                            Audio::playSound(Audio::SoundId::ticker, Audio::ChannelId::ui, Ui::width());
                         }
                     }
                 }
@@ -167,18 +166,20 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
             return;
         }
 
-        if (SceneManager::getPauseFlags() & (1 << 2))
+        if ((SceneManager::getPauseFlags() & PauseFlags::browsePrompt) != PauseFlags::none)
         {
             return;
         }
 
         auto news = MessageManager::get(MessageManager::getActiveIndex());
 
+        auto x = self.x;
+        auto y = self.y;
         auto width = self.width;
         auto height = self.height;
 
         const auto& rt = drawingCtx.currentRenderTarget();
-        auto clipped = Gfx::clipRenderTarget(rt, { 0, 0, width, height });
+        auto clipped = Gfx::clipRenderTarget(rt, { x, y, width, height });
 
         if (!clipped)
         {
@@ -190,7 +191,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         auto colour = Colours::getShade(Colour::white, 5);
         const auto& mtd = getMessageTypeDescriptor(news->type);
 
-        if (!mtd.hasFlag(MessageTypeFlags::unk1))
+        if (!mtd.hasFlag(MessageTypeFlags::isGeneralNews))
         {
             colour = Colours::getShade(Colour::mutedDarkRed, 5);
         }

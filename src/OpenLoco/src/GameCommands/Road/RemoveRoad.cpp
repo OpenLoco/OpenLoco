@@ -13,7 +13,7 @@
 #include "Objects/RoadObject.h"
 #include "Random.h"
 #include "RemoveRoadStation.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 #include "SceneManager.h"
 #include "World/TownManager.h"
 
@@ -25,7 +25,7 @@ namespace OpenLoco::GameCommands
     static void playRoadRemovalSound(const World::Pos3 pos)
     {
         const auto frequency = gPrng2().randNext(17955, 26146);
-        Audio::playSound(Audio::SoundId::demolish, pos, 0, frequency);
+        Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, pos, 0, frequency);
     }
 
     struct OverlapRoads
@@ -143,7 +143,7 @@ namespace OpenLoco::GameCommands
         }
 
         // Check mod removal costs
-        if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+        if (!roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
         {
             for (auto i = 0U; i < 2; i++)
             {
@@ -169,13 +169,14 @@ namespace OpenLoco::GameCommands
         auto* roadEl = getRoadElement(args.pos, args, args.sequenceIndex, flags);
         if (roadEl == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
-        const auto companyId = SceneManager::isEditorMode() ? CompanyId::neutral : getUpdatingCompanyId();
-        if (!sub_431E6A(companyId, reinterpret_cast<const World::TileElement*>(roadEl)))
+        const CompanyId roadOwner = roadEl->owner();
+
+        if (!sub_431E6A(roadOwner, reinterpret_cast<const World::TileElement*>(roadEl)))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         /*
@@ -194,7 +195,7 @@ namespace OpenLoco::GameCommands
                 FormatArguments::common(town->name);
                 setErrorText(StringIds::stringid_local_authority_wont_allow_removal_in_use);
             }
-            return FAILURE;
+            return kFailure;
         }
         */
 
@@ -229,9 +230,9 @@ namespace OpenLoco::GameCommands
                     srArgs.roadObjectId = args.objectId;
 
                     auto stationRemovalRes = GameCommands::doCommand(srArgs, flags);
-                    if (stationRemovalRes == FAILURE)
+                    if (stationRemovalRes == kFailure)
                     {
-                        return FAILURE;
+                        return kFailure;
                     }
 
                     totalRemovalCost += stationRemovalRes;
@@ -256,7 +257,7 @@ namespace OpenLoco::GameCommands
         {
             const auto roadLoc = roadStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
 
-            if (!(flags & Flags::aiAllocated))
+            if (shouldInvalidateTile(flags))
             {
                 World::TileManager::mapInvalidateTileFull(roadLoc);
             }
@@ -292,8 +293,8 @@ namespace OpenLoco::GameCommands
         // 0x00477A10
         totalRemovalCost += pieceRemovalCost;
 
-        // Seems to have been forgotten in vanilla
-        if (removeRoadBridge)
+        // Add on bridge refund if applicable (Absent from vanilla)
+        if (removeRoadBridge && roadOwner != CompanyId::neutral)
         {
             const auto* bridgeObj = ObjectManager::get<BridgeObject>(roadBridgeId);
             const auto bridgeBaseCost = Economy::getInflationAdjustedCost(bridgeObj->sellCostFactor, bridgeObj->costIndex, 10);

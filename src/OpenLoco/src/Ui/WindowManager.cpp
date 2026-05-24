@@ -7,7 +7,6 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Intro.h"
@@ -16,8 +15,10 @@
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "MultiPlayer.h"
+#include "OpenLoco.h"
 #include "SceneManager.h"
 #include "ScrollView.h"
+#include "ToolTip.h"
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Ui/ToolManager.h"
@@ -27,7 +28,6 @@
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
 #include <array>
 #include <cinttypes>
@@ -35,456 +35,23 @@
 #include <sfl/static_vector.hpp>
 #include <iostream>
 
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::Ui::WindowManager
 {
-    namespace FindFlag
-    {
-        constexpr uint16_t byType = 1 << 7;
-    }
-
     static constexpr size_t kMaxWindows = 64;
 
-    static loco_global<uint16_t, 0x0050C19C> _timeSinceLastTick;
-    static loco_global<uint16_t, 0x0052334E> _thousandthTickCounter;
-    static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
-    static loco_global<uint16_t, 0x00508F10> __508F10;
-    static loco_global<Gfx::RenderTarget, 0x0050B884> _screenRT;
-    static loco_global<uint8_t, 0x005233B6> _currentModalType;
-    static loco_global<uint32_t, 0x00523508> _523508;
-    static loco_global<uint32_t, 0x009DA3D4> _9DA3D4;
-    static loco_global<int32_t, 0x00E3F0B8> _gCurrentRotation;
+    static uint16_t _thousandthTickCounter;                      // 0x0052334E
+    static WindowType _currentModalType = WindowType::undefined; // 0x005233B6
+    static int32_t _currentRotation;                             // 0x00E3F0B8
 
     static sfl::static_vector<Window, kMaxWindows> _windows;
 
     static std::array<AdvancedColour, enumValue(WindowColour::count)> _windowColours;
 
-    static void viewportRedrawAfterShift(Window* window, Viewport* viewport, int16_t x, int16_t y);
+    static void viewportRedrawAfterShift(Window* window, Viewport* viewport, int32_t x, int32_t y);
 
     void init()
     {
         _windows.clear();
-        _523508 = 0;
-    }
-
-    void registerHooks()
-    {
-        registerHook(
-            0x0043454F,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Windows::CompanyWindow::open(CompanyId(regs.ax));
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x004345EE,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Windows::CompanyWindow::openFinances(CompanyId(regs.ax));
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x00434731,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Windows::CompanyWindow::openChallenge(CompanyId(regs.ax));
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x0043EE58,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Windows::ScenarioOptions::open();
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x004B6033,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto* w = Windows::Vehicle::Main::open(reinterpret_cast<Vehicles::VehicleBase*>(regs.edx));
-                regs = backup;
-                regs.esi = X86Pointer(w);
-                return 0;
-            });
-
-        registerHook(
-            0x0045EFDB,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto window = (Ui::Window*)regs.esi;
-                window->viewportZoomIn(false);
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x0045F015,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto window = (Ui::Window*)regs.esi;
-                window->viewportZoomOut(false);
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x0045F18B,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                callViewportRotateEventOnAllWindows();
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x0045FCE6,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Point mouse = { regs.ax, regs.bx };
-                auto pos = Ui::screenGetMapXyWithZ(mouse, regs.bp);
-                regs = backup;
-                if (pos)
-                {
-                    regs.ax = (*pos).x;
-                    regs.bx = (*pos).y;
-                }
-                else
-                {
-                    regs.ax = -32768;
-                }
-                return 0;
-            });
-
-        registerHook(
-            0x004610F2,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                World::mapInvalidateSelectionRect();
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x00456D2D,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Windows::Industry::open(IndustryId(regs.dl));
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x00495685,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                const char* buffer = (const char*)regs.esi;
-                const auto font = *loco_global<Gfx::Font, 0x0112C876>();
-                uint16_t width = Gfx::TextRenderer::getStringWidth(font, buffer);
-                regs = backup;
-                regs.cx = width;
-
-                return 0;
-            });
-
-        registerHook(
-            0x00499B7E,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto window = Windows::Town::open(regs.dx);
-                regs = backup;
-                regs.esi = X86Pointer(window);
-
-                return 0;
-            });
-
-        registerHook(
-            0x0048F210,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto window = Windows::Station::open(StationId(regs.dx));
-                regs = backup;
-                regs.esi = X86Pointer(window);
-
-                return 0;
-            });
-
-        registerHook(
-            0x004577FF,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto window = Windows::IndustryList::open();
-                regs = backup;
-                regs.esi = X86Pointer(window);
-
-                return 0;
-            });
-
-        registerHook(
-            0x00428F8B,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Ui::Windows::NewsWindow::open(MessageId(regs.ax));
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x004B93A5,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                sub_4B93A5(regs.bx);
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x004C5C69,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Gfx::invalidateRegion(regs.ax, regs.bx, regs.dx, regs.bp);
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x004C9984,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                invalidateAllWindowsAfterInput();
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x004C9A95,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto window = findAt(regs.ax, regs.bx);
-                regs = backup;
-                regs.esi = X86Pointer(window);
-
-                return 0;
-            });
-
-        registerHook(
-            0x004C9AFA,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto window = findAtAlt(regs.ax, regs.bx);
-                regs = backup;
-                regs.esi = X86Pointer(window);
-
-                return 0;
-            });
-
-        registerHook(
-            0x004C9B56,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Ui::Window* w;
-                if (regs.cx & FindFlag::byType)
-                {
-                    w = find((WindowType)(regs.cx & ~FindFlag::byType));
-                }
-                else
-                {
-                    w = find((WindowType)regs.cx, regs.dx);
-                }
-                regs = backup;
-                regs.esi = X86Pointer(w);
-                if (w == nullptr)
-                {
-                    return X86_FLAG_ZERO;
-                }
-
-                return 0;
-            });
-
-        registerHook(
-            0x004CA4BD,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto window = (Ui::Window*)regs.esi;
-                if (window != nullptr)
-                {
-                    window->invalidate();
-                }
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x004CB966,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                if (regs.al < 0)
-                {
-                    invalidateWidget((WindowType)(regs.al & 0x7F), regs.bx, regs.ah);
-                }
-                else if ((regs.al & 1 << 6) != 0)
-                {
-                    invalidate((WindowType)(regs.al & 0xBF));
-                }
-                else
-                {
-                    invalidate((WindowType)regs.al, regs.bx);
-                }
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x004CC692,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                if ((regs.cx & FindFlag::byType) != 0)
-                {
-                    close((WindowType)(regs.cx & ~FindFlag::byType));
-                }
-                else
-                {
-                    close((WindowType)regs.cx, regs.dx);
-                }
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x004CC6EA,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto window = (Ui::Window*)regs.esi;
-                close(window);
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x004CD296,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                relocateWindows();
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x004CD3D0,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                dispatchUpdateAll();
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x004CE3D6,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                ToolManager::toolCancel();
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x004CE438,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto w = getMainWindow();
-                regs = backup;
-                regs.esi = X86Pointer(w);
-                if (w == nullptr)
-                {
-                    return X86_FLAG_CARRY;
-                }
-
-                return 0;
-            });
-
-        registerHook(
-            0x004CEE0B,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                sub_4CEE0B(*(Ui::Window*)regs.esi);
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x004C9F5D,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto w = createWindow((WindowType)regs.cl, Ui::Point32(regs.ax, regs.eax >> 16), Ui::Size32(regs.bx, regs.ebx >> 16), WindowFlags(regs.ecx >> 8), *(const WindowEventList*)regs.edx);
-                regs = backup;
-
-                regs.esi = X86Pointer(w);
-                return 0;
-            });
-
-        registerHook(
-            0x004C9C68,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto w = createWindow((WindowType)regs.cl, Ui::Size32(regs.bx, (((uint32_t)regs.ebx) >> 16)), WindowFlags(regs.ecx >> 8), *(const WindowEventList*)regs.edx);
-                regs = backup;
-
-                regs.esi = X86Pointer(w);
-                return 0;
-            });
-
-        registerHook(
-            0x004CF456,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                closeAllFloatingWindows();
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
-            0x004CD3A9,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-
-                auto w = bringToFront((WindowType)regs.cx, regs.dx);
-                regs = backup;
-
-                regs.esi = X86Pointer(w);
-                if (w == nullptr)
-                {
-                    return X86_FLAG_ZERO;
-                }
-
-                return 0;
-            });
     }
 
     Window* get(size_t index)
@@ -518,12 +85,17 @@ namespace OpenLoco::Ui::WindowManager
 
     WindowType getCurrentModalType()
     {
-        return (WindowType)*_currentModalType;
+        return _currentModalType;
     }
 
     void setCurrentModalType(WindowType type)
     {
-        _currentModalType = (uint8_t)type;
+        _currentModalType = type;
+    }
+
+    void resetThousandthTickCounter()
+    {
+        _thousandthTickCounter = 0;
     }
 
     void updateViewports()
@@ -537,10 +109,11 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004C6118
     void update()
     {
-        _tooltipNotShownTicks = _tooltipNotShownTicks + _timeSinceLastTick;
+        uint16_t timeSinceLastTick = getTimeSinceLastTick();
+        ToolTip::setNotShownTicks(ToolTip::getNotShownTicks() + timeSinceLastTick);
 
         // 1000 tick update
-        _thousandthTickCounter = _thousandthTickCounter + _timeSinceLastTick;
+        _thousandthTickCounter += timeSinceLastTick;
         if (_thousandthTickCounter >= 1000)
         {
             _thousandthTickCounter = 0;
@@ -571,7 +144,7 @@ namespace OpenLoco::Ui::WindowManager
     // 0x00439BA5
     void updateDaily()
     {
-        if (find(WindowType::tooltip) && Windows::ToolTip::isTimeTooltip())
+        if (find(WindowType::tooltip) && ToolTip::isTimeTooltip())
         {
             Windows::ToolTip::closeAndReset();
         }
@@ -621,7 +194,7 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004C9A95
-    Window* findAt(int16_t x, int16_t y)
+    Window* findAt(int32_t x, int32_t y)
     {
         for (auto it = _windows.rbegin(); it != _windows.rend(); ++it)
         {
@@ -645,7 +218,7 @@ namespace OpenLoco::Ui::WindowManager
                 continue;
             }
 
-            if (w.hasFlags(WindowFlags::flag_7))
+            if (w.hasFlags(WindowFlags::ignoreInFindAt))
             {
                 continue;
             }
@@ -675,7 +248,7 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004C9AFA
-    Window* findAtAlt(int16_t x, int16_t y)
+    Window* findAtAlt(int32_t x, int32_t y)
     {
         for (auto it = _windows.rbegin(); it != _windows.rend(); ++it)
         {
@@ -782,11 +355,6 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004C9984
     void invalidateAllWindowsAfterInput()
     {
-        if (SceneManager::isPaused())
-        {
-            _523508++;
-        }
-
         std::for_each(_windows.rbegin(), _windows.rend(), [](Ui::Window& w) {
             w.updateScrollWidgets();
             w.invalidatePressedImageButtons();
@@ -894,7 +462,7 @@ namespace OpenLoco::Ui::WindowManager
      * @param width @<bx>
      * @param height @<cx>
      */
-    static bool windowFitsWithinSpace(Ui::Point32 position, Ui::Size32 size)
+    static bool windowFitsWithinSpace(Ui::Point position, Ui::Size size)
     {
         if (position.x < 0)
         {
@@ -948,8 +516,8 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004C9F27
     static Window* createWindowOnScreen(
         WindowType type,
-        Ui::Point32 origin,
-        Ui::Size32 size,
+        Ui::Point origin,
+        Ui::Size size,
         Ui::WindowFlags flags,
         const WindowEventList& events)
     {
@@ -960,7 +528,7 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004C9BA2
-    static bool windowFitsOnScreen(Ui::Point32 origin, Ui::Size32 size)
+    static bool windowFitsOnScreen(Ui::Point origin, Ui::Size size)
     {
         if (origin.x < -(size.width / 4))
         {
@@ -995,11 +563,11 @@ namespace OpenLoco::Ui::WindowManager
      */
     Window* createWindow(
         WindowType type,
-        Ui::Size32 size,
+        Ui::Size size,
         Ui::WindowFlags flags,
         const WindowEventList& events)
     {
-        Ui::Point32 position{};
+        Ui::Point position{};
 
         position.x = 0;  // dx
         position.y = 30; // ax
@@ -1157,8 +725,8 @@ namespace OpenLoco::Ui::WindowManager
      */
     Window* createWindow(
         WindowType type,
-        Ui::Point32 origin,
-        Ui::Size32 size,
+        Ui::Point origin,
+        Ui::Size size,
         WindowFlags flags,
         const WindowEventList& events)
     {
@@ -1188,7 +756,7 @@ namespace OpenLoco::Ui::WindowManager
 
         bool stickToBack = (flags & WindowFlags::stickToBack) != WindowFlags::none;
         bool stickToFront = (flags & WindowFlags::stickToFront) != WindowFlags::none;
-        bool hasFlag12 = (flags & WindowFlags::flag_12) != WindowFlags::none;
+        bool playSoundOnOpen = (flags & WindowFlags::playSoundOnOpen) != WindowFlags::none;
         bool shouldOpenQuietly = (flags & WindowFlags::openQuietly) != WindowFlags::none;
 
         // Find right position to insert new window
@@ -1222,10 +790,10 @@ namespace OpenLoco::Ui::WindowManager
         auto window = Ui::Window(origin, size);
         window.type = type;
         window.flags = flags;
-        if (hasFlag12 || (!stickToBack && !stickToFront && !shouldOpenQuietly))
+        if (playSoundOnOpen || (!stickToBack && !stickToFront && !shouldOpenQuietly))
         {
             window.flags |= WindowFlags::whiteBorderMask;
-            Audio::playSound(Audio::SoundId::openWindow, origin.x + size.width / 2);
+            Audio::playSound(Audio::SoundId::openWindow, Audio::ChannelId::ui, origin.x + size.width / 2);
         }
 
         window.eventHandlers = &events;
@@ -1238,7 +806,7 @@ namespace OpenLoco::Ui::WindowManager
         return newWindow;
     }
 
-    Window* createWindowCentred(WindowType type, Ui::Size32 size, WindowFlags flags, const WindowEventList& events)
+    Window* createWindowCentred(WindowType type, Ui::Size size, WindowFlags flags, const WindowEventList& events)
     {
         auto x = (Ui::width() / 2) - (size.width / 2);
         auto y = std::max(28, (Ui::height() / 2) - (size.height / 2));
@@ -1312,30 +880,13 @@ namespace OpenLoco::Ui::WindowManager
             w->setColour(WindowColour::primary, static_cast<Colour>(CompanyManager::getCompanyColour(w->owner)));
         }
 
-        addr<0x1136F9C, int16_t>() = w->x;
-        addr<0x1136F9E, int16_t>() = w->y;
-
         // Text colouring
         setWindowColours(WindowColour::primary, w->getColour(WindowColour::primary).opaque());
         setWindowColours(WindowColour::secondary, w->getColour(WindowColour::secondary).opaque());
         setWindowColours(WindowColour::tertiary, w->getColour(WindowColour::tertiary).opaque());
         setWindowColours(WindowColour::quaternary, w->getColour(WindowColour::quaternary).opaque());
 
-        // Clip render target to window rect.
-        const auto windowRect = Ui::Rect{
-            w->x,
-            w->y,
-            w->width,
-            w->height,
-        };
-
-        auto windowRT = Gfx::clipRenderTarget(rt, windowRect);
-        if (!windowRT.has_value())
-        {
-            return;
-        }
-
-        drawingCtx.pushRenderTarget(*windowRT);
+        drawingCtx.pushRenderTarget(rt);
 
         w->callPrepareDraw();
         w->callDraw(drawingCtx);
@@ -1346,7 +897,6 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004CD3D0
     void dispatchUpdateAll()
     {
-        _523508++;
         GameCommands::setUpdatingCompanyId(CompanyManager::getControllingId());
 
         std::for_each(_windows.rbegin(), _windows.rend(), [](auto& w) {
@@ -1426,7 +976,7 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004CD296
     void relocateWindows()
     {
-        int16_t newLocation = 8;
+        auto newLocation = 8;
         for (auto& w : _windows)
         {
             // Work out if the window requires moving
@@ -1441,17 +991,32 @@ namespace OpenLoco::Ui::WindowManager
             if (extendsX || extendsY)
             {
                 // Calculate the new locations
+                auto oldX = w.x;
+                auto oldY = w.y;
                 w.x = newLocation;
                 w.y = newLocation + 28;
 
                 // Move the next new location so windows are not directly on top
                 newLocation += 8;
+
+                // Adjust the viewports if required.
+                if (w.viewports[0] != nullptr)
+                {
+                    w.viewports[0]->x -= oldX - w.x;
+                    w.viewports[0]->y -= oldY - w.y;
+                }
+
+                if (w.viewports[1] != nullptr)
+                {
+                    w.viewports[1]->x -= oldX - w.x;
+                    w.viewports[1]->y -= oldY - w.y;
+                }
             }
         }
     }
 
     // 0x004CEE0B
-    void sub_4CEE0B(const Window& self)
+    void moveOtherWindowsDown(const Window& self)
     {
         int left = self.x;
         int right = self.x + self.width;
@@ -1502,12 +1067,22 @@ namespace OpenLoco::Ui::WindowManager
                 int dY = bottom + 3 - w.y;
                 w.y += dY;
                 w.invalidate();
+
+                if (w.viewports[0] != nullptr)
+                {
+                    w.viewports[0]->y += dY;
+                }
+
+                if (w.viewports[1] != nullptr)
+                {
+                    w.viewports[1]->y += dY;
+                }
             }
         }
     }
 
     // 0x004B93A5
-    void sub_4B93A5(WindowNumber_t number)
+    void invalidateOrderPageByVehicleNumber(WindowNumber_t number)
     {
         for (auto& w : _windows)
         {
@@ -1536,7 +1111,7 @@ namespace OpenLoco::Ui::WindowManager
         close(WindowType::construction);
         close(WindowType::companyFaceSelection);
         ToolManager::toolCancel();
-        addr<0x00522096, uint8_t>() = 0;
+        Windows::Construction::resetGhostVisibilityFlags();
     }
 
     // 0x004BF089
@@ -1852,16 +1427,8 @@ namespace OpenLoco::Ui::WindowManager
      * @param window @<edi>
      * @param viewport @<esi>
      */
-    void viewportShiftPixels(Ui::Window* window, Ui::Viewport* viewport, int16_t dX, int16_t dY)
+    void viewportShiftPixels(Ui::Window* window, Ui::Viewport* viewport, int32_t dX, int32_t dY)
     {
-        auto vpX = viewport->x;
-        auto vpY = viewport->y;
-        if (viewport->owner != nullptr)
-        {
-            vpX += viewport->owner->x;
-            vpY += viewport->owner->y;
-        }
-
         const auto index = indexOf(*window);
         for (auto it = _windows.begin() + index; it != _windows.end(); it++)
         {
@@ -1881,53 +1448,51 @@ namespace OpenLoco::Ui::WindowManager
                 continue;
             }
 
-            if (vpX + viewport->width <= w.x)
+            if (viewport->x + viewport->width <= w.x)
             {
                 continue;
             }
 
-            if (w.x + w.width <= vpX)
+            if (w.x + w.width <= viewport->x)
             {
                 continue;
             }
 
-            if (vpY + viewport->height <= w.y)
+            if (viewport->y + viewport->height <= w.y)
             {
                 continue;
             }
 
-            if (w.y + w.height <= vpY)
+            if (w.y + w.height <= viewport->y)
             {
                 continue;
             }
 
-            int16_t left, top, right, bottom, cx;
-
-            left = w.x;
-            top = w.y;
-            right = w.x + w.width;
-            bottom = w.y + w.height;
+            auto left = w.x;
+            auto top = w.y;
+            auto right = w.x + w.width;
+            auto bottom = w.y + w.height;
 
             // TODO: replace these with min/max
-            cx = vpX;
+            auto cx = viewport->x;
             if (left < cx)
             {
                 left = cx;
             }
 
-            cx = vpX + viewport->width;
+            cx = viewport->x + viewport->width;
             if (right > cx)
             {
                 right = cx;
             }
 
-            cx = vpY;
+            cx = viewport->y;
             if (top < cx)
             {
                 top = cx;
             }
 
-            cx = vpY + viewport->height;
+            cx = viewport->y + viewport->height;
             if (bottom > cx)
             {
                 bottom = cx;
@@ -1950,25 +1515,17 @@ namespace OpenLoco::Ui::WindowManager
      * @param y @<bp>
      * @param viewport @<esi>
      */
-    void viewportRedrawAfterShift(Window* window, Viewport* viewport, int16_t x, int16_t y)
+    void viewportRedrawAfterShift(Window* window, Viewport* viewport, int32_t x, int32_t y)
     {
-        auto vpX = viewport->x;
-        auto vpY = viewport->y;
-        if (viewport->owner != nullptr)
-        {
-            vpX += viewport->owner->x;
-            vpY += viewport->owner->y;
-        }
-
         while (window != nullptr)
         {
             // skip current window and non-intersecting windows
             if (viewport == window->viewports[0]
                 || viewport == window->viewports[1]
-                || vpX + viewport->width <= window->x
-                || vpX >= window->x + window->width
-                || vpY + viewport->height <= window->y
-                || vpY >= window->y + window->height)
+                || viewport->x + viewport->width <= window->x
+                || viewport->x >= window->x + window->width
+                || viewport->y + viewport->height <= window->y
+                || viewport->y >= window->y + window->height)
             {
                 size_t nextWindowIndex = WindowManager::indexOf(*window) + 1;
                 window = nextWindowIndex >= count() ? nullptr : WindowManager::get(nextWindowIndex);
@@ -2042,10 +1599,10 @@ namespace OpenLoco::Ui::WindowManager
             return;
         }
 
-        int16_t left = vpX;
-        int16_t top = vpY;
-        int16_t right = left + viewport->width;
-        int16_t bottom = top + viewport->height;
+        auto left = viewport->x;
+        auto top = viewport->y;
+        auto right = left + viewport->width;
+        auto bottom = top + viewport->height;
 
         // if moved more than the viewport size
         if (std::abs(x) >= viewport->width || std::abs(y) >= viewport->height)
@@ -2061,14 +1618,14 @@ namespace OpenLoco::Ui::WindowManager
             if (x > 0)
             {
                 // draw left
-                int16_t _right = left + x;
+                auto _right = left + x;
                 Gfx::render(left, top, _right, bottom);
                 left += x;
             }
             else if (x < 0)
             {
                 // draw right
-                int16_t _left = right + x;
+                auto _left = right + x;
                 Gfx::render(_left, top, right, bottom);
                 right += x;
             }
@@ -2247,12 +1804,12 @@ namespace OpenLoco::Ui::WindowManager
 
     int32_t getCurrentRotation()
     {
-        return _gCurrentRotation;
+        return _currentRotation;
     }
 
     void setCurrentRotation(int32_t value)
     {
-        _gCurrentRotation = value;
+        _currentRotation = value;
     }
 
     // 0x0052622E
@@ -2275,8 +1832,8 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     static void windowDraw(Gfx::DrawingContext& ctx, Ui::Window* w, Rect rect);
-    static void windowDraw(Gfx::DrawingContext& ctx, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
-    static bool windowDrawSplit(Gfx::DrawingContext& ctx, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
+    static void windowDraw(Gfx::DrawingContext& ctx, Ui::Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
+    static bool windowDrawSplit(Gfx::DrawingContext& ctx, Ui::Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
 
     /**
      * 0x004C5EA9
@@ -2287,7 +1844,7 @@ namespace OpenLoco::Ui::WindowManager
      * @param right @<dx>
      * @param bottom @<bp>
      */
-    static void windowDraw(Gfx::DrawingContext& ctx, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
+    static void windowDraw(Gfx::DrawingContext& ctx, Ui::Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom)
     {
         if (!w->isVisible())
         {
@@ -2303,8 +1860,8 @@ namespace OpenLoco::Ui::WindowManager
         // Clamp region
         left = std::max(left, w->x);
         top = std::max(top, w->y);
-        right = std::min<int16_t>(right, w->x + w->width);
-        bottom = std::min<int16_t>(bottom, w->y + w->height);
+        right = std::min(right, w->x + w->width);
+        bottom = std::min(bottom, w->y + w->height);
         if (left >= right)
         {
             return;
@@ -2317,12 +1874,12 @@ namespace OpenLoco::Ui::WindowManager
         // Draw the window in this region
         drawSingle(ctx, w, left, top, right, bottom);
 
-        for (uint32_t index = indexOf(*w) + 1; index < count(); index++)
+        for (auto index = indexOf(*w) + 1; index < count(); index++)
         {
             auto* v = get(index);
 
             // Don't draw overlapping opaque windows, they won't have changed
-            if (!v->hasFlags(WindowFlags::transparent))
+            if (!v->isTranslucent())
             {
                 continue;
             }
@@ -2347,7 +1904,7 @@ namespace OpenLoco::Ui::WindowManager
      * @param bottom @<bp>
      * @return
      */
-    static bool windowDrawSplit(Gfx::DrawingContext& ctx, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
+    static bool windowDrawSplit(Gfx::DrawingContext& ctx, Ui::Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom)
     {
         // Divide the draws up for only the visible regions of the window recursively
         for (size_t index = indexOf(*w) + 1; index < count(); index++)

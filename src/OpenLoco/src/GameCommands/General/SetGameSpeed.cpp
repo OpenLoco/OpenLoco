@@ -1,9 +1,6 @@
 #include "SetGameSpeed.h"
 #include "GameCommands/GameCommands.h"
 #include "SceneManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
@@ -11,7 +8,7 @@ namespace OpenLoco::GameCommands
     {
         if (speed > GameSpeed::MAX)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         SceneManager::setGameSpeed(speed);

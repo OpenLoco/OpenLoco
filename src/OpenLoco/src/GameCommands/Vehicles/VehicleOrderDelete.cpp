@@ -5,9 +5,7 @@
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
+#include "Vehicles/VehicleHead.h"
 
 namespace OpenLoco::GameCommands
 {
@@ -17,7 +15,7 @@ namespace OpenLoco::GameCommands
         auto* head = EntityManager::get<Vehicles::VehicleHead>(args.head);
         if (head == nullptr)
         {
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
 
         GameCommands::setPosition(head->position);
@@ -28,9 +26,9 @@ namespace OpenLoco::GameCommands
 
         if (args.orderOffset > head->sizeOfOrderTable)
         {
-            return FAILURE;
+            return kFailure;
         }
-        Ui::WindowManager::sub_4B93A5(enumValue(head->id));
+        Ui::WindowManager::invalidateOrderPageByVehicleNumber(enumValue(head->id));
 
         Vehicles::OrderManager::deleteOrder(head, args.orderOffset);
 

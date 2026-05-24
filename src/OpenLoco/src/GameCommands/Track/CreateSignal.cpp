@@ -162,25 +162,25 @@ namespace OpenLoco::GameCommands
         setPosition(args.pos + World::Pos3{ 16, 16, 0 });
         if (!World::TileManager::checkFreeElementsAndReorganise())
         {
-            return FAILURE;
+            return kFailure;
         }
 
         auto* elTrack = getElTrackAt(args, args.pos, args.index);
 
         if (elTrack == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (elTrack->hasLevelCrossing())
         {
             setErrorText(StringIds::level_crossing_in_the_way);
-            return FAILURE;
+            return kFailure;
         }
 
         if (!sub_431E6A(elTrack->owner(), reinterpret_cast<World::TileElement*>(elTrack)))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         const auto trackPieces = World::TrackData::getTrackPiece(args.trackId);
@@ -190,7 +190,7 @@ namespace OpenLoco::GameCommands
 
         if (!validateTrackIsSignalCompatible(args, trackPieces, trackStart))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         uint32_t totalCost = signalCost(args, trackPieces[0], trackStart);
@@ -203,7 +203,7 @@ namespace OpenLoco::GameCommands
             auto* pieceElTrack = getElTrackAt(args, trackLoc, piece.index);
             if (pieceElTrack == nullptr)
             {
-                return FAILURE;
+                return kFailure;
             }
 
             if (flags & Flags::ghost)
@@ -233,12 +233,12 @@ namespace OpenLoco::GameCommands
                     auto* newSignal = World::TileManager::insertElementAfterNoReorg<World::SignalElement>(reinterpret_cast<World::TileElement*>(pieceElTrack), trackLoc, pieceElTrack->baseZ(), pieceElTrack->occupiedQuarter());
                     if (newSignal == nullptr)
                     {
-                        return FAILURE;
+                        return kFailure;
                     }
                     pieceElTrack = newSignal->prev()->as<World::TrackElement>();
                     if (pieceElTrack == nullptr)
                     {
-                        return FAILURE;
+                        return kFailure;
                     }
                     newSignal->setRotation(pieceElTrack->rotation());
                     newSignal->setGhost(flags & Flags::ghost);
@@ -252,7 +252,7 @@ namespace OpenLoco::GameCommands
                 auto* elSignal = pieceElTrack->next()->as<World::SignalElement>();
                 if (elSignal == nullptr)
                 {
-                    return FAILURE;
+                    return kFailure;
                 }
                 if (sides & (1U << 15))
                 {
@@ -292,7 +292,7 @@ namespace OpenLoco::GameCommands
             {
                 const uint16_t tad = args.rotation | (args.trackId << 3);
                 {
-                    auto [nextLoc, nextRotation] = World::Track::getTrackConnectionEnd(args.pos, tad);
+                    auto [nextLoc, nextRotation] = World::Track::getTrackConnectionEnd(trackStart, tad);
                     auto tc = World::Track::getTrackConnections(nextLoc, nextRotation, getUpdatingCompanyId(), args.trackObjType, 0, 0);
                     if (!tc.connections.empty())
                     {
@@ -303,7 +303,7 @@ namespace OpenLoco::GameCommands
                 }
 
                 auto& trackSize = World::TrackData::getUnkTrack(tad);
-                auto nextTrackStart = args.pos + trackSize.pos;
+                auto nextTrackStart = trackStart + trackSize.pos;
                 if (trackSize.rotationEnd < 12)
                 {
                     nextTrackStart -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };

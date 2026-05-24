@@ -1,11 +1,10 @@
 #include "RoadStationObject.h"
 #include "Graphics/Colour.h"
+#include "Graphics/DrawingContext.h"
 #include "Graphics/Gfx.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "ObjectImageTable.h"
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco
 {
@@ -130,9 +129,9 @@ namespace OpenLoco
         assert(remainingData.size() == imgRes.tableLength);
 
         auto imageOffset = image + RoadStation::ImageIds::totalPreviewImages;
-        for (size_t i = 0; i < std::size(var_10); ++i)
+        for (size_t i = 0; i < std::size(imageOffsets); ++i)
         {
-            var_10[i] = imageOffset;
+            imageOffsets[i] = imageOffset;
             imageOffset += kDrawStyleTotalNumImages[paintStyle];
         }
     }
@@ -143,7 +142,7 @@ namespace OpenLoco
         name = 0;
         image = 0;
 
-        std::fill(std::begin(var_10), std::end(var_10), 0);
+        std::fill(std::begin(imageOffsets), std::end(imageOffsets), 0);
         std::fill(std::begin(mods), std::end(mods), 0);
         cargoType = 0;
         std::fill(&cargoOffsetBytes[0][0], &cargoOffsetBytes[0][0] + sizeof(cargoOffsetBytes) / sizeof(uint32_t), 0);

@@ -8,11 +8,10 @@
 #include "Localisation/StringManager.h"
 #include "Types.hpp"
 #include "Vehicles/Vehicle.h"
-#include <OpenLoco/Interop/Interop.hpp>
-#include <array>
-#include <unordered_map>
+#include "Vehicles/VehicleHead.h"
 
-using namespace OpenLoco::Interop;
+#include <OpenLoco/Utility/LookupTable.hpp>
+#include <array>
 
 namespace OpenLoco::GameCommands
 {
@@ -27,16 +26,16 @@ namespace OpenLoco::GameCommands
      * @param buffer0 @<edx> - First group of 4 characters of a 12 character update buffer
      * @param buffer1 @<dx> - Second group of 4 characters of a 12 character update buffer
      * @param buffer2 @<bp> - Third group of 4 characters of a 12 character update buffer
-     * @return @<ebx> - if rename is successful, return 0, if failed, return FAILURE
+     * @return @<ebx> - if rename is successful, return 0, if failed, return kFailure
      */
     static uint32_t renameVehicle(const VehicleRenameArgs& args, const uint8_t flags)
     {
         setExpenditureType(ExpenditureType::TrainRunningCosts);
 
-        static loco_global<EntityId, 0x0113621D> _headId_113621D;
+        static EntityId targetVehicleHeadId{}; // 0x0113621D
         if (args.i == 1)
         {
-            _headId_113621D = args.head;
+            targetVehicleHeadId = args.head;
         }
 
         static char staticRenameBuffer[37]{};
@@ -53,12 +52,12 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        EntityId vehicleHeadId = _headId_113621D;
+        EntityId vehicleHeadId = targetVehicleHeadId;
         Vehicles::VehicleHead* vehicleHead = EntityManager::get<Vehicles::VehicleHead>(vehicleHeadId);
 
         if (vehicleHead == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
         char renameStringBuffer[37] = "";
         memcpy(renameStringBuffer, staticRenameBuffer, sizeof(staticRenameBuffer));
@@ -80,7 +79,7 @@ namespace OpenLoco::GameCommands
             allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, true);
             if (allocatedStringId == StringIds::empty)
             {
-                return FAILURE;
+                return kFailure;
             }
             if ((flags & Flags::apply) == 0)
             {
@@ -95,14 +94,14 @@ namespace OpenLoco::GameCommands
                 return 0;
             }
 
-            static const std::unordered_map<VehicleType, StringId> defaultVehicleStringIdMap = {
+            static constexpr auto defaultVehicleStringIdMap = Utility::buildLookupTable<VehicleType, StringId>({
                 { VehicleType::train, StringIds::train_number },
                 { VehicleType::bus, StringIds::bus_number },
                 { VehicleType::truck, StringIds::truck_number },
                 { VehicleType::tram, StringIds::tram_number },
                 { VehicleType::aircraft, StringIds::aircraft_number },
-                { VehicleType::ship, StringIds::ship_number }
-            };
+                { VehicleType::ship, StringIds::ship_number },
+            });
             allocatedStringId = defaultVehicleStringIdMap.at(vehicleHead->vehicleType);
         }
 

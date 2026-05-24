@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Types.hpp"
 #include <OpenLoco/Engine/Ui/Point.hpp>
 #include <optional>

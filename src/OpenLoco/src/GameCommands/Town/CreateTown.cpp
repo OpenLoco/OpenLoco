@@ -11,14 +11,13 @@
 #include "Map/TileManager.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "World/IndustryManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 
 namespace OpenLoco::GameCommands
@@ -90,7 +89,7 @@ namespace OpenLoco::GameCommands
 
             if (!foundPos)
             {
-                return FAILURE;
+                return kFailure;
             }
         }
         else
@@ -133,7 +132,7 @@ namespace OpenLoco::GameCommands
 
             if (!foundPos)
             {
-                return FAILURE;
+                return kFailure;
             }
         }
 
@@ -141,7 +140,7 @@ namespace OpenLoco::GameCommands
         if (!newTown)
         {
             setErrorText(StringIds::too_many_towns);
-            return FAILURE;
+            return kFailure;
         }
 
         if (!(flags & Flags::apply))

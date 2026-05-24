@@ -4,9 +4,7 @@
 #include "GameCommands/GameCommands.h"
 #include "Types.hpp"
 #include "Vehicles/Vehicle.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
+#include "Vehicles/VehicleHead.h"
 
 namespace OpenLoco::GameCommands
 {
@@ -18,23 +16,23 @@ namespace OpenLoco::GameCommands
         auto* head = EntityManager::get<Vehicles::VehicleHead>(headId);
         if (head == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!sub_431E6A(head->owner))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!head->canBeModified())
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (head->tileX == -1)
         {
             setErrorText(StringIds::empty);
-            return FAILURE;
+            return kFailure;
         }
 
         if (!(flags & Flags::apply))

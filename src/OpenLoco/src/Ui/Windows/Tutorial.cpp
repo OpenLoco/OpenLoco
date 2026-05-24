@@ -1,7 +1,6 @@
 #include "Tutorial.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
@@ -20,7 +19,7 @@ namespace OpenLoco::Ui::Windows::Tutorial
         frame,
     };
 
-    static constexpr Ui::Size32 kWindowSize = { 140, 29 };
+    static constexpr Ui::Size kWindowSize = { 140, 29 };
 
     static constexpr auto widgets = makeWidgets(
         Widgets::Wt3Widget({ 0, 0 }, kWindowSize, WindowColour::primary)
@@ -75,7 +74,7 @@ namespace OpenLoco::Ui::Windows::Tutorial
         args.push(titleStringIds[tutorialNumber]);
 
         auto& widget = self.widgets[Widx::frame];
-        auto point = Point(widget.midX(), widget.top + 4);
+        auto point = Point(self.x + widget.midX(), self.y + widget.top + 4);
         tr.drawStringCentred(point, Colour::black, StringIds::tutorial_text, args);
 
         point.y += 10;

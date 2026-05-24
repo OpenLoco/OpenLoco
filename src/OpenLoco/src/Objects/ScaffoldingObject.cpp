@@ -1,11 +1,11 @@
 #include "ScaffoldingObject.h"
 #include "Graphics/Colour.h"
+#include "Graphics/DrawingContext.h"
 #include "Graphics/Gfx.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "ObjectImageTable.h"
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <cassert>
 
 namespace OpenLoco
@@ -17,7 +17,7 @@ namespace OpenLoco
 
         drawingCtx.drawImage(x, y + 23, colourImage + Scaffolding::ImageIds::type21x1SegmentBack);
         drawingCtx.drawImage(x, y + 23, colourImage + Scaffolding::ImageIds::type21x1SegmentFront);
-        drawingCtx.drawImage(x, y + 23, colourImage + Scaffolding::ImageIds::type21x1RoofSE);
+        drawingCtx.drawImage(x, y + 23 - segmentHeights[2], colourImage + Scaffolding::ImageIds::type21x1RoofSE);
     }
 
     // 0x0042DED8

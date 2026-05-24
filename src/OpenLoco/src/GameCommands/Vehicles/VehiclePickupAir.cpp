@@ -1,7 +1,14 @@
 #include "VehiclePickupAir.h"
+#include "Config.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle1.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
+#include "Vehicles/VehicleTail.h"
 #include "World/StationManager.h"
 
 using namespace OpenLoco::Vehicles;
@@ -16,12 +23,12 @@ namespace OpenLoco::GameCommands
         setPosition(train.veh2->position);
         if (!sub_431E6A(train.head->owner))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!train.head->canBeModified())
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!(flags & Flags::apply))
@@ -58,18 +65,21 @@ namespace OpenLoco::GameCommands
             component.var_38 &= ~(Vehicles::Flags38::isGhost);
         });
 
-        for (auto& car : train.cars)
+        if (!Config::get().keepCargoModifyPickup)
         {
-            for (auto& component : car)
+            for (auto& car : train.cars)
             {
-                removeAllCargo(component);
+                for (auto& component : car)
+                {
+                    removeAllCargo(component);
+                }
             }
         }
 
         return 0;
     }
 
-    void vehiclePickupAir(Interop::registers& regs)
+    void vehiclePickupAir(registers& regs)
     {
         const VehiclePickupAirArgs args(regs);
         regs.ebx = vehiclePickupAir(args, regs.bl);

@@ -13,12 +13,10 @@ namespace OpenLoco::Tutorial
 
     State state();
 
-    void registerHooks();
-
     void start(int16_t tutorialNumber);
     void stop();
 
-    uint16_t nextInput();
+    int32_t nextInput();
     StringId nextString();
 
     uint8_t getTutorialNumber();

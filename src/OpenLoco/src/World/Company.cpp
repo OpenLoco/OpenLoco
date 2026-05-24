@@ -21,23 +21,25 @@
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "Random.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "SceneManager.h"
 #include "StationManager.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
+
 #include <OpenLoco/Core/Numerics.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Bound.hpp>
+#include <OpenLoco/Utility/LookupTable.hpp>
 #include <algorithm>
 #include <array>
-#include <map>
-#include <sfl/static_unordered_flat_set.hpp>
-
-using namespace OpenLoco::Interop;
+#include <sfl/static_unordered_set.hpp>
 
 namespace OpenLoco
 {
@@ -230,7 +232,7 @@ namespace OpenLoco
         return static_cast<CorporateRating>(std::min(9, performanceIndex / 100));
     }
 
-    static std::map<CorporateRating, StringId> _ratingNames = {
+    static constexpr auto kRatingNames = Utility::buildLookupTable<CorporateRating, StringId>({
         { CorporateRating::platelayer, StringIds::corporate_rating_platelayer },
         { CorporateRating::engineer, StringIds::corporate_rating_engineer },
         { CorporateRating::trafficManager, StringIds::corporate_rating_traffic_manager },
@@ -241,12 +243,12 @@ namespace OpenLoco
         { CorporateRating::chairman, StringIds::corporate_rating_chairman },
         { CorporateRating::president, StringIds::corporate_rating_president },
         { CorporateRating::tycoon, StringIds::corporate_rating_tycoon },
-    };
+    });
 
     StringId getCorporateRatingAsStringId(CorporateRating rating)
     {
-        auto it = _ratingNames.find(rating);
-        if (it != _ratingNames.end())
+        auto it = kRatingNames.find(rating);
+        if (it != kRatingNames.end())
         {
             return it->second;
         }
@@ -345,7 +347,7 @@ namespace OpenLoco
     {
         AvailableTracksAndRoads result;
         const auto* company = CompanyManager::get(id);
-        sfl::static_unordered_flat_set<uint8_t, Limits::kMaxTrackObjects> tracks;
+        sfl::static_unordered_set<uint8_t, Limits::kMaxTrackObjects> tracks;
         for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
         {
             const auto* vehObj = ObjectManager::get<VehicleObject>(i);
@@ -362,10 +364,10 @@ namespace OpenLoco
 
         std::copy_if(std::begin(tracks), std::end(tracks), std::back_inserter(result), [](uint8_t trackIdx) {
             const auto* trackObj = ObjectManager::get<TrackObject>(trackIdx);
-            return !trackObj->hasFlags(TrackObjectFlags::unk_02);
+            return !trackObj->hasFlags(TrackObjectFlags::isRoad);
         });
 
-        sfl::static_unordered_flat_set<uint8_t, Limits::kMaxRoadObjects> roads;
+        sfl::static_unordered_set<uint8_t, Limits::kMaxRoadObjects> roads;
         for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
         {
             const auto* vehObj = ObjectManager::get<VehicleObject>(i);
@@ -390,7 +392,7 @@ namespace OpenLoco
                 continue;
             }
 
-            if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+            if (roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
             {
                 roads.insert(i | (1 << 7));
             }
@@ -398,7 +400,7 @@ namespace OpenLoco
 
         std::copy_if(std::begin(roads), std::end(roads), std::back_inserter(result), [](uint8_t trackIdx) {
             const auto* trackObj = ObjectManager::get<RoadObject>(trackIdx & ~(1 << 7));
-            return trackObj->hasFlags(RoadObjectFlags::unk_01);
+            return trackObj->hasFlags(RoadObjectFlags::isRail);
         });
 
         return result;
@@ -413,7 +415,7 @@ namespace OpenLoco
         AvailableTracksAndRoads result;
 
         const auto* company = CompanyManager::get(id);
-        sfl::static_unordered_flat_set<uint8_t, Limits::kMaxRoadObjects> roads;
+        sfl::static_unordered_set<uint8_t, Limits::kMaxRoadObjects> roads;
         for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
         {
             const auto* vehObj = ObjectManager::get<VehicleObject>(i);
@@ -436,7 +438,7 @@ namespace OpenLoco
                 continue;
             }
 
-            if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+            if (roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
             {
                 roads.insert(i | (1U << 7));
             }
@@ -444,10 +446,10 @@ namespace OpenLoco
 
         std::copy_if(std::begin(roads), std::end(roads), std::back_inserter(result), [](uint8_t roadId) {
             const auto* roadObj = ObjectManager::get<RoadObject>(roadId & ~(1U << 7));
-            return !roadObj->hasFlags(RoadObjectFlags::unk_01);
+            return !roadObj->hasFlags(RoadObjectFlags::isRail);
         });
 
-        sfl::static_unordered_flat_set<uint8_t, Limits::kMaxTrackObjects> tracks;
+        sfl::static_unordered_set<uint8_t, Limits::kMaxTrackObjects> tracks;
         for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
         {
             const auto* vehObj = ObjectManager::get<VehicleObject>(i);
@@ -464,7 +466,7 @@ namespace OpenLoco
 
         std::copy_if(std::begin(tracks), std::end(tracks), std::back_inserter(result), [](uint8_t trackIdx) {
             const auto* trackObj = ObjectManager::get<TrackObject>(trackIdx);
-            return trackObj->hasFlags(TrackObjectFlags::unk_02);
+            return trackObj->hasFlags(TrackObjectFlags::isRoad);
         });
 
         return result;
@@ -1044,7 +1046,7 @@ namespace OpenLoco
                 // Reduces progress by 10% for each company outside of top 3 better performing than the player
                 // Caps out at 30% reduction
                 const auto multiplier = std::min(numCompaniesBetterPerforming - 2, 3U);
-                return std::max(progress - 10 * multiplier, 0U);
+                return static_cast<uint8_t>(std::max(progress - 10 * multiplier, 0U));
             }
             return progress;
         }

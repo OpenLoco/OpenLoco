@@ -6,10 +6,9 @@
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleHead.h"
 #include "World/StationManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Vehicles;
 
 namespace OpenLoco::GameCommands
@@ -20,7 +19,7 @@ namespace OpenLoco::GameCommands
         auto* head = EntityManager::get<VehicleHead>(args.head);
         if (head == nullptr)
         {
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
 
         GameCommands::setPosition(head->position);
@@ -37,7 +36,7 @@ namespace OpenLoco::GameCommands
                 if (station->owner != head->owner)
                 {
                     setErrorText(StringIds::stationOwnedByAnotherCompany);
-                    return FAILURE;
+                    return kFailure;
                 }
             }
         }
@@ -49,13 +48,13 @@ namespace OpenLoco::GameCommands
             if (head->mode == TransportMode::water && order->is<OrderRouteThrough>())
             {
                 setErrorText(StringIds::orderTypeNotValidForShips);
-                return FAILURE;
+                return kFailure;
             }
             // Aircraft can't have either order
             else if (head->mode == TransportMode::air)
             {
                 setErrorText(StringIds::orderTypeNotValidForAircraft);
-                return FAILURE;
+                return kFailure;
             }
         }
 
@@ -63,17 +62,17 @@ namespace OpenLoco::GameCommands
         if (!OrderManager::spaceLeftInGlobalOrderTableForOrder(order))
         {
             setErrorText(StringIds::no_space_for_more_vehicle_orders);
-            return FAILURE;
+            return kFailure;
         }
         if (!OrderManager::spaceLeftInVehicleOrderTable(head))
         {
             setErrorText(StringIds::tooManyOrdersForThisVehicle);
-            return FAILURE;
+            return kFailure;
         }
 
         if (args.orderOffset > head->sizeOfOrderTable)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!(flags & GameCommands::Flags::apply))
@@ -81,7 +80,7 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        Ui::WindowManager::sub_4B93A5(enumValue(head->id));
+        Ui::WindowManager::invalidateOrderPageByVehicleNumber(enumValue(head->id));
 
         // If we're inserting the same stop order once more, change its type to route through
         if (order->getType() == OrderType::StopAt && !(head->mode == TransportMode::water || head->mode == TransportMode::air))

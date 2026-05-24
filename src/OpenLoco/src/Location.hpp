@@ -1,8 +1,7 @@
 #pragma once
 
-#include <cstdint>
-
 #include <OpenLoco/Math/Vector.hpp>
+#include <cstdint>
 
 namespace OpenLoco
 {

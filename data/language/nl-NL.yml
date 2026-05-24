@@ -2315,7 +2315,7 @@ strings:
   2260: "{COLOUR WINDOW_2} Lengte: {COLOUR BLACK}{INT32_2DP} tegel(s)"
   2261: "{NEWLINE}{COLOUR WINDOW_2} Lengte: {COLOUR BLACK}{INT32_2DP} tegel(s)"
   2262: "{NEWLINE}Lengte:  {INT32_2DP} tegel(s)"
-  2263: "{COLOUR WINDOW_2}{UINT16}/{UINT16}"
+  2263: "{COLOUR BLACK}{UINT16}/{UINT16}"
   2264: "Reuzenscreenshot"
   2265: "{COLOUR WINDOW_2} Bestandsnaam: {COLOUR BLACK}{STRINGID}"
   2266: "Scenario-opties"

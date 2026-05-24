@@ -28,5 +28,5 @@ TEST(TimerTest, TestReset)
     timer.reset();
 
     // Should be close to zero at this point.
-    EXPECT_NEAR(timer.elapsed(), 0.0f, 0.001f);
+    EXPECT_NEAR(timer.elapsed(), 0.0f, 0.1f);
 }

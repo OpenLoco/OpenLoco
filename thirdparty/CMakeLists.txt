@@ -17,30 +17,22 @@ if ( NOT yaml-cpp_FOUND )
         GIT_TAG             c2680200486572baf8221ba052ef50b58ecd816e # 0.8.0 + cmake fix patch 
     )
     FetchContent_MakeAvailable(yaml-cpp)
-    loco_thirdparty_target_compile_link_flags(yaml-cpp)
 
     # Group all the ThirdParty items under a ThirdParty folder in IDEs
     set_target_properties(yaml-cpp PROPERTIES FOLDER "ThirdParty")
+else()
+    if (NOT TARGET yaml-cpp::yaml-cpp)
+        # Some system versions of yaml-cpp don't have the proper target
+        # so we are defining it so we can follow yaml-cpp's conventions
+        add_library(yaml-cpp::yaml-cpp ALIAS yaml-cpp)
+    endif()
 endif()
 
 if (${OPENLOCO_BUILD_TESTS})
     find_package(GTest REQUIRED)
 endif()
 
-find_package(SDL2 REQUIRED CONFIG)
-if (TARGET SDL2::SDL2-static)
-    set(SDL2_LIB SDL2::SDL2-static)
-elseif (TARGET SDL2::SDL2)
-    set(SDL2_LIB SDL2::SDL2)
-else ()
-    # Even though we asked for SDL2 from a configure mode which would have SDL2 targets
-    # it appears we have been given a raw module mode SDL2 so create a wrapper library
-    # then we can treat it just like a normal configure mode target
-    add_library(SDL2_WRAPPER INTERFACE)
-    target_link_libraries(SDL2_WRAPPER INTERFACE ${SDL2_LIBRARIES})
-    target_include_directories(SDL2_WRAPPER INTERFACE ${SDL2_INCLUDE_DIRS})
-    set(SDL2_LIB SDL2_WRAPPER)
-endif()
+find_package(SDL3 REQUIRED CONFIG)
 
 find_package(PNG REQUIRED)
 find_package(ZLIB REQUIRED) # Dependency of PNG not really required but vcpkg not mapping static png dependencies
@@ -63,20 +55,18 @@ if (MSVC)
 endif()
 
 find_package(fmt QUIET)
-if ( NOT fmt_FOUND )
-    ## fmt
-    FetchContent_Declare(
-        fmt
-        GIT_REPOSITORY      https://github.com/fmtlib/fmt
-        GIT_TAG             11.1.4
-        GIT_SHALLOW         ON
-    )
-    FetchContent_MakeAvailable(fmt)
-    
-    loco_thirdparty_target_compile_link_flags(fmt)
-    
-    # Group all the ThirdParty items under a ThirdParty folder in IDEs
-    set_target_properties(fmt PROPERTIES FOLDER "ThirdParty")
+if ( NOT fmt_FOUND )	
+    ## fmt	
+    FetchContent_Declare(	
+        fmt	
+        GIT_REPOSITORY      https://github.com/fmtlib/fmt	
+        GIT_TAG             11.1.4	
+        GIT_SHALLOW         ON	
+    )	
+    FetchContent_MakeAvailable(fmt)	
+
+    # Group all the ThirdParty items under a ThirdParty folder in IDEs	
+    set_target_properties(fmt PROPERTIES FOLDER "ThirdParty")	
 endif()
 
 find_package(sfl QUIET)
@@ -85,11 +75,16 @@ if ( NOT sfl_FOUND )
     FetchContent_Declare(
         sfl
         GIT_REPOSITORY      https://github.com/slavenf/sfl-library
-        GIT_TAG             1.9.2
+        GIT_TAG             2.2.0
         GIT_SHALLOW         ON
+        EXCLUDE_FROM_ALL
     )
     FetchContent_MakeAvailable(sfl)
-    
-    # Group all the ThirdParty items under a ThirdParty folder in IDEs
-    set_target_properties(sfl PROPERTIES FOLDER "ThirdParty")
+endif()
+
+if (HAS_LIBSTDCPP)
+    find_package(TBB)
+    if (NOT TBB_FOUND )
+        message(WARNING "TBB could not be found but using libstdc++ multithreding may be broken")
+    endif()
 endif()

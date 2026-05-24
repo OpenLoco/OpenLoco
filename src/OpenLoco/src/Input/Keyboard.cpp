@@ -17,26 +17,24 @@
 #include "World/CompanyManager.h"
 #include <Localisation/Conversion.h>
 #include <Localisation/Unicode.h>
+#include <OpenLoco/Core/BitSet.hpp>
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
-#include <OpenLoco/Interop/Interop.hpp>
-#include <SDL2/SDL.h>
+#include <SDL3/SDL_keyboard.h>
 #include <cstdint>
 #include <functional>
+#include <optional>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::GameCommands;
 
 namespace OpenLoco::Input
 {
 
-#pragma pack(push, 1)
     struct Key
     {
         uint32_t keyCode;
         uint32_t charCode;
     };
-#pragma pack(pop)
 
     static void normalKey();
     static void cheat();
@@ -44,14 +42,14 @@ namespace OpenLoco::Input
     static void loc_4BED04();
     static void loc_4BED79();
 
-    static loco_global<KeyModifier, 0x00508F18> _keyModifier;
+    static KeyModifier _keyModifier;
     static std::string _cheatBuffer; // 0x0011364A5
-    static loco_global<Key[64], 0x0113E300> _keyQueue;
-    static loco_global<uint32_t, 0x00525388> _keyQueueLastWrite;
-    static loco_global<uint32_t, 0x00525384> _keyQueueReadIndex;
-    static loco_global<uint32_t, 0x00525380> _keyQueueWriteIndex;
-    static loco_global<uint8_t[256], 0x01140740> _keyboardState;
-    static loco_global<uint8_t, 0x011364A4> _editingShortcutIndex;
+    static std::array<Key, 64> _keyQueue;
+    static uint32_t _keyQueueLastWrite;
+    static uint32_t _keyQueueReadIndex;
+    static uint32_t _keyQueueWriteIndex;
+    static BitSet<SDL_SCANCODE_COUNT> _keyboardState;
+    static bool _hasKeyboardState = false;
 
     static const std::pair<std::string, std::function<void()>> kCheats[] = {
         { "DRIVER", loc_4BECDE },
@@ -65,11 +63,16 @@ namespace OpenLoco::Input
         return (keyModifier & modifier) != KeyModifier::none;
     }
 
+    KeyModifier getKeyModifier()
+    {
+        return _keyModifier;
+    }
+
     static void loc_4BECDE()
     {
         SceneManager::addSceneFlags(SceneManager::Flags::driverCheatEnabled);
 
-        Audio::playSound(Audio::SoundId::clickPress, Ui::width() / 2);
+        Audio::playSound(Audio::SoundId::clickPress, Audio::ChannelId::ui, Ui::width() / 2);
     }
 
     static void loc_4BED04()
@@ -108,7 +111,7 @@ namespace OpenLoco::Input
             GameCommands::VehicleApplyShuntCheatArgs args;
             args.head = EntityId(w->number);
             GameCommands::doCommand(args, GameCommands::Flags::apply);
-            Audio::playSound(Audio::SoundId::clickPress, Ui::width() / 2);
+            Audio::playSound(Audio::SoundId::clickPress, Audio::ChannelId::ui, Ui::width() / 2);
 
             return;
         }
@@ -118,7 +121,7 @@ namespace OpenLoco::Input
     {
         GameCommands::doCommand(GameCommands::ApplyFreeCashCheatArgs(), GameCommands::Flags::apply);
 
-        Audio::playSound(Audio::SoundId::clickPress, Ui::width() / 2);
+        Audio::playSound(Audio::SoundId::clickPress, Audio::ChannelId::ui, Ui::width() / 2);
     }
 
     static void loc_4BEFEF()
@@ -148,9 +151,37 @@ namespace OpenLoco::Input
 
             case Tutorial::State::recording:
             {
-                call(0x004BF005);
+                // Vanilla had tutorial recording here at 0x004BF005
+                // as tutorials are fixed mouse position there isn't much
+                // point implementing this code as per vanilla.
                 break;
             }
+        }
+    }
+
+    // 0x0040477F
+    void readKeyboardState()
+    {
+        _hasKeyboardState = false;
+
+        // Reset state.
+        _keyboardState.reset();
+
+        int numKeys;
+        auto sdlKeyboardState = SDL_GetKeyboardState(&numKeys);
+        if (sdlKeyboardState != nullptr)
+        {
+            for (int scanCode = 0; scanCode < numKeys; scanCode++)
+            {
+                bool isDown = sdlKeyboardState[scanCode] != 0;
+                if (!isDown)
+                {
+                    continue;
+                }
+
+                _keyboardState.set(scanCode, true);
+            }
+            _hasKeyboardState = 1;
         }
     }
 
@@ -158,7 +189,7 @@ namespace OpenLoco::Input
     void enqueueKey(uint32_t keycode)
     {
         uint32_t writeIndex = _keyQueueWriteIndex;
-        auto nextWriteIndex = (writeIndex + 1) % std::size(_keyQueue);
+        auto nextWriteIndex = static_cast<uint32_t>((writeIndex + 1) % std::size(_keyQueue));
         if (nextWriteIndex == _keyQueueReadIndex)
         {
             return;
@@ -166,6 +197,24 @@ namespace OpenLoco::Input
         _keyQueueLastWrite = writeIndex;
         _keyQueue[writeIndex] = { keycode, 0 };
         _keyQueueWriteIndex = nextWriteIndex;
+    }
+
+    // 0x00406FBA
+    void handleKeyInput(uint32_t keycode)
+    {
+        enqueueKey(keycode);
+
+        switch (keycode)
+        {
+            case SDLK_RETURN:
+            case SDLK_BACKSPACE:
+            case SDLK_DELETE:
+            {
+                char c[] = { (char)keycode, '\0' };
+                enqueueText(c);
+                break;
+            }
+        }
     }
 
     void enqueueText(const char* text)
@@ -183,19 +232,22 @@ namespace OpenLoco::Input
     }
 
     // 0x00407028
-    static Key* getNextKey()
+    static std::optional<Key> getNextKey()
     {
         uint32_t readIndex = _keyQueueReadIndex;
         if (readIndex == _keyQueueWriteIndex)
         {
-            return nullptr;
+            return std::nullopt;
         }
-        auto* out = &_keyQueue[readIndex];
+
+        const auto nextKey = _keyQueue[readIndex];
         readIndex++;
+
         // Wrap around at _keyQueue size
         readIndex %= std::size(_keyQueue);
         _keyQueueReadIndex = readIndex;
-        return out;
+
+        return nextKey;
     }
 
     static bool tryShortcut(Shortcut sc, uint32_t keyCode, KeyModifier modifiers)
@@ -221,7 +273,7 @@ namespace OpenLoco::Input
     static void cheat()
     {
         // Used to handle INSERT cheat
-        if ((_keyboardState[SDL_SCANCODE_INSERT] & 0x80) != 0 || (_keyboardState[SDL_SCANCODE_LALT] & 0x80) != 0 || (_keyboardState[SDL_SCANCODE_RALT] & 0x80) != 0)
+        if (_keyboardState[SDL_SCANCODE_INSERT] || _keyboardState[SDL_SCANCODE_LALT] || _keyboardState[SDL_SCANCODE_RALT])
         {
             if (hasKeyModifier(KeyModifier::cheat))
             {
@@ -257,66 +309,13 @@ namespace OpenLoco::Input
         }
     }
 
-    static void editShortcut(Key* k)
-    {
-        if (k->keyCode == SDLK_UP)
-        {
-            return;
-        }
-        if (k->keyCode == SDLK_DOWN)
-        {
-            return;
-        }
-        if (k->keyCode == SDLK_LEFT)
-        {
-            return;
-        }
-        if (k->keyCode == SDLK_RIGHT)
-        {
-            return;
-        }
-        if (k->keyCode == SDLK_NUMLOCKCLEAR)
-        {
-            return;
-        }
-        if (k->keyCode == SDLK_LGUI)
-        {
-            return;
-        }
-        if (k->keyCode == SDLK_RGUI)
-        {
-            return;
-        }
-
-        auto& cfg = Config::get();
-
-        // Unbind any shortcuts that may be using the current keycode.
-        for (auto& [id, shortcut] : cfg.shortcuts)
-        {
-            if (shortcut.keyCode == k->keyCode && shortcut.modifiers == _keyModifier)
-            {
-                shortcut.keyCode = 0xFFFFFFFF;
-                shortcut.modifiers = KeyModifier::invalid;
-            }
-        }
-
-        // Assign this keybinding to the shortcut we're currently rebinding.
-        auto& shortcut = cfg.shortcuts.at(static_cast<Input::Shortcut>(*_editingShortcutIndex));
-        shortcut.keyCode = k->keyCode;
-        shortcut.modifiers = _keyModifier;
-
-        WindowManager::close(WindowType::editKeyboardShortcut);
-        WindowManager::invalidate(WindowType::keyboardShortcuts);
-        Config::write();
-    }
-
     // 0x004BEDA0
     static void normalKey()
     {
         while (true)
         {
-            auto* nextKey = getNextKey();
-            if (nextKey == nullptr)
+            auto nextKey = getNextKey();
+            if (!nextKey.has_value())
             {
                 loc_4BEFEF();
                 break;
@@ -347,19 +346,12 @@ namespace OpenLoco::Input
                 continue;
             }
 
-            auto ti = WindowManager::find(WindowType::editKeyboardShortcut);
-            if (ti != nullptr)
+            if (WindowManager::callKeyUpEventBackToFront(nextKey->charCode, nextKey->keyCode))
             {
-                editShortcut(nextKey);
                 continue;
             }
 
             if (tryShortcut(Shortcut::screenshot, nextKey->keyCode, _keyModifier))
-            {
-                continue;
-            }
-
-            if (WindowManager::callKeyUpEventBackToFront(nextKey->charCode, nextKey->keyCode))
             {
                 continue;
             }
@@ -513,22 +505,22 @@ namespace OpenLoco::Input
 
         Ui::Point delta = { 0, 0 };
 
-        if (_keyboardState[SDL_SCANCODE_LEFT] & 0x80)
+        if (_keyboardState[SDL_SCANCODE_LEFT])
         {
             delta.x -= Config::get().edgeScrollingSpeed;
         }
 
-        if (_keyboardState[SDL_SCANCODE_UP] & 0x80)
+        if (_keyboardState[SDL_SCANCODE_UP])
         {
             delta.y -= Config::get().edgeScrollingSpeed;
         }
 
-        if (_keyboardState[SDL_SCANCODE_DOWN] & 0x80)
+        if (_keyboardState[SDL_SCANCODE_DOWN])
         {
             delta.y += Config::get().edgeScrollingSpeed;
         }
 
-        if (_keyboardState[SDL_SCANCODE_RIGHT] & 0x80)
+        if (_keyboardState[SDL_SCANCODE_RIGHT])
         {
             delta.x += Config::get().edgeScrollingSpeed;
         }
@@ -570,27 +562,27 @@ namespace OpenLoco::Input
 
         _keyModifier = _keyModifier & ~(KeyModifier::shift | KeyModifier::control | KeyModifier::unknown);
 
-        if (addr<0x005251CC, uint8_t>() != 1)
+        if (!_hasKeyboardState)
         {
             return;
         }
 
-        if (_keyboardState[SDL_SCANCODE_LSHIFT] & 0x80)
+        if (_keyboardState[SDL_SCANCODE_LSHIFT])
         {
             _keyModifier |= KeyModifier::shift;
         }
 
-        if (_keyboardState[SDL_SCANCODE_RSHIFT] & 0x80)
+        if (_keyboardState[SDL_SCANCODE_RSHIFT])
         {
             _keyModifier |= KeyModifier::shift;
         }
 
-        if (_keyboardState[SDL_SCANCODE_LCTRL] & 0x80)
+        if (_keyboardState[SDL_SCANCODE_LCTRL])
         {
             _keyModifier |= KeyModifier::control;
         }
 
-        if (_keyboardState[SDL_SCANCODE_RCTRL] & 0x80)
+        if (_keyboardState[SDL_SCANCODE_RCTRL])
         {
             _keyModifier |= KeyModifier::control;
         }

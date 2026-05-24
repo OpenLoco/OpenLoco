@@ -1,4 +1,5 @@
 #include "RemoveTrack.h"
+#include "Audio/Audio.h"
 #include "Economy/Economy.h"
 #include "Map/RoadElement.h"
 #include "Map/SignalElement.h"
@@ -6,6 +7,7 @@
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
 #include "Objects/BridgeObject.h"
+#include "Objects/ObjectManager.h"
 #include "Objects/TrackExtraObject.h"
 #include "Objects/TrackObject.h"
 #include "Random.h"
@@ -103,7 +105,7 @@ namespace OpenLoco::GameCommands
     static void playTrackRemovalSound(const World::Pos3 pos)
     {
         const auto frequency = gPrng2().randNext(17955, 26146);
-        Audio::playSound(Audio::SoundId::demolish, pos, 0, frequency);
+        Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, pos, 0, frequency);
     }
 
     // 0x0049C7F2
@@ -117,12 +119,12 @@ namespace OpenLoco::GameCommands
         auto* elTrack = getElTrackAt(args, flags, args.pos, args.index);
         if (elTrack == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if ((flags & Flags::ghost) == 0 && !sub_431E6A(elTrack->owner(), reinterpret_cast<World::TileElement*>(elTrack)))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (elTrack->hasSignal())
@@ -148,13 +150,13 @@ namespace OpenLoco::GameCommands
                 }
             }
 
-            if (auto cost = GameCommands::doCommand(srArgs, flags); cost != FAILURE)
+            if (auto cost = GameCommands::doCommand(srArgs, flags); cost != kFailure)
             {
                 totalRemovalCost += cost;
             }
             else
             {
-                return FAILURE;
+                return kFailure;
             }
         }
 
@@ -170,13 +172,13 @@ namespace OpenLoco::GameCommands
             tsArgs.index = args.index;
             tsArgs.type = args.trackObjectId;
 
-            if (auto cost = GameCommands::doCommand(tsArgs, flags); cost != FAILURE)
+            if (auto cost = GameCommands::doCommand(tsArgs, flags); cost != kFailure)
             {
                 totalRemovalCost += cost;
             }
             else
             {
-                return FAILURE;
+                return kFailure;
             }
         }
 
@@ -198,7 +200,7 @@ namespace OpenLoco::GameCommands
         {
             const auto trackLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
 
-            if (!(flags & Flags::aiAllocated))
+            if (shouldInvalidateTile(flags))
             {
                 World::TileManager::mapInvalidateTileFull(trackLoc);
             }
@@ -206,7 +208,7 @@ namespace OpenLoco::GameCommands
             auto* pieceElTrack = getElTrackAt(args, flags, trackLoc, piece.index);
             if (pieceElTrack == nullptr)
             {
-                return FAILURE;
+                return kFailure;
             }
 
             if (pieceElTrack->hasBridge())

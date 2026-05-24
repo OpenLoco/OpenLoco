@@ -1,3 +1,5 @@
+#pragma once
+
 #include "GameCommands/GameCommands.h"
 #include "Map/Track/TrackModSection.h"
 

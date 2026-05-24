@@ -13,6 +13,7 @@ namespace OpenLoco
 
         ValueType value;
         constexpr ValueType getRaw() const { return value; }
+        constexpr SpeedTemplate() = default;
         constexpr explicit SpeedTemplate(ValueType val)
             : value(val)
         {
@@ -99,7 +100,7 @@ namespace OpenLoco
     namespace Literals
     {
         // Note: Only valid for 5 decimal places.
-        constexpr Speed32 operator"" _mph(long double speedMph)
+        constexpr Speed32 operator""_mph(long double speedMph)
         {
             const auto wholeNumber = static_cast<uint32_t>(speedMph);
             const auto fraction = static_cast<uint64_t>((speedMph - wholeNumber) * 100000);

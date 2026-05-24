@@ -6,9 +6,7 @@
 #include "Ui/WindowManager.h"
 #include "VehicleSell.h"
 #include "Vehicles/Vehicle.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
+#include "Vehicles/VehicleHead.h"
 
 namespace OpenLoco::GameCommands
 {
@@ -25,12 +23,12 @@ namespace OpenLoco::GameCommands
         auto* head = EntityManager::get<Vehicles::VehicleHead>(args.head);
         if (head == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         head->manualPower = args.speed;
 
-        if (head->hasVehicleFlags(VehicleFlags::commandStop))
+        if (head->hasVehicleFlags(Vehicles::VehicleFlags::commandStop))
         {
             if (head->status == Vehicles::Status::stuck || head->status == Vehicles::Status::crashed)
             {

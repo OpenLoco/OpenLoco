@@ -9,6 +9,7 @@ set(public_files
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/MemoryStream.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/Numerics.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/Prng.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/SourceLocation.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/Stream.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/Timer.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/Traits.hpp"
@@ -32,6 +33,11 @@ set(test_files
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/TraitsTest.cpp"
 )
 
+set(public_link_libraries
+    fmt::fmt
+    sfl::sfl
+)
+
 loco_add_library(Core STATIC
     PUBLIC_FILES
         ${public_files}
@@ -39,11 +45,6 @@ loco_add_library(Core STATIC
         ${private_files}
     TEST_FILES
         ${test_files}
+    PUBLIC_LINK_LIBRARIES
+        ${public_link_libraries}
 )
-
-target_link_libraries(Core
-    PUBLIC
-        fmt::fmt
-        sfl::sfl
-)
-

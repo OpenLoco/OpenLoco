@@ -5,12 +5,19 @@
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
+#include "Objects/ObjectManager.h"
 #include "Objects/RoadExtraObject.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackExtraObject.h"
 #include "Objects/TrackObject.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle1.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
+#include "Vehicles/VehicleTail.h"
 #include "ViewportManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
 
@@ -56,7 +63,7 @@ namespace OpenLoco::GameCommands
                     {
                         continue;
                     }
-                    if (!(getGameState().roadObjectIdIsNotTram & (1 << elRoad->roadObjectId())))
+                    if (!(getGameState().roadObjectIdIsAnyRoadTypeCompatible & (1 << elRoad->roadObjectId())))
                     {
                         continue;
                     }
@@ -89,7 +96,7 @@ namespace OpenLoco::GameCommands
             return false;
         }
 
-        if (!(getGameState().roadObjectIdIsFlag7 & (1 << elRoad->roadObjectId())))
+        if (!(getGameState().roadObjectIdIsUsableByAllCompanies & (1 << elRoad->roadObjectId())))
         {
             if (!sub_431E6A(elRoad->owner(), reinterpret_cast<const World::TileElement*>(elRoad)))
             {
@@ -193,7 +200,7 @@ namespace OpenLoco::GameCommands
     {
         if (args.head == EntityId::null)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         try
@@ -213,19 +220,19 @@ namespace OpenLoco::GameCommands
 
             if (!sub_431E6A(train.head->owner))
             {
-                return FAILURE;
+                return kFailure;
             }
             if (!args.convertGhost)
             {
                 if (train.head->tileX != -1)
                 {
                     setErrorText(StringIds::empty);
-                    return FAILURE;
+                    return kFailure;
                 }
                 if (train.cars.empty())
                 {
                     setErrorText(StringIds::empty);
-                    return FAILURE;
+                    return kFailure;
                 }
             }
 
@@ -249,14 +256,14 @@ namespace OpenLoco::GameCommands
                 {
                     if (!validateRoadPlacement(pos, args.trackAndDirection, *train.head))
                     {
-                        return FAILURE;
+                        return kFailure;
                     }
                 }
                 else
                 {
                     if (!validateTrackPlacement(pos, args.trackAndDirection, *train.head))
                     {
-                        return FAILURE;
+                        return kFailure;
                     }
                 }
                 Vehicles::TrackAndDirection tad(0, 0);
@@ -268,10 +275,10 @@ namespace OpenLoco::GameCommands
                         res == VehicleManager::PlaceDownResult::Unk0
                             ? StringIds::not_enough_space_or_vehicle_in_the_way
                             : StringIds::vehicle_approaching_or_in_the_way);
-                    return FAILURE;
+                    return kFailure;
                 }
 
-                train.head->vehicleFlags |= VehicleFlags::commandStop;
+                train.head->vehicleFlags |= Vehicles::VehicleFlags::commandStop;
                 train.head->manualPower = -40;
                 if (flags & Flags::ghost)
                 {
@@ -283,7 +290,7 @@ namespace OpenLoco::GameCommands
         }
         catch (Exception::RuntimeError&)
         {
-            return FAILURE;
+            return kFailure;
         }
         if ((flags & Flags::apply) && !(flags & Flags::ghost))
         {

@@ -72,15 +72,14 @@ namespace OpenLoco
     enum class MessageTypeFlags : uint16_t
     {
         none = 0U,
-        unk0 = (1U << 0),
-        unk1 = (1U << 1),
+        shouldDedup = (1U << 0),
+        isGeneralNews = (1U << 1), // If set, renders newspaper style dialogue appropriate to time period. If not set, renders red error dialogue
         hasFirstItem = (1U << 2),
         hasSecondItem = (1U << 3),
-        unk5 = (1U << 5), // Never set
+        smallerFont = (1U << 5), // Never set - but if it was, it results in font size of Gfx::Font::large not being set
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(MessageTypeFlags);
 
-#pragma pack(push, 1)
     struct Message
     {
         static constexpr uint8_t kNumSubjects = 3;
@@ -119,7 +118,6 @@ namespace OpenLoco
             timeActive |= (1 << 15);
         }
     };
-#pragma pack(pop)
 
     struct MessageTypeDescriptor
     {

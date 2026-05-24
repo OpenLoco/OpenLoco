@@ -25,7 +25,7 @@ namespace OpenLoco
     {
         none = 0U,
         recolourable = 1U << 0,
-        unk1 = 1U << 1, // Has no canopy??
+        noCanopy = 1U << 1,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(TrainStationFlags);
 
@@ -37,7 +37,7 @@ namespace OpenLoco
         using CargoOffset = std::array<World::Pos3, 2>;
 
         StringId name;
-        uint8_t drawStyle;                         // 0x02
+        uint8_t paintStyle;                        // 0x02
         uint8_t height;                            // 0x03 despite being uint8_t this is bigZ not smallZ
         World::Track::TrackTraitFlags trackPieces; // 0x04
         int16_t buildCostFactor;                   // 0x06
@@ -46,10 +46,10 @@ namespace OpenLoco
         uint8_t var_0B;
         TrainStationFlags flags; // 0x0C
         uint8_t var_0D;
-        uint32_t image; // 0x0E
-        uint32_t var_12[4];
-        uint8_t numCompatible; // 0x22
-        uint8_t mods[7];
+        uint32_t image;                  // 0x0E
+        uint32_t imageOffsets[4];        // 0x12 "sequenceIndexImageOffsets"
+        uint8_t numCompatible;           // 0x22
+        uint8_t mods[7];                 // 0x23
         uint16_t designedYear;           // 0x2A
         uint16_t obsoleteYear;           // 0x2C
         uint32_t cargoOffsetBytes[4][4]; // 0x2E

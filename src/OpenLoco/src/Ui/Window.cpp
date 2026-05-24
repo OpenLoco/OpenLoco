@@ -2,8 +2,7 @@
 #include "Config.h"
 #include "Entities/EntityManager.h"
 #include "Graphics/Colour.h"
-#include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/DrawingContext.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
@@ -18,17 +17,16 @@
 #include "ViewportManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Engine/Ui/Rect.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <cassert>
 #include <cinttypes>
 
 using namespace OpenLoco;
-using namespace OpenLoco::Interop;
+
 using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui
 {
-    Window::Window(Ui::Point32 position, Ui::Size32 size)
+    Window::Window(Ui::Point position, Ui::Size size)
         : x(static_cast<int16_t>(position.x))
         , y(static_cast<int16_t>(position.y))
         , width(static_cast<uint16_t>(size.width))
@@ -88,6 +86,19 @@ namespace OpenLoco::Ui
         }
     }
 
+    bool Window::isVisible()
+    {
+        return true;
+    }
+
+    bool Window::isTranslucent()
+    {
+        const bool isTransparent = this->hasFlags(WindowFlags::transparent);
+        const bool isMainWindow = type == WindowType::main;
+        const bool hasTransparentFrame = Config::get().windowFrameStyle == Config::WindowFrameStyle::transparent;
+        return !isMainWindow && (hasTransparentFrame || isTransparent);
+    }
+
     bool Window::isEnabled(WidgetIndex_t widgetIndex)
     {
         return (this->disabledWidgets & (1ULL << widgetIndex)) == 0;
@@ -129,9 +140,9 @@ namespace OpenLoco::Ui
             return std::nullopt;
         }
 
-        if (vp->containsUi(mouse - w->position()))
+        if (vp->containsUi(mouse))
         {
-            viewport_pos vpos = vp->screenToViewport(mouse - w->position());
+            viewport_pos vpos = vp->screenToViewport(mouse);
             World::Pos2 position = viewportCoordToMapCoord(vpos.x, vpos.y, z, WindowManager::getCurrentRotation());
             if (World::validCoords(position))
             {
@@ -210,7 +221,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        if (vp->hasFlags(ViewportFlags::seeThroughTracks | ViewportFlags::seeThroughScenery | ViewportFlags::seeThroughRoads | ViewportFlags::seeThroughBuildings | ViewportFlags::seeThroughTrees | ViewportFlags::seeThroughBridges) || w->hasFlags(WindowFlags::flag_8))
+        if (vp->hasFlags(ViewportFlags::seeThroughTracks | ViewportFlags::seeThroughScenery | ViewportFlags::seeThroughRoads | ViewportFlags::seeThroughBuildings | ViewportFlags::seeThroughTrees | ViewportFlags::seeThroughBridges) || w->hasFlags(WindowFlags::viewportNoShiftPixels))
         {
             auto rect = Ui::Rect(vp->x, vp->y, vp->width, vp->height);
             Gfx::render(rect);
@@ -549,32 +560,6 @@ namespace OpenLoco::Ui
         }
     }
 
-    void Window::viewportGetMapCoordsByCursor(int16_t* mapX, int16_t* mapY, int16_t* offsetX, int16_t* offsetY)
-    {
-        // Get mouse position to offset against.
-        const auto mouse = Ui::getCursorPosScaled();
-
-        // Compute map coordinate by mouse position.
-        auto res = ViewportInteraction::getMapCoordinatesFromPos(mouse.x, mouse.y, ViewportInteraction::InteractionItemFlags::none);
-        auto& interaction = res.first;
-        *mapX = interaction.pos.x;
-        *mapY = interaction.pos.y;
-
-        // Get viewport coordinates centring around the tile.
-        auto baseHeight = TileManager::getHeight({ *mapX, *mapY }).landHeight;
-        Viewport* v = this->viewports[0];
-        const auto dest = v->centre2dCoordinates({ *mapX, *mapY, baseHeight });
-
-        // Rebase mouse position onto centre of window, and compensate for zoom level.
-        int16_t rebasedX = ((this->width >> 1) - mouse.x) * (1 << v->zoom),
-                rebasedY = ((this->height >> 1) - mouse.y) * (1 << v->zoom);
-
-        // Compute cursor offset relative to tile.
-        ViewportConfig* vc = &this->viewportConfigurations[0];
-        *offsetX = (vc->savedViewX - (dest.x + rebasedX)) * (1 << v->zoom);
-        *offsetY = (vc->savedViewY - (dest.y + rebasedY)) * (1 << v->zoom);
-    }
-
     // 0x004C6801
     void Window::moveWindowToLocation(viewport_pos pos)
     {
@@ -632,7 +617,8 @@ namespace OpenLoco::Ui
         moveWindowToLocation(pos);
     }
 
-    void Window::viewportCentreMain()
+    // Centres the main viewport on this window's saved view.
+    void Window::viewportCentreMain() const
     {
         if (viewports[0] == nullptr || savedView.isEmpty())
         {
@@ -642,7 +628,7 @@ namespace OpenLoco::Ui
         auto main = WindowManager::getMainWindow();
 
         // Unfocus the viewport.
-        main->viewportConfigurations[0].viewportTargetSprite = EntityId::null;
+        Ui::Windows::Main::viewportFocusOnEntity(*main, EntityId::null);
 
         // Centre viewport on tile/entity.
         if (savedView.isEntityView())
@@ -656,73 +642,6 @@ namespace OpenLoco::Ui
         }
     }
 
-    void Window::viewportCentreTileAroundCursor(int16_t mapX, int16_t mapY, int16_t offsetX, int16_t offsetY)
-    {
-        // Get viewport coordinates centring around the tile.
-        auto baseHeight = TileManager::getHeight({ mapX, mapY }).landHeight;
-        Viewport* v = this->viewports[0];
-        const auto dest = v->centre2dCoordinates({ mapX, mapY, baseHeight });
-
-        // Get mouse position to offset against.
-        const auto mouse = Ui::getCursorPosScaled();
-
-        // Rebase mouse position onto centre of window, and compensate for zoom level.
-        int16_t rebasedX = ((this->width >> 1) - mouse.x) * (1 << v->zoom),
-                rebasedY = ((this->height >> 1) - mouse.y) * (1 << v->zoom);
-
-        // Apply offset to the viewport.
-        ViewportConfig* vc = &this->viewportConfigurations[0];
-        vc->savedViewX = dest.x + rebasedX + (offsetX / (1 << v->zoom));
-        vc->savedViewY = dest.y + rebasedY + (offsetY / (1 << v->zoom));
-    }
-
-    void Window::viewportFocusOnEntity(EntityId targetEntity)
-    {
-        if (viewports[0] == nullptr || savedView.isEmpty())
-        {
-            return;
-        }
-
-        viewportConfigurations[0].viewportTargetSprite = targetEntity;
-    }
-
-    bool Window::viewportIsFocusedOnEntity(EntityId targetEntity) const
-    {
-        if (targetEntity == EntityId::null || viewports[0] == nullptr || savedView.isEmpty())
-        {
-            return false;
-        }
-
-        return viewportConfigurations[0].viewportTargetSprite == targetEntity;
-    }
-
-    bool Window::viewportIsFocusedOnAnyEntity() const
-    {
-        if (viewports[0] == nullptr || savedView.isEmpty())
-        {
-            return false;
-        }
-
-        return viewportConfigurations[0].viewportTargetSprite != EntityId::null;
-    }
-
-    void Window::viewportUnfocusFromEntity()
-    {
-        if (viewports[0] == nullptr || savedView.isEmpty())
-        {
-            return;
-        }
-
-        if (viewportConfigurations[0].viewportTargetSprite == EntityId::null)
-        {
-            return;
-        }
-
-        auto entity = EntityManager::get<EntityBase>(viewportConfigurations[0].viewportTargetSprite);
-        viewportConfigurations[0].viewportTargetSprite = EntityId::null;
-        viewportCentreOnTile(entity->position);
-    }
-
     void Window::viewportZoomSet(int8_t zoomLevel, bool toCursor)
     {
         Viewport* v = this->viewports[0];
@@ -734,15 +653,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        // Zooming to cursor? Remember where we're pointing at the moment.
-        int16_t savedMapX = 0;
-        int16_t savedMapY = 0;
-        int16_t offsetX = 0;
-        int16_t offsetY = 0;
-        if (toCursor && Config::get().zoomToCursor)
-        {
-            this->viewportGetMapCoordsByCursor(&savedMapX, &savedMapY, &offsetX, &offsetY);
-        }
+        const auto previousZoomLevel = v->zoom;
 
         // Zoom in
         while (v->zoom > zoomLevel)
@@ -764,11 +675,25 @@ namespace OpenLoco::Ui
             v->viewHeight *= 2;
         }
 
-        // Zooming to cursor? Centre around the tile we were hovering over just now.
         if (toCursor && Config::get().zoomToCursor)
         {
-            this->viewportCentreTileAroundCursor(savedMapX, savedMapY, offsetX, offsetY);
+            const auto mouseCoords = Ui::getCursorPosScaled() - Point(v->x, v->y);
+            const int32_t diffX = mouseCoords.x - ((v->viewWidth >> zoomLevel) / 2);
+            const int32_t diffY = mouseCoords.y - ((v->viewHeight >> zoomLevel) / 2);
+            if (previousZoomLevel > zoomLevel)
+            {
+                vc->savedViewX += diffX << zoomLevel;
+                vc->savedViewY += diffY << zoomLevel;
+            }
+            else
+            {
+                vc->savedViewX -= diffX << previousZoomLevel;
+                vc->savedViewY -= diffY << previousZoomLevel;
+            }
         }
+
+        v->viewX = vc->savedViewX;
+        v->viewY = vc->savedViewY;
 
         this->invalidate();
     }
@@ -898,6 +823,18 @@ namespace OpenLoco::Ui
         this->x += dx;
         this->y += dy;
 
+        if (this->viewports[0] != nullptr)
+        {
+            this->viewports[0]->x += dx;
+            this->viewports[0]->y += dy;
+        }
+
+        if (this->viewports[1] != nullptr)
+        {
+            this->viewports[1]->x += dx;
+            this->viewports[1]->y += dy;
+        }
+
         this->invalidate();
 
         return true;
@@ -945,6 +882,18 @@ namespace OpenLoco::Ui
         this->x += offset.x;
         this->y += offset.y;
         this->invalidate();
+
+        if (this->viewports[0] != nullptr)
+        {
+            this->viewports[0]->x += offset.x;
+            this->viewports[0]->y += offset.y;
+        }
+
+        if (this->viewports[1] != nullptr)
+        {
+            this->viewports[1]->x += offset.x;
+            this->viewports[1]->y += offset.y;
+        }
     }
 
     bool Window::moveToCentre()
@@ -1305,9 +1254,9 @@ namespace OpenLoco::Ui
     // 0x004CA4DF
     void Window::draw(Gfx::DrawingContext& drawingCtx)
     {
-        if (this->hasFlags(WindowFlags::transparent) && !this->hasFlags(WindowFlags::noBackground))
+        if (this->isTranslucent() && !this->hasFlags(WindowFlags::noBackground))
         {
-            drawingCtx.fillRect(0, 0, this->width - 1, this->height - 1, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+            drawingCtx.fillRect(this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
         }
 
         uint64_t pressedWidget = 0;
@@ -1348,10 +1297,10 @@ namespace OpenLoco::Ui
         if (this->hasFlags(WindowFlags::whiteBorderMask))
         {
             drawingCtx.fillRectInset(
-                0,
-                0,
-                this->width - 1,
-                this->height - 1,
+                this->x,
+                this->y,
+                this->x + this->width - 1,
+                this->y + this->height - 1,
                 Colour::white,
                 Gfx::RectInsetFlags::fillNone);
         }

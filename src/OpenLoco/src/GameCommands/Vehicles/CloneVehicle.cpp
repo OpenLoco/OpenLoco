@@ -1,5 +1,6 @@
 #include "CloneVehicle.h"
 #include "CreateVehicle.h"
+#include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Ui/WindowManager.h"
@@ -9,27 +10,34 @@
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
+#include "Vehicles/Vehicle1.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
 
 namespace OpenLoco::GameCommands
 {
-    static void copyVehicleColours(Vehicles::VehicleBase* source, Vehicles::VehicleBase* target)
+    static void copyVehicleColours(Vehicles::Vehicle& source, Vehicles::Vehicle& target)
     {
-        auto* sourceHead = source;
-        auto* targetHead = target;
-        while (sourceHead != nullptr && targetHead != nullptr)
+        auto srcIter = source.cars.begin();
+        auto tgtIter = target.cars.begin();
+        auto srcEnd = source.cars.end();
+        for (; srcIter != srcEnd; srcIter++, tgtIter++)
         {
-            targetHead->setColourScheme(sourceHead->getColourScheme());
-            sourceHead = sourceHead->nextVehicleComponent();
-            targetHead = targetHead->nextVehicleComponent();
+            auto srcCarIter = (*srcIter).begin();
+            auto tgtCarIter = (*tgtIter).begin();
+            auto srcCarEnd = (*srcIter).end();
+            for (; srcCarIter != srcCarEnd; srcCarIter++, tgtCarIter++)
+            {
+                (*tgtCarIter).body->colourScheme = (*srcCarIter).body->colourScheme;
+                (*tgtCarIter).front->colourScheme = (*srcCarIter).front->colourScheme;
+                (*tgtCarIter).back->colourScheme = (*srcCarIter).back->colourScheme;
+            }
         }
     }
 
     static uint32_t cloneVehicle(EntityId head, uint8_t flags)
     {
-        static loco_global<EntityId, 0x0113642A> _113642A;
         Vehicles::Vehicle existingTrain(head);
         Vehicles::VehicleHead* newHead = nullptr;
 
@@ -44,9 +52,9 @@ namespace OpenLoco::GameCommands
                 args.vehicleType = car.front->objectId;
 
                 const auto cost = doCommand(args, 0);
-                if (cost == FAILURE)
+                if (cost == kFailure)
                 {
-                    totalCost = FAILURE;
+                    totalCost = kFailure;
                     break;
                 }
                 else
@@ -55,9 +63,9 @@ namespace OpenLoco::GameCommands
                 }
             }
 
-            if (totalCost == FAILURE)
+            if (totalCost == kFailure)
             {
-                return FAILURE;
+                return kFailure;
             }
             return totalCost;
         }
@@ -76,10 +84,10 @@ namespace OpenLoco::GameCommands
                 cost = doCommand(args, Flags::apply);
                 cargoType = car.body->primaryCargo.type;
 
-                auto* newVeh = EntityManager::get<Vehicles::VehicleBase>(_113642A);
+                auto* newVeh = EntityManager::get<Vehicles::VehicleBase>(getLegacyReturnState().lastCreatedVehicleId);
                 if (newVeh == nullptr)
                 {
-                    return FAILURE;
+                    return kFailure;
                 }
                 newHead = EntityManager::get<Vehicles::VehicleHead>(newVeh->getHead());
             }
@@ -91,9 +99,9 @@ namespace OpenLoco::GameCommands
 
                 cost = doCommand(args, Flags::apply);
             }
-            if (cost == FAILURE)
+            if (cost == kFailure)
             {
-                totalCost = FAILURE;
+                totalCost = kFailure;
                 break;
             }
             else
@@ -101,12 +109,13 @@ namespace OpenLoco::GameCommands
                 totalCost += cost;
             }
         }
-        if (totalCost == FAILURE || newHead == nullptr)
+        if (totalCost == kFailure || newHead == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
-        copyVehicleColours(existingTrain.head, newHead);
+        auto newTrain = Vehicles::Vehicle(*newHead);
+        copyVehicleColours(existingTrain, newTrain);
 
         // Copy orders
         std::vector<std::shared_ptr<Vehicles::Order>> clonedOrders;
@@ -144,6 +153,10 @@ namespace OpenLoco::GameCommands
             args.cargoType = cargoType;
             doCommand(args, Flags::apply);
         }
+
+        // Finally, set the expenditure type
+        // Note we explicitly set this *after* running all the sub commands!
+        setExpenditureType(ExpenditureType::VehiclePurchases);
 
         return totalCost;
     }

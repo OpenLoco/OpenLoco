@@ -6,8 +6,6 @@
 #include "Ui/WindowManager.h"
 #include "Ui/WindowType.h"
 
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::GameCommands
 {
     // 0x00431E32
@@ -20,16 +18,13 @@ namespace OpenLoco::GameCommands
 
         Ui::WindowManager::invalidate(Ui::WindowType::timeToolbar);
 
-        if (SceneManager::isPaused())
+        if ((SceneManager::getPauseFlags() & PauseFlags::player) != PauseFlags::none)
         {
-            SceneManager::unsetPauseFlag(1 << 0);
-            Audio::unpauseSound();
+            SceneManager::unsetPauseFlag(PauseFlags::player);
         }
         else
         {
-            SceneManager::setPauseFlag(1 << 0);
-            Audio::pauseSound();
-            Ui::Windows::TimePanel::invalidateFrame();
+            SceneManager::setPauseFlag(PauseFlags::player);
         }
 
         return 0;

@@ -15,9 +15,7 @@
 #include "Viewport.hpp"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Engine/World.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;
 
 namespace OpenLoco::Paint
@@ -161,6 +159,7 @@ namespace OpenLoco::Paint
             {
                 session.setItemType(InteractionItem::noInteraction);
                 imageId = Gfx::applyGhostToImage(imageOffset);
+                // TODO: apply company colour if playerCompanyID != elTrack.owner()?
             }
             World::Pos3 offset(offsetAndBBoffset.offset.x, offsetAndBBoffset.offset.y, getSignalHeightOffset(isRight, trackId) + height);
             World::Pos3 bbOffset(offsetAndBBoffset.boundingOffset.x, offsetAndBBoffset.boundingOffset.y, offset.z + 4);

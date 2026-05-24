@@ -4,6 +4,7 @@
 #include "InvalidationGrid.h"
 #include "SoftwareDrawingContext.h"
 #include <OpenLoco/Engine/Ui/Rect.hpp>
+#include <SDL3/SDL_pixels.h>
 #include <algorithm>
 #include <cstddef>
 #include <memory>
@@ -13,21 +14,15 @@ struct SDL_Surface;
 struct SDL_Window;
 struct SDL_Renderer;
 struct SDL_Texture;
-struct SDL_PixelFormat;
+
+namespace OpenLoco::Ui
+{
+    struct ScreenInfo;
+}
 
 namespace OpenLoco::Gfx
 {
     struct RenderTarget;
-
-#pragma pack(push, 1)
-    struct PaletteEntry
-    {
-        uint8_t b;
-        uint8_t g;
-        uint8_t r;
-        uint8_t a;
-    };
-#pragma pack(pop)
 
     class SoftwareDrawingEngine
     {
@@ -69,10 +64,13 @@ namespace OpenLoco::Gfx
             int16_t srcX,
             int16_t srcY);
 
+        const Ui::ScreenInfo& getScreenInfo() const;
+
+        bool setVSync(bool state);
+
     private:
         void renderDirtyRegions();
 
-    private:
         SDL_Renderer* _renderer{};
         SDL_Window* _window{};
         SDL_Palette* _palette{};
@@ -81,11 +79,12 @@ namespace OpenLoco::Gfx
 
         SDL_Texture* _screenTexture{};
         SDL_Texture* _scaledScreenTexture{};
-        SDL_PixelFormat* _screenTextureFormat{};
 
         SDL_Texture* _screenRGBATexture{};
 
         SoftwareDrawingContext _ctx;
         InvalidationGrid _invalidationGrid;
+
+        bool _vsync = false;
     };
 }

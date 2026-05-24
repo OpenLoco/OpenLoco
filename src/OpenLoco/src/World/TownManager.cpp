@@ -16,20 +16,16 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/RegionObject.h"
 #include "Objects/TownNamesObject.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Numerics.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 
 namespace OpenLoco::TownManager
 {
-    static loco_global<Town*, 0x01135C38> _dword_1135C38;
-
     // 0x0049B45F
     static uint32_t calcCargoInfluenceFlags(const Town& town)
     {
@@ -268,7 +264,7 @@ namespace OpenLoco::TownManager
         town->history[0] = 0;
         town->historyMinPopulation = 0;
 
-        std::fill_n(&town->var_150[0], std::size(town->var_150), 0);
+        std::fill_n(&town->amenityCounts[0], std::size(town->amenityCounts), 0);
 
         town->var_19C[0][0] = 0;
         town->var_19C[0][1] = 0;
@@ -312,7 +308,6 @@ namespace OpenLoco::TownManager
     }
 
     // 0x00497DC1
-    // The return value of this function is also being returned via dword_1135C38.
     // esi population
     // edi capacity
     // ebp rating | (numBuildings << 16)
@@ -321,12 +316,10 @@ namespace OpenLoco::TownManager
         auto res = getClosestTownAndDensity(loc);
         if (res == std::nullopt)
         {
-            _dword_1135C38 = nullptr;
             return nullptr;
         }
         auto townId = res->first;
         auto town = get(townId);
-        _dword_1135C38 = town;
 
         if (town == nullptr)
         {
@@ -370,7 +363,7 @@ namespace OpenLoco::TownManager
             town.numBuildings = 0;
             town.population = 0;
             town.populationCapacity = 0;
-            std::fill(std::begin(town.var_150), std::end(town.var_150), 0);
+            std::fill(std::begin(town.amenityCounts), std::end(town.amenityCounts), 0);
         }
 
         for (const auto& tilePos : World::getWorldRange())
@@ -414,9 +407,9 @@ namespace OpenLoco::TownManager
                 auto* town = updateTownInfo(World::toWorldSpace(tilePos), population, producedQuantity, 0, 1);
                 if (town != nullptr)
                 {
-                    if (buildingObj->var_AC != 0xFF)
+                    if (buildingObj->townAmenityCategory != TownAmenityCategory::none)
                     {
-                        town->var_150[buildingObj->var_AC] += 1;
+                        town->amenityCounts[enumValue(buildingObj->townAmenityCategory)] += 1;
                     }
                 }
             }
@@ -518,18 +511,6 @@ namespace OpenLoco::TownManager
         const auto unk = std::clamp((realDistance - town->numBuildings * 4 + 512) / 128, 0, 4);
         const uint8_t density = std::min(4 - unk, 3); // edx
         return { std::make_pair(town->id(), density) };
-    }
-
-    void registerHooks()
-    {
-        registerHook(
-            0x00497348,
-            []([[maybe_unused]] registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                resetBuildingsInfluence();
-                regs = backup;
-                return 0;
-            });
     }
 }
 

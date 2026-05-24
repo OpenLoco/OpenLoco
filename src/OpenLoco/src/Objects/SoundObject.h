@@ -37,7 +37,7 @@ namespace OpenLoco
 
         StringId name;
         uint32_t dataOffset;
-        uint8_t var_06;
+        uint8_t shouldLoop;
         uint8_t pad_07;
         uint32_t volume; // 0x08
 

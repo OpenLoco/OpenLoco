@@ -4,9 +4,9 @@
 #include "GameCommands/GameCommands.h"
 #include "Types.hpp"
 #include "Vehicles/Vehicle.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
+#include "Vehicles/Vehicle1.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleHead.h"
 
 namespace OpenLoco::GameCommands
 {
@@ -23,12 +23,12 @@ namespace OpenLoco::GameCommands
             auto& head = train.head;
             if (!sub_431E6A(head->owner))
             {
-                return FAILURE;
+                return kFailure;
             }
 
             if (!head->canBeModified())
             {
-                return FAILURE;
+                return kFailure;
             }
 
             if (!(flags & Flags::apply))
@@ -47,7 +47,7 @@ namespace OpenLoco::GameCommands
         }
         catch (std::runtime_error&)
         {
-            return FAILURE;
+            return kFailure;
         }
     }
 

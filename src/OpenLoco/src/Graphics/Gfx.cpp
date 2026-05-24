@@ -4,6 +4,7 @@
 #include "Environment.h"
 #include "Font.h"
 #include "Graphics/DrawSprite.h"
+#include "Graphics/DrawingContext.h"
 #include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "ImageIds.h"
@@ -20,7 +21,6 @@
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Core/Stream.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
 #include <cassert>
 #include <fstream>
@@ -28,7 +28,6 @@
 #include <memory>
 #include <numeric>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Utility;
 using namespace OpenLoco::Gfx;
 using namespace OpenLoco::Ui;
@@ -36,18 +35,21 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Gfx
 {
-    constexpr uint32_t kG1CountTemporary = 0x1000;
-
-    static loco_global<G1Element[G1ExpectedCount::kDisc + kG1CountTemporary + G1ExpectedCount::kObjects], 0x9E2424> _g1Elements;
+    // 0x009E2424
+    static std::array<G1Element, G1ExpectedCount::kDisc + G1ExpectedCount::kTemporaryObjects + G1ExpectedCount::kObjects> _g1Elements;
 
     static std::unique_ptr<std::byte[]> _g1Buffer;
 
-    static loco_global<uint8_t[224 * 4], 0x112C884> _characterWidths;
+    // 0x0112C884
+    static std::array<std::array<uint8_t, 224>, 4> _characterWidths;
+
+    // 0x0113ED20
+    static std::array<PaletteEntry, 256> _rgbaPalette;
 
     // 0x004FFAE8
     ImageId applyGhostToImage(uint32_t imageIndex)
     {
-        if (Config::get().old.constructionMarker)
+        if (Config::get().constructionMarker)
         {
             return ImageId(imageIndex).withTranslucency(ExtColour::unk31);
         }
@@ -153,7 +155,7 @@ namespace OpenLoco::Gfx
         }
 
         _g1Buffer = std::move(elementData);
-        std::copy(elements.begin(), elements.end(), _g1Elements.get());
+        std::copy(elements.begin(), elements.end(), _g1Elements.begin());
     }
 
     static int32_t getFontBaseIndex(Font font)
@@ -201,7 +203,7 @@ namespace OpenLoco::Gfx
                 {
                     width = 0;
                 }
-                _characterWidths[enumValue(font.offset) + i] = width;
+                _characterWidths[enumValue(font.offset) / 224][i] = width;
             }
         }
         // Vanilla setup scrolling text related globals here (unused)
@@ -277,11 +279,11 @@ namespace OpenLoco::Gfx
 
         if (Input::hasFlag(Input::Flags::rightMousePressed))
         {
-            Ui::processMessagesMini();
+            Input::processMessagesMini();
         }
         else
         {
-            Ui::processMessages();
+            Input::processMessages();
         }
     }
 
@@ -313,8 +315,6 @@ namespace OpenLoco::Gfx
         }
         return nullptr;
     }
-
-    static loco_global<Gfx::PaletteEntry[256], 0x0113ED20> _113ED20;
 
     // 0x0046E07B
     void loadCurrency()
@@ -361,11 +361,11 @@ namespace OpenLoco::Gfx
         uint8_t* colourData = g1Palette->offset;
         for (auto i = g1Palette->xOffset; i < g1Palette->width + g1Palette->xOffset; ++i)
         {
-            _113ED20[i].b = (*colourData++ * modifier) / 256;
-            _113ED20[i].g = (*colourData++ * modifier) / 256;
-            _113ED20[i].r = (*colourData++ * modifier) / 256;
+            _rgbaPalette[i].b = (*colourData++ * modifier) / 256;
+            _rgbaPalette[i].g = (*colourData++ * modifier) / 256;
+            _rgbaPalette[i].r = (*colourData++ * modifier) / 256;
         }
-        getDrawingEngine().updatePalette(_113ED20, 10, 236);
+        getDrawingEngine().updatePalette(_rgbaPalette.data(), 10, 236);
     }
 
     // 0x004523F4
@@ -375,11 +375,16 @@ namespace OpenLoco::Gfx
         uint8_t* colourData = g1Palette->offset;
         for (auto i = g1Palette->xOffset; i < g1Palette->width + g1Palette->xOffset; ++i)
         {
-            _113ED20[i].b = *colourData++;
-            _113ED20[i].g = *colourData++;
-            _113ED20[i].r = *colourData++;
+            _rgbaPalette[i].b = *colourData++;
+            _rgbaPalette[i].g = *colourData++;
+            _rgbaPalette[i].r = *colourData++;
         }
-        getDrawingEngine().updatePalette(_113ED20, 10, 236);
+        getDrawingEngine().updatePalette(_rgbaPalette.data(), 10, 236);
+    }
+
+    std::span<const PaletteEntry> getRgbaPalette()
+    {
+        return _rgbaPalette;
     }
 
     // 0x004530F8
@@ -403,7 +408,7 @@ namespace OpenLoco::Gfx
         // Draw all the images on top of the one bitmap
         for (size_t i = 0; i < numImages; ++i)
         {
-            drawingCtx.drawImage({ 0, 0 }, baseImageId.withIndexOffset(i));
+            drawingCtx.drawImage({ 0, 0 }, baseImageId.withIndexOffset(static_cast<int32_t>(i)));
         }
 
         drawingCtx.popRenderTarget();
@@ -487,12 +492,12 @@ namespace OpenLoco::Gfx
 
     int16_t getCharacterWidth(Font font, char32_t character)
     {
-        return _characterWidths[getFontBaseIndex(font) + character - 32];
+        return _characterWidths[getFontBaseIndex(font) / 224][character - 32];
     }
 
     void setCharacterWidth(Font font, char32_t character, int16_t width)
     {
-        _characterWidths[getFontBaseIndex(font) + character - 32] = width;
+        _characterWidths[getFontBaseIndex(font) / 224][character - 32] = width;
     }
 
     ImageId getImageForCharacter(Font font, char32_t character)

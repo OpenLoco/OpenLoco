@@ -2,7 +2,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
@@ -21,7 +20,7 @@
 
 namespace OpenLoco::Ui::Windows::ObjectLoadError
 {
-    static constexpr Ui::Size32 kWindowSize = { 360, 238 };
+    static constexpr Ui::Size kWindowSize = { 360, 238 };
 
     static constexpr uint8_t kRowHeight = 12; // CJK: 15
 
@@ -90,7 +89,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         self.draw(drawingCtx);
 
         // Draw explanatory text
-        auto point = Point(3, 19);
+        auto point = Point(self.x + 3, self.y + 19);
         auto tr = Gfx::TextRenderer(drawingCtx);
         tr.drawStringLeftWrapped(point, self.width - 6, self.getColour(WindowColour::secondary), StringIds::objectErrorExplanation);
     }

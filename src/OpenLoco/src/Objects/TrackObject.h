@@ -21,9 +21,9 @@ namespace OpenLoco
     enum class TrackObjectFlags : uint16_t
     {
         none = 0U,
-        unk_00 = 1U << 0,
-        unk_01 = 1U << 1,
-        unk_02 = 1U << 2,
+        hasRackRail = 1U << 0,   // if set road can have rack rail added (not used)
+        noSlipSurface = 1U << 1, // if set vehicles can't start slipping
+        isRoad = 1U << 2,        // controls if the object appears in the roads menu instead of the track menu
 
         unk_04 = 1U << 4,
     };

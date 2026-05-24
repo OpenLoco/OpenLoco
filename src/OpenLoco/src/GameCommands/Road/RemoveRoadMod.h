@@ -42,4 +42,6 @@ namespace OpenLoco::GameCommands
             return regs;
         }
     };
+
+    void removeRoadMod(registers& regs);
 }

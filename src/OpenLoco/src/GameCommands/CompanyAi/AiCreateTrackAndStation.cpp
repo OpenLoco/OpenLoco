@@ -1,4 +1,5 @@
 #include "AiCreateTrackAndStation.h"
+#include "Economy/Expenditures.h"
 #include "GameCommands/Track/CreateTrack.h"
 #include "GameCommands/Track/CreateTrainStation.h"
 #include "Map/BuildingElement.h"
@@ -9,8 +10,6 @@
 
 namespace OpenLoco::GameCommands
 {
-    static loco_global<uint8_t, 0x01136073> _byte_1136073;
-
     // 0x004A7328
     static World::TileClearance::ClearFuncResult clearNearbyArea(World::TileElement& el)
     {
@@ -40,7 +39,7 @@ namespace OpenLoco::GameCommands
         GameCommands::setExpenditureType(ExpenditureType::Construction);
         if (!World::TileManager::checkFreeElementsAndReorganise())
         {
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
         currency32_t totalCost = 0;
         int32_t numTilesTrackOrRoadUnderneath = 0;
@@ -94,15 +93,15 @@ namespace OpenLoco::GameCommands
                 const auto trackRes = static_cast<currency32_t>(trackRegs.ebx);
                 if (!(flags & GameCommands::Flags::apply))
                 {
-                    if (static_cast<uint32_t>(trackRes) == GameCommands::FAILURE)
+                    if (static_cast<uint32_t>(trackRes) == GameCommands::kFailure)
                     {
-                        return GameCommands::FAILURE;
+                        return GameCommands::kFailure;
                     }
 
                     // There is a level crossing or track overlay so we can't place a station
-                    if (_byte_1136073 & ((1U << 2) | (1U << 3)))
+                    if (getLegacyReturnState().flags_1136073 & ((1U << 2) | (1U << 3)))
                     {
-                        return GameCommands::FAILURE;
+                        return GameCommands::kFailure;
                     }
                 }
                 totalCost += trackRes;
@@ -122,9 +121,9 @@ namespace OpenLoco::GameCommands
                 const auto stationRes = static_cast<currency32_t>(stationRegs.ebx);
                 if (!(flags & GameCommands::Flags::apply))
                 {
-                    if (static_cast<uint32_t>(stationRes) == GameCommands::FAILURE)
+                    if (static_cast<uint32_t>(stationRes) == GameCommands::kFailure)
                     {
-                        return GameCommands::FAILURE;
+                        return GameCommands::kFailure;
                     }
                 }
                 totalCost += stationRes;
@@ -140,7 +139,7 @@ namespace OpenLoco::GameCommands
                 const auto baseZ = args.pos.z / World::kSmallZStep;
                 if (!World::TileClearance::applyClearAtStandardHeight(pos, baseZ, baseZ + 12, World::QuarterTile{ 0xF, 0 }, clearNearbyArea))
                 {
-                    return GameCommands::FAILURE;
+                    return GameCommands::kFailure;
                 }
                 pos -= World::kRotationOffset[args.rotation];
             }
@@ -154,7 +153,7 @@ namespace OpenLoco::GameCommands
                 const auto baseZ = args.pos.z / World::kSmallZStep;
                 if (!World::TileClearance::applyClearAtStandardHeight(pos, baseZ, baseZ + 12, World::QuarterTile{ 0xF, 0 }, clearNearbyArea))
                 {
-                    return GameCommands::FAILURE;
+                    return GameCommands::kFailure;
                 }
                 pos += World::kRotationOffset[args.rotation];
             }
@@ -163,7 +162,7 @@ namespace OpenLoco::GameCommands
         {
             if (numTilesTrackOrRoadUnderneath >= args.stationLength - 2)
             {
-                return GameCommands::FAILURE;
+                return GameCommands::kFailure;
             }
         }
         return totalCost;

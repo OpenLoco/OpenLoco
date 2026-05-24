@@ -32,6 +32,7 @@
 #include "GameCommands/Vehicles/VehicleRefit.h"
 #include "GameCommands/Vehicles/VehicleSell.h"
 #include "GameState.h"
+#include "Logging.h"
 #include "Map/BuildingElement.h"
 #include "Map/IndustryElement.h"
 #include "Map/RoadElement.h"
@@ -43,6 +44,7 @@
 #include "Map/TrackElement.h"
 #include "Map/TreeElement.h"
 #include "MessageManager.h"
+#include "Objects/AirportObject.h"
 #include "Objects/BridgeObject.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/CargoObject.h"
@@ -61,6 +63,9 @@
 #include "Random.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
 #include "World/Company.h"
 #include "World/CompanyManager.h"
@@ -70,23 +75,25 @@
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Engine/World.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <bit>
 #include <numeric>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 using namespace OpenLoco::Literals;
 using namespace OpenLoco::CompanyAi; // Eventually this will all be under this namespace
 
+// #define DEBUG_AI_CODE
+
 namespace OpenLoco
 {
-    static void removeEntityFromThought(AiThought& thought, size_t index);
+    static void logAiAction([[maybe_unused]] const CompanyId companyId, [[maybe_unused]] std::string_view message)
+    {
+#ifdef DEBUG_AI_CODE
+        Diagnostics::Logging::info("[Ai Company {}] {}", enumValue(companyId), message);
+#endif //  DEBUG_AI_CODE
+    }
 
-    static loco_global<StationId, 0x0112C730> _lastPlacedTrackStationId;
-    static loco_global<StationId, 0x0112C744> _lastPlacedAirportStationId;
-    static loco_global<StationId, 0x0112C748> _lastPlacedPortStationId;
-    static loco_global<EntityId, 0x0113642A> _lastCreatedVehicleId;
+    static void removeEntityFromThought(AiThought& thought, size_t index);
 
     enum class ThoughtTypeFlags : uint32_t
     {
@@ -253,22 +260,22 @@ namespace OpenLoco
             createArgs.vehicleId = trainHeadId;
             createArgs.vehicleType = thought.var_46[i];
             auto res = GameCommands::doCommand(createArgs, GameCommands::Flags::apply);
-            if (res == GameCommands::FAILURE)
+            if (res == GameCommands::kFailure)
             {
                 // If we can't create a vehicle try create a free vehicle!
                 res = GameCommands::doCommand(createArgs, GameCommands::Flags::apply | GameCommands::Flags::noPayment);
-                if (res == GameCommands::FAILURE)
+                if (res == GameCommands::kFailure)
                 {
                     return PurchaseVehicleResult::failure;
                 }
             }
             if (trainHeadId == EntityId::null)
             {
-                trainHeadId = _lastCreatedVehicleId;
+                trainHeadId = GameCommands::getLegacyReturnState().lastCreatedVehicleId;
             }
             // There was some broken code that would try read the head as a body here
 
-            // auto* veh = EntityManager::get<Vehicles::VehicleBogie>(_lastCreatedVehicleId); lol no this wouldn't work
+            // auto* veh = EntityManager::get<Vehicles::VehicleBogie>(GameCommands::getLegacyReturnState().lastCreatedVehicleId); lol no this wouldn't work
             // auto train = Vehicles::Vehicle(veh->head);
             // auto car = [&train, veh]() {
             //     for (auto& car : train.cars)
@@ -346,7 +353,7 @@ namespace OpenLoco
             insertArgs.rawOrder = stopAt.getRaw();
             auto insertRes = GameCommands::doCommand(insertArgs, GameCommands::Flags::apply);
             // Fix vanilla bug
-            if (insertRes != GameCommands::FAILURE)
+            if (insertRes != GameCommands::kFailure)
             {
                 orderOffset += sizeof(stopAt);
             }
@@ -365,7 +372,7 @@ namespace OpenLoco
                 insertArgs2.rawOrder = waitFor.getRaw();
                 auto insert2Res = GameCommands::doCommand(insertArgs2, GameCommands::Flags::apply);
                 // Fix vanilla bug
-                if (insert2Res != GameCommands::FAILURE)
+                if (insert2Res != GameCommands::kFailure)
                 {
                     orderOffset += sizeof(waitFor);
                 }
@@ -567,6 +574,8 @@ namespace OpenLoco
             return;
         }
 
+        logAiAction(company.id(), "Entering end thought state selling off assets");
+
         if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
         {
             bool hasAssets = false;
@@ -760,7 +769,7 @@ namespace OpenLoco
             trackType &= ~(1U << 7);
             mode = TransportMode::road;
             auto* roadObj = ObjectManager::get<RoadObject>(trackType);
-            if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+            if (roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
             {
                 trackType = 0xFFU;
             }
@@ -1609,18 +1618,18 @@ namespace OpenLoco
                         auto* elRoad = el.as<World::RoadElement>();
                         if (elRoad != nullptr)
                         {
-                            const bool targetIsNotTram = getGameState().roadObjectIdIsNotTram & (1U << (thought.trackObjId & ~(1U << 7)));
-                            const bool elIsNotTram = getGameState().roadObjectIdIsNotTram & (1U << elRoad->roadObjectId());
-                            if (targetIsNotTram)
+                            const bool targetIsAnyRoadTypeCompatible = getGameState().roadObjectIdIsAnyRoadTypeCompatible & (1U << (thought.trackObjId & ~(1U << 7)));
+                            const bool elIsAnyRoadTypeCompatible = getGameState().roadObjectIdIsAnyRoadTypeCompatible & (1U << elRoad->roadObjectId());
+                            if (targetIsAnyRoadTypeCompatible)
                             {
-                                if (!elIsNotTram)
+                                if (!elIsAnyRoadTypeCompatible)
                                 {
                                     continue;
                                 }
                             }
                             else
                             {
-                                if (elIsNotTram)
+                                if (elIsAnyRoadTypeCompatible)
                                 {
                                     continue;
                                 }
@@ -1631,7 +1640,7 @@ namespace OpenLoco
                             }
                             existingMods = 0U;
                             auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
-                            if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+                            if (!roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
                             {
                                 for (auto i = 0U; i < 2; ++i)
                                 {
@@ -1744,6 +1753,7 @@ namespace OpenLoco
     static void aiThinkState1(Company& company)
     {
         company.activeThoughtId++;
+
         if (company.activeThoughtId < kMaxAiThoughts)
         {
             auto& thought = company.aiThoughts[company.activeThoughtId];
@@ -1752,10 +1762,12 @@ namespace OpenLoco
                 aiThinkState1(company);
                 return;
             }
+            logAiAction(company.id(), "Advance to next thought id");
 
             if (sub_487F8D(company, thought))
             {
-                company.var_4A4 = AiThinkState::unk7;
+                logAiAction(company.id(), "Sell off land assets: due to sub_487F8D");
+                company.var_4A4 = AiThinkState::sellOffLandAssets;
                 company.var_4A5 = 0;
                 companyEmotionEvent(company.id(), Emotion::disgusted);
                 return;
@@ -1768,7 +1780,7 @@ namespace OpenLoco
             }
             return;
         }
-        if (((company.challengeFlags & CompanyFlags::unk0) != CompanyFlags::none)
+        if (((company.challengeFlags & CompanyFlags::aiHasStarted) != CompanyFlags::none)
             || (getCurrentDay() - company.startedDate <= 42))
         {
             company.var_4A4 = AiThinkState::unk2;
@@ -2172,16 +2184,20 @@ namespace OpenLoco
                 auto* buildingObj = ObjectManager::get<BuildingObject>(elBuilding->objectId());
                 for (auto i = 0U; i < 2; ++i)
                 {
-                    if (buildingObj->requiredCargoType[i] == 0xFFU)
+                    if (buildingObj->consumedCargoType[i] == 0xFFU)
                     {
                         continue;
                     }
-                    uint8_t quantity = buildingObj->var_A8[i];
-                    if (buildingObj->hasFlags(BuildingObjectFlags::largeTile))
+                    uint8_t quantity = buildingObj->consumedCargoQty[i];
+                    // We are doing a quick estimate of consumed cargo so
+                    // are counting all tiles of a multi tile building this
+                    // will inflate multitile buildings score by 4x so we
+                    // compensate for 1x1 buildings by multiplying by 4
+                    if (!buildingObj->hasFlags(BuildingObjectFlags::largeTile))
                     {
                         quantity *= 4;
                     }
-                    scores[buildingObj->requiredCargoType[i]] += quantity;
+                    scores[buildingObj->consumedCargoType[i]] += quantity;
                 }
             }
         }
@@ -3544,7 +3560,7 @@ namespace OpenLoco
 
             auto* roadObj = ObjectManager::get<RoadObject>(roadObjId & ~(1U << 7));
             using enum RoadObjectFlags;
-            if ((roadObj->flags & (unk_07 | isRoad | unk_03 | unk_02)) != (unk_07 | isRoad | unk_03 | unk_02))
+            if ((roadObj->flags & (allowUseByAllCompanies | isRoad | anyRoadTypeCompatible | unk_02)) != (allowUseByAllCompanies | isRoad | anyRoadTypeCompatible | unk_02))
             {
                 continue;
             }
@@ -3586,7 +3602,7 @@ namespace OpenLoco
 
             auto* roadObj = ObjectManager::get<RoadObject>(roadObjId & ~(1U << 7));
             using enum RoadObjectFlags;
-            if (roadObj->hasFlags(unk_07 | isRoad | unk_03 | isOneWay))
+            if (roadObj->hasFlags(allowUseByAllCompanies | isRoad | anyRoadTypeCompatible | isOneWay))
             {
                 continue;
             }
@@ -4347,7 +4363,7 @@ namespace OpenLoco
         args.rotation = aiStation.rotation;
         args.type = thought.stationObjId;
         const auto res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
-        if (res == GameCommands::FAILURE)
+        if (res == GameCommands::kFailure)
         {
             return true;
         }
@@ -4613,7 +4629,7 @@ namespace OpenLoco
         args.rotation = direction;
         args.type = thought.stationObjId;
         const auto res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
-        if (res == GameCommands::FAILURE)
+        if (res == GameCommands::kFailure)
         {
             return true;
         }
@@ -4663,7 +4679,7 @@ namespace OpenLoco
         }
 
         bool isTram = false;
-        if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+        if (!roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
         {
             isTram = true;
             if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
@@ -4674,7 +4690,7 @@ namespace OpenLoco
         if (doBasicPlacement)
         {
             const auto res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
-            if (res == GameCommands::FAILURE)
+            if (res == GameCommands::kFailure)
             {
                 return true;
             }
@@ -4706,7 +4722,7 @@ namespace OpenLoco
             {
                 args.rotation = elRoad->rotation();
                 const auto res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
-                if (res == GameCommands::FAILURE)
+                if (res == GameCommands::kFailure)
                 {
                     continue;
                 }
@@ -4727,7 +4743,7 @@ namespace OpenLoco
                 args2.rotation = args.rotation;
                 args2.type = args.stationObjectId;
                 const auto res = GameCommands::doCommand(args2, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
-                if (res == GameCommands::FAILURE)
+                if (res == GameCommands::kFailure)
                 {
                     continue;
                 }
@@ -4808,7 +4824,7 @@ namespace OpenLoco
 
         const auto res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
 
-        if (res == GameCommands::FAILURE)
+        if (res == GameCommands::kFailure)
         {
             return true;
         }
@@ -5099,7 +5115,8 @@ namespace OpenLoco
     {
         if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
         {
-            company.var_4A4 = AiThinkState::unk6;
+            logAiAction(company.id(), "Undo partial action: due to clearance issue");
+            company.var_4A4 = AiThinkState::undoPartialAction;
             company.var_4A5 = 3;
         }
         else
@@ -5107,7 +5124,8 @@ namespace OpenLoco
             switch (sub_48259F(company, thought))
             {
                 case 1:
-                    company.var_4A4 = AiThinkState::unk6;
+                    logAiAction(company.id(), "Undo partial action: due to sub_48259F");
+                    company.var_4A4 = AiThinkState::undoPartialAction;
                     company.var_4A5 = 3;
                     break;
                 case 2:
@@ -5275,7 +5293,8 @@ namespace OpenLoco
     {
         if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
         {
-            company.var_4A4 = AiThinkState::unk6;
+            logAiAction(company.id(), "Undo partial action: due to clearance");
+            company.var_4A4 = AiThinkState::undoPartialAction;
             company.var_4A5 = 2;
             company.var_85C4 = World::Pos2(0, 0);
             return;
@@ -5285,7 +5304,8 @@ namespace OpenLoco
         {
             if (aiPathfind(company, thought))
             {
-                company.var_4A4 = AiThinkState::unk6;
+                logAiAction(company.id(), "Undo partial action: due to aiPathfind");
+                company.var_4A4 = AiThinkState::undoPartialAction;
                 company.var_4A5 = 2;
                 company.var_85C4 = World::Pos2(0, 0);
             }
@@ -5297,7 +5317,8 @@ namespace OpenLoco
                 company.var_4A5 = 2;
                 if (sub_486324(company, thought))
                 {
-                    company.var_4A4 = AiThinkState::unk6;
+                    logAiAction(company.id(), "Undo partial action: due to sub_486324");
+                    company.var_4A4 = AiThinkState::undoPartialAction;
                     company.var_4A5 = 2;
                     company.var_85C4 = World::Pos2(0, 0);
                 }
@@ -5365,7 +5386,7 @@ namespace OpenLoco
             args.type = signalType;
 
             const auto res = GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::apply | GameCommands::Flags::noPayment);
-            if (res != GameCommands::FAILURE)
+            if (res != GameCommands::kFailure)
             {
                 distanceFromSignal = 0;
             }
@@ -5449,7 +5470,8 @@ namespace OpenLoco
 
         if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
         {
-            company.var_4A4 = AiThinkState::unk6;
+            logAiAction(company.id(), "Undo partial action: due to clearance");
+            company.var_4A4 = AiThinkState::undoPartialAction;
             company.var_4A5 = 2;
             company.var_85C4 = World::Pos2{ 0, 0 };
             return;
@@ -5558,7 +5580,8 @@ namespace OpenLoco
         // Decide if station placement attempt
         if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
         {
-            company.var_4A4 = AiThinkState::unk6;
+            logAiAction(company.id(), "Undo partial action: due to clearance");
+            company.var_4A4 = AiThinkState::undoPartialAction;
             company.var_4A5 = 2;
             company.var_85C4 = World::Pos2{ 0, 0 };
             return;
@@ -5566,7 +5589,8 @@ namespace OpenLoco
         auto res = sub_4865B4(thought);
         if (res == 1)
         {
-            company.var_4A4 = AiThinkState::unk6;
+            logAiAction(company.id(), "Undo partial action: due to sub_4865B4");
+            company.var_4A4 = AiThinkState::undoPartialAction;
             company.var_4A5 = 2;
             company.var_85C4 = World::Pos2{ 0, 0 };
         }
@@ -5589,7 +5613,8 @@ namespace OpenLoco
         // Calculate station cost?
         if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
         {
-            company.var_4A4 = AiThinkState::unk6;
+            logAiAction(company.id(), "Undo partial action: due to clearance");
+            company.var_4A4 = AiThinkState::undoPartialAction;
             company.var_4A5 = 2;
             company.var_85C4 = World::Pos2{ 0, 0 };
             return;
@@ -5632,7 +5657,8 @@ namespace OpenLoco
     {
         if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
         {
-            company.var_4A4 = AiThinkState::unk6;
+            logAiAction(company.id(), "Undo partial action: due to clearance");
+            company.var_4A4 = AiThinkState::undoPartialAction;
             company.var_4A5 = 2;
             company.var_85C4 = World::Pos2{ 0, 0 };
             return;
@@ -5641,21 +5667,23 @@ namespace OpenLoco
         const auto res = shouldConvertAiAllocated(company, thought);
         if (res == 1)
         {
-            company.var_4A4 = AiThinkState::unk6;
+            logAiAction(company.id(), "Undo partial action: due to shouldConvertAiAllocated");
+            company.var_4A4 = AiThinkState::undoPartialAction;
             company.var_4A5 = 2;
             company.var_85C4 = World::Pos2{ 0, 0 };
         }
         else if (res == 2)
         {
+            logAiAction(company.id(), "Convert allocated Ai assets: due to shouldConvertAiAllocated");
             // Go to converting the aiAllocated items into real items
-            company.var_4A4 = AiThinkState::unk4;
+            company.var_4A4 = AiThinkState::convertAiAllocated;
             company.var_4A5 = 0;
             company.challengeFlags |= CompanyFlags::unk2;
-            if ((company.challengeFlags & CompanyFlags::unk0) != CompanyFlags::none)
+            if ((company.challengeFlags & CompanyFlags::aiHasStarted) != CompanyFlags::none)
             {
                 return;
             }
-            company.challengeFlags |= CompanyFlags::unk0;
+            company.challengeFlags |= CompanyFlags::aiHasStarted;
 
             auto townId = static_cast<TownId>(thought.destinationA);
             if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::destinationAIsIndustry))
@@ -5759,11 +5787,11 @@ namespace OpenLoco
                 if (elRoad->roadObjectId() != roadObjectId)
                 {
                     auto* existingRoadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
-                    if (!existingRoadObj->hasFlags(RoadObjectFlags::unk_03))
+                    if (!existingRoadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
                     {
                         continue;
                     }
-                    if (!newRoadObj->hasFlags(RoadObjectFlags::unk_03))
+                    if (!newRoadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
                     {
                         continue;
                     }
@@ -5799,7 +5827,7 @@ namespace OpenLoco
         auto [elRoad, elStation] = getRoadAndAiStationElements(pos, rotation, roadObjectId, roadId, sequenceIndex, noStations, companyId);
         if (elRoad == nullptr || (!elRoad->isAiAllocated() && elStation == nullptr))
         {
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
         uint8_t _112C2F4 = 0;
         uint8_t roadStationObjId = 0xFFU;
@@ -5813,7 +5841,7 @@ namespace OpenLoco
             roadStationObjId = elStation->objectId();
             if (noStations)
             {
-                return GameCommands::FAILURE;
+                return GameCommands::kFailure;
             }
         }
 
@@ -5821,7 +5849,7 @@ namespace OpenLoco
         const auto existingRoadObjId = elRoad->roadObjectId();
         auto* existingRoadObj = ObjectManager::get<RoadObject>(existingRoadObjId);
         uint8_t mods = 0;
-        if (!existingRoadObj->hasFlags(RoadObjectFlags::unk_03))
+        if (!existingRoadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
         {
             mods = elRoad->mods();
         }
@@ -5870,11 +5898,11 @@ namespace OpenLoco
             args.roadObjectId = roadObjectId;
             args.rotation = rotation;
             auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_7);
-            if (res == GameCommands::FAILURE)
+            if (res == GameCommands::kFailure)
             {
                 res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noPayment | GameCommands::Flags::flag_7);
             }
-            if (res != GameCommands::FAILURE)
+            if (res != GameCommands::kFailure)
             {
                 totalCost += res;
             }
@@ -5890,17 +5918,17 @@ namespace OpenLoco
             args.index = sequenceIndex;
             args.type = roadStationObjId;
             auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_7);
-            if (res == GameCommands::FAILURE)
+            if (res == GameCommands::kFailure)
             {
                 res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noPayment | GameCommands::Flags::flag_7);
             }
-            if (res != GameCommands::FAILURE)
+            if (res != GameCommands::kFailure)
             {
                 totalCost += res;
             }
             else
             {
-                return GameCommands::FAILURE;
+                return GameCommands::kFailure;
             }
         }
 
@@ -5943,6 +5971,7 @@ namespace OpenLoco
             return 1;
         }
 
+        auto& legacyGCReturn = GameCommands::getLegacyReturnState();
         auto& aiStation = thought.stations[i];
         const auto pos = World::Pos3(aiStation.pos, aiStation.baseZ * World::kSmallZStep);
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased))
@@ -5958,17 +5987,17 @@ namespace OpenLoco
             placeArgs.rotation = aiStation.rotation;
             placeArgs.type = thought.stationObjId;
 
-            if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply) == GameCommands::FAILURE)
+            if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply) == GameCommands::kFailure)
             {
-                if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply | GameCommands::Flags::noPayment) == GameCommands::FAILURE)
+                if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply | GameCommands::Flags::noPayment) == GameCommands::kFailure)
                 {
                     return 2;
                 }
             }
 
-            if (_lastPlacedAirportStationId != StationId::null)
+            if (legacyGCReturn.lastPlacedAirport != StationId::null)
             {
-                aiStation.id = _lastPlacedAirportStationId;
+                aiStation.id = legacyGCReturn.lastPlacedAirport;
             }
         }
         else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::waterBased))
@@ -5984,17 +6013,17 @@ namespace OpenLoco
             placeArgs.rotation = aiStation.rotation;
             placeArgs.type = thought.stationObjId;
 
-            if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply) == GameCommands::FAILURE)
+            if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply) == GameCommands::kFailure)
             {
-                if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply | GameCommands::Flags::noPayment) == GameCommands::FAILURE)
+                if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply | GameCommands::Flags::noPayment) == GameCommands::kFailure)
                 {
                     return 2;
                 }
             }
 
-            if (_lastPlacedPortStationId != StationId::null)
+            if (legacyGCReturn.lastPlacedDock != StationId::null)
             {
-                aiStation.id = _lastPlacedPortStationId;
+                aiStation.id = legacyGCReturn.lastPlacedDock;
             }
         }
         else
@@ -6004,14 +6033,14 @@ namespace OpenLoco
                 // Road
 
                 // TODO: Vanilla bug passes rotation for flags???
-                if (replaceAiAllocatedRoad(pos, aiStation.rotation, thought.trackObjId & ~(1U << 7), 0, 0, false, aiStation.rotation) == GameCommands::FAILURE)
+                if (replaceAiAllocatedRoad(pos, aiStation.rotation, thought.trackObjId & ~(1U << 7), 0, 0, false, aiStation.rotation) == GameCommands::kFailure)
                 {
                     return 2;
                 }
 
-                if (_lastPlacedTrackStationId != StationId::null)
+                if (legacyGCReturn.lastPlacedTrackRoadStationId != StationId::null)
                 {
-                    aiStation.id = _lastPlacedTrackStationId;
+                    aiStation.id = legacyGCReturn.lastPlacedTrackRoadStationId;
                 }
             }
             else
@@ -6026,17 +6055,17 @@ namespace OpenLoco
 
                 for (auto j = 0U; j < thought.stationLength; ++j)
                 {
-                    if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply) == GameCommands::FAILURE)
+                    if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply) == GameCommands::kFailure)
                     {
-                        if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply | GameCommands::Flags::noPayment) == GameCommands::FAILURE)
+                        if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply | GameCommands::Flags::noPayment) == GameCommands::kFailure)
                         {
                             return 2;
                         }
                     }
 
-                    if (_lastPlacedTrackStationId != StationId::null)
+                    if (legacyGCReturn.lastPlacedTrackRoadStationId != StationId::null)
                     {
-                        aiStation.id = _lastPlacedTrackStationId;
+                        aiStation.id = legacyGCReturn.lastPlacedTrackRoadStationId;
                     }
                     placeArgs.pos += World::Pos3{ kRotationOffset[placeArgs.rotation], 0 };
                 }
@@ -6066,7 +6095,8 @@ namespace OpenLoco
         const auto res = replaceAiAllocatedStation(company, thought);
         if (res == 2)
         {
-            company.var_4A4 = AiThinkState::unk6;
+            logAiAction(company.id(), "Undo partial action: due to replaceAiAllocatedStation");
+            company.var_4A4 = AiThinkState::undoPartialAction;
             company.var_4A5 = 1;
             sub_487144(company);
         }
@@ -6174,7 +6204,7 @@ namespace OpenLoco
                 const auto requiredMods = 0U;
                 const auto roadObjId = thought.trackObjId & ~(1U << 7);
                 auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
-                auto compatRoadObjId = roadObj->hasFlags(RoadObjectFlags::unk_03) ? 0xFFU : roadObjId;
+                auto compatRoadObjId = roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible) ? 0xFFU : roadObjId;
 
                 auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(pos, tad);
                 auto rc = Track::getRoadConnectionsAiAllocated(nextPos, nextRotation, company.id(), compatRoadObjId, requiredMods, queryMods);
@@ -6214,7 +6244,7 @@ namespace OpenLoco
                     replacePos.z += TrackData::getRoadPiece(roadId)[0].z;
                     const auto noStations = true;
 
-                    const auto success = replaceAiAllocatedRoad(replacePos, rotation, roadObjId, roadId, 0, noStations, flags) != GameCommands::FAILURE;
+                    const auto success = replaceAiAllocatedRoad(replacePos, rotation, roadObjId, roadId, 0, noStations, flags) != GameCommands::kFailure;
                     return success ? 0 : 2;
                 }
             }
@@ -6275,10 +6305,10 @@ namespace OpenLoco
                     args.trackId = trackId;
                     args.sequenceIndex = 0;
 
-                    const auto success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE;
+                    const auto success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure;
                     if (!success)
                     {
-                        if (GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noPayment) == GameCommands::FAILURE)
+                        if (GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noPayment) == GameCommands::kFailure)
                         {
                             return 2;
                         }
@@ -6295,7 +6325,8 @@ namespace OpenLoco
         const auto res = replaceAiAllocatedTrackRoad(company, thought);
         if (res == 2)
         {
-            company.var_4A4 = AiThinkState::unk6;
+            logAiAction(company.id(), "Undo partial action: due to replaceAiAllocatedTrackRoad");
+            company.var_4A4 = AiThinkState::undoPartialAction;
             company.var_4A5 = 1;
             sub_487144(company);
         }
@@ -6311,7 +6342,8 @@ namespace OpenLoco
         const auto res = purchaseVehicle(company, thought);
         if (res == PurchaseVehicleResult::failure)
         {
-            company.var_4A4 = AiThinkState::unk6;
+            logAiAction(company.id(), "Undo partial action: due to purchaseVehicle failure");
+            company.var_4A4 = AiThinkState::undoPartialAction;
             company.var_4A5 = 0;
         }
         else if (res == PurchaseVehicleResult::allVehiclesPurchased)
@@ -6332,7 +6364,8 @@ namespace OpenLoco
 
     using AiThinkState4Function = void (*)(Company&, AiThought&);
 
-    static constexpr std::array<AiThinkState4Function, 4> _funcs_4F9500 = {
+    // 0x004F9500
+    static constexpr std::array<AiThinkState4Function, 4> kConvertAiAllocatedSubStateFuncs = {
         sub_43106B,
         sub_43109A,
         sub_4310C4,
@@ -6340,12 +6373,12 @@ namespace OpenLoco
     };
 
     // 0x00431035
-    static void aiThinkState4(Company& company)
+    static void aiThinkConvertAiAllocated(Company& company)
     {
         companyEmotionEvent(company.id(), Emotion::thinking);
         company.var_85F6++;
 
-        _funcs_4F9500[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
+        kConvertAiAllocatedSubStateFuncs[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
     }
 
     static void nullsub_3([[maybe_unused]] Company& company)
@@ -6368,7 +6401,7 @@ namespace OpenLoco
                 continue;
             }
             head->breakdownFlags &= ~Vehicles::BreakdownFlags::breakdownPending;
-            if (!head->hasVehicleFlags(VehicleFlags::commandStop))
+            if (!head->hasVehicleFlags(Vehicles::VehicleFlags::commandStop))
             {
                 GameCommands::VehicleChangeRunningModeArgs args{};
                 args.head = head->head;
@@ -6413,7 +6446,7 @@ namespace OpenLoco
             GameCommands::VehicleSellArgs args{};
             args.car = head->id;
             auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
-            if (res == GameCommands::FAILURE)
+            if (res == GameCommands::kFailure)
             {
                 continue;
             }
@@ -6450,7 +6483,7 @@ namespace OpenLoco
     {
         using enum TrackRoadRemoveQueryFlags;
         auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
-        if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+        if (roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
         {
             return roadTypeShouldNotBeRemoved;
         }
@@ -6628,19 +6661,19 @@ namespace OpenLoco
 
         // Calling GC directly to match vanilla.
         // TODO change to use GameCommands::doCommand as this isn't handling costs
-        auto regs = static_cast<registers>(args);
+        auto regs = static_cast<GameCommands::registers>(args);
         regs.bl = GameCommands::Flags::apply;
         GameCommands::removeRoadStation(regs);
-        if (static_cast<uint32_t>(regs.ebx) != GameCommands::FAILURE)
+        if (static_cast<uint32_t>(regs.ebx) != GameCommands::kFailure)
         {
             args.rotation ^= (1u << 1);
-            auto regs2 = static_cast<registers>(args);
+            auto regs2 = static_cast<GameCommands::registers>(args);
             regs2.bl = GameCommands::Flags::apply;
             GameCommands::removeRoadStation(regs2);
         }
 
         auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
-        if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+        if (!roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
         {
             using enum TrackRoadRemoveQueryFlags;
             if ((queryRoadForRemoval(pos, (0 << 3) | rotation, roadObjId, companyId) & (malformed | roadTypeShouldNotBeRemoved)) == none)
@@ -6670,7 +6703,7 @@ namespace OpenLoco
             args.trackObjectId = trackObjId;
             // Calling GC directly to match vanilla.
             // TODO change to use GameCommands::doCommand as this isn't handling costs
-            auto regs = static_cast<registers>(args);
+            auto regs = static_cast<GameCommands::registers>(args);
             regs.bl = GameCommands::Flags::apply;
             GameCommands::removeTrack(regs);
 
@@ -6778,7 +6811,7 @@ namespace OpenLoco
                 args.roadId = roadId;
                 args.rotation = rotation;
                 args.sequenceIndex = 0;
-                const auto success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE;
+                const auto success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure;
                 // If we fail for some reason or we are at the end of the road
                 // we progress to the next phase of road removal
                 if (!success || rc.connections.empty())
@@ -6896,7 +6929,7 @@ namespace OpenLoco
                 args.trackId = trackId;
                 args.rotation = rotation;
                 args.index = 0;
-                const auto success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE;
+                const auto success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure;
                 // If we fail for some reason or we are at the end of the track
                 // we progress to the next phase of track removal
                 if (!success || tc.connections.empty())
@@ -7035,7 +7068,7 @@ namespace OpenLoco
                     args.rotation = elRoad->rotation();
                     args.sequenceIndex = elRoad->sequenceIndex();
                     auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
-                    if (res != GameCommands::FAILURE)
+                    if (res != GameCommands::kFailure)
                     {
                         recheck = true;
                         break;
@@ -7059,7 +7092,7 @@ namespace OpenLoco
                     args.rotation = elTrack->rotation();
                     args.index = elTrack->sequenceIndex();
                     auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
-                    if (res != GameCommands::FAILURE)
+                    if (res != GameCommands::kFailure)
                     {
                         recheck = true;
                         break;
@@ -7132,7 +7165,7 @@ namespace OpenLoco
             args.index = 0;
 
             auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
-            if (res == GameCommands::FAILURE)
+            if (res == GameCommands::kFailure)
             {
                 // Try remove facing the opposite rotation
                 args.rotation ^= (1U << 1);
@@ -7312,7 +7345,7 @@ namespace OpenLoco
     }
 
     // 0x004F9510
-    static constexpr std::array<AiThinkState4Function, 5> kFuncs4F9510 = {
+    static constexpr std::array<AiThinkState4Function, 5> kUndoPartialActionSubStateFuncs = {
         sub_43112D,
         sub_431142,
         sub_431164,
@@ -7321,12 +7354,10 @@ namespace OpenLoco
     };
 
     // 0x00431104
-    static void aiThinkState6(Company& company)
+    static void aiThinkUndoPartialAction(Company& company)
     {
-        // try sell a vehicle?
-
         company.var_85F6++;
-        kFuncs4F9510[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
+        kUndoPartialActionSubStateFuncs[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
     }
 
     // 0x004311CA
@@ -7347,16 +7378,17 @@ namespace OpenLoco
 
     using AiThinkState7Function = void (*)(Company&, AiThought&);
 
-    static constexpr std::array<AiThinkState7Function, 3> _funcs_4F9524 = {
+    // 0x004F9524
+    static constexpr std::array<AiThinkState7Function, 3> kSellOffLandAssetsSubStateFuncs = {
         sub_4311B5,
         sub_4311CA,
         sub_4311DA,
     };
 
     // 0x00431193
-    static void aiThinkState7(Company& company)
+    static void aiThinkSellOffLandAssets(Company& company)
     {
-        _funcs_4F9524[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
+        kSellOffLandAssetsSubStateFuncs[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
     }
 
     // 0x00487DAD
@@ -7373,7 +7405,7 @@ namespace OpenLoco
             args.roadId = 0;
             args.type = thought.mods;
             const auto cost = GameCommands::doCommand(args, flags);
-            if (cost != GameCommands::FAILURE)
+            if (cost != GameCommands::kFailure)
             {
                 return cost;
             }
@@ -7390,7 +7422,7 @@ namespace OpenLoco
             args.trackId = 0;
             args.type = thought.mods;
             const auto cost = GameCommands::doCommand(args, flags);
-            if (cost != GameCommands::FAILURE)
+            if (cost != GameCommands::kFailure)
             {
                 return cost;
             }
@@ -7471,7 +7503,7 @@ namespace OpenLoco
             return false;
         }
 
-        return tryPlaceTrackOrRoadMods(thought, GameCommands::Flags::apply) == GameCommands::FAILURE;
+        return tryPlaceTrackOrRoadMods(thought, GameCommands::Flags::apply) == GameCommands::kFailure;
     }
 
     // 0x0043122D
@@ -7515,7 +7547,8 @@ namespace OpenLoco
         const auto res = purchaseVehicle(company, thought);
         if (res == PurchaseVehicleResult::failure)
         {
-            company.var_4A4 = AiThinkState::unk7;
+            logAiAction(company.id(), "Sell off land assets: due to purchaseVehicle failure");
+            company.var_4A4 = AiThinkState::sellOffLandAssets;
             company.var_4A5 = 0;
         }
         else if (res == PurchaseVehicleResult::allVehiclesPurchased)
@@ -7658,10 +7691,10 @@ namespace OpenLoco
         aiThinkState1,
         aiThinkState2,
         aiThinkState3,
-        aiThinkState4,
+        aiThinkConvertAiAllocated,
         nullsub_3,
-        aiThinkState6,
-        aiThinkState7,
+        aiThinkUndoPartialAction,
+        aiThinkSellOffLandAssets,
         aiThinkState8,
         nullsub_4,
         aiThinkEndCompany,
@@ -7690,7 +7723,7 @@ namespace OpenLoco
 
         processVehiclePlaceStateMachine(*company);
 
-        if (company->headquartersX != -1 || (company->challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none || (company->challengeFlags & CompanyFlags::unk0) == CompanyFlags::none)
+        if (company->headquartersX != -1 || (company->challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none || (company->challengeFlags & CompanyFlags::aiHasStarted) == CompanyFlags::none)
         {
             return;
         }

@@ -1,17 +1,16 @@
 #include "Screenshot.h"
 #include "Entities/EntityManager.h"
 #include "Environment.h"
+#include "GameState.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/TileManager.h"
-#include "ScenarioOptions.h"
 #include "Ui.h"
 #include "WindowManager.h"
 #include <OpenLoco/Core/Exception.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Platform.h>
 #include <cstdint>
 #include <fstream>
@@ -20,12 +19,11 @@
 
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non-portable
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 
 namespace OpenLoco::Ui
 {
-    static loco_global<int8_t, 0x00508F16> _screenshotCountdown;
+    static int8_t _screenshotCountdown = 0; // 0x00508F16
 
     static ScreenshotType _screenshotType = ScreenshotType::regular;
 
@@ -82,7 +80,7 @@ namespace OpenLoco::Ui
 
     static void saveRenderTargetToPng(const Gfx::RenderTarget& rt, std::fstream& outputStream)
     {
-        static loco_global<uint8_t[256][4], 0x0113ED20> _113ED20;
+        auto rgbaPalette = Gfx::getRgbaPalette();
 
         png_structp pngPtr = nullptr;
         png_colorp palette = nullptr;
@@ -116,9 +114,9 @@ namespace OpenLoco::Ui
 
             for (size_t i = 0; i < 246; i++)
             {
-                palette[i].blue = _113ED20[i][0];
-                palette[i].green = _113ED20[i][1];
-                palette[i].red = _113ED20[i][2];
+                palette[i].blue = rgbaPalette[i].b;
+                palette[i].green = rgbaPalette[i].g;
+                palette[i].red = rgbaPalette[i].r;
             }
             png_set_PLTE(pngPtr, infoPtr, palette, 246);
 
@@ -152,8 +150,8 @@ namespace OpenLoco::Ui
     {
         auto screenshotsFolderPath = Environment::getPathNoWarning(Environment::PathId::screenshots);
         Environment::autoCreateDirectory(screenshotsFolderPath);
-        std::string scenarioName = Scenario::getOptions().scenarioName;
 
+        std::string scenarioName = getGameState().scenarioName;
         if (scenarioName.length() == 0)
         {
             scenarioName = StringManager::getString(StringIds::screenshot_filename_template);

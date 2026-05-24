@@ -2,7 +2,6 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -48,6 +47,8 @@
 #include "World/CompanyManager.h"
 #include "World/Industry.h"
 #include "World/Station.h"
+
+#include <OpenLoco/Utility/LookupTable.hpp>
 #include <map>
 
 using namespace OpenLoco::World;
@@ -56,7 +57,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 {
     static TilePos2 _currentPosition{};
 
-    static constexpr Ui::Size32 kWindowSize = { 350, 200 };
+    static constexpr Ui::Size kWindowSize = { 350, 200 };
 
     namespace widx
     {
@@ -161,14 +162,14 @@ namespace OpenLoco::Ui::Windows::TileInspector
             FormatArguments args{};
             args.push(StringIds::tile_inspector_x_coord);
             auto& widget = self.widgets[widx::xPos];
-            auto point = Point(widget.left - 15, widget.top + 1);
+            auto point = Point(self.x + widget.left - 15, self.y + widget.top + 1);
             tr.drawStringLeft(point, Colour::black, StringIds::wcolour2_stringid, args);
         }
         {
             FormatArguments args{};
             args.push(StringIds::tile_inspector_y_coord);
             auto& widget = self.widgets[widx::yPos];
-            auto point = Point(widget.left - 15, widget.top + 1);
+            auto point = Point(self.x + widget.left - 15, self.y + widget.top + 1);
             tr.drawStringLeft(point, Colour::black, StringIds::wcolour2_stringid, args);
         }
 
@@ -177,14 +178,14 @@ namespace OpenLoco::Ui::Windows::TileInspector
             FormatArguments args{};
             args.push<int16_t>(_currentPosition.x);
             auto& widget = self.widgets[widx::xPos];
-            auto point = Point(widget.left + 2, widget.top + 1);
+            auto point = Point(self.x + widget.left + 2, self.y + widget.top + 1);
             tr.drawStringLeft(point, Colour::black, StringIds::tile_inspector_coord, args);
         }
         {
             FormatArguments args{};
             args.push<int16_t>(_currentPosition.y);
             auto& widget = self.widgets[widx::yPos];
-            auto point = Point(widget.left + 2, widget.top + 1);
+            auto point = Point(self.x + widget.left + 2, self.y + widget.top + 1);
             tr.drawStringLeft(point, Colour::black, StringIds::tile_inspector_coord, args);
         }
 
@@ -199,14 +200,14 @@ namespace OpenLoco::Ui::Windows::TileInspector
             snprintf(&buffer[1], std::size(buffer) - 1, "Data: %02x %02x %02x %02x %02x %02x %02x %02x", data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
 
             auto widget = self.widgets[widx::detailsGroup];
-            auto point = Point(widget.left + 7, widget.top + 14);
+            auto point = Point(self.x + widget.left + 7, self.y + widget.top + 14);
             tr.drawString(point, Colour::black, buffer);
         }
     }
 
     static StringId getElementTypeName(const TileElement& element)
     {
-        static const std::map<ElementType, StringId> typeToString = {
+        static constexpr auto kTypeToString = Utility::buildLookupTable<ElementType, StringId>({
             { ElementType::surface, StringIds::tile_inspector_element_type_surface },
             { ElementType::track, StringIds::tile_inspector_element_type_track },
             { ElementType::station, StringIds::tile_inspector_element_type_station },
@@ -216,9 +217,9 @@ namespace OpenLoco::Ui::Windows::TileInspector
             { ElementType::wall, StringIds::tile_inspector_element_type_wall },
             { ElementType::road, StringIds::tile_inspector_element_type_road },
             { ElementType::industry, StringIds::tile_inspector_element_type_industry },
-        };
+        });
 
-        return typeToString.at(element.type());
+        return kTypeToString.at(element.type());
     }
 
     static StringId getObjectName(const TileElement& element)

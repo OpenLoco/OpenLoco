@@ -21,16 +21,16 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::competitor;
 
-        StringId name;           // 0x00
-        StringId lastName;       // 0x02
-        uint32_t var_04;         // 0x04
-        uint32_t var_08;         // 0x08
-        uint32_t emotions;       // 0x0C
-        uint32_t images[9];      // 0x10
-        uint8_t intelligence;    // 0x34
-        uint8_t aggressiveness;  // 0x35
-        uint8_t competitiveness; // 0x36
-        uint8_t var_37;          // 0x37
+        StringId name;                  // 0x00
+        StringId availableNamePrefixes; // 0x02
+        uint32_t availablePlayStyles;   // 0x04
+        uint32_t var_08;                // 0x08
+        uint32_t emotions;              // 0x0C
+        uint32_t images[9];             // 0x10
+        uint8_t intelligence;           // 0x34
+        uint8_t aggressiveness;         // 0x35
+        uint8_t competitiveness;        // 0x36
+        uint8_t var_37;                 // 0x37
 
         void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;

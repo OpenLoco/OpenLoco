@@ -5,8 +5,6 @@
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::GameCommands
 {
     // 0x0046DE88
@@ -17,12 +15,17 @@ namespace OpenLoco::GameCommands
         auto* company = CompanyManager::get(GameCommands::getUpdatingCompanyId());
         const currency32_t loanDifference = company->currentLoan - newLoan;
 
+        if (newLoan < 0)
+        {
+            // TODO: Error message loan cannot be negative
+            return kFailure;
+        }
         if (company->currentLoan > newLoan)
         {
             if (company->cash < loanDifference)
             {
                 GameCommands::setErrorText(StringIds::not_enough_cash_available);
-                return FAILURE;
+                return kFailure;
             }
         }
         else
@@ -31,7 +34,7 @@ namespace OpenLoco::GameCommands
             if (newLoan > maxLoan)
             {
                 GameCommands::setErrorText(StringIds::bank_refuses_to_increase_loan);
-                return FAILURE;
+                return kFailure;
             }
         }
 

@@ -7,7 +7,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -78,11 +77,11 @@ namespace OpenLoco::Ui::Windows::Industry
 
     namespace Industry
     {
-        static constexpr Ui::Size32 kWindowSize = { 223, 137 };
+        static constexpr Ui::Size kWindowSize = { 223, 137 };
 
-        static constexpr Ui::Size32 kMinWindowSize = { 192, 137 };
+        static constexpr Ui::Size kMinWindowSize = { 192, 137 };
 
-        static constexpr Ui::Size32 kMaxWindowSize = { 600, 440 };
+        static constexpr Ui::Size kMaxWindowSize = { 600, 440 };
 
         enum widx
         {
@@ -150,7 +149,7 @@ namespace OpenLoco::Ui::Windows::Industry
             args.push(StringIds::buffer_1250);
 
             auto widget = &self.widgets[widx::status_bar];
-            auto point = Point(widget->left - 1, widget->top - 1);
+            auto point = Point(self.x + widget->left - 1, self.y + widget->top - 1);
             auto width = widget->width();
             tr.drawStringLeftClipped(point, width, Colour::black, StringIds::black_stringid, args);
         }
@@ -185,14 +184,14 @@ namespace OpenLoco::Ui::Windows::Industry
                 {
                     GameCommands::IndustryRemovalArgs args;
                     args.industryId = static_cast<IndustryId>(self.number);
-                    bool success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE;
+                    bool success = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure;
 
                     if (!success)
                     {
                         break;
                     }
 
-                    Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+                    Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
                     break;
                 }
             }
@@ -266,7 +265,7 @@ namespace OpenLoco::Ui::Windows::Industry
             }
             else
             {
-                if (Config::get().hasFlags(Config::Flags::gridlinesOnLandscape))
+                if (Config::get().gridlinesOnLandscape)
                 {
                     flags |= ViewportFlags::gridlines_on_landscape;
                 }
@@ -278,7 +277,7 @@ namespace OpenLoco::Ui::Windows::Industry
             {
                 auto widget = &self.widgets[widx::viewport];
                 auto tile = World::Pos3({ industry->x, industry->y, tileZ });
-                auto origin = Ui::Point(widget->left + 1, widget->top + 1);
+                auto origin = Ui::Point(widget->left + self.x + 1, widget->top + self.y + 1);
                 auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
                 ViewportManager::create(&self, 0, origin, size, self.savedView.zoomLevel, tile);
                 self.invalidate();
@@ -325,7 +324,7 @@ namespace OpenLoco::Ui::Windows::Industry
         if (window == nullptr)
         {
             // 0x00456DBC start
-            const WindowFlags newFlags = WindowFlags::flag_8 | WindowFlags::resizable;
+            const WindowFlags newFlags = WindowFlags::viewportNoShiftPixels | WindowFlags::resizable;
             window = WindowManager::createWindow(WindowType::industry, Industry::kWindowSize, newFlags, Industry::getEvents());
             window->number = enumValue(industryId);
             window->minWidth = 192;
@@ -363,9 +362,9 @@ namespace OpenLoco::Ui::Windows::Industry
     namespace Production
     {
 
-        static constexpr Ui::Size32 kMinWindowSize = { 299, 282 };
+        static constexpr Ui::Size kMinWindowSize = { 299, 282 };
 
-        static constexpr Ui::Size32 kMaxWindowSize = { 299, 337 };
+        static constexpr Ui::Size kMaxWindowSize = { 299, 337 };
 
         // 0x00455FD9
         static void prepareDraw(Window& self)
@@ -400,9 +399,9 @@ namespace OpenLoco::Ui::Windows::Industry
 
     namespace Production2
     {
-        static constexpr Ui::Size32 kMinWindowSize = { 299, 282 };
+        static constexpr Ui::Size kMinWindowSize = { 299, 282 };
 
-        static constexpr Ui::Size32 kMaxWindowSize = { 299, 337 };
+        static constexpr Ui::Size kMaxWindowSize = { 299, 337 };
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(222, 136, StringIds::title_industry_monthly_production)
@@ -442,7 +441,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
     namespace Transported
     {
-        static constexpr Ui::Size32 kWindowSize = { 300, 127 };
+        static constexpr Ui::Size kWindowSize = { 300, 127 };
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(300, 126, StringIds::title_statistics)
@@ -467,7 +466,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
             auto industry = IndustryManager::get(IndustryId(self.number));
             const auto* industryObj = industry->getObject();
-            auto origin = Point(3, 45);
+            auto origin = Point(self.x + 3, self.y + 45);
 
             // Draw Last Months received cargo stats
             if (industry->canReceiveCargo())
@@ -609,21 +608,21 @@ namespace OpenLoco::Ui::Windows::Industry
                 FormatArguments args{};
                 args.push(cargoObj->unitsAndCargoName);
 
-                auto point = Point(2, 44);
+                auto point = Point(self.x + 2, self.y - 24 + 68);
                 tr.drawStringLeft(point, Colour::black, StringIds::production_graph_label, args);
             }
 
             // Draw Y label and grid lines.
-            const uint16_t graphBottom = self.height - 7;
+            const uint16_t graphBottom = self.y + self.height - 7;
             int32_t yTick = 0;
-            for (int16_t yPos = graphBottom; yPos >= 68; yPos -= 20)
+            for (int16_t yPos = graphBottom; yPos >= self.y + 68; yPos -= 20)
             {
                 FormatArguments args{};
                 args.push(yTick);
 
-                drawingCtx.drawRect(41, yPos, 239, 1, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Gfx::RectFlags::none);
+                drawingCtx.drawRect(self.x + 41, yPos, 239, 1, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Gfx::RectFlags::none);
 
-                auto point = Point(39, yPos - 6);
+                auto point = Point(self.x + 39, yPos - 6);
                 tr.drawStringRight(point, Colour::black, StringIds::population_graph_people, args);
 
                 yTick += 1000;
@@ -638,8 +637,8 @@ namespace OpenLoco::Ui::Windows::Industry
             const uint8_t productionNum = productionTabWidx - widx::tab_production;
             for (uint8_t i = industry->producedCargoMonthlyHistorySize[productionNum] - 1; i > 0; i--)
             {
-                const uint16_t xPos = 41 + i;
-                const uint16_t yPos = 56;
+                const uint16_t xPos = self.x + 41 + i;
+                const uint16_t yPos = self.y + 56;
 
                 // Draw horizontal year and vertical grid lines.
                 if (month == MonthId::january)
@@ -799,7 +798,10 @@ namespace OpenLoco::Ui::Windows::Industry
             args.push(industry->name);
             args.push(industry->town);
 
-            TextInput::openTextInput(&self, StringIds::title_industry_name, StringIds::prompt_enter_new_industry_name, industry->name, widgetIndex, &industry->town);
+            FormatArgumentsBuffer buffer{};
+            auto args2 = FormatArguments(buffer);
+            args2.push(industry->town);
+            TextInput::openTextInput(&self, StringIds::title_industry_name, StringIds::prompt_enter_new_industry_name, industry->name, widgetIndex, args2);
         }
 
         // 0x00455CC7
@@ -814,7 +816,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
             self.currentTab = widgetIndex - widx::tab_industry;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::maximised);
             self.var_85C = -1;
 
             self.viewportRemove(0);
@@ -878,8 +880,8 @@ namespace OpenLoco::Ui::Windows::Industry
                     imageId += productionTabImageIds[0];
                 }
 
-                auto xPos = widget.left;
-                auto yPos = widget.top;
+                auto xPos = widget.left + self.x;
+                auto yPos = widget.top + self.y;
                 drawingCtx.drawImage(xPos, yPos, imageId);
 
                 auto caroObj = ObjectManager::get<CargoObject>(industryObj->producedCargoType[productionTabNumber]);

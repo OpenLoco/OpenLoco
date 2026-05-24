@@ -2,7 +2,7 @@
 #include "Animation.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/TrainSignalObject.h"
-#include "ScenarioManager.h"
+#include "Scenario/ScenarioManager.h"
 #include "TileManager.h"
 #include "ViewportManager.h"
 

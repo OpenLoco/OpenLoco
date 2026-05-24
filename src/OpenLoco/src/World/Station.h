@@ -22,7 +22,7 @@ namespace OpenLoco
     {
         struct StationElement;
     }
-#pragma pack(push, 1)
+
     enum class StationCargoStatsFlags : uint8_t
     {
         none = 0U,
@@ -82,7 +82,7 @@ namespace OpenLoco
         transportModeRoad = (1U << 1),
         transportModeAir = (1U << 2),
         transportModeWater = (1U << 3),
-        flag_4 = (1U << 4),
+        sorted = (1U << 4), // unused; used to be used by the station list
         flag_5 = (1U << 5), // isNotFullyCreated ?? like ghost will never have this set
         flag_6 = (1U << 6),
         flag_7 = (1U << 7),
@@ -142,7 +142,6 @@ namespace OpenLoco
         uint8_t airportRotation{};               // 0x3B3
         World::Pos3 airportStartPos{};           // 0x3B4
         uint32_t airportMovementOccupiedEdges{}; // 0x3BA
-        uint8_t pad_3BE[0x3D2 - 0x3BE]{};
 
         bool empty() const { return name == StringIds::null; }
         StationId id() const;
@@ -163,8 +162,6 @@ namespace OpenLoco
         void updateCargoAcceptance();
         void alertCargoAcceptanceChange(uint32_t oldCargoAcc, uint32_t newCargoAcc);
     };
-    static_assert(sizeof(Station) == 0x3D2);
-#pragma pack(pop)
 
     void setCatchmentDisplay(const Station* station, const CatchmentFlags flags);
     bool isWithinCatchmentDisplay(const World::Pos2 pos);

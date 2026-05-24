@@ -42,4 +42,6 @@ namespace OpenLoco::GameCommands
             return regs;
         }
     };
+
+    void createRoadMod(registers& regs);
 }

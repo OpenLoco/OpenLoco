@@ -1,10 +1,6 @@
 #include "ExplosionEffect.h"
 #include "Entities/EntityManager.h"
 
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco
 {
     // 0x004407CC

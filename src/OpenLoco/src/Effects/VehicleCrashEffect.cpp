@@ -5,10 +5,6 @@
 #include "Random.h"
 #include "SplashEffect.h"
 
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco
 {
     // There are a total of 12 sprites for this effect, the paint code divides this by 256.
@@ -59,7 +55,7 @@ namespace OpenLoco
             // We hit the water surface, create a splash effect.
             const auto splashPos = World::Pos3{ position.x, position.y, waterZ };
 
-            Audio::playSound(Audio::SoundId::splash2, splashPos);
+            Audio::playSound(Audio::SoundId::splash2, Audio::ChannelId::vehicles, splashPos);
             Splash::create({ position.x, position.y, waterZ });
 
             EntityManager::freeEntity(this);
@@ -74,7 +70,6 @@ namespace OpenLoco
         }
 
         moveTo(newLoc);
-        invalidateSprite();
 
         frame += kAnimationSpeed;
         if (frame >= kMaxSplashFrames)

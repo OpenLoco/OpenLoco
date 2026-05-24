@@ -1,7 +1,6 @@
 #include "ColourButtonWidget.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Ui/Window.h"
 
@@ -35,6 +34,9 @@ namespace OpenLoco::Ui::Widgets
             imageId = imageId.withPrimary(widgetState.colour.c());
         }
 
-        drawingCtx.drawImage({}, imageId);
+        auto* window = widgetState.window;
+
+        const auto pos = window->position() + widget.position();
+        drawingCtx.drawImage(pos, imageId);
     }
 }

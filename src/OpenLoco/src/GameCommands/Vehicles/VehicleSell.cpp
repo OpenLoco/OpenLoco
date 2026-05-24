@@ -4,7 +4,11 @@
 #include "VehiclePickupAir.h"
 #include "VehiclePickupWater.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
+#include "Vehicles/VehicleTail.h"
 
 using namespace OpenLoco::Vehicles;
 
@@ -18,13 +22,13 @@ namespace OpenLoco::GameCommands
         auto* vehBase = EntityManager::get<VehicleBase>(id);
         if (vehBase == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         auto* head = EntityManager::get<VehicleHead>(vehBase->getHead());
         if (head == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
         Vehicle train(*head);
         if (head == vehBase)
@@ -39,7 +43,7 @@ namespace OpenLoco::GameCommands
             auto* bogie = vehBase->asVehicleBogie();
             if (bogie == nullptr)
             {
-                return FAILURE;
+                return kFailure;
             }
             refundCost = bogie->refundCost;
         }
@@ -87,7 +91,8 @@ namespace OpenLoco::GameCommands
                 }
                 Vehicles::Car car(vehBase);
                 VehicleManager::deleteCar(car);
-                head->sub_4AF7A4();
+
+                head->autoLayoutTrain();
                 head->updateTrainProperties();
                 head->applyBreakdownToTrain();
                 if (placeArgs.has_value())
@@ -108,12 +113,12 @@ namespace OpenLoco::GameCommands
         {
             if (!sub_431E6A(vehBase->owner))
             {
-                return FAILURE;
+                return kFailure;
             }
             if (!head->canBeModified())
             {
                 // Error message set by canBeModified
-                return FAILURE;
+                return kFailure;
             }
             setPosition(head->position);
         }
@@ -121,7 +126,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004AED34
-    void sellVehicle(Interop::registers& regs)
+    void sellVehicle(registers& regs)
     {
         regs.ebx = sellVehicle(EntityId(regs.dx), regs.bl);
     }

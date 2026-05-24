@@ -8,9 +8,6 @@
 #include "Localisation/StringManager.h"
 #include "Types.hpp"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
@@ -83,7 +80,7 @@ namespace OpenLoco::GameCommands
             if (strcmp(rivalCompanyName, renameStringBuffer) == 0)
             {
                 GameCommands::setErrorText(StringIds::chosen_name_in_use);
-                return GameCommands::FAILURE;
+                return GameCommands::kFailure;
             }
         }
 
@@ -91,7 +88,7 @@ namespace OpenLoco::GameCommands
         StringId allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, false);
         if (allocatedStringId == StringIds::empty)
         {
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
 
         // Bailing out early?

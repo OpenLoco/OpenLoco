@@ -26,7 +26,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
         panel,
     };
 
-    static constexpr Ui::Size32 kWindowSize = { 350, 47 };
+    static constexpr Ui::Size kWindowSize = { 350, 47 };
 
     static constexpr auto widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 350, 47 }, WindowColour::primary),
@@ -52,7 +52,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
         auto window = WindowManager::createWindowCentred(
             WindowType::progressBar,
             kWindowSize,
-            WindowFlags::flag_11 | WindowFlags::stickToFront,
+            WindowFlags::lighterFrame | WindowFlags::stickToFront,
             getEvents());
 
         window->setWidgets(widgets);
@@ -104,7 +104,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
 
         self.draw(drawingCtx);
 
-        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(2, 17, self.width - 5, self.height - 19));
+        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(self.x + 2, self.y + 17, self.width - 5, self.height - 19));
         if (!clipped)
         {
             return;

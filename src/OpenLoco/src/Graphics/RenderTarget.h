@@ -6,8 +6,6 @@
 
 namespace OpenLoco::Gfx
 {
-#pragma pack(push, 1)
-
     // TODO: Convert this to a handle once everything is implemented.
     // Depending on the rendering engine this could be a buffer on GPU or RAM.
     struct RenderTarget
@@ -23,8 +21,6 @@ namespace OpenLoco::Gfx
         Ui::Rect getUiRect() const;
         Ui::Rect getDrawableRect() const;
     };
-
-#pragma pack(pop)
 
     std::optional<RenderTarget> clipRenderTarget(const RenderTarget& src, const Ui::Rect& newRect);
 }

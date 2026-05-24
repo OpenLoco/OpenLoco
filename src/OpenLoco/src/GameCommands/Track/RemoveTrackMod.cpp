@@ -7,8 +7,6 @@
 #include "Vehicles/Vehicle.h"
 #include <OpenLoco/Math/Vector.hpp>
 
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::GameCommands
 {
     // 0x004A668A
@@ -59,12 +57,12 @@ namespace OpenLoco::GameCommands
 
         if (elTrack == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!sub_431E6A(elTrack->owner(), reinterpret_cast<const World::TileElement*>(elTrack)))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         const auto& piece = World::TrackData::getTrackPiece(elTrack->trackId())[elTrack->sequenceIndex()];

@@ -1,4 +1,5 @@
 set(public_files
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Diagnostics/Assertion.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Diagnostics/LogFile.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Diagnostics/LogLevel.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Diagnostics/LogSink.h"
@@ -14,7 +15,13 @@ set(private_files
 )
 
 set(test_files
+    "${CMAKE_CURRENT_SOURCE_DIR}/tests/AssertionTests.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/LoggingTests.cpp"
+)
+
+set(public_link_libraries
+    Core
+    Platform
 )
 
 loco_add_library(Diagnostics STATIC
@@ -24,10 +31,6 @@ loco_add_library(Diagnostics STATIC
         ${private_files}
     TEST_FILES
         ${test_files}
-)
-
-target_link_libraries(Diagnostics 
-    PUBLIC
-        Core
-        Platform
+    PUBLIC_LINK_LIBRARIES
+        ${public_link_libraries}
 )

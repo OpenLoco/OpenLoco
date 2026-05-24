@@ -27,7 +27,6 @@ namespace OpenLoco
         smoke = 8 // Smoke from broken down train
     };
 
-#pragma pack(push, 1)
     struct EffectEntity : EntityBase
     {
         static constexpr auto kBaseType = EntityBaseType::effect;
@@ -36,12 +35,14 @@ namespace OpenLoco
         template<typename TType, EffectType TClass>
         TType* as() const
         {
-            return getSubType() == TClass ? (TType*)this : nullptr;
+            return subType == TClass ? (TType*)this : nullptr;
         }
 
     public:
-        EffectType getSubType() const { return EffectType(EntityBase::getSubType()); }
-        void setSubType(const EffectType newType) { EntityBase::setSubType(static_cast<uint8_t>(newType)); }
+        EffectType subType;
+
+        EffectType getSubType() const { return subType; }
+        void setSubType(const EffectType newType) { subType = newType; }
         Exhaust* asExhaust() const { return as<Exhaust, EffectType::exhaust>(); }
         MoneyEffect* asRedGreenCurrency() const { return as<MoneyEffect, EffectType::redGreenCurrency>(); }
         MoneyEffect* asWindowCurrency() const { return as<MoneyEffect, EffectType::windowCurrency>(); }
@@ -53,5 +54,5 @@ namespace OpenLoco
         Smoke* asSmoke() const { return as<Smoke, EffectType::smoke>(); }
         void update();
     };
-#pragma pack(pop)
+    static_assert(sizeof(EffectEntity) <= sizeof(Entity));
 }

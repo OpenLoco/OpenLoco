@@ -8,10 +8,9 @@
 #include "Types.hpp"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleHead.h"
 #include <OpenLoco/Core/Numerics.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
@@ -27,12 +26,12 @@ namespace OpenLoco::GameCommands
 
             if (!head->canBeModified())
             {
-                return FAILURE;
+                return kFailure;
             }
 
             if (!sub_431E6A(head->owner))
             {
-                return FAILURE;
+                return kFailure;
             }
 
             if (train.cars.empty())
@@ -88,7 +87,7 @@ namespace OpenLoco::GameCommands
         }
         catch (std::runtime_error&)
         {
-            return FAILURE;
+            return kFailure;
         }
     }
 

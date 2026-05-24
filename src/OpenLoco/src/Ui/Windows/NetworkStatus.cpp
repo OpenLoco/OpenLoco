@@ -1,7 +1,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/StringIds.h"
 #include "OpenLoco.h"
@@ -26,7 +25,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
         panel,
     };
 
-    static constexpr Ui::Size32 kWindowSize = { 441, 91 };
+    static constexpr Ui::Size kWindowSize = { 441, 91 };
 
     static constexpr auto widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 441, 91 }, WindowColour::primary),
@@ -49,7 +48,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
         auto window = WindowManager::createWindowCentred(
             WindowType::networkStatus,
             kWindowSize,
-            WindowFlags::flag_11 | WindowFlags::stickToFront,
+            WindowFlags::lighterFrame | WindowFlags::stickToFront,
             getEvents());
 
         window->setWidgets(widgets);
@@ -108,7 +107,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
 
         self.draw(drawingCtx);
 
-        auto origin = Point((self.width / 2), (self.height / 2));
+        auto origin = Point(self.x + (self.width / 2), self.y + (self.height / 2));
         auto width = self.width;
 
         tr.drawStringCentredClipped(origin, width, Colour::black, StringIds::buffer_1250);

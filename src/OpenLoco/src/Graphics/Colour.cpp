@@ -1,11 +1,9 @@
 #include "Colour.h"
 #include "Gfx.h"
 #include "PaletteMap.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <array>
 #include <cassert>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Colours
 {

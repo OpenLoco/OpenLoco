@@ -6,6 +6,7 @@
 #include "S5/SawyerStream.h"
 #include <OpenLoco/Core/MemoryStream.h>
 #include <OpenLoco/Diagnostics/Logging.h>
+#include <OpenLoco/Version.hpp>
 #include <chrono>
 #include <fmt/chrono.h>
 #include <iostream>
@@ -403,7 +404,7 @@ namespace OpenLoco
 
     void printVersion()
     {
-        auto versionInfo = OpenLoco::getVersionInfo();
+        auto versionInfo = Version::getVersionInfo();
         std::cout << versionInfo << std::endl;
     }
 

@@ -5,9 +5,6 @@
 #include "Objects/ObjectManager.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
@@ -32,7 +29,7 @@ namespace OpenLoco::GameCommands
                 if (company.id() != targetCompanyId)
                 {
                     GameCommands::setErrorText(StringIds::already_selected_for_another_company);
-                    return GameCommands::FAILURE;
+                    return GameCommands::kFailure;
                 }
                 else
                 {
@@ -54,7 +51,7 @@ namespace OpenLoco::GameCommands
             // Load the new competitor object
             if (!ObjectManager::load(targetHeader))
             {
-                return GameCommands::FAILURE;
+                return GameCommands::kFailure;
             }
 
             ObjectManager::reloadAll();
@@ -63,7 +60,7 @@ namespace OpenLoco::GameCommands
             foundCompetitor = ObjectManager::findObjectHandle(targetHeader);
             if (!foundCompetitor)
             {
-                return GameCommands::FAILURE;
+                return GameCommands::kFailure;
             }
         }
 

@@ -1,6 +1,5 @@
 #include "Chart.h"
 #include "Economy/Currency.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Ui/Window.h"
 

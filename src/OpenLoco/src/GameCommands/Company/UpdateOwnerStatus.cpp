@@ -2,8 +2,6 @@
 #include "GameCommands/GameCommands.h"
 #include "World/CompanyManager.h"
 
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::GameCommands
 {
     // 0x004383CA
@@ -15,7 +13,7 @@ namespace OpenLoco::GameCommands
             auto* company = CompanyManager::get(companyId);
             if (company == nullptr)
             {
-                return FAILURE;
+                return kFailure;
             }
             company->ownerStatus = ownerStatus;
         }

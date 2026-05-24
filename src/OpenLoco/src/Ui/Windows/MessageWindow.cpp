@@ -6,7 +6,6 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Intro.h"
@@ -67,8 +66,8 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
     namespace Messages
     {
-        static constexpr Ui::Size32 kMinWindowSize = { 366, 217 };
-        static constexpr Ui::Size32 kMaxWindowSize = { 366, 1200 };
+        static constexpr Ui::Size kMinWindowSize = { 366, 217 };
+        static constexpr Ui::Size kMaxWindowSize = { 366, 1200 };
         static int8_t messageHeight = 39;
 
         enum widx
@@ -177,7 +176,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             NewsWindow::open(MessageId(messageIndex));
 
             int32_t pan = self.width / 2 + self.x;
-            Audio::playSound(Audio::SoundId::clickDown, pan);
+            Audio::playSound(Audio::SoundId::clickDown, Audio::ChannelId::ui, pan);
         }
 
         // 0x0042A87C
@@ -338,7 +337,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                 WindowType::messages,
                 { x, y },
                 { 366, 217 },
-                WindowFlags::flag_11,
+                WindowFlags::lighterFrame,
                 Messages::getEvents());
 
             window->number = 0;
@@ -347,7 +346,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             window->rowHover = -1;
             window->disabledWidgets = 0;
 
-            WindowManager::sub_4CEE0B(*window);
+            WindowManager::moveOtherWindowsDown(*window);
 
             window->minWidth = Messages::kMinWindowSize.width;
             window->minHeight = Messages::kMinWindowSize.height;
@@ -392,7 +391,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
     namespace Settings
     {
-        static constexpr Ui::Size32 kWindowSize = { 366, 155 };
+        static constexpr Ui::Size kWindowSize = { 366, 155 };
 
         static constexpr auto kNumWidgetsPerDropdown = 3;
 
@@ -508,7 +507,8 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     }
 
                     auto ddIndex = wIndex - widx::company_major_news;
-                    auto currentItem = Config::get().old.newsSettings[ddIndex / kNumWidgetsPerDropdown];
+                    auto currentItem = Config::get().newsSettings[ddIndex / kNumWidgetsPerDropdown];
+                    Config::write();
                     Dropdown::setItemSelected(static_cast<size_t>(currentItem));
                     break;
                 }
@@ -535,9 +535,9 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     auto dropdownIndex = (widgetIndex - widx::company_major_news) / kNumWidgetsPerDropdown;
                     auto newValue = static_cast<Config::NewsType>(itemIndex);
 
-                    if (newValue != Config::get().old.newsSettings[dropdownIndex])
+                    if (newValue != Config::get().newsSettings[dropdownIndex])
                     {
-                        Config::get().old.newsSettings[dropdownIndex] = newValue;
+                        Config::get().newsSettings[dropdownIndex] = newValue;
                         Config::write();
                         Gfx::invalidateScreen();
                     }
@@ -562,7 +562,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             for (auto i = 0; i < 6; i++)
             {
                 auto widgetIndex = widx::company_major_news + (kNumWidgetsPerDropdown * i);
-                auto setting = static_cast<uint8_t>(Config::get().old.newsSettings[i]);
+                auto setting = static_cast<uint8_t>(Config::get().newsSettings[i]);
                 self.widgets[widgetIndex].text = kNewsDropdownStringIds[setting];
             }
         }
@@ -642,7 +642,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
             self.currentTab = widgetIndex - widx::tab_messages;
             self.frameNo = 0;
-            self.flags &= ~(WindowFlags::flag_16);
+            self.flags &= ~(WindowFlags::maximised);
 
             self.viewportRemove(0);
 

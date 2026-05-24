@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringManager.h"
 #include "Window.h"
 #include <Map/Track/TrackModSection.h>
@@ -41,13 +42,15 @@ namespace OpenLoco::Ui::WindowManager
     };
 
     void init();
-    void registerHooks();
 
     void setWindowColours(WindowColour slot, AdvancedColour colour);
     AdvancedColour getWindowColour(WindowColour slot);
 
     WindowType getCurrentModalType();
     void setCurrentModalType(WindowType type);
+
+    void resetThousandthTickCounter();
+
     Window* get(size_t index);
     size_t indexOf(const Window& pWindow);
     size_t count();
@@ -59,9 +62,9 @@ namespace OpenLoco::Ui::WindowManager
     Viewport* getMainViewport();
     Window* find(WindowType type);
     Window* find(WindowType type, WindowNumber_t number);
-    Window* findAt(int16_t x, int16_t y);
+    Window* findAt(int32_t x, int32_t y);
     Window* findAt(Ui::Point point);
-    Window* findAtAlt(int16_t x, int16_t y);
+    Window* findAtAlt(int32_t x, int32_t y);
     Window* bringToFront(Window& window);
     Window* bringToFront(WindowType type, WindowNumber_t id = 0);
     void invalidate(WindowType type);
@@ -71,18 +74,18 @@ namespace OpenLoco::Ui::WindowManager
     void close(WindowType type);
     void close(WindowType type, WindowNumber_t id);
     void close(Window* window);
-    Window* createWindow(WindowType type, Ui::Size32 size, WindowFlags flags, const WindowEventList& events);
-    Window* createWindow(WindowType type, Ui::Point32 origin, Ui::Size32 size, WindowFlags flags, const WindowEventList& events);
-    Window* createWindowCentred(WindowType type, Ui::Size32 size, WindowFlags flags, const WindowEventList& events);
-    Window* createWindow(WindowType type, Ui::Size32 size, WindowFlags flags, const WindowEventList& events);
+    Window* createWindow(WindowType type, Ui::Size size, WindowFlags flags, const WindowEventList& events);
+    Window* createWindow(WindowType type, Ui::Point origin, Ui::Size size, WindowFlags flags, const WindowEventList& events);
+    Window* createWindowCentred(WindowType type, Ui::Size size, WindowFlags flags, const WindowEventList& events);
+    Window* createWindow(WindowType type, Ui::Size size, WindowFlags flags, const WindowEventList& events);
     void dispatchUpdateAll();
     void callEvent8OnAllWindows();
     void callEvent9OnAllWindows();
     void callViewportRotateEventOnAllWindows();
     bool callKeyUpEventBackToFront(uint32_t charCode, uint32_t keyCode);
     void relocateWindows();
-    void sub_4CEE0B(const Window& self);
-    void sub_4B93A5(WindowNumber_t number);
+    void moveOtherWindowsDown(const Window& self);
+    void invalidateOrderPageByVehicleNumber(WindowNumber_t number);
     void closeConstructionWindows();
     void closeTopmost();
     void wheelInput(int wheel);
@@ -93,7 +96,7 @@ namespace OpenLoco::Ui::WindowManager
     int32_t getCurrentRotation();
     void setCurrentRotation(int32_t value);
 
-    void viewportShiftPixels(Ui::Window* window, Ui::Viewport* viewport, int16_t dX, int16_t dY);
+    void viewportShiftPixels(Ui::Window* window, Ui::Viewport* viewport, int32_t dX, int32_t dY);
     void viewportSetVisibility(ViewportVisibility flags);
 
     // 0x0052622E
@@ -109,6 +112,7 @@ namespace OpenLoco::Ui::WindowManager
 namespace OpenLoco::Vehicles
 {
     struct VehicleBase;
+    struct VehicleBogie;
     struct Car;
 }
 
@@ -126,9 +130,10 @@ namespace OpenLoco::Ui::Windows
 
     namespace BuildVehicle
     {
-        Window* open(uint32_t vehicle, uint32_t flags);
+        Window* openByVehicleId(EntityId vehicleId);
+        Window* openByType(VehicleType vehicleType);
+        Window* openByVehicleObjectId(uint16_t vehicleObjectId);
         void sub_4B92A5(Ui::Window* window);
-        void registerHooks();
     }
 
     namespace Cheats
@@ -170,7 +175,7 @@ namespace OpenLoco::Ui::Windows
         bool isSignalTabOpen();
         bool rotate(Window& self);
         void removeConstructionGhosts();
-        void registerHooks();
+        void resetGhostVisibilityFlags();
         uint16_t getLastSelectedMods();
         World::Track::ModSection getLastSelectedTrackModSection();
     }
@@ -178,6 +183,7 @@ namespace OpenLoco::Ui::Windows
     namespace DragVehiclePart
     {
         void open(Vehicles::Car& car);
+        Vehicles::VehicleBogie* getDragCarComponent();
     }
 
     namespace EditKeyboardShortcut
@@ -190,7 +196,6 @@ namespace OpenLoco::Ui::Windows
         void open(StringId title, StringId message = StringIds::null);
         void openQuiet(StringId title, StringId message = StringIds::null);
         void openWithCompetitor(StringId title, StringId message, CompanyId competitorId);
-        void registerHooks();
     }
 
     namespace Industry
@@ -201,6 +206,7 @@ namespace OpenLoco::Ui::Windows
     namespace IndustryList
     {
         Window* open();
+        void refreshList();
         void reset();
         void removeIndustry(const IndustryId id);
     }
@@ -222,6 +228,11 @@ namespace OpenLoco::Ui::Windows
         void hideGridlines();
         void showDirectionArrows();
         void hideDirectionArrows();
+
+        void viewportFocusOnEntity(Window& main, EntityId targetEntity);
+        bool viewportIsFocusedOnEntity(const Window& main, EntityId targetEntity);
+        bool viewportIsFocusedOnAnyEntity(const Window& main);
+        void viewportUnfocusFromEntity(Window& main);
     }
 
     namespace MapToolTip
@@ -241,6 +252,11 @@ namespace OpenLoco::Ui::Windows
     namespace MessageWindow
     {
         void open();
+    }
+
+    namespace MusicJukebox
+    {
+        Window* open();
     }
 
     namespace MusicSelection
@@ -280,8 +296,7 @@ namespace OpenLoco::Ui::Windows
     namespace Options
     {
         Window* open();
-        Window* openMusicSettings();
-        constexpr uint8_t kTabOffsetMusic = 2;
+        Window* openAudioSettings();
     }
 
     namespace PlayerInfoPanel
@@ -304,7 +319,7 @@ namespace OpenLoco::Ui::Windows
             load = 1,
             save = 2
         };
-        bool open(browse_type type, char* path, const char* filter, StringId titleId);
+        std::optional<std::string> open(browse_type type, std::string_view path, const char* filter, StringId titleId);
     }
 
     namespace PromptOkCancel
@@ -365,9 +380,7 @@ namespace OpenLoco::Ui::Windows
 
     namespace TextInput
     {
-        void registerHooks();
-
-        void openTextInput(Ui::Window* w, StringId title, StringId message, StringId value, int callingWidget, const void* valueArgs, uint32_t inputSize = StringManager::kUserStringSize - 1);
+        void openTextInput(Ui::Window* w, StringId title, StringId message, StringId value, int callingWidget, FormatArgumentsView valueArgs, uint32_t inputSize = StringManager::kUserStringSize - 1);
         void sub_4CE6C9(WindowType type, WindowNumber_t number);
         void cancel();
         void sub_4CE6FF();
@@ -428,12 +441,9 @@ namespace OpenLoco::Ui::Windows
 
     namespace ToolTip
     {
-        void registerHooks();
-        void open(Ui::Window* window, int32_t widgetIndex, int16_t x, int16_t y);
-        void update(Ui::Window* window, int32_t widgetIndex, StringId stringId, int16_t x, int16_t y);
-        void set_52336E(bool value);
+        void open(Ui::Window* window, int32_t widgetIndex, int32_t x, int32_t y);
+        void update(Ui::Window* window, int32_t widgetIndex, StringId stringId, int32_t x, int32_t y);
         void closeAndReset();
-        bool isTimeTooltip();
     }
 
     namespace Town
@@ -444,6 +454,7 @@ namespace OpenLoco::Ui::Windows
     namespace TownList
     {
         Window* open();
+        void refreshList();
         void removeTown(TownId);
         void reset();
         bool rotate(Window& self);

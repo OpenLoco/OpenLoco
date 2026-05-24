@@ -8,9 +8,8 @@
 #include "Map/TileLoop.hpp"
 #include "Map/TileManager.h"
 #include "Objects/ObjectManager.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 
 namespace OpenLoco::GameCommands
@@ -75,9 +74,9 @@ namespace OpenLoco::GameCommands
             }
 
             auto cost = TileManager::adjustWaterHeight(toWorldSpace(tilePos), waterHeight, removedBuildings, flags);
-            if (cost == FAILURE)
+            if (cost == kFailure)
             {
-                return FAILURE;
+                return kFailure;
             }
             else
             {
@@ -89,7 +88,7 @@ namespace OpenLoco::GameCommands
         {
             auto centre = (args.pointA + args.pointB) / 2;
             auto tileHeight = World::TileManager::getHeight(centre);
-            Audio::playSound(Audio::SoundId::water, World::Pos3(centre.x, centre.y, tileHeight.waterHeight));
+            Audio::playSound(Audio::SoundId::water, Audio::ChannelId::effects, World::Pos3(centre.x, centre.y, tileHeight.waterHeight));
         }
 
         return totalCost;

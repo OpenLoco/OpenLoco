@@ -1,9 +1,12 @@
 #include "VehicleRearrange.h"
+#include "Config.h"
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "VehiclePickupAir.h"
 #include "VehiclePickupWater.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
 
 namespace OpenLoco::GameCommands
@@ -33,38 +36,38 @@ namespace OpenLoco::GameCommands
         {
             if (!sub_431E6A(sourceVehicle->owner))
             {
-                return FAILURE;
+                return kFailure;
             }
             if (!sub_431E6A(destVehicle->owner))
             {
-                return FAILURE;
+                return kFailure;
             }
 
             if (!sourceHead->canBeModified())
             {
-                return FAILURE;
+                return kFailure;
             }
             if (!destHead->canBeModified())
             {
-                return FAILURE;
+                return kFailure;
             }
 
             if (sourceVehicle->getTrackType() != destVehicle->getTrackType())
             {
                 setErrorText(StringIds::incompatible_vehicle);
-                return FAILURE;
+                return kFailure;
             }
 
             // Pretty sure this needs to be true but not 100% (openloco addition)
             auto* sourceBogie = sourceVehicle->asVehicleBogie();
             if (sourceBogie == nullptr)
             {
-                return FAILURE;
+                return kFailure;
             }
 
             if (!destHead->isVehicleTypeCompatible(sourceBogie->objectId))
             {
-                return FAILURE;
+                return kFailure;
             }
 
             setPosition(destVehicle->position);
@@ -75,22 +78,22 @@ namespace OpenLoco::GameCommands
             auto* sourceBogie = sourceVehicle->asVehicleBogie();
             if (sourceBogie == nullptr)
             {
-                return FAILURE;
+                return kFailure;
             }
 
             Vehicles::Vehicle sourceTrain(*sourceHead);
             Vehicles::Vehicle destTrain(*destHead);
 
-            if (sourceHead != destHead)
+            if (sourceHead != destHead && !Config::get().keepCargoModifyPickup)
             {
                 [&train = sourceTrain, &targetBogie = *sourceBogie]() {
                     for (auto& car : train.cars)
                     {
-                        for (auto& carComponet : car)
+                        for (auto& carComponent : car)
                         {
-                            if (carComponet.front == &targetBogie)
+                            if (carComponent.front == &targetBogie)
                             {
-                                Vehicles::removeAllCargo(carComponet);
+                                Vehicles::removeAllCargo(carComponent);
                                 return;
                             }
                         }
@@ -144,11 +147,11 @@ namespace OpenLoco::GameCommands
             // Vehicle has been invalidate so get it again
             sourceTrain = Vehicles::Vehicle(*sourceHead);
 
-            destHead->sub_4AF7A4();
+            destHead->autoLayoutTrain();
             destHead->updateTrainProperties();
             if (sourceHead != destHead)
             {
-                sourceHead->sub_4AF7A4();
+                sourceHead->autoLayoutTrain();
                 sourceHead->updateTrainProperties();
             }
 

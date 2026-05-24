@@ -3,7 +3,7 @@
 #include "ObjectImageTable.h"
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
-#include <OpenLoco/Interop/Interop.hpp>
+
 #include <cassert>
 
 namespace OpenLoco

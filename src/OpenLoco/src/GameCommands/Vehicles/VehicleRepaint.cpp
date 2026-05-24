@@ -3,9 +3,8 @@
 #include "GameCommands/GameCommands.h"
 #include "Types.hpp"
 #include "Vehicles/Vehicle.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
 
 namespace OpenLoco::GameCommands
 {
@@ -42,12 +41,12 @@ namespace OpenLoco::GameCommands
         auto veh = entity->asBase<Vehicles::VehicleBase>();
         if (veh == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!sub_431E6A(veh->owner))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!(flags & Flags::apply))

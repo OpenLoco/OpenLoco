@@ -5,15 +5,14 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Logging.h"
 #include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
-#include "Scenario.h"
-#include "ScenarioManager.h"
+#include "Scenario/Scenario.h"
+#include "Scenario/ScenarioManager.h"
 #include "SceneManager.h"
 #include "Ui/ScrollView.h"
 #include "Ui/Widget.h"
@@ -29,7 +28,7 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Ui::Windows::ScenarioSelect
 {
-    static constexpr Ui::Size32 kWindowSize = { 610, 412 };
+    static constexpr Ui::Size kWindowSize = { 610, 412 };
 
     namespace widx
     {
@@ -50,7 +49,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 610, 412 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 608, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::select_scenario_for_new_game),
+        Widgets::Caption({ 1, 1 }, { 608, 34 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::select_scenario_for_new_game),
         Widgets::ImageButton({ 595, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Wt3Widget({ 0, 48 }, { 610, 364 }, WindowColour::secondary),
         Widgets::Tab({ 3, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
@@ -121,7 +120,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             WindowType::scenarioSelect,
             { width() / 2 - kWindowSize.width / 2, std::max<int16_t>(height() / 2 - kWindowSize.height / 2, 28) },
             kWindowSize,
-            WindowFlags::stickToFront | WindowFlags::flag_12,
+            WindowFlags::stickToFront | WindowFlags::playSoundOnOpen,
             getEvents());
 
         self->setWidgets(_widgets);
@@ -136,7 +135,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         initTabs(self);
 
         // Select the last tab used, or the first available one.
-        uint8_t selectedTab = Config::get().old.scenarioSelectedTab;
+        uint8_t selectedTab = Config::get().scenarioSelectedTab;
         if (self->widgets[widx::tab0 + selectedTab].hidden)
         {
             selectedTab = 0;
@@ -169,7 +168,12 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     {
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        drawingCtx.drawRectInset(0, 20, self.width, 41, self.getColour(WindowColour::primary), Gfx::RectInsetFlags::none);
+        // Extend background frame with a solid colour
+        // TODO: this should not be needed
+        if (Config::get().windowFrameStyle == Config::WindowFrameStyle::background)
+        {
+            drawingCtx.drawRectInset(self.x, self.y + 20, self.width, 41, self.getColour(WindowColour::primary), Gfx::RectInsetFlags::none);
+        }
 
         // Draw widgets.
         self.draw(drawingCtx);
@@ -192,7 +196,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             }
 
             const auto offset = self.currentTab == i ? 1 : 0;
-            auto origin = Ui::Point(widget.midX(), widget.midY() - 3 - offset);
+            auto origin = Ui::Point(widget.midX() + self.x, widget.midY() + self.y - 3 - offset);
             const StringId caption = scenarioGroupIds[i];
 
             auto argsBuf = FormatArgumentsBuffer{};
@@ -235,8 +239,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             }
         }
 
-        const int16_t baseX = self.widgets[widx::list].right + 4;
-        const int16_t baseY = self.widgets[widx::panel].top + 5;
+        const int16_t baseX = self.x + self.widgets[widx::list].right + 4;
+        const int16_t baseY = self.y + self.widgets[widx::panel].top + 5;
         const int16_t colWidth = self.widgets[widx::panel].right - self.widgets[widx::list].right - 6;
 
         int16_t x = baseX, y = baseY;
@@ -359,7 +363,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             // Delayed start for competing companies
             args = FormatArguments();
             args.push<uint16_t>(scenarioInfo->competingCompanyDelay);
-            competitionStringId = scenarioInfo->numCompetingCompanies == 1 ? StringIds::competition_not_starting_for_month : StringIds::competition_not_starting_for_months;
+            competitionStringId = scenarioInfo->competingCompanyDelay == 1 ? StringIds::competition_not_starting_for_month : StringIds::competition_not_starting_for_months;
             tr.drawStringLeft(Point(x, y), Colour::black, competitionStringId, args);
         }
     }
@@ -474,7 +478,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
                 self.currentTab = selectedCategory;
 
-                auto& config = Config::get().old;
+                auto& config = Config::get();
                 config.scenarioSelectedTab = selectedCategory;
                 Config::write();
 
@@ -515,7 +519,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         }
 
         // Mouse click sound
-        Audio::playSound(Audio::SoundId::clickDown, self.x + (self.width / 2));
+        Audio::playSound(Audio::SoundId::clickDown, Audio::ChannelId::ui, self.x + (self.width / 2));
 
         if (SceneManager::isNetworked())
         {

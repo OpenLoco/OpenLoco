@@ -8,22 +8,22 @@
 #include "StringManager.h"
 #include "Ui.h"
 #include "Unicode.h"
+
 #include <OpenLoco/Core/Exception.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Platform.h>
+#include <OpenLoco/Utility/LookupTable.hpp>
 #include <cassert>
 #include <iostream>
 #include <stdexcept>
 #include <yaml-cpp/yaml.h>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Localisation
 {
     static std::vector<std::unique_ptr<char[]>> _stringsOwner;
 
-    static const std::map<std::string, uint8_t, std::less<>> kBasicCommands = {
+    static constexpr auto kBasicCommands = Utility::buildLookupTable<std::string_view, uint8_t>({
         { "INT16_1DP", ControlCodes::int16_decimals },
         { "INT32_2DP", ControlCodes::int32_decimals },
         { "INT16", ControlCodes::int16_grouped },
@@ -40,9 +40,9 @@ namespace OpenLoco::Localisation
         { "STRING", ControlCodes::string_ptr },
         { "POP16", ControlCodes::pop16 },
         { "POWER", ControlCodes::power },
-    };
+    });
 
-    static const std::map<std::string, uint8_t, std::less<>> kTextColourNames = {
+    static constexpr auto kTextColourNames = Utility::buildLookupTable<std::string_view, uint8_t>({
         { "BLACK", ControlCodes::Colour::black },
         { "WINDOW_1", ControlCodes::windowColour1 },
         { "WINDOW_2", ControlCodes::windowColour2 },
@@ -53,7 +53,7 @@ namespace OpenLoco::Localisation
         { "TOPAZ", ControlCodes::Colour::topaz },
         { "RED", ControlCodes::Colour::red },
         { "GREEN", ControlCodes::Colour::green },
-    };
+    });
 
     static std::unique_ptr<char[]> readString(const char* value, size_t size)
     {
@@ -70,17 +70,16 @@ namespace OpenLoco::Localisation
                 continue;
             }
 
-            char readChar = convertUnicodeToLoco(codepoint);
-            if (readChar == '{')
+            if (codepoint == '{')
             {
                 std::vector<std::string_view> commands = {};
                 char* start = nullptr;
                 while (true)
                 {
                     char* pos = (char*)ptr;
-                    readChar = readCodePoint(&ptr);
+                    codepoint = readCodePoint(&ptr);
 
-                    if (readChar == ' ')
+                    if (codepoint == ' ')
                     {
                         if (start != nullptr)
                         {
@@ -90,7 +89,7 @@ namespace OpenLoco::Localisation
                         continue;
                     }
 
-                    if (readChar == '}')
+                    if (codepoint == '}')
                     {
                         if (start != nullptr)
                         {
@@ -218,11 +217,11 @@ namespace OpenLoco::Localisation
             }
             else
             {
-                *out = readChar;
+                *out = convertUnicodeToLoco(codepoint);
                 out++;
             }
 
-            if (readChar == '\0')
+            if (codepoint == '\0')
             {
                 break;
             }

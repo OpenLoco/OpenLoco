@@ -1,6 +1,6 @@
 #include "Graphics/Colour.h"
+#include "Graphics/DrawingContext.h"
 #include "Graphics/ImageIds.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "OpenLoco.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/Wt3Widget.h"
@@ -8,7 +8,7 @@
 
 namespace OpenLoco::Ui::Windows::TitleLogo
 {
-    static constexpr Ui::Size32 kWindowSize = { 298, 170 };
+    static constexpr Ui::Size kWindowSize = { 298, 170 };
 
     namespace Widx
     {

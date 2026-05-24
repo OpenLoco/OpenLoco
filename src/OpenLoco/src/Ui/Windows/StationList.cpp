@@ -2,7 +2,6 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -32,7 +31,7 @@
 
 namespace OpenLoco::Ui::Windows::StationList
 {
-    static constexpr Ui::Size32 kWindowSize = { 600, 197 };
+    static constexpr Ui::Size kWindowSize = { 600, 197 };
     static constexpr Ui::Size kMaxDimensions = { 640, 1200 };
     static constexpr Ui::Size kMinDimensions = { 192, 100 };
 
@@ -74,7 +73,7 @@ namespace OpenLoco::Ui::Windows::StationList
         Widgets::TableHeader({ 404, 43 }, { 90, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_total_units_waiting),
         Widgets::TableHeader({ 494, 43 }, { 120, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_cargo_accepted),
         Widgets::ScrollView({ 3, 56 }, { 594, 126 }, WindowColour::secondary, Scrollbars::vertical),
-        Widgets::Label({ 4, kWindowSize.height - 12 }, { kWindowSize.width, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
+        Widgets::Label({ 4, kWindowSize.height - 12 }, { kWindowSize.width - kResizeHandleSize, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
 
     );
 
@@ -103,16 +102,29 @@ namespace OpenLoco::Ui::Windows::StationList
     };
 
     // 0x004910E8
-    static void refreshStationList(Window* window)
+    static void populateStationList(Window& self)
     {
-        window->rowCount = 0;
+        self.rowCount = 0;
 
         for (auto& station : StationManager::stations())
         {
-            if (station.owner == CompanyId(window->number))
+            if (station.owner != CompanyId(self.number))
             {
-                station.flags &= ~StationFlags::flag_4;
+                continue;
             }
+
+            if ((station.flags & StationFlags::flag_5) != StationFlags::none)
+            {
+                continue;
+            }
+
+            const StationFlags mask = tabInformationByType[self.currentTab].stationMask;
+            if ((station.flags & mask) == StationFlags::none)
+            {
+                continue;
+            }
+
+            self.rowInfo[self.rowCount++] = enumValue(station.id());
         }
     }
 
@@ -204,80 +216,17 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x0049111A
-    static void updateStationList(Window* window)
+    static void sortStationList(Window& self)
     {
-        StationId edi = StationId::null;
+        auto list = std::span<StationId>(reinterpret_cast<StationId*>(self.rowInfo), self.rowCount);
 
-        for (auto& station : StationManager::stations())
-        {
-            if (station.owner != CompanyId(window->number))
-            {
-                continue;
-            }
+        std::stable_sort(list.begin(), list.end(), [self](StationId lhs, StationId rhs) {
+            auto* lhsStation = StationManager::get(lhs);
+            auto* rhsStation = StationManager::get(rhs);
+            return getOrder(SortMode(self.sortMode), *lhsStation, *rhsStation);
+        });
 
-            if ((station.flags & StationFlags::flag_5) != StationFlags::none)
-            {
-                continue;
-            }
-
-            const StationFlags mask = tabInformationByType[window->currentTab].stationMask;
-            if ((station.flags & mask) == StationFlags::none)
-            {
-                continue;
-            }
-
-            if ((station.flags & StationFlags::flag_4) != StationFlags::none)
-            {
-                continue;
-            }
-
-            if (edi == StationId::null)
-            {
-                edi = station.id();
-                continue;
-            }
-
-            if (getOrder(SortMode(window->sortMode), station, *StationManager::get(edi)))
-            {
-                edi = station.id();
-            }
-        }
-
-        if (edi != StationId::null)
-        {
-            bool dl = false;
-
-            StationManager::get(edi)->flags |= StationFlags::flag_4;
-
-            auto ebp = window->rowCount;
-            if (edi != StationId(window->rowInfo[ebp]))
-            {
-                window->rowInfo[ebp] = enumValue(edi);
-                dl = true;
-            }
-
-            window->rowCount += 1;
-            if (window->rowCount > window->var_83C)
-            {
-                window->var_83C = window->rowCount;
-                dl = true;
-            }
-
-            if (dl)
-            {
-                window->invalidate();
-            }
-        }
-        else
-        {
-            if (window->var_83C != window->rowCount)
-            {
-                window->var_83C = window->rowCount;
-                window->invalidate();
-            }
-
-            refreshStationList(window);
-        }
+        self.invalidate();
     }
 
     // 0x004910AB
@@ -285,15 +234,19 @@ namespace OpenLoco::Ui::Windows::StationList
     {
         auto* station = StationManager::get(stationId);
         auto* window = WindowManager::find(WindowType::stationList, enumValue(station->owner));
-        if (window != nullptr)
+        if (window == nullptr)
         {
-            for (uint16_t i = 0; i < window->var_83C; i++)
-            {
-                if (stationId == StationId(window->rowInfo[i]))
-                {
-                    window->rowInfo[i] = enumValue(StationId::null);
-                }
-            }
+            return;
+        }
+
+        auto list = std::span<StationId>(reinterpret_cast<StationId*>(window->rowInfo), window->rowCount);
+
+        auto newEnd = std::remove_if(list.begin(), list.end(), [stationId](StationId el) { return el == stationId; });
+        auto numRemoved = std::distance(newEnd, list.end());
+
+        if (numRemoved > 0)
+        {
+            window->rowCount -= numRemoved;
         }
     }
 
@@ -320,7 +273,7 @@ namespace OpenLoco::Ui::Windows::StationList
             window = WindowManager::createWindow(
                 WindowType::stationList,
                 kWindowSize,
-                WindowFlags::flag_11,
+                WindowFlags::lighterFrame,
                 getEvents());
 
             window->number = enumValue(companyId);
@@ -328,10 +281,10 @@ namespace OpenLoco::Ui::Windows::StationList
             window->currentTab = 0;
             window->frameNo = 0;
             window->sortMode = 0;
-            window->var_83C = 0;
+            window->rowCount = 0;
             window->rowHover = -1;
 
-            refreshStationList(window);
+            populateStationList(*window);
 
             window->minWidth = kMinDimensions.width;
             window->minHeight = kMinDimensions.height;
@@ -380,7 +333,7 @@ namespace OpenLoco::Ui::Windows::StationList
         }
 
         uint16_t currentIndex = yPos / kRowHeight;
-        if (currentIndex < window.var_83C && window.rowInfo[currentIndex] != -1)
+        if (currentIndex < window.rowCount && window.rowInfo[currentIndex] != -1)
         {
             return CursorId::handPointer;
         }
@@ -442,6 +395,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
         window.widgets[widx::scrollview].right = window.width - 4;
         window.widgets[widx::scrollview].bottom = window.height - 14;
+        window.widgets[widx::status_bar].right = window.width - kResizeHandleSize - 1;
 
         // Reposition header buttons.
         window.widgets[widx::sort_name].right = std::min(203, window.width - 4);
@@ -475,8 +429,8 @@ namespace OpenLoco::Ui::Windows::StationList
 
         // TODO: locale-based pluralisation.
         auto args = FormatArguments{ widget.textArgs };
-        args.push(window.var_83C == 1 ? StringIds::status_num_stations_singular : StringIds::status_num_stations_plural);
-        args.push<uint16_t>(window.var_83C);
+        args.push(window.rowCount == 1 ? StringIds::status_num_stations_singular : StringIds::status_num_stations_plural);
+        args.push<uint16_t>(window.rowCount);
     }
 
     // 0x0049157F
@@ -489,7 +443,7 @@ namespace OpenLoco::Ui::Windows::StationList
         drawingCtx.clearSingle(shade);
 
         uint16_t yPos = 0;
-        for (uint16_t i = 0; i < window.var_83C; i++)
+        for (uint16_t i = 0; i < window.rowCount; i++)
         {
             auto stationId = StationId(window.rowInfo[i]);
 
@@ -513,7 +467,12 @@ namespace OpenLoco::Ui::Windows::StationList
                 text_colour_id = StringIds::wcolour2_stringid;
             }
 
-            auto station = StationManager::get(stationId);
+            auto* station = StationManager::get(stationId);
+            if (station == nullptr || station->empty())
+            {
+                removeStationFromList(stationId);
+                continue;
+            }
 
             // First, draw the town name.
             {
@@ -612,8 +571,8 @@ namespace OpenLoco::Ui::Windows::StationList
         auto company = CompanyManager::get(CompanyId(self.number));
         auto competitor = ObjectManager::get<CompetitorObject>(company->competitorId);
         uint32_t image = Gfx::recolour(competitor->images[enumValue(company->ownerEmotion)], company->mainColours.primary);
-        uint16_t x = self.widgets[widx::company_select].left + 1;
-        uint16_t y = self.widgets[widx::company_select].top + 1;
+        uint16_t x = self.x + self.widgets[widx::company_select].left + 1;
+        uint16_t y = self.y + self.widgets[widx::company_select].top + 1;
         drawingCtx.drawImage(x, y, image);
     }
 
@@ -651,9 +610,9 @@ namespace OpenLoco::Ui::Windows::StationList
         window.sortMode = 0;
         window.rowCount = 0;
 
-        refreshStationList(&window);
+        populateStationList(window);
 
-        window.var_83C = 0;
+        window.rowCount = 0;
         window.rowHover = -1;
 
         window.callOnResize();
@@ -696,10 +655,10 @@ namespace OpenLoco::Ui::Windows::StationList
 
                 window.invalidate();
 
-                window.var_83C = 0;
+                window.rowCount = 0;
                 window.rowHover = -1;
 
-                refreshStationList(&window);
+                populateStationList(window);
 
                 window.callOnResize();
                 window.callPrepareDraw();
@@ -721,10 +680,10 @@ namespace OpenLoco::Ui::Windows::StationList
 
                 window.sortMode = sortMode;
                 window.invalidate();
-                window.var_83C = 0;
+                window.rowCount = 0;
                 window.rowHover = -1;
 
-                refreshStationList(&window);
+                populateStationList(window);
                 break;
             }
         }
@@ -734,7 +693,7 @@ namespace OpenLoco::Ui::Windows::StationList
     static void onScrollMouseDown(Ui::Window& window, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
         uint16_t currentRow = y / kRowHeight;
-        if (currentRow > window.var_83C)
+        if (currentRow > window.rowCount)
         {
             return;
         }
@@ -756,7 +715,7 @@ namespace OpenLoco::Ui::Windows::StationList
         uint16_t currentRow = y / kRowHeight;
         int16_t currentStation = -1;
 
-        if (currentRow < window.var_83C)
+        if (currentRow < window.rowCount)
         {
             currentStation = window.rowInfo[currentRow];
         }
@@ -778,16 +737,13 @@ namespace OpenLoco::Ui::Windows::StationList
         window.callPrepareDraw();
         WindowManager::invalidateWidget(WindowType::stationList, window.number, window.currentTab + 4);
 
-        // Add three stations every tick.
-        updateStationList(&window);
-        updateStationList(&window);
-        updateStationList(&window);
+        sortStationList(window);
     }
 
     // 0x00491999
     static void getScrollSize(Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
     {
-        scrollHeight = kRowHeight * window.var_83C;
+        scrollHeight = kRowHeight * window.rowCount;
     }
 
     // 0x00491841

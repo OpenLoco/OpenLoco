@@ -6,10 +6,13 @@
 #include "Random.h"
 #include "Types.hpp"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle1.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
+#include "Vehicles/VehicleTail.h"
 #include <OpenLoco/Core/Prng.h>
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Vehicles
 {
@@ -17,7 +20,7 @@ namespace OpenLoco::Vehicles
     void playPickupSound(Vehicles::Vehicle2* veh2)
     {
         const auto frequency = gPrng2().randNext(20003, 24098);
-        Audio::playSound(Audio::SoundId::vehiclePickup, veh2->position, -1000, frequency);
+        Audio::playSound(Audio::SoundId::vehiclePickup, Audio::ChannelId::ui, veh2->position, -1000, frequency);
     }
 }
 
@@ -31,7 +34,7 @@ namespace OpenLoco::GameCommands
         auto* head = EntityManager::get<Vehicles::VehicleHead>(headId);
         if (head == nullptr)
         {
-            return FAILURE;
+            return kFailure;
         }
         auto train = Vehicles::Vehicle(*head);
         auto* veh2 = train.veh2;
@@ -40,12 +43,12 @@ namespace OpenLoco::GameCommands
 
         if (!GameCommands::sub_431E6A(head->owner))
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!head->canBeModified())
         {
-            return FAILURE;
+            return kFailure;
         }
 
         if (!(flags & GameCommands::Flags::apply))
@@ -63,7 +66,7 @@ namespace OpenLoco::GameCommands
         // Clear ghost flag on primary vehicle pieces and all car components.
         train.applyToComponents([](auto& component) { component.var_38 &= ~Vehicles::Flags38::isGhost; });
 
-        head->vehicleFlags |= VehicleFlags::commandStop;
+        head->vehicleFlags |= Vehicles::VehicleFlags::commandStop;
 
         return 0;
     }

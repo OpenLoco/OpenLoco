@@ -22,7 +22,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/ScaffoldingObject.h"
 #include "Objects/TreeObject.h"
-#include "ScenarioOptions.h"
+#include "Scenario/ScenarioOptions.h"
 #include "SceneManager.h"
 #include "ViewportManager.h"
 #include "World/IndustryManager.h"
@@ -31,8 +31,6 @@
 
 namespace OpenLoco::GameCommands
 {
-    static loco_global<IndustryId, 0x00E0C3C9> _industryLastPlacedId;
-
     // Convert the cargo id's into a bitset
     static uint32_t getProducedCargoBitSet(const IndustryObject& indObj)
     {
@@ -135,7 +133,7 @@ namespace OpenLoco::GameCommands
         auto* indObj = industry->getObject();
         if (!World::TileManager::checkFreeElementsAndReorganise())
         {
-            return FAILURE;
+            return kFailure;
         }
 
         const bool isMultiTile = indObj->buildingSizeFlags & (1U << buildingType);
@@ -194,7 +192,7 @@ namespace OpenLoco::GameCommands
             const auto tilePos = World::toTileSpace(pos + offset.pos);
             if (!World::validCoords(tilePos))
             {
-                return FAILURE;
+                return kFailure;
             }
 
             if ((flags & Flags::apply) && !(flags & Flags::ghost))
@@ -216,18 +214,18 @@ namespace OpenLoco::GameCommands
                     if (surface->water() * World::kMicroToSmallZStep != highestBaseZ)
                     {
                         setErrorText(StringIds::can_only_be_built_on_water);
-                        return FAILURE;
+                        return kFailure;
                     }
 
                     if (surface->hasType6Flag())
                     {
                         setErrorText(StringIds::water_channel_currently_needed_by_ships);
-                        return FAILURE;
+                        return kFailure;
                     }
                     World::QuarterTile qt(0xF, 0xF);
                     if (!World::TileClearance::applyClearAtStandardHeight(World::toWorldSpace(tilePos), highestBaseZ, clearZ, qt, clearFunc))
                     {
-                        return FAILURE;
+                        return kFailure;
                     }
                 }
                 else
@@ -235,12 +233,12 @@ namespace OpenLoco::GameCommands
                     if (surface->water())
                     {
                         setErrorText(StringIds::cant_build_this_underwater);
-                        return FAILURE;
+                        return kFailure;
                     }
                     World::QuarterTile qt(0xF, 0xF);
                     if (!World::TileClearance::applyClearAtStandardHeight(World::toWorldSpace(tilePos), surface->baseZ(), clearZ, qt, clearFunc))
                     {
-                        return FAILURE;
+                        return kFailure;
                     }
                     // TODO: This is dangerous pointer might be invalid?
                     if (surface->slope() || surface->baseZ() != highestBaseZ)
@@ -281,32 +279,32 @@ namespace OpenLoco::GameCommands
                                 if (elTrack != nullptr && !elTrack->isGhost() && !elTrack->hasBridge())
                                 {
                                     setErrorText(StringIds::empty);
-                                    return FAILURE;
+                                    return kFailure;
                                 }
                                 else if (elRoad != nullptr && !elRoad->isGhost() && !elRoad->hasBridge())
                                 {
                                     setErrorText(StringIds::empty);
-                                    return FAILURE;
+                                    return kFailure;
                                 }
                                 else if (elStation != nullptr && elStation->stationType() == StationType::airport)
                                 {
                                     setErrorText(StringIds::empty);
-                                    return FAILURE;
+                                    return kFailure;
                                 }
                                 else if (elBuilding != nullptr)
                                 {
                                     setErrorText(StringIds::empty);
-                                    return FAILURE;
+                                    return kFailure;
                                 }
                                 else if (elIndustry != nullptr)
                                 {
                                     setErrorText(StringIds::empty);
-                                    return FAILURE;
+                                    return kFailure;
                                 }
                                 else if (elTree != nullptr && clearZ <= elTree->baseZ())
                                 {
                                     setErrorText(StringIds::empty);
-                                    return FAILURE;
+                                    return kFailure;
                                 }
                             }
                         }
@@ -334,7 +332,7 @@ namespace OpenLoco::GameCommands
                 auto* elIndustry = World::TileManager::insertElement<World::IndustryElement>(World::toWorldSpace(tilePos), highestBaseZ, 0xF);
                 if (elIndustry == nullptr)
                 {
-                    return FAILURE;
+                    return kFailure;
                 }
                 elIndustry->setClearZ(clearZ);
                 elIndustry->setRotation(direction);
@@ -375,7 +373,7 @@ namespace OpenLoco::GameCommands
             return Colour::black;
         }
         // Note: Don't optimise for size 1 as randNext required to prevent divergence
-        return availableColours[prng.randNext(availableColours.size() - 1)];
+        return availableColours[prng.randNext(static_cast<int32_t>(availableColours.size()) - 1)];
     }
 
     struct RangeAndMinDistance
@@ -416,6 +414,7 @@ namespace OpenLoco::GameCommands
     // 0x0045436B
     static currency32_t createIndustry(const IndustryPlacementArgs& args, const uint8_t flags)
     {
+        getLegacyReturnState().lastPlacedIndustryId = IndustryId::null;
         GameCommands::setExpenditureType(ExpenditureType::Miscellaneous);
         {
             const auto centrePos = World::Pos2(args.pos.x + 16, args.pos.y + 16);
@@ -428,9 +427,9 @@ namespace OpenLoco::GameCommands
         const auto newIndustryId = sub_454C91(args.type, args.pos, prng);
         if (newIndustryId == IndustryId::null)
         {
-            return FAILURE;
+            return kFailure;
         }
-        _industryLastPlacedId = newIndustryId;
+        getLegacyReturnState().lastPlacedIndustryId = newIndustryId;
         auto* newIndustry = IndustryManager::get(newIndustryId);
         auto* indObj = newIndustry->getObject();
         if (args.buildImmediately)
@@ -541,7 +540,7 @@ namespace OpenLoco::GameCommands
                 {
                     // do test placement
                     const uint32_t cost = placeIndustryBuilding(newIndustryId, randPos, direction, building, randColour, args.buildImmediately, flags & ~(Flags::apply));
-                    if (cost == FAILURE)
+                    if (cost == kFailure)
                     {
                         continue;
                     }
@@ -551,7 +550,7 @@ namespace OpenLoco::GameCommands
                 }
 
                 const uint32_t cost = placeIndustryBuilding(newIndustryId, randPos, direction, building, randColour, args.buildImmediately, flags);
-                if (cost == FAILURE)
+                if (cost == kFailure)
                 {
                     continue;
                 }
@@ -565,7 +564,7 @@ namespace OpenLoco::GameCommands
                 StringManager::emptyUserString(newIndustry->name);
                 // Free the industry slot
                 newIndustry->name = StringIds::null;
-                return FAILURE;
+                return kFailure;
             }
         }
 

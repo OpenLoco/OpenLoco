@@ -11,8 +11,13 @@
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
+#include "Objects/AirportObject.h"
+#include "Objects/ObjectManager.h"
 #include "Random.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
 #include "World/Company.h"
 #include "World/StationManager.h"
@@ -109,7 +114,7 @@ namespace OpenLoco::CompanyAi
             }
             if (roadObjectId == 0xFFU)
             {
-                if (!(getGameState().roadObjectIdIsNotTram & (1U << elRoad->roadObjectId())))
+                if (!(getGameState().roadObjectIdIsAnyRoadTypeCompatible & (1U << elRoad->roadObjectId())))
                 {
                     continue;
                 }
@@ -188,7 +193,7 @@ namespace OpenLoco::CompanyAi
                     }
                     if (elRoad->roadObjectId() != roadObjectId)
                     {
-                        if (!(getGameState().roadObjectIdIsNotTram & (1U << elRoad->roadObjectId())))
+                        if (!(getGameState().roadObjectIdIsAnyRoadTypeCompatible & (1U << elRoad->roadObjectId())))
                         {
                             continue;
                         }
@@ -330,7 +335,7 @@ namespace OpenLoco::CompanyAi
         const auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
 
         GameCommands::setUpdatingCompanyId(oldUpdatingCompanyId);
-        if (res == GameCommands::FAILURE)
+        if (res == GameCommands::kFailure)
         {
             tryPlaceVehicleFailure(company, head);
             return;
@@ -391,7 +396,7 @@ namespace OpenLoco::CompanyAi
         const auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
 
         GameCommands::setUpdatingCompanyId(oldUpdatingCompanyId);
-        if (res == GameCommands::FAILURE)
+        if (res == GameCommands::kFailure)
         {
             tryPlaceVehicleFailure(company, head);
             return;
@@ -477,7 +482,7 @@ namespace OpenLoco::CompanyAi
             const auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
 
             GameCommands::setUpdatingCompanyId(oldUpdatingCompanyId);
-            if (res == GameCommands::FAILURE)
+            if (res == GameCommands::kFailure)
             {
                 tryPlaceVehicleFailure(company, head);
             }

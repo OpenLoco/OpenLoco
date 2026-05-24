@@ -4,7 +4,6 @@
 #include "Types.hpp"
 #include "Vehicles/Orders.h"
 #include <OpenLoco/Engine/World.hpp>
-
 #include <cstdint>
 #include <span>
 #include <string>

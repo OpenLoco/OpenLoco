@@ -1,3 +1,5 @@
+#pragma once
+
 #include <OpenLoco/Core/Prng.h>
 
 namespace OpenLoco

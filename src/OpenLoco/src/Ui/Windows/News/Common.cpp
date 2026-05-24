@@ -14,7 +14,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 {
     NewsState _nState{};
 
-    static void createNewsWindow(Ui::Size32 kWindowSize, std::span<const Widget> widgets, AdvancedColour colour, bool isOld, WindowFlags flags)
+    static void createNewsWindow(Ui::Size kWindowSize, std::span<const Widget> widgets, AdvancedColour colour, bool isOld, WindowFlags flags)
     {
         _nState.slideInHeight = 5;
 
@@ -84,7 +84,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 }
             }
 
-            auto newsSettings = Config::get().old.newsSettings[static_cast<uint8_t>(messageSubType)];
+            auto newsSettings = Config::get().newsSettings[static_cast<uint8_t>(messageSubType)];
 
             if (newsSettings == Config::NewsType::none)
             {
@@ -95,7 +95,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             if (newsSettings == Config::NewsType::ticker)
             {
                 _nState.numCharsToDisplay = 0;
-                WindowFlags flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent | WindowFlags::flag_7;
+                WindowFlags flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent | WindowFlags::ignoreInFindAt;
 
                 auto window = WindowManager::createWindow(
                     WindowType::news,
@@ -132,11 +132,11 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             if (soundId != Audio::SoundId::null)
             {
                 int32_t pan = Ui::width() / 2;
-                Audio::playSound(soundId, pan);
+                Audio::playSound(soundId, Audio::ChannelId::ui, pan);
             }
         }
 
-        if (mtd.hasFlag(MessageTypeFlags::unk1))
+        if (mtd.hasFlag(MessageTypeFlags::isGeneralNews))
         {
             WindowFlags flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent | WindowFlags::noBackground;
 

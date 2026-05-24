@@ -4,18 +4,16 @@
 #include "Map/MapSelection.h"
 #include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::World;
 
 namespace OpenLoco::ToolManager
 {
-    static loco_global<Ui::WindowNumber_t, 0x00523390> _toolWindowNumber;
-    static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
-    static loco_global<Ui::CursorId, 0x00523393> _toolWindowCursor;
-    static loco_global<uint16_t, 0x00523394> _toolWidgetIndex;
+    static Ui::WindowNumber_t _toolWindowNumber = 0;               // 0x00523390
+    static Ui::WindowType _toolWindowType = Ui::WindowType::main;  // 0x00523392
+    static Ui::CursorId _toolWindowCursor = Ui::CursorId::pointer; // 0x00523393
+    static uint16_t _toolWidgetIndex = 0;                          // 0x00523394
 
     Window* toolGetActiveWindow()
     {
@@ -92,7 +90,7 @@ namespace OpenLoco::ToolManager
             Input::resetFlag(Input::Flags::toolActive);
 
             World::mapInvalidateSelectionRect();
-            World::mapInvalidateMapSelectionTiles();
+            World::mapInvalidateMapSelectionFreeFormTiles();
 
             resetMapSelectionFlag(MapSelectionFlags::enable | MapSelectionFlags::enableConstruct | MapSelectionFlags::enableConstructionArrow | MapSelectionFlags::unk_03 | MapSelectionFlags::unk_04);
 
@@ -122,7 +120,6 @@ namespace OpenLoco::ToolManager
         toolCancel();
     }
 
-    //  0x00523390
     Ui::WindowNumber_t getToolWindowNumber()
     {
         return _toolWindowNumber;
@@ -132,7 +129,6 @@ namespace OpenLoco::ToolManager
         _toolWindowNumber = toolWindowNumber;
     }
 
-    // 0x00523392
     Ui::WindowType getToolWindowType()
     {
         return _toolWindowType;
@@ -142,7 +138,6 @@ namespace OpenLoco::ToolManager
         _toolWindowType = toolWindowType;
     }
 
-    // 0x00523393
     Ui::CursorId getToolCursor()
     {
         return _toolWindowCursor;
@@ -152,7 +147,6 @@ namespace OpenLoco::ToolManager
         _toolWindowCursor = toolWindowCursor;
     }
 
-    // 0x00523394
     int16_t getToolWidgetIndex()
     {
         return _toolWidgetIndex;

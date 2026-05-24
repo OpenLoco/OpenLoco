@@ -7,11 +7,17 @@
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"
 #include "MessageManager.h"
-#include "Scenario.h"
+#include "Scenario/Scenario.h"
 #include "Types.hpp"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/Vehicle1.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
+#include "Vehicles/VehicleTail.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
@@ -274,11 +280,11 @@ namespace OpenLoco::GameCommands
         auto* veh = EntityManager::get<Vehicles::VehicleHead>(head);
         if (veh == nullptr)
         {
-            return GameCommands::FAILURE;
+            return GameCommands::kFailure;
         }
         if (flags & Flags::apply)
         {
-            veh->vehicleFlags |= VehicleFlags::shuntCheat;
+            veh->vehicleFlags |= Vehicles::VehicleFlags::shuntCheat;
         }
         return 0;
     }
