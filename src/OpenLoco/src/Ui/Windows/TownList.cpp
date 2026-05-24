@@ -576,6 +576,17 @@ namespace OpenLoco::Ui::Windows::TownList
         return window;
     }
 
+    void refreshList()
+    {
+        auto* window = WindowManager::find(WindowType::townList);
+        if (window == nullptr)
+        {
+            return;
+        }
+
+        Common::populateTownList(*window);
+    }
+
     // 0x00496B50
     void reset()
     {

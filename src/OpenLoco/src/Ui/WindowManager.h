@@ -206,6 +206,7 @@ namespace OpenLoco::Ui::Windows
     namespace IndustryList
     {
         Window* open();
+        void refreshList();
         void reset();
         void removeIndustry(const IndustryId id);
     }
@@ -453,6 +454,7 @@ namespace OpenLoco::Ui::Windows
     namespace TownList
     {
         Window* open();
+        void refreshList();
         void removeTown(TownId);
         void reset();
         bool rotate(Window& self);

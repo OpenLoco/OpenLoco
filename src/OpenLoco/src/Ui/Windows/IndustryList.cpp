@@ -616,6 +616,17 @@ namespace OpenLoco::Ui::Windows::IndustryList
         return window;
     }
 
+    void refreshList()
+    {
+        auto* window = WindowManager::find(WindowType::industryList);
+        if (window == nullptr)
+        {
+            return;
+        }
+
+        Common::populateIndustryList(*window);
+    }
+
     void reset()
     {
         getGameState().lastIndustryOption = 0xFF;

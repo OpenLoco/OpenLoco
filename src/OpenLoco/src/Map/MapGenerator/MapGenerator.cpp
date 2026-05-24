@@ -1079,6 +1079,7 @@ namespace OpenLoco::World::MapGenerator
 
         WindowManager::close(WindowType::town);
         WindowManager::close(WindowType::industry);
+
         Ui::ProgressBar::begin(StringIds::generating_landscape);
 
         auto rotation = WindowManager::getCurrentRotation();
@@ -1132,6 +1133,9 @@ namespace OpenLoco::World::MapGenerator
         Scenario::sub_4969E0(0);
         Scenario::sub_4748D4();
         Ui::ProgressBar::end();
+
+        Ui::Windows::IndustryList::refreshList();
+        Ui::Windows::TownList::refreshList();
     }
 
     void setPngHeightmapPath(const fs::path& path)
