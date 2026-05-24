@@ -422,13 +422,14 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C1D19
     void removeTrainFromList(Window& self, EntityId head)
     {
-        for (auto i = 0; i < self.rowCount; ++i)
+        auto list = std::span<EntityId>(reinterpret_cast<EntityId*>(self.rowInfo), self.rowCount);
+
+        auto newEnd = std::remove_if(list.begin(), list.end(), [head](EntityId el) { return el == head; });
+        auto numRemoved = std::distance(newEnd, list.end());
+
+        if (numRemoved > 0)
         {
-            auto entryId = EntityId(self.rowInfo[i]);
-            if (entryId == head)
-            {
-                self.rowInfo[i] = enumValue(EntityId::null);
-            }
+            self.rowCount -= numRemoved;
         }
     }
 
@@ -603,8 +604,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
             auto head = EntityManager::get<VehicleHead>(vehicleId);
             if (head == nullptr)
             {
+                removeTrainFromList(self, vehicleId);
                 continue;
             }
+
             // Highlight selection.
             if (head->id == EntityId(self.rowHover))
             {

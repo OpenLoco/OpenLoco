@@ -441,7 +441,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     stringId = StringIds::wcolour2_stringid;
                 }
 
-                auto company = CompanyManager::get(CompanyId(rowItem));
+                auto* company = CompanyManager::get(CompanyId(rowItem));
+                if (company == nullptr || company->empty())
+                {
+                    removeCompany(CompanyId(rowItem));
+                    continue;
+                }
+
                 auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitorId);
                 auto imageId = Gfx::recolour(competitorObj->images[enumValue(company->ownerEmotion)], company->mainColours.primary);
 
@@ -591,17 +597,22 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
     void removeCompany(CompanyId id)
     {
-        auto* w = WindowManager::find(WindowType::companyList);
-        if (w != nullptr)
+        auto* window = WindowManager::find(WindowType::companyList);
+        if (window == nullptr)
         {
-            for (auto i = 0; i < w->rowCount; i++)
-            {
-                if (static_cast<CompanyId>(w->rowInfo[i]) == id)
-                {
-                    w->rowInfo[i] = -1;
-                }
-            }
+            return;
         }
+
+        auto list = std::span<CompanyId>(reinterpret_cast<CompanyId*>(window->rowInfo), window->rowCount);
+
+        auto newEnd = std::remove_if(list.begin(), list.end(), [id](CompanyId el) { return el == id; });
+        auto numRemoved = std::distance(newEnd, list.end());
+
+        if (numRemoved > 0)
+        {
+            window->rowCount -= numRemoved;
+        }
+
         WindowManager::invalidate(WindowType::companyList);
     }
 

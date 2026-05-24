@@ -234,15 +234,19 @@ namespace OpenLoco::Ui::Windows::StationList
     {
         auto* station = StationManager::get(stationId);
         auto* window = WindowManager::find(WindowType::stationList, enumValue(station->owner));
-        if (window != nullptr)
+        if (window == nullptr)
         {
-            for (uint16_t i = 0; i < window->rowCount; i++)
-            {
-                if (stationId == StationId(window->rowInfo[i]))
-                {
-                    window->rowInfo[i] = enumValue(StationId::null);
-                }
-            }
+            return;
+        }
+
+        auto list = std::span<StationId>(reinterpret_cast<StationId*>(window->rowInfo), window->rowCount);
+
+        auto newEnd = std::remove_if(list.begin(), list.end(), [stationId](StationId el) { return el == stationId; });
+        auto numRemoved = std::distance(newEnd, list.end());
+
+        if (numRemoved > 0)
+        {
+            window->rowCount -= numRemoved;
         }
     }
 
@@ -463,7 +467,12 @@ namespace OpenLoco::Ui::Windows::StationList
                 text_colour_id = StringIds::wcolour2_stringid;
             }
 
-            auto station = StationManager::get(stationId);
+            auto* station = StationManager::get(stationId);
+            if (station == nullptr || station->empty())
+            {
+                removeStationFromList(stationId);
+                continue;
+            }
 
             // First, draw the town name.
             {
