@@ -31,9 +31,9 @@
 #include <algorithm>
 #include <array>
 #include <cinttypes>
+#include <iostream>
 #include <memory>
 #include <sfl/static_vector.hpp>
-#include <iostream>
 
 namespace OpenLoco::Ui::WindowManager
 {
@@ -1537,9 +1537,10 @@ namespace OpenLoco::Ui::WindowManager
 
             if (viewport->x < window->x)
             {
-                std::cout << std::endl << "Viewport x is less than window x " << viewport->x << " < " << window->x << "," << viewport->width 
+                std::cout << std::endl
+                          << "Viewport x is less than window x " << viewport->x << " < " << window->x << "," << viewport->width
                           << "," << viewport->viewWidth << "," << static_cast<uint16_t>(viewport->zoom);
-                if((viewport->width != (window->x - viewport->x)) || (viewport->viewWidth != (viewport->width << viewport->zoom)))
+                if ((viewport->width != (window->x - viewport->x)) || (viewport->viewWidth != (viewport->width << viewport->zoom)))
                 {
                     viewport->width = window->x - viewport->x;
                     viewport->viewWidth = viewport->width << viewport->zoom;
