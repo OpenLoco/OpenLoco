@@ -330,7 +330,7 @@ namespace OpenLoco::S5
     }
 
     // 0x00441FC9
-    std::unique_ptr<S5File> importSave(Stream& stream)
+    std::unique_ptr<S5File> loadSave(Stream& stream)
     {
         SawyerStreamReader fs(stream);
         if (!fs.validateChecksum())
@@ -483,7 +483,7 @@ namespace OpenLoco::S5
             Ui::ProgressBar::begin(StringIds::loading);
             Ui::ProgressBar::setProgress(10);
 
-            auto file = importSave(stream);
+            auto file = loadSave(stream);
 
             Ui::ProgressBar::setProgress(90);
 

@@ -12,6 +12,7 @@
 #include "S5/S5Options.h"
 #include "Vehicles/Vehicle.h"
 #include <OpenLoco/Core/FileStream.h>
+#include <OpenLoco/Core/MemoryStream.h>
 
 using namespace OpenLoco::Diagnostics;
 
@@ -670,12 +671,26 @@ namespace OpenLoco::GameSaveCompare
 
     bool compareGameStates(const fs::path& path)
     {
-        char* gameStateChar = (char*)(&getGameState());
-        S5::GameState* currentS5GameState = reinterpret_cast<S5::GameState*>(gameStateChar);
         Logging::info("Comparing reference file {} to current GameState frame", path);
+
+        MemoryStream ms;
+        if (!S5::exportGameStateToFile(ms, S5::SaveFlags::noWindowClose))
+        {
+            Logging::error("Failed to export current game state for comparison");
+            return false;
+        }
+
+        ms.setPosition(0);
+        auto currentGameState = S5::loadSave(ms);
+        if (currentGameState == nullptr)
+        {
+            Logging::error("Failed to reload exported current game state for comparison");
+            return false;
+        }
+
         FileStream referenceFile(path, StreamMode::read);
-        auto referenceGameState = S5::importSave(referenceFile);
-        return compareGameStates(*currentS5GameState, referenceGameState->gameState, false);
+        auto referenceGameState = S5::loadSave(referenceFile);
+        return compareGameStates(currentGameState->gameState, referenceGameState->gameState, false);
     }
 
     bool compareGameStates(const fs::path& path1, const fs::path& path2, bool displayAllDivergences)
@@ -685,9 +700,9 @@ namespace OpenLoco::GameSaveCompare
         Logging::info("   file2: {}", path2);
 
         FileStream file1(path1, StreamMode::read);
-        auto state1 = S5::importSave(file1);
+        auto state1 = S5::loadSave(file1);
         FileStream file2(path2, StreamMode::read);
-        auto state2 = S5::importSave(file2);
+        auto state2 = S5::loadSave(file2);
         auto match = compareGameStates(state1->gameState, state2->gameState, displayAllDivergences);
         match &= compareElements(state1->tileElements, state2->tileElements, displayAllDivergences);
         return match;
