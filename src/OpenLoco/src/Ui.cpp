@@ -471,6 +471,11 @@ namespace OpenLoco::Ui
         Gui::resize();
         Gfx::invalidateScreen();
 
+        if (Tutorial::state() == Tutorial::State::initialising)
+        {
+            return;
+        }
+
         // Save window size to config if NOT maximized
         auto wf = SDL_GetWindowFlags(_window);
         if (!_isChangingDisplayMode && !(wf & SDL_WINDOW_MAXIMIZED) && !(wf & SDL_WINDOW_FULLSCREEN))
@@ -1002,7 +1007,6 @@ namespace OpenLoco::Ui
 
         config.scaleFactor = newScaleFactor;
 
-        OpenLoco::Config::write();
         Ui::triggerResize();
         Gfx::invalidateScreen();
     }
@@ -1017,6 +1021,7 @@ namespace OpenLoco::Ui
         }
 
         setWindowScaling(newScaleFactor);
+        Config::write();
     }
 
     bool hasInputFocus()

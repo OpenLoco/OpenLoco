@@ -68,6 +68,8 @@ namespace OpenLoco::Tutorial
             return;
         }
 
+        _state = State::initialising;
+
         // NB: only used by tutorial widget drawing after.
         _tutorialNumber = tutorialNumber;
 
@@ -93,6 +95,7 @@ namespace OpenLoco::Tutorial
         {
             if (!Ui::setDisplayMode(Config::ScreenMode::window, newResolution))
             {
+                _state = State::none;
                 return;
             }
         }
@@ -136,8 +139,9 @@ namespace OpenLoco::Tutorial
     void stop()
     {
         _state = State::none;
+        Config::read();
+        Ui::triggerResize();
         Gfx::invalidateScreen();
-        Gui::resize();
     }
 
     // 0x0043C7A2
