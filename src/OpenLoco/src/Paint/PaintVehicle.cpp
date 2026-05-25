@@ -135,7 +135,8 @@ namespace OpenLoco::Paint
                 if (bogie->has38Flags(Flags38::isGhost))
                 {
                     session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-                    imageId = Gfx::applyGhostToImage(imageIndex);
+                    const auto companyColour = CompanyManager::getCompanyColour(bogie->owner);
+                    imageId = Gfx::applyGhostToImage(imageIndex, companyColour);
                 }
                 else if (bogie->hasVehicleFlags(VehicleFlags::unk_5))
                 {
@@ -182,7 +183,8 @@ namespace OpenLoco::Paint
                 if (bogie->has38Flags(Flags38::isGhost))
                 {
                     session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-                    imageId = Gfx::applyGhostToImage(imageIndex);
+                    const auto companyColour = CompanyManager::getCompanyColour(bogie->owner);
+                    imageId = Gfx::applyGhostToImage(imageIndex, companyColour);
                 }
                 else
                 {
@@ -207,7 +209,8 @@ namespace OpenLoco::Paint
                 if (bogie->has38Flags(Flags38::isGhost))
                 {
                     session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-                    imageId = Gfx::applyGhostToImage(imageIndex);
+                    const auto companyColour = CompanyManager::getCompanyColour(bogie->owner);
+                    imageId = Gfx::applyGhostToImage(imageIndex, companyColour);
                 }
                 else
                 {
@@ -288,7 +291,8 @@ namespace OpenLoco::Paint
         ImageId imageId{};
         if (body->has38Flags(Flags38::isGhost))
         {
-            imageId = Gfx::applyGhostToImage(bodyImageIndex);
+            const auto companyColour = CompanyManager::getCompanyColour(body->owner);
+            imageId = Gfx::applyGhostToImage(bodyImageIndex, companyColour);
         }
         else if (body->hasVehicleFlags(VehicleFlags::unk_5))
         {

@@ -276,9 +276,8 @@ namespace OpenLoco::Paint
         if (elTrack.isGhost() || elTrack.isAiAllocated())
         {
             session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-            baseTrackImageColour = Gfx::applyGhostToImage(0);
-
-            // TODO: apply company colour if playerCompanyID != elTrack.owner()?
+            const auto companyColour = CompanyManager::getCompanyColour(elTrack.owner());
+            baseTrackImageColour = Gfx::applyGhostToImage(0, companyColour);
         }
 
         TrackPaintCommon trackSession{ baseTrackImageColour.withIndex(trackObj->image), baseTrackImageColour, trackObj->tunnel };
@@ -319,7 +318,8 @@ namespace OpenLoco::Paint
             }
             else if (elTrack.hasGhostMods() && ghostMods & (1 << mod))
             {
-                trackExtraBaseImage = Gfx::applyGhostToImage(trackExtraObj->image);
+                const auto companyColour = CompanyManager::getCompanyColour(elTrack.owner());
+                trackExtraBaseImage = Gfx::applyGhostToImage(trackExtraObj->image, companyColour);
             }
             else
             {

@@ -322,6 +322,19 @@ namespace YAML
     {
         static const convert_pair_vector<WindowFrameStyle>& getEntries() { return kWindowFrameStyleEntries; }
     };
+
+    // ConstructionMarkerStyle
+    const convert_pair_vector<ConstructionMarkerStyle> kConstructionMarkerStyleEntries = {
+        enum_def(ConstructionMarkerStyle, white),
+        enum_def(ConstructionMarkerStyle, translucent),
+        enum_def(ConstructionMarkerStyle, translucentWhite),
+        enum_def(ConstructionMarkerStyle, companyColourTranslucent),
+    };
+    template<>
+    struct convert<ConstructionMarkerStyle> : convert_enum_base<ConstructionMarkerStyle>
+    {
+        static const convert_pair_vector<ConstructionMarkerStyle>& getEntries() { return kConstructionMarkerStyleEntries; }
+    };
 }
 
 #undef enum_def

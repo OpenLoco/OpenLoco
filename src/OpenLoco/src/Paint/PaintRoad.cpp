@@ -497,7 +497,8 @@ namespace OpenLoco::Paint
         if (elRoad.isGhost() || elRoad.isAiAllocated())
         {
             session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-            baseRoadImageColour = Gfx::applyGhostToImage(0);
+            const auto companyColour = CompanyManager::getCompanyColour(elRoad.owner());
+            baseRoadImageColour = Gfx::applyGhostToImage(0, companyColour);
 
             // TODO: apply company colour if playerCompanyID != elTrack.owner()?
         }
@@ -571,7 +572,8 @@ namespace OpenLoco::Paint
             }
             else if (elRoad.hasGhostMods() && (ghostMods & (1U << mod)))
             {
-                roadExtraBaseImage = Gfx::applyGhostToImage(roadExtraObj->image);
+                const auto companyColour = CompanyManager::getCompanyColour(elRoad.owner());
+                roadExtraBaseImage = Gfx::applyGhostToImage(roadExtraObj->image, companyColour);
             }
             else
             {
