@@ -45,7 +45,7 @@ if (OPENLOCO_USE_VCPKG)
         endif ()
         FetchContent_Declare(vcpkg
             GIT_REPOSITORY https://github.com/microsoft/vcpkg.git
-            GIT_TAG 2026.02.27
+            GIT_TAG d015e31e90838a4c9dfa3eed45979bc70d9357fc
         )
         FetchContent_MakeAvailable(vcpkg)
 

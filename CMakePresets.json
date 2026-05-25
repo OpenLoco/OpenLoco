@@ -21,7 +21,7 @@
             "displayName": "x86-64",
             "description": "Configure environment for Windows x86-64",
             "inherits": "windows-base",
-            "generator": "Visual Studio 17 2022",
+            "generator": "Visual Studio 18 2026",
             "cacheVariables": {
                 "VCPKG_TARGET_TRIPLET": {
                     "type": "STRING",
@@ -34,7 +34,7 @@
             "displayName": "x86-32 CI",
             "description": "CI configure environment for Windows x86-32",
             "inherits": "windows-base",
-            "generator": "Visual Studio 17 2022",
+            "generator": "Visual Studio 18 2026",
             "architecture": {
                 "strategy": "set",
                 "value": "Win32"

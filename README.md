@@ -81,7 +81,7 @@ The following libraries/dependencies are used:
 
 ### Windows
 - 10 / 11
-- [Visual Studio 2022](https://www.visualstudio.com/vs/community/)
+- [Visual Studio 2026](https://www.visualstudio.com/vs/community/)
   - Desktop development with C++ (ensure MFC component is selected)
   - Dependencies are managed with [vcpkg](https://github.com/Microsoft/vcpkg)
 
@@ -104,8 +104,8 @@ The following libraries/dependencies are used:
 ### Windows:
 
 1. Check out the repository. This can be done using [GitHub Desktop](https://desktop.github.com) or [other tools](https://help.github.com/articles/which-remote-url-should-i-use).
-2. With VS 2022 use the "Open a local folder" option to start the project file generation. This may take some time as it downloads dependencies.
-3. After successful generation of the project files open "build/windows/openloco.sln".
+2. With VS 2026 use the "Open a local folder" option to start the project file generation. This may take some time as it downloads dependencies.
+3. After successful generation of the project files open "build/windows/openloco.slnx".
 4. Select a config Debug or Release and run Build -> Build Solution.
 4. Run the game from "build/windows/<config>/OpenLoco.exe" or within VS.
 
