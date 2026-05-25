@@ -825,8 +825,8 @@ namespace OpenLoco::StringIds
     constexpr StringId initialising = 1087;
     constexpr StringId loading = 1088;
     constexpr StringId installing_new_data = 1089;
-    constexpr StringId white = 1090;
-    constexpr StringId translucent = 1091;
+    constexpr StringId white = UNUSED_STR(1090);
+    constexpr StringId translucent = UNUSED_STR(1091);
     constexpr StringId construction_marker = 1092;
     constexpr StringId vehicles_min_scale = 1093;
     constexpr StringId station_names_min_scale = 1094;
@@ -2151,6 +2151,10 @@ namespace OpenLoco::StringIds
     constexpr StringId cheat_keep_cargo_modify_pickup = 2435;
     constexpr StringId tooltip_keep_cargo_modify_pickup = 2436;
     constexpr StringId sortComponents = 2437;
+    constexpr StringId constructionMarkerSolidWhite = 2438;
+    constexpr StringId constructionMarkerTranslucentBlack = 2439;
+    constexpr StringId constructionMarkerTranslucentWhite = 2440;
+    constexpr StringId constructionMarkerCompanyColour = 2441;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

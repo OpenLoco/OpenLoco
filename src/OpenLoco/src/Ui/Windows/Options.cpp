@@ -726,10 +726,10 @@ namespace OpenLoco::Ui::Windows::Options
 #pragma mark - Construction Marker (Widget 19)
 
         static constexpr StringId kConstructionMarkerStyleStringIds[] = {
-            StringIds::white,
-            StringIds::translucent,
-            StringIds::translucent, // TODO
-            StringIds::new_company, // TODO
+            StringIds::constructionMarkerSolidWhite,
+            StringIds::constructionMarkerTranslucentBlack,
+            StringIds::constructionMarkerTranslucentWhite,
+            StringIds::constructionMarkerCompanyColour,
         };
 
         // 0x004BFE2E
