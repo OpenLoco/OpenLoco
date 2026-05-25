@@ -27,7 +27,7 @@ jobs:
         run: scripts/check-changelog-formatting
   windows:
     name: Windows x64
-    runs-on: windows-2025-vs2026
+    runs-on: windows-latest
     needs: check-code-formatting
     env:
       CONFIGURATION: Release
@@ -103,7 +103,7 @@ jobs:
           ctest --test-dir build\windows\ --output-on-failure
   windows32:
     name: Windows Win32
-    runs-on: windows-2025-vs2026
+    runs-on: windows-latest
     needs: check-code-formatting
     env:
       CONFIGURATION: Release
