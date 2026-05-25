@@ -56,6 +56,8 @@ namespace OpenLoco::Paint
         // 0x00525D30 (note this should be combined with a applyGhostToImage)
         const auto scaffoldingColour = buildingObj.scaffoldingColour;
 
+        const auto companyColour = elBuilding.colour();
+
         const auto scaffSegType = buildingObj.scaffoldingSegmentType;
         if (totalSectionHeight != 0 && scaffSegType != 0xFF)
         {
@@ -66,8 +68,7 @@ namespace OpenLoco::Paint
             ImageId baseScaffImage{};
             if (elBuilding.isGhost())
             {
-                baseScaffImage = Gfx::applyGhostToImage(baseScaffImageIdx);
-                // TODO: apply company colour if playerCompanyID != elTrack.owner()?
+                baseScaffImage = Gfx::applyGhostToImage(baseScaffImageIdx, companyColour);
             }
             else
             {
@@ -125,7 +126,7 @@ namespace OpenLoco::Paint
             ImageId baseScaffImage{};
             if (elBuilding.isGhost())
             {
-                baseScaffImage = Gfx::applyGhostToImage(baseScaffImageIdx);
+                baseScaffImage = Gfx::applyGhostToImage(baseScaffImageIdx, companyColour);
             }
             else
             {
@@ -176,7 +177,8 @@ namespace OpenLoco::Paint
         if (elBuilding.isGhost())
         {
             session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-            baseColour = Gfx::applyGhostToImage(0);
+            const auto companyColour = elBuilding.colour();
+            baseColour = Gfx::applyGhostToImage(0, companyColour);
         }
         // Combine this with any imageId
         const uint8_t rotation = (session.getRotation() + elBuilding.rotation()) & 0x3;

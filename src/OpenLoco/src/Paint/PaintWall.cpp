@@ -88,6 +88,7 @@ namespace OpenLoco::Paint
         if (isGhost)
         {
             return Gfx::applyGhostToImage(imageIndex);
+            // TODO: wall doesn't know what company is building it
         }
 
         ImageId imageId{ imageIndex };

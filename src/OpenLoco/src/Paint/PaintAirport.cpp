@@ -65,9 +65,7 @@ namespace OpenLoco::Paint
         if (elStation.isGhost())
         {
             session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-            baseColour = Gfx::applyGhostToImage(0);
-
-            // TODO: apply company colour if playerCompanyID != elTrack.owner()?
+            baseColour = Gfx::applyGhostToImage(0, companyColour);
         }
         // Combine this with any imageId
         const uint8_t rotation = (session.getRotation() + elStation.rotation()) & 0x3;

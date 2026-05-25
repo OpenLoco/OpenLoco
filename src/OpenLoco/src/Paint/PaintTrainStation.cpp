@@ -294,10 +294,8 @@ namespace OpenLoco::Paint
         if (elStation.isGhost() || elStation.isAiAllocated())
         {
             session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-            imageIdbase = Gfx::applyGhostToImage(stationObj->imageOffsets[elStation.sequenceIndex()]);
+            imageIdbase = Gfx::applyGhostToImage(stationObj->imageOffsets[elStation.sequenceIndex()], companyColour);
             imageIdTranslucentBase = ImageId{ stationObj->imageOffsets[elStation.sequenceIndex()] }.withTranslucency(ExtColour::unk2F);
-
-            // TODO: apply company colour if playerCompanyID != elTrack.owner()?
         }
         else
         {

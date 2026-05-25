@@ -155,7 +155,7 @@ namespace OpenLoco::Gfx
         return ImageIdFlags::translucent | (enumValue(colour) << 19) | image;
     }
 
-    [[nodiscard]] ImageId applyGhostToImage(uint32_t imageIndex);
+    [[nodiscard]] ImageId applyGhostToImage(uint32_t imageIndex, Colour companyColour = Colour::white);
     [[nodiscard]] constexpr uint32_t getImageIndex(uint32_t imageId) { return imageId & 0x7FFFF; }
 
     // Invalidates the entire screen.

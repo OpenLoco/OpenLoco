@@ -159,7 +159,7 @@ namespace OpenLoco::Paint
             {
                 session.setItemType(InteractionItem::noInteraction);
                 imageId = Gfx::applyGhostToImage(imageOffset);
-                // TODO: apply company colour if playerCompanyID != elTrack.owner()?
+                // TODO: how do I get company colour here?
             }
             World::Pos3 offset(offsetAndBBoffset.offset.x, offsetAndBBoffset.offset.y, getSignalHeightOffset(isRight, trackId) + height);
             World::Pos3 bbOffset(offsetAndBBoffset.boundingOffset.x, offsetAndBBoffset.boundingOffset.y, offset.z + 4);
@@ -177,6 +177,7 @@ namespace OpenLoco::Paint
                     {
                         session.setItemType(InteractionItem::noInteraction);
                         imageId = Gfx::applyGhostToImage(imageOffset);
+                        // TODO: how do I get company colour here?
                     }
                     session.addToPlotListAsChild(imageId, offset, bbOffset, bbSize);
                 }
@@ -189,6 +190,7 @@ namespace OpenLoco::Paint
                     {
                         session.setItemType(InteractionItem::noInteraction);
                         imageId = Gfx::applyGhostToImage(imageOffset);
+                        // TODO: how do I get company colour here?
                     }
                     session.addToPlotListAsChild(imageId, offset, bbOffset, bbSize);
                 }

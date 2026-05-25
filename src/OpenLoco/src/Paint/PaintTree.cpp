@@ -76,6 +76,7 @@ namespace OpenLoco::Paint
             session.setItemType(InteractionItem::noInteraction);
             imageId2 = Gfx::applyGhostToImage(imageIndex2);
             imageId1 = Gfx::applyGhostToImage(imageIndex1);
+            // TODO: tree doesn't know what company is planting it
         }
         else if (treeObj->colours != 0)
         {

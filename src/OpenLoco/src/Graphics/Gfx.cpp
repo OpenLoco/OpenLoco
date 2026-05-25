@@ -47,7 +47,7 @@ namespace OpenLoco::Gfx
     static std::array<PaletteEntry, 256> _rgbaPalette;
 
     // 0x004FFAE8
-    ImageId applyGhostToImage(uint32_t imageIndex)
+    ImageId applyGhostToImage(uint32_t imageIndex, Colour companyColour)
     {
         using Config::ConstructionMarkerStyle;
         switch (Config::get().constructionMarker)
@@ -60,6 +60,9 @@ namespace OpenLoco::Gfx
 
             case ConstructionMarkerStyle::translucentWhite:
                 return ImageId(imageIndex).withTranslucency(ExtColour::unk2C);
+
+            case ConstructionMarkerStyle::companyColourTranslucent:
+                return ImageId(imageIndex).withTranslucency(Colours::getTranslucent(companyColour));
 
             default:
                 throw Exception::RuntimeError("Unknown ConstructionMarkerStyle");

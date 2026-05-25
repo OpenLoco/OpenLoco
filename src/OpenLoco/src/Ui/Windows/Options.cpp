@@ -729,17 +729,21 @@ namespace OpenLoco::Ui::Windows::Options
             StringIds::white,
             StringIds::translucent,
             StringIds::translucent, // TODO
+            StringIds::new_company, // TODO
         };
 
         // 0x004BFE2E
         static void constructionMarkerMouseDown(const Window& self, [[maybe_unused]] WidgetIndex_t wi)
         {
-            auto& dropdown = self.widgets[Widx::construction_marker];
-            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 3, 0x80);
+            auto n = std::size(kConstructionMarkerStyleStringIds);
 
-            Dropdown::add(0, StringIds::dropdown_stringid, kConstructionMarkerStyleStringIds[0]);
-            Dropdown::add(1, StringIds::dropdown_stringid, kConstructionMarkerStyleStringIds[1]);
-            Dropdown::add(2, StringIds::dropdown_stringid, kConstructionMarkerStyleStringIds[2]);
+            auto& dropdown = self.widgets[Widx::construction_marker];
+            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), n, 0x80);
+
+            for (size_t i = 0; i < n; ++i)
+            {
+                Dropdown::add(i, StringIds::dropdown_stringid, kConstructionMarkerStyleStringIds[i]);
+            }
             Dropdown::setItemSelected(enumValue(Config::get().constructionMarker));
         }
 

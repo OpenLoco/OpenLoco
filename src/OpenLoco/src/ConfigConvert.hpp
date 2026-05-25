@@ -328,6 +328,7 @@ namespace YAML
         enum_def(ConstructionMarkerStyle, white),
         enum_def(ConstructionMarkerStyle, translucent),
         enum_def(ConstructionMarkerStyle, translucentWhite),
+        enum_def(ConstructionMarkerStyle, companyColourTranslucent),
     };
     template<>
     struct convert<ConstructionMarkerStyle> : convert_enum_base<ConstructionMarkerStyle>
