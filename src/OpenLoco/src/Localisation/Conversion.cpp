@@ -177,6 +177,10 @@ namespace OpenLoco::Localisation
         { 0x017D, 'Z' }, // Ž
         { 0x017E, 'z' }, // ž
         { 0x017F, 's' }, // ſ
+        { 0x0218, 'S' }, // Ș
+        { 0x0219, 's' }, // ș
+        { 0x021A, 'T' }, // Ț
+        { 0x021B, 't' }, // ț
     });
 
     // Ensure that the table is sorted by Unicode point.
