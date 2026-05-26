@@ -1,10 +1,10 @@
-#include "RoadStationObject.h"
+#include "Objects/RoadStationObject.h"
 #include "Graphics/Colour.h"
 #include "Graphics/DrawingContext.h"
 #include "Graphics/Gfx.h"
-#include "ObjectImageTable.h"
-#include "ObjectManager.h"
-#include "ObjectStringTable.h"
+#include "Objects/ObjectImageTable.h"
+#include "Objects/ObjectManager.h"
+#include "Objects/ObjectStringTable.h"
 
 namespace OpenLoco
 {

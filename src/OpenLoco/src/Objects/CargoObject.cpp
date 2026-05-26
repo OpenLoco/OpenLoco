@@ -1,7 +1,7 @@
-#include "CargoObject.h"
-#include "ObjectImageTable.h"
-#include "ObjectManager.h"
-#include "ObjectStringTable.h"
+#include "Objects/CargoObject.h"
+#include "Objects/ObjectImageTable.h"
+#include "Objects/ObjectManager.h"
+#include "Objects/ObjectStringTable.h"
 
 #include <cassert>
 

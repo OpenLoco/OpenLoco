@@ -1,4 +1,4 @@
-#include "RemoveTrackMod.h"
+#include "GameCommands/Track/RemoveTrackMod.h"
 #include "Economy/Expenditures.h"
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"

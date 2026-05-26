@@ -1,4 +1,4 @@
-#include "Cheat.h"
+#include "GameCommands/Cheats/Cheat.h"
 #include "Economy/Currency.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"

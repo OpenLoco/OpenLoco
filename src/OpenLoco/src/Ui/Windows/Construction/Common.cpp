@@ -1,4 +1,3 @@
-#include "Construction.h"
 #include "Date.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
@@ -30,6 +29,7 @@
 #include "SceneManager.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Windows/Construction/Construction.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 

@@ -1,4 +1,4 @@
-#include "RenameIndustry.h"
+#include "GameCommands/Industries/RenameIndustry.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Industries/RenameIndustry.h"

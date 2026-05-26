@@ -1,11 +1,9 @@
-#include "Station.h"
-#include "CompanyManager.h"
+#include "World/Station.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingContext.h"
 #include "Graphics/TextRenderer.h"
-#include "IndustryManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
@@ -29,10 +27,12 @@
 #include "Objects/TrackObject.h"
 #include "Objects/TrainStationObject.h"
 #include "Random.h"
-#include "StationManager.h"
-#include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
+#include "World/CompanyManager.h"
+#include "World/IndustryManager.h"
+#include "World/StationManager.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Math/Bound.hpp>
 #include <algorithm>
 #include <cassert>

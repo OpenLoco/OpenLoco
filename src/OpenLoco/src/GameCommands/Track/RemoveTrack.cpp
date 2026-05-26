@@ -1,6 +1,8 @@
-#include "RemoveTrack.h"
+#include "GameCommands/Track/RemoveTrack.h"
 #include "Audio/Audio.h"
 #include "Economy/Economy.h"
+#include "GameCommands/Track/RemoveSignal.h"
+#include "GameCommands/Track/RemoveTrainStation.h"
 #include "Map/RoadElement.h"
 #include "Map/SignalElement.h"
 #include "Map/TileManager.h"
@@ -11,8 +13,6 @@
 #include "Objects/TrackExtraObject.h"
 #include "Objects/TrackObject.h"
 #include "Random.h"
-#include "RemoveSignal.h"
-#include "RemoveTrainStation.h"
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
 

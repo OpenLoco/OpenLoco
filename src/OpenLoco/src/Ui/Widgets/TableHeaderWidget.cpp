@@ -1,5 +1,5 @@
-#include "TableHeaderWidget.h"
-#include "ButtonWidget.h"
+#include "Ui/Widgets/TableHeaderWidget.h"
+#include "Ui/Widgets/ButtonWidget.h"
 
 namespace OpenLoco::Ui::Widgets
 {

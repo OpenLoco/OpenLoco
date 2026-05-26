@@ -1,4 +1,4 @@
-#include "Shortcuts.h"
+#include "Input/Shortcuts.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/General/SetGameSpeed.h"
 #include "GameCommands/General/TogglePause.h"

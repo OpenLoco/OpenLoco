@@ -1,5 +1,4 @@
-#include "IndustryManager.h"
-#include "CompanyManager.h"
+#include "World/IndustryManager.h"
 #include "Date.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
@@ -18,8 +17,9 @@
 #include "Objects/ObjectManager.h"
 #include "Random.h"
 #include "SceneManager.h"
-#include "TownManager.h"
 #include "Ui/WindowManager.h"
+#include "World/CompanyManager.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Math/Vector.hpp>
 #include <numeric>
 
@@ -270,9 +270,7 @@ namespace OpenLoco::IndustryManager
             // };
             const auto randomNum = gPrng1().randNext();
 
-            const auto randomPos = World::toWorldSpace(World::TilePos2(
-                (((randomNum >> 16) * World::kMapRows) >> 16),
-                (((randomNum & 0xFFFF) * World::kMapColumns) >> 16)));
+            const auto randomPos = World::toWorldSpace(World::TilePos2((((randomNum >> 16) * World::kMapRows) >> 16), (((randomNum & 0xFFFF) * World::kMapColumns) >> 16)));
 
             if (isTooCloseToNearbyIndustries(randomPos))
             {

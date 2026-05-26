@@ -1,4 +1,4 @@
-#include "PaintTileDecorations.h"
+#include "Paint/PaintTileDecorations.h"
 #include "Config.h"
 #include "GameState.h"
 #include "Graphics/ImageIds.h"

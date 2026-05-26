@@ -1,4 +1,4 @@
-#include "Wt3Widget.h"
+#include "Ui/Widgets/Wt3Widget.h"
 #include "Graphics/DrawingContext.h"
 #include "Ui/Window.h"
 

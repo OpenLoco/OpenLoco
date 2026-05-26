@@ -1,8 +1,8 @@
-#include "SoftwareDrawingEngine.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Config.h"
 #include "Graphics/FPSCounter.h"
+#include "Graphics/RenderTarget.h"
 #include "Logging.h"
-#include "RenderTarget.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
 

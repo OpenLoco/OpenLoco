@@ -1,8 +1,8 @@
-#include "ImageButtonWidget.h"
+#include "Ui/Widgets/ImageButtonWidget.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/TextRenderer.h"
-#include "LabelWidget.h"
+#include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Window.h"
 
 namespace OpenLoco::Ui::Widgets

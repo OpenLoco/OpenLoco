@@ -1,4 +1,4 @@
-#include "ObjectImageTable.h"
+#include "Objects/ObjectImageTable.h"
 #include "Graphics/Gfx.h"
 #include <OpenLoco/Core/Exception.hpp>
 

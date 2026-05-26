@@ -1,4 +1,4 @@
-#include "NetworkConnection.h"
+#include "Network/NetworkConnection.h"
 #include "Logging.h"
 #include <OpenLoco/Platform/Platform.h>
 #include <cstring>

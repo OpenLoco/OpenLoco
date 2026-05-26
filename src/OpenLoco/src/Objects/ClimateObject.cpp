@@ -1,6 +1,6 @@
-#include "ClimateObject.h"
-#include "ObjectManager.h"
-#include "ObjectStringTable.h"
+#include "Objects/ClimateObject.h"
+#include "Objects/ObjectManager.h"
+#include "Objects/ObjectStringTable.h"
 
 #include <cassert>
 

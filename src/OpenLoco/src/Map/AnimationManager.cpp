@@ -1,13 +1,13 @@
-#include "AnimationManager.h"
-#include "Animation.h"
-#include "BuildingElement.h"
+#include "Map/AnimationManager.h"
 #include "Game.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
-#include "IndustryElement.h"
-#include "RoadElement.h"
-#include "SignalElement.h"
-#include "StationElement.h"
+#include "Map/Animation.h"
+#include "Map/BuildingElement.h"
+#include "Map/IndustryElement.h"
+#include "Map/RoadElement.h"
+#include "Map/SignalElement.h"
+#include "Map/StationElement.h"
 
 #include <array>
 

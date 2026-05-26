@@ -1,4 +1,4 @@
-#include "CreateTrainStation.h"
+#include "GameCommands/Track/CreateTrainStation.h"
 #include "Economy/Economy.h"
 #include "Localisation/StringIds.h"
 #include "Map/StationElement.h"

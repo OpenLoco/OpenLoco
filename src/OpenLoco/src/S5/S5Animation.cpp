@@ -1,4 +1,4 @@
-#include "S5Animation.h"
+#include "S5/S5Animation.h"
 #include "Map/Animation.h"
 
 namespace OpenLoco::S5

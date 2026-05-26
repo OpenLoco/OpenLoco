@@ -1,4 +1,4 @@
-#include "ChangeLoan.h"
+#include "GameCommands/Company/ChangeLoan.h"
 #include "Economy/Economy.h"
 #include "GameCommands/GameCommands.h"
 #include "Localisation/StringIds.h"

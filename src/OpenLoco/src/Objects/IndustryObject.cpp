@@ -1,13 +1,13 @@
-#include "IndustryObject.h"
-#include "CargoObject.h"
+#include "Objects/IndustryObject.h"
 #include "Graphics/Colour.h"
 #include "Graphics/DrawingContext.h"
 #include "Graphics/Gfx.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
-#include "ObjectImageTable.h"
-#include "ObjectManager.h"
-#include "ObjectStringTable.h"
+#include "Objects/CargoObject.h"
+#include "Objects/ObjectImageTable.h"
+#include "Objects/ObjectManager.h"
+#include "Objects/ObjectStringTable.h"
 #include <OpenLoco/Core/Numerics.hpp>
 #include <algorithm>
 

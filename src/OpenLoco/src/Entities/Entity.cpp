@@ -1,5 +1,5 @@
-#include "Entity.h"
-#include "EntityManager.h"
+#include "Entities/Entity.h"
+#include "Entities/EntityManager.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 

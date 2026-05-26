@@ -1,10 +1,10 @@
-#include "VehicleSpeedControl.h"
+#include "GameCommands/Vehicles/VehicleSpeedControl.h"
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Vehicles/VehicleSell.h"
 #include "Types.hpp"
 #include "Ui/WindowManager.h"
-#include "VehicleSell.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleHead.h"
 

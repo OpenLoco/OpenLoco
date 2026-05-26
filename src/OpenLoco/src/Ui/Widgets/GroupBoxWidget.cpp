@@ -1,4 +1,4 @@
-#include "GroupBoxWidget.h"
+#include "Ui/Widgets/GroupBoxWidget.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/Formatting.h"
 #include "Ui/Window.h"

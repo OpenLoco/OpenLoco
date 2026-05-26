@@ -1,4 +1,4 @@
-#include "S5Entity.h"
+#include "S5/S5Entity.h"
 #include "Effects/ExhaustEffect.h"
 #include "Effects/ExplosionEffect.h"
 #include "Effects/ExplosionSmokeEffect.h"

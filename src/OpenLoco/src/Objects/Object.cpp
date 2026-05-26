@@ -1,4 +1,4 @@
-#include "Object.h"
+#include "Objects/Object.h"
 #include <OpenLoco/Utility/String.hpp>
 #include <fmt/format.h>
 #include <string_view>

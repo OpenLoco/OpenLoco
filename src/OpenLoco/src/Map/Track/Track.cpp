@@ -1,13 +1,13 @@
-#include "Track.h"
+#include "Map/Track/Track.h"
 #include "GameState.h"
 #include "Map/RoadElement.h"
 #include "Map/SignalElement.h"
 #include "Map/StationElement.h"
 #include "Map/TileManager.h"
+#include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
-#include "TrackData.h"
 
 namespace OpenLoco::World::Track
 {

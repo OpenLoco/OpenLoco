@@ -1,6 +1,4 @@
-#include "CompanyManager.h"
-#include "CompanyAi/CompanyAi.h"
-#include "CompanyRecords.h"
+#include "World/CompanyManager.h"
 #include "Config.h"
 #include "Date.h"
 #include "Economy/Economy.h"
@@ -33,12 +31,14 @@
 #include "Scenario/Scenario.h"
 #include "Scenario/ScenarioManager.h"
 #include "SceneManager.h"
-#include "TownManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
+#include "World/CompanyAi/CompanyAi.h"
+#include "World/CompanyRecords.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Math/Bound.hpp>
 #include <array>
 #include <sfl/static_vector.hpp>

@@ -1,6 +1,6 @@
-#include "DrawSprite.h"
-#include "DrawSpriteBMP.hpp"
-#include "DrawSpriteRLE.hpp"
+#include "Graphics/DrawSprite.h"
+#include "Graphics/DrawSpriteBMP.hpp"
+#include "Graphics/DrawSpriteRLE.hpp"
 #include "Graphics/Gfx.h"
 #include "Graphics/RenderTarget.h"
 

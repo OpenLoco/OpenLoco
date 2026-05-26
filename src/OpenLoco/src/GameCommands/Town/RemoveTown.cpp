@@ -1,4 +1,4 @@
-#include "RemoveTown.h"
+#include "GameCommands/Town/RemoveTown.h"
 #include "Audio/Audio.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/Buildings/RemoveBuilding.h"

@@ -1,6 +1,6 @@
-#include "S5GameState.h"
+#include "S5/S5GameState.h"
 #include "GameState.h"
-#include "S5.h"
+#include "S5/S5.h"
 #include "Scenario/ScenarioConstruction.h"
 
 namespace OpenLoco::S5

@@ -1,5 +1,5 @@
-#include "EntityManager.h"
-#include "EntityTweener.h"
+#include "Entities/EntityManager.h"
+#include "Entities/EntityTweener.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
 #include "GameStateFlags.h"

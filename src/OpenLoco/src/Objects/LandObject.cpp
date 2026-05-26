@@ -1,11 +1,11 @@
-#include "LandObject.h"
-#include "CliffEdgeObject.h"
+#include "Objects/LandObject.h"
 #include "Graphics/Colour.h"
 #include "Graphics/DrawingContext.h"
 #include "Graphics/Gfx.h"
-#include "ObjectImageTable.h"
-#include "ObjectManager.h"
-#include "ObjectStringTable.h"
+#include "Objects/CliffEdgeObject.h"
+#include "Objects/ObjectImageTable.h"
+#include "Objects/ObjectManager.h"
+#include "Objects/ObjectStringTable.h"
 
 namespace OpenLoco
 {

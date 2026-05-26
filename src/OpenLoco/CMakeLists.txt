@@ -735,6 +735,7 @@ set(public_link_libraries
     PNG::PNG
     $<$<PLATFORM_ID:Windows>:winmm>
     $<$<PLATFORM_ID:Windows>:ws2_32>
+    $<$<PLATFORM_ID:Windows>:Resources>
     $<$<BOOL:${MINGW}>:imm32>
     $<$<AND:$<BOOL:${HAS_LIBSTDCPP}>,$<BOOL:${TBB_FOUND}>>:TBB::tbb> # libstdc++ does not support <execution> without tbb
 )
@@ -762,6 +763,8 @@ loco_add_library(OpenLoco STATIC
     PRIVATE_COMPILE_DEFINITIONS
         ${private_compile_definitions}
 )
+
+target_include_directories(OpenLoco PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco")
 
 if (APPLE)
     # Enable the use of e.g. std::execution::par

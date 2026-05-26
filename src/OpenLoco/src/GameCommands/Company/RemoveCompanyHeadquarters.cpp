@@ -1,4 +1,4 @@
-#include "RemoveCompanyHeadquarters.h"
+#include "GameCommands/Company/RemoveCompanyHeadquarters.h"
 #include "Audio/Audio.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/Buildings/RemoveBuilding.h"

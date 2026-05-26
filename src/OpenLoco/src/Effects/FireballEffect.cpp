@@ -1,4 +1,4 @@
-#include "FireballEffect.h"
+#include "Effects/FireballEffect.h"
 #include "Entities/EntityManager.h"
 
 namespace OpenLoco

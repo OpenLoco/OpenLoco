@@ -1,4 +1,4 @@
-#include "CheckboxWidget.h"
+#include "Ui/Widgets/CheckboxWidget.h"
 #include "Graphics/Colour.h"
 #include "Graphics/TextRenderer.h"
 #include "Ui/Window.h"
