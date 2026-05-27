@@ -1,5 +1,6 @@
 26.04+ (???)
 ------------------------------------------------------------------------
+- Feature: [#3720] A preferred company name can now be set, separate from the preferred owner name.
 - Change: [#3517] Letters with unsupported diacritics/accents are temporarily replaced with regular letters to keep e.g. Czech, Slovak readable.
 - Change: [#3710] The Build Vehicle window is now wider by default, moving the sorting options to a dedicated dropdown.
 - Change: [#3734] The Station Construction tab now lists accepted and produced cargo in full, with labels along the icons.
