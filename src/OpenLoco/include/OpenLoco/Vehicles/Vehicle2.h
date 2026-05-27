@@ -48,4 +48,6 @@ namespace OpenLoco::Vehicles
         }
     };
     static_assert(sizeof(Vehicle2) <= sizeof(Entity));
+
+    void railProduceCrossingWhistle(const Vehicle2& veh2);
 }
