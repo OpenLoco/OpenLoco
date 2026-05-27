@@ -1,4 +1,4 @@
-#include "RenderTarget.h"
+#include "Graphics/RenderTarget.h"
 
 namespace OpenLoco::Gfx
 {

@@ -1,4 +1,4 @@
-#include "VehicleRepaint.h"
+#include "GameCommands/Vehicles/VehicleRepaint.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Types.hpp"

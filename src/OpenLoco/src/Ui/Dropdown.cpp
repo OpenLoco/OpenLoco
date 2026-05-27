@@ -1,4 +1,4 @@
-#include "Dropdown.h"
+#include "Ui/Dropdown.h"
 #include "Engine/Limits.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/TextRenderer.h"
@@ -9,9 +9,9 @@
 #include "Logging.h"
 #include "Objects/CompetitorObject.h"
 #include "Objects/ObjectManager.h"
+#include "Ui/Widget.h"
 #include "Ui/Widgets/Wt3Widget.h"
-#include "Widget.h"
-#include "Window.h"
+#include "Ui/Window.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <cassert>

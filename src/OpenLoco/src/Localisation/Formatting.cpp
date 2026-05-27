@@ -1,14 +1,14 @@
-#include "Formatting.h"
+#include "Localisation/Formatting.h"
 #include "Config.h"
 #include "Date.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
+#include "Localisation/StringBuffer.h"
+#include "Localisation/StringIds.h"
+#include "Localisation/StringManager.h"
 #include "Logging.h"
 #include "Objects/CurrencyObject.h"
 #include "Objects/ObjectManager.h"
-#include "StringBuffer.h"
-#include "StringIds.h"
-#include "StringManager.h"
 #include "World/TownManager.h"
 
 #include <OpenLoco/Core/Exception.hpp>

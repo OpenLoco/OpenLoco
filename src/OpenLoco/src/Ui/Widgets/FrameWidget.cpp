@@ -1,4 +1,4 @@
-#include "FrameWidget.h"
+#include "Ui/Widgets/FrameWidget.h"
 #include "Config.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"

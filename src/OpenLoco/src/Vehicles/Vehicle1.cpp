@@ -1,4 +1,4 @@
-#include "Vehicle1.h"
+#include "Vehicles/Vehicle1.h"
 #include "Audio/Audio.h"
 #include "Entities/EntityManager.h"
 #include "Map/TileManager.h"
@@ -10,11 +10,11 @@
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "Random.h"
-#include "RoutingManager.h"
-#include "Vehicle2.h"
-#include "VehicleBogie.h"
-#include "VehicleHead.h"
-#include "VehicleTail.h"
+#include "Vehicles/RoutingManager.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
+#include "Vehicles/VehicleTail.h"
 #include "ViewportManager.h"
 
 using namespace OpenLoco::Literals;

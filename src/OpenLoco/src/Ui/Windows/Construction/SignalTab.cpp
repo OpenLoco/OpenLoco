@@ -1,5 +1,4 @@
 #include "Audio/Audio.h"
-#include "Construction.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Track/CreateSignal.h"
 #include "GameCommands/Track/RemoveSignal.h"
@@ -22,6 +21,7 @@
 #include "Ui/Widget.h"
 #include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Windows/Construction/Construction.h"
 
 using namespace OpenLoco::World;
 using namespace OpenLoco::World::TileManager;

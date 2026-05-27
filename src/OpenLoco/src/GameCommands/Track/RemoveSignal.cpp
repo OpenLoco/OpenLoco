@@ -1,4 +1,4 @@
-#include "RemoveSignal.h"
+#include "GameCommands/Track/RemoveSignal.h"
 #include "Economy/Economy.h"
 #include "Map/SignalElement.h"
 #include "Map/TileManager.h"

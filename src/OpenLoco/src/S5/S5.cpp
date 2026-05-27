@@ -1,6 +1,6 @@
 #define DO_TITLE_SEQUENCE_CHECKS
 
-#include "S5.h"
+#include "S5/S5.h"
 
 #include "Audio/Audio.h"
 #include "EditorController.h"
@@ -18,9 +18,9 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/ScenarioTextObject.h"
 #include "OpenLoco.h"
-#include "S5File.h"
-#include "S5Options.h"
-#include "SawyerStream.h"
+#include "S5/S5File.h"
+#include "S5/S5Options.h"
+#include "S5/SawyerStream.h"
 #include "Scenario/Scenario.h"
 #include "Scenario/ScenarioManager.h"
 #include "Scenario/ScenarioOptions.h"

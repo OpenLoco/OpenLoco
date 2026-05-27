@@ -1,4 +1,4 @@
-#include "CreateBuilding.h"
+#include "GameCommands/Buildings/CreateBuilding.h"
 #include "Economy/Economy.h"
 #include "Localisation/StringIds.h"
 #include "Map/AnimationManager.h"

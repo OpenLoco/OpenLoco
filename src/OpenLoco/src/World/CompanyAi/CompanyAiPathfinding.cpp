@@ -1,5 +1,4 @@
-#include "CompanyAiPathfinding.h"
-#include "CompanyAi.h"
+#include "World/CompanyAi/CompanyAiPathfinding.h"
 #include "Economy/Economy.h"
 #include "GameCommands/CompanyAi/AiTrackReplacement.h"
 #include "GameCommands/Road/CreateRoad.h"
@@ -27,6 +26,7 @@
 #include "Objects/TrackObject.h"
 #include "Objects/TreeObject.h"
 #include "World/Company.h"
+#include "World/CompanyAi/CompanyAi.h"
 #include "World/Station.h"
 
 namespace OpenLoco::CompanyAi

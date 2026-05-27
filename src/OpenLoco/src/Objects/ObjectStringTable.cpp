@@ -1,9 +1,9 @@
-#include "ObjectStringTable.h"
+#include "Objects/ObjectStringTable.h"
 #include "Config.h"
 #include "Localisation/Languages.h"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
-#include "ObjectManager.h"
+#include "Objects/ObjectManager.h"
 
 namespace OpenLoco::ObjectManager
 {

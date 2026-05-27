@@ -1,4 +1,4 @@
-#include "CreateWall.h"
+#include "GameCommands/Terraform/CreateWall.h"
 #include "Economy/Economy.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"

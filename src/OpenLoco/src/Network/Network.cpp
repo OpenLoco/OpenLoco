@@ -1,14 +1,14 @@
-#include "Network.h"
+#include "Network/Network.h"
 #include "CommandLine.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
 #include "Graphics/Gfx.h"
 #include "Logging.h"
-#include "NetworkClient.h"
-#include "NetworkServer.h"
+#include "Network/NetworkClient.h"
+#include "Network/NetworkServer.h"
+#include "Network/Socket.h"
 #include "Scenario/ScenarioManager.h"
 #include "SceneManager.h"
-#include "Socket.h"
 #include <cassert>
 #include <stdexcept>
 

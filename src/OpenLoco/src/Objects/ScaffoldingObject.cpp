@@ -1,10 +1,10 @@
-#include "ScaffoldingObject.h"
+#include "Objects/ScaffoldingObject.h"
 #include "Graphics/Colour.h"
 #include "Graphics/DrawingContext.h"
 #include "Graphics/Gfx.h"
-#include "ObjectImageTable.h"
-#include "ObjectManager.h"
-#include "ObjectStringTable.h"
+#include "Objects/ObjectImageTable.h"
+#include "Objects/ObjectManager.h"
+#include "Objects/ObjectStringTable.h"
 
 #include <cassert>
 

@@ -1,4 +1,4 @@
-#include "ChangeLandMaterial.h"
+#include "GameCommands/Terraform/ChangeLandMaterial.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
 #include "Map/MapGenerator/MapGenerator.h"

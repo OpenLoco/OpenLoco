@@ -1,11 +1,9 @@
-#include "StationManager.h"
-#include "CompanyManager.h"
+#include "World/StationManager.h"
 #include "Config.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
-#include "IndustryManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
@@ -16,12 +14,14 @@
 #include "Objects/IndustryObject.h"
 #include "Scenario/ScenarioManager.h"
 #include "SceneManager.h"
-#include "TownManager.h"
 #include "Ui/Window.h"
 #include "Ui/WindowManager.h"
 #include "Ui/Windows/Construction/Construction.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/VehicleManager.h"
+#include "World/CompanyManager.h"
+#include "World/IndustryManager.h"
+#include "World/TownManager.h"
 
 #include <OpenLoco/Math/Vector.hpp>
 #include <bitset>

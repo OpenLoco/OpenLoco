@@ -1,6 +1,6 @@
-#include "NetworkBase.h"
+#include "Network/NetworkBase.h"
 #include "Logging.h"
-#include "Packet.h"
+#include "Network/Packet.h"
 #include <OpenLoco/Platform/Platform.h>
 
 using namespace OpenLoco;

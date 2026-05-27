@@ -1,5 +1,4 @@
-#include "Blueprints.h"
-#include "Construction.h"
+#include "Ui/Windows/Construction/Blueprints.h"
 #include "GameCommands/Track/CreateSignal.h"
 #include "GameCommands/Track/CreateTrack.h"
 #include "GameCommands/Track/CreateTrainStation.h"
@@ -14,6 +13,7 @@
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
 #include "Ui/WindowManager.h"
+#include "Ui/Windows/Construction/Construction.h"
 #include "World/CompanyManager.h"
 
 namespace OpenLoco

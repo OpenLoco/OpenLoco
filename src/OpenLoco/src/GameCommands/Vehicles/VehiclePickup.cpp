@@ -1,4 +1,4 @@
-#include "VehiclePickup.h"
+#include "GameCommands/Vehicles/VehiclePickup.h"
 #include "Audio/Audio.h"
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"

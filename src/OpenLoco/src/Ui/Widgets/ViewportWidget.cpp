@@ -1,6 +1,6 @@
-#include "ViewportWidget.h"
+#include "Ui/Widgets/ViewportWidget.h"
 #include "Graphics/TextRenderer.h"
-#include "TextBoxWidget.h"
+#include "Ui/Widgets/TextBoxWidget.h"
 #include "Ui/Window.h"
 
 namespace OpenLoco::Ui::Widgets

@@ -1,5 +1,4 @@
-#include "TownManager.h"
-#include "CompanyManager.h"
+#include "World/TownManager.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
@@ -19,6 +18,7 @@
 #include "Scenario/ScenarioManager.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
+#include "World/CompanyManager.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Numerics.hpp>
 

@@ -1,4 +1,4 @@
-#include "Town.h"
+#include "World/Town.h"
 #include "Config.h"
 #include "Date.h"
 #include "GameCommands/Buildings/CreateBuilding.h"
@@ -27,10 +27,10 @@
 #include "Objects/RoadStationObject.h"
 #include "Objects/StreetLightObject.h"
 #include "Random.h"
-#include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
 #include <algorithm>
 #include <bit>

@@ -1,5 +1,5 @@
-#include "SoundObject.h"
-#include "ObjectStringTable.h"
+#include "Objects/SoundObject.h"
+#include "Objects/ObjectStringTable.h"
 
 #include <cassert>
 

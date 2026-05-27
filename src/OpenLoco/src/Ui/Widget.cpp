@@ -1,4 +1,4 @@
-#include "Widget.h"
+#include "Ui/Widget.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
@@ -7,7 +7,7 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Ui/ScrollView.h"
-#include "Window.h"
+#include "Ui/Window.h"
 
 #include <cassert>
 

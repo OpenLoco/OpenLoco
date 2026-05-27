@@ -1,6 +1,6 @@
-#include "PaletteMap.h"
-#include "Gfx.h"
-#include "ImageIds.h"
+#include "Graphics/PaletteMap.h"
+#include "Graphics/Gfx.h"
+#include "Graphics/ImageIds.h"
 
 #include <algorithm>
 #include <cassert>

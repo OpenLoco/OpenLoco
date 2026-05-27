@@ -1,7 +1,7 @@
-#include "StringManager.h"
+#include "Localisation/StringManager.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
-#include "StringIds.h"
+#include "Localisation/StringIds.h"
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <cassert>
 #include <cstring>

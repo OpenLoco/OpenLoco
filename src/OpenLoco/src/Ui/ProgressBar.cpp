@@ -1,9 +1,9 @@
-#include "ProgressBar.h"
+#include "Ui/ProgressBar.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringManager.h"
 #include "SceneManager.h"
-#include "WindowManager.h"
+#include "Ui/WindowManager.h"
 
 namespace OpenLoco::Ui::ProgressBar
 {

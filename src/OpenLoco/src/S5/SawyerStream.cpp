@@ -1,4 +1,4 @@
-#include "SawyerStream.h"
+#include "S5/SawyerStream.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <algorithm>
 #include <bit>

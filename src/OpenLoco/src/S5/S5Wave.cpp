@@ -1,4 +1,4 @@
-#include "S5Wave.h"
+#include "S5/S5Wave.h"
 #include "Map/Wave.h"
 
 namespace OpenLoco::S5

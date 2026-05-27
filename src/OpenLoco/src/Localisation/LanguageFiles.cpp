@@ -1,13 +1,13 @@
-#include "LanguageFiles.h"
+#include "Localisation/LanguageFiles.h"
 #include "Config.h"
-#include "Conversion.h"
 #include "Environment.h"
+#include "Localisation/Conversion.h"
 #include "Localisation/Formatting.h"
+#include "Localisation/StringIds.h"
+#include "Localisation/StringManager.h"
+#include "Localisation/Unicode.h"
 #include "Logging.h"
-#include "StringIds.h"
-#include "StringManager.h"
 #include "Ui.h"
-#include "Unicode.h"
 
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Platform/Platform.h>

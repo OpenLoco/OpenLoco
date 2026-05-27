@@ -1,5 +1,4 @@
 #include "Audio/Audio.h"
-#include "Construction.h"
 #include "GameCommands/Airports/CreateAirport.h"
 #include "GameCommands/Airports/RemoveAirport.h"
 #include "GameCommands/Docks/CreatePort.h"
@@ -38,6 +37,7 @@
 #include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/Wt3Widget.h"
+#include "Ui/Windows/Construction/Construction.h"
 #include "World/CompanyManager.h"
 #include "World/Industry.h"
 #include "World/StationManager.h"

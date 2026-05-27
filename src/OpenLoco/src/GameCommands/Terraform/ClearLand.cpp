@@ -1,4 +1,4 @@
-#include "ClearLand.h"
+#include "GameCommands/Terraform/ClearLand.h"
 #include "Economy/Economy.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"

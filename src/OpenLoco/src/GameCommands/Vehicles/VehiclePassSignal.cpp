@@ -1,4 +1,4 @@
-#include "VehiclePassSignal.h"
+#include "GameCommands/Vehicles/VehiclePassSignal.h"
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"

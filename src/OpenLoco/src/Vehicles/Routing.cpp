@@ -1,4 +1,4 @@
-#include "Routing.h"
+#include "Vehicles/Routing.h"
 #include "Economy/Economy.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
@@ -16,7 +16,7 @@
 #include "Objects/RoadObject.h"
 #include "Objects/TrackExtraObject.h"
 #include "Objects/TrackObject.h"
-#include "Vehicle.h"
+#include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Engine/World.hpp>

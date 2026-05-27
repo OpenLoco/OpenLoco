@@ -1,6 +1,6 @@
-#include "Colour.h"
-#include "Gfx.h"
-#include "PaletteMap.h"
+#include "Graphics/Colour.h"
+#include "Graphics/Gfx.h"
+#include "Graphics/PaletteMap.h"
 
 #include <array>
 #include <cassert>

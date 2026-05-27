@@ -1,8 +1,8 @@
-#include "DropdownWidget.h"
+#include "Ui/Widgets/DropdownWidget.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/TextRenderer.h"
-#include "LabelWidget.h"
+#include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Window.h"
 
 namespace OpenLoco::Ui::Widgets

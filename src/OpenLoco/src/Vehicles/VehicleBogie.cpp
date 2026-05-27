@@ -1,4 +1,4 @@
-#include "VehicleBogie.h"
+#include "Vehicles/VehicleBogie.h"
 #include "Audio/Audio.h"
 #include "Effects/ExplosionEffect.h"
 #include "Effects/SplashEffect.h"
@@ -11,8 +11,8 @@
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "Random.h"
-#include "VehicleBody.h"
-#include "VehicleHead.h"
+#include "Vehicles/VehicleBody.h"
+#include "Vehicles/VehicleHead.h"
 
 #include <OpenLoco/Math/Trigonometry.hpp>
 #include <cstdint>

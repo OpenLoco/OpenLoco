@@ -1,9 +1,8 @@
-#include "Industry.h"
+#include "World/Industry.h"
 #include "Date.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Industries/RemoveIndustry.h"
 #include "GameCommands/Terraform/CreateWall.h"
-#include "IndustryManager.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Map/AnimationManager.h"
@@ -17,8 +16,9 @@
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
 #include "Random.h"
-#include "StationManager.h"
 #include "ViewportManager.h"
+#include "World/IndustryManager.h"
+#include "World/StationManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Math/Bound.hpp>
 #include <algorithm>

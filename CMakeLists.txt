@@ -95,6 +95,11 @@ option(STRICT "Build with warnings as errors" YES)
 option(OPENLOCO_BUILD_TESTS "Build tests" YES)
 option(OPENLOCO_HEADER_CHECK "Verify all public interfaces are standalone" NO)
 
+if (APPLE)
+    # Enable the use of e.g. std::execution::par
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexperimental-library")
+endif ()
+
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
 # Display source files nicely in IDEs
@@ -122,24 +127,24 @@ if (NOT APPLE)
     if (${CMAKE_VERSION} VERSION_GREATER 3.26)
         # Uses the copy_directory_if_different to avoid copying objects/language every time (3.26 feature)
         add_custom_target(OpenLocoAssets ALL
-            COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different "${CMAKE_CURRENT_SOURCE_DIR}/data" "$<TARGET_FILE_DIR:OpenLoco>/data"
-            COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different "${openloco_objects_SOURCE_DIR}" "$<TARGET_FILE_DIR:OpenLoco>/data/objects"
+            COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different "${CMAKE_CURRENT_SOURCE_DIR}/data" "$<TARGET_FILE_DIR:App>/data"
+            COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different "${openloco_objects_SOURCE_DIR}" "$<TARGET_FILE_DIR:App>/data/objects"
             COMMENT "Copying over data and objects folder"
         )
     else()
         add_custom_target(OpenLocoAssets ALL
-            COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/data" "$<TARGET_FILE_DIR:OpenLoco>/data"
-            COMMAND ${CMAKE_COMMAND} -E copy_directory "${openloco_objects_SOURCE_DIR}" "$<TARGET_FILE_DIR:OpenLoco>/data/objects"
+            COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/data" "$<TARGET_FILE_DIR:App>/data"
+            COMMAND ${CMAKE_COMMAND} -E copy_directory "${openloco_objects_SOURCE_DIR}" "$<TARGET_FILE_DIR:App>/data/objects"
             COMMENT "Copying over data and objects folder"
         )
     endif()
-    add_dependencies(OpenLoco OpenLocoAssets)
+    add_dependencies(App OpenLocoAssets)
     set_target_properties(OpenLocoAssets PROPERTIES PROJECT_LABEL "Assets")
 endif()
 
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenLoco)
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT App)
 
-install(TARGETS OpenLoco
+install(TARGETS App
     RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
     BUNDLE DESTINATION ".")
 

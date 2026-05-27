@@ -1,4 +1,4 @@
-#include "RemoveAirport.h"
+#include "GameCommands/Airports/RemoveAirport.h"
 #include "Economy/Economy.h"
 #include "Localisation/StringIds.h"
 #include "Map/StationElement.h"

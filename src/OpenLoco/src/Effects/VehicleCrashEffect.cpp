@@ -1,9 +1,9 @@
-#include "VehicleCrashEffect.h"
+#include "Effects/VehicleCrashEffect.h"
 #include "Audio/Audio.h"
+#include "Effects/SplashEffect.h"
 #include "Entities/EntityManager.h"
 #include "Map/TileManager.h"
 #include "Random.h"
-#include "SplashEffect.h"
 
 namespace OpenLoco
 {

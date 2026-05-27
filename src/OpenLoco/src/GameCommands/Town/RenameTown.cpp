@@ -1,4 +1,4 @@
-#include "RenameTown.h"
+#include "GameCommands/Town/RenameTown.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Town/RenameTown.h"

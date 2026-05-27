@@ -1,5 +1,4 @@
 #include "Audio/Audio.h"
-#include "Construction.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Road/CreateRoadMod.h"
 #include "GameCommands/Road/RemoveRoadMod.h"
@@ -29,6 +28,7 @@
 #include "Ui/Widgets/CheckboxWidget.h"
 #include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/Wt3Widget.h"
+#include "Ui/Windows/Construction/Construction.h"
 #include "World/CompanyManager.h"
 
 using namespace OpenLoco::World;

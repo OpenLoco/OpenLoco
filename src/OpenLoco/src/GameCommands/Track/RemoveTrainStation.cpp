@@ -1,4 +1,4 @@
-#include "RemoveTrainStation.h"
+#include "GameCommands/Track/RemoveTrainStation.h"
 #include "Economy/Economy.h"
 #include "Map/StationElement.h"
 #include "Map/TileElement.h"

@@ -1,4 +1,4 @@
-#include "RenameCompanyName.h"
+#include "GameCommands/Company/RenameCompanyName.h"
 #include "Economy/Expenditures.h"
 #include "Engine/Limits.h"
 #include "GameCommands/GameCommands.h"

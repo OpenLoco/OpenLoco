@@ -1,4 +1,4 @@
-#include "RenameVehicle.h"
+#include "GameCommands/Vehicles/RenameVehicle.h"
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
