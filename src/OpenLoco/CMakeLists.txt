@@ -753,11 +753,17 @@ set(private_compile_definitions
     $<$<CXX_COMPILER_ID:MSVC>:${msvc_private_compile_definitions}>
 )
 
+set(test_files
+    "${CMAKE_CURRENT_SOURCE_DIR}/tests/TileManagerTests.cpp"
+)
+
 loco_add_library(OpenLoco STATIC
     PRIVATE_FILES
         ${OLOCO_SOURCES}
     PUBLIC_FILES
         ${OLOCO_HEADERS}
+    TEST_FILES
+        ${test_files}
     PUBLIC_LINK_LIBRARIES
         ${public_link_libraries}
     PRIVATE_COMPILE_DEFINITIONS

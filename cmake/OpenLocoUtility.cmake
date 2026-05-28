@@ -100,6 +100,11 @@ function(_loco_add_target TARGET TYPE)
                 $<$<BOOL:${_LIBRARY}>:${TARGET}>
                 GTest::gtest_main)
 
+        if (_LIBRARY)
+            target_include_directories(${TEST_TARGET} PRIVATE
+                $<TARGET_PROPERTY:${TARGET},INCLUDE_DIRECTORIES>)
+        endif()
+
         include(GoogleTest)
 
         gtest_discover_tests(${TEST_TARGET})
