@@ -812,6 +812,7 @@ namespace OpenLoco::CompanyManager
         // Original network logic removed
         auto& gameState = getGameState();
         gameState.flags |= GameStateFlags::preferredOwnerName;
+        gameState.flags |= GameStateFlags::preferredCompanyName;
 
         // Any preference with respect to owner face?
         auto competitorId = Config::get().usePreferredOwnerFace ? selectNewCompetitorFromHeader(Config::get().preferredOwnerFace)
@@ -1241,6 +1242,12 @@ namespace OpenLoco::CompanyManager
             }
         }
 
+        // Don't clobber if there's a preferred name
+        if (Config::get().usePreferredCompanyName)
+        {
+            return;
+        }
+
         // Only continue if we've not set a custom company name yet.
         auto* company = get(GameCommands::getUpdatingCompanyId());
         if (company == nullptr || company->name != StringIds::new_company)
@@ -1278,6 +1285,43 @@ namespace OpenLoco::CompanyManager
             changeCompanyNameArgs.bufferIndex = 0;
 
             GameCommands::doCommand(changeCompanyNameArgs, GameCommands::Flags::apply);
+        }
+    }
+
+    void setPreferredCompanyName()
+    {
+        if (!Config::get().usePreferredCompanyName)
+        {
+            return;
+        }
+
+        // Only continue if we've not set a custom company name yet.
+        auto* company = get(GameCommands::getUpdatingCompanyId());
+        if (company == nullptr || company->name != StringIds::new_company)
+        {
+            return;
+        }
+
+        GameCommands::setErrorTitle(StringIds::cannot_change_company_name);
+        {
+            GameCommands::ChangeCompanyNameArgs args{};
+
+            args.companyId = GameCommands::getUpdatingCompanyId();
+            args.bufferIndex = 1;
+            std::memcpy(args.buffer, Config::get().preferredCompanyName.c_str(), 36);
+
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+            args.bufferIndex = 2;
+
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+            args.bufferIndex = 0;
+
+            if (GameCommands::doCommand(args, GameCommands::Flags::apply))
+            {
+                Ui::Windows::TextInput::cancel();
+            }
         }
     }
 

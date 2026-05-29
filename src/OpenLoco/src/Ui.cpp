@@ -855,6 +855,18 @@ namespace OpenLoco::Ui
             Game::removeFlags(GameStateFlags::preferredOwnerName);
         }
 
+        if (Game::hasFlags(GameStateFlags::preferredCompanyName))
+        {
+            if (!SceneManager::isTitleMode() && !SceneManager::isEditorMode())
+            {
+                if (Tutorial::state() == Tutorial::State::none)
+                {
+                    CompanyManager::setPreferredCompanyName();
+                }
+            }
+            Game::removeFlags(GameStateFlags::preferredCompanyName);
+        }
+
         if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_5))
         {
             GameCommands::LoadSaveQuitGameArgs args{};
