@@ -575,7 +575,7 @@ namespace OpenLoco
     // Part of calculating the max height clearance for a new building on this tile
     // A collision in this function means that the building/obstacle will not be removed
     // Optionally `allowBuildingUpdate` ignores buildings that are old and not headquarters (to allow for their removal)
-    static World::TileClearance::ClearFuncResult getBuildingMaxHeightClearFunc(World::TileElement& el, uint8_t baseZ, uint8_t& minZDiff, bool allowBuildingUpdate)
+    static World::TileClearance::ClearFuncResult getBuildingMaxHeightClearFunc(World::TileElementEntry& el, uint8_t baseZ, uint8_t& minZDiff, bool allowBuildingUpdate)
     {
         auto* elTree = el.as<World::TreeElement>();
         auto* elBuilding = el.as<World::BuildingElement>();
@@ -656,7 +656,7 @@ namespace OpenLoco
             const auto elSurface = World::TileManager::get(loc).surface();
             const auto minZ = std::min(elSurface->baseHeight(), pos.z) / World::kSmallZStep;
             World::QuarterTile qt(0xF, 0xF);
-            auto clearFunc = [baseZ = pos.z / World::kSmallZStep, &minClear, allowBuildingUpdate](TileElement& el) {
+            auto clearFunc = [baseZ = pos.z / World::kSmallZStep, &minClear, allowBuildingUpdate](World::TileElementEntry& el) {
                 return getBuildingMaxHeightClearFunc(el, baseZ, minClear, allowBuildingUpdate);
             };
             if (!World::TileClearance::applyClearAtStandardHeight(loc, minZ, 255, qt, clearFunc))

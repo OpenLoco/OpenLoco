@@ -81,13 +81,12 @@ namespace OpenLoco
         return produceCargoState;
     }
 
-    static bool findTree(SurfaceElement* surface)
+    static bool findTreeAboveSurface(const TileElementEntry* surfaceEntry)
     {
-        auto element = surface;
-        while (!element->isLast())
+        while (surfaceEntry != nullptr && !surfaceEntry->isLast())
         {
-            element++;
-            if (element->type() == ElementType::tree)
+            surfaceEntry = surfaceEntry->next();
+            if (surfaceEntry->type() == ElementType::tree)
             {
                 return true;
             }
@@ -410,9 +409,10 @@ namespace OpenLoco
     // 0x0045329B
     void Industry::isFarmTileProducing(const Pos2& pos)
     {
-        const auto& surface = TileManager::get(pos).surface();
-        if (surface != nullptr)
+        auto* surfaceEntry = TileManager::get(pos).surfaceEntry();
+        if (surfaceEntry != nullptr)
         {
+            const auto* surface = surfaceEntry->as<SurfaceElement>();
             if (surface->isIndustrial())
             {
                 if (surface->industryId() == id())
@@ -423,7 +423,7 @@ namespace OpenLoco
                     {
                         // loc_4532E5
                         numFarmTiles++;
-                        if ((!obj->hasFlags(IndustryObjectFlags::farmProductionIgnoresSnow) && surface->snowCoverage() != 0) || findTree(surface))
+                        if ((!obj->hasFlags(IndustryObjectFlags::farmProductionIgnoresSnow) && surface->snowCoverage() != 0) || findTreeAboveSurface(surfaceEntry))
                         {
                             numIdleFarmTiles++;
                         }

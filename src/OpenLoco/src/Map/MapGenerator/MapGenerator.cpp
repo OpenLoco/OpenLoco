@@ -676,7 +676,7 @@ namespace OpenLoco::World::MapGenerator
         // Cull trees that are too high / low
         uint32_t randMask = gPrng1().randNext();
         uint32_t i = 0;
-        std::vector<TileElement*> toBeRemoved;
+        std::vector<TileElementEntry*> toBeRemoved;
         for (auto& loc : getWorldRange())
         {
             auto tile = TileManager::get(loc);

@@ -65,7 +65,6 @@ namespace OpenLoco::Ui::ViewportManager
         // Viewports with 0 width are invalid.
         if (size.width == 0)
         {
-            assert(size.width != 0);
             return nullptr;
         }
 

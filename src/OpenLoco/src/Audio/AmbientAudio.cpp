@@ -33,6 +33,9 @@ namespace OpenLoco::Audio
         return _volumes[zoom];
     }
 
+    // Compiler warning work-around, wants to see a declaration.
+    void updateAmbientNoise();
+
     void updateAmbientNoise()
     {
         if (!isAudioEnabled())
@@ -74,12 +77,12 @@ namespace OpenLoco::Audio
                             waterCount++;
                             break;
                         }
-                        else if (elSurface->snowCoverage() && elSurface->isLast())
+                        else if (elSurface->snowCoverage() && el.isLast())
                         {
                             wildernessCount++;
                             break;
                         }
-                        else if (elSurface->baseZ() >= 64 && elSurface->isLast())
+                        else if (elSurface->baseZ() >= 64 && el.isLast())
                         {
                             wildernessCount++;
                             break;

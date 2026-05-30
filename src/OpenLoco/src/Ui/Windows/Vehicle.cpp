@@ -3327,9 +3327,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5BA3
-        static ViewportInteraction::InteractionArg stationAdjustedInteraction(const Vehicles::VehicleHead& head, int16_t orderTableIndex, World::TileElementBase* el, ViewportInteraction::InteractionArg interaction)
+        static ViewportInteraction::InteractionArg stationAdjustedInteraction(const Vehicles::VehicleHead& head, int16_t orderTableIndex, World::StationElement* elStation, ViewportInteraction::InteractionArg interaction)
         {
-            auto* elStation = el->as<StationElement>();
             if (elStation == nullptr)
             {
                 return ViewportInteraction::kNoInteractionArg;
@@ -3345,13 +3344,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B5B92
         static ViewportInteraction::InteractionArg trainStationAdjustedInteraction(const Vehicles::VehicleHead& head, int16_t orderTableIndex, ViewportInteraction::InteractionArg interaction)
         {
-            auto* el = static_cast<TileElement*>(interaction.object);
-            auto* elStation = el->as<StationElement>();
+            auto* entry = static_cast<World::TileElementEntry*>(interaction.object);
+            auto* elStation = entry->as<StationElement>();
             if (elStation == nullptr)
             {
                 return ViewportInteraction::kNoInteractionArg;
             }
-            auto* elTrack = elStation->prev()->as<TrackElement>();
+            auto* elTrack = entry->prev()->as<TrackElement>();
             if (elTrack == nullptr)
             {
                 return ViewportInteraction::kNoInteractionArg;
@@ -3368,8 +3367,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B5AC9
         static ViewportInteraction::InteractionArg trackAdjustedInteraction(const Vehicles::VehicleHead& head, int16_t orderTableIndex, ViewportInteraction::InteractionArg interaction)
         {
-            auto* el = static_cast<TileElement*>(interaction.object);
-            auto* elTrack = el->as<TrackElement>();
+            auto* entry = static_cast<World::TileElementEntry*>(interaction.object);
+            auto* elTrack = entry->as<TrackElement>();
             if (elTrack == nullptr)
             {
                 return ViewportInteraction::kNoInteractionArg;
@@ -3387,13 +3386,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (elTrack->hasStationElement())
             {
-                auto* elStation = elTrack->next()->as<StationElement>();
+                auto* stationEntry = entry->next();
+                auto* elStation = stationEntry->as<StationElement>();
                 if (elStation != nullptr)
                 {
                     if (!elStation->isAiAllocated() && !elStation->isGhost())
                     {
                         ViewportInteraction::InteractionArg arg{ interaction.pos, 0, interaction.type, interaction.modId };
-                        arg.object = elStation;
+                        arg.object = stationEntry;
                         return trainStationAdjustedInteraction(head, orderTableIndex, arg);
                     }
                 }
@@ -3411,8 +3411,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B5AC9
         static ViewportInteraction::InteractionArg roadAdjustedInteraction(const Vehicles::VehicleHead& head, int16_t orderTableIndex, ViewportInteraction::InteractionArg interaction)
         {
-            auto* el = static_cast<TileElement*>(interaction.object);
-            auto* elRoad = el->as<RoadElement>();
+            auto* entry = static_cast<World::TileElementEntry*>(interaction.object);
+            auto* elRoad = entry->as<RoadElement>();
             if (elRoad == nullptr)
             {
                 return ViewportInteraction::kNoInteractionArg;
@@ -3426,12 +3426,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (elRoad->hasStationElement())
             {
                 auto* elStation = getStationElement({ interaction.pos, elRoad->baseHeight() });
-                if (elStation != nullptr)
+                if (elStation != nullptr && !elStation->isAiAllocated() && !elStation->isGhost())
                 {
-                    if (!elStation->isAiAllocated() && !elStation->isGhost())
-                    {
-                        return stationAdjustedInteraction(head, orderTableIndex, elStation, interaction);
-                    }
+                    return stationAdjustedInteraction(head, orderTableIndex, elStation, interaction);
                 }
             }
             if (head.mode == TransportMode::air)
@@ -3445,8 +3442,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B5B7F
         static ViewportInteraction::InteractionArg dockAirportAdjustedInteraction(const Vehicles::VehicleHead& head, int16_t orderTableIndex, ViewportInteraction::InteractionArg interaction)
         {
-            auto* el = static_cast<TileElement*>(interaction.object);
-            auto* elStation = el->as<StationElement>();
+            auto* entry = static_cast<World::TileElementEntry*>(interaction.object);
+            auto* elStation = entry->as<StationElement>();
             if (elStation == nullptr)
             {
                 return ViewportInteraction::kNoInteractionArg;
@@ -3499,7 +3496,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     return trainStationAdjustedInteraction(*head, self.orderTableIndex, interaction);
 
                 case ViewportInteraction::InteractionItem::roadStation:
-                    return stationAdjustedInteraction(*head, self.orderTableIndex, static_cast<TileElement*>(interaction.object), interaction);
+                {
+                    auto* entry = static_cast<World::TileElementEntry*>(interaction.object);
+                    return stationAdjustedInteraction(*head, self.orderTableIndex, entry->as<World::StationElement>(), interaction);
+                }
 
                 case ViewportInteraction::InteractionItem::airport:
                 case ViewportInteraction::InteractionItem::dock:
@@ -3532,8 +3532,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case Ui::ViewportInteraction::InteractionItem::track:
                 {
                     // 0x004B5160
-                    auto tileElement = static_cast<TileElement*>(args.object);
-                    auto trackElement = tileElement->as<TrackElement>();
+                    auto entry = static_cast<World::TileElementEntry*>(args.object);
+                    auto trackElement = entry->as<TrackElement>();
                     if (trackElement == nullptr)
                     {
                         break;
@@ -3580,8 +3580,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case Ui::ViewportInteraction::InteractionItem::road:
                 {
                     // 0x004B5223
-                    auto* tileElement = static_cast<TileElement*>(args.object);
-                    auto* roadElement = tileElement->as<RoadElement>();
+                    auto* entry = static_cast<World::TileElementEntry*>(args.object);
+                    auto* roadElement = entry->as<RoadElement>();
                     if (roadElement == nullptr)
                     {
                         break;
@@ -4328,8 +4328,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static std::optional<GameCommands::VehicleAirPlacementArgs> getVehicleAirPlacementArgsFromCursor(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y)
         {
             auto res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~ViewportInteraction::InteractionItemFlags::station);
-            auto* elStation = static_cast<World::StationElement*>(res.first.object);
-            if (res.first.type != ViewportInteraction::InteractionItem::airport)
+            World::StationElement* elStation = nullptr;
+            if (res.first.type == ViewportInteraction::InteractionItem::airport)
+            {
+                elStation = static_cast<World::TileElementEntry*>(res.first.object)->as<World::StationElement>();
+            }
+            else
             {
                 res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::surface | ViewportInteraction::InteractionItemFlags::water));
                 const auto& interaction = res.first;
@@ -4515,7 +4519,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             // Get the best progress along the road relative to the cursor
-            auto* roadElement = static_cast<World::RoadElement*>(interaction.object);
+            auto* roadElement = static_cast<World::TileElementEntry*>(interaction.object)->as<World::RoadElement>();
             World::Pos3 loc(interaction.pos.x, interaction.pos.y, roadElement->baseHeight());
             auto progress = getRoadProgressAtCursor({ x, y }, *viewport, *roadElement, loc);
 
@@ -4615,7 +4619,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             // Get the best progress along the track relative to the cursor
-            auto* trackElement = static_cast<World::TrackElement*>(interaction.object);
+            auto* trackElement = static_cast<World::TileElementEntry*>(interaction.object)->as<World::TrackElement>();
             World::Pos3 loc(interaction.pos.x, interaction.pos.y, trackElement->baseHeight());
             auto progress = getTrackProgressAtCursor({ x, y }, *viewport, *trackElement, loc);
 

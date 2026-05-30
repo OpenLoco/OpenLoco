@@ -234,7 +234,7 @@ namespace OpenLoco::Vehicles
             {
                 continue;
             }
-            return std::make_pair(elTrack->next()->as<SignalElement>(), elTrack);
+            return std::make_pair(el.next()->as<SignalElement>(), elTrack);
         }
         return std::nullopt;
     }

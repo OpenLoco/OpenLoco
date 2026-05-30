@@ -1034,7 +1034,7 @@ namespace OpenLoco::Vehicles
                     continue;
                 }
 
-                if (!track->isLast())
+                if (!el.isLast())
                 {
                     stationFound = true;
                 }

@@ -9,6 +9,7 @@
 #include "Map/RoadElement.h"
 #include "Map/SignalElement.h"
 #include "Map/StationElement.h"
+#include "Map/TileElementEntry.h"
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"
 #include "Map/TreeElement.h"
@@ -504,8 +505,8 @@ namespace OpenLoco::Input
 
                         case InteractionItem::headquarterBuilding:
                         {
-                            const auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
-                            const auto* building = tileElement->as<World::BuildingElement>();
+                            const auto* entry = reinterpret_cast<World::TileElementEntry*>(interaction.object);
+                            const auto* building = entry->as<World::BuildingElement>();
                             if (building != nullptr)
                             {
                                 auto index = building->sequenceIndex();

@@ -80,7 +80,7 @@ namespace OpenLoco
             {
                 continue;
             }
-            auto* elStation = elTrack->next()->as<World::StationElement>();
+            auto* elStation = el.next()->as<World::StationElement>();
             if (elStation == nullptr)
             {
                 continue;

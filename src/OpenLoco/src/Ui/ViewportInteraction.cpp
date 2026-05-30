@@ -27,6 +27,7 @@
 #include "Map/SignalElement.h"
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
+#include "Map/TileElementEntry.h"
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"
 #include "Map/TreeElement.h"
@@ -77,7 +78,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     // 0x004CD95A
     static bool _track(InteractionArg& interaction)
     {
-        auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
+        auto* tileElement = reinterpret_cast<World::TileElementEntry*>(interaction.object);
         auto* track = tileElement->as<TrackElement>();
         if (track == nullptr)
         {
@@ -100,14 +101,14 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
 
         interaction.type = InteractionItem::trainStation;
-        interaction.object = station;
+        interaction.object = tileElement;
         return getStationArguments(interaction);
     }
 
     // 0x004CD974
     static bool _road(InteractionArg& interaction)
     {
-        auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
+        auto* tileElement = reinterpret_cast<World::TileElementEntry*>(interaction.object);
         auto* road = tileElement->as<RoadElement>();
         if (road == nullptr)
         {
@@ -119,13 +120,28 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
 
         World::StationElement* station = nullptr;
-        World::Tile tile{ World::toTileSpace(interaction.pos), tileElement };
+        World::TileElementEntry* stationEntry = nullptr;
+        auto tile = World::TileManager::get(World::toTileSpace(interaction.pos));
+        bool foundRoad = false;
         for (auto& t : tile)
         {
-            station = t.as<StationElement>();
-            if (station != nullptr)
+            if (foundRoad)
             {
-                break;
+                station = t.as<StationElement>();
+                if (station != nullptr)
+                {
+                    stationEntry = &t;
+                    break;
+                }
+                continue;
+            }
+            auto* r = t.as<World::RoadElement>();
+            if (r != nullptr && r->baseZ() == road->baseZ()
+                && r->rotation() == road->rotation()
+                && r->roadId() == road->roadId()
+                && r->roadObjectId() == road->roadObjectId())
+            {
+                foundRoad = true;
             }
         }
 
@@ -134,7 +150,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             return false;
         }
 
-        interaction.object = station;
+        interaction.object = stationEntry;
         interaction.type = InteractionItem::dock;
         if (station->isAiAllocated())
         {
@@ -148,7 +164,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     // 0x004CD99A
     static bool getStationArguments(InteractionArg& interaction)
     {
-        auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
+        auto* tileElement = reinterpret_cast<World::TileElementEntry*>(interaction.object);
         auto* station = tileElement->as<StationElement>();
         if (station == nullptr)
         {
@@ -222,7 +238,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     // 0x004CD8D5
     static bool getIndustryArguments(InteractionArg& interaction)
     {
-        auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
+        auto* tileElement = reinterpret_cast<World::TileElementEntry*>(interaction.object);
         auto* industryTile = tileElement->as<IndustryElement>();
         if (industryTile == nullptr)
         {
@@ -296,7 +312,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     // 0x004CD84A
     static bool getHeadquarterArguments(const InteractionArg& interaction)
     {
-        auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
+        auto* tileElement = reinterpret_cast<World::TileElementEntry*>(interaction.object);
         auto* buildingTile = tileElement->as<BuildingElement>();
         if (buildingTile == nullptr)
         {
@@ -469,7 +485,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     static bool rightOverTrack(InteractionArg& interaction)
     {
         interaction.type = InteractionItem::track;
-        auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
+        auto* tileElement = reinterpret_cast<World::TileElementEntry*>(interaction.object);
         auto* track = tileElement->as<TrackElement>();
         if (track == nullptr)
         {
@@ -508,7 +524,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             return rightOverTrack(interaction);
         }
 
-        auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
+        auto* tileElement = reinterpret_cast<World::TileElementEntry*>(interaction.object);
         auto* track = tileElement->as<TrackElement>();
         if (track == nullptr)
         {
@@ -533,7 +549,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     // 0x004CDBEA
     static bool rightOverSignal(InteractionArg& interaction)
     {
-        auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
+        auto* tileElement = reinterpret_cast<World::TileElementEntry*>(interaction.object);
         auto* signal = tileElement->as<SignalElement>();
         auto* track = tileElement->prev()->as<TrackElement>();
         if (signal == nullptr || track == nullptr)
@@ -547,7 +563,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
         if (!Windows::Construction::isSignalTabOpen())
         {
-            interaction.object = track;
+            interaction.object = tileElement->prev();
             return rightOverTrack(interaction);
         }
 
@@ -562,7 +578,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     // 0x004CDD8C
     static bool rightOverTrainStation(InteractionArg& interaction)
     {
-        auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
+        auto* tileElement = reinterpret_cast<World::TileElementEntry*>(interaction.object);
         auto* elStation = tileElement->as<StationElement>();
         auto* track = tileElement->prev()->as<TrackElement>();
         if (elStation == nullptr || track == nullptr)
@@ -576,7 +592,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
         if (!Windows::Construction::isStationTabOpen())
         {
-            interaction.object = track;
+            interaction.object = tileElement->prev();
             return rightOverTrack(interaction);
         }
 
@@ -594,7 +610,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     static bool rightOverRoad(InteractionArg& interaction)
     {
         interaction.type = InteractionItem::road;
-        auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
+        auto* tileElement = reinterpret_cast<World::TileElementEntry*>(interaction.object);
         auto* road = tileElement->as<RoadElement>();
         if (road == nullptr)
         {
@@ -633,7 +649,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             return rightOverRoad(interaction);
         }
 
-        auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
+        auto* tileElement = reinterpret_cast<World::TileElementEntry*>(interaction.object);
         auto* road = tileElement->as<RoadElement>();
         if (road == nullptr)
         {
@@ -658,7 +674,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     // 0x004CDDF2
     static bool rightOverRoadStation(InteractionArg& interaction)
     {
-        auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
+        auto* tileElement = reinterpret_cast<World::TileElementEntry*>(interaction.object);
         auto* elStation = tileElement->as<StationElement>();
         auto* road = tileElement->prev()->as<RoadElement>();
         if (elStation == nullptr || road == nullptr)
@@ -672,7 +688,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
         if (!Windows::Construction::isStationTabOpen())
         {
-            interaction.object = road;
+            interaction.object = tileElement->prev();
             return rightOverRoad(interaction);
         }
         auto* station = StationManager::get(elStation->stationId());
@@ -693,7 +709,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     // 0x004CDC26
     static bool rightOverAirport(InteractionArg& interaction)
     {
-        auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
+        auto* tileElement = reinterpret_cast<World::TileElementEntry*>(interaction.object);
         auto* elStation = tileElement->as<StationElement>();
         if (elStation == nullptr)
         {
@@ -729,7 +745,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     // 0x004CDCD9
     static bool rightOverDock(InteractionArg& interaction)
     {
-        auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
+        auto* tileElement = reinterpret_cast<World::TileElementEntry*>(interaction.object);
         auto* elStation = tileElement->as<StationElement>();
         if (elStation == nullptr)
         {
@@ -765,7 +781,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     // 0x004CDE58
     static bool rightOverTree(InteractionArg& interaction)
     {
-        auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
+        auto* tileElement = reinterpret_cast<World::TileElementEntry*>(interaction.object);
         auto* tree = tileElement->as<TreeElement>();
         if (tree == nullptr)
         {
@@ -780,7 +796,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     // 0x004CE0D8
     static bool rightOverWall(InteractionArg& interaction)
     {
-        auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
+        auto* tileElement = reinterpret_cast<World::TileElementEntry*>(interaction.object);
         auto* wall = tileElement->as<WallElement>();
         if (wall == nullptr)
         {
@@ -796,7 +812,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     // Note: this is only when in a constructing mode
     static bool rightOverBuildingConstruct(InteractionArg& interaction)
     {
-        auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
+        auto* tileElement = reinterpret_cast<World::TileElementEntry*>(interaction.object);
         auto* building = tileElement->as<BuildingElement>();
         if (building == nullptr)
         {
@@ -816,7 +832,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     // 0x004CE107
     static bool rightOverHeadquarters(InteractionArg& interaction)
     {
-        auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
+        auto* tileElement = reinterpret_cast<World::TileElementEntry*>(interaction.object);
         auto* building = tileElement->as<BuildingElement>();
         if (building == nullptr)
         {
@@ -856,7 +872,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             return true;
         }
 
-        auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
+        auto* tileElement = reinterpret_cast<World::TileElementEntry*>(interaction.object);
         auto* building = tileElement->as<BuildingElement>();
         if (building == nullptr)
         {
@@ -1055,9 +1071,14 @@ namespace OpenLoco::Ui::ViewportInteraction
     }
 
     // 0x004A5AA1
-    static void rightReleasedSignal(World::SignalElement* signal, const bool isLeftSignal, const World::Pos2 pos)
+    static void rightReleasedSignal(World::TileElementEntry* signalEntry, const bool isLeftSignal, const World::Pos2 pos)
     {
-        auto* track = signal->prev()->as<World::TrackElement>();
+        auto* signal = signalEntry->as<World::SignalElement>();
+        if (signal == nullptr)
+        {
+            return;
+        }
+        auto* track = signalEntry->prev()->as<World::TrackElement>();
         if (track == nullptr)
         {
             return;
@@ -1100,9 +1121,14 @@ namespace OpenLoco::Ui::ViewportInteraction
     }
 
     // 0x004A5B66
-    static void rightReleasedTrainStation(World::StationElement* station, const World::Pos2 pos)
+    static void rightReleasedTrainStation(World::TileElementEntry* stationEntry, const World::Pos2 pos)
     {
-        auto* track = station->prev()->as<World::TrackElement>();
+        auto* station = stationEntry->as<World::StationElement>();
+        if (station == nullptr)
+        {
+            return;
+        }
+        auto* track = stationEntry->prev()->as<World::TrackElement>();
         if (track == nullptr)
         {
             return;
@@ -1122,9 +1148,14 @@ namespace OpenLoco::Ui::ViewportInteraction
     }
 
     // 0x004A5BDF
-    static void rightReleasedRoadStation(World::StationElement* station, const World::Pos2 pos)
+    static void rightReleasedRoadStation(World::TileElementEntry* stationEntry, const World::Pos2 pos)
     {
-        auto* road = station->prev()->as<RoadElement>();
+        auto* station = stationEntry->as<World::StationElement>();
+        if (station == nullptr)
+        {
+            return;
+        }
+        auto* road = stationEntry->prev()->as<RoadElement>();
         if (road == nullptr)
         {
             return;
@@ -1287,7 +1318,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     {
         auto interaction = ViewportInteraction::rightOver(xPos, yPos);
 
-        auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
+        auto* tileElement = reinterpret_cast<World::TileElementEntry*>(interaction.object);
 
         switch (interaction.type)
         {
@@ -1385,29 +1416,17 @@ namespace OpenLoco::Ui::ViewportInteraction
             }
             case InteractionItem::signal:
             {
-                auto* signal = tileElement->as<SignalElement>();
-                if (signal != nullptr)
-                {
-                    rightReleasedSignal(signal, interaction.modId != 0, interaction.pos);
-                }
+                rightReleasedSignal(tileElement, interaction.modId != 0, interaction.pos);
                 break;
             }
             case InteractionItem::trainStation:
             {
-                auto* station = tileElement->as<StationElement>();
-                if (station != nullptr)
-                {
-                    rightReleasedTrainStation(station, interaction.pos);
-                }
+                rightReleasedTrainStation(tileElement, interaction.pos);
                 break;
             }
             case InteractionItem::roadStation:
             {
-                auto* station = tileElement->as<StationElement>();
-                if (station != nullptr)
-                {
-                    rightReleasedRoadStation(station, interaction.pos);
-                }
+                rightReleasedRoadStation(tileElement, interaction.pos);
                 break;
             }
             case InteractionItem::airport:
@@ -1562,7 +1581,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         int16_t waterHeight = 0; // E40130
         if (info.type == InteractionItem::water)
         {
-            auto* surface = static_cast<const SurfaceElement*>(info.object);
+            const auto* surface = static_cast<World::TileElementEntry*>(info.object)->as<SurfaceElement>();
             waterHeight = surface->waterHeight();
         }
 
