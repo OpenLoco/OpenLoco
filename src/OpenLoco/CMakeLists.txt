@@ -138,6 +138,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/MapSelection.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/RoadElement.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/SignalElement.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/TileElementEntry.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/StationElement.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/SurfaceData.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/SurfaceElement.cpp"
@@ -528,9 +529,10 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Map/Tile.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Map/TileClearance.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Map/TileElement.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Map/TileElementBase.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Map/TileElementEntry.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Map/TileLoop.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Map/TileManager.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Map/TileState.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Map/Track/SubpositionData.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Map/Track/Track.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Map/Track/TrackData.h"
@@ -753,11 +755,17 @@ set(private_compile_definitions
     $<$<CXX_COMPILER_ID:MSVC>:${msvc_private_compile_definitions}>
 )
 
+set(test_files
+    "${CMAKE_CURRENT_SOURCE_DIR}/tests/TileManagerTests.cpp"
+)
+
 loco_add_library(OpenLoco STATIC
     PRIVATE_FILES
         ${OLOCO_SOURCES}
     PUBLIC_FILES
         ${OLOCO_HEADERS}
+    TEST_FILES
+        ${test_files}
     PUBLIC_LINK_LIBRARIES
         ${public_link_libraries}
     PRIVATE_COMPILE_DEFINITIONS
