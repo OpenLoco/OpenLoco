@@ -203,7 +203,7 @@ namespace OpenLoco::World::Track
 
     constexpr uint16_t kNullTad = 0xFFFFU;
 
-    static uint16_t getElTrackConnection(const World::TrackElement& elTrack, uint8_t nextRotation, uint8_t baseZ, uint8_t queryMods)
+    static uint16_t getElTrackConnection(const World::TileElementEntry& entry, const World::TrackElement& elTrack, uint8_t nextRotation, uint8_t baseZ, uint8_t queryMods)
     {
         if (elTrack.sequenceIndex() == 0)
         {
@@ -226,7 +226,7 @@ namespace OpenLoco::World::Track
 
                     if (elTrack.hasSignal())
                     {
-                        auto* elSignal = elTrack.next()->as<SignalElement>();
+                        auto* elSignal = entry.next()->as<SignalElement>();
                         if (elSignal != nullptr)
                         {
                             if (!elSignal->isAiAllocated() && !elSignal->isGhost())
@@ -270,7 +270,7 @@ namespace OpenLoco::World::Track
 
         if (elTrack.hasSignal())
         {
-            auto* elSignal = elTrack.next()->as<SignalElement>();
+            auto* elSignal = entry.next()->as<SignalElement>();
             if (elSignal != nullptr)
             {
                 if (!elSignal->isAiAllocated() && !elSignal->isGhost())
@@ -318,7 +318,7 @@ namespace OpenLoco::World::Track
                 continue;
             }
 
-            const auto connection = getElTrackConnection(*elTrack, nextRotation, baseZ, queryMods);
+            const auto connection = getElTrackConnection(el, *elTrack, nextRotation, baseZ, queryMods);
             if (connection == kNullTad)
             {
                 continue;
@@ -327,7 +327,7 @@ namespace OpenLoco::World::Track
             result.connections.push_back(connection);
             if (elTrack->hasStationElement())
             {
-                auto* elStation = elTrack->next()->as<StationElement>();
+                auto* elStation = el.next()->as<StationElement>();
                 if (elStation != nullptr)
                 {
                     if (!elStation->isAiAllocated() && !elStation->isGhost())
@@ -384,7 +384,7 @@ namespace OpenLoco::World::Track
                 continue;
             }
 
-            const auto connection = getElTrackConnection(*elTrack, nextRotation, baseZ, queryMods);
+            const auto connection = getElTrackConnection(el, *elTrack, nextRotation, baseZ, queryMods);
             if (connection == kNullTad)
             {
                 continue;
@@ -393,7 +393,7 @@ namespace OpenLoco::World::Track
             result.connections.push_back(connection);
             if (elTrack->hasStationElement())
             {
-                auto* elStation = elTrack->next()->as<StationElement>();
+                auto* elStation = el.next()->as<StationElement>();
                 if (elStation != nullptr)
                 {
                     // No need to consider aiAllocated or ghost flags
@@ -414,10 +414,9 @@ namespace OpenLoco::World
 {
     TrackElement::TrackElement(World::SmallZ baseZ, World::SmallZ clearZ, uint8_t direction, uint8_t quarterTile, uint8_t sequenceIndex, uint8_t trackObjId, uint8_t trackId, std::optional<uint8_t> bridge, CompanyId owner, uint8_t mods)
     {
-        setType(World::ElementType::track);
+        _0 = direction & 0x3;
         setBaseZ(baseZ);
         setClearZ(clearZ);
-        _type |= direction & 0x3;
         _flags = quarterTile & 0xF;
         _4 = (trackId & 0x3F) | (bridge ? 0x80 : 0);
         _5 = (sequenceIndex & 0xF) | ((trackObjId & 0xF) << 4);

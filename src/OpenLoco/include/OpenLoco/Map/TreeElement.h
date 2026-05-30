@@ -1,11 +1,12 @@
 #pragma once
 
-#include "TileElementBase.h"
+#include "TileElement.h"
+#include "TileElementEntry.h"
 
 namespace OpenLoco::World
 {
 #pragma pack(push, 1)
-    struct TreeElement : public TileElementBase
+    struct TreeElement : public TileElement
     {
         static constexpr ElementType kElementType = ElementType::tree;
 
@@ -21,17 +22,17 @@ namespace OpenLoco::World
         {
             _4 = type;
         }
-        uint8_t rotation() const { return _type & 0x03; }
+        uint8_t rotation() const { return _0 & 0x03; }
         void setRotation(uint8_t rotation)
         {
-            _type &= ~0x3;
-            _type |= rotation & 0x3;
+            _0 &= ~0x3;
+            _0 |= rotation & 0x3;
         }
-        uint8_t quadrant() const { return (_type >> 6) & 0x03; } // _0_C0
+        uint8_t quadrant() const { return (_0 >> 6) & 0x03; } // _0_C0
         void setQuadrant(uint8_t quad)
         {
-            _type &= ~0xC0;
-            _type |= (quad & 0x3) << 6;
+            _0 &= ~0xC0;
+            _0 |= (quad & 0x3) << 6;
         }
         uint8_t growth() const { return _5 & 0xF; }
         void setGrowth(uint8_t unk)
@@ -79,5 +80,5 @@ namespace OpenLoco::World
 #pragma pack(pop)
     static_assert(sizeof(TreeElement) == kTileElementSize);
 
-    bool updateTreeElement(TreeElement& elTree, const World::Pos2 loc);
+    bool updateTreeElement(TileElementEntry& entry, const World::Pos2 loc);
 }

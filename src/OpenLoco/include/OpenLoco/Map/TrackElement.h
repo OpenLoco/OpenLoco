@@ -1,13 +1,13 @@
 #pragma once
 
-#include "TileElementBase.h"
+#include "TileElement.h"
 #include <optional>
 
 namespace OpenLoco::World
 {
 #pragma pack(push, 1)
 
-    struct TrackElement : public TileElementBase
+    struct TrackElement : public TileElement
     {
         static constexpr ElementType kElementType = ElementType::track;
 
@@ -21,23 +21,23 @@ namespace OpenLoco::World
         TrackElement() = default;
         TrackElement(World::SmallZ baseZ, World::SmallZ clearZ, uint8_t direction, uint8_t quarterTile, uint8_t sequenceIndex, uint8_t trackObjId, uint8_t trackId, std::optional<uint8_t> bridge, CompanyId owner, uint8_t mods);
 
-        bool hasStationElement() const { return (_type & 0x80) != 0; }
+        bool hasStationElement() const { return (_0 & 0x80) != 0; }
         void setHasStationElement(bool state)
         {
-            _type &= ~0x80;
-            _type |= state ? 0x80 : 0;
+            _0 &= ~0x80;
+            _0 |= state ? 0x80 : 0;
         }
-        bool hasSignal() const { return (_type & 0x40) != 0; }
+        bool hasSignal() const { return (_0 & 0x40) != 0; }
         void setHasSignal(bool state)
         {
-            _type &= ~0x40;
-            _type |= state ? 0x40 : 0;
+            _0 &= ~0x40;
+            _0 |= state ? 0x40 : 0;
         }
-        uint8_t rotation() const { return _type & 0x03; }
+        uint8_t rotation() const { return _0 & 0x03; }
         void setRotation(uint8_t rotation)
         {
-            _type &= ~0x3;
-            _type |= rotation & 0x3;
+            _0 &= ~0x3;
+            _0 |= rotation & 0x3;
         }
         uint8_t trackId() const { return _4 & 0x3F; } // _4
         void setTrackId(uint8_t trackId)

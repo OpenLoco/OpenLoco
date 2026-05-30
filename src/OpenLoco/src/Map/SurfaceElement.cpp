@@ -32,6 +32,10 @@ namespace OpenLoco::World
     static void updateNonIndustrialSurface(SurfaceElement& elSurface, const World::Pos2 loc)
     {
         auto* landObj = ObjectManager::get<LandObject>(elSurface.terrain());
+        if (landObj == nullptr)
+        {
+            return;
+        }
         if (!landObj->hasFlags(LandObjectFlags::hasGrowthStages))
         {
             return;
@@ -201,6 +205,10 @@ namespace OpenLoco::World
                 // Validate if it should exist and if it should create
                 // it.
                 auto* nextSurface = TileManager::get(nextLoc).surface();
+                if (nextSurface == nullptr)
+                {
+                    continue;
+                }
                 if (nextSurface->isIndustrial())
                 {
                     if (nextSurface->industryId() == surf->industryId())

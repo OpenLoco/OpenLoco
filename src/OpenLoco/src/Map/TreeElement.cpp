@@ -28,7 +28,7 @@ namespace OpenLoco::World
         World::Pos2{ 23, 7 },
     };
     // 0x004BDA17
-    static TileClearance::ClearFuncResult clearFunction(World::TileElement& el, bool& noTrees)
+    static TileClearance::ClearFuncResult clearFunction(World::TileElementEntry& el, bool& noTrees)
     {
         if (el.isAiAllocated() || el.isGhost())
         {
@@ -109,8 +109,8 @@ namespace OpenLoco::World
                     }
                 }
 
-                auto clearFunc = [&noTrees](World::TileElement& el) -> TileClearance::ClearFuncResult {
-                    return clearFunction(el, noTrees);
+                auto clearFunc = [&noTrees](World::TileElementEntry& entry) -> TileClearance::ClearFuncResult {
+                    return clearFunction(entry, noTrees);
                 };
 
                 TileClearance::applyClearAtStandardHeight(checkPos, baseZ, clearZ, qt, clearFunc);
@@ -137,8 +137,9 @@ namespace OpenLoco::World
     }
 
     // 0x004BD52B
-    bool updateTreeElement(TreeElement& elTree, const World::Pos2 loc)
+    bool updateTreeElement(TileElementEntry& entry, const World::Pos2 loc)
     {
+        auto& elTree = entry.get<TreeElement>();
         if (elTree.unk7l() != 7)
         {
             elTree.setUnk7l(elTree.unk7l() + 1);
@@ -153,7 +154,7 @@ namespace OpenLoco::World
             if (unk == 0xFFU)
             {
                 invalidateTree(elTree, loc);
-                TileManager::removeElement(reinterpret_cast<TileElement&>(elTree));
+                TileManager::removeElement(entry);
                 return false;
             }
             else

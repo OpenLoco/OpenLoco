@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TileElementBase.h"
+#include "TileElement.h"
 
 namespace OpenLoco
 {
@@ -10,7 +10,7 @@ namespace OpenLoco
 namespace OpenLoco::World
 {
 #pragma pack(push, 1)
-    struct BuildingElement : public TileElementBase
+    struct BuildingElement : public TileElement
     {
         static constexpr ElementType kElementType = ElementType::building;
 
@@ -20,24 +20,24 @@ namespace OpenLoco::World
         uint16_t _6;
 
     public:
-        uint8_t rotation() const { return _type & 0x03; }
+        uint8_t rotation() const { return _0 & 0x03; }
         void setRotation(uint8_t rotation)
         {
-            _type &= ~0x03;
-            _type |= rotation & 0x3;
+            _0 &= ~0x03;
+            _0 |= rotation & 0x3;
         }
         // Saves having to access the building object flags
-        bool isMiscBuilding() const { return (_type & 0x40) != 0; }
+        bool isMiscBuilding() const { return (_0 & 0x40) != 0; }
         void setIsMiscBuilding(bool state)
         {
-            _type &= ~0x40;
-            _type |= state ? 0x40 : 0;
+            _0 &= ~0x40;
+            _0 |= state ? 0x40 : 0;
         }
-        bool isConstructed() const { return (_type & 0x80) != 0; }
+        bool isConstructed() const { return (_0 & 0x80) != 0; }
         void setConstructed(bool state)
         {
-            _type &= ~0x80;
-            _type |= state ? 0x80 : 0;
+            _0 &= ~0x80;
+            _0 |= state ? 0x80 : 0;
         }
         Colour colour() const { return static_cast<Colour>(_6 >> 11); }
         void setColour(Colour colour) { _6 = (_6 & 0x7FF) | (enumValue(colour) << 11); }

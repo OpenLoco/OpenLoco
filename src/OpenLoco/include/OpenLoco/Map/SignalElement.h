@@ -1,13 +1,13 @@
 #pragma once
 
-#include "TileElementBase.h"
+#include "TileElement.h"
 
 namespace OpenLoco::World
 {
     struct Animation;
 
 #pragma pack(push, 1)
-    struct SignalElement : public TileElementBase
+    struct SignalElement : public TileElement
     {
         static constexpr ElementType kElementType = ElementType::signal;
 
@@ -69,23 +69,23 @@ namespace OpenLoco::World
         Side sides[2];
 
     public:
-        uint8_t rotation() const { return _type & 0x3; }
+        uint8_t rotation() const { return _0 & 0x3; }
         void setRotation(uint8_t rotation)
         {
-            _type &= ~0x3;
-            _type |= rotation & 0x3;
+            _0 &= ~0x3;
+            _0 |= rotation & 0x3;
         }
-        bool isLeftGhost() const { return _type & 0x80; }
+        bool isLeftGhost() const { return _0 & 0x80; }
         void setLeftGhost(bool state)
         {
-            _type &= ~0x80;
-            _type |= state ? 0x80 : 0;
+            _0 &= ~0x80;
+            _0 |= state ? 0x80 : 0;
         }
-        bool isRightGhost() const { return _type & 0x40; }
+        bool isRightGhost() const { return _0 & 0x40; }
         void setRightGhost(bool state)
         {
-            _type &= ~0x40;
-            _type |= state ? 0x40 : 0;
+            _0 &= ~0x40;
+            _0 |= state ? 0x40 : 0;
         }
         Side& getLeft() { return sides[0]; }
         Side& getRight() { return sides[1]; }
