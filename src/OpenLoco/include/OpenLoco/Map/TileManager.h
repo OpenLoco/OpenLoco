@@ -2,7 +2,11 @@
 
 #include "Tile.h"
 #include "TileClearance.h"
+#include "TileElement.h"
+#include "TileElementEntry.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <OpenLoco/Core/Store.hpp>
+#include <array>
 #include <cstdint>
 #include <set>
 #include <span>
@@ -38,38 +42,37 @@ namespace OpenLoco::World::TileManager
 
     void allocateMapElements();
     void initialise();
-    std::span<TileElement> getElements();
+    std::span<const TileElementEntry> getEntries();
     uint32_t numFreeElements();
     Tile get(TilePos2 pos);
     Tile get(Pos2 pos);
     Tile get(coord_t x, coord_t y);
-    void setElements(std::span<TileElement> elements);
-    void removeElement(TileElement& element);
+    void removeElement(TileElementEntry& entry);
     // This is used with wasRemoveOnLastElement to indicate that pointer passed to removeElement is now bad
-    void setRemoveElementPointerChecker(TileElement& element);
+    void setRemoveElementPointerChecker(TileElementEntry& entry);
     // See above. Used to indicate if pointer to removeElement is now bad
     bool wasRemoveOnLastElement();
 
-    // Note: Any TileElement pointers invalid after this call
-    TileElement* insertElement(ElementType type, const Pos2& pos, uint8_t baseZ, uint8_t occupiedQuads);
-    // Note: Any TileElement pointers invalid after this call
+    // Note: Any TileElementEntry pointers invalid after this call
+    TileElementEntry* insertElement(ElementType type, const Pos2& pos, uint8_t baseZ, uint8_t occupiedQuads);
+    // Note: Any TileElementEntry pointers invalid after this call
     template<typename TileT>
-    TileT* insertElement(const Pos2& pos, const uint8_t baseZ, const uint8_t occupiedQuads)
+    TileElementEntry* insertElement(const Pos2& pos, const uint8_t baseZ, const uint8_t occupiedQuads)
     {
-        return insertElement(TileT::kElementType, pos, baseZ, occupiedQuads)->template as<TileT>();
+        return insertElement(TileT::kElementType, pos, baseZ, occupiedQuads);
     }
 
     // Note: `after` pointer will be invalid after this call
-    TileElement* insertElementAfterNoReorg(TileElement* after, ElementType type, const Pos2& pos, uint8_t baseZ, uint8_t occupiedQuads);
+    TileElementEntry* insertElementAfterNoReorg(TileElementEntry* after, ElementType type, const Pos2& pos, uint8_t baseZ, uint8_t occupiedQuads);
     // Note: `after` pointer will be invalid after this call
     template<typename TileT>
-    TileT* insertElementAfterNoReorg(TileElement* after, const Pos2& pos, const uint8_t baseZ, const uint8_t occupiedQuads)
+    TileElementEntry* insertElementAfterNoReorg(TileElementEntry* after, const Pos2& pos, const uint8_t baseZ, const uint8_t occupiedQuads)
     {
-        return insertElementAfterNoReorg(after, TileT::kElementType, pos, baseZ, occupiedQuads)->template as<TileT>();
+        return insertElementAfterNoReorg(after, TileT::kElementType, pos, baseZ, occupiedQuads);
     }
 
     // Special road element insert
-    World::RoadElement* insertElementRoad(const Pos2& pos, uint8_t baseZ, uint8_t occupiedQuads);
+    TileElementEntry* insertElementRoad(const Pos2& pos, uint8_t baseZ, uint8_t occupiedQuads);
 
     TileHeight getHeight(const Pos2& pos);
     SmallZ getSurfaceCornerHeight(const SurfaceElement& surface);
@@ -82,7 +85,27 @@ namespace OpenLoco::World::TileManager
     // Defragments singular tile (chosen tile updates each call)
     void defragmentTilePeriodic();
     bool checkFreeElementsAndReorganise();
-    CompanyId getTileOwner(const World::TileElement& el);
+    TileElement& resolveEntry(const TileElementEntry* entry);
+
+    template<typename T>
+    Store<T>& getStore();
+
+    template<typename T>
+    TileElementEntry allocElement(const T& element)
+    {
+        Store<T>& store = getStore<T>();
+        const uint32_t idx = store.allocate();
+        store[idx] = element;
+
+        TileElementEntry entry{};
+        entry.setType(T::kElementType);
+        entry.setIndex(idx);
+        return entry;
+    }
+
+    void destroyElement(const TileElementEntry& entry);
+
+    CompanyId getTileOwner(const World::TileElementEntry& el);
     void mapInvalidateTileFull(World::Pos2 pos);
     void resetSurfaceClearance();
     int16_t mountainHeight(const World::Pos2& loc);
@@ -95,8 +118,8 @@ namespace OpenLoco::World::TileManager
     void removeSurfaceIndustry(const Pos2& pos);
     void removeSurfaceIndustryAtHeight(const Pos3& pos);
     void createDestructExplosion(const World::Pos3& pos);
-    void removeBuildingElement(BuildingElement& element, const World::Pos2& pos);
-    void removeTree(TreeElement& element, const uint8_t flags, const World::Pos2& pos);
+    void removeBuildingElement(TileElementEntry& entry, const World::Pos2& pos);
+    void removeTree(TileElementEntry& entry, const uint8_t flags, const World::Pos2& pos);
     void removeAllWallsOnTileAbove(const World::TilePos2& pos, SmallZ baseZ);
     void removeAllWallsOnTileBelow(const World::TilePos2& pos, SmallZ baseZ);
     void setLevelCrossingFlags(const World::Pos3 pos);
