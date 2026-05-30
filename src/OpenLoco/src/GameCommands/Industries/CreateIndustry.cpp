@@ -107,14 +107,13 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0045572D
-    static World::TileClearance::ClearFuncResult tileClearFunction(World::TileElement& el, const World::Pos2 pos, const uint8_t flags, currency32_t& cost)
+    static World::TileClearance::ClearFuncResult tileClearFunction(World::TileElementEntry& entry, const World::Pos2 pos, const uint8_t flags, currency32_t& cost)
     {
-        auto* elTree = el.as<World::TreeElement>();
-        if (elTree == nullptr)
+        if (entry.type() != World::ElementType::tree)
         {
             return World::TileClearance::ClearFuncResult::collision;
         }
-        return World::TileClearance::clearTreeCollision(*elTree, pos, flags, cost);
+        return World::TileClearance::clearTreeCollision(entry, pos, flags, cost);
     }
 
     /* 0x004551CC
@@ -204,8 +203,8 @@ namespace OpenLoco::GameCommands
                 auto tile = World::TileManager::get(tilePos);
                 const auto* surface = tile.surface();
 
-                auto clearFunc = [tilePos, flags, &totalCost](World::TileElement& el) {
-                    return tileClearFunction(el, World::toWorldSpace(tilePos), flags, totalCost);
+                auto clearFunc = [tilePos, flags, &totalCost](World::TileElementEntry& entry) {
+                    return tileClearFunction(entry, World::toWorldSpace(tilePos), flags, totalCost);
                 };
 
                 // Perform clearance checks
@@ -329,24 +328,25 @@ namespace OpenLoco::GameCommands
                     World::TileManager::removeSurfaceIndustry(World::toWorldSpace(tilePos));
                     World::TileManager::setTerrainStyleAsCleared(World::toWorldSpace(tilePos));
                 }
-                auto* elIndustry = World::TileManager::insertElement<World::IndustryElement>(World::toWorldSpace(tilePos), highestBaseZ, 0xF);
-                if (elIndustry == nullptr)
+                auto* industryEntry = World::TileManager::insertElement<World::IndustryElement>(World::toWorldSpace(tilePos), highestBaseZ, 0xF);
+                if (industryEntry == nullptr)
                 {
                     return kFailure;
                 }
-                elIndustry->setClearZ(clearZ);
-                elIndustry->setRotation(direction);
-                elIndustry->setIsConstructed(buildImmediate);
-                elIndustry->setIndustryId(industryId);
-                elIndustry->setSequenceIndex(offset.index);
+                auto& elIndustry = industryEntry->get<World::IndustryElement>();
+                elIndustry.setClearZ(clearZ);
+                elIndustry.setRotation(direction);
+                elIndustry.setIsConstructed(buildImmediate);
+                elIndustry.setIndustryId(industryId);
+                elIndustry.setSequenceIndex(offset.index);
                 // TODO: If it turns out there are more vars in _5 they should be cleared here
-                elIndustry->setSectionProgress(0);
-                elIndustry->setColour(colour);
-                elIndustry->setBuildingType(buildingType);
-                elIndustry->setVar_6_003F(0);
-                World::AnimationManager::createAnimation(3, World::toWorldSpace(tilePos), elIndustry->baseZ());
-                elIndustry->setGhost(flags & Flags::ghost);
-                Ui::ViewportManager::invalidate(World::toWorldSpace(tilePos), elIndustry->baseHeight(), elIndustry->clearHeight());
+                elIndustry.setSectionProgress(0);
+                elIndustry.setColour(colour);
+                elIndustry.setBuildingType(buildingType);
+                elIndustry.setVar_6_003F(0);
+                World::AnimationManager::createAnimation(3, World::toWorldSpace(tilePos), elIndustry.baseZ());
+                elIndustry.setGhost(flags & Flags::ghost);
+                Ui::ViewportManager::invalidate(World::toWorldSpace(tilePos), elIndustry.baseHeight(), elIndustry.clearHeight());
             }
         }
 

@@ -18,7 +18,13 @@
 
 namespace OpenLoco::GameCommands
 {
-    static World::TrackElement* getElTrackAt(const TrackRemovalArgs& args, const uint8_t flags, const World::Pos3 pos, const uint8_t sequenceIndex)
+    struct TrackLookup
+    {
+        World::TileElementEntry* entry;
+        World::TrackElement* element;
+    };
+
+    static TrackLookup getElTrackAt(const TrackRemovalArgs& args, const uint8_t flags, const World::Pos3 pos, const uint8_t sequenceIndex)
     {
         auto tile = World::TileManager::get(pos);
         for (auto& el : tile)
@@ -62,17 +68,17 @@ namespace OpenLoco::GameCommands
             {
                 continue;
             }
-            return elTrack;
+            return { &el, elTrack };
         }
-        return nullptr;
+        return { nullptr, nullptr };
     };
 
     // 0x0049CC23
     static currency32_t trackRemoveCost(const TrackRemovalArgs& args, const World::TrackData::PreviewTrack trackPiece0, const World::Pos3 trackStart, const uint8_t flags)
     {
         const auto trackLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece0.x, trackPiece0.y }, args.rotation), trackPiece0.z };
-        auto* pieceElTrack = getElTrackAt(args, flags, trackLoc, trackPiece0.index);
-        if (pieceElTrack == nullptr)
+        auto [trackEntry, pieceElTrack] = getElTrackAt(args, flags, trackLoc, trackPiece0.index);
+        if (trackEntry == nullptr)
         {
             return 0;
         }
@@ -116,13 +122,13 @@ namespace OpenLoco::GameCommands
 
         currency32_t totalRemovalCost = 0;
 
-        auto* elTrack = getElTrackAt(args, flags, args.pos, args.index);
-        if (elTrack == nullptr)
+        auto [trackEntry, elTrack] = getElTrackAt(args, flags, args.pos, args.index);
+        if (trackEntry == nullptr)
         {
             return kFailure;
         }
 
-        if ((flags & Flags::ghost) == 0 && !sub_431E6A(elTrack->owner(), reinterpret_cast<World::TileElement*>(elTrack)))
+        if ((flags & Flags::ghost) == 0 && !sub_431E6A(elTrack->owner(), elTrack))
         {
             return kFailure;
         }
@@ -137,7 +143,7 @@ namespace OpenLoco::GameCommands
             srArgs.trackObjType = args.trackObjectId;
             srArgs.flags = 0;
 
-            auto* elSignal = elTrack->next()->as<World::SignalElement>();
+            auto* elSignal = trackEntry->next()->as<World::SignalElement>();
             if (elSignal != nullptr)
             {
                 if (elSignal->getLeft().hasSignal())
@@ -161,7 +167,11 @@ namespace OpenLoco::GameCommands
         }
 
         // Fetch track element again; signal removal above might have invalidated the pointer.
-        elTrack = getElTrackAt(args, flags, args.pos, args.index);
+        {
+            auto refreshed = getElTrackAt(args, flags, args.pos, args.index);
+            trackEntry = refreshed.entry;
+            elTrack = refreshed.element;
+        }
 
         if (elTrack->hasStationElement())
         {
@@ -183,7 +193,11 @@ namespace OpenLoco::GameCommands
         }
 
         // Fetch track element again; station removal above might have invalidated the pointer.
-        elTrack = getElTrackAt(args, flags, args.pos, args.index);
+        {
+            auto refreshed = getElTrackAt(args, flags, args.pos, args.index);
+            trackEntry = refreshed.entry;
+            elTrack = refreshed.element;
+        }
 
         const auto trackPieces = World::TrackData::getTrackPiece(args.trackId);
         auto& trackPiece = trackPieces[args.index];
@@ -205,8 +219,8 @@ namespace OpenLoco::GameCommands
                 World::TileManager::mapInvalidateTileFull(trackLoc);
             }
 
-            auto* pieceElTrack = getElTrackAt(args, flags, trackLoc, piece.index);
-            if (pieceElTrack == nullptr)
+            auto [pieceEntry, pieceElTrack] = getElTrackAt(args, flags, trackLoc, piece.index);
+            if (pieceEntry == nullptr)
             {
                 return kFailure;
             }
@@ -222,7 +236,7 @@ namespace OpenLoco::GameCommands
                 continue;
             }
 
-            World::TileManager::removeElement(*reinterpret_cast<World::TileElement*>(pieceElTrack));
+            World::TileManager::removeElement(*pieceEntry);
             World::TileManager::setLevelCrossingFlags(trackLoc);
         }
 

@@ -125,7 +125,13 @@ namespace OpenLoco::GameCommands
         return std::make_pair(NearbyStationValidation::okay, nearbyStation.id);
     }
 
-    static World::TrackElement* getElTrack(World::Pos3 pos, uint8_t rotation, uint8_t trackObjectId, uint8_t trackId, uint8_t index)
+    struct TrackLookup
+    {
+        World::TileElementEntry* entry;
+        World::TrackElement* element;
+    };
+
+    static TrackLookup getElTrack(World::Pos3 pos, uint8_t rotation, uint8_t trackObjectId, uint8_t trackId, uint8_t index)
     {
         auto tile = World::TileManager::get(pos);
         for (auto& el : tile)
@@ -155,16 +161,16 @@ namespace OpenLoco::GameCommands
             {
                 continue;
             }
-            return elTrack;
+            return { &el, elTrack };
         }
-        return nullptr;
+        return { nullptr, nullptr };
     }
 
     // 0x0048BAC2
-    static World::TileClearance::ClearFuncResult clearFuncAiReservation(World::TileElement& el, World::TrackElement& elReferenceTrack)
+    static World::TileClearance::ClearFuncResult clearFuncAiReservation(World::TileElementEntry& entry, World::TrackElement& elReferenceTrack)
     {
-        auto* elStation = el.as<World::StationElement>();
-        auto* elTrack = el.as<World::TrackElement>();
+        auto* elStation = entry.as<World::StationElement>();
+        auto* elTrack = entry.as<World::TrackElement>();
         if (elStation != nullptr)
         {
             if (elStation->stationType() == StationType::trainStation)
@@ -180,10 +186,9 @@ namespace OpenLoco::GameCommands
     };
 
     // 0x0048BAE5
-    static World::TileClearance::ClearFuncResult clearFuncCollideWithSurface(World::TileElement& el)
+    static World::TileClearance::ClearFuncResult clearFuncCollideWithSurface(World::TileElementEntry& entry)
     {
-        auto* elSurface = el.as<World::SurfaceElement>();
-        if (elSurface != nullptr)
+        if (entry.type() == World::ElementType::surface)
         {
             return World::TileClearance::ClearFuncResult::collision;
         }
@@ -218,11 +223,11 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        auto* initialElTrack = getElTrack(args.pos, args.rotation, args.trackObjectId, args.trackId, args.index);
+        auto [initialEntry, initialElTrack] = getElTrack(args.pos, args.rotation, args.trackObjectId, args.trackId, args.index);
 
         auto index = args.index;
 
-        if (initialElTrack == nullptr)
+        if (initialEntry == nullptr)
         {
             if (flags & Flags::apply)
             {
@@ -237,7 +242,7 @@ namespace OpenLoco::GameCommands
         }
         else
         {
-            if (!sub_431E6A(initialElTrack->owner(), reinterpret_cast<World::TileElement*>(initialElTrack)))
+            if (!sub_431E6A(initialElTrack->owner(), initialElTrack))
             {
                 return kFailure;
             }
@@ -313,7 +318,7 @@ namespace OpenLoco::GameCommands
         {
             const auto trackLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
 
-            auto* elTrack = getElTrack(trackLoc, args.rotation, args.trackObjectId, args.trackId, piece.index);
+            auto [trackEntry, elTrack] = getElTrack(trackLoc, args.rotation, args.trackObjectId, args.trackId, piece.index);
 
             if (elTrack == nullptr)
             {
@@ -400,7 +405,7 @@ namespace OpenLoco::GameCommands
                     // Replace station if it already exists
                     if (elTrack->hasStationElement())
                     {
-                        auto* elStation = elTrack->next()->as<World::StationElement>();
+                        auto* elStation = trackEntry->next()->as<World::StationElement>();
                         if (elStation == nullptr)
                         {
                             return kFailure;
@@ -432,8 +437,8 @@ namespace OpenLoco::GameCommands
                 World::QuarterTile qt(elTrack->occupiedQuarter(), 0);
                 if (!(flags & Flags::aiAllocated))
                 {
-                    auto clearFunc = [&elTrack](World::TileElement& el) {
-                        return clearFuncAiReservation(el, *elTrack);
+                    auto clearFunc = [&elTrack](World::TileElementEntry& entry) {
+                        return clearFuncAiReservation(entry, *elTrack);
                     };
                     if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ + 8, clearZ, qt, clearFunc))
                     {
@@ -463,7 +468,7 @@ namespace OpenLoco::GameCommands
                 // Actually place the new station
                 if (elTrack->hasStationElement())
                 {
-                    auto* elStation = elTrack->next()->as<World::StationElement>();
+                    auto* elStation = trackEntry->next()->as<World::StationElement>();
                     if (elStation == nullptr)
                     {
                         return kFailure;
@@ -478,20 +483,25 @@ namespace OpenLoco::GameCommands
                 else
                 {
                     // elTrack pointer will be invalid after this call
-                    newStationElement = World::TileManager::insertElementAfterNoReorg<World::StationElement>(
-                        reinterpret_cast<World::TileElement*>(elTrack),
+                    auto* stationEntry = World::TileManager::insertElementAfterNoReorg<World::StationElement>(
+                        trackEntry,
                         trackLoc,
                         elTrack->baseZ(),
                         elTrack->occupiedQuarter());
-                    if (newStationElement == nullptr)
+                    if (stationEntry == nullptr)
                     {
                         return kFailure;
                     }
-                    elTrack = newStationElement->prev()->as<World::TrackElement>();
-                    if (elTrack == nullptr)
+                    {
+                        auto refreshed = getElTrack(trackLoc, args.rotation, args.trackObjectId, args.trackId, piece.index);
+                        trackEntry = refreshed.entry;
+                        elTrack = refreshed.element;
+                    }
+                    if (trackEntry == nullptr)
                     {
                         return kFailure;
                     }
+                    newStationElement = &stationEntry->get<World::StationElement>();
                     newStationElement->setRotation(elTrack->rotation());
                     newStationElement->setGhost(flags & Flags::ghost);
                     newStationElement->setAiAllocated(flags & Flags::aiAllocated);

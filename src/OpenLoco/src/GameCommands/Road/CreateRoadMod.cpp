@@ -50,7 +50,7 @@ namespace OpenLoco::GameCommands
     static uint32_t createRoadMod(const RoadModsPlacementArgs& args, uint8_t flags)
     {
         auto* roadEl = getRoadElement(args);
-        if (roadEl == nullptr || !sub_431E6A(roadEl->owner(), reinterpret_cast<const World::TileElement*>(roadEl)))
+        if (roadEl == nullptr || !sub_431E6A(roadEl->owner(), roadEl))
         {
             return kFailure;
         }

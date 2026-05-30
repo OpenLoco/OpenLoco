@@ -290,7 +290,7 @@ namespace OpenLoco::GameCommands
         if (!(gs.roadObjectIdIsUsableByAllCompanies & (1U << elRoad.roadObjectId()))
             || !(gs.roadObjectIdIsUsableByAllCompanies & (1U << args.roadObjectId)))
         {
-            if (!sub_431E6A(elRoad.owner(), reinterpret_cast<const World::TileElement*>(&elRoad)))
+            if (!sub_431E6A(elRoad.owner(), &elRoad))
             {
                 return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::collisionErrorSet);
             }
@@ -533,7 +533,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x00476D40
-    static RoadClearFunctionResult clearFunction(World::TileElement& el, currency32_t& totalCost, World::TileClearance::RemovedBuildings& removedBuildings, const ClearFunctionArgs& args)
+    static RoadClearFunctionResult clearFunction(World::TileElementEntry& entry, currency32_t& totalCost, World::TileClearance::RemovedBuildings& removedBuildings, const ClearFunctionArgs& args)
     {
         // stack
         // 0x0 = totalCost
@@ -546,11 +546,11 @@ namespace OpenLoco::GameCommands
         // 0x0112C2E3 = levelCrossingObjId
         // 0x0112C2EC = hasStation
 
-        switch (el.type())
+        switch (entry.type())
         {
             case World::ElementType::track:
             {
-                auto* elTrack = el.as<World::TrackElement>();
+                auto* elTrack = entry.as<World::TrackElement>();
                 if (elTrack != nullptr)
                 {
                     return clearTrack(*elTrack, args);
@@ -559,7 +559,7 @@ namespace OpenLoco::GameCommands
             }
             case World::ElementType::station:
             {
-                auto* elStation = el.as<World::StationElement>();
+                auto* elStation = entry.as<World::StationElement>();
                 if (elStation->stationType() == StationType::roadStation)
                 {
                     return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::noCollision);
@@ -569,27 +569,13 @@ namespace OpenLoco::GameCommands
             case World::ElementType::signal:
                 return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::noCollision);
             case World::ElementType::building:
-            {
-                auto* elBuilding = el.as<World::BuildingElement>();
-                if (elBuilding == nullptr)
-                {
-                    return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::noCollision);
-                }
                 getLegacyReturnState().flags_1136073 |= (1U << 4);
-                return RoadClearFunctionResult(World::TileClearance::clearBuildingCollision(*elBuilding, args.pos, removedBuildings, args.flags, totalCost));
-            }
+                return RoadClearFunctionResult(World::TileClearance::clearBuildingCollision(entry, args.pos, removedBuildings, args.flags, totalCost));
             case World::ElementType::tree:
-            {
-                auto* elTree = el.as<World::TreeElement>();
-                if (elTree == nullptr)
-                {
-                    return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::noCollision);
-                }
-                return RoadClearFunctionResult(World::TileClearance::clearTreeCollision(*elTree, args.pos, args.flags, totalCost));
-            }
+                return RoadClearFunctionResult(World::TileClearance::clearTreeCollision(entry, args.pos, args.flags, totalCost));
             case World::ElementType::road:
             {
-                auto* elRoad = el.as<World::RoadElement>();
+                auto* elRoad = entry.as<World::RoadElement>();
                 if (elRoad != nullptr)
                 {
                     return clearRoad(*elRoad, args);
@@ -754,8 +740,8 @@ namespace OpenLoco::GameCommands
             clearArgs.flags = flags;
             clearArgs.unkFlags = args.unkFlags;
 
-            auto clearFunc = [&totalCost, &hasLevelCrossing, &hasStation, &removedBuildings, &levelCrossingObjId, &stationId, &roadIdUnk, &clearArgs](World::TileElement& el) {
-                const auto res = clearFunction(el, totalCost, removedBuildings, clearArgs);
+            auto clearFunc = [&totalCost, &hasLevelCrossing, &hasStation, &removedBuildings, &levelCrossingObjId, &stationId, &roadIdUnk, &clearArgs](World::TileElementEntry& entry) {
+                const auto res = clearFunction(entry, totalCost, removedBuildings, clearArgs);
                 hasLevelCrossing |= res.hasLevelCrossing;
                 hasStation |= res.hasStation;
                 if (res.levelCrossingObjId != 0xFFU)
@@ -831,44 +817,45 @@ namespace OpenLoco::GameCommands
                 World::TileManager::setTerrainStyleAsClearedAtHeight(roadLoc);
             }
 
-            auto* newElRoad = World::TileManager::insertElementRoad(roadLoc, baseZ, quarterTile.getBaseQuarterOccupied());
-            if (newElRoad == nullptr)
+            auto* roadEntry = World::TileManager::insertElementRoad(roadLoc, baseZ, quarterTile.getBaseQuarterOccupied());
+            if (roadEntry == nullptr)
             {
                 return kFailure;
             }
-            newElRoad->setClearZ(clearZ);
-            newElRoad->setRotation(args.rotation);
-            newElRoad->setRoadObjectId(args.roadObjectId);
-            newElRoad->setSequenceIndex(piece.index);
-            newElRoad->setRoadId(args.roadId);
-            newElRoad->setOwner(companyId);
+            auto& newElRoad = roadEntry->get<World::RoadElement>();
+            newElRoad.setClearZ(clearZ);
+            newElRoad.setRotation(args.rotation);
+            newElRoad.setRoadObjectId(args.roadObjectId);
+            newElRoad.setSequenceIndex(piece.index);
+            newElRoad.setRoadId(args.roadId);
+            newElRoad.setOwner(companyId);
             for (auto i = 0U; i < 2; ++i)
             {
                 if (validMods & (1U << i))
                 {
-                    newElRoad->setMod(i, true);
+                    newElRoad.setMod(i, true);
                 }
             }
             if ((getGameState().roadObjectIdIsAnyRoadTypeCompatible & (1U << args.roadObjectId)) && companyId != CompanyId::neutral)
             {
-                newElRoad->setUnk7_40(true);
+                newElRoad.setUnk7_40(true);
             }
-            newElRoad->setBridgeObjectId(args.bridge);
-            newElRoad->setHasBridge(returnState.flags_1136073 & (1U << 1));
+            newElRoad.setBridgeObjectId(args.bridge);
+            newElRoad.setHasBridge(returnState.flags_1136073 & (1U << 1));
             if (hasLevelCrossing && !(flags & Flags::aiAllocated))
             {
-                newElRoad->setHasLevelCrossing(true);
-                newElRoad->setLevelCrossingObjectId(levelCrossingObjId);
+                newElRoad.setHasLevelCrossing(true);
+                newElRoad.setLevelCrossingObjectId(levelCrossingObjId);
             }
             else
             {
-                newElRoad->setHasLevelCrossing(false);
-                newElRoad->setLevelCrossingObjectId(0);
+                newElRoad.setHasLevelCrossing(false);
+                newElRoad.setLevelCrossingObjectId(0);
             }
-            newElRoad->setHasStationElement(hasStation);
-            newElRoad->setFlag6(piece.index == (roadPieces.size() - 1));
-            newElRoad->setGhost(flags & Flags::ghost);
-            newElRoad->setAiAllocated(flags & Flags::aiAllocated);
+            newElRoad.setHasStationElement(hasStation);
+            newElRoad.setFlag6(piece.index == (roadPieces.size() - 1));
+            newElRoad.setGhost(flags & Flags::ghost);
+            newElRoad.setAiAllocated(flags & Flags::aiAllocated);
             if (shouldInvalidateTile(flags))
             {
                 World::TileManager::mapInvalidateTileFull(roadLoc);
@@ -904,30 +891,31 @@ namespace OpenLoco::GameCommands
                     World::TileManager::removeSurfaceIndustryAtHeight(args.pos);
                     World::TileManager::setTerrainStyleAsClearedAtHeight(args.pos);
 
-                    auto* newElRoad = World::TileManager::insertElement<World::RoadElement>(args.pos, args.pos.z / World::kSmallZStep, 0xFU);
-                    if (newElRoad == nullptr)
+                    auto* roadEntry = World::TileManager::insertElement<World::RoadElement>(args.pos, args.pos.z / World::kSmallZStep, 0xFU);
+                    if (roadEntry == nullptr)
                     {
                         return;
                     }
-                    newElRoad->setClearZ(args.pos.z / World::kSmallZStep + 8);
-                    newElRoad->setRotation(rotation);
-                    newElRoad->setRoadObjectId(args.roadObjectId);
-                    newElRoad->setSequenceIndex(0);
-                    newElRoad->setRoadId(roadId);
-                    newElRoad->setOwner(companyId);
+                    auto& newElRoad = roadEntry->get<World::RoadElement>();
+                    newElRoad.setClearZ(args.pos.z / World::kSmallZStep + 8);
+                    newElRoad.setRotation(rotation);
+                    newElRoad.setRoadObjectId(args.roadObjectId);
+                    newElRoad.setSequenceIndex(0);
+                    newElRoad.setRoadId(roadId);
+                    newElRoad.setOwner(companyId);
                     for (auto i = 0U; i < 2; ++i)
                     {
                         if (validMods & (1U << i))
                         {
-                            newElRoad->setMod(i, true);
+                            newElRoad.setMod(i, true);
                         }
                     }
-                    newElRoad->setBridgeObjectId(args.bridge);
-                    newElRoad->setHasBridge(getLegacyReturnState().flags_1136073 & (1U << 1));
+                    newElRoad.setBridgeObjectId(args.bridge);
+                    newElRoad.setHasBridge(getLegacyReturnState().flags_1136073 & (1U << 1));
 
-                    newElRoad->setFlag6(true);
-                    newElRoad->setGhost(flags & Flags::ghost);
-                    newElRoad->setAiAllocated(flags & Flags::aiAllocated);
+                    newElRoad.setFlag6(true);
+                    newElRoad.setGhost(flags & Flags::ghost);
+                    newElRoad.setAiAllocated(flags & Flags::aiAllocated);
                 };
 
                 auto requiresAdditionalLeft = [&roadIdUnk, rot0Flag, rot1Flag, rot2Flag, rot3Flag]() {

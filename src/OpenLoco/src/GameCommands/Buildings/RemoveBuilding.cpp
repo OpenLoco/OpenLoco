@@ -103,7 +103,7 @@ namespace OpenLoco::GameCommands
 
                     if (flags & GameCommands::Flags::apply)
                     {
-                        World::TileManager::removeBuildingElement(subElBuilding->get<World::BuildingElement>(), subTilePos);
+                        World::TileManager::removeBuildingElement(element, subTilePos);
                         auto& options = Scenario::getOptions();
                         options.madeAnyChanges = 1;
                     }

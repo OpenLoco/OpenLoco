@@ -30,8 +30,8 @@ namespace OpenLoco::GameCommands
 
     struct OverlapRoads
     {
-        World::RoadElement* _begin = nullptr;
-        World::RoadElement* _end = nullptr;
+        World::TileElementEntry* _begin = nullptr;
+        World::TileElementEntry* _end = nullptr;
 
         OverlapRoads(World::Pos3 pos)
         {
@@ -39,7 +39,7 @@ namespace OpenLoco::GameCommands
             for (auto& el : tile)
             {
                 auto* elRoad = el.as<World::RoadElement>();
-                if (elRoad == nullptr)
+                if (elRoad == nullptr || elRoad->baseZ() != pos.z / World::kSmallZStep)
                 {
                     if (_begin != nullptr)
                     {
@@ -47,27 +47,19 @@ namespace OpenLoco::GameCommands
                     }
                     continue;
                 }
-                if (elRoad->baseZ() != pos.z / World::kSmallZStep)
-                {
-                    if (_begin != nullptr)
-                    {
-                        break;
-                    }
-                    continue;
-                }
-                _end = elRoad + 1;
+                _end = el.next();
                 if (_begin == nullptr)
                 {
-                    _begin = elRoad;
+                    _begin = &el;
                 }
             }
         }
 
-        World::RoadElement* begin() const { return _begin; }
-        World::RoadElement* end() const { return _end; }
+        World::TileElementEntry* begin() const { return _begin; }
+        World::TileElementEntry* end() const { return _end; }
     };
 
-    static World::RoadElement* getRoadElement(const World::Pos3 pos, const RoadRemovalArgs& args, uint8_t sequenceIndex, uint8_t flags)
+    static World::TileElementEntry* getRoadElement(const World::Pos3 pos, const RoadRemovalArgs& args, uint8_t sequenceIndex, uint8_t flags)
     {
         auto tile = World::TileManager::get(pos);
         const auto baseZ = pos.z / World::kSmallZStep;
@@ -115,7 +107,7 @@ namespace OpenLoco::GameCommands
                 return nullptr;
             }
 
-            return elRoad;
+            return &element;
         }
 
         return nullptr;
@@ -126,11 +118,12 @@ namespace OpenLoco::GameCommands
     {
         const auto roadLoc = roadStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ roadPiece0.x, roadPiece0.y }, args.rotation), roadPiece0.z };
 
-        auto* roadElPiece = getRoadElement(roadLoc, args, roadPiece0.index, flags);
-        if (roadElPiece == nullptr)
+        auto* roadEntry = getRoadElement(roadLoc, args, roadPiece0.index, flags);
+        if (roadEntry == nullptr)
         {
             return 0;
         }
+        auto* roadElPiece = roadEntry->as<World::RoadElement>();
 
         currency32_t totalRemovalCost = 0;
 
@@ -166,15 +159,16 @@ namespace OpenLoco::GameCommands
         setPosition(args.pos + World::Pos3{ 16, 16, 0 });
 
         // 0x0047762D
-        auto* roadEl = getRoadElement(args.pos, args, args.sequenceIndex, flags);
-        if (roadEl == nullptr)
+        auto* roadEntry = getRoadElement(args.pos, args, args.sequenceIndex, flags);
+        if (roadEntry == nullptr)
         {
             return kFailure;
         }
+        auto* roadEl = roadEntry->as<World::RoadElement>();
 
         const CompanyId roadOwner = roadEl->owner();
 
-        if (!sub_431E6A(roadOwner, reinterpret_cast<const World::TileElement*>(roadEl)))
+        if (!sub_431E6A(roadOwner, roadEl))
         {
             return kFailure;
         }
@@ -208,12 +202,13 @@ namespace OpenLoco::GameCommands
             // We only want to remove the road station if the target road element is the only
             // user of the road station.
             const auto overlaps = OverlapRoads(args.pos);
-            const auto hasOtherRoadStationUsers = std::ranges::any_of(overlaps, [roadEl](const World::RoadElement& el) {
-                if (&el == roadEl)
+            const auto hasOtherRoadStationUsers = std::ranges::any_of(overlaps, [roadEl](const World::TileElementEntry& entry) {
+                auto* el = entry.as<World::RoadElement>();
+                if (el == nullptr || el == roadEl)
                 {
                     return false;
                 }
-                return el.hasStationElement();
+                return el->hasStationElement();
             });
 
             if (!hasOtherRoadStationUsers)
@@ -263,11 +258,12 @@ namespace OpenLoco::GameCommands
             }
 
             // 0x00477934
-            auto* roadElPiece = getRoadElement(roadLoc, args, piece.index, flags);
-            if (roadElPiece == nullptr)
+            auto* pieceEntry = getRoadElement(roadLoc, args, piece.index, flags);
+            if (pieceEntry == nullptr)
             {
                 continue;
             }
+            auto* roadElPiece = pieceEntry->as<World::RoadElement>();
 
             // 0x004779B2
             if (roadElPiece->hasBridge())
@@ -285,7 +281,7 @@ namespace OpenLoco::GameCommands
                 continue;
             }
 
-            World::TileManager::removeElement(*reinterpret_cast<World::TileElement*>(roadElPiece));
+            World::TileManager::removeElement(*pieceEntry);
             Scenario::getOptions().madeAnyChanges = 1;
             World::TileManager::setLevelCrossingFlags(roadLoc);
         }

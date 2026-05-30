@@ -98,7 +98,7 @@ namespace OpenLoco::GameCommands
 
         if (!(getGameState().roadObjectIdIsUsableByAllCompanies & (1 << elRoad->roadObjectId())))
         {
-            if (!sub_431E6A(elRoad->owner(), reinterpret_cast<const World::TileElement*>(elRoad)))
+            if (!sub_431E6A(elRoad->owner(), elRoad))
             {
                 return false;
             }
@@ -177,7 +177,7 @@ namespace OpenLoco::GameCommands
             return false;
         }
 
-        if (!sub_431E6A(elTrack->owner(), reinterpret_cast<const World::TileElement*>(elTrack)))
+        if (!sub_431E6A(elTrack->owner(), elTrack))
         {
             return false;
         }

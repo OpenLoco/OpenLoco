@@ -34,28 +34,21 @@ namespace OpenLoco::GameCommands
             auto ourCompanyId = GameCommands::getUpdatingCompanyId();
 
             // First phase: change ownership of all tile elements that currently belong to the target company.
-            for (auto& element : TileManager::getElements())
+            for (auto& roadElement : TileManager::getStore<RoadElement>())
             {
-                auto* roadElement = element.as<RoadElement>();
-                if (roadElement != nullptr)
+                // Check to verify that roadElement is owned by the target company
+                if (roadElement.owner() == targetCompanyId)
                 {
-                    // Check to verify that roadElement is owned by the target company
-                    if (roadElement->owner() == targetCompanyId)
-                    {
-                        roadElement->setOwner(ourCompanyId);
-                    }
-                    continue;
+                    roadElement.setOwner(ourCompanyId);
                 }
+            }
 
-                auto* trackElement = element.as<TrackElement>();
-                if (trackElement != nullptr)
+            for (auto& trackElement : TileManager::getStore<TrackElement>())
+            {
+                // Check to verify that the trackElement is owned by the target company.
+                if (trackElement.owner() == targetCompanyId)
                 {
-                    // Check to verify that the trackElement is owned by the target company.
-                    if (trackElement->owner() == targetCompanyId)
-                    {
-                        trackElement->setOwner(ourCompanyId);
-                    }
-                    continue;
+                    trackElement.setOwner(ourCompanyId);
                 }
             }
 
