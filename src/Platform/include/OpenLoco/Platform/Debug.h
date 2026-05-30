@@ -3,7 +3,7 @@
 // NOLINTBEGIN(cppcoreguidelines-macro-usage)
 // This is a macro on purpose to avoid introducing another callsite for debug breaks.
 // It is used by the assertion code.
-#ifdef _MSC_VER
+#if defined(_WIN32)
 #include <intrin.h>
 #define OPENLOCO_DEBUG_BREAK() __debugbreak()
 #else
