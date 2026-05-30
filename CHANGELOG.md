@@ -1,4 +1,4 @@
-26.04+ (???)
+26.05 (2026-05-30)
 ------------------------------------------------------------------------
 - Feature: [#3720] A preferred company name can now be set, separate from the preferred owner name.
 - Change: [#3517] Letters with unsupported diacritics/accents are temporarily replaced with regular letters to keep e.g. Czech, Slovak readable.
