@@ -1,6 +1,7 @@
 #include "Paint/PaintTrainStation.h"
 #include "Map/StationElement.h"
 #include "Map/TileElement.h"
+#include "Map/TileElementEntry.h"
 #include "Map/TrackElement.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/TrainStationObject.h"
@@ -203,9 +204,10 @@ namespace OpenLoco::Paint
     }
 
     // 0x004D7A5C
-    static void paintTrainStationStyle0DiagonalTrack(PaintSession& session, const World::StationElement& elStation, const ImageId imageBase, const ImageId imageTranslucentBase)
+    static void paintTrainStationStyle0DiagonalTrack(PaintSession& session, const World::TileElementEntry& entry, const ImageId imageBase, const ImageId imageTranslucentBase)
     {
-        const auto* elTrack = elStation.prev()->as<World::TrackElement>();
+        auto& elStation = entry.get<World::StationElement>();
+        const auto* elTrack = entry.prev()->as<World::TrackElement>();
         if (elTrack == nullptr)
         {
             return;
@@ -252,8 +254,9 @@ namespace OpenLoco::Paint
     }
 
     // 0x004D78EC
-    static void paintTrainStationStyle0(PaintSession& session, const World::StationElement& elStation, const uint8_t trackId, [[maybe_unused]] const uint8_t sequenceIndex, const ImageId imageBase, const ImageId imageGlassBase)
+    static void paintTrainStationStyle0(PaintSession& session, const World::TileElementEntry& entry, const uint8_t trackId, [[maybe_unused]] const uint8_t sequenceIndex, const ImageId imageBase, const ImageId imageGlassBase)
     {
+        auto& elStation = entry.get<World::StationElement>();
         switch (trackId)
         {
             case 0:
@@ -261,7 +264,7 @@ namespace OpenLoco::Paint
                 break;
             case 1:
                 // Vanilla had hard to reach code for diagonal train stations
-                paintTrainStationStyle0DiagonalTrack(session, elStation, imageBase, imageGlassBase);
+                paintTrainStationStyle0DiagonalTrack(session, entry, imageBase, imageGlassBase);
                 break;
             default:
                 return;
@@ -269,14 +272,15 @@ namespace OpenLoco::Paint
     }
 
     // 0x0048B34D
-    void paintTrainStation(PaintSession& session, const World::StationElement& elStation)
+    void paintTrainStation(PaintSession& session, const World::TileElementEntry& entry)
     {
+        auto& elStation = entry.get<World::StationElement>();
         session.setItemType(Ui::ViewportInteraction::InteractionItem::trainStation);
 
         const auto* stationObj = ObjectManager::get<TrainStationObject>(elStation.objectId());
         session.setOccupiedAdditionSupportSegments(SegmentFlags::all);
 
-        const auto* elTrack = elStation.prev()->as<World::TrackElement>();
+        const auto* elTrack = entry.prev()->as<World::TrackElement>();
         if (elTrack == nullptr)
         {
             return;
@@ -308,7 +312,7 @@ namespace OpenLoco::Paint
         switch (stationObj->paintStyle)
         {
             case 0:
-                paintTrainStationStyle0(session, elStation, elTrack->trackId(), elTrack->sequenceIndex(), imageIdbase, imageIdTranslucentBase);
+                paintTrainStationStyle0(session, entry, elTrack->trackId(), elTrack->sequenceIndex(), imageIdbase, imageIdTranslucentBase);
                 break;
             default:
                 // Track only have 1 style of drawing

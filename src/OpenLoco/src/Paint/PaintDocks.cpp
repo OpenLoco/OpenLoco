@@ -1,6 +1,7 @@
 #include "Paint/PaintDocks.h"
 #include "Graphics/RenderTarget.h"
 #include "Map/StationElement.h"
+#include "Map/TileElementEntry.h"
 #include "Objects/DockObject.h"
 #include "Objects/ObjectManager.h"
 #include "Paint/Paint.h"

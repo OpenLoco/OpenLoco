@@ -2,6 +2,7 @@
 #include "Map/RoadElement.h"
 #include "Map/StationElement.h"
 #include "Map/TileElement.h"
+#include "Map/TileElementEntry.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadStationObject.h"
 #include "Paint/Paint.h"
@@ -151,14 +152,15 @@ namespace OpenLoco::Paint
     }
 
     // 0x0048B403
-    void paintRoadStation(PaintSession& session, const World::StationElement& elStation)
+    void paintRoadStation(PaintSession& session, const World::TileElementEntry& entry)
     {
+        auto& elStation = entry.get<World::StationElement>();
         session.setItemType(Ui::ViewportInteraction::InteractionItem::roadStation);
 
         const auto* stationObj = ObjectManager::get<RoadStationObject>(elStation.objectId());
         session.setOccupiedAdditionSupportSegments(SegmentFlags::all);
 
-        const auto* elRoad = elStation.prev()->as<World::RoadElement>();
+        const auto* elRoad = entry.prev()->as<World::RoadElement>();
         if (elRoad == nullptr)
         {
             return;

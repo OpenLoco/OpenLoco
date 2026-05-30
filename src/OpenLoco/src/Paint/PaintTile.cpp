@@ -253,9 +253,9 @@ namespace OpenLoco::Paint
         return { vpPos };
     }
 
-    static void paintTileElementsEndLoop(PaintSession& session, const World::TileElement& el)
+    static void paintTileElementsEndLoop(PaintSession& session, const World::TileElementEntry& el)
     {
-        if (el.isLast() || el.baseZ() != ((&el) + 1)->baseZ())
+        if (el.isLast() || el.baseZ() != (&el + 1)->baseZ())
         {
             if (session.getRoadExits() != 0)
             {
@@ -327,14 +327,12 @@ namespace OpenLoco::Paint
                 }
                 case World::ElementType::station:
                 {
-                    auto& elStation = el.get<World::StationElement>();
-                    paintStation(session, elStation);
+                    paintStation(session, el);
                     break;
                 }
                 case World::ElementType::signal:
                 {
-                    auto& elSignal = el.get<World::SignalElement>();
-                    paintSignal(session, elSignal);
+                    paintSignal(session, el);
                     break;
                 }
                 case World::ElementType::building:
@@ -408,7 +406,7 @@ namespace OpenLoco::Paint
                     {
                         case StationType::airport:
                         case StationType::docks:
-                            paintStation(session, elStation);
+                            paintStation(session, el);
                             break;
                         default:
                         case StationType::roadStation:
