@@ -3,6 +3,16 @@
 #include <cstdint>
 #include <span>
 
+namespace OpenLoco
+{
+    struct GameState;
+}
+
+namespace OpenLoco::World
+{
+    struct TileElementEntry;
+}
+
 namespace OpenLoco::S5
 {
     enum class ElementType : uint8_t
@@ -413,4 +423,6 @@ namespace OpenLoco::S5
     };
     static_assert(sizeof(IndustryElement) == kTileElementSize);
 #pragma pack(pop)
+
+    TileElement toSaveElement(const OpenLoco::GameState& gs, const World::TileElementEntry& entry);
 }
