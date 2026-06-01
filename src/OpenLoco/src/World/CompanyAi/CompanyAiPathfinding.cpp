@@ -337,7 +337,7 @@ namespace OpenLoco::CompanyAi
         const bool unkFlag,
         const PlacementVars& placementVars,
         QueryTrackRoadPlacementResult& totalResult,
-        QueryTrackRoadPlacementState& state,
+        QueryTrackRoadPlacementState& placementState,
         PathfindingState& pathState)
     {
         // bl
@@ -418,7 +418,7 @@ namespace OpenLoco::CompanyAi
         }
 
         totalResult.flags |= (1U << 0);
-        state.currentWeighting += World::TrackData::getTrackMiscData(trackId).unkWeighting;
+        placementState.currentWeighting += World::TrackData::getTrackMiscData(trackId).unkWeighting;
 
         auto& returnState = GameCommands::getLegacyReturnState();
 
@@ -427,12 +427,12 @@ namespace OpenLoco::CompanyAi
         {
             // returnState.byte_1136074 is the bridge height
             const auto unkFactor = (returnState.byte_1136074 * World::TrackData::getTrackMiscData(trackId).unkWeighting) / 2;
-            state.bridgeWeighting += unkFactor;
+            placementState.bridgeWeighting += unkFactor;
         }
         // Place track attempt requires removing a building
         if (returnState.flags_1136073 & (1U << 4))
         {
-            state.numBuildingsRequiredDestroyed++;
+            placementState.numBuildingsRequiredDestroyed++;
         }
         // 0x004856AB
 
@@ -459,16 +459,16 @@ namespace OpenLoco::CompanyAi
                     return;
                 }
                 totalResult.minScore = 0;
-                if ((state.currentWeighting & 0xFFFFU) < totalResult.minWeighting)
+                if ((placementState.currentWeighting & 0xFFFFU) < totalResult.minWeighting)
                 {
-                    totalResult.minWeighting = state.currentWeighting & 0xFFFFU;
+                    totalResult.minWeighting = placementState.currentWeighting & 0xFFFFU;
                 }
                 return;
             }
 
-            if (pathState.maxTrackRoadWeightingLimit <= state.currentWeighting)
+            if (pathState.maxTrackRoadWeightingLimit <= placementState.currentWeighting)
             {
-                const auto newScore = state.bridgeWeighting / 32 + distScore * 4 + state.numBuildingsRequiredDestroyed;
+                const auto newScore = placementState.bridgeWeighting / 32 + distScore * 4 + placementState.numBuildingsRequiredDestroyed;
                 totalResult.minScore = std::min<uint16_t>(newScore, totalResult.minScore);
             }
             else
@@ -493,9 +493,9 @@ namespace OpenLoco::CompanyAi
                     }
 
                     // Make a copy of the state as each track needs to be evaluated independently
-                    auto tempState = state;
+                    auto tempPlacementState = placementState;
 
-                    queryTrackPlacementScoreRecurse(company, nextPos, newTad, newUnkFlag, placementVars, totalResult, tempState, pathState);
+                    queryTrackPlacementScoreRecurse(company, nextPos, newTad, newUnkFlag, placementVars, totalResult, tempPlacementState, pathState);
                 }
             }
         }
@@ -514,12 +514,12 @@ namespace OpenLoco::CompanyAi
         result.minScore = 0xFFFFU;
         result.minWeighting = 0xFFFFU;
 
-        QueryTrackRoadPlacementState state{};
-        state.numBuildingsRequiredDestroyed = 0U;
-        state.currentWeighting = 0U;
-        state.bridgeWeighting = 0U;
+        QueryTrackRoadPlacementState placementState{};
+        placementState.numBuildingsRequiredDestroyed = 0U;
+        placementState.currentWeighting = 0U;
+        placementState.bridgeWeighting = 0U;
 
-        queryTrackPlacementScoreRecurse(company, pos, tad, unkFlag, placementVars, result, state, pathState);
+        queryTrackPlacementScoreRecurse(company, pos, tad, unkFlag, placementVars, result, placementState, pathState);
 
         return result;
     }
@@ -536,7 +536,7 @@ namespace OpenLoco::CompanyAi
         const uint16_t tad,
         const PlacementVars& placementVars,
         QueryTrackRoadPlacementResult& totalResult,
-        QueryTrackRoadPlacementState& state,
+        QueryTrackRoadPlacementState& placementState,
         PathfindingState& pathState)
     {
         // bl
@@ -594,19 +594,19 @@ namespace OpenLoco::CompanyAi
         {
             placementWeighting -= placementWeighting / 4;
         }
-        state.currentWeighting += placementWeighting;
+        placementState.currentWeighting += placementWeighting;
 
         // Place road attempt required a bridge
         if (returnState.flags_1136073 & (1U << 0))
         {
             // returnState.byte_1136074 is the bridge height
             const auto unkFactor = (returnState.byte_1136074 * placementWeighting) / 2;
-            state.bridgeWeighting += unkFactor;
+            placementState.bridgeWeighting += unkFactor;
         }
         // Place road attempt requires removing a building
         if (returnState.flags_1136073 & (1U << 4))
         {
-            state.numBuildingsRequiredDestroyed++;
+            placementState.numBuildingsRequiredDestroyed++;
         }
         // 0x00485A01
 
@@ -628,16 +628,16 @@ namespace OpenLoco::CompanyAi
                     return;
                 }
                 totalResult.minScore = 0;
-                if ((state.currentWeighting & 0xFFFFU) < totalResult.minWeighting)
+                if ((placementState.currentWeighting & 0xFFFFU) < totalResult.minWeighting)
                 {
-                    totalResult.minWeighting = state.currentWeighting & 0xFFFFU;
+                    totalResult.minWeighting = placementState.currentWeighting & 0xFFFFU;
                 }
                 return;
             }
 
-            if (pathState.maxTrackRoadWeightingLimit <= state.currentWeighting)
+            if (pathState.maxTrackRoadWeightingLimit <= placementState.currentWeighting)
             {
-                const auto newScore = state.bridgeWeighting / 32 + distScore * 4 + state.numBuildingsRequiredDestroyed;
+                const auto newScore = placementState.bridgeWeighting / 32 + distScore * 4 + placementState.numBuildingsRequiredDestroyed;
                 totalResult.minScore = std::min<uint16_t>(newScore, totalResult.minScore);
             }
             else
@@ -647,9 +647,9 @@ namespace OpenLoco::CompanyAi
                     const auto newTad = (newRoadId << 3) | nextRotation;
 
                     // Make a copy of the state as each track needs to be evaluated independently
-                    auto tempState = state;
+                    auto tempPlacementState = placementState;
 
-                    queryRoadPlacementScoreRecurse(company, nextPos, newTad, placementVars, totalResult, tempState, pathState);
+                    queryRoadPlacementScoreRecurse(company, nextPos, newTad, placementVars, totalResult, tempPlacementState, pathState);
                 }
             }
         }
@@ -667,12 +667,12 @@ namespace OpenLoco::CompanyAi
         result.minScore = 0xFFFFU;
         result.minWeighting = 0xFFFFU;
 
-        QueryTrackRoadPlacementState state{};
-        state.numBuildingsRequiredDestroyed = 0U;
-        state.currentWeighting = 0U;
-        state.bridgeWeighting = 0U;
+        QueryTrackRoadPlacementState placementState{};
+        placementState.numBuildingsRequiredDestroyed = 0U;
+        placementState.currentWeighting = 0U;
+        placementState.bridgeWeighting = 0U;
 
-        queryRoadPlacementScoreRecurse(company, pos, tad, placementVars, result, state, pathState);
+        queryRoadPlacementScoreRecurse(company, pos, tad, placementVars, result, placementState, pathState);
 
         return result;
     }
