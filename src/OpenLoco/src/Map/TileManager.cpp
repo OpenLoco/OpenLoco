@@ -1759,28 +1759,22 @@ namespace OpenLoco::World::TileManager
     // 0x0047AB9B
     void updateYearly()
     {
+        auto& gs = getGameState();
+        auto& ts = gs.tileState;
         const auto isObjectAnyRoadTypeCompatible = getGameState().roadObjectIdIsAnyRoadTypeCompatible;
-        for (const auto& tilePos : getWorldRange())
+
+        for (auto& elRoad : ts.road)
         {
-            auto tile = get(tilePos);
-            for (auto& el : tile)
+            if (elRoad.isAiAllocated() || elRoad.isGhost())
             {
-                auto* elRoad = el.as<RoadElement>();
-                if (elRoad == nullptr)
-                {
-                    continue;
-                }
-                if (elRoad->isAiAllocated() || elRoad->isGhost())
-                {
-                    continue;
-                }
-                // This is a much cheaper tram checker
-                // compared to getting the object
-                if (isObjectAnyRoadTypeCompatible & (1U << elRoad->roadObjectId()))
-                {
-                    elRoad->setUnk7_80(elRoad->hasUnk7_40());
-                    elRoad->setUnk7_40(false);
-                }
+                continue;
+            }
+            // This is a much cheaper tram checker
+            // compared to getting the object
+            if (isObjectAnyRoadTypeCompatible & (1U << elRoad.roadObjectId()))
+            {
+                elRoad.setUnk7_80(elRoad.hasUnk7_40());
+                elRoad.setUnk7_40(false);
             }
         }
     }
