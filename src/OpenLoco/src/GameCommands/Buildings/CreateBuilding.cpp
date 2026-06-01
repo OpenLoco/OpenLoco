@@ -102,25 +102,12 @@ namespace OpenLoco::GameCommands
                 const auto clearZ = (args.pos.z + clearHeight) / World::kSmallZStep;
 
                 World::QuarterTile qt(0xF, 0xF);
-                auto clearFunc = [tilePos, &removedBuildings, flags, &totalCost](World::TileElement& el) {
-                    switch (el.type())
+                auto clearFunc = [tilePos, &removedBuildings, flags, &totalCost](World::TileElementEntry& entry) {
+                    switch (entry.type())
                     {
                         case World::ElementType::tree:
-                        {
-                            auto* elTree = el.as<World::TreeElement>();
-                            if (elTree == nullptr)
-                            {
-                                return World::TileClearance::ClearFuncResult::noCollision;
-                            }
-                            return World::TileClearance::clearTreeCollision(*elTree, World::toWorldSpace(tilePos), flags, totalCost);
-                        }
+                            return World::TileClearance::clearTreeCollision(entry, World::toWorldSpace(tilePos), flags, totalCost);
                         case World::ElementType::building:
-                        {
-                            auto* elBuilding = el.as<World::BuildingElement>();
-                            if (elBuilding == nullptr)
-                            {
-                                return World::TileClearance::ClearFuncResult::noCollision;
-                            }
                             // This is used to stop creating a building ghost
                             // even if a clear could succeed here. This is
                             // because if it did place a ghost the ghost cleanup
@@ -129,8 +116,7 @@ namespace OpenLoco::GameCommands
                             {
                                 return World::TileClearance::ClearFuncResult::collision;
                             }
-                            return World::TileClearance::clearBuildingCollision(*elBuilding, World::toWorldSpace(tilePos), removedBuildings, flags, totalCost);
-                        }
+                            return World::TileClearance::clearBuildingCollision(entry, World::toWorldSpace(tilePos), removedBuildings, flags, totalCost);
                         default:
                             return World::TileClearance::ClearFuncResult::collision;
                     }
@@ -228,25 +214,26 @@ namespace OpenLoco::GameCommands
                     World::TileManager::removeSurfaceIndustry(World::toWorldSpace(tilePos));
                     World::TileManager::setTerrainStyleAsCleared(World::toWorldSpace(tilePos));
                 }
-                auto* elBuilding = World::TileManager::insertElement<World::BuildingElement>(World::toWorldSpace(tilePos), args.pos.z / World::kSmallZStep, 0xF);
-                if (elBuilding == nullptr)
+                auto* buildingEntry = World::TileManager::insertElement<World::BuildingElement>(World::toWorldSpace(tilePos), args.pos.z / World::kSmallZStep, 0xF);
+                if (buildingEntry == nullptr)
                 {
                     return kFailure;
                 }
-                elBuilding->setClearZ((clearHeight / World::kSmallZStep) + elBuilding->baseZ());
-                elBuilding->setRotation(args.rotation);
-                elBuilding->setConstructed(args.buildImmediately);
+                auto& elBuilding = buildingEntry->get<World::BuildingElement>();
+                elBuilding.setClearZ((clearHeight / World::kSmallZStep) + elBuilding.baseZ());
+                elBuilding.setRotation(args.rotation);
+                elBuilding.setConstructed(args.buildImmediately);
                 if (args.buildImmediately && offset.index == 0 && buildingObj->numElevatorSequences != 0)
                 {
-                    World::AnimationManager::createAnimation(5, World::toWorldSpace(tilePos), elBuilding->baseZ());
+                    World::AnimationManager::createAnimation(5, World::toWorldSpace(tilePos), elBuilding.baseZ());
                 }
-                elBuilding->setObjectId(args.type);
-                elBuilding->setSequenceIndex(offset.index);
-                elBuilding->setUnk5u(0);
-                elBuilding->setColour(args.colour);
-                elBuilding->setVariation(args.variation);
-                elBuilding->setAge(0);
-                elBuilding->setIsMiscBuilding(buildingObj->hasFlags(BuildingObjectFlags::miscBuilding));
+                elBuilding.setObjectId(args.type);
+                elBuilding.setSequenceIndex(offset.index);
+                elBuilding.setUnk5u(0);
+                elBuilding.setColour(args.colour);
+                elBuilding.setVariation(args.variation);
+                elBuilding.setAge(0);
+                elBuilding.setIsMiscBuilding(buildingObj->hasFlags(BuildingObjectFlags::miscBuilding));
 
                 bool hasFrames = false;
                 const auto partAnimations = buildingObj->getBuildingPartAnimations();
@@ -259,11 +246,11 @@ namespace OpenLoco::GameCommands
                 }
                 if (hasFrames)
                 {
-                    World::AnimationManager::createAnimation(6, World::toWorldSpace(tilePos), elBuilding->baseZ());
+                    World::AnimationManager::createAnimation(6, World::toWorldSpace(tilePos), elBuilding.baseZ());
                 }
 
-                elBuilding->setGhost(flags & Flags::ghost);
-                Ui::ViewportManager::invalidate(World::toWorldSpace(tilePos), elBuilding->baseHeight(), elBuilding->clearHeight());
+                elBuilding.setGhost(flags & Flags::ghost);
+                Ui::ViewportManager::invalidate(World::toWorldSpace(tilePos), elBuilding.baseHeight(), elBuilding.clearHeight());
                 Scenario::getOptions().madeAnyChanges = 1;
             }
         }

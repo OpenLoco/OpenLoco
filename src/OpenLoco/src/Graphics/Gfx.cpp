@@ -151,7 +151,7 @@ namespace OpenLoco::Gfx
         // Adjust memory offsets
         for (auto& element : elements)
         {
-            element.offset += (uintptr_t)elementData.get();
+            element.offset = reinterpret_cast<std::uint8_t*>(elementData.get()) + element.offset32;
         }
 
         _g1Buffer = std::move(elementData);

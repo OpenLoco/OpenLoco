@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TileElementBase.h"
+#include "TileElement.h"
 
 namespace OpenLoco
 {
@@ -11,7 +11,7 @@ namespace OpenLoco::World
 {
 #pragma pack(push, 1)
 
-    struct IndustryElement : public TileElementBase
+    struct IndustryElement : public TileElement
     {
         static constexpr ElementType kElementType = ElementType::industry;
 
@@ -32,11 +32,11 @@ namespace OpenLoco::World
             _6 &= ~0x7C0;
             _6 |= type << 6;
         }
-        uint8_t rotation() const { return _type & 0x3; }
+        uint8_t rotation() const { return _0 & 0x3; }
         void setRotation(const uint8_t rotation)
         {
-            _type &= ~0x3;
-            _type |= rotation & 0x3;
+            _0 &= ~0x3;
+            _0 |= rotation & 0x3;
         }
         // var_5_03
         uint8_t sequenceIndex() const;
@@ -60,7 +60,7 @@ namespace OpenLoco::World
         uint8_t var_6_003F() const;
         void setVar_6_003F(uint8_t val);
 
-        bool isConstructed() const { return _type & 0x80; }
+        bool isConstructed() const { return _0 & 0x80; }
         void setIsConstructed(bool val);
 
         bool update(const World::Pos2& loc);

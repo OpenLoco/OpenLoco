@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Graphics/Colour.h"
-#include "TileElementBase.h"
+#include "TileElement.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 
 namespace OpenLoco::World
@@ -15,7 +15,7 @@ namespace OpenLoco::World
     OPENLOCO_ENABLE_ENUM_OPERATORS(EdgeSlope);
 
 #pragma pack(push, 1)
-    struct WallElement : public TileElementBase
+    struct WallElement : public TileElement
     {
         static constexpr ElementType kElementType = ElementType::wall;
 
@@ -31,20 +31,20 @@ namespace OpenLoco::World
         {
             _4 = id;
         }
-        uint8_t rotation() const { return _type & 0x3; } // _0
+        uint8_t rotation() const { return _0 & 0x3; } // _0
         void setRotation(uint8_t rotation)
         {
-            _type &= ~0x3;
-            _type |= (rotation & 0x3);
+            _0 &= ~0x3;
+            _0 |= (rotation & 0x3);
         }
         EdgeSlope getSlopeFlags() const
         {
-            return static_cast<EdgeSlope>((_type & 0xC0) >> 6);
+            return static_cast<EdgeSlope>((_0 & 0xC0) >> 6);
         }
         void setSlopeFlags(EdgeSlope slopeFlags)
         {
-            _type &= ~0xC0;
-            _type |= (enumValue(slopeFlags) << 6) & 0xC0;
+            _0 &= ~0xC0;
+            _0 |= (enumValue(slopeFlags) << 6) & 0xC0;
         }
         void setPrimaryColour(Colour colour)
         {

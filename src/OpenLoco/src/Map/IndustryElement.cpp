@@ -59,8 +59,8 @@ namespace OpenLoco::World
 
     void IndustryElement::setIsConstructed(bool val)
     {
-        _type &= ~(1 << 7);
-        _type |= val ? (1 << 7) : 0;
+        _0 &= ~(1 << 7);
+        _0 |= val ? (1 << 7) : 0;
     }
 
     // 0x0045769A

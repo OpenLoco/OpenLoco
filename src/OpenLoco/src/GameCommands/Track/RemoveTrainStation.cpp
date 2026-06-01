@@ -62,7 +62,7 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if (!sub_431E6A(initialElTrack->owner(), reinterpret_cast<const World::TileElement*>(initialElTrack)))
+        if (!sub_431E6A(initialElTrack->owner(), initialElTrack))
         {
             return kFailure;
         }
@@ -78,14 +78,34 @@ namespace OpenLoco::GameCommands
         {
             const auto trackLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
 
-            auto* elTrack = getElTrack(trackLoc, args.rotation, args.type, args.trackId, piece.index);
-            if (elTrack == nullptr)
+            World::TileElementEntry* trackEntry = nullptr;
+            World::TrackElement* elTrack = nullptr;
+            {
+                auto tile = World::TileManager::get(trackLoc);
+                for (auto& el : tile)
+                {
+                    auto* candidate = el.as<World::TrackElement>();
+                    if (candidate == nullptr
+                        || candidate->baseHeight() != trackLoc.z
+                        || candidate->rotation() != args.rotation
+                        || candidate->sequenceIndex() != piece.index
+                        || candidate->trackId() != args.trackId
+                        || candidate->trackObjectId() != args.type)
+                    {
+                        continue;
+                    }
+                    trackEntry = &el;
+                    elTrack = candidate;
+                    break;
+                }
+            }
+            if (trackEntry == nullptr)
             {
                 return kFailure;
             }
 
-            auto* nextEl = elTrack->next();
-            auto* stationEl = nextEl->as<World::StationElement>();
+            auto* nextEntry = trackEntry->next();
+            auto* stationEl = nextEntry->as<World::StationElement>();
             if (stationEl == nullptr)
             {
                 return kFailure;
@@ -110,7 +130,7 @@ namespace OpenLoco::GameCommands
                 elTrack->setClearZ(elTrack->clearZ() - stationObj->height);
                 Ui::ViewportManager::invalidate(World::Pos2(trackLoc), stationEl->baseHeight(), stationEl->clearHeight(), ZoomLevel::eighth);
                 elTrack->setHasStationElement(false);
-                World::TileManager::removeElement(*nextEl);
+                World::TileManager::removeElement(*nextEntry);
             }
         }
 

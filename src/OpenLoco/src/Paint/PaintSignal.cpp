@@ -4,6 +4,7 @@
 #include "Graphics/RenderTarget.h"
 #include "Map/SignalElement.h"
 #include "Map/TileElement.h"
+#include "Map/TileElementEntry.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
 #include "Objects/ObjectManager.h"
@@ -210,14 +211,15 @@ namespace OpenLoco::Paint
     }
 
     // 0x0048864C
-    void paintSignal(PaintSession& session, const World::SignalElement& elSignal)
+    void paintSignal(PaintSession& session, const World::TileElementEntry& entry)
     {
+        auto& elSignal = entry.get<World::SignalElement>();
         if (elSignal.isAiAllocated())
         {
             return;
         }
 
-        auto* elTrack = elSignal.prev()->as<World::TrackElement>();
+        auto* elTrack = entry.prev()->as<World::TrackElement>();
         if (elTrack == nullptr)
         {
             return;

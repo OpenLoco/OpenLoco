@@ -19,6 +19,7 @@
 #include "Map/RoadElement.h"
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
+#include "Map/TileElementEntry.h"
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"
 #include "Objects/AirportObject.h"
@@ -849,8 +850,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return std::nullopt;
         }
 
-        auto* elRoad = reinterpret_cast<const TileElement*>(interaction.object)->as<RoadElement>();
-        auto* elStation = reinterpret_cast<const TileElement*>(interaction.object)->as<StationElement>();
+        auto* elRoad = reinterpret_cast<const TileElementEntry*>(interaction.object)->as<RoadElement>();
+        auto* elStation = reinterpret_cast<const TileElementEntry*>(interaction.object)->as<StationElement>();
         if (elRoad == nullptr && elStation == nullptr)
         {
             return std::nullopt;
@@ -926,8 +927,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return std::nullopt;
         }
 
-        auto* elTrack = reinterpret_cast<const TileElement*>(interaction.object)->as<TrackElement>();
-        auto* elStation = reinterpret_cast<const TileElement*>(interaction.object)->as<StationElement>();
+        auto* elTrack = reinterpret_cast<const TileElementEntry*>(interaction.object)->as<TrackElement>();
+        auto* elStation = reinterpret_cast<const TileElementEntry*>(interaction.object)->as<StationElement>();
         if (elTrack == nullptr && elStation == nullptr)
         {
             return std::nullopt;

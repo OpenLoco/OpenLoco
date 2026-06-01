@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TileElement.h"
+#include "TileElementEntry.h"
 #include "Types.hpp"
 #include <OpenLoco/Engine/World.hpp>
 #include <array>
@@ -8,6 +9,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <limits>
+#include <span>
 #include <tuple>
 
 namespace OpenLoco::Ui
@@ -95,27 +97,27 @@ namespace OpenLoco::World
         struct Iterator
         {
             using iterator_concept = std::forward_iterator_tag;
-            using value_type = TileElement;
+            using value_type = TileElementEntry;
             using difference_type = std::ptrdiff_t;
-            using pointer = TileElement*;
-            using reference = TileElement&;
+            using pointer = TileElementEntry*;
+            using reference = TileElementEntry&;
 
         private:
-            TileElement* _current{};
+            TileElementEntry* _current{};
 
         public:
             constexpr Iterator() = default;
-            constexpr Iterator(TileElement* current)
+            constexpr Iterator(TileElementEntry* current)
                 : _current(current)
             {
             }
 
-            constexpr TileElement& operator*() const
+            constexpr TileElementEntry& operator*() const
             {
                 return *_current;
             }
 
-            constexpr TileElement* operator->() const
+            constexpr TileElementEntry* operator->() const
             {
                 return _current;
             }
@@ -132,7 +134,7 @@ namespace OpenLoco::World
                 }
                 else
                 {
-                    _current = _current->next();
+                    ++_current;
                 }
                 return *this;
             }
@@ -144,18 +146,21 @@ namespace OpenLoco::World
                 return result;
             }
 
-            constexpr auto operator<=>(const Iterator& other) const = default;
+            constexpr bool operator==(const Iterator& other) const
+            {
+                return _current == other._current;
+            }
         };
 
     private:
-        TileElement* const _data;
+        TileElementEntry* const _data;
 
     public:
         static constexpr size_t npos = std::numeric_limits<size_t>().max();
 
         const TilePos2 pos;
 
-        Tile(const TilePos2& tPos, TileElement* data);
+        Tile(const TilePos2& tPos, TileElementEntry* data);
         bool isNull() const;
         Iterator begin();
         Iterator begin() const;
@@ -164,8 +169,9 @@ namespace OpenLoco::World
         size_t size();
         TileElement* operator[](size_t i);
 
-        size_t indexOf(const TileElementBase* element) const;
+        size_t indexOf(const TileElement* element) const;
         SurfaceElement* surface() const;
+        TileElementEntry* surfaceEntry() const;
         StationElement* trainStation(uint8_t trackId, uint8_t direction, uint8_t baseZ) const;
         StationElement* roadStation(uint8_t roadId, uint8_t direction, uint8_t baseZ) const;
     };

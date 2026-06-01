@@ -2,11 +2,11 @@
 
 namespace OpenLoco::World
 {
-    struct StationElement;
+    struct TileElementEntry;
 }
 namespace OpenLoco::Paint
 {
     struct PaintSession;
 
-    void paintRoadStation(PaintSession& session, const World::StationElement& elStation);
+    void paintRoadStation(PaintSession& session, const World::TileElementEntry& entry);
 }

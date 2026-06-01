@@ -1,5 +1,5 @@
 #pragma once
-#include "TileElementBase.h"
+#include "TileElement.h"
 
 namespace OpenLoco
 {
@@ -11,7 +11,7 @@ namespace OpenLoco::World
     struct Animation;
 
 #pragma pack(push, 1)
-    struct StationElement : public TileElementBase
+    struct StationElement : public TileElement
     {
         static constexpr ElementType kElementType = ElementType::station;
 
@@ -40,17 +40,17 @@ namespace OpenLoco::World
         }
         StationType stationType() const;
         void setStationType(StationType type);
-        uint8_t rotation() const { return _type & 0x3; }
+        uint8_t rotation() const { return _0 & 0x3; }
         void setRotation(uint8_t rotation)
         {
-            _type &= ~0x3;
-            _type |= rotation & 0x3;
+            _0 &= ~0x3;
+            _0 |= rotation & 0x3;
         }
-        uint8_t sequenceIndex() const { return (_type >> 6) & 3; }
+        uint8_t sequenceIndex() const { return (_0 >> 6) & 3; }
         void setSequenceIndex(uint8_t index)
         {
-            _type &= ~0xC0;
-            _type |= (index & 3) << 6;
+            _0 &= ~0xC0;
+            _0 |= (index & 3) << 6;
         }
         StationId stationId() const { return StationId(_stationId & 0x3FF); }
         void setStationId(StationId id)

@@ -60,7 +60,7 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if (!sub_431E6A(elRoad->owner(), reinterpret_cast<const World::TileElement*>(elRoad)))
+        if (!sub_431E6A(elRoad->owner(), elRoad))
         {
             return kFailure;
         }

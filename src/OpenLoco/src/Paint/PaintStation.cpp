@@ -118,8 +118,9 @@ namespace OpenLoco::Paint
     }
 
     // 0x0048B313
-    void paintStation(PaintSession& session, const World::StationElement& elStation)
+    void paintStation(PaintSession& session, const World::TileElementEntry& entry)
     {
+        auto& elStation = entry.get<World::StationElement>();
         if (elStation.isAiAllocated() && !showAiPlanningGhosts())
         {
             return;
@@ -135,10 +136,10 @@ namespace OpenLoco::Paint
         switch (elStation.stationType())
         {
             case StationType::trainStation:
-                paintTrainStation(session, elStation);
+                paintTrainStation(session, entry);
                 break;
             case StationType::roadStation:
-                paintRoadStation(session, elStation);
+                paintRoadStation(session, entry);
                 break;
             case StationType::airport:
                 paintAirport(session, elStation);

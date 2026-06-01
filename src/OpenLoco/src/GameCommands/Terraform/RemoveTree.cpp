@@ -66,7 +66,7 @@ namespace OpenLoco::GameCommands
 
             if (flags & Flags::apply)
             {
-                World::TileManager::removeTree(*treeElement, flags, pos);
+                World::TileManager::removeTree(element, flags, pos);
             }
 
             auto& options = Scenario::getOptions();

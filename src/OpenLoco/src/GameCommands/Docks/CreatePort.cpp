@@ -225,27 +225,13 @@ namespace OpenLoco::GameCommands
             }
 
             // 0x0049434F same as TileClearance::tileClearFunction but collides on surfaces as well
-            auto clearFunc = [pos = World::toWorldSpace(tilePos), &removedBuildings, flags, &totalCost](World::TileElement& el) {
-                switch (el.type())
+            auto clearFunc = [pos = World::toWorldSpace(tilePos), &removedBuildings, flags, &totalCost](World::TileElementEntry& entry) {
+                switch (entry.type())
                 {
                     case World::ElementType::tree:
-                    {
-                        auto* elTree = el.as<World::TreeElement>();
-                        if (elTree == nullptr)
-                        {
-                            return World::TileClearance::ClearFuncResult::noCollision;
-                        }
-                        return World::TileClearance::clearTreeCollision(*elTree, pos, flags, totalCost);
-                    }
+                        return World::TileClearance::clearTreeCollision(entry, pos, flags, totalCost);
                     case World::ElementType::building:
-                    {
-                        auto* elBuilding = el.as<World::BuildingElement>();
-                        if (elBuilding == nullptr)
-                        {
-                            return World::TileClearance::ClearFuncResult::noCollision;
-                        }
-                        return World::TileClearance::clearBuildingCollision(*elBuilding, pos, removedBuildings, flags, totalCost);
-                    }
+                        return World::TileClearance::clearBuildingCollision(entry, pos, removedBuildings, flags, totalCost);
                     default:
                         return World::TileClearance::ClearFuncResult::collision;
                 }
@@ -340,31 +326,32 @@ namespace OpenLoco::GameCommands
                     World::TileManager::removeSurfaceIndustry(World::toWorldSpace(tilePos));
                     World::TileManager::setTerrainStyleAsCleared(World::toWorldSpace(tilePos));
                 }
-                auto* elStation = World::TileManager::insertElement<World::StationElement>(World::toWorldSpace(tilePos), args.pos.z / World::kSmallZStep, 0xF);
-                if (elStation == nullptr)
+                auto* stationEntry = World::TileManager::insertElement<World::StationElement>(World::toWorldSpace(tilePos), args.pos.z / World::kSmallZStep, 0xF);
+                if (stationEntry == nullptr)
                 {
                     return kFailure;
                 }
-                elStation->setClearZ((clearHeight / World::kSmallZStep) + elStation->baseZ());
-                elStation->setRotation(args.rotation);
-                elStation->setObjectId(args.type);
-                elStation->setStationType(StationType::docks);
-                elStation->setOwner(getUpdatingCompanyId());
-                elStation->setUnk4SLR4(0);
-                elStation->setBuildingType(buildingType);
+                auto& elStation = stationEntry->get<World::StationElement>();
+                elStation.setClearZ((clearHeight / World::kSmallZStep) + elStation.baseZ());
+                elStation.setRotation(args.rotation);
+                elStation.setObjectId(args.type);
+                elStation.setStationType(StationType::docks);
+                elStation.setOwner(getUpdatingCompanyId());
+                elStation.setUnk4SLR4(0);
+                elStation.setBuildingType(buildingType);
                 if (!(flags & Flags::ghost))
                 {
-                    elStation->setStationId(stationId);
+                    elStation.setStationId(stationId);
                 }
                 else
                 {
-                    elStation->setStationId(static_cast<StationId>(0));
+                    elStation.setStationId(static_cast<StationId>(0));
                 }
-                elStation->setGhost(flags & Flags::ghost);
-                elStation->setSequenceIndex(offset.index);
-                World::AnimationManager::createAnimation(8, World::toWorldSpace(tilePos), elStation->baseZ());
+                elStation.setGhost(flags & Flags::ghost);
+                elStation.setSequenceIndex(offset.index);
+                World::AnimationManager::createAnimation(8, World::toWorldSpace(tilePos), elStation.baseZ());
 
-                elStation->setAiAllocated(flags & Flags::aiAllocated);
+                elStation.setAiAllocated(flags & Flags::aiAllocated);
                 if (shouldInvalidateTile(flags))
                 {
                     World::TileManager::mapInvalidateTileFull(World::toWorldSpace(tilePos));

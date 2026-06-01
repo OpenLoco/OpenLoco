@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TileElementBase.h"
+#include "TileElement.h"
 
 namespace OpenLoco::World
 {
@@ -47,7 +47,7 @@ namespace OpenLoco::World
     }
 
 #pragma pack(push, 1)
-    struct SurfaceElement : public TileElementBase
+    struct SurfaceElement : public TileElement
     {
         static constexpr ElementType kElementType = ElementType::surface;
 
@@ -61,7 +61,6 @@ namespace OpenLoco::World
         SurfaceElement() = default;
         SurfaceElement(World::SmallZ baseZ, World::SmallZ clearZ, uint8_t quarterTile, bool highTypeFlag)
         {
-            setType(kElementType);
             setBaseZ(baseZ);
             setClearZ(clearZ);
             _flags = quarterTile;
@@ -108,19 +107,19 @@ namespace OpenLoco::World
         void setVariation(const uint8_t variation) { _7 = variation; }
         void setType6Flag(bool state)
         {
-            _type &= ~0x40;
-            _type |= state ? 0x40 : 0;
+            _0 &= ~0x40;
+            _0 |= state ? 0x40 : 0;
         }
-        bool hasType6Flag() const { return _type & 0x40; }
+        bool hasType6Flag() const { return _0 & 0x40; }
 
         // Note: Also used for other means for boats
-        bool isIndustrial() const { return _type & 0x80; }
+        bool isIndustrial() const { return _0 & 0x80; }
 
         // Note: Also used for other means for boats
         void setIsIndustrialFlag(bool state)
         {
-            _type &= ~0x80;
-            _type |= state ? 0x80 : 0;
+            _0 &= ~0x80;
+            _0 |= state ? 0x80 : 0;
         }
         void removeIndustry(const World::Pos2& pos);
     };

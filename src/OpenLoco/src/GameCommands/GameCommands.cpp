@@ -105,14 +105,24 @@ namespace OpenLoco::GameCommands
     static uint16_t _gameCommandFlags;
     static uint8_t _gameCommandNestLevel = 0; // 0x00508F08
 
-    static CompanyId _updatingCompanyId;                                                      // 0x009C68EB
-    static const World::TileElement* _errorTileElementPtr = World::TileManager::kInvalidTile; // 0x009C68D0
-    static World::Pos3 _gGameCommandPosition;                                                 // 0x009C68E0
-    static StringId _gGameCommandErrorText;                                                   // 0x009C68E6
-    static StringId _gGameCommandErrorTitle;                                                  // 0x009C68E8
-    static bool _gGameCommandErrorSound = true;                                               // 0x00508F09
-    static ExpenditureType _gGameCommandExpenditureType;                                      // 0x009C68EA
-    static CompanyId _errorCompanyId;                                                         // 0x009C68EE
+    static CompanyId _updatingCompanyId; // 0x009C68EB
+    enum class ErrorElementKind : uint8_t
+    {
+        none,
+        track,
+        road,
+        station,
+    };
+    static ErrorElementKind _errorElementKind = ErrorElementKind::none;
+    static const World::TrackElement* _errorElementTrack = nullptr;
+    static const World::RoadElement* _errorElementRoad = nullptr;
+    static const World::StationElement* _errorElementStation = nullptr;
+    static World::Pos3 _gGameCommandPosition;            // 0x009C68E0
+    static StringId _gGameCommandErrorText;              // 0x009C68E6
+    static StringId _gGameCommandErrorTitle;             // 0x009C68E8
+    static bool _gGameCommandErrorSound = true;          // 0x00508F09
+    static ExpenditureType _gGameCommandExpenditureType; // 0x009C68EA
+    static CompanyId _errorCompanyId;                    // 0x009C68EE
 
     static LegacyReturnState _legacyReturnState; // 0x01136072
 
@@ -443,57 +453,39 @@ namespace OpenLoco::GameCommands
         }
 
         // advanced errors
-        if (_errorTileElementPtr != World::TileManager::kInvalidTile)
+        switch (_errorElementKind)
         {
-            using namespace OpenLoco::World;
-
-            auto* tile = _errorTileElementPtr;
-            switch (tile->type())
+            case ErrorElementKind::track:
             {
-                case ElementType::track: // 4
+                const TrackObject* pObject = ObjectManager::get<TrackObject>(_errorElementTrack->trackObjectId());
+                if (pObject != nullptr)
                 {
-                    auto& trackElement = tile->get<TrackElement>();
-
-                    const TrackObject* pObject = ObjectManager::get<TrackObject>(trackElement.trackObjectId());
-                    if (pObject == nullptr)
-                    {
-                        break;
-                    }
-
                     auto formatter = FormatArguments::common();
                     formatter.push(pObject->name);
                     formatter.push(CompanyManager::get(_errorCompanyId)->name);
                     Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_stringid_belongs_to, _errorCompanyId);
                     return GameCommands::kFailure;
                 }
-
-                case ElementType::road: // 0x1C
+                break;
+            }
+            case ErrorElementKind::road:
+            {
+                const RoadObject* pObject = ObjectManager::get<RoadObject>(_errorElementRoad->roadObjectId());
+                if (pObject != nullptr)
                 {
-                    auto& roadElement = tile->get<RoadElement>();
-
-                    const RoadObject* pObject = ObjectManager::get<RoadObject>(roadElement.roadObjectId());
-                    if (pObject == nullptr)
-                    {
-                        break;
-                    }
-
                     auto formatter = FormatArguments::common();
                     formatter.push(pObject->name);
                     formatter.push(CompanyManager::get(_errorCompanyId)->name);
                     Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_stringid_belongs_to, _errorCompanyId);
                     return GameCommands::kFailure;
                 }
-
-                case ElementType::station: // 8
+                break;
+            }
+            case ErrorElementKind::station:
+            {
+                const Station* pStation = StationManager::get(_errorElementStation->stationId());
+                if (pStation != nullptr)
                 {
-                    auto& stationElement = tile->get<StationElement>();
-
-                    const Station* pStation = StationManager::get(stationElement.stationId());
-                    if (pStation == nullptr)
-                    {
-                        break;
-                    }
-
                     auto formatter = FormatArguments::common();
                     formatter.push(pStation->name);
                     formatter.push(pStation->town);
@@ -501,18 +493,10 @@ namespace OpenLoco::GameCommands
                     Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_stringid_belongs_to, _errorCompanyId);
                     return GameCommands::kFailure;
                 }
-
-                case ElementType::signal: // 0x0C
-                {
-                    auto formatter = FormatArguments::common();
-                    formatter.push(CompanyManager::get(_errorCompanyId)->name);
-                    Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_signal_belongs_to, _errorCompanyId);
-                    return GameCommands::kFailure;
-                }
-
-                default:
-                    break;
+                break;
             }
+            case ErrorElementKind::none:
+                break;
         }
 
         // fallback
@@ -525,7 +509,7 @@ namespace OpenLoco::GameCommands
     // 0x00431E6A
     // al  : company
     // esi : tile
-    bool sub_431E6A(const CompanyId company, const World::TileElement* const tile /*= nullptr*/)
+    static bool sub_431E6A_common(const CompanyId company)
     {
         if (company == CompanyId::neutral)
         {
@@ -537,7 +521,49 @@ namespace OpenLoco::GameCommands
         }
         _gGameCommandErrorText = 0xFFFEU;
         _errorCompanyId = company;
-        _errorTileElementPtr = tile == nullptr ? World::TileManager::kInvalidTile : tile;
+        return false;
+    }
+
+    bool sub_431E6A(const CompanyId company)
+    {
+        if (sub_431E6A_common(company))
+        {
+            return true;
+        }
+        _errorElementKind = ErrorElementKind::none;
+        return false;
+    }
+
+    bool sub_431E6A(const CompanyId company, const World::TrackElement* const elTrack)
+    {
+        if (sub_431E6A_common(company))
+        {
+            return true;
+        }
+        _errorElementKind = elTrack != nullptr ? ErrorElementKind::track : ErrorElementKind::none;
+        _errorElementTrack = elTrack;
+        return false;
+    }
+
+    bool sub_431E6A(const CompanyId company, const World::RoadElement* const elRoad)
+    {
+        if (sub_431E6A_common(company))
+        {
+            return true;
+        }
+        _errorElementKind = elRoad != nullptr ? ErrorElementKind::road : ErrorElementKind::none;
+        _errorElementRoad = elRoad;
+        return false;
+    }
+
+    bool sub_431E6A(const CompanyId company, const World::StationElement* const elStation)
+    {
+        if (sub_431E6A_common(company))
+        {
+            return true;
+        }
+        _errorElementKind = elStation != nullptr ? ErrorElementKind::station : ErrorElementKind::none;
+        _errorElementStation = elStation;
         return false;
     }
 

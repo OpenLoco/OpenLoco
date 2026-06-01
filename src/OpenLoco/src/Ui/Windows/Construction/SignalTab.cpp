@@ -8,6 +8,7 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/SignalElement.h"
+#include "Map/TileElementEntry.h"
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
@@ -156,7 +157,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             return std::nullopt;
         }
 
-        auto* elTrack = reinterpret_cast<World::TileElement*>(interaction.object)->as<TrackElement>();
+        auto* elTrack = reinterpret_cast<World::TileElementEntry*>(interaction.object)->as<TrackElement>();
         if (elTrack == nullptr)
         {
             return std::nullopt;

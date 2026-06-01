@@ -28,22 +28,22 @@ namespace OpenLoco::World::TileClearance
         collisionRemoved,
     };
 
-    void setCollisionErrorMessage(const World::TileElement& el);
+    void setCollisionErrorMessage(const World::TileElementEntry& el);
 
-    bool applyClearAtAllHeights(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearFuncResult(TileElement& el)> clearFunc);
-    bool applyClearAtStandardHeight(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearFuncResult(TileElement& el)> clearFunc);
+    bool applyClearAtAllHeights(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearFuncResult(TileElementEntry& entry)> clearFunc);
+    bool applyClearAtStandardHeight(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearFuncResult(TileElementEntry& entry)> clearFunc);
     bool canConstructAt(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt);
 
     using RemovedBuildings = sfl::small_set<World::Pos3, 128, LessThanPos3>;
 
     // Removes Buildings and Trees but everything else is a collision
-    ClearFuncResult clearWithDefaultCollision(World::TileElement& el, const World::Pos2 pos, RemovedBuildings& removedBuildings, const uint8_t flags, currency32_t& cost);
+    ClearFuncResult clearWithDefaultCollision(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const uint8_t flags, currency32_t& cost);
     // Removes Buildings and Trees but everything else is **NOT** a collision
-    ClearFuncResult clearWithoutDefaultCollision(World::TileElement& el, const World::Pos2 pos, RemovedBuildings& removedBuildings, const uint8_t flags, currency32_t& cost);
+    ClearFuncResult clearWithoutDefaultCollision(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const uint8_t flags, currency32_t& cost);
     // Removes a building as per normal clear function setup
-    ClearFuncResult clearBuildingCollision(World::BuildingElement& elBuilding, const World::Pos2 pos, RemovedBuildings& removedBuildings, const uint8_t flags, currency32_t& cost);
+    ClearFuncResult clearBuildingCollision(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const uint8_t flags, currency32_t& cost);
     // Removes a tree as per normal clear function setup
-    ClearFuncResult clearTreeCollision(World::TreeElement& elTree, const World::Pos2 pos, const uint8_t flags, currency32_t& cost);
+    ClearFuncResult clearTreeCollision(World::TileElementEntry& entry, const World::Pos2 pos, const uint8_t flags, currency32_t& cost);
 
     // These are an additional return variable from the applyClear functions
     TileManager::ElementPositionFlags getPositionFlags();

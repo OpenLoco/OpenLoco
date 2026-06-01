@@ -19,9 +19,8 @@ namespace OpenLoco::World
         , _6(0)
         , _7(0)
     {
-        _type = 0;
+        _0 = 0;
         _flags = 0;
-        setType(World::ElementType::road);
         setBaseZ(baseZ);
         setClearZ(clearZ);
     }

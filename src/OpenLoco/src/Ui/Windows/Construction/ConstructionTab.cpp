@@ -14,6 +14,7 @@
 #include "Map/MapSelection.h"
 #include "Map/RoadElement.h"
 #include "Map/SurfaceElement.h"
+#include "Map/TileElementEntry.h"
 #include "Map/TileManager.h"
 #include "Map/Track/Track.h"
 #include "Map/Track/TrackData.h"
@@ -2078,7 +2079,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             return std::nullopt;
         }
 
-        const auto* elTrack = reinterpret_cast<World::TileElement*>(interaction.object)->as<RoadElement>();
+        const auto* elTrack = reinterpret_cast<World::TileElementEntry*>(interaction.object)->as<RoadElement>();
         if (elTrack == nullptr)
         {
             return std::nullopt;
@@ -2101,7 +2102,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             return std::nullopt;
         }
 
-        const auto* elTrack = reinterpret_cast<World::TileElement*>(interaction.object)->as<TrackElement>();
+        const auto* elTrack = reinterpret_cast<World::TileElementEntry*>(interaction.object)->as<TrackElement>();
         if (elTrack == nullptr)
         {
             return std::nullopt;
@@ -2966,10 +2967,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         const auto& trackPieces = TrackData::getTrackPiece(trackPieceId);
         const auto trackDirection = direction & 3;
 
-        World::TileElement backupTileElements[5] = {};
-
         World::SurfaceElement previewSideSurfaceTileElement{ 255, 255, 0xF, true };
-        previewSideSurfaceTileElement.setLastFlag(true);
 
         Paint::SessionOptions options{};
         options.rotation = WindowManager::getCurrentRotation();
@@ -2991,33 +2989,41 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             const auto northTileCoords = centreTileCoords + World::toTileSpace(World::kOffsets[3]);
             const auto southTileCoords = centreTileCoords - World::toTileSpace(World::kOffsets[3]);
 
-            // Copy map elements which will be replaced with temporary ones containing track
-            backupTileElements[0] = *World::TileManager::get(centreTileCoords)[0];
-            backupTileElements[1] = *World::TileManager::get(eastTileCoords)[0];
-            backupTileElements[2] = *World::TileManager::get(westTileCoords)[0];
-            backupTileElements[3] = *World::TileManager::get(northTileCoords)[0];
-            backupTileElements[4] = *World::TileManager::get(southTileCoords)[0];
-
             // Set the temporary track element
             World::TrackElement newTrackEl(baseZ, clearZ, trackDirection, quarterTile.getBaseQuarterOccupied(), trackPiece.index, trackType, trackPieceId, std::nullopt, CompanyManager::getControllingId(), selectedMods);
-            newTrackEl.setLastFlag(true);
 
-            // Replace map elements with temp ones
-            *World::TileManager::get(centreTileCoords)[0] = *reinterpret_cast<World::TileElement*>(&newTrackEl);
-            *World::TileManager::get(eastTileCoords)[0] = *reinterpret_cast<World::TileElement*>(&previewSideSurfaceTileElement);
-            *World::TileManager::get(westTileCoords)[0] = *reinterpret_cast<World::TileElement*>(&previewSideSurfaceTileElement);
-            *World::TileManager::get(northTileCoords)[0] = *reinterpret_cast<World::TileElement*>(&previewSideSurfaceTileElement);
-            *World::TileManager::get(southTileCoords)[0] = *reinterpret_cast<World::TileElement*>(&previewSideSurfaceTileElement);
+            // Back up the map elements which will be replaced with temporary ones
+            World::TileElementEntry* slots[5] = {
+                &*World::TileManager::get(centreTileCoords).begin(),
+                &*World::TileManager::get(eastTileCoords).begin(),
+                &*World::TileManager::get(westTileCoords).begin(),
+                &*World::TileManager::get(northTileCoords).begin(),
+                &*World::TileManager::get(southTileCoords).begin(),
+            };
+            World::TileElementEntry temps[5] = {
+                World::TileManager::allocElement(newTrackEl),
+                World::TileManager::allocElement(previewSideSurfaceTileElement),
+                World::TileManager::allocElement(previewSideSurfaceTileElement),
+                World::TileManager::allocElement(previewSideSurfaceTileElement),
+                World::TileManager::allocElement(previewSideSurfaceTileElement),
+            };
+            World::TileElementEntry backups[5];
+            for (auto i = 0U; i < std::size(slots); ++i)
+            {
+                temps[i].setLastFlag(true);
+                backups[i] = *slots[i];
+                *slots[i] = temps[i];
+            }
 
             // Draw this map tile
             Paint::paintTileElements(session, trackPos);
 
             // Restore map elements
-            *World::TileManager::get(centreTileCoords)[0] = backupTileElements[0];
-            *World::TileManager::get(eastTileCoords)[0] = backupTileElements[1];
-            *World::TileManager::get(westTileCoords)[0] = backupTileElements[2];
-            *World::TileManager::get(northTileCoords)[0] = backupTileElements[3];
-            *World::TileManager::get(southTileCoords)[0] = backupTileElements[4];
+            for (auto i = 0U; i < std::size(slots); ++i)
+            {
+                *slots[i] = backups[i];
+                World::TileManager::destroyElement(temps[i]);
+            }
         }
 
         session.arrangeStructs();
@@ -3060,10 +3066,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         const auto& roadPieces = TrackData::getRoadPiece(roadPieceId);
         const auto roadDirection = direction & 3;
 
-        World::TileElement backupTileElements[5] = {};
-
         World::SurfaceElement previewSideSurfaceTileElement{ 255, 255, 0xF, true };
-        previewSideSurfaceTileElement.setLastFlag(true);
 
         Paint::SessionOptions options{};
         options.rotation = WindowManager::getCurrentRotation();
@@ -3085,13 +3088,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             const auto northTileCoords = centreTileCoords + World::toTileSpace(World::kOffsets[3]);
             const auto southTileCoords = centreTileCoords - World::toTileSpace(World::kOffsets[3]);
 
-            // Copy map elements which will be replaced with temporary ones containing road
-            backupTileElements[0] = *World::TileManager::get(centreTileCoords)[0];
-            backupTileElements[1] = *World::TileManager::get(eastTileCoords)[0];
-            backupTileElements[2] = *World::TileManager::get(westTileCoords)[0];
-            backupTileElements[3] = *World::TileManager::get(northTileCoords)[0];
-            backupTileElements[4] = *World::TileManager::get(southTileCoords)[0];
-
             // Set the temporary road element
             World::RoadElement newRoadEl(baseZ, clearZ);
             newRoadEl.setRotation(roadDirection);
@@ -3101,24 +3097,39 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             newRoadEl.setMods(selectedMods);
             newRoadEl.setOccupiedQuarter(quarterTile.getBaseQuarterOccupied());
             newRoadEl.setOwner(CompanyManager::getControllingId());
-            newRoadEl.setLastFlag(true);
 
-            // Replace map elements with temp ones
-            *World::TileManager::get(centreTileCoords)[0] = *reinterpret_cast<World::TileElement*>(&newRoadEl);
-            *World::TileManager::get(eastTileCoords)[0] = *reinterpret_cast<World::TileElement*>(&previewSideSurfaceTileElement);
-            *World::TileManager::get(westTileCoords)[0] = *reinterpret_cast<World::TileElement*>(&previewSideSurfaceTileElement);
-            *World::TileManager::get(northTileCoords)[0] = *reinterpret_cast<World::TileElement*>(&previewSideSurfaceTileElement);
-            *World::TileManager::get(southTileCoords)[0] = *reinterpret_cast<World::TileElement*>(&previewSideSurfaceTileElement);
+            // Back up the map elements which will be replaced with temporary ones
+            World::TileElementEntry* slots[5] = {
+                &*World::TileManager::get(centreTileCoords).begin(),
+                &*World::TileManager::get(eastTileCoords).begin(),
+                &*World::TileManager::get(westTileCoords).begin(),
+                &*World::TileManager::get(northTileCoords).begin(),
+                &*World::TileManager::get(southTileCoords).begin(),
+            };
+            World::TileElementEntry temps[5] = {
+                World::TileManager::allocElement(newRoadEl),
+                World::TileManager::allocElement(previewSideSurfaceTileElement),
+                World::TileManager::allocElement(previewSideSurfaceTileElement),
+                World::TileManager::allocElement(previewSideSurfaceTileElement),
+                World::TileManager::allocElement(previewSideSurfaceTileElement),
+            };
+            World::TileElementEntry backups[5];
+            for (auto i = 0U; i < std::size(slots); ++i)
+            {
+                temps[i].setLastFlag(true);
+                backups[i] = *slots[i];
+                *slots[i] = temps[i];
+            }
 
             // Draw this map tile
             Paint::paintTileElements(session, trackPos);
 
             // Restore map elements
-            *World::TileManager::get(centreTileCoords)[0] = backupTileElements[0];
-            *World::TileManager::get(eastTileCoords)[0] = backupTileElements[1];
-            *World::TileManager::get(westTileCoords)[0] = backupTileElements[2];
-            *World::TileManager::get(northTileCoords)[0] = backupTileElements[3];
-            *World::TileManager::get(southTileCoords)[0] = backupTileElements[4];
+            for (auto i = 0U; i < std::size(slots); ++i)
+            {
+                *slots[i] = backups[i];
+                World::TileManager::destroyElement(temps[i]);
+            }
         }
 
         session.arrangeStructs();

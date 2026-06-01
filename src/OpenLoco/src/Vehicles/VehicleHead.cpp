@@ -3754,14 +3754,14 @@ namespace OpenLoco::Vehicles
             return result;
         }
         auto tile = TileManager::get(tilePos);
-        auto* elSurface = tile.surface();
-        if (elSurface->water() != waterMicroZ)
+        auto* surfaceEntry = tile.surfaceEntry();
+        if (surfaceEntry->as<SurfaceElement>()->water() != waterMicroZ)
         {
             return result;
         }
-        if (!elSurface->isLast())
+        if (!surfaceEntry->isLast())
         {
-            auto* elObsticle = elSurface->next();
+            auto* elObsticle = surfaceEntry->next();
             if (elObsticle != nullptr && !elObsticle->isGhost() && !elObsticle->isAiAllocated())
             {
                 if (elObsticle->baseZ() / kMicroToSmallZStep - waterMicroZ < 1)
@@ -4089,24 +4089,24 @@ namespace OpenLoco::Vehicles
             Ui::ViewportManager::invalidate(piecePos, piecePos.z, piecePos.z + 32);
 
             auto tile = TileManager::get(piecePos);
-            World::TrackElement* beginTrackElement = nullptr;
-            World::TrackElement* lastTrackElement = nullptr;
+            World::TileElementEntry* beginEntry = nullptr;
+            World::TileElementEntry* lastEntry = nullptr;
             for (auto& el : tile)
             {
                 auto* elTrack = el.as<World::TrackElement>();
                 if (elTrack == nullptr)
                 {
-                    beginTrackElement = nullptr;
+                    beginEntry = nullptr;
                     continue;
                 }
                 if (elTrack->baseHeight() != piecePos.z)
                 {
-                    beginTrackElement = nullptr;
+                    beginEntry = nullptr;
                     continue;
                 }
-                if (beginTrackElement == nullptr)
+                if (beginEntry == nullptr)
                 {
-                    beginTrackElement = elTrack;
+                    beginEntry = &el;
                 }
                 if (elTrack->rotation() != rotation)
                 {
@@ -4129,23 +4129,24 @@ namespace OpenLoco::Vehicles
                 {
                     break;
                 }
-                lastTrackElement = elTrack;
+                lastEntry = &el;
                 break;
             }
-            if (lastTrackElement == nullptr || beginTrackElement == nullptr || beginTrackElement == lastTrackElement)
+            if (lastEntry == nullptr || beginEntry == nullptr || beginEntry == lastEntry)
             {
                 continue;
             }
-            // Move the track element we are on to the front of the list of track elements
-            const bool isLastElement = lastTrackElement->isLast();
-            lastTrackElement->setLastFlag(false);
-            auto* iter = lastTrackElement;
-            while (iter > beginTrackElement)
+            // Move the matched track to the front of the tile's track run by rotating the
+            // entry handles (which define order); the typed data stays put in its Store slot.
+            const bool isLastElement = lastEntry->isLast();
+            lastEntry->setLastFlag(false);
+            auto* iter = lastEntry;
+            while (iter > beginEntry)
             {
                 std::swap(*iter, *(iter - 1));
                 iter--;
             }
-            lastTrackElement->setLastFlag(isLastElement);
+            lastEntry->setLastFlag(isLastElement);
         }
     }
 

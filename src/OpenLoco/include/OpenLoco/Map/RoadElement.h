@@ -1,13 +1,13 @@
 #pragma once
 
-#include "TileElementBase.h"
+#include "TileElement.h"
 
 namespace OpenLoco::World
 {
     struct Animation;
 
 #pragma pack(push, 1)
-    struct RoadElement : public TileElementBase
+    struct RoadElement : public TileElement
     {
         static constexpr ElementType kElementType = ElementType::road;
 
@@ -21,11 +21,11 @@ namespace OpenLoco::World
         RoadElement() = default;
         RoadElement(World::SmallZ baseZ, World::SmallZ clearZ);
 
-        uint8_t rotation() const { return _type & 0x03; }
+        uint8_t rotation() const { return _0 & 0x03; }
         void setRotation(uint8_t rotation)
         {
-            _type &= ~0x3;
-            _type |= rotation & 0x03;
+            _0 &= ~0x3;
+            _0 |= rotation & 0x03;
         }
         uint8_t roadId() const { return _4 & 0xF; } // _4l
         void setRoadId(uint8_t roadId)
@@ -87,15 +87,15 @@ namespace OpenLoco::World
             _6 &= ~0xE0;
             _6 |= bridge << 5;
         }
-        bool hasStationElement() const { return (_type & 0x80) != 0; }
+        bool hasStationElement() const { return (_0 & 0x80) != 0; }
         void setHasStationElement(bool state)
         {
-            _type &= ~0x80;
-            _type |= state ? 0x80 : 0;
+            _0 &= ~0x80;
+            _0 |= state ? 0x80 : 0;
         }
-        bool hasSignalElement() const { return (_type & 0x40) != 0; } // Always false
-        bool hasUnk7_10() const { return _7 & (1 << 4); }             // _7u (bit 4) level crossing related
-        void setUnk7_10(bool newState)                                // _7u (bit 4) level crossing related
+        bool hasSignalElement() const { return (_0 & 0x40) != 0; } // Always false
+        bool hasUnk7_10() const { return _7 & (1 << 4); }          // _7u (bit 4) level crossing related
+        void setUnk7_10(bool newState)                             // _7u (bit 4) level crossing related
         {
             _7 &= ~(1 << 4);
             _7 |= newState ? (1 << 4) : 0;

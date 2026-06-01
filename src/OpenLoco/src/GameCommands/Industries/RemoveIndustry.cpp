@@ -20,10 +20,10 @@ namespace OpenLoco::GameCommands
 {
     // 0x00455916
     // NOTE: Element is invalid after this call and all elements on tile
-    static void removeElement(const World::Pos2& pos, World::TileElement& el)
+    static void removeElement(const World::Pos2& pos, World::TileElementEntry& entry)
     {
-        Ui::ViewportManager::invalidate(pos, el.baseHeight(), el.clearHeight());
-        World::TileManager::removeElement(el);
+        Ui::ViewportManager::invalidate(pos, entry.baseHeight(), entry.clearHeight());
+        World::TileManager::removeElement(entry);
     }
 
     // 0x0045579F

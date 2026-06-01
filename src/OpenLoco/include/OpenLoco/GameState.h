@@ -2,6 +2,7 @@
 #include "Engine/Limits.h"
 #include "Entities/Entity.h"
 #include "Map/Animation.h"
+#include "Map/TileState.h"
 #include "Map/Wave.h"
 #include "Message.h"
 #include "Scenario/ScenarioConstruction.h"
@@ -124,6 +125,8 @@ namespace OpenLoco
         char userStrings[Limits::kMaxUserStrings][32];                           // 0x432A44 (0x0095885C)
         uint16_t routings[Limits::kMaxVehicles][Limits::kMaxRoutingsPerVehicle]; // 0x442A44 (0x0096885C)
         uint8_t orders[Limits::kMaxOrders];                                      // 0x461E44 (0x00987C5C)
+
+        World::TileState tileState;
     };
 
     GameState& getGameState();

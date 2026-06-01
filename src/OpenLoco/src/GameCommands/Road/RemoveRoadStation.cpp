@@ -52,8 +52,8 @@ namespace OpenLoco::GameCommands
 
     struct RoadElements
     {
-        World::RoadElement* begin;
-        World::TileElementBase* end;
+        World::TileElementEntry* begin;
+        World::TileElementEntry* end;
     };
 
     static RoadElements getRoadElementsRange(const World::Pos3& roadLoc)
@@ -79,10 +79,10 @@ namespace OpenLoco::GameCommands
                 }
                 continue;
             }
-            range.end = elRoad->next();
+            range.end = el.next();
             if (range.begin == nullptr)
             {
-                range.begin = elRoad;
+                range.begin = &el;
             }
         }
         return range;
@@ -116,7 +116,7 @@ namespace OpenLoco::GameCommands
             {
                 return kFailure;
             }
-            World::StationElement* stationEl = roadRange.end->as<World::StationElement>();
+            auto* stationEl = roadRange.end->as<World::StationElement>();
 
             if (stationEl == nullptr)
             {
@@ -124,7 +124,7 @@ namespace OpenLoco::GameCommands
             }
 
             // NB: vanilla would query owner from station struct, not the station element
-            if (!sub_431E6A(stationEl->owner(), reinterpret_cast<const World::TileElement*>(stationEl)))
+            if (!sub_431E6A(stationEl->owner(), stationEl))
             {
                 return kFailure;
             }
@@ -146,7 +146,8 @@ namespace OpenLoco::GameCommands
             {
                 return kFailure;
             }
-            World::StationElement* stationEl = roadRange.end->as<World::StationElement>();
+            auto* stationEntry = roadRange.end;
+            auto* stationEl = stationEntry->as<World::StationElement>();
             if (stationEl == nullptr)
             {
                 return kFailure;
@@ -168,13 +169,14 @@ namespace OpenLoco::GameCommands
 
             if ((flags & Flags::apply) != 0)
             {
-                for (auto* elRoad = roadRange.begin; elRoad != roadRange.end; ++elRoad)
+                for (auto* roadEntry = roadRange.begin; roadEntry != roadRange.end; ++roadEntry)
                 {
+                    auto* elRoad = roadEntry->as<World::RoadElement>();
                     elRoad->setHasStationElement(false);
                     elRoad->setClearZ(elRoad->clearZ() - stationObj->height);
                 }
                 Ui::ViewportManager::invalidate(World::Pos2(roadLoc), stationEl->baseHeight(), stationEl->clearHeight(), ZoomLevel::eighth);
-                World::TileManager::removeElement(*reinterpret_cast<World::TileElement*>(stationEl));
+                World::TileManager::removeElement(*stationEntry);
             }
         }
 

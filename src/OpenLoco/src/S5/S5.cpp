@@ -13,13 +13,23 @@
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
+#include "Map/BuildingElement.h"
+#include "Map/IndustryElement.h"
+#include "Map/RoadElement.h"
+#include "Map/SignalElement.h"
+#include "Map/StationElement.h"
+#include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
+#include "Map/TrackElement.h"
+#include "Map/TreeElement.h"
+#include "Map/WallElement.h"
 #include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/ScenarioTextObject.h"
 #include "OpenLoco.h"
 #include "S5/S5File.h"
 #include "S5/S5Options.h"
+#include "S5/S5TileElement.h"
 #include "S5/SawyerStream.h"
 #include "Scenario/Scenario.h"
 #include "Scenario/ScenarioManager.h"
@@ -118,6 +128,237 @@ namespace OpenLoco::S5
         return saveDetails;
     }
 
+    static void loadTileElements(OpenLoco::GameState& gs, std::span<const TileElement> srcElements)
+    {
+        auto& ts = gs.tileState;
+        ts.surface.clear();
+        ts.track.clear();
+        ts.station.clear();
+        ts.signal.clear();
+        ts.building.clear();
+        ts.tree.clear();
+        ts.wall.clear();
+        ts.road.clear();
+        ts.industry.clear();
+
+        if (ts.entries.size() != World::TileManager::kMaxElements)
+        {
+            ts.entries.assign(World::TileManager::kMaxElements, World::TileElementEntry::empty());
+        }
+        else
+        {
+            std::fill(ts.entries.begin(), ts.entries.end(), World::TileElementEntry::empty());
+        }
+
+        const size_t count = std::min(srcElements.size(), ts.entries.size());
+        for (size_t i = 0; i < count; ++i)
+        {
+            const auto& srcElem = srcElements[i];
+            auto& entry = ts.entries[i];
+            if (srcElem.baseZ() == 0xFFU)
+            {
+                entry = World::TileElementEntry::empty();
+                continue;
+            }
+
+            const auto worldType = static_cast<World::ElementType>(enumValue(srcElem.type()));
+            uint32_t idx = 0;
+            switch (worldType)
+            {
+                case World::ElementType::surface:
+                {
+                    const auto& d = *srcElem.as<SurfaceElement>();
+                    idx = ts.surface.allocate();
+                    auto& dstElem = ts.surface[idx];
+                    dstElem.rawData()[1] = srcElem.flags();
+                    dstElem.setBaseZ(srcElem.baseZ());
+                    dstElem.setClearZ(srcElem.clearZ());
+                    dstElem.setSlope(d.slope());
+                    dstElem.setSnowCoverage(d.snowCoverage());
+                    dstElem.setWater(d.water());
+                    dstElem.setUpdateTimer(d.updateTimer());
+                    dstElem.setTerrain(d.terrain());
+                    dstElem.setGrowthStage(d.growthStage());
+                    dstElem.setVariation(d.var7());
+                    dstElem.setIsIndustrialFlag(d.isIndustrial());
+                    dstElem.setType6Flag(d.type6Flag());
+                    break;
+                }
+                case World::ElementType::track:
+                {
+                    const auto& d = *srcElem.as<TrackElement>();
+                    idx = ts.track.allocate();
+                    auto& dstElem = ts.track[idx];
+                    dstElem.rawData()[1] = srcElem.flags();
+                    dstElem.setBaseZ(srcElem.baseZ());
+                    dstElem.setClearZ(srcElem.clearZ());
+                    dstElem.setRotation(d.rotation());
+                    dstElem.setHasSignal(d.hasSignal());
+                    dstElem.setHasStationElement(d.hasStationElement());
+                    dstElem.setTrackId(d.trackId());
+                    dstElem.setHasGhostMods(d.hasGhostMods());
+                    dstElem.setHasBridge(d.hasBridge());
+                    dstElem.setSequenceIndex(d.sequenceIndex());
+                    dstElem.setTrackObjectId(d.trackObjectId());
+                    dstElem.setHasLevelCrossing(d.hasLevelCrossing());
+                    dstElem.setBridgeObjectId(d.bridge());
+                    dstElem.setOwner(static_cast<CompanyId>(d.owner()));
+                    for (uint8_t m = 0; m < 4; ++m)
+                    {
+                        dstElem.setMod(m, (d.mods() >> m) & 1);
+                    }
+                    break;
+                }
+                case World::ElementType::station:
+                {
+                    const auto& d = *srcElem.as<StationElement>();
+                    idx = ts.station.allocate();
+                    auto& dstElem = ts.station[idx];
+                    dstElem.rawData()[1] = srcElem.flags();
+                    dstElem.setBaseZ(srcElem.baseZ());
+                    dstElem.setClearZ(srcElem.clearZ());
+                    dstElem.setRotation(d.rotation());
+                    dstElem.setSequenceIndex(d.sequenceIndex());
+                    dstElem.setOwner(static_cast<CompanyId>(d.owner()));
+                    dstElem.setUnk4SLR4(d.unk4SLR4());
+                    dstElem.setObjectId(d.objectId());
+                    dstElem.setStationType(static_cast<StationType>(d.stationType()));
+                    dstElem.setStationId(static_cast<StationId>(d.stationId()));
+                    dstElem.setBuildingType(d.buildingType());
+                    break;
+                }
+                case World::ElementType::signal:
+                {
+                    const auto& d = *srcElem.as<SignalElement>();
+                    idx = ts.signal.allocate();
+                    auto& dstElem = ts.signal[idx];
+                    dstElem.rawData()[1] = srcElem.flags();
+                    dstElem.setBaseZ(srcElem.baseZ());
+                    dstElem.setClearZ(srcElem.clearZ());
+                    dstElem.setRotation(d.rotation());
+                    dstElem.setLeftGhost(d.isLeftGhost());
+                    dstElem.setRightGhost(d.isRightGhost());
+                    const auto copySide = [](World::SignalElement::Side& dst, const SignalElement::Side& srcSide) {
+                        dst.setSignalObjectId(srcSide.signalObjectId());
+                        dst.setUnk4(srcSide.unk4());
+                        dst.setIsOccupied(srcSide.isOccupied());
+                        dst.setHasSignal(srcSide.hasSignal());
+                        dst.setFrame(srcSide.frame());
+                        dst.setAllLights(srcSide.allLights());
+                    };
+                    copySide(dstElem.getLeft(), d.left());
+                    copySide(dstElem.getRight(), d.right());
+                    break;
+                }
+                case World::ElementType::building:
+                {
+                    const auto& d = *srcElem.as<BuildingElement>();
+                    idx = ts.building.allocate();
+                    auto& dstElem = ts.building[idx];
+                    dstElem.rawData()[1] = srcElem.flags();
+                    dstElem.setBaseZ(srcElem.baseZ());
+                    dstElem.setClearZ(srcElem.clearZ());
+                    dstElem.setRotation(d.rotation());
+                    dstElem.setIsMiscBuilding(d.isMiscBuilding());
+                    dstElem.setConstructed(d.isConstructed());
+                    dstElem.setObjectId(d.objectId());
+                    dstElem.setSequenceIndex(d.sequenceIndex());
+                    dstElem.setUnk5u(d.unk5u());
+                    dstElem.setAge(d.age());
+                    dstElem.setVariation(d.variation());
+                    dstElem.setColour(static_cast<Colour>(d.colour()));
+                    break;
+                }
+                case World::ElementType::tree:
+                {
+                    const auto& d = *srcElem.as<TreeElement>();
+                    idx = ts.tree.allocate();
+                    auto& dstElem = ts.tree[idx];
+                    dstElem.rawData()[1] = srcElem.flags();
+                    dstElem.setBaseZ(srcElem.baseZ());
+                    dstElem.setClearZ(srcElem.clearZ());
+                    dstElem.setRotation(d.rotation());
+                    dstElem.setQuadrant(d.quadrant());
+                    dstElem.setTreeObjectId(d.treeObjectId());
+                    dstElem.setGrowth(d.growth());
+                    dstElem.setUnk5h(d.unk5h());
+                    dstElem.setColour(static_cast<Colour>(d.colour()));
+                    dstElem.setSnow(d.hasSnow());
+                    dstElem.setIsDying(d.isDying());
+                    dstElem.setUnk7l(d.unk7l());
+                    dstElem.setSeason(d.season());
+                    break;
+                }
+                case World::ElementType::wall:
+                {
+                    const auto& d = *srcElem.as<WallElement>();
+                    idx = ts.wall.allocate();
+                    auto& dstElem = ts.wall[idx];
+                    dstElem.rawData()[1] = srcElem.flags();
+                    dstElem.setBaseZ(srcElem.baseZ());
+                    dstElem.setClearZ(srcElem.clearZ());
+                    dstElem.setRotation(d.rotation());
+                    dstElem.setSlopeFlags(static_cast<World::EdgeSlope>(d.slopeFlags()));
+                    dstElem.setWallObjectId(d.wallObjectId());
+                    dstElem.setPrimaryColour(static_cast<Colour>(d.primaryColour()));
+                    dstElem.setSecondaryColour(static_cast<Colour>(d.secondaryColour()));
+                    dstElem.setTertiaryColour(static_cast<Colour>(d.tertiaryColour()));
+                    break;
+                }
+                case World::ElementType::road:
+                {
+                    const auto& d = *srcElem.as<RoadElement>();
+                    idx = ts.road.allocate();
+                    auto& dstElem = ts.road[idx];
+                    dstElem.rawData()[1] = srcElem.flags();
+                    dstElem.setBaseZ(srcElem.baseZ());
+                    dstElem.setClearZ(srcElem.clearZ());
+                    dstElem.setRotation(d.rotation());
+                    dstElem.setHasStationElement(d.hasStationElement());
+                    dstElem.setRoadId(d.roadId());
+                    dstElem.setLaneOccupation(d.laneOccupation());
+                    dstElem.setHasGhostMods(d.hasGhostMods());
+                    dstElem.setHasBridge(d.hasBridge());
+                    dstElem.setSequenceIndex(d.sequenceIndex());
+                    dstElem.setLevelCrossingObjectId(d.levelCrossingObjectId());
+                    dstElem.setRoadObjectId(d.roadObjectId());
+                    dstElem.setUnk6l(d.unk6l());
+                    dstElem.setBridgeObjectId(d.bridge());
+                    dstElem.setOwner(static_cast<CompanyId>(d.owner()));
+                    dstElem.setUnk7_10(d.unk7_10());
+                    dstElem.setHasLevelCrossing(d.hasLevelCrossing());
+                    dstElem.setUnk7_40(d.unk7_40());
+                    dstElem.setUnk7_80(d.unk7_80());
+                    break;
+                }
+                case World::ElementType::industry:
+                {
+                    const auto& d = *srcElem.as<IndustryElement>();
+                    idx = ts.industry.allocate();
+                    auto& dstElem = ts.industry[idx];
+                    dstElem.rawData()[1] = srcElem.flags();
+                    dstElem.setBaseZ(srcElem.baseZ());
+                    dstElem.setClearZ(srcElem.clearZ());
+                    dstElem.setRotation(d.rotation());
+                    dstElem.setIsConstructed(d.isConstructed());
+                    dstElem.setIndustryId(static_cast<IndustryId>(d.industryId()));
+                    dstElem.setSequenceIndex(d.sequenceIndex());
+                    dstElem.setSectionProgress(d.sectionProgress());
+                    dstElem.setVar_6_003F(d.var6_003F());
+                    dstElem.setBuildingType(d.buildingType());
+                    dstElem.setColour(static_cast<Colour>(d.colour()));
+                    break;
+                }
+            }
+            entry.setType(worldType);
+            entry.setIndex(idx);
+            entry.setLastFlag(srcElem.isLast());
+        }
+
+        ts.entriesEnd = static_cast<std::ptrdiff_t>(count);
+        World::TileManager::updateTilePointers();
+    }
+
     /**
      * Removes all tile elements that have the ghost flag set.
      * Assumes all elements are organised in tile order.
@@ -182,9 +423,13 @@ namespace OpenLoco::S5
         dst.general.savedViewRotation = savedView.rotation;
 
         // Copy tile elements; remove any ghosts before saving
-        auto tileElements = TileManager::getElements();
-        file->tileElements.resize(tileElements.size());
-        std::memcpy(file->tileElements.data(), tileElements.data(), tileElements.size_bytes());
+        const auto entries = TileManager::getEntries();
+        file->tileElements.clear();
+        file->tileElements.reserve(entries.size());
+        for (const auto& entry : entries)
+        {
+            file->tileElements.push_back(toSaveElement(src, entry));
+        }
         removeGhostElements(file->tileElements);
 
         return file;
@@ -642,7 +887,7 @@ namespace OpenLoco::S5
             // Copy tile elements
             if ((dst.flags & GameStateFlags::tileManagerLoaded) != GameStateFlags::none)
             {
-                TileManager::setElements(std::span<World::TileElement>(reinterpret_cast<World::TileElement*>(file->tileElements.data()), file->tileElements.size()));
+                loadTileElements(dst, file->tileElements);
             }
             else
             {

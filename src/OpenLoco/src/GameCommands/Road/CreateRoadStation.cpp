@@ -163,10 +163,10 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0048BAF5
-    static World::TileClearance::ClearFuncResult clearFunc0(World::TileElement& el, World::RoadElement* elReferenceRoad0, World::RoadElement* elReferenceRoad1)
+    static World::TileClearance::ClearFuncResult clearFunc0(World::TileElementEntry& entry, World::RoadElement* elReferenceRoad0, World::RoadElement* elReferenceRoad1)
     {
-        auto* elStation = el.as<World::StationElement>();
-        auto* elRoad = el.as<World::RoadElement>();
+        auto* elStation = entry.as<World::StationElement>();
+        auto* elRoad = entry.as<World::RoadElement>();
         if (elStation != nullptr)
         {
             if (elStation->stationType() == StationType::roadStation)
@@ -183,10 +183,9 @@ namespace OpenLoco::GameCommands
 
     // TODO THIS IS A DUPLICATE MOVE TO SOMEWHERE ELSE
     // 0x0048BAE5
-    static World::TileClearance::ClearFuncResult clearFuncCollideWithSurface(World::TileElement& el)
+    static World::TileClearance::ClearFuncResult clearFuncCollideWithSurface(World::TileElementEntry& entry)
     {
-        auto* elSurface = el.as<World::SurfaceElement>();
-        if (elSurface != nullptr)
+        if (entry.type() == World::ElementType::surface)
         {
             return World::TileClearance::ClearFuncResult::collision;
         }
@@ -280,7 +279,7 @@ namespace OpenLoco::GameCommands
                     return kFailure;
                 }
                 // Do not allow replacing station elements owned by other companies
-                if (!sub_431E6A(elStation->owner(), reinterpret_cast<const World::TileElement*>(elStation)))
+                if (!sub_431E6A(elStation->owner(), elStation))
                 {
                     return kFailure;
                 }
@@ -433,6 +432,10 @@ namespace OpenLoco::GameCommands
                 nullptr,
                 nullptr,
             };
+            std::array<World::TileElementEntry*, 2> elRoadEntries = {
+                nullptr,
+                nullptr,
+            };
 
             {
                 auto tile = World::TileManager::get(roadLoc);
@@ -457,7 +460,7 @@ namespace OpenLoco::GameCommands
                     }
                     if (roadObj2->hasFlags(RoadObjectFlags::anyRoadTypeCompatible)
                         || roadObj2->hasFlags(RoadObjectFlags::allowUseByAllCompanies)
-                        || sub_431E6A(elRoad->owner(), &el))
+                        || sub_431E6A(elRoad->owner(), elRoad))
                     {
                         unk112C7F4 = true;
                     }
@@ -467,9 +470,11 @@ namespace OpenLoco::GameCommands
                         if (elRoad->roadObjectId() == stationObj->mods[i])
                         {
                             elRoads[1] = elRoad;
+                            elRoadEntries[1] = &el;
                             if (elRoads[0] == nullptr)
                             {
                                 elRoads[0] = elRoad;
+                                elRoadEntries[0] = &el;
                             }
                             isCompatible = true;
                             break;
@@ -484,9 +489,11 @@ namespace OpenLoco::GameCommands
                         if (roadObj2->stations[i] == args.type)
                         {
                             elRoads[1] = elRoad;
+                            elRoadEntries[1] = &el;
                             if (elRoads[0] == nullptr)
                             {
                                 elRoads[0] = elRoad;
+                                elRoadEntries[0] = &el;
                             }
                             isCompatible = true;
                             break;
@@ -515,7 +522,7 @@ namespace OpenLoco::GameCommands
                 // Replace station if it already exists
                 if (!unk112C7F3 && elRoads[1]->hasStationElement())
                 {
-                    auto* elStation = elRoads[1]->next()->as<World::StationElement>();
+                    auto* elStation = elRoadEntries[1]->next()->as<World::StationElement>();
                     if (elStation == nullptr)
                     {
                         return kFailure;
@@ -546,8 +553,8 @@ namespace OpenLoco::GameCommands
             const auto clearZ = baseZ + 8 + stationObj->height / World::kSmallZStep;
             World::QuarterTile qt(0b1111, 0);
 
-            auto clearFunc = [&elRoads](World::TileElement& el) {
-                return clearFunc0(el, elRoads[0], elRoads[1]);
+            auto clearFunc = [&elRoads](World::TileElementEntry& entry) {
+                return clearFunc0(entry, elRoads[0], elRoads[1]);
             };
             // Perform clearance at just the road clear height to road clear height + station height
             if (!World::TileClearance::applyClearAtStandardHeight(roadLoc, baseZ + 8, clearZ, qt, clearFunc))
@@ -587,15 +594,18 @@ namespace OpenLoco::GameCommands
             // Actually place the new station
             if (elRoads[1]->hasStationElement())
             {
-                auto* elStation = elRoads[1]->next()->as<World::StationElement>();
+                auto* elStation = elRoadEntries[1]->next()->as<World::StationElement>();
                 if (elStation == nullptr)
                 {
                     return kFailure;
                 }
                 auto* oldStationObj = ObjectManager::get<RoadStationObject>(elStation->objectId());
-                for (auto elRoad = elRoads[0]; elRoad <= elRoads[1]; ++elRoad)
+                for (auto* entry = elRoadEntries[0]; entry <= elRoadEntries[1]; ++entry)
                 {
-                    elRoad->setClearZ(elRoad->clearZ() - oldStationObj->height / World::kSmallZStep);
+                    if (auto* elRoad = entry->as<World::RoadElement>())
+                    {
+                        elRoad->setClearZ(elRoad->clearZ() - oldStationObj->height / World::kSmallZStep);
+                    }
                 }
                 isNewStationTile = false; // We are just replacing so not a new tile
                 Ui::ViewportManager::invalidate(roadLoc, elStation->baseHeight(), elStation->clearHeight());
@@ -604,17 +614,20 @@ namespace OpenLoco::GameCommands
             else
             {
                 // elTrack pointer will be invalid after this call
-                newStationElement = World::TileManager::insertElementAfterNoReorg<World::StationElement>(
-                    reinterpret_cast<World::TileElement*>(elRoads[1]),
+                auto* stationEntry = World::TileManager::insertElementAfterNoReorg<World::StationElement>(
+                    elRoadEntries[1],
                     roadLoc,
                     elRoads[1]->baseZ(),
                     elRoads[1]->occupiedQuarter());
-                if (newStationElement == nullptr)
+                if (stationEntry == nullptr)
                 {
                     return kFailure;
                 }
+                newStationElement = &stationEntry->get<World::StationElement>();
                 elRoads[0] = nullptr;
                 elRoads[1] = nullptr;
+                elRoadEntries[0] = nullptr;
+                elRoadEntries[1] = nullptr;
                 auto tile = World::TileManager::get(roadLoc);
                 for (auto& el : tile)
                 {
@@ -628,9 +641,11 @@ namespace OpenLoco::GameCommands
                         continue;
                     }
                     elRoads[1] = elRoad;
+                    elRoadEntries[1] = &el;
                     if (elRoads[0] == nullptr)
                     {
                         elRoads[0] = elRoad;
+                        elRoadEntries[0] = &el;
                     }
                 }
                 newStationElement->setRotation(elRoads[1]->rotation());
@@ -648,15 +663,21 @@ namespace OpenLoco::GameCommands
                 {
                     newStationElement->setStationId(static_cast<StationId>(0));
                 }
-                for (auto elRoad = elRoads[0]; elRoad <= elRoads[1]; ++elRoad)
+                for (auto* entry = elRoadEntries[0]; entry <= elRoadEntries[1]; ++entry)
                 {
-                    elRoad->setHasStationElement(true);
+                    if (auto* elRoad = entry->as<World::RoadElement>())
+                    {
+                        elRoad->setHasStationElement(true);
+                    }
                 }
             }
             newStationElement->setObjectId(args.type);
-            for (auto elRoad = elRoads[0]; elRoad <= elRoads[1]; ++elRoad)
+            for (auto* entry = elRoadEntries[0]; entry <= elRoadEntries[1]; ++entry)
             {
-                elRoad->setClearZ(elRoad->clearZ() + stationObj->height / World::kSmallZStep);
+                if (auto* elRoad = entry->as<World::RoadElement>())
+                {
+                    elRoad->setClearZ(elRoad->clearZ() + stationObj->height / World::kSmallZStep);
+                }
             }
             newStationElement->setClearZ(elRoads[0]->clearZ());
             newStationElement->setOwner(getUpdatingCompanyId());
