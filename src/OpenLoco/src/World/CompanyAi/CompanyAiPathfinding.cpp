@@ -33,20 +33,26 @@ namespace OpenLoco::CompanyAi
 {
     using ValidTrackRoadIds = sfl::static_vector<uint8_t, 64>;
 
-    // TODO: Integrate these globals into the functions
-    static uint8_t _pathFindUndoCount112C518 = {};          // 0x0112C518 company 0x85EE
-    static int32_t _pathFindTotalTrackRoadWeighting = {};   // 0x0112C398 company 0x85DE
-    static World::Pos2 _targetPos = {};                     // 0x0112C3C2
-    static World::SmallZ _targetBaseZ = {};                 // 0x0112C515
-    static uint8_t _targetRot = {};                         // 0x0112C516
-    static World::Pos2 _startPos = {};                      // 0x0112C3C6
-    static World::SmallZ _startBaseZ = {};                  // 0x0112C517
-    static World::Pos2 _targetStubPos = {};                 // 0x0112C3CC
-    static World::SmallZ _targetStubBaseZ = {};             // 0x0112C59C
-    static uint32_t _maxTrackRoadWeightingLimit = {};       // 0x0112C358 Limits the extent of the track/road placement search
-    static uint32_t _createTrackRoadCommandAiUnkFlags = {}; // 0x0112C374
-    static uint16_t _targetStubTad = {};                    // 0x0112C4D4
-    static uint16_t _startTad = {};                         // 0x0112C3CA
+    struct PathfindingState
+    {
+        World::Pos2 startPos = {};     // 0x0112C3C6
+        World::SmallZ startBaseZ = {}; // 0x0112C517
+        uint16_t startTad = {};        // 0x0112C3CA
+
+        World::Pos2 targetPos = {};     // 0x0112C3C2
+        World::SmallZ targetBaseZ = {}; // 0x0112C515
+        uint8_t targetRot = {};         // 0x0112C516
+
+        World::Pos2 targetStubPos = {};     // 0x0112C3CC
+        World::SmallZ targetStubBaseZ = {}; // 0x0112C59C
+        uint16_t targetStubTad = {};        // 0x0112C4D4
+
+        uint8_t undoCount = {};               // 0x0112C518 company 0x85EE
+        int32_t totalTrackRoadWeighting = {}; // 0x0112C398 company 0x85DE
+
+        uint32_t maxTrackRoadWeightingLimit = {};       // 0x0112C358 Limits the extent of the track/road placement search
+        uint32_t createTrackRoadCommandAiUnkFlags = {}; // 0x0112C374
+    };
 
     struct PlacementVars
     {
@@ -58,7 +64,7 @@ namespace OpenLoco::CompanyAi
     };
 
     // 0x00483A7E
-    static PlacementVars getPlacementVars(const Company& company, const AiThought& thought)
+    static PlacementVars getPlacementVars(const Company& company, const AiThought& thought, PathfindingState& pathState)
     {
         // 0x0112C384
         bool allowSteepSlopes = false;
@@ -114,41 +120,41 @@ namespace OpenLoco::CompanyAi
         }
         result.mods = unkMods;
         result.rackRailType = unkRackRail;
-        _createTrackRoadCommandAiUnkFlags = 1U << 22;
+        pathState.createTrackRoadCommandAiUnkFlags = 1U << 22;
 
         if (company.var_85C3 & (1U << 3))
         {
             // 0x00483BAF
-            if (_startBaseZ == _targetStubBaseZ)
+            if (pathState.startBaseZ == pathState.targetStubBaseZ)
             {
-                const auto diff = _startPos - _targetStubPos;
+                const auto diff = pathState.startPos - pathState.targetStubPos;
                 const auto absDiff = World::Pos2(std::abs(diff.x), std::abs(diff.y));
                 if (absDiff.x <= 3 * World::kTileSize && absDiff.y <= 3 * World::kTileSize)
                 {
-                    _createTrackRoadCommandAiUnkFlags = _createTrackRoadCommandAiUnkFlags & ~(1U << 22);
+                    pathState.createTrackRoadCommandAiUnkFlags = pathState.createTrackRoadCommandAiUnkFlags & ~(1U << 22);
                 }
             }
-            if (_startBaseZ == _targetBaseZ)
+            if (pathState.startBaseZ == pathState.targetBaseZ)
             {
-                const auto diff = _startPos - _targetPos;
+                const auto diff = pathState.startPos - pathState.targetPos;
                 const auto absDiff = World::Pos2(std::abs(diff.x), std::abs(diff.y));
                 if (absDiff.x <= 3 * World::kTileSize && absDiff.y <= 3 * World::kTileSize)
                 {
-                    _createTrackRoadCommandAiUnkFlags = _createTrackRoadCommandAiUnkFlags & ~(1U << 22);
+                    pathState.createTrackRoadCommandAiUnkFlags = pathState.createTrackRoadCommandAiUnkFlags & ~(1U << 22);
                 }
             }
         }
 
         if (isRoad)
         {
-            _createTrackRoadCommandAiUnkFlags = _createTrackRoadCommandAiUnkFlags & ~(1U << 22);
+            pathState.createTrackRoadCommandAiUnkFlags = pathState.createTrackRoadCommandAiUnkFlags & ~(1U << 22);
 
             auto* roadObj = ObjectManager::get<RoadObject>(thought.trackObjId & ~(1U << 7));
-            _createTrackRoadCommandAiUnkFlags |= (1U << 21);
+            pathState.createTrackRoadCommandAiUnkFlags |= (1U << 21);
             if (roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
             {
-                _createTrackRoadCommandAiUnkFlags = _createTrackRoadCommandAiUnkFlags & ~(1U << 21);
-                _createTrackRoadCommandAiUnkFlags |= (1U << 20);
+                pathState.createTrackRoadCommandAiUnkFlags = pathState.createTrackRoadCommandAiUnkFlags & ~(1U << 21);
+                pathState.createTrackRoadCommandAiUnkFlags |= (1U << 20);
             }
         }
 
@@ -324,7 +330,7 @@ namespace OpenLoco::CompanyAi
     // company : _unk112C390
     //
     // return via ref argument totalResult
-    static void queryTrackPlacementScoreRecurse(Company& company, const World::Pos3 pos, const uint16_t tad, const bool unkFlag, const PlacementVars& placementVars, QueryTrackRoadPlacementResult& totalResult, QueryTrackRoadPlacementState& state)
+    static void queryTrackPlacementScoreRecurse(Company& company, const World::Pos3 pos, const uint16_t tad, const bool unkFlag, const PlacementVars& placementVars, QueryTrackRoadPlacementResult& totalResult, QueryTrackRoadPlacementState& state, PathfindingState& pathState)
     {
         // bl
         const auto direction = tad & 0x3;
@@ -337,33 +343,33 @@ namespace OpenLoco::CompanyAi
             return;
         }
 
-        _createTrackRoadCommandAiUnkFlags = _createTrackRoadCommandAiUnkFlags | (1U << 22);
+        pathState.createTrackRoadCommandAiUnkFlags = pathState.createTrackRoadCommandAiUnkFlags | (1U << 22);
 
         if (company.var_85C3 & (1U << 3))
         {
             {
-                const auto diffZ = std::abs(_targetStubBaseZ - (pos.z / World::kSmallZStep));
+                const auto diffZ = std::abs(pathState.targetStubBaseZ - (pos.z / World::kSmallZStep));
 
                 if (diffZ <= 4)
                 {
-                    const auto diffX = std::abs(_targetStubPos.x - pos.x);
-                    const auto diffY = std::abs(_targetStubPos.y - pos.y);
+                    const auto diffX = std::abs(pathState.targetStubPos.x - pos.x);
+                    const auto diffY = std::abs(pathState.targetStubPos.y - pos.y);
                     if (diffX <= 3 * World::kTileSize && diffY <= 3 * World::kTileSize)
                     {
-                        _createTrackRoadCommandAiUnkFlags = _createTrackRoadCommandAiUnkFlags & ~(1U << 22);
+                        pathState.createTrackRoadCommandAiUnkFlags = pathState.createTrackRoadCommandAiUnkFlags & ~(1U << 22);
                     }
                 }
             }
             {
-                const auto diffZ = std::abs(_targetBaseZ - (pos.z / World::kSmallZStep));
+                const auto diffZ = std::abs(pathState.targetBaseZ - (pos.z / World::kSmallZStep));
 
                 if (diffZ <= 4)
                 {
-                    const auto diffX = std::abs(_targetPos.x - pos.x);
-                    const auto diffY = std::abs(_targetPos.y - pos.y);
+                    const auto diffX = std::abs(pathState.targetPos.x - pos.x);
+                    const auto diffY = std::abs(pathState.targetPos.y - pos.y);
                     if (diffX <= 3 * World::kTileSize && diffY <= 3 * World::kTileSize)
                     {
-                        _createTrackRoadCommandAiUnkFlags = _createTrackRoadCommandAiUnkFlags & ~(1U << 22);
+                        pathState.createTrackRoadCommandAiUnkFlags = pathState.createTrackRoadCommandAiUnkFlags & ~(1U << 22);
                     }
                 }
             }
@@ -371,7 +377,7 @@ namespace OpenLoco::CompanyAi
         // 0x004855F9
         {
             using enum World::Track::CommonTraitFlags;
-            if (!(_createTrackRoadCommandAiUnkFlags & (1U << 22))
+            if (!(pathState.createTrackRoadCommandAiUnkFlags & (1U << 22))
                 && (World::TrackData::getTrackMiscData(trackId).flags & (slope | steepSlope)) != none)
             {
                 return;
@@ -391,7 +397,7 @@ namespace OpenLoco::CompanyAi
         args.pos = pos;
         args.mods = 0;
         args.unk = false;
-        args.unkFlags = _createTrackRoadCommandAiUnkFlags >> 20;
+        args.unkFlags = pathState.createTrackRoadCommandAiUnkFlags >> 20;
 
         {
             auto regs = static_cast<GameCommands::registers>(args);
@@ -427,9 +433,9 @@ namespace OpenLoco::CompanyAi
         const auto nextRotation = trackSize.rotationEnd & 0x3U;
         const auto newUnkFlag = trackSize.rotationEnd >= 12;
         {
-            const auto diffZ = std::abs(_targetStubBaseZ - (nextPos.z / World::kSmallZStep));
-            const auto diffX = std::abs(_targetStubPos.x - nextPos.x) / 8;
-            const auto diffY = std::abs(_targetStubPos.y - nextPos.y) / 8;
+            const auto diffZ = std::abs(pathState.targetStubBaseZ - (nextPos.z / World::kSmallZStep));
+            const auto diffX = std::abs(pathState.targetStubPos.x - nextPos.x) / 8;
+            const auto diffY = std::abs(pathState.targetStubPos.y - nextPos.y) / 8;
 
             const auto squareHypot = diffX * diffX + diffY * diffY + diffZ * diffZ;
             const auto distScore = Math::Vector::fastSquareRoot(squareHypot);
@@ -440,7 +446,7 @@ namespace OpenLoco::CompanyAi
                 {
                     return;
                 }
-                if ((nextRotation ^ (1U << 1)) != (_targetStubTad & 0x3U))
+                if ((nextRotation ^ (1U << 1)) != (pathState.targetStubTad & 0x3U))
                 {
                     return;
                 }
@@ -452,7 +458,7 @@ namespace OpenLoco::CompanyAi
                 return;
             }
 
-            if (_maxTrackRoadWeightingLimit <= state.currentWeighting)
+            if (pathState.maxTrackRoadWeightingLimit <= state.currentWeighting)
             {
                 const auto newScore = state.bridgeWeighting / 32 + distScore * 4 + state.numBuildingsRequiredDestroyed;
                 totalResult.minScore = std::min<uint16_t>(newScore, totalResult.minScore);
@@ -481,13 +487,13 @@ namespace OpenLoco::CompanyAi
                     // Make a copy of the state as each track needs to be evaluated independently
                     auto tempState = state;
 
-                    queryTrackPlacementScoreRecurse(company, nextPos, newTad, newUnkFlag, placementVars, totalResult, tempState);
+                    queryTrackPlacementScoreRecurse(company, nextPos, newTad, newUnkFlag, placementVars, totalResult, tempState, pathState);
                 }
             }
         }
     }
 
-    static QueryTrackRoadPlacementResult queryTrackPlacementScore(Company& company, const World::Pos3 pos, const uint16_t tad, const bool unkFlag, const PlacementVars& placementVars)
+    static QueryTrackRoadPlacementResult queryTrackPlacementScore(Company& company, const World::Pos3 pos, const uint16_t tad, const bool unkFlag, const PlacementVars& placementVars, PathfindingState& pathState)
     {
         QueryTrackRoadPlacementResult result{};
         result.flags = 1U << 7;
@@ -499,7 +505,7 @@ namespace OpenLoco::CompanyAi
         state.currentWeighting = 0U;
         state.bridgeWeighting = 0U;
 
-        queryTrackPlacementScoreRecurse(company, pos, tad, unkFlag, placementVars, result, state);
+        queryTrackPlacementScoreRecurse(company, pos, tad, unkFlag, placementVars, result, state, pathState);
 
         return result;
     }
@@ -510,7 +516,7 @@ namespace OpenLoco::CompanyAi
     // company : _unk112C390
     //
     // return via ref argument totalResult
-    static void queryRoadPlacementScoreRecurse(Company& company, const World::Pos3 pos, const uint16_t tad, const PlacementVars& placementVars, QueryTrackRoadPlacementResult& totalResult, QueryTrackRoadPlacementState& state)
+    static void queryRoadPlacementScoreRecurse(Company& company, const World::Pos3 pos, const uint16_t tad, const PlacementVars& placementVars, QueryTrackRoadPlacementResult& totalResult, QueryTrackRoadPlacementState& state, PathfindingState& pathState)
     {
         // bl
         const auto direction = tad & 0x3;
@@ -531,7 +537,7 @@ namespace OpenLoco::CompanyAi
         args.bridge = placementVars.bridgeTypes[0];
         args.pos = pos;
         args.mods = 0;
-        args.unkFlags = _createTrackRoadCommandAiUnkFlags >> 16;
+        args.unkFlags = pathState.createTrackRoadCommandAiUnkFlags >> 16;
 
         auto& returnState = GameCommands::getLegacyReturnState();
 
@@ -541,7 +547,7 @@ namespace OpenLoco::CompanyAi
             GameCommands::createRoad(regs);
             if (static_cast<uint32_t>(regs.ebx) == GameCommands::kFailure)
             {
-                if ((_createTrackRoadCommandAiUnkFlags & (1U << 20)) && returnState.alternateRoadObjectId != 0xFFU)
+                if ((pathState.createTrackRoadCommandAiUnkFlags & (1U << 20)) && returnState.alternateRoadObjectId != 0xFFU)
                 {
                     args.roadObjectId = returnState.alternateRoadObjectId;
                 }
@@ -587,16 +593,16 @@ namespace OpenLoco::CompanyAi
         const auto nextPos = pos + roadSize.pos;
         const auto nextRotation = roadSize.rotationEnd & 0x3U;
         {
-            const auto diffZ = std::abs(_targetStubBaseZ - (nextPos.z / World::kSmallZStep));
-            const auto diffX = std::abs(_targetStubPos.x - nextPos.x) / 8;
-            const auto diffY = std::abs(_targetStubPos.y - nextPos.y) / 8;
+            const auto diffZ = std::abs(pathState.targetStubBaseZ - (nextPos.z / World::kSmallZStep));
+            const auto diffX = std::abs(pathState.targetStubPos.x - nextPos.x) / 8;
+            const auto diffY = std::abs(pathState.targetStubPos.y - nextPos.y) / 8;
 
             const auto squareHypot = diffX * diffX + diffY * diffY + diffZ * diffZ;
             const auto distScore = Math::Vector::fastSquareRoot(squareHypot);
 
             if (distScore == 0)
             {
-                if ((nextRotation ^ (1U << 1)) != (_targetStubTad & 0x3U))
+                if ((nextRotation ^ (1U << 1)) != (pathState.targetStubTad & 0x3U))
                 {
                     return;
                 }
@@ -608,7 +614,7 @@ namespace OpenLoco::CompanyAi
                 return;
             }
 
-            if (_maxTrackRoadWeightingLimit <= state.currentWeighting)
+            if (pathState.maxTrackRoadWeightingLimit <= state.currentWeighting)
             {
                 const auto newScore = state.bridgeWeighting / 32 + distScore * 4 + state.numBuildingsRequiredDestroyed;
                 totalResult.minScore = std::min<uint16_t>(newScore, totalResult.minScore);
@@ -622,13 +628,13 @@ namespace OpenLoco::CompanyAi
                     // Make a copy of the state as each track needs to be evaluated independently
                     auto tempState = state;
 
-                    queryRoadPlacementScoreRecurse(company, nextPos, newTad, placementVars, totalResult, tempState);
+                    queryRoadPlacementScoreRecurse(company, nextPos, newTad, placementVars, totalResult, tempState, pathState);
                 }
             }
         }
     }
 
-    static QueryTrackRoadPlacementResult queryRoadPlacementScore(Company& company, const World::Pos3 pos, const uint16_t tad, const PlacementVars& placementVars)
+    static QueryTrackRoadPlacementResult queryRoadPlacementScore(Company& company, const World::Pos3 pos, const uint16_t tad, const PlacementVars& placementVars, PathfindingState& pathState)
     {
         QueryTrackRoadPlacementResult result{};
         result.flags = 1U << 7;
@@ -640,27 +646,27 @@ namespace OpenLoco::CompanyAi
         state.currentWeighting = 0U;
         state.bridgeWeighting = 0U;
 
-        queryRoadPlacementScoreRecurse(company, pos, tad, placementVars, result, state);
+        queryRoadPlacementScoreRecurse(company, pos, tad, placementVars, result, state, pathState);
 
         return result;
     }
 
     // 0x00484B5C
-    static void pathFindTrackUndoSection(Company& company, const uint8_t trackObjId)
+    static void pathFindTrackUndoSection(Company& company, const uint8_t trackObjId, PathfindingState& pathState)
     {
-        if (_pathFindTotalTrackRoadWeighting <= 0)
+        if (pathState.totalTrackRoadWeighting <= 0)
         {
-            _pathFindUndoCount112C518 = 0;
+            pathState.undoCount = 0;
             return;
         }
 
-        const auto trackId = (_startTad >> 3) & 0x3F;
-        _pathFindTotalTrackRoadWeighting -= static_cast<int32_t>(World::TrackData::getTrackMiscData(trackId).unkWeighting);
-        _pathFindUndoCount112C518--;
+        const auto trackId = (pathState.startTad >> 3) & 0x3F;
+        pathState.totalTrackRoadWeighting -= static_cast<int32_t>(World::TrackData::getTrackMiscData(trackId).unkWeighting);
+        pathState.undoCount--;
 
-        const auto rotation = (_startTad & 0x3U);
+        const auto rotation = (pathState.startTad & 0x3U);
         auto& trackPiece0 = World::TrackData::getTrackPiece(trackId)[0];
-        const auto pos = World::Pos3(_startPos, (_startBaseZ * World::kSmallZStep) + trackPiece0.z);
+        const auto pos = World::Pos3(pathState.startPos, (pathState.startBaseZ * World::kSmallZStep) + trackPiece0.z);
 
         const auto hasAiAllocatedElTrack = [&pos, rotation, trackId, trackObjId]() {
             auto tile = World::TileManager::get(pos);
@@ -719,8 +725,8 @@ namespace OpenLoco::CompanyAi
         GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment | GameCommands::Flags::apply);
         // No check of failure!
 
-        auto nextPos = World::Pos3(_startPos, _startBaseZ * World::kSmallZStep);
-        const auto rot = World::TrackData::getUnkTrack(_startTad & 0x3FFU).rotationBegin;
+        auto nextPos = World::Pos3(pathState.startPos, pathState.startBaseZ * World::kSmallZStep);
+        const auto rot = World::TrackData::getUnkTrack(pathState.startTad & 0x3FFU).rotationBegin;
         if (rot < 12)
         {
             nextPos -= World::Pos3(World::kRotationOffset[rot], 0);
@@ -751,29 +757,29 @@ namespace OpenLoco::CompanyAi
                 newTad ^= (1U << 1);
             }
 
-            _startTad = newTad;
-            _startPos = newPos;
-            _startBaseZ = newPos.z / World::kSmallZStep;
+            pathState.startTad = newTad;
+            pathState.startPos = newPos;
+            pathState.startBaseZ = newPos.z / World::kSmallZStep;
         }
     }
 
     // 0x00484655
-    static void pathFindTrackSection(Company& company, const PlacementVars& placementVars)
+    static void pathFindTrackSection(Company& company, const PlacementVars& placementVars, PathfindingState& pathState)
     {
-        if (_pathFindUndoCount112C518 == 0)
+        if (pathState.undoCount == 0)
         {
             // 0x00484662
-            if (_pathFindTotalTrackRoadWeighting >= static_cast<int32_t>(company.var_85EA))
+            if (pathState.totalTrackRoadWeighting >= static_cast<int32_t>(company.var_85EA))
             {
                 company.var_85F0 = 0xF000U;
                 return;
             }
             // 0x00484813
-            _maxTrackRoadWeightingLimit = (company.var_85C3 & ((1U << 4) | (1U << 2))) ? 138 : 224;
+            pathState.maxTrackRoadWeightingLimit = (company.var_85C3 & ((1U << 4) | (1U << 2))) ? 138 : 224;
 
             {
-                auto pos = World::Pos3(_targetStubPos, _targetStubBaseZ * World::kSmallZStep);
-                auto tad = _targetStubTad & 0x3FFU;
+                auto pos = World::Pos3(pathState.targetStubPos, pathState.targetStubBaseZ * World::kSmallZStep);
+                auto tad = pathState.targetStubTad & 0x3FFU;
                 auto& trackSize = World::TrackData::getUnkTrack(tad);
                 pos += trackSize.pos;
                 const auto rotation = trackSize.rotationEnd;
@@ -781,12 +787,12 @@ namespace OpenLoco::CompanyAi
                 {
                     pos -= World::Pos3(World::kRotationOffset[rotation], 0);
                 }
-                _targetStubPos = pos;
-                _targetStubBaseZ = pos.z / World::kSmallZStep;
+                pathState.targetStubPos = pos;
+                pathState.targetStubBaseZ = pos.z / World::kSmallZStep;
             }
 
-            auto pos = World::Pos3(_startPos, _startBaseZ * World::kSmallZStep);
-            auto tad = _startTad & 0x3FFU;
+            auto pos = World::Pos3(pathState.startPos, pathState.startBaseZ * World::kSmallZStep);
+            auto tad = pathState.startTad & 0x3FFU;
             auto& trackSize = World::TrackData::getUnkTrack(tad);
             pos += trackSize.pos;
             auto rotation = trackSize.rotationEnd;
@@ -815,7 +821,7 @@ namespace OpenLoco::CompanyAi
                     }
                 }
                 const auto newTad = (trackId << 3) | rotation;
-                placementResults.push_back(std::make_pair(trackId, queryTrackPlacementScore(company, pos, newTad, diagFlag, placementVars)));
+                placementResults.push_back(std::make_pair(trackId, queryTrackPlacementScore(company, pos, newTad, diagFlag, placementVars, pathState)));
             }
             // 0x00484813
             uint16_t bestMinScore = 0xFFFFU;
@@ -850,7 +856,7 @@ namespace OpenLoco::CompanyAi
                 args.rotation = trackSize.rotationEnd;
                 args.trackObjectId = placementVars.trackRoadObjId;
                 args.bridge = placementVars.bridgeTypes[0];
-                if (_createTrackRoadCommandAiUnkFlags & (1U << 22))
+                if (pathState.createTrackRoadCommandAiUnkFlags & (1U << 22))
                 {
                     args.bridge = placementVars.bridgeTypes[1];
                     if (args.trackId != 0)
@@ -858,7 +864,7 @@ namespace OpenLoco::CompanyAi
                         args.bridge = placementVars.bridgeTypes[0];
                     }
                 }
-                args.unkFlags = _createTrackRoadCommandAiUnkFlags >> 20;
+                args.unkFlags = pathState.createTrackRoadCommandAiUnkFlags >> 20;
                 args.mods = placementVars.mods >> 16;
                 if ((World::TrackData::getTrackMiscData(args.trackId).flags & World::Track::CommonTraitFlags::steepSlope) != World::Track::CommonTraitFlags::none)
                 {
@@ -878,57 +884,57 @@ namespace OpenLoco::CompanyAi
                         const auto entry = Company::Unk25C0HashTableEntry(args.pos, args.trackId, args.rotation & 0x3);
                         company.addHashTableEntry(entry);
 
-                        _pathFindUndoCount112C518 = 15;
+                        pathState.undoCount = 15;
                         return;
                     }
                 }
                 // 0x00484A05
-                if (_pathFindTotalTrackRoadWeighting == 0)
+                if (pathState.totalTrackRoadWeighting == 0)
                 {
                     company.var_85E6 = (bestTrackId << 3) | (args.rotation & 0x3U);
                 }
 
-                _startPos = pos;
-                _startBaseZ = pos.z / World::kSmallZStep;
-                _startTad = (bestTrackId << 3) | (args.rotation & 0x3U);
-                _pathFindTotalTrackRoadWeighting += static_cast<int32_t>(World::TrackData::getTrackMiscData(bestTrackId).unkWeighting);
+                pathState.startPos = pos;
+                pathState.startBaseZ = pos.z / World::kSmallZStep;
+                pathState.startTad = (bestTrackId << 3) | (args.rotation & 0x3U);
+                pathState.totalTrackRoadWeighting += static_cast<int32_t>(World::TrackData::getTrackMiscData(bestTrackId).unkWeighting);
                 return;
             }
             else
             {
                 // ax, cx, dl
-                auto pos2 = World::Pos3(_startPos, _startBaseZ * World::kSmallZStep);
+                auto pos2 = World::Pos3(pathState.startPos, pathState.startBaseZ * World::kSmallZStep);
                 // dh
-                auto trackIdStart = (_startTad >> 3) & 0x3F;
-                auto rot = _startTad & 0x3U;
+                auto trackIdStart = (pathState.startTad >> 3) & 0x3F;
+                auto rot = pathState.startTad & 0x3U;
                 const auto entry = Company::Unk25C0HashTableEntry(pos2, trackIdStart, rot);
                 company.addHashTableEntry(entry);
-                _pathFindUndoCount112C518 = 1;
+                pathState.undoCount = 1;
                 return;
             }
         }
         else
         {
-            pathFindTrackUndoSection(company, placementVars.trackRoadObjId);
+            pathFindTrackUndoSection(company, placementVars.trackRoadObjId, pathState);
         }
     }
 
     // 0x00485283
-    static void pathFindRoadUndoSection(Company& company, const uint8_t roadObjId)
+    static void pathFindRoadUndoSection(Company& company, const uint8_t roadObjId, PathfindingState& pathState)
     {
-        if (_pathFindTotalTrackRoadWeighting <= 0)
+        if (pathState.totalTrackRoadWeighting <= 0)
         {
-            _pathFindUndoCount112C518 = 0;
+            pathState.undoCount = 0;
             return;
         }
 
-        const auto roadId = (_startTad >> 3) & 0xF;
-        _pathFindTotalTrackRoadWeighting -= static_cast<int32_t>(World::TrackData::getRoadMiscData(roadId).unkWeighting);
-        _pathFindUndoCount112C518--;
+        const auto roadId = (pathState.startTad >> 3) & 0xF;
+        pathState.totalTrackRoadWeighting -= static_cast<int32_t>(World::TrackData::getRoadMiscData(roadId).unkWeighting);
+        pathState.undoCount--;
 
-        const auto rotation = (_startTad & 0x3U);
+        const auto rotation = (pathState.startTad & 0x3U);
         auto& roadPiece0 = World::TrackData::getRoadPiece(roadId)[0];
-        const auto pos = World::Pos3(_startPos, (_startBaseZ * World::kSmallZStep) + roadPiece0.z);
+        const auto pos = World::Pos3(pathState.startPos, (pathState.startBaseZ * World::kSmallZStep) + roadPiece0.z);
 
         const auto aiAllocatedElRoad = [&pos, rotation, roadId, companyId = company.id()]() -> World::RoadElement* {
             auto tile = World::TileManager::get(pos);
@@ -988,8 +994,8 @@ namespace OpenLoco::CompanyAi
         GameCommands::doCommand(args, GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment | GameCommands::Flags::apply);
         // No check of failure!
 
-        auto nextPos = World::Pos3(_startPos, _startBaseZ * World::kSmallZStep);
-        const auto rot = World::TrackData::getUnkRoad(_startTad & 0x3FFU).rotationBegin;
+        auto nextPos = World::Pos3(pathState.startPos, pathState.startBaseZ * World::kSmallZStep);
+        const auto rot = World::TrackData::getUnkRoad(pathState.startTad & 0x3FFU).rotationBegin;
         nextPos -= World::Pos3(World::kRotationOffset[rot], 0);
 
         const auto nextRot = World::kReverseRotation[rot];
@@ -1015,41 +1021,41 @@ namespace OpenLoco::CompanyAi
                 newTad ^= (1U << 1);
             }
 
-            _startTad = newTad;
-            _startPos = newPos;
-            _startBaseZ = newPos.z / World::kSmallZStep;
+            pathState.startTad = newTad;
+            pathState.startPos = newPos;
+            pathState.startBaseZ = newPos.z / World::kSmallZStep;
         }
     }
 
     // 0x00484D76
-    static void pathFindRoadSection(Company& company, const PlacementVars& placementVars)
+    static void pathFindRoadSection(Company& company, const PlacementVars& placementVars, PathfindingState& pathState)
     {
         const auto roadObjId = placementVars.trackRoadObjId & ~(1U << 7);
-        if (_pathFindUndoCount112C518 == 0)
+        if (pathState.undoCount == 0)
         {
             // 0x00484D83
-            if (_pathFindTotalTrackRoadWeighting >= static_cast<int32_t>(company.var_85EA))
+            if (pathState.totalTrackRoadWeighting >= static_cast<int32_t>(company.var_85EA))
             {
                 company.var_85F0 = 0xF000U;
                 return;
             }
             // 0x00484D9A
-            _maxTrackRoadWeightingLimit = 138;
+            pathState.maxTrackRoadWeightingLimit = 138;
 
             {
-                auto pos = World::Pos3(_targetStubPos, _targetStubBaseZ * World::kSmallZStep);
-                auto tad = _targetStubTad & 0x3FFU;
+                auto pos = World::Pos3(pathState.targetStubPos, pathState.targetStubBaseZ * World::kSmallZStep);
+                auto tad = pathState.targetStubTad & 0x3FFU;
                 const auto& roadSize = World::TrackData::getUnkRoad(tad);
                 pos += roadSize.pos;
                 const auto rotation = roadSize.rotationEnd;
                 pos -= World::Pos3(World::kRotationOffset[rotation], 0);
 
-                _targetStubPos = pos;
-                _targetStubBaseZ = pos.z / World::kSmallZStep;
+                pathState.targetStubPos = pos;
+                pathState.targetStubBaseZ = pos.z / World::kSmallZStep;
             }
 
-            auto pos = World::Pos3(_startPos, _startBaseZ * World::kSmallZStep);
-            auto tad = _startTad & 0x3FFU;
+            auto pos = World::Pos3(pathState.startPos, pathState.startBaseZ * World::kSmallZStep);
+            auto tad = pathState.startTad & 0x3FFU;
             auto& roadSize = World::TrackData::getUnkRoad(tad);
             pos += roadSize.pos;
             auto rotation = roadSize.rotationEnd & 0x3U;
@@ -1062,7 +1068,7 @@ namespace OpenLoco::CompanyAi
             for (const auto roadId : placementVars.validIds)
             {
                 const auto newTad = (roadId << 3) | rotation;
-                placementResults.push_back(std::make_pair(roadId, queryRoadPlacementScore(company, pos, newTad, placementVars)));
+                placementResults.push_back(std::make_pair(roadId, queryRoadPlacementScore(company, pos, newTad, placementVars, pathState)));
             }
             // 0x00484EF0
             uint16_t bestMinScore = 0xFFFFU;
@@ -1102,7 +1108,7 @@ namespace OpenLoco::CompanyAi
                 {
                     args.bridge = placementVars.bridgeTypes[0];
                 }
-                args.unkFlags = _createTrackRoadCommandAiUnkFlags >> 16;
+                args.unkFlags = pathState.createTrackRoadCommandAiUnkFlags >> 16;
                 args.mods = placementVars.mods >> 16;
                 if ((World::TrackData::getRoadMiscData(args.roadId).flags & World::Track::CommonTraitFlags::steepSlope) != World::Track::CommonTraitFlags::none)
                 {
@@ -1125,7 +1131,7 @@ namespace OpenLoco::CompanyAi
                         {
                             argsUnk.bridge = returnState.byte_1136075;
                         }
-                        if (_createTrackRoadCommandAiUnkFlags & (1U << 20) && returnState.alternateRoadObjectId != 0xFFU)
+                        if (pathState.createTrackRoadCommandAiUnkFlags & (1U << 20) && returnState.alternateRoadObjectId != 0xFFU)
                         {
                             argsUnk.roadObjectId = returnState.alternateRoadObjectId;
                         }
@@ -1136,53 +1142,53 @@ namespace OpenLoco::CompanyAi
                             const auto entry = Company::Unk25C0HashTableEntry(args.pos, args.roadId, args.rotation & 0x3);
                             company.addHashTableEntry(entry);
 
-                            _pathFindUndoCount112C518 = 15;
+                            pathState.undoCount = 15;
                             return;
                         }
                     }
                 }
                 // 0x0048512C
-                if (_pathFindTotalTrackRoadWeighting == 0)
+                if (pathState.totalTrackRoadWeighting == 0)
                 {
                     company.var_85E6 = (bestRoadId << 3) | (args.rotation & 0x3U);
                 }
 
-                _startPos = pos;
-                _startBaseZ = pos.z / World::kSmallZStep;
-                _startTad = (bestRoadId << 3) | (args.rotation & 0x3U);
-                _pathFindTotalTrackRoadWeighting += static_cast<int32_t>(World::TrackData::getRoadMiscData(bestRoadId).unkWeighting);
+                pathState.startPos = pos;
+                pathState.startBaseZ = pos.z / World::kSmallZStep;
+                pathState.startTad = (bestRoadId << 3) | (args.rotation & 0x3U);
+                pathState.totalTrackRoadWeighting += static_cast<int32_t>(World::TrackData::getRoadMiscData(bestRoadId).unkWeighting);
                 return;
             }
             else
             {
                 // ax, cx, dl
-                auto pos2 = World::Pos3(_startPos, _startBaseZ * World::kSmallZStep);
+                auto pos2 = World::Pos3(pathState.startPos, pathState.startBaseZ * World::kSmallZStep);
                 // dh
-                auto roadIdStart = (_startTad >> 3) & 0xF;
-                auto rot = _startTad & 0x3U;
+                auto roadIdStart = (pathState.startTad >> 3) & 0xF;
+                auto rot = pathState.startTad & 0x3U;
                 const auto entry = Company::Unk25C0HashTableEntry(pos2, roadIdStart, rot);
                 company.addHashTableEntry(entry);
-                _pathFindUndoCount112C518 = 1;
+                pathState.undoCount = 1;
                 return;
             }
         }
         else
         {
-            pathFindRoadUndoSection(company, roadObjId);
+            pathFindRoadUndoSection(company, roadObjId, pathState);
         }
     }
 
     // 0x00484648
     // company : _unk112C390
-    static void pathFindSection(Company& company, const PlacementVars& placementVars)
+    static void pathFindSection(Company& company, const PlacementVars& placementVars, PathfindingState& pathState)
     {
         if (placementVars.trackRoadObjId & (1U << 7))
         {
-            pathFindRoadSection(company, placementVars);
+            pathFindRoadSection(company, placementVars, pathState);
         }
         else
         {
-            pathFindTrackSection(company, placementVars);
+            pathFindTrackSection(company, placementVars, pathState);
         }
     }
 
@@ -2142,11 +2148,11 @@ namespace OpenLoco::CompanyAi
     // targetPos.z: 0x0112C515 * World::kSmallZStep
     // targetRot: 0x0112C516
     // trackObjId: 0x0112C519
-    static PathfindResult measureTrackRoute(const World::Pos3 startPos, const uint16_t startTad, const World::Pos3 targetPos, const uint8_t targetRot, const uint8_t trackObjId, const CompanyId companyId)
+    static PathfindResult measureTrackRoute(const World::Pos3 startPos, const uint16_t startTad, const World::Pos3 targetPos, const uint8_t targetRot, const uint8_t trackObjId, const CompanyId companyId, const PathfindingState& pathState)
     {
         PathfindResult result{};
         bool hasExistingTrackConnection = false;
-        uint32_t unk112C360 = _pathFindTotalTrackRoadWeighting;
+        uint32_t unk112C360 = pathState.totalTrackRoadWeighting;
         World::Pos3 pos = startPos;
         uint16_t tad = startTad;
         for (auto i = 0U; i < 400; ++i)
@@ -2332,12 +2338,12 @@ namespace OpenLoco::CompanyAi
     }
 
     // 0x00485B68
-    static PathfindResult measureRoute(const uint8_t trackRoadObjId)
+    static PathfindResult measureRoute(const uint8_t trackRoadObjId, const PathfindingState& pathState)
     {
-        const auto startPos = World::Pos3{ _startPos.x, _startPos.y, _startBaseZ * World::kSmallZStep };
-        const auto startTad = _startTad;
-        const auto targetPos = World::Pos3{ _targetPos.x, _targetPos.y, _targetBaseZ * World::kSmallZStep };
-        const auto targetRot = _targetRot;
+        const auto startPos = World::Pos3{ pathState.startPos.x, pathState.startPos.y, pathState.startBaseZ * World::kSmallZStep };
+        const auto startTad = pathState.startTad;
+        const auto targetPos = World::Pos3{ pathState.targetPos.x, pathState.targetPos.y, pathState.targetBaseZ * World::kSmallZStep };
+        const auto targetRot = pathState.targetRot;
         const auto companyId = GameCommands::getUpdatingCompanyId();
         if (trackRoadObjId & (1U << 7))
         {
@@ -2347,7 +2353,7 @@ namespace OpenLoco::CompanyAi
         else
         {
             const auto trackObjId = trackRoadObjId;
-            return measureTrackRoute(startPos, startTad, targetPos, targetRot, trackObjId, companyId);
+            return measureTrackRoute(startPos, startTad, targetPos, targetRot, trackObjId, companyId, pathState);
         }
     }
 
@@ -2367,9 +2373,9 @@ namespace OpenLoco::CompanyAi
     }
 
     // 0x00484508
-    static bool evaluatePathfound(Company& company, AiThought& thought, const uint8_t trackRoadObjId)
+    static bool evaluatePathfound(Company& company, AiThought& thought, const uint8_t trackRoadObjId, const PathfindingState& pathState)
     {
-        const auto pathResult = measureRoute(trackRoadObjId);
+        const auto pathResult = measureRoute(trackRoadObjId, pathState);
         const auto pathfindState = pathResult.state;
         if (pathfindState == PathfindResultState::noRoute)
         {
@@ -2456,31 +2462,32 @@ namespace OpenLoco::CompanyAi
     // 0x00483FBA
     bool aiPathfind(Company& company, AiThought& thought)
     {
+        PathfindingState pathState{};
         switch (company.var_85E8)
         {
             case 0:
             {
-                _targetPos = company.var_85C4;
-                _targetBaseZ = company.var_85C8;
-                _targetRot = company.var_85CE;
+                pathState.targetPos = company.var_85C4;
+                pathState.targetBaseZ = company.var_85C8;
+                pathState.targetRot = company.var_85CE;
 
-                _startPos = company.var_85D0;
-                _startBaseZ = company.var_85D4;
-                _startTad = company.var_85D5;
+                pathState.startPos = company.var_85D0;
+                pathState.startBaseZ = company.var_85D4;
+                pathState.startTad = company.var_85D5;
 
-                _targetStubPos = company.var_85D7;
-                _targetStubBaseZ = company.var_85DB;
-                _targetStubTad = company.var_85DC;
+                pathState.targetStubPos = company.var_85D7;
+                pathState.targetStubBaseZ = company.var_85DB;
+                pathState.targetStubTad = company.var_85DC;
 
-                _pathFindTotalTrackRoadWeighting = company.var_85DE;
-                _pathFindUndoCount112C518 = company.var_85EE;
+                pathState.totalTrackRoadWeighting = company.var_85DE;
+                pathState.undoCount = company.var_85EE;
 
-                const auto placementVars = getPlacementVars(company, thought);
+                const auto placementVars = getPlacementVars(company, thought, pathState);
 
                 if (pathStubsConnect(company, placementVars.trackRoadObjId & (1U << 7)))
                 {
                     // 0x00484508
-                    return evaluatePathfound(company, thought, placementVars.trackRoadObjId);
+                    return evaluatePathfound(company, thought, placementVars.trackRoadObjId, pathState);
                 }
                 else
                 {
@@ -2490,7 +2497,7 @@ namespace OpenLoco::CompanyAi
                     {
                         // 0x004845EF
 
-                        const auto pathfindState = measureRoute(placementVars.trackRoadObjId).state;
+                        const auto pathfindState = measureRoute(placementVars.trackRoadObjId, pathState).state;
                         if (pathfindState == PathfindResultState::noRoute)
                         {
                             return true;
@@ -2501,35 +2508,35 @@ namespace OpenLoco::CompanyAi
                         return false;
                     }
 
-                    pathFindSection(company, placementVars);
-                    company.var_85DE = _pathFindTotalTrackRoadWeighting;
-                    company.var_85EE = _pathFindUndoCount112C518;
-                    company.var_85D0 = _startPos;
-                    company.var_85D4 = _startBaseZ;
-                    company.var_85D5 = _startTad;
+                    pathFindSection(company, placementVars, pathState);
+                    company.var_85DE = pathState.totalTrackRoadWeighting;
+                    company.var_85EE = pathState.undoCount;
+                    company.var_85D0 = pathState.startPos;
+                    company.var_85D4 = pathState.startBaseZ;
+                    company.var_85D5 = pathState.startTad;
                     return false;
                 }
             }
             case 1:
             {
-                _targetPos = company.var_85C4;
-                _targetBaseZ = company.var_85C8;
-                _targetRot = company.var_85CE;
+                pathState.targetPos = company.var_85C4;
+                pathState.targetBaseZ = company.var_85C8;
+                pathState.targetRot = company.var_85CE;
 
-                _startPos = company.var_85D0;
-                _startBaseZ = company.var_85D4;
-                _startTad = company.var_85D5;
+                pathState.startPos = company.var_85D0;
+                pathState.startBaseZ = company.var_85D4;
+                pathState.startTad = company.var_85D5;
 
-                _targetStubPos = company.var_85D7;
-                _targetStubBaseZ = company.var_85DB;
-                _targetStubTad = company.var_85DC;
+                pathState.targetStubPos = company.var_85D7;
+                pathState.targetStubBaseZ = company.var_85DB;
+                pathState.targetStubTad = company.var_85DC;
 
-                _pathFindTotalTrackRoadWeighting = company.var_85DE;
-                _pathFindUndoCount112C518 = company.var_85EE;
+                pathState.totalTrackRoadWeighting = company.var_85DE;
+                pathState.undoCount = company.var_85EE;
 
-                const auto placementVars = getPlacementVars(company, thought);
+                const auto placementVars = getPlacementVars(company, thought, pathState);
 
-                if (_pathFindTotalTrackRoadWeighting == 0)
+                if (pathState.totalTrackRoadWeighting == 0)
                 {
                     // 0x004845FF
                     aiPathfindNextState(company);
@@ -2544,40 +2551,40 @@ namespace OpenLoco::CompanyAi
                         return true;
                     }
 
-                    _pathFindUndoCount112C518 = 1;
-                    pathFindSection(company, placementVars);
-                    company.var_85DE = _pathFindTotalTrackRoadWeighting;
-                    company.var_85EE = _pathFindUndoCount112C518;
-                    company.var_85D0 = _startPos;
-                    company.var_85D4 = _startBaseZ;
-                    company.var_85D5 = _startTad;
+                    pathState.undoCount = 1;
+                    pathFindSection(company, placementVars, pathState);
+                    company.var_85DE = pathState.totalTrackRoadWeighting;
+                    company.var_85EE = pathState.undoCount;
+                    company.var_85D0 = pathState.startPos;
+                    company.var_85D4 = pathState.startBaseZ;
+                    company.var_85D5 = pathState.startTad;
                     return false;
                 }
             }
             case 2:
             {
                 // Different to case 0 and 1
-                _targetPos = company.var_85C9;
-                _targetBaseZ = company.var_85CD;
-                _targetRot = company.var_85CF;
+                pathState.targetPos = company.var_85C9;
+                pathState.targetBaseZ = company.var_85CD;
+                pathState.targetRot = company.var_85CF;
 
-                _startPos = company.var_85D7;
-                _startBaseZ = company.var_85DB;
-                _startTad = company.var_85DC;
+                pathState.startPos = company.var_85D7;
+                pathState.startBaseZ = company.var_85DB;
+                pathState.startTad = company.var_85DC;
 
-                _targetStubPos = company.var_85D0;
-                _targetStubBaseZ = company.var_85D4;
-                _targetStubTad = company.var_85D5;
+                pathState.targetStubPos = company.var_85D0;
+                pathState.targetStubBaseZ = company.var_85D4;
+                pathState.targetStubTad = company.var_85D5;
 
-                _pathFindTotalTrackRoadWeighting = company.var_85E2;
-                _pathFindUndoCount112C518 = company.var_85EF;
+                pathState.totalTrackRoadWeighting = company.var_85E2;
+                pathState.undoCount = company.var_85EF;
 
-                const auto placementVars = getPlacementVars(company, thought);
+                const auto placementVars = getPlacementVars(company, thought, pathState);
 
                 if (pathStubsConnect(company, placementVars.trackRoadObjId & (1U << 7)))
                 {
                     // 0x00484508
-                    return evaluatePathfound(company, thought, placementVars.trackRoadObjId);
+                    return evaluatePathfound(company, thought, placementVars.trackRoadObjId, pathState);
                 }
                 else
                 {
@@ -2588,7 +2595,7 @@ namespace OpenLoco::CompanyAi
                     {
                         // 0x004845EF duplicate
 
-                        const auto pathfindState = measureRoute(placementVars.trackRoadObjId).state;
+                        const auto pathfindState = measureRoute(placementVars.trackRoadObjId, pathState).state;
                         if (pathfindState == PathfindResultState::noRoute)
                         {
                             return true;
@@ -2599,12 +2606,12 @@ namespace OpenLoco::CompanyAi
                         return false;
                     }
 
-                    pathFindSection(company, placementVars);
-                    company.var_85E2 = _pathFindTotalTrackRoadWeighting;
-                    company.var_85EF = _pathFindUndoCount112C518;
-                    company.var_85D7 = _startPos;
-                    company.var_85DB = _startBaseZ;
-                    company.var_85DC = _startTad;
+                    pathFindSection(company, placementVars, pathState);
+                    company.var_85E2 = pathState.totalTrackRoadWeighting;
+                    company.var_85EF = pathState.undoCount;
+                    company.var_85D7 = pathState.startPos;
+                    company.var_85DB = pathState.startBaseZ;
+                    company.var_85DC = pathState.startTad;
                     return false;
                 }
             }
