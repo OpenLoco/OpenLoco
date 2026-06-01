@@ -330,7 +330,15 @@ namespace OpenLoco::CompanyAi
     // company : _unk112C390
     //
     // return via ref argument totalResult
-    static void queryTrackPlacementScoreRecurse(Company& company, const World::Pos3 pos, const uint16_t tad, const bool unkFlag, const PlacementVars& placementVars, QueryTrackRoadPlacementResult& totalResult, QueryTrackRoadPlacementState& state, PathfindingState& pathState)
+    static void queryTrackPlacementScoreRecurse(
+        Company& company,
+        const World::Pos3 pos,
+        const uint16_t tad,
+        const bool unkFlag,
+        const PlacementVars& placementVars,
+        QueryTrackRoadPlacementResult& totalResult,
+        QueryTrackRoadPlacementState& state,
+        PathfindingState& pathState)
     {
         // bl
         const auto direction = tad & 0x3;
@@ -493,7 +501,13 @@ namespace OpenLoco::CompanyAi
         }
     }
 
-    static QueryTrackRoadPlacementResult queryTrackPlacementScore(Company& company, const World::Pos3 pos, const uint16_t tad, const bool unkFlag, const PlacementVars& placementVars, PathfindingState& pathState)
+    static QueryTrackRoadPlacementResult queryTrackPlacementScore(
+        Company& company,
+        const World::Pos3 pos,
+        const uint16_t tad,
+        const bool unkFlag,
+        const PlacementVars& placementVars,
+        PathfindingState& pathState)
     {
         QueryTrackRoadPlacementResult result{};
         result.flags = 1U << 7;
@@ -516,7 +530,14 @@ namespace OpenLoco::CompanyAi
     // company : _unk112C390
     //
     // return via ref argument totalResult
-    static void queryRoadPlacementScoreRecurse(Company& company, const World::Pos3 pos, const uint16_t tad, const PlacementVars& placementVars, QueryTrackRoadPlacementResult& totalResult, QueryTrackRoadPlacementState& state, PathfindingState& pathState)
+    static void queryRoadPlacementScoreRecurse(
+        Company& company,
+        const World::Pos3 pos,
+        const uint16_t tad,
+        const PlacementVars& placementVars,
+        QueryTrackRoadPlacementResult& totalResult,
+        QueryTrackRoadPlacementState& state,
+        PathfindingState& pathState)
     {
         // bl
         const auto direction = tad & 0x3;
@@ -634,7 +655,12 @@ namespace OpenLoco::CompanyAi
         }
     }
 
-    static QueryTrackRoadPlacementResult queryRoadPlacementScore(Company& company, const World::Pos3 pos, const uint16_t tad, const PlacementVars& placementVars, PathfindingState& pathState)
+    static QueryTrackRoadPlacementResult queryRoadPlacementScore(
+        Company& company,
+        const World::Pos3 pos,
+        const uint16_t tad,
+        const PlacementVars& placementVars,
+        PathfindingState& pathState)
     {
         QueryTrackRoadPlacementResult result{};
         result.flags = 1U << 7;
@@ -1194,7 +1220,12 @@ namespace OpenLoco::CompanyAi
 
     namespace RoadReplacePrice
     {
-        static const World::RoadElement* getRoadElement(const World::Pos3 pos, const uint8_t rotation, const uint8_t roadId, const uint8_t sequenceIndex, const CompanyId companyId)
+        static const World::RoadElement* getRoadElement(
+            const World::Pos3 pos,
+            const uint8_t rotation,
+            const uint8_t roadId,
+            const uint8_t sequenceIndex,
+            const CompanyId companyId)
         {
 
             auto tile = World::TileManager::get(pos);
@@ -2148,7 +2179,14 @@ namespace OpenLoco::CompanyAi
     // targetPos.z: 0x0112C515 * World::kSmallZStep
     // targetRot: 0x0112C516
     // trackObjId: 0x0112C519
-    static PathfindResult measureTrackRoute(const World::Pos3 startPos, const uint16_t startTad, const World::Pos3 targetPos, const uint8_t targetRot, const uint8_t trackObjId, const CompanyId companyId, const PathfindingState& pathState)
+    static PathfindResult measureTrackRoute(
+        const World::Pos3 startPos,
+        const uint16_t startTad,
+        const World::Pos3 targetPos,
+        const uint8_t targetRot,
+        const uint8_t trackObjId,
+        const CompanyId companyId,
+        const PathfindingState& pathState)
     {
         PathfindResult result{};
         bool hasExistingTrackConnection = false;
@@ -2245,7 +2283,13 @@ namespace OpenLoco::CompanyAi
     // targetPos.z: 0x0112C515 * World::kSmallZStep
     // targetRot: 0x0112C516
     // roadObjId: 0x0112C519
-    static PathfindResult measureRoadRoute(const World::Pos3 startPos, const uint16_t startTad, const World::Pos3 targetPos, const uint8_t targetRot, const uint8_t roadObjId, const CompanyId companyId)
+    static PathfindResult measureRoadRoute(
+        const World::Pos3 startPos,
+        const uint16_t startTad,
+        const World::Pos3 targetPos,
+        const uint8_t targetRot,
+        const uint8_t roadObjId,
+        const CompanyId companyId)
     {
         PathfindResult result{};
         bool hasExistingRoadConnection = false;
