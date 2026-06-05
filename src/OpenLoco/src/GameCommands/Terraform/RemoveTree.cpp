@@ -39,13 +39,13 @@ namespace OpenLoco::GameCommands
         auto tile = World::TileManager::get(args.pos);
         for (auto& element : tile)
         {
-            if (element.baseHeight() != args.pos.z)
+            auto* treeElement = element.as<World::TreeElement>();
+            if (treeElement == nullptr)
             {
                 continue;
             }
 
-            auto* treeElement = element.as<World::TreeElement>();
-            if (treeElement == nullptr)
+            if (treeElement->baseHeight() != args.pos.z)
             {
                 continue;
             }
