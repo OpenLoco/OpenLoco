@@ -1215,7 +1215,8 @@ namespace OpenLoco::Ui::ViewportInteraction
         GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
         GameCommands::TreeRemovalArgs args;
         args.pos = Pos3(pos.x, pos.y, tree->baseHeight());
-        args.elementType = tree->rawData()[0];
+        args.rotation = tree->rotation();
+        args.quadrant = tree->quadrant();
         args.type = tree->treeObjectId();
         GameCommands::doCommand(args, GameCommands::Flags::apply);
     }
