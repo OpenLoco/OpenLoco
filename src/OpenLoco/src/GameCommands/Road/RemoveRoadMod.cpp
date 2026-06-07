@@ -60,7 +60,7 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if (!sub_431E6A(elRoad->owner(), elRoad))
+        if (!checkCompanyCompatibility(elRoad->owner(), *elRoad))
         {
             return kFailure;
         }

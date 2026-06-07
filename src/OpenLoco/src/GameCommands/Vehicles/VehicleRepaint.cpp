@@ -44,7 +44,7 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if (!sub_431E6A(veh->owner))
+        if (!checkCompanyCompatibility(veh->owner))
         {
             return kFailure;
         }

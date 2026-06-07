@@ -98,7 +98,7 @@ namespace OpenLoco::GameCommands
 
         if (!(getGameState().roadObjectIdIsUsableByAllCompanies & (1 << elRoad->roadObjectId())))
         {
-            if (!sub_431E6A(elRoad->owner(), elRoad))
+            if (!checkCompanyCompatibility(elRoad->owner(), *elRoad))
             {
                 return false;
             }
@@ -177,7 +177,7 @@ namespace OpenLoco::GameCommands
             return false;
         }
 
-        if (!sub_431E6A(elTrack->owner(), elTrack))
+        if (!checkCompanyCompatibility(elTrack->owner(), *elTrack))
         {
             return false;
         }
@@ -218,7 +218,7 @@ namespace OpenLoco::GameCommands
             setExpenditureType(vehTypeToCost[enumValue(train.head->vehicleType)]);
             setPosition(args.pos);
 
-            if (!sub_431E6A(train.head->owner))
+            if (!checkCompanyCompatibility(train.head->owner))
             {
                 return kFailure;
             }

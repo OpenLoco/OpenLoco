@@ -279,7 +279,7 @@ namespace OpenLoco::GameCommands
                     return kFailure;
                 }
                 // Do not allow replacing station elements owned by other companies
-                if (!sub_431E6A(elStation->owner(), elStation))
+                if (!checkCompanyCompatibility(elStation->owner(), *elStation))
                 {
                     return kFailure;
                 }
@@ -460,7 +460,7 @@ namespace OpenLoco::GameCommands
                     }
                     if (roadObj2->hasFlags(RoadObjectFlags::anyRoadTypeCompatible)
                         || roadObj2->hasFlags(RoadObjectFlags::allowUseByAllCompanies)
-                        || sub_431E6A(elRoad->owner(), elRoad))
+                        || checkCompanyCompatibility(elRoad->owner(), *elRoad))
                     {
                         unk112C7F4 = true;
                     }

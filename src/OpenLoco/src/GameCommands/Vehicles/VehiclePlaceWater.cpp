@@ -41,7 +41,7 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if (!sub_431E6A(head->owner))
+        if (!checkCompanyCompatibility(head->owner))
         {
             return kFailure;
         }
@@ -99,7 +99,7 @@ namespace OpenLoco::GameCommands
 
             auto* station = StationManager::get(elStation->stationId());
 
-            if (!sub_431E6A(station->owner))
+            if (!checkCompanyCompatibility(station->owner))
             {
                 return kFailure;
             }

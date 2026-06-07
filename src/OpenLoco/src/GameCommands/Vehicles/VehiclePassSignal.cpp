@@ -21,7 +21,7 @@ namespace OpenLoco::GameCommands
             setPosition(train.veh2->position);
 
             auto& head = train.head;
-            if (!sub_431E6A(head->owner))
+            if (!checkCompanyCompatibility(head->owner))
             {
                 return kFailure;
             }

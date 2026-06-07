@@ -128,7 +128,7 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if ((flags & Flags::ghost) == 0 && !sub_431E6A(elTrack->owner(), elTrack))
+        if ((flags & Flags::ghost) == 0 && !checkCompanyCompatibility(elTrack->owner(), *elTrack))
         {
             return kFailure;
         }

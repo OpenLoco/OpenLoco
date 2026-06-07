@@ -290,7 +290,7 @@ namespace OpenLoco::GameCommands
         if (!(gs.roadObjectIdIsUsableByAllCompanies & (1U << elRoad.roadObjectId()))
             || !(gs.roadObjectIdIsUsableByAllCompanies & (1U << args.roadObjectId)))
         {
-            if (!sub_431E6A(elRoad.owner(), &elRoad))
+            if (!checkCompanyCompatibility(elRoad.owner(), elRoad))
             {
                 return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::collisionErrorSet);
             }
