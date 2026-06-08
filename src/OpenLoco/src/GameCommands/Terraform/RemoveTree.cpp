@@ -29,34 +29,38 @@ namespace OpenLoco::GameCommands
      * @param flags @<bl>
      * @return @<ebx> - returns the remove cost if successful; otherwise GameCommands::kFailure (in the assembly code we never get into failure path)
      */
-    static uint32_t removeTree(const World::Pos3& pos, const uint8_t type, const uint8_t elementType, const uint8_t flags)
+    static uint32_t removeTree(const TreeRemovalArgs& args, const uint8_t flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Construction);
 
-        auto tileHeight = World::TileManager::getHeight(pos);
-        GameCommands::setPosition(World::Pos3(pos.x + World::kTileSize / 2, pos.y + World::kTileSize / 2, tileHeight.landHeight));
+        auto tileHeight = World::TileManager::getHeight(args.pos);
+        GameCommands::setPosition(World::Pos3(args.pos.x + World::kTileSize / 2, args.pos.y + World::kTileSize / 2, tileHeight.landHeight));
 
-        auto tile = World::TileManager::get(pos);
+        auto tile = World::TileManager::get(args.pos);
         for (auto& element : tile)
         {
-            // TODO: refactor! Figure out what info it actually needs.
-            if (element.rawData()[0] != elementType)
-            {
-                continue;
-            }
-
-            if (element.baseHeight() != pos.z)
-            {
-                continue;
-            }
-
             auto* treeElement = element.as<World::TreeElement>();
             if (treeElement == nullptr)
             {
                 continue;
             }
 
-            if (treeElement->treeObjectId() != type)
+            if (treeElement->baseHeight() != args.pos.z)
+            {
+                continue;
+            }
+
+            if (treeElement->quadrant() != args.quadrant)
+            {
+                continue;
+            }
+
+            if (treeElement->rotation() != args.rotation)
+            {
+                continue;
+            }
+
+            if (treeElement->treeObjectId() != args.type)
             {
                 continue;
             }
@@ -66,7 +70,7 @@ namespace OpenLoco::GameCommands
 
             if (flags & Flags::apply)
             {
-                World::TileManager::removeTree(element, flags, pos);
+                World::TileManager::removeTree(element, flags, args.pos);
             }
 
             auto& options = Scenario::getOptions();
@@ -81,6 +85,6 @@ namespace OpenLoco::GameCommands
     void removeTree(registers& regs)
     {
         TreeRemovalArgs args(regs);
-        regs.ebx = removeTree(args.pos, args.type, args.elementType, regs.bl);
+        regs.ebx = removeTree(args, regs.bl);
     }
 }
