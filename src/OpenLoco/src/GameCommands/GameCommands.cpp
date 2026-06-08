@@ -113,10 +113,17 @@ namespace OpenLoco::GameCommands
         road,
         station,
     };
-    static ErrorElementKind _errorElementKind = ErrorElementKind::none;
-    static const World::TrackElement* _errorElementTrack = nullptr;
-    static const World::RoadElement* _errorElementRoad = nullptr;
-    static const World::StationElement* _errorElementStation = nullptr;
+    struct ErrorData
+    {
+        ErrorElementKind kind = ErrorElementKind::none;
+        union
+        {
+            uint8_t trackObjectId = 0;
+            uint8_t roadObjectId;
+            StationId stationId;
+        };
+    };
+    static ErrorData _errorElementData;
     static World::Pos3 _gGameCommandPosition;            // 0x009C68E0
     static StringId _gGameCommandErrorText;              // 0x009C68E6
     static StringId _gGameCommandErrorTitle;             // 0x009C68E8
@@ -135,6 +142,8 @@ namespace OpenLoco::GameCommands
         uintptr_t originalAddress; // original array: 0x004F9548
         bool unpausesGame;         // original array: 0x004F9688
     };
+
+    static constexpr StringId kErrorBelongsToOther = 0xFFFEU;
 
     // clang-format off
     static constexpr GameCommandInfo kGameCommandDefinitions[85] = {
@@ -445,7 +454,7 @@ namespace OpenLoco::GameCommands
             return GameCommands::kFailure;
         }
 
-        if (_gGameCommandErrorText != 0xFFFE)
+        if (_gGameCommandErrorText != kErrorBelongsToOther)
         {
             auto openError = _gGameCommandErrorSound ? Windows::Error::open : Windows::Error::openQuiet;
             openError(_gGameCommandErrorTitle, _gGameCommandErrorText);
@@ -453,11 +462,11 @@ namespace OpenLoco::GameCommands
         }
 
         // advanced errors
-        switch (_errorElementKind)
+        switch (_errorElementData.kind)
         {
             case ErrorElementKind::track:
             {
-                const TrackObject* pObject = ObjectManager::get<TrackObject>(_errorElementTrack->trackObjectId());
+                const TrackObject* pObject = ObjectManager::get<TrackObject>(_errorElementData.trackObjectId);
                 if (pObject != nullptr)
                 {
                     auto formatter = FormatArguments::common();
@@ -470,7 +479,7 @@ namespace OpenLoco::GameCommands
             }
             case ErrorElementKind::road:
             {
-                const RoadObject* pObject = ObjectManager::get<RoadObject>(_errorElementRoad->roadObjectId());
+                const RoadObject* pObject = ObjectManager::get<RoadObject>(_errorElementData.roadObjectId);
                 if (pObject != nullptr)
                 {
                     auto formatter = FormatArguments::common();
@@ -483,7 +492,7 @@ namespace OpenLoco::GameCommands
             }
             case ErrorElementKind::station:
             {
-                const Station* pStation = StationManager::get(_errorElementStation->stationId());
+                const Station* pStation = StationManager::get(_errorElementData.stationId);
                 if (pStation != nullptr)
                 {
                     auto formatter = FormatArguments::common();
@@ -499,7 +508,7 @@ namespace OpenLoco::GameCommands
                 break;
         }
 
-        // fallback
+        // Fallback + ErrorElementKind::none is a valid case which just means the error belongs to a company without an associated element
         auto formatter = FormatArguments::common();
         formatter.push(CompanyManager::get(_errorCompanyId)->name);
         Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_belongs_to, _errorCompanyId);
@@ -509,7 +518,7 @@ namespace OpenLoco::GameCommands
     // 0x00431E6A
     // al  : company
     // esi : tile
-    static bool sub_431E6A_common(const CompanyId company)
+    static bool checkCompanyCompatibilityCommon(const CompanyId company)
     {
         if (company == CompanyId::neutral)
         {
@@ -519,51 +528,51 @@ namespace OpenLoco::GameCommands
         {
             return true;
         }
-        _gGameCommandErrorText = 0xFFFEU;
+        _gGameCommandErrorText = kErrorBelongsToOther;
         _errorCompanyId = company;
         return false;
     }
 
-    bool sub_431E6A(const CompanyId company)
+    bool checkCompanyCompatibility(const CompanyId company)
     {
-        if (sub_431E6A_common(company))
+        if (checkCompanyCompatibilityCommon(company))
         {
             return true;
         }
-        _errorElementKind = ErrorElementKind::none;
+        _errorElementData.kind = ErrorElementKind::none;
         return false;
     }
 
-    bool sub_431E6A(const CompanyId company, const World::TrackElement* const elTrack)
+    bool checkCompanyCompatibility(const CompanyId company, const World::TrackElement& elTrack)
     {
-        if (sub_431E6A_common(company))
+        if (checkCompanyCompatibilityCommon(company))
         {
             return true;
         }
-        _errorElementKind = elTrack != nullptr ? ErrorElementKind::track : ErrorElementKind::none;
-        _errorElementTrack = elTrack;
+        _errorElementData.kind = ErrorElementKind::track;
+        _errorElementData.trackObjectId = elTrack.trackObjectId();
         return false;
     }
 
-    bool sub_431E6A(const CompanyId company, const World::RoadElement* const elRoad)
+    bool checkCompanyCompatibility(const CompanyId company, const World::RoadElement& elRoad)
     {
-        if (sub_431E6A_common(company))
+        if (checkCompanyCompatibilityCommon(company))
         {
             return true;
         }
-        _errorElementKind = elRoad != nullptr ? ErrorElementKind::road : ErrorElementKind::none;
-        _errorElementRoad = elRoad;
+        _errorElementData.kind = ErrorElementKind::road;
+        _errorElementData.roadObjectId = elRoad.roadObjectId();
         return false;
     }
 
-    bool sub_431E6A(const CompanyId company, const World::StationElement* const elStation)
+    bool checkCompanyCompatibility(const CompanyId company, const World::StationElement& elStation)
     {
-        if (sub_431E6A_common(company))
+        if (checkCompanyCompatibilityCommon(company))
         {
             return true;
         }
-        _errorElementKind = elStation != nullptr ? ErrorElementKind::station : ErrorElementKind::none;
-        _errorElementStation = elStation;
+        _errorElementData.kind = ErrorElementKind::station;
+        _errorElementData.stationId = elStation.stationId();
         return false;
     }
 

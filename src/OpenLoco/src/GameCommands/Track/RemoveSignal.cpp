@@ -99,7 +99,7 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if (!sub_431E6A(elTrack->owner(), elTrack))
+        if (!checkCompanyCompatibility(elTrack->owner(), *elTrack))
         {
             return kFailure;
         }

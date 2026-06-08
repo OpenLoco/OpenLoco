@@ -22,7 +22,7 @@ namespace OpenLoco::GameCommands
         setExpenditureType(ExpenditureType::ShipRunningCosts);
         Vehicle train(head);
         setPosition(train.veh2->position);
-        if (!sub_431E6A(train.head->owner))
+        if (!checkCompanyCompatibility(train.head->owner))
         {
             return kFailure;
         }

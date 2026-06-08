@@ -242,7 +242,7 @@ namespace OpenLoco::GameCommands
         }
         else
         {
-            if (!sub_431E6A(initialElTrack->owner(), initialElTrack))
+            if (!checkCompanyCompatibility(initialElTrack->owner(), *initialElTrack))
             {
                 return kFailure;
             }

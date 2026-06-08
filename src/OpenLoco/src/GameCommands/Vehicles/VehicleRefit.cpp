@@ -29,7 +29,7 @@ namespace OpenLoco::GameCommands
                 return kFailure;
             }
 
-            if (!sub_431E6A(head->owner))
+            if (!checkCompanyCompatibility(head->owner))
             {
                 return kFailure;
             }

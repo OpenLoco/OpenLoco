@@ -88,7 +88,7 @@ namespace OpenLoco::GameCommands
             return World::TileClearance::ClearFuncResult::collisionErrorSet;
         }
 
-        if (!sub_431E6A(elTrack.owner(), &elTrack))
+        if (!checkCompanyCompatibility(elTrack.owner(), elTrack))
         {
             return World::TileClearance::ClearFuncResult::collisionErrorSet;
         }

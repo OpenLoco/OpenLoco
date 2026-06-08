@@ -205,10 +205,13 @@ namespace OpenLoco::GameCommands
 
     uint32_t doCommand(GameCommand command, const registers& registers);
     uint32_t doCommandForReal(GameCommand command, CompanyId company, const registers& registers);
-    bool sub_431E6A(const CompanyId company);
-    bool sub_431E6A(const CompanyId company, const World::TrackElement* const elTrack);
-    bool sub_431E6A(const CompanyId company, const World::RoadElement* const elRoad);
-    bool sub_431E6A(const CompanyId company, const World::StationElement* const elStation);
+
+    // If the company matches the current updating company or if either is neutral.
+    // On failure sets relevant error text and returns false (has overloads for setting more specific error text)
+    bool checkCompanyCompatibility(const CompanyId company);
+    bool checkCompanyCompatibility(const CompanyId company, const World::TrackElement& elTrack);
+    bool checkCompanyCompatibility(const CompanyId company, const World::RoadElement& elRoad);
+    bool checkCompanyCompatibility(const CompanyId company, const World::StationElement& elStation);
 
     template<typename T>
     uint32_t doCommand(const T& args, uint8_t flags)

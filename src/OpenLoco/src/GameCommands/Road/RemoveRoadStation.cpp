@@ -124,7 +124,7 @@ namespace OpenLoco::GameCommands
             }
 
             // NB: vanilla would query owner from station struct, not the station element
-            if (!sub_431E6A(stationEl->owner(), stationEl))
+            if (!checkCompanyCompatibility(stationEl->owner(), *stationEl))
             {
                 return kFailure;
             }

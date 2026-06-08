@@ -41,7 +41,7 @@ namespace OpenLoco::GameCommands
 
         GameCommands::setPosition(veh2->position);
 
-        if (!GameCommands::sub_431E6A(head->owner))
+        if (!GameCommands::checkCompanyCompatibility(head->owner))
         {
             return kFailure;
         }

@@ -37,7 +37,7 @@ namespace OpenLoco::GameCommands
                     continue;
                 }
 
-                if (!sub_431E6A(company.id()))
+                if (!checkCompanyCompatibility(company.id()))
                 {
                     return GameCommands::kFailure;
                 }

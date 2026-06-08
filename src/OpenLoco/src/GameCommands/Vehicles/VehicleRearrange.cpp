@@ -34,11 +34,11 @@ namespace OpenLoco::GameCommands
 
         if (!(flags & Flags::apply))
         {
-            if (!sub_431E6A(sourceVehicle->owner))
+            if (!checkCompanyCompatibility(sourceVehicle->owner))
             {
                 return kFailure;
             }
-            if (!sub_431E6A(destVehicle->owner))
+            if (!checkCompanyCompatibility(destVehicle->owner))
             {
                 return kFailure;
             }

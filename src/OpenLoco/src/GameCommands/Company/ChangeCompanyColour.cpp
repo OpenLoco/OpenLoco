@@ -63,7 +63,7 @@ namespace OpenLoco::GameCommands
         }
         else
         {
-            if (!sub_431E6A(args.companyId))
+            if (!checkCompanyCompatibility(args.companyId))
             {
                 return GameCommands::kFailure;
             }

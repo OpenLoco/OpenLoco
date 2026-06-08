@@ -168,7 +168,7 @@ namespace OpenLoco::GameCommands
 
         const CompanyId roadOwner = roadEl->owner();
 
-        if (!sub_431E6A(roadOwner, roadEl))
+        if (!checkCompanyCompatibility(roadOwner, *roadEl))
         {
             return kFailure;
         }
