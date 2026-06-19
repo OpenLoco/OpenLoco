@@ -26,9 +26,21 @@ jobs:
       - name: Run check-changelog-formatting
         run: scripts/check-changelog-formatting
   windows:
-    name: Windows x64
-    runs-on: windows-latest
+    name: Windows x64 (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
     needs: check-code-formatting
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-2022
+            preset: windows
+            build_preset: windows-release
+            build_dir: windows
+          - os: windows-2025
+            preset: windows2026
+            build_preset: windows2026-release
+            build_dir: windows2026
     env:
       CONFIGURATION: Release
       POWERSHELL_TELEMETRY_OPTOUT: 1
@@ -47,23 +59,23 @@ jobs:
         uses: actions/cache@v5
         with:
           path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
-          key: ${{ runner.os }}-64-vcpkg-${{ env.ImageVersion }}-${{ hashFiles('vcpkg*.json') }}
+          key: ${{ matrix.os }}-64-vcpkg-${{ env.ImageVersion }}-${{ hashFiles('vcpkg*.json') }}
           restore-keys: |
-            ${{ runner.os }}-64-vcpkg-${{ env.ImageVersion }}-
+            ${{ matrix.os }}-64-vcpkg-${{ env.ImageVersion }}-
       - name: Build OpenLoco
         shell: cmd
         run: |
-          cmake --preset windows
-          cmake --build --preset windows-release
+          cmake --preset ${{ matrix.preset }}
+          cmake --build --preset ${{ matrix.build_preset }}
       - name: Build release
         run: |
           mkdir artifacts | Out-Null
           Copy-Item CHANGELOG.md,CONTRIBUTORS.md,LICENSE artifacts
-          Copy-Item build\windows\Release\* artifacts -Recurse
+          Copy-Item build\${{ matrix.build_dir }}\Release\* artifacts -Recurse
       - name: Upload release artifact
         uses: actions/upload-artifact@v4
         with:
-          name: OpenLoco-${{ runner.os }}-x64
+          name: OpenLoco-${{ matrix.os }}-x64
           path: |
             artifacts/
             !artifacts/*.pdb
@@ -71,7 +83,7 @@ jobs:
       - name: Upload symbols artifact
         uses: actions/upload-artifact@v4
         with:
-          name: OpenLoco-${{ runner.os }}-x64-symbols
+          name: OpenLoco-${{ matrix.os }}-x64-symbols
           path: |
             artifacts/*.pdb
           if-no-files-found: warn
@@ -95,15 +107,15 @@ jobs:
         shell: bash
         run: |
           set -e
-          ./build/windows/Release/OpenLoco.exe --locomotion_path "./LocomotionAssets" simulate "./TestData/Saves/MMTest.SV5" 100000 -o "result.sv5"
-          ./build/windows/Release/OpenLoco.exe --locomotion_path "./LocomotionAssets" compare "./TestData/Saves/MMTest100000_base.SV5" "result.sv5"
+          ./build/${{ matrix.build_dir }}/Release/OpenLoco.exe --locomotion_path "./LocomotionAssets" simulate "./TestData/Saves/MMTest.SV5" 100000 -o "result.sv5"
+          ./build/${{ matrix.build_dir }}/Release/OpenLoco.exe --locomotion_path "./LocomotionAssets" compare "./TestData/Saves/MMTest100000_base.SV5" "result.sv5"
       - name: Run Tests
         shell: cmd
         run: |
-          ctest --test-dir build\windows\ --output-on-failure
+          ctest --test-dir build\${{ matrix.build_dir }}\ --output-on-failure
   windows32:
     name: Windows Win32
-    runs-on: windows-latest
+    runs-on: windows-2022
     needs: check-code-formatting
     env:
       CONFIGURATION: Release
