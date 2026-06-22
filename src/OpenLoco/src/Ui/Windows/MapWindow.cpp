@@ -2255,20 +2255,13 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
 
         // Then, assign surface texture colours
-        for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::land); i++)
-        {
-            auto landObj = ObjectManager::get<LandObject>(i);
-            if (landObj == nullptr)
-            {
-                continue;
-            }
-
-            auto landPixel = Gfx::getG1Element(landObj->mapPixelImage)->offset[0];
+        ObjectManager::forEachLoaded<LandObject>([&availableColours](const LandObject& landObj) {
+            auto landPixel = Gfx::getG1Element(landObj.mapPixelImage)->offset[0];
             availableColours = checkIndustryColours(landPixel, availableColours);
 
-            landPixel = Gfx::getG1Element(landObj->mapPixelImage)->offset[1];
+            landPixel = Gfx::getG1Element(landObj.mapPixelImage)->offset[1];
             availableColours = checkIndustryColours(landPixel, availableColours);
-        }
+        });
 
         availableColours = checkIndustryColours(PaletteIndex::mutedDarkRed2, availableColours);
         availableColours = checkIndustryColours(PaletteIndex::black2, availableColours);
@@ -2281,41 +2274,27 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
 
         // Assign preferred industry colours, if possible
-        for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::industry); i++)
-        {
-            auto industryObj = ObjectManager::get<IndustryObject>(i);
-            if (industryObj == nullptr)
-            {
-                continue;
-            }
-
+        ObjectManager::forEachLoaded<IndustryObject>([&availableColours](LoadedObjectId i, const IndustryObject& industryObj) {
             // Preferred colour still available?
-            auto preferredColour = enumValue(industryObj->mapColour);
+            auto preferredColour = enumValue(industryObj.mapColour);
             if (availableColours & (1U << preferredColour))
             {
                 _assignedIndustryColours[i] = preferredColour;
                 availableColours &= ~(1U << preferredColour);
             }
-        }
+        });
 
         // Assign alternative industry colours if needed
-        for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::industry); i++)
-        {
-            auto industryObj = ObjectManager::get<IndustryObject>(i);
-            if (industryObj == nullptr)
-            {
-                continue;
-            }
-
+        ObjectManager::forEachLoaded<IndustryObject>([&availableColours](LoadedObjectId i, [[maybe_unused]] const IndustryObject& industryObj) {
             if (_assignedIndustryColours[i] != 0xFF)
             {
-                continue;
+                return;
             }
 
             auto freeColour = std::max(0, Numerics::bitScanForward(availableColours));
             availableColours &= ~(1U << freeColour);
             _assignedIndustryColours[i] = freeColour;
-        }
+        });
     }
 
     // 0x0046CED0
@@ -2335,20 +2314,13 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
 
         // Then, assign surface texture colours
-        for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::land); i++)
-        {
-            auto landObj = ObjectManager::get<LandObject>(i);
-            if (landObj == nullptr)
-            {
-                continue;
-            }
-
-            auto landPixel = Gfx::getG1Element(landObj->mapPixelImage)->offset[0];
+        ObjectManager::forEachLoaded<LandObject>([&availableColours](const LandObject& landObj) {
+            auto landPixel = Gfx::getG1Element(landObj.mapPixelImage)->offset[0];
             availableColours = checkIndustryColours(landPixel, availableColours);
 
-            landPixel = Gfx::getG1Element(landObj->mapPixelImage)->offset[1];
+            landPixel = Gfx::getG1Element(landObj.mapPixelImage)->offset[1];
             availableColours = checkIndustryColours(landPixel, availableColours);
-        }
+        });
 
         availableColours = checkIndustryColours(PaletteIndex::mutedDarkRed2, availableColours);
         availableColours = checkIndustryColours(PaletteIndex::orange8, availableColours);
