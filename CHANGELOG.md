@@ -24,6 +24,7 @@
 - Fix: [#3029] Even when audio is muted, the game continues to advance the jukebox playlist.
 - Fix: [#3173] Having multiple (station) vehicle lists open at once may cause duplicates and/or flashing listings.
 - Fix: [#3183] Sound and music being unpaused when the game is still paused in certain situations.
+- Fix: [#3332] Incorrect curve and slope options appear for one frame when right-clicking on track or road.
 - Fix: [#3334] Auto order of cars with centrePosition flag incorrectly calculated.
 - Fix: [#3467] 'Menu' key is not localised in the keyboard shortcuts list.
 - Fix: [#3634] Invalidation issue when show AI planning is turned off.
