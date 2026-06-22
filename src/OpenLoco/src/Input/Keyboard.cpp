@@ -129,6 +129,7 @@ namespace OpenLoco::Input
         switch (Tutorial::state())
         {
             case Tutorial::State::none:
+            case Tutorial::State::initialising:
                 break;
 
             case Tutorial::State::playing:

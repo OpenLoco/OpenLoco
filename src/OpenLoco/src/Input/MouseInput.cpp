@@ -287,6 +287,7 @@ namespace OpenLoco::Input
         switch (Tutorial::state())
         {
             case Tutorial::State::none:
+            case Tutorial::State::initialising:
             {
                 _cursor2 = _cursor;
                 break;
