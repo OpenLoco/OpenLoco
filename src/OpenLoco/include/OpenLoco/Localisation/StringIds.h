@@ -2158,6 +2158,7 @@ namespace OpenLoco::StringIds
     constexpr StringId title_preferred_company_name = 2442;
     constexpr StringId enter_preferred_company_name = 2443;
     constexpr StringId cannot_change_company_name = 2444;
+    constexpr StringId window_browse_home_folder_tooltip = 2445;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

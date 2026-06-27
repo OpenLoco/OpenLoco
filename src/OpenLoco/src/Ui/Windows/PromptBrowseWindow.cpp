@@ -54,6 +54,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         panel,
         folder_path,
         parent_button,
+        home_button,
         text_filename,
         ok_button,
         scrollview,
@@ -64,8 +65,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         Widgets::Caption({ 1, 1 }, { 498, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::empty),
         Widgets::ImageButton({ 485, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { 500, 365 }, WindowColour::secondary),
-        Widgets::Label({ 3, 18 }, { 470, 24 }, WindowColour::secondary, ContentAlign::left, StringIds::window_browse_folder),
-        Widgets::ImageButton({ 473, 18 }, { 24, 24 }, WindowColour::secondary, ImageIds::icon_parent_folder, StringIds::window_browse_parent_folder_tooltip),
+        Widgets::Label({ 3, 18 }, { 447, 24 }, WindowColour::secondary, ContentAlign::left, StringIds::window_browse_folder),
+        Widgets::ImageButton({ 449, 18 }, { 24, 24 }, WindowColour::secondary, ImageIds::icon_parent_folder, StringIds::window_browse_parent_folder_tooltip),
+        Widgets::ImageButton({ 473, 18 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_left_turnaround, StringIds::window_browse_home_folder_tooltip),
         Widgets::TextBox({ 88, 348 }, { 408, 14 }, WindowColour::secondary),
         Widgets::Button({ 426, 364 }, { 70, 12 }, WindowColour::secondary, StringIds::label_button_ok),
         Widgets::ScrollView({ 3, 45 }, { 494, 323 }, WindowColour::secondary, Scrollbars::vertical)
@@ -96,6 +98,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void drawLandscapePreview(Ui::Window& window, Gfx::DrawingContext& drawingCtx, int32_t x, int32_t y, int32_t width, int32_t height);
     static void drawTextInput(Ui::Window* window, Gfx::DrawingContext& drawingCtx, const char* text, int32_t caret, bool showCaret);
     static void upOneLevel();
+    static void defaultDirectory();
     static void changeDirectory(const fs::path& path);
     static void processFileForLoadSave(Window* window);
     static void processFileForLoadSave(Window* window, fs::path& entry);
@@ -218,6 +221,12 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 break;
             case widx::parent_button:
                 upOneLevel();
+                window.var_85A = -1;
+                window.initScrollWidgets();
+                window.invalidate();
+                break;
+            case widx::home_button:
+                defaultDirectory();
                 window.var_85A = -1;
                 window.initScrollWidgets();
                 window.invalidate();
@@ -362,8 +371,12 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             self.widgets[widx::scrollview].right += 122;
         }
 
-        self.widgets[widx::parent_button].left = self.width - 26;
-        self.widgets[widx::parent_button].right = self.width - 3;
+        self.widgets[widx::home_button].right = self.width - 3;
+        self.widgets[widx::home_button].left = self.widgets[widx::home_button].right - 24;
+
+        self.widgets[widx::parent_button].right = self.widgets[widx::home_button].left;
+        self.widgets[widx::parent_button].left = self.widgets[widx::parent_button].right - 24;
+
         self.widgets[widx::folder_path].right = self.widgets[widx::parent_button].left;
 
         // Get width of the base 'Folder:' string
@@ -834,6 +847,27 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 #endif
         // Going up one level (compensating for trailing slashes).
         changeDirectory(_currentDirectory.parent_path().parent_path());
+    }
+
+    static void defaultDirectory()
+    {
+        Environment::PathId pathId;
+        switch (_fileType)
+        {
+            case savedGame:
+                pathId = Environment::PathId::save;
+                break;
+            case landscape:
+                pathId = Environment::PathId::landscape;
+                break;
+            case heightmap:
+                pathId = Environment::PathId::heightmap;
+                break;
+            default:
+                throw Exception::RuntimeError("Unknown BrowseFileType.");
+        }
+        auto path = getDefaultPathNoWarning(pathId);
+        changeDirectory(path);
     }
 
     // 0x00446E62
