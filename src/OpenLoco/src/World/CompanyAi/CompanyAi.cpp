@@ -6662,14 +6662,12 @@ namespace OpenLoco
         // Calling GC directly to match vanilla.
         // TODO change to use GameCommands::doCommand as this isn't handling costs
         auto regs = static_cast<GameCommands::registers>(args);
-        regs.bl = GameCommands::Flags::apply;
-        GameCommands::removeRoadStation(regs);
+        GameCommands::removeRoadStation(regs, GameCommands::Flags::apply);
         if (static_cast<uint32_t>(regs.ebx) != GameCommands::kFailure)
         {
             args.rotation ^= (1u << 1);
             auto regs2 = static_cast<GameCommands::registers>(args);
-            regs2.bl = GameCommands::Flags::apply;
-            GameCommands::removeRoadStation(regs2);
+            GameCommands::removeRoadStation(regs2, GameCommands::Flags::apply);
         }
 
         auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
@@ -6704,8 +6702,7 @@ namespace OpenLoco
             // Calling GC directly to match vanilla.
             // TODO change to use GameCommands::doCommand as this isn't handling costs
             auto regs = static_cast<GameCommands::registers>(args);
-            regs.bl = GameCommands::Flags::apply;
-            GameCommands::removeTrack(regs);
+            GameCommands::removeTrack(regs, GameCommands::Flags::apply);
 
             piecePos += World::Pos3{ kRotationOffset[rotation], 0 };
         }

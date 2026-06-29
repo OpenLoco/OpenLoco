@@ -585,8 +585,8 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void createTrack(registers& regs)
+    void createTrack(registers& regs, const uint8_t flags)
     {
-        regs.ebx = createTrack(TrackPlacementArgs(regs), regs.bl);
+        regs.ebx = createTrack(TrackPlacementArgs(regs), flags);
     }
 }

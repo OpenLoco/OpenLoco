@@ -29,5 +29,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void removeWall(registers& regs);
+    void removeWall(registers& regs, const uint8_t flags);
 }

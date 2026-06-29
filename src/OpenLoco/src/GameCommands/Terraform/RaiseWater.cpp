@@ -94,9 +94,9 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void raiseWater(registers& regs)
+    void raiseWater(registers& regs, const uint8_t flags)
     {
         const RaiseWaterArgs args(regs);
-        regs.ebx = raiseWater(args, regs.bl);
+        regs.ebx = raiseWater(args, flags);
     }
 }

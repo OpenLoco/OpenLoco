@@ -83,8 +83,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehicleRepaint(registers& regs)
+    void vehicleRepaint(registers& regs, const uint8_t flags)
     {
-        regs.ebx = vehicleRepaint(VehicleRepaintArgs(regs), regs.bl);
+        regs.ebx = vehicleRepaint(VehicleRepaintArgs(regs), flags);
     }
 }

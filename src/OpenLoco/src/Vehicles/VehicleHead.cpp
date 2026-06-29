@@ -311,8 +311,7 @@ namespace OpenLoco::Vehicles
                             args.head = head;
                             args.mode = GameCommands::VehicleChangeRunningModeArgs::Mode::startVehicle;
                             auto regs = static_cast<GameCommands::registers>(args);
-                            regs.bl = GameCommands::Flags::apply;
-                            GameCommands::vehicleChangeRunningMode(regs);
+                            GameCommands::vehicleChangeRunningMode(regs, GameCommands::Flags::apply);
                             if (static_cast<uint32_t>(regs.ebx) == GameCommands::kFailure)
                             {
                                 liftUpVehicle();

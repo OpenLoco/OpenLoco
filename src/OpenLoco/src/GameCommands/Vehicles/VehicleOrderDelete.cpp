@@ -35,8 +35,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehicleOrderDelete(registers& regs)
+    void vehicleOrderDelete(registers& regs, const uint8_t flags)
     {
-        regs.ebx = vehicleOrderDelete(VehicleOrderDeleteArgs(regs), regs.bl);
+        regs.ebx = vehicleOrderDelete(VehicleOrderDeleteArgs(regs), flags);
     }
 }

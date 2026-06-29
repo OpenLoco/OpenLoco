@@ -272,9 +272,9 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void createBuilding(registers& regs)
+    void createBuilding(registers& regs, const uint8_t flags)
     {
         BuildingPlacementArgs args(regs);
-        regs.ebx = createBuilding(args, regs.bl);
+        regs.ebx = createBuilding(args, flags);
     }
 }

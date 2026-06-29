@@ -523,8 +523,8 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x00493AA7
-    void createPort(registers& regs)
+    void createPort(registers& regs, const uint8_t flags)
     {
-        regs.ebx = createPort(PortPlacementArgs(regs), regs.bl);
+        regs.ebx = createPort(PortPlacementArgs(regs), flags);
     }
 }

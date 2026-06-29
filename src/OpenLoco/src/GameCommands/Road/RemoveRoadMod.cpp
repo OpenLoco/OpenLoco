@@ -78,8 +78,8 @@ namespace OpenLoco::GameCommands
         return cost;
     }
 
-    void removeRoadMod(registers& regs)
+    void removeRoadMod(registers& regs, const uint8_t flags)
     {
-        regs.ebx = removeRoadMod(RoadModsRemovalArgs(regs), regs.bl);
+        regs.ebx = removeRoadMod(RoadModsRemovalArgs(regs), flags);
     }
 }

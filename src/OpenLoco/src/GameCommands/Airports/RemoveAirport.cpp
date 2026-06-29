@@ -294,8 +294,8 @@ namespace OpenLoco::GameCommands
         return loc_49372F(stationId, *foundStationEl, foundPos, flags);
     }
 
-    void removeAirport(registers& regs)
+    void removeAirport(registers& regs, const uint8_t flags)
     {
-        regs.ebx = removeAirport(AirportRemovalArgs(regs), regs.bl);
+        regs.ebx = removeAirport(AirportRemovalArgs(regs), flags);
     }
 }

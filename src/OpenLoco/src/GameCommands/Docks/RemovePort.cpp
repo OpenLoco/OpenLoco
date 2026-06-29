@@ -148,8 +148,8 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void removePort(registers& regs)
+    void removePort(registers& regs, const uint8_t flags)
     {
-        regs.ebx = removePort(PortRemovalArgs(regs), regs.bl);
+        regs.ebx = removePort(PortRemovalArgs(regs), flags);
     }
 }

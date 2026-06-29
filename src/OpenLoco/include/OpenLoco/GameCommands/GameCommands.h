@@ -204,7 +204,7 @@ namespace OpenLoco::GameCommands
     constexpr uint32_t kFailure = 0x80000000;
 
     uint32_t doCommand(GameCommand command, const registers& registers);
-    uint32_t doCommandForReal(GameCommand command, CompanyId company, const registers& registers);
+    uint32_t doCommandForReal(GameCommand command, CompanyId company, const registers& registers, const uint8_t flags);
 
     // If the company matches the current updating company or if either is neutral.
     // On failure sets relevant error text and returns false (has overloads for setting more specific error text)

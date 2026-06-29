@@ -24,5 +24,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void vehicleOrderReverse(registers& regs);
+    void vehicleOrderReverse(registers& regs, const uint8_t flags);
 }

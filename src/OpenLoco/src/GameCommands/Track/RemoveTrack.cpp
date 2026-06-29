@@ -260,8 +260,8 @@ namespace OpenLoco::GameCommands
         return totalRemovalCost;
     }
 
-    void removeTrack(registers& regs)
+    void removeTrack(registers& regs, const uint8_t flags)
     {
-        regs.ebx = removeTrack(TrackRemovalArgs(regs), regs.bl);
+        regs.ebx = removeTrack(TrackRemovalArgs(regs), flags);
     }
 }

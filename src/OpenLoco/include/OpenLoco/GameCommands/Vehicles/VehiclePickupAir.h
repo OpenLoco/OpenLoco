@@ -24,5 +24,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void vehiclePickupAir(registers& regs);
+    void vehiclePickupAir(registers& regs, const uint8_t flags);
 }

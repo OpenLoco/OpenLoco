@@ -49,9 +49,9 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehicleReverse(registers& regs)
+    void vehicleReverse(registers& regs, const uint8_t flags)
     {
         VehicleReverseArgs args(regs);
-        regs.ebx = vehicleReverse(args.head, regs.bl);
+        regs.ebx = vehicleReverse(args.head, flags);
     }
 }

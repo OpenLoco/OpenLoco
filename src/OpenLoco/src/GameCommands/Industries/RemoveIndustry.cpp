@@ -168,9 +168,9 @@ namespace OpenLoco::GameCommands
         return Economy::getInflationAdjustedCost(indObj->clearCostFactor, indObj->costIndex, 3);
     }
 
-    void removeIndustry(registers& regs)
+    void removeIndustry(registers& regs, const uint8_t flags)
     {
         IndustryRemovalArgs args(regs);
-        regs.ebx = removeIndustry(args.industryId, regs.bl);
+        regs.ebx = removeIndustry(args.industryId, flags);
     }
 }

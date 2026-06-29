@@ -262,9 +262,9 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void cheat(registers& regs)
+    void cheat(registers& regs, const uint8_t flags)
     {
-        regs.ebx = cheat(GameCommands::GenericCheatArgs(regs), regs.bl);
+        regs.ebx = cheat(GameCommands::GenericCheatArgs(regs), flags);
     }
 
     // 0x004BAC53
@@ -282,10 +282,10 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehicleShuntCheat(registers& regs)
+    void vehicleShuntCheat(registers& regs, const uint8_t flags)
     {
         VehicleApplyShuntCheatArgs args(regs);
-        regs.ebx = vehicleShuntCheat(args.head, regs.bl);
+        regs.ebx = vehicleShuntCheat(args.head, flags);
     }
 
     // 0x00438A08
@@ -305,8 +305,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void freeCashCheat(registers& regs)
+    void freeCashCheat(registers& regs, const uint8_t flags)
     {
-        regs.ebx = freeCashCheat(regs.bl);
+        regs.ebx = freeCashCheat(flags);
     }
 }

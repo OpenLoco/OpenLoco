@@ -87,8 +87,8 @@ namespace OpenLoco::GameCommands
         return result.cost;
     }
 
-    void createTrackMod(registers& regs)
+    void createTrackMod(registers& regs, const uint8_t flags)
     {
-        regs.ebx = createTrackMod(TrackModsPlacementArgs(regs), regs.bl);
+        regs.ebx = createTrackMod(TrackModsPlacementArgs(regs), flags);
     }
 }

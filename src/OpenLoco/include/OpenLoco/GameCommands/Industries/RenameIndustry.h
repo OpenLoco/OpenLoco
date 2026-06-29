@@ -41,5 +41,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void renameIndustry(registers& regs);
+    void renameIndustry(registers& regs, const uint8_t flags);
 }

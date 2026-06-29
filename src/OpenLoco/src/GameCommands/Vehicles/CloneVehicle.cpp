@@ -161,8 +161,8 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void cloneVehicle(registers& regs)
+    void cloneVehicle(registers& regs, const uint8_t flags)
     {
-        regs.ebx = cloneVehicle(EntityId(regs.ax), regs.bl);
+        regs.ebx = cloneVehicle(EntityId(regs.ax), flags);
     }
 }

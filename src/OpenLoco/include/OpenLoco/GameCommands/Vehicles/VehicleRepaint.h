@@ -77,5 +77,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void vehicleRepaint(registers& regs);
+    void vehicleRepaint(registers& regs, const uint8_t flags);
 }

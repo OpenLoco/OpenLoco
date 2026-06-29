@@ -284,9 +284,9 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void createWall(registers& regs)
+    void createWall(registers& regs, const uint8_t flags)
     {
         WallPlacementArgs args(regs);
-        regs.ebx = createWall(args, regs.bl);
+        regs.ebx = createWall(args, flags);
     }
 }

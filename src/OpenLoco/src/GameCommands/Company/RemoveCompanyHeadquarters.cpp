@@ -73,9 +73,9 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void removeCompanyHeadquarters(registers& regs)
+    void removeCompanyHeadquarters(registers& regs, const uint8_t flags)
     {
         HeadquarterRemovalArgs args(regs);
-        regs.ebx = removeCompanyHeadquarters(args.pos, regs.bl);
+        regs.ebx = removeCompanyHeadquarters(args.pos, flags);
     }
 }

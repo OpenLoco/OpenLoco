@@ -31,5 +31,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void vehicleOrderInsert(registers& regs);
+    void vehicleOrderInsert(registers& regs, const uint8_t flags);
 }
