@@ -86,7 +86,7 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void lowerLand(registers& regs)
+    void lowerLand(registers& regs, const uint8_t flags)
     {
         // We keep track of removed buildings for each tile visited
         // this prevents accidentally double counting their removal
@@ -94,6 +94,6 @@ namespace OpenLoco::GameCommands
         World::TileClearance::RemovedBuildings removedBuildings{};
 
         const LowerLandArgs args(regs);
-        regs.ebx = lowerLand(args, removedBuildings, regs.bl);
+        regs.ebx = lowerLand(args, removedBuildings, flags);
     }
 }

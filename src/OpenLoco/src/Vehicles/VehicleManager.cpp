@@ -389,8 +389,7 @@ namespace OpenLoco::VehicleManager
                 GameCommands::VehiclePickupAirArgs airArgs{};
                 airArgs.head = head.id;
                 GameCommands::registers regs = static_cast<GameCommands::registers>(airArgs);
-                regs.bl = GameCommands::Flags::apply;
-                GameCommands::vehiclePickupAir(regs);
+                GameCommands::vehiclePickupAir(regs, GameCommands::Flags::apply);
                 break;
             }
             case TransportMode::water:
@@ -400,8 +399,7 @@ namespace OpenLoco::VehicleManager
                 GameCommands::VehiclePickupWaterArgs waterArgs{};
                 waterArgs.head = head.id;
                 GameCommands::registers regs = static_cast<GameCommands::registers>(waterArgs);
-                regs.bl = GameCommands::Flags::apply;
-                GameCommands::vehiclePickupWater(regs);
+                GameCommands::vehiclePickupWater(regs, GameCommands::Flags::apply);
             }
         }
 

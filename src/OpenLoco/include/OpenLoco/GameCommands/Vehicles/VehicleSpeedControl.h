@@ -27,5 +27,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void vehicleSpeedControl(registers& regs);
+    void vehicleSpeedControl(registers& regs, const uint8_t flags);
 }

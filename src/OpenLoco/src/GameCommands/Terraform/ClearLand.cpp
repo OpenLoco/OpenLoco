@@ -92,9 +92,9 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void clearLand(registers& regs)
+    void clearLand(registers& regs, const uint8_t flags)
     {
         const ClearLandArgs args(regs);
-        regs.ebx = clearLand(args, regs.bl);
+        regs.ebx = clearLand(args, flags);
     }
 }

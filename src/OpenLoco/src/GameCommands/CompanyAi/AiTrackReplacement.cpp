@@ -407,8 +407,8 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004A734F
-    void aiTrackReplacement(registers& regs)
+    void aiTrackReplacement(registers& regs, const uint8_t flags)
     {
-        regs.ebx = aiTrackReplacement(AiTrackReplacementArgs(regs), regs.bl);
+        regs.ebx = aiTrackReplacement(AiTrackReplacementArgs(regs), flags);
     }
 }

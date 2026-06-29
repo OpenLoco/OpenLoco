@@ -766,8 +766,8 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    void createVehicle(registers& regs)
+    void createVehicle(registers& regs, const uint8_t flags)
     {
-        regs.ebx = createVehicle(regs.bl, regs.dx, EntityId(regs.di));
+        regs.ebx = createVehicle(flags, regs.dx, EntityId(regs.di));
     }
 }

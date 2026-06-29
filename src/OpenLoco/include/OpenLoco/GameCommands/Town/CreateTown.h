@@ -28,5 +28,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void createTown(registers& regs);
+    void createTown(registers& regs, const uint8_t flags);
 }

@@ -37,5 +37,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void createIndustry(registers& regs);
+    void createIndustry(registers& regs, const uint8_t flags);
 }

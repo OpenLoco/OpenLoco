@@ -705,9 +705,9 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void createIndustry(registers& regs)
+    void createIndustry(registers& regs, const uint8_t flags)
     {
         IndustryPlacementArgs args(regs);
-        regs.ebx = createIndustry(args, regs.bl);
+        regs.ebx = createIndustry(args, flags);
     }
 }

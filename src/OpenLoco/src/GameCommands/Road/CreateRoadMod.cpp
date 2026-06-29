@@ -76,8 +76,8 @@ namespace OpenLoco::GameCommands
         return result.cost;
     }
 
-    void createRoadMod(registers& regs)
+    void createRoadMod(registers& regs, const uint8_t flags)
     {
-        regs.ebx = createRoadMod(RoadModsPlacementArgs(regs), regs.bl);
+        regs.ebx = createRoadMod(RoadModsPlacementArgs(regs), flags);
     }
 }

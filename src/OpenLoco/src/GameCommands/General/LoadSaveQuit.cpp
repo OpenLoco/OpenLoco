@@ -71,8 +71,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void loadSaveQuit(registers& regs)
+    void loadSaveQuit(registers& regs, const uint8_t flags)
     {
-        regs.ebx = loadSaveQuit(LoadSaveQuitGameArgs(regs), regs.bl);
+        regs.ebx = loadSaveQuit(LoadSaveQuitGameArgs(regs), flags);
     }
 }

@@ -107,9 +107,9 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void changeCompanyFace(registers& regs)
+    void changeCompanyFace(registers& regs, const uint8_t flags)
     {
         ChangeCompanyFaceArgs args(regs);
-        regs.ebx = changeCompanyFace(regs.bl, args.companyId, args.objHeader);
+        regs.ebx = changeCompanyFace(flags, args.companyId, args.objHeader);
     }
 }

@@ -93,8 +93,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehiclePickupWater(registers& regs)
+    void vehiclePickupWater(registers& regs, const uint8_t flags)
     {
-        regs.ebx = vehiclePickupWater(EntityId(regs.di), regs.bl);
+        regs.ebx = vehiclePickupWater(EntityId(regs.di), flags);
     }
 }

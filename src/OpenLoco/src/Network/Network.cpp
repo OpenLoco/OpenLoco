@@ -122,7 +122,7 @@ namespace OpenLoco::Network
         Logging::info("Player #{}: {}", static_cast<int>(client), message);
     }
 
-    void queueGameCommand(CompanyId company, const OpenLoco::GameCommands::registers& regs)
+    void queueGameCommand(CompanyId company, const OpenLoco::GameCommands::registers& regs, const uint8_t flags)
     {
         // TEMP debug code
         if (regs.esi == 73)
@@ -132,11 +132,11 @@ namespace OpenLoco::Network
 
         if (_mode == NetworkMode::server)
         {
-            _server->queueGameCommand(company, regs);
+            _server->queueGameCommand(company, regs, flags);
         }
         else
         {
-            _client->sendGameCommand(company, regs);
+            _client->sendGameCommand(company, regs, flags);
         }
     }
 

@@ -27,5 +27,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void vehicleOrderDelete(registers& regs);
+    void vehicleOrderDelete(registers& regs, const uint8_t flags);
 }

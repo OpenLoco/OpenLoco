@@ -72,9 +72,9 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void removeWall(registers& regs)
+    void removeWall(registers& regs, const uint8_t flags)
     {
         const WallRemovalArgs args(regs);
-        regs.ebx = removeWall(args, regs.bl);
+        regs.ebx = removeWall(args, flags);
     }
 }

@@ -51,9 +51,9 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    void vehiclePassSignal(registers& regs)
+    void vehiclePassSignal(registers& regs, const uint8_t flags)
     {
         VehiclePassSignalArgs args(regs);
-        regs.ebx = vehiclePassSignal(args.head, regs.bl);
+        regs.ebx = vehiclePassSignal(args.head, flags);
     }
 }

@@ -112,9 +112,9 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void changeCompanyOwnerName(registers& regs)
+    void changeCompanyOwnerName(registers& regs, const uint8_t flags)
     {
-        regs.ebx = changeCompanyOwnerName(ChangeCompanyOwnerNameArgs(regs), regs.bl);
+        regs.ebx = changeCompanyOwnerName(ChangeCompanyOwnerNameArgs(regs), flags);
     }
 
     // 0x00434BA1
@@ -191,8 +191,7 @@ namespace OpenLoco::GameCommands
             args.objHeader = foundInstalledObject.value();
 
             auto regs = registers(args);
-            regs.bl = Flags::apply;
-            changeCompanyFace(regs);
+            changeCompanyFace(regs, Flags::apply);
         }
     }
 }

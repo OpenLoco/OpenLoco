@@ -120,8 +120,7 @@ namespace OpenLoco::GameCommands
                         GameCommands::VehiclePickupAirArgs airArgs{};
                         airArgs.head = train.head->id;
                         registers regs = static_cast<registers>(airArgs);
-                        regs.bl = GameCommands::Flags::apply;
-                        GameCommands::vehiclePickupAir(regs);
+                        GameCommands::vehiclePickupAir(regs, GameCommands::Flags::apply);
                         break;
                     }
                     case TransportMode::water:
@@ -131,8 +130,7 @@ namespace OpenLoco::GameCommands
                         GameCommands::VehiclePickupWaterArgs waterArgs{};
                         waterArgs.head = train.head->id;
                         registers regs = static_cast<registers>(waterArgs);
-                        regs.bl = GameCommands::Flags::apply;
-                        GameCommands::vehiclePickupWater(regs);
+                        GameCommands::vehiclePickupWater(regs, GameCommands::Flags::apply);
                     }
                 }
                 setExpenditureType(ExpenditureType::TrainRunningCosts);
@@ -167,8 +165,8 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    void vehicleRearrange(registers& regs)
+    void vehicleRearrange(registers& regs, const uint8_t flags)
     {
-        regs.ebx = vehicleRearrange(VehicleRearrangeArgs(regs), regs.bl);
+        regs.ebx = vehicleRearrange(VehicleRearrangeArgs(regs), flags);
     }
 }

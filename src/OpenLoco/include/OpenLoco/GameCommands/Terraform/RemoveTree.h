@@ -35,5 +35,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void removeTree(registers& regs);
+    void removeTree(registers& regs, const uint8_t flags);
 }

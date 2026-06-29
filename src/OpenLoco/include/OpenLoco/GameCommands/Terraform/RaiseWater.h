@@ -28,5 +28,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void raiseWater(registers& regs);
+    void raiseWater(registers& regs, const uint8_t flags);
 }

@@ -69,9 +69,9 @@ namespace OpenLoco::Network
 
         void listen(const std::string& bind, port_t port);
         void sendChatMessage(std::string_view message) override;
-        void sendGameCommand(uint32_t index, uint32_t tick, CompanyId company, const OpenLoco::GameCommands::registers& regs);
+        void sendGameCommand(uint32_t index, uint32_t tick, CompanyId company, const OpenLoco::GameCommands::registers& regs, const uint8_t flags);
 
-        void queueGameCommand(CompanyId company, const OpenLoco::GameCommands::registers& regs);
+        void queueGameCommand(CompanyId company, const OpenLoco::GameCommands::registers& regs, const uint8_t flags);
         void runGameCommands();
     };
 }

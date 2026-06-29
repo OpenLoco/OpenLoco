@@ -37,5 +37,5 @@ namespace OpenLoco::GameCommands
     };
 
     uint32_t raiseLand(const RaiseLandArgs& args, World::TileClearance::RemovedBuildings& removedBuildings, const uint8_t flags);
-    void raiseLand(registers& regs);
+    void raiseLand(registers& regs, const uint8_t flags);
 }

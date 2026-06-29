@@ -188,8 +188,8 @@ namespace OpenLoco::GameCommands
         return cost;
     }
 
-    void removeSignal(registers& regs)
+    void removeSignal(registers& regs, const uint8_t flags)
     {
-        regs.ebx = removeSignal(SignalRemovalArgs(regs), regs.bl);
+        regs.ebx = removeSignal(SignalRemovalArgs(regs), flags);
     }
 }

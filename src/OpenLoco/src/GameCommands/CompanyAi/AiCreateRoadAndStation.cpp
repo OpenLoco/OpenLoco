@@ -57,8 +57,7 @@ namespace OpenLoco::GameCommands
             roadArgs.unkFlags = 0;
 
             auto roadRegs = static_cast<registers>(roadArgs);
-            roadRegs.bl = flags;
-            createRoad(roadRegs);
+            createRoad(roadRegs, flags);
             const auto roadRes = static_cast<currency32_t>(roadRegs.ebx);
             if (!(flags & GameCommands::Flags::apply))
             {
@@ -85,8 +84,7 @@ namespace OpenLoco::GameCommands
             stationArgs.index = 0;  // Always index 0 for straight road
 
             auto stationRegs = static_cast<registers>(stationArgs);
-            stationRegs.bl = flags;
-            createRoadStation(stationRegs);
+            createRoadStation(stationRegs, flags);
             const auto stationRes = static_cast<currency32_t>(stationRegs.ebx);
             if (!(flags & GameCommands::Flags::apply))
             {
@@ -121,8 +119,8 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0047AF0B
-    void aiCreateRoadAndStation(registers& regs)
+    void aiCreateRoadAndStation(registers& regs, const uint8_t flags)
     {
-        regs.ebx = aiCreateRoadAndStationCost(AiRoadAndStationPlacementArgs(regs), regs.bl);
+        regs.ebx = aiCreateRoadAndStationCost(AiRoadAndStationPlacementArgs(regs), flags);
     }
 }

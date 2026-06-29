@@ -88,8 +88,7 @@ namespace OpenLoco::GameCommands
                 trackArgs.unk = false;
 
                 auto trackRegs = static_cast<registers>(trackArgs);
-                trackRegs.bl = flags;
-                createTrack(trackRegs);
+                createTrack(trackRegs, flags);
                 const auto trackRes = static_cast<currency32_t>(trackRegs.ebx);
                 if (!(flags & GameCommands::Flags::apply))
                 {
@@ -116,8 +115,7 @@ namespace OpenLoco::GameCommands
                 stationArgs.index = 0;   // Always index 0 for straight track
 
                 auto stationRegs = static_cast<registers>(stationArgs);
-                stationRegs.bl = flags;
-                createTrainStation(stationRegs);
+                createTrainStation(stationRegs, flags);
                 const auto stationRes = static_cast<currency32_t>(stationRegs.ebx);
                 if (!(flags & GameCommands::Flags::apply))
                 {
@@ -169,8 +167,8 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004A6FDC
-    void aiCreateTrackAndStation(registers& regs)
+    void aiCreateTrackAndStation(registers& regs, const uint8_t flags)
     {
-        regs.ebx = aiCreateTrackAndStation(AiTrackAndStationPlacementArgs(regs), regs.bl);
+        regs.ebx = aiCreateTrackAndStation(AiTrackAndStationPlacementArgs(regs), flags);
     }
 }

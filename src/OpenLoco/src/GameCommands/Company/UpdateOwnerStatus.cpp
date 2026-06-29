@@ -20,9 +20,9 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void updateOwnerStatus(registers& regs)
+    void updateOwnerStatus(registers& regs, const uint8_t flags)
     {
         UpdateOwnerStatusArgs args(regs);
-        regs.ebx = updateOwnerStatus(regs.bl, args.ownerStatus);
+        regs.ebx = updateOwnerStatus(flags, args.ownerStatus);
     }
 }

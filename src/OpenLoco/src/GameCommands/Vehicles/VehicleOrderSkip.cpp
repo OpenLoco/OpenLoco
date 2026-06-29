@@ -32,8 +32,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehicleOrderSkip(registers& regs)
+    void vehicleOrderSkip(registers& regs, const uint8_t flags)
     {
-        regs.ebx = vehicleOrderSkip(EntityId(regs.di), regs.bl);
+        regs.ebx = vehicleOrderSkip(EntityId(regs.di), flags);
     }
 }

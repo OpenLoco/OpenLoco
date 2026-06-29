@@ -194,8 +194,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehiclePlaceAir(registers& regs)
+    void vehiclePlaceAir(registers& regs, const uint8_t flags)
     {
-        regs.ebx = vehiclePlaceAir(VehicleAirPlacementArgs(regs), regs.bl);
+        regs.ebx = vehiclePlaceAir(VehicleAirPlacementArgs(regs), flags);
     }
 }

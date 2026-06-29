@@ -24,5 +24,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void removeIndustry(registers& regs);
+    void removeIndustry(registers& regs, const uint8_t flags);
 }

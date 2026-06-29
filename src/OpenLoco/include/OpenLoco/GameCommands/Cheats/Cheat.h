@@ -82,7 +82,7 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void vehicleShuntCheat(registers& regs);
-    void cheat(registers& regs);
-    void freeCashCheat(registers& regs);
+    void vehicleShuntCheat(registers& regs, const uint8_t flags);
+    void cheat(registers& regs, const uint8_t flags);
+    void freeCashCheat(registers& regs, const uint8_t flags);
 }

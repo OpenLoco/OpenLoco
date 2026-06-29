@@ -32,5 +32,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void createPort(registers& regs);
+    void createPort(registers& regs, const uint8_t flags);
 }

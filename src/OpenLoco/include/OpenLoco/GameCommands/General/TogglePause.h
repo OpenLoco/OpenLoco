@@ -19,5 +19,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void togglePause(registers& regs);
+    void togglePause(registers& regs, const uint8_t flags);
 }
