@@ -69,6 +69,6 @@ namespace OpenLoco::World
     static_assert(sizeof(IndustryElement) == kTileElementSize);
 
     struct Animation;
-    bool updateIndustryAnimation1(const Animation& anim);
-    bool updateIndustryAnimation2(const Animation& anim);
+    bool updateIndustryContinuousAnimation(const Animation& anim);
+    bool updateIndustryRandomAnimation(const Animation& anim);
 }
