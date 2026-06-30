@@ -13,13 +13,18 @@ namespace OpenLoco::World
     enum class IndustryElementFlags : uint16_t
     {
         none = 0U,
-        randomAnimationTypeMask = 0x3U << 0,
         playingRandomAnimation = 1U << 4,
         randomAnimationQueued = 1U << 5,
-        buildingTypeMask = 0x1FU << 6,
-        colourMask = 0x1FU << 11,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(IndustryElementFlags);
+
+    constexpr uint16_t kIndustryElement6ColourMask = 0xF800;
+    constexpr uint16_t kIndustryElement6BuildingTypeMask = 0x07C0;
+    constexpr uint16_t kIndustryElement6RandomAnimationTypeMask = 0x0003;
+    constexpr uint16_t kIndustryElement6SectionsCompletedMask = 0x001F;
+    constexpr uint16_t kIndustryElement5TileSequenceMask = 0x03;
+    constexpr uint8_t kIndustryElement5SectionConstructionProgressMask = 0xE0;
+
 #pragma pack(push, 1)
 
     struct IndustryElement : public TileElement
@@ -28,16 +33,22 @@ namespace OpenLoco::World
 
     private:
         IndustryId _industryId;
+
+        /* Field _5 data structures
+         * 0b111xxxxx = construction progress of uppermost section
+         * 0bxxxxxx11 = sequence number of multi-tile building
+         * 0bxxx111xx = unused bits
+         */
         uint8_t _5;
 
         /* Field _6 data structures
          * 0b11111xxxxxxxxxxx = colour
-         * 0bxxxxxx11111xxxxx = building type
-         * 0bxxxxxxxxxxx1xxxx = random animation is queued and will play at the next opportunity
-         * 0bxxxxxxxxxxxx1xxx = random animation is currently playing
+         * 0bxxxxx11111xxxxxx = building type
+         * 0bxxxxxxxxxx1xxxxx = random animation is queued and will play at the next opportunity
+         * 0bxxxxxxxxxxx1xxxx = random animation is currently playing
          * 0bxxxxxxxxxxxxxx11 = random animation type
-         * 0bxxxxx1xxxxxxx1xx = unused bits
-         * 0bxxxxxxxxxx111111 = number of building sections
+         * 0bxxxxxxxxxxxx11xx = unused bits (of above)
+         * 0bxxxxxxxxxx111111 = number of building sections completed
          */
         uint16_t _6;
 
@@ -50,7 +61,7 @@ namespace OpenLoco::World
         uint8_t buildingType() const;
         void setBuildingType(uint8_t type)
         {
-            _6 &= ~0x7C0;
+            _6 &= ~kIndustryElement6BuildingTypeMask;
             _6 |= type << 6;
         }
         uint8_t rotation() const { return _0 & 0x3; }
@@ -63,17 +74,17 @@ namespace OpenLoco::World
         uint8_t sequenceIndex() const;
         void setSequenceIndex(const uint8_t index)
         {
-            _5 &= ~0x3;
-            _5 |= index & 0x3;
+            _5 &= ~kIndustryElement5TileSequenceMask;
+            _5 |= index & kIndustryElement5TileSequenceMask;
         }
         // var_5_E0
         uint8_t sectionProgress() const;
         void setSectionProgress(uint8_t val);
 
-        Colour var_6_F800() const;
+        Colour colour() const;
         void setColour(Colour c)
         {
-            _6 &= ~0xF800;
+            _6 &= ~kIndustryElement6ColourMask;
             _6 |= enumValue(c) << 11;
         }
 
@@ -99,7 +110,7 @@ namespace OpenLoco::World
 
         constexpr uint8_t randomAnimationType() const
         {
-            return _6 & enumValue(IndustryElementFlags::randomAnimationTypeMask);
+            return _6 & kIndustryElement6RandomAnimationTypeMask;
         }
         void setRandomAnimationType(uint8_t type);
     };
