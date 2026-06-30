@@ -441,7 +441,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
     namespace Transported
     {
-        static constexpr Ui::Size kWindowSize = { 300, 127 };
+        static constexpr Ui::Size kWindowSize = { 300, 196 };
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(300, 126, StringIds::title_statistics)
@@ -499,6 +499,35 @@ namespace OpenLoco::Ui::Windows::Industry
                 }
                 origin.y += 4;
                 origin.x -= 4;
+
+                // Draw input buffer stats
+                tr.drawStringLeft(origin, Colour::black, StringIds::cargo_awaiting_processing);
+                origin.y += 10;
+                origin.x += 4;
+                cargoNumber = 0;
+                for (const auto& requiredCargoType : industryObj->requiredCargoType)
+                {
+                    if (requiredCargoType != kCargoTypeNull)
+                    {
+                        auto cargoObj = ObjectManager::get<CargoObject>(requiredCargoType);
+                        FormatArguments args{};
+
+                        if (industry->receivedCargoQuantityPreviousMonth[cargoNumber] == 1)
+                        {
+                            args.push(cargoObj->unitNameSingular);
+                        }
+                        else
+                        {
+                            args.push(cargoObj->unitNamePlural);
+                        }
+                        args.push<uint32_t>(industry->receivedCargoQuantityDailyTotal[cargoNumber]);
+
+                        origin = tr.drawStringLeftWrapped(origin, 290, Colour::black, StringIds::black_stringid, args);
+                    }
+                    cargoNumber++;
+                }
+                origin.y += 4;
+                origin.x -= 4;
             }
 
             // Draw Last Months produced cargo stats
@@ -531,6 +560,38 @@ namespace OpenLoco::Ui::Windows::Industry
                     }
                     cargoNumber++;
                 }
+                origin.y += 4;
+                origin.x -= 4;
+
+                // Draw output buffer stats
+                tr.drawStringLeft(origin, Colour::black, StringIds::cargo_awaiting_transport);
+                origin.y += 10;
+                origin.x += 4;
+
+                cargoNumber = 0;
+                for (const auto& producedCargoType : industryObj->producedCargoType)
+                {
+                    if (producedCargoType != kCargoTypeNull)
+                    {
+                        auto cargoObj = ObjectManager::get<CargoObject>(producedCargoType);
+                        FormatArguments args{};
+
+                        if (industry->receivedCargoQuantityPreviousMonth[cargoNumber] == 1)
+                        {
+                            args.push(cargoObj->unitNameSingular);
+                        }
+                        else
+                        {
+                            args.push(cargoObj->unitNamePlural);
+                        }
+                        args.push<uint32_t>(industry->outputBuffer[cargoNumber]);
+
+                        origin = tr.drawStringLeftWrapped(origin, 290, Colour::black, StringIds::black_stringid, args);
+                    }
+                    cargoNumber++;
+                }
+                origin.y += 4;
+                origin.x -= 4;
             }
         }
 

@@ -2497,3 +2497,5 @@ strings:
   2442: Preferred Company Name
   2443: "Enter the preferred company name:"
   2444: Can't change company name...
+  2445: "{COLOUR WINDOW_2}Cargo awaiting processing:"
+  2446: "{COLOUR WINDOW_2}Cargo awaiting transport:"

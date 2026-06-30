@@ -302,6 +302,10 @@ __pycache__/
 CMakeUserSettings.json
 CMakeUserPresets.json
 
+# CMake build directories
+.cmake/
+CMakeFiles/
+
 # BizTalk build output
 *.btp.cs
 *.btm.cs
