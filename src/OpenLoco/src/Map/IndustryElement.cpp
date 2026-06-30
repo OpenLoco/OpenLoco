@@ -22,39 +22,39 @@ namespace OpenLoco::World
 
     uint8_t IndustryElement::buildingType() const
     {
-        return (_6 >> 6) & 0x1F;
+        return (_6 & kIndustryElement6BuildingTypeMask) >> 6;
     }
 
-    Colour IndustryElement::var_6_F800() const
+    Colour IndustryElement::colour() const
     {
-        return static_cast<Colour>((_6 >> 11) & 0x1F);
+        return static_cast<Colour>((_6 & kIndustryElement6ColourMask) >> 11);
     }
 
     uint8_t IndustryElement::sectionsCompleted() const
     {
-        return _6 & 0x3F;
+        return _6 & kIndustryElement6SectionsCompletedMask;
     }
 
     void IndustryElement::setSectionsCompleted(uint8_t val)
     {
-        _6 &= ~(0x3F);
-        _6 |= val & 0x3F;
+        _6 &= ~kIndustryElement6SectionsCompletedMask;
+        _6 |= val & kIndustryElement6SectionsCompletedMask;
     }
 
     uint8_t IndustryElement::sectionProgress() const
     {
-        return (_5 >> 5) & 0x7;
+        return (_5 & kIndustryElement5SectionConstructionProgressMask) >> 5;
     }
 
     void IndustryElement::setSectionProgress(uint8_t val)
     {
-        _5 &= ~(0xE0);
-        _5 |= (val & 0x7) << 5;
+        _5 &= ~kIndustryElement5SectionConstructionProgressMask;
+        _5 |= (val << 5 ) & kIndustryElement5SectionConstructionProgressMask;
     }
 
     uint8_t IndustryElement::sequenceIndex() const
     {
-        return _5 & 0x3;
+        return _5 & kIndustryElement5TileSequenceMask;
     }
 
     void IndustryElement::setIsConstructed(bool val)
@@ -65,7 +65,7 @@ namespace OpenLoco::World
 
     void IndustryElement::setRandomAnimationType(uint8_t type)
     {
-        _6 &= ~enumValue(IndustryElementFlags::randomAnimationTypeMask);
+        _6 &= ~kIndustryElement6RandomAnimationTypeMask;
         _6 |= type;
     }
 

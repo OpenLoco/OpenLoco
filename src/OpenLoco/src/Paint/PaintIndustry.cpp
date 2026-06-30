@@ -165,7 +165,7 @@ namespace OpenLoco::Paint
         auto* industry = elIndustry.industry();
         auto* indObj = industry->getObject();
 
-        ImageId baseColour(0, elIndustry.var_6_F800());
+        ImageId baseColour(0, elIndustry.colour());
         if (elIndustry.isGhost())
         {
             session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
@@ -194,7 +194,7 @@ namespace OpenLoco::Paint
             if (session.getRenderTarget()->zoomLevel <= 1)
             {
                 const auto shadowImageOffset = buildingType * 4 + indObj->shadowImageIds + rotation;
-                const ImageId shadowImage = baseColour.withIndex(shadowImageOffset).withTranslucency(Colours::getShadow(elIndustry.var_6_F800()));
+                const ImageId shadowImage = baseColour.withIndex(shadowImageOffset).withTranslucency(Colours::getShadow(elIndustry.colour()));
                 if (isMultiTile)
                 {
                     session.addToPlotListAsChild(shadowImage, imageOffset, bbOffset, bbSize);
