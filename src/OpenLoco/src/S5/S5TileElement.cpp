@@ -208,9 +208,9 @@ namespace OpenLoco::S5
                 dstElem.setIndustryId(enumValue(srcElem.industryId()));
                 dstElem.setSequenceIndex(srcElem.sequenceIndex());
                 dstElem.setSectionProgress(srcElem.sectionProgress());
-                dstElem.setVar6_003F(srcElem.var_6_003F());
+                dstElem.setVar6_003F(srcElem.sectionsCompleted());
                 dstElem.setBuildingType(srcElem.buildingType());
-                dstElem.setColour(enumValue(srcElem.var_6_F800()));
+                dstElem.setColour(enumValue(srcElem.colour()));
                 break;
             }
         }
