@@ -49,7 +49,7 @@ namespace OpenLoco::World
     void IndustryElement::setSectionProgress(uint8_t val)
     {
         _5 &= ~kIndustryElement5SectionConstructionProgressMask;
-        _5 |= (val << 5 ) & kIndustryElement5SectionConstructionProgressMask;
+        _5 |= (val << 5) & kIndustryElement5SectionConstructionProgressMask;
     }
 
     uint8_t IndustryElement::sequenceIndex() const
@@ -209,8 +209,7 @@ namespace OpenLoco::World
                     if ((rand & 0x700) == 0)
                     {
                         const auto randAnim = _E0C3D4[(numAnimations * (rand & 0xFF)) / 256];
-                        applyToMultiTile(*this, loc, isMultiTile, [randAnim](IndustryElement& elIndustry, [[maybe_unused]] const World::Pos2& pos)
-                        {
+                        applyToMultiTile(*this, loc, isMultiTile, [randAnim](IndustryElement& elIndustry, [[maybe_unused]] const World::Pos2& pos) {
                             elIndustry.setFlags(IndustryElementFlags::randomAnimationQueued);
                             elIndustry.setRandomAnimationType(randAnim);
                         });
