@@ -1,5 +1,6 @@
 #pragma once
 
+#include "OpenLoco/Core/EnumFlags.hpp"
 #include "TileElement.h"
 
 namespace OpenLoco
@@ -9,6 +10,12 @@ namespace OpenLoco
 
 namespace OpenLoco::World
 {
+    enum class IndustryElementFlags : uint16_t
+    {
+        none = 0U,
+        randomAnimationPlaying = 1U << 5,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(IndustryElementFlags);
 #pragma pack(push, 1)
 
     struct IndustryElement : public TileElement
@@ -18,7 +25,11 @@ namespace OpenLoco::World
     private:
         IndustryId _industryId;
         uint8_t _5;
-        uint16_t _6;
+        union
+        {
+            uint16_t _6;
+            IndustryElementFlags industryFlags;
+        };
 
     public:
         // _4
@@ -64,6 +75,10 @@ namespace OpenLoco::World
         void setIsConstructed(bool val);
 
         bool update(const World::Pos2& loc);
+        constexpr bool hasFlags(IndustryElementFlags flagsToTest) const
+        {
+            return (industryFlags & flagsToTest) != IndustryElementFlags::none;
+        }
     };
 #pragma pack(pop)
     static_assert(sizeof(IndustryElement) == kTileElementSize);
