@@ -31,14 +31,14 @@ namespace OpenLoco::Paint
         if (!elIndustry.isConstructed())
         {
             ticks = 0;
-            numSections = elIndustry.var_6_003F();
+            numSections = elIndustry.sectionsCompleted();
             sectionProgress = elIndustry.sectionProgress();
         }
 
         std::span<const std::uint8_t> animationSequence{};
-        if ((elIndustry.var_6_003F() & (1 << 5)) && (elIndustry.var_6_003F() & (1 << 4)))
+        if (elIndustry.hasFlags(IndustryElementFlags::randomAnimationQueued | IndustryElementFlags::playingRandomAnimation))
         {
-            animationSequence = indObj.getAnimationSequence(elIndustry.var_6_003F() & 0x3);
+            animationSequence = indObj.getAnimationSequence(elIndustry.randomAnimationType());
         }
 
         uint32_t buildingType = elIndustry.buildingType();

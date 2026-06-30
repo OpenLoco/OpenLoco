@@ -13,7 +13,11 @@ namespace OpenLoco::World
     enum class IndustryElementFlags : uint16_t
     {
         none = 0U,
-        randomAnimationPlaying = 1U << 5,
+        randomAnimationTypeMask = 0x3U << 0,
+        playingRandomAnimation = 1U << 4,
+        randomAnimationQueued = 1U << 5,
+        buildingTypeMask = 0x1FU << 6,
+        colourMask = 0x1FU << 11,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(IndustryElementFlags);
 #pragma pack(push, 1)
@@ -25,11 +29,17 @@ namespace OpenLoco::World
     private:
         IndustryId _industryId;
         uint8_t _5;
-        union
-        {
-            uint16_t _6;
-            IndustryElementFlags industryFlags;
-        };
+
+        /* Field _6 data structures
+         * 0b11111xxxxxxxxxxx = colour
+         * 0bxxxxxx11111xxxxx = building type
+         * 0bxxxxxxxxxxx1xxxx = random animation is queued and will play at the next opportunity
+         * 0bxxxxxxxxxxxx1xxx = random animation is currently playing
+         * 0bxxxxxxxxxxxxxx11 = random animation type
+         * 0bxxxxx1xxxxxxx1xx = unused bits
+         * 0bxxxxxxxxxx111111 = number of building sections
+         */
+        uint16_t _6;
 
     public:
         // _4
@@ -67,9 +77,8 @@ namespace OpenLoco::World
             _6 |= enumValue(c) << 11;
         }
 
-        // This has two uses. When under construction it is the number of completed sections. Otherwise its animation sequence related
-        uint8_t var_6_003F() const;
-        void setVar_6_003F(uint8_t val);
+        uint8_t sectionsCompleted() const;
+        void setSectionsCompleted(uint8_t val);
 
         bool isConstructed() const { return _0 & 0x80; }
         void setIsConstructed(bool val);
@@ -77,8 +86,22 @@ namespace OpenLoco::World
         bool update(const World::Pos2& loc);
         constexpr bool hasFlags(IndustryElementFlags flagsToTest) const
         {
-            return (industryFlags & flagsToTest) != IndustryElementFlags::none;
+            return (static_cast<IndustryElementFlags>(_6) & flagsToTest) == flagsToTest;
         }
+        void setFlags(IndustryElementFlags flagsToSet)
+        {
+            _6 |= enumValue(flagsToSet);
+        }
+        void unsetFlags(IndustryElementFlags flagsToUnset)
+        {
+            _6 &= ~enumValue(flagsToUnset);
+        };
+
+        constexpr uint8_t randomAnimationType() const
+        {
+            return _6 & enumValue(IndustryElementFlags::randomAnimationTypeMask);
+        }
+        void setRandomAnimationType(uint8_t type);
     };
 #pragma pack(pop)
     static_assert(sizeof(IndustryElement) == kTileElementSize);
