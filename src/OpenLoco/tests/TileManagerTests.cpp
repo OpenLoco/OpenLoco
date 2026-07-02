@@ -53,7 +53,7 @@ namespace
             for (size_t i = 0; i < tile.size(); ++i)
             {
                 std::array<uint8_t, kTileElementSize> bytes{};
-                std::memcpy(bytes.data(), tile[i], kTileElementSize);
+                std::memcpy(bytes.data(), tile[i]->rawData().data(), kTileElementSize);
                 out.push_back(bytes);
             }
             return out;
@@ -282,12 +282,12 @@ TEST_F(TileManagerTest, TileIndexOfFindsMemberAndMissesNonMember)
     TileManager::insertElement(ElementType::tree, toWorldSpace(kTestTile), 16, 0);
     auto tile = TileManager::get(kTestTile);
     ASSERT_EQ(tile.size(), 3u);
-    EXPECT_EQ(tile.indexOf(tile[0]), 0u);
-    EXPECT_EQ(tile.indexOf(tile[1]), 1u);
-    EXPECT_EQ(tile.indexOf(tile[2]), 2u);
+    EXPECT_EQ(tile.indexOf(&TileManager::resolveEntry(tile[0])), 0u);
+    EXPECT_EQ(tile.indexOf(&TileManager::resolveEntry(tile[1])), 1u);
+    EXPECT_EQ(tile.indexOf(&TileManager::resolveEntry(tile[2])), 2u);
 
     auto otherTile = TileManager::get(kOtherTile);
-    EXPECT_EQ(tile.indexOf(otherTile[0]), Tile::npos);
+    EXPECT_EQ(tile.indexOf(&TileManager::resolveEntry(otherTile[0])), Tile::npos);
 }
 
 TEST_F(TileManagerTest, BoundaryTilesAreUsable)
@@ -796,7 +796,7 @@ TEST_F(TileManagerTest, TileSurfaceReturnsTheSurfaceElement)
     ASSERT_NE(surface, nullptr);
     EXPECT_EQ(typeAt(tile, 0), ElementType::surface);
     EXPECT_EQ(surface->baseZ(), 4);
-    EXPECT_EQ(static_cast<TileElement*>(surface), tile[0]);
+    EXPECT_EQ(static_cast<TileElement*>(surface), &TileManager::resolveEntry(tile[0]));
 }
 
 TEST_F(TileManagerTest, TileTrainStationFindsStationFollowingMatchingTrack)

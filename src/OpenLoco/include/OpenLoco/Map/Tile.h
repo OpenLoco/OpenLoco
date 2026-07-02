@@ -167,7 +167,7 @@ namespace OpenLoco::World
         Iterator end();
         Iterator end() const;
         size_t size();
-        TileElement* operator[](size_t i);
+        TileElementEntry* operator[](size_t i);
 
         size_t indexOf(const TileElement* element) const;
         SurfaceElement* surface() const;
