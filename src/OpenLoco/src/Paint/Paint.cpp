@@ -592,7 +592,7 @@ namespace OpenLoco::Paint
         ps->type = _itemType;
         ps->modId = _trackModId;
         ps->mapPos = _mapPosition;
-        ps->tileElement = reinterpret_cast<World::TileElement*>(_currentItem);
+        ps->tileElement = reinterpret_cast<World::TileElementEntry*>(_currentItem);
         return ps;
     }
 
