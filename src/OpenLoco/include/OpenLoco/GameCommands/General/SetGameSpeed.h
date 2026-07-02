@@ -28,5 +28,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void setGameSpeed(registers& regs);
+    void setGameSpeed(registers& regs, const uint8_t flags);
 }

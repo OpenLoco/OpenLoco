@@ -502,10 +502,9 @@ namespace OpenLoco::World::TileClearance
         GameCommands::BuildingRemovalArgs args{};
         args.pos = buildingStart;
         GameCommands::registers regs = static_cast<GameCommands::registers>(args);
-        regs.bl = removeBuildingFlags;
         // We should probably call doCommand here but then it gets messy with the costs
         // look into changing this in the future.
-        GameCommands::removeBuilding(regs);
+        GameCommands::removeBuilding(regs, removeBuildingFlags);
         const auto buildingCost = static_cast<currency32_t>(regs.ebx);
         if (static_cast<uint32_t>(buildingCost) == GameCommands::kFailure)
         {

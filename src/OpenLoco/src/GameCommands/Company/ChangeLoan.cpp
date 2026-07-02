@@ -51,9 +51,9 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void changeLoan(registers& regs)
+    void changeLoan(registers& regs, const uint8_t flags)
     {
         ChangeLoanArgs args(regs);
-        regs.ebx = changeLoan(args.newLoan, regs.bl);
+        regs.ebx = changeLoan(args.newLoan, flags);
     }
 }

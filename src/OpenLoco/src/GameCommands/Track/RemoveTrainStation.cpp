@@ -151,8 +151,8 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void removeTrainStation(registers& regs)
+    void removeTrainStation(registers& regs, const uint8_t flags)
     {
-        regs.ebx = removeTrainStation(TrainStationRemovalArgs(regs), regs.bl);
+        regs.ebx = removeTrainStation(TrainStationRemovalArgs(regs), flags);
     }
 }

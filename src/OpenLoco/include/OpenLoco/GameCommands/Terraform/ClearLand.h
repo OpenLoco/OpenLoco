@@ -30,5 +30,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void clearLand(registers& regs);
+    void clearLand(registers& regs, const uint8_t flags);
 }

@@ -330,8 +330,8 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void createSignal(registers& regs)
+    void createSignal(registers& regs, const uint8_t flags)
     {
-        regs.ebx = createSignal(SignalPlacementArgs(regs), regs.bl);
+        regs.ebx = createSignal(SignalPlacementArgs(regs), flags);
     }
 }

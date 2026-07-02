@@ -447,8 +447,8 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void createAirport(registers& regs)
+    void createAirport(registers& regs, const uint8_t flags)
     {
-        regs.ebx = createAirport(AirportPlacementArgs(regs), regs.bl);
+        regs.ebx = createAirport(AirportPlacementArgs(regs), flags);
     }
 }

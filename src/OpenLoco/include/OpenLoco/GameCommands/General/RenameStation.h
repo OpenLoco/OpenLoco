@@ -41,5 +41,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void renameStation(registers& regs);
+    void renameStation(registers& regs, const uint8_t flags);
 }

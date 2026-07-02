@@ -195,8 +195,8 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void removeRoadStation(registers& regs)
+    void removeRoadStation(registers& regs, const uint8_t flags)
     {
-        regs.ebx = removeRoadStation(RoadStationRemovalArgs(regs), regs.bl);
+        regs.ebx = removeRoadStation(RoadStationRemovalArgs(regs), flags);
     }
 }

@@ -30,8 +30,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void togglePause(registers& regs)
+    void togglePause(registers& regs, const uint8_t flags)
     {
-        regs.ebx = togglePause(regs.bl);
+        regs.ebx = togglePause(flags);
     }
 }

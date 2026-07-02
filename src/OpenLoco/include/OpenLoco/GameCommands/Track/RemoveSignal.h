@@ -40,5 +40,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void removeSignal(registers& regs);
+    void removeSignal(registers& regs, const uint8_t flags);
 }

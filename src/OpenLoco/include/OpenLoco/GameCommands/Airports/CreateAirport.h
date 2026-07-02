@@ -32,5 +32,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void createAirport(registers& regs);
+    void createAirport(registers& regs, const uint8_t flags);
 }

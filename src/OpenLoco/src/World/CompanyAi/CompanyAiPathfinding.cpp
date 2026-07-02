@@ -409,8 +409,7 @@ namespace OpenLoco::CompanyAi
 
         {
             auto regs = static_cast<GameCommands::registers>(args);
-            regs.bl = GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment;
-            GameCommands::createTrack(regs);
+            GameCommands::createTrack(regs, GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
             if (static_cast<uint32_t>(regs.ebx) == GameCommands::kFailure)
             {
                 return;
@@ -564,8 +563,7 @@ namespace OpenLoco::CompanyAi
 
         {
             auto regs = static_cast<GameCommands::registers>(args);
-            regs.bl = GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment;
-            GameCommands::createRoad(regs);
+            GameCommands::createRoad(regs, GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
             if (static_cast<uint32_t>(regs.ebx) == GameCommands::kFailure)
             {
                 if ((pathState.createTrackRoadCommandAiUnkFlags & (1U << 20)) && returnState.alternateRoadObjectId != 0xFFU)
@@ -577,8 +575,7 @@ namespace OpenLoco::CompanyAi
                     args.bridge = returnState.byte_1136075;
                 }
                 regs = static_cast<GameCommands::registers>(args);
-                regs.bl = GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment;
-                GameCommands::createRoad(regs);
+                GameCommands::createRoad(regs, GameCommands::Flags::aiAllocated | GameCommands::Flags::noPayment);
                 if (static_cast<uint32_t>(regs.ebx) == GameCommands::kFailure)
                 {
                     return;
@@ -2223,8 +2220,7 @@ namespace OpenLoco::CompanyAi
                 args.trackObjectId = trackObjId;
 
                 auto regs(static_cast<GameCommands::registers>(args));
-                regs.bl = 0;
-                GameCommands::aiTrackReplacement(regs);
+                GameCommands::aiTrackReplacement(regs, 0);
                 if (static_cast<uint32_t>(regs.ebx) != GameCommands::kFailure)
                 {
                     result.totalCost += static_cast<uint32_t>(regs.ebx);

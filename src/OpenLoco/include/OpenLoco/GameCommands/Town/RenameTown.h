@@ -41,5 +41,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void renameTown(registers& regs);
+    void renameTown(registers& regs, const uint8_t flags);
 }

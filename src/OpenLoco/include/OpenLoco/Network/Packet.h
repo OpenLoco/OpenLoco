@@ -172,6 +172,7 @@ namespace OpenLoco::Network
         uint32_t tick{};
         CompanyId company{};
         OpenLoco::GameCommands::registers regs;
+        uint8_t flags{};
     };
 #pragma pack(pop)
 }

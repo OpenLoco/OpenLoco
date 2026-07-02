@@ -390,9 +390,9 @@ namespace OpenLoco::GameCommands
         return _mtnToolCost;
     }
 
-    void lowerRaiseLandMountain(registers& regs)
+    void lowerRaiseLandMountain(registers& regs, const uint8_t flags)
     {
         const LowerRaiseLandMountainArgs args(regs);
-        regs.ebx = lowerRaiseLandMountain(args, regs.bl);
+        regs.ebx = lowerRaiseLandMountain(args, flags);
     }
 }

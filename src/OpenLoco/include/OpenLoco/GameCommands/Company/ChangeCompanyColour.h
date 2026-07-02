@@ -51,5 +51,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void changeCompanyColour(registers& regs);
+    void changeCompanyColour(registers& regs, const uint8_t flags);
 }

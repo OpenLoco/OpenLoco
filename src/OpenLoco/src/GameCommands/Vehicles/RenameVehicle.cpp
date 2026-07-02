@@ -112,9 +112,9 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void renameVehicle(registers& regs)
+    void renameVehicle(registers& regs, const uint8_t flags)
     {
-        regs.ebx = renameVehicle(VehicleRenameArgs(regs), regs.bl);
+        regs.ebx = renameVehicle(VehicleRenameArgs(regs), flags);
     }
 
 }

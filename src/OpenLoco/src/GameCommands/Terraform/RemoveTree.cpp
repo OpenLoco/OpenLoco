@@ -82,9 +82,9 @@ namespace OpenLoco::GameCommands
         return kFailure;
     }
 
-    void removeTree(registers& regs)
+    void removeTree(registers& regs, const uint8_t flags)
     {
         TreeRemovalArgs args(regs);
-        regs.ebx = removeTree(args, regs.bl);
+        regs.ebx = removeTree(args, flags);
     }
 }

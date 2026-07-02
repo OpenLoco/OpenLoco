@@ -34,5 +34,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void buildCompanyHeadquarters(registers& regs);
+    void buildCompanyHeadquarters(registers& regs, const uint8_t flags);
 }

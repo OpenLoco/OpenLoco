@@ -114,9 +114,9 @@ namespace OpenLoco::GameCommands
         return GameCommands::kFailure;
     }
 
-    void removeBuilding(registers& regs)
+    void removeBuilding(registers& regs, const uint8_t flags)
     {
         BuildingRemovalArgs args(regs);
-        regs.ebx = removeBuilding(args.pos, regs.bl);
+        regs.ebx = removeBuilding(args.pos, flags);
     }
 }

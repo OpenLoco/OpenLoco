@@ -544,8 +544,8 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void createTrainStation(registers& regs)
+    void createTrainStation(registers& regs, const uint8_t flags)
     {
-        regs.ebx = createTrainStation(TrainStationPlacementArgs(regs), regs.bl);
+        regs.ebx = createTrainStation(TrainStationPlacementArgs(regs), flags);
     }
 }

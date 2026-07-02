@@ -106,8 +106,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void changeCompanyName(registers& regs)
+    void changeCompanyName(registers& regs, const uint8_t flags)
     {
-        regs.ebx = changeCompanyName(ChangeCompanyNameArgs(regs), regs.bl);
+        regs.ebx = changeCompanyName(ChangeCompanyNameArgs(regs), flags);
     }
 }

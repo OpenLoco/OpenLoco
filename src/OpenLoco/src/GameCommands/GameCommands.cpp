@@ -102,7 +102,6 @@ using namespace OpenLoco::Ui;
 
 namespace OpenLoco::GameCommands
 {
-    static uint16_t _gameCommandFlags;
     static uint8_t _gameCommandNestLevel = 0; // 0x00508F08
 
     static CompanyId _updatingCompanyId; // 0x009C68EB
@@ -133,7 +132,7 @@ namespace OpenLoco::GameCommands
 
     static LegacyReturnState _legacyReturnState; // 0x01136072
 
-    using GameCommandFunc = void (*)(registers& regs);
+    using GameCommandFunc = void (*)(registers& regs, const uint8_t flags);
 
     struct GameCommandInfo
     {
@@ -235,8 +234,8 @@ namespace OpenLoco::GameCommands
     };
     // clang-format on
 
-    static uint32_t loc_4314EA();
-    static uint32_t loc_4313C6(int esi, const registers& regs);
+    static uint32_t loc_4314EA(const uint8_t flags);
+    static uint32_t loc_4313C6(int esi, const registers& regs, const uint8_t flags);
 
     static bool commandRequiresUnpausingGame(GameCommand command, uint16_t flags)
     {
@@ -257,18 +256,17 @@ namespace OpenLoco::GameCommands
     // 0x00431315
     uint32_t doCommand(GameCommand command, const registers& regs)
     {
-        uint16_t flags = regs.bx;
+        const uint8_t flags = regs.bl;
         uint32_t esi = static_cast<uint32_t>(command);
 
-        _gameCommandFlags = regs.bx;
         if (_gameCommandNestLevel != 0)
         {
-            return loc_4313C6(esi, regs);
+            return loc_4313C6(esi, regs, flags);
         }
 
         if ((flags & Flags::apply) == 0)
         {
-            return loc_4313C6(esi, regs);
+            return loc_4313C6(esi, regs, flags);
         }
 
         auto isGhost = (flags & Flags::ghost) != 0;
@@ -278,20 +276,18 @@ namespace OpenLoco::GameCommands
             // Just return the result without applying for now
             registers copyRegs = regs;
             copyRegs.esi = static_cast<int32_t>(command);
-            Network::queueGameCommand(_updatingCompanyId, copyRegs);
+            Network::queueGameCommand(_updatingCompanyId, copyRegs, flags);
 
-            copyRegs.bx &= ~Flags::apply;
-            return loc_4313C6(esi, copyRegs);
+            return loc_4313C6(esi, copyRegs, flags & ~Flags::apply);
         }
 
-        return doCommandForReal(command, _updatingCompanyId, regs);
+        return doCommandForReal(command, _updatingCompanyId, regs, flags);
     }
 
-    uint32_t doCommandForReal(GameCommand command, CompanyId company, const registers& regs)
+    uint32_t doCommandForReal(GameCommand command, CompanyId company, const registers& regs, const uint8_t flags)
     {
         _updatingCompanyId = company;
 
-        uint16_t flags = regs.bx;
         uint32_t esi = static_cast<uint32_t>(command);
 
         if (commandRequiresUnpausingGame(command, flags) && _updatingCompanyId == CompanyManager::getControllingId())
@@ -322,15 +318,15 @@ namespace OpenLoco::GameCommands
             // call(0x0046E34A, fnRegs); // some network stuff. Untested
         }
 
-        return loc_4313C6(esi, regs);
+        return loc_4313C6(esi, regs, flags);
     }
 
-    static void callGameCommandFunction(uint32_t command, registers& regs)
+    static void callGameCommandFunction(uint32_t command, registers& regs, const uint8_t flags)
     {
         auto& gameCommand = kGameCommandDefinitions[command];
         if (gameCommand.implementation != nullptr)
         {
-            gameCommand.implementation(regs);
+            gameCommand.implementation(regs, flags);
         }
         else
         {
@@ -339,18 +335,14 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    static uint32_t loc_4313C6(int esi, const registers& regs)
+    static uint32_t loc_4313C6(int esi, const registers& regs, const uint8_t flags)
     {
-        uint16_t flags = regs.bx;
         _gGameCommandErrorText = StringIds::null;
         _gameCommandNestLevel++;
 
-        uint16_t flagsBackup = _gameCommandFlags;
         registers fnRegs1 = regs;
-        fnRegs1.bl &= ~Flags::apply;
-        callGameCommandFunction(esi, fnRegs1);
+        callGameCommandFunction(esi, fnRegs1, flags & ~Flags::apply);
         int32_t ebx = fnRegs1.ebx;
-        _gameCommandFlags = flagsBackup;
 
         if (ebx != static_cast<int32_t>(GameCommands::kFailure))
         {
@@ -361,8 +353,8 @@ namespace OpenLoco::GameCommands
 
             if (_gameCommandNestLevel == 1)
             {
-                if ((_gameCommandFlags & Flags::allowNegativeCashFlow) == 0
-                    && (_gameCommandFlags & Flags::noPayment) == 0
+                if ((flags & Flags::allowNegativeCashFlow) == 0
+                    && (flags & Flags::noPayment) == 0
                     && ebx != 0)
                 {
                     if (!CompanyManager::ensureCompanyFunding(getUpdatingCompanyId(), ebx))
@@ -377,7 +369,7 @@ namespace OpenLoco::GameCommands
         {
             if (flags & Flags::apply)
             {
-                return loc_4314EA();
+                return loc_4314EA(flags);
             }
             else
             {
@@ -392,15 +384,13 @@ namespace OpenLoco::GameCommands
             return ebx;
         }
 
-        uint16_t flagsBackup2 = _gameCommandFlags;
         registers fnRegs2 = regs;
-        callGameCommandFunction(esi, fnRegs2);
+        callGameCommandFunction(esi, fnRegs2, flags);
         int32_t ebx2 = fnRegs2.ebx;
-        _gameCommandFlags = flagsBackup2;
 
         if (ebx2 == static_cast<int32_t>(GameCommands::kFailure))
         {
-            return loc_4314EA();
+            return loc_4314EA(flags);
         }
 
         if (SceneManager::isEditorMode())
@@ -419,7 +409,7 @@ namespace OpenLoco::GameCommands
             return ebx;
         }
 
-        if ((flagsBackup2 & Flags::noPayment) != 0)
+        if ((flags & Flags::noPayment) != 0)
         {
             return ebx;
         }
@@ -436,7 +426,7 @@ namespace OpenLoco::GameCommands
         return ebx;
     }
 
-    static uint32_t loc_4314EA()
+    static uint32_t loc_4314EA(const uint8_t flags)
     {
         _gameCommandNestLevel--;
         if (_gameCommandNestLevel != 0)
@@ -449,7 +439,7 @@ namespace OpenLoco::GameCommands
             return GameCommands::kFailure;
         }
 
-        if (_gameCommandFlags & Flags::noErrorWindow)
+        if (flags & Flags::noErrorWindow)
         {
             return GameCommands::kFailure;
         }

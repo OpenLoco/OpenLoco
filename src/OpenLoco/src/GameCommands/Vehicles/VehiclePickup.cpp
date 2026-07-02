@@ -71,8 +71,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehiclePickup(registers& regs)
+    void vehiclePickup(registers& regs, const uint8_t flags)
     {
-        regs.ebx = vehiclePickup(regs.bl, EntityId(regs.di));
+        regs.ebx = vehiclePickup(flags, EntityId(regs.di));
     }
 }

@@ -157,8 +157,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehiclePlaceWater(registers& regs)
+    void vehiclePlaceWater(registers& regs, const uint8_t flags)
     {
-        regs.ebx = vehiclePlaceWater(VehicleWaterPlacementArgs(regs), regs.bl);
+        regs.ebx = vehiclePlaceWater(VehicleWaterPlacementArgs(regs), flags);
     }
 }

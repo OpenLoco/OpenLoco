@@ -78,8 +78,8 @@ namespace OpenLoco::GameCommands
         return cost;
     }
 
-    void removeTrackMod(registers& regs)
+    void removeTrackMod(registers& regs, const uint8_t flags)
     {
-        regs.ebx = removeTrackMod(TrackModsRemovalArgs(regs), regs.bl);
+        regs.ebx = removeTrackMod(TrackModsRemovalArgs(regs), flags);
     }
 }

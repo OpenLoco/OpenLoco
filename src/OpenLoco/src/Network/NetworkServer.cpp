@@ -191,7 +191,7 @@ void NetworkServer::onReceiveSendChatMessagePacket(Client& client, const SendCha
 
 void NetworkServer::onReceiveGameCommandPacket([[maybe_unused]] Client& client, const GameCommandPacket& packet)
 {
-    queueGameCommand(packet.company, packet.regs);
+    queueGameCommand(packet.company, packet.regs, packet.flags);
 }
 
 void NetworkServer::removedTimedOutClients()
@@ -308,23 +308,25 @@ void NetworkServer::sendChatMessage(std::string_view message)
     _chatMessageQueue.push({ 0, std::string(message) });
 }
 
-void NetworkServer::sendGameCommand(uint32_t index, uint32_t tick, CompanyId company, const OpenLoco::GameCommands::registers& regs)
+void NetworkServer::sendGameCommand(uint32_t index, uint32_t tick, CompanyId company, const OpenLoco::GameCommands::registers& regs, const uint8_t flags)
 {
     GameCommandPacket packet;
     packet.index = index;
     packet.tick = tick;
     packet.company = company;
     packet.regs = regs;
+    packet.flags = flags;
     sendPacketToAll(packet);
 }
 
-void NetworkServer::queueGameCommand(CompanyId company, const OpenLoco::GameCommands::registers& regs)
+void NetworkServer::queueGameCommand(CompanyId company, const OpenLoco::GameCommands::registers& regs, const uint8_t flags)
 {
     GameCommandPacket newPacket;
     newPacket.index = ++_gameCommandIndex;
     newPacket.tick = 0;
     newPacket.company = company;
     newPacket.regs = regs;
+    newPacket.flags = flags;
     _gameCommands.push(newPacket);
 }
 
@@ -338,13 +340,13 @@ void NetworkServer::runGameCommands()
     {
         auto& gc = _gameCommands.front();
 
-        [[maybe_unused]] auto result = GameCommands::doCommandForReal(static_cast<GameCommands::GameCommand>(gc.regs.esi), gc.company, gc.regs);
+        [[maybe_unused]] auto result = GameCommands::doCommandForReal(static_cast<GameCommands::GameCommand>(gc.regs.esi), gc.company, gc.regs, gc.flags);
 
         // TODO We can't do this, we have to send a dummy command to the clients
         //      otherwise we skip a game command index
         // if (result != 0x80000000)
         // {
-        sendGameCommand(gc.index, tick, gc.company, gc.regs);
+        sendGameCommand(gc.index, tick, gc.company, gc.regs, gc.flags);
         // }
 
         _gameCommands.pop();

@@ -700,8 +700,8 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void createRoadStation(registers& regs)
+    void createRoadStation(registers& regs, const uint8_t flags)
     {
-        regs.ebx = createRoadStation(RoadStationPlacementArgs(regs), regs.bl);
+        regs.ebx = createRoadStation(RoadStationPlacementArgs(regs), flags);
     }
 }

@@ -299,8 +299,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehiclePlace(registers& regs)
+    void vehiclePlace(registers& regs, const uint8_t flags)
     {
-        regs.ebx = vehiclePlace(VehiclePlacementArgs(regs), regs.bl);
+        regs.ebx = vehiclePlace(VehiclePlacementArgs(regs), flags);
     }
 }

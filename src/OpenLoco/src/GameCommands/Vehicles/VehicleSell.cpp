@@ -126,8 +126,8 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004AED34
-    void sellVehicle(registers& regs)
+    void sellVehicle(registers& regs, const uint8_t flags)
     {
-        regs.ebx = sellVehicle(EntityId(regs.dx), regs.bl);
+        regs.ebx = sellVehicle(EntityId(regs.dx), flags);
     }
 }

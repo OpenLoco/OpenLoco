@@ -135,9 +135,9 @@ namespace OpenLoco::GameCommands
         return Economy::getInflationAdjustedCost(treeObj->buildCostFactor, treeObj->costIndex, 12);
     }
 
-    void createTree(registers& regs)
+    void createTree(registers& regs, const uint8_t flags)
     {
         TreePlacementArgs args(regs);
-        regs.ebx = createTree(args, regs.bl);
+        regs.ebx = createTree(args, flags);
     }
 }

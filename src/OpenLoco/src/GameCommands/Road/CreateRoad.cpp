@@ -1105,8 +1105,8 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void createRoad(registers& regs)
+    void createRoad(registers& regs, const uint8_t flags)
     {
-        regs.ebx = createRoad(RoadPlacementArgs(regs), regs.bl);
+        regs.ebx = createRoad(RoadPlacementArgs(regs), flags);
     }
 }

@@ -4,7 +4,7 @@
 
 namespace OpenLoco::GameCommands
 {
-    void changeCompanyFace(registers& regs);
+    void changeCompanyFace(registers& regs, const uint8_t flags);
 
     struct ChangeCompanyFaceArgs
     {

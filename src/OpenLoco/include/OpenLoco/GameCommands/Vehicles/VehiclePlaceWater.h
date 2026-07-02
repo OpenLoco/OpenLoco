@@ -32,5 +32,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void vehiclePlaceWater(registers& regs);
+    void vehiclePlaceWater(registers& regs, const uint8_t flags);
 }

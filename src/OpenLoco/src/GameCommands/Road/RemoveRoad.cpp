@@ -312,8 +312,8 @@ namespace OpenLoco::GameCommands
         return totalRemovalCost;
     }
 
-    void removeRoad(registers& regs)
+    void removeRoad(registers& regs, const uint8_t flags)
     {
-        regs.ebx = removeRoad(RoadRemovalArgs(regs), regs.bl);
+        regs.ebx = removeRoad(RoadRemovalArgs(regs), flags);
     }
 }
