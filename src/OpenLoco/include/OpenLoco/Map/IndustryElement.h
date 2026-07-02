@@ -10,19 +10,14 @@ namespace OpenLoco
 
 namespace OpenLoco::World
 {
-    enum class IndustryElementFlags : uint16_t
-    {
-        none = 0U,
-        playingRandomAnimation = 1U << 4,
-        randomAnimationQueued = 1U << 5,
-    };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(IndustryElementFlags);
 
     constexpr uint16_t kIndustryElement6ColourMask = 0xF800;
     constexpr uint16_t kIndustryElement6BuildingTypeMask = 0x07C0;
     constexpr uint16_t kIndustryElement6RandomAnimationTypeMask = 0x0003;
     constexpr uint16_t kIndustryElement6SectionsCompletedMask = 0x001F;
     constexpr uint16_t kIndustryElement5TileSequenceMask = 0x03;
+    constexpr uint16_t kIndustryElement6RandomAnimationQueued = (1 << 5);
+    constexpr uint16_t kIndustryElement6RandomAnimationPlaying = (1 << 4);
     constexpr uint8_t kIndustryElement5SectionConstructionProgressMask = 0xE0;
 
 #pragma pack(push, 1)
@@ -95,18 +90,12 @@ namespace OpenLoco::World
         void setIsConstructed(bool val);
 
         bool update(const World::Pos2& loc);
-        constexpr bool hasFlags(IndustryElementFlags flagsToTest) const
-        {
-            return (static_cast<IndustryElementFlags>(_6) & flagsToTest) == flagsToTest;
-        }
-        void setFlags(IndustryElementFlags flagsToSet)
-        {
-            _6 |= enumValue(flagsToSet);
-        }
-        void unsetFlags(IndustryElementFlags flagsToUnset)
-        {
-            _6 &= ~enumValue(flagsToUnset);
-        };
+
+        bool randomAnimationQueued() const { return _6 & kIndustryElement6RandomAnimationQueued; }
+        void setRandomAnimationQueued(bool val);
+
+        bool randomAnimationPlaying() const { return _6 & kIndustryElement6RandomAnimationPlaying; }
+        void setRandomAnimationPlaying(bool val);
 
         constexpr uint8_t randomAnimationType() const
         {

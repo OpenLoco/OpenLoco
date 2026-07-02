@@ -69,6 +69,18 @@ namespace OpenLoco::World
         _6 |= type;
     }
 
+    void IndustryElement::setRandomAnimationPlaying(bool val)
+    {
+        _6 &= ~kIndustryElement6RandomAnimationPlaying;
+        _6 |= kIndustryElement6RandomAnimationPlaying * val;
+    }
+
+    void IndustryElement::setRandomAnimationQueued(bool val)
+    {
+        _6 &= ~kIndustryElement6RandomAnimationQueued;
+        _6 |= kIndustryElement6RandomAnimationQueued * val;
+    }
+
     // 0x0045769A
     // A more generic version of the vanilla function
     template<typename TFunction>
@@ -191,7 +203,7 @@ namespace OpenLoco::World
                     break;
                 }
             }
-            if (hasAZeroFrame && !hasFlags(IndustryElementFlags::randomAnimationQueued))
+            if (hasAZeroFrame && !randomAnimationQueued())
             {
                 std::array<uint8_t, 8> _E0C3D4{};
                 auto ptr = _E0C3D4.begin();
@@ -210,7 +222,7 @@ namespace OpenLoco::World
                     {
                         const auto randAnim = _E0C3D4[(numAnimations * (rand & 0xFF)) / 256];
                         applyToMultiTile(*this, loc, isMultiTile, [randAnim](IndustryElement& elIndustry, [[maybe_unused]] const World::Pos2& pos) {
-                            elIndustry.setFlags(IndustryElementFlags::randomAnimationQueued);
+                            elIndustry.setRandomAnimationQueued(true);
                             elIndustry.setRandomAnimationType(randAnim);
                         });
                         AnimationManager::createAnimation(4, loc, baseZ());
@@ -308,7 +320,7 @@ namespace OpenLoco::World
             {
                 continue;
             }
-            if (!elIndustry->hasFlags(IndustryElementFlags::randomAnimationQueued))
+            if (!elIndustry->randomAnimationQueued())
             {
                 continue;
             }
@@ -329,13 +341,13 @@ namespace OpenLoco::World
                 {
                     const auto animSpeed = partAnim.animationSpeed & ~(1 << 7);
                     const auto speedMask = animLength - 1;
-                    if (elIndustry->hasFlags(IndustryElementFlags::playingRandomAnimation))
+                    if (elIndustry->randomAnimationPlaying())
                     {
                         if ((speedMask & (ScenarioManager::getScenarioTicks() >> animSpeed)) == 0)
                         {
                             applyToMultiTile(*elIndustry, anim.pos, isMultiTile, [](World::IndustryElement& elIndustry, const World::Pos2& pos) {
                                 Ui::ViewportManager::invalidate(pos, elIndustry.baseHeight(), elIndustry.clearHeight(), ZoomLevel::quarter);
-                                elIndustry.unsetFlags(IndustryElementFlags::randomAnimationQueued);
+                                elIndustry.setRandomAnimationQueued(false);
                             });
                             return true;
                         }
@@ -357,7 +369,7 @@ namespace OpenLoco::World
                         {
                             applyToMultiTile(*elIndustry, anim.pos, isMultiTile, [](World::IndustryElement& elIndustry, const World::Pos2& pos) {
                                 Ui::ViewportManager::invalidate(pos, elIndustry.baseHeight(), elIndustry.clearHeight(), ZoomLevel::quarter);
-                                elIndustry.setFlags(IndustryElementFlags::playingRandomAnimation);
+                                elIndustry.setRandomAnimationQueued(true);
                             });
                         }
                         return false;
