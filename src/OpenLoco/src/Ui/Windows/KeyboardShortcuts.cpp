@@ -3,8 +3,8 @@
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
 #include "Graphics/TextRenderer.h"
+#include "Input/ShortcutFormatter.h"
 #include "Localisation/FormatArguments.hpp"
-#include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
@@ -17,9 +17,6 @@
 #include "Ui/Widgets/ScrollViewWidget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
-#include <OpenLoco/Utility/LookupTable.hpp>
-#include <SDL3/SDL_keyboard.h>
-#include <unordered_map>
 
 using namespace OpenLoco::Input;
 
@@ -87,59 +84,6 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         self.draw(drawingCtx);
     }
 
-    static void getBindingString(uint32_t keyCode, char* buffer, const size_t bufferLength)
-    {
-        static constexpr auto keysToString = Utility::buildLookupTable<uint32_t, StringId>({
-            { SDLK_BACKSPACE, StringIds::keyboard_backspace },
-            { SDLK_TAB, StringIds::keyboard_tab },
-            { SDLK_RETURN, StringIds::keyboard_return },
-            { SDLK_PAUSE, StringIds::keyboard_pause },
-            { SDLK_CAPSLOCK, StringIds::keyboard_caps },
-            { SDLK_ESCAPE, StringIds::keyboard_escape },
-            { SDLK_SPACE, StringIds::keyboard_spacebar },
-            { SDLK_PAGEUP, StringIds::keyboard_pageup },
-            { SDLK_PAGEDOWN, StringIds::keyboard_pagedown },
-            { SDLK_END, StringIds::keyboard_end },
-            { SDLK_HOME, StringIds::keyboard_home },
-            { SDLK_LEFT, StringIds::keyboard_left },
-            { SDLK_UP, StringIds::keyboard_up },
-            { SDLK_RIGHT, StringIds::keyboard_right },
-            { SDLK_DOWN, StringIds::keyboard_down },
-            { SDLK_INSERT, StringIds::keyboard_insert },
-            { SDLK_DELETE, StringIds::keyboard_delete },
-            { SDLK_KP_1, StringIds::keyboard_numpad_1 },
-            { SDLK_KP_2, StringIds::keyboard_numpad_2 },
-            { SDLK_KP_3, StringIds::keyboard_numpad_3 },
-            { SDLK_KP_4, StringIds::keyboard_numpad_4 },
-            { SDLK_KP_5, StringIds::keyboard_numpad_5 },
-            { SDLK_KP_6, StringIds::keyboard_numpad_6 },
-            { SDLK_KP_7, StringIds::keyboard_numpad_7 },
-            { SDLK_KP_8, StringIds::keyboard_numpad_8 },
-            { SDLK_KP_9, StringIds::keyboard_numpad_9 },
-            { SDLK_KP_0, StringIds::keyboard_numpad_0 },
-            { SDLK_KP_DIVIDE, StringIds::keyboard_numpad_divide },
-            { SDLK_KP_ENTER, StringIds::keyboard_numpad_enter },
-            { SDLK_KP_MINUS, StringIds::keyboard_numpad_minus },
-            { SDLK_KP_MULTIPLY, StringIds::keyboard_numpad_multiply },
-            { SDLK_KP_PERIOD, StringIds::keyboard_numpad_period },
-            { SDLK_KP_PLUS, StringIds::keyboard_numpad_plus },
-            { SDLK_NUMLOCKCLEAR, StringIds::keyboard_numlock },
-            { SDLK_SCROLLLOCK, StringIds::keyboard_scroll },
-            { SDLK_MENU, StringIds::keyboard_menu },
-        });
-
-        auto match = keysToString.find(keyCode);
-        if (match != keysToString.end())
-        {
-            StringManager::formatString(buffer, match->second);
-        }
-        else
-        {
-            const char* sdlBuffer = SDL_GetKeyName(keyCode);
-            strncpy(buffer, sdlBuffer, bufferLength - 1);
-        }
-    }
-
     // 0x004BE72C
     static void drawScroll(Ui::Window& self, Gfx::DrawingContext& drawingCtx, [[maybe_unused]] const uint32_t scrollIndex)
     {
@@ -172,33 +116,18 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
                 format = StringIds::wcolour2_stringid;
             }
 
-            auto modifierStringId = StringIds::empty;
-            auto baseStringId = StringIds::empty;
-            char buffer[128]{};
+            char buffer[ShortcutFormatter::kShortcutBufferSize]{};
 
             const auto& def = shortcutDefs[i];
             auto& shortcut = shortcuts.at(def.id);
-            if (shortcut.keyCode != 0xFFFFFFFF && shortcut.modifiers != KeyModifier::invalid)
-            {
-                if ((shortcut.modifiers & KeyModifier::shift) == KeyModifier::shift)
-                {
-                    modifierStringId = StringIds::keyboard_shortcut_modifier_shift;
-                }
-                else if ((shortcut.modifiers & KeyModifier::control) == KeyModifier::control)
-                {
-                    modifierStringId = StringIds::keyboard_shortcut_modifier_ctrl;
-                }
-
-                baseStringId = StringIds::stringptr;
-                getBindingString(shortcut.keyCode, buffer, std::size(buffer));
-            }
+            const auto binding = ShortcutFormatter::getBinding(shortcut, buffer, std::size(buffer));
 
             FormatArguments formatter{};
             formatter.push(StringIds::keyboard_shortcut_list_format);
             formatter.push(ShortcutManager::getName(static_cast<Shortcut>(i)));
-            formatter.push(modifierStringId);
-            formatter.push(baseStringId);
-            formatter.push(buffer);
+            formatter.push(binding.modifierStringId);
+            formatter.push(binding.keyStringId);
+            formatter.push(binding.keyString);
 
             auto point = Point(0, yPos - 1);
             tr.drawStringLeft(point, Colour::black, format, formatter);
