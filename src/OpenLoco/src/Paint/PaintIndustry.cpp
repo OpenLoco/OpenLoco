@@ -36,7 +36,7 @@ namespace OpenLoco::Paint
         }
 
         std::span<const std::uint8_t> animationSequence{};
-        if (elIndustry.randomAnimationQueued() && elIndustry.randomAnimationPlaying())
+        if (elIndustry.randomAnimationPlaying() && elIndustry.randomAnimationAvailable())
         {
             animationSequence = indObj.getAnimationSequence(elIndustry.randomAnimationType());
         }

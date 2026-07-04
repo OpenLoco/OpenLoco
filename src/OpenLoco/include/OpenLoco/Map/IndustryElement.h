@@ -16,8 +16,8 @@ namespace OpenLoco::World
     constexpr uint16_t kIndustryElement6RandomAnimationTypeMask = 0x0003;
     constexpr uint16_t kIndustryElement6SectionsCompletedMask = 0x001F;
     constexpr uint16_t kIndustryElement5TileSequenceMask = 0x03;
-    constexpr uint16_t kIndustryElement6RandomAnimationQueued = (1 << 5);
-    constexpr uint16_t kIndustryElement6RandomAnimationPlaying = (1 << 4);
+    constexpr uint16_t kIndustryElement6RandomAnimationPlaying = (1 << 5);
+    constexpr uint16_t kIndustryElement6RandomAnimationAvailable = (1 << 4);
     constexpr uint8_t kIndustryElement5SectionConstructionProgressMask = 0xE0;
 
 #pragma pack(push, 1)
@@ -39,8 +39,8 @@ namespace OpenLoco::World
         /* Field _6 data structures
          * 0b11111xxxxxxxxxxx = colour
          * 0bxxxxx11111xxxxxx = building type
-         * 0bxxxxxxxxxx1xxxxx = random animation is queued and will play at the next opportunity
-         * 0bxxxxxxxxxxx1xxxx = random animation is currently playing
+         * 0bxxxxxxxxxx1xxxxx = random animation is playing
+         * 0bxxxxxxxxxxx1xxxx = random animations can play
          * 0bxxxxxxxxxxxxxx11 = random animation type
          * 0bxxxxxxxxxxxx11xx = unused bits (of above)
          * 0bxxxxxxxxxx111111 = number of building sections completed
@@ -91,11 +91,11 @@ namespace OpenLoco::World
 
         bool update(const World::Pos2& loc);
 
-        bool randomAnimationQueued() const { return _6 & kIndustryElement6RandomAnimationQueued; }
-        void setRandomAnimationQueued(bool val);
-
         bool randomAnimationPlaying() const { return _6 & kIndustryElement6RandomAnimationPlaying; }
         void setRandomAnimationPlaying(bool val);
+
+        bool randomAnimationAvailable() const { return _6 & kIndustryElement6RandomAnimationAvailable; }
+        void setRandomAnimationAvailable(bool val);
 
         constexpr uint8_t randomAnimationType() const
         {
