@@ -913,7 +913,7 @@ namespace OpenLoco::Ui
 
         if (Ui::isInitialized())
         {
-            WindowManager::callEvent8OnAllWindows();
+            WindowManager::callHandleInputBeginEventOnAllWindows();
 
             WindowManager::invalidateAllWindowsAfterInput();
             Input::updateCursorPosition();
@@ -955,13 +955,13 @@ namespace OpenLoco::Ui
             Input::processMouseWheel();
         }
 
-        WindowManager::callEvent9OnAllWindows();
+        WindowManager::callHandleInputEndEventOnAllWindows();
     }
 
     // 0x004C98CF
     void minimalHandleInput()
     {
-        WindowManager::callEvent8OnAllWindows();
+        WindowManager::callHandleInputBeginEventOnAllWindows();
 
         WindowManager::invalidateAllWindowsAfterInput();
         Input::updateCursorPosition();
@@ -988,7 +988,7 @@ namespace OpenLoco::Ui
             processMouseTool(x, y);
         }
 
-        WindowManager::callEvent9OnAllWindows();
+        WindowManager::callHandleInputEndEventOnAllWindows();
     }
 
     void setWindowScaling(float newScaleFactor)

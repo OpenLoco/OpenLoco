@@ -989,24 +989,24 @@ namespace OpenLoco::Ui
         eventHandlers->onUpdate(*this);
     }
 
-    void Window::call_8()
+    void Window::callHandleInputBegin()
     {
-        if (eventHandlers->event_08 == nullptr)
+        if (eventHandlers->onHandleInputBegin == nullptr)
         {
             return;
         }
 
-        eventHandlers->event_08(*this);
+        eventHandlers->onHandleInputBegin(*this);
     }
 
-    void Window::call_9()
+    void Window::callHandleInputEnd()
     {
-        if (eventHandlers->event_09 == nullptr)
+        if (eventHandlers->onHandleInputEnd == nullptr)
         {
             return;
         }
 
-        eventHandlers->event_09(*this);
+        eventHandlers->onHandleInputEnd(*this);
     }
 
     void Window::callToolUpdate(WidgetIndex_t widgetIndex, const WidgetId id, int16_t xPos, int16_t yPos)

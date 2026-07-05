@@ -115,13 +115,13 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A847
-        static void event_08(Window& self)
+        static void onHandleInputBegin(Window& self)
         {
             self.flags |= WindowFlags::notScrollView;
         }
 
         // 0x0042A84F
-        static void event_09(Window& self)
+        static void onHandleInputEnd(Window& self)
         {
             if (!self.hasFlags(WindowFlags::notScrollView))
             {
@@ -297,8 +297,8 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             .onMouseUp = onMouseUp,
             .onResize = onResize,
             .onUpdate = Common::onUpdate,
-            .event_08 = event_08,
-            .event_09 = event_09,
+            .onHandleInputBegin = onHandleInputBegin,
+            .onHandleInputEnd = onHandleInputEnd,
             .getScrollSize = getScrollSize,
             .scrollMouseDown = scrollMouseDown,
             .scrollMouseOver = scrollMouseOver,

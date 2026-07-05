@@ -342,13 +342,13 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x0049196F
-    static void event_08(Window& window)
+    static void onHandleInputBegin(Window& window)
     {
         window.flags |= WindowFlags::notScrollView;
     }
 
     // 0x00491977
-    static void event_09(Window& window)
+    static void onHandleInputEnd(Window& window)
     {
         if (!window.hasFlags(WindowFlags::notScrollView))
         {
@@ -759,8 +759,8 @@ namespace OpenLoco::Ui::Windows::StationList
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
         .onUpdate = onUpdate,
-        .event_08 = event_08,
-        .event_09 = event_09,
+        .onHandleInputBegin = onHandleInputBegin,
+        .onHandleInputEnd = onHandleInputEnd,
         .getScrollSize = getScrollSize,
         .scrollMouseDown = onScrollMouseDown,
         .scrollMouseOver = onScrollMouseOver,

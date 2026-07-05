@@ -264,13 +264,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x004362F7
-        static void event_08(Window& self)
+        static void onHandleInputBegin(Window& self)
         {
             self.flags |= WindowFlags::notScrollView;
         }
 
         // 0x004362FF
-        static void event_09(Window& self)
+        static void onHandleInputEnd(Window& self)
         {
             if (!self.hasFlags(WindowFlags::notScrollView))
             {
@@ -524,8 +524,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
             .onMouseUp = onMouseUp,
             .onResize = onResize,
             .onUpdate = onUpdate,
-            .event_08 = event_08,
-            .event_09 = event_09,
+            .onHandleInputBegin = onHandleInputBegin,
+            .onHandleInputEnd = onHandleInputEnd,
             .getScrollSize = getScrollSize,
             .scrollMouseDown = onScrollMouseDown,
             .scrollMouseOver = onScrollMouseOver,

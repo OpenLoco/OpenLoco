@@ -74,8 +74,8 @@ namespace OpenLoco::Ui
         void (*onDropdown)(Window&, WidgetIndex_t, WidgetId, int16_t) = nullptr;
         void (*onPeriodicUpdate)(Window&) = nullptr;
         void (*onUpdate)(Window&) = nullptr;
-        void (*event_08)(Window&) = nullptr;
-        void (*event_09)(Window&) = nullptr;
+        void (*onHandleInputBegin)(Window&) = nullptr;
+        void (*onHandleInputEnd)(Window&) = nullptr;
         void (*onToolUpdate)(Window&, const WidgetIndex_t, WidgetId, const int16_t, const int16_t) = nullptr;
         void (*onToolDown)(Window&, const WidgetIndex_t, WidgetId, const int16_t, const int16_t) = nullptr;
         void (*toolDrag)(Window&, const WidgetIndex_t, WidgetId, const int16_t, const int16_t) = nullptr;
@@ -356,8 +356,8 @@ namespace OpenLoco::Ui
         void callOnDropdown(WidgetIndex_t widgetIndex, WidgetId id, int16_t itemIndex);                                   // 5
         void callOnPeriodicUpdate();                                                                                      // 6
         void callUpdate();                                                                                                // 7
-        void call_8();                                                                                                    // 8
-        void call_9();                                                                                                    // 9
+        void callHandleInputBegin();                                                                                      // 8
+        void callHandleInputEnd();                                                                                        // 9
         void callToolUpdate(WidgetIndex_t widgetIndex, WidgetId id, int16_t xPos, int16_t yPos);                          // 10
         void callToolDown(WidgetIndex_t widgetIndex, WidgetId id, int16_t xPos, int16_t yPos);                            // 11
         void callToolDrag(WidgetIndex_t widgetIndex, WidgetId id, const int16_t xPos, const int16_t yPos);                // 12

@@ -1060,12 +1060,12 @@ namespace OpenLoco::Ui::Windows::Station
             sortVehicleList(self);
         }
 
-        static void event_08(Window& self)
+        static void onHandleInputBegin(Window& self)
         {
             self.flags |= WindowFlags::notScrollView;
         }
 
-        static void event_09(Window& self)
+        static void onHandleInputEnd(Window& self)
         {
             if (self.hasFlags(WindowFlags::notScrollView))
             {
@@ -1150,8 +1150,8 @@ namespace OpenLoco::Ui::Windows::Station
             .onMouseUp = Common::onMouseUp,
             .onResize = onResize,
             .onUpdate = onUpdate,
-            .event_08 = event_08,
-            .event_09 = event_09,
+            .onHandleInputBegin = onHandleInputBegin,
+            .onHandleInputEnd = onHandleInputEnd,
             .getScrollSize = getScrollSize,
             .scrollMouseDown = onScrollMouseDown,
             .scrollMouseOver = onScrollMouseOver,
