@@ -498,29 +498,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
             return fallback;
         }
 
-        // 0x004580DE
-        static void onHandleInputBegin(Window& self)
-        {
-            self.flags |= WindowFlags::notScrollView;
-        }
-
-        // 0x004580E6
-        static void onHandleInputEnd(Window& self)
-        {
-            if (!self.hasFlags(WindowFlags::notScrollView))
-            {
-                return;
-            }
-
-            if (self.rowHover == -1)
-            {
-                return;
-            }
-
-            self.rowHover = -1;
-            self.invalidate();
-        }
-
         // 0x00457FCA
         static void tabReset(Window& self)
         {
@@ -539,8 +516,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onUpdate = onUpdate,
-            .onHandleInputBegin = onHandleInputBegin,
-            .onHandleInputEnd = onHandleInputEnd,
+            .onHandleInputBegin = listWindowOnHandleInputBegin,
+            .onHandleInputEnd = listWindowOnHandleInputEnd,
             .getScrollSize = getScrollSize,
             .scrollMouseDown = onScrollMouseDown,
             .scrollMouseOver = onScrollMouseOver,

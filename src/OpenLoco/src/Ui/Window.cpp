@@ -153,6 +153,27 @@ namespace OpenLoco::Ui
         return std::nullopt;
     }
 
+    void listWindowOnHandleInputBegin(Window& window)
+    {
+        window.flags |= WindowFlags::notScrollView;
+    }
+
+    void listWindowOnHandleInputEnd(Window& window)
+    {
+        if (!window.hasFlags(WindowFlags::notScrollView))
+        {
+            return;
+        }
+
+        if (window.rowHover == -1)
+        {
+            return;
+        }
+
+        window.rowHover = -1;
+        window.invalidate();
+    }
+
     // 0x0045FD41
     // Input:
     // regs.ax:  x

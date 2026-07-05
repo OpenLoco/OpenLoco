@@ -341,29 +341,6 @@ namespace OpenLoco::Ui::Windows::StationList
         return fallback;
     }
 
-    // 0x0049196F
-    static void onHandleInputBegin(Window& window)
-    {
-        window.flags |= WindowFlags::notScrollView;
-    }
-
-    // 0x00491977
-    static void onHandleInputEnd(Window& window)
-    {
-        if (!window.hasFlags(WindowFlags::notScrollView))
-        {
-            return;
-        }
-
-        if (window.rowHover == -1)
-        {
-            return;
-        }
-
-        window.rowHover = -1;
-        window.invalidate();
-    }
-
     // 0x00491344
     static void prepareDraw(Ui::Window& window)
     {
@@ -759,8 +736,8 @@ namespace OpenLoco::Ui::Windows::StationList
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
         .onUpdate = onUpdate,
-        .onHandleInputBegin = onHandleInputBegin,
-        .onHandleInputEnd = onHandleInputEnd,
+        .onHandleInputBegin = listWindowOnHandleInputBegin,
+        .onHandleInputEnd = listWindowOnHandleInputEnd,
         .getScrollSize = getScrollSize,
         .scrollMouseDown = onScrollMouseDown,
         .scrollMouseOver = onScrollMouseOver,
