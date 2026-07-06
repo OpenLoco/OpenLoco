@@ -3752,9 +3752,16 @@ namespace OpenLoco::Vehicles
         {
             return result;
         }
+
         auto tile = TileManager::get(tilePos);
         auto* surfaceEntry = tile.surfaceEntry();
-        if (surfaceEntry->as<SurfaceElement>()->water() != waterMicroZ)
+        if (surfaceEntry == nullptr)
+        {
+            return result;
+        }
+
+        auto* surfaceEl = surfaceEntry->as<SurfaceElement>();
+        if (surfaceEl != nullptr && surfaceEl->water() != waterMicroZ)
         {
             return result;
         }
@@ -6511,26 +6518,32 @@ namespace OpenLoco::Vehicles
                     lastBody = component.body;
                 }
             }
-            auto* lastObj = ObjectManager::get<VehicleObject>(lastBody->objectId);
-            bool shouldReverseTrainCars = [&lastObj, this]() {
-                if (hasVehicleFlags(VehicleFlags::shuntCheat) && hasVehicleFlags(VehicleFlags::manualControl))
-                {
-                    return true;
-                }
-                if (lastObj->hasFlags(VehicleObjectFlags::flag_08))
-                {
-                    return false;
-                }
-                if (lastObj->hasFlags(VehicleObjectFlags::topAndTailPosition))
-                {
-                    return true;
-                }
-                if (lastObj->power == 0)
-                {
-                    return false;
-                }
-                return !lastObj->hasFlags(VehicleObjectFlags::centerPosition);
-            }();
+
+            bool shouldReverseTrainCars = false;
+            if (lastBody != nullptr)
+            {
+                auto* lastObj = ObjectManager::get<VehicleObject>(lastBody->objectId);
+                shouldReverseTrainCars = [&lastObj, this]() {
+                    if (hasVehicleFlags(VehicleFlags::shuntCheat) && hasVehicleFlags(VehicleFlags::manualControl))
+                    {
+                        return true;
+                    }
+                    if (lastObj->hasFlags(VehicleObjectFlags::flag_08))
+                    {
+                        return false;
+                    }
+                    if (lastObj->hasFlags(VehicleObjectFlags::topAndTailPosition))
+                    {
+                        return true;
+                    }
+                    if (lastObj->power == 0)
+                    {
+                        return false;
+                    }
+                    return !lastObj->hasFlags(VehicleObjectFlags::centerPosition);
+                }();
+            }
+
             if (shouldReverseTrainCars)
             {
                 // 0x004ADE36

@@ -561,8 +561,13 @@ namespace OpenLoco::CompanyManager
         }
 
         auto* company = get(chosenCompanyId);
-        company->competitorId = competitorId;
+        if (company == nullptr)
+        {
+            return CompanyId::null;
+        }
+
         auto* competitorObj = ObjectManager::get<CompetitorObject>(competitorId);
+        company->competitorId = competitorId;
         company->challengeFlags = CompanyFlags::none;
         company->var_49C = 0;
         company->var_4A0 = 0;
@@ -570,6 +575,7 @@ namespace OpenLoco::CompanyManager
         company->name = StringIds::new_company;
         company->ownerName = StringIds::new_owner;
         company->startedDate = getCurrentDay();
+
         if (isPlayer)
         {
             Colour primaryColour = Colour::max;

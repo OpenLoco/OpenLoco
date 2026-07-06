@@ -413,7 +413,7 @@ namespace OpenLoco
         if (surfaceEntry != nullptr)
         {
             const auto* surface = surfaceEntry->as<SurfaceElement>();
-            if (surface->isIndustrial())
+            if (surface != nullptr && surface->isIndustrial())
             {
                 if (surface->industryId() == id())
                 {
