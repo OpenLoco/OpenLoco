@@ -706,6 +706,7 @@ namespace OpenLoco::Ui::Windows::Town
             point.x += 4;
             point.y += 14;
 
+            auto cargoTypesDelivered = 0;
             auto startPoint = Point(point);
             auto currentRow = 0;
             for (uint8_t cargoId = 0; cargoId < std::size(town->monthlyCargoDelivered); cargoId++)
@@ -729,6 +730,8 @@ namespace OpenLoco::Ui::Windows::Town
                 {
                     args.push(cargoObj->unitNamePlural);
                 }
+                cargoTypesDelivered++;
+
                 if (++currentRow > kNumRows)
                 {
                     currentRow = 0;
@@ -738,6 +741,13 @@ namespace OpenLoco::Ui::Windows::Town
                 args.push<uint32_t>(town->monthlyCargoDelivered[cargoId]);
                 tr.drawStringLeftClipped(point, self.width - 12, Colour::black, StringIds::black_stringid, args);
                 point.y += 10;
+            }
+            if (cargoTypesDelivered == 0)
+            {
+                FormatArguments args{};
+                args.push(StringIds::town_no_deliveries);
+                args.push(Common::getTownSizeName(town->size));
+                tr.drawStringLeftClipped(point, self.width - 12, Colour::black, StringIds::black_stringid, args);
             }
         }
 
