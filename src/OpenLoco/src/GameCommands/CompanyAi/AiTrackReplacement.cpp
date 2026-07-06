@@ -201,17 +201,20 @@ namespace OpenLoco::GameCommands
         }
 
         auto* trackSeqEntry = getTrackElement(args.pos, args.rotation, args.trackObjectId, args.trackId, args.sequenceIndex, companyId);
-
-        if (trackSeqEntry == nullptr)
+        auto* trackObj = ObjectManager::get<TrackObject>(args.trackObjectId);
+        if (trackObj == nullptr)
         {
             return GameCommands::kFailure;
         }
 
-        auto* trackObj = ObjectManager::get<TrackObject>(args.trackObjectId);
-
         currency32_t totalCost = 0;
         const auto trackIdCostFactor = World::TrackData::getTrackMiscData(args.trackId).costFactor;
         auto* elTrackSeq = trackSeqEntry->as<World::TrackElement>();
+        if (elTrackSeq == nullptr)
+        {
+            return GameCommands::kFailure;
+        }
+
         if (elTrackSeq->isAiAllocated())
         {
             {
@@ -290,7 +293,13 @@ namespace OpenLoco::GameCommands
             {
                 continue;
             }
+
             auto* elTrack = trackEntry->as<World::TrackElement>();
+            if (elTrack == nullptr)
+            {
+                continue;
+            }
+
             if (elTrack->hasBridge())
             {
                 hasBridge = true;
@@ -365,7 +374,12 @@ namespace OpenLoco::GameCommands
             {
                 // elTrack is invalid after clearFunction
                 trackEntry = getTrackElement(trackLoc, args.rotation, args.trackObjectId, args.trackId, piece.index, companyId);
-                trackEntry->as<World::TrackElement>()->setHasLevelCrossing(true);
+
+                auto* trackEl = trackEntry->as<World::TrackElement>();
+                if (trackEl != nullptr)
+                {
+                    trackEl->setHasLevelCrossing(true);
+                }
             }
 
             if (flags & Flags::apply)

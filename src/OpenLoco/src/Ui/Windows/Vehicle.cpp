@@ -3470,7 +3470,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B5A1A
         static Ui::ViewportInteraction::InteractionArg getRouteInteractionFromCursor(Window& self, const int16_t x, const int16_t y)
         {
-            auto head = Common::getVehicle(self);
+            auto* head = Common::getVehicle(self);
+            if (head == nullptr)
+            {
+                return ViewportInteraction::kNoInteractionArg;
+            }
+
             auto flags = ViewportInteraction::InteractionItemFlags::track
                 | ViewportInteraction::InteractionItemFlags::roadAndTram
                 | ViewportInteraction::InteractionItemFlags::station
@@ -4393,7 +4398,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
             }
 
-            if (elStation->isAiAllocated() || elStation->isGhost())
+            if (elStation == nullptr || elStation->isAiAllocated() || elStation->isGhost())
             {
                 return {};
             }
@@ -4401,6 +4406,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             GameCommands::VehicleAirPlacementArgs placementArgs;
             placementArgs.stationId = elStation->stationId();
             placementArgs.head = head.id;
+
             auto* airportObj = ObjectManager::get<AirportObject>(elStation->objectId());
             const auto movementNodes = airportObj->getMovementNodes();
 
@@ -4520,6 +4526,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             // Get the best progress along the road relative to the cursor
             auto* roadElement = static_cast<World::TileElementEntry*>(interaction.object)->as<World::RoadElement>();
+            if (roadElement == nullptr)
+            {
+                return {};
+            }
+
             World::Pos3 loc(interaction.pos.x, interaction.pos.y, roadElement->baseHeight());
             auto progress = getRoadProgressAtCursor({ x, y }, *viewport, *roadElement, loc);
 
@@ -4620,6 +4631,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             // Get the best progress along the track relative to the cursor
             auto* trackElement = static_cast<World::TileElementEntry*>(interaction.object)->as<World::TrackElement>();
+            if (trackElement == nullptr)
+            {
+                return {};
+            }
+
             World::Pos3 loc(interaction.pos.x, interaction.pos.y, trackElement->baseHeight());
             auto progress = getTrackProgressAtCursor({ x, y }, *viewport, *trackElement, loc);
 
