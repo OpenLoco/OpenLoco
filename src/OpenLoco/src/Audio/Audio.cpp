@@ -1,4 +1,6 @@
 #include "Audio/Audio.h"
+#include "Audio/AmbientAudio.h"
+#include "Audio/VehicleAudio.h"
 #include "Config.h"
 #include "Environment.h"
 #include "Localisation/StringIds.h"
@@ -37,9 +39,6 @@ namespace OpenLoco::Audio
     static std::vector<BufferId> _samples;
     static std::unordered_map<uint16_t, BufferId> _objectSamples;
     static std::unordered_map<PathId, BufferId> _musicSamples;
-
-    void updateVehicleNoise();
-    void updateAmbientNoise();
 
     static void playSound(SoundId id, ChannelId channel, const World::Pos3& loc, int32_t volume, int32_t pan, int32_t frequency);
 
