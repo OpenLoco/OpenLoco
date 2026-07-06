@@ -172,8 +172,11 @@ namespace OpenLoco::GameCommands
                 for (auto* roadEntry = roadRange.begin; roadEntry != roadRange.end; ++roadEntry)
                 {
                     auto* elRoad = roadEntry->as<World::RoadElement>();
-                    elRoad->setHasStationElement(false);
-                    elRoad->setClearZ(elRoad->clearZ() - stationObj->height);
+                    if (elRoad != nullptr)
+                    {
+                        elRoad->setHasStationElement(false);
+                        elRoad->setClearZ(elRoad->clearZ() - stationObj->height);
+                    }
                 }
                 Ui::ViewportManager::invalidate(World::Pos2(roadLoc), stationEl->baseHeight(), stationEl->clearHeight(), ZoomLevel::eighth);
                 World::TileManager::removeElement(*stationEntry);

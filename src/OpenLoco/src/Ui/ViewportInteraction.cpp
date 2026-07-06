@@ -1583,7 +1583,10 @@ namespace OpenLoco::Ui::ViewportInteraction
         if (info.type == InteractionItem::water)
         {
             const auto* surface = static_cast<World::TileElementEntry*>(info.object)->as<SurfaceElement>();
-            waterHeight = surface->waterHeight();
+            if (surface != nullptr)
+            {
+                waterHeight = surface->waterHeight();
+            }
         }
 
         const auto minPosition = info.pos;                  // E40128/A

@@ -123,11 +123,16 @@ namespace OpenLoco::GameCommands
         {
             return 0;
         }
-        auto* roadElPiece = roadEntry->as<World::RoadElement>();
 
-        currency32_t totalRemovalCost = 0;
+        auto* roadElPiece = roadEntry->as<World::RoadElement>();
+        if (roadElPiece == nullptr)
+        {
+            return 0;
+        }
 
         const auto* roadObj = ObjectManager::get<RoadObject>(roadElPiece->roadObjectId());
+        currency32_t totalRemovalCost = 0;
+
         if (roadElPiece->owner() != CompanyId::neutral)
         {
             const auto trackBaseCost = Economy::getInflationAdjustedCost(roadObj->sellCostFactor, roadObj->costIndex, 10);
@@ -164,7 +169,12 @@ namespace OpenLoco::GameCommands
         {
             return kFailure;
         }
+
         auto* roadEl = roadEntry->as<World::RoadElement>();
+        if (roadEl == nullptr)
+        {
+            return kFailure;
+        }
 
         const CompanyId roadOwner = roadEl->owner();
 
@@ -263,7 +273,12 @@ namespace OpenLoco::GameCommands
             {
                 continue;
             }
+
             auto* roadElPiece = pieceEntry->as<World::RoadElement>();
+            if (roadElPiece == nullptr)
+            {
+                continue;
+            }
 
             // 0x004779B2
             if (roadElPiece->hasBridge())
