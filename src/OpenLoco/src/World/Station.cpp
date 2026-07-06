@@ -1563,6 +1563,10 @@ namespace OpenLoco
                 continue;
             }
             auto* elStation = stationEntry->as<StationElement>();
+            if (elStation == nullptr)
+            {
+                continue;
+            }
 
             // 0x0112C7AB
             bool isCovered = false;
@@ -1572,6 +1576,11 @@ namespace OpenLoco
             // Also resets the station sequence index to 0
             auto isStationElementCovered = [&isCovered](World::TileElementEntry& stEntry, const World::Pos3 pos, bool hasPassedSurface) {
                 auto* elStation = stEntry.as<StationElement>();
+                if (elStation == nullptr)
+                {
+                    return;
+                }
+
                 elStation->setSequenceIndex(0);
 
                 isCovered |= [hasPassedSurface, &stEntry, elStation]() {
@@ -1653,8 +1662,11 @@ namespace OpenLoco
 
                 auto setStationSequenceIndex = [](World::TileElementEntry& stEntry, const World::Pos3 pos, bool) {
                     auto* elStation = stEntry.as<StationElement>();
-                    elStation->setSequenceIndex(1);
-                    Ui::ViewportManager::invalidate(pos, elStation->baseHeight(), elStation->clearHeight());
+                    if (elStation != nullptr)
+                    {
+                        elStation->setSequenceIndex(1);
+                        Ui::ViewportManager::invalidate(pos, elStation->baseHeight(), elStation->clearHeight());
+                    }
                 };
                 forEachStationElement(pos, rotation, stationEntry, setStationSequenceIndex);
             }
