@@ -17,6 +17,7 @@
 #include "Objects/CargoObject.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
+#include "OpenLoco/Utility/LookupTable.hpp"
 #include "SceneManager.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
@@ -64,6 +65,19 @@ namespace OpenLoco::Ui::Windows::Town
                 Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_population_graph),
                 Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town_ratings_each_company),
                 Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_statistics));
+        }
+
+        static StringId getTownSizeName(TownSize size)
+        {
+            static constexpr auto kTypeToString = Utility::buildLookupTable<TownSize, StringId>({
+                { TownSize::hamlet, StringIds::town_size_hamlet },
+                { TownSize::village, StringIds::town_size_village },
+                { TownSize::town, StringIds::town_size_town },
+                { TownSize::city, StringIds::town_size_city },
+                { TownSize::metropolis, StringIds::town_size_metropolis },
+            });
+
+            return kTypeToString.at(size);
         }
 
         // Defined at the bottom of this file.
@@ -542,9 +556,7 @@ namespace OpenLoco::Ui::Windows::Town
     namespace CompanyRatings
     {
         static constexpr auto widgets = makeWidgets(
-            Common::makeCommonWidgets(340, 208, StringIds::title_town_local_authority)
-
-        );
+            Common::makeCommonWidgets(340, 208, StringIds::title_town_local_authority));
 
         // 0x00499761
         static void prepareDraw(Window& self)
@@ -565,6 +577,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             point.x += 4;
             point.y += 14;
+            auto companiesServingTown = 0;
             auto town = TownManager::get(TownId(self.number));
             for (uint8_t i = 0; i < std::size(town->companyRatings); i++)
             {
@@ -572,6 +585,7 @@ namespace OpenLoco::Ui::Windows::Town
                 {
                     continue;
                 }
+                companiesServingTown++;
 
                 int16_t rating = (std::clamp<int16_t>(town->companyRatings[i], -1000, 1000) + 1000) / 20;
                 StringId rank{};
@@ -604,6 +618,14 @@ namespace OpenLoco::Ui::Windows::Town
 
                 tr.drawStringLeftClipped(point, self.width - 12, Colour::black, StringIds::town_rating_company_percentage_rank, args);
 
+                point.y += 10;
+            }
+            if (companiesServingTown == 0)
+            {
+                FormatArguments args{};
+                args.push(StringIds::town_not_served);
+                args.push(Common::getTownSizeName(town->size));
+                tr.drawStringLeftClipped(point, self.width - 12, Colour::black, StringIds::black_stringid, args);
                 point.y += 10;
             }
         }
