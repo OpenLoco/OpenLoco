@@ -1,3 +1,4 @@
+#include "Audio/AmbientAudio.h"
 #include "Audio/Audio.h"
 #include "Environment.h"
 #include "Game.h"
@@ -32,9 +33,6 @@ namespace OpenLoco::Audio
         constexpr int32_t _volumes[]{ -1200, -2000, -3000, -3000 };
         return _volumes[zoom];
     }
-
-    // Compiler warning work-around, wants to see a declaration.
-    void updateAmbientNoise();
 
     void updateAmbientNoise()
     {
