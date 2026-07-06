@@ -55,10 +55,10 @@ namespace OpenLoco::World
         return static_cast<size_t>(dist);
     }
 
-    TileElement* Tile::operator[](size_t i)
+    TileElementEntry* Tile::operator[](size_t i)
     {
         assert(i < size());
-        return &TileManager::resolveEntry(&_data[i]);
+        return &_data[i];
     }
 
     size_t Tile::indexOf(const TileElement* element) const

@@ -13,7 +13,7 @@
 
 namespace OpenLoco::World
 {
-    struct TileElement;
+    struct TileElementEntry;
 }
 namespace OpenLoco
 {
@@ -143,7 +143,7 @@ namespace OpenLoco::Paint
         PaintStruct* nextQuadrantPS;
         union
         {
-            World::TileElement* tileElement;
+            World::TileElementEntry* tileElement;
             EntityBase* entity;
         };
         ImageId imageId;
@@ -276,7 +276,7 @@ namespace OpenLoco::Paint
             return World::Pos2{ _spritePositionX, _spritePositionY };
         }
         Ui::ViewportFlags getViewFlags() const { return _viewFlags; }
-        // TileElement or Entity
+        // TileElementEntry or Entity
         void setCurrentItem(void* item) { _currentItem = item; }
         void* getCurrentItem() const { return _currentItem; }
         void setItemType(const Ui::ViewportInteraction::InteractionItem type) { _itemType = type; }
