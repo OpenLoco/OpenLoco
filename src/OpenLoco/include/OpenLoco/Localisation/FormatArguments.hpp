@@ -2,6 +2,7 @@
 
 #include <OpenLoco/Core/Exception.hpp>
 #include <array>
+#include <cstring>
 #include <sfl/small_vector.hpp>
 
 namespace OpenLoco
