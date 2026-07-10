@@ -189,6 +189,10 @@ namespace OpenLoco::Config
         _config.preferredOwnerFace = config["preferredOwnerFace"].as<ObjectHeader>(kEmptyObjectHeader);
         _config.usePreferredOwnerFace = config["usePreferredOwnerFace"].as<bool>(false);
 
+        // Preferred comapny
+        _config.preferredCompanyName = config["preferredCompanyName"].as<std::string>("");
+        _config.usePreferredCompanyName = config["usePreferredCompanyName"].as<bool>(false);
+
         // Misc settings
         _config.scenarioSelectedTab = config["scenarioSelectedTab"].as<int32_t>(2);
 
@@ -323,6 +327,10 @@ namespace OpenLoco::Config
         node["usePreferredOwnerName"] = _config.usePreferredOwnerName;
         node["preferredOwnerFace"] = _config.preferredOwnerFace;
         node["usePreferredOwnerFace"] = _config.usePreferredOwnerFace;
+
+        // Preferred company
+        node["preferredCompanyName"] = _config.preferredCompanyName;
+        node["usePreferredCompanyName"] = _config.usePreferredCompanyName;
 
         // Shortcuts
         const auto& shortcuts = _config.shortcuts;

@@ -1,4 +1,4 @@
-#include "VehicleOrderReverse.h"
+#include "GameCommands/Vehicles/VehicleOrderReverse.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Ui/WindowManager.h"
@@ -29,8 +29,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehicleOrderReverse(registers& regs)
+    void vehicleOrderReverse(registers& regs, const uint8_t flags)
     {
-        regs.ebx = vehicleOrderReverse(VehicleOrderReverseArgs(regs), regs.bl);
+        regs.ebx = vehicleOrderReverse(VehicleOrderReverseArgs(regs), flags);
     }
 }

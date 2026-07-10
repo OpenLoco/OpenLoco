@@ -1,4 +1,4 @@
-#include "RenameTown.h"
+#include "GameCommands/Town/RenameTown.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Town/RenameTown.h"
@@ -103,8 +103,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void renameTown(registers& regs)
+    void renameTown(registers& regs, const uint8_t flags)
     {
-        regs.ebx = renameTown(GameCommands::RenameTownArgs(regs), regs.bl);
+        regs.ebx = renameTown(GameCommands::RenameTownArgs(regs), flags);
     }
 }

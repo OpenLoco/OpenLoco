@@ -1,4 +1,4 @@
-#include "ChangeLandMaterial.h"
+#include "GameCommands/Terraform/ChangeLandMaterial.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
 #include "Map/MapGenerator/MapGenerator.h"
@@ -61,9 +61,9 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void changeLandMaterial(registers& regs)
+    void changeLandMaterial(registers& regs, const uint8_t flags)
     {
         ChangeLandMaterialArgs args(regs);
-        regs.ebx = changeLandMaterial(args.pointA, args.pointB, args.landType, regs.bl);
+        regs.ebx = changeLandMaterial(args.pointA, args.pointB, args.landType, flags);
     }
 }

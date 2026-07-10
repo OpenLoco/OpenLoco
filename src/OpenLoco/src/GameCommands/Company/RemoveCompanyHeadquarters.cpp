@@ -1,4 +1,4 @@
-#include "RemoveCompanyHeadquarters.h"
+#include "GameCommands/Company/RemoveCompanyHeadquarters.h"
 #include "Audio/Audio.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/Buildings/RemoveBuilding.h"
@@ -37,7 +37,7 @@ namespace OpenLoco::GameCommands
                     continue;
                 }
 
-                if (!sub_431E6A(company.id(), nullptr))
+                if (!checkCompanyCompatibility(company.id()))
                 {
                     return GameCommands::kFailure;
                 }
@@ -73,9 +73,9 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void removeCompanyHeadquarters(registers& regs)
+    void removeCompanyHeadquarters(registers& regs, const uint8_t flags)
     {
         HeadquarterRemovalArgs args(regs);
-        regs.ebx = removeCompanyHeadquarters(args.pos, regs.bl);
+        regs.ebx = removeCompanyHeadquarters(args.pos, flags);
     }
 }

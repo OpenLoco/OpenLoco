@@ -1,4 +1,4 @@
-#include "CreateVehicle.h"
+#include "GameCommands/Vehicles/CreateVehicle.h"
 #include "Audio/Audio.h"
 #include "Config.h"
 #include "Date.h"
@@ -683,7 +683,7 @@ namespace OpenLoco::GameCommands
         Vehicle train(headId);
         setPosition(train.veh2->position);
 
-        if (!sub_431E6A(train.head->owner))
+        if (!checkCompanyCompatibility(train.head->owner))
         {
             return kFailure;
         }
@@ -766,8 +766,8 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    void createVehicle(registers& regs)
+    void createVehicle(registers& regs, const uint8_t flags)
     {
-        regs.ebx = createVehicle(regs.bl, regs.dx, EntityId(regs.di));
+        regs.ebx = createVehicle(flags, regs.dx, EntityId(regs.di));
     }
 }

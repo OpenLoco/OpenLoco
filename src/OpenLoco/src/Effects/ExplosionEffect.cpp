@@ -1,4 +1,4 @@
-#include "ExplosionEffect.h"
+#include "Effects/ExplosionEffect.h"
 #include "Entities/EntityManager.h"
 
 namespace OpenLoco

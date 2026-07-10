@@ -1,4 +1,4 @@
-#include "Cheat.h"
+#include "GameCommands/Cheats/Cheat.h"
 #include "Economy/Currency.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
@@ -34,28 +34,21 @@ namespace OpenLoco::GameCommands
             auto ourCompanyId = GameCommands::getUpdatingCompanyId();
 
             // First phase: change ownership of all tile elements that currently belong to the target company.
-            for (auto& element : TileManager::getElements())
+            for (auto& roadElement : TileManager::getStore<RoadElement>())
             {
-                auto* roadElement = element.as<RoadElement>();
-                if (roadElement != nullptr)
+                // Check to verify that roadElement is owned by the target company
+                if (roadElement.owner() == targetCompanyId)
                 {
-                    // Check to verify that roadElement is owned by the target company
-                    if (roadElement->owner() == targetCompanyId)
-                    {
-                        roadElement->setOwner(ourCompanyId);
-                    }
-                    continue;
+                    roadElement.setOwner(ourCompanyId);
                 }
+            }
 
-                auto* trackElement = element.as<TrackElement>();
-                if (trackElement != nullptr)
+            for (auto& trackElement : TileManager::getStore<TrackElement>())
+            {
+                // Check to verify that the trackElement is owned by the target company.
+                if (trackElement.owner() == targetCompanyId)
                 {
-                    // Check to verify that the trackElement is owned by the target company.
-                    if (trackElement->owner() == targetCompanyId)
-                    {
-                        trackElement->setOwner(ourCompanyId);
-                    }
-                    continue;
+                    trackElement.setOwner(ourCompanyId);
                 }
             }
 
@@ -269,9 +262,9 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void cheat(registers& regs)
+    void cheat(registers& regs, const uint8_t flags)
     {
-        regs.ebx = cheat(GameCommands::GenericCheatArgs(regs), regs.bl);
+        regs.ebx = cheat(GameCommands::GenericCheatArgs(regs), flags);
     }
 
     // 0x004BAC53
@@ -289,10 +282,10 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehicleShuntCheat(registers& regs)
+    void vehicleShuntCheat(registers& regs, const uint8_t flags)
     {
         VehicleApplyShuntCheatArgs args(regs);
-        regs.ebx = vehicleShuntCheat(args.head, regs.bl);
+        regs.ebx = vehicleShuntCheat(args.head, flags);
     }
 
     // 0x00438A08
@@ -312,8 +305,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void freeCashCheat(registers& regs)
+    void freeCashCheat(registers& regs, const uint8_t flags)
     {
-        regs.ebx = freeCashCheat(regs.bl);
+        regs.ebx = freeCashCheat(flags);
     }
 }

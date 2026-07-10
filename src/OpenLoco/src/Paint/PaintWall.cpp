@@ -1,9 +1,9 @@
-#include "PaintWall.h"
+#include "Paint/PaintWall.h"
 #include "Graphics/Colour.h"
 #include "Map/WallElement.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/WallObject.h"
-#include "Paint.h"
+#include "Paint/Paint.h"
 #include "Scenario/ScenarioManager.h"
 #include "Ui/ViewportInteraction.h"
 #include <cassert>

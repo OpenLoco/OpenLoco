@@ -1,4 +1,4 @@
-#include "RemoveIndustry.h"
+#include "GameCommands/Industries/RemoveIndustry.h"
 #include "Economy/Economy.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
@@ -20,10 +20,10 @@ namespace OpenLoco::GameCommands
 {
     // 0x00455916
     // NOTE: Element is invalid after this call and all elements on tile
-    static void removeElement(const World::Pos2& pos, World::TileElement& el)
+    static void removeElement(const World::Pos2& pos, World::TileElementEntry& entry)
     {
-        Ui::ViewportManager::invalidate(pos, el.baseHeight(), el.clearHeight());
-        World::TileManager::removeElement(el);
+        Ui::ViewportManager::invalidate(pos, entry.baseHeight(), entry.clearHeight());
+        World::TileManager::removeElement(entry);
     }
 
     // 0x0045579F
@@ -168,9 +168,9 @@ namespace OpenLoco::GameCommands
         return Economy::getInflationAdjustedCost(indObj->clearCostFactor, indObj->costIndex, 3);
     }
 
-    void removeIndustry(registers& regs)
+    void removeIndustry(registers& regs, const uint8_t flags)
     {
         IndustryRemovalArgs args(regs);
-        regs.ebx = removeIndustry(args.industryId, regs.bl);
+        regs.ebx = removeIndustry(args.industryId, flags);
     }
 }

@@ -1,4 +1,4 @@
-#include "BuildCompanyHeadquarters.h"
+#include "GameCommands/Company/BuildCompanyHeadquarters.h"
 #include "Audio/Audio.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/Buildings/CreateBuilding.h"
@@ -69,9 +69,9 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void buildCompanyHeadquarters(registers& regs)
+    void buildCompanyHeadquarters(registers& regs, const uint8_t flags)
     {
         HeadquarterPlacementArgs args(regs);
-        regs.ebx = buildCompanyHeadquarters(args, regs.bl);
+        regs.ebx = buildCompanyHeadquarters(args, flags);
     }
 }

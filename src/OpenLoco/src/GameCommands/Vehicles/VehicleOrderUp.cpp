@@ -1,4 +1,4 @@
-#include "VehicleOrderUp.h"
+#include "GameCommands/Vehicles/VehicleOrderUp.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Ui/WindowManager.h"
@@ -70,8 +70,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehicleOrderUp(registers& regs)
+    void vehicleOrderUp(registers& regs, const uint8_t flags)
     {
-        regs.ebx = vehicleOrderUp(VehicleOrderUpArgs(regs), regs.bl);
+        regs.ebx = vehicleOrderUp(VehicleOrderUpArgs(regs), flags);
     }
 }

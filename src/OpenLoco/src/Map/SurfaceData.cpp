@@ -1,5 +1,5 @@
-#include "SurfaceData.h"
-#include "SurfaceElement.h"
+#include "Map/SurfaceData.h"
+#include "Map/SurfaceElement.h"
 #include <array>
 
 namespace OpenLoco::World

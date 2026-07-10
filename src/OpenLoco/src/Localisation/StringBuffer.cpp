@@ -1,5 +1,5 @@
-#include "StringBuffer.h"
-#include "Formatting.h"
+#include "Localisation/StringBuffer.h"
+#include "Localisation/Formatting.h"
 
 namespace OpenLoco
 {

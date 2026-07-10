@@ -1,4 +1,4 @@
-#include "VehiclePlaceWater.h"
+#include "GameCommands/Vehicles/VehiclePlaceWater.h"
 #include "Audio/Audio.h"
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
@@ -41,7 +41,7 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if (!sub_431E6A(head->owner))
+        if (!checkCompanyCompatibility(head->owner))
         {
             return kFailure;
         }
@@ -99,7 +99,7 @@ namespace OpenLoco::GameCommands
 
             auto* station = StationManager::get(elStation->stationId());
 
-            if (!sub_431E6A(station->owner))
+            if (!checkCompanyCompatibility(station->owner))
             {
                 return kFailure;
             }
@@ -157,8 +157,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehiclePlaceWater(registers& regs)
+    void vehiclePlaceWater(registers& regs, const uint8_t flags)
     {
-        regs.ebx = vehiclePlaceWater(VehicleWaterPlacementArgs(regs), regs.bl);
+        regs.ebx = vehiclePlaceWater(VehicleWaterPlacementArgs(regs), flags);
     }
 }

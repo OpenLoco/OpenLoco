@@ -1,4 +1,4 @@
-#include "VehicleReverse.h"
+#include "GameCommands/Vehicles/VehicleReverse.h"
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
@@ -19,7 +19,7 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if (!sub_431E6A(head->owner))
+        if (!checkCompanyCompatibility(head->owner))
         {
             return kFailure;
         }
@@ -49,9 +49,9 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehicleReverse(registers& regs)
+    void vehicleReverse(registers& regs, const uint8_t flags)
     {
         VehicleReverseArgs args(regs);
-        regs.ebx = vehicleReverse(args.head, regs.bl);
+        regs.ebx = vehicleReverse(args.head, flags);
     }
 }

@@ -1,4 +1,5 @@
-#include "Audio.h"
+#include "Audio/AmbientAudio.h"
+#include "Audio/Audio.h"
 #include "Environment.h"
 #include "Game.h"
 #include "GameStateFlags.h"
@@ -74,12 +75,12 @@ namespace OpenLoco::Audio
                             waterCount++;
                             break;
                         }
-                        else if (elSurface->snowCoverage() && elSurface->isLast())
+                        else if (elSurface->snowCoverage() && el.isLast())
                         {
                             wildernessCount++;
                             break;
                         }
-                        else if (elSurface->baseZ() >= 64 && elSurface->isLast())
+                        else if (elSurface->baseZ() >= 64 && el.isLast())
                         {
                             wildernessCount++;
                             break;

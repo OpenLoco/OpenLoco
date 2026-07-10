@@ -1,9 +1,9 @@
-#include "VehicleRearrange.h"
+#include "GameCommands/Vehicles/VehicleRearrange.h"
 #include "Config.h"
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
-#include "VehiclePickupAir.h"
-#include "VehiclePickupWater.h"
+#include "GameCommands/Vehicles/VehiclePickupAir.h"
+#include "GameCommands/Vehicles/VehiclePickupWater.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleBogie.h"
 #include "Vehicles/VehicleHead.h"
@@ -34,11 +34,11 @@ namespace OpenLoco::GameCommands
 
         if (!(flags & Flags::apply))
         {
-            if (!sub_431E6A(sourceVehicle->owner))
+            if (!checkCompanyCompatibility(sourceVehicle->owner))
             {
                 return kFailure;
             }
-            if (!sub_431E6A(destVehicle->owner))
+            if (!checkCompanyCompatibility(destVehicle->owner))
             {
                 return kFailure;
             }
@@ -120,8 +120,7 @@ namespace OpenLoco::GameCommands
                         GameCommands::VehiclePickupAirArgs airArgs{};
                         airArgs.head = train.head->id;
                         registers regs = static_cast<registers>(airArgs);
-                        regs.bl = GameCommands::Flags::apply;
-                        GameCommands::vehiclePickupAir(regs);
+                        GameCommands::vehiclePickupAir(regs, GameCommands::Flags::apply);
                         break;
                     }
                     case TransportMode::water:
@@ -131,8 +130,7 @@ namespace OpenLoco::GameCommands
                         GameCommands::VehiclePickupWaterArgs waterArgs{};
                         waterArgs.head = train.head->id;
                         registers regs = static_cast<registers>(waterArgs);
-                        regs.bl = GameCommands::Flags::apply;
-                        GameCommands::vehiclePickupWater(regs);
+                        GameCommands::vehiclePickupWater(regs, GameCommands::Flags::apply);
                     }
                 }
                 setExpenditureType(ExpenditureType::TrainRunningCosts);
@@ -167,8 +165,8 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    void vehicleRearrange(registers& regs)
+    void vehicleRearrange(registers& regs, const uint8_t flags)
     {
-        regs.ebx = vehicleRearrange(VehicleRearrangeArgs(regs), regs.bl);
+        regs.ebx = vehicleRearrange(VehicleRearrangeArgs(regs), flags);
     }
 }

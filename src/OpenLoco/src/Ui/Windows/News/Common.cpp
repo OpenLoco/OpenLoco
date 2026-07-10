@@ -3,11 +3,11 @@
 #include "Graphics/Colour.h"
 #include "Message.h"
 #include "MessageManager.h"
-#include "News.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "SceneManager.h"
 #include "Ui/Widgets/NewsPanelWidget.h"
+#include "Ui/Windows/News/News.h"
 #include "World/CompanyManager.h"
 
 namespace OpenLoco::Ui::Windows::NewsWindow

@@ -1,4 +1,4 @@
-#include "VehiclePlace.h"
+#include "GameCommands/Vehicles/VehiclePlace.h"
 #include "Economy/Expenditures.h"
 #include "GameState.h"
 #include "Map/RoadElement.h"
@@ -98,7 +98,7 @@ namespace OpenLoco::GameCommands
 
         if (!(getGameState().roadObjectIdIsUsableByAllCompanies & (1 << elRoad->roadObjectId())))
         {
-            if (!sub_431E6A(elRoad->owner(), reinterpret_cast<const World::TileElement*>(elRoad)))
+            if (!checkCompanyCompatibility(elRoad->owner(), *elRoad))
             {
                 return false;
             }
@@ -177,7 +177,7 @@ namespace OpenLoco::GameCommands
             return false;
         }
 
-        if (!sub_431E6A(elTrack->owner(), reinterpret_cast<const World::TileElement*>(elTrack)))
+        if (!checkCompanyCompatibility(elTrack->owner(), *elTrack))
         {
             return false;
         }
@@ -218,7 +218,7 @@ namespace OpenLoco::GameCommands
             setExpenditureType(vehTypeToCost[enumValue(train.head->vehicleType)]);
             setPosition(args.pos);
 
-            if (!sub_431E6A(train.head->owner))
+            if (!checkCompanyCompatibility(train.head->owner))
             {
                 return kFailure;
             }
@@ -299,8 +299,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehiclePlace(registers& regs)
+    void vehiclePlace(registers& regs, const uint8_t flags)
     {
-        regs.ebx = vehiclePlace(VehiclePlacementArgs(regs), regs.bl);
+        regs.ebx = vehiclePlace(VehiclePlacementArgs(regs), flags);
     }
 }

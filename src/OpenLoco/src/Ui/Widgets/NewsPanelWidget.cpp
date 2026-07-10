@@ -1,4 +1,4 @@
-#include "NewsPanelWidget.h"
+#include "Ui/Widgets/NewsPanelWidget.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/TextRenderer.h"

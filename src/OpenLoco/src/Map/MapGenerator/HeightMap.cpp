@@ -1,4 +1,4 @@
-#include "HeightMap.h"
+#include "Map/MapGenerator/HeightMap.h"
 #include <algorithm>
 
 namespace OpenLoco::World::MapGenerator

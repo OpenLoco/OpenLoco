@@ -1,4 +1,4 @@
-#include "VehiclePickupWater.h"
+#include "GameCommands/Vehicles/VehiclePickupWater.h"
 #include "Config.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
@@ -22,7 +22,7 @@ namespace OpenLoco::GameCommands
         setExpenditureType(ExpenditureType::ShipRunningCosts);
         Vehicle train(head);
         setPosition(train.veh2->position);
-        if (!sub_431E6A(train.head->owner))
+        if (!checkCompanyCompatibility(train.head->owner))
         {
             return kFailure;
         }
@@ -93,8 +93,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehiclePickupWater(registers& regs)
+    void vehiclePickupWater(registers& regs, const uint8_t flags)
     {
-        regs.ebx = vehiclePickupWater(EntityId(regs.di), regs.bl);
+        regs.ebx = vehiclePickupWater(EntityId(regs.di), flags);
     }
 }

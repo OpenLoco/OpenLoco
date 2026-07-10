@@ -1,4 +1,4 @@
-#include "SetGameSpeed.h"
+#include "GameCommands/General/SetGameSpeed.h"
 #include "GameCommands/GameCommands.h"
 #include "SceneManager.h"
 
@@ -15,7 +15,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void setGameSpeed(registers& regs)
+    void setGameSpeed(registers& regs, const uint8_t)
     {
         SetGameSpeedArgs args(regs);
         regs.ebx = GameCommands::setGameSpeed(args.newSpeed);

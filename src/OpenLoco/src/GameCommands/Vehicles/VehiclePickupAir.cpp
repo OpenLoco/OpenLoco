@@ -1,4 +1,4 @@
-#include "VehiclePickupAir.h"
+#include "GameCommands/Vehicles/VehiclePickupAir.h"
 #include "Config.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
@@ -21,7 +21,7 @@ namespace OpenLoco::GameCommands
         setExpenditureType(ExpenditureType::AircraftRunningCosts);
         Vehicle train(args.head);
         setPosition(train.veh2->position);
-        if (!sub_431E6A(train.head->owner))
+        if (!checkCompanyCompatibility(train.head->owner))
         {
             return kFailure;
         }
@@ -79,9 +79,9 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehiclePickupAir(registers& regs)
+    void vehiclePickupAir(registers& regs, const uint8_t flags)
     {
         const VehiclePickupAirArgs args(regs);
-        regs.ebx = vehiclePickupAir(args, regs.bl);
+        regs.ebx = vehiclePickupAir(args, flags);
     }
 }

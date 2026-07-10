@@ -1,8 +1,8 @@
-#include "VehicleSell.h"
+#include "GameCommands/Vehicles/VehicleSell.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
-#include "VehiclePickupAir.h"
-#include "VehiclePickupWater.h"
+#include "GameCommands/Vehicles/VehiclePickupAir.h"
+#include "GameCommands/Vehicles/VehiclePickupWater.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleBody.h"
 #include "Vehicles/VehicleBogie.h"
@@ -111,7 +111,7 @@ namespace OpenLoco::GameCommands
         }
         else
         {
-            if (!sub_431E6A(vehBase->owner))
+            if (!checkCompanyCompatibility(vehBase->owner))
             {
                 return kFailure;
             }
@@ -126,8 +126,8 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004AED34
-    void sellVehicle(registers& regs)
+    void sellVehicle(registers& regs, const uint8_t flags)
     {
-        regs.ebx = sellVehicle(EntityId(regs.dx), regs.bl);
+        regs.ebx = sellVehicle(EntityId(regs.dx), flags);
     }
 }

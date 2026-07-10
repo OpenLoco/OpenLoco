@@ -1,4 +1,3 @@
-#include "Construction.h"
 #include "Date.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
@@ -30,6 +29,7 @@
 #include "SceneManager.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Windows/Construction/Construction.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 
@@ -248,8 +248,7 @@ namespace OpenLoco::Ui::Windows::Construction
         auto* viewport = main.viewports[0];
 
         auto& cState = getConstructionState();
-        cState.backupTileElement = *reinterpret_cast<TileElement*>(track);
-        auto* copyElement = (cState.backupTileElement).as<TrackElement>();
+        auto* copyElement = track;
         if (copyElement == nullptr)
         {
             return nullptr;
@@ -355,8 +354,7 @@ namespace OpenLoco::Ui::Windows::Construction
         auto* viewport = main.viewports[0];
 
         auto& cState = getConstructionState();
-        cState.backupTileElement = *reinterpret_cast<TileElement*>(road);
-        auto* copyElement = (cState.backupTileElement).as<RoadElement>();
+        auto* copyElement = road;
         if (copyElement == nullptr)
         {
             return nullptr;

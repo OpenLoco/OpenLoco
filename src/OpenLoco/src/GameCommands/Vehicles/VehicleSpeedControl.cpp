@@ -1,10 +1,10 @@
-#include "VehicleSpeedControl.h"
+#include "GameCommands/Vehicles/VehicleSpeedControl.h"
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Vehicles/VehicleSell.h"
 #include "Types.hpp"
 #include "Ui/WindowManager.h"
-#include "VehicleSell.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleHead.h"
 
@@ -45,8 +45,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehicleSpeedControl(registers& regs)
+    void vehicleSpeedControl(registers& regs, const uint8_t flags)
     {
-        regs.ebx = vehicleSpeedControl(VehicleSpeedControlArgs(regs), regs.bl);
+        regs.ebx = vehicleSpeedControl(VehicleSpeedControlArgs(regs), flags);
     }
 }

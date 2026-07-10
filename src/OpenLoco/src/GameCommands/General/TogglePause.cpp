@@ -1,4 +1,4 @@
-#include "TogglePause.h"
+#include "GameCommands/General/TogglePause.h"
 #include "Audio/Audio.h"
 #include "GameCommands/GameCommands.h"
 #include "GameException.hpp"
@@ -30,8 +30,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void togglePause(registers& regs)
+    void togglePause(registers& regs, const uint8_t flags)
     {
-        regs.ebx = togglePause(regs.bl);
+        regs.ebx = togglePause(flags);
     }
 }

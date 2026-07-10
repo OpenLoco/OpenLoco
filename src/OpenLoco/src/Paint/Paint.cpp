@@ -1,4 +1,4 @@
-#include "Paint.h"
+#include "Paint/Paint.h"
 #include "Config.h"
 #include "Game.h"
 #include "GameStateFlags.h"
@@ -11,9 +11,9 @@
 #include "Logging.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
-#include "PaintEntity.h"
-#include "PaintRoad.h"
-#include "PaintTile.h"
+#include "Paint/PaintEntity.h"
+#include "Paint/PaintRoad.h"
+#include "Paint/PaintTile.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "World/StationManager.h"
@@ -595,7 +595,7 @@ namespace OpenLoco::Paint
         ps->type = _itemType;
         ps->modId = _trackModId;
         ps->mapPos = _mapPosition;
-        ps->tileElement = reinterpret_cast<World::TileElement*>(_currentItem);
+        ps->tileElement = reinterpret_cast<World::TileElementEntry*>(_currentItem);
         return ps;
     }
 

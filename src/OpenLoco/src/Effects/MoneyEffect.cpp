@@ -1,4 +1,4 @@
-#include "MoneyEffect.h"
+#include "Effects/MoneyEffect.h"
 #include "Entities/EntityManager.h"
 #include "Graphics/TextRenderer.h"
 #include "Localisation/FormatArguments.hpp"

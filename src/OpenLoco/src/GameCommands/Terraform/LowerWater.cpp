@@ -1,4 +1,4 @@
-#include "LowerWater.h"
+#include "GameCommands/Terraform/LowerWater.h"
 #include "Audio/Audio.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
@@ -79,9 +79,9 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void lowerWater(registers& regs)
+    void lowerWater(registers& regs, const uint8_t flags)
     {
         const LowerWaterArgs args(regs);
-        regs.ebx = lowerWater(args, regs.bl);
+        regs.ebx = lowerWater(args, flags);
     }
 }

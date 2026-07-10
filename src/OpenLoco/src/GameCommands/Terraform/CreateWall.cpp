@@ -1,4 +1,4 @@
-#include "CreateWall.h"
+#include "GameCommands/Terraform/CreateWall.h"
 #include "Economy/Economy.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
@@ -251,41 +251,42 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        auto* wall = TileManager::insertElement<WallElement>(args.pos, targetBaseZ, 0);
-        if (wall == nullptr)
+        auto* wallEntry = TileManager::insertElement<WallElement>(args.pos, targetBaseZ, 0);
+        if (wallEntry == nullptr)
         {
             return kFailure;
         }
 
-        wall->setClearZ(clearZ);
-        wall->setRotation(args.rotation);
-        wall->setSlopeFlags(slopeFlags);
-        wall->setPrimaryColour(args.primaryColour);
-        wall->setSecondaryColour(args.secondaryColour);
-        wall->setWallObjectId(args.type);
+        auto& wall = wallEntry->get<WallElement>();
+        wall.setClearZ(clearZ);
+        wall.setRotation(args.rotation);
+        wall.setSlopeFlags(slopeFlags);
+        wall.setPrimaryColour(args.primaryColour);
+        wall.setSecondaryColour(args.secondaryColour);
+        wall.setWallObjectId(args.type);
 
         if ((wallObj->flags & WallObjectFlags::hasTertiaryColour) != WallObjectFlags::none)
         {
-            wall->setTertiaryColour(args.tertiaryColour);
+            wall.setTertiaryColour(args.tertiaryColour);
         }
 
         if (flags & Flags::ghost)
         {
-            wall->setGhost(true);
+            wall.setGhost(true);
         }
 
-        getLegacyReturnState().lastPlacedWall = wall;
+        getLegacyReturnState().lastPlacedWall = &wall;
 
-        Ui::ViewportManager::invalidate(args.pos, wall->baseHeight(), wall->baseHeight() + 72, ZoomLevel::half);
+        Ui::ViewportManager::invalidate(args.pos, wall.baseHeight(), wall.baseHeight() + 72, ZoomLevel::half);
 
         Scenario::getOptions().madeAnyChanges = 1;
 
         return 0;
     }
 
-    void createWall(registers& regs)
+    void createWall(registers& regs, const uint8_t flags)
     {
         WallPlacementArgs args(regs);
-        regs.ebx = createWall(args, regs.bl);
+        regs.ebx = createWall(args, flags);
     }
 }

@@ -1,4 +1,4 @@
-#include "PaintStation.h"
+#include "Paint/PaintStation.h"
 #include "Graphics/Colour.h"
 #include "Graphics/RenderTarget.h"
 #include "Map/StationElement.h"
@@ -6,11 +6,11 @@
 #include "Objects/CargoObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/TrainStationObject.h"
-#include "Paint.h"
-#include "PaintAirport.h"
-#include "PaintDocks.h"
-#include "PaintRoadStation.h"
-#include "PaintTrainStation.h"
+#include "Paint/Paint.h"
+#include "Paint/PaintAirport.h"
+#include "Paint/PaintDocks.h"
+#include "Paint/PaintRoadStation.h"
+#include "Paint/PaintTrainStation.h"
 #include "Ui.h"
 #include "Ui/ViewportInteraction.h"
 #include "World/CompanyManager.h"
@@ -118,8 +118,9 @@ namespace OpenLoco::Paint
     }
 
     // 0x0048B313
-    void paintStation(PaintSession& session, const World::StationElement& elStation)
+    void paintStation(PaintSession& session, const World::TileElementEntry& entry)
     {
+        auto& elStation = entry.get<World::StationElement>();
         if (elStation.isAiAllocated() && !showAiPlanningGhosts())
         {
             return;
@@ -135,10 +136,10 @@ namespace OpenLoco::Paint
         switch (elStation.stationType())
         {
             case StationType::trainStation:
-                paintTrainStation(session, elStation);
+                paintTrainStation(session, entry);
                 break;
             case StationType::roadStation:
-                paintRoadStation(session, elStation);
+                paintRoadStation(session, entry);
                 break;
             case StationType::airport:
                 paintAirport(session, elStation);

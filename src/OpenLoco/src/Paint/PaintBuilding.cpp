@@ -1,10 +1,10 @@
-#include "PaintBuilding.h"
+#include "Paint/PaintBuilding.h"
 #include "Graphics/RenderTarget.h"
 #include "Map/BuildingElement.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/ScaffoldingObject.h"
-#include "Paint.h"
+#include "Paint/Paint.h"
 #include "Scenario/ScenarioManager.h"
 #include "Ui/ViewportInteraction.h"
 

@@ -1,4 +1,4 @@
-#include "VehicleOrderSkip.h"
+#include "GameCommands/Vehicles/VehicleOrderSkip.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Ui/WindowManager.h"
@@ -32,8 +32,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehicleOrderSkip(registers& regs)
+    void vehicleOrderSkip(registers& regs, const uint8_t flags)
     {
-        regs.ebx = vehicleOrderSkip(EntityId(regs.di), regs.bl);
+        regs.ebx = vehicleOrderSkip(EntityId(regs.di), flags);
     }
 }

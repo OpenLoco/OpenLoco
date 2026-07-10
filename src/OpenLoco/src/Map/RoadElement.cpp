@@ -1,13 +1,13 @@
-#include "RoadElement.h"
+#include "Map/RoadElement.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Road/RemoveRoad.h"
 #include "GameState.h"
+#include "Map/Tile.h"
+#include "Map/TileManager.h"
 #include "Objects/LevelCrossingObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Scenario/ScenarioManager.h"
-#include "Tile.h"
-#include "TileManager.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
 
@@ -19,9 +19,8 @@ namespace OpenLoco::World
         , _6(0)
         , _7(0)
     {
-        _type = 0;
+        _0 = 0;
         _flags = 0;
-        setType(World::ElementType::road);
         setBaseZ(baseZ);
         setClearZ(clearZ);
     }

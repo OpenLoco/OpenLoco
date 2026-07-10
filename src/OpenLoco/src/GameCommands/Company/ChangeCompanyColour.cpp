@@ -1,4 +1,4 @@
-#include "ChangeCompanyColour.h"
+#include "GameCommands/Company/ChangeCompanyColour.h"
 #include "Audio/Audio.h"
 #include "GameCommands/GameCommands.h"
 #include "GameException.hpp"
@@ -63,7 +63,7 @@ namespace OpenLoco::GameCommands
         }
         else
         {
-            if (!sub_431E6A(args.companyId, nullptr))
+            if (!checkCompanyCompatibility(args.companyId))
             {
                 return GameCommands::kFailure;
             }
@@ -85,8 +85,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void changeCompanyColour(registers& regs)
+    void changeCompanyColour(registers& regs, const uint8_t flags)
     {
-        regs.ebx = changeCompanyColour(ChangeCompanyColourSchemeArgs(regs), regs.bl);
+        regs.ebx = changeCompanyColour(ChangeCompanyColourSchemeArgs(regs), flags);
     }
 }

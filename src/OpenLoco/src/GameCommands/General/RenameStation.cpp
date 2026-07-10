@@ -1,4 +1,4 @@
-#include "RenameStation.h"
+#include "GameCommands/General/RenameStation.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Gfx.h"
@@ -111,8 +111,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void renameStation(registers& regs)
+    void renameStation(registers& regs, const uint8_t flags)
     {
-        regs.ebx = renameStation(GameCommands::RenameStationArgs(regs), regs.bl);
+        regs.ebx = renameStation(GameCommands::RenameStationArgs(regs), flags);
     }
 }

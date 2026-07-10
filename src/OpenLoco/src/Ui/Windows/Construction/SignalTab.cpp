@@ -1,5 +1,4 @@
 #include "Audio/Audio.h"
-#include "Construction.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Track/CreateSignal.h"
 #include "GameCommands/Track/RemoveSignal.h"
@@ -9,6 +8,7 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/SignalElement.h"
+#include "Map/TileElementEntry.h"
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
@@ -22,6 +22,7 @@
 #include "Ui/Widget.h"
 #include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Windows/Construction/Construction.h"
 
 using namespace OpenLoco::World;
 using namespace OpenLoco::World::TileManager;
@@ -156,7 +157,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             return std::nullopt;
         }
 
-        auto* elTrack = reinterpret_cast<World::TileElement*>(interaction.object)->as<TrackElement>();
+        auto* elTrack = reinterpret_cast<World::TileElementEntry*>(interaction.object)->as<TrackElement>();
         if (elTrack == nullptr)
         {
             return std::nullopt;

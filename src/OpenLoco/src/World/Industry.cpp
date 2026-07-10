@@ -1,9 +1,8 @@
-#include "Industry.h"
+#include "World/Industry.h"
 #include "Date.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Industries/RemoveIndustry.h"
 #include "GameCommands/Terraform/CreateWall.h"
-#include "IndustryManager.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Map/AnimationManager.h"
@@ -17,8 +16,9 @@
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
 #include "Random.h"
-#include "StationManager.h"
 #include "ViewportManager.h"
+#include "World/IndustryManager.h"
+#include "World/StationManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Math/Bound.hpp>
 #include <algorithm>
@@ -81,13 +81,12 @@ namespace OpenLoco
         return produceCargoState;
     }
 
-    static bool findTree(SurfaceElement* surface)
+    static bool findTreeAboveSurface(const TileElementEntry* surfaceEntry)
     {
-        auto element = surface;
-        while (!element->isLast())
+        while (surfaceEntry != nullptr && !surfaceEntry->isLast())
         {
-            element++;
-            if (element->type() == ElementType::tree)
+            surfaceEntry = surfaceEntry->next();
+            if (surfaceEntry->type() == ElementType::tree)
             {
                 return true;
             }
@@ -410,10 +409,11 @@ namespace OpenLoco
     // 0x0045329B
     void Industry::isFarmTileProducing(const Pos2& pos)
     {
-        const auto& surface = TileManager::get(pos).surface();
-        if (surface != nullptr)
+        auto* surfaceEntry = TileManager::get(pos).surfaceEntry();
+        if (surfaceEntry != nullptr)
         {
-            if (surface->isIndustrial())
+            const auto* surface = surfaceEntry->as<SurfaceElement>();
+            if (surface != nullptr && surface->isIndustrial())
             {
                 if (surface->industryId() == id())
                 {
@@ -423,7 +423,7 @@ namespace OpenLoco
                     {
                         // loc_4532E5
                         numFarmTiles++;
-                        if ((!obj->hasFlags(IndustryObjectFlags::farmProductionIgnoresSnow) && surface->snowCoverage() != 0) || findTree(surface))
+                        if ((!obj->hasFlags(IndustryObjectFlags::farmProductionIgnoresSnow) && surface->snowCoverage() != 0) || findTreeAboveSurface(surfaceEntry))
                         {
                             numIdleFarmTiles++;
                         }

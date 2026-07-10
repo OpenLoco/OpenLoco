@@ -1,4 +1,4 @@
-#include "VehicleRepaint.h"
+#include "GameCommands/Vehicles/VehicleRepaint.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Types.hpp"
@@ -44,7 +44,7 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if (!sub_431E6A(veh->owner))
+        if (!checkCompanyCompatibility(veh->owner))
         {
             return kFailure;
         }
@@ -83,8 +83,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehicleRepaint(registers& regs)
+    void vehicleRepaint(registers& regs, const uint8_t flags)
     {
-        regs.ebx = vehicleRepaint(VehicleRepaintArgs(regs), regs.bl);
+        regs.ebx = vehicleRepaint(VehicleRepaintArgs(regs), flags);
     }
 }

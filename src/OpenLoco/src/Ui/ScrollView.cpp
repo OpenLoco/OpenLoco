@@ -1,9 +1,9 @@
-#include "ScrollView.h"
+#include "Ui/ScrollView.h"
 #include "Input.h"
-#include "ToolTip.h"
 #include "Ui.h"
-#include "Widget.h"
-#include "WindowManager.h"
+#include "Ui/ToolTip.h"
+#include "Ui/Widget.h"
+#include "Ui/WindowManager.h"
 #include <cmath>
 
 namespace OpenLoco::Ui::ScrollView

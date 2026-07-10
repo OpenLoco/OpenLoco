@@ -1,8 +1,8 @@
-#include "NetworkClient.h"
+#include "Network/NetworkClient.h"
 #include "Config.h"
 #include "GameCommands/GameCommands.h"
 #include "Logging.h"
-#include "NetworkConnection.h"
+#include "Network/NetworkConnection.h"
 #include "S5/S5.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
@@ -332,13 +332,14 @@ void NetworkClient::sendChatMessage(std::string_view message)
     }
 }
 
-void NetworkClient::sendGameCommand(CompanyId company, const OpenLoco::GameCommands::registers& regs)
+void NetworkClient::sendGameCommand(CompanyId company, const OpenLoco::GameCommands::registers& regs, const uint8_t flags)
 {
     if (_serverConnection != nullptr && _status == NetworkClientStatus::connected)
     {
         GameCommandPacket packet;
         packet.company = company;
         packet.regs = regs;
+        packet.flags = flags;
         _serverConnection->sendPacket(packet);
     }
 }
@@ -381,7 +382,7 @@ void NetworkClient::runGameCommandsForTick(uint32_t tick)
         if (nextPacket.index == _localGameCommandIndex + 1 && nextPacket.tick == tick)
         {
             _localGameCommandIndex++;
-            GameCommands::doCommandForReal(static_cast<GameCommands::GameCommand>(nextPacket.regs.esi), nextPacket.company, nextPacket.regs);
+            GameCommands::doCommandForReal(static_cast<GameCommands::GameCommand>(nextPacket.regs.esi), nextPacket.company, nextPacket.regs, nextPacket.flags);
             _receivedGameCommands.pop_front();
         }
         else

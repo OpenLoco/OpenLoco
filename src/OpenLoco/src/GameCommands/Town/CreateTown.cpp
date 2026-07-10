@@ -1,4 +1,4 @@
-#include "CreateTown.h"
+#include "GameCommands/Town/CreateTown.h"
 #include "Audio/Audio.h"
 #include "Date.h"
 #include "Economy/Expenditures.h"
@@ -181,9 +181,9 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void createTown(registers& regs)
+    void createTown(registers& regs, const uint8_t flags)
     {
         TownPlacementArgs args(regs);
-        regs.ebx = createTown(args, regs.bl);
+        regs.ebx = createTown(args, flags);
     }
 }

@@ -1,6 +1,6 @@
-#include "Languages.h"
-#include "Conversion.h"
+#include "Localisation/Languages.h"
 #include "Environment.h"
+#include "Localisation/Conversion.h"
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Platform/Platform.h>
 #include <algorithm>

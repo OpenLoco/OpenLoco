@@ -2490,5 +2490,12 @@ strings:
   2435: 'Keep vehicle cargo on modify or pickup'
   2436: '{SMALLFONT}{COLOUR BLACK}When enabled, cargo will not be cleared from the entire vehicle when adding cars, moving cars or picking up the vehicle'
   2437: "Sort by"
-  2501: "Max Clip Height Increment"
-  2502: "Max Clip Height Decrement"
+  5501: "Max Clip Height Increment"
+  5502: "Max Clip Height Decrement"
+  2438: 'Preferred company'
+  2439: Use preferred company name when starting a new game
+  2440: "{SMALLFONT}{COLOUR BLACK}Select this option to use the same company name every time you start a new game"
+  2441: "{COLOUR WINDOW_2}Preferred company name: {COLOUR BLACK}{STRINGID}"
+  2442: Preferred Company Name
+  2443: "Enter the preferred company name:"
+  2444: Can't change company name...

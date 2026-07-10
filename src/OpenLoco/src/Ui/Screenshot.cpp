@@ -1,4 +1,4 @@
-#include "Screenshot.h"
+#include "Ui/Screenshot.h"
 #include "Entities/EntityManager.h"
 #include "Environment.h"
 #include "GameState.h"
@@ -9,7 +9,7 @@
 #include "Localisation/StringIds.h"
 #include "Map/TileManager.h"
 #include "Ui.h"
-#include "WindowManager.h"
+#include "Ui/WindowManager.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Platform/Platform.h>
 #include <cstdint>

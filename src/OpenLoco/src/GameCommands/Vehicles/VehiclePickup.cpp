@@ -1,4 +1,4 @@
-#include "VehiclePickup.h"
+#include "GameCommands/Vehicles/VehiclePickup.h"
 #include "Audio/Audio.h"
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
@@ -41,7 +41,7 @@ namespace OpenLoco::GameCommands
 
         GameCommands::setPosition(veh2->position);
 
-        if (!GameCommands::sub_431E6A(head->owner))
+        if (!GameCommands::checkCompanyCompatibility(head->owner))
         {
             return kFailure;
         }
@@ -71,8 +71,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehiclePickup(registers& regs)
+    void vehiclePickup(registers& regs, const uint8_t flags)
     {
-        regs.ebx = vehiclePickup(regs.bl, EntityId(regs.di));
+        regs.ebx = vehiclePickup(flags, EntityId(regs.di));
     }
 }

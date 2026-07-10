@@ -1,9 +1,9 @@
-#include "PaintBridge.h"
+#include "Paint/PaintBridge.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
 #include "Objects/BridgeObject.h"
 #include "Objects/ObjectManager.h"
-#include "Paint.h"
+#include "Paint/Paint.h"
 #include "Ui/ViewportInteraction.h"
 #include <OpenLoco/Core/Numerics.hpp>
 

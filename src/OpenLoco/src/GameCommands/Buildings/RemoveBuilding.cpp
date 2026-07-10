@@ -1,4 +1,4 @@
-#include "RemoveBuilding.h"
+#include "GameCommands/Buildings/RemoveBuilding.h"
 #include "Economy/Economy.h"
 #include "GameCommands/GameCommands.h"
 #include "Localisation/FormatArguments.hpp"
@@ -103,7 +103,7 @@ namespace OpenLoco::GameCommands
 
                     if (flags & GameCommands::Flags::apply)
                     {
-                        World::TileManager::removeBuildingElement(subElBuilding->get<World::BuildingElement>(), subTilePos);
+                        World::TileManager::removeBuildingElement(element, subTilePos);
                         auto& options = Scenario::getOptions();
                         options.madeAnyChanges = 1;
                     }
@@ -114,9 +114,9 @@ namespace OpenLoco::GameCommands
         return GameCommands::kFailure;
     }
 
-    void removeBuilding(registers& regs)
+    void removeBuilding(registers& regs, const uint8_t flags)
     {
         BuildingRemovalArgs args(regs);
-        regs.ebx = removeBuilding(args.pos, regs.bl);
+        regs.ebx = removeBuilding(args.pos, flags);
     }
 }

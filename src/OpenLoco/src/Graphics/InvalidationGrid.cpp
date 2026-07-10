@@ -1,4 +1,4 @@
-#include "InvalidationGrid.h"
+#include "Graphics/InvalidationGrid.h"
 
 #include <algorithm>
 #include <cstring>

@@ -1,4 +1,4 @@
-#include "LabelWidget.h"
+#include "Ui/Widgets/LabelWidget.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/TextRenderer.h"

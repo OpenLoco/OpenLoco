@@ -1,4 +1,4 @@
-#include "Vehicle1.h"
+#include "Vehicles/Vehicle1.h"
 #include "Audio/Audio.h"
 #include "Entities/EntityManager.h"
 #include "Map/TileManager.h"
@@ -10,11 +10,11 @@
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "Random.h"
-#include "RoutingManager.h"
-#include "Vehicle2.h"
-#include "VehicleBogie.h"
-#include "VehicleHead.h"
-#include "VehicleTail.h"
+#include "Vehicles/RoutingManager.h"
+#include "Vehicles/Vehicle2.h"
+#include "Vehicles/VehicleBogie.h"
+#include "Vehicles/VehicleHead.h"
+#include "Vehicles/VehicleTail.h"
 #include "ViewportManager.h"
 
 using namespace OpenLoco::Literals;
@@ -485,8 +485,12 @@ namespace OpenLoco::Vehicles
 
         const auto newDistance = vehicle1UpdateRoadMotionByPieces(veh1, numRoadPieces);
         veh1.var_3C += newDistance;
+
         auto* head = EntityManager::get<VehicleHead>(veh1.head);
-        head->var_3C += newDistance - noOvertakeDistance;
+        if (head != nullptr)
+        {
+            head->var_3C += newDistance - noOvertakeDistance;
+        }
     }
 
     // 0x0047D52B
@@ -517,10 +521,14 @@ namespace OpenLoco::Vehicles
 
         const auto newDistance = vehicle1UpdateRoadMotionByPieces(veh1, numRoadPieces);
         veh1.var_3C += newDistance;
+
         auto* head = EntityManager::get<VehicleHead>(veh1.head);
-        head->var_3C += newDistance - noOvertakeDistance;
-        head->trackAndDirection.road._data &= kResetRouting;
-        head->trackAndDirection.road._data |= numRoadPieces <= 1 ? World::Track::AdditionalTaDFlags::isChangingLane : World::Track::AdditionalTaDFlags::isOvertaking;
+        if (head != nullptr)
+        {
+            head->var_3C += newDistance - noOvertakeDistance;
+            head->trackAndDirection.road._data &= kResetRouting;
+            head->trackAndDirection.road._data |= numRoadPieces <= 1 ? World::Track::AdditionalTaDFlags::isChangingLane : World::Track::AdditionalTaDFlags::isOvertaking;
+        }
     }
 
     enum class LookaheadType
@@ -724,6 +732,11 @@ namespace OpenLoco::Vehicles
         }
 
         auto* head = EntityManager::get<VehicleHead>(component.head);
+        if (head == nullptr)
+        {
+            return RoadMotionNewPieceResult::noFurther;
+        }
+
         if (head->var_52 != 1)
         {
             auto res = lookaheadRoad(component);

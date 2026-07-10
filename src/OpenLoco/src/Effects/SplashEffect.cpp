@@ -1,4 +1,4 @@
-#include "SplashEffect.h"
+#include "Effects/SplashEffect.h"
 #include "Entities/EntityManager.h"
 
 namespace OpenLoco

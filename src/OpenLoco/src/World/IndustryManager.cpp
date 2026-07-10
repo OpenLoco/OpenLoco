@@ -1,5 +1,4 @@
-#include "IndustryManager.h"
-#include "CompanyManager.h"
+#include "World/IndustryManager.h"
 #include "Date.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
@@ -18,8 +17,9 @@
 #include "Objects/ObjectManager.h"
 #include "Random.h"
 #include "SceneManager.h"
-#include "TownManager.h"
 #include "Ui/WindowManager.h"
+#include "World/CompanyManager.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Math/Vector.hpp>
 #include <numeric>
 

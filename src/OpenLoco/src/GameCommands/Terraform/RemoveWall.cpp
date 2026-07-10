@@ -1,4 +1,4 @@
-#include "RemoveWall.h"
+#include "GameCommands/Terraform/RemoveWall.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
 #include "Map/TileManager.h"
@@ -72,9 +72,9 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void removeWall(registers& regs)
+    void removeWall(registers& regs, const uint8_t flags)
     {
         const WallRemovalArgs args(regs);
-        regs.ebx = removeWall(args, regs.bl);
+        regs.ebx = removeWall(args, flags);
     }
 }

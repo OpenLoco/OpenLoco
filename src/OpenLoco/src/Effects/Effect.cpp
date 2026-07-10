@@ -1,12 +1,12 @@
-#include "Effect.h"
-#include "ExhaustEffect.h"
-#include "ExplosionEffect.h"
-#include "ExplosionSmokeEffect.h"
-#include "FireballEffect.h"
-#include "MoneyEffect.h"
-#include "SmokeEffect.h"
-#include "SplashEffect.h"
-#include "VehicleCrashEffect.h"
+#include "Effects/Effect.h"
+#include "Effects/ExhaustEffect.h"
+#include "Effects/ExplosionEffect.h"
+#include "Effects/ExplosionSmokeEffect.h"
+#include "Effects/FireballEffect.h"
+#include "Effects/MoneyEffect.h"
+#include "Effects/SmokeEffect.h"
+#include "Effects/SplashEffect.h"
+#include "Effects/VehicleCrashEffect.h"
 
 namespace OpenLoco
 {

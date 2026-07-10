@@ -1,9 +1,9 @@
-#include "TextRenderer.h"
-#include "DrawingContext.h"
+#include "Graphics/TextRenderer.h"
+#include "Graphics/DrawingContext.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/RenderTarget.h"
 #include "Localisation/Formatting.h"
-#include "RenderTarget.h"
 #include "Ui/WindowManager.h"
 
 namespace OpenLoco::Gfx

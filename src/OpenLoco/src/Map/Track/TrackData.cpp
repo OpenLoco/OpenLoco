@@ -1,5 +1,5 @@
-#include "TrackData.h"
-#include "TrackEnum.h"
+#include "Map/Track/TrackData.h"
+#include "Map/Track/TrackEnum.h"
 #include <OpenLoco/Core/Numerics.hpp>
 #include <array>
 #include <bit>

@@ -1,4 +1,4 @@
-#include "RemoveTown.h"
+#include "GameCommands/Town/RemoveTown.h"
 #include "Audio/Audio.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/Buildings/RemoveBuilding.h"
@@ -165,9 +165,9 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void removeTown(registers& regs)
+    void removeTown(registers& regs, const uint8_t flags)
     {
         TownRemovalArgs args(regs);
-        regs.ebx = removeTown(args, regs.bl);
+        regs.ebx = removeTown(args, flags);
     }
 }

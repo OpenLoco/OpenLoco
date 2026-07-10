@@ -1,4 +1,4 @@
-#include "RenameIndustry.h"
+#include "GameCommands/Industries/RenameIndustry.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Industries/RenameIndustry.h"
@@ -100,8 +100,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void renameIndustry(registers& regs)
+    void renameIndustry(registers& regs, const uint8_t flags)
     {
-        regs.ebx = renameIndustry(GameCommands::RenameIndustryArgs(regs), regs.bl);
+        regs.ebx = renameIndustry(GameCommands::RenameIndustryArgs(regs), flags);
     }
 }

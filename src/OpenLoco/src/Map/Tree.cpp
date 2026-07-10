@@ -1,15 +1,15 @@
-#include "Tree.h"
+#include "Map/Tree.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Terraform/CreateTree.h"
 #include "Graphics/Colour.h"
 #include "Map/MapSelection.h"
+#include "Map/SurfaceElement.h"
+#include "Map/TileManager.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/TreeObject.h"
 #include "Random.h"
 #include "Scenario/Scenario.h"
-#include "SurfaceElement.h"
-#include "TileManager.h"
 #include "Ui/ViewportInteraction.h"
 #include <OpenLoco/Math/Trigonometry.hpp>
 

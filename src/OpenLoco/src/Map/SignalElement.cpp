@@ -1,9 +1,9 @@
-#include "SignalElement.h"
-#include "Animation.h"
+#include "Map/SignalElement.h"
+#include "Map/Animation.h"
+#include "Map/TileManager.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/TrainSignalObject.h"
 #include "Scenario/ScenarioManager.h"
-#include "TileManager.h"
 #include "ViewportManager.h"
 
 namespace OpenLoco::World

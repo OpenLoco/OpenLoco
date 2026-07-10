@@ -1,4 +1,4 @@
-#include "CreateTree.h"
+#include "GameCommands/Terraform/CreateTree.h"
 #include "Economy/Economy.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
@@ -93,50 +93,51 @@ namespace OpenLoco::GameCommands
 
         if (flags & Flags::apply)
         {
-            auto* elTree = World::TileManager::insertElement<World::TreeElement>(args.pos, baseZ, qt.getBaseQuarterOccupied());
-            if (elTree == nullptr)
+            auto* treeEntry = World::TileManager::insertElement<World::TreeElement>(args.pos, baseZ, qt.getBaseQuarterOccupied());
+            if (treeEntry == nullptr)
             {
                 return kFailure;
             }
-            Ui::Windows::Terraform::setLastPlacedTree(elTree);
-            elTree->setRotation(args.rotation);
-            elTree->setQuadrant(args.quadrant);
-            elTree->setTreeObjectId(args.type);
-            elTree->setGrowth(0);
-            elTree->setUnk5h(0);
-            elTree->setColour(args.colour);
-            elTree->setIsDying(false);
-            elTree->setSnow(false);
-            elTree->setSeason(treeObj->currentSeason);
-            elTree->setUnk7l(7);
-            elTree->setClearZ(treeObj->initialHeight / World::kSmallZStep + elTree->baseZ());
+            auto& elTree = treeEntry->get<World::TreeElement>();
+            Ui::Windows::Terraform::setLastPlacedTree(&elTree);
+            elTree.setRotation(args.rotation);
+            elTree.setQuadrant(args.quadrant);
+            elTree.setTreeObjectId(args.type);
+            elTree.setGrowth(0);
+            elTree.setUnk5h(0);
+            elTree.setColour(args.colour);
+            elTree.setIsDying(false);
+            elTree.setSnow(false);
+            elTree.setSeason(treeObj->currentSeason);
+            elTree.setUnk7l(7);
+            elTree.setClearZ(treeObj->initialHeight / World::kSmallZStep + elTree.baseZ());
             Scenario::getOptions().madeAnyChanges = 1;
             if (args.buildImmediately)
             {
-                elTree->setGrowth(treeObj->growth - 1);
-                elTree->setClearZ(treeObj->height / World::kSmallZStep + elTree->baseZ());
-                if (elTree->baseZ() - 4 > Scenario::getCurrentSnowLine() && treeObj->hasFlags(TreeObjectFlags::hasSnowVariation))
+                elTree.setGrowth(treeObj->growth - 1);
+                elTree.setClearZ(treeObj->height / World::kSmallZStep + elTree.baseZ());
+                if (elTree.baseZ() - 4 > Scenario::getCurrentSnowLine() && treeObj->hasFlags(TreeObjectFlags::hasSnowVariation))
                 {
-                    elTree->setSnow(true);
+                    elTree.setSnow(true);
                 }
             }
             if (flags & Flags::ghost)
             {
-                elTree->setGhost(true);
+                elTree.setGhost(true);
             }
             else
             {
                 TownManager::updateTownInfo(args.pos, 0, 0, treeObj->rating, 0);
             }
-            Ui::ViewportManager::invalidate(args.pos, elTree->baseHeight(), elTree->clearHeight(), ZoomLevel::eighth, 56);
+            Ui::ViewportManager::invalidate(args.pos, elTree.baseHeight(), elTree.clearHeight(), ZoomLevel::eighth, 56);
         }
 
         return Economy::getInflationAdjustedCost(treeObj->buildCostFactor, treeObj->costIndex, 12);
     }
 
-    void createTree(registers& regs)
+    void createTree(registers& regs, const uint8_t flags)
     {
         TreePlacementArgs args(regs);
-        regs.ebx = createTree(args, regs.bl);
+        regs.ebx = createTree(args, flags);
     }
 }

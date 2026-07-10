@@ -1,11 +1,9 @@
-#include "Station.h"
-#include "CompanyManager.h"
+#include "World/Station.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingContext.h"
 #include "Graphics/TextRenderer.h"
-#include "IndustryManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
@@ -29,10 +27,12 @@
 #include "Objects/TrackObject.h"
 #include "Objects/TrainStationObject.h"
 #include "Random.h"
-#include "StationManager.h"
-#include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
+#include "World/CompanyManager.h"
+#include "World/IndustryManager.h"
+#include "World/StationManager.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Math/Bound.hpp>
 #include <algorithm>
 #include <cassert>
@@ -274,7 +274,7 @@ namespace OpenLoco
             for (uint16_t i = 0; i < station->stationTileSize; i++)
             {
                 auto pos = station->stationTiles[i];
-                auto stationElement = getStationElement(pos);
+                auto* stationElement = getStationElement(pos);
 
                 if (stationElement == nullptr)
                 {
@@ -560,7 +560,7 @@ namespace OpenLoco
             auto pos = station->stationTiles[i];
             pos.z = World::heightFloor(pos.z);
 
-            auto stationElement = getStationElement(pos);
+            auto* stationElement = getStationElement(pos);
 
             if (stationElement == nullptr)
             {
@@ -1075,8 +1075,8 @@ namespace OpenLoco
         for (auto i = 0U; i < station->stationTileSize; ++i)
         {
             auto& tile = station->stationTiles[i];
-            auto* elStation = getStationElement(tile);
-            if (elStation == nullptr)
+            auto* stationElement = getStationElement(tile);
+            if (stationElement == nullptr)
             {
                 continue;
             }
@@ -1110,7 +1110,26 @@ namespace OpenLoco
         for (auto i = 0U; i < station->stationTileSize; ++i)
         {
             auto& pos = station->stationTiles[i];
-            StationElement* elStation = getStationElement(pos);
+            TileElementEntry* stationEntry = nullptr;
+            StationElement* elStation = nullptr;
+            {
+                auto tile = TileManager::get(pos.x, pos.y);
+                const auto baseZ = pos.z / 4;
+                for (auto& element : tile)
+                {
+                    auto* candidate = element.as<StationElement>();
+                    if (candidate == nullptr || candidate->baseZ() != baseZ)
+                    {
+                        continue;
+                    }
+                    if (!candidate->isAiAllocated())
+                    {
+                        stationEntry = &element;
+                        elStation = candidate;
+                    }
+                    break;
+                }
+            }
             if (elStation == nullptr || elStation->isGhost())
             {
                 continue;
@@ -1119,7 +1138,7 @@ namespace OpenLoco
             {
                 case StationType::trainStation:
                 {
-                    auto* elTrack = elStation->prev()->as<TrackElement>();
+                    auto* elTrack = stationEntry->prev()->as<TrackElement>();
                     if (elTrack == nullptr)
                     {
                         break;
@@ -1137,7 +1156,7 @@ namespace OpenLoco
                     auto tile = TileManager::get(pos);
                     for (auto& el2 : tile)
                     {
-                        if (&el2 == reinterpret_cast<TileElement*>(&elStation))
+                        if (&el2 == stationEntry)
                         {
                             break;
                         }
@@ -1264,9 +1283,9 @@ namespace OpenLoco
         }
 
         // Remove tile by moving the remaining tiles over the one to remove
-        // NB: erasing is handled by StationManager::zeroUnused; not calling std::erase due to type mismatches
         std::rotate(foundTilePos, foundTilePos + 1, std::end(station->stationTiles));
         station->stationTileSize--;
+        station->stationTiles[std::size(station->stationTiles) - 1] = World::Pos3{};
     }
 
     // 0x0048F482
@@ -1392,9 +1411,9 @@ namespace OpenLoco
     // 0x0048DBC2
     // Iterates over all station elements of a track piece apply function `func` to each station element
     template<typename Func>
-    static void forEachStationElement(const World::Pos3 pos, const uint8_t rotation, World::StationElement* firstElStation, Func&& func)
+    static void forEachStationElement(const World::Pos3 pos, const uint8_t rotation, World::TileElementEntry* firstStationEntry, Func&& func)
     {
-        auto* firstElTrack = firstElStation->prev()->as<TrackElement>();
+        auto* firstElTrack = firstStationEntry->prev()->as<TrackElement>();
         assert(firstElTrack != nullptr);
         if (firstElTrack == nullptr)
         {
@@ -1424,7 +1443,7 @@ namespace OpenLoco
                 {
                     continue;
                 }
-                auto* elTrack = elStation->prev()->as<TrackElement>();
+                auto* elTrack = el.prev()->as<TrackElement>();
                 if (elTrack == nullptr)
                 {
                     continue;
@@ -1437,7 +1456,7 @@ namespace OpenLoco
                 {
                     continue;
                 }
-                func(elStation, trackLoc, hasPassedSurface);
+                func(el, trackLoc, hasPassedSurface);
             }
         }
     }
@@ -1460,7 +1479,7 @@ namespace OpenLoco
             {
                 continue;
             }
-            auto* nextElStation = elTrack->next()->as<StationElement>();
+            auto* nextElStation = el.next()->as<StationElement>();
             if (nextElStation == nullptr)
             {
                 continue;
@@ -1509,7 +1528,7 @@ namespace OpenLoco
             auto pos = station.stationTiles[i];
             const uint8_t rotation = pos.z & 0x3;
             pos.z = Numerics::floor2(pos.z, 4);
-            auto* elStation = [&pos]() -> World::StationElement* {
+            auto* stationEntry = [&pos]() -> World::TileElementEntry* {
                 auto tile = TileManager::get(pos);
                 for (auto& el : tile)
                 {
@@ -1526,7 +1545,7 @@ namespace OpenLoco
                     {
                         break;
                     }
-                    auto* elTrack = elStation->prev()->as<TrackElement>();
+                    auto* elTrack = el.prev()->as<TrackElement>();
                     if (elTrack == nullptr)
                     {
                         continue;
@@ -1535,10 +1554,15 @@ namespace OpenLoco
                     {
                         continue;
                     }
-                    return elStation;
+                    return &el;
                 }
                 return nullptr;
             }();
+            if (stationEntry == nullptr)
+            {
+                continue;
+            }
+            auto* elStation = stationEntry->as<StationElement>();
             if (elStation == nullptr)
             {
                 continue;
@@ -1550,17 +1574,23 @@ namespace OpenLoco
             auto* stationObj = ObjectManager::get<TrainStationObject>(elStation->objectId());
 
             // Also resets the station sequence index to 0
-            auto isStationElementCovered = [&isCovered](World::StationElement* elStation, const World::Pos3 pos, bool hasPassedSurface) {
+            auto isStationElementCovered = [&isCovered](World::TileElementEntry& stEntry, const World::Pos3 pos, bool hasPassedSurface) {
+                auto* elStation = stEntry.as<StationElement>();
+                if (elStation == nullptr)
+                {
+                    return;
+                }
+
                 elStation->setSequenceIndex(0);
 
-                isCovered |= [hasPassedSurface, elStation]() {
+                isCovered |= [hasPassedSurface, &stEntry, elStation]() {
                     if (!hasPassedSurface)
                     {
                         return true;
                     }
                     else
                     {
-                        auto* elTrack = elStation->prev()->as<TrackElement>();
+                        auto* elTrack = stEntry.prev()->as<TrackElement>();
                         if (elTrack == nullptr)
                         {
                             return false;
@@ -1573,11 +1603,11 @@ namespace OpenLoco
                                 return true;
                             }
                         }
-                        if (elStation->isLast())
+                        if (stEntry.isLast())
                         {
                             return false;
                         }
-                        auto* el = elStation->next();
+                        auto* el = stEntry.next();
                         do
                         {
                             if (el->baseZ() != elStation->baseZ())
@@ -1595,7 +1625,7 @@ namespace OpenLoco
                 Ui::ViewportManager::invalidate(pos, elStation->baseHeight(), elStation->clearHeight());
             };
 
-            forEachStationElement(pos, rotation, elStation, isStationElementCovered);
+            forEachStationElement(pos, rotation, stationEntry, isStationElementCovered);
             if (isCovered || stationObj->var_0B == 0)
             {
                 continue;
@@ -1603,7 +1633,7 @@ namespace OpenLoco
 
             if (stationObj->var_0B != 1)
             {
-                auto* elTrack = elStation->prev()->as<TrackElement>();
+                auto* elTrack = stationEntry->prev()->as<TrackElement>();
                 if (elTrack == nullptr)
                 {
                     continue;
@@ -1630,11 +1660,15 @@ namespace OpenLoco
                     continue;
                 }
 
-                auto setStationSequenceIndex = [](World::StationElement* elStation, const World::Pos3 pos, bool) {
-                    elStation->setSequenceIndex(1);
-                    Ui::ViewportManager::invalidate(pos, elStation->baseHeight(), elStation->clearHeight());
+                auto setStationSequenceIndex = [](World::TileElementEntry& stEntry, const World::Pos3 pos, bool) {
+                    auto* elStation = stEntry.as<StationElement>();
+                    if (elStation != nullptr)
+                    {
+                        elStation->setSequenceIndex(1);
+                        Ui::ViewportManager::invalidate(pos, elStation->baseHeight(), elStation->clearHeight());
+                    }
                 };
-                forEachStationElement(pos, rotation, elStation, setStationSequenceIndex);
+                forEachStationElement(pos, rotation, stationEntry, setStationSequenceIndex);
             }
         }
     }

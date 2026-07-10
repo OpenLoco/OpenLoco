@@ -1,10 +1,15 @@
-#include "Tile.h"
-#include "IndustryElement.h"
+#include "Map/Tile.h"
+#include "Map/BuildingElement.h"
+#include "Map/IndustryElement.h"
+#include "Map/RoadElement.h"
+#include "Map/SignalElement.h"
+#include "Map/StationElement.h"
+#include "Map/SurfaceElement.h"
+#include "Map/TileManager.h"
+#include "Map/TrackElement.h"
+#include "Map/TreeElement.h"
+#include "Map/WallElement.h"
 #include "Objects/ObjectManager.h"
-#include "RoadElement.h"
-#include "StationElement.h"
-#include "SurfaceElement.h"
-#include "TrackElement.h"
 #include "Ui/WindowManager.h"
 #include "Viewport.hpp"
 #include "World/IndustryManager.h"
@@ -13,22 +18,7 @@
 
 namespace OpenLoco::World
 {
-    const uint8_t* TileElementBase::data() const
-    {
-        return (uint8_t*)this;
-    }
-
-    ElementType TileElementBase::type() const
-    {
-        return (ElementType)((_type & 0x3C) >> 2);
-    }
-
-    bool TileElementBase::isLast() const
-    {
-        return (_flags & ElementFlags::last) != 0;
-    }
-
-    Tile::Tile(const TilePos2& tPos, TileElement* data)
+    Tile::Tile(const TilePos2& tPos, TileElementEntry* data)
         : _data(data)
         , pos(tPos)
     {
@@ -65,18 +55,18 @@ namespace OpenLoco::World
         return static_cast<size_t>(dist);
     }
 
-    TileElement* Tile::operator[](size_t i)
+    TileElementEntry* Tile::operator[](size_t i)
     {
         assert(i < size());
         return &_data[i];
     }
 
-    size_t Tile::indexOf(const TileElementBase* element) const
+    size_t Tile::indexOf(const TileElement* element) const
     {
         size_t i = 0;
-        for (const auto& tile : *this)
+        for (auto& tile : *this)
         {
-            if (&tile == element)
+            if (tile.operator->() == element)
             {
                 return i;
             }
@@ -93,6 +83,18 @@ namespace OpenLoco::World
             if (result != nullptr)
             {
                 return result;
+            }
+        }
+        return nullptr;
+    }
+
+    TileElementEntry* Tile::surfaceEntry() const
+    {
+        for (auto& entry : *this)
+        {
+            if (entry.as<SurfaceElement>() != nullptr)
+            {
+                return &entry;
             }
         }
         return nullptr;

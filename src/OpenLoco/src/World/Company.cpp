@@ -1,5 +1,4 @@
-#include "Company.h"
-#include "CompanyManager.h"
+#include "World/Company.h"
 #include "Date.h"
 #include "Economy/Economy.h"
 #include "Entities/EntityManager.h"
@@ -8,7 +7,6 @@
 #include "GameCommands/Vehicles/VehicleChangeRunningMode.h"
 #include "GameState.h"
 #include "Graphics/Gfx.h"
-#include "IndustryManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/BuildingElement.h"
@@ -23,8 +21,6 @@
 #include "Random.h"
 #include "Scenario/ScenarioManager.h"
 #include "SceneManager.h"
-#include "StationManager.h"
-#include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/Vehicle2.h"
@@ -33,6 +29,10 @@
 #include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
+#include "World/CompanyManager.h"
+#include "World/IndustryManager.h"
+#include "World/StationManager.h"
+#include "World/TownManager.h"
 
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Math/Bound.hpp>

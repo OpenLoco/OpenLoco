@@ -1,4 +1,4 @@
-#include "VehiclePassSignal.h"
+#include "GameCommands/Vehicles/VehiclePassSignal.h"
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
@@ -21,7 +21,7 @@ namespace OpenLoco::GameCommands
             setPosition(train.veh2->position);
 
             auto& head = train.head;
-            if (!sub_431E6A(head->owner))
+            if (!checkCompanyCompatibility(head->owner))
             {
                 return kFailure;
             }
@@ -51,9 +51,9 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    void vehiclePassSignal(registers& regs)
+    void vehiclePassSignal(registers& regs, const uint8_t flags)
     {
         VehiclePassSignalArgs args(regs);
-        regs.ebx = vehiclePassSignal(args.head, regs.bl);
+        regs.ebx = vehiclePassSignal(args.head, flags);
     }
 }

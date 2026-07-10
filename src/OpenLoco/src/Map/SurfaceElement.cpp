@@ -1,16 +1,16 @@
-#include "SurfaceElement.h"
+#include "Map/SurfaceElement.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Terraform/CreateWall.h"
 #include "GameCommands/Terraform/RemoveWall.h"
-#include "IndustryElement.h"
+#include "Map/IndustryElement.h"
+#include "Map/TileManager.h"
+#include "Map/WallElement.h"
+#include "Map/WaveManager.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
 #include "Scenario/Scenario.h"
-#include "TileManager.h"
 #include "ViewportManager.h"
-#include "WallElement.h"
-#include "WaveManager.h"
 #include "World/IndustryManager.h"
 #include "World/TownManager.h"
 
@@ -32,6 +32,10 @@ namespace OpenLoco::World
     static void updateNonIndustrialSurface(SurfaceElement& elSurface, const World::Pos2 loc)
     {
         auto* landObj = ObjectManager::get<LandObject>(elSurface.terrain());
+        if (landObj == nullptr)
+        {
+            return;
+        }
         if (!landObj->hasFlags(LandObjectFlags::hasGrowthStages))
         {
             return;
@@ -201,6 +205,10 @@ namespace OpenLoco::World
                 // Validate if it should exist and if it should create
                 // it.
                 auto* nextSurface = TileManager::get(nextLoc).surface();
+                if (nextSurface == nullptr)
+                {
+                    continue;
+                }
                 if (nextSurface->isIndustrial())
                 {
                     if (nextSurface->industryId() == surf->industryId())

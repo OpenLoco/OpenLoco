@@ -1,4 +1,4 @@
-#include "VehicleOrderInsert.h"
+#include "GameCommands/Vehicles/VehicleOrderInsert.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Objects/VehicleObject.h"
@@ -119,8 +119,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehicleOrderInsert(registers& regs)
+    void vehicleOrderInsert(registers& regs, const uint8_t flags)
     {
-        regs.ebx = vehicleOrderInsert(VehicleOrderInsertArgs(regs), regs.bl);
+        regs.ebx = vehicleOrderInsert(VehicleOrderInsertArgs(regs), flags);
     }
 }

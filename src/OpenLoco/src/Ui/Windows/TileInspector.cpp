@@ -205,7 +205,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         }
     }
 
-    static StringId getElementTypeName(const TileElement& element)
+    static StringId getElementTypeName(const TileElementEntry& element)
     {
         static constexpr auto kTypeToString = Utility::buildLookupTable<ElementType, StringId>({
             { ElementType::surface, StringIds::tile_inspector_element_type_surface },
@@ -222,7 +222,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         return kTypeToString.at(element.type());
     }
 
-    static StringId getObjectName(const TileElement& element)
+    static StringId getObjectName(const TileElementEntry& element)
     {
         switch (element.type())
         {
@@ -317,7 +317,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         return StringIds::empty;
     }
 
-    static StringId getOwnerName(const TileElement& element)
+    static StringId getOwnerName(const TileElementEntry& element)
     {
         if (element.type() == ElementType::road)
         {

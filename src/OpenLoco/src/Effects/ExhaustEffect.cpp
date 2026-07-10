@@ -1,4 +1,4 @@
-#include "ExhaustEffect.h"
+#include "Effects/ExhaustEffect.h"
 #include "Entities/EntityManager.h"
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
@@ -80,7 +80,7 @@ namespace OpenLoco
             {
                 continue;
             }
-            auto* elStation = elTrack->next()->as<World::StationElement>();
+            auto* elStation = el.next()->as<World::StationElement>();
             if (elStation == nullptr)
             {
                 continue;

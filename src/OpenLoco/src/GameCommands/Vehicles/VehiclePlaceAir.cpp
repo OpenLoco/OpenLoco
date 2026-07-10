@@ -1,4 +1,4 @@
-#include "VehiclePlaceAir.h"
+#include "GameCommands/Vehicles/VehiclePlaceAir.h"
 #include "Audio/Audio.h"
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
@@ -53,7 +53,7 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if (!sub_431E6A(head->owner))
+        if (!checkCompanyCompatibility(head->owner))
         {
             return kFailure;
         }
@@ -137,7 +137,7 @@ namespace OpenLoco::GameCommands
                 return kFailure;
             }
 
-            if (!sub_431E6A(station->owner))
+            if (!checkCompanyCompatibility(station->owner))
             {
                 return kFailure;
             }
@@ -194,8 +194,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehiclePlaceAir(registers& regs)
+    void vehiclePlaceAir(registers& regs, const uint8_t flags)
     {
-        regs.ebx = vehiclePlaceAir(VehicleAirPlacementArgs(regs), regs.bl);
+        regs.ebx = vehiclePlaceAir(VehicleAirPlacementArgs(regs), flags);
     }
 }

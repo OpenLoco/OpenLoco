@@ -1,5 +1,4 @@
 #include "Audio/Audio.h"
-#include "Construction.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Road/CreateRoadMod.h"
 #include "GameCommands/Road/RemoveRoadMod.h"
@@ -12,6 +11,7 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/RoadElement.h"
+#include "Map/TileElementEntry.h"
 #include "Map/TileManager.h"
 #include "Map/Track/TrackModSection.h"
 #include "Map/TrackElement.h"
@@ -29,6 +29,7 @@
 #include "Ui/Widgets/CheckboxWidget.h"
 #include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/Wt3Widget.h"
+#include "Ui/Windows/Construction/Construction.h"
 #include "World/CompanyManager.h"
 
 using namespace OpenLoco::World;
@@ -154,7 +155,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             return std::nullopt;
         }
 
-        auto* elRoad = reinterpret_cast<World::TileElement*>(interaction.object)->as<RoadElement>();
+        auto* elRoad = reinterpret_cast<World::TileElementEntry*>(interaction.object)->as<RoadElement>();
         if (elRoad == nullptr)
         {
             return std::nullopt;
@@ -181,7 +182,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             return std::nullopt;
         }
 
-        auto* elTrack = reinterpret_cast<World::TileElement*>(interaction.object)->as<TrackElement>();
+        auto* elTrack = reinterpret_cast<World::TileElementEntry*>(interaction.object)->as<TrackElement>();
         if (elTrack == nullptr)
         {
             return std::nullopt;

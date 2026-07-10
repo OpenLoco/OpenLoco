@@ -1,12 +1,12 @@
-#include "VehicleChangeRunningMode.h"
+#include "GameCommands/Vehicles/VehicleChangeRunningMode.h"
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Vehicles/VehicleSell.h"
 #include "Objects/ObjectManager.h"
 #include "Speed.hpp"
 #include "Types.hpp"
 #include "Ui/WindowManager.h"
-#include "VehicleSell.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/Vehicle1.h"
 #include "Vehicles/Vehicle2.h"
@@ -236,8 +236,8 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    void vehicleChangeRunningMode(registers& regs)
+    void vehicleChangeRunningMode(registers& regs, const uint8_t flags)
     {
-        regs.ebx = vehicleChangeRunningMode(VehicleChangeRunningModeArgs(regs), regs.bl);
+        regs.ebx = vehicleChangeRunningMode(VehicleChangeRunningModeArgs(regs), flags);
     }
 }

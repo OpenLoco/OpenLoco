@@ -1,4 +1,4 @@
-#include "AiCreateRoadAndStation.h"
+#include "GameCommands/CompanyAi/AiCreateRoadAndStation.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/Road/CreateRoad.h"
 #include "GameCommands/Road/CreateRoadStation.h"
@@ -11,19 +11,19 @@
 namespace OpenLoco::GameCommands
 {
     // 0x0047B0DC
-    static World::TileClearance::ClearFuncResult clearNearbyArea(World::TileElement& el)
+    static World::TileClearance::ClearFuncResult clearNearbyArea(World::TileElementEntry& entry)
     {
-        if (el.type() == World::ElementType::tree)
+        if (entry.type() == World::ElementType::tree)
         {
             return World::TileClearance::ClearFuncResult::noCollision;
         }
-        if (el.type() == World::ElementType::road)
+        if (entry.type() == World::ElementType::road)
         {
             return World::TileClearance::ClearFuncResult::noCollision;
         }
-        if (el.type() == World::ElementType::building)
+        if (entry.type() == World::ElementType::building)
         {
-            auto* elBuilding = el.as<World::BuildingElement>();
+            auto* elBuilding = entry.as<World::BuildingElement>();
             if (elBuilding == nullptr)
             {
                 return World::TileClearance::ClearFuncResult::noCollision;
@@ -57,8 +57,7 @@ namespace OpenLoco::GameCommands
             roadArgs.unkFlags = 0;
 
             auto roadRegs = static_cast<registers>(roadArgs);
-            roadRegs.bl = flags;
-            createRoad(roadRegs);
+            createRoad(roadRegs, flags);
             const auto roadRes = static_cast<currency32_t>(roadRegs.ebx);
             if (!(flags & GameCommands::Flags::apply))
             {
@@ -85,8 +84,7 @@ namespace OpenLoco::GameCommands
             stationArgs.index = 0;  // Always index 0 for straight road
 
             auto stationRegs = static_cast<registers>(stationArgs);
-            stationRegs.bl = flags;
-            createRoadStation(stationRegs);
+            createRoadStation(stationRegs, flags);
             const auto stationRes = static_cast<currency32_t>(stationRegs.ebx);
             if (!(flags & GameCommands::Flags::apply))
             {
@@ -121,8 +119,8 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0047AF0B
-    void aiCreateRoadAndStation(registers& regs)
+    void aiCreateRoadAndStation(registers& regs, const uint8_t flags)
     {
-        regs.ebx = aiCreateRoadAndStationCost(AiRoadAndStationPlacementArgs(regs), regs.bl);
+        regs.ebx = aiCreateRoadAndStationCost(AiRoadAndStationPlacementArgs(regs), flags);
     }
 }

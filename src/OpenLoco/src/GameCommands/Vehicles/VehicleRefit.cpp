@@ -1,4 +1,4 @@
-#include "VehicleRefit.h"
+#include "GameCommands/Vehicles/VehicleRefit.h"
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
@@ -29,7 +29,7 @@ namespace OpenLoco::GameCommands
                 return kFailure;
             }
 
-            if (!sub_431E6A(head->owner))
+            if (!checkCompanyCompatibility(head->owner))
             {
                 return kFailure;
             }
@@ -91,8 +91,8 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    void vehicleRefit(registers& regs)
+    void vehicleRefit(registers& regs, const uint8_t flags)
     {
-        regs.ebx = vehicleRefit(VehicleRefitArgs(regs), regs.bl);
+        regs.ebx = vehicleRefit(VehicleRefitArgs(regs), flags);
     }
 }

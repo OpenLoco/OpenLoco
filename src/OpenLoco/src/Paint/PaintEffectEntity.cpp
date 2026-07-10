@@ -1,4 +1,4 @@
-#include "PaintEffectEntity.h"
+#include "Paint/PaintEffectEntity.h"
 #include "Config.h"
 #include "Effects/ExhaustEffect.h"
 #include "Effects/ExplosionEffect.h"
@@ -14,7 +14,7 @@
 #include "Localisation/StringIds.h"
 #include "Map/Tile.h"
 #include "Objects/SteamObject.h"
-#include "Paint.h"
+#include "Paint/Paint.h"
 #include "World/CompanyManager.h"
 
 #include <array>

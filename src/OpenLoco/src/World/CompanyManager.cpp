@@ -1,6 +1,4 @@
-#include "CompanyManager.h"
-#include "CompanyAi/CompanyAi.h"
-#include "CompanyRecords.h"
+#include "World/CompanyManager.h"
 #include "Config.h"
 #include "Date.h"
 #include "Economy/Economy.h"
@@ -33,12 +31,14 @@
 #include "Scenario/Scenario.h"
 #include "Scenario/ScenarioManager.h"
 #include "SceneManager.h"
-#include "TownManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
+#include "World/CompanyAi/CompanyAi.h"
+#include "World/CompanyRecords.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Math/Bound.hpp>
 #include <array>
 #include <sfl/static_vector.hpp>
@@ -561,8 +561,13 @@ namespace OpenLoco::CompanyManager
         }
 
         auto* company = get(chosenCompanyId);
-        company->competitorId = competitorId;
+        if (company == nullptr)
+        {
+            return CompanyId::null;
+        }
+
         auto* competitorObj = ObjectManager::get<CompetitorObject>(competitorId);
+        company->competitorId = competitorId;
         company->challengeFlags = CompanyFlags::none;
         company->var_49C = 0;
         company->var_4A0 = 0;
@@ -570,6 +575,7 @@ namespace OpenLoco::CompanyManager
         company->name = StringIds::new_company;
         company->ownerName = StringIds::new_owner;
         company->startedDate = getCurrentDay();
+
         if (isPlayer)
         {
             Colour primaryColour = Colour::max;
@@ -812,6 +818,7 @@ namespace OpenLoco::CompanyManager
         // Original network logic removed
         auto& gameState = getGameState();
         gameState.flags |= GameStateFlags::preferredOwnerName;
+        gameState.flags |= GameStateFlags::preferredCompanyName;
 
         // Any preference with respect to owner face?
         auto competitorId = Config::get().usePreferredOwnerFace ? selectNewCompetitorFromHeader(Config::get().preferredOwnerFace)
@@ -1241,6 +1248,12 @@ namespace OpenLoco::CompanyManager
             }
         }
 
+        // Don't clobber if there's a preferred name
+        if (Config::get().usePreferredCompanyName)
+        {
+            return;
+        }
+
         // Only continue if we've not set a custom company name yet.
         auto* company = get(GameCommands::getUpdatingCompanyId());
         if (company == nullptr || company->name != StringIds::new_company)
@@ -1278,6 +1291,43 @@ namespace OpenLoco::CompanyManager
             changeCompanyNameArgs.bufferIndex = 0;
 
             GameCommands::doCommand(changeCompanyNameArgs, GameCommands::Flags::apply);
+        }
+    }
+
+    void setPreferredCompanyName()
+    {
+        if (!Config::get().usePreferredCompanyName)
+        {
+            return;
+        }
+
+        // Only continue if we've not set a custom company name yet.
+        auto* company = get(GameCommands::getUpdatingCompanyId());
+        if (company == nullptr || company->name != StringIds::new_company)
+        {
+            return;
+        }
+
+        GameCommands::setErrorTitle(StringIds::cannot_change_company_name);
+        {
+            GameCommands::ChangeCompanyNameArgs args{};
+
+            args.companyId = GameCommands::getUpdatingCompanyId();
+            args.bufferIndex = 1;
+            std::memcpy(args.buffer, Config::get().preferredCompanyName.c_str(), 36);
+
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+            args.bufferIndex = 2;
+
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+            args.bufferIndex = 0;
+
+            if (GameCommands::doCommand(args, GameCommands::Flags::apply))
+            {
+                Ui::Windows::TextInput::cancel();
+            }
         }
     }
 

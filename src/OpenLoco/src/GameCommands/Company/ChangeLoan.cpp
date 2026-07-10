@@ -1,4 +1,4 @@
-#include "ChangeLoan.h"
+#include "GameCommands/Company/ChangeLoan.h"
 #include "Economy/Economy.h"
 #include "GameCommands/GameCommands.h"
 #include "Localisation/StringIds.h"
@@ -51,9 +51,9 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void changeLoan(registers& regs)
+    void changeLoan(registers& regs, const uint8_t flags)
     {
         ChangeLoanArgs args(regs);
-        regs.ebx = changeLoan(args.newLoan, regs.bl);
+        regs.ebx = changeLoan(args.newLoan, flags);
     }
 }

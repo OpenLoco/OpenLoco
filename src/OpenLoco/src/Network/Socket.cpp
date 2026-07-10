@@ -58,7 +58,7 @@
 #endif // _WIN32
 // clang-format on
 
-#include "Socket.h"
+#include "Network/Socket.h"
 #include <OpenLoco/Diagnostics/Logging.h>
 
 using namespace OpenLoco::Diagnostics;

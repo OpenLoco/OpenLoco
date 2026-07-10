@@ -1,4 +1,4 @@
-#include "RemoveAirport.h"
+#include "GameCommands/Airports/RemoveAirport.h"
 #include "Economy/Economy.h"
 #include "Localisation/StringIds.h"
 #include "Map/StationElement.h"
@@ -68,8 +68,26 @@ namespace OpenLoco::GameCommands
                 continue;
             }
 
-            auto* stationEl = getStationEl(airportPos);
-            if (stationEl == nullptr)
+            World::TileElementEntry* stationEntry = nullptr;
+            World::StationElement* stationEl = nullptr;
+            {
+                auto tile = World::TileManager::get(airportPos);
+                for (auto& el : tile)
+                {
+                    auto* candidate = el.as<World::StationElement>();
+                    if (candidate == nullptr)
+                    {
+                        continue;
+                    }
+                    if (candidate->baseHeight() == airportPos.z)
+                    {
+                        stationEntry = &el;
+                        stationEl = candidate;
+                        break;
+                    }
+                }
+            }
+            if (stationEntry == nullptr)
             {
                 return false;
             }
@@ -79,7 +97,7 @@ namespace OpenLoco::GameCommands
                 Ui::ViewportManager::invalidate(World::Pos2(airportPos), stationEl->baseHeight(), stationEl->clearHeight(), ZoomLevel::eighth);
             }
 
-            World::TileManager::removeElement(*reinterpret_cast<World::TileElement*>(stationEl));
+            World::TileManager::removeElement(*stationEntry);
         }
 
         return true;
@@ -276,8 +294,8 @@ namespace OpenLoco::GameCommands
         return loc_49372F(stationId, *foundStationEl, foundPos, flags);
     }
 
-    void removeAirport(registers& regs)
+    void removeAirport(registers& regs, const uint8_t flags)
     {
-        regs.ebx = removeAirport(AirportRemovalArgs(regs), regs.bl);
+        regs.ebx = removeAirport(AirportRemovalArgs(regs), flags);
     }
 }

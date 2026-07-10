@@ -1,4 +1,4 @@
-#include "PaintTile.h"
+#include "Paint/PaintTile.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
@@ -16,17 +16,17 @@
 #include "Map/WallElement.h"
 #include "Objects/BridgeObject.h"
 #include "Objects/ObjectManager.h"
-#include "Paint.h"
-#include "PaintBridge.h"
-#include "PaintBuilding.h"
-#include "PaintIndustry.h"
-#include "PaintRoad.h"
-#include "PaintSignal.h"
-#include "PaintStation.h"
-#include "PaintSurface.h"
-#include "PaintTrack.h"
-#include "PaintTree.h"
-#include "PaintWall.h"
+#include "Paint/Paint.h"
+#include "Paint/PaintBridge.h"
+#include "Paint/PaintBuilding.h"
+#include "Paint/PaintIndustry.h"
+#include "Paint/PaintRoad.h"
+#include "Paint/PaintSignal.h"
+#include "Paint/PaintStation.h"
+#include "Paint/PaintSurface.h"
+#include "Paint/PaintTrack.h"
+#include "Paint/PaintTree.h"
+#include "Paint/PaintWall.h"
 #include "Ui.h"
 #include "Ui/ViewportInteraction.h"
 #include "World/Station.h"
@@ -253,9 +253,9 @@ namespace OpenLoco::Paint
         return { vpPos };
     }
 
-    static void paintTileElementsEndLoop(PaintSession& session, const World::TileElement& el)
+    static void paintTileElementsEndLoop(PaintSession& session, const World::TileElementEntry& el)
     {
-        if (el.isLast() || el.baseZ() != ((&el) + 1)->baseZ())
+        if (el.isLast() || el.baseZ() != (&el + 1)->baseZ())
         {
             if (session.getRoadExits() != 0)
             {
@@ -327,14 +327,12 @@ namespace OpenLoco::Paint
                 }
                 case World::ElementType::station:
                 {
-                    auto& elStation = el.get<World::StationElement>();
-                    paintStation(session, elStation);
+                    paintStation(session, el);
                     break;
                 }
                 case World::ElementType::signal:
                 {
-                    auto& elSignal = el.get<World::SignalElement>();
-                    paintSignal(session, elSignal);
+                    paintSignal(session, el);
                     break;
                 }
                 case World::ElementType::building:
@@ -408,7 +406,7 @@ namespace OpenLoco::Paint
                     {
                         case StationType::airport:
                         case StationType::docks:
-                            paintStation(session, elStation);
+                            paintStation(session, el);
                             break;
                         default:
                         case StationType::roadStation:

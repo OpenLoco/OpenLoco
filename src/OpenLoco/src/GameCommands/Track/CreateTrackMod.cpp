@@ -1,4 +1,4 @@
-#include "CreateTrackMod.h"
+#include "GameCommands/Track/CreateTrackMod.h"
 #include "Economy/Expenditures.h"
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
@@ -60,7 +60,7 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if (!sub_431E6A(elTrack->owner(), reinterpret_cast<const World::TileElement*>(elTrack)))
+        if (!checkCompanyCompatibility(elTrack->owner(), *elTrack))
         {
             return kFailure;
         }
@@ -87,8 +87,8 @@ namespace OpenLoco::GameCommands
         return result.cost;
     }
 
-    void createTrackMod(registers& regs)
+    void createTrackMod(registers& regs, const uint8_t flags)
     {
-        regs.ebx = createTrackMod(TrackModsPlacementArgs(regs), regs.bl);
+        regs.ebx = createTrackMod(TrackModsPlacementArgs(regs), flags);
     }
 }

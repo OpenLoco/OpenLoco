@@ -1,14 +1,14 @@
-#include "Network.h"
+#include "Network/Network.h"
 #include "CommandLine.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
 #include "Graphics/Gfx.h"
 #include "Logging.h"
-#include "NetworkClient.h"
-#include "NetworkServer.h"
+#include "Network/NetworkClient.h"
+#include "Network/NetworkServer.h"
+#include "Network/Socket.h"
 #include "Scenario/ScenarioManager.h"
 #include "SceneManager.h"
-#include "Socket.h"
 #include <cassert>
 #include <stdexcept>
 
@@ -122,7 +122,7 @@ namespace OpenLoco::Network
         Logging::info("Player #{}: {}", static_cast<int>(client), message);
     }
 
-    void queueGameCommand(CompanyId company, const OpenLoco::GameCommands::registers& regs)
+    void queueGameCommand(CompanyId company, const OpenLoco::GameCommands::registers& regs, const uint8_t flags)
     {
         // TEMP debug code
         if (regs.esi == 73)
@@ -132,11 +132,11 @@ namespace OpenLoco::Network
 
         if (_mode == NetworkMode::server)
         {
-            _server->queueGameCommand(company, regs);
+            _server->queueGameCommand(company, regs, flags);
         }
         else
         {
-            _client->sendGameCommand(company, regs);
+            _client->sendGameCommand(company, regs, flags);
         }
     }
 

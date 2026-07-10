@@ -1,4 +1,4 @@
-#include "Economy.h"
+#include "Economy/Economy.h"
 #include "GameState.h"
 #include "Objects/CargoObject.h"
 #include "Objects/ObjectManager.h"

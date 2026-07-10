@@ -1,5 +1,4 @@
 #include "Audio/Audio.h"
-#include "Construction.h"
 #include "GameCommands/Airports/CreateAirport.h"
 #include "GameCommands/Airports/RemoveAirport.h"
 #include "GameCommands/Docks/CreatePort.h"
@@ -20,6 +19,7 @@
 #include "Map/RoadElement.h"
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
+#include "Map/TileElementEntry.h"
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"
 #include "Objects/AirportObject.h"
@@ -38,6 +38,7 @@
 #include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/Wt3Widget.h"
+#include "Ui/Windows/Construction/Construction.h"
 #include "World/CompanyManager.h"
 #include "World/Industry.h"
 #include "World/StationManager.h"
@@ -849,8 +850,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return std::nullopt;
         }
 
-        auto* elRoad = reinterpret_cast<const TileElement*>(interaction.object)->as<RoadElement>();
-        auto* elStation = reinterpret_cast<const TileElement*>(interaction.object)->as<StationElement>();
+        auto* elRoad = reinterpret_cast<const TileElementEntry*>(interaction.object)->as<RoadElement>();
+        auto* elStation = reinterpret_cast<const TileElementEntry*>(interaction.object)->as<StationElement>();
         if (elRoad == nullptr && elStation == nullptr)
         {
             return std::nullopt;
@@ -926,8 +927,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return std::nullopt;
         }
 
-        auto* elTrack = reinterpret_cast<const TileElement*>(interaction.object)->as<TrackElement>();
-        auto* elStation = reinterpret_cast<const TileElement*>(interaction.object)->as<StationElement>();
+        auto* elTrack = reinterpret_cast<const TileElementEntry*>(interaction.object)->as<TrackElement>();
+        auto* elStation = reinterpret_cast<const TileElementEntry*>(interaction.object)->as<StationElement>();
         if (elTrack == nullptr && elStation == nullptr)
         {
             return std::nullopt;

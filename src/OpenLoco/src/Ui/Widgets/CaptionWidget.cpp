@@ -1,4 +1,4 @@
-#include "CaptionWidget.h"
+#include "Ui/Widgets/CaptionWidget.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/TextRenderer.h"

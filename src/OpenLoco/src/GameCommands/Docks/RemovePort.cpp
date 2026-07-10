@@ -1,4 +1,4 @@
-#include "RemovePort.h"
+#include "GameCommands/Docks/RemovePort.h"
 #include "Economy/Economy.h"
 #include "Localisation/StringIds.h"
 #include "Map/StationElement.h"
@@ -52,8 +52,26 @@ namespace OpenLoco::GameCommands
                 }
             }
 
-            auto* stationEl = getStationEl(portPos);
-            if (stationEl == nullptr)
+            World::TileElementEntry* stationEntry = nullptr;
+            World::StationElement* stationEl = nullptr;
+            {
+                auto tile = World::TileManager::get(portPos);
+                for (auto& el : tile)
+                {
+                    auto* candidate = el.as<World::StationElement>();
+                    if (candidate == nullptr)
+                    {
+                        continue;
+                    }
+                    if (candidate->baseHeight() == portPos.z)
+                    {
+                        stationEntry = &el;
+                        stationEl = candidate;
+                        break;
+                    }
+                }
+            }
+            if (stationEntry == nullptr)
             {
                 return false;
             }
@@ -68,7 +86,7 @@ namespace OpenLoco::GameCommands
                 Ui::ViewportManager::invalidate(World::Pos2(portPos), stationEl->baseHeight(), stationEl->clearHeight(), ZoomLevel::eighth);
             }
 
-            World::TileManager::removeElement(*reinterpret_cast<World::TileElement*>(stationEl));
+            World::TileManager::removeElement(*stationEntry);
         }
 
         return true;
@@ -130,8 +148,8 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void removePort(registers& regs)
+    void removePort(registers& regs, const uint8_t flags)
     {
-        regs.ebx = removePort(PortRemovalArgs(regs), regs.bl);
+        regs.ebx = removePort(PortRemovalArgs(regs), flags);
     }
 }

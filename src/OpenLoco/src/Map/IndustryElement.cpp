@@ -1,12 +1,12 @@
-#include "IndustryElement.h"
-#include "Animation.h"
-#include "AnimationManager.h"
+#include "Map/IndustryElement.h"
+#include "Map/Animation.h"
+#include "Map/AnimationManager.h"
+#include "Map/StationElement.h"
+#include "Map/TileLoop.hpp"
+#include "Map/TileManager.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
 #include "Scenario/ScenarioManager.h"
-#include "StationElement.h"
-#include "TileLoop.hpp"
-#include "TileManager.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "World/Industry.h"
@@ -59,8 +59,8 @@ namespace OpenLoco::World
 
     void IndustryElement::setIsConstructed(bool val)
     {
-        _type &= ~(1 << 7);
-        _type |= val ? (1 << 7) : 0;
+        _0 &= ~(1 << 7);
+        _0 |= val ? (1 << 7) : 0;
     }
 
     // 0x0045769A

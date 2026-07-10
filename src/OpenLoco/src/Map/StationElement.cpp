@@ -1,10 +1,10 @@
-#include "StationElement.h"
-#include "Animation.h"
+#include "Map/StationElement.h"
+#include "Map/Animation.h"
+#include "Map/TileManager.h"
 #include "Objects/AirportObject.h"
 #include "Objects/DockObject.h"
 #include "Objects/ObjectManager.h"
 #include "Scenario/ScenarioManager.h"
-#include "TileManager.h"
 #include "ViewportManager.h"
 #include "World/Station.h"
 

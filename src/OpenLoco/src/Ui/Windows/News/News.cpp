@@ -1,4 +1,4 @@
-#include "News.h"
+#include "Ui/Windows/News/News.h"
 #include "Date.h"
 #include "Entities/EntityManager.h"
 #include "Graphics/Colour.h"

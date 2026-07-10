@@ -1,4 +1,4 @@
-#include "RemoveRoadMod.h"
+#include "GameCommands/Road/RemoveRoadMod.h"
 #include "Economy/Expenditures.h"
 #include "Map/RoadElement.h"
 #include "Map/TileManager.h"
@@ -60,7 +60,7 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if (!sub_431E6A(elRoad->owner(), reinterpret_cast<const World::TileElement*>(elRoad)))
+        if (!checkCompanyCompatibility(elRoad->owner(), *elRoad))
         {
             return kFailure;
         }
@@ -78,8 +78,8 @@ namespace OpenLoco::GameCommands
         return cost;
     }
 
-    void removeRoadMod(registers& regs)
+    void removeRoadMod(registers& regs, const uint8_t flags)
     {
-        regs.ebx = removeRoadMod(RoadModsRemovalArgs(regs), regs.bl);
+        regs.ebx = removeRoadMod(RoadModsRemovalArgs(regs), flags);
     }
 }

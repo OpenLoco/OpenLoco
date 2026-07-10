@@ -7,10 +7,10 @@
 #include "Localisation/StringIds.h"
 #include "Message.h"
 #include "MessageManager.h"
-#include "News.h"
 #include "SceneManager.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/Wt3Widget.h"
+#include "Ui/Windows/News/News.h"
 
 namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 {

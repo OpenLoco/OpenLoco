@@ -1,12 +1,12 @@
-#include "CloneVehicle.h"
-#include "CreateVehicle.h"
+#include "GameCommands/Vehicles/CloneVehicle.h"
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Vehicles/CreateVehicle.h"
+#include "GameCommands/Vehicles/VehicleChangeRunningMode.h"
+#include "GameCommands/Vehicles/VehicleOrderInsert.h"
+#include "GameCommands/Vehicles/VehicleRefit.h"
 #include "Ui/WindowManager.h"
-#include "VehicleChangeRunningMode.h"
-#include "VehicleOrderInsert.h"
-#include "VehicleRefit.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
@@ -161,8 +161,8 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void cloneVehicle(registers& regs)
+    void cloneVehicle(registers& regs, const uint8_t flags)
     {
-        regs.ebx = cloneVehicle(EntityId(regs.ax), regs.bl);
+        regs.ebx = cloneVehicle(EntityId(regs.ax), flags);
     }
 }

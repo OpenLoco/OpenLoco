@@ -1,4 +1,4 @@
-#include "EffectsManager.h"
+#include "Effects/EffectsManager.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
 
