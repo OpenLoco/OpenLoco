@@ -59,8 +59,8 @@ namespace OpenLoco::World
 
     void IndustryElement::setIsConstructed(bool val)
     {
-        _0 &= ~(1 << 7);
-        _0 |= val ? (1 << 7) : 0;
+        _0 &= ~kIndustryElement0Constructed;
+        _0 |= val ? kIndustryElement0Constructed : 0;
     }
 
     void IndustryElement::setRandomAnimationType(uint8_t type)

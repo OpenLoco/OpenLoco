@@ -10,6 +10,8 @@ namespace OpenLoco
 
 namespace OpenLoco::World
 {
+    constexpr uint8_t kIndustryElement0RotationMask = 0b0000'0011;
+    constexpr uint8_t kIndustryElement0Constructed = 0b1000'0000;
     constexpr uint8_t kIndustryElement5TileSequenceMask = 0b0000'0011;
     constexpr uint8_t kIndustryElement5SectionConstructionProgressMask = 0b1110'0000;
     // The sections complete mask and random animation masks are used at mutually exclusive times
@@ -43,11 +45,11 @@ namespace OpenLoco::World
             _6 &= ~kIndustryElement6BuildingTypeMask;
             _6 |= type << 6;
         }
-        uint8_t rotation() const { return _0 & 0x3; }
+        uint8_t rotation() const { return _0 & kIndustryElement0RotationMask; }
         void setRotation(const uint8_t rotation)
         {
-            _0 &= ~0x3;
-            _0 |= rotation & 0x3;
+            _0 &= ~kIndustryElement0RotationMask;
+            _0 |= rotation & kIndustryElement0RotationMask;
         }
         // var_5_03
         uint8_t sequenceIndex() const;
@@ -70,7 +72,7 @@ namespace OpenLoco::World
         uint8_t sectionsCompleted() const;
         void setSectionsCompleted(uint8_t val);
 
-        bool isConstructed() const { return _0 & 0x80; }
+        bool isConstructed() const { return _0 & kIndustryElement0Constructed; }
         void setIsConstructed(bool val);
 
         bool update(const World::Pos2& loc);
