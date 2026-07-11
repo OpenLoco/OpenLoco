@@ -17,7 +17,7 @@ namespace OpenLoco::World
     constexpr uint16_t kIndustryElement6RandomAnimationPlaying = (1 << 5);
     constexpr uint16_t kIndustryElement6BuildingTypeMask = 0b0000'0111'1100'0000;
     constexpr uint16_t kIndustryElement6ColourMask = 0b1111'1000'0000'0000;
-    constexpr uint16_t kIndustryElement5TileSequenceMask = 0b0000'0011;
+    constexpr uint8_t kIndustryElement5TileSequenceMask = 0b0000'0011;
     constexpr uint8_t kIndustryElement5SectionConstructionProgressMask = 0b1110'0000;
 
 #pragma pack(push, 1)
