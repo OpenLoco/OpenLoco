@@ -10,15 +10,15 @@ namespace OpenLoco
 
 namespace OpenLoco::World
 {
-
-    constexpr uint16_t kIndustryElement6ColourMask = 0xF800;
-    constexpr uint16_t kIndustryElement6BuildingTypeMask = 0x07C0;
-    constexpr uint16_t kIndustryElement6RandomAnimationTypeMask = 0x0003;
-    constexpr uint16_t kIndustryElement6SectionsCompletedMask = 0x001F;
-    constexpr uint16_t kIndustryElement5TileSequenceMask = 0x03;
-    constexpr uint16_t kIndustryElement6RandomAnimationPlaying = (1 << 5);
+    // The sections complete mask and random animation masks are used at mutually exclusive times
+    constexpr uint16_t kIndustryElement6SectionsCompletedMask = 0b0000'0000'0011'1111;
+    constexpr uint16_t kIndustryElement6RandomAnimationTypeMask = 0b0000'0000'0000'0011;
     constexpr uint16_t kIndustryElement6RandomAnimationAvailable = (1 << 4);
-    constexpr uint8_t kIndustryElement5SectionConstructionProgressMask = 0xE0;
+    constexpr uint16_t kIndustryElement6RandomAnimationPlaying = (1 << 5);
+    constexpr uint16_t kIndustryElement6BuildingTypeMask = 0b0000'0111'1100'0000;
+    constexpr uint16_t kIndustryElement6ColourMask = 0b1111'1000'0000'0000;
+    constexpr uint16_t kIndustryElement5TileSequenceMask = 0b0000'0011;
+    constexpr uint8_t kIndustryElement5SectionConstructionProgressMask = 0b1110'0000;
 
 #pragma pack(push, 1)
 
@@ -28,23 +28,7 @@ namespace OpenLoco::World
 
     private:
         IndustryId _industryId;
-
-        /* Field _5 data structures
-         * 0b111xxxxx = construction progress of uppermost section
-         * 0bxxxxxx11 = sequence number of multi-tile building
-         * 0bxxx111xx = unused bits
-         */
         uint8_t _5;
-
-        /* Field _6 data structures
-         * 0b11111xxxxxxxxxxx = colour
-         * 0bxxxxx11111xxxxxx = building type
-         * 0bxxxxxxxxxx1xxxxx = random animation is playing
-         * 0bxxxxxxxxxxx1xxxx = random animations can play
-         * 0bxxxxxxxxxxxxxx11 = random animation type
-         * 0bxxxxxxxxxxxx11xx = unused bits (of above)
-         * 0bxxxxxxxxxx111111 = number of building sections completed
-         */
         uint16_t _6;
 
     public:
