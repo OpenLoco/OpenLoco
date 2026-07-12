@@ -602,7 +602,7 @@ namespace OpenLoco::CompanyManager
         }
         else
         {
-            company->ownerName = competitorObj->name;
+            company->ownerName = competitorObj->firstName;
             uint32_t randVal = 0;
             uint8_t companyNamePrefix = 0; // Usually a colour but can be a town
             uint8_t companyPlaystyle = 0;
@@ -614,7 +614,7 @@ namespace OpenLoco::CompanyManager
                 sfl::static_vector<uint8_t, 32> availableNamePrefixes;
                 for (auto j = 0U; j < 32; ++j)
                 {
-                    if (competitorObj->availablePlayStyles & (1U << j))
+                    if (competitorObj->availableNamePrefixes & (1U << j))
                     {
                         availableNamePrefixes.push_back(j);
                     }
@@ -625,7 +625,7 @@ namespace OpenLoco::CompanyManager
                 sfl::static_vector<uint8_t, 32> availablePlaystyles;
                 for (auto j = 0U; j < 32; ++j)
                 {
-                    if (competitorObj->var_08 & (1U << j))
+                    if (competitorObj->availablePlayStyles & (1U << j))
                     {
                         availablePlaystyles.push_back(j);
                     }
@@ -705,7 +705,7 @@ namespace OpenLoco::CompanyManager
             }
 
             const auto stringId = kCompanyAiPlaystyleString[companyPlaystyle];
-            auto args = FormatArguments::common(kCompanyAiNamePrefixes[companyNamePrefix], competitorObj->availableNamePrefixes);
+            auto args = FormatArguments::common(kCompanyAiNamePrefixes[companyNamePrefix], competitorObj->lastName);
             if (company->aiPlaystyleTownId != 0xFFU)
             {
                 args.push(TownManager::get(static_cast<TownId>(company->aiPlaystyleTownId))->name);
