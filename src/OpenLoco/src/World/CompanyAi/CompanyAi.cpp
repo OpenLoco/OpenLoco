@@ -3560,7 +3560,7 @@ namespace OpenLoco
 
             auto* roadObj = ObjectManager::get<RoadObject>(roadObjId & ~(1U << 7));
             using enum RoadObjectFlags;
-            if ((roadObj->flags & (allowUseByAllCompanies | isRoad | anyRoadTypeCompatible | unk_02)) != (allowUseByAllCompanies | isRoad | anyRoadTypeCompatible | unk_02))
+            if ((roadObj->flags & (allowUseByAllCompanies | isRoad | anyRoadTypeCompatible | allowsJunctions)) != (allowUseByAllCompanies | isRoad | anyRoadTypeCompatible | allowsJunctions))
             {
                 continue;
             }
