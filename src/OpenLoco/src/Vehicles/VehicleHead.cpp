@@ -6528,7 +6528,7 @@ namespace OpenLoco::Vehicles
                     {
                         return true;
                     }
-                    if (lastObj->hasFlags(VehicleObjectFlags::flag_08))
+                    if (lastObj->hasFlags(VehicleObjectFlags::canReverse))
                     {
                         return false;
                     }
