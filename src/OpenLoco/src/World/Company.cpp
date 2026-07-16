@@ -903,12 +903,12 @@ namespace OpenLoco
         return std::min(performanceIndex / 200, 4);
     }
 
-    bool Company::hashTableContains(const Unk25C0HashTableEntry& entry) const
+    bool Company::hashTableContains(const TrackRoadHashTableEntry& entry) const
     {
         auto index = entry.calculateHash();
-        while (var_25C0[index].var_00 != 0xFFFF)
+        while (trackandRoadHashTable[index].posX != 0xFFFF)
         {
-            auto& rhsEntry = var_25C0[index];
+            auto& rhsEntry = trackandRoadHashTable[index];
             if (rhsEntry.getPosition() == entry.getPosition()
                 && rhsEntry.getDirection() == entry.getDirection()
                 && rhsEntry.getTrackRoadId() == entry.getTrackRoadId())
@@ -922,7 +922,7 @@ namespace OpenLoco
             }
 
             index++;
-            if (index >= std::size(var_25C0))
+            if (index >= std::size(trackandRoadHashTable))
             {
                 index = 0;
             }
@@ -930,28 +930,28 @@ namespace OpenLoco
         return false;
     }
 
-    bool Company::addHashTableEntry(const Unk25C0HashTableEntry& entry)
+    bool Company::addHashTableEntry(const TrackRoadHashTableEntry& entry)
     {
-        if (var_25C0_length >= 2048)
+        if (hashTableLength >= 2048)
         {
             return false; // Hash table is full
         }
         auto index = entry.calculateHash();
 
-        while (var_25C0[index].var_00 != 0xFFFF)
+        while (trackandRoadHashTable[index].posX != 0xFFFF)
         {
-            auto& rhsEntry = var_25C0[index];
-            rhsEntry.var_02 |= 1U << 0; // mark as hash collision
+            auto& rhsEntry = trackandRoadHashTable[index];
+            rhsEntry.posYAndFlags |= 1U << 0; // mark as hash collision
 
             index++;
-            if (index >= std::size(var_25C0))
+            if (index >= std::size(trackandRoadHashTable))
             {
                 index = 0;
             }
         }
 
-        var_25C0[index] = entry;
-        var_25C0_length++;
+        trackandRoadHashTable[index] = entry;
+        hashTableLength++;
         return true;
     }
 
@@ -1137,15 +1137,15 @@ namespace OpenLoco
         return applyBeTopProgressModifiers(progress, objective, *this);
     }
 
-    Company::Unk25C0HashTableEntry::Unk25C0HashTableEntry(World::Pos3 pos, uint8_t trackRoadId, uint8_t direction)
+    Company::TrackRoadHashTableEntry::TrackRoadHashTableEntry(World::Pos3 pos, uint8_t trackRoadId, uint8_t direction)
     {
-        var_00 = pos.x;
-        var_02 = pos.y;
-        var_04 = pos.z / World::kSmallZStep;
-        var_05 = (trackRoadId & 0x3F) | (direction << 6);
+        posX = pos.x;
+        posYAndFlags = pos.y;
+        posZ = pos.z / World::kSmallZStep;
+        trackRoadIdAndDirection = (trackRoadId & 0x3F) | (direction << 6);
     }
 
-    constexpr uint16_t Company::Unk25C0HashTableEntry::calculateHash() const
+    constexpr uint16_t Company::TrackRoadHashTableEntry::calculateHash() const
     {
         const auto direction = getDirection();
         const auto pos = getPosition();

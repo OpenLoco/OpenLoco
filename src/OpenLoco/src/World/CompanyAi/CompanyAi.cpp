@@ -228,9 +228,9 @@ namespace OpenLoco
     // 0x00487144
     static void sub_487144(Company& company)
     {
-        company.var_85C2 = 0;
-        company.var_85C3 = 0;
-        company.var_85F0 = 0;
+        company.aiStationIndex = 0;
+        company.aiStationFlags = 0;
+        company.aiPathfindIterCount = 0;
     }
 
     enum class PurchaseVehicleResult
@@ -566,11 +566,11 @@ namespace OpenLoco
     // 0x004308D4
     static void aiThinkState0(Company& company)
     {
-        company.var_85F6++;
-        if (company.var_85F6 < 672)
+        company.aiThinkTimer++;
+        if (company.aiThinkTimer < 672)
         {
-            company.var_4A4 = AiThinkState::unk2;
-            company.var_4A5 = 0;
+            company.aiThinkState = AiThinkState::unk2;
+            company.aiThinkSubState = 0;
             return;
         }
 
@@ -600,14 +600,14 @@ namespace OpenLoco
             }
             if (!hasAssets)
             {
-                company.var_4A4 = AiThinkState::endCompany;
-                company.var_85C4 = World::Pos2{ 0, 0 };
+                company.aiThinkState = AiThinkState::endCompany;
+                company.aiPathfindTargetPos = World::Pos2{ 0, 0 };
                 return;
             }
         }
 
-        company.var_85F6 = 0;
-        company.var_4A4 = AiThinkState::unk1;
+        company.aiThinkTimer = 0;
+        company.aiThinkState = AiThinkState::unk1;
         company.activeThoughtId = kAiThoughtIdNull;
         tryRemovePortsAndAirports(company);
     }
@@ -1767,24 +1767,24 @@ namespace OpenLoco
             if (sub_487F8D(company, thought))
             {
                 logAiAction(company.id(), "Sell off land assets: due to sub_487F8D");
-                company.var_4A4 = AiThinkState::sellOffLandAssets;
-                company.var_4A5 = 0;
+                company.aiThinkState = AiThinkState::sellOffLandAssets;
+                company.aiThinkSubState = 0;
                 companyEmotionEvent(company.id(), Emotion::disgusted);
                 return;
             }
 
             if (sub_488050(company, thought))
             {
-                company.var_4A4 = AiThinkState::unk8;
-                company.var_4A5 = 0;
+                company.aiThinkState = AiThinkState::unk8;
+                company.aiThinkSubState = 0;
             }
             return;
         }
         if (((company.challengeFlags & CompanyFlags::aiHasStarted) != CompanyFlags::none)
             || (getCurrentDay() - company.startedDate <= 42))
         {
-            company.var_4A4 = AiThinkState::unk2;
-            company.var_4A5 = 0;
+            company.aiThinkState = AiThinkState::unk2;
+            company.aiThinkSubState = 0;
             return;
         }
         CompanyManager::aiDestroy(company.id());
@@ -1798,7 +1798,7 @@ namespace OpenLoco
             auto& thought = company.aiThoughts[company.activeThoughtId];
             clearThought(thought);
         }
-        company.var_4A5 = 13;
+        company.aiThinkSubState = 13;
     }
 
     // 0x0047EABE & 0x0047EB17
@@ -2496,7 +2496,7 @@ namespace OpenLoco
         }
 
         bool use25BE = false;
-        const auto var25BE = company.var_25BE;
+        const auto var25BE = company.aiSavedThoughtType;
         if (var25BE != AiThoughtType::null)
         {
             if (randVal & 0x1F)
@@ -2511,7 +2511,7 @@ namespace OpenLoco
             thought.type = static_cast<AiThoughtType>(((randVal & 0x1F) * 20) / 32);
             randVal = std::rotr(randVal, 5);
         }
-        company.var_25BE = thought.type;
+        company.aiSavedThoughtType = thought.type;
 
         switch (thought.type)
         {
@@ -2766,7 +2766,7 @@ namespace OpenLoco
                 generateNewThought(company, thought);
                 if (thought.type != AiThoughtType::null)
                 {
-                    company.var_4A5 = 1;
+                    company.aiThinkSubState = 1;
                     return;
                 }
             }
@@ -2873,7 +2873,7 @@ namespace OpenLoco
         if (similarThoughts.inSameCompany || similarThoughts.total > 1)
         {
             clearThought(thought);
-            company.var_4A5 = 13;
+            company.aiThinkSubState = 13;
             return;
         }
         if (similarThoughts.total == 1)
@@ -2883,18 +2883,18 @@ namespace OpenLoco
                 if (!thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
                 {
                     clearThought(thought);
-                    company.var_4A5 = 13;
+                    company.aiThinkSubState = 13;
                     return;
                 }
             }
             if (similarThoughts.total != similarThoughts.totalUnprofitable)
             {
                 clearThought(thought);
-                company.var_4A5 = 13;
+                company.aiThinkSubState = 13;
                 return;
             }
         }
-        company.var_4A5 = 2;
+        company.aiThinkSubState = 2;
     }
 
     // 0x00480FC3
@@ -3068,11 +3068,11 @@ namespace OpenLoco
         auto& thought = company.aiThoughts[company.activeThoughtId];
         if (applyPlaystyleRestrictions(company, thought))
         {
-            company.var_25BE = AiThoughtType::null;
+            company.aiSavedThoughtType = AiThoughtType::null;
             state2ClearActiveThought(company);
             return;
         }
-        company.var_4A5 = 3;
+        company.aiThinkSubState = 3;
     }
 
     // 0x00481433
@@ -3486,7 +3486,7 @@ namespace OpenLoco
             state2ClearActiveThought(company);
             return;
         }
-        company.var_4A5 = 4;
+        company.aiThinkSubState = 4;
     }
 
     // 0x0047FE3A
@@ -3655,7 +3655,7 @@ namespace OpenLoco
         }
         else
         {
-            company.var_4A5 = 5;
+            company.aiThinkSubState = 5;
         }
     }
 
@@ -3673,8 +3673,8 @@ namespace OpenLoco
         thought.var_43 = request.dl;
         thought.var_7C = request.dl * request.trainRunCost;
         thought.var_76 += request.trainCost;
-        company.var_85F2 = request.trainCost;
-        company.var_4A5 = 6;
+        company.aiVehicleCost = request.trainCost;
+        company.aiThinkSubState = 6;
     }
 
     // 0x00430C73
@@ -3687,7 +3687,7 @@ namespace OpenLoco
         }
         else
         {
-            company.var_4A5 = 7;
+            company.aiThinkSubState = 7;
         }
     }
 
@@ -3787,7 +3787,7 @@ namespace OpenLoco
         auto& thought = company.aiThoughts[company.activeThoughtId];
         thought.var_76 += estimateStationCost(thought);
 
-        company.var_4A5 = 8;
+        company.aiThinkSubState = 8;
     }
 
     // 0x004821C5
@@ -3896,7 +3896,7 @@ namespace OpenLoco
         auto& thought = company.aiThoughts[company.activeThoughtId];
         thought.var_76 += estimateTrackPlacementCosts(thought);
 
-        company.var_4A5 = 9;
+        company.aiThinkSubState = 9;
         // TODO: activeThoughtRevenueEstimate has same address as the thoughtState2AiStationIdx variable
         // in the future we should use a new offset.
         company.thoughtState2AiStationIdx = 0;
@@ -3956,7 +3956,7 @@ namespace OpenLoco
         company.thoughtState2AiStationIdx++;
         if (company.thoughtState2AiStationIdx >= 4)
         {
-            company.var_4A5 = 10;
+            company.aiThinkSubState = 10;
         }
     }
 
@@ -4053,17 +4053,17 @@ namespace OpenLoco
     // 0x00430D26
     static void sub_430D26(Company& company)
     {
-        company.var_25BE = AiThoughtType::null;
+        company.aiSavedThoughtType = AiThoughtType::null;
         auto& thought = company.aiThoughts[company.activeThoughtId];
         company.activeThoughtRevenueEstimate = estimateThoughtRevenue(thought);
-        company.var_4A5 = 11;
+        company.aiThinkSubState = 11;
     }
 
     // 0x00430D54
     static void sub_430D54(Company& company)
     {
-        company.var_2582 = 0;
-        company.var_4A5 = 12;
+        company.aiThoughtCooldown = 0;
+        company.aiThinkSubState = 12;
     }
 
     static constexpr std::array<uint8_t, 12> kIntelligenceToMoneyFactor = {
@@ -4110,13 +4110,13 @@ namespace OpenLoco
         }
         else
         {
-            company.var_4A4 = AiThinkState::unk3;
-            company.var_4A5 = 0;
+            company.aiThinkState = AiThinkState::unk3;
+            company.aiThinkSubState = 0;
             // 0x00482578
-            company.var_259A = 0xFE;
-            company.var_259B = 0xFE;
-            company.var_259C = 0xFE;
-            company.var_2596 = 0;
+            company.aiBridgeTypeLow = 0xFE;
+            company.aiBridgeTypeMedium = 0xFE;
+            company.aiBridgeTypeHigh = 0xFE;
+            company.aiBridgeSelectionCounter = 0;
             thought.var_76 = 0;
         }
     }
@@ -4124,7 +4124,7 @@ namespace OpenLoco
     // 0x00430DAE
     static void sub_430DAE(Company& company)
     {
-        company.var_4A4 = AiThinkState::unk0;
+        company.aiThinkState = AiThinkState::unk0;
     }
 
     using AiThinkState2Function = void (*)(Company&);
@@ -4149,8 +4149,8 @@ namespace OpenLoco
     // 0x004309FD
     static void aiThinkState2(Company& company)
     {
-        company.var_85F6++;
-        _funcs_4F94B0[company.var_4A5](company);
+        company.aiThinkTimer++;
+        _funcs_4F94B0[company.aiThinkSubState](company);
     }
 
     // 0x004834C0, 0x0048352E, 0x00493594
@@ -4659,7 +4659,7 @@ namespace OpenLoco
         {
             args.unk1 |= (1U << 0);
         }
-        args.bridge = company.var_259A;
+        args.bridge = company.aiBridgeTypeLow;
 
         auto* roadObj = ObjectManager::get<RoadObject>(args.roadObjectId);
         for (auto i = 0U; i < 2; ++i)
@@ -4810,7 +4810,7 @@ namespace OpenLoco
         {
             args.unk1 |= (1U << 0);
         }
-        args.bridge = company.var_259A;
+        args.bridge = company.aiBridgeTypeLow;
 
         auto* trackObj = ObjectManager::get<TrackObject>(thought.trackObjId);
         for (auto i = 0U; i < 4; ++i)
@@ -4992,9 +4992,9 @@ namespace OpenLoco
     // 0x0048259F
     static uint8_t sub_48259F(Company& company, AiThought& thought)
     {
-        if (company.var_259A == 254)
+        if (company.aiBridgeTypeLow == 254)
         {
-            company.var_259A = sub_4834C0(thought, [](const BridgeObject& bridgeObj) {
+            company.aiBridgeTypeLow = sub_4834C0(thought, [](const BridgeObject& bridgeObj) {
                 if (bridgeObj.maxHeight < 4)
                 {
                     return false;
@@ -5016,9 +5016,9 @@ namespace OpenLoco
             });
             return 0;
         }
-        if (company.var_259B == 254)
+        if (company.aiBridgeTypeMedium == 254)
         {
-            company.var_259B = sub_4834C0(thought, [](const BridgeObject& bridgeObj) {
+            company.aiBridgeTypeMedium = sub_4834C0(thought, [](const BridgeObject& bridgeObj) {
                 if (bridgeObj.maxHeight < 8)
                 {
                     return false;
@@ -5027,9 +5027,9 @@ namespace OpenLoco
             });
             return 0;
         }
-        if (company.var_259C == 254)
+        if (company.aiBridgeTypeHigh == 254)
         {
-            company.var_259C = sub_4834C0(thought, [](const BridgeObject& bridgeObj) {
+            company.aiBridgeTypeHigh = sub_4834C0(thought, [](const BridgeObject& bridgeObj) {
                 if (bridgeObj.maxHeight < 8)
                 {
                     return false;
@@ -5069,21 +5069,21 @@ namespace OpenLoco
         for (auto i = 0U; i < 3; ++i)
         {
             auto bridgeHeight = 0U;
-            if (company.var_2596 >= 200)
+            if (company.aiBridgeSelectionCounter >= 200)
             {
                 bridgeHeight = 32;
             }
-            else if (company.var_2596 >= 100)
+            else if (company.aiBridgeSelectionCounter >= 100)
             {
                 bridgeHeight = 16;
             }
             if (!sub_482662(company, thought, chosenStation, bridgeHeight))
             {
-                company.var_2596 = 0;
+                company.aiBridgeSelectionCounter = 0;
                 return 0;
             }
-            company.var_2596++;
-            if (company.var_2596 >= 400)
+            company.aiBridgeSelectionCounter++;
+            if (company.aiBridgeSelectionCounter >= 400)
             {
                 return 1;
             }
@@ -5094,19 +5094,19 @@ namespace OpenLoco
     // 0x0048377C
     static void sub_48377C(Company& company, AiThought& thought)
     {
-        company.var_85C2 = 0xFFU;
-        company.var_85C3 = 0;
+        company.aiStationIndex = 0xFFU;
+        company.aiStationFlags = 0;
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk17))
         {
-            company.var_85C3 |= (1U << 3);
+            company.aiStationFlags |= (1U << 3);
         }
         if (thought.hasPurchaseFlags(AiPurchaseFlags::unk0))
         {
-            company.var_85C3 |= (1U << 2);
+            company.aiStationFlags |= (1U << 2);
         }
         if (thought.hasPurchaseFlags(AiPurchaseFlags::unk1))
         {
-            company.var_85C3 |= (1U << 4);
+            company.aiStationFlags |= (1U << 4);
         }
     }
 
@@ -5116,8 +5116,8 @@ namespace OpenLoco
         if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
         {
             logAiAction(company.id(), "Undo partial action: due to clearance issue");
-            company.var_4A4 = AiThinkState::undoPartialAction;
-            company.var_4A5 = 3;
+            company.aiThinkState = AiThinkState::undoPartialAction;
+            company.aiThinkSubState = 3;
         }
         else
         {
@@ -5125,11 +5125,11 @@ namespace OpenLoco
             {
                 case 1:
                     logAiAction(company.id(), "Undo partial action: due to sub_48259F");
-                    company.var_4A4 = AiThinkState::undoPartialAction;
-                    company.var_4A5 = 3;
+                    company.aiThinkState = AiThinkState::undoPartialAction;
+                    company.aiThinkSubState = 3;
                     break;
                 case 2:
-                    company.var_4A5 = 1;
+                    company.aiThinkSubState = 1;
                     sub_48377C(company, thought);
                     break;
                 default:
@@ -5141,7 +5141,7 @@ namespace OpenLoco
     // 0x004837C2
     static bool sub_4837C2(Company& company, AiThought& thought)
     {
-        company.var_85C3 &= ~((1U << 0) | (1U << 1));
+        company.aiStationFlags &= ~((1U << 0) | (1U << 1));
 
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased))
         {
@@ -5170,14 +5170,14 @@ namespace OpenLoco
                 {
                     if (!(aiStation.var_C & ((1U << 2) | (1U << 1))))
                     {
-                        company.var_85C3 |= 1U << 0;
+                        company.aiStationFlags |= 1U << 0;
                         return i;
                     }
                     if (aiStation.var_C & (1U << 0))
                     {
                         if (!(aiStation.var_C & ((1U << 4) | (1U << 3))))
                         {
-                            company.var_85C3 |= 1U << 0;
+                            company.aiStationFlags |= 1U << 0;
                             return i;
                         }
                     }
@@ -5192,11 +5192,11 @@ namespace OpenLoco
         }
 
         {
-            company.var_85C2 = findRequiredAiStation;
+            company.aiStationIndex = findRequiredAiStation;
             const auto& aiStation = thought.stations[findRequiredAiStation];
             auto pos = aiStation.pos;
             auto rotation = aiStation.rotation;
-            if (company.var_85C3 & (1U << 0))
+            if (company.aiStationFlags & (1U << 0))
             {
                 if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::railBased))
                 {
@@ -5207,23 +5207,23 @@ namespace OpenLoco
             }
             rotation ^= (1U << 1);
 
-            company.var_85C4 = pos;
-            company.var_85C8 = aiStation.baseZ;
-            company.var_85CE = rotation;
-            company.var_85D0 = pos;
-            company.var_85D4 = aiStation.baseZ;
-            company.var_85D5 = rotation;
+            company.aiPathfindTargetPos = pos;
+            company.aiPathfindTargetBaseZ = aiStation.baseZ;
+            company.aiPathfindTargetRot = rotation;
+            company.aiPathfindStartPos = pos;
+            company.aiPathfindStartBaseZ = aiStation.baseZ;
+            company.aiPathfindStartTad = rotation;
         }
         {
-            const auto aiStationIndex = (company.var_85C3 & (1U << 0)) ? thought.stations[findRequiredAiStation].var_A : thought.stations[findRequiredAiStation].var_9;
+            const auto aiStationIndex = (company.aiStationFlags & (1U << 0)) ? thought.stations[findRequiredAiStation].var_A : thought.stations[findRequiredAiStation].var_9;
             const auto& aiStation = thought.stations[aiStationIndex];
-            if (aiStation.var_9 != company.var_85C2)
+            if (aiStation.var_9 != company.aiStationIndex)
             {
-                company.var_85C3 |= (1U << 1);
+                company.aiStationFlags |= (1U << 1);
             }
             auto pos = aiStation.pos;
             auto rotation = aiStation.rotation;
-            if (company.var_85C3 & (1U << 1))
+            if (company.aiStationFlags & (1U << 1))
             {
                 if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::railBased))
                 {
@@ -5234,28 +5234,28 @@ namespace OpenLoco
             }
             rotation ^= (1U << 1);
 
-            company.var_85C9 = pos;
-            company.var_85CD = aiStation.baseZ;
-            company.var_85CF = rotation;
-            company.var_85D7 = pos;
-            company.var_85DB = aiStation.baseZ;
-            company.var_85DC = rotation;
+            company.aiPathfindTargetPos2 = pos;
+            company.aiPathfindTargetBaseZ2 = aiStation.baseZ;
+            company.aiPathfindTargetRot2 = rotation;
+            company.aiPathfindStartPos2 = pos;
+            company.aiPathfindStartBaseZ2 = aiStation.baseZ;
+            company.aiPathfindStartTad2 = rotation;
         }
-        company.var_85F0 = 0;
-        company.var_85EE = 0;
-        company.var_85EF = 0;
-        company.var_85DE = 0;
-        company.var_85E2 = 0;
-        company.var_85E8 = 0;
+        company.aiPathfindIterCount = 0;
+        company.aiPathfindUndoCount1 = 0;
+        company.aiPathfindUndoCount2 = 0;
+        company.aiPathfindWeighting1 = 0;
+        company.aiPathfindWeighting2 = 0;
+        company.aiPathfindPhase = 0;
 
-        const auto distance = std::max<uint16_t>(256, Math::Vector::distance3D(World::Pos3(company.var_85C4, company.var_85C8 * World::kSmallZStep), World::Pos3(company.var_85C9, company.var_85CD * World::kSmallZStep)));
-        company.var_85EA = distance / 2 + distance * 2;
+        const auto distance = std::max<uint16_t>(256, Math::Vector::distance3D(World::Pos3(company.aiPathfindTargetPos, company.aiPathfindTargetBaseZ * World::kSmallZStep), World::Pos3(company.aiPathfindTargetPos2, company.aiPathfindTargetBaseZ2 * World::kSmallZStep)));
+        company.aiPathfindMaxWeighting = distance / 2 + distance * 2;
         // TODO: When diverging just set this all to a fixed value rather than only first entry
-        for (auto& htEntry : company.var_25C0)
+        for (auto& htEntry : company.trackandRoadHashTable)
         {
-            htEntry.var_00 = 0xFFFFU;
+            htEntry.posX = 0xFFFFU;
         }
-        company.var_25C0_length = 0;
+        company.hashTableLength = 0;
         return false;
     }
 
@@ -5284,7 +5284,7 @@ namespace OpenLoco
             return true;
         }
 
-        company.var_85C2 = 0;
+        company.aiStationIndex = 0;
         return false;
     }
 
@@ -5294,33 +5294,33 @@ namespace OpenLoco
         if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
         {
             logAiAction(company.id(), "Undo partial action: due to clearance");
-            company.var_4A4 = AiThinkState::undoPartialAction;
-            company.var_4A5 = 2;
-            company.var_85C4 = World::Pos2(0, 0);
+            company.aiThinkState = AiThinkState::undoPartialAction;
+            company.aiThinkSubState = 2;
+            company.aiPathfindTargetPos = World::Pos2(0, 0);
             return;
         }
 
-        if (company.var_85C2 != 0xFFU)
+        if (company.aiStationIndex != 0xFFU)
         {
             if (aiPathfind(company, thought))
             {
                 logAiAction(company.id(), "Undo partial action: due to aiPathfind");
-                company.var_4A4 = AiThinkState::undoPartialAction;
-                company.var_4A5 = 2;
-                company.var_85C4 = World::Pos2(0, 0);
+                company.aiThinkState = AiThinkState::undoPartialAction;
+                company.aiThinkSubState = 2;
+                company.aiPathfindTargetPos = World::Pos2(0, 0);
             }
         }
         else
         {
             if (sub_4837C2(company, thought))
             {
-                company.var_4A5 = 2;
+                company.aiThinkSubState = 2;
                 if (sub_486324(company, thought))
                 {
                     logAiAction(company.id(), "Undo partial action: due to sub_486324");
-                    company.var_4A4 = AiThinkState::undoPartialAction;
-                    company.var_4A5 = 2;
-                    company.var_85C4 = World::Pos2(0, 0);
+                    company.aiThinkState = AiThinkState::undoPartialAction;
+                    company.aiThinkSubState = 2;
+                    company.aiPathfindTargetPos = World::Pos2(0, 0);
                 }
             }
         }
@@ -5417,12 +5417,12 @@ namespace OpenLoco
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk6))
         {
             // 0x0048639B
-            if (company.var_85C2 >= thought.numStations)
+            if (company.aiStationIndex >= thought.numStations)
             {
                 return true;
             }
 
-            const auto& aiStation = thought.stations[company.var_85C2];
+            const auto& aiStation = thought.stations[company.aiStationIndex];
 
             const auto stationEnd = World::Pos3(
                 aiStation.pos + World::Pos3{ kRotationOffset[aiStation.rotation], 0 } * (thought.stationLength - 1),
@@ -5430,20 +5430,20 @@ namespace OpenLoco
 
             const uint8_t signalSide = (1U << 0);
             const auto tad = 0 | aiStation.rotation;
-            company.var_85C2++;
+            company.aiStationIndex++;
 
             placeAiAllocatedSignalsEvenlySpaced(stationEnd, tad, trackObjId, minSignalSpacing, signalType, signalSide);
             return false;
         }
         else if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::unk17))
         {
-            if (company.var_85C2 >= 2)
+            if (company.aiStationIndex >= 2)
             {
                 return true;
             }
 
             // 0x0048640F
-            const uint8_t signalSide = company.var_85C2 & 1 ? (1U << 0) : (1U << 1);
+            const uint8_t signalSide = company.aiStationIndex & 1 ? (1U << 0) : (1U << 1);
 
             const auto& aiStation = thought.stations[0];
 
@@ -5454,8 +5454,8 @@ namespace OpenLoco
             {
                 return false;
             }
-            const auto tad = tc.connections[company.var_85C2] & Track::AdditionalTaDFlags::basicTaDMask;
-            company.var_85C2++;
+            const auto tad = tc.connections[company.aiStationIndex] & Track::AdditionalTaDFlags::basicTaDMask;
+            company.aiStationIndex++;
 
             placeAiAllocatedSignalsEvenlySpaced(trackEnd.nextPos, tad, trackObjId, minSignalSpacing, signalType, signalSide);
             return false;
@@ -5471,15 +5471,15 @@ namespace OpenLoco
         if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
         {
             logAiAction(company.id(), "Undo partial action: due to clearance");
-            company.var_4A4 = AiThinkState::undoPartialAction;
-            company.var_4A5 = 2;
-            company.var_85C4 = World::Pos2{ 0, 0 };
+            company.aiThinkState = AiThinkState::undoPartialAction;
+            company.aiThinkSubState = 2;
+            company.aiPathfindTargetPos = World::Pos2{ 0, 0 };
             return;
         }
 
         if (tryPlaceAiAllocatedSignalsBetweenStations(company, thought))
         {
-            company.var_4A5 = 3;
+            company.aiThinkSubState = 3;
         }
     }
 
@@ -5581,22 +5581,22 @@ namespace OpenLoco
         if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
         {
             logAiAction(company.id(), "Undo partial action: due to clearance");
-            company.var_4A4 = AiThinkState::undoPartialAction;
-            company.var_4A5 = 2;
-            company.var_85C4 = World::Pos2{ 0, 0 };
+            company.aiThinkState = AiThinkState::undoPartialAction;
+            company.aiThinkSubState = 2;
+            company.aiPathfindTargetPos = World::Pos2{ 0, 0 };
             return;
         }
         auto res = sub_4865B4(thought);
         if (res == 1)
         {
             logAiAction(company.id(), "Undo partial action: due to sub_4865B4");
-            company.var_4A4 = AiThinkState::undoPartialAction;
-            company.var_4A5 = 2;
-            company.var_85C4 = World::Pos2{ 0, 0 };
+            company.aiThinkState = AiThinkState::undoPartialAction;
+            company.aiThinkSubState = 2;
+            company.aiPathfindTargetPos = World::Pos2{ 0, 0 };
         }
         else if (res == 2)
         {
-            company.var_4A5 = 4;
+            company.aiThinkSubState = 4;
         }
     }
 
@@ -5604,7 +5604,7 @@ namespace OpenLoco
     static void sub_486668(Company& company, AiThought& thought)
     {
         thought.var_76 += estimateStationCost(thought);
-        thought.var_76 += company.var_85F2;
+        thought.var_76 += company.aiVehicleCost;
     }
 
     // 0x00430F50
@@ -5614,13 +5614,13 @@ namespace OpenLoco
         if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
         {
             logAiAction(company.id(), "Undo partial action: due to clearance");
-            company.var_4A4 = AiThinkState::undoPartialAction;
-            company.var_4A5 = 2;
-            company.var_85C4 = World::Pos2{ 0, 0 };
+            company.aiThinkState = AiThinkState::undoPartialAction;
+            company.aiThinkSubState = 2;
+            company.aiPathfindTargetPos = World::Pos2{ 0, 0 };
             return;
         }
         sub_486668(company, thought);
-        company.var_4A5 = 5;
+        company.aiThinkSubState = 5;
     }
 
     // 0x0048667A
@@ -5658,9 +5658,9 @@ namespace OpenLoco
         if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
         {
             logAiAction(company.id(), "Undo partial action: due to clearance");
-            company.var_4A4 = AiThinkState::undoPartialAction;
-            company.var_4A5 = 2;
-            company.var_85C4 = World::Pos2{ 0, 0 };
+            company.aiThinkState = AiThinkState::undoPartialAction;
+            company.aiThinkSubState = 2;
+            company.aiPathfindTargetPos = World::Pos2{ 0, 0 };
             return;
         }
 
@@ -5668,16 +5668,16 @@ namespace OpenLoco
         if (res == 1)
         {
             logAiAction(company.id(), "Undo partial action: due to shouldConvertAiAllocated");
-            company.var_4A4 = AiThinkState::undoPartialAction;
-            company.var_4A5 = 2;
-            company.var_85C4 = World::Pos2{ 0, 0 };
+            company.aiThinkState = AiThinkState::undoPartialAction;
+            company.aiThinkSubState = 2;
+            company.aiPathfindTargetPos = World::Pos2{ 0, 0 };
         }
         else if (res == 2)
         {
             logAiAction(company.id(), "Convert allocated Ai assets: due to shouldConvertAiAllocated");
             // Go to converting the aiAllocated items into real items
-            company.var_4A4 = AiThinkState::convertAiAllocated;
-            company.var_4A5 = 0;
+            company.aiThinkState = AiThinkState::convertAiAllocated;
+            company.aiThinkSubState = 0;
             company.challengeFlags |= CompanyFlags::unk2;
             if ((company.challengeFlags & CompanyFlags::aiHasStarted) != CompanyFlags::none)
             {
@@ -5709,9 +5709,9 @@ namespace OpenLoco
     // 0x00430DB6
     static void aiThinkState3(Company& company)
     {
-        company.var_85F6++;
+        company.aiThinkTimer++;
 
-        _funcs_4F94E8[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
+        _funcs_4F94E8[company.aiThinkSubState](company, company.aiThoughts[company.activeThoughtId]);
     }
 
     static StationElement* getAiAllocatedStationElement(const Pos3& pos)
@@ -6082,11 +6082,11 @@ namespace OpenLoco
     // 0x004869C2
     static void sub_4869C2(Company& company)
     {
-        company.var_85C2 = 0xFF;
-        company.var_85C3 = 0;
-        company.var_85DE = 0;
+        company.aiStationIndex = 0xFF;
+        company.aiStationFlags = 0;
+        company.aiPathfindWeighting1 = 0;
         const auto* competitorObj = ObjectManager::get<CompetitorObject>(company.competitorId);
-        company.var_85EA = kAgrressivenessTable1[competitorObj->aggressiveness - 1];
+        company.aiPathfindMaxWeighting = kAgrressivenessTable1[competitorObj->aggressiveness - 1];
     }
 
     // 0x0043106B
@@ -6096,13 +6096,13 @@ namespace OpenLoco
         if (res == 2)
         {
             logAiAction(company.id(), "Undo partial action: due to replaceAiAllocatedStation");
-            company.var_4A4 = AiThinkState::undoPartialAction;
-            company.var_4A5 = 1;
+            company.aiThinkState = AiThinkState::undoPartialAction;
+            company.aiThinkSubState = 1;
             sub_487144(company);
         }
         else if (res == 1)
         {
-            company.var_4A5 = 1;
+            company.aiThinkSubState = 1;
             sub_4869C2(company);
         }
     }
@@ -6110,7 +6110,7 @@ namespace OpenLoco
     // 0x00486E63 & 0x00486C2C
     static void advanceAiStationAiAllocationReplacementState(Company& company, AiThought& thought)
     {
-        const auto aiStationIndex = company.var_85C2;
+        const auto aiStationIndex = company.aiStationIndex;
         auto& aiStation = thought.stations[aiStationIndex];
 
         auto advanceStationSide = [](uint8_t& stationSide) {
@@ -6126,7 +6126,7 @@ namespace OpenLoco
             }
         };
 
-        if (company.var_85C3 & (1U << 0))
+        if (company.aiStationFlags & (1U << 0))
         {
             advanceStationSide(aiStation.var_C);
         }
@@ -6134,7 +6134,7 @@ namespace OpenLoco
         {
             advanceStationSide(aiStation.var_B);
         }
-        company.var_85C2 = 0xFFU;
+        company.aiStationIndex = 0xFFU;
     }
 
     // 0x00486C98 & 0x00486A37
@@ -6145,21 +6145,21 @@ namespace OpenLoco
         {
             if (thought.stations[i].var_B & 0b1010)
             {
-                company.var_85C2 = i;
-                company.var_85C3 &= ~(1U << 0);
-                company.var_85D0 = thought.stations[i].pos;
-                company.var_85D4 = thought.stations[i].baseZ;
-                company.var_85D5 = thought.stations[i].rotation ^ (1U << 1);
+                company.aiStationIndex = i;
+                company.aiStationFlags &= ~(1U << 0);
+                company.aiPathfindStartPos = thought.stations[i].pos;
+                company.aiPathfindStartBaseZ = thought.stations[i].baseZ;
+                company.aiPathfindStartTad = thought.stations[i].rotation ^ (1U << 1);
                 return 0;
             }
             else if (thought.stations[i].var_C & 0b1010)
             {
-                company.var_85C2 = i;
-                company.var_85C3 |= 1U << 0;
+                company.aiStationIndex = i;
+                company.aiStationFlags |= 1U << 0;
                 const auto stationOffset = isRoad ? World::Pos2{ 0, 0 } : kRotationOffset[thought.stations[i].rotation] * (thought.stationLength - 1);
-                company.var_85D0 = thought.stations[i].pos + stationOffset;
-                company.var_85D4 = thought.stations[i].baseZ;
-                company.var_85D5 = thought.stations[i].rotation;
+                company.aiPathfindStartPos = thought.stations[i].pos + stationOffset;
+                company.aiPathfindStartBaseZ = thought.stations[i].baseZ;
+                company.aiPathfindStartTad = thought.stations[i].rotation;
                 return 0;
             }
         }
@@ -6175,14 +6175,14 @@ namespace OpenLoco
             return 1;
         }
 
-        company.var_85DE++;
+        company.aiPathfindWeighting1++;
 
-        if (company.var_85DE < company.var_85EA)
+        if (company.aiPathfindWeighting1 < company.aiPathfindMaxWeighting)
         {
             return 0;
         }
 
-        company.var_85DE = 0;
+        company.aiPathfindWeighting1 = 0;
         if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
         {
             return 2;
@@ -6191,15 +6191,15 @@ namespace OpenLoco
         {
             // Road
             // 0x00486C98
-            if (company.var_85C2 == 0xFFU)
+            if (company.aiStationIndex == 0xFFU)
             {
                 return setupNextAiStationAiAllocationReplacement(company, thought, false);
             }
             else
             {
                 // 0x00486D3E
-                const auto pos = World::Pos3(company.var_85D0, company.var_85D4 * World::kSmallZStep);
-                const auto tad = company.var_85D5;
+                const auto pos = World::Pos3(company.aiPathfindStartPos, company.aiPathfindStartBaseZ * World::kSmallZStep);
+                const auto tad = company.aiPathfindStartTad;
                 const auto queryMods = 0U;
                 const auto requiredMods = 0U;
                 const auto roadObjId = thought.trackObjId & ~(1U << 7);
@@ -6218,9 +6218,9 @@ namespace OpenLoco
                     auto replaceTad = rc.connections[0] & Track::AdditionalTaDFlags::basicTaDMask;
                     auto replacePos = nextPos;
 
-                    company.var_85D0 = replacePos;
-                    company.var_85D4 = replacePos.z / World::kSmallZStep;
-                    company.var_85D5 = replaceTad;
+                    company.aiPathfindStartPos = replacePos;
+                    company.aiPathfindStartBaseZ = replacePos.z / World::kSmallZStep;
+                    company.aiPathfindStartTad = replaceTad;
 
                     // This is completely wrong but it matches vanilla
                     // TODO: Remove and replace with 'apply' when we want to diverge
@@ -6253,15 +6253,15 @@ namespace OpenLoco
         {
             // Rail
             // 0x00486A37
-            if (company.var_85C2 == 0xFFU)
+            if (company.aiStationIndex == 0xFFU)
             {
                 return setupNextAiStationAiAllocationReplacement(company, thought, true);
             }
             else
             {
                 // 0x00486AFC
-                const auto pos = World::Pos3(company.var_85D0, company.var_85D4 * World::kSmallZStep);
-                const auto tad = company.var_85D5;
+                const auto pos = World::Pos3(company.aiPathfindStartPos, company.aiPathfindStartBaseZ * World::kSmallZStep);
+                const auto tad = company.aiPathfindStartTad;
                 const auto queryMods = 0U;
                 const auto requiredMods = 0U;
                 const auto trackObjId = thought.trackObjId;
@@ -6278,9 +6278,9 @@ namespace OpenLoco
                     auto replaceTad = tc.connections[0] & Track::AdditionalTaDFlags::basicTaDMask;
                     auto replacePos = nextPos;
 
-                    company.var_85D0 = replacePos;
-                    company.var_85D4 = replacePos.z / World::kSmallZStep;
-                    company.var_85D5 = replaceTad;
+                    company.aiPathfindStartPos = replacePos;
+                    company.aiPathfindStartBaseZ = replacePos.z / World::kSmallZStep;
+                    company.aiPathfindStartTad = replaceTad;
 
                     if (replaceTad & (1U << 2))
                     {
@@ -6326,13 +6326,13 @@ namespace OpenLoco
         if (res == 2)
         {
             logAiAction(company.id(), "Undo partial action: due to replaceAiAllocatedTrackRoad");
-            company.var_4A4 = AiThinkState::undoPartialAction;
-            company.var_4A5 = 1;
+            company.aiThinkState = AiThinkState::undoPartialAction;
+            company.aiThinkSubState = 1;
             sub_487144(company);
         }
         else if (res == 1)
         {
-            company.var_4A5 = 2;
+            company.aiThinkSubState = 2;
         }
     }
 
@@ -6343,13 +6343,13 @@ namespace OpenLoco
         if (res == PurchaseVehicleResult::failure)
         {
             logAiAction(company.id(), "Undo partial action: due to purchaseVehicle failure");
-            company.var_4A4 = AiThinkState::undoPartialAction;
-            company.var_4A5 = 0;
+            company.aiThinkState = AiThinkState::undoPartialAction;
+            company.aiThinkSubState = 0;
         }
         else if (res == PurchaseVehicleResult::allVehiclesPurchased)
         {
             // Move onto the next stage of this AiThinkState
-            company.var_4A5 = 3;
+            company.aiThinkSubState = 3;
         }
         // else will keep purchasing vehicles until allVehiclesPurchased
     }
@@ -6359,7 +6359,7 @@ namespace OpenLoco
     {
         sub_4876CB(thought);
         companyEmotionEvent(company.id(), Emotion::happy);
-        company.var_4A4 = AiThinkState::unk0;
+        company.aiThinkState = AiThinkState::unk0;
     }
 
     using AiThinkState4Function = void (*)(Company&, AiThought&);
@@ -6376,9 +6376,9 @@ namespace OpenLoco
     static void aiThinkConvertAiAllocated(Company& company)
     {
         companyEmotionEvent(company.id(), Emotion::thinking);
-        company.var_85F6++;
+        company.aiThinkTimer++;
 
-        kConvertAiAllocatedSubStateFuncs[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
+        kConvertAiAllocatedSubStateFuncs[company.aiThinkSubState](company, company.aiThoughts[company.activeThoughtId]);
     }
 
     static void nullsub_3([[maybe_unused]] Company& company)
@@ -6461,7 +6461,7 @@ namespace OpenLoco
     {
         if (sellAiThoughtVehicle(thought))
         {
-            company.var_4A5 = 1;
+            company.aiThinkSubState = 1;
             sub_487144(company);
         }
     }
@@ -6753,15 +6753,15 @@ namespace OpenLoco
     static bool sub_48715C(Company& company, AiThought& thought)
     {
         if (thoughtTypeHasFlags(thought.type, ThoughtTypeFlags::airBased | ThoughtTypeFlags::waterBased)
-            || (company.var_85C3 & (1U << 2)))
+            || (company.aiStationFlags & (1U << 2)))
         {
             return sub_4836EB(thought, company.id());
         }
         // 0x00487183
-        company.var_85F0++;
-        if (company.var_85F0 >= 1600)
+        company.aiPathfindIterCount++;
+        if (company.aiPathfindIterCount >= 1600)
         {
-            company.var_85C3 |= (1U << 2);
+            company.aiStationFlags |= (1U << 2);
             return false;
         }
         using enum TrackRoadRemoveQueryFlags;
@@ -6769,15 +6769,15 @@ namespace OpenLoco
         {
             const auto roadObjId = thought.trackObjId & ~(1U << 7);
             // 0x00487432
-            if (company.var_85C3 & (1U << 1))
+            if (company.aiStationFlags & (1U << 1))
             {
-                const auto pos = World::Pos3(company.var_85D0, company.var_85D4 * kSmallZStep);
-                const auto tad = company.var_85D5;
+                const auto pos = World::Pos3(company.aiPathfindStartPos, company.aiPathfindStartBaseZ * kSmallZStep);
+                const auto tad = company.aiPathfindStartTad;
                 const auto roadFlags = queryRoadForRemoval(pos, tad, roadObjId, company.id());
 
                 if ((roadFlags & (malformed | roadTypeShouldNotBeRemoved | isRoadJunction)) != none)
                 {
-                    company.var_85C3 &= ~(1U << 1);
+                    company.aiStationFlags &= ~(1U << 1);
                     return false;
                 }
 
@@ -6813,22 +6813,22 @@ namespace OpenLoco
                 // we progress to the next phase of road removal
                 if (!success || rc.connections.empty())
                 {
-                    company.var_85C3 &= ~(1U << 1);
+                    company.aiStationFlags &= ~(1U << 1);
                     return false;
                 }
 
-                company.var_85D0 = nextPos;
-                company.var_85D4 = nextPos.z / kSmallZStep;
-                company.var_85D5 = rc.connections[0] & Track::AdditionalTaDFlags::basicTaDMask;
+                company.aiPathfindStartPos = nextPos;
+                company.aiPathfindStartBaseZ = nextPos.z / kSmallZStep;
+                company.aiPathfindStartTad = rc.connections[0] & Track::AdditionalTaDFlags::basicTaDMask;
                 return false;
             }
             else
             {
-                auto stationIdx = company.var_85C2;
+                auto stationIdx = company.aiStationIndex;
                 auto& aiStation = thought.stations[stationIdx];
                 std::optional<World::Pos3> stationPos;
                 uint8_t rotation = 0U;
-                if (company.var_85C3 & (1U << 0))
+                if (company.aiStationFlags & (1U << 0))
                 {
                     if (aiStation.var_A != 0xFFU)
                     {
@@ -6860,26 +6860,26 @@ namespace OpenLoco
                             continue;
                         }
 
-                        company.var_85D0 = nextPos;
-                        company.var_85D4 = nextPos.z / kSmallZStep;
-                        company.var_85D5 = tadConnection;
-                        company.var_85C3 |= (1U << 1);
+                        company.aiPathfindStartPos = nextPos;
+                        company.aiPathfindStartBaseZ = nextPos.z / kSmallZStep;
+                        company.aiPathfindStartTad = tadConnection;
+                        company.aiStationFlags |= (1U << 1);
                         return false;
                     }
                 }
                 // 0x00487504
-                if (company.var_85C3 & (1U << 0))
+                if (company.aiStationFlags & (1U << 0))
                 {
-                    company.var_85C3 &= ~(1U << 0);
-                    company.var_85C2++;
-                    if (company.var_85C2 >= thought.numStations)
+                    company.aiStationFlags &= ~(1U << 0);
+                    company.aiStationIndex++;
+                    if (company.aiStationIndex >= thought.numStations)
                     {
-                        company.var_85C3 |= (1U << 2); // All stations removed
+                        company.aiStationFlags |= (1U << 2); // All stations removed
                     }
                 }
                 else
                 {
-                    company.var_85C3 |= (1U << 0);
+                    company.aiStationFlags |= (1U << 0);
                 }
                 return false;
             }
@@ -6887,15 +6887,15 @@ namespace OpenLoco
         else
         {
             // 0x0048718D
-            if (company.var_85C3 & (1U << 1))
+            if (company.aiStationFlags & (1U << 1))
             {
-                const auto pos = World::Pos3(company.var_85D0, company.var_85D4 * kSmallZStep);
-                const auto tad = company.var_85D5;
+                const auto pos = World::Pos3(company.aiPathfindStartPos, company.aiPathfindStartBaseZ * kSmallZStep);
+                const auto tad = company.aiPathfindStartTad;
                 const auto roadFlags = queryTrackForRemoval(pos, tad, thought.trackObjId, company.id());
 
                 if ((roadFlags & (malformed | hasStation)) != none)
                 {
-                    company.var_85C3 &= ~(1U << 1);
+                    company.aiStationFlags &= ~(1U << 1);
                     return false;
                 }
 
@@ -6931,22 +6931,22 @@ namespace OpenLoco
                 // we progress to the next phase of track removal
                 if (!success || tc.connections.empty())
                 {
-                    company.var_85C3 &= ~(1U << 1);
+                    company.aiStationFlags &= ~(1U << 1);
                     return false;
                 }
 
-                company.var_85D0 = nextPos;
-                company.var_85D4 = nextPos.z / kSmallZStep;
-                company.var_85D5 = tc.connections[0] & Track::AdditionalTaDFlags::basicTaDMask;
+                company.aiPathfindStartPos = nextPos;
+                company.aiPathfindStartBaseZ = nextPos.z / kSmallZStep;
+                company.aiPathfindStartTad = tc.connections[0] & Track::AdditionalTaDFlags::basicTaDMask;
                 return false;
             }
             else
             {
-                auto stationIdx = company.var_85C2;
+                auto stationIdx = company.aiStationIndex;
                 auto& aiStation = thought.stations[stationIdx];
                 std::optional<World::Pos3> stationPos;
                 uint8_t rotation = 0U;
-                if (company.var_85C3 & (1U << 0))
+                if (company.aiStationFlags & (1U << 0))
                 {
                     if (aiStation.var_A != 0xFFU)
                     {
@@ -6979,26 +6979,26 @@ namespace OpenLoco
                             continue;
                         }
 
-                        company.var_85D0 = nextPos;
-                        company.var_85D4 = nextPos.z / kSmallZStep;
-                        company.var_85D5 = tadConnection;
-                        company.var_85C3 |= (1U << 1);
+                        company.aiPathfindStartPos = nextPos;
+                        company.aiPathfindStartBaseZ = nextPos.z / kSmallZStep;
+                        company.aiPathfindStartTad = tadConnection;
+                        company.aiStationFlags |= (1U << 1);
                         return false;
                     }
                 }
                 // 0x0048727C
-                if (company.var_85C3 & (1U << 0))
+                if (company.aiStationFlags & (1U << 0))
                 {
-                    company.var_85C3 &= ~(1U << 0);
-                    company.var_85C2++;
-                    if (company.var_85C2 >= thought.numStations)
+                    company.aiStationFlags &= ~(1U << 0);
+                    company.aiStationIndex++;
+                    if (company.aiStationIndex >= thought.numStations)
                     {
-                        company.var_85C3 |= (1U << 2); // All stations removed
+                        company.aiStationFlags |= (1U << 2); // All stations removed
                     }
                 }
                 else
                 {
-                    company.var_85C3 |= (1U << 0);
+                    company.aiStationFlags |= (1U << 0);
                 }
                 return false;
             }
@@ -7012,7 +7012,7 @@ namespace OpenLoco
         // we can maybe enforce types for the state machine
         if (sellAiThoughtVehicle(thought))
         {
-            company.var_4A5 = 1;
+            company.aiThinkSubState = 1;
             sub_487144(company);
         }
     }
@@ -7022,8 +7022,8 @@ namespace OpenLoco
     {
         if (sub_48715C(company, thought))
         {
-            company.var_4A5 = 2;
-            company.var_85C4 = World::Pos2{ 0, 0 };
+            company.aiThinkSubState = 2;
+            company.aiPathfindTargetPos = World::Pos2{ 0, 0 };
         }
     }
 
@@ -7103,7 +7103,7 @@ namespace OpenLoco
     // returns false until the whole map has been iterated
     static bool removeAllAiAllocatedCompanyAssetsOnMapByChunk(Company& company, AiThought& thought)
     {
-        auto pos = company.var_85C4;
+        auto pos = company.aiPathfindTargetPos;
         bool fullySearched = false;
         for (auto i = 0U; i < 1500; ++i)
         {
@@ -7136,7 +7136,7 @@ namespace OpenLoco
         }
         else
         {
-            company.var_85C4 = pos;
+            company.aiPathfindTargetPos = pos;
             return false;
         }
     }
@@ -7146,7 +7146,7 @@ namespace OpenLoco
     {
         if (removeAllAiAllocatedCompanyAssetsOnMapByChunk(company, thought))
         {
-            company.var_4A5 = 3;
+            company.aiThinkSubState = 3;
         }
     }
 
@@ -7330,7 +7330,7 @@ namespace OpenLoco
     {
         if (removeAiAllocatedStations(thought) != 0)
         {
-            company.var_4A5 = 4;
+            company.aiThinkSubState = 4;
         }
     }
 
@@ -7338,7 +7338,7 @@ namespace OpenLoco
     static void sub_431186(Company& company, AiThought& thought)
     {
         clearThought(thought);
-        company.var_4A4 = AiThinkState::unk0;
+        company.aiThinkState = AiThinkState::unk0;
     }
 
     // 0x004F9510
@@ -7353,8 +7353,8 @@ namespace OpenLoco
     // 0x00431104
     static void aiThinkUndoPartialAction(Company& company)
     {
-        company.var_85F6++;
-        kUndoPartialActionSubStateFuncs[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
+        company.aiThinkTimer++;
+        kUndoPartialActionSubStateFuncs[company.aiThinkSubState](company, company.aiThoughts[company.activeThoughtId]);
     }
 
     // 0x004311CA
@@ -7362,7 +7362,7 @@ namespace OpenLoco
     {
         if (sub_48715C(company, thought))
         {
-            company.var_4A5 = 2;
+            company.aiThinkSubState = 2;
         }
     }
 
@@ -7370,7 +7370,7 @@ namespace OpenLoco
     static void sub_4311DA(Company& company, AiThought& thought)
     {
         clearThought(thought);
-        company.var_4A4 = AiThinkState::unk1;
+        company.aiThinkState = AiThinkState::unk1;
     }
 
     using AiThinkState7Function = void (*)(Company&, AiThought&);
@@ -7385,7 +7385,7 @@ namespace OpenLoco
     // 0x00431193
     static void aiThinkSellOffLandAssets(Company& company)
     {
-        kSellOffLandAssetsSubStateFuncs[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
+        kSellOffLandAssetsSubStateFuncs[company.aiThinkSubState](company, company.aiThoughts[company.activeThoughtId]);
     }
 
     // 0x00487DAD
@@ -7477,14 +7477,14 @@ namespace OpenLoco
     static void sub_431209(Company& company, AiThought& thought)
     {
         sub_487C83(thought);
-        company.var_4A5 = 1;
+        company.aiThinkSubState = 1;
     }
 
     // 0x00431216
     static void sub_431216(Company& company, AiThought&)
     {
         // branch on sub_487E6D (which is a nop) would have made var_4A4 = 1
-        company.var_4A5 = 2;
+        company.aiThinkSubState = 2;
     }
 
     // 0x00487E74
@@ -7508,11 +7508,11 @@ namespace OpenLoco
     {
         if (sub_487E74(company, thought))
         {
-            company.var_4A4 = AiThinkState::unk1;
+            company.aiThinkState = AiThinkState::unk1;
         }
         else
         {
-            company.var_4A5 = 3;
+            company.aiThinkSubState = 3;
         }
     }
 
@@ -7534,7 +7534,7 @@ namespace OpenLoco
     {
         if (sellAiThoughtVehicleIfRequired(thought))
         {
-            company.var_4A5 = 4;
+            company.aiThinkSubState = 4;
         }
     }
 
@@ -7545,13 +7545,13 @@ namespace OpenLoco
         if (res == PurchaseVehicleResult::failure)
         {
             logAiAction(company.id(), "Sell off land assets: due to purchaseVehicle failure");
-            company.var_4A4 = AiThinkState::sellOffLandAssets;
-            company.var_4A5 = 0;
+            company.aiThinkState = AiThinkState::sellOffLandAssets;
+            company.aiThinkSubState = 0;
         }
         else if (res == PurchaseVehicleResult::allVehiclesPurchased)
         {
             // Move onto the next stage of this AiThinkState
-            company.var_4A5 = 5;
+            company.aiThinkSubState = 5;
         }
         // else will keep purchasing vehicles until allVehiclesPurchased
     }
@@ -7560,7 +7560,7 @@ namespace OpenLoco
     static void sub_431279(Company& company, AiThought& thought)
     {
         sub_4876CB(thought);
-        company.var_4A4 = AiThinkState::unk1;
+        company.aiThinkState = AiThinkState::unk1;
     }
 
     using Unk4311E7ThinkFunction = void (*)(Company&, AiThought&);
@@ -7577,7 +7577,7 @@ namespace OpenLoco
     // 0x004311E7
     static void aiThinkState8(Company& company)
     {
-        _funcs_4F9530[company.var_4A5](company, company.aiThoughts[company.activeThoughtId]);
+        _funcs_4F9530[company.aiThinkSubState](company, company.aiThoughts[company.activeThoughtId]);
     }
 
     static void nullsub_4([[maybe_unused]] Company& company)
@@ -7642,7 +7642,7 @@ namespace OpenLoco
     static bool removeAllCompanyAssetsOnMapByChunk(Company& company)
     {
         auto remainingRange = World::TilePosRangeView(
-            World::toTileSpace(company.var_85C4),
+            World::toTileSpace(company.aiPathfindTargetPos),
             World::TilePos2{ World::kMapColumns - 1, World::kMapRows - 1 });
 
         auto count = 1500;
@@ -7657,7 +7657,7 @@ namespace OpenLoco
             }
             if (count == 0)
             {
-                company.var_85C4 = World::toWorldSpace(tilePos);
+                company.aiPathfindTargetPos = World::toWorldSpace(tilePos);
                 return false;
             }
         }
@@ -7710,7 +7710,7 @@ namespace OpenLoco
 
         auto* company = CompanyManager::get(id);
 
-        const auto thinkFunc1 = _funcs_430786[enumValue(company->var_4A4)];
+        const auto thinkFunc1 = _funcs_430786[enumValue(company->aiThinkState)];
         thinkFunc1(*company);
 
         if (company->empty())
@@ -7784,7 +7784,7 @@ namespace OpenLoco
     void setAiObservation(CompanyId id)
     {
         auto* company = CompanyManager::get(id);
-        if (company->var_4A4 == AiThinkState::unk3)
+        if (company->aiThinkState == AiThinkState::unk3)
         {
             World::Pos2 pos{};
             auto& thought = company->aiThoughts[company->activeThoughtId];

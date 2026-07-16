@@ -3172,7 +3172,7 @@ namespace OpenLoco::Vehicles
                 cargoStats.flags |= StationCargoStatsFlags::flag3;
             }
 
-            company->var_4A0 |= 1ULL << cargo.type;
+            company->cargoTypesDelivered2 |= 1ULL << cargo.type;
         }
         else
         {
@@ -3479,7 +3479,7 @@ namespace OpenLoco::Vehicles
         }
 
         auto* company = CompanyManager::get(owner);
-        company->var_49C |= 1 << cargo.type;
+        company->cargoTypesDelivered |= 1 << cargo.type;
         updateTrainProperties();
         Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(id));
         return true;

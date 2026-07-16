@@ -122,7 +122,7 @@ namespace OpenLoco::CompanyAi
         result.rackRailType = unkRackRail;
         pathState.createTrackRoadCommandAiUnkFlags = 1U << 22;
 
-        if (company.var_85C3 & (1U << 3))
+        if (company.aiStationFlags & (1U << 3))
         {
             // 0x00483BAF
             if (pathState.startBaseZ == pathState.targetStubBaseZ)
@@ -158,9 +158,9 @@ namespace OpenLoco::CompanyAi
             }
         }
 
-        result.bridgeTypes[0] = company.var_259A;
-        result.bridgeTypes[1] = company.var_259B;
-        result.bridgeTypes[2] = company.var_259C;
+        result.bridgeTypes[0] = company.aiBridgeTypeLow;
+        result.bridgeTypes[1] = company.aiBridgeTypeMedium;
+        result.bridgeTypes[2] = company.aiBridgeTypeHigh;
 
         if (isRoad)
         {
@@ -267,12 +267,12 @@ namespace OpenLoco::CompanyAi
     // 0x00483EF2
     static bool roadStubsConnect(const Company& company)
     {
-        const auto& road0Size = World::TrackData::getUnkRoad(company.var_85D5);
-        const auto connectPos0 = World::Pos3(company.var_85D0, company.var_85D4 * World::kSmallZStep) + road0Size.pos - World::Pos3(World::kRotationOffset[road0Size.rotationEnd], 0);
+        const auto& road0Size = World::TrackData::getUnkRoad(company.aiPathfindStartTad);
+        const auto connectPos0 = World::Pos3(company.aiPathfindStartPos, company.aiPathfindStartBaseZ * World::kSmallZStep) + road0Size.pos - World::Pos3(World::kRotationOffset[road0Size.rotationEnd], 0);
         const auto rotationConnect0 = road0Size.rotationEnd ^ (1U << 1);
 
-        const auto& road1Size = World::TrackData::getUnkRoad(company.var_85DC);
-        const auto connectPos1 = World::Pos3(company.var_85D7, company.var_85DB * World::kSmallZStep) + road1Size.pos;
+        const auto& road1Size = World::TrackData::getUnkRoad(company.aiPathfindStartTad2);
+        const auto connectPos1 = World::Pos3(company.aiPathfindStartPos2, company.aiPathfindStartBaseZ2 * World::kSmallZStep) + road1Size.pos;
         const auto rotationConnect1 = road1Size.rotationEnd;
 
         return connectPos0 == connectPos1 && rotationConnect0 == rotationConnect1;
@@ -281,16 +281,16 @@ namespace OpenLoco::CompanyAi
     // 0x00483E2D
     static bool trackStubsConnect(const Company& company)
     {
-        const auto& track0Size = World::TrackData::getUnkTrack(company.var_85D5);
-        auto connectPos0 = World::Pos3(company.var_85D0, company.var_85D4 * World::kSmallZStep) + track0Size.pos;
+        const auto& track0Size = World::TrackData::getUnkTrack(company.aiPathfindStartTad);
+        auto connectPos0 = World::Pos3(company.aiPathfindStartPos, company.aiPathfindStartBaseZ * World::kSmallZStep) + track0Size.pos;
         if (track0Size.rotationEnd < 12)
         {
             connectPos0 -= World::Pos3(World::kRotationOffset[track0Size.rotationEnd], 0);
         }
         const auto rotationConnect0 = track0Size.rotationEnd ^ (1U << 1);
 
-        const auto& track1Size = World::TrackData::getUnkTrack(company.var_85DC);
-        const auto connectPos1 = World::Pos3(company.var_85D7, company.var_85DB * World::kSmallZStep) + track1Size.pos;
+        const auto& track1Size = World::TrackData::getUnkTrack(company.aiPathfindStartTad2);
+        const auto connectPos1 = World::Pos3(company.aiPathfindStartPos2, company.aiPathfindStartBaseZ2 * World::kSmallZStep) + track1Size.pos;
         const auto rotationConnect1 = track1Size.rotationEnd;
 
         return connectPos0 == connectPos1 && rotationConnect0 == rotationConnect1;
@@ -345,7 +345,7 @@ namespace OpenLoco::CompanyAi
         // dh
         const auto trackId = (tad >> 3) & 0x3F;
 
-        const auto entry = Company::Unk25C0HashTableEntry(pos, trackId, direction);
+        const auto entry = Company::TrackRoadHashTableEntry(pos, trackId, direction);
         if (company.hashTableContains(entry))
         {
             return;
@@ -353,7 +353,7 @@ namespace OpenLoco::CompanyAi
 
         pathState.createTrackRoadCommandAiUnkFlags = pathState.createTrackRoadCommandAiUnkFlags | (1U << 22);
 
-        if (company.var_85C3 & (1U << 3))
+        if (company.aiStationFlags & (1U << 3))
         {
             {
                 const auto diffZ = std::abs(pathState.targetStubBaseZ - (pos.z / World::kSmallZStep));
@@ -543,7 +543,7 @@ namespace OpenLoco::CompanyAi
         // dh
         const auto roadId = (tad >> 3) & 0xF;
 
-        const auto entry = Company::Unk25C0HashTableEntry(pos, roadId, direction);
+        const auto entry = Company::TrackRoadHashTableEntry(pos, roadId, direction);
         if (company.hashTableContains(entry))
         {
             return;
@@ -735,7 +735,7 @@ namespace OpenLoco::CompanyAi
 
         if (!hasAiAllocatedElTrack)
         {
-            company.var_85F0 = 0xF000U;
+            company.aiPathfindIterCount = 0xF000U;
             return;
         }
 
@@ -759,7 +759,7 @@ namespace OpenLoco::CompanyAi
 
         if (tc.connections.empty())
         {
-            company.var_85F0 = 0xF000U;
+            company.aiPathfindIterCount = 0xF000U;
             return;
         }
 
@@ -792,13 +792,13 @@ namespace OpenLoco::CompanyAi
         if (pathState.undoCount == 0)
         {
             // 0x00484662
-            if (pathState.totalTrackRoadWeighting >= static_cast<int32_t>(company.var_85EA))
+            if (pathState.totalTrackRoadWeighting >= static_cast<int32_t>(company.aiPathfindMaxWeighting))
             {
-                company.var_85F0 = 0xF000U;
+                company.aiPathfindIterCount = 0xF000U;
                 return;
             }
             // 0x00484813
-            pathState.maxTrackRoadWeightingLimit = (company.var_85C3 & ((1U << 4) | (1U << 2))) ? 138 : 224;
+            pathState.maxTrackRoadWeightingLimit = (company.aiStationFlags & ((1U << 4) | (1U << 2))) ? 138 : 224;
 
             {
                 auto pos = World::Pos3(pathState.targetStubPos, pathState.targetStubBaseZ * World::kSmallZStep);
@@ -904,7 +904,7 @@ namespace OpenLoco::CompanyAi
                     if (res == GameCommands::kFailure)
                     {
                         // 0x00484AB6
-                        const auto entry = Company::Unk25C0HashTableEntry(args.pos, args.trackId, args.rotation & 0x3);
+                        const auto entry = Company::TrackRoadHashTableEntry(args.pos, args.trackId, args.rotation & 0x3);
                         company.addHashTableEntry(entry);
 
                         pathState.undoCount = 15;
@@ -914,7 +914,7 @@ namespace OpenLoco::CompanyAi
                 // 0x00484A05
                 if (pathState.totalTrackRoadWeighting == 0)
                 {
-                    company.var_85E6 = (bestTrackId << 3) | (args.rotation & 0x3U);
+                    company.aiBestTrackRoadId = (bestTrackId << 3) | (args.rotation & 0x3U);
                 }
 
                 pathState.startPos = pos;
@@ -930,7 +930,7 @@ namespace OpenLoco::CompanyAi
                 // dh
                 auto trackIdStart = (pathState.startTad >> 3) & 0x3F;
                 auto rot = pathState.startTad & 0x3U;
-                const auto entry = Company::Unk25C0HashTableEntry(pos2, trackIdStart, rot);
+                const auto entry = Company::TrackRoadHashTableEntry(pos2, trackIdStart, rot);
                 company.addHashTableEntry(entry);
                 pathState.undoCount = 1;
                 return;
@@ -1004,7 +1004,7 @@ namespace OpenLoco::CompanyAi
 
         if (aiAllocatedElRoad == nullptr)
         {
-            company.var_85F0 = 0xF000U;
+            company.aiPathfindIterCount = 0xF000U;
             return;
         }
 
@@ -1057,9 +1057,9 @@ namespace OpenLoco::CompanyAi
         if (pathState.undoCount == 0)
         {
             // 0x00484D83
-            if (pathState.totalTrackRoadWeighting >= static_cast<int32_t>(company.var_85EA))
+            if (pathState.totalTrackRoadWeighting >= static_cast<int32_t>(company.aiPathfindMaxWeighting))
             {
-                company.var_85F0 = 0xF000U;
+                company.aiPathfindIterCount = 0xF000U;
                 return;
             }
             // 0x00484D9A
@@ -1162,7 +1162,7 @@ namespace OpenLoco::CompanyAi
                         if (res == GameCommands::kFailure)
                         {
                             // 0x004851DD
-                            const auto entry = Company::Unk25C0HashTableEntry(args.pos, args.roadId, args.rotation & 0x3);
+                            const auto entry = Company::TrackRoadHashTableEntry(args.pos, args.roadId, args.rotation & 0x3);
                             company.addHashTableEntry(entry);
 
                             pathState.undoCount = 15;
@@ -1173,7 +1173,7 @@ namespace OpenLoco::CompanyAi
                 // 0x0048512C
                 if (pathState.totalTrackRoadWeighting == 0)
                 {
-                    company.var_85E6 = (bestRoadId << 3) | (args.rotation & 0x3U);
+                    company.aiBestTrackRoadId = (bestRoadId << 3) | (args.rotation & 0x3U);
                 }
 
                 pathState.startPos = pos;
@@ -1189,7 +1189,7 @@ namespace OpenLoco::CompanyAi
                 // dh
                 auto roadIdStart = (pathState.startTad >> 3) & 0xF;
                 auto rot = pathState.startTad & 0x3U;
-                const auto entry = Company::Unk25C0HashTableEntry(pos2, roadIdStart, rot);
+                const auto entry = Company::TrackRoadHashTableEntry(pos2, roadIdStart, rot);
                 company.addHashTableEntry(entry);
                 pathState.undoCount = 1;
                 return;
@@ -2400,16 +2400,16 @@ namespace OpenLoco::CompanyAi
     // 0x004845FF
     static void aiPathfindNextState(Company& company)
     {
-        company.var_85E8++;
-        company.var_85F0 = 0;
-        company.var_85EE = 0;
-        company.var_85EF = 0;
+        company.aiPathfindPhase++;
+        company.aiPathfindIterCount = 0;
+        company.aiPathfindUndoCount1 = 0;
+        company.aiPathfindUndoCount2 = 0;
         // TODO: When diverging just set this all to a fixed value rather than only first entry
         for (auto& htEntry : company.var_25C0)
         {
             htEntry.var_00 = 0xFFFFU;
         }
-        company.var_25C0_length = 0;
+        company.hashTableLength = 0;
     }
 
     // 0x00484508
@@ -2444,9 +2444,9 @@ namespace OpenLoco::CompanyAi
                 aiPathfindNextState(company);
                 return false;
             }
-            auto& aiStation = thought.stations[company.var_85C2];
+            auto& aiStation = thought.stations[company.aiStationIndex];
             uint8_t nextStationIdx = 0xFFU;
-            if (company.var_85C3 & (1U << 0))
+            if (company.aiStationFlags & (1U << 0))
             {
                 nextStationIdx = aiStation.var_A;
                 if (aiStation.var_C & ((1U << 2) | (1U << 1)))
@@ -2471,7 +2471,7 @@ namespace OpenLoco::CompanyAi
                 }
             }
             auto& aiStation2 = thought.stations[nextStationIdx];
-            if (aiStation2.var_9 != company.var_85C2)
+            if (aiStation2.var_9 != company.aiStationIndex)
             {
                 if (aiStation2.var_C & ((1U << 2) | (1U << 1)))
                 {
@@ -2493,7 +2493,7 @@ namespace OpenLoco::CompanyAi
                     aiStation2.var_B |= (1U << 1);
                 }
             }
-            company.var_85C2 = 0xFFU;
+            company.aiStationIndex = 0xFFU;
             thought.var_76 += pathResult.totalCost;
             return false;
         }
@@ -2503,24 +2503,24 @@ namespace OpenLoco::CompanyAi
     bool aiPathfind(Company& company, AiThought& thought)
     {
         PathfindingState pathState{};
-        switch (company.var_85E8)
+        switch (company.aiPathfindPhase)
         {
             case 0:
             {
-                pathState.targetPos = company.var_85C4;
-                pathState.targetBaseZ = company.var_85C8;
-                pathState.targetRot = company.var_85CE;
+                pathState.targetPos = company.aiPathfindTargetPos;
+                pathState.targetBaseZ = company.aiPathfindTargetBaseZ;
+                pathState.targetRot = company.aiPathfindTargetRot;
 
-                pathState.startPos = company.var_85D0;
-                pathState.startBaseZ = company.var_85D4;
-                pathState.startTad = company.var_85D5;
+                pathState.startPos = company.aiPathfindStartPos;
+                pathState.startBaseZ = company.aiPathfindStartBaseZ;
+                pathState.startTad = company.aiPathfindStartTad;
 
-                pathState.targetStubPos = company.var_85D7;
-                pathState.targetStubBaseZ = company.var_85DB;
-                pathState.targetStubTad = company.var_85DC;
+                pathState.targetStubPos = company.aiPathfindStartPos2;
+                pathState.targetStubBaseZ = company.aiPathfindStartBaseZ2;
+                pathState.targetStubTad = company.aiPathfindStartTad2;
 
-                pathState.totalTrackRoadWeighting = company.var_85DE;
-                pathState.undoCount = company.var_85EE;
+                pathState.totalTrackRoadWeighting = company.aiPathfindWeighting1;
+                pathState.undoCount = company.aiPathfindUndoCount1;
 
                 const auto placementVars = getPlacementVars(company, thought, pathState);
 
@@ -2532,8 +2532,8 @@ namespace OpenLoco::CompanyAi
                 else
                 {
                     // 0x004850A0
-                    company.var_85F0++;
-                    if (company.var_85F0 > 384)
+                    company.aiPathfindIterCount++;
+                    if (company.aiPathfindIterCount > 384)
                     {
                         // 0x004845EF
 
@@ -2549,30 +2549,30 @@ namespace OpenLoco::CompanyAi
                     }
 
                     pathFindSection(company, placementVars, pathState);
-                    company.var_85DE = pathState.totalTrackRoadWeighting;
-                    company.var_85EE = pathState.undoCount;
-                    company.var_85D0 = pathState.startPos;
-                    company.var_85D4 = pathState.startBaseZ;
-                    company.var_85D5 = pathState.startTad;
+                    company.aiPathfindWeighting1 = pathState.totalTrackRoadWeighting;
+                    company.aiPathfindUndoCount1 = pathState.undoCount;
+                    company.aiPathfindStartPos = pathState.startPos;
+                    company.aiPathfindStartBaseZ = pathState.startBaseZ;
+                    company.aiPathfindStartTad = pathState.startTad;
                     return false;
                 }
             }
             case 1:
             {
-                pathState.targetPos = company.var_85C4;
-                pathState.targetBaseZ = company.var_85C8;
-                pathState.targetRot = company.var_85CE;
+                pathState.targetPos = company.aiPathfindTargetPos;
+                pathState.targetBaseZ = company.aiPathfindTargetBaseZ;
+                pathState.targetRot = company.aiPathfindTargetRot;
 
-                pathState.startPos = company.var_85D0;
-                pathState.startBaseZ = company.var_85D4;
-                pathState.startTad = company.var_85D5;
+                pathState.startPos = company.aiPathfindStartPos;
+                pathState.startBaseZ = company.aiPathfindStartBaseZ;
+                pathState.startTad = company.aiPathfindStartTad;
 
-                pathState.targetStubPos = company.var_85D7;
-                pathState.targetStubBaseZ = company.var_85DB;
-                pathState.targetStubTad = company.var_85DC;
+                pathState.targetStubPos = company.aiPathfindStartPos2;
+                pathState.targetStubBaseZ = company.aiPathfindStartBaseZ2;
+                pathState.targetStubTad = company.aiPathfindStartTad2;
 
-                pathState.totalTrackRoadWeighting = company.var_85DE;
-                pathState.undoCount = company.var_85EE;
+                pathState.totalTrackRoadWeighting = company.aiPathfindWeighting1;
+                pathState.undoCount = company.aiPathfindUndoCount1;
 
                 const auto placementVars = getPlacementVars(company, thought, pathState);
 
@@ -2585,39 +2585,39 @@ namespace OpenLoco::CompanyAi
                 else
                 {
                     // 0x00484338
-                    company.var_85F0++;
-                    if (company.var_85F0 > 384)
+                    company.aiPathfindIterCount++;
+                    if (company.aiPathfindIterCount > 384)
                     {
                         return true;
                     }
 
                     pathState.undoCount = 1;
                     pathFindSection(company, placementVars, pathState);
-                    company.var_85DE = pathState.totalTrackRoadWeighting;
-                    company.var_85EE = pathState.undoCount;
-                    company.var_85D0 = pathState.startPos;
-                    company.var_85D4 = pathState.startBaseZ;
-                    company.var_85D5 = pathState.startTad;
+                    company.aiPathfindWeighting1 = pathState.totalTrackRoadWeighting;
+                    company.aiPathfindUndoCount1 = pathState.undoCount;
+                    company.aiPathfindStartPos = pathState.startPos;
+                    company.aiPathfindStartBaseZ = pathState.startBaseZ;
+                    company.aiPathfindStartTad = pathState.startTad;
                     return false;
                 }
             }
             case 2:
             {
                 // Different to case 0 and 1
-                pathState.targetPos = company.var_85C9;
-                pathState.targetBaseZ = company.var_85CD;
-                pathState.targetRot = company.var_85CF;
+                pathState.targetPos = company.aiPathfindTargetPos2;
+                pathState.targetBaseZ = company.aiPathfindTargetBaseZ2;
+                pathState.targetRot = company.aiPathfindTargetRot2;
 
-                pathState.startPos = company.var_85D7;
-                pathState.startBaseZ = company.var_85DB;
-                pathState.startTad = company.var_85DC;
+                pathState.startPos = company.aiPathfindStartPos2;
+                pathState.startBaseZ = company.aiPathfindStartBaseZ2;
+                pathState.startTad = company.aiPathfindStartTad2;
 
-                pathState.targetStubPos = company.var_85D0;
-                pathState.targetStubBaseZ = company.var_85D4;
-                pathState.targetStubTad = company.var_85D5;
+                pathState.targetStubPos = company.aiPathfindStartPos;
+                pathState.targetStubBaseZ = company.aiPathfindStartBaseZ;
+                pathState.targetStubTad = company.aiPathfindStartTad;
 
-                pathState.totalTrackRoadWeighting = company.var_85E2;
-                pathState.undoCount = company.var_85EF;
+                pathState.totalTrackRoadWeighting = company.aiPathfindWeighting2;
+                pathState.undoCount = company.aiPathfindUndoCount2;
 
                 const auto placementVars = getPlacementVars(company, thought, pathState);
 
@@ -2630,8 +2630,8 @@ namespace OpenLoco::CompanyAi
                 {
                     // 0x004841EE
 
-                    company.var_85F0++;
-                    if (company.var_85F0 > 384)
+                    company.aiPathfindIterCount++;
+                    if (company.aiPathfindIterCount > 384)
                     {
                         // 0x004845EF duplicate
 
@@ -2647,11 +2647,11 @@ namespace OpenLoco::CompanyAi
                     }
 
                     pathFindSection(company, placementVars, pathState);
-                    company.var_85E2 = pathState.totalTrackRoadWeighting;
-                    company.var_85EF = pathState.undoCount;
-                    company.var_85D7 = pathState.startPos;
-                    company.var_85DB = pathState.startBaseZ;
-                    company.var_85DC = pathState.startTad;
+                    company.aiPathfindWeighting2 = pathState.totalTrackRoadWeighting;
+                    company.aiPathfindUndoCount2 = pathState.undoCount;
+                    company.aiPathfindStartPos2 = pathState.startPos;
+                    company.aiPathfindStartBaseZ2 = pathState.startBaseZ;
+                    company.aiPathfindStartTad2 = pathState.startTad;
                     return false;
                 }
             }

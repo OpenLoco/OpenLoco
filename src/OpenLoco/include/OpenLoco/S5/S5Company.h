@@ -60,12 +60,12 @@ namespace OpenLoco::S5
 
     struct Company
     {
-        struct HashTableEntry
+        struct TrackRoadHashTableEntry
         {
-            uint16_t var_00; // x
-            uint16_t var_02; // y + flags
-            uint8_t var_04;  // z
-            uint8_t var_05;  // trackId | (direction << 6)
+            uint16_t posX; // x
+            uint16_t posYAndFlags; // y + flags
+            uint8_t posZ;  // z
+            uint8_t trackRoadIdAndDirection;  // trackId | (direction << 6)
         };
         uint16_t name;
         uint16_t ownerName;
@@ -86,55 +86,55 @@ namespace OpenLoco::S5
         uint8_t numExpenditureYears;       // 0x57
         currency32_t expenditures[16][17]; // 0x58
         uint32_t startedDate;              // 0x0498
-        uint32_t var_49C;
-        uint32_t var_4A0;
-        uint8_t var_4A4; // 0x04A4
-        uint8_t var_4A5;
-        uint8_t var_4A6;
-        uint8_t var_4A7;
+        uint32_t cargoTypesDelivered;      // 0x49C
+        uint32_t cargoTypesDelivered2;     // 0x4A0
+        uint8_t aiThinkState;              // 0x04A4
+        uint8_t aiThinkSubState;           // 0x4A5
+        uint8_t aiPlaceVehicleState;       // 0x4A6
+        uint8_t aiPlaceVehiclePad;         // 0x4A7
         AiThought aiThoughts[60];                  // 0x04A8
         uint8_t activeThoughtId;                   // 0x2578
         World::SmallZ headquartersZ;               // 0x2579
         coord_t headquartersX;                     // 0x257A -1 on no headquarter placed
         coord_t headquartersY;                     // 0x257C
         currency32_t activeThoughtRevenueEstimate; // 0x257E Also used for thoughtState2AiStationIdx in sub_430CEC TODO: Don't do this
-        uint32_t var_2582;
+        uint32_t aiThoughtCooldown;                // 0x2582
         uint8_t pad_2586[0x2596 - 0x2586];
-        uint32_t var_2596;
-        uint8_t var_259A;
-        uint8_t var_259B;
-        uint8_t var_259C;
+        uint32_t aiBridgeSelectionCounter;          // 0x2596
+        uint8_t aiBridgeTypeLow;                    // 0x259A
+        uint8_t aiBridgeTypeMedium;                 // 0x259B
+        uint8_t aiBridgeTypeHigh;                   // 0x259C
         uint8_t pad_259D;
         uint32_t aiPlaceVehicleIndex;
         uint8_t pad_25A2[0x25BE - 0x25A2];
-        uint8_t var_25BE;
-        uint8_t currentRating;           // 0x25BF
-        HashTableEntry var_25C0[0x1000]; // 0x25C0 Hash table entries
-        uint16_t var_25C0_length;        // 0x85C0 Hash table length
-        uint8_t var_85C2;
-        uint8_t var_85C3;
-        World::Pos2 var_85C4;
-        World::SmallZ var_85C8;
-        World::Pos2 var_85C9;
-        World::SmallZ var_85CD;
-        uint8_t var_85CE;
-        uint8_t var_85CF;
-        World::Pos2 var_85D0;
-        World::SmallZ var_85D4;
-        uint16_t var_85D5;
-        World::Pos2 var_85D7;
-        World::SmallZ var_85DB;
-        uint16_t var_85DC;
-        uint32_t var_85DE;
-        uint32_t var_85E2;
-        uint16_t var_85E6;
-        uint16_t var_85E8;
-        uint32_t var_85EA;
-        uint8_t var_85EE;
-        uint8_t var_85EF;
-        uint16_t var_85F0;
-        currency32_t var_85F2;
-        uint16_t var_85F6;
+        uint8_t aiSavedThoughtType;                    // 0x25BE
+        uint8_t currentRating;                       // 0x25BF
+        TrackRoadHashTableEntry trackandRoadHashTable[0x1000];            // 0x25C0 Hash table entries
+        uint16_t hashTableLength;                    // 0x85C0 Hash table length
+        uint8_t aiStationIndex;                      // 0x85C2
+        uint8_t aiStationFlags;                      // 0x85C3
+        World::Pos2 aiPathfindTargetPos;             // 0x85C4
+        World::SmallZ aiPathfindTargetBaseZ;         // 0x85C8
+        World::Pos2 aiPathfindTargetPos2;            // 0x85C9
+        World::SmallZ aiPathfindTargetBaseZ2;        // 0x85CD
+        uint8_t aiPathfindTargetRot;                 // 0x85CE
+        uint8_t aiPathfindTargetRot2;                // 0x85CF
+        World::Pos2 aiPathfindStartPos;              // 0x85D0
+        World::SmallZ aiPathfindStartBaseZ;          // 0x85D4
+        uint16_t aiPathfindStartTad;                 // 0x85D5
+        World::Pos2 aiPathfindStartPos2;             // 0x85D7
+        World::SmallZ aiPathfindStartBaseZ2;         // 0x85DB
+        uint16_t aiPathfindStartTad2;                // 0x85DC
+        uint32_t aiPathfindWeighting1;               // 0x85DE
+        uint32_t aiPathfindWeighting2;               // 0x85E2
+        uint16_t aiBestTrackRoadId;                  // 0x85E6
+        uint16_t aiPathfindPhase;                    // 0x85E8
+        uint32_t aiPathfindMaxWeighting;             // 0x85EA
+        uint8_t aiPathfindUndoCount1;                // 0x85EE
+        uint8_t aiPathfindUndoCount2;                // 0x85EF
+        uint16_t aiPathfindIterCount;                // 0x85F0
+        currency32_t aiVehicleCost;                  // 0x85F2
+        uint16_t aiThinkTimer;                       // 0x85F6
         uint32_t cargoUnitsTotalDelivered;        // 0x85F8
         uint32_t cargoUnitsDeliveredHistory[120]; // 0x85FC
         int16_t performanceIndexHistory[120];     // 0x87DC
@@ -164,12 +164,12 @@ namespace OpenLoco::S5
 
     struct CompanyType2
     {
-        struct HashTableEntry
+        struct TrackRoadHashTableEntry
         {
-            uint16_t var_00; // x
-            uint16_t var_02; // y + flags
-            uint8_t var_04;  // z
-            uint8_t var_05;  // trackId | (direction << 6)
+            uint16_t posX; // x
+            uint16_t posYAndFlags; // y + flags
+            uint8_t posZ;  // z
+            uint8_t trackRoadIdAndDirection;  // trackId | (direction << 6)
         };
         uint16_t name;
         uint16_t ownerName;
@@ -190,55 +190,55 @@ namespace OpenLoco::S5
         uint8_t numExpenditureYears;       // 0x57
         currency32_t expenditures[16][17]; // 0x58
         uint32_t startedDate;              // 0x0498
-        uint32_t var_49C;
-        uint32_t var_4A0;
-        uint8_t var_4A4; // 0x04A4
-        uint8_t var_4A5;
-        uint8_t var_4A6;
-        uint8_t var_4A7;
+        uint32_t cargoTypesDelivered;      // 0x49C
+        uint32_t cargoTypesDelivered2;     // 0x4A0
+        uint8_t aiThinkState;              // 0x04A4
+        uint8_t aiThinkSubState;           // 0x4A5
+        uint8_t aiPlaceVehicleState;       // 0x4A6
+        uint8_t aiPlaceVehiclePad;         // 0x4A7
         AiThought aiThoughts[60];                  // 0x04A8
         uint8_t activeThoughtId;                   // 0x2578
         World::SmallZ headquartersZ;               // 0x2579
         coord_t headquartersX;                     // 0x257A -1 on no headquarter placed
         coord_t headquartersY;                     // 0x257C
         currency32_t activeThoughtRevenueEstimate; // 0x257E Also used for thoughtState2AiStationIdx in sub_430CEC TODO: Don't do this
-        uint32_t var_2582;
+        uint32_t aiThoughtCooldown;                // 0x2582
         uint8_t pad_2586[0x2596 - 0x2586];
-        uint32_t var_2596;
-        uint8_t var_259A;
-        uint8_t var_259B;
-        uint8_t var_259C;
+        uint32_t aiBridgeSelectionCounter;          // 0x2596
+        uint8_t aiBridgeTypeLow;                    // 0x259A
+        uint8_t aiBridgeTypeMedium;                 // 0x259B
+        uint8_t aiBridgeTypeHigh;                   // 0x259C
         uint8_t pad_259D;
         uint32_t aiPlaceVehicleIndex;
         uint8_t pad_25A2[0x25BE - 0x25A2];
-        uint8_t var_25BE;
-        uint8_t currentRating;           // 0x25BF
-        HashTableEntry var_25C0[0x1000]; // 0x25C0 Hash table entries
-        uint16_t var_25C0_length;        // 0x85C0 Hash table length
-        uint8_t var_85C2;
-        uint8_t var_85C3;
-        World::Pos2 var_85C4;
-        World::SmallZ var_85C8;
-        World::Pos2 var_85C9;
-        World::SmallZ var_85CD;
-        uint8_t var_85CE;
-        uint8_t var_85CF;
-        World::Pos2 var_85D0;
-        World::SmallZ var_85D4;
-        uint16_t var_85D5;
-        World::Pos2 var_85D7;
-        World::SmallZ var_85DB;
-        uint16_t var_85DC;
-        uint32_t var_85DE;
-        uint32_t var_85E2;
-        uint16_t var_85E6;
-        uint16_t var_85E8;
-        uint32_t var_85EA;
-        uint8_t var_85EE;
-        uint8_t var_85EF;
-        uint16_t var_85F0;
-        currency32_t var_85F2;
-        uint16_t var_85F6;
+        uint8_t aiSavedThoughtType;                    // 0x25BE
+        uint8_t currentRating;                       // 0x25BF
+        TrackRoadHashTableEntry trackandRoadHashTable[0x1000];            // 0x25C0 Hash table entries
+        uint16_t hashTableLength;                    // 0x85C0 Hash table length
+        uint8_t aiStationIndex;                      // 0x85C2
+        uint8_t aiStationFlags;                      // 0x85C3
+        World::Pos2 aiPathfindTargetPos;             // 0x85C4
+        World::SmallZ aiPathfindTargetBaseZ;         // 0x85C8
+        World::Pos2 aiPathfindTargetPos2;            // 0x85C9
+        World::SmallZ aiPathfindTargetBaseZ2;        // 0x85CD
+        uint8_t aiPathfindTargetRot;                 // 0x85CE
+        uint8_t aiPathfindTargetRot2;                // 0x85CF
+        World::Pos2 aiPathfindStartPos;              // 0x85D0
+        World::SmallZ aiPathfindStartBaseZ;          // 0x85D4
+        uint16_t aiPathfindStartTad;                 // 0x85D5
+        World::Pos2 aiPathfindStartPos2;             // 0x85D7
+        World::SmallZ aiPathfindStartBaseZ2;         // 0x85DB
+        uint16_t aiPathfindStartTad2;                // 0x85DC
+        uint32_t aiPathfindWeighting1;               // 0x85DE
+        uint32_t aiPathfindWeighting2;               // 0x85E2
+        uint16_t aiBestTrackRoadId;                  // 0x85E6
+        uint16_t aiPathfindPhase;                    // 0x85E8
+        uint32_t aiPathfindMaxWeighting;             // 0x85EA
+        uint8_t aiPathfindUndoCount1;                // 0x85EE
+        uint8_t aiPathfindUndoCount2;                // 0x85EF
+        uint16_t aiPathfindIterCount;                // 0x85F0
+        currency32_t aiVehicleCost;                  // 0x85F2
+        uint16_t aiThinkTimer;                       // 0x85F6
         uint32_t cargoUnitsTotalDelivered;        // 0x85F8
         uint32_t cargoUnitsDeliveredHistory[120]; // 0x85FC
         int16_t performanceIndexHistory[120];     // 0x87DC
