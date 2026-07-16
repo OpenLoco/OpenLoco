@@ -2065,7 +2065,7 @@ namespace OpenLoco::Ui::Windows::Options
                 self.widgets[Widx::labelOwnerFace].text = StringIds::currentPreferredFace;
 
                 FormatArguments args{ self.widgets[Widx::labelOwnerFace].textArgs };
-                args.push(competitor->name);
+                args.push(competitor->firstName);
 
                 self.widgets[Widx::ownerFacePreview].image = ImageId(competitor->images[0]).withIndexOffset(1).withPrimary(Colour::black).toUInt32();
             }
