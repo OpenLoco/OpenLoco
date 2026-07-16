@@ -12,6 +12,8 @@
 #include "Graphics/ImageIds.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
+#include "Input/ShortcutFormatter.h"
+#include "Input/Shortcuts.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/IndustryElement.h"
@@ -52,6 +54,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     static bool _isDragging = false;
     static World::TilePos2 _toolPosDrag;
     static World::TilePos2 _toolPosInitial;
+    static char _shortcutBuffer[Input::ShortcutFormatter::kShortcutBufferSize];
 
     static constexpr auto kWidgets = makeWidgets(
         Common::makeCommonWidgets(138, 190, StringIds::stringid_2),
@@ -1186,6 +1189,24 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         self.widgets[Common::widx::panel].bottom = self.height - 1;
     }
 
+    static std::optional<FormatArguments> tooltip(Ui::Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    {
+        if (widgetIndex != widx::rotate)
+        {
+            return FormatArguments{};
+        }
+
+        const auto binding = Input::ShortcutFormatter::getBinding(Input::Shortcut::rotateConstructionObject, _shortcutBuffer, std::size(_shortcutBuffer));
+        self.widgets[widgetIndex].tooltip = StringIds::tooltip_with_hotkey;
+
+        FormatArguments args{};
+        args.push(StringIds::rotate_90);
+        args.push(binding.modifierStringId);
+        args.push(binding.isBound ? binding.keyStringId : StringIds::keyboard_shortcut_unbound);
+        args.push(binding.keyString);
+        return args;
+    }
+
     // 0x0049DE40
     static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
     {
@@ -1366,6 +1387,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         .toolDrag = onToolDrag,
         .toolUp = onToolUp,
         .onToolAbort = onToolAbort,
+        .tooltip = tooltip,
         .prepareDraw = prepareDraw,
         .draw = draw,
     };

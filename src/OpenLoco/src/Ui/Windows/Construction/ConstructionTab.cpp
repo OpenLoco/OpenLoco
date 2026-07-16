@@ -9,6 +9,8 @@
 #include "Graphics/RenderTarget.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
+#include "Input/ShortcutFormatter.h"
+#include "Input/Shortcuts.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/MapSelection.h"
@@ -54,6 +56,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static World::TilePos2 _toolPosInitial;
 
     static std::optional<CopiedTrack> _copiedTrack;
+    static char _shortcutBuffer[Input::ShortcutFormatter::kShortcutBufferSize];
 
     namespace TrackPiece
     {
@@ -2908,8 +2911,86 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         Common::repositionTabs(&self);
     }
 
-    static std::optional<FormatArguments> tooltip(Ui::Window&, WidgetIndex_t, [[maybe_unused]] const WidgetId id)
+    static std::optional<Input::Shortcut> getShortcutForWidget(const WidgetIndex_t widgetIndex)
     {
+        auto& cState = getConstructionState();
+        switch (widgetIndex)
+        {
+            case widx::construct:
+                if (!cState.constructionHover)
+                {
+                    return Input::Shortcut::constructionBuildAtCurrentPos;
+                }
+                return std::nullopt;
+
+            case widx::remove:
+                return Input::Shortcut::constructionRemoveAtCurrentPos;
+
+            case widx::rotate_90:
+                if (cState.constructionHover)
+                {
+                    return Input::Shortcut::rotateConstructionObject;
+                }
+                return Input::Shortcut::constructionSelectPosition;
+
+            default:
+                return std::nullopt;
+        }
+    }
+
+    static StringId getTooltipForWidget(const WidgetIndex_t widgetIndex)
+    {
+        auto& cState = getConstructionState();
+        switch (widgetIndex)
+        {
+            case widx::construct:
+                return cState.constructionHover ? StringIds::tooltip_start_construction : StringIds::tooltip_construct;
+
+            case widx::remove:
+                return StringIds::tooltip_remove;
+
+            case widx::rotate_90:
+                return cState.constructionHover ? StringIds::rotate_90 : StringIds::new_construction_position;
+
+            default:
+                return StringIds::null;
+        }
+    }
+
+    static std::optional<FormatArguments> getShortcutTooltip(Window& self, const WidgetIndex_t widgetIndex)
+    {
+        auto tooltipId = getTooltipForWidget(widgetIndex);
+        if (tooltipId == StringIds::null)
+        {
+            return std::nullopt;
+        }
+
+        auto shortcut = getShortcutForWidget(widgetIndex);
+        if (!shortcut)
+        {
+            self.widgets[widgetIndex].tooltip = tooltipId;
+            return std::nullopt;
+        }
+
+        const auto binding = Input::ShortcutFormatter::getBinding(*shortcut, _shortcutBuffer, std::size(_shortcutBuffer));
+        self.widgets[widgetIndex].tooltip = StringIds::tooltip_with_hotkey;
+
+        FormatArguments args{};
+        args.push(tooltipId);
+        args.push(binding.modifierStringId);
+        args.push(binding.isBound ? binding.keyStringId : StringIds::keyboard_shortcut_unbound);
+        args.push(binding.keyString);
+        return args;
+    }
+
+    static std::optional<FormatArguments> tooltip(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    {
+        auto shortcutTooltip = getShortcutTooltip(self, widgetIndex);
+        if (shortcutTooltip)
+        {
+            return shortcutTooltip;
+        }
+
         FormatArguments args{};
         args.skip(2);
 
