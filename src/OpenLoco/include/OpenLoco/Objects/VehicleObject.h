@@ -202,7 +202,7 @@ namespace OpenLoco
         canReverse = 1U << 8,
         aircraftIsTaildragger = 1U << 8,
         anyRoadType = 1U << 9, // set on all road vehicles except trams
-        flag_10 = 1U << 10, // unused?
+        flag_10 = 1U << 10,    // unused?
         cannotCoupleToSelf = 1U << 11,
         aircraftFlaresLanding = 1U << 11, // set only on Concorde
         mustHavePair = 1U << 12,          // train requires two or more of this vehicle
