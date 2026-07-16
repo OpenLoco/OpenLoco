@@ -110,17 +110,17 @@ namespace OpenLoco
     {
         struct Station
         {
-            StationId id;                 // 0x0
-            AiThoughtStationFlags var_02; // 0x2 flags?
-            uint8_t rotation;             // 0x3
-            World::Pos2 pos;              // 0x4
-            uint8_t baseZ;                // 0x8
-            uint8_t var_9;                // 0x9 aiStationIndex
-            uint8_t var_A;                // 0xA aiStationIndex
-            uint8_t var_B;                // 0xB
-            uint8_t var_C;                // 0xC
+            StationId id;                // 0x0
+            AiThoughtStationFlags flags; // 0x2
+            uint8_t rotation;            // 0x3
+            World::Pos2 pos;             // 0x4
+            uint8_t baseZ;               // 0x8
+            uint8_t nextStationIndex;    // 0x9
+            uint8_t prevStationIndex;    // 0xA
+            uint8_t connectionFlagsA;    // 0xB
+            uint8_t connectionFlagsB;    // 0xC
 
-            constexpr bool hasFlags(AiThoughtStationFlags flags) const { return (var_02 & flags) != AiThoughtStationFlags::none; }
+            constexpr bool hasFlags(AiThoughtStationFlags flags) const { return (this->flags & flags) != AiThoughtStationFlags::none; }
         };
         AiThoughtType type;            // 0x00 0x4A8
         uint8_t destinationA;          // 0x01 0x4A9 either a TownId or IndustryId
@@ -132,16 +132,16 @@ namespace OpenLoco
         uint8_t rackRailType;          // 0x3F 0x4E7 Is 0xFFU for no rack rail
         uint16_t mods;                 // 0x40 0x4E8 track or road
         uint8_t cargoType;             // 0x42 0x4EA
-        uint8_t var_43;                // 0x4EB
-        uint8_t numVehicles;           // 0x44 0x4EC size of var_66
-        uint8_t var_45;                // 0x4ED size of var_46
-        uint16_t var_46[16];           // 0x4EF array of uint16_t object id
+        uint8_t numVehiclesTarget;     // 0x4EB
+        uint8_t numVehicles;           // 0x44 0x4EC size of vehicles
+        uint8_t numVehicleObjTypes;    // 0x4ED size of vehicleObjTypes
+        uint16_t vehicleObjTypes[16];  // 0x4EF array of uint16_t object id
         EntityId vehicles[8];          // 0x66 0x50E see also numVehicles for current size
-        currency32_t var_76;           // 0x51E
-        currency32_t var_7C;           // 0x524
-        currency32_t var_80;           // 0x528
-        currency32_t var_84;           // 0x52C
-        uint8_t var_88;                // 0x530
+        currency32_t totalCost;        // 0x51E
+        currency32_t totalRunningCost; // 0x524
+        currency32_t income;           // 0x528
+        currency32_t previousIncome;   // 0x52C
+        uint8_t thoughtAge;            // 0x530
         uint8_t stationObjId;          // 0x89 0x531 Could be either Airport/Dock/TrainStation/RoadStation
         uint8_t signalObjId;           // 0x8A 0x532 Can be 0xFFU for n
         AiPurchaseFlags purchaseFlags; // 0x8B 0x533

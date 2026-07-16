@@ -501,9 +501,9 @@ namespace OpenLoco
                 continue;
             }
 
-            thought.var_88 = std::min(0xFF, thought.var_88 + 1);
-            thought.var_84 = thought.var_80;
-            thought.var_80 = 0;
+            thought.thoughtAge = std::min(0xFF, thought.thoughtAge + 1);
+            thought.previousIncome = thought.income;
+            thought.income = 0;
             currency32_t totalRunCost = 0;
             for (auto i = 0; i < thought.numVehicles; ++i)
             {
@@ -513,7 +513,7 @@ namespace OpenLoco
                     totalRunCost += vehHead->calculateRunningCost();
                 }
             }
-            thought.var_7C = totalRunCost;
+            thought.totalRunningCost = totalRunCost;
         }
     }
 

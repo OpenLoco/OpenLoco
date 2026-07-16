@@ -2448,53 +2448,53 @@ namespace OpenLoco::CompanyAi
             uint8_t nextStationIdx = 0xFFU;
             if (company.aiStationFlags & (1U << 0))
             {
-                nextStationIdx = aiStation.var_A;
-                if (aiStation.var_C & ((1U << 2) | (1U << 1)))
+                nextStationIdx = aiStation.prevStationIndex;
+                if (aiStation.connectionFlagsB & ((1U << 2) | (1U << 1)))
                 {
-                    aiStation.var_C |= (1U << 3);
+                    aiStation.connectionFlagsB |= (1U << 3);
                 }
                 else
                 {
-                    aiStation.var_C |= (1U << 1);
+                    aiStation.connectionFlagsB |= (1U << 1);
                 }
             }
             else
             {
-                nextStationIdx = aiStation.var_9;
-                if (aiStation.var_B & ((1U << 2) | (1U << 1)))
+                nextStationIdx = aiStation.nextStationIndex;
+                if (aiStation.connectionFlagsA & ((1U << 2) | (1U << 1)))
                 {
-                    aiStation.var_B |= (1U << 3);
+                    aiStation.connectionFlagsA |= (1U << 3);
                 }
                 else
                 {
-                    aiStation.var_B |= (1U << 1);
+                    aiStation.connectionFlagsA |= (1U << 1);
                 }
             }
             auto& aiStation2 = thought.stations[nextStationIdx];
-            if (aiStation2.var_9 != company.aiStationIndex)
+            if (aiStation2.nextStationIndex != company.aiStationIndex)
             {
-                if (aiStation2.var_C & ((1U << 2) | (1U << 1)))
+                if (aiStation2.connectionFlagsB & ((1U << 2) | (1U << 1)))
                 {
-                    aiStation2.var_C |= (1U << 3);
+                    aiStation2.connectionFlagsB |= (1U << 3);
                 }
                 else
                 {
-                    aiStation2.var_C |= (1U << 1);
+                    aiStation2.connectionFlagsB |= (1U << 1);
                 }
             }
             else
             {
-                if (aiStation2.var_B & ((1U << 2) | (1U << 1)))
+                if (aiStation2.connectionFlagsA & ((1U << 2) | (1U << 1)))
                 {
-                    aiStation2.var_B |= (1U << 3);
+                    aiStation2.connectionFlagsA |= (1U << 3);
                 }
                 else
                 {
-                    aiStation2.var_B |= (1U << 1);
+                    aiStation2.connectionFlagsA |= (1U << 1);
                 }
             }
             company.aiStationIndex = 0xFFU;
-            thought.var_76 += pathResult.totalCost;
+            thought.totalCost += pathResult.totalCost;
             return false;
         }
     }

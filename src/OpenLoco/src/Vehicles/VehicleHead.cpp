@@ -3303,7 +3303,7 @@ namespace OpenLoco::Vehicles
             if (aiThoughtId != 0xFF)
             {
                 auto company = CompanyManager::get(owner);
-                company->aiThoughts[aiThoughtId].var_80 += cargoProfit;
+                company->aiThoughts[aiThoughtId].income += cargoProfit;
             }
             train.veh2->curMonthRevenue += cargoProfit;
             if (cargoProfit != 0)

@@ -57,35 +57,35 @@ namespace OpenLoco::S5
             for (auto j = 0U; j < std::size(srcThought.stations); ++j)
             {
                 dstThought.stations[j].id = enumValue(srcThought.stations[j].id);
-                dstThought.stations[j].var_02 = enumValue(srcThought.stations[j].var_02);
+                dstThought.stations[j].flags = enumValue(srcThought.stations[j].flags);
                 dstThought.stations[j].rotation = srcThought.stations[j].rotation;
                 dstThought.stations[j].pos = srcThought.stations[j].pos;
                 dstThought.stations[j].baseZ = srcThought.stations[j].baseZ;
-                dstThought.stations[j].var_9 = srcThought.stations[j].var_9;
-                dstThought.stations[j].var_A = srcThought.stations[j].var_A;
-                dstThought.stations[j].var_B = srcThought.stations[j].var_B;
-                dstThought.stations[j].var_C = srcThought.stations[j].var_C;
+                dstThought.stations[j].nextStationIndex = srcThought.stations[j].nextStationIndex;
+                dstThought.stations[j].prevStationIndex = srcThought.stations[j].prevStationIndex;
+                dstThought.stations[j].connectionFlagsA = srcThought.stations[j].connectionFlagsA;
+                dstThought.stations[j].connectionFlagsB = srcThought.stations[j].connectionFlagsB;
             }
 
             dstThought.trackObjId = srcThought.trackObjId;
             dstThought.rackRailType = srcThought.rackRailType;
             dstThought.mods = srcThought.mods;
             dstThought.cargoType = srcThought.cargoType;
-            dstThought.var_43 = srcThought.var_43;
+            dstThought.numVehiclesTarget = srcThought.numVehiclesTarget;
             dstThought.numVehicles = srcThought.numVehicles;
-            dstThought.var_45 = srcThought.var_45;
-            std::ranges::copy(srcThought.var_46, dstThought.var_46);
+            dstThought.numVehicleObjTypes = srcThought.numVehicleObjTypes;
+            std::ranges::copy(srcThought.vehicleObjTypes, dstThought.vehicleObjTypes);
 
             for (auto j = 0U; j < std::size(srcThought.vehicles); ++j)
             {
                 dstThought.vehicles[j] = enumValue(srcThought.vehicles[j]);
             }
 
-            dstThought.var_76 = srcThought.var_76;
-            dstThought.var_7C = srcThought.var_7C;
-            dstThought.var_80 = srcThought.var_80;
-            dstThought.var_84 = srcThought.var_84;
-            dstThought.var_88 = srcThought.var_88;
+            dstThought.totalCost = srcThought.totalCost;
+            dstThought.totalRunningCost = srcThought.totalRunningCost;
+            dstThought.income = srcThought.income;
+            dstThought.previousIncome = srcThought.previousIncome;
+            dstThought.thoughtAge = srcThought.thoughtAge;
             dstThought.stationObjId = srcThought.stationObjId;
             dstThought.signalObjId = srcThought.signalObjId;
             dstThought.purchaseFlags = enumValue(srcThought.purchaseFlags);
@@ -349,32 +349,32 @@ namespace OpenLoco::S5
             for (auto j = 0U; j < std::size(srcThought.stations); ++j)
             {
                 dstThought.stations[j].id = static_cast<StationId>(srcThought.stations[j].id);
-                dstThought.stations[j].var_02 = static_cast<AiThoughtStationFlags>(srcThought.stations[j].var_02);
+                dstThought.stations[j].flags = static_cast<AiThoughtStationFlags>(srcThought.stations[j].flags);
                 dstThought.stations[j].rotation = srcThought.stations[j].rotation;
                 dstThought.stations[j].pos = srcThought.stations[j].pos;
                 dstThought.stations[j].baseZ = srcThought.stations[j].baseZ;
-                dstThought.stations[j].var_9 = srcThought.stations[j].var_9;
-                dstThought.stations[j].var_A = srcThought.stations[j].var_A;
-                dstThought.stations[j].var_B = srcThought.stations[j].var_B;
-                dstThought.stations[j].var_C = srcThought.stations[j].var_C;
+                dstThought.stations[j].nextStationIndex = srcThought.stations[j].nextStationIndex;
+                dstThought.stations[j].prevStationIndex = srcThought.stations[j].prevStationIndex;
+                dstThought.stations[j].connectionFlagsA = srcThought.stations[j].connectionFlagsA;
+                dstThought.stations[j].connectionFlagsB = srcThought.stations[j].connectionFlagsB;
             }
             dstThought.trackObjId = srcThought.trackObjId;
             dstThought.rackRailType = srcThought.rackRailType;
             dstThought.mods = srcThought.mods;
             dstThought.cargoType = srcThought.cargoType;
-            dstThought.var_43 = srcThought.var_43;
+            dstThought.numVehiclesTarget = srcThought.numVehiclesTarget;
             dstThought.numVehicles = srcThought.numVehicles;
-            dstThought.var_45 = srcThought.var_45;
-            std::ranges::copy(srcThought.var_46, dstThought.var_46);
+            dstThought.numVehicleObjTypes = srcThought.numVehicleObjTypes;
+            std::ranges::copy(srcThought.vehicleObjTypes, dstThought.vehicleObjTypes);
             for (auto j = 0U; j < std::size(srcThought.vehicles); ++j)
             {
                 dstThought.vehicles[j] = static_cast<EntityId>(srcThought.vehicles[j]);
             }
-            dstThought.var_76 = srcThought.var_76;
-            dstThought.var_7C = srcThought.var_7C;
-            dstThought.var_80 = srcThought.var_80;
-            dstThought.var_84 = srcThought.var_84;
-            dstThought.var_88 = srcThought.var_88;
+            dstThought.totalCost = srcThought.totalCost;
+            dstThought.totalRunningCost = srcThought.totalRunningCost;
+            dstThought.income = srcThought.income;
+            dstThought.previousIncome = srcThought.previousIncome;
+            dstThought.thoughtAge = srcThought.thoughtAge;
             dstThought.stationObjId = srcThought.stationObjId;
             dstThought.signalObjId = srcThought.signalObjId;
             dstThought.purchaseFlags = static_cast<AiPurchaseFlags>(srcThought.purchaseFlags);
