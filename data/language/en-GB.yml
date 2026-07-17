@@ -2497,3 +2497,5 @@ strings:
   2442: Preferred Company Name
   2443: "Enter the preferred company name:"
   2444: Can't change company name...
+  2445: "{STRINGID} has no nearby transit companies"
+  2446: "{STRINGID} has not received any deliveries last month"

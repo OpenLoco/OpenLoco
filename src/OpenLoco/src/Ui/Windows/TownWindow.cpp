@@ -14,8 +14,10 @@
 #include "Localisation/StringIds.h"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
+#include "Objects/CargoObject.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
+#include "OpenLoco/Utility/LookupTable.hpp"
 #include "SceneManager.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
@@ -49,6 +51,7 @@ namespace OpenLoco::Ui::Windows::Town
             tab_town,
             tab_population,
             tab_company_ratings,
+            tab_transported,
         };
 
         static constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
@@ -60,7 +63,21 @@ namespace OpenLoco::Ui::Windows::Town
                 Widgets::Panel({ 0, 41 }, { frameWidth, 120 }, WindowColour::secondary),
                 Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town),
                 Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_population_graph),
-                Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town_ratings_each_company));
+                Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town_ratings_each_company),
+                Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_statistics));
+        }
+
+        static StringId getTownSizeName(TownSize size)
+        {
+            static constexpr auto kTypeToString = Utility::buildLookupTable<TownSize, StringId>({
+                { TownSize::hamlet, StringIds::town_size_hamlet },
+                { TownSize::village, StringIds::town_size_village },
+                { TownSize::town, StringIds::town_size_town },
+                { TownSize::city, StringIds::town_size_city },
+                { TownSize::metropolis, StringIds::town_size_metropolis },
+            });
+
+            return kTypeToString.at(size);
         }
 
         // Defined at the bottom of this file.
@@ -76,7 +93,7 @@ namespace OpenLoco::Ui::Windows::Town
     {
         enum widx
         {
-            viewport = 7,
+            viewport = 8,
             status_bar,
             centre_on_viewport,
             expand_town,
@@ -167,6 +184,7 @@ namespace OpenLoco::Ui::Windows::Town
                 case Common::widx::tab_town:
                 case Common::widx::tab_population:
                 case Common::widx::tab_company_ratings:
+                case Common::widx::tab_transported:
                     Common::switchTab(self, widgetIndex);
                     break;
 
@@ -506,6 +524,7 @@ namespace OpenLoco::Ui::Windows::Town
                 case Common::widx::tab_town:
                 case Common::widx::tab_population:
                 case Common::widx::tab_company_ratings:
+                case Common::widx::tab_transported:
                     Common::switchTab(self, widgetIndex);
                     break;
             }
@@ -537,9 +556,7 @@ namespace OpenLoco::Ui::Windows::Town
     namespace CompanyRatings
     {
         static constexpr auto widgets = makeWidgets(
-            Common::makeCommonWidgets(340, 208, StringIds::title_town_local_authority)
-
-        );
+            Common::makeCommonWidgets(340, 208, StringIds::title_town_local_authority));
 
         // 0x00499761
         static void prepareDraw(Window& self)
@@ -560,6 +577,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             point.x += 4;
             point.y += 14;
+            auto companiesServingTown = 0;
             auto town = TownManager::get(TownId(self.number));
             for (uint8_t i = 0; i < std::size(town->companyRatings); i++)
             {
@@ -567,6 +585,7 @@ namespace OpenLoco::Ui::Windows::Town
                 {
                     continue;
                 }
+                companiesServingTown++;
 
                 int16_t rating = (std::clamp<int16_t>(town->companyRatings[i], -1000, 1000) + 1000) / 20;
                 StringId rank{};
@@ -601,6 +620,14 @@ namespace OpenLoco::Ui::Windows::Town
 
                 point.y += 10;
             }
+            if (companiesServingTown == 0)
+            {
+                FormatArguments args{};
+                args.push(StringIds::town_not_served);
+                args.push(Common::getTownSizeName(town->size));
+                tr.drawStringLeftClipped(point, self.width - 12, Colour::black, StringIds::black_stringid, args);
+                point.y += 10;
+            }
         }
 
         // 0x004998E7
@@ -619,6 +646,7 @@ namespace OpenLoco::Ui::Windows::Town
                 case Common::widx::tab_town:
                 case Common::widx::tab_population:
                 case Common::widx::tab_company_ratings:
+                case Common::widx::tab_transported:
                     Common::switchTab(self, widgetIndex);
                     break;
             }
@@ -630,6 +658,123 @@ namespace OpenLoco::Ui::Windows::Town
             // Call to sub_498E9B has been deliberately omitted.
 
             self.setSize({ 340, 208 }, { 340, 208 });
+        }
+
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onUpdate = Common::update,
+            .textInput = Common::textInput,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
+        {
+            return kEvents;
+        }
+    }
+
+    namespace Transported
+    {
+        static constexpr Size kTransportedWindowSize = { 340, 228 };
+
+        static constexpr auto kNumRows = 16;
+        static constexpr auto kColumnSpacing = 160;
+
+        static constexpr auto widgets = makeWidgets(
+            Common::makeCommonWidgets(kTransportedWindowSize.width, kTransportedWindowSize.height, StringIds::title_statistics));
+
+        static void prepareDraw(Window& self)
+        {
+            Common::prepareDraw(self);
+        }
+
+        static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
+        {
+            auto tr = Gfx::TextRenderer(drawingCtx);
+
+            self.draw(drawingCtx);
+            Common::drawTabs(self, drawingCtx);
+
+            auto town = TownManager::get(TownId(self.number));
+
+            auto point = Point(self.x + 4, self.y + 46);
+
+            tr.drawStringLeft(point, Colour::black, StringIds::received_cargo);
+
+            point.x += 4;
+            point.y += 14;
+
+            auto cargoTypesDelivered = 0;
+            auto startPoint = Point(point);
+            auto currentRow = 0;
+            for (uint8_t cargoId = 0; cargoId < std::size(town->monthlyCargoDelivered); cargoId++)
+            {
+                auto cargoObj = ObjectManager::get<CargoObject>(cargoId);
+                if (cargoObj == nullptr)
+                {
+                    continue;
+                }
+                auto isInfluentialCargo = (town->cargoInfluenceFlags & (1 << cargoId)) != 0;
+                FormatArguments args{};
+                if (town->monthlyCargoDelivered[cargoId] == 1)
+                {
+                    args.push(cargoObj->unitNameSingular);
+                }
+                else if (town->monthlyCargoDelivered[cargoId] == 0 && !isInfluentialCargo)
+                {
+                    continue;
+                }
+                else
+                {
+                    args.push(cargoObj->unitNamePlural);
+                }
+                cargoTypesDelivered++;
+
+                if (++currentRow > kNumRows)
+                {
+                    currentRow = 0;
+                    startPoint.x += kColumnSpacing;
+                    point = startPoint;
+                }
+                args.push<uint32_t>(town->monthlyCargoDelivered[cargoId]);
+                tr.drawStringLeftClipped(point, self.width - 12, Colour::black, StringIds::black_stringid, args);
+                point.y += 10;
+            }
+            if (cargoTypesDelivered == 0)
+            {
+                FormatArguments args{};
+                args.push(StringIds::town_no_deliveries);
+                args.push(Common::getTownSizeName(town->size));
+                tr.drawStringLeftClipped(point, self.width - 12, Colour::black, StringIds::black_stringid, args);
+            }
+        }
+
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        {
+            switch (widgetIndex)
+            {
+                case Common::widx::caption:
+                    Common::renameTownPrompt(self, widgetIndex);
+                    break;
+
+                case Common::widx::close_button:
+                    WindowManager::close(&self);
+                    break;
+
+                case Common::widx::tab_town:
+                case Common::widx::tab_population:
+                case Common::widx::tab_company_ratings:
+                case Common::widx::tab_transported:
+                    Common::switchTab(self, widgetIndex);
+                    break;
+            }
+        }
+
+        static void onResize(Window& self)
+        {
+            self.setSize(kTransportedWindowSize, kTransportedWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -660,7 +805,8 @@ namespace OpenLoco::Ui::Windows::Town
         static TabInformation tabInformationByTabOffset[] = {
             { Town::widgets,           widx::tab_town,            Town::getEvents()           },
             { Population::widgets,     widx::tab_population,      Population::getEvents()     },
-            { CompanyRatings::widgets, widx::tab_company_ratings, CompanyRatings::getEvents() }
+            { CompanyRatings::widgets, widx::tab_company_ratings, CompanyRatings::getEvents() },
+            { Transported::widgets, widx::tab_transported, Transported::getEvents() }
         };
         // clang-format on
 
@@ -843,6 +989,30 @@ namespace OpenLoco::Ui::Windows::Town
                 }
 
                 Widget::drawTab(self, drawingCtx, imageId, widx::tab_company_ratings);
+            }
+
+            // Transported Tab
+            {
+                static constexpr uint32_t transportedTabImageIds[] = {
+                    InterfaceSkin::ImageIds::tab_transported_frame0,
+                    InterfaceSkin::ImageIds::tab_transported_frame1,
+                    InterfaceSkin::ImageIds::tab_transported_frame2,
+                    InterfaceSkin::ImageIds::tab_transported_frame3,
+                    InterfaceSkin::ImageIds::tab_transported_frame4,
+                    InterfaceSkin::ImageIds::tab_transported_frame5,
+                    InterfaceSkin::ImageIds::tab_transported_frame6,
+                };
+
+                uint32_t imageId = skin->img;
+                if (self.currentTab == widx::tab_transported - widx::tab_town)
+                {
+                    imageId += transportedTabImageIds[(self.frameNo / 4) % std::size(transportedTabImageIds)];
+                }
+                else
+                {
+                    imageId += transportedTabImageIds[0];
+                }
+                Widget::drawTab(self, drawingCtx, imageId, widx::tab_transported);
             }
         }
     }

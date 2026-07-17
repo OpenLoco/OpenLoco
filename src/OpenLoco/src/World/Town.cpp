@@ -202,7 +202,7 @@ namespace OpenLoco
         // Work towards computing new build speed.
         // will be the smallest of the influence cargo delivered to the town
         // i.e. to get maximum growth max of the influence cargo must be delivered
-        // every update. If no influence cargo the grows at max rate
+        // every update. If no influence cargo the town grows at max rate
         uint16_t minCargoDelivered = std::numeric_limits<uint16_t>::max();
         uint32_t cargoFlags = cargoInfluenceFlags;
         while (cargoFlags != 0)
