@@ -1,7 +1,10 @@
 #include "MemoryStream.h"
 #include "Exception.hpp"
 #include <algorithm>
+#include <cstddef>
 #include <cstring>
+#include <malloc.h>
+#include <span>
 
 namespace OpenLoco
 {

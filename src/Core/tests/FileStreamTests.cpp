@@ -1,14 +1,16 @@
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Core/FileStream.h>
+#include <Stream.hpp>
 #include <array>
+#include <cstdint>
 #include <cstdio>
 #include <filesystem>
 #include <gtest/gtest.h>
-#include <numeric>
+#include <vector>
 
 using namespace OpenLoco;
 
-static std::filesystem::path getTempFilePath()
+static fs::path getTempFilePath()
 {
     char tempNameBuf[L_tmpnam]{};
 #ifdef _MSC_VER
@@ -17,7 +19,7 @@ static std::filesystem::path getTempFilePath()
 #else
     const char* tempName = tmpnam(tempNameBuf);
 #endif
-    auto tempDir = std::filesystem::temp_directory_path();
+    auto tempDir = fs::temp_directory_path();
     auto tempFile = tempDir / tempName;
     return tempFile;
 }
@@ -34,7 +36,7 @@ static auto generateData(size_t dataLength)
     return data;
 }
 
-static void generateFile(const std::filesystem::path& filePath, const DataBuffer& inputBytes)
+static void generateFile(const fs::path& filePath, const DataBuffer& inputBytes)
 {
     FileStream streamOut(filePath, StreamMode::write);
     ASSERT_EQ(streamOut.getLength(), 0);
@@ -64,7 +66,7 @@ TEST(FileStreamTest, testWriteRead)
     ASSERT_EQ(readBuffer, testData);
 
     streamIn.close();
-    std::filesystem::remove(filePath);
+    fs::remove(filePath);
 }
 
 TEST(FileStreamTest, testBadRead)
@@ -86,7 +88,7 @@ TEST(FileStreamTest, testBadRead)
     EXPECT_THROW(streamIn.read(readBuffer.data(), readBuffer.size()), Exception::RuntimeError);
 
     streamIn.close();
-    std::filesystem::remove(filePath);
+    fs::remove(filePath);
 }
 
 TEST(FileStreamTest, testPosition)
@@ -112,7 +114,7 @@ TEST(FileStreamTest, testPosition)
     ASSERT_EQ(streamOut.getPosition(), 4);
 
     streamOut.close();
-    std::filesystem::remove(filePath);
+    fs::remove(filePath);
 }
 
 TEST(FileStreamTest, testModeWriteRead)
@@ -137,7 +139,7 @@ TEST(FileStreamTest, testModeWriteRead)
     EXPECT_THROW(streamOut.read(readBuffer.data(), readBuffer.size()), Exception::InvalidOperation);
 
     streamOut.close();
-    std::filesystem::remove(filePath);
+    fs::remove(filePath);
 }
 
 TEST(FileStreamTest, testModeReadWrite)
@@ -155,7 +157,7 @@ TEST(FileStreamTest, testModeReadWrite)
     EXPECT_THROW(streamIn.write(testData.data(), testData.size()), Exception::InvalidOperation);
 
     streamIn.close();
-    std::filesystem::remove(filePath);
+    fs::remove(filePath);
 }
 
 TEST(FileStreamTest, testWrite100MiB)
@@ -177,7 +179,7 @@ TEST(FileStreamTest, testWrite100MiB)
     ASSERT_EQ(streamOut.getLength(), k100MiB);
 
     streamOut.close();
-    std::filesystem::remove(filePath);
+    fs::remove(filePath);
 }
 
 TEST(FileStreamTest, testRead100MiB)
@@ -202,5 +204,5 @@ TEST(FileStreamTest, testRead100MiB)
     ASSERT_EQ(testData, readBuffer);
 
     streamIn.close();
-    std::filesystem::remove(filePath);
+    fs::remove(filePath);
 }

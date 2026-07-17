@@ -1,5 +1,6 @@
 #include "Prng.h"
 #include <bit>
+#include <cstdint>
 
 namespace OpenLoco::Core
 {

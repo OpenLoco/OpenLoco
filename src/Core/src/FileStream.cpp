@@ -1,11 +1,13 @@
 #include "FileStream.h"
 #include "Exception.hpp"
+#include <Stream.hpp>
 #include <algorithm>
-#include <stdio.h>
+#include <cstdio>
+#include <filesystem>
 
 namespace OpenLoco
 {
-    static FILE* fileOpen(const std::filesystem::path& path, StreamMode mode)
+    static FILE* fileOpen(const fs::path& path, StreamMode mode)
     {
         if (mode == StreamMode::none)
         {
@@ -74,7 +76,7 @@ namespace OpenLoco
         return length;
     }
 
-    FileStream::FileStream(const std::filesystem::path& path, StreamMode mode)
+    FileStream::FileStream(const fs::path& path, StreamMode mode)
     {
         if (!open(path, mode))
         {
@@ -88,7 +90,7 @@ namespace OpenLoco
         close();
     }
 
-    bool FileStream::open(const std::filesystem::path& path, StreamMode mode)
+    bool FileStream::open(const fs::path& path, StreamMode mode)
     {
         close();
 

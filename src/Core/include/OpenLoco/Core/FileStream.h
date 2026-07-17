@@ -1,7 +1,7 @@
 #pragma once
 
+#include "FileSystem.hpp"
 #include "Stream.hpp"
-#include <cstdint>
 #include <cstdio>
 #include <filesystem>
 
@@ -17,10 +17,10 @@ namespace OpenLoco
 
     public:
         FileStream() = default;
-        FileStream(const std::filesystem::path& path, StreamMode mode);
+        FileStream(const fs::path& path, StreamMode mode);
         ~FileStream() override;
 
-        bool open(const std::filesystem::path& path, StreamMode mode);
+        bool open(const fs::path& path, StreamMode mode);
 
         bool isOpen() const noexcept;
 

@@ -1,5 +1,7 @@
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <cstdint>
 #include <gtest/gtest.h>
+#include <type_traits>
 
 enum class TestFlags : std::uint32_t
 {

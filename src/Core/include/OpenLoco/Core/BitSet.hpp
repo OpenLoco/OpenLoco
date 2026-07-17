@@ -3,11 +3,18 @@
 #include <algorithm>
 #include <array>
 #include <bit>
+#include <cstdarg>
 #include <cstddef>
 #include <cstdint>
 #include <functional>
+#include <initializer_list>
+#include <iterator>
 #include <limits>
+#include <memory>
 #include <string>
+#include <string_view>
+#include <type_traits>
+#include <utility>
 
 // Note this is identical to OpenRCT2's BitSet only with style changes to match codebase
 

@@ -2,7 +2,6 @@
 
 #include <bit>
 #include <cassert>
-#include <cstddef>
 #include <cstdint>
 
 namespace OpenLoco::Numerics

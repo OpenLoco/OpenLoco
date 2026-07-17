@@ -10,3 +10,8 @@ end_of_line = lf
 
 [*.txt]
 trim_trailing_whitespace = false
+
+[*.{cpp,h,hpp,ixx}]
+cpp_cleanup_include_directives = true
+dotnet_diagnostic.VCIC001.severity = error
+dotnet_diagnostic.VCIC002.severity = warning
