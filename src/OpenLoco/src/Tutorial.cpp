@@ -144,8 +144,7 @@ namespace OpenLoco::Tutorial
     {
         _state = State::none;
         Config::read();
-        Ui::triggerResize();
-        Gfx::invalidateScreen();
+        Ui::setDisplayMode(Config::get().display.mode);
     }
 
     // 0x0043C7A2

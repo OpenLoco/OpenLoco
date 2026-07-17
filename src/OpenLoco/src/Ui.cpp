@@ -471,7 +471,7 @@ namespace OpenLoco::Ui
         Gui::resize();
         Gfx::invalidateScreen();
 
-        if (Tutorial::state() == Tutorial::State::initialising)
+        if (Tutorial::state() != Tutorial::State::none)
         {
             return;
         }
@@ -615,6 +615,7 @@ namespace OpenLoco::Ui
         }
 
         auto& config = Config::get();
+        /*
         if (config.display.mode == Config::ScreenMode::window)
         {
             int32_t currentWidth = 0;
@@ -625,14 +626,17 @@ namespace OpenLoco::Ui
                 _lastWindowedResolution = { currentWidth, currentHeight };
             }
         }
+        */
 
         // Set the new dimensions of the screen.
         if (mode == Config::ScreenMode::window)
         {
+            /*
             if (_lastWindowedResolution.isPositive())
             {
                 newResolution = _lastWindowedResolution;
             }
+            */
 
             if (!SDL_SetWindowSize(_window, newResolution.width, newResolution.height))
             {
@@ -689,6 +693,14 @@ namespace OpenLoco::Ui
         }
 
         SDL_SyncWindow(_window);
+
+        if (Tutorial::state() == Tutorial::State::initialising)
+        {
+            Ui::triggerResize();
+            Gfx::invalidateScreen();
+            _isChangingDisplayMode = false;
+            return true;
+        }
 
         // It appears we were successful in setting the screen mode, so let's up date the config.
         config.display.mode = mode;
