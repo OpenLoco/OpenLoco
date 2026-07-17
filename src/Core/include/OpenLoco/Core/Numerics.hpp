@@ -2,12 +2,8 @@
 
 #include <bit>
 #include <cassert>
-
-#if defined(__LINUX__) || (defined(__APPLE__) && defined(__MACH__))
 #include <cstddef>
-#else
 #include <cstdint>
-#endif
 
 namespace OpenLoco::Numerics
 {
