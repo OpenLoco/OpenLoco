@@ -475,6 +475,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/GameException.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/GameSaveCompare.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/GameState.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/GameStateFlags.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Graphics/Colour.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Graphics/DrawSprite.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Graphics/DrawSpriteBMP.hpp"
