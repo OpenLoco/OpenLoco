@@ -2405,9 +2405,9 @@ namespace OpenLoco::CompanyAi
         company.aiPathfindUndoCount1 = 0;
         company.aiPathfindUndoCount2 = 0;
         // TODO: When diverging just set this all to a fixed value rather than only first entry
-        for (auto& htEntry : company.var_25C0)
+        for (auto& htEntry : company.trackandRoadHashTable)
         {
-            htEntry.var_00 = 0xFFFFU;
+            htEntry.posX = 0xFFFFU;
         }
         company.hashTableLength = 0;
     }

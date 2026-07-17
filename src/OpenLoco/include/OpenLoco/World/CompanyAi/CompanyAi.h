@@ -120,7 +120,7 @@ namespace OpenLoco
             uint8_t connectionFlagsA;    // 0xB
             uint8_t connectionFlagsB;    // 0xC
 
-            constexpr bool hasFlags(AiThoughtStationFlags flags) const { return (this->flags & flags) != AiThoughtStationFlags::none; }
+            constexpr bool hasFlags(AiThoughtStationFlags thoughtFlags) const { return (this->flags & thoughtFlags) != AiThoughtStationFlags::none; }
         };
         AiThoughtType type;            // 0x00 0x4A8
         uint8_t destinationA;          // 0x01 0x4A9 either a TownId or IndustryId
