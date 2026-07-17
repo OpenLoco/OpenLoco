@@ -2,8 +2,8 @@
 #include "Exception.hpp"
 #include <algorithm>
 #include <cstddef>
+#include <cstdlib>
 #include <cstring>
-#include <malloc.h>
 #include <span>
 
 namespace OpenLoco
