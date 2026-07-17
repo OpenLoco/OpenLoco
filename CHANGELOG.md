@@ -1,6 +1,7 @@
 26.05+ (???)
 ------------------------------------------------------------------------
 - Feature: [#3768] Add tab to town window to show delivered cargo last month.
+- Change: [#3740] Options that interfere with tutorial operation are temporarily disabled options during playback.
 
 26.05 (2026-05-30)
 ------------------------------------------------------------------------

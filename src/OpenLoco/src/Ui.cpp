@@ -471,6 +471,11 @@ namespace OpenLoco::Ui
         Gui::resize();
         Gfx::invalidateScreen();
 
+        if (Tutorial::state() != Tutorial::State::none)
+        {
+            return;
+        }
+
         // Save window size to config if NOT maximized
         auto wf = SDL_GetWindowFlags(_window);
         if (!_isChangingDisplayMode && !(wf & SDL_WINDOW_MAXIMIZED) && !(wf & SDL_WINDOW_FULLSCREEN))
@@ -610,6 +615,7 @@ namespace OpenLoco::Ui
         }
 
         auto& config = Config::get();
+        /*
         if (config.display.mode == Config::ScreenMode::window)
         {
             int32_t currentWidth = 0;
@@ -620,14 +626,17 @@ namespace OpenLoco::Ui
                 _lastWindowedResolution = { currentWidth, currentHeight };
             }
         }
+        */
 
         // Set the new dimensions of the screen.
         if (mode == Config::ScreenMode::window)
         {
+            /*
             if (_lastWindowedResolution.isPositive())
             {
                 newResolution = _lastWindowedResolution;
             }
+            */
 
             if (!SDL_SetWindowSize(_window, newResolution.width, newResolution.height))
             {
@@ -684,6 +693,14 @@ namespace OpenLoco::Ui
         }
 
         SDL_SyncWindow(_window);
+
+        if (Tutorial::state() == Tutorial::State::initialising)
+        {
+            Ui::triggerResize();
+            Gfx::invalidateScreen();
+            _isChangingDisplayMode = false;
+            return true;
+        }
 
         // It appears we were successful in setting the screen mode, so let's up date the config.
         config.display.mode = mode;
@@ -1002,7 +1019,6 @@ namespace OpenLoco::Ui
 
         config.scaleFactor = newScaleFactor;
 
-        OpenLoco::Config::write();
         Ui::triggerResize();
         Gfx::invalidateScreen();
     }
@@ -1017,6 +1033,7 @@ namespace OpenLoco::Ui
         }
 
         setWindowScaling(newScaleFactor);
+        Config::write();
     }
 
     bool hasInputFocus()
