@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <array>
 #include <bit>
-#include <cstdarg>
 #include <cstddef>
 #include <cstdint>
 #include <functional>
