@@ -2,7 +2,7 @@
 
 #include <cstdint>
 #ifdef _MSC_VER
-#include <intrin0.inl.h>
+#include <intrin.h>
 #endif
 
 namespace OpenLoco::Numerics
