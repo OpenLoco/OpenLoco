@@ -2,12 +2,7 @@
 #include "Ui/Cursor.h"
 #include <algorithm>
 #include <cmath>
-#include <codecvt>
-#include <cstring>
-#include <iostream>
-#include <limits>
 #include <map>
-#include <stdexcept>
 
 #ifdef _WIN32
 #include <OpenLoco/Resources/Resource.h>
@@ -16,14 +11,11 @@
 #define NOMINMAX
 #endif
 #define WIN32_LEAN_AND_MEAN
-#include <shlobj.h>
 #include <windows.h>
 
 // `small` is used as a type in `windows.h`
 #undef small
 #endif
-
-#include <SDL3/SDL.h>
 
 #include "Config.h"
 #include "Game.h"
@@ -34,7 +26,6 @@
 #include "Gui.h"
 #include "Input.h"
 #include "Intro.h"
-#include "Logging.h"
 #include "MultiPlayer.h"
 #include "SceneManager.h"
 #include "Tutorial.h"
@@ -44,7 +35,21 @@
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Core/Exception.hpp>
-#include <OpenLoco/Utility/String.hpp>
+#include <OpenLoco/Diagnostics/Logging.h>
+#include <OpenLoco/Engine/Ui/Point.hpp>
+#include <SDL3/SDL_error.h>
+#include <SDL3/SDL_init.h>
+#include <SDL3/SDL_keyboard.h>
+#include <SDL3/SDL_messagebox.h>
+#include <SDL3/SDL_mouse.h>
+#include <SDL3/SDL_properties.h>
+#include <SDL3/SDL_rect.h>
+#include <SDL3/SDL_stdinc.h>
+#include <SDL3/SDL_video.h>
+#include <Ui/Widget.h>
+#include <cstdint>
+#include <string>
+#include <vector>
 
 using namespace OpenLoco::GameCommands;
 using namespace OpenLoco::Diagnostics;

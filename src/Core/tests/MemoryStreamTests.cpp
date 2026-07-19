@@ -1,6 +1,8 @@
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Core/MemoryStream.h>
 #include <array>
+#include <cstddef>
+#include <cstdint>
 #include <gtest/gtest.h>
 
 using namespace OpenLoco;

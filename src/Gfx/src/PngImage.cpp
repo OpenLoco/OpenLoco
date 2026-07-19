@@ -44,7 +44,7 @@ namespace OpenLoco::Gfx
         Logging::warn("{}", error_msg);
     }
 
-    std::unique_ptr<PngImage> PngImage::loadFromFile(const std::filesystem::path& filePath)
+    std::unique_ptr<PngImage> PngImage::loadFromFile(const fs::path& filePath)
     {
         std::ifstream inFile(filePath, std::ios::binary);
 
