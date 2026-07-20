@@ -176,7 +176,7 @@ namespace OpenLoco
         autosaveReset();
     }
 
-    static void initialise()
+    void initialise()
     {
         const auto& cfg = Config::get();
 

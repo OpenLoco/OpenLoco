@@ -30,8 +30,6 @@
 #undef small
 #endif
 
-using namespace OpenLoco::Ui;
-using namespace OpenLoco::Input;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco

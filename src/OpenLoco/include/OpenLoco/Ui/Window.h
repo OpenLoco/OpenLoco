@@ -1,18 +1,18 @@
 #pragma once
 
-#include "Graphics/Colour.h"
-#include "Graphics/Gfx.h"
-#include "Map/Tile.h"
-#include "Objects/Object.h"
-#include "Types.hpp"
-#include "Ui.h"
-#include "Ui/ScrollFlags.hpp"
-#include "Ui/Widget.h"
-#include "Ui/WindowType.h"
-#include "Viewport.hpp"
-#include "World/Company.h"
-#include "ZoomLevel.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <OpenLoco/Graphics/Colour.h>
+#include <OpenLoco/Graphics/Gfx.h>
+#include <OpenLoco/Map/Tile.h>
+#include <OpenLoco/Objects/Object.h>
+#include <OpenLoco/Types.hpp>
+#include <OpenLoco/Ui.h>
+#include <OpenLoco/Ui/ScrollFlags.hpp>
+#include <OpenLoco/Ui/Widget.h>
+#include <OpenLoco/Ui/WindowType.h>
+#include <OpenLoco/Viewport.hpp>
+#include <OpenLoco/World/Company.h>
+#include <OpenLoco/ZoomLevel.hpp>
 #include <optional>
 #include <sfl/small_vector.hpp>
 

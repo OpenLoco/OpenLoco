@@ -21,10 +21,6 @@ namespace OpenLoco
 {
     static CommandLineOptions _cmdlineOptions;
 
-    static int uncompressFile(const CommandLineOptions& options);
-    static int simulate(const CommandLineOptions& options);
-    static int compare(const CommandLineOptions& options);
-
     const CommandLineOptions& getCommandLineOptions()
     {
         return _cmdlineOptions;
