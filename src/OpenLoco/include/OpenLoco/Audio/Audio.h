@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Location.hpp"
-#include "Types.hpp"
 #include <OpenLoco/Audio/AudioEngine.h>
 #include <OpenLoco/Engine/World.hpp>
+#include <OpenLoco/Location.hpp>
+#include <OpenLoco/Types.hpp>
 #include <cmath>
 #include <optional>
 #include <string>

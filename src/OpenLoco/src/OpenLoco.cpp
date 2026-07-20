@@ -178,14 +178,9 @@ namespace OpenLoco
 
     void initialise()
     {
-        const auto& cfg = Config::get();
-
         _last_tick_time = Platform::getTime();
 
         std::srand(std::time(nullptr));
-
-        Ui::createWindow(cfg.display);
-        Audio::initialiseDSound();
 
         Input::Shortcuts::initialize();
         World::TileManager::allocateMapElements();
@@ -206,18 +201,6 @@ namespace OpenLoco
 
         ObjectManager::loadIndex();
         ScenarioManager::loadIndex();
-
-        const auto& cmdLineOptions = getCommandLineOptions();
-        if (cmdLineOptions.action == CommandLineAction::intro)
-        {
-            Intro::state(Intro::State::begin);
-        }
-        else
-        {
-            Intro::state(Intro::State::end);
-        }
-
-        Title::start();
     }
 
     static bool loadFile(const fs::path& path)
@@ -737,16 +720,6 @@ namespace OpenLoco
 
     void simulateGame(const fs::path& savePath, int32_t ticks)
     {
-        Config::read();
-
-        if (getCommandLineOptions().locomotionDataPath.has_value())
-        {
-            auto& cfg = Config::get();
-            cfg.locoInstallPath = getCommandLineOptions().locomotionDataPath.value();
-        }
-
-        Environment::resolvePaths();
-
         try
         {
             initialise();
