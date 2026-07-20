@@ -45,15 +45,14 @@ namespace OpenLoco
     template<>
     struct DataSerialization<TestStruct>
     {
-        static void encode(const TestStruct& src, DataSerilizer& ds)
-        {
-            ds.encodeAll(src.a, src.b, src.c, src.d, src.e, src.f, src.g);
-        }
-
-        static void decode(TestStruct& dest, DataSerilizer& ds)
-        {
-            ds.decodeAll(dest.a, dest.b, dest.c, dest.d, dest.e, dest.f, dest.g);
-        }
+        using Fields = FieldList<
+            &TestStruct::a,
+            &TestStruct::b,
+            &TestStruct::c,
+            &TestStruct::d,
+            &TestStruct::e,
+            &TestStruct::f,
+            &TestStruct::g>;
     };
 
     template<>

@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Stream.hpp"
 #include <type_traits>
 
@@ -68,6 +69,11 @@ namespace OpenLoco
         Stream& _stream;
     };
 
+    template<auto... Fields>
+    struct FieldList
+    {
+    };
+
     template<typename T>
     struct DataSerialization
     {
@@ -78,12 +84,30 @@ namespace OpenLoco
     template<typename T>
     void DataSerilizer::encode(const T& src)
     {
-        DataSerialization<T>::encode(src, *this);
+        if constexpr (requires { typename DataSerialization<T>::Fields; })
+        {
+            [&]<auto... Fields>(FieldList<Fields...>) {
+                (encode(src.*Fields), ...);
+            }(typename DataSerialization<T>::Fields{});
+        }
+        else
+        {
+            DataSerialization<T>::encode(src, *this);
+        }
     }
 
     template<typename T>
     void DataSerilizer::decode(T& dest)
     {
-        DataSerialization<T>::decode(dest, *this);
+        if constexpr (requires { typename DataSerialization<T>::Fields; })
+        {
+            [&]<auto... Fields>(FieldList<Fields...>) {
+                (decode(dest.*Fields), ...);
+            }(typename DataSerialization<T>::Fields{});
+        }
+        else
+        {
+            DataSerialization<T>::decode(dest, *this);
+        }
     }
 }
