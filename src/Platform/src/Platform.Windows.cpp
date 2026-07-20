@@ -29,6 +29,14 @@ namespace OpenLoco::Platform
 {
     static constexpr auto kSingleInstanceMutexName = L"OpenLocoMutex";
 
+    void initialise()
+    {
+        // Ensures that assert dialogs allow for ignoring them (not the default behaviour for console subsystem)
+        _set_error_mode(_OUT_TO_MSGBOX);
+
+        CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+    }
+
     uint32_t getTime()
     {
         return timeGetTime();

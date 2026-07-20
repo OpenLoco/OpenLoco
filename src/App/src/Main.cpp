@@ -20,19 +20,6 @@
 #include <SDL3/SDL_main.h>
 #include <iostream>
 
-#ifdef _WIN32
-// timeGetTime is unavailable if we use lean and mean
-// #define WIN32_LEAN_AND_MEAN
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
-#include <objbase.h>
-#include <windows.h>
-
-// `small` is used as a type in `windows.h`
-#undef small
-#endif
-
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco
@@ -359,21 +346,16 @@ namespace OpenLoco
 
 int main(int argc, const char** argv)
 {
+    OpenLoco::Platform::initialise();
+
     auto options = OpenLoco::parseCommandLine(OpenLoco::Platform::getCmdLineVector(argc, argv));
-
-#ifdef WIN32
-    // Ensures that assert dialogs allow for ignoring them (not the default behaviour for console subsystem)
-    _set_error_mode(_OUT_TO_MSGBOX);
-
-    CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-#endif
+    if (!options)
+    {
+        OpenLoco::printHelp();
+        return EXIT_FAILURE;
+    }
 
     SDL_SetMainReady();
-    int result = OpenLoco::main(std::move(*options));
 
-#ifdef _WIN32
-    CoUninitialize();
-#endif
-
-    return result;
+    return OpenLoco::main(std::move(*options));
 }
