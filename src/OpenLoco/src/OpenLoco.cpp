@@ -182,8 +182,8 @@ namespace OpenLoco
 
         std::srand(std::time(nullptr));
 
+        Input::Shortcuts::initialize();
         World::TileManager::allocateMapElements();
-        Environment::resolvePaths();
         Localisation::enumerateLanguages();
         Localisation::loadLanguageFile();
         startupChecks();
@@ -793,15 +793,18 @@ namespace OpenLoco
         Logging::info("{}", Version::getVersionInfo());
         Logging::info("{}", Version::getPlatformInfo());
 
+        setCommandLineOptions(options);
+
+        const auto& cfg = Config::read();
+
         Environment::setLocale();
+        Environment::resolvePaths();
 
         auto ret = runCommandLineOnlyCommand(options);
         if (ret)
         {
             return *ret;
         }
-
-        setCommandLineOptions(options);
 
         if (!OpenLoco::Platform::isRunningInWine())
         {
@@ -818,11 +821,6 @@ namespace OpenLoco
 
         try
         {
-            Input::Shortcuts::initialize();
-
-            const auto& cfg = Config::read();
-            Environment::resolvePaths();
-
             Ui::createWindow(cfg.display);
             Audio::initialiseDSound();
             run();
