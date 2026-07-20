@@ -1,5 +1,6 @@
 #include <OpenLoco/Core/BinaryStream.h>
 #include <OpenLoco/Core/DataSerialization.h>
+#include <OpenLoco/Core/Reflection.hpp>
 #include <array>
 #include <gtest/gtest.h>
 
@@ -43,16 +44,16 @@ namespace OpenLoco
 {
 
     template<>
-    struct DataSerialization<TestStruct>
+    struct Reflection<TestStruct>
     {
         using Fields = FieldList<
-            &TestStruct::a,
-            &TestStruct::b,
-            &TestStruct::c,
-            &TestStruct::d,
-            &TestStruct::e,
-            &TestStruct::f,
-            &TestStruct::g>;
+            Serializable<&TestStruct::a>,
+            Serializable<&TestStruct::b>,
+            Serializable<&TestStruct::c>,
+            Serializable<&TestStruct::d>,
+            Serializable<&TestStruct::e>,
+            Serializable<&TestStruct::f>,
+            Serializable<&TestStruct::g>>;
     };
 
     template<>
