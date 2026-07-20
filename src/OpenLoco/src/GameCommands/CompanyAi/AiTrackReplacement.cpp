@@ -201,6 +201,10 @@ namespace OpenLoco::GameCommands
         }
 
         auto* trackSeqEntry = getTrackElement(args.pos, args.rotation, args.trackObjectId, args.trackId, args.sequenceIndex, companyId);
+        if (trackSeqEntry == nullptr)
+        {
+            return GameCommands::kFailure;
+        }
         auto* trackObj = ObjectManager::get<TrackObject>(args.trackObjectId);
         if (trackObj == nullptr)
         {
