@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Reflection.hpp"
 #include "Stream.hpp"
 #include <algorithm>
 #include <array>
@@ -126,11 +127,6 @@ namespace OpenLoco
         Stream& _stream;
     };
 
-    template<auto... Fields>
-    struct FieldList
-    {
-    };
-
     template<typename T>
     struct DataSerialization
     {
@@ -141,11 +137,11 @@ namespace OpenLoco
     template<typename T>
     void DataSerilizer::encode(const T& src)
     {
-        if constexpr (requires { typename DataSerialization<T>::Fields; })
+        if constexpr (requires { typename Reflection<T>::Fields; })
         {
-            [&]<auto... Fields>(FieldList<Fields...>) {
-                (encode(src.*Fields), ...);
-            }(typename DataSerialization<T>::Fields{});
+            [&]<typename... Fields>(FieldList<Fields...>) {
+                (encode(src.*Fields::field), ...);
+            }(typename Reflection<T>::Fields{});
         }
         else
         {
@@ -156,11 +152,11 @@ namespace OpenLoco
     template<typename T>
     void DataSerilizer::decode(T& dest)
     {
-        if constexpr (requires { typename DataSerialization<T>::Fields; })
+        if constexpr (requires { typename Reflection<T>::Fields; })
         {
-            [&]<auto... Fields>(FieldList<Fields...>) {
-                (decode(dest.*Fields), ...);
-            }(typename DataSerialization<T>::Fields{});
+            [&]<typename... Fields>(FieldList<Fields...>) {
+                (decode(dest.*Fields::field), ...);
+            }(typename Reflection<T>::Fields{});
         }
         else
         {
