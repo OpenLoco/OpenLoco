@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Company.h"
-#include "LabelFrame.h"
-#include "Map/Tile.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Prng.h>
+#include <OpenLoco/LabelFrame.h>
+#include <OpenLoco/Map/Tile.h>
 #include <limits>
 #include <optional>
 

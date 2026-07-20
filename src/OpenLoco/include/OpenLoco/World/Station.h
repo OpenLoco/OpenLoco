@@ -1,12 +1,12 @@
 #pragma once
 
-#include "LabelFrame.h"
-#include "Localisation/StringManager.h"
-#include "Map/Tile.h"
-#include "Speed.hpp"
-#include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Numerics.hpp>
+#include <OpenLoco/LabelFrame.h>
+#include <OpenLoco/Localisation/StringManager.h>
+#include <OpenLoco/Map/Tile.h>
+#include <OpenLoco/Speed.hpp>
+#include <OpenLoco/Types.hpp>
 #include <cstdint>
 #include <limits>
 #include <optional>

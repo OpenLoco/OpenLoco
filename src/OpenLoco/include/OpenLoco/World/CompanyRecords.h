@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Speed.hpp"
-#include "Types.hpp"
+#include <OpenLoco/Speed.hpp>
+#include <OpenLoco/Types.hpp>
 
 namespace OpenLoco::CompanyManager
 {

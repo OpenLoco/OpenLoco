@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Engine/Limits.h"
 #include "Industry.h"
-#include "Objects/IndustryObject.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/LocoFixedVector.hpp>
+#include <OpenLoco/Engine/Limits.h>
+#include <OpenLoco/Objects/IndustryObject.h>
 #include <array>
 #include <cstddef>
 

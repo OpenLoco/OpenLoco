@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Engine/Limits.h"
-#include "Map/Tile.h"
-#include "Map/TileLoop.hpp"
-#include "Types.hpp"
 #include <OpenLoco/Core/BitSet.hpp>
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Prng.h>
+#include <OpenLoco/Engine/Limits.h>
+#include <OpenLoco/Map/Tile.h>
+#include <OpenLoco/Map/TileLoop.hpp>
+#include <OpenLoco/Types.hpp>
 #include <limits>
 #include <span>
 
