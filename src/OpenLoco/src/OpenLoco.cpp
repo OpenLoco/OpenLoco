@@ -178,9 +178,14 @@ namespace OpenLoco
 
     static void initialise()
     {
+        const auto& cfg = Config::get();
+
         _last_tick_time = Platform::getTime();
 
         std::srand(std::time(nullptr));
+
+        Ui::createWindow(cfg.display);
+        Audio::initialiseDSound();
 
         Input::Shortcuts::initialize();
         World::TileManager::allocateMapElements();
@@ -705,7 +710,7 @@ namespace OpenLoco
         }
     }
 
-    static void update()
+    void update()
     {
         auto timeNow = Clock::now();
         auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(timeNow - _lastUpdate).count() / 1'000'000.0;
@@ -723,24 +728,6 @@ namespace OpenLoco
         {
             fixedUpdate();
         }
-    }
-
-    // 0x00406386
-    static void run()
-    {
-#ifdef _WIN32
-        CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-#endif
-        initialise();
-
-        while (Input::processMessages())
-        {
-            update();
-        }
-
-#ifdef _WIN32
-        CoUninitialize();
-#endif
     }
 
     uint16_t getTimeSinceLastTick()
@@ -783,72 +770,4 @@ namespace OpenLoco
         tickLogic(ticks);
     }
 
-    // 0x00406D13
-    static int main(const CommandLineOptions& options)
-    {
-        // Bootstrap the logging system.
-        Logging::initialize(options.logLevels);
-
-        // Always print the product name, version, and platform info first.
-        Logging::info("{}", Version::getVersionInfo());
-        Logging::info("{}", Version::getPlatformInfo());
-
-        setCommandLineOptions(options);
-
-        const auto& cfg = Config::read();
-
-        Environment::setLocale();
-        Environment::resolvePaths();
-
-        auto ret = runCommandLineOnlyCommand(options);
-        if (ret)
-        {
-            return *ret;
-        }
-
-        if (!OpenLoco::Platform::isRunningInWine())
-        {
-            CrashHandler::AppInfo appInfo;
-            appInfo.name = "OpenLoco";
-            appInfo.version = Version::getVersionInfo();
-
-            _exHandler = CrashHandler::init(appInfo);
-        }
-        else
-        {
-            Logging::warn("Detected wine, not installing crash handler as it doesn't provide useful data. Consider using native builds of OpenLoco instead.");
-        }
-
-        try
-        {
-            Ui::createWindow(cfg.display);
-            Audio::initialiseDSound();
-            run();
-            exitCleanly();
-        }
-        catch (const std::exception& e)
-        {
-            Logging::error("Exception: {}", e.what());
-            Ui::showMessageBox("Exception", e.what());
-            exitCleanly();
-        }
-        catch (...)
-        {
-            Ui::showMessageBox("Exception", "Unsure what threw the exception!");
-            exitCleanly();
-        }
-    }
-
-    int main(std::vector<std::string>&& argv)
-    {
-        auto options = parseCommandLine(std::move(argv));
-        if (options)
-        {
-            return main(*options);
-        }
-        else
-        {
-            return 1;
-        }
-    }
 }
