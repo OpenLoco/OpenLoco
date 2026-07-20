@@ -176,14 +176,14 @@ namespace OpenLoco
         autosaveReset();
     }
 
-    static void initialise()
+    void initialise()
     {
         _last_tick_time = Platform::getTime();
 
         std::srand(std::time(nullptr));
 
+        Input::Shortcuts::initialize();
         World::TileManager::allocateMapElements();
-        Environment::resolvePaths();
         Localisation::enumerateLanguages();
         Localisation::loadLanguageFile();
         startupChecks();
@@ -201,18 +201,6 @@ namespace OpenLoco
 
         ObjectManager::loadIndex();
         ScenarioManager::loadIndex();
-
-        const auto& cmdLineOptions = getCommandLineOptions();
-        if (cmdLineOptions.action == CommandLineAction::intro)
-        {
-            Intro::state(Intro::State::begin);
-        }
-        else
-        {
-            Intro::state(Intro::State::end);
-        }
-
-        Title::start();
     }
 
     static bool loadFile(const fs::path& path)
@@ -705,7 +693,7 @@ namespace OpenLoco
         }
     }
 
-    static void update()
+    void update()
     {
         auto timeNow = Clock::now();
         auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(timeNow - _lastUpdate).count() / 1'000'000.0;
@@ -725,24 +713,6 @@ namespace OpenLoco
         }
     }
 
-    // 0x00406386
-    static void run()
-    {
-#ifdef _WIN32
-        CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-#endif
-        initialise();
-
-        while (Input::processMessages())
-        {
-            update();
-        }
-
-#ifdef _WIN32
-        CoUninitialize();
-#endif
-    }
-
     uint16_t getTimeSinceLastTick()
     {
         return _time_since_last_tick;
@@ -750,16 +720,6 @@ namespace OpenLoco
 
     void simulateGame(const fs::path& savePath, int32_t ticks)
     {
-        Config::read();
-
-        if (getCommandLineOptions().locomotionDataPath.has_value())
-        {
-            auto& cfg = Config::get();
-            cfg.locoInstallPath = getCommandLineOptions().locomotionDataPath.value();
-        }
-
-        Environment::resolvePaths();
-
         try
         {
             initialise();
@@ -783,74 +743,4 @@ namespace OpenLoco
         tickLogic(ticks);
     }
 
-    // 0x00406D13
-    static int main(const CommandLineOptions& options)
-    {
-        // Bootstrap the logging system.
-        Logging::initialize(options.logLevels);
-
-        // Always print the product name, version, and platform info first.
-        Logging::info("{}", Version::getVersionInfo());
-        Logging::info("{}", Version::getPlatformInfo());
-
-        Environment::setLocale();
-
-        auto ret = runCommandLineOnlyCommand(options);
-        if (ret)
-        {
-            return *ret;
-        }
-
-        setCommandLineOptions(options);
-
-        if (!OpenLoco::Platform::isRunningInWine())
-        {
-            CrashHandler::AppInfo appInfo;
-            appInfo.name = "OpenLoco";
-            appInfo.version = Version::getVersionInfo();
-
-            _exHandler = CrashHandler::init(appInfo);
-        }
-        else
-        {
-            Logging::warn("Detected wine, not installing crash handler as it doesn't provide useful data. Consider using native builds of OpenLoco instead.");
-        }
-
-        try
-        {
-            Input::Shortcuts::initialize();
-
-            const auto& cfg = Config::read();
-            Environment::resolvePaths();
-
-            Ui::createWindow(cfg.display);
-            Audio::initialiseDSound();
-            run();
-            exitCleanly();
-        }
-        catch (const std::exception& e)
-        {
-            Logging::error("Exception: {}", e.what());
-            Ui::showMessageBox("Exception", e.what());
-            exitCleanly();
-        }
-        catch (...)
-        {
-            Ui::showMessageBox("Exception", "Unsure what threw the exception!");
-            exitCleanly();
-        }
-    }
-
-    int main(std::vector<std::string>&& argv)
-    {
-        auto options = parseCommandLine(std::move(argv));
-        if (options)
-        {
-            return main(*options);
-        }
-        else
-        {
-            return 1;
-        }
-    }
 }

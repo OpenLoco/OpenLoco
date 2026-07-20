@@ -2,8 +2,8 @@
 
 #include "BuildingCommon.h"
 #include "Object.h"
-#include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <OpenLoco/Types.hpp>
 #include <span>
 
 namespace OpenLoco

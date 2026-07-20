@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Graphics/Gfx.h"
-#include "Graphics/ImageIds.h"
-#include "Localisation/FormatArguments.hpp"
-#include "Localisation/StringIds.h"
-#include "Localisation/StringManager.h"
+#include <OpenLoco/Graphics/Gfx.h>
+#include <OpenLoco/Graphics/ImageIds.h>
+#include <OpenLoco/Localisation/FormatArguments.hpp>
+#include <OpenLoco/Localisation/StringIds.h>
+#include <OpenLoco/Localisation/StringManager.h>
 #include <array>
 #include <cstdint>
 

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Objects/Object.h"
-#include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/FileSystem.hpp>
+#include <OpenLoco/Objects/Object.h>
+#include <OpenLoco/Types.hpp>
 #include <cstdint>
 #include <memory>
 #include <vector>

@@ -9,6 +9,10 @@
 
 namespace OpenLoco::Platform
 {
+    void initialise()
+    {
+    }
+
     uint32_t getTime()
     {
         struct timespec spec;

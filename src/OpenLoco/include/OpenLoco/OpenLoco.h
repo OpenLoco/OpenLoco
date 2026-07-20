@@ -21,9 +21,10 @@ namespace OpenLoco
     void resetSubsystems();
     void simulateGame(const fs::path& path, int32_t ticks);
 
+    void initialise();
+    void update();
     void sub_431695(uint16_t var_F253A0);
     uint16_t getTimeSinceLastTick();
-    int main(std::vector<std::string>&& argv);
     bool promptTickLoop(std::function<bool()> tickAction);
     [[noreturn]] void exitCleanly();
     [[noreturn]] void exitWithError(StringId titleStringId, StringId messageStringId);

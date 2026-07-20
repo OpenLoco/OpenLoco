@@ -7,6 +7,7 @@
 
 namespace OpenLoco::Platform
 {
+    void initialise();
     uint32_t getTime();
     fs::path getUserDirectory();
     fs::path promptDirectory(const std::string& title, void* hwnd);

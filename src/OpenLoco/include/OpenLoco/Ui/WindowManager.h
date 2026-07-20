@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Localisation/FormatArguments.hpp"
-#include "Localisation/StringManager.h"
 #include "Window.h"
-#include <Map/Track/TrackModSection.h>
 #include <OpenLoco/Engine/World.hpp>
+#include <OpenLoco/Localisation/FormatArguments.hpp>
+#include <OpenLoco/Localisation/StringManager.h>
+#include <OpenLoco/Map/Track/TrackModSection.h>
 #include <cstddef>
 #include <functional>
 #include <string_view>
