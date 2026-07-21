@@ -302,6 +302,10 @@ namespace OpenLoco
         setCommandLineOptions(options);
 
         Config::read();
+        if (options.locomotionDataPath.has_value())
+        {
+            Config::get().locoInstallPath = options.locomotionDataPath.value();
+        }
         Environment::setLocale();
         Environment::resolvePaths();
 
