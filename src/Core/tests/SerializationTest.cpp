@@ -47,13 +47,13 @@ namespace OpenLoco
     struct Reflection<TestStruct>
     {
         using Fields = FieldList<
-            Serializable<&TestStruct::a>,
-            Serializable<&TestStruct::b>,
-            Serializable<&TestStruct::c>,
-            Serializable<&TestStruct::d>,
-            Serializable<&TestStruct::e>,
-            Serializable<&TestStruct::f>,
-            Serializable<&TestStruct::g>>;
+            REFL_SERIALIZABLE_FIELD(TestStruct, a),
+            REFL_SERIALIZABLE_FIELD(TestStruct, b),
+            REFL_SERIALIZABLE_FIELD(TestStruct, c),
+            REFL_SERIALIZABLE_FIELD(TestStruct, d),
+            REFL_SERIALIZABLE_FIELD(TestStruct, e),
+            REFL_SERIALIZABLE_FIELD(TestStruct, f),
+            REFL_SERIALIZABLE_FIELD(TestStruct, g)>;
     };
 
     template<>
