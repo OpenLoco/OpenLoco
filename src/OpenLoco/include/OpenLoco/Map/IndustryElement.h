@@ -10,13 +10,31 @@ namespace OpenLoco
 
 namespace OpenLoco::World
 {
+    // Field 0:  C?TT'TTRR
+    // C : Is Constructed
+    // T : Element type
+    // R : Rotation
+    // ? : Unused
     constexpr uint8_t kIndustryElement0RotationMask = 0b0000'0011;
-    constexpr uint8_t kIndustryElement0Constructed = 0b1000'0000;
+    constexpr uint8_t kIndustryElement0Constructed = (1 << 7);
+
+    // Field 5: PPP?'??SS
+    // P : Section construction progress
+    // S : Sequence index
+    // ? : Unused
     constexpr uint8_t kIndustryElement5TileSequenceMask = 0b0000'0011;
     constexpr uint8_t kIndustryElement5SectionConstructionProgressMask = 0b1110'0000;
-    // The sections complete mask and random animation masks are used at mutually exclusive times
     constexpr uint16_t kIndustryElement6SectionsCompletedMask = 0b0000'0000'0011'1111;
     constexpr uint16_t kIndustryElement6RandomAnimationTypeMask = 0b0000'0000'0000'0011;
+
+    // Field 6: CCCC'CBBB'BBPA'??TT or CCCC'CBBB'BBSS'SSSS
+    // C : Colour
+    // B : Building type
+    // P : Random animation playing
+    // A : Random animation available
+    // T : Random animation type
+    // S : Section construct completed
+    // ? : Unused
     constexpr uint16_t kIndustryElement6RandomAnimationAvailable = (1 << 4);
     constexpr uint16_t kIndustryElement6RandomAnimationPlaying = (1 << 5);
     constexpr uint16_t kIndustryElement6BuildingTypeMask = 0b0000'0111'1100'0000;

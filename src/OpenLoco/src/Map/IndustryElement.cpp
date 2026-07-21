@@ -75,13 +75,13 @@ namespace OpenLoco::World
     void IndustryElement::setRandomAnimationAvailable(bool val)
     {
         _6 &= ~kIndustryElement6RandomAnimationAvailable;
-        _6 |= kIndustryElement6RandomAnimationAvailable * val;
+        _6 |= val ? kIndustryElement6RandomAnimationAvailable : 0;
     }
 
     void IndustryElement::setRandomAnimationPlaying(bool val)
     {
         _6 &= ~kIndustryElement6RandomAnimationPlaying;
-        _6 |= kIndustryElement6RandomAnimationPlaying * val;
+        _6 |= val ? kIndustryElement6RandomAnimationPlaying : 0;
     }
 
     // 0x0045769A
