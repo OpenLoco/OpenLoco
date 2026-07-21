@@ -24,8 +24,6 @@ namespace OpenLoco::World
     // ? : Unused
     constexpr uint8_t kIndustryElement5TileSequenceMask = 0b0000'0011;
     constexpr uint8_t kIndustryElement5SectionConstructionProgressMask = 0b1110'0000;
-    constexpr uint16_t kIndustryElement6SectionsCompletedMask = 0b0000'0000'0011'1111;
-    constexpr uint16_t kIndustryElement6RandomAnimationTypeMask = 0b0000'0000'0000'0011;
 
     // Field 6: CCCC'CBBB'BBPA'??TT or CCCC'CBBB'BBSS'SSSS
     // C : Colour
@@ -35,6 +33,8 @@ namespace OpenLoco::World
     // T : Random animation type
     // S : Section construct completed
     // ? : Unused
+    constexpr uint16_t kIndustryElement6SectionsCompletedMask = 0b0000'0000'0011'1111;
+    constexpr uint16_t kIndustryElement6RandomAnimationTypeMask = 0b0000'0000'0000'0011;
     constexpr uint16_t kIndustryElement6RandomAnimationAvailable = (1 << 4);
     constexpr uint16_t kIndustryElement6RandomAnimationPlaying = (1 << 5);
     constexpr uint16_t kIndustryElement6BuildingTypeMask = 0b0000'0111'1100'0000;
