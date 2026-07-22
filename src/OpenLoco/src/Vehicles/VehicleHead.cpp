@@ -3990,7 +3990,7 @@ namespace OpenLoco::Vehicles
                 {
                     if (hasSignal)
                     {
-                        setSignalState(pos, tad, trackObjId, 0);
+                        clearSignalStateIfPresent(pos, tad, trackObjId);
                     }
                     leaveLevelCrossing(pos, tad, 9);
                 }
@@ -6207,7 +6207,7 @@ namespace OpenLoco::Vehicles
             {
                 if (hasSignal)
                 {
-                    setSignalState(pos, tad, trackObjId, 0);
+                    clearSignalStateIfPresent(pos, tad, trackObjId);
                 }
                 leaveLevelCrossing(pos, tad, 9);
             }
@@ -6464,7 +6464,7 @@ namespace OpenLoco::Vehicles
                 tad._data = routing & World::Track::AdditionalTaDFlags::basicTaDMask;
                 if (routing & World::Track::AdditionalTaDFlags::hasSignal)
                 {
-                    setSignalState(routingPos, tad, train.tail->trackType, 0);
+                    clearSignalStateIfPresent(routingPos, tad, train.tail->trackType);
                 }
                 routingPos += World::TrackData::getUnkTrack(tad._data).pos;
             }

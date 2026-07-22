@@ -307,7 +307,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0048963F
-    void setSignalState(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags)
+    static void setSignalStateInternal(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags, const bool tolerateMissingTrack)
     {
         const auto unk1 = flags & 0xFFFF;
         assert(unk1 != 10); // Only happens if wrong function was called call getSignalState
@@ -332,7 +332,11 @@ namespace OpenLoco::Vehicles
 
             if (!res)
             {
-                // The track may have been removed while a vehicle is still routing over it.
+                if (!tolerateMissingTrack)
+                {
+                    // This shouldn't happen I think. Either way useful in debug to know.
+                    assert(false);
+                }
                 return;
             }
 
@@ -417,6 +421,16 @@ namespace OpenLoco::Vehicles
                 }
             }
         }
+    }
+
+    void setSignalState(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags)
+    {
+        setSignalStateInternal(loc, trackAndDirection, trackType, flags, false);
+    }
+
+    void clearSignalStateIfPresent(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType)
+    {
+        setSignalStateInternal(loc, trackAndDirection, trackType, 0, true);
     }
 
     // 0x004A2AF0
