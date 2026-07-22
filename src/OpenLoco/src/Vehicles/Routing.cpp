@@ -332,8 +332,7 @@ namespace OpenLoco::Vehicles
 
             if (!res)
             {
-                // This shouldn't happen I think. Either way useful in debug to know.
-                assert(false);
+                // The track may have been removed while a vehicle is still routing over it.
                 return;
             }
 
