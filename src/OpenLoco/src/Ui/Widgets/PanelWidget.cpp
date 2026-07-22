@@ -14,7 +14,7 @@ namespace OpenLoco::Ui::Widgets
             return;
         }
 
-        if (window->minHeight == window->maxHeight || window->minWidth == window->maxWidth)
+        if (window->minHeight == window->maxHeight && window->minWidth == window->maxWidth)
         {
             return;
         }
