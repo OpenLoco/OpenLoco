@@ -315,7 +315,12 @@ namespace OpenLoco::Ui
 
     static SDL_Cursor* loadCursor(Cursor& cursor)
     {
-        return SDL_CreateCursor(cursor.data, cursor.mask, 32, 32, cursor.x, cursor.y);
+        auto* sdlCursor = SDL_CreateCursor(cursor.data, cursor.mask, 32, 32, cursor.x, cursor.y);
+        if (sdlCursor == nullptr)
+        {
+            Logging::error("SDL_CreateCursor() failed: {}", SDL_GetError());
+        }
+        return sdlCursor;
     }
 
     // 0x00452001
@@ -381,16 +386,13 @@ namespace OpenLoco::Ui
     // edx: cusor_id
     void setCursor(CursorId id)
     {
-        if (_cursors.size() > 0)
+        if (SDL_SetCursor(_cursors[id]))
         {
-            if (_cursors.find(id) == _cursors.end())
-            {
-                // Default to cursor 0
-                id = CursorId::pointer;
-            }
-
             _currentCursor = id;
-            SDL_SetCursor(_cursors[id]);
+        }
+        else
+        {
+            Logging::error("SDL_SetCursor() failed for cursor {}: {}", enumValue(id), SDL_GetError());
         }
     }
 
