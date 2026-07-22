@@ -63,9 +63,9 @@ namespace OpenLoco::World::AnimationManager
             case 2:
                 return false;
             case 3:
-                return updateIndustryAnimation1(anim);
+                return updateIndustryContinuousAnimation(anim);
             case 4:
-                return updateIndustryAnimation2(anim);
+                return updateIndustryRandomAnimation(anim);
             case 5:
                 return updateBuildingAnimation1(anim);
             case 6:

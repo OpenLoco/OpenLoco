@@ -344,7 +344,7 @@ namespace OpenLoco::S5
                     dstElem.setIndustryId(static_cast<IndustryId>(d.industryId()));
                     dstElem.setSequenceIndex(d.sequenceIndex());
                     dstElem.setSectionProgress(d.sectionProgress());
-                    dstElem.setVar_6_003F(d.var6_003F());
+                    dstElem.setSectionsCompleted(d.var6_003F());
                     dstElem.setBuildingType(d.buildingType());
                     dstElem.setColour(static_cast<Colour>(d.colour()));
                     break;

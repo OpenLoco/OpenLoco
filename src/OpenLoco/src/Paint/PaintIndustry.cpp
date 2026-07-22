@@ -31,14 +31,14 @@ namespace OpenLoco::Paint
         if (!elIndustry.isConstructed())
         {
             ticks = 0;
-            numSections = elIndustry.var_6_003F();
+            numSections = elIndustry.sectionsCompleted();
             sectionProgress = elIndustry.sectionProgress();
         }
 
         std::span<const std::uint8_t> animationSequence{};
-        if ((elIndustry.var_6_003F() & (1 << 5)) && (elIndustry.var_6_003F() & (1 << 4)))
+        if (elIndustry.randomAnimationPlaying() && elIndustry.randomAnimationAvailable())
         {
-            animationSequence = indObj.getAnimationSequence(elIndustry.var_6_003F() & 0x3);
+            animationSequence = indObj.getAnimationSequence(elIndustry.randomAnimationType());
         }
 
         uint32_t buildingType = elIndustry.buildingType();
@@ -165,7 +165,7 @@ namespace OpenLoco::Paint
         auto* industry = elIndustry.industry();
         auto* indObj = industry->getObject();
 
-        ImageId baseColour(0, elIndustry.var_6_F800());
+        ImageId baseColour(0, elIndustry.colour());
         if (elIndustry.isGhost())
         {
             session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
@@ -194,7 +194,7 @@ namespace OpenLoco::Paint
             if (session.getRenderTarget()->zoomLevel <= 1)
             {
                 const auto shadowImageOffset = buildingType * 4 + indObj->shadowImageIds + rotation;
-                const ImageId shadowImage = baseColour.withIndex(shadowImageOffset).withTranslucency(Colours::getShadow(elIndustry.var_6_F800()));
+                const ImageId shadowImage = baseColour.withIndex(shadowImageOffset).withTranslucency(Colours::getShadow(elIndustry.colour()));
                 if (isMultiTile)
                 {
                     session.addToPlotListAsChild(shadowImage, imageOffset, bbOffset, bbSize);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "OpenLoco/Core/EnumFlags.hpp"
 #include "TileElement.h"
 
 namespace OpenLoco
@@ -9,6 +10,36 @@ namespace OpenLoco
 
 namespace OpenLoco::World
 {
+    // Field 0:  C?TT'TTRR
+    // C : Is Constructed
+    // T : Element type
+    // R : Rotation
+    // ? : Unused
+    constexpr uint8_t kIndustryElement0RotationMask = 0b0000'0011;
+    constexpr uint8_t kIndustryElement0Constructed = (1 << 7);
+
+    // Field 5: PPP?'??SS
+    // P : Section construction progress
+    // S : Sequence index
+    // ? : Unused
+    constexpr uint8_t kIndustryElement5TileSequenceMask = 0b0000'0011;
+    constexpr uint8_t kIndustryElement5SectionConstructionProgressMask = 0b1110'0000;
+
+    // Field 6: CCCC'CBBB'BBPA'??TT or CCCC'CBBB'BBSS'SSSS
+    // C : Colour
+    // B : Building type
+    // P : Random animation playing
+    // A : Random animation available
+    // T : Random animation type
+    // S : Section construct completed
+    // ? : Unused
+    constexpr uint16_t kIndustryElement6SectionsCompletedMask = 0b0000'0000'0011'1111;
+    constexpr uint16_t kIndustryElement6RandomAnimationTypeMask = 0b0000'0000'0000'0011;
+    constexpr uint16_t kIndustryElement6RandomAnimationAvailable = (1 << 4);
+    constexpr uint16_t kIndustryElement6RandomAnimationPlaying = (1 << 5);
+    constexpr uint16_t kIndustryElement6BuildingTypeMask = 0b0000'0111'1100'0000;
+    constexpr uint16_t kIndustryElement6ColourMask = 0b1111'1000'0000'0000;
+
 #pragma pack(push, 1)
 
     struct IndustryElement : public TileElement
@@ -29,46 +60,57 @@ namespace OpenLoco::World
         uint8_t buildingType() const;
         void setBuildingType(uint8_t type)
         {
-            _6 &= ~0x7C0;
+            _6 &= ~kIndustryElement6BuildingTypeMask;
             _6 |= type << 6;
         }
-        uint8_t rotation() const { return _0 & 0x3; }
+        uint8_t rotation() const { return _0 & kIndustryElement0RotationMask; }
         void setRotation(const uint8_t rotation)
         {
-            _0 &= ~0x3;
-            _0 |= rotation & 0x3;
+            _0 &= ~kIndustryElement0RotationMask;
+            _0 |= rotation & kIndustryElement0RotationMask;
         }
         // var_5_03
         uint8_t sequenceIndex() const;
         void setSequenceIndex(const uint8_t index)
         {
-            _5 &= ~0x3;
-            _5 |= index & 0x3;
+            _5 &= ~kIndustryElement5TileSequenceMask;
+            _5 |= index & kIndustryElement5TileSequenceMask;
         }
         // var_5_E0
         uint8_t sectionProgress() const;
         void setSectionProgress(uint8_t val);
 
-        Colour var_6_F800() const;
+        Colour colour() const;
         void setColour(Colour c)
         {
-            _6 &= ~0xF800;
+            _6 &= ~kIndustryElement6ColourMask;
             _6 |= enumValue(c) << 11;
         }
 
-        // This has two uses. When under construction it is the number of completed sections. Otherwise its animation sequence related
-        uint8_t var_6_003F() const;
-        void setVar_6_003F(uint8_t val);
+        uint8_t sectionsCompleted() const;
+        void setSectionsCompleted(uint8_t val);
 
-        bool isConstructed() const { return _0 & 0x80; }
+        bool isConstructed() const { return _0 & kIndustryElement0Constructed; }
         void setIsConstructed(bool val);
 
         bool update(const World::Pos2& loc);
+
+        bool randomAnimationPlaying() const { return _6 & kIndustryElement6RandomAnimationPlaying; }
+        void setRandomAnimationPlaying(bool val);
+
+        bool randomAnimationAvailable() const { return _6 & kIndustryElement6RandomAnimationAvailable; }
+        void setRandomAnimationAvailable(bool val);
+
+        constexpr uint8_t randomAnimationType() const
+        {
+            return _6 & kIndustryElement6RandomAnimationTypeMask;
+        }
+        void setRandomAnimationType(uint8_t type);
     };
 #pragma pack(pop)
     static_assert(sizeof(IndustryElement) == kTileElementSize);
 
     struct Animation;
-    bool updateIndustryAnimation1(const Animation& anim);
-    bool updateIndustryAnimation2(const Animation& anim);
+    bool updateIndustryContinuousAnimation(const Animation& anim);
+    bool updateIndustryRandomAnimation(const Animation& anim);
 }
