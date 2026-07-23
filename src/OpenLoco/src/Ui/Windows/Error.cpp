@@ -39,8 +39,13 @@ namespace OpenLoco::Ui::Windows::Error
             frame,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kFrame{ "frame" };
+        }
+
         static constexpr auto widgets = makeWidgets(
-            Widgets::Panel({ 0, 0 }, { 200, 42 }, WindowColour::primary)
+            Widgets::Panel(Widx::kFrame, { 0, 0 }, { 200, 42 }, WindowColour::primary)
 
         );
     }
@@ -53,9 +58,15 @@ namespace OpenLoco::Ui::Windows::Error
             innerFrame,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kFrame{ "frame" };
+            constexpr WidgetId kInnerFrame{ "innerFrame" };
+        }
+
         static constexpr auto widgets = makeWidgets(
-            Widgets::Panel({ 0, 0 }, { 250, 70 }, WindowColour::primary),
-            Widgets::Wt3Widget({ 3, 3 }, { 64, 64 }, WindowColour::secondary)
+            Widgets::Panel(Widx::kFrame, { 0, 0 }, { 250, 70 }, WindowColour::primary),
+            Widgets::Wt3Widget(Widx::kInnerFrame, { 3, 3 }, { 64, 64 }, WindowColour::secondary)
 
         );
     }
