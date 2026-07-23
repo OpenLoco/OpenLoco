@@ -10,7 +10,12 @@
 #include <iostream>
 #include <locale>
 #endif
+#include <cctype>
+#include <cstdint>
 #include <limits>
+#include <string>
+#include <string_view>
+#include <utility>
 
 namespace OpenLoco::Utility
 {

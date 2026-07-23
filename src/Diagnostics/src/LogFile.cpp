@@ -1,11 +1,16 @@
 #include "OpenLoco/Diagnostics/LogFile.h"
-#include <fmt/chrono.h>
 #include <fmt/format.h>
+#include <ostream>
 #ifdef _MSC_VER
 // Disable warning C4127: conditional expression is constant, libfmt has some code that triggers this warning.
 #pragma warning(disable : 4127)
 #endif
+#include <LogLevel.h>
+#include <chrono>
+#include <filesystem>
 #include <fmt/ostream.h>
+#include <string>
+#include <string_view>
 
 namespace OpenLoco::Diagnostics::Logging
 {

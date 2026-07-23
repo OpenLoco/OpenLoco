@@ -2,8 +2,13 @@
 
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <cassert>
+#include <filesystem>
 #include <fstream>
+#include <istream>
+#include <memory>
 #include <png.h>
+#include <stdexcept>
+#include <vector>
 
 using namespace OpenLoco::Diagnostics;
 
