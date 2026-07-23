@@ -1000,8 +1000,9 @@ namespace OpenLoco::Ui::Windows::Options
         constexpr auto kVolumeGroupHeight = kVolumeFirstSliderYOffset + (kNumVolumeSliders / kNumVolumeColumns) * kSliderRowHeight;
 
         constexpr auto kMusicGroupOffset = kVolumeGroupOffset + kVolumeGroupHeight + 4;
-        constexpr auto kPlayTitleMusicRowOffset = kNormalTextRowOffset * 1;
-        constexpr auto kMusicGroupHeight = kPlayTitleMusicRowOffset + kNormalTextRowOffset + 4;
+        constexpr auto kPlayTitleMusicRowOffset = kNormalTextRowOffset;
+        constexpr auto kPlayGameMusicRowOffset = kPlayTitleMusicRowOffset + kNormalTextRowOffset;
+        constexpr auto kMusicGroupHeight = kPlayGameMusicRowOffset + kNormalTextRowOffset + 4;
 
         static constexpr Ui::Size kWindowSize = { 366, kMusicGroupOffset + kMusicGroupHeight + 4 };
 
@@ -1029,6 +1030,7 @@ namespace OpenLoco::Ui::Windows::Options
 
                 frame_music,
                 play_title_music,
+                play_game_music,
             };
         }
 
@@ -1058,13 +1060,15 @@ namespace OpenLoco::Ui::Windows::Options
             Widgets::Slider({ kSliderSecondaryX, getSliderRowY(5) - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_ambient_volume_tip),
 
             Widgets::GroupBox({ 4, kMusicGroupOffset }, { kWindowSize.width - 8, kMusicGroupHeight }, WindowColour::secondary, StringIds::frame_music),
-            Widgets::Checkbox({ 10, kMusicGroupOffset + kPlayTitleMusicRowOffset }, { 346, 12 }, WindowColour::secondary, StringIds::play_title_music)
+            Widgets::Checkbox({ 10, kMusicGroupOffset + kPlayTitleMusicRowOffset }, { 346, 12 }, WindowColour::secondary, StringIds::play_title_music),
+            Widgets::Checkbox({ 10, kMusicGroupOffset + kPlayGameMusicRowOffset }, { 346, 12 }, WindowColour::secondary, StringIds::play_game_music, StringIds::play_game_music_tip) // TODO new stringid
 
         );
 
         static void audioDeviceMouseDown(const Window& self);
         static void audioDeviceDropdown(const Window& self, int16_t itemIndex);
         static void playTitleMusicOnMouseUp(Window& self);
+        static void playGameMusicOnMouseUp(Window& self);
         static void volumeSliderMouseDown(Window& self, WidgetIndex_t wi);
 
         // 0x004C0217, 0x004C0217
@@ -1089,10 +1093,14 @@ namespace OpenLoco::Ui::Windows::Options
                 }
             }
 
-            // Play title music checkbox
+            // Play music checkboxes
             if (Config::get().audio.playTitleMusic)
             {
                 self.activatedWidgets |= (1ULL << Widx::play_title_music);
+            }
+            if (Config::get().audio.playJukeboxMusic)
+            {
+                self.activatedWidgets |= (1ULL << Widx::play_game_music);
             }
         }
 
@@ -1130,6 +1138,9 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 case Widx::play_title_music:
                     playTitleMusicOnMouseUp(self);
+                    return;
+                case Widx::play_game_music:
+                    playGameMusicOnMouseUp(self);
                     return;
             }
         }
@@ -1222,6 +1233,32 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 Audio::stopMusic();
             }
+        }
+
+        static void playGameMusicOnMouseUp(Window& self)
+        {
+            auto& cfg = Config::get();
+
+            if (!SceneManager::isPlayMode())
+            {
+                cfg.audio.playJukeboxMusic = !cfg.audio.playJukeboxMusic;
+                Config::write();
+                self.invalidate();
+                return;
+            }
+
+            // See also ToolbarTop.cpp's audioMenuDropdown
+            if (cfg.audio.playJukeboxMusic)
+            {
+                Jukebox::disableMusic();
+            }
+            else
+            {
+                Jukebox::enableMusic();
+            }
+
+            WindowManager::invalidate(WindowType::musicJukebox);
+            self.invalidate();
         }
 
         static Audio::ChannelId widgetToChannelId(WidgetIndex_t wi)
