@@ -37,24 +37,29 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         map_generation_menu = Common::widx::w2,
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kMapGenerationMenu{ "map_generation_menu" };
+    }
+
     static constexpr auto _widgets = makeWidgets(
-        Widgets::ToolbarButton({ 0, 0 }, { 30, 28 }, WindowColour::primary),  // 0
-        Widgets::ToolbarButton({ 30, 0 }, { 30, 28 }, WindowColour::primary), // 1
-        Widgets::ToolbarButton({ 60, 0 }, { 30, 28 }, WindowColour::primary), // 2
+        Widgets::ToolbarButton(Common::Widx::kLoadsaveMenu, { 0, 0 }, { 30, 28 }, WindowColour::primary), // 0
+        Widgets::ToolbarButton(Common::Widx::kAudioMenu, { 30, 0 }, { 30, 28 }, WindowColour::primary),   // 1
+        Widgets::ToolbarButton(Widx::kMapGenerationMenu, { 60, 0 }, { 30, 28 }, WindowColour::primary),   // 2
 
-        Widgets::ToolbarButton({ 104, 0 }, { 30, 28 }, WindowColour::secondary), // 3
-        Widgets::ToolbarButton({ 134, 0 }, { 30, 28 }, WindowColour::secondary), // 4
-        Widgets::ToolbarButton({ 164, 0 }, { 30, 28 }, WindowColour::secondary), // 5
+        Widgets::ToolbarButton(Common::Widx::kZoomMenu, { 104, 0 }, { 30, 28 }, WindowColour::secondary),   // 3
+        Widgets::ToolbarButton(Common::Widx::kRotateMenu, { 134, 0 }, { 30, 28 }, WindowColour::secondary), // 4
+        Widgets::ToolbarButton(Common::Widx::kViewMenu, { 164, 0 }, { 30, 28 }, WindowColour::secondary),   // 5
 
-        Widgets::ToolbarButton({ 267, 0 }, { 30, 28 }, WindowColour::tertiary), // 6
-        Widgets::ToolbarButton({ 0, 0 }, { 1, 1 }, WindowColour::primary),      // 7
-        Widgets::ToolbarButton({ 357, 0 }, { 30, 28 }, WindowColour::tertiary), // 8
-        Widgets::ToolbarButton({ 0, 0 }, { 1, 1 }, WindowColour::primary),      // 9
-        Widgets::ToolbarButton({ 0, 0 }, { 1, 1 }, WindowColour::primary),      // 10
+        Widgets::ToolbarButton(Common::Widx::kTerraformMenu, { 267, 0 }, { 30, 28 }, WindowColour::tertiary), // 6
+        Widgets::ToolbarButton(Common::Widx::kRailroadMenu, { 0, 0 }, { 1, 1 }, WindowColour::primary),       // 7
+        Widgets::ToolbarButton(Common::Widx::kRoadMenu, { 357, 0 }, { 30, 28 }, WindowColour::tertiary),      // 8
+        Widgets::ToolbarButton(Common::Widx::kPortMenu, { 0, 0 }, { 1, 1 }, WindowColour::primary),           // 9
+        Widgets::ToolbarButton(Common::Widx::kBuildVehiclesMenu, { 0, 0 }, { 1, 1 }, WindowColour::primary),  // 10
 
-        Widgets::ToolbarButton({ 0, 0 }, { 1, 1 }, WindowColour::primary),       // 11
-        Widgets::ToolbarButton({ 0, 0 }, { 1, 1 }, WindowColour::primary),       // 12
-        Widgets::ToolbarButton({ 460, 0 }, { 30, 28 }, WindowColour::quaternary) // 13
+        Widgets::ToolbarButton(Common::Widx::kVehiclesMenu, { 0, 0 }, { 1, 1 }, WindowColour::primary),    // 11
+        Widgets::ToolbarButton(Common::Widx::kStationsMenu, { 0, 0 }, { 1, 1 }, WindowColour::primary),    // 12
+        Widgets::ToolbarButton(Common::Widx::kTownsMenu, { 460, 0 }, { 30, 28 }, WindowColour::quaternary) // 13
     );
 
     static const WindowEventList& getEvents();
@@ -252,19 +257,19 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     }
 
     // 0x0043D541
-    static void onMouseDown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseDown(Window& window, WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case Common::widx::loadsave_menu:
+            case Common::Widx::kLoadsaveMenu:
                 loadsaveMenuMouseDown(&window, widgetIndex);
                 break;
 
-            case Common::widx::audio_menu:
+            case Common::Widx::kAudioMenu:
                 audioMenuMouseDown(&window, widgetIndex);
                 break;
 
-            case widx::map_generation_menu:
+            case Widx::kMapGenerationMenu:
                 mapGenerationMenuMouseDown(&window, widgetIndex);
                 break;
 
@@ -275,19 +280,19 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     }
 
     // 0x0043D5A6
-    static void onDropdown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+    static void onDropdown(Window& window, WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case Common::widx::loadsave_menu:
+            case Common::Widx::kLoadsaveMenu:
                 loadsaveMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
-            case Common::widx::audio_menu:
+            case Common::Widx::kAudioMenu:
                 audioMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
-            case widx::map_generation_menu:
+            case Widx::kMapGenerationMenu:
                 mapGenerationMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
