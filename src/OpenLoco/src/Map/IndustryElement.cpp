@@ -372,7 +372,7 @@ namespace OpenLoco::World
                         {
                             applyToMultiTile(*elIndustry, anim.pos, isMultiTile, [](World::IndustryElement& elIndustry, const World::Pos2& pos) {
                                 Ui::ViewportManager::invalidate(pos, elIndustry.baseHeight(), elIndustry.clearHeight(), ZoomLevel::quarter);
-                                elIndustry.setRandomAnimationPlaying(true);
+                                elIndustry.setRandomAnimationAvailable(true);
                             });
                         }
                         return false;
