@@ -175,7 +175,7 @@ namespace OpenLoco::Environment
         return result;
     }
 
-    static fs::path getDefaultPathNoWarning(PathId id)
+    fs::path getDefaultPathNoWarning(PathId id)
     {
         auto basePath = getBasePath(id);
         auto subPath = getSubPath(id);
