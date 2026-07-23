@@ -69,16 +69,16 @@ strings:
   58: Too many names defined
   59: Not enough cash - requires {CURRENCY32}
   60: "{SMALLFONT}{COLOUR BLACK}Close window"
-  61: Game Initialization Failed
-  62: Unable to start game in a minimized state
-  63: Unable to initialize graphics system
-  64: CD Key Code {INT32 RAW} is not valid for your Locomotion CD!{COLOUR WINDOW_1}{COLOUR WINDOW_1}Please un-install Chris Sawyer's Locomotion and re-install with the correct CD Key Code
+  61: Game Initialisation Failed
+  62: Unable to start game in a minimised state
+  63: Unable to initialise graphics system
+  64: CD Key Code {INT32 RAW} is not valid for your Locomotion CD!{COLOUR WINDOW_1}{COLOUR WINDOW_1}Please uninstall Chris Sawyer's Locomotion and re-install with the correct CD Key Code
 
   65: "{UINT16 RAW} x {UINT16 RAW}"
   66: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{UINT16 RAW} x {UINT16 RAW}"
 
-  67: About 'Chris Sawyer's Locomotion'
-  68: Chris Sawyer's Locomotion
+  67: "About 'Chris Sawyer's Locomotion'"
+  68: "Chris Sawyer's Locomotion"
   69: "{COLOUR WINDOW_2}Version 4.02.176 (UK English)"
   70: "{COLOUR WINDOW_2}Copyright © 2004 Chris Sawyer, All Rights Reserved"
   71: "{COLOUR WINDOW_2}Designed & Programmed by Chris Sawyer"
@@ -721,7 +721,7 @@ strings:
   698: "{SMALLFONT}{COLOUR BLACK}Company Value: {CURRENCY48}{NEWLINE}Profit from vehicles: {CURRENCY48}/month"
   699: "{NEWLINE}Challenge progress: {INT16}%{STRINGID}"
   700: "{NEWLINE}Time left: {COLOUR BLACK}{INT16} years {INT16} months"
-  701: Customize Keys...
+  701: Customise Keys...
   702: Keyboard Shortcuts
   703: Reset Keys
   704: "{SMALLFONT}{COLOUR BLACK}Set all keyboard shortcuts back to default settings"
@@ -1078,7 +1078,7 @@ strings:
   1051: "{COLOUR BLACK}Scott Joplin (Performed by Peter James Adcock)"
   1052: "{COLOUR WINDOW_2}Setting Off"
   1053: "{COLOUR BLACK}Allister Brimble (Trumpet played by Brian Moore, Clarinet played by John Glanfield)"
-  1054: "{COLOUR WINDOW_2}A Traveller's Seranade"
+  1054: "{COLOUR WINDOW_2}A Traveller's Serenade"
   1055: "{COLOUR BLACK}David Punshon"
   1056: "{COLOUR WINDOW_2}Latino Trip"
   1057: "{COLOUR BLACK}David Punshon"
@@ -1574,7 +1574,7 @@ strings:
   1538: "{SMALLFONT}{COLOUR BLACK}Next music track"
   1539: Play only music for current era
   1540: Play all music
-  1541: Play customized selection of music
+  1541: Play customised selection of music
   1542: Edit selection...
   1543: "{SMALLFONT}{COLOUR BLACK}Edit the music track selection list"
   1544: Edit Music Selection
@@ -1647,7 +1647,7 @@ strings:
   1610: The Ragtime Dance
   1611: Easy Winners
   1612: Setting Off
-  1613: A Traveller's Seranade
+  1613: A Traveller's Serenade
   1614: Latino Trip
   1615: A Good Head Of Steam
   1616: Hop To The Bop
@@ -1911,7 +1911,7 @@ strings:
   1871: Allow industries to close down during game
   1872: Allow new industries to start up during game
   1873: Share additional companies/owner faces
-  1874: "{SMALLFONT}{COLOUR BLACK}Select this option to send any customized companies/owner face data files to the other computer during the connection process"
+  1874: "{SMALLFONT}{COLOUR BLACK}Select this option to send any customised companies/owner face data files to the other computer during the connection process"
   1875: "{COLOUR WINDOW_2}Forbid competing companies from using"
   1876: "{COLOUR WINDOW_2}Forbid player companies from using"
   1877: "{NEWLINE}Stops at: {STRINGID}"
@@ -2280,7 +2280,7 @@ strings:
   2225: "Construction: Remove at current position"
   2226: "Construction: Select position"
   2227: "Trains reverse at signals"
-  2228: Autopay
+  2228: "Auto-pay"
   2229: "{SMALLFONT}{COLOUR BLACK}Once per day, any current funds you have will be used to pay off your loan, if you have one."
   2230: "{COLOUR WINDOW_2}Year:"
   2231: "{COLOUR WINDOW_2}Month:"
@@ -2362,7 +2362,7 @@ strings:
   2307: "{MOVE_X 10}{STRINGID} {SPRITE}"
   2308: "»{MOVE_X 10}{STRINGID} {SPRITE}"
   2309: "{COLOUR BLACK}{STRINGID} {SPRITE}"
-  2310: "Cargoless"
+  2310: "Cargo-less"
   2311: "Disable vehicle load penalty"
   2312: "{SMALLFONT}{COLOUR BLACK}When enabled, disables the vehicle loading speed penalty when vehicle length exceeds station length"
   2313: "See-through buildings"
@@ -2442,16 +2442,16 @@ strings:
   2387: "-"
   2388: "{UINT16} music track selected"
   2389: "{UINT16} music tracks selected"
-  2390: User interface
-  2391: 'Window frame style:'
+  2390: "User interface"
+  2391: "Window frame style:"
   2392: "{SMALLFONT}{COLOUR BLACK}This is the style used to decorate windows."
-  2393: 'Gradient (default)'
-  2394: 'Solid colour'
-  2395: 'Translucent colour'
-  2396: 'Frame rate limit:'
-  2397: 'Internal speed (default)'
-  2398: 'Vertical sync'
-  2399: 'Unrestricted'
+  2393: "Gradient (default)"
+  2394: "Solid colour"
+  2395: "Translucent colour"
+  2396: "Frame rate limit:"
+  2397: "Internal speed (default)"
+  2398: "Vertical sync"
+  2399: "Unrestricted"
   2400: "Confirm move component"
   2401: "Move component"
   2402: "Moving this vehicle component will remove all cargo aboard the entire vehicle. Continue?"
@@ -2486,17 +2486,17 @@ strings:
   2431: "Descending order"
   2432: "Capacity"
   2433: "Obsolescence"
-  2434: 'Vehicle cargo'
-  2435: 'Keep vehicle cargo on modify or pickup'
-  2436: '{SMALLFONT}{COLOUR BLACK}When enabled, cargo will not be cleared from the entire vehicle when adding cars, moving cars or picking up the vehicle'
+  2434: "Vehicle cargo"
+  2435: "Keep vehicle cargo on modify or pickup"
+  2436: "{SMALLFONT}{COLOUR BLACK}When enabled, cargo will not be cleared from the entire vehicle when adding cars, moving cars or picking up the vehicle"
   2437: "Sort by"
-  2438: 'Preferred company'
-  2439: Use preferred company name when starting a new game
+  2438: "Preferred company"
+  2439: "Use preferred company name when starting a new game"
   2440: "{SMALLFONT}{COLOUR BLACK}Select this option to use the same company name every time you start a new game"
   2441: "{COLOUR WINDOW_2}Preferred company name: {COLOUR BLACK}{STRINGID}"
-  2442: Preferred Company Name
+  2442: "Preferred Company Name"
   2443: "Enter the preferred company name:"
-  2444: Can't change company name...
+  2444: "Can't change company name..."
   2445: "{STRINGID} has no nearby transit companies"
   2446: "{STRINGID} has not received any deliveries last month"
   2447: "{SMALLFONT}{COLOUR BLACK}Navigate back to the home folder for this item type"

@@ -5,6 +5,7 @@
 - Change: [#3740] Options that interfere with tutorial operation are temporarily disabled options during playback.
 - Fix: [#3776] Unchecking "Play Music" from the top toolbar does not invalidate Jukebox window.
 - Fix: [#3790] Some windows (e.g. town population) don't have a window resize handle in the bottom-right corner.
+- Fix: [#3802] Fix some spelling mistakes in the en-GB and en-US translations.
 
 26.05 (2026-05-30)
 ------------------------------------------------------------------------
