@@ -85,6 +85,38 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         scrollview_vehicle_preview,
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kFrame{ "frame" };
+        constexpr WidgetId kCaption{ "caption" };
+        constexpr WidgetId kCloseButton{ "close_button" };
+        constexpr WidgetId kPanel{ "panel" };
+        constexpr WidgetId kSearchBox{ "searchBox" };
+        constexpr WidgetId kSearchClearButton{ "searchClearButton" };
+        constexpr WidgetId kFilterLabel{ "filterLabel" };
+        constexpr WidgetId kFilterDropdown{ "filterDropdown" };
+        constexpr WidgetId kCargoLabel{ "cargoLabel" };
+        constexpr WidgetId kCargoDropdown{ "cargoDropdown" };
+        constexpr WidgetId kSortLabel{ "sortLabel" };
+        constexpr WidgetId kSortDropdown{ "sortDropdown" };
+        constexpr WidgetId kTabBuildNewTrains{ "tab_build_new_trains" };
+        constexpr WidgetId kTabBuildNewBuses{ "tab_build_new_buses" };
+        constexpr WidgetId kTabBuildNewTrucks{ "tab_build_new_trucks" };
+        constexpr WidgetId kTabBuildNewTrams{ "tab_build_new_trams" };
+        constexpr WidgetId kTabBuildNewAircraft{ "tab_build_new_aircraft" };
+        constexpr WidgetId kTabBuildNewShips{ "tab_build_new_ships" };
+        constexpr WidgetId kTabTrackType0{ "tab_track_type_0" };
+        constexpr WidgetId kTabTrackType1{ "tab_track_type_1" };
+        constexpr WidgetId kTabTrackType2{ "tab_track_type_2" };
+        constexpr WidgetId kTabTrackType3{ "tab_track_type_3" };
+        constexpr WidgetId kTabTrackType4{ "tab_track_type_4" };
+        constexpr WidgetId kTabTrackType5{ "tab_track_type_5" };
+        constexpr WidgetId kTabTrackType6{ "tab_track_type_6" };
+        constexpr WidgetId kTabTrackType7{ "tab_track_type_7" };
+        constexpr WidgetId kScrollviewVehicleSelection{ "scrollview_vehicle_selection" };
+        constexpr WidgetId kScrollviewVehiclePreview{ "scrollview_vehicle_preview" };
+    }
+
     enum scrollIdx
     {
         vehicle_selection,
@@ -223,39 +255,39 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
     // 0x5231D0
     static constexpr auto _widgets = makeWidgets(
-        Widgets::Frame({ 0, 0 }, { 380, 233 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 378, 13 }, Widgets::Caption::Style::colourText, WindowColour::primary),
-        Widgets::ImageButton({ 365, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        Widgets::Panel({ 0, 41 }, { 380, 192 }, WindowColour::secondary),
+        Widgets::Frame(Widx::kFrame, { 0, 0 }, { 380, 233 }, WindowColour::primary),
+        Widgets::Caption(Widx::kCaption, { 1, 1 }, { 378, 13 }, Widgets::Caption::Style::colourText, WindowColour::primary),
+        Widgets::ImageButton(Widx::kCloseButton, { 365, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::Panel(Widx::kPanel, { 0, 41 }, { 380, 192 }, WindowColour::secondary),
 
         // Filter options
-        Widgets::TextBox({ 4, 72 }, { 246, 14 }, WindowColour::secondary),
-        Widgets::Button({ 50, 72 }, { 38, 14 }, WindowColour::secondary, StringIds::clearInput),
-        Widgets::dropdownWidgets({ 3, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterComponents),
-        Widgets::dropdownWidgets({ 48, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterCargoSupported),
-        Widgets::dropdownWidgets({ 93, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::sortComponents),
+        Widgets::TextBox(Widx::kSearchBox, { 4, 72 }, { 246, 14 }, WindowColour::secondary),
+        Widgets::Button(Widx::kSearchClearButton, { 50, 72 }, { 38, 14 }, WindowColour::secondary, StringIds::clearInput),
+        Widgets::dropdownWidgets(Widx::kFilterLabel, Widx::kFilterDropdown, { 3, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterComponents),
+        Widgets::dropdownWidgets(Widx::kCargoLabel, Widx::kCargoDropdown, { 48, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterCargoSupported),
+        Widgets::dropdownWidgets(Widx::kSortLabel, Widx::kSortDropdown, { 93, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::sortComponents),
 
         // Primary tabs
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_train_vehicles),
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_buses),
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_trucks),
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_trams),
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_aircraft),
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_ships),
+        Widgets::Tab(Widx::kTabBuildNewTrains, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_train_vehicles),
+        Widgets::Tab(Widx::kTabBuildNewBuses, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_buses),
+        Widgets::Tab(Widx::kTabBuildNewTrucks, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_trucks),
+        Widgets::Tab(Widx::kTabBuildNewTrams, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_trams),
+        Widgets::Tab(Widx::kTabBuildNewAircraft, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_aircraft),
+        Widgets::Tab(Widx::kTabBuildNewShips, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_ships),
 
         // Secondary tabs
-        Widgets::Tab({ 5, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        Widgets::Tab({ 36, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        Widgets::Tab({ 67, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        Widgets::Tab({ 98, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        Widgets::Tab({ 129, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        Widgets::Tab({ 160, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        Widgets::Tab({ 191, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        Widgets::Tab({ 222, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        Widgets::Tab(Widx::kTabTrackType0, { 5, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        Widgets::Tab(Widx::kTabTrackType1, { 36, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        Widgets::Tab(Widx::kTabTrackType2, { 67, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        Widgets::Tab(Widx::kTabTrackType3, { 98, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        Widgets::Tab(Widx::kTabTrackType4, { 129, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        Widgets::Tab(Widx::kTabTrackType5, { 160, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        Widgets::Tab(Widx::kTabTrackType6, { 191, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        Widgets::Tab(Widx::kTabTrackType7, { 222, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
 
         // Scroll and preview areas
-        Widgets::ScrollView({ 3, 102 }, { 374, 146 }, WindowColour::secondary, Scrollbars::vertical),
-        Widgets::ScrollView({ 250, 44 }, { 180, 66 }, WindowColour::secondary, Scrollbars::none)
+        Widgets::ScrollView(Widx::kScrollviewVehicleSelection, { 3, 102 }, { 374, 146 }, WindowColour::secondary, Scrollbars::vertical),
+        Widgets::ScrollView(Widx::kScrollviewVehiclePreview, { 250, 44 }, { 180, 66 }, WindowColour::secondary, Scrollbars::none)
 
     );
 
@@ -772,20 +804,20 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C3576
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case widx::close_button:
+            case Widx::kCloseButton:
                 WindowManager::close(&window);
                 break;
 
-            case widx::tab_build_new_trains:
-            case widx::tab_build_new_buses:
-            case widx::tab_build_new_trucks:
-            case widx::tab_build_new_trams:
-            case widx::tab_build_new_aircraft:
-            case widx::tab_build_new_ships:
+            case Widx::kTabBuildNewTrains:
+            case Widx::kTabBuildNewBuses:
+            case Widx::kTabBuildNewTrucks:
+            case Widx::kTabBuildNewTrams:
+            case Widx::kTabBuildNewAircraft:
+            case Widx::kTabBuildNewShips:
             {
 
                 if (Input::hasFlag(Input::Flags::toolActive))
@@ -830,14 +862,14 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 window.moveInsideScreenEdges();
                 break;
             }
-            case widx::tab_track_type_0:
-            case widx::tab_track_type_1:
-            case widx::tab_track_type_2:
-            case widx::tab_track_type_3:
-            case widx::tab_track_type_4:
-            case widx::tab_track_type_5:
-            case widx::tab_track_type_6:
-            case widx::tab_track_type_7:
+            case Widx::kTabTrackType0:
+            case Widx::kTabTrackType1:
+            case Widx::kTabTrackType2:
+            case Widx::kTabTrackType3:
+            case Widx::kTabTrackType4:
+            case Widx::kTabTrackType5:
+            case Widx::kTabTrackType6:
+            case Widx::kTabTrackType7:
             {
                 auto tab = widxToTrackTypeTab(widgetIndex);
                 if (window.currentSecondaryTab == tab)
@@ -859,7 +891,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 break;
             }
 
-            case widx::searchClearButton:
+            case Widx::kSearchClearButton:
             {
                 inputSession.clearInput();
                 sub_4B92A5(&window);
@@ -870,9 +902,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         }
     }
 
-    static void onMouseDown(Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseDown(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        if (widgetIndex == widx::filterDropdown)
+        if (id == Widx::kFilterDropdown)
         {
             auto& dropdown = self.widgets[widx::filterLabel];
             auto numItems = Config::get().displayLockedVehicles ? 5 : 2;
@@ -912,7 +944,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 Dropdown::setItemSelected(3);
             }
         }
-        else if (widgetIndex == widx::sortDropdown)
+        else if (id == Widx::kSortDropdown)
         {
             auto& dropdown = self.widgets[widx::sortLabel];
             auto numItems = 12;
@@ -943,7 +975,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 Dropdown::setItemSelected(11);
             }
         }
-        else if (widgetIndex == widx::cargoDropdown)
+        else if (id == Widx::kCargoDropdown)
         {
             auto& dropdown = self.widgets[widx::cargoLabel];
             auto numItems = 2U;
@@ -1001,14 +1033,14 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         }
     }
 
-    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+    static void onDropdown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
     {
         if (itemIndex < 0)
         {
             return;
         }
 
-        if (widgetIndex == widx::filterDropdown)
+        if (id == Widx::kFilterDropdown)
         {
             if (itemIndex == 0)
             {
@@ -1027,7 +1059,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 _vehicleFilterFlags ^= VehicleFilterFlags::locked;
             }
         }
-        else if (widgetIndex == widx::sortDropdown)
+        else if (id == Widx::kSortDropdown)
         {
             if (itemIndex == 0)
             {
@@ -1074,7 +1106,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 _vehicleSortAscending = false;
             }
         }
-        else if (widgetIndex == widx::cargoDropdown)
+        else if (id == Widx::kCargoDropdown)
         {
             if (itemIndex >= 2)
             {
@@ -1274,9 +1306,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C37CB
-    static Ui::CursorId cursor(Window& window, WidgetIndex_t widgetIdx, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId cursor(Window& window, [[maybe_unused]] WidgetIndex_t widgetIdx, const WidgetId id, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
-        if (widgetIdx != widx::scrollview_vehicle_selection)
+        if (id != Widx::kScrollviewVehicleSelection)
         {
             return fallback;
         }
