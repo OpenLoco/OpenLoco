@@ -488,29 +488,29 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
     void onDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
-        switch (widgetIndex)
+        switch (window->widgets[widgetIndex].id)
         {
-            case widx::zoom_menu:
+            case Widx::kZoomMenu:
                 zoomMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
-            case widx::rotate_menu:
+            case Widx::kRotateMenu:
                 rotateMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
-            case widx::view_menu:
+            case Widx::kViewMenu:
                 viewMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
-            case widx::terraform_menu:
+            case Widx::kTerraformMenu:
                 terraformMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
-            case widx::road_menu:
+            case Widx::kRoadMenu:
                 roadMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
-            case widx::towns_menu:
+            case Widx::kTownsMenu:
                 townsMenuDropdown(window, widgetIndex, itemIndex);
                 break;
         }
@@ -519,29 +519,29 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     // 0x0043A071
     void onMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
-        switch (widgetIndex)
+        switch (window->widgets[widgetIndex].id)
         {
-            case widx::zoom_menu:
+            case Widx::kZoomMenu:
                 zoomMenuMouseDown(window, widgetIndex);
                 break;
 
-            case widx::rotate_menu:
+            case Widx::kRotateMenu:
                 rotateMenuMouseDown(window, widgetIndex);
                 break;
 
-            case widx::view_menu:
+            case Widx::kViewMenu:
                 viewMenuMouseDown(window, widgetIndex);
                 break;
 
-            case widx::terraform_menu:
+            case Widx::kTerraformMenu:
                 terraformMenuMouseDown(window, widgetIndex);
                 break;
 
-            case widx::road_menu:
+            case Widx::kRoadMenu:
                 roadMenuMouseDown(window, widgetIndex);
                 break;
 
-            case widx::towns_menu:
+            case Widx::kTownsMenu:
                 townsMenuMouseDown(window, widgetIndex);
                 break;
         }

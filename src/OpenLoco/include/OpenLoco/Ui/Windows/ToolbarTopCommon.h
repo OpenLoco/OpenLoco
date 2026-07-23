@@ -25,6 +25,23 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         towns_menu,
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kLoadsaveMenu{ "loadsave_menu" };
+        constexpr WidgetId kAudioMenu{ "audio_menu" };
+        constexpr WidgetId kZoomMenu{ "zoom_menu" };
+        constexpr WidgetId kRotateMenu{ "rotate_menu" };
+        constexpr WidgetId kViewMenu{ "view_menu" };
+        constexpr WidgetId kTerraformMenu{ "terraform_menu" };
+        constexpr WidgetId kRailroadMenu{ "railroad_menu" };
+        constexpr WidgetId kRoadMenu{ "road_menu" };
+        constexpr WidgetId kPortMenu{ "port_menu" };
+        constexpr WidgetId kBuildVehiclesMenu{ "build_vehicles_menu" };
+        constexpr WidgetId kVehiclesMenu{ "vehicles_menu" };
+        constexpr WidgetId kStationsMenu{ "stations_menu" };
+        constexpr WidgetId kTownsMenu{ "towns_menu" };
+    }
+
     void prepareTownWidget(Window& self);
 
     void draw(Window& window, Gfx::DrawingContext& drawingCtx);

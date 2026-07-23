@@ -50,24 +50,29 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         cheats_menu = Common::widx::w2
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kCheatsMenu{ "cheats_menu" };
+    }
+
     static constexpr auto _widgets = makeWidgets(
-        Widgets::ToolbarButton({ 0, 0 }, { 30, 28 }, WindowColour::primary),
-        Widgets::ToolbarButton({ 30, 0 }, { 30, 28 }, WindowColour::primary),
-        Widgets::ToolbarButton({ 60, 0 }, { 30, 28 }, WindowColour::primary),
+        Widgets::ToolbarButton(Common::Widx::kLoadsaveMenu, { 0, 0 }, { 30, 28 }, WindowColour::primary),
+        Widgets::ToolbarButton(Common::Widx::kAudioMenu, { 30, 0 }, { 30, 28 }, WindowColour::primary),
+        Widgets::ToolbarButton(Widx::kCheatsMenu, { 60, 0 }, { 30, 28 }, WindowColour::primary),
 
-        Widgets::ToolbarButton({ 104, 0 }, { 30, 28 }, WindowColour::secondary),
-        Widgets::ToolbarButton({ 134, 0 }, { 30, 28 }, WindowColour::secondary),
-        Widgets::ToolbarButton({ 164, 0 }, { 30, 28 }, WindowColour::secondary),
+        Widgets::ToolbarButton(Common::Widx::kZoomMenu, { 104, 0 }, { 30, 28 }, WindowColour::secondary),
+        Widgets::ToolbarButton(Common::Widx::kRotateMenu, { 134, 0 }, { 30, 28 }, WindowColour::secondary),
+        Widgets::ToolbarButton(Common::Widx::kViewMenu, { 164, 0 }, { 30, 28 }, WindowColour::secondary),
 
-        Widgets::ToolbarButton({ 267, 0 }, { 30, 28 }, WindowColour::tertiary),
-        Widgets::ToolbarButton({ 387, 0 }, { 30, 28 }, WindowColour::tertiary),
-        Widgets::ToolbarButton({ 357, 0 }, { 30, 28 }, WindowColour::tertiary),
-        Widgets::ToolbarButton({ 417, 0 }, { 30, 28 }, WindowColour::tertiary),
-        Widgets::ToolbarButton({ 417, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ToolbarButton(Common::Widx::kTerraformMenu, { 267, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ToolbarButton(Common::Widx::kRailroadMenu, { 387, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ToolbarButton(Common::Widx::kRoadMenu, { 357, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ToolbarButton(Common::Widx::kPortMenu, { 417, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ToolbarButton(Common::Widx::kBuildVehiclesMenu, { 417, 0 }, { 30, 28 }, WindowColour::tertiary),
 
-        Widgets::ToolbarButton({ 490, 0 }, { 30, 28 }, WindowColour::quaternary),
-        Widgets::ToolbarButton({ 520, 0 }, { 30, 28 }, WindowColour::quaternary),
-        Widgets::ToolbarButton({ 460, 0 }, { 30, 28 }, WindowColour::quaternary)
+        Widgets::ToolbarButton(Common::Widx::kVehiclesMenu, { 490, 0 }, { 30, 28 }, WindowColour::quaternary),
+        Widgets::ToolbarButton(Common::Widx::kStationsMenu, { 520, 0 }, { 30, 28 }, WindowColour::quaternary),
+        Widgets::ToolbarButton(Common::Widx::kTownsMenu, { 460, 0 }, { 30, 28 }, WindowColour::quaternary)
 
     );
 
@@ -727,39 +732,39 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x0043A071
-    static void onMouseDown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseDown(Window& window, WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case Common::widx::loadsave_menu:
+            case Common::Widx::kLoadsaveMenu:
                 loadsaveMenuMouseDown(&window, widgetIndex);
                 break;
 
-            case Common::widx::audio_menu:
+            case Common::Widx::kAudioMenu:
                 audioMenuMouseDown(&window, widgetIndex);
                 break;
 
-            case widx::cheats_menu:
+            case Widx::kCheatsMenu:
                 cheatsMenuMouseDown(&window, widgetIndex);
                 break;
 
-            case Common::widx::railroad_menu:
+            case Common::Widx::kRailroadMenu:
                 railroadMenuMouseDown(&window, widgetIndex);
                 break;
 
-            case Common::widx::port_menu:
+            case Common::Widx::kPortMenu:
                 portMenuMouseDown(&window, widgetIndex);
                 break;
 
-            case Common::widx::build_vehicles_menu:
+            case Common::Widx::kBuildVehiclesMenu:
                 buildVehiclesMenuMouseDown(&window, widgetIndex);
                 break;
 
-            case Common::widx::vehicles_menu:
+            case Common::Widx::kVehiclesMenu:
                 vehiclesMenuMouseDown(&window, widgetIndex);
                 break;
 
-            case Common::widx::stations_menu:
+            case Common::Widx::kStationsMenu:
                 stationsMenuMouseDown(&window, widgetIndex);
                 break;
 
@@ -769,39 +774,39 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         }
     }
 
-    static void onDropdown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+    static void onDropdown(Window& window, WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case Common::widx::loadsave_menu:
+            case Common::Widx::kLoadsaveMenu:
                 loadsaveMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
-            case Common::widx::audio_menu:
+            case Common::Widx::kAudioMenu:
                 audioMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
-            case widx::cheats_menu:
+            case Widx::kCheatsMenu:
                 cheatsMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
-            case Common::widx::railroad_menu:
+            case Common::Widx::kRailroadMenu:
                 railroadMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
-            case Common::widx::port_menu:
+            case Common::Widx::kPortMenu:
                 portMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
-            case Common::widx::build_vehicles_menu:
+            case Common::Widx::kBuildVehiclesMenu:
                 buildVehiclesMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
-            case Common::widx::vehicles_menu:
+            case Common::Widx::kVehiclesMenu:
                 vehiclesMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
-            case Common::widx::stations_menu:
+            case Common::Widx::kStationsMenu:
                 stationsMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
