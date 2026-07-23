@@ -3,6 +3,11 @@
 #include "Input.h"
 #include <cstdint>
 
+namespace OpenLoco
+{
+    class FormatArguments;
+}
+
 namespace OpenLoco::Input
 {
     enum class Shortcut : uint32_t
@@ -82,5 +87,7 @@ namespace OpenLoco::Input
         const KeyboardBinding& getBinding(Shortcut id);
 
         void setBinding(Shortcut id, uint32_t keyCode, KeyModifier modifiers);
+
+        void pushModifierStrings(FormatArguments& formatter, KeyModifier modifiers);
     }
 }

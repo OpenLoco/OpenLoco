@@ -19,9 +19,8 @@
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <OpenLoco/Utility/LookupTable.hpp>
 #include <SDL3/SDL_keyboard.h>
-#include <array>
+#include <cstddef>
 #include <unordered_map>
-#include <utility>
 
 using namespace OpenLoco::Input;
 
@@ -29,12 +28,14 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 {
     static constexpr int kRowHeight = 10; // CJK: 13
 
+    static constexpr Ui::Size kWindowSize = { 420, 238 };
+
     static constexpr auto _widgets = makeWidgets(
-        Widgets::Frame({ 0, 0 }, { 360, 238 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 358, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::keyboard_shortcuts),
-        Widgets::ImageButton({ 345, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        Widgets::Panel({ 0, 15 }, { 360, 223 }, WindowColour::secondary),
-        Widgets::ScrollView({ 4, 19 }, { 352, 202 }, WindowColour::secondary, Scrollbars::vertical, StringIds::keyboard_shortcut_list_tip),
+        Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
+        Widgets::Caption({ 1, 1 }, { kWindowSize.width - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::keyboard_shortcuts),
+        Widgets::ImageButton({ kWindowSize.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::Panel({ 0, 15 }, { kWindowSize.width, kWindowSize.height - 15 }, WindowColour::secondary),
+        Widgets::ScrollView({ 4, 19 }, { kWindowSize.width - 8, 202 }, WindowColour::secondary, Scrollbars::vertical, StringIds::keyboard_shortcut_list_tip),
         Widgets::Button({ 4, 223 }, { 150, 12 }, WindowColour::secondary, StringIds::reset_keys, StringIds::reset_keys_tip)
 
     );
@@ -67,7 +68,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         }
 
         // 0x004BF833 (create_options_window)
-        window = WindowManager::createWindowCentred(WindowType::keyboardShortcuts, { 360, 238 }, WindowFlags::none, getEvents());
+        window = WindowManager::createWindowCentred(WindowType::keyboardShortcuts, kWindowSize, WindowFlags::none, getEvents());
 
         window->setWidgets(_widgets);
         window->initScrollWidgets();
@@ -142,44 +143,6 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         }
     }
 
-    static void pushModifierStrings(FormatArguments& formatter, KeyModifier modifiers)
-    {
-        static constexpr std::pair<KeyModifier, StringId> kModifierStrings[] = {
-            { KeyModifier::leftControl, StringIds::keyboard_shortcut_modifier_ctrl },
-            { KeyModifier::rightControl, StringIds::keyboard_shortcut_modifier_right_ctrl },
-            { KeyModifier::shift, StringIds::keyboard_shortcut_modifier_shift },
-            { KeyModifier::leftAlt, StringIds::keyboard_shortcut_modifier_alt },
-            { KeyModifier::rightAlt, StringIds::keyboard_shortcut_modifier_right_alt },
-        };
-
-        std::array<StringId, std::size(kModifierStrings)> stringIds{};
-        auto count = 0U;
-
-        for (const auto& [modifier, stringId] : kModifierStrings)
-        {
-            if ((modifiers & modifier) != KeyModifier::none)
-            {
-                stringIds[count++] = stringId;
-            }
-        }
-
-        if (count == 0)
-        {
-            formatter.push(StringIds::empty);
-            return;
-        }
-
-        for (auto i = 1U; i < count; i++)
-        {
-            formatter.push(StringIds::keyboard_shortcut_modifier_pair);
-        }
-
-        for (auto i = 0U; i < count; i++)
-        {
-            formatter.push(stringIds[i]);
-        }
-    }
-
     // 0x004BE72C
     static void drawScroll(Ui::Window& self, Gfx::DrawingContext& drawingCtx, [[maybe_unused]] const uint32_t scrollIndex)
     {
@@ -224,10 +187,11 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
                 getBindingString(binding.keyCode, buffer, std::size(buffer));
             }
 
-            FormatArguments formatter{};
+            std::byte argsBuffer[32]{};
+            FormatArguments formatter{ argsBuffer, std::size(argsBuffer) };
             formatter.push(StringIds::keyboard_shortcut_list_format);
             formatter.push(ShortcutManager::getName(static_cast<Shortcut>(i)));
-            pushModifierStrings(formatter, isBound ? binding.modifiers : KeyModifier::none);
+            Input::Shortcuts::pushModifierStrings(formatter, isBound ? binding.modifiers : KeyModifier::none);
             formatter.push(baseStringId);
             formatter.push(buffer);
 

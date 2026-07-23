@@ -5,6 +5,7 @@
 #include "GameCommands/General/TogglePause.h"
 #include "GameState.h"
 #include "Input.h"
+#include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Scenario/ScenarioOptions.h"
 #include "SceneManager.h"
@@ -18,9 +19,9 @@
 #include "World/TownManager.h"
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <SDL3/SDL_keyboard.h>
-#include <array>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 using namespace OpenLoco::Ui;
@@ -883,6 +884,24 @@ namespace OpenLoco::Input::Shortcuts
         }
 
         Config::write();
+    }
+
+    void pushModifierStrings(FormatArguments& formatter, KeyModifier modifiers)
+    {
+        static constexpr std::pair<KeyModifier, StringId> kModifierStrings[] = {
+            { KeyModifier::leftControl, StringIds::keyboard_shortcut_modifier_ctrl },
+            { KeyModifier::rightControl, StringIds::keyboard_shortcut_modifier_right_ctrl },
+            { KeyModifier::shift, StringIds::keyboard_shortcut_modifier_shift },
+            { KeyModifier::leftAlt, StringIds::keyboard_shortcut_modifier_alt },
+            { KeyModifier::rightAlt, StringIds::keyboard_shortcut_modifier_right_alt },
+        };
+
+        formatter.push(StringIds::keyboard_shortcut_modifiers);
+
+        for (const auto& [modifier, stringId] : kModifierStrings)
+        {
+            formatter.push((modifiers & modifier) != KeyModifier::none ? stringId : StringIds::empty);
+        }
     }
 
     const KeyboardBinding& getBinding(Shortcut id)
