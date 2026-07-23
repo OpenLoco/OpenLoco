@@ -30,12 +30,20 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
         cancelButton,
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kCaption{ "caption" };
+        constexpr WidgetId kCloseButton{ "closeButton" };
+        constexpr WidgetId kOkButton{ "okButton" };
+        constexpr WidgetId kCancelButton{ "cancelButton" };
+    }
+
     static constexpr auto _widgets = makeWidgets(
         Widgets::Panel({ 0, 0 }, { 280, 92 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 278, 13 }, Widgets::Caption::Style::boxed, WindowColour::primary),
-        Widgets::Button({ 267, 2 }, { 11, 11 }, WindowColour::primary, StringIds::close_window_cross, StringIds::tooltip_close_window),
-        Widgets::Button({ 20, 77 }, { 100, 12 }, WindowColour::primary, StringIds::label_ok),
-        Widgets::Button({ 160, 77 }, { 100, 12 }, WindowColour::primary, StringIds::label_button_cancel)
+        Widgets::Caption(Widx::kCaption, { 1, 1 }, { 278, 13 }, Widgets::Caption::Style::boxed, WindowColour::primary),
+        Widgets::Button(Widx::kCloseButton, { 267, 2 }, { 11, 11 }, WindowColour::primary, StringIds::close_window_cross, StringIds::tooltip_close_window),
+        Widgets::Button(Widx::kOkButton, { 20, 77 }, { 100, 12 }, WindowColour::primary, StringIds::label_ok),
+        Widgets::Button(Widx::kCancelButton, { 160, 77 }, { 100, 12 }, WindowColour::primary, StringIds::label_button_cancel)
 
     );
 
@@ -118,16 +126,16 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     }
 
     // 0x004470FD
-    static void onMouseUp(Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseUp(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case widx::closeButton:
-            case widx::cancelButton:
+            case Widx::kCloseButton:
+            case Widx::kCancelButton:
                 WindowManager::close(self.type);
                 break;
 
-            case widx::okButton:
+            case Widx::kOkButton:
                 _result = true;
                 WindowManager::close(self.type);
                 break;
