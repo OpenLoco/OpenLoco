@@ -1,6 +1,5 @@
 #pragma once
 
-#include "OpenLoco/Core/EnumFlags.hpp"
 #include "TileElement.h"
 
 namespace OpenLoco
