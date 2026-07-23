@@ -14,8 +14,13 @@ namespace OpenLoco::Ui::Windows::Main
         viewport
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kViewport{ "viewport" };
+    }
+
     static constexpr auto _widgets = makeWidgets(
-        Widgets::Viewport({ 0, 0 }, { 0, 0 }, WindowColour::primary, Widget::kContentUnk)
+        Widgets::Viewport(Widx::kViewport, { 0, 0 }, { 0, 0 }, WindowColour::primary, Widget::kContentUnk)
 
     );
 
