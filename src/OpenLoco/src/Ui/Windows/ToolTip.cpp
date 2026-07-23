@@ -114,9 +114,14 @@ namespace OpenLoco::Ui::Windows::ToolTip
         text
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kText{ "text" };
+    }
+
     // 0x005234CC
     static constexpr auto _widgets = makeWidgets(
-        Widgets::Wt3Widget({ 0, 0 }, { 200, 32 }, WindowColour::primary)
+        Widgets::Wt3Widget(Widx::kText, { 0, 0 }, { 200, 32 }, WindowColour::primary)
 
     );
 
