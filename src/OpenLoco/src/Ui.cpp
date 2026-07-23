@@ -2,7 +2,6 @@
 #include "Ui/Cursor.h"
 #include <algorithm>
 #include <cmath>
-#include <map>
 
 #ifdef _WIN32
 #include <OpenLoco/Resources/Resource.h>
