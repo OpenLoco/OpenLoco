@@ -482,8 +482,10 @@ namespace OpenLoco::Ui::Windows::Town
                 }
 
                 // Draw population graph
-                uint16_t yPos1 = -town->history[i] + (self.height - 57);
-                uint16_t yPos2 = -town->history[i + 1] + (self.height - 57);
+                const uint16_t chartTop = 0;
+                const uint16_t chartBottom = self.height - 57;
+                const int16_t yPos1 = std::clamp<int16_t>(-town->history[i] + chartBottom, chartTop, chartBottom);
+                const int16_t yPos2 = std::clamp<int16_t>(-town->history[i + 1] + chartBottom, chartTop, chartBottom);
 
                 // Do not draw current segment yet; it may be zeroed.
                 if (i < town->historySize - 1)
