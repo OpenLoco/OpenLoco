@@ -72,26 +72,51 @@ namespace OpenLoco::Ui::Windows::VehicleList
         cargo_type_btn,
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kFrame{ "frame" };
+        constexpr WidgetId kCaption{ "caption" };
+        constexpr WidgetId kCloseButton{ "close_button" };
+        constexpr WidgetId kPanel{ "panel" };
+        constexpr WidgetId kTabTrains{ "tab_trains" };
+        constexpr WidgetId kTabBuses{ "tab_buses" };
+        constexpr WidgetId kTabTrucks{ "tab_trucks" };
+        constexpr WidgetId kTabTrams{ "tab_trams" };
+        constexpr WidgetId kTabAircraft{ "tab_aircraft" };
+        constexpr WidgetId kTabShips{ "tab_ships" };
+        constexpr WidgetId kCompanySelect{ "company_select" };
+        constexpr WidgetId kSortName{ "sort_name" };
+        constexpr WidgetId kSortProfit{ "sort_profit" };
+        constexpr WidgetId kSortAge{ "sort_age" };
+        constexpr WidgetId kSortReliability{ "sort_reliability" };
+        constexpr WidgetId kScrollview{ "scrollview" };
+        constexpr WidgetId kStatusBar{ "status_bar" };
+        constexpr WidgetId kFilterType{ "filter_type" };
+        constexpr WidgetId kFilterTypeBtn{ "filter_type_btn" };
+        constexpr WidgetId kCargoType{ "cargo_type" };
+        constexpr WidgetId kCargoTypeBtn{ "cargo_type_btn" };
+    }
+
     static constexpr auto _widgets = makeWidgets(
-        Widgets::Frame({ 0, 0 }, { 550, 213 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 548, 13 }, Widgets::Caption::Style::colourText, WindowColour::primary),
-        Widgets::ImageButton({ 535, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        Widgets::Panel({ 0, 41 }, { 550, 172 }, WindowColour::secondary),
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_trains),
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_buses),
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_trucks),
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_trams),
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_aircraft),
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_ships),
-        Widgets::ImageButton({ 0, 14 }, { 26, 26 }, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_select_company),
-        Widgets::TableHeader({ 4, 43 }, { 310, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_name),
-        Widgets::TableHeader({ 314, 43 }, { 100, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_profit),
-        Widgets::TableHeader({ 414, 43 }, { 65, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_age),
-        Widgets::TableHeader({ 479, 43 }, { 67, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_reliability),
-        Widgets::ScrollView({ 3, 56 }, { 544, 138 }, WindowColour::secondary, Scrollbars::vertical),
-        Widgets::Label({ 3, kWindowSize.height - 13 }, { kWindowSize.width - kResizeHandleSize, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid),
-        Widgets::dropdownWidgets({ 280 - 16, 200 }, { 120, 12 }, WindowColour::secondary, StringIds::wcolour2_stringid),
-        Widgets::dropdownWidgets({ 402 - 16, 200 }, { 150, 12 }, WindowColour::secondary, StringIds::wcolour2_stringid)
+        Widgets::Frame(Widx::kFrame, { 0, 0 }, { 550, 213 }, WindowColour::primary),
+        Widgets::Caption(Widx::kCaption, { 1, 1 }, { 548, 13 }, Widgets::Caption::Style::colourText, WindowColour::primary),
+        Widgets::ImageButton(Widx::kCloseButton, { 535, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::Panel(Widx::kPanel, { 0, 41 }, { 550, 172 }, WindowColour::secondary),
+        Widgets::Tab(Widx::kTabTrains, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_trains),
+        Widgets::Tab(Widx::kTabBuses, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_buses),
+        Widgets::Tab(Widx::kTabTrucks, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_trucks),
+        Widgets::Tab(Widx::kTabTrams, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_trams),
+        Widgets::Tab(Widx::kTabAircraft, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_aircraft),
+        Widgets::Tab(Widx::kTabShips, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_ships),
+        Widgets::ImageButton(Widx::kCompanySelect, { 0, 14 }, { 26, 26 }, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_select_company),
+        Widgets::TableHeader(Widx::kSortName, { 4, 43 }, { 310, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_name),
+        Widgets::TableHeader(Widx::kSortProfit, { 314, 43 }, { 100, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_profit),
+        Widgets::TableHeader(Widx::kSortAge, { 414, 43 }, { 65, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_age),
+        Widgets::TableHeader(Widx::kSortReliability, { 479, 43 }, { 67, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_reliability),
+        Widgets::ScrollView(Widx::kScrollview, { 3, 56 }, { 544, 138 }, WindowColour::secondary, Scrollbars::vertical),
+        Widgets::Label(Widx::kStatusBar, { 3, kWindowSize.height - 13 }, { kWindowSize.width - kResizeHandleSize, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid),
+        Widgets::dropdownWidgets(Widx::kFilterType, Widx::kFilterTypeBtn, { 280 - 16, 200 }, { 120, 12 }, WindowColour::secondary, StringIds::wcolour2_stringid),
+        Widgets::dropdownWidgets(Widx::kCargoType, Widx::kCargoTypeBtn, { 402 - 16, 200 }, { 150, 12 }, WindowColour::secondary, StringIds::wcolour2_stringid)
 
     );
 
@@ -731,30 +756,30 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C2409
-    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case widx::close_button:
+            case Widx::kCloseButton:
                 WindowManager::close(&self);
                 break;
 
-            case widx::tab_trains:
-            case widx::tab_buses:
-            case widx::tab_trucks:
-            case widx::tab_trams:
-            case widx::tab_aircraft:
-            case widx::tab_ships:
+            case Widx::kTabTrains:
+            case Widx::kTabBuses:
+            case Widx::kTabTrucks:
+            case Widx::kTabTrams:
+            case Widx::kTabAircraft:
+            case Widx::kTabShips:
             {
                 auto vehicleType = VehicleType(widgetIndex - widx::tab_trains);
                 switchTab(self, vehicleType);
                 break;
             }
 
-            case widx::sort_name:
-            case widx::sort_profit:
-            case widx::sort_age:
-            case widx::sort_reliability:
+            case Widx::kSortName:
+            case Widx::kSortProfit:
+            case Widx::kSortAge:
+            case Widx::kSortReliability:
             {
                 auto sortMode = widgetIndex - widx::sort_name;
                 if (self.sortMode == sortMode)
@@ -771,14 +796,14 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C2434
-    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        if (widgetIndex == widx::company_select)
+        if (id == Widx::kCompanySelect)
         {
             Dropdown::populateCompanySelect(&self, &self.widgets[widgetIndex]);
         }
 
-        else if (widgetIndex == widx::filter_type_btn)
+        else if (id == Widx::kFilterTypeBtn)
         {
             Widget dropdown = self.widgets[widx::filter_type];
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 2, 0x80);
@@ -787,7 +812,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::transporting_cargo);
             Dropdown::setItemSelected(self.var_850);
         }
-        else if (widgetIndex == widx::cargo_type_btn)
+        else if (id == Widx::kCargoTypeBtn)
         {
             auto index = 0;
             auto selectedIndex = -1;
@@ -862,14 +887,14 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self.invalidate();
     }
 
-    static void onDropdown(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+    static void onDropdown(Ui::Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
     {
-        if (widgetIndex == widx::company_select)
+        if (id == Widx::kCompanySelect)
         {
             return onCompanyDropdown(self, itemIndex);
         }
 
-        if (widgetIndex == filter_type_btn && itemIndex != -1)
+        if (id == Widx::kFilterTypeBtn && itemIndex != -1)
         {
             if (self.var_850 != itemIndex)
             {
@@ -878,7 +903,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             }
         }
 
-        else if (widgetIndex == cargo_type_btn && itemIndex != -1)
+        else if (id == Widx::kCargoTypeBtn && itemIndex != -1)
         {
             self.var_852 = Dropdown::getItemArgument(itemIndex, 3);
         }
@@ -911,9 +936,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C266D
-    static CursorId cursor(Window& self, WidgetIndex_t widgetIdx, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, int16_t yPos, CursorId fallback)
+    static CursorId cursor(Window& self, [[maybe_unused]] WidgetIndex_t widgetIdx, const WidgetId id, [[maybe_unused]] int16_t xPos, int16_t yPos, CursorId fallback)
     {
-        if (widgetIdx != widx::scrollview)
+        if (id != Widx::kScrollview)
         {
             return fallback;
         }
