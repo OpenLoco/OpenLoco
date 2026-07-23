@@ -285,8 +285,6 @@ namespace OpenLoco::Ui
         }
 #endif
 
-        initialiseCursors(); // must be done after SDL_Init and SDL_CreateWindow
-
         SDL_ShowWindow(_window);
     }
 
