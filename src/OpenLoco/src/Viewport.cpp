@@ -191,9 +191,9 @@ namespace OpenLoco::Ui
         zoomViewRt.x &= bitmask;
         zoomViewRt.y &= bitmask;
 
-        auto unkX = ((zoomViewRt.x - static_cast<int32_t>(viewX & bitmask)) >> zoom) + x;
+        auto unkX = ((static_cast<int32_t>(rect.origin.x & bitmask) - static_cast<int32_t>(viewX & bitmask)) >> zoom) + x;
 
-        auto unkY = ((zoomViewRt.y - static_cast<int32_t>(viewY & bitmask)) >> zoom) + y;
+        auto unkY = ((static_cast<int32_t>(rect.origin.y & bitmask) - static_cast<int32_t>(viewY & bitmask)) >> zoom) + y;
 
         zoomViewRt.pitch = rt.width + rt.pitch - (zoomViewRt.width >> zoom);
         zoomViewRt.bits = rt.bits + (unkX - rt.x) + ((unkY - rt.y) * (rt.width + rt.pitch));
