@@ -248,6 +248,7 @@ namespace OpenLoco
         initialise();
 
         Ui::createWindow(cfg.display);
+        Ui::initialiseCursors();
         Audio::initialiseDSound();
 
         const auto& cmdLineOptions = getCommandLineOptions();

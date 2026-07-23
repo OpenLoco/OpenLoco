@@ -1,9 +1,3 @@
-#include "GameStateFlags.h"
-#include "Ui/Cursor.h"
-#include <algorithm>
-#include <cmath>
-#include <map>
-
 #ifdef _WIN32
 #include <OpenLoco/Resources/Resource.h>
 
@@ -21,6 +15,7 @@
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/General/LoadSaveQuit.h"
+#include "GameStateFlags.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Gui.h"
@@ -30,6 +25,7 @@
 #include "SceneManager.h"
 #include "Tutorial.h"
 #include "Ui.h"
+#include "Ui/Cursor.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Window.h"
 #include "Ui/WindowManager.h"
@@ -47,6 +43,8 @@
 #include <SDL3/SDL_stdinc.h>
 #include <SDL3/SDL_video.h>
 #include <Ui/Widget.h>
+#include <algorithm>
+#include <cmath>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -75,7 +73,7 @@ namespace OpenLoco::Ui
     static std::vector<Resolution> _fsResolutions;
 
     static SDL_Window* _window;
-    static std::map<CursorId, SDL_Cursor*> _cursors;
+    static std::array<SDL_Cursor*, kNumCursors> _cursors;
     static CursorId _currentCursor = CursorId::pointer;
 
     static void setWindowIcon();
@@ -313,84 +311,100 @@ namespace OpenLoco::Ui
         SDL_RestoreWindow(_window);
     }
 
-    static SDL_Cursor* loadCursor(Cursor& cursor)
+    static void loadCursor(CursorId id, Cursor& cursor)
     {
-        return SDL_CreateCursor(cursor.data, cursor.mask, 32, 32, cursor.x, cursor.y);
+        auto* sdlCursor = SDL_CreateCursor(cursor.data, cursor.mask, 32, 32, cursor.x, cursor.y);
+        if (sdlCursor == nullptr)
+        {
+            Logging::error("SDL_CreateCursor() failed. CursorId: {}, Error: {}", enumValue(id), SDL_GetError());
+            return;
+        }
+
+        _cursors[enumValue(id)] = sdlCursor;
+    }
+
+    static void loadSystemCursor(CursorId id, SDL_SystemCursor sdlId)
+    {
+        auto* sdlCursor = SDL_CreateSystemCursor(sdlId);
+        if (sdlCursor == nullptr)
+        {
+            Logging::error("SDL_CreateSystemCursor() failed. CursorId: {}, SDL_SystemCursor: {}, Error: {}", enumValue(id), (int)sdlId, SDL_GetError());
+            return;
+        }
+
+        _cursors[enumValue(id)] = sdlCursor;
     }
 
     // 0x00452001
     void initialiseCursors()
     {
-        _cursors[CursorId::pointer] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_DEFAULT);
-        _cursors[CursorId::blank] = loadCursor(Cursor::blank);
-        _cursors[CursorId::upArrow] = loadCursor(Cursor::upArrow);
-        _cursors[CursorId::upDownArrow] = loadCursor(Cursor::upDownArrow);
-        _cursors[CursorId::handPointer] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_POINTER);
-        _cursors[CursorId::busy] = loadCursor(Cursor::busy);
-        _cursors[CursorId::diagonalArrows] = loadCursor(Cursor::diagonalArrows);
-        _cursors[CursorId::picker] = loadCursor(Cursor::picker);
-        _cursors[CursorId::plantTree] = loadCursor(Cursor::plantTree);
-        _cursors[CursorId::placeFountain] = loadCursor(Cursor::placeFountain);
-        _cursors[CursorId::placeStatue] = loadCursor(Cursor::placeStatue);
-        _cursors[CursorId::placeBench] = loadCursor(Cursor::placeBench);
-        _cursors[CursorId::crosshair] = loadCursor(Cursor::crosshair);
-        _cursors[CursorId::placeTrashBin] = loadCursor(Cursor::placeTrashBin);
-        _cursors[CursorId::placeLantern] = loadCursor(Cursor::placeLantern);
-        _cursors[CursorId::placeFence] = loadCursor(Cursor::placeFence);
-        _cursors[CursorId::placeFlowers] = loadCursor(Cursor::placeFlowers);
-        _cursors[CursorId::placePath] = loadCursor(Cursor::placePath);
-        _cursors[CursorId::landTool] = loadCursor(Cursor::landTool);
-        _cursors[CursorId::waterTool] = loadCursor(Cursor::waterTool);
-        _cursors[CursorId::placeHome] = loadCursor(Cursor::placeHome);
-        _cursors[CursorId::placeVolcano] = loadCursor(Cursor::placeVolcano);
-        _cursors[CursorId::footsteps] = loadCursor(Cursor::footsteps);
-        _cursors[CursorId::brush] = loadCursor(Cursor::brush);
-        _cursors[CursorId::placeBanner] = loadCursor(Cursor::placeBanner);
-        _cursors[CursorId::openHand] = loadCursor(Cursor::openHand);
-        _cursors[CursorId::dragHand] = loadCursor(Cursor::dragHand);
-        _cursors[CursorId::placeTrain] = loadCursor(Cursor::placeTrain);
-        _cursors[CursorId::placeTrainAlt] = loadCursor(Cursor::placeTrainAlt);
-        _cursors[CursorId::placeBus] = loadCursor(Cursor::placeBus);
-        _cursors[CursorId::placeBusAlt] = loadCursor(Cursor::placeBusAlt);
-        _cursors[CursorId::placeTruck] = loadCursor(Cursor::placeTruck);
-        _cursors[CursorId::placeTruckAlt] = loadCursor(Cursor::placeTruckAlt);
-        _cursors[CursorId::placeTram] = loadCursor(Cursor::placeTram);
-        _cursors[CursorId::placeTramAlt] = loadCursor(Cursor::placeTramAlt);
-        _cursors[CursorId::placePlane] = loadCursor(Cursor::placePlane);
-        _cursors[CursorId::placeShip] = loadCursor(Cursor::placeShip);
-        _cursors[CursorId::inwardArrows] = loadCursor(Cursor::inwardArrows);
-        _cursors[CursorId::placeTown] = loadCursor(Cursor::placeTown);
-        _cursors[CursorId::placeBuilding] = loadCursor(Cursor::placeBuilding);
-        _cursors[CursorId::placeFactory] = loadCursor(Cursor::placeFactory);
-        _cursors[CursorId::bulldozerTool] = loadCursor(Cursor::bulldozerTool);
-        _cursors[CursorId::placeSignal] = loadCursor(Cursor::placeSignal);
-        _cursors[CursorId::placeHQ] = loadCursor(Cursor::placeHQ);
-        _cursors[CursorId::placeStation] = loadCursor(Cursor::placeStation);
+        loadSystemCursor(CursorId::pointer, SDL_SYSTEM_CURSOR_DEFAULT);
+        loadCursor(CursorId::blank, Cursor::blank);
+        loadCursor(CursorId::upArrow, Cursor::upArrow);
+        loadCursor(CursorId::upDownArrow, Cursor::upDownArrow);
+        loadSystemCursor(CursorId::handPointer, SDL_SYSTEM_CURSOR_POINTER);
+        loadCursor(CursorId::busy, Cursor::busy);
+        loadCursor(CursorId::diagonalArrows, Cursor::diagonalArrows);
+        loadCursor(CursorId::picker, Cursor::picker);
+        loadCursor(CursorId::plantTree, Cursor::plantTree);
+        loadCursor(CursorId::placeFountain, Cursor::placeFountain);
+        loadCursor(CursorId::placeStatue, Cursor::placeStatue);
+        loadCursor(CursorId::placeBench, Cursor::placeBench);
+        loadCursor(CursorId::crosshair, Cursor::crosshair);
+        loadCursor(CursorId::placeTrashBin, Cursor::placeTrashBin);
+        loadCursor(CursorId::placeLantern, Cursor::placeLantern);
+        loadCursor(CursorId::placeFence, Cursor::placeFence);
+        loadCursor(CursorId::placeFlowers, Cursor::placeFlowers);
+        loadCursor(CursorId::placePath, Cursor::placePath);
+        loadCursor(CursorId::landTool, Cursor::landTool);
+        loadCursor(CursorId::waterTool, Cursor::waterTool);
+        loadCursor(CursorId::placeHome, Cursor::placeHome);
+        loadCursor(CursorId::placeVolcano, Cursor::placeVolcano);
+        loadCursor(CursorId::footsteps, Cursor::footsteps);
+        loadCursor(CursorId::brush, Cursor::brush);
+        loadCursor(CursorId::placeBanner, Cursor::placeBanner);
+        loadCursor(CursorId::openHand, Cursor::openHand);
+        loadCursor(CursorId::dragHand, Cursor::dragHand);
+        loadCursor(CursorId::placeTrain, Cursor::placeTrain);
+        loadCursor(CursorId::placeTrainAlt, Cursor::placeTrainAlt);
+        loadCursor(CursorId::placeBus, Cursor::placeBus);
+        loadCursor(CursorId::placeBusAlt, Cursor::placeBusAlt);
+        loadCursor(CursorId::placeTruck, Cursor::placeTruck);
+        loadCursor(CursorId::placeTruckAlt, Cursor::placeTruckAlt);
+        loadCursor(CursorId::placeTram, Cursor::placeTram);
+        loadCursor(CursorId::placeTramAlt, Cursor::placeTramAlt);
+        loadCursor(CursorId::placePlane, Cursor::placePlane);
+        loadCursor(CursorId::placeShip, Cursor::placeShip);
+        loadCursor(CursorId::inwardArrows, Cursor::inwardArrows);
+        loadCursor(CursorId::placeTown, Cursor::placeTown);
+        loadCursor(CursorId::placeBuilding, Cursor::placeBuilding);
+        loadCursor(CursorId::placeFactory, Cursor::placeFactory);
+        loadCursor(CursorId::bulldozerTool, Cursor::bulldozerTool);
+        loadCursor(CursorId::placeSignal, Cursor::placeSignal);
+        loadCursor(CursorId::placeHQ, Cursor::placeHQ);
+        loadCursor(CursorId::placeStation, Cursor::placeStation);
     }
 
     void disposeCursors()
     {
-        for (auto cursor : _cursors)
+        for (auto*& cursor : _cursors)
         {
-            SDL_DestroyCursor(cursor.second);
+            SDL_DestroyCursor(cursor);
+            cursor = nullptr;
         }
-        _cursors.clear();
     }
 
     // 0x00407BA3
     // edx: cusor_id
     void setCursor(CursorId id)
     {
-        if (_cursors.size() > 0)
+        if (SDL_SetCursor(_cursors[enumValue(id)]))
         {
-            if (_cursors.find(id) == _cursors.end())
-            {
-                // Default to cursor 0
-                id = CursorId::pointer;
-            }
-
             _currentCursor = id;
-            SDL_SetCursor(_cursors[id]);
+        }
+        else
+        {
+            Logging::error("SDL_SetCursor() failed for cursor {}: {}", enumValue(id), SDL_GetError());
         }
     }
 
