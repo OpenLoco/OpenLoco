@@ -313,7 +313,7 @@ strings:
   295: "{STRINGID} Oilfield"
   296: "{STRINGID} Mines"
   297: "{STRINGID} Docks"
-  298: "{STRINGID} Annexe"
+  298: "{STRINGID} Annex"
   299: "{STRINGID} Sidings"
   300: "{STRINGID} Branch"
   301: Upper {STRINGID}
@@ -1042,8 +1042,8 @@ strings:
   1015: "{OUTLINE}{COLOUR WINDOW_2}(Press a key or mouse button to take control)"
   1016: Another instance of Chris Sawyer's Locomotion is already running
 
-  1017: Music Acknowledgements...
-  1018: Music Acknowledgements
+  1017: Music Acknowledgments...
+  1018: Music Acknowledgments
   1019: "{COLOUR BLACK}Copyright © Chris Sawyer"
   1020: "{COLOUR WINDOW_2}Locomotion Title"
   1021: "{COLOUR BLACK}John Broomhall (Guitar played by Keith Thompson)"
@@ -1079,7 +1079,7 @@ strings:
   1051: "{COLOUR BLACK}Scott Joplin (Performed by Peter James Adcock)"
   1052: "{COLOUR WINDOW_2}Setting Off"
   1053: "{COLOUR BLACK}Allister Brimble (Trumpet played by Brian Moore, Clarinet played by John Glanfield)"
-  1054: "{COLOUR WINDOW_2}A Traveller's Seranade"
+  1054: "{COLOUR WINDOW_2}A Traveller's Serenade"
   1055: "{COLOUR BLACK}David Punshon"
   1056: "{COLOUR WINDOW_2}Latino Trip"
   1057: "{COLOUR BLACK}David Punshon"
@@ -1113,7 +1113,7 @@ strings:
   1084: File is not a single player saved game
   1085: File is not a two player saved game
   1086: Please wait...
-  1087: Initialising...
+  1087: Initializing...
   1088: Loading...
   1089: "Installing new data: "
 
@@ -1648,7 +1648,7 @@ strings:
   1610: The Ragtime Dance
   1611: Easy Winners
   1612: Setting Off
-  1613: A Traveller's Seranade
+  1613: A Traveller's Serenade
   1614: Latino Trip
   1615: A Good Head Of Steam
   1616: Hop To The Bop

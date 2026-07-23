@@ -72,7 +72,7 @@ strings:
   61: Game Initialisation Failed
   62: Unable to start game in a minimised state
   63: Unable to initialise graphics system
-  64: CD Key Code {INT32 RAW} is not valid for your Locomotion CD!{COLOUR WINDOW_1}{COLOUR WINDOW_1}Please un-install Chris Sawyer's Locomotion and re-install with the correct CD Key Code
+  64: CD Key Code {INT32 RAW} is not valid for your Locomotion CD!{COLOUR WINDOW_1}{COLOUR WINDOW_1}Please uninstall Chris Sawyer's Locomotion and re-install with the correct CD Key Code
 
   65: "{UINT16 RAW} x {UINT16 RAW}"
   66: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{UINT16 RAW} x {UINT16 RAW}"
