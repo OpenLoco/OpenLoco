@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Input.h"
 #include <cstdint>
 
 namespace OpenLoco::Input
@@ -62,8 +63,24 @@ namespace OpenLoco::Input
         openDebugWindow,
     };
 
+    constexpr uint32_t kInvalidKeyCode = 0xFFFFFFFF;
+
+    struct KeyboardBinding
+    {
+        uint32_t keyCode = kInvalidKeyCode;
+        KeyModifier modifiers = KeyModifier::invalid;
+    };
+
     namespace Shortcuts
     {
         void initialize();
+
+        void loadBindings();
+
+        void resetBindings();
+
+        const KeyboardBinding& getBinding(Shortcut id);
+
+        void setBinding(Shortcut id, uint32_t keyCode, KeyModifier modifiers);
     }
 }

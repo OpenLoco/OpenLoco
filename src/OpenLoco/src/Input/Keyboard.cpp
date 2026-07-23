@@ -253,8 +253,8 @@ namespace OpenLoco::Input
 
     static bool tryShortcut(Shortcut sc, uint32_t keyCode, KeyModifier modifiers)
     {
-        auto cfg = OpenLoco::Config::get();
-        if (cfg.shortcuts[sc].keyCode == keyCode && cfg.shortcuts[sc].modifiers == modifiers)
+        const auto& binding = Shortcuts::getBinding(sc);
+        if (binding.keyCode == keyCode && binding.modifiers == modifiers)
         {
             ShortcutManager::execute(sc);
             return true;
