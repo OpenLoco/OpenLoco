@@ -1,3 +1,4 @@
+#include "Vector.hpp"
 #include <array>
 #include <cstdint>
 
