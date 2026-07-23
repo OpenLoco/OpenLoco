@@ -20,13 +20,21 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         next_button,
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kPreviousFrame{ "previous_frame" };
+        constexpr WidgetId kPreviousButton{ "previous_button" };
+        constexpr WidgetId kNextFrame{ "next_frame" };
+        constexpr WidgetId kNextButton{ "next_button" };
+    }
+
     static constexpr uint16_t kWindowHeight = 32;
 
     static constexpr auto _widgets = makeWidgets(
-        Widgets::Wt3Widget({ 0, 0 }, { 200, 34 }, WindowColour::primary),
-        Widgets::ImageButton({ 2, 2 }, { 196, 30 }, WindowColour::primary),
-        Widgets::Wt3Widget({ 440, 0 }, { 200, 34 }, WindowColour::primary),
-        Widgets::ImageButton({ 442, 2 }, { 196, 30 }, WindowColour::primary)
+        Widgets::Wt3Widget(Widx::kPreviousFrame, { 0, 0 }, { 200, 34 }, WindowColour::primary),
+        Widgets::ImageButton(Widx::kPreviousButton, { 2, 2 }, { 196, 30 }, WindowColour::primary),
+        Widgets::Wt3Widget(Widx::kNextFrame, { 440, 0 }, { 200, 34 }, WindowColour::primary),
+        Widgets::ImageButton(Widx::kNextButton, { 442, 2 }, { 196, 30 }, WindowColour::primary)
 
     );
 
@@ -120,15 +128,15 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
     }
 
     // 0x0043D0ED
-    static void onMouseUp(Window&, WidgetIndex_t i, [[maybe_unused]] const WidgetId id)
+    static void onMouseUp(Window&, [[maybe_unused]] WidgetIndex_t i, const WidgetId id)
     {
-        switch (i)
+        switch (id)
         {
-            case widx::previous_button:
+            case Widx::kPreviousButton:
                 EditorController::goToPreviousStep();
                 break;
 
-            case widx::next_button:
+            case Widx::kNextButton:
                 EditorController::goToNextStep();
                 break;
         }
