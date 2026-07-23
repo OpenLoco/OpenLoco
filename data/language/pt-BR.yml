@@ -1023,7 +1023,7 @@ strings:
   997: "SHIFT + "
   998: "CTRL + "
   999: Alterar Atalhos de Teclado
-  1000: "{COLOUR WINDOW_2}Pressione uma nova tecla de atalho para:{NEWLINE}{NEWLINE_SMALLER}{COLOUR BLACK}“{STRINGID}”"
+  1000: "{COLOUR WINDOW_2}Pressione uma nova tecla de atalho para:
   1001: "{SMALLFONT}{COLOUR BLACK}Clique na descrição do atalho para selecionar uma nova tecla"
   1002: Mover câmera quando o cursor estiver na borda da tela
   1003: "{SMALLFONT}{COLOUR BLACK}Move a câmera quando o cursor do mouse estiver na borda da tela"

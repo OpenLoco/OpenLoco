@@ -1023,7 +1023,7 @@ strings:
   997: "UMSCHALT + "
   998: "STRG + "
   999: Tastatur-Kurzbefehl ändern
-  1000: "{COLOUR WINDOW_2}Eingabe des neuen Kurzbefehls für:{NEWLINE}{NEWLINE_SMALLER}{COLOUR BLACK}“{STRINGID}”"
+  1000: "{COLOUR WINDOW_2}Eingabe des neuen Kurzbefehls für:
   1001: "{SMALLFONT}{COLOUR BLACK}Zum Auswählen einer neuen Taste auf Kurzbefehl-Beschreibung klicken"
   1002: Ansicht durch Bewegung des Zeigers am Bildschirmrand scrollen
   1003: "{SMALLFONT}{COLOUR BLACK}Wählen Sie, ob die Ansicht durch Bewegung des Zeigers am Bildschirmrand gescrollt werden soll"

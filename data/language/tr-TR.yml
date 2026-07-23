@@ -1024,7 +1024,7 @@ strings:
   997: "SHIFT + "
   998: "CTRL + "
   999: Klavye Kisayolunu Degistir
-  1000: "{COLOUR WINDOW_2}Yeni kisayol tusuna basiniz:{NEWLINE}{NEWLINE_SMALLER}{COLOUR BLACK}“{STRINGID}”"
+  1000: "{COLOUR WINDOW_2}Yeni kisayol tusuna basiniz:
   1001: "{SMALLFONT}{COLOUR BLACK}Yeni tusu seçmek için kisayol açiklamasina tiklayin"
   1002: Imleç ekran kenarindayken görünümü kaydir
   1003: "{SMALLFONT}{COLOUR BLACK}Fare imleci ekranin kenarindayken görünümün kaydirilip kaydirilmayacagini seçin"

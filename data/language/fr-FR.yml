@@ -1023,7 +1023,7 @@ strings:
   997: "MAJ + "
   998: "CTRL + "
   999: Modifier raccourci clavier
-  1000: "{COLOUR WINDOW_2}Nouveau raccourci clavier pour : {NEWLINE}{NEWLINE_SMALLER}{COLOUR BLACK}“{STRINGID}”"
+  1000: "{COLOUR WINDOW_2}Nouveau raccourci clavier pour :
   1001: "{SMALLFONT}{COLOUR BLACK}Cliquer sur la description du raccourci pour choisir une nouvelle touche"
   1002: Faire défiler la vue quand le curseur atteint le bord de l'écran
   1003: "{SMALLFONT}{COLOUR BLACK}Choisir s'il faut faire défiler la vue quand le curseur atteint le bord de l'écran"

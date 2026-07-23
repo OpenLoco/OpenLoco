@@ -1023,7 +1023,7 @@ strings:
   997: "SHIFT + "
   998: "CTRL + "
   999: 修改快捷键
-  1000: "{COLOUR WINDOW_2}为以下功能按下新的快捷键:{NEWLINE}{NEWLINE_SMALLER}{COLOUR BLACK}“{STRINGID}”"
+  1000: "{COLOUR WINDOW_2}为以下功能按下新的快捷键:
   1001: "{SMALLFONT}{COLOUR BLACK}点击快捷键描述以选择新的键位"
   1002: 当光标悬停在屏幕边缘时滚动视角
   1003: "{SMALLFONT}{COLOUR BLACK}选择是否在光标悬停在屏幕边缘时滚动视角"

@@ -1023,7 +1023,7 @@ strings:
   997: "Maiusc + "
   998: "Ctrl + "
   999: Cambia comando da tastiera
-  1000: "{COLOUR WINDOW_2}Premi il nuovo comando da tastiera per:{NEWLINE}{NEWLINE_SMALLER}{COLOUR BLACK}“{STRINGID}”"
+  1000: "{COLOUR WINDOW_2}Premi il nuovo comando da tastiera per:
   1001: "{SMALLFONT}{COLOUR BLACK}Clicca sulla funzione per cambiare il comando da tastiera"
   1002: Scorrimento visuale con puntatore a bordo schermo
   1003: "{SMALLFONT}{COLOUR BLACK}Fa scorrere la visuale quando il puntatore del mouse viene portato ai bordi dello schermo"
