@@ -9,13 +9,10 @@
 
 namespace OpenLoco::Ui::Windows::Main
 {
-    namespace widx
+    enum widx
     {
-        enum
-        {
-            viewport
-        };
-    }
+        viewport
+    };
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Viewport({ 0, 0 }, { 0, 0 }, WindowColour::primary, Widget::kContentUnk)

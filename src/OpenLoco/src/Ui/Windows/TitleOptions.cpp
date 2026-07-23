@@ -14,13 +14,10 @@ namespace OpenLoco::Ui::Windows::TitleOptions
 {
     static constexpr Ui::Size kWindowSize = { 60, 15 };
 
-    namespace Widx
+    enum widx
     {
-        enum
-        {
-            options_button
-        };
-    }
+        options_button
+    };
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::ImageButton({ 0, 0 }, kWindowSize, WindowColour::secondary)
@@ -55,7 +52,7 @@ namespace OpenLoco::Ui::Windows::TitleOptions
         window.draw(drawingCtx);
 
         int16_t x = window.x + window.width / 2;
-        int16_t y = window.y + window.widgets[Widx::options_button].top + 2;
+        int16_t y = window.y + window.widgets[widx::options_button].top + 2;
         Ui::Point origin = { x, y };
 
         auto argsBuf = FormatArgumentsBuffer{};
@@ -74,7 +71,7 @@ namespace OpenLoco::Ui::Windows::TitleOptions
 
         switch (widgetIndex)
         {
-            case Widx::options_button:
+            case widx::options_button:
                 Ui::Windows::Options::open();
                 break;
         }

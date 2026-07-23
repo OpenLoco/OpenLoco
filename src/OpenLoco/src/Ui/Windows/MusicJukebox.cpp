@@ -22,25 +22,22 @@ namespace OpenLoco::Ui::Windows::MusicJukebox
 {
     static constexpr Ui::Size kWindowSize = { 366, 109 };
 
-    namespace Widx
+    enum widx
     {
-        enum
-        {
-            frame,
-            caption,
-            close_button,
-            panel,
-            currently_playing_label,
-            currently_playing,
-            currently_playing_btn,
-            music_controls_stop,
-            music_controls_play,
-            music_controls_next,
-            music_playlist,
-            music_playlist_btn,
-            edit_selection
-        };
-    }
+        frame,
+        caption,
+        close_button,
+        panel,
+        currently_playing_label,
+        currently_playing,
+        currently_playing_btn,
+        music_controls_stop,
+        music_controls_play,
+        music_controls_next,
+        music_playlist,
+        music_playlist_btn,
+        edit_selection
+    };
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
@@ -68,13 +65,13 @@ namespace OpenLoco::Ui::Windows::MusicJukebox
     // 0x004C0217, 0x004C0217
     static void prepareDraw(Window& self)
     {
-        self.widgets[Widx::frame].right = self.width - 1;
-        self.widgets[Widx::frame].bottom = self.height - 1;
-        self.widgets[Widx::panel].right = self.width - 1;
-        self.widgets[Widx::panel].bottom = self.height - 1;
-        self.widgets[Widx::caption].right = self.width - 2;
-        self.widgets[Widx::close_button].left = self.width - 15;
-        self.widgets[Widx::close_button].right = self.width - 15 + 12;
+        self.widgets[widx::frame].right = self.width - 1;
+        self.widgets[widx::frame].bottom = self.height - 1;
+        self.widgets[widx::panel].right = self.width - 1;
+        self.widgets[widx::panel].bottom = self.height - 1;
+        self.widgets[widx::caption].right = self.width - 2;
+        self.widgets[widx::close_button].left = self.width - 15;
+        self.widgets[widx::close_button].right = self.width - 15 + 12;
 
         // Currently playing music track
         {
@@ -91,7 +88,7 @@ namespace OpenLoco::Ui::Windows::MusicJukebox
                     songName = StringIds::music_locomotion_title;
                 }
             }
-            auto args = FormatArguments(self.widgets[Widx::currently_playing].textArgs);
+            auto args = FormatArguments(self.widgets[widx::currently_playing].textArgs);
             args.push(songName);
         }
 
@@ -101,17 +98,17 @@ namespace OpenLoco::Ui::Windows::MusicJukebox
         // Jukebox controls (stop/play/skip)
         if (!SceneManager::isPlayMode())
         {
-            self.disabledWidgets |= (1ULL << Widx::currently_playing) | (1ULL << Widx::currently_playing_btn) | (1ULL << Widx::music_controls_play) | (1ULL << Widx::music_controls_stop) | (1ULL << Widx::music_controls_next);
+            self.disabledWidgets |= (1ULL << widx::currently_playing) | (1ULL << widx::currently_playing_btn) | (1ULL << widx::music_controls_play) | (1ULL << widx::music_controls_stop) | (1ULL << widx::music_controls_next);
         }
         else if (Jukebox::isMusicPlaying())
         {
             // Play button appears pressed
-            self.activatedWidgets |= (1ULL << Widx::music_controls_play);
+            self.activatedWidgets |= (1ULL << widx::music_controls_play);
         }
         else
         {
             // Stop button appears pressed
-            self.activatedWidgets |= (1ULL << Widx::music_controls_stop);
+            self.activatedWidgets |= (1ULL << widx::music_controls_stop);
         }
 
         // Selected playlist
@@ -122,7 +119,7 @@ namespace OpenLoco::Ui::Windows::MusicJukebox
                 StringIds::play_custom_music_selection,
             };
 
-            auto args = FormatArguments(self.widgets[Widx::music_playlist].textArgs);
+            auto args = FormatArguments(self.widgets[widx::music_playlist].textArgs);
 
             StringId selectedPlaylistStringId = playlist_string_ids[enumValue(Config::get().audio.playlist)];
             args.push(selectedPlaylistStringId);
@@ -131,7 +128,7 @@ namespace OpenLoco::Ui::Windows::MusicJukebox
         // Edit custom playlist music selection button
         if (Config::get().audio.playlist != Config::MusicPlaylistType::custom)
         {
-            self.disabledWidgets |= (1ULL << Widx::edit_selection);
+            self.disabledWidgets |= (1ULL << widx::edit_selection);
         }
     }
 
@@ -144,23 +141,23 @@ namespace OpenLoco::Ui::Windows::MusicJukebox
     {
         switch (wi)
         {
-            case Widx::close_button:
+            case widx::close_button:
                 WindowManager::close(&self);
                 return;
 
-            case Widx::music_controls_stop:
+            case widx::music_controls_stop:
                 stopMusic(self);
                 return;
 
-            case Widx::music_controls_play:
+            case widx::music_controls_play:
                 playMusic(self);
                 return;
 
-            case Widx::music_controls_next:
+            case widx::music_controls_next:
                 playNextSong(self);
                 return;
 
-            case Widx::edit_selection:
+            case widx::edit_selection:
                 MusicSelection::open();
                 return;
         }
@@ -170,10 +167,10 @@ namespace OpenLoco::Ui::Windows::MusicJukebox
     {
         switch (wi)
         {
-            case Widx::music_playlist_btn:
+            case widx::music_playlist_btn:
                 musicPlaylistMouseDown(self);
                 break;
-            case Widx::currently_playing_btn:
+            case widx::currently_playing_btn:
                 currentlyPlayingMouseDown(self);
                 break;
         }
@@ -183,10 +180,10 @@ namespace OpenLoco::Ui::Windows::MusicJukebox
     {
         switch (widgetIndex)
         {
-            case Widx::music_playlist_btn:
+            case widx::music_playlist_btn:
                 musicPlaylistDropdown(self, itemIndex);
                 break;
-            case Widx::currently_playing_btn:
+            case widx::currently_playing_btn:
                 currentlyPlayingDropdown(self, itemIndex);
                 break;
         }
@@ -197,7 +194,7 @@ namespace OpenLoco::Ui::Windows::MusicJukebox
     {
         auto tracks = Jukebox::makeSelectedPlaylist();
 
-        auto& dropdown = self.widgets[Widx::currently_playing];
+        auto& dropdown = self.widgets[widx::currently_playing];
         Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), tracks.size(), 0x80);
 
         int index = -1;
@@ -257,7 +254,7 @@ namespace OpenLoco::Ui::Windows::MusicJukebox
     // 0x004C07E4
     static void musicPlaylistMouseDown(const Window& self)
     {
-        auto& dropdown = self.widgets[Widx::music_playlist];
+        auto& dropdown = self.widgets[widx::music_playlist];
         Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 3, 0x80);
 
         Dropdown::add(0, StringIds::dropdown_stringid, StringIds::play_only_music_from_current_era);

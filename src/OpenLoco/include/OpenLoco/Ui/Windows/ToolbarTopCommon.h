@@ -4,29 +4,26 @@
 
 namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 {
-    namespace Widx
+    enum widx
     {
-        enum
-        {
-            loadsave_menu,
-            audio_menu,
-            w2,
+        loadsave_menu,
+        audio_menu,
+        w2,
 
-            zoom_menu,
-            rotate_menu,
-            view_menu,
+        zoom_menu,
+        rotate_menu,
+        view_menu,
 
-            terraform_menu,
-            railroad_menu,
-            road_menu,
-            port_menu,
-            build_vehicles_menu,
+        terraform_menu,
+        railroad_menu,
+        road_menu,
+        port_menu,
+        build_vehicles_menu,
 
-            vehicles_menu,
-            stations_menu,
-            towns_menu,
-        };
-    }
+        vehicles_menu,
+        stations_menu,
+        towns_menu,
+    };
 
     void prepareTownWidget(Window& self);
 

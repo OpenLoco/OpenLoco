@@ -26,7 +26,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
 
     static std::vector<ObjectHeader> _loadErrorObjectsList;
 
-    enum Widx
+    enum widx
     {
         frame,
         title,
@@ -184,9 +184,9 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
 
         uint16_t y = 0;
         auto namePos = Point(1, y);
-        auto typePos = Point(window.widgets[Widx::typeHeader].left - 4, y);
-        auto typeWidth = window.widgets[Widx::typeHeader].width() - 6;
-        auto checksumPos = Point(window.widgets[Widx::checksumHeader].left - 4, y);
+        auto typePos = Point(window.widgets[widx::typeHeader].left - 4, y);
+        auto typeWidth = window.widgets[widx::typeHeader].width() - 6;
+        auto checksumPos = Point(window.widgets[widx::checksumHeader].left - 4, y);
         for (uint16_t i = 0; i < window.rowCount; i++)
         {
             if (y + kRowHeight < rt.y)
@@ -251,7 +251,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
     {
         switch (widgetIndex)
         {
-            case Widx::close:
+            case widx::close:
                 WindowManager::close(window.type);
                 break;
         }

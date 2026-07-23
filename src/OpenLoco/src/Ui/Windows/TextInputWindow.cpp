@@ -34,19 +34,16 @@ namespace OpenLoco::Ui::Windows::TextInput
 
     static Ui::TextInput::InputSession inputSession;
 
-    namespace Widx
+    enum widx
     {
-        enum
-        {
-            frame,
-            title,
-            close,
-            panel,
-            input,
-            charLimit,
-            ok,
-        };
-    }
+        frame,
+        title,
+        close,
+        panel,
+        input,
+        charLimit,
+        ok,
+    };
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 330, 90 }, WindowColour::primary),
@@ -96,7 +93,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         StringManager::formatString(temp, value, valueArgs);
 
         inputSession = Ui::TextInput::InputSession(temp, inputSize);
-        inputSession.calculateTextOffset(window->widgets[Widx::input].width() - 2);
+        inputSession.calculateTextOffset(window->widgets[widx::input].width() - 2);
 
         caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
 
@@ -120,15 +117,15 @@ namespace OpenLoco::Ui::Windows::TextInput
         }
 
         // TODO: Get the correct type and provide getter/setter.
-        window->widgets[Widx::title].styleData = enumValue(Widgets::Caption::Style::whiteText);
+        window->widgets[widx::title].styleData = enumValue(Widgets::Caption::Style::whiteText);
         if (window->owner != CompanyId::null)
         {
             window->flags |= WindowFlags::lighterFrame;
-            window->widgets[Widx::title].styleData = enumValue(Widgets::Caption::Style::colourText);
+            window->widgets[widx::title].styleData = enumValue(Widgets::Caption::Style::colourText);
         }
 
         // Focus the textbox element
-        Input::setFocus(window->type, window->number, Widx::input);
+        Input::setFocus(window->type, window->number, widx::input);
     }
 
     /**
@@ -184,13 +181,13 @@ namespace OpenLoco::Ui::Windows::TextInput
      */
     static void prepareDraw(Ui::Window& self)
     {
-        self.widgets[Widx::title].text = _title;
-        memcpy(self.widgets[Widx::title].textArgs.data(), _formatArgs.data(), 16);
+        self.widgets[widx::title].text = _title;
+        memcpy(self.widgets[widx::title].textArgs.data(), _formatArgs.data(), 16);
 
         const uint16_t numCharacters = static_cast<uint16_t>(inputSession.buffer.length());
         const uint16_t maxNumCharacters = inputSession.inputLenLimit;
 
-        FormatArguments args{ self.widgets[Widx::charLimit].textArgs };
+        FormatArguments args{ self.widgets[widx::charLimit].textArgs };
         args.push<uint16_t>(numCharacters);
         args.push<uint16_t>(maxNumCharacters);
     }
@@ -218,7 +215,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         Ui::Point position = Point(window.x + window.width / 2, window.y + 30);
         tr.drawStringCentredWrapped(position, window.width - 8, Colour::black, StringIds::wcolour2_stringid, args2);
 
-        auto& inputWidget = window.widgets[Widx::input];
+        auto& inputWidget = window.widgets[widx::input];
         auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(inputWidget.left + 1 + window.x, inputWidget.top + 1 + window.y, inputWidget.width() - 2, inputWidget.height() - 2));
         if (!clipped)
         {
@@ -243,7 +240,7 @@ namespace OpenLoco::Ui::Windows::TextInput
             strncpy(drawnBuffer, inputSession.buffer.c_str(), inputSession.cursorPosition);
             drawnBuffer[inputSession.cursorPosition] = '\0';
 
-            if (Input::isFocused(window.type, window.number, Widx::input))
+            if (Input::isFocused(window.type, window.number, widx::input))
             {
                 auto width = tr.getStringWidth(drawnBuffer);
                 auto cursorPos = Point(inputSession.xOffset + width, 1);
@@ -259,10 +256,10 @@ namespace OpenLoco::Ui::Windows::TextInput
     {
         switch (widgetIndex)
         {
-            case Widx::close:
+            case widx::close:
                 WindowManager::close(&window);
                 break;
-            case Widx::ok:
+            case widx::ok:
                 inputSession.sanitizeInput();
                 auto caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
                 if (caller != nullptr)
@@ -289,15 +286,15 @@ namespace OpenLoco::Ui::Windows::TextInput
     {
         if (charCode == SDLK_RETURN)
         {
-            w.callOnMouseUp(Widx::ok, w.widgets[Widx::ok].id);
+            w.callOnMouseUp(widx::ok, w.widgets[widx::ok].id);
             return true;
         }
         else if (charCode == SDLK_ESCAPE)
         {
-            w.callOnMouseUp(Widx::close, w.widgets[Widx::close].id);
+            w.callOnMouseUp(widx::close, w.widgets[widx::close].id);
             return true;
         }
-        else if (!Input::isFocused(w.type, w.number, Widx::input) || !inputSession.handleInput(charCode, keyCode))
+        else if (!Input::isFocused(w.type, w.number, widx::input) || !inputSession.handleInput(charCode, keyCode))
         {
             return false;
         }
@@ -305,7 +302,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         WindowManager::invalidate(WindowType::textInput, 0);
         inputSession.cursorFrame = 0;
 
-        int containerWidth = w.widgets[Widx::input].width() - 2;
+        int containerWidth = w.widgets[widx::input].width() - 2;
         if (inputSession.needsReoffsetting(containerWidth))
         {
             inputSession.calculateTextOffset(containerWidth);

@@ -10,13 +10,10 @@ namespace OpenLoco::Ui::Windows::TitleLogo
 {
     static constexpr Ui::Size kWindowSize = { 298, 170 };
 
-    namespace Widx
+    enum widx
     {
-        enum
-        {
-            logo
-        };
-    }
+        logo
+    };
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Wt3Widget({ 0, 0 }, kWindowSize, WindowColour::primary)
@@ -54,7 +51,7 @@ namespace OpenLoco::Ui::Windows::TitleLogo
     {
         switch (widgetIndex)
         {
-            case Widx::logo:
+            case widx::logo:
                 About::open();
                 break;
         }
