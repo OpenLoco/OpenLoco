@@ -19,7 +19,9 @@
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <OpenLoco/Utility/LookupTable.hpp>
 #include <SDL3/SDL_keyboard.h>
+#include <array>
 #include <unordered_map>
+#include <utility>
 
 using namespace OpenLoco::Input;
 
@@ -140,6 +142,44 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         }
     }
 
+    static void pushModifierStrings(FormatArguments& formatter, KeyModifier modifiers)
+    {
+        static constexpr std::pair<KeyModifier, StringId> kModifierStrings[] = {
+            { KeyModifier::leftControl, StringIds::keyboard_shortcut_modifier_ctrl },
+            { KeyModifier::rightControl, StringIds::keyboard_shortcut_modifier_right_ctrl },
+            { KeyModifier::shift, StringIds::keyboard_shortcut_modifier_shift },
+            { KeyModifier::leftAlt, StringIds::keyboard_shortcut_modifier_alt },
+            { KeyModifier::rightAlt, StringIds::keyboard_shortcut_modifier_right_alt },
+        };
+
+        std::array<StringId, std::size(kModifierStrings)> stringIds{};
+        auto count = 0U;
+
+        for (const auto& [modifier, stringId] : kModifierStrings)
+        {
+            if ((modifiers & modifier) != KeyModifier::none)
+            {
+                stringIds[count++] = stringId;
+            }
+        }
+
+        if (count == 0)
+        {
+            formatter.push(StringIds::empty);
+            return;
+        }
+
+        for (auto i = 1U; i < count; i++)
+        {
+            formatter.push(StringIds::keyboard_shortcut_modifier_pair);
+        }
+
+        for (auto i = 0U; i < count; i++)
+        {
+            formatter.push(stringIds[i]);
+        }
+    }
+
     // 0x004BE72C
     static void drawScroll(Ui::Window& self, Gfx::DrawingContext& drawingCtx, [[maybe_unused]] const uint32_t scrollIndex)
     {
@@ -176,29 +216,18 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 
             const auto& def = shortcutDefs[i];
             const auto& binding = Input::Shortcuts::getBinding(def.id);
+            const auto isBound = binding.keyCode != kInvalidKeyCode && binding.modifiers != KeyModifier::invalid;
 
-            if (binding.keyCode != kInvalidKeyCode && binding.modifiers != KeyModifier::invalid)
+            if (isBound)
             {
-                auto* ptr = buffer;
-                auto* const bufferEnd = std::end(buffer);
-
-                if ((binding.modifiers & KeyModifier::control) == KeyModifier::control)
-                {
-                    ptr = StringManager::formatString(ptr, static_cast<size_t>(bufferEnd - ptr), StringIds::keyboard_shortcut_modifier_ctrl);
-                }
-                if ((binding.modifiers & KeyModifier::shift) == KeyModifier::shift)
-                {
-                    ptr = StringManager::formatString(ptr, static_cast<size_t>(bufferEnd - ptr), StringIds::keyboard_shortcut_modifier_shift);
-                }
-
                 baseStringId = StringIds::stringptr;
-                getBindingString(binding.keyCode, ptr, static_cast<size_t>(bufferEnd - ptr));
+                getBindingString(binding.keyCode, buffer, std::size(buffer));
             }
 
             FormatArguments formatter{};
             formatter.push(StringIds::keyboard_shortcut_list_format);
             formatter.push(ShortcutManager::getName(static_cast<Shortcut>(i)));
-            formatter.push(StringIds::empty);
+            pushModifierStrings(formatter, isBound ? binding.modifiers : KeyModifier::none);
             formatter.push(baseStringId);
             formatter.push(buffer);
 

@@ -2161,6 +2161,10 @@ namespace OpenLoco::StringIds
     constexpr StringId town_not_served = 2445;
     constexpr StringId town_no_deliveries = 2446;
     constexpr StringId window_browse_home_folder_tooltip = 2447;
+    constexpr StringId keyboard_shortcut_modifier_alt = 2448;
+    constexpr StringId keyboard_shortcut_modifier_right_ctrl = 2449;
+    constexpr StringId keyboard_shortcut_modifier_right_alt = 2450;
+    constexpr StringId keyboard_shortcut_modifier_pair = 2451;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

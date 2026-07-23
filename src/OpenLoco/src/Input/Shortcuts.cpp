@@ -776,9 +776,21 @@ namespace OpenLoco::Input::Shortcuts
             {
                 res.modifiers |= KeyModifier::shift;
             }
-            else if (keyCode == SDLK_LCTRL || keyCode == SDLK_RCTRL)
+            else if (keyCode == SDLK_LCTRL)
             {
-                res.modifiers |= KeyModifier::control;
+                res.modifiers |= KeyModifier::leftControl;
+            }
+            else if (keyCode == SDLK_RCTRL)
+            {
+                res.modifiers |= KeyModifier::rightControl;
+            }
+            else if (keyCode == SDLK_LALT)
+            {
+                res.modifiers |= KeyModifier::leftAlt;
+            }
+            else if (keyCode == SDLK_RALT)
+            {
+                res.modifiers |= KeyModifier::rightAlt;
             }
             else if (keyCode == SDLK_LGUI || keyCode == SDLK_RGUI)
             {
@@ -804,9 +816,24 @@ namespace OpenLoco::Input::Shortcuts
             keyName += SDL_GetKeyName(SDLK_LSHIFT);
             keyName += kBindingDelimiter;
         }
-        if ((binding.modifiers & KeyModifier::control) != KeyModifier::none)
+        if ((binding.modifiers & KeyModifier::leftControl) != KeyModifier::none)
         {
             keyName += SDL_GetKeyName(SDLK_LCTRL);
+            keyName += kBindingDelimiter;
+        }
+        if ((binding.modifiers & KeyModifier::rightControl) != KeyModifier::none)
+        {
+            keyName += SDL_GetKeyName(SDLK_RCTRL);
+            keyName += kBindingDelimiter;
+        }
+        if ((binding.modifiers & KeyModifier::leftAlt) != KeyModifier::none)
+        {
+            keyName += SDL_GetKeyName(SDLK_LALT);
+            keyName += kBindingDelimiter;
+        }
+        if ((binding.modifiers & KeyModifier::rightAlt) != KeyModifier::none)
+        {
+            keyName += SDL_GetKeyName(SDLK_RALT);
             keyName += kBindingDelimiter;
         }
         if ((binding.modifiers & KeyModifier::unknown) != KeyModifier::none)
@@ -874,6 +901,8 @@ namespace OpenLoco::Input::Shortcuts
     void setBinding(Shortcut id, uint32_t keyCode, KeyModifier modifiers)
     {
         auto& configShortcuts = Config::get().shortcuts;
+
+        modifiers = modifiers & ~KeyModifier::cheat;
 
         for (const auto& def : ShortcutManager::getList())
         {

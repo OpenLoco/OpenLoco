@@ -49,10 +49,16 @@ namespace OpenLoco::Input
     {
         none = 0U,
         shift = 1U << 0,
-        control = 1U << 1,
+        leftControl = 1U << 1,
         unknown = 1U << 2,
+        leftAlt = 1U << 3,
+        rightControl = 1U << 4,
+        rightAlt = 1U << 5,
         cheat = 1U << 7,
         invalid = 0xFF,
+
+        control = leftControl | rightControl,
+        alt = leftAlt | rightAlt,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(KeyModifier);
 
