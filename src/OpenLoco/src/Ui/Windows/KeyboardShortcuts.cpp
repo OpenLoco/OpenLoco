@@ -1,8 +1,8 @@
-#include "Config.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
 #include "Graphics/TextRenderer.h"
+#include "Input/Shortcuts.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
@@ -151,7 +151,6 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         drawingCtx.clearSingle(shade);
 
         const auto& shortcutDefs = ShortcutManager::getList();
-        const auto& shortcuts = Config::get().shortcuts;
         auto yPos = 0;
         for (auto i = 0; i < self.rowCount; i++)
         {
@@ -177,20 +176,21 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             char buffer[128]{};
 
             const auto& def = shortcutDefs[i];
-            auto& shortcut = shortcuts.at(def.id);
-            if (shortcut.keyCode != 0xFFFFFFFF && shortcut.modifiers != KeyModifier::invalid)
+            const auto& binding = Input::Shortcuts::getBinding(def.id);
+
+            if (binding.keyCode != kInvalidKeyCode && binding.modifiers != KeyModifier::invalid)
             {
-                if ((shortcut.modifiers & KeyModifier::shift) == KeyModifier::shift)
+                if ((binding.modifiers & KeyModifier::shift) == KeyModifier::shift)
                 {
                     modifierStringId = StringIds::keyboard_shortcut_modifier_shift;
                 }
-                else if ((shortcut.modifiers & KeyModifier::control) == KeyModifier::control)
+                else if ((binding.modifiers & KeyModifier::control) == KeyModifier::control)
                 {
                     modifierStringId = StringIds::keyboard_shortcut_modifier_ctrl;
                 }
 
                 baseStringId = StringIds::stringptr;
-                getBindingString(shortcut.keyCode, buffer, std::size(buffer));
+                getBindingString(binding.keyCode, buffer, std::size(buffer));
             }
 
             FormatArguments formatter{};
@@ -224,7 +224,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     // 0x004BE832
     static void resetShortcuts(Window* self)
     {
-        Config::resetShortcuts();
+        Input::Shortcuts::resetBindings();
         self->invalidate();
     }
 

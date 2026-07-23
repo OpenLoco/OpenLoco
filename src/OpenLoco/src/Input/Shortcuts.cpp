@@ -1,4 +1,5 @@
 #include "Input/Shortcuts.h"
+#include "Config.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/General/SetGameSpeed.h"
 #include "GameCommands/General/TogglePause.h"
@@ -16,8 +17,11 @@
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
+#include <SDL3/SDL_keyboard.h>
 #include <array>
+#include <string>
 #include <unordered_map>
+#include <vector>
 
 using namespace OpenLoco::Ui;
 
@@ -740,5 +744,157 @@ namespace OpenLoco::Input::Shortcuts
         ShortcutManager::add(Shortcut::gameSpeedExtraFastForward,       StringIds::shortcut_game_speed_extra_fast_forward,      gameSpeedExtraFastForward,      "gameSpeedExtraFastForward",        "");
         ShortcutManager::add(Shortcut::openDebugWindow,                 StringIds::empty,                                       openDebugWindow,                "openDebugWindow",                  "F10");
         // clang-format on
+
+        loadBindings();
+    }
+
+    static constexpr char kBindingDelimiter = '+';
+
+    static std::vector<KeyboardBinding> _bindings;
+
+    static KeyboardBinding parseBinding(const std::string& binding)
+    {
+        if (binding.empty())
+        {
+            return KeyboardBinding{ kInvalidKeyCode, KeyModifier::invalid };
+        }
+
+        KeyboardBinding res{ kInvalidKeyCode, KeyModifier::none };
+
+        std::size_t current = 0;
+        std::size_t pos = binding.find_first_of(kBindingDelimiter, 0);
+        while (pos != std::string::npos)
+        {
+            const auto token = binding.substr(current, pos - current);
+            current = pos + 1;
+            pos = binding.find_first_of(kBindingDelimiter, current);
+
+            const auto keyCode = SDL_GetKeyFromName(token.c_str());
+
+            // Check against known modifiers
+            if (keyCode == SDLK_LSHIFT || keyCode == SDLK_RSHIFT)
+            {
+                res.modifiers |= KeyModifier::shift;
+            }
+            else if (keyCode == SDLK_LCTRL || keyCode == SDLK_RCTRL)
+            {
+                res.modifiers |= KeyModifier::control;
+            }
+            else if (keyCode == SDLK_LGUI || keyCode == SDLK_RGUI)
+            {
+                res.modifiers |= KeyModifier::unknown;
+            }
+        }
+
+        res.keyCode = SDL_GetKeyFromName(binding.substr(current).c_str());
+
+        return res;
+    }
+
+    static std::string formatBinding(const KeyboardBinding& binding)
+    {
+        if (binding.keyCode == kInvalidKeyCode || binding.modifiers == KeyModifier::invalid)
+        {
+            return {};
+        }
+
+        std::string keyName;
+        if ((binding.modifiers & KeyModifier::shift) != KeyModifier::none)
+        {
+            keyName += SDL_GetKeyName(SDLK_LSHIFT);
+            keyName += kBindingDelimiter;
+        }
+        if ((binding.modifiers & KeyModifier::control) != KeyModifier::none)
+        {
+            keyName += SDL_GetKeyName(SDLK_LCTRL);
+            keyName += kBindingDelimiter;
+        }
+        if ((binding.modifiers & KeyModifier::unknown) != KeyModifier::none)
+        {
+            keyName += SDL_GetKeyName(SDLK_LGUI);
+            keyName += kBindingDelimiter;
+        }
+
+        keyName += SDL_GetKeyName(binding.keyCode);
+
+        return keyName;
+    }
+
+    void loadBindings()
+    {
+        const auto& shortcutDefs = ShortcutManager::getList();
+        if (shortcutDefs.empty())
+        {
+            _bindings.clear();
+            return;
+        }
+
+        auto& configShortcuts = Config::get().shortcuts;
+
+        _bindings.assign(enumValue(shortcutDefs.back().id) + 1, KeyboardBinding{});
+        for (const auto& def : shortcutDefs)
+        {
+            auto it = configShortcuts.find(def.configName);
+            if (it == std::end(configShortcuts))
+            {
+                it = configShortcuts.emplace(def.configName, def.defaultBinding).first;
+            }
+
+            _bindings[enumValue(def.id)] = parseBinding(it->second);
+        }
+    }
+
+    // 0x004BE3F3
+    void resetBindings()
+    {
+        auto& configShortcuts = Config::get().shortcuts;
+
+        for (const auto& def : ShortcutManager::getList())
+        {
+            configShortcuts[def.configName] = def.defaultBinding;
+            _bindings[enumValue(def.id)] = parseBinding(def.defaultBinding);
+        }
+
+        Config::write();
+    }
+
+    const KeyboardBinding& getBinding(Shortcut id)
+    {
+        static constexpr KeyboardBinding kUnbound{};
+
+        const auto index = enumValue(id);
+        if (index >= _bindings.size())
+        {
+            return kUnbound;
+        }
+
+        return _bindings[index];
+    }
+
+    void setBinding(Shortcut id, uint32_t keyCode, KeyModifier modifiers)
+    {
+        auto& configShortcuts = Config::get().shortcuts;
+
+        for (const auto& def : ShortcutManager::getList())
+        {
+            auto& binding = _bindings[enumValue(def.id)];
+            if (def.id == id)
+            {
+                binding = KeyboardBinding{ keyCode, modifiers };
+            }
+            else if (binding.keyCode == keyCode && binding.modifiers == modifiers)
+            {
+                // Unbind any shortcut that is already using this keycode.
+                binding = KeyboardBinding{};
+            }
+            else
+            {
+                continue;
+            }
+
+            configShortcuts[def.configName] = formatBinding(binding);
+        }
+
+        Config::write();
     }
 }

@@ -3,7 +3,6 @@
 #include "Environment.h"
 #include <Message.h>
 #include <OpenLoco/Core/FileSystem.hpp>
-#include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <fstream>
 #include <locale>
 #include <yaml-cpp/yaml.h>
@@ -22,19 +21,17 @@ namespace OpenLoco::Config
 
     static void readShortcutConfig(const YAML::Node& scNode)
     {
-        const auto& shortcutDefs = Input::ShortcutManager::getList();
         auto& shortcuts = _config.shortcuts;
-        for (const auto& def : shortcutDefs)
+        shortcuts.clear();
+
+        if (!scNode.IsMap())
         {
-            auto node = scNode[def.configName];
-            if (node)
-            {
-                shortcuts[def.id] = node.as<KeyboardShortcut>();
-            }
-            else
-            {
-                shortcuts[def.id] = YAML::Node(def.defaultBinding).as<KeyboardShortcut>();
-            }
+            return;
+        }
+
+        for (const auto& entry : scNode)
+        {
+            shortcuts[entry.first.as<std::string>()] = entry.second.as<std::string>("");
         }
     }
 
@@ -333,20 +330,10 @@ namespace OpenLoco::Config
         node["usePreferredCompanyName"] = _config.usePreferredCompanyName;
 
         // Shortcuts
-        const auto& shortcuts = _config.shortcuts;
-        const auto& shortcutDefs = Input::ShortcutManager::getList();
         auto scNode = node["shortcuts"];
-        for (const auto& def : shortcutDefs)
+        for (const auto& [configName, binding] : _config.shortcuts)
         {
-            auto it = shortcuts.find(def.id);
-            if (it != std::end(shortcuts))
-            {
-                scNode[def.configName] = it->second;
-            }
-            else
-            {
-                scNode[def.configName] = "";
-            }
+            scNode[configName] = binding;
         }
         node["shortcuts"] = scNode;
 
@@ -360,21 +347,5 @@ namespace OpenLoco::Config
         }
 
         std::locale::global(backupLocale);
-    }
-
-    // 0x004BE3F3
-    void resetShortcuts()
-    {
-        const auto& shortcutDefs = Input::ShortcutManager::getList();
-
-        auto& shortcuts = _config.shortcuts;
-        shortcuts.clear();
-
-        for (const auto& def : shortcutDefs)
-        {
-            shortcuts[def.id] = YAML::Node(def.defaultBinding).as<KeyboardShortcut>();
-        }
-
-        write();
     }
 }

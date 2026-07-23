@@ -1,4 +1,3 @@
-#include "Config.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/TextRenderer.h"
@@ -92,26 +91,10 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
             return;
         }
 
-        auto& cfg = Config::get();
-
-        // Unbind any shortcuts that may be using the current keycode.
-        for (auto& [id, shortcut] : cfg.shortcuts)
-        {
-            if (shortcut.keyCode == keyCode && shortcut.modifiers == Input::getKeyModifier())
-            {
-                shortcut.keyCode = 0xFFFFFFFF;
-                shortcut.modifiers = KeyModifier::invalid;
-            }
-        }
-
-        // Assign this keybinding to the shortcut we're currently rebinding.
-        auto& shortcut = cfg.shortcuts.at(static_cast<Input::Shortcut>(_editingShortcutIndex));
-        shortcut.keyCode = keyCode;
-        shortcut.modifiers = Input::getKeyModifier();
+        Input::Shortcuts::setBinding(static_cast<Input::Shortcut>(_editingShortcutIndex), keyCode, Input::getKeyModifier());
 
         WindowManager::close(WindowType::editKeyboardShortcut);
         WindowManager::invalidate(WindowType::keyboardShortcuts);
-        Config::write();
     }
 
     // 0x004BE8DF
