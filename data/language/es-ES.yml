@@ -1023,7 +1023,7 @@ strings:
   997: "MAYÚS + "
   998: "CTRL + "
   999: Cambiar atajo de teclado
-  1000: "{COLOUR WINDOW_2}Pulsar nuevo atajo de teclado para:{NEWLINE}{NEWLINE_SMALLER}{COLOUR BLACK}“{STRINGID}”"
+  1000: "{COLOUR WINDOW_2}Pulsar nuevo atajo de teclado para:
   1001: "{SMALLFONT}{COLOUR BLACK}Pulsa en la descripción del atajo para seleccionar una nueva tecla"
   1002: Desplazar vista cuando el cursor esté en el borde de la pantalla
   1003: "{SMALLFONT}{COLOUR BLACK}Selecciona si quieres desplazar la vista cuando el cursor del ratón esté en el borde de la pantalla"

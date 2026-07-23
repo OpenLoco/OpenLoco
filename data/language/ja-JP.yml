@@ -1023,7 +1023,7 @@ strings:
   997: "SHIFT + "
   998: "CTRL + "
   999: ショートカットをセットする
-  1000: "{COLOUR WINDOW_2}Press new shortcut key for:{NEWLINE}{NEWLINE_SMALLER}{COLOUR BLACK}“{STRINGID}”"
+  1000: "{COLOUR WINDOW_2}Press new shortcut key for:
   1001: "{SMALLFONT}{COLOUR BLACK}Click on shortcut description to select new key"
   1002: Scroll View when Pointer at Screen Edge
   1003: "{SMALLFONT}{COLOUR BLACK}Select whether to scroll the view when the mouse pointer is at the screen edge"

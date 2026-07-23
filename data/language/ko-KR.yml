@@ -1023,7 +1023,7 @@ strings:
   997: "SHIFT + "
   998: "CTRL + "
   999: 키보드 단축키 변경
-  1000: "{COLOUR WINDOW_2}아래 기능에 지정할 새로운 단축키를 입력하세요:{NEWLINE}{NEWLINE_SMALLER}{COLOUR BLACK}“{STRINGID}”"
+  1000: "{COLOUR WINDOW_2}아래 기능에 지정할 새로운 단축키를 입력하세요:
   1001: "{SMALLFONT}{COLOUR BLACK}새 단축키를 지정할 단축키 설명을 클릭하세요"
   1002: 화면 가장자리에 마우스 커서를 가져가면 화면 스크롤
   1003: "{SMALLFONT}{COLOUR BLACK}마우스 커서가 화면 가장자리에 가까이 가면 지도 화면을 스크롤할지 선택합니다"
