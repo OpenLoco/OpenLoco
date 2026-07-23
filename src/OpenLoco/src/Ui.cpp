@@ -285,6 +285,8 @@ namespace OpenLoco::Ui
         }
 #endif
 
+        initialiseCursors(); // must be done after SDL_Init and SDL_CreateWindow
+
         SDL_ShowWindow(_window);
     }
 
@@ -318,7 +320,7 @@ namespace OpenLoco::Ui
         auto* sdlCursor = SDL_CreateCursor(cursor.data, cursor.mask, 32, 32, cursor.x, cursor.y);
         if (sdlCursor == nullptr)
         {
-            Logging::error("SDL_CreateCursor() failed: {}", SDL_GetError());
+            Logging::error("SDL_CreateCursor() failed. CursorId: {}, Error: {}", enumValue(id), SDL_GetError());
             return;
         }
 
@@ -330,7 +332,7 @@ namespace OpenLoco::Ui
         auto* sdlCursor = SDL_CreateSystemCursor(sdlId);
         if (sdlCursor == nullptr)
         {
-            Logging::error("SDL_CreateSystemCursor() failed: {}", SDL_GetError());
+            Logging::error("SDL_CreateSystemCursor() failed. CursorId: {}, SDL_SystemCursor: {}, Error: {}", enumValue(id), (int)sdlId, SDL_GetError());
             return;
         }
 

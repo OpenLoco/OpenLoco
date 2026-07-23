@@ -192,7 +192,6 @@ namespace OpenLoco
         Gfx::initialise();
 
         Ui::initialise();
-        Ui::initialiseCursors();
         resetSubsystems();
         Gui::init();
 
