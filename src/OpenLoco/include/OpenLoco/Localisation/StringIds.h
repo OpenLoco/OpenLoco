@@ -2166,6 +2166,7 @@ namespace OpenLoco::StringIds
     constexpr StringId keyboard_shortcut_modifier_right_alt = 2450;
     constexpr StringId keyboard_shortcut_modifiers = 2451;
     constexpr StringId black_quoted_stringid = 2452;
+    constexpr StringId frame_music = 2453;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

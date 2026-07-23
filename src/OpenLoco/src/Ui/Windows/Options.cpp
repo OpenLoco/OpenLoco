@@ -980,10 +980,11 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace AudioTab
     {
+        constexpr auto kNormalTextRowOffset = 14;
+
         constexpr auto kSoundGroupOffset = 49;
-        constexpr auto kDeviceRowOffset = 14;
-        constexpr auto kCheckboxRowOffset = kDeviceRowOffset + 18;
-        constexpr auto kSoundGroupHeight = kDeviceRowOffset + kCheckboxRowOffset + 4;
+        constexpr auto kDeviceRowOffset = kNormalTextRowOffset;
+        constexpr auto kSoundGroupHeight = kDeviceRowOffset + kNormalTextRowOffset + 4;
 
         constexpr auto kVolumeGroupOffset = kSoundGroupOffset + kSoundGroupHeight + 4;
         constexpr auto kVolumeFirstSliderYOffset = 16;
@@ -998,7 +999,11 @@ namespace OpenLoco::Ui::Windows::Options
         constexpr auto kSliderWidth = 196;
         constexpr auto kVolumeGroupHeight = kVolumeFirstSliderYOffset + (kNumVolumeSliders / kNumVolumeColumns) * kSliderRowHeight;
 
-        static constexpr Ui::Size kWindowSize = { 366, kVolumeGroupOffset + kVolumeGroupHeight + 4 };
+        constexpr auto kMusicGroupOffset = kVolumeGroupOffset + kVolumeGroupHeight + 4;
+        constexpr auto kPlayTitleMusicRowOffset = kNormalTextRowOffset * 1;
+        constexpr auto kMusicGroupHeight = kPlayTitleMusicRowOffset + kNormalTextRowOffset + 4;
+
+        static constexpr Ui::Size kWindowSize = { 366, kMusicGroupOffset + kMusicGroupHeight + 4 };
 
         namespace Widx
         {
@@ -1007,7 +1012,6 @@ namespace OpenLoco::Ui::Windows::Options
                 frame_sound = Common::Widx::tab_miscellaneous + 1,
                 audio_device,
                 audio_device_btn,
-                play_title_music,
 
                 frame_volume,
                 volume_master_label,
@@ -1022,6 +1026,9 @@ namespace OpenLoco::Ui::Windows::Options
                 volume_ui,
                 volume_ambient_label,
                 volume_ambient,
+
+                frame_music,
+                play_title_music,
             };
         }
 
@@ -1035,7 +1042,6 @@ namespace OpenLoco::Ui::Windows::Options
 
             Widgets::GroupBox({ 4, kSoundGroupOffset }, { kWindowSize.width - 8, kSoundGroupHeight }, WindowColour::secondary, StringIds::frame_sound),
             Widgets::dropdownWidgets({ 10, kSoundGroupOffset + kDeviceRowOffset }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
-            Widgets::Checkbox({ 10, kSoundGroupOffset + kCheckboxRowOffset }, { 346, 12 }, WindowColour::secondary, StringIds::play_title_music),
 
             Widgets::GroupBox({ 4, kVolumeGroupOffset }, { kWindowSize.width - 8, kVolumeGroupHeight }, WindowColour::secondary, StringIds::frame_volume),
             Widgets::Label({ kSliderPrimaryLabelX, getSliderRowY(0) + 3 }, { kSliderLabelWidth, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::master_volume),
@@ -1049,7 +1055,10 @@ namespace OpenLoco::Ui::Windows::Options
             Widgets::Label({ kSliderPrimaryLabelX, getSliderRowY(4) + 3 }, { kSliderLabelWidth, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::ui_volume),
             Widgets::Slider({ kSliderPrimaryX, getSliderRowY(4) - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_ui_volume_tip),
             Widgets::Label({ kSliderSecondaryLabelX, getSliderRowY(5) + 3 }, { kSliderLabelWidth, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::ambient_volume),
-            Widgets::Slider({ kSliderSecondaryX, getSliderRowY(5) - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_ambient_volume_tip)
+            Widgets::Slider({ kSliderSecondaryX, getSliderRowY(5) - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_ambient_volume_tip),
+
+            Widgets::GroupBox({ 4, kMusicGroupOffset }, { kWindowSize.width - 8, kMusicGroupHeight }, WindowColour::secondary, StringIds::frame_music),
+            Widgets::Checkbox({ 10, kMusicGroupOffset + kPlayTitleMusicRowOffset }, { 346, 12 }, WindowColour::secondary, StringIds::play_title_music)
 
         );
 
