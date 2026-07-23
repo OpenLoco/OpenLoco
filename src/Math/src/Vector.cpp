@@ -1,5 +1,5 @@
-#include "Vector.hpp"
 #include <array>
+#include <cstdint>
 
 namespace OpenLoco::Math::Vector
 {
