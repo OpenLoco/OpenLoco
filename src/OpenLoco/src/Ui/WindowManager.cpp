@@ -937,17 +937,17 @@ namespace OpenLoco::Ui::WindowManager
         _windows.erase(_windows.begin() + index);
     }
 
-    void callEvent8OnAllWindows()
+    void callHandleInputBeginEventOnAllWindows()
     {
         std::for_each(_windows.rbegin(), _windows.rend(), [](auto& w) {
-            w.call_8();
+            w.callHandleInputBegin();
         });
     }
 
-    void callEvent9OnAllWindows()
+    void callHandleInputEndEventOnAllWindows()
     {
         std::for_each(_windows.rbegin(), _windows.rend(), [](auto& w) {
-            w.call_9();
+            w.callHandleInputEnd();
         });
     }
 

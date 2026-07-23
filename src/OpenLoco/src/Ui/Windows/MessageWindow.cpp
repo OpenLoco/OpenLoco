@@ -114,29 +114,6 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             }
         }
 
-        // 0x0042A847
-        static void event_08(Window& self)
-        {
-            self.flags |= WindowFlags::notScrollView;
-        }
-
-        // 0x0042A84F
-        static void event_09(Window& self)
-        {
-            if (!self.hasFlags(WindowFlags::notScrollView))
-            {
-                return;
-            }
-
-            if (self.rowHover == -1)
-            {
-                return;
-            }
-
-            self.rowHover = -1;
-            self.invalidate();
-        }
-
         // 0x0042A871
         static void getScrollSize([[maybe_unused]] Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
@@ -297,8 +274,8 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             .onMouseUp = onMouseUp,
             .onResize = onResize,
             .onUpdate = Common::onUpdate,
-            .event_08 = event_08,
-            .event_09 = event_09,
+            .onHandleInputBegin = listWindowOnHandleInputBegin,
+            .onHandleInputEnd = listWindowOnHandleInputEnd,
             .getScrollSize = getScrollSize,
             .scrollMouseDown = scrollMouseDown,
             .scrollMouseOver = scrollMouseOver,

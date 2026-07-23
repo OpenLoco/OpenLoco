@@ -153,6 +153,27 @@ namespace OpenLoco::Ui
         return std::nullopt;
     }
 
+    void listWindowOnHandleInputBegin(Window& window)
+    {
+        window.flags |= WindowFlags::notScrollView;
+    }
+
+    void listWindowOnHandleInputEnd(Window& window)
+    {
+        if (!window.hasFlags(WindowFlags::notScrollView))
+        {
+            return;
+        }
+
+        if (window.rowHover == -1)
+        {
+            return;
+        }
+
+        window.rowHover = -1;
+        window.invalidate();
+    }
+
     // 0x0045FD41
     // Input:
     // regs.ax:  x
@@ -989,24 +1010,24 @@ namespace OpenLoco::Ui
         eventHandlers->onUpdate(*this);
     }
 
-    void Window::call_8()
+    void Window::callHandleInputBegin()
     {
-        if (eventHandlers->event_08 == nullptr)
+        if (eventHandlers->onHandleInputBegin == nullptr)
         {
             return;
         }
 
-        eventHandlers->event_08(*this);
+        eventHandlers->onHandleInputBegin(*this);
     }
 
-    void Window::call_9()
+    void Window::callHandleInputEnd()
     {
-        if (eventHandlers->event_09 == nullptr)
+        if (eventHandlers->onHandleInputEnd == nullptr)
         {
             return;
         }
 
-        eventHandlers->event_09(*this);
+        eventHandlers->onHandleInputEnd(*this);
     }
 
     void Window::callToolUpdate(WidgetIndex_t widgetIndex, const WidgetId id, int16_t xPos, int16_t yPos)

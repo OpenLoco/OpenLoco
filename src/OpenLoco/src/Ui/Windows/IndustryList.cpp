@@ -498,29 +498,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
             return fallback;
         }
 
-        // 0x004580DE
-        static void event_08(Window& self)
-        {
-            self.flags |= WindowFlags::notScrollView;
-        }
-
-        // 0x004580E6
-        static void event_09(Window& self)
-        {
-            if (!self.hasFlags(WindowFlags::notScrollView))
-            {
-                return;
-            }
-
-            if (self.rowHover == -1)
-            {
-                return;
-            }
-
-            self.rowHover = -1;
-            self.invalidate();
-        }
-
         // 0x00457FCA
         static void tabReset(Window& self)
         {
@@ -539,8 +516,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onUpdate = onUpdate,
-            .event_08 = event_08,
-            .event_09 = event_09,
+            .onHandleInputBegin = listWindowOnHandleInputBegin,
+            .onHandleInputEnd = listWindowOnHandleInputEnd,
             .getScrollSize = getScrollSize,
             .scrollMouseDown = onScrollMouseDown,
             .scrollMouseOver = onScrollMouseOver,
@@ -1028,7 +1005,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458708
-        static void event_08(Window& self)
+        static void onHandleInputBegin(Window& self)
         {
             if (self.var_846 != 0xFFFF)
             {
@@ -1297,7 +1274,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             .onMouseUp = onMouseUp,
             .onResize = onResize,
             .onUpdate = onUpdate,
-            .event_08 = event_08,
+            .onHandleInputBegin = onHandleInputBegin,
             .onToolUpdate = onToolUpdate,
             .onToolDown = onToolDown,
             .onToolAbort = onToolAbort,

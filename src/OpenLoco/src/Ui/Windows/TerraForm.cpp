@@ -439,7 +439,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBEDF
-        static void event_08(Window& self)
+        static void onHandleInputBegin(Window& self)
         {
             if (self.var_846 != 0xFFFFU)
             {
@@ -884,7 +884,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
             .onUpdate = onUpdate,
-            .event_08 = event_08,
+            .onHandleInputBegin = onHandleInputBegin,
             .onToolUpdate = onToolUpdate,
             .onToolDown = onToolDown,
             .onToolAbort = onToolAbort,
@@ -2434,7 +2434,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC377
-        static void event_08(Window& self)
+        static void onHandleInputBegin(Window& self)
         {
             if (self.var_846 != 0xFFFFU)
             {
@@ -2724,7 +2724,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             .onMouseUp = Common::onMouseUp,
             .onResize = onResize,
             .onUpdate = onUpdate,
-            .event_08 = event_08,
+            .onHandleInputBegin = onHandleInputBegin,
             .onToolUpdate = onToolUpdate,
             .onToolDown = onToolDown,
             .onToolAbort = onToolAbort,

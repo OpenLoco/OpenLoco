@@ -198,8 +198,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void switchTab(Window& self, const WidgetIndex_t widgetIndex);
         static void setCaptionEnableState(Window& self);
         static void onPickup(Window& self, const WidgetIndex_t pickupWidx);
-        static void event8(Window& self);
-        static void event9(Window& self);
         static size_t getNumCars(Ui::Window& self);
         static void drawTabs(Window& window, Gfx::DrawingContext& drawingCtx);
         static void pickupToolUpdate(Window& self, const int16_t x, const int16_t y);
@@ -1985,8 +1983,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
             .onUpdate = onUpdate,
-            .event_08 = Common::event8,
-            .event_09 = Common::event9,
+            .onHandleInputBegin = listWindowOnHandleInputBegin,
+            .onHandleInputEnd = listWindowOnHandleInputEnd,
             .onToolUpdate = onToolUpdate,
             .onToolDown = onToolDown,
             .onToolAbort = onToolAbort,
@@ -2640,8 +2638,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
             .onUpdate = onUpdate,
-            .event_08 = Common::event8,
-            .event_09 = Common::event9,
+            .onHandleInputBegin = listWindowOnHandleInputBegin,
+            .onHandleInputEnd = listWindowOnHandleInputEnd,
             .getScrollSize = getScrollSize,
             .scrollMouseOver = scrollMouseOver,
             .textInput = Common::textInput,
@@ -4088,8 +4086,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
             .onUpdate = onUpdate,
-            .event_08 = Common::event8,
-            .event_09 = Common::event9,
+            .onHandleInputBegin = listWindowOnHandleInputBegin,
+            .onHandleInputEnd = listWindowOnHandleInputEnd,
             .onToolDown = onToolDown,
             .onToolAbort = toolCancel,
             .toolCursor = toolCursor,
@@ -5020,25 +5018,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (head->owner != CompanyManager::getControllingId())
             {
                 self.disabledWidgets |= (1ULL << widx::caption);
-            }
-        }
-
-        // 0x004B45DD, 0x004B55A7, 0x004B3C1B
-        static void event8(Window& self)
-        {
-            self.flags |= WindowFlags::notScrollView;
-        }
-
-        // 0x004B45E5, 0x004B55B6, 0x004B3C23
-        static void event9(Window& self)
-        {
-            if (self.hasFlags(WindowFlags::notScrollView))
-            {
-                if (self.rowHover != -1)
-                {
-                    self.rowHover = -1;
-                    self.invalidate();
-                }
             }
         }
 

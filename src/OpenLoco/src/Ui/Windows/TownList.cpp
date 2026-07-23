@@ -418,29 +418,6 @@ namespace OpenLoco::Ui::Windows::TownList
             sortTownList(self);
         }
 
-        // 0x0049A4D0
-        static void event_08(Window& self)
-        {
-            self.flags |= WindowFlags::notScrollView;
-        }
-
-        // 0x0049A4D8
-        static void event_09(Window& self)
-        {
-            if (!self.hasFlags(WindowFlags::notScrollView))
-            {
-                return;
-            }
-
-            if (self.rowHover == -1)
-            {
-                return;
-            }
-
-            self.rowHover = -1;
-            self.invalidate();
-        }
-
         // 0x0049A4FA
         static void getScrollSize(Ui::Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
@@ -490,8 +467,8 @@ namespace OpenLoco::Ui::Windows::TownList
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onUpdate = onUpdate,
-            .event_08 = event_08,
-            .event_09 = event_09,
+            .onHandleInputBegin = listWindowOnHandleInputBegin,
+            .onHandleInputEnd = listWindowOnHandleInputEnd,
             .getScrollSize = getScrollSize,
             .scrollMouseDown = onScrollMouseDown,
             .scrollMouseOver = onScrollMouseOver,
@@ -1395,7 +1372,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AEA1
-        static void event_08(Window& self)
+        static void onHandleInputBegin(Window& self)
         {
             if (self.var_846 != 0xFFFF)
             {
@@ -1507,7 +1484,7 @@ namespace OpenLoco::Ui::Windows::TownList
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
             .onUpdate = onUpdate,
-            .event_08 = event_08,
+            .onHandleInputBegin = onHandleInputBegin,
             .onToolUpdate = onToolUpdate,
             .onToolDown = onToolDown,
             .onToolAbort = onToolAbort,
