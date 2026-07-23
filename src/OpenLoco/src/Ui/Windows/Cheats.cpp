@@ -51,17 +51,26 @@ namespace OpenLoco::Ui::Windows::Cheats
         // this should be 1 more than the number of widgets defined above in commonWidgets
         constexpr uint32_t nextWidx = 8;
 
+        namespace Widx
+        {
+            constexpr WidgetId kCloseButton{ "close_button" };
+            constexpr WidgetId kTabFinances{ "tab_finances" };
+            constexpr WidgetId kTabCompanies{ "tab_companies" };
+            constexpr WidgetId kTabVehicles{ "tab_vehicles" };
+            constexpr WidgetId kTabTowns{ "tab_towns" };
+        }
+
         static constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
         {
             return makeWidgets(
                 Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
                 Widgets::Caption({ 1, 1 }, { frameWidth - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, windowCaptionId),
-                Widgets::ImageButton({ frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::ImageButton(Widx::kCloseButton, { frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
                 Widgets::Panel({ 0, 41 }, { frameWidth, frameHeight - 41 }, WindowColour::secondary),
-                Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-                Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-                Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-                Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab));
+                Widgets::Tab(Widx::kTabFinances, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+                Widgets::Tab(Widx::kTabCompanies, { 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+                Widgets::Tab(Widx::kTabVehicles, { 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+                Widgets::Tab(Widx::kTabTowns, { 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab));
         }
 
         static void drawTabs(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
@@ -181,27 +190,47 @@ namespace OpenLoco::Ui::Windows::Cheats
             date_change_apply,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kCashStepValue{ "cash_step_value" };
+            constexpr WidgetId kCashStepDecrease{ "cash_step_decrease" };
+            constexpr WidgetId kCashStepIncrease{ "cash_step_increase" };
+            constexpr WidgetId kCashStepApply{ "cash_step_apply" };
+            constexpr WidgetId kLoanValue{ "loan_value" };
+            constexpr WidgetId kLoanClear{ "loan_clear" };
+            constexpr WidgetId kYearStepValue{ "year_step_value" };
+            constexpr WidgetId kYearStepDecrease{ "year_step_decrease" };
+            constexpr WidgetId kYearStepIncrease{ "year_step_increase" };
+            constexpr WidgetId kMonthStepValue{ "month_step_value" };
+            constexpr WidgetId kMonthStepDecrease{ "month_step_decrease" };
+            constexpr WidgetId kMonthStepIncrease{ "month_step_increase" };
+            constexpr WidgetId kDayStepValue{ "day_step_value" };
+            constexpr WidgetId kDayStepDecrease{ "day_step_decrease" };
+            constexpr WidgetId kDayStepIncrease{ "day_step_increase" };
+            constexpr WidgetId kDateChangeApply{ "date_change_apply" };
+        }
+
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize.width, kWindowSize.height, StringIds::financial_cheats),
             // money
             Widgets::GroupBox({ 4, 48 }, { kWindowSize.width - 8, 33 }, WindowColour::secondary, StringIds::cheat_increase_funds),
             Widgets::Label({ 10, 62 }, { 70, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::cheat_amount),
-            Widgets::stepperWidgets({ 80, 62 }, { 95, 12 }, WindowColour::secondary, StringIds::cheat_loan_value),
-            Widgets::Button({ 180, 62 }, { 60, 12 }, WindowColour::secondary, StringIds::cheat_add),
+            Widgets::stepperWidgets(Widx::kCashStepValue, Widx::kCashStepDecrease, Widx::kCashStepIncrease, { 80, 62 }, { 95, 12 }, WindowColour::secondary, StringIds::cheat_loan_value),
+            Widgets::Button(Widx::kCashStepApply, { 180, 62 }, { 60, 12 }, WindowColour::secondary, StringIds::cheat_add),
             // loan
             Widgets::GroupBox({ 4, 86 }, { kWindowSize.width - 8, 33 }, WindowColour::secondary, StringIds::cheat_clear_loan),
             Widgets::Label({ 10, 100 }, { 70, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::company_current_loan),
-            Widgets::TextBox({ 80, 100 }, { 95, 12 }, WindowColour::secondary, StringIds::cheat_loan_value),
-            Widgets::Button({ 180, 100 }, { 60, 12 }, WindowColour::secondary, StringIds::cheat_clear),
+            Widgets::TextBox(Widx::kLoanValue, { 80, 100 }, { 95, 12 }, WindowColour::secondary, StringIds::cheat_loan_value),
+            Widgets::Button(Widx::kLoanClear, { 180, 100 }, { 60, 12 }, WindowColour::secondary, StringIds::cheat_clear),
             // date/time
             Widgets::GroupBox({ 4, 124 }, { kWindowSize.width - 8, 80 }, WindowColour::secondary, StringIds::cheat_date_change_apply),
             Widgets::Label({ 10, 138 }, { 70, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::cheat_year),
-            Widgets::stepperWidgets({ 80, 138 }, { 95, 12 }, WindowColour::secondary, StringIds::cheat_year_value),
+            Widgets::stepperWidgets(Widx::kYearStepValue, Widx::kYearStepDecrease, Widx::kYearStepIncrease, { 80, 138 }, { 95, 12 }, WindowColour::secondary, StringIds::cheat_year_value),
             Widgets::Label({ 10, 154 }, { 70, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::cheat_month),
-            Widgets::stepperWidgets({ 80, 154 }, { 95, 12 }, WindowColour::secondary, StringIds::black_stringid),
+            Widgets::stepperWidgets(Widx::kMonthStepValue, Widx::kMonthStepDecrease, Widx::kMonthStepIncrease, { 80, 154 }, { 95, 12 }, WindowColour::secondary, StringIds::black_stringid),
             Widgets::Label({ 10, 170 }, { 70, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::cheat_day),
-            Widgets::stepperWidgets({ 80, 170 }, { 95, 12 }, WindowColour::secondary, StringIds::cheat_day_value),
-            Widgets::Button({ 10, 186 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_date_change_apply)
+            Widgets::stepperWidgets(Widx::kDayStepValue, Widx::kDayStepDecrease, Widx::kDayStepIncrease, { 80, 170 }, { 95, 12 }, WindowColour::secondary, StringIds::cheat_day_value),
+            Widgets::Button(Widx::kDateChangeApply, { 10, 186 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_date_change_apply)
 
         );
 
@@ -266,22 +295,22 @@ namespace OpenLoco::Ui::Windows::Cheats
             Common::drawTabs(self, drawingCtx);
         }
 
-        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(self.type);
                     break;
 
-                case Common::widx::tab_finances:
-                case Common::widx::tab_companies:
-                case Common::widx::tab_vehicles:
-                case Common::widx::tab_towns:
+                case Common::Widx::kTabFinances:
+                case Common::Widx::kTabCompanies:
+                case Common::Widx::kTabVehicles:
+                case Common::Widx::kTabTowns:
                     Common::switchTab(self, widgetIndex);
                     break;
 
-                case widx::cash_step_apply:
+                case Widx::kCashStepApply:
                 {
                     GameCommands::GenericCheatArgs args{};
                     args.subcommand = CheatCommand::addCash;
@@ -292,7 +321,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     break;
                 }
 
-                case widx::loan_clear:
+                case Widx::kLoanClear:
                 {
                     GameCommands::GenericCheatArgs args{};
                     args.subcommand = CheatCommand::clearLoan;
@@ -302,7 +331,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     break;
                 }
 
-                case widx::date_change_apply:
+                case Widx::kDateChangeApply:
                 {
                     GameCommands::GenericCheatArgs args{};
                     args.subcommand = CheatCommand::modifyDate;
@@ -322,45 +351,45 @@ namespace OpenLoco::Ui::Windows::Cheats
             return std::max<int32_t>(0, std::min<int32_t>(getMonthTotalDay(date.year, date.month) - 1, date.day));
         }
 
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseDown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
         {
             const auto stepSize = Input::getClickRepeatStepSize();
             const auto cashStepSize = stepSize * 1'000;
             const auto timeStepSize = stepSize;
 
-            switch (widgetIndex)
+            switch (id)
             {
-                case widx::cash_step_decrease:
+                case Widx::kCashStepDecrease:
                     _cashIncreaseStep = std::max<currency32_t>(Math::Bound::sub(_cashIncreaseStep, cashStepSize), 0);
                     WindowManager::invalidateWidget(self.type, self.number, widx::cash_step_value);
                     break;
 
-                case widx::cash_step_increase:
+                case Widx::kCashStepIncrease:
                     _cashIncreaseStep = std::max<currency32_t>(Math::Bound::add(_cashIncreaseStep, cashStepSize), 0);
                     WindowManager::invalidateWidget(self.type, self.number, widx::cash_step_value);
                     break;
 
-                case widx::year_step_decrease:
+                case Widx::kYearStepDecrease:
                     _date.year = std::max<int32_t>(OpenLoco::Scenario::kMinYear, Math::Bound::sub(_date.year, timeStepSize));
                     break;
 
-                case widx::year_step_increase:
+                case Widx::kYearStepIncrease:
                     _date.year = Math::Bound::add(_date.year, timeStepSize);
                     break;
 
-                case widx::month_step_decrease:
+                case Widx::kMonthStepDecrease:
                     _date.month = static_cast<MonthId>(std::max<int8_t>(0, Math::Bound::sub(static_cast<int8_t>(_date.month), timeStepSize)));
                     break;
 
-                case widx::month_step_increase:
+                case Widx::kMonthStepIncrease:
                     _date.month = static_cast<MonthId>(std::min<int8_t>(11, Math::Bound::add(static_cast<int8_t>(_date.month), timeStepSize)));
                     break;
 
-                case widx::day_step_decrease:
+                case Widx::kDayStepDecrease:
                     _date.day = std::max<int32_t>(0, Math::Bound::sub(_date.day, timeStepSize));
                     break;
 
-                case widx::day_step_increase:
+                case Widx::kDayStepIncrease:
                     _date.day = std::min<int32_t>(getMonthTotalDay(_date.year, _date.month) - 1, Math::Bound::add(_date.day, timeStepSize));
                     break;
             }
@@ -412,16 +441,27 @@ namespace OpenLoco::Ui::Windows::Cheats
             complete_challenge_button,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kTargetCompanyDropdown{ "target_company_dropdown" };
+            constexpr WidgetId kTargetCompanyDropdownBtn{ "target_company_dropdown_btn" };
+            constexpr WidgetId kSwitchCompanyButton{ "switch_company_button" };
+            constexpr WidgetId kAcquireCompanyAssetsButton{ "acquire_company_assets_button" };
+            constexpr WidgetId kToggleBankruptcyButton{ "toggle_bankruptcy_button" };
+            constexpr WidgetId kToggleJailStatusButton{ "toggle_jail_status_button" };
+            constexpr WidgetId kCompleteChallengeButton{ "complete_challenge_button" };
+        }
+
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize.width, kWindowSize.height, StringIds::company_cheats),
             Widgets::GroupBox({ 4, 48 }, { kWindowSize.width - 8, 33 }, WindowColour::secondary, StringIds::cheat_select_target_company),
-            Widgets::dropdownWidgets({ 10, 62 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::black_stringid),
+            Widgets::dropdownWidgets(Widx::kTargetCompanyDropdown, Widx::kTargetCompanyDropdownBtn, { 10, 62 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::black_stringid),
             Widgets::GroupBox({ 4, 86 }, { kWindowSize.width - 8, 96 }, WindowColour::secondary, StringIds::cheat_select_cheat_to_apply),
-            Widgets::Button({ 10, 100 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_switch_to_company),
-            Widgets::Button({ 10, 116 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_acquire_company_assets),
-            Widgets::Button({ 10, 132 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_toggle_bankruptcy),
-            Widgets::Button({ 10, 148 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_toggle_jail_status),
-            Widgets::Button({ 10, 164 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::completeChallenge)
+            Widgets::Button(Widx::kSwitchCompanyButton, { 10, 100 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_switch_to_company),
+            Widgets::Button(Widx::kAcquireCompanyAssetsButton, { 10, 116 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_acquire_company_assets),
+            Widgets::Button(Widx::kToggleBankruptcyButton, { 10, 132 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_toggle_bankruptcy),
+            Widgets::Button(Widx::kToggleJailStatusButton, { 10, 148 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_toggle_jail_status),
+            Widgets::Button(Widx::kCompleteChallengeButton, { 10, 164 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::completeChallenge)
 
         );
 
@@ -464,22 +504,22 @@ namespace OpenLoco::Ui::Windows::Cheats
             Common::drawTabs(self, drawingCtx);
         }
 
-        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(self.type);
                     break;
 
-                case Common::widx::tab_finances:
-                case Common::widx::tab_companies:
-                case Common::widx::tab_vehicles:
-                case Common::widx::tab_towns:
+                case Common::Widx::kTabFinances:
+                case Common::Widx::kTabCompanies:
+                case Common::Widx::kTabVehicles:
+                case Common::Widx::kTabTowns:
                     Common::switchTab(self, widgetIndex);
                     break;
 
-                case widx::acquire_company_assets_button:
+                case Widx::kAcquireCompanyAssetsButton:
                 {
                     GameCommands::GenericCheatArgs args{};
                     args.subcommand = CheatCommand::acquireAssets;
@@ -490,7 +530,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     return;
                 }
 
-                case widx::switch_company_button:
+                case Widx::kSwitchCompanyButton:
                 {
                     GameCommands::GenericCheatArgs args{};
                     args.subcommand = CheatCommand::switchCompany;
@@ -501,7 +541,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     return;
                 }
 
-                case widx::toggle_bankruptcy_button:
+                case Widx::kToggleBankruptcyButton:
                 {
                     GameCommands::GenericCheatArgs args{};
                     args.subcommand = CheatCommand::toggleBankruptcy;
@@ -512,7 +552,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     return;
                 }
 
-                case widx::toggle_jail_status_button:
+                case Widx::kToggleJailStatusButton:
                 {
                     GameCommands::GenericCheatArgs args{};
                     args.subcommand = CheatCommand::toggleJail;
@@ -523,7 +563,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     return;
                 }
 
-                case widx::complete_challenge_button:
+                case Widx::kCompleteChallengeButton:
                 {
                     GameCommands::GenericCheatArgs args{};
                     args.subcommand = CheatCommand::completeChallenge;
@@ -536,22 +576,22 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseDown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            if (widgetIndex == widx::target_company_dropdown_btn)
+            if (id == Widx::kTargetCompanyDropdownBtn)
             {
-                Dropdown::populateCompanySelect(&self, &self.widgets[widgetIndex - 1]);
+                Dropdown::populateCompanySelect(&self, &self.widgets[widx::target_company_dropdown]);
             }
         }
 
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+        static void onDropdown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
         {
             if (itemIndex == -1)
             {
                 return;
             }
 
-            if (widgetIndex == widx::target_company_dropdown_btn)
+            if (id == Widx::kTargetCompanyDropdownBtn)
             {
                 _targetCompanyId = Dropdown::getCompanyIdFromSelection(itemIndex);
                 self.invalidate();
@@ -596,16 +636,25 @@ namespace OpenLoco::Ui::Windows::Cheats
             checkbox_keep_cargo_modify_pickup,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kReliablityAllToZero{ "reliablity_all_to_zero" };
+            constexpr WidgetId kReliablityAllToHundred{ "reliablity_all_to_hundred" };
+            constexpr WidgetId kCheckboxDisplayLockedVehicles{ "checkbox_display_locked_vehicles" };
+            constexpr WidgetId kCheckboxBuildLockedVehicles{ "checkbox_build_locked_vehicles" };
+            constexpr WidgetId kCheckboxKeepCargoModifyPickup{ "checkbox_keep_cargo_modify_pickup" };
+        }
+
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize.width, kWindowSize.height, StringIds::vehicle_cheats),
             Widgets::GroupBox({ 4, 48 }, { kWindowSize.width - 8, 49 }, WindowColour::secondary, StringIds::cheat_set_vehicle_reliability),
-            Widgets::Button({ 10, 62 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_reliability_zero),
-            Widgets::Button({ 10, 78 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_reliability_hundred),
+            Widgets::Button(Widx::kReliablityAllToZero, { 10, 62 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_reliability_zero),
+            Widgets::Button(Widx::kReliablityAllToHundred, { 10, 78 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_reliability_hundred),
             Widgets::GroupBox({ 4, 102 }, { kWindowSize.width - 8, 45 }, WindowColour::secondary, StringIds::cheat_build_vehicle_window),
-            Widgets::Checkbox({ 10, 116 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::display_locked_vehicles, StringIds::tooltip_display_locked_vehicles),
-            Widgets::Checkbox({ 25, 130 }, { kWindowSize.width - 35, 12 }, WindowColour::secondary, StringIds::allow_building_locked_vehicles, StringIds::tooltip_build_locked_vehicles),
+            Widgets::Checkbox(Widx::kCheckboxDisplayLockedVehicles, { 10, 116 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::display_locked_vehicles, StringIds::tooltip_display_locked_vehicles),
+            Widgets::Checkbox(Widx::kCheckboxBuildLockedVehicles, { 25, 130 }, { kWindowSize.width - 35, 12 }, WindowColour::secondary, StringIds::allow_building_locked_vehicles, StringIds::tooltip_build_locked_vehicles),
             Widgets::GroupBox({ 4, 152 }, { kWindowSize.width - 8, 30 }, WindowColour::secondary, StringIds::cheat_vehicle_cargo),
-            Widgets::Checkbox({ 10, 166 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_keep_cargo_modify_pickup, StringIds::tooltip_keep_cargo_modify_pickup));
+            Widgets::Checkbox(Widx::kCheckboxKeepCargoModifyPickup, { 10, 166 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_keep_cargo_modify_pickup, StringIds::tooltip_keep_cargo_modify_pickup));
 
         static void prepareDraw(Window& self)
         {
@@ -648,22 +697,22 @@ namespace OpenLoco::Ui::Windows::Cheats
             Common::drawTabs(self, drawingCtx);
         }
 
-        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(self.type);
                     break;
 
-                case Common::widx::tab_finances:
-                case Common::widx::tab_companies:
-                case Common::widx::tab_vehicles:
-                case Common::widx::tab_towns:
+                case Common::Widx::kTabFinances:
+                case Common::Widx::kTabCompanies:
+                case Common::Widx::kTabVehicles:
+                case Common::Widx::kTabTowns:
                     Common::switchTab(self, widgetIndex);
                     break;
 
-                case widx::reliablity_all_to_zero:
+                case Widx::kReliablityAllToZero:
                 {
                     GameCommands::GenericCheatArgs args{};
                     args.subcommand = CheatCommand::vehicleReliability;
@@ -675,7 +724,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     return;
                 }
 
-                case widx::reliablity_all_to_hundred:
+                case Widx::kReliablityAllToHundred:
                 {
                     GameCommands::GenericCheatArgs args{};
                     args.subcommand = CheatCommand::vehicleReliability;
@@ -687,7 +736,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     return;
                 }
 
-                case widx::checkbox_display_locked_vehicles:
+                case Widx::kCheckboxDisplayLockedVehicles:
                 {
                     Config::get().displayLockedVehicles = !Config::get().displayLockedVehicles;
 
@@ -709,7 +758,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     break;
                 }
 
-                case widx::checkbox_build_locked_vehicles:
+                case Widx::kCheckboxBuildLockedVehicles:
                 {
                     if (Config::get().displayLockedVehicles)
                     {
@@ -721,7 +770,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     break;
                 }
 
-                case widx::checkbox_keep_cargo_modify_pickup:
+                case Widx::kCheckboxKeepCargoModifyPickup:
                 {
                     Config::get().keepCargoModifyPickup = !Config::get().keepCargoModifyPickup;
                     Config::write();
@@ -764,13 +813,21 @@ namespace OpenLoco::Ui::Windows::Cheats
             ratings_all_to_max,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kRatingsAllMin10pct{ "ratings_all_min_10pct" };
+            constexpr WidgetId kRatingsAllPlus10pct{ "ratings_all_plus_10pct" };
+            constexpr WidgetId kRatingsAllToMin{ "ratings_all_to_min" };
+            constexpr WidgetId kRatingsAllToMax{ "ratings_all_to_max" };
+        }
+
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize.width, kWindowSize.height, StringIds::town_cheats),
             Widgets::GroupBox({ 4, 48 }, { kWindowSize.width - 8, 49 }, WindowColour::secondary, StringIds::cheat_set_ratings),
-            Widgets::Button({ 10, 62 }, { (kWindowSize.width - 26) / 2, 12 }, WindowColour::secondary, StringIds::cheat_ratings_min_10pct),
-            Widgets::Button({ 3 + (kWindowSize.width / 2), 62 }, { (kWindowSize.width - 26) / 2, 12 }, WindowColour::secondary, StringIds::cheat_ratings_plus_10pct),
-            Widgets::Button({ 10, 78 }, { (kWindowSize.width - 26) / 2, 12 }, WindowColour::secondary, StringIds::cheat_ratings_to_min),
-            Widgets::Button({ 3 + (kWindowSize.width / 2), 78 }, { (kWindowSize.width - 26) / 2, 12 }, WindowColour::secondary, StringIds::cheat_ratings_to_max)
+            Widgets::Button(Widx::kRatingsAllMin10pct, { 10, 62 }, { (kWindowSize.width - 26) / 2, 12 }, WindowColour::secondary, StringIds::cheat_ratings_min_10pct),
+            Widgets::Button(Widx::kRatingsAllPlus10pct, { 3 + (kWindowSize.width / 2), 62 }, { (kWindowSize.width - 26) / 2, 12 }, WindowColour::secondary, StringIds::cheat_ratings_plus_10pct),
+            Widgets::Button(Widx::kRatingsAllToMin, { 10, 78 }, { (kWindowSize.width - 26) / 2, 12 }, WindowColour::secondary, StringIds::cheat_ratings_to_min),
+            Widgets::Button(Widx::kRatingsAllToMax, { 3 + (kWindowSize.width / 2), 78 }, { (kWindowSize.width - 26) / 2, 12 }, WindowColour::secondary, StringIds::cheat_ratings_to_max)
 
         );
 
@@ -786,22 +843,22 @@ namespace OpenLoco::Ui::Windows::Cheats
             Common::drawTabs(self, drawingCtx);
         }
 
-        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(self.type);
                     break;
 
-                case Common::widx::tab_finances:
-                case Common::widx::tab_companies:
-                case Common::widx::tab_vehicles:
-                case Common::widx::tab_towns:
+                case Common::Widx::kTabFinances:
+                case Common::Widx::kTabCompanies:
+                case Common::Widx::kTabVehicles:
+                case Common::Widx::kTabTowns:
                     Common::switchTab(self, widgetIndex);
                     break;
 
-                case widx::ratings_all_min_10pct:
+                case Widx::kRatingsAllMin10pct:
                 {
                     GameCommands::GenericCheatArgs args{};
                     args.subcommand = CheatCommand::companyRatings;
@@ -813,7 +870,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     return;
                 }
 
-                case widx::ratings_all_plus_10pct:
+                case Widx::kRatingsAllPlus10pct:
                 {
                     GameCommands::GenericCheatArgs args{};
                     args.subcommand = CheatCommand::companyRatings;
@@ -825,7 +882,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     return;
                 }
 
-                case widx::ratings_all_to_min:
+                case Widx::kRatingsAllToMin:
                 {
                     GameCommands::GenericCheatArgs args{};
                     args.subcommand = CheatCommand::companyRatings;
@@ -837,7 +894,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     return;
                 }
 
-                case widx::ratings_all_to_max:
+                case Widx::kRatingsAllToMax:
                 {
                     GameCommands::GenericCheatArgs args{};
                     args.subcommand = CheatCommand::companyRatings;
