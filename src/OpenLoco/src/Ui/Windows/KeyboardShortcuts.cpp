@@ -171,7 +171,6 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
                 format = StringIds::wcolour2_stringid;
             }
 
-            auto modifierStringId = StringIds::empty;
             auto baseStringId = StringIds::empty;
             char buffer[128]{};
 
@@ -180,23 +179,26 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 
             if (binding.keyCode != kInvalidKeyCode && binding.modifiers != KeyModifier::invalid)
             {
+                auto* ptr = buffer;
+                auto* const bufferEnd = std::end(buffer);
+
+                if ((binding.modifiers & KeyModifier::control) == KeyModifier::control)
+                {
+                    ptr = StringManager::formatString(ptr, static_cast<size_t>(bufferEnd - ptr), StringIds::keyboard_shortcut_modifier_ctrl);
+                }
                 if ((binding.modifiers & KeyModifier::shift) == KeyModifier::shift)
                 {
-                    modifierStringId = StringIds::keyboard_shortcut_modifier_shift;
-                }
-                else if ((binding.modifiers & KeyModifier::control) == KeyModifier::control)
-                {
-                    modifierStringId = StringIds::keyboard_shortcut_modifier_ctrl;
+                    ptr = StringManager::formatString(ptr, static_cast<size_t>(bufferEnd - ptr), StringIds::keyboard_shortcut_modifier_shift);
                 }
 
                 baseStringId = StringIds::stringptr;
-                getBindingString(binding.keyCode, buffer, std::size(buffer));
+                getBindingString(binding.keyCode, ptr, static_cast<size_t>(bufferEnd - ptr));
             }
 
             FormatArguments formatter{};
             formatter.push(StringIds::keyboard_shortcut_list_format);
             formatter.push(ShortcutManager::getName(static_cast<Shortcut>(i)));
-            formatter.push(modifierStringId);
+            formatter.push(StringIds::empty);
             formatter.push(baseStringId);
             formatter.push(buffer);
 
