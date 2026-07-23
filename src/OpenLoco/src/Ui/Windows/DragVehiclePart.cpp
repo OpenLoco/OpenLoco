@@ -17,9 +17,14 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         frame
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kFrame{ "frame" };
+    }
+
     // 0x00522504
     static constexpr auto widgets = makeWidgets(
-        Widgets::Wt3Widget({ 0, 0 }, { 150, 60 }, WindowColour::primary)
+        Widgets::Wt3Widget(Widx::kFrame, { 0, 0 }, { 150, 60 }, WindowColour::primary)
 
     );
 
