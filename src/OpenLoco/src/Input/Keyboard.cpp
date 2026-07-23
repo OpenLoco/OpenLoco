@@ -254,7 +254,7 @@ namespace OpenLoco::Input
     static bool tryShortcut(Shortcut sc, uint32_t keyCode, KeyModifier modifiers)
     {
         const auto& binding = Shortcuts::getBinding(sc);
-        if (binding.keyCode == keyCode && binding.modifiers == modifiers)
+        if (binding.keyCode == keyCode && binding.modifiers == (modifiers & ~KeyModifier::cheat))
         {
             ShortcutManager::execute(sc);
             return true;
@@ -332,6 +332,11 @@ namespace OpenLoco::Input
                 continue;
             }
 
+            if (nextKey->keyCode == SDLK_LALT || nextKey->keyCode == SDLK_RALT)
+            {
+                continue;
+            }
+
             if (hasKeyModifier(KeyModifier::cheat))
             {
                 if (nextKey->charCode >= 'a' && nextKey->charCode <= 'z')
@@ -344,7 +349,10 @@ namespace OpenLoco::Input
                     _cheatBuffer += nextKey->charCode;
                 }
 
-                continue;
+                if ((_keyModifier & KeyModifier::alt) == KeyModifier::none)
+                {
+                    continue;
+                }
             }
 
             if (WindowManager::callKeyUpEventBackToFront(nextKey->charCode, nextKey->keyCode))
@@ -561,7 +569,7 @@ namespace OpenLoco::Input
         handleScreenshotCountdown();
         edgeScroll();
 
-        _keyModifier = _keyModifier & ~(KeyModifier::shift | KeyModifier::control | KeyModifier::unknown);
+        _keyModifier = _keyModifier & ~(KeyModifier::shift | KeyModifier::control | KeyModifier::alt | KeyModifier::unknown);
 
         if (!_hasKeyboardState)
         {
@@ -580,12 +588,22 @@ namespace OpenLoco::Input
 
         if (_keyboardState[SDL_SCANCODE_LCTRL])
         {
-            _keyModifier |= KeyModifier::control;
+            _keyModifier |= KeyModifier::leftControl;
         }
 
         if (_keyboardState[SDL_SCANCODE_RCTRL])
         {
-            _keyModifier |= KeyModifier::control;
+            _keyModifier |= KeyModifier::rightControl;
+        }
+
+        if (_keyboardState[SDL_SCANCODE_LALT])
+        {
+            _keyModifier |= KeyModifier::leftAlt;
+        }
+
+        if (_keyboardState[SDL_SCANCODE_RALT])
+        {
+            _keyModifier |= KeyModifier::rightAlt;
         }
 
         keyScroll();

@@ -19,6 +19,7 @@
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <OpenLoco/Utility/LookupTable.hpp>
 #include <SDL3/SDL_keyboard.h>
+#include <cstddef>
 #include <unordered_map>
 
 using namespace OpenLoco::Input;
@@ -27,12 +28,14 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 {
     static constexpr int kRowHeight = 10; // CJK: 13
 
+    static constexpr Ui::Size kWindowSize = { 420, 238 };
+
     static constexpr auto _widgets = makeWidgets(
-        Widgets::Frame({ 0, 0 }, { 360, 238 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 358, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::keyboard_shortcuts),
-        Widgets::ImageButton({ 345, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        Widgets::Panel({ 0, 15 }, { 360, 223 }, WindowColour::secondary),
-        Widgets::ScrollView({ 4, 19 }, { 352, 202 }, WindowColour::secondary, Scrollbars::vertical, StringIds::keyboard_shortcut_list_tip),
+        Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
+        Widgets::Caption({ 1, 1 }, { kWindowSize.width - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::keyboard_shortcuts),
+        Widgets::ImageButton({ kWindowSize.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::Panel({ 0, 15 }, { kWindowSize.width, kWindowSize.height - 15 }, WindowColour::secondary),
+        Widgets::ScrollView({ 4, 19 }, { kWindowSize.width - 8, 202 }, WindowColour::secondary, Scrollbars::vertical, StringIds::keyboard_shortcut_list_tip),
         Widgets::Button({ 4, 223 }, { 150, 12 }, WindowColour::secondary, StringIds::reset_keys, StringIds::reset_keys_tip)
 
     );
@@ -65,7 +68,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         }
 
         // 0x004BF833 (create_options_window)
-        window = WindowManager::createWindowCentred(WindowType::keyboardShortcuts, { 360, 238 }, WindowFlags::none, getEvents());
+        window = WindowManager::createWindowCentred(WindowType::keyboardShortcuts, kWindowSize, WindowFlags::none, getEvents());
 
         window->setWidgets(_widgets);
         window->initScrollWidgets();
@@ -171,32 +174,24 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
                 format = StringIds::wcolour2_stringid;
             }
 
-            auto modifierStringId = StringIds::empty;
             auto baseStringId = StringIds::empty;
             char buffer[128]{};
 
             const auto& def = shortcutDefs[i];
             const auto& binding = Input::Shortcuts::getBinding(def.id);
+            const auto isBound = binding.keyCode != kInvalidKeyCode && binding.modifiers != KeyModifier::invalid;
 
-            if (binding.keyCode != kInvalidKeyCode && binding.modifiers != KeyModifier::invalid)
+            if (isBound)
             {
-                if ((binding.modifiers & KeyModifier::shift) == KeyModifier::shift)
-                {
-                    modifierStringId = StringIds::keyboard_shortcut_modifier_shift;
-                }
-                else if ((binding.modifiers & KeyModifier::control) == KeyModifier::control)
-                {
-                    modifierStringId = StringIds::keyboard_shortcut_modifier_ctrl;
-                }
-
                 baseStringId = StringIds::stringptr;
                 getBindingString(binding.keyCode, buffer, std::size(buffer));
             }
 
-            FormatArguments formatter{};
+            std::byte argsBuffer[32]{};
+            FormatArguments formatter{ argsBuffer, std::size(argsBuffer) };
             formatter.push(StringIds::keyboard_shortcut_list_format);
             formatter.push(ShortcutManager::getName(static_cast<Shortcut>(i)));
-            formatter.push(modifierStringId);
+            Input::Shortcuts::pushModifierStrings(formatter, isBound ? binding.modifiers : KeyModifier::none);
             formatter.push(baseStringId);
             formatter.push(buffer);
 

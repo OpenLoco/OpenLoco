@@ -5,6 +5,7 @@
 #include "GameCommands/General/TogglePause.h"
 #include "GameState.h"
 #include "Input.h"
+#include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Scenario/ScenarioOptions.h"
 #include "SceneManager.h"
@@ -18,9 +19,9 @@
 #include "World/TownManager.h"
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <SDL3/SDL_keyboard.h>
-#include <array>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 using namespace OpenLoco::Ui;
@@ -776,9 +777,21 @@ namespace OpenLoco::Input::Shortcuts
             {
                 res.modifiers |= KeyModifier::shift;
             }
-            else if (keyCode == SDLK_LCTRL || keyCode == SDLK_RCTRL)
+            else if (keyCode == SDLK_LCTRL)
             {
-                res.modifiers |= KeyModifier::control;
+                res.modifiers |= KeyModifier::leftControl;
+            }
+            else if (keyCode == SDLK_RCTRL)
+            {
+                res.modifiers |= KeyModifier::rightControl;
+            }
+            else if (keyCode == SDLK_LALT)
+            {
+                res.modifiers |= KeyModifier::leftAlt;
+            }
+            else if (keyCode == SDLK_RALT)
+            {
+                res.modifiers |= KeyModifier::rightAlt;
             }
             else if (keyCode == SDLK_LGUI || keyCode == SDLK_RGUI)
             {
@@ -804,9 +817,24 @@ namespace OpenLoco::Input::Shortcuts
             keyName += SDL_GetKeyName(SDLK_LSHIFT);
             keyName += kBindingDelimiter;
         }
-        if ((binding.modifiers & KeyModifier::control) != KeyModifier::none)
+        if ((binding.modifiers & KeyModifier::leftControl) != KeyModifier::none)
         {
             keyName += SDL_GetKeyName(SDLK_LCTRL);
+            keyName += kBindingDelimiter;
+        }
+        if ((binding.modifiers & KeyModifier::rightControl) != KeyModifier::none)
+        {
+            keyName += SDL_GetKeyName(SDLK_RCTRL);
+            keyName += kBindingDelimiter;
+        }
+        if ((binding.modifiers & KeyModifier::leftAlt) != KeyModifier::none)
+        {
+            keyName += SDL_GetKeyName(SDLK_LALT);
+            keyName += kBindingDelimiter;
+        }
+        if ((binding.modifiers & KeyModifier::rightAlt) != KeyModifier::none)
+        {
+            keyName += SDL_GetKeyName(SDLK_RALT);
             keyName += kBindingDelimiter;
         }
         if ((binding.modifiers & KeyModifier::unknown) != KeyModifier::none)
@@ -858,6 +886,24 @@ namespace OpenLoco::Input::Shortcuts
         Config::write();
     }
 
+    void pushModifierStrings(FormatArguments& formatter, KeyModifier modifiers)
+    {
+        static constexpr std::pair<KeyModifier, StringId> kModifierStrings[] = {
+            { KeyModifier::leftControl, StringIds::keyboard_shortcut_modifier_ctrl },
+            { KeyModifier::rightControl, StringIds::keyboard_shortcut_modifier_right_ctrl },
+            { KeyModifier::shift, StringIds::keyboard_shortcut_modifier_shift },
+            { KeyModifier::leftAlt, StringIds::keyboard_shortcut_modifier_alt },
+            { KeyModifier::rightAlt, StringIds::keyboard_shortcut_modifier_right_alt },
+        };
+
+        formatter.push(StringIds::keyboard_shortcut_modifiers);
+
+        for (const auto& [modifier, stringId] : kModifierStrings)
+        {
+            formatter.push((modifiers & modifier) != KeyModifier::none ? stringId : StringIds::empty);
+        }
+    }
+
     const KeyboardBinding& getBinding(Shortcut id)
     {
         static constexpr KeyboardBinding kUnbound{};
@@ -874,6 +920,8 @@ namespace OpenLoco::Input::Shortcuts
     void setBinding(Shortcut id, uint32_t keyCode, KeyModifier modifiers)
     {
         auto& configShortcuts = Config::get().shortcuts;
+
+        modifiers = modifiers & ~KeyModifier::cheat;
 
         for (const auto& def : ShortcutManager::getList())
         {
