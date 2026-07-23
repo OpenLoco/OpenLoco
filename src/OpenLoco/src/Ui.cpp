@@ -1,8 +1,3 @@
-#include "GameStateFlags.h"
-#include "Ui/Cursor.h"
-#include <algorithm>
-#include <cmath>
-
 #ifdef _WIN32
 #include <OpenLoco/Resources/Resource.h>
 
@@ -20,6 +15,7 @@
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/General/LoadSaveQuit.h"
+#include "GameStateFlags.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Gui.h"
@@ -29,6 +25,7 @@
 #include "SceneManager.h"
 #include "Tutorial.h"
 #include "Ui.h"
+#include "Ui/Cursor.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Window.h"
 #include "Ui/WindowManager.h"
@@ -46,6 +43,8 @@
 #include <SDL3/SDL_stdinc.h>
 #include <SDL3/SDL_video.h>
 #include <Ui/Widget.h>
+#include <algorithm>
+#include <cmath>
 #include <cstdint>
 #include <string>
 #include <vector>
