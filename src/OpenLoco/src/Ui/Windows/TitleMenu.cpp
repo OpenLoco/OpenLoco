@@ -118,13 +118,23 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         multiplayer_toggle_btn,
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kScenarioListBtn{ "scenario_list_btn" };
+        constexpr WidgetId kLoadGameBtn{ "load_game_btn" };
+        constexpr WidgetId kTutorialBtn{ "tutorial_btn" };
+        constexpr WidgetId kScenarioEditorBtn{ "scenario_editor_btn" };
+        constexpr WidgetId kChatBtn{ "chat_btn" };
+        constexpr WidgetId kMultiplayerToggleBtn{ "multiplayer_toggle_btn" };
+    }
+
     static constexpr auto _widgets = makeWidgets(
-        Widgets::ImageButton({ 0, 0 }, { kBtnMainSize, kBtnMainSize }, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_new_game),
-        Widgets::ImageButton({ kBtnMainSize, 0 }, { kBtnMainSize, kBtnMainSize }, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_load_game),
-        Widgets::ImageButton({ kBtnMainSize * 2, 0 }, { kBtnMainSize, kBtnMainSize }, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_show_tutorial),
-        Widgets::ImageButton({ kBtnMainSize * 3, 0 }, { kBtnMainSize, kBtnMainSize }, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_scenario_editor),
-        Widgets::ImageButton({ kBtnMainSize * 4 - 31, kBtnMainSize - 27 }, { 31, 27 }, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_chat_tooltip),
-        Widgets::ImageButton({ 0, kBtnMainSize }, { kWW, kBtnSubHeight }, WindowColour::secondary, Widget::kContentNull, StringIds::title_multiplayer_toggle_tooltip)
+        Widgets::ImageButton(Widx::kScenarioListBtn, { 0, 0 }, { kBtnMainSize, kBtnMainSize }, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_new_game),
+        Widgets::ImageButton(Widx::kLoadGameBtn, { kBtnMainSize, 0 }, { kBtnMainSize, kBtnMainSize }, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_load_game),
+        Widgets::ImageButton(Widx::kTutorialBtn, { kBtnMainSize * 2, 0 }, { kBtnMainSize, kBtnMainSize }, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_show_tutorial),
+        Widgets::ImageButton(Widx::kScenarioEditorBtn, { kBtnMainSize * 3, 0 }, { kBtnMainSize, kBtnMainSize }, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_scenario_editor),
+        Widgets::ImageButton(Widx::kChatBtn, { kBtnMainSize * 4 - 31, kBtnMainSize - 27 }, { 31, 27 }, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_chat_tooltip),
+        Widgets::ImageButton(Widx::kMultiplayerToggleBtn, { 0, kBtnMainSize }, { kWW, kBtnSubHeight }, WindowColour::secondary, Widget::kContentNull, StringIds::title_multiplayer_toggle_tooltip)
 
     );
 
@@ -288,65 +298,65 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     // 0x00439094
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseUp(Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
     {
         if (Intro::isActive())
         {
             return;
         }
 
-        switch (widgetIndex)
+        switch (id)
         {
-            case widx::scenario_list_btn:
+            case Widx::kScenarioListBtn:
                 sub_4391DA();
                 break;
-            case widx::load_game_btn:
+            case Widx::kLoadGameBtn:
                 sub_4391E2();
                 break;
-            case widx::scenario_editor_btn:
+            case Widx::kScenarioEditorBtn:
                 Title::stop();
                 sub_43910A();
                 break;
-            case widx::chat_btn:
+            case Widx::kChatBtn:
                 beginSendChatMessage(window);
                 break;
-            case widx::multiplayer_toggle_btn:
+            case Widx::kMultiplayerToggleBtn:
                 showMultiplayer(&window);
                 break;
         }
     }
 
     // 0x004390D1
-    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseDown(Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case widx::tutorial_btn:
+            case Widx::kTutorialBtn:
                 sub_439112(&window);
                 break;
         }
     }
 
     // 0x004390DD
-    static void onDropdown([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+    static void onDropdown([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case widx::tutorial_btn:
+            case Widx::kTutorialBtn:
                 sub_4391CC(itemIndex);
                 break;
         }
     }
 
     // 0x004390ED
-    static void onTextInput([[maybe_unused]] Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const char* input)
+    static void onTextInput([[maybe_unused]] Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, const char* input)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case widx::chat_btn:
+            case Widx::kChatBtn:
                 sub_43918F(input);
                 break;
-            case widx::multiplayer_toggle_btn:
+            case Widx::kMultiplayerToggleBtn:
                 multiplayerConnect(input);
                 break;
         }
