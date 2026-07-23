@@ -41,7 +41,7 @@ namespace OpenLoco::Gfx
             ImageIds::noise_mask_7,
         };
 
-        static void drawRect(const RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint8_t colour, RectFlags flags);
+        static void drawRect(const RenderTarget& rt, int32_t x, int32_t y, int32_t dx, int32_t dy, uint8_t colour, RectFlags flags);
         static void drawImageSolid(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex);
 
         // 0x00447485
@@ -308,7 +308,7 @@ namespace OpenLoco::Gfx
         }
 
         // 0x00448C79
-        static void drawImage(const RenderTarget* rt, int16_t x, int16_t y, uint32_t image)
+        static void drawImage(const RenderTarget* rt, int32_t x, int32_t y, uint32_t image)
         {
             drawImage(*rt, { x, y }, ImageId::fromUInt32(image));
         }
@@ -316,11 +316,11 @@ namespace OpenLoco::Gfx
         // 0x00450890, 0x00450F87, 0x00450D1E, 0x00450ABA
         template<int32_t TZoomLevel>
         static void drawMaskedZoom(
-            int16_t imageHeight,
-            int16_t imageWidth,
+            int32_t imageHeight,
+            int32_t imageWidth,
             int16_t rowSize,
             const uint8_t* bytesMask,
-            int16_t dstWrap,
+            int32_t dstWrap,
             uint8_t* dstBuf,
             const uint8_t* bytesImage)
         {
@@ -434,7 +434,7 @@ namespace OpenLoco::Gfx
                         newRt.height >>= 1;
                         drawImageMaskedZoom<TZoomLevel - 1>(
                             newRt,
-                            { static_cast<int16_t>(pos.x >> 1), static_cast<int16_t>(pos.y >> 1) },
+                            { pos.x >> 1, pos.y >> 1 },
                             image.withIndexOffset(-g1Image->zoomOffset),
                             maskImage.withIndexOffset(-g1ImageMask->zoomOffset));
                         return;
@@ -442,8 +442,8 @@ namespace OpenLoco::Gfx
                 }
             }
 
-            int16_t imageHeight = g1Image->height;
-            int16_t imageWidth = g1Image->width;
+            int32_t imageHeight = g1Image->height;
+            int32_t imageWidth = g1Image->width;
 
             const auto* imageDataPos = g1Image->offset;
             auto* dstBuf = rt.bits;
@@ -451,7 +451,7 @@ namespace OpenLoco::Gfx
             constexpr uint16_t zoomMask = static_cast<uint16_t>(~0ULL << TZoomLevel);
             constexpr int16_t offsetX = (1 << TZoomLevel) - 1;
 
-            int16_t dstTop = ((g1Image->yOffset + pos.y) & zoomMask) - rt.y;
+            int32_t dstTop = ((g1Image->yOffset + pos.y) & zoomMask) - rt.y;
             if (dstTop >= 0)
             {
                 auto scaledWidth = rt.width >> TZoomLevel;
@@ -478,7 +478,7 @@ namespace OpenLoco::Gfx
                 dstTop = 0;
             }
 
-            int16_t dstBottom = imageHeight + dstTop;
+            int32_t dstBottom = imageHeight + dstTop;
             if (dstBottom > rt.height)
             {
                 imageHeight -= dstBottom - rt.height;
@@ -490,14 +490,14 @@ namespace OpenLoco::Gfx
             }
 
             int16_t rowSize = 0;
-            int16_t dstWrap = rt.pitch + (rt.width >> TZoomLevel);
+            int32_t dstWrap = rt.pitch + (rt.width >> TZoomLevel);
 
             if constexpr (TZoomLevel == 0)
             {
                 dstWrap -= g1Image->width;
             }
 
-            int16_t dstLeft = ((g1Image->xOffset + pos.x + offsetX) & zoomMask) - rt.x;
+            int32_t dstLeft = ((g1Image->xOffset + pos.x + offsetX) & zoomMask) - rt.x;
             if (dstLeft < 0)
             {
                 imageWidth += dstLeft;
@@ -517,7 +517,7 @@ namespace OpenLoco::Gfx
                 dstLeft = 0;
             }
 
-            int16_t dstRight = imageWidth + dstLeft - rt.width;
+            int32_t dstRight = imageWidth + dstLeft - rt.width;
             if (imageWidth + dstLeft > rt.width)
             {
                 imageWidth -= dstRight;
@@ -590,7 +590,7 @@ namespace OpenLoco::Gfx
         // dx: bottom
         // ebp: colour | enumValue(flags)
         // edi: rt
-        static void drawRectImpl(const RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint8_t colour, RectFlags flags)
+        static void drawRectImpl(const RenderTarget& rt, int32_t left, int32_t top, int32_t right, int32_t bottom, uint8_t colour, RectFlags flags)
         {
             if (left > right)
             {
@@ -720,18 +720,18 @@ namespace OpenLoco::Gfx
             drawRectImpl(rt, rect.left(), rect.top(), rect.right(), rect.bottom(), colour, flags);
         }
 
-        static void fillRect(const RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint8_t colour, RectFlags flags)
+        static void fillRect(const RenderTarget& rt, int32_t left, int32_t top, int32_t right, int32_t bottom, uint8_t colour, RectFlags flags)
         {
             drawRectImpl(rt, left, top, right, bottom, colour, flags);
         }
 
-        static void drawRect(const RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint8_t colour, RectFlags flags)
+        static void drawRect(const RenderTarget& rt, int32_t x, int32_t y, int32_t dx, int32_t dy, uint8_t colour, RectFlags flags)
         {
             // This makes the function signature more like a drawing application
             drawRectImpl(rt, x, y, x + dx - 1, y + dy - 1, colour, flags);
         }
 
-        static void fillRectInset(const RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, AdvancedColour colour, RectInsetFlags flags)
+        static void fillRectInset(const RenderTarget& rt, int32_t left, int32_t top, int32_t right, int32_t bottom, AdvancedColour colour, RectInsetFlags flags)
         {
             const auto rect = Ui::Rect::fromLTRB(left, top, right, bottom);
             const auto baseColour = static_cast<Colour>(colour);
@@ -836,7 +836,7 @@ namespace OpenLoco::Gfx
             }
         }
 
-        static void drawRectInset(const RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, AdvancedColour colour, RectInsetFlags flags)
+        static void drawRectInset(const RenderTarget& rt, int32_t x, int32_t y, int32_t dx, int32_t dy, AdvancedColour colour, RectInsetFlags flags)
         {
             // This makes the function signature more like a drawing application
             fillRectInset(rt, x, y, x + dx - 1, y + dy - 1, colour, flags);
@@ -1041,25 +1041,25 @@ namespace OpenLoco::Gfx
         return Impl::clearSingle(rt, paletteId);
     }
 
-    void SoftwareDrawingContext::fillRect(int16_t left, int16_t top, int16_t right, int16_t bottom, uint8_t colour, RectFlags flags)
+    void SoftwareDrawingContext::fillRect(int32_t left, int32_t top, int32_t right, int32_t bottom, uint8_t colour, RectFlags flags)
     {
         auto& rt = currentRenderTarget();
         return Impl::fillRect(rt, left, top, right, bottom, colour, flags);
     }
 
-    void SoftwareDrawingContext::drawRect(int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint8_t colour, RectFlags flags)
+    void SoftwareDrawingContext::drawRect(int32_t x, int32_t y, int32_t dx, int32_t dy, uint8_t colour, RectFlags flags)
     {
         auto& rt = currentRenderTarget();
         return Impl::drawRect(rt, x, y, dx, dy, colour, flags);
     }
 
-    void SoftwareDrawingContext::fillRectInset(int16_t left, int16_t top, int16_t right, int16_t bottom, AdvancedColour colour, RectInsetFlags flags)
+    void SoftwareDrawingContext::fillRectInset(int32_t left, int32_t top, int32_t right, int32_t bottom, AdvancedColour colour, RectInsetFlags flags)
     {
         auto& rt = currentRenderTarget();
         return Impl::fillRectInset(rt, left, top, right, bottom, colour, flags);
     }
 
-    void SoftwareDrawingContext::drawRectInset(int16_t x, int16_t y, uint16_t dx, uint16_t dy, AdvancedColour colour, RectInsetFlags flags)
+    void SoftwareDrawingContext::drawRectInset(int32_t x, int32_t y, int32_t dx, int32_t dy, AdvancedColour colour, RectInsetFlags flags)
     {
         auto& rt = currentRenderTarget();
         return Impl::drawRectInset(rt, x, y, dx, dy, colour, flags);
@@ -1077,7 +1077,7 @@ namespace OpenLoco::Gfx
         return Impl::drawCircle(rt, centre, radius, lineWidth, colour);
     }
 
-    void SoftwareDrawingContext::drawImage(int16_t x, int16_t y, uint32_t image)
+    void SoftwareDrawingContext::drawImage(int32_t x, int32_t y, uint32_t image)
     {
         auto& rt = currentRenderTarget();
         return Impl::drawImage(&rt, x, y, image);

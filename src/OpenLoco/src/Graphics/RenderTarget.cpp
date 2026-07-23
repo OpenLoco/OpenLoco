@@ -23,11 +23,11 @@ namespace OpenLoco::Gfx
         const Ui::Rect oldRect = src.getUiRect();
         Ui::Rect intersect = oldRect.intersection(newRect);
         const auto stride = oldRect.size.width + src.pitch;
-        const int16_t newPitch = stride - intersect.size.width;
+        const int32_t newPitch = stride - intersect.size.width;
         auto* newBits = src.bits + (stride * (intersect.origin.y - oldRect.origin.y) + (intersect.origin.x - oldRect.origin.x));
         intersect.origin.x = std::max(0, oldRect.origin.x - newRect.origin.x);
         intersect.origin.y = std::max(0, oldRect.origin.y - newRect.origin.y);
-        RenderTarget newRT{ newBits, static_cast<int16_t>(intersect.origin.x), static_cast<int16_t>(intersect.origin.y), static_cast<int16_t>(intersect.size.width), static_cast<int16_t>(intersect.size.height), newPitch, 0 };
+        RenderTarget newRT{ newBits, intersect.origin.x, intersect.origin.y, intersect.size.width, intersect.size.height, newPitch, 0 };
 
         if (newRT.width <= 0 || newRT.height <= 0)
         {
