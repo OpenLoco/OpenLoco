@@ -61,20 +61,35 @@ namespace OpenLoco::Ui::Windows::CompanyList
             tab_speed_records,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kFrame{ "frame" };
+            constexpr WidgetId kCaption{ "caption" };
+            constexpr WidgetId kCloseButton{ "close_button" };
+            constexpr WidgetId kPanel{ "panel" };
+            constexpr WidgetId kTabCompanyList{ "tab_company_list" };
+            constexpr WidgetId kTabPerformance{ "tab_performance" };
+            constexpr WidgetId kTabCargoUnits{ "tab_cargo_units" };
+            constexpr WidgetId kTabCargoDistance{ "tab_cargo_distance" };
+            constexpr WidgetId kTabValues{ "tab_values" };
+            constexpr WidgetId kTabPaymentRates{ "tab_payment_rates" };
+            constexpr WidgetId kTabSpeedRecords{ "tab_speed_records" };
+        }
+
         static constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
         {
             return makeWidgets(
-                Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
-                Widgets::Caption({ 1, 1 }, { frameWidth - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, windowCaptionId),
-                Widgets::ImageButton({ frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-                Widgets::Panel({ 0, 41 }, { frameWidth, 231 }, WindowColour::secondary),
-                Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_compare_companies),
-                Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_company_performance),
-                Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_cargo_graphs),
-                Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_cargo_distance_graphs),
-                Widgets::Tab({ 127, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_company_values),
-                Widgets::Tab({ 158, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_cargo_payment_rates),
-                Widgets::Tab({ 189, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_speed_records));
+                Widgets::Frame(Widx::kFrame, { 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
+                Widgets::Caption(Widx::kCaption, { 1, 1 }, { frameWidth - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, windowCaptionId),
+                Widgets::ImageButton(Widx::kCloseButton, { frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::Panel(Widx::kPanel, { 0, 41 }, { frameWidth, 231 }, WindowColour::secondary),
+                Widgets::Tab(Widx::kTabCompanyList, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_compare_companies),
+                Widgets::Tab(Widx::kTabPerformance, { 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_company_performance),
+                Widgets::Tab(Widx::kTabCargoUnits, { 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_cargo_graphs),
+                Widgets::Tab(Widx::kTabCargoDistance, { 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_cargo_distance_graphs),
+                Widgets::Tab(Widx::kTabValues, { 127, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_company_values),
+                Widgets::Tab(Widx::kTabPaymentRates, { 158, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_cargo_payment_rates),
+                Widgets::Tab(Widx::kTabSpeedRecords, { 189, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_speed_records));
         }
 
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id);
@@ -102,14 +117,24 @@ namespace OpenLoco::Ui::Windows::CompanyList
             status_bar,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kSortName{ "sort_name" };
+            constexpr WidgetId kSortStatus{ "sort_status" };
+            constexpr WidgetId kSortPerformance{ "sort_performance" };
+            constexpr WidgetId kSortValue{ "sort_value" };
+            constexpr WidgetId kScrollview{ "scrollview" };
+            constexpr WidgetId kStatusBar{ "status_bar" };
+        }
+
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(640, 272, StringIds::title_company_list),
-            Widgets::TableHeader({ 4, 43 }, { 175, 12 }, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_name),
-            Widgets::TableHeader({ 179, 43 }, { 210, 12 }, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_status),
-            Widgets::TableHeader({ 389, 43 }, { 145, 12 }, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_performance),
-            Widgets::TableHeader({ 534, 43 }, { 100, 12 }, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_value),
-            Widgets::ScrollView({ 3, 56 }, { 634, 201 }, WindowColour::secondary, Scrollbars::vertical),
-            Widgets::Label({ 3, kWindowSize.height - 17 }, { kWindowSize.width - kResizeHandleSize, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
+            Widgets::TableHeader(Widx::kSortName, { 4, 43 }, { 175, 12 }, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_name),
+            Widgets::TableHeader(Widx::kSortStatus, { 179, 43 }, { 210, 12 }, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_status),
+            Widgets::TableHeader(Widx::kSortPerformance, { 389, 43 }, { 145, 12 }, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_performance),
+            Widgets::TableHeader(Widx::kSortValue, { 534, 43 }, { 100, 12 }, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_value),
+            Widgets::ScrollView(Widx::kScrollview, { 3, 56 }, { 634, 201 }, WindowColour::secondary, Scrollbars::vertical),
+            Widgets::Label(Widx::kStatusBar, { 3, kWindowSize.height - 17 }, { kWindowSize.width - kResizeHandleSize, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
 
         );
 
@@ -122,28 +147,28 @@ namespace OpenLoco::Ui::Windows::CompanyList
         };
 
         // 0x004360A2
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(&self);
                     break;
 
-                case Common::widx::tab_company_list:
-                case Common::widx::tab_performance:
-                case Common::widx::tab_cargo_units:
-                case Common::widx::tab_cargo_distance:
-                case Common::widx::tab_values:
-                case Common::widx::tab_payment_rates:
-                case Common::widx::tab_speed_records:
+                case Common::Widx::kTabCompanyList:
+                case Common::Widx::kTabPerformance:
+                case Common::Widx::kTabCargoUnits:
+                case Common::Widx::kTabCargoDistance:
+                case Common::Widx::kTabValues:
+                case Common::Widx::kTabPaymentRates:
+                case Common::Widx::kTabSpeedRecords:
                     Common::switchTab(self, widgetIndex);
                     break;
 
-                case sort_name:
-                case sort_status:
-                case sort_performance:
-                case sort_value:
+                case Widx::kSortName:
+                case Widx::kSortStatus:
+                case Widx::kSortPerformance:
+                case Widx::kSortValue:
                 {
                     auto sortMode = widgetIndex - widx::sort_name;
                     if (self.sortMode == sortMode)
@@ -318,9 +343,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x0043632C
-        static Ui::CursorId cursor(Window& self, WidgetIndex_t widgetIdx, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+        static Ui::CursorId cursor(Window& self, [[maybe_unused]] WidgetIndex_t widgetIdx, const WidgetId id, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
         {
-            if (widgetIdx != widx::scrollview)
+            if (id != Widx::kScrollview)
             {
                 return fallback;
             }
@@ -1344,21 +1369,21 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // clang-format on
 
         // 0x0043667B
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(&self);
                     break;
 
-                case Common::widx::tab_company_list:
-                case Common::widx::tab_performance:
-                case Common::widx::tab_cargo_units:
-                case Common::widx::tab_cargo_distance:
-                case Common::widx::tab_values:
-                case Common::widx::tab_payment_rates:
-                case Common::widx::tab_speed_records:
+                case Common::Widx::kTabCompanyList:
+                case Common::Widx::kTabPerformance:
+                case Common::Widx::kTabCargoUnits:
+                case Common::Widx::kTabCargoDistance:
+                case Common::Widx::kTabValues:
+                case Common::Widx::kTabPaymentRates:
+                case Common::Widx::kTabSpeedRecords:
                     Common::switchTab(self, widgetIndex);
                     break;
             }
