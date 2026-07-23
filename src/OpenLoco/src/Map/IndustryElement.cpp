@@ -16,7 +16,6 @@
 namespace OpenLoco::World
 {
     constexpr auto kSectionComplete = 0x7;
-    constexpr auto kConstructionComplete = std::numeric_limits<uint8_t>::max();
 
     Industry* IndustryElement::industry() const
     {
@@ -153,7 +152,7 @@ namespace OpenLoco::World
                     ind->under_construction++;
                     if (ind->under_construction >= ind->numTiles)
                     {
-                        ind->under_construction = kConstructionComplete;
+                        ind->under_construction = kIndustryConstructionComplete;
                         Ui::WindowManager::invalidate(Ui::WindowType::industry, enumValue(ind->id()));
                         Ui::WindowManager::invalidate(Ui::WindowType::industryList);
                     }
@@ -234,7 +233,7 @@ namespace OpenLoco::World
             }
         }
 
-        if (ind->under_construction == kConstructionComplete)
+        if (ind->under_construction == kIndustryConstructionComplete)
         {
             const coord_t upperRange = isMultiTile ? 5 : 4;
             constexpr coord_t kLowerRange = 4;
