@@ -51,17 +51,29 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             tab_scenario,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kFrame{ "frame" };
+            constexpr WidgetId kCaption{ "caption" };
+            constexpr WidgetId kCloseButton{ "close_button" };
+            constexpr WidgetId kPanel{ "panel" };
+            constexpr WidgetId kTabChallenge{ "tab_challenge" };
+            constexpr WidgetId kTabCompanies{ "tab_companies" };
+            constexpr WidgetId kTabFinances{ "tab_finances" };
+            constexpr WidgetId kTabScenario{ "tab_scenario" };
+        }
+
         static constexpr auto makeCommonWidgets(int32_t frameHeight, StringId windowCaptionId)
         {
             return makeWidgets(
-                Widgets::Frame({ 0, 0 }, { 366, frameHeight }, WindowColour::primary),
-                Widgets::Caption({ 1, 1 }, { 364, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, windowCaptionId),
-                Widgets::ImageButton({ 351, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-                Widgets::Panel({ 0, 41 }, { 366, 175 }, WindowColour::secondary),
-                Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_scenario_challenge),
-                Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_options),
-                Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_financial_options),
-                Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_scenario_options));
+                Widgets::Frame(Widx::kFrame, { 0, 0 }, { 366, frameHeight }, WindowColour::primary),
+                Widgets::Caption(Widx::kCaption, { 1, 1 }, { 364, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, windowCaptionId),
+                Widgets::ImageButton(Widx::kCloseButton, { 351, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::Panel(Widx::kPanel, { 0, 41 }, { 366, 175 }, WindowColour::secondary),
+                Widgets::Tab(Widx::kTabChallenge, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_scenario_challenge),
+                Widgets::Tab(Widx::kTabCompanies, { 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_options),
+                Widgets::Tab(Widx::kTabFinances, { 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_financial_options),
+                Widgets::Tab(Widx::kTabScenario, { 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_scenario_options));
         }
 
         // 0x00440082
@@ -189,17 +201,34 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             time_limit_value_up,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kObjectiveType{ "objective_type" };
+            constexpr WidgetId kObjectiveTypeBtn{ "objective_type_btn" };
+            constexpr WidgetId kObjectiveValue{ "objective_value" };
+            constexpr WidgetId kObjectiveValueDown{ "objective_value_down" };
+            constexpr WidgetId kObjectiveValueUp{ "objective_value_up" };
+            constexpr WidgetId kObjectiveCargo{ "objective_cargo" };
+            constexpr WidgetId kObjectiveCargoBtn{ "objective_cargo_btn" };
+            constexpr WidgetId kCheckBeTopCompany{ "check_be_top_company" };
+            constexpr WidgetId kCheckBeWithinTopThreeCompanies{ "check_be_within_top_three_companies" };
+            constexpr WidgetId kCheckTimeLimit{ "check_time_limit" };
+            constexpr WidgetId kTimeLimitValue{ "time_limit_value" };
+            constexpr WidgetId kTimeLimitValueDown{ "time_limit_value_down" };
+            constexpr WidgetId kTimeLimitValueUp{ "time_limit_value_up" };
+        }
+
         const uint64_t holdableWidgets = (1 << widx::objective_value_down) | (1 << widx::objective_value_up) | (1 << widx::time_limit_value_down) | (1 << widx::time_limit_value_up);
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(197, StringIds::title_scenario_challenge),
-            Widgets::dropdownWidgets({ 10, 52 }, { 346, 12 }, WindowColour::secondary),
-            Widgets::stepperWidgets({ 10, 67 }, { 163, 12 }, WindowColour::secondary),
-            Widgets::dropdownWidgets({ 193, 67 }, { 163, 12 }, WindowColour::secondary),
-            Widgets::Checkbox({ 10, 83 }, { 346, 12 }, WindowColour::secondary, StringIds::and_be_the_top_company),
-            Widgets::Checkbox({ 10, 98 }, { 346, 12 }, WindowColour::secondary, StringIds::and_be_within_the_top_companies),
-            Widgets::Checkbox({ 10, 113 }, { 346, 12 }, WindowColour::secondary, StringIds::with_a_time_limit),
-            Widgets::stepperWidgets({ 256, 112 }, { 100, 12 }, WindowColour::secondary, StringIds::time_limit_years_value)
+            Widgets::dropdownWidgets(Widx::kObjectiveType, Widx::kObjectiveTypeBtn, { 10, 52 }, { 346, 12 }, WindowColour::secondary),
+            Widgets::stepperWidgets(Widx::kObjectiveValue, Widx::kObjectiveValueDown, Widx::kObjectiveValueUp, { 10, 67 }, { 163, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets(Widx::kObjectiveCargo, Widx::kObjectiveCargoBtn, { 193, 67 }, { 163, 12 }, WindowColour::secondary),
+            Widgets::Checkbox(Widx::kCheckBeTopCompany, { 10, 83 }, { 346, 12 }, WindowColour::secondary, StringIds::and_be_the_top_company),
+            Widgets::Checkbox(Widx::kCheckBeWithinTopThreeCompanies, { 10, 98 }, { 346, 12 }, WindowColour::secondary, StringIds::and_be_within_the_top_companies),
+            Widgets::Checkbox(Widx::kCheckTimeLimit, { 10, 113 }, { 346, 12 }, WindowColour::secondary, StringIds::with_a_time_limit),
+            Widgets::stepperWidgets(Widx::kTimeLimitValue, Widx::kTimeLimitValueDown, Widx::kTimeLimitValueUp, { 256, 112 }, { 100, 12 }, WindowColour::secondary, StringIds::time_limit_years_value)
 
         );
 
@@ -231,21 +260,21 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static int16_t cargoByDropdownIndex[kMaxCargoObjects] = { -1 };
 
         // 0x0043FD51
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+        static void onDropdown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
         {
             if (itemIndex == -1)
             {
                 return;
             }
 
-            switch (widgetIndex)
+            switch (id)
             {
-                case widx::objective_type_btn:
+                case Widx::kObjectiveTypeBtn:
                     Scenario::getObjective().type = static_cast<Scenario::ObjectiveType>(itemIndex);
                     self.invalidate();
                     break;
 
-                case widx::objective_cargo_btn:
+                case Widx::kObjectiveCargoBtn:
                 {
                     Scenario::getObjective().deliveredCargoType = cargoByDropdownIndex[itemIndex];
                     self.invalidate();
@@ -254,11 +283,11 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043FD14
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseDown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case widx::objective_type_btn:
+                case Widx::kObjectiveTypeBtn:
                 {
                     Widget& target = self.widgets[widx::objective_type];
                     Dropdown::show(self.x + target.left, self.y + target.top, target.width() - 4, target.height(), self.getColour(WindowColour::secondary), std::size(objectiveTypeLabelIds), 0x80);
@@ -272,7 +301,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     break;
                 }
 
-                case widx::objective_value_down:
+                case Widx::kObjectiveValueDown:
                 {
                     uint32_t stepSize = Input::getClickRepeatStepSize();
 
@@ -308,7 +337,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     break;
                 }
 
-                case widx::objective_value_up:
+                case Widx::kObjectiveValueUp:
                 {
                     uint32_t stepSize = Input::getClickRepeatStepSize();
 
@@ -343,7 +372,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     break;
                 }
 
-                case widx::objective_cargo_btn:
+                case Widx::kObjectiveCargoBtn:
                 {
                     uint16_t numCargoObjects = 0;
                     for (uint16_t cargoIdx = 0; cargoIdx < kMaxCargoObjects; cargoIdx++)
@@ -380,14 +409,14 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     break;
                 }
 
-                case widx::time_limit_value_down:
+                case Widx::kTimeLimitValueDown:
                 {
                     Scenario::getObjective().timeLimitYears = std::max<uint8_t>(Scenario::getObjective().timeLimitYears - 1, Scenario::kMinObjectiveYearLimit);
                     self.invalidate();
                     break;
                 }
 
-                case widx::time_limit_value_up:
+                case Widx::kTimeLimitValueUp:
                 {
                     Scenario::getObjective().timeLimitYears = std::min<uint8_t>(Scenario::getObjective().timeLimitYears + 1, Scenario::kMaxObjectiveYearLimit);
                     self.invalidate();
@@ -397,32 +426,32 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043FCED
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(&self);
                     break;
 
-                case Common::widx::tab_challenge:
-                case Common::widx::tab_companies:
-                case Common::widx::tab_finances:
-                case Common::widx::tab_scenario:
+                case Common::Widx::kTabChallenge:
+                case Common::Widx::kTabCompanies:
+                case Common::Widx::kTabFinances:
+                case Common::Widx::kTabScenario:
                     Common::switchTab(self, widgetIndex);
                     break;
 
-                case check_be_top_company:
+                case Widx::kCheckBeTopCompany:
                     Scenario::getObjective().flags ^= Scenario::ObjectiveFlags::beTopCompany;
                     self.invalidate();
                     break;
 
-                case check_be_within_top_three_companies:
+                case Widx::kCheckBeWithinTopThreeCompanies:
                     Scenario::getObjective().flags ^= Scenario::ObjectiveFlags::beWithinTopThreeCompanies;
                     self.invalidate();
                     break;
 
-                case check_time_limit:
+                case Widx::kCheckTimeLimit:
                     Scenario::getObjective().flags ^= Scenario::ObjectiveFlags::withinTimeLimit;
                     self.invalidate();
                     break;
@@ -593,28 +622,56 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             player_forbid_ships,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kMaxCompetingCompanies{ "max_competing_companies" };
+            constexpr WidgetId kMaxCompetingCompaniesDown{ "max_competing_companies_down" };
+            constexpr WidgetId kMaxCompetingCompaniesUp{ "max_competing_companies_up" };
+            constexpr WidgetId kDelayBeforeCompetingCompaniesStart{ "delay_before_competing_companies_start" };
+            constexpr WidgetId kDelayBeforeCompetingCompaniesStartDown{ "delay_before_competing_companies_start_down" };
+            constexpr WidgetId kDelayBeforeCompetingCompaniesStartUp{ "delay_before_competing_companies_start_up" };
+            constexpr WidgetId kPreferredIntelligence{ "preferred_intelligence" };
+            constexpr WidgetId kPreferredIntelligenceBtn{ "preferred_intelligence_btn" };
+            constexpr WidgetId kPreferredAggressiveness{ "preferred_aggressiveness" };
+            constexpr WidgetId kPreferredAggressivenessBtn{ "preferred_aggressiveness_btn" };
+            constexpr WidgetId kPreferredCompetitiveness{ "preferred_competitiveness" };
+            constexpr WidgetId kPreferredCompetitivenessBtn{ "preferred_competitiveness_btn" };
+            constexpr WidgetId kCompetitorForbidTrains{ "competitor_forbid_trains" };
+            constexpr WidgetId kCompetitorForbidBuses{ "competitor_forbid_buses" };
+            constexpr WidgetId kCompetitorForbidTrucks{ "competitor_forbid_trucks" };
+            constexpr WidgetId kCompetitorForbidTrams{ "competitor_forbid_trams" };
+            constexpr WidgetId kCompetitorForbidAircraft{ "competitor_forbid_aircraft" };
+            constexpr WidgetId kCompetitorForbidShips{ "competitor_forbid_ships" };
+            constexpr WidgetId kPlayerForbidTrains{ "player_forbid_trains" };
+            constexpr WidgetId kPlayerForbidBuses{ "player_forbid_buses" };
+            constexpr WidgetId kPlayerForbidTrucks{ "player_forbid_trucks" };
+            constexpr WidgetId kPlayerForbidTrams{ "player_forbid_trams" };
+            constexpr WidgetId kPlayerForbidAircraft{ "player_forbid_aircraft" };
+            constexpr WidgetId kPlayerForbidShips{ "player_forbid_ships" };
+        }
+
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(327, StringIds::title_company_options),
-            Widgets::stepperWidgets({ 256, 52 }, { 100, 12 }, WindowColour::secondary, StringIds::max_competing_companies_value),
-            Widgets::stepperWidgets({ 256, 67 }, { 100, 12 }, WindowColour::secondary, StringIds::delay_before_competing_companies_start_months),
+            Widgets::stepperWidgets(Widx::kMaxCompetingCompanies, Widx::kMaxCompetingCompaniesDown, Widx::kMaxCompetingCompaniesUp, { 256, 52 }, { 100, 12 }, WindowColour::secondary, StringIds::max_competing_companies_value),
+            Widgets::stepperWidgets(Widx::kDelayBeforeCompetingCompaniesStart, Widx::kDelayBeforeCompetingCompaniesStartDown, Widx::kDelayBeforeCompetingCompaniesStartUp, { 256, 67 }, { 100, 12 }, WindowColour::secondary, StringIds::delay_before_competing_companies_start_months),
             Widgets::GroupBox({ 5, 102 - 14 - 5 }, { 356, 63 }, WindowColour::secondary, StringIds::selection_of_competing_companies),
-            Widgets::dropdownWidgets({ 246, 102 - 4 }, { 110, 12 }, WindowColour::secondary),
-            Widgets::dropdownWidgets({ 246, 117 - 4 }, { 110, 12 }, WindowColour::secondary),
-            Widgets::dropdownWidgets({ 246, 132 - 4 }, { 110, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets(Widx::kPreferredIntelligence, Widx::kPreferredIntelligenceBtn, { 246, 102 - 4 }, { 110, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets(Widx::kPreferredAggressiveness, Widx::kPreferredAggressivenessBtn, { 246, 117 - 4 }, { 110, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets(Widx::kPreferredCompetitiveness, Widx::kPreferredCompetitivenessBtn, { 246, 132 - 4 }, { 110, 12 }, WindowColour::secondary),
             Widgets::GroupBox({ 5, 150 }, { 356, 50 }, WindowColour::secondary, StringIds::forbid_competing_companies_from_using),
-            Widgets::Checkbox({ 15 + 113 * 0, 166 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_trains),
-            Widgets::Checkbox({ 15 + 113 * 1, 166 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_buses),
-            Widgets::Checkbox({ 15 + 113 * 1, 180 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_trucks),
-            Widgets::Checkbox({ 15 + 113 * 0, 180 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_trams),
-            Widgets::Checkbox({ 15 + 113 * 2, 166 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_aircraft),
-            Widgets::Checkbox({ 15 + 113 * 2, 180 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_ships),
+            Widgets::Checkbox(Widx::kCompetitorForbidTrains, { 15 + 113 * 0, 166 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_trains),
+            Widgets::Checkbox(Widx::kCompetitorForbidBuses, { 15 + 113 * 1, 166 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_buses),
+            Widgets::Checkbox(Widx::kCompetitorForbidTrucks, { 15 + 113 * 1, 180 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_trucks),
+            Widgets::Checkbox(Widx::kCompetitorForbidTrams, { 15 + 113 * 0, 180 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_trams),
+            Widgets::Checkbox(Widx::kCompetitorForbidAircraft, { 15 + 113 * 2, 166 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_aircraft),
+            Widgets::Checkbox(Widx::kCompetitorForbidShips, { 15 + 113 * 2, 180 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_ships),
             Widgets::GroupBox({ 5, 202 }, { 356, 50 }, WindowColour::secondary, StringIds::forbid_player_companies_from_using),
-            Widgets::Checkbox({ 15 + 113 * 0, 219 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_trains),
-            Widgets::Checkbox({ 15 + 113 * 1, 219 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_buses),
-            Widgets::Checkbox({ 15 + 113 * 1, 233 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_trucks),
-            Widgets::Checkbox({ 15 + 113 * 0, 233 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_trams),
-            Widgets::Checkbox({ 15 + 113 * 2, 219 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_aircraft),
-            Widgets::Checkbox({ 15 + 113 * 2, 233 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_ships)
+            Widgets::Checkbox(Widx::kPlayerForbidTrains, { 15 + 113 * 0, 219 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_trains),
+            Widgets::Checkbox(Widx::kPlayerForbidBuses, { 15 + 113 * 1, 219 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_buses),
+            Widgets::Checkbox(Widx::kPlayerForbidTrucks, { 15 + 113 * 1, 233 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_trucks),
+            Widgets::Checkbox(Widx::kPlayerForbidTrams, { 15 + 113 * 0, 233 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_trams),
+            Widgets::Checkbox(Widx::kPlayerForbidAircraft, { 15 + 113 * 2, 219 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_aircraft),
+            Widgets::Checkbox(Widx::kPlayerForbidShips, { 15 + 113 * 2, 233 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_ships)
 
         );
 
@@ -651,7 +708,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         };
 
         // 0x0043F67C
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+        static void onDropdown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
         {
             if (itemIndex == -1)
             {
@@ -660,17 +717,17 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             auto& state = getGameState();
 
-            switch (widgetIndex)
+            switch (id)
             {
-                case widx::preferred_intelligence_btn:
+                case Widx::kPreferredIntelligenceBtn:
                     state.preferredAIIntelligence = itemIndex;
                     break;
 
-                case widx::preferred_aggressiveness_btn:
+                case Widx::kPreferredAggressivenessBtn:
                     state.preferredAIAggressiveness = itemIndex;
                     break;
 
-                case widx::preferred_competitiveness_btn:
+                case Widx::kPreferredCompetitivenessBtn:
                     state.preferredAICompetitiveness = itemIndex;
                     break;
             }
@@ -679,33 +736,33 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043F639
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseDown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
         {
             auto& state = getGameState();
 
-            switch (widgetIndex)
+            switch (id)
             {
-                case widx::max_competing_companies_down:
+                case Widx::kMaxCompetingCompaniesDown:
                     CompanyManager::setMaxCompetingCompanies(std::max<int8_t>(CompanyManager::getMaxCompetingCompanies() - 1, Scenario::kMinCompetingCompanies));
                     self.invalidate();
                     break;
 
-                case widx::max_competing_companies_up:
+                case Widx::kMaxCompetingCompaniesUp:
                     CompanyManager::setMaxCompetingCompanies(std::min<uint8_t>(CompanyManager::getMaxCompetingCompanies() + 1, Scenario::kMaxCompetingCompanies));
                     self.invalidate();
                     break;
 
-                case widx::delay_before_competing_companies_start_down:
+                case Widx::kDelayBeforeCompetingCompaniesStartDown:
                     CompanyManager::setCompetitorStartDelay(std::max<int8_t>(CompanyManager::getCompetitorStartDelay() - 1, Scenario::kMinCompetitorStartDelay));
                     self.invalidate();
                     break;
 
-                case widx::delay_before_competing_companies_start_up:
+                case Widx::kDelayBeforeCompetingCompaniesStartUp:
                     CompanyManager::setCompetitorStartDelay(std::min<uint8_t>(CompanyManager::getCompetitorStartDelay() + 1, Scenario::kMaxCompetitorStartDelay));
                     self.invalidate();
                     break;
 
-                case widx::preferred_intelligence_btn:
+                case Widx::kPreferredIntelligenceBtn:
                 {
                     Widget& target = self.widgets[widx::preferred_intelligence];
                     Dropdown::show(self.x + target.left, self.y + target.top, target.width() - 4, target.height(), self.getColour(WindowColour::secondary), std::size(preferenceLabelIds), 0x80);
@@ -719,7 +776,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     break;
                 }
 
-                case widx::preferred_aggressiveness_btn:
+                case Widx::kPreferredAggressivenessBtn:
                 {
                     Widget& target = self.widgets[widx::preferred_aggressiveness];
                     Dropdown::show(self.x + target.left, self.y + target.top, target.width() - 4, target.height(), self.getColour(WindowColour::secondary), std::size(preferenceLabelIds), 0x80);
@@ -733,7 +790,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     break;
                 }
 
-                case widx::preferred_competitiveness_btn:
+                case Widx::kPreferredCompetitivenessBtn:
                 {
                     Widget& target = self.widgets[widx::preferred_competitiveness];
                     Dropdown::show(self.x + target.left, self.y + target.top, target.width() - 4, target.height(), self.getColour(WindowColour::secondary), std::size(preferenceLabelIds), 0x80);
@@ -750,29 +807,29 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043F60C
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
             auto& state = getGameState();
 
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(&self);
                     break;
 
-                case Common::widx::tab_challenge:
-                case Common::widx::tab_companies:
-                case Common::widx::tab_finances:
-                case Common::widx::tab_scenario:
+                case Common::Widx::kTabChallenge:
+                case Common::Widx::kTabCompanies:
+                case Common::Widx::kTabFinances:
+                case Common::Widx::kTabScenario:
                     Common::switchTab(self, widgetIndex);
                     break;
 
-                case widx::competitor_forbid_trains:
-                case widx::competitor_forbid_buses:
-                case widx::competitor_forbid_trucks:
-                case widx::competitor_forbid_trams:
-                case widx::competitor_forbid_aircraft:
-                case widx::competitor_forbid_ships:
+                case Widx::kCompetitorForbidTrains:
+                case Widx::kCompetitorForbidBuses:
+                case Widx::kCompetitorForbidTrucks:
+                case Widx::kCompetitorForbidTrams:
+                case Widx::kCompetitorForbidAircraft:
+                case Widx::kCompetitorForbidShips:
                 {
                     uint16_t targetVehicle = static_cast<uint16_t>(widgetIndex - widx::competitor_forbid_trains);
                     uint16_t newForbiddenVehicles = state.forbiddenVehiclesCompetitors ^ (1 << targetVehicle);
@@ -790,12 +847,12 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     break;
                 }
 
-                case widx::player_forbid_trains:
-                case widx::player_forbid_buses:
-                case widx::player_forbid_trucks:
-                case widx::player_forbid_trams:
-                case widx::player_forbid_aircraft:
-                case widx::player_forbid_ships:
+                case Widx::kPlayerForbidTrains:
+                case Widx::kPlayerForbidBuses:
+                case Widx::kPlayerForbidTrucks:
+                case Widx::kPlayerForbidTrams:
+                case Widx::kPlayerForbidAircraft:
+                case Widx::kPlayerForbidShips:
                 {
                     uint16_t targetVehicle = static_cast<uint16_t>(widgetIndex - widx::player_forbid_trains);
                     uint16_t newForbiddenVehicles = state.forbiddenVehiclesPlayers ^ (1 << targetVehicle);
@@ -874,11 +931,24 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             loan_interest_rate_up,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kStartingLoan{ "starting_loan" };
+            constexpr WidgetId kStartingLoanDown{ "starting_loan_down" };
+            constexpr WidgetId kStartingLoanUp{ "starting_loan_up" };
+            constexpr WidgetId kMaxLoanSize{ "max_loan_size" };
+            constexpr WidgetId kMaxLoanSizeDown{ "max_loan_size_down" };
+            constexpr WidgetId kMaxLoanSizeUp{ "max_loan_size_up" };
+            constexpr WidgetId kLoanInterestRate{ "loan_interest_rate" };
+            constexpr WidgetId kLoanInterestRateDown{ "loan_interest_rate_down" };
+            constexpr WidgetId kLoanInterestRateUp{ "loan_interest_rate_up" };
+        }
+
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(217, StringIds::title_financial_options),
-            Widgets::stepperWidgets({ 256, 52 }, { 100, 12 }, WindowColour::secondary, StringIds::starting_loan_value),
-            Widgets::stepperWidgets({ 256, 67 }, { 100, 12 }, WindowColour::secondary, StringIds::max_loan_size_value),
-            Widgets::stepperWidgets({ 256, 82 }, { 100, 12 }, WindowColour::secondary, StringIds::loan_interest_rate_value)
+            Widgets::stepperWidgets(Widx::kStartingLoan, Widx::kStartingLoanDown, Widx::kStartingLoanUp, { 256, 52 }, { 100, 12 }, WindowColour::secondary, StringIds::starting_loan_value),
+            Widgets::stepperWidgets(Widx::kMaxLoanSize, Widx::kMaxLoanSizeDown, Widx::kMaxLoanSizeUp, { 256, 67 }, { 100, 12 }, WindowColour::secondary, StringIds::max_loan_size_value),
+            Widgets::stepperWidgets(Widx::kLoanInterestRate, Widx::kLoanInterestRateDown, Widx::kLoanInterestRateUp, { 256, 82 }, { 100, 12 }, WindowColour::secondary, StringIds::loan_interest_rate_value)
 
         );
 
@@ -901,17 +971,17 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             tr.drawStringLeft(point, Colour::black, StringIds::loan_interest_rate);
         }
 
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseDown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
         {
             auto& state = getGameState();
 
-            switch (widgetIndex)
+            switch (id)
             {
-                case widx::starting_loan_down:
+                case Widx::kStartingLoanDown:
                     CompanyManager::setStartingLoanSize(std::max<int16_t>(CompanyManager::getStartingLoanSize() - 50, Scenario::kMinStartLoanUnits));
                     break;
 
-                case widx::starting_loan_up:
+                case Widx::kStartingLoanUp:
                     CompanyManager::setStartingLoanSize(std::min<uint16_t>(CompanyManager::getStartingLoanSize() + 50, Scenario::kMaxStartLoanUnits));
                     if (CompanyManager::getStartingLoanSize() > CompanyManager::getMaxLoanSize())
                     {
@@ -919,7 +989,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     }
                     break;
 
-                case widx::max_loan_size_down:
+                case Widx::kMaxLoanSizeDown:
                     CompanyManager::setMaxLoanSize(std::max<int16_t>(CompanyManager::getMaxLoanSize() - 50, Scenario::kMinLoanSizeUnits));
                     if (CompanyManager::getStartingLoanSize() > CompanyManager::getMaxLoanSize())
                     {
@@ -927,15 +997,15 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     }
                     break;
 
-                case widx::max_loan_size_up:
+                case Widx::kMaxLoanSizeUp:
                     CompanyManager::setMaxLoanSize(std::min<uint16_t>(CompanyManager::getMaxLoanSize() + 50, Scenario::kMaxLoanSizeUnits));
                     break;
 
-                case widx::loan_interest_rate_down:
+                case Widx::kLoanInterestRateDown:
                     state.loanInterestRate = std::max<int16_t>(state.loanInterestRate - 1, Scenario::kMinLoanInterestUnits);
                     break;
 
-                case widx::loan_interest_rate_up:
+                case Widx::kLoanInterestRateUp:
                     state.loanInterestRate = std::min<uint16_t>(state.loanInterestRate + 1, Scenario::kMaxLoanInterestUnits);
                     break;
             }
@@ -943,18 +1013,18 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             self.invalidate();
         }
 
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(&self);
                     break;
 
-                case Common::widx::tab_challenge:
-                case Common::widx::tab_companies:
-                case Common::widx::tab_finances:
-                case Common::widx::tab_scenario:
+                case Common::Widx::kTabChallenge:
+                case Common::Widx::kTabCompanies:
+                case Common::Widx::kTabFinances:
+                case Common::Widx::kTabScenario:
                     Common::switchTab(self, widgetIndex);
                     break;
             }
@@ -1011,11 +1081,19 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             change_details_btn,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kChangeNameBtn{ "change_name_btn" };
+            constexpr WidgetId kScenarioGroup{ "scenario_group" };
+            constexpr WidgetId kScenarioGroupBtn{ "scenario_group_btn" };
+            constexpr WidgetId kChangeDetailsBtn{ "change_details_btn" };
+        }
+
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(217, StringIds::title_scenario_options),
-            Widgets::Button({ 281, 52 }, { 75, 12 }, WindowColour::secondary, StringIds::change),
-            Widgets::dropdownWidgets({ 196, 67 }, { 160, 12 }, WindowColour::secondary, StringIds::empty),
-            Widgets::Button({ 281, 82 }, { 75, 12 }, WindowColour::secondary, StringIds::change)
+            Widgets::Button(Widx::kChangeNameBtn, { 281, 52 }, { 75, 12 }, WindowColour::secondary, StringIds::change),
+            Widgets::dropdownWidgets(Widx::kScenarioGroup, Widx::kScenarioGroupBtn, { 196, 67 }, { 160, 12 }, WindowColour::secondary, StringIds::empty),
+            Widgets::Button(Widx::kChangeDetailsBtn, { 281, 82 }, { 75, 12 }, WindowColour::secondary, StringIds::change)
 
         );
 
@@ -1097,9 +1175,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         };
 
         // 0x0043F14B
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+        static void onDropdown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
         {
-            if (widgetIndex == widx::scenario_group_btn && itemIndex != -1)
+            if (id == Widx::kScenarioGroupBtn && itemIndex != -1)
             {
                 Scenario::getOptions().difficulty = itemIndex;
                 self.invalidate();
@@ -1107,9 +1185,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043F140
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseDown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            if (widgetIndex == widx::scenario_group_btn)
+            if (id == Widx::kScenarioGroupBtn)
             {
                 Widget& target = self.widgets[widx::scenario_group];
                 Dropdown::show(self.x + target.left, self.y + target.top, target.width() - 4, target.height(), self.getColour(WindowColour::secondary), std::size(scenarioGroupLabelIds), 0x80);
@@ -1124,22 +1202,22 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043F11F
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(&self);
                     break;
 
-                case Common::widx::tab_challenge:
-                case Common::widx::tab_companies:
-                case Common::widx::tab_finances:
-                case Common::widx::tab_scenario:
+                case Common::Widx::kTabChallenge:
+                case Common::Widx::kTabCompanies:
+                case Common::Widx::kTabFinances:
+                case Common::Widx::kTabScenario:
                     Common::switchTab(self, widgetIndex);
                     break;
 
-                case widx::change_name_btn:
+                case Widx::kChangeNameBtn:
                 {
                     char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
                     strncpy(buffer, Scenario::getOptions().scenarioName, 512);
@@ -1149,7 +1227,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     break;
                 }
 
-                case widx::change_details_btn:
+                case Widx::kChangeDetailsBtn:
                 {
                     char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
                     strncpy(buffer, Scenario::getOptions().scenarioDetails, 512);
@@ -1182,11 +1260,11 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043F156
-        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
+        static void textInput(Window& self, [[maybe_unused]] WidgetIndex_t callingWidget, const WidgetId id, const char* input)
         {
-            switch (callingWidget)
+            switch (id)
             {
-                case widx::change_name_btn:
+                case Widx::kChangeNameBtn:
                 {
                     strncpy(Scenario::getOptions().scenarioName, input, sizeof(Scenario::Options::scenarioName) - 1);
                     Scenario::getOptions().scenarioName[sizeof(Scenario::Options::scenarioName) - 1] = '\0';
@@ -1195,7 +1273,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     break;
                 }
 
-                case widx::change_details_btn:
+                case Widx::kChangeDetailsBtn:
                 {
                     strncpy(Scenario::getOptions().scenarioDetails, input, sizeof(Scenario::Options::scenarioDetails) - 1);
                     Scenario::getOptions().scenarioDetails[sizeof(Scenario::Options::scenarioDetails) - 1] = '\0';
