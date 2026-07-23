@@ -19,10 +19,15 @@ namespace OpenLoco::Ui::Windows::Tutorial
         frame,
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kFrame{ "frame" };
+    }
+
     static constexpr Ui::Size kWindowSize = { 140, 29 };
 
     static constexpr auto widgets = makeWidgets(
-        Widgets::Wt3Widget({ 0, 0 }, kWindowSize, WindowColour::primary)
+        Widgets::Wt3Widget(Widx::kFrame, { 0, 0 }, kWindowSize, WindowColour::primary)
 
     );
 
