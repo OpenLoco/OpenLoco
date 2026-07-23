@@ -55,9 +55,9 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
     static constexpr auto kWidgets = makeWidgets(
         Common::makeCommonWidgets(138, 190, StringIds::stringid_2),
-        Widgets::dropdownWidgets({ 3, 45 }, { 132, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_station_type),
-        Widgets::Wt3Widget({ 35, 60 }, { 68, 68 }, WindowColour::secondary),
-        Widgets::ImageButton({ 112, 104 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_90));
+        Widgets::dropdownWidgets(Widx::kStation, Widx::kStationDropdown, { 3, 45 }, { 132, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_station_type),
+        Widgets::Wt3Widget(Widx::kImage, { 35, 60 }, { 68, 68 }, WindowColour::secondary),
+        Widgets::ImageButton(Widx::kRotate, { 112, 104 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_90));
 
     std::span<const Widget> getWidgets()
     {
@@ -71,20 +71,20 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     {
         auto& cState = getConstructionState();
 
-        switch (widgetIndex)
+        switch (id)
         {
-            case Common::widx::close_button:
+            case Common::Widx::kCloseButton:
                 WindowManager::close(&self);
                 break;
 
-            case Common::widx::tab_construction:
-            case Common::widx::tab_overhead:
-            case Common::widx::tab_signal:
-            case Common::widx::tab_station:
+            case Common::Widx::kTabConstruction:
+            case Common::Widx::kTabOverhead:
+            case Common::Widx::kTabSignal:
+            case Common::Widx::kTabStation:
                 Common::switchTab(self, widgetIndex);
                 break;
 
-            case widx::rotate:
+            case Widx::kRotate:
                 cState.constructionRotation++;
                 cState.constructionRotation = cState.constructionRotation & 3;
                 cState.stationCost = GameCommands::kFailure;
@@ -116,9 +116,9 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     {
         auto& cState = getConstructionState();
 
-        switch (widgetIndex)
+        switch (id)
         {
-            case widx::station_dropdown:
+            case Widx::kStationDropdown:
             {
                 uint8_t stationCount = 0;
                 while (cState.stationList[stationCount] != 0xFF)
@@ -151,7 +151,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 }
                 break;
             }
-            case widx::image:
+            case Widx::kImage:
             {
                 ToolManager::toolCancel();
                 ToolManager::toolSet(self, widgetIndex, CursorId::placeStation);
@@ -161,11 +161,11 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x0049E256
-    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+    static void onDropdown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
     {
         auto& cState = getConstructionState();
 
-        if (widgetIndex == widx::station_dropdown)
+        if (id == Widx::kStationDropdown)
         {
             if (itemIndex == -1)
             {

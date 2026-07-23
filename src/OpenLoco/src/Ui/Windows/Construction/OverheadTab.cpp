@@ -39,12 +39,12 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 {
     static constexpr auto widgets = makeWidgets(
         Common::makeCommonWidgets(138, 192, StringIds::stringid_2),
-        Widgets::Checkbox({ 3, 45 }, { 132, 12 }, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
-        Widgets::Checkbox({ 3, 57 }, { 132, 12 }, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
-        Widgets::Checkbox({ 3, 69 }, { 132, 12 }, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
-        Widgets::Checkbox({ 3, 81 }, { 132, 12 }, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
-        Widgets::Wt3Widget({ 35, 110 }, { 66, 66 }, WindowColour::secondary),
-        Widgets::dropdownWidgets({ 3, 95 }, { 132, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_track_to_upgrade));
+        Widgets::Checkbox(Widx::kCheckbox1, { 3, 45 }, { 132, 12 }, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
+        Widgets::Checkbox(Widx::kCheckbox2, { 3, 57 }, { 132, 12 }, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
+        Widgets::Checkbox(Widx::kCheckbox3, { 3, 69 }, { 132, 12 }, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
+        Widgets::Checkbox(Widx::kCheckbox4, { 3, 81 }, { 132, 12 }, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
+        Widgets::Wt3Widget(Widx::kImage, { 35, 110 }, { 66, 66 }, WindowColour::secondary),
+        Widgets::dropdownWidgets(Widx::kTrack, Widx::kTrackDropdown, { 3, 95 }, { 132, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_track_to_upgrade));
 
     std::span<const Widget> getWidgets()
     {
@@ -58,23 +58,23 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     {
         auto& cState = getConstructionState();
 
-        switch (widgetIndex)
+        switch (id)
         {
-            case Common::widx::close_button:
+            case Common::Widx::kCloseButton:
                 WindowManager::close(&self);
                 break;
 
-            case Common::widx::tab_construction:
-            case Common::widx::tab_overhead:
-            case Common::widx::tab_signal:
-            case Common::widx::tab_station:
+            case Common::Widx::kTabConstruction:
+            case Common::Widx::kTabOverhead:
+            case Common::Widx::kTabSignal:
+            case Common::Widx::kTabStation:
                 Common::switchTab(self, widgetIndex);
                 break;
 
-            case widx::checkbox_1:
-            case widx::checkbox_2:
-            case widx::checkbox_3:
-            case widx::checkbox_4:
+            case Widx::kCheckbox1:
+            case Widx::kCheckbox2:
+            case Widx::kCheckbox3:
+            case Widx::kCheckbox4:
             {
                 auto checkboxIndex = widgetIndex - widx::checkbox_1;
 
@@ -94,9 +94,9 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     {
         auto& cState = getConstructionState();
 
-        switch (widgetIndex)
+        switch (id)
         {
-            case widx::track_dropdown:
+            case Widx::kTrackDropdown:
             {
                 uint8_t modCount = 3;
 
@@ -116,7 +116,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 break;
             }
 
-            case widx::image:
+            case Widx::kImage:
             {
                 ToolManager::toolCancel();
                 ToolManager::toolSet(self, widgetIndex, CursorId::crosshair);
@@ -126,9 +126,9 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049EC09
-    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+    static void onDropdown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
     {
-        if (widgetIndex != widx::track_dropdown)
+        if (id != Widx::kTrackDropdown)
         {
             return;
         }
