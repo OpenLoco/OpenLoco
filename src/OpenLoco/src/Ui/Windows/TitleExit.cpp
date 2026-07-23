@@ -22,8 +22,13 @@ namespace OpenLoco::Ui::Windows::TitleExit
         exit_button
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kExitButton{ "exit_button" };
+    }
+
     static constexpr auto _widgets = makeWidgets(
-        Widgets::ImageButton({ 0, 0 }, kWindowSize, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_exit_from_game)
+        Widgets::ImageButton(Widx::kExitButton, { 0, 0 }, kWindowSize, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_exit_from_game)
 
     );
 
@@ -71,16 +76,16 @@ namespace OpenLoco::Ui::Windows::TitleExit
     }
 
     // 0x00439268
-    static void onMouseUp([[maybe_unused]] Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseUp([[maybe_unused]] Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
     {
         if (Intro::isActive())
         {
             return;
         }
 
-        switch (widgetIndex)
+        switch (id)
         {
-            case widx::exit_button:
+            case Widx::kExitButton:
                 // Exit to desktop
                 GameCommands::LoadSaveQuitGameArgs args{};
                 args.loadQuitMode = LoadOrQuitMode::quitGamePrompt;

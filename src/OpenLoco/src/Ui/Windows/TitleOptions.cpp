@@ -19,8 +19,13 @@ namespace OpenLoco::Ui::Windows::TitleOptions
         options_button
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kOptionsButton{ "options_button" };
+    }
+
     static constexpr auto _widgets = makeWidgets(
-        Widgets::ImageButton({ 0, 0 }, kWindowSize, WindowColour::secondary)
+        Widgets::ImageButton(Widx::kOptionsButton, { 0, 0 }, kWindowSize, WindowColour::secondary)
 
     );
 
@@ -62,16 +67,16 @@ namespace OpenLoco::Ui::Windows::TitleOptions
         tr.drawStringCentredWrapped(origin, window.width, Colour::white, StringIds::outlined_wcolour2_stringid, args);
     }
 
-    static void onMouseUp([[maybe_unused]] Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseUp([[maybe_unused]] Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
     {
         if (Intro::isActive())
         {
             return;
         }
 
-        switch (widgetIndex)
+        switch (id)
         {
-            case widx::options_button:
+            case Widx::kOptionsButton:
                 Ui::Windows::Options::open();
                 break;
         }
