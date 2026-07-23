@@ -39,18 +39,34 @@ namespace OpenLoco::Ui::Windows::MusicJukebox
         edit_selection
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kFrame{ "frame" };
+        constexpr WidgetId kCaption{ "caption" };
+        constexpr WidgetId kCloseButton{ "close_button" };
+        constexpr WidgetId kPanel{ "panel" };
+        constexpr WidgetId kCurrentlyPlaying{ "currently_playing" };
+        constexpr WidgetId kCurrentlyPlayingBtn{ "currently_playing_btn" };
+        constexpr WidgetId kMusicControlsStop{ "music_controls_stop" };
+        constexpr WidgetId kMusicControlsPlay{ "music_controls_play" };
+        constexpr WidgetId kMusicControlsNext{ "music_controls_next" };
+        constexpr WidgetId kMusicPlaylist{ "music_playlist" };
+        constexpr WidgetId kMusicPlaylistBtn{ "music_playlist_btn" };
+        constexpr WidgetId kEditSelection{ "edit_selection" };
+    }
+
     static constexpr auto _widgets = makeWidgets(
-        Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { (uint16_t)(kWindowSize.width - 2), 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::jukebox_window_title),
-        Widgets::ImageButton({ (int16_t)(kWindowSize.width - 15), 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        Widgets::Panel({ 0, 15 }, { kWindowSize.width, 102 }, WindowColour::secondary),
+        Widgets::Frame(Widx::kFrame, { 0, 0 }, kWindowSize, WindowColour::primary),
+        Widgets::Caption(Widx::kCaption, { 1, 1 }, { (uint16_t)(kWindowSize.width - 2), 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::jukebox_window_title),
+        Widgets::ImageButton(Widx::kCloseButton, { (int16_t)(kWindowSize.width - 15), 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::Panel(Widx::kPanel, { 0, 15 }, { kWindowSize.width, 102 }, WindowColour::secondary),
         Widgets::Label({ 10, 27 }, { 145, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::currently_playing),
-        Widgets::dropdownWidgets({ 160, 27 }, { 196, 12 }, WindowColour::secondary, StringIds::stringid),
-        Widgets::ImageButton({ 10, 42 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_stop, StringIds::music_controls_stop_tip),
-        Widgets::ImageButton({ 34, 42 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_play, StringIds::music_controls_play_tip),
-        Widgets::ImageButton({ 58, 42 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_next, StringIds::music_controls_next_tip),
-        Widgets::dropdownWidgets({ 10, 69 }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
-        Widgets::Button({ 183, 86 }, { 173, 12 }, WindowColour::secondary, StringIds::edit_music_selection, StringIds::edit_music_selection_tip)
+        Widgets::dropdownWidgets(Widx::kCurrentlyPlaying, Widx::kCurrentlyPlayingBtn, { 160, 27 }, { 196, 12 }, WindowColour::secondary, StringIds::stringid),
+        Widgets::ImageButton(Widx::kMusicControlsStop, { 10, 42 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_stop, StringIds::music_controls_stop_tip),
+        Widgets::ImageButton(Widx::kMusicControlsPlay, { 34, 42 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_play, StringIds::music_controls_play_tip),
+        Widgets::ImageButton(Widx::kMusicControlsNext, { 58, 42 }, { 24, 24 }, WindowColour::secondary, ImageIds::music_controls_next, StringIds::music_controls_next_tip),
+        Widgets::dropdownWidgets(Widx::kMusicPlaylist, Widx::kMusicPlaylistBtn, { 10, 69 }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
+        Widgets::Button(Widx::kEditSelection, { 183, 86 }, { 173, 12 }, WindowColour::secondary, StringIds::edit_music_selection, StringIds::edit_music_selection_tip)
 
     );
 
@@ -137,53 +153,53 @@ namespace OpenLoco::Ui::Windows::MusicJukebox
         self.draw(drawingCtx);
     }
 
-    static void onMouseUp(Window& self, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
+    static void onMouseUp(Window& self, [[maybe_unused]] WidgetIndex_t wi, const WidgetId id)
     {
-        switch (wi)
+        switch (id)
         {
-            case widx::close_button:
+            case Widx::kCloseButton:
                 WindowManager::close(&self);
                 return;
 
-            case widx::music_controls_stop:
+            case Widx::kMusicControlsStop:
                 stopMusic(self);
                 return;
 
-            case widx::music_controls_play:
+            case Widx::kMusicControlsPlay:
                 playMusic(self);
                 return;
 
-            case widx::music_controls_next:
+            case Widx::kMusicControlsNext:
                 playNextSong(self);
                 return;
 
-            case widx::edit_selection:
+            case Widx::kEditSelection:
                 MusicSelection::open();
                 return;
         }
     }
 
-    static void onMouseDown(Window& self, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
+    static void onMouseDown(Window& self, [[maybe_unused]] WidgetIndex_t wi, const WidgetId id)
     {
-        switch (wi)
+        switch (id)
         {
-            case widx::music_playlist_btn:
+            case Widx::kMusicPlaylistBtn:
                 musicPlaylistMouseDown(self);
                 break;
-            case widx::currently_playing_btn:
+            case Widx::kCurrentlyPlayingBtn:
                 currentlyPlayingMouseDown(self);
                 break;
         }
     }
 
-    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+    static void onDropdown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case widx::music_playlist_btn:
+            case Widx::kMusicPlaylistBtn:
                 musicPlaylistDropdown(self, itemIndex);
                 break;
-            case widx::currently_playing_btn:
+            case Widx::kCurrentlyPlayingBtn:
                 currentlyPlayingDropdown(self, itemIndex);
                 break;
         }
