@@ -263,48 +263,83 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         objectImage,
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kFrame{ "frame" };
+        constexpr WidgetId kCaption{ "caption" };
+        constexpr WidgetId kCloseButton{ "closeButton" };
+        constexpr WidgetId kPanel{ "panel" };
+        constexpr WidgetId kPrimaryTab1{ "primaryTab1" };
+        constexpr WidgetId kPrimaryTab2{ "primaryTab2" };
+        constexpr WidgetId kPrimaryTab3{ "primaryTab3" };
+        constexpr WidgetId kPrimaryTab4{ "primaryTab4" };
+        constexpr WidgetId kPrimaryTab5{ "primaryTab5" };
+        constexpr WidgetId kPrimaryTab6{ "primaryTab6" };
+        constexpr WidgetId kPrimaryTab7{ "primaryTab7" };
+        constexpr WidgetId kPrimaryTab8{ "primaryTab8" };
+        constexpr WidgetId kPrimaryTab9{ "primaryTab9" };
+        constexpr WidgetId kPrimaryTab10{ "primaryTab10" };
+        constexpr WidgetId kPrimaryTab11{ "primaryTab11" };
+        constexpr WidgetId kPrimaryTab12{ "primaryTab12" };
+        constexpr WidgetId kFilterLabel{ "filterLabel" };
+        constexpr WidgetId kFilterDropdown{ "filterDropdown" };
+        constexpr WidgetId kTextInput{ "textInput" };
+        constexpr WidgetId kClearButton{ "clearButton" };
+        constexpr WidgetId kSecondaryTab1{ "secondaryTab1" };
+        constexpr WidgetId kSecondaryTab2{ "secondaryTab2" };
+        constexpr WidgetId kSecondaryTab3{ "secondaryTab3" };
+        constexpr WidgetId kSecondaryTab4{ "secondaryTab4" };
+        constexpr WidgetId kSecondaryTab5{ "secondaryTab5" };
+        constexpr WidgetId kSecondaryTab6{ "secondaryTab6" };
+        constexpr WidgetId kSecondaryTab7{ "secondaryTab7" };
+        constexpr WidgetId kSecondaryTab8{ "secondaryTab8" };
+        constexpr WidgetId kScrollviewFrame{ "scrollviewFrame" };
+        constexpr WidgetId kScrollview{ "scrollview" };
+        constexpr WidgetId kObjectImage{ "objectImage" };
+    }
+
     static constexpr uint8_t kMaxNumPrimaryTabs = 12;
     static constexpr uint8_t kMaxNumSecondaryTabs = 8;
 
     static constexpr auto widgets = makeWidgets(
-        Widgets::Frame({ 0, 0 }, { 600, 398 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 598, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::title_object_selection),
-        Widgets::ImageButton({ 585, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        Widgets::Panel({ 0, 41 }, { 600, 357 }, WindowColour::secondary),
+        Widgets::Frame(Widx::kFrame, { 0, 0 }, { 600, 398 }, WindowColour::primary),
+        Widgets::Caption(Widx::kCaption, { 1, 1 }, { 598, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::title_object_selection),
+        Widgets::ImageButton(Widx::kCloseButton, { 585, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::Panel(Widx::kPanel, { 0, 41 }, { 600, 357 }, WindowColour::secondary),
 
         // Primary tab area
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 127, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 158, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 189, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 220, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 251, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 282, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 313, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 344, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kPrimaryTab1, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kPrimaryTab2, { 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kPrimaryTab3, { 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kPrimaryTab4, { 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kPrimaryTab5, { 127, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kPrimaryTab6, { 158, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kPrimaryTab7, { 189, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kPrimaryTab8, { 220, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kPrimaryTab9, { 251, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kPrimaryTab10, { 282, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kPrimaryTab11, { 313, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kPrimaryTab12, { 344, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
 
         // Filter options
-        Widgets::dropdownWidgets({ 492, 20 }, { 100, 12 }, WindowColour::primary, StringIds::wcolour2_stringid),
-        Widgets::TextBox({ 4, 45 }, { 246, 14 }, WindowColour::secondary),
-        Widgets::Button({ 254, 45 }, { 38, 14 }, WindowColour::secondary, StringIds::clearInput),
+        Widgets::dropdownWidgets(Widx::kFilterLabel, Widx::kFilterDropdown, { 492, 20 }, { 100, 12 }, WindowColour::primary, StringIds::wcolour2_stringid),
+        Widgets::TextBox(Widx::kTextInput, { 4, 45 }, { 246, 14 }, WindowColour::secondary),
+        Widgets::Button(Widx::kClearButton, { 254, 45 }, { 38, 14 }, WindowColour::secondary, StringIds::clearInput),
 
         // Secondary tabs
-        Widgets::Tab({ 3, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 34, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 65, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 96, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 127, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 158, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 189, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 220, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kSecondaryTab1, { 3, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kSecondaryTab2, { 34, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kSecondaryTab3, { 65, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kSecondaryTab4, { 96, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kSecondaryTab5, { 127, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kSecondaryTab6, { 158, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kSecondaryTab7, { 189, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kSecondaryTab8, { 220, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
 
         // Scroll and preview areas
-        Widgets::Panel({ 3, 83 }, { 290, 303 }, WindowColour::secondary),
-        Widgets::ScrollView({ 4, 85 }, { 288, 300 }, WindowColour::secondary, Scrollbars::vertical),
-        Widgets::ImageButton({ 391, 45 }, kObjectPreviewSize, WindowColour::secondary)
+        Widgets::Panel(Widx::kScrollviewFrame, { 3, 83 }, { 290, 303 }, WindowColour::secondary),
+        Widgets::ScrollView(Widx::kScrollview, { 4, 85 }, { 288, 300 }, WindowColour::secondary, Scrollbars::vertical),
+        Widgets::ImageButton(Widx::kObjectImage, { 391, 45 }, kObjectPreviewSize, WindowColour::secondary)
 
     );
 
@@ -1366,31 +1401,31 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x004737BA
     static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case widx::closeButton:
+            case Widx::kCloseButton:
                 tryCloseWindow();
                 break;
 
-            case widx::primaryTab1:
-            case widx::primaryTab2:
-            case widx::primaryTab3:
-            case widx::primaryTab4:
-            case widx::primaryTab5:
-            case widx::primaryTab6:
-            case widx::primaryTab7:
-            case widx::primaryTab8:
-            case widx::primaryTab9:
-            case widx::primaryTab10:
-            case widx::primaryTab11:
-            case widx::primaryTab12:
+            case Widx::kPrimaryTab1:
+            case Widx::kPrimaryTab2:
+            case Widx::kPrimaryTab3:
+            case Widx::kPrimaryTab4:
+            case Widx::kPrimaryTab5:
+            case Widx::kPrimaryTab6:
+            case Widx::kPrimaryTab7:
+            case Widx::kPrimaryTab8:
+            case Widx::kPrimaryTab9:
+            case Widx::kPrimaryTab10:
+            case Widx::kPrimaryTab11:
+            case Widx::kPrimaryTab12:
             {
                 auto clickedTab = widgetIndex - widx::primaryTab1;
                 switchPrimaryTab(self, clickedTab);
                 break;
             }
 
-            case widx::clearButton:
+            case Widx::kClearButton:
             {
                 inputSession.clearInput();
                 applyFilterToObjectList(FilterFlags(self.var_858));
@@ -1399,14 +1434,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 break;
             }
 
-            case widx::secondaryTab1:
-            case widx::secondaryTab2:
-            case widx::secondaryTab3:
-            case widx::secondaryTab4:
-            case widx::secondaryTab5:
-            case widx::secondaryTab6:
-            case widx::secondaryTab7:
-            case widx::secondaryTab8:
+            case Widx::kSecondaryTab1:
+            case Widx::kSecondaryTab2:
+            case Widx::kSecondaryTab3:
+            case Widx::kSecondaryTab4:
+            case Widx::kSecondaryTab5:
+            case Widx::kSecondaryTab6:
+            case Widx::kSecondaryTab7:
+            case Widx::kSecondaryTab8:
             {
                 auto& subTabs = kMainTabInfo[self.currentTab].subTabs;
                 auto previousSubType = subTabs[self.currentSecondaryTab].objectType;
@@ -1429,9 +1464,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
-    static void onMouseDown(Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseDown(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        if (widgetIndex == widx::filterDropdown)
+        if (id == Widx::kFilterDropdown)
         {
             auto& dropdown = self.widgets[widx::filterLabel];
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 7, 0);
@@ -1467,9 +1502,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
-    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+    static void onDropdown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
     {
-        if (widgetIndex != widx::filterDropdown)
+        if (id != Widx::kFilterDropdown)
         {
             return;
         }

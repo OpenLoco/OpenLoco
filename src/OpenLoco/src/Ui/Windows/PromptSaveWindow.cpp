@@ -32,14 +32,24 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
         cancelButton,
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kCaption{ "caption" };
+        constexpr WidgetId kCloseButton{ "closeButton" };
+        constexpr WidgetId kPromptLabel{ "promptLabel" };
+        constexpr WidgetId kSaveButton{ "saveButton" };
+        constexpr WidgetId kDontSaveButton{ "dontSaveButton" };
+        constexpr WidgetId kCancelButton{ "cancelButton" };
+    }
+
     static constexpr auto _widgets = makeWidgets(
         Widgets::Panel({ 0, 0 }, { 260, 48 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 258, 13 }, Widgets::Caption::Style::boxed, WindowColour::primary, StringIds::empty),
-        Widgets::Button({ 247, 2 }, { 11, 11 }, WindowColour::primary, StringIds::close_window_cross, StringIds::tooltip_close_window),
-        Widgets::Label({ 2, 17 }, { 256, 12 }, WindowColour::primary, ContentAlign::center, StringIds::empty),
-        Widgets::Button({ 8, 33 }, { 78, 12 }, WindowColour::primary, StringIds::label_button_save),
-        Widgets::Button({ 91, 33 }, { 78, 12 }, WindowColour::primary, StringIds::label_button_dont_save),
-        Widgets::Button({ 174, 33 }, { 78, 12 }, WindowColour::primary, StringIds::label_button_cancel)
+        Widgets::Caption(Widx::kCaption, { 1, 1 }, { 258, 13 }, Widgets::Caption::Style::boxed, WindowColour::primary, StringIds::empty),
+        Widgets::Button(Widx::kCloseButton, { 247, 2 }, { 11, 11 }, WindowColour::primary, StringIds::close_window_cross, StringIds::tooltip_close_window),
+        Widgets::Label(Widx::kPromptLabel, { 2, 17 }, { 256, 12 }, WindowColour::primary, ContentAlign::center, StringIds::empty),
+        Widgets::Button(Widx::kSaveButton, { 8, 33 }, { 78, 12 }, WindowColour::primary, StringIds::label_button_save),
+        Widgets::Button(Widx::kDontSaveButton, { 91, 33 }, { 78, 12 }, WindowColour::primary, StringIds::label_button_dont_save),
+        Widgets::Button(Widx::kCancelButton, { 174, 33 }, { 78, 12 }, WindowColour::primary, StringIds::label_button_cancel)
 
     );
 
@@ -111,12 +121,12 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
     }
 
     // 0x0043C3F4
-    static void onMouseUp([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseUp([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case widx::closeButton:
-            case widx::cancelButton:
+            case Widx::kCloseButton:
+            case Widx::kCancelButton:
             {
                 GameCommands::LoadSaveQuitGameArgs args{};
                 args.loadQuitMode = _savePromptType;
@@ -125,13 +135,13 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
                 break;
             }
 
-            case widx::saveButton:
+            case Widx::kSaveButton:
             {
                 Game::confirmSaveGame(_savePromptType);
                 break;
             }
 
-            case widx::dontSaveButton:
+            case Widx::kDontSaveButton:
             {
                 GameCommands::LoadSaveQuitGameArgs args{};
                 args.loadQuitMode = _savePromptType;

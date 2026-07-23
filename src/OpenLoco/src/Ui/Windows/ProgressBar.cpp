@@ -19,7 +19,7 @@
 
 namespace OpenLoco::Ui::Windows::ProgressBar
 {
-    enum Widx
+    enum widx
     {
         frame,
         caption,

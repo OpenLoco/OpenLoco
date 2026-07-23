@@ -4,28 +4,42 @@
 
 namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 {
+    enum widx
+    {
+        loadsave_menu,
+        audio_menu,
+        w2,
+
+        zoom_menu,
+        rotate_menu,
+        view_menu,
+
+        terraform_menu,
+        railroad_menu,
+        road_menu,
+        port_menu,
+        build_vehicles_menu,
+
+        vehicles_menu,
+        stations_menu,
+        towns_menu,
+    };
+
     namespace Widx
     {
-        enum
-        {
-            loadsave_menu,
-            audio_menu,
-            w2,
-
-            zoom_menu,
-            rotate_menu,
-            view_menu,
-
-            terraform_menu,
-            railroad_menu,
-            road_menu,
-            port_menu,
-            build_vehicles_menu,
-
-            vehicles_menu,
-            stations_menu,
-            towns_menu,
-        };
+        constexpr WidgetId kLoadsaveMenu{ "loadsave_menu" };
+        constexpr WidgetId kAudioMenu{ "audio_menu" };
+        constexpr WidgetId kZoomMenu{ "zoom_menu" };
+        constexpr WidgetId kRotateMenu{ "rotate_menu" };
+        constexpr WidgetId kViewMenu{ "view_menu" };
+        constexpr WidgetId kTerraformMenu{ "terraform_menu" };
+        constexpr WidgetId kRailroadMenu{ "railroad_menu" };
+        constexpr WidgetId kRoadMenu{ "road_menu" };
+        constexpr WidgetId kPortMenu{ "port_menu" };
+        constexpr WidgetId kBuildVehiclesMenu{ "build_vehicles_menu" };
+        constexpr WidgetId kVehiclesMenu{ "vehicles_menu" };
+        constexpr WidgetId kStationsMenu{ "stations_menu" };
+        constexpr WidgetId kTownsMenu{ "towns_menu" };
     }
 
     void prepareTownWidget(Window& self);

@@ -47,15 +47,25 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             tab_settings,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kFrame{ "frame" };
+            constexpr WidgetId kCaption{ "caption" };
+            constexpr WidgetId kCloseButton{ "close_button" };
+            constexpr WidgetId kPanel{ "panel" };
+            constexpr WidgetId kTabMessages{ "tab_messages" };
+            constexpr WidgetId kTabSettings{ "tab_settings" };
+        }
+
         static constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
         {
             return makeWidgets(
-                Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
-                Widgets::Caption({ 1, 1 }, { frameWidth - 2, 13 }, Widgets::Caption::Style::colourText, WindowColour::primary, windowCaptionId),
-                Widgets::ImageButton({ frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-                Widgets::Panel({ 0, 41 }, { 366, 175 }, WindowColour::secondary),
-                Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_recent_messages),
-                Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_message_options));
+                Widgets::Frame(Widx::kFrame, { 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
+                Widgets::Caption(Widx::kCaption, { 1, 1 }, { frameWidth - 2, 13 }, Widgets::Caption::Style::colourText, WindowColour::primary, windowCaptionId),
+                Widgets::ImageButton(Widx::kCloseButton, { frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::Panel(Widx::kPanel, { 0, 41 }, { 366, 175 }, WindowColour::secondary),
+                Widgets::Tab(Widx::kTabMessages, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_recent_messages),
+                Widgets::Tab(Widx::kTabSettings, { 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_message_options));
         }
 
         static void prepareDraw(Window& self);
@@ -75,23 +85,28 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             scrollview = 6,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kScrollview{ "scrollview" };
+        }
+
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(366, 217, StringIds::title_messages),
-            Widgets::ScrollView({ 3, 45 }, { 360, 146 }, WindowColour::secondary, Scrollbars::vertical)
+            Widgets::ScrollView(Widx::kScrollview, { 3, 45 }, { 360, 146 }, WindowColour::secondary, Scrollbars::vertical)
 
         );
 
         // 0x0042A6F5
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(&self);
                     break;
 
-                case Common::widx::tab_messages:
-                case Common::widx::tab_settings:
+                case Common::Widx::kTabMessages:
+                case Common::Widx::kTabSettings:
                     Common::switchTab(self, widgetIndex);
                     break;
             }
@@ -401,46 +416,63 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             playSoundEffects,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kCompanyMajorNews{ "company_major_news" };
+            constexpr WidgetId kCompanyMajorNewsDropdown{ "company_major_news_dropdown" };
+            constexpr WidgetId kCompetitorMajorNews{ "competitor_major_news" };
+            constexpr WidgetId kCompetitorMajorNewsDropdown{ "competitor_major_news_dropdown" };
+            constexpr WidgetId kCompanyMinorNews{ "company_minor_news" };
+            constexpr WidgetId kCompanyMinorNewsDropdown{ "company_minor_news_dropdown" };
+            constexpr WidgetId kCompetitorMinorNews{ "competitor_minor_news" };
+            constexpr WidgetId kCompetitorMinorNewsDropdown{ "competitor_minor_news_dropdown" };
+            constexpr WidgetId kGeneralNews{ "general_news" };
+            constexpr WidgetId kGeneralNewsDropdown{ "general_news_dropdown" };
+            constexpr WidgetId kAdvice{ "advice" };
+            constexpr WidgetId kAdviceDropdown{ "advice_dropdown" };
+            constexpr WidgetId kPlaySoundEffects{ "playSoundEffects" };
+        }
+
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(366, 155, StringIds::title_messages),
 
             Widgets::Label({ 4, 47 }, { 230, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::company_major_news),
-            Widgets::dropdownWidgets({ 236, 47 }, { 124, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets(Widx::kCompanyMajorNews, Widx::kCompanyMajorNewsDropdown, { 236, 47 }, { 124, 12 }, WindowColour::secondary),
 
             Widgets::Label({ 4, 62 }, { 230, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::competitor_major_news),
-            Widgets::dropdownWidgets({ 236, 62 }, { 124, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets(Widx::kCompetitorMajorNews, Widx::kCompetitorMajorNewsDropdown, { 236, 62 }, { 124, 12 }, WindowColour::secondary),
 
             Widgets::Label({ 4, 77 }, { 230, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::company_minor_news),
-            Widgets::dropdownWidgets({ 236, 77 }, { 124, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets(Widx::kCompanyMinorNews, Widx::kCompanyMinorNewsDropdown, { 236, 77 }, { 124, 12 }, WindowColour::secondary),
 
             Widgets::Label({ 4, 92 }, { 230, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::competitor_minor_news),
-            Widgets::dropdownWidgets({ 236, 92 }, { 124, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets(Widx::kCompetitorMinorNews, Widx::kCompetitorMinorNewsDropdown, { 236, 92 }, { 124, 12 }, WindowColour::secondary),
 
             Widgets::Label({ 4, 107 }, { 230, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::general_news),
-            Widgets::dropdownWidgets({ 236, 107 }, { 124, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets(Widx::kGeneralNews, Widx::kGeneralNewsDropdown, { 236, 107 }, { 124, 12 }, WindowColour::secondary),
 
             Widgets::Label({ 4, 122 }, { 230, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::advice),
-            Widgets::dropdownWidgets({ 236, 122 }, { 124, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets(Widx::kAdvice, Widx::kAdviceDropdown, { 236, 122 }, { 124, 12 }, WindowColour::secondary),
 
-            Widgets::Checkbox({ 4, 137 }, { 346, 12 }, WindowColour::secondary, StringIds::playNewsSoundEffects, StringIds::playNewsSoundEffectsTip)
+            Widgets::Checkbox(Widx::kPlaySoundEffects, { 4, 137 }, { 346, 12 }, WindowColour::secondary, StringIds::playNewsSoundEffects, StringIds::playNewsSoundEffectsTip)
 
         );
 
         // 0x0042AA84
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(&self);
                     break;
 
-                case Common::widx::tab_messages:
-                case Common::widx::tab_settings:
+                case Common::Widx::kTabMessages:
+                case Common::Widx::kTabSettings:
                     Common::switchTab(self, widgetIndex);
                     break;
 
-                case widx::playSoundEffects:
+                case Widx::kPlaySoundEffects:
                 {
                     Config::get().audio.playNewsSounds ^= 1;
                     Config::write();
@@ -459,14 +491,14 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         // 0x0042AA9F
         static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case widx::company_major_news_dropdown:
-                case widx::competitor_major_news_dropdown:
-                case widx::company_minor_news_dropdown:
-                case widx::competitor_minor_news_dropdown:
-                case widx::general_news_dropdown:
-                case widx::advice_dropdown:
+                case Widx::kCompanyMajorNewsDropdown:
+                case Widx::kCompetitorMajorNewsDropdown:
+                case Widx::kCompanyMinorNewsDropdown:
+                case Widx::kCompetitorMinorNewsDropdown:
+                case Widx::kGeneralNewsDropdown:
+                case Widx::kAdviceDropdown:
                 {
                     auto wIndex = widgetIndex - 1;
                     auto widget = self.widgets[wIndex];
@@ -495,14 +527,14 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         // 0x0042AAAC
         static void onDropdown([[maybe_unused]] Window& self, Ui::WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case widx::company_major_news_dropdown:
-                case widx::competitor_major_news_dropdown:
-                case widx::company_minor_news_dropdown:
-                case widx::competitor_minor_news_dropdown:
-                case widx::general_news_dropdown:
-                case widx::advice_dropdown:
+                case Widx::kCompanyMajorNewsDropdown:
+                case Widx::kCompetitorMajorNewsDropdown:
+                case Widx::kCompanyMinorNewsDropdown:
+                case Widx::kCompetitorMinorNewsDropdown:
+                case Widx::kGeneralNewsDropdown:
+                case Widx::kAdviceDropdown:
                 {
                     if (itemIndex == -1)
                     {

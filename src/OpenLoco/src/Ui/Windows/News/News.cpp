@@ -61,24 +61,24 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     namespace Common
     {
         // 0x00429BB7
-        static void onMouseUp([[maybe_unused]] Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                 {
                     MessageManager::clearActiveMessage();
                     break;
                 }
 
-                case Common::widx::viewport1Button:
-                case Common::widx::viewport2Button:
+                case Common::Widx::kViewport1Button:
+                case Common::Widx::kViewport2Button:
                 {
                     if (MessageManager::getActiveIndex() != MessageId::null)
                     {
                         auto news = MessageManager::get(MessageManager::getActiveIndex());
                         const auto& mtd = getMessageTypeDescriptor(news->type);
-                        if (widgetIndex == Common::widx::viewport1Button)
+                        if (id == Common::Widx::kViewport1Button)
                         {
                             if (!mtd.hasFlag(MessageTypeFlags::hasFirstItem))
                             {
@@ -95,7 +95,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                         MessageItemArgumentType itemType;
                         uint16_t itemId;
-                        if (widgetIndex == Common::widx::viewport1Button)
+                        if (id == Common::Widx::kViewport1Button)
                         {
                             itemType = mtd.argumentTypes[0];
                             itemId = news->itemSubjects[0];

@@ -17,7 +17,7 @@
 
 namespace OpenLoco::Ui::Windows::NetworkStatus
 {
-    enum Widx
+    enum widx
     {
         frame,
         caption,
@@ -25,12 +25,17 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
         panel,
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kCloseBtn{ "closeBtn" };
+    }
+
     static constexpr Ui::Size kWindowSize = { 441, 91 };
 
     static constexpr auto widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 441, 91 }, WindowColour::primary),
         Widgets::Caption({ 1, 1 }, { 439, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::empty),
-        Widgets::ImageButton({ 426, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::ImageButton(Widx::kCloseBtn, { 426, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { 441, 76 }, WindowColour::secondary)
 
     );
@@ -86,11 +91,11 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
         }
     }
 
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseUp(Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case Widx::closeBtn:
+            case Widx::kCloseBtn:
                 WindowManager::close(&window);
                 break;
         }

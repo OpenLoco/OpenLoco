@@ -76,22 +76,34 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Common
     {
+        enum widx
+        {
+            frame = 0,
+            caption = 1,
+            close_button = 2,
+            panel = 3,
+            tab_display,
+            tab_rendering,
+            tab_audio,
+            tab_regional,
+            tab_controls,
+            tab_company,
+            tab_miscellaneous,
+        };
+
         namespace Widx
         {
-            enum
-            {
-                frame = 0,
-                caption = 1,
-                close_button = 2,
-                panel = 3,
-                tab_display,
-                tab_rendering,
-                tab_audio,
-                tab_regional,
-                tab_controls,
-                tab_company,
-                tab_miscellaneous,
-            };
+            constexpr WidgetId kFrame{ "frame" };
+            constexpr WidgetId kCaption{ "caption" };
+            constexpr WidgetId kCloseButton{ "close_button" };
+            constexpr WidgetId kPanel{ "panel" };
+            constexpr WidgetId kTabDisplay{ "tab_display" };
+            constexpr WidgetId kTabRendering{ "tab_rendering" };
+            constexpr WidgetId kTabAudio{ "tab_audio" };
+            constexpr WidgetId kTabRegional{ "tab_regional" };
+            constexpr WidgetId kTabControls{ "tab_controls" };
+            constexpr WidgetId kTabCompany{ "tab_company" };
+            constexpr WidgetId kTabMiscellaneous{ "tab_miscellaneous" };
         }
 
         enum tab
@@ -110,13 +122,13 @@ namespace OpenLoco::Ui::Windows::Options
             self.activatedWidgets = 1ULL << (self.currentTab + 4);
             self.disabledWidgets = 0;
 
-            self.widgets[Widx::frame].right = self.width - 1;
-            self.widgets[Widx::frame].bottom = self.height - 1;
-            self.widgets[Widx::panel].right = self.width - 1;
-            self.widgets[Widx::panel].bottom = self.height - 1;
-            self.widgets[Widx::caption].right = self.width - 2;
-            self.widgets[Widx::close_button].left = self.width - 15;
-            self.widgets[Widx::close_button].right = self.width - 15 + 12;
+            self.widgets[widx::frame].right = self.width - 1;
+            self.widgets[widx::frame].bottom = self.height - 1;
+            self.widgets[widx::panel].right = self.width - 1;
+            self.widgets[widx::panel].bottom = self.height - 1;
+            self.widgets[widx::caption].right = self.width - 2;
+            self.widgets[widx::close_button].left = self.width - 15;
+            self.widgets[widx::close_button].right = self.width - 15 + 12;
 
             disableTabsByCurrentScene(self);
 
@@ -145,7 +157,7 @@ namespace OpenLoco::Ui::Windows::Options
                     imageId += kRedenderingTabImageIds[0];
                 }
 
-                self.widgets[Widx::tab_rendering].image = imageId;
+                self.widgets[widx::tab_rendering].image = imageId;
             }
 
             static constexpr uint32_t globe_tab_ids[] = {
@@ -190,13 +202,13 @@ namespace OpenLoco::Ui::Windows::Options
                 {
                     imageId = globe_tab_ids[(self.frameNo / 2) % 32];
                 }
-                self.widgets[Widx::tab_regional].image = imageId;
+                self.widgets[widx::tab_regional].image = imageId;
             }
 
             // Company tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_company;
-                self.widgets[Widx::tab_company].image = imageId;
+                self.widgets[widx::tab_company].image = imageId;
             }
         }
 
@@ -207,19 +219,19 @@ namespace OpenLoco::Ui::Windows::Options
 
         static bool onMouseUp(Window& self, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
-            switch (wi)
+            switch (id)
             {
-                case Widx::close_button:
+                case Widx::kCloseButton:
                     WindowManager::close(&self);
                     return true;
 
-                case Widx::tab_display:
-                case Widx::tab_rendering:
-                case Widx::tab_audio:
-                case Widx::tab_regional:
-                case Widx::tab_controls:
-                case Widx::tab_company:
-                case Widx::tab_miscellaneous:
+                case Widx::kTabDisplay:
+                case Widx::kTabRendering:
+                case Widx::kTabAudio:
+                case Widx::kTabRegional:
+                case Widx::kTabControls:
+                case Widx::kTabCompany:
+                case Widx::kTabMiscellaneous:
                     Options::tabOnMouseUp(self, wi);
                     return true;
 
@@ -233,17 +245,17 @@ namespace OpenLoco::Ui::Windows::Options
             constexpr auto kTabWidth = 31;
 
             return makeWidgets(
-                Widgets::Frame({ 0, 0 }, windowSize, WindowColour::primary),
-                Widgets::Caption({ 1, 1 }, { (uint16_t)(windowSize.width - 2), 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, windowCaptionId),
-                Widgets::ImageButton({ (int16_t)(windowSize.width - 15), 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-                Widgets::Panel({ 0, 41 }, { windowSize.width, 102 }, WindowColour::secondary),
-                Widgets::Tab({ 3 + kTabWidth * 0, 15 }, { kTabWidth, 27 }, WindowColour::secondary, ImageIds::tab_display, StringIds::tooltip_display_options),
-                Widgets::Tab({ 3 + kTabWidth * 1, 15 }, { kTabWidth, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_options_rendering),
-                Widgets::Tab({ 3 + kTabWidth * 2, 15 }, { kTabWidth, 27 }, WindowColour::secondary, ImageIds::tab_sound, StringIds::tooltip_audio_options),
-                Widgets::Tab({ 3 + kTabWidth * 3, 15 }, { kTabWidth, 27 }, WindowColour::secondary, ImageIds::tab_globe_0, StringIds::tooltip_regional_options),
-                Widgets::Tab({ 3 + kTabWidth * 4, 15 }, { kTabWidth, 27 }, WindowColour::secondary, ImageIds::tab_control, StringIds::tooltip_control_options),
-                Widgets::Tab({ 3 + kTabWidth * 5, 15 }, { kTabWidth, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_options),
-                Widgets::Tab({ 3 + kTabWidth * 6, 15 }, { kTabWidth, 27 }, WindowColour::secondary, ImageIds::tab_miscellaneous, StringIds::tooltip_miscellaneous_options));
+                Widgets::Frame(Widx::kFrame, { 0, 0 }, windowSize, WindowColour::primary),
+                Widgets::Caption(Widx::kCaption, { 1, 1 }, { (uint16_t)(windowSize.width - 2), 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, windowCaptionId),
+                Widgets::ImageButton(Widx::kCloseButton, { (int16_t)(windowSize.width - 15), 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::Panel(Widx::kPanel, { 0, 41 }, { windowSize.width, 102 }, WindowColour::secondary),
+                Widgets::Tab(Widx::kTabDisplay, { 3 + kTabWidth * 0, 15 }, { kTabWidth, 27 }, WindowColour::secondary, ImageIds::tab_display, StringIds::tooltip_display_options),
+                Widgets::Tab(Widx::kTabRendering, { 3 + kTabWidth * 1, 15 }, { kTabWidth, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_options_rendering),
+                Widgets::Tab(Widx::kTabAudio, { 3 + kTabWidth * 2, 15 }, { kTabWidth, 27 }, WindowColour::secondary, ImageIds::tab_sound, StringIds::tooltip_audio_options),
+                Widgets::Tab(Widx::kTabRegional, { 3 + kTabWidth * 3, 15 }, { kTabWidth, 27 }, WindowColour::secondary, ImageIds::tab_globe_0, StringIds::tooltip_regional_options),
+                Widgets::Tab(Widx::kTabControls, { 3 + kTabWidth * 4, 15 }, { kTabWidth, 27 }, WindowColour::secondary, ImageIds::tab_control, StringIds::tooltip_control_options),
+                Widgets::Tab(Widx::kTabCompany, { 3 + kTabWidth * 5, 15 }, { kTabWidth, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_options),
+                Widgets::Tab(Widx::kTabMiscellaneous, { 3 + kTabWidth * 6, 15 }, { kTabWidth, 27 }, WindowColour::secondary, ImageIds::tab_miscellaneous, StringIds::tooltip_miscellaneous_options));
         }
     }
 
@@ -251,26 +263,37 @@ namespace OpenLoco::Ui::Windows::Options
     {
         static constexpr Ui::Size kWindowSize = { 400, 151 };
 
+        enum widx
+        {
+            frame_hardware = Common::widx::tab_miscellaneous + 1,
+            screen_mode_label,
+            screen_mode,
+            screen_mode_btn,
+            display_resolution_label,
+            display_resolution,
+            display_resolution_btn,
+            display_scale_label,
+            display_scale,
+            display_scale_down_btn,
+            display_scale_up_btn,
+            frame_limit_label,
+            frame_limit,
+            frame_limit_btn,
+            show_fps,
+        };
+
         namespace Widx
         {
-            enum
-            {
-                frame_hardware = Common::Widx::tab_miscellaneous + 1,
-                screen_mode_label,
-                screen_mode,
-                screen_mode_btn,
-                display_resolution_label,
-                display_resolution,
-                display_resolution_btn,
-                display_scale_label,
-                display_scale,
-                display_scale_down_btn,
-                display_scale_up_btn,
-                frame_limit_label,
-                frame_limit,
-                frame_limit_btn,
-                show_fps,
-            };
+            constexpr WidgetId kScreenMode{ "screen_mode" };
+            constexpr WidgetId kScreenModeBtn{ "screen_mode_btn" };
+            constexpr WidgetId kDisplayResolution{ "display_resolution" };
+            constexpr WidgetId kDisplayResolutionBtn{ "display_resolution_btn" };
+            constexpr WidgetId kDisplayScale{ "display_scale" };
+            constexpr WidgetId kDisplayScaleDownBtn{ "display_scale_down_btn" };
+            constexpr WidgetId kDisplayScaleUpBtn{ "display_scale_up_btn" };
+            constexpr WidgetId kFrameLimit{ "frame_limit" };
+            constexpr WidgetId kFrameLimitBtn{ "frame_limit_btn" };
+            constexpr WidgetId kShowFps{ "show_fps" };
         }
 
         static constexpr auto _widgets = makeWidgets(
@@ -278,18 +301,18 @@ namespace OpenLoco::Ui::Windows::Options
             Widgets::GroupBox({ 4, 49 }, { 392, 97 }, WindowColour::secondary, StringIds::frame_hardware),
 
             Widgets::Label({ 10, 63 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::options_screen_mode),
-            Widgets::dropdownWidgets({ 235, 63 }, { 154, 12 }, WindowColour::secondary, StringIds::empty),
+            Widgets::dropdownWidgets(Widx::kScreenMode, Widx::kScreenModeBtn, { 235, 63 }, { 154, 12 }, WindowColour::secondary, StringIds::empty),
 
             Widgets::Label({ 10, 79 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::display_resolution),
-            Widgets::dropdownWidgets({ 235, 79 }, { 154, 12 }, WindowColour::secondary, StringIds::display_resolution_dropdown_format),
+            Widgets::dropdownWidgets(Widx::kDisplayResolution, Widx::kDisplayResolutionBtn, { 235, 79 }, { 154, 12 }, WindowColour::secondary, StringIds::display_resolution_dropdown_format),
 
             Widgets::Label({ 10, 95 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::window_scale_factor),
-            Widgets::stepperWidgets({ 235, 95 }, { 154, 12 }, WindowColour::secondary, StringIds::scale_formatted),
+            Widgets::stepperWidgets(Widx::kDisplayScale, Widx::kDisplayScaleDownBtn, Widx::kDisplayScaleUpBtn, { 235, 95 }, { 154, 12 }, WindowColour::secondary, StringIds::scale_formatted),
 
             Widgets::Label({ 10, 111 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::frameRateLimitLabel),
-            Widgets::dropdownWidgets({ 235, 111 }, { 154, 12 }, WindowColour::secondary, StringIds::empty),
+            Widgets::dropdownWidgets(Widx::kFrameLimit, Widx::kFrameLimitBtn, { 235, 111 }, { 154, 12 }, WindowColour::secondary, StringIds::empty),
 
-            Widgets::Checkbox({ 10, 127 }, { 380, 12 }, WindowColour::secondary, StringIds::option_show_fps_counter, StringIds::option_show_fps_counter_tooltip)
+            Widgets::Checkbox(Widx::kShowFps, { 10, 127 }, { 380, 12 }, WindowColour::secondary, StringIds::option_show_fps_counter, StringIds::option_show_fps_counter_tooltip)
 
         );
 
@@ -301,9 +324,9 @@ namespace OpenLoco::Ui::Windows::Options
                 return;
             }
 
-            switch (wi)
+            switch (id)
             {
-                case Widx::show_fps:
+                case Widx::kShowFps:
                 {
                     auto& cfg = OpenLoco::Config::get();
                     cfg.showFPS ^= 1;
@@ -319,20 +342,20 @@ namespace OpenLoco::Ui::Windows::Options
         {
             if (Config::get().display.mode == Config::ScreenMode::fullscreen)
             {
-                self.disabledWidgets &= ~(1ULL << Widx::display_resolution) | (1ULL << Widx::display_resolution_btn);
-                self.disabledWidgets &= ~((1ULL << Widx::display_resolution) | (1ULL << Widx::display_resolution_btn));
+                self.disabledWidgets &= ~(1ULL << widx::display_resolution) | (1ULL << widx::display_resolution_btn);
+                self.disabledWidgets &= ~((1ULL << widx::display_resolution) | (1ULL << widx::display_resolution_btn));
             }
             else
             {
-                self.disabledWidgets |= ((1ULL << Widx::display_resolution) | (1ULL << Widx::display_resolution_btn));
-                self.disabledWidgets |= (1ULL << Widx::display_resolution) | (1ULL << Widx::display_resolution_btn);
+                self.disabledWidgets |= ((1ULL << widx::display_resolution) | (1ULL << widx::display_resolution_btn));
+                self.disabledWidgets |= (1ULL << widx::display_resolution) | (1ULL << widx::display_resolution_btn);
             }
         }
 #endif
 
         static void screenModeMouseDown(const Window& self, [[maybe_unused]] WidgetIndex_t wi)
         {
-            auto& dropdown = self.widgets[Widx::screen_mode];
+            auto& dropdown = self.widgets[widx::screen_mode];
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 3, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::options_mode_windowed);
@@ -368,7 +391,7 @@ namespace OpenLoco::Ui::Windows::Options
         {
             std::vector<Resolution> resolutions = getFullscreenResolutions();
 
-            auto& dropdown = self.widgets[Widx::display_resolution];
+            auto& dropdown = self.widgets[widx::display_resolution];
             Dropdown::showText2(self.x + dropdown.left, self.y + dropdown.top, dropdown.width(), dropdown.height(), self.getColour(WindowColour::secondary), resolutions.size(), 0x80);
 
             auto& cfg = Config::get();
@@ -397,7 +420,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void frameLimitMouseDown(const Window& self, [[maybe_unused]] WidgetIndex_t wi)
         {
-            auto& dropdown = self.widgets[Widx::frame_limit];
+            auto& dropdown = self.widgets[widx::frame_limit];
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width(), dropdown.height(), self.getColour(WindowColour::secondary), 3, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::frameRateLimitInternal);
@@ -441,7 +464,7 @@ namespace OpenLoco::Ui::Windows::Options
             if (drawingEngine.setVSync(config.display.vsync))
             {
                 Config::write();
-                WindowManager::invalidateWidget(self.type, self.number, Widx::frame_limit);
+                WindowManager::invalidateWidget(self.type, self.number, widx::frame_limit);
             }
         }
 
@@ -455,38 +478,38 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004BFBB7
         static void onMouseDown(Window& self, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
         {
-            switch (wi)
+            switch (id)
             {
-                case Widx::screen_mode_btn:
+                case Widx::kScreenModeBtn:
                     screenModeMouseDown(self, wi);
                     break;
-                case Widx::display_resolution_btn:
+                case Widx::kDisplayResolutionBtn:
                     resolutionMouseDown(self, wi);
                     break;
-                case Widx::display_scale_down_btn:
+                case Widx::kDisplayScaleDownBtn:
                     displayScaleMouseDown(self, wi, -OpenLoco::Ui::ScaleFactor::step);
                     break;
-                case Widx::display_scale_up_btn:
+                case Widx::kDisplayScaleUpBtn:
                     displayScaleMouseDown(self, wi, OpenLoco::Ui::ScaleFactor::step);
                     break;
-                case Widx::frame_limit_btn:
+                case Widx::kFrameLimitBtn:
                     frameLimitMouseDown(self, wi);
                     break;
             }
         }
 
         // 0x004BFBE8
-        static void onDropdown(Window& self, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id, int16_t item_index)
+        static void onDropdown(Window& self, [[maybe_unused]] WidgetIndex_t wi, const WidgetId id, int16_t item_index)
         {
-            switch (wi)
+            switch (id)
             {
-                case Widx::screen_mode_btn:
+                case Widx::kScreenModeBtn:
                     screenModeDropdown(self, item_index);
                     break;
-                case Widx::display_resolution_btn:
+                case Widx::kDisplayResolutionBtn:
                     resolutionDropdown(self, item_index);
                     break;
-                case Widx::frame_limit_btn:
+                case Widx::kFrameLimitBtn:
                     frameLimitDropdown(self, item_index);
                     break;
             }
@@ -520,11 +543,11 @@ namespace OpenLoco::Ui::Windows::Options
                     screenModeStringId = StringIds::options_mode_fullscreen_window;
                     break;
             }
-            self.widgets[Widx::screen_mode].text = screenModeStringId;
+            self.widgets[widx::screen_mode].text = screenModeStringId;
 
             // Resolution.
             {
-                auto args = FormatArguments(self.widgets[Widx::display_resolution].textArgs);
+                auto args = FormatArguments(self.widgets[widx::display_resolution].textArgs);
                 auto& resolution = Config::get().display.fullscreenResolution;
                 args.push<uint16_t>(resolution.width);
                 args.push<uint16_t>(resolution.height);
@@ -532,7 +555,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             // Scale.
             {
-                auto args = FormatArguments(self.widgets[Widx::display_scale].textArgs);
+                auto args = FormatArguments(self.widgets[widx::display_scale].textArgs);
                 args.push<int32_t>(Config::get().scaleFactor * 100);
             }
 
@@ -548,21 +571,21 @@ namespace OpenLoco::Ui::Windows::Options
                     frameLimitStringId = StringIds::frameRateLimitUnrestricted;
                 }
             }
-            self.widgets[Widx::frame_limit].text = frameLimitStringId;
+            self.widgets[widx::frame_limit].text = frameLimitStringId;
 
             if (Config::get().showFPS)
             {
-                self.activatedWidgets |= (1ULL << Widx::show_fps);
+                self.activatedWidgets |= (1ULL << widx::show_fps);
             }
 
             if (Config::get().scaleFactor <= OpenLoco::Ui::ScaleFactor::min)
             {
-                self.disabledWidgets |= (1ULL << Widx::display_scale_down_btn);
+                self.disabledWidgets |= (1ULL << widx::display_scale_down_btn);
             }
 
             if (Config::get().scaleFactor >= OpenLoco::Ui::ScaleFactor::max)
             {
-                self.disabledWidgets |= (1ULL << Widx::display_scale_up_btn);
+                self.disabledWidgets |= (1ULL << widx::display_scale_up_btn);
             }
 
 #if !(defined(__APPLE__) && defined(__MACH__))
@@ -581,16 +604,16 @@ namespace OpenLoco::Ui::Windows::Options
         {
             if (Config::get().display.mode != Config::ScreenMode::fullscreen)
             {
-                self.disabledWidgets = (1ULL << Display::Widx::display_resolution) | (1ULL << Display::Widx::display_resolution_btn);
+                self.disabledWidgets = (1ULL << Display::widx::display_resolution) | (1ULL << Display::widx::display_resolution_btn);
             }
 
 #if !(defined(__APPLE__) && defined(__MACH__))
             Display::screenModeToggleEnabled(self);
 #else
-            self.disabledWidgets |= (1ULL << Display::Widx::screen_mode)
-                | (1ULL << Display::Widx::screen_mode_btn)
-                | (1ULL << Display::Widx::display_resolution)
-                | (1ULL << Display::Widx::display_resolution_btn);
+            self.disabledWidgets |= (1ULL << Display::widx::screen_mode)
+                | (1ULL << Display::widx::screen_mode_btn)
+                | (1ULL << Display::widx::display_resolution)
+                | (1ULL << Display::widx::display_resolution_btn);
 #endif
         }
 
@@ -614,30 +637,43 @@ namespace OpenLoco::Ui::Windows::Options
     {
         static constexpr Ui::Size kWindowSize = { 400, 218 };
 
+        enum widx
+        {
+            frame_map_rendering = Common::widx::tab_miscellaneous + 1,
+            vehicles_min_scale_label,
+            vehicles_min_scale,
+            vehicles_min_scale_btn,
+            station_names_min_scale_label,
+            station_names_min_scale,
+            station_names_min_scale_btn,
+            construction_marker_label,
+            construction_marker,
+            construction_marker_btn,
+            landscape_smoothing,
+            gridlines_on_landscape,
+            cash_popup_rendering,
+            show_company_ai_planning,
+
+            frame_user_interface,
+            window_frame_style_label,
+            window_frame_style,
+            window_frame_style_btn,
+        };
+
         namespace Widx
         {
-            enum
-            {
-                frame_map_rendering = Common::Widx::tab_miscellaneous + 1,
-                vehicles_min_scale_label,
-                vehicles_min_scale,
-                vehicles_min_scale_btn,
-                station_names_min_scale_label,
-                station_names_min_scale,
-                station_names_min_scale_btn,
-                construction_marker_label,
-                construction_marker,
-                construction_marker_btn,
-                landscape_smoothing,
-                gridlines_on_landscape,
-                cash_popup_rendering,
-                show_company_ai_planning,
-
-                frame_user_interface,
-                window_frame_style_label,
-                window_frame_style,
-                window_frame_style_btn,
-            };
+            constexpr WidgetId kVehiclesMinScale{ "vehicles_min_scale" };
+            constexpr WidgetId kVehiclesMinScaleBtn{ "vehicles_min_scale_btn" };
+            constexpr WidgetId kStationNamesMinScale{ "station_names_min_scale" };
+            constexpr WidgetId kStationNamesMinScaleBtn{ "station_names_min_scale_btn" };
+            constexpr WidgetId kConstructionMarker{ "construction_marker" };
+            constexpr WidgetId kConstructionMarkerBtn{ "construction_marker_btn" };
+            constexpr WidgetId kLandscapeSmoothing{ "landscape_smoothing" };
+            constexpr WidgetId kGridlinesOnLandscape{ "gridlines_on_landscape" };
+            constexpr WidgetId kCashPopupRendering{ "cash_popup_rendering" };
+            constexpr WidgetId kShowCompanyAiPlanning{ "show_company_ai_planning" };
+            constexpr WidgetId kWindowFrameStyle{ "window_frame_style" };
+            constexpr WidgetId kWindowFrameStyleBtn{ "window_frame_style_btn" };
         }
 
         static constexpr auto _widgets = makeWidgets(
@@ -645,22 +681,22 @@ namespace OpenLoco::Ui::Windows::Options
             Widgets::GroupBox({ 4, 49 }, { 392, 128 }, WindowColour::secondary, StringIds::frame_map_rendering),
 
             Widgets::Label({ 10, 63 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::vehicles_min_scale),
-            Widgets::dropdownWidgets({ 235, 63 }, { 154, 12 }, WindowColour::secondary, StringIds::empty, StringIds::vehicles_min_scale_tip),
+            Widgets::dropdownWidgets(Widx::kVehiclesMinScale, Widx::kVehiclesMinScaleBtn, { 235, 63 }, { 154, 12 }, WindowColour::secondary, StringIds::empty, StringIds::vehicles_min_scale_tip),
 
             Widgets::Label({ 10, 79 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::station_names_min_scale),
-            Widgets::dropdownWidgets({ 235, 79 }, { 154, 12 }, WindowColour::secondary, StringIds::empty, StringIds::station_names_min_scale_tip),
+            Widgets::dropdownWidgets(Widx::kStationNamesMinScale, Widx::kStationNamesMinScaleBtn, { 235, 79 }, { 154, 12 }, WindowColour::secondary, StringIds::empty, StringIds::station_names_min_scale_tip),
 
             Widgets::Label({ 10, 95 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::construction_marker),
-            Widgets::dropdownWidgets({ 235, 95 }, { 154, 12 }, WindowColour::secondary, StringIds::empty),
+            Widgets::dropdownWidgets(Widx::kConstructionMarker, Widx::kConstructionMarkerBtn, { 235, 95 }, { 154, 12 }, WindowColour::secondary, StringIds::empty),
 
-            Widgets::Checkbox({ 10, 110 }, { 346, 12 }, WindowColour::secondary, StringIds::landscape_smoothing, StringIds::landscape_smoothing_tip),
-            Widgets::Checkbox({ 10, 126 }, { 346, 12 }, WindowColour::secondary, StringIds::gridlines_on_landscape, StringIds::gridlines_on_landscape_tip),
-            Widgets::Checkbox({ 10, 142 }, { 346, 12 }, WindowColour::secondary, StringIds::cash_popup_rendering, StringIds::tooltip_cash_popup_rendering),
-            Widgets::Checkbox({ 10, 158 }, { 346, 12 }, WindowColour::secondary, StringIds::show_company_ai_planning, StringIds::show_company_ai_planning_tip),
+            Widgets::Checkbox(Widx::kLandscapeSmoothing, { 10, 110 }, { 346, 12 }, WindowColour::secondary, StringIds::landscape_smoothing, StringIds::landscape_smoothing_tip),
+            Widgets::Checkbox(Widx::kGridlinesOnLandscape, { 10, 126 }, { 346, 12 }, WindowColour::secondary, StringIds::gridlines_on_landscape, StringIds::gridlines_on_landscape_tip),
+            Widgets::Checkbox(Widx::kCashPopupRendering, { 10, 142 }, { 346, 12 }, WindowColour::secondary, StringIds::cash_popup_rendering, StringIds::tooltip_cash_popup_rendering),
+            Widgets::Checkbox(Widx::kShowCompanyAiPlanning, { 10, 158 }, { 346, 12 }, WindowColour::secondary, StringIds::show_company_ai_planning, StringIds::show_company_ai_planning_tip),
 
             Widgets::GroupBox({ 4, 180 }, { 392, 32 }, WindowColour::secondary, StringIds::userInterfaceGroup),
             Widgets::Label({ 10, 195 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::windowFrameStyle),
-            Widgets::dropdownWidgets({ 235, 194 }, { 154, 12 }, WindowColour::secondary, StringIds::empty, StringIds::windowFrameStyleTip)
+            Widgets::dropdownWidgets(Widx::kWindowFrameStyle, Widx::kWindowFrameStyleBtn, { 235, 194 }, { 154, 12 }, WindowColour::secondary, StringIds::empty, StringIds::windowFrameStyleTip)
 
         );
 
@@ -672,9 +708,9 @@ namespace OpenLoco::Ui::Windows::Options
                 return;
             }
 
-            switch (wi)
+            switch (id)
             {
-                case Widx::landscape_smoothing:
+                case Widx::kLandscapeSmoothing:
                 {
                     auto& cfg = OpenLoco::Config::get();
                     cfg.landscapeSmoothing ^= true;
@@ -683,7 +719,7 @@ namespace OpenLoco::Ui::Windows::Options
                     return;
                 }
 
-                case Widx::gridlines_on_landscape:
+                case Widx::kGridlinesOnLandscape:
                 {
                     auto& cfg = OpenLoco::Config::get();
                     cfg.gridlinesOnLandscape ^= true;
@@ -704,7 +740,7 @@ namespace OpenLoco::Ui::Windows::Options
                     return;
                 }
 
-                case Widx::cash_popup_rendering:
+                case Widx::kCashPopupRendering:
                 {
                     auto& cfg = OpenLoco::Config::get();
                     cfg.cashPopupRendering = !cfg.cashPopupRendering;
@@ -713,7 +749,7 @@ namespace OpenLoco::Ui::Windows::Options
                     return;
                 }
 
-                case Widx::show_company_ai_planning:
+                case Widx::kShowCompanyAiPlanning:
                 {
                     auto& cfg = OpenLoco::Config::get();
                     cfg.showAiPlanningAsGhosts = !cfg.showAiPlanningAsGhosts;
@@ -728,7 +764,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004BFE2E
         static void constructionMarkerMouseDown(const Window& self, [[maybe_unused]] WidgetIndex_t wi)
         {
-            auto& dropdown = self.widgets[Widx::construction_marker];
+            auto& dropdown = self.widgets[widx::construction_marker];
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 2, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::white);
@@ -760,7 +796,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004BFEBE
         static void vehicleZoomMouseDown(const Window& self, [[maybe_unused]] WidgetIndex_t wi)
         {
-            auto& dropdown = self.widgets[Widx::vehicles_min_scale];
+            auto& dropdown = self.widgets[widx::vehicles_min_scale];
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 4, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::full_scale);
@@ -794,7 +830,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004BFF72
         static void stationNamesScaleMouseDown(const Window& self, [[maybe_unused]] WidgetIndex_t wi)
         {
-            auto& dropdown = self.widgets[Widx::station_names_min_scale];
+            auto& dropdown = self.widgets[widx::station_names_min_scale];
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 4, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::full_scale);
@@ -825,7 +861,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void windowFrameStyleMouseDown(const Window& self, [[maybe_unused]] WidgetIndex_t wi)
         {
-            auto& dropdown = self.widgets[Widx::window_frame_style];
+            auto& dropdown = self.widgets[widx::window_frame_style];
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 3, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::windowFrameStyleGradient);
@@ -853,40 +889,40 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004BFBB7
-        static void onMouseDown(Window& self, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
+        static void onMouseDown(Window& self, WidgetIndex_t wi, const WidgetId id)
         {
-            switch (wi)
+            switch (id)
             {
-                case Widx::construction_marker_btn:
+                case Widx::kConstructionMarkerBtn:
                     constructionMarkerMouseDown(self, wi);
                     break;
-                case Widx::vehicles_min_scale_btn:
+                case Widx::kVehiclesMinScaleBtn:
                     vehicleZoomMouseDown(self, wi);
                     break;
-                case Widx::station_names_min_scale_btn:
+                case Widx::kStationNamesMinScaleBtn:
                     stationNamesScaleMouseDown(self, wi);
                     break;
-                case Widx::window_frame_style_btn:
+                case Widx::kWindowFrameStyleBtn:
                     windowFrameStyleMouseDown(self, wi);
                     break;
             }
         }
 
         // 0x004BFBE8
-        static void onDropdown([[maybe_unused]] Window& self, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id, int16_t item_index)
+        static void onDropdown([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t wi, const WidgetId id, int16_t item_index)
         {
-            switch (wi)
+            switch (id)
             {
-                case Widx::construction_marker_btn:
+                case Widx::kConstructionMarkerBtn:
                     constructionMarkerDropdown(item_index);
                     break;
-                case Widx::vehicles_min_scale_btn:
+                case Widx::kVehiclesMinScaleBtn:
                     vehicleZoomDropdown(item_index);
                     break;
-                case Widx::station_names_min_scale_btn:
+                case Widx::kStationNamesMinScaleBtn:
                     stationNamesScaleDropdown(item_index);
                     break;
-                case Widx::window_frame_style_btn:
+                case Widx::kWindowFrameStyleBtn:
                     windowFrameStyleDropdown(item_index);
                     break;
             }
@@ -909,11 +945,11 @@ namespace OpenLoco::Ui::Windows::Options
 
             if (Config::get().constructionMarker)
             {
-                self.widgets[Widx::construction_marker].text = StringIds::translucent;
+                self.widgets[widx::construction_marker].text = StringIds::translucent;
             }
             else
             {
-                self.widgets[Widx::construction_marker].text = StringIds::white;
+                self.widgets[widx::construction_marker].text = StringIds::white;
             }
 
             static constexpr StringId kScaleStringIds[] = {
@@ -923,8 +959,8 @@ namespace OpenLoco::Ui::Windows::Options
                 StringIds::eighth_scale,
             };
 
-            self.widgets[Widx::vehicles_min_scale].text = kScaleStringIds[Config::get().vehiclesMinScale];
-            self.widgets[Widx::station_names_min_scale].text = kScaleStringIds[Config::get().stationNamesMinScale];
+            self.widgets[widx::vehicles_min_scale].text = kScaleStringIds[Config::get().vehiclesMinScale];
+            self.widgets[widx::station_names_min_scale].text = kScaleStringIds[Config::get().stationNamesMinScale];
 
             static constexpr StringId kWindowStyleStringIds[] = {
                 StringIds::windowFrameStyleGradient,
@@ -932,26 +968,26 @@ namespace OpenLoco::Ui::Windows::Options
                 StringIds::windowFrameStyleTranslucent,
             };
 
-            self.widgets[Widx::window_frame_style].text = kWindowStyleStringIds[enumValue(Config::get().windowFrameStyle)];
+            self.widgets[widx::window_frame_style].text = kWindowStyleStringIds[enumValue(Config::get().windowFrameStyle)];
 
             if (Config::get().landscapeSmoothing)
             {
-                self.activatedWidgets |= (1ULL << Widx::landscape_smoothing);
+                self.activatedWidgets |= (1ULL << widx::landscape_smoothing);
             }
 
             if (Config::get().gridlinesOnLandscape)
             {
-                self.activatedWidgets |= (1ULL << Widx::gridlines_on_landscape);
+                self.activatedWidgets |= (1ULL << widx::gridlines_on_landscape);
             }
 
             if (Config::get().cashPopupRendering)
             {
-                self.activatedWidgets |= (1ULL << Widx::cash_popup_rendering);
+                self.activatedWidgets |= (1ULL << widx::cash_popup_rendering);
             }
 
             if (Config::get().showAiPlanningAsGhosts)
             {
-                self.activatedWidgets |= (1ULL << Widx::show_company_ai_planning);
+                self.activatedWidgets |= (1ULL << widx::show_company_ai_planning);
             }
         }
 
@@ -1000,29 +1036,39 @@ namespace OpenLoco::Ui::Windows::Options
 
         static constexpr Ui::Size kWindowSize = { 366, kVolumeGroupOffset + kVolumeGroupHeight + 4 };
 
+        enum widx
+        {
+            frame_sound = Common::widx::tab_miscellaneous + 1,
+            audio_device,
+            audio_device_btn,
+            play_title_music,
+
+            frame_volume,
+            volume_master_label,
+            volume_master,
+            volume_music_label,
+            volume_music,
+            volume_effects_label,
+            volume_effects,
+            volume_vehicles_label,
+            volume_vehicles,
+            volume_ui_label,
+            volume_ui,
+            volume_ambient_label,
+            volume_ambient,
+        };
+
         namespace Widx
         {
-            enum
-            {
-                frame_sound = Common::Widx::tab_miscellaneous + 1,
-                audio_device,
-                audio_device_btn,
-                play_title_music,
-
-                frame_volume,
-                volume_master_label,
-                volume_master,
-                volume_music_label,
-                volume_music,
-                volume_effects_label,
-                volume_effects,
-                volume_vehicles_label,
-                volume_vehicles,
-                volume_ui_label,
-                volume_ui,
-                volume_ambient_label,
-                volume_ambient,
-            };
+            constexpr WidgetId kAudioDevice{ "audio_device" };
+            constexpr WidgetId kAudioDeviceBtn{ "audio_device_btn" };
+            constexpr WidgetId kPlayTitleMusic{ "play_title_music" };
+            constexpr WidgetId kVolumeMaster{ "volume_master" };
+            constexpr WidgetId kVolumeMusic{ "volume_music" };
+            constexpr WidgetId kVolumeEffects{ "volume_effects" };
+            constexpr WidgetId kVolumeVehicles{ "volume_vehicles" };
+            constexpr WidgetId kVolumeUi{ "volume_ui" };
+            constexpr WidgetId kVolumeAmbient{ "volume_ambient" };
         }
 
         static constexpr int32_t getSliderRowY(uint8_t num)
@@ -1034,22 +1080,22 @@ namespace OpenLoco::Ui::Windows::Options
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_audio),
 
             Widgets::GroupBox({ 4, kSoundGroupOffset }, { kWindowSize.width - 8, kSoundGroupHeight }, WindowColour::secondary, StringIds::frame_sound),
-            Widgets::dropdownWidgets({ 10, kSoundGroupOffset + kDeviceRowOffset }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
-            Widgets::Checkbox({ 10, kSoundGroupOffset + kCheckboxRowOffset }, { 346, 12 }, WindowColour::secondary, StringIds::play_title_music),
+            Widgets::dropdownWidgets(Widx::kAudioDevice, Widx::kAudioDeviceBtn, { 10, kSoundGroupOffset + kDeviceRowOffset }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
+            Widgets::Checkbox(Widx::kPlayTitleMusic, { 10, kSoundGroupOffset + kCheckboxRowOffset }, { 346, 12 }, WindowColour::secondary, StringIds::play_title_music),
 
             Widgets::GroupBox({ 4, kVolumeGroupOffset }, { kWindowSize.width - 8, kVolumeGroupHeight }, WindowColour::secondary, StringIds::frame_volume),
             Widgets::Label({ kSliderPrimaryLabelX, getSliderRowY(0) + 3 }, { kSliderLabelWidth, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::master_volume),
-            Widgets::Slider({ kSliderPrimaryX, getSliderRowY(0) - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_master_volume_tip),
+            Widgets::Slider(Widx::kVolumeMaster, { kSliderPrimaryX, getSliderRowY(0) - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_master_volume_tip),
             Widgets::Label({ kSliderSecondaryLabelX, getSliderRowY(1) + 3 }, { kSliderLabelWidth, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::music_channel_volume),
-            Widgets::Slider({ kSliderSecondaryX, getSliderRowY(1) - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_music_channel_volume_tip),
+            Widgets::Slider(Widx::kVolumeMusic, { kSliderSecondaryX, getSliderRowY(1) - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_music_channel_volume_tip),
             Widgets::Label({ kSliderPrimaryLabelX, getSliderRowY(2) + 3 }, { kSliderLabelWidth, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::effects_volume),
-            Widgets::Slider({ kSliderPrimaryX, getSliderRowY(2) - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_effects_volume_tip),
+            Widgets::Slider(Widx::kVolumeEffects, { kSliderPrimaryX, getSliderRowY(2) - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_effects_volume_tip),
             Widgets::Label({ kSliderSecondaryLabelX, getSliderRowY(3) + 3 }, { kSliderLabelWidth, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::vehicles_volume),
-            Widgets::Slider({ kSliderSecondaryX, getSliderRowY(3) - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_vehicles_volume_tip),
+            Widgets::Slider(Widx::kVolumeVehicles, { kSliderSecondaryX, getSliderRowY(3) - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_vehicles_volume_tip),
             Widgets::Label({ kSliderPrimaryLabelX, getSliderRowY(4) + 3 }, { kSliderLabelWidth, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::ui_volume),
-            Widgets::Slider({ kSliderPrimaryX, getSliderRowY(4) - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_ui_volume_tip),
+            Widgets::Slider(Widx::kVolumeUi, { kSliderPrimaryX, getSliderRowY(4) - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_ui_volume_tip),
             Widgets::Label({ kSliderSecondaryLabelX, getSliderRowY(5) + 3 }, { kSliderLabelWidth, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::ambient_volume),
-            Widgets::Slider({ kSliderSecondaryX, getSliderRowY(5) - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_ambient_volume_tip)
+            Widgets::Slider(Widx::kVolumeAmbient, { kSliderSecondaryX, getSliderRowY(5) - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_ambient_volume_tip)
 
         );
 
@@ -1067,7 +1113,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             // Audio device
             {
-                auto args = FormatArguments(self.widgets[Widx::audio_device].textArgs);
+                auto args = FormatArguments(self.widgets[widx::audio_device].textArgs);
                 auto audioDeviceName = Audio::getCurrentDeviceName();
                 if (audioDeviceName != nullptr)
                 {
@@ -1083,7 +1129,7 @@ namespace OpenLoco::Ui::Windows::Options
             // Play title music checkbox
             if (Config::get().audio.playTitleMusic)
             {
-                self.activatedWidgets |= (1ULL << Widx::play_title_music);
+                self.activatedWidgets |= (1ULL << widx::play_title_music);
             }
         }
 
@@ -1102,52 +1148,52 @@ namespace OpenLoco::Ui::Windows::Options
         {
             self.draw(drawingCtx);
 
-            drawVolumeSlider(self, drawingCtx, Widx::volume_master, Audio::getChannelVolume(Audio::ChannelId::master));
-            drawVolumeSlider(self, drawingCtx, Widx::volume_music, Audio::getChannelVolume(Audio::ChannelId::music));
-            drawVolumeSlider(self, drawingCtx, Widx::volume_effects, Audio::getChannelVolume(Audio::ChannelId::effects));
-            drawVolumeSlider(self, drawingCtx, Widx::volume_vehicles, Audio::getChannelVolume(Audio::ChannelId::vehicles));
-            drawVolumeSlider(self, drawingCtx, Widx::volume_ui, Audio::getChannelVolume(Audio::ChannelId::ui));
-            drawVolumeSlider(self, drawingCtx, Widx::volume_ambient, Audio::getChannelVolume(Audio::ChannelId::ambient));
+            drawVolumeSlider(self, drawingCtx, widx::volume_master, Audio::getChannelVolume(Audio::ChannelId::master));
+            drawVolumeSlider(self, drawingCtx, widx::volume_music, Audio::getChannelVolume(Audio::ChannelId::music));
+            drawVolumeSlider(self, drawingCtx, widx::volume_effects, Audio::getChannelVolume(Audio::ChannelId::effects));
+            drawVolumeSlider(self, drawingCtx, widx::volume_vehicles, Audio::getChannelVolume(Audio::ChannelId::vehicles));
+            drawVolumeSlider(self, drawingCtx, widx::volume_ui, Audio::getChannelVolume(Audio::ChannelId::ui));
+            drawVolumeSlider(self, drawingCtx, widx::volume_ambient, Audio::getChannelVolume(Audio::ChannelId::ambient));
         }
 
-        static void onMouseUp(Window& self, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Window& self, WidgetIndex_t wi, const WidgetId id)
         {
             if (Common::onMouseUp(self, wi, id))
             {
                 return;
             }
 
-            switch (wi)
+            switch (id)
             {
-                case Widx::play_title_music:
+                case Widx::kPlayTitleMusic:
                     playTitleMusicOnMouseUp(self);
                     return;
             }
         }
 
-        static void onMouseDown(Window& self, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
+        static void onMouseDown(Window& self, WidgetIndex_t wi, const WidgetId id)
         {
-            switch (wi)
+            switch (id)
             {
-                case Widx::audio_device_btn:
+                case Widx::kAudioDeviceBtn:
                     audioDeviceMouseDown(self);
                     break;
-                case Widx::volume_master:
-                case Widx::volume_music:
-                case Widx::volume_effects:
-                case Widx::volume_vehicles:
-                case Widx::volume_ui:
-                case Widx::volume_ambient:
+                case Widx::kVolumeMaster:
+                case Widx::kVolumeMusic:
+                case Widx::kVolumeEffects:
+                case Widx::kVolumeVehicles:
+                case Widx::kVolumeUi:
+                case Widx::kVolumeAmbient:
                     volumeSliderMouseDown(self, wi);
                     break;
             }
         }
 
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+        static void onDropdown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Widx::audio_device_btn:
+                case Widx::kAudioDeviceBtn:
                     audioDeviceDropdown(self, itemIndex);
                     break;
             }
@@ -1159,7 +1205,7 @@ namespace OpenLoco::Ui::Windows::Options
             const auto& devices = Audio::getDevices();
             if (devices.size() != 0)
             {
-                auto& dropdown = self.widgets[Widx::audio_device];
+                auto& dropdown = self.widgets[widx::audio_device];
                 Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), devices.size(), 0x80);
                 for (size_t i = 0; i < devices.size(); i++)
                 {
@@ -1189,7 +1235,7 @@ namespace OpenLoco::Ui::Windows::Options
                     Audio::playMusic(Environment::PathId::css5, config.audio.mainVolume, true);
                 }
 
-                WindowManager::invalidateWidget(self.type, self.number, Widx::audio_device);
+                WindowManager::invalidateWidget(self.type, self.number, widx::audio_device);
             }
         }
 
@@ -1219,17 +1265,17 @@ namespace OpenLoco::Ui::Windows::Options
         {
             switch (wi)
             {
-                case Widx::volume_master:
+                case widx::volume_master:
                     return Audio::ChannelId::master;
-                case Widx::volume_music:
+                case widx::volume_music:
                     return Audio::ChannelId::music;
-                case Widx::volume_effects:
+                case widx::volume_effects:
                     return Audio::ChannelId::effects;
-                case Widx::volume_vehicles:
+                case widx::volume_vehicles:
                     return Audio::ChannelId::vehicles;
-                case Widx::volume_ui:
+                case widx::volume_ui:
                     return Audio::ChannelId::ui;
-                case Widx::volume_ambient:
+                case widx::volume_ambient:
                     return Audio::ChannelId::ambient;
                 default:
                     return Audio::ChannelId::master;
@@ -1308,50 +1354,63 @@ namespace OpenLoco::Ui::Windows::Options
     {
         static constexpr Ui::Size kWindowSize = { 366, 167 };
 
+        enum widx
+        {
+            language_label = Common::widx::tab_miscellaneous + 1,
+            language,
+            language_btn,
+            distance_label,
+            distance_speed,
+            distance_speed_btn,
+            heights_label,
+            heights,
+            heights_btn,
+            currency_label,
+            currency,
+            currency_btn,
+            preferred_currency_label,
+            preferred_currency,
+            preferred_currency_btn,
+            preferred_currency_for_new_games,
+            preferred_currency_always
+        };
+
         namespace Widx
         {
-            enum
-            {
-                language_label = Common::Widx::tab_miscellaneous + 1,
-                language,
-                language_btn,
-                distance_label,
-                distance_speed,
-                distance_speed_btn,
-                heights_label,
-                heights,
-                heights_btn,
-                currency_label,
-                currency,
-                currency_btn,
-                preferred_currency_label,
-                preferred_currency,
-                preferred_currency_btn,
-                preferred_currency_for_new_games,
-                preferred_currency_always
-            };
+            constexpr WidgetId kLanguage{ "language" };
+            constexpr WidgetId kLanguageBtn{ "language_btn" };
+            constexpr WidgetId kDistanceSpeed{ "distance_speed" };
+            constexpr WidgetId kDistanceSpeedBtn{ "distance_speed_btn" };
+            constexpr WidgetId kHeights{ "heights" };
+            constexpr WidgetId kHeightsBtn{ "heights_btn" };
+            constexpr WidgetId kCurrency{ "currency" };
+            constexpr WidgetId kCurrencyBtn{ "currency_btn" };
+            constexpr WidgetId kPreferredCurrency{ "preferred_currency" };
+            constexpr WidgetId kPreferredCurrencyBtn{ "preferred_currency_btn" };
+            constexpr WidgetId kPreferredCurrencyForNewGames{ "preferred_currency_for_new_games" };
+            constexpr WidgetId kPreferredCurrencyAlways{ "preferred_currency_always" };
         }
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_regional),
 
             Widgets::Label({ 10, 49 }, { 173, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::options_language),
-            Widgets::dropdownWidgets({ 183, 49 }, { 173, 12 }, WindowColour::secondary, StringIds::stringptr),
+            Widgets::dropdownWidgets(Widx::kLanguage, Widx::kLanguageBtn, { 183, 49 }, { 173, 12 }, WindowColour::secondary, StringIds::stringptr),
 
             Widgets::Label({ 10, 69 }, { 173, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::distance_and_speed),
-            Widgets::dropdownWidgets({ 183, 69 }, { 173, 12 }, WindowColour::secondary, StringIds::stringid),
+            Widgets::dropdownWidgets(Widx::kDistanceSpeed, Widx::kDistanceSpeedBtn, { 183, 69 }, { 173, 12 }, WindowColour::secondary, StringIds::stringid),
 
             Widgets::Label({ 10, 84 }, { 173, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::heights),
-            Widgets::dropdownWidgets({ 183, 84 }, { 173, 12 }, WindowColour::secondary, StringIds::stringid),
+            Widgets::dropdownWidgets(Widx::kHeights, Widx::kHeightsBtn, { 183, 84 }, { 173, 12 }, WindowColour::secondary, StringIds::stringid),
 
             Widgets::Label({ 10, 104 }, { 173, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::current_game_currency),
-            Widgets::dropdownWidgets({ 183, 104 }, { 173, 12 }, WindowColour::secondary, StringIds::stringid, StringIds::current_game_currency_tip),
+            Widgets::dropdownWidgets(Widx::kCurrency, Widx::kCurrencyBtn, { 183, 104 }, { 173, 12 }, WindowColour::secondary, StringIds::stringid, StringIds::current_game_currency_tip),
 
             Widgets::Label({ 10, 119 }, { 173, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::new_game_currency),
-            Widgets::dropdownWidgets({ 183, 119 }, { 173, 12 }, WindowColour::secondary, StringIds::preferred_currency_buffer, StringIds::new_game_currency_tip),
+            Widgets::dropdownWidgets(Widx::kPreferredCurrency, Widx::kPreferredCurrencyBtn, { 183, 119 }, { 173, 12 }, WindowColour::secondary, StringIds::preferred_currency_buffer, StringIds::new_game_currency_tip),
 
-            Widgets::Checkbox({ 10, 134 }, { 346, 12 }, WindowColour::secondary, StringIds::use_preferred_currency_new_game, StringIds::use_preferred_currency_new_game_tip),
-            Widgets::Checkbox({ 10, 148 }, { 346, 12 }, WindowColour::secondary, StringIds::use_preferred_currency_always, StringIds::use_preferred_currency_always_tip)
+            Widgets::Checkbox(Widx::kPreferredCurrencyForNewGames, { 10, 134 }, { 346, 12 }, WindowColour::secondary, StringIds::use_preferred_currency_new_game, StringIds::use_preferred_currency_new_game_tip),
+            Widgets::Checkbox(Widx::kPreferredCurrencyAlways, { 10, 148 }, { 346, 12 }, WindowColour::secondary, StringIds::use_preferred_currency_always, StringIds::use_preferred_currency_always_tip)
 
         );
 
@@ -1376,7 +1435,7 @@ namespace OpenLoco::Ui::Windows::Options
             Common::prepareDraw(self);
 
             {
-                auto args = FormatArguments(self.widgets[Widx::language].textArgs);
+                auto args = FormatArguments(self.widgets[widx::language].textArgs);
 
                 auto& language = Localisation::getDescriptorForLanguage(Config::get().language);
                 _chosenLanguage = language.nativeName;
@@ -1384,7 +1443,7 @@ namespace OpenLoco::Ui::Windows::Options
             }
 
             {
-                auto args = FormatArguments(self.widgets[Widx::distance_speed].textArgs);
+                auto args = FormatArguments(self.widgets[widx::distance_speed].textArgs);
 
                 StringId current_measurement_format = StringIds::imperial;
                 if (OpenLoco::Config::get().measurementFormat == Config::MeasurementFormat::metric)
@@ -1396,12 +1455,12 @@ namespace OpenLoco::Ui::Windows::Options
             }
 
             {
-                auto args = FormatArguments(self.widgets[Widx::currency].textArgs);
+                auto args = FormatArguments(self.widgets[widx::currency].textArgs);
                 args.push(ObjectManager::get<CurrencyObject>()->name);
             }
 
             {
-                auto args = FormatArguments(self.widgets[Widx::heights].textArgs);
+                auto args = FormatArguments(self.widgets[widx::heights].textArgs);
 
                 StringId current_height_units = StringIds::height_units;
                 if (!OpenLoco::Config::get().showHeightAsUnits)
@@ -1414,18 +1473,18 @@ namespace OpenLoco::Ui::Windows::Options
 
             if (Config::get().usePreferredCurrencyForNewGames)
             {
-                self.activatedWidgets |= (1ULL << Widx::preferred_currency_for_new_games);
+                self.activatedWidgets |= (1ULL << widx::preferred_currency_for_new_games);
             }
 
             if (Config::get().usePreferredCurrencyAlways)
             {
-                self.activatedWidgets |= (1ULL << Widx::preferred_currency_always);
+                self.activatedWidgets |= (1ULL << widx::preferred_currency_always);
             }
 
             if (Config::get().usePreferredCurrencyAlways || SceneManager::isTitleMode())
             {
-                self.disabledWidgets |= (1ULL << Widx::currency);
-                self.disabledWidgets |= (1ULL << Widx::currency_btn);
+                self.disabledWidgets |= (1ULL << widx::currency);
+                self.disabledWidgets |= (1ULL << widx::currency_btn);
             }
         }
 
@@ -1436,70 +1495,70 @@ namespace OpenLoco::Ui::Windows::Options
             self.draw(drawingCtx);
         }
 
-        static void onMouseUp(Window& self, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Window& self, WidgetIndex_t wi, const WidgetId id)
         {
             if (Common::onMouseUp(self, wi, id))
             {
                 return;
             }
 
-            switch (wi)
+            switch (id)
             {
-                case Widx::preferred_currency_for_new_games:
+                case Widx::kPreferredCurrencyForNewGames:
                     preferredCurrencyNewGameMouseUp(self);
                     return;
 
-                case Widx::preferred_currency_always:
+                case Widx::kPreferredCurrencyAlways:
                     preferredCurrencyAlwaysMouseUp(self);
                     return;
             }
         }
 
         // 0x004BFBB7
-        static void onMouseDown(Window& self, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
+        static void onMouseDown(Window& self, [[maybe_unused]] WidgetIndex_t wi, const WidgetId id)
         {
-            switch (wi)
+            switch (id)
             {
-                case Widx::language_btn:
+                case Widx::kLanguageBtn:
                     languageMouseDown(self);
                     break;
-                case Widx::heights_btn:
+                case Widx::kHeightsBtn:
                     heightsLabelsMouseDown(self);
                     break;
-                case Widx::distance_speed_btn:
+                case Widx::kDistanceSpeedBtn:
                     distanceSpeedMouseDown(self);
                     break;
-                case Widx::currency_btn:
+                case Widx::kCurrencyBtn:
                     currencyMouseDown(self);
                     break;
-                case Widx::preferred_currency_btn:
+                case Widx::kPreferredCurrencyBtn:
                     preferredCurrencyMouseDown(self);
                     break;
             }
         }
 
         // 0x004C0C4A
-        static void onDropdown(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+        static void onDropdown(Ui::Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Widx::language_btn:
+                case Widx::kLanguageBtn:
                     languageDropdown(self, itemIndex);
                     break;
 
-                case Widx::heights_btn:
+                case Widx::kHeightsBtn:
                     heightsLabelsDropdown(self, itemIndex);
                     break;
 
-                case Widx::distance_speed_btn:
+                case Widx::kDistanceSpeedBtn:
                     distanceSpeedDropdown(self, itemIndex);
                     break;
 
-                case Widx::currency_btn:
+                case Widx::kCurrencyBtn:
                     currencyDropdown(self, itemIndex);
                     break;
 
-                case Widx::preferred_currency_btn:
+                case Widx::kPreferredCurrencyBtn:
                     preferredCurrencyDropdown(self, itemIndex);
                     break;
             }
@@ -1510,7 +1569,7 @@ namespace OpenLoco::Ui::Windows::Options
             const auto lds = Localisation::getLanguageDescriptors();
             uint8_t numLanguages = static_cast<uint8_t>(lds.size());
 
-            auto& dropdown = self.widgets[Widx::language];
+            auto& dropdown = self.widgets[widx::language];
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), numLanguages - 1, 0x80);
 
             std::string& current_language = Config::get().language;
@@ -1551,7 +1610,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C0C73
         static void currencyMouseDown(const Window& self)
         {
-            auto& dropdown = self.widgets[Widx::currency];
+            auto& dropdown = self.widgets[widx::currency];
             auto numItems = ObjectManager::getNumAvailableObjectsByType(ObjectType::currency);
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), numItems, 0x80);
 
@@ -1605,7 +1664,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C0DCF
         static void preferredCurrencyMouseDown(const Window& self)
         {
-            auto& dropdown = self.widgets[Widx::preferred_currency];
+            auto& dropdown = self.widgets[widx::preferred_currency];
             auto numItems = ObjectManager::getNumAvailableObjectsByType(ObjectType::currency);
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), numItems, 0x80);
 
@@ -1679,7 +1738,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C0F49
         static void distanceSpeedMouseDown(const Window& self)
         {
-            auto& dropdown = self.widgets[Widx::distance_speed];
+            auto& dropdown = self.widgets[widx::distance_speed];
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 2, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::imperial);
@@ -1712,7 +1771,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C0FFA
         static void heightsLabelsMouseDown(const Window& self)
         {
-            auto& dropdown = self.widgets[Widx::heights];
+            auto& dropdown = self.widgets[widx::heights];
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 2, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::height_units);
@@ -1774,25 +1833,30 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Controls
     {
+        enum widx
+        {
+            edge_scrolling = Common::widx::tab_miscellaneous + 1,
+            zoom_to_cursor,
+            invert_right_mouse_view_pan,
+            customize_keys
+        };
+
         namespace Widx
         {
-            enum
-            {
-                edge_scrolling = Common::Widx::tab_miscellaneous + 1,
-                zoom_to_cursor,
-                invertRightMouseViewPan,
-                customize_keys
-            };
+            constexpr WidgetId kEdgeScrolling{ "edge_scrolling" };
+            constexpr WidgetId kZoomToCursor{ "zoom_to_cursor" };
+            constexpr WidgetId kInvertRightMouseViewPan{ "invert_right_mouse_view_pan" };
+            constexpr WidgetId kCustomizeKeys{ "customize_keys" };
         }
 
         static constexpr Ui::Size kWindowSize = { 366, 114 };
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_controls),
-            Widgets::Checkbox({ 10, 49 }, { 346, 12 }, WindowColour::secondary, StringIds::scroll_screen_edge, StringIds::scroll_screen_edge_tip),
-            Widgets::Checkbox({ 10, 64 }, { 346, 12 }, WindowColour::secondary, StringIds::zoom_to_cursor, StringIds::zoom_to_cursor_tip),
-            Widgets::Checkbox({ 10, 79 }, { 346, 12 }, WindowColour::secondary, StringIds::invert_right_mouse_dragging, StringIds::tooltip_invert_right_mouse_dragging),
-            Widgets::Button({ 26, 94 }, { 160, 12 }, WindowColour::secondary, StringIds::customise_keys, StringIds::customise_keys_tip)
+            Widgets::Checkbox(Widx::kEdgeScrolling, { 10, 49 }, { 346, 12 }, WindowColour::secondary, StringIds::scroll_screen_edge, StringIds::scroll_screen_edge_tip),
+            Widgets::Checkbox(Widx::kZoomToCursor, { 10, 64 }, { 346, 12 }, WindowColour::secondary, StringIds::zoom_to_cursor, StringIds::zoom_to_cursor_tip),
+            Widgets::Checkbox(Widx::kInvertRightMouseViewPan, { 10, 79 }, { 346, 12 }, WindowColour::secondary, StringIds::invert_right_mouse_dragging, StringIds::tooltip_invert_right_mouse_dragging),
+            Widgets::Button(Widx::kCustomizeKeys, { 26, 94 }, { 160, 12 }, WindowColour::secondary, StringIds::customise_keys, StringIds::customise_keys_tip)
 
         );
 
@@ -1807,18 +1871,18 @@ namespace OpenLoco::Ui::Windows::Options
 
             Common::prepareDraw(self);
 
-            self.activatedWidgets &= ~(1ULL << Widx::edge_scrolling | 1ULL << Widx::zoom_to_cursor | 1ULL << Widx::invertRightMouseViewPan);
+            self.activatedWidgets &= ~(1ULL << widx::edge_scrolling | 1ULL << widx::zoom_to_cursor | 1ULL << widx::invert_right_mouse_view_pan);
             if (Config::get().edgeScrolling)
             {
-                self.activatedWidgets |= (1ULL << Widx::edge_scrolling);
+                self.activatedWidgets |= (1ULL << widx::edge_scrolling);
             }
             if (Config::get().zoomToCursor)
             {
-                self.activatedWidgets |= (1ULL << Widx::zoom_to_cursor);
+                self.activatedWidgets |= (1ULL << widx::zoom_to_cursor);
             }
             if (Config::get().invertRightMouseViewPan)
             {
-                self.activatedWidgets |= (1ULL << Widx::invertRightMouseViewPan);
+                self.activatedWidgets |= (1ULL << widx::invert_right_mouse_view_pan);
             }
         }
 
@@ -1836,21 +1900,21 @@ namespace OpenLoco::Ui::Windows::Options
                 return;
             }
 
-            switch (wi)
+            switch (id)
             {
-                case Widx::customize_keys:
+                case Widx::kCustomizeKeys:
                     openKeyboardShortcuts();
                     break;
 
-                case Widx::edge_scrolling:
+                case Widx::kEdgeScrolling:
                     edgeScrollingMouseUp(self);
                     break;
 
-                case Widx::zoom_to_cursor:
+                case Widx::kZoomToCursor:
                     zoomToCursorMouseUp(self);
                     break;
 
-                case Widx::invertRightMouseViewPan:
+                case Widx::kInvertRightMouseViewPan:
                     invertRightMouseViewPan(self);
                     break;
             }
@@ -1916,27 +1980,38 @@ namespace OpenLoco::Ui::Windows::Options
     {
         static constexpr Ui::Size kWindowSize = { 420, 187 };
 
+        enum widx
+        {
+            groupPreferredOwner = Common::widx::tab_miscellaneous + 1,
+
+            usePreferredOwnerFace,
+            changeOwnerFaceBtn,
+            labelOwnerFace,
+
+            usePreferredOwnerName,
+            changeOwnerNameBtn,
+            labelPreferredOwnerName,
+
+            ownerFacePreview,
+
+            groupPreferredCompany,
+            usePreferredCompanyName,
+            changeCompanyNameBtn,
+            labelPreferredCompanyName,
+        };
+
         namespace Widx
         {
-            enum
-            {
-                groupPreferredOwner = Common::Widx::tab_miscellaneous + 1,
-
-                usePreferredOwnerFace,
-                changeOwnerFaceBtn,
-                labelOwnerFace,
-
-                usePreferredOwnerName,
-                changeOwnerNameBtn,
-                labelPreferredOwnerName,
-
-                ownerFacePreview,
-
-                groupPreferredCompany,
-                usePreferredCompanyName,
-                changeCompanyNameBtn,
-                labelPreferredCompanyName,
-            };
+            constexpr WidgetId kUsePreferredOwnerFace{ "usePreferredOwnerFace" };
+            constexpr WidgetId kChangeOwnerFaceBtn{ "changeOwnerFaceBtn" };
+            constexpr WidgetId kLabelOwnerFace{ "labelOwnerFace" };
+            constexpr WidgetId kUsePreferredOwnerName{ "usePreferredOwnerName" };
+            constexpr WidgetId kChangeOwnerNameBtn{ "changeOwnerNameBtn" };
+            constexpr WidgetId kLabelPreferredOwnerName{ "labelPreferredOwnerName" };
+            constexpr WidgetId kOwnerFacePreview{ "ownerFacePreview" };
+            constexpr WidgetId kUsePreferredCompanyName{ "usePreferredCompanyName" };
+            constexpr WidgetId kChangeCompanyNameBtn{ "changeCompanyNameBtn" };
+            constexpr WidgetId kLabelPreferredCompanyName{ "labelPreferredCompanyName" };
         }
 
         static constexpr auto _widgets = makeWidgets(
@@ -1946,25 +2021,25 @@ namespace OpenLoco::Ui::Windows::Options
             Widgets::GroupBox({ 4, 50 }, { 412, 80 }, WindowColour::secondary, StringIds::preferred_owner_name),
 
             // Preferred owner face
-            Widgets::Checkbox({ 10, 64 }, { 400, 12 }, WindowColour::secondary, StringIds::usePreferredCompanyFace, StringIds::usePreferredCompanyFaceTip),
-            Widgets::Button({ 265, 79 }, { 75, 12 }, WindowColour::secondary, StringIds::change),
-            Widgets::Label({ 24, 79 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::currentPreferredFace),
+            Widgets::Checkbox(Widx::kUsePreferredOwnerFace, { 10, 64 }, { 400, 12 }, WindowColour::secondary, StringIds::usePreferredCompanyFace, StringIds::usePreferredCompanyFaceTip),
+            Widgets::Button(Widx::kChangeOwnerFaceBtn, { 265, 79 }, { 75, 12 }, WindowColour::secondary, StringIds::change),
+            Widgets::Label(Widx::kLabelOwnerFace, { 24, 79 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::currentPreferredFace),
 
             // Preferred owner name
-            Widgets::Checkbox({ 10, 97 }, { 400, 12 }, WindowColour::secondary, StringIds::use_preferred_owner_name, StringIds::use_preferred_owner_name_tip),
-            Widgets::Button({ 265, 112 }, { 75, 12 }, WindowColour::secondary, StringIds::change),
-            Widgets::Label({ 24, 112 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::wcolour2_preferred_owner_name),
+            Widgets::Checkbox(Widx::kUsePreferredOwnerName, { 10, 97 }, { 400, 12 }, WindowColour::secondary, StringIds::use_preferred_owner_name, StringIds::use_preferred_owner_name_tip),
+            Widgets::Button(Widx::kChangeOwnerNameBtn, { 265, 112 }, { 75, 12 }, WindowColour::secondary, StringIds::change),
+            Widgets::Label(Widx::kLabelPreferredOwnerName, { 24, 112 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::wcolour2_preferred_owner_name),
 
             // Preferred owner preview
-            Widgets::ImageButton({ 345, 59 }, { 66, 66 }, WindowColour::secondary, Widget::kContentNull),
+            Widgets::ImageButton(Widx::kOwnerFacePreview, { 345, 59 }, { 66, 66 }, WindowColour::secondary, Widget::kContentNull),
 
             // Preferred company group
             Widgets::GroupBox({ 4, 135 }, { 412, 47 }, WindowColour::secondary, StringIds::preferred_company_name),
 
             // Preferred company name
-            Widgets::Checkbox({ 10, 149 }, { 400, 12 }, WindowColour::secondary, StringIds::use_preferred_company_name, StringIds::use_preferred_company_name_tip),
-            Widgets::Button({ 265, 164 }, { 75, 12 }, WindowColour::secondary, StringIds::change),
-            Widgets::Label({ 24, 164 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::wcolour2_preferred_company_name)
+            Widgets::Checkbox(Widx::kUsePreferredCompanyName, { 10, 149 }, { 400, 12 }, WindowColour::secondary, StringIds::use_preferred_company_name, StringIds::use_preferred_company_name_tip),
+            Widgets::Button(Widx::kChangeCompanyNameBtn, { 265, 164 }, { 75, 12 }, WindowColour::secondary, StringIds::change),
+            Widgets::Label(Widx::kLabelPreferredCompanyName, { 24, 164 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::wcolour2_preferred_company_name)
 
             // TODO: default colours?
 
@@ -2015,34 +2090,34 @@ namespace OpenLoco::Ui::Windows::Options
 
             if (Config::get().usePreferredOwnerName)
             {
-                self.activatedWidgets |= (1ULL << Widx::usePreferredOwnerName);
+                self.activatedWidgets |= (1ULL << widx::usePreferredOwnerName);
             }
             else
             {
-                self.disabledWidgets |= (1ULL << Widx::changeOwnerNameBtn);
+                self.disabledWidgets |= (1ULL << widx::changeOwnerNameBtn);
             }
 
             if (Config::get().usePreferredOwnerFace)
             {
-                self.activatedWidgets |= (1ULL << Widx::usePreferredOwnerFace);
+                self.activatedWidgets |= (1ULL << widx::usePreferredOwnerFace);
             }
             else
             {
-                self.disabledWidgets |= ((1ULL << Widx::changeOwnerFaceBtn) | (1ULL << Widx::ownerFacePreview));
+                self.disabledWidgets |= ((1ULL << widx::changeOwnerFaceBtn) | (1ULL << widx::ownerFacePreview));
 
-                self.widgets[Widx::labelOwnerFace].text = StringIds::empty;
-                self.widgets[Widx::ownerFacePreview].content = Widget::kContentNull;
+                self.widgets[widx::labelOwnerFace].text = StringIds::empty;
+                self.widgets[widx::ownerFacePreview].content = Widget::kContentNull;
 
                 self.object = nullptr;
             }
 
             if (Config::get().usePreferredCompanyName)
             {
-                self.activatedWidgets |= (1ULL << Widx::usePreferredCompanyName);
+                self.activatedWidgets |= (1ULL << widx::usePreferredCompanyName);
             }
             else
             {
-                self.disabledWidgets |= (1ULL << Widx::changeCompanyNameBtn);
+                self.disabledWidgets |= (1ULL << widx::changeCompanyNameBtn);
             }
 
             // Set preferred owner name.
@@ -2053,7 +2128,7 @@ namespace OpenLoco::Ui::Windows::Options
                 strcpy(buffer, playerName);
                 buffer[strlen(playerName)] = '\0';
 
-                FormatArguments args{ self.widgets[Widx::labelPreferredOwnerName].textArgs };
+                FormatArguments args{ self.widgets[widx::labelPreferredOwnerName].textArgs };
                 args.push(StringIds::buffer_2039);
             }
 
@@ -2062,12 +2137,12 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 const CompetitorObject* competitor = reinterpret_cast<CompetitorObject*>(self.object);
 
-                self.widgets[Widx::labelOwnerFace].text = StringIds::currentPreferredFace;
+                self.widgets[widx::labelOwnerFace].text = StringIds::currentPreferredFace;
 
-                FormatArguments args{ self.widgets[Widx::labelOwnerFace].textArgs };
+                FormatArguments args{ self.widgets[widx::labelOwnerFace].textArgs };
                 args.push(competitor->firstName);
 
-                self.widgets[Widx::ownerFacePreview].image = ImageId(competitor->images[0]).withIndexOffset(1).withPrimary(Colour::black).toUInt32();
+                self.widgets[widx::ownerFacePreview].image = ImageId(competitor->images[0]).withIndexOffset(1).withPrimary(Colour::black).toUInt32();
             }
 
             loadPreferredFace(self);
@@ -2080,7 +2155,7 @@ namespace OpenLoco::Ui::Windows::Options
                 strcpy(buffer, companyName);
                 buffer[strlen(companyName)] = '\0';
 
-                FormatArguments args{ self.widgets[Widx::labelPreferredCompanyName].textArgs };
+                FormatArguments args{ self.widgets[widx::labelPreferredCompanyName].textArgs };
                 args.push(StringIds::buffer_2040);
             }
         }
@@ -2098,7 +2173,7 @@ namespace OpenLoco::Ui::Windows::Options
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
-            TextInput::openTextInput(&self, StringIds::preferred_owner_name, StringIds::enter_preferred_owner_name, StringIds::buffer_2039, Widx::usePreferredOwnerName, {});
+            TextInput::openTextInput(&self, StringIds::preferred_owner_name, StringIds::enter_preferred_owner_name, StringIds::buffer_2039, widx::usePreferredOwnerName, {});
         }
 
         // 0x004C135F
@@ -2142,7 +2217,7 @@ namespace OpenLoco::Ui::Windows::Options
             strcpy(buffer, companyName);
             buffer[strlen(companyName)] = '\0';
 
-            TextInput::openTextInput(&self, StringIds::preferred_company_name, StringIds::enter_preferred_company_name, StringIds::buffer_2040, Widx::usePreferredCompanyName, {});
+            TextInput::openTextInput(&self, StringIds::preferred_company_name, StringIds::enter_preferred_company_name, StringIds::buffer_2040, widx::usePreferredCompanyName, {});
         }
 
         static void usePreferredCompanyNameMouseUp(Window& self)
@@ -2159,37 +2234,37 @@ namespace OpenLoco::Ui::Windows::Options
             }
         }
 
-        static void onMouseUp(Window& self, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Window& self, WidgetIndex_t wi, const WidgetId id)
         {
             if (Common::onMouseUp(self, wi, id))
             {
                 return;
             }
 
-            switch (wi)
+            switch (id)
             {
-                case Widx::usePreferredOwnerName:
+                case Widx::kUsePreferredOwnerName:
                     usePreferredOwnerNameMouseUp(self);
                     break;
 
-                case Widx::changeOwnerNameBtn:
+                case Widx::kChangeOwnerNameBtn:
                     changePreferredName(self);
                     break;
 
-                case Widx::usePreferredOwnerFace:
+                case Widx::kUsePreferredOwnerFace:
                     usePreferredOwnerFaceMouseUp(self);
                     break;
 
-                case Widx::changeOwnerFaceBtn:
-                case Widx::ownerFacePreview:
+                case Widx::kChangeOwnerFaceBtn:
+                case Widx::kOwnerFacePreview:
                     changePreferredFace(self);
                     break;
 
-                case Widx::usePreferredCompanyName:
+                case Widx::kUsePreferredCompanyName:
                     usePreferredCompanyNameMouseUp(self);
                     break;
 
-                case Widx::changeCompanyNameBtn:
+                case Widx::kChangeCompanyNameBtn:
                     changePreferredCompany(self);
                     break;
             }
@@ -2223,15 +2298,15 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C1304
-        static void textInput(Window& self, WidgetIndex_t i, [[maybe_unused]] const WidgetId id, const char* str)
+        static void textInput(Window& self, [[maybe_unused]] WidgetIndex_t i, const WidgetId id, const char* str)
         {
-            switch (i)
+            switch (id)
             {
-                case Widx::usePreferredOwnerName:
+                case Widx::kUsePreferredOwnerName:
                     setPreferredName(self, str);
                     break;
 
-                case Widx::usePreferredCompanyName:
+                case Widx::kUsePreferredCompanyName:
                     setPreferredCompanyName(self, str);
                     break;
             }
@@ -2264,31 +2339,45 @@ namespace OpenLoco::Ui::Windows::Options
     {
         static constexpr Ui::Size kWindowSize = { 420, 266 };
 
+        enum widx
+        {
+            groupCheats = Common::widx::tab_miscellaneous + 1,
+            enableCheatsToolbarButton,
+            disableAICompanies,
+            disableTownExpansion,
+
+            groupVehicleBehaviour,
+            disable_vehicle_breakdowns,
+            disable_vehicle_load_penalty,
+            disableStationSizeLimit,
+            trainsReverseAtSignals,
+
+            groupSaveOptions,
+            autosave_frequency_label,
+            autosave_frequency,
+            autosave_frequency_btn,
+            autosave_amount_label,
+            autosave_amount,
+            autosave_amount_down_btn,
+            autosave_amount_up_btn,
+            export_plugin_objects,
+        };
+
         namespace Widx
         {
-            enum
-            {
-                groupCheats = Common::Widx::tab_miscellaneous + 1,
-                enableCheatsToolbarButton,
-                disableAICompanies,
-                disableTownExpansion,
-
-                groupVehicleBehaviour,
-                disable_vehicle_breakdowns,
-                disable_vehicle_load_penalty,
-                disableStationSizeLimit,
-                trainsReverseAtSignals,
-
-                groupSaveOptions,
-                autosave_frequency_label,
-                autosave_frequency,
-                autosave_frequency_btn,
-                autosave_amount_label,
-                autosave_amount,
-                autosave_amount_down_btn,
-                autosave_amount_up_btn,
-                export_plugin_objects,
-            };
+            constexpr WidgetId kEnableCheatsToolbarButton{ "enableCheatsToolbarButton" };
+            constexpr WidgetId kDisableAICompanies{ "disableAICompanies" };
+            constexpr WidgetId kDisableTownExpansion{ "disableTownExpansion" };
+            constexpr WidgetId kDisableVehicleBreakdowns{ "disable_vehicle_breakdowns" };
+            constexpr WidgetId kDisableVehicleLoadPenalty{ "disable_vehicle_load_penalty" };
+            constexpr WidgetId kDisableStationSizeLimit{ "disableStationSizeLimit" };
+            constexpr WidgetId kTrainsReverseAtSignals{ "trainsReverseAtSignals" };
+            constexpr WidgetId kAutosaveFrequency{ "autosave_frequency" };
+            constexpr WidgetId kAutosaveFrequencyBtn{ "autosave_frequency_btn" };
+            constexpr WidgetId kAutosaveAmount{ "autosave_amount" };
+            constexpr WidgetId kAutosaveAmountDownBtn{ "autosave_amount_down_btn" };
+            constexpr WidgetId kAutosaveAmountUpBtn{ "autosave_amount_up_btn" };
+            constexpr WidgetId kExportPluginObjects{ "export_plugin_objects" };
         }
 
         static constexpr auto _widgets = makeWidgets(
@@ -2296,27 +2385,27 @@ namespace OpenLoco::Ui::Windows::Options
 
             // Gameplay tweaks group
             Widgets::GroupBox({ 4, 49 }, { 412, 62 }, WindowColour::secondary, StringIds::gameplay_tweaks),
-            Widgets::Checkbox({ 10, 64 }, { 400, 12 }, WindowColour::secondary, StringIds::option_cheat_menu_enable, StringIds::tooltip_option_cheat_menu_enable),
-            Widgets::Checkbox({ 10, 79 }, { 400, 12 }, WindowColour::secondary, StringIds::disableAICompanies, StringIds::disableAICompanies_tip),
-            Widgets::Checkbox({ 10, 94 }, { 400, 12 }, WindowColour::secondary, StringIds::disableTownExpansion, StringIds::disableTownExpansion_tip),
+            Widgets::Checkbox(Widx::kEnableCheatsToolbarButton, { 10, 64 }, { 400, 12 }, WindowColour::secondary, StringIds::option_cheat_menu_enable, StringIds::tooltip_option_cheat_menu_enable),
+            Widgets::Checkbox(Widx::kDisableAICompanies, { 10, 79 }, { 400, 12 }, WindowColour::secondary, StringIds::disableAICompanies, StringIds::disableAICompanies_tip),
+            Widgets::Checkbox(Widx::kDisableTownExpansion, { 10, 94 }, { 400, 12 }, WindowColour::secondary, StringIds::disableTownExpansion, StringIds::disableTownExpansion_tip),
 
             // Vehicle behaviour
             Widgets::GroupBox({ 4, 115 }, { 412, 77 }, WindowColour::secondary, StringIds::vehicleTrackBehaviour),
-            Widgets::Checkbox({ 10, 130 }, { 400, 12 }, WindowColour::secondary, StringIds::disable_vehicle_breakdowns),
-            Widgets::Checkbox({ 10, 145 }, { 400, 12 }, WindowColour::secondary, StringIds::disableVehicleLoadingPenalty, StringIds::disableVehicleLoadingPenaltyTip),
-            Widgets::Checkbox({ 10, 160 }, { 400, 12 }, WindowColour::secondary, StringIds::disableStationSizeLimitLabel, StringIds::disableStationSizeLimitTooltip),
-            Widgets::Checkbox({ 10, 175 }, { 400, 12 }, WindowColour::secondary, StringIds::trainsReverseAtSignals),
+            Widgets::Checkbox(Widx::kDisableVehicleBreakdowns, { 10, 130 }, { 400, 12 }, WindowColour::secondary, StringIds::disable_vehicle_breakdowns),
+            Widgets::Checkbox(Widx::kDisableVehicleLoadPenalty, { 10, 145 }, { 400, 12 }, WindowColour::secondary, StringIds::disableVehicleLoadingPenalty, StringIds::disableVehicleLoadingPenaltyTip),
+            Widgets::Checkbox(Widx::kDisableStationSizeLimit, { 10, 160 }, { 400, 12 }, WindowColour::secondary, StringIds::disableStationSizeLimitLabel, StringIds::disableStationSizeLimitTooltip),
+            Widgets::Checkbox(Widx::kTrainsReverseAtSignals, { 10, 175 }, { 400, 12 }, WindowColour::secondary, StringIds::trainsReverseAtSignals),
 
             // Save options group
             Widgets::GroupBox({ 4, 196 }, { 412, 65 }, WindowColour::secondary, StringIds::autosave_preferences),
 
             Widgets::Label({ 10, 211 }, { 200, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::autosave_frequency),
-            Widgets::dropdownWidgets({ 250, 211 }, { 156, 12 }, WindowColour::secondary, StringIds::empty),
+            Widgets::dropdownWidgets(Widx::kAutosaveFrequency, Widx::kAutosaveFrequencyBtn, { 250, 211 }, { 156, 12 }, WindowColour::secondary, StringIds::empty),
 
             Widgets::Label({ 10, 226 }, { 200, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::autosave_amount),
-            Widgets::stepperWidgets({ 250, 226 }, { 156, 12 }, WindowColour::secondary, StringIds::empty),
+            Widgets::stepperWidgets(Widx::kAutosaveAmount, Widx::kAutosaveAmountDownBtn, Widx::kAutosaveAmountUpBtn, { 250, 226 }, { 156, 12 }, WindowColour::secondary, StringIds::empty),
 
-            Widgets::Checkbox({ 10, 241 }, { 400, 12 }, WindowColour::secondary, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip)
+            Widgets::Checkbox(Widx::kExportPluginObjects, { 10, 241 }, { 400, 12 }, WindowColour::secondary, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip)
 
         );
 
@@ -2336,45 +2425,45 @@ namespace OpenLoco::Ui::Windows::Options
 
             if (Config::get().cheatsMenuEnabled)
             {
-                self.activatedWidgets |= (1ULL << Widx::enableCheatsToolbarButton);
+                self.activatedWidgets |= (1ULL << widx::enableCheatsToolbarButton);
             }
 
             if (Config::get().breakdownsDisabled)
             {
-                self.activatedWidgets |= (1ULL << Widx::disable_vehicle_breakdowns);
+                self.activatedWidgets |= (1ULL << widx::disable_vehicle_breakdowns);
             }
 
             if (Config::get().trainsReverseAtSignals)
             {
-                self.activatedWidgets |= (1ULL << Widx::trainsReverseAtSignals);
+                self.activatedWidgets |= (1ULL << widx::trainsReverseAtSignals);
             }
 
             if (Config::get().disableVehicleLoadPenaltyCheat)
             {
-                self.activatedWidgets |= (1ULL << Widx::disable_vehicle_load_penalty);
+                self.activatedWidgets |= (1ULL << widx::disable_vehicle_load_penalty);
             }
 
             if (Config::get().disableStationSizeLimit)
             {
-                self.activatedWidgets |= (1ULL << Widx::disableStationSizeLimit);
+                self.activatedWidgets |= (1ULL << widx::disableStationSizeLimit);
             }
 
             if (Config::get().companyAIDisabled)
             {
-                self.activatedWidgets |= (1ULL << Widx::disableAICompanies);
+                self.activatedWidgets |= (1ULL << widx::disableAICompanies);
             }
 
             if (Config::get().townGrowthDisabled)
             {
-                self.activatedWidgets |= (1ULL << Widx::disableTownExpansion);
+                self.activatedWidgets |= (1ULL << widx::disableTownExpansion);
             }
 
             if (Config::get().exportObjectsWithSaves)
             {
-                self.activatedWidgets |= (1ULL << Widx::export_plugin_objects);
+                self.activatedWidgets |= (1ULL << widx::export_plugin_objects);
             }
 
-            self.widgets[Widx::export_plugin_objects].hidden = !ObjectManager::getCustomObjectsInIndexStatus();
+            self.widgets[widx::export_plugin_objects].hidden = !ObjectManager::getCustomObjectsInIndexStatus();
         }
 
         static void drawDropdownContent(const Window& self, Gfx::DrawingContext& drawingCtx, WidgetIndex_t widgetIndex, StringId stringId, int32_t value)
@@ -2410,11 +2499,11 @@ namespace OpenLoco::Ui::Windows::Options
                     stringId = StringIds::autosave_every_x_months;
                     break;
             }
-            drawDropdownContent(self, drawingCtx, Widx::autosave_frequency, stringId, freq);
+            drawDropdownContent(self, drawingCtx, widx::autosave_frequency, stringId, freq);
 
             // Value for autosave amount
             auto scale = Config::get().autosaveAmount;
-            drawDropdownContent(self, drawingCtx, Widx::autosave_amount, StringIds::int_32, scale);
+            drawDropdownContent(self, drawingCtx, widx::autosave_amount, StringIds::int_32, scale);
         }
 
         static void changeAutosaveAmount(Window& self, int32_t delta)
@@ -2509,65 +2598,65 @@ namespace OpenLoco::Ui::Windows::Options
                 return;
             }
 
-            switch (wi)
+            switch (id)
             {
-                case Widx::enableCheatsToolbarButton:
+                case Widx::kEnableCheatsToolbarButton:
                     enableCheatsToolbarButtonMouseUp(self);
                     break;
 
-                case Widx::disable_vehicle_breakdowns:
+                case Widx::kDisableVehicleBreakdowns:
                     disableVehicleBreakdownsMouseUp(self);
                     break;
 
-                case Widx::trainsReverseAtSignals:
+                case Widx::kTrainsReverseAtSignals:
                     trainsReverseAtSignalsMouseUp(self);
                     break;
 
-                case Widx::disable_vehicle_load_penalty:
+                case Widx::kDisableVehicleLoadPenalty:
                     Config::get().disableVehicleLoadPenaltyCheat = !Config::get().disableVehicleLoadPenaltyCheat;
-                    WindowManager::invalidateWidget(self.type, self.number, Widx::disable_vehicle_load_penalty);
+                    WindowManager::invalidateWidget(self.type, self.number, widx::disable_vehicle_load_penalty);
                     break;
 
-                case Widx::disableStationSizeLimit:
+                case Widx::kDisableStationSizeLimit:
                     Config::get().disableStationSizeLimit ^= true;
-                    WindowManager::invalidateWidget(self.type, self.number, Widx::disableStationSizeLimit);
+                    WindowManager::invalidateWidget(self.type, self.number, widx::disableStationSizeLimit);
                     break;
 
-                case Widx::disableAICompanies:
+                case Widx::kDisableAICompanies:
                     disableAICompaniesMouseUp(self);
                     break;
 
-                case Widx::disableTownExpansion:
+                case Widx::kDisableTownExpansion:
                     disableTownExpansionMouseUp(self);
                     break;
 
-                case Widx::export_plugin_objects:
+                case Widx::kExportPluginObjects:
                     exportPluginObjectsMouseUp(self);
                     break;
             }
         }
 
-        static void onMouseDown(Window& self, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
+        static void onMouseDown(Window& self, [[maybe_unused]] WidgetIndex_t wi, const WidgetId id)
         {
-            switch (wi)
+            switch (id)
             {
-                case Widx::autosave_frequency_btn:
-                    showAutosaveFrequencyDropdown(self, Widx::autosave_frequency);
+                case Widx::kAutosaveFrequencyBtn:
+                    showAutosaveFrequencyDropdown(self, widx::autosave_frequency);
                     break;
-                case Widx::autosave_amount_down_btn:
+                case Widx::kAutosaveAmountDownBtn:
                     changeAutosaveAmount(self, -1);
                     break;
-                case Widx::autosave_amount_up_btn:
+                case Widx::kAutosaveAmountUpBtn:
                     changeAutosaveAmount(self, 1);
                     break;
             }
         }
 
-        static void onDropdown(Window& self, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id, int16_t item_index)
+        static void onDropdown(Window& self, [[maybe_unused]] WidgetIndex_t wi, const WidgetId id, int16_t item_index)
         {
-            switch (wi)
+            switch (id)
             {
-                case Widx::autosave_frequency_btn:
+                case Widx::kAutosaveFrequencyBtn:
                     handleAutosaveFrequencyDropdown(self, item_index);
                     break;
             }
@@ -2655,14 +2744,14 @@ namespace OpenLoco::Ui::Windows::Options
 
     static void disableTabsByCurrentScene(Window& self)
     {
-        self.disabledWidgets &= ~(1ULL << Common::Widx::tab_regional);
+        self.disabledWidgets &= ~(1ULL << Common::widx::tab_regional);
 
         if (SceneManager::isEditorMode() && Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
         {
-            self.disabledWidgets |= 1ULL << Common::Widx::tab_regional;
+            self.disabledWidgets |= 1ULL << Common::widx::tab_regional;
         }
 
-        Widget::leftAlignTabs(self, Common::Widx::tab_display, Common::Widx::tab_miscellaneous);
+        Widget::leftAlignTabs(self, Common::widx::tab_display, Common::widx::tab_miscellaneous);
     }
 
     // 0x004C1519 & 0x00474911
@@ -2725,7 +2814,7 @@ namespace OpenLoco::Ui::Windows::Options
     {
         auto* window = open();
 
-        window->callOnMouseUp(Common::Widx::tab_audio, window->widgets[Common::Widx::tab_audio].id);
+        window->callOnMouseUp(Common::widx::tab_audio, window->widgets[Common::widx::tab_audio].id);
 
         return window;
     }
@@ -2755,7 +2844,7 @@ namespace OpenLoco::Ui::Windows::Options
         ToolManager::toolCancel(self.type, self.number);
 
         TextInput::sub_4CE6C9(self.type, self.number);
-        self.currentTab = wi - Common::Widx::tab_display;
+        self.currentTab = wi - Common::widx::tab_display;
         self.frameNo = 0;
         self.flags &= ~(WindowFlags::maximised);
         self.disabledWidgets = 0;
@@ -2777,7 +2866,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         else if ((Common::tab)self.currentTab == Common::tab::audio)
         {
-            self.holdableWidgets = (1ULL << AudioTab::Widx::volume_master) | (1ULL << AudioTab::Widx::volume_music) | (1ULL << AudioTab::Widx::volume_effects) | (1ULL << AudioTab::Widx::volume_vehicles) | (1ULL << AudioTab::Widx::volume_ui) | (1ULL << AudioTab::Widx::volume_ambient);
+            self.holdableWidgets = (1ULL << AudioTab::widx::volume_master) | (1ULL << AudioTab::widx::volume_music) | (1ULL << AudioTab::widx::volume_effects) | (1ULL << AudioTab::widx::volume_vehicles) | (1ULL << AudioTab::widx::volume_ui) | (1ULL << AudioTab::widx::volume_ambient);
         }
 
         self.callOnResize();

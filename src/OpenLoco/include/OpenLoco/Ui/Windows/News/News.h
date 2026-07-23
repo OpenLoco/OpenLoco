@@ -36,16 +36,26 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             viewport2Button,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kFrame{ "frame" };
+            constexpr WidgetId kCloseButton{ "close_button" };
+            constexpr WidgetId kViewport1{ "viewport1" };
+            constexpr WidgetId kViewport2{ "viewport2" };
+            constexpr WidgetId kViewport1Button{ "viewport1Button" };
+            constexpr WidgetId kViewport2Button{ "viewport2Button" };
+        }
+
         template<typename TFrameWidget>
         constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight)
         {
             return makeWidgets(
-                TFrameWidget({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
-                Widgets::ImageButton({ frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-                Widgets::Viewport({ 2, frameHeight - 73 }, { 168, 64 }, WindowColour::primary, Widget::kContentUnk),
-                Widgets::Viewport({ 180, frameHeight - 73 }, { 168, 64 }, WindowColour::primary, Widget::kContentUnk),
-                Widgets::ImageButton({ 2, frameHeight - 75 }, { 180, 75 }, WindowColour::primary),
-                Widgets::ImageButton({ 2, frameHeight - 75 }, { 180, 75 }, WindowColour::primary));
+                TFrameWidget(Widx::kFrame, { 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
+                Widgets::ImageButton(Widx::kCloseButton, { frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::Viewport(Widx::kViewport1, { 2, frameHeight - 73 }, { 168, 64 }, WindowColour::primary, Widget::kContentUnk),
+                Widgets::Viewport(Widx::kViewport2, { 180, frameHeight - 73 }, { 168, 64 }, WindowColour::primary, Widget::kContentUnk),
+                Widgets::ImageButton(Widx::kViewport1Button, { 2, frameHeight - 75 }, { 180, 75 }, WindowColour::primary),
+                Widgets::ImageButton(Widx::kViewport2Button, { 2, frameHeight - 75 }, { 180, 75 }, WindowColour::primary));
         }
 
         const WindowEventList& getEvents();
@@ -74,6 +84,11 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         {
             frame,
         };
+
+        namespace Widx
+        {
+            constexpr WidgetId kFrame{ "frame" };
+        }
 
         std::span<const Widget> getWidgets();
 

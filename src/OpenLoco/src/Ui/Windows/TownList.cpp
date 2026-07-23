@@ -66,17 +66,29 @@ namespace OpenLoco::Ui::Windows::TownList
             tab_build_misc_buildings,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kFrame{ "frame" };
+            constexpr WidgetId kCaption{ "caption" };
+            constexpr WidgetId kCloseButton{ "close_button" };
+            constexpr WidgetId kPanel{ "panel" };
+            constexpr WidgetId kTabTownList{ "tab_town_list" };
+            constexpr WidgetId kTabBuildTown{ "tab_build_town" };
+            constexpr WidgetId kTabBuildBuildings{ "tab_build_buildings" };
+            constexpr WidgetId kTabBuildMiscBuildings{ "tab_build_misc_buildings" };
+        }
+
         static constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
         {
             return makeWidgets(
-                Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
-                Widgets::Caption({ 1, 1 }, { frameWidth - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, windowCaptionId),
-                Widgets::ImageButton({ frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-                Widgets::Panel({ 0, 41 }, { frameWidth, 155 }, WindowColour::secondary),
-                Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town_list),
-                Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_town),
-                Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_buildings),
-                Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_misc_buildings));
+                Widgets::Frame(Widx::kFrame, { 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
+                Widgets::Caption(Widx::kCaption, { 1, 1 }, { frameWidth - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, windowCaptionId),
+                Widgets::ImageButton(Widx::kCloseButton, { frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::Panel(Widx::kPanel, { 0, 41 }, { frameWidth, 155 }, WindowColour::secondary),
+                Widgets::Tab(Widx::kTabTownList, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town_list),
+                Widgets::Tab(Widx::kTabBuildTown, { 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_town),
+                Widgets::Tab(Widx::kTabBuildBuildings, { 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_buildings),
+                Widgets::Tab(Widx::kTabBuildMiscBuildings, { 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_misc_buildings));
         }
 
         static void prepareDraw(Window& self);
@@ -103,14 +115,24 @@ namespace OpenLoco::Ui::Windows::TownList
             status_bar,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kSortTownName{ "sort_town_name" };
+            constexpr WidgetId kSortTownType{ "sort_town_type" };
+            constexpr WidgetId kSortTownPopulation{ "sort_town_population" };
+            constexpr WidgetId kSortTownStations{ "sort_town_stations" };
+            constexpr WidgetId kScrollview{ "scrollview" };
+            constexpr WidgetId kStatusBar{ "status_bar" };
+        }
+
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(600, 197, StringIds::title_towns),
-            Widgets::TableHeader({ 4, 43 }, { 200, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_name),
-            Widgets::TableHeader({ 204, 43 }, { 80, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_town_type),
-            Widgets::TableHeader({ 284, 43 }, { 70, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_population),
-            Widgets::TableHeader({ 354, 43 }, { 70, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_stations),
-            Widgets::ScrollView({ 3, 56 }, { 594, 126 }, WindowColour::secondary, 2),
-            Widgets::Label({ 4, kWindowSize.height - 17 }, { kWindowSize.width - kResizeHandleSize, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
+            Widgets::TableHeader(Widx::kSortTownName, { 4, 43 }, { 200, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_name),
+            Widgets::TableHeader(Widx::kSortTownType, { 204, 43 }, { 80, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_town_type),
+            Widgets::TableHeader(Widx::kSortTownPopulation, { 284, 43 }, { 70, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_population),
+            Widgets::TableHeader(Widx::kSortTownStations, { 354, 43 }, { 70, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_stations),
+            Widgets::ScrollView(Widx::kScrollview, { 3, 56 }, { 594, 126 }, WindowColour::secondary, 2),
+            Widgets::Label(Widx::kStatusBar, { 4, kWindowSize.height - 17 }, { kWindowSize.width - kResizeHandleSize, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
 
         );
 
@@ -246,25 +268,25 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A27F
-        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(&self);
                     break;
 
-                case Common::widx::tab_town_list:
-                case Common::widx::tab_build_town:
-                case Common::widx::tab_build_buildings:
-                case Common::widx::tab_build_misc_buildings:
+                case Common::Widx::kTabTownList:
+                case Common::Widx::kTabBuildTown:
+                case Common::Widx::kTabBuildBuildings:
+                case Common::Widx::kTabBuildMiscBuildings:
                     Common::switchTab(self, widgetIndex);
                     break;
 
-                case widx::sort_town_name:
-                case widx::sort_town_type:
-                case widx::sort_town_population:
-                case widx::sort_town_stations:
+                case Widx::kSortTownName:
+                case Widx::kSortTownType:
+                case Widx::kSortTownPopulation:
+                case Widx::kSortTownStations:
                 {
                     auto sortMode = widgetIndex - widx::sort_town_name;
                     if (self.sortMode == sortMode)
@@ -433,9 +455,9 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x004919A4
-        static Ui::CursorId cursor(Window& self, WidgetIndex_t widgetIdx, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+        static Ui::CursorId cursor(Window& self, [[maybe_unused]] WidgetIndex_t widgetIdx, const WidgetId id, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
         {
-            if (widgetIdx != widx::scrollview)
+            if (id != Widx::kScrollview)
             {
                 return fallback;
             }
@@ -603,9 +625,15 @@ namespace OpenLoco::Ui::Windows::TownList
             select_size,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kCurrentSize{ "current_size" };
+            constexpr WidgetId kSelectSize{ "select_size" };
+        }
+
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(220, 87, StringIds::title_build_new_towns),
-            Widgets::dropdownWidgets({ 100, 45 }, { 117, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_town_size)
+            Widgets::dropdownWidgets(Widx::kCurrentSize, Widx::kSelectSize, { 100, 45 }, { 117, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_town_size)
 
         );
 
@@ -646,18 +674,18 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A675
-        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(&self);
                     break;
 
-                case Common::widx::tab_town_list:
-                case Common::widx::tab_build_town:
-                case Common::widx::tab_build_buildings:
-                case Common::widx::tab_build_misc_buildings:
+                case Common::Widx::kTabTownList:
+                case Common::Widx::kTabBuildTown:
+                case Common::Widx::kTabBuildBuildings:
+                case Common::Widx::kTabBuildMiscBuildings:
                     Common::switchTab(self, widgetIndex);
                     break;
             }
@@ -676,9 +704,9 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A697
-        static void onDropdown(Window& self, Ui::WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+        static void onDropdown(Window& self, [[maybe_unused]] Ui::WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
         {
-            if (widgetIndex != widx::select_size)
+            if (id != Widx::kSelectSize)
             {
                 return;
             }
@@ -745,9 +773,9 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A690
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            if (widgetIndex == widx::select_size)
+            if (id == Widx::kSelectSize)
             {
                 populateTownSizeSelect(self, &self.widgets[widgetIndex]);
             }
@@ -815,11 +843,18 @@ namespace OpenLoco::Ui::Windows::TownList
             object_colour,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kScrollview{ "scrollview" };
+            constexpr WidgetId kRotateObject{ "rotate_object" };
+            constexpr WidgetId kObjectColour{ "object_colour" };
+        }
+
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(640, 172, StringIds::title_build_new_buildings),
-            Widgets::ScrollView({ 2, 45 }, { 573, 112 }, WindowColour::secondary, 2),
-            Widgets::ImageButton({ 575, 46 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
-            Widgets::ColourButton({ 579, 91 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_object_colour)
+            Widgets::ScrollView(Widx::kScrollview, { 2, 45 }, { 573, 112 }, WindowColour::secondary, 2),
+            Widgets::ImageButton(Widx::kRotateObject, { 575, 46 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
+            Widgets::ColourButton(Widx::kObjectColour, { 579, 91 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_object_colour)
 
         );
 
@@ -888,22 +923,22 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AB31
-        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(&self);
                     break;
 
-                case Common::widx::tab_town_list:
-                case Common::widx::tab_build_town:
-                case Common::widx::tab_build_buildings:
-                case Common::widx::tab_build_misc_buildings:
+                case Common::Widx::kTabTownList:
+                case Common::Widx::kTabBuildTown:
+                case Common::Widx::kTabBuildBuildings:
+                case Common::Widx::kTabBuildMiscBuildings:
                     Common::switchTab(self, widgetIndex);
                     break;
 
-                case widx::rotate_object:
+                case Widx::kRotateObject:
                     if (_buildingRotation < 3)
                     {
                         _buildingRotation++;
@@ -988,9 +1023,9 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AB59
-        static void onDropdown(Window& self, Ui::WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+        static void onDropdown(Window& self, [[maybe_unused]] Ui::WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
         {
-            if (widgetIndex != widx::object_colour)
+            if (id != Widx::kObjectColour)
             {
                 return;
             }
@@ -1151,9 +1186,9 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AB52
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            if (widgetIndex == widx::object_colour)
+            if (id == Widx::kObjectColour)
             {
                 auto obj = ObjectManager::get<BuildingObject>(self.rowHover);
                 Dropdown::showColour(&self, &self.widgets[widgetIndex], obj->colours, _buildingColour, self.getColour(WindowColour::secondary));

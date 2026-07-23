@@ -47,15 +47,27 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         status_bar,
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kFrame{ "frame" };
+        constexpr WidgetId kTitle{ "title" };
+        constexpr WidgetId kClose{ "close" };
+        constexpr WidgetId kPanel{ "panel" };
+        constexpr WidgetId kSortTitle{ "sort_title" };
+        constexpr WidgetId kSortYears{ "sort_years" };
+        constexpr WidgetId kScrollview{ "scrollview" };
+        constexpr WidgetId kStatusBar{ "status_bar" };
+    }
+
     static constexpr auto _widgets = makeWidgets(
-        Widgets::Frame({ 0, 0 }, { kWindowSizeDefault.width, kWindowSizeDefault.height }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { kWindowSizeDefault.width - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::music_selection_title),
-        Widgets::ImageButton({ kWindowSizeDefault.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        Widgets::Panel({ 0, 15 }, { kWindowSizeDefault.width, kWindowSizeDefault.height - 15 }, WindowColour::secondary),
-        Widgets::TableHeader({ kPadding + 1, 17 }, { kWindowSizeDefault.width - 2 * kPadding - kColumnYearsWidth - 1, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_track_title),
-        Widgets::TableHeader({ kWindowSizeDefault.width - kPadding - kColumnYearsWidth, 17 }, { kColumnYearsWidth, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_music_years),
-        Widgets::ScrollView({ kPadding, 30 }, { kWindowSizeDefault.width - 2 * kPadding, kWindowSizeDefault.height - kStatusBarClearance - 30 }, WindowColour::secondary, Scrollbars::vertical, StringIds::music_selection_tooltip),
-        Widgets::Label({ kPadding, kWindowSizeDefault.height - 12 }, { kWindowSizeMin.width - kResizeHandleSize - kPadding, 11 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
+        Widgets::Frame(Widx::kFrame, { 0, 0 }, { kWindowSizeDefault.width, kWindowSizeDefault.height }, WindowColour::primary),
+        Widgets::Caption(Widx::kTitle, { 1, 1 }, { kWindowSizeDefault.width - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::music_selection_title),
+        Widgets::ImageButton(Widx::kClose, { kWindowSizeDefault.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::Panel(Widx::kPanel, { 0, 15 }, { kWindowSizeDefault.width, kWindowSizeDefault.height - 15 }, WindowColour::secondary),
+        Widgets::TableHeader(Widx::kSortTitle, { kPadding + 1, 17 }, { kWindowSizeDefault.width - 2 * kPadding - kColumnYearsWidth - 1, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_track_title),
+        Widgets::TableHeader(Widx::kSortYears, { kWindowSizeDefault.width - kPadding - kColumnYearsWidth, 17 }, { kColumnYearsWidth, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_music_years),
+        Widgets::ScrollView(Widx::kScrollview, { kPadding, 30 }, { kWindowSizeDefault.width - 2 * kPadding, kWindowSizeDefault.height - kStatusBarClearance - 30 }, WindowColour::secondary, Scrollbars::vertical, StringIds::music_selection_tooltip),
+        Widgets::Label(Widx::kStatusBar, { kPadding, kWindowSizeDefault.height - 12 }, { kWindowSizeMin.width - kResizeHandleSize - kPadding, 11 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid)
 
     );
 
@@ -291,18 +303,18 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     }
 
     // 0x004C1757
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseUp(Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case widx::close:
+            case Widx::kClose:
                 WindowManager::close(window.type);
                 break;
 
-            case sort_title:
+            case Widx::kSortTitle:
                 cycleSortMode(window, Jukebox::MusicSortMode::titleAscending, Jukebox::MusicSortMode::titleDescending);
                 break;
-            case sort_years:
+            case Widx::kSortYears:
                 cycleSortMode(window, Jukebox::MusicSortMode::yearsDescending, Jukebox::MusicSortMode::yearsAscending);
                 break;
         }

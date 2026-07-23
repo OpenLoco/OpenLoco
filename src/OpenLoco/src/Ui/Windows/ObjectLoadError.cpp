@@ -26,7 +26,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
 
     static std::vector<ObjectHeader> _loadErrorObjectsList;
 
-    enum Widx
+    enum widx
     {
         frame,
         title,
@@ -38,14 +38,21 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         scrollview,
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kClose{ "close" };
+        constexpr WidgetId kTypeHeader{ "typeHeader" };
+        constexpr WidgetId kChecksumHeader{ "checksumHeader" };
+    }
+
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 360, 238 }, WindowColour::primary),
         Widgets::Caption({ 1, 1 }, { 358, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::objectErrorWindowTitle),
-        Widgets::ImageButton({ 345, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::ImageButton(Widx::kClose, { 345, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { 360, 223 }, WindowColour::secondary),
         Widgets::TableHeader({ 4, 43 }, { 100, 12 }, WindowColour::secondary, StringIds::tableHeaderObjectId),
-        Widgets::TableHeader({ 104, 43 }, { 152, 12 }, WindowColour::secondary, StringIds::tableHeaderObjectType),
-        Widgets::TableHeader({ 256, 43 }, { 100, 12 }, WindowColour::secondary, StringIds::tableHeaderObjectChecksum),
+        Widgets::TableHeader(Widx::kTypeHeader, { 104, 43 }, { 152, 12 }, WindowColour::secondary, StringIds::tableHeaderObjectType),
+        Widgets::TableHeader(Widx::kChecksumHeader, { 256, 43 }, { 100, 12 }, WindowColour::secondary, StringIds::tableHeaderObjectChecksum),
         Widgets::ScrollView({ 4, 57 }, { 352, 176 }, WindowColour::secondary, Scrollbars::vertical)
 
     );
@@ -184,9 +191,9 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
 
         uint16_t y = 0;
         auto namePos = Point(1, y);
-        auto typePos = Point(window.widgets[Widx::typeHeader].left - 4, y);
-        auto typeWidth = window.widgets[Widx::typeHeader].width() - 6;
-        auto checksumPos = Point(window.widgets[Widx::checksumHeader].left - 4, y);
+        auto typePos = Point(window.widgets[widx::typeHeader].left - 4, y);
+        auto typeWidth = window.widgets[widx::typeHeader].width() - 6;
+        auto checksumPos = Point(window.widgets[widx::checksumHeader].left - 4, y);
         for (uint16_t i = 0; i < window.rowCount; i++)
         {
             if (y + kRowHeight < rt.y)
@@ -247,11 +254,11 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         scrollHeight = kRowHeight * window.rowCount;
     }
 
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseUp(Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case Widx::close:
+            case Widx::kClose:
                 WindowManager::close(window.type);
                 break;
         }

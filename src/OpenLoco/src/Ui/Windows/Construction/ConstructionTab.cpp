@@ -97,30 +97,30 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     static constexpr auto widgets = makeWidgets(
         Common::makeCommonWidgets(138, 276, StringIds::stringid_2),
-        Widgets::ImageButton({ 3, 45 }, { 22, 24 }, WindowColour::secondary, ImageIds::construction_left_hand_curve_very_small, StringIds::tooltip_left_hand_curve_very_small),
-        Widgets::ImageButton({ 3, 45 }, { 22, 24 }, WindowColour::secondary, ImageIds::construction_left_hand_curve_small, StringIds::tooltip_left_hand_curve_small),
-        Widgets::ImageButton({ 25, 45 }, { 22, 24 }, WindowColour::secondary, ImageIds::construction_left_hand_curve, StringIds::tooltip_left_hand_curve),
-        Widgets::ImageButton({ 47, 45 }, { 22, 24 }, WindowColour::secondary, ImageIds::construction_left_hand_curve_large, StringIds::tooltip_left_hand_curve_large),
-        Widgets::ImageButton({ 69, 45 }, { 22, 24 }, WindowColour::secondary, ImageIds::construction_right_hand_curve_large, StringIds::tooltip_right_hand_curve_large),
-        Widgets::ImageButton({ 91, 45 }, { 22, 24 }, WindowColour::secondary, ImageIds::construction_right_hand_curve, StringIds::tooltip_right_hand_curve),
-        Widgets::ImageButton({ 113, 45 }, { 22, 24 }, WindowColour::secondary, ImageIds::construction_right_hand_curve_small, StringIds::tooltip_right_hand_curve_small),
-        Widgets::ImageButton({ 113, 45 }, { 22, 24 }, WindowColour::secondary, ImageIds::construction_right_hand_curve_very_small, StringIds::tooltip_right_hand_curve_very_small),
-        Widgets::ImageButton({ 9, 69 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_s_bend_dual_track_left, StringIds::tooltip_s_bend_left_dual_track),
-        Widgets::ImageButton({ 33, 69 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_s_bend_left, StringIds::tooltip_s_bend_left),
-        Widgets::ImageButton({ 57, 69 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_straight, StringIds::tooltip_straight),
-        Widgets::ImageButton({ 81, 69 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_s_bend_right, StringIds::tooltip_s_bend_right),
-        Widgets::ImageButton({ 105, 69 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_s_bend_dual_track_right, StringIds::tooltip_s_bend_right_dual_track),
-        Widgets::ImageButton({ 9, 96 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_steep_slope_down, StringIds::tooltip_steep_slope_down),
-        Widgets::ImageButton({ 33, 96 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_slope_down, StringIds::tooltip_slope_down),
-        Widgets::ImageButton({ 57, 96 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_level, StringIds::tooltip_level),
-        Widgets::ImageButton({ 81, 96 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_slope_up, StringIds::tooltip_slope_up),
-        Widgets::ImageButton({ 105, 96 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_steep_slope_up, StringIds::tooltip_steep_slope_up),
-        Widgets::dropdownWidgets({ 40, 123 }, { 58, 20 }, WindowColour::secondary, StringIds::empty, StringIds::tooltip_bridge_stats),
-        Widgets::Wt3Widget({ 3, 145 }, { 132, 100 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_construct),
-        Widgets::ImageButton({ 72, 248 }, { 39, 24 }, WindowColour::secondary, ImageIds::construction_remove, StringIds::tooltip_remove),
-        Widgets::ImageButton({ 111, 248 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_90),
-        Widgets::Button({ 3, 248 }, { 33, 24 }, WindowColour::secondary, StringIds::construction_copy, StringIds::construction_copy_tooltip),
-        Widgets::Button({ 36, 248 }, { 37, 24 }, WindowColour::secondary, StringIds::construction_paste, StringIds::construction_paste_tooltip)
+        Widgets::ImageButton(Widx::kLeftHandCurveVerySmall, { 3, 45 }, { 22, 24 }, WindowColour::secondary, ImageIds::construction_left_hand_curve_very_small, StringIds::tooltip_left_hand_curve_very_small),
+        Widgets::ImageButton(Widx::kLeftHandCurveSmall, { 3, 45 }, { 22, 24 }, WindowColour::secondary, ImageIds::construction_left_hand_curve_small, StringIds::tooltip_left_hand_curve_small),
+        Widgets::ImageButton(Widx::kLeftHandCurve, { 25, 45 }, { 22, 24 }, WindowColour::secondary, ImageIds::construction_left_hand_curve, StringIds::tooltip_left_hand_curve),
+        Widgets::ImageButton(Widx::kLeftHandCurveLarge, { 47, 45 }, { 22, 24 }, WindowColour::secondary, ImageIds::construction_left_hand_curve_large, StringIds::tooltip_left_hand_curve_large),
+        Widgets::ImageButton(Widx::kRightHandCurveLarge, { 69, 45 }, { 22, 24 }, WindowColour::secondary, ImageIds::construction_right_hand_curve_large, StringIds::tooltip_right_hand_curve_large),
+        Widgets::ImageButton(Widx::kRightHandCurve, { 91, 45 }, { 22, 24 }, WindowColour::secondary, ImageIds::construction_right_hand_curve, StringIds::tooltip_right_hand_curve),
+        Widgets::ImageButton(Widx::kRightHandCurveSmall, { 113, 45 }, { 22, 24 }, WindowColour::secondary, ImageIds::construction_right_hand_curve_small, StringIds::tooltip_right_hand_curve_small),
+        Widgets::ImageButton(Widx::kRightHandCurveVerySmall, { 113, 45 }, { 22, 24 }, WindowColour::secondary, ImageIds::construction_right_hand_curve_very_small, StringIds::tooltip_right_hand_curve_very_small),
+        Widgets::ImageButton(Widx::kSBendDualTrackLeft, { 9, 69 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_s_bend_dual_track_left, StringIds::tooltip_s_bend_left_dual_track),
+        Widgets::ImageButton(Widx::kSBendLeft, { 33, 69 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_s_bend_left, StringIds::tooltip_s_bend_left),
+        Widgets::ImageButton(Widx::kStraight, { 57, 69 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_straight, StringIds::tooltip_straight),
+        Widgets::ImageButton(Widx::kSBendRight, { 81, 69 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_s_bend_right, StringIds::tooltip_s_bend_right),
+        Widgets::ImageButton(Widx::kSBendDualTrackRight, { 105, 69 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_s_bend_dual_track_right, StringIds::tooltip_s_bend_right_dual_track),
+        Widgets::ImageButton(Widx::kSteepSlopeDown, { 9, 96 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_steep_slope_down, StringIds::tooltip_steep_slope_down),
+        Widgets::ImageButton(Widx::kSlopeDown, { 33, 96 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_slope_down, StringIds::tooltip_slope_down),
+        Widgets::ImageButton(Widx::kLevel, { 57, 96 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_level, StringIds::tooltip_level),
+        Widgets::ImageButton(Widx::kSlopeUp, { 81, 96 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_slope_up, StringIds::tooltip_slope_up),
+        Widgets::ImageButton(Widx::kSteepSlopeUp, { 105, 96 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_steep_slope_up, StringIds::tooltip_steep_slope_up),
+        Widgets::dropdownWidgets(Widx::kBridge, Widx::kBridgeDropdown, { 40, 123 }, { 58, 20 }, WindowColour::secondary, StringIds::empty, StringIds::tooltip_bridge_stats),
+        Widgets::Wt3Widget(Widx::kConstruct, { 3, 145 }, { 132, 100 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_construct),
+        Widgets::ImageButton(Widx::kRemove, { 72, 248 }, { 39, 24 }, WindowColour::secondary, ImageIds::construction_remove, StringIds::tooltip_remove),
+        Widgets::ImageButton(Widx::kRotate90, { 111, 248 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_90),
+        Widgets::Button(Widx::kCopy, { 3, 248 }, { 33, 24 }, WindowColour::secondary, StringIds::construction_copy, StringIds::construction_copy_tooltip),
+        Widgets::Button(Widx::kPaste, { 36, 248 }, { 37, 24 }, WindowColour::secondary, StringIds::construction_paste, StringIds::construction_paste_tooltip)
 
     );
 
@@ -517,28 +517,28 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         auto& cState = getConstructionState();
-        switch (widgetIndex)
+        switch (id)
         {
-            case Common::widx::close_button:
+            case Common::Widx::kCloseButton:
                 WindowManager::close(&self);
                 break;
 
-            case Common::widx::tab_construction:
-            case Common::widx::tab_overhead:
-            case Common::widx::tab_signal:
-            case Common::widx::tab_station:
+            case Common::Widx::kTabConstruction:
+            case Common::Widx::kTabOverhead:
+            case Common::Widx::kTabSignal:
+            case Common::Widx::kTabStation:
                 Common::switchTab(self, widgetIndex);
                 break;
 
-            case widx::construct:
+            case Widx::kConstruct:
                 constructTrackOrRoad(&self, widgetIndex);
                 break;
 
-            case widx::remove:
+            case Widx::kRemove:
                 removeTrack(&self, widgetIndex);
                 break;
 
-            case widx::rotate_90:
+            case Widx::kRotate90:
             {
                 if (cState.constructionHover)
                 {
@@ -566,7 +566,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 break;
             }
 
-            case widx::copy:
+            case Widx::kCopy:
             {
                 removeConstructionGhosts();
                 _copiedTrack = std::nullopt;
@@ -578,7 +578,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 break;
             }
 
-            case widx::paste:
+            case Widx::kPaste:
             {
                 removeConstructionGhosts();
                 if (ToolManager::isToolActive(self.type, 0, widx::paste))
@@ -1783,53 +1783,53 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     {
         auto& cState = getConstructionState();
 
-        switch (widgetIndex)
+        switch (id)
         {
-            case widx::left_hand_curve:
+            case Widx::kLeftHandCurve:
                 changeTrackPiece(TrackPiece::left_hand_curve, false);
                 break;
 
-            case widx::right_hand_curve:
+            case Widx::kRightHandCurve:
                 changeTrackPiece(TrackPiece::right_hand_curve, false);
                 break;
 
-            case widx::left_hand_curve_small:
+            case Widx::kLeftHandCurveSmall:
                 changeTrackPiece(TrackPiece::left_hand_curve_small, false);
                 break;
 
-            case widx::right_hand_curve_small:
+            case Widx::kRightHandCurveSmall:
                 changeTrackPiece(TrackPiece::right_hand_curve_small, false);
                 break;
 
-            case widx::left_hand_curve_very_small:
+            case Widx::kLeftHandCurveVerySmall:
                 changeTrackPiece(TrackPiece::left_hand_curve_very_small, false);
                 break;
 
-            case widx::right_hand_curve_very_small:
+            case Widx::kRightHandCurveVerySmall:
                 changeTrackPiece(TrackPiece::right_hand_curve_very_small, false);
                 break;
 
-            case widx::left_hand_curve_large:
+            case Widx::kLeftHandCurveLarge:
                 changeTrackPiece(TrackPiece::left_hand_curve_large, false);
                 break;
 
-            case widx::right_hand_curve_large:
+            case Widx::kRightHandCurveLarge:
                 changeTrackPiece(TrackPiece::right_hand_curve_large, false);
                 break;
 
-            case widx::straight:
+            case Widx::kStraight:
                 changeTrackPiece(TrackPiece::straight, false);
                 break;
 
-            case widx::s_bend_left:
+            case Widx::kSBendLeft:
                 changeTrackPiece(TrackPiece::s_bend_left, false);
                 break;
 
-            case widx::s_bend_right:
+            case Widx::kSBendRight:
                 changeTrackPiece(TrackPiece::s_bend_right, false);
                 break;
 
-            case widx::s_bend_dual_track_left:
+            case Widx::kSBendDualTrackLeft:
             {
                 cState.byte_113603A = 0xFF;
                 removeConstructionGhosts();
@@ -1852,7 +1852,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 break;
             }
 
-            case widx::s_bend_dual_track_right:
+            case Widx::kSBendDualTrackRight:
             {
                 cState.byte_113603A = 0xFF;
                 removeConstructionGhosts();
@@ -1875,33 +1875,33 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 break;
             }
 
-            case widx::steep_slope_down:
+            case Widx::kSteepSlopeDown:
                 changeTrackPiece(TrackGradient::steep_slope_down, true);
                 break;
 
-            case widx::slope_down:
+            case Widx::kSlopeDown:
                 changeTrackPiece(TrackGradient::slope_down, true);
                 break;
 
-            case widx::level:
+            case Widx::kLevel:
                 changeTrackPiece(TrackGradient::level, true);
                 break;
 
-            case widx::slope_up:
+            case Widx::kSlopeUp:
                 changeTrackPiece(TrackGradient::slope_up, true);
                 break;
 
-            case widx::steep_slope_up:
+            case Widx::kSteepSlopeUp:
                 changeTrackPiece(TrackGradient::steep_slope_up, true);
                 break;
 
-            case widx::bridge_dropdown:
+            case Widx::kBridgeDropdown:
             {
                 bridgeDropdown(&self);
                 break;
             }
 
-            case widx::construct:
+            case Widx::kConstruct:
             {
                 if (Input::getClickRepeatTicks() >= 40)
                 {
@@ -1910,7 +1910,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 break;
             }
 
-            case widx::remove:
+            case Widx::kRemove:
             {
                 if (Input::getClickRepeatTicks() >= 40)
                 {
@@ -1922,11 +1922,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049D4EA
-    static void onDropdown([[maybe_unused]] Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+    static void onDropdown([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
     {
         auto& cState = getConstructionState();
 
-        if (widgetIndex == widx::bridge_dropdown)
+        if (id == Widx::kBridgeDropdown)
         {
             if (itemIndex != -1)
             {
@@ -2878,9 +2878,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049D4F5
-    static Ui::CursorId cursor([[maybe_unused]] Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, [[maybe_unused]] int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId cursor([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, [[maybe_unused]] int16_t xPos, [[maybe_unused]] int16_t yPos, Ui::CursorId fallback)
     {
-        if (widgetIndex == widx::bridge || widgetIndex == widx::bridge_dropdown)
+        if (id == Widx::kBridge || id == Widx::kBridgeDropdown)
         {
             Ui::ToolTip::setTooltipTimeout(2000);
         }

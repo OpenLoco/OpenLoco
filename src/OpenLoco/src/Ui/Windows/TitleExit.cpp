@@ -17,16 +17,18 @@ namespace OpenLoco::Ui::Windows::TitleExit
 {
     static constexpr Ui::Size kWindowSize = { 40, 28 };
 
+    enum widx
+    {
+        exit_button
+    };
+
     namespace Widx
     {
-        enum
-        {
-            exit_button
-        };
+        constexpr WidgetId kExitButton{ "exit_button" };
     }
 
     static constexpr auto _widgets = makeWidgets(
-        Widgets::ImageButton({ 0, 0 }, kWindowSize, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_exit_from_game)
+        Widgets::ImageButton(Widx::kExitButton, { 0, 0 }, kWindowSize, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_exit_from_game)
 
     );
 
@@ -56,7 +58,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
         self.width = Gfx::TextRenderer::getStringWidthNewLined(Gfx::Font::medium_bold, exitString) + 10;
 
         self.x = Ui::width() - self.width;
-        self.widgets[Widx::exit_button].right = self.width;
+        self.widgets[widx::exit_button].right = self.width;
     }
 
     // 0x00439236
@@ -68,22 +70,22 @@ namespace OpenLoco::Ui::Windows::TitleExit
         window.draw(drawingCtx);
 
         int16_t x = window.x + window.width / 2;
-        int16_t y = window.y + window.widgets[Widx::exit_button].top + 8;
+        int16_t y = window.y + window.widgets[widx::exit_button].top + 8;
         Ui::Point origin = { x, y };
         tr.drawStringCentredWrapped(origin, window.width, Colour::black, StringIds::title_exit_game);
     }
 
     // 0x00439268
-    static void onMouseUp([[maybe_unused]] Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseUp([[maybe_unused]] Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
     {
         if (Intro::isActive())
         {
             return;
         }
 
-        switch (widgetIndex)
+        switch (id)
         {
-            case Widx::exit_button:
+            case Widx::kExitButton:
                 // Exit to desktop
                 GameCommands::LoadSaveQuitGameArgs args{};
                 args.loadQuitMode = LoadOrQuitMode::quitGamePrompt;

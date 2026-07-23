@@ -123,17 +123,29 @@ namespace OpenLoco::Ui::Windows::Construction
             tab_overhead,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kFrame{ "frame" };
+            constexpr WidgetId kCaption{ "caption" };
+            constexpr WidgetId kCloseButton{ "close_button" };
+            constexpr WidgetId kPanel{ "panel" };
+            constexpr WidgetId kTabConstruction{ "tab_construction" };
+            constexpr WidgetId kTabStation{ "tab_station" };
+            constexpr WidgetId kTabSignal{ "tab_signal" };
+            constexpr WidgetId kTabOverhead{ "tab_overhead" };
+        }
+
         constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
         {
             return makeWidgets(
-                Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
-                Widgets::Caption({ 1, 1 }, { frameWidth - 2, 13 }, Widgets::Caption::Style::colourText, WindowColour::primary, windowCaptionId),
-                Widgets::ImageButton({ frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-                Widgets::Panel({ 0, 41 }, { frameWidth, frameHeight - 41 }, WindowColour::secondary),
-                Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_track_road_construction),
-                Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_station_construction),
-                Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_signal_construction),
-                Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_electrification_construction));
+                Widgets::Frame(Widx::kFrame, { 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
+                Widgets::Caption(Widx::kCaption, { 1, 1 }, { frameWidth - 2, 13 }, Widgets::Caption::Style::colourText, WindowColour::primary, windowCaptionId),
+                Widgets::ImageButton(Widx::kCloseButton, { frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::Panel(Widx::kPanel, { 0, 41 }, { frameWidth, frameHeight - 41 }, WindowColour::secondary),
+                Widgets::Tab(Widx::kTabConstruction, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_track_road_construction),
+                Widgets::Tab(Widx::kTabStation, { 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_station_construction),
+                Widgets::Tab(Widx::kTabSignal, { 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_signal_construction),
+                Widgets::Tab(Widx::kTabOverhead, { 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_electrification_construction));
         }
 
         void prepareDraw(Window* self);
@@ -208,6 +220,35 @@ namespace OpenLoco::Ui::Windows::Construction
             paste,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kLeftHandCurveVerySmall{ "left_hand_curve_very_small" };
+            constexpr WidgetId kLeftHandCurveSmall{ "left_hand_curve_small" };
+            constexpr WidgetId kLeftHandCurve{ "left_hand_curve" };
+            constexpr WidgetId kLeftHandCurveLarge{ "left_hand_curve_large" };
+            constexpr WidgetId kRightHandCurveLarge{ "right_hand_curve_large" };
+            constexpr WidgetId kRightHandCurve{ "right_hand_curve" };
+            constexpr WidgetId kRightHandCurveSmall{ "right_hand_curve_small" };
+            constexpr WidgetId kRightHandCurveVerySmall{ "right_hand_curve_very_small" };
+            constexpr WidgetId kSBendDualTrackLeft{ "s_bend_dual_track_left" };
+            constexpr WidgetId kSBendLeft{ "s_bend_left" };
+            constexpr WidgetId kStraight{ "straight" };
+            constexpr WidgetId kSBendRight{ "s_bend_right" };
+            constexpr WidgetId kSBendDualTrackRight{ "s_bend_dual_track_right" };
+            constexpr WidgetId kSteepSlopeDown{ "steep_slope_down" };
+            constexpr WidgetId kSlopeDown{ "slope_down" };
+            constexpr WidgetId kLevel{ "level" };
+            constexpr WidgetId kSlopeUp{ "slope_up" };
+            constexpr WidgetId kSteepSlopeUp{ "steep_slope_up" };
+            constexpr WidgetId kBridge{ "bridge" };
+            constexpr WidgetId kBridgeDropdown{ "bridge_dropdown" };
+            constexpr WidgetId kConstruct{ "construct" };
+            constexpr WidgetId kRemove{ "remove" };
+            constexpr WidgetId kRotate90{ "rotate_90" };
+            constexpr WidgetId kCopy{ "copy" };
+            constexpr WidgetId kPaste{ "paste" };
+        }
+
         // clang-format off
         constexpr uint64_t allTrack = {
             (1ULL << widx::left_hand_curve_very_small) |
@@ -269,6 +310,14 @@ namespace OpenLoco::Ui::Windows::Construction
             rotate,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kStation{ "station" };
+            constexpr WidgetId kStationDropdown{ "station_dropdown" };
+            constexpr WidgetId kImage{ "image" };
+            constexpr WidgetId kRotate{ "rotate" };
+        }
+
         std::span<const Widget> getWidgets();
 
         void tabReset(Window& self);
@@ -286,6 +335,14 @@ namespace OpenLoco::Ui::Windows::Construction
             both_directions,
             single_direction,
         };
+
+        namespace Widx
+        {
+            constexpr WidgetId kSignal{ "signal" };
+            constexpr WidgetId kSignalDropdown{ "signal_dropdown" };
+            constexpr WidgetId kBothDirections{ "both_directions" };
+            constexpr WidgetId kSingleDirection{ "single_direction" };
+        }
 
         std::span<const Widget> getWidgets();
 
@@ -306,6 +363,17 @@ namespace OpenLoco::Ui::Windows::Construction
             track,
             track_dropdown,
         };
+
+        namespace Widx
+        {
+            constexpr WidgetId kCheckbox1{ "checkbox_1" };
+            constexpr WidgetId kCheckbox2{ "checkbox_2" };
+            constexpr WidgetId kCheckbox3{ "checkbox_3" };
+            constexpr WidgetId kCheckbox4{ "checkbox_4" };
+            constexpr WidgetId kImage{ "image" };
+            constexpr WidgetId kTrack{ "track" };
+            constexpr WidgetId kTrackDropdown{ "track_dropdown" };
+        }
 
         std::span<const Widget> getWidgets();
 
