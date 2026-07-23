@@ -111,18 +111,33 @@ namespace OpenLoco::Ui::Windows::MapWindow
         statusBar,
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kFrame{ "frame" };
+        constexpr WidgetId kCaption{ "caption" };
+        constexpr WidgetId kCloseButton{ "closeButton" };
+        constexpr WidgetId kPanel{ "panel" };
+        constexpr WidgetId kTabOverall{ "tabOverall" };
+        constexpr WidgetId kTabVehicles{ "tabVehicles" };
+        constexpr WidgetId kTabIndustries{ "tabIndustries" };
+        constexpr WidgetId kTabRoutes{ "tabRoutes" };
+        constexpr WidgetId kTabOwnership{ "tabOwnership" };
+        constexpr WidgetId kScrollview{ "scrollview" };
+        constexpr WidgetId kStatusBar{ "statusBar" };
+    }
+
     static constexpr auto kWidgets = makeWidgets(
-        Widgets::Frame({ 0, 0 }, { 350, 272 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 348, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::title_map),
-        Widgets::ImageButton({ 335, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        Widgets::Panel({ 0, 41 }, { 350, 230 }, WindowColour::secondary),
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_overall),
-        Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_vehicles),
-        Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_industries),
-        Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_routes),
-        Widgets::Tab({ 158, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_ownership),
-        Widgets::ScrollView({ 3, 44 }, { 240, 215 }, WindowColour::secondary, Scrollbars::horizontal | Scrollbars::vertical),
-        Widgets::Label({ 3, 250 }, { 322, 21 }, WindowColour::secondary, ContentAlign::center)
+        Widgets::Frame(Widx::kFrame, { 0, 0 }, { 350, 272 }, WindowColour::primary),
+        Widgets::Caption(Widx::kCaption, { 1, 1 }, { 348, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::title_map),
+        Widgets::ImageButton(Widx::kCloseButton, { 335, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::Panel(Widx::kPanel, { 0, 41 }, { 350, 230 }, WindowColour::secondary),
+        Widgets::Tab(Widx::kTabOverall, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_overall),
+        Widgets::Tab(Widx::kTabVehicles, { 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_vehicles),
+        Widgets::Tab(Widx::kTabIndustries, { 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_industries),
+        Widgets::Tab(Widx::kTabRoutes, { 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_routes),
+        Widgets::Tab(Widx::kTabOwnership, { 158, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_ownership),
+        Widgets::ScrollView(Widx::kScrollview, { 3, 44 }, { 240, 215 }, WindowColour::secondary, Scrollbars::horizontal | Scrollbars::vertical),
+        Widgets::Label(Widx::kStatusBar, { 3, 250 }, { 322, 21 }, WindowColour::secondary, ContentAlign::center)
 
     );
 
@@ -192,18 +207,18 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046B8CF
     static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case widx::closeButton:
+            case Widx::kCloseButton:
                 WindowManager::close(&self);
                 break;
 
-            case widx::tabOverall:
-            case widx::tabVehicles:
-            case widx::tabIndustries:
-            case widx::tabRoutes:
-            case widx::tabOwnership:
-            case widx::scrollview:
+            case Widx::kTabOverall:
+            case Widx::kTabVehicles:
+            case Widx::kTabIndustries:
+            case Widx::kTabRoutes:
+            case Widx::kTabOwnership:
+            case Widx::kScrollview:
             {
                 auto tabIndex = widgetIndex - widx::tabOverall;
 
