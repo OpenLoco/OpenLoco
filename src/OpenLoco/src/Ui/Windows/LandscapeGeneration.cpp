@@ -65,6 +65,21 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             generate_now,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kFrame{ "frame" };
+            constexpr WidgetId kCaption{ "caption" };
+            constexpr WidgetId kCloseButton{ "close_button" };
+            constexpr WidgetId kPanel{ "panel" };
+            constexpr WidgetId kTabOptions{ "tab_options" };
+            constexpr WidgetId kTabLand{ "tab_land" };
+            constexpr WidgetId kTabWater{ "tab_water" };
+            constexpr WidgetId kTabForests{ "tab_forests" };
+            constexpr WidgetId kTabTowns{ "tab_towns" };
+            constexpr WidgetId kTabIndustries{ "tab_industries" };
+            constexpr WidgetId kGenerateNow{ "generate_now" };
+        }
+
         enum class ResetLandscapeMode
         {
             generate_now = 0,
@@ -74,17 +89,17 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static constexpr auto makeCommonWidgets(int32_t frame_height, StringId window_caption_id)
         {
             return makeWidgets(
-                Widgets::Frame({ 0, 0 }, { 366, frame_height }, WindowColour::primary),
-                Widgets::Caption({ 1, 1 }, { 364, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, window_caption_id),
-                Widgets::ImageButton({ 351, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-                Widgets::Panel({ 0, 41 }, { 366, 175 }, WindowColour::secondary),
-                Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_options),
-                Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_land),
-                Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_water),
-                Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_forests),
-                Widgets::Tab({ 127, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_towns),
-                Widgets::Tab({ 158, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_industries),
-                Widgets::Button({ 196, frame_height - 17 }, { 160, 12 }, WindowColour::secondary, StringIds::button_generate_landscape, StringIds::tooltip_generate_random_landscape));
+                Widgets::Frame(Widx::kFrame, { 0, 0 }, { 366, frame_height }, WindowColour::primary),
+                Widgets::Caption(Widx::kCaption, { 1, 1 }, { 364, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, window_caption_id),
+                Widgets::ImageButton(Widx::kCloseButton, { 351, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::Panel(Widx::kPanel, { 0, 41 }, { 366, 175 }, WindowColour::secondary),
+                Widgets::Tab(Widx::kTabOptions, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_options),
+                Widgets::Tab(Widx::kTabLand, { 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_land),
+                Widgets::Tab(Widx::kTabWater, { 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_water),
+                Widgets::Tab(Widx::kTabForests, { 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_forests),
+                Widgets::Tab(Widx::kTabTowns, { 127, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_towns),
+                Widgets::Tab(Widx::kTabIndustries, { 158, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_industries),
+                Widgets::Button(Widx::kGenerateNow, { 196, frame_height - 17 }, { 160, 12 }, WindowColour::secondary, StringIds::button_generate_landscape, StringIds::tooltip_generate_random_landscape));
         }
 
         // Defined at the bottom of this file.
@@ -127,22 +142,22 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case widx::close_button:
+                case Widx::kCloseButton:
                     WindowManager::close(&self);
                     break;
 
-                case widx::tab_options:
-                case widx::tab_land:
-                case widx::tab_water:
-                case widx::tab_forests:
-                case widx::tab_towns:
-                case widx::tab_industries:
+                case Widx::kTabOptions:
+                case Widx::kTabLand:
+                case Widx::kTabWater:
+                case Widx::kTabForests:
+                case Widx::kTabTowns:
+                case Widx::kTabIndustries:
                     switchTab(self, widgetIndex);
                     break;
 
-                case widx::generate_now:
+                case Widx::kGenerateNow:
                     confirmResetLandscape(ResetLandscapeMode::generate_now);
                     break;
             }
@@ -288,6 +303,24 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             browseHeightmapFile,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kStartYear{ "start_year" };
+            constexpr WidgetId kStartYearDown{ "start_year_down" };
+            constexpr WidgetId kStartYearUp{ "start_year_up" };
+            constexpr WidgetId kHeightMapBox{ "heightMapBox" };
+            constexpr WidgetId kHeightMapDropdown{ "heightMapDropdown" };
+            constexpr WidgetId kHillObjectLabel{ "hillObjectLabel" };
+            constexpr WidgetId kChangeHeightmapBtn{ "change_heightmap_btn" };
+            constexpr WidgetId kTerrainSmoothingLabel{ "terrainSmoothingLabel" };
+            constexpr WidgetId kTerrainSmoothingNum{ "terrainSmoothingNum" };
+            constexpr WidgetId kTerrainSmoothingNumDown{ "terrainSmoothingNumDown" };
+            constexpr WidgetId kTerrainSmoothingNumUp{ "terrainSmoothingNumUp" };
+            constexpr WidgetId kGenerateWhenGameStarts{ "generate_when_game_starts" };
+            constexpr WidgetId kHeightmapFileLabel{ "heightmapFileLabel" };
+            constexpr WidgetId kBrowseHeightmapFile{ "browseHeightmapFile" };
+        }
+
         // clang-format off
         const uint64_t holdable_widgets =
             (1 << widx::start_year_up) |
@@ -302,21 +335,21 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             // General options
             Widgets::GroupBox({ 4, 50 }, { 358, 50 }, WindowColour::secondary, StringIds::landscapeOptionsGroupGeneral),
             Widgets::Label({ 10, 65 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::start_year),
-            Widgets::stepperWidgets({ 256, 65 }, { 100, 12 }, WindowColour::secondary, StringIds::start_year_value),
+            Widgets::stepperWidgets(Widx::kStartYear, Widx::kStartYearDown, Widx::kStartYearUp, { 256, 65 }, { 100, 12 }, WindowColour::secondary, StringIds::start_year_value),
             Widgets::Label({ 10, 81 }, { 160, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::height_map_source),
-            Widgets::dropdownWidgets({ 176, 81 }, { 180, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets(Widx::kHeightMapBox, Widx::kHeightMapDropdown, { 176, 81 }, { 180, 12 }, WindowColour::secondary),
 
             // Generator options
             Widgets::GroupBox({ 4, 105 }, { 358, 50 }, WindowColour::secondary, StringIds::landscapeOptionsGroupGenerator),
-            Widgets::Label({ 10, 120 }, { 260, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::landscapeOptionsCurrentHillObject),
-            Widgets::Button({ 280, 120 }, { 75, 12 }, WindowColour::secondary, StringIds::change),
-            Widgets::Label({ 10, 120 }, { 260, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::landscapeOptionsSmoothingPasses),
-            Widgets::stepperWidgets({ 256, 120 }, { 100, 12 }, WindowColour::secondary, StringIds::uint16_raw),
-            Widgets::Checkbox({ 10, 136 }, { 346, 12 }, WindowColour::secondary, StringIds::label_generate_random_landscape_when_game_starts, StringIds::tooltip_generate_random_landscape_when_game_starts),
+            Widgets::Label(Widx::kHillObjectLabel, { 10, 120 }, { 260, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::landscapeOptionsCurrentHillObject),
+            Widgets::Button(Widx::kChangeHeightmapBtn, { 280, 120 }, { 75, 12 }, WindowColour::secondary, StringIds::change),
+            Widgets::Label(Widx::kTerrainSmoothingLabel, { 10, 120 }, { 260, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::landscapeOptionsSmoothingPasses),
+            Widgets::stepperWidgets(Widx::kTerrainSmoothingNum, Widx::kTerrainSmoothingNumDown, Widx::kTerrainSmoothingNumUp, { 256, 120 }, { 100, 12 }, WindowColour::secondary, StringIds::uint16_raw),
+            Widgets::Checkbox(Widx::kGenerateWhenGameStarts, { 10, 136 }, { 346, 12 }, WindowColour::secondary, StringIds::label_generate_random_landscape_when_game_starts, StringIds::tooltip_generate_random_landscape_when_game_starts),
 
             // PNG browser
-            Widgets::Label({ 10, 120 }, { 260, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::currentHeightmapFile),
-            Widgets::Button({ 280, 120 }, { 75, 12 }, WindowColour::secondary, StringIds::button_browse)
+            Widgets::Label(Widx::kHeightmapFileLabel, { 10, 120 }, { 260, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::currentHeightmapFile),
+            Widgets::Button(Widx::kBrowseHeightmapFile, { 280, 120 }, { 75, 12 }, WindowColour::secondary, StringIds::button_browse)
 
         );
 
@@ -423,11 +456,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043E1BA
-        static void onDropdown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+        static void onDropdown(Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case widx::heightMapDropdown:
+                case Widx::kHeightMapDropdown:
                     if (itemIndex != -1)
                     {
                         Scenario::getOptions().generator = static_cast<Scenario::LandGeneratorType>(itemIndex);
@@ -438,13 +471,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043DC83
-        static void onMouseDown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseDown(Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
         {
             auto& options = Scenario::getOptions();
 
-            switch (widgetIndex)
+            switch (id)
             {
-                case widx::start_year_up:
+                case Widx::kStartYearUp:
                     if (options.scenarioStartYear + 1 <= Scenario::kMaxYear)
                     {
                         options.scenarioStartYear += 1;
@@ -452,7 +485,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     window.invalidate();
                     break;
 
-                case widx::start_year_down:
+                case Widx::kStartYearDown:
                     if (options.scenarioStartYear - 1 >= Scenario::kMinYear)
                     {
                         options.scenarioStartYear -= 1;
@@ -460,17 +493,17 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     window.invalidate();
                     break;
 
-                case widx::terrainSmoothingNumUp:
+                case Widx::kTerrainSmoothingNumUp:
                     options.numTerrainSmoothingPasses = std::clamp(options.numTerrainSmoothingPasses + 1, 1, 5);
                     window.invalidate();
                     break;
 
-                case widx::terrainSmoothingNumDown:
+                case Widx::kTerrainSmoothingNumDown:
                     options.numTerrainSmoothingPasses = std::clamp(options.numTerrainSmoothingPasses - 1, 1, 5);
                     window.invalidate();
                     break;
 
-                case widx::heightMapDropdown:
+                case Widx::kHeightMapDropdown:
                 {
                     Widget& target = window.widgets[widx::heightMapBox];
                     Dropdown::show(window.x + target.left, window.y + target.top, target.width() - 4, target.height(), window.getColour(WindowColour::secondary), std::size(generatorIds), 0x80);
@@ -489,9 +522,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043DC58
         static void onMouseUp(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case widx::generate_when_game_starts:
+                case Widx::kGenerateWhenGameStarts:
                     if ((Scenario::getOptions().scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none)
                     {
                         Scenario::getOptions().scenarioFlags |= Scenario::ScenarioFlags::landscapeGenerationDone;
@@ -504,12 +537,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     }
                     break;
 
-                case widx::change_heightmap_btn:
+                case Widx::kChangeHeightmapBtn:
                     EditorController::goToPreviousStep();
                     ObjectSelectionWindow::openInTab(ObjectType::hillShapes);
                     break;
 
-                case widx::browseHeightmapFile:
+                case Widx::kBrowseHeightmapFile:
                 {
                     if (auto res = Game::loadHeightmapOpen())
                     {
@@ -603,18 +636,32 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             scrollview,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kTopographyStyle{ "topography_style" };
+            constexpr WidgetId kTopographyStyleBtn{ "topography_style_btn" };
+            constexpr WidgetId kMinLandHeight{ "min_land_height" };
+            constexpr WidgetId kMinLandHeightDown{ "min_land_height_down" };
+            constexpr WidgetId kMinLandHeightUp{ "min_land_height_up" };
+            constexpr WidgetId kHillDensity{ "hill_density" };
+            constexpr WidgetId kHillDensityDown{ "hill_density_down" };
+            constexpr WidgetId kHillDensityUp{ "hill_density_up" };
+            constexpr WidgetId kHillsEdgeOfMap{ "hillsEdgeOfMap" };
+            constexpr WidgetId kScrollview{ "scrollview" };
+        }
+
         const uint64_t holdable_widgets = (1 << widx::min_land_height_up) | (1 << widx::min_land_height_down) | (1 << widx::hill_density_up) | (1 << widx::hill_density_down);
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(252, StringIds::title_landscape_generation_land),
             Widgets::Label({ 10, 52 }, { 160, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::topography_style),
-            Widgets::dropdownWidgets({ 176, 52 }, { 180, 12 }, WindowColour::secondary),
+            Widgets::dropdownWidgets(Widx::kTopographyStyle, Widx::kTopographyStyleBtn, { 176, 52 }, { 180, 12 }, WindowColour::secondary),
             Widgets::Label({ 10, 68 }, { 250, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::min_land_height),
-            Widgets::stepperWidgets({ 256, 68 }, { 100, 12 }, WindowColour::secondary, StringIds::min_land_height_units),
+            Widgets::stepperWidgets(Widx::kMinLandHeight, Widx::kMinLandHeightDown, Widx::kMinLandHeightUp, { 256, 68 }, { 100, 12 }, WindowColour::secondary, StringIds::min_land_height_units),
             Widgets::Label({ 10, 84 }, { 250, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::hill_density),
-            Widgets::stepperWidgets({ 256, 84 }, { 100, 12 }, WindowColour::secondary, StringIds::hill_density_percent),
-            Widgets::Checkbox({ 10, 100 }, { 346, 12 }, WindowColour::secondary, StringIds::create_hills_right_up_to_edge_of_map),
-            Widgets::ScrollView({ 4, 116 }, { 358, 112 }, WindowColour::secondary, Scrollbars::vertical)
+            Widgets::stepperWidgets(Widx::kHillDensity, Widx::kHillDensityDown, Widx::kHillDensityUp, { 256, 84 }, { 100, 12 }, WindowColour::secondary, StringIds::hill_density_percent),
+            Widgets::Checkbox(Widx::kHillsEdgeOfMap, { 10, 100 }, { 346, 12 }, WindowColour::secondary, StringIds::create_hills_right_up_to_edge_of_map),
+            Widgets::ScrollView(Widx::kScrollview, { 4, 116 }, { 358, 112 }, WindowColour::secondary, Scrollbars::vertical)
 
         );
 
@@ -723,11 +770,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         };
 
         // 0x0043E1BA
-        static void onDropdown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+        static void onDropdown(Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case widx::topography_style_btn:
+                case Widx::kTopographyStyleBtn:
                     if (itemIndex != -1)
                     {
                         Scenario::getOptions().topographyStyle = static_cast<Scenario::TopographyStyle>(itemIndex);
@@ -735,7 +782,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     }
                     break;
 
-                case widx::scrollview:
+                case Widx::kScrollview:
                     if (itemIndex != -1 && window.rowHover != -1)
                     {
                         Scenario::getOptions().landDistributionPatterns[window.rowHover] = static_cast<Scenario::LandDistributionPattern>(itemIndex);
@@ -746,21 +793,21 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043E173
-        static void onMouseDown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseDown(Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
         {
             auto& options = Scenario::getOptions();
 
-            switch (widgetIndex)
+            switch (id)
             {
-                case widx::min_land_height_up:
+                case Widx::kMinLandHeightUp:
                     options.minLandHeight = std::min<int8_t>(options.minLandHeight + 1, Scenario::kMaxBaseLandHeight);
                     break;
 
-                case widx::min_land_height_down:
+                case Widx::kMinLandHeightDown:
                     options.minLandHeight = std::max<int8_t>(Scenario::kMinBaseLandHeight, options.minLandHeight - 1);
                     break;
 
-                case widx::topography_style_btn:
+                case Widx::kTopographyStyleBtn:
                 {
                     Widget& target = window.widgets[widx::topography_style];
                     Dropdown::show(window.x + target.left, window.y + target.top, target.width() - 4, target.height(), window.getColour(WindowColour::secondary), std::size(topographyStyleIds), 0x80);
@@ -774,11 +821,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     break;
                 }
 
-                case widx::hill_density_up:
+                case Widx::kHillDensityUp:
                     options.hillDensity = std::min<int8_t>(options.hillDensity + 1, Scenario::kMaxHillDensity);
                     break;
 
-                case widx::hill_density_down:
+                case Widx::kHillDensityDown:
                     options.hillDensity = std::max<int8_t>(Scenario::kMinHillDensity, options.hillDensity - 1);
                     break;
 
@@ -792,11 +839,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043E14E
-        static void onMouseUp(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Window& window, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case widx::hillsEdgeOfMap:
+                case Widx::kHillsEdgeOfMap:
                     Scenario::getOptions().scenarioFlags ^= Scenario::ScenarioFlags::hillsEdgeOfMap;
                     window.invalidate();
                     break;
@@ -962,6 +1009,28 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             meander_rate_up,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kSeaLevel{ "sea_level" };
+            constexpr WidgetId kSeaLevelDown{ "sea_level_down" };
+            constexpr WidgetId kSeaLevelUp{ "sea_level_up" };
+            constexpr WidgetId kNumRiverbeds{ "num_riverbeds" };
+            constexpr WidgetId kNumRiverbedsDown{ "num_riverbeds_down" };
+            constexpr WidgetId kNumRiverbedsUp{ "num_riverbeds_up" };
+            constexpr WidgetId kMinRiverWidth{ "min_river_width" };
+            constexpr WidgetId kMinRiverWidthDown{ "min_river_width_down" };
+            constexpr WidgetId kMinRiverWidthUp{ "min_river_width_up" };
+            constexpr WidgetId kMaxRiverWidth{ "max_river_width" };
+            constexpr WidgetId kMaxRiverWidthDown{ "max_river_width_down" };
+            constexpr WidgetId kMaxRiverWidthUp{ "max_river_width_up" };
+            constexpr WidgetId kRiverbankWidth{ "riverbank_width" };
+            constexpr WidgetId kRiverbankWidthDown{ "riverbank_width_down" };
+            constexpr WidgetId kRiverbankWidthUp{ "riverbank_width_up" };
+            constexpr WidgetId kMeanderRate{ "meander_rate" };
+            constexpr WidgetId kMeanderRateDown{ "meander_rate_down" };
+            constexpr WidgetId kMeanderRateUp{ "meander_rate_up" };
+        }
+
         // clang-format off
         const uint64_t holdable_widgets = (1ULL << widx::sea_level_up) | (1ULL << widx::sea_level_down) |
             (1ULL << widx::num_riverbeds_down) | (1ULL << widx::num_riverbeds_up) |
@@ -974,73 +1043,73 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(217, StringIds::title_landscape_generation_water),
             Widgets::Label({ 10, 52 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::sea_level),
-            Widgets::stepperWidgets({ 256, 52 }, { 100, 12 }, WindowColour::secondary, StringIds::sea_level_units),
+            Widgets::stepperWidgets(Widx::kSeaLevel, Widx::kSeaLevelDown, Widx::kSeaLevelUp, { 256, 52 }, { 100, 12 }, WindowColour::secondary, StringIds::sea_level_units),
             Widgets::Label({ 10, 68 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::number_riverbeds),
-            Widgets::stepperWidgets({ 256, 68 }, { 100, 12 }, WindowColour::secondary, StringIds::uint16_raw),
+            Widgets::stepperWidgets(Widx::kNumRiverbeds, Widx::kNumRiverbedsDown, Widx::kNumRiverbedsUp, { 256, 68 }, { 100, 12 }, WindowColour::secondary, StringIds::uint16_raw),
             Widgets::Label({ 10, 84 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::minimum_river_width),
-            Widgets::stepperWidgets({ 256, 84 }, { 100, 12 }, WindowColour::secondary, StringIds::min_land_height_units),
+            Widgets::stepperWidgets(Widx::kMinRiverWidth, Widx::kMinRiverWidthDown, Widx::kMinRiverWidthUp, { 256, 84 }, { 100, 12 }, WindowColour::secondary, StringIds::min_land_height_units),
             Widgets::Label({ 10, 100 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::maximum_river_width),
-            Widgets::stepperWidgets({ 256, 100 }, { 100, 12 }, WindowColour::secondary, StringIds::min_land_height_units),
+            Widgets::stepperWidgets(Widx::kMaxRiverWidth, Widx::kMaxRiverWidthDown, Widx::kMaxRiverWidthUp, { 256, 100 }, { 100, 12 }, WindowColour::secondary, StringIds::min_land_height_units),
             Widgets::Label({ 10, 116 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::riverbank_width),
-            Widgets::stepperWidgets({ 256, 116 }, { 100, 12 }, WindowColour::secondary, StringIds::min_land_height_units),
+            Widgets::stepperWidgets(Widx::kRiverbankWidth, Widx::kRiverbankWidthDown, Widx::kRiverbankWidthUp, { 256, 116 }, { 100, 12 }, WindowColour::secondary, StringIds::min_land_height_units),
             Widgets::Label({ 10, 132 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::meander_rate),
-            Widgets::stepperWidgets({ 256, 132 }, { 100, 12 }, WindowColour::secondary, StringIds::min_land_height_units)
+            Widgets::stepperWidgets(Widx::kMeanderRate, Widx::kMeanderRateDown, Widx::kMeanderRateUp, { 256, 132 }, { 100, 12 }, WindowColour::secondary, StringIds::min_land_height_units)
 
         );
 
         // 0x0043E173
-        static void onMouseDown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseDown(Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
         {
             auto& gameState = getGameState();
             auto& options = Scenario::getOptions();
 
-            switch (widgetIndex)
+            switch (id)
             {
-                case widx::sea_level_up:
+                case Widx::kSeaLevelUp:
                     gameState.seaLevel = std::min<int8_t>(gameState.seaLevel + 1, Scenario::kMaxSeaLevel);
                     break;
 
-                case widx::sea_level_down:
+                case Widx::kSeaLevelDown:
                     gameState.seaLevel = std::max<int8_t>(Scenario::kMinSeaLevel, gameState.seaLevel - 1);
                     break;
 
-                case widx::num_riverbeds_up:
+                case Widx::kNumRiverbedsUp:
                     options.numRiverbeds = std::min<int8_t>(options.numRiverbeds + 1, Scenario::kMaxNumRiverbeds);
                     break;
 
-                case widx::num_riverbeds_down:
+                case Widx::kNumRiverbedsDown:
                     options.numRiverbeds = std::max<int8_t>(Scenario::kMinNumRiverbeds, options.numRiverbeds - 1);
                     break;
 
-                case widx::min_river_width_up:
+                case Widx::kMinRiverWidthUp:
                     options.minRiverWidth = std::min<int8_t>(options.minRiverWidth + 1, Scenario::kMaxMinRiverWidth);
                     break;
 
-                case widx::min_river_width_down:
+                case Widx::kMinRiverWidthDown:
                     options.minRiverWidth = std::max<int8_t>(Scenario::kMinMinRiverWidth, options.minRiverWidth - 1);
                     break;
 
-                case widx::max_river_width_up:
+                case Widx::kMaxRiverWidthUp:
                     options.maxRiverWidth = std::min<int8_t>(options.maxRiverWidth + 1, Scenario::kMaxMaxRiverWidth);
                     break;
 
-                case widx::max_river_width_down:
+                case Widx::kMaxRiverWidthDown:
                     options.maxRiverWidth = std::max<int8_t>(Scenario::kMinMaxRiverWidth, options.maxRiverWidth - 1);
                     break;
 
-                case widx::riverbank_width_up:
+                case Widx::kRiverbankWidthUp:
                     options.riverbankWidth = std::min<int8_t>(options.riverbankWidth + 1, Scenario::kMaxRiverbankWidth);
                     break;
 
-                case widx::riverbank_width_down:
+                case Widx::kRiverbankWidthDown:
                     options.riverbankWidth = std::max<int8_t>(Scenario::kMinRiverbankWidth, options.riverbankWidth - 1);
                     break;
 
-                case widx::meander_rate_up:
+                case Widx::kMeanderRateUp:
                     options.riverMeanderRate = std::min<int8_t>(options.riverMeanderRate + 1, Scenario::kMaxRiverMeanderRate);
                     break;
 
-                case widx::meander_rate_down:
+                case Widx::kMeanderRateDown:
                     options.riverMeanderRate = std::max<int8_t>(Scenario::kMinRiverMeanderRate, options.riverMeanderRate - 1);
                     break;
 
@@ -1139,47 +1208,75 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             max_altitude_for_trees_up,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kNumberOfForests{ "number_of_forests" };
+            constexpr WidgetId kNumberOfForestsDown{ "number_of_forests_down" };
+            constexpr WidgetId kNumberOfForestsUp{ "number_of_forests_up" };
+            constexpr WidgetId kMinForestRadius{ "minForestRadius" };
+            constexpr WidgetId kMinForestRadiusDown{ "min_forest_radius_down" };
+            constexpr WidgetId kMinForestRadiusUp{ "min_forest_radius_up" };
+            constexpr WidgetId kMaxForestRadius{ "maxForestRadius" };
+            constexpr WidgetId kMaxForestRadiusDown{ "max_forest_radius_down" };
+            constexpr WidgetId kMaxForestRadiusUp{ "max_forest_radius_up" };
+            constexpr WidgetId kMinForestDensity{ "minForestDensity" };
+            constexpr WidgetId kMinForestDensityDown{ "min_forest_density_down" };
+            constexpr WidgetId kMinForestDensityUp{ "min_forest_density_up" };
+            constexpr WidgetId kMaxForestDensity{ "maxForestDensity" };
+            constexpr WidgetId kMaxForestDensityDown{ "max_forest_density_down" };
+            constexpr WidgetId kMaxForestDensityUp{ "max_forest_density_up" };
+            constexpr WidgetId kNumberRandomTrees{ "number_random_trees" };
+            constexpr WidgetId kNumberRandomTreesDown{ "number_random_trees_down" };
+            constexpr WidgetId kNumberRandomTreesUp{ "number_random_trees_up" };
+            constexpr WidgetId kMinAltitudeForTrees{ "min_altitude_for_trees" };
+            constexpr WidgetId kMinAltitudeForTreesDown{ "min_altitude_for_trees_down" };
+            constexpr WidgetId kMinAltitudeForTreesUp{ "min_altitude_for_trees_up" };
+            constexpr WidgetId kMaxAltitudeForTrees{ "max_altitude_for_trees" };
+            constexpr WidgetId kMaxAltitudeForTreesDown{ "max_altitude_for_trees_down" };
+            constexpr WidgetId kMaxAltitudeForTreesUp{ "max_altitude_for_trees_up" };
+        }
+
         const uint64_t holdable_widgets = (1ULL << widx::number_of_forests_up) | (1ULL << widx::number_of_forests_down) | (1ULL << widx::min_forest_radius_up) | (1ULL << widx::min_forest_radius_down) | (1ULL << widx::max_forest_radius_up) | (1ULL << widx::max_forest_radius_down) | (1ULL << widx::min_forest_density_up) | (1ULL << widx::min_forest_density_down) | (1ULL << widx::max_forest_density_up) | (1 << widx::max_forest_density_down) | (1ULL << widx::number_random_trees_up) | (1ULL << widx::number_random_trees_down) | (1ULL << widx::min_altitude_for_trees_up) | (1ULL << widx::min_altitude_for_trees_down) | (1ULL << widx::max_altitude_for_trees_down) | (1ULL << widx::max_altitude_for_trees_up);
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(217, StringIds::title_landscape_generation_forests),
             Widgets::Label({ 10, 52 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::number_of_forests),
-            Widgets::stepperWidgets({ 256, 52 }, { 100, 12 }, WindowColour::secondary, StringIds::number_of_forests_value),
+            Widgets::stepperWidgets(Widx::kNumberOfForests, Widx::kNumberOfForestsDown, Widx::kNumberOfForestsUp, { 256, 52 }, { 100, 12 }, WindowColour::secondary, StringIds::number_of_forests_value),
             Widgets::Label({ 10, 67 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::min_forest_radius),
-            Widgets::stepperWidgets({ 256, 67 }, { 100, 12 }, WindowColour::secondary, StringIds::min_forest_radius_blocks),
+            Widgets::stepperWidgets(Widx::kMinForestRadius, Widx::kMinForestRadiusDown, Widx::kMinForestRadiusUp, { 256, 67 }, { 100, 12 }, WindowColour::secondary, StringIds::min_forest_radius_blocks),
             Widgets::Label({ 10, 82 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::max_forest_radius),
-            Widgets::stepperWidgets({ 256, 82 }, { 100, 12 }, WindowColour::secondary, StringIds::max_forest_radius_blocks),
+            Widgets::stepperWidgets(Widx::kMaxForestRadius, Widx::kMaxForestRadiusDown, Widx::kMaxForestRadiusUp, { 256, 82 }, { 100, 12 }, WindowColour::secondary, StringIds::max_forest_radius_blocks),
             Widgets::Label({ 10, 97 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::min_forest_density),
-            Widgets::stepperWidgets({ 256, 97 }, { 100, 12 }, WindowColour::secondary, StringIds::min_forest_density_percent),
+            Widgets::stepperWidgets(Widx::kMinForestDensity, Widx::kMinForestDensityDown, Widx::kMinForestDensityUp, { 256, 97 }, { 100, 12 }, WindowColour::secondary, StringIds::min_forest_density_percent),
             Widgets::Label({ 10, 112 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::max_forest_density),
-            Widgets::stepperWidgets({ 256, 112 }, { 100, 12 }, WindowColour::secondary, StringIds::max_forest_density_percent),
+            Widgets::stepperWidgets(Widx::kMaxForestDensity, Widx::kMaxForestDensityDown, Widx::kMaxForestDensityUp, { 256, 112 }, { 100, 12 }, WindowColour::secondary, StringIds::max_forest_density_percent),
             Widgets::Label({ 10, 127 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::number_random_trees),
-            Widgets::stepperWidgets({ 256, 127 }, { 100, 12 }, WindowColour::secondary, StringIds::number_random_trees_value),
+            Widgets::stepperWidgets(Widx::kNumberRandomTrees, Widx::kNumberRandomTreesDown, Widx::kNumberRandomTreesUp, { 256, 127 }, { 100, 12 }, WindowColour::secondary, StringIds::number_random_trees_value),
             Widgets::Label({ 10, 142 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::min_altitude_for_trees),
-            Widgets::stepperWidgets({ 256, 142 }, { 100, 12 }, WindowColour::secondary, StringIds::min_altitude_for_trees_height),
+            Widgets::stepperWidgets(Widx::kMinAltitudeForTrees, Widx::kMinAltitudeForTreesDown, Widx::kMinAltitudeForTreesUp, { 256, 142 }, { 100, 12 }, WindowColour::secondary, StringIds::min_altitude_for_trees_height),
             Widgets::Label({ 10, 157 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::max_altitude_for_trees),
-            Widgets::stepperWidgets({ 256, 157 }, { 100, 12 }, WindowColour::secondary, StringIds::max_altitude_for_trees_height)
+            Widgets::stepperWidgets(Widx::kMaxAltitudeForTrees, Widx::kMaxAltitudeForTreesDown, Widx::kMaxAltitudeForTreesUp, { 256, 157 }, { 100, 12 }, WindowColour::secondary, StringIds::max_altitude_for_trees_height)
 
         );
 
         // 0x0043E670
-        static void onMouseDown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseDown(Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
         {
             auto& options = Scenario::getOptions();
 
-            switch (widgetIndex)
+            switch (id)
             {
-                case widx::number_of_forests_up:
+                case Widx::kNumberOfForestsUp:
                 {
                     options.numberOfForests = std::min<int16_t>(options.numberOfForests + 10, Scenario::kMaxNumForests);
                     break;
                 }
-                case widx::number_of_forests_down:
+                case Widx::kNumberOfForestsDown:
                 {
                     options.numberOfForests = std::max<int16_t>(Scenario::kMinNumForests, options.numberOfForests - 10);
                     break;
                 }
-                case widx::min_forest_radius_up:
+                case Widx::kMinForestRadiusUp:
                 {
                     options.minForestRadius = std::min<int16_t>(options.minForestRadius + 1, Scenario::kMaxForestRadius);
                     if (options.minForestRadius > options.maxForestRadius)
@@ -1188,17 +1285,17 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     }
                     break;
                 }
-                case widx::min_forest_radius_down:
+                case Widx::kMinForestRadiusDown:
                 {
                     options.minForestRadius = std::max<int8_t>(Scenario::kMinForestRadius, options.minForestRadius - 1);
                     break;
                 }
-                case widx::max_forest_radius_up:
+                case Widx::kMaxForestRadiusUp:
                 {
                     options.maxForestRadius = std::clamp<int8_t>(options.maxForestRadius + 1, Scenario::kMinForestRadius, Scenario::kMaxForestRadius);
                     break;
                 }
-                case widx::max_forest_radius_down:
+                case Widx::kMaxForestRadiusDown:
                 {
                     options.maxForestRadius = std::clamp<int8_t>(options.maxForestRadius - 1, Scenario::kMinForestRadius, Scenario::kMaxForestRadius);
                     if (options.maxForestRadius < options.minForestRadius)
@@ -1207,7 +1304,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     }
                     break;
                 }
-                case widx::min_forest_density_up:
+                case Widx::kMinForestDensityUp:
                 {
                     options.minForestDensity = std::min<int8_t>(options.minForestDensity + 1, Scenario::kMaxForestDensity);
                     if (options.minForestDensity > options.maxForestDensity)
@@ -1216,17 +1313,17 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     }
                     break;
                 }
-                case widx::min_forest_density_down:
+                case Widx::kMinForestDensityDown:
                 {
                     options.minForestDensity = std::max<int8_t>(Scenario::kMinForestDensity, options.minForestDensity - 1);
                     break;
                 }
-                case widx::max_forest_density_up:
+                case Widx::kMaxForestDensityUp:
                 {
                     options.maxForestDensity = std::min<int8_t>(options.maxForestDensity + 1, Scenario::kMaxForestDensity);
                     break;
                 }
-                case widx::max_forest_density_down:
+                case Widx::kMaxForestDensityDown:
                 {
                     options.maxForestDensity = std::max<int8_t>(Scenario::kMinForestDensity, options.maxForestDensity - 1);
                     if (options.maxForestDensity < options.minForestDensity)
@@ -1235,17 +1332,17 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     }
                     break;
                 }
-                case widx::number_random_trees_up:
+                case Widx::kNumberRandomTreesUp:
                 {
                     options.numberRandomTrees = std::min<int16_t>(options.numberRandomTrees + 25, Scenario::kMaxNumTrees);
                     break;
                 }
-                case widx::number_random_trees_down:
+                case Widx::kNumberRandomTreesDown:
                 {
                     options.numberRandomTrees = std::max<int16_t>(Scenario::kMinNumTrees, options.numberRandomTrees - 25);
                     break;
                 }
-                case widx::min_altitude_for_trees_up:
+                case Widx::kMinAltitudeForTreesUp:
                 {
                     options.minAltitudeForTrees = std::min<int8_t>(options.minAltitudeForTrees + 1, Scenario::kMaxAltitudeTrees);
                     if (options.minAltitudeForTrees > options.maxAltitudeForTrees)
@@ -1254,17 +1351,17 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     }
                     break;
                 }
-                case widx::min_altitude_for_trees_down:
+                case Widx::kMinAltitudeForTreesDown:
                 {
                     options.minAltitudeForTrees = std::max<int8_t>(Scenario::kMinAltitudeTrees, options.minAltitudeForTrees - 1);
                     break;
                 }
-                case widx::max_altitude_for_trees_up:
+                case Widx::kMaxAltitudeForTreesUp:
                 {
                     options.maxAltitudeForTrees = std::min<int8_t>(options.maxAltitudeForTrees + 1, Scenario::kMaxAltitudeTrees);
                     break;
                 }
-                case widx::max_altitude_for_trees_down:
+                case Widx::kMaxAltitudeForTreesDown:
                 {
                     options.maxAltitudeForTrees = std::max<int8_t>(Scenario::kMinAltitudeTrees, options.maxAltitudeForTrees - 1);
                     if (options.maxAltitudeForTrees < options.minAltitudeForTrees)
@@ -1366,14 +1463,23 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             max_town_size_btn,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kNumberOfTowns{ "number_of_towns" };
+            constexpr WidgetId kNumberOfTownsDown{ "number_of_towns_down" };
+            constexpr WidgetId kNumberOfTownsUp{ "number_of_towns_up" };
+            constexpr WidgetId kMaxTownSize{ "max_town_size" };
+            constexpr WidgetId kMaxTownSizeBtn{ "max_town_size_btn" };
+        }
+
         const uint64_t holdable_widgets = (1 << widx::number_of_towns_up) | (1 << widx::number_of_towns_down);
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(217, StringIds::title_landscape_generation_towns),
             Widgets::Label({ 10, 52 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::number_of_towns),
-            Widgets::stepperWidgets({ 256, 52 }, { 100, 12 }, WindowColour::secondary, StringIds::number_of_towns_value),
+            Widgets::stepperWidgets(Widx::kNumberOfTowns, Widx::kNumberOfTownsDown, Widx::kNumberOfTownsUp, { 256, 52 }, { 100, 12 }, WindowColour::secondary, StringIds::number_of_towns_value),
             Widgets::Label({ 10, 67 }, { 160, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::max_town_size),
-            Widgets::dropdownWidgets({ 176, 67 }, { 180, 12 }, WindowColour::secondary)
+            Widgets::dropdownWidgets(Widx::kMaxTownSize, Widx::kMaxTownSizeBtn, { 176, 67 }, { 180, 12 }, WindowColour::secondary)
 
         );
 
@@ -1389,9 +1495,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         };
 
         // 0x0043EA28
-        static void onDropdown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+        static void onDropdown(Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
         {
-            if (widgetIndex != widx::max_town_size_btn || itemIndex == -1)
+            if (id != Widx::kMaxTownSizeBtn || itemIndex == -1)
             {
                 return;
             }
@@ -1401,13 +1507,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043EA0D
-        static void onMouseDown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseDown(Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
         {
             auto& options = Scenario::getOptions();
 
-            switch (widgetIndex)
+            switch (id)
             {
-                case widx::number_of_towns_up:
+                case Widx::kNumberOfTownsUp:
                 {
                     uint16_t newNumTowns = std::min<uint16_t>(options.numberOfTowns + 1, Limits::kMaxTowns);
                     options.numberOfTowns = newNumTowns;
@@ -1415,7 +1521,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     break;
                 }
 
-                case widx::number_of_towns_down:
+                case Widx::kNumberOfTownsDown:
                 {
                     // Vanilla behaviour: Zero-town map generation is allowed in the scenario editor and
                     // is checked on the editor stage progression for non-zero. It is required to be non-zero
@@ -1430,7 +1536,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     break;
                 }
 
-                case widx::max_town_size_btn:
+                case Widx::kMaxTownSizeBtn:
                 {
                     Widget& target = window.widgets[widx::max_town_size];
                     Dropdown::show(window.x + target.left, window.y + target.top, target.width() - 4, target.height(), window.getColour(WindowColour::secondary), std::size(townSizeLabels), 0x80);
@@ -1483,14 +1589,22 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             check_allow_industries_start_up,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kNumIndustries{ "num_industries" };
+            constexpr WidgetId kNumIndustriesBtn{ "num_industries_btn" };
+            constexpr WidgetId kCheckAllowIndustriesCloseDown{ "check_allow_industries_close_down" };
+            constexpr WidgetId kCheckAllowIndustriesStartUp{ "check_allow_industries_start_up" };
+        }
+
         const uint64_t holdable_widgets = 0;
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(217, StringIds::title_landscape_generation_industries),
             Widgets::Label({ 10, 52 }, { 160, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::number_of_industries),
-            Widgets::dropdownWidgets({ 176, 52 }, { 180, 12 }, WindowColour::secondary),
-            Widgets::Checkbox({ 10, 68 }, { 346, 12 }, WindowColour::secondary, StringIds::allow_industries_to_close_down_during_game),
-            Widgets::Checkbox({ 10, 83 }, { 346, 12 }, WindowColour::secondary, StringIds::allow_new_industries_to_start_up_during_game)
+            Widgets::dropdownWidgets(Widx::kNumIndustries, Widx::kNumIndustriesBtn, { 176, 52 }, { 180, 12 }, WindowColour::secondary),
+            Widgets::Checkbox(Widx::kCheckAllowIndustriesCloseDown, { 10, 68 }, { 346, 12 }, WindowColour::secondary, StringIds::allow_industries_to_close_down_during_game),
+            Widgets::Checkbox(Widx::kCheckAllowIndustriesStartUp, { 10, 83 }, { 346, 12 }, WindowColour::secondary, StringIds::allow_new_industries_to_start_up_during_game)
 
         );
 
@@ -1501,9 +1615,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         };
 
         // 0x0043EBF8
-        static void onDropdown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+        static void onDropdown(Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
         {
-            if (widgetIndex != widx::num_industries_btn || itemIndex == -1)
+            if (id != Widx::kNumIndustriesBtn || itemIndex == -1)
             {
                 return;
             }
@@ -1513,11 +1627,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043EBF1
-        static void onMouseDown(Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseDown(Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case widx::num_industries_btn:
+                case Widx::kNumIndustriesBtn:
                 {
                     Widget& target = window.widgets[widx::num_industries];
                     Dropdown::show(window.x + target.left, window.y + target.top, target.width() - 4, target.height(), window.getColour(WindowColour::secondary), std::size(numIndustriesLabels), 0x80);
@@ -1531,12 +1645,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     break;
                 }
 
-                case widx::check_allow_industries_close_down:
+                case Widx::kCheckAllowIndustriesCloseDown:
                     IndustryManager::setFlags(IndustryManager::getFlags() ^ IndustryManager::Flags::disallowIndustriesCloseDown);
                     window.invalidate();
                     break;
 
-                case widx::check_allow_industries_start_up:
+                case Widx::kCheckAllowIndustriesStartUp:
                     IndustryManager::setFlags(IndustryManager::getFlags() ^ IndustryManager::Flags::disallowIndustriesStartUp);
                     window.invalidate();
                     break;
