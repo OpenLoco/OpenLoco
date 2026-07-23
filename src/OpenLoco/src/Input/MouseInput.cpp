@@ -1559,7 +1559,7 @@ namespace OpenLoco::Input
                     case Ui::WidgetType::frame:
                         if (window->hasFlags(Ui::WindowFlags::resizable))
                         {
-                            if (window->minWidth != window->maxWidth && window->minHeight != window->maxHeight)
+                            if (window->minWidth != window->maxWidth || window->minHeight != window->maxHeight)
                             {
                                 if (x >= window->x + window->width - 19 && y >= window->y + window->height - 19)
                                 {
