@@ -322,7 +322,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                     Jukebox::enableMusic();
                 }
 
-                WindowManager::invalidate(WindowType::musicSelection);
+                WindowManager::invalidate(WindowType::musicJukebox);
                 break;
             }
 
