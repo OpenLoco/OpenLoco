@@ -3,6 +3,7 @@
 - Feature: [#3569] Add a "home" button to the browse prompt window.
 - Feature: [#3768] Add tab to town window to show delivered cargo last month.
 - Change: [#3740] Options that interfere with tutorial operation are temporarily disabled options during playback.
+- Fix: [#3573] Town population graphs values draw overflow if the line is outside the viewable part of the window.
 - Fix: [#3776] Unchecking "Play Music" from the top toolbar does not invalidate Jukebox window.
 - Fix: [#3790] Some windows (e.g. town population) don't have a window resize handle in the bottom-right corner.
 
