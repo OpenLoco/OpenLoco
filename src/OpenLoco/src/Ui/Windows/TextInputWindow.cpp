@@ -45,14 +45,23 @@ namespace OpenLoco::Ui::Windows::TextInput
         ok,
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kTitle{ "title" };
+        constexpr WidgetId kClose{ "close" };
+        constexpr WidgetId kInput{ "input" };
+        constexpr WidgetId kCharLimit{ "charLimit" };
+        constexpr WidgetId kOk{ "ok" };
+    }
+
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 330, 90 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 328, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary),
-        Widgets::ImageButton({ 315, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::Caption(Widx::kTitle, { 1, 1 }, { 328, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary),
+        Widgets::ImageButton(Widx::kClose, { 315, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { 330, 75 }, WindowColour::secondary),
-        Widgets::TextBox({ 4, 58 }, { 322, 14 }, WindowColour::secondary),
-        Widgets::Label({ 150, 75 }, { 100, 10 }, WindowColour::secondary, ContentAlign::right, StringIds::num_characters_left_int_int),
-        Widgets::Button({ 256, 74 }, { 70, 12 }, WindowColour::secondary, StringIds::label_button_ok)
+        Widgets::TextBox(Widx::kInput, { 4, 58 }, { 322, 14 }, WindowColour::secondary),
+        Widgets::Label(Widx::kCharLimit, { 150, 75 }, { 100, 10 }, WindowColour::secondary, ContentAlign::right, StringIds::num_characters_left_int_int),
+        Widgets::Button(Widx::kOk, { 256, 74 }, { 70, 12 }, WindowColour::secondary, StringIds::label_button_ok)
 
     );
 
@@ -252,14 +261,14 @@ namespace OpenLoco::Ui::Windows::TextInput
     }
 
     // 0x004CE8B6
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseUp(Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case widx::close:
+            case Widx::kClose:
                 WindowManager::close(&window);
                 break;
-            case widx::ok:
+            case Widx::kOk:
                 inputSession.sanitizeInput();
                 auto caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
                 if (caller != nullptr)
