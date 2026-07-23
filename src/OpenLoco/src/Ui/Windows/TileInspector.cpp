@@ -59,30 +59,27 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
     static constexpr Ui::Size kWindowSize = { 350, 200 };
 
-    namespace widx
+    enum widx
     {
-        enum
-        {
-            frame,
-            title,
-            close,
-            panel,
-            xPos,
-            xPosDecrease,
-            xPosIncrease,
-            yPos,
-            yPosDecrease,
-            yPosIncrease,
-            select,
-            nameTypeHeader,
-            baseHeightHeader,
-            clearHeightHeader,
-            directionHeader,
-            ghostHeader,
-            scrollview,
-            detailsGroup,
-        };
-    }
+        frame,
+        title,
+        close,
+        panel,
+        xPos,
+        xPosDecrease,
+        xPosIncrease,
+        yPos,
+        yPosDecrease,
+        yPosIncrease,
+        select,
+        nameTypeHeader,
+        baseHeightHeader,
+        clearHeightHeader,
+        directionHeader,
+        ghostHeader,
+        scrollview,
+        detailsGroup,
+    };
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),

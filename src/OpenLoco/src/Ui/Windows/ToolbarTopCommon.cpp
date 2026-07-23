@@ -37,11 +37,11 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         auto interface = ObjectManager::get<InterfaceSkinObject>();
         if (_lastTownOption == 0)
         {
-            self.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_towns);
+            self.widgets[Common::widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_towns);
         }
         else
         {
-            self.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_industries);
+            self.widgets[Common::widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_industries);
         }
     }
 
@@ -55,10 +55,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
         auto lastRoadOption = getGameState().lastRoadOption;
 
-        if (!self.widgets[Widx::road_menu].hidden && lastRoadOption != 0xFF)
+        if (!self.widgets[widx::road_menu].hidden && lastRoadOption != 0xFF)
         {
-            uint32_t x = self.widgets[Widx::road_menu].left + self.x;
-            uint32_t y = self.widgets[Widx::road_menu].top + self.y;
+            uint32_t x = self.widgets[widx::road_menu].left + self.x;
+            uint32_t y = self.widgets[widx::road_menu].top + self.y;
             uint32_t fgImage = 0;
 
             // Figure out what icon to show on the button face.
@@ -78,7 +78,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
             auto interface = ObjectManager::get<InterfaceSkinObject>();
             uint32_t bgImage = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, self.getColour(WindowColour::tertiary).c());
 
-            if (Input::isDropdownActive(Ui::WindowType::topToolbar, self.number, Widx::road_menu))
+            if (Input::isDropdownActive(Ui::WindowType::topToolbar, self.number, widx::road_menu))
             {
                 y++;
                 bgImage++;
@@ -86,7 +86,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
             drawingCtx.drawImage(x, y, fgImage);
 
-            y = self.widgets[Widx::road_menu].top + self.y;
+            y = self.widgets[widx::road_menu].top + self.y;
             drawingCtx.drawImage(x, y, bgImage);
         }
     }
@@ -490,27 +490,27 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     {
         switch (widgetIndex)
         {
-            case Widx::zoom_menu:
+            case widx::zoom_menu:
                 zoomMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
-            case Widx::rotate_menu:
+            case widx::rotate_menu:
                 rotateMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
-            case Widx::view_menu:
+            case widx::view_menu:
                 viewMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
-            case Widx::terraform_menu:
+            case widx::terraform_menu:
                 terraformMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
-            case Widx::road_menu:
+            case widx::road_menu:
                 roadMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
-            case Widx::towns_menu:
+            case widx::towns_menu:
                 townsMenuDropdown(window, widgetIndex, itemIndex);
                 break;
         }
@@ -521,27 +521,27 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     {
         switch (widgetIndex)
         {
-            case Widx::zoom_menu:
+            case widx::zoom_menu:
                 zoomMenuMouseDown(window, widgetIndex);
                 break;
 
-            case Widx::rotate_menu:
+            case widx::rotate_menu:
                 rotateMenuMouseDown(window, widgetIndex);
                 break;
 
-            case Widx::view_menu:
+            case widx::view_menu:
                 viewMenuMouseDown(window, widgetIndex);
                 break;
 
-            case Widx::terraform_menu:
+            case widx::terraform_menu:
                 terraformMenuMouseDown(window, widgetIndex);
                 break;
 
-            case Widx::road_menu:
+            case widx::road_menu:
                 roadMenuMouseDown(window, widgetIndex);
                 break;
 
-            case Widx::towns_menu:
+            case widx::towns_menu:
                 townsMenuMouseDown(window, widgetIndex);
                 break;
         }
@@ -564,7 +564,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         auto main = WindowManager::getMainWindow();
         if (main == nullptr)
         {
-            window.setDisabledWidgetsAndInvalidate(Widx::zoom_menu | Widx::rotate_menu);
+            window.setDisabledWidgetsAndInvalidate(widx::zoom_menu | widx::rotate_menu);
         }
         else
         {

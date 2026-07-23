@@ -32,13 +32,10 @@
 
 namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
 {
-    namespace Widx
+    enum widx
     {
-        enum
-        {
-            map_generation_menu = Common::Widx::w2,
-        };
-    }
+        map_generation_menu = Common::widx::w2,
+    };
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::ToolbarButton({ 0, 0 }, { 30, 28 }, WindowColour::primary),  // 0
@@ -259,15 +256,15 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     {
         switch (widgetIndex)
         {
-            case Common::Widx::loadsave_menu:
+            case Common::widx::loadsave_menu:
                 loadsaveMenuMouseDown(&window, widgetIndex);
                 break;
 
-            case Common::Widx::audio_menu:
+            case Common::widx::audio_menu:
                 audioMenuMouseDown(&window, widgetIndex);
                 break;
 
-            case Widx::map_generation_menu:
+            case widx::map_generation_menu:
                 mapGenerationMenuMouseDown(&window, widgetIndex);
                 break;
 
@@ -282,15 +279,15 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     {
         switch (widgetIndex)
         {
-            case Common::Widx::loadsave_menu:
+            case Common::widx::loadsave_menu:
                 loadsaveMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
-            case Common::Widx::audio_menu:
+            case Common::widx::audio_menu:
                 audioMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
-            case Widx::map_generation_menu:
+            case widx::map_generation_menu:
                 mapGenerationMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
@@ -305,40 +302,40 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     {
         uint32_t x = std::max(640, Ui::width()) - 1;
 
-        Common::rightAlignTabs(&window, x, { Common::Widx::towns_menu });
+        Common::rightAlignTabs(&window, x, { Common::widx::towns_menu });
         x -= 11;
-        Common::rightAlignTabs(&window, x, { Common::Widx::road_menu, Common::Widx::terraform_menu });
+        Common::rightAlignTabs(&window, x, { Common::widx::road_menu, Common::widx::terraform_menu });
 
         const bool isLandscapeEditor = EditorController::getCurrentStep() == EditorController::Step::landscapeEditor;
 
-        window.widgets[Common::Widx::zoom_menu].hidden = !isLandscapeEditor;
-        window.widgets[Common::Widx::rotate_menu].hidden = !isLandscapeEditor;
-        window.widgets[Common::Widx::view_menu].hidden = !isLandscapeEditor;
-        window.widgets[Common::Widx::terraform_menu].hidden = !isLandscapeEditor;
-        window.widgets[Widx::map_generation_menu].hidden = !isLandscapeEditor;
-        window.widgets[Common::Widx::towns_menu].hidden = !isLandscapeEditor;
-        window.widgets[Common::Widx::road_menu].hidden = !(isLandscapeEditor && getGameState().lastRoadOption != 0xFF);
+        window.widgets[Common::widx::zoom_menu].hidden = !isLandscapeEditor;
+        window.widgets[Common::widx::rotate_menu].hidden = !isLandscapeEditor;
+        window.widgets[Common::widx::view_menu].hidden = !isLandscapeEditor;
+        window.widgets[Common::widx::terraform_menu].hidden = !isLandscapeEditor;
+        window.widgets[widx::map_generation_menu].hidden = !isLandscapeEditor;
+        window.widgets[Common::widx::towns_menu].hidden = !isLandscapeEditor;
+        window.widgets[Common::widx::road_menu].hidden = !(isLandscapeEditor && getGameState().lastRoadOption != 0xFF);
 
         auto interface = ObjectManager::get<InterfaceSkinObject>();
         if (!Audio::isAudioEnabled())
         {
-            window.activatedWidgets |= (1 << Common::Widx::audio_menu);
-            window.widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_inactive, window.getColour(WindowColour::primary).c());
+            window.activatedWidgets |= (1 << Common::widx::audio_menu);
+            window.widgets[Common::widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_inactive, window.getColour(WindowColour::primary).c());
         }
         else
         {
-            window.activatedWidgets &= ~(1 << Common::Widx::audio_menu);
-            window.widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_active, window.getColour(WindowColour::primary).c());
+            window.activatedWidgets &= ~(1 << Common::widx::audio_menu);
+            window.widgets[Common::widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_active, window.getColour(WindowColour::primary).c());
         }
 
-        window.widgets[Common::Widx::loadsave_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_loadsave);
-        window.widgets[Common::Widx::zoom_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_zoom);
-        window.widgets[Common::Widx::rotate_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_rotate);
-        window.widgets[Common::Widx::view_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_view);
+        window.widgets[Common::widx::loadsave_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_loadsave);
+        window.widgets[Common::widx::zoom_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_zoom);
+        window.widgets[Common::widx::rotate_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_rotate);
+        window.widgets[Common::widx::view_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_view);
 
-        window.widgets[Common::Widx::terraform_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_terraform);
-        window.widgets[Widx::map_generation_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_cogwheels);
-        window.widgets[Common::Widx::road_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque);
+        window.widgets[Common::widx::terraform_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_terraform);
+        window.widgets[widx::map_generation_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_cogwheels);
+        window.widgets[Common::widx::road_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque);
 
         Common::prepareTownWidget(window);
     }

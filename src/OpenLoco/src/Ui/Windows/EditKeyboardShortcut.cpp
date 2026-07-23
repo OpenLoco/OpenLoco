@@ -34,19 +34,16 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
 
     static const WindowEventList& getEvents();
 
-    namespace Widx
+    enum widx
     {
-        enum
-        {
-            frame,
-            caption,
-            close,
-            panel,
-            description,
-            shortcutName,
-            pressedKeys,
-        };
-    }
+        frame,
+        caption,
+        close,
+        panel,
+        description,
+        shortcutName,
+        pressedKeys,
+    };
 
     // 0x004BF7B9
     Window* open(const uint8_t shortcutIndex)
@@ -119,17 +116,17 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
     static void prepareDraw(Window& self)
     {
         {
-            auto args = FormatArguments(self.widgets[Widx::description].textArgs);
+            auto args = FormatArguments(self.widgets[widx::description].textArgs);
             args.push(StringIds::empty);
         }
 
         {
-            auto args = FormatArguments(self.widgets[Widx::shortcutName].textArgs);
+            auto args = FormatArguments(self.widgets[widx::shortcutName].textArgs);
             args.push(ShortcutManager::getName(static_cast<Shortcut>(_editingShortcutIndex)));
         }
 
         {
-            auto args = FormatArguments(self.widgets[Widx::pressedKeys].textArgs);
+            auto args = FormatArguments(self.widgets[widx::pressedKeys].textArgs);
             Input::Shortcuts::pushModifierStrings(args, _pressedModifiers);
         }
     }
@@ -145,7 +142,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
     {
         switch (widgetIndex)
         {
-            case Widx::close:
+            case widx::close:
                 WindowManager::close(&self);
                 return;
         }

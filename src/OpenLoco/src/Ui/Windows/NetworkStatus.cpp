@@ -17,7 +17,7 @@
 
 namespace OpenLoco::Ui::Windows::NetworkStatus
 {
-    enum Widx
+    enum widx
     {
         frame,
         caption,
@@ -90,7 +90,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
     {
         switch (widgetIndex)
         {
-            case Widx::closeBtn:
+            case widx::closeBtn:
                 WindowManager::close(&window);
                 break;
         }

@@ -30,22 +30,19 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 {
     static constexpr Ui::Size kWindowSize = { 610, 412 };
 
-    namespace widx
+    enum widx
     {
-        enum
-        {
-            frame,
-            title,
-            close,
-            panel,
-            tab0,
-            tab1,
-            tab2,
-            tab3,
-            tab4,
-            list,
-        };
-    }
+        frame,
+        title,
+        close,
+        panel,
+        tab0,
+        tab1,
+        tab2,
+        tab3,
+        tab4,
+        list,
+    };
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 610, 412 }, WindowColour::primary),

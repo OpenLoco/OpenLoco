@@ -40,18 +40,15 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 
     );
 
-    namespace Widx
+    enum widx
     {
-        enum
-        {
-            frame,
-            caption,
-            close_button,
-            panel,
-            list,
-            reset_keys_btn,
-        };
-    }
+        frame,
+        caption,
+        close_button,
+        panel,
+        list,
+        reset_keys_btn,
+    };
 
     static void resetShortcuts(Window* self);
     static const WindowEventList& getEvents();
@@ -206,11 +203,11 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     {
         switch (widgetIndex)
         {
-            case Widx::close_button:
+            case widx::close_button:
                 WindowManager::close(&self);
                 return;
 
-            case Widx::reset_keys_btn:
+            case widx::reset_keys_btn:
                 resetShortcuts(&self);
                 return;
         }

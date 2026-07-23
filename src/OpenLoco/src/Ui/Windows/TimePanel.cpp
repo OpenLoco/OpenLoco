@@ -32,20 +32,17 @@ namespace OpenLoco::Ui::Windows::TimePanel
     // When paused, the time panel will alternate between displaying "* paused *" and the in-game date every this many ticks.
     static constexpr auto kPausedStatusTextDuration = 30;
 
-    namespace Widx
+    enum widx
     {
-        enum
-        {
-            outer_frame,
-            inner_frame,
-            map_chat_menu,
-            date_btn,
-            pause_btn,
-            normal_speed_btn,
-            fast_forward_btn,
-            extra_fast_forward_btn,
-        };
-    }
+        outer_frame,
+        inner_frame,
+        map_chat_menu,
+        date_btn,
+        pause_btn,
+        normal_speed_btn,
+        fast_forward_btn,
+        extra_fast_forward_btn,
+    };
 
     static void formatChallenge(FormatArguments& args);
     static void sendChatMessage(const char* str);
@@ -90,52 +87,52 @@ namespace OpenLoco::Ui::Windows::TimePanel
     // 0x004396A4
     static void prepareDraw([[maybe_unused]] Window& window)
     {
-        window.widgets[Widx::inner_frame].hidden = true;
-        window.widgets[Widx::pause_btn].image = Gfx::recolour(ImageIds::speed_pause);
-        window.widgets[Widx::normal_speed_btn].image = Gfx::recolour(ImageIds::speed_normal);
-        window.widgets[Widx::fast_forward_btn].image = Gfx::recolour(ImageIds::speed_fast_forward);
-        window.widgets[Widx::extra_fast_forward_btn].image = Gfx::recolour(ImageIds::speed_extra_fast_forward);
+        window.widgets[widx::inner_frame].hidden = true;
+        window.widgets[widx::pause_btn].image = Gfx::recolour(ImageIds::speed_pause);
+        window.widgets[widx::normal_speed_btn].image = Gfx::recolour(ImageIds::speed_normal);
+        window.widgets[widx::fast_forward_btn].image = Gfx::recolour(ImageIds::speed_fast_forward);
+        window.widgets[widx::extra_fast_forward_btn].image = Gfx::recolour(ImageIds::speed_extra_fast_forward);
 
         if (SceneManager::isPaused())
         {
-            window.widgets[Widx::pause_btn].image = Gfx::recolour(ImageIds::speed_pause_active);
+            window.widgets[widx::pause_btn].image = Gfx::recolour(ImageIds::speed_pause_active);
         }
         else if (SceneManager::getGameSpeed() == GameSpeed::Normal)
         {
-            window.widgets[Widx::normal_speed_btn].image = Gfx::recolour(ImageIds::speed_normal_active);
+            window.widgets[widx::normal_speed_btn].image = Gfx::recolour(ImageIds::speed_normal_active);
         }
         else if (SceneManager::getGameSpeed() == GameSpeed::FastForward)
         {
-            window.widgets[Widx::fast_forward_btn].image = Gfx::recolour(ImageIds::speed_fast_forward_active);
+            window.widgets[widx::fast_forward_btn].image = Gfx::recolour(ImageIds::speed_fast_forward_active);
         }
         else if (SceneManager::getGameSpeed() == GameSpeed::ExtraFastForward)
         {
-            window.widgets[Widx::extra_fast_forward_btn].image = Gfx::recolour(ImageIds::speed_extra_fast_forward_active);
+            window.widgets[widx::extra_fast_forward_btn].image = Gfx::recolour(ImageIds::speed_extra_fast_forward_active);
         }
 
         if (SceneManager::isNetworked())
         {
-            window.widgets[Widx::fast_forward_btn].hidden = true;
-            window.widgets[Widx::extra_fast_forward_btn].hidden = true;
+            window.widgets[widx::fast_forward_btn].hidden = true;
+            window.widgets[widx::extra_fast_forward_btn].hidden = true;
 
-            window.widgets[Widx::pause_btn].left = 38;
-            window.widgets[Widx::pause_btn].right = 57;
-            window.widgets[Widx::normal_speed_btn].left = 58;
-            window.widgets[Widx::normal_speed_btn].right = 77;
+            window.widgets[widx::pause_btn].left = 38;
+            window.widgets[widx::pause_btn].right = 57;
+            window.widgets[widx::normal_speed_btn].left = 58;
+            window.widgets[widx::normal_speed_btn].right = 77;
         }
         else
         {
-            window.widgets[Widx::fast_forward_btn].hidden = false;
-            window.widgets[Widx::extra_fast_forward_btn].hidden = false;
+            window.widgets[widx::fast_forward_btn].hidden = false;
+            window.widgets[widx::extra_fast_forward_btn].hidden = false;
 
-            window.widgets[Widx::pause_btn].left = 18;
-            window.widgets[Widx::pause_btn].right = 37;
-            window.widgets[Widx::normal_speed_btn].left = 38;
-            window.widgets[Widx::normal_speed_btn].right = 57;
-            window.widgets[Widx::fast_forward_btn].left = 58;
-            window.widgets[Widx::fast_forward_btn].right = 77;
-            window.widgets[Widx::extra_fast_forward_btn].left = 78;
-            window.widgets[Widx::extra_fast_forward_btn].right = 97;
+            window.widgets[widx::pause_btn].left = 18;
+            window.widgets[widx::pause_btn].right = 37;
+            window.widgets[widx::normal_speed_btn].left = 38;
+            window.widgets[widx::normal_speed_btn].right = 57;
+            window.widgets[widx::fast_forward_btn].left = 58;
+            window.widgets[widx::fast_forward_btn].right = 77;
+            window.widgets[widx::extra_fast_forward_btn].left = 78;
+            window.widgets[widx::extra_fast_forward_btn].right = 97;
         }
     }
 
@@ -152,7 +149,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     {
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        Widget& frame = self.widgets[Widx::outer_frame];
+        Widget& frame = self.widgets[widx::outer_frame];
         drawingCtx.drawRect(self.x + frame.left, self.y + frame.top, frame.width(), frame.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
 
         // Draw widgets.
@@ -174,19 +171,19 @@ namespace OpenLoco::Ui::Windows::TimePanel
         }
 
         auto c = self.getColour(WindowColour::primary).opaque();
-        if (Input::isHovering(WindowType::timeToolbar, 0, Widx::date_btn))
+        if (Input::isHovering(WindowType::timeToolbar, 0, widx::date_btn))
         {
             c = Colour::white;
         }
 
         {
-            auto& widget = _widgets[Widx::date_btn];
+            auto& widget = _widgets[widx::date_btn];
             auto point = Point(self.x + widget.midX(), self.y + widget.top + 1);
             tr.drawStringCentred(point, c, format, args);
         }
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        drawingCtx.drawImage(self.x + _widgets[Widx::map_chat_menu].left - 2, self.y + _widgets[Widx::map_chat_menu].top - 1, skin->img + map_sprites_by_rotation[WindowManager::getCurrentRotation()]);
+        drawingCtx.drawImage(self.x + _widgets[widx::map_chat_menu].left - 2, self.y + _widgets[widx::map_chat_menu].top - 1, skin->img + map_sprites_by_rotation[WindowManager::getCurrentRotation()]);
     }
 
     // 0x004398FB
@@ -194,19 +191,19 @@ namespace OpenLoco::Ui::Windows::TimePanel
     {
         switch (widgetIndex)
         {
-            case Widx::date_btn:
+            case widx::date_btn:
                 MessageWindow::open();
                 break;
-            case Widx::pause_btn:
+            case widx::pause_btn:
                 GameCommands::doCommand(GameCommands::PauseGameArgs{}, GameCommands::Flags::apply);
                 break;
-            case Widx::normal_speed_btn:
+            case widx::normal_speed_btn:
                 GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::Normal }, GameCommands::Flags::apply);
                 break;
-            case Widx::fast_forward_btn:
+            case widx::fast_forward_btn:
                 GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::FastForward }, GameCommands::Flags::apply);
                 break;
-            case Widx::extra_fast_forward_btn:
+            case widx::extra_fast_forward_btn:
                 GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::ExtraFastForward }, GameCommands::Flags::apply);
                 break;
         }
@@ -239,7 +236,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         args.push(opponent->name);
 
         // TODO: convert this to a builder pattern, with chainable functions to set the different string ids and arguments
-        TextInput::openTextInput(&self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, Widx::map_chat_menu, args);
+        TextInput::openTextInput(&self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, widx::map_chat_menu, args);
     }
 
     // 0x0043A72F
@@ -278,7 +275,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     {
         switch (widgetIndex)
         {
-            case Widx::map_chat_menu:
+            case widx::map_chat_menu:
                 mapMouseDown(&window, widgetIndex);
                 break;
         }
@@ -289,7 +286,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     {
         switch (widgetIndex)
         {
-            case Widx::map_chat_menu:
+            case widx::map_chat_menu:
                 mapDropdown(&w, widgetIndex, item_index);
                 break;
         }
@@ -300,7 +297,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     {
         switch (widgetIdx)
         {
-            case Widx::date_btn:
+            case widx::date_btn:
                 Ui::ToolTip::setTooltipTimeout(2000);
                 break;
         }
@@ -314,7 +311,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         FormatArguments args{};
         switch (widgetIndex)
         {
-            case Widx::date_btn:
+            case widx::date_btn:
                 formatChallenge(args);
                 break;
         }
@@ -366,7 +363,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     {
         switch (widgetIndex)
         {
-            case Widx::map_chat_menu:
+            case widx::map_chat_menu:
                 sendChatMessage(str);
                 break;
         }
@@ -411,7 +408,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
             redrawScheduled = false;
 
             // Invalidating the inner frame widget effectively causes the entire time panel to be redrawn.
-            WindowManager::invalidateWidget(WindowType::timeToolbar, 0, Widx::inner_frame);
+            WindowManager::invalidateWidget(WindowType::timeToolbar, 0, widx::inner_frame);
         }
     }
 

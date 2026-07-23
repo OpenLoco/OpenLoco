@@ -27,17 +27,14 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 {
     static constexpr Ui::Size kWindowSize = { 140, 27 };
 
-    namespace Widx
+    enum widx
     {
-        enum
-        {
-            outer_frame,
-            inner_frame,
-            player,
-            company_value,
-            performanceIndex
-        };
-    }
+        outer_frame,
+        inner_frame,
+        player,
+        company_value,
+        performanceIndex
+    };
 
     static void performanceIndexMouseUp();
     static void companyValueTooltip(FormatArguments& args);
@@ -177,7 +174,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     // 0x004393E7
     static void prepareDraw(Window& window)
     {
-        window.widgets[Widx::inner_frame].hidden = true;
+        window.widgets[widx::inner_frame].hidden = true;
     }
 
     // 0x43944B
@@ -185,7 +182,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     {
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        Widget& frame = window.widgets[Widx::outer_frame];
+        Widget& frame = window.widgets[widx::outer_frame];
         drawingCtx.drawRect(window.x + frame.left, window.y + frame.top, frame.width(), frame.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
 
         // Draw widgets.
@@ -214,7 +211,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             }
 
             auto colour = window.getColour(WindowColour::primary).opaque();
-            if (Input::isHovering(WindowType::playerInfoToolbar, 0, Widx::company_value))
+            if (Input::isHovering(WindowType::playerInfoToolbar, 0, widx::company_value))
             {
                 colour = Colour::white;
             }
@@ -239,7 +236,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             }
 
             auto colour = window.getColour(WindowColour::primary).opaque();
-            if (Input::isHovering(WindowType::playerInfoToolbar, 0, Widx::performanceIndex))
+            if (Input::isHovering(WindowType::playerInfoToolbar, 0, widx::performanceIndex))
             {
                 colour = Colour::white;
             }
@@ -257,10 +254,10 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     {
         switch (widgetIndex)
         {
-            case Widx::company_value:
+            case widx::company_value:
                 companyValueMouseUp();
                 break;
-            case Widx::performanceIndex:
+            case widx::performanceIndex:
                 performanceIndexMouseUp();
                 break;
         }
@@ -271,7 +268,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     {
         switch (widgetIndex)
         {
-            case Widx::player:
+            case widx::player:
                 playerMouseDown(&window, widgetIndex);
                 break;
         }
@@ -282,7 +279,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     {
         switch (widgetIndex)
         {
-            case Widx::player:
+            case widx::player:
                 playerDropdownClick(item_index);
                 break;
         }
@@ -305,8 +302,8 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     {
         switch (widgetIndex)
         {
-            case Widx::company_value:
-            case Widx::performanceIndex:
+            case widx::company_value:
+            case widx::performanceIndex:
                 Ui::ToolTip::setTooltipTimeout(2000);
                 break;
         }
@@ -319,11 +316,11 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         FormatArguments args{};
         switch (widgetIndex)
         {
-            case Widx::company_value:
+            case widx::company_value:
                 companyValueTooltip(args);
                 break;
 
-            case Widx::performanceIndex:
+            case widx::performanceIndex:
                 performanceIndexTooltip(args);
                 break;
         }
@@ -362,7 +359,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         if (_redrawScheduled)
         {
             _redrawScheduled = false;
-            WindowManager::invalidateWidget(WindowType::playerInfoToolbar, 0, Widx::inner_frame);
+            WindowManager::invalidateWidget(WindowType::playerInfoToolbar, 0, widx::inner_frame);
         }
     }
 

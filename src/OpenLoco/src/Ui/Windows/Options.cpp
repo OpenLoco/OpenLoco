@@ -76,23 +76,20 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Common
     {
-        namespace Widx
+        enum widx
         {
-            enum
-            {
-                frame = 0,
-                caption = 1,
-                close_button = 2,
-                panel = 3,
-                tab_display,
-                tab_rendering,
-                tab_audio,
-                tab_regional,
-                tab_controls,
-                tab_company,
-                tab_miscellaneous,
-            };
-        }
+            frame = 0,
+            caption = 1,
+            close_button = 2,
+            panel = 3,
+            tab_display,
+            tab_rendering,
+            tab_audio,
+            tab_regional,
+            tab_controls,
+            tab_company,
+            tab_miscellaneous,
+        };
 
         enum tab
         {
@@ -110,13 +107,13 @@ namespace OpenLoco::Ui::Windows::Options
             self.activatedWidgets = 1ULL << (self.currentTab + 4);
             self.disabledWidgets = 0;
 
-            self.widgets[Widx::frame].right = self.width - 1;
-            self.widgets[Widx::frame].bottom = self.height - 1;
-            self.widgets[Widx::panel].right = self.width - 1;
-            self.widgets[Widx::panel].bottom = self.height - 1;
-            self.widgets[Widx::caption].right = self.width - 2;
-            self.widgets[Widx::close_button].left = self.width - 15;
-            self.widgets[Widx::close_button].right = self.width - 15 + 12;
+            self.widgets[widx::frame].right = self.width - 1;
+            self.widgets[widx::frame].bottom = self.height - 1;
+            self.widgets[widx::panel].right = self.width - 1;
+            self.widgets[widx::panel].bottom = self.height - 1;
+            self.widgets[widx::caption].right = self.width - 2;
+            self.widgets[widx::close_button].left = self.width - 15;
+            self.widgets[widx::close_button].right = self.width - 15 + 12;
 
             disableTabsByCurrentScene(self);
 
@@ -145,7 +142,7 @@ namespace OpenLoco::Ui::Windows::Options
                     imageId += kRedenderingTabImageIds[0];
                 }
 
-                self.widgets[Widx::tab_rendering].image = imageId;
+                self.widgets[widx::tab_rendering].image = imageId;
             }
 
             static constexpr uint32_t globe_tab_ids[] = {
@@ -190,13 +187,13 @@ namespace OpenLoco::Ui::Windows::Options
                 {
                     imageId = globe_tab_ids[(self.frameNo / 2) % 32];
                 }
-                self.widgets[Widx::tab_regional].image = imageId;
+                self.widgets[widx::tab_regional].image = imageId;
             }
 
             // Company tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_company;
-                self.widgets[Widx::tab_company].image = imageId;
+                self.widgets[widx::tab_company].image = imageId;
             }
         }
 
@@ -209,17 +206,17 @@ namespace OpenLoco::Ui::Windows::Options
         {
             switch (wi)
             {
-                case Widx::close_button:
+                case widx::close_button:
                     WindowManager::close(&self);
                     return true;
 
-                case Widx::tab_display:
-                case Widx::tab_rendering:
-                case Widx::tab_audio:
-                case Widx::tab_regional:
-                case Widx::tab_controls:
-                case Widx::tab_company:
-                case Widx::tab_miscellaneous:
+                case widx::tab_display:
+                case widx::tab_rendering:
+                case widx::tab_audio:
+                case widx::tab_regional:
+                case widx::tab_controls:
+                case widx::tab_company:
+                case widx::tab_miscellaneous:
                     Options::tabOnMouseUp(self, wi);
                     return true;
 
@@ -251,27 +248,24 @@ namespace OpenLoco::Ui::Windows::Options
     {
         static constexpr Ui::Size kWindowSize = { 400, 151 };
 
-        namespace Widx
+        enum widx
         {
-            enum
-            {
-                frame_hardware = Common::Widx::tab_miscellaneous + 1,
-                screen_mode_label,
-                screen_mode,
-                screen_mode_btn,
-                display_resolution_label,
-                display_resolution,
-                display_resolution_btn,
-                display_scale_label,
-                display_scale,
-                display_scale_down_btn,
-                display_scale_up_btn,
-                frame_limit_label,
-                frame_limit,
-                frame_limit_btn,
-                show_fps,
-            };
-        }
+            frame_hardware = Common::widx::tab_miscellaneous + 1,
+            screen_mode_label,
+            screen_mode,
+            screen_mode_btn,
+            display_resolution_label,
+            display_resolution,
+            display_resolution_btn,
+            display_scale_label,
+            display_scale,
+            display_scale_down_btn,
+            display_scale_up_btn,
+            frame_limit_label,
+            frame_limit,
+            frame_limit_btn,
+            show_fps,
+        };
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_display),
@@ -303,7 +297,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             switch (wi)
             {
-                case Widx::show_fps:
+                case widx::show_fps:
                 {
                     auto& cfg = OpenLoco::Config::get();
                     cfg.showFPS ^= 1;
@@ -319,20 +313,20 @@ namespace OpenLoco::Ui::Windows::Options
         {
             if (Config::get().display.mode == Config::ScreenMode::fullscreen)
             {
-                self.disabledWidgets &= ~(1ULL << Widx::display_resolution) | (1ULL << Widx::display_resolution_btn);
-                self.disabledWidgets &= ~((1ULL << Widx::display_resolution) | (1ULL << Widx::display_resolution_btn));
+                self.disabledWidgets &= ~(1ULL << widx::display_resolution) | (1ULL << widx::display_resolution_btn);
+                self.disabledWidgets &= ~((1ULL << widx::display_resolution) | (1ULL << widx::display_resolution_btn));
             }
             else
             {
-                self.disabledWidgets |= ((1ULL << Widx::display_resolution) | (1ULL << Widx::display_resolution_btn));
-                self.disabledWidgets |= (1ULL << Widx::display_resolution) | (1ULL << Widx::display_resolution_btn);
+                self.disabledWidgets |= ((1ULL << widx::display_resolution) | (1ULL << widx::display_resolution_btn));
+                self.disabledWidgets |= (1ULL << widx::display_resolution) | (1ULL << widx::display_resolution_btn);
             }
         }
 #endif
 
         static void screenModeMouseDown(const Window& self, [[maybe_unused]] WidgetIndex_t wi)
         {
-            auto& dropdown = self.widgets[Widx::screen_mode];
+            auto& dropdown = self.widgets[widx::screen_mode];
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 3, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::options_mode_windowed);
@@ -368,7 +362,7 @@ namespace OpenLoco::Ui::Windows::Options
         {
             std::vector<Resolution> resolutions = getFullscreenResolutions();
 
-            auto& dropdown = self.widgets[Widx::display_resolution];
+            auto& dropdown = self.widgets[widx::display_resolution];
             Dropdown::showText2(self.x + dropdown.left, self.y + dropdown.top, dropdown.width(), dropdown.height(), self.getColour(WindowColour::secondary), resolutions.size(), 0x80);
 
             auto& cfg = Config::get();
@@ -397,7 +391,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void frameLimitMouseDown(const Window& self, [[maybe_unused]] WidgetIndex_t wi)
         {
-            auto& dropdown = self.widgets[Widx::frame_limit];
+            auto& dropdown = self.widgets[widx::frame_limit];
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width(), dropdown.height(), self.getColour(WindowColour::secondary), 3, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::frameRateLimitInternal);
@@ -441,7 +435,7 @@ namespace OpenLoco::Ui::Windows::Options
             if (drawingEngine.setVSync(config.display.vsync))
             {
                 Config::write();
-                WindowManager::invalidateWidget(self.type, self.number, Widx::frame_limit);
+                WindowManager::invalidateWidget(self.type, self.number, widx::frame_limit);
             }
         }
 
@@ -457,19 +451,19 @@ namespace OpenLoco::Ui::Windows::Options
         {
             switch (wi)
             {
-                case Widx::screen_mode_btn:
+                case widx::screen_mode_btn:
                     screenModeMouseDown(self, wi);
                     break;
-                case Widx::display_resolution_btn:
+                case widx::display_resolution_btn:
                     resolutionMouseDown(self, wi);
                     break;
-                case Widx::display_scale_down_btn:
+                case widx::display_scale_down_btn:
                     displayScaleMouseDown(self, wi, -OpenLoco::Ui::ScaleFactor::step);
                     break;
-                case Widx::display_scale_up_btn:
+                case widx::display_scale_up_btn:
                     displayScaleMouseDown(self, wi, OpenLoco::Ui::ScaleFactor::step);
                     break;
-                case Widx::frame_limit_btn:
+                case widx::frame_limit_btn:
                     frameLimitMouseDown(self, wi);
                     break;
             }
@@ -480,13 +474,13 @@ namespace OpenLoco::Ui::Windows::Options
         {
             switch (wi)
             {
-                case Widx::screen_mode_btn:
+                case widx::screen_mode_btn:
                     screenModeDropdown(self, item_index);
                     break;
-                case Widx::display_resolution_btn:
+                case widx::display_resolution_btn:
                     resolutionDropdown(self, item_index);
                     break;
-                case Widx::frame_limit_btn:
+                case widx::frame_limit_btn:
                     frameLimitDropdown(self, item_index);
                     break;
             }
@@ -520,11 +514,11 @@ namespace OpenLoco::Ui::Windows::Options
                     screenModeStringId = StringIds::options_mode_fullscreen_window;
                     break;
             }
-            self.widgets[Widx::screen_mode].text = screenModeStringId;
+            self.widgets[widx::screen_mode].text = screenModeStringId;
 
             // Resolution.
             {
-                auto args = FormatArguments(self.widgets[Widx::display_resolution].textArgs);
+                auto args = FormatArguments(self.widgets[widx::display_resolution].textArgs);
                 auto& resolution = Config::get().display.fullscreenResolution;
                 args.push<uint16_t>(resolution.width);
                 args.push<uint16_t>(resolution.height);
@@ -532,7 +526,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             // Scale.
             {
-                auto args = FormatArguments(self.widgets[Widx::display_scale].textArgs);
+                auto args = FormatArguments(self.widgets[widx::display_scale].textArgs);
                 args.push<int32_t>(Config::get().scaleFactor * 100);
             }
 
@@ -548,21 +542,21 @@ namespace OpenLoco::Ui::Windows::Options
                     frameLimitStringId = StringIds::frameRateLimitUnrestricted;
                 }
             }
-            self.widgets[Widx::frame_limit].text = frameLimitStringId;
+            self.widgets[widx::frame_limit].text = frameLimitStringId;
 
             if (Config::get().showFPS)
             {
-                self.activatedWidgets |= (1ULL << Widx::show_fps);
+                self.activatedWidgets |= (1ULL << widx::show_fps);
             }
 
             if (Config::get().scaleFactor <= OpenLoco::Ui::ScaleFactor::min)
             {
-                self.disabledWidgets |= (1ULL << Widx::display_scale_down_btn);
+                self.disabledWidgets |= (1ULL << widx::display_scale_down_btn);
             }
 
             if (Config::get().scaleFactor >= OpenLoco::Ui::ScaleFactor::max)
             {
-                self.disabledWidgets |= (1ULL << Widx::display_scale_up_btn);
+                self.disabledWidgets |= (1ULL << widx::display_scale_up_btn);
             }
 
 #if !(defined(__APPLE__) && defined(__MACH__))
@@ -581,16 +575,16 @@ namespace OpenLoco::Ui::Windows::Options
         {
             if (Config::get().display.mode != Config::ScreenMode::fullscreen)
             {
-                self.disabledWidgets = (1ULL << Display::Widx::display_resolution) | (1ULL << Display::Widx::display_resolution_btn);
+                self.disabledWidgets = (1ULL << Display::widx::display_resolution) | (1ULL << Display::widx::display_resolution_btn);
             }
 
 #if !(defined(__APPLE__) && defined(__MACH__))
             Display::screenModeToggleEnabled(self);
 #else
-            self.disabledWidgets |= (1ULL << Display::Widx::screen_mode)
-                | (1ULL << Display::Widx::screen_mode_btn)
-                | (1ULL << Display::Widx::display_resolution)
-                | (1ULL << Display::Widx::display_resolution_btn);
+            self.disabledWidgets |= (1ULL << Display::widx::screen_mode)
+                | (1ULL << Display::widx::screen_mode_btn)
+                | (1ULL << Display::widx::display_resolution)
+                | (1ULL << Display::widx::display_resolution_btn);
 #endif
         }
 
@@ -614,31 +608,28 @@ namespace OpenLoco::Ui::Windows::Options
     {
         static constexpr Ui::Size kWindowSize = { 400, 218 };
 
-        namespace Widx
+        enum widx
         {
-            enum
-            {
-                frame_map_rendering = Common::Widx::tab_miscellaneous + 1,
-                vehicles_min_scale_label,
-                vehicles_min_scale,
-                vehicles_min_scale_btn,
-                station_names_min_scale_label,
-                station_names_min_scale,
-                station_names_min_scale_btn,
-                construction_marker_label,
-                construction_marker,
-                construction_marker_btn,
-                landscape_smoothing,
-                gridlines_on_landscape,
-                cash_popup_rendering,
-                show_company_ai_planning,
+            frame_map_rendering = Common::widx::tab_miscellaneous + 1,
+            vehicles_min_scale_label,
+            vehicles_min_scale,
+            vehicles_min_scale_btn,
+            station_names_min_scale_label,
+            station_names_min_scale,
+            station_names_min_scale_btn,
+            construction_marker_label,
+            construction_marker,
+            construction_marker_btn,
+            landscape_smoothing,
+            gridlines_on_landscape,
+            cash_popup_rendering,
+            show_company_ai_planning,
 
-                frame_user_interface,
-                window_frame_style_label,
-                window_frame_style,
-                window_frame_style_btn,
-            };
-        }
+            frame_user_interface,
+            window_frame_style_label,
+            window_frame_style,
+            window_frame_style_btn,
+        };
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::title_options_rendering),
@@ -674,7 +665,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             switch (wi)
             {
-                case Widx::landscape_smoothing:
+                case widx::landscape_smoothing:
                 {
                     auto& cfg = OpenLoco::Config::get();
                     cfg.landscapeSmoothing ^= true;
@@ -683,7 +674,7 @@ namespace OpenLoco::Ui::Windows::Options
                     return;
                 }
 
-                case Widx::gridlines_on_landscape:
+                case widx::gridlines_on_landscape:
                 {
                     auto& cfg = OpenLoco::Config::get();
                     cfg.gridlinesOnLandscape ^= true;
@@ -704,7 +695,7 @@ namespace OpenLoco::Ui::Windows::Options
                     return;
                 }
 
-                case Widx::cash_popup_rendering:
+                case widx::cash_popup_rendering:
                 {
                     auto& cfg = OpenLoco::Config::get();
                     cfg.cashPopupRendering = !cfg.cashPopupRendering;
@@ -713,7 +704,7 @@ namespace OpenLoco::Ui::Windows::Options
                     return;
                 }
 
-                case Widx::show_company_ai_planning:
+                case widx::show_company_ai_planning:
                 {
                     auto& cfg = OpenLoco::Config::get();
                     cfg.showAiPlanningAsGhosts = !cfg.showAiPlanningAsGhosts;
@@ -728,7 +719,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004BFE2E
         static void constructionMarkerMouseDown(const Window& self, [[maybe_unused]] WidgetIndex_t wi)
         {
-            auto& dropdown = self.widgets[Widx::construction_marker];
+            auto& dropdown = self.widgets[widx::construction_marker];
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 2, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::white);
@@ -760,7 +751,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004BFEBE
         static void vehicleZoomMouseDown(const Window& self, [[maybe_unused]] WidgetIndex_t wi)
         {
-            auto& dropdown = self.widgets[Widx::vehicles_min_scale];
+            auto& dropdown = self.widgets[widx::vehicles_min_scale];
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 4, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::full_scale);
@@ -794,7 +785,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004BFF72
         static void stationNamesScaleMouseDown(const Window& self, [[maybe_unused]] WidgetIndex_t wi)
         {
-            auto& dropdown = self.widgets[Widx::station_names_min_scale];
+            auto& dropdown = self.widgets[widx::station_names_min_scale];
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 4, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::full_scale);
@@ -825,7 +816,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void windowFrameStyleMouseDown(const Window& self, [[maybe_unused]] WidgetIndex_t wi)
         {
-            auto& dropdown = self.widgets[Widx::window_frame_style];
+            auto& dropdown = self.widgets[widx::window_frame_style];
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 3, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::windowFrameStyleGradient);
@@ -857,16 +848,16 @@ namespace OpenLoco::Ui::Windows::Options
         {
             switch (wi)
             {
-                case Widx::construction_marker_btn:
+                case widx::construction_marker_btn:
                     constructionMarkerMouseDown(self, wi);
                     break;
-                case Widx::vehicles_min_scale_btn:
+                case widx::vehicles_min_scale_btn:
                     vehicleZoomMouseDown(self, wi);
                     break;
-                case Widx::station_names_min_scale_btn:
+                case widx::station_names_min_scale_btn:
                     stationNamesScaleMouseDown(self, wi);
                     break;
-                case Widx::window_frame_style_btn:
+                case widx::window_frame_style_btn:
                     windowFrameStyleMouseDown(self, wi);
                     break;
             }
@@ -877,16 +868,16 @@ namespace OpenLoco::Ui::Windows::Options
         {
             switch (wi)
             {
-                case Widx::construction_marker_btn:
+                case widx::construction_marker_btn:
                     constructionMarkerDropdown(item_index);
                     break;
-                case Widx::vehicles_min_scale_btn:
+                case widx::vehicles_min_scale_btn:
                     vehicleZoomDropdown(item_index);
                     break;
-                case Widx::station_names_min_scale_btn:
+                case widx::station_names_min_scale_btn:
                     stationNamesScaleDropdown(item_index);
                     break;
-                case Widx::window_frame_style_btn:
+                case widx::window_frame_style_btn:
                     windowFrameStyleDropdown(item_index);
                     break;
             }
@@ -909,11 +900,11 @@ namespace OpenLoco::Ui::Windows::Options
 
             if (Config::get().constructionMarker)
             {
-                self.widgets[Widx::construction_marker].text = StringIds::translucent;
+                self.widgets[widx::construction_marker].text = StringIds::translucent;
             }
             else
             {
-                self.widgets[Widx::construction_marker].text = StringIds::white;
+                self.widgets[widx::construction_marker].text = StringIds::white;
             }
 
             static constexpr StringId kScaleStringIds[] = {
@@ -923,8 +914,8 @@ namespace OpenLoco::Ui::Windows::Options
                 StringIds::eighth_scale,
             };
 
-            self.widgets[Widx::vehicles_min_scale].text = kScaleStringIds[Config::get().vehiclesMinScale];
-            self.widgets[Widx::station_names_min_scale].text = kScaleStringIds[Config::get().stationNamesMinScale];
+            self.widgets[widx::vehicles_min_scale].text = kScaleStringIds[Config::get().vehiclesMinScale];
+            self.widgets[widx::station_names_min_scale].text = kScaleStringIds[Config::get().stationNamesMinScale];
 
             static constexpr StringId kWindowStyleStringIds[] = {
                 StringIds::windowFrameStyleGradient,
@@ -932,26 +923,26 @@ namespace OpenLoco::Ui::Windows::Options
                 StringIds::windowFrameStyleTranslucent,
             };
 
-            self.widgets[Widx::window_frame_style].text = kWindowStyleStringIds[enumValue(Config::get().windowFrameStyle)];
+            self.widgets[widx::window_frame_style].text = kWindowStyleStringIds[enumValue(Config::get().windowFrameStyle)];
 
             if (Config::get().landscapeSmoothing)
             {
-                self.activatedWidgets |= (1ULL << Widx::landscape_smoothing);
+                self.activatedWidgets |= (1ULL << widx::landscape_smoothing);
             }
 
             if (Config::get().gridlinesOnLandscape)
             {
-                self.activatedWidgets |= (1ULL << Widx::gridlines_on_landscape);
+                self.activatedWidgets |= (1ULL << widx::gridlines_on_landscape);
             }
 
             if (Config::get().cashPopupRendering)
             {
-                self.activatedWidgets |= (1ULL << Widx::cash_popup_rendering);
+                self.activatedWidgets |= (1ULL << widx::cash_popup_rendering);
             }
 
             if (Config::get().showAiPlanningAsGhosts)
             {
-                self.activatedWidgets |= (1ULL << Widx::show_company_ai_planning);
+                self.activatedWidgets |= (1ULL << widx::show_company_ai_planning);
             }
         }
 
@@ -1000,30 +991,27 @@ namespace OpenLoco::Ui::Windows::Options
 
         static constexpr Ui::Size kWindowSize = { 366, kVolumeGroupOffset + kVolumeGroupHeight + 4 };
 
-        namespace Widx
+        enum widx
         {
-            enum
-            {
-                frame_sound = Common::Widx::tab_miscellaneous + 1,
-                audio_device,
-                audio_device_btn,
-                play_title_music,
+            frame_sound = Common::widx::tab_miscellaneous + 1,
+            audio_device,
+            audio_device_btn,
+            play_title_music,
 
-                frame_volume,
-                volume_master_label,
-                volume_master,
-                volume_music_label,
-                volume_music,
-                volume_effects_label,
-                volume_effects,
-                volume_vehicles_label,
-                volume_vehicles,
-                volume_ui_label,
-                volume_ui,
-                volume_ambient_label,
-                volume_ambient,
-            };
-        }
+            frame_volume,
+            volume_master_label,
+            volume_master,
+            volume_music_label,
+            volume_music,
+            volume_effects_label,
+            volume_effects,
+            volume_vehicles_label,
+            volume_vehicles,
+            volume_ui_label,
+            volume_ui,
+            volume_ambient_label,
+            volume_ambient,
+        };
 
         static constexpr int32_t getSliderRowY(uint8_t num)
         {
@@ -1067,7 +1055,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             // Audio device
             {
-                auto args = FormatArguments(self.widgets[Widx::audio_device].textArgs);
+                auto args = FormatArguments(self.widgets[widx::audio_device].textArgs);
                 auto audioDeviceName = Audio::getCurrentDeviceName();
                 if (audioDeviceName != nullptr)
                 {
@@ -1083,7 +1071,7 @@ namespace OpenLoco::Ui::Windows::Options
             // Play title music checkbox
             if (Config::get().audio.playTitleMusic)
             {
-                self.activatedWidgets |= (1ULL << Widx::play_title_music);
+                self.activatedWidgets |= (1ULL << widx::play_title_music);
             }
         }
 
@@ -1102,12 +1090,12 @@ namespace OpenLoco::Ui::Windows::Options
         {
             self.draw(drawingCtx);
 
-            drawVolumeSlider(self, drawingCtx, Widx::volume_master, Audio::getChannelVolume(Audio::ChannelId::master));
-            drawVolumeSlider(self, drawingCtx, Widx::volume_music, Audio::getChannelVolume(Audio::ChannelId::music));
-            drawVolumeSlider(self, drawingCtx, Widx::volume_effects, Audio::getChannelVolume(Audio::ChannelId::effects));
-            drawVolumeSlider(self, drawingCtx, Widx::volume_vehicles, Audio::getChannelVolume(Audio::ChannelId::vehicles));
-            drawVolumeSlider(self, drawingCtx, Widx::volume_ui, Audio::getChannelVolume(Audio::ChannelId::ui));
-            drawVolumeSlider(self, drawingCtx, Widx::volume_ambient, Audio::getChannelVolume(Audio::ChannelId::ambient));
+            drawVolumeSlider(self, drawingCtx, widx::volume_master, Audio::getChannelVolume(Audio::ChannelId::master));
+            drawVolumeSlider(self, drawingCtx, widx::volume_music, Audio::getChannelVolume(Audio::ChannelId::music));
+            drawVolumeSlider(self, drawingCtx, widx::volume_effects, Audio::getChannelVolume(Audio::ChannelId::effects));
+            drawVolumeSlider(self, drawingCtx, widx::volume_vehicles, Audio::getChannelVolume(Audio::ChannelId::vehicles));
+            drawVolumeSlider(self, drawingCtx, widx::volume_ui, Audio::getChannelVolume(Audio::ChannelId::ui));
+            drawVolumeSlider(self, drawingCtx, widx::volume_ambient, Audio::getChannelVolume(Audio::ChannelId::ambient));
         }
 
         static void onMouseUp(Window& self, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
@@ -1119,7 +1107,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             switch (wi)
             {
-                case Widx::play_title_music:
+                case widx::play_title_music:
                     playTitleMusicOnMouseUp(self);
                     return;
             }
@@ -1129,15 +1117,15 @@ namespace OpenLoco::Ui::Windows::Options
         {
             switch (wi)
             {
-                case Widx::audio_device_btn:
+                case widx::audio_device_btn:
                     audioDeviceMouseDown(self);
                     break;
-                case Widx::volume_master:
-                case Widx::volume_music:
-                case Widx::volume_effects:
-                case Widx::volume_vehicles:
-                case Widx::volume_ui:
-                case Widx::volume_ambient:
+                case widx::volume_master:
+                case widx::volume_music:
+                case widx::volume_effects:
+                case widx::volume_vehicles:
+                case widx::volume_ui:
+                case widx::volume_ambient:
                     volumeSliderMouseDown(self, wi);
                     break;
             }
@@ -1147,7 +1135,7 @@ namespace OpenLoco::Ui::Windows::Options
         {
             switch (widgetIndex)
             {
-                case Widx::audio_device_btn:
+                case widx::audio_device_btn:
                     audioDeviceDropdown(self, itemIndex);
                     break;
             }
@@ -1159,7 +1147,7 @@ namespace OpenLoco::Ui::Windows::Options
             const auto& devices = Audio::getDevices();
             if (devices.size() != 0)
             {
-                auto& dropdown = self.widgets[Widx::audio_device];
+                auto& dropdown = self.widgets[widx::audio_device];
                 Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), devices.size(), 0x80);
                 for (size_t i = 0; i < devices.size(); i++)
                 {
@@ -1189,7 +1177,7 @@ namespace OpenLoco::Ui::Windows::Options
                     Audio::playMusic(Environment::PathId::css5, config.audio.mainVolume, true);
                 }
 
-                WindowManager::invalidateWidget(self.type, self.number, Widx::audio_device);
+                WindowManager::invalidateWidget(self.type, self.number, widx::audio_device);
             }
         }
 
@@ -1219,17 +1207,17 @@ namespace OpenLoco::Ui::Windows::Options
         {
             switch (wi)
             {
-                case Widx::volume_master:
+                case widx::volume_master:
                     return Audio::ChannelId::master;
-                case Widx::volume_music:
+                case widx::volume_music:
                     return Audio::ChannelId::music;
-                case Widx::volume_effects:
+                case widx::volume_effects:
                     return Audio::ChannelId::effects;
-                case Widx::volume_vehicles:
+                case widx::volume_vehicles:
                     return Audio::ChannelId::vehicles;
-                case Widx::volume_ui:
+                case widx::volume_ui:
                     return Audio::ChannelId::ui;
-                case Widx::volume_ambient:
+                case widx::volume_ambient:
                     return Audio::ChannelId::ambient;
                 default:
                     return Audio::ChannelId::master;
@@ -1308,29 +1296,26 @@ namespace OpenLoco::Ui::Windows::Options
     {
         static constexpr Ui::Size kWindowSize = { 366, 167 };
 
-        namespace Widx
+        enum widx
         {
-            enum
-            {
-                language_label = Common::Widx::tab_miscellaneous + 1,
-                language,
-                language_btn,
-                distance_label,
-                distance_speed,
-                distance_speed_btn,
-                heights_label,
-                heights,
-                heights_btn,
-                currency_label,
-                currency,
-                currency_btn,
-                preferred_currency_label,
-                preferred_currency,
-                preferred_currency_btn,
-                preferred_currency_for_new_games,
-                preferred_currency_always
-            };
-        }
+            language_label = Common::widx::tab_miscellaneous + 1,
+            language,
+            language_btn,
+            distance_label,
+            distance_speed,
+            distance_speed_btn,
+            heights_label,
+            heights,
+            heights_btn,
+            currency_label,
+            currency,
+            currency_btn,
+            preferred_currency_label,
+            preferred_currency,
+            preferred_currency_btn,
+            preferred_currency_for_new_games,
+            preferred_currency_always
+        };
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_regional),
@@ -1376,7 +1361,7 @@ namespace OpenLoco::Ui::Windows::Options
             Common::prepareDraw(self);
 
             {
-                auto args = FormatArguments(self.widgets[Widx::language].textArgs);
+                auto args = FormatArguments(self.widgets[widx::language].textArgs);
 
                 auto& language = Localisation::getDescriptorForLanguage(Config::get().language);
                 _chosenLanguage = language.nativeName;
@@ -1384,7 +1369,7 @@ namespace OpenLoco::Ui::Windows::Options
             }
 
             {
-                auto args = FormatArguments(self.widgets[Widx::distance_speed].textArgs);
+                auto args = FormatArguments(self.widgets[widx::distance_speed].textArgs);
 
                 StringId current_measurement_format = StringIds::imperial;
                 if (OpenLoco::Config::get().measurementFormat == Config::MeasurementFormat::metric)
@@ -1396,12 +1381,12 @@ namespace OpenLoco::Ui::Windows::Options
             }
 
             {
-                auto args = FormatArguments(self.widgets[Widx::currency].textArgs);
+                auto args = FormatArguments(self.widgets[widx::currency].textArgs);
                 args.push(ObjectManager::get<CurrencyObject>()->name);
             }
 
             {
-                auto args = FormatArguments(self.widgets[Widx::heights].textArgs);
+                auto args = FormatArguments(self.widgets[widx::heights].textArgs);
 
                 StringId current_height_units = StringIds::height_units;
                 if (!OpenLoco::Config::get().showHeightAsUnits)
@@ -1414,18 +1399,18 @@ namespace OpenLoco::Ui::Windows::Options
 
             if (Config::get().usePreferredCurrencyForNewGames)
             {
-                self.activatedWidgets |= (1ULL << Widx::preferred_currency_for_new_games);
+                self.activatedWidgets |= (1ULL << widx::preferred_currency_for_new_games);
             }
 
             if (Config::get().usePreferredCurrencyAlways)
             {
-                self.activatedWidgets |= (1ULL << Widx::preferred_currency_always);
+                self.activatedWidgets |= (1ULL << widx::preferred_currency_always);
             }
 
             if (Config::get().usePreferredCurrencyAlways || SceneManager::isTitleMode())
             {
-                self.disabledWidgets |= (1ULL << Widx::currency);
-                self.disabledWidgets |= (1ULL << Widx::currency_btn);
+                self.disabledWidgets |= (1ULL << widx::currency);
+                self.disabledWidgets |= (1ULL << widx::currency_btn);
             }
         }
 
@@ -1445,11 +1430,11 @@ namespace OpenLoco::Ui::Windows::Options
 
             switch (wi)
             {
-                case Widx::preferred_currency_for_new_games:
+                case widx::preferred_currency_for_new_games:
                     preferredCurrencyNewGameMouseUp(self);
                     return;
 
-                case Widx::preferred_currency_always:
+                case widx::preferred_currency_always:
                     preferredCurrencyAlwaysMouseUp(self);
                     return;
             }
@@ -1460,19 +1445,19 @@ namespace OpenLoco::Ui::Windows::Options
         {
             switch (wi)
             {
-                case Widx::language_btn:
+                case widx::language_btn:
                     languageMouseDown(self);
                     break;
-                case Widx::heights_btn:
+                case widx::heights_btn:
                     heightsLabelsMouseDown(self);
                     break;
-                case Widx::distance_speed_btn:
+                case widx::distance_speed_btn:
                     distanceSpeedMouseDown(self);
                     break;
-                case Widx::currency_btn:
+                case widx::currency_btn:
                     currencyMouseDown(self);
                     break;
-                case Widx::preferred_currency_btn:
+                case widx::preferred_currency_btn:
                     preferredCurrencyMouseDown(self);
                     break;
             }
@@ -1483,23 +1468,23 @@ namespace OpenLoco::Ui::Windows::Options
         {
             switch (widgetIndex)
             {
-                case Widx::language_btn:
+                case widx::language_btn:
                     languageDropdown(self, itemIndex);
                     break;
 
-                case Widx::heights_btn:
+                case widx::heights_btn:
                     heightsLabelsDropdown(self, itemIndex);
                     break;
 
-                case Widx::distance_speed_btn:
+                case widx::distance_speed_btn:
                     distanceSpeedDropdown(self, itemIndex);
                     break;
 
-                case Widx::currency_btn:
+                case widx::currency_btn:
                     currencyDropdown(self, itemIndex);
                     break;
 
-                case Widx::preferred_currency_btn:
+                case widx::preferred_currency_btn:
                     preferredCurrencyDropdown(self, itemIndex);
                     break;
             }
@@ -1510,7 +1495,7 @@ namespace OpenLoco::Ui::Windows::Options
             const auto lds = Localisation::getLanguageDescriptors();
             uint8_t numLanguages = static_cast<uint8_t>(lds.size());
 
-            auto& dropdown = self.widgets[Widx::language];
+            auto& dropdown = self.widgets[widx::language];
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), numLanguages - 1, 0x80);
 
             std::string& current_language = Config::get().language;
@@ -1551,7 +1536,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C0C73
         static void currencyMouseDown(const Window& self)
         {
-            auto& dropdown = self.widgets[Widx::currency];
+            auto& dropdown = self.widgets[widx::currency];
             auto numItems = ObjectManager::getNumAvailableObjectsByType(ObjectType::currency);
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), numItems, 0x80);
 
@@ -1605,7 +1590,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C0DCF
         static void preferredCurrencyMouseDown(const Window& self)
         {
-            auto& dropdown = self.widgets[Widx::preferred_currency];
+            auto& dropdown = self.widgets[widx::preferred_currency];
             auto numItems = ObjectManager::getNumAvailableObjectsByType(ObjectType::currency);
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), numItems, 0x80);
 
@@ -1679,7 +1664,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C0F49
         static void distanceSpeedMouseDown(const Window& self)
         {
-            auto& dropdown = self.widgets[Widx::distance_speed];
+            auto& dropdown = self.widgets[widx::distance_speed];
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 2, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::imperial);
@@ -1712,7 +1697,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C0FFA
         static void heightsLabelsMouseDown(const Window& self)
         {
-            auto& dropdown = self.widgets[Widx::heights];
+            auto& dropdown = self.widgets[widx::heights];
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 2, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::height_units);
@@ -1774,16 +1759,13 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Controls
     {
-        namespace Widx
+        enum widx
         {
-            enum
-            {
-                edge_scrolling = Common::Widx::tab_miscellaneous + 1,
-                zoom_to_cursor,
-                invertRightMouseViewPan,
-                customize_keys
-            };
-        }
+            edge_scrolling = Common::widx::tab_miscellaneous + 1,
+            zoom_to_cursor,
+            invert_right_mouse_view_pan,
+            customize_keys
+        };
 
         static constexpr Ui::Size kWindowSize = { 366, 114 };
 
@@ -1807,18 +1789,18 @@ namespace OpenLoco::Ui::Windows::Options
 
             Common::prepareDraw(self);
 
-            self.activatedWidgets &= ~(1ULL << Widx::edge_scrolling | 1ULL << Widx::zoom_to_cursor | 1ULL << Widx::invertRightMouseViewPan);
+            self.activatedWidgets &= ~(1ULL << widx::edge_scrolling | 1ULL << widx::zoom_to_cursor | 1ULL << widx::invert_right_mouse_view_pan);
             if (Config::get().edgeScrolling)
             {
-                self.activatedWidgets |= (1ULL << Widx::edge_scrolling);
+                self.activatedWidgets |= (1ULL << widx::edge_scrolling);
             }
             if (Config::get().zoomToCursor)
             {
-                self.activatedWidgets |= (1ULL << Widx::zoom_to_cursor);
+                self.activatedWidgets |= (1ULL << widx::zoom_to_cursor);
             }
             if (Config::get().invertRightMouseViewPan)
             {
-                self.activatedWidgets |= (1ULL << Widx::invertRightMouseViewPan);
+                self.activatedWidgets |= (1ULL << widx::invert_right_mouse_view_pan);
             }
         }
 
@@ -1838,19 +1820,19 @@ namespace OpenLoco::Ui::Windows::Options
 
             switch (wi)
             {
-                case Widx::customize_keys:
+                case widx::customize_keys:
                     openKeyboardShortcuts();
                     break;
 
-                case Widx::edge_scrolling:
+                case widx::edge_scrolling:
                     edgeScrollingMouseUp(self);
                     break;
 
-                case Widx::zoom_to_cursor:
+                case widx::zoom_to_cursor:
                     zoomToCursorMouseUp(self);
                     break;
 
-                case Widx::invertRightMouseViewPan:
+                case widx::invert_right_mouse_view_pan:
                     invertRightMouseViewPan(self);
                     break;
             }
@@ -1916,28 +1898,25 @@ namespace OpenLoco::Ui::Windows::Options
     {
         static constexpr Ui::Size kWindowSize = { 420, 187 };
 
-        namespace Widx
+        enum widx
         {
-            enum
-            {
-                groupPreferredOwner = Common::Widx::tab_miscellaneous + 1,
+            groupPreferredOwner = Common::widx::tab_miscellaneous + 1,
 
-                usePreferredOwnerFace,
-                changeOwnerFaceBtn,
-                labelOwnerFace,
+            usePreferredOwnerFace,
+            changeOwnerFaceBtn,
+            labelOwnerFace,
 
-                usePreferredOwnerName,
-                changeOwnerNameBtn,
-                labelPreferredOwnerName,
+            usePreferredOwnerName,
+            changeOwnerNameBtn,
+            labelPreferredOwnerName,
 
-                ownerFacePreview,
+            ownerFacePreview,
 
-                groupPreferredCompany,
-                usePreferredCompanyName,
-                changeCompanyNameBtn,
-                labelPreferredCompanyName,
-            };
-        }
+            groupPreferredCompany,
+            usePreferredCompanyName,
+            changeCompanyNameBtn,
+            labelPreferredCompanyName,
+        };
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_company),
@@ -2015,34 +1994,34 @@ namespace OpenLoco::Ui::Windows::Options
 
             if (Config::get().usePreferredOwnerName)
             {
-                self.activatedWidgets |= (1ULL << Widx::usePreferredOwnerName);
+                self.activatedWidgets |= (1ULL << widx::usePreferredOwnerName);
             }
             else
             {
-                self.disabledWidgets |= (1ULL << Widx::changeOwnerNameBtn);
+                self.disabledWidgets |= (1ULL << widx::changeOwnerNameBtn);
             }
 
             if (Config::get().usePreferredOwnerFace)
             {
-                self.activatedWidgets |= (1ULL << Widx::usePreferredOwnerFace);
+                self.activatedWidgets |= (1ULL << widx::usePreferredOwnerFace);
             }
             else
             {
-                self.disabledWidgets |= ((1ULL << Widx::changeOwnerFaceBtn) | (1ULL << Widx::ownerFacePreview));
+                self.disabledWidgets |= ((1ULL << widx::changeOwnerFaceBtn) | (1ULL << widx::ownerFacePreview));
 
-                self.widgets[Widx::labelOwnerFace].text = StringIds::empty;
-                self.widgets[Widx::ownerFacePreview].content = Widget::kContentNull;
+                self.widgets[widx::labelOwnerFace].text = StringIds::empty;
+                self.widgets[widx::ownerFacePreview].content = Widget::kContentNull;
 
                 self.object = nullptr;
             }
 
             if (Config::get().usePreferredCompanyName)
             {
-                self.activatedWidgets |= (1ULL << Widx::usePreferredCompanyName);
+                self.activatedWidgets |= (1ULL << widx::usePreferredCompanyName);
             }
             else
             {
-                self.disabledWidgets |= (1ULL << Widx::changeCompanyNameBtn);
+                self.disabledWidgets |= (1ULL << widx::changeCompanyNameBtn);
             }
 
             // Set preferred owner name.
@@ -2053,7 +2032,7 @@ namespace OpenLoco::Ui::Windows::Options
                 strcpy(buffer, playerName);
                 buffer[strlen(playerName)] = '\0';
 
-                FormatArguments args{ self.widgets[Widx::labelPreferredOwnerName].textArgs };
+                FormatArguments args{ self.widgets[widx::labelPreferredOwnerName].textArgs };
                 args.push(StringIds::buffer_2039);
             }
 
@@ -2062,12 +2041,12 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 const CompetitorObject* competitor = reinterpret_cast<CompetitorObject*>(self.object);
 
-                self.widgets[Widx::labelOwnerFace].text = StringIds::currentPreferredFace;
+                self.widgets[widx::labelOwnerFace].text = StringIds::currentPreferredFace;
 
-                FormatArguments args{ self.widgets[Widx::labelOwnerFace].textArgs };
+                FormatArguments args{ self.widgets[widx::labelOwnerFace].textArgs };
                 args.push(competitor->firstName);
 
-                self.widgets[Widx::ownerFacePreview].image = ImageId(competitor->images[0]).withIndexOffset(1).withPrimary(Colour::black).toUInt32();
+                self.widgets[widx::ownerFacePreview].image = ImageId(competitor->images[0]).withIndexOffset(1).withPrimary(Colour::black).toUInt32();
             }
 
             loadPreferredFace(self);
@@ -2080,7 +2059,7 @@ namespace OpenLoco::Ui::Windows::Options
                 strcpy(buffer, companyName);
                 buffer[strlen(companyName)] = '\0';
 
-                FormatArguments args{ self.widgets[Widx::labelPreferredCompanyName].textArgs };
+                FormatArguments args{ self.widgets[widx::labelPreferredCompanyName].textArgs };
                 args.push(StringIds::buffer_2040);
             }
         }
@@ -2098,7 +2077,7 @@ namespace OpenLoco::Ui::Windows::Options
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
-            TextInput::openTextInput(&self, StringIds::preferred_owner_name, StringIds::enter_preferred_owner_name, StringIds::buffer_2039, Widx::usePreferredOwnerName, {});
+            TextInput::openTextInput(&self, StringIds::preferred_owner_name, StringIds::enter_preferred_owner_name, StringIds::buffer_2039, widx::usePreferredOwnerName, {});
         }
 
         // 0x004C135F
@@ -2142,7 +2121,7 @@ namespace OpenLoco::Ui::Windows::Options
             strcpy(buffer, companyName);
             buffer[strlen(companyName)] = '\0';
 
-            TextInput::openTextInput(&self, StringIds::preferred_company_name, StringIds::enter_preferred_company_name, StringIds::buffer_2040, Widx::usePreferredCompanyName, {});
+            TextInput::openTextInput(&self, StringIds::preferred_company_name, StringIds::enter_preferred_company_name, StringIds::buffer_2040, widx::usePreferredCompanyName, {});
         }
 
         static void usePreferredCompanyNameMouseUp(Window& self)
@@ -2168,28 +2147,28 @@ namespace OpenLoco::Ui::Windows::Options
 
             switch (wi)
             {
-                case Widx::usePreferredOwnerName:
+                case widx::usePreferredOwnerName:
                     usePreferredOwnerNameMouseUp(self);
                     break;
 
-                case Widx::changeOwnerNameBtn:
+                case widx::changeOwnerNameBtn:
                     changePreferredName(self);
                     break;
 
-                case Widx::usePreferredOwnerFace:
+                case widx::usePreferredOwnerFace:
                     usePreferredOwnerFaceMouseUp(self);
                     break;
 
-                case Widx::changeOwnerFaceBtn:
-                case Widx::ownerFacePreview:
+                case widx::changeOwnerFaceBtn:
+                case widx::ownerFacePreview:
                     changePreferredFace(self);
                     break;
 
-                case Widx::usePreferredCompanyName:
+                case widx::usePreferredCompanyName:
                     usePreferredCompanyNameMouseUp(self);
                     break;
 
-                case Widx::changeCompanyNameBtn:
+                case widx::changeCompanyNameBtn:
                     changePreferredCompany(self);
                     break;
             }
@@ -2227,11 +2206,11 @@ namespace OpenLoco::Ui::Windows::Options
         {
             switch (i)
             {
-                case Widx::usePreferredOwnerName:
+                case widx::usePreferredOwnerName:
                     setPreferredName(self, str);
                     break;
 
-                case Widx::usePreferredCompanyName:
+                case widx::usePreferredCompanyName:
                     setPreferredCompanyName(self, str);
                     break;
             }
@@ -2264,32 +2243,29 @@ namespace OpenLoco::Ui::Windows::Options
     {
         static constexpr Ui::Size kWindowSize = { 420, 266 };
 
-        namespace Widx
+        enum widx
         {
-            enum
-            {
-                groupCheats = Common::Widx::tab_miscellaneous + 1,
-                enableCheatsToolbarButton,
-                disableAICompanies,
-                disableTownExpansion,
+            groupCheats = Common::widx::tab_miscellaneous + 1,
+            enableCheatsToolbarButton,
+            disableAICompanies,
+            disableTownExpansion,
 
-                groupVehicleBehaviour,
-                disable_vehicle_breakdowns,
-                disable_vehicle_load_penalty,
-                disableStationSizeLimit,
-                trainsReverseAtSignals,
+            groupVehicleBehaviour,
+            disable_vehicle_breakdowns,
+            disable_vehicle_load_penalty,
+            disableStationSizeLimit,
+            trainsReverseAtSignals,
 
-                groupSaveOptions,
-                autosave_frequency_label,
-                autosave_frequency,
-                autosave_frequency_btn,
-                autosave_amount_label,
-                autosave_amount,
-                autosave_amount_down_btn,
-                autosave_amount_up_btn,
-                export_plugin_objects,
-            };
-        }
+            groupSaveOptions,
+            autosave_frequency_label,
+            autosave_frequency,
+            autosave_frequency_btn,
+            autosave_amount_label,
+            autosave_amount,
+            autosave_amount_down_btn,
+            autosave_amount_up_btn,
+            export_plugin_objects,
+        };
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_miscellaneous),
@@ -2336,45 +2312,45 @@ namespace OpenLoco::Ui::Windows::Options
 
             if (Config::get().cheatsMenuEnabled)
             {
-                self.activatedWidgets |= (1ULL << Widx::enableCheatsToolbarButton);
+                self.activatedWidgets |= (1ULL << widx::enableCheatsToolbarButton);
             }
 
             if (Config::get().breakdownsDisabled)
             {
-                self.activatedWidgets |= (1ULL << Widx::disable_vehicle_breakdowns);
+                self.activatedWidgets |= (1ULL << widx::disable_vehicle_breakdowns);
             }
 
             if (Config::get().trainsReverseAtSignals)
             {
-                self.activatedWidgets |= (1ULL << Widx::trainsReverseAtSignals);
+                self.activatedWidgets |= (1ULL << widx::trainsReverseAtSignals);
             }
 
             if (Config::get().disableVehicleLoadPenaltyCheat)
             {
-                self.activatedWidgets |= (1ULL << Widx::disable_vehicle_load_penalty);
+                self.activatedWidgets |= (1ULL << widx::disable_vehicle_load_penalty);
             }
 
             if (Config::get().disableStationSizeLimit)
             {
-                self.activatedWidgets |= (1ULL << Widx::disableStationSizeLimit);
+                self.activatedWidgets |= (1ULL << widx::disableStationSizeLimit);
             }
 
             if (Config::get().companyAIDisabled)
             {
-                self.activatedWidgets |= (1ULL << Widx::disableAICompanies);
+                self.activatedWidgets |= (1ULL << widx::disableAICompanies);
             }
 
             if (Config::get().townGrowthDisabled)
             {
-                self.activatedWidgets |= (1ULL << Widx::disableTownExpansion);
+                self.activatedWidgets |= (1ULL << widx::disableTownExpansion);
             }
 
             if (Config::get().exportObjectsWithSaves)
             {
-                self.activatedWidgets |= (1ULL << Widx::export_plugin_objects);
+                self.activatedWidgets |= (1ULL << widx::export_plugin_objects);
             }
 
-            self.widgets[Widx::export_plugin_objects].hidden = !ObjectManager::getCustomObjectsInIndexStatus();
+            self.widgets[widx::export_plugin_objects].hidden = !ObjectManager::getCustomObjectsInIndexStatus();
         }
 
         static void drawDropdownContent(const Window& self, Gfx::DrawingContext& drawingCtx, WidgetIndex_t widgetIndex, StringId stringId, int32_t value)
@@ -2410,11 +2386,11 @@ namespace OpenLoco::Ui::Windows::Options
                     stringId = StringIds::autosave_every_x_months;
                     break;
             }
-            drawDropdownContent(self, drawingCtx, Widx::autosave_frequency, stringId, freq);
+            drawDropdownContent(self, drawingCtx, widx::autosave_frequency, stringId, freq);
 
             // Value for autosave amount
             auto scale = Config::get().autosaveAmount;
-            drawDropdownContent(self, drawingCtx, Widx::autosave_amount, StringIds::int_32, scale);
+            drawDropdownContent(self, drawingCtx, widx::autosave_amount, StringIds::int_32, scale);
         }
 
         static void changeAutosaveAmount(Window& self, int32_t delta)
@@ -2511,37 +2487,37 @@ namespace OpenLoco::Ui::Windows::Options
 
             switch (wi)
             {
-                case Widx::enableCheatsToolbarButton:
+                case widx::enableCheatsToolbarButton:
                     enableCheatsToolbarButtonMouseUp(self);
                     break;
 
-                case Widx::disable_vehicle_breakdowns:
+                case widx::disable_vehicle_breakdowns:
                     disableVehicleBreakdownsMouseUp(self);
                     break;
 
-                case Widx::trainsReverseAtSignals:
+                case widx::trainsReverseAtSignals:
                     trainsReverseAtSignalsMouseUp(self);
                     break;
 
-                case Widx::disable_vehicle_load_penalty:
+                case widx::disable_vehicle_load_penalty:
                     Config::get().disableVehicleLoadPenaltyCheat = !Config::get().disableVehicleLoadPenaltyCheat;
-                    WindowManager::invalidateWidget(self.type, self.number, Widx::disable_vehicle_load_penalty);
+                    WindowManager::invalidateWidget(self.type, self.number, widx::disable_vehicle_load_penalty);
                     break;
 
-                case Widx::disableStationSizeLimit:
+                case widx::disableStationSizeLimit:
                     Config::get().disableStationSizeLimit ^= true;
-                    WindowManager::invalidateWidget(self.type, self.number, Widx::disableStationSizeLimit);
+                    WindowManager::invalidateWidget(self.type, self.number, widx::disableStationSizeLimit);
                     break;
 
-                case Widx::disableAICompanies:
+                case widx::disableAICompanies:
                     disableAICompaniesMouseUp(self);
                     break;
 
-                case Widx::disableTownExpansion:
+                case widx::disableTownExpansion:
                     disableTownExpansionMouseUp(self);
                     break;
 
-                case Widx::export_plugin_objects:
+                case widx::export_plugin_objects:
                     exportPluginObjectsMouseUp(self);
                     break;
             }
@@ -2551,13 +2527,13 @@ namespace OpenLoco::Ui::Windows::Options
         {
             switch (wi)
             {
-                case Widx::autosave_frequency_btn:
-                    showAutosaveFrequencyDropdown(self, Widx::autosave_frequency);
+                case widx::autosave_frequency_btn:
+                    showAutosaveFrequencyDropdown(self, widx::autosave_frequency);
                     break;
-                case Widx::autosave_amount_down_btn:
+                case widx::autosave_amount_down_btn:
                     changeAutosaveAmount(self, -1);
                     break;
-                case Widx::autosave_amount_up_btn:
+                case widx::autosave_amount_up_btn:
                     changeAutosaveAmount(self, 1);
                     break;
             }
@@ -2567,7 +2543,7 @@ namespace OpenLoco::Ui::Windows::Options
         {
             switch (wi)
             {
-                case Widx::autosave_frequency_btn:
+                case widx::autosave_frequency_btn:
                     handleAutosaveFrequencyDropdown(self, item_index);
                     break;
             }
@@ -2655,14 +2631,14 @@ namespace OpenLoco::Ui::Windows::Options
 
     static void disableTabsByCurrentScene(Window& self)
     {
-        self.disabledWidgets &= ~(1ULL << Common::Widx::tab_regional);
+        self.disabledWidgets &= ~(1ULL << Common::widx::tab_regional);
 
         if (SceneManager::isEditorMode() && Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
         {
-            self.disabledWidgets |= 1ULL << Common::Widx::tab_regional;
+            self.disabledWidgets |= 1ULL << Common::widx::tab_regional;
         }
 
-        Widget::leftAlignTabs(self, Common::Widx::tab_display, Common::Widx::tab_miscellaneous);
+        Widget::leftAlignTabs(self, Common::widx::tab_display, Common::widx::tab_miscellaneous);
     }
 
     // 0x004C1519 & 0x00474911
@@ -2725,7 +2701,7 @@ namespace OpenLoco::Ui::Windows::Options
     {
         auto* window = open();
 
-        window->callOnMouseUp(Common::Widx::tab_audio, window->widgets[Common::Widx::tab_audio].id);
+        window->callOnMouseUp(Common::widx::tab_audio, window->widgets[Common::widx::tab_audio].id);
 
         return window;
     }
@@ -2755,7 +2731,7 @@ namespace OpenLoco::Ui::Windows::Options
         ToolManager::toolCancel(self.type, self.number);
 
         TextInput::sub_4CE6C9(self.type, self.number);
-        self.currentTab = wi - Common::Widx::tab_display;
+        self.currentTab = wi - Common::widx::tab_display;
         self.frameNo = 0;
         self.flags &= ~(WindowFlags::maximised);
         self.disabledWidgets = 0;
@@ -2777,7 +2753,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         else if ((Common::tab)self.currentTab == Common::tab::audio)
         {
-            self.holdableWidgets = (1ULL << AudioTab::Widx::volume_master) | (1ULL << AudioTab::Widx::volume_music) | (1ULL << AudioTab::Widx::volume_effects) | (1ULL << AudioTab::Widx::volume_vehicles) | (1ULL << AudioTab::Widx::volume_ui) | (1ULL << AudioTab::Widx::volume_ambient);
+            self.holdableWidgets = (1ULL << AudioTab::widx::volume_master) | (1ULL << AudioTab::widx::volume_music) | (1ULL << AudioTab::widx::volume_effects) | (1ULL << AudioTab::widx::volume_vehicles) | (1ULL << AudioTab::widx::volume_ui) | (1ULL << AudioTab::widx::volume_ambient);
         }
 
         self.callOnResize();

@@ -45,13 +45,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     // Temporary storage for railroad menu dropdown (populated in mouseDown, consumed in dropdown callback)
     static AvailableTracksAndRoads _railroadMenuObjects;
 
-    namespace Widx
+    enum widx
     {
-        enum
-        {
-            cheats_menu = Common::Widx::w2
-        };
-    }
+        cheats_menu = Common::widx::w2
+    };
 
     static constexpr auto _widgets = makeWidgets(
         Widgets::ToolbarButton({ 0, 0 }, { 30, 28 }, WindowColour::primary),
@@ -734,35 +731,35 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     {
         switch (widgetIndex)
         {
-            case Common::Widx::loadsave_menu:
+            case Common::widx::loadsave_menu:
                 loadsaveMenuMouseDown(&window, widgetIndex);
                 break;
 
-            case Common::Widx::audio_menu:
+            case Common::widx::audio_menu:
                 audioMenuMouseDown(&window, widgetIndex);
                 break;
 
-            case Widx::cheats_menu:
+            case widx::cheats_menu:
                 cheatsMenuMouseDown(&window, widgetIndex);
                 break;
 
-            case Common::Widx::railroad_menu:
+            case Common::widx::railroad_menu:
                 railroadMenuMouseDown(&window, widgetIndex);
                 break;
 
-            case Common::Widx::port_menu:
+            case Common::widx::port_menu:
                 portMenuMouseDown(&window, widgetIndex);
                 break;
 
-            case Common::Widx::build_vehicles_menu:
+            case Common::widx::build_vehicles_menu:
                 buildVehiclesMenuMouseDown(&window, widgetIndex);
                 break;
 
-            case Common::Widx::vehicles_menu:
+            case Common::widx::vehicles_menu:
                 vehiclesMenuMouseDown(&window, widgetIndex);
                 break;
 
-            case Common::Widx::stations_menu:
+            case Common::widx::stations_menu:
                 stationsMenuMouseDown(&window, widgetIndex);
                 break;
 
@@ -776,35 +773,35 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     {
         switch (widgetIndex)
         {
-            case Common::Widx::loadsave_menu:
+            case Common::widx::loadsave_menu:
                 loadsaveMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
-            case Common::Widx::audio_menu:
+            case Common::widx::audio_menu:
                 audioMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
-            case Widx::cheats_menu:
+            case widx::cheats_menu:
                 cheatsMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
-            case Common::Widx::railroad_menu:
+            case Common::widx::railroad_menu:
                 railroadMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
-            case Common::Widx::port_menu:
+            case Common::widx::port_menu:
                 portMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
-            case Common::Widx::build_vehicles_menu:
+            case Common::widx::build_vehicles_menu:
                 buildVehiclesMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
-            case Common::Widx::vehicles_menu:
+            case Common::widx::vehicles_menu:
                 vehiclesMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
-            case Common::Widx::stations_menu:
+            case Common::widx::stations_menu:
                 stationsMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
@@ -821,10 +818,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
         const auto companyColour = CompanyManager::getPlayerCompanyColour();
 
-        if (!window.widgets[Common::Widx::railroad_menu].hidden)
+        if (!window.widgets[Common::widx::railroad_menu].hidden)
         {
-            uint32_t x = window.widgets[Common::Widx::railroad_menu].left + window.x;
-            uint32_t y = window.widgets[Common::Widx::railroad_menu].top + window.y;
+            uint32_t x = window.widgets[Common::widx::railroad_menu].left + window.x;
+            uint32_t y = window.widgets[Common::widx::railroad_menu].top + window.y;
             uint32_t fg_image = 0;
 
             // Figure out what icon to show on the button face.
@@ -845,7 +842,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, window.getColour(WindowColour::tertiary).c());
 
             y--;
-            if (Input::isDropdownActive(Ui::WindowType::topToolbar, window.number, Common::Widx::railroad_menu))
+            if (Input::isDropdownActive(Ui::WindowType::topToolbar, window.number, Common::widx::railroad_menu))
             {
                 y++;
                 bg_image++;
@@ -853,13 +850,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             drawingCtx.drawImage(x, y, fg_image);
 
-            y = window.widgets[Common::Widx::railroad_menu].top + window.y;
+            y = window.widgets[Common::widx::railroad_menu].top + window.y;
             drawingCtx.drawImage(x, y, bg_image);
         }
 
         {
-            uint32_t x = window.widgets[Common::Widx::vehicles_menu].left + window.x;
-            uint32_t y = window.widgets[Common::Widx::vehicles_menu].top + window.y;
+            uint32_t x = window.widgets[Common::widx::vehicles_menu].left + window.x;
+            uint32_t y = window.widgets[Common::widx::vehicles_menu].top + window.y;
 
             static constexpr uint32_t button_face_image_ids[] = {
                 InterfaceSkin::ImageIds::vehicle_train_frame_0,
@@ -875,7 +872,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, window.getColour(WindowColour::quaternary).c());
 
             y--;
-            if (Input::isDropdownActive(Ui::WindowType::topToolbar, window.number, Common::Widx::vehicles_menu))
+            if (Input::isDropdownActive(Ui::WindowType::topToolbar, window.number, Common::widx::vehicles_menu))
             {
                 y++;
                 bg_image++;
@@ -883,13 +880,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             drawingCtx.drawImage(x, y, fg_image);
 
-            y = window.widgets[Common::Widx::vehicles_menu].top + window.y;
+            y = window.widgets[Common::widx::vehicles_menu].top + window.y;
             drawingCtx.drawImage(x, y, bg_image);
         }
 
         {
-            uint32_t x = window.widgets[Common::Widx::build_vehicles_menu].left + window.x;
-            uint32_t y = window.widgets[Common::Widx::build_vehicles_menu].top + window.y;
+            uint32_t x = window.widgets[Common::widx::build_vehicles_menu].left + window.x;
+            uint32_t y = window.widgets[Common::widx::build_vehicles_menu].top + window.y;
 
             static constexpr uint32_t kBuildVehicleImages[] = {
                 InterfaceSkin::ImageIds::toolbar_build_vehicle_train,
@@ -904,7 +901,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             auto interface = ObjectManager::get<InterfaceSkinObject>();
             uint32_t fg_image = Gfx::recolour(interface->img + kBuildVehicleImages[enumValue(getGameState().lastBuildVehiclesOption)], companyColour);
 
-            if (Input::isDropdownActive(Ui::WindowType::topToolbar, window.number, Common::Widx::build_vehicles_menu))
+            if (Input::isDropdownActive(Ui::WindowType::topToolbar, window.number, Common::widx::build_vehicles_menu))
             {
                 fg_image++;
             }
@@ -920,28 +917,28 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
         if (!Audio::isAudioEnabled())
         {
-            window.activatedWidgets |= (1 << Common::Widx::audio_menu);
-            window.widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_inactive, window.getColour(WindowColour::primary).c());
+            window.activatedWidgets |= (1 << Common::widx::audio_menu);
+            window.widgets[Common::widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_inactive, window.getColour(WindowColour::primary).c());
         }
         else
         {
-            window.activatedWidgets &= ~(1 << Common::Widx::audio_menu);
-            window.widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_active, window.getColour(WindowColour::primary).c());
+            window.activatedWidgets &= ~(1 << Common::widx::audio_menu);
+            window.widgets[Common::widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_active, window.getColour(WindowColour::primary).c());
         }
 
         const bool cheatsOn = Config::get().cheatsMenuEnabled;
-        window.widgets[Widx::cheats_menu].hidden = !cheatsOn;
+        window.widgets[widx::cheats_menu].hidden = !cheatsOn;
 
-        const auto& refWidget = window.widgets[cheatsOn ? enumValue(Widx::cheats_menu) : enumValue(Common::Widx::audio_menu)];
+        const auto& refWidget = window.widgets[cheatsOn ? enumValue(widx::cheats_menu) : enumValue(Common::widx::audio_menu)];
         const auto offsetWidget = [&window, refWidget](uint8_t widgetIndex, uint8_t index) {
             auto& widget = window.widgets[widgetIndex];
             widget.left = refWidget.left + 14 + (refWidget.width() * index);
             widget.right = widget.left + refWidget.width() - 1;
         };
 
-        offsetWidget(Common::Widx::zoom_menu, 1);
-        offsetWidget(Common::Widx::rotate_menu, 2);
-        offsetWidget(Common::Widx::view_menu, 3);
+        offsetWidget(Common::widx::zoom_menu, 1);
+        offsetWidget(Common::widx::rotate_menu, 2);
+        offsetWidget(Common::widx::view_menu, 3);
 
         if (_lastPortOption == 0
             && getGameState().lastAirport == 0xFF
@@ -950,57 +947,57 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             _lastPortOption = 1;
         }
 
-        window.widgets[Common::Widx::loadsave_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_loadsave);
-        window.widgets[Widx::cheats_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_cogwheels);
-        window.widgets[Common::Widx::zoom_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_zoom);
-        window.widgets[Common::Widx::rotate_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_rotate);
-        window.widgets[Common::Widx::view_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_view);
+        window.widgets[Common::widx::loadsave_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_loadsave);
+        window.widgets[widx::cheats_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_cogwheels);
+        window.widgets[Common::widx::zoom_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_zoom);
+        window.widgets[Common::widx::rotate_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_rotate);
+        window.widgets[Common::widx::view_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_view);
 
-        window.widgets[Common::Widx::terraform_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_terraform);
-        window.widgets[Common::Widx::railroad_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque);
-        window.widgets[Common::Widx::road_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque);
-        window.widgets[Common::Widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque);
-        window.widgets[Common::Widx::build_vehicles_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque);
+        window.widgets[Common::widx::terraform_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_terraform);
+        window.widgets[Common::widx::railroad_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque);
+        window.widgets[Common::widx::road_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque);
+        window.widgets[Common::widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque);
+        window.widgets[Common::widx::build_vehicles_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque);
 
-        window.widgets[Common::Widx::vehicles_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque);
-        window.widgets[Common::Widx::stations_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_stations);
+        window.widgets[Common::widx::vehicles_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque);
+        window.widgets[Common::widx::stations_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_stations);
 
         Common::prepareTownWidget(window);
 
         if (_lastPortOption == 0)
         {
-            window.widgets[Common::Widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_airports);
+            window.widgets[Common::widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_airports);
         }
         else
         {
-            window.widgets[Common::Widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_ports);
+            window.widgets[Common::widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_ports);
         }
 
-        window.widgets[Common::Widx::road_menu].hidden = !(getGameState().lastRoadOption != 0xFF);
-        window.widgets[Common::Widx::railroad_menu].hidden = !(getGameState().lastRailroadOption != 0xFF);
-        window.widgets[Common::Widx::port_menu].hidden = !(getGameState().lastAirport != 0xFF || getGameState().lastShipPort != 0xFF);
+        window.widgets[Common::widx::road_menu].hidden = !(getGameState().lastRoadOption != 0xFF);
+        window.widgets[Common::widx::railroad_menu].hidden = !(getGameState().lastRailroadOption != 0xFF);
+        window.widgets[Common::widx::port_menu].hidden = !(getGameState().lastAirport != 0xFF || getGameState().lastShipPort != 0xFF);
 
         uint32_t x = std::max(640, Ui::width()) - 1;
-        Common::rightAlignTabs(&window, x, { Common::Widx::towns_menu, Common::Widx::stations_menu, Common::Widx::vehicles_menu });
+        Common::rightAlignTabs(&window, x, { Common::widx::towns_menu, Common::widx::stations_menu, Common::widx::vehicles_menu });
         x -= 11;
-        Common::rightAlignTabs(&window, x, { Common::Widx::build_vehicles_menu });
+        Common::rightAlignTabs(&window, x, { Common::widx::build_vehicles_menu });
 
-        if (!window.widgets[Common::Widx::port_menu].hidden)
+        if (!window.widgets[Common::widx::port_menu].hidden)
         {
-            Common::rightAlignTabs(&window, x, { Common::Widx::port_menu });
+            Common::rightAlignTabs(&window, x, { Common::widx::port_menu });
         }
 
-        if (!window.widgets[Common::Widx::road_menu].hidden)
+        if (!window.widgets[Common::widx::road_menu].hidden)
         {
-            Common::rightAlignTabs(&window, x, { Common::Widx::road_menu });
+            Common::rightAlignTabs(&window, x, { Common::widx::road_menu });
         }
 
-        if (!window.widgets[Common::Widx::railroad_menu].hidden)
+        if (!window.widgets[Common::widx::railroad_menu].hidden)
         {
-            Common::rightAlignTabs(&window, x, { Common::Widx::railroad_menu });
+            Common::rightAlignTabs(&window, x, { Common::widx::railroad_menu });
         }
 
-        Common::rightAlignTabs(&window, x, { Common::Widx::terraform_menu });
+        Common::rightAlignTabs(&window, x, { Common::widx::terraform_menu });
     }
 
     static constexpr WindowEventList kEvents = {
