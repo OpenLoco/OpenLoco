@@ -44,17 +44,29 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         list,
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kClose{ "close" };
+        constexpr WidgetId kPanel{ "panel" };
+        constexpr WidgetId kTab0{ "tab0" };
+        constexpr WidgetId kTab1{ "tab1" };
+        constexpr WidgetId kTab2{ "tab2" };
+        constexpr WidgetId kTab3{ "tab3" };
+        constexpr WidgetId kTab4{ "tab4" };
+        constexpr WidgetId kList{ "list" };
+    }
+
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, { 610, 412 }, WindowColour::primary),
         Widgets::Caption({ 1, 1 }, { 608, 34 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::select_scenario_for_new_game),
-        Widgets::ImageButton({ 595, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        Widgets::Wt3Widget({ 0, 48 }, { 610, 364 }, WindowColour::secondary),
-        Widgets::Tab({ 3, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
-        Widgets::Tab({ 94, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
-        Widgets::Tab({ 185, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
-        Widgets::Tab({ 276, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
-        Widgets::Tab({ 367, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
-        Widgets::ScrollView({ 3, 52 }, { 431, 356 }, WindowColour::secondary, Scrollbars::vertical)
+        Widgets::ImageButton(Widx::kClose, { 595, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::Wt3Widget(Widx::kPanel, { 0, 48 }, { 610, 364 }, WindowColour::secondary),
+        Widgets::Tab(Widx::kTab0, { 3, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
+        Widgets::Tab(Widx::kTab1, { 94, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
+        Widgets::Tab(Widx::kTab2, { 185, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
+        Widgets::Tab(Widx::kTab3, { 276, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
+        Widgets::Tab(Widx::kTab4, { 367, 15 }, { 91, 34 }, WindowColour::secondary, ImageIds::wide_tab),
+        Widgets::ScrollView(Widx::kList, { 3, 52 }, { 431, 356 }, WindowColour::secondary, Scrollbars::vertical)
 
     );
 
@@ -446,26 +458,26 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x00443E9B
-    static void onMouseUp(Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseUp(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case widx::close:
+            case Widx::kClose:
                 WindowManager::close(&self);
                 break;
         }
     }
 
     // 0x00443EA6
-    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case widx::tab0:
-            case widx::tab1:
-            case widx::tab2:
-            case widx::tab3:
-            case widx::tab4:
+            case Widx::kTab0:
+            case Widx::kTab1:
+            case Widx::kTab2:
+            case Widx::kTab3:
+            case Widx::kTab4:
             {
                 uint8_t selectedCategory = widgetIndex - widx::tab0;
                 if (self.currentTab == selectedCategory)
