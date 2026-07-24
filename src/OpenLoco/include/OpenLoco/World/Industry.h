@@ -32,6 +32,8 @@ namespace OpenLoco
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(IndustryFlags);
 
+    constexpr uint8_t kIndustryConstructionComplete = std::numeric_limits<uint8_t>::max();
+
     struct Industry
     {
         StringId name;

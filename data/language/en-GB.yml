@@ -2505,3 +2505,8 @@ strings:
   2450: "R.ALT + "
   2451: "{STRINGID}{STRINGID}{STRINGID}{STRINGID}{STRINGID}"
   2452: "{COLOUR BLACK}“{STRINGID}”"
+  2453: "Music"
+  2454: "{COLOUR WINDOW_2}Play music during gameplay"
+  2455: "Open jukebox..."
+  2456: "{COLOUR WINDOW_2}Cargo awaiting processing:"
+  2457: "{COLOUR WINDOW_2}Cargo awaiting transport:"

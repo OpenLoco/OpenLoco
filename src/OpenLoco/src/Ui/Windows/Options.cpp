@@ -980,10 +980,11 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace AudioTab
     {
+        constexpr auto kNormalTextRowOffset = 14;
+
         constexpr auto kSoundGroupOffset = 49;
-        constexpr auto kDeviceRowOffset = 14;
-        constexpr auto kCheckboxRowOffset = kDeviceRowOffset + 18;
-        constexpr auto kSoundGroupHeight = kDeviceRowOffset + kCheckboxRowOffset + 4;
+        constexpr auto kDeviceRowOffset = kNormalTextRowOffset;
+        constexpr auto kSoundGroupHeight = kDeviceRowOffset + kNormalTextRowOffset + 4;
 
         constexpr auto kVolumeGroupOffset = kSoundGroupOffset + kSoundGroupHeight + 4;
         constexpr auto kVolumeFirstSliderYOffset = 16;
@@ -998,7 +999,12 @@ namespace OpenLoco::Ui::Windows::Options
         constexpr auto kSliderWidth = 196;
         constexpr auto kVolumeGroupHeight = kVolumeFirstSliderYOffset + (kNumVolumeSliders / kNumVolumeColumns) * kSliderRowHeight;
 
-        static constexpr Ui::Size kWindowSize = { 366, kVolumeGroupOffset + kVolumeGroupHeight + 4 };
+        constexpr auto kMusicGroupOffset = kVolumeGroupOffset + kVolumeGroupHeight + 4;
+        constexpr auto kPlayTitleMusicRowOffset = kNormalTextRowOffset;
+        constexpr auto kPlayGameMusicRowOffset = kPlayTitleMusicRowOffset + kNormalTextRowOffset;
+        constexpr auto kMusicGroupHeight = kPlayGameMusicRowOffset + kNormalTextRowOffset + 4;
+
+        static constexpr Ui::Size kWindowSize = { 366, kMusicGroupOffset + kMusicGroupHeight + 4 };
 
         namespace Widx
         {
@@ -1007,7 +1013,6 @@ namespace OpenLoco::Ui::Windows::Options
                 frame_sound = Common::Widx::tab_miscellaneous + 1,
                 audio_device,
                 audio_device_btn,
-                play_title_music,
 
                 frame_volume,
                 volume_master_label,
@@ -1022,6 +1027,11 @@ namespace OpenLoco::Ui::Windows::Options
                 volume_ui,
                 volume_ambient_label,
                 volume_ambient,
+
+                frame_music,
+                play_title_music,
+                play_game_music,
+                open_jukebox,
             };
         }
 
@@ -1035,7 +1045,6 @@ namespace OpenLoco::Ui::Windows::Options
 
             Widgets::GroupBox({ 4, kSoundGroupOffset }, { kWindowSize.width - 8, kSoundGroupHeight }, WindowColour::secondary, StringIds::frame_sound),
             Widgets::dropdownWidgets({ 10, kSoundGroupOffset + kDeviceRowOffset }, { 346, 12 }, WindowColour::secondary, StringIds::stringid),
-            Widgets::Checkbox({ 10, kSoundGroupOffset + kCheckboxRowOffset }, { 346, 12 }, WindowColour::secondary, StringIds::play_title_music),
 
             Widgets::GroupBox({ 4, kVolumeGroupOffset }, { kWindowSize.width - 8, kVolumeGroupHeight }, WindowColour::secondary, StringIds::frame_volume),
             Widgets::Label({ kSliderPrimaryLabelX, getSliderRowY(0) + 3 }, { kSliderLabelWidth, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::master_volume),
@@ -1049,13 +1058,19 @@ namespace OpenLoco::Ui::Windows::Options
             Widgets::Label({ kSliderPrimaryLabelX, getSliderRowY(4) + 3 }, { kSliderLabelWidth, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::ui_volume),
             Widgets::Slider({ kSliderPrimaryX, getSliderRowY(4) - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_ui_volume_tip),
             Widgets::Label({ kSliderSecondaryLabelX, getSliderRowY(5) + 3 }, { kSliderLabelWidth, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::ambient_volume),
-            Widgets::Slider({ kSliderSecondaryX, getSliderRowY(5) - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_ambient_volume_tip)
+            Widgets::Slider({ kSliderSecondaryX, getSliderRowY(5) - 3 }, { kSliderWidth, 18 }, WindowColour::secondary, Widget::kContentNull, StringIds::set_ambient_volume_tip),
+
+            Widgets::GroupBox({ 4, kMusicGroupOffset }, { kWindowSize.width - 8, kMusicGroupHeight }, WindowColour::secondary, StringIds::frame_music),
+            Widgets::Checkbox({ 10, kMusicGroupOffset + kPlayTitleMusicRowOffset }, { 346, 12 }, WindowColour::secondary, StringIds::play_title_music),
+            Widgets::Checkbox({ 10, kMusicGroupOffset + kPlayGameMusicRowOffset }, { 173, 12 }, WindowColour::secondary, StringIds::play_game_music),
+            Widgets::Button({ 236, kMusicGroupOffset + kPlayGameMusicRowOffset }, { 120, 12 }, WindowColour::secondary, StringIds::options_open_jukebox)
 
         );
 
         static void audioDeviceMouseDown(const Window& self);
         static void audioDeviceDropdown(const Window& self, int16_t itemIndex);
         static void playTitleMusicOnMouseUp(Window& self);
+        static void playGameMusicOnMouseUp(Window& self);
         static void volumeSliderMouseDown(Window& self, WidgetIndex_t wi);
 
         // 0x004C0217, 0x004C0217
@@ -1080,10 +1095,20 @@ namespace OpenLoco::Ui::Windows::Options
                 }
             }
 
-            // Play title music checkbox
+            // Play music checkboxes
             if (Config::get().audio.playTitleMusic)
             {
                 self.activatedWidgets |= (1ULL << Widx::play_title_music);
+            }
+            if (Config::get().audio.playJukeboxMusic)
+            {
+                self.activatedWidgets |= (1ULL << Widx::play_game_music);
+            }
+
+            // Disable open jukebox button when playing music is disabled
+            if (!Config::get().audio.playJukeboxMusic)
+            {
+                self.disabledWidgets |= (1ULL << Widx::open_jukebox);
             }
         }
 
@@ -1121,6 +1146,14 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 case Widx::play_title_music:
                     playTitleMusicOnMouseUp(self);
+                    return;
+
+                case Widx::play_game_music:
+                    playGameMusicOnMouseUp(self);
+                    return;
+
+                case Widx::open_jukebox:
+                    MusicJukebox::open();
                     return;
             }
         }
@@ -1213,6 +1246,33 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 Audio::stopMusic();
             }
+            WindowManager::invalidate(WindowType::musicJukebox);
+        }
+
+        static void playGameMusicOnMouseUp(Window& self)
+        {
+            auto& cfg = Config::get();
+
+            if (!SceneManager::isPlayMode())
+            {
+                cfg.audio.playJukeboxMusic = !cfg.audio.playJukeboxMusic;
+                Config::write();
+                self.invalidate();
+                return;
+            }
+
+            // See also ToolbarTop.cpp's audioMenuDropdown
+            if (cfg.audio.playJukeboxMusic)
+            {
+                Jukebox::disableMusic();
+            }
+            else
+            {
+                Jukebox::enableMusic();
+            }
+
+            WindowManager::invalidate(WindowType::musicJukebox);
+            self.invalidate();
         }
 
         static Audio::ChannelId widgetToChannelId(WidgetIndex_t wi)

@@ -847,17 +847,17 @@ namespace OpenLoco::Ui::Windows::Terraform
                     if (self.rowInfo[i] == self.var_846)
                     {
                         _lastTreeColourFlag = AdvancedColour::translucentFlag;
-                        drawingCtx.drawRectInset(xPos, yPos, 65, kRowHeight - 1, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::colourLight);
+                        drawingCtx.drawRectInset(xPos, yPos, kColumnWidth, kRowHeight, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::colourLight);
                     }
                 }
                 else
                 {
                     _lastTreeColourFlag = AdvancedColour::translucentFlag | AdvancedColour::outlineFlag;
-                    drawingCtx.drawRectInset(xPos, yPos, 65, kRowHeight - 1, self.getColour(WindowColour::secondary), (Gfx::RectInsetFlags::colourLight | Gfx::RectInsetFlags::borderInset));
+                    drawingCtx.drawRectInset(xPos, yPos, kColumnWidth, kRowHeight, self.getColour(WindowColour::secondary), (Gfx::RectInsetFlags::colourLight | Gfx::RectInsetFlags::borderInset));
                 }
 
                 const auto* treeObj = ObjectManager::get<TreeObject>(self.rowInfo[i]);
-                auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(xPos + 1, yPos + 1, 64, kRowHeight - 2));
+                auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(xPos + 1, yPos + 1, kColumnWidth - 2, kRowHeight - 2));
                 if (clipped)
                 {
                     drawingCtx.pushRenderTarget(*clipped);
@@ -2241,6 +2241,7 @@ namespace OpenLoco::Ui::Windows::Terraform
     {
         static constexpr Ui::Size kWindowSize = { 418, 108 };
 
+        static constexpr uint8_t kColumnWidth = 40;
         static constexpr uint8_t kRowHeight = 48;
 
         enum widx
@@ -2689,17 +2690,17 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     if (self.rowInfo[i] == self.var_846)
                     {
-                        drawingCtx.drawRectInset(xPos, yPos, 40, kRowHeight, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::colourLight);
+                        drawingCtx.drawRectInset(xPos, yPos, kColumnWidth, kRowHeight, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::colourLight);
                     }
                 }
                 else
                 {
-                    drawingCtx.drawRectInset(xPos, yPos, 40, kRowHeight, self.getColour(WindowColour::secondary), (Gfx::RectInsetFlags::colourLight | Gfx::RectInsetFlags::borderInset));
+                    drawingCtx.drawRectInset(xPos, yPos, kColumnWidth, kRowHeight, self.getColour(WindowColour::secondary), (Gfx::RectInsetFlags::colourLight | Gfx::RectInsetFlags::borderInset));
                 }
 
                 auto wallObj = ObjectManager::get<WallObject>(self.rowInfo[i]);
 
-                auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(xPos + 1, yPos + 1, 39, 47));
+                auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(xPos + 1, yPos + 1, kColumnWidth - 2, kRowHeight - 2));
                 if (clipped)
                 {
                     drawingCtx.pushRenderTarget(*clipped);
@@ -2709,9 +2710,9 @@ namespace OpenLoco::Ui::Windows::Terraform
                     drawingCtx.popRenderTarget();
                 }
 
-                xPos += 40;
+                xPos += kColumnWidth;
 
-                if (xPos >= 40 * 10) // full row
+                if (xPos >= kColumnWidth * 10) // full row
                 {
                     xPos = 0;
                     yPos += kRowHeight;
