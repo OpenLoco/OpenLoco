@@ -1019,7 +1019,7 @@ strings:
   994: ???
   995: ???
 
-  996: "{STRINGID}:{MOVE_X 215}{STRINGID}{STRINGID}"
+  996: "{STRINGID}:"
   997: "SHIFT + "
   998: "CTRL + "
   999: Change Keyboard Shortcut
