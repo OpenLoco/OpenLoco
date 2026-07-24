@@ -3,8 +3,11 @@
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
 #include "Map/MapSelection.h"
+#include "Map/RoadElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
+#include "Map/Track/TrackData.h"
+#include "Map/TrackElement.h"
 #include "Map/Wave.h"
 #include "Map/WaveManager.h"
 #include "Objects/IndustryObject.h"
@@ -892,8 +895,8 @@ namespace OpenLoco::Paint
     constexpr std::array<World::Pos3, 4> kEdgeBoundingBoxSize = {
         World::Pos3{ 0, 30, 15 },
         World::Pos3{ 30, 0, 15 },
-        World::Pos3{ 30, 0, 15 },
-        World::Pos3{ 0, 30, 15 },
+        World::Pos3{ 30, 0, 13 },
+        World::Pos3{ 0, 30, 13 },
     };
     constexpr std::array<std::array<std::array<uint32_t, 5>, 4>, 2> kEdgeMaskImageFromSlope = {
         std::array<std::array<uint32_t, 5>, 4>{
@@ -1208,7 +1211,7 @@ namespace OpenLoco::Paint
         }
     }
 
-    static void paintSurfaceCliffEdgeImpl(PaintSession& session, uint8_t edge, int16_t baseHeight, const EdgeHeight& edgeHeight, uint32_t cliffEdgeImageBase)
+    static void paintSurfaceCliffEdgeImpl(PaintSession& session, uint8_t edge, int16_t baseHeight, const EdgeHeight& edgeHeight, uint32_t cliffEdgeImageBase, bool hideTopSection)
     {
         if (edgeHeight.self0 <= edgeHeight.neighbour0
             && edgeHeight.self1 <= edgeHeight.neighbour1)
@@ -1302,7 +1305,11 @@ namespace OpenLoco::Paint
                 continue;
             }
 
-            paintEdgeSection(session, cliffEdgeImageBase, factor, uHeight, edge, maskArr[0]);
+            const bool isTopSection = uHeight + 1 >= edgeHeight.self0 && uHeight + 1 >= edgeHeight.self1;
+            if (!(hideTopSection && isTopSection))
+            {
+                paintEdgeSection(session, cliffEdgeImageBase, factor, uHeight, edge, maskArr[0]);
+            }
             uHeight++;
         }
 
@@ -1316,8 +1323,69 @@ namespace OpenLoco::Paint
             }
         }
 
+        if (hideTopSection)
+        {
+            return;
+        }
+
         paintEdgeSection(session, cliffEdgeImageBase, factor, uHeight, edge, maskArr[unk]);
     }
+
+    static bool isCliffEdgeTopCoveredByBridge(const uint8_t sharedEdgeDir, const TileDescriptor& neighbour, const EdgeHeight& edgeHeight)
+    {
+        const auto cliffTopHeight = std::max(edgeHeight.self0, edgeHeight.self1) * kMicroZStep;
+
+        const auto isCovered = [&](const bool isFirstTile,
+                                   const bool isLastTile,
+                                   const int16_t elementBaseHeight,
+                                   const World::TrackData::TrackCoordinates& coords) {
+            if (elementBaseHeight == cliffTopHeight)
+            {
+                return true;
+            }
+
+            if (isFirstTile
+                && ((coords.rotationBegin + 2) & 3) == sharedEdgeDir
+                && elementBaseHeight + std::max<int16_t>(0, -coords.pos.z) == cliffTopHeight)
+            {
+                return true;
+            }
+
+            return isLastTile
+                && (coords.rotationEnd & 3) == sharedEdgeDir
+                && elementBaseHeight + std::max<int16_t>(0, coords.pos.z) == cliffTopHeight;
+        };
+
+        const auto tile = World::TileManager::get(neighbour.pos);
+        for (const auto& el : tile)
+        {
+            const auto* elRoad = el.as<World::RoadElement>();
+            if (elRoad != nullptr && elRoad->hasBridge()
+                && isCovered(
+                    elRoad->sequenceIndex() == 0,
+                    elRoad->isFlag6(),
+                    elRoad->baseHeight(),
+                    World::TrackData::getUnkRoad((elRoad->roadId() << 3) | elRoad->rotation())))
+            {
+                return true;
+            }
+
+            const auto* elTrack = el.as<World::TrackElement>();
+            if (elTrack != nullptr && elTrack->hasBridge()
+                && isCovered(
+                    elTrack->sequenceIndex() == 0,
+                    elTrack->isFlag6(),
+                    elTrack->baseHeight(),
+                    World::TrackData::getUnkTrack((elTrack->trackId() << 3) | elTrack->rotation())))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    constexpr std::array<uint8_t, 4> kEdgeToWorldDirRot0 = { 2, 1, 3, 0 };
 
     static void paintSurfaceCliffEdge(PaintSession& session, uint8_t edge, const int16_t baseHeight, const TileDescriptor& neighbour, uint32_t cliffEdgeImageBase)
     {
@@ -1326,7 +1394,9 @@ namespace OpenLoco::Paint
             return;
         }
 
-        paintSurfaceCliffEdgeImpl(session, edge, baseHeight, neighbour.edgeHeight, cliffEdgeImageBase);
+        const auto sharedEdgeDir = static_cast<uint8_t>((kEdgeToWorldDirRot0[edge] - session.getRotation() + 2) & 3);
+        const bool hideTopSection = edge >= 2 && isCliffEdgeTopCoveredByBridge(sharedEdgeDir, neighbour, neighbour.edgeHeight);
+        paintSurfaceCliffEdgeImpl(session, edge, baseHeight, neighbour.edgeHeight, cliffEdgeImageBase, hideTopSection);
     }
 
     static void paintSurfaceWaterCliffEdge(PaintSession& session, uint8_t edge, const int16_t waterHeight, const TileDescriptor& neighbour, uint32_t cliffEdgeImageBase)
@@ -1342,7 +1412,7 @@ namespace OpenLoco::Paint
 
         const auto edgeHeight = EdgeHeight{ static_cast<uint8_t>(waterHeight / kMicroZStep), neighbour.edgeHeight.neighbour0, static_cast<uint8_t>(waterHeight / kMicroZStep), neighbour.edgeHeight.neighbour1 };
 
-        paintSurfaceCliffEdgeImpl(session, edge, waterHeight, edgeHeight, cliffEdgeImageBase);
+        paintSurfaceCliffEdgeImpl(session, edge, waterHeight, edgeHeight, cliffEdgeImageBase, false);
     }
 
     template<std::size_t TDirection>
