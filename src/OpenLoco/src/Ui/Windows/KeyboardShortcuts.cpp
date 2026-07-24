@@ -281,7 +281,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             return;
         }
 
-        EditKeyboardShortcut::open(row);
+        EditKeyboardShortcut::open(static_cast<Input::Shortcut>(row));
     }
 
     static void onResize(Window& self)
