@@ -1,6 +1,6 @@
 #include "Crash.h"
 
-#if defined(USE_CRASHPAD)
+#if defined(USE_CRASHPAD) && defined(_WIN32)
 #include "Platform.h"
 #include <OpenLoco/Utility/String.hpp>
 #include <base/files/file_path.h>
@@ -12,7 +12,7 @@
 
 namespace OpenLoco::CrashHandler
 {
-#if defined(USE_CRASHPAD)
+#if defined(USE_CRASHPAD) && defined(_WIN32)
     [[maybe_unused]] static std::wstring getDumpDirectory()
     {
         auto crashDir = Platform::getUserDirectory() / "crashes";
