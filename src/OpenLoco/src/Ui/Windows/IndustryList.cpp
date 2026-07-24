@@ -755,7 +755,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         static int getRowIndex(int16_t x, int16_t y)
         {
-            return (x / 112) + (y / kRowHeight) * kColsPerRow;
+            return (x / kColumnWidth) + (y / kRowHeight) * kColsPerRow;
         }
 
         // 0x00458966
