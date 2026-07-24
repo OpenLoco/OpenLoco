@@ -253,7 +253,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             formatter.push(baseStringId);
             formatter.push(buffer);
 
-            point.x = width / 2;
+            point.x = width / 5 * 3;
             tr.drawStringLeft(point, Colour::black, format, formatter);
             yPos += kRowHeight;
         }
