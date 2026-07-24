@@ -224,6 +224,7 @@ namespace OpenLoco::World
                     {
                         const auto randAnim = _E0C3D4[(numAnimations * (rand & 0xFF)) / 256];
                         applyToMultiTile(*this, loc, isMultiTile, [randAnim](IndustryElement& elIndustry, [[maybe_unused]] const World::Pos2& pos) {
+                            elIndustry.setRandomAnimationAvailable(false);
                             elIndustry.setRandomAnimationPlaying(true);
                             elIndustry.setRandomAnimationType(randAnim);
                         });
