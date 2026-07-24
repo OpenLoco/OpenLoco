@@ -2169,6 +2169,8 @@ namespace OpenLoco::StringIds
     constexpr StringId frame_music = 2453;
     constexpr StringId play_game_music = 2454;
     constexpr StringId options_open_jukebox = 2455;
+    constexpr StringId cargo_awaiting_processing = 2456;
+    constexpr StringId cargo_awaiting_transport = 2457;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
