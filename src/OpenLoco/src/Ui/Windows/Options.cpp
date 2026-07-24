@@ -1240,6 +1240,7 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 Audio::stopMusic();
             }
+            WindowManager::invalidate(WindowType::musicJukebox);
         }
 
         static void playGameMusicOnMouseUp(Window& self)
