@@ -231,7 +231,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             formatter.push(StringIds::keyboard_shortcut_list_format);
             formatter.push(def->displayName);
 
-            auto point = Point(0, yPos - 1);
+            auto point = Point(0, yPos);
             tr.drawStringLeft(point, Colour::black, format, formatter);
 
             // Get current binding
