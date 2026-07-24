@@ -16,7 +16,6 @@
 namespace OpenLoco::World
 {
     constexpr auto kSectionComplete = 0x7;
-    constexpr auto kConstructionComplete = std::numeric_limits<uint8_t>::max();
 
     Industry* IndustryElement::industry() const
     {
@@ -153,7 +152,7 @@ namespace OpenLoco::World
                     ind->under_construction++;
                     if (ind->under_construction >= ind->numTiles)
                     {
-                        ind->under_construction = kConstructionComplete;
+                        ind->under_construction = kIndustryConstructionComplete;
                         Ui::WindowManager::invalidate(Ui::WindowType::industry, enumValue(ind->id()));
                         Ui::WindowManager::invalidate(Ui::WindowType::industryList);
                     }
@@ -225,6 +224,7 @@ namespace OpenLoco::World
                     {
                         const auto randAnim = _E0C3D4[(numAnimations * (rand & 0xFF)) / 256];
                         applyToMultiTile(*this, loc, isMultiTile, [randAnim](IndustryElement& elIndustry, [[maybe_unused]] const World::Pos2& pos) {
+                            elIndustry.setRandomAnimationAvailable(false);
                             elIndustry.setRandomAnimationPlaying(true);
                             elIndustry.setRandomAnimationType(randAnim);
                         });
@@ -234,7 +234,7 @@ namespace OpenLoco::World
             }
         }
 
-        if (ind->under_construction == kConstructionComplete)
+        if (ind->under_construction == kIndustryConstructionComplete)
         {
             const coord_t upperRange = isMultiTile ? 5 : 4;
             constexpr coord_t kLowerRange = 4;
@@ -372,7 +372,7 @@ namespace OpenLoco::World
                         {
                             applyToMultiTile(*elIndustry, anim.pos, isMultiTile, [](World::IndustryElement& elIndustry, const World::Pos2& pos) {
                                 Ui::ViewportManager::invalidate(pos, elIndustry.baseHeight(), elIndustry.clearHeight(), ZoomLevel::quarter);
-                                elIndustry.setRandomAnimationPlaying(true);
+                                elIndustry.setRandomAnimationAvailable(true);
                             });
                         }
                         return false;
