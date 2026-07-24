@@ -35,12 +35,12 @@ namespace OpenLoco::S5
         dst.numExpenditureYears = src.numExpenditureYears;
         std::memcpy(dst.expenditures, src.expenditures, kExpenditureHistoryCapacity * ExpenditureType::Count * sizeof(currency32_t));
         dst.startedDate = src.startedDate;
-        dst.var_49C = src.var_49C;
-        dst.var_4A0 = src.var_4A0;
-        dst.var_4A4 = enumValue(src.var_4A4);
-        dst.var_4A5 = src.var_4A5;
-        dst.var_4A6 = enumValue(src.var_4A6);
-        dst.var_4A7 = src.var_4A7;
+        dst.cargoTypesDelivered = src.cargoTypesDelivered;
+        dst.cargoTypesDelivered2 = src.cargoTypesDelivered2;
+        dst.aiThinkState = enumValue(src.aiThinkState);
+        dst.aiThinkSubState = src.aiThinkSubState;
+        dst.aiPlaceVehicleState = enumValue(src.aiPlaceVehicleState);
+        dst.aiPlaceVehiclePad = src.aiPlaceVehiclePad;
 
         // Copy AI thoughts
         for (auto i = 0U; i < kMaxAiThoughts; ++i)
@@ -57,35 +57,35 @@ namespace OpenLoco::S5
             for (auto j = 0U; j < std::size(srcThought.stations); ++j)
             {
                 dstThought.stations[j].id = enumValue(srcThought.stations[j].id);
-                dstThought.stations[j].var_02 = enumValue(srcThought.stations[j].var_02);
+                dstThought.stations[j].flags = enumValue(srcThought.stations[j].flags);
                 dstThought.stations[j].rotation = srcThought.stations[j].rotation;
                 dstThought.stations[j].pos = srcThought.stations[j].pos;
                 dstThought.stations[j].baseZ = srcThought.stations[j].baseZ;
-                dstThought.stations[j].var_9 = srcThought.stations[j].var_9;
-                dstThought.stations[j].var_A = srcThought.stations[j].var_A;
-                dstThought.stations[j].var_B = srcThought.stations[j].var_B;
-                dstThought.stations[j].var_C = srcThought.stations[j].var_C;
+                dstThought.stations[j].nextStationIndex = srcThought.stations[j].nextStationIndex;
+                dstThought.stations[j].prevStationIndex = srcThought.stations[j].prevStationIndex;
+                dstThought.stations[j].connectionFlagsA = srcThought.stations[j].connectionFlagsA;
+                dstThought.stations[j].connectionFlagsB = srcThought.stations[j].connectionFlagsB;
             }
 
             dstThought.trackObjId = srcThought.trackObjId;
             dstThought.rackRailType = srcThought.rackRailType;
             dstThought.mods = srcThought.mods;
             dstThought.cargoType = srcThought.cargoType;
-            dstThought.var_43 = srcThought.var_43;
+            dstThought.numVehiclesTarget = srcThought.numVehiclesTarget;
             dstThought.numVehicles = srcThought.numVehicles;
-            dstThought.var_45 = srcThought.var_45;
-            std::ranges::copy(srcThought.var_46, dstThought.var_46);
+            dstThought.numVehicleObjTypes = srcThought.numVehicleObjTypes;
+            std::ranges::copy(srcThought.vehicleObjTypes, dstThought.vehicleObjTypes);
 
             for (auto j = 0U; j < std::size(srcThought.vehicles); ++j)
             {
                 dstThought.vehicles[j] = enumValue(srcThought.vehicles[j]);
             }
 
-            dstThought.var_76 = srcThought.var_76;
-            dstThought.var_7C = srcThought.var_7C;
-            dstThought.var_80 = srcThought.var_80;
-            dstThought.var_84 = srcThought.var_84;
-            dstThought.var_88 = srcThought.var_88;
+            dstThought.totalCost = srcThought.totalCost;
+            dstThought.totalRunningCost = srcThought.totalRunningCost;
+            dstThought.income = srcThought.income;
+            dstThought.previousIncome = srcThought.previousIncome;
+            dstThought.thoughtAge = srcThought.thoughtAge;
             dstThought.stationObjId = srcThought.stationObjId;
             dstThought.signalObjId = srcThought.signalObjId;
             dstThought.purchaseFlags = enumValue(srcThought.purchaseFlags);
@@ -96,49 +96,49 @@ namespace OpenLoco::S5
         dst.headquartersX = src.headquartersX;
         dst.headquartersY = src.headquartersY;
         dst.activeThoughtRevenueEstimate = src.activeThoughtRevenueEstimate;
-        dst.var_2582 = src.var_2582;
-        dst.var_2596 = src.var_2596;
-        dst.var_259A = src.var_259A;
-        dst.var_259B = src.var_259B;
-        dst.var_259C = src.var_259C;
+        dst.aiThoughtCooldown = src.aiThoughtCooldown;
+        dst.aiBridgeSelectionCounter = src.aiBridgeSelectionCounter;
+        dst.aiBridgeTypeLow = src.aiBridgeTypeLow;
+        dst.aiBridgeTypeMedium = src.aiBridgeTypeMedium;
+        dst.aiBridgeTypeHigh = src.aiBridgeTypeHigh;
         dst.aiPlaceVehicleIndex = src.aiPlaceVehicleIndex;
-        dst.var_25BE = enumValue(src.var_25BE);
+        dst.aiSavedThoughtType = enumValue(src.aiSavedThoughtType);
         dst.currentRating = enumValue(src.currentRating);
 
         // Copy hash table
-        for (auto i = 0U; i < std::size(src.var_25C0); ++i)
+        for (auto i = 0U; i < std::size(src.trackandRoadHashTable); ++i)
         {
-            dst.var_25C0[i].var_00 = src.var_25C0[i].var_00;
-            dst.var_25C0[i].var_02 = src.var_25C0[i].var_02;
-            dst.var_25C0[i].var_04 = src.var_25C0[i].var_04;
-            dst.var_25C0[i].var_05 = src.var_25C0[i].var_05;
+            dst.trackandRoadHashTable[i].posX = src.trackandRoadHashTable[i].posX;
+            dst.trackandRoadHashTable[i].posYAndFlags = src.trackandRoadHashTable[i].posYAndFlags;
+            dst.trackandRoadHashTable[i].posZ = src.trackandRoadHashTable[i].posZ;
+            dst.trackandRoadHashTable[i].trackRoadIdAndDirection = src.trackandRoadHashTable[i].trackRoadIdAndDirection;
         }
 
-        dst.var_25C0_length = src.var_25C0_length;
-        dst.var_85C2 = src.var_85C2;
-        dst.var_85C3 = src.var_85C3;
-        dst.var_85C4 = src.var_85C4;
-        dst.var_85C8 = src.var_85C8;
-        dst.var_85C9 = src.var_85C9;
-        dst.var_85CD = src.var_85CD;
-        dst.var_85CE = src.var_85CE;
-        dst.var_85CF = src.var_85CF;
-        dst.var_85D0 = src.var_85D0;
-        dst.var_85D4 = src.var_85D4;
-        dst.var_85D5 = src.var_85D5;
-        dst.var_85D7 = src.var_85D7;
-        dst.var_85DB = src.var_85DB;
-        dst.var_85DC = src.var_85DC;
-        dst.var_85DE = src.var_85DE;
-        dst.var_85E2 = src.var_85E2;
-        dst.var_85E6 = src.var_85E6;
-        dst.var_85E8 = src.var_85E8;
-        dst.var_85EA = src.var_85EA;
-        dst.var_85EE = src.var_85EE;
-        dst.var_85EF = src.var_85EF;
-        dst.var_85F0 = src.var_85F0;
-        dst.var_85F2 = src.var_85F2;
-        dst.var_85F6 = src.var_85F6;
+        dst.hashTableLength = src.hashTableLength;
+        dst.aiStationIndex = src.aiStationIndex;
+        dst.aiStationFlags = src.aiStationFlags;
+        dst.aiPathfindTargetPos = src.aiPathfindTargetPos;
+        dst.aiPathfindTargetBaseZ = src.aiPathfindTargetBaseZ;
+        dst.aiPathfindTargetPos2 = src.aiPathfindTargetPos2;
+        dst.aiPathfindTargetBaseZ2 = src.aiPathfindTargetBaseZ2;
+        dst.aiPathfindTargetRot = src.aiPathfindTargetRot;
+        dst.aiPathfindTargetRot2 = src.aiPathfindTargetRot2;
+        dst.aiPathfindStartPos = src.aiPathfindStartPos;
+        dst.aiPathfindStartBaseZ = src.aiPathfindStartBaseZ;
+        dst.aiPathfindStartTad = src.aiPathfindStartTad;
+        dst.aiPathfindStartPos2 = src.aiPathfindStartPos2;
+        dst.aiPathfindStartBaseZ2 = src.aiPathfindStartBaseZ2;
+        dst.aiPathfindStartTad2 = src.aiPathfindStartTad2;
+        dst.aiPathfindWeighting1 = src.aiPathfindWeighting1;
+        dst.aiPathfindWeighting2 = src.aiPathfindWeighting2;
+        dst.aiBestTrackRoadId = src.aiBestTrackRoadId;
+        dst.aiPathfindPhase = src.aiPathfindPhase;
+        dst.aiPathfindMaxWeighting = src.aiPathfindMaxWeighting;
+        dst.aiPathfindUndoCount1 = src.aiPathfindUndoCount1;
+        dst.aiPathfindUndoCount2 = src.aiPathfindUndoCount2;
+        dst.aiPathfindIterCount = src.aiPathfindIterCount;
+        dst.aiVehicleCost = src.aiVehicleCost;
+        dst.aiThinkTimer = src.aiThinkTimer;
         dst.cargoUnitsTotalDelivered = src.cargoUnitsTotalDelivered;
         std::ranges::copy(src.cargoUnitsDeliveredHistory, dst.cargoUnitsDeliveredHistory);
         std::ranges::copy(src.performanceIndexHistory, dst.performanceIndexHistory);
@@ -193,12 +193,12 @@ namespace OpenLoco::S5
         dst.numExpenditureYears = src.numExpenditureYears;
         std::memcpy(dst.expenditures, src.expenditures, kExpenditureHistoryCapacity * ExpenditureType::Count * sizeof(currency32_t));
         dst.startedDate = src.startedDate;
-        dst.var_49C = src.var_49C;
-        dst.var_4A0 = src.var_4A0;
-        dst.var_4A4 = src.var_4A4;
-        dst.var_4A5 = src.var_4A5;
-        dst.var_4A6 = src.var_4A6;
-        dst.var_4A7 = src.var_4A7;
+        dst.cargoTypesDelivered = src.cargoTypesDelivered;
+        dst.cargoTypesDelivered2 = src.cargoTypesDelivered2;
+        dst.aiThinkState = src.aiThinkState;
+        dst.aiThinkSubState = src.aiThinkSubState;
+        dst.aiPlaceVehicleState = src.aiPlaceVehicleState;
+        dst.aiPlaceVehiclePad = src.aiPlaceVehiclePad;
 
         std::ranges::copy(src.aiThoughts, dst.aiThoughts);
 
@@ -207,49 +207,49 @@ namespace OpenLoco::S5
         dst.headquartersX = src.headquartersX;
         dst.headquartersY = src.headquartersY;
         dst.activeThoughtRevenueEstimate = src.activeThoughtRevenueEstimate;
-        dst.var_2582 = src.var_2582;
-        dst.var_2596 = src.var_2596;
-        dst.var_259A = src.var_259A;
-        dst.var_259B = src.var_259B;
-        dst.var_259C = src.var_259C;
+        dst.aiThoughtCooldown = src.aiThoughtCooldown;
+        dst.aiBridgeSelectionCounter = src.aiBridgeSelectionCounter;
+        dst.aiBridgeTypeLow = src.aiBridgeTypeLow;
+        dst.aiBridgeTypeMedium = src.aiBridgeTypeMedium;
+        dst.aiBridgeTypeHigh = src.aiBridgeTypeHigh;
         dst.aiPlaceVehicleIndex = src.aiPlaceVehicleIndex;
-        dst.var_25BE = src.var_25BE;
+        dst.aiSavedThoughtType = src.aiSavedThoughtType;
         dst.currentRating = src.currentRating;
 
         // Copy hash table
-        for (auto i = 0U; i < std::size(src.var_25C0); ++i)
+        for (auto i = 0U; i < std::size(src.trackandRoadHashTable); ++i)
         {
-            dst.var_25C0[i].var_00 = src.var_25C0[i].var_00;
-            dst.var_25C0[i].var_02 = src.var_25C0[i].var_02;
-            dst.var_25C0[i].var_04 = src.var_25C0[i].var_04;
-            dst.var_25C0[i].var_05 = src.var_25C0[i].var_05;
+            dst.trackandRoadHashTable[i].posX = src.trackandRoadHashTable[i].posX;
+            dst.trackandRoadHashTable[i].posYAndFlags = src.trackandRoadHashTable[i].posYAndFlags;
+            dst.trackandRoadHashTable[i].posZ = src.trackandRoadHashTable[i].posZ;
+            dst.trackandRoadHashTable[i].trackRoadIdAndDirection = src.trackandRoadHashTable[i].trackRoadIdAndDirection;
         }
 
-        dst.var_25C0_length = src.var_25C0_length;
-        dst.var_85C2 = src.var_85C2;
-        dst.var_85C3 = src.var_85C3;
-        dst.var_85C4 = src.var_85C4;
-        dst.var_85C8 = src.var_85C8;
-        dst.var_85C9 = src.var_85C9;
-        dst.var_85CD = src.var_85CD;
-        dst.var_85CE = src.var_85CE;
-        dst.var_85CF = src.var_85CF;
-        dst.var_85D0 = src.var_85D0;
-        dst.var_85D4 = src.var_85D4;
-        dst.var_85D5 = src.var_85D5;
-        dst.var_85D7 = src.var_85D7;
-        dst.var_85DB = src.var_85DB;
-        dst.var_85DC = src.var_85DC;
-        dst.var_85DE = src.var_85DE;
-        dst.var_85E2 = src.var_85E2;
-        dst.var_85E6 = src.var_85E6;
-        dst.var_85E8 = src.var_85E8;
-        dst.var_85EA = src.var_85EA;
-        dst.var_85EE = src.var_85EE;
-        dst.var_85EF = src.var_85EF;
-        dst.var_85F0 = src.var_85F0;
-        dst.var_85F2 = src.var_85F2;
-        dst.var_85F6 = src.var_85F6;
+        dst.hashTableLength = src.hashTableLength;
+        dst.aiStationIndex = src.aiStationIndex;
+        dst.aiStationFlags = src.aiStationFlags;
+        dst.aiPathfindTargetPos = src.aiPathfindTargetPos;
+        dst.aiPathfindTargetBaseZ = src.aiPathfindTargetBaseZ;
+        dst.aiPathfindTargetPos2 = src.aiPathfindTargetPos2;
+        dst.aiPathfindTargetBaseZ2 = src.aiPathfindTargetBaseZ2;
+        dst.aiPathfindTargetRot = src.aiPathfindTargetRot;
+        dst.aiPathfindTargetRot2 = src.aiPathfindTargetRot2;
+        dst.aiPathfindStartPos = src.aiPathfindStartPos;
+        dst.aiPathfindStartBaseZ = src.aiPathfindStartBaseZ;
+        dst.aiPathfindStartTad = src.aiPathfindStartTad;
+        dst.aiPathfindStartPos2 = src.aiPathfindStartPos2;
+        dst.aiPathfindStartBaseZ2 = src.aiPathfindStartBaseZ2;
+        dst.aiPathfindStartTad2 = src.aiPathfindStartTad2;
+        dst.aiPathfindWeighting1 = src.aiPathfindWeighting1;
+        dst.aiPathfindWeighting2 = src.aiPathfindWeighting2;
+        dst.aiBestTrackRoadId = src.aiBestTrackRoadId;
+        dst.aiPathfindPhase = src.aiPathfindPhase;
+        dst.aiPathfindMaxWeighting = src.aiPathfindMaxWeighting;
+        dst.aiPathfindUndoCount1 = src.aiPathfindUndoCount1;
+        dst.aiPathfindUndoCount2 = src.aiPathfindUndoCount2;
+        dst.aiPathfindIterCount = src.aiPathfindIterCount;
+        dst.aiVehicleCost = src.aiVehicleCost;
+        dst.aiThinkTimer = src.aiThinkTimer;
         dst.cargoUnitsTotalDelivered = src.cargoUnitsTotalDelivered;
         std::ranges::copy(src.cargoUnitsDeliveredHistory, dst.cargoUnitsDeliveredHistory);
         std::ranges::copy(src.performanceIndexHistory, dst.performanceIndexHistory);
@@ -330,12 +330,12 @@ namespace OpenLoco::S5
         dst.numExpenditureYears = src.numExpenditureYears;
         std::memcpy(dst.expenditures, src.expenditures, kExpenditureHistoryCapacity * ExpenditureType::Count * sizeof(currency32_t));
         dst.startedDate = src.startedDate;
-        dst.var_49C = src.var_49C;
-        dst.var_4A0 = src.var_4A0;
-        dst.var_4A4 = static_cast<AiThinkState>(src.var_4A4);
-        dst.var_4A5 = src.var_4A5;
-        dst.var_4A6 = static_cast<AiPlaceVehicleState>(src.var_4A6);
-        dst.var_4A7 = src.var_4A7;
+        dst.cargoTypesDelivered = src.cargoTypesDelivered;
+        dst.cargoTypesDelivered2 = src.cargoTypesDelivered2;
+        dst.aiThinkState = static_cast<AiThinkState>(src.aiThinkState);
+        dst.aiThinkSubState = src.aiThinkSubState;
+        dst.aiPlaceVehicleState = static_cast<AiPlaceVehicleState>(src.aiPlaceVehicleState);
+        dst.aiPlaceVehiclePad = src.aiPlaceVehiclePad;
         // Copy AI thoughts
         for (auto i = 0U; i < kMaxAiThoughts; ++i)
         {
@@ -349,32 +349,32 @@ namespace OpenLoco::S5
             for (auto j = 0U; j < std::size(srcThought.stations); ++j)
             {
                 dstThought.stations[j].id = static_cast<StationId>(srcThought.stations[j].id);
-                dstThought.stations[j].var_02 = static_cast<AiThoughtStationFlags>(srcThought.stations[j].var_02);
+                dstThought.stations[j].flags = static_cast<AiThoughtStationFlags>(srcThought.stations[j].flags);
                 dstThought.stations[j].rotation = srcThought.stations[j].rotation;
                 dstThought.stations[j].pos = srcThought.stations[j].pos;
                 dstThought.stations[j].baseZ = srcThought.stations[j].baseZ;
-                dstThought.stations[j].var_9 = srcThought.stations[j].var_9;
-                dstThought.stations[j].var_A = srcThought.stations[j].var_A;
-                dstThought.stations[j].var_B = srcThought.stations[j].var_B;
-                dstThought.stations[j].var_C = srcThought.stations[j].var_C;
+                dstThought.stations[j].nextStationIndex = srcThought.stations[j].nextStationIndex;
+                dstThought.stations[j].prevStationIndex = srcThought.stations[j].prevStationIndex;
+                dstThought.stations[j].connectionFlagsA = srcThought.stations[j].connectionFlagsA;
+                dstThought.stations[j].connectionFlagsB = srcThought.stations[j].connectionFlagsB;
             }
             dstThought.trackObjId = srcThought.trackObjId;
             dstThought.rackRailType = srcThought.rackRailType;
             dstThought.mods = srcThought.mods;
             dstThought.cargoType = srcThought.cargoType;
-            dstThought.var_43 = srcThought.var_43;
+            dstThought.numVehiclesTarget = srcThought.numVehiclesTarget;
             dstThought.numVehicles = srcThought.numVehicles;
-            dstThought.var_45 = srcThought.var_45;
-            std::ranges::copy(srcThought.var_46, dstThought.var_46);
+            dstThought.numVehicleObjTypes = srcThought.numVehicleObjTypes;
+            std::ranges::copy(srcThought.vehicleObjTypes, dstThought.vehicleObjTypes);
             for (auto j = 0U; j < std::size(srcThought.vehicles); ++j)
             {
                 dstThought.vehicles[j] = static_cast<EntityId>(srcThought.vehicles[j]);
             }
-            dstThought.var_76 = srcThought.var_76;
-            dstThought.var_7C = srcThought.var_7C;
-            dstThought.var_80 = srcThought.var_80;
-            dstThought.var_84 = srcThought.var_84;
-            dstThought.var_88 = srcThought.var_88;
+            dstThought.totalCost = srcThought.totalCost;
+            dstThought.totalRunningCost = srcThought.totalRunningCost;
+            dstThought.income = srcThought.income;
+            dstThought.previousIncome = srcThought.previousIncome;
+            dstThought.thoughtAge = srcThought.thoughtAge;
             dstThought.stationObjId = srcThought.stationObjId;
             dstThought.signalObjId = srcThought.signalObjId;
             dstThought.purchaseFlags = static_cast<AiPurchaseFlags>(srcThought.purchaseFlags);
@@ -384,47 +384,47 @@ namespace OpenLoco::S5
         dst.headquartersX = src.headquartersX;
         dst.headquartersY = src.headquartersY;
         dst.activeThoughtRevenueEstimate = src.activeThoughtRevenueEstimate;
-        dst.var_2582 = src.var_2582;
-        dst.var_2596 = src.var_2596;
-        dst.var_259A = src.var_259A;
-        dst.var_259B = src.var_259B;
-        dst.var_259C = src.var_259C;
+        dst.aiThoughtCooldown = src.aiThoughtCooldown;
+        dst.aiBridgeSelectionCounter = src.aiBridgeSelectionCounter;
+        dst.aiBridgeTypeLow = src.aiBridgeTypeLow;
+        dst.aiBridgeTypeMedium = src.aiBridgeTypeMedium;
+        dst.aiBridgeTypeHigh = src.aiBridgeTypeHigh;
         dst.aiPlaceVehicleIndex = src.aiPlaceVehicleIndex;
-        dst.var_25BE = static_cast<AiThoughtType>(src.var_25BE);
+        dst.aiSavedThoughtType = static_cast<AiThoughtType>(src.aiSavedThoughtType);
         dst.currentRating = static_cast<CorporateRating>(src.currentRating);
         // Copy hash table
-        for (auto i = 0U; i < std::size(src.var_25C0); ++i)
+        for (auto i = 0U; i < std::size(src.trackandRoadHashTable); ++i)
         {
-            dst.var_25C0[i].var_00 = src.var_25C0[i].var_00;
-            dst.var_25C0[i].var_02 = src.var_25C0[i].var_02;
-            dst.var_25C0[i].var_04 = src.var_25C0[i].var_04;
-            dst.var_25C0[i].var_05 = src.var_25C0[i].var_05;
+            dst.trackandRoadHashTable[i].posX = src.trackandRoadHashTable[i].posX;
+            dst.trackandRoadHashTable[i].posYAndFlags = src.trackandRoadHashTable[i].posYAndFlags;
+            dst.trackandRoadHashTable[i].posZ = src.trackandRoadHashTable[i].posZ;
+            dst.trackandRoadHashTable[i].trackRoadIdAndDirection = src.trackandRoadHashTable[i].trackRoadIdAndDirection;
         }
-        dst.var_25C0_length = src.var_25C0_length;
-        dst.var_85C2 = src.var_85C2;
-        dst.var_85C3 = src.var_85C3;
-        dst.var_85C4 = src.var_85C4;
-        dst.var_85C8 = src.var_85C8;
-        dst.var_85C9 = src.var_85C9;
-        dst.var_85CD = src.var_85CD;
-        dst.var_85CE = src.var_85CE;
-        dst.var_85CF = src.var_85CF;
-        dst.var_85D0 = src.var_85D0;
-        dst.var_85D4 = src.var_85D4;
-        dst.var_85D5 = src.var_85D5;
-        dst.var_85D7 = src.var_85D7;
-        dst.var_85DB = src.var_85DB;
-        dst.var_85DC = src.var_85DC;
-        dst.var_85DE = src.var_85DE;
-        dst.var_85E2 = src.var_85E2;
-        dst.var_85E6 = src.var_85E6;
-        dst.var_85E8 = src.var_85E8;
-        dst.var_85EA = src.var_85EA;
-        dst.var_85EE = src.var_85EE;
-        dst.var_85EF = src.var_85EF;
-        dst.var_85F0 = src.var_85F0;
-        dst.var_85F2 = src.var_85F2;
-        dst.var_85F6 = src.var_85F6;
+        dst.hashTableLength = src.hashTableLength;
+        dst.aiStationIndex = src.aiStationIndex;
+        dst.aiStationFlags = src.aiStationFlags;
+        dst.aiPathfindTargetPos = src.aiPathfindTargetPos;
+        dst.aiPathfindTargetBaseZ = src.aiPathfindTargetBaseZ;
+        dst.aiPathfindTargetPos2 = src.aiPathfindTargetPos2;
+        dst.aiPathfindTargetBaseZ2 = src.aiPathfindTargetBaseZ2;
+        dst.aiPathfindTargetRot = src.aiPathfindTargetRot;
+        dst.aiPathfindTargetRot2 = src.aiPathfindTargetRot2;
+        dst.aiPathfindStartPos = src.aiPathfindStartPos;
+        dst.aiPathfindStartBaseZ = src.aiPathfindStartBaseZ;
+        dst.aiPathfindStartTad = src.aiPathfindStartTad;
+        dst.aiPathfindStartPos2 = src.aiPathfindStartPos2;
+        dst.aiPathfindStartBaseZ2 = src.aiPathfindStartBaseZ2;
+        dst.aiPathfindStartTad2 = src.aiPathfindStartTad2;
+        dst.aiPathfindWeighting1 = src.aiPathfindWeighting1;
+        dst.aiPathfindWeighting2 = src.aiPathfindWeighting2;
+        dst.aiBestTrackRoadId = src.aiBestTrackRoadId;
+        dst.aiPathfindPhase = src.aiPathfindPhase;
+        dst.aiPathfindMaxWeighting = src.aiPathfindMaxWeighting;
+        dst.aiPathfindUndoCount1 = src.aiPathfindUndoCount1;
+        dst.aiPathfindUndoCount2 = src.aiPathfindUndoCount2;
+        dst.aiPathfindIterCount = src.aiPathfindIterCount;
+        dst.aiVehicleCost = src.aiVehicleCost;
+        dst.aiThinkTimer = src.aiThinkTimer;
         dst.cargoUnitsTotalDelivered = src.cargoUnitsTotalDelivered;
         std::ranges::copy(src.cargoUnitsDeliveredHistory, dst.cargoUnitsDeliveredHistory);
         std::ranges::copy(src.performanceIndexHistory, dst.performanceIndexHistory);

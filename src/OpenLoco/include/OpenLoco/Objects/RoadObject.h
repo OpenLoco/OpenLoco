@@ -26,7 +26,7 @@ namespace OpenLoco
         none = 0U,
         isOneWay = 1U << 0,
         isRail = 1U << 1, // controls if the object appears in the tracks menu instead of the road menu
-        unk_02 = 1U << 2,
+        allowsJunctions = 1U << 2,
         anyRoadTypeCompatible = 1U << 3,  // when used can't have mods
         noSlipSurface = 1U << 4,          // if set vehicles can't start slipping
         hasRackRail = 1U << 5,            // if set road can have rack rail added (not used)
