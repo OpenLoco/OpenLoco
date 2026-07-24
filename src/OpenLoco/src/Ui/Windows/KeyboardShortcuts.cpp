@@ -29,6 +29,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     static constexpr int kRowHeight = 10; // CJK: 13
 
     static constexpr Ui::Size kWindowSize = { 420, 238 };
+    static constexpr Ui::Size kMaxWindowSize = { 800, 400 };
 
     namespace Widx
     {
@@ -62,16 +63,14 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     // 0x004BE6C7
     Window* open()
     {
-        Window* window;
-
-        window = WindowManager::bringToFront(WindowType::keyboardShortcuts, 0);
+        Window* window = WindowManager::bringToFront(WindowType::keyboardShortcuts, 0);
         if (window != nullptr)
         {
             return window;
         }
 
         // 0x004BF833 (create_options_window)
-        window = WindowManager::createWindowCentred(WindowType::keyboardShortcuts, kWindowSize, WindowFlags::none, getEvents());
+        window = WindowManager::createWindowCentred(WindowType::keyboardShortcuts, kWindowSize, WindowFlags::resizable, getEvents());
 
         window->setWidgets(_widgets);
         window->initScrollWidgets();
@@ -82,6 +81,11 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 
         window->rowCount = static_cast<uint16_t>(ShortcutManager::getList().size());
         window->rowHover = -1;
+
+        window->minWidth = kWindowSize.width;
+        window->minHeight = kWindowSize.height;
+        window->maxWidth = kMaxWindowSize.width;
+        window->maxHeight = kMaxWindowSize.height;
 
         return window;
     }
@@ -177,28 +181,38 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
                 format = StringIds::wcolour2_stringid;
             }
 
-            auto baseStringId = StringIds::empty;
+            std::byte argsBuffer[32]{};
             char buffer[128]{};
 
-            const auto& def = shortcutDefs[i];
-            const auto& binding = Input::Shortcuts::getBinding(def.id);
-            const auto isBound = binding.keyCode != kInvalidKeyCode && binding.modifiers != KeyModifier::invalid;
-
-            if (isBound)
-            {
-                baseStringId = StringIds::stringptr;
-                getBindingString(binding.keyCode, buffer, std::size(buffer));
-            }
-
-            std::byte argsBuffer[32]{};
+            // Draw shortcut name
             FormatArguments formatter{ argsBuffer, std::size(argsBuffer) };
             formatter.push(StringIds::keyboard_shortcut_list_format);
             formatter.push(ShortcutManager::getName(static_cast<Shortcut>(i)));
+
+            auto point = Point(0, yPos - 1);
+            tr.drawStringLeft(point, Colour::black, format, formatter);
+
+            // Get current binding
+            const auto& def = shortcutDefs[i];
+            const auto& binding = Input::Shortcuts::getBinding(def.id);
+            const auto isBound = binding.keyCode != kInvalidKeyCode && binding.modifiers != KeyModifier::invalid;
+            if (!isBound)
+            {
+                yPos += kRowHeight;
+                continue;
+            }
+
+            auto baseStringId = StringIds::stringptr;
+            getBindingString(binding.keyCode, buffer, std::size(buffer));
+
+            // Draw current binding
+            formatter.rewind();
+            formatter.push(StringIds::stringid_stringid);
             Input::Shortcuts::pushModifierStrings(formatter, isBound ? binding.modifiers : KeyModifier::none);
             formatter.push(baseStringId);
             formatter.push(buffer);
 
-            auto point = Point(0, yPos - 1);
+            point.x = self.widgets[widx::list].width() / 2;
             tr.drawStringLeft(point, Colour::black, format, formatter);
             yPos += kRowHeight;
         }
@@ -270,8 +284,31 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         EditKeyboardShortcut::open(row);
     }
 
+    static void onResize(Window& self)
+    {
+        self.widgets[widx::frame].right = self.width - 1;
+        self.widgets[widx::frame].bottom = self.height - 1;
+
+        self.widgets[widx::panel].right = self.width - 1;
+        self.widgets[widx::panel].bottom = self.height - 1;
+
+        self.widgets[widx::caption].right = self.width - 2;
+
+        self.widgets[widx::close_button].left = self.width - 15;
+        self.widgets[widx::close_button].right = self.width - 3;
+
+        self.widgets[widx::list].right = self.width - 4;
+        self.widgets[widx::list].bottom = self.height - 36;
+
+        self.widgets[widx::reset_keys_btn].left = self.width - 150 - 4;
+        self.widgets[widx::reset_keys_btn].right = self.width - 4;
+        self.widgets[widx::reset_keys_btn].top = self.height - 15 - 12;
+        self.widgets[widx::reset_keys_btn].bottom = self.height - 15;
+    }
+
     static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
+        .onResize = onResize,
         .getScrollSize = getScrollSize,
         .scrollMouseDown = onScrollMouseDown,
         .scrollMouseOver = onScrollMouseOver,
