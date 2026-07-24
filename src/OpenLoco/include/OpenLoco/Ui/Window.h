@@ -320,7 +320,6 @@ namespace OpenLoco::Ui
         bool isActivated(WidgetIndex_t index);
         bool isHoldable(WidgetIndex_t index);
         bool canResize();
-        void capSize(int32_t minWidth, int32_t minHeight, int32_t maxWidth, int32_t maxHeight);
         void viewportsUpdatePosition();
         void invalidatePressedImageButtons();
         void invalidate();
