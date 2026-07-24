@@ -2506,5 +2506,5 @@ strings:
   2451: "{STRINGID}{STRINGID}{STRINGID}{STRINGID}{STRINGID}"
   2452: "{COLOUR BLACK}“{STRINGID}”"
   2453: "Music"
-  2454: "{COLOUR WINDOW_2}Play in-game music"
-  2455: "{SMALLFONT}{COLOUR BLACK}Toggle whether background music plays during gameplay. Go to the Jukebox to customise the music further, accessible from the top toolbar."
+  2454: "{COLOUR WINDOW_2}Play music during gameplay"
+  2455: "Open jukebox..."

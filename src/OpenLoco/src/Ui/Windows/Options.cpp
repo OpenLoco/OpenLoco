@@ -1031,6 +1031,7 @@ namespace OpenLoco::Ui::Windows::Options
                 frame_music,
                 play_title_music,
                 play_game_music,
+                open_jukebox,
             };
         }
 
@@ -1061,7 +1062,8 @@ namespace OpenLoco::Ui::Windows::Options
 
             Widgets::GroupBox({ 4, kMusicGroupOffset }, { kWindowSize.width - 8, kMusicGroupHeight }, WindowColour::secondary, StringIds::frame_music),
             Widgets::Checkbox({ 10, kMusicGroupOffset + kPlayTitleMusicRowOffset }, { 346, 12 }, WindowColour::secondary, StringIds::play_title_music),
-            Widgets::Checkbox({ 10, kMusicGroupOffset + kPlayGameMusicRowOffset }, { 346, 12 }, WindowColour::secondary, StringIds::play_game_music, StringIds::play_game_music_tip) // TODO new stringid
+            Widgets::Checkbox({ 10, kMusicGroupOffset + kPlayGameMusicRowOffset }, { 173, 12 }, WindowColour::secondary, StringIds::play_game_music),
+            Widgets::Button({ 10 + 173, kMusicGroupOffset + kPlayGameMusicRowOffset }, { 173, 12 }, WindowColour::secondary, StringIds::options_open_jukebox)
 
         );
 
@@ -1139,8 +1141,13 @@ namespace OpenLoco::Ui::Windows::Options
                 case Widx::play_title_music:
                     playTitleMusicOnMouseUp(self);
                     return;
+
                 case Widx::play_game_music:
                     playGameMusicOnMouseUp(self);
+                    return;
+
+                case Widx::open_jukebox:
+                    MusicJukebox::open();
                     return;
             }
         }
