@@ -134,6 +134,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static constexpr uint8_t kRowHeight = 102;
         static constexpr uint8_t kColumnWidth = 66;
+        static constexpr uint8_t kColsPerRow = 9;
 
         enum widx
         {
@@ -199,7 +200,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 i = 0;
             }
 
-            i = (i / 9) * kRowHeight;
+            i = (i / kColsPerRow) * kRowHeight;
 
             self.scrollAreas[0].contentOffsetY = i;
             Ui::ScrollView::updateThumbs(self, widx::scrollview);
@@ -635,7 +636,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBEC1
         static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            scrollHeight = (self.rowCount + 8) / 9;
+            scrollHeight = (self.rowCount + (kColsPerRow - 1)) / kColsPerRow;
             if (scrollHeight == 0)
             {
                 scrollHeight += 1;
@@ -645,7 +646,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static int getRowIndex(int16_t x, int16_t y)
         {
-            return (x / kColumnWidth) + (y / kRowHeight) * 9;
+            return (x / kColumnWidth) + (y / kRowHeight) * kColsPerRow;
         }
 
         // 0x004BBF3B
@@ -869,7 +870,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
                 xPos += kColumnWidth;
 
-                if (xPos >= kColumnWidth * 9) // full row
+                if (xPos >= kColumnWidth * kColsPerRow) // full row
                 {
                     xPos = 0;
                     yPos += kRowHeight;
@@ -2243,6 +2244,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static constexpr uint8_t kColumnWidth = 40;
         static constexpr uint8_t kRowHeight = 48;
+        static constexpr uint8_t kColsPerRow = 10;
 
         enum widx
         {
@@ -2278,7 +2280,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 i = 0;
             }
 
-            i = (i / 10) * kRowHeight;
+            i = (i / kColsPerRow) * kRowHeight;
 
             self.scrollAreas[0].contentOffsetY = i;
             Ui::ScrollView::updateThumbs(self, widx::scrollview);
@@ -2565,7 +2567,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC359
         static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            scrollHeight = (self.rowCount + 9) / 10;
+            scrollHeight = (self.rowCount + (kColsPerRow - 1)) / kColsPerRow;
             if (scrollHeight == 0)
             {
                 scrollHeight += 1;
@@ -2575,7 +2577,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static int getRowIndex(int16_t x, int16_t y)
         {
-            return (x / 40) + (y / kRowHeight) * 10;
+            return (x / kColumnWidth) + (y / kRowHeight) * kColsPerRow;
         }
 
         // 0x004BC3D3
@@ -2712,7 +2714,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
                 xPos += kColumnWidth;
 
-                if (xPos >= kColumnWidth * 10) // full row
+                if (xPos >= kColumnWidth * kColsPerRow) // full row
                 {
                     xPos = 0;
                     yPos += kRowHeight;
