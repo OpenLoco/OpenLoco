@@ -29,7 +29,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     static constexpr int kRowHeight = 10; // CJK: 13
 
     static constexpr Ui::Size kWindowSize = { 420, 238 };
-    static constexpr Ui::Size kMaxWindowSize = { 800, 400 };
+    static constexpr Ui::Size kMaxWindowSize = { 600, 800 };
 
     namespace Widx
     {
