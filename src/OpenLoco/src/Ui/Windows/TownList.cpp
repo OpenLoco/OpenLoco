@@ -1263,7 +1263,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
                 auto buildingObj = ObjectManager::get<BuildingObject>(self.rowInfo[i]);
 
-                auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(xPos + 1, yPos + 1, 110, 110));
+                auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(xPos + 1, yPos + 1, kColumnWidth - 2, kRowHeight - 2));
                 if (clipped)
                 {
                     drawingCtx.pushRenderTarget(*clipped);
@@ -1275,7 +1275,7 @@ namespace OpenLoco::Ui::Windows::TownList
                         colour = bit == -1 ? Colour::black : static_cast<Colour>(bit);
                     }
 
-                    buildingObj->drawBuilding(drawingCtx, _buildingRotation, 56, 96, colour);
+                    buildingObj->drawBuilding(drawingCtx, _buildingRotation, kColumnWidth / 2, kRowHeight / 2 + 40, colour);
 
                     drawingCtx.popRenderTarget();
                 }
