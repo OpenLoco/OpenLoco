@@ -5,9 +5,9 @@
 #include <OpenLoco/Utility/String.hpp>
 #include <base/files/file_path.h>
 #include <client/crashpad_client.h>
-#include <windows.h>
 #include <map>
 #include <vector>
+#include <windows.h>
 #endif
 
 namespace OpenLoco::CrashHandler
