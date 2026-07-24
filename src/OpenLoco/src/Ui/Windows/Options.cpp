@@ -1063,7 +1063,7 @@ namespace OpenLoco::Ui::Windows::Options
             Widgets::GroupBox({ 4, kMusicGroupOffset }, { kWindowSize.width - 8, kMusicGroupHeight }, WindowColour::secondary, StringIds::frame_music),
             Widgets::Checkbox({ 10, kMusicGroupOffset + kPlayTitleMusicRowOffset }, { 346, 12 }, WindowColour::secondary, StringIds::play_title_music),
             Widgets::Checkbox({ 10, kMusicGroupOffset + kPlayGameMusicRowOffset }, { 173, 12 }, WindowColour::secondary, StringIds::play_game_music),
-            Widgets::Button({ 10 + 173, kMusicGroupOffset + kPlayGameMusicRowOffset }, { 173, 12 }, WindowColour::secondary, StringIds::options_open_jukebox)
+            Widgets::Button({ 236, kMusicGroupOffset + kPlayGameMusicRowOffset }, { 120, 12 }, WindowColour::secondary, StringIds::options_open_jukebox)
 
         );
 
