@@ -47,6 +47,17 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 
     );
 
+    static constexpr std::array kSeparatorPositions = std::to_array<Shortcut>({
+        Shortcut::rotateConstructionObject,
+        Shortcut::toggleDirArrowsonTracks,
+        Shortcut::buildNewVehicles,
+        Shortcut::showCompaniesList,
+        Shortcut::showJukeboxWindow,
+        Shortcut::sendMessage,
+        Shortcut::constructionSelectPosition,
+        Shortcut::gameSpeedExtraFastForward,
+    });
+
     static std::vector<std::optional<Shortcut>> _shortcutList;
 
     enum widx
@@ -68,6 +79,10 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         for (auto& entry : ShortcutManager::getList())
         {
             _shortcutList.push_back(entry.id);
+            if (std::find(kSeparatorPositions.begin(), kSeparatorPositions.end(), entry.id) != kSeparatorPositions.end())
+            {
+                _shortcutList.push_back({});
+            }
         }
     }
 
@@ -172,6 +187,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         auto shade = Colours::getShade(colour, 4);
         drawingCtx.clearSingle(shade);
 
+        auto width = self.widgets[widx::list].width();
         auto yPos = 0;
         for (auto i = 0; i < self.rowCount; i++)
         {
@@ -187,7 +203,13 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 
             if (!_shortcutList[i].has_value())
             {
-                // draw separator
+                // Draw separator
+                uint32_t colour = enumValue(Colours::getTranslucent(self.getColour(WindowColour::secondary).c()));
+                colour++;
+                drawingCtx.drawRect(1, yPos + 4, width - 1, 1, colour, Gfx::RectFlags::transparent);
+                colour++;
+                drawingCtx.drawRect(1, yPos + 5, width - 1, 1, colour, Gfx::RectFlags::transparent);
+
                 yPos += kRowHeight;
                 continue;
             }
@@ -231,7 +253,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             formatter.push(baseStringId);
             formatter.push(buffer);
 
-            point.x = self.widgets[widx::list].width() / 2;
+            point.x = width / 2;
             tr.drawStringLeft(point, Colour::black, format, formatter);
             yPos += kRowHeight;
         }
