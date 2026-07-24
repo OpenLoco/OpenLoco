@@ -10,6 +10,14 @@
     #define OPENLOCO_ARCHITECTURE "x86-64"
 #elif defined(__i386__) || defined(_M_IX86)
     #define OPENLOCO_ARCHITECTURE "x86"
+#elif defined(__riscv)
+    #if __riscv_xlen == 64
+        #define OPENLOCO_ARCHITECTURE "RISC-V64"
+    #elif __riscv_xlen == 32
+        #define OPENLOCO_ARCHITECTURE "RISC-V32"
+    #else
+        #define OPENLOCO_ARCHITECTURE "RISC-V"
+    #endif
 #elif defined(__aarch64__) || defined(_M_ARM64)
     #define OPENLOCO_ARCHITECTURE "AArch64"
 #elif defined(__arm__) || defined(_M_ARM)
