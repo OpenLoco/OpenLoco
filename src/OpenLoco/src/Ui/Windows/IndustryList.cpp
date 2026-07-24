@@ -1158,23 +1158,24 @@ namespace OpenLoco::Ui::Windows::IndustryList
             self.callGetScrollSize(0, scrollWidth, scrollHeight);
             self.scrollAreas[0].contentHeight = scrollHeight;
 
-            auto i = 0;
-            for (; i <= self.rowCount; i++)
+            auto activeCell = 0;
+            for (; activeCell <= self.rowCount; activeCell++)
             {
-                if (self.rowInfo[i] == self.rowHover)
+                if (self.rowInfo[activeCell] == self.rowHover)
                 {
                     break;
                 }
             }
 
-            if (i >= self.rowCount)
+            if (activeCell >= self.rowCount)
             {
-                i = 0;
+                activeCell = 0;
             }
 
-            i = (i / kColsPerRow) * kRowHeight;
+            auto focusRow = activeCell / kColsPerRow;
+            auto offsetY = focusRow * kRowHeight;
 
-            self.scrollAreas[0].contentOffsetY = i;
+            self.scrollAreas[0].contentOffsetY = offsetY;
             Ui::ScrollView::updateThumbs(self, widx::scrollview);
         }
 
