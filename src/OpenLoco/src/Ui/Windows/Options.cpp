@@ -1104,6 +1104,12 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 self.activatedWidgets |= (1ULL << Widx::play_game_music);
             }
+
+            // Disable open jukebox button when playing music is disabled
+            if (!Config::get().audio.playJukeboxMusic)
+            {
+                self.disabledWidgets |= (1ULL << Widx::open_jukebox);
+            }
         }
 
         static constexpr int32_t kSliderPixelRange = 80;
