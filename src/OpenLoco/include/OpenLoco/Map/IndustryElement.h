@@ -1,6 +1,5 @@
 #pragma once
 
-#include "OpenLoco/Core/EnumFlags.hpp"
 #include "TileElement.h"
 
 namespace OpenLoco
@@ -31,7 +30,7 @@ namespace OpenLoco::World
     // P : Random animation playing
     // A : Random animation available
     // T : Random animation type
-    // S : Section construct completed
+    // S : Completed construction sections
     // ? : Unused
     constexpr uint16_t kIndustryElement6SectionsCompletedMask = 0b0000'0000'0011'1111;
     constexpr uint16_t kIndustryElement6RandomAnimationTypeMask = 0b0000'0000'0000'0011;
