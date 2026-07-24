@@ -60,7 +60,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
         _editingShortcutIndex = shortcutIndex;
         _pressedModifiers = KeyModifier::none;
 
-        auto window = WindowManager::createWindow(WindowType::editKeyboardShortcut, kWindowSize, WindowFlags::none, getEvents());
+        auto window = WindowManager::createWindowCentred(WindowType::editKeyboardShortcut, kWindowSize, WindowFlags::none, getEvents());
 
         window->setWidgets(_widgets);
         window->initScrollWidgets();
