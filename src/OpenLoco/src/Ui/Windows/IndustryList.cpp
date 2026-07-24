@@ -988,11 +988,11 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
                 auto industryObj = ObjectManager::get<IndustryObject>(self.rowInfo[i]);
 
-                auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(xPos + 1, yPos + 1, 110, 110));
+                auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(xPos + 1, yPos + 1, kColumnWidth - 2, kRowHeight - 2));
                 if (clipped)
                 {
                     drawingCtx.pushRenderTarget(*clipped);
-                    industryObj->drawIndustry(drawingCtx, 56, 96);
+                    industryObj->drawIndustry(drawingCtx, kColumnWidth / 2, kRowHeight / 2 + 40);
                     drawingCtx.popRenderTarget();
                 }
 
