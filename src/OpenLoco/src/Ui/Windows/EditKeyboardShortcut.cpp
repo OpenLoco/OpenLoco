@@ -128,9 +128,10 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
             args.push(StringIds::empty);
         }
 
+        if (auto def = ShortcutManager::getDefinition(_editingShortcutId))
         {
             auto args = FormatArguments(self.widgets[widx::shortcutName].textArgs);
-            args.push(ShortcutManager::getName(_editingShortcutId));
+            args.push(def->displayName);
         }
 
         {
