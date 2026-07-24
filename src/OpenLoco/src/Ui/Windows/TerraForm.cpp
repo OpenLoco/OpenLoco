@@ -2707,7 +2707,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     drawingCtx.pushRenderTarget(*clipped);
 
-                    drawingCtx.drawImage(34, 28, wallObj->sprite);
+                    drawingCtx.drawImage(kColumnWidth - 6, kRowHeight - 20, wallObj->sprite);
 
                     drawingCtx.popRenderTarget();
                 }
