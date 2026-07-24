@@ -48,10 +48,10 @@ else()
     set(OPENAL_LIBRARIES OpenAL::OpenAL)
 endif()
 
-# breakpad is also required
-if (MSVC)
-    find_package(unofficial-breakpad CONFIG REQUIRED)
-    set(BREAKPAD_LIBRARIES unofficial::breakpad::libbreakpad unofficial::breakpad::libbreakpad_client)
+# crashpad is optional and selected through OPENLOCO_CRASH_REPORTING.
+if (MSVC AND OPENLOCO_USE_CRASHPAD)
+    find_package(crashpad CONFIG REQUIRED)
+    set(CRASHPAD_LIBRARIES crashpad::crashpad)
 endif()
 
 find_package(fmt QUIET)

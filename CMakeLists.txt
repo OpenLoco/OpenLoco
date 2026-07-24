@@ -33,6 +33,49 @@ else()
 endif()
 option(OPENLOCO_USE_VCPKG "Use vcpkg for dependencies and toolchain" ${OPENLOCO_USE_VCPKG_DEFAULT})
 
+set(OPENLOCO_CRASH_REPORTING "auto" CACHE STRING "Crash reporting backend (auto|off|crashpad)")
+set_property(CACHE OPENLOCO_CRASH_REPORTING PROPERTY STRINGS auto off crashpad)
+
+set(_openloco_crash_reporting "${OPENLOCO_CRASH_REPORTING}")
+string(TOLOWER "${_openloco_crash_reporting}" _openloco_crash_reporting)
+
+set(_openloco_valid_crash_reporting_values auto off crashpad)
+if (NOT _openloco_crash_reporting IN_LIST _openloco_valid_crash_reporting_values)
+    message(FATAL_ERROR "Invalid OPENLOCO_CRASH_REPORTING value: '${OPENLOCO_CRASH_REPORTING}'. Valid values: auto, off, crashpad")
+endif()
+
+set(_openloco_is_windows_arm64 FALSE)
+if (CMAKE_VS_PLATFORM_NAME STREQUAL "ARM64"
+    OR CMAKE_GENERATOR_PLATFORM STREQUAL "ARM64"
+    OR CMAKE_SYSTEM_PROCESSOR MATCHES "^[Aa][Rr][Mm]64$"
+    OR CMAKE_SYSTEM_PROCESSOR MATCHES "^[Aa][Aa][Rr][Cc][Hh]64$")
+    set(_openloco_is_windows_arm64 TRUE)
+endif()
+
+set(OPENLOCO_CRASH_PROVIDER "${_openloco_crash_reporting}")
+if (OPENLOCO_CRASH_PROVIDER STREQUAL "auto")
+    if (WIN32)
+        set(OPENLOCO_CRASH_PROVIDER "crashpad")
+    else()
+        set(OPENLOCO_CRASH_PROVIDER "off")
+    endif()
+endif()
+
+if (OPENLOCO_CRASH_PROVIDER STREQUAL "crashpad")
+    if (NOT WIN32)
+        message(WARNING "Crashpad is currently enabled only for Windows builds in this project. Falling back to OPENLOCO_CRASH_REPORTING=off.")
+        set(OPENLOCO_CRASH_PROVIDER "off")
+    endif()
+endif()
+
+if (OPENLOCO_USE_VCPKG)
+    if (OPENLOCO_CRASH_PROVIDER STREQUAL "crashpad")
+        set(VCPKG_MANIFEST_FEATURES "crashpad" CACHE STRING "Enabled vcpkg manifest features" FORCE)
+    else()
+        set(VCPKG_MANIFEST_FEATURES "" CACHE STRING "Enabled vcpkg manifest features" FORCE)
+    endif()
+endif()
+
 
 # On windows VCPKG is used to get all dependencies other platforms can use it as well by setting OPENLOCO_USE_VCPKG
 if (OPENLOCO_USE_VCPKG)
@@ -94,6 +137,12 @@ include(OpenLocoUtility)
 option(STRICT "Build with warnings as errors" YES)
 option(OPENLOCO_BUILD_TESTS "Build tests" YES)
 option(OPENLOCO_HEADER_CHECK "Verify all public interfaces are standalone" NO)
+
+set(OPENLOCO_USE_CRASHPAD OFF)
+if (OPENLOCO_CRASH_PROVIDER STREQUAL "crashpad")
+    set(OPENLOCO_USE_CRASHPAD ON)
+endif()
+message(STATUS "Crash reporting provider: ${OPENLOCO_CRASH_PROVIDER}")
 
 if (APPLE)
     # Enable the use of e.g. std::execution::par

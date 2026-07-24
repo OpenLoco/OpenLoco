@@ -24,6 +24,14 @@ loco_add_executable(App
 
 set_target_properties(App PROPERTIES OUTPUT_NAME OpenLoco)
 
+if (WIN32 AND OPENLOCO_USE_CRASHPAD)
+    add_custom_command(TARGET App POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${CMAKE_BINARY_DIR}/vcpkg_installed/${VCPKG_TARGET_TRIPLET}/tools/crashpad/crashpad_handler${CMAKE_EXECUTABLE_SUFFIX}"
+            "$<TARGET_FILE_DIR:App>/crashpad_handler${CMAKE_EXECUTABLE_SUFFIX}"
+        COMMENT "Copying Crashpad handler executable")
+endif()
+
 if (APPLE)
     target_link_options(App PRIVATE "-framework" "Cocoa")
 

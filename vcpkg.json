@@ -1,12 +1,19 @@
 {
   "name": "openloco",
   "version-string": "22.02",
+  "features": {
+    "crashpad": {
+      "description": "Enable Crashpad crash reporting dependency on supported Windows targets",
+      "dependencies": [
+        {
+          "name": "crashpad",
+          "platform": "windows & !uwp"
+        }
+      ]
+    }
+  },
   "dependencies": [
     "benchmark",
-    {
-      "name": "breakpad",
-      "platform": "windows"
-    },
     "gtest",
     "libpng",
     "openal-soft",
