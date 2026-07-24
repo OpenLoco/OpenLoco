@@ -637,7 +637,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
     {
         static constexpr Ui::Size kWindowSize = { 578, 172 };
 
+        static constexpr uint8_t kColumnWidth = 112;
         static constexpr uint8_t kRowHeight = 112;
+        static constexpr uint8_t kColsPerRow = 5;
 
         enum widx
         {
@@ -753,7 +755,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         static int getRowIndex(int16_t x, int16_t y)
         {
-            return (x / 112) + (y / kRowHeight) * 5;
+            return (x / 112) + (y / kRowHeight) * kColsPerRow;
         }
 
         // 0x00458966
@@ -937,7 +939,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x004586EA
         static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
-            scrollHeight = (4 + self.rowCount) / 5;
+            scrollHeight = (self.rowCount + (kColsPerRow - 1)) / kColsPerRow;
             if (scrollHeight == 0)
             {
                 scrollHeight += 1;
@@ -959,8 +961,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
             {
                 if (yPos + kRowHeight < rt.y)
                 {
-                    xPos += kRowHeight;
-                    if (xPos >= kRowHeight * 5) // full row
+                    xPos += kColumnWidth;
+                    if (xPos >= kColumnWidth * kColsPerRow) // full row
                     {
                         xPos = 0;
                         yPos += kRowHeight;
@@ -976,12 +978,12 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 {
                     if (self.rowInfo[i] == self.var_846)
                     {
-                        drawingCtx.drawRectInset(xPos, yPos, kRowHeight, kRowHeight, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::colourLight);
+                        drawingCtx.drawRectInset(xPos, yPos, kColumnWidth, kRowHeight, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::colourLight);
                     }
                 }
                 else
                 {
-                    drawingCtx.drawRectInset(xPos, yPos, kRowHeight, kRowHeight, self.getColour(WindowColour::secondary), (Gfx::RectInsetFlags::colourLight | Gfx::RectInsetFlags::borderInset));
+                    drawingCtx.drawRectInset(xPos, yPos, kColumnWidth, kRowHeight, self.getColour(WindowColour::secondary), (Gfx::RectInsetFlags::colourLight | Gfx::RectInsetFlags::borderInset));
                 }
 
                 auto industryObj = ObjectManager::get<IndustryObject>(self.rowInfo[i]);
@@ -994,9 +996,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     drawingCtx.popRenderTarget();
                 }
 
-                xPos += kRowHeight;
+                xPos += kColumnWidth;
 
-                if (xPos >= kRowHeight * 5) // full row
+                if (xPos >= kColumnWidth * kColsPerRow) // full row
                 {
                     xPos = 0;
                     yPos += kRowHeight;
@@ -1170,7 +1172,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 i = 0;
             }
 
-            i = (i / 5) * kRowHeight;
+            i = (i / kColsPerRow) * kRowHeight;
 
             self.scrollAreas[0].contentOffsetY = i;
             Ui::ScrollView::updateThumbs(self, widx::scrollview);
