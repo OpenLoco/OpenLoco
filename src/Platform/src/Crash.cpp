@@ -39,7 +39,7 @@ namespace OpenLoco::CrashHandler
 
     Handle init([[maybe_unused]] const AppInfo& appInfo)
     {
-#if !defined(DEBUG) && defined(USE_CRASHPAD)
+#if !defined(DEBUG) && defined(USE_CRASHPAD) && defined(_WIN32)
         const auto handlerPath = getHandlerPath();
         const auto crashDir = getDumpDirectory();
 
@@ -81,7 +81,7 @@ namespace OpenLoco::CrashHandler
 
     void shutdown([[maybe_unused]] Handle exHandler)
     {
-#if !defined(DEBUG) && defined(USE_CRASHPAD)
+#if !defined(DEBUG) && defined(USE_CRASHPAD) && defined(_WIN32)
         if (exHandler == nullptr)
         {
             return;
