@@ -190,5 +190,5 @@ namespace OpenLoco
 
     void sub_48D794(const Station& station);
 
-    void drawStationName(Gfx::DrawingContext& drawingCtx, const Station& station, uint8_t zoom, bool isHovered);
+    void drawStationName(Gfx::DrawingContext& drawingCtx, const Station& station, ZoomLevel zoom, bool isHovered);
 }

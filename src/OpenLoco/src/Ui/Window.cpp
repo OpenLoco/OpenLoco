@@ -226,10 +226,10 @@ namespace OpenLoco::Ui
     // 0x004C68E4
     static void viewportMove(int16_t x, int16_t y, Ui::Window* w, Ui::Viewport* vp)
     {
-        int origX = vp->viewX >> vp->zoom;
-        int origY = vp->viewY >> vp->zoom;
-        int newX = x >> vp->zoom;
-        int newY = y >> vp->zoom;
+        int origX = vp->zoom.applyInversedTo(vp->viewX);
+        int origY = vp->zoom.applyInversedTo(vp->viewY);
+        int newX = vp->zoom.applyInversedTo<int32_t>(x);
+        int newY = vp->zoom.applyInversedTo<int32_t>(y);
         int diffX = origX - newX;
         int diffY = origY - newY;
 
@@ -249,14 +249,13 @@ namespace OpenLoco::Ui
             return;
         }
 
-        uint8_t zoom = (1 << vp->zoom);
         Viewport backup = *vp;
 
         if (vp->x < 0)
         {
             vp->width += vp->x;
-            vp->viewWidth += vp->x * zoom;
-            vp->viewX -= vp->x * zoom;
+            vp->viewWidth += vp->zoom.applyTo(vp->x);
+            vp->viewX -= vp->zoom.applyTo(vp->x);
             vp->x = 0;
         }
 
@@ -264,7 +263,7 @@ namespace OpenLoco::Ui
         if (eax > 0)
         {
             vp->width -= eax;
-            vp->viewWidth -= eax * zoom;
+            vp->viewWidth -= vp->zoom.applyTo(eax);
         }
 
         if (vp->width <= 0)
@@ -276,8 +275,8 @@ namespace OpenLoco::Ui
         if (vp->y < 0)
         {
             vp->height += vp->y;
-            vp->viewHeight += vp->y * zoom;
-            vp->viewY -= vp->y * zoom;
+            vp->viewHeight += vp->zoom.applyTo(vp->y);
+            vp->viewY -= vp->zoom.applyTo(vp->y);
             vp->y = 0;
         }
 
@@ -285,7 +284,7 @@ namespace OpenLoco::Ui
         if (eax > 0)
         {
             vp->height -= eax;
-            vp->viewHeight -= eax * zoom;
+            vp->viewHeight -= vp->zoom.applyTo(eax);
         }
 
         if (vp->height <= 0)
@@ -668,7 +667,7 @@ namespace OpenLoco::Ui
         Viewport* v = this->viewports[0];
         ViewportConfig* vc = &this->viewportConfigurations[0];
 
-        zoomLevel = std::clamp<int8_t>(zoomLevel, 0, 3);
+        zoomLevel = std::clamp<int8_t>(zoomLevel, ZoomLevel::min, ZoomLevel::max);
         if (v->zoom == zoomLevel)
         {
             return;
@@ -698,18 +697,19 @@ namespace OpenLoco::Ui
 
         if (toCursor && Config::get().zoomToCursor)
         {
+            const auto newZoomLevel = ZoomLevel{ zoomLevel };
             const auto mouseCoords = Ui::getCursorPosScaled() - Point(v->x, v->y);
-            const int32_t diffX = mouseCoords.x - ((v->viewWidth >> zoomLevel) / 2);
-            const int32_t diffY = mouseCoords.y - ((v->viewHeight >> zoomLevel) / 2);
-            if (previousZoomLevel > zoomLevel)
+            const int32_t diffX = mouseCoords.x - (newZoomLevel.applyInversedTo(v->viewWidth) / 2);
+            const int32_t diffY = mouseCoords.y - (newZoomLevel.applyInversedTo(v->viewHeight) / 2);
+            if (previousZoomLevel > newZoomLevel)
             {
-                vc->savedViewX += diffX << zoomLevel;
-                vc->savedViewY += diffY << zoomLevel;
+                vc->savedViewX += newZoomLevel.applyTo(diffX);
+                vc->savedViewY += newZoomLevel.applyTo(diffY);
             }
             else
             {
-                vc->savedViewX -= diffX << previousZoomLevel;
-                vc->savedViewY -= diffY << previousZoomLevel;
+                vc->savedViewX -= previousZoomLevel.applyTo(diffX);
+                vc->savedViewY -= previousZoomLevel.applyTo(diffY);
             }
         }
 
@@ -809,22 +809,18 @@ namespace OpenLoco::Ui
             config.savedViewX = newSavedView.viewX;
             config.savedViewY = newSavedView.viewY;
 
-            auto zoom = static_cast<int32_t>(newSavedView.zoomLevel) - viewport->zoom;
-            if (zoom != 0)
+            const auto zoomDiff = static_cast<int32_t>(newSavedView.zoomLevel) - static_cast<int32_t>(viewport->zoom);
+            if (zoomDiff < 0)
             {
-                if (zoom < 0)
-                {
-                    zoom = -zoom;
-                    viewport->viewWidth >>= zoom;
-                    viewport->viewHeight >>= zoom;
-                }
-                else
-                {
-                    viewport->viewWidth <<= zoom;
-                    viewport->viewHeight <<= zoom;
-                }
+                viewport->viewWidth >>= -zoomDiff;
+                viewport->viewHeight >>= -zoomDiff;
             }
-            viewport->zoom = zoom;
+            else if (zoomDiff > 0)
+            {
+                viewport->viewWidth <<= zoomDiff;
+                viewport->viewHeight <<= zoomDiff;
+            }
+            viewport->zoom = newSavedView.zoomLevel;
             viewport->setRotation(newSavedView.rotation);
 
             config.savedViewX -= viewport->viewWidth / 2;

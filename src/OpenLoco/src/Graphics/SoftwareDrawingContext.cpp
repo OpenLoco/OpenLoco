@@ -231,12 +231,55 @@ namespace OpenLoco::Gfx
             }
         }
 
+        static void drawImageMagnify(const RenderTarget& rt, ZoomLevel zoom, const Ui::Point& pos, const ImageId& image, const G1Element& element, const PaletteMap::View palette, const G1Element* noiseImage)
+        {
+            const auto left = zoom.applyInversedTo(pos.x + element.xOffset);
+            const auto top = zoom.applyInversedTo(pos.y + element.yOffset);
+            const auto right = zoom.applyInversedTo(pos.x + element.xOffset + element.width);
+            const auto bottom = zoom.applyInversedTo(pos.y + element.yOffset + element.height);
+
+            const auto width = std::min<int32_t>(right, rt.x + rt.width) - std::max<int32_t>(left, rt.x);
+            const auto height = std::min<int32_t>(bottom, rt.y + rt.height) - std::max<int32_t>(top, rt.y);
+            if (width <= 0 || height <= 0)
+            {
+                return;
+            }
+
+            const auto offsetX = rt.x - left;
+            const auto offsetY = rt.y - top;
+
+            const DrawSpriteArgs args{
+                palette,
+                element,
+                Ui::Point{ std::max(0, offsetX), std::max(0, offsetY) },
+                Ui::Point{ std::max(0, -offsetX), std::max(0, -offsetY) },
+                Ui::Size(width, height),
+                noiseImage
+            };
+            const auto op = getDrawBlendOp(image, args);
+
+            if (element.hasFlags(G1ElementFlags::isRLECompressed))
+            {
+                drawSpriteToBufferMagnify<true>(rt, zoom, args, op);
+            }
+            else
+            {
+                drawSpriteToBufferMagnify<false>(rt, zoom, args, op);
+            }
+        }
+
         // 0x00448D90
         static void drawImagePaletteSet(const RenderTarget& rt, ZoomLevel zoom, const Ui::Point& pos, const ImageId& image, const PaletteMap::View palette, const G1Element* noiseImage)
         {
             const auto* element = getG1Element(image.getIndex());
             if (element == nullptr)
             {
+                return;
+            }
+
+            if (zoom < ZoomLevel::full)
+            {
+                drawImageMagnify(rt, zoom, pos, image, *element, palette, noiseImage);
                 return;
             }
 
@@ -536,9 +579,70 @@ namespace OpenLoco::Gfx
                 imageDataPos);
         }
 
+        static void drawImageMaskedMagnify(const RenderTarget& rt, ZoomLevel zoom, const Ui::Point& pos, const ImageId& image, const ImageId& maskImage)
+        {
+            const auto* g1Image = Gfx::getG1Element(image.getIndex());
+            const auto* g1ImageMask = Gfx::getG1Element(maskImage.getIndex());
+            if (g1Image == nullptr || g1ImageMask == nullptr)
+            {
+                return;
+            }
+            if (g1Image->hasFlags(G1ElementFlags::isRLECompressed) || g1ImageMask->hasFlags(G1ElementFlags::isRLECompressed))
+            {
+                assert(false);
+
+                return;
+            }
+
+            const auto left = zoom.applyInversedTo(pos.x + g1Image->xOffset);
+            const auto top = zoom.applyInversedTo(pos.y + g1Image->yOffset);
+            const auto right = zoom.applyInversedTo(pos.x + g1Image->xOffset + g1Image->width);
+            const auto bottom = zoom.applyInversedTo(pos.y + g1Image->yOffset + g1Image->height);
+
+            const auto width = std::min<int32_t>(right, rt.x + rt.width) - std::max<int32_t>(left, rt.x);
+            const auto height = std::min<int32_t>(bottom, rt.y + rt.height) - std::max<int32_t>(top, rt.y);
+            if (width <= 0 || height <= 0)
+            {
+                return;
+            }
+
+            const auto offsetX = rt.x - left;
+            const auto offsetY = rt.y - top;
+            const auto srcX = std::max(0, offsetX);
+            const auto srcY = std::max(0, offsetY);
+
+            const auto dstLineWidth = static_cast<size_t>(rt.width) + rt.pitch;
+            auto* dst = rt.bits + dstLineWidth * std::max(0, -offsetY) + std::max(0, -offsetX);
+
+            for (auto y = 0; y < height; y++)
+            {
+                auto* nextDst = dst + dstLineWidth;
+                const auto imageY = zoom.applyTo(srcY + y);
+                const auto* imageLine = &g1Image->offset[static_cast<size_t>(g1Image->width) * imageY];
+                const auto* maskLine = &g1ImageMask->offset[static_cast<size_t>(g1ImageMask->width) * imageY];
+
+                for (auto x = 0; x < width; x++, dst++)
+                {
+                    const auto imageX = zoom.applyTo(srcX + x);
+                    const auto masked = imageLine[imageX] & maskLine[imageX];
+                    if (masked)
+                    {
+                        *dst = masked;
+                    }
+                }
+                dst = nextDst;
+            }
+        }
+
         // 0x00450705
         static void drawImageMasked(const RenderTarget& rt, ZoomLevel zoom, const Ui::Point& pos, const ImageId& image, const ImageId& maskImage)
         {
+            if (zoom < ZoomLevel::full)
+            {
+                drawImageMaskedMagnify(rt, zoom, pos, image, maskImage);
+                return;
+            }
+
             switch (zoom)
             {
                 case 0:

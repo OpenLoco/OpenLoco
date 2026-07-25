@@ -47,6 +47,17 @@ namespace OpenLoco::Paint
         _foregroundCullingHeight = options.foregroundCullHeight;
     }
 
+    // Magnifying zoom levels have several screen pixels per world unit, so the far
+    // edges have to round outwards to still cover every pixel of the render target.
+    static constexpr int32_t screenToWorldCeil(ZoomLevel zoom, int32_t value)
+    {
+        if (zoom >= ZoomLevel::full)
+        {
+            return zoom.applyTo(value);
+        }
+        return zoom.applyTo(value + zoom.applyInversedTo(1) - 1);
+    }
+
     int32_t PaintSession::getWorldX() const
     {
         return _zoom.applyTo(static_cast<int32_t>(_renderTarget->x));
@@ -59,12 +70,12 @@ namespace OpenLoco::Paint
 
     int32_t PaintSession::getWorldWidth() const
     {
-        return _zoom.applyTo(static_cast<int32_t>(_renderTarget->width));
+        return screenToWorldCeil(_zoom, _renderTarget->x + _renderTarget->width) - getWorldX();
     }
 
     int32_t PaintSession::getWorldHeight() const
     {
-        return _zoom.applyTo(static_cast<int32_t>(_renderTarget->height));
+        return screenToWorldCeil(_zoom, _renderTarget->y + _renderTarget->height) - getWorldY();
     }
 
     void PaintSession::setEntityPosition(const World::Pos2& pos)
@@ -215,8 +226,8 @@ namespace OpenLoco::Paint
 
         const auto rtWorldX = zoom.applyTo(static_cast<int32_t>(rt.x));
         const auto rtWorldY = zoom.applyTo(static_cast<int32_t>(rt.y));
-        const auto rtWorldWidth = zoom.applyTo(static_cast<int32_t>(rt.width));
-        const auto rtWorldHeight = zoom.applyTo(static_cast<int32_t>(rt.height));
+        const auto rtWorldWidth = screenToWorldCeil(zoom, rt.x + rt.width) - rtWorldX;
+        const auto rtWorldHeight = screenToWorldCeil(zoom, rt.y + rt.height) - rtWorldY;
 
         if (right <= rtWorldX)
         {
@@ -510,7 +521,7 @@ namespace OpenLoco::Paint
     {
         const auto worldX = zoom.applyTo(static_cast<int32_t>(rt->x));
         const auto worldY = zoom.applyTo(static_cast<int32_t>(rt->y));
-        const auto worldHeight = zoom.applyTo(static_cast<int32_t>(rt->height));
+        const auto worldHeight = screenToWorldCeil(zoom, rt->y + rt->height) - worldY;
 
         // TODO: Work out what these constants represent
         uint16_t numVerticalQuadrants = (worldHeight + (rotation == 0 ? 1040 : 1056)) >> 5;
@@ -1000,7 +1011,7 @@ namespace OpenLoco::Paint
         }
 
         auto imagePos = ps.vpPos;
-        if (ps.type == Ui::ViewportInteraction::InteractionItem::entity)
+        if (ps.type == Ui::ViewportInteraction::InteractionItem::entity && zoom > ZoomLevel::full)
         {
             const auto zoomAlign = zoom.applyTo(1U);
             imagePos.x = Numerics::floor2(imagePos.x, zoomAlign);
@@ -1026,7 +1037,7 @@ namespace OpenLoco::Paint
             imageId = ImageId(imageId.getIndex()).withTranslucency(ExtColour::unk30);
         }
         Ui::Point imagePos = ps.vpPos + attachPs.vpPos;
-        if (zoom != 0)
+        if (zoom > ZoomLevel::full)
         {
             imagePos.x = Numerics::floor2(imagePos.x, 2);
             imagePos.y = Numerics::floor2(imagePos.y, 2);
@@ -1112,7 +1123,7 @@ namespace OpenLoco::Paint
         const auto zoom = _zoom;
 
         auto tr = Gfx::TextRenderer(drawingCtx);
-        tr.setCurrentFont(zoom == 0 ? Gfx::Font::medium_bold : Gfx::Font::small);
+        tr.setCurrentFont(zoom <= ZoomLevel::full ? Gfx::Font::medium_bold : Gfx::Font::small);
 
         char buffer[512]{};
 

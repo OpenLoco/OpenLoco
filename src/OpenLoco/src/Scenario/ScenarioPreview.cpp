@@ -25,8 +25,8 @@ namespace OpenLoco::Scenario
         saveVp.height = size.height;
         saveVp.flags = Ui::ViewportFlags::hideTownNames | Ui::ViewportFlags::hideStationNames;
         saveVp.zoom = ZoomLevel::half;
-        saveVp.viewWidth = size.width << saveVp.zoom;
-        saveVp.viewHeight = size.height << saveVp.zoom;
+        saveVp.viewWidth = saveVp.zoom.applyTo(size.width);
+        saveVp.viewHeight = saveVp.zoom.applyTo(size.height);
 
         const auto viewPos = saveVp.centre2dCoordinates(mapPosXYZ);
         saveVp.viewX = viewPos.x;

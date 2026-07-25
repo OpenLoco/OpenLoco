@@ -269,8 +269,8 @@ namespace OpenLoco::Ui::Windows::Town
                 {
                     viewport->width = newWidth;
                     viewport->height = newHeight;
-                    viewport->viewWidth = newWidth << viewport->zoom;
-                    viewport->viewHeight = newHeight << viewport->zoom;
+                    viewport->viewWidth = viewport->zoom.applyTo(newWidth);
+                    viewport->viewHeight = viewport->zoom.applyTo(newHeight);
                     self.savedView.clear();
                 }
             }

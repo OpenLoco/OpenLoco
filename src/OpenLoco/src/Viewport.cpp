@@ -51,8 +51,7 @@ namespace OpenLoco::Ui
         {
             return;
         }
-        auto intersection = uiRect.intersection(viewRect);
-        paint(drawingCtx, screenToViewport(intersection));
+        paint(drawingCtx, uiRect.intersection(viewRect));
     }
 
     // 0x0048DE97
@@ -140,49 +139,38 @@ namespace OpenLoco::Ui
         options.rotation = getRotation();
         options.viewFlags = flags;
 
-        const uint32_t bitmask = 0xFFFFFFFF << zoom;
-
-        const int32_t worldLeft = rect.origin.x & bitmask;
-        const int32_t worldTop = rect.origin.y & bitmask;
-        const int32_t worldWidth = rect.width() & bitmask;
-        const int32_t worldHeight = rect.height() & bitmask;
-
         Gfx::RenderTarget zoomViewRt{};
-        zoomViewRt.x = worldLeft >> zoom;
-        zoomViewRt.y = worldTop >> zoom;
-        zoomViewRt.width = worldWidth >> zoom;
-        zoomViewRt.height = worldHeight >> zoom;
-
-        auto unkX = (zoomViewRt.x - (static_cast<int32_t>(viewX & bitmask) >> zoom)) + x;
-
-        auto unkY = (zoomViewRt.y - (static_cast<int32_t>(viewY & bitmask) >> zoom)) + y;
+        zoomViewRt.width = rect.width();
+        zoomViewRt.height = rect.height();
+        zoomViewRt.x = zoom.applyInversedTo(viewX) + (rect.left() - x);
+        zoomViewRt.y = zoom.applyInversedTo(viewY) + (rect.top() - y);
 
         zoomViewRt.pitch = rt.width + rt.pitch - zoomViewRt.width;
-        zoomViewRt.bits = rt.bits + (unkX - rt.x) + ((unkY - rt.y) * (rt.width + rt.pitch));
+        zoomViewRt.bits = rt.bits + (rect.left() - rt.x) + ((rect.top() - rt.y) * (rt.width + rt.pitch));
 
         // make sure, the compare operation is done in int32_t to avoid the loop becoming an infinite loop.
         // this as well as the [x += 32] in the loop causes signed integer overflow -> undefined behaviour.
-        auto rightBorder = worldLeft + worldWidth;
-        // Floors to nearest 32
-        auto alignedX = worldLeft & ~0x1F;
+        const auto columnWidth = zoom.applyInversedTo(32);
+        auto rightBorder = zoomViewRt.x + zoomViewRt.width;
+        // Floors to nearest column
+        auto alignedX = zoomViewRt.x & ~(columnWidth - 1);
 
         // Drawing is performed in columns of 32 pixels (1 tile wide)
         sfl::small_vector<Gfx::RenderTarget, 512> columns;
 
         // Generate and sort columns.
-        for (auto columnX = alignedX; columnX < rightBorder; columnX += 32)
+        for (auto columnX = alignedX; columnX < rightBorder; columnX += columnWidth)
         {
             Gfx::RenderTarget columnRt = zoomViewRt;
-            const auto columnLeft = columnX >> zoom;
-            if (columnLeft >= columnRt.x)
+            if (columnX >= columnRt.x)
             {
-                auto leftPitch = columnLeft - columnRt.x;
+                auto leftPitch = columnX - columnRt.x;
                 columnRt.width -= leftPitch;
                 columnRt.pitch += leftPitch;
                 columnRt.bits += leftPitch;
-                columnRt.x = columnLeft;
+                columnRt.x = columnX;
             }
-            auto columnRightX = (columnX + 32) >> zoom;
+            auto columnRightX = columnX + columnWidth;
             auto paintRight = columnRt.x + columnRt.width;
             if (paintRight >= columnRightX)
             {

@@ -1698,7 +1698,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
                     auto zoom = viewport->zoom;
 
-                    auto dY = -(16 >> zoom);
+                    auto dY = -zoom.applyInversedTo(16);
                     if (dY == 0)
                     {
                         dY = -1;

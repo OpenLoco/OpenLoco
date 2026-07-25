@@ -963,7 +963,7 @@ namespace OpenLoco::S5
                 SavedViewSimple savedView;
                 savedView.viewX = file->gameState.general.savedViewX;
                 savedView.viewY = file->gameState.general.savedViewY;
-                savedView.zoomLevel = static_cast<ZoomLevel>(file->gameState.general.savedViewZoom);
+                savedView.zoomLevel = ZoomLevel{ std::clamp<int8_t>(file->gameState.general.savedViewZoom, ZoomLevel::min, ZoomLevel::max) };
                 savedView.rotation = file->gameState.general.savedViewRotation;
                 mainWindow->viewportFromSavedView(savedView);
                 mainWindow->invalidate();

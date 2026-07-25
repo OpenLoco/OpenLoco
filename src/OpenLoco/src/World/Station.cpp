@@ -860,7 +860,19 @@ namespace OpenLoco
         uint16_t width;
         uint16_t height;
     };
-    static constexpr std::array<StationBorder, 4> kZoomToStationBorder = {
+    static constexpr std::array<StationBorder, ZoomLevel::count> kZoomToStationBorder = {
+        StationBorder{
+            ImageIds::curved_border_left_medium,
+            ImageIds::curved_border_right_medium,
+            3,
+            11,
+        },
+        StationBorder{
+            ImageIds::curved_border_left_medium,
+            ImageIds::curved_border_right_medium,
+            3,
+            11,
+        },
         StationBorder{
             ImageIds::curved_border_left_medium,
             ImageIds::curved_border_right_medium,
@@ -887,7 +899,9 @@ namespace OpenLoco
         },
     };
 
-    static constexpr std::array<Gfx::Font, 4> kZoomToStationFonts = {
+    static constexpr std::array<Gfx::Font, ZoomLevel::count> kZoomToStationFonts = {
+        Gfx::Font::medium_bold,
+        Gfx::Font::medium_bold,
         Gfx::Font::medium_bold,
         Gfx::Font::medium_bold,
         Gfx::Font::small,
@@ -895,7 +909,7 @@ namespace OpenLoco
     };
 
     // 0x0048DF4D, 0x0048E13B
-    void drawStationName(Gfx::DrawingContext& drawingCtx, const Station& station, uint8_t zoom, bool isHovered)
+    void drawStationName(Gfx::DrawingContext& drawingCtx, const Station& station, ZoomLevel zoom, bool isHovered)
     {
         const Gfx::RenderTarget& rt = drawingCtx.currentRenderTarget();
         if (!station.labelFrame.contains(rt.getUiRect(), zoom))
@@ -903,7 +917,7 @@ namespace OpenLoco
             return;
         }
 
-        auto& borderImages = kZoomToStationBorder[zoom];
+        auto& borderImages = kZoomToStationBorder[zoom.index()];
 
         const auto companyColour = [&station]() {
             if (station.owner == CompanyId::null)
@@ -917,10 +931,10 @@ namespace OpenLoco
         }();
         const auto colour = Colours::getTranslucent(companyColour, isHovered ? 0 : 1);
 
-        Ui::Point topLeft = { station.labelFrame.left[zoom],
-                              station.labelFrame.top[zoom] };
-        Ui::Point bottomRight = { station.labelFrame.right[zoom],
-                                  station.labelFrame.bottom[zoom] };
+        Ui::Point topLeft = { station.labelFrame.left[zoom.index()],
+                              station.labelFrame.top[zoom.index()] };
+        Ui::Point bottomRight = { station.labelFrame.right[zoom.index()],
+                                  station.labelFrame.bottom[zoom.index()] };
 
         drawingCtx.drawImage(ZoomLevel::full, topLeft, ImageId(borderImages.left).withTranslucency(ExtColour::unk34));
         drawingCtx.drawImage(ZoomLevel::full, topLeft, ImageId(borderImages.left).withTranslucency(colour));
@@ -943,7 +957,7 @@ namespace OpenLoco
         StringManager::formatString(str, getTransportIconsFromStationFlags(station.flags));
 
         auto tr = Gfx::TextRenderer(drawingCtx);
-        tr.setCurrentFont(kZoomToStationFonts[zoom]);
+        tr.setCurrentFont(kZoomToStationFonts[zoom.index()]);
         auto point = topLeft + Point(borderImages.width, 0);
         tr.drawString(point, Colour::black, buffer);
     }
@@ -963,17 +977,18 @@ namespace OpenLoco
         const auto remainingLength = strEnd - buffer;
         StringManager::formatString(strEnd, remainingLength, getTransportIconsFromStationFlags(flags));
 
-        for (auto zoom = 0U; zoom < 4; ++zoom)
+        for (auto level = ZoomLevel::min; level <= ZoomLevel::max; ++level)
         {
             Ui::Viewport virtualVp{};
-            virtualVp.zoom = zoom;
+            virtualVp.zoom = ZoomLevel{ level };
+            const auto index = virtualVp.zoom.index();
 
             const auto labelCenter = World::Pos3{ x, y, z };
             const auto vpPos = World::gameToScreen(labelCenter, WindowManager::getCurrentRotation());
 
-            const auto font = kZoomToStationFonts[zoom];
-            const auto width = Gfx::TextRenderer::getStringWidth(font, buffer) + kZoomToStationBorder[zoom].width * 2;
-            const auto height = kZoomToStationBorder[zoom].height;
+            const auto font = kZoomToStationFonts[index];
+            const auto width = Gfx::TextRenderer::getStringWidth(font, buffer) + kZoomToStationBorder[index].width * 2;
+            const auto height = kZoomToStationBorder[index].height;
 
             const auto [zoomWidth, zoomHeight] = ScreenToViewport::scaleTransform(Ui::Point(width, height), virtualVp);
 
@@ -985,10 +1000,10 @@ namespace OpenLoco
             const auto [uiLeft, uiTop] = ViewportToScreen::scaleTransform(Ui::Point(left, top), virtualVp);
             const auto [uiRight, uiBottom] = ViewportToScreen::scaleTransform(Ui::Point(right, bottom), virtualVp);
 
-            labelFrame.left[zoom] = uiLeft;
-            labelFrame.right[zoom] = uiRight;
-            labelFrame.top[zoom] = uiTop;
-            labelFrame.bottom[zoom] = uiBottom;
+            labelFrame.left[index] = uiLeft;
+            labelFrame.right[index] = uiRight;
+            labelFrame.top[index] = uiTop;
+            labelFrame.bottom[index] = uiBottom;
         }
     }
 

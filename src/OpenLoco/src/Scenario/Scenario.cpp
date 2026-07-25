@@ -318,7 +318,7 @@ namespace OpenLoco::Scenario
                 SavedViewSimple savedView;
                 savedView.viewX = gameState.savedViewX;
                 savedView.viewY = gameState.savedViewY;
-                savedView.zoomLevel = static_cast<ZoomLevel>(gameState.savedViewZoom);
+                savedView.zoomLevel = ZoomLevel{ std::clamp<int8_t>(gameState.savedViewZoom, ZoomLevel::min, ZoomLevel::max) };
                 savedView.rotation = gameState.savedViewRotation;
                 mainWindow->viewportFromSavedView(savedView);
                 mainWindow->invalidate();
