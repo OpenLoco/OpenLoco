@@ -23,14 +23,22 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
     static uint8_t _editingShortcutIndex;
     static KeyModifier _pressedModifiers;
 
+    namespace Widx
+    {
+        constexpr WidgetId kClose{ "close" };
+        constexpr WidgetId kDescription{ "description" };
+        constexpr WidgetId kShortcutName{ "shortcutName" };
+        constexpr WidgetId kPressedKeys{ "pressedKeys" };
+    }
+
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
         Widgets::Caption({ 1, 1 }, { kWindowSize.width - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::change_keyboard_shortcut),
-        Widgets::ImageButton({ 265, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::ImageButton(Widx::kClose, { 265, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { kWindowSize.width, kWindowSize.height - 15 }, WindowColour::secondary),
-        Widgets::Label({ 4, 20 }, { kWindowSize.width - 8, 12 }, WindowColour::secondary, ContentAlign::center, StringIds::change_keyboard_shortcut_desc),
-        Widgets::Label({ 4, 34 }, { kWindowSize.width - 8, 12 }, WindowColour::secondary, ContentAlign::center, StringIds::black_quoted_stringid),
-        Widgets::Label({ 4, 54 }, { kWindowSize.width - 8, 12 }, WindowColour::secondary, ContentAlign::center, StringIds::black_stringid));
+        Widgets::Label(Widx::kDescription, { 4, 20 }, { kWindowSize.width - 8, 12 }, WindowColour::secondary, ContentAlign::center, StringIds::change_keyboard_shortcut_desc),
+        Widgets::Label(Widx::kShortcutName, { 4, 34 }, { kWindowSize.width - 8, 12 }, WindowColour::secondary, ContentAlign::center, StringIds::black_quoted_stringid),
+        Widgets::Label(Widx::kPressedKeys, { 4, 54 }, { kWindowSize.width - 8, 12 }, WindowColour::secondary, ContentAlign::center, StringIds::black_stringid));
 
     static const WindowEventList& getEvents();
 
@@ -138,11 +146,11 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
     }
 
     // 0x004BE821
-    static void onMouseUp(Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseUp(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case widx::close:
+            case Widx::kClose:
                 WindowManager::close(&self);
                 return;
         }
