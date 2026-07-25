@@ -328,10 +328,8 @@ namespace OpenLoco::Ui
         void setDisabledWidgetsAndInvalidate(uint32_t _disabledWidgets);
         void viewportCentreMain() const;
         void viewportSetUndergroundFlag(bool underground, Ui::Viewport* vp);
-        void viewportGetMapCoordsByCursor(int16_t* mapX, int16_t* mapY, int16_t* offsetX, int16_t* offsetY);
         void moveWindowToLocation(viewport_pos pos);
         void viewportCentreOnTile(const World::Pos3& loc);
-        void viewportCentreTileAroundCursor(int16_t mapX, int16_t mapY, int16_t offsetX, int16_t offsetY);
         void viewportZoomSet(int8_t zoomLevel, bool toCursor);
         void viewportZoomIn(bool toCursor);
         void viewportZoomOut(bool toCursor);
