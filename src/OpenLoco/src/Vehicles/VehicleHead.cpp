@@ -3992,7 +3992,7 @@ namespace OpenLoco::Vehicles
                     {
                         setSignalState(pos, tad, trackObjId, 0);
                     }
-                    leaveLevelCrossing(pos, tad, 9);
+                    leaveLevelCrossing(pos, tad, false);
                 }
 
                 pos += World::TrackData::getUnkTrack(tad._data).pos;
@@ -4601,7 +4601,7 @@ namespace OpenLoco::Vehicles
             {
                 TrackAndDirection::_TrackAndDirection tad{ 0, 0 };
                 tad._data = connection & World::Track::AdditionalTaDFlags::basicTaDMask;
-                leaveLevelCrossing(nextPos, tad, 8);
+                leaveLevelCrossing(nextPos, tad, true);
             }
 
             if (connection & World::Track::AdditionalTaDFlags::hasSignal)
@@ -5026,7 +5026,7 @@ namespace OpenLoco::Vehicles
                     if (elRoad->hasLevelCrossing())
                     {
                         res |= RoadOccupationFlags::hasLevelCrossing;
-                        if (elRoad->hasUnk7_10())
+                        if (elRoad->isLevelCrossingClosed())
                         {
                             res |= RoadOccupationFlags::isLevelCrossingClosed;
                         }
@@ -5047,7 +5047,7 @@ namespace OpenLoco::Vehicles
                     if (elRoad->hasLevelCrossing())
                     {
                         res |= RoadOccupationFlags::hasLevelCrossing;
-                        if (elRoad->hasUnk7_10())
+                        if (elRoad->isLevelCrossingClosed())
                         {
                             res |= RoadOccupationFlags::isLevelCrossingClosed;
                         }
@@ -6209,7 +6209,7 @@ namespace OpenLoco::Vehicles
                 {
                     setSignalState(pos, tad, trackObjId, 0);
                 }
-                leaveLevelCrossing(pos, tad, 9);
+                leaveLevelCrossing(pos, tad, false);
             }
 
             pos += World::TrackData::getUnkTrack(tad._data).pos;
@@ -6655,7 +6655,7 @@ namespace OpenLoco::Vehicles
             auto headPos = World::Pos3{ tileX, tileY, tileBaseZ * World::kSmallZStep };
             auto simplifiedTad = trackAndDirection;
             simplifiedTad.track._data &= World::Track::AdditionalTaDFlags::basicTaDMask;
-            leaveLevelCrossing(headPos, simplifiedTad.track, 8);
+            leaveLevelCrossing(headPos, simplifiedTad.track, true);
         }
 
         var_3C = 0;

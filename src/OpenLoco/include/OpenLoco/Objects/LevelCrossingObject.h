@@ -21,13 +21,13 @@ namespace OpenLoco
         static constexpr auto kObjectType = ObjectType::levelCrossing;
 
         StringId name;
-        int16_t costFactor;     // 0x02
-        int16_t sellCostFactor; // 0x04
-        uint8_t costIndex;      // 0x06
-        uint8_t animationSpeed; // 0x07
-        uint8_t closingFrames;  // 0x08
-        uint8_t closedFrames;   // 0x09
-        uint8_t var_0A;         // 0x0A
+        int16_t costFactor;             // 0x02
+        int16_t sellCostFactor;         // 0x04
+        uint8_t costIndex;              // 0x06
+        uint8_t closedAnimationSpeed;   // 0x07
+        uint8_t closedAnimationFrames;  // 0x08
+        uint8_t closingAnimationFrames; // 0x09
+        uint8_t animationSpeedBitmask;  // 0x0A
         uint8_t pad_0B;
         uint16_t designedYear; // 0x0C
         uint32_t image;        // 0x0E
