@@ -826,7 +826,7 @@ namespace OpenLoco::Paint
         quadrantIndex = _quadrantBackIndex;
         while (++quadrantIndex < _quadrantFrontIndex)
         {
-            psCache = arrangeStructsHelper(psCache, quadrantIndex & 0xFFFF, QuadrantFlags::none, currentRotation);
+            psCache = arrangeStructsHelper(psCache, quadrantIndex & 0xFFFF, QuadrantFlags::neighbour, currentRotation);
         }
 
         _paintHead = psHead.nextQuadrantPS;
