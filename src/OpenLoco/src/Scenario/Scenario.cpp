@@ -49,6 +49,7 @@
 #include "World/TownManager.h"
 
 #include <OpenLoco/Platform/Platform.h>
+#include <algorithm>
 
 using namespace OpenLoco::World;
 using namespace OpenLoco::Ui;

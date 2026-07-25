@@ -1,5 +1,6 @@
 #include "S5/S5LabelFrame.h"
 #include "LabelFrame.h"
+#include <array>
 
 namespace OpenLoco::S5
 {

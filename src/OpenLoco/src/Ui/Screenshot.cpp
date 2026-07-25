@@ -12,6 +12,7 @@
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Platform/Platform.h>
+#include <algorithm>
 #include <cstdint>
 #include <fstream>
 #include <png.h>
