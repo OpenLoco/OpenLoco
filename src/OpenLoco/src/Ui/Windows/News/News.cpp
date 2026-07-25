@@ -477,7 +477,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             {
                 const auto itemSubject = news->itemSubjects[i];
                 const auto& viewWidget = self->widgets[Common::widx::viewport1 + i];
-                const SubjectType subjectType = SubjectType((uint8_t)_nState.savedView[i].zoomLevel);
+                const SubjectType subjectType = SubjectType(static_cast<uint8_t>(static_cast<int8_t>(_nState.savedView[i].zoomLevel)));
 
                 if (subjectType == SubjectType::companyFace && itemSubject != 0xFFFFU)
                 {

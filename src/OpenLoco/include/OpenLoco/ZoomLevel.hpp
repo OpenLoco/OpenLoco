@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include <compare>
 #include <cstdint>
 
 namespace OpenLoco
@@ -28,9 +29,21 @@ namespace OpenLoco
         {
         }
 
-        constexpr operator int8_t() const
+        explicit constexpr operator int8_t() const
         {
             return level;
+        }
+
+        constexpr auto operator<=>(const ZoomLevel& other) const = default;
+
+        constexpr ZoomLevel operator+(int8_t rhs) const
+        {
+            return ZoomLevel{ static_cast<int8_t>(level + rhs) };
+        }
+
+        constexpr ZoomLevel operator-(int8_t rhs) const
+        {
+            return ZoomLevel{ static_cast<int8_t>(level - rhs) };
         }
 
         constexpr ZoomLevel& operator++()

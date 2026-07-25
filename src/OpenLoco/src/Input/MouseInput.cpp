@@ -599,7 +599,7 @@ namespace OpenLoco::Input
                     }
                     else
                     {
-                        const auto panZoom = ZoomLevel{ static_cast<int8_t>(vp->zoom + 1) };
+                        const auto panZoom = vp->zoom + 1;
                         const auto offsetX = -panZoom.applyTo(-std::abs(dragOffset.x)) * (dragOffset.x < 0 ? -1 : 1);
                         const auto offsetY = -panZoom.applyTo(-std::abs(dragOffset.y)) * (dragOffset.y < 0 ? -1 : 1);
 

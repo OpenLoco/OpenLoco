@@ -287,14 +287,14 @@ namespace OpenLoco::Gfx
             {
                 const auto zoomCoords = Ui::Point(pos.x >> 1, pos.y >> 1);
                 drawImagePaletteSet(
-                    rt, static_cast<uint8_t>(zoom - 1), zoomCoords, image.withIndexOffset(-element->zoomOffset), palette, noiseImage);
+                    rt, zoom - 1, zoomCoords, image.withIndexOffset(-element->zoomOffset), palette, noiseImage);
                 return;
             }
 
             const bool isRLE = element->hasFlags(G1ElementFlags::isRLECompressed);
             if (isRLE)
             {
-                switch (zoom)
+                switch (static_cast<int8_t>(zoom))
                 {
                     default:
                         drawImagePaletteSet<0, true>(rt, pos, image, *element, palette, noiseImage);
@@ -312,7 +312,7 @@ namespace OpenLoco::Gfx
             }
             else
             {
-                switch (zoom)
+                switch (static_cast<int8_t>(zoom))
                 {
                     default:
                         drawImagePaletteSet<0, false>(rt, pos, image, *element, palette, noiseImage);
@@ -461,7 +461,7 @@ namespace OpenLoco::Gfx
                     {
                         drawImageMaskedZoom<TZoomLevel - 1>(
                             rt,
-                            static_cast<uint8_t>(zoom - 1),
+                            zoom - 1,
                             { static_cast<int16_t>(pos.x >> 1), static_cast<int16_t>(pos.y >> 1) },
                             image.withIndexOffset(-g1Image->zoomOffset),
                             maskImage.withIndexOffset(-g1ImageMask->zoomOffset));
@@ -643,7 +643,7 @@ namespace OpenLoco::Gfx
                 return;
             }
 
-            switch (zoom)
+            switch (static_cast<int8_t>(zoom))
             {
                 case 0:
                     drawImageMaskedZoom<0>(rt, zoom, pos, image, maskImage);

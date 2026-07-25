@@ -330,7 +330,7 @@ namespace OpenLoco::Ui
         void viewportSetUndergroundFlag(bool underground, Ui::Viewport* vp);
         void moveWindowToLocation(viewport_pos pos);
         void viewportCentreOnTile(const World::Pos3& loc);
-        void viewportZoomSet(int8_t zoomLevel, bool toCursor);
+        void viewportZoomSet(ZoomLevel zoomLevel, bool toCursor);
         void viewportZoomIn(bool toCursor);
         void viewportZoomOut(bool toCursor);
         void viewportRotateRight();

@@ -218,7 +218,7 @@ namespace OpenLoco::Ui
     {
         const auto& main = WindowManager::getMainWindow();
 
-        const auto zoomLevel = ZoomLevel{ std::max<int8_t>(main->viewports[0]->zoom, ZoomLevel::full) };
+        const auto zoomLevel = ZoomLevel{ std::max<int8_t>(static_cast<int8_t>(main->viewports[0]->zoom), ZoomLevel::full) };
 
         const uint16_t resolutionWidth = zoomLevel.applyInversedTo(World::kMapColumns * 32 * 2) + 8;
         const uint16_t resolutionHeight = zoomLevel.applyInversedTo(World::kMapRows * 32 * 1) + 128;

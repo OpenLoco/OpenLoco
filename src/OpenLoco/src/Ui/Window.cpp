@@ -662,13 +662,13 @@ namespace OpenLoco::Ui
         }
     }
 
-    void Window::viewportZoomSet(int8_t zoomLevel, bool toCursor)
+    void Window::viewportZoomSet(ZoomLevel zoomLevel, bool toCursor)
     {
         Viewport* v = this->viewports[0];
         ViewportConfig* vc = &this->viewportConfigurations[0];
 
-        zoomLevel = std::clamp<int8_t>(zoomLevel, ZoomLevel::min, ZoomLevel::max);
-        if (v->zoom == zoomLevel)
+        const auto newZoomLevel = ZoomLevel{ std::clamp<int8_t>(static_cast<int8_t>(zoomLevel), ZoomLevel::min, ZoomLevel::max) };
+        if (v->zoom == newZoomLevel)
         {
             return;
         }
@@ -676,7 +676,7 @@ namespace OpenLoco::Ui
         const auto previousZoomLevel = v->zoom;
 
         // Zoom in
-        while (v->zoom > zoomLevel)
+        while (v->zoom > newZoomLevel)
         {
             v->zoom--;
             vc->savedViewX += v->viewWidth / 4;
@@ -686,7 +686,7 @@ namespace OpenLoco::Ui
         }
 
         // Zoom out
-        while (v->zoom < zoomLevel)
+        while (v->zoom < newZoomLevel)
         {
             v->zoom++;
             vc->savedViewX -= v->viewWidth / 2;
@@ -697,7 +697,6 @@ namespace OpenLoco::Ui
 
         if (toCursor && Config::get().zoomToCursor)
         {
-            const auto newZoomLevel = ZoomLevel{ zoomLevel };
             const auto mouseCoords = Ui::getCursorPosScaled() - Point(v->x, v->y);
             const int32_t diffX = mouseCoords.x - (newZoomLevel.applyInversedTo(v->viewWidth) / 2);
             const int32_t diffY = mouseCoords.y - (newZoomLevel.applyInversedTo(v->viewHeight) / 2);
@@ -809,7 +808,7 @@ namespace OpenLoco::Ui
             config.savedViewX = newSavedView.viewX;
             config.savedViewY = newSavedView.viewY;
 
-            const auto zoomDiff = static_cast<int32_t>(newSavedView.zoomLevel) - static_cast<int32_t>(viewport->zoom);
+            const auto zoomDiff = static_cast<int32_t>(static_cast<int8_t>(newSavedView.zoomLevel)) - static_cast<int32_t>(static_cast<int8_t>(viewport->zoom));
             if (zoomDiff < 0)
             {
                 viewport->viewWidth >>= -zoomDiff;

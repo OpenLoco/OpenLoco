@@ -32,7 +32,7 @@ namespace OpenLoco::Audio
 
     static int8_t getZoomVolumeModifier(ZoomLevel zoom)
     {
-        return std::clamp<int8_t>(zoom, 0, 2) * kVolumeModifierZoomIncrement;
+        return std::clamp<int8_t>(static_cast<int8_t>(zoom), 0, 2) * kVolumeModifierZoomIncrement;
     }
 
     static bool isUnderground(const World::Pos3& pos)

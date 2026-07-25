@@ -296,7 +296,7 @@ namespace OpenLoco::Ui::ViewportManager
         rect.right = t->spriteRight;
         rect.bottom = t->spriteBottom;
 
-        auto level = ZoomLevel{ std::min<int8_t>(Config::get().vehiclesMinScale, zoom) };
+        auto level = ZoomLevel{ std::min<int8_t>(Config::get().vehiclesMinScale, static_cast<int8_t>(zoom)) };
         invalidate(rect, level);
     }
 
