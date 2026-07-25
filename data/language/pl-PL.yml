@@ -1023,7 +1023,7 @@ strings:
   997: 'Shift + '
   998: 'Ctrl + '
   999: Zmiana Skrótu Klawiszowego
-  1000: '{COLOUR WINDOW_2}Wciśnij nowy klawisz skrótu dla:{NEWLINE}{NEWLINE_SMALLER}{COLOUR BLACK}“{STRINGID}”'
+  1000: '{COLOUR WINDOW_2}Wciśnij nowy klawisz skrótu dla:'
   1001: '{SMALLFONT}{COLOUR BLACK}Kliknij na opis skrótu, aby wybrać nowy klawisz'
   1002: Przesuwaj widok wskaźnikiem na krawędzi ekranu
   1003: '{SMALLFONT}{COLOUR BLACK}Wybierz, czy chcesz przewijać widok, gdy wskaźnik myszy znajduje się na krawędzi ekranu'
