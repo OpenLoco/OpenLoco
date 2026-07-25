@@ -11,6 +11,7 @@
 - Fix: [#3776] Unchecking "Play Music" from the top toolbar does not invalidate Jukebox window.
 - Fix: [#3790] Some windows (e.g. town population) don't have a window resize handle in the bottom-right corner.
 - Fix: [#3802] Fix some spelling mistakes in the en-GB and en-US translations.
+- Fix: [#3828] The vehicle list is not refreshed when applying a cargo filter.
 
 26.05 (2026-05-30)
 ------------------------------------------------------------------------
