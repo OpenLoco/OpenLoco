@@ -115,7 +115,7 @@ namespace OpenLoco::Ui
 
             tr.setCurrentFont(Gfx::Font::medium_normal);
 
-            auto point = Point(orderFrame.frame.left[zoom] + 1, orderFrame.frame.top[zoom]);
+            auto point = Point(orderFrame.frame.left[zoom.index()] + 1, orderFrame.frame.top[zoom.index()]);
             tr.drawString(point, AdvancedColour(Colour::white).outline(), const_cast<char*>(orderString.c_str()));
         }
     }
