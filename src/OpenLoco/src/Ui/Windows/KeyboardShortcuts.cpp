@@ -342,12 +342,12 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         self.widgets[widx::close_button].right = self.width - 3;
 
         self.widgets[widx::list].right = self.width - 4;
-        self.widgets[widx::list].bottom = self.height - 36;
+        self.widgets[widx::list].bottom = self.height - 20;
 
-        self.widgets[widx::reset_keys_btn].left = self.width - 150 - 4;
-        self.widgets[widx::reset_keys_btn].right = self.width - 4;
-        self.widgets[widx::reset_keys_btn].top = self.height - 15 - 12;
-        self.widgets[widx::reset_keys_btn].bottom = self.height - 15;
+        self.widgets[widx::reset_keys_btn].left = self.width - 150 - 4 - 12;
+        self.widgets[widx::reset_keys_btn].right = self.width - 4 - 12;
+        self.widgets[widx::reset_keys_btn].top = self.height - 4 - 12;
+        self.widgets[widx::reset_keys_btn].bottom = self.height - 4;
     }
 
     static constexpr WindowEventList kEvents = {
