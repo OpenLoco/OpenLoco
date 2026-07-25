@@ -875,12 +875,18 @@ namespace OpenLoco::Ui::Windows::VehicleList
             {
                 self.var_850 = itemIndex;
                 self.var_852 = 0xFFFF;
+                populateVehicleList(self);
             }
         }
 
         else if (widgetIndex == cargo_type_btn && itemIndex != -1)
         {
-            self.var_852 = Dropdown::getItemArgument(itemIndex, 3);
+            auto newCargo = Dropdown::getItemArgument(itemIndex, 3);
+            if (self.var_852 != newCargo)
+            {
+                self.var_852 = newCargo;
+                populateVehicleList(self);
+            }
         }
     }
 
