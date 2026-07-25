@@ -1004,7 +1004,7 @@ strings:
   997: 'SHIFT +'
   998: 'CTRL +'
   999: Ändra tangentbordsgenväg
-  1000: '{COLOUR WINDOW_2}Tryck in ny genvägstangent för:{NEWLINE}{NEWLINE_SMALLER}{COLOUR BLACK}“{STRINGID}”'
+  1000: '{COLOUR WINDOW_2}Tryck in ny genvägstangent för:'
   1001: '{SMALLFONT}{COLOUR BLACK}Klicka på genvägsbeskrivningen för att välja ny tangent'
   1002: Skrolla vyn när pekaren är vid skärmkanten
   1003: '{SMALLFONT}{COLOUR BLACK}Välj om vyn ska skrollas när muspekaren är vid skärmkanten'
