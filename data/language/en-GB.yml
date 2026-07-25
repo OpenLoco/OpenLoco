@@ -2510,3 +2510,4 @@ strings:
   2455: "Open jukebox..."
   2456: "{COLOUR WINDOW_2}Cargo awaiting processing:"
   2457: "{COLOUR WINDOW_2}Cargo awaiting transport:"
+  2458: "{STRINGID}{STRINGID}"

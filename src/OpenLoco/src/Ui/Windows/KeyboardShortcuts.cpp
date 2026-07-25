@@ -222,7 +222,6 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             }
 
             std::byte argsBuffer[32]{};
-            char buffer[128]{};
 
             const auto def = ShortcutManager::getDefinition(*_shortcutList[i]);
 
@@ -243,14 +242,14 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
                 continue;
             }
 
-            auto baseStringId = StringIds::stringptr;
+            char buffer[128]{};
             getBindingString(binding.keyCode, buffer, std::size(buffer));
 
             // Draw current binding
             formatter.rewind();
-            formatter.push(StringIds::stringid_stringid);
-            Input::Shortcuts::pushModifierStrings(formatter, isBound ? binding.modifiers : KeyModifier::none);
-            formatter.push(baseStringId);
+            formatter.push(StringIds::keyboard_shortcut_binding);
+            Input::Shortcuts::pushModifierStrings(formatter, binding.modifiers);
+            formatter.push(StringIds::stringptr);
             formatter.push(buffer);
 
             point.x = width / 5 * 3;
