@@ -448,8 +448,8 @@ namespace OpenLoco::Gfx
             const auto* imageDataPos = g1Image->offset;
             auto* dstBuf = rt.bits;
 
-            constexpr uint16_t zoomMask = static_cast<uint16_t>(~0ULL << TZoomLevel);
-            constexpr int16_t offsetX = (1 << TZoomLevel) - 1;
+            constexpr uint32_t zoomMask = static_cast<uint32_t>(~0ULL << TZoomLevel);
+            constexpr int32_t offsetX = (1 << TZoomLevel) - 1;
 
             int32_t dstTop = ((g1Image->yOffset + pos.y) & zoomMask) - rt.y;
             if (dstTop >= 0)
