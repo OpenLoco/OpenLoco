@@ -49,28 +49,28 @@ namespace OpenLoco::Gfx
 
         virtual void clearSingle(uint8_t paletteId) = 0;
 
-        virtual void fillRect(int16_t left, int16_t top, int16_t right, int16_t bottom, uint8_t colour, RectFlags flags) = 0;
+        virtual void fillRect(int32_t left, int32_t top, int32_t right, int32_t bottom, uint8_t colour, RectFlags flags) = 0;
 
         void fillRect(const Ui::Point& origin, const Ui::Size& size, uint8_t colour, RectFlags flags)
         {
             fillRect(origin.x, origin.y, origin.x + size.width - 1, origin.y + size.height - 1, colour, flags);
         }
 
-        virtual void drawRect(int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint8_t colour, RectFlags flags) = 0;
+        virtual void drawRect(int32_t x, int32_t y, int32_t dx, int32_t dy, uint8_t colour, RectFlags flags) = 0;
 
         void drawRect(const Ui::Point& origin, const Ui::Size& size, uint8_t colour, RectFlags flags)
         {
             drawRect(origin.x, origin.y, size.width, size.height, colour, flags);
         }
 
-        virtual void fillRectInset(int16_t left, int16_t top, int16_t right, int16_t bottom, AdvancedColour colour, RectInsetFlags flags) = 0;
+        virtual void fillRectInset(int32_t left, int32_t top, int32_t right, int32_t bottom, AdvancedColour colour, RectInsetFlags flags) = 0;
 
         void fillRectInset(const Ui::Point& origin, const Ui::Size& size, AdvancedColour colour, RectInsetFlags flags)
         {
             fillRectInset(origin.x, origin.y, origin.x + size.width - 1, origin.y + size.height - 1, colour, flags);
         }
 
-        virtual void drawRectInset(int16_t x, int16_t y, uint16_t dx, uint16_t dy, AdvancedColour colour, RectInsetFlags flags) = 0;
+        virtual void drawRectInset(int32_t x, int32_t y, int32_t dx, int32_t dy, AdvancedColour colour, RectInsetFlags flags) = 0;
 
         void drawRectInset(const Ui::Point& origin, const Ui::Size& size, AdvancedColour colour, RectInsetFlags flags)
         {
@@ -83,7 +83,7 @@ namespace OpenLoco::Gfx
 
         virtual void drawImage(ZoomLevel zoom, const Ui::Point& pos, const ImageId& image) = 0;
 
-        void drawImage(ZoomLevel zoom, int16_t x, int16_t y, uint32_t image)
+        void drawImage(ZoomLevel zoom, int32_t x, int32_t y, uint32_t image)
         {
             drawImage(zoom, Ui::Point(x, y), ImageId::fromUInt32(image));
         }

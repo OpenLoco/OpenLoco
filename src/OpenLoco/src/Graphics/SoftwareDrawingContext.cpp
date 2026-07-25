@@ -41,7 +41,7 @@ namespace OpenLoco::Gfx
             ImageIds::noise_mask_7,
         };
 
-        static void drawRect(const RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint8_t colour, RectFlags flags);
+        static void drawRect(const RenderTarget& rt, int32_t x, int32_t y, int32_t dx, int32_t dy, uint8_t colour, RectFlags flags);
         static void drawImageSolid(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex);
 
         // 0x00447485
@@ -683,7 +683,7 @@ namespace OpenLoco::Gfx
         // dx: bottom
         // ebp: colour | enumValue(flags)
         // edi: rt
-        static void drawRectImpl(const RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint8_t colour, RectFlags flags)
+        static void drawRectImpl(const RenderTarget& rt, int32_t left, int32_t top, int32_t right, int32_t bottom, uint8_t colour, RectFlags flags)
         {
             if (left > right)
             {
@@ -811,18 +811,18 @@ namespace OpenLoco::Gfx
             drawRectImpl(rt, rect.left(), rect.top(), rect.right(), rect.bottom(), colour, flags);
         }
 
-        static void fillRect(const RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint8_t colour, RectFlags flags)
+        static void fillRect(const RenderTarget& rt, int32_t left, int32_t top, int32_t right, int32_t bottom, uint8_t colour, RectFlags flags)
         {
             drawRectImpl(rt, left, top, right, bottom, colour, flags);
         }
 
-        static void drawRect(const RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint8_t colour, RectFlags flags)
+        static void drawRect(const RenderTarget& rt, int32_t x, int32_t y, int32_t dx, int32_t dy, uint8_t colour, RectFlags flags)
         {
             // This makes the function signature more like a drawing application
             drawRectImpl(rt, x, y, x + dx - 1, y + dy - 1, colour, flags);
         }
 
-        static void fillRectInset(const RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, AdvancedColour colour, RectInsetFlags flags)
+        static void fillRectInset(const RenderTarget& rt, int32_t left, int32_t top, int32_t right, int32_t bottom, AdvancedColour colour, RectInsetFlags flags)
         {
             const auto rect = Ui::Rect::fromLTRB(left, top, right, bottom);
             const auto baseColour = static_cast<Colour>(colour);
@@ -927,7 +927,7 @@ namespace OpenLoco::Gfx
             }
         }
 
-        static void drawRectInset(const RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, AdvancedColour colour, RectInsetFlags flags)
+        static void drawRectInset(const RenderTarget& rt, int32_t x, int32_t y, int32_t dx, int32_t dy, AdvancedColour colour, RectInsetFlags flags)
         {
             // This makes the function signature more like a drawing application
             fillRectInset(rt, x, y, x + dx - 1, y + dy - 1, colour, flags);
@@ -1132,25 +1132,25 @@ namespace OpenLoco::Gfx
         return Impl::clearSingle(rt, paletteId);
     }
 
-    void SoftwareDrawingContext::fillRect(int16_t left, int16_t top, int16_t right, int16_t bottom, uint8_t colour, RectFlags flags)
+    void SoftwareDrawingContext::fillRect(int32_t left, int32_t top, int32_t right, int32_t bottom, uint8_t colour, RectFlags flags)
     {
         auto& rt = currentRenderTarget();
         return Impl::fillRect(rt, left, top, right, bottom, colour, flags);
     }
 
-    void SoftwareDrawingContext::drawRect(int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint8_t colour, RectFlags flags)
+    void SoftwareDrawingContext::drawRect(int32_t x, int32_t y, int32_t dx, int32_t dy, uint8_t colour, RectFlags flags)
     {
         auto& rt = currentRenderTarget();
         return Impl::drawRect(rt, x, y, dx, dy, colour, flags);
     }
 
-    void SoftwareDrawingContext::fillRectInset(int16_t left, int16_t top, int16_t right, int16_t bottom, AdvancedColour colour, RectInsetFlags flags)
+    void SoftwareDrawingContext::fillRectInset(int32_t left, int32_t top, int32_t right, int32_t bottom, AdvancedColour colour, RectInsetFlags flags)
     {
         auto& rt = currentRenderTarget();
         return Impl::fillRectInset(rt, left, top, right, bottom, colour, flags);
     }
 
-    void SoftwareDrawingContext::drawRectInset(int16_t x, int16_t y, uint16_t dx, uint16_t dy, AdvancedColour colour, RectInsetFlags flags)
+    void SoftwareDrawingContext::drawRectInset(int32_t x, int32_t y, int32_t dx, int32_t dy, AdvancedColour colour, RectInsetFlags flags)
     {
         auto& rt = currentRenderTarget();
         return Impl::drawRectInset(rt, x, y, dx, dy, colour, flags);
