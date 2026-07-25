@@ -572,7 +572,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         uint32_t image = Gfx::recolour(competitorObj->images[enumValue(company->ownerEmotion)], company->mainColours.primary);
         uint16_t x = self.x + self.widgets[Widx::company_select].left + 1;
         uint16_t y = self.y + self.widgets[Widx::company_select].top + 1;
-        drawingCtx.drawImage(x, y, image);
+        drawingCtx.drawImage(ZoomLevel::full, x, y, image);
     }
 
     // 0x004C21CD

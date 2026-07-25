@@ -125,17 +125,17 @@ namespace OpenLoco::Ui
         {
             if (imageId != kContentUnk)
             {
-                drawingCtx.drawImage(pos.x, pos.y, imageId);
+                drawingCtx.drawImage(ZoomLevel::full, pos.x, pos.y, imageId);
             }
         }
         else
         {
             if (imageId != kContentUnk)
             {
-                drawingCtx.drawImage(pos.x, pos.y + 1, imageId);
+                drawingCtx.drawImage(ZoomLevel::full, pos.x, pos.y + 1, imageId);
             }
 
-            drawingCtx.drawImage(pos.x, pos.y, Gfx::recolourTranslucent(ImageIds::tab, ExtColour::unk33));
+            drawingCtx.drawImage(ZoomLevel::full, pos.x, pos.y, Gfx::recolourTranslucent(ImageIds::tab, ExtColour::unk33));
             drawingCtx.drawRect(pos.x, pos.y + 26, 31, 1, Colours::getShade(w.getColour(WindowColour::secondary).c(), 7), Gfx::RectFlags::none);
         }
     }

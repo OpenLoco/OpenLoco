@@ -1489,7 +1489,7 @@ namespace OpenLoco::Paint
     void paintSurface(PaintSession& session, World::SurfaceElement& elSurface)
     {
         session.setItemType(Ui::ViewportInteraction::InteractionItem::surface);
-        const auto zoomLevel = session.getRenderTarget()->zoomLevel;
+        const auto zoomLevel = session.getZoom();
         session.setDidPassSurface(true);
 
         // 0x00F252B0 / 0x00F252B4 but if 0x00F252B0 == -2 that means industrial

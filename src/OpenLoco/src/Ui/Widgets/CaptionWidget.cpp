@@ -45,8 +45,8 @@ namespace OpenLoco::Ui::Widgets
     // 0x004CF3EB
     static void drawStationNameBackground(Gfx::DrawingContext& drawingCtx, const Ui::Point& origin, AdvancedColour colour, int32_t width)
     {
-        drawingCtx.drawImage(origin - Ui::Point{ 4, 0 }, Gfx::recolour(ImageIds::curved_border_left_medium, colour.c()));
-        drawingCtx.drawImage(origin + Ui::Point(width, 0), Gfx::recolour(ImageIds::curved_border_right_medium, colour.c()));
+        drawingCtx.drawImage(ZoomLevel::full, origin - Ui::Point{ 4, 0 }, Gfx::recolour(ImageIds::curved_border_left_medium, colour.c()));
+        drawingCtx.drawImage(ZoomLevel::full, origin + Ui::Point(width, 0), Gfx::recolour(ImageIds::curved_border_right_medium, colour.c()));
         drawingCtx.fillRect(origin, Ui::Size{ width, 11 }, Colours::getShade(colour.c(), 5), Gfx::RectFlags::none);
     }
 

@@ -238,7 +238,6 @@ namespace OpenLoco::Ui
         rt.width = resolutionWidth;
         rt.height = resolutionHeight;
         rt.pitch = 0;
-        rt.zoomLevel = 0;
 
         auto& drawingEngine = Gfx::getDrawingEngine();
         auto& drawingCtx = drawingEngine.getDrawingContext();

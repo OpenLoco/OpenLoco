@@ -199,7 +199,7 @@ namespace OpenLoco::Gfx
                         }
                         else
                         {
-                            ctx.drawImage(pos.x, pos.y, image);
+                            ctx.drawImage(ZoomLevel::full, pos.x, pos.y, image);
                         }
 
                         pos.x += getG1Element(imageId.getIndex())->width;
@@ -1148,7 +1148,7 @@ namespace OpenLoco::Gfx
                         ImageId imageId{ image & 0x7FFFF };
                         str += 4;
 
-                        ctx.drawImage(pos.x, pos.y, image);
+                        ctx.drawImage(ZoomLevel::full, pos.x, pos.y, image);
 
                         // For some reason the wrapStringTicker doesn't do this??
                         numChars--;

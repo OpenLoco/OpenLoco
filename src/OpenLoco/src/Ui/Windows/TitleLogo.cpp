@@ -46,7 +46,7 @@ namespace OpenLoco::Ui::Windows::TitleLogo
     // 0x00439298
     static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
     {
-        drawingCtx.drawImage(window.x, window.y, ImageIds::locomotion_logo);
+        drawingCtx.drawImage(ZoomLevel::full, window.x, window.y, ImageIds::locomotion_logo);
     }
 
     // 0x004392AD

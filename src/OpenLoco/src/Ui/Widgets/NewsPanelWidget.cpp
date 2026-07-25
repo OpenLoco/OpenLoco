@@ -18,17 +18,17 @@ namespace OpenLoco::Ui::Widgets
         if (style == Style::old)
         {
             auto imageId = Gfx::recolour(ImageIds::news_background_old_left, ExtColour::translucentBrown1);
-            drawingCtx.drawImage(pos, imageId);
+            drawingCtx.drawImage(ZoomLevel::full, pos, imageId);
 
             imageId = Gfx::recolour(ImageIds::news_background_old_right, ExtColour::translucentBrown1);
 
-            drawingCtx.drawImage(centerPos, imageId);
+            drawingCtx.drawImage(ZoomLevel::full, centerPos, imageId);
         }
         else if (style == Style::new_)
         {
-            drawingCtx.drawImage(pos, ImageIds::news_background_new_left);
+            drawingCtx.drawImage(ZoomLevel::full, pos, ImageIds::news_background_new_left);
 
-            drawingCtx.drawImage(centerPos, ImageIds::news_background_new_right);
+            drawingCtx.drawImage(ZoomLevel::full, centerPos, ImageIds::news_background_new_right);
         }
         else
         {

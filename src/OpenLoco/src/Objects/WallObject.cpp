@@ -46,10 +46,10 @@ namespace OpenLoco
             image = Gfx::recolour(sprite + WallObj::ImageIds::kFlatSE, Colour::mutedDarkRed);
         }
 
-        drawingCtx.drawImage(x + 14, y + 16 + (height * 2), image);
+        drawingCtx.drawImage(ZoomLevel::full, x + 14, y + 16 + (height * 2), image);
         if ((flags & WallObjectFlags::hasGlass) != WallObjectFlags::none)
         {
-            drawingCtx.drawImage(x + 14, y + 16 + (height * 2), Gfx::recolourTranslucent(sprite + WallObj::ImageIds::kGlassFlatSE, ExtColour::unk8C));
+            drawingCtx.drawImage(ZoomLevel::full, x + 14, y + 16 + (height * 2), Gfx::recolourTranslucent(sprite + WallObj::ImageIds::kGlassFlatSE, ExtColour::unk8C));
         }
         else
         {
@@ -57,7 +57,7 @@ namespace OpenLoco
             // TODO: delete
             if ((flags & WallObjectFlags::unk4) != WallObjectFlags::none)
             {
-                drawingCtx.drawImage(x + 14, y + 16 + (height * 2), image + WallObj::ImageIds::kFlatNE);
+                drawingCtx.drawImage(ZoomLevel::full, x + 14, y + 16 + (height * 2), image + WallObj::ImageIds::kFlatNE);
             }
         }
     }

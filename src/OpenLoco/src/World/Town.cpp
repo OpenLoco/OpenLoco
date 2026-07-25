@@ -84,9 +84,10 @@ namespace OpenLoco
         Gfx::Font::medium_normal,
     };
 
-    void Town::drawLabel(Gfx::DrawingContext& drawingCtx, const Gfx::RenderTarget& rt)
+    void Town::drawLabel(Gfx::DrawingContext& drawingCtx, ZoomLevel zoom)
     {
-        if (!labelFrame.contains(rt.getDrawableRect(), rt.zoomLevel))
+        const auto& rt = drawingCtx.currentRenderTarget();
+        if (!labelFrame.contains(rt.getUiRect(), zoom))
         {
             return;
         }
@@ -95,9 +96,9 @@ namespace OpenLoco
 
         char buffer[512]{};
         StringManager::formatString(buffer, name);
-        tr.setCurrentFont(kZoomToTownFonts[rt.zoomLevel]);
+        tr.setCurrentFont(kZoomToTownFonts[zoom]);
 
-        auto point = Ui::Point(labelFrame.left[rt.zoomLevel] + 1, labelFrame.top[rt.zoomLevel] + 1);
+        auto point = Ui::Point(labelFrame.left[zoom] + 1, labelFrame.top[zoom] + 1);
         tr.drawString(point, AdvancedColour(Colour::white).outline(), buffer);
     }
 

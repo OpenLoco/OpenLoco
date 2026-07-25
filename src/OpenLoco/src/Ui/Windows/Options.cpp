@@ -1118,9 +1118,9 @@ namespace OpenLoco::Ui::Windows::Options
         static void drawVolumeSlider(Window& self, Gfx::DrawingContext& drawingCtx, WidgetIndex_t widx, int32_t volume)
         {
             auto& widget = self.widgets[widx];
-            drawingCtx.drawImage(self.x + widget.left, self.y + widget.top, Gfx::recolour(ImageIds::volume_slider_track, self.getColour(WindowColour::secondary).c()));
+            drawingCtx.drawImage(ZoomLevel::full, self.x + widget.left, self.y + widget.top, Gfx::recolour(ImageIds::volume_slider_track, self.getColour(WindowColour::secondary).c()));
             int16_t x = kThumbHalfWidth + Audio::dbToPercent(volume) * kSliderPixelRange / 100;
-            drawingCtx.drawImage(self.x + widget.left + x, self.y + widget.top, Gfx::recolour(ImageIds::volume_slider_thumb, self.getColour(WindowColour::secondary).c()));
+            drawingCtx.drawImage(ZoomLevel::full, self.x + widget.left + x, self.y + widget.top, Gfx::recolour(ImageIds::volume_slider_thumb, self.getColour(WindowColour::secondary).c()));
         }
 
         static void draw(Window& self, Gfx::DrawingContext& drawingCtx)

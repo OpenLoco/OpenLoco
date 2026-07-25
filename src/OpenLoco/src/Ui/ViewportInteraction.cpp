@@ -1515,16 +1515,14 @@ namespace OpenLoco::Ui::ViewportInteraction
             auto vpPos = vp->screenToViewport({ screenPos.x, screenPos.y });
 
             Gfx::RenderTarget _rt1; // 0x00E0C3E4
-            _rt1.zoomLevel = vp->zoom;
-            _rt1.x = (0xFFFF << vp->zoom) & vpPos.x;
-            _rt1.y = (0xFFFF << vp->zoom) & vpPos.y;
+            _rt1.x = ((0xFFFF << vp->zoom) & vpPos.x) >> vp->zoom;
+            _rt1.y = ((0xFFFF << vp->zoom) & vpPos.y) >> vp->zoom;
 
             Gfx::RenderTarget _rt2; // 0x00E0C3F4
             _rt2.x = _rt1.x;
             _rt2.y = _rt1.y;
             _rt2.width = 1;
             _rt2.height = 1;
-            _rt2.zoomLevel = _rt1.zoomLevel;
 
             Paint::SessionOptions options{};
             options.rotation = vp->getRotation();
@@ -1532,13 +1530,13 @@ namespace OpenLoco::Ui::ViewportInteraction
             options.isHitTest = true;
             // Todo: should this pass the cullHeight...
 
-            auto session = Paint::PaintSession(_rt2, options);
+            auto session = Paint::PaintSession(_rt2, vp->zoom, options);
             session.generate();
             session.arrangeStructs();
             interaction = session.getNormalInteractionInfo(flags);
             if (!vp->hasFlags(ViewportFlags::hideStationNames))
             {
-                if (_rt2.zoomLevel <= Config::get().stationNamesMinScale)
+                if (vp->zoom <= Config::get().stationNamesMinScale)
                 {
                     auto stationInteraction = session.getStationNameInteractionInfo(flags);
                     if (stationInteraction.type != InteractionItem::noInteraction)

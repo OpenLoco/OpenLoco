@@ -209,11 +209,11 @@ namespace OpenLoco::Ui::Windows::Error
                 imageId = Gfx::recolour(imageId, company->mainColours.primary);
                 imageId++;
 
-                drawingCtx.drawImage(xPos, yPos, imageId);
+                drawingCtx.drawImage(ZoomLevel::full, xPos, yPos, imageId);
 
                 if (company->jailStatus != 0)
                 {
-                    drawingCtx.drawImage(xPos, yPos, ImageIds::owner_jailed);
+                    drawingCtx.drawImage(ZoomLevel::full, xPos, yPos, ImageIds::owner_jailed);
                 }
 
                 auto point = Point(self.x + (self.width - kCompetitorSize) / 2 + kCompetitorSize + kPadding, self.y + 20);

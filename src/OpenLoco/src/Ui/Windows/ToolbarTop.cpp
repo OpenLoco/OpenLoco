@@ -851,10 +851,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 bg_image++;
             }
 
-            drawingCtx.drawImage(x, y, fg_image);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, fg_image);
 
             y = window.widgets[Common::Widx::railroad_menu].top + window.y;
-            drawingCtx.drawImage(x, y, bg_image);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, bg_image);
         }
 
         {
@@ -881,10 +881,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 bg_image++;
             }
 
-            drawingCtx.drawImage(x, y, fg_image);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, fg_image);
 
             y = window.widgets[Common::Widx::vehicles_menu].top + window.y;
-            drawingCtx.drawImage(x, y, bg_image);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, bg_image);
         }
 
         {
@@ -909,7 +909,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 fg_image++;
             }
 
-            drawingCtx.drawImage(x, y, fg_image);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, fg_image);
         }
     }
 

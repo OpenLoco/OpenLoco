@@ -897,8 +897,8 @@ namespace OpenLoco
     // 0x0048DF4D, 0x0048E13B
     void drawStationName(Gfx::DrawingContext& drawingCtx, const Station& station, uint8_t zoom, bool isHovered)
     {
-        const Gfx::RenderTarget& unZoomedRt = drawingCtx.currentRenderTarget();
-        if (!station.labelFrame.contains(unZoomedRt.getDrawableRect(), zoom))
+        const Gfx::RenderTarget& rt = drawingCtx.currentRenderTarget();
+        if (!station.labelFrame.contains(rt.getUiRect(), zoom))
         {
             return;
         }
@@ -922,12 +922,12 @@ namespace OpenLoco
         Ui::Point bottomRight = { station.labelFrame.right[zoom],
                                   station.labelFrame.bottom[zoom] };
 
-        drawingCtx.drawImage(topLeft, ImageId(borderImages.left).withTranslucency(ExtColour::unk34));
-        drawingCtx.drawImage(topLeft, ImageId(borderImages.left).withTranslucency(colour));
+        drawingCtx.drawImage(ZoomLevel::full, topLeft, ImageId(borderImages.left).withTranslucency(ExtColour::unk34));
+        drawingCtx.drawImage(ZoomLevel::full, topLeft, ImageId(borderImages.left).withTranslucency(colour));
 
         Ui::Point topRight = { static_cast<int16_t>(bottomRight.x - borderImages.width) + 1, topLeft.y };
-        drawingCtx.drawImage(topRight, ImageId(borderImages.right).withTranslucency(ExtColour::unk34));
-        drawingCtx.drawImage(topRight, ImageId(borderImages.right).withTranslucency(colour));
+        drawingCtx.drawImage(ZoomLevel::full, topRight, ImageId(borderImages.right).withTranslucency(ExtColour::unk34));
+        drawingCtx.drawImage(ZoomLevel::full, topRight, ImageId(borderImages.right).withTranslucency(colour));
 
         drawingCtx.drawRect(topLeft.x + borderImages.width + 1, topLeft.y, bottomRight.x - topLeft.x - 2 * borderImages.width, bottomRight.y - topLeft.y + 1, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
         drawingCtx.drawRect(topLeft.x + borderImages.width + 1, topLeft.y, bottomRight.x - topLeft.x - 2 * borderImages.width, bottomRight.y - topLeft.y + 1, enumValue(colour), Gfx::RectFlags::transparent);

@@ -488,11 +488,11 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     const ImageId imageId(imageIndexBase + 1, company->mainColours.primary);
                     const auto x = self->x + viewWidget.midX() - 31;
                     const auto y = self->y + viewWidget.midY() - 31;
-                    drawingCtx.drawImage(Ui::Point(x, y), imageId);
+                    drawingCtx.drawImage(ZoomLevel::full, Ui::Point(x, y), imageId);
 
                     if (company->jailStatus != 0)
                     {
-                        drawingCtx.drawImage(Ui::Point(x, y), ImageId(ImageIds::owner_jailed));
+                        drawingCtx.drawImage(ZoomLevel::full, Ui::Point(x, y), ImageId(ImageIds::owner_jailed));
                     }
                 }
 

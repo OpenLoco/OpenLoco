@@ -943,10 +943,10 @@ namespace OpenLoco::Ui::Windows::Industry
 
                 auto xPos = widget.left + self.x;
                 auto yPos = widget.top + self.y;
-                drawingCtx.drawImage(xPos, yPos, imageId);
+                drawingCtx.drawImage(ZoomLevel::full, xPos, yPos, imageId);
 
                 auto caroObj = ObjectManager::get<CargoObject>(industryObj->producedCargoType[productionTabNumber]);
-                drawingCtx.drawImage(xPos + 18, yPos + 14, caroObj->unitInlineSprite);
+                drawingCtx.drawImage(ZoomLevel::full, xPos + 18, yPos + 14, caroObj->unitInlineSprite);
 
                 Widget::drawTab(self, drawingCtx, Widget::kContentUnk, tab);
             }

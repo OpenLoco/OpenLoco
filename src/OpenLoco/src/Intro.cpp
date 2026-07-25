@@ -71,8 +71,8 @@ namespace OpenLoco::Intro
         drawingCtx.clearSingle(PaletteIndex::mutedDarkRed5); // this isn't actually mutedDarkRed5 as the atari palette is different
 
         const auto pos = Ui::Point(Ui::width() / 2 - 216, Ui::height() / 2 - 54);
-        drawingCtx.drawImage(pos, ImageId(ImageIds::atari_logo_intro_left));
-        drawingCtx.drawImage(pos + Ui::Point(216, 0), ImageId(ImageIds::atari_logo_intro_right));
+        drawingCtx.drawImage(ZoomLevel::full, pos, ImageId(ImageIds::atari_logo_intro_left));
+        drawingCtx.drawImage(ZoomLevel::full, pos + Ui::Point(216, 0), ImageId(ImageIds::atari_logo_intro_right));
         _introTicks = -24;
         _state = State::displayAtari;
     }
@@ -100,8 +100,8 @@ namespace OpenLoco::Intro
             drawingCtx.clearSingle(PaletteIndex::black0);
 
             const auto pos = Ui::Point(Ui::width() / 2 - 320 + 70, Ui::height() / 2 - 58);
-            drawingCtx.drawImage(pos, ImageId(ImageIds::chris_sawyer_logo_intro_left));
-            drawingCtx.drawImage(pos + Ui::Point(250, 0), ImageId(ImageIds::chris_sawyer_logo_intro_right));
+            drawingCtx.drawImage(ZoomLevel::full, pos, ImageId(ImageIds::chris_sawyer_logo_intro_left));
+            drawingCtx.drawImage(ZoomLevel::full, pos + Ui::Point(250, 0), ImageId(ImageIds::chris_sawyer_logo_intro_right));
 
             _introTicks = 0;
             _state = State::displayCS;

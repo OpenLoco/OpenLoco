@@ -62,7 +62,7 @@ namespace OpenLoco::Ui::Widgets
             imageId = ImageId::fromUInt32(Gfx::recolour(imageId.getIndex(), colour.c()));
         }
 
-        drawingCtx.drawImage(pos, imageId);
+        drawingCtx.drawImage(ZoomLevel::full, pos, imageId);
     }
 
     static void draw_3(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)

@@ -25,7 +25,7 @@ namespace OpenLoco::Ui::Widgets
         const auto resizeBarPos = pos + Ui::Point(size.width - 18, size.height - 18);
 
         uint32_t image = Gfx::recolour(ImageIds::window_resize_handle, colour.c());
-        drawingCtx.drawImage(resizeBarPos, image);
+        drawingCtx.drawImage(ZoomLevel::full, resizeBarPos, image);
     }
 
     // 0x004CAB58

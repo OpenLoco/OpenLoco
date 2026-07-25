@@ -24,9 +24,10 @@ using namespace OpenLoco::Ui::ViewportInteraction;
 
 namespace OpenLoco::Paint
 {
-    PaintSession::PaintSession(const Gfx::RenderTarget& rt, const SessionOptions& options)
+    PaintSession::PaintSession(const Gfx::RenderTarget& rt, ZoomLevel zoom, const SessionOptions& options)
     {
         _renderTarget = &rt;
+        _zoom = zoom;
         _lastPS = nullptr;
         for (auto& quadrant : _quadrants)
         {
@@ -44,6 +45,26 @@ namespace OpenLoco::Paint
 
         // TODO: unused
         _foregroundCullingHeight = options.foregroundCullHeight;
+    }
+
+    int32_t PaintSession::getWorldX() const
+    {
+        return _zoom.applyTo(static_cast<int32_t>(_renderTarget->x));
+    }
+
+    int32_t PaintSession::getWorldY() const
+    {
+        return _zoom.applyTo(static_cast<int32_t>(_renderTarget->y));
+    }
+
+    int32_t PaintSession::getWorldWidth() const
+    {
+        return _zoom.applyTo(static_cast<int32_t>(_renderTarget->width));
+    }
+
+    int32_t PaintSession::getWorldHeight() const
+    {
+        return _zoom.applyTo(static_cast<int32_t>(_renderTarget->height));
     }
 
     void PaintSession::setEntityPosition(const World::Pos2& pos)
@@ -184,7 +205,7 @@ namespace OpenLoco::Paint
         return addToPlotListAsParent(imageId, offset, offset, boundBoxSize);
     }
 
-    static constexpr bool imageWithinRT(const Ui::viewport_pos& imagePos, const Gfx::G1Element& g1, const Gfx::RenderTarget& rt)
+    static constexpr bool imageWithinRT(const Ui::viewport_pos& imagePos, const Gfx::G1Element& g1, const Gfx::RenderTarget& rt, ZoomLevel zoom)
     {
         int32_t left = imagePos.x + g1.xOffset;
         int32_t bottom = imagePos.y + g1.yOffset;
@@ -192,19 +213,24 @@ namespace OpenLoco::Paint
         int32_t right = left + g1.width;
         int32_t top = bottom + g1.height;
 
-        if (right <= rt.x)
+        const auto rtWorldX = zoom.applyTo(static_cast<int32_t>(rt.x));
+        const auto rtWorldY = zoom.applyTo(static_cast<int32_t>(rt.y));
+        const auto rtWorldWidth = zoom.applyTo(static_cast<int32_t>(rt.width));
+        const auto rtWorldHeight = zoom.applyTo(static_cast<int32_t>(rt.height));
+
+        if (right <= rtWorldX)
         {
             return false;
         }
-        if (top <= rt.y)
+        if (top <= rtWorldY)
         {
             return false;
         }
-        if (left >= rt.x + rt.width)
+        if (left >= rtWorldX + rtWorldWidth)
         {
             return false;
         }
-        if (bottom >= rt.y + rt.height)
+        if (bottom >= rtWorldY + rtWorldHeight)
         {
             return false;
         }
@@ -270,8 +296,8 @@ namespace OpenLoco::Paint
             return nullptr;
         }
 
-        const auto rtLeft = getRenderTarget()->x;
-        const auto rtRight = getRenderTarget()->x + getRenderTarget()->width;
+        const auto rtLeft = getWorldX();
+        const auto rtRight = getWorldX() + getWorldWidth();
 
         auto newMins = ps->bounds.mins;
         // The following uses the fact that gameToScreen calculates the
@@ -480,14 +506,18 @@ namespace OpenLoco::Paint
     };
 
     template<uint8_t rotation>
-    GenerationParameters generateParameters(const Gfx::RenderTarget* rt)
+    GenerationParameters generateParameters(const Gfx::RenderTarget* rt, ZoomLevel zoom)
     {
+        const auto worldX = zoom.applyTo(static_cast<int32_t>(rt->x));
+        const auto worldY = zoom.applyTo(static_cast<int32_t>(rt->y));
+        const auto worldHeight = zoom.applyTo(static_cast<int32_t>(rt->height));
+
         // TODO: Work out what these constants represent
-        uint16_t numVerticalQuadrants = (rt->height + (rotation == 0 ? 1040 : 1056)) >> 5;
+        uint16_t numVerticalQuadrants = (worldHeight + (rotation == 0 ? 1040 : 1056)) >> 5;
 
         auto mapLoc = Ui::viewportCoordToMapCoord(
-            Numerics::floor2(rt->x, 32),
-            Numerics::floor2(rt->y - 16, 32),
+            Numerics::floor2(worldX, 32),
+            Numerics::floor2(worldY - 16, 32),
             0,
             rotation);
         if constexpr (rotation & 1)
@@ -567,7 +597,7 @@ namespace OpenLoco::Paint
 
         const auto vpPos = World::gameToScreen(swappedRotCoord, currentRotation);
 
-        if (!imageWithinRT(vpPos, *g1, *_renderTarget))
+        if (!imageWithinRT(vpPos, *g1, *_renderTarget, _zoom))
         {
             return nullptr;
         }
@@ -607,16 +637,16 @@ namespace OpenLoco::Paint
         switch (currentRotation)
         {
             case 0:
-                generateTilesAndEntities(generateParameters<0>(getRenderTarget()));
+                generateTilesAndEntities(generateParameters<0>(getRenderTarget(), getZoom()));
                 break;
             case 1:
-                generateTilesAndEntities(generateParameters<1>(getRenderTarget()));
+                generateTilesAndEntities(generateParameters<1>(getRenderTarget(), getZoom()));
                 break;
             case 2:
-                generateTilesAndEntities(generateParameters<2>(getRenderTarget()));
+                generateTilesAndEntities(generateParameters<2>(getRenderTarget(), getZoom()));
                 break;
             case 3:
-                generateTilesAndEntities(generateParameters<3>(getRenderTarget()));
+                generateTilesAndEntities(generateParameters<3>(getRenderTarget(), getZoom()));
                 break;
         }
     }
@@ -960,7 +990,7 @@ namespace OpenLoco::Paint
         return false;
     }
 
-    static void drawStruct(const Gfx::RenderTarget& rt, Gfx::DrawingContext& drawingCtx, const PaintStruct& ps, const bool shouldCull)
+    static void drawStruct(ZoomLevel zoom, Gfx::DrawingContext& drawingCtx, const PaintStruct& ps, const bool shouldCull)
     {
         auto imageId = ps.imageId;
 
@@ -972,22 +1002,22 @@ namespace OpenLoco::Paint
         auto imagePos = ps.vpPos;
         if (ps.type == Ui::ViewportInteraction::InteractionItem::entity)
         {
-            const auto zoomAlign = 1U << rt.zoomLevel;
+            const auto zoomAlign = zoom.applyTo(1U);
             imagePos.x = Numerics::floor2(imagePos.x, zoomAlign);
             imagePos.y = Numerics::floor2(imagePos.y, zoomAlign);
         }
 
         if ((ps.flags & PaintStructFlags::hasMaskedImage) != PaintStructFlags::none)
         {
-            drawingCtx.drawImageMasked(imagePos, imageId, ps.maskedImageId);
+            drawingCtx.drawImageMasked(zoom, imagePos, imageId, ps.maskedImageId);
         }
         else
         {
-            drawingCtx.drawImage(imagePos, imageId);
+            drawingCtx.drawImage(zoom, imagePos, imageId);
         }
     }
 
-    static void drawAttachStruct(const Gfx::RenderTarget& rt, Gfx::DrawingContext& drawingCtx, const PaintStruct& ps, const AttachedPaintStruct& attachPs, const bool shouldCull)
+    static void drawAttachStruct(ZoomLevel zoom, Gfx::DrawingContext& drawingCtx, const PaintStruct& ps, const AttachedPaintStruct& attachPs, const bool shouldCull)
     {
         auto imageId = attachPs.imageId;
 
@@ -996,7 +1026,7 @@ namespace OpenLoco::Paint
             imageId = ImageId(imageId.getIndex()).withTranslucency(ExtColour::unk30);
         }
         Ui::Point imagePos = ps.vpPos + attachPs.vpPos;
-        if (rt.zoomLevel != 0)
+        if (zoom != 0)
         {
             imagePos.x = Numerics::floor2(imagePos.x, 2);
             imagePos.y = Numerics::floor2(imagePos.y, 2);
@@ -1004,15 +1034,15 @@ namespace OpenLoco::Paint
 
         if ((attachPs.flags & PaintStructFlags::hasMaskedImage) != PaintStructFlags::none)
         {
-            drawingCtx.drawImageMasked(imagePos, imageId, attachPs.maskedImageId);
+            drawingCtx.drawImageMasked(zoom, imagePos, imageId, attachPs.maskedImageId);
         }
         else
         {
-            drawingCtx.drawImage(imagePos, imageId);
+            drawingCtx.drawImage(zoom, imagePos, imageId);
         }
     }
 
-    static void drawAllAttachedStructs(const Gfx::RenderTarget& rt, Gfx::DrawingContext& drawingCtx, const PaintStruct& ps, const Ui::ViewportFlags viewFlags)
+    static void drawAllAttachedStructs(ZoomLevel zoom, Gfx::DrawingContext& drawingCtx, const PaintStruct& ps, const Ui::ViewportFlags viewFlags)
     {
         for (const auto* attachPs = ps.attachedPS; attachPs != nullptr; attachPs = attachPs->next)
         {
@@ -1024,14 +1054,14 @@ namespace OpenLoco::Paint
                     continue;
                 }
             }
-            drawAttachStruct(rt, drawingCtx, ps, *attachPs, shouldCullAttach);
+            drawAttachStruct(zoom, drawingCtx, ps, *attachPs, shouldCullAttach);
         }
     }
 
     // 0x0045EA23
     void PaintSession::drawStructs(Gfx::DrawingContext& drawingCtx)
     {
-        const Gfx::RenderTarget& rt = drawingCtx.currentRenderTarget();
+        const auto zoom = _zoom;
 
         for (const auto* ps = _paintHead; ps != nullptr; ps = ps->nextQuadrantPS)
         {
@@ -1045,7 +1075,7 @@ namespace OpenLoco::Paint
                 }
             }
 
-            drawStruct(rt, drawingCtx, *ps, shouldCull);
+            drawStruct(zoom, drawingCtx, *ps, shouldCull);
 
             // Draw any children this might have
             for (const auto* childPs = ps->children; childPs != nullptr; childPs = childPs->children)
@@ -1060,13 +1090,13 @@ namespace OpenLoco::Paint
                     }
                 }
 
-                drawStruct(rt, drawingCtx, *childPs, shouldCullChild);
+                drawStruct(zoom, drawingCtx, *childPs, shouldCullChild);
 
-                drawAllAttachedStructs(rt, drawingCtx, *childPs, _viewFlags);
+                drawAllAttachedStructs(zoom, drawingCtx, *childPs, _viewFlags);
             }
 
             // Draw any attachments to the struct
-            drawAllAttachedStructs(rt, drawingCtx, *ps, _viewFlags);
+            drawAllAttachedStructs(zoom, drawingCtx, *ps, _viewFlags);
         }
     }
 
@@ -1079,16 +1109,7 @@ namespace OpenLoco::Paint
             return;
         }
 
-        Gfx::RenderTarget unZoomedRt = drawingCtx.currentRenderTarget();
-        const auto zoom = unZoomedRt.zoomLevel;
-
-        unZoomedRt.zoomLevel = 0;
-        unZoomedRt.x >>= zoom;
-        unZoomedRt.y >>= zoom;
-        unZoomedRt.width >>= zoom;
-        unZoomedRt.height >>= zoom;
-
-        drawingCtx.pushRenderTarget(unZoomedRt);
+        const auto zoom = _zoom;
 
         auto tr = Gfx::TextRenderer(drawingCtx);
         tr.setCurrentFont(zoom == 0 ? Gfx::Font::medium_bold : Gfx::Font::small);
@@ -1097,7 +1118,7 @@ namespace OpenLoco::Paint
 
         for (; psString != nullptr; psString = psString->next)
         {
-            Ui::Point loc(psString->vpPos.x >> zoom, psString->vpPos.y >> zoom);
+            const Ui::Point loc{ _zoom.applyInversedTo(psString->vpPos.x), _zoom.applyInversedTo(psString->vpPos.y) };
             StringManager::formatString(buffer, psString->stringId, psString->argsBuf);
 
             Ui::WindowManager::setWindowColours(Ui::WindowColour::primary, AdvancedColour(static_cast<Colour>(psString->colour)));
@@ -1105,8 +1126,6 @@ namespace OpenLoco::Paint
 
             tr.drawStringYOffsets(loc, Colour::black, buffer, psString->yOffsets);
         }
-
-        drawingCtx.popRenderTarget();
     }
 
     // 0x00447C21
@@ -1154,7 +1173,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x00447A5F
-    static bool isSpriteInteractedWithPaletteSet(const Gfx::RenderTarget* rt, ImageId imageId, const Ui::Point& coords, const Gfx::PaletteMap::View paletteMap)
+    static bool isSpriteInteractedWithPaletteSet(const Gfx::RenderTarget* rt, ZoomLevel zoom, ImageId imageId, const Ui::Point& coords, const Gfx::PaletteMap::View paletteMap)
     {
         const auto* g1 = Gfx::getG1Element(imageId.getIndex());
         if (g1 == nullptr)
@@ -1162,8 +1181,8 @@ namespace OpenLoco::Paint
             return false;
         }
 
-        auto zoomLevel = rt->zoomLevel;
-        Ui::Point interactionPoint{ rt->x, rt->y };
+        auto zoomLevel = zoom;
+        Ui::Point interactionPoint{ zoom.applyTo(static_cast<int32_t>(rt->x)), zoom.applyTo(static_cast<int32_t>(rt->y)) };
         Ui::Point origin = coords;
 
         if (zoomLevel > 0)
@@ -1212,7 +1231,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x00447A0E
-    static bool isSpriteInteractedWith(const Gfx::RenderTarget* rt, ImageId imageId, const Ui::Point& coords)
+    static bool isSpriteInteractedWith(const Gfx::RenderTarget* rt, ZoomLevel zoom, ImageId imageId, const Ui::Point& coords)
     {
         auto paletteMap = Gfx::PaletteMap::getDefault();
         if (imageId.hasPrimary())
@@ -1223,7 +1242,7 @@ namespace OpenLoco::Paint
                 paletteMap = *pm;
             }
         }
-        return isSpriteInteractedWithPaletteSet(rt, imageId, coords, paletteMap);
+        return isSpriteInteractedWithPaletteSet(rt, zoom, imageId, coords, paletteMap);
     }
 
     // 0x0045EDFC
@@ -1270,12 +1289,12 @@ namespace OpenLoco::Paint
         return true;
     }
 
-    static std::optional<InteractionArg> getAttachedInteractionInfo(const Gfx::RenderTarget& rt, const InteractionItemFlags flags, const PaintStruct& ps)
+    static std::optional<InteractionArg> getAttachedInteractionInfo(const Gfx::RenderTarget& rt, ZoomLevel zoom, const InteractionItemFlags flags, const PaintStruct& ps)
     {
         std::optional<InteractionArg> info = std::nullopt;
         for (auto* attachedPS = ps.attachedPS; attachedPS != nullptr; attachedPS = attachedPS->next)
         {
-            if (isSpriteInteractedWith(&rt, attachedPS->imageId, attachedPS->vpPos + ps.vpPos))
+            if (isSpriteInteractedWith(&rt, zoom, attachedPS->imageId, attachedPS->vpPos + ps.vpPos))
             {
                 if (isPSSpriteTypeInFilter(ps.type, flags))
                 {
@@ -1294,7 +1313,7 @@ namespace OpenLoco::Paint
         for (auto* ps = _paintHead; ps != nullptr; ps = ps->nextQuadrantPS)
         {
             // Check main paint struct
-            if (isSpriteInteractedWith(getRenderTarget(), ps->imageId, ps->vpPos))
+            if (isSpriteInteractedWith(getRenderTarget(), getZoom(), ps->imageId, ps->vpPos))
             {
                 if (isPSSpriteTypeInFilter(ps->type, flags))
                 {
@@ -1305,7 +1324,7 @@ namespace OpenLoco::Paint
             // Check children paint structs
             for (const auto* childPs = ps->children; childPs != nullptr; childPs = childPs->children)
             {
-                if (isSpriteInteractedWith(getRenderTarget(), childPs->imageId, childPs->vpPos))
+                if (isSpriteInteractedWith(getRenderTarget(), getZoom(), childPs->imageId, childPs->vpPos))
                 {
                     if (isPSSpriteTypeInFilter(childPs->type, flags))
                     {
@@ -1313,7 +1332,7 @@ namespace OpenLoco::Paint
                     }
                 }
 
-                auto attachedInfo = getAttachedInteractionInfo(*getRenderTarget(), flags, *childPs);
+                auto attachedInfo = getAttachedInteractionInfo(*getRenderTarget(), getZoom(), flags, *childPs);
                 if (attachedInfo.has_value())
                 {
                     info = attachedInfo.value();
@@ -1321,7 +1340,7 @@ namespace OpenLoco::Paint
             }
 
             // Check attached to main paint struct
-            auto attachedInfo = getAttachedInteractionInfo(*getRenderTarget(), flags, *ps);
+            auto attachedInfo = getAttachedInteractionInfo(*getRenderTarget(), getZoom(), flags, *ps);
             if (attachedInfo.has_value())
             {
                 info = attachedInfo.value();
@@ -1340,7 +1359,7 @@ namespace OpenLoco::Paint
             return interaction;
         }
 
-        auto rect = _renderTarget->getDrawableRect();
+        auto rect = _renderTarget->getUiRect();
 
         for (auto& station : StationManager::stations())
         {
@@ -1349,7 +1368,7 @@ namespace OpenLoco::Paint
                 continue;
             }
 
-            if (!station.labelFrame.contains(rect, _renderTarget->zoomLevel))
+            if (!station.labelFrame.contains(rect, getZoom()))
             {
                 continue;
             }
@@ -1372,11 +1391,11 @@ namespace OpenLoco::Paint
             return interaction;
         }
 
-        auto rect = _renderTarget->getDrawableRect();
+        auto rect = _renderTarget->getUiRect();
 
         for (auto& town : TownManager::towns())
         {
-            if (!town.labelFrame.contains(rect, _renderTarget->zoomLevel))
+            if (!town.labelFrame.contains(rect, getZoom()))
             {
                 continue;
             }

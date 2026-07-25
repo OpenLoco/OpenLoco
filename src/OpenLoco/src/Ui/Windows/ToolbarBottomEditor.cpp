@@ -88,7 +88,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 
         if (EditorController::canGoBack())
         {
-            drawingCtx.drawImage(self.x + previous.left + 6, self.y + previous.top + 6, ImageIds::step_back);
+            drawingCtx.drawImage(ZoomLevel::full, self.x + previous.left + 6, self.y + previous.top + 6, ImageIds::step_back);
             int x = (previous.left + 30 + previous.right) / 2;
             int y = previous.top + 6;
             auto textColour = self.getColour(WindowColour::secondary).opaque();
@@ -103,7 +103,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
             point = Point(self.x + x, self.y + y + 10);
             tr.drawStringCentred(point, textColour, kStepNames.at(EditorController::getPreviousStep()));
         }
-        drawingCtx.drawImage(self.x + next.right - 29, self.y + next.top + 4, ImageIds::step_forward);
+        drawingCtx.drawImage(ZoomLevel::full, self.x + next.right - 29, self.y + next.top + 4, ImageIds::step_forward);
         int x = next.left + (next.width() - 31) / 2;
         int y = next.top + 6;
         auto textColour = self.getColour(WindowColour::secondary).opaque();

@@ -39,7 +39,6 @@ namespace OpenLoco::Scenario
         rt.width = size.width;
         rt.height = size.height;
         rt.pitch = 0;
-        rt.zoomLevel = saveVp.zoom;
 
         auto& drawingEngine = Gfx::getDrawingEngine();
         auto& drawingCtx = drawingEngine.getDrawingContext();

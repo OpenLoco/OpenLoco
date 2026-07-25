@@ -415,7 +415,7 @@ namespace OpenLoco::Ui::Windows::Station
                 }
 
                 auto* cargoObj = ObjectManager::get<CargoObject>(cargoId);
-                drawingCtx.drawImage(origin, cargoObj->unitInlineSprite);
+                drawingCtx.drawImage(ZoomLevel::full, origin, cargoObj->unitInlineSprite);
                 origin.x += 12;
 
                 cargoTypeCount++;
@@ -558,7 +558,7 @@ namespace OpenLoco::Ui::Windows::Station
                     for (; units > 0; units--)
                     {
                         {
-                            drawingCtx.drawImage(xPos, y, cargoObj->unitInlineSprite);
+                            drawingCtx.drawImage(ZoomLevel::full, xPos, y, cargoObj->unitInlineSprite);
                             xPos += 10;
                         }
                     }

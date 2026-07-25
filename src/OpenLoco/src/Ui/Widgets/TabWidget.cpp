@@ -51,7 +51,7 @@ namespace OpenLoco::Ui::Widgets
 
         imageId = imageId.withPrimary(colour.c());
 
-        drawingCtx.drawImage(pos, imageId);
+        drawingCtx.drawImage(ZoomLevel::full, pos, imageId);
     }
 
     static void drawTabContent(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
@@ -76,17 +76,17 @@ namespace OpenLoco::Ui::Widgets
         {
             if (widget.image != Widget::kContentNull)
             {
-                drawingCtx.drawImage(pos.x, pos.y, widget.image);
+                drawingCtx.drawImage(ZoomLevel::full, pos.x, pos.y, widget.image);
             }
         }
         else
         {
             if (widget.image != Widget::kContentUnk)
             {
-                drawingCtx.drawImage(pos.x, pos.y + 1, widget.image);
+                drawingCtx.drawImage(ZoomLevel::full, pos.x, pos.y + 1, widget.image);
             }
 
-            drawingCtx.drawImage(pos.x, pos.y, Gfx::recolourTranslucent(ImageIds::tab, ExtColour::unk33));
+            drawingCtx.drawImage(ZoomLevel::full, pos.x, pos.y, Gfx::recolourTranslucent(ImageIds::tab, ExtColour::unk33));
             drawingCtx.drawRect(pos.x, pos.y + 26, 31, 1, Colours::getShade(window->getColour(WindowColour::secondary).c(), 7), Gfx::RectFlags::none);
         }
     }

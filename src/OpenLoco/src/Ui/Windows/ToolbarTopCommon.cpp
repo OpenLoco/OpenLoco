@@ -84,10 +84,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
                 bgImage++;
             }
 
-            drawingCtx.drawImage(x, y, fgImage);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, fgImage);
 
             y = self.widgets[Widx::road_menu].top + self.y;
-            drawingCtx.drawImage(x, y, bgImage);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, bgImage);
         }
     }
 

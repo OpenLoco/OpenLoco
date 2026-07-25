@@ -141,7 +141,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
             auto* competitor = ObjectManager::get<CompetitorObject>(company->competitorId);
             auto imageId = Gfx::recolour(competitor->images[enumValue(company->ownerEmotion)], company->mainColours.primary);
 
-            drawingCtx.drawImage(left + 1, top + 1, imageId);
+            drawingCtx.drawImage(ZoomLevel::full, left + 1, top + 1, imageId);
         }
     }
 

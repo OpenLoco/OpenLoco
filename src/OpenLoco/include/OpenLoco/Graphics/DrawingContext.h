@@ -7,6 +7,7 @@
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Engine/Ui/Rect.hpp>
+#include <OpenLoco/ZoomLevel.hpp>
 #include <cstdint>
 
 namespace OpenLoco::Gfx
@@ -80,16 +81,19 @@ namespace OpenLoco::Gfx
 
         virtual void drawCircle(const Ui::Point& centre, int32_t radius, int32_t lineWidth, PaletteIndex_t colour) = 0;
 
-        virtual void drawImage(int16_t x, int16_t y, uint32_t image) = 0;
+        virtual void drawImage(ZoomLevel zoom, const Ui::Point& pos, const ImageId& image) = 0;
 
-        void drawImage(const Ui::Point& pos, uint32_t image)
+        void drawImage(ZoomLevel zoom, int16_t x, int16_t y, uint32_t image)
         {
-            drawImage(pos, ImageId::fromUInt32(image));
+            drawImage(zoom, Ui::Point(x, y), ImageId::fromUInt32(image));
         }
 
-        virtual void drawImage(const Ui::Point& pos, const ImageId& image) = 0;
+        void drawImage(ZoomLevel zoom, const Ui::Point& pos, uint32_t image)
+        {
+            drawImage(zoom, pos, ImageId::fromUInt32(image));
+        }
 
-        virtual void drawImageMasked(const Ui::Point& pos, const ImageId& image, const ImageId& maskImage) = 0;
+        virtual void drawImageMasked(ZoomLevel zoom, const Ui::Point& pos, const ImageId& image, const ImageId& maskImage) = 0;
 
         virtual void drawImageSolid(const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex) = 0;
 

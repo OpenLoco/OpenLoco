@@ -284,11 +284,11 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 g1->height = 128;
 
                 // Draw preview image and restore original G1 image.
-                drawingCtx.drawImage(x, y, imageId);
+                drawingCtx.drawImage(ZoomLevel::full, x, y, imageId);
                 *g1 = backupG1;
 
                 // Draw compass
-                drawingCtx.drawImage(x, y, ImageIds::height_map_compass);
+                drawingCtx.drawImage(ZoomLevel::full, x, y, ImageIds::height_map_compass);
             }
         }
         else
@@ -298,7 +298,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
             // No preview image -- a placeholder will have to do.
             auto image = Gfx::recolour(ImageIds::random_map_watermark, self.getColour(WindowColour::secondary).c());
-            drawingCtx.drawImage(x, y, image);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, image);
 
             x += 64;
             y += 59;
@@ -427,7 +427,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             }
 
             // Draw checkmark to indicate completion
-            drawingCtx.drawImage(self.widgets[widx::list].width() - ScrollView::kScrollbarSize - 25, y + 1, ImageIds::scenario_completed_tick);
+            drawingCtx.drawImage(ZoomLevel::full, self.widgets[widx::list].width() - ScrollView::kScrollbarSize - 25, y + 1, ImageIds::scenario_completed_tick);
 
             // 'Completed by' info
             {

@@ -16,7 +16,7 @@ namespace OpenLoco::Gfx
         const int32_t width = args.size.width;
         int32_t height = args.size.height;
         constexpr auto zoom = 1 << TZoomLevel;
-        auto dstLineWidth = (static_cast<size_t>(rt.width) >> TZoomLevel) + rt.pitch;
+        auto dstLineWidth = static_cast<size_t>(rt.width) + rt.pitch;
         auto* dst0 = rt.bits;
         // Move the pointer to the start point of the destination
         dst0 += dstLineWidth * args.dstPos.y + args.dstPos.x;

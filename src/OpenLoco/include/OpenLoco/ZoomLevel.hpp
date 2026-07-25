@@ -28,9 +28,18 @@ namespace OpenLoco
             return level;
         }
 
-        constexpr bool operator==(const ZoomLevel other) const
+        // Converts a value from screen space into world space.
+        template<typename T>
+        constexpr T applyTo(const T value) const
         {
-            return level == other.level;
+            return static_cast<T>(value << level);
+        }
+
+        // Converts a value from world space into screen space.
+        template<typename T>
+        constexpr T applyInversedTo(const T value) const
+        {
+            return static_cast<T>(value >> level);
         }
     };
 #pragma pack(pop)

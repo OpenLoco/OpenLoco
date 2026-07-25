@@ -81,7 +81,7 @@ namespace OpenLoco
         bool empty() const;
         TownId id() const;
         void update();
-        void drawLabel(Gfx::DrawingContext& drawingCtx, const Gfx::RenderTarget& rt);
+        void drawLabel(Gfx::DrawingContext& drawingCtx, ZoomLevel zoom);
         void updateLabel();
         void updateMonthly();
         void adjustCompanyRating(CompanyId cid, int amount);

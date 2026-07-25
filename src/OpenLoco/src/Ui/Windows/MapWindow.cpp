@@ -2179,7 +2179,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         Gfx::getG1Element(0)->yOffset = 0;
         Gfx::getG1Element(0)->flags = Gfx::G1ElementFlags::none;
 
-        drawingCtx.drawImage(0, 0, 0);
+        drawingCtx.drawImage(ZoomLevel::full, 0, 0, 0);
 
         *element = backupElement;
 

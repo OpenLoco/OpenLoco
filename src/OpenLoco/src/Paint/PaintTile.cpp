@@ -48,11 +48,11 @@ namespace OpenLoco::Paint
 
         const auto loc2 = loc + kUnkOffsets[session.getRotation()];
         const auto vpPos = World::gameToScreen(World::Pos3(loc2.x, loc2.y, 16), session.getRotation());
-        if (vpPos.y + 32 <= session.getRenderTarget()->y)
+        if (vpPos.y + 32 <= session.getWorldY())
         {
             return;
         }
-        if (vpPos.y - 20 >= session.getRenderTarget()->height + session.getRenderTarget()->y)
+        if (vpPos.y - 20 >= session.getWorldHeight() + session.getWorldY())
         {
             return;
         }
@@ -239,11 +239,11 @@ namespace OpenLoco::Paint
         const auto vpPos = World::gameToScreen(World::Pos3(loc2.x, loc2.y, 0), session.getRotation());
         paintConstructionArrow(session, loc2);
 
-        if (vpPos.y + 52 <= session.getRenderTarget()->y)
+        if (vpPos.y + 52 <= session.getWorldY())
         {
             return std::nullopt;
         }
-        if (vpPos.y - session.getMaxHeight() > session.getRenderTarget()->y + session.getRenderTarget()->height)
+        if (vpPos.y - session.getMaxHeight() > session.getWorldY() + session.getWorldHeight())
         {
             return std::nullopt;
         }

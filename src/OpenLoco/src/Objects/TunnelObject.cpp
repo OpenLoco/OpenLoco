@@ -12,8 +12,8 @@ namespace OpenLoco
     // 0x00469806
     void TunnelObject::drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const
     {
-        drawingCtx.drawImage(x - 16, y + 15, image);
-        drawingCtx.drawImage(x - 16, y + 15, image + 1);
+        drawingCtx.drawImage(ZoomLevel::full, x - 16, y + 15, image);
+        drawingCtx.drawImage(ZoomLevel::full, x - 16, y + 15, image + 1);
     }
 
     // 0x004697C9
