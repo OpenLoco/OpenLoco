@@ -112,7 +112,7 @@ namespace OpenLoco::Paint
         {
             if (frame == 15)
             {
-                frame = (((ScenarioManager::getScenarioTicks() / (1U << crossingObj->closedAnimationSpeed)) & (crossingObj->closedAnimationFrames - 1)) + crossingObj->closingAnimationFrames + 1);
+                frame = (((ScenarioManager::getScenarioTicks() / (1U << crossingObj->closedAnimationDelay)) & (crossingObj->closedAnimationFrameCount - 1)) + crossingObj->transitionAnimationFrameCount + 1);
             }
         }
 

@@ -148,7 +148,7 @@ namespace OpenLoco::World
 
             const auto* levelCrossingObj = ObjectManager::get<LevelCrossingObject>(elRoad->levelCrossingObjectId());
 
-            if (ScenarioManager::getScenarioTicks() & levelCrossingObj->animationSpeedBitmask)
+            if (ScenarioManager::getScenarioTicks() & levelCrossingObj->transitionAnimationDelayBitmask)
             {
                 hasAnimation = true; // skip this tick - don't advance the transition
             }
@@ -163,7 +163,7 @@ namespace OpenLoco::World
                     if (newFrame != 15)
                     {
                         newFrame++;
-                        if (newFrame > levelCrossingObj->closingAnimationFrames)
+                        if (newFrame > levelCrossingObj->transitionAnimationFrameCount)
                         {
                             newFrame = 15; // transition complete; fully closed
                         }
@@ -177,7 +177,7 @@ namespace OpenLoco::World
                         newFrame--;
                         if (newFrame == 14)
                         {
-                            newFrame = levelCrossingObj->closingAnimationFrames;
+                            newFrame = levelCrossingObj->transitionAnimationFrameCount;
                         }
                         hasAnimation = true;
                     }

@@ -2,6 +2,8 @@
 
 #include "Object.h"
 #include "Types.hpp"
+#include <cstddef>
+#include <cstdint>
 #include <span>
 
 namespace OpenLoco
@@ -21,16 +23,16 @@ namespace OpenLoco
         static constexpr auto kObjectType = ObjectType::levelCrossing;
 
         StringId name;
-        int16_t costFactor;             // 0x02
-        int16_t sellCostFactor;         // 0x04
-        uint8_t costIndex;              // 0x06
-        uint8_t closedAnimationSpeed;   // 0x07
-        uint8_t closedAnimationFrames;  // 0x08
-        uint8_t closingAnimationFrames; // 0x09
-        uint8_t animationSpeedBitmask;  // 0x0A
-        uint8_t pad_0B;
-        uint16_t designedYear; // 0x0C
-        uint32_t image;        // 0x0E
+        int16_t costFactor;                      // 0x02
+        int16_t sellCostFactor;                  // 0x04
+        uint8_t costIndex;                       // 0x06
+        uint8_t closedAnimationDelay;            // 0x07
+        uint8_t closedAnimationFrameCount;       // 0x08
+        uint8_t transitionAnimationFrameCount;   // 0x09
+        uint8_t transitionAnimationDelayBitmask; // 0x0A
+        uint8_t pad_0B;                          // 0x0B
+        uint16_t designedYear;                   // 0x0C
+        uint32_t image;                          // 0x0E
 
         bool validate() const;
         void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);
