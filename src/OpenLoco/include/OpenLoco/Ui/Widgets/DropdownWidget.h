@@ -15,12 +15,6 @@ namespace OpenLoco::Ui::Widgets
             events.draw = &draw;
         }
 
-        constexpr ComboBox(Point origin, Size size, WindowColour colour, StringId content = StringIds::null, StringId tooltip = StringIds::null)
-            : ComboBox(WidgetId::none, origin, size, colour, content, tooltip)
-        {
-            events.draw = &draw;
-        }
-
         static void draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState);
     };
 
@@ -35,10 +29,5 @@ namespace OpenLoco::Ui::Widgets
         return makeWidgets(
             ComboBox(comboId, origin, size, colour, content, tooltip),
             Button(buttonId, { xPos, yPos }, { width, height }, colour, StringIds::dropdown));
-    }
-
-    constexpr auto dropdownWidgets(Ui::Point origin, Ui::Size size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
-    {
-        return dropdownWidgets(WidgetId::none, WidgetId::none, origin, size, colour, content, tooltip);
     }
 }
