@@ -122,16 +122,19 @@ namespace OpenLoco
             const auto index = zoom.index();
             auto font = kZoomToTownFonts[index];
 
-            auto nameWidth = zoom.applyTo(Gfx::TextRenderer::getStringWidth(font, buffer) + 2);
-            auto nameHeight = zoom.applyTo(11); // was a lookup on 0x4FF6FC; same for all zoom levels
+            const auto uiWidth = Gfx::TextRenderer::getStringWidth(font, buffer) + 2;
+            const auto uiHeight = 11; // was a lookup on 0x4FF6FC; same for all zoom levels
+
+            auto nameWidth = zoom.applyTo(uiWidth);
+            auto nameHeight = zoom.applyTo(uiHeight);
 
             auto xOffset = rotated.x - (nameWidth / 2);
             auto yOffset = rotated.y - (nameHeight / 2);
 
             labelFrame.left[index] = zoom.applyInversedTo(xOffset);
-            labelFrame.right[index] = zoom.applyInversedTo(xOffset + nameWidth);
+            labelFrame.right[index] = labelFrame.left[index] + uiWidth;
             labelFrame.top[index] = zoom.applyInversedTo(yOffset);
-            labelFrame.bottom[index] = zoom.applyInversedTo(yOffset + nameHeight);
+            labelFrame.bottom[index] = labelFrame.top[index] + uiHeight;
         }
     }
 

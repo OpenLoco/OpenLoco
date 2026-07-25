@@ -413,16 +413,19 @@ namespace OpenLoco::Vehicles::OrderManager
                 // The first line of the label will always be at the centre
                 // of the station/waypoint. This works out where the subsequent
                 // lines of the label will end up.
-                auto width = zoom.applyTo(stringWidth + 3);
+                const auto uiWidth = stringWidth + 3;
+                const auto uiHeight = 11;
+
+                auto width = zoom.applyTo<int32_t>(uiWidth);
                 auto numberHeight = zoom.applyTo(unk.lineNumber * 10 /* lineHeight TODO make same as Windows::Vehicle.cpp lineHeight */);
-                auto firstLineHeight = zoom.applyTo(11);
+                auto firstLineHeight = zoom.applyTo(uiHeight);
                 auto midX = width / 2;
                 auto midFirstLineY = firstLineHeight / 2;
 
                 unk.frame.left[index] = zoom.applyInversedTo(pos.x - midX);
-                unk.frame.right[index] = zoom.applyInversedTo(pos.x + midX);
+                unk.frame.right[index] = unk.frame.left[index] + uiWidth;
                 unk.frame.top[index] = zoom.applyInversedTo(pos.y - midFirstLineY + numberHeight);
-                unk.frame.bottom[index] = zoom.applyInversedTo(pos.y + midFirstLineY + numberHeight);
+                unk.frame.bottom[index] = unk.frame.top[index] + uiHeight;
             }
             i++;
         }

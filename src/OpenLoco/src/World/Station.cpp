@@ -939,7 +939,7 @@ namespace OpenLoco
         drawingCtx.drawImage(ZoomLevel::full, topLeft, ImageId(borderImages.left).withTranslucency(ExtColour::unk34));
         drawingCtx.drawImage(ZoomLevel::full, topLeft, ImageId(borderImages.left).withTranslucency(colour));
 
-        Ui::Point topRight = { static_cast<int16_t>(bottomRight.x - borderImages.width) + 1, topLeft.y };
+        Ui::Point topRight = { bottomRight.x - borderImages.width + 1, topLeft.y };
         drawingCtx.drawImage(ZoomLevel::full, topRight, ImageId(borderImages.right).withTranslucency(ExtColour::unk34));
         drawingCtx.drawImage(ZoomLevel::full, topRight, ImageId(borderImages.right).withTranslucency(colour));
 
@@ -993,17 +993,14 @@ namespace OpenLoco
             const auto [zoomWidth, zoomHeight] = ScreenToViewport::scaleTransform(Ui::Point(width, height), virtualVp);
 
             const auto left = vpPos.x - zoomWidth / 2;
-            const auto right = left + zoomWidth;
             const auto top = vpPos.y - zoomHeight / 2 - 32;
-            const auto bottom = top + zoomHeight;
 
             const auto [uiLeft, uiTop] = ViewportToScreen::scaleTransform(Ui::Point(left, top), virtualVp);
-            const auto [uiRight, uiBottom] = ViewportToScreen::scaleTransform(Ui::Point(right, bottom), virtualVp);
 
             labelFrame.left[index] = uiLeft;
-            labelFrame.right[index] = uiRight;
+            labelFrame.right[index] = uiLeft + width;
             labelFrame.top[index] = uiTop;
-            labelFrame.bottom[index] = uiBottom;
+            labelFrame.bottom[index] = uiTop + height;
         }
     }
 
