@@ -637,6 +637,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBEC1
         static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
+            scrollWidth = kColumnWidth * kColsPerRow;
             scrollHeight = (self.rowCount + (kColsPerRow - 1)) / kColsPerRow;
             if (scrollHeight == 0)
             {
@@ -2569,6 +2570,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC359
         static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
+            scrollWidth = kColumnWidth * kColsPerRow;
             scrollHeight = (self.rowCount + (kColsPerRow - 1)) / kColsPerRow;
             if (scrollHeight == 0)
             {

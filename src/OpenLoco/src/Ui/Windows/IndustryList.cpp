@@ -939,6 +939,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x004586EA
         static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
+            scrollWidth = kColumnWidth * kColsPerRow;
             scrollHeight = (self.rowCount + (kColsPerRow - 1)) / kColsPerRow;
             if (scrollHeight == 0)
             {

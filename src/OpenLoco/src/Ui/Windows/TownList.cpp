@@ -1206,6 +1206,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049AE83
         static void getScrollSize(Ui::Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
         {
+            scrollWidth = kColumnWidth * kColsPerRow;
             scrollHeight = (self.rowCount + (kColsPerRow - 1)) / kColsPerRow;
             if (scrollHeight == 0)
             {
