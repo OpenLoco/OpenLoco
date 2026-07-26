@@ -33,6 +33,7 @@ namespace OpenLoco::Audio
     static ALCcontext* _alcContext = nullptr;
     static std::vector<uint32_t> _alSources;
     static std::vector<uint32_t> _alBuffers;
+    static std::size_t _maxInstances = 0;
 
     static bool _isInitialised = false;
     static bool _isPaused = false;
@@ -65,6 +66,11 @@ namespace OpenLoco::Audio
 
     static AudioInstance* getInstance(AudioHandle handle)
     {
+        if (handle == AudioHandle::null)
+        {
+            return nullptr;
+        }
+
         auto idx = static_cast<uint32_t>(handle);
         if (idx >= _instances.size() || !_instances[idx].active)
         {
@@ -116,9 +122,14 @@ namespace OpenLoco::Audio
             return false;
         }
 
+        // clang-format off
         constexpr ALCint attrs[] = {
-            ALC_HRTF_SOFT, ALC_FALSE, 0
+            ALC_HRTF_SOFT, ALC_FALSE,
+            ALC_MONO_SOURCES, 1024,
+            ALC_STEREO_SOURCES, 32,
+            0
         };
+        // clang-format on
 
         _alcContext = alcCreateContext(_alcDevice, attrs);
         if (_alcContext == nullptr)
@@ -159,6 +170,14 @@ namespace OpenLoco::Audio
 
             Logging::info("OpenAL EFX reverb initialized.");
         }
+
+        ALCint numMono = 0;
+        ALCint numStereo = 0;
+        alcGetIntegerv(_alcDevice, ALC_MONO_SOURCES, 1, &numMono);
+        alcGetIntegerv(_alcDevice, ALC_STEREO_SOURCES, 1, &numStereo);
+        _maxInstances = static_cast<std::size_t>(numMono + numStereo);
+
+        Logging::info("OpenAL supports {} mono sources and {} stereo sources, total {} sources.", numMono, numStereo, _maxInstances);
 
         return true;
     }
@@ -291,13 +310,23 @@ namespace OpenLoco::Audio
         uint32_t sourceId = 0;
         if (idx < _instances.size())
         {
+            // Re-use an existing source for this instance.
             sourceId = _instances[idx].sourceId;
         }
         else
         {
+            // Create a new source for this instance.
+            if (_instances.size() >= _maxInstances)
+            {
+                Logging::verbose("Maximum number of audio sources reached, cannot create new audio instance.");
+                return AudioHandle::null;
+            }
+
             alGenSources(1, &sourceId);
             _alSources.push_back(sourceId);
         }
+
+        // Bind the buffer to the source.
         alSourcei(sourceId, AL_BUFFER, static_cast<ALint>(buffer));
 
         AudioInstance inst{};
