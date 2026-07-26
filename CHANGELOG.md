@@ -5,6 +5,7 @@
 - Feature: [#3768] Add tab to town window to show delivered cargo last month.
 - Feature: [#3805] Keyboard shortcuts can now combine multiple modifiers, including left and right Ctrl and Alt.
 - Feature: [#3813] Add OpenGraphics replacements for town names, trams, tracks, roads and a large number of trains.
+- Feature: [#3836] Add new double and quadruple viewport zoom levels.
 - Change: [#3740] Options that interfere with tutorial operation are temporarily disabled options during playback.
 - Change: [#3777] Jukebox can now be toggled and opened from the options window, grouped together with the title screen music toggle.
 - Fix: [#2956] Roads drawn over cliffs can have a visible gap (original bug).
