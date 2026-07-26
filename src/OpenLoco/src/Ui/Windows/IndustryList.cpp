@@ -856,9 +856,12 @@ namespace OpenLoco::Ui::Windows::IndustryList
             }
         }
 
+        static void updateActiveThumb(Window& self);
+
         // 0x004585B8
         static void onUpdate(Window& self)
         {
+            bool hasResized = false;
             if (!Input::hasFlag(Input::Flags::rightMousePressed))
             {
                 auto cursor = Input::getMouseLocation();
@@ -867,7 +870,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 {
                     auto xPos = cursor.x - self.x;
                     auto yPos = cursor.y - self.y;
-                    if ((yPos < 42) || (xPos + 26 <= self.width))
+                    if ((yPos < 42) || (xPos + 4 <= self.width))
                     {
                         auto activeWidget = self.findWidgetAt(cursor.x, cursor.y);
                         if (activeWidget > Common::widx::panel)
@@ -880,13 +883,13 @@ namespace OpenLoco::Ui::Windows::IndustryList
                                 {
                                     newHeight = std::min(newHeight, 276);
                                 }
-                                self.setSize({ kWindowSize.width, newHeight });
+                                hasResized |= self.setSize({ kWindowSize.width, newHeight });
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    self.setSize(kWindowSize);
+                                    hasResized |= self.setSize(kWindowSize);
                                 }
                             }
                         }
@@ -897,13 +900,18 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        self.setSize(kWindowSize);
+                        hasResized |= self.setSize(kWindowSize);
                     }
                 }
             }
             self.frameNo++;
 
             self.callPrepareDraw();
+            if (hasResized)
+            {
+                updateActiveThumb(self);
+            }
+
             WindowManager::invalidateWidget(WindowType::industryList, self.number, self.currentTab + Common::widx::tab_industry_list);
 
             if (!ToolManager::isToolActive(self.type, self.number))

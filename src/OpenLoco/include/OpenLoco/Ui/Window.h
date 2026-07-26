@@ -287,9 +287,9 @@ namespace OpenLoco::Ui
             return hasResized;
         }
 
-        constexpr void setSize(Ui::Size size)
+        constexpr bool setSize(Ui::Size size)
         {
-            setSize(size, size);
+            return setSize(size, size);
         }
 
         constexpr AdvancedColour getColour(WindowColour index) const
