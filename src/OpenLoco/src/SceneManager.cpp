@@ -1,6 +1,10 @@
 #include "SceneManager.h"
 #include "Audio/Audio.h"
+#include "Logging.h"
 #include "Ui/WindowManager.h"
+#include <optional>
+
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::SceneManager
 {
@@ -8,6 +12,59 @@ namespace OpenLoco::SceneManager
     static Flags _sceneFlags;       // 0x00508F14
     static PauseFlags _pausedState; // 0x00508F17
     static GameSpeed _gameSpeed;    // 0x00508F1A
+
+    static SceneId _currentScene = SceneId::boot;
+    static std::optional<SceneId> _pendingScene;
+
+    static constexpr const char* sceneName(SceneId scene)
+    {
+        switch (scene)
+        {
+            case SceneId::boot: return "boot";
+            case SceneId::intro: return "intro";
+            case SceneId::title: return "title";
+            case SceneId::gameplay: return "gameplay";
+            case SceneId::editor: return "editor";
+        }
+        return "unknown";
+    }
+
+    SceneId getCurrentScene()
+    {
+        return _currentScene;
+    }
+
+    SceneId getPendingScene()
+    {
+        return _pendingScene.value_or(_currentScene);
+    }
+
+    bool isSceneTransitionPending()
+    {
+        return _pendingScene.has_value();
+    }
+
+    // Requests a scene change, this is deferred until the current tick has fully unwound.
+    void requestScene(SceneId scene)
+    {
+        _pendingScene = scene;
+    }
+
+    // Returns true if the current scene was changed.
+    bool applyPendingScene()
+    {
+        if (!_pendingScene.has_value())
+        {
+            return false;
+        }
+
+        const auto previousScene = _currentScene;
+        _currentScene = *_pendingScene;
+        _pendingScene.reset();
+
+        Logging::info("Scene transition: {} -> {}", sceneName(previousScene), sceneName(_currentScene));
+        return true;
+    }
 
     void resetSceneAge()
     {

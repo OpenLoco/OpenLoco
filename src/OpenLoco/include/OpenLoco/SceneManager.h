@@ -25,6 +25,15 @@ namespace OpenLoco
 
     namespace SceneManager
     {
+        enum class SceneId : uint8_t
+        {
+            boot,
+            intro,
+            title,
+            gameplay,
+            editor,
+        };
+
         enum class Flags : uint16_t
         {
             none = 0U,
@@ -39,6 +48,13 @@ namespace OpenLoco
             pauseOverrideEnabled = 1U << 8, // new in OpenLoco
         };
         OPENLOCO_ENABLE_ENUM_OPERATORS(Flags);
+
+        // Scene transitions
+        SceneId getCurrentScene();
+        SceneId getPendingScene();
+        bool isSceneTransitionPending();
+        void requestScene(SceneId scene);
+        bool applyPendingScene();
 
         void resetSceneAge();
         uint16_t getSceneAge();
