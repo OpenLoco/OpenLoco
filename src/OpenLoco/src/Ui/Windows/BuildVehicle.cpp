@@ -23,6 +23,7 @@
 #include "Objects/TrackObject.h"
 #include "Objects/VehicleObject.h"
 #include "OpenLoco.h"
+#include "Tutorial.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ScrollView.h"
 #include "Ui/TextInput.h"
@@ -433,6 +434,23 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             setTrackTypeTabs(window);
             resetTrackTypeTabSelection(window);
             sub_4B92A5(window);
+
+            if (OpenLoco::Tutorial::state() != OpenLoco::Tutorial::State::none)
+            {
+                // Restore vanilla window layout
+                window->width = 380;
+                window->height = 233;
+                window->widgets[widx::searchBox].hidden = true;
+                window->widgets[widx::searchClearButton].hidden = true;
+                window->widgets[widx::filterLabel].hidden = true;
+                window->widgets[widx::filterDropdown].hidden = true;
+                window->widgets[widx::cargoLabel].hidden = true;
+                window->widgets[widx::cargoDropdown].hidden = true;
+                window->widgets[widx::sortLabel].hidden = true;
+                window->widgets[widx::sortDropdown].hidden = true;
+                window->widgets[widx::scrollview_vehicle_selection].top = 72;
+                window->widgets[widx::scrollview_vehicle_selection].bottom = 72 + 146 + 1;
+            }
 
             window->callOnResize();
             window->callPrepareDraw();
