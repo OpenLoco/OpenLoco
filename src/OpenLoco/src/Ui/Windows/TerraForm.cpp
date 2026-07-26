@@ -829,7 +829,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
                 image = Gfx::recolour(image, colour);
             }
-            drawingCtx.drawImage(32, 96, image);
+            drawingCtx.drawImage(ZoomLevel::full, 32, 96, image);
         }
 
         // 0x004BB982
@@ -1698,7 +1698,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
                     auto zoom = viewport->zoom;
 
-                    auto dY = -(16 >> zoom);
+                    auto dY = -zoom.applyInversedTo(16);
                     if (dY == 0)
                     {
                         dY = -1;
@@ -1812,15 +1812,15 @@ namespace OpenLoco::Ui::Windows::Terraform
                         // For even sizes, we need to draw the image twice
                         // TODO: replace with proper grid images
                         placeForImage -= { 4, 0 };
-                        drawingCtx.drawImage(placeForImage, areaImage);
+                        drawingCtx.drawImage(ZoomLevel::full, placeForImage, areaImage);
 
                         placeForImage += { 8, 0 };
-                        drawingCtx.drawImage(placeForImage, areaImage);
+                        drawingCtx.drawImage(ZoomLevel::full, placeForImage, areaImage);
                     }
                     else
                     {
                         // For odd sizes, we just need the one
-                        drawingCtx.drawImage(placeForImage, areaImage);
+                        drawingCtx.drawImage(ZoomLevel::full, placeForImage, areaImage);
                     }
                 }
 
@@ -1829,7 +1829,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     auto areaImage = ImageId(ImageIds::tool_area).withIndexOffset(_adjustToolSize);
                     Ui::Point placeForImage(toolArea.left + self.x, toolArea.top + self.y);
-                    drawingCtx.drawImage(placeForImage, areaImage);
+                    drawingCtx.drawImage(ZoomLevel::full, placeForImage, areaImage);
                 }
             }
             // Or draw as a number, if we can't fit a sprite
@@ -2109,7 +2109,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             auto zoom = viewport->zoom;
 
-            auto dY = -(16 >> zoom);
+            auto dY = -zoom.applyInversedTo(16);
             if (dY == 0)
             {
                 dY = -1;
@@ -2711,7 +2711,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     drawingCtx.pushRenderTarget(*clipped);
 
-                    drawingCtx.drawImage(kColumnWidth - 6, kRowHeight - 20, wallObj->sprite);
+                    drawingCtx.drawImage(ZoomLevel::full, kColumnWidth - 6, kRowHeight - 20, wallObj->sprite);
 
                     drawingCtx.popRenderTarget();
                 }

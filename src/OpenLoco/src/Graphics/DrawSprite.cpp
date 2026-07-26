@@ -47,6 +47,7 @@ namespace OpenLoco::Gfx
         }
         return op;
     }
+
 #pragma warning(push)
 #pragma warning(disable : 4063) // not a valid value for a switch of this enum
 #pragma GCC diagnostic push
@@ -112,8 +113,81 @@ namespace OpenLoco::Gfx
             }
         }
     }
+
+    template<bool TIsRLE>
+    inline void drawSpriteToBufferMagnifyHelper(const RenderTarget& rt, ZoomLevel zoom, const DrawSpriteArgs& args, const DrawBlendOp op)
+    {
+        if constexpr (!TIsRLE)
+        {
+            switch (op)
+            {
+                case DrawBlendOp::transparent | DrawBlendOp::src | DrawBlendOp::dst:
+                    drawBMPSpriteMagnify<DrawBlendOp::transparent | DrawBlendOp::src | DrawBlendOp::dst>(rt, zoom, args);
+                    break;
+                case DrawBlendOp::transparent | DrawBlendOp::src:
+                    drawBMPSpriteMagnify<DrawBlendOp::transparent | DrawBlendOp::src>(rt, zoom, args);
+                    break;
+                case DrawBlendOp::transparent | DrawBlendOp::dst:
+                    drawBMPSpriteMagnify<DrawBlendOp::transparent | DrawBlendOp::dst>(rt, zoom, args);
+                    break;
+                case DrawBlendOp::none:
+                    drawBMPSpriteMagnify<DrawBlendOp::none>(rt, zoom, args);
+                    break;
+                case DrawBlendOp::transparent:
+                    drawBMPSpriteMagnify<DrawBlendOp::transparent>(rt, zoom, args);
+                    break;
+                case DrawBlendOp::transparent | DrawBlendOp::src | DrawBlendOp::noiseMask:
+                    drawBMPSpriteMagnify<DrawBlendOp::transparent | DrawBlendOp::src | DrawBlendOp::noiseMask>(rt, zoom, args);
+                    break;
+                case DrawBlendOp::none | DrawBlendOp::noiseMask:
+                    drawBMPSpriteMagnify<DrawBlendOp::none | DrawBlendOp::noiseMask>(rt, zoom, args);
+                    break;
+                case DrawBlendOp::transparent | DrawBlendOp::noiseMask:
+                    drawBMPSpriteMagnify<DrawBlendOp::transparent | DrawBlendOp::noiseMask>(rt, zoom, args);
+                    break;
+                default:
+                    assert(false);
+                    break;
+            }
+        }
+        else
+        {
+            switch (op)
+            {
+                case DrawBlendOp::transparent | DrawBlendOp::src | DrawBlendOp::dst:
+                    drawRLESpriteMagnify<DrawBlendOp::transparent | DrawBlendOp::src | DrawBlendOp::dst>(rt, zoom, args);
+                    break;
+                case DrawBlendOp::transparent | DrawBlendOp::src:
+                    drawRLESpriteMagnify<DrawBlendOp::transparent | DrawBlendOp::src>(rt, zoom, args);
+                    break;
+                case DrawBlendOp::transparent | DrawBlendOp::dst:
+                    drawRLESpriteMagnify<DrawBlendOp::transparent | DrawBlendOp::dst>(rt, zoom, args);
+                    break;
+                case DrawBlendOp::none:
+                    drawRLESpriteMagnify<DrawBlendOp::none>(rt, zoom, args);
+                    break;
+                case DrawBlendOp::transparent:
+                    drawRLESpriteMagnify<DrawBlendOp::transparent>(rt, zoom, args);
+                    break;
+                default:
+                    assert(false);
+                    break;
+            }
+        }
+    }
 #pragma GCC diagnostic pop
 #pragma warning(pop)
+
+    template<>
+    void drawSpriteToBufferMagnify<false>(const RenderTarget& rt, ZoomLevel zoom, const DrawSpriteArgs& args, const DrawBlendOp op)
+    {
+        drawSpriteToBufferMagnifyHelper<false>(rt, zoom, args, op);
+    }
+    template<>
+    void drawSpriteToBufferMagnify<true>(const RenderTarget& rt, ZoomLevel zoom, const DrawSpriteArgs& args, const DrawBlendOp op)
+    {
+        drawSpriteToBufferMagnifyHelper<true>(rt, zoom, args, op);
+    }
 
     template<>
     void drawSpriteToBuffer<0, false>(const RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)

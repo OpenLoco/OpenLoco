@@ -689,8 +689,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     self.invalidate();
                     viewport->width = newWidth;
                     viewport->height = newHeight;
-                    viewport->viewWidth = newWidth << viewport->zoom;
-                    viewport->viewHeight = newHeight << viewport->zoom;
+                    viewport->viewWidth = viewport->zoom.applyTo(newWidth);
+                    viewport->viewHeight = viewport->zoom.applyTo(newHeight);
                     self.savedView.clear();
                 }
             }
@@ -1054,10 +1054,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 if ((pickupButton.image & 0x20000000) != 0 && !self.isDisabled(widx::pickup))
                 {
-                    drawingCtx.drawImage(
-                        self.x + pickupButton.left,
-                        self.y + pickupButton.top,
-                        Gfx::recolour(pickupButton.image, CompanyManager::getCompanyColour(self.owner)));
+                    drawingCtx.drawImage(ZoomLevel::full, self.x + pickupButton.left, self.y + pickupButton.top, Gfx::recolour(pickupButton.image, CompanyManager::getCompanyColour(self.owner)));
                 }
             }
 
@@ -1088,10 +1085,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Widget& speedWidget = self.widgets[widx::speedControl];
             if (!speedWidget.hidden)
             {
-                drawingCtx.drawImage(
-                    self.x + speedWidget.left,
-                    self.y + speedWidget.top + 10,
-                    Gfx::recolour(ImageIds::speed_control_track, self.getColour(WindowColour::secondary).c()));
+                drawingCtx.drawImage(ZoomLevel::full, self.x + speedWidget.left, self.y + speedWidget.top + 10, Gfx::recolour(ImageIds::speed_control_track, self.getColour(WindowColour::secondary).c()));
 
                 auto point = Point(self.x + speedWidget.midX(), self.y + speedWidget.top + 4);
                 tr.drawStringCentred(point, Colour::black, StringIds::tiny_power);
@@ -1099,10 +1093,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 point = Point(self.x + speedWidget.midX(), self.y + speedWidget.bottom - 10);
                 tr.drawStringCentred(point, Colour::black, StringIds::tiny_brake);
 
-                drawingCtx.drawImage(
-                    self.x + speedWidget.left + 1,
-                    self.y + speedWidget.top + 57 - veh->manualPower,
-                    Gfx::recolour(ImageIds::speed_control_thumb, self.getColour(WindowColour::secondary).c()));
+                drawingCtx.drawImage(ZoomLevel::full, self.x + speedWidget.left + 1, self.y + speedWidget.top + 57 - veh->manualPower, Gfx::recolour(ImageIds::speed_control_thumb, self.getColour(WindowColour::secondary).c()));
             }
 
             if (self.viewports[0] == nullptr && ToolManager::isToolActive(self.type, self.number))
@@ -1859,7 +1850,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 if ((self.widgets[widx::pickup].image & (1 << 29)) && !self.isDisabled(widx::pickup))
                 {
                     auto image = Gfx::recolour(self.widgets[widx::pickup].image, CompanyManager::getCompanyColour(self.owner));
-                    drawingCtx.drawImage(self.widgets[widx::pickup].left + self.x, self.widgets[widx::pickup].top + self.y, image);
+                    drawingCtx.drawImage(ZoomLevel::full, self.widgets[widx::pickup].left + self.x, self.widgets[widx::pickup].top + self.y, image);
                 }
             }
             uint16_t textRightEdge = isPaintToolActive(self) ? self.width - 39 : self.width;
@@ -3981,7 +3972,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 if (ToolManager::isToolActive(self.type, self.number))
                 {
                     auto imageId = kNumberCircle[orderNumber - 1];
-                    drawingCtx.drawImage(labelWidth + 8 + 3, y, Gfx::recolour(imageId, Colour::white));
+                    drawingCtx.drawImage(ZoomLevel::full, labelWidth + 8 + 3, y, Gfx::recolour(imageId, Colour::white));
                 }
                 orderNumber++;
             }

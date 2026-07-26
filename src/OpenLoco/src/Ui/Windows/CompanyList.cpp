@@ -1290,7 +1290,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     imageId = Gfx::recolour(imageId, company->mainColours.primary);
 
                     auto x = self.x + 4;
-                    drawingCtx.drawImage(x, y, imageId);
+                    drawingCtx.drawImage(ZoomLevel::full, x, y, imageId);
 
                     y += 7;
                     auto point = Point(self.x + 33, y);

@@ -948,24 +948,20 @@ namespace OpenLoco::Ui::Windows::Construction
                 auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(x, y, width, height));
                 if (clipped)
                 {
-                    clipped->zoomLevel = 1;
-                    clipped->width <<= 1;
-                    clipped->height <<= 1;
-                    clipped->x <<= 1;
-                    clipped->y <<= 1;
+                    const auto zoom = ZoomLevel{ ZoomLevel::half };
 
                     drawingCtx.pushRenderTarget(*clipped);
 
                     auto roadStationObj = ObjectManager::get<RoadStationObject>(cState.lastSelectedStationType);
                     auto imageId = Gfx::recolour(roadStationObj->image, companyColour);
-                    drawingCtx.drawImage(-4, -10, imageId);
+                    drawingCtx.drawImage(zoom, { -4, -10 }, ImageId::fromUInt32(imageId));
                     auto colour = Colours::getTranslucent(companyColour);
                     if (!roadStationObj->hasFlags(RoadStationFlags::recolourable))
                     {
                         colour = ExtColour::unk2E;
                     }
                     imageId = Gfx::recolourTranslucent(roadStationObj->image, colour) + 1;
-                    drawingCtx.drawImage(-4, -10, imageId);
+                    drawingCtx.drawImage(zoom, { -4, -10 }, ImageId::fromUInt32(imageId));
 
                     drawingCtx.popRenderTarget();
                 }
@@ -990,7 +986,7 @@ namespace OpenLoco::Ui::Windows::Construction
                         {
                             imageId += (self.frameNo / 2) % 8;
                         }
-                        drawingCtx.drawImage(x, y, imageId);
+                        drawingCtx.drawImage(ZoomLevel::full, x, y, imageId);
                     }
                 }
 
@@ -1077,17 +1073,13 @@ namespace OpenLoco::Ui::Windows::Construction
                 auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(x, y, width, height));
                 if (clipped)
                 {
-                    clipped->zoomLevel = 1;
-                    clipped->width *= 2;
-                    clipped->height *= 2;
-                    clipped->x *= 2;
-                    clipped->y *= 2;
+                    const auto zoom = ZoomLevel{ ZoomLevel::half };
 
                     drawingCtx.pushRenderTarget(*clipped);
 
                     auto trainStationObj = ObjectManager::get<TrainStationObject>(cState.lastSelectedStationType);
                     auto imageId = Gfx::recolour(trainStationObj->image + TrainStation::ImageIds::preview_image, companyColour);
-                    drawingCtx.drawImage(-4, -9, imageId);
+                    drawingCtx.drawImage(zoom, { -4, -9 }, ImageId::fromUInt32(imageId));
 
                     auto colour = Colours::getTranslucent(companyColour);
                     if (!trainStationObj->hasFlags(TrainStationFlags::recolourable))
@@ -1095,7 +1087,7 @@ namespace OpenLoco::Ui::Windows::Construction
                         colour = ExtColour::unk2E;
                     }
                     imageId = Gfx::recolourTranslucent(trainStationObj->image + TrainStation::ImageIds::preview_image_windows, colour);
-                    drawingCtx.drawImage(-4, -9, imageId);
+                    drawingCtx.drawImage(zoom, { -4, -9 }, ImageId::fromUInt32(imageId));
 
                     drawingCtx.popRenderTarget();
                 }
@@ -1133,7 +1125,7 @@ namespace OpenLoco::Ui::Windows::Construction
                         frameIndex <<= 3;
                         imageId += frameIndex;
                     }
-                    drawingCtx.drawImage(15, 31, imageId);
+                    drawingCtx.drawImage(ZoomLevel::full, 15, 31, imageId);
 
                     drawingCtx.popRenderTarget();
                 }
@@ -1157,7 +1149,7 @@ namespace OpenLoco::Ui::Windows::Construction
                         {
                             imageId += (self.frameNo / 2) % 8;
                         }
-                        drawingCtx.drawImage(x, y, imageId);
+                        drawingCtx.drawImage(ZoomLevel::full, x, y, imageId);
                     }
                 }
 

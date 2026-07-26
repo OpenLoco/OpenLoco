@@ -325,7 +325,7 @@ namespace OpenLoco::Ui::Dropdown
                         {
                             imageId++;
                         }
-                        drawingCtx.drawImage(x, y, imageId);
+                        drawingCtx.drawImage(ZoomLevel::full, x, y, imageId);
                     }
                 }
                 else

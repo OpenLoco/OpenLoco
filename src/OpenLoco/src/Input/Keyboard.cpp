@@ -488,8 +488,8 @@ namespace OpenLoco::Input
             return;
         }
 
-        delta.x *= 1 << viewport->zoom;
-        delta.y *= 1 << viewport->zoom;
+        delta.x = viewport->zoom.applyTo(delta.x);
+        delta.y = viewport->zoom.applyTo(delta.y);
         main->viewportConfigurations[0].savedViewX += delta.x;
         main->viewportConfigurations[0].savedViewY += delta.y;
         Input::setFlag(Flags::viewportScrolling);
@@ -556,8 +556,8 @@ namespace OpenLoco::Input
             return;
         }
 
-        delta.x *= 1 << viewport->zoom;
-        delta.y *= 1 << viewport->zoom;
+        delta.x = viewport->zoom.applyTo(delta.x);
+        delta.y = viewport->zoom.applyTo(delta.y);
         main->viewportConfigurations[0].savedViewX += delta.x;
         main->viewportConfigurations[0].savedViewY += delta.y;
         Input::setFlag(Flags::viewportScrolling);

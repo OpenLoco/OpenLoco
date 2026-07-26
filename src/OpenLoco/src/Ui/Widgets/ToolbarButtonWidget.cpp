@@ -35,6 +35,6 @@ namespace OpenLoco::Ui::Widgets
             imageId = imageId.withIndexOffset(1);
         }
 
-        drawingCtx.drawImage(pos, imageId);
+        drawingCtx.drawImage(ZoomLevel::full, pos, imageId);
     }
 }

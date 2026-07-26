@@ -231,7 +231,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 const uint32_t image = Gfx::recolour(competitor->images[enumValue(company->ownerEmotion)] + 1, company->mainColours.primary);
                 const uint16_t x = self.x + self.widgets[widx::face].left + 1;
                 const uint16_t y = self.y + self.widgets[widx::face].top + 1;
-                drawingCtx.drawImage(x, y, image);
+                drawingCtx.drawImage(ZoomLevel::full, x, y, image);
             }
 
             // If the owner's been naughty, draw some jail bars over them.
@@ -240,7 +240,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 const uint32_t image = ImageIds::owner_jailed;
                 const uint16_t x = self.x + self.widgets[widx::face].left + 1;
                 const uint16_t y = self.y + self.widgets[widx::face].top + 1;
-                drawingCtx.drawImage(x, y, image);
+                drawingCtx.drawImage(ZoomLevel::full, x, y, image);
             }
 
             // Draw owner name
@@ -427,8 +427,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 {
                     viewport->width = proposedDims.width;
                     viewport->height = proposedDims.height;
-                    viewport->viewWidth = proposedDims.width << viewport->zoom;
-                    viewport->viewHeight = proposedDims.height << viewport->zoom;
+                    viewport->viewWidth = viewport->zoom.applyTo(proposedDims.width);
+                    viewport->viewHeight = viewport->zoom.applyTo(proposedDims.height);
                     self.savedView.clear();
                 }
             }
@@ -2816,7 +2816,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             const uint32_t image = Gfx::recolour(competitor->images[enumValue(company->ownerEmotion)], company->mainColours.primary);
             const uint16_t x = self->x + self->widgets[Common::widx::company_select].left + 1;
             const uint16_t y = self->y + self->widgets[Common::widx::company_select].top + 1;
-            drawingCtx.drawImage(x, y, image);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, image);
         }
 
         // 0x00434413

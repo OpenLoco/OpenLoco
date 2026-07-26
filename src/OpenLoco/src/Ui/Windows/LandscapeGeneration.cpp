@@ -661,7 +661,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 // Draw tile icon.
                 const uint32_t imageId = landObject->mapPixelImage + OpenLoco::Land::ImageIds::landscape_generator_tile_icon;
-                drawingCtx.drawImage(2, yPos + 1, imageId);
+                drawingCtx.drawImage(ZoomLevel::full, 2, yPos + 1, imageId);
 
                 // Draw land description.
                 {

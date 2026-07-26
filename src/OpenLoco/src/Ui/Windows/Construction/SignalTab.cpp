@@ -348,14 +348,14 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         xPos = self.widgets[widx::both_directions].midX() + self.x;
         yPos = self.widgets[widx::both_directions].bottom + self.y - 4;
 
-        drawingCtx.drawImage(xPos - 8, yPos, imageId);
+        drawingCtx.drawImage(ZoomLevel::full, xPos - 8, yPos, imageId);
 
-        drawingCtx.drawImage(xPos + 8, yPos, imageId + 4);
+        drawingCtx.drawImage(ZoomLevel::full, xPos + 8, yPos, imageId + 4);
 
         xPos = self.widgets[widx::single_direction].midX() + self.x;
         yPos = self.widgets[widx::single_direction].bottom + self.y - 4;
 
-        drawingCtx.drawImage(xPos, yPos, imageId);
+        drawingCtx.drawImage(ZoomLevel::full, xPos, yPos, imageId);
 
         if (cState.signalCost != GameCommands::kFailure && cState.signalCost != 0)
         {

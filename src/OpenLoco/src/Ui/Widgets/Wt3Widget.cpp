@@ -53,7 +53,7 @@ namespace OpenLoco::Ui::Widgets
             imageId = imageId.withPrimary(colour.c());
         }
 
-        drawingCtx.drawImage(position, imageId);
+        drawingCtx.drawImage(ZoomLevel::full, position, imageId);
     }
 
     void Wt3Widget::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)

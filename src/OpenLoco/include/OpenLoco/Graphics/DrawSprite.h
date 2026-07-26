@@ -4,6 +4,7 @@
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Engine/Ui/Point.hpp>
 #include <OpenLoco/Engine/Ui/Size.hpp>
+#include <OpenLoco/ZoomLevel.hpp>
 
 namespace OpenLoco::Gfx
 {
@@ -70,4 +71,7 @@ namespace OpenLoco::Gfx
 
     template<uint8_t TZoomLevel, bool TIsRLE>
     void drawSpriteToBuffer(const RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op);
+
+    template<bool TIsRLE>
+    void drawSpriteToBufferMagnify(const RenderTarget& rt, ZoomLevel zoom, const DrawSpriteArgs& args, const DrawBlendOp op);
 }

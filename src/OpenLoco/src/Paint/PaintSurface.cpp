@@ -1489,7 +1489,7 @@ namespace OpenLoco::Paint
     void paintSurface(PaintSession& session, World::SurfaceElement& elSurface)
     {
         session.setItemType(Ui::ViewportInteraction::InteractionItem::surface);
-        const auto zoomLevel = session.getRenderTarget()->zoomLevel;
+        const auto zoomLevel = session.getZoom();
         session.setDidPassSurface(true);
 
         // 0x00F252B0 / 0x00F252B4 but if 0x00F252B0 == -2 that means industrial
@@ -1530,7 +1530,7 @@ namespace OpenLoco::Paint
         };
 
         if (((session.getViewFlags() & Ui::ViewportFlags::height_marks_on_land) != Ui::ViewportFlags::none)
-            && zoomLevel == 0)
+            && zoomLevel <= ZoomLevel::full)
         {
             const auto markerPos = session.getUnkPosition() + World::Pos2(16, 16);
             const auto markerHeight = World::TileManager::getHeight(markerPos).landHeight + 3;
@@ -1572,7 +1572,7 @@ namespace OpenLoco::Paint
 
             session.setItemType(Ui::ViewportInteraction::InteractionItem::surface);
 
-            if ((zoomLevel == 0 && industryObj->hasFlags(IndustryObjectFlags::farmTilesDrawAboveSnow))
+            if ((zoomLevel <= ZoomLevel::full && industryObj->hasFlags(IndustryObjectFlags::farmTilesDrawAboveSnow))
                 || elSurface.snowCoverage() == 0)
             {
                 // Draw main surface image
@@ -1626,7 +1626,7 @@ namespace OpenLoco::Paint
                 const auto imageIndex = [&elSurface, zoomLevel, displaySlope, &landObj, variation]() {
                     if (!elSurface.water()
                         && elSurface.variation() != 0
-                        && zoomLevel == 0
+                        && zoomLevel <= ZoomLevel::full
                         && displaySlope == 0
                         && (landObj->numGrowthStages - 1) == elSurface.getGrowthStage())
                     {
@@ -1715,7 +1715,7 @@ namespace OpenLoco::Paint
             }
         }
 
-        if (zoomLevel == 0
+        if (zoomLevel <= ZoomLevel::full
             && (session.getViewFlags() & (Ui::ViewportFlags::underground_view | Ui::ViewportFlags::flag_7)) == Ui::ViewportFlags::none
             && Config::get().landscapeSmoothing)
         {
@@ -1736,7 +1736,7 @@ namespace OpenLoco::Paint
                 const auto variation = industryObj->numImagesPerFieldGrowthStage * elSurface.getGrowthStage() + ((industryObj->farmTileNumImageAngles - 1) & rotation) * 21;
                 const auto imageIndex = industryObj->fieldImageIds + variation + displaySlope;
 
-                if ((zoomLevel == 0 && industryObj->hasFlags(IndustryObjectFlags::farmTilesDrawAboveSnow))
+                if ((zoomLevel <= ZoomLevel::full && industryObj->hasFlags(IndustryObjectFlags::farmTilesDrawAboveSnow))
                     || selfDescriptor.snowCoverage == 0)
                 {
                     paintMainUndergroundSurface(session, imageIndex, displaySlope);
@@ -1828,7 +1828,7 @@ namespace OpenLoco::Paint
             session.attachToPrevious(attachedImage, { 0, 0 });
 
             // Draw waves
-            if (elSurface.isFlag6() && zoomLevel == 0)
+            if (elSurface.isFlag6() && zoomLevel <= ZoomLevel::full)
             {
                 const auto waveIndex = WaveManager::getWaveIndex(toTileSpace(session.getUnkPosition()));
                 const auto& wave = WaveManager::getWave(waveIndex);

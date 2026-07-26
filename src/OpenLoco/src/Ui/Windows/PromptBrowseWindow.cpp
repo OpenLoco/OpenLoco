@@ -526,7 +526,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             g1->offset = (uint8_t*)saveInfo.image;
             g1->width = 250;
             g1->height = 200;
-            drawingCtx.drawImage(x + 1, y + 1, imageId);
+            drawingCtx.drawImage(ZoomLevel::full, x + 1, y + 1, imageId);
             *g1 = backupg1;
         }
         y += 207;
@@ -596,17 +596,17 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 g1->offset = &_previewScenarioOptions->preview[0][0];
                 g1->width = 128;
                 g1->height = 128;
-                drawingCtx.drawImage(x + 1, y + 1, imageId);
+                drawingCtx.drawImage(ZoomLevel::full, x + 1, y + 1, imageId);
                 *g1 = backupg1;
 
-                drawingCtx.drawImage(x, y + 1, ImageIds::height_map_compass);
+                drawingCtx.drawImage(ZoomLevel::full, x, y + 1, ImageIds::height_map_compass);
             }
         }
         else
         {
             // Randomly generated landscape
             auto imageId = Gfx::recolour(ImageIds::random_map_watermark, window.getColour(WindowColour::secondary).c());
-            drawingCtx.drawImage(x, y, imageId);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, imageId);
             auto origin = Ui::Point(x + 64, y + 60);
             tr.drawStringCentredWrapped(origin, 128, Colour::black, StringIds::randomly_generated_landscape);
         }
@@ -688,7 +688,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             auto x = 1;
             if (isRootPath(entry) || fs::is_directory(entry))
             {
-                drawingCtx.drawImage(x, y, ImageIds::icon_folder);
+                drawingCtx.drawImage(ZoomLevel::full, x, y, ImageIds::icon_folder);
                 x += 14;
             }
 

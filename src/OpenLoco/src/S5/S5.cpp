@@ -419,7 +419,7 @@ namespace OpenLoco::S5
         dst = *exportGameState(src);
         dst.general.savedViewX = savedView.viewX;
         dst.general.savedViewY = savedView.viewY;
-        dst.general.savedViewZoom = static_cast<uint8_t>(savedView.zoomLevel);
+        dst.general.savedViewZoom = static_cast<uint8_t>(static_cast<int8_t>(savedView.zoomLevel));
         dst.general.savedViewRotation = savedView.rotation;
 
         // Copy tile elements; remove any ghosts before saving
@@ -963,7 +963,7 @@ namespace OpenLoco::S5
                 SavedViewSimple savedView;
                 savedView.viewX = file->gameState.general.savedViewX;
                 savedView.viewY = file->gameState.general.savedViewY;
-                savedView.zoomLevel = static_cast<ZoomLevel>(file->gameState.general.savedViewZoom);
+                savedView.zoomLevel = ZoomLevel{ std::clamp<int8_t>(file->gameState.general.savedViewZoom, ZoomLevel::min, ZoomLevel::max) };
                 savedView.rotation = file->gameState.general.savedViewRotation;
                 mainWindow->viewportFromSavedView(savedView);
                 mainWindow->invalidate();

@@ -79,9 +79,9 @@ namespace OpenLoco::Ui::ViewportManager
         vp->width = size.width;
         vp->height = size.height;
 
-        vp->viewWidth = size.width << static_cast<uint8_t>(zoom);
-        vp->viewHeight = size.height << static_cast<uint8_t>(zoom);
-        vp->zoom = static_cast<uint8_t>(zoom);
+        vp->viewWidth = zoom.applyTo(size.width);
+        vp->viewHeight = zoom.applyTo(size.height);
+        vp->zoom = zoom;
         vp->flags = ViewportFlags::none;
 
         if (Config::get().gridlinesOnLandscape)
@@ -193,7 +193,7 @@ namespace OpenLoco::Ui::ViewportManager
             }
 
             // Skip if zoomed out further than zoom argument
-            if (viewport.zoom > (uint8_t)zoom)
+            if (viewport.zoom > zoom)
             {
                 continue;
             }
@@ -212,10 +212,10 @@ namespace OpenLoco::Ui::ViewportManager
             int16_t bottom = intersection.bottom - viewport.viewY;
 
             // apply zoom
-            left = left >> viewport.zoom;
-            right = right >> viewport.zoom;
-            top = top >> viewport.zoom;
-            bottom = bottom >> viewport.zoom;
+            left = viewport.zoom.applyInversedTo(left);
+            right = viewport.zoom.applyInversedTo(right);
+            top = viewport.zoom.applyInversedTo(top);
+            bottom = viewport.zoom.applyInversedTo(bottom);
 
             // offset calculated area by viewport offset
             left += viewport.x;
@@ -239,15 +239,11 @@ namespace OpenLoco::Ui::ViewportManager
             }
 
             ViewportRect rect;
-            rect.left = station->labelFrame.left[viewport.zoom];
-            rect.top = station->labelFrame.top[viewport.zoom];
-            rect.right = station->labelFrame.right[viewport.zoom] + 1;
-            rect.bottom = station->labelFrame.bottom[viewport.zoom] + 1;
-
-            rect.left <<= viewport.zoom;
-            rect.top <<= viewport.zoom;
-            rect.right <<= viewport.zoom;
-            rect.bottom <<= viewport.zoom;
+            const auto labelIndex = viewport.zoom.index();
+            rect.left = viewport.zoom.applyTo<int32_t>(station->labelFrame.left[labelIndex]);
+            rect.top = viewport.zoom.applyTo<int32_t>(station->labelFrame.top[labelIndex]);
+            rect.right = viewport.zoom.applyTo<int32_t>(station->labelFrame.right[labelIndex] + 1);
+            rect.bottom = viewport.zoom.applyTo<int32_t>(station->labelFrame.bottom[labelIndex] + 1);
 
             if (!viewport.intersects(rect))
             {
@@ -263,10 +259,10 @@ namespace OpenLoco::Ui::ViewportManager
             int16_t bottom = intersection.bottom - viewport.viewY;
 
             // apply zoom
-            left = left >> viewport.zoom;
-            right = right >> viewport.zoom;
-            top = top >> viewport.zoom;
-            bottom = bottom >> viewport.zoom;
+            left = viewport.zoom.applyInversedTo(left);
+            right = viewport.zoom.applyInversedTo(right);
+            top = viewport.zoom.applyInversedTo(top);
+            bottom = viewport.zoom.applyInversedTo(bottom);
 
             // offset calculated area by viewport offset
             left += viewport.x;
@@ -300,7 +296,7 @@ namespace OpenLoco::Ui::ViewportManager
         rect.right = t->spriteRight;
         rect.bottom = t->spriteBottom;
 
-        auto level = static_cast<ZoomLevel>(std::min<uint8_t>(Config::get().vehiclesMinScale, zoom));
+        auto level = ZoomLevel{ std::min<int8_t>(Config::get().vehiclesMinScale, static_cast<int8_t>(zoom)) };
         invalidate(rect, level);
     }
 

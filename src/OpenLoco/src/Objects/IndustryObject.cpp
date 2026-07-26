@@ -112,7 +112,7 @@ namespace OpenLoco
         for (const auto part : getBuildingParts(0))
         {
             auto image = baseImage.withIndexOffset(part * 4 + 1);
-            drawingCtx.drawImage(pos, image);
+            drawingCtx.drawImage(ZoomLevel::full, pos, image);
             pos.y -= partHeights[part];
         }
     }

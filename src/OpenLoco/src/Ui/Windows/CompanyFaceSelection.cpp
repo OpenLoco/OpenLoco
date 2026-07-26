@@ -275,7 +275,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 
             const CompetitorObject* competitor = reinterpret_cast<CompetitorObject*>(ObjectManager::getTemporaryObject());
             uint32_t img = Gfx::recolour(competitor->images[0] + 1, Colour::black);
-            drawingCtx.drawImage(l, t, img);
+            drawingCtx.drawImage(ZoomLevel::full, l, t, img);
         }
 
         {

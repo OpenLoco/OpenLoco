@@ -27,7 +27,7 @@ namespace OpenLoco::Ui::Widgets
         const auto resizeBarPos = pos + Ui::Point(size.width - kResizeHandleSize, size.height - kResizeHandleSize);
 
         uint32_t image = Gfx::recolour(ImageIds::window_resize_handle, colour.c());
-        drawingCtx.drawImage(resizeBarPos, image);
+        drawingCtx.drawImage(ZoomLevel::full, resizeBarPos, image);
     }
 
     // 0x004CAAB9
@@ -100,7 +100,7 @@ namespace OpenLoco::Ui::Widgets
             // NB: starting on the right side to counter the border on the left side of the sprite
             for (auto i = numPassesNeeded; i >= 0; i--)
             {
-                drawingCtx.drawImage(i * (backgroundImageWidth - 1), 0, imageId);
+                drawingCtx.drawImage(ZoomLevel::full, i * (backgroundImageWidth - 1), 0, imageId);
             }
 
             drawingCtx.popRenderTarget();

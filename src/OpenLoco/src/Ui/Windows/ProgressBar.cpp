@@ -113,7 +113,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
         drawingCtx.pushRenderTarget(*clipped);
 
         // First, draw the train track.
-        drawingCtx.drawImage(0, 0, ImageIds::progressbar_track);
+        drawingCtx.drawImage(ZoomLevel::full, 0, 0, ImageIds::progressbar_track);
 
         // What train image to use depends on the progress bar style.
         uint32_t trainImage;
@@ -144,7 +144,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
 
         // Draw the train image from the right of the window,
         int16_t xPos = _progressBarValue - 255;
-        drawingCtx.drawImage(xPos, 0, trainImage);
+        drawingCtx.drawImage(ZoomLevel::full, xPos, 0, trainImage);
 
         drawingCtx.popRenderTarget();
     }

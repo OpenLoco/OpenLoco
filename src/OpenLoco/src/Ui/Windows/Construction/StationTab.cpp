@@ -1205,20 +1205,20 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         {
             auto airportObj = ObjectManager::get<AirportObject>(cState.lastSelectedStationType);
             auto imageId = Gfx::recolour(airportObj->image, companyColour);
-            drawingCtx.drawImage(xPos, yPos, imageId);
+            drawingCtx.drawImage(ZoomLevel::full, xPos, yPos, imageId);
         }
         else if (cState.byte_1136063 & (1 << 6))
         {
             auto dockObj = ObjectManager::get<DockObject>(cState.lastSelectedStationType);
             auto imageId = Gfx::recolour(dockObj->image, companyColour);
-            drawingCtx.drawImage(xPos, yPos, imageId);
+            drawingCtx.drawImage(ZoomLevel::full, xPos, yPos, imageId);
         }
         else if (cState.trackType & (1 << 7))
         {
             auto roadStationObj = ObjectManager::get<RoadStationObject>(cState.lastSelectedStationType);
 
             auto imageId = Gfx::recolour(roadStationObj->image + RoadStation::ImageIds::preview_image, companyColour);
-            drawingCtx.drawImage(xPos, yPos, imageId);
+            drawingCtx.drawImage(ZoomLevel::full, xPos, yPos, imageId);
 
             auto colour = Colours::getTranslucent(companyColour);
             if (!roadStationObj->hasFlags(RoadStationFlags::recolourable))
@@ -1227,14 +1227,14 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             }
 
             imageId = Gfx::recolourTranslucent(roadStationObj->image + RoadStation::ImageIds::preview_image_windows, colour);
-            drawingCtx.drawImage(xPos, yPos, imageId);
+            drawingCtx.drawImage(ZoomLevel::full, xPos, yPos, imageId);
         }
         else
         {
             auto trainStationObj = ObjectManager::get<TrainStationObject>(cState.lastSelectedStationType);
 
             auto imageId = Gfx::recolour(trainStationObj->image + TrainStation::ImageIds::preview_image, companyColour);
-            drawingCtx.drawImage(xPos, yPos, imageId);
+            drawingCtx.drawImage(ZoomLevel::full, xPos, yPos, imageId);
 
             auto colour = Colours::getTranslucent(companyColour);
             if (!trainStationObj->hasFlags(TrainStationFlags::recolourable))
@@ -1243,7 +1243,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             }
 
             imageId = Gfx::recolourTranslucent(trainStationObj->image + TrainStation::ImageIds::preview_image_windows, colour);
-            drawingCtx.drawImage(xPos, yPos, imageId);
+            drawingCtx.drawImage(ZoomLevel::full, xPos, yPos, imageId);
         }
 
         if (cState.stationCost != GameCommands::kFailure && cState.stationCost != 0)
@@ -1310,7 +1310,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 }
 
                 auto* cargoObj = ObjectManager::get<CargoObject>(i);
-                drawingCtx.drawImage(origin.x, origin.y, cargoObj->unitInlineSprite);
+                drawingCtx.drawImage(ZoomLevel::full, origin.x, origin.y, cargoObj->unitInlineSprite);
 
                 FormatArguments args{};
                 args.push(cargoObj->name);

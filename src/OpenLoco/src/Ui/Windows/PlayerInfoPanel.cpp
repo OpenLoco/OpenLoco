@@ -196,7 +196,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         auto playerCompany = CompanyManager::get(CompanyManager::getControllingId());
         auto competitor = ObjectManager::get<CompetitorObject>(playerCompany->competitorId);
         auto image = Gfx::recolour(competitor->images[enumValue(playerCompany->ownerEmotion)], playerCompany->mainColours.primary);
-        drawingCtx.drawImage(window.x + frame.left + 2, window.y + frame.top + 2, image);
+        drawingCtx.drawImage(ZoomLevel::full, window.x + frame.left + 2, window.y + frame.top + 2, image);
 
         auto x = window.x + frame.width() / 2 + 12;
         {

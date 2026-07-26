@@ -330,7 +330,7 @@ namespace OpenLoco::Ui
         void viewportSetUndergroundFlag(bool underground, Ui::Viewport* vp);
         void moveWindowToLocation(viewport_pos pos);
         void viewportCentreOnTile(const World::Pos3& loc);
-        void viewportZoomSet(int8_t zoomLevel, bool toCursor);
+        void viewportZoomSet(ZoomLevel zoomLevel, bool toCursor);
         void viewportZoomIn(bool toCursor);
         void viewportZoomOut(bool toCursor);
         void viewportRotateRight();
@@ -380,7 +380,7 @@ namespace OpenLoco::Ui
         WidgetIndex_t nextAvailableWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex);
     };
 
-    World::Pos2 viewportCoordToMapCoord(int16_t x, int16_t y, int16_t z, int32_t rotation);
+    World::Pos2 viewportCoordToMapCoord(int32_t x, int32_t y, int32_t z, int32_t rotation);
     std::optional<World::Pos2> screenGetMapXyWithZ(const Point& mouse, const int16_t z);
     void listWindowOnHandleInputBegin(Window& window);
     void listWindowOnHandleInputEnd(Window& window);

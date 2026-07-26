@@ -420,7 +420,8 @@ namespace OpenLoco::Audio
                     zVol = 8;
                 }
             }
-            volume = ((-1024 * viewport.zoom - 1) << zVol) + 1;
+            const auto zoomAttenuation = std::max<int8_t>(static_cast<int8_t>(viewport.zoom), ZoomLevel::full);
+            volume = ((-1024 * zoomAttenuation - 1) << zVol) + 1;
         }
         return volume;
     }

@@ -84,10 +84,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
                 bgImage++;
             }
 
-            drawingCtx.drawImage(x, y, fgImage);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, fgImage);
 
             y = self.widgets[Widx::road_menu].top + self.y;
-            drawingCtx.drawImage(x, y, bgImage);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, bgImage);
         }
     }
 
@@ -113,19 +113,19 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         Dropdown::setHighlightedItem(0);
 
         auto mainWindow = WindowManager::getMainWindow();
-        if (mainWindow->viewports[0]->zoom == 0)
+        if (mainWindow->viewports[0]->zoom == ZoomLevel::min)
         {
             Dropdown::setItemDisabled(0);
             Dropdown::setHighlightedItem(1);
         }
 
-        if (mainWindow->viewports[0]->zoom == 3)
+        if (mainWindow->viewports[0]->zoom == ZoomLevel::max)
         {
             Dropdown::setItemDisabled(1);
             _zoomTicks = 1000;
         }
 
-        if (mainWindow->viewports[0]->zoom != 3 && _zoomTicks <= 32)
+        if (mainWindow->viewports[0]->zoom != ZoomLevel::max && _zoomTicks <= 32)
         {
             Dropdown::setHighlightedItem(1);
         }

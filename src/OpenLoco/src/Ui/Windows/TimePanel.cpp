@@ -186,7 +186,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         }
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        drawingCtx.drawImage(self.x + _widgets[Widx::map_chat_menu].left - 2, self.y + _widgets[Widx::map_chat_menu].top - 1, skin->img + map_sprites_by_rotation[WindowManager::getCurrentRotation()]);
+        drawingCtx.drawImage(ZoomLevel::full, self.x + _widgets[Widx::map_chat_menu].left - 2, self.y + _widgets[Widx::map_chat_menu].top - 1, skin->img + map_sprites_by_rotation[WindowManager::getCurrentRotation()]);
     }
 
     // 0x004398FB

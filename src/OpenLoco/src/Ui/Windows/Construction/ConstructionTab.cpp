@@ -2973,7 +2973,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         options.rotation = WindowManager::getCurrentRotation();
         options.skipTrackRoadSurfaces = (flags & TrackRoadPreviewFlags::skipTrackRoadSurfaces) != TrackRoadPreviewFlags::none;
 
-        auto session = Paint::PaintSession(drawingCtx.currentRenderTarget(), options);
+        auto session = Paint::PaintSession(drawingCtx.currentRenderTarget(), ZoomLevel::full, options);
 
         for (const auto& trackPiece : trackPieces)
         {
@@ -3072,7 +3072,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         options.rotation = WindowManager::getCurrentRotation();
         options.skipTrackRoadSurfaces = (flags & TrackRoadPreviewFlags::skipTrackRoadSurfaces) != TrackRoadPreviewFlags::none;
 
-        auto session = Paint::PaintSession(drawingCtx.currentRenderTarget(), options);
+        auto session = Paint::PaintSession(drawingCtx.currentRenderTarget(), ZoomLevel::full, options);
 
         for (const auto& roadPiece : roadPieces)
         {
@@ -3250,7 +3250,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                     auto x = self.x + self.widgets[widx::bridge].left + 2;
                     auto y = self.y + self.widgets[widx::bridge].top + 1;
 
-                    drawingCtx.drawImage(x, y, imageId);
+                    drawingCtx.drawImage(ZoomLevel::full, x, y, imageId);
                 }
             }
         }

@@ -20,7 +20,7 @@ namespace OpenLoco
         drawingCtx.drawRect(0, 0, kObjectPreviewSize.width, kObjectPreviewSize.height, Colours::getShade(Colour::mutedSeaGreen, 1), Gfx::RectFlags::none);
 
         auto image = Gfx::recolour(images[0] + 1, Colour::mutedSeaGreen);
-        drawingCtx.drawImage(x - 32, y - 32, image);
+        drawingCtx.drawImage(ZoomLevel::full, x - 32, y - 32, image);
     }
 
     // 0x00434DA7

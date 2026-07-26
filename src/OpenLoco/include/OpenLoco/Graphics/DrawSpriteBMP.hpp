@@ -7,6 +7,44 @@
 
 namespace OpenLoco::Gfx
 {
+    template<DrawBlendOp TBlendOp>
+    inline void drawBMPSpriteMagnify(const RenderTarget& rt, ZoomLevel zoom, const DrawSpriteArgs& args)
+    {
+        const auto& g1 = args.sourceImage;
+        const auto& paletteMap = args.palMap;
+        const int32_t width = args.size.width;
+        const int32_t height = args.size.height;
+        const size_t srcLineWidth = g1.width;
+        const size_t dstLineWidth = static_cast<size_t>(rt.width) + rt.pitch;
+        auto* dst = rt.bits + dstLineWidth * args.dstPos.y + args.dstPos.x;
+
+        for (int32_t y = 0; y < height; y++)
+        {
+            auto* nextDst = dst + dstLineWidth;
+            const auto srcY = zoom.applyTo(args.srcPos.y + y);
+            const auto* srcLine = g1.offset + srcLineWidth * srcY;
+
+            if constexpr ((TBlendOp & DrawBlendOp::noiseMask) != DrawBlendOp::none)
+            {
+                const auto* noiseLine = args.noiseImage->offset + srcLineWidth * srcY;
+                for (int32_t x = 0; x < width; x++, dst++)
+                {
+                    const auto srcX = zoom.applyTo(args.srcPos.x + x);
+                    blitPixel<TBlendOp>(srcLine[srcX], *dst, paletteMap, noiseLine[srcX]);
+                }
+            }
+            else
+            {
+                for (int32_t x = 0; x < width; x++, dst++)
+                {
+                    const auto srcX = zoom.applyTo(args.srcPos.x + x);
+                    blitPixel<TBlendOp>(srcLine[srcX], *dst, paletteMap, 0xFF);
+                }
+            }
+            dst = nextDst;
+        }
+    }
+
     template<DrawBlendOp TBlendOp, uint8_t TZoomLevel>
     inline void drawBMPSprite(const RenderTarget& rt, const DrawSpriteArgs& args)
     {
@@ -16,7 +54,7 @@ namespace OpenLoco::Gfx
         const int32_t width = args.size.width;
         int32_t height = args.size.height;
         const size_t srcLineWidth = g1.width << TZoomLevel;
-        const size_t dstLineWidth = (static_cast<size_t>(rt.width) >> TZoomLevel) + rt.pitch;
+        const size_t dstLineWidth = static_cast<size_t>(rt.width) + rt.pitch;
         auto* dst = rt.bits;
         // Move the pointer to the start point of the destination
         dst += dstLineWidth * args.dstPos.y + args.dstPos.x;

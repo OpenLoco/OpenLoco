@@ -216,8 +216,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
                 image_id = kGlobeSpin[((window.var_846 / 2) % kGlobeSpin.size())];
             }
 
-            drawingCtx.drawImage(x, y, image_id);
-            drawingCtx.drawImage(x, y, ImageIds::title_menu_sparkle);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, image_id);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, ImageIds::title_menu_sparkle);
         }
 
         if (!window.widgets[Widx::load_game_btn].hidden)
@@ -231,8 +231,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
                 image_id = kGlobeSpin[((window.var_846 / 2) % kGlobeSpin.size())];
             }
 
-            drawingCtx.drawImage(x, y, image_id);
-            drawingCtx.drawImage(x, y, ImageIds::title_menu_save);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, image_id);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, ImageIds::title_menu_save);
         }
 
         if (!window.widgets[Widx::tutorial_btn].hidden)
@@ -246,10 +246,10 @@ namespace OpenLoco::Ui::Windows::TitleMenu
                 image_id = kGlobeSpin[((window.var_846 / 2) % kGlobeSpin.size())];
             }
 
-            drawingCtx.drawImage(x, y, image_id);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, image_id);
 
             // TODO: base lesson overlay on language
-            drawingCtx.drawImage(x, y, ImageIds::title_menu_lesson_l);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, ImageIds::title_menu_lesson_l);
         }
 
         if (!window.widgets[Widx::scenario_editor_btn].hidden)
@@ -263,7 +263,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
                 image_id = kGlobeConstruct[((window.var_846 / 2) % kGlobeConstruct.size())];
             }
 
-            drawingCtx.drawImage(x, y, image_id);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, image_id);
         }
 
         if (!window.widgets[Widx::multiplayer_toggle_btn].hidden)

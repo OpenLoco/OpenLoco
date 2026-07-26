@@ -77,16 +77,19 @@ namespace OpenLoco
     }
 
     // 0x004FF6F4
-    static constexpr std::array<Gfx::Font, 4> kZoomToTownFonts = {
+    static constexpr std::array<Gfx::Font, ZoomLevel::count> kZoomToTownFonts = {
+        Gfx::Font::medium_bold,
+        Gfx::Font::medium_bold,
         Gfx::Font::medium_bold,
         Gfx::Font::medium_bold,
         Gfx::Font::medium_normal,
         Gfx::Font::medium_normal,
     };
 
-    void Town::drawLabel(Gfx::DrawingContext& drawingCtx, const Gfx::RenderTarget& rt)
+    void Town::drawLabel(Gfx::DrawingContext& drawingCtx, ZoomLevel zoom)
     {
-        if (!labelFrame.contains(rt.getDrawableRect(), rt.zoomLevel))
+        const auto& rt = drawingCtx.currentRenderTarget();
+        if (!labelFrame.contains(rt.getUiRect(), zoom))
         {
             return;
         }
@@ -95,9 +98,9 @@ namespace OpenLoco
 
         char buffer[512]{};
         StringManager::formatString(buffer, name);
-        tr.setCurrentFont(kZoomToTownFonts[rt.zoomLevel]);
+        tr.setCurrentFont(kZoomToTownFonts[zoom.index()]);
 
-        auto point = Ui::Point(labelFrame.left[rt.zoomLevel] + 1, labelFrame.top[rt.zoomLevel] + 1);
+        auto point = Ui::Point(labelFrame.left[zoom.index()] + 1, labelFrame.top[zoom.index()] + 1);
         tr.drawString(point, AdvancedColour(Colour::white).outline(), buffer);
     }
 
@@ -113,20 +116,25 @@ namespace OpenLoco
         auto rotated = World::gameToScreen(pos, Ui::WindowManager::getCurrentRotation());
         rotated.y -= 48;
 
-        for (auto zoomLevel = 0; zoomLevel < 4; zoomLevel++)
+        for (auto level = ZoomLevel::min; level <= ZoomLevel::max; level++)
         {
-            auto font = kZoomToTownFonts[zoomLevel];
+            const auto zoom = ZoomLevel{ level };
+            const auto index = zoom.index();
+            auto font = kZoomToTownFonts[index];
 
-            auto nameWidth = (Gfx::TextRenderer::getStringWidth(font, buffer) + 2) << zoomLevel;
-            auto nameHeight = 11 << zoomLevel; // was a lookup on 0x4FF6FC; same for all zoom levels
+            const auto uiWidth = Gfx::TextRenderer::getStringWidth(font, buffer) + 2;
+            const auto uiHeight = 11; // was a lookup on 0x4FF6FC; same for all zoom levels
+
+            auto nameWidth = zoom.applyTo(uiWidth);
+            auto nameHeight = zoom.applyTo(uiHeight);
 
             auto xOffset = rotated.x - (nameWidth / 2);
             auto yOffset = rotated.y - (nameHeight / 2);
 
-            labelFrame.left[zoomLevel] = xOffset >> zoomLevel;
-            labelFrame.right[zoomLevel] = (xOffset + nameWidth) >> zoomLevel;
-            labelFrame.top[zoomLevel] = yOffset >> zoomLevel;
-            labelFrame.bottom[zoomLevel] = (yOffset + nameHeight) >> zoomLevel;
+            labelFrame.left[index] = zoom.applyInversedTo(xOffset);
+            labelFrame.right[index] = labelFrame.left[index] + uiWidth;
+            labelFrame.top[index] = zoom.applyInversedTo(yOffset);
+            labelFrame.bottom[index] = labelFrame.top[index] + uiHeight;
         }
     }
 

@@ -3,6 +3,7 @@
 #include "Graphics/Gfx.h"
 #include "Location.hpp"
 #include "Types.hpp"
+#include "ZoomLevel.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Engine/World.hpp>
 #include <algorithm>
@@ -88,7 +89,7 @@ namespace OpenLoco::Ui
         int32_t viewY;       // 0x0A
         int32_t viewWidth;   // 0x0C
         int32_t viewHeight;  // 0x0E
-        uint8_t zoom;        // 0x10
+        ZoomLevel zoom;      // 0x10
         uint8_t pad_11;      // 0x11
         ViewportFlags flags; // 0x12
 
@@ -212,7 +213,7 @@ namespace OpenLoco::Ui
 
         [[nodiscard]] constexpr Point scaleTransform(const Point& uiPoint, const Viewport& vp)
         {
-            return uiPoint << vp.zoom;
+            return Point{ vp.zoom.applyTo(uiPoint.x), vp.zoom.applyTo(uiPoint.y) };
         }
 
         [[nodiscard]] constexpr Point viewOffsetTransform(const Point& point, const Viewport& vp)
@@ -235,7 +236,7 @@ namespace OpenLoco::Ui
 
         [[nodiscard]] constexpr Point scaleTransform(const Point& uiPoint, const Viewport& vp)
         {
-            return uiPoint >> vp.zoom;
+            return Point{ vp.zoom.applyInversedTo(uiPoint.x), vp.zoom.applyInversedTo(uiPoint.y) };
         }
 
         [[nodiscard]] constexpr Point viewOffsetTransform(const Point& point, const Viewport& vp)

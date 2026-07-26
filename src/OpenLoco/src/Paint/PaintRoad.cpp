@@ -341,7 +341,7 @@ namespace OpenLoco::Paint
                 session.setMergeRoadBaseImage(roadSession.roadBaseImageId.withIndexOffset(kMergeBaseImageIndex[enumValue(rpp.isMultiTileMerge[rotation]) - 1]).toUInt32());
                 session.setMergeRoadHeight(height);
             }
-            if (session.getRenderTarget()->zoomLevel == 0 && !elRoad.hasLevelCrossing() && !elRoad.hasSignalElement() && !elRoad.hasStationElement() && elRoad.streetLightStyle() != 0)
+            if (session.getZoom() <= ZoomLevel::full && !elRoad.hasLevelCrossing() && !elRoad.hasSignalElement() && !elRoad.hasStationElement() && elRoad.streetLightStyle() != 0)
             {
                 session.setMergeRoadStreetlight(elRoad.streetLightStyle());
             }
@@ -362,7 +362,7 @@ namespace OpenLoco::Paint
                 rpcp.boundingBoxOffsets[rotation] + heightOffset,
                 rpcp.boundingBoxSizes[rotation]);
 
-            if (session.getRenderTarget()->zoomLevel == 0 && !elRoad.hasLevelCrossing() && !elRoad.hasSignalElement() && !elRoad.hasStationElement() && elRoad.streetLightStyle() != 0)
+            if (session.getZoom() <= ZoomLevel::full && !elRoad.hasLevelCrossing() && !elRoad.hasSignalElement() && !elRoad.hasStationElement() && elRoad.streetLightStyle() != 0)
             {
                 paintRoadStreetlights(session, elRoad, rpp.streetlightHeights[rotation]);
             }
@@ -453,7 +453,7 @@ namespace OpenLoco::Paint
         const auto height = elRoad.baseHeight();
         const auto rotation = (session.getRotation() + elRoad.rotation()) & 0x3;
         if (((session.getViewFlags() & Ui::ViewportFlags::height_marks_on_tracks_roads) != Ui::ViewportFlags::none)
-            && session.getRenderTarget()->zoomLevel == 0)
+            && session.getZoom() <= ZoomLevel::full)
         {
             const bool isLast = elRoad.isFlag6();
             const bool isFirstTile = elRoad.sequenceIndex() == 0;
@@ -471,7 +471,7 @@ namespace OpenLoco::Paint
 
         auto* roadObj = ObjectManager::get<RoadObject>(elRoad.roadObjectId());
         if (((session.getViewFlags() & Ui::ViewportFlags::one_way_direction_arrows) != Ui::ViewportFlags::none)
-            && session.getRenderTarget()->zoomLevel == 0
+            && session.getZoom() <= ZoomLevel::full
             && !elRoad.isGhost()
             && roadObj->hasFlags(RoadObjectFlags::isOneWay))
         {
@@ -541,7 +541,7 @@ namespace OpenLoco::Paint
             }
         }
 
-        if (session.getRenderTarget()->zoomLevel > 1)
+        if (session.getZoom() > 1)
         {
             return;
         }
@@ -551,7 +551,7 @@ namespace OpenLoco::Paint
             paintLevelCrossing(session, baseRoadImageColour, elRoad, rotation);
         }
 
-        if (session.getRenderTarget()->zoomLevel > 0 || roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
+        if (session.getZoom() > 0 || roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
         {
             return;
         }

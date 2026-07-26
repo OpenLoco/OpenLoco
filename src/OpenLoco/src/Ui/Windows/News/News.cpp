@@ -477,7 +477,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             {
                 const auto itemSubject = news->itemSubjects[i];
                 const auto& viewWidget = self->widgets[Common::widx::viewport1 + i];
-                const SubjectType subjectType = SubjectType((uint8_t)_nState.savedView[i].zoomLevel);
+                const SubjectType subjectType = SubjectType(static_cast<uint8_t>(static_cast<int8_t>(_nState.savedView[i].zoomLevel)));
 
                 if (subjectType == SubjectType::companyFace && itemSubject != 0xFFFFU)
                 {
@@ -488,11 +488,11 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     const ImageId imageId(imageIndexBase + 1, company->mainColours.primary);
                     const auto x = self->x + viewWidget.midX() - 31;
                     const auto y = self->y + viewWidget.midY() - 31;
-                    drawingCtx.drawImage(Ui::Point(x, y), imageId);
+                    drawingCtx.drawImage(ZoomLevel::full, Ui::Point(x, y), imageId);
 
                     if (company->jailStatus != 0)
                     {
-                        drawingCtx.drawImage(Ui::Point(x, y), ImageId(ImageIds::owner_jailed));
+                        drawingCtx.drawImage(ZoomLevel::full, Ui::Point(x, y), ImageId(ImageIds::owner_jailed));
                     }
                 }
 
