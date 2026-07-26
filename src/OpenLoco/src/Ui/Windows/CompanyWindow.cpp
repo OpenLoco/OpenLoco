@@ -441,7 +441,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             Common::enableRenameByCaption(&self);
 
-            self.setSize(Status::kWindowSize, { 640, 400 });
+            self.setSizeBounds(Status::kWindowSize, { 640, 400 });
 
             if (self.viewports[0] != nullptr)
             {
@@ -1143,7 +1143,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onResize(Window& self)
         {
             Common::enableRenameByCaption(&self);
-            self.setSize(kWindowSize);
+            self.setSizeBounds(kWindowSize);
             self.callViewportRotate();
         }
 
@@ -1746,7 +1746,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onResize(Window& self)
         {
             Common::enableRenameByCaption(&self);
-            self.setSize(kWindowSize);
+            self.setSizeBounds(kWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -2249,7 +2249,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onResize(Window& self)
         {
             Common::enableRenameByCaption(&self);
-            self.setSize(kWindowSize);
+            self.setSizeBounds(kWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -2479,7 +2479,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             const uint16_t kWindowHeight = std::max<int16_t>(cargoHeight, 50) + 62;
 
-            self.setSize({ kWindowSize.width, kWindowHeight });
+            self.setSizeBounds({ kWindowSize.width, kWindowHeight });
         }
 
         static constexpr WindowEventList kEvents = {
@@ -2667,7 +2667,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00434048
         static void onResize(Window& self)
         {
-            self.setSize(kWindowSize);
+            self.setSizeBounds(kWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -2832,7 +2832,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             Common::disableChallengeTab(&self);
             self.invalidate();
-            self.setSize(*tabInfo.kWindowSize);
+            self.setSizeBounds(*tabInfo.kWindowSize);
             self.callOnResize();
             self.callPrepareDraw();
             self.initScrollWidgets();

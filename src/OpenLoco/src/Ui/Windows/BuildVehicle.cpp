@@ -1132,7 +1132,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         window.flags |= WindowFlags::resizable;
 
         auto minWidth = std::max<uint16_t>(_numTrackTypeTabs * 31 + 195, 380);
-        window.setSize({ minWidth, 233 }, kMaxWindowSize);
+        window.setSizeBounds({ minWidth, 233 }, kMaxWindowSize);
 
         auto& scrollArea = window.scrollAreas[scrollIdx::vehicle_selection];
         auto& scrollWidget = window.widgets[widx::scrollview_vehicle_selection];

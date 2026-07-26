@@ -208,7 +208,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             Common::enableRenameByCaption(&self);
 
-            self.setSize(kWindowSize, Common::kMaxWindowSize);
+            self.setSizeBounds(kWindowSize, Common::kMaxWindowSize);
 
             if (self.viewports[0] != nullptr)
             {
@@ -486,7 +486,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             Common::enableRenameByCaption(&self);
 
-            self.setSize(Common::kMinWindowSize, Common::kMaxWindowSize);
+            self.setSizeBounds(Common::kMinWindowSize, Common::kMaxWindowSize);
         }
 
         // 0x0048EB64
@@ -732,7 +732,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             Common::enableRenameByCaption(&self);
 
-            self.setSize(kWindowSize, kMaxWindowSize);
+            self.setSizeBounds(kWindowSize, kMaxWindowSize);
         }
 
         // 0x0048EE4A
@@ -1173,7 +1173,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             Common::enableRenameByCaption(&self);
 
-            self.setSize(kWindowSize, kMaxWindowSize);
+            self.setSizeBounds(kWindowSize, kMaxWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {

@@ -552,7 +552,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         window = WindowManager::createWindowCentred(WindowType::objectSelection, { kWindowSizeMin }, WindowFlags::resizable, getEvents());
         window->setWidgets(widgets);
-        window->setSize(kWindowSizeMin, kWindowSizeMax);
+        window->setSizeBounds(kWindowSizeMin, kWindowSizeMax);
         window->initScrollWidgets();
         window->frameNo = 0;
         window->rowHover = -1;

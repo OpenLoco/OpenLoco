@@ -241,7 +241,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         self.flags |= WindowFlags::resizable;
         self.minWidth = kMinWindowSize.width;
 
-        self.setSize(kMinWindowSize, kMaxWindowSize);
+        self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
 
         auto& widget = self.widgets[widx::scrollview];
         auto& map = self.scrollAreas[0];

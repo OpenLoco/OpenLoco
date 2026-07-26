@@ -784,7 +784,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A844
         static void onResize(Window& self)
         {
-            self.setSize(kWindowSize, kWindowSize);
+            self.setSizeBounds(kWindowSize, kWindowSize);
         }
 
         // 0x0049A7C7
@@ -981,13 +981,13 @@ namespace OpenLoco::Ui::Windows::TownList
                                 {
                                     newHeight = std::min(newHeight, 276);
                                 }
-                                hasResized |= self.setSize({ kWindowSize.width, newHeight });
+                                hasResized |= self.setSizeBounds({ kWindowSize.width, newHeight });
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    hasResized |= self.setSize(kWindowSize);
+                                    hasResized |= self.setSizeBounds(kWindowSize);
                                 }
                             }
                         }
@@ -998,7 +998,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        hasResized |= self.setSize(kWindowSize);
+                        hasResized |= self.setSizeBounds(kWindowSize);
                     }
                 }
             }
@@ -1224,7 +1224,7 @@ namespace OpenLoco::Ui::Windows::TownList
             self.invalidate();
             Ui::Size kMinWindowSize = { self.minWidth, self.minHeight };
             Ui::Size kMaxWindowSize = { self.maxWidth, self.maxHeight };
-            bool hasResized = self.setSize(kMinWindowSize, kMaxWindowSize);
+            bool hasResized = self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
             if (hasResized)
             {
                 updateActiveThumb(self);

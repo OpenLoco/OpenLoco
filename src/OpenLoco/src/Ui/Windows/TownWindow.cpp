@@ -273,7 +273,7 @@ namespace OpenLoco::Ui::Windows::Town
         {
             // Call to sub_498E9B has been deliberately omitted.
 
-            self.setSize({ 192, 161 }, { 600, 440 });
+            self.setSizeBounds({ 192, 161 }, { 600, 440 });
 
             if (self.viewports[0] != nullptr)
             {
@@ -558,7 +558,7 @@ namespace OpenLoco::Ui::Windows::Town
         {
             // Call to sub_498E9B has been deliberately omitted.
 
-            self.setSize({ 299, 172 }, { 299, 327 });
+            self.setSizeBounds({ 299, 172 }, { 299, 327 });
         }
 
         static constexpr WindowEventList kEvents = {
@@ -680,7 +680,7 @@ namespace OpenLoco::Ui::Windows::Town
         {
             // Call to sub_498E9B has been deliberately omitted.
 
-            self.setSize({ 340, 208 }, { 340, 208 });
+            self.setSizeBounds({ 340, 208 }, { 340, 208 });
         }
 
         static constexpr WindowEventList kEvents = {
@@ -797,7 +797,7 @@ namespace OpenLoco::Ui::Windows::Town
 
         static void onResize(Window& self)
         {
-            self.setSize(kTransportedWindowSize, kTransportedWindowSize);
+            self.setSizeBounds(kTransportedWindowSize, kTransportedWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -935,7 +935,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             self.invalidate();
 
-            self.setSize(kWindowSize);
+            self.setSizeBounds(kWindowSize);
             self.callOnResize();
             self.callPrepareDraw();
             self.initScrollWidgets();

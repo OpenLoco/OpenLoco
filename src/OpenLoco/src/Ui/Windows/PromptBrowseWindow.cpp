@@ -220,7 +220,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     // 0x004467F6
     static void onResize(Window& window)
     {
-        window.setSize({ 400, 300 }, { 640, 800 });
+        window.setSizeBounds({ 400, 300 }, { 640, 800 });
     }
 
     // 0x00446465

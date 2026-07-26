@@ -718,7 +718,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void onResize(Window& self)
         {
             Common::setCaptionEnableState(self);
-            self.setSize(kMinWindowSize, kMaxWindowSize);
+            self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
 
             if (self.viewports[0] != nullptr)
             {
@@ -1271,11 +1271,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Common::setCaptionEnableState(self);
             if (CompanyManager::getControllingId() == self.owner)
             {
-                self.setSize(kMinWindowSizeWithPaintEnabled, kMaxWindowSize);
+                self.setSizeBounds(kMinWindowSizeWithPaintEnabled, kMaxWindowSize);
             }
             else
             {
-                self.setSize(kMinWindowSize, kMaxWindowSize);
+                self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
             }
         }
 
@@ -2676,7 +2676,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void onResize(Window& self)
         {
             Common::setCaptionEnableState(self);
-            self.setSize(kMinWindowSize, kMaxWindowSize);
+            self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -2879,7 +2879,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void onResize(Window& self)
         {
             Common::setCaptionEnableState(self);
-            self.setSize(kMinWindowSize, kMaxWindowSize);
+            self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -3139,7 +3139,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void onResize(Window& self)
         {
             Common::setCaptionEnableState(self);
-            self.setSize(kMinWindowSize, kMaxWindowSize);
+            self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
         }
 
         // 0x004B4DD3

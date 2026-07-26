@@ -991,7 +991,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
             self.invalidate();
 
-            self.setSize(tabInfo.kWindowSize);
+            self.setSizeBounds(tabInfo.kWindowSize);
             self.callOnResize();
             self.callPrepareDraw();
             self.initScrollWidgets();

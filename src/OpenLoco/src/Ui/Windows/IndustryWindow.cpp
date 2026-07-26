@@ -222,7 +222,7 @@ namespace OpenLoco::Ui::Windows::Industry
         // 0x00455F1A
         static void onResize(Window& self)
         {
-            self.setSize(kMinWindowSize, kMaxWindowSize);
+            self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
 
             if (self.viewports[0] != nullptr)
             {
@@ -398,7 +398,7 @@ namespace OpenLoco::Ui::Windows::Industry
         static void onResize(Window& self)
         {
             {
-                self.setSize(kMinWindowSize, kMaxWindowSize);
+                self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
             }
         }
 
@@ -440,7 +440,7 @@ namespace OpenLoco::Ui::Windows::Industry
         static void onResize(Window& self)
         {
             {
-                self.setSize(kMinWindowSize, kMaxWindowSize);
+                self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
             }
         }
 
@@ -619,7 +619,7 @@ namespace OpenLoco::Ui::Windows::Industry
         static void onResize(Window& self)
         {
             {
-                self.setSize(kWindowSize, kWindowSize);
+                self.setSizeBounds(kWindowSize, kWindowSize);
             }
         }
 
@@ -913,7 +913,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
             self.invalidate();
 
-            self.setSize(Industry::kWindowSize);
+            self.setSizeBounds(Industry::kWindowSize);
             self.callOnResize();
             self.callPrepareDraw();
             self.initScrollWidgets();

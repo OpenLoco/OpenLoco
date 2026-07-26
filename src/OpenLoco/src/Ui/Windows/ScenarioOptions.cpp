@@ -1379,7 +1379,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 }
             }();
 
-            self.setSize(newSize);
+            self.setSizeBounds(newSize);
             self.callOnResize();
             self.callPrepareDraw();
             self.initScrollWidgets();

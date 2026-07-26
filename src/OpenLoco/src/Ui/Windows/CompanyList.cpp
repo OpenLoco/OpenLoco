@@ -190,7 +190,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x004363CB
         static void onResize(Window& self)
         {
-            self.setSize(Common::kMinWindowSize, Common::kMaxWindowSize);
+            self.setSizeBounds(Common::kMinWindowSize, Common::kMaxWindowSize);
         }
 
         // 0x00437BA0
@@ -637,7 +637,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x004366D7
         static void onResize(Window& self)
         {
-            self.setSize(kWindowSize, Common::kMaxWindowSize);
+            self.setSizeBounds(kWindowSize, Common::kMaxWindowSize);
         }
 
         // 0x00436490
@@ -730,7 +730,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x004369FB
         static void onResize(Window& self)
         {
-            self.setSize(kWindowSize, Common::kMaxWindowSize);
+            self.setSizeBounds(kWindowSize, Common::kMaxWindowSize);
         }
 
         // 0x004367B4
@@ -823,7 +823,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00436D1F
         static void onResize(Window& self)
         {
-            self.setSize(kWindowSize, Common::kMaxWindowSize);
+            self.setSizeBounds(kWindowSize, Common::kMaxWindowSize);
         }
 
         // 0x00436AD8
@@ -916,7 +916,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00437043
         static void onResize(Window& self)
         {
-            self.setSize(kWindowSize, Common::kMaxWindowSize);
+            self.setSizeBounds(kWindowSize, Common::kMaxWindowSize);
         }
 
         // 0x00436DFC
@@ -1009,7 +1009,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x0043737D
         static void onResize(Window& self)
         {
-            self.setSize(kWindowSize, Common::kMaxWindowSize);
+            self.setSizeBounds(kWindowSize, Common::kMaxWindowSize);
         }
 
         // 0x004F9442
@@ -1269,7 +1269,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00437591
         static void onResize(Window& self)
         {
-            self.setSize(kWindowSize, kWindowSize);
+            self.setSizeBounds(kWindowSize, kWindowSize);
         }
 
         // 0x0043745A

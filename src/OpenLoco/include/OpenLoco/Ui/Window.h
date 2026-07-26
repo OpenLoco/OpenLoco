@@ -247,7 +247,7 @@ namespace OpenLoco::Ui
             widgets.insert(widgets.end(), newWidgets.begin(), newWidgets.end());
         }
 
-        constexpr bool setSize(Ui::Size minSize, Ui::Size maxSize)
+        constexpr bool setSizeBounds(Ui::Size minSize, Ui::Size maxSize)
         {
             bool hasResized = false;
 
@@ -287,9 +287,9 @@ namespace OpenLoco::Ui
             return hasResized;
         }
 
-        constexpr bool setSize(Ui::Size size)
+        constexpr bool setSizeBounds(Ui::Size size)
         {
-            return setSize(size, size);
+            return setSizeBounds(size, size);
         }
 
         constexpr AdvancedColour getColour(WindowColour index) const
