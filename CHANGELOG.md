@@ -1,5 +1,6 @@
 26.07+ (???)
 ------------------------------------------------------------------------
+- Fix: [#3842] Native browse prompt not working on Windows, preventing selecting the Locomotion path on first start.
 
 26.07 (2026-07-26)
 ------------------------------------------------------------------------
