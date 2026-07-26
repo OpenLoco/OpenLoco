@@ -930,21 +930,20 @@ namespace OpenLoco::Ui::Windows::TownList
                 {
                     auto xPos = cursor.x - self.x;
                     auto yPos = cursor.y - self.y;
-
                     if ((yPos < 42) || (xPos + 26 <= self.width))
                     {
-                        WidgetIndex_t activeWidget = self.findWidgetAt(cursor.x, cursor.y);
+                        auto activeWidget = self.findWidgetAt(cursor.x, cursor.y);
                         if (activeWidget > Common::widx::panel)
                         {
                             self.expandContentCounter += 1;
                             if (self.expandContentCounter >= 8)
                             {
-                                auto y = std::min(self.scrollAreas[0].contentHeight - 1 + 60, 500);
+                                auto newHeight = std::min(self.scrollAreas[0].contentHeight - 1 + 60, 500);
                                 if (Ui::height() < 600)
                                 {
-                                    y = std::min(y, 276);
+                                    newHeight = std::min(newHeight, 276);
                                 }
-                                self.setSize({ kWindowSize.width, y });
+                                self.setSize({ kWindowSize.width, newHeight });
                             }
                             else
                             {
