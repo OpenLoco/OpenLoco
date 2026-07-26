@@ -33,7 +33,6 @@
 #include "Environment.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
-#include "GameException.hpp"
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "Graphics/Colour.h"
@@ -260,149 +259,186 @@ namespace OpenLoco
         {
             MessageManager::sub_428E47();
             WindowManager::dispatchUpdateAll();
+
+            if (SceneManager::isSceneTransitionPending())
+            {
+                return;
+            }
         }
 
         Input::processKeyboardInput();
         WindowManager::update();
+
+        if (SceneManager::isSceneTransitionPending())
+        {
+            return;
+        }
+
         Ui::handleInput();
+
+        if (SceneManager::isSceneTransitionPending())
+        {
+            return;
+        }
+
         CompanyManager::updateOwnerStatus();
     }
 
-    // This is called when the game requested to end the current tick early.
-    // This can be caused by loading a new save game or exceptions.
-    static void tickInterrupted()
+    // The remainder of a tick is abandoned when a scene transition was requested, the game
+    // state it was operating on has been replaced by that point.
+    static void applyPendingScene()
     {
+        if (!SceneManager::applyPendingScene())
+        {
+            return;
+        }
+
         EntityTweener::get().reset();
-        Logging::info("Tick interrupted");
+    }
+
+    static void tickIntro()
+    {
+        Intro::update();
+
+        if (Intro::state() == Intro::State::end2)
+        {
+            if (launchGameFromCmdLineOptions())
+            {
+                Intro::state(Intro::State::none);
+            }
+        }
+    }
+
+    static void tickGame()
+    {
+        uint16_t numUpdates = std::clamp<uint16_t>(_time_since_last_tick / (uint16_t)31, 1, 3);
+        if (WindowManager::find(Ui::WindowType::multiplayer, 0) != nullptr)
+        {
+            numUpdates = 1;
+        }
+        if (SceneManager::isNetworked())
+        {
+            numUpdates = 1;
+        }
+        if (Input::hasPendingMouseInputUpdate())
+        {
+            Input::clearPendingMouseInputUpdate();
+            numUpdates = 1;
+        }
+        else
+        {
+            switch (Input::state())
+            {
+                case State::reset:
+                case State::normal:
+                case State::dropdownActive:
+                    if (Input::hasFlag(Flags::viewportScrolling))
+                    {
+                        Input::resetFlag(Flags::viewportScrolling);
+                        numUpdates = 1;
+                    }
+                    break;
+                case State::widgetPressed: break;
+                case State::positioningWindow: break;
+                case State::viewportRight: break;
+                case State::viewportLeft: break;
+                case State::scrollLeft: break;
+                case State::resizing: break;
+                case State::scrollRight: break;
+            }
+        }
+
+        Ui::WindowManager::setVehiclePreviewRotationFrame(Ui::WindowManager::getVehiclePreviewRotationFrame() + numUpdates);
+
+        if (SceneManager::isPaused())
+        {
+            numUpdates = 0;
+        }
+        uint16_t var_F253A0 = std::max<uint16_t>(1, numUpdates);
+        SceneManager::setSceneAge(std::min(0xFFFF, (int32_t)SceneManager::getSceneAge() + var_F253A0));
+        if (SceneManager::getGameSpeed() != GameSpeed::Normal)
+        {
+            numUpdates *= 3;
+            if (SceneManager::getGameSpeed() != GameSpeed::FastForward)
+            {
+                numUpdates *= 3;
+            }
+        }
+
+        // Catch up to server (usually after we have just joined the game)
+        auto numTicksBehind = Network::getServerTick() - ScenarioManager::getScenarioTicks();
+        if (numTicksBehind > 4)
+        {
+            numUpdates = 4;
+        }
+
+        tickLogic(numUpdates);
+
+        if (SceneManager::isSceneTransitionPending())
+        {
+            return;
+        }
+
+        getGameState().var_014A++;
+        if (SceneManager::isEditorMode())
+        {
+            EditorController::tick();
+        }
+
+        Audio::playBackgroundMusic();
+
+        sub_431695(var_F253A0);
     }
 
     // 0x0046A794
     static void tick()
     {
-        try
+        uint32_t time = Platform::getTime();
+        _time_since_last_tick = (uint16_t)std::min(time - _last_tick_time, 500U);
+        _last_tick_time = time;
+
+        if (Tutorial::state() != Tutorial::State::none)
         {
-            uint32_t time = Platform::getTime();
-            _time_since_last_tick = (uint16_t)std::min(time - _last_tick_time, 500U);
-            _last_tick_time = time;
+            _time_since_last_tick = 31;
+        }
 
-            if (Tutorial::state() != Tutorial::State::none)
+        GameCommands::resetCommandNestLevel();
+        Ui::update();
+
+        // Original called 0x00440DEC here which handled legacy cmd line options
+        // like installing scenarios and handling multiplayer.
+
+        Input::handleKeyboard();
+        Input::processMouseMovement();
+        Audio::update();
+
+        // Network messages are handled outside of the scene, they can request a scene transition.
+        Network::update();
+
+        if (!SceneManager::isSceneTransitionPending())
+        {
+            if (Intro::isActive())
             {
-                _time_since_last_tick = 31;
+                tickIntro();
             }
-
-            GameCommands::resetCommandNestLevel();
-            Ui::update();
-
+            else
             {
-                // Original called 0x00440DEC here which handled legacy cmd line options
-                // like installing scenarios and handling multiplayer.
-
-                Input::handleKeyboard();
-                Input::processMouseMovement();
-                Audio::update();
-
-                Network::update();
-
-                if (Intro::isActive())
-                {
-                    Intro::update();
-                    if (Intro::state() == Intro::State::end2)
-                    {
-                        if (launchGameFromCmdLineOptions())
-                        {
-                            Intro::state(Intro::State::none);
-                        }
-                    }
-                }
-                else
-                {
-                    uint16_t numUpdates = std::clamp<uint16_t>(_time_since_last_tick / (uint16_t)31, 1, 3);
-                    if (WindowManager::find(Ui::WindowType::multiplayer, 0) != nullptr)
-                    {
-                        numUpdates = 1;
-                    }
-                    if (SceneManager::isNetworked())
-                    {
-                        numUpdates = 1;
-                    }
-                    if (Input::hasPendingMouseInputUpdate())
-                    {
-                        Input::clearPendingMouseInputUpdate();
-                        numUpdates = 1;
-                    }
-                    else
-                    {
-                        switch (Input::state())
-                        {
-                            case State::reset:
-                            case State::normal:
-                            case State::dropdownActive:
-                                if (Input::hasFlag(Flags::viewportScrolling))
-                                {
-                                    Input::resetFlag(Flags::viewportScrolling);
-                                    numUpdates = 1;
-                                }
-                                break;
-                            case State::widgetPressed: break;
-                            case State::positioningWindow: break;
-                            case State::viewportRight: break;
-                            case State::viewportLeft: break;
-                            case State::scrollLeft: break;
-                            case State::resizing: break;
-                            case State::scrollRight: break;
-                        }
-                    }
-
-                    Ui::WindowManager::setVehiclePreviewRotationFrame(Ui::WindowManager::getVehiclePreviewRotationFrame() + numUpdates);
-
-                    if (SceneManager::isPaused())
-                    {
-                        numUpdates = 0;
-                    }
-                    uint16_t var_F253A0 = std::max<uint16_t>(1, numUpdates);
-                    SceneManager::setSceneAge(std::min(0xFFFF, (int32_t)SceneManager::getSceneAge() + var_F253A0));
-                    if (SceneManager::getGameSpeed() != GameSpeed::Normal)
-                    {
-                        numUpdates *= 3;
-                        if (SceneManager::getGameSpeed() != GameSpeed::FastForward)
-                        {
-                            numUpdates *= 3;
-                        }
-                    }
-
-                    // Catch up to server (usually after we have just joined the game)
-                    auto numTicksBehind = Network::getServerTick() - ScenarioManager::getScenarioTicks();
-                    if (numTicksBehind > 4)
-                    {
-                        numUpdates = 4;
-                    }
-
-                    tickLogic(numUpdates);
-
-                    getGameState().var_014A++;
-                    if (SceneManager::isEditorMode())
-                    {
-                        EditorController::tick();
-                    }
-
-                    Audio::playBackgroundMusic();
-
-                    sub_431695(var_F253A0);
-                }
+                tickGame();
             }
         }
-        catch (GameException)
-        {
-            // Premature end of current tick; use a different message to indicate it's from C++ code
-            tickInterrupted();
-            return;
-        }
+
+        applyPendingScene();
     }
 
     static void tickLogic(int32_t count)
     {
         for (int32_t i = 0; i < count; i++)
         {
+            if (SceneManager::isSceneTransitionPending())
+            {
+                break;
+            }
+
             tickLogic();
         }
     }
@@ -418,6 +454,11 @@ namespace OpenLoco
         ScenarioManager::setScenarioTicks(ScenarioManager::getScenarioTicks() + 1);
         ScenarioManager::setScenarioTicks2(ScenarioManager::getScenarioTicks2() + 1);
         Network::processGameCommands(ScenarioManager::getScenarioTicks());
+
+        if (SceneManager::isSceneTransitionPending())
+        {
+            return;
+        }
 
         recordTickStartPrng();
         World::TileManager::defragmentTilePeriodic();
@@ -722,23 +763,21 @@ namespace OpenLoco
         try
         {
             initialise();
-            loadFile(savePath);
+            if (loadFile(savePath))
+            {
+                Logging::info("File loaded. Starting simulation.");
+            }
+            else
+            {
+                Logging::error("Unable to simulate park!");
+            }
         }
         catch (const std::exception& e)
         {
             Logging::error("Unable to simulate park: {}", e.what());
         }
-        catch (const GameException i)
-        {
-            if (i != GameException::Interrupt)
-            {
-                Logging::error("Unable to simulate park!");
-            }
-            else
-            {
-                Logging::info("File loaded. Starting simulation.");
-            }
-        }
+
+        SceneManager::applyPendingScene();
         tickLogic(ticks);
     }
 

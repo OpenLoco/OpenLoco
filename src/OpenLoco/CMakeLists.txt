@@ -472,7 +472,6 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/GameCommands/Vehicles/VehicleReverse.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/GameCommands/Vehicles/VehicleSell.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/GameCommands/Vehicles/VehicleSpeedControl.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/GameException.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/GameSaveCompare.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/GameState.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/GameStateFlags.h"

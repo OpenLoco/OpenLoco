@@ -4,7 +4,6 @@
 #include "Environment.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/General/LoadSaveQuit.h"
-#include "GameException.hpp"
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "Input.h"
@@ -127,7 +126,8 @@ namespace OpenLoco::Game
                 if (S5::importSaveToGameState(path, S5::LoadFlags::landscape))
                 {
                     SceneManager::resetSceneAge();
-                    throw GameException::Interrupt;
+                    SceneManager::requestScene(SceneManager::SceneId::editor);
+                    return;
                 }
             }
         }
@@ -142,7 +142,8 @@ namespace OpenLoco::Game
                 if (S5::importSaveToGameState(path, S5::LoadFlags::none))
                 {
                     SceneManager::resetSceneAge();
-                    throw GameException::Interrupt;
+                    SceneManager::requestScene(SceneManager::SceneId::gameplay);
+                    return;
                 }
             }
         }
@@ -208,7 +209,8 @@ namespace OpenLoco::Game
 
                 Ui::Windows::Error::open(StringIds::error_the_other_player_has_exited_the_game);
 
-                throw GameException::Interrupt;
+                SceneManager::requestScene(SceneManager::SceneId::title);
+                return;
             }
         }
 
@@ -240,7 +242,7 @@ namespace OpenLoco::Game
 
         Title::start();
 
-        throw GameException::Interrupt;
+        SceneManager::requestScene(SceneManager::SceneId::title);
     }
 
     // 0x0043C427

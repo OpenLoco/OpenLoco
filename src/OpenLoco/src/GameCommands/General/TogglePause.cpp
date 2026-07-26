@@ -1,7 +1,6 @@
 #include "GameCommands/General/TogglePause.h"
 #include "Audio/Audio.h"
 #include "GameCommands/GameCommands.h"
-#include "GameException.hpp"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
 #include "Ui/WindowType.h"
