@@ -198,7 +198,7 @@ namespace OpenLoco::Ui::Widgets
 
         Gfx::RenderTarget cropped = drawingCtx.currentRenderTarget();
         // Restore original dimensions for cropping calculations
-        auto cropSize = Ui::Size{ contentSize.width, contentSize.height };
+        auto cropSize = Ui::Size{ contentSize.width - kScrollbarMargin, contentSize.height - kScrollbarMargin };
 
         if (contentPos.x > cropped.x)
         {
