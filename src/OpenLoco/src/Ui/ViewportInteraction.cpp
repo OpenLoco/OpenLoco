@@ -1491,7 +1491,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     std::pair<ViewportInteraction::InteractionArg, Viewport*> getMapCoordinatesFromPos(int32_t screenX, int32_t screenY, InteractionItemFlags flags)
     {
         ViewportInteraction::InteractionArg interaction{};
-        Ui::Point screenPos = { static_cast<int16_t>(screenX), static_cast<int16_t>(screenY) };
+        Ui::Point screenPos = { screenX, screenY };
         auto w = WindowManager::findAt(screenPos);
         if (w == nullptr)
         {
