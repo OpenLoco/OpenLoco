@@ -1514,7 +1514,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             chosenV = vp;
             auto vpPos = vp->screenToViewport({ screenPos.x, screenPos.y });
 
-            const int32_t alignMask = vp->zoom > ZoomLevel::full ? vp->zoom.applyTo(0xFFFF) : ~0;
+            const int32_t alignMask = vp->zoom > ZoomLevel::full ? ~(vp->zoom.applyTo(1) - 1) : ~0;
 
             Gfx::RenderTarget _rt1; // 0x00E0C3E4
             _rt1.x = vp->zoom.applyInversedTo(alignMask & vpPos.x);
