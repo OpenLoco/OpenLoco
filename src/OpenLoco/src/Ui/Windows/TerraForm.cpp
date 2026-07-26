@@ -149,7 +149,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(634, 162, StringIds::title_plant_trees),
-            Widgets::ScrollView({ 3, 45 }, { 605, 101 }, WindowColour::secondary, Scrollbars::vertical),
+            Widgets::ScrollView({ 3, 45 }, { 605, kRowHeight }, WindowColour::secondary, Scrollbars::vertical),
             Widgets::ImageButton({ 609, 46 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
             Widgets::ColourButton({ 609, 70 }, { 24, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_object_colour),
             Widgets::ImageButton({ 609, 94 }, { 24, 24 }, WindowColour::secondary, ImageIds::plant_cluster_selected_tree, StringIds::plant_cluster_selected_tree),
@@ -385,10 +385,9 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (activeWindow == &self)
                 {
                     xPos -= self.x;
-                    xPos += 26;
                     yPos -= self.y;
 
-                    if ((yPos < 42) || (xPos <= self.width))
+                    if ((yPos < 42) || (xPos + 26 <= self.width))
                     {
                         xPos = cursor.x;
                         yPos = cursor.y;
@@ -404,19 +403,13 @@ namespace OpenLoco::Ui::Windows::Terraform
                                 {
                                     y = std::min(y, 358);
                                 }
-                                self.minWidth = kWindowSize.width;
-                                self.minHeight = y;
-                                self.maxWidth = kWindowSize.width;
-                                self.maxHeight = y;
+                                self.setSize({ kWindowSize.width, y });
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    self.minWidth = kWindowSize.width;
-                                    self.minHeight = kWindowSize.height;
-                                    self.maxWidth = kWindowSize.width;
-                                    self.maxHeight = kWindowSize.height;
+                                    self.setSize(kWindowSize);
                                 }
                             }
                         }
@@ -427,10 +420,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        self.minWidth = kWindowSize.width;
-                        self.minHeight = kWindowSize.height;
-                        self.maxWidth = kWindowSize.width;
-                        self.maxHeight = kWindowSize.height;
+                        self.setSize(kWindowSize);
                     }
                 }
             }
@@ -2257,7 +2247,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(418, 108, StringIds::title_build_walls),
-            Widgets::ScrollView({ 2, 45 }, { 391, 48 }, WindowColour::secondary, Scrollbars::vertical)
+            Widgets::ScrollView({ 2, 45 }, { 391, kRowHeight }, WindowColour::secondary, Scrollbars::vertical)
 
         );
 
@@ -2384,10 +2374,9 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (activeWindow == &self)
                 {
                     xPos -= self.x;
-                    xPos += 26;
                     yPos -= self.y;
 
-                    if ((yPos < 42) || (xPos <= self.width))
+                    if ((yPos < 42) || (xPos + 26 <= self.width))
                     {
                         xPos = cursor.x;
                         yPos = cursor.y;
@@ -2403,19 +2392,13 @@ namespace OpenLoco::Ui::Windows::Terraform
                                 {
                                     y = std::min(y, 358);
                                 }
-                                self.minWidth = kWindowSize.width;
-                                self.minHeight = y;
-                                self.maxWidth = kWindowSize.width;
-                                self.maxHeight = y;
+                                self.setSize({ kWindowSize.width, y });
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    self.minWidth = kWindowSize.width;
-                                    self.minHeight = kWindowSize.height;
-                                    self.maxWidth = kWindowSize.width;
-                                    self.maxHeight = kWindowSize.height;
+                                    self.setSize(kWindowSize);
                                 }
                             }
                         }
@@ -2426,10 +2409,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        self.minWidth = kWindowSize.width;
-                        self.minHeight = kWindowSize.height;
-                        self.maxWidth = kWindowSize.width;
-                        self.maxHeight = kWindowSize.height;
+                        self.setSize(kWindowSize);
                     }
                 }
             }

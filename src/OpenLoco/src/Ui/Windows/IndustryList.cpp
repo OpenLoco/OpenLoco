@@ -648,7 +648,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(577, 171, StringIds::title_fund_new_industries),
-            Widgets::ScrollView({ 3, 45 }, { 549, 111 }, WindowColour::secondary, Scrollbars::vertical)
+            Widgets::ScrollView({ 3, 45 }, { 549, kRowHeight }, WindowColour::secondary, Scrollbars::vertical)
 
         );
 
@@ -868,10 +868,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 if (activeWindow == &self)
                 {
                     xPos -= self.x;
-                    xPos += 26;
                     yPos -= self.y;
 
-                    if ((yPos < 42) || (xPos <= self.width))
+                    if ((yPos < 42) || (xPos + 26 <= self.width))
                     {
                         xPos = cursor.x;
                         yPos = cursor.y;
@@ -887,19 +886,13 @@ namespace OpenLoco::Ui::Windows::IndustryList
                                 {
                                     y = std::min(y, 276);
                                 }
-                                self.minWidth = kWindowSize.width;
-                                self.minHeight = y;
-                                self.maxWidth = kWindowSize.width;
-                                self.maxHeight = y;
+                                self.setSize({ kWindowSize.width, y });
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    self.minWidth = kWindowSize.width;
-                                    self.minHeight = kWindowSize.height;
-                                    self.maxWidth = kWindowSize.width;
-                                    self.maxHeight = kWindowSize.height;
+                                    self.setSize(kWindowSize);
                                 }
                             }
                         }
@@ -910,10 +903,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        self.minWidth = kWindowSize.width;
-                        self.minHeight = kWindowSize.height;
-                        self.maxWidth = kWindowSize.width;
-                        self.maxHeight = kWindowSize.height;
+                        self.setSize(kWindowSize);
                     }
                 }
             }
