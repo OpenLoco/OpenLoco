@@ -347,7 +347,7 @@ namespace OpenLoco::Ui
 
         void callClose();                                                                                                 // 0
         void callOnMouseUp(WidgetIndex_t widgetIndex, WidgetId id);                                                       // 1
-        Ui::Window* callOnResize();                                                                                       // 2
+        void callOnResize();                                                                                              // 2
         void callOnMouseHover(WidgetIndex_t widgetIndex, WidgetId id);                                                    // 3
         void callOnMouseDown(WidgetIndex_t widgetIndex, WidgetId id);                                                     // 4
         void callOnDropdown(WidgetIndex_t widgetIndex, WidgetId id, int16_t itemIndex);                                   // 5

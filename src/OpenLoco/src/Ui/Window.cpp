@@ -1105,15 +1105,14 @@ namespace OpenLoco::Ui
         eventHandlers->onMouseUp(*this, widgetIndex, id);
     }
 
-    Ui::Window* Window::callOnResize()
+    void Window::callOnResize()
     {
         if (eventHandlers->onResize == nullptr)
         {
-            return this;
+            return;
         }
 
         eventHandlers->onResize(*this);
-        return this;
     }
 
     void Window::callOnMouseHover(WidgetIndex_t widgetIndex, const WidgetId id)
