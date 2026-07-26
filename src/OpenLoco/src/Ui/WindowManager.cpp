@@ -231,11 +231,6 @@ namespace OpenLoco::Ui::WindowManager
                 }
             }
 
-            if (w.callOnResize() == nullptr)
-            {
-                return findAt(x, y);
-            }
-
             return &w;
         }
         return nullptr;
@@ -278,11 +273,6 @@ namespace OpenLoco::Ui::WindowManager
                 {
                     continue;
                 }
-            }
-
-            if (w.callOnResize() == nullptr)
-            {
-                return findAt(x, y);
             }
 
             return &w;
