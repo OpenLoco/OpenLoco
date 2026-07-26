@@ -1,4 +1,4 @@
-26.05+ (???)
+26.07 (2026-07-26)
 ------------------------------------------------------------------------
 - Feature: [#3569] Add a "home" button to the browse prompt window.
 - Feature: [#3760] Add amount of cargo awaiting processing and transport to the industry window.
