@@ -183,7 +183,7 @@ namespace OpenLoco::Ui
     // Output:
     // {x: regs.ax, y: regs.bx}
     // Note: in the original code: regs.dx: x/2 (probably not used anywhere)
-    World::Pos2 viewportCoordToMapCoord(int16_t x, int16_t y, int16_t z, int32_t rotation)
+    World::Pos2 viewportCoordToMapCoord(int32_t x, int32_t y, int32_t z, int32_t rotation)
     {
         constexpr uint8_t inverseRotationMapping[4] = { 0, 3, 2, 1 };
         const auto result = World::Pos2(y - (x >> 1) + z, y + (x >> 1) + z);
@@ -224,12 +224,12 @@ namespace OpenLoco::Ui
     }
 
     // 0x004C68E4
-    static void viewportMove(int16_t x, int16_t y, Ui::Window* w, Ui::Viewport* vp)
+    static void viewportMove(int32_t x, int32_t y, Ui::Window* w, Ui::Viewport* vp)
     {
         int origX = vp->zoom.applyInversedTo(vp->viewX);
         int origY = vp->zoom.applyInversedTo(vp->viewY);
-        int newX = vp->zoom.applyInversedTo<int32_t>(x);
-        int newY = vp->zoom.applyInversedTo<int32_t>(y);
+        int newX = vp->zoom.applyInversedTo(x);
+        int newY = vp->zoom.applyInversedTo(y);
         int diffX = origX - newX;
         int diffY = origY - newY;
 
