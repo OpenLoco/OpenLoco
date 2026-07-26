@@ -376,6 +376,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 WindowManager::close(&self);
             }
 
+            bool hasResized = false;
             if (!Input::hasFlag(Input::Flags::rightMousePressed))
             {
                 auto cursor = Input::getMouseLocation();
@@ -397,13 +398,13 @@ namespace OpenLoco::Ui::Windows::Terraform
                                 {
                                     newHeight = std::min(newHeight, 358);
                                 }
-                                self.setSize({ kWindowSize.width, newHeight });
+                                hasResized |= self.setSize({ kWindowSize.width, newHeight });
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    self.setSize(kWindowSize);
+                                    hasResized |= self.setSize(kWindowSize);
                                 }
                             }
                         }
@@ -414,13 +415,18 @@ namespace OpenLoco::Ui::Windows::Terraform
                     self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        self.setSize(kWindowSize);
+                        hasResized |= self.setSize(kWindowSize);
                     }
                 }
             }
             self.frameNo++;
 
             self.callPrepareDraw();
+            if (hasResized)
+            {
+                updateActiveThumb(self);
+            }
+
             WindowManager::invalidateWidget(WindowType::terraform, self.number, self.currentTab + Common::widx::tab_clear_area);
         }
 
@@ -2359,6 +2365,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 WindowManager::close(&self);
             }
 
+            bool hasResized = false;
             if (!Input::hasFlag(Input::Flags::rightMousePressed))
             {
                 auto cursor = Input::getMouseLocation();
@@ -2380,13 +2387,13 @@ namespace OpenLoco::Ui::Windows::Terraform
                                 {
                                     newHeight = std::min(newHeight, 358);
                                 }
-                                self.setSize({ kWindowSize.width, newHeight });
+                                hasResized |= self.setSize({ kWindowSize.width, newHeight });
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    self.setSize(kWindowSize);
+                                    hasResized |= self.setSize(kWindowSize);
                                 }
                             }
                         }
@@ -2397,13 +2404,18 @@ namespace OpenLoco::Ui::Windows::Terraform
                     self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        self.setSize(kWindowSize);
+                        hasResized |= self.setSize(kWindowSize);
                     }
                 }
             }
             self.frameNo++;
 
             self.callPrepareDraw();
+            if (hasResized)
+            {
+                updateActiveThumb(self);
+            }
+
             WindowManager::invalidateWidget(WindowType::terraform, self.number, self.currentTab + Common::widx::tab_clear_area);
         }
 

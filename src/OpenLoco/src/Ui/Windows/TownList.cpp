@@ -919,9 +919,12 @@ namespace OpenLoco::Ui::Windows::TownList
             }
         }
 
+        static void updateActiveThumb(Window& self);
+
         // 0x0049AD51
         static void onUpdate(Window& self)
         {
+            bool hasResized = false;
             if (!Input::hasFlag(Input::Flags::rightMousePressed))
             {
                 auto cursor = Input::getMouseLocation();
@@ -943,13 +946,13 @@ namespace OpenLoco::Ui::Windows::TownList
                                 {
                                     newHeight = std::min(newHeight, 276);
                                 }
-                                self.setSize({ kWindowSize.width, newHeight });
+                                hasResized |= self.setSize({ kWindowSize.width, newHeight });
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    self.setSize(kWindowSize);
+                                    hasResized |= self.setSize(kWindowSize);
                                 }
                             }
                         }
@@ -960,13 +963,18 @@ namespace OpenLoco::Ui::Windows::TownList
                     self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        self.setSize(kWindowSize);
+                        hasResized |= self.setSize(kWindowSize);
                     }
                 }
             }
             self.frameNo++;
 
             self.callPrepareDraw();
+            if (hasResized)
+            {
+                updateActiveThumb(self);
+            }
+
             WindowManager::invalidateWidget(WindowType::townList, self.number, self.currentTab + Common::widx::tab_town_list);
             if (!ToolManager::isToolActive(self.type, self.number))
             {
