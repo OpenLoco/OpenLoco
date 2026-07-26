@@ -1,10 +1,16 @@
 #include "SceneManager.h"
 #include "Audio/Audio.h"
 #include "Logging.h"
+#include "Scenes/BootScene.h"
+#include "Scenes/EditorScene.h"
+#include "Scenes/GameplayScene.h"
+#include "Scenes/IntroScene.h"
+#include "Scenes/TitleScene.h"
 #include "Ui/WindowManager.h"
 #include <optional>
 
 using namespace OpenLoco::Diagnostics;
+using namespace OpenLoco::Scenes;
 
 namespace OpenLoco::SceneManager
 {
@@ -50,20 +56,76 @@ namespace OpenLoco::SceneManager
         _pendingScene = scene;
     }
 
-    // Returns true if the current scene was changed.
-    bool applyPendingScene()
+    static void applyPendingScene()
     {
-        if (!_pendingScene.has_value())
-        {
-            return false;
-        }
-
         const auto previousScene = _currentScene;
         _currentScene = *_pendingScene;
         _pendingScene.reset();
 
         Logging::info("Scene transition: {} -> {}", sceneName(previousScene), sceneName(_currentScene));
+    }
+
+    static void enterScene(SceneId scene)
+    {
+        switch (scene)
+        {
+            case SceneId::boot: break;
+            case SceneId::intro: IntroScene::onEnter(); break;
+            case SceneId::title: TitleScene::onEnter(); break;
+            case SceneId::gameplay: break;
+            case SceneId::editor: break;
+        }
+    }
+
+    static void exitScene(SceneId scene)
+    {
+        switch (scene)
+        {
+            case SceneId::boot: break;
+            case SceneId::intro: IntroScene::onExit(); break;
+            case SceneId::title: break;
+            case SceneId::gameplay: break;
+            case SceneId::editor: break;
+        }
+    }
+
+    // Returns true if the current scene was changed.
+    bool applySceneTransition()
+    {
+        if (!isSceneTransitionPending())
+        {
+            return false;
+        }
+
+        exitScene(_currentScene);
+        applyPendingScene();
+        enterScene(_currentScene);
+
         return true;
+    }
+
+    void tickScene()
+    {
+        switch (_currentScene)
+        {
+            case SceneId::boot: BootScene::tick(); break;
+            case SceneId::intro: IntroScene::tick(); break;
+            case SceneId::title: TitleScene::tick(); break;
+            case SceneId::gameplay: GameplayScene::tick(); break;
+            case SceneId::editor: EditorScene::tick(); break;
+        }
+    }
+
+    void tickSceneLogic()
+    {
+        switch (_currentScene)
+        {
+            case SceneId::boot: break;
+            case SceneId::intro: break;
+            case SceneId::title: TitleScene::tickLogic(); break;
+            case SceneId::gameplay: break;
+            case SceneId::editor: break;
+        }
     }
 
     void resetSceneAge()

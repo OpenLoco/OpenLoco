@@ -23,6 +23,7 @@ namespace OpenLoco
 
     void initialise();
     void update();
+    void tickLogic(int32_t count);
     void sub_431695(uint16_t var_F253A0);
     uint16_t getTimeSinceLastTick();
     bool promptTickLoop(std::function<bool()> tickAction);

@@ -15,7 +15,6 @@
 #include "Scenario/Scenario.h"
 #include "Scenario/ScenarioOptions.h"
 #include "SceneManager.h"
-#include "Title.h"
 #include "Ui/ProgressBar.h"
 #include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
@@ -205,8 +204,6 @@ namespace OpenLoco::Game
                     Input::resetFlag(Input::Flags::rightMousePressed);
                 }
 
-                Title::start();
-
                 Ui::Windows::Error::open(StringIds::error_the_other_player_has_exited_the_game);
 
                 SceneManager::requestScene(SceneManager::SceneId::title);
@@ -239,8 +236,6 @@ namespace OpenLoco::Game
             Input::stopCursorDrag();
             Input::resetFlag(Input::Flags::rightMousePressed);
         }
-
-        Title::start();
 
         SceneManager::requestScene(SceneManager::SceneId::title);
     }

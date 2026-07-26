@@ -54,7 +54,11 @@ namespace OpenLoco
         SceneId getPendingScene();
         bool isSceneTransitionPending();
         void requestScene(SceneId scene);
-        bool applyPendingScene();
+        bool applySceneTransition();
+
+        // Scene dispatch
+        void tickScene();
+        void tickSceneLogic();
 
         void resetSceneAge();
         uint16_t getSceneAge();

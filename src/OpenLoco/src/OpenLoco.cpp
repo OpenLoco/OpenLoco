@@ -1,4 +1,3 @@
-#include "CommandLine.h"
 #include "Scenario/Scenario.h"
 #include <algorithm>
 #include <cassert>
@@ -26,7 +25,6 @@
 #include "Config.h"
 #include "Date.h"
 #include "Economy/Economy.h"
-#include "EditorController.h"
 #include "Effects/EffectsManager.h"
 #include "Entities/EntityManager.h"
 #include "Entities/EntityTweener.h"
@@ -40,7 +38,6 @@
 #include "Gui.h"
 #include "Input.h"
 #include "Input/Shortcuts.h"
-#include "Intro.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/LanguageFiles.h"
 #include "Localisation/Languages.h"
@@ -60,7 +57,7 @@
 #include "Scenario/ScenarioManager.h"
 #include "Scenario/ScenarioOptions.h"
 #include "SceneManager.h"
-#include "Title.h"
+#include "Scenes/BootScene.h"
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Ui/ProgressBar.h"
@@ -98,7 +95,6 @@ namespace OpenLoco
     static int32_t _monthsSinceLastAutosave;
 
     static void autosaveReset();
-    static void tickLogic(int32_t count);
     static void tickLogic();
     static void dateTick();
 
@@ -201,57 +197,6 @@ namespace OpenLoco
         ScenarioManager::loadIndex();
     }
 
-    static bool loadFile(const fs::path& path)
-    {
-        auto extension = path.extension().u8string();
-        if (Utility::iequals(extension, S5::extensionSC5))
-        {
-            return Scenario::loadAndStart(path);
-        }
-        else
-        {
-            return S5::importSaveToGameState(path, S5::LoadFlags::none);
-        }
-    }
-
-    static bool loadFile(const std::string& path)
-    {
-        return loadFile(fs::u8path(path));
-    }
-
-    static bool launchGameFromCmdLineOptions()
-    {
-        const auto& cmdLineOptions = getCommandLineOptions();
-        try
-        {
-            if (cmdLineOptions.action == CommandLineAction::host)
-            {
-                Network::openServer();
-                return loadFile(cmdLineOptions.path);
-            }
-            else if (cmdLineOptions.action == CommandLineAction::join)
-            {
-                if (cmdLineOptions.port)
-                {
-                    return Network::joinServer(cmdLineOptions.address, *cmdLineOptions.port);
-                }
-                else
-                {
-                    return Network::joinServer(cmdLineOptions.address);
-                }
-            }
-            else if (!cmdLineOptions.path.empty())
-            {
-                return loadFile(cmdLineOptions.path);
-            }
-        }
-        catch (const std::exception& e)
-        {
-            Logging::error("Unable to load park: {}", e.what());
-        }
-        return false;
-    }
-
     void sub_431695(uint16_t var_F253A0)
     {
         GameCommands::setUpdatingCompanyId(CompanyManager::getControllingId());
@@ -288,106 +233,12 @@ namespace OpenLoco
     // state it was operating on has been replaced by that point.
     static void applyPendingScene()
     {
-        if (!SceneManager::applyPendingScene())
+        if (!SceneManager::applySceneTransition())
         {
             return;
         }
 
         EntityTweener::get().reset();
-    }
-
-    static void tickIntro()
-    {
-        Intro::update();
-
-        if (Intro::state() == Intro::State::end2)
-        {
-            if (launchGameFromCmdLineOptions())
-            {
-                Intro::state(Intro::State::none);
-            }
-        }
-    }
-
-    static void tickGame()
-    {
-        uint16_t numUpdates = std::clamp<uint16_t>(_time_since_last_tick / (uint16_t)31, 1, 3);
-        if (WindowManager::find(Ui::WindowType::multiplayer, 0) != nullptr)
-        {
-            numUpdates = 1;
-        }
-        if (SceneManager::isNetworked())
-        {
-            numUpdates = 1;
-        }
-        if (Input::hasPendingMouseInputUpdate())
-        {
-            Input::clearPendingMouseInputUpdate();
-            numUpdates = 1;
-        }
-        else
-        {
-            switch (Input::state())
-            {
-                case State::reset:
-                case State::normal:
-                case State::dropdownActive:
-                    if (Input::hasFlag(Flags::viewportScrolling))
-                    {
-                        Input::resetFlag(Flags::viewportScrolling);
-                        numUpdates = 1;
-                    }
-                    break;
-                case State::widgetPressed: break;
-                case State::positioningWindow: break;
-                case State::viewportRight: break;
-                case State::viewportLeft: break;
-                case State::scrollLeft: break;
-                case State::resizing: break;
-                case State::scrollRight: break;
-            }
-        }
-
-        Ui::WindowManager::setVehiclePreviewRotationFrame(Ui::WindowManager::getVehiclePreviewRotationFrame() + numUpdates);
-
-        if (SceneManager::isPaused())
-        {
-            numUpdates = 0;
-        }
-        uint16_t var_F253A0 = std::max<uint16_t>(1, numUpdates);
-        SceneManager::setSceneAge(std::min(0xFFFF, (int32_t)SceneManager::getSceneAge() + var_F253A0));
-        if (SceneManager::getGameSpeed() != GameSpeed::Normal)
-        {
-            numUpdates *= 3;
-            if (SceneManager::getGameSpeed() != GameSpeed::FastForward)
-            {
-                numUpdates *= 3;
-            }
-        }
-
-        // Catch up to server (usually after we have just joined the game)
-        auto numTicksBehind = Network::getServerTick() - ScenarioManager::getScenarioTicks();
-        if (numTicksBehind > 4)
-        {
-            numUpdates = 4;
-        }
-
-        tickLogic(numUpdates);
-
-        if (SceneManager::isSceneTransitionPending())
-        {
-            return;
-        }
-
-        getGameState().var_014A++;
-        if (SceneManager::isEditorMode())
-        {
-            EditorController::tick();
-        }
-
-        Audio::playBackgroundMusic();
-
-        sub_431695(var_F253A0);
     }
 
     // 0x0046A794
@@ -412,25 +263,17 @@ namespace OpenLoco
         Input::processMouseMovement();
         Audio::update();
 
-        // Network messages are handled outside of the scene, they can request a scene transition.
+        // Network messages are handled outside of the scenes, they can request a scene transition.
         Network::update();
 
-        if (!SceneManager::isSceneTransitionPending())
-        {
-            if (Intro::isActive())
-            {
-                tickIntro();
-            }
-            else
-            {
-                tickGame();
-            }
-        }
+        applyPendingScene();
+
+        SceneManager::tickScene();
 
         applyPendingScene();
     }
 
-    static void tickLogic(int32_t count)
+    void tickLogic(int32_t count)
     {
         for (int32_t i = 0; i < count; i++)
         {
@@ -477,7 +320,7 @@ namespace OpenLoco
         CompanyManager::update();
         World::AnimationManager::update();
         Audio::update();
-        Title::update();
+        SceneManager::tickSceneLogic();
 
         Scenario::getOptions().madeAnyChanges = userMadeAnyChanges;
 
@@ -763,7 +606,7 @@ namespace OpenLoco
         try
         {
             initialise();
-            if (loadFile(savePath))
+            if (Scenes::BootScene::loadFile(savePath))
             {
                 Logging::info("File loaded. Starting simulation.");
             }
@@ -777,7 +620,7 @@ namespace OpenLoco
             Logging::error("Unable to simulate park: {}", e.what());
         }
 
-        SceneManager::applyPendingScene();
+        SceneManager::applySceneTransition();
         tickLogic(ticks);
     }
 

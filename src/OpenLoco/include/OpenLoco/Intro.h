@@ -17,7 +17,6 @@ namespace OpenLoco::Intro
         displayNotice,
         displayNoticeBeginReset,
         end = 254,
-        end2 = 255,
     };
 
     bool isActive();
