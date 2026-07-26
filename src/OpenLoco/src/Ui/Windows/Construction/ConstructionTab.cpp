@@ -27,6 +27,7 @@
 #include "Objects/TrackObject.h"
 #include "Paint/Paint.h"
 #include "Paint/PaintTile.h"
+#include "Tutorial.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
 #include "Ui/ToolTip.h"
@@ -1128,6 +1129,17 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 activateSelectedTrackWidgets(window);
             }
+        }
+
+        if (OpenLoco::Tutorial::state() != OpenLoco::Tutorial::State::none)
+        {
+            // Restore original window layout from before copy and paste buttons were added
+            window->widgets[widx::remove].left = 6;
+            window->widgets[widx::remove].right = 6 + 46 + 1;
+            window->widgets[widx::rotate_90].left = 57;
+            window->widgets[widx::rotate_90].right = 57 + 24 + 1;
+            window->widgets[widx::copy].hidden = true;
+            window->widgets[widx::paste].hidden = true;
         }
     }
 
