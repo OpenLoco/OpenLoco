@@ -80,7 +80,7 @@ namespace OpenLoco
 
         bool empty() const;
         TownId id() const;
-        void update();
+        void tick();
         void drawLabel(Gfx::DrawingContext& drawingCtx, ZoomLevel zoom);
         void updateLabel();
         void updateMonthly();

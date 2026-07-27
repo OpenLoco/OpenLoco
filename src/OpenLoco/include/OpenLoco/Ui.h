@@ -107,7 +107,7 @@ namespace OpenLoco::Ui
     void setCursorPos(int32_t x, int32_t y);
     void hideCursor();
     void showCursor();
-    void update();
+    void tick();
     void triggerResize();
     void render();
     void showMessageBox(const std::string& title, const std::string& message);

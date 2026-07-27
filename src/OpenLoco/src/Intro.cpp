@@ -5,11 +5,9 @@
 #include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
-#include "Gui.h"
 #include "Localisation/StringIds.h"
 #include "MultiPlayer.h"
 #include "OpenLoco.h"
-#include "Title.h"
 #include "Ui.h"
 #include "ViewportManager.h"
 
@@ -36,18 +34,8 @@ namespace OpenLoco::Intro
     static void updateEnd(Gfx::DrawingContext& drawingCtx)
     {
         drawingCtx.clearSingle(PaletteIndex::black0);
-        _state = State::end2;
-        _introTicks = 0;
-    }
-
-    static void updateEnd2([[maybe_unused]] Gfx::DrawingContext& drawingCtx)
-    {
         _state = State::none;
-        Gfx::loadDefaultPalette();
-        Gfx::invalidateScreen();
-        resetSubsystems();
-        Gui::init();
-        Title::reset();
+        _introTicks = 0;
     }
 
     static void updateNone([[maybe_unused]] Gfx::DrawingContext& drawingCtx) {}
@@ -203,7 +191,7 @@ namespace OpenLoco::Intro
     };
 
     // 0x0046AE0C
-    void update()
+    void tick()
     {
         auto& drawingEngine = Gfx::getDrawingEngine();
         auto& drawingCtx = drawingEngine.getDrawingContext();
@@ -211,10 +199,6 @@ namespace OpenLoco::Intro
         if (_state == State::end)
         {
             updateEnd(drawingCtx);
-        }
-        else if (_state == State::end2)
-        {
-            updateEnd2(drawingCtx);
         }
         else if (enumValue(_state) < std::size(kUpdateFunctions))
         {

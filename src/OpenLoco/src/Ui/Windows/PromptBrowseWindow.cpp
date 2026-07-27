@@ -192,7 +192,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                     WindowManager::dispatchUpdateAll();
                     Input::processKeyboardInput();
                     Input::processMouseWheel();
-                    WindowManager::update();
+                    WindowManager::tick();
                     Ui::minimalHandleInput();
                     Gfx::renderAndUpdate();
                     return WindowManager::find(WindowType::fileBrowserPrompt) != nullptr;

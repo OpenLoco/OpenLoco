@@ -147,7 +147,7 @@ namespace OpenLoco
     }
 
     // 0x00453275
-    void Industry::update()
+    void Industry::tick()
     {
         // Maybe worthwhile returning early if the industry does not use farm tiles
         if (!hasFlags(IndustryFlags::isGhost) && under_construction == kIndustryConstructionComplete)

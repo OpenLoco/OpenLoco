@@ -7,7 +7,6 @@
 #include <OpenLoco/Environment.h>
 #include <OpenLoco/GameSaveCompare.h>
 #include <OpenLoco/GameState.h>
-#include <OpenLoco/Intro.h>
 #include <OpenLoco/Logging.h>
 #include <OpenLoco/Objects/Object.h>
 #include <OpenLoco/OpenLoco.h>
@@ -15,7 +14,6 @@
 #include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/S5/S5.h>
 #include <OpenLoco/S5/SawyerStream.h>
-#include <OpenLoco/Title.h>
 #include <OpenLoco/Version.hpp>
 #include <SDL3/SDL_main.h>
 #include <iostream>
@@ -245,23 +243,12 @@ namespace OpenLoco
     {
         auto& cfg = Config::get();
 
-        initialise();
-
+        // Window creation must be done before Gfx can be initialized.
         Ui::createWindow(cfg.display);
         Ui::initialiseCursors();
         Audio::initialiseDSound();
 
-        const auto& cmdLineOptions = getCommandLineOptions();
-        if (cmdLineOptions.action == CommandLineAction::intro)
-        {
-            Intro::state(Intro::State::begin);
-        }
-        else
-        {
-            Intro::state(Intro::State::end);
-        }
-
-        Title::start();
+        initialise();
 
         while (Input::processMessages())
         {

@@ -1,7 +1,13 @@
 #pragma once
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <OpenLoco/Core/FileSystem.hpp>
 #include <cstdint>
+
+namespace OpenLoco::S5
+{
+    enum class LoadFlags : uint32_t;
+}
 
 namespace OpenLoco
 {
@@ -25,6 +31,15 @@ namespace OpenLoco
 
     namespace SceneManager
     {
+        enum class SceneId : uint8_t
+        {
+            boot,
+            intro,
+            title,
+            gameplay,
+            editor,
+        };
+
         enum class Flags : uint16_t
         {
             none = 0U,
@@ -39,6 +54,23 @@ namespace OpenLoco
             pauseOverrideEnabled = 1U << 8, // new in OpenLoco
         };
         OPENLOCO_ENABLE_ENUM_OPERATORS(Flags);
+
+        // Scene transitions
+        SceneId getCurrentScene();
+        SceneId getPendingScene();
+        bool isSceneTransitionPending();
+        void requestScene(SceneId scene);
+
+        // Requests a scene change that first loads the given file, the load is performed
+        // as part of the scene transition rather than inside the tick that requested it.
+        void requestSceneLoad(SceneId scene, const fs::path& path, S5::LoadFlags flags);
+
+        bool applySceneTransition();
+
+        // Scene dispatch
+        void tick();
+        void tickInterface();
+        void update();
 
         void resetSceneAge();
         uint16_t getSceneAge();

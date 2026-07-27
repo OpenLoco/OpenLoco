@@ -145,7 +145,7 @@ namespace OpenLoco
 
         bool empty() const { return name == StringIds::null; }
         StationId id() const;
-        void update();
+        void tick();
         uint32_t calcAcceptedCargo(CargoSearchState& cargoSearchState) const;
         char* getStatusString(char* buffer);
         bool updateCargo();

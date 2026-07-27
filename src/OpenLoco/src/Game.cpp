@@ -4,7 +4,6 @@
 #include "Environment.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/General/LoadSaveQuit.h"
-#include "GameException.hpp"
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "Input.h"
@@ -16,7 +15,6 @@
 #include "Scenario/Scenario.h"
 #include "Scenario/ScenarioOptions.h"
 #include "SceneManager.h"
-#include "Title.h"
 #include "Ui/ProgressBar.h"
 #include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
@@ -124,11 +122,8 @@ namespace OpenLoco::Game
                 _activeSavePath = path.u8string();
 
                 // 0x004424CE
-                if (S5::importSaveToGameState(path, S5::LoadFlags::landscape))
-                {
-                    SceneManager::resetSceneAge();
-                    throw GameException::Interrupt;
-                }
+                SceneManager::requestSceneLoad(SceneManager::SceneId::editor, path, S5::LoadFlags::landscape);
+                return;
             }
         }
         else if (!SceneManager::isNetworked())
@@ -139,11 +134,8 @@ namespace OpenLoco::Game
                 auto path = fs::u8path(*res).replace_extension(S5::extensionSV5);
                 _activeSavePath = path.u8string();
 
-                if (S5::importSaveToGameState(path, S5::LoadFlags::none))
-                {
-                    SceneManager::resetSceneAge();
-                    throw GameException::Interrupt;
-                }
+                SceneManager::requestSceneLoad(SceneManager::SceneId::gameplay, path, S5::LoadFlags::none);
+                return;
             }
         }
         else if (SceneManager::isNetworked())
@@ -204,11 +196,10 @@ namespace OpenLoco::Game
                     Input::resetFlag(Input::Flags::rightMousePressed);
                 }
 
-                Title::start();
-
                 Ui::Windows::Error::open(StringIds::error_the_other_player_has_exited_the_game);
 
-                throw GameException::Interrupt;
+                SceneManager::requestScene(SceneManager::SceneId::title);
+                return;
             }
         }
 
@@ -238,9 +229,7 @@ namespace OpenLoco::Game
             Input::resetFlag(Input::Flags::rightMousePressed);
         }
 
-        Title::start();
-
-        throw GameException::Interrupt;
+        SceneManager::requestScene(SceneManager::SceneId::title);
     }
 
     // 0x0043C427

@@ -4,7 +4,6 @@
 #include "Date.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
-#include "GameException.hpp"
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "Gui.h"
@@ -129,7 +128,7 @@ namespace OpenLoco::EditorController
         options.riverMeanderRate = 10;
 
         SceneManager::resetSceneAge();
-        throw GameException::Interrupt;
+        SceneManager::requestScene(SceneManager::SceneId::editor);
     }
 
     // 0x0043CB9F
@@ -409,9 +408,8 @@ namespace OpenLoco::EditorController
 
                 ScenarioManager::loadIndex(true);
 
-                // This ends with a premature tick termination
                 Game::returnToTitle();
-                return; // won't be reached
+                return;
             }
 
             case Step::saveScenario:

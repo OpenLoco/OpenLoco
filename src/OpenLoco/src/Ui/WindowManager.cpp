@@ -106,7 +106,7 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004C6118
-    void update()
+    void tick()
     {
         uint16_t timeSinceLastTick = getTimeSinceLastTick();
         ToolTip::setNotShownTicks(ToolTip::getNotShownTicks() + timeSinceLastTick);

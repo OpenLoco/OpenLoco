@@ -22,7 +22,7 @@ namespace OpenLoco::Network
     bool joinServer(std::string_view host);
     bool joinServer(std::string_view host, port_t port);
     void close();
-    void update();
+    void tick();
 
     void sendChatMessage(std::string_view message);
     void receiveChatMessage(client_id_t client, std::string_view message);

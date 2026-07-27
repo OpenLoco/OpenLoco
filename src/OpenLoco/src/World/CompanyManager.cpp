@@ -220,7 +220,7 @@ namespace OpenLoco::CompanyManager
     }
 
     // 0x00430319
-    void update()
+    void tick()
     {
         if (!SceneManager::isEditorMode() && !Config::get().companyAIDisabled)
         {

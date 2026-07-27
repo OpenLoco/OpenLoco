@@ -223,6 +223,12 @@ namespace OpenLoco::Gfx
     {
         assert(index + count < 256);
 
+        if (_palette == nullptr)
+        {
+            // In headless mode, the palette is not created, so we cannot update it.
+            return;
+        }
+
         SDL_Color base[256]{};
         SDL_Color* basePtr = &base[index];
         auto* entryPtr = &entries[index];

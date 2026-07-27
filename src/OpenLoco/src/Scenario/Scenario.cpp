@@ -7,7 +7,6 @@
 #include "Environment.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
-#include "GameException.hpp"
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "Graphics/Gfx.h"
@@ -371,7 +370,7 @@ namespace OpenLoco::Scenario
         Gfx::invalidateScreen();
         SceneManager::resetSceneAge();
         MultiPlayer::setFlag(MultiPlayer::flags::flag_10);
-        throw GameException::Interrupt;
+        SceneManager::requestScene(SceneManager::SceneId::gameplay);
     }
 
     // 0x0044400C
@@ -390,6 +389,7 @@ namespace OpenLoco::Scenario
         gameState.rng = Core::Prng(Platform::getTime() ^ oldRng.srand_0(), oldRng.srand_1());
         std::strncpy(gameState.scenarioFileName, path.u8string().c_str(), std::size(gameState.scenarioFileName) - 1);
         start();
+        return true;
     }
 
     // this will prepare _commonFormatArgs array before drawing the StringIds::challenge_value

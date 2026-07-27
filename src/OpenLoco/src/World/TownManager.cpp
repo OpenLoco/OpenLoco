@@ -442,7 +442,7 @@ namespace OpenLoco::TownManager
     }
 
     // 0x00496B6D
-    void update()
+    void tick()
     {
         if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !SceneManager::isEditorMode())
         {
@@ -454,7 +454,7 @@ namespace OpenLoco::TownManager
                 if (town != nullptr && !town->empty())
                 {
                     GameCommands::setUpdatingCompanyId(CompanyId::neutral);
-                    town->update();
+                    town->tick();
                 }
             }
         }
