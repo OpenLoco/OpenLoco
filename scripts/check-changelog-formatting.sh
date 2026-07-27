@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Run the script and capture the output
-output=$(node scripts/format-changelog.js CHANGELOG.md)
+output=$(node scripts/format-changelog.py CHANGELOG.md)
 
 # Check if node script ran successfully
 if [ $? -eq 0 ]; then
@@ -12,7 +12,7 @@ if [ $? -eq 0 ]; then
     
     if [ $? -ne 0 ]; then
         printf "\nDifferences found. You can apply the changes locally with:\n"
-        printf "  node scripts/format-changelog.js CHANGELOG.md | git diff --no-index - CHANGELOG.md | git apply\n"
+        printf "  python3 scripts/format-changelog.py CHANGELOG.md | git diff --no-index - CHANGELOG.md | git apply\n"
         exit 1
     else
         echo "No differences found. Exiting with status 0."
