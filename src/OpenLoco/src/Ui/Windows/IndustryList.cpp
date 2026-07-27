@@ -648,7 +648,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(577, 171, StringIds::title_fund_new_industries),
-            Widgets::ScrollView({ 3, 45 }, { 549, 111 }, WindowColour::secondary, Scrollbars::vertical)
+            Widgets::ScrollView({ 3, 45 }, { 549, kRowHeight }, WindowColour::secondary, Scrollbars::vertical)
 
         );
 
@@ -856,50 +856,40 @@ namespace OpenLoco::Ui::Windows::IndustryList
             }
         }
 
+        static void updateActiveThumb(Window& self);
+
         // 0x004585B8
         static void onUpdate(Window& self)
         {
+            bool hasResized = false;
             if (!Input::hasFlag(Input::Flags::rightMousePressed))
             {
                 auto cursor = Input::getMouseLocation();
-                auto xPos = cursor.x;
-                auto yPos = cursor.y;
-                Window* activeWindow = WindowManager::findAt(xPos, yPos);
+                Window* activeWindow = WindowManager::findAt(cursor.x, cursor.y);
                 if (activeWindow == &self)
                 {
-                    xPos -= self.x;
-                    xPos += 26;
-                    yPos -= self.y;
-
-                    if ((yPos < 42) || (xPos <= self.width))
+                    auto xPos = cursor.x - self.x;
+                    auto yPos = cursor.y - self.y;
+                    if ((yPos < 42) || (xPos + 4 <= self.width))
                     {
-                        xPos = cursor.x;
-                        yPos = cursor.y;
-                        WidgetIndex_t activeWidget = self.findWidgetAt(xPos, yPos);
-
+                        auto activeWidget = self.findWidgetAt(cursor.x, cursor.y);
                         if (activeWidget > Common::widx::panel)
                         {
                             self.expandContentCounter += 1;
                             if (self.expandContentCounter >= 8)
                             {
-                                auto y = std::min(self.scrollAreas[0].contentHeight - 1 + 60, 500);
+                                auto newHeight = std::min(self.scrollAreas[0].contentHeight - 1 + 60, 500);
                                 if (Ui::height() < 600)
                                 {
-                                    y = std::min(y, 276);
+                                    newHeight = std::min(newHeight, 276);
                                 }
-                                self.minWidth = kWindowSize.width;
-                                self.minHeight = y;
-                                self.maxWidth = kWindowSize.width;
-                                self.maxHeight = y;
+                                hasResized |= self.setSize({ kWindowSize.width, newHeight });
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    self.minWidth = kWindowSize.width;
-                                    self.minHeight = kWindowSize.height;
-                                    self.maxWidth = kWindowSize.width;
-                                    self.maxHeight = kWindowSize.height;
+                                    hasResized |= self.setSize(kWindowSize);
                                 }
                             }
                         }
@@ -910,16 +900,18 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        self.minWidth = kWindowSize.width;
-                        self.minHeight = kWindowSize.height;
-                        self.maxWidth = kWindowSize.width;
-                        self.maxHeight = kWindowSize.height;
+                        hasResized |= self.setSize(kWindowSize);
                     }
                 }
             }
             self.frameNo++;
 
             self.callPrepareDraw();
+            if (hasResized)
+            {
+                updateActiveThumb(self);
+            }
+
             WindowManager::invalidateWidget(WindowType::industryList, self.number, self.currentTab + Common::widx::tab_industry_list);
 
             if (!ToolManager::isToolActive(self.type, self.number))

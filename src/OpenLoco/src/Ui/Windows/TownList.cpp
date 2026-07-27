@@ -819,7 +819,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(640, 172, StringIds::title_build_new_buildings),
-            Widgets::ScrollView({ 2, 45 }, { 573, 112 }, WindowColour::secondary, 2),
+            Widgets::ScrollView({ 2, 45 }, { 573, kRowHeight }, WindowColour::secondary, 2),
             Widgets::ImageButton({ 575, 46 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
             Widgets::ColourButton({ 579, 91 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_object_colour)
 
@@ -919,49 +919,40 @@ namespace OpenLoco::Ui::Windows::TownList
             }
         }
 
+        static void updateActiveThumb(Window& self);
+
         // 0x0049AD51
         static void onUpdate(Window& self)
         {
+            bool hasResized = false;
             if (!Input::hasFlag(Input::Flags::rightMousePressed))
             {
                 auto cursor = Input::getMouseLocation();
-                auto xPos = cursor.x;
-                auto yPos = cursor.y;
-                Window* activeWindow = WindowManager::findAt(xPos, yPos);
+                Window* activeWindow = WindowManager::findAt(cursor.x, cursor.y);
                 if (activeWindow == &self)
                 {
-                    xPos -= self.x;
-                    xPos += 26;
-                    yPos -= self.y;
-
-                    if ((yPos < 42) || (xPos <= self.width))
+                    auto xPos = cursor.x - self.x;
+                    auto yPos = cursor.y - self.y;
+                    if ((yPos < 42) || (xPos + 26 <= self.width))
                     {
-                        xPos = cursor.x;
-                        yPos = cursor.y;
-                        WidgetIndex_t activeWidget = self.findWidgetAt(xPos, yPos);
+                        auto activeWidget = self.findWidgetAt(cursor.x, cursor.y);
                         if (activeWidget > Common::widx::panel)
                         {
                             self.expandContentCounter += 1;
                             if (self.expandContentCounter >= 8)
                             {
-                                auto y = std::min(self.scrollAreas[0].contentHeight - 1 + 60, 500);
+                                auto newHeight = std::min(self.scrollAreas[0].contentHeight - 1 + 60, 500);
                                 if (Ui::height() < 600)
                                 {
-                                    y = std::min(y, 276);
+                                    newHeight = std::min(newHeight, 276);
                                 }
-                                self.minWidth = kWindowSize.width;
-                                self.minHeight = y;
-                                self.maxWidth = kWindowSize.width;
-                                self.maxHeight = y;
+                                hasResized |= self.setSize({ kWindowSize.width, newHeight });
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    self.minWidth = kWindowSize.width;
-                                    self.minHeight = kWindowSize.height;
-                                    self.maxWidth = kWindowSize.width;
-                                    self.maxHeight = kWindowSize.height;
+                                    hasResized |= self.setSize(kWindowSize);
                                 }
                             }
                         }
@@ -972,16 +963,18 @@ namespace OpenLoco::Ui::Windows::TownList
                     self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        self.minWidth = kWindowSize.width;
-                        self.minHeight = kWindowSize.height;
-                        self.maxWidth = kWindowSize.width;
-                        self.maxHeight = kWindowSize.height;
+                        hasResized |= self.setSize(kWindowSize);
                     }
                 }
             }
             self.frameNo++;
 
             self.callPrepareDraw();
+            if (hasResized)
+            {
+                updateActiveThumb(self);
+            }
+
             WindowManager::invalidateWidget(WindowType::townList, self.number, self.currentTab + Common::widx::tab_town_list);
             if (!ToolManager::isToolActive(self.type, self.number))
             {

@@ -149,7 +149,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(634, 162, StringIds::title_plant_trees),
-            Widgets::ScrollView({ 3, 45 }, { 605, 101 }, WindowColour::secondary, Scrollbars::vertical),
+            Widgets::ScrollView({ 3, 45 }, { 605, kRowHeight }, WindowColour::secondary, Scrollbars::vertical),
             Widgets::ImageButton({ 609, 46 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
             Widgets::ColourButton({ 609, 70 }, { 24, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_object_colour),
             Widgets::ImageButton({ 609, 94 }, { 24, 24 }, WindowColour::secondary, ImageIds::plant_cluster_selected_tree, StringIds::plant_cluster_selected_tree),
@@ -376,47 +376,35 @@ namespace OpenLoco::Ui::Windows::Terraform
                 WindowManager::close(&self);
             }
 
+            bool hasResized = false;
             if (!Input::hasFlag(Input::Flags::rightMousePressed))
             {
                 auto cursor = Input::getMouseLocation();
-                auto xPos = cursor.x;
-                auto yPos = cursor.y;
-                Window* activeWindow = WindowManager::findAt(xPos, yPos);
+                Window* activeWindow = WindowManager::findAt(cursor.x, cursor.y);
                 if (activeWindow == &self)
                 {
-                    xPos -= self.x;
-                    xPos += 26;
-                    yPos -= self.y;
-
-                    if ((yPos < 42) || (xPos <= self.width))
+                    auto xPos = cursor.x - self.x;
+                    auto yPos = cursor.y - self.y;
+                    if ((yPos < 42) || (xPos + 26 <= self.width))
                     {
-                        xPos = cursor.x;
-                        yPos = cursor.y;
-                        WidgetIndex_t activeWidget = self.findWidgetAt(xPos, yPos);
-
+                        auto activeWidget = self.findWidgetAt(cursor.x, cursor.y);
                         if (activeWidget > Common::widx::panel)
                         {
                             self.expandContentCounter += 1;
                             if (self.expandContentCounter >= 8)
                             {
-                                auto y = std::min(self.scrollAreas[0].contentHeight - 1 + 60, 562);
+                                auto newHeight = std::min(self.scrollAreas[0].contentHeight - 1 + 60, 562);
                                 if (Ui::height() < 600)
                                 {
-                                    y = std::min(y, 358);
+                                    newHeight = std::min(newHeight, 358);
                                 }
-                                self.minWidth = kWindowSize.width;
-                                self.minHeight = y;
-                                self.maxWidth = kWindowSize.width;
-                                self.maxHeight = y;
+                                hasResized |= self.setSize({ kWindowSize.width, newHeight });
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    self.minWidth = kWindowSize.width;
-                                    self.minHeight = kWindowSize.height;
-                                    self.maxWidth = kWindowSize.width;
-                                    self.maxHeight = kWindowSize.height;
+                                    hasResized |= self.setSize(kWindowSize);
                                 }
                             }
                         }
@@ -427,16 +415,18 @@ namespace OpenLoco::Ui::Windows::Terraform
                     self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        self.minWidth = kWindowSize.width;
-                        self.minHeight = kWindowSize.height;
-                        self.maxWidth = kWindowSize.width;
-                        self.maxHeight = kWindowSize.height;
+                        hasResized |= self.setSize(kWindowSize);
                     }
                 }
             }
             self.frameNo++;
 
             self.callPrepareDraw();
+            if (hasResized)
+            {
+                updateActiveThumb(self);
+            }
+
             WindowManager::invalidateWidget(WindowType::terraform, self.number, self.currentTab + Common::widx::tab_clear_area);
         }
 
@@ -2257,7 +2247,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(418, 108, StringIds::title_build_walls),
-            Widgets::ScrollView({ 2, 45 }, { 391, 48 }, WindowColour::secondary, Scrollbars::vertical)
+            Widgets::ScrollView({ 2, 45 }, { 391, kRowHeight }, WindowColour::secondary, Scrollbars::vertical)
 
         );
 
@@ -2375,47 +2365,35 @@ namespace OpenLoco::Ui::Windows::Terraform
                 WindowManager::close(&self);
             }
 
+            bool hasResized = false;
             if (!Input::hasFlag(Input::Flags::rightMousePressed))
             {
                 auto cursor = Input::getMouseLocation();
-                auto xPos = cursor.x;
-                auto yPos = cursor.y;
-                Window* activeWindow = WindowManager::findAt(xPos, yPos);
+                Window* activeWindow = WindowManager::findAt(cursor.x, cursor.y);
                 if (activeWindow == &self)
                 {
-                    xPos -= self.x;
-                    xPos += 26;
-                    yPos -= self.y;
-
-                    if ((yPos < 42) || (xPos <= self.width))
+                    auto xPos = cursor.x - self.x;
+                    auto yPos = cursor.y - self.y;
+                    if ((yPos < 42) || (xPos + 26 <= self.width))
                     {
-                        xPos = cursor.x;
-                        yPos = cursor.y;
-                        WidgetIndex_t activeWidget = self.findWidgetAt(xPos, yPos);
-
+                        auto activeWidget = self.findWidgetAt(cursor.x, cursor.y);
                         if (activeWidget > Common::widx::panel)
                         {
                             self.expandContentCounter += 1;
                             if (self.expandContentCounter >= 8)
                             {
-                                auto y = std::min(self.scrollAreas[0].contentHeight - 1 + 60, 562);
+                                auto newHeight = std::min(self.scrollAreas[0].contentHeight - 1 + 60, 562);
                                 if (Ui::height() < 600)
                                 {
-                                    y = std::min(y, 358);
+                                    newHeight = std::min(newHeight, 358);
                                 }
-                                self.minWidth = kWindowSize.width;
-                                self.minHeight = y;
-                                self.maxWidth = kWindowSize.width;
-                                self.maxHeight = y;
+                                hasResized |= self.setSize({ kWindowSize.width, newHeight });
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    self.minWidth = kWindowSize.width;
-                                    self.minHeight = kWindowSize.height;
-                                    self.maxWidth = kWindowSize.width;
-                                    self.maxHeight = kWindowSize.height;
+                                    hasResized |= self.setSize(kWindowSize);
                                 }
                             }
                         }
@@ -2426,16 +2404,18 @@ namespace OpenLoco::Ui::Windows::Terraform
                     self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        self.minWidth = kWindowSize.width;
-                        self.minHeight = kWindowSize.height;
-                        self.maxWidth = kWindowSize.width;
-                        self.maxHeight = kWindowSize.height;
+                        hasResized |= self.setSize(kWindowSize);
                     }
                 }
             }
             self.frameNo++;
 
             self.callPrepareDraw();
+            if (hasResized)
+            {
+                updateActiveThumb(self);
+            }
+
             WindowManager::invalidateWidget(WindowType::terraform, self.number, self.currentTab + Common::widx::tab_clear_area);
         }
 

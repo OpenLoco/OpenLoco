@@ -265,6 +265,7 @@ namespace OpenLoco::Ui
             }
             else if (width > maxWidth)
             {
+                invalidate();
                 width = maxWidth;
                 invalidate();
                 hasResized = true;
@@ -278,6 +279,7 @@ namespace OpenLoco::Ui
             }
             else if (height > maxHeight)
             {
+                invalidate();
                 height = maxHeight;
                 invalidate();
                 hasResized = true;
@@ -285,9 +287,9 @@ namespace OpenLoco::Ui
             return hasResized;
         }
 
-        constexpr void setSize(Ui::Size size)
+        constexpr bool setSize(Ui::Size size)
         {
-            setSize(size, size);
+            return setSize(size, size);
         }
 
         constexpr AdvancedColour getColour(WindowColour index) const
