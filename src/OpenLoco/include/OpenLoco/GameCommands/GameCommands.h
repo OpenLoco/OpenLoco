@@ -133,6 +133,8 @@ namespace OpenLoco::GameCommands
         setGameSpeed = 82,
         vehicleOrderReverse = 83,
         vehicleRepaint = 84,
+        createSignalsAuto = 85,
+        removeSignalsAuto = 86,
     };
 
     constexpr int32_t kDefaultRegValue = 0xCCCCCCCC;
