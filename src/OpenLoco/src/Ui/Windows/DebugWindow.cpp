@@ -30,7 +30,7 @@ namespace OpenLoco::Ui::Windows::Debug
     static constexpr int32_t kTabWidth = 31;
     static constexpr int32_t kTabHeight = 27;
 
-    namespace widx
+    namespace Widx
     {
         constexpr auto frame = WidgetId("frame");
         constexpr auto title = WidgetId("title");
@@ -60,27 +60,27 @@ namespace OpenLoco::Ui::Windows::Debug
         using namespace Widgets;
 
         static constexpr auto _widgets = makeWidgets(
-            Frame(widx::frame, { 0, 0 }, kWindowSize, WindowColour::primary),
-            Caption(widx::title, { 1, 1 }, { kWindowSize.width - 2, kTitlebarHeight }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::openloco),
-            ImageButton(widx::close, { kWindowSize.width - 15, kMargin }, { 13, kTitlebarHeight }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+            Frame(Widx::frame, { 0, 0 }, kWindowSize, WindowColour::primary),
+            Caption(Widx::title, { 1, 1 }, { kWindowSize.width - 2, kTitlebarHeight }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::openloco),
+            ImageButton(Widx::close, { kWindowSize.width - 15, kMargin }, { 13, kTitlebarHeight }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
 
-            Panel(widx::panel, { 0, kTitlebarHeight + kMargin }, { kWindowSize.width, 245 }, WindowColour::secondary),
+            Panel(Widx::panel, { 0, kTitlebarHeight + kMargin }, { kWindowSize.width, 245 }, WindowColour::secondary),
 
-            Button(widx::button_1, { kMargin, kTitlebarHeight + kMargin + (0 * (kRowSize + kMargin)) }, { kWindowSize.width / 2, kButtonHeight }, WindowColour::secondary, StringIds::openloco),
-            ImageButton(widx::button_2, { kMargin, kTitlebarHeight + kMargin + (1 * (kRowSize + kMargin)) }, { 24, 24 }, WindowColour::secondary, ImageIds::red_flag, StringIds::tooltip_stop_start),
+            Button(Widx::button_1, { kMargin, kTitlebarHeight + kMargin + (0 * (kRowSize + kMargin)) }, { kWindowSize.width / 2, kButtonHeight }, WindowColour::secondary, StringIds::openloco),
+            ImageButton(Widx::button_2, { kMargin, kTitlebarHeight + kMargin + (1 * (kRowSize + kMargin)) }, { 24, 24 }, WindowColour::secondary, ImageIds::red_flag, StringIds::tooltip_stop_start),
 
-            Label(widx::label_1, { kMargin, kTitlebarHeight + kMargin + (2 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, ContentAlign::left, StringIds::openloco),
-            Label(widx::label_2, { kMargin, kTitlebarHeight + kMargin + (3 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, ContentAlign::center, StringIds::openloco),
-            Label(widx::label_3, { kMargin, kTitlebarHeight + kMargin + (4 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, ContentAlign::right, StringIds::openloco),
+            Label(Widx::label_1, { kMargin, kTitlebarHeight + kMargin + (2 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, ContentAlign::left, StringIds::openloco),
+            Label(Widx::label_2, { kMargin, kTitlebarHeight + kMargin + (3 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, ContentAlign::center, StringIds::openloco),
+            Label(Widx::label_3, { kMargin, kTitlebarHeight + kMargin + (4 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, ContentAlign::right, StringIds::openloco),
 
-            Checkbox(widx::checkbox_1, { kMargin, kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, StringIds::openloco),
-            Checkbox(widx::checkbox_2, { kMargin, kTitlebarHeight + kMargin + (6 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, StringIds::openloco),
-            Checkbox(widx::checkbox_3, { kMargin, kTitlebarHeight + kMargin + (7 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, StringIds::openloco),
-            Checkbox(widx::checkbox_4, { kMargin, kTitlebarHeight + kMargin + (8 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, StringIds::openloco),
+            Checkbox(Widx::checkbox_1, { kMargin, kTitlebarHeight + kMargin + (5 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, StringIds::openloco),
+            Checkbox(Widx::checkbox_2, { kMargin, kTitlebarHeight + kMargin + (6 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, StringIds::openloco),
+            Checkbox(Widx::checkbox_3, { kMargin, kTitlebarHeight + kMargin + (7 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, StringIds::openloco),
+            Checkbox(Widx::checkbox_4, { kMargin, kTitlebarHeight + kMargin + (8 * (kRowSize + kMargin)) }, { kWindowSize.width - (kMargin * 2), kLabelHeight }, WindowColour::secondary, StringIds::openloco),
 
-            Tab(widx::tab_1, { kMargin + ((kTabWidth + kMargin) * 0), kTitlebarHeight + kMargin + (9 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town),
-            Tab(widx::tab_2, { kMargin + ((kTabWidth + kMargin) * 1), kTitlebarHeight + kMargin + (9 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_population_graph),
-            Tab(widx::tab_3, { kMargin + ((kTabWidth + kMargin) * 2), kTitlebarHeight + kMargin + (9 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town_ratings_each_company)
+            Tab(Widx::tab_1, { kMargin + ((kTabWidth + kMargin) * 0), kTitlebarHeight + kMargin + (9 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town),
+            Tab(Widx::tab_2, { kMargin + ((kTabWidth + kMargin) * 1), kTitlebarHeight + kMargin + (9 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_population_graph),
+            Tab(Widx::tab_3, { kMargin + ((kTabWidth + kMargin) * 2), kTitlebarHeight + kMargin + (9 * (kRowSize + kMargin)) }, { kTabWidth, kTabHeight }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town_ratings_each_company)
             //
         );
     }
@@ -100,7 +100,7 @@ namespace OpenLoco::Ui::Windows::Debug
             getEvents());
 
         window->setWidgets(_widgets);
-        // window->disabledWidgets = 1U << widx::tab_3;
+        // window->disabledWidgets = 1U << Widx::tab_3;
         window->initScrollWidgets();
 
         auto getWidgetById = [&](Window& window, const WidgetId id) -> Widget& {
@@ -114,14 +114,14 @@ namespace OpenLoco::Ui::Windows::Debug
             throw std::runtime_error("Widget not found");
         };
 
-        auto& chkbox2 = getWidgetById(*window, widx::checkbox_2);
+        auto& chkbox2 = getWidgetById(*window, Widx::checkbox_2);
         chkbox2.activated = true;
 
-        auto& chkbox3 = getWidgetById(*window, widx::checkbox_3);
+        auto& chkbox3 = getWidgetById(*window, Widx::checkbox_3);
         chkbox3.activated = false;
         chkbox3.disabled = true;
 
-        auto& chkbox4 = getWidgetById(*window, widx::checkbox_4);
+        auto& chkbox4 = getWidgetById(*window, Widx::checkbox_4);
         chkbox4.activated = true;
         chkbox4.disabled = true;
 
@@ -138,7 +138,7 @@ namespace OpenLoco::Ui::Windows::Debug
         const auto& widget = window.widgets[widgetIndex];
         switch (widget.id)
         {
-            case widx::close:
+            case Widx::close:
                 WindowManager::close(window.type);
                 break;
         }

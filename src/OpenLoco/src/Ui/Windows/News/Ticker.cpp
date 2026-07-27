@@ -15,7 +15,7 @@
 namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 {
     static constexpr auto widgets = makeWidgets(
-        Widgets::Wt3Widget({ 0, 0 }, { 111, 26 }, WindowColour::primary)
+        Widgets::Wt3Widget(Widx::kFrame, { 0, 0 }, { 111, 26 }, WindowColour::primary)
 
     );
 
@@ -25,9 +25,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
     }
 
     // 0x00429EA2
-    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseUp(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        if (widgetIndex != 0)
+        if (id != Widx::kFrame)
         {
             return;
         }

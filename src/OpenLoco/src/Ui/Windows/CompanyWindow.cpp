@@ -72,20 +72,35 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             company_select,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kFrame{ "frame" };
+            constexpr WidgetId kCaption{ "caption" };
+            constexpr WidgetId kCloseButton{ "close_button" };
+            constexpr WidgetId kPanel{ "panel" };
+            constexpr WidgetId kTabStatus{ "tab_status" };
+            constexpr WidgetId kTabDetails{ "tab_details" };
+            constexpr WidgetId kTabColourScheme{ "tab_colour_scheme" };
+            constexpr WidgetId kTabFinances{ "tab_finances" };
+            constexpr WidgetId kTabCargoDelivered{ "tab_cargo_delivered" };
+            constexpr WidgetId kTabChallenge{ "tab_challenge" };
+            constexpr WidgetId kCompanySelect{ "company_select" };
+        }
+
         static constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
         {
             return makeWidgets(
-                Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
-                Widgets::Caption({ 1, 1 }, { frameWidth - 2, 13 }, Widgets::Caption::Style::colourText, WindowColour::primary, windowCaptionId),
-                Widgets::ImageButton({ frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-                Widgets::Panel({ 0, 41 }, { frameWidth, 120 }, WindowColour::secondary),
-                Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_owner_and_status),
-                Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_headquarters_and_details),
-                Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_colour_scheme),
-                Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_finances),
-                Widgets::Tab({ 127, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_cargo_delivered),
-                Widgets::Tab({ 158, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_challenge_for_this_game),
-                Widgets::ImageButton({ 0, 14 }, { 26, 26 }, WindowColour::primary, ImageIds::null, StringIds::tooltip_select_company));
+                Widgets::Frame(Widx::kFrame, { 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
+                Widgets::Caption(Widx::kCaption, { 1, 1 }, { frameWidth - 2, 13 }, Widgets::Caption::Style::colourText, WindowColour::primary, windowCaptionId),
+                Widgets::ImageButton(Widx::kCloseButton, { frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::Panel(Widx::kPanel, { 0, 41 }, { frameWidth, 120 }, WindowColour::secondary),
+                Widgets::Tab(Widx::kTabStatus, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_owner_and_status),
+                Widgets::Tab(Widx::kTabDetails, { 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_headquarters_and_details),
+                Widgets::Tab(Widx::kTabColourScheme, { 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_colour_scheme),
+                Widgets::Tab(Widx::kTabFinances, { 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_finances),
+                Widgets::Tab(Widx::kTabCargoDelivered, { 127, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_cargo_delivered),
+                Widgets::Tab(Widx::kTabChallenge, { 158, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_challenge_for_this_game),
+                Widgets::ImageButton(Widx::kCompanySelect, { 0, 14 }, { 26, 26 }, WindowColour::primary, ImageIds::null, StringIds::tooltip_select_company));
         }
 
         // 0x004343FC
@@ -134,13 +149,22 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             change_owner_name,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kUnk11{ "unk_11" };
+            constexpr WidgetId kViewport{ "viewport" };
+            constexpr WidgetId kCentreOnViewport{ "centre_on_viewport" };
+            constexpr WidgetId kFace{ "face" };
+            constexpr WidgetId kChangeOwnerName{ "change_owner_name" };
+        }
+
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(270, 182, StringIds::title_company),
-            Widgets::Label({ 3, 160 }, { 242, 21 }, WindowColour::secondary, ContentAlign::center),
-            Widgets::Viewport({ 3, 44 }, { 96, 120 }, WindowColour::secondary, Widget::kContentUnk),
-            Widgets::ImageButton({ 0, 0 }, { 24, 24 }, WindowColour::secondary, ImageIds::centre_viewport, StringIds::move_main_view_to_show_this),
-            Widgets::ImageButton({ 178, 57 }, { 66, 66 }, WindowColour::secondary, Widget::kContentNull),
-            Widgets::ImageButton({ 154, 124 }, { 112, 22 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_change_owner_name)
+            Widgets::Label(Widx::kUnk11, { 3, 160 }, { 242, 21 }, WindowColour::secondary, ContentAlign::center),
+            Widgets::Viewport(Widx::kViewport, { 3, 44 }, { 96, 120 }, WindowColour::secondary, Widget::kContentUnk),
+            Widgets::ImageButton(Widx::kCentreOnViewport, { 0, 0 }, { 24, 24 }, WindowColour::secondary, ImageIds::centre_viewport, StringIds::move_main_view_to_show_this),
+            Widgets::ImageButton(Widx::kFace, { 178, 57 }, { 66, 66 }, WindowColour::secondary, Widget::kContentNull),
+            Widgets::ImageButton(Widx::kChangeOwnerName, { 154, 124 }, { 112, 22 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_change_owner_name)
 
         );
 
@@ -281,36 +305,36 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432244
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::caption:
+                case Common::Widx::kCaption:
                     Common::renameCompanyPrompt(&self, widgetIndex);
                     break;
 
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(&self);
                     break;
 
-                case Common::widx::tab_status:
-                case Common::widx::tab_details:
-                case Common::widx::tab_colour_scheme:
-                case Common::widx::tab_finances:
-                case Common::widx::tab_cargo_delivered:
-                case Common::widx::tab_challenge:
+                case Common::Widx::kTabStatus:
+                case Common::Widx::kTabDetails:
+                case Common::Widx::kTabColourScheme:
+                case Common::Widx::kTabFinances:
+                case Common::Widx::kTabCargoDelivered:
+                case Common::Widx::kTabChallenge:
                     Common::switchTab(self, widgetIndex);
                     break;
 
-                case widx::centre_on_viewport:
+                case Widx::kCentreOnViewport:
                     self.viewportCentreMain();
                     break;
 
-                case widx::face:
+                case Widx::kFace:
                     CompanyFaceSelection::open(CompanyId(self.number), self.type);
                     break;
 
-                case widx::change_owner_name:
+                case Widx::kChangeOwnerName:
                 {
                     auto company = CompanyManager::get(CompanyId(self.number));
                     TextInput::openTextInput(&self, StringIds::title_name_owner, StringIds::prompt_enter_new_name_for_owner, company->ownerName, widgetIndex, {});
@@ -320,18 +344,18 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432283
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseDown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            if (widgetIndex == Common::widx::company_select)
+            if (id == Common::Widx::kCompanySelect)
             {
-                Dropdown::populateCompanySelect(&self, &self.widgets[widgetIndex]);
+                Dropdown::populateCompanySelect(&self, &self.widgets[Common::widx::company_select]);
             }
         }
 
         // 0x0043228E
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+        static void onDropdown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
         {
-            if (widgetIndex == Common::widx::company_select)
+            if (id == Common::Widx::kCompanySelect)
             {
                 Common::switchCompany(&self, itemIndex);
             }
@@ -392,13 +416,13 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x004322F6
-        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
+        static void textInput(Window& self, [[maybe_unused]] WidgetIndex_t callingWidget, const WidgetId id, const char* input)
         {
-            if (callingWidget == Common::widx::caption)
+            if (id == Common::Widx::kCaption)
             {
                 Common::renameCompany(&self, input);
             }
-            else if (callingWidget == widx::change_owner_name)
+            else if (id == Widx::kChangeOwnerName)
             {
                 renameCompanyOwnerName(&self, input);
             }
@@ -692,12 +716,20 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             centre_on_viewport,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kViewport{ "viewport" };
+            constexpr WidgetId kBuildHq{ "build_hq" };
+            constexpr WidgetId kRotateHq{ "rotate_hq" };
+            constexpr WidgetId kCentreOnViewport{ "centre_on_viewport" };
+        }
+
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(340, 194, StringIds::title_company_details),
-            Widgets::Viewport({ 219, 54 }, { 96, 120 }, WindowColour::secondary, Widget::kContentUnk),
-            Widgets::ImageButton({ 315, 92 }, { 24, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_build_or_move_headquarters),
-            Widgets::ImageButton({ 315, 92 + 26 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
-            Widgets::ImageButton({ 0, 0 }, { 24, 24 }, WindowColour::secondary, ImageIds::centre_viewport, StringIds::move_main_view_to_show_this)
+            Widgets::Viewport(Widx::kViewport, { 219, 54 }, { 96, 120 }, WindowColour::secondary, Widget::kContentUnk),
+            Widgets::ImageButton(Widx::kBuildHq, { 315, 92 }, { 24, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_build_or_move_headquarters),
+            Widgets::ImageButton(Widx::kRotateHq, { 315, 92 + 26 }, { 24, 24 }, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
+            Widgets::ImageButton(Widx::kCentreOnViewport, { 0, 0 }, { 24, 24 }, WindowColour::secondary, ImageIds::centre_viewport, StringIds::move_main_view_to_show_this)
 
         );
 
@@ -882,28 +914,28 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432BDD
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::caption:
+                case Common::Widx::kCaption:
                     Common::renameCompanyPrompt(&self, widgetIndex);
                     break;
 
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(&self);
                     break;
 
-                case Common::widx::tab_status:
-                case Common::widx::tab_details:
-                case Common::widx::tab_colour_scheme:
-                case Common::widx::tab_finances:
-                case Common::widx::tab_cargo_delivered:
-                case Common::widx::tab_challenge:
+                case Common::Widx::kTabStatus:
+                case Common::Widx::kTabDetails:
+                case Common::Widx::kTabColourScheme:
+                case Common::Widx::kTabFinances:
+                case Common::Widx::kTabCargoDelivered:
+                case Common::Widx::kTabChallenge:
                     Common::switchTab(self, widgetIndex);
                     break;
 
-                case widx::centre_on_viewport:
+                case Widx::kCentreOnViewport:
                     self.viewportCentreMain();
                     break;
             }
@@ -915,29 +947,29 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432C08
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::company_select:
-                    Dropdown::populateCompanySelect(&self, &self.widgets[widgetIndex]);
+                case Common::Widx::kCompanySelect:
+                    Dropdown::populateCompanySelect(&self, &self.widgets[Common::widx::company_select]);
                     break;
 
-                case widx::build_hq:
+                case Widx::kBuildHq:
                     ToolManager::toolSet(self, widgetIndex, CursorId::placeHQ);
                     Input::setFlag(Input::Flags::flag6);
                     break;
 
-                case widx::rotate_hq:
+                case Widx::kRotateHq:
                     rotateHQGhost90Deg();
                     break;
             }
         }
 
         // 0x00432C19
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+        static void onDropdown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
         {
-            if (widgetIndex == Common::widx::company_select)
+            if (id == Common::Widx::kCompanySelect)
             {
                 Common::switchCompany(&self, itemIndex);
             }
@@ -949,9 +981,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432C24
-        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
+        static void textInput(Window& self, [[maybe_unused]] WidgetIndex_t callingWidget, const WidgetId id, const char* input)
         {
-            if (callingWidget == Common::widx::caption)
+            if (id == Common::Widx::kCaption)
             {
                 Common::renameCompany(&self, input);
             }
@@ -1263,6 +1295,42 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             secondary_colour_ships,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kCheckSteamLocomotives{ "check_steam_locomotives" };
+            constexpr WidgetId kCheckDieselLocomotives{ "check_diesel_locomotives" };
+            constexpr WidgetId kCheckElectricLocomotives{ "check_electric_locomotives" };
+            constexpr WidgetId kCheckMultipleUnits{ "check_multiple_units" };
+            constexpr WidgetId kCheckPassengerVehicles{ "check_passenger_vehicles" };
+            constexpr WidgetId kCheckFreightVehicles{ "check_freight_vehicles" };
+            constexpr WidgetId kCheckBuses{ "check_buses" };
+            constexpr WidgetId kCheckTrucks{ "check_trucks" };
+            constexpr WidgetId kCheckAircraft{ "check_aircraft" };
+            constexpr WidgetId kCheckShips{ "check_ships" };
+            constexpr WidgetId kMainColourScheme{ "main_colour_scheme" };
+            constexpr WidgetId kMainColourSteamLocomotives{ "main_colour_steam_locomotives" };
+            constexpr WidgetId kMainColourDieselLocomotives{ "main_colour_diesel_locomotives" };
+            constexpr WidgetId kMainColourElectricLocomotives{ "main_colour_electric_locomotives" };
+            constexpr WidgetId kMainColourMultipleUnits{ "main_colour_multiple_units" };
+            constexpr WidgetId kMainColourPassengerVehicles{ "main_colour_passenger_vehicles" };
+            constexpr WidgetId kMainColourFreightVehicles{ "main_colour_freight_vehicles" };
+            constexpr WidgetId kMainColourBuses{ "main_colour_buses" };
+            constexpr WidgetId kMainColourTrucks{ "main_colour_trucks" };
+            constexpr WidgetId kMainColourAircraft{ "main_colour_aircraft" };
+            constexpr WidgetId kMainColourShips{ "main_colour_ships" };
+            constexpr WidgetId kSecondaryColourScheme{ "secondary_colour_scheme" };
+            constexpr WidgetId kSecondaryColourSteamLocomotives{ "secondary_colour_steam_locomotives" };
+            constexpr WidgetId kSecondaryColourDieselLocomotives{ "secondary_colour_diesel_locomotives" };
+            constexpr WidgetId kSecondaryColourElectricLocomotives{ "secondary_colour_electric_locomotives" };
+            constexpr WidgetId kSecondaryColourMultipleUnits{ "secondary_colour_multiple_units" };
+            constexpr WidgetId kSecondaryColourPassengerVehicles{ "secondary_colour_passenger_vehicles" };
+            constexpr WidgetId kSecondaryColourFreightVehicles{ "secondary_colour_freight_vehicles" };
+            constexpr WidgetId kSecondaryColourBuses{ "secondary_colour_buses" };
+            constexpr WidgetId kSecondaryColourTrucks{ "secondary_colour_trucks" };
+            constexpr WidgetId kSecondaryColourAircraft{ "secondary_colour_aircraft" };
+            constexpr WidgetId kSecondaryColourShips{ "secondary_colour_ships" };
+        }
+
         // clang-format off
         constexpr uint64_t allMainColours = {
             (1ULL << widx::main_colour_scheme) |
@@ -1308,38 +1376,38 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(265, 252, StringIds::title_company_colour_scheme),
-            Widgets::Checkbox({ 15, 81 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_steam_locomotives, StringIds::tooltip_toggle_vehicle_colour_scheme),
-            Widgets::Checkbox({ 15, 98 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_diesel_locomotives, StringIds::tooltip_toggle_vehicle_colour_scheme),
-            Widgets::Checkbox({ 15, 115 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_electric_locomotives, StringIds::tooltip_toggle_vehicle_colour_scheme),
-            Widgets::Checkbox({ 15, 132 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_multiple_units, StringIds::tooltip_toggle_vehicle_colour_scheme),
-            Widgets::Checkbox({ 15, 149 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_passenger_vehicles, StringIds::tooltip_toggle_vehicle_colour_scheme),
-            Widgets::Checkbox({ 15, 166 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_freight_vehicles, StringIds::tooltip_toggle_vehicle_colour_scheme),
-            Widgets::Checkbox({ 15, 183 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_buses, StringIds::tooltip_toggle_vehicle_colour_scheme),
-            Widgets::Checkbox({ 15, 200 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_trucks, StringIds::tooltip_toggle_vehicle_colour_scheme),
-            Widgets::Checkbox({ 15, 217 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_aircraft, StringIds::tooltip_toggle_vehicle_colour_scheme),
-            Widgets::Checkbox({ 15, 234 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_ships, StringIds::tooltip_toggle_vehicle_colour_scheme),
-            Widgets::ColourButton({ 221, 48 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
-            Widgets::ColourButton({ 221, 78 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
-            Widgets::ColourButton({ 221, 95 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
-            Widgets::ColourButton({ 221, 112 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
-            Widgets::ColourButton({ 221, 129 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
-            Widgets::ColourButton({ 221, 146 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
-            Widgets::ColourButton({ 221, 163 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
-            Widgets::ColourButton({ 221, 180 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
-            Widgets::ColourButton({ 221, 197 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
-            Widgets::ColourButton({ 221, 214 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
-            Widgets::ColourButton({ 221, 231 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
-            Widgets::ColourButton({ 239, 48 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
-            Widgets::ColourButton({ 239, 78 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
-            Widgets::ColourButton({ 239, 95 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
-            Widgets::ColourButton({ 239, 112 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
-            Widgets::ColourButton({ 239, 129 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
-            Widgets::ColourButton({ 239, 146 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
-            Widgets::ColourButton({ 239, 163 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
-            Widgets::ColourButton({ 239, 180 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
-            Widgets::ColourButton({ 239, 197 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
-            Widgets::ColourButton({ 239, 214 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
-            Widgets::ColourButton({ 239, 231 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour)
+            Widgets::Checkbox(Widx::kCheckSteamLocomotives, { 15, 81 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_steam_locomotives, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            Widgets::Checkbox(Widx::kCheckDieselLocomotives, { 15, 98 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_diesel_locomotives, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            Widgets::Checkbox(Widx::kCheckElectricLocomotives, { 15, 115 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_electric_locomotives, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            Widgets::Checkbox(Widx::kCheckMultipleUnits, { 15, 132 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_multiple_units, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            Widgets::Checkbox(Widx::kCheckPassengerVehicles, { 15, 149 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_passenger_vehicles, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            Widgets::Checkbox(Widx::kCheckFreightVehicles, { 15, 166 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_freight_vehicles, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            Widgets::Checkbox(Widx::kCheckBuses, { 15, 183 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_buses, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            Widgets::Checkbox(Widx::kCheckTrucks, { 15, 200 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_trucks, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            Widgets::Checkbox(Widx::kCheckAircraft, { 15, 217 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_aircraft, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            Widgets::Checkbox(Widx::kCheckShips, { 15, 234 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_ships, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            Widgets::ColourButton(Widx::kMainColourScheme, { 221, 48 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
+            Widgets::ColourButton(Widx::kMainColourSteamLocomotives, { 221, 78 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
+            Widgets::ColourButton(Widx::kMainColourDieselLocomotives, { 221, 95 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
+            Widgets::ColourButton(Widx::kMainColourElectricLocomotives, { 221, 112 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
+            Widgets::ColourButton(Widx::kMainColourMultipleUnits, { 221, 129 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
+            Widgets::ColourButton(Widx::kMainColourPassengerVehicles, { 221, 146 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
+            Widgets::ColourButton(Widx::kMainColourFreightVehicles, { 221, 163 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
+            Widgets::ColourButton(Widx::kMainColourBuses, { 221, 180 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
+            Widgets::ColourButton(Widx::kMainColourTrucks, { 221, 197 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
+            Widgets::ColourButton(Widx::kMainColourAircraft, { 221, 214 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
+            Widgets::ColourButton(Widx::kMainColourShips, { 221, 231 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_main_colour),
+            Widgets::ColourButton(Widx::kSecondaryColourScheme, { 239, 48 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
+            Widgets::ColourButton(Widx::kSecondaryColourSteamLocomotives, { 239, 78 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
+            Widgets::ColourButton(Widx::kSecondaryColourDieselLocomotives, { 239, 95 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
+            Widgets::ColourButton(Widx::kSecondaryColourElectricLocomotives, { 239, 112 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
+            Widgets::ColourButton(Widx::kSecondaryColourMultipleUnits, { 239, 129 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
+            Widgets::ColourButton(Widx::kSecondaryColourPassengerVehicles, { 239, 146 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
+            Widgets::ColourButton(Widx::kSecondaryColourFreightVehicles, { 239, 163 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
+            Widgets::ColourButton(Widx::kSecondaryColourBuses, { 239, 180 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
+            Widgets::ColourButton(Widx::kSecondaryColourTrucks, { 239, 197 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
+            Widgets::ColourButton(Widx::kSecondaryColourAircraft, { 239, 214 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour),
+            Widgets::ColourButton(Widx::kSecondaryColourShips, { 239, 231 }, { 16, 16 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_secondary_colour)
 
         );
 
@@ -1457,37 +1525,37 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433032
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::caption:
+                case Common::Widx::kCaption:
                     Common::renameCompanyPrompt(&self, widgetIndex);
                     break;
 
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(&self);
                     break;
 
-                case Common::widx::tab_status:
-                case Common::widx::tab_details:
-                case Common::widx::tab_colour_scheme:
-                case Common::widx::tab_finances:
-                case Common::widx::tab_cargo_delivered:
-                case Common::widx::tab_challenge:
+                case Common::Widx::kTabStatus:
+                case Common::Widx::kTabDetails:
+                case Common::Widx::kTabColourScheme:
+                case Common::Widx::kTabFinances:
+                case Common::Widx::kTabCargoDelivered:
+                case Common::Widx::kTabChallenge:
                     Common::switchTab(self, widgetIndex);
                     break;
 
-                case widx::check_steam_locomotives:
-                case widx::check_diesel_locomotives:
-                case widx::check_electric_locomotives:
-                case widx::check_multiple_units:
-                case widx::check_passenger_vehicles:
-                case widx::check_freight_vehicles:
-                case widx::check_buses:
-                case widx::check_trucks:
-                case widx::check_aircraft:
-                case widx::check_ships:
+                case Widx::kCheckSteamLocomotives:
+                case Widx::kCheckDieselLocomotives:
+                case Widx::kCheckElectricLocomotives:
+                case Widx::kCheckMultipleUnits:
+                case Widx::kCheckPassengerVehicles:
+                case Widx::kCheckFreightVehicles:
+                case Widx::kCheckBuses:
+                case Widx::kCheckTrucks:
+                case Widx::kCheckAircraft:
+                case Widx::kCheckShips:
                     // customVehicleColoursSet reserves first bit for main colour scheme even though it can't be changed, so skip it.
                     const auto vehicleType = widgetIndex - widx::check_steam_locomotives + 1;
                     const auto company = CompanyManager::get(CompanyId(self.number));
@@ -1509,25 +1577,25 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433067
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::company_select:
+                case Common::Widx::kCompanySelect:
                     Dropdown::populateCompanySelect(&self, &self.widgets[widgetIndex]);
                     break;
 
-                case main_colour_scheme:
-                case main_colour_steam_locomotives:
-                case main_colour_diesel_locomotives:
-                case main_colour_electric_locomotives:
-                case main_colour_multiple_units:
-                case main_colour_passenger_vehicles:
-                case main_colour_freight_vehicles:
-                case main_colour_buses:
-                case main_colour_trucks:
-                case main_colour_aircraft:
-                case main_colour_ships:
+                case Widx::kMainColourScheme:
+                case Widx::kMainColourSteamLocomotives:
+                case Widx::kMainColourDieselLocomotives:
+                case Widx::kMainColourElectricLocomotives:
+                case Widx::kMainColourMultipleUnits:
+                case Widx::kMainColourPassengerVehicles:
+                case Widx::kMainColourFreightVehicles:
+                case Widx::kMainColourBuses:
+                case Widx::kMainColourTrucks:
+                case Widx::kMainColourAircraft:
+                case Widx::kMainColourShips:
                 {
                     auto* company = CompanyManager::get(CompanyId(self.number));
                     Colour selectedColour;
@@ -1546,17 +1614,17 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     break;
                 }
 
-                case secondary_colour_scheme:
-                case secondary_colour_steam_locomotives:
-                case secondary_colour_diesel_locomotives:
-                case secondary_colour_electric_locomotives:
-                case secondary_colour_multiple_units:
-                case secondary_colour_passenger_vehicles:
-                case secondary_colour_freight_vehicles:
-                case secondary_colour_buses:
-                case secondary_colour_trucks:
-                case secondary_colour_aircraft:
-                case secondary_colour_ships:
+                case Widx::kSecondaryColourScheme:
+                case Widx::kSecondaryColourSteamLocomotives:
+                case Widx::kSecondaryColourDieselLocomotives:
+                case Widx::kSecondaryColourElectricLocomotives:
+                case Widx::kSecondaryColourMultipleUnits:
+                case Widx::kSecondaryColourPassengerVehicles:
+                case Widx::kSecondaryColourFreightVehicles:
+                case Widx::kSecondaryColourBuses:
+                case Widx::kSecondaryColourTrucks:
+                case Widx::kSecondaryColourAircraft:
+                case Widx::kSecondaryColourShips:
                 {
                     auto* company = CompanyManager::get(CompanyId(self.number));
                     Colour selectedColour;
@@ -1578,34 +1646,34 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433092
-        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
+        static void textInput(Window& self, [[maybe_unused]] WidgetIndex_t callingWidget, const WidgetId id, const char* input)
         {
-            if (callingWidget == Common::widx::caption)
+            if (id == Common::Widx::kCaption)
             {
                 Common::renameCompany(&self, input);
             }
         }
 
         // 0x0043309D
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::company_select:
+                case Common::Widx::kCompanySelect:
                     Common::switchCompany(&self, itemIndex);
                     break;
 
-                case widx::main_colour_scheme:
-                case widx::main_colour_steam_locomotives:
-                case widx::main_colour_diesel_locomotives:
-                case widx::main_colour_electric_locomotives:
-                case widx::main_colour_multiple_units:
-                case widx::main_colour_passenger_vehicles:
-                case widx::main_colour_freight_vehicles:
-                case widx::main_colour_buses:
-                case widx::main_colour_trucks:
-                case widx::main_colour_aircraft:
-                case widx::main_colour_ships:
+                case Widx::kMainColourScheme:
+                case Widx::kMainColourSteamLocomotives:
+                case Widx::kMainColourDieselLocomotives:
+                case Widx::kMainColourElectricLocomotives:
+                case Widx::kMainColourMultipleUnits:
+                case Widx::kMainColourPassengerVehicles:
+                case Widx::kMainColourFreightVehicles:
+                case Widx::kMainColourBuses:
+                case Widx::kMainColourTrucks:
+                case Widx::kMainColourAircraft:
+                case Widx::kMainColourShips:
                 {
                     if (itemIndex == -1)
                     {
@@ -1630,17 +1698,17 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     break;
                 }
 
-                case widx::secondary_colour_scheme:
-                case widx::secondary_colour_steam_locomotives:
-                case widx::secondary_colour_diesel_locomotives:
-                case widx::secondary_colour_electric_locomotives:
-                case widx::secondary_colour_multiple_units:
-                case widx::secondary_colour_passenger_vehicles:
-                case widx::secondary_colour_freight_vehicles:
-                case widx::secondary_colour_buses:
-                case widx::secondary_colour_trucks:
-                case widx::secondary_colour_aircraft:
-                case widx::secondary_colour_ships:
+                case Widx::kSecondaryColourScheme:
+                case Widx::kSecondaryColourSteamLocomotives:
+                case Widx::kSecondaryColourDieselLocomotives:
+                case Widx::kSecondaryColourElectricLocomotives:
+                case Widx::kSecondaryColourMultipleUnits:
+                case Widx::kSecondaryColourPassengerVehicles:
+                case Widx::kSecondaryColourFreightVehicles:
+                case Widx::kSecondaryColourBuses:
+                case Widx::kSecondaryColourTrucks:
+                case Widx::kSecondaryColourAircraft:
+                case Widx::kSecondaryColourShips:
                 {
                     if (itemIndex == -1)
                     {
@@ -1711,13 +1779,22 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             loan_autopay,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kScrollview{ "scrollview" };
+            constexpr WidgetId kCurrentLoan{ "currentLoan" };
+            constexpr WidgetId kLoanDecrease{ "loan_decrease" };
+            constexpr WidgetId kLoanIncrease{ "loan_increase" };
+            constexpr WidgetId kLoanAutopay{ "loan_autopay" };
+        }
+
         constexpr uint16_t expenditureColumnWidth = 128;
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(636, 319, StringIds::title_company_finances),
-            Widgets::ScrollView({ 133, 45 }, { 499, 215 }, WindowColour::secondary, Scrollbars::horizontal),
-            Widgets::stepperWidgets({ 87, 264 }, { 100, 12 }, WindowColour::secondary, StringIds::company_current_loan_value),
-            Widgets::Checkbox({ 320, 264 }, { 204, 12 }, WindowColour::secondary, StringIds::loan_autopay, StringIds::tooltip_loan_autopay) // loan_autopay
+            Widgets::ScrollView(Widx::kScrollview, { 133, 45 }, { 499, 215 }, WindowColour::secondary, Scrollbars::horizontal),
+            Widgets::stepperWidgets(Widx::kCurrentLoan, Widx::kLoanDecrease, Widx::kLoanIncrease, { 87, 264 }, { 100, 12 }, WindowColour::secondary, StringIds::company_current_loan_value),
+            Widgets::Checkbox(Widx::kLoanAutopay, { 320, 264 }, { 204, 12 }, WindowColour::secondary, StringIds::loan_autopay, StringIds::tooltip_loan_autopay) // loan_autopay
 
         );
 
@@ -2031,28 +2108,28 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433819
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::caption:
+                case Common::Widx::kCaption:
                     Common::renameCompanyPrompt(&self, widgetIndex);
                     break;
 
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(&self);
                     break;
 
-                case Common::widx::tab_status:
-                case Common::widx::tab_details:
-                case Common::widx::tab_colour_scheme:
-                case Common::widx::tab_finances:
-                case Common::widx::tab_cargo_delivered:
-                case Common::widx::tab_challenge:
+                case Common::Widx::kTabStatus:
+                case Common::Widx::kTabDetails:
+                case Common::Widx::kTabColourScheme:
+                case Common::Widx::kTabFinances:
+                case Common::Widx::kTabCargoDelivered:
+                case Common::Widx::kTabChallenge:
                     Common::switchTab(self, widgetIndex);
                     break;
 
-                case widx::loan_autopay:
+                case Widx::kLoanAutopay:
                 {
                     auto company = CompanyManager::get(CompanyId(self.number));
                     company->challengeFlags ^= CompanyFlags::autopayLoan;
@@ -2062,15 +2139,15 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043383E
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::company_select:
+                case Common::Widx::kCompanySelect:
                     Dropdown::populateCompanySelect(&self, &self.widgets[widgetIndex]);
                     break;
 
-                case widx::loan_decrease:
+                case Widx::kLoanDecrease:
                 {
                     auto* company = CompanyManager::get(CompanyId(self.number));
                     if (company->currentLoan == 0)
@@ -2086,7 +2163,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     break;
                 }
 
-                case widx::loan_increase:
+                case Widx::kLoanIncrease:
                 {
                     auto* company = CompanyManager::get(CompanyId(self.number));
 
@@ -2101,9 +2178,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043385D
-        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
+        static void textInput(Window& self, [[maybe_unused]] WidgetIndex_t callingWidget, const WidgetId id, const char* input)
         {
-            if (callingWidget == Common::widx::caption)
+            if (id == Common::Widx::kCaption)
             {
                 Common::renameCompany(&self, input);
             }
@@ -2135,9 +2212,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433868
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+        static void onDropdown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
         {
-            if (widgetIndex == Common::widx::company_select)
+            if (id == Common::Widx::kCompanySelect)
             {
                 Common::switchCompany(&self, itemIndex);
                 scrollToLatestData(self);
@@ -2324,51 +2401,51 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433BE6
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::caption:
+                case Common::Widx::kCaption:
                     Common::renameCompanyPrompt(&self, widgetIndex);
                     break;
 
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(&self);
                     break;
 
-                case Common::widx::tab_status:
-                case Common::widx::tab_details:
-                case Common::widx::tab_colour_scheme:
-                case Common::widx::tab_finances:
-                case Common::widx::tab_cargo_delivered:
-                case Common::widx::tab_challenge:
+                case Common::Widx::kTabStatus:
+                case Common::Widx::kTabDetails:
+                case Common::Widx::kTabColourScheme:
+                case Common::Widx::kTabFinances:
+                case Common::Widx::kTabCargoDelivered:
+                case Common::Widx::kTabChallenge:
                     Common::switchTab(self, widgetIndex);
                     break;
             }
         }
 
         // 0x00433C0B
-        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseDown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            if (widgetIndex == Common::widx::company_select)
+            if (id == Common::Widx::kCompanySelect)
             {
-                Dropdown::populateCompanySelect(&self, &self.widgets[widgetIndex]);
+                Dropdown::populateCompanySelect(&self, &self.widgets[Common::widx::company_select]);
             }
         }
 
         // 0x00433C16
-        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
+        static void textInput(Window& self, [[maybe_unused]] WidgetIndex_t callingWidget, const WidgetId id, const char* input)
         {
-            if (callingWidget == Common::widx::caption)
+            if (id == Common::Widx::kCaption)
             {
                 Common::renameCompany(&self, input);
             }
         }
 
         // 0x00433C21
-        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+        static void onDropdown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
         {
-            if (widgetIndex == Common::widx::company_select)
+            if (id == Common::Widx::kCompanySelect)
             {
                 Common::switchCompany(&self, itemIndex);
             }
@@ -2547,33 +2624,33 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433FFE
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::caption:
+                case Common::Widx::kCaption:
                     Common::renameCompanyPrompt(&self, widgetIndex);
                     break;
 
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(&self);
                     break;
 
-                case Common::widx::tab_status:
-                case Common::widx::tab_details:
-                case Common::widx::tab_colour_scheme:
-                case Common::widx::tab_finances:
-                case Common::widx::tab_cargo_delivered:
-                case Common::widx::tab_challenge:
+                case Common::Widx::kTabStatus:
+                case Common::Widx::kTabDetails:
+                case Common::Widx::kTabColourScheme:
+                case Common::Widx::kTabFinances:
+                case Common::Widx::kTabCargoDelivered:
+                case Common::Widx::kTabChallenge:
                     Common::switchTab(self, widgetIndex);
                     break;
             }
         }
 
         // 0x00434023
-        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
+        static void textInput(Window& self, [[maybe_unused]] WidgetIndex_t callingWidget, const WidgetId id, const char* input)
         {
-            if (callingWidget == Common::widx::caption)
+            if (id == Common::Widx::kCaption)
             {
                 Common::renameCompany(&self, input);
             }

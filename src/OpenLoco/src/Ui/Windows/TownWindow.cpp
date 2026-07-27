@@ -54,17 +54,29 @@ namespace OpenLoco::Ui::Windows::Town
             tab_transported,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kFrame{ "frame" };
+            constexpr WidgetId kCaption{ "caption" };
+            constexpr WidgetId kCloseButton{ "close_button" };
+            constexpr WidgetId kPanel{ "panel" };
+            constexpr WidgetId kTabTown{ "tab_town" };
+            constexpr WidgetId kTabPopulation{ "tab_population" };
+            constexpr WidgetId kTabCompanyRatings{ "tab_company_ratings" };
+            constexpr WidgetId kTabTransported{ "tab_transported" };
+        }
+
         static constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
         {
             return makeWidgets(
-                Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
-                Widgets::Caption({ 1, 1 }, { frameWidth - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, windowCaptionId),
-                Widgets::ImageButton({ frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-                Widgets::Panel({ 0, 41 }, { frameWidth, 120 }, WindowColour::secondary),
-                Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town),
-                Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_population_graph),
-                Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town_ratings_each_company),
-                Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_statistics));
+                Widgets::Frame(Widx::kFrame, { 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
+                Widgets::Caption(Widx::kCaption, { 1, 1 }, { frameWidth - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, windowCaptionId),
+                Widgets::ImageButton(Widx::kCloseButton, { frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::Panel(Widx::kPanel, { 0, 41 }, { frameWidth, 120 }, WindowColour::secondary),
+                Widgets::Tab(Widx::kTabTown, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town),
+                Widgets::Tab(Widx::kTabPopulation, { 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_population_graph),
+                Widgets::Tab(Widx::kTabCompanyRatings, { 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town_ratings_each_company),
+                Widgets::Tab(Widx::kTabTransported, { 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_statistics));
         }
 
         static StringId getTownSizeName(TownSize size)
@@ -100,13 +112,22 @@ namespace OpenLoco::Ui::Windows::Town
             demolish_town,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kViewport{ "viewport" };
+            constexpr WidgetId kStatusBar{ "status_bar" };
+            constexpr WidgetId kCentreOnViewport{ "centre_on_viewport" };
+            constexpr WidgetId kExpandTown{ "expand_town" };
+            constexpr WidgetId kDemolishTown{ "demolish_town" };
+        }
+
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(223, 161, StringIds::title_town),
-            Widgets::Viewport({ 3, 44 }, { 195, 104 }, WindowColour::secondary, Widget::kContentUnk),
-            Widgets::Label({ 3, 139 }, { 195, 21 }, WindowColour::secondary, ContentAlign::center),
-            Widgets::ImageButton({ 0, 0 }, { 24, 24 }, WindowColour::secondary, ImageIds::centre_viewport, StringIds::move_main_view_to_show_this),
-            Widgets::ImageButton({ 198, 44 }, { 24, 24 }, WindowColour::secondary, ImageIds::town_expand, StringIds::expand_this_town),
-            Widgets::ImageButton({ 198, 68 }, { 24, 24 }, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::demolish_this_town)
+            Widgets::Viewport(Widx::kViewport, { 3, 44 }, { 195, 104 }, WindowColour::secondary, Widget::kContentUnk),
+            Widgets::Label(Widx::kStatusBar, { 3, 139 }, { 195, 21 }, WindowColour::secondary, ContentAlign::center),
+            Widgets::ImageButton(Widx::kCentreOnViewport, { 0, 0 }, { 24, 24 }, WindowColour::secondary, ImageIds::centre_viewport, StringIds::move_main_view_to_show_this),
+            Widgets::ImageButton(Widx::kExpandTown, { 198, 44 }, { 24, 24 }, WindowColour::secondary, ImageIds::town_expand, StringIds::expand_this_town),
+            Widgets::ImageButton(Widx::kDemolishTown, { 198, 68 }, { 24, 24 }, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::demolish_this_town)
 
         );
 
@@ -169,32 +190,32 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x00499079
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::caption:
+                case Common::Widx::kCaption:
                     Common::renameTownPrompt(self, widgetIndex);
                     break;
 
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(&self);
                     break;
 
-                case Common::widx::tab_town:
-                case Common::widx::tab_population:
-                case Common::widx::tab_company_ratings:
-                case Common::widx::tab_transported:
+                case Common::Widx::kTabTown:
+                case Common::Widx::kTabPopulation:
+                case Common::Widx::kTabCompanyRatings:
+                case Common::Widx::kTabTransported:
                     Common::switchTab(self, widgetIndex);
                     break;
 
                 // 0x0049932D
-                case widx::centre_on_viewport:
+                case Widx::kCentreOnViewport:
                     self.viewportCentreMain();
                     break;
 
                 // 0x004990B9
-                case widx::expand_town:
+                case Widx::kExpandTown:
                 {
                     auto town = TownManager::get(TownId(self.number));
 
@@ -228,7 +249,7 @@ namespace OpenLoco::Ui::Windows::Town
                 }
 
                 // 0x0049916A
-                case widx::demolish_town:
+                case Widx::kDemolishTown:
                 {
                     GameCommands::setErrorTitle(StringIds::cant_remove_town);
 
@@ -511,22 +532,22 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x004996AC
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::caption:
+                case Common::Widx::kCaption:
                     Common::renameTownPrompt(self, widgetIndex);
                     break;
 
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(&self);
                     break;
 
-                case Common::widx::tab_town:
-                case Common::widx::tab_population:
-                case Common::widx::tab_company_ratings:
-                case Common::widx::tab_transported:
+                case Common::Widx::kTabTown:
+                case Common::Widx::kTabPopulation:
+                case Common::Widx::kTabCompanyRatings:
+                case Common::Widx::kTabTransported:
                     Common::switchTab(self, widgetIndex);
                     break;
             }
@@ -633,22 +654,22 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x004998E7
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::caption:
+                case Common::Widx::kCaption:
                     Common::renameTownPrompt(self, widgetIndex);
                     break;
 
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(&self);
                     break;
 
-                case Common::widx::tab_town:
-                case Common::widx::tab_population:
-                case Common::widx::tab_company_ratings:
-                case Common::widx::tab_transported:
+                case Common::Widx::kTabTown:
+                case Common::Widx::kTabPopulation:
+                case Common::Widx::kTabCompanyRatings:
+                case Common::Widx::kTabTransported:
                     Common::switchTab(self, widgetIndex);
                     break;
             }
@@ -753,22 +774,22 @@ namespace OpenLoco::Ui::Windows::Town
             }
         }
 
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::caption:
+                case Common::Widx::kCaption:
                     Common::renameTownPrompt(self, widgetIndex);
                     break;
 
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(&self);
                     break;
 
-                case Common::widx::tab_town:
-                case Common::widx::tab_population:
-                case Common::widx::tab_company_ratings:
-                case Common::widx::tab_transported:
+                case Common::Widx::kTabTown:
+                case Common::Widx::kTabPopulation:
+                case Common::Widx::kTabCompanyRatings:
+                case Common::Widx::kTabTransported:
                     Common::switchTab(self, widgetIndex);
                     break;
             }
@@ -837,9 +858,9 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x00499287
-        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
+        static void textInput(Window& self, [[maybe_unused]] WidgetIndex_t callingWidget, const WidgetId id, const char* input)
         {
-            if (callingWidget != Common::widx::caption)
+            if (id != Common::Widx::kCaption)
             {
                 return;
             }

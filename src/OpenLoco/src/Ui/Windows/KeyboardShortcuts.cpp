@@ -30,28 +30,31 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 
     static constexpr Ui::Size kWindowSize = { 420, 238 };
 
+    namespace Widx
+    {
+        constexpr WidgetId kCloseButton{ "close_button" };
+        constexpr WidgetId kResetKeysBtn{ "reset_keys_btn" };
+    }
+
     static constexpr auto _widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
         Widgets::Caption({ 1, 1 }, { kWindowSize.width - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::keyboard_shortcuts),
-        Widgets::ImageButton({ kWindowSize.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::ImageButton(Widx::kCloseButton, { kWindowSize.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { kWindowSize.width, kWindowSize.height - 15 }, WindowColour::secondary),
         Widgets::ScrollView({ 4, 19 }, { kWindowSize.width - 8, 202 }, WindowColour::secondary, Scrollbars::vertical, StringIds::keyboard_shortcut_list_tip),
-        Widgets::Button({ 4, 223 }, { 150, 12 }, WindowColour::secondary, StringIds::reset_keys, StringIds::reset_keys_tip)
+        Widgets::Button(Widx::kResetKeysBtn, { 4, 223 }, { 150, 12 }, WindowColour::secondary, StringIds::reset_keys, StringIds::reset_keys_tip)
 
     );
 
-    namespace Widx
+    enum widx
     {
-        enum
-        {
-            frame,
-            caption,
-            close_button,
-            panel,
-            list,
-            reset_keys_btn,
-        };
-    }
+        frame,
+        caption,
+        close_button,
+        panel,
+        list,
+        reset_keys_btn,
+    };
 
     static void resetShortcuts(Window* self);
     static const WindowEventList& getEvents();
@@ -202,15 +205,15 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE821
-    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseUp(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case Widx::close_button:
+            case Widx::kCloseButton:
                 WindowManager::close(&self);
                 return;
 
-            case Widx::reset_keys_btn:
+            case Widx::kResetKeysBtn:
                 resetShortcuts(&self);
                 return;
         }
