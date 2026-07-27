@@ -71,7 +71,7 @@ namespace OpenLoco::StationManager
             auto station = get(id);
             if (station != nullptr && !station->empty())
             {
-                station->update();
+                station->tick();
             }
         }
     }

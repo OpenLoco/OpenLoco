@@ -82,6 +82,10 @@ namespace OpenLoco::Scenes::BootScene
         }
     }
 
+    void tickInterface()
+    {
+    }
+
     void update()
     {
     }

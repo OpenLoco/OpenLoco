@@ -454,7 +454,7 @@ namespace OpenLoco::TownManager
                 if (town != nullptr && !town->empty())
                 {
                     GameCommands::setUpdatingCompanyId(CompanyId::neutral);
-                    town->update();
+                    town->tick();
                 }
             }
         }

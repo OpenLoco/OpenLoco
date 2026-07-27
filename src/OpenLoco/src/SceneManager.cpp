@@ -139,6 +139,28 @@ namespace OpenLoco::SceneManager
         }
     }
 
+    void tickInterface()
+    {
+        switch (_currentScene)
+        {
+            case SceneId::boot:
+                BootScene::tickInterface();
+                break;
+            case SceneId::intro:
+                IntroScene::tickInterface();
+                break;
+            case SceneId::title:
+                TitleScene::tickInterface();
+                break;
+            case SceneId::gameplay:
+                GameplayScene::tickInterface();
+                break;
+            case SceneId::editor:
+                EditorScene::tickInterface();
+                break;
+        }
+    }
+
     void update()
     {
         switch (_currentScene)

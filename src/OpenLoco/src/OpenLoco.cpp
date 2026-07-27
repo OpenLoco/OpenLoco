@@ -73,10 +73,9 @@ namespace OpenLoco
     static Timepoint _lastUpdate = Clock::now();
     static CrashHandler::Handle _exHandler = nullptr;
 
-    static uint16_t _time_since_last_tick; // 0x0050C19C
+    static uint32_t _time_since_last_tick; // 0x0050C19C
     static uint32_t _last_tick_time;       // 0x0050C19E
-    static uint16_t _numTicks;
-    static uint16_t _numFrameUpdates; // 0x00F253A0
+    static uint16_t _numFrameUpdates;      // 0x00F253A0
 
     // 0x004BE621
     [[noreturn]] void exitWithError(StringId titleStringId, StringId messageStringId)
@@ -192,7 +191,7 @@ namespace OpenLoco
         }
 
         Input::processKeyboardInput();
-        WindowManager::update();
+        WindowManager::tick();
         Ui::handleInput();
         CompanyManager::updateOwnerStatus();
     }
@@ -210,9 +209,9 @@ namespace OpenLoco
     }
 
     // Decides how many ticks the world is advanced by this fixed update.
-    static void calculateNumTicks()
+    static uint32_t calculateNumTicks()
     {
-        uint16_t numUpdates = std::clamp<uint16_t>(_time_since_last_tick / (uint16_t)31, 1, 3);
+        uint32_t numUpdates = std::clamp<uint32_t>(_time_since_last_tick / 31U, 1, 3);
 
         if (WindowManager::find(Ui::WindowType::multiplayer, 0) != nullptr)
         {
@@ -277,7 +276,7 @@ namespace OpenLoco
             numUpdates = 4;
         }
 
-        _numTicks = numUpdates;
+        return numUpdates;
     }
 
     // 0x0046A794
@@ -293,7 +292,7 @@ namespace OpenLoco
         }
 
         GameCommands::resetCommandNestLevel();
-        Ui::update();
+        Ui::tick();
 
         // Original called 0x00440DEC here which handled legacy cmd line options
         // like installing scenarios and handling multiplayer.
@@ -303,13 +302,17 @@ namespace OpenLoco
         Audio::tick();
 
         // Network messages are handled outside of the scenes, they can request a scene transition.
-        Network::update();
+        Network::tick();
 
         applyPendingScene();
 
-        calculateNumTicks();
+        const auto numTicks = calculateNumTicks();
+        for (auto i = 0U; i < numTicks; i++)
+        {
+            SceneManager::tick();
+        }
 
-        SceneManager::tick();
+        SceneManager::tickInterface();
 
         applyPendingScene();
     }
@@ -415,11 +418,6 @@ namespace OpenLoco
         return _time_since_last_tick;
     }
 
-    uint16_t getNumTicks()
-    {
-        return _numTicks;
-    }
-
     uint16_t getNumFrameUpdates()
     {
         return _numFrameUpdates;
@@ -453,7 +451,7 @@ namespace OpenLoco
                 break;
             }
 
-            Scenes::GameScene::tickWorld();
+            Scenes::GameScene::tick();
         }
     }
 

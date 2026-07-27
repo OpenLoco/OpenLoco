@@ -26,6 +26,10 @@ namespace OpenLoco::Scenes::IntroScene
         }
     }
 
+    void tickInterface()
+    {
+    }
+
     void update()
     {
     }

@@ -58,6 +58,7 @@ namespace OpenLoco
 
         // Fixed update.
         void tick();
+        void tickInterface();
 
         // Per frame update.
         void update();

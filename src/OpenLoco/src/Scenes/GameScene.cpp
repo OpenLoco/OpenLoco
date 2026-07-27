@@ -209,7 +209,7 @@ namespace OpenLoco::Scenes::GameScene
     }
 
     // 0x0046ABCB
-    void tickWorld()
+    void tick()
     {
         if (!Network::shouldProcessTick(ScenarioManager::getScenarioTicks() + 1))
         {

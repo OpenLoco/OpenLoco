@@ -88,7 +88,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
                 Input::handleKeyboard();
                 WindowManager::dispatchUpdateAll();
                 Input::processKeyboardInput();
-                WindowManager::update();
+                WindowManager::tick();
                 Ui::minimalHandleInput();
                 Gfx::renderAndUpdate();
                 return WindowManager::find(WindowType::confirmationPrompt) != nullptr;

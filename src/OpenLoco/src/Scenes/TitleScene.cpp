@@ -16,17 +16,18 @@ namespace OpenLoco::Scenes::TitleScene
 
     void tick()
     {
-        for (uint16_t i = 0; i < getNumTicks(); i++)
-        {
-            GameScene::tickWorld();
+        GameScene::tick();
 
-            Title::update();
-        }
+        Title::update();
+    }
 
+    void tickInterface()
+    {
         GameScene::tickInterface();
     }
 
     void update()
     {
     }
+
 }

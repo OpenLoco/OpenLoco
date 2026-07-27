@@ -457,7 +457,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004524C1
-    void update()
+    void tick()
     {
     }
 
