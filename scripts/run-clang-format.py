@@ -33,12 +33,12 @@ class ExitStatus:
     DIFF = 1
     TROUBLE = 2
 
-
 def list_files(files, recursive=False, extensions=None, exclude=None):
     if extensions is None:
         extensions = []
     if exclude is None:
         exclude = []
+
 
     out = []
     for file in files:
