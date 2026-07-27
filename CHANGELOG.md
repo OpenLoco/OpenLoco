@@ -1,5 +1,6 @@
 26.07+ (???)
 ------------------------------------------------------------------------
+- Fix: [#3841] Extreme lag when a map reaches the maximum number of audio sources (e.g. many vehicles in view).
 - Fix: [#3842] Native browse prompt not working on Windows, preventing selecting the Locomotion path on first start.
 - Fix: [#3846] Can click beyond last item in station and company list windows, opening invalid windows.
 
