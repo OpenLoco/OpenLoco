@@ -24,7 +24,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Run check-changelog-formatting
-        run: scripts/check-changelog-formatting
+        run: scripts/check-changelog-formatting.sh
   windows:
     name: Windows x64 (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
