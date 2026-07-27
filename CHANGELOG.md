@@ -854,6 +854,3 @@
 - Feature: Clicking track / road construction while holding shift will place 10 pieces in a row.
 - Change: [#79] Store `game.cfg`, `plugin.dat` and `scores.dat` in OpenLoco config directory.
 - Change: [#79] Disable file existence and size checks.
-
-clang-format version 18.1.6
-

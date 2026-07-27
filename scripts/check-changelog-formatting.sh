@@ -1,18 +1,17 @@
-#!/bin/sh
+#!/bin/bash
 
 # Run the script and capture the output
-output=$(python3 ./scripts/run-changelog-format.py ./CHANGELOG.md)
+output=$(python3 scripts/run-changelog-format.py CHANGELOG.md)
 
-# Check if node script ran successfully
+# Check if the script ran successfully
 if [ $? -eq 0 ]; then
     echo "Script ran successfully. Running diff..."
-    
-    # Pass $output via stdin (-) to git diff
-    printf '%s\n' "$output" | git diff --color --no-index - ./CHANGELOG.md
-    
+    # Run diff on the original file and the output
+    git diff --color --no-index <(echo "$output") CHANGELOG.md
+    # If diff finds differences, inform the user and exit with a non-zero status
     if [ $? -ne 0 ]; then
-        printf "\nDifferences found. You can apply the changes locally with:\n"
-        printf "  python3 ./scripts/run-changelog-format.py ./CHANGELOG.md | git diff --no-index - ./CHANGELOG.md | git apply\n"
+        echo -e "\nDifferences found. You can apply the changes locally with:"
+        echo "  git diff --no-index <(python3 scripts/run-changelog-format.py CHANGELOG.md) CHANGELOG.md | git apply"
         exit 1
     else
         echo "No differences found. Exiting with status 0."
@@ -20,6 +19,6 @@ if [ $? -eq 0 ]; then
     fi
 else
     echo "Script encountered an error:"
-    printf '%s\n' "$output"
+    echo "$output"
     exit 1
 fi

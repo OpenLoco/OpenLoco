@@ -7,21 +7,27 @@ jobs:
   check-code-formatting:
     name: Check code formatting
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: sh
     container:
       image: openrct2/openrct2-build:17-format
     steps:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Run clang-format
-        run: sh scripts/check-code-formatting.sh
+        run: scripts/check-code-formatting.sh
   check-changelog-formatting:
     name: Check changelog formatting
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Run check-changelog-formatting
-        run: sh scripts/check-changelog-formatting.sh
+        run: scripts/check-changelog-formatting.sh
   windows:
     name: Windows x64 (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
