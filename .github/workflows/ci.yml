@@ -26,8 +26,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
       - name: Run check-changelog-formatting
-        run: scripts/check-changelog-formatting.sh
+        run: python3 scripts/run-changelog-format.py CHANGELOG.md
   windows:
     name: Windows x64 (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
