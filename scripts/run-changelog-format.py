@@ -1,12 +1,7 @@
 #!/usr/bin/env python3
 
-"""A wrapper script around clang-format, suitable for linting multiple files
-and to use for continuous integration.
-
-This is an alternative API for the clang-format command line.
-It runs over multiple files and directories in parallel.
-A diff output is produced and a sensible exit code is returned.
-
+"""
+Formats the changelog
 """
 
 from __future__ import print_function, unicode_literals
