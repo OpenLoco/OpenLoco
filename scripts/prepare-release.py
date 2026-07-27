@@ -81,7 +81,7 @@ def main():
 
     raw_version = args.version.lstrip('v')   # e.g. "26.07"
     tag_name = f"v{raw_version}"             # e.g. "v26.07"
-    bug_report_version = f"{raw_version}.1"  # e.g. "26.07.1"
+    bug_report_version = f"{raw_version}"  # e.g. "26.07.1"
     today_str = datetime.now().strftime("%Y-%m-%d")
     dry_run = args.dry_run
 
@@ -115,6 +115,7 @@ def main():
         sys.exit(1)
 
     release_notes = changelog_match.group(1).strip()
+    release_notes = "\n".join(release_notes.splitlines()[1:])
     
     new_header = f"{raw_version} ({today_str})"
     updated_changelog = re.sub(
@@ -131,7 +132,7 @@ def main():
         show_diff(changelog_path, changelog_content, updated_changelog)
         print(f"\n   {CLR_BLUE}>>> EXTRACTED RELEASE NOTES:{CLR_RESET}")
         for line in release_notes.splitlines():
-            print(f"       | {line}")
+            print(f"        | {line}")
     else:
         with open(changelog_path, "w", encoding="utf-8") as f:
             f.write(updated_changelog)
@@ -186,7 +187,7 @@ def main():
     print_step(3, f"Creating Commit and Tag '{tag_name}'", dry_run)
     run_git_cmd(["git", "add", issue_template_path, changelog_path, cmakelists_path], dry_run)
     run_git_cmd(["git", "commit", "-m", f"Release {tag_name}"], dry_run)
-    run_git_cmd(["git", "tag", "-a", tag_name, "-m", f"Release {tag_name}"], dry_run)
+    run_git_cmd(["git", "tag", "-a", tag_name, "-m", f'"{release_notes}"'], dry_run)
 
     # -----------------------------------------------------------------
     # Step 4: Push Commit & Tag to Remote
