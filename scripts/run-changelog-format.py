@@ -18,7 +18,8 @@ import fnmatch
 import io
 import multiprocessing
 import os
-import signalimport re
+import re
+import signal
 import sys
 from dataclasses import dataclass, field
 from functools import cmp_to_key
