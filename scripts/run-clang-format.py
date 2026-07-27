@@ -27,6 +27,7 @@ from functools import partial
 
 DEFAULT_EXTENSIONS = 'c,h,C,H,cpp,hpp,cc,hh,c++,h++,cxx,hxx'
 
+
 class ExitStatus:
     SUCCESS = 0
     DIFF = 1
@@ -37,6 +38,7 @@ def list_files(files, recursive=False, extensions=None, exclude=None):
         extensions = []
     if exclude is None:
         exclude = []
+
 
     out = []
     for file in files:
