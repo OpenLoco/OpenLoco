@@ -1,6 +1,6 @@
 #include "Scenes/TitleScene.h"
 #include "Graphics/Gfx.h"
-#include "SceneManager.h"
+#include "OpenLoco.h"
 #include "Scenes/GameScene.h"
 #include "Title.h"
 
@@ -16,18 +16,17 @@ namespace OpenLoco::Scenes::TitleScene
 
     void tick()
     {
-        const auto numFrameUpdates = GameScene::tickWorld();
-
-        if (SceneManager::isSceneTransitionPending())
+        for (uint16_t i = 0; i < getNumTicks(); i++)
         {
-            return;
+            GameScene::tickWorld();
+
+            Title::update();
         }
 
-        GameScene::tickInterface(numFrameUpdates);
+        GameScene::tickInterface();
     }
 
-    void tickLogic()
+    void update()
     {
-        Title::update();
     }
 }

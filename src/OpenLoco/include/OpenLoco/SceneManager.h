@@ -56,9 +56,11 @@ namespace OpenLoco
         void requestScene(SceneId scene);
         bool applySceneTransition();
 
-        // Scene dispatch
-        void tickScene();
-        void tickSceneLogic();
+        // Fixed update.
+        void tick();
+
+        // Per frame update.
+        void update();
 
         void resetSceneAge();
         uint16_t getSceneAge();

@@ -23,5 +23,5 @@ namespace OpenLoco::Intro
     State state();
     void state(State state);
 
-    void update();
+    void tick();
 }

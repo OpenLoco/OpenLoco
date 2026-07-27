@@ -553,7 +553,7 @@ namespace OpenLoco::Audio
         return handle;
     }
 
-    void update()
+    void tick()
     {
         reclaimFinishedInstances();
         updateVehicleNoise();

@@ -243,11 +243,11 @@ namespace OpenLoco
     {
         auto& cfg = Config::get();
 
-        initialise();
-
+        // Window creation must be done before Gfx can be initialized.
         Ui::createWindow(cfg.display);
         Ui::initialiseCursors();
-        Audio::initialiseDSound();
+
+        initialise();
 
         while (Input::processMessages())
         {

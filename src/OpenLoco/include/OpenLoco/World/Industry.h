@@ -78,7 +78,7 @@ namespace OpenLoco
         bool canProduceCargo() const;
         void getStatusString(const char* buffer);
 
-        void update();
+        void tick();
         void updateDaily();
         void updateMonthly();
         bool isMonthlyProductionUp();

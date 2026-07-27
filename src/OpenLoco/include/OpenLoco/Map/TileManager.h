@@ -113,7 +113,7 @@ namespace OpenLoco::World::TileManager
     uint16_t countSurroundingDesertTiles(const Pos2& pos);
     uint16_t countSurroundingTrees(const Pos2& pos);
     uint16_t countNearbyWaterTiles(Pos2 pos);
-    void update();
+    void tick();
     void updateYearly();
     void removeSurfaceIndustry(const Pos2& pos);
     void removeSurfaceIndustryAtHeight(const Pos3& pos);

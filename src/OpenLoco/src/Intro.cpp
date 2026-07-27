@@ -191,7 +191,7 @@ namespace OpenLoco::Intro
     };
 
     // 0x0046AE0C
-    void update()
+    void tick()
     {
         auto& drawingEngine = Gfx::getDrawingEngine();
         auto& drawingCtx = drawingEngine.getDrawingContext();

@@ -3,4 +3,5 @@
 namespace OpenLoco::Scenes::GameplayScene
 {
     void tick();
+    void update();
 }

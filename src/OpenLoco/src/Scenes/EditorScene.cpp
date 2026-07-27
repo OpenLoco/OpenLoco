@@ -1,21 +1,23 @@
 #include "Scenes/EditorScene.h"
 #include "EditorController.h"
-#include "SceneManager.h"
+#include "OpenLoco.h"
 #include "Scenes/GameScene.h"
 
 namespace OpenLoco::Scenes::EditorScene
 {
     void tick()
     {
-        const auto numFrameUpdates = GameScene::tickWorld();
-
-        if (SceneManager::isSceneTransitionPending())
+        for (uint16_t i = 0; i < getNumTicks(); i++)
         {
-            return;
+            GameScene::tickWorld();
         }
 
         EditorController::tick();
 
-        GameScene::tickInterface(numFrameUpdates);
+        GameScene::tickInterface();
+    }
+
+    void update()
+    {
     }
 }

@@ -69,11 +69,18 @@ namespace OpenLoco::SceneManager
     {
         switch (scene)
         {
-            case SceneId::boot: break;
-            case SceneId::intro: IntroScene::onEnter(); break;
-            case SceneId::title: TitleScene::onEnter(); break;
-            case SceneId::gameplay: break;
-            case SceneId::editor: break;
+            case SceneId::boot:
+                break;
+            case SceneId::intro:
+                IntroScene::onEnter();
+                break;
+            case SceneId::title:
+                TitleScene::onEnter();
+                break;
+            case SceneId::gameplay:
+                break;
+            case SceneId::editor:
+                break;
         }
     }
 
@@ -81,11 +88,17 @@ namespace OpenLoco::SceneManager
     {
         switch (scene)
         {
-            case SceneId::boot: break;
-            case SceneId::intro: IntroScene::onExit(); break;
-            case SceneId::title: break;
-            case SceneId::gameplay: break;
-            case SceneId::editor: break;
+            case SceneId::boot:
+                break;
+            case SceneId::intro:
+                IntroScene::onExit();
+                break;
+            case SceneId::title:
+                break;
+            case SceneId::gameplay:
+                break;
+            case SceneId::editor:
+                break;
         }
     }
 
@@ -104,27 +117,47 @@ namespace OpenLoco::SceneManager
         return true;
     }
 
-    void tickScene()
+    void tick()
     {
         switch (_currentScene)
         {
-            case SceneId::boot: BootScene::tick(); break;
-            case SceneId::intro: IntroScene::tick(); break;
-            case SceneId::title: TitleScene::tick(); break;
-            case SceneId::gameplay: GameplayScene::tick(); break;
-            case SceneId::editor: EditorScene::tick(); break;
+            case SceneId::boot:
+                BootScene::tick();
+                break;
+            case SceneId::intro:
+                IntroScene::tick();
+                break;
+            case SceneId::title:
+                TitleScene::tick();
+                break;
+            case SceneId::gameplay:
+                GameplayScene::tick();
+                break;
+            case SceneId::editor:
+                EditorScene::tick();
+                break;
         }
     }
 
-    void tickSceneLogic()
+    void update()
     {
         switch (_currentScene)
         {
-            case SceneId::boot: break;
-            case SceneId::intro: break;
-            case SceneId::title: TitleScene::tickLogic(); break;
-            case SceneId::gameplay: break;
-            case SceneId::editor: break;
+            case SceneId::boot:
+                BootScene::update();
+                break;
+            case SceneId::intro:
+                IntroScene::update();
+                break;
+            case SceneId::title:
+                TitleScene::update();
+                break;
+            case SceneId::gameplay:
+                GameplayScene::update();
+                break;
+            case SceneId::editor:
+                EditorScene::update();
+                break;
         }
     }
 

@@ -6,4 +6,5 @@ namespace OpenLoco::Scenes::BootScene
 {
     bool loadFile(const fs::path& path);
     void tick();
+    void update();
 }

@@ -26,7 +26,7 @@ namespace OpenLoco::World
     }
 
     // 0x00477FC2
-    bool RoadElement::update(const World::Pos2& loc)
+    bool RoadElement::tick(const World::Pos2& loc)
     {
         if (owner() == CompanyId::neutral || CompanyManager::isPlayerCompany(owner()))
         {

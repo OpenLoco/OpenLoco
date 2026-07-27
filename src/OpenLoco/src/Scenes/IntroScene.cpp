@@ -18,11 +18,15 @@ namespace OpenLoco::Scenes::IntroScene
 
     void tick()
     {
-        Intro::update();
+        Intro::tick();
 
         if (!Intro::isActive())
         {
             SceneManager::requestScene(SceneManager::SceneId::boot);
         }
+    }
+
+    void update()
+    {
     }
 }

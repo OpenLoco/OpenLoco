@@ -1168,7 +1168,7 @@ namespace OpenLoco::World::TileManager
         return nearbyWaterTiles;
     }
 
-    static bool update(TileElementEntry& el, const World::Pos2& loc)
+    static bool tick(TileElementEntry& el, const World::Pos2& loc)
     {
         switch (el.type())
         {
@@ -1180,7 +1180,7 @@ namespace OpenLoco::World::TileManager
             case ElementType::building:
             {
                 auto& elBuilding = el.get<BuildingElement>();
-                return elBuilding.update(loc);
+                return elBuilding.tick(loc);
             }
             case ElementType::tree:
             {
@@ -1189,12 +1189,12 @@ namespace OpenLoco::World::TileManager
             case ElementType::road:
             {
                 auto& elRoad = el.get<RoadElement>();
-                return elRoad.update(loc);
+                return elRoad.tick(loc);
             }
             case ElementType::industry:
             {
                 auto& elIndustry = el.get<IndustryElement>();
-                return elIndustry.update(loc);
+                return elIndustry.tick(loc);
             }
             case ElementType::track: break;
             case ElementType::station: break;
@@ -1205,7 +1205,7 @@ namespace OpenLoco::World::TileManager
     }
 
     // 0x00463ABA
-    void update()
+    void tick()
     {
         if (!Game::hasFlags(GameStateFlags::tileManagerLoaded))
         {
@@ -1227,7 +1227,7 @@ namespace OpenLoco::World::TileManager
                     }
 
                     // If update removed/added tiles we must stop loop as pointer is invalid
-                    if (!update(el, pos))
+                    if (!tick(el, pos))
                     {
                         break;
                     }

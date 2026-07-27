@@ -4,5 +4,5 @@ namespace OpenLoco::Scenes::TitleScene
 {
     void onEnter();
     void tick();
-    void tickLogic();
+    void update();
 }

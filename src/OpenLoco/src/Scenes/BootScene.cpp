@@ -81,4 +81,8 @@ namespace OpenLoco::Scenes::BootScene
             SceneManager::requestScene(SceneManager::SceneId::title);
         }
     }
+
+    void update()
+    {
+    }
 }

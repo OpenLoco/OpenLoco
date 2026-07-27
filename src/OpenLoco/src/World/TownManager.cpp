@@ -442,7 +442,7 @@ namespace OpenLoco::TownManager
     }
 
     // 0x00496B6D
-    void update()
+    void tick()
     {
         if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !SceneManager::isEditorMode())
         {
