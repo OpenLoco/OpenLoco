@@ -35,7 +35,7 @@ def format_diff_line(line):
 
 def show_diff(filename, old_content, new_content):
     import difflib
-    print(f"\n   {CLR_BLUE}>>> PROPOSED DIFF: {filename}{CLR_RESET}")
+    print(f"\n    {CLR_BLUE}>>> PROPOSED DIFF: {filename}{CLR_RESET}")
     diff = list(difflib.unified_diff(
         old_content.splitlines(keepends=True),
         new_content.splitlines(keepends=True),
@@ -46,14 +46,14 @@ def show_diff(filename, old_content, new_content):
         colored_diff = "".join(format_diff_line(line) for line in diff)
         print(colored_diff, end="")
     else:
-        print(f"   {CLR_YELLOW}(No changes detected){CLR_RESET}")
+        print(f"    {CLR_YELLOW}(No changes detected){CLR_RESET}")
 
 def run_git_cmd(cmd, dry_run=False):
     cmd_str = " ".join(cmd)
     if dry_run:
-        print(f"   {CLR_YELLOW}[DRY-RUN EXEC]{CLR_RESET} {cmd_str}")
+        print(f"    {CLR_YELLOW}[DRY-RUN EXEC]{CLR_RESET} {cmd_str}")
     else:
-        print(f"   {CLR_GREEN}[EXEC]{CLR_RESET} {cmd_str}")
+        print(f"    {CLR_GREEN}[EXEC]{CLR_RESET} {cmd_str}")
         subprocess.run(cmd, check=True)
 
 def print_step(step_num, title, dry_run=False):
@@ -73,15 +73,21 @@ def main():
     parser = argparse.ArgumentParser(description="Prepare and tag a new release.")
     parser.add_argument("version", help="Release version string without 'v' prefix (e.g. 26.07)")
     parser.add_argument(
+        "-r", "--remote",
+        required=True,
+        help="Git remote name to push to (e.g. origin, upstream)."
+    )
+    parser.add_argument(
         "-n", "--dry-run",
         action="store_true",
         help="Perform a dry run without modifying files, committing, or pushing."
     )
     args = parser.parse_args()
 
+    remote = args.remote
     raw_version = args.version.lstrip('v')   # e.g. "26.07"
-    tag_name = f"v{raw_version}"             # e.g. "v26.07"
-    bug_report_version = f"{raw_version}"  # e.g. "26.07.1"
+    tag_name = f"v{raw_version}"              # e.g. "v26.07"
+    bug_report_version = f"{raw_version}"   # e.g. "26.07.1"
     today_str = datetime.now().strftime("%Y-%m-%d")
     dry_run = args.dry_run
 
@@ -89,7 +95,7 @@ def main():
     changelog_path = "CHANGELOG.md"
     cmakelists_path = "CMakeLists.txt"
 
-    print(f"\n🚀 {CLR_BOLD}{CLR_CYAN}STARTING RELEASE PROCESS FOR {tag_name} ({today_str}){CLR_RESET}")
+    print(f"\n🚀 {CLR_BOLD}{CLR_CYAN}STARTING RELEASE PROCESS FOR {tag_name} ({today_str}) -> Remote: {remote}{CLR_RESET}")
     if dry_run:
         print(f"⚠️  {CLR_YELLOW}RUNNING IN DRY-RUN MODE — No files will be modified, no git commands executed.{CLR_RESET}")
 
@@ -98,7 +104,7 @@ def main():
     # -----------------------------------------------------------------
     print_step(1, "Parsing CHANGELOG.md & Updating Release Header", dry_run)
     if not os.path.exists(changelog_path):
-        print(f"   ❌ {CLR_RED}Error: {changelog_path} not found.{CLR_RESET}")
+        print(f"    ❌ {CLR_RED}Error: {changelog_path} not found.{CLR_RESET}")
         sys.exit(1)
 
     with open(changelog_path, "r", encoding="utf-8") as f:
@@ -111,7 +117,7 @@ def main():
     )
 
     if not changelog_match:
-        print(f"   ❌ {CLR_RED}Error: Could not find top section in {changelog_path}{CLR_RESET}")
+        print(f"    ❌ {CLR_RED}Error: Could not find top section in {changelog_path}{CLR_RESET}")
         sys.exit(1)
 
     release_notes = changelog_match.group(1).strip()
@@ -126,17 +132,17 @@ def main():
         flags=re.MULTILINE
     )
 
-    print(f"   ℹ️  {CLR_YELLOW}Extracted {len(release_notes.splitlines())} lines of release notes.{CLR_RESET}")
+    print(f"    ℹ️  {CLR_YELLOW}Extracted {len(release_notes.splitlines())} lines of release notes.{CLR_RESET}")
 
     if dry_run:
         show_diff(changelog_path, changelog_content, updated_changelog)
-        print(f"\n   {CLR_BLUE}>>> EXTRACTED RELEASE NOTES:{CLR_RESET}")
+        print(f"\n    {CLR_BLUE}>>> EXTRACTED RELEASE NOTES:{CLR_RESET}")
         for line in release_notes.splitlines():
             print(f"        | {line}")
     else:
         with open(changelog_path, "w", encoding="utf-8") as f:
             f.write(updated_changelog)
-        print(f"   ✅ {CLR_GREEN}Updated {changelog_path}{CLR_RESET}")
+        print(f"    ✅ {CLR_GREEN}Updated {changelog_path}{CLR_RESET}")
 
     # -----------------------------------------------------------------
     # Step 2: Update Issue Template & CMakeLists.txt
@@ -160,7 +166,7 @@ def main():
         else:
             with open(issue_template_path, "w", encoding="utf-8") as f:
                 f.write(updated_template)
-            print(f"   ✅ {CLR_GREEN}Updated {issue_template_path}{CLR_RESET}")
+            print(f"    ✅ {CLR_GREEN}Updated {issue_template_path}{CLR_RESET}")
 
     # CMakeLists.txt
     if os.path.exists(cmakelists_path):
@@ -179,7 +185,7 @@ def main():
         else:
             with open(cmakelists_path, "w", encoding="utf-8") as f:
                 f.write(updated_cmake)
-            print(f"   ✅ {CLR_GREEN}Updated {cmakelists_path}{CLR_RESET}")
+            print(f"    ✅ {CLR_GREEN}Updated {cmakelists_path}{CLR_RESET}")
 
     # -----------------------------------------------------------------
     # Step 3: Commit and Tag Release
@@ -192,8 +198,8 @@ def main():
     # -----------------------------------------------------------------
     # Step 4: Push Commit & Tag to Remote
     # -----------------------------------------------------------------
-    print_step(4, "Pushing Release Commit & Tag to Remote", dry_run)
-    run_git_cmd(["git", "push", "--follow-tags"], dry_run)
+    print_step(4, f"Pushing Release Commit & Tag to '{remote}'", dry_run)
+    run_git_cmd(["git", "push", remote, "--follow-tags"], dry_run)
 
     # -----------------------------------------------------------------
     # Step 5: Prepare Next Development Cycle in CHANGELOG.md
@@ -208,11 +214,11 @@ def main():
     else:
         with open(changelog_path, "w", encoding="utf-8") as f:
             f.write(new_dev_changelog)
-        print(f"   ✅ {CLR_GREEN}Prepended next cycle header to {changelog_path}{CLR_RESET}")
+        print(f"    ✅ {CLR_GREEN}Prepended next cycle header to {changelog_path}{CLR_RESET}")
 
     run_git_cmd(["git", "add", changelog_path], dry_run)
     run_git_cmd(["git", "commit", "-m", "Prepare for next development cycle [skip ci]"], dry_run)
-    run_git_cmd(["git", "push"], dry_run)
+    run_git_cmd(["git", "push", remote], dry_run)
 
     # -----------------------------------------------------------------
     # Summary
@@ -222,7 +228,7 @@ def main():
     if dry_run:
         print(f"🎉 {CLR_BOLD}{CLR_YELLOW}DRY-RUN COMPLETE: No files were changed and no commits were pushed.{CLR_RESET}")
     else:
-        print(f"🎉 {CLR_BOLD}{CLR_GREEN}SUCCESS: Release {tag_name} tagged, pushed, and next cycle prepared!{CLR_RESET}")
+        print(f"🎉 {CLR_BOLD}{CLR_GREEN}SUCCESS: Release {tag_name} tagged, pushed to '{remote}', and next cycle prepared!{CLR_RESET}")
     print(f"{CLR_STEEL}{bar}{CLR_RESET}\n")
 
 if __name__ == "__main__":
