@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Run the script and capture the output
-output=$(node scripts/format-changelog.py CHANGELOG.md)
+output=$(python3 scripts/format-changelog.py CHANGELOG.md)
 
 # Check if node script ran successfully
 if [ $? -eq 0 ]; then
