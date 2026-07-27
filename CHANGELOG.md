@@ -1,4 +1,4 @@
-26.07+ (???)
+26.07.1 (2026-07-27)
 ------------------------------------------------------------------------
 - Fix: [#3524] Jittery window height in the 'gridded' tabs of the industry list, town list, and terraform windows.
 - Fix: [#3841] Extreme lag when a map reaches the maximum number of audio sources (e.g. many vehicles in view).
