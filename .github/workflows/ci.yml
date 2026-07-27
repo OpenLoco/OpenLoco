@@ -343,3 +343,50 @@ jobs:
           name: OpenLoco-macos-arm64
           path: artifacts
           if-no-files-found: error
+  create-release:
+    name: Create GitHub Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [windows, windows32, macos] # todo: add linux builds
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Extract tag annotation message for release notes
+      - name: Extract Tag Description & Version
+        id: tag_info
+        run: |
+          git fetch --tags --force
+          
+          # Reads the annotated tag description message
+          TAG_MSG=$(git tag -l --format='%(contents)' "${{ github.ref_name }}")
+          
+          {
+            echo "RELEASE_NOTES<<EOF"
+            echo "$TAG_MSG"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      # Downloads artifacts produced by previous build jobs
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-artifacts
+
+      # Creates the release with tag name, tag annotation as body, and attached build artifacts
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          body: ${{ steps.tag_info.outputs.RELEASE_NOTES }}
+          draft: false
+          prerelease: false
+          files: release-artifacts/**/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
