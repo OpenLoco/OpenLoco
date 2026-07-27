@@ -264,7 +264,7 @@ def main():
         kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
 
     parser = argparse.ArgumentParser(description="Prepare, harden, and tag a new release.")
-    parser.add_argument("version", help="Release version string without 'v' prefix (e.g. 26.07)")
+    parser.add_argument("tag", help="Release tag name (e.g. v99.99 or 99.99)")
     parser.add_argument("-r", "--remote", required=True, help="Git remote name (e.g. origin, upstream).")
     parser.add_argument("-n", "--dry-run", action="store_true", help="Perform a dry run without modifying files.")
     parser.add_argument("-y", "--non-interactive", action="store_true", help="Non-interactive mode (auto-accept defaults).")
@@ -273,7 +273,15 @@ def main():
 
     NON_INTERACTIVE = args.non_interactive
     remote = args.remote
-    raw_version = args.version.lstrip('v')
+    input_tag = args.tag.strip()
+
+    # Parse version number out of input tag (extracts numeric string like "99.99" from "v99.99" or "99.99")
+    version_match = re.search(r"(\d+\.\d+(?:\.\d+)?)", input_tag)
+    if not version_match:
+        print(f"❌ {CLR_RED}Error: Could not parse a valid version number from tag input '{input_tag}'. (Expected format e.g. v99.99 or 99.99){CLR_RESET}")
+        sys.exit(1)
+
+    raw_version = version_match.group(1)
     tag_name = f"v{raw_version}"
     bug_report_version = f"{raw_version}"
     today_str = datetime.now().strftime("%Y-%m-%d")
@@ -387,7 +395,7 @@ def main():
     staged_files = [f for f in [issue_template_path, changelog_path, cmakelists_path] if os.path.exists(f)]
     run_git_cmd(["git", "add"] + staged_files, dry_run)
     run_git_cmd(["git", "commit", "-m", f"Release {tag_name}"], dry_run)
-    run_git_cmd(["git", "tag", "-a", tag_name, "-m", f"{release_notes}"], dry_run)
+    run_git_cmd(["git", "tag", "-a", tag_name, "-m", f'"{release_notes}"'], dry_run)
 
     # -----------------------------------------------------------------
     # Step 4: Push Commit & Tag to Remote with Error Recovery
@@ -411,7 +419,7 @@ def main():
         print(f"    ✅ {CLR_GREEN}Prepended next cycle header to {changelog_path}{CLR_RESET}")
 
     run_git_cmd(["git", "add", changelog_path], dry_run)
-    run_git_cmd(["git", "commit", "-m", "Prepare for next development cycle [skip ci]"], dry_run)
+    run_git_cmd(["git", "commit", "-m", f'"Start v{raw_version}+"'], dry_run)
     push_with_retry(remote, tag_name, dry_run)
 
     # -----------------------------------------------------------------
