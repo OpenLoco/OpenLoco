@@ -428,21 +428,23 @@ namespace OpenLoco
         try
         {
             initialise();
-            if (Scenes::BootScene::loadFile(savePath))
-            {
-                Logging::info("File loaded. Starting simulation.");
-            }
-            else
-            {
-                Logging::error("Unable to simulate park!");
-            }
+            Scenes::BootScene::loadFile(savePath);
+
+            // The load itself is performed as part of the scene transition.
+            SceneManager::applySceneTransition();
         }
         catch (const std::exception& e)
         {
             Logging::error("Unable to simulate park: {}", e.what());
         }
 
-        SceneManager::applySceneTransition();
+        if (SceneManager::getCurrentScene() != SceneManager::SceneId::gameplay)
+        {
+            Logging::error("Unable to simulate park!");
+            return;
+        }
+
+        Logging::info("File loaded. Starting simulation.");
 
         for (int32_t i = 0; i < ticks; i++)
         {

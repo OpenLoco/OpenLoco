@@ -23,7 +23,8 @@ namespace OpenLoco::Scenes::BootScene
         }
         else
         {
-            return S5::importSaveToGameState(path, S5::LoadFlags::none);
+            SceneManager::requestSceneLoad(SceneManager::SceneId::gameplay, path, S5::LoadFlags::none);
+            return true;
         }
     }
 

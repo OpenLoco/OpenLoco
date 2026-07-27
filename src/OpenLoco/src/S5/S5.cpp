@@ -993,7 +993,6 @@ namespace OpenLoco::S5
             if (!hasLoadFlags(flags, LoadFlags::titleSequence) && !hasLoadFlags(flags, LoadFlags::twoPlayer) && !hasLoadFlags(flags, LoadFlags::landscape))
             {
                 SceneManager::resetSceneAge();
-                SceneManager::requestScene(SceneManager::SceneId::gameplay);
             }
 
             return true;

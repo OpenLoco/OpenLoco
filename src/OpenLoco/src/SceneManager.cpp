@@ -1,6 +1,7 @@
 #include "SceneManager.h"
 #include "Audio/Audio.h"
 #include "Logging.h"
+#include "S5/S5.h"
 #include "Scenes/BootScene.h"
 #include "Scenes/EditorScene.h"
 #include "Scenes/GameplayScene.h"
@@ -22,15 +23,28 @@ namespace OpenLoco::SceneManager
     static SceneId _currentScene = SceneId::boot;
     static std::optional<SceneId> _pendingScene;
 
+    struct SceneLoad
+    {
+        fs::path path;
+        S5::LoadFlags flags;
+    };
+
+    static std::optional<SceneLoad> _pendingLoad;
+
     static constexpr const char* sceneName(SceneId scene)
     {
         switch (scene)
         {
-            case SceneId::boot: return "boot";
-            case SceneId::intro: return "intro";
-            case SceneId::title: return "title";
-            case SceneId::gameplay: return "gameplay";
-            case SceneId::editor: return "editor";
+            case SceneId::boot:
+                return "boot";
+            case SceneId::intro:
+                return "intro";
+            case SceneId::title:
+                return "title";
+            case SceneId::gameplay:
+                return "gameplay";
+            case SceneId::editor:
+                return "editor";
         }
         return "unknown";
     }
@@ -54,6 +68,13 @@ namespace OpenLoco::SceneManager
     void requestScene(SceneId scene)
     {
         _pendingScene = scene;
+    }
+
+    void requestSceneLoad(SceneId scene, const fs::path& path, S5::LoadFlags flags)
+    {
+        _pendingLoad = SceneLoad{ path, flags };
+
+        requestScene(scene);
     }
 
     static void applyPendingScene()
@@ -102,6 +123,26 @@ namespace OpenLoco::SceneManager
         }
     }
 
+    static bool applyPendingLoad()
+    {
+        if (!_pendingLoad.has_value())
+        {
+            return true;
+        }
+
+        const auto load = *_pendingLoad;
+        _pendingLoad.reset();
+
+        if (!S5::importSaveToGameState(load.path, load.flags))
+        {
+            Logging::error("Failed to load '{}', returning to title", load.path.u8string());
+            requestScene(SceneId::title);
+            return false;
+        }
+
+        return true;
+    }
+
     // Returns true if the current scene was changed.
     bool applySceneTransition()
     {
@@ -112,6 +153,12 @@ namespace OpenLoco::SceneManager
 
         exitScene(_currentScene);
         applyPendingScene();
+
+        if (!applyPendingLoad())
+        {
+            return true;
+        }
+
         enterScene(_currentScene);
 
         return true;

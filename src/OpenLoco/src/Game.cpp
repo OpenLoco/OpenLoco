@@ -122,12 +122,8 @@ namespace OpenLoco::Game
                 _activeSavePath = path.u8string();
 
                 // 0x004424CE
-                if (S5::importSaveToGameState(path, S5::LoadFlags::landscape))
-                {
-                    SceneManager::resetSceneAge();
-                    SceneManager::requestScene(SceneManager::SceneId::editor);
-                    return;
-                }
+                SceneManager::requestSceneLoad(SceneManager::SceneId::editor, path, S5::LoadFlags::landscape);
+                return;
             }
         }
         else if (!SceneManager::isNetworked())
@@ -138,12 +134,8 @@ namespace OpenLoco::Game
                 auto path = fs::u8path(*res).replace_extension(S5::extensionSV5);
                 _activeSavePath = path.u8string();
 
-                if (S5::importSaveToGameState(path, S5::LoadFlags::none))
-                {
-                    SceneManager::resetSceneAge();
-                    SceneManager::requestScene(SceneManager::SceneId::gameplay);
-                    return;
-                }
+                SceneManager::requestSceneLoad(SceneManager::SceneId::gameplay, path, S5::LoadFlags::none);
+                return;
             }
         }
         else if (SceneManager::isNetworked())

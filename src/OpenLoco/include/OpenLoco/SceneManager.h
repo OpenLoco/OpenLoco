@@ -1,7 +1,13 @@
 #pragma once
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <OpenLoco/Core/FileSystem.hpp>
 #include <cstdint>
+
+namespace OpenLoco::S5
+{
+    enum class LoadFlags : uint32_t;
+}
 
 namespace OpenLoco
 {
@@ -54,13 +60,16 @@ namespace OpenLoco
         SceneId getPendingScene();
         bool isSceneTransitionPending();
         void requestScene(SceneId scene);
+
+        // Requests a scene change that first loads the given file, the load is performed
+        // as part of the scene transition rather than inside the tick that requested it.
+        void requestSceneLoad(SceneId scene, const fs::path& path, S5::LoadFlags flags);
+
         bool applySceneTransition();
 
-        // Fixed update.
+        // Scene dispatch
         void tick();
         void tickInterface();
-
-        // Per frame update.
         void update();
 
         void resetSceneAge();
