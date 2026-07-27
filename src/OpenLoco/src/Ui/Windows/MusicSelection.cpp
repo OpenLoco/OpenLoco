@@ -312,7 +312,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     static void onScrollMouseDown(Ui::Window& window, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
         const uint16_t currentRow = y / kRowHeight;
-        if (currentRow > window.rowCount)
+        if (currentRow >= window.rowCount)
         {
             return;
         }
@@ -341,7 +341,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     static void onScrollMouseOver(Ui::Window& window, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
         uint16_t currentRow = y / kRowHeight;
-        if (currentRow > window.rowCount || currentRow == window.rowHover)
+        if (currentRow >= window.rowCount || currentRow == window.rowHover)
         {
             return;
         }

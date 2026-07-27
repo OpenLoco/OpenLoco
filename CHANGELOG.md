@@ -1,6 +1,7 @@
 26.07+ (???)
 ------------------------------------------------------------------------
 - Fix: [#3842] Native browse prompt not working on Windows, preventing selecting the Locomotion path on first start.
+- Fix: [#3846] Can click beyond last item in station and company list windows, opening invalid windows.
 
 26.07 (2026-07-26)
 ------------------------------------------------------------------------
