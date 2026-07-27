@@ -273,7 +273,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static void onScrollMouseDown(Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
         {
             uint16_t currentRow = y / kRowHeight;
-            if (currentRow > self.rowCount)
+            if (currentRow >= self.rowCount)
             {
                 return;
             }
