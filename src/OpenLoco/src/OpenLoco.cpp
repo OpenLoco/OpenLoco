@@ -157,11 +157,16 @@ namespace OpenLoco
 
         std::srand(std::time(nullptr));
 
-        Input::Shortcuts::initialize();
-        World::TileManager::allocateMapElements();
+        // Do this first since some shutdown logic might otherwise read bad data.
+        EntityManager::reset();
+
         Localisation::enumerateLanguages();
         Localisation::loadLanguageFile();
+
         startupChecks();
+
+        Input::Shortcuts::initialize();
+        World::TileManager::allocateMapElements();
 
         Gfx::loadG1();
         Gfx::initialise();
