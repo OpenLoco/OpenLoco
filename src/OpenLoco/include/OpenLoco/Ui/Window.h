@@ -254,6 +254,7 @@ namespace OpenLoco::Ui
                 return;
             }
 
+            invalidate();
             width = size.width;
             height = size.height;
             callOnResize();
