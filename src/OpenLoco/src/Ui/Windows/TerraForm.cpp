@@ -105,7 +105,6 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx);
         static void prepareDraw(Window& self);
         static void onUpdate(Window& self);
-        static void onResize(Window& self, uint8_t height);
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id);
         static void sub_4A69DD();
 
@@ -1010,12 +1009,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             _adjustToolSize = _clearAreaToolSize;
         }
 
-        // 0x004BC7C6
-        static void onResize(Window& self)
-        {
-            Common::onResize(self, 105);
-        }
-
         // 0x004BC65C
         static void onMouseDown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
         {
@@ -1195,7 +1188,6 @@ namespace OpenLoco::Ui::Windows::Terraform
         static constexpr WindowEventList kEvents = {
             .onClose = onClose,
             .onMouseUp = Common::onMouseUp,
-            .onResize = onResize,
             .onMouseDown = onMouseDown,
             .onUpdate = Common::onUpdate,
             .onToolUpdate = onToolUpdate,
@@ -1293,12 +1285,11 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             if (SceneManager::isEditorMode())
             {
-                Common::onResize(self, 115);
+                self.setSizeFixed({ 161, 115 });
             }
             else
             {
-                // CHANGE: Resizes window to allow Dropdown and cost string to be drawn separately
-                Common::onResize(self, 140);
+                self.setSizeFixed({ 161, 140 });
             }
         }
 
@@ -1950,12 +1941,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             _adjustToolSize = _adjustWaterToolSize;
         }
 
-        // 0x004BCEB4
-        static void onResize(Window& self)
-        {
-            Common::onResize(self, 115);
-        }
-
         // 0x004BCD9D
         static void onMouseDown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
         {
@@ -2243,7 +2228,6 @@ namespace OpenLoco::Ui::Windows::Terraform
         static constexpr WindowEventList kEvents = {
             .onClose = onClose,
             .onMouseUp = Common::onMouseUp,
-            .onResize = onResize,
             .onMouseDown = onMouseDown,
             .onUpdate = Common::onUpdate,
             .onToolUpdate = onToolUpdate,
@@ -2760,31 +2744,18 @@ namespace OpenLoco::Ui::Windows::Terraform
             const widx widgetIndex;
             const WindowEventList& events;
             const uint64_t holdableWidgets;
+            const Size windowSize;
         };
 
         // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { ClearArea::widgets,   widx::tab_clear_area,   ClearArea::getEvents(),   ClearArea::holdableWidgets },
-            { AdjustLand::widgets,  widx::tab_adjust_land,  AdjustLand::getEvents(),  AdjustLand::holdableWidgets },
-            { AdjustWater::widgets, widx::tab_adjust_water, AdjustWater::getEvents(), AdjustWater::holdableWidgets },
-            { PlantTrees::widgets,  widx::tab_plant_trees,  PlantTrees::getEvents(),  PlantTrees::holdableWidgets },
-            { BuildWalls::widgets,  widx::tab_build_walls,  BuildWalls::getEvents(),  BuildWalls::holdableWidgets },
+            { ClearArea::widgets,   widx::tab_clear_area,   ClearArea::getEvents(),   ClearArea::holdableWidgets,   { 161, 105 } },
+            { AdjustLand::widgets,  widx::tab_adjust_land,  AdjustLand::getEvents(),  AdjustLand::holdableWidgets,  { 161, 140 } },
+            { AdjustWater::widgets, widx::tab_adjust_water, AdjustWater::getEvents(), AdjustWater::holdableWidgets, { 161, 115 } },
+            { PlantTrees::widgets,  widx::tab_plant_trees,  PlantTrees::getEvents(),  PlantTrees::holdableWidgets,  PlantTrees::kWindowSize },
+            { BuildWalls::widgets,  widx::tab_build_walls,  BuildWalls::getEvents(),  BuildWalls::holdableWidgets,  BuildWalls::kWindowSize },
         };
         // clang-format on
-
-        static void onResize(Window& self, uint8_t height)
-        {
-            self.flags |= WindowFlags::resizable;
-
-            /*auto width = 130;
-            if (isEditorMode())
-                width += 31;*/
-
-            // CHANGE: width set to 161 to include building walls tab
-            uint16_t width = 161;
-            Ui::Size kWindowSize = { width, height };
-            self.setSizeFixed(kWindowSize);
-        }
 
         // 0x004BC78A, 0x004BCB0B
         static void onUpdate(Window& self)
@@ -2907,14 +2878,10 @@ namespace OpenLoco::Ui::Windows::Terraform
             self.activatedWidgets = 0;
             self.setWidgets(tabInfo.widgets);
 
-            auto disabledWidgets = 0;
-
-            // CHANGE: Disabled so the build walls tab shows outside of editor mode
-            /*if (!isEditorMode() && !isSandboxMode())
-                disabledWidgets |= common::widx::tab_build_walls;*/
-
-            self.disabledWidgets = disabledWidgets;
+            self.disabledWidgets = 0;
             self.invalidate();
+
+            self.setSizeFixed(tabInfo.windowSize);
 
             switch (widgetIndex)
             {

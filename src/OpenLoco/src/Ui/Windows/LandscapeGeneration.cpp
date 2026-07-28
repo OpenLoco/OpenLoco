@@ -1772,8 +1772,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             }();
 
             self.setSizeFixed(newSize);
-
-            self.callOnResize();
             self.callPrepareDraw();
             self.initScrollWidgets();
             self.invalidate();
