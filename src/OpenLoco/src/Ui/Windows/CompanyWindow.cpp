@@ -1142,7 +1142,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onResize(Window& self)
         {
             Common::enableRenameByCaption(&self);
-            self.setSizeFixed(kWindowSize);
             self.callViewportRotate();
         }
 
@@ -1745,7 +1744,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onResize(Window& self)
         {
             Common::enableRenameByCaption(&self);
-            self.setSizeFixed(kWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -2248,7 +2246,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onResize(Window& self)
         {
             Common::enableRenameByCaption(&self);
-            self.setSizeFixed(kWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -2290,7 +2287,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         window->currentTab = Common::tab_finances - Common::tab_status;
-        window->setSize(Finances::kWindowSize);
+        window->setSizeFixed(Finances::kWindowSize);
         window->invalidate();
 
         window->setWidgets(Finances::widgets);
@@ -2662,15 +2659,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             WindowManager::invalidate(WindowType::company, self.number);
         }
 
-        // 0x00434048
-        static void onResize(Window& self)
-        {
-            self.setSizeFixed(kWindowSize);
-        }
-
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
-            .onResize = onResize,
             .onUpdate = onUpdate,
             .textInput = textInput,
             .prepareDraw = prepareDraw,
@@ -2702,7 +2692,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         window->currentTab = Common::tab_challenge - Common::tab_status;
-        window->setSize(Challenge::kWindowSize);
+        window->setSizeFixed(Challenge::kWindowSize);
         window->invalidate();
 
         window->setWidgets(Challenge::widgets);
