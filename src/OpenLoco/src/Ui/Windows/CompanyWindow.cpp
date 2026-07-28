@@ -2718,7 +2718,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         };
 
         // clang-format off
-        static TabInformation tabInformationByTabOffset[] = {
+        static TabInformation kTabInformationByTabOffset[] = {
             { Status::widgets,         widx::tab_status,          Status::getEvents(),         &Status::kWindowSize },
             { Details::widgets,        widx::tab_details,         Details::getEvents(),        &Details::kWindowSize },
             { ColourScheme::widgets,   widx::tab_colour_scheme,   ColourScheme::getEvents(),   &ColourScheme::kWindowSize },
@@ -2762,30 +2762,13 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             self->activatedWidgets = 0;
 
-            static std::span<const Widget> widgetCollectionsByTabId[] = {
-                Status::widgets,
-                Details::widgets,
-                ColourScheme::widgets,
-                Finances::widgets,
-                CargoDelivered::widgets,
-                Challenge::widgets,
-            };
+            auto& tabInfo = kTabInformationByTabOffset[self->currentTab];
 
-            auto newWidgets = widgetCollectionsByTabId[self->currentTab];
-            self->setWidgets(newWidgets);
-            // self->initScrollWidgets();
-
-            static constexpr widx tabWidgetIdxByTabId[] = {
-                tab_status,
-                tab_details,
-                tab_colour_scheme,
-                tab_finances,
-                tab_cargo_delivered,
-                tab_challenge,
-            };
+            self->setWidgets(tabInfo.widgets);
+            self->initScrollWidgets();
 
             self->activatedWidgets &= ~((1 << tab_status) | (1 << tab_details) | (1 << tab_colour_scheme) | (1 << tab_finances) | (1 << tab_cargo_delivered) | (1 << tab_challenge));
-            self->activatedWidgets |= (1ULL << tabWidgetIdxByTabId[self->currentTab]);
+            self->activatedWidgets |= (1ULL << tabInfo.widgetIndex);
         }
 
         // 0x0043230B
@@ -2805,7 +2788,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.viewportRemove(0);
 
             auto tabIndex = widgetIndex - widx::tab_status;
-            auto tabInfo = tabInformationByTabOffset[tabIndex];
+            auto tabInfo = kTabInformationByTabOffset[tabIndex];
 
             self.holdableWidgets = 0;
             self.eventHandlers = &tabInfo.events;
