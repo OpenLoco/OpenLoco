@@ -1271,10 +1271,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
             Ui::Size kMinWindowSize = { self.minWidth, self.minHeight };
             Ui::Size kMaxWindowSize = { self.maxWidth, self.maxHeight };
             self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
-            // if (hasResized)
-            {
-                updateActiveThumb(self);
-            }
+
+            updateActiveThumb(self);
         }
 
         static constexpr WindowEventList kEvents = {

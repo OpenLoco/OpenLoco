@@ -249,12 +249,18 @@ namespace OpenLoco::Ui
 
         constexpr void setSize(Ui::Size size)
         {
+            if (width == size.width && height == size.height)
+            {
+                printf("Called setSize without needing to\n");
+                return;
+            }
+
             width = size.width;
             height = size.height;
             callOnResize();
         }
 
-        constexpr bool setSizeBounds(Ui::Size minSize, Ui::Size maxSize)
+        constexpr void setSizeBounds(Ui::Size minSize, Ui::Size maxSize)
         {
             bool hasResized = false;
 
@@ -291,10 +297,14 @@ namespace OpenLoco::Ui
                 invalidate();
                 hasResized = true;
             }
-            return hasResized;
+
+            if (hasResized)
+            {
+                callOnResize();
+            }
         }
 
-        constexpr bool setSizeBounds(Ui::Size size)
+        constexpr void setSizeBounds(Ui::Size size)
         {
             return setSizeBounds(size, size);
         }

@@ -1215,11 +1215,9 @@ namespace OpenLoco::Ui::Windows::TownList
             self.invalidate();
             Ui::Size kMinWindowSize = { self.minWidth, self.minHeight };
             Ui::Size kMaxWindowSize = { self.maxWidth, self.maxHeight };
-            bool hasResized = self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
-            if (hasResized)
-            {
-                updateActiveThumb(self);
-            }
+            self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
+
+            updateActiveThumb(self);
         }
 
         // 0x0049AE83

@@ -353,10 +353,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             Ui::Size kMinWindowSize = { self.minWidth, self.minHeight };
             Ui::Size kMaxWindowSize = { self.maxWidth, self.maxHeight };
             self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
-            // if (hasResized)
-            {
-                updateActiveThumb(self);
-            }
+
+            updateActiveThumb(self);
         }
 
         // 0x004BBAEA
@@ -2390,11 +2388,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             self.invalidate();
             Ui::Size kMinWindowSize = { self.minWidth, self.minHeight };
             Ui::Size kMaxWindowSize = { self.maxWidth, self.maxHeight };
-            bool hasResized = self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
-            if (hasResized)
-            {
-                updateActiveThumb(self);
-            }
+            self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
+
+            updateActiveThumb(self);
         }
 
         // 0x004BC23D
