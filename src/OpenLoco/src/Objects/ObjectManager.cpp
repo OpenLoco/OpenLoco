@@ -186,7 +186,7 @@ namespace OpenLoco::ObjectManager
             for (LoadedObjectId i = 0; i < maxObjectsForType; i++)
             {
                 auto obj = typedObjectList.objects[i];
-                if (obj != nullptr && obj != reinterpret_cast<Object*>(-1))
+                if (obj != nullptr)
                 {
                     const auto& objHeader = typedObjectList.objectEntryExtendeds[i];
 
@@ -216,7 +216,7 @@ namespace OpenLoco::ObjectManager
         for (LoadedObjectId i = 0; i < maxObjectsForType; i++)
         {
             auto obj = typedObjectList.objects[i];
-            if (obj == nullptr || obj != reinterpret_cast<Object*>(-1))
+            if (obj == nullptr)
             {
                 continue;
             }
@@ -595,7 +595,7 @@ namespace OpenLoco::ObjectManager
         }
         unload(*handle);
         free(_objectRepository[enumValue(handle->type)].objects[handle->id]);
-        _objectRepository[enumValue(handle->type)].objects[handle->id] = reinterpret_cast<Object*>(-1);
+        _objectRepository[enumValue(handle->type)].objects[handle->id] = nullptr;
     }
 
     // 0x00471BCE
@@ -658,7 +658,7 @@ namespace OpenLoco::ObjectManager
         size_t index = 0;
         for (; index < getMaxObjects(type); ++index)
         {
-            if (getRepositoryItem(type).objects[index] == reinterpret_cast<Object*>(-1))
+            if (getRepositoryItem(type).objects[index] == nullptr)
             {
                 break;
             }
