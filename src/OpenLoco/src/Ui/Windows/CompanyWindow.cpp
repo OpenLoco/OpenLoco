@@ -447,55 +447,56 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.callViewportRotate();
         }
 
-        static void sub_434336(Window* self, const SavedView& view)
+        // 0x00434336
+        static void createViewportFromSavedView(Window& self, const SavedView& view)
         {
-            if (self->viewports[0] != nullptr)
+            if (self.viewports[0] != nullptr)
             {
                 return;
             }
 
-            auto& widget = self->widgets[widx::viewport];
-            auto origin = Ui::Point(widget.left + self->x + 1, widget.top + self->y + 1);
+            auto& widget = self.widgets[widx::viewport];
+            auto origin = Ui::Point(widget.left + self.x + 1, widget.top + self.y + 1);
             auto size = Ui::Size(widget.width() - 2, widget.height() - 2);
             if (view.isEntityView())
             {
-                ViewportManager::create(self, 0, origin, size, self->savedView.zoomLevel, view.entityId);
+                ViewportManager::create(&self, 0, origin, size, self.savedView.zoomLevel, view.entityId);
             }
             else
             {
-                ViewportManager::create(self, 0, origin, size, self->savedView.zoomLevel, view.getPos());
+                ViewportManager::create(&self, 0, origin, size, self.savedView.zoomLevel, view.getPos());
             }
         }
 
-        static void sub_434223(Window* const self, const SavedView& view, const ViewportFlags vpFlags)
+        static void reinitialiseViewport(Window& self, const SavedView& view, const ViewportFlags vpFlags)
         {
-            self->savedView = view;
-            sub_434336(self, view);
-            self->viewports[0]->flags |= vpFlags;
-            self->invalidate();
+            self.savedView = view;
+            createViewportFromSavedView(self, view);
+            self.viewports[0]->flags |= vpFlags;
+            self.invalidate();
         }
 
-        static void differentViewportSettings(Window* const self, const SavedView& view)
+        static void differentViewportSettings(Window& self, const SavedView& view)
         {
-            auto vpFlags = self->viewports[0]->flags;
-            self->viewportRemove(0);
-            sub_434223(self, view, vpFlags);
+            auto vpFlags = self.viewports[0]->flags;
+            self.viewportRemove(0);
+            reinitialiseViewport(self, view, vpFlags);
         }
 
-        static void noViewportPresent(Window* const self, const SavedView& view)
+        static void noViewportPresent(Window& self, const SavedView& view)
         {
             ViewportFlags vpFlags = ViewportFlags::none;
             if (Config::get().gridlinesOnLandscape)
             {
                 vpFlags |= ViewportFlags::gridlines_on_landscape;
             }
-            sub_434223(self, view, vpFlags);
+            reinitialiseViewport(self, view, vpFlags);
         }
 
-        static void invalidViewport(Window* const self)
+        static void invalidViewport(Window& self)
         {
-            self->viewportRemove(0);
-            self->invalidate();
+            self.viewportRemove(0);
+            self.invalidate();
         }
 
         // 0x004327C8
@@ -535,7 +536,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                     if (self.viewports[0] == nullptr)
                     {
-                        noViewportPresent(&self, view);
+                        noViewportPresent(self, view);
                         return;
                     }
 
@@ -543,7 +544,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     {
                         if (self.savedView != view)
                         {
-                            differentViewportSettings(&self, view);
+                            differentViewportSettings(self, view);
                             return;
                         }
                         return;
@@ -556,7 +557,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 // Not observing anything at all?
                 else
                 {
-                    invalidViewport(&self);
+                    invalidViewport(self);
                 }
             }
             else
@@ -566,12 +567,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 auto* vehicle = entity->asBase<Vehicles::VehicleBase>();
                 if (vehicle == nullptr)
                 {
-                    invalidViewport(&self);
+                    invalidViewport(self);
                     return;
                 }
                 if (!vehicle->isVehicleHead() || (vehicle->position.x == Location::null))
                 {
-                    invalidViewport(&self);
+                    invalidViewport(self);
                     return;
                 }
 
@@ -587,13 +588,13 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 if (self.viewports[0] == nullptr)
                 {
-                    noViewportPresent(&self, view);
+                    noViewportPresent(self, view);
                     return;
                 }
 
                 if (self.savedView != view)
                 {
-                    differentViewportSettings(&self, view);
+                    differentViewportSettings(self, view);
                     return;
                 }
             }
@@ -1113,7 +1114,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00434377
-        static void createViewportFromSavedView(Window& self, const SavedView& view)
+        static void createHQViewportFromSavedView(Window& self, const SavedView& view)
         {
             if (self.viewports[0] != nullptr)
             {
@@ -1124,7 +1125,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto origin = Ui::Point(widget.left + self.x + 1, widget.top + self.y + 1);
             auto size = Ui::Size(widget.width() - 2, widget.height() - 2);
 
-            ViewportManager::create(self, 0, origin, size, self.savedView.zoomLevel, view.getPos());
+            ViewportManager::create(&self, 0, origin, size, self.savedView.zoomLevel, view.getPos());
             self.flags |= WindowFlags::viewportNoScrolling;
             self.invalidate();
         }
@@ -1180,7 +1181,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
 
             self.savedView = view;
-            createViewportFromSavedView(&self, view);
+            createHQViewportFromSavedView(self, view);
             if (self.viewports[0] != nullptr)
             {
                 self.viewports[0]->flags = vpFlags;
