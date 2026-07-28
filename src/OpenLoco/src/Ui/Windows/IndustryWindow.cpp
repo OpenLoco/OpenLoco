@@ -392,9 +392,7 @@ namespace OpenLoco::Ui::Windows::Industry
         // 0x0045654F
         static void onResize(Window& self)
         {
-            {
-                self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
-            }
+            self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -434,9 +432,7 @@ namespace OpenLoco::Ui::Windows::Industry
         // 0x004565FF
         static void onResize(Window& self)
         {
-            {
-                self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
-            }
+            self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -613,9 +609,7 @@ namespace OpenLoco::Ui::Windows::Industry
         // 0x004569C2
         static void onResize(Window& self)
         {
-            {
-                self.setSizeBounds(kWindowSize, kWindowSize);
-            }
+            self.setSizeFixed(kWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
