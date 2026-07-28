@@ -220,8 +220,6 @@ namespace OpenLoco::Ui::Windows::Industry
         // 0x00455F1A
         static void onResize(Window& self)
         {
-            self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
-
             if (self.viewports[0] != nullptr)
             {
                 uint16_t newWidth = self.width - 30;
@@ -389,15 +387,8 @@ namespace OpenLoco::Ui::Windows::Industry
             Widget::leftAlignTabs(self, Common::widx::tab_industry, Common::widx::tab_transported);
         }
 
-        // 0x0045654F
-        static void onResize(Window& self)
-        {
-            self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
-        }
-
         static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
-            .onResize = onResize,
             .onUpdate = Common::update,
             .textInput = Common::textInput,
             .prepareDraw = prepareDraw,
@@ -429,15 +420,8 @@ namespace OpenLoco::Ui::Windows::Industry
             Widget::leftAlignTabs(self, Common::widx::tab_industry, Common::widx::tab_transported);
         }
 
-        // 0x004565FF
-        static void onResize(Window& self)
-        {
-            self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
-        }
-
         static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
-            .onResize = onResize,
             .onUpdate = Common::update,
             .textInput = Common::textInput,
             .prepareDraw = prepareDraw,
@@ -606,15 +590,8 @@ namespace OpenLoco::Ui::Windows::Industry
             }
         }
 
-        // 0x004569C2
-        static void onResize(Window& self)
-        {
-            self.setSizeFixed(kWindowSize);
-        }
-
         static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
-            .onResize = onResize,
             .onUpdate = Common::update,
             .textInput = Common::textInput,
             .prepareDraw = prepareDraw,
@@ -634,13 +611,15 @@ namespace OpenLoco::Ui::Windows::Industry
             std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
+            const Size minSize;
+            const Size maxSize;
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { Industry::widgets, widx::tab_industry, Industry::getEvents() },
-            { Production2::widgets, widx::tab_production, Production::getEvents() },
-            { Production2::widgets, widx::tab_production_2, Production2::getEvents() },
-            { Transported::widgets, widx::tab_transported, Transported::getEvents() }
+            { Industry::widgets, widx::tab_industry, Industry::getEvents(), Industry::kWindowSize, Industry::kWindowSize },
+            { Production2::widgets, widx::tab_production, Production::getEvents(), Production::kMinWindowSize, Production::kMaxWindowSize },
+            { Production2::widgets, widx::tab_production_2, Production2::getEvents(), Production2::kMinWindowSize, Production2::kMaxWindowSize },
+            { Transported::widgets, widx::tab_transported, Transported::getEvents(), Transported::kWindowSize, Transported::kWindowSize }
         };
 
         static void setDisabledWidgets(Window& self)
@@ -902,7 +881,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
             self.invalidate();
 
-            self.setSizeFixed(Industry::kWindowSize);
+            self.setSizeBounds(tabInfo.minSize, tabInfo.maxSize);
             self.callOnResize();
             self.callPrepareDraw();
             self.initScrollWidgets();
