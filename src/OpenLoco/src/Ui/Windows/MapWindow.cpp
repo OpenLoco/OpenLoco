@@ -239,8 +239,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static void onResize(Window& self)
     {
         self.flags |= WindowFlags::resizable;
-        self.minWidth = kMinWindowSize.width;
-
         self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
 
         auto& widget = self.widgets[widx::scrollview];
@@ -2420,6 +2418,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         window = WindowManager::createWindow(WindowType::map, size, WindowFlags::none, getEvents());
         window->setWidgets(kWidgets);
+        window->callOnResize();
         window->initScrollWidgets();
         window->frameNo = 0;
 
