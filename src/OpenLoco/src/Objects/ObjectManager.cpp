@@ -216,7 +216,7 @@ namespace OpenLoco::ObjectManager
         for (LoadedObjectId i = 0; i < maxObjectsForType; i++)
         {
             auto obj = typedObjectList.objects[i];
-            if (obj == nullptr || obj != reinterpret_cast<Object*>(-1))
+            if (obj == nullptr || obj == reinterpret_cast<Object*>(-1))
             {
                 continue;
             }
