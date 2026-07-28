@@ -581,10 +581,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             WindowManager::moveOtherWindowsDown(*window);
 
-            window->minWidth = IndustryList::kMinDimensions.width;
-            window->minHeight = IndustryList::kMinDimensions.height;
-            window->maxWidth = IndustryList::kMaxDimensions.width;
-            window->maxHeight = IndustryList::kMaxDimensions.height;
+            window->setSizeBounds(IndustryList::kMinDimensions, IndustryList::kMaxDimensions);
             window->flags |= WindowFlags::resizable;
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();

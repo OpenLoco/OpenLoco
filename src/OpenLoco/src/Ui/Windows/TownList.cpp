@@ -534,10 +534,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             WindowManager::moveOtherWindowsDown(*window);
 
-            window->minWidth = TownList::kMinDimensions.width;
-            window->minHeight = TownList::kMinDimensions.height;
-            window->maxWidth = TownList::kMaxDimensions.width;
-            window->maxHeight = TownList::kMaxDimensions.height;
+            window->setSizeBounds(TownList::kMinDimensions, TownList::kMaxDimensions);
             window->flags |= WindowFlags::resizable;
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();

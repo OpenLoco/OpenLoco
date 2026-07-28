@@ -90,9 +90,7 @@ namespace OpenLoco::Ui::Windows::Industry
     namespace Industry
     {
         static constexpr Ui::Size kWindowSize = { 223, 137 };
-
         static constexpr Ui::Size kMinWindowSize = { 192, 137 };
-
         static constexpr Ui::Size kMaxWindowSize = { 600, 440 };
 
         enum widx
@@ -347,10 +345,7 @@ namespace OpenLoco::Ui::Windows::Industry
             const WindowFlags newFlags = WindowFlags::viewportNoShiftPixels | WindowFlags::resizable;
             window = WindowManager::createWindow(WindowType::industry, Industry::kWindowSize, newFlags, Industry::getEvents());
             window->number = enumValue(industryId);
-            window->minWidth = 192;
-            window->minHeight = 137;
-            window->maxWidth = 600;
-            window->maxHeight = 440;
+            window->setSizeBounds(Industry::kMinWindowSize, Industry::kMaxWindowSize);
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             if (skin != nullptr)

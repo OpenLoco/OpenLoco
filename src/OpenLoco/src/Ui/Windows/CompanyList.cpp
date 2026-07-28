@@ -577,10 +577,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         window->currentTab = 0;
-        window->minWidth = Common::kMinWindowSize.width;
-        window->minHeight = Common::kMinWindowSize.height;
-        window->maxWidth = Common::kMaxWindowSize.width;
-        window->maxHeight = Common::kMaxWindowSize.height;
+        window->setSizeBounds(Common::kMinWindowSize, Common::kMaxWindowSize);
 
         window->invalidate();
 

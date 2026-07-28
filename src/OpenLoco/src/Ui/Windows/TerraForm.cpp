@@ -937,10 +937,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             WindowManager::moveOtherWindowsDown(*window);
 
-            window->minWidth = PlantTrees::kWindowSize.width;
-            window->minHeight = PlantTrees::kWindowSize.height;
-            window->maxWidth = PlantTrees::kWindowSize.width;
-            window->maxHeight = PlantTrees::kWindowSize.height;
+            window->setSizeBounds(PlantTrees::kWindowSize);
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::secondary, skin->windowTerraFormColour);

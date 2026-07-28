@@ -336,10 +336,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
             WindowManager::moveOtherWindowsDown(*window);
 
-            window->minWidth = Messages::kMinWindowSize.width;
-            window->minHeight = Messages::kMinWindowSize.height;
-            window->maxWidth = Messages::kMaxWindowSize.width;
-            window->maxHeight = Messages::kMaxWindowSize.height;
+            window->setSizeBounds(Messages::kMinWindowSize, Messages::kMaxWindowSize);
             window->flags |= WindowFlags::resizable;
 
             window->owner = CompanyManager::getControllingId();
