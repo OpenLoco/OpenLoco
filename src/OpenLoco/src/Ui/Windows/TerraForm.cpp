@@ -412,13 +412,13 @@ namespace OpenLoco::Ui::Windows::Terraform
                                 {
                                     newHeight = std::min(newHeight, 358);
                                 }
-                                self.setSizeBounds({ kWindowSize.width, newHeight });
+                                self.setSizeFixed({ kWindowSize.width, newHeight });
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    self.setSizeBounds(kWindowSize);
+                                    self.setSizeFixed(kWindowSize);
                                 }
                             }
                         }
@@ -429,7 +429,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        self.setSizeBounds(kWindowSize);
+                        self.setSizeFixed(kWindowSize);
                     }
                 }
             }
@@ -935,7 +935,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             WindowManager::moveOtherWindowsDown(*window);
 
-            window->setSizeBounds(PlantTrees::kWindowSize);
+            window->setSizeFixed(PlantTrees::kWindowSize);
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::secondary, skin->windowTerraFormColour);
@@ -2414,13 +2414,13 @@ namespace OpenLoco::Ui::Windows::Terraform
                                 {
                                     newHeight = std::min(newHeight, 358);
                                 }
-                                self.setSizeBounds({ kWindowSize.width, newHeight });
+                                self.setSizeFixed({ kWindowSize.width, newHeight });
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    self.setSizeBounds(kWindowSize);
+                                    self.setSizeFixed(kWindowSize);
                                 }
                             }
                         }
@@ -2431,7 +2431,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        self.setSizeBounds(kWindowSize);
+                        self.setSizeFixed(kWindowSize);
                     }
                 }
             }
@@ -2783,7 +2783,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             // CHANGE: width set to 161 to include building walls tab
             uint16_t width = 161;
             Ui::Size kWindowSize = { width, height };
-            self.setSizeBounds(kWindowSize);
+            self.setSizeFixed(kWindowSize);
         }
 
         // 0x004BC78A, 0x004BCB0B

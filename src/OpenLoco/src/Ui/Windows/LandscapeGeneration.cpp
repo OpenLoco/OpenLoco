@@ -1771,7 +1771,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 }
             }();
 
-            self.setSizeBounds(newSize);
+            self.setSizeFixed(newSize);
 
             self.callOnResize();
             self.callPrepareDraw();

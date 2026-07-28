@@ -1142,7 +1142,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onResize(Window& self)
         {
             Common::enableRenameByCaption(&self);
-            self.setSizeBounds(kWindowSize);
+            self.setSizeFixed(kWindowSize);
             self.callViewportRotate();
         }
 
@@ -1745,7 +1745,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onResize(Window& self)
         {
             Common::enableRenameByCaption(&self);
-            self.setSizeBounds(kWindowSize);
+            self.setSizeFixed(kWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -2248,7 +2248,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onResize(Window& self)
         {
             Common::enableRenameByCaption(&self);
-            self.setSizeBounds(kWindowSize);
+            self.setSizeFixed(kWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -2477,7 +2477,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             const uint16_t kWindowHeight = std::max<int16_t>(cargoHeight, 50) + 62;
 
-            self.setSizeBounds({ kWindowSize.width, kWindowHeight });
+            self.setSizeFixed({ kWindowSize.width, kWindowHeight });
         }
 
         static constexpr WindowEventList kEvents = {
@@ -2665,7 +2665,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00434048
         static void onResize(Window& self)
         {
-            self.setSizeBounds(kWindowSize);
+            self.setSizeFixed(kWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -2829,7 +2829,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             Common::disableChallengeTab(&self);
             self.invalidate();
-            self.setSizeBounds(*tabInfo.kWindowSize);
+            self.setSizeFixed(*tabInfo.kWindowSize);
             self.callOnResize();
             self.callPrepareDraw();
             self.initScrollWidgets();

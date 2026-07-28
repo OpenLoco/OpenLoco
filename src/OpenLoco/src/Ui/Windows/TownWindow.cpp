@@ -685,7 +685,7 @@ namespace OpenLoco::Ui::Windows::Town
         {
             // Call to sub_498E9B has been deliberately omitted.
 
-            self.setSizeBounds(kWindowSize);
+            self.setSizeFixed(kWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -802,7 +802,7 @@ namespace OpenLoco::Ui::Windows::Town
 
         static void onResize(Window& self)
         {
-            self.setSizeBounds(kTransportedWindowSize);
+            self.setSizeFixed(kTransportedWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -940,7 +940,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             self.invalidate();
 
-            self.setSizeBounds(kWindowSize);
+            self.setSizeFixed(kWindowSize);
             self.callOnResize();
             self.callPrepareDraw();
             self.initScrollWidgets();

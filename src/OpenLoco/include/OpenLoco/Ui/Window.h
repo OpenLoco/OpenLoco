@@ -275,7 +275,7 @@ namespace OpenLoco::Ui
             return setSize({ width, height });
         }
 
-        constexpr bool setSizeBounds(Ui::Size size)
+        constexpr bool setSizeFixed(Ui::Size size)
         {
             return setSizeBounds(size, size);
         }

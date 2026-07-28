@@ -689,7 +689,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x004361D8
         static void tabReset(Window& self)
         {
-            self.setSizeBounds(kWindowSize);
+            self.setSizeFixed(kWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -777,7 +777,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00436201
         static void tabReset(Window& self)
         {
-            self.setSizeBounds(kWindowSize);
+            self.setSizeFixed(kWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -865,7 +865,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00436227
         static void tabReset(Window& self)
         {
-            self.setSizeBounds(kWindowSize);
+            self.setSizeFixed(kWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -953,7 +953,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x0043624D
         static void tabReset(Window& self)
         {
-            self.setSizeBounds(kWindowSize);
+            self.setSizeFixed(kWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -1207,7 +1207,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00436273
         static void tabReset(Window& self)
         {
-            self.setSizeBounds(kWindowSize);
+            self.setSizeFixed(kWindowSize);
             Economy::buildDeliveredCargoPaymentsTable();
         }
 

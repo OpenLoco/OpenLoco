@@ -908,7 +908,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
             self.invalidate();
 
-            self.setSizeBounds(Industry::kWindowSize);
+            self.setSizeFixed(Industry::kWindowSize);
             self.callOnResize();
             self.callPrepareDraw();
             self.initScrollWidgets();

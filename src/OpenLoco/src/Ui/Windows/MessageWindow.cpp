@@ -578,7 +578,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         // 0x0042A7E8
         static void tabReset(Window& self)
         {
-            self.setSizeBounds(kWindowSize);
+            self.setSizeFixed(kWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {

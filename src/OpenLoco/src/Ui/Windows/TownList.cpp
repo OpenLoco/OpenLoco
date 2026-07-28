@@ -791,7 +791,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A3BE
         static void tabReset(Window& self)
         {
-            self.setSizeBounds(kWindowSize);
+            self.setSizeFixed(kWindowSize);
             ToolManager::toolSet(self, Common::widx::tab_build_town, CursorId::placeTown);
             Input::setFlag(Input::Flags::flag6);
             Ui::Windows::Main::showGridlines();
@@ -965,13 +965,13 @@ namespace OpenLoco::Ui::Windows::TownList
                                 {
                                     newHeight = std::min(newHeight, 276);
                                 }
-                                self.setSizeBounds({ kWindowSize.width, newHeight });
+                                self.setSizeFixed({ kWindowSize.width, newHeight });
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    self.setSizeBounds(kWindowSize);
+                                    self.setSizeFixed(kWindowSize);
                                 }
                             }
                         }
@@ -982,7 +982,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        self.setSizeBounds(kWindowSize);
+                        self.setSizeFixed(kWindowSize);
                     }
                 }
             }
@@ -1451,7 +1451,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A3FF
         static void tabReset(Window& self)
         {
-            self.setSizeBounds(kWindowSize);
+            self.setSizeFixed(kWindowSize);
 
             auto tab = Common::widx::tab_build_buildings;
             if (self.currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)

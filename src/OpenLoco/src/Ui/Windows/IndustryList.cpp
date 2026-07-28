@@ -897,13 +897,13 @@ namespace OpenLoco::Ui::Windows::IndustryList
                                 {
                                     newHeight = std::min(newHeight, 276);
                                 }
-                                self.setSizeBounds({ kWindowSize.width, newHeight });
+                                self.setSizeFixed({ kWindowSize.width, newHeight });
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    self.setSizeBounds(kWindowSize);
+                                    self.setSizeFixed(kWindowSize);
                                 }
                             }
                         }
@@ -914,7 +914,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        self.setSizeBounds(kWindowSize);
+                        self.setSizeFixed(kWindowSize);
                     }
                 }
             }
@@ -1240,7 +1240,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00457FFE
         static void tabReset(Window& self)
         {
-            self.setSizeBounds(NewIndustries::kWindowSize);
+            self.setSizeFixed(NewIndustries::kWindowSize);
 
             ToolManager::toolSet(self, Common::widx::tab_new_industry, CursorId::placeFactory);
 
