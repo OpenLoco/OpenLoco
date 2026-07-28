@@ -20,7 +20,7 @@
 #include <OpenLoco/Utility/LookupTable.hpp>
 #include <SDL3/SDL_keyboard.h>
 #include <cstddef>
-#include <unordered_map>
+#include <vector>
 
 using namespace OpenLoco::Input;
 
@@ -29,6 +29,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     static constexpr int kRowHeight = 10; // CJK: 13
 
     static constexpr Ui::Size kWindowSize = { 420, 238 };
+    static constexpr Ui::Size kMaxWindowSize = { 600, 800 };
 
     namespace Widx
     {
@@ -46,6 +47,19 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 
     );
 
+    static constexpr std::array kSeparatorPositions = std::to_array<Shortcut>({
+        Shortcut::rotateConstructionObject,
+        Shortcut::toggleDirArrowsonTracks,
+        Shortcut::buildNewVehicles,
+        Shortcut::showCompaniesList,
+        Shortcut::showJukeboxWindow,
+        Shortcut::sendMessage,
+        Shortcut::constructionSelectPosition,
+        Shortcut::gameSpeedExtraFastForward,
+    });
+
+    static std::vector<std::optional<Shortcut>> _shortcutList;
+
     enum widx
     {
         frame,
@@ -56,22 +70,33 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         reset_keys_btn,
     };
 
-    static void resetShortcuts(Window* self);
+    static void resetShortcuts(Window& self);
     static const WindowEventList& getEvents();
+
+    static void repopulateShortcutList()
+    {
+        _shortcutList.clear();
+        for (auto& entry : ShortcutManager::getList())
+        {
+            _shortcutList.push_back(entry.id);
+            if (std::find(kSeparatorPositions.begin(), kSeparatorPositions.end(), entry.id) != kSeparatorPositions.end())
+            {
+                _shortcutList.push_back({});
+            }
+        }
+    }
 
     // 0x004BE6C7
     Window* open()
     {
-        Window* window;
-
-        window = WindowManager::bringToFront(WindowType::keyboardShortcuts, 0);
+        Window* window = WindowManager::bringToFront(WindowType::keyboardShortcuts, 0);
         if (window != nullptr)
         {
             return window;
         }
 
         // 0x004BF833 (create_options_window)
-        window = WindowManager::createWindowCentred(WindowType::keyboardShortcuts, kWindowSize, WindowFlags::none, getEvents());
+        window = WindowManager::createWindowCentred(WindowType::keyboardShortcuts, kWindowSize, WindowFlags::resizable, getEvents());
 
         window->setWidgets(_widgets);
         window->initScrollWidgets();
@@ -80,8 +105,14 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         window->setColour(WindowColour::primary, skin->windowTitlebarColour);
         window->setColour(WindowColour::secondary, skin->windowOptionsColour);
 
-        window->rowCount = static_cast<uint16_t>(ShortcutManager::getList().size());
+        repopulateShortcutList();
+        window->rowCount = static_cast<int16_t>(_shortcutList.size());
         window->rowHover = -1;
+
+        window->minWidth = kWindowSize.width;
+        window->minHeight = kWindowSize.height;
+        window->maxWidth = kMaxWindowSize.width;
+        window->maxHeight = kMaxWindowSize.height;
 
         return window;
     }
@@ -152,11 +183,11 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         const auto& rt = drawingCtx.currentRenderTarget();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        auto colour = self.getColour(WindowColour::secondary).c();
-        auto shade = Colours::getShade(colour, 4);
+        auto bgColour = self.getColour(WindowColour::secondary).c();
+        auto shade = Colours::getShade(bgColour, 4);
         drawingCtx.clearSingle(shade);
 
-        const auto& shortcutDefs = ShortcutManager::getList();
+        auto width = self.widgets[widx::list].width();
         auto yPos = 0;
         for (auto i = 0; i < self.rowCount; i++)
         {
@@ -170,6 +201,19 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
                 break;
             }
 
+            if (!_shortcutList[i].has_value())
+            {
+                // Draw separator
+                uint32_t colour = enumValue(Colours::getTranslucent(self.getColour(WindowColour::secondary).c()));
+                colour++;
+                drawingCtx.drawRect(1, yPos + 4, width - 1, 1, colour, Gfx::RectFlags::transparent);
+                colour++;
+                drawingCtx.drawRect(1, yPos + 5, width - 1, 1, colour, Gfx::RectFlags::transparent);
+
+                yPos += kRowHeight;
+                continue;
+            }
+
             StringId format = StringIds::black_stringid;
             if (i == self.rowHover)
             {
@@ -177,28 +221,38 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
                 format = StringIds::wcolour2_stringid;
             }
 
-            auto baseStringId = StringIds::empty;
-            char buffer[128]{};
-
-            const auto& def = shortcutDefs[i];
-            const auto& binding = Input::Shortcuts::getBinding(def.id);
-            const auto isBound = binding.keyCode != kInvalidKeyCode && binding.modifiers != KeyModifier::invalid;
-
-            if (isBound)
-            {
-                baseStringId = StringIds::stringptr;
-                getBindingString(binding.keyCode, buffer, std::size(buffer));
-            }
-
             std::byte argsBuffer[32]{};
+
+            const auto def = ShortcutManager::getDefinition(*_shortcutList[i]);
+
+            // Draw shortcut name
             FormatArguments formatter{ argsBuffer, std::size(argsBuffer) };
             formatter.push(StringIds::keyboard_shortcut_list_format);
-            formatter.push(ShortcutManager::getName(static_cast<Shortcut>(i)));
-            Input::Shortcuts::pushModifierStrings(formatter, isBound ? binding.modifiers : KeyModifier::none);
-            formatter.push(baseStringId);
+            formatter.push(def->displayName);
+
+            auto point = Point(0, yPos);
+            tr.drawStringLeft(point, Colour::black, format, formatter);
+
+            // Get current binding
+            const auto& binding = Input::Shortcuts::getBinding(def->id);
+            const auto isBound = binding.keyCode != kInvalidKeyCode && binding.modifiers != KeyModifier::invalid;
+            if (!isBound)
+            {
+                yPos += kRowHeight;
+                continue;
+            }
+
+            char buffer[128]{};
+            getBindingString(binding.keyCode, buffer, std::size(buffer));
+
+            // Draw current binding
+            formatter.rewind();
+            formatter.push(StringIds::keyboard_shortcut_binding);
+            Input::Shortcuts::pushModifierStrings(formatter, binding.modifiers);
+            formatter.push(StringIds::stringptr);
             formatter.push(buffer);
 
-            auto point = Point(0, yPos - 1);
+            point.x = width / 5 * 3;
             tr.drawStringLeft(point, Colour::black, format, formatter);
             yPos += kRowHeight;
         }
@@ -214,16 +268,16 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
                 return;
 
             case Widx::kResetKeysBtn:
-                resetShortcuts(&self);
+                resetShortcuts(self);
                 return;
         }
     }
 
     // 0x004BE832
-    static void resetShortcuts(Window* self)
+    static void resetShortcuts(Window& self)
     {
         Input::Shortcuts::resetBindings();
-        self->invalidate();
+        self.invalidate();
     }
 
     // 0x004BE844
@@ -244,7 +298,6 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     static void onScrollMouseOver(Ui::Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
         auto row = y / kRowHeight;
-
         if (row >= self.rowCount)
         {
             return;
@@ -261,17 +314,45 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     static void onScrollMouseDown(Ui::Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
         auto row = y / kRowHeight;
-
         if (row >= self.rowCount)
         {
             return;
         }
 
-        EditKeyboardShortcut::open(row);
+        auto shortcutId = _shortcutList[row];
+        if (!shortcutId.has_value())
+        {
+            return;
+        }
+
+        EditKeyboardShortcut::open(*shortcutId);
+    }
+
+    static void onResize(Window& self)
+    {
+        self.widgets[widx::frame].right = self.width - 1;
+        self.widgets[widx::frame].bottom = self.height - 1;
+
+        self.widgets[widx::panel].right = self.width - 1;
+        self.widgets[widx::panel].bottom = self.height - 1;
+
+        self.widgets[widx::caption].right = self.width - 2;
+
+        self.widgets[widx::close_button].left = self.width - 15;
+        self.widgets[widx::close_button].right = self.width - 3;
+
+        self.widgets[widx::list].right = self.width - 4;
+        self.widgets[widx::list].bottom = self.height - 20;
+
+        self.widgets[widx::reset_keys_btn].left = self.width - 150 - 4 - 12;
+        self.widgets[widx::reset_keys_btn].right = self.width - 4 - 12;
+        self.widgets[widx::reset_keys_btn].top = self.height - 4 - 12;
+        self.widgets[widx::reset_keys_btn].bottom = self.height - 4;
     }
 
     static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
+        .onResize = onResize,
         .getScrollSize = getScrollSize,
         .scrollMouseDown = onScrollMouseDown,
         .scrollMouseOver = onScrollMouseOver,

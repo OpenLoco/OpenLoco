@@ -20,7 +20,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
 {
     static constexpr Ui::Size kWindowSize = { 280, 78 };
 
-    static uint8_t _editingShortcutIndex;
+    static Shortcut _editingShortcutId;
     static KeyModifier _pressedModifiers;
 
     namespace Widx
@@ -54,13 +54,13 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
     };
 
     // 0x004BF7B9
-    Window* open(const uint8_t shortcutIndex)
+    Window* open(const Shortcut shortcutId)
     {
         WindowManager::close(WindowType::editKeyboardShortcut);
-        _editingShortcutIndex = shortcutIndex;
+        _editingShortcutId = shortcutId;
         _pressedModifiers = KeyModifier::none;
 
-        auto window = WindowManager::createWindow(WindowType::editKeyboardShortcut, kWindowSize, WindowFlags::none, getEvents());
+        auto window = WindowManager::createWindowCentred(WindowType::editKeyboardShortcut, kWindowSize, WindowFlags::none, getEvents());
 
         window->setWidgets(_widgets);
         window->initScrollWidgets();
@@ -72,7 +72,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
         return window;
     }
 
-    static void editShortcut([[maybe_unused]] const uint32_t charCode, const uint32_t keyCode)
+    static void editShortcut([[maybe_unused]] const uint32_t charCode, const uint32_t keyCode, const KeyModifier keyModifier)
     {
         if (keyCode == SDLK_UP)
         {
@@ -103,7 +103,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
             return;
         }
 
-        Input::Shortcuts::setBinding(static_cast<Input::Shortcut>(_editingShortcutIndex), keyCode, Input::getKeyModifier());
+        Input::Shortcuts::setBinding(_editingShortcutId, keyCode, keyModifier);
 
         WindowManager::close(WindowType::editKeyboardShortcut);
         WindowManager::invalidate(WindowType::keyboardShortcuts);
@@ -128,14 +128,15 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
             args.push(StringIds::empty);
         }
 
+        if (auto def = ShortcutManager::getDefinition(_editingShortcutId))
         {
             auto args = FormatArguments(self.widgets[widx::shortcutName].textArgs);
-            args.push(ShortcutManager::getName(static_cast<Shortcut>(_editingShortcutIndex)));
+            args.push(def->displayName);
         }
 
         {
             auto args = FormatArguments(self.widgets[widx::pressedKeys].textArgs);
-            Input::Shortcuts::pushModifierStrings(args, _pressedModifiers);
+            Shortcuts::pushModifierStrings(args, _pressedModifiers);
         }
     }
 
@@ -158,7 +159,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
 
     static bool onKeyUp([[maybe_unused]] Window& self, const uint32_t charCode, const uint32_t keyCode)
     {
-        editShortcut(charCode, keyCode);
+        editShortcut(charCode, keyCode, Input::getKeyModifier());
 
         return true;
     }
