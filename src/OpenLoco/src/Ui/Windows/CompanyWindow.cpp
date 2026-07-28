@@ -124,15 +124,15 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00431E9B
-        static void enableRenameByCaption(Window* self)
+        static void enableRenameByCaption(Window& self)
         {
-            if (SceneManager::isEditorMode() || CompanyId(self->number) == CompanyManager::getControllingId())
+            if (SceneManager::isEditorMode() || CompanyId(self.number) == CompanyManager::getControllingId())
             {
-                self->disabledWidgets &= ~(1ULL << caption);
+                self.disabledWidgets &= ~(1ULL << caption);
             }
             else
             {
-                self->disabledWidgets |= (1ULL << caption);
+                self.disabledWidgets |= (1ULL << caption);
             }
         }
 
@@ -431,8 +431,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00432724
         static void onResize(Window& self)
         {
-            Common::enableRenameByCaption(&self);
-
             self.setSizeBounds(Status::kWindowSize, { 640, 400 });
 
             if (self.viewports[0] != nullptr)
@@ -1117,7 +1115,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00432D9F
         static void onResize(Window& self)
         {
-            Common::enableRenameByCaption(&self);
             self.callViewportRotate();
         }
 
@@ -1698,15 +1695,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             WindowManager::invalidate(WindowType::company, self.number);
         }
 
-        // 0x00433279
-        static void onResize(Window& self)
-        {
-            Common::enableRenameByCaption(&self);
-        }
-
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
-            .onResize = onResize,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
             .onUpdate = onUpdate,
@@ -2177,15 +2167,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             WindowManager::invalidate(WindowType::company, self.number);
         }
 
-        // 0x004339B7
-        static void onResize(Window& self)
-        {
-            Common::enableRenameByCaption(&self);
-        }
-
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
-            .onResize = onResize,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
             .onUpdate = onUpdate,
@@ -2374,8 +2357,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00433C97
         static void onResize(Window& self)
         {
-            Common::enableRenameByCaption(&self);
-
             uint16_t cargoHeight = 0;
             const auto company = CompanyManager::get(CompanyId(self.number));
             for (uint8_t i = 0; i < static_cast<uint8_t>(std::size(company->cargoDelivered)); i++)
@@ -2665,9 +2646,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             self.viewportRemove(0);
 
-            auto tabIndex = widgetIndex - widx::tab_status;
-            auto tabInfo = kTabInformationByTabOffset[tabIndex];
-
+            auto& tabInfo = kTabInformationByTabOffset[self.currentTab];
             self.holdableWidgets = 0;
             self.eventHandlers = &tabInfo.events;
             self.activatedWidgets = 0;
@@ -2746,6 +2725,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         void prepareDraw(Window& self)
         {
+            enableRenameByCaption(self);
+
             // Set company name in title
             auto company = CompanyManager::get(CompanyId(self.number));
             auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
