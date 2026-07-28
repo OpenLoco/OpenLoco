@@ -352,8 +352,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             self.invalidate();
             Ui::Size kMinWindowSize = { self.minWidth, self.minHeight };
             Ui::Size kMaxWindowSize = { self.maxWidth, self.maxHeight };
-            bool hasResized = self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
-            if (hasResized)
+            self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
+            // if (hasResized)
             {
                 updateActiveThumb(self);
             }
@@ -398,7 +398,6 @@ namespace OpenLoco::Ui::Windows::Terraform
                 WindowManager::close(&self);
             }
 
-            bool hasResized = false;
             if (!Input::hasFlag(Input::Flags::rightMousePressed))
             {
                 auto cursor = Input::getMouseLocation();
@@ -420,13 +419,13 @@ namespace OpenLoco::Ui::Windows::Terraform
                                 {
                                     newHeight = std::min(newHeight, 358);
                                 }
-                                hasResized |= self.setSizeBounds({ kWindowSize.width, newHeight });
+                                self.setSizeBounds({ kWindowSize.width, newHeight });
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    hasResized |= self.setSizeBounds(kWindowSize);
+                                    self.setSizeBounds(kWindowSize);
                                 }
                             }
                         }
@@ -437,18 +436,13 @@ namespace OpenLoco::Ui::Windows::Terraform
                     self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        hasResized |= self.setSizeBounds(kWindowSize);
+                        self.setSizeBounds(kWindowSize);
                     }
                 }
             }
             self.frameNo++;
 
             self.callPrepareDraw();
-            if (hasResized)
-            {
-                updateActiveThumb(self);
-            }
-
             WindowManager::invalidateWidget(WindowType::terraform, self.number, self.currentTab + Common::widx::tab_clear_area);
         }
 
@@ -2416,7 +2410,6 @@ namespace OpenLoco::Ui::Windows::Terraform
                 WindowManager::close(&self);
             }
 
-            bool hasResized = false;
             if (!Input::hasFlag(Input::Flags::rightMousePressed))
             {
                 auto cursor = Input::getMouseLocation();
@@ -2438,13 +2431,13 @@ namespace OpenLoco::Ui::Windows::Terraform
                                 {
                                     newHeight = std::min(newHeight, 358);
                                 }
-                                hasResized |= self.setSizeBounds({ kWindowSize.width, newHeight });
+                                self.setSizeBounds({ kWindowSize.width, newHeight });
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    hasResized |= self.setSizeBounds(kWindowSize);
+                                    self.setSizeBounds(kWindowSize);
                                 }
                             }
                         }
@@ -2455,18 +2448,13 @@ namespace OpenLoco::Ui::Windows::Terraform
                     self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        hasResized |= self.setSizeBounds(kWindowSize);
+                        self.setSizeBounds(kWindowSize);
                     }
                 }
             }
             self.frameNo++;
 
             self.callPrepareDraw();
-            if (hasResized)
-            {
-                updateActiveThumb(self);
-            }
-
             WindowManager::invalidateWidget(WindowType::terraform, self.number, self.currentTab + Common::widx::tab_clear_area);
         }
 

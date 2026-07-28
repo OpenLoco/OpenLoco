@@ -347,7 +347,7 @@ namespace OpenLoco::Ui::WindowManager
         std::for_each(_windows.rbegin(), _windows.rend(), [](Ui::Window& w) {
             w.updateScrollWidgets();
             w.invalidatePressedImageButtons();
-            w.callOnResize();
+            // w.callOnResize();
         });
     }
 

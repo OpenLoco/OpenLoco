@@ -668,8 +668,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         window->currentTab = 0;
-        window->width = Status::kWindowSize.width;
-        window->height = Status::kWindowSize.height;
+        window->setSize(Status::kWindowSize);
         window->invalidate();
 
         window->setWidgets(Status::widgets);
@@ -2291,8 +2290,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         window->currentTab = Common::tab_finances - Common::tab_status;
-        window->width = Finances::kWindowSize.width;
-        window->height = Finances::kWindowSize.height;
+        window->setSize(Finances::kWindowSize);
         window->invalidate();
 
         window->setWidgets(Finances::widgets);
@@ -2704,8 +2702,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         window->currentTab = Common::tab_challenge - Common::tab_status;
-        window->width = Challenge::kWindowSize.width;
-        window->height = Challenge::kWindowSize.height;
+        window->setSize(Challenge::kWindowSize);
         window->invalidate();
 
         window->setWidgets(Challenge::widgets);

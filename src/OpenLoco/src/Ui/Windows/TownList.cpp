@@ -550,8 +550,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             // 0x00499CFC end
 
-            window->width = TownList::kWindowSize.width;
-            window->height = TownList::kWindowSize.height;
+            window->setSize(TownList::kWindowSize);
             window->invalidate();
 
             window->setWidgets(TownList::widgets);
@@ -954,12 +953,9 @@ namespace OpenLoco::Ui::Windows::TownList
             }
         }
 
-        static void updateActiveThumb(Window& self);
-
         // 0x0049AD51
         static void onUpdate(Window& self)
         {
-            bool hasResized = false;
             if (!Input::hasFlag(Input::Flags::rightMousePressed))
             {
                 auto cursor = Input::getMouseLocation();
@@ -981,13 +977,13 @@ namespace OpenLoco::Ui::Windows::TownList
                                 {
                                     newHeight = std::min(newHeight, 276);
                                 }
-                                hasResized |= self.setSizeBounds({ kWindowSize.width, newHeight });
+                                self.setSizeBounds({ kWindowSize.width, newHeight });
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    hasResized |= self.setSizeBounds(kWindowSize);
+                                    self.setSizeBounds(kWindowSize);
                                 }
                             }
                         }
@@ -998,18 +994,13 @@ namespace OpenLoco::Ui::Windows::TownList
                     self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        hasResized |= self.setSizeBounds(kWindowSize);
+                        self.setSizeBounds(kWindowSize);
                     }
                 }
             }
             self.frameNo++;
 
             self.callPrepareDraw();
-            if (hasResized)
-            {
-                updateActiveThumb(self);
-            }
-
             WindowManager::invalidateWidget(WindowType::townList, self.number, self.currentTab + Common::widx::tab_town_list);
             if (!ToolManager::isToolActive(self.type, self.number))
             {

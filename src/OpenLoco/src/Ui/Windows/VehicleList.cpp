@@ -426,8 +426,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto tabIndex = static_cast<uint8_t>(type);
         self->currentTab = tabIndex;
         self->rowHeight = row_heights[tabIndex];
-        self->width = kWindowSize.width;
-        self->height = kWindowSize.height;
+        self->setSize(kWindowSize);
         self->sortMode = 0;
         self->rowHover = -1;
         self->var_850 = static_cast<int16_t>(FilterMode::allVehicles);
@@ -736,11 +735,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         disableUnavailableVehicleTypes(self);
         self.invalidate();
-
-        if (self.width < 220)
-        {
-            self.width = 220;
-        }
 
         self.rowCount = 0;
         populateVehicleList(self);
@@ -1072,23 +1066,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     {
         self.flags |= WindowFlags::resizable;
 
-        self.minWidth = kMinDimensions.width;
-        self.minHeight = kMinDimensions.height;
-
-        self.maxWidth = kMaxDimensions.width;
-        self.maxHeight = kMaxDimensions.height;
-
-        if (self.width < self.minWidth)
-        {
-            self.width = self.minWidth;
-            self.invalidate();
-        }
-
-        if (self.height < self.minHeight)
-        {
-            self.height = self.minHeight;
-            self.invalidate();
-        }
+        self.setSizeBounds(kMinDimensions, kMaxDimensions);
 
         // Basic frame widget dimensions
         self.widgets[widx::frame].right = self.width - 1;

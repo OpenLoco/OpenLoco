@@ -511,12 +511,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00436198
         static void tabReset(Window& self)
         {
-            self.minWidth = Common::kMinWindowSize.width;
-            self.minHeight = Common::kMinWindowSize.height;
-            self.maxWidth = Common::kMaxWindowSize.width;
-            self.maxHeight = Common::kMaxWindowSize.height;
-            self.width = kWindowSize.width;
-            self.height = kWindowSize.height;
+            self.setSize(kWindowSize);
+            self.setSizeBounds(Common::kMinWindowSize, Common::kMaxWindowSize);
             self.rowCount = 0;
             self.rowHover = -1;
             Common::populateCompanyList(self);
@@ -696,12 +692,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x004361D8
         static void tabReset(Window& self)
         {
-            self.minWidth = kWindowSize.width;
-            self.minHeight = kWindowSize.height;
-            self.maxWidth = kWindowSize.width;
-            self.maxHeight = kWindowSize.height;
-            self.width = kWindowSize.width;
-            self.height = kWindowSize.height;
+            self.setSizeBounds(kWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -789,12 +780,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00436201
         static void tabReset(Window& self)
         {
-            self.minWidth = kWindowSize.width;
-            self.minHeight = kWindowSize.height;
-            self.maxWidth = kWindowSize.width;
-            self.maxHeight = kWindowSize.height;
-            self.width = kWindowSize.width;
-            self.height = kWindowSize.height;
+            self.setSizeBounds(kWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -882,12 +868,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00436227
         static void tabReset(Window& self)
         {
-            self.minWidth = kWindowSize.width;
-            self.minHeight = kWindowSize.height;
-            self.maxWidth = kWindowSize.width;
-            self.maxHeight = kWindowSize.height;
-            self.width = kWindowSize.width;
-            self.height = kWindowSize.height;
+            self.setSizeBounds(kWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -975,12 +956,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x0043624D
         static void tabReset(Window& self)
         {
-            self.minWidth = kWindowSize.width;
-            self.minHeight = kWindowSize.height;
-            self.maxWidth = kWindowSize.width;
-            self.maxHeight = kWindowSize.height;
-            self.width = kWindowSize.width;
-            self.height = kWindowSize.height;
+            self.setSizeBounds(kWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -1234,12 +1210,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00436273
         static void tabReset(Window& self)
         {
-            self.minWidth = kWindowSize.width;
-            self.minHeight = kWindowSize.height;
-            self.maxWidth = kWindowSize.width;
-            self.maxHeight = kWindowSize.height;
-            self.width = kWindowSize.width;
-            self.height = kWindowSize.height;
+            self.setSizeBounds(kWindowSize);
             Economy::buildDeliveredCargoPaymentsTable();
         }
 

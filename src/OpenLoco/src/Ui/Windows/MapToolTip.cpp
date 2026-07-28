@@ -53,7 +53,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
             return;
         }
 
-        auto height = 55;
+        const auto height = 55;
         auto maxY = Ui::height() - height;
         int16_t y = cursor.y + 15; // Normally, we'd display the tooltip 15 lower
         if (y > maxY)
@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
             y -= height + 19;
         }
 
-        auto width = 240;
+        const auto width = 240;
         int16_t x = width <= Ui::width() ? std::clamp(cursor.x - (width / 2), 0, Ui::width() - width) : 0;
 
         auto* window = WindowManager::find(WindowType::mapTooltip);
@@ -72,8 +72,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
             window->invalidate();
             window->x = x;
             window->y = y;
-            window->width = width;
-            window->height = height;
+            window->setSize({ width, height });
         }
         else
         {

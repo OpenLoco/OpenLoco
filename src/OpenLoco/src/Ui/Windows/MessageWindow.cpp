@@ -276,12 +276,8 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         // 0x0042A7B9
         static void tabReset(Window& self)
         {
-            self.minWidth = kMinWindowSize.width;
-            self.minHeight = kMinWindowSize.height;
-            self.maxWidth = kMaxWindowSize.width;
-            self.maxHeight = kMaxWindowSize.height;
-            self.width = kMinWindowSize.width;
-            self.height = kMinWindowSize.height;
+            self.setSize(kMinWindowSize);
+            self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
             self.rowHover = -1;
         }
 
@@ -350,8 +346,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::secondary, skin->windowPlayerColor);
 
-            window->width = Messages::kMinWindowSize.width;
-            window->height = Messages::kMinWindowSize.height;
+            window->setSize(Messages::kMinWindowSize);
         }
 
         window->currentTab = 0;
@@ -586,12 +581,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         // 0x0042A7E8
         static void tabReset(Window& self)
         {
-            self.minWidth = kWindowSize.width;
-            self.minHeight = kWindowSize.height;
-            self.maxWidth = kWindowSize.width;
-            self.maxHeight = kWindowSize.height;
-            self.width = kWindowSize.width;
-            self.height = kWindowSize.height;
+            self.setSizeBounds(kWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {

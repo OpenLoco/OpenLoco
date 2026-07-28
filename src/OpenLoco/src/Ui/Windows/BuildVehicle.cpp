@@ -403,8 +403,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         else
         {
             window = create(CompanyManager::getControllingId());
-            window->width = kWindowSize.width;
-            window->height = kWindowSize.height;
+            window->setSize(kWindowSize);
             _buildTargetVehicle = -1;
             if (!isTabId)
             {

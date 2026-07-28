@@ -602,8 +602,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
         // End of 0x0043DAEA
 
-        window->width = kWindowSize.width;
-        window->height = kWindowSize.height;
+        window->setSize(kWindowSize);
 
         window->invalidate();
 

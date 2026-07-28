@@ -1064,6 +1064,8 @@ namespace OpenLoco::Ui
 
     void Window::callOnResize()
     {
+        printf("calling onresize for window type %d\n", type);
+
         if (eventHandlers->onResize == nullptr)
         {
             return;

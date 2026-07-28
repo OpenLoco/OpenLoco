@@ -522,12 +522,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static void tabReset(Window& self)
         {
             self.invalidate();
-            self.minWidth = kMinDimensions.width;
-            self.minHeight = kMinDimensions.height;
-            self.maxWidth = kMaxDimensions.width;
-            self.maxHeight = kMaxDimensions.height;
-            self.width = kWindowSize.width;
-            self.height = kWindowSize.height;
+            self.setSize(kWindowSize);
+            self.setSizeBounds(kMinDimensions, kMaxDimensions);
             self.rowCount = 0;
             self.rowHover = -1;
             Common::populateIndustryList(self);
@@ -597,8 +593,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             // 0x00457878 end
 
-            window->width = IndustryList::kWindowSize.width;
-            window->height = IndustryList::kWindowSize.height;
+            window->setSize(IndustryList::kWindowSize);
 
             window->invalidate();
 
@@ -881,12 +876,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
             }
         }
 
-        static void updateActiveThumb(Window& self);
-
         // 0x004585B8
         static void onUpdate(Window& self)
         {
-            bool hasResized = false;
             if (!Input::hasFlag(Input::Flags::rightMousePressed))
             {
                 auto cursor = Input::getMouseLocation();
@@ -908,13 +900,13 @@ namespace OpenLoco::Ui::Windows::IndustryList
                                 {
                                     newHeight = std::min(newHeight, 276);
                                 }
-                                hasResized |= self.setSizeBounds({ kWindowSize.width, newHeight });
+                                self.setSizeBounds({ kWindowSize.width, newHeight });
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    hasResized |= self.setSizeBounds(kWindowSize);
+                                    self.setSizeBounds(kWindowSize);
                                 }
                             }
                         }
@@ -925,18 +917,13 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        hasResized |= self.setSizeBounds(kWindowSize);
+                        self.setSizeBounds(kWindowSize);
                     }
                 }
             }
             self.frameNo++;
 
             self.callPrepareDraw();
-            if (hasResized)
-            {
-                updateActiveThumb(self);
-            }
-
             WindowManager::invalidateWidget(WindowType::industryList, self.number, self.currentTab + Common::widx::tab_industry_list);
 
             if (!ToolManager::isToolActive(self.type, self.number))
@@ -1283,8 +1270,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
             self.invalidate();
             Ui::Size kMinWindowSize = { self.minWidth, self.minHeight };
             Ui::Size kMaxWindowSize = { self.maxWidth, self.maxHeight };
-            bool hasResized = self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
-            if (hasResized)
+            self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
+            // if (hasResized)
             {
                 updateActiveThumb(self);
             }

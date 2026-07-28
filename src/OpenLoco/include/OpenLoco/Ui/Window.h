@@ -247,6 +247,13 @@ namespace OpenLoco::Ui
             widgets.insert(widgets.end(), newWidgets.begin(), newWidgets.end());
         }
 
+        constexpr void setSize(Ui::Size size)
+        {
+            width = size.width;
+            height = size.height;
+            callOnResize();
+        }
+
         constexpr bool setSizeBounds(Ui::Size minSize, Ui::Size maxSize)
         {
             bool hasResized = false;
