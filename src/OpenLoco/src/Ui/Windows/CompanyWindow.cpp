@@ -2760,15 +2760,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static void switchTabWidgets(Window* self)
         {
-            self->activatedWidgets = 0;
-
             auto& tabInfo = kTabInformationByTabOffset[self->currentTab];
 
             self->setWidgets(tabInfo.widgets);
             self->initScrollWidgets();
 
-            self->activatedWidgets &= ~((1 << tab_status) | (1 << tab_details) | (1 << tab_colour_scheme) | (1 << tab_finances) | (1 << tab_cargo_delivered) | (1 << tab_challenge));
-            self->activatedWidgets |= (1ULL << tabInfo.widgetIndex);
+            self->activatedWidgets = (1ULL << tabInfo.widgetIndex);
         }
 
         // 0x0043230B
