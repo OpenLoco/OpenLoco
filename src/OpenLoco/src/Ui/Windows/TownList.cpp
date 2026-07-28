@@ -474,12 +474,8 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A37E
         static void tabReset(Window& self)
         {
-            self.minWidth = kMinDimensions.width;
-            self.minHeight = kMinDimensions.height;
-            self.maxWidth = kMaxDimensions.width;
-            self.maxHeight = kMaxDimensions.height;
-            self.width = kWindowSize.width;
-            self.height = kWindowSize.height;
+            self.setSize(kWindowSize);
+            self.setSizeBounds(kMinDimensions, kMaxDimensions);
             self.rowCount = 0;
             self.rowHover = -1;
 
@@ -538,10 +534,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             WindowManager::moveOtherWindowsDown(*window);
 
-            window->minWidth = TownList::kMinDimensions.width;
-            window->minHeight = TownList::kMinDimensions.height;
-            window->maxWidth = TownList::kMaxDimensions.width;
-            window->maxHeight = TownList::kMaxDimensions.height;
+            window->setSizeBounds(TownList::kMinDimensions, TownList::kMaxDimensions);
             window->flags |= WindowFlags::resizable;
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
@@ -550,8 +543,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             // 0x00499CFC end
 
-            window->width = TownList::kWindowSize.width;
-            window->height = TownList::kWindowSize.height;
+            window->setSize(TownList::kWindowSize);
             window->invalidate();
 
             window->setWidgets(TownList::widgets);
@@ -784,7 +776,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A844
         static void onResize(Window& self)
         {
-            self.setSize(kWindowSize, kWindowSize);
+            self.setSizeBounds(kWindowSize, kWindowSize);
         }
 
         // 0x0049A7C7
@@ -799,12 +791,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A3BE
         static void tabReset(Window& self)
         {
-            self.minWidth = kWindowSize.width;
-            self.minHeight = kWindowSize.height;
-            self.maxWidth = kWindowSize.width;
-            self.maxWidth = kWindowSize.height;
-            self.width = kWindowSize.width;
-            self.height = kWindowSize.height;
+            self.setSizeFixed(kWindowSize);
             ToolManager::toolSet(self, Common::widx::tab_build_town, CursorId::placeTown);
             Input::setFlag(Input::Flags::flag6);
             Ui::Windows::Main::showGridlines();
@@ -954,12 +941,9 @@ namespace OpenLoco::Ui::Windows::TownList
             }
         }
 
-        static void updateActiveThumb(Window& self);
-
         // 0x0049AD51
         static void onUpdate(Window& self)
         {
-            bool hasResized = false;
             if (!Input::hasFlag(Input::Flags::rightMousePressed))
             {
                 auto cursor = Input::getMouseLocation();
@@ -981,13 +965,13 @@ namespace OpenLoco::Ui::Windows::TownList
                                 {
                                     newHeight = std::min(newHeight, 276);
                                 }
-                                hasResized |= self.setSize({ kWindowSize.width, newHeight });
+                                self.setSizeFixed({ kWindowSize.width, newHeight });
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    hasResized |= self.setSize(kWindowSize);
+                                    self.setSizeFixed(kWindowSize);
                                 }
                             }
                         }
@@ -998,18 +982,13 @@ namespace OpenLoco::Ui::Windows::TownList
                     self.expandContentCounter = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        hasResized |= self.setSize(kWindowSize);
+                        self.setSizeFixed(kWindowSize);
                     }
                 }
             }
             self.frameNo++;
 
             self.callPrepareDraw();
-            if (hasResized)
-            {
-                updateActiveThumb(self);
-            }
-
             WindowManager::invalidateWidget(WindowType::townList, self.number, self.currentTab + Common::widx::tab_town_list);
             if (!ToolManager::isToolActive(self.type, self.number))
             {
@@ -1221,14 +1200,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049AF98
         static void onResize(Window& self)
         {
-            self.invalidate();
-            Ui::Size kMinWindowSize = { self.minWidth, self.minHeight };
-            Ui::Size kMaxWindowSize = { self.maxWidth, self.maxHeight };
-            bool hasResized = self.setSize(kMinWindowSize, kMaxWindowSize);
-            if (hasResized)
-            {
-                updateActiveThumb(self);
-            }
+            updateActiveThumb(self);
         }
 
         // 0x0049AE83
@@ -1479,12 +1451,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A3FF
         static void tabReset(Window& self)
         {
-            self.minWidth = kWindowSize.width;
-            self.minHeight = kWindowSize.height;
-            self.maxWidth = kWindowSize.width;
-            self.maxWidth = kWindowSize.height;
-            self.width = kWindowSize.width;
-            self.height = kWindowSize.height;
+            self.setSizeFixed(kWindowSize);
 
             auto tab = Common::widx::tab_build_buildings;
             if (self.currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)

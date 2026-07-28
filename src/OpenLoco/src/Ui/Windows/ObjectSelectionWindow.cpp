@@ -409,7 +409,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             auto widgetIndex = widx::primaryTab1 + i;
             if (shouldShowPrimaryTab(i, FilterLevel(self->filterLevel)))
             {
-                self->disabledWidgets &= ~(1ULL << widgetIndex);
                 self->widgets[widgetIndex].hidden = false;
                 self->widgets[widgetIndex].left = xPos;
                 self->widgets[widgetIndex].right = xPos + 31;
@@ -417,7 +416,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             }
             else
             {
-                self->disabledWidgets |= (1ULL << widgetIndex);
                 self->widgets[widgetIndex].hidden = true;
             }
         }
@@ -542,7 +540,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static Ui::Window* internalOpen(std::optional<ObjectType> optionalObjectType)
     {
         auto window = WindowManager::bringToFront(WindowType::objectSelection);
-
         if (window != nullptr)
         {
             return window;
@@ -550,9 +547,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         auto& selection = ObjectManager::prepareSelectionList(true);
 
-        window = WindowManager::createWindowCentred(WindowType::objectSelection, { kWindowSizeMin }, WindowFlags::resizable, getEvents());
+        window = WindowManager::createWindowCentred(WindowType::objectSelection, kWindowSizeMin, WindowFlags::resizable, getEvents());
         window->setWidgets(widgets);
-        window->setSize(kWindowSizeMin, kWindowSizeMax);
+        window->setSizeBounds(kWindowSizeMin, kWindowSizeMax);
         window->initScrollWidgets();
         window->frameNo = 0;
         window->rowHover = -1;
@@ -643,23 +640,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         self.widgets[widx::scrollviewFrame].bottom = self.widgets[widx::scrollview].bottom + 1;
         self.widgets[widx::scrollviewFrame].right = self.widgets[widx::scrollview].right + 1;
 
-        const auto& currentTab = kMainTabInfo[self.currentTab];
-        const auto& subTabs = currentTab.subTabs;
-        const bool showSecondaryTabs = !subTabs.empty() && FilterLevel(self.filterLevel) != FilterLevel::beginner;
-
-        // Secondary tabs reduce the amount of space for the scroll view
-        if (showSecondaryTabs)
-        {
-            self.widgets[widx::scrollview].top = 62 + 28;
-            self.widgets[widx::scrollviewFrame].hidden = false;
-            self.widgets[widx::scrollviewFrame].top = self.widgets[widx::scrollview].top - 2;
-        }
-        else
-        {
-            self.widgets[widx::scrollview].top = 62;
-            self.widgets[widx::scrollviewFrame].hidden = true;
-        }
-
         // Reposition preview area in the centre of the second half
         self.widgets[widx::objectImage].left = self.width / 4 * 3 - kObjectPreviewSize.width / 2;
         self.widgets[widx::objectImage].right = self.widgets[widx::objectImage].left + kObjectPreviewSize.width;
@@ -676,11 +656,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             self.widgets[widx::closeButton].hidden = true;
         }
 
-        self.activatedWidgets |= 1ULL << (widx::primaryTab1 + self.currentTab);
-        const auto& currentTab = kMainTabInfo[self.currentTab];
-        const auto& subTabs = currentTab.subTabs;
-        const bool showSecondaryTabs = !subTabs.empty() && FilterLevel(self.filterLevel) != FilterLevel::beginner;
-
         static constexpr std::array<StringId, 3> kFilterLevelStringIds = {
             StringIds::objSelectionFilterBeginner,
             StringIds::objSelectionFilterAdvanced,
@@ -692,6 +667,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             FormatArguments args{ widget.textArgs };
             args.push(kFilterLevelStringIds[self.filterLevel]);
         }
+
+        self.activatedWidgets |= 1ULL << (widx::primaryTab1 + self.currentTab);
+        const auto& currentTab = kMainTabInfo[self.currentTab];
+        const auto& subTabs = currentTab.subTabs;
+        const bool showSecondaryTabs = !subTabs.empty() && FilterLevel(self.filterLevel) != FilterLevel::beginner;
 
         // Update page title
         auto args = FormatArguments(self.widgets[widx::caption].textArgs);
@@ -710,14 +690,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             const auto widgetIndex = i + widx::secondaryTab1;
 
             const bool subTabIsVisible = showSecondaryTabs && i < subTabs.size() && shouldShowSubTab(subTabs, i, FilterLevel(self.filterLevel));
-            if (subTabIsVisible)
-            {
-                self.disabledWidgets &= ~(1ULL << widgetIndex);
-            }
-            else
-            {
-                self.disabledWidgets |= (1ULL << widgetIndex);
-            }
+            self.widgets[widgetIndex].hidden = !subTabIsVisible;
 
             if (self.currentSecondaryTab == i)
             {
@@ -727,6 +700,19 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             {
                 self.activatedWidgets &= ~(1ULL << widgetIndex);
             }
+        }
+
+        // Secondary tabs reduce the amount of space for the scroll view
+        if (showSecondaryTabs)
+        {
+            self.widgets[widx::scrollview].top = 62 + 28;
+            self.widgets[widx::scrollviewFrame].hidden = false;
+            self.widgets[widx::scrollviewFrame].top = self.widgets[widx::scrollview].top - 2;
+        }
+        else
+        {
+            self.widgets[widx::scrollview].top = 62;
+            self.widgets[widx::scrollviewFrame].hidden = true;
         }
     }
 

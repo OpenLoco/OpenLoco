@@ -1,5 +1,7 @@
 26.07.1+ (???)
 ------------------------------------------------------------------------
+- Fix: [#2082] Scrollbars can be overdrawn when certain windows are resized but their scrollview is not.
+- Fix: [#3858] Save file details can overflow the file browser window at minimum height.
 
 26.07.1 (2026-07-27)
 ------------------------------------------------------------------------

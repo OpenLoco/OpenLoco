@@ -239,9 +239,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static void onResize(Window& self)
     {
         self.flags |= WindowFlags::resizable;
-        self.minWidth = kMinWindowSize.width;
-
-        self.setSize(kMinWindowSize, kMaxWindowSize);
+        self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
 
         auto& widget = self.widgets[widx::scrollview];
         auto& map = self.scrollAreas[0];
@@ -2413,13 +2411,14 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         if (Ui::getLastMapWindowAttributes().flags != WindowFlags::none)
         {
-            size = { Ui::getLastMapWindowAttributes().size.width, Ui::getLastMapWindowAttributes().size.height };
+            size = Ui::getLastMapWindowAttributes().size;
             size.width = std::clamp<uint16_t>(size.width, 350, Ui::width());
             size.height = std::clamp<uint16_t>(size.height, 272, Ui::height() - 56);
         }
 
         window = WindowManager::createWindow(WindowType::map, size, WindowFlags::none, getEvents());
         window->setWidgets(kWidgets);
+        window->callOnResize();
         window->initScrollWidgets();
         window->frameNo = 0;
 

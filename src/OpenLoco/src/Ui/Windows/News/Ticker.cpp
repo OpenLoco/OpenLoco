@@ -51,17 +51,15 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
     // 0x00429FE4
     static void onResize(Window& self)
     {
-        auto y = Ui::height() - kWindowSize.height + 1;
+        auto y = Ui::height() - kWindowSize.height;
         auto x = Ui::width() - kWindowSize.width - 27;
-        auto height = kWindowSize.height - 1;
 
-        if (y != self.y || x != self.x || kWindowSize.width != self.width || height != self.height)
+        if (y != self.y || x != self.x)
         {
             self.invalidate();
             self.y = y;
             self.x = x;
-            self.width = kWindowSize.width;
-            self.height = height;
+            self.setSize(kWindowSize);
             self.invalidate();
         }
     }

@@ -777,8 +777,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
             setDisabledWidgets(&self);
 
-            self.width = self.widgets[widx::frame].right + 1;
-            self.height = self.widgets[widx::frame].bottom + 1;
+            self.setSize({ self.widgets[widx::frame].right + 1, self.widgets[widx::frame].bottom + 1 });
         }
 
         void setNextAndPreviousTrackTile(const TrackElement& elTrack, const World::Pos2& pos)

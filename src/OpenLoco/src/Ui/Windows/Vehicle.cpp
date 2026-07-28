@@ -717,9 +717,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B3210
         static void onResize(Window& self)
         {
-            Common::setCaptionEnableState(self);
-            self.setSize(kMinWindowSize, kMaxWindowSize);
-
             if (self.viewports[0] != nullptr)
             {
                 auto head = Common::getVehicle(self);
@@ -948,6 +945,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void prepareDraw(Window& self)
         {
             Common::setActiveTabs(self);
+            Common::setCaptionEnableState(self);
+
             auto head = Common::getVehicle(self);
             if (head == nullptr)
             {
@@ -1268,14 +1267,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B3D73
         static void onResize(Window& self)
         {
-            Common::setCaptionEnableState(self);
             if (CompanyManager::getControllingId() == self.owner)
             {
-                self.setSize(kMinWindowSizeWithPaintEnabled, kMaxWindowSize);
+                self.setSizeBounds(kMinWindowSizeWithPaintEnabled, kMaxWindowSize);
             }
             else
             {
-                self.setSize(kMinWindowSize, kMaxWindowSize);
+                self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
             }
         }
 
@@ -1674,6 +1672,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void prepareDraw(Window& self)
         {
             Common::setActiveTabs(self);
+            Common::setCaptionEnableState(self);
 
             auto head = Common::getVehicle(self);
             if (head == nullptr)
@@ -2279,6 +2278,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void prepareDraw(Window& self)
         {
             Common::setActiveTabs(self);
+            Common::setCaptionEnableState(self);
 
             auto* headVehicle = Common::getVehicle(self);
             if (headVehicle == nullptr)
@@ -2672,16 +2672,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
             WindowManager::invalidateWidget(self.type, self.number, 6);
         }
 
-        // 0x004B4621
-        static void onResize(Window& self)
-        {
-            Common::setCaptionEnableState(self);
-            self.setSize(kMinWindowSize, kMaxWindowSize);
-        }
-
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
-            .onResize = onResize,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
             .onUpdate = onUpdate,
@@ -2708,6 +2700,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void prepareDraw(Window& self)
         {
             Common::setActiveTabs(self);
+            Common::setCaptionEnableState(self);
 
             auto vehicle = Common::getVehicle(self);
             if (vehicle == nullptr)
@@ -2875,16 +2868,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
             WindowManager::invalidateWidget(self.type, self.number, Common::widx::tabFinances);
         }
 
-        // 0x004B59AF
-        static void onResize(Window& self)
-        {
-            Common::setCaptionEnableState(self);
-            self.setSize(kMinWindowSize, kMaxWindowSize);
-        }
-
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
-            .onResize = onResize,
             .onUpdate = onUpdate,
             .textInput = Common::textInput,
             .tooltip = tooltip,
@@ -3133,13 +3118,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     break;
                 }
             }
-        }
-
-        // 0x004B564E
-        static void onResize(Window& self)
-        {
-            Common::setCaptionEnableState(self);
-            self.setSize(kMinWindowSize, kMaxWindowSize);
         }
 
         // 0x004B4DD3
@@ -3821,6 +3799,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void prepareDraw(Window& self)
         {
             Common::setActiveTabs(self);
+            Common::setCaptionEnableState(self);
+
             auto head = Common::getVehicle(self);
             if (head == nullptr)
             {
@@ -4129,7 +4109,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static constexpr WindowEventList kEvents = {
             .onClose = close,
             .onMouseUp = onMouseUp,
-            .onResize = onResize,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
             .onUpdate = onUpdate,
@@ -4164,16 +4143,18 @@ namespace OpenLoco::Ui::Windows::Vehicle
             const widx widgetIndex;
             std::span<const Widget> widgets;
             const WindowEventList& events;
-            const uint64_t* holdableWidgets;
+            const uint64_t holdableWidgets;
+            const Size minSize;
+            const Size maxSize;
         };
 
         // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { widx::tabMain,     Main::widgets,     Main::getEvents(),     &Main::holdableWidgets },
-            { widx::tabDetails,  Details::widgets,  Details::getEvents(),  &Details::holdableWidgets },
-            { widx::tabCargo,    Cargo::widgets,    Cargo::getEvents(),    &Cargo::holdableWidgets },
-            { widx::tabFinances, Finances::widgets, Finances::getEvents(), &Finances::holdableWidgets },
-            { widx::tabRoute,    Route::widgets,    Route::getEvents(),    &Route::holdableWidgets }
+            { widx::tabMain,     Main::widgets,     Main::getEvents(),     Main::holdableWidgets,     Main::kMinWindowSize,     Main::kMaxWindowSize     },
+            { widx::tabDetails,  Details::widgets,  Details::getEvents(),  Details::holdableWidgets,  Details::kMinWindowSize,  Details::kMaxWindowSize  },
+            { widx::tabCargo,    Cargo::widgets,    Cargo::getEvents(),    Cargo::holdableWidgets,    Cargo::kMinWindowSize,    Cargo::kMaxWindowSize    },
+            { widx::tabFinances, Finances::widgets, Finances::getEvents(), Finances::holdableWidgets, Finances::kMinWindowSize, Finances::kMaxWindowSize },
+            { widx::tabRoute,    Route::widgets,    Route::getEvents(),    Route::holdableWidgets,    Route::kMinWindowSize,    Route::kMaxWindowSize    }
         };
         // clang-format on
 
@@ -5029,7 +5010,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.viewportRemove(0);
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tabMain];
-            self.holdableWidgets = *tabInfo.holdableWidgets;
+            self.holdableWidgets = tabInfo.holdableWidgets;
             self.eventHandlers = &tabInfo.events;
             self.activatedWidgets = 0;
             self.setWidgets(tabInfo.widgets);
@@ -5039,6 +5020,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.invalidate();
             self.rowHover = -1;
             self.orderTableIndex = -1;
+
+            self.setSizeBounds(tabInfo.minSize, tabInfo.maxSize);
             self.callOnResize();
             self.callPrepareDraw();
             self.initScrollWidgets();

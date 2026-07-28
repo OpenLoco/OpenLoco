@@ -39,6 +39,10 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Ui::Windows::PromptBrowse
 {
+    constexpr Size kWindowSize = { 500, 380 };
+    constexpr Size kMinWindowSize = { 400, 340 };
+    constexpr Size kMaxWindowSize = { 640, 800 };
+
     enum BrowseFileType : uint8_t
     {
         savedGame,
@@ -154,13 +158,14 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         auto window = WindowManager::createWindowCentred(
             WindowType::fileBrowserPrompt,
-            { 500, 380 },
+            kWindowSize,
             Ui::WindowFlags::stickToFront | Ui::WindowFlags::resizable | Ui::WindowFlags::playSoundOnOpen,
             getEvents());
 
         if (window != nullptr)
         {
             window->setWidgets(widgets);
+            window->callOnResize();
             window->widgets[widx::caption].text = titleId;
             window->initScrollWidgets();
 
@@ -220,7 +225,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     // 0x004467F6
     static void onResize(Window& window)
     {
-        window.capSize(400, 300, 640, 800);
+        window.setSizeBounds(kMinWindowSize, kMaxWindowSize);
     }
 
     // 0x00446465

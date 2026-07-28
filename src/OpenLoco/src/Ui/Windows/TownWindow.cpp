@@ -38,8 +38,6 @@ using namespace OpenLoco::GameCommands;
 
 namespace OpenLoco::Ui::Windows::Town
 {
-    static constexpr Ui::Size kWindowSize = { 223, 161 };
-
     namespace Common
     {
         enum widx
@@ -103,6 +101,10 @@ namespace OpenLoco::Ui::Windows::Town
 
     namespace Town
     {
+        static constexpr Ui::Size kWindowSize = { 223, 161 };
+        static constexpr Size kMinWindowSize = { 192, 161 };
+        static constexpr Size kMaxWindowSize = { 600, 440 };
+
         enum widx
         {
             viewport = 8,
@@ -273,8 +275,6 @@ namespace OpenLoco::Ui::Windows::Town
         {
             // Call to sub_498E9B has been deliberately omitted.
 
-            self.setSize({ 192, 161 }, { 600, 440 });
-
             if (self.viewports[0] != nullptr)
             {
                 uint16_t newWidth = self.width - 30;
@@ -397,12 +397,9 @@ namespace OpenLoco::Ui::Windows::Town
         {
             // 0x00499C0D start
             const WindowFlags newFlags = WindowFlags::viewportNoShiftPixels | WindowFlags::resizable;
-            window = WindowManager::createWindow(WindowType::town, kWindowSize, newFlags, Town::getEvents());
+            window = WindowManager::createWindow(WindowType::town, Town::kWindowSize, newFlags, Town::getEvents());
             window->number = townId;
-            window->minWidth = 192;
-            window->minHeight = 161;
-            window->maxWidth = 600;
-            window->maxHeight = 440;
+            window->setSizeBounds(Town::kMinWindowSize, Town::kMaxWindowSize);
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             if (skin != nullptr)
@@ -431,6 +428,9 @@ namespace OpenLoco::Ui::Windows::Town
 
     namespace Population
     {
+        static constexpr Size kMinWindowSize = { 299, 172 };
+        static constexpr Size kMaxWindowSize = { 299, 327 };
+
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(223, 161, StringIds::title_town_population)
 
@@ -558,7 +558,7 @@ namespace OpenLoco::Ui::Windows::Town
         {
             // Call to sub_498E9B has been deliberately omitted.
 
-            self.setSize({ 299, 172 }, { 299, 327 });
+            self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -578,6 +578,8 @@ namespace OpenLoco::Ui::Windows::Town
 
     namespace CompanyRatings
     {
+        constexpr Size kWindowSize = { 340, 208 };
+
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(340, 208, StringIds::title_town_local_authority));
 
@@ -680,7 +682,7 @@ namespace OpenLoco::Ui::Windows::Town
         {
             // Call to sub_498E9B has been deliberately omitted.
 
-            self.setSize({ 340, 208 }, { 340, 208 });
+            self.setSizeFixed(kWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -700,13 +702,13 @@ namespace OpenLoco::Ui::Windows::Town
 
     namespace Transported
     {
-        static constexpr Size kTransportedWindowSize = { 340, 228 };
+        static constexpr Size kWindowSize = { 340, 228 };
 
         static constexpr auto kNumRows = 16;
         static constexpr auto kColumnSpacing = 160;
 
         static constexpr auto widgets = makeWidgets(
-            Common::makeCommonWidgets(kTransportedWindowSize.width, kTransportedWindowSize.height, StringIds::title_statistics));
+            Common::makeCommonWidgets(kWindowSize.width, kWindowSize.height, StringIds::title_statistics));
 
         static void prepareDraw(Window& self)
         {
@@ -795,14 +797,8 @@ namespace OpenLoco::Ui::Windows::Town
             }
         }
 
-        static void onResize(Window& self)
-        {
-            self.setSize(kTransportedWindowSize, kTransportedWindowSize);
-        }
-
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
-            .onResize = onResize,
             .onUpdate = Common::update,
             .textInput = Common::textInput,
             .prepareDraw = prepareDraw,
@@ -822,14 +818,16 @@ namespace OpenLoco::Ui::Windows::Town
             std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
+            const Size minSize;
+            const Size maxSize;
         };
 
         // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { Town::widgets,           widx::tab_town,            Town::getEvents()           },
-            { Population::widgets,     widx::tab_population,      Population::getEvents()     },
-            { CompanyRatings::widgets, widx::tab_company_ratings, CompanyRatings::getEvents() },
-            { Transported::widgets, widx::tab_transported, Transported::getEvents() }
+            { Town::widgets,           widx::tab_town,            Town::getEvents(),           Town::kMinWindowSize, Town::kMaxWindowSize                      },
+            { Population::widgets,     widx::tab_population,      Population::getEvents(),     Population::kMinWindowSize, Population::kMaxWindowSize                },
+            { CompanyRatings::widgets, widx::tab_company_ratings, CompanyRatings::getEvents(), CompanyRatings::kWindowSize, CompanyRatings::kWindowSize            },
+            { Transported::widgets,    widx::tab_transported,     Transported::getEvents(),    Transported::kWindowSize, Transported::kWindowSize            }
         };
         // clang-format on
 
@@ -935,7 +933,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             self.invalidate();
 
-            self.setSize(kWindowSize);
+            self.setSizeBounds(tabInfo.minSize, tabInfo.maxSize);
             self.callOnResize();
             self.callPrepareDraw();
             self.initScrollWidgets();

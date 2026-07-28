@@ -602,8 +602,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
         // End of 0x0043DAEA
 
-        window->width = kWindowSize.width;
-        window->height = kWindowSize.height;
+        window->setSize(kWindowSize);
 
         window->invalidate();
 
@@ -1772,9 +1771,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 }
             }();
 
-            self.setSize(newSize);
-
-            self.callOnResize();
+            self.setSizeFixed(newSize);
             self.callPrepareDraw();
             self.initScrollWidgets();
             self.invalidate();

@@ -208,7 +208,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             Common::enableRenameByCaption(&self);
 
-            self.setSize(kWindowSize, Common::kMaxWindowSize);
+            self.setSizeBounds(kWindowSize, Common::kMaxWindowSize);
 
             if (self.viewports[0] != nullptr)
             {
@@ -338,13 +338,11 @@ namespace OpenLoco::Ui::Windows::Station
             const WindowFlags newFlags = WindowFlags::resizable | WindowFlags::lighterFrame;
             window = WindowManager::createWindow(WindowType::station, Station::kWindowSize, newFlags, Station::getEvents());
             window->number = enumValue(stationId);
+
             auto station = StationManager::get(stationId);
             window->owner = station->owner;
-            window->minWidth = Common::kMinWindowSize.width;
-            window->minHeight = Common::kMinWindowSize.height;
-            window->maxWidth = Common::kMaxWindowSize.width;
-            window->maxHeight = Common::kMaxWindowSize.height;
 
+            window->setSizeBounds(Common::kMinWindowSize, Common::kMaxWindowSize);
             window->savedView.clear();
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
@@ -486,7 +484,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             Common::enableRenameByCaption(&self);
 
-            self.setSize(Common::kMinWindowSize, Common::kMaxWindowSize);
+            self.setSizeBounds(Common::kMinWindowSize, Common::kMaxWindowSize);
         }
 
         // 0x0048EB64
@@ -732,7 +730,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             Common::enableRenameByCaption(&self);
 
-            self.setSize(kWindowSize, kMaxWindowSize);
+            self.setSizeBounds(kWindowSize, kMaxWindowSize);
         }
 
         // 0x0048EE4A
@@ -1173,7 +1171,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             Common::enableRenameByCaption(&self);
 
-            self.setSize(kWindowSize, kMaxWindowSize);
+            self.setSizeBounds(kWindowSize, kMaxWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {

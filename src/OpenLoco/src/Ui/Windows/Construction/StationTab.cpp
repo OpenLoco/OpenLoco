@@ -1180,7 +1180,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         auto& baseFrame = kWidgets[Common::widx::frame];
         auto newHeight = baseFrame.height() + 1 + (numAcceptedCargoTypes + numProducedCargoTypes) * 11;
         auto newSize = Size{ baseFrame.width(), newHeight };
-        self.setSize(newSize, newSize);
+        self.setSizeBounds(newSize, newSize);
 
         self.widgets[Common::widx::frame].bottom = self.height - 1;
         self.widgets[Common::widx::panel].bottom = self.height - 1;

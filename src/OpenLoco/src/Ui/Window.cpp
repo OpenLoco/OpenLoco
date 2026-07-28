@@ -43,49 +43,6 @@ namespace OpenLoco::Ui
         return this->hasFlags(WindowFlags::resizable) && (this->minWidth != this->maxWidth || this->minHeight != this->maxHeight);
     }
 
-    void Window::capSize(int32_t newMinWidth, int32_t newMinHeight, int32_t newMaxWidth, int32_t newMaxHeight)
-    {
-        auto w = this->width;
-        auto h = this->height;
-        auto shouldInvalidateBefore = false;
-        auto shouldInvalidateAfter = false;
-        if (w < newMinWidth)
-        {
-            w = newMinWidth;
-            shouldInvalidateAfter = true;
-        }
-        if (h < newMinHeight)
-        {
-            h = newMinHeight;
-            shouldInvalidateAfter = true;
-        }
-        if (w > newMaxWidth)
-        {
-            shouldInvalidateBefore = true;
-            w = newMaxWidth;
-        }
-        if (h > newMaxHeight)
-        {
-            shouldInvalidateBefore = true;
-            h = newMaxHeight;
-        }
-
-        if (shouldInvalidateBefore)
-        {
-            invalidate();
-        }
-        this->width = w;
-        this->height = h;
-        this->minWidth = newMinWidth;
-        this->minHeight = newMinHeight;
-        this->maxWidth = newMaxWidth;
-        this->maxHeight = newMaxHeight;
-        if (shouldInvalidateAfter)
-        {
-            invalidate();
-        }
-    }
-
     bool Window::isVisible()
     {
         return true;
@@ -1105,15 +1062,14 @@ namespace OpenLoco::Ui
         eventHandlers->onMouseUp(*this, widgetIndex, id);
     }
 
-    Ui::Window* Window::callOnResize()
+    void Window::callOnResize()
     {
         if (eventHandlers->onResize == nullptr)
         {
-            return this;
+            return;
         }
 
         eventHandlers->onResize(*this);
-        return this;
     }
 
     void Window::callOnMouseHover(WidgetIndex_t widgetIndex, const WidgetId id)

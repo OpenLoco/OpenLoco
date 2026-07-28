@@ -570,8 +570,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             }
             // 0x0043EEFF end
 
-            window->width = kOtherWindowSize.width;
-            window->height = kOtherWindowSize.height;
+            window->setSize(kOtherWindowSize);
         }
 
         window->currentTab = 0;
@@ -1379,7 +1378,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 }
             }();
 
-            self.setSize(newSize);
+            self.setSizeFixed(newSize);
             self.callOnResize();
             self.callPrepareDraw();
             self.initScrollWidgets();

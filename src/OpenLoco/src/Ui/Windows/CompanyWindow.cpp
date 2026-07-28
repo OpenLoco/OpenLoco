@@ -441,7 +441,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             Common::enableRenameByCaption(&self);
 
-            self.setSize(Status::kWindowSize, { 640, 400 });
+            self.setSizeBounds(Status::kWindowSize, { 640, 400 });
 
             if (self.viewports[0] != nullptr)
             {
@@ -668,8 +668,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         window->currentTab = 0;
-        window->width = Status::kWindowSize.width;
-        window->height = Status::kWindowSize.height;
+        window->setSize(Status::kWindowSize);
         window->invalidate();
 
         window->setWidgets(Status::widgets);
@@ -1143,7 +1142,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onResize(Window& self)
         {
             Common::enableRenameByCaption(&self);
-            self.setSize(kWindowSize);
             self.callViewportRotate();
         }
 
@@ -1746,7 +1744,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onResize(Window& self)
         {
             Common::enableRenameByCaption(&self);
-            self.setSize(kWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -2249,7 +2246,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onResize(Window& self)
         {
             Common::enableRenameByCaption(&self);
-            self.setSize(kWindowSize);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -2291,8 +2287,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         window->currentTab = Common::tab_finances - Common::tab_status;
-        window->width = Finances::kWindowSize.width;
-        window->height = Finances::kWindowSize.height;
+        window->setSizeFixed(Finances::kWindowSize);
         window->invalidate();
 
         window->setWidgets(Finances::widgets);
@@ -2479,7 +2474,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             const uint16_t kWindowHeight = std::max<int16_t>(cargoHeight, 50) + 62;
 
-            self.setSize({ kWindowSize.width, kWindowHeight });
+            self.setSizeFixed({ kWindowSize.width, kWindowHeight });
         }
 
         static constexpr WindowEventList kEvents = {
@@ -2664,15 +2659,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             WindowManager::invalidate(WindowType::company, self.number);
         }
 
-        // 0x00434048
-        static void onResize(Window& self)
-        {
-            self.setSize(kWindowSize);
-        }
-
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
-            .onResize = onResize,
             .onUpdate = onUpdate,
             .textInput = textInput,
             .prepareDraw = prepareDraw,
@@ -2704,8 +2692,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         window->currentTab = Common::tab_challenge - Common::tab_status;
-        window->width = Challenge::kWindowSize.width;
-        window->height = Challenge::kWindowSize.height;
+        window->setSizeFixed(Challenge::kWindowSize);
         window->invalidate();
 
         window->setWidgets(Challenge::widgets);
@@ -2832,7 +2819,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             Common::disableChallengeTab(&self);
             self.invalidate();
-            self.setSize(*tabInfo.kWindowSize);
+            self.setSizeFixed(*tabInfo.kWindowSize);
             self.callOnResize();
             self.callPrepareDraw();
             self.initScrollWidgets();

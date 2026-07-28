@@ -807,10 +807,8 @@ namespace OpenLoco::Input
 
         w->invalidate();
 
-        w->width = std::clamp(w->width + dx, w->minWidth, w->maxWidth);
-        w->height = std::clamp(w->height + dy, w->minHeight, w->maxHeight);
+        w->setSize({ w->width + dx, w->height + dy });
         w->flags |= Ui::WindowFlags::hasBeenResized;
-        w->callOnResize();
         w->callPrepareDraw();
 
         w->scrollAreas[0].contentWidth = -1;

@@ -2919,7 +2919,7 @@ namespace OpenLoco::Ui::Windows::Options
         self.eventHandlers = &tabInfo.events;
         self.setWidgets(tabInfo.widgets);
         self.invalidate();
-        self.setSize(tabInfo.kWindowSize);
+        self.setSizeFixed(tabInfo.kWindowSize);
 
         if ((Common::tab)self.currentTab == Common::tab::display)
         {

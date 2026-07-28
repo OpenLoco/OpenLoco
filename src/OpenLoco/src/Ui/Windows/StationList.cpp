@@ -306,10 +306,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
             populateStationList(*window);
 
-            window->minWidth = kMinDimensions.width;
-            window->minHeight = kMinDimensions.height;
-            window->maxWidth = kMaxDimensions.width;
-            window->maxHeight = kMaxDimensions.height;
+            window->setSizeBounds(kMinDimensions, kMaxDimensions);
             window->flags |= WindowFlags::resizable;
 
             auto interface = ObjectManager::get<InterfaceSkinObject>();

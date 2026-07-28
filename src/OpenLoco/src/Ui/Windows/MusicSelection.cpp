@@ -163,7 +163,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 
     static void onResize(Ui::Window& self)
     {
-        self.setSize(kWindowSizeMin, kWindowSizeMax);
+        self.setSizeBounds(kWindowSizeMin, kWindowSizeMax);
 
         // Resize & reposition widgets
         self.widgets[widx::frame].right = self.width - 1;
