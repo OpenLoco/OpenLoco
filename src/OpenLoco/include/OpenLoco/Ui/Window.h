@@ -247,20 +247,27 @@ namespace OpenLoco::Ui
             widgets.insert(widgets.end(), newWidgets.begin(), newWidgets.end());
         }
 
-        constexpr void setSize(Ui::Size size)
+        constexpr bool setSize(Ui::Size size)
         {
             if (width == size.width && height == size.height)
             {
-                return;
+                return false;
             }
 
             invalidate();
             width = size.width;
             height = size.height;
-            callOnResize();
+
+            if (!clampSizeToBounds())
+            {
+                // We resized the window, even if `clampSizeToBounds` didn't
+                callOnResize();
+            }
+
+            return true;
         }
 
-        constexpr void setSizeBounds(Ui::Size minSize, Ui::Size maxSize)
+        constexpr bool setSizeBounds(Ui::Size minSize, Ui::Size maxSize)
         {
             minWidth = minSize.width;
             minHeight = minSize.height;
@@ -268,48 +275,29 @@ namespace OpenLoco::Ui
             maxWidth = maxSize.width;
             maxHeight = maxSize.height;
 
-            clampSizeToBounds();
+            return clampSizeToBounds();
         }
 
-        constexpr void clampSizeToBounds()
+        constexpr bool clampSizeToBounds()
         {
-            bool hasResized = false;
-
-            if (width < minWidth)
+            if (minWidth == 0 || minHeight == 0 || maxWidth == 0 || maxHeight == 0)
             {
-                width = minWidth;
-                invalidate();
-                hasResized = true;
-            }
-            else if (width > maxWidth)
-            {
-                invalidate();
-                width = maxWidth;
-                invalidate();
-                hasResized = true;
+                printf("Error: attempting to clamp window of type %d (number %d) with no bounds set!\n", type, number);
             }
 
-            if (height < minHeight)
-            {
-                height = minHeight;
-                invalidate();
-                hasResized = true;
-            }
-            else if (height > maxHeight)
-            {
-                invalidate();
-                height = maxHeight;
-                invalidate();
-                hasResized = true;
-            }
+            auto newWidth = std::clamp(width, minWidth, maxWidth);
+            auto newHeight = std::clamp(height, minHeight, maxHeight);
+            bool hasResized = setSize({ newWidth, newHeight });
 
             if (hasResized)
             {
                 callOnResize();
             }
+
+            return hasResized;
         }
 
-        constexpr void setSizeBounds(Ui::Size size)
+        constexpr bool setSizeBounds(Ui::Size size)
         {
             return setSizeBounds(size, size);
         }
