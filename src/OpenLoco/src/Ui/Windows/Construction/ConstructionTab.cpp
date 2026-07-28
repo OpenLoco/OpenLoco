@@ -2135,7 +2135,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             // Attempt to place track piece -- in silence
             GameCommands::setErrorSound(false);
-            onMouseUp(*window, widx::construct, WidgetId::none);
+            onMouseUp(*window, widx::construct, Widx::kConstruct);
             GameCommands::setErrorSound(true);
 
             if (cState.trackCost != GameCommands::kFailure || cState.roadCost != GameCommands::kFailure)
@@ -2163,7 +2163,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             }
 
             // Failed to place track piece -- rotate and make error sound
-            onMouseUp(*window, widx::rotate_90, WidgetId::none);
+            onMouseUp(*window, widx::rotate_90, Widx::kRotate90);
             Audio::playSound(Audio::SoundId::error, Audio::ChannelId::ui, int32_t(Input::getMouseLocation().x));
             return;
         }
