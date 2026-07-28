@@ -692,7 +692,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // Allow setting company owner name if no preferred owner name has been set.
         if (!Config::get().usePreferredOwnerName)
         {
-            Status::onMouseUp(*self, Status::widx::change_owner_name, WidgetId::none);
+            Status::onMouseUp(*self, Status::widx::change_owner_name, Status::Widx::kChangeOwnerName);
         }
 
         return self;
