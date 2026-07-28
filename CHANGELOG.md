@@ -1,5 +1,6 @@
 26.07.1+ (???)
 ------------------------------------------------------------------------
+- Change: [#3815] The keyboard shortcuts window is now separated into groups, and can now be resized.
 - Fix: [#2082] Scrollbars can be overdrawn when certain windows are resized but their scrollview is not.
 - Fix: [#3858] Save file details can overflow the file browser window at minimum height.
 
