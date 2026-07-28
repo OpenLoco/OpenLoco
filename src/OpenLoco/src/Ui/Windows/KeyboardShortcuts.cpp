@@ -183,8 +183,8 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         const auto& rt = drawingCtx.currentRenderTarget();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        auto colour = self.getColour(WindowColour::secondary).c();
-        auto shade = Colours::getShade(colour, 4);
+        auto bgColour = self.getColour(WindowColour::secondary).c();
+        auto shade = Colours::getShade(bgColour, 4);
         drawingCtx.clearSingle(shade);
 
         auto width = self.widgets[widx::list].width();
