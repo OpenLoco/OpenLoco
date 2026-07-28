@@ -103,6 +103,16 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 Widgets::ImageButton(Widx::kCompanySelect, { 0, 14 }, { 26, 26 }, WindowColour::primary, ImageIds::null, StringIds::tooltip_select_company));
         }
 
+        struct TabInformation
+        {
+            std::span<const Widget> widgets;
+            const widx widgetIndex;
+            const WindowEventList& events;
+            const Ui::Size kWindowSize;
+        };
+
+        extern std::array<TabInformation, 6> kTabInformationByTabOffset;
+
         // 0x004343FC
         static void disableChallengeTab(Window* self)
         {
@@ -131,7 +141,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void renameCompany(Window* self, const char* input);
         static void switchCompany(Window* self, int16_t itemIndex);
         static void switchTab(Window& self, WidgetIndex_t widgetIndex);
-        static void switchTabWidgets(Window* self);
         static void drawCompanySelect(const Window* const self, Gfx::DrawingContext& drawingCtx);
         static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx);
     }
@@ -171,12 +180,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00431EBB
         static void prepareDraw(Window& self)
         {
-            Common::switchTabWidgets(&self);
-
             // Set company name in title.
             auto company = CompanyManager::get(CompanyId(self.number));
             auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             args.push(company->name);
+
+            // Set active tab
+            auto& tabInfo = Common::kTabInformationByTabOffset[self.currentTab];
+            self.activatedWidgets = (1ULL << tabInfo.widgetIndex);
 
             self.disabledWidgets &= ~((1 << widx::centre_on_viewport) | (1 << widx::face));
 
@@ -735,12 +746,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x004327CF
         static void prepareDraw(Window& self)
         {
-            Common::switchTabWidgets(&self);
-
             // Set company name.
             auto company = CompanyManager::get(CompanyId(self.number));
             auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             args.push(company->name);
+
+            // Set active tab
+            auto& tabInfo = Common::kTabInformationByTabOffset[self.currentTab];
+            self.activatedWidgets = (1ULL << tabInfo.widgetIndex);
 
             auto companyColour = CompanyManager::getCompanyColour(CompanyId(self.number));
             auto skin = ObjectManager::get<InterfaceSkinObject>();
@@ -1412,12 +1425,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00432E0F
         static void prepareDraw(Window& self)
         {
-            Common::switchTabWidgets(&self);
-
             // Set company name.
             auto company = CompanyManager::get(CompanyId(self.number));
             auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             args.push(company->name);
+
+            // Set active tab
+            auto& tabInfo = Common::kTabInformationByTabOffset[self.currentTab];
+            self.activatedWidgets = (1ULL << tabInfo.widgetIndex);
 
             self.widgets[Common::widx::frame].right = self.width - 1;
             self.widgets[Common::widx::frame].bottom = self.height - 1;
@@ -1800,8 +1815,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x004332E4
         static void prepareDraw(Window& self)
         {
-            Common::switchTabWidgets(&self);
-
             auto company = CompanyManager::get(CompanyId(self.number));
 
             // Set company name.
@@ -1815,6 +1828,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 auto args = FormatArguments(self.widgets[widx::currentLoan].textArgs);
                 args.push(company->currentLoan);
             }
+
+            // Set active tab
+            auto& tabInfo = Common::kTabInformationByTabOffset[self.currentTab];
+            self.activatedWidgets = (1ULL << tabInfo.widgetIndex);
 
             self.widgets[Common::widx::frame].right = self.width - 1;
             self.widgets[Common::widx::frame].bottom = self.height - 1;
@@ -2315,12 +2332,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00433A22
         static void prepareDraw(Window& self)
         {
-            Common::switchTabWidgets(&self);
-
             // Set company name.
             auto company = CompanyManager::get(CompanyId(self.number));
             auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             args.push(company->name);
+
+            // Set active tab
+            auto& tabInfo = Common::kTabInformationByTabOffset[self.currentTab];
+            self.activatedWidgets = (1ULL << tabInfo.widgetIndex);
 
             self.widgets[Common::widx::frame].right = self.width - 1;
             self.widgets[Common::widx::frame].bottom = self.height - 1;
@@ -2506,12 +2525,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00433D39
         static void prepareDraw(Window& self)
         {
-            Common::switchTabWidgets(&self);
-
             // Set company name.
             auto company = CompanyManager::get(CompanyId(self.number));
             auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             args.push(company->name);
+
+            // Set active tab
+            auto& tabInfo = Common::kTabInformationByTabOffset[self.currentTab];
+            self.activatedWidgets = (1ULL << tabInfo.widgetIndex);
 
             self.widgets[Common::widx::frame].right = self.width - 1;
             self.widgets[Common::widx::frame].bottom = self.height - 1;
@@ -2709,23 +2730,15 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Common
     {
-        struct TabInformation
-        {
-            std::span<const Widget> widgets;
-            const widx widgetIndex;
-            const WindowEventList& events;
-            const Ui::Size kWindowSize;
-        };
-
         // clang-format off
-        static TabInformation kTabInformationByTabOffset[] = {
+        std::array<TabInformation, 6> kTabInformationByTabOffset = std::to_array<TabInformation>({
             { Status::kWidgets,         widx::tab_status,          Status::getEvents(),         Status::kWindowSize },
             { Details::kWidgets,        widx::tab_details,         Details::getEvents(),        Details::kWindowSize },
             { ColourScheme::kWidgets,   widx::tab_colour_scheme,   ColourScheme::getEvents(),   ColourScheme::kWindowSize },
             { Finances::kWidgets,       widx::tab_finances,        Finances::getEvents(),       Finances::kWindowSize },
             { CargoDelivered::kWidgets, widx::tab_cargo_delivered, CargoDelivered::getEvents(), CargoDelivered::kWindowSize },
             { Challenge::kWidgets,      widx::tab_challenge,       Challenge::getEvents(),      Challenge::kWindowSize }
-        };
+        });
         // clang-format on
 
         static void switchCompany(Window* self, int16_t itemIndex)
@@ -2756,16 +2769,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             Common::disableChallengeTab(self);
             self->invalidate();
-        }
-
-        static void switchTabWidgets(Window* self)
-        {
-            auto& tabInfo = kTabInformationByTabOffset[self->currentTab];
-
-            self->setWidgets(tabInfo.widgets);
-            self->initScrollWidgets();
-
-            self->activatedWidgets = (1ULL << tabInfo.widgetIndex);
         }
 
         // 0x0043230B
