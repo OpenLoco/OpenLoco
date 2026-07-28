@@ -537,7 +537,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     args.param1 = enumValue(_targetCompanyId);
 
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
-                    WindowManager::invalidate(WindowType::playerInfoToolbar);
+                    Gfx::invalidateScreen();
                     return;
                 }
 
