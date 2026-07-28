@@ -262,13 +262,18 @@ namespace OpenLoco::Ui
 
         constexpr void setSizeBounds(Ui::Size minSize, Ui::Size maxSize)
         {
-            bool hasResized = false;
-
             minWidth = minSize.width;
             minHeight = minSize.height;
 
             maxWidth = maxSize.width;
             maxHeight = maxSize.height;
+
+            clampSizeToBounds();
+        }
+
+        constexpr void clampSizeToBounds()
+        {
+            bool hasResized = false;
 
             if (width < minWidth)
             {

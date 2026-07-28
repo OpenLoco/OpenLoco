@@ -1243,10 +1243,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00457FFE
         static void tabReset(Window& self)
         {
-            self.minWidth = NewIndustries::kWindowSize.width;
-            self.minHeight = NewIndustries::kWindowSize.height;
-            self.maxWidth = NewIndustries::kWindowSize.width;
-            self.maxHeight = NewIndustries::kWindowSize.height;
+            self.setSizeBounds(NewIndustries::kWindowSize);
+
             ToolManager::toolSet(self, Common::widx::tab_new_industry, CursorId::placeFactory);
 
             Input::setFlag(Input::Flags::flag6);
@@ -1268,10 +1266,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static void onResize(Window& self)
         {
             self.invalidate();
-            Ui::Size kMinWindowSize = { self.minWidth, self.minHeight };
-            Ui::Size kMaxWindowSize = { self.maxWidth, self.maxHeight };
-            self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
-
+            self.clampSizeToBounds();
             updateActiveThumb(self);
         }
 

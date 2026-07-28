@@ -474,12 +474,8 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A37E
         static void tabReset(Window& self)
         {
-            self.minWidth = kMinDimensions.width;
-            self.minHeight = kMinDimensions.height;
-            self.maxWidth = kMaxDimensions.width;
-            self.maxHeight = kMaxDimensions.height;
-            self.width = kWindowSize.width;
-            self.height = kWindowSize.height;
+            self.setSize(kWindowSize);
+            self.setSizeBounds(kMinDimensions, kMaxDimensions);
             self.rowCount = 0;
             self.rowHover = -1;
 
@@ -798,12 +794,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A3BE
         static void tabReset(Window& self)
         {
-            self.minWidth = kWindowSize.width;
-            self.minHeight = kWindowSize.height;
-            self.maxWidth = kWindowSize.width;
-            self.maxWidth = kWindowSize.height;
-            self.width = kWindowSize.width;
-            self.height = kWindowSize.height;
+            self.setSizeBounds(kWindowSize);
             ToolManager::toolSet(self, Common::widx::tab_build_town, CursorId::placeTown);
             Input::setFlag(Input::Flags::flag6);
             Ui::Windows::Main::showGridlines();
@@ -1213,9 +1204,7 @@ namespace OpenLoco::Ui::Windows::TownList
         static void onResize(Window& self)
         {
             self.invalidate();
-            Ui::Size kMinWindowSize = { self.minWidth, self.minHeight };
-            Ui::Size kMaxWindowSize = { self.maxWidth, self.maxHeight };
-            self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
+            self.clampSizeToBounds();
 
             updateActiveThumb(self);
         }
@@ -1468,12 +1457,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A3FF
         static void tabReset(Window& self)
         {
-            self.minWidth = kWindowSize.width;
-            self.minHeight = kWindowSize.height;
-            self.maxWidth = kWindowSize.width;
-            self.maxWidth = kWindowSize.height;
-            self.width = kWindowSize.width;
-            self.height = kWindowSize.height;
+            self.setSizeBounds(kWindowSize);
 
             auto tab = Common::widx::tab_build_buildings;
             if (self.currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)

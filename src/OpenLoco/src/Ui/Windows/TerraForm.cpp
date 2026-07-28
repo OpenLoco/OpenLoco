@@ -350,10 +350,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onResize(Window& self)
         {
             self.invalidate();
-            Ui::Size kMinWindowSize = { self.minWidth, self.minHeight };
-            Ui::Size kMaxWindowSize = { self.maxWidth, self.maxHeight };
-            self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
-
+            self.clampSizeToBounds();
             updateActiveThumb(self);
         }
 
@@ -2386,10 +2383,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onResize(Window& self)
         {
             self.invalidate();
-            Ui::Size kMinWindowSize = { self.minWidth, self.minHeight };
-            Ui::Size kMaxWindowSize = { self.maxWidth, self.maxHeight };
-            self.setSizeBounds(kMinWindowSize, kMaxWindowSize);
-
+            self.clampSizeToBounds();
             updateActiveThumb(self);
         }
 
@@ -2796,7 +2790,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             // CHANGE: width set to 161 to include building walls tab
             uint16_t width = 161;
             Ui::Size kWindowSize = { width, height };
-            self.setSizeBounds(kWindowSize, kWindowSize);
+            self.setSizeBounds(kWindowSize);
         }
 
         // 0x004BC78A, 0x004BCB0B
