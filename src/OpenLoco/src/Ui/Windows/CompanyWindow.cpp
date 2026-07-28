@@ -158,7 +158,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             constexpr WidgetId kChangeOwnerName{ "change_owner_name" };
         }
 
-        static constexpr auto widgets = makeWidgets(
+        static constexpr auto kWidgets = makeWidgets(
             Common::makeCommonWidgets(270, 182, StringIds::title_company),
             Widgets::Label(Widx::kUnk11, { 3, 160 }, { 242, 21 }, WindowColour::secondary, ContentAlign::center),
             Widgets::Viewport(Widx::kViewport, { 3, 44 }, { 96, 120 }, WindowColour::secondary, Widget::kContentUnk),
@@ -671,7 +671,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window->setSize(Status::kWindowSize);
         window->invalidate();
 
-        window->setWidgets(Status::widgets);
+        window->setWidgets(Status::kWidgets);
         window->holdableWidgets = 0;
         window->eventHandlers = &Status::getEvents();
         window->activatedWidgets = 0;
@@ -723,7 +723,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             constexpr WidgetId kCentreOnViewport{ "centre_on_viewport" };
         }
 
-        static constexpr auto widgets = makeWidgets(
+        static constexpr auto kWidgets = makeWidgets(
             Common::makeCommonWidgets(340, 194, StringIds::title_company_details),
             Widgets::Viewport(Widx::kViewport, { 219, 54 }, { 96, 120 }, WindowColour::secondary, Widget::kContentUnk),
             Widgets::ImageButton(Widx::kBuildHq, { 315, 92 }, { 24, 24 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_build_or_move_headquarters),
@@ -1372,7 +1372,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         };
         // clang-format on
 
-        static constexpr auto widgets = makeWidgets(
+        static constexpr auto kWidgets = makeWidgets(
             Common::makeCommonWidgets(265, 252, StringIds::title_company_colour_scheme),
             Widgets::Checkbox(Widx::kCheckSteamLocomotives, { 15, 81 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_steam_locomotives, StringIds::tooltip_toggle_vehicle_colour_scheme),
             Widgets::Checkbox(Widx::kCheckDieselLocomotives, { 15, 98 }, { 204, 12 }, WindowColour::secondary, StringIds::colour_diesel_locomotives, StringIds::tooltip_toggle_vehicle_colour_scheme),
@@ -1787,7 +1787,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         constexpr uint16_t expenditureColumnWidth = 128;
 
-        static constexpr auto widgets = makeWidgets(
+        static constexpr auto kWidgets = makeWidgets(
             Common::makeCommonWidgets(636, 319, StringIds::title_company_finances),
             Widgets::ScrollView(Widx::kScrollview, { 133, 45 }, { 499, 215 }, WindowColour::secondary, Scrollbars::horizontal),
             Widgets::stepperWidgets(Widx::kCurrentLoan, Widx::kLoanDecrease, Widx::kLoanIncrease, { 87, 264 }, { 100, 12 }, WindowColour::secondary, StringIds::company_current_loan_value),
@@ -2290,7 +2290,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window->setSizeFixed(Finances::kWindowSize);
         window->invalidate();
 
-        window->setWidgets(Finances::widgets);
+        window->setWidgets(Finances::kWidgets);
         window->holdableWidgets = Finances::holdableWidgets;
         window->eventHandlers = &Finances::getEvents();
         window->activatedWidgets = 0;
@@ -2307,7 +2307,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     {
         static constexpr Ui::Size kWindowSize = { 240, 382 };
 
-        static constexpr auto widgets = makeWidgets(
+        static constexpr auto kWidgets = makeWidgets(
             Common::makeCommonWidgets(240, 382, StringIds::title_company_cargo_delivered)
 
         );
@@ -2498,7 +2498,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     {
         static constexpr Ui::Size kWindowSize = { 320, 182 };
 
-        static constexpr auto widgets = makeWidgets(
+        static constexpr auto kWidgets = makeWidgets(
             Common::makeCommonWidgets(320, 182, StringIds::title_company_challenge)
 
         );
@@ -2695,7 +2695,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window->setSizeFixed(Challenge::kWindowSize);
         window->invalidate();
 
-        window->setWidgets(Challenge::widgets);
+        window->setWidgets(Challenge::kWidgets);
         window->holdableWidgets = 0;
         window->eventHandlers = &Challenge::getEvents();
         window->activatedWidgets = 0;
@@ -2714,17 +2714,17 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
-            const Ui::Size* kWindowSize;
+            const Ui::Size kWindowSize;
         };
 
         // clang-format off
         static TabInformation kTabInformationByTabOffset[] = {
-            { Status::widgets,         widx::tab_status,          Status::getEvents(),         &Status::kWindowSize },
-            { Details::widgets,        widx::tab_details,         Details::getEvents(),        &Details::kWindowSize },
-            { ColourScheme::widgets,   widx::tab_colour_scheme,   ColourScheme::getEvents(),   &ColourScheme::kWindowSize },
-            { Finances::widgets,       widx::tab_finances,        Finances::getEvents(),       &Finances::kWindowSize },
-            { CargoDelivered::widgets, widx::tab_cargo_delivered, CargoDelivered::getEvents(), &CargoDelivered::kWindowSize },
-            { Challenge::widgets,      widx::tab_challenge,       Challenge::getEvents(),      &Challenge::kWindowSize }
+            { Status::kWidgets,         widx::tab_status,          Status::getEvents(),         Status::kWindowSize },
+            { Details::kWidgets,        widx::tab_details,         Details::getEvents(),        Details::kWindowSize },
+            { ColourScheme::kWidgets,   widx::tab_colour_scheme,   ColourScheme::getEvents(),   ColourScheme::kWindowSize },
+            { Finances::kWidgets,       widx::tab_finances,        Finances::getEvents(),       Finances::kWindowSize },
+            { CargoDelivered::kWidgets, widx::tab_cargo_delivered, CargoDelivered::getEvents(), CargoDelivered::kWindowSize },
+            { Challenge::kWidgets,      widx::tab_challenge,       Challenge::getEvents(),      Challenge::kWindowSize }
         };
         // clang-format on
 
@@ -2799,7 +2799,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             Common::disableChallengeTab(&self);
             self.invalidate();
-            self.setSizeFixed(*tabInfo.kWindowSize);
+            self.setSizeFixed(tabInfo.kWindowSize);
             self.callOnResize();
             self.callPrepareDraw();
             self.initScrollWidgets();
