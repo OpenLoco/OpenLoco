@@ -743,7 +743,7 @@ namespace OpenLoco::Input::Shortcuts
         ShortcutManager::add(Shortcut::gameSpeedNormal,                 StringIds::shortcut_game_speed_normal,                  gameSpeedNormal,                "gameSpeedNormal",                  "");
         ShortcutManager::add(Shortcut::gameSpeedFastForward,            StringIds::shortcut_game_speed_fast_forward,            gameSpeedFastForward,           "gameSpeedFastForward",             "");
         ShortcutManager::add(Shortcut::gameSpeedExtraFastForward,       StringIds::shortcut_game_speed_extra_fast_forward,      gameSpeedExtraFastForward,      "gameSpeedExtraFastForward",        "");
-        ShortcutManager::add(Shortcut::openDebugWindow,                 StringIds::empty,                                       openDebugWindow,                "openDebugWindow",                  "F10");
+        ShortcutManager::add(Shortcut::openDebugWindow,                 StringIds::shortcut_debug_window,                       openDebugWindow,                "openDebugWindow",                  "F10");
         // clang-format on
 
         loadBindings();
