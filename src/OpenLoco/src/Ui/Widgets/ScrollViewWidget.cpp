@@ -172,8 +172,6 @@ namespace OpenLoco::Ui::Widgets
         const auto position = window->position() + widget.position();
         const auto size = widget.size();
 
-        auto tr = Gfx::TextRenderer(drawingCtx);
-
         // Draw background with inset
         drawingCtx.fillRectInset(position, size, widgetState.colour, widgetState.flags | Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillDarker);
 
@@ -181,9 +179,11 @@ namespace OpenLoco::Ui::Widgets
         auto contentPos = position + Point{ kScrollbarMargin, kScrollbarMargin };
         auto contentSize = Ui::Size{ size.width - (kScrollbarMargin * 2), size.height - (kScrollbarMargin * 2) };
 
-        const auto& scrollArea = window->scrollAreas[widgetState.scrollviewIndex];
-
+        // TODO: any effect?
+        auto tr = Gfx::TextRenderer(drawingCtx);
         tr.setCurrentFont(Gfx::Font::medium_bold);
+
+        const auto& scrollArea = window->scrollAreas[widgetState.scrollviewIndex];
         if (scrollArea.contentWidth > size.width && scrollArea.hasFlags(Ui::ScrollFlags::hscrollbarVisible))
         {
             drawHScroll(drawingCtx, widget, widgetState, scrollArea);
