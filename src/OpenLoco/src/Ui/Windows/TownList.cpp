@@ -1200,9 +1200,6 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049AF98
         static void onResize(Window& self)
         {
-            self.invalidate();
-            self.clampSizeToBounds();
-
             updateActiveThumb(self);
         }
 

@@ -349,8 +349,6 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBFBD
         static void onResize(Window& self)
         {
-            self.invalidate();
-            self.clampSizeToBounds();
             updateActiveThumb(self);
         }
 
@@ -2379,8 +2377,6 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC44B
         static void onResize(Window& self)
         {
-            self.invalidate();
-            self.clampSizeToBounds();
             updateActiveThumb(self);
         }
 

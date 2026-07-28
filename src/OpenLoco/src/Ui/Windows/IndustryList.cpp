@@ -1262,8 +1262,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x004589E8
         static void onResize(Window& self)
         {
-            self.invalidate();
-            self.clampSizeToBounds();
             updateActiveThumb(self);
         }
 

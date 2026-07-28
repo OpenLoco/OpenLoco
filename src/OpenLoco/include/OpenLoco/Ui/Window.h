@@ -249,21 +249,19 @@ namespace OpenLoco::Ui
 
         constexpr bool setSize(Ui::Size size)
         {
-            if (width == size.width && height == size.height)
+            const auto newWidth = maxWidth > 0 ? std::clamp(size.width, minWidth, maxWidth) : size.width;
+            const auto newHeight = maxHeight > 0 ? std::clamp(size.height, minHeight, maxHeight) : size.height;
+
+            if (width == newWidth && height == newHeight)
             {
                 return false;
             }
 
             invalidate();
-            width = size.width;
-            height = size.height;
-
-            if (!clampSizeToBounds())
-            {
-                // We resized the window, even if `clampSizeToBounds` didn't
-                callOnResize();
-            }
-
+            width = newWidth;
+            height = newHeight;
+            invalidate();
+            callOnResize();
             return true;
         }
 
@@ -271,25 +269,10 @@ namespace OpenLoco::Ui
         {
             minWidth = minSize.width;
             minHeight = minSize.height;
-
             maxWidth = maxSize.width;
             maxHeight = maxSize.height;
 
-            return clampSizeToBounds();
-        }
-
-        constexpr bool clampSizeToBounds()
-        {
-            auto newWidth = maxWidth > 0 ? std::clamp(width, minWidth, maxWidth) : width;
-            auto newHeight = maxHeight > 0 ? std::clamp(height, minHeight, maxHeight) : height;
-            bool hasResized = setSize({ newWidth, newHeight });
-
-            if (hasResized)
-            {
-                callOnResize();
-            }
-
-            return hasResized;
+            return setSize({ width, height });
         }
 
         constexpr bool setSizeBounds(Ui::Size size)
