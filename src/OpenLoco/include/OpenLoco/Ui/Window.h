@@ -251,7 +251,6 @@ namespace OpenLoco::Ui
         {
             if (width == size.width && height == size.height)
             {
-                printf("Called setSize without needing to\n");
                 return;
             }
 
