@@ -245,6 +245,10 @@ namespace OpenLoco::Ui
         {
             widgets.clear();
             widgets.insert(widgets.end(), newWidgets.begin(), newWidgets.end());
+
+            // Ensure initial widget positions are assigned through event function
+            invalidate();
+            callOnResize();
         }
 
         constexpr bool setSize(Ui::Size size)
