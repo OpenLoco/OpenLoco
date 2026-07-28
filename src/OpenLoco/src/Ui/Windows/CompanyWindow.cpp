@@ -1112,20 +1112,21 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.callViewportRotate();
         }
 
-        static void sub_434377(Window* self, const SavedView& view)
+        // 0x00434377
+        static void createViewportFromSavedView(Window& self, const SavedView& view)
         {
-            if (self->viewports[0] != nullptr)
+            if (self.viewports[0] != nullptr)
             {
                 return;
             }
 
-            auto& widget = self->widgets[widx::viewport];
-            auto origin = Ui::Point(widget.left + self->x + 1, widget.top + self->y + 1);
+            auto& widget = self.widgets[widx::viewport];
+            auto origin = Ui::Point(widget.left + self.x + 1, widget.top + self.y + 1);
             auto size = Ui::Size(widget.width() - 2, widget.height() - 2);
 
-            ViewportManager::create(self, 0, origin, size, self->savedView.zoomLevel, view.getPos());
-            self->flags |= WindowFlags::viewportNoScrolling;
-            self->invalidate();
+            ViewportManager::create(self, 0, origin, size, self.savedView.zoomLevel, view.getPos());
+            self.flags |= WindowFlags::viewportNoScrolling;
+            self.invalidate();
         }
 
         // 0x00432E08
@@ -1179,7 +1180,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
 
             self.savedView = view;
-            sub_434377(&self, view);
+            createViewportFromSavedView(&self, view);
             if (self.viewports[0] != nullptr)
             {
                 self.viewports[0]->flags = vpFlags;
