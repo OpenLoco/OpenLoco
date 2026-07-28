@@ -280,13 +280,8 @@ namespace OpenLoco::Ui
 
         constexpr bool clampSizeToBounds()
         {
-            if (minWidth == 0 || minHeight == 0 || maxWidth == 0 || maxHeight == 0)
-            {
-                printf("Error: attempting to clamp window of type %d (number %d) with no bounds set!\n", type, number);
-            }
-
-            auto newWidth = std::clamp(width, minWidth, maxWidth);
-            auto newHeight = std::clamp(height, minHeight, maxHeight);
+            auto newWidth = maxWidth > 0 ? std::clamp(width, minWidth, maxWidth) : width;
+            auto newHeight = maxHeight > 0 ? std::clamp(height, minHeight, maxHeight) : height;
             bool hasResized = setSize({ newWidth, newHeight });
 
             if (hasResized)
