@@ -4455,7 +4455,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
 
                 auto viewPos = World::gameToScreen(*nodeLoc, res.second->getRotation());
-                auto uiPos = res.second->viewportToScreen(viewPos) + vpOffset;
+                auto uiPos = res.second->viewportToWindow(viewPos) + vpOffset;
                 auto distance = Math::Vector::manhattanDistance2D(uiPos, Point{ x, y });
                 if (distance < bestDistance)
                 {
@@ -4534,7 +4534,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 auto potentialLoc = roadFirstTile + moveInfo.loc;
                 auto viewPos = World::gameToScreen(potentialLoc, viewport.getRotation());
-                auto uiPos = viewport.viewportToScreen(viewPos) + vpOffset;
+                auto uiPos = viewport.viewportToWindow(viewPos) + vpOffset;
                 auto distance = Math::Vector::manhattanDistance2D(uiPos, cursorLoc);
                 if (distance < bestDistance)
                 {
@@ -4641,7 +4641,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 auto potentialLoc = trackFirstTile + moveInfo.loc;
                 auto viewPos = World::gameToScreen(potentialLoc, viewport.getRotation());
-                auto uiPos = viewport.viewportToScreen(viewPos) + vpOffset;
+                auto uiPos = viewport.viewportToWindow(viewPos) + vpOffset;
                 auto distance = Math::Vector::manhattanDistance2D(uiPos, cursorLoc);
                 if (distance < bestDistance)
                 {

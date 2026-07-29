@@ -841,11 +841,11 @@ namespace OpenLoco::Ui::Windows::Construction
             const auto vpOffset = vpOwner != nullptr ? vpOwner->position() : Ui::Point{};
 
             const auto vpPosNext = gameToScreen(cState.nextTile + World::Pos3(16, 16, 0), viewport.getRotation());
-            const auto uiPosNext = viewport.viewportToScreen(vpPosNext) + vpOffset;
+            const auto uiPosNext = viewport.viewportToWindow(vpPosNext) + vpOffset;
             const auto distanceToNext = Math::Vector::manhattanDistance2D(uiPosNext, point);
 
             const auto vpPosPrevious = gameToScreen(cState.previousTile + World::Pos3(16, 16, 0), viewport.getRotation());
-            const auto uiPosPrevious = viewport.viewportToScreen(vpPosPrevious) + vpOffset;
+            const auto uiPosPrevious = viewport.viewportToWindow(vpPosPrevious) + vpOffset;
             const auto distanceToPrevious = Math::Vector::manhattanDistance2D(uiPosPrevious, point);
 
             return distanceToNext < distanceToPrevious;

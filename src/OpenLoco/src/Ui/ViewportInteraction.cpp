@@ -457,7 +457,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         uint32_t nearestDistance = std::numeric_limits<uint32_t>().max();
         Vehicles::VehicleBase* nearestVehicle = nullptr;
-        auto targetPosition = viewport->screenToViewport(Ui::Point(tempX, tempY) - window->position());
+        auto targetPosition = viewport->windowToViewport(Ui::Point(tempX, tempY) - window->position());
 
         for (auto* v : VehicleManager::VehicleList())
         {
@@ -969,7 +969,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         {
             for (auto vp : w->viewports)
             {
-                if (vp != nullptr && vp->containsUi(screenPos - w->position()))
+                if (vp != nullptr && vp->containsWindowPos(screenPos - w->position()))
                 {
                     if (vp->hasFlags(ViewportFlags::seeThroughBuildings))
                     {
@@ -1506,13 +1506,13 @@ namespace OpenLoco::Ui::ViewportInteraction
                 continue;
             }
 
-            if (!vp->containsUi(screenPos - w->position()))
+            if (!vp->containsWindowPos(screenPos - w->position()))
             {
                 continue;
             }
 
             chosenV = vp;
-            auto vpPos = vp->screenToViewport(screenPos - w->position());
+            auto vpPos = vp->windowToViewport(screenPos - w->position());
 
             const int32_t alignMask = vp->zoom > ZoomLevel::full ? ~(vp->zoom.applyTo(1) - 1) : ~0;
 
@@ -1598,7 +1598,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         const auto minPosition = info.pos;                  // E40128/A
         const auto maxPosition = info.pos + Pos2{ 31, 31 }; // E4012C/E
         auto mapPos = info.pos + Pos2{ 16, 16 };
-        const auto initialVPPos = viewport->screenToViewport(screenCoords - vpOwner->position());
+        const auto initialVPPos = viewport->windowToViewport(screenCoords - vpOwner->position());
 
         for (int32_t i = 0; i < 5; i++)
         {
@@ -1637,7 +1637,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         const auto minPosition = info.pos;                  // E40128/A
         const auto maxPosition = info.pos + Pos2{ 31, 31 }; // E4012C/E
         auto mapPos = info.pos + Pos2{ 16, 16 };
-        const auto initialVPPos = viewport->screenToViewport(screenCoords - vpOwner->position());
+        const auto initialVPPos = viewport->windowToViewport(screenCoords - vpOwner->position());
 
         for (int32_t i = 0; i < 5; i++)
         {

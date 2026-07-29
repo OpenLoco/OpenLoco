@@ -126,7 +126,7 @@ namespace OpenLoco::Audio
     static AudioAttributes getVehicleAudioAttributes(const Vehicles::VehicleBase& base, const Vehicles::VehicleSound& soundParams, const Ui::Window& owner, const Viewport& viewport)
     {
         auto vpPos = World::gameToScreen(base.position, WindowManager::getCurrentRotation());
-        const auto uiPoint = viewport.viewportToScreen(vpPos) + owner.position();
+        const auto uiPoint = viewport.viewportToWindow(vpPos) + owner.position();
 
         const auto zoomVolumeModifier = getZoomVolumeModifier(viewport.zoom);
 

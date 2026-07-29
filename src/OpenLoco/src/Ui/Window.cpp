@@ -97,9 +97,9 @@ namespace OpenLoco::Ui
             return std::nullopt;
         }
 
-        if (vp->containsUi(mouse - w->position()))
+        if (vp->containsWindowPos(mouse - w->position()))
         {
-            viewport_pos vpos = vp->screenToViewport(mouse - w->position());
+            viewport_pos vpos = vp->windowToViewport(mouse - w->position());
             World::Pos2 position = viewportCoordToMapCoord(vpos.x, vpos.y, z, WindowManager::getCurrentRotation());
             if (World::validCoords(position))
             {
@@ -720,7 +720,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        const auto uiCentre = viewport->getUiCentre() + position();
+        const auto uiCentre = viewport->getWindowCentre() + position();
         auto res = ViewportInteraction::getSurfaceLocFromUi(uiCentre);
 
         World::Pos3 target = [&]() {

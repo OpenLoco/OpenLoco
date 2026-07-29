@@ -990,12 +990,12 @@ namespace OpenLoco
             const auto width = Gfx::TextRenderer::getStringWidth(font, buffer) + kZoomToStationBorder[index].width * 2;
             const auto height = kZoomToStationBorder[index].height;
 
-            const auto [zoomWidth, zoomHeight] = ScreenToViewport::scaleTransform(Ui::Point(width, height), virtualVp);
+            const auto [zoomWidth, zoomHeight] = WindowToViewport::scaleTransform(Ui::Point(width, height), virtualVp);
 
             const auto left = vpPos.x - zoomWidth / 2;
             const auto top = vpPos.y - zoomHeight / 2 - 32;
 
-            const auto [uiLeft, uiTop] = ViewportToScreen::scaleTransform(Ui::Point(left, top), virtualVp);
+            const auto [uiLeft, uiTop] = ViewportToWindow::scaleTransform(Ui::Point(left, top), virtualVp);
 
             labelFrame.left[index] = uiLeft;
             labelFrame.right[index] = uiLeft + width;

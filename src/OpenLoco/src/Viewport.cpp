@@ -240,7 +240,7 @@ namespace OpenLoco::Ui
         return viewport_pos(viewX + viewWidth / 2, viewY + viewHeight / 2);
     }
 
-    Point Viewport::getUiCentre() const
+    Point Viewport::getWindowCentre() const
     {
         return Point(x + width / 2, y + height / 2);
     }
@@ -271,7 +271,7 @@ namespace OpenLoco::Ui
             return {};
         }
 
-        auto res = Ui::ViewportInteraction::getSurfaceLocFromUi(getUiCentre() + owner->position());
+        auto res = Ui::ViewportInteraction::getSurfaceLocFromUi(getWindowCentre() + owner->position());
         if (!res)
         {
             return {};
