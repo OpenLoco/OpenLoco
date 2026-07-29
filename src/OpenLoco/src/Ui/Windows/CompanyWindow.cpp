@@ -663,6 +663,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window->holdableWidgets = 0;
         window->eventHandlers = &Status::getEvents();
         window->activatedWidgets = 0;
+        window->callOnResize();
 
         Common::disableChallengeTab(window);
         window->initScrollWidgets();
@@ -1381,6 +1382,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00432E0F
         static void prepareDraw(Window& self)
         {
+            Common::prepareDraw(self);
+
             auto* company = CompanyManager::get(CompanyId(self.number));
 
             // Set company's main colour
@@ -1741,6 +1744,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x004332E4
         static void prepareDraw(Window& self)
         {
+            Common::prepareDraw(self);
+
             auto* company = CompanyManager::get(CompanyId(self.number));
 
             // Set current loan value
