@@ -176,6 +176,7 @@ namespace OpenLoco::Config
         int32_t edgeScrollingSpeed = 12;
         bool invertRightMouseViewPan = false;
         bool toolbarAutoMenu = true;
+        bool toolbarButtonsCentred = false;
         WindowFrameStyle windowFrameStyle = WindowFrameStyle::background;
         bool zoomToCursor = true;
 

@@ -356,11 +356,11 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
 
         Common::prepareTownWidget(window);
 
-        // if (false)
+        if (!Config::get().toolbarButtonsCentred)
         {
             justifyTabs(window);
         }
-        // else
+        else
         {
             centreTabs(window);
         }

@@ -995,11 +995,11 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         window.widgets[Common::widx::railroad_menu].hidden = !(getGameState().defaultRailroadObjectId != 0xFF);
         window.widgets[Common::widx::port_menu].hidden = !(getGameState().lastAirport != 0xFF || getGameState().lastShipPort != 0xFF);
 
-        // if (false)
+        if (!Config::get().toolbarButtonsCentred)
         {
             justifyTabs(window);
         }
-        // else
+        else
         {
             centreTabs(window);
         }
