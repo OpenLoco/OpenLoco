@@ -1,5 +1,6 @@
 26.08+ (???)
 ------------------------------------------------------------------------
+- Change: [#3867] Repeated presses of the build tracks and build roads keyboard shortcuts now cycles track/road types.
 - Fix: [#3943] Unable to place or remove signals on multi tile track elements.
 - Fix: [#3955] Terraform window can break dimensions of construction window.
 
