@@ -19,6 +19,7 @@
 #include "World/TownManager.h"
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <SDL3/SDL_keyboard.h>
+#include <algorithm>
 #include <string>
 #include <unordered_map>
 #include <utility>
@@ -344,12 +345,30 @@ namespace OpenLoco::Input::Shortcuts
             return;
         }
 
-        if (getGameState().defaultRailroadObjectId == 0xFF)
+        auto track = getGameState().defaultRailroadObjectId;
+
+        if (track == 0xFF)
         {
             return;
         }
 
-        Windows::Construction::openWithFlags(getGameState().defaultRailroadObjectId);
+        // Is construction for it already open?
+        if (WindowManager::find(WindowType::construction) != nullptr && Windows::Construction::getCurrentTrackType() == track)
+        {
+            // Find next available track
+            const auto available = companyGetAvailableRailTracks(GameCommands::getUpdatingCompanyId());
+            auto it = std::find(available.begin(), available.end(), track);
+            if (it != available.end() && it + 1 != available.end())
+            {
+                track = *(it + 1);
+            }
+            else
+            {
+                track = available[0];
+            }
+        }
+
+        Windows::Construction::openWithFlags(track);
     }
 
     // 0x004BF24F
@@ -360,12 +379,30 @@ namespace OpenLoco::Input::Shortcuts
             return;
         }
 
-        if (getGameState().defaultRoadObjectId == 0xFF)
+        auto road = getGameState().defaultRoadObjectId;
+
+        if (road == 0xFF)
         {
             return;
         }
 
-        Windows::Construction::openWithFlags(getGameState().defaultRoadObjectId);
+        // Is construction for it already open?
+        if (WindowManager::find(WindowType::construction) != nullptr && Windows::Construction::getCurrentTrackType() == road)
+        {
+            // Find next available road
+            const auto available = companyGetAvailableRoads(GameCommands::getUpdatingCompanyId());
+            auto it = std::find(available.begin(), available.end(), road);
+            if (it != available.end() && it + 1 != available.end())
+            {
+                road = *(it + 1);
+            }
+            else
+            {
+                road = available[0];
+            }
+        }
+
+        Windows::Construction::openWithFlags(road);
     }
 
     // 0x004BF276
