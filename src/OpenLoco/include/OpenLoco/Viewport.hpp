@@ -98,7 +98,7 @@ namespace OpenLoco::Ui
             return (vpos.y >= viewY && vpos.y < viewY + viewHeight && vpos.x >= viewX && vpos.x < viewX + viewWidth);
         }
 
-        constexpr bool containsUi(const Point& pos)
+        constexpr bool containsUi(const Point& pos) const
         {
             return (pos.x >= x && pos.x < x + width && pos.y >= y && pos.y < y + height);
         }

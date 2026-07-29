@@ -512,7 +512,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (self.viewports[0] == nullptr)
             {
                 auto widget = &self.widgets[widx::viewport];
-                auto origin = Ui::Point(widget->left + self.x + 1, widget->top + self.y + 1);
+                auto origin = Ui::Point(widget->left + 1, widget->top + 1);
                 auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
                 ViewportManager::create(&self, 0, origin, size, self.savedView.zoomLevel, targetEntity);
                 self.invalidate();
@@ -4438,6 +4438,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             int32_t bestDistance = std::numeric_limits<int32_t>::max();
             uint8_t bestNode = 0;
+            auto* vpOwner = WindowManager::findWindowForViewport(res.second);
+            const auto vpOffset = vpOwner != nullptr ? vpOwner->position() : Ui::Point{};
             // TODO: Use std::ranges::reverse_view
             for (auto node = airportObj->numMovementNodes - 1; node > -1; node--)
             {
@@ -4453,7 +4455,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
 
                 auto viewPos = World::gameToScreen(*nodeLoc, res.second->getRotation());
-                auto uiPos = res.second->viewportToScreen(viewPos);
+                auto uiPos = res.second->viewportToScreen(viewPos) + vpOffset;
                 auto distance = Math::Vector::manhattanDistance2D(uiPos, Point{ x, y });
                 if (distance < bestDistance)
                 {
@@ -4526,11 +4528,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
             // to the cursors location.
             int32_t bestDistance = std::numeric_limits<int32_t>::max();
             uint16_t bestProgress = 0;
+            auto* vpOwner = WindowManager::findWindowForViewport(&viewport);
+            const auto vpOffset = vpOwner != nullptr ? vpOwner->position() : Ui::Point{};
             for (const auto& moveInfo : moveInfoArr)
             {
                 auto potentialLoc = roadFirstTile + moveInfo.loc;
                 auto viewPos = World::gameToScreen(potentialLoc, viewport.getRotation());
-                auto uiPos = viewport.viewportToScreen(viewPos);
+                auto uiPos = viewport.viewportToScreen(viewPos) + vpOffset;
                 auto distance = Math::Vector::manhattanDistance2D(uiPos, cursorLoc);
                 if (distance < bestDistance)
                 {
@@ -4631,11 +4635,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
             // to the cursors location.
             int32_t bestDistance = std::numeric_limits<int32_t>::max();
             uint16_t bestProgress = 0;
+            auto* vpOwner = WindowManager::findWindowForViewport(&viewport);
+            const auto vpOffset = vpOwner != nullptr ? vpOwner->position() : Ui::Point{};
             for (const auto& moveInfo : moveInfoArr)
             {
                 auto potentialLoc = trackFirstTile + moveInfo.loc;
                 auto viewPos = World::gameToScreen(potentialLoc, viewport.getRotation());
-                auto uiPos = viewport.viewportToScreen(viewPos);
+                auto uiPos = viewport.viewportToScreen(viewPos) + vpOffset;
                 auto distance = Math::Vector::manhattanDistance2D(uiPos, cursorLoc);
                 if (distance < bestDistance)
                 {

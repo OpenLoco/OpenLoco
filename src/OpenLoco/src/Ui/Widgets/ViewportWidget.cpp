@@ -30,7 +30,7 @@ namespace OpenLoco::Ui::Widgets
         tr.drawStringLeftClipped(point, width, colour, widget.text, formatArgs);
     }
 
-    static void drawViewports(Gfx::DrawingContext& drawingCtx, [[maybe_unused]] const Widget& widget, const WidgetState& widgetState)
+    static void drawViewports(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
         // TODO: Move the viewport into the widget.
         auto* window = widgetState.window;
@@ -38,14 +38,24 @@ namespace OpenLoco::Ui::Widgets
         // TODO: Move viewports into the Widget
         auto& viewports = window->viewports;
 
-        if (viewports[0] != nullptr)
+        if (viewports[0] == nullptr && viewports[1] == nullptr)
         {
-            viewports[0]->render(drawingCtx);
+            return;
         }
 
-        if (viewports[1] != nullptr)
+        if (drawingCtx.pushClip(Ui::Rect(-widget.left, -widget.top, window->width, window->height)))
         {
-            viewports[1]->render(drawingCtx);
+            if (viewports[0] != nullptr)
+            {
+                viewports[0]->render(drawingCtx);
+            }
+
+            if (viewports[1] != nullptr)
+            {
+                viewports[1]->render(drawingCtx);
+            }
+
+            drawingCtx.popClip();
         }
     }
 

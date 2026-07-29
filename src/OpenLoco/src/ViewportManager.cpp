@@ -184,93 +184,99 @@ namespace OpenLoco::Ui::ViewportManager
 
     static void invalidate(const ViewportRect& rect, ZoomLevel zoom)
     {
-        for (auto& viewport : _viewports)
+        for (size_t i = 0; i < WindowManager::count(); i++)
         {
-            // Skip destroyed viewports.
-            if (viewport.isValid() == 0)
+            auto* window = WindowManager::get(i);
+            for (auto* viewport : window->viewports)
             {
-                continue;
+                if (viewport == nullptr)
+                {
+                    continue;
+                }
+
+                // Skip if zoomed out further than zoom argument
+                if (viewport->zoom > zoom)
+                {
+                    continue;
+                }
+
+                if (!viewport->intersects(rect))
+                {
+                    continue;
+                }
+
+                auto intersection = viewport->getIntersection(rect);
+
+                // offset rect by (negative) viewport origin
+                int16_t left = intersection.left - viewport->viewX;
+                int16_t right = intersection.right - viewport->viewX;
+                int16_t top = intersection.top - viewport->viewY;
+                int16_t bottom = intersection.bottom - viewport->viewY;
+
+                // apply zoom
+                left = viewport->zoom.applyInversedTo(left);
+                right = viewport->zoom.applyInversedTo(right);
+                top = viewport->zoom.applyInversedTo(top);
+                bottom = viewport->zoom.applyInversedTo(bottom);
+
+                // offset calculated area by viewport offset
+                left += viewport->x + window->x;
+                right += viewport->x + window->x;
+                top += viewport->y + window->y;
+                bottom += viewport->y + window->y;
+
+                Gfx::invalidateRegion(left, top, right, bottom);
             }
-
-            // Skip if zoomed out further than zoom argument
-            if (viewport.zoom > zoom)
-            {
-                continue;
-            }
-
-            if (!viewport.intersects(rect))
-            {
-                continue;
-            }
-
-            auto intersection = viewport.getIntersection(rect);
-
-            // offset rect by (negative) viewport origin
-            int16_t left = intersection.left - viewport.viewX;
-            int16_t right = intersection.right - viewport.viewX;
-            int16_t top = intersection.top - viewport.viewY;
-            int16_t bottom = intersection.bottom - viewport.viewY;
-
-            // apply zoom
-            left = viewport.zoom.applyInversedTo(left);
-            right = viewport.zoom.applyInversedTo(right);
-            top = viewport.zoom.applyInversedTo(top);
-            bottom = viewport.zoom.applyInversedTo(bottom);
-
-            // offset calculated area by viewport offset
-            left += viewport.x;
-            right += viewport.x;
-            top += viewport.y;
-            bottom += viewport.y;
-
-            Gfx::invalidateRegion(left, top, right, bottom);
         }
     }
 
     // 0x004CBA2D
     void invalidate(Station* station)
     {
-        for (auto& viewport : _viewports)
+        for (size_t i = 0; i < WindowManager::count(); i++)
         {
-            // Skip destroyed viewports.
-            if (viewport.isValid() == 0)
+            auto* window = WindowManager::get(i);
+            for (auto* viewport : window->viewports)
             {
-                continue;
+                if (viewport == nullptr)
+                {
+                    continue;
+                }
+
+                ViewportRect rect;
+                const auto labelIndex = viewport->zoom.index();
+                rect.left = viewport->zoom.applyTo<int32_t>(station->labelFrame.left[labelIndex]);
+                rect.top = viewport->zoom.applyTo<int32_t>(station->labelFrame.top[labelIndex]);
+                rect.right = viewport->zoom.applyTo<int32_t>(station->labelFrame.right[labelIndex] + 1);
+                rect.bottom = viewport->zoom.applyTo<int32_t>(station->labelFrame.bottom[labelIndex] + 1);
+
+                if (!viewport->intersects(rect))
+                {
+                    continue;
+                }
+
+                auto intersection = viewport->getIntersection(rect);
+
+                // offset rect by (negative) viewport origin
+                int16_t left = intersection.left - viewport->viewX;
+                int16_t right = intersection.right - viewport->viewX;
+                int16_t top = intersection.top - viewport->viewY;
+                int16_t bottom = intersection.bottom - viewport->viewY;
+
+                // apply zoom
+                left = viewport->zoom.applyInversedTo(left);
+                right = viewport->zoom.applyInversedTo(right);
+                top = viewport->zoom.applyInversedTo(top);
+                bottom = viewport->zoom.applyInversedTo(bottom);
+
+                // offset calculated area by viewport offset
+                left += viewport->x + window->x;
+                right += viewport->x + window->x;
+                top += viewport->y + window->y;
+                bottom += viewport->y + window->y;
+
+                Gfx::invalidateRegion(left, top, right, bottom);
             }
-
-            ViewportRect rect;
-            const auto labelIndex = viewport.zoom.index();
-            rect.left = viewport.zoom.applyTo<int32_t>(station->labelFrame.left[labelIndex]);
-            rect.top = viewport.zoom.applyTo<int32_t>(station->labelFrame.top[labelIndex]);
-            rect.right = viewport.zoom.applyTo<int32_t>(station->labelFrame.right[labelIndex] + 1);
-            rect.bottom = viewport.zoom.applyTo<int32_t>(station->labelFrame.bottom[labelIndex] + 1);
-
-            if (!viewport.intersects(rect))
-            {
-                continue;
-            }
-
-            auto intersection = viewport.getIntersection(rect);
-
-            // offset rect by (negative) viewport origin
-            int16_t left = intersection.left - viewport.viewX;
-            int16_t right = intersection.right - viewport.viewX;
-            int16_t top = intersection.top - viewport.viewY;
-            int16_t bottom = intersection.bottom - viewport.viewY;
-
-            // apply zoom
-            left = viewport.zoom.applyInversedTo(left);
-            right = viewport.zoom.applyInversedTo(right);
-            top = viewport.zoom.applyInversedTo(top);
-            bottom = viewport.zoom.applyInversedTo(bottom);
-
-            // offset calculated area by viewport offset
-            left += viewport.x;
-            right += viewport.x;
-            top += viewport.y;
-            bottom += viewport.y;
-
-            Gfx::invalidateRegion(left, top, right, bottom);
         }
     }
 

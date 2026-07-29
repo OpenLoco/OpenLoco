@@ -107,7 +107,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        if (!drawingCtx.pushClip(Rect(widget.left, widget.top, widget.width(), widget.height())))
+        if (!drawingCtx.pushClip(Rect(w.x + widget.left, w.y + widget.top, widget.width(), widget.height())))
         {
             return;
         }
