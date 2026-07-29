@@ -14,10 +14,13 @@ namespace OpenLoco
     enum class LoadOrQuitMode : uint16_t;
     enum class ObjectType : uint8_t;
 }
-
 namespace OpenLoco::Gfx
 {
     struct RenderTarget;
+}
+namespace OpenLoco::Input
+{
+    enum class Shortcut : uint32_t;
 }
 namespace OpenLoco::Ui
 {
@@ -56,7 +59,7 @@ namespace OpenLoco::Ui::WindowManager
     size_t count();
 
     void updateViewports();
-    void update();
+    void tick();
     void updateDaily();
     Window* getMainWindow();
     Viewport* getMainViewport();
@@ -188,7 +191,7 @@ namespace OpenLoco::Ui::Windows
 
     namespace EditKeyboardShortcut
     {
-        Window* open(uint8_t shortcutIndex);
+        Window* open(Input::Shortcut shortcutId);
     }
 
     namespace Error

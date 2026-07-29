@@ -136,7 +136,7 @@ namespace OpenLoco::World
         }
         CompanyId owner() const { return CompanyId(_7 & 0xF); } // _7l
         void setOwner(CompanyId newOwner) { _7 = (_7 & 0xF0) | (enumValue(newOwner) & 0xF); }
-        bool update(const World::Pos2& loc);
+        bool tick(const World::Pos2& loc);
     };
 #pragma pack(pop)
     static_assert(sizeof(RoadElement) == kTileElementSize);

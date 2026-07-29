@@ -15,7 +15,7 @@
 namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 {
     static constexpr auto widgets = makeWidgets(
-        Widgets::Wt3Widget({ 0, 0 }, { 111, 26 }, WindowColour::primary)
+        Widgets::Wt3Widget(Widx::kFrame, { 0, 0 }, { 111, 26 }, WindowColour::primary)
 
     );
 
@@ -25,9 +25,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
     }
 
     // 0x00429EA2
-    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseUp(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        if (widgetIndex != 0)
+        if (id != Widx::kFrame)
         {
             return;
         }
@@ -51,17 +51,15 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
     // 0x00429FE4
     static void onResize(Window& self)
     {
-        auto y = Ui::height() - kWindowSize.height + 1;
+        auto y = Ui::height() - kWindowSize.height;
         auto x = Ui::width() - kWindowSize.width - 27;
-        auto height = kWindowSize.height - 1;
 
-        if (y != self.y || x != self.x || kWindowSize.width != self.width || height != self.height)
+        if (y != self.y || x != self.x)
         {
             self.invalidate();
             self.y = y;
             self.x = x;
-            self.width = kWindowSize.width;
-            self.height = height;
+            self.setSize(kWindowSize);
             self.invalidate();
         }
     }

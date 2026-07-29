@@ -27,16 +27,22 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 {
     static constexpr Ui::Size kWindowSize = { 140, 27 };
 
+    enum widx
+    {
+        outer_frame,
+        inner_frame,
+        player,
+        company_value,
+        performanceIndex
+    };
+
     namespace Widx
     {
-        enum
-        {
-            outer_frame,
-            inner_frame,
-            player,
-            company_value,
-            performanceIndex
-        };
+        constexpr WidgetId kOuterFrame{ "outer_frame" };
+        constexpr WidgetId kInnerFrame{ "inner_frame" };
+        constexpr WidgetId kPlayer{ "player" };
+        constexpr WidgetId kCompanyValue{ "company_value" };
+        constexpr WidgetId kPerformanceIndex{ "performanceIndex" };
     }
 
     static void performanceIndexMouseUp();
@@ -46,11 +52,11 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 
     // 0x00509d08
     static constexpr auto _widgets = makeWidgets(
-        Widgets::Wt3Widget({ 0, 0 }, { 140, 29 }, WindowColour::primary),
-        Widgets::Wt3Widget({ 2, 2 }, { 136, 25 }, WindowColour::primary),
-        Widgets::ImageButton({ 1, 1 }, { 26, 26 }, WindowColour::primary),
-        Widgets::ImageButton({ 27, 2 }, { 111, 12 }, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_company_value),
-        Widgets::ImageButton({ 27, 14 }, { 111, 12 }, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_performance_index)
+        Widgets::Wt3Widget(Widx::kOuterFrame, { 0, 0 }, { 140, 29 }, WindowColour::primary),
+        Widgets::Wt3Widget(Widx::kInnerFrame, { 2, 2 }, { 136, 25 }, WindowColour::primary),
+        Widgets::ImageButton(Widx::kPlayer, { 1, 1 }, { 26, 26 }, WindowColour::primary),
+        Widgets::ImageButton(Widx::kCompanyValue, { 27, 2 }, { 111, 12 }, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_company_value),
+        Widgets::ImageButton(Widx::kPerformanceIndex, { 27, 14 }, { 111, 12 }, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_performance_index)
 
     );
 
@@ -177,7 +183,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     // 0x004393E7
     static void prepareDraw(Window& window)
     {
-        window.widgets[Widx::inner_frame].hidden = true;
+        window.widgets[widx::inner_frame].hidden = true;
     }
 
     // 0x43944B
@@ -185,7 +191,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     {
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        Widget& frame = window.widgets[Widx::outer_frame];
+        Widget& frame = window.widgets[widx::outer_frame];
         drawingCtx.drawRect(window.x + frame.left, window.y + frame.top, frame.width(), frame.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
 
         // Draw widgets.
@@ -214,7 +220,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             }
 
             auto colour = window.getColour(WindowColour::primary).opaque();
-            if (Input::isHovering(WindowType::playerInfoToolbar, 0, Widx::company_value))
+            if (Input::isHovering(WindowType::playerInfoToolbar, 0, widx::company_value))
             {
                 colour = Colour::white;
             }
@@ -239,7 +245,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             }
 
             auto colour = window.getColour(WindowColour::primary).opaque();
-            if (Input::isHovering(WindowType::playerInfoToolbar, 0, Widx::performanceIndex))
+            if (Input::isHovering(WindowType::playerInfoToolbar, 0, widx::performanceIndex))
             {
                 colour = Colour::white;
             }
@@ -253,36 +259,36 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004395A4
-    static void onMouseUp([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseUp([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case Widx::company_value:
+            case Widx::kCompanyValue:
                 companyValueMouseUp();
                 break;
-            case Widx::performanceIndex:
+            case Widx::kPerformanceIndex:
                 performanceIndexMouseUp();
                 break;
         }
     }
 
     // 0x004395B1
-    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case Widx::player:
+            case Widx::kPlayer:
                 playerMouseDown(&window, widgetIndex);
                 break;
         }
     }
 
     // 0x004395BC
-    static void onDropdown([[maybe_unused]] Window& w, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t item_index)
+    static void onDropdown([[maybe_unused]] Window& w, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, int16_t item_index)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case Widx::player:
+            case Widx::kPlayer:
                 playerDropdownClick(item_index);
                 break;
         }
@@ -301,12 +307,12 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004395DE
-    static Ui::CursorId onCursor([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, [[maybe_unused]] int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId onCursor([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, [[maybe_unused]] int16_t xPos, [[maybe_unused]] int16_t yPos, Ui::CursorId fallback)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case Widx::company_value:
-            case Widx::performanceIndex:
+            case Widx::kCompanyValue:
+            case Widx::kPerformanceIndex:
                 Ui::ToolTip::setTooltipTimeout(2000);
                 break;
         }
@@ -314,16 +320,16 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004395F5
-    static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
     {
         FormatArguments args{};
-        switch (widgetIndex)
+        switch (id)
         {
-            case Widx::company_value:
+            case Widx::kCompanyValue:
                 companyValueTooltip(args);
                 break;
 
-            case Widx::performanceIndex:
+            case Widx::kPerformanceIndex:
                 performanceIndexTooltip(args);
                 break;
         }
@@ -362,7 +368,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         if (_redrawScheduled)
         {
             _redrawScheduled = false;
-            WindowManager::invalidateWidget(WindowType::playerInfoToolbar, 0, Widx::inner_frame);
+            WindowManager::invalidateWidget(WindowType::playerInfoToolbar, 0, widx::inner_frame);
         }
     }
 

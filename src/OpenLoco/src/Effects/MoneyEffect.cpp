@@ -40,7 +40,7 @@ namespace OpenLoco
     // clang-format on
 
     // 0x0044063E
-    void MoneyEffect::update()
+    void MoneyEffect::tick()
     {
         invalidateSprite();
 

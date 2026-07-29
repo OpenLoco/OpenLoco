@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <functional>
+#include <optional>
 #include <vector>
 
 namespace OpenLoco
@@ -37,7 +38,7 @@ namespace OpenLoco::Input::ShortcutManager
 
     void execute(Shortcut s);
 
-    StringId getName(Shortcut s);
+    std::optional<ShortcutEntry> getDefinition(Shortcut id);
 
     const ShortcutMap& getList();
 }

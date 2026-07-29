@@ -118,7 +118,7 @@ namespace OpenLoco::World
     }
 
     // 0x00456FF7
-    bool IndustryElement::update(const World::Pos2& loc)
+    bool IndustryElement::tick(const World::Pos2& loc)
     {
         // Sequence 0 updates all the other ones
         if (sequenceIndex() != 0)

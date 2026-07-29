@@ -17,12 +17,11 @@ namespace OpenLoco::Intro
         displayNotice,
         displayNoticeBeginReset,
         end = 254,
-        end2 = 255,
     };
 
     bool isActive();
     State state();
     void state(State state);
 
-    void update();
+    void tick();
 }

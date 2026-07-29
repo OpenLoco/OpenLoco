@@ -1,5 +1,13 @@
-26.07+ (???)
+26.07.1+ (???)
 ------------------------------------------------------------------------
+- Change: [#3815] The keyboard shortcuts window is now separated into groups, and can now be resized.
+- Fix: [#2082] Scrollbars can be overdrawn when certain windows are resized but their scrollview is not.
+- Fix: [#3855] UI invalidation issue when using switch company cheat.
+- Fix: [#3858] Save file details can overflow the file browser window at minimum height.
+
+26.07.1 (2026-07-27)
+------------------------------------------------------------------------
+- Fix: [#3524] Jittery window height in the 'gridded' tabs of the industry list, town list, and terraform windows.
 - Fix: [#3841] Extreme lag when a map reaches the maximum number of audio sources (e.g. many vehicles in view).
 - Fix: [#3842] Native browse prompt not working on Windows, preventing selecting the Locomotion path on first start.
 - Fix: [#3846] Can click beyond last item in station and company list windows, opening invalid windows.
@@ -15,7 +23,6 @@
 - Change: [#3740] Options that interfere with tutorial operation are temporarily disabled options during playback.
 - Change: [#3777] Jukebox can now be toggled and opened from the options window, grouped together with the title screen music toggle.
 - Fix: [#2956] Roads drawn over cliffs can have a visible gap (original bug).
-- Fix: [#3524] Jittery window height in the 'gridded' tabs of the industry list, town list, and terraform windows.
 - Fix: [#3525] The grid cell borders in the terraform window overlap subtly with their contents.
 - Fix: [#3573] Town population graphs values draw overflow if the line is outside the viewable part of the window.
 - Fix: [#3776] Unchecking "Play Music" from the top toolbar does not invalidate Jukebox window.

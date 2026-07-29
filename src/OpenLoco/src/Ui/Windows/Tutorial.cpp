@@ -14,15 +14,20 @@
 
 namespace OpenLoco::Ui::Windows::Tutorial
 {
-    enum Widx
+    enum widx
     {
         frame,
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kFrame{ "frame" };
+    }
+
     static constexpr Ui::Size kWindowSize = { 140, 29 };
 
     static constexpr auto widgets = makeWidgets(
-        Widgets::Wt3Widget({ 0, 0 }, kWindowSize, WindowColour::primary)
+        Widgets::Wt3Widget(Widx::kFrame, { 0, 0 }, kWindowSize, WindowColour::primary)
 
     );
 
@@ -54,7 +59,7 @@ namespace OpenLoco::Ui::Windows::Tutorial
     // 0x00439B3D
     static void prepareDraw(Window& self)
     {
-        self.widgets[Widx::frame].right = self.width - 1;
+        self.widgets[widx::frame].right = self.width - 1;
     }
 
     // 0x00439B4A
@@ -73,7 +78,7 @@ namespace OpenLoco::Ui::Windows::Tutorial
         FormatArguments args{};
         args.push(titleStringIds[tutorialNumber]);
 
-        auto& widget = self.widgets[Widx::frame];
+        auto& widget = self.widgets[widx::frame];
         auto point = Point(self.x + widget.midX(), self.y + widget.top + 4);
         tr.drawStringCentred(point, Colour::black, StringIds::tutorial_text, args);
 

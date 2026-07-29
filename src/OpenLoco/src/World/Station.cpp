@@ -202,7 +202,7 @@ namespace OpenLoco
     };
 
     // 0x0048B23E
-    void Station::update()
+    void Station::tick()
     {
         updateCargoAcceptance();
     }

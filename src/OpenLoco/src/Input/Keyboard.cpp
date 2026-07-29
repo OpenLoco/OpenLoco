@@ -376,7 +376,17 @@ namespace OpenLoco::Input
                 continue;
             }
 
-            if (!SceneManager::isTitleMode())
+            if (Intro::isActive())
+            {
+                if (Intro::state() == Intro::State::displayNotice)
+                {
+                    Intro::state(Intro::State::end);
+                    continue;
+                }
+
+                Intro::state(Intro::State::displayNoticeBegin);
+            }
+            else if (!SceneManager::isTitleMode())
             {
                 for (const auto& shortcut : ShortcutManager::getList())
                 {
@@ -386,17 +396,6 @@ namespace OpenLoco::Input
                     }
                 }
                 continue;
-            }
-
-            if (Intro::state() == Intro::State::displayNotice)
-            {
-                Intro::state(Intro::State::end);
-                continue;
-            }
-
-            if (Intro::isActive())
-            {
-                Intro::state(Intro::State::displayNoticeBegin);
             }
 
             if (tryShortcut(Shortcut::sendMessage, nextKey->keyCode, _keyModifier))

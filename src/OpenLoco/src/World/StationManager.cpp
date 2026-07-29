@@ -63,7 +63,7 @@ namespace OpenLoco::StationManager
     }
 
     // 0x0048B1FA
-    void update()
+    void tick()
     {
         if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !SceneManager::isEditorMode())
         {
@@ -71,7 +71,7 @@ namespace OpenLoco::StationManager
             auto station = get(id);
             if (station != nullptr && !station->empty())
             {
-                station->update();
+                station->tick();
             }
         }
     }

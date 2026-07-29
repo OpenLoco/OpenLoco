@@ -267,7 +267,10 @@ void NetworkClient::processFullState(std::span<uint8_t const> fullData)
     updateLocalTick();
 
     BinaryStream bs(fullData.data(), fullData.size() - sizeof(ExtraState));
-    S5::importSaveToGameState(bs, S5::LoadFlags::none);
+    if (S5::importSaveToGameState(bs, S5::LoadFlags::none))
+    {
+        SceneManager::requestScene(SceneManager::SceneId::gameplay);
+    }
 }
 
 void NetworkClient::receiveChatMessagePacket(const ReceiveChatMessage& packet)

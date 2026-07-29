@@ -47,14 +47,22 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         face_frame
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kCaption{ "caption" };
+        constexpr WidgetId kCloseButton{ "close_button" };
+        constexpr WidgetId kScrollview{ "scrollview" };
+        constexpr WidgetId kFaceFrame{ "face_frame" };
+    }
+
     // 0x509680
     static constexpr auto widgets = makeWidgets(
         Widgets::Frame({ 0, 0 }, kWindowSize, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 398, 13 }, Widgets::Caption::Style::colourText, WindowColour::primary, StringIds::company_face_selection_title),
-        Widgets::ImageButton({ 385, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::Caption(Widx::kCaption, { 1, 1 }, { 398, 13 }, Widgets::Caption::Style::colourText, WindowColour::primary, StringIds::company_face_selection_title),
+        Widgets::ImageButton(Widx::kCloseButton, { 385, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { 400, 257 }, WindowColour::secondary),
-        Widgets::ScrollView({ 4, 19 }, { 188, 248 }, WindowColour::secondary, Scrollbars::vertical, StringIds::tooltip_company_face_selection),
-        Widgets::Tab({ 265, 23 }, { 66, 66 }, WindowColour::secondary)
+        Widgets::ScrollView(Widx::kScrollview, { 4, 19 }, { 188, 248 }, WindowColour::secondary, Scrollbars::vertical, StringIds::tooltip_company_face_selection),
+        Widgets::Tab(Widx::kFaceFrame, { 265, 23 }, { 66, 66 }, WindowColour::secondary)
 
     );
 
@@ -130,11 +138,11 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x435299
-    static void onMouseUp(Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseUp(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case widx::close_button:
+            case Widx::kCloseButton:
                 WindowManager::close(&self);
                 break;
         }

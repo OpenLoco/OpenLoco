@@ -6,7 +6,6 @@
 #include "EditorController.h"
 #include "Entities/EntityManager.h"
 #include "Game.h"
-#include "GameException.hpp"
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "Gui.h"
@@ -811,8 +810,8 @@ namespace OpenLoco::S5
                 };
 
                 Ui::ProgressBar::end();
-                // Throws!
                 Game::returnToTitle();
+                return false;
             }
 
             if (!hasLoadFlags(flags, LoadFlags::scenario | LoadFlags::landscape))
@@ -994,7 +993,6 @@ namespace OpenLoco::S5
             if (!hasLoadFlags(flags, LoadFlags::titleSequence) && !hasLoadFlags(flags, LoadFlags::twoPlayer) && !hasLoadFlags(flags, LoadFlags::landscape))
             {
                 SceneManager::resetSceneAge();
-                throw GameException::Interrupt;
             }
 
             return true;

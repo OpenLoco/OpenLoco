@@ -52,7 +52,7 @@ namespace OpenLoco
      *
      * @param this @<esi>
      */
-    void Town::update()
+    void Town::tick()
     {
         recalculateSize();
 

@@ -50,17 +50,29 @@ namespace OpenLoco::Ui::Windows::Industry
             tab_transported,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kFrame{ "frame" };
+            constexpr WidgetId kCaption{ "caption" };
+            constexpr WidgetId kCloseButton{ "close_button" };
+            constexpr WidgetId kPanel{ "panel" };
+            constexpr WidgetId kTabIndustry{ "tab_industry" };
+            constexpr WidgetId kTabProduction{ "tab_production" };
+            constexpr WidgetId kTabProduction2{ "tab_production_2" };
+            constexpr WidgetId kTabTransported{ "tab_transported" };
+        }
+
         static constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
         {
             return makeWidgets(
-                Widgets::Frame({ 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
-                Widgets::Caption({ 1, 1 }, { frameWidth - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, windowCaptionId),
-                Widgets::ImageButton({ frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-                Widgets::Panel({ 0, 41 }, { frameWidth, 95 }, WindowColour::secondary),
-                Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_industry),
-                Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_production_graph),
-                Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_production_graph),
-                Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_statistics));
+                Widgets::Frame(Widx::kFrame, { 0, 0 }, { frameWidth, frameHeight }, WindowColour::primary),
+                Widgets::Caption(Widx::kCaption, { 1, 1 }, { frameWidth - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, windowCaptionId),
+                Widgets::ImageButton(Widx::kCloseButton, { frameWidth - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+                Widgets::Panel(Widx::kPanel, { 0, 41 }, { frameWidth, 95 }, WindowColour::secondary),
+                Widgets::Tab(Widx::kTabIndustry, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_industry),
+                Widgets::Tab(Widx::kTabProduction, { 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_production_graph),
+                Widgets::Tab(Widx::kTabProduction2, { 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_production_graph),
+                Widgets::Tab(Widx::kTabTransported, { 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_statistics));
         }
 
         // Defined at the bottom of this file.
@@ -78,9 +90,7 @@ namespace OpenLoco::Ui::Windows::Industry
     namespace Industry
     {
         static constexpr Ui::Size kWindowSize = { 223, 137 };
-
         static constexpr Ui::Size kMinWindowSize = { 192, 137 };
-
         static constexpr Ui::Size kMaxWindowSize = { 600, 440 };
 
         enum widx
@@ -91,12 +101,20 @@ namespace OpenLoco::Ui::Windows::Industry
             demolish_industry,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kViewport{ "viewport" };
+            constexpr WidgetId kStatusBar{ "status_bar" };
+            constexpr WidgetId kCentreOnViewport{ "centre_on_viewport" };
+            constexpr WidgetId kDemolishIndustry{ "demolish_industry" };
+        }
+
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(223, 137, StringIds::title_town),
-            Widgets::Viewport({ 3, 44 }, { 195, 80 }, WindowColour::secondary, Widget::kContentUnk),
-            Widgets::Label({ 3, 115 }, { 195, 21 }, WindowColour::secondary, ContentAlign::center),
-            Widgets::ImageButton({ 0, 0 }, { 24, 24 }, WindowColour::secondary, ImageIds::centre_viewport, StringIds::move_main_view_to_show_this),
-            Widgets::ImageButton({ 198, 44 }, { 24, 24 }, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::demolish_this_industry)
+            Widgets::Viewport(Widx::kViewport, { 3, 44 }, { 195, 80 }, WindowColour::secondary, Widget::kContentUnk),
+            Widgets::Label(Widx::kStatusBar, { 3, 115 }, { 195, 21 }, WindowColour::secondary, ContentAlign::center),
+            Widgets::ImageButton(Widx::kCentreOnViewport, { 0, 0 }, { 24, 24 }, WindowColour::secondary, ImageIds::centre_viewport, StringIds::move_main_view_to_show_this),
+            Widgets::ImageButton(Widx::kDemolishIndustry, { 198, 44 }, { 24, 24 }, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::demolish_this_industry)
 
         );
 
@@ -157,30 +175,30 @@ namespace OpenLoco::Ui::Windows::Industry
         // 0x00455C86
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::caption:
+                case Common::Widx::kCaption:
                     Common::renameIndustryPrompt(self, widgetIndex);
                     break;
 
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(&self);
                     break;
 
-                case Common::widx::tab_industry:
-                case Common::widx::tab_production:
-                case Common::widx::tab_production_2:
-                case Common::widx::tab_transported:
+                case Common::Widx::kTabIndustry:
+                case Common::Widx::kTabProduction:
+                case Common::Widx::kTabProduction2:
+                case Common::Widx::kTabTransported:
                     Common::switchTab(self, widgetIndex);
                     break;
 
                 // 0x00455EA2
-                case widx::centre_on_viewport:
+                case Widx::kCentreOnViewport:
                     self.viewportCentreMain();
                     break;
 
                 // 0x00455E59
-                case widx::demolish_industry:
+                case Widx::kDemolishIndustry:
                 {
                     GameCommands::IndustryRemovalArgs args;
                     args.industryId = static_cast<IndustryId>(self.number);
@@ -202,8 +220,6 @@ namespace OpenLoco::Ui::Windows::Industry
         // 0x00455F1A
         static void onResize(Window& self)
         {
-            self.setSize(kMinWindowSize, kMaxWindowSize);
-
             if (self.viewports[0] != nullptr)
             {
                 uint16_t newWidth = self.width - 30;
@@ -327,10 +343,7 @@ namespace OpenLoco::Ui::Windows::Industry
             const WindowFlags newFlags = WindowFlags::viewportNoShiftPixels | WindowFlags::resizable;
             window = WindowManager::createWindow(WindowType::industry, Industry::kWindowSize, newFlags, Industry::getEvents());
             window->number = enumValue(industryId);
-            window->minWidth = 192;
-            window->minHeight = 137;
-            window->maxWidth = 600;
-            window->maxHeight = 440;
+            window->setSizeBounds(Industry::kMinWindowSize, Industry::kMaxWindowSize);
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             if (skin != nullptr)
@@ -374,17 +387,8 @@ namespace OpenLoco::Ui::Windows::Industry
             Widget::leftAlignTabs(self, Common::widx::tab_industry, Common::widx::tab_transported);
         }
 
-        // 0x0045654F
-        static void onResize(Window& self)
-        {
-            {
-                self.setSize(kMinWindowSize, kMaxWindowSize);
-            }
-        }
-
         static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
-            .onResize = onResize,
             .onUpdate = Common::update,
             .textInput = Common::textInput,
             .prepareDraw = prepareDraw,
@@ -416,17 +420,8 @@ namespace OpenLoco::Ui::Windows::Industry
             Widget::leftAlignTabs(self, Common::widx::tab_industry, Common::widx::tab_transported);
         }
 
-        // 0x004565FF
-        static void onResize(Window& self)
-        {
-            {
-                self.setSize(kMinWindowSize, kMaxWindowSize);
-            }
-        }
-
         static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
-            .onResize = onResize,
             .onUpdate = Common::update,
             .textInput = Common::textInput,
             .prepareDraw = prepareDraw,
@@ -595,17 +590,8 @@ namespace OpenLoco::Ui::Windows::Industry
             }
         }
 
-        // 0x004569C2
-        static void onResize(Window& self)
-        {
-            {
-                self.setSize(kWindowSize, kWindowSize);
-            }
-        }
-
         static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
-            .onResize = onResize,
             .onUpdate = Common::update,
             .textInput = Common::textInput,
             .prepareDraw = prepareDraw,
@@ -625,13 +611,15 @@ namespace OpenLoco::Ui::Windows::Industry
             std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
+            const Size minSize;
+            const Size maxSize;
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { Industry::widgets, widx::tab_industry, Industry::getEvents() },
-            { Production2::widgets, widx::tab_production, Production::getEvents() },
-            { Production2::widgets, widx::tab_production_2, Production2::getEvents() },
-            { Transported::widgets, widx::tab_transported, Transported::getEvents() }
+            { Industry::widgets, widx::tab_industry, Industry::getEvents(), Industry::kWindowSize, Industry::kWindowSize },
+            { Production2::widgets, widx::tab_production, Production::getEvents(), Production::kMinWindowSize, Production::kMaxWindowSize },
+            { Production2::widgets, widx::tab_production_2, Production2::getEvents(), Production2::kMinWindowSize, Production2::kMaxWindowSize },
+            { Transported::widgets, widx::tab_transported, Transported::getEvents(), Transported::kWindowSize, Transported::kWindowSize }
         };
 
         static void setDisabledWidgets(Window& self)
@@ -754,20 +742,20 @@ namespace OpenLoco::Ui::Windows::Industry
         // 0x004565B5, 0x00456505
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
         {
-            switch (widgetIndex)
+            switch (id)
             {
-                case Common::widx::caption:
+                case Common::Widx::kCaption:
                     Common::renameIndustryPrompt(self, widgetIndex);
                     break;
 
-                case Common::widx::close_button:
+                case Common::Widx::kCloseButton:
                     WindowManager::close(&self);
                     break;
 
-                case Common::widx::tab_industry:
-                case Common::widx::tab_production:
-                case Common::widx::tab_production_2:
-                case Common::widx::tab_transported:
+                case Common::Widx::kTabIndustry:
+                case Common::Widx::kTabProduction:
+                case Common::Widx::kTabProduction2:
+                case Common::Widx::kTabTransported:
                     Common::switchTab(self, widgetIndex);
                     break;
             }
@@ -800,9 +788,9 @@ namespace OpenLoco::Ui::Windows::Industry
         }
 
         // 0x00455CBC
-        static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input)
+        static void textInput(Window& self, [[maybe_unused]] WidgetIndex_t callingWidget, const WidgetId id, const char* input)
         {
-            if (callingWidget != Common::widx::caption)
+            if (id != Common::Widx::kCaption)
             {
                 return;
             }
@@ -893,7 +881,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
             self.invalidate();
 
-            self.setSize(Industry::kWindowSize);
+            self.setSizeBounds(tabInfo.minSize, tabInfo.maxSize);
             self.callOnResize();
             self.callPrepareDraw();
             self.initScrollWidgets();

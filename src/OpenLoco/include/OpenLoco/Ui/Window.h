@@ -245,49 +245,41 @@ namespace OpenLoco::Ui
         {
             widgets.clear();
             widgets.insert(widgets.end(), newWidgets.begin(), newWidgets.end());
+
+            invalidate();
         }
 
-        constexpr bool setSize(Ui::Size minSize, Ui::Size maxSize)
+        constexpr bool setSize(Ui::Size size)
         {
-            bool hasResized = false;
+            const auto newWidth = maxWidth > 0 ? std::clamp(size.width, minWidth, maxWidth) : size.width;
+            const auto newHeight = maxHeight > 0 ? std::clamp(size.height, minHeight, maxHeight) : size.height;
 
+            if (width == newWidth && height == newHeight)
+            {
+                return false;
+            }
+
+            invalidate();
+            width = newWidth;
+            height = newHeight;
+            invalidate();
+            callOnResize();
+            return true;
+        }
+
+        constexpr bool setSizeBounds(Ui::Size minSize, Ui::Size maxSize)
+        {
             minWidth = minSize.width;
             minHeight = minSize.height;
-
             maxWidth = maxSize.width;
             maxHeight = maxSize.height;
 
-            if (width < minWidth)
-            {
-                width = minWidth;
-                invalidate();
-                hasResized = true;
-            }
-            else if (width > maxWidth)
-            {
-                width = maxWidth;
-                invalidate();
-                hasResized = true;
-            }
-
-            if (height < minHeight)
-            {
-                height = minHeight;
-                invalidate();
-                hasResized = true;
-            }
-            else if (height > maxHeight)
-            {
-                height = maxHeight;
-                invalidate();
-                hasResized = true;
-            }
-            return hasResized;
+            return setSize({ width, height });
         }
 
-        constexpr void setSize(Ui::Size size)
+        constexpr bool setSizeFixed(Ui::Size size)
         {
-            setSize(size, size);
+            return setSizeBounds(size, size);
         }
 
         constexpr AdvancedColour getColour(WindowColour index) const
@@ -318,7 +310,6 @@ namespace OpenLoco::Ui
         bool isActivated(WidgetIndex_t index);
         bool isHoldable(WidgetIndex_t index);
         bool canResize();
-        void capSize(int32_t minWidth, int32_t minHeight, int32_t maxWidth, int32_t maxHeight);
         void viewportsUpdatePosition();
         void invalidatePressedImageButtons();
         void invalidate();
@@ -347,7 +338,7 @@ namespace OpenLoco::Ui
 
         void callClose();                                                                                                 // 0
         void callOnMouseUp(WidgetIndex_t widgetIndex, WidgetId id);                                                       // 1
-        Ui::Window* callOnResize();                                                                                       // 2
+        void callOnResize();                                                                                              // 2
         void callOnMouseHover(WidgetIndex_t widgetIndex, WidgetId id);                                                    // 3
         void callOnMouseDown(WidgetIndex_t widgetIndex, WidgetId id);                                                     // 4
         void callOnDropdown(WidgetIndex_t widgetIndex, WidgetId id, int16_t itemIndex);                                   // 5

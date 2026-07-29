@@ -58,7 +58,7 @@ namespace OpenLoco::World
     }
 
     // 0x0042DF8B
-    bool BuildingElement::update(const World::Pos2& loc)
+    bool BuildingElement::tick(const World::Pos2& loc)
     {
         // Only update from tile index 0 of multi tile buildings
         if (sequenceIndex())

@@ -54,15 +54,15 @@ namespace OpenLoco::Input::ShortcutManager
         it->action();
     }
 
-    StringId getName(Shortcut id)
+    std::optional<ShortcutEntry> getDefinition(Shortcut id)
     {
         auto it = findShortcut(id);
         if (it == std::end(_shortcuts) || it->id != id)
         {
-            return 0xFFFF; // TODO: String-id null
+            return std::nullopt;
         }
 
-        return it->displayName;
+        return *it;
     }
 
     const ShortcutMap& getList()

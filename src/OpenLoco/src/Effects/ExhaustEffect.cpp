@@ -16,7 +16,7 @@ namespace OpenLoco
     }
 
     // 0x004408C2
-    void Exhaust::update()
+    void Exhaust::tick()
     {
         const auto* steamObj = getObject();
         if (steamObj->hasFlags(SteamObjectFlags::applyWind))
