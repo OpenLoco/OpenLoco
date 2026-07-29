@@ -21,10 +21,9 @@ namespace OpenLoco::Ui::Widgets
             return;
         }
 
-        const auto pos = window->position() + widget.position();
         const auto size = widget.size();
 
-        const auto resizeBarPos = pos + Ui::Point(size.width - kResizeHandleSize, size.height - kResizeHandleSize);
+        const auto resizeBarPos = Ui::Point(size.width - kResizeHandleSize, size.height - kResizeHandleSize);
 
         uint32_t image = Gfx::recolour(ImageIds::window_resize_handle, colour.c());
         drawingCtx.drawImage(ZoomLevel::full, resizeBarPos, image);
@@ -57,12 +56,11 @@ namespace OpenLoco::Ui::Widgets
             shade = Colours::getShade(widgetState.colour.c(), 1);
         }
 
-        const auto pos = window->position() + widget.position();
         const auto size = widget.size();
 
         // Shadow at the right side.
         drawingCtx.fillRect(
-            pos + Point{ size.width - 1, 0 },
+            Point{ size.width - 1, 0 },
             Ui::Size{ 1, 41u },
             shade,
             Gfx::RectFlags::none);
@@ -73,12 +71,9 @@ namespace OpenLoco::Ui::Widgets
     void Frame::drawBackground(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
         const auto* window = widgetState.window;
-        const auto pos = window->position() + widget.position();
         const auto size = widget.size();
 
-        const auto& rt = drawingCtx.currentRenderTarget();
-        const auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(pos.x, pos.y, size.width, 41));
-        if (clipped)
+        if (drawingCtx.pushClip(Ui::Rect(0, 0, size.width, 41)))
         {
             uint32_t imageId = widget.image;
             if (window->hasFlags(WindowFlags::lighterFrame))
@@ -89,8 +84,6 @@ namespace OpenLoco::Ui::Widgets
             {
                 imageId = Gfx::recolour(ImageIds::frame_background_image_alt, widgetState.colour.c());
             }
-
-            drawingCtx.pushRenderTarget(*clipped);
 
             // Derive the number of background images to paint
             const auto backgroundImageWidth = Gfx::getG1Element(imageId)->width;
@@ -103,7 +96,7 @@ namespace OpenLoco::Ui::Widgets
                 drawingCtx.drawImage(ZoomLevel::full, i * (backgroundImageWidth - 1), 0, imageId);
             }
 
-            drawingCtx.popRenderTarget();
+            drawingCtx.popClip();
         }
     }
 
@@ -111,15 +104,13 @@ namespace OpenLoco::Ui::Widgets
     {
         const auto flags = widgetState.flags;
         const auto colour = widgetState.colour;
-        const auto* window = widgetState.window;
-        drawingCtx.fillRectInset(window->position() + widget.position(), widget.size(), colour, flags);
+        drawingCtx.fillRectInset(Ui::Point{}, widget.size(), colour, flags);
     }
 
     void Frame::drawTransparent(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
         const auto flags = widgetState.flags;
         const auto colour = widgetState.colour.translucent();
-        const auto* window = widgetState.window;
-        drawingCtx.fillRectInset(window->position() + widget.position(), widget.size(), colour, flags);
+        drawingCtx.fillRectInset(Ui::Point{}, widget.size(), colour, flags);
     }
 }
