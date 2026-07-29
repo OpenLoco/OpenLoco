@@ -9,6 +9,7 @@
 #include <AudioHandle.h>
 #include <OpenLoco/Audio/AudioEngine.h>
 #include <OpenLoco/Diagnostics/Logging.h>
+#include <algorithm>
 #include <array>
 #include <cmath>
 #include <cstdint>

@@ -16,6 +16,7 @@
 #include <OpenLoco/S5/SawyerStream.h>
 #include <OpenLoco/Version.hpp>
 #include <SDL3/SDL_main.h>
+#include <fmt/chrono.h>
 #include <iostream>
 
 using namespace OpenLoco::Diagnostics;
