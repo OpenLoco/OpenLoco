@@ -310,9 +310,6 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         }
     }
 
-    static void justifyTabs(Window& self);
-    static void centreTabs(Window& self);
-
     // 0x0043D2F3
     static void prepareDraw(Window& window)
     {
@@ -356,67 +353,14 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
 
         Common::prepareTownWidget(window);
 
-        if (!Config::get().toolbarButtonsCentred)
+        if (Config::get().toolbarButtonsCentred)
         {
-            justifyTabs(window);
+            Common::centreToolbar(window);
         }
         else
         {
-            centreTabs(window);
+            Common::justifyToolbar(window);
         }
-    }
-
-    static void centreTabs(Window& self)
-    {
-        auto numVisibleWidgets = 0;
-        for (auto& widget : self.widgets)
-        {
-            if (!widget.hidden)
-            {
-                numVisibleWidgets++;
-            }
-        }
-
-        auto totalWidth = numVisibleWidgets * 30 + (3 * 11);
-
-        // Left-hand side
-        uint32_t x = std::max(0, (Ui::width() - totalWidth) / 2);
-        x = Common::leftAlignTabs(self, x, { Common::widx::loadsave_menu, Common::widx::audio_menu });
-        if (!self.widgets[widx::map_generation_menu].hidden)
-        {
-            x = Common::leftAlignTabs(self, x, { widx::map_generation_menu });
-        }
-        x += 11;
-        x = Common::leftAlignTabs(self, x, { Common::widx::zoom_menu, Common::widx::rotate_menu, Common::widx::view_menu });
-
-        // Right-hand side
-        x += 11;
-        x = Common::leftAlignTabs(self, x, { Common::widx::terraform_menu });
-        if (!self.widgets[Common::widx::road_menu].hidden)
-        {
-            x = Common::leftAlignTabs(self, x, { Common::widx::road_menu });
-        }
-        x = Common::leftAlignTabs(self, x, { Common::widx::towns_menu });
-    }
-
-    static void justifyTabs(Window& self)
-    {
-        // Left-hand side
-        uint32_t x = 0;
-
-        x = Common::leftAlignTabs(self, x, { Common::widx::loadsave_menu, Common::widx::audio_menu });
-        if (!self.widgets[widx::map_generation_menu].hidden)
-        {
-            x = Common::leftAlignTabs(self, x, { widx::map_generation_menu });
-        }
-        x += 11;
-        x = Common::leftAlignTabs(self, x, { Common::widx::zoom_menu, Common::widx::rotate_menu, Common::widx::view_menu });
-
-        // Right-hand side
-        x = std::max(640, Ui::width()) - 1;
-        x = Common::rightAlignTabs(self, x, { Common::widx::towns_menu });
-        x -= 11;
-        x = Common::rightAlignTabs(self, x, { Common::widx::road_menu, Common::widx::terraform_menu });
     }
 
     static constexpr WindowEventList kEvents = {

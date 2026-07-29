@@ -572,25 +572,121 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         }
     }
 
-    [[nodiscard]] uint32_t leftAlignTabs(Window& self, uint32_t x, const std::initializer_list<uint32_t> widxs)
+    [[nodiscard]] static uint32_t leftAlignButtons(Window& self, uint32_t x, const std::initializer_list<uint32_t> widxs)
     {
         for (const auto& widx : widxs)
         {
-            self.widgets[widx].left = x;
-            self.widgets[widx].right = x + 29;
+            auto& widget = self.widgets[widx];
+            if (widget.hidden)
+            {
+                continue;
+            }
+
+            widget.left = x;
+            widget.right = x + 29;
             x += 30;
         }
         return x;
     }
 
-    [[nodiscard]] uint32_t rightAlignTabs(Window& self, uint32_t x, const std::initializer_list<uint32_t> widxs)
+    [[nodiscard]] static uint32_t rightAlignButtons(Window& self, uint32_t x, const std::initializer_list<uint32_t> widxs)
     {
         for (const auto& widx : widxs)
         {
-            self.widgets[widx].right = x;
-            self.widgets[widx].left = x - 29;
+            auto& widget = self.widgets[widx];
+            if (widget.hidden)
+            {
+                continue;
+            }
+
+            widget.right = x;
+            widget.left = x - 29;
             x -= 30;
         }
         return x;
     }
+
+    void centreToolbar(Window& self)
+    {
+        auto numVisibleWidgets = 0;
+        for (auto& widget : self.widgets)
+        {
+            if (!widget.hidden)
+            {
+                numVisibleWidgets++;
+            }
+        }
+
+        auto totalWidth = numVisibleWidgets * 30 + (4 * 11);
+
+        // Left-hand side
+        uint32_t x = std::max(0, (Ui::width() - totalWidth) / 2);
+        x = Common::leftAlignButtons(self, x, { Common::widx::loadsave_menu, Common::widx::audio_menu });
+        if (!self.widgets[widx::w2].hidden)
+        {
+            x = Common::leftAlignButtons(self, x, { widx::w2 });
+        }
+        x += 11;
+        x = Common::leftAlignButtons(self, x, { Common::widx::zoom_menu, Common::widx::rotate_menu, Common::widx::view_menu });
+
+        // Right-hand side
+        x += 11;
+        x = Common::leftAlignButtons(self, x, { Common::widx::terraform_menu });
+
+        if (!self.widgets[Common::widx::railroad_menu].hidden)
+        {
+            x = Common::leftAlignButtons(self, x, { Common::widx::railroad_menu });
+        }
+
+        if (!self.widgets[Common::widx::road_menu].hidden)
+        {
+            x = Common::leftAlignButtons(self, x, { Common::widx::road_menu });
+        }
+
+        if (!self.widgets[Common::widx::port_menu].hidden)
+        {
+            x = Common::leftAlignButtons(self, x, { Common::widx::port_menu });
+        }
+
+        x = Common::leftAlignButtons(self, x, { Common::widx::build_vehicles_menu });
+        x += 11;
+        x = Common::leftAlignButtons(self, x, { Common::widx::vehicles_menu, Common::widx::stations_menu, Common::widx::towns_menu });
+    }
+
+    void justifyToolbar(Window& self)
+    {
+        // Left-hand side
+        uint32_t x = 0;
+        x = Common::leftAlignButtons(self, x, { Common::widx::loadsave_menu, Common::widx::audio_menu });
+        if (!self.widgets[widx::w2].hidden)
+        {
+            x = Common::leftAlignButtons(self, x, { widx::w2 });
+        }
+        x += 11;
+        x = Common::leftAlignButtons(self, x, { Common::widx::zoom_menu, Common::widx::rotate_menu, Common::widx::view_menu });
+
+        // Right-hand side
+        x = std::max(640, Ui::width()) - 1;
+        x = Common::rightAlignButtons(self, x, { Common::widx::towns_menu, Common::widx::stations_menu, Common::widx::vehicles_menu });
+        x -= 11;
+        x = Common::rightAlignButtons(self, x, { Common::widx::build_vehicles_menu });
+
+        if (!self.widgets[Common::widx::port_menu].hidden)
+        {
+            x = Common::rightAlignButtons(self, x, { Common::widx::port_menu });
+        }
+
+        if (!self.widgets[Common::widx::road_menu].hidden)
+        {
+            x = Common::rightAlignButtons(self, x, { Common::widx::road_menu });
+        }
+
+        if (!self.widgets[Common::widx::railroad_menu].hidden)
+        {
+            x = Common::rightAlignButtons(self, x, { Common::widx::railroad_menu });
+        }
+
+        x = Common::rightAlignButtons(self, x, { Common::widx::terraform_menu });
+    }
+
 }
