@@ -1,4 +1,5 @@
 #include "Graphics/FPSCounter.h"
+#include "Config.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/TextRenderer.h"
@@ -52,7 +53,8 @@ namespace OpenLoco::Gfx
 
         // Draw text
         const int stringWidth = tr.getStringWidth(buffer);
-        auto point = Ui::Point(Ui::width() / 2 - (stringWidth / 2), 2);
+        const bool inCentre = !Config::get().toolbarButtonsCentred;
+        auto point = Ui::Point{ (inCentre ? (Ui::width() - stringWidth) / 2 : 4), 4 };
         tr.drawString(point, Colour::black, buffer);
 
         // Make area dirty so the text doesn't get drawn over the last
