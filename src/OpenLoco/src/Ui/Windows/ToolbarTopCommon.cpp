@@ -572,13 +572,25 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         }
     }
 
-    void rightAlignTabs(Window* window, uint32_t& x, const std::initializer_list<uint32_t> widxs)
+    [[nodiscard]] uint32_t leftAlignTabs(Window& self, uint32_t x, const std::initializer_list<uint32_t> widxs)
     {
         for (const auto& widx : widxs)
         {
-            window->widgets[widx].right = x;
-            window->widgets[widx].left = x - 29;
+            self.widgets[widx].left = x;
+            self.widgets[widx].right = x + 29;
+            x += 30;
+        }
+        return x;
+    }
+
+    [[nodiscard]] uint32_t rightAlignTabs(Window& self, uint32_t x, const std::initializer_list<uint32_t> widxs)
+    {
+        for (const auto& widx : widxs)
+        {
+            self.widgets[widx].right = x;
+            self.widgets[widx].left = x - 29;
             x -= 30;
         }
+        return x;
     }
 }

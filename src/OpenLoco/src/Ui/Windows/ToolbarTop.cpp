@@ -56,6 +56,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     static constexpr auto _widgets = makeWidgets(
+        // Left-hand side
         Widgets::ToolbarButton(Common::Widx::kLoadsaveMenu, { 0, 0 }, { 30, 28 }, WindowColour::primary),
         Widgets::ToolbarButton(Common::Widx::kAudioMenu, { 30, 0 }, { 30, 28 }, WindowColour::primary),
         Widgets::ToolbarButton(Widx::kCheatsMenu, { 60, 0 }, { 30, 28 }, WindowColour::primary),
@@ -64,6 +65,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         Widgets::ToolbarButton(Common::Widx::kRotateMenu, { 134, 0 }, { 30, 28 }, WindowColour::secondary),
         Widgets::ToolbarButton(Common::Widx::kViewMenu, { 164, 0 }, { 30, 28 }, WindowColour::secondary),
 
+        // Right-hand side
         Widgets::ToolbarButton(Common::Widx::kTerraformMenu, { 267, 0 }, { 30, 28 }, WindowColour::tertiary),
         Widgets::ToolbarButton(Common::Widx::kRailroadMenu, { 387, 0 }, { 30, 28 }, WindowColour::tertiary),
         Widgets::ToolbarButton(Common::Widx::kRoadMenu, { 357, 0 }, { 30, 28 }, WindowColour::tertiary),
@@ -923,6 +925,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         }
     }
 
+    static void justifyTabs(Window& self);
+
     // 0x00439BCB
     static void prepareDraw(Window& window)
     {
@@ -990,27 +994,43 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         window.widgets[Common::widx::railroad_menu].hidden = !(getGameState().defaultRailroadObjectId != 0xFF);
         window.widgets[Common::widx::port_menu].hidden = !(getGameState().lastAirport != 0xFF || getGameState().lastShipPort != 0xFF);
 
-        uint32_t x = std::max(640, Ui::width()) - 1;
-        Common::rightAlignTabs(&window, x, { Common::widx::towns_menu, Common::widx::stations_menu, Common::widx::vehicles_menu });
+        justifyTabs(window);
+    }
+
+    static void justifyTabs(Window& self)
+    {
+        // Left-hand side
+        uint32_t x = 0;
+        x = Common::leftAlignTabs(self, x, { Common::widx::loadsave_menu, Common::widx::audio_menu });
+        if (!self.widgets[widx::cheats_menu].hidden)
+        {
+            x = Common::leftAlignTabs(self, x, { widx::cheats_menu });
+        }
+        x += 11;
+        x = Common::leftAlignTabs(self, x, { Common::widx::zoom_menu, Common::widx::rotate_menu, Common::widx::view_menu });
+
+        // Right-hand side
+        x = std::max(640, Ui::width()) - 1;
+        x = Common::rightAlignTabs(self, x, { Common::widx::towns_menu, Common::widx::stations_menu, Common::widx::vehicles_menu });
         x -= 11;
-        Common::rightAlignTabs(&window, x, { Common::widx::build_vehicles_menu });
+        x = Common::rightAlignTabs(self, x, { Common::widx::build_vehicles_menu });
 
-        if (!window.widgets[Common::widx::port_menu].hidden)
+        if (!self.widgets[Common::widx::port_menu].hidden)
         {
-            Common::rightAlignTabs(&window, x, { Common::widx::port_menu });
+            x = Common::rightAlignTabs(self, x, { Common::widx::port_menu });
         }
 
-        if (!window.widgets[Common::widx::road_menu].hidden)
+        if (!self.widgets[Common::widx::road_menu].hidden)
         {
-            Common::rightAlignTabs(&window, x, { Common::widx::road_menu });
+            x = Common::rightAlignTabs(self, x, { Common::widx::road_menu });
         }
 
-        if (!window.widgets[Common::widx::railroad_menu].hidden)
+        if (!self.widgets[Common::widx::railroad_menu].hidden)
         {
-            Common::rightAlignTabs(&window, x, { Common::widx::railroad_menu });
+            x = Common::rightAlignTabs(self, x, { Common::widx::railroad_menu });
         }
 
-        Common::rightAlignTabs(&window, x, { Common::widx::terraform_menu });
+        x = Common::rightAlignTabs(self, x, { Common::widx::terraform_menu });
     }
 
     static constexpr WindowEventList kEvents = {

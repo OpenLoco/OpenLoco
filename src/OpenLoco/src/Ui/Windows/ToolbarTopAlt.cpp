@@ -314,10 +314,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     static void prepareDraw(Window& window)
     {
         uint32_t x = std::max(640, Ui::width()) - 1;
-
-        Common::rightAlignTabs(&window, x, { Common::widx::towns_menu });
+        x = Common::rightAlignTabs(window, x, { Common::widx::towns_menu });
         x -= 11;
-        Common::rightAlignTabs(&window, x, { Common::widx::road_menu, Common::widx::terraform_menu });
+        x = Common::rightAlignTabs(window, x, { Common::widx::road_menu, Common::widx::terraform_menu });
 
         const bool isLandscapeEditor = EditorController::getCurrentStep() == EditorController::Step::landscapeEditor;
 
