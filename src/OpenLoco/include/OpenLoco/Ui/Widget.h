@@ -105,6 +105,7 @@ namespace OpenLoco::Ui
         toolbarTab,
         tab,
         buttonWithImage,
+        buttonWithHoverImage,
         buttonWithColour,
         button,
         label,
