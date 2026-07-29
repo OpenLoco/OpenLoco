@@ -326,6 +326,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         window.widgets[Common::widx::railroad_menu].hidden = true;
         window.widgets[Common::widx::road_menu].hidden = !(isLandscapeEditor && getGameState().defaultRoadObjectId != 0xFF);
         window.widgets[Common::widx::port_menu].hidden = true;
+        window.widgets[Common::widx::build_vehicles_menu].hidden = true;
+
         window.widgets[Common::widx::vehicles_menu].hidden = true;
         window.widgets[Common::widx::stations_menu].hidden = true;
         window.widgets[Common::widx::towns_menu].hidden = !isLandscapeEditor;
