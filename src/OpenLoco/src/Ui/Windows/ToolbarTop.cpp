@@ -926,6 +926,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     static void justifyTabs(Window& self);
+    static void centreTabs(Window& self);
 
     // 0x00439BCB
     static void prepareDraw(Window& window)
@@ -994,7 +995,61 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         window.widgets[Common::widx::railroad_menu].hidden = !(getGameState().defaultRailroadObjectId != 0xFF);
         window.widgets[Common::widx::port_menu].hidden = !(getGameState().lastAirport != 0xFF || getGameState().lastShipPort != 0xFF);
 
-        justifyTabs(window);
+        // if (false)
+        {
+            justifyTabs(window);
+        }
+        // else
+        {
+            centreTabs(window);
+        }
+    }
+
+    static void centreTabs(Window& self)
+    {
+        auto numVisibleWidgets = 0;
+        for (auto& widget : self.widgets)
+        {
+            if (!widget.hidden)
+            {
+                numVisibleWidgets++;
+            }
+        }
+
+        auto totalWidth = numVisibleWidgets * 30 + (4 * 11);
+
+        // Left-hand side
+        uint32_t x = std::max(0, (Ui::width() - totalWidth) / 2);
+        x = Common::leftAlignTabs(self, x, { Common::widx::loadsave_menu, Common::widx::audio_menu });
+        if (!self.widgets[widx::cheats_menu].hidden)
+        {
+            x = Common::leftAlignTabs(self, x, { widx::cheats_menu });
+        }
+        x += 11;
+        x = Common::leftAlignTabs(self, x, { Common::widx::zoom_menu, Common::widx::rotate_menu, Common::widx::view_menu });
+
+        // Right-hand side
+        x += 11;
+        x = Common::leftAlignTabs(self, x, { Common::widx::terraform_menu });
+
+        if (!self.widgets[Common::widx::railroad_menu].hidden)
+        {
+            x = Common::leftAlignTabs(self, x, { Common::widx::railroad_menu });
+        }
+
+        if (!self.widgets[Common::widx::road_menu].hidden)
+        {
+            x = Common::leftAlignTabs(self, x, { Common::widx::road_menu });
+        }
+
+        if (!self.widgets[Common::widx::port_menu].hidden)
+        {
+            x = Common::leftAlignTabs(self, x, { Common::widx::port_menu });
+        }
+
+        x = Common::leftAlignTabs(self, x, { Common::widx::build_vehicles_menu });
+        x += 11;
+        x = Common::leftAlignTabs(self, x, { Common::widx::vehicles_menu, Common::widx::stations_menu, Common::widx::towns_menu });
     }
 
     static void justifyTabs(Window& self)
