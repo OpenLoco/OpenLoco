@@ -3,6 +3,7 @@
 - Feature: [#3872] Added an option to align the top toolbar buttons horizontally centred (off by default).
 - Change: [#3815] The keyboard shortcuts window is now separated into groups, and can now be resized.
 - Change: [#3863] The toolbar buttons can now be set to open on click instead of hover.
+- Change: [#3867] Repeated presses of the build tracks and build roads keyboard shortcuts now cycles track/road types.
 - Fix: [#2082] Scrollbars can be overdrawn when certain windows are resized but their scrollview is not.
 - Fix: [#2983] Can no longer scroll to adjust terraform tool size widgets.
 - Fix: [#3676] Fix bug where last land variation sprite went unused (original bug).
