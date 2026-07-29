@@ -163,6 +163,15 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 self.x += width;
                 self.invalidate();
             }
+
+            for (auto i = 0; i < 2; ++i)
+            {
+                const auto subjectType = SubjectType(static_cast<uint8_t>(static_cast<int8_t>(_nState.savedView[i].zoomLevel)));
+                if (subjectType == SubjectType::vehicleImage)
+                {
+                    WindowManager::invalidateWidget(WindowType::news, self.number, Common::widx::viewport1 + i);
+                }
+            }
         }
 
         static SavedView getView(Window* self, Message* news, uint16_t itemId, MessageItemArgumentType itemType, bool* selectable)
