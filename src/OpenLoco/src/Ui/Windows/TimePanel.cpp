@@ -162,12 +162,12 @@ namespace OpenLoco::Ui::Windows::TimePanel
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         Widget& frame = self.widgets[widx::outer_frame];
-        drawingCtx.drawRect(self.x + frame.left, self.y + frame.top, frame.width(), frame.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(frame.left, frame.top, frame.width(), frame.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
 
         // Draw widgets.
         self.draw(drawingCtx);
 
-        drawingCtx.drawRectInset(self.x + frame.left + 1, self.y + frame.top + 1, frame.width() - 2, frame.height() - 2, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
+        drawingCtx.drawRectInset(frame.left + 1, frame.top + 1, frame.width() - 2, frame.height() - 2, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
         FormatArguments args{};
         args.push<uint32_t>(getCurrentDay());
@@ -190,12 +190,12 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
         {
             auto& widget = _widgets[widx::date_btn];
-            auto point = Point(self.x + widget.midX(), self.y + widget.top + 1);
+            auto point = Point(widget.midX(), widget.top + 1);
             tr.drawStringCentred(point, c, format, args);
         }
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        drawingCtx.drawImage(ZoomLevel::full, self.x + _widgets[widx::map_chat_menu].left - 2, self.y + _widgets[widx::map_chat_menu].top - 1, skin->img + map_sprites_by_rotation[WindowManager::getCurrentRotation()]);
+        drawingCtx.drawImage(ZoomLevel::full, _widgets[widx::map_chat_menu].left - 2, _widgets[widx::map_chat_menu].top - 1, skin->img + map_sprites_by_rotation[WindowManager::getCurrentRotation()]);
     }
 
     // 0x004398FB

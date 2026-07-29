@@ -158,8 +158,7 @@ namespace OpenLoco::Ui::Windows::Debug
         auto radius = 4;
         radius += (window->frameNo / 4) % 12;
 
-        Ui::Point windowPos = state.window->position();
-        drawingCtx.drawCircle(windowPos + localPos, radius, 2, PaletteIndex::red5);
+        drawingCtx.drawCircle(localPos, radius, 2, PaletteIndex::red5);
     }
 
     static void onUpdate(Ui::Window& window)

@@ -825,8 +825,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
         if (!window.widgets[Common::widx::railroad_menu].hidden)
         {
-            uint32_t x = window.widgets[Common::widx::railroad_menu].left + window.x;
-            uint32_t y = window.widgets[Common::widx::railroad_menu].top + window.y;
+            uint32_t x = window.widgets[Common::widx::railroad_menu].left;
+            uint32_t y = window.widgets[Common::widx::railroad_menu].top;
             uint32_t fg_image = 0;
 
             // Figure out what icon to show on the button face.
@@ -855,13 +855,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             drawingCtx.drawImage(ZoomLevel::full, x, y, fg_image);
 
-            y = window.widgets[Common::widx::railroad_menu].top + window.y;
+            y = window.widgets[Common::widx::railroad_menu].top;
             drawingCtx.drawImage(ZoomLevel::full, x, y, bg_image);
         }
 
         {
-            uint32_t x = window.widgets[Common::widx::vehicles_menu].left + window.x;
-            uint32_t y = window.widgets[Common::widx::vehicles_menu].top + window.y;
+            uint32_t x = window.widgets[Common::widx::vehicles_menu].left;
+            uint32_t y = window.widgets[Common::widx::vehicles_menu].top;
 
             static constexpr uint32_t button_face_image_ids[] = {
                 InterfaceSkin::ImageIds::vehicle_train_frame_0,
@@ -885,13 +885,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             drawingCtx.drawImage(ZoomLevel::full, x, y, fg_image);
 
-            y = window.widgets[Common::widx::vehicles_menu].top + window.y;
+            y = window.widgets[Common::widx::vehicles_menu].top;
             drawingCtx.drawImage(ZoomLevel::full, x, y, bg_image);
         }
 
         {
-            uint32_t x = window.widgets[Common::widx::build_vehicles_menu].left + window.x;
-            uint32_t y = window.widgets[Common::widx::build_vehicles_menu].top + window.y;
+            uint32_t x = window.widgets[Common::widx::build_vehicles_menu].left;
+            uint32_t y = window.widgets[Common::widx::build_vehicles_menu].top;
 
             static constexpr uint32_t kBuildVehicleImages[] = {
                 InterfaceSkin::ImageIds::toolbar_build_vehicle_train,

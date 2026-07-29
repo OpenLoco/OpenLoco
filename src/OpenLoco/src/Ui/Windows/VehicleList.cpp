@@ -594,8 +594,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto company = CompanyManager::get(CompanyId(self.number));
         auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitorId);
         uint32_t image = Gfx::recolour(competitorObj->images[enumValue(company->ownerEmotion)], company->mainColours.primary);
-        uint16_t x = self.x + self.widgets[widx::company_select].left + 1;
-        uint16_t y = self.y + self.widgets[widx::company_select].top + 1;
+        uint16_t x = self.widgets[widx::company_select].left + 1;
+        uint16_t y = self.widgets[widx::company_select].top + 1;
         drawingCtx.drawImage(ZoomLevel::full, x, y, image);
     }
 

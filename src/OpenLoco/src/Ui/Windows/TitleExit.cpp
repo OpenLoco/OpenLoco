@@ -69,8 +69,8 @@ namespace OpenLoco::Ui::Windows::TitleExit
         // Draw widgets.
         window.draw(drawingCtx);
 
-        int16_t x = window.x + window.width / 2;
-        int16_t y = window.y + window.widgets[widx::exit_button].top + 8;
+        int16_t x = window.width / 2;
+        int16_t y = window.widgets[widx::exit_button].top + 8;
         Ui::Point origin = { x, y };
         tr.drawStringCentredWrapped(origin, window.width, Colour::black, StringIds::title_exit_game);
     }

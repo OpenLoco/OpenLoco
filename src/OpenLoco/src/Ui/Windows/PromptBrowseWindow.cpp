@@ -473,8 +473,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 const auto& widget = window.widgets[widx::scrollview];
 
                 auto width = window.width - widget.right - 8;
-                auto x = window.x + widget.right + 3;
-                auto y = window.y + 45;
+                auto x = widget.right + 3;
+                auto y = 45;
 
                 auto nameBuffer = selectedFile.stem().u8string();
                 nameBuffer = Localisation::convertUnicodeToLoco(nameBuffer);
@@ -511,20 +511,16 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         if (!filenameBox.hidden)
         {
             // Draw filename label
-            auto point = Point(window.x + 3, window.y + filenameBox.top + 2);
+            auto point = Point(3, filenameBox.top + 2);
             tr.drawStringLeft(point, Colour::black, StringIds::window_browse_filename);
 
             // Clip to text box
-            const auto& rt = drawingCtx.currentRenderTarget();
-            auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(window.x + filenameBox.left + 1, window.y + filenameBox.top + 1, filenameBox.right - filenameBox.left - 1, filenameBox.bottom - filenameBox.top - 1));
-            if (clipped)
+            if (drawingCtx.pushClip(Ui::Rect(filenameBox.left + 1, filenameBox.top + 1, filenameBox.right - filenameBox.left - 1, filenameBox.bottom - filenameBox.top - 1)))
             {
-                drawingCtx.pushRenderTarget(*clipped);
-
                 bool showCaret = Input::isFocused(window.type, window.number, widx::text_filename) && (inputSession.cursorFrame & 0x10) == 0;
                 drawTextInput(&window, drawingCtx, inputSession.buffer.c_str(), static_cast<int32_t>(inputSession.cursorPosition), showCaret);
 
-                drawingCtx.popRenderTarget();
+                drawingCtx.popClip();
             }
         }
     }

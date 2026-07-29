@@ -100,17 +100,12 @@ namespace OpenLoco::Ui::Windows::ProgressBar
     // 004CF7A0
     static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        const auto& rt = drawingCtx.currentRenderTarget();
-
         self.draw(drawingCtx);
 
-        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(self.x + 2, self.y + 17, self.width - 5, self.height - 19));
-        if (!clipped)
+        if (!drawingCtx.pushClip(Ui::Rect(2, 17, self.width - 5, self.height - 19)))
         {
             return;
         }
-
-        drawingCtx.pushRenderTarget(*clipped);
 
         // First, draw the train track.
         drawingCtx.drawImage(ZoomLevel::full, 0, 0, ImageIds::progressbar_track);
@@ -146,7 +141,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
         int16_t xPos = _progressBarValue - 255;
         drawingCtx.drawImage(ZoomLevel::full, xPos, 0, trainImage);
 
-        drawingCtx.popRenderTarget();
+        drawingCtx.popClip();
     }
 
     static constexpr WindowEventList kEvents = {

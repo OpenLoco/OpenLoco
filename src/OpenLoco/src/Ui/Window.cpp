@@ -1207,7 +1207,7 @@ namespace OpenLoco::Ui
     {
         if (this->isTranslucent() && !this->hasFlags(WindowFlags::noBackground))
         {
-            drawingCtx.fillRect(this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+            drawingCtx.fillRect(0, 0, this->width - 1, this->height - 1, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
         }
 
         uint64_t pressedWidget = 0;
@@ -1233,29 +1233,25 @@ namespace OpenLoco::Ui
         }
 
         uint8_t scrollviewIndex = 0;
-        if (drawingCtx.pushClip(Rect(this->x, this->y, this->width, this->height)))
+        for (auto& widget : widgets)
         {
-            for (auto& widget : widgets)
-            {
-                widget.draw(drawingCtx, this, pressedWidget, tool_widget, hovered_widget, scrollviewIndex);
+            widget.draw(drawingCtx, this, pressedWidget, tool_widget, hovered_widget, scrollviewIndex);
 
-                // FIXME: This is ugly and error prone, put the ScrollArea data in the widget,
-                //        previously it was passed as reference to draw where it incremented it.
-                if (widget.type == WidgetType::scrollview)
-                {
-                    scrollviewIndex++;
-                }
+            // FIXME: This is ugly and error prone, put the ScrollArea data in the widget,
+            //        previously it was passed as reference to draw where it incremented it.
+            if (widget.type == WidgetType::scrollview)
+            {
+                scrollviewIndex++;
             }
-            drawingCtx.popClip();
         }
 
         if (this->hasFlags(WindowFlags::whiteBorderMask))
         {
             drawingCtx.fillRectInset(
-                this->x,
-                this->y,
-                this->x + this->width - 1,
-                this->y + this->height - 1,
+                0,
+                0,
+                this->width - 1,
+                this->height - 1,
                 Colour::white,
                 Gfx::RectInsetFlags::fillNone);
         }

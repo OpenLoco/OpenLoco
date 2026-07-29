@@ -937,8 +937,8 @@ namespace OpenLoco::Ui::Windows::Construction
             {
                 Widget::drawTab(self, drawingCtx, ImageIds::null, widx::tab_station);
 
-                auto x = self.widgets[widx::tab_station].left + self.x + 1;
-                auto y = self.widgets[widx::tab_station].top + self.y + 1;
+                auto x = self.widgets[widx::tab_station].left + 1;
+                auto y = self.widgets[widx::tab_station].top + 1;
                 auto width = 29;
                 auto height = 25;
                 if (self.currentTab == widx::tab_station - widx::tab_construction)
@@ -946,13 +946,9 @@ namespace OpenLoco::Ui::Windows::Construction
                     height++;
                 }
 
-                const auto& rt = drawingCtx.currentRenderTarget();
-                auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(x, y, width, height));
-                if (clipped)
+                if (drawingCtx.pushClip(Ui::Rect(x, y, width, height)))
                 {
                     const auto zoom = ZoomLevel{ ZoomLevel::half };
-
-                    drawingCtx.pushRenderTarget(*clipped);
 
                     auto roadStationObj = ObjectManager::get<RoadStationObject>(cState.lastSelectedStationType);
                     auto imageId = Gfx::recolour(roadStationObj->image, companyColour);
@@ -965,7 +961,7 @@ namespace OpenLoco::Ui::Windows::Construction
                     imageId = Gfx::recolourTranslucent(roadStationObj->image, colour) + 1;
                     drawingCtx.drawImage(zoom, { -4, -10 }, ImageId::fromUInt32(imageId));
 
-                    drawingCtx.popRenderTarget();
+                    drawingCtx.popClip();
                 }
 
                 Widget::drawTab(self, drawingCtx, Widget::kContentUnk, widx::tab_station);
@@ -975,8 +971,8 @@ namespace OpenLoco::Ui::Windows::Construction
             {
                 Widget::drawTab(self, drawingCtx, ImageIds::null, widx::tab_overhead);
 
-                auto x = self.widgets[widx::tab_overhead].left + self.x + 2;
-                auto y = self.widgets[widx::tab_overhead].top + self.y + 2;
+                auto x = self.widgets[widx::tab_overhead].left + 2;
+                auto y = self.widgets[widx::tab_overhead].top + 2;
 
                 for (auto i = 0; i < 2; i++)
                 {
@@ -1062,8 +1058,8 @@ namespace OpenLoco::Ui::Windows::Construction
             {
                 Widget::drawTab(self, drawingCtx, ImageIds::null, widx::tab_station);
 
-                auto x = self.widgets[widx::tab_station].left + self.x + 1;
-                auto y = self.widgets[widx::tab_station].top + self.y + 1;
+                auto x = self.widgets[widx::tab_station].left + 1;
+                auto y = self.widgets[widx::tab_station].top + 1;
                 auto width = 29;
                 auto height = 25;
                 if (self.currentTab == widx::tab_station - widx::tab_construction)
@@ -1071,13 +1067,9 @@ namespace OpenLoco::Ui::Windows::Construction
                     height++;
                 }
 
-                const auto& rt = drawingCtx.currentRenderTarget();
-                auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(x, y, width, height));
-                if (clipped)
+                if (drawingCtx.pushClip(Ui::Rect(x, y, width, height)))
                 {
                     const auto zoom = ZoomLevel{ ZoomLevel::half };
-
-                    drawingCtx.pushRenderTarget(*clipped);
 
                     auto trainStationObj = ObjectManager::get<TrainStationObject>(cState.lastSelectedStationType);
                     auto imageId = Gfx::recolour(trainStationObj->image + TrainStation::ImageIds::preview_image, companyColour);
@@ -1091,7 +1083,7 @@ namespace OpenLoco::Ui::Windows::Construction
                     imageId = Gfx::recolourTranslucent(trainStationObj->image + TrainStation::ImageIds::preview_image_windows, colour);
                     drawingCtx.drawImage(zoom, { -4, -9 }, ImageId::fromUInt32(imageId));
 
-                    drawingCtx.popRenderTarget();
+                    drawingCtx.popClip();
                 }
 
                 Widget::drawTab(self, drawingCtx, Widget::kContentUnk, widx::tab_station);
@@ -1101,8 +1093,8 @@ namespace OpenLoco::Ui::Windows::Construction
             if (!self.isDisabled(widx::tab_signal))
             {
                 Widget::drawTab(self, drawingCtx, ImageIds::null, widx::tab_signal);
-                auto x = self.widgets[widx::tab_signal].left + self.x + 1;
-                auto y = self.widgets[widx::tab_signal].top + self.y + 1;
+                auto x = self.widgets[widx::tab_signal].left + 1;
+                auto y = self.widgets[widx::tab_signal].top + 1;
                 auto width = 29;
                 auto height = 25;
                 if (self.currentTab == widx::tab_station - widx::tab_construction)
@@ -1110,12 +1102,8 @@ namespace OpenLoco::Ui::Windows::Construction
                     height++;
                 }
 
-                const auto& rt = drawingCtx.currentRenderTarget();
-                auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(x, y, width, height));
-                if (clipped)
+                if (drawingCtx.pushClip(Ui::Rect(x, y, width, height)))
                 {
-                    drawingCtx.pushRenderTarget(*clipped);
-
                     auto trainSignalObject = ObjectManager::get<TrainSignalObject>(cState.lastSelectedSignal);
                     auto imageId = trainSignalObject->image;
                     if (self.currentTab == widx::tab_signal - widx::tab_construction)
@@ -1129,7 +1117,7 @@ namespace OpenLoco::Ui::Windows::Construction
                     }
                     drawingCtx.drawImage(ZoomLevel::full, 15, 31, imageId);
 
-                    drawingCtx.popRenderTarget();
+                    drawingCtx.popClip();
                 }
 
                 Widget::drawTab(self, drawingCtx, Widget::kContentUnk, widx::tab_signal);
@@ -1139,8 +1127,8 @@ namespace OpenLoco::Ui::Windows::Construction
             if (!self.isDisabled(widx::tab_overhead))
             {
                 Widget::drawTab(self, drawingCtx, ImageIds::null, widx::tab_overhead);
-                auto x = self.widgets[widx::tab_overhead].left + self.x + 2;
-                auto y = self.widgets[widx::tab_overhead].top + self.y + 2;
+                auto x = self.widgets[widx::tab_overhead].left + 2;
+                auto y = self.widgets[widx::tab_overhead].top + 2;
                 for (auto i = 0; i < 4; i++)
                 {
                     if (cState.modList[i] != 0xFF)

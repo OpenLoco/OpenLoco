@@ -881,7 +881,12 @@ namespace OpenLoco::Ui::WindowManager
         drawingCtx.pushRenderTarget(rt);
 
         w->callPrepareDraw();
-        w->callDraw(drawingCtx);
+
+        if (drawingCtx.pushClip(Ui::Rect(w->x, w->y, w->width, w->height)))
+        {
+            w->callDraw(drawingCtx);
+            drawingCtx.popClip();
+        }
 
         drawingCtx.popRenderTarget();
     }

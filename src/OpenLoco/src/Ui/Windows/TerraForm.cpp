@@ -795,7 +795,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 FormatArguments args{};
                 args.push<uint32_t>(treeCost);
 
-                auto point = Point(self.x + 3 + self.width - 17, self.y + self.height - 13);
+                auto point = Point(3 + self.width - 17, self.height - 13);
                 tr.drawStringRight(point, Colour::black, StringIds::build_cost, args);
             }
 
@@ -803,7 +803,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 FormatArguments args{};
                 args.push(treeObj->name);
 
-                auto point = Point(self.x + 3, self.y + self.height - 13);
+                auto point = Point(3, self.height - 13);
                 auto width = self.width - 19;
                 tr.drawStringLeftClipped(point, width, Colour::black, StringIds::black_stringid, args);
             }
@@ -1154,8 +1154,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             // Draw as a number if we can't fit a sprite
             if (_adjustToolSize > 10)
             {
-                auto xPos = toolArea.midX() + self.x;
-                auto yPos = toolArea.midY() + self.y - 5;
+                auto xPos = toolArea.midX();
+                auto yPos = toolArea.midY() - 5;
                 auto point = Point(xPos, yPos);
 
                 FormatArguments args{};
@@ -1174,8 +1174,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
 
             {
-                auto xPos = toolArea.midX() + self.x;
-                auto yPos = toolArea.bottom + self.y + 5;
+                auto xPos = toolArea.midX();
+                auto yPos = toolArea.bottom + 5;
                 auto point = Point(xPos, yPos);
 
                 FormatArguments args{};
@@ -1809,7 +1809,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (isMountainMode)
                 {
                     auto areaImage = ImageId(ImageIds::tool_area);
-                    Ui::Point placeForImage(toolArea.left + self.x, toolArea.top + self.y);
+                    Ui::Point placeForImage(toolArea.left, toolArea.top);
 
                     if ((_adjustToolSize & 1) == 0)
                     {
@@ -1832,15 +1832,15 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (!isMountainMode || _adjustToolSize > 1)
                 {
                     auto areaImage = ImageId(ImageIds::tool_area).withIndexOffset(_adjustToolSize);
-                    Ui::Point placeForImage(toolArea.left + self.x, toolArea.top + self.y);
+                    Ui::Point placeForImage(toolArea.left, toolArea.top);
                     drawingCtx.drawImage(ZoomLevel::full, placeForImage, areaImage);
                 }
             }
             // Or draw as a number, if we can't fit a sprite
             else
             {
-                auto xPos = toolArea.midX() + self.x;
-                auto yPos = toolArea.midY() + self.y - 5;
+                auto xPos = toolArea.midX();
+                auto yPos = toolArea.midY() - 5;
                 auto point = Point(xPos, yPos);
 
                 FormatArguments args{};
@@ -1848,8 +1848,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                 tr.drawStringCentred(point, Colour::black, StringIds::tile_inspector_coord, args);
             }
 
-            auto xPos = toolArea.midX() + self.x;
-            auto yPos = toolArea.bottom + self.y + 28;
+            auto xPos = toolArea.midX();
+            auto yPos = toolArea.bottom + 28;
 
             if (_raiseLandCost != GameCommands::kFailure)
             {
@@ -2186,8 +2186,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             // Draw as a number if we can't fit a sprite
             if (_adjustToolSize > 10)
             {
-                auto xPos = toolArea.midX() + self.x;
-                auto yPos = toolArea.midY() + self.y - 5;
+                auto xPos = toolArea.midX();
+                auto yPos = toolArea.midY() - 5;
                 auto point = Point(xPos, yPos);
 
                 FormatArguments args{};
@@ -2195,8 +2195,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                 tr.drawStringCentred(point, Colour::black, StringIds::tile_inspector_coord, args);
             }
 
-            auto xPos = toolArea.midX() + self.x;
-            auto yPos = toolArea.bottom + self.y + 5;
+            auto xPos = toolArea.midX();
+            auto yPos = toolArea.bottom + 5;
 
             if (_raiseWaterCost != GameCommands::kFailure)
             {
@@ -2655,8 +2655,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
 
             auto wallObj = ObjectManager::get<WallObject>(wallId);
-            auto xPos = self.x + 3;
-            auto yPos = self.y + self.height - 13;
+            auto xPos = 3;
+            auto yPos = self.height - 13;
             auto width = self.width - 19;
             auto point = Point(xPos, yPos);
 
