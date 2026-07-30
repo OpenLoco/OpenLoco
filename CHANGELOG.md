@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Fix: [#2082] Scrollbars can be overdrawn when certain windows are resized but their scrollview is not.
 - Fix: [#3858] Save file details can overflow the file browser window at minimum height.
+- Fix: [#3861] The news sound setting is not read properly from the config file.
 
 26.07.1 (2026-07-27)
 ------------------------------------------------------------------------
