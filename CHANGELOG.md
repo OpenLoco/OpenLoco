@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Change: [#3815] The keyboard shortcuts window is now separated into groups, and can now be resized.
 - Fix: [#2082] Scrollbars can be overdrawn when certain windows are resized but their scrollview is not.
+- Fix: [#3676] Fix bug where last land variation sprite went unused (original bug).
 - Fix: [#3855] UI invalidation issue when using switch company cheat.
 - Fix: [#3858] Save file details can overflow the file browser window at minimum height.
 
