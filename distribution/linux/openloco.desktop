@@ -3,9 +3,10 @@
 Type=Application
 Version=1.0
 Exec=OpenLoco %u
-Icon=openloco
+Icon=com.openloco.OpenLoco
 Name=OpenLoco
 GenericName=Transport management game
+StartupWMClass=OpenLoco
 GenericName[nl]=Transportbedrijfsimulator
 Comment=Open Source re-implementation of Chris Sawyer's Locomotion.
 Comment[ca]=Reimplementació de codi obert del Chris Sawyer's Locomotion.

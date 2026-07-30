@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.openloco.OpenLoco</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-2.0-only</project_license>
+  
+  <name>OpenLoco</name>
+  <summary>Open Source re-implementation of Chris Sawyer's Locomotion</summary>
+  <description>
+    <p>
+      OpenLoco is an open-source re-implementation of Chris Sawyer's Locomotion (CSL),
+      the spiritual successor to Transport Tycoon. OpenLoco aims to improve the game
+      similar to how OpenTTD improved Transport Tycoon, and OpenRCT2 improved
+      RollerCoaster Tycoon.
+    </p>
+    <p>
+      CSL was originally written in x86 assembly, building on top of the
+      RollerCoaster Tycoon 2 engine. However, the engine has changed substantially
+      enough that OpenLoco currently does not share its codebase with OpenRCT2.
+    </p>
+    <p>
+      Note: OpenLoco requires the asset files of the original Chris Sawyer's Locomotion
+      to play the game. It can be bought at e.g. Steam or GOG.com.
+    </p>
+  </description>
+  
+  <categories>
+    <category>Game</category>
+    <category>Simulation</category>
+  </categories>
+  
+  <keywords>
+    <keyword>transport</keyword>
+    <keyword>management</keyword>
+    <keyword>simulation</keyword>
+    <keyword>tycoon</keyword>
+    <keyword>locomotion</keyword>
+    <keyword>chris-sawyer</keyword>
+    <keyword>train</keyword>
+    <keyword>bus</keyword>
+    <keyword>truck</keyword>
+    <keyword>ship</keyword>
+    <keyword>airplane</keyword>
+  </keywords>
+  
+  <url type="homepage">https://github.com/OpenLoco/OpenLoco</url>
+  <url type="bugtracker">https://github.com/OpenLoco/OpenLoco/issues</url>
+  <url type="help">https://discord.gg/vEuNRHD</url>
+  <url type="donation">https://github.com/sponsors/OpenLoco</url>
+  
+  <developer>
+    <name>OpenLoco Team</name>
+    <email>openloco@protonmail.com</email>
+    <url>https://github.com/OpenLoco/OpenLoco</url>
+  </developer>
+  
+  <screenshots>
+    <screenshot type="default">
+      <image>https://user-images.githubusercontent.com/604665/55420349-1a2aea00-5577-11e9-87da-78fe5cdb09e1.png</image>
+      <caption>OpenLoco Gameplay Screenshot</caption>
+    </screenshot>
+  </screenshots>
+  
+  <releases>
+    <release version="26.07.1" date="2026-07-30">
+      <description>
+        <p>Latest development version</p>
+      </description>
+    </release>
+  </releases>
+  
+  <content_rating type="oars-1.1" />
+  
+  <launchable type="desktop-id">openloco.desktop</launchable>
+</component>

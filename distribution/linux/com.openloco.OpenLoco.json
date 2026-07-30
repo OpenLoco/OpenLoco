@@ -1,0 +1,134 @@
+{
+    "app-id": "com.openloco.OpenLoco",
+    "runtime": "org.freedesktop.Platform",
+    "runtime-version": "24.08",
+    "sdk": "org.freedesktop.Sdk",
+    "command": "openloco",
+    "finish-args": [
+        "--device=dri",
+        "--socket=wayland",
+        "--socket=x11",
+        "--socket=pulseaudio",
+        "--socket=session-bus",
+        "--filesystem=xdg-config",
+        "--filesystem=xdg-data:ro",
+        "--filesystem=xdg-save",
+        "--filesystem=~/.local/share/chris-sawyer-locomotion:create"
+    ],
+    "modules": [
+        {
+            "name": "yaml-cpp",
+            "buildsystem": "cmake-ninja",
+            "builddir": true,
+            "config-opts": [
+                "-DYAML_CPP_BUILD_TESTS=OFF",
+                "-DYAML_CPP_BUILD_TOOLS=OFF",
+                "-DYAML_CPP_BUILD_CONTRIB=OFF",
+                "-DYAML_BUILD_SHARED_LIBS=OFF",
+                "-DYAML_CPP_INSTALL=OFF"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/jbeder/yaml-cpp/archive/c2680200486572baf8221ba052ef50b58ecd816e.tar.gz",
+                    "sha256": "a7a23371444762b15822332534d124481545507f86401aa727763938e79a6452"
+                }
+            ]
+        },
+        {
+            "name": "fmt",
+            "buildsystem": "cmake-ninja",
+            "builddir": true,
+            "config-opts": [
+                "-DFMT_TEST=OFF",
+                "-DFMT_DOC=OFF",
+                "-DBUILD_SHARED_LIBS=OFF"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/fmtlib/fmt/archive/11.1.4.tar.gz",
+                    "sha256": "5244b5582f43940450c10346301439c9d18a89a34086f6746722a11424e0146b"
+                }
+            ]
+        },
+        {
+            "name": "sfl",
+            "buildsystem": "cmake-ninja",
+            "builddir": true,
+            "config-opts": [
+                "-DSFL_NO_TESTS=ON",
+                "-DBUILD_SHARED_LIBS=OFF"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/slavenf/sfl-library/archive/refs/tags/v2.2.0.tar.gz",
+                    "sha256": "2b333387e35641353410e753166507915234996141d6b6417294c3847895547a"
+                }
+            ]
+        },
+        {
+            "name": "openloco",
+            "buildsystem": "cmake-ninja",
+            "builddir": true,
+            "config-opts": [
+                "-DCMAKE_BUILD_TYPE=Release",
+                "-DOPENLOCO_USE_VCPKG=OFF",
+                "-DOPENLOCO_BUILD_TESTS=OFF",
+                "-DOPENLOCO_HEADER_CHECK=OFF",
+                "-DCMAKE_INSTALL_PREFIX=/app",
+                "-DCMAKE_PREFIX_PATH=/app"
+            ],
+            "build-options": {
+                "cxxflags": "-std=c++20"
+            },
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.9/objects.zip",
+                    "sha256": "442790242746559704516e98f8427af108607b532145c3502f7770e132f9e1bd",
+                    "dest": "openloco-objects"
+                },
+                {
+                    "type": "dir",
+                    "path": ".",
+                    "dest": "openloco"
+                }
+            ],
+            "post-install": [
+                "cp -r openloco-objects /app/data/objects",
+                "cp -r openloco/data /app/data"
+            ]
+        }
+    ],
+    "metadata": {
+        "name": "OpenLoco",
+        "summary": "Open Source re-implementation of Chris Sawyer's Locomotion",
+        "description": "<p>OpenLoco is an open-source re-implementation of <em>Chris Sawyer's Locomotion</em> (CSL), the spiritual successor to Transport Tycoon. OpenLoco aims to improve the game similar to how OpenTTD improved Transport Tycoon, and OpenRCT2 improved RollerCoaster Tycoon.</p><p>CSL was originally written in x86 assembly, building on top of the RollerCoaster Tycoon 2 engine. However, the engine has changed substantially enough that OpenLoco currently does not share its codebase with OpenRCT2.</p>",
+        "license": "GPL-2.0-only",
+        "url": {
+            "homepage": "https://github.com/OpenLoco/OpenLoco",
+            "bugtracker": "https://github.com/OpenLoco/OpenLoco/issues",
+            "help": "https://discord.gg/vEuNRHD"
+        },
+        "screenshots": [
+            {
+                "url": "https://user-images.githubusercontent.com/604665/55420349-1a2aea00-5577-11e9-87da-78fe5cdb09e1.png",
+                "caption": "OpenLoco Gameplay Screenshot"
+            }
+        ],
+        "categories": ["Game", "Simulation"],
+        "keywords": ["transport", "management", "simulation", "tycoon", "locomotion", "chris-sawyer"],
+        "icon": "com.openloco.OpenLoco.svg",
+        "icon-64": "com.openloco.OpenLoco-64.png",
+        "icon-128": "com.openloco.OpenLoco-128.png",
+        "developer": [
+            {
+                "name": "OpenLoco Team",
+                "url": "https://github.com/OpenLoco/OpenLoco",
+                "email": "openloco@protonmail.com"
+            }
+        ]
+    }
+}
