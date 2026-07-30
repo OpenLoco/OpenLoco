@@ -334,6 +334,10 @@ namespace OpenLoco::Ui::Windows::Construction
             signal_dropdown,
             both_directions,
             single_direction,
+            step_label,
+            step_value,
+            signal_placement_step_decrease,
+            signal_placement_step_increase,
         };
 
         namespace Widx
@@ -342,7 +346,13 @@ namespace OpenLoco::Ui::Windows::Construction
             constexpr WidgetId kSignalDropdown{ "signal_dropdown" };
             constexpr WidgetId kBothDirections{ "both_directions" };
             constexpr WidgetId kSingleDirection{ "single_direction" };
+            constexpr WidgetId kStepLabel{ "step_label" };
+            constexpr WidgetId kStepValue{ "step_value" };
+            constexpr WidgetId kStepDecrease{ "step_decrease" };
+            constexpr WidgetId kStepIncrease{ "step_increase" };
         }
+
+        constexpr uint64_t kHoldableWidgets = (1ULL << widx::signal_placement_step_decrease) | (1ULL << widx::signal_placement_step_increase);
 
         std::span<const Widget> getWidgets();
 
