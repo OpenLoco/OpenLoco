@@ -16,6 +16,7 @@ namespace OpenLoco::GameCommands
             , index(regs.dh & 0xF)
             , trackObjType(regs.bp & 0xF)
             , flags(regs.edi >> 16)
+            , step((regs.ecx >> 16) & 0xFF)
         {
         }
 
@@ -25,12 +26,13 @@ namespace OpenLoco::GameCommands
         uint8_t index;
         uint8_t trackObjType;
         uint16_t flags;
+        uint8_t step;
 
         explicit operator registers() const
         {
             registers regs;
             regs.ax = pos.x;
-            regs.cx = pos.y;
+            regs.ecx = pos.y | (step << 16);
             regs.edi = pos.z | (flags << 16);
             regs.bh = rotation;
             regs.dl = trackId;

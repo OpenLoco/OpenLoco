@@ -3,6 +3,7 @@
 #include "GameCommands/Track/CreateSignal.h"
 #include "GameCommands/Track/CreateSignalsAuto.h"
 #include "GameCommands/Track/RemoveSignal.h"
+#include "GameCommands/Track/RemoveSignalsAuto.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
@@ -216,123 +217,19 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         return { args };
     }
 
-    static void WalkTrack(const GameCommands::SignalPlacementArgs& initialPlace, uint8_t flags)
-    {
-        // step size of 0 means no repeated track walking - just a single action
-
-        auto pos = initialPlace.pos;
-        auto tad = (initialPlace.trackId << 3) | initialPlace.rotation;
-        const auto stepSize = signalPlacementStepSize;
-        auto stepCount = 0;
-
-        do
-        {
-            stepCount++;
-            const auto [trackEndLoc, trackEndRotation] = World::Track::getTrackConnectionEnd(pos, tad & 0x7F);
-            auto tc = World::Track::getTrackConnections(trackEndLoc, trackEndRotation, GameCommands::getUpdatingCompanyId(), initialPlace.trackId, 0, 0);
-            if (tc.connections.size() != 1)
-            {
-                return;
-            }
-            pos = trackEndLoc;
-            tad = tc.connections[0] & 0x7F;
-            if (stepCount == stepSize)
-            {
-                stepCount = 0;
-                const auto tile = World::TileManager::get(pos);
-                auto trackId = 0u;
-                for (const auto& el : tile)
-                {
-                    auto* elTrack = el.as<TrackElement>();
-                    if (elTrack == nullptr)
-                    {
-                        continue;
-                    }
-
-                    if (elTrack->owner() != GameCommands::getUpdatingCompanyId())
-                    {
-                        continue;
-                    }
-
-                    if (elTrack->trackObjectId() != initialPlace.trackObjType)
-                    {
-                        continue;
-                    }
-                    trackId = elTrack->trackId();
-                }
-                GameCommands::SignalPlacementArgs args = initialPlace;
-                args.pos = trackEndLoc;
-                args.rotation = trackEndRotation;
-                args.trackId = trackId;
-                auto res = GameCommands::doCommand(args, flags);
-                if (res == GameCommands::kFailure)
-                {
-                    return;
-                }
-            }
-        } while (stepSize > 0);
-    }
-
-    static void WalkTrackRemove(const GameCommands::SignalRemovalArgs& initialPlace, uint8_t flags)
-    {
-        auto pos = initialPlace.pos;
-        auto tad = (initialPlace.trackId << 3) | initialPlace.rotation;
-        const auto stepSize = signalPlacementStepSize;
-        auto stepCount = 0;
-
-        do
-        {
-            stepCount++;
-            const auto [trackEndLoc, trackEndRotation] = World::Track::getTrackConnectionEnd(pos, tad & 0x7F);
-            auto tc = World::Track::getTrackConnections(trackEndLoc, trackEndRotation, GameCommands::getUpdatingCompanyId(), initialPlace.trackId, 0, 0);
-            if (tc.connections.size() != 1)
-            {
-                return;
-            }
-            pos = trackEndLoc;
-            tad = tc.connections[0] & 0x7F;
-            if (stepCount == stepSize)
-            {
-                stepCount = 0;
-                const auto tile = World::TileManager::get(pos);
-                auto trackId = 0u;
-                for (const auto& el : tile)
-                {
-                    auto* elTrack = el.as<TrackElement>();
-                    if (elTrack == nullptr)
-                    {
-                        continue;
-                    }
-
-                    if (elTrack->owner() != GameCommands::getUpdatingCompanyId())
-                    {
-                        continue;
-                    }
-
-                    if (elTrack->trackObjectId() != initialPlace.trackObjType)
-                    {
-                        continue;
-                    }
-                    trackId = elTrack->trackId();
-                }
-                GameCommands::SignalRemovalArgs args = initialPlace;
-                args.pos = trackEndLoc;
-                args.rotation = trackEndRotation;
-                args.trackId = trackId;
-                auto res = GameCommands::doCommand(args, flags);
-                if (res == GameCommands::kFailure)
-                {
-                    return;
-                }
-            }
-        } while (stepSize > 0);
-    }
-
     static uint32_t placeSignalGhost(const GameCommands::SignalPlacementArgs& args)
     {
-        WalkTrack(args, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
-        //  auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
-        //  if (res != GameCommands::kFailure)
+        GameCommands::SignalsPlacementAutoArgs autoArgs{};
+        autoArgs.index = args.index;
+        autoArgs.pos = args.pos;
+        autoArgs.rotation = args.rotation;
+        autoArgs.trackId = args.trackId;
+        autoArgs.trackObjType = args.trackObjType;
+        autoArgs.step = signalPlacementStepSize;
+        autoArgs.sides = args.sides;
+
+        auto res = GameCommands::doCommand(autoArgs, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+        if (res != GameCommands::kFailure)
         {
             Common::setGhostVisibilityFlag(GhostVisibilityFlags::signal);
 
@@ -344,7 +241,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             cState.signalGhostSides = args.sides;
             cState.signalGhostTrackObjId = args.trackObjType;
         }
-        return 10;
+        return res;
     }
 
     // 0x0049FEF6
@@ -354,15 +251,15 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         {
             auto& cState = getConstructionState();
 
-            GameCommands::SignalRemovalArgs args;
+            GameCommands::SignalsRemovalAutoArgs args;
             args.pos = cState.signalGhostPos;
             args.rotation = cState.signalGhostRotation;
             args.trackId = cState.signalGhostTrackId;
             args.index = cState.signalGhostTileIndex;
             args.flags = cState.signalGhostSides;
             args.trackObjType = cState.signalGhostTrackObjId;
-            WalkTrackRemove(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
-            // GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+            args.step = signalPlacementStepSize;
+            GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
 
             Common::unsetGhostVisibilityFlag(GhostVisibilityFlags::signal);
         }
