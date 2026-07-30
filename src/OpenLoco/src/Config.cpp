@@ -81,7 +81,7 @@ namespace OpenLoco::Config
             audioConfig.ambientVolume = audioNode["ambientVolume"].as<int32_t>(100);
             audioConfig.playJukeboxMusic = audioNode["playJukeboxMusic"].as<bool>(true);
             audioConfig.playTitleMusic = audioNode["play_title_music"].as<bool>(true);
-            audioConfig.playNewsSounds = audioNode["play_news_sounds"].as<bool>(true);
+            audioConfig.playNewsSounds = audioNode["playNewsSounds"].as<bool>(true);
             audioConfig.playlist = audioNode["playlist"].as<MusicPlaylistType>(MusicPlaylistType::currentEra);
 
             if (audioNode["customJukebox"])
