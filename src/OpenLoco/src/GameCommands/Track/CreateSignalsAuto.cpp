@@ -48,7 +48,7 @@ namespace OpenLoco::GameCommands
         return { nullptr, nullptr };
     };
 
-    static uint32_t AutoPlaceSignals(const World::Pos3& trackStart, uint8_t rotation, uint8_t trackId, const uint8_t trackObjType, const uint8_t signalType, const uint16_t sides, const uint8_t step, const uint8_t initialStep, const uint8_t flags)
+    static uint32_t AutoPlaceSignals(const World::Pos3& trackStart, uint16_t tad, const uint8_t trackObjType, const uint8_t signalType, const uint16_t sides, const uint8_t step, const uint8_t initialStep, const uint8_t flags)
     {
         auto pos = World::Pos3(trackStart);
         int32_t currentStep = initialStep;
@@ -59,6 +59,8 @@ namespace OpenLoco::GameCommands
         uint32_t totalCost = 0;
         while (true)
         {
+            const auto rotation = tad & 0x3;
+            const auto trackId = (tad >> 3) & 0x3F;
             auto elTrack = getElTrackAt(pos, 0, rotation, trackObjType, trackId);
             if (elTrack.element == nullptr)
             {
@@ -71,13 +73,6 @@ namespace OpenLoco::GameCommands
                 break;
             }
 
-            // If we have a level crossing we skip this tile and continue
-            if (elTrack.element->hasLevelCrossing())
-            {
-                continue;
-            }
-
-            const auto tad = (trackId << 3) | rotation;
             const auto [trackEndLoc, trackEndRotation] = World::Track::getTrackConnectionEnd(pos, tad);
             auto tc = World::Track::getTrackConnections(trackEndLoc, trackEndRotation, GameCommands::getUpdatingCompanyId(), trackObjType, 0, 0);
 
@@ -87,7 +82,8 @@ namespace OpenLoco::GameCommands
                 break;
             }
 
-            if (currentStep == 0)
+            // If we have a level crossing we skip this tile for placement
+            if (currentStep == 0 && !elTrack.element->hasLevelCrossing())
             {
                 GameCommands::SignalPlacementArgs sargs{};
                 sargs.pos = pos;
@@ -108,8 +104,87 @@ namespace OpenLoco::GameCommands
 
             // Now we move to the next track piece
             pos = trackEndLoc;
-            rotation = trackEndRotation;
-            trackId = (tc.connections[0] >> 3) & 0x3F;
+            tad = tc.connections[0] & World::Track::AdditionalTaDFlags::basicTaDMask;
+            currentStep++;
+            if (currentStep >= step)
+            {
+                currentStep = 0;
+            }
+
+            // If we have looped back to the start we stop the auto placement
+            if (pos == trackStart)
+            {
+                break;
+            }
+        }
+        return totalCost;
+    }
+
+    static uint32_t AutoPlaceSignalsBackwards(const World::Pos3& trackStart, uint16_t tad, const uint8_t trackObjType, const uint8_t signalType, const uint16_t sides, const uint8_t step, const uint8_t initialStep, const uint8_t flags)
+    {
+        auto pos = World::Pos3(trackStart);
+        int32_t currentStep = initialStep;
+        if (currentStep >= step)
+        {
+            currentStep = 0;
+        }
+        uint32_t totalCost = 0;
+        while (true)
+        {
+            const auto rotation = tad & 0x3;
+            const auto trackId = (tad >> 3) & 0x3F;
+            auto elTrack = getElTrackAt(pos, 0, rotation, trackObjType, trackId);
+            if (elTrack.element == nullptr)
+            {
+                return GameCommands::kFailure;
+            }
+
+            // If we have a signal or station stop the auto placement
+            if (elTrack.element->hasSignal() || elTrack.element->hasStationElement())
+            {
+                break;
+            }
+
+            auto reverseStart = pos;
+            auto& trackSize = World::TrackData::getUnkTrack(tad);
+            if (trackSize.rotationEnd < 12)
+            {
+                reverseStart -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+            }
+
+            const auto reverseStartRotation = World::kReverseRotation[trackSize.rotationEnd];
+            auto tc = World::Track::getTrackConnections(reverseStart, reverseStartRotation, GameCommands::getUpdatingCompanyId(), trackObjType, 0, 0);
+
+            // If there is a junction or no connection we stop the auto placement
+            if (tc.connections.size() != 1)
+            {
+                break;
+            }
+
+            // If we have a level crossing we skip this tile for placement
+            if (currentStep == 0 && !elTrack.element->hasLevelCrossing())
+            {
+                GameCommands::SignalPlacementArgs sargs{};
+                sargs.pos = pos;
+                sargs.rotation = rotation;
+                sargs.trackId = trackId;
+                sargs.index = elTrack.element->sequenceIndex();
+                sargs.sides = sides;
+                sargs.trackObjType = trackObjType;
+                sargs.type = signalType;
+
+                auto res = GameCommands::doCommand(sargs, flags);
+                if (res == GameCommands::kFailure)
+                {
+                    return GameCommands::kFailure;
+                }
+                totalCost += res;
+            }
+
+            // Now we move to the next track piece
+            pos = reverseStart;
+            tad = tc.connections[0] & World::Track::AdditionalTaDFlags::basicTaDMask;
+            tad ^= (1U << 2);
             currentStep++;
             if (currentStep >= step)
             {
@@ -140,7 +215,8 @@ namespace OpenLoco::GameCommands
 
         // Perform a forward walk along the track placing signals every arg.step tiles
         {
-            auto cost = AutoPlaceSignals(trackStart, args.rotation, args.trackId, args.trackObjType, args.type, args.sides, args.step, 0, flags);
+            const auto startTad = args.rotation | (args.trackId << 3);
+            auto cost = AutoPlaceSignals(trackStart, startTad, args.trackObjType, args.type, args.sides, args.step, 0, flags);
             if (cost == GameCommands::kFailure)
             {
                 return GameCommands::kFailure;
@@ -152,7 +228,6 @@ namespace OpenLoco::GameCommands
         {
             auto reverseStart = trackStart;
             auto& trackSize = World::TrackData::getUnkTrack((args.trackId << 3) | args.rotation);
-            reverseStart += trackSize.pos;
             if (trackSize.rotationEnd < 12)
             {
                 reverseStart -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
@@ -162,10 +237,9 @@ namespace OpenLoco::GameCommands
             auto tc = World::Track::getTrackConnections(reverseStart, reverseStartRotation, GameCommands::getUpdatingCompanyId(), args.trackObjType, 0, 0);
             if (tc.connections.size() == 1)
             {
-                auto reverseTrackId = (tc.connections[0] >> 3) & 0x3F;
-                auto reverseRotation = (tc.connections[0] & 0x03);
+                const auto reverseTad = (tc.connections[0] & World::Track::AdditionalTaDFlags::basicTaDMask) ^ (1U << 2);
                 // Start at step 1 so we don't place a signal on the first tile
-                auto cost = AutoPlaceSignals(reverseStart, reverseRotation, reverseTrackId, args.trackObjType, args.type, args.sides, args.step, 1, flags);
+                auto cost = AutoPlaceSignalsBackwards(reverseStart, reverseTad, args.trackObjType, args.type, args.sides, args.step, 1, flags);
                 if (cost == GameCommands::kFailure)
                 {
                     return GameCommands::kFailure;
