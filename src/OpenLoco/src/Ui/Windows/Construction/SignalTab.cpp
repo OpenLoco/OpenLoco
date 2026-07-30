@@ -24,6 +24,8 @@
 #include "Ui/Widget.h"
 #include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/LabelWidget.h"
+#include "Ui/Widgets/StepperWidget.h"
 #include "Ui/Windows/Construction/Construction.h"
 
 using namespace OpenLoco::World;
@@ -31,11 +33,23 @@ using namespace OpenLoco::World::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction::Signal
 {
+    constexpr uint8_t kDefaultSignalPlacementStepSize = 4;
+    constexpr uint8_t kMaxSignalPlacementStepSize = 64;
+    static uint8_t signalPlacementStepSize = kDefaultSignalPlacementStepSize;
+
+    constexpr int32_t kWidth = 132;
+    constexpr int32_t kHeight = 222;
+    constexpr int32_t kSpacing = 4;
+    constexpr int32_t kImageButtonSize = 40;
+
     static constexpr auto widgets = makeWidgets(
-        Common::makeCommonWidgets(138, 167, StringIds::stringid_2),
-        Widgets::dropdownWidgets(Widx::kSignal, Widx::kSignalDropdown, { 3, 45 }, { 132, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_signal_type),
-        Widgets::ImageButton(Widx::kBothDirections, { 27, 110 }, { 40, 40 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_both_directions),
-        Widgets::ImageButton(Widx::kSingleDirection, { 71, 110 }, { 40, 40 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_single_direction));
+        Common::makeCommonWidgets(kWidth, kHeight, StringIds::stringid_2),
+
+        Widgets::dropdownWidgets(Widx::kSignal, Widx::kSignalDropdown, { kSpacing, 45 }, { kWidth - (kSpacing * 2), 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_signal_type),
+        Widgets::ImageButton(Widx::kBothDirections, { ((kWidth - (kSpacing * 2)) / 2) - kSpacing - kImageButtonSize, 90 }, { kImageButtonSize, kImageButtonSize }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_both_directions),
+        Widgets::ImageButton(Widx::kSingleDirection, { ((kWidth - (kSpacing * 2)) / 2) + kSpacing, 90 }, { kImageButtonSize, kImageButtonSize }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_single_direction),
+        Widgets::Label(Widx::kStepLabel, { kSpacing, 186 }, { kWidth - (kSpacing * 2), 12 }, WindowColour::secondary, ContentAlign::left, StringIds::signal_placement_step_size),
+        Widgets::stepperWidgets(Widx::kStepValue, Widx::kStepDecrease, Widx::kStepIncrease, { kSpacing, 202 }, { 48, 12 }, WindowColour::secondary, StringIds::uint16_raw, StringIds::tooltip_select_signal_type));
 
     std::span<const Widget> getWidgets()
     {
@@ -114,6 +128,23 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
                 ToolManager::toolSet(self, widgetIndex, CursorId::placeSignal);
                 break;
             }
+
+            case Widx::kStepDecrease:
+            {
+                if (signalPlacementStepSize > 0) // prevent underflow
+                {
+                    signalPlacementStepSize = std::max<uint8_t>(0, signalPlacementStepSize - 1);
+                    self.invalidate();
+                }
+                break;
+            }
+
+            case Widx::kStepIncrease:
+            {
+                signalPlacementStepSize = std::min<uint8_t>(kMaxSignalPlacementStepSize, signalPlacementStepSize + 1);
+                self.invalidate();
+                break;
+            }
         }
     }
 
@@ -187,14 +218,17 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
     static void WalkTrack(const GameCommands::SignalPlacementArgs& initialPlace, uint8_t flags)
     {
+        // step size of 0 means no repeated track walking - just a single action
+
         auto pos = initialPlace.pos;
         auto tad = (initialPlace.trackId << 3) | initialPlace.rotation;
-        const auto stepSize = 4;
+        const auto stepSize = signalPlacementStepSize;
         auto stepCount = 0;
-        while (1)
+
+        do
         {
             stepCount++;
-            const auto [trackEndLoc, trackEndRotation] = World::Track::getTrackConnectionEnd(pos, tad);
+            const auto [trackEndLoc, trackEndRotation] = World::Track::getTrackConnectionEnd(pos, tad & 0x7F);
             auto tc = World::Track::getTrackConnections(trackEndLoc, trackEndRotation, GameCommands::getUpdatingCompanyId(), initialPlace.trackId, 0, 0);
             if (tc.connections.size() != 1)
             {
@@ -236,26 +270,27 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
                     return;
                 }
             }
-        }
+        } while (stepSize > 0);
     }
 
     static void WalkTrackRemove(const GameCommands::SignalRemovalArgs& initialPlace, uint8_t flags)
     {
         auto pos = initialPlace.pos;
         auto tad = (initialPlace.trackId << 3) | initialPlace.rotation;
-        const auto stepSize = 4;
+        const auto stepSize = signalPlacementStepSize;
         auto stepCount = 0;
-        while (1)
+
+        do
         {
             stepCount++;
-            const auto [trackEndLoc, trackEndRotation] = World::Track::getTrackConnectionEnd(pos, tad);
+            const auto [trackEndLoc, trackEndRotation] = World::Track::getTrackConnectionEnd(pos, tad & 0x7F);
             auto tc = World::Track::getTrackConnections(trackEndLoc, trackEndRotation, GameCommands::getUpdatingCompanyId(), initialPlace.trackId, 0, 0);
             if (tc.connections.size() != 1)
             {
                 return;
             }
             pos = trackEndLoc;
-            tad = tc.connections[0];
+            tad = tc.connections[0] & 0x7F;
             if (stepCount == stepSize)
             {
                 stepCount = 0;
@@ -290,12 +325,12 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
                     return;
                 }
             }
-        }
+        } while (stepSize > 0);
     }
 
     static uint32_t placeSignalGhost(const GameCommands::SignalPlacementArgs& args)
     {
-         WalkTrack(args, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+        WalkTrack(args, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
         //  auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
         //  if (res != GameCommands::kFailure)
         {
@@ -414,7 +449,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         autoArgs.trackId = args->trackId;
         autoArgs.sides = args->sides;
         autoArgs.trackObjType = args->trackObjType;
-        autoArgs.step = 4;
+        autoArgs.step = signalPlacementStepSize;
 
         auto res = GameCommands::doCommand(autoArgs, GameCommands::Flags::apply);
         if (res == GameCommands::kFailure)
@@ -432,12 +467,21 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         auto& cState = getConstructionState();
         auto trackObj = ObjectManager::get<TrackObject>(cState.trackType);
 
-        auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
-        args.push(trackObj->name);
+        {
+            auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
+            args.push(trackObj->name);
+        }
 
         auto trainSignalObject = ObjectManager::get<TrainSignalObject>(cState.lastSelectedSignal);
 
         self.widgets[widx::signal].text = trainSignalObject->name;
+
+        // Update step size value display
+        {
+            auto& widget = self.widgets[widx::step_value];
+            FormatArguments args{ widget.textArgs };
+            args.push<uint16_t>(signalPlacementStepSize); // can't push a single byte???
+        }
 
         Common::repositionTabs(&self);
     }
@@ -491,6 +535,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
     void tabReset(Window& self)
     {
+        self.holdableWidgets = kHoldableWidgets;
         self.callOnMouseDown(Signal::widx::both_directions, self.widgets[Signal::widx::both_directions].id);
     }
 
