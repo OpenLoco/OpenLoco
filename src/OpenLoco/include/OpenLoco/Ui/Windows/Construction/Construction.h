@@ -67,9 +67,12 @@ namespace OpenLoco::Ui::Windows::Construction
         uint16_t signalGhostTrackObjId; // 0x0113600A
         uint8_t modGhostTrackObjId;     // 0x01136010
 
-        uint8_t signalList[17];          // 0x0113601D
-        uint8_t lastSelectedSignal;      // 0x0113602E
-        uint8_t isSignalBothDirections;  // 0x0113602F
+        uint8_t signalList[17];              // 0x0113601D
+        uint8_t lastSelectedSignal;          // 0x0113602E
+        uint8_t isSignalBothDirections;      // 0x0113602F
+        uint8_t signalPlacementStepSize = 1; // new
+        bool repeatedSignalMode = false;     // new
+
         uint8_t bridgeList[9];           // 0x01136030
         uint8_t lastSelectedBridge;      // 0x01136039
         uint8_t byte_113603A;            // 0x0113603A -- only 0 or 0xFF, bridge-related
@@ -334,6 +337,7 @@ namespace OpenLoco::Ui::Windows::Construction
             signal_dropdown,
             both_directions,
             single_direction,
+            auto_mode,
             step_label,
             step_value,
             signal_placement_step_decrease,
@@ -346,6 +350,7 @@ namespace OpenLoco::Ui::Windows::Construction
             constexpr WidgetId kSignalDropdown{ "signal_dropdown" };
             constexpr WidgetId kBothDirections{ "both_directions" };
             constexpr WidgetId kSingleDirection{ "single_direction" };
+            constexpr WidgetId kAutoMode{ "auto_mode" };
             constexpr WidgetId kStepLabel{ "step_label" };
             constexpr WidgetId kStepValue{ "step_value" };
             constexpr WidgetId kStepDecrease{ "step_decrease" };

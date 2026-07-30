@@ -36,8 +36,6 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 {
     constexpr uint8_t kDefaultSignalPlacementStepSize = 4;
     constexpr uint8_t kMaxSignalPlacementStepSize = 64;
-    static uint8_t signalPlacementStepSize = kDefaultSignalPlacementStepSize;
-
     constexpr int32_t kWidth = 132;
     constexpr int32_t kHeight = 222;
     constexpr int32_t kSpacing = 4;
@@ -45,10 +43,10 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
     static constexpr auto widgets = makeWidgets(
         Common::makeCommonWidgets(kWidth, kHeight, StringIds::stringid_2),
-
         Widgets::dropdownWidgets(Widx::kSignal, Widx::kSignalDropdown, { kSpacing, 45 }, { kWidth - (kSpacing * 2), 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_signal_type),
         Widgets::ImageButton(Widx::kBothDirections, { ((kWidth - (kSpacing * 2)) / 2) - kSpacing - kImageButtonSize, 90 }, { kImageButtonSize, kImageButtonSize }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_both_directions),
         Widgets::ImageButton(Widx::kSingleDirection, { ((kWidth - (kSpacing * 2)) / 2) + kSpacing, 90 }, { kImageButtonSize, kImageButtonSize }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_single_direction),
+        Widgets::Button(Widx::kAutoMode, { ((kWidth - (kSpacing * 2)) / 2) - 44, 138 }, { 88, 40 }, WindowColour::secondary, StringIds::signal_placement_single, StringIds::signal_placement_single_tooltip),
         Widgets::Label(Widx::kStepLabel, { kSpacing, 186 }, { kWidth - (kSpacing * 2), 12 }, WindowColour::secondary, ContentAlign::left, StringIds::signal_placement_step_size),
         Widgets::stepperWidgets(Widx::kStepValue, Widx::kStepDecrease, Widx::kStepIncrease, { kSpacing, 202 }, { 48, 12 }, WindowColour::secondary, StringIds::uint16_raw, StringIds::tooltip_select_signal_type));
 
@@ -74,6 +72,12 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             case Common::Widx::kTabStation:
                 Common::switchTab(self, widgetIndex);
                 break;
+            case Widx::kAutoMode:
+                auto& cState = getConstructionState();
+                cState.repeatedSignalMode = !cState.repeatedSignalMode;
+                self.widgets[widx::auto_mode].content = cState.repeatedSignalMode ? StringIds::signal_placement_repeat : StringIds::signal_placement_single;
+                self.widgets[widx::auto_mode].tooltip = cState.repeatedSignalMode ? StringIds::signal_placement_repeat_tooltip : StringIds::signal_placement_single_tooltip;
+                self.invalidate();
         }
     }
 
@@ -132,17 +136,15 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
             case Widx::kStepDecrease:
             {
-                if (signalPlacementStepSize > 0) // prevent underflow
-                {
-                    signalPlacementStepSize = std::max<uint8_t>(0, signalPlacementStepSize - 1);
-                    self.invalidate();
-                }
+                cState.signalPlacementStepSize = std::max<uint8_t>(1, cState.signalPlacementStepSize - 1);
+                self.invalidate();
+
                 break;
             }
 
             case Widx::kStepIncrease:
             {
-                signalPlacementStepSize = std::min<uint8_t>(kMaxSignalPlacementStepSize, signalPlacementStepSize + 1);
+                cState.signalPlacementStepSize = std::min<uint8_t>(kMaxSignalPlacementStepSize, cState.signalPlacementStepSize + 1);
                 self.invalidate();
                 break;
             }
@@ -206,6 +208,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         args.trackId = elTrack->trackId();
         args.index = elTrack->sequenceIndex();
         args.trackObjType = elTrack->trackObjectId();
+
         if (isBothDirectons)
         {
             args.sides = 0xC000;
@@ -214,21 +217,50 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         {
             args.sides = getSide(args.pos, { x, y }, *elTrack, *viewport) ? 0x4000 : 0x8000;
         }
+
+        return { args };
+    }
+
+    static std::optional<GameCommands::SignalsPlacementAutoArgs> getSignalsPlacementAutoArgsFromCursor(const int16_t x, const int16_t y, const bool isBothDirectons)
+    {
+        auto [interaction, viewport] = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::track));
+        if (interaction.type != ViewportInteraction::InteractionItem::track)
+        {
+            return std::nullopt;
+        }
+
+        auto* elTrack = reinterpret_cast<World::TileElementEntry*>(interaction.object)->as<TrackElement>();
+        if (elTrack == nullptr)
+        {
+            return std::nullopt;
+        }
+
+        auto& cState = getConstructionState();
+
+        GameCommands::SignalsPlacementAutoArgs args;
+        args.type = cState.lastSelectedSignal;
+        args.pos = World::Pos3(interaction.pos.x, interaction.pos.y, elTrack->baseHeight());
+        args.rotation = elTrack->rotation();
+        args.trackId = elTrack->trackId();
+        args.index = elTrack->sequenceIndex();
+        args.trackObjType = elTrack->trackObjectId();
+        args.step = cState.signalPlacementStepSize;
+
+        if (isBothDirectons)
+        {
+            args.sides = 0xC000;
+        }
+        else
+        {
+            args.sides = getSide(args.pos, { x, y }, *elTrack, *viewport) ? 0x4000 : 0x8000;
+        }
+
         return { args };
     }
 
     static uint32_t placeSignalGhost(const GameCommands::SignalPlacementArgs& args)
     {
-        GameCommands::SignalsPlacementAutoArgs autoArgs{};
-        autoArgs.index = args.index;
-        autoArgs.pos = args.pos;
-        autoArgs.rotation = args.rotation;
-        autoArgs.trackId = args.trackId;
-        autoArgs.trackObjType = args.trackObjType;
-        autoArgs.step = signalPlacementStepSize;
-        autoArgs.sides = args.sides;
-
-        auto res = GameCommands::doCommand(autoArgs, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+        auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
         if (res != GameCommands::kFailure)
         {
             Common::setGhostVisibilityFlag(GhostVisibilityFlags::signal);
@@ -244,6 +276,25 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         return res;
     }
 
+    static uint32_t placeRepeatedSignalGhost(const GameCommands::SignalsPlacementAutoArgs& args)
+    {
+        auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+        if (res != GameCommands::kFailure)
+        {
+            Common::setGhostVisibilityFlag(GhostVisibilityFlags::signal);
+
+            auto& cState = getConstructionState();
+            cState.signalGhostPos = args.pos;
+            cState.signalGhostRotation = args.rotation;
+            cState.signalGhostTrackId = args.trackId;
+            cState.signalGhostTileIndex = args.index;
+            cState.signalGhostSides = args.sides;
+            cState.signalGhostTrackObjId = args.trackObjType;
+            cState.signalPlacementStepSize = args.step;
+        }
+        return res;
+    }
+
     // 0x0049FEF6
     void removeSignalGhost()
     {
@@ -251,15 +302,28 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         {
             auto& cState = getConstructionState();
 
-            GameCommands::SignalsRemovalAutoArgs args;
-            args.pos = cState.signalGhostPos;
-            args.rotation = cState.signalGhostRotation;
-            args.trackId = cState.signalGhostTrackId;
-            args.index = cState.signalGhostTileIndex;
-            args.flags = cState.signalGhostSides;
-            args.trackObjType = cState.signalGhostTrackObjId;
-            args.step = signalPlacementStepSize;
-            GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+            {
+                GameCommands::SignalRemovalArgs args;
+                args.pos = cState.signalGhostPos;
+                args.rotation = cState.signalGhostRotation;
+                args.trackId = cState.signalGhostTrackId;
+                args.index = cState.signalGhostTileIndex;
+                args.flags = cState.signalGhostSides;
+                args.trackObjType = cState.signalGhostTrackObjId;
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+            }
+
+            {
+                GameCommands::SignalsRemovalAutoArgs args;
+                args.pos = cState.signalGhostPos;
+                args.rotation = cState.signalGhostRotation;
+                args.trackId = cState.signalGhostTrackId;
+                args.index = cState.signalGhostTileIndex;
+                args.flags = cState.signalGhostSides;
+                args.trackObjType = cState.signalGhostTrackObjId;
+                args.step = cState.signalPlacementStepSize;
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
+            }
 
             Common::unsetGhostVisibilityFlag(GhostVisibilityFlags::signal);
         }
@@ -277,38 +341,78 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
         auto& cState = getConstructionState();
 
-        auto placementArgs = getSignalPlacementArgsFromCursor(x, y, isBothDirections);
-        if (!placementArgs || (placementArgs->trackObjType != cState.trackType))
+        if (cState.repeatedSignalMode)
         {
-            removeConstructionGhosts();
-            if (cState.signalCost != GameCommands::kFailure)
+            auto placementArgs = getSignalsPlacementAutoArgsFromCursor(x, y, isBothDirections);
+            if (!placementArgs || (placementArgs->trackObjType != cState.trackType))
             {
-                cState.signalCost = GameCommands::kFailure;
-                self.invalidate();
-            }
-            return;
-        }
-
-        if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::signal))
-        {
-            if (cState.signalGhostPos == placementArgs->pos
-                && cState.signalGhostRotation == placementArgs->rotation
-                && cState.signalGhostTrackId == placementArgs->trackId
-                && cState.signalGhostTileIndex == placementArgs->index
-                && cState.signalGhostSides == placementArgs->sides
-                && cState.signalGhostTrackObjId == placementArgs->trackObjType)
-            {
+                removeConstructionGhosts();
+                if (cState.signalCost != GameCommands::kFailure)
+                {
+                    cState.signalCost = GameCommands::kFailure;
+                    self.invalidate();
+                }
                 return;
             }
+
+            if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::signal))
+            {
+                if (cState.signalGhostPos == placementArgs->pos
+                    && cState.signalGhostRotation == placementArgs->rotation
+                    && cState.signalGhostTrackId == placementArgs->trackId
+                    && cState.signalGhostTileIndex == placementArgs->index
+                    && cState.signalGhostSides == placementArgs->sides
+                    && cState.signalGhostTrackObjId == placementArgs->trackObjType)
+                {
+                    return;
+                }
+            }
+
+            removeConstructionGhosts();
+
+            auto cost = placeRepeatedSignalGhost(*placementArgs);
+            if (cost != cState.signalCost)
+            {
+                cState.signalCost = cost;
+                self.invalidate();
+            }
         }
-
-        removeConstructionGhosts();
-
-        auto cost = placeSignalGhost(*placementArgs);
-        if (cost != cState.signalCost)
+        else
         {
-            cState.signalCost = cost;
-            self.invalidate();
+
+            auto placementArgs = getSignalPlacementArgsFromCursor(x, y, isBothDirections);
+            if (!placementArgs || (placementArgs->trackObjType != cState.trackType))
+            {
+                removeConstructionGhosts();
+                if (cState.signalCost != GameCommands::kFailure)
+                {
+                    cState.signalCost = GameCommands::kFailure;
+                    self.invalidate();
+                }
+                return;
+            }
+
+            if (Common::hasGhostVisibilityFlag(GhostVisibilityFlags::signal))
+            {
+                if (cState.signalGhostPos == placementArgs->pos
+                    && cState.signalGhostRotation == placementArgs->rotation
+                    && cState.signalGhostTrackId == placementArgs->trackId
+                    && cState.signalGhostTileIndex == placementArgs->index
+                    && cState.signalGhostSides == placementArgs->sides
+                    && cState.signalGhostTrackObjId == placementArgs->trackObjType)
+                {
+                    return;
+                }
+            }
+
+            removeConstructionGhosts();
+
+            auto cost = placeSignalGhost(*placementArgs);
+            if (cost != cState.signalCost)
+            {
+                cState.signalCost = cost;
+                self.invalidate();
+            }
         }
     }
 
@@ -323,36 +427,60 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         removeConstructionGhosts();
 
         const bool isBothDirections = widgetIndex == widx::both_directions;
-        auto args = getSignalPlacementArgsFromCursor(x, y, isBothDirections);
-        if (!args)
-        {
-            return;
-        }
-
         auto& cState = getConstructionState();
 
-        if (args->trackObjType != cState.trackType)
+        if (cState.repeatedSignalMode)
         {
-            Error::open(StringIds::cant_build_signal_here, StringIds::wrong_type_of_track_road);
-            return;
+            auto args = getSignalsPlacementAutoArgsFromCursor(x, y, isBothDirections);
+            if (!args)
+            {
+                return;
+            }
+
+            if (args->trackObjType != cState.trackType)
+            {
+                Error::open(StringIds::cant_build_signal_here, StringIds::wrong_type_of_track_road);
+                return;
+            }
+
+            GameCommands::setErrorTitle(isBothDirections ? StringIds::cant_build_signals_here : StringIds::cant_build_signal_here);
+            GameCommands::SignalsPlacementAutoArgs autoArgs{};
+            autoArgs.index = args->index;
+            autoArgs.pos = args->pos;
+            autoArgs.rotation = args->rotation;
+            autoArgs.trackId = args->trackId;
+            autoArgs.sides = args->sides;
+            autoArgs.trackObjType = args->trackObjType;
+            autoArgs.step = cState.signalPlacementStepSize;
+
+            auto res = GameCommands::doCommand(autoArgs, GameCommands::Flags::apply);
+            if (res == GameCommands::kFailure)
+            {
+                return;
+            }
+        }
+        else
+        {
+            auto args = getSignalPlacementArgsFromCursor(x, y, isBothDirections);
+            if (!args)
+            {
+                return;
+            }
+
+            if (args->trackObjType != cState.trackType)
+            {
+                Error::open(StringIds::cant_build_signal_here, StringIds::wrong_type_of_track_road);
+                return;
+            }
+
+            GameCommands::setErrorTitle(isBothDirections ? StringIds::cant_build_signals_here : StringIds::cant_build_signal_here);
+            auto res = GameCommands::doCommand(*args, GameCommands::Flags::apply);
+            if (res == GameCommands::kFailure)
+            {
+                return;
+            }
         }
 
-        GameCommands::setErrorTitle(isBothDirections ? StringIds::cant_build_signals_here : StringIds::cant_build_signal_here);
-        // WalkTrack(*args, GameCommands::Flags::apply);
-        GameCommands::SignalsPlacementAutoArgs autoArgs{};
-        autoArgs.index = args->index;
-        autoArgs.pos = args->pos;
-        autoArgs.rotation = args->rotation;
-        autoArgs.trackId = args->trackId;
-        autoArgs.sides = args->sides;
-        autoArgs.trackObjType = args->trackObjType;
-        autoArgs.step = signalPlacementStepSize;
-
-        auto res = GameCommands::doCommand(autoArgs, GameCommands::Flags::apply);
-        if (res == GameCommands::kFailure)
-        {
-            return;
-        }
         Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, GameCommands::getPosition());
     }
 
@@ -370,14 +498,22 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         }
 
         auto trainSignalObject = ObjectManager::get<TrainSignalObject>(cState.lastSelectedSignal);
-
         self.widgets[widx::signal].text = trainSignalObject->name;
+
+        if (cState.repeatedSignalMode)
+        {
+            self.activatedWidgets |= (1 << widx::auto_mode);
+        }
+        else
+        {
+            self.activatedWidgets &= ~(1 << widx::auto_mode);
+        }
 
         // Update step size value display
         {
             auto& widget = self.widgets[widx::step_value];
             FormatArguments args{ widget.textArgs };
-            args.push<uint16_t>(signalPlacementStepSize); // can't push a single byte???
+            args.push<uint16_t>(cState.signalPlacementStepSize); // can't push a single byte???
         }
 
         Common::repositionTabs(&self);
@@ -434,6 +570,10 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     {
         self.holdableWidgets = kHoldableWidgets;
         self.callOnMouseDown(Signal::widx::both_directions, self.widgets[Signal::widx::both_directions].id);
+
+        auto& cState = getConstructionState();
+        self.widgets[widx::auto_mode].content = cState.repeatedSignalMode ? StringIds::signal_placement_repeat : StringIds::signal_placement_single;
+        self.widgets[widx::auto_mode].tooltip = cState.repeatedSignalMode ? StringIds::signal_placement_repeat_tooltip : StringIds::signal_placement_single_tooltip;
     }
 
     static constexpr WindowEventList kEvents = {

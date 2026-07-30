@@ -28,7 +28,7 @@ namespace OpenLoco::GameCommands
         uint8_t type;
         uint8_t trackObjType;
         uint16_t sides;
-        uint8_t step;
+        uint8_t step = 1;
 
         explicit operator registers() const
         {
