@@ -94,12 +94,8 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     // 0x004B6197
     static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        const auto& rt = drawingCtx.currentRenderTarget();
-        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(self.x, self.y, self.width, self.height));
-        if (clipped)
+        if (drawingCtx.pushClip(Ui::Rect(0, 0, self.width, self.height)))
         {
-            drawingCtx.pushRenderTarget(*clipped);
-
             Vehicles::Vehicle train(_dragVehicleHead);
             for (auto& car : train.cars)
             {
@@ -110,7 +106,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
                     break;
                 }
             }
-            drawingCtx.popRenderTarget();
+            drawingCtx.popClip();
         }
     }
 

@@ -187,7 +187,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             const auto& widget = self.widgets[widx::status_bar];
             const auto width = widget.width() - 1;
-            auto point = Point(self.x + widget.left - 1, self.y + widget.top - 1);
+            auto point = Point(widget.left - 1, widget.top - 1);
             tr.drawStringLeftClipped(point, width, Colour::black, StringIds::status_town_population, args);
         }
 
@@ -348,7 +348,7 @@ namespace OpenLoco::Ui::Windows::Town
             {
                 auto widget = &self.widgets[widx::viewport];
                 auto tile = World::Pos3({ town->x, town->y, tileZ });
-                auto origin = Ui::Point(widget->left + self.x + 1, widget->top + self.y + 1);
+                auto origin = Ui::Point(widget->left + 1, widget->top + 1);
                 auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
                 ViewportManager::create(&self, 0, origin, size, self.savedView.zoomLevel, tile);
                 self.invalidate();
@@ -445,20 +445,15 @@ namespace OpenLoco::Ui::Windows::Town
         // 0x004994F9
         static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
         {
-            const auto& rt = drawingCtx.currentRenderTarget();
-
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(drawingCtx);
             Common::drawTabs(self, drawingCtx);
 
-            auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(self.x, self.y + 44, self.width, self.height - 44));
-            if (!clipped)
+            if (!drawingCtx.pushClip(Ui::Rect(0, 44, self.width, self.height - 44)))
             {
                 return;
             }
-
-            drawingCtx.pushRenderTarget(*clipped);
 
             auto town = TownManager::get(TownId(self.number));
 
@@ -528,7 +523,7 @@ namespace OpenLoco::Ui::Windows::Town
                 }
             }
 
-            drawingCtx.popRenderTarget();
+            drawingCtx.popClip();
         }
 
         // 0x004996AC
@@ -597,7 +592,7 @@ namespace OpenLoco::Ui::Windows::Town
             self.draw(drawingCtx);
             Common::drawTabs(self, drawingCtx);
 
-            auto point = Point(self.x + 4, self.y + 46);
+            auto point = Point(4, 46);
             tr.drawStringLeft(point, Colour::black, StringIds::local_authority_ratings_transport_companies);
 
             point.x += 4;
@@ -724,7 +719,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             auto town = TownManager::get(TownId(self.number));
 
-            auto point = Point(self.x + 4, self.y + 46);
+            auto point = Point(4, 46);
 
             tr.drawStringLeft(point, Colour::black, StringIds::received_cargo);
 

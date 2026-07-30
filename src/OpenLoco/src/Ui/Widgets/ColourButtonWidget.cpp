@@ -34,9 +34,6 @@ namespace OpenLoco::Ui::Widgets
             imageId = imageId.withPrimary(widgetState.colour.c());
         }
 
-        auto* window = widgetState.window;
-
-        const auto pos = window->position() + widget.position();
-        drawingCtx.drawImage(ZoomLevel::full, pos, imageId);
+        drawingCtx.drawImage(ZoomLevel::full, Ui::Point{}, imageId);
     }
 }

@@ -47,20 +47,6 @@ namespace OpenLoco::Ui
             return;
         }
 
-        const auto& rt = drawingCtx.currentRenderTarget();
-
-        if (!window->hasFlags(WindowFlags::noBackground))
-        {
-            // Check if widget is outside the draw region
-            if (window->x + left >= rt.x + rt.width && window->x + right < rt.x)
-            {
-                if (window->y + top >= rt.y + rt.height && window->y + bottom < rt.y)
-                {
-                    return;
-                }
-            }
-        }
-
         Gfx::RectInsetFlags widgetFlags = Gfx::RectInsetFlags::none;
         if (windowColour == WindowColour::primary && window->hasFlags(WindowFlags::lighterFrame))
         {
@@ -87,7 +73,11 @@ namespace OpenLoco::Ui
 
         if (events.draw != nullptr)
         {
-            events.draw(drawingCtx, *this, widgetState);
+            if (drawingCtx.pushClip(Rect(left, top, width(), height())))
+            {
+                events.draw(drawingCtx, *this, widgetState);
+                drawingCtx.popClip();
+            }
             return;
         }
     }
@@ -96,10 +86,6 @@ namespace OpenLoco::Ui
     void Widget::drawTab(Window& w, Gfx::DrawingContext& drawingCtx, uint32_t imageId, WidgetIndex_t index)
     {
         auto& widget = w.widgets[index];
-
-        Ui::Point pos = {};
-        pos.x = widget.left + w.x;
-        pos.y = widget.top + w.y;
 
         if (w.isDisabled(index))
         {
@@ -121,23 +107,30 @@ namespace OpenLoco::Ui
             return;
         }
 
+        if (!drawingCtx.pushClip(Rect(widget.left, widget.top, widget.width(), widget.height())))
+        {
+            return;
+        }
+
         if (isActivated)
         {
             if (imageId != kContentUnk)
             {
-                drawingCtx.drawImage(ZoomLevel::full, pos.x, pos.y, imageId);
+                drawingCtx.drawImage(ZoomLevel::full, 0, 0, imageId);
             }
         }
         else
         {
             if (imageId != kContentUnk)
             {
-                drawingCtx.drawImage(ZoomLevel::full, pos.x, pos.y + 1, imageId);
+                drawingCtx.drawImage(ZoomLevel::full, 0, 1, imageId);
             }
 
-            drawingCtx.drawImage(ZoomLevel::full, pos.x, pos.y, Gfx::recolourTranslucent(ImageIds::tab, ExtColour::unk33));
-            drawingCtx.drawRect(pos.x, pos.y + 26, 31, 1, Colours::getShade(w.getColour(WindowColour::secondary).c(), 7), Gfx::RectFlags::none);
+            drawingCtx.drawImage(ZoomLevel::full, 0, 0, Gfx::recolourTranslucent(ImageIds::tab, ExtColour::unk33));
+            drawingCtx.drawRect(0, 26, 31, 1, Colours::getShade(w.getColour(WindowColour::secondary).c(), 7), Gfx::RectFlags::none);
         }
+
+        drawingCtx.popClip();
     }
 
     void Widget::leftAlignTabs(Window& window, uint8_t firstTabIndex, uint8_t lastTabIndex, uint16_t tabWidth)

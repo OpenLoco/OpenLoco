@@ -56,8 +56,8 @@ namespace OpenLoco::Ui::Windows::TitleOptions
         // Draw widgets.
         window.draw(drawingCtx);
 
-        int16_t x = window.x + window.width / 2;
-        int16_t y = window.y + window.widgets[widx::options_button].top + 2;
+        int16_t x = window.width / 2;
+        int16_t y = window.widgets[widx::options_button].top + 2;
         Ui::Point origin = { x, y };
 
         auto argsBuf = FormatArgumentsBuffer{};

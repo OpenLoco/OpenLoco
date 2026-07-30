@@ -281,7 +281,7 @@ namespace OpenLoco::Ui::Windows::Station
             {
                 auto widget = &self.widgets[widx::viewport];
                 auto tile = World::Pos3({ station->x, station->y, station->z });
-                auto origin = Ui::Point(widget->left + self.x + 1, widget->top + self.y + 1);
+                auto origin = Ui::Point(widget->left + 1, widget->top + 1);
                 auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
                 ViewportManager::create(&self, 0, origin, size, self.savedView.zoomLevel, tile);
                 self.invalidate();
@@ -430,7 +430,7 @@ namespace OpenLoco::Ui::Windows::Station
 
             const char* acceptedLabel = StringManager::getString(StringIds::accepted_cargo_separator);
             auto labelWidth = tr.getStringWidth(acceptedLabel);
-            auto origin = self.position() + self.widgets[widx::status_bar].position() + Point{ labelWidth + 2, -1 };
+            auto origin = self.widgets[widx::status_bar].position() + Point{ labelWidth + 2, -1 };
 
             auto station = StationManager::get(StationId(self.number));
             uint8_t cargoTypeCount = 0;
@@ -1480,8 +1480,8 @@ namespace OpenLoco::Ui::Windows::Station
                 Widget::drawTab(self, drawingCtx, imageId, widx::tab_cargo_ratings);
 
                 auto widget = self.widgets[widx::tab_cargo_ratings];
-                auto yOffset = widget.top + self.y + 14;
-                auto xOffset = widget.left + self.x + 4;
+                auto yOffset = widget.top + 14;
+                auto xOffset = widget.left + 4;
                 auto totalRatingBars = 0;
 
                 for (const auto& cargoStats : station->cargoStats)

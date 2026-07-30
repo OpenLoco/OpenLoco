@@ -209,7 +209,6 @@ namespace OpenLoco::Ui::Windows::TextInput
      */
     static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
     {
-        const auto& rt = drawingCtx.currentRenderTarget();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         window.draw(drawingCtx);
@@ -221,43 +220,38 @@ namespace OpenLoco::Ui::Windows::TextInput
         args2.push(*reinterpret_cast<uint32_t*>(_formatArgs.data() + 8));
         args2.push(*reinterpret_cast<uint32_t*>(_formatArgs.data() + 12));
 
-        Ui::Point position = Point(window.x + window.width / 2, window.y + 30);
+        Ui::Point position = Point(window.width / 2, 30);
         tr.drawStringCentredWrapped(position, window.width - 8, Colour::black, StringIds::wcolour2_stringid, args2);
 
         auto& inputWidget = window.widgets[widx::input];
-        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(inputWidget.left + 1 + window.x, inputWidget.top + 1 + window.y, inputWidget.width() - 2, inputWidget.height() - 2));
-        if (!clipped)
+        if (drawingCtx.pushClip(Ui::Rect(inputWidget.left + 1, inputWidget.top + 1, inputWidget.width() - 2, inputWidget.height() - 2)))
         {
-            return;
-        }
+            char* drawnBuffer = (char*)StringManager::getString(StringIds::buffer_2039);
+            strcpy(drawnBuffer, inputSession.buffer.c_str());
 
-        drawingCtx.pushRenderTarget(*clipped);
-
-        char* drawnBuffer = (char*)StringManager::getString(StringIds::buffer_2039);
-        strcpy(drawnBuffer, inputSession.buffer.c_str());
-
-        {
-            FormatArguments args{};
-            args.push(StringIds::buffer_2039);
-
-            position = { inputSession.xOffset, 1 };
-            tr.drawStringLeft(position, Colour::black, StringIds::black_stringid, args);
-        }
-
-        if ((inputSession.cursorFrame % 32) < 16)
-        {
-            strncpy(drawnBuffer, inputSession.buffer.c_str(), inputSession.cursorPosition);
-            drawnBuffer[inputSession.cursorPosition] = '\0';
-
-            if (Input::isFocused(window.type, window.number, widx::input))
             {
-                auto width = tr.getStringWidth(drawnBuffer);
-                auto cursorPos = Point(inputSession.xOffset + width, 1);
-                drawingCtx.fillRect(cursorPos.x, cursorPos.y, cursorPos.x, cursorPos.y + 9, Colours::getShade(window.getColour(WindowColour::secondary).c(), 9), Gfx::RectFlags::none);
-            }
-        }
+                FormatArguments args{};
+                args.push(StringIds::buffer_2039);
 
-        drawingCtx.popRenderTarget();
+                position = { inputSession.xOffset, 1 };
+                tr.drawStringLeft(position, Colour::black, StringIds::black_stringid, args);
+            }
+
+            if ((inputSession.cursorFrame % 32) < 16)
+            {
+                strncpy(drawnBuffer, inputSession.buffer.c_str(), inputSession.cursorPosition);
+                drawnBuffer[inputSession.cursorPosition] = '\0';
+
+                if (Input::isFocused(window.type, window.number, widx::input))
+                {
+                    auto width = tr.getStringWidth(drawnBuffer);
+                    auto cursorPos = Point(inputSession.xOffset + width, 1);
+                    drawingCtx.fillRect(cursorPos.x, cursorPos.y, cursorPos.x, cursorPos.y + 9, Colours::getShade(window.getColour(WindowColour::secondary).c(), 9), Gfx::RectFlags::none);
+                }
+            }
+
+            drawingCtx.popClip();
+        }
     }
 
     // 0x004CE8B6

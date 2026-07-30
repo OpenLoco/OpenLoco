@@ -511,8 +511,8 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         auto& cState = getConstructionState();
         if (cState.lastSelectedMods & 0xF)
         {
-            auto xPos = self.x + self.widgets[widx::image].left + 1;
-            auto yPos = self.y + self.widgets[widx::image].top + 1;
+            auto xPos = self.widgets[widx::image].left + 1;
+            auto yPos = self.widgets[widx::image].top + 1;
             auto width = self.widgets[widx::image].width();
             auto height = self.widgets[widx::image].height();
 
@@ -556,7 +556,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
             auto tr = Gfx::TextRenderer(drawingCtx);
 
-            auto point = Point(self.x + 69, self.widgets[widx::image].bottom + self.y + 4);
+            auto point = Point(69, self.widgets[widx::image].bottom + 4);
             tr.drawStringCentred(point, Colour::black, StringIds::build_cost, args);
         }
     }

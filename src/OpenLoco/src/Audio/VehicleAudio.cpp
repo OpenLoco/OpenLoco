@@ -81,7 +81,7 @@ namespace OpenLoco::Audio
         return falloffModifier;
     }
 
-    static Viewport* findBestViewportForEntity(const World::Pos3& position, EntityId headId)
+    static std::pair<Ui::Window*, Viewport*> findBestViewportForEntity(const World::Pos3& position, EntityId headId)
     {
         auto vpPos = World::gameToScreen(position, WindowManager::getCurrentRotation());
 
@@ -90,11 +90,11 @@ namespace OpenLoco::Audio
         {
             if (main->savedView.isEntityView() && main->savedView.entityId == headId)
             {
-                return main->viewports[0];
+                return { main, main->viewports[0] };
             }
             if (main->viewports[0]->contains(vpPos))
             {
-                return main->viewports[0];
+                return { main, main->viewports[0] };
             }
         }
 
@@ -112,21 +112,21 @@ namespace OpenLoco::Audio
             }
             if (w->savedView.isEntityView() && w->savedView.entityId == headId)
             {
-                return viewport;
+                return { w, viewport };
             }
             if (viewport->contains(vpPos))
             {
-                return viewport;
+                return { w, viewport };
             }
         }
 
-        return nullptr;
+        return { nullptr, nullptr };
     }
 
-    static AudioAttributes getVehicleAudioAttributes(const Vehicles::VehicleBase& base, const Vehicles::VehicleSound& soundParams, const Viewport& viewport)
+    static AudioAttributes getVehicleAudioAttributes(const Vehicles::VehicleBase& base, const Vehicles::VehicleSound& soundParams, const Ui::Window& owner, const Viewport& viewport)
     {
         auto vpPos = World::gameToScreen(base.position, WindowManager::getCurrentRotation());
-        const auto uiPoint = viewport.viewportToScreen(vpPos);
+        const auto uiPoint = viewport.viewportToWindow(vpPos) + owner.position();
 
         const auto zoomVolumeModifier = getZoomVolumeModifier(viewport.zoom);
 
@@ -172,7 +172,7 @@ namespace OpenLoco::Audio
             return;
         }
 
-        auto* viewport = findBestViewportForEntity(base.position, headId);
+        auto [vpOwner, viewport] = findBestViewportForEntity(base.position, headId);
         if (viewport == nullptr)
         {
             if (sound.audioHandle != AudioHandle::null)
@@ -183,7 +183,7 @@ namespace OpenLoco::Audio
         }
 
         auto sid = makeObjectSoundId(sound.drivingSoundId);
-        auto attribs = getVehicleAudioAttributes(base, sound, *viewport);
+        auto attribs = getVehicleAudioAttributes(base, sound, *vpOwner, *viewport);
 
         if (sound.audioHandle == AudioHandle::null)
         {

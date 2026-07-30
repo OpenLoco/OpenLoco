@@ -6,10 +6,6 @@ namespace OpenLoco::Ui::Widgets
 {
     void ToolbarButton::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
-        auto* window = widgetState.window;
-
-        const auto pos = window->position() + widget.position();
-
         const bool isColourSet = widget.image & Widget::kImageIdColourSet;
         ImageId imageId = ImageId::fromUInt32(widget.image & ~Widget::kImageIdColourSet);
 
@@ -35,6 +31,6 @@ namespace OpenLoco::Ui::Widgets
             imageId = imageId.withIndexOffset(1);
         }
 
-        drawingCtx.drawImage(ZoomLevel::full, pos, imageId);
+        drawingCtx.drawImage(ZoomLevel::full, Ui::Point{}, imageId);
     }
 }

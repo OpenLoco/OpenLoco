@@ -171,20 +171,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 
         auto news = MessageManager::get(MessageManager::getActiveIndex());
 
-        auto x = self.x;
-        auto y = self.y;
-        auto width = self.width;
-        auto height = self.height;
-
-        const auto& rt = drawingCtx.currentRenderTarget();
-        auto clipped = Gfx::clipRenderTarget(rt, { x, y, width, height });
-
-        if (!clipped)
+        if (!drawingCtx.pushClip({ 0, 0, self.width, self.height }))
         {
             return;
         }
-
-        drawingCtx.pushRenderTarget(*clipped);
 
         auto colour = Colours::getShade(Colour::white, 5);
         const auto& mtd = getMessageTypeDescriptor(news->type);
@@ -243,7 +233,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         auto point = Point(55, 0);
         tr.drawStringTicker(point, StringIds::buffer_2039, Colour::black, 4, ((_nState.numCharsToDisplay & ~(1 << 15)) >> 2), 109);
 
-        drawingCtx.popRenderTarget();
+        drawingCtx.popClip();
     }
 
     static constexpr WindowEventList kEvents = {

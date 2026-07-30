@@ -97,9 +97,9 @@ namespace OpenLoco::Ui
             return std::nullopt;
         }
 
-        if (vp->containsUi(mouse))
+        if (vp->containsWindowPos(mouse - w->position()))
         {
-            viewport_pos vpos = vp->screenToViewport(mouse);
+            viewport_pos vpos = vp->windowToViewport(mouse - w->position());
             World::Pos2 position = viewportCoordToMapCoord(vpos.x, vpos.y, z, WindowManager::getCurrentRotation());
             if (World::validCoords(position))
             {
@@ -201,12 +201,15 @@ namespace OpenLoco::Ui
 
         if (vp->hasFlags(ViewportFlags::seeThroughTracks | ViewportFlags::seeThroughScenery | ViewportFlags::seeThroughRoads | ViewportFlags::seeThroughBuildings | ViewportFlags::seeThroughTrees | ViewportFlags::seeThroughBridges) || w->hasFlags(WindowFlags::viewportNoShiftPixels))
         {
-            auto rect = Ui::Rect(vp->x, vp->y, vp->width, vp->height);
+            auto rect = Ui::Rect(w->x + vp->x, w->y + vp->y, vp->width, vp->height);
             Gfx::render(rect);
             return;
         }
 
         Viewport backup = *vp;
+
+        vp->x += w->x;
+        vp->y += w->y;
 
         if (vp->x < 0)
         {
@@ -717,7 +720,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        const auto uiCentre = viewport->getUiCentre();
+        const auto uiCentre = viewport->getWindowCentre() + position();
         auto res = ViewportInteraction::getSurfaceLocFromUi(uiCentre);
 
         World::Pos3 target = [&]() {
@@ -796,18 +799,6 @@ namespace OpenLoco::Ui
         this->x += dx;
         this->y += dy;
 
-        if (this->viewports[0] != nullptr)
-        {
-            this->viewports[0]->x += dx;
-            this->viewports[0]->y += dy;
-        }
-
-        if (this->viewports[1] != nullptr)
-        {
-            this->viewports[1]->x += dx;
-            this->viewports[1]->y += dy;
-        }
-
         this->invalidate();
 
         return true;
@@ -855,18 +846,6 @@ namespace OpenLoco::Ui
         this->x += offset.x;
         this->y += offset.y;
         this->invalidate();
-
-        if (this->viewports[0] != nullptr)
-        {
-            this->viewports[0]->x += offset.x;
-            this->viewports[0]->y += offset.y;
-        }
-
-        if (this->viewports[1] != nullptr)
-        {
-            this->viewports[1]->x += offset.x;
-            this->viewports[1]->y += offset.y;
-        }
     }
 
     bool Window::moveToCentre()
@@ -1228,7 +1207,7 @@ namespace OpenLoco::Ui
     {
         if (this->isTranslucent() && !this->hasFlags(WindowFlags::noBackground))
         {
-            drawingCtx.fillRect(this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+            drawingCtx.fillRect(0, 0, this->width - 1, this->height - 1, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
         }
 
         uint64_t pressedWidget = 0;
@@ -1269,10 +1248,10 @@ namespace OpenLoco::Ui
         if (this->hasFlags(WindowFlags::whiteBorderMask))
         {
             drawingCtx.fillRectInset(
-                this->x,
-                this->y,
-                this->x + this->width - 1,
-                this->y + this->height - 1,
+                0,
+                0,
+                this->width - 1,
+                this->height - 1,
                 Colour::white,
                 Gfx::RectInsetFlags::fillNone);
         }

@@ -1219,6 +1219,26 @@ namespace OpenLoco::Gfx
         return _state->rtStack.top();
     }
 
+    bool SoftwareDrawingContext::pushClip(const Ui::Rect& rect)
+    {
+        auto& rt = currentRenderTarget();
+
+        auto clipped = clipRenderTarget(rt, rect);
+        if (!clipped.has_value())
+        {
+            return false;
+        }
+
+        pushRenderTarget(*clipped);
+
+        return true;
+    }
+
+    void SoftwareDrawingContext::popClip()
+    {
+        popRenderTarget();
+    }
+
     void SoftwareDrawingContext::reset()
     {
         _state->rtStack = {};

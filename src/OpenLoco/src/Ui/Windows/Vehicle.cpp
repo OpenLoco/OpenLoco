@@ -512,7 +512,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (self.viewports[0] == nullptr)
             {
                 auto widget = &self.widgets[widx::viewport];
-                auto origin = Ui::Point(widget->left + self.x + 1, widget->top + self.y + 1);
+                auto origin = Ui::Point(widget->left + 1, widget->top + 1);
                 auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
                 ViewportManager::create(&self, 0, origin, size, self.savedView.zoomLevel, targetEntity);
                 self.invalidate();
@@ -1109,7 +1109,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 if ((pickupButton.image & 0x20000000) != 0 && !self.isDisabled(widx::pickup))
                 {
-                    drawingCtx.drawImage(ZoomLevel::full, self.x + pickupButton.left, self.y + pickupButton.top, Gfx::recolour(pickupButton.image, CompanyManager::getCompanyColour(self.owner)));
+                    drawingCtx.drawImage(ZoomLevel::full, pickupButton.left, pickupButton.top, Gfx::recolour(pickupButton.image, CompanyManager::getCompanyColour(self.owner)));
                 }
             }
 
@@ -1133,22 +1133,22 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
 
                 auto& widget = self.widgets[widx::status];
-                auto point = Point(self.x + widget.left - 1, self.y + widget.top - 1);
+                auto point = Point(widget.left - 1, widget.top - 1);
                 tr.drawStringLeftClipped(point, widget.width() - 1, Colour::black, strFormat, args);
             }
 
             Widget& speedWidget = self.widgets[widx::speedControl];
             if (!speedWidget.hidden)
             {
-                drawingCtx.drawImage(ZoomLevel::full, self.x + speedWidget.left, self.y + speedWidget.top + 10, Gfx::recolour(ImageIds::speed_control_track, self.getColour(WindowColour::secondary).c()));
+                drawingCtx.drawImage(ZoomLevel::full, speedWidget.left, speedWidget.top + 10, Gfx::recolour(ImageIds::speed_control_track, self.getColour(WindowColour::secondary).c()));
 
-                auto point = Point(self.x + speedWidget.midX(), self.y + speedWidget.top + 4);
+                auto point = Point(speedWidget.midX(), speedWidget.top + 4);
                 tr.drawStringCentred(point, Colour::black, StringIds::tiny_power);
 
-                point = Point(self.x + speedWidget.midX(), self.y + speedWidget.bottom - 10);
+                point = Point(speedWidget.midX(), speedWidget.bottom - 10);
                 tr.drawStringCentred(point, Colour::black, StringIds::tiny_brake);
 
-                drawingCtx.drawImage(ZoomLevel::full, self.x + speedWidget.left + 1, self.y + speedWidget.top + 57 - veh->manualPower, Gfx::recolour(ImageIds::speed_control_thumb, self.getColour(WindowColour::secondary).c()));
+                drawingCtx.drawImage(ZoomLevel::full, speedWidget.left + 1, speedWidget.top + 57 - veh->manualPower, Gfx::recolour(ImageIds::speed_control_thumb, self.getColour(WindowColour::secondary).c()));
             }
 
             if (self.viewports[0] == nullptr && ToolManager::isToolActive(self.type, self.number))
@@ -1157,7 +1157,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 args.push(StringIds::getVehicleType(veh->vehicleType));
 
                 auto& button = self.widgets[widx::viewport];
-                auto origin = Point(self.x + button.midX(), self.y + button.midY());
+                auto origin = Point(button.midX(), button.midY());
                 tr.drawStringCentredWrapped(origin, button.width() - 6, Colour::black, StringIds::click_on_view_select_string_id_start, args);
             }
         }
@@ -1905,7 +1905,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 if ((self.widgets[widx::pickup].image & (1 << 29)) && !self.isDisabled(widx::pickup))
                 {
                     auto image = Gfx::recolour(self.widgets[widx::pickup].image, CompanyManager::getCompanyColour(self.owner));
-                    drawingCtx.drawImage(ZoomLevel::full, self.widgets[widx::pickup].left + self.x, self.widgets[widx::pickup].top + self.y, image);
+                    drawingCtx.drawImage(ZoomLevel::full, self.widgets[widx::pickup].left, self.widgets[widx::pickup].top, image);
                 }
             }
             uint16_t textRightEdge = isPaintToolActive(self) ? self.width - 39 : self.width;
@@ -1916,7 +1916,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            Ui::Point pos = { self.x + 3, self.y + self.height - kVehicleDetailsTextHeight + kVehicleDetailsOffset };
+            Ui::Point pos = { 3, self.height - kVehicleDetailsTextHeight + kVehicleDetailsOffset };
             Vehicles::Vehicle train{ *head };
 
             // Draw power and weight
@@ -2335,7 +2335,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 FormatArguments args = {};
                 args.push<StringId>(StringIds::buffer_1250);
 
-                auto point = Point(self.x + 3, self.y + self.height - 25);
+                auto point = Point(3, self.height - 25);
                 tr.drawStringLeftClipped(point, self.width - 15, Colour::black, StringIds::total_stringid, args);
             }
 
@@ -2347,7 +2347,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 FormatArguments args = {};
                 args.push<StringId>(StringIds::buffer_1250);
 
-                auto point = Point(self.x + 3, self.y + self.height - 13);
+                auto point = Point(3, self.height - 13);
                 tr.drawStringLeftClipped(point, self.width - 15, Colour::black, StringIds::vehicle_capacity_stringid, args);
             }
         }
@@ -2734,7 +2734,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.draw(drawingCtx);
             Common::drawTabs(self, drawingCtx);
 
-            auto pos = Ui::Point(self.x + 4, self.y + 46);
+            auto pos = Ui::Point(4, 46);
 
             auto head = Common::getVehicle(self);
             if (head == nullptr)
@@ -2820,7 +2820,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 // Sale value of vehicle: {CURRENCY32}
                 FormatArguments args{};
                 args.push(train.head->totalRefundCost);
-                pos.y = self.y + self.height - 14;
+                pos.y = self.height - 14;
                 tr.drawStringLeft(pos, Colour::black, StringIds::sale_value_of_vehicle, args);
             }
         }
@@ -3907,7 +3907,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (ToolManager::isToolActive(WindowType::vehicle, self.number))
             {
                 // Location at bottom left edge of window
-                auto loc = Point(self.x + 3, self.y + self.height - 13);
+                auto loc = Point(3, self.height - 13);
                 tr.drawStringLeftClipped(loc, self.width - 14, Colour::black, StringIds::route_click_on_waypoint);
             }
         }
@@ -4438,6 +4438,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             int32_t bestDistance = std::numeric_limits<int32_t>::max();
             uint8_t bestNode = 0;
+            auto* vpOwner = WindowManager::findWindowForViewport(res.second);
+            const auto vpOffset = vpOwner != nullptr ? vpOwner->position() : Ui::Point{};
             // TODO: Use std::ranges::reverse_view
             for (auto node = airportObj->numMovementNodes - 1; node > -1; node--)
             {
@@ -4453,7 +4455,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
 
                 auto viewPos = World::gameToScreen(*nodeLoc, res.second->getRotation());
-                auto uiPos = res.second->viewportToScreen(viewPos);
+                auto uiPos = res.second->viewportToWindow(viewPos) + vpOffset;
                 auto distance = Math::Vector::manhattanDistance2D(uiPos, Point{ x, y });
                 if (distance < bestDistance)
                 {
@@ -4526,11 +4528,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
             // to the cursors location.
             int32_t bestDistance = std::numeric_limits<int32_t>::max();
             uint16_t bestProgress = 0;
+            auto* vpOwner = WindowManager::findWindowForViewport(&viewport);
+            const auto vpOffset = vpOwner != nullptr ? vpOwner->position() : Ui::Point{};
             for (const auto& moveInfo : moveInfoArr)
             {
                 auto potentialLoc = roadFirstTile + moveInfo.loc;
                 auto viewPos = World::gameToScreen(potentialLoc, viewport.getRotation());
-                auto uiPos = viewport.viewportToScreen(viewPos);
+                auto uiPos = viewport.viewportToWindow(viewPos) + vpOffset;
                 auto distance = Math::Vector::manhattanDistance2D(uiPos, cursorLoc);
                 if (distance < bestDistance)
                 {
@@ -4631,11 +4635,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
             // to the cursors location.
             int32_t bestDistance = std::numeric_limits<int32_t>::max();
             uint16_t bestProgress = 0;
+            auto* vpOwner = WindowManager::findWindowForViewport(&viewport);
+            const auto vpOffset = vpOwner != nullptr ? vpOwner->position() : Ui::Point{};
             for (const auto& moveInfo : moveInfoArr)
             {
                 auto potentialLoc = trackFirstTile + moveInfo.loc;
                 auto viewPos = World::gameToScreen(potentialLoc, viewport.getRotation());
-                auto uiPos = viewport.viewportToScreen(viewPos);
+                auto uiPos = viewport.viewportToWindow(viewPos) + vpOffset;
                 auto distance = Math::Vector::manhattanDistance2D(uiPos, cursorLoc);
                 if (distance < bestDistance)
                 {

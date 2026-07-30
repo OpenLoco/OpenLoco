@@ -192,6 +192,18 @@ namespace OpenLoco::Ui::WindowManager
         });
     }
 
+    Window* findWindowForViewport(const Viewport* viewport)
+    {
+        if (viewport == nullptr)
+        {
+            return nullptr;
+        }
+
+        return findImpl([viewport](auto&& w) {
+            return w.viewports[0] == viewport || w.viewports[1] == viewport;
+        });
+    }
+
     // 0x004C9A95
     Window* findAt(int32_t x, int32_t y)
     {
@@ -412,15 +424,7 @@ namespace OpenLoco::Ui::WindowManager
         // If window is almost off-screen to the left
         if (right < 20)
         {
-            const auto shiftRight = 20 - window->x;
             window->x = 20;
-            for (auto* vp : window->viewports)
-            {
-                if (vp != nullptr)
-                {
-                    vp->x += shiftRight;
-                }
-            }
             window->invalidate();
         }
 
@@ -877,7 +881,12 @@ namespace OpenLoco::Ui::WindowManager
         drawingCtx.pushRenderTarget(rt);
 
         w->callPrepareDraw();
-        w->callDraw(drawingCtx);
+
+        if (drawingCtx.pushClip(Ui::Rect(w->x, w->y, w->width, w->height)))
+        {
+            w->callDraw(drawingCtx);
+            drawingCtx.popClip();
+        }
 
         drawingCtx.popRenderTarget();
     }
@@ -979,26 +988,11 @@ namespace OpenLoco::Ui::WindowManager
             if (extendsX || extendsY)
             {
                 // Calculate the new locations
-                auto oldX = w.x;
-                auto oldY = w.y;
                 w.x = newLocation;
                 w.y = newLocation + 28;
 
                 // Move the next new location so windows are not directly on top
                 newLocation += 8;
-
-                // Adjust the viewports if required.
-                if (w.viewports[0] != nullptr)
-                {
-                    w.viewports[0]->x -= oldX - w.x;
-                    w.viewports[0]->y -= oldY - w.y;
-                }
-
-                if (w.viewports[1] != nullptr)
-                {
-                    w.viewports[1]->x -= oldX - w.x;
-                    w.viewports[1]->y -= oldY - w.y;
-                }
             }
         }
     }
@@ -1055,16 +1049,6 @@ namespace OpenLoco::Ui::WindowManager
                 int dY = bottom + 3 - w.y;
                 w.y += dY;
                 w.invalidate();
-
-                if (w.viewports[0] != nullptr)
-                {
-                    w.viewports[0]->y += dY;
-                }
-
-                if (w.viewports[1] != nullptr)
-                {
-                    w.viewports[1]->y += dY;
-                }
             }
         }
     }

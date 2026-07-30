@@ -65,6 +65,7 @@ namespace OpenLoco::Ui::WindowManager
     Viewport* getMainViewport();
     Window* find(WindowType type);
     Window* find(WindowType type, WindowNumber_t number);
+    Window* findWindowForViewport(const Viewport* viewport);
     Window* findAt(int32_t x, int32_t y);
     Window* findAt(Ui::Point point);
     Window* findAtAlt(int32_t x, int32_t y);

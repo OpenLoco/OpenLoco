@@ -1693,8 +1693,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         drawTabs(self, drawingCtx);
 
         {
-            auto x = self.x + self.width - 104;
-            uint16_t y = self.y + 44;
+            auto x = self.width - 104;
+            uint16_t y = 44;
 
             switch (self.currentTab + widx::tabOverall)
             {
@@ -1719,7 +1719,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
                     break;
             }
 
-            y -= self.y;
             y += 14;
             y = std::max<uint16_t>(y, kMinWindowSize.height);
 
@@ -1746,7 +1745,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
 
         auto& widget = self.widgets[widx::statusBar];
-        auto point = Point(self.x + widget.left - 1, self.y + widget.top - 1);
+        auto point = Point(widget.left - 1, widget.top - 1);
         auto width = widget.width();
 
         tr.drawStringLeftClipped(point, width, Colour::black, StringIds::black_stringid, args);

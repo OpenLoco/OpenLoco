@@ -1166,9 +1166,9 @@ namespace OpenLoco::Ui::Windows::Options
         static void drawVolumeSlider(Window& self, Gfx::DrawingContext& drawingCtx, WidgetIndex_t widx, int32_t volume)
         {
             auto& widget = self.widgets[widx];
-            drawingCtx.drawImage(ZoomLevel::full, self.x + widget.left, self.y + widget.top, Gfx::recolour(ImageIds::volume_slider_track, self.getColour(WindowColour::secondary).c()));
+            drawingCtx.drawImage(ZoomLevel::full, widget.left, widget.top, Gfx::recolour(ImageIds::volume_slider_track, self.getColour(WindowColour::secondary).c()));
             int16_t x = kThumbHalfWidth + Audio::dbToPercent(volume) * kSliderPixelRange / 100;
-            drawingCtx.drawImage(ZoomLevel::full, self.x + widget.left + x, self.y + widget.top, Gfx::recolour(ImageIds::volume_slider_thumb, self.getColour(WindowColour::secondary).c()));
+            drawingCtx.drawImage(ZoomLevel::full, widget.left + x, widget.top, Gfx::recolour(ImageIds::volume_slider_thumb, self.getColour(WindowColour::secondary).c()));
         }
 
         static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
@@ -2537,7 +2537,7 @@ namespace OpenLoco::Ui::Windows::Options
             args.push(stringId);
             args.push(value);
 
-            auto point = Point(self.x + widget.left + 1, self.y + widget.top + 1);
+            auto point = Point(widget.left + 1, widget.top + 1);
             tr.drawStringLeft(point, Colour::black, StringIds::black_stringid, args);
         }
 

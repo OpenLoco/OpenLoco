@@ -240,7 +240,7 @@ namespace OpenLoco::Ui
         return viewport_pos(viewX + viewWidth / 2, viewY + viewHeight / 2);
     }
 
-    Point Viewport::getUiCentre() const
+    Point Viewport::getWindowCentre() const
     {
         return Point(x + width / 2, y + height / 2);
     }
@@ -265,7 +265,13 @@ namespace OpenLoco::Ui
 
     std::optional<Pos2> Viewport::getCentreScreenMapPosition() const
     {
-        auto res = Ui::ViewportInteraction::getSurfaceLocFromUi(getUiCentre());
+        auto* owner = WindowManager::findWindowForViewport(this);
+        if (owner == nullptr)
+        {
+            return {};
+        }
+
+        auto res = Ui::ViewportInteraction::getSurfaceLocFromUi(getWindowCentre() + owner->position());
         if (!res)
         {
             return {};

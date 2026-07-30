@@ -181,7 +181,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         // TODO: this should not be needed
         if (Config::get().windowFrameStyle == Config::WindowFrameStyle::background)
         {
-            drawingCtx.drawRectInset(self.x, self.y + 20, self.width, 41, self.getColour(WindowColour::primary), Gfx::RectInsetFlags::none);
+            drawingCtx.drawRectInset(0, 20, self.width, 41, self.getColour(WindowColour::primary), Gfx::RectInsetFlags::none);
         }
 
         // Draw widgets.
@@ -205,7 +205,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             }
 
             const auto offset = self.currentTab == i ? 1 : 0;
-            auto origin = Ui::Point(widget.midX() + self.x, widget.midY() + self.y - 3 - offset);
+            auto origin = Ui::Point(widget.midX(), widget.midY() - 3 - offset);
             const StringId caption = scenarioGroupIds[i];
 
             auto argsBuf = FormatArgumentsBuffer{};
@@ -248,8 +248,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             }
         }
 
-        const int16_t baseX = self.x + self.widgets[widx::list].right + 4;
-        const int16_t baseY = self.y + self.widgets[widx::panel].top + 5;
+        const int16_t baseX = self.widgets[widx::list].right + 4;
+        const int16_t baseY = self.widgets[widx::panel].top + 5;
         const int16_t colWidth = self.widgets[widx::panel].right - self.widgets[widx::list].right - 6;
 
         int16_t x = baseX, y = baseY;

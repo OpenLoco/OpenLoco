@@ -45,6 +45,10 @@ namespace OpenLoco::Gfx
 
         virtual const RenderTarget& currentRenderTarget() const = 0;
 
+        virtual bool pushClip(const Ui::Rect& rect) = 0;
+
+        virtual void popClip() = 0;
+
         virtual void clear(uint32_t fill) = 0;
 
         virtual void clearSingle(uint8_t paletteId) = 0;

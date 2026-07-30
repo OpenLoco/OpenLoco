@@ -351,7 +351,7 @@ namespace OpenLoco::Audio
         return ObjectManager::get<SoundObject>(idx);
     }
 
-    static Viewport* findBestViewportForSound(viewport_pos vpos)
+    static std::pair<Window*, Viewport*> findBestViewportForSound(viewport_pos vpos)
     {
         auto w = WindowManager::find(WindowType::main, 0);
         if (w != nullptr)
@@ -359,7 +359,7 @@ namespace OpenLoco::Audio
             auto viewport = w->viewports[0];
             if (viewport != nullptr && viewport->contains(vpos))
             {
-                return viewport;
+                return { w, viewport };
             }
         }
 
@@ -371,12 +371,12 @@ namespace OpenLoco::Audio
                 auto viewport = w->viewports[0];
                 if (viewport != nullptr && viewport->contains(vpos))
                 {
-                    return viewport;
+                    return { w, viewport };
                 }
             }
         }
 
-        return nullptr;
+        return { nullptr, nullptr };
     }
 
     static constexpr std::array<int32_t, 32> kSoundVolumeTable = { {
@@ -476,14 +476,14 @@ namespace OpenLoco::Audio
         if (pan == kPlayAtLocation)
         {
             auto vpos = World::gameToScreen(loc, WindowManager::getCurrentRotation());
-            auto viewport = findBestViewportForSound(vpos);
+            auto [w, viewport] = findBestViewportForSound(vpos);
             if (viewport == nullptr)
             {
                 return;
             }
 
             volume += calculateVolumeFromViewport(id, loc, *viewport);
-            pan = viewport->viewportToScreen(vpos).x;
+            pan = viewport->viewportToWindow(vpos).x + w->x;
             if (volume < -10000)
             {
                 return;

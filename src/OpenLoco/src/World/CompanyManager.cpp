@@ -1063,7 +1063,7 @@ namespace OpenLoco::CompanyManager
             return;
         }
 
-        auto screenPosition = viewport->getUiCentre();
+        auto screenPosition = viewport->getWindowCentre() + main->position();
 
         auto res = Ui::ViewportInteraction::getSurfaceLocFromUi(screenPosition);
 

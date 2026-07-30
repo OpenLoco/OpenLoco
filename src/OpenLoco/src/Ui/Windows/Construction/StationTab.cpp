@@ -1196,8 +1196,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         auto company = CompanyManager::getPlayerCompany();
         auto companyColour = company->mainColours.primary;
-        int16_t xPos = self.widgets[widx::image].left + self.x;
-        int16_t yPos = self.widgets[widx::image].top + self.y;
+        int16_t xPos = self.widgets[widx::image].left;
+        int16_t yPos = self.widgets[widx::image].top;
 
         auto& cState = getConstructionState();
 
@@ -1249,7 +1249,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         if (cState.stationCost != GameCommands::kFailure && cState.stationCost != 0)
         {
             auto& widget = self.widgets[widx::image];
-            auto point = Point(self.x + 69, widget.bottom + self.y + 4);
+            auto point = Point(69, widget.bottom + 4);
 
             FormatArguments args{};
             args.push<uint32_t>(cState.stationCost);
@@ -1257,8 +1257,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             tr.drawStringCentred(point, Colour::black, StringIds::build_cost, args);
         }
 
-        xPos = self.x + 3;
-        yPos = self.widgets[widx::image].bottom + self.y + 16;
+        xPos = 3;
+        yPos = self.widgets[widx::image].bottom + 16;
         auto width = self.width - 4;
         drawingCtx.drawRectInset(xPos, yPos, width, 1, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset);
 
@@ -1282,23 +1282,23 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             args.push(station->town);
         }
 
-        xPos = self.x + 69;
-        yPos = self.widgets[widx::image].bottom + self.y + 18;
+        xPos = 69;
+        yPos = self.widgets[widx::image].bottom + 18;
 
         // Draw new station name
         auto origin = Point(xPos, yPos);
         width = self.width - 4;
         tr.drawStringCentredClipped(origin, width, Colour::black, StringIds::new_station_buffer, args);
 
-        xPos = self.x + 2;
-        yPos = self.widgets[widx::image].bottom + self.y + 29;
+        xPos = 2;
+        yPos = self.widgets[widx::image].bottom + 29;
 
         // Catchment area cargo acceptance list
         origin = Point(xPos, yPos);
         origin = tr.drawStringLeft(origin, Colour::black, StringIds::catchment_area_accepts);
 
         // Indent cargo list compared to the header
-        origin.x = self.x + 14;
+        origin.x = 14;
         origin.y += 11;
 
         auto drawCargoList = [&origin, &drawingCtx, &tr, &self](uint32_t cargoTypes) {
@@ -1332,11 +1332,11 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
 
         // Catchment area cargo production list
-        origin.x = self.x + 2;
+        origin.x = 2;
         origin = tr.drawStringLeft(origin, Colour::black, StringIds::catchment_area_produces);
 
         // Indent cargo list compared to the header
-        origin.x = self.x + 14;
+        origin.x = 14;
         origin.y += 11;
 
         if (cState.constructingStationProducedCargoTypes == 0)
