@@ -25,10 +25,20 @@
           "platform": "linux"
         }
       ]
-    },
-    {
-        "name": "tbb",
-        "platform": "linux"
     }
-  ]
+  ],
+  "default-features": [
+    "libstdcxx-execution"
+  ],
+  "features": {
+    "libstdcxx-execution": {
+      "description": "TBB backend that libstdc++ requires for <execution>",
+      "dependencies": [
+        {
+          "name": "tbb",
+          "platform": "linux"
+        }
+      ]
+    }
+  }
 }
