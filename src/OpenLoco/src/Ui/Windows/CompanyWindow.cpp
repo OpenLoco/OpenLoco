@@ -421,8 +421,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onUpdate(Window& self)
         {
             self.frameNo += 1;
-            self.callPrepareDraw();
-            WindowManager::invalidate(WindowType::company, self.number);
+            WindowManager::invalidateWidget(WindowType::company, self.number, Common::widx::tab_challenge);
         }
 
         // 0x00432724
@@ -1104,8 +1103,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onUpdate(Window& self)
         {
             self.frameNo += 1;
-            self.callPrepareDraw();
-            WindowManager::invalidate(WindowType::company, self.number);
+            WindowManager::invalidateWidget(WindowType::company, self.number, Common::widx::tab_details);
         }
 
         // 0x00432D9F
@@ -1687,8 +1685,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onUpdate(Window& self)
         {
             self.frameNo += 1;
-            self.callPrepareDraw();
-            WindowManager::invalidate(WindowType::company, self.number);
+            WindowManager::invalidateWidget(WindowType::company, self.number, Common::widx::tab_colour_scheme);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -2158,8 +2155,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onUpdate(Window& self)
         {
             self.frameNo += 1;
-            self.callPrepareDraw();
-            WindowManager::invalidate(WindowType::company, self.number);
+            WindowManager::invalidateWidget(WindowType::company, self.number, widx::scrollview);
+            WindowManager::invalidateWidget(WindowType::company, self.number, Common::widx::tab_finances);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -2342,8 +2339,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onUpdate(Window& self)
         {
             self.frameNo += 1;
-            self.callPrepareDraw();
-            WindowManager::invalidate(WindowType::company, self.number);
+            WindowManager::invalidateWidget(WindowType::company, self.number, Common::widx::tab_status);
         }
 
         // 0x00433C97
@@ -2525,8 +2521,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onUpdate(Window& self)
         {
             self.frameNo += 1;
-            self.callPrepareDraw();
-            WindowManager::invalidate(WindowType::company, self.number);
+            WindowManager::invalidateWidget(WindowType::company, self.number, Common::widx::tab_challenge);
         }
 
         static constexpr WindowEventList kEvents = {
