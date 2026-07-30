@@ -152,6 +152,11 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         window->rowCount = Jukebox::kNumMusicTracks;
         window->rowHover = -1;
 
+        window->minWidth = kWindowSizeMin.width;
+        window->minHeight = kWindowSizeMin.height;
+        window->maxWidth = kWindowSizeMax.width;
+        window->maxHeight = kWindowSizeMax.height;
+
         setSortMode(*window, Jukebox::MusicSortMode::original);
 
         // Set status bar text
