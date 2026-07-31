@@ -421,8 +421,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onUpdate(Window& self)
         {
             self.frameNo += 1;
-            self.callPrepareDraw();
-            WindowManager::invalidate(WindowType::company, self.number);
+            WindowManager::invalidateWidget(WindowType::company, self.number, Common::widx::tab_challenge);
         }
 
         // 0x00432724
@@ -509,7 +508,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             self.callPrepareDraw();
 
-            const auto& company = CompanyManager::get(CompanyId(self.number));
+            const auto* company = CompanyManager::get(CompanyId(self.number));
 
             if (company->observationEntity == EntityId::null)
             {
@@ -563,7 +562,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             else
             {
                 // loc_434170
-                auto entity = EntityManager::get<OpenLoco::EntityBase>(company->observationEntity);
+                auto* entity = EntityManager::get<EntityBase>(company->observationEntity);
                 auto* vehicle = entity->asBase<Vehicles::VehicleBase>();
                 if (vehicle == nullptr)
                 {
@@ -622,14 +621,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     static Window* create(CompanyId companyId)
     {
         const WindowFlags newFlags = WindowFlags::viewportNoShiftPixels | WindowFlags::lighterFrame;
-        auto window = WindowManager::createWindow(WindowType::company, Status::kWindowSize, newFlags, Status::getEvents());
+        auto* window = WindowManager::createWindow(WindowType::company, Status::kWindowSize, newFlags, Status::getEvents());
         window->number = enumValue(companyId);
         window->owner = companyId;
         window->currentTab = 0;
         window->frameNo = 0;
         window->savedView.clear();
 
-        auto skin = ObjectManager::get<InterfaceSkinObject>();
+        auto* skin = ObjectManager::get<InterfaceSkinObject>();
         window->setColour(WindowColour::secondary, skin->windowPlayerColor);
 
         window->flags |= WindowFlags::resizable;
@@ -640,7 +639,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     // 0x0043454F
     Window* open(CompanyId companyId)
     {
-        auto window = WindowManager::bringToFront(WindowType::company, enumValue(companyId));
+        auto* window = WindowManager::bringToFront(WindowType::company, enumValue(companyId));
         if (window != nullptr)
         {
             if (ToolManager::isToolActive(window->type, window->number))
@@ -727,7 +726,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::prepareDraw(self);
 
             auto companyColour = CompanyManager::getCompanyColour(CompanyId(self.number));
-            auto skin = ObjectManager::get<InterfaceSkinObject>();
+            auto* skin = ObjectManager::get<InterfaceSkinObject>();
             uint32_t image = skin->img + InterfaceSkin::ImageIds::build_headquarters;
             self.widgets[widx::build_hq].image = Gfx::recolour(image, companyColour) | Widget::kImageIdColourSet;
 
@@ -805,7 +804,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::drawTabs(self, drawingCtx);
             Common::drawCompanySelect(&self, drawingCtx);
 
-            auto company = CompanyManager::get(CompanyId(self.number));
+            auto* company = CompanyManager::get(CompanyId(self.number));
             auto x = 3;
             auto y = 48;
             {
@@ -1104,8 +1103,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onUpdate(Window& self)
         {
             self.frameNo += 1;
-            self.callPrepareDraw();
-            WindowManager::invalidate(WindowType::company, self.number);
+            WindowManager::invalidateWidget(WindowType::company, self.number, Common::widx::tab_details);
         }
 
         // 0x00432D9F
@@ -1140,7 +1138,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
 
             self.callPrepareDraw();
-            auto company = CompanyManager::get(CompanyId(self.number));
+            auto* company = CompanyManager::get(CompanyId(self.number));
             if (company->headquartersX == -1)
             {
                 // If headquarters not placed destroy the viewport
@@ -1507,7 +1505,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case Widx::kCheckShips:
                     // customVehicleColoursSet reserves first bit for main colour scheme even though it can't be changed, so skip it.
                     const auto vehicleType = widgetIndex - widx::check_steam_locomotives + 1;
-                    const auto company = CompanyManager::get(CompanyId(self.number));
+                    const auto* company = CompanyManager::get(CompanyId(self.number));
                     const auto newMode = (company->customVehicleColoursSet & (1 << vehicleType)) == 0 ? 1 : 0;
 
                     GameCommands::setErrorTitle(StringIds::error_cant_change_colour_scheme);
@@ -1687,8 +1685,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onUpdate(Window& self)
         {
             self.frameNo += 1;
-            self.callPrepareDraw();
-            WindowManager::invalidate(WindowType::company, self.number);
+            WindowManager::invalidateWidget(WindowType::company, self.number, Common::widx::tab_colour_scheme);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -1934,7 +1931,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             y += 14;
         }
 
-        static currency48_t drawFinanceExpenditureColumn(Gfx::DrawingContext& drawingCtx, const int16_t x, int16_t& y, uint8_t columnIndex, Company& company)
+        static currency48_t drawFinanceExpenditureColumn(Gfx::DrawingContext& drawingCtx, const int16_t x, int16_t& y, uint8_t columnIndex, const Company& company)
         {
             auto tr = Gfx::TextRenderer(drawingCtx);
 
@@ -2003,7 +2000,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 y += 10;
             }
 
-            const auto company = CompanyManager::get(CompanyId(self.number));
+            const auto* company = CompanyManager::get(CompanyId(self.number));
 
             uint32_t curYear = getCurrentYear();
             uint8_t expenditureYears = std::min<uint8_t>(company->numExpenditureYears, kExpenditureHistoryCapacity);
@@ -2158,8 +2155,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onUpdate(Window& self)
         {
             self.frameNo += 1;
-            self.callPrepareDraw();
-            WindowManager::invalidate(WindowType::company, self.number);
+            WindowManager::invalidateWidget(WindowType::company, self.number, widx::scrollview);
+            WindowManager::invalidateWidget(WindowType::company, self.number, Common::widx::tab_finances);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -2184,7 +2181,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     // 0x004345EE
     Window* openFinances(CompanyId companyId)
     {
-        auto window = WindowManager::bringToFront(WindowType::company, enumValue(companyId));
+        auto* window = WindowManager::bringToFront(WindowType::company, enumValue(companyId));
         if (window != nullptr)
         {
             if (ToolManager::isToolActive(window->type, window->number))
@@ -2251,10 +2248,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             y += 10;
 
             uint8_t numPrinted = 0;
-            const auto company = CompanyManager::get(CompanyId(self.number));
+            const auto* company = CompanyManager::get(CompanyId(self.number));
             for (uint8_t i = 0; i < static_cast<uint8_t>(std::size(company->cargoDelivered)); i++)
             {
-                auto cargo = ObjectManager::get<CargoObject>(i);
+                auto* cargo = ObjectManager::get<CargoObject>(i);
                 if (cargo == nullptr || company->cargoDelivered[i] == 0)
                 {
                     continue;
@@ -2342,8 +2339,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onUpdate(Window& self)
         {
             self.frameNo += 1;
-            self.callPrepareDraw();
-            WindowManager::invalidate(WindowType::company, self.number);
+            WindowManager::invalidateWidget(WindowType::company, self.number, Common::widx::tab_status);
         }
 
         // 0x00433C97
@@ -2525,8 +2521,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onUpdate(Window& self)
         {
             self.frameNo += 1;
-            self.callPrepareDraw();
-            WindowManager::invalidate(WindowType::company, self.number);
+            WindowManager::invalidateWidget(WindowType::company, self.number, Common::widx::tab_challenge);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -2546,7 +2541,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     // 00434731
     Window* openChallenge(CompanyId companyId)
     {
-        auto window = WindowManager::bringToFront(WindowType::company, enumValue(companyId));
+        auto* window = WindowManager::bringToFront(WindowType::company, enumValue(companyId));
         if (window != nullptr)
         {
             if (ToolManager::isToolActive(window->type, window->number))
@@ -2600,14 +2595,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             CompanyId companyId = Dropdown::getCompanyIdFromSelection(itemIndex);
 
             // Try to find an open company window for this company.
-            auto companyWindow = WindowManager::bringToFront(WindowType::company, enumValue(companyId));
+            auto* companyWindow = WindowManager::bringToFront(WindowType::company, enumValue(companyId));
             if (companyWindow != nullptr)
             {
                 return;
             }
 
             // If not, we'll turn this window into a window for the company selected.
-            auto company = CompanyManager::get(companyId);
+            auto* company = CompanyManager::get(companyId);
             if (company->name == StringIds::empty)
             {
                 return;
@@ -2670,7 +2665,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x0043252E
         static void renameCompanyPrompt(Window* self, WidgetIndex_t widgetIndex)
         {
-            auto company = CompanyManager::get(CompanyId(self->number));
+            auto* company = CompanyManager::get(CompanyId(self->number));
             TextInput::openTextInput(self, StringIds::title_name_company, StringIds::prompt_enter_new_company_name, company->name, widgetIndex, {});
         }
 
@@ -2703,8 +2698,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static void drawCompanySelect(const Window* const self, Gfx::DrawingContext& drawingCtx)
         {
-            const auto company = CompanyManager::get(CompanyId(self->number));
-            const auto competitor = ObjectManager::get<CompetitorObject>(company->competitorId);
+            const auto* company = CompanyManager::get(CompanyId(self->number));
+            const auto* competitor = ObjectManager::get<CompetitorObject>(company->competitorId);
 
             // Draw company owner face.
             const uint32_t image = Gfx::recolour(competitor->images[enumValue(company->ownerEmotion)], company->mainColours.primary);
@@ -2718,7 +2713,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             enableRenameByCaption(self);
 
             // Set company name in title
-            auto company = CompanyManager::get(CompanyId(self.number));
+            auto* company = CompanyManager::get(CompanyId(self.number));
             auto args = FormatArguments(self.widgets[widx::caption].textArgs);
             args.push(company->name);
 
@@ -2746,7 +2741,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00434413
         void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx)
         {
-            auto skin = ObjectManager::get<InterfaceSkinObject>();
+            auto* skin = ObjectManager::get<InterfaceSkinObject>();
 
             // Status tab
             {
