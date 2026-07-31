@@ -1185,7 +1185,7 @@ namespace OpenLoco::Ui::WindowManager
             }
 
             // Terraform tool size inputs
-            if (isStepperGroup(w, reverseIndex, WidgetType::buttonWithHoverImage))
+            if (isStepperGroup(w, reverseIndex, WidgetType::buttonWithAlternateImage))
             {
                 return reverseIndex;
             }

@@ -6,7 +6,7 @@ namespace OpenLoco::Ui::Widgets
 {
     struct CornerButton : public Widget
     {
-        static constexpr auto kWidgetType = WidgetType::buttonWithHoverImage;
+        static constexpr auto kWidgetType = WidgetType::buttonWithAlternateImage;
 
         constexpr CornerButton(WidgetId id, Point origin, Size size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
             : Widget(id, origin, size, kWidgetType, colour, content, tooltip)
