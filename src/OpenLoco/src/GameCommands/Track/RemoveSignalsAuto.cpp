@@ -13,7 +13,7 @@ namespace OpenLoco::GameCommands
         World::TrackElement* element;
     };
 
-    static TrackLookup getElTrackAt(const World::Pos3 pos, const uint8_t index, const uint8_t rotation, const uint8_t trackObjType, const uint8_t trackId)
+    static TrackLookup getElTrackAt(const World::Pos3 pos, const uint8_t rotation, const uint8_t index, const uint8_t trackObjType, const uint8_t trackId)
     {
         auto tile = World::TileManager::get(pos);
         for (auto& el : tile)
@@ -61,7 +61,21 @@ namespace OpenLoco::GameCommands
         {
             const auto rotation = tad & 0x3;
             const auto trackId = (tad >> 3) & 0x3F;
-            auto elTrack = getElTrackAt(pos, 0, rotation, trackObjType, trackId);
+            auto connectionTrackStart = pos;
+            if (tad & (1U << 2))
+            {
+                auto& trackSize = World::TrackData::getUnkTrack(tad);
+                connectionTrackStart += trackSize.pos;
+                if (trackSize.rotationEnd < 12)
+                {
+                    connectionTrackStart -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+                }
+            }
+            auto iterationTrackStart = connectionTrackStart;
+            auto& trackPiece0 = World::TrackData::getTrackPiece(trackId)[0];
+            iterationTrackStart += World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece0.x, trackPiece0.y }, rotation), trackPiece0.z };
+
+            auto elTrack = getElTrackAt(iterationTrackStart, rotation, 0, trackObjType, trackId);
             if (elTrack.element == nullptr)
             {
                 return GameCommands::kFailure;
@@ -71,6 +85,38 @@ namespace OpenLoco::GameCommands
             if (elTrack.element->hasStationElement())
             {
                 break;
+            }
+
+            if (World::Track::validateTrackIsSignalCompatible(connectionTrackStart, rotation, trackId, trackObjType).has_value())
+            {
+                break;
+            }
+
+            // If we have a level crossing we skip this tile for removal
+            if (currentStep == 0 && !elTrack.element->hasLevelCrossing())
+            {
+                // If we have a reverse connection then we need to reverse the sides!
+                // Except when they are double sided signals.
+                auto adjustedSides = sides;
+                if ((tad & (1U << 2)) && sides != ((1U << 15) | (1U << 14)))
+                {
+                    adjustedSides ^= (1U << 15) | (1U << 14);
+                }
+
+                GameCommands::SignalRemovalArgs sargs{};
+                sargs.pos = iterationTrackStart;
+                sargs.rotation = rotation;
+                sargs.trackId = trackId;
+                sargs.index = 0;
+                sargs.flags = adjustedSides;
+                sargs.trackObjType = trackObjType;
+
+                auto res = GameCommands::doCommand(sargs, flags);
+                if (res == GameCommands::kFailure)
+                {
+                    return GameCommands::kFailure;
+                }
+                totalCost += res;
             }
 
             const auto [trackEndLoc, trackEndRotation] = World::Track::getTrackConnectionEnd(pos, tad);
@@ -82,107 +128,9 @@ namespace OpenLoco::GameCommands
                 break;
             }
 
-            // If we have a level crossing we skip this tile for removal
-            if (currentStep == 0 && !elTrack.element->hasLevelCrossing())
-            {
-                GameCommands::SignalRemovalArgs sargs{};
-                sargs.pos = pos;
-                sargs.rotation = rotation;
-                sargs.trackId = trackId;
-                sargs.index = 0;
-                sargs.flags = sides;
-                sargs.trackObjType = trackObjType;
-
-                auto res = GameCommands::doCommand(sargs, flags);
-                if (res == GameCommands::kFailure)
-                {
-                    return GameCommands::kFailure;
-                }
-                totalCost += res;
-            }
-
             // Now we move to the next track piece
             pos = trackEndLoc;
             tad = tc.connections[0] & World::Track::AdditionalTaDFlags::basicTaDMask;
-            currentStep++;
-            if (currentStep >= step)
-            {
-                currentStep = 0;
-            }
-
-            // If we have looped back to the start we stop the auto removal
-            if (pos == trackStart)
-            {
-                break;
-            }
-        }
-        return totalCost;
-    }
-
-    static uint32_t AutoRemoveSignalsBackwards(const World::Pos3& trackStart, uint16_t tad, const uint8_t trackObjType, const uint16_t sides, const uint8_t step, const uint8_t initialStep, const uint8_t flags)
-    {
-        auto pos = World::Pos3(trackStart);
-        int32_t currentStep = initialStep;
-        if (currentStep >= step)
-        {
-            currentStep = 0;
-        }
-        uint32_t totalCost = 0;
-        while (true)
-        {
-            const auto rotation = tad & 0x3;
-            const auto trackId = (tad >> 3) & 0x3F;
-            auto elTrack = getElTrackAt(pos, 0, rotation, trackObjType, trackId);
-            if (elTrack.element == nullptr)
-            {
-                return GameCommands::kFailure;
-            }
-
-            // If we have a station stop the auto removal
-            if (elTrack.element->hasStationElement())
-            {
-                break;
-            }
-
-            auto reverseStart = pos;
-            auto& trackSize = World::TrackData::getUnkTrack(tad);
-            if (trackSize.rotationEnd < 12)
-            {
-                reverseStart -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
-            }
-
-            const auto reverseStartRotation = World::kReverseRotation[trackSize.rotationEnd];
-            auto tc = World::Track::getTrackConnections(reverseStart, reverseStartRotation, GameCommands::getUpdatingCompanyId(), trackObjType, 0, 0);
-
-            // If there is a junction or no connection we stop the auto removal
-            if (tc.connections.size() != 1)
-            {
-                break;
-            }
-
-            // If we have a level crossing we skip this tile for removal
-            if (currentStep == 0 && !elTrack.element->hasLevelCrossing())
-            {
-                GameCommands::SignalRemovalArgs sargs{};
-                sargs.pos = pos;
-                sargs.rotation = rotation;
-                sargs.trackId = trackId;
-                sargs.index = elTrack.element->sequenceIndex();
-                sargs.flags = sides;
-                sargs.trackObjType = trackObjType;
-
-                auto res = GameCommands::doCommand(sargs, flags);
-                if (res == GameCommands::kFailure)
-                {
-                    return GameCommands::kFailure;
-                }
-                totalCost += res;
-            }
-
-            // Now we move to the next track piece
-            pos = reverseStart;
-            tad = tc.connections[0] & World::Track::AdditionalTaDFlags::basicTaDMask;
-            tad ^= (1U << 2);
             currentStep++;
             if (currentStep >= step)
             {
@@ -226,18 +174,25 @@ namespace OpenLoco::GameCommands
         {
             auto reverseStart = trackStart;
             auto& trackSize = World::TrackData::getUnkTrack((args.trackId << 3) | args.rotation);
-            if (trackSize.rotationEnd < 12)
+            if (trackSize.rotationBegin < 12)
             {
-                reverseStart -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+                reverseStart -= World::Pos3{ World::kRotationOffset[trackSize.rotationBegin], 0 };
             }
 
-            const auto reverseStartRotation = World::kReverseRotation[trackSize.rotationEnd];
+            const auto reverseStartRotation = World::kReverseRotation[trackSize.rotationBegin];
             auto tc = World::Track::getTrackConnections(reverseStart, reverseStartRotation, GameCommands::getUpdatingCompanyId(), args.trackObjType, 0, 0);
             if (tc.connections.size() == 1)
             {
-                const auto reverseTad = (tc.connections[0] & World::Track::AdditionalTaDFlags::basicTaDMask) ^ (1U << 2);
+                const auto reverseTad = tc.connections[0] & World::Track::AdditionalTaDFlags::basicTaDMask;
+
+                // As we are walking backwards we need to reverse the sides we are placing signals on, except when they are double sided signals.
+                auto reverseSides = args.flags;
+                if (args.flags != ((1U << 15) | (1U << 14)))
+                {
+                    reverseSides ^= (1U << 15) | (1U << 14);
+                }
                 // Start at step 1 so we don't remove a signal on the first tile
-                auto cost = AutoRemoveSignalsBackwards(reverseStart, reverseTad, args.trackObjType, args.flags, args.step, 1, flags);
+                auto cost = AutoRemoveSignals(reverseStart, reverseTad, args.trackObjType, reverseSides, args.step, 1, flags);
                 if (cost == GameCommands::kFailure)
                 {
                     return GameCommands::kFailure;
