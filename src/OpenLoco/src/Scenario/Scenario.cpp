@@ -216,7 +216,7 @@ namespace OpenLoco::Scenario
 
         Vehicles::RoutingManager::resetRoutingTable();
         Vehicles::OrderManager::reset();
-        Ui::Windows::Terraform::resetLastSelections();
+        Ui::Windows::Terraform::resetDefaultObjectIds();
         sub_43C8FD();
         MessageManager::reset();
     }
@@ -227,7 +227,7 @@ namespace OpenLoco::Scenario
     {
         ObjectManager::updateRoadObjectIdFlags();
         ObjectManager::updateDefaultLevelCrossingType();
-        ObjectManager::updateLastTrackTypeOption();
+        ObjectManager::resetDefaultTrackTypeObjectId();
         CompanyManager::updatePlayerInfrastructureOptions();
         Gfx::invalidateScreen();
         ObjectManager::updateTerraformObjects();
@@ -332,7 +332,7 @@ namespace OpenLoco::Scenario
 
         EntityManager::updateSpatialIndex();
         WindowManager::resetThousandthTickCounter();
-        Ui::Windows::Terraform::resetLastSelections();
+        Ui::Windows::Terraform::resetDefaultObjectIds();
         MessageManager::reset();
 
         std::memcpy(gameState.scenarioDetails, Scenario::getOptions().scenarioDetails, sizeof(gameState.scenarioDetails));

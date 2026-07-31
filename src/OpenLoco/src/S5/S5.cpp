@@ -971,7 +971,7 @@ namespace OpenLoco::S5
             EntityManager::updateSpatialIndex();
             TownManager::updateLabels();
             StationManager::updateLabels();
-            Ui::Windows::Terraform::resetLastSelections();
+            Ui::Windows::Terraform::resetDefaultObjectIds();
             WindowManager::resetThousandthTickCounter();
             Gfx::invalidateScreen();
             if (!hasLoadFlags(flags, LoadFlags::landscape))

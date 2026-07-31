@@ -581,8 +581,8 @@ namespace OpenLoco::Ui::Windows::TownList
     // 0x00496B50
     void reset()
     {
-        getGameState().lastBuildingOption = 0xFF;
-        getGameState().lastMiscBuildingOption = 0xFF;
+        getGameState().defaultBuildingObjectId = 0xFF;
+        getGameState().defaultMiscBuildingObjectId = 0xFF;
         _buildingRotation = 2;
         _townSize = 3;
     }
@@ -1326,11 +1326,11 @@ namespace OpenLoco::Ui::Windows::TownList
 
                     if (self.currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)
                     {
-                        getGameState().lastMiscBuildingOption = static_cast<uint8_t>(rowInfo);
+                        getGameState().defaultMiscBuildingObjectId = static_cast<uint8_t>(rowInfo);
                     }
                     else
                     {
-                        getGameState().lastBuildingOption = static_cast<uint8_t>(rowInfo);
+                        getGameState().defaultBuildingObjectId = static_cast<uint8_t>(rowInfo);
                     }
 
                     updateBuildingColours(self);
@@ -1420,19 +1420,19 @@ namespace OpenLoco::Ui::Windows::TownList
             self.rowCount = buildingCount;
             auto rowHover = -1;
 
-            auto lastSelectedBuilding = getGameState().lastBuildingOption;
+            auto defaultSelectedBuilding = getGameState().defaultBuildingObjectId;
             if (self.currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)
             {
-                lastSelectedBuilding = getGameState().lastMiscBuildingOption;
+                defaultSelectedBuilding = getGameState().defaultMiscBuildingObjectId;
             }
 
-            if (lastSelectedBuilding != 0xFF)
+            if (defaultSelectedBuilding != 0xFF)
             {
                 for (auto i = 0; i <= self.rowCount; i++)
                 {
-                    if (lastSelectedBuilding == self.rowInfo[i])
+                    if (defaultSelectedBuilding == self.rowInfo[i])
                     {
-                        rowHover = lastSelectedBuilding;
+                        rowHover = defaultSelectedBuilding;
                         break;
                     }
                 }

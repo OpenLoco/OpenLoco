@@ -4179,7 +4179,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
                 case TransportMode::road:
                 {
-                    auto roadObjId = head.trackType == 0xFF ? getGameState().lastTrackTypeOption : head.trackType;
+                    auto roadObjId = head.trackType == 0xFF ? getGameState().defaultTrackTypeObjectId : head.trackType;
                     auto roadObj = ObjectManager::get<RoadObject>(roadObjId);
                     image = roadObj->image + (isPlaced ? 32 : 33);
                     tooltip = isPlaced ? StringIds::tooltip_remove_from_track : StringIds::tooltip_place_on_track;

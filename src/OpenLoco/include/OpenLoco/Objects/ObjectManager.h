@@ -187,7 +187,7 @@ namespace OpenLoco::ObjectManager
     void updateYearly2();
 
     void updateTerraformObjects();
-    void updateLastTrackTypeOption();
+    void resetDefaultTrackTypeObjectId();
 
     std::span<LandObjectFlags> getLandObjectFlagsCache();
 

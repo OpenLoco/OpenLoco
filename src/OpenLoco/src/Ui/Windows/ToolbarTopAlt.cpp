@@ -319,7 +319,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         window.widgets[Common::widx::terraform_menu].hidden = !isLandscapeEditor;
         window.widgets[widx::map_generation_menu].hidden = !isLandscapeEditor;
         window.widgets[Common::widx::towns_menu].hidden = !isLandscapeEditor;
-        window.widgets[Common::widx::road_menu].hidden = !(isLandscapeEditor && getGameState().lastRoadOption != 0xFF);
+        window.widgets[Common::widx::road_menu].hidden = !(isLandscapeEditor && getGameState().defaultRoadObjectId != 0xFF);
 
         auto interface = ObjectManager::get<InterfaceSkinObject>();
         if (!Audio::isAudioEnabled())

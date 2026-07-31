@@ -618,7 +618,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
     void reset()
     {
-        getGameState().lastIndustryOption = 0xFF;
+        getGameState().defaultIndustryObjectId = 0xFF;
     }
 
     // 0x0045792A
@@ -787,7 +787,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 if (index < 0)
                 {
                     self.rowHover = rowInfo;
-                    getGameState().lastIndustryOption = rowInfo;
+                    getGameState().defaultIndustryObjectId = rowInfo;
 
                     int32_t pan = (self.width >> 1) + self.x;
                     Audio::playSound(Audio::SoundId::clickDown, Audio::ChannelId::ui, pan);
@@ -1215,14 +1215,14 @@ namespace OpenLoco::Ui::Windows::IndustryList
             self.rowCount = industryCount;
             auto rowHover = -1;
 
-            auto lastIndustryOption = getGameState().lastIndustryOption;
-            if (lastIndustryOption != 0xFF)
+            auto defaultIndustryObjectId = getGameState().defaultIndustryObjectId;
+            if (defaultIndustryObjectId != 0xFF)
             {
                 for (auto i = 0; i < self.rowCount; i++)
                 {
-                    if (lastIndustryOption == self.rowInfo[i])
+                    if (defaultIndustryObjectId == self.rowInfo[i])
                     {
-                        rowHover = lastIndustryOption;
+                        rowHover = defaultIndustryObjectId;
                         break;
                     }
                 }
