@@ -594,7 +594,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         }
 
         Dropdown::showBelow(window, widgetIndex, ddIndex, 25, (1 << 6));
-        Dropdown::setHighlightedItem(enumValue(getGameState().defaultBuildVehiclesObjectId));
+        Dropdown::setHighlightedItem(enumValue(getGameState().defaultBuildVehicleType));
     }
 
     // 0x0043ADC7
@@ -612,7 +612,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
         itemIndex = Dropdown::getMenuOption(itemIndex);
         const auto vehicleType = static_cast<VehicleType>(itemIndex);
-        getGameState().defaultBuildVehiclesObjectId = vehicleType;
+        getGameState().defaultBuildVehicleType = vehicleType;
 
         BuildVehicle::openByType(vehicleType);
     }
@@ -904,7 +904,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             // Figure out what icon to show on the button face.
             auto interface = ObjectManager::get<InterfaceSkinObject>();
-            uint32_t fg_image = Gfx::recolour(interface->img + kBuildVehicleImages[enumValue(getGameState().defaultBuildVehiclesObjectId)], companyColour);
+            uint32_t fg_image = Gfx::recolour(interface->img + kBuildVehicleImages[enumValue(getGameState().defaultBuildVehicleType)], companyColour);
 
             if (Input::isDropdownActive(Ui::WindowType::topToolbar, window.number, Common::widx::build_vehicles_menu))
             {

@@ -409,12 +409,12 @@ namespace OpenLoco::Input::Shortcuts
         }
 
         // This can't ever happen as nothing sets it to 0xFFU
-        if (enumValue(getGameState().defaultBuildVehiclesObjectId) == 0xFF)
+        if (enumValue(getGameState().defaultBuildVehicleType) == 0xFF)
         {
             return;
         }
 
-        Windows::BuildVehicle::openByType(getGameState().defaultBuildVehiclesObjectId);
+        Windows::BuildVehicle::openByType(getGameState().defaultBuildVehicleType);
     }
 
     // 0x004BF2D1

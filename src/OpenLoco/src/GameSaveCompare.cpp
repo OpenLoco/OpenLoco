@@ -465,7 +465,7 @@ namespace OpenLoco::GameSaveCompare
         foundDivergence |= isLoggedDivergence("multiplayerPrng", gameState1.general.multiplayerPrng, gameState2.general.multiplayerPrng, 2, displayAllDivergences);
         foundDivergence |= isLoggedDivergentGameStateField("var_40C", 0, gameState1.general.multiplayerChecksumA, gameState2.general.multiplayerChecksumA);
         foundDivergence |= isLoggedDivergentGameStateField("var_410", 0, gameState1.general.multiplayerChecksumB, gameState2.general.multiplayerChecksumB);
-        foundDivergence |= isLoggedDivergentGameStateField("defaultBuildVehiclesObjectId", 0, gameState1.general.defaultBuildVehiclesObjectId, gameState2.general.defaultBuildVehiclesObjectId);
+        foundDivergence |= isLoggedDivergentGameStateField("defaultBuildVehicleType", 0, gameState1.general.defaultBuildVehicleType, gameState2.general.defaultBuildVehicleType);
         foundDivergence |= isLoggedDivergentGameStateField("numberOfIndustries", 0, gameState1.general.numberOfIndustries, gameState2.general.numberOfIndustries);
         foundDivergence |= isLoggedDivergentGameStateField("vehiclePreviewRotationFrame", 0, gameState1.general.vehiclePreviewRotationFrame, gameState2.general.vehiclePreviewRotationFrame);
         foundDivergence |= isLoggedDivergentGameStateField("objectiveType", 0, gameState1.general.objectiveType, gameState2.general.objectiveType);

@@ -804,10 +804,10 @@ namespace OpenLoco::CompanyManager
         auto vehicleTypeInt = Numerics::bitScanForward(playerCompany->availableVehicles);
         const auto vehicleType = vehicleTypeInt == -1 ? VehicleType::train : static_cast<VehicleType>(vehicleTypeInt);
 
-        gameState.lastVehicleType = vehicleType; // TODO: Should this also be renamed to defaultXXObjectId?
-        gameState.defaultBuildVehiclesObjectId = vehicleType;
-        gameState.lastAirport = 0xFFU; // TODO: Should this also be renamed to defaultXXObjectId?
-        gameState.lastShipPort = 0xFFU; // TODO: Should this also be renamed to defaultXXObjectId?
+        gameState.lastVehicleType = vehicleType;
+        gameState.defaultBuildVehicleType = vehicleType;
+        gameState.lastAirport = 0xFFU;
+        gameState.lastShipPort = 0xFFU;
 
         Ui::Windows::Construction::updateAvailableAirportAndDockOptions();
     }

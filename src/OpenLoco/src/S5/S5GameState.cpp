@@ -91,7 +91,7 @@ namespace OpenLoco::S5
         dst.multiplayerPrng[1] = src.multiplayerPrng.srand_1();
         dst.multiplayerChecksumA = src.multiplayerChecksumA;
         dst.multiplayerChecksumB = src.multiplayerChecksumB;
-        dst.defaultBuildVehiclesObjectId = enumValue(src.defaultBuildVehiclesObjectId);
+        dst.defaultBuildVehicleType = enumValue(src.defaultBuildVehicleType);
         dst.numberOfIndustries = src.numberOfIndustries;
         dst.vehiclePreviewRotationFrame = src.vehiclePreviewRotationFrame;
         dst.objectiveType = enumValue(src.scenarioObjective.type);
@@ -293,7 +293,7 @@ namespace OpenLoco::S5
         dst.multiplayerPrng = Core::Prng(src.multiplayerPrng[0], src.multiplayerPrng[1]);
         dst.multiplayerChecksumA = src.multiplayerChecksumA;
         dst.multiplayerChecksumB = src.multiplayerChecksumB;
-        dst.defaultBuildVehiclesObjectId = static_cast<VehicleType>(src.defaultBuildVehiclesObjectId);
+        dst.defaultBuildVehicleType = static_cast<VehicleType>(src.defaultBuildVehicleType);
         dst.numberOfIndustries = src.numberOfIndustries;
         dst.vehiclePreviewRotationFrame = src.vehiclePreviewRotationFrame;
         dst.scenarioObjective.type = static_cast<Scenario::ObjectiveType>(src.objectiveType);

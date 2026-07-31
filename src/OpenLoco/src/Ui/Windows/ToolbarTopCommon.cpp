@@ -26,7 +26,7 @@
 
 namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 {
-    static uint32_t _zoomTicks;     // 0x009C86F8
+    static uint32_t _zoomTicks;          // 0x009C86F8
     static uint8_t _defaultTownObjectId; // 0x009C870C
 
     // Temporary storage for road menu dropdown (populated in mouseDown, consumed in dropdown callback)

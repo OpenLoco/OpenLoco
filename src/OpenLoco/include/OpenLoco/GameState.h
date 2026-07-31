@@ -86,7 +86,7 @@ namespace OpenLoco
         Core::Prng multiplayerPrng;                                              // 0x000404 (0x0052621C)
         uint32_t multiplayerChecksumA;                                           // 0x00040C (0x00526224) unused
         uint32_t multiplayerChecksumB;                                           // 0x000410 (0x00526228) unused
-        VehicleType defaultBuildVehiclesObjectId;                                // 0x000414 (0x0052622C)
+        VehicleType defaultBuildVehicleType;                                     // 0x000414 (0x0052622C)
         uint8_t numberOfIndustries;                                              // 0x000415 (0x0052622D)
         uint16_t vehiclePreviewRotationFrame;                                    // 0x000416 (0x0052622E)
         Scenario::Objective scenarioObjective;                                   // 0x000418 (0x00526230)
