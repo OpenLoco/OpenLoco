@@ -246,13 +246,13 @@ namespace OpenLoco::Ui::Windows::Terraform
             self.rowCount = treeCount;
             auto rowHover = -1;
 
-            if (getGameState().lastTreeOption != 0xFF)
+            if (getGameState().defaultTreeObjectId != 0xFF)
             {
                 for (auto i = 0; i < self.rowCount; i++)
                 {
-                    if (getGameState().lastTreeOption == self.rowInfo[i])
+                    if (getGameState().defaultTreeObjectId == self.rowInfo[i])
                     {
-                        rowHover = getGameState().lastTreeOption;
+                        rowHover = getGameState().defaultTreeObjectId;
                         break;
                     }
                 }
@@ -661,7 +661,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (index < 0)
                 {
                     self.rowHover = rowInfo;
-                    getGameState().lastTreeOption = static_cast<uint8_t>(rowInfo);
+                    getGameState().defaultTreeObjectId = static_cast<uint8_t>(rowInfo);
 
                     updateTreeColours(self);
 
@@ -2316,13 +2316,13 @@ namespace OpenLoco::Ui::Windows::Terraform
             self.rowCount = wallCount;
             auto rowHover = -1;
 
-            if (getGameState().lastWallOption != 0xFF)
+            if (getGameState().defaultWallObjectId != 0xFF)
             {
                 for (auto i = 0; i < self.rowCount; i++)
                 {
-                    if (getGameState().lastWallOption == self.rowInfo[i])
+                    if (getGameState().defaultWallObjectId == self.rowInfo[i])
                     {
-                        rowHover = getGameState().lastWallOption;
+                        rowHover = getGameState().defaultWallObjectId;
                         break;
                     }
                 }
@@ -2582,7 +2582,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (index < 0)
                 {
                     self.rowHover = rowInfo;
-                    getGameState().lastWallOption = static_cast<uint8_t>(rowInfo);
+                    getGameState().defaultWallObjectId = static_cast<uint8_t>(rowInfo);
 
                     int32_t pan = (self.width >> 1) + self.x;
                     Audio::playSound(Audio::SoundId::clickDown, Audio::ChannelId::ui, pan);
@@ -2826,7 +2826,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
             // Adjust Land Tab
             {
-                auto landObj = ObjectManager::get<LandObject>(getGameState().lastLandOption);
+                auto landObj = ObjectManager::get<LandObject>(getGameState().defaultLandObjectId);
                 uint32_t imageId = landObj->mapPixelImage + Land::ImageIds::toolbar_terraform_land;
 
                 Widget::drawTab(self, drawingCtx, imageId, widx::tab_adjust_land);
@@ -2997,12 +2997,12 @@ namespace OpenLoco::Ui::Windows::Terraform
     }
 
     // 0x004BAEC4
-    void resetLastSelections()
+    void resetDefaultObjectIds()
     {
         _treeRotation = 2;
 
         auto& gameState = getGameState();
-        gameState.lastTreeOption = 0xFF;
-        gameState.lastWallOption = 0xFF;
+        gameState.defaultTreeObjectId = 0xFF;
+        gameState.defaultWallObjectId = 0xFF;
     }
 }

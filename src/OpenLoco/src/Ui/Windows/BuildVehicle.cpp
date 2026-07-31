@@ -457,7 +457,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             targetTrackType |= (1 << 7);
             if (targetTrackType == 0xFF)
             {
-                targetTrackType = getGameState().lastTrackTypeOption;
+                targetTrackType = getGameState().defaultTrackTypeObjectId;
             }
         }
 
@@ -829,9 +829,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 window.rowHeight = kScrollRowHeight[newTab];
                 window.frameNo = 0;
                 window.currentSecondaryTab = 0;
-                if (newTab != enumValue(getGameState().lastBuildVehiclesOption))
+                if (newTab != enumValue(getGameState().defaultBuildVehicleType))
                 {
-                    getGameState().lastBuildVehiclesOption = static_cast<VehicleType>(newTab);
+                    getGameState().defaultBuildVehicleType = static_cast<VehicleType>(newTab);
                     WindowManager::invalidate(WindowType::topToolbar, 0);
                 }
 
@@ -1766,7 +1766,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 auto trackType = vehicleObj->trackType;
                 if (trackType == 0xFF)
                 {
-                    trackType = getGameState().lastTrackTypeOption;
+                    trackType = getGameState().defaultTrackTypeObjectId;
                 }
                 roadTrackTypes |= (1 << trackType);
             }
@@ -1828,13 +1828,13 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         uint32_t trackTab = 0;
         for (; trackTab < _numTrackTypeTabs; trackTab++)
         {
-            if (getGameState().lastRailroadOption == _trackTypesForTab[trackTab])
+            if (getGameState().defaultRailroadObjectId == _trackTypesForTab[trackTab])
             {
                 found = true;
                 break;
             }
 
-            if (getGameState().lastRoadOption == _trackTypesForTab[trackTab])
+            if (getGameState().defaultRoadObjectId == _trackTypesForTab[trackTab])
             {
                 found = true;
                 break;
@@ -1872,11 +1872,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         if (setRail)
         {
-            getGameState().lastRailroadOption = trackType | (isRoad ? (1 << 7) : 0);
+            getGameState().defaultRailroadObjectId = trackType | (isRoad ? (1 << 7) : 0);
         }
         else
         {
-            getGameState().lastRoadOption = trackType | (isRoad ? (1 << 7) : 0);
+            getGameState().defaultRoadObjectId = trackType | (isRoad ? (1 << 7) : 0);
         }
 
         // The window number doesn't really matter as there is only one top toolbar

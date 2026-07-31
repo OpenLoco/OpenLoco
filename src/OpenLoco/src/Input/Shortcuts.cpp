@@ -344,12 +344,12 @@ namespace OpenLoco::Input::Shortcuts
             return;
         }
 
-        if (getGameState().lastRailroadOption == 0xFF)
+        if (getGameState().defaultRailroadObjectId == 0xFF)
         {
             return;
         }
 
-        Windows::Construction::openWithFlags(getGameState().lastRailroadOption);
+        Windows::Construction::openWithFlags(getGameState().defaultRailroadObjectId);
     }
 
     // 0x004BF24F
@@ -360,12 +360,12 @@ namespace OpenLoco::Input::Shortcuts
             return;
         }
 
-        if (getGameState().lastRoadOption == 0xFF)
+        if (getGameState().defaultRoadObjectId == 0xFF)
         {
             return;
         }
 
-        Windows::Construction::openWithFlags(getGameState().lastRoadOption);
+        Windows::Construction::openWithFlags(getGameState().defaultRoadObjectId);
     }
 
     // 0x004BF276
@@ -409,12 +409,12 @@ namespace OpenLoco::Input::Shortcuts
         }
 
         // This can't ever happen as nothing sets it to 0xFFU
-        if (enumValue(getGameState().lastBuildVehiclesOption) == 0xFF)
+        if (enumValue(getGameState().defaultBuildVehicleType) == 0xFF)
         {
             return;
         }
 
-        Windows::BuildVehicle::openByType(getGameState().lastBuildVehiclesOption);
+        Windows::BuildVehicle::openByType(getGameState().defaultBuildVehicleType);
     }
 
     // 0x004BF2D1

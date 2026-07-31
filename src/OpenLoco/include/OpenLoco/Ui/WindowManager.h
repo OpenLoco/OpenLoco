@@ -379,7 +379,7 @@ namespace OpenLoco::Ui::Windows
         void setAdjustWaterToolSize(uint8_t size);
         void setClearAreaToolSize(uint8_t size);
         void setLastPlacedTree(World::TreeElement* elTree);
-        void resetLastSelections();
+        void resetDefaultObjectIds();
     }
 
     namespace TextInput

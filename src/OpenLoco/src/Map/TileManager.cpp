@@ -217,7 +217,7 @@ namespace OpenLoco::World::TileManager
     {
         _periodicDefragStartTile = 0;
         getGameState().tileUpdateStartLocation = World::Pos2(0, 0);
-        const auto landType = getGameState().lastLandOption == 0xFF ? 0 : getGameState().lastLandOption;
+        const auto landType = getGameState().defaultLandObjectId == 0xFF ? 0 : getGameState().defaultLandObjectId;
 
         storeClearAll();
         if (tileState().entries.size() != kMaxElements)

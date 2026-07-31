@@ -52,7 +52,7 @@ namespace OpenLoco::EditorController
         options.difficulty = 2;
         options.madeAnyChanges = 0;
         options.scenarioFlags = Scenario::ScenarioFlags::landscapeGenerationDone;
-        gameState.lastLandOption = 0xFF;
+        gameState.defaultLandObjectId = 0xFF;
         gameState.lastMapWindowAttributes.flags = WindowFlags::none;
 
         WindowManager::closeAllFloatingWindows();
@@ -256,7 +256,7 @@ namespace OpenLoco::EditorController
             case Step::scenarioOptions:
                 // 0x0043D12C
                 WindowManager::closeAllFloatingWindows();
-                Windows::Terraform::resetLastSelections();
+                Windows::Terraform::resetDefaultObjectIds();
                 Scenario::getOptions().editorStep = Step::landscapeEditor;
                 Windows::LandscapeGeneration::open();
                 break;
@@ -330,7 +330,7 @@ namespace OpenLoco::EditorController
                 }
                 Scenario::sub_4748D4();
                 Scenario::initialiseSnowLine();
-                Windows::Terraform::resetLastSelections();
+                Windows::Terraform::resetDefaultObjectIds();
                 Scenario::getOptions().editorStep = Step::landscapeEditor;
                 Windows::LandscapeGeneration::open();
                 if ((Scenario::getOptions().scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) != Scenario::ScenarioFlags::none)

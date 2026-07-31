@@ -537,31 +537,31 @@ namespace OpenLoco::Ui::Windows::Construction
     // Update available road and rail for player company
     void updateAvailableRoadAndRailOptions()
     {
-        if (getGameState().lastRoadOption == 0xFF)
+        if (getGameState().defaultRoadObjectId == 0xFF)
         {
-            uint8_t lastRoadOption = getGameState().lastTrackTypeOption;
-            if (lastRoadOption == 0xFF)
+            uint8_t defaultRoadObjectId = getGameState().defaultTrackTypeObjectId;
+            if (defaultRoadObjectId == 0xFF)
             {
                 const auto availableObjects = companyGetAvailableRoads(CompanyManager::getControllingId());
                 if (!availableObjects.empty())
                 {
-                    lastRoadOption = availableObjects[0];
+                    defaultRoadObjectId = availableObjects[0];
                 }
             }
             else
             {
-                lastRoadOption |= 1 << 7;
+                defaultRoadObjectId |= 1 << 7;
             }
-            getGameState().lastRoadOption = lastRoadOption;
+            getGameState().defaultRoadObjectId = defaultRoadObjectId;
             WindowManager::invalidate(Ui::WindowType::topToolbar, 0);
         }
 
-        if (getGameState().lastRailroadOption == 0xFF)
+        if (getGameState().defaultRailroadObjectId == 0xFF)
         {
             const auto availableObjects = companyGetAvailableRailTracks(CompanyManager::getControllingId());
             if (!availableObjects.empty())
             {
-                getGameState().lastRailroadOption = availableObjects[0];
+                getGameState().defaultRailroadObjectId = availableObjects[0];
             }
             WindowManager::invalidate(Ui::WindowType::topToolbar, 0);
         }
@@ -1245,11 +1245,11 @@ namespace OpenLoco::Ui::Windows::Construction
                 auto roadObj = ObjectManager::get<RoadObject>(newTrackType);
                 if (!roadObj->hasFlags(RoadObjectFlags::isRail))
                 {
-                    getGameState().lastRoadOption = trackType;
+                    getGameState().defaultRoadObjectId = trackType;
                 }
                 else
                 {
-                    getGameState().lastRailroadOption = trackType;
+                    getGameState().defaultRailroadObjectId = trackType;
                 }
             }
             else
@@ -1257,11 +1257,11 @@ namespace OpenLoco::Ui::Windows::Construction
                 auto trackObj = ObjectManager::get<TrackObject>(newTrackType);
                 if (!trackObj->hasFlags(TrackObjectFlags::isRoad))
                 {
-                    getGameState().lastRailroadOption = trackType;
+                    getGameState().defaultRailroadObjectId = trackType;
                 }
                 else
                 {
-                    getGameState().lastRoadOption = trackType;
+                    getGameState().defaultRoadObjectId = trackType;
                 }
             }
             WindowManager::invalidate(WindowType::topToolbar, 0);
