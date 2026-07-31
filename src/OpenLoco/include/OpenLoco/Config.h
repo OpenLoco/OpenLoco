@@ -174,6 +174,8 @@ namespace OpenLoco::Config
         bool cashPopupRendering = true;
         bool edgeScrolling = true;
         int32_t edgeScrollingSpeed = 12;
+        bool invertRightMouseViewPan = false;
+        bool toolbarAutoMenu = true;
         WindowFrameStyle windowFrameStyle = WindowFrameStyle::background;
         bool zoomToCursor = true;
 
@@ -196,7 +198,6 @@ namespace OpenLoco::Config
         bool companyAIDisabled = false;
         bool disableVehicleLoadPenaltyCheat = false;
         bool displayLockedVehicles = false;
-        bool invertRightMouseViewPan = false;
         bool townGrowthDisabled = false;
         bool trainsReverseAtSignals = true;
         bool disableStationSizeLimit = false;

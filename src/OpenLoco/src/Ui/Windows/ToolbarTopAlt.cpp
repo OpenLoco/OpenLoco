@@ -279,6 +279,14 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         }
     }
 
+    static void onMouseHover(Window& window, WidgetIndex_t widgetIndex, const WidgetId id)
+    {
+        if (Config::get().toolbarAutoMenu)
+        {
+            onMouseDown(window, widgetIndex, id);
+        }
+    }
+
     // 0x0043D5A6
     static void onDropdown(Window& window, WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
     {
@@ -347,7 +355,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
 
     static constexpr WindowEventList kEvents = {
         .onResize = Common::onResize,
-        .onMouseHover = onMouseDown,
+        .onMouseHover = onMouseHover,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
         .onUpdate = Common::onUpdate,

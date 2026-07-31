@@ -1900,6 +1900,7 @@ namespace OpenLoco::Ui::Windows::Options
             edge_scrolling = Common::widx::tab_miscellaneous + 1,
             zoom_to_cursor,
             invert_right_mouse_view_pan,
+            toolbar_auto_menu,
             customize_keys
         };
 
@@ -1908,23 +1909,26 @@ namespace OpenLoco::Ui::Windows::Options
             constexpr WidgetId kEdgeScrolling{ "edge_scrolling" };
             constexpr WidgetId kZoomToCursor{ "zoom_to_cursor" };
             constexpr WidgetId kInvertRightMouseViewPan{ "invert_right_mouse_view_pan" };
+            constexpr WidgetId kToolbarMenuAuto{ "toolbar_auto_menu" };
             constexpr WidgetId kCustomizeKeys{ "customize_keys" };
         }
 
-        static constexpr Ui::Size kWindowSize = { 366, 114 };
+        static constexpr Ui::Size kWindowSize = { 366, 129 };
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_controls),
             Widgets::Checkbox(Widx::kEdgeScrolling, { 10, 49 }, { 346, 12 }, WindowColour::secondary, StringIds::scroll_screen_edge, StringIds::scroll_screen_edge_tip),
             Widgets::Checkbox(Widx::kZoomToCursor, { 10, 64 }, { 346, 12 }, WindowColour::secondary, StringIds::zoom_to_cursor, StringIds::zoom_to_cursor_tip),
             Widgets::Checkbox(Widx::kInvertRightMouseViewPan, { 10, 79 }, { 346, 12 }, WindowColour::secondary, StringIds::invert_right_mouse_dragging, StringIds::tooltip_invert_right_mouse_dragging),
-            Widgets::Button(Widx::kCustomizeKeys, { 26, 94 }, { 160, 12 }, WindowColour::secondary, StringIds::customise_keys, StringIds::customise_keys_tip)
+            Widgets::Checkbox(Widx::kToolbarMenuAuto, { 10, 94 }, { 346, 12 }, WindowColour::secondary, StringIds::toolbar_auto_menu),
+            Widgets::Button(Widx::kCustomizeKeys, { 26, 109 }, { 160, 12 }, WindowColour::secondary, StringIds::customise_keys, StringIds::customise_keys_tip)
 
         );
 
         static void edgeScrollingMouseUp(Window& self);
         static void zoomToCursorMouseUp(Window& self);
         static void invertRightMouseViewPan(Window& self);
+        static void toolbarAutoMenuMouseUp(Window& self);
         static void openKeyboardShortcuts();
 
         static void prepareDraw(Window& self)
@@ -1933,7 +1937,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             Common::prepareDraw(self);
 
-            self.activatedWidgets &= ~(1ULL << widx::edge_scrolling | 1ULL << widx::zoom_to_cursor | 1ULL << widx::invert_right_mouse_view_pan);
+            self.activatedWidgets &= ~(1ULL << widx::edge_scrolling | 1ULL << widx::zoom_to_cursor | 1ULL << widx::invert_right_mouse_view_pan | 1ULL << widx::toolbar_auto_menu);
             if (Config::get().edgeScrolling)
             {
                 self.activatedWidgets |= (1ULL << widx::edge_scrolling);
@@ -1945,6 +1949,10 @@ namespace OpenLoco::Ui::Windows::Options
             if (Config::get().invertRightMouseViewPan)
             {
                 self.activatedWidgets |= (1ULL << widx::invert_right_mouse_view_pan);
+            }
+            if (Config::get().toolbarAutoMenu)
+            {
+                self.activatedWidgets |= (1ULL << widx::toolbar_auto_menu);
             }
         }
 
@@ -1979,6 +1987,10 @@ namespace OpenLoco::Ui::Windows::Options
                 case Widx::kInvertRightMouseViewPan:
                     invertRightMouseViewPan(self);
                     break;
+
+                case Widx::kToolbarMenuAuto:
+                    toolbarAutoMenuMouseUp(self);
+                    break;
             }
         }
 
@@ -2005,6 +2017,15 @@ namespace OpenLoco::Ui::Windows::Options
         {
             auto& cfg = OpenLoco::Config::get();
             cfg.invertRightMouseViewPan = !cfg.invertRightMouseViewPan;
+            Config::write();
+
+            self.invalidate();
+        }
+
+        static void toolbarAutoMenuMouseUp(Window& self)
+        {
+            auto& cfg = OpenLoco::Config::get();
+            cfg.toolbarAutoMenu = !cfg.toolbarAutoMenu;
             Config::write();
 
             self.invalidate();

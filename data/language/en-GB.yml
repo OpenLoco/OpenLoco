@@ -2512,3 +2512,4 @@ strings:
   2457: "{COLOUR WINDOW_2}Cargo awaiting transport:"
   2458: "{STRINGID}{STRINGID}"
   2459: "Debug window"
+  2460: "Show toolbar menus on hover instead of click"

@@ -1,6 +1,7 @@
 26.07.1+ (???)
 ------------------------------------------------------------------------
 - Change: [#3815] The keyboard shortcuts window is now separated into groups, and can now be resized.
+- Change: [#3863] The toolbar buttons can now be set to open on click instead of hover.
 - Fix: [#2082] Scrollbars can be overdrawn when certain windows are resized but their scrollview is not.
 - Fix: [#3676] Fix bug where last land variation sprite went unused (original bug).
 - Fix: [#3855] UI invalidation issue when using switch company cheat.
