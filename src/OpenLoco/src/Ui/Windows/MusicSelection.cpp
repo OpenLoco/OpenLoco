@@ -142,6 +142,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             WindowFlags::resizable,
             getEvents());
 
+        window->setSizeBounds(kWindowSizeMin, kWindowSizeMax);
         window->setWidgets(_widgets);
         window->initScrollWidgets();
 
@@ -151,11 +152,6 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 
         window->rowCount = Jukebox::kNumMusicTracks;
         window->rowHover = -1;
-
-        window->minWidth = kWindowSizeMin.width;
-        window->minHeight = kWindowSizeMin.height;
-        window->maxWidth = kWindowSizeMax.width;
-        window->maxHeight = kWindowSizeMax.height;
 
         setSortMode(*window, Jukebox::MusicSortMode::original);
 

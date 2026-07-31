@@ -109,10 +109,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         window->rowCount = static_cast<int16_t>(_shortcutList.size());
         window->rowHover = -1;
 
-        window->minWidth = kWindowSize.width;
-        window->minHeight = kWindowSize.height;
-        window->maxWidth = kMaxWindowSize.width;
-        window->maxHeight = kMaxWindowSize.height;
+        window->setSizeBounds(kWindowSize, kMaxWindowSize);
 
         return window;
     }
