@@ -31,7 +31,6 @@
 #include <algorithm>
 #include <array>
 #include <cinttypes>
-#include <iostream>
 #include <memory>
 #include <sfl/static_vector.hpp>
 

@@ -280,7 +280,8 @@ namespace OpenLoco::Ui
         return { res->first };
     }
 
-    static int16_t __max_clip_height = 0x280;
+    static const int16_t __default_max_clip_height = 0x280;
+    static int16_t __max_clip_height = __default_max_clip_height;
 
     int16_t getMaxClipHeight()
     {
@@ -290,5 +291,10 @@ namespace OpenLoco::Ui
     void setMaxClipHeight(int16_t maxClipHeight)
     {
         __max_clip_height = maxClipHeight;
+    }
+
+    void resetMaxClipHeight()
+    {
+        __max_clip_height = __default_max_clip_height;
     }
 }
