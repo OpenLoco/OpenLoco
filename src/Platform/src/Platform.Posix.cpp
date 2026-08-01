@@ -110,7 +110,7 @@ namespace OpenLoco::Platform
     {
         std::string input;
         std::cout << "Type your Locomotion path: ";
-        std::cin >> input;
+        std::getline(std::cin, input);
 
         auto path = fs::canonical(input);
         return path;
