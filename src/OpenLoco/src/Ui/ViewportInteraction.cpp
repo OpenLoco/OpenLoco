@@ -1537,8 +1537,8 @@ namespace OpenLoco::Ui::ViewportInteraction
             options.viewFlags = vp->flags;
             options.isHitTest = true;
             // Todo: should this pass the cullHeight...
-
             auto session = Paint::PaintSession(_rt2, vp->zoom, options);
+            session.setMaxClipHeight(getMaxClipHeight());
             session.generate();
             session.arrangeStructs();
             interaction = session.getNormalInteractionInfo(flags);

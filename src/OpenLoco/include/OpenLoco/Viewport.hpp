@@ -249,4 +249,8 @@ namespace OpenLoco::Ui
             return windowOffsetTransform(scaleTransform(viewOffsetTransform(vpPoint, vp), vp), vp);
         }
     }
+
+    int16_t getMaxClipHeight();
+    void setMaxClipHeight(int16_t maxClipHeight);
+    void resetMaxClipHeight();
 }
