@@ -1,7 +1,6 @@
 #include "GameCommands/Company/ChangeCompanyColour.h"
 #include "Audio/Audio.h"
 #include "GameCommands/GameCommands.h"
-#include "GameException.hpp"
 #include "Localisation/StringIds.h"
 #include "OpenLoco.h"
 #include "Ui/WindowManager.h"

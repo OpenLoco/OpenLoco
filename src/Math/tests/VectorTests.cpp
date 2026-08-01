@@ -1,4 +1,5 @@
 #include <OpenLoco/Math/Vector.hpp>
+#include <cstdint>
 #include <gtest/gtest.h>
 
 using namespace OpenLoco::Math;

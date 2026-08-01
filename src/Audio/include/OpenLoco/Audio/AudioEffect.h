@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdint>
-
 namespace OpenLoco::Audio
 {
     struct ReverbParams

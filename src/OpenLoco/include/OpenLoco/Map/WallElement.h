@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Graphics/Colour.h"
 #include "TileElement.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <OpenLoco/Graphics/Colour.h>
 
 namespace OpenLoco::World
 {

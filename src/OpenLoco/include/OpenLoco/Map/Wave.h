@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Location.hpp"
 #include <OpenLoco/Engine/World.hpp>
+#include <OpenLoco/Location.hpp>
 
 namespace OpenLoco::World
 {

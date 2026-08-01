@@ -1,12 +1,12 @@
 #pragma once
 
-#include "LabelFrame.h"
-#include "Localisation/StringManager.h"
-#include "Map/Tile.h"
-#include "Speed.hpp"
-#include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Numerics.hpp>
+#include <OpenLoco/LabelFrame.h>
+#include <OpenLoco/Localisation/StringManager.h>
+#include <OpenLoco/Map/Tile.h>
+#include <OpenLoco/Speed.hpp>
+#include <OpenLoco/Types.hpp>
 #include <cstdint>
 #include <limits>
 #include <optional>
@@ -145,7 +145,7 @@ namespace OpenLoco
 
         bool empty() const { return name == StringIds::null; }
         StationId id() const;
-        void update();
+        void tick();
         uint32_t calcAcceptedCargo(CargoSearchState& cargoSearchState) const;
         char* getStatusString(char* buffer);
         bool updateCargo();
@@ -190,5 +190,5 @@ namespace OpenLoco
 
     void sub_48D794(const Station& station);
 
-    void drawStationName(Gfx::DrawingContext& drawingCtx, const Station& station, uint8_t zoom, bool isHovered);
+    void drawStationName(Gfx::DrawingContext& drawingCtx, const Station& station, ZoomLevel zoom, bool isHovered);
 }

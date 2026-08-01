@@ -109,7 +109,7 @@ namespace OpenLoco
         }
 
         // Under Construction
-        if (under_construction != 0xFF)
+        if (under_construction != kIndustryConstructionComplete)
         {
             ptr = StringManager::formatString(ptr, StringIds::industry_under_construction);
             return;
@@ -147,10 +147,10 @@ namespace OpenLoco
     }
 
     // 0x00453275
-    void Industry::update()
+    void Industry::tick()
     {
         // Maybe worthwhile returning early if the industry does not use farm tiles
-        if (!hasFlags(IndustryFlags::isGhost) && under_construction == 0xFF)
+        if (!hasFlags(IndustryFlags::isGhost) && under_construction == kIndustryConstructionComplete)
         {
             // Run tile loop for 100 iterations every tick; whole 384x384 map scans in 1475 ticks/15 days/37 seconds
             for (int i = 0; i < 100; i++)

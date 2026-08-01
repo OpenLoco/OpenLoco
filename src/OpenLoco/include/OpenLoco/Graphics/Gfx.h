@@ -2,9 +2,9 @@
 
 #include "Font.h"
 #include "ImageId.h"
-#include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Engine/Ui/Rect.hpp>
+#include <OpenLoco/Types.hpp>
 #include <array>
 #include <cstdint>
 #include <optional>

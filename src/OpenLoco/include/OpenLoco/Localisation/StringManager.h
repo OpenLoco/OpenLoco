@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Types.hpp"
-#include <Engine/Limits.h>
+#include <OpenLoco/Engine/Limits.h>
+#include <OpenLoco/Types.hpp>
 #include <cstddef>
 #include <cstdint>
 #include <string_view>

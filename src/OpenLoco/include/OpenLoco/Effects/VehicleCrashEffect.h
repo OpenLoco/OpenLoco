@@ -16,7 +16,7 @@ namespace OpenLoco
         int32_t accelerationY; // 0x3C
         int32_t accelerationZ; // 0x40
 
-        void update();
+        void tick();
 
         static VehicleCrashParticle* create(const World::Pos3& loc, const ColourScheme colourScheme);
     };

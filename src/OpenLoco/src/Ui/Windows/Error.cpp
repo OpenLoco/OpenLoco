@@ -39,8 +39,13 @@ namespace OpenLoco::Ui::Windows::Error
             frame,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kFrame{ "frame" };
+        }
+
         static constexpr auto widgets = makeWidgets(
-            Widgets::Panel({ 0, 0 }, { 200, 42 }, WindowColour::primary)
+            Widgets::Panel(Widx::kFrame, { 0, 0 }, { 200, 42 }, WindowColour::primary)
 
         );
     }
@@ -53,9 +58,15 @@ namespace OpenLoco::Ui::Windows::Error
             innerFrame,
         };
 
+        namespace Widx
+        {
+            constexpr WidgetId kFrame{ "frame" };
+            constexpr WidgetId kInnerFrame{ "innerFrame" };
+        }
+
         static constexpr auto widgets = makeWidgets(
-            Widgets::Panel({ 0, 0 }, { 250, 70 }, WindowColour::primary),
-            Widgets::Wt3Widget({ 3, 3 }, { 64, 64 }, WindowColour::secondary)
+            Widgets::Panel(Widx::kFrame, { 0, 0 }, { 250, 70 }, WindowColour::primary),
+            Widgets::Wt3Widget(Widx::kInnerFrame, { 3, 3 }, { 64, 64 }, WindowColour::secondary)
 
         );
     }
@@ -192,15 +203,15 @@ namespace OpenLoco::Ui::Windows::Error
 
             if (_errorCompetitorId == CompanyId::null)
             {
-                uint16_t xPos = self.x + self.width / 2;
-                uint16_t yPos = self.y + kPadding;
+                uint16_t xPos = self.width / 2;
+                uint16_t yPos = kPadding;
 
                 tr.drawStringCentredRaw(Point(xPos, yPos), _linebreakCount, colour, &_errorText[0]);
             }
             else
             {
-                auto xPos = self.x + self.widgets[ErrorCompetitor::widx::innerFrame].left;
-                auto yPos = self.y + self.widgets[ErrorCompetitor::widx::innerFrame].top;
+                auto xPos = self.widgets[ErrorCompetitor::widx::innerFrame].left;
+                auto yPos = self.widgets[ErrorCompetitor::widx::innerFrame].top;
 
                 auto company = CompanyManager::get(_errorCompetitorId);
                 auto companyObj = ObjectManager::get<CompetitorObject>(company->competitorId);
@@ -209,14 +220,14 @@ namespace OpenLoco::Ui::Windows::Error
                 imageId = Gfx::recolour(imageId, company->mainColours.primary);
                 imageId++;
 
-                drawingCtx.drawImage(xPos, yPos, imageId);
+                drawingCtx.drawImage(ZoomLevel::full, xPos, yPos, imageId);
 
                 if (company->jailStatus != 0)
                 {
-                    drawingCtx.drawImage(xPos, yPos, ImageIds::owner_jailed);
+                    drawingCtx.drawImage(ZoomLevel::full, xPos, yPos, ImageIds::owner_jailed);
                 }
 
-                auto point = Point(self.x + (self.width - kCompetitorSize) / 2 + kCompetitorSize + kPadding, self.y + 20);
+                auto point = Point((self.width - kCompetitorSize) / 2 + kCompetitorSize + kPadding, 20);
                 tr.drawStringCentredRaw(point, _linebreakCount, colour, &_errorText[0]);
             }
         }

@@ -99,7 +99,7 @@ namespace OpenLoco::Paint
         session.resetLastPS(); // Odd...
         if (airportObj->hasFlags(AirportObjectFlags::hasShadows))
         {
-            if (session.getRenderTarget()->zoomLevel <= 1)
+            if (session.getZoom() <= 1)
             {
                 const auto shadowImageOffset = variation * 4 + airportObj->image + rotation + 1;
                 const ImageId shadowImage = ImageId(shadowImageOffset).withTranslucency(Colours::getShadow(Colour::orange));

@@ -26,8 +26,8 @@
 
 namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 {
-    static uint32_t _zoomTicks;     // 0x009C86F8
-    static uint8_t _lastTownOption; // 0x009C870C
+    static uint32_t _zoomTicks;          // 0x009C86F8
+    static uint8_t _defaultTownObjectId; // 0x009C870C
 
     // Temporary storage for road menu dropdown (populated in mouseDown, consumed in dropdown callback)
     static AvailableTracksAndRoads _roadMenuObjects;
@@ -35,13 +35,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     void prepareTownWidget(Window& self)
     {
         auto interface = ObjectManager::get<InterfaceSkinObject>();
-        if (_lastTownOption == 0)
+        if (_defaultTownObjectId == 0)
         {
-            self.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_towns);
+            self.widgets[Common::widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_towns);
         }
         else
         {
-            self.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_industries);
+            self.widgets[Common::widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_industries);
         }
     }
 
@@ -53,24 +53,24 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
         const auto companyColour = CompanyManager::getPlayerCompanyColour();
 
-        auto lastRoadOption = getGameState().lastRoadOption;
+        auto defaultRoadObjectId = getGameState().defaultRoadObjectId;
 
-        if (!self.widgets[Widx::road_menu].hidden && lastRoadOption != 0xFF)
+        if (!self.widgets[widx::road_menu].hidden && defaultRoadObjectId != 0xFF)
         {
-            uint32_t x = self.widgets[Widx::road_menu].left + self.x;
-            uint32_t y = self.widgets[Widx::road_menu].top + self.y;
+            uint32_t x = self.widgets[widx::road_menu].left;
+            uint32_t y = self.widgets[widx::road_menu].top;
             uint32_t fgImage = 0;
 
             // Figure out what icon to show on the button face.
-            bool isRoad = lastRoadOption & (1 << 7);
+            bool isRoad = defaultRoadObjectId & (1 << 7);
             if (isRoad)
             {
-                auto obj = ObjectManager::get<RoadObject>(lastRoadOption & ~(1 << 7));
+                auto obj = ObjectManager::get<RoadObject>(defaultRoadObjectId & ~(1 << 7));
                 fgImage = Gfx::recolour(obj->image, companyColour);
             }
             else
             {
-                auto obj = ObjectManager::get<TrackObject>(lastRoadOption);
+                auto obj = ObjectManager::get<TrackObject>(defaultRoadObjectId);
                 fgImage = Gfx::recolour(obj->image + TrackObj::ImageIds::kUiPreviewImage0, companyColour);
             }
 
@@ -78,16 +78,16 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
             auto interface = ObjectManager::get<InterfaceSkinObject>();
             uint32_t bgImage = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, self.getColour(WindowColour::tertiary).c());
 
-            if (Input::isDropdownActive(Ui::WindowType::topToolbar, self.number, Widx::road_menu))
+            if (Input::isDropdownActive(Ui::WindowType::topToolbar, self.number, widx::road_menu))
             {
                 y++;
                 bgImage++;
             }
 
-            drawingCtx.drawImage(x, y, fgImage);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, fgImage);
 
-            y = self.widgets[Widx::road_menu].top + self.y;
-            drawingCtx.drawImage(x, y, bgImage);
+            y = self.widgets[widx::road_menu].top;
+            drawingCtx.drawImage(ZoomLevel::full, x, y, bgImage);
         }
     }
 
@@ -113,19 +113,19 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         Dropdown::setHighlightedItem(0);
 
         auto mainWindow = WindowManager::getMainWindow();
-        if (mainWindow->viewports[0]->zoom == 0)
+        if (mainWindow->viewports[0]->zoom == ZoomLevel::min)
         {
             Dropdown::setItemDisabled(0);
             Dropdown::setHighlightedItem(1);
         }
 
-        if (mainWindow->viewports[0]->zoom == 3)
+        if (mainWindow->viewports[0]->zoom == ZoomLevel::max)
         {
             Dropdown::setItemDisabled(1);
             _zoomTicks = 1000;
         }
 
-        if (mainWindow->viewports[0]->zoom != 3 && _zoomTicks <= 32)
+        if (mainWindow->viewports[0]->zoom != ZoomLevel::max && _zoomTicks <= 32)
         {
             Dropdown::setHighlightedItem(1);
         }
@@ -230,7 +230,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     void terraformMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         auto interface = ObjectManager::get<InterfaceSkinObject>();
-        auto land = ObjectManager::get<LandObject>(getGameState().lastLandOption);
+        auto land = ObjectManager::get<LandObject>(getGameState().defaultLandObjectId);
         auto water = ObjectManager::get<WaterObject>();
 
         Dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_bulldozer, StringIds::menu_clear_area });
@@ -278,7 +278,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
             Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { objImage, objStringId });
 
-            if (objIndex == getGameState().lastRoadOption)
+            if (objIndex == getGameState().defaultRoadObjectId)
             {
                 highlightedItem = i;
             }
@@ -295,7 +295,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         Dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_towns, StringIds::menu_towns });
         Dropdown::add(1, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_industries, StringIds::menu_industries });
         Dropdown::showBelow(window, widgetIndex, 2, 25, (1 << 6));
-        Dropdown::setHighlightedItem(_lastTownOption);
+        Dropdown::setHighlightedItem(_defaultTownObjectId);
     }
 
     // 0x0043A86D
@@ -477,40 +477,40 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         if (itemIndex == 0)
         {
             TownList::open();
-            _lastTownOption = 0;
+            _defaultTownObjectId = 0;
         }
         else if (itemIndex == 1)
         {
             IndustryList::open();
-            _lastTownOption = 1;
+            _defaultTownObjectId = 1;
         }
     }
 
     void onDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
-        switch (widgetIndex)
+        switch (window->widgets[widgetIndex].id)
         {
-            case Widx::zoom_menu:
+            case Widx::kZoomMenu:
                 zoomMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
-            case Widx::rotate_menu:
+            case Widx::kRotateMenu:
                 rotateMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
-            case Widx::view_menu:
+            case Widx::kViewMenu:
                 viewMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
-            case Widx::terraform_menu:
+            case Widx::kTerraformMenu:
                 terraformMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
-            case Widx::road_menu:
+            case Widx::kRoadMenu:
                 roadMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
-            case Widx::towns_menu:
+            case Widx::kTownsMenu:
                 townsMenuDropdown(window, widgetIndex, itemIndex);
                 break;
         }
@@ -519,29 +519,29 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     // 0x0043A071
     void onMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
-        switch (widgetIndex)
+        switch (window->widgets[widgetIndex].id)
         {
-            case Widx::zoom_menu:
+            case Widx::kZoomMenu:
                 zoomMenuMouseDown(window, widgetIndex);
                 break;
 
-            case Widx::rotate_menu:
+            case Widx::kRotateMenu:
                 rotateMenuMouseDown(window, widgetIndex);
                 break;
 
-            case Widx::view_menu:
+            case Widx::kViewMenu:
                 viewMenuMouseDown(window, widgetIndex);
                 break;
 
-            case Widx::terraform_menu:
+            case Widx::kTerraformMenu:
                 terraformMenuMouseDown(window, widgetIndex);
                 break;
 
-            case Widx::road_menu:
+            case Widx::kRoadMenu:
                 roadMenuMouseDown(window, widgetIndex);
                 break;
 
-            case Widx::towns_menu:
+            case Widx::kTownsMenu:
                 townsMenuMouseDown(window, widgetIndex);
                 break;
         }
@@ -550,7 +550,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     void onOpen([[maybe_unused]] Window& window)
     {
         _zoomTicks = 0;
-        _lastTownOption = 0;
+        _defaultTownObjectId = 0;
     }
 
     void onUpdate([[maybe_unused]] Window& window)
@@ -564,7 +564,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         auto main = WindowManager::getMainWindow();
         if (main == nullptr)
         {
-            window.setDisabledWidgetsAndInvalidate(Widx::zoom_menu | Widx::rotate_menu);
+            window.setDisabledWidgetsAndInvalidate(widx::zoom_menu | widx::rotate_menu);
         }
         else
         {

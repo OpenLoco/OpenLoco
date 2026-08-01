@@ -29,6 +29,14 @@ namespace OpenLoco::Platform
 {
     static constexpr auto kSingleInstanceMutexName = L"OpenLocoMutex";
 
+    void initialise()
+    {
+        // Ensures that assert dialogs allow for ignoring them (not the default behaviour for console subsystem)
+        _set_error_mode(_OUT_TO_MSGBOX);
+
+        CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+    }
+
     uint32_t getTime()
     {
         return timeGetTime();
@@ -73,7 +81,7 @@ namespace OpenLoco::Platform
 
         // Initialize COM and get a pointer to the shell memory allocator
         LPMALLOC lpMalloc;
-        if (SUCCEEDED(CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED)) && SUCCEEDED(SHGetMalloc(&lpMalloc)))
+        if (SUCCEEDED(SHGetMalloc(&lpMalloc)))
         {
             auto titleW = Utility::toUtf16(title);
             BROWSEINFOW bi{};
@@ -91,7 +99,6 @@ namespace OpenLoco::Platform
         {
             std::cerr << "Error opening directory browse window";
         }
-        CoUninitialize();
 
         // SHBrowseForFolderW might minimize the main window,
         // so make sure that it's visible again.

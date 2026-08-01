@@ -1,10 +1,8 @@
 #pragma once
 
 #include "Stream.hpp"
-#include <cstdint>
-#include <cstdio>
+#include <cstddef>
 #include <span>
-#include <vector>
 
 namespace OpenLoco
 {

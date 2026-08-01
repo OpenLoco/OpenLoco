@@ -95,7 +95,7 @@ namespace OpenLoco::Network
         _mode = NetworkMode::none;
     }
 
-    void update()
+    void tick()
     {
         auto serverOrClient = getServerOrClient();
         if (serverOrClient != nullptr)

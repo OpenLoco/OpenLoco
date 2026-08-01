@@ -43,49 +43,6 @@ namespace OpenLoco::Ui
         return this->hasFlags(WindowFlags::resizable) && (this->minWidth != this->maxWidth || this->minHeight != this->maxHeight);
     }
 
-    void Window::capSize(int32_t newMinWidth, int32_t newMinHeight, int32_t newMaxWidth, int32_t newMaxHeight)
-    {
-        auto w = this->width;
-        auto h = this->height;
-        auto shouldInvalidateBefore = false;
-        auto shouldInvalidateAfter = false;
-        if (w < newMinWidth)
-        {
-            w = newMinWidth;
-            shouldInvalidateAfter = true;
-        }
-        if (h < newMinHeight)
-        {
-            h = newMinHeight;
-            shouldInvalidateAfter = true;
-        }
-        if (w > newMaxWidth)
-        {
-            shouldInvalidateBefore = true;
-            w = newMaxWidth;
-        }
-        if (h > newMaxHeight)
-        {
-            shouldInvalidateBefore = true;
-            h = newMaxHeight;
-        }
-
-        if (shouldInvalidateBefore)
-        {
-            invalidate();
-        }
-        this->width = w;
-        this->height = h;
-        this->minWidth = newMinWidth;
-        this->minHeight = newMinHeight;
-        this->maxWidth = newMaxWidth;
-        this->maxHeight = newMaxHeight;
-        if (shouldInvalidateAfter)
-        {
-            invalidate();
-        }
-    }
-
     bool Window::isVisible()
     {
         return true;
@@ -140,9 +97,9 @@ namespace OpenLoco::Ui
             return std::nullopt;
         }
 
-        if (vp->containsUi(mouse))
+        if (vp->containsWindowPos(mouse - w->position()))
         {
-            viewport_pos vpos = vp->screenToViewport(mouse);
+            viewport_pos vpos = vp->windowToViewport(mouse - w->position());
             World::Pos2 position = viewportCoordToMapCoord(vpos.x, vpos.y, z, WindowManager::getCurrentRotation());
             if (World::validCoords(position))
             {
@@ -151,6 +108,27 @@ namespace OpenLoco::Ui
         }
 
         return std::nullopt;
+    }
+
+    void listWindowOnHandleInputBegin(Window& window)
+    {
+        window.flags |= WindowFlags::notScrollView;
+    }
+
+    void listWindowOnHandleInputEnd(Window& window)
+    {
+        if (!window.hasFlags(WindowFlags::notScrollView))
+        {
+            return;
+        }
+
+        if (window.rowHover == -1)
+        {
+            return;
+        }
+
+        window.rowHover = -1;
+        window.invalidate();
     }
 
     // 0x0045FD41
@@ -162,7 +140,7 @@ namespace OpenLoco::Ui
     // Output:
     // {x: regs.ax, y: regs.bx}
     // Note: in the original code: regs.dx: x/2 (probably not used anywhere)
-    World::Pos2 viewportCoordToMapCoord(int16_t x, int16_t y, int16_t z, int32_t rotation)
+    World::Pos2 viewportCoordToMapCoord(int32_t x, int32_t y, int32_t z, int32_t rotation)
     {
         constexpr uint8_t inverseRotationMapping[4] = { 0, 3, 2, 1 };
         const auto result = World::Pos2(y - (x >> 1) + z, y + (x >> 1) + z);
@@ -203,12 +181,12 @@ namespace OpenLoco::Ui
     }
 
     // 0x004C68E4
-    static void viewportMove(int16_t x, int16_t y, Ui::Window* w, Ui::Viewport* vp)
+    static void viewportMove(int32_t x, int32_t y, Ui::Window* w, Ui::Viewport* vp)
     {
-        int origX = vp->viewX >> vp->zoom;
-        int origY = vp->viewY >> vp->zoom;
-        int newX = x >> vp->zoom;
-        int newY = y >> vp->zoom;
+        int origX = vp->zoom.applyInversedTo(vp->viewX);
+        int origY = vp->zoom.applyInversedTo(vp->viewY);
+        int newX = vp->zoom.applyInversedTo(x);
+        int newY = vp->zoom.applyInversedTo(y);
         int diffX = origX - newX;
         int diffY = origY - newY;
 
@@ -223,19 +201,21 @@ namespace OpenLoco::Ui
 
         if (vp->hasFlags(ViewportFlags::seeThroughTracks | ViewportFlags::seeThroughScenery | ViewportFlags::seeThroughRoads | ViewportFlags::seeThroughBuildings | ViewportFlags::seeThroughTrees | ViewportFlags::seeThroughBridges) || w->hasFlags(WindowFlags::viewportNoShiftPixels))
         {
-            auto rect = Ui::Rect(vp->x, vp->y, vp->width, vp->height);
+            auto rect = Ui::Rect(w->x + vp->x, w->y + vp->y, vp->width, vp->height);
             Gfx::render(rect);
             return;
         }
 
-        uint8_t zoom = (1 << vp->zoom);
         Viewport backup = *vp;
+
+        vp->x += w->x;
+        vp->y += w->y;
 
         if (vp->x < 0)
         {
             vp->width += vp->x;
-            vp->viewWidth += vp->x * zoom;
-            vp->viewX -= vp->x * zoom;
+            vp->viewWidth += vp->zoom.applyTo(vp->x);
+            vp->viewX -= vp->zoom.applyTo(vp->x);
             vp->x = 0;
         }
 
@@ -243,7 +223,7 @@ namespace OpenLoco::Ui
         if (eax > 0)
         {
             vp->width -= eax;
-            vp->viewWidth -= eax * zoom;
+            vp->viewWidth -= vp->zoom.applyTo(eax);
         }
 
         if (vp->width <= 0)
@@ -255,8 +235,8 @@ namespace OpenLoco::Ui
         if (vp->y < 0)
         {
             vp->height += vp->y;
-            vp->viewHeight += vp->y * zoom;
-            vp->viewY -= vp->y * zoom;
+            vp->viewHeight += vp->zoom.applyTo(vp->y);
+            vp->viewY -= vp->zoom.applyTo(vp->y);
             vp->y = 0;
         }
 
@@ -264,7 +244,7 @@ namespace OpenLoco::Ui
         if (eax > 0)
         {
             vp->height -= eax;
-            vp->viewHeight -= eax * zoom;
+            vp->viewHeight -= vp->zoom.applyTo(eax);
         }
 
         if (vp->height <= 0)
@@ -642,13 +622,13 @@ namespace OpenLoco::Ui
         }
     }
 
-    void Window::viewportZoomSet(int8_t zoomLevel, bool toCursor)
+    void Window::viewportZoomSet(ZoomLevel zoomLevel, bool toCursor)
     {
         Viewport* v = this->viewports[0];
         ViewportConfig* vc = &this->viewportConfigurations[0];
 
-        zoomLevel = std::clamp<int8_t>(zoomLevel, 0, 3);
-        if (v->zoom == zoomLevel)
+        const auto newZoomLevel = ZoomLevel{ std::clamp<int8_t>(static_cast<int8_t>(zoomLevel), ZoomLevel::min, ZoomLevel::max) };
+        if (v->zoom == newZoomLevel)
         {
             return;
         }
@@ -656,7 +636,7 @@ namespace OpenLoco::Ui
         const auto previousZoomLevel = v->zoom;
 
         // Zoom in
-        while (v->zoom > zoomLevel)
+        while (v->zoom > newZoomLevel)
         {
             v->zoom--;
             vc->savedViewX += v->viewWidth / 4;
@@ -666,7 +646,7 @@ namespace OpenLoco::Ui
         }
 
         // Zoom out
-        while (v->zoom < zoomLevel)
+        while (v->zoom < newZoomLevel)
         {
             v->zoom++;
             vc->savedViewX -= v->viewWidth / 2;
@@ -678,17 +658,17 @@ namespace OpenLoco::Ui
         if (toCursor && Config::get().zoomToCursor)
         {
             const auto mouseCoords = Ui::getCursorPosScaled() - Point(v->x, v->y);
-            const int32_t diffX = mouseCoords.x - ((v->viewWidth >> zoomLevel) / 2);
-            const int32_t diffY = mouseCoords.y - ((v->viewHeight >> zoomLevel) / 2);
-            if (previousZoomLevel > zoomLevel)
+            const int32_t diffX = mouseCoords.x - (newZoomLevel.applyInversedTo(v->viewWidth) / 2);
+            const int32_t diffY = mouseCoords.y - (newZoomLevel.applyInversedTo(v->viewHeight) / 2);
+            if (previousZoomLevel > newZoomLevel)
             {
-                vc->savedViewX += diffX << zoomLevel;
-                vc->savedViewY += diffY << zoomLevel;
+                vc->savedViewX += newZoomLevel.applyTo(diffX);
+                vc->savedViewY += newZoomLevel.applyTo(diffY);
             }
             else
             {
-                vc->savedViewX -= diffX << previousZoomLevel;
-                vc->savedViewY -= diffY << previousZoomLevel;
+                vc->savedViewX -= previousZoomLevel.applyTo(diffX);
+                vc->savedViewY -= previousZoomLevel.applyTo(diffY);
             }
         }
 
@@ -740,7 +720,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        const auto uiCentre = viewport->getUiCentre();
+        const auto uiCentre = viewport->getWindowCentre() + position();
         auto res = ViewportInteraction::getSurfaceLocFromUi(uiCentre);
 
         World::Pos3 target = [&]() {
@@ -788,22 +768,18 @@ namespace OpenLoco::Ui
             config.savedViewX = newSavedView.viewX;
             config.savedViewY = newSavedView.viewY;
 
-            auto zoom = static_cast<int32_t>(newSavedView.zoomLevel) - viewport->zoom;
-            if (zoom != 0)
+            const auto zoomDiff = static_cast<int32_t>(static_cast<int8_t>(newSavedView.zoomLevel)) - static_cast<int32_t>(static_cast<int8_t>(viewport->zoom));
+            if (zoomDiff < 0)
             {
-                if (zoom < 0)
-                {
-                    zoom = -zoom;
-                    viewport->viewWidth >>= zoom;
-                    viewport->viewHeight >>= zoom;
-                }
-                else
-                {
-                    viewport->viewWidth <<= zoom;
-                    viewport->viewHeight <<= zoom;
-                }
+                viewport->viewWidth >>= -zoomDiff;
+                viewport->viewHeight >>= -zoomDiff;
             }
-            viewport->zoom = zoom;
+            else if (zoomDiff > 0)
+            {
+                viewport->viewWidth <<= zoomDiff;
+                viewport->viewHeight <<= zoomDiff;
+            }
+            viewport->zoom = newSavedView.zoomLevel;
             viewport->setRotation(newSavedView.rotation);
 
             config.savedViewX -= viewport->viewWidth / 2;
@@ -822,18 +798,6 @@ namespace OpenLoco::Ui
 
         this->x += dx;
         this->y += dy;
-
-        if (this->viewports[0] != nullptr)
-        {
-            this->viewports[0]->x += dx;
-            this->viewports[0]->y += dy;
-        }
-
-        if (this->viewports[1] != nullptr)
-        {
-            this->viewports[1]->x += dx;
-            this->viewports[1]->y += dy;
-        }
 
         this->invalidate();
 
@@ -882,18 +846,6 @@ namespace OpenLoco::Ui
         this->x += offset.x;
         this->y += offset.y;
         this->invalidate();
-
-        if (this->viewports[0] != nullptr)
-        {
-            this->viewports[0]->x += offset.x;
-            this->viewports[0]->y += offset.y;
-        }
-
-        if (this->viewports[1] != nullptr)
-        {
-            this->viewports[1]->x += offset.x;
-            this->viewports[1]->y += offset.y;
-        }
     }
 
     bool Window::moveToCentre()
@@ -989,24 +941,24 @@ namespace OpenLoco::Ui
         eventHandlers->onUpdate(*this);
     }
 
-    void Window::call_8()
+    void Window::callHandleInputBegin()
     {
-        if (eventHandlers->event_08 == nullptr)
+        if (eventHandlers->onHandleInputBegin == nullptr)
         {
             return;
         }
 
-        eventHandlers->event_08(*this);
+        eventHandlers->onHandleInputBegin(*this);
     }
 
-    void Window::call_9()
+    void Window::callHandleInputEnd()
     {
-        if (eventHandlers->event_09 == nullptr)
+        if (eventHandlers->onHandleInputEnd == nullptr)
         {
             return;
         }
 
-        eventHandlers->event_09(*this);
+        eventHandlers->onHandleInputEnd(*this);
     }
 
     void Window::callToolUpdate(WidgetIndex_t widgetIndex, const WidgetId id, int16_t xPos, int16_t yPos)
@@ -1089,15 +1041,14 @@ namespace OpenLoco::Ui
         eventHandlers->onMouseUp(*this, widgetIndex, id);
     }
 
-    Ui::Window* Window::callOnResize()
+    void Window::callOnResize()
     {
         if (eventHandlers->onResize == nullptr)
         {
-            return this;
+            return;
         }
 
         eventHandlers->onResize(*this);
-        return this;
     }
 
     void Window::callOnMouseHover(WidgetIndex_t widgetIndex, const WidgetId id)
@@ -1256,7 +1207,7 @@ namespace OpenLoco::Ui
     {
         if (this->isTranslucent() && !this->hasFlags(WindowFlags::noBackground))
         {
-            drawingCtx.fillRect(this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+            drawingCtx.fillRect(0, 0, this->width - 1, this->height - 1, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
         }
 
         uint64_t pressedWidget = 0;
@@ -1297,10 +1248,10 @@ namespace OpenLoco::Ui
         if (this->hasFlags(WindowFlags::whiteBorderMask))
         {
             drawingCtx.fillRectInset(
-                this->x,
-                this->y,
-                this->x + this->width - 1,
-                this->y + this->height - 1,
+                0,
+                0,
+                this->width - 1,
+                this->height - 1,
                 Colour::white,
                 Gfx::RectInsetFlags::fillNone);
         }

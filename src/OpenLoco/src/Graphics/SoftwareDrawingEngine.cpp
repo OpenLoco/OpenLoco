@@ -223,6 +223,12 @@ namespace OpenLoco::Gfx
     {
         assert(index + count < 256);
 
+        if (_palette == nullptr)
+        {
+            // In headless mode, the palette is not created, so we cannot update it.
+            return;
+        }
+
         SDL_Color base[256]{};
         SDL_Color* basePtr = &base[index];
         auto* entryPtr = &entries[index];
@@ -279,7 +285,6 @@ namespace OpenLoco::Gfx
         rt.y = rect.top();
         rt.bits = _screenRT.bits + rect.left() + ((_screenRT.width + _screenRT.pitch) * rect.top());
         rt.pitch = _screenRT.width + _screenRT.pitch - rect.width();
-        rt.zoomLevel = 0;
 
         // Set the render target to the screen rt.
         _ctx.pushRenderTarget(rt);

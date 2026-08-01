@@ -14,18 +14,17 @@ namespace OpenLoco::Ui::Widgets
             return;
         }
 
-        if (window->minHeight == window->maxHeight || window->minWidth == window->maxWidth)
+        if (window->minHeight == window->maxHeight && window->minWidth == window->maxWidth)
         {
             return;
         }
 
-        const auto pos = window->position() + widget.position();
         const auto size = widget.size();
 
-        const auto resizeBarPos = pos + Ui::Point(size.width - 18, size.height - 18);
+        const auto resizeBarPos = Ui::Point(size.width - 18, size.height - 18);
 
         uint32_t image = Gfx::recolour(ImageIds::window_resize_handle, colour.c());
-        drawingCtx.drawImage(resizeBarPos, image);
+        drawingCtx.drawImage(ZoomLevel::full, resizeBarPos, image);
     }
 
     // 0x004CAB58
@@ -33,11 +32,10 @@ namespace OpenLoco::Ui::Widgets
     {
         auto* window = widgetState.window;
 
-        const auto pos = window->position() + widget.position();
         const auto size = widget.size();
 
         drawingCtx.fillRectInset(
-            pos,
+            Ui::Point{},
             size,
             widgetState.colour,
             widgetState.flags);

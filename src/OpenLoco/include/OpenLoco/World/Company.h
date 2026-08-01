@@ -1,13 +1,13 @@
 #pragma once
 
 #include "CompanyAi/CompanyAi.h"
-#include "Economy/Currency.h"
-#include "Economy/Expenditures.h"
-#include "Engine/Limits.h"
-#include "Types.hpp"
 #include <OpenLoco/Core/BitSet.hpp>
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <OpenLoco/Economy/Currency.h>
+#include <OpenLoco/Economy/Expenditures.h>
+#include <OpenLoco/Engine/Limits.h>
 #include <OpenLoco/Engine/World.hpp>
+#include <OpenLoco/Types.hpp>
 #include <cstddef>
 #include <cstdint>
 #include <limits>

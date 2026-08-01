@@ -1,5 +1,6 @@
 #include "BinaryStream.h"
 #include "Exception.hpp"
+#include <algorithm>
 #include <cstring>
 
 namespace OpenLoco

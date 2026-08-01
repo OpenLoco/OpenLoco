@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Location.hpp"
-#include "Types.hpp"
 #include <OpenLoco/Audio/AudioEngine.h>
 #include <OpenLoco/Engine/World.hpp>
+#include <OpenLoco/Location.hpp>
+#include <OpenLoco/Types.hpp>
 #include <cmath>
 #include <optional>
 #include <string>
@@ -87,7 +87,7 @@ namespace OpenLoco::Audio
     bool shouldSoundLoop(SoundId id);
     AudioHandle play(SoundId id, ChannelId channel, const AudioAttributes& attribs = {});
 
-    void update();
+    void tick();
 
     void setBgmVolume(int32_t volume);
 

@@ -2,8 +2,13 @@
 
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <cassert>
+#include <filesystem>
 #include <fstream>
+#include <istream>
+#include <memory>
 #include <png.h>
+#include <stdexcept>
+#include <vector>
 
 using namespace OpenLoco::Diagnostics;
 
@@ -44,7 +49,7 @@ namespace OpenLoco::Gfx
         Logging::warn("{}", error_msg);
     }
 
-    std::unique_ptr<PngImage> PngImage::loadFromFile(const std::filesystem::path& filePath)
+    std::unique_ptr<PngImage> PngImage::loadFromFile(const fs::path& filePath)
     {
         std::ifstream inFile(filePath, std::ios::binary);
 

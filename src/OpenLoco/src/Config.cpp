@@ -3,7 +3,6 @@
 #include "Environment.h"
 #include <Message.h>
 #include <OpenLoco/Core/FileSystem.hpp>
-#include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <fstream>
 #include <locale>
 #include <yaml-cpp/yaml.h>
@@ -22,19 +21,17 @@ namespace OpenLoco::Config
 
     static void readShortcutConfig(const YAML::Node& scNode)
     {
-        const auto& shortcutDefs = Input::ShortcutManager::getList();
         auto& shortcuts = _config.shortcuts;
-        for (const auto& def : shortcutDefs)
+        shortcuts.clear();
+
+        if (!scNode.IsMap())
         {
-            auto node = scNode[def.configName];
-            if (node)
-            {
-                shortcuts[def.id] = node.as<KeyboardShortcut>();
-            }
-            else
-            {
-                shortcuts[def.id] = YAML::Node(def.defaultBinding).as<KeyboardShortcut>();
-            }
+            return;
+        }
+
+        for (const auto& entry : scNode)
+        {
+            shortcuts[entry.first.as<std::string>()] = entry.second.as<std::string>("");
         }
     }
 
@@ -84,7 +81,7 @@ namespace OpenLoco::Config
             audioConfig.ambientVolume = audioNode["ambientVolume"].as<int32_t>(100);
             audioConfig.playJukeboxMusic = audioNode["playJukeboxMusic"].as<bool>(true);
             audioConfig.playTitleMusic = audioNode["play_title_music"].as<bool>(true);
-            audioConfig.playNewsSounds = audioNode["play_news_sounds"].as<bool>(true);
+            audioConfig.playNewsSounds = audioNode["playNewsSounds"].as<bool>(true);
             audioConfig.playlist = audioNode["playlist"].as<MusicPlaylistType>(MusicPlaylistType::currentEra);
 
             if (audioNode["customJukebox"])
@@ -161,6 +158,8 @@ namespace OpenLoco::Config
         _config.cashPopupRendering = config["cashPopupRendering"].as<bool>(true);
         _config.edgeScrolling = config["edgeScrolling"].as<bool>(true);
         _config.edgeScrollingSpeed = config["edgeScrollingSpeed"].as<int32_t>(12);
+        _config.invertRightMouseViewPan = config["invertRightMouseViewPan"].as<bool>(false);
+        _config.toolbarAutoMenu = config["toolbarAutoMenu"].as<bool>(true);
         _config.windowFrameStyle = config["windowFrameStyle"].as<WindowFrameStyle>(WindowFrameStyle::background);
         _config.zoomToCursor = config["zoom_to_cursor"].as<bool>(true);
 
@@ -176,7 +175,6 @@ namespace OpenLoco::Config
         _config.companyAIDisabled = config["companyAIDisabled"].as<bool>(false);
         _config.disableVehicleLoadPenaltyCheat = config["disableVehicleLoadPenaltyCheat"].as<bool>(false);
         _config.displayLockedVehicles = config["displayLockedVehicles"].as<bool>(false);
-        _config.invertRightMouseViewPan = config["invertRightMouseViewPan"].as<bool>(false);
         _config.townGrowthDisabled = config["townGrowthDisabled"].as<bool>(false);
         _config.trainsReverseAtSignals = config["trainsReverseAtSignals"].as<bool>(false);
         _config.disableStationSizeLimit = config["disableStationSizeLimit"].as<bool>(false);
@@ -300,6 +298,7 @@ namespace OpenLoco::Config
         node["cashPopupRendering"] = _config.cashPopupRendering;
         node["edgeScrolling"] = _config.edgeScrolling;
         node["edgeScrollingSpeed"] = _config.edgeScrollingSpeed;
+        node["toolbarAutoMenu"] = _config.toolbarAutoMenu;
         node["windowFrameStyle"] = _config.windowFrameStyle;
         node["zoom_to_cursor"] = _config.zoomToCursor;
 
@@ -333,20 +332,10 @@ namespace OpenLoco::Config
         node["usePreferredCompanyName"] = _config.usePreferredCompanyName;
 
         // Shortcuts
-        const auto& shortcuts = _config.shortcuts;
-        const auto& shortcutDefs = Input::ShortcutManager::getList();
         auto scNode = node["shortcuts"];
-        for (const auto& def : shortcutDefs)
+        for (const auto& [configName, binding] : _config.shortcuts)
         {
-            auto it = shortcuts.find(def.id);
-            if (it != std::end(shortcuts))
-            {
-                scNode[def.configName] = it->second;
-            }
-            else
-            {
-                scNode[def.configName] = "";
-            }
+            scNode[configName] = binding;
         }
         node["shortcuts"] = scNode;
 
@@ -360,21 +349,5 @@ namespace OpenLoco::Config
         }
 
         std::locale::global(backupLocale);
-    }
-
-    // 0x004BE3F3
-    void resetShortcuts()
-    {
-        const auto& shortcutDefs = Input::ShortcutManager::getList();
-
-        auto& shortcuts = _config.shortcuts;
-        shortcuts.clear();
-
-        for (const auto& def : shortcutDefs)
-        {
-            shortcuts[def.id] = YAML::Node(def.defaultBinding).as<KeyboardShortcut>();
-        }
-
-        write();
     }
 }

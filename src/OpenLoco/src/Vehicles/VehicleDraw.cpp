@@ -244,7 +244,7 @@ namespace OpenLoco
 
         const auto p1 = World::gameToScreen(World::Pos3(unk1.x, unk1.y, 0), 0);
 
-        drawingCtx.drawImage(offset + Ui::Point(p1.x, p1.y), item.image);
+        drawingCtx.drawImage(ZoomLevel::full, offset + Ui::Point(p1.x, p1.y), item.image);
     }
 
     struct DrawItems
@@ -592,7 +592,7 @@ namespace OpenLoco
             {
                 continue;
             }
-            drawingCtx.drawImage(loc + Ui::Point(item.dist, 0), item.image);
+            drawingCtx.drawImage(ZoomLevel::full, loc + Ui::Point(item.dist, 0), item.image);
         }
         // Then draw the bodies
         for (auto& item : screenDistDrawItems.items)
@@ -601,7 +601,7 @@ namespace OpenLoco
             {
                 continue;
             }
-            drawingCtx.drawImage(loc + Ui::Point(item.dist, 0), item.image);
+            drawingCtx.drawImage(ZoomLevel::full, loc + Ui::Point(item.dist, 0), item.image);
         }
         return screenDistDrawItems.totalDistance;
     }
@@ -641,7 +641,7 @@ namespace OpenLoco
             }
             else
             {
-                drawingCtx.drawImage(loc + Ui::Point(item.dist, 0), item.image);
+                drawingCtx.drawImage(ZoomLevel::full, loc + Ui::Point(item.dist, 0), item.image);
             }
         }
         return screenDistDrawItems.totalDistance;

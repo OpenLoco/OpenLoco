@@ -1,10 +1,10 @@
 #include "Logging.h"
 #include "LogSink.h"
 #include "LogTerminal.h"
+#include <LogLevel.h>
 #include <algorithm>
-#include <cstdio>
-#include <fmt/color.h>
-#include <stdarg.h>
+#include <memory>
+#include <string_view>
 #include <vector>
 
 namespace OpenLoco::Diagnostics::Logging

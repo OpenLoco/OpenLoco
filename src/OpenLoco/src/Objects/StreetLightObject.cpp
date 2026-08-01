@@ -19,8 +19,8 @@ namespace OpenLoco
         for (auto i = 0; i < 3; i++)
         {
             auto imageId = (i * 4) + image;
-            drawingCtx.drawImage(imgPosition.x - 14, imgPosition.y, imageId + 2);
-            drawingCtx.drawImage(imgPosition.x, imgPosition.y - 7, imageId);
+            drawingCtx.drawImage(ZoomLevel::full, imgPosition.x - 14, imgPosition.y, imageId + 2);
+            drawingCtx.drawImage(ZoomLevel::full, imgPosition.x, imgPosition.y - 7, imageId);
             imgPosition.x += 20;
             imgPosition.y += kDescriptionRowHeight;
         }

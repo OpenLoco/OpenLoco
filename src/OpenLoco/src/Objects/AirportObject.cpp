@@ -12,7 +12,7 @@ namespace OpenLoco
     void AirportObject::drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const
     {
         auto colourImage = Gfx::recolour(image, Colour::mutedDarkRed);
-        drawingCtx.drawImage(x - 34, y - 34, colourImage);
+        drawingCtx.drawImage(ZoomLevel::full, x - 34, y - 34, colourImage);
     }
 
     // 0x00490DE7

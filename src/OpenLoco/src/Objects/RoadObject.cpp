@@ -14,13 +14,13 @@ namespace OpenLoco
         auto colourImage = Gfx::recolour(image, Colour::mutedDarkRed);
         if (paintStyle == 1)
         {
-            drawingCtx.drawImage(x, y, colourImage + 34);
-            drawingCtx.drawImage(x, y, colourImage + 36);
-            drawingCtx.drawImage(x, y, colourImage + 38);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, colourImage + 34);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, colourImage + 36);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, colourImage + 38);
         }
         else
         {
-            drawingCtx.drawImage(x, y, colourImage + 34);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, colourImage + 34);
         }
     }
 

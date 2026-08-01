@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Traits.hpp"
-#include <cstddef>
 #include <cstdint>
 #include <istream>
 

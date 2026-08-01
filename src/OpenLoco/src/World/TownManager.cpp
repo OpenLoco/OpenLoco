@@ -77,7 +77,7 @@ namespace OpenLoco::TownManager
     {
         none = 0,
         adjacentToLargeWaterBody = 1 << 0,
-        notMountaineous = 1 << 1,
+        mountainous = 1 << 1,
         adjacentToSmallWaterBody = 1 << 2,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(LocationFlags);
@@ -178,7 +178,7 @@ namespace OpenLoco::TownManager
                 }
             }
 
-            if ((locationFlags & LocationFlags::notMountaineous) != LocationFlags::none)
+            if ((locationFlags & LocationFlags::mountainous) != LocationFlags::none)
             {
                 auto pos = Pos2(town->x + kTileSize / 2, town->y + kTileSize / 2);
                 auto height = TileManager::getHeight(pos);
@@ -442,7 +442,7 @@ namespace OpenLoco::TownManager
     }
 
     // 0x00496B6D
-    void update()
+    void tick()
     {
         if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !SceneManager::isEditorMode())
         {
@@ -454,7 +454,7 @@ namespace OpenLoco::TownManager
                 if (town != nullptr && !town->empty())
                 {
                     GameCommands::setUpdatingCompanyId(CompanyId::neutral);
-                    town->update();
+                    town->tick();
                 }
             }
         }

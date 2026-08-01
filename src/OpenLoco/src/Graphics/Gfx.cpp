@@ -399,7 +399,6 @@ namespace OpenLoco::Gfx
             /*.width = */ 200,
             /*.height = */ 200,
             /*.pitch = */ 0,
-            /*.zoom_level = */ 0,
         };
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
@@ -408,7 +407,7 @@ namespace OpenLoco::Gfx
         // Draw all the images on top of the one bitmap
         for (size_t i = 0; i < numImages; ++i)
         {
-            drawingCtx.drawImage({ 0, 0 }, baseImageId.withIndexOffset(static_cast<int32_t>(i)));
+            drawingCtx.drawImage(ZoomLevel::full, { 0, 0 }, baseImageId.withIndexOffset(static_cast<int32_t>(i)));
         }
 
         drawingCtx.popRenderTarget();

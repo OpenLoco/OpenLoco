@@ -99,7 +99,7 @@ namespace OpenLoco::GameCommands
         {
             auto* competitor = ObjectManager::get<CompetitorObject>(foundCompetitor->id);
             auto oldName = targetCompany->name;
-            targetCompany->name = competitor->name;
+            targetCompany->name = competitor->firstName;
             StringManager::emptyUserString(oldName);
         }
 

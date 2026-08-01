@@ -220,7 +220,7 @@ namespace OpenLoco::CompanyManager
     }
 
     // 0x00430319
-    void update()
+    void tick()
     {
         if (!SceneManager::isEditorMode() && !Config::get().companyAIDisabled)
         {
@@ -602,7 +602,7 @@ namespace OpenLoco::CompanyManager
         }
         else
         {
-            company->ownerName = competitorObj->name;
+            company->ownerName = competitorObj->firstName;
             uint32_t randVal = 0;
             uint8_t companyNamePrefix = 0; // Usually a colour but can be a town
             uint8_t companyPlaystyle = 0;
@@ -614,7 +614,7 @@ namespace OpenLoco::CompanyManager
                 sfl::static_vector<uint8_t, 32> availableNamePrefixes;
                 for (auto j = 0U; j < 32; ++j)
                 {
-                    if (competitorObj->availablePlayStyles & (1U << j))
+                    if (competitorObj->availableNamePrefixes & (1U << j))
                     {
                         availableNamePrefixes.push_back(j);
                     }
@@ -625,7 +625,7 @@ namespace OpenLoco::CompanyManager
                 sfl::static_vector<uint8_t, 32> availablePlaystyles;
                 for (auto j = 0U; j < 32; ++j)
                 {
-                    if (competitorObj->var_08 & (1U << j))
+                    if (competitorObj->availablePlayStyles & (1U << j))
                     {
                         availablePlaystyles.push_back(j);
                     }
@@ -705,7 +705,7 @@ namespace OpenLoco::CompanyManager
             }
 
             const auto stringId = kCompanyAiPlaystyleString[companyPlaystyle];
-            auto args = FormatArguments::common(kCompanyAiNamePrefixes[companyNamePrefix], competitorObj->availableNamePrefixes);
+            auto args = FormatArguments::common(kCompanyAiNamePrefixes[companyNamePrefix], competitorObj->lastName);
             if (company->aiPlaystyleTownId != 0xFFU)
             {
                 args.push(TownManager::get(static_cast<TownId>(company->aiPlaystyleTownId))->name);
@@ -791,21 +791,21 @@ namespace OpenLoco::CompanyManager
     {
         auto* playerCompany = getPlayerCompany();
         auto& gameState = getGameState();
-        auto roadType = gameState.lastTrackTypeOption | (1U << 7);
+        auto roadType = gameState.defaultTrackTypeObjectId | (1U << 7);
         if (roadType == 0xFFU)
         {
             const auto roads = companyGetAvailableRoads(playerCompany->id());
             roadType = roads.empty() ? 0xFFU : roads[0];
         }
-        gameState.lastRoadOption = roadType;
+        gameState.defaultRoadObjectId = roadType;
         const auto tracks = companyGetAvailableRailTracks(playerCompany->id());
-        gameState.lastRailroadOption = tracks.empty() ? 0xFFU : tracks[0];
+        gameState.defaultRailroadObjectId = tracks.empty() ? 0xFFU : tracks[0];
 
         auto vehicleTypeInt = Numerics::bitScanForward(playerCompany->availableVehicles);
         const auto vehicleType = vehicleTypeInt == -1 ? VehicleType::train : static_cast<VehicleType>(vehicleTypeInt);
 
         gameState.lastVehicleType = vehicleType;
-        gameState.lastBuildVehiclesOption = vehicleType;
+        gameState.defaultBuildVehicleType = vehicleType;
         gameState.lastAirport = 0xFFU;
         gameState.lastShipPort = 0xFFU;
 
@@ -1063,7 +1063,7 @@ namespace OpenLoco::CompanyManager
             return;
         }
 
-        auto screenPosition = viewport->getUiCentre();
+        auto screenPosition = viewport->getWindowCentre() + main->position();
 
         auto res = Ui::ViewportInteraction::getSurfaceLocFromUi(screenPosition);
 

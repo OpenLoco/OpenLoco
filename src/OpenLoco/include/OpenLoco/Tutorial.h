@@ -7,6 +7,7 @@ namespace OpenLoco::Tutorial
     enum class State : uint8_t
     {
         none,
+        initialising,
         playing,
         recording,
     };

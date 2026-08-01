@@ -1,5 +1,5 @@
 #pragma once
-#include "S5/Limits.h"
+#include <OpenLoco/S5/Limits.h>
 
 namespace OpenLoco::Limits
 {

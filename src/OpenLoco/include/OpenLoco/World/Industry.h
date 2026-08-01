@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Engine/Limits.h"
-#include "Map/Tile.h"
-#include "Map/TileLoop.hpp"
-#include "Types.hpp"
 #include <OpenLoco/Core/BitSet.hpp>
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Prng.h>
+#include <OpenLoco/Engine/Limits.h>
+#include <OpenLoco/Map/Tile.h>
+#include <OpenLoco/Map/TileLoop.hpp>
+#include <OpenLoco/Types.hpp>
 #include <limits>
 #include <span>
 
@@ -31,6 +31,8 @@ namespace OpenLoco
         flag_04 = 1U << 3,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(IndustryFlags);
+
+    constexpr uint8_t kIndustryConstructionComplete = std::numeric_limits<uint8_t>::max();
 
     struct Industry
     {
@@ -76,7 +78,7 @@ namespace OpenLoco
         bool canProduceCargo() const;
         void getStatusString(const char* buffer);
 
-        void update();
+        void tick();
         void updateDaily();
         void updateMonthly();
         bool isMonthlyProductionUp();

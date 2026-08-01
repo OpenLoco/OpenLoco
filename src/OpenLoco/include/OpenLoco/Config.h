@@ -3,7 +3,6 @@
 #include "Input.h"
 #include "Objects/Object.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <array>
 #include <cstddef>
 #include <cstdint>
@@ -136,12 +135,6 @@ namespace OpenLoco::Config
         Playlist customJukebox;
     };
 
-    struct KeyboardShortcut
-    {
-        uint32_t keyCode;
-        Input::KeyModifier modifiers;
-    };
-
     struct Network
     {
         bool enabled{};
@@ -181,6 +174,8 @@ namespace OpenLoco::Config
         bool cashPopupRendering = true;
         bool edgeScrolling = true;
         int32_t edgeScrollingSpeed = 12;
+        bool invertRightMouseViewPan = false;
+        bool toolbarAutoMenu = true;
         WindowFrameStyle windowFrameStyle = WindowFrameStyle::background;
         bool zoomToCursor = true;
 
@@ -203,7 +198,6 @@ namespace OpenLoco::Config
         bool companyAIDisabled = false;
         bool disableVehicleLoadPenaltyCheat = false;
         bool displayLockedVehicles = false;
-        bool invertRightMouseViewPan = false;
         bool townGrowthDisabled = false;
         bool trainsReverseAtSignals = true;
         bool disableStationSizeLimit = false;
@@ -219,13 +213,11 @@ namespace OpenLoco::Config
 
         int32_t scenarioSelectedTab;
 
-        std::map<Input::Shortcut, KeyboardShortcut> shortcuts;
+        std::map<std::string, std::string> shortcuts;
     };
 
     Config& get();
 
     Config& read();
     void write();
-
-    void resetShortcuts();
 }

@@ -68,11 +68,13 @@ namespace OpenLoco::Tutorial
             return;
         }
 
+        _state = State::initialising;
+
         // NB: only used by tutorial widget drawing after.
         _tutorialNumber = tutorialNumber;
 
         // Figure out what dimensions to use for the tutorial, and whether we can continue using scaling.
-        const auto& config = Config::get();
+        auto& config = Config::get();
         Config::Resolution newResolution = tutorialResolution;
         if (config.scaleFactor > 1.0)
         {
@@ -93,9 +95,14 @@ namespace OpenLoco::Tutorial
         {
             if (!Ui::setDisplayMode(Config::ScreenMode::window, newResolution))
             {
+                _state = State::none;
                 return;
             }
         }
+
+        // Disable options that interfere with tutorial operations.
+        config.cheatsMenuEnabled = false;
+        config.invertRightMouseViewPan = false;
 
         // Get the environment file for this tutorial.
         static constexpr Environment::PathId tutorialFileIds[] = {
@@ -136,8 +143,8 @@ namespace OpenLoco::Tutorial
     void stop()
     {
         _state = State::none;
-        Gfx::invalidateScreen();
-        Gui::resize();
+        Config::read();
+        Ui::setDisplayMode(Config::get().display.mode);
     }
 
     // 0x0043C7A2

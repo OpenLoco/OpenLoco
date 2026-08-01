@@ -3,6 +3,7 @@
 #include "Graphics/Gfx.h"
 #include "Location.hpp"
 #include "Types.hpp"
+#include "ZoomLevel.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Engine/World.hpp>
 #include <algorithm>
@@ -68,12 +69,12 @@ namespace OpenLoco::Ui
 
     struct Viewport;
 
-    namespace ScreenToViewport
+    namespace WindowToViewport
     {
         [[nodiscard]] constexpr Point applyTransform(const Point& uiPoint, const Viewport& vp);
     }
 
-    namespace ViewportToScreen
+    namespace ViewportToWindow
     {
         [[nodiscard]] constexpr Point applyTransform(const Point& vpPoint, const Viewport& vp);
     }
@@ -88,7 +89,7 @@ namespace OpenLoco::Ui
         int32_t viewY;       // 0x0A
         int32_t viewWidth;   // 0x0C
         int32_t viewHeight;  // 0x0E
-        uint8_t zoom;        // 0x10
+        ZoomLevel zoom;      // 0x10
         uint8_t pad_11;      // 0x11
         ViewportFlags flags; // 0x12
 
@@ -97,7 +98,7 @@ namespace OpenLoco::Ui
             return (vpos.y >= viewY && vpos.y < viewY + viewHeight && vpos.x >= viewX && vpos.x < viewX + viewWidth);
         }
 
-        constexpr bool containsUi(const Point& pos)
+        constexpr bool containsWindowPos(const Point& pos) const
         {
             return (pos.x >= x && pos.x < x + width && pos.y >= y && pos.y < y + height);
         }
@@ -147,29 +148,29 @@ namespace OpenLoco::Ui
         void setRotation(int32_t value);
 
         /**
-         * Maps a 2D viewport position to a UI (screen) position.
+         * Maps a 2D viewport position to a window relative position.
          */
-        Point viewportToScreen(const viewport_pos& vpos) const
+        Point viewportToWindow(const viewport_pos& vpos) const
         {
-            const auto vpPoint = ViewportToScreen::applyTransform({ vpos.x, vpos.y }, *this);
+            const auto vpPoint = ViewportToWindow::applyTransform({ vpos.x, vpos.y }, *this);
             return vpPoint;
         }
 
         /**
-         * Maps a UI (screen) position to a 2D viewport position.
+         * Maps a window relative position to a 2D viewport position.
          */
-        viewport_pos screenToViewport(const Point& pos) const
+        viewport_pos windowToViewport(const Point& pos) const
         {
-            const auto vpPoint = ScreenToViewport::applyTransform(pos, *this);
+            const auto vpPoint = WindowToViewport::applyTransform(pos, *this);
             return { vpPoint.x, vpPoint.y };
         }
         /**
-         * Maps a UI (screen) rectangle to a 2D viewport rectangle.
+         * Maps a window relative rectangle to a 2D viewport rectangle.
          */
-        Rect screenToViewport(const Rect& rect)
+        Rect windowToViewport(const Rect& rect)
         {
-            auto leftTop = screenToViewport(Point(rect.left(), rect.top()));
-            auto rightBottom = screenToViewport(Point(rect.right(), rect.bottom()));
+            auto leftTop = windowToViewport(Point(rect.left(), rect.top()));
+            auto rightBottom = windowToViewport(Point(rect.right(), rect.bottom()));
             return Rect::fromLTRB(leftTop.x, leftTop.y, rightBottom.x, rightBottom.y);
         }
 
@@ -178,7 +179,7 @@ namespace OpenLoco::Ui
         SavedViewSimple toSavedView() const;
 
         viewport_pos getCentre() const;
-        Point getUiCentre() const;
+        Point getWindowCentre() const;
         World::Pos2 getCentreMapPosition() const;
         std::optional<World::Pos2> getCentreScreenMapPosition() const;
 
@@ -203,16 +204,16 @@ namespace OpenLoco::Ui
         int32_t savedViewY;            // 0x4
     };
 
-    namespace ScreenToViewport
+    namespace WindowToViewport
     {
-        [[nodiscard]] constexpr Point uiOffsetTransform(const Point& uiPoint, const Viewport& vp)
+        [[nodiscard]] constexpr Point windowOffsetTransform(const Point& uiPoint, const Viewport& vp)
         {
             return uiPoint - Point{ vp.x, vp.y };
         }
 
         [[nodiscard]] constexpr Point scaleTransform(const Point& uiPoint, const Viewport& vp)
         {
-            return uiPoint << vp.zoom;
+            return Point{ vp.zoom.applyTo(uiPoint.x), vp.zoom.applyTo(uiPoint.y) };
         }
 
         [[nodiscard]] constexpr Point viewOffsetTransform(const Point& point, const Viewport& vp)
@@ -222,20 +223,20 @@ namespace OpenLoco::Ui
 
         [[nodiscard]] constexpr Point applyTransform(const Point& uiPoint, const Viewport& vp)
         {
-            return viewOffsetTransform(scaleTransform(uiOffsetTransform(uiPoint, vp), vp), vp);
+            return viewOffsetTransform(scaleTransform(windowOffsetTransform(uiPoint, vp), vp), vp);
         }
     }
 
-    namespace ViewportToScreen
+    namespace ViewportToWindow
     {
-        [[nodiscard]] constexpr Point uiOffsetTransform(const Point& uiPoint, const Viewport& vp)
+        [[nodiscard]] constexpr Point windowOffsetTransform(const Point& uiPoint, const Viewport& vp)
         {
             return uiPoint + Point{ vp.x, vp.y };
         }
 
         [[nodiscard]] constexpr Point scaleTransform(const Point& uiPoint, const Viewport& vp)
         {
-            return uiPoint >> vp.zoom;
+            return Point{ vp.zoom.applyInversedTo(uiPoint.x), vp.zoom.applyInversedTo(uiPoint.y) };
         }
 
         [[nodiscard]] constexpr Point viewOffsetTransform(const Point& point, const Viewport& vp)
@@ -245,7 +246,7 @@ namespace OpenLoco::Ui
 
         [[nodiscard]] constexpr Point applyTransform(const Point& vpPoint, const Viewport& vp)
         {
-            return uiOffsetTransform(scaleTransform(viewOffsetTransform(vpPoint, vp), vp), vp);
+            return windowOffsetTransform(scaleTransform(viewOffsetTransform(vpPoint, vp), vp), vp);
         }
     }
 

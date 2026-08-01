@@ -20,13 +20,21 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         next_button,
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kPreviousFrame{ "previous_frame" };
+        constexpr WidgetId kPreviousButton{ "previous_button" };
+        constexpr WidgetId kNextFrame{ "next_frame" };
+        constexpr WidgetId kNextButton{ "next_button" };
+    }
+
     static constexpr uint16_t kWindowHeight = 32;
 
     static constexpr auto _widgets = makeWidgets(
-        Widgets::Wt3Widget({ 0, 0 }, { 200, 34 }, WindowColour::primary),
-        Widgets::ImageButton({ 2, 2 }, { 196, 30 }, WindowColour::primary),
-        Widgets::Wt3Widget({ 440, 0 }, { 200, 34 }, WindowColour::primary),
-        Widgets::ImageButton({ 442, 2 }, { 196, 30 }, WindowColour::primary)
+        Widgets::Wt3Widget(Widx::kPreviousFrame, { 0, 0 }, { 200, 34 }, WindowColour::primary),
+        Widgets::ImageButton(Widx::kPreviousButton, { 2, 2 }, { 196, 30 }, WindowColour::primary),
+        Widgets::Wt3Widget(Widx::kNextFrame, { 440, 0 }, { 200, 34 }, WindowColour::primary),
+        Widgets::ImageButton(Widx::kNextButton, { 442, 2 }, { 196, 30 }, WindowColour::primary)
 
     );
 
@@ -71,24 +79,24 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 
         if (EditorController::canGoBack())
         {
-            drawingCtx.drawRect(previous.left + self.x, previous.top + self.y, previous.width(), previous.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+            drawingCtx.drawRect(previous.left, previous.top, previous.width(), previous.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
         }
-        drawingCtx.drawRect(next.left + self.x, next.top + self.y, next.width(), next.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(next.left, next.top, next.width(), next.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
 
         self.draw(drawingCtx);
 
         if (EditorController::canGoBack())
         {
-            drawingCtx.drawRectInset(previous.left + self.x + 1, previous.top + self.y + 1, previous.width() - 2, previous.height() - 2, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
+            drawingCtx.drawRectInset(previous.left + 1, previous.top + 1, previous.width() - 2, previous.height() - 2, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
         }
-        drawingCtx.drawRectInset(next.left + self.x + 1, next.top + self.y + 1, next.width() - 2, next.height() - 2, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
+        drawingCtx.drawRectInset(next.left + 1, next.top + 1, next.width() - 2, next.height() - 2, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
-        auto point = Point((previous.right + next.left) / 2 + self.x, self.y + self.height - 12);
+        auto point = Point((previous.right + next.left) / 2, self.height - 12);
         tr.drawStringCentred(point, self.getColour(WindowColour::tertiary).opaque().outline(), kStepNames.at(EditorController::getCurrentStep()));
 
         if (EditorController::canGoBack())
         {
-            drawingCtx.drawImage(self.x + previous.left + 6, self.y + previous.top + 6, ImageIds::step_back);
+            drawingCtx.drawImage(ZoomLevel::full, previous.left + 6, previous.top + 6, ImageIds::step_back);
             int x = (previous.left + 30 + previous.right) / 2;
             int y = previous.top + 6;
             auto textColour = self.getColour(WindowColour::secondary).opaque();
@@ -97,13 +105,13 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
                 textColour = Colour::white;
             }
 
-            point = Point(self.x + x, self.y + y);
+            point = Point(x, y);
             tr.drawStringCentred(point, textColour, StringIds::editor_previous_step);
 
-            point = Point(self.x + x, self.y + y + 10);
+            point = Point(x, y + 10);
             tr.drawStringCentred(point, textColour, kStepNames.at(EditorController::getPreviousStep()));
         }
-        drawingCtx.drawImage(self.x + next.right - 29, self.y + next.top + 4, ImageIds::step_forward);
+        drawingCtx.drawImage(ZoomLevel::full, next.right - 29, next.top + 4, ImageIds::step_forward);
         int x = next.left + (next.width() - 31) / 2;
         int y = next.top + 6;
         auto textColour = self.getColour(WindowColour::secondary).opaque();
@@ -112,23 +120,23 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
             textColour = Colour::white;
         }
 
-        point = Point(self.x + x, self.y + y);
+        point = Point(x, y);
         tr.drawStringCentred(point, textColour, StringIds::editor_next_step);
 
-        point = Point(self.x + x, self.y + y + 10);
+        point = Point(x, y + 10);
         tr.drawStringCentred(point, textColour, kStepNames.at(EditorController::getNextStep()));
     }
 
     // 0x0043D0ED
-    static void onMouseUp(Window&, WidgetIndex_t i, [[maybe_unused]] const WidgetId id)
+    static void onMouseUp(Window&, [[maybe_unused]] WidgetIndex_t i, const WidgetId id)
     {
-        switch (i)
+        switch (id)
         {
-            case widx::previous_button:
+            case Widx::kPreviousButton:
                 EditorController::goToPreviousStep();
                 break;
 
-            case widx::next_button:
+            case Widx::kNextButton:
                 EditorController::goToNextStep();
                 break;
         }

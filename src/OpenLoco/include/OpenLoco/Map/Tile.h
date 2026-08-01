@@ -2,8 +2,8 @@
 
 #include "TileElement.h"
 #include "TileElementEntry.h"
-#include "Types.hpp"
 #include <OpenLoco/Engine/World.hpp>
+#include <OpenLoco/Types.hpp>
 #include <array>
 #include <cassert>
 #include <cstddef>

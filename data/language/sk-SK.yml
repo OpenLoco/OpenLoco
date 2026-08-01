@@ -1020,11 +1020,11 @@ strings:
   994: ???
   995: ???
 
-  996: "{STRINGID}:{MOVE_X 215}{STRINGID}{STRINGID}"
+  996: "{STRINGID}:"
   997: "SHIFT + "
   998: "CTRL + "
   999: Zmeniť klávesovú skratku
-  1000: "{COLOUR WINDOW_2}Stlačte novú klávesovú skratku pre:{NEWLINE}{NEWLINE_SMALLER}{COLOUR BLACK}“{STRINGID}”"
+  1000: "{COLOUR WINDOW_2}Stlačte novú klávesovú skratku pre:"
   1001: "{SMALLFONT}{COLOUR BLACK}Kliknutím na popis skratky vyberte novú klávesu"
   1002: Posúvať zobrazenie keď kurzor je na okraji obrazovky
   1003: "{SMALLFONT}{COLOUR BLACK}Vyberte, či sa má posúvať zobrazenie keď kurzor myši je na okraji obrazovky"

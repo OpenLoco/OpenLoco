@@ -1,9 +1,6 @@
 #include "Numerics.hpp"
 
-#include <cstddef>
 #include <cstdint>
-#include <limits.h>
-#include <type_traits>
 #ifdef _MSC_VER
 #include <intrin.h>
 #endif

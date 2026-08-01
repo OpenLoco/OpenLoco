@@ -1,8 +1,14 @@
 #include "OpenLoco/Diagnostics/LogTerminal.h"
+#include <LogLevel.h>
 #include <OpenLoco/Platform/Platform.h>
+#include <chrono>
+#include <cstdio>
+#include <fmt/base.h>
 #include <fmt/chrono.h>
 #include <fmt/color.h>
 #include <fmt/format.h>
+#include <string>
+#include <string_view>
 
 namespace OpenLoco::Diagnostics::Logging
 {

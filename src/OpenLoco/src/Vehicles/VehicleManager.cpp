@@ -30,7 +30,7 @@
 namespace OpenLoco::VehicleManager
 {
     // 0x004A8826
-    void update()
+    void tick()
     {
         if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !SceneManager::isEditorMode())
         {

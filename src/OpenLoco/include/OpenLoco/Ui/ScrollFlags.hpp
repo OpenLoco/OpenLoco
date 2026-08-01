@@ -1,7 +1,7 @@
 #pragma once
 
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <type_traits>
+#include <cstdint>
 
 namespace OpenLoco::Ui
 {

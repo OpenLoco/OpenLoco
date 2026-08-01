@@ -12,7 +12,7 @@ namespace OpenLoco
     void BridgeObject::drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const
     {
         auto colourImage = Gfx::recolour(image, Colour::mutedDarkRed);
-        drawingCtx.drawImage(x - 21, y - 9, colourImage);
+        drawingCtx.drawImage(ZoomLevel::full, x - 21, y - 9, colourImage);
     }
 
     // 0x0042C651

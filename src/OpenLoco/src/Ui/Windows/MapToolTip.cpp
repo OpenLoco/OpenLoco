@@ -53,7 +53,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
             return;
         }
 
-        auto height = 55;
+        const auto height = 55;
         auto maxY = Ui::height() - height;
         int16_t y = cursor.y + 15; // Normally, we'd display the tooltip 15 lower
         if (y > maxY)
@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
             y -= height + 19;
         }
 
-        auto width = 240;
+        const auto width = 240;
         int16_t x = width <= Ui::width() ? std::clamp(cursor.x - (width / 2), 0, Ui::width() - width) : 0;
 
         auto* window = WindowManager::find(WindowType::mapTooltip);
@@ -72,8 +72,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
             window->invalidate();
             window->x = x;
             window->y = y;
-            window->width = width;
-            window->height = height;
+            window->setSize({ width, height });
         }
         else
         {
@@ -122,16 +121,16 @@ namespace OpenLoco::Ui::Windows::MapToolTip
 
         if (_mapTooltipOwner == CompanyId::null || _mapTooltipOwner == CompanyManager::getControllingId())
         {
-            Ui::Point origin(self.x + self.width / 2, self.y + self.height / 2 - 5);
+            Ui::Point origin(self.width / 2, self.height / 2 - 5);
             tr.drawStringCentredWrapped(origin, self.width, Colour::black, StringIds::outlined_wcolour2_stringid, args);
         }
         else
         {
-            Ui::Point origin(self.x + self.width / 2 + 13, self.y + self.height / 2 - 5);
+            Ui::Point origin(self.width / 2 + 13, self.height / 2 - 5);
             auto basePoint = tr.drawStringCentredWrapped(origin, self.width - 28, Colour::black, StringIds::outlined_wcolour2_stringid, args);
 
             auto left = basePoint.x - 28;
-            auto top = self.y + self.height / 2 - 13;
+            auto top = self.height / 2 - 13;
             auto right = left + 25;
             auto bottom = top + 25;
 
@@ -141,7 +140,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
             auto* competitor = ObjectManager::get<CompetitorObject>(company->competitorId);
             auto imageId = Gfx::recolour(competitor->images[enumValue(company->ownerEmotion)], company->mainColours.primary);
 
-            drawingCtx.drawImage(left + 1, top + 1, imageId);
+            drawingCtx.drawImage(ZoomLevel::full, left + 1, top + 1, imageId);
         }
     }
 

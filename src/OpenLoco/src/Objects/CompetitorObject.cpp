@@ -20,7 +20,7 @@ namespace OpenLoco
         drawingCtx.drawRect(0, 0, kObjectPreviewSize.width, kObjectPreviewSize.height, Colours::getShade(Colour::mutedSeaGreen, 1), Gfx::RectFlags::none);
 
         auto image = Gfx::recolour(images[0] + 1, Colour::mutedSeaGreen);
-        drawingCtx.drawImage(x - 32, y - 32, image);
+        drawingCtx.drawImage(ZoomLevel::full, x - 32, y - 32, image);
     }
 
     // 0x00434DA7
@@ -84,8 +84,8 @@ namespace OpenLoco
             remainingData = remainingData.subspan(strRes.tableLength);
         };
 
-        loadString(name, 0);
-        loadString(availableNamePrefixes, 1);
+        loadString(firstName, 0);
+        loadString(lastName, 1);
 
         // Load images
         auto imageRes = ObjectManager::loadImageTable(remainingData);
@@ -107,8 +107,8 @@ namespace OpenLoco
     // 0x00434D08
     void CompetitorObject::unload()
     {
-        name = 0;
-        availableNamePrefixes = 0;
+        firstName = 0;
+        lastName = 0;
 
         std::fill(std::begin(images), std::end(images), 0);
     }

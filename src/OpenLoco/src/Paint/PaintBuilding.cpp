@@ -199,7 +199,7 @@ namespace OpenLoco::Paint
         session.resetLastPS(); // Odd...
         if (buildingObj->hasFlags(BuildingObjectFlags::hasShadows))
         {
-            if (session.getRenderTarget()->zoomLevel <= 1)
+            if (session.getZoom() <= 1)
             {
                 const auto shadowImageOffset = (buildingObj->numParts + buildingObj->numElevatorSequences + variation) * 4 + buildingObj->image + rotation;
                 const ImageId shadowImage = ImageId(shadowImageOffset).withTranslucency(Colours::getShadow(Colour::orange));
