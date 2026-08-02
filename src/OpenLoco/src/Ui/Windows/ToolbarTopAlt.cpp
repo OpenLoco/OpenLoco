@@ -313,21 +313,24 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     // 0x0043D2F3
     static void prepareDraw(Window& window)
     {
-        uint32_t x = std::max(640, Ui::width()) - 1;
-
-        Common::rightAlignTabs(&window, x, { Common::widx::towns_menu });
-        x -= 11;
-        Common::rightAlignTabs(&window, x, { Common::widx::road_menu, Common::widx::terraform_menu });
-
         const bool isLandscapeEditor = EditorController::getCurrentStep() == EditorController::Step::landscapeEditor;
 
+        // Left-hand side
+        window.widgets[widx::map_generation_menu].hidden = !isLandscapeEditor;
         window.widgets[Common::widx::zoom_menu].hidden = !isLandscapeEditor;
         window.widgets[Common::widx::rotate_menu].hidden = !isLandscapeEditor;
         window.widgets[Common::widx::view_menu].hidden = !isLandscapeEditor;
+
+        // Right-hand side
         window.widgets[Common::widx::terraform_menu].hidden = !isLandscapeEditor;
-        window.widgets[widx::map_generation_menu].hidden = !isLandscapeEditor;
-        window.widgets[Common::widx::towns_menu].hidden = !isLandscapeEditor;
+        window.widgets[Common::widx::railroad_menu].hidden = true;
         window.widgets[Common::widx::road_menu].hidden = !(isLandscapeEditor && getGameState().defaultRoadObjectId != 0xFF);
+        window.widgets[Common::widx::port_menu].hidden = true;
+        window.widgets[Common::widx::build_vehicles_menu].hidden = true;
+
+        window.widgets[Common::widx::vehicles_menu].hidden = true;
+        window.widgets[Common::widx::stations_menu].hidden = true;
+        window.widgets[Common::widx::towns_menu].hidden = !isLandscapeEditor;
 
         auto interface = ObjectManager::get<InterfaceSkinObject>();
         if (!Audio::isAudioEnabled())
@@ -351,6 +354,15 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         window.widgets[Common::widx::road_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque);
 
         Common::prepareTownWidget(window);
+
+        if (Config::get().toolbarButtonsCentred)
+        {
+            Common::centreToolbar(window);
+        }
+        else
+        {
+            Common::justifyToolbar(window);
+        }
     }
 
     static constexpr WindowEventList kEvents = {

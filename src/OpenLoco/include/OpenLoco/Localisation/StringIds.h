@@ -2174,6 +2174,7 @@ namespace OpenLoco::StringIds
     constexpr StringId keyboard_shortcut_binding = 2458;
     constexpr StringId shortcut_debug_window = 2459;
     constexpr StringId toolbar_auto_menu = 2460;
+    constexpr StringId toolbar_buttons_centred = 2461;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

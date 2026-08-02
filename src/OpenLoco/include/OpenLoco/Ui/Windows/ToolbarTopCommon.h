@@ -66,5 +66,6 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     void onMouseDown(Window* window, WidgetIndex_t widgetIndex);
     void onDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex);
 
-    void rightAlignTabs(Window* window, uint32_t& x, const std::initializer_list<uint32_t> widxs);
+    void centreToolbar(Window& self);
+    void justifyToolbar(Window& self);
 }
