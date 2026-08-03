@@ -184,7 +184,11 @@ namespace OpenLoco::Ui
             columns.push_back(columnRt);
         }
 
+#if defined(__EMSCRIPTEN__)
+        std::for_each(columns.begin(), columns.end(), [&](const auto& columnRt) {
+#else
         std::for_each(std::execution::par, columns.begin(), columns.end(), [&](const auto& columnRt) {
+#endif
             // TODO: This bypasses the interface currently, needs refactoring to create a new drawing context per thread.
             Gfx::SoftwareDrawingContext columnDrawingCtx;
             columnDrawingCtx.pushRenderTarget(columnRt);
