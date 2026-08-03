@@ -142,6 +142,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             WindowFlags::resizable,
             getEvents());
 
+        window->setSizeBounds(kWindowSizeMin, kWindowSizeMax);
         window->setWidgets(_widgets);
         window->initScrollWidgets();
 

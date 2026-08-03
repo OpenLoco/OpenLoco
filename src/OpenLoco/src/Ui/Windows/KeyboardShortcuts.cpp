@@ -43,7 +43,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         Widgets::ImageButton(Widx::kCloseButton, { kWindowSize.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel({ 0, 15 }, { kWindowSize.width, kWindowSize.height - 15 }, WindowColour::secondary),
         Widgets::ScrollView({ 4, 19 }, { kWindowSize.width - 8, 202 }, WindowColour::secondary, Scrollbars::vertical, StringIds::keyboard_shortcut_list_tip),
-        Widgets::Button(Widx::kResetKeysBtn, { 4, 223 }, { 150, 12 }, WindowColour::secondary, StringIds::reset_keys, StringIds::reset_keys_tip)
+        Widgets::Button(Widx::kResetKeysBtn, { kWindowSize.width - 150 - 4 - 12, 223 }, { 150, 12 }, WindowColour::secondary, StringIds::reset_keys, StringIds::reset_keys_tip)
 
     );
 
@@ -109,10 +109,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         window->rowCount = static_cast<int16_t>(_shortcutList.size());
         window->rowHover = -1;
 
-        window->minWidth = kWindowSize.width;
-        window->minHeight = kWindowSize.height;
-        window->maxWidth = kMaxWindowSize.width;
-        window->maxHeight = kMaxWindowSize.height;
+        window->setSizeBounds(kWindowSize, kMaxWindowSize);
 
         return window;
     }
