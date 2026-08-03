@@ -26,7 +26,7 @@
 #include "Ui/Screenshot.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
-#include "Ui/Widgets/ToolbarButtonWidget.h"
+#include "Ui/Widgets/ImageButtonAltWidget.h"
 #include "Ui/WindowManager.h"
 #include "Ui/Windows/ToolbarTopCommon.h"
 #include "Vehicles/Vehicle.h"
@@ -57,24 +57,24 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
     static constexpr auto _widgets = makeWidgets(
         // Left-hand side
-        Widgets::ToolbarButton(Common::Widx::kLoadsaveMenu, { 0, 0 }, { 30, 28 }, WindowColour::primary),
-        Widgets::ToolbarButton(Common::Widx::kAudioMenu, { 30, 0 }, { 30, 28 }, WindowColour::primary),
-        Widgets::ToolbarButton(Widx::kCheatsMenu, { 60, 0 }, { 30, 28 }, WindowColour::primary),
+        Widgets::ImageButtonAlt(Common::Widx::kLoadsaveMenu, { 0, 0 }, { 30, 28 }, WindowColour::primary),
+        Widgets::ImageButtonAlt(Common::Widx::kAudioMenu, { 30, 0 }, { 30, 28 }, WindowColour::primary),
+        Widgets::ImageButtonAlt(Widx::kCheatsMenu, { 60, 0 }, { 30, 28 }, WindowColour::primary),
 
-        Widgets::ToolbarButton(Common::Widx::kZoomMenu, { 104, 0 }, { 30, 28 }, WindowColour::secondary),
-        Widgets::ToolbarButton(Common::Widx::kRotateMenu, { 134, 0 }, { 30, 28 }, WindowColour::secondary),
-        Widgets::ToolbarButton(Common::Widx::kViewMenu, { 164, 0 }, { 30, 28 }, WindowColour::secondary),
+        Widgets::ImageButtonAlt(Common::Widx::kZoomMenu, { 104, 0 }, { 30, 28 }, WindowColour::secondary),
+        Widgets::ImageButtonAlt(Common::Widx::kRotateMenu, { 134, 0 }, { 30, 28 }, WindowColour::secondary),
+        Widgets::ImageButtonAlt(Common::Widx::kViewMenu, { 164, 0 }, { 30, 28 }, WindowColour::secondary),
 
         // Right-hand side
-        Widgets::ToolbarButton(Common::Widx::kTerraformMenu, { 267, 0 }, { 30, 28 }, WindowColour::tertiary),
-        Widgets::ToolbarButton(Common::Widx::kRailroadMenu, { 387, 0 }, { 30, 28 }, WindowColour::tertiary),
-        Widgets::ToolbarButton(Common::Widx::kRoadMenu, { 357, 0 }, { 30, 28 }, WindowColour::tertiary),
-        Widgets::ToolbarButton(Common::Widx::kPortMenu, { 417, 0 }, { 30, 28 }, WindowColour::tertiary),
-        Widgets::ToolbarButton(Common::Widx::kBuildVehiclesMenu, { 417, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ImageButtonAlt(Common::Widx::kTerraformMenu, { 267, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ImageButtonAlt(Common::Widx::kRailroadMenu, { 387, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ImageButtonAlt(Common::Widx::kRoadMenu, { 357, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ImageButtonAlt(Common::Widx::kPortMenu, { 417, 0 }, { 30, 28 }, WindowColour::tertiary),
+        Widgets::ImageButtonAlt(Common::Widx::kBuildVehiclesMenu, { 417, 0 }, { 30, 28 }, WindowColour::tertiary),
 
-        Widgets::ToolbarButton(Common::Widx::kVehiclesMenu, { 490, 0 }, { 30, 28 }, WindowColour::quaternary),
-        Widgets::ToolbarButton(Common::Widx::kStationsMenu, { 520, 0 }, { 30, 28 }, WindowColour::quaternary),
-        Widgets::ToolbarButton(Common::Widx::kTownsMenu, { 460, 0 }, { 30, 28 }, WindowColour::quaternary)
+        Widgets::ImageButtonAlt(Common::Widx::kVehiclesMenu, { 490, 0 }, { 30, 28 }, WindowColour::quaternary),
+        Widgets::ImageButtonAlt(Common::Widx::kStationsMenu, { 520, 0 }, { 30, 28 }, WindowColour::quaternary),
+        Widgets::ImageButtonAlt(Common::Widx::kTownsMenu, { 460, 0 }, { 30, 28 }, WindowColour::quaternary)
 
     );
 

@@ -42,6 +42,7 @@
 #include "Ui/Widgets/CaptionWidget.h"
 #include "Ui/Widgets/ColourButtonWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
+#include "Ui/Widgets/ImageButtonAltWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/ScrollViewWidget.h"
@@ -989,8 +990,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(130, 105, StringIds::clear_area),
             Widgets::Wt3Widget(Widx::kToolArea, { 33 + 16, 45 }, { 64, 44 }, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_clear_area),
-            Widgets::ImageButton(Widx::kDecreaseArea, { 34 + 16, 46 }, { 16, 16 }, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_clear_area),
-            Widgets::ImageButton(Widx::kIncreaseArea, { 80 + 16, 72 }, { 16, 16 }, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_clear_area)
+            Widgets::ImageButtonAlt(Widx::kDecreaseArea, { 34 + 16, 46 }, { 16, 16 }, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_clear_area),
+            Widgets::ImageButtonAlt(Widx::kIncreaseArea, { 80 + 16, 72 }, { 16, 16 }, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_clear_area)
 
         );
 
@@ -1233,8 +1234,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(130, 105, StringIds::title_adjust_land),
             Widgets::Wt3Widget(Widx::kToolArea, { 49, 45 }, { 64, 44 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_adjust_land_tool),
-            Widgets::ImageButton(Widx::kDecreaseArea, { 50, 46 }, { 16, 16 }, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_land_area),
-            Widgets::ImageButton(Widx::kIncreaseArea, { 96, 72 }, { 16, 16 }, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_land_area),
+            Widgets::ImageButtonAlt(Widx::kDecreaseArea, { 50, 46 }, { 16, 16 }, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_land_area),
+            Widgets::ImageButtonAlt(Widx::kIncreaseArea, { 96, 72 }, { 16, 16 }, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_land_area),
             Widgets::ImageButton(Widx::kMountainMode, { 57, 92 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_slope_up, StringIds::mountainModeTooltip),
             Widgets::ImageButton(Widx::kPaintMode, { 83, 92 }, { 24, 24 }, WindowColour::secondary, ImageIds::paintbrush, StringIds::tooltip_paint_landscape_tool),
             Widgets::ImageButton(Widx::kLandMaterial, { 112, 94 }, { 20, 20 }, WindowColour::primary)
@@ -1920,8 +1921,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(130, 105, StringIds::title_adjust_water),
             Widgets::Wt3Widget(Widx::kToolArea, { 33 + 16, 45 }, { 64, 44 }, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_adjust_water_tool),
-            Widgets::ImageButton(Widx::kDecreaseArea, { 34 + 16, 46 }, { 16, 16 }, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_water_area),
-            Widgets::ImageButton(Widx::kIncreaseArea, { 80 + 16, 72 }, { 16, 16 }, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_water_area)
+            Widgets::ImageButtonAlt(Widx::kDecreaseArea, { 34 + 16, 46 }, { 16, 16 }, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_water_area),
+            Widgets::ImageButtonAlt(Widx::kIncreaseArea, { 80 + 16, 72 }, { 16, 16 }, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_water_area)
 
         );
 

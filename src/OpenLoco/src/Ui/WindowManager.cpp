@@ -1178,12 +1178,14 @@ namespace OpenLoco::Ui::WindowManager
                 break;
             }
 
-            if (isStepperGroup(w, reverseIndex, WidgetType::toolbarTab))
+            // Regular stepper buttons
+            if (isStepperGroup(w, reverseIndex, WidgetType::button))
             {
                 return reverseIndex;
             }
 
-            if (isStepperGroup(w, reverseIndex, WidgetType::button))
+            // Terraform tool size inputs
+            if (isStepperGroup(w, reverseIndex, WidgetType::buttonWithAlternateImage))
             {
                 return reverseIndex;
             }

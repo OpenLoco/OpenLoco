@@ -1,10 +1,10 @@
-#include "Ui/Widgets/ToolbarButtonWidget.h"
+#include "Ui/Widgets/ImageButtonAltWidget.h"
 #include "Graphics/DrawingContext.h"
 #include "Ui/Window.h"
 
 namespace OpenLoco::Ui::Widgets
 {
-    void ToolbarButton::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
+    void ImageButtonAlt::draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState)
     {
         const bool isColourSet = widget.image & Widget::kImageIdColourSet;
         ImageId imageId = ImageId::fromUInt32(widget.image & ~Widget::kImageIdColourSet);
