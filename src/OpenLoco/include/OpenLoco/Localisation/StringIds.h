@@ -2158,6 +2158,8 @@ namespace OpenLoco::StringIds
     constexpr StringId title_preferred_company_name = 2442;
     constexpr StringId enter_preferred_company_name = 2443;
     constexpr StringId cannot_change_company_name = 2444;
+    constexpr StringId shortcut_max_clip_height_increment = 5501;
+    constexpr StringId shortcut_max_clip_height_decrement = 5502;
     constexpr StringId town_not_served = 2445;
     constexpr StringId town_no_deliveries = 2446;
     constexpr StringId window_browse_home_folder_tooltip = 2447;
