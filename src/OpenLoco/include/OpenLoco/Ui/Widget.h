@@ -102,7 +102,6 @@ namespace OpenLoco::Ui
         wt_3,
         slider,
         wt_6,
-        toolbarTab,
         tab,
         buttonWithImage,
         buttonWithAlternateImage,
