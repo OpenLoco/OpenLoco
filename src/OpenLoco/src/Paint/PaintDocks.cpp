@@ -70,7 +70,7 @@ namespace OpenLoco::Paint
         // Combine this with any imageId
         const auto rotation = (session.getRotation() + elStation.rotation()) & 0x3;
 
-        const int16_t bbLengthZ = std::min(elStation.clearHeight() - elStation.baseHeight(), 128) - 2;
+        const int16_t bbLengthZ = elStation.clearHeight() - elStation.baseHeight() - 2;
 
         const auto baseHeight = elStation.baseHeight();
 

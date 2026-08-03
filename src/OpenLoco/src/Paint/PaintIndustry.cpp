@@ -175,7 +175,7 @@ namespace OpenLoco::Paint
         const uint8_t rotation = (session.getRotation() + elIndustry.rotation()) & 0x3;
 
         // 0x00525D4E
-        const int16_t bbLengthZ = std::min(elIndustry.clearHeight() - elIndustry.baseHeight(), 128) - 2;
+        const int16_t bbLengthZ = elIndustry.clearHeight() - elIndustry.baseHeight() - 2;
 
         // 0x00E0C3A4
         uint32_t buildingType = elIndustry.buildingType();

@@ -85,7 +85,7 @@ namespace OpenLoco::Paint
         // ceil to 4
         clearHeight += 3;
         clearHeight &= ~3;
-        const int16_t bbLengthZ = std::min(clearHeight, 128) - 2;
+        const int16_t bbLengthZ = clearHeight - 2;
 
         const auto baseHeight = elStation.baseHeight();
 
