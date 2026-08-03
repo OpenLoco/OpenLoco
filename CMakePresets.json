@@ -21,7 +21,7 @@
             "displayName": "x86-64",
             "description": "Configure environment for Windows x86-64",
             "inherits": "windows-base",
-            "generator": "Visual Studio 17 2022",
+            "generator": "Visual Studio 18 2026",
             "cacheVariables": {
                 "VCPKG_TARGET_TRIPLET": {
                     "type": "STRING",
@@ -47,7 +47,7 @@
             "displayName": "x86-32 CI",
             "description": "CI configure environment for Windows x86-32",
             "inherits": "windows-base",
-            "generator": "Visual Studio 17 2022",
+            "generator": "Visual Studio 18 2026",
             "architecture": {
                 "strategy": "set",
                 "value": "Win32"
@@ -182,6 +182,33 @@
                     "value": "ONLY"
                 }
             }
+        },
+        {
+            "name": "emscripten-base",
+            "hidden": true,
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "generator": "Ninja"
+        },
+        {
+            "name": "emscripten",
+            "displayName": "Emscripten (WebAssembly)",
+            "description": "Ninja configure environment for Emscripten/WebAssembly",
+            "inherits": "emscripten-base",
+            "toolchainFile": "${sourceDir}/cmake/emscripten_toolchain.cmake",
+            "cacheVariables": {
+                "OPENLOCO_USE_VCPKG": {
+                    "type": "BOOL",
+                    "value": false
+                },
+                "OPENLOCO_BUILD_TESTS": {
+                    "type": "BOOL",
+                    "value": false
+                },
+                "CMAKE_BUILD_TYPE": {
+                    "type": "STRING",
+                    "value": "Release"
+                }
+            }
         }
     ],
     "buildPresets": [
@@ -265,6 +292,14 @@
             "configurePreset": "mingw32",
             "displayName": "Release",
             "description": "Build Release Configuration",
+            "configuration": "Release",
+            "nativeToolOptions": [ "-k0" ]
+        },
+        {
+            "name": "emscripten",
+            "configurePreset": "emscripten",
+            "displayName": "Release (WebAssembly)",
+            "description": "Build Release Configuration for WebAssembly",
             "configuration": "Release",
             "nativeToolOptions": [ "-k0" ]
         }

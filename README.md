@@ -97,6 +97,13 @@ The following libraries/dependencies are used:
 - Libraries mentioned above installed to standard paths using e.g. Homebrew
 - Dependencies can optionally be managed by vcpkg
 
+### Web (Emscripten)
+- cmake 3.22+
+- ninja
+- [Emscripten SDK](https://emscripten.org/docs/getting_started/downloads.html), with its environment activated
+- A browser with WebAssembly, WebGL 2 and Web Audio support
+- The original Locomotion assets packaged as `OpenLocoData.js` and `OpenLocoData.data`
+
 ---
 
 ## 4.2 Compiling and running
@@ -135,6 +142,23 @@ cmake --build --preset posix-release
 ```
 
 Note: Only arm64 builds have been tested.
+
+### Web (Emscripten)
+
+Activate the Emscripten SDK environment, then configure and build with:
+```
+cmake --preset emscripten
+cmake --build --preset emscripten
+```
+
+The build writes `OpenLoco.js`, `OpenLoco.wasm` and `index.html` to `build/emscripten`. The original game assets are still required; place `OpenLocoData.js` and `OpenLocoData.data` in that directory. CMake does not currently generate this asset bundle.
+
+Serve the directory over HTTP rather than opening `index.html` directly:
+```
+python -m http.server 8080 --directory build/emscripten
+```
+
+Then open `http://localhost:8080` in the browser.
 
 ---
 
