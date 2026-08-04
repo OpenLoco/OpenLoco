@@ -47,9 +47,11 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         Widgets::ImageButton(Widx::kBothDirections, { ((kWidth - (kSpacing * 2)) / 2) - kSpacing - kImageButtonSize, 96 }, { kImageButtonSize, kImageButtonSize }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_both_directions),
         Widgets::ImageButton(Widx::kSingleDirection, { ((kWidth - (kSpacing * 2)) / 2) + kSpacing, 96 }, { kImageButtonSize, kImageButtonSize }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_single_direction),
         Widgets::Checkbox(Widx::kAutoMode, { kSpacing, 144 }, { kWidth - (kSpacing * 2), 12 }, WindowColour::secondary, StringIds::signal_placement_repeat, StringIds::signal_placement_repeat_tooltip),
-        Widgets::Label(Widx::kStepLabel, { kSpacing, 160 }, { kWidth - (kSpacing * 2), 12 }, WindowColour::secondary, ContentAlign::left, StringIds::signal_placement_step_size),
-        Widgets::stepperWidgets(Widx::kStepValue, Widx::kStepDecrease, Widx::kStepIncrease, { kWidth - kSpacing - kStepperWidth, 160 }, { kStepperWidth, 12 }, WindowColour::secondary, StringIds::uint16_raw, StringIds::tooltip_select_signal_type));
-    // cost of signal placement is drawn at the bottom of the window as the last widget
+        Widgets::Label(Widx::kStepLabel, { kSpacing, 160 }, { kWidth - (kSpacing * 2), 13 }, WindowColour::secondary, ContentAlign::left, StringIds::signal_placement_step_size),
+        Widgets::stepperWidgets(Widx::kStepValue, Widx::kStepDecrease, Widx::kStepIncrease, { kWidth - kSpacing - kStepperWidth, 160 }, { kStepperWidth, 12 }, WindowColour::secondary, StringIds::uint16_raw, StringIds::tooltip_select_signal_type)
+        // cost of signal placement is drawn at the bottom of the window as the last widget
+
+    );
 
     std::span<const Widget> getWidgets()
     {
