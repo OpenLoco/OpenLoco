@@ -562,7 +562,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
         auto drawSeparator = [&self, &drawingCtx](int16_t yPos) {
             auto xPos = 3;
-            auto width = self.width - 4;
+            auto width = self.width - 7;
             drawingCtx.drawRectInset(xPos, yPos, width, 1, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset);
         };
 
