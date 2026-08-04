@@ -1394,7 +1394,104 @@ namespace OpenLoco::Ui::Windows::ToolbarTop
         }
     }
 
-    static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx);
+    // 0x00439DE4
+    static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx)
+    {
+        const auto companyColour = CompanyManager::getPlayerCompanyColour();
+
+        if (!self.widgets[widx::railroad_menu].hidden)
+        {
+            uint32_t x = self.widgets[widx::railroad_menu].left;
+            uint32_t y = self.widgets[widx::railroad_menu].top;
+            uint32_t fg_image = 0;
+
+            // Figure out what icon to show on the button face.
+            uint8_t ebx = getGameState().defaultRailroadObjectId;
+            if ((ebx & (1 << 7)) != 0)
+            {
+                ebx = ebx & ~(1 << 7);
+                auto obj = ObjectManager::get<RoadObject>(ebx);
+                fg_image = Gfx::recolour(obj->image, companyColour);
+            }
+            else
+            {
+                auto obj = ObjectManager::get<TrackObject>(ebx);
+                fg_image = Gfx::recolour(obj->image + TrackObj::ImageIds::kUiPreviewImage0, companyColour);
+            }
+
+            auto interface = ObjectManager::get<InterfaceSkinObject>();
+            uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, self.getColour(WindowColour::tertiary).c());
+
+            y--;
+            if (Input::isDropdownActive(Ui::WindowType::topToolbar, self.number, widx::railroad_menu))
+            {
+                y++;
+                bg_image++;
+            }
+
+            drawingCtx.drawImage(ZoomLevel::full, x, y, fg_image);
+
+            y = self.widgets[widx::railroad_menu].top;
+            drawingCtx.drawImage(ZoomLevel::full, x, y, bg_image);
+        }
+
+        if (!self.widgets[widx::vehicles_menu].hidden)
+        {
+            uint32_t x = self.widgets[widx::vehicles_menu].left;
+            uint32_t y = self.widgets[widx::vehicles_menu].top;
+
+            static constexpr uint32_t button_face_image_ids[] = {
+                InterfaceSkin::ImageIds::vehicle_train_frame_0,
+                InterfaceSkin::ImageIds::vehicle_buses_frame_0,
+                InterfaceSkin::ImageIds::vehicle_trucks_frame_0,
+                InterfaceSkin::ImageIds::vehicle_trams_frame_0,
+                InterfaceSkin::ImageIds::vehicle_aircraft_frame_0,
+                InterfaceSkin::ImageIds::vehicle_ships_frame_0,
+            };
+
+            auto interface = ObjectManager::get<InterfaceSkinObject>();
+            uint32_t fg_image = Gfx::recolour(interface->img + button_face_image_ids[static_cast<uint8_t>(getGameState().lastVehicleType)], companyColour);
+            uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, self.getColour(WindowColour::quaternary).c());
+
+            y--;
+            if (Input::isDropdownActive(Ui::WindowType::topToolbar, self.number, widx::vehicles_menu))
+            {
+                y++;
+                bg_image++;
+            }
+
+            drawingCtx.drawImage(ZoomLevel::full, x, y, fg_image);
+
+            y = self.widgets[widx::vehicles_menu].top;
+            drawingCtx.drawImage(ZoomLevel::full, x, y, bg_image);
+        }
+
+        if (!self.widgets[widx::build_vehicles_menu].hidden)
+        {
+            uint32_t x = self.widgets[widx::build_vehicles_menu].left;
+            uint32_t y = self.widgets[widx::build_vehicles_menu].top;
+
+            static constexpr uint32_t kBuildVehicleImages[] = {
+                InterfaceSkin::ImageIds::toolbar_build_vehicle_train,
+                InterfaceSkin::ImageIds::toolbar_build_vehicle_bus,
+                InterfaceSkin::ImageIds::toolbar_build_vehicle_truck,
+                InterfaceSkin::ImageIds::toolbar_build_vehicle_tram,
+                InterfaceSkin::ImageIds::toolbar_build_vehicle_airplane,
+                InterfaceSkin::ImageIds::toolbar_build_vehicle_boat,
+            };
+
+            // Figure out what icon to show on the button face.
+            auto interface = ObjectManager::get<InterfaceSkinObject>();
+            uint32_t fg_image = Gfx::recolour(interface->img + kBuildVehicleImages[enumValue(getGameState().defaultBuildVehicleType)], companyColour);
+
+            if (Input::isDropdownActive(Ui::WindowType::topToolbar, self.number, widx::build_vehicles_menu))
+            {
+                fg_image++;
+            }
+
+            drawingCtx.drawImage(ZoomLevel::full, x, y, fg_image);
+        }
+    }
 
     // 0x00439DE4
     static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
@@ -1535,105 +1632,6 @@ namespace OpenLoco::Ui::Windows::ToolbarTop
         x = rightAlignButtons(self, x, { widx::towns_menu, widx::stations_menu, widx::vehicles_menu });
         x -= 11;
         x = rightAlignButtons(self, x, { widx::build_vehicles_menu, widx::port_menu, widx::road_menu, widx::railroad_menu, widx::terraform_menu });
-    }
-
-    // 0x00439DE4
-    static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx)
-    {
-        const auto companyColour = CompanyManager::getPlayerCompanyColour();
-
-        if (!self.widgets[widx::railroad_menu].hidden)
-        {
-            uint32_t x = self.widgets[widx::railroad_menu].left;
-            uint32_t y = self.widgets[widx::railroad_menu].top;
-            uint32_t fg_image = 0;
-
-            // Figure out what icon to show on the button face.
-            uint8_t ebx = getGameState().defaultRailroadObjectId;
-            if ((ebx & (1 << 7)) != 0)
-            {
-                ebx = ebx & ~(1 << 7);
-                auto obj = ObjectManager::get<RoadObject>(ebx);
-                fg_image = Gfx::recolour(obj->image, companyColour);
-            }
-            else
-            {
-                auto obj = ObjectManager::get<TrackObject>(ebx);
-                fg_image = Gfx::recolour(obj->image + TrackObj::ImageIds::kUiPreviewImage0, companyColour);
-            }
-
-            auto interface = ObjectManager::get<InterfaceSkinObject>();
-            uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, self.getColour(WindowColour::tertiary).c());
-
-            y--;
-            if (Input::isDropdownActive(Ui::WindowType::topToolbar, self.number, widx::railroad_menu))
-            {
-                y++;
-                bg_image++;
-            }
-
-            drawingCtx.drawImage(ZoomLevel::full, x, y, fg_image);
-
-            y = self.widgets[widx::railroad_menu].top;
-            drawingCtx.drawImage(ZoomLevel::full, x, y, bg_image);
-        }
-
-        if (!self.widgets[widx::vehicles_menu].hidden)
-        {
-            uint32_t x = self.widgets[widx::vehicles_menu].left;
-            uint32_t y = self.widgets[widx::vehicles_menu].top;
-
-            static constexpr uint32_t button_face_image_ids[] = {
-                InterfaceSkin::ImageIds::vehicle_train_frame_0,
-                InterfaceSkin::ImageIds::vehicle_buses_frame_0,
-                InterfaceSkin::ImageIds::vehicle_trucks_frame_0,
-                InterfaceSkin::ImageIds::vehicle_trams_frame_0,
-                InterfaceSkin::ImageIds::vehicle_aircraft_frame_0,
-                InterfaceSkin::ImageIds::vehicle_ships_frame_0,
-            };
-
-            auto interface = ObjectManager::get<InterfaceSkinObject>();
-            uint32_t fg_image = Gfx::recolour(interface->img + button_face_image_ids[static_cast<uint8_t>(getGameState().lastVehicleType)], companyColour);
-            uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, self.getColour(WindowColour::quaternary).c());
-
-            y--;
-            if (Input::isDropdownActive(Ui::WindowType::topToolbar, self.number, widx::vehicles_menu))
-            {
-                y++;
-                bg_image++;
-            }
-
-            drawingCtx.drawImage(ZoomLevel::full, x, y, fg_image);
-
-            y = self.widgets[widx::vehicles_menu].top;
-            drawingCtx.drawImage(ZoomLevel::full, x, y, bg_image);
-        }
-
-        if (!self.widgets[widx::build_vehicles_menu].hidden)
-        {
-            uint32_t x = self.widgets[widx::build_vehicles_menu].left;
-            uint32_t y = self.widgets[widx::build_vehicles_menu].top;
-
-            static constexpr uint32_t kBuildVehicleImages[] = {
-                InterfaceSkin::ImageIds::toolbar_build_vehicle_train,
-                InterfaceSkin::ImageIds::toolbar_build_vehicle_bus,
-                InterfaceSkin::ImageIds::toolbar_build_vehicle_truck,
-                InterfaceSkin::ImageIds::toolbar_build_vehicle_tram,
-                InterfaceSkin::ImageIds::toolbar_build_vehicle_airplane,
-                InterfaceSkin::ImageIds::toolbar_build_vehicle_boat,
-            };
-
-            // Figure out what icon to show on the button face.
-            auto interface = ObjectManager::get<InterfaceSkinObject>();
-            uint32_t fg_image = Gfx::recolour(interface->img + kBuildVehicleImages[enumValue(getGameState().defaultBuildVehicleType)], companyColour);
-
-            if (Input::isDropdownActive(Ui::WindowType::topToolbar, self.number, widx::build_vehicles_menu))
-            {
-                fg_image++;
-            }
-
-            drawingCtx.drawImage(ZoomLevel::full, x, y, fg_image);
-        }
     }
 
     // 0x00439BCB
