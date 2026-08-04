@@ -531,31 +531,32 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         auto& cState = getConstructionState();
         auto trainSignalObject = ObjectManager::get<TrainSignalObject>(cState.lastSelectedSignal);
 
-        auto xPos = 3;
-        auto yPos = 63;
-        auto width = 130;
-
         {
             FormatArguments args{};
             args.push(trainSignalObject->description);
 
-            auto point = Point(xPos, yPos);
-            tr.drawStringLeftWrapped(point, width, Colour::black, StringIds::signal_black, args);
+            tr.drawStringLeftWrapped({ 3, 63 }, 130, Colour::black, StringIds::signal_black, args);
         }
 
-        auto imageId = trainSignalObject->image;
+        auto baseImageId = trainSignalObject->image;
 
-        xPos = self.widgets[widx::both_directions].midX();
-        yPos = self.widgets[widx::both_directions].bottom - 4;
+        // Both directions
+        {
+            auto xPos = self.widgets[widx::both_directions].midX();
+            auto yPos = self.widgets[widx::both_directions].bottom - 4;
 
-        drawingCtx.drawImage(ZoomLevel::full, xPos - 8, yPos, imageId);
+            drawingCtx.drawImage(ZoomLevel::full, xPos - 8, yPos, baseImageId);
 
-        drawingCtx.drawImage(ZoomLevel::full, xPos + 8, yPos, imageId + 4);
+            drawingCtx.drawImage(ZoomLevel::full, xPos + 8, yPos, baseImageId + 4);
+        }
 
-        xPos = self.widgets[widx::single_direction].midX();
-        yPos = self.widgets[widx::single_direction].bottom - 4;
+        // Single direction
+        {
+            auto xPos = self.widgets[widx::single_direction].midX();
+            auto yPos = self.widgets[widx::single_direction].bottom - 4;
 
-        drawingCtx.drawImage(ZoomLevel::full, xPos, yPos, imageId);
+            drawingCtx.drawImage(ZoomLevel::full, xPos, yPos, baseImageId);
+        }
 
         if (cState.signalCost != GameCommands::kFailure && cState.signalCost != 0)
         {
