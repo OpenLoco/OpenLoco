@@ -30,7 +30,6 @@
 #include "Ui/Widget.h"
 #include "Ui/Widgets/ImageButtonAltWidget.h"
 #include "Ui/WindowManager.h"
-#include "Ui/Windows/ToolbarTopCommon.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleHead.h"
 #include "Vehicles/VehicleManager.h"
@@ -40,7 +39,7 @@
 
 #include <OpenLoco/Utility/LookupTable.hpp>
 
-namespace OpenLoco::Ui::Windows::ToolbarTop::Game
+namespace OpenLoco::Ui::Windows::ToolbarTop
 {
     static uint8_t _defaultPortObjectId; // 0x009C870D
     static uint8_t _defaultTownObjectId; // 0x009C870C
