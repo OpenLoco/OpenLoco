@@ -35,8 +35,6 @@ using namespace OpenLoco::World::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction::Signal
 {
-    constexpr uint8_t kDefaultSignalPlacementStepSize = 4;
-    constexpr uint8_t kMaxSignalPlacementStepSize = 64;
     constexpr int32_t kWidth = 132;
     constexpr int32_t kHeight = 196;
     constexpr int32_t kSpacing = 4;
