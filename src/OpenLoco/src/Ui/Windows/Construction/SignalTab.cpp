@@ -35,8 +35,8 @@ using namespace OpenLoco::World::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction::Signal
 {
-    constexpr int32_t kWidth = 132;
-    constexpr int32_t kHeight = 196;
+    constexpr int32_t kWidth = 156;
+    constexpr int32_t kHeight = 208;
     constexpr int32_t kSpacing = 4;
     constexpr int32_t kImageButtonSize = 40;
     constexpr int32_t kStepperWidth = 48;
@@ -46,9 +46,9 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         Widgets::dropdownWidgets(Widx::kSignal, Widx::kSignalDropdown, { kSpacing, 45 }, { kWidth - (kSpacing * 2), 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_signal_type),
         Widgets::ImageButton(Widx::kBothDirections, { ((kWidth - (kSpacing * 2)) / 2) - kSpacing - kImageButtonSize, 96 }, { kImageButtonSize, kImageButtonSize }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_both_directions),
         Widgets::ImageButton(Widx::kSingleDirection, { ((kWidth - (kSpacing * 2)) / 2) + kSpacing, 96 }, { kImageButtonSize, kImageButtonSize }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_single_direction),
-        Widgets::Checkbox(Widx::kAutoMode, { kSpacing, 144 }, { kWidth - (kSpacing * 2), 12 }, WindowColour::secondary, StringIds::signal_placement_repeat, StringIds::signal_placement_repeat_tooltip),
-        Widgets::Label(Widx::kStepLabel, { kSpacing, 160 }, { kWidth - (kSpacing * 2), 13 }, WindowColour::secondary, ContentAlign::left, StringIds::signal_placement_step_size),
-        Widgets::stepperWidgets(Widx::kStepValue, Widx::kStepDecrease, Widx::kStepIncrease, { kWidth - kSpacing - kStepperWidth, 160 }, { kStepperWidth, 12 }, WindowColour::secondary, StringIds::uint16_raw, StringIds::tooltip_select_signal_type)
+        Widgets::Checkbox(Widx::kAutoMode, { kSpacing, 144 + 8 }, { kWidth - (kSpacing * 2), 12 }, WindowColour::secondary, StringIds::signal_placement_repeat, StringIds::signal_placement_repeat_tooltip),
+        Widgets::Label(Widx::kStepLabel, { kSpacing, 160 + 8 }, { kWidth - (kSpacing * 2), 13 }, WindowColour::secondary, ContentAlign::left, StringIds::signal_placement_step_size),
+        Widgets::stepperWidgets(Widx::kStepValue, Widx::kStepDecrease, Widx::kStepIncrease, { kWidth - kSpacing - kStepperWidth, 160 + 8 }, { kStepperWidth, 12 }, WindowColour::secondary, StringIds::uint16_raw, StringIds::tooltip_select_signal_type)
         // cost of signal placement is drawn at the bottom of the window as the last widget
 
     );
@@ -560,11 +560,19 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             drawingCtx.drawImage(ZoomLevel::full, xPos, yPos, baseImageId);
         }
 
+        auto drawSeparator = [&self, &drawingCtx](int16_t yPos) {
+            auto xPos = 3;
+            auto width = self.width - 4;
+            drawingCtx.drawRectInset(xPos, yPos, width, 1, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset);
+        };
+
+        drawSeparator(self.widgets[widx::single_direction].bottom + 9);
+        drawSeparator(kHeight - 12 - 9);
+
         if (cState.signalCost != GameCommands::kFailure && cState.signalCost != 0)
         {
             FormatArguments args{};
             args.push<uint32_t>(cState.signalCost);
-
             auto point = Point(kWidth / 2, kHeight - kSpacing - 12); // drawn at the bottom of the window, centered
             tr.drawStringCentred(point, Colour::black, StringIds::build_cost, args);
         }
