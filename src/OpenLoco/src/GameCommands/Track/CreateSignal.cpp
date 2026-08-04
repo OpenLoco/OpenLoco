@@ -146,7 +146,7 @@ namespace OpenLoco::GameCommands
 
         const auto trackStart = args.pos - World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece.x, trackPiece.y }, args.rotation), trackPiece.z };
 
-        if (auto res = World::Track::validateTrackIsSignalCompatible(trackStart,args.rotation,args.trackId,args.trackObjType); res.has_value())
+        if (auto res = World::Track::validateTrackIsSignalCompatible(trackStart, args.rotation, args.trackId, args.trackObjType); res.has_value())
         {
             setErrorText(res.value());
             return kFailure;
