@@ -23,6 +23,7 @@
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/CheckboxWidget.h"
 #include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/LabelWidget.h"
@@ -37,18 +38,20 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     constexpr uint8_t kDefaultSignalPlacementStepSize = 4;
     constexpr uint8_t kMaxSignalPlacementStepSize = 64;
     constexpr int32_t kWidth = 132;
-    constexpr int32_t kHeight = 222;
+    constexpr int32_t kHeight = 196;
     constexpr int32_t kSpacing = 4;
     constexpr int32_t kImageButtonSize = 40;
+    constexpr int32_t kStepperWidth = 48;
 
     static constexpr auto widgets = makeWidgets(
         Common::makeCommonWidgets(kWidth, kHeight, StringIds::stringid_2),
         Widgets::dropdownWidgets(Widx::kSignal, Widx::kSignalDropdown, { kSpacing, 45 }, { kWidth - (kSpacing * 2), 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_signal_type),
-        Widgets::ImageButton(Widx::kBothDirections, { ((kWidth - (kSpacing * 2)) / 2) - kSpacing - kImageButtonSize, 90 }, { kImageButtonSize, kImageButtonSize }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_both_directions),
-        Widgets::ImageButton(Widx::kSingleDirection, { ((kWidth - (kSpacing * 2)) / 2) + kSpacing, 90 }, { kImageButtonSize, kImageButtonSize }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_single_direction),
-        Widgets::Button(Widx::kAutoMode, { ((kWidth - (kSpacing * 2)) / 2) - 44, 138 }, { 88, 40 }, WindowColour::secondary, StringIds::signal_placement_single, StringIds::signal_placement_single_tooltip),
-        Widgets::Label(Widx::kStepLabel, { kSpacing, 186 }, { kWidth - (kSpacing * 2), 12 }, WindowColour::secondary, ContentAlign::left, StringIds::signal_placement_step_size),
-        Widgets::stepperWidgets(Widx::kStepValue, Widx::kStepDecrease, Widx::kStepIncrease, { kSpacing, 202 }, { 48, 12 }, WindowColour::secondary, StringIds::uint16_raw, StringIds::tooltip_select_signal_type));
+        Widgets::ImageButton(Widx::kBothDirections, { ((kWidth - (kSpacing * 2)) / 2) - kSpacing - kImageButtonSize, 96 }, { kImageButtonSize, kImageButtonSize }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_both_directions),
+        Widgets::ImageButton(Widx::kSingleDirection, { ((kWidth - (kSpacing * 2)) / 2) + kSpacing, 96 }, { kImageButtonSize, kImageButtonSize }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_single_direction),
+        Widgets::Checkbox(Widx::kAutoMode, { kSpacing, 144 }, { kWidth - (kSpacing * 2), 12 }, WindowColour::secondary, StringIds::signal_placement_single, StringIds::signal_placement_single_tooltip),
+        Widgets::Label(Widx::kStepLabel, { kSpacing, 160 }, { kWidth - (kSpacing * 2), 12 }, WindowColour::secondary, ContentAlign::left, StringIds::signal_placement_step_size),
+        Widgets::stepperWidgets(Widx::kStepValue, Widx::kStepDecrease, Widx::kStepIncrease, { kWidth - kSpacing - kStepperWidth, 160 }, { kStepperWidth, 12 }, WindowColour::secondary, StringIds::uint16_raw, StringIds::tooltip_select_signal_type));
+    // cost of signal placement is drawn at the bottom of the window as the last widget
 
     std::span<const Widget> getWidgets()
     {
@@ -561,7 +564,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             FormatArguments args{};
             args.push<uint32_t>(cState.signalCost);
 
-            auto point = Point(69, self.widgets[widx::single_direction].bottom + 5);
+            auto point = Point(kWidth / 2, kHeight - kSpacing - 12); // drawn at the bottom of the window, centered
             tr.drawStringCentred(point, Colour::black, StringIds::build_cost, args);
         }
     }
