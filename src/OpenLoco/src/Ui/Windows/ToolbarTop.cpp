@@ -21,6 +21,7 @@
 #include "Objects/TrackObject.h"
 #include "Objects/WaterObject.h"
 #include "S5/S5.h"
+#include "Scenario/ScenarioOptions.h"
 #include "SceneManager.h"
 #include "Tutorial.h"
 #include "Ui/Dropdown.h"
@@ -48,12 +49,14 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
     enum widx
     {
-        cheats_menu = Common::widx::w2
+        cheats_menu = Common::widx::w2,
+        map_generation_menu = Common::widx::w2,
     };
 
     namespace Widx
     {
         constexpr WidgetId kCheatsMenu{ "cheats_menu" };
+        constexpr WidgetId kMapGenerationMenu{ "map_generation_menu" };
     }
 
     static constexpr auto _widgets = makeWidgets(
@@ -61,6 +64,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         Widgets::ImageButtonAlt(Common::Widx::kLoadsaveMenu, { 0, 0 }, { 30, 28 }, WindowColour::primary),
         Widgets::ImageButtonAlt(Common::Widx::kAudioMenu, { 30, 0 }, { 30, 28 }, WindowColour::primary),
         Widgets::ImageButtonAlt(Widx::kCheatsMenu, { 60, 0 }, { 30, 28 }, WindowColour::primary),
+        Widgets::ImageButtonAlt(Widx::kMapGenerationMenu, { 60, 0 }, { 30, 28 }, WindowColour::primary),
 
         Widgets::ImageButtonAlt(Common::Widx::kZoomMenu, { 104, 0 }, { 30, 28 }, WindowColour::secondary),
         Widgets::ImageButtonAlt(Common::Widx::kRotateMenu, { 134, 0 }, { 30, 28 }, WindowColour::secondary),
@@ -83,6 +87,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     {
         loadGame,
         saveGame,
+        loadLandscape,
+        saveLandscape,
         about,
         options,
         screenshot,
@@ -123,13 +129,23 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     static void loadsaveMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         auto d = Dropdown::create()
-                     .below(*window, widgetIndex)
-                     .item(LoadSaveDropdownId::loadGame, StringIds::menu_load_game)
-                     .item(LoadSaveDropdownId::saveGame, StringIds::menu_save_game)
-                     .separator()
-                     .item(LoadSaveDropdownId::about, StringIds::menu_about)
-                     .item(LoadSaveDropdownId::options, StringIds::options)
-                     .item(LoadSaveDropdownId::screenshot, StringIds::menu_screenshot);
+                     .below(*window, widgetIndex);
+
+        if (SceneManager::isEditorMode())
+        {
+            d.item(LoadSaveDropdownId::loadLandscape, StringIds::load_landscape);
+            d.item(LoadSaveDropdownId::saveLandscape, StringIds::save_landscape);
+        }
+        else
+        {
+            d.item(LoadSaveDropdownId::loadGame, StringIds::menu_load_game);
+            d.item(LoadSaveDropdownId::saveGame, StringIds::menu_save_game);
+        }
+
+        d.separator()
+            .item(LoadSaveDropdownId::about, StringIds::menu_about)
+            .item(LoadSaveDropdownId::options, StringIds::options)
+            .item(LoadSaveDropdownId::screenshot, StringIds::menu_screenshot);
 
         // TODO: REMOVE WHEN REWORKING TUTORIALS (the if statement - keep the item) (and tutorial.h include above)
         if (OpenLoco::Tutorial::state() == OpenLoco::Tutorial::State::none)
@@ -241,6 +257,37 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 prepareSaveGame();
                 break;
 
+            case LoadSaveDropdownId::loadLandscape:
+            {
+                GameCommands::LoadSaveQuitGameArgs args{};
+                args.loadQuitMode = LoadOrQuitMode::loadGamePrompt;
+                args.saveMode = GameCommands::LoadSaveQuitGameArgs::SaveMode::promptSave;
+                GameCommands::doCommand(args, GameCommands::Flags::apply);
+            }
+            break;
+
+            case LoadSaveDropdownId::saveLandscape:
+            {
+                if (Scenario::getOptions().editorStep == EditorController::Step::objectSelection)
+                {
+                    if (!ObjectSelectionWindow::tryCloseWindow())
+                    {
+                        // Try close has failed so do not open save window!
+                        return;
+                    }
+                }
+                WindowManager::closeAllFloatingWindows();
+                ToolManager::toolCancel();
+
+                // Save Landscape
+                if (auto res = OpenLoco::Game::saveLandscapeOpen())
+                {
+                    OpenLoco::Game::saveLandscape(*res);
+                    Gfx::invalidateScreen();
+                }
+                break;
+            }
+
             case LoadSaveDropdownId::about:
                 About::open();
                 break;
@@ -301,6 +348,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         if (Config::get().audio.playJukeboxMusic)
         {
             Dropdown::setItemSelected(1);
+        }
+
+        if (SceneManager::isEditorMode())
+        {
+            Dropdown::setItemDisabled(1);
+            Dropdown::setItemDisabled(4);
         }
 
         Dropdown::setHighlightedItem(0);
@@ -430,6 +483,42 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 {
                     SceneManager::removeSceneFlags(SceneManager::Flags::driverCheatEnabled);
                 }
+                break;
+        }
+    }
+
+    // 0x004402BC
+    static void mapGenerationMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
+    {
+        Dropdown::add(0, StringIds::landscape_generation_options);
+        auto numItems = 1;
+
+        if (Config::get().cheatsMenuEnabled)
+        {
+            Dropdown::add(1, StringIds::tile_inspector);
+            numItems += 1;
+        }
+
+        Dropdown::showBelow(window, widgetIndex, numItems, 0);
+        Dropdown::setHighlightedItem(0);
+    }
+
+    // 0x004402DA
+    static void mapGenerationMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
+    {
+        if (itemIndex == -1)
+        {
+            itemIndex = Dropdown::getHighlightedItem();
+        }
+
+        switch (itemIndex)
+        {
+            case 0:
+                Windows::LandscapeGeneration::open();
+                break;
+
+            case 1:
+                TileInspector::open();
                 break;
         }
     }
@@ -756,6 +845,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 cheatsMenuMouseDown(&window, widgetIndex);
                 break;
 
+            case Widx::kMapGenerationMenu:
+                mapGenerationMenuMouseDown(&window, widgetIndex);
+                break;
+
             case Common::Widx::kRailroadMenu:
                 railroadMenuMouseDown(&window, widgetIndex);
                 break;
@@ -804,6 +897,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             case Widx::kCheatsMenu:
                 cheatsMenuDropdown(&window, widgetIndex, itemIndex);
+                break;
+
+            case Widx::kMapGenerationMenu:
+                mapGenerationMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
             case Common::Widx::kRailroadMenu:
@@ -875,6 +972,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             drawingCtx.drawImage(ZoomLevel::full, x, y, bg_image);
         }
 
+        if (!window.widgets[Common::widx::vehicles_menu].hidden)
         {
             uint32_t x = window.widgets[Common::widx::vehicles_menu].left;
             uint32_t y = window.widgets[Common::widx::vehicles_menu].top;
@@ -905,6 +1003,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             drawingCtx.drawImage(ZoomLevel::full, x, y, bg_image);
         }
 
+        if (!window.widgets[Common::widx::build_vehicles_menu].hidden)
         {
             uint32_t x = window.widgets[Common::widx::build_vehicles_menu].left;
             uint32_t y = window.widgets[Common::widx::build_vehicles_menu].top;
@@ -934,8 +1033,29 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     // 0x00439BCB
     static void prepareDraw(Window& window)
     {
-        auto interface = ObjectManager::get<InterfaceSkinObject>();
+        // Hide buttons while in editor
+        const bool isEditor = SceneManager::isEditorMode();
+        const bool isLandscapeEditor = EditorController::getCurrentStep() == EditorController::Step::landscapeEditor;
 
+        // Left-hand side
+        window.widgets[widx::cheats_menu].hidden = isEditor;
+        window.widgets[widx::map_generation_menu].hidden = !isEditor || !isLandscapeEditor;
+        window.widgets[Common::widx::zoom_menu].hidden = isEditor && !isLandscapeEditor;
+        window.widgets[Common::widx::rotate_menu].hidden = isEditor && !isLandscapeEditor;
+        window.widgets[Common::widx::view_menu].hidden = isEditor && !isLandscapeEditor;
+
+        // Right-hand side
+        window.widgets[Common::widx::terraform_menu].hidden = isEditor && !isLandscapeEditor;
+        window.widgets[Common::widx::railroad_menu].hidden = isEditor;
+        window.widgets[Common::widx::road_menu].hidden = isEditor && !(isLandscapeEditor && getGameState().defaultRoadObjectId != 0xFF);
+        window.widgets[Common::widx::port_menu].hidden = isEditor;
+        window.widgets[Common::widx::build_vehicles_menu].hidden = isEditor;
+
+        window.widgets[Common::widx::vehicles_menu].hidden = isEditor;
+        window.widgets[Common::widx::stations_menu].hidden = isEditor;
+        window.widgets[Common::widx::towns_menu].hidden = isEditor && !isLandscapeEditor;
+
+        const auto* interface = ObjectManager::get<InterfaceSkinObject>();
         if (!Audio::isAudioEnabled())
         {
             window.activatedWidgets |= (1 << Common::widx::audio_menu);
