@@ -506,10 +506,13 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         if (cState.repeatedSignalMode)
         {
             self.activatedWidgets |= (1 << widx::auto_mode);
+            self.disabledWidgets &= ~(
+                (1ULL << widx::step_label) | (1ULL << widx::step_value) | (1ULL << widx::signal_placement_step_decrease) | (1ULL << widx::signal_placement_step_increase));
         }
         else
         {
             self.activatedWidgets &= ~(1 << widx::auto_mode);
+            self.disabledWidgets |= (1ULL << widx::step_label) | (1ULL << widx::step_value) | (1ULL << widx::signal_placement_step_decrease) | (1ULL << widx::signal_placement_step_increase);
         }
 
         // Update step size value display
