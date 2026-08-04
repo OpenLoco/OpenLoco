@@ -67,11 +67,11 @@ namespace OpenLoco::Ui::Windows::Construction
         uint16_t signalGhostTrackObjId; // 0x0113600A
         uint8_t modGhostTrackObjId;     // 0x01136010
 
-        uint8_t signalList[17];              // 0x0113601D
-        uint8_t lastSelectedSignal;          // 0x0113602E
-        uint8_t isSignalBothDirections;      // 0x0113602F
-        uint8_t signalPlacementStepSize = 1; // new
-        bool repeatedSignalMode = false;     // new
+        uint8_t signalList[17];          // 0x0113601D
+        uint8_t lastSelectedSignal;      // 0x0113602E
+        uint8_t isSignalBothDirections;  // 0x0113602F
+        uint8_t signalPlacementStepSize; // new
+        bool repeatedSignalMode;         // new
 
         uint8_t bridgeList[9];           // 0x01136030
         uint8_t lastSelectedBridge;      // 0x01136039
@@ -358,6 +358,9 @@ namespace OpenLoco::Ui::Windows::Construction
         }
 
         constexpr uint64_t kHoldableWidgets = (1ULL << widx::signal_placement_step_decrease) | (1ULL << widx::signal_placement_step_increase);
+
+        constexpr uint8_t kDefaultSignalPlacementStepSize = 4;
+        constexpr uint8_t kMaxSignalPlacementStepSize = 64;
 
         std::span<const Widget> getWidgets();
 

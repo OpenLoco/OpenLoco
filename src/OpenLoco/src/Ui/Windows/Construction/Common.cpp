@@ -134,6 +134,9 @@ namespace OpenLoco::Ui::Windows::Construction
         cState.lastSelectedMods = lastMod;
         cState.byte_113603A = 0;
 
+        cState.signalPlacementStepSize = Signal::kDefaultSignalPlacementStepSize;
+        cState.repeatedSignalMode = false;
+
         return trackWindow();
     }
 
