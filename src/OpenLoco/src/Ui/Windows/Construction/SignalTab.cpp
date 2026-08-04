@@ -46,7 +46,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         Widgets::dropdownWidgets(Widx::kSignal, Widx::kSignalDropdown, { kSpacing, 45 }, { kWidth - (kSpacing * 2), 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_signal_type),
         Widgets::ImageButton(Widx::kBothDirections, { ((kWidth - (kSpacing * 2)) / 2) - kSpacing - kImageButtonSize, 96 }, { kImageButtonSize, kImageButtonSize }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_both_directions),
         Widgets::ImageButton(Widx::kSingleDirection, { ((kWidth - (kSpacing * 2)) / 2) + kSpacing, 96 }, { kImageButtonSize, kImageButtonSize }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_single_direction),
-        Widgets::Checkbox(Widx::kAutoMode, { kSpacing, 144 }, { kWidth - (kSpacing * 2), 12 }, WindowColour::secondary, StringIds::signal_placement_single, StringIds::signal_placement_single_tooltip),
+        Widgets::Checkbox(Widx::kAutoMode, { kSpacing, 144 }, { kWidth - (kSpacing * 2), 12 }, WindowColour::secondary, StringIds::signal_placement_repeat, StringIds::signal_placement_repeat_tooltip),
         Widgets::Label(Widx::kStepLabel, { kSpacing, 160 }, { kWidth - (kSpacing * 2), 12 }, WindowColour::secondary, ContentAlign::left, StringIds::signal_placement_step_size),
         Widgets::stepperWidgets(Widx::kStepValue, Widx::kStepDecrease, Widx::kStepIncrease, { kWidth - kSpacing - kStepperWidth, 160 }, { kStepperWidth, 12 }, WindowColour::secondary, StringIds::uint16_raw, StringIds::tooltip_select_signal_type));
     // cost of signal placement is drawn at the bottom of the window as the last widget
@@ -73,12 +73,12 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             case Common::Widx::kTabStation:
                 Common::switchTab(self, widgetIndex);
                 break;
+
             case Widx::kAutoMode:
                 auto& cState = getConstructionState();
                 cState.repeatedSignalMode = !cState.repeatedSignalMode;
-                self.widgets[widx::auto_mode].content = cState.repeatedSignalMode ? StringIds::signal_placement_repeat : StringIds::signal_placement_single;
-                self.widgets[widx::auto_mode].tooltip = cState.repeatedSignalMode ? StringIds::signal_placement_repeat_tooltip : StringIds::signal_placement_single_tooltip;
                 self.invalidate();
+                break;
         }
     }
 
@@ -571,10 +571,6 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     {
         self.holdableWidgets = kHoldableWidgets;
         self.callOnMouseDown(Signal::widx::both_directions, self.widgets[Signal::widx::both_directions].id);
-
-        auto& cState = getConstructionState();
-        self.widgets[widx::auto_mode].content = cState.repeatedSignalMode ? StringIds::signal_placement_repeat : StringIds::signal_placement_single;
-        self.widgets[widx::auto_mode].tooltip = cState.repeatedSignalMode ? StringIds::signal_placement_repeat_tooltip : StringIds::signal_placement_single_tooltip;
     }
 
     static constexpr WindowEventList kEvents = {
