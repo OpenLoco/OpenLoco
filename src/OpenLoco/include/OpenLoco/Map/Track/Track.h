@@ -2,9 +2,9 @@
 
 #include "Types.hpp"
 #include <OpenLoco/Engine/World.hpp>
+#include <optional>
 #include <sfl/static_vector.hpp>
 #include <utility>
-#include <optional>
 
 namespace OpenLoco::World::Track
 {

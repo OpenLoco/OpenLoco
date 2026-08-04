@@ -552,6 +552,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Map/Track/SubpositionData.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Map/Track/Track.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Map/Track/TrackData.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Map/Track/TrackIteration.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Map/Track/TrackModSection.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Map/Track/TrackEnum.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Map/TrackElement.h"
