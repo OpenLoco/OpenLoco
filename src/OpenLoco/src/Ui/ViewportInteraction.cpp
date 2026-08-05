@@ -573,14 +573,10 @@ namespace OpenLoco::Ui::ViewportInteraction
         {
             return false;
         }
-        if (Ui::Windows::Construction::getConstructionState().repeatedSignalMode)
-        {
-            FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, StringIds::capt_signals_block);
-        }
-        else
-        {
-            FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, StringIds::capt_signal);
-        }
+        const auto tooltipMessage = Windows::Construction::getConstructionState().repeatedSignalMode ? StringIds::capt_signals_block : StringIds::capt_signal;
+
+        FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, tooltipMessage);
+
         return true;
     }
 
@@ -1115,34 +1111,18 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
 
         GameCommands::setErrorTitle(StringIds::cant_remove_signal);
-        if (Windows::Construction::getConstructionState().repeatedSignalMode)
+
+        GameCommands::SignalsRemovalAutoArgs args;
+        args.pos = Pos3(pos.x, pos.y, track->baseHeight());
+        args.rotation = track->rotation();
+        args.trackId = track->trackId();
+        args.index = track->sequenceIndex();
+        args.trackObjType = track->trackObjectId();
+        args.flags = unkFlags;
+        args.step = Windows::Construction::getConstructionState().repeatedSignalMode ? 1 : 0;
+        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure)
         {
-            GameCommands::SignalsRemovalAutoArgs args;
-            args.pos = Pos3(pos.x, pos.y, track->baseHeight());
-            args.rotation = track->rotation();
-            args.trackId = track->trackId();
-            args.index = track->sequenceIndex();
-            args.trackObjType = track->trackObjectId();
-            args.flags = unkFlags;
-            args.step = 1;
-            if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure)
-            {
-                Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
-            }
-        }
-        else
-        {
-            GameCommands::SignalRemovalArgs args;
-            args.pos = Pos3(pos.x, pos.y, track->baseHeight());
-            args.rotation = track->rotation();
-            args.trackId = track->trackId();
-            args.index = track->sequenceIndex();
-            args.trackObjType = track->trackObjectId();
-            args.flags = unkFlags;
-            if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure)
-            {
-                Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
-            }
+            Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
         }
     }
 

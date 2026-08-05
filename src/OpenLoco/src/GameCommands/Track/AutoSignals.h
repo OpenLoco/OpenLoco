@@ -125,6 +125,10 @@ namespace OpenLoco::GameCommands
     template<typename FilterFunction, typename ActionFunction>
     static uint32_t AutoSignalsWalk(const World::Pos3& pos, const uint8_t trackId, const uint8_t rotation, const uint8_t index, const uint8_t trackObjType, const uint16_t sides, const uint8_t step, const uint8_t flags, FilterFunction&& filterFunc, ActionFunction&& actionFunc)
     {
+        if (step == 0)
+        {
+            return actionFunc(pos, (rotation & 0x3) | (trackId << 3), sides, trackObjType, flags);
+        }
         const auto trackPieces = World::TrackData::getTrackPiece(trackId);
         if (trackPieces.size() < index)
         {
