@@ -43,6 +43,20 @@ namespace OpenLoco::GameCommands
         return nullptr;
     };
 
+    static uint32_t placeSignal(const World::Pos3& pos, const uint16_t tad, const uint16_t sides, const uint8_t trackObjType, const uint8_t signalType, const uint8_t flags)
+    {
+        GameCommands::SignalPlacementArgs sargs{};
+        sargs.pos = pos;
+        sargs.rotation = tad & 0x3;
+        sargs.trackId = (tad >> 3) & 0x3F;
+        sargs.index = 0;
+        sargs.sides = sides;
+        sargs.trackObjType = trackObjType;
+        sargs.type = signalType;
+
+        return GameCommands::doCommand(sargs, flags);
+    }
+
     static uint32_t AutoPlaceSignals(const World::Pos3& trackStart, uint16_t tad, const uint8_t trackObjType, const uint8_t signalType, const uint16_t sides, const uint8_t step, const uint8_t initialStep, const uint8_t flags)
     {
         int32_t currentStep = initialStep;
@@ -84,11 +98,6 @@ namespace OpenLoco::GameCommands
                 // If we have a level crossing we skip this tile for placement
                 if (currentStep == 0 && !elTrack->hasLevelCrossing())
                 {
-                    GameCommands::SignalPlacementArgs sargs{};
-                    sargs.pos = iterationTrackStart;
-                    sargs.rotation = rotation;
-                    sargs.trackId = trackId;
-                    sargs.index = 0;
                     // If we have a reverse connection then we need to reverse the sides!
                     // Except when they are double sided signals.
                     auto adjustedSides = sides;
@@ -96,17 +105,15 @@ namespace OpenLoco::GameCommands
                     {
                         adjustedSides ^= (1U << 15) | (1U << 14);
                     }
-                    sargs.sides = adjustedSides;
-                    sargs.trackObjType = trackObjType;
-                    sargs.type = signalType;
 
-                    auto res = GameCommands::doCommand(sargs, flags);
-                    if (res == GameCommands::kFailure)
+                    auto cost = placeSignal(iterationTrackStart, tad, adjustedSides, trackObjType, signalType, flags);
+
+                    if (cost == GameCommands::kFailure)
                     {
                         totalCost = GameCommands::kFailure;
                         return false;
                     }
-                    totalCost += res;
+                    totalCost += cost;
                 }
                 currentStep++;
                 if (currentStep >= step)
