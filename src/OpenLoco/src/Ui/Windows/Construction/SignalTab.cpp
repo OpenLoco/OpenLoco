@@ -450,6 +450,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             GameCommands::SignalsPlacementAutoArgs autoArgs{};
             autoArgs.index = args->index;
             autoArgs.pos = args->pos;
+            autoArgs.type = args->type;
             autoArgs.rotation = args->rotation;
             autoArgs.trackId = args->trackId;
             autoArgs.sides = args->sides;
