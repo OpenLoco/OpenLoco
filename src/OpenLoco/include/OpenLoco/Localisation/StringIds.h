@@ -2178,6 +2178,7 @@ namespace OpenLoco::StringIds
     constexpr StringId signal_placement_repeat = 2462;
     constexpr StringId signal_placement_repeat_tooltip = 2463;
     constexpr StringId signal_placement_step_size = 2464;
+    constexpr StringId capt_signals_block = 2465;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
