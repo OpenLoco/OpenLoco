@@ -41,22 +41,29 @@ namespace OpenLoco::GameCommands
         return nullptr;
     };
 
-    template<typename FilterFunction, typename ActionFunction>
-    static uint32_t AutoPlaceSignals(const World::Pos3& trackStart, uint16_t tad, const uint8_t trackObjType, const uint16_t sides, const uint8_t step, const uint8_t initialStep, const uint8_t flags, FilterFunction&& filterFunc, ActionFunction&& actionFunc)
+    struct PlaceResult
     {
+        uint32_t cost = 0;
+        bool failure = false;
+        bool hasPlaced = false;
+    };
+
+    template<typename FilterFunction, typename ActionFunction>
+    static PlaceResult AutoPlaceSignals(const World::Pos3& trackStart, uint16_t tad, const uint8_t trackObjType, const uint16_t sides, const uint8_t step, const uint8_t initialStep, const uint8_t flags, FilterFunction&& filterFunc, ActionFunction&& actionFunc)
+    {
+        PlaceResult result{};
         int32_t currentStep = initialStep;
         if (currentStep >= step)
         {
             currentStep = 0;
         }
-        uint32_t totalCost = 0;
 
         World::Track::iterateTrackToJunction(
             trackStart,
             tad,
             trackObjType,
             GameCommands::getUpdatingCompanyId(),
-            [trackObjType, step, sides, flags, &currentStep, &totalCost, &filterFunc, &actionFunc](const World::Pos3& pos, uint16_t tad) {
+            [trackObjType, step, sides, flags, &currentStep, &result, &filterFunc, &actionFunc](const World::Pos3& pos, uint16_t tad) {
                 auto iterationTrackStart = pos;
                 const auto rotation = tad & 0x3;
                 const auto trackId = (tad >> 3) & 0x3F;
@@ -66,7 +73,7 @@ namespace OpenLoco::GameCommands
                 auto elTrack = getElTrackAt(iterationTrackStart, rotation, 0, trackObjType, trackId);
                 if (elTrack == nullptr)
                 {
-                    totalCost = GameCommands::kFailure;
+                    result.failure = true;
                     return false;
                 }
                 // If we have additional filtering
@@ -75,8 +82,9 @@ namespace OpenLoco::GameCommands
                     return false;
                 }
 
-                if (World::Track::validateTrackIsSignalCompatible(pos, rotation, trackId, trackObjType).has_value())
+                if (auto res = World::Track::validateTrackIsSignalCompatible(pos, rotation, trackId, trackObjType); res.has_value())
                 {
+                    setErrorText(res.value());
                     return false;
                 }
 
@@ -95,10 +103,11 @@ namespace OpenLoco::GameCommands
 
                     if (cost == GameCommands::kFailure)
                     {
-                        totalCost = GameCommands::kFailure;
+                        result.failure = true;
                         return false;
                     }
-                    totalCost += cost;
+                    result.hasPlaced = true;
+                    result.cost += cost;
                 }
                 currentStep++;
                 if (currentStep >= step)
@@ -107,7 +116,7 @@ namespace OpenLoco::GameCommands
                 }
                 return true;
             });
-        return totalCost;
+        return result;
     }
 
     template<typename FilterFunction, typename ActionFunction>
@@ -123,16 +132,18 @@ namespace OpenLoco::GameCommands
         const auto trackStart = pos - World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece.x, trackPiece.y }, rotation), trackPiece.z };
 
         uint32_t totalCost = 0;
+        bool hasPlaced = false;
 
         // Perform a forward walk along the track placing signals every arg.step tiles
         {
             const auto startTad = rotation | (trackId << 3);
-            auto cost = AutoPlaceSignals(trackStart, startTad, trackObjType, sides, step, 0, flags, filterFunc, actionFunc);
-            if (cost == GameCommands::kFailure)
+            auto result = AutoPlaceSignals(trackStart, startTad, trackObjType, sides, step, 0, flags, filterFunc, actionFunc);
+            if (result.failure)
             {
                 return GameCommands::kFailure;
             }
-            totalCost += cost;
+            totalCost += result.cost;
+            hasPlaced |= result.hasPlaced;
         }
 
         // Perform a backward walk along the track placing signals every arg.step tiles
@@ -157,13 +168,20 @@ namespace OpenLoco::GameCommands
                     reverseSides ^= (1U << 15) | (1U << 14);
                 }
                 // Start at step 1 so we don't place a signal on the first tile
-                auto cost = AutoPlaceSignals(reverseStart, reverseTad, trackObjType, reverseSides, step, 1, flags, filterFunc, actionFunc);
-                if (cost == GameCommands::kFailure)
+                auto result = AutoPlaceSignals(reverseStart, reverseTad, trackObjType, reverseSides, step, 1, flags, filterFunc, actionFunc);
+                if (result.failure)
                 {
                     return GameCommands::kFailure;
                 }
-                totalCost += cost;
+                totalCost += result.cost;
+                hasPlaced |= result.hasPlaced;
             }
+        }
+
+        // If we haven't performed any signal action then we return failure
+        if (!hasPlaced)
+        {
+            return GameCommands::kFailure;
         }
         return totalCost;
     }
