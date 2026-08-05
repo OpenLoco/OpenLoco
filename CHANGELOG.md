@@ -1,5 +1,6 @@
 26.07.1+ (???)
 ------------------------------------------------------------------------
+- Feature: [#139, #3775] Added signal placement at fixed step distance along a track block. Added signal removal by track block.
 - Feature: [#3872] Added an option to align the top toolbar buttons horizontally centred (off by default).
 - Change: [#3815] The keyboard shortcuts window is now separated into groups, and can now be resized.
 - Change: [#3863] The toolbar buttons can now be set to open on click instead of hover.
