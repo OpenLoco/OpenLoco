@@ -65,6 +65,7 @@ namespace OpenLoco::Ui::Windows::Construction
         uint16_t signalGhostSides;      // 0x01136002
         World::Pos3 signalGhostPos;     // 0x01136004
         uint16_t signalGhostTrackObjId; // 0x0113600A
+        uint8_t signalGhostStep;        // new
         uint8_t modGhostTrackObjId;     // 0x01136010
 
         uint8_t signalList[17];          // 0x0113601D
