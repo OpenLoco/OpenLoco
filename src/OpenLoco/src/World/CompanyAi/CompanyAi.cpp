@@ -5332,6 +5332,8 @@ namespace OpenLoco
     // * More than 1 track connection
     static void placeAiAllocatedSignalsEvenlySpaced(const World::Pos3 startPos, const uint16_t startTad, const uint8_t trackObjId, const uint16_t minSignalDistance, const uint8_t signalType, const uint8_t startSignalSide)
     {
+        // TODO: Use World::Track::iterateTrackToJunction as this duplicates that logic
+
         auto getNextTrack = [trackObjId](const World::Pos3 pos, const uint16_t tad) {
             const auto trackEnd = Track::getTrackConnectionEnd(pos, tad & Track::AdditionalTaDFlags::basicTaDMask);
             const auto tc = Track::getTrackConnectionsAi(trackEnd.nextPos, trackEnd.nextRotation, GameCommands::getUpdatingCompanyId(), trackObjId, 0, 0);
