@@ -335,21 +335,21 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             viewportWidget.hidden = view.isEmpty();
             buttonWidget.hidden = !selectable;
 
+            // Update viewport layout
+            const bool juxtapose = subjectIndex == 0 && mtd.hasFlag(MessageTypeFlags::hasSecondItem);
+            const auto& size = juxtapose ? layout.halfSize : layout.fullSize;
+
+            viewportWidget.left = layout.position.x + 2;
+            viewportWidget.right = layout.position.x + size.width - 4;
+            buttonWidget.left = layout.position.x + size.width;
+            buttonWidget.right = layout.position.x + size.width;
+
             // Update viewport focus
             if (_nState.savedView[0] != view)
             {
                 _nState.savedView[0] = view;
                 self.viewportRemove(0);
                 self.invalidate();
-
-                // Update viewport layout
-                const bool juxtapose = subjectIndex == 0 && mtd.hasFlag(MessageTypeFlags::hasSecondItem);
-                const auto& size = juxtapose ? layout.halfSize : layout.fullSize;
-
-                viewportWidget.left = layout.position.x + 2;
-                viewportWidget.right = layout.position.x + size.width - 4;
-                buttonWidget.left = layout.position.x + size.width;
-                buttonWidget.right = layout.position.x + size.width;
 
                 if (!view.isEmpty())
                 {
