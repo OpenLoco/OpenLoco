@@ -748,29 +748,25 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 drawStationNews(self, drawingCtx, news);
             }
 
-            if (mtd.hasFlag(MessageTypeFlags::hasFirstItem))
+            if (mtd.hasFlag(MessageTypeFlags::hasFirstItem) && news->itemSubjects[0] != 0xFFFF)
             {
-                if (news->itemSubjects[0] != 0xFFFF)
-                {
-                    auto x = (self.widgets[Common::widx::viewport1Button].left + self.widgets[Common::widx::viewport1Button].right) / 2;
-                    auto y = self.widgets[Common::widx::viewport1Button].bottom - 7;
-                    auto width = self.widgets[Common::widx::viewport1Button].width() - 1;
-                    auto point = Point(x, y);
+                auto& widget = self.widgets[Common::widx::viewport1Button];
+                auto x = widget.midX();
+                auto y = widget.bottom - 7;
+                auto width = widget.width() - 1;
+                auto point = Point(x, y);
 
-                    drawViewportString(drawingCtx, point, width, mtd.argumentTypes[0], news->itemSubjects[0]);
-                }
+                drawViewportString(drawingCtx, point, width, mtd.argumentTypes[0], news->itemSubjects[0]);
             }
-            if (mtd.hasFlag(MessageTypeFlags::hasSecondItem))
+            if (mtd.hasFlag(MessageTypeFlags::hasSecondItem) && news->itemSubjects[1] != 0xFFFF)
             {
-                if (news->itemSubjects[1] != 0xFFFF)
-                {
-                    auto x = (self.widgets[Common::widx::viewport2Button].left + self.widgets[Common::widx::viewport2Button].right) / 2;
-                    auto y = self.widgets[Common::widx::viewport2Button].bottom - 7;
-                    auto width = self.widgets[Common::widx::viewport2Button].width() - 1;
-                    auto point = Point(x, y);
+                auto& widget = self.widgets[Common::widx::viewport2Button];
+                auto x = widget.midX();
+                auto y = widget.bottom - 7;
+                auto width = widget.width() - 1;
+                auto point = Point(x, y);
 
-                    drawViewportString(drawingCtx, point, width, mtd.argumentTypes[1], news->itemSubjects[1]);
-                }
+                drawViewportString(drawingCtx, point, width, mtd.argumentTypes[1], news->itemSubjects[1]);
             }
         }
 
