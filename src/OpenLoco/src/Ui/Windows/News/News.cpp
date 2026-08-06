@@ -283,9 +283,28 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             return view;
         }
 
-        // TODO: deduplicate with initViewport1
-        static void initViewport0(Window& self)
+        struct ViewportLayout
         {
+            MessageTypeFlags subjectFlag;
+            WidgetIndex_t viewportWidgetId;
+            WidgetIndex_t buttonWidgetId;
+            Point position;
+            Size fullSize;
+            Size halfSize;
+        };
+
+        static constexpr Size kFullSizeNews = { 351, 42 };
+        static constexpr Size kHalfSizeNews = { 174, 42 };
+
+        static constexpr std::array kViewportLayouts = std::to_array<ViewportLayout>({
+            { MessageTypeFlags::hasFirstItem, Common::widx::viewport1, Common::widx::viewport1Button, Point{ 4, 42 }, kFullSizeNews, kHalfSizeNews },
+            { MessageTypeFlags::hasSecondItem, Common::widx::viewport2, Common::widx::viewport2Button, Point{ 186, 42 }, kHalfSizeNews, kHalfSizeNews },
+        });
+
+        static void initViewport(Window& self, const uint8_t subjectIndex)
+        {
+            auto& layout = kViewportLayouts[subjectIndex];
+
             SavedView view;
             view.mapX = -1;
             view.mapY = -1;
@@ -301,28 +320,28 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             if (MessageManager::getActiveIndex() != MessageId::null)
             {
-                if (mtd.hasFlag(MessageTypeFlags::hasFirstItem))
+                if (mtd.hasFlag(layout.subjectFlag))
                 {
-                    auto itemType = mtd.argumentTypes[0];
+                    auto itemType = mtd.argumentTypes[subjectIndex];
 
-                    if (news->itemSubjects[0] != 0xFFFF)
+                    if (news->itemSubjects[subjectIndex] != 0xFFFF)
                     {
-                        view = getView(&self, news, news->itemSubjects[0], itemType, &selectable);
+                        view = getView(&self, news, news->itemSubjects[subjectIndex], itemType, &selectable);
                     }
                 }
             }
 
-            self.widgets[Common::widx::viewport1].hidden = true;
-            self.widgets[Common::widx::viewport1Button].hidden = true;
+            self.widgets[layout.viewportWidgetId].hidden = true;
+            self.widgets[layout.buttonWidgetId].hidden = true;
 
             if (!view.isEmpty())
             {
-                self.widgets[Common::widx::viewport1].hidden = false;
+                self.widgets[layout.viewportWidgetId].hidden = false;
             }
 
             if (selectable)
             {
-                self.widgets[Common::widx::viewport1Button].hidden = false;
+                self.widgets[layout.buttonWidgetId].hidden = false;
             }
 
             if (_nState.savedView[0] != view)
@@ -331,36 +350,26 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 self.viewportRemove(0);
                 self.invalidate();
 
-                self.widgets[Common::widx::viewport1].left = 6;
-                self.widgets[Common::widx::viewport1].right = 353;
-                self.widgets[Common::widx::viewport1Button].left = 4;
-                self.widgets[Common::widx::viewport1Button].right = 355;
+                const bool juxtapose = subjectIndex == 0 && mtd.hasFlag(MessageTypeFlags::hasSecondItem);
+                const auto& size = juxtapose ? layout.halfSize : layout.fullSize;
 
-                if (mtd.hasFlag(MessageTypeFlags::hasSecondItem))
-                {
-                    self.widgets[Common::widx::viewport1].left = 6;
-                    self.widgets[Common::widx::viewport1].right = 173;
-                    self.widgets[Common::widx::viewport1Button].left = 4;
-                    self.widgets[Common::widx::viewport1Button].right = 175;
-                }
+                self.widgets[layout.viewportWidgetId].left = layout.position.x + 2;
+                self.widgets[layout.viewportWidgetId].right = layout.position.x + size.width - 4;
+                self.widgets[layout.buttonWidgetId].left = layout.position.x + size.width;
+                self.widgets[layout.buttonWidgetId].right = layout.position.x + size.width;
 
                 if (!view.isEmpty())
                 {
-                    int16_t x = self.widgets[Common::widx::viewport1].left + 1;
-                    int16_t y = self.widgets[Common::widx::viewport1].top + 1;
-                    Ui::Point origin = { x, y };
+                    auto origin = self.widgets[layout.viewportWidgetId].position() + Point{ 1, 1 };
 
-                    uint16_t viewportWidth = self.widgets[Common::widx::viewport1].width();
+                    uint16_t viewportWidth = self.widgets[layout.viewportWidgetId].width();
                     uint16_t viewportHeight = 62;
                     Ui::Size viewportSize = { viewportWidth, viewportHeight };
 
                     if (mtd.hasFlag(MessageTypeFlags::isGeneralNews))
                     {
-                        x = self.widgets[Common::widx::viewport1].left;
-                        y = self.widgets[Common::widx::viewport1].top;
-                        origin = { x, y };
-
-                        viewportWidth = self.widgets[Common::widx::viewport1].width() + 2;
+                        origin = self.widgets[layout.viewportWidgetId].position();
+                        viewportWidth = self.widgets[layout.viewportWidgetId].width() + 2;
                         viewportHeight = 64;
                         viewportSize = { viewportWidth, viewportHeight };
                     }
@@ -378,92 +387,11 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             }
         }
 
-        // TODO: deduplicate with initViewport0
-        static void initViewport1(Window& self)
-        {
-            SavedView view;
-            view.mapX = -1;
-            view.mapY = -1;
-            view.surfaceZ = -1;
-            view.rotation = -1;
-            view.zoomLevel = (ZoomLevel)0xFFU;
-            view.entityId = EntityId::null;
-
-            auto news = MessageManager::get(MessageManager::getActiveIndex());
-            const auto& mtd = getMessageTypeDescriptor(news->type);
-
-            bool selectable = false;
-
-            if (MessageManager::getActiveIndex() != MessageId::null)
-            {
-                if (mtd.hasFlag(MessageTypeFlags::hasSecondItem))
-                {
-                    auto itemType = mtd.argumentTypes[1];
-
-                    if (news->itemSubjects[1] != 0xFFFF)
-                    {
-                        view = getView(&self, news, news->itemSubjects[1], itemType, &selectable);
-                    }
-                }
-            }
-
-            self.widgets[Common::widx::viewport2].hidden = true;
-            self.widgets[Common::widx::viewport2Button].hidden = true;
-
-            if (!view.isEmpty())
-            {
-                self.widgets[Common::widx::viewport2].hidden = false;
-            }
-
-            if (selectable)
-            {
-                self.widgets[Common::widx::viewport2Button].hidden = false;
-            }
-
-            if (_nState.savedView[1] != view)
-            {
-                _nState.savedView[1] = view;
-                self.viewportRemove(1);
-                self.invalidate();
-
-                self.widgets[Common::widx::viewport2].left = 186;
-                self.widgets[Common::widx::viewport2].right = 353;
-                self.widgets[Common::widx::viewport2Button].left = 184;
-                self.widgets[Common::widx::viewport2Button].right = 355;
-
-                if (!view.isEmpty())
-                {
-                    int16_t x = self.widgets[Common::widx::viewport2].left + 1;
-                    int16_t y = self.widgets[Common::widx::viewport2].top + 1;
-                    Ui::Point origin = { x, y };
-
-                    uint16_t viewportWidth = self.widgets[Common::widx::viewport2].width();
-                    uint16_t viewportHeight = 62;
-                    Ui::Size viewportSize = { viewportWidth, viewportHeight };
-
-                    if (mtd.hasFlag(MessageTypeFlags::isGeneralNews))
-                    {
-                        x = self.widgets[Common::widx::viewport2].left;
-                        y = self.widgets[Common::widx::viewport2].top;
-                        origin = { x, y };
-
-                        viewportWidth = self.widgets[Common::widx::viewport2].width() + 2;
-                        viewportHeight = 64;
-                        viewportSize = { viewportWidth, viewportHeight };
-                    }
-
-                    ViewportManager::create(&self, 1, origin, viewportSize, view.zoomLevel, view.getPos());
-
-                    self.invalidate();
-                }
-            }
-        }
-
         // 0x00429209
         void initViewports(Window& self)
         {
-            initViewport0(self);
-            initViewport1(self);
+            initViewport(self, 0);
+            initViewport(self, 1);
         }
 
         // 0x0042A136
