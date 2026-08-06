@@ -341,7 +341,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             viewportWidget.left = layout.position.x + 2;
             viewportWidget.right = layout.position.x + size.width - 4;
-            buttonWidget.left = layout.position.x + size.width;
+            buttonWidget.left = layout.position.x;
             buttonWidget.right = layout.position.x + size.width;
 
             // Update viewport focus
