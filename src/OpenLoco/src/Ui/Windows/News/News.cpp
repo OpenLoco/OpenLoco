@@ -345,10 +345,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             buttonWidget.right = layout.position.x + size.width;
 
             // Update viewport focus
-            if (_nState.savedView[0] != view)
+            if (_nState.savedView[subjectIndex] != view)
             {
-                _nState.savedView[0] = view;
-                self.viewportRemove(0);
+                _nState.savedView[subjectIndex] = view;
+                self.viewportRemove(subjectIndex);
                 self.invalidate();
 
                 if (!view.isEmpty())
@@ -375,6 +375,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     {
                         ViewportManager::create(&self, 0, origin, viewportSize, view.zoomLevel, view.getPos());
                     }
+
                     self.invalidate();
                 }
             }
