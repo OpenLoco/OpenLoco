@@ -174,7 +174,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             }
         }
 
-        static SavedView getView(Window* self, const Message* news, uint16_t itemId, MessageItemArgumentType itemType, bool* selectable)
+        static SavedView getView(Window* self, const Message* news, uint16_t itemId, MessageItemArgumentType itemType, bool& selectable)
         {
             SavedView view;
             view.mapX = -1;
@@ -194,7 +194,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     view.surfaceZ = World::TileManager::getHeight({ view.mapX, view.mapY }).landHeight;
                     view.rotation = WindowManager::getCurrentRotation();
                     view.zoomLevel = ZoomLevel::half;
-                    *selectable = true;
+                    selectable = true;
                     break;
                 }
 
@@ -207,7 +207,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     view.surfaceZ = station->z;
                     view.rotation = WindowManager::getCurrentRotation();
                     view.zoomLevel = ZoomLevel::full;
-                    *selectable = true;
+                    selectable = true;
                     break;
                 }
 
@@ -220,7 +220,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     view.surfaceZ = World::TileManager::getHeight({ view.mapX, view.mapY }).landHeight;
                     view.rotation = WindowManager::getCurrentRotation();
                     view.zoomLevel = ZoomLevel::half;
-                    *selectable = true;
+                    selectable = true;
                     break;
                 }
 
@@ -247,7 +247,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     view.flags = (1 << 15);
                     view.zoomLevel = ZoomLevel::full;
                     view.rotation = WindowManager::getCurrentRotation();
-                    *selectable = true;
+                    selectable = true;
                     break;
                 }
 
@@ -256,7 +256,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     // TODO: Do this better
                     view.zoomLevel = enumValue(SubjectType::companyFace);
                     self->invalidate();
-                    *selectable = true;
+                    selectable = true;
                     break;
 
                 case MessageItemArgumentType::location:
@@ -265,7 +265,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     view.surfaceZ = World::TileManager::getHeight({ view.mapX, view.mapY }).landHeight;
                     view.zoomLevel = ZoomLevel::full;
                     view.rotation = WindowManager::getCurrentRotation();
-                    *selectable = true;
+                    selectable = true;
                     break;
 
                 case MessageItemArgumentType::unk6:
@@ -277,7 +277,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     // TODO: Do this better
                     view.zoomLevel = enumValue(SubjectType::vehicleImage);
                     self->invalidate();
-                    *selectable = true;
+                    selectable = true;
                     break;
             }
             return view;
@@ -324,7 +324,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                     if (news->itemSubjects[subjectIndex] != 0xFFFF)
                     {
-                        view = getView(&self, news, news->itemSubjects[subjectIndex], itemType, &selectable);
+                        view = getView(&self, news, news->itemSubjects[subjectIndex], itemType, selectable);
                     }
                 }
             }
