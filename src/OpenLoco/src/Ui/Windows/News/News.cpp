@@ -174,7 +174,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             }
         }
 
-        static SavedView getView(Window* self, Message* news, uint16_t itemId, MessageItemArgumentType itemType, bool* selectable)
+        static SavedView getView(Window* self, const Message* news, uint16_t itemId, MessageItemArgumentType itemType, bool* selectable)
         {
             SavedView view;
             view.mapX = -1;
@@ -303,8 +303,6 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
         static void initViewport(Window& self, const uint8_t subjectIndex)
         {
-            auto& layout = kViewportLayouts[subjectIndex];
-
             SavedView view;
             view.mapX = -1;
             view.mapY = -1;
@@ -313,11 +311,11 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             view.zoomLevel = (ZoomLevel)0xFFU;
             view.entityId = EntityId::null;
 
-            auto news = MessageManager::get(MessageManager::getActiveIndex());
+            const auto* news = MessageManager::get(MessageManager::getActiveIndex());
             const auto& mtd = getMessageTypeDescriptor(news->type);
+            const auto& layout = kViewportLayouts[subjectIndex];
 
             bool selectable = false;
-
             if (MessageManager::getActiveIndex() != MessageId::null)
             {
                 if (mtd.hasFlag(layout.subjectFlag))
@@ -331,45 +329,40 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 }
             }
 
-            self.widgets[layout.viewportWidgetId].hidden = true;
-            self.widgets[layout.buttonWidgetId].hidden = true;
+            auto& viewportWidget = self.widgets[layout.viewportWidgetId];
+            auto& buttonWidget = self.widgets[layout.buttonWidgetId];
 
-            if (!view.isEmpty())
-            {
-                self.widgets[layout.viewportWidgetId].hidden = false;
-            }
+            viewportWidget.hidden = view.isEmpty();
+            buttonWidget.hidden = !selectable;
 
-            if (selectable)
-            {
-                self.widgets[layout.buttonWidgetId].hidden = false;
-            }
-
+            // Update viewport focus
             if (_nState.savedView[0] != view)
             {
                 _nState.savedView[0] = view;
                 self.viewportRemove(0);
                 self.invalidate();
 
+                // Update viewport layout
                 const bool juxtapose = subjectIndex == 0 && mtd.hasFlag(MessageTypeFlags::hasSecondItem);
                 const auto& size = juxtapose ? layout.halfSize : layout.fullSize;
 
-                self.widgets[layout.viewportWidgetId].left = layout.position.x + 2;
-                self.widgets[layout.viewportWidgetId].right = layout.position.x + size.width - 4;
-                self.widgets[layout.buttonWidgetId].left = layout.position.x + size.width;
-                self.widgets[layout.buttonWidgetId].right = layout.position.x + size.width;
+                viewportWidget.left = layout.position.x + 2;
+                viewportWidget.right = layout.position.x + size.width - 4;
+                buttonWidget.left = layout.position.x + size.width;
+                buttonWidget.right = layout.position.x + size.width;
 
                 if (!view.isEmpty())
                 {
-                    auto origin = self.widgets[layout.viewportWidgetId].position() + Point{ 1, 1 };
+                    auto origin = viewportWidget.position() + Point{ 1, 1 };
 
-                    uint16_t viewportWidth = self.widgets[layout.viewportWidgetId].width();
+                    uint16_t viewportWidth = viewportWidget.width();
                     uint16_t viewportHeight = 62;
                     Ui::Size viewportSize = { viewportWidth, viewportHeight };
 
                     if (mtd.hasFlag(MessageTypeFlags::isGeneralNews))
                     {
-                        origin = self.widgets[layout.viewportWidgetId].position();
-                        viewportWidth = self.widgets[layout.viewportWidgetId].width() + 2;
+                        origin = viewportWidget.position();
+                        viewportWidth = viewportWidget.width() + 2;
                         viewportHeight = 64;
                         viewportSize = { viewportWidth, viewportHeight };
                     }
