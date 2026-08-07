@@ -203,7 +203,13 @@ namespace OpenLoco::Ui::Windows
 
     namespace EditorStepController
     {
-        void open();
+        enum class StepDirection : uint8_t
+        {
+            previous,
+            next,
+        };
+
+        void open(StepDirection direction);
     }
 
     namespace Error

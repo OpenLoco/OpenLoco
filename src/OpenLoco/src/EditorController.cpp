@@ -141,7 +141,11 @@ namespace OpenLoco::EditorController
         Windows::Terraform::setClearAreaToolSize(2);
 
         Windows::ToolbarTop::open();
-        Windows::EditorStepController::open();
+
+        using Windows::EditorStepController::StepDirection;
+        Windows::EditorStepController::open(StepDirection::previous);
+        Windows::EditorStepController::open(StepDirection::next);
+
         Gui::resize();
     }
 
