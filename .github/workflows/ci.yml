@@ -340,7 +340,7 @@ jobs:
       - name: Tar artifacts
         run: |
           cd artifacts
-          tar zcvf ../OpenLoco-linux-x64-glibc2.43.tar.gz *
+          tar zcvf OpenLoco-linux-x64-glibc2.43.tar.gz *
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
