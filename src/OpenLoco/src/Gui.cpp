@@ -105,6 +105,13 @@ namespace OpenLoco::Gui
             window->x = std::max(uiWidth, 640) - window->width;
         }
 
+        window = WindowManager::find(WindowType::editorStatusLine);
+        if (window)
+        {
+            window->y = uiHeight - window->height;
+            window->x = (std::max(uiWidth, 640) - window->width) / 2;
+        }
+
         window = WindowManager::find(WindowType::titleMenu);
         if (window)
         {

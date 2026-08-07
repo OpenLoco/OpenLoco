@@ -95,12 +95,6 @@ namespace OpenLoco::Ui::Windows::EditorStepController
         self.draw(drawingCtx);
         drawingCtx.drawRectInset(frame.left + 1, frame.top + 1, frame.width() - 2, frame.height() - 2, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
-        auto tr = Gfx::TextRenderer(drawingCtx);
-
-        // TODO: move to different window
-        // auto point = Point((previous.right + next.left) / 2, self.height - 12);
-        // tr.drawStringCentred(point, self.getColour(WindowColour::tertiary).opaque().outline(), kStepNames.at(EditorController::getCurrentStep()));
-
         const auto& layout = isPreviousButton(self) ? kStepFrames[0] : kStepFrames[1];
         const auto& labelOffset = layout.labelOffset;
         const auto& imageOffset = layout.imageOffset;
@@ -115,6 +109,7 @@ namespace OpenLoco::Ui::Windows::EditorStepController
         }
 
         auto textPos = frame.position() + labelOffset;
+        auto tr = Gfx::TextRenderer(drawingCtx);
         tr.drawStringCentred(textPos, textColour, layout.label);
 
         textPos.y += 10;

@@ -147,6 +147,8 @@ namespace OpenLoco::EditorController
         Windows::EditorStepController::open(StepDirection::previous);
         Windows::EditorStepController::open(StepDirection::next);
 
+        Windows::EditorStatusLine::open();
+
         Gui::resize();
     }
 
