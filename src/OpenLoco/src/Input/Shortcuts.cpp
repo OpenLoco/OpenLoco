@@ -337,6 +337,37 @@ namespace OpenLoco::Input::Shortcuts
         Windows::Terraform::openClearArea();
     }
 
+    static void buildTracksBuildRoadsCommon(uint8_t roadOrTrackId, const AvailableTracksAndRoads available)
+    {
+        if (roadOrTrackId == 0xFF)
+        {
+            return;
+        }
+
+        if (available.empty())
+        {
+            assert(false); // If there are none avaiable, why is the default not 0xFF ?
+            return;
+        }
+
+        // Is construction with this road/track type already open?
+        if (WindowManager::find(WindowType::construction) != nullptr && Windows::Construction::getCurrentTrackType() == roadOrTrackId)
+        {
+            // Find next available with wrapping
+            auto it = std::find(available.begin(), available.end(), roadOrTrackId);
+            if (it != available.end() && it + 1 != available.end())
+            {
+                roadOrTrackId = *(it + 1);
+            }
+            else
+            {
+                roadOrTrackId = available[0];
+            }
+        }
+
+        Windows::Construction::openWithFlags(roadOrTrackId);
+    }
+
     // 0x004BF232
     static void buildTracks()
     {
@@ -345,36 +376,7 @@ namespace OpenLoco::Input::Shortcuts
             return;
         }
 
-        // Could be either a track object or a road object
-        auto track = getGameState().defaultRailroadObjectId;
-
-        if (track == 0xFF)
-        {
-            return;
-        }
-
-        // Is construction for it already open?
-        if (WindowManager::find(WindowType::construction) != nullptr && Windows::Construction::getCurrentTrackType() == track)
-        {
-            // Find next available track
-            const auto available = companyGetAvailableRailTracks(GameCommands::getUpdatingCompanyId());
-            if (available.empty())
-            {
-                assert(false); // getGameState().defaultRailroadObjectId != 0xFF, but there are no available rail tracks?
-                return;
-            }
-            auto it = std::find(available.begin(), available.end(), track);
-            if (it != available.end() && it + 1 != available.end())
-            {
-                track = *(it + 1);
-            }
-            else
-            {
-                track = available[0];
-            }
-        }
-
-        Windows::Construction::openWithFlags(track);
+        buildTracksBuildRoadsCommon(getGameState().defaultRailroadObjectId, companyGetAvailableRailTracks(GameCommands::getUpdatingCompanyId()));
     }
 
     // 0x004BF24F
@@ -385,36 +387,7 @@ namespace OpenLoco::Input::Shortcuts
             return;
         }
 
-        // Could be either a track object or a road object
-        auto road = getGameState().defaultRoadObjectId;
-
-        if (road == 0xFF)
-        {
-            return;
-        }
-
-        // Is construction for it already open?
-        if (WindowManager::find(WindowType::construction) != nullptr && Windows::Construction::getCurrentTrackType() == road)
-        {
-            // Find next available road
-            const auto available = companyGetAvailableRoads(GameCommands::getUpdatingCompanyId());
-            if (available.empty())
-            {
-                assert(false); // getGameState().defaultRoadObjectId != 0xFF, but there are no available roads?
-                return;
-            }
-            auto it = std::find(available.begin(), available.end(), road);
-            if (it != available.end() && it + 1 != available.end())
-            {
-                road = *(it + 1);
-            }
-            else
-            {
-                road = available[0];
-            }
-        }
-
-        Windows::Construction::openWithFlags(road);
+        buildTracksBuildRoadsCommon(getGameState().defaultRoadObjectId, companyGetAvailableRoads(GameCommands::getUpdatingCompanyId()));
     }
 
     // 0x004BF276
