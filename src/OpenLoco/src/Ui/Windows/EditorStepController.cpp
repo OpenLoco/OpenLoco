@@ -12,29 +12,23 @@
 
 namespace OpenLoco::Ui::Windows::EditorStepController
 {
+    static constexpr Size kWindowSize = { 200, 32 };
+
     enum widx
     {
-        previous_frame,
-        previous_button,
-        next_frame,
-        next_button,
+        frame,
+        button,
     };
 
     namespace Widx
     {
-        constexpr WidgetId kPreviousFrame{ "previous_frame" };
-        constexpr WidgetId kPreviousButton{ "previous_button" };
-        constexpr WidgetId kNextFrame{ "next_frame" };
-        constexpr WidgetId kNextButton{ "next_button" };
+        constexpr WidgetId kFrame{ "frame" };
+        constexpr WidgetId kButton{ "button" };
     }
 
-    static constexpr uint16_t kWindowHeight = 32;
-
     static constexpr auto _widgets = makeWidgets(
-        Widgets::Wt3Widget(Widx::kPreviousFrame, { 0, 0 }, { 200, 34 }, WindowColour::primary),
-        Widgets::ImageButton(Widx::kPreviousButton, { 2, 2 }, { 196, 30 }, WindowColour::primary),
-        Widgets::Wt3Widget(Widx::kNextFrame, { 440, 0 }, { 200, 34 }, WindowColour::primary),
-        Widgets::ImageButton(Widx::kNextButton, { 442, 2 }, { 196, 30 }, WindowColour::primary)
+        Widgets::Wt3Widget(Widx::kFrame, { 0, 0 }, kWindowSize, WindowColour::primary),
+        Widgets::ImageButton(Widx::kButton, { 2, 2 }, kWindowSize - Size{ 4, 4 }, WindowColour::primary)
 
     );
 
@@ -43,13 +37,13 @@ namespace OpenLoco::Ui::Windows::EditorStepController
     // 0x0043CCCD
     void open(StepDirection direction)
     {
-        const auto origin = Ui::Point(0, Ui::height() - kWindowHeight);
-        const auto windowSize = Ui::Size(Ui::width(), kWindowHeight);
+        const auto xPos = direction == StepDirection::previous ? 0 : Ui::width() - kWindowSize.width;
+        const auto origin = Ui::Point(xPos, Ui::height() - kWindowSize.height);
 
         auto window = WindowManager::createWindow(
             WindowType::editorStepController,
             origin,
-            windowSize,
+            kWindowSize,
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground,
             getEvents());
 
@@ -62,28 +56,17 @@ namespace OpenLoco::Ui::Windows::EditorStepController
         window->setColour(WindowColour::tertiary, AdvancedColour(Colour::mutedSeaGreen).translucent());
     }
 
+    static bool isPreviousButton(Window& self)
+    {
+        return StepDirection(self.number) == StepDirection::previous;
+    }
+
     // 0x0043CE21
     static void prepareDraw(Window& self)
     {
-        self.widgets[widx::next_frame].hidden = false;
-        self.widgets[widx::next_button].hidden = false;
-
-        if (EditorController::canGoBack())
-        {
-            self.widgets[widx::previous_frame].hidden = false;
-            self.widgets[widx::previous_button].hidden = false;
-        }
-        else
-        {
-            self.widgets[widx::previous_frame].hidden = true;
-            self.widgets[widx::previous_button].hidden = true;
-        }
-
-        // 0x0043CDD1
-        self.widgets[widx::next_frame].right = self.width - 1;
-        self.widgets[widx::next_frame].left = self.width - 1 - 2 - 195 - 2;
-        self.widgets[widx::next_button].left = self.widgets[widx::next_frame].left + 2;
-        self.widgets[widx::next_button].right = self.widgets[widx::next_frame].right - 2;
+        const bool hidden = isPreviousButton(self) && !EditorController::canGoBack();
+        self.widgets[widx::frame].hidden = hidden;
+        self.widgets[widx::button].hidden = hidden;
     }
 
     static constexpr auto kStepNames = Utility::buildLookupTable<EditorController::Step, StringId>({
@@ -93,76 +76,76 @@ namespace OpenLoco::Ui::Windows::EditorStepController
         { EditorController::Step::saveScenario, StringIds::editor_step_save },
     });
 
+    struct StepFrame
+    {
+        StringId label;
+        uint32_t image;
+        Point labelOffset;
+        Point imageOffset;
+    };
+
+    static constexpr std::array kStepFrames = std::to_array<StepFrame>({
+        { StringIds::editor_previous_step, ImageIds::step_back, Point{ (kWindowSize.width + 30) / 2, 6 }, Point{ 6, 6 } },
+        { StringIds::editor_next_step, ImageIds::step_forward, Point{ (kWindowSize.width - 31) / 2, 6 }, Point{ kWindowSize.width - 29, 6 } },
+    });
+
     // 0x0043CE65
     static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
     {
+        const bool hidden = isPreviousButton(self) && !EditorController::canGoBack();
+        if (hidden)
+        {
+            return;
+        }
+
+        // Draw frame
+        auto& frame = self.widgets[widx::frame];
+        drawingCtx.drawRect(frame.left, frame.top, frame.width(), frame.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+        self.draw(drawingCtx);
+        drawingCtx.drawRectInset(frame.left + 1, frame.top + 1, frame.width() - 2, frame.height() - 2, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
+
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        Widget& previous = self.widgets[widx::previous_frame];
-        Widget& next = self.widgets[widx::next_frame];
+        // TODO: move to different window
+        // auto point = Point((previous.right + next.left) / 2, self.height - 12);
+        // tr.drawStringCentred(point, self.getColour(WindowColour::tertiary).opaque().outline(), kStepNames.at(EditorController::getCurrentStep()));
 
-        if (EditorController::canGoBack())
-        {
-            drawingCtx.drawRect(previous.left, previous.top, previous.width(), previous.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
-        }
-        drawingCtx.drawRect(next.left, next.top, next.width(), next.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+        const auto& layout = isPreviousButton(self) ? kStepFrames[0] : kStepFrames[1];
+        const auto& labelOffset = layout.labelOffset;
+        const auto& imageOffset = layout.imageOffset;
 
-        self.draw(drawingCtx);
+        auto imagePos = frame.position() + imageOffset;
+        drawingCtx.drawImage(ZoomLevel::full, imagePos.x, imagePos.y, layout.image);
 
-        if (EditorController::canGoBack())
-        {
-            drawingCtx.drawRectInset(previous.left + 1, previous.top + 1, previous.width() - 2, previous.height() - 2, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
-        }
-        drawingCtx.drawRectInset(next.left + 1, next.top + 1, next.width() - 2, next.height() - 2, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
-
-        auto point = Point((previous.right + next.left) / 2, self.height - 12);
-        tr.drawStringCentred(point, self.getColour(WindowColour::tertiary).opaque().outline(), kStepNames.at(EditorController::getCurrentStep()));
-
-        if (EditorController::canGoBack())
-        {
-            drawingCtx.drawImage(ZoomLevel::full, previous.left + 6, previous.top + 6, ImageIds::step_back);
-            int x = (previous.left + 30 + previous.right) / 2;
-            int y = previous.top + 6;
-            auto textColour = self.getColour(WindowColour::secondary).opaque();
-            if (Input::isHovering(self.type, self.number, widx::previous_button))
-            {
-                textColour = Colour::white;
-            }
-
-            point = Point(x, y);
-            tr.drawStringCentred(point, textColour, StringIds::editor_previous_step);
-
-            point = Point(x, y + 10);
-            tr.drawStringCentred(point, textColour, kStepNames.at(EditorController::getPreviousStep()));
-        }
-        drawingCtx.drawImage(ZoomLevel::full, next.right - 29, next.top + 4, ImageIds::step_forward);
-        int x = next.left + (next.width() - 31) / 2;
-        int y = next.top + 6;
         auto textColour = self.getColour(WindowColour::secondary).opaque();
-        if (Input::isHovering(self.type, self.number, widx::next_button))
+        if (Input::isHovering(self.type, self.number, widx::button))
         {
             textColour = Colour::white;
         }
 
-        point = Point(x, y);
-        tr.drawStringCentred(point, textColour, StringIds::editor_next_step);
+        auto textPos = frame.position() + labelOffset;
+        tr.drawStringCentred(textPos, textColour, layout.label);
 
-        point = Point(x, y + 10);
-        tr.drawStringCentred(point, textColour, kStepNames.at(EditorController::getNextStep()));
+        textPos.y += 10;
+        auto labelStep = isPreviousButton(self) ? EditorController::getPreviousStep() : EditorController::getNextStep();
+        tr.drawStringCentred(textPos, textColour, kStepNames.at(labelStep));
     }
 
     // 0x0043D0ED
-    static void onMouseUp(Window&, [[maybe_unused]] WidgetIndex_t i, const WidgetId id)
+    static void onMouseUp(Window& self, [[maybe_unused]] WidgetIndex_t i, const WidgetId id)
     {
-        switch (id)
+        if (id != Widx::kButton)
         {
-            case Widx::kPreviousButton:
-                EditorController::goToPreviousStep();
-                break;
+            return;
+        }
 
-            case Widx::kNextButton:
-                EditorController::goToNextStep();
-                break;
+        if (isPreviousButton(self))
+        {
+            EditorController::goToPreviousStep();
+        }
+        else
+        {
+            EditorController::goToNextStep();
         }
     }
 
