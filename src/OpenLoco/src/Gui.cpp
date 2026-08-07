@@ -96,14 +96,13 @@ namespace OpenLoco::Gui
         if (window)
         {
             window->y = uiHeight - window->height;
-            window->width = std::max(uiWidth, 640);
         }
 
         window = WindowManager::find(WindowType::editorStepController, enumValue(StepDirection::next));
         if (window)
         {
             window->y = uiHeight - window->height;
-            window->width = std::max(uiWidth, 640);
+            window->x = std::max(uiWidth, 640) - window->width;
         }
 
         window = WindowManager::find(WindowType::titleMenu);
