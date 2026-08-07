@@ -206,6 +206,11 @@ namespace OpenLoco::Ui::Windows
         void open(StepDirection direction);
     }
 
+    namespace EditorStatusLine
+    {
+        void open();
+    }
+
     namespace Error
     {
         void open(StringId title, StringId message = StringIds::null);

@@ -309,6 +309,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/DragVehiclePart.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/EditKeyboardShortcut.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/EditorStepController.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/EditorStatusLine.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/Error.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/IndustryList.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/IndustryWindow.cpp"

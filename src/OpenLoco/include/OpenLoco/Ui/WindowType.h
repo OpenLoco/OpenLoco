@@ -11,7 +11,7 @@ namespace OpenLoco::Ui
         playerInfoToolbar = 2,
         timeToolbar = 3,
         editorStepController = 4,
-
+        editorStatusLine = 5,
         tooltip = 6,
         dropdown = 7,
 
