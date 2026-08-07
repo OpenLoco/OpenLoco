@@ -10,7 +10,7 @@
 
 #include <OpenLoco/Utility/LookupTable.hpp>
 
-namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
+namespace OpenLoco::Ui::Windows::EditorStepController
 {
     enum widx
     {
@@ -38,12 +38,28 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 
     );
 
-    static constexpr auto kStepNames = Utility::buildLookupTable<EditorController::Step, StringId>({
-        { EditorController::Step::objectSelection, StringIds::editor_step_object_selection },
-        { EditorController::Step::landscapeEditor, StringIds::editor_step_landscape },
-        { EditorController::Step::scenarioOptions, StringIds::editor_step_options },
-        { EditorController::Step::saveScenario, StringIds::editor_step_save },
-    });
+    static const WindowEventList& getEvents();
+
+    // 0x0043CCCD
+    void open()
+    {
+        const auto origin = Ui::Point(0, Ui::height() - kWindowHeight);
+        const auto windowSize = Ui::Size(Ui::width(), kWindowHeight);
+
+        auto window = WindowManager::createWindow(
+            WindowType::editorStepController,
+            origin,
+            windowSize,
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground,
+            getEvents());
+
+        window->setWidgets(_widgets);
+        window->var_854 = 0;
+        window->initScrollWidgets();
+        window->setColour(WindowColour::primary, AdvancedColour(Colour::mutedSeaGreen).translucent());
+        window->setColour(WindowColour::secondary, AdvancedColour(Colour::mutedSeaGreen).translucent());
+        window->setColour(WindowColour::tertiary, AdvancedColour(Colour::mutedSeaGreen).translucent());
+    }
 
     // 0x0043CE21
     static void prepareDraw(Window& self)
@@ -68,6 +84,13 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         self.widgets[widx::next_button].left = self.widgets[widx::next_frame].left + 2;
         self.widgets[widx::next_button].right = self.widgets[widx::next_frame].right - 2;
     }
+
+    static constexpr auto kStepNames = Utility::buildLookupTable<EditorController::Step, StringId>({
+        { EditorController::Step::objectSelection, StringIds::editor_step_object_selection },
+        { EditorController::Step::landscapeEditor, StringIds::editor_step_landscape },
+        { EditorController::Step::scenarioOptions, StringIds::editor_step_options },
+        { EditorController::Step::saveScenario, StringIds::editor_step_save },
+    });
 
     // 0x0043CE65
     static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
@@ -151,26 +174,5 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
     static const WindowEventList& getEvents()
     {
         return kEvents;
-    }
-
-    // 0x0043CCCD
-    void open()
-    {
-        const auto origin = Ui::Point(0, Ui::height() - kWindowHeight);
-        const auto windowSize = Ui::Size(Ui::width(), kWindowHeight);
-
-        auto window = WindowManager::createWindow(
-            WindowType::editorToolbar,
-            origin,
-            windowSize,
-            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground,
-            getEvents());
-
-        window->setWidgets(_widgets);
-        window->var_854 = 0;
-        window->initScrollWidgets();
-        window->setColour(WindowColour::primary, AdvancedColour(Colour::mutedSeaGreen).translucent());
-        window->setColour(WindowColour::secondary, AdvancedColour(Colour::mutedSeaGreen).translucent());
-        window->setColour(WindowColour::tertiary, AdvancedColour(Colour::mutedSeaGreen).translucent());
     }
 }

@@ -90,7 +90,7 @@ namespace OpenLoco::Gui
             window->x = std::max(uiWidth, 640) - window->width;
         }
 
-        window = WindowManager::find(WindowType::editorToolbar);
+        window = WindowManager::find(WindowType::editorStepController);
         if (window)
         {
             window->y = uiHeight - window->height;

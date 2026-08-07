@@ -201,6 +201,11 @@ namespace OpenLoco::Ui::Windows
         Window* open(Input::Shortcut shortcutId);
     }
 
+    namespace EditorStepController
+    {
+        void open();
+    }
+
     namespace Error
     {
         void open(StringId title, StringId message = StringIds::null);
@@ -425,11 +430,6 @@ namespace OpenLoco::Ui::Windows
     namespace TitleVersion
     {
         Window* open();
-    }
-
-    namespace ToolbarBottom::Editor
-    {
-        void open();
     }
 
     namespace ToolbarTop
