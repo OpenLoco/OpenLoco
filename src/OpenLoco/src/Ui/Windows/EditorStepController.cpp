@@ -83,8 +83,7 @@ namespace OpenLoco::Ui::Windows::EditorStepController
     // 0x0043CE65
     static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        const bool hidden = isPreviousButton(self) && !EditorController::canGoBack();
-        if (hidden)
+        if (self.widgets[widx::frame].hidden)
         {
             return;
         }
