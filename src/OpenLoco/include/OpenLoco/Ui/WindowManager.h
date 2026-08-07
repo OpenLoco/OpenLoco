@@ -433,12 +433,7 @@ namespace OpenLoco::Ui::Windows
         void open();
     }
 
-    namespace ToolbarTop::Game
-    {
-        void open();
-    }
-
-    namespace ToolbarTop::Editor
+    namespace ToolbarTop
     {
         void open();
     }

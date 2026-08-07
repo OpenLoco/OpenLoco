@@ -140,7 +140,7 @@ namespace OpenLoco::EditorController
         Windows::Terraform::setAdjustWaterToolSize(1);
         Windows::Terraform::setClearAreaToolSize(2);
 
-        Windows::ToolbarTop::Editor::open();
+        Windows::ToolbarTop::open();
         Windows::ToolbarBottom::Editor::open();
         Gui::resize();
     }

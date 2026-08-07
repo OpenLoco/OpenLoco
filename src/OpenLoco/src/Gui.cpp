@@ -32,7 +32,7 @@ namespace OpenLoco::Gui
         }
         else if (SceneManager::isPlayMode())
         {
-            Windows::ToolbarTop::Game::open();
+            Windows::ToolbarTop::open();
 
             Windows::PlayerInfoPanel::open();
             Windows::TimePanel::open();
