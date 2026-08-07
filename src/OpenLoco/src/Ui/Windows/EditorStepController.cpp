@@ -41,7 +41,7 @@ namespace OpenLoco::Ui::Windows::EditorStepController
     static const WindowEventList& getEvents();
 
     // 0x0043CCCD
-    void open()
+    void open(StepDirection direction)
     {
         const auto origin = Ui::Point(0, Ui::height() - kWindowHeight);
         const auto windowSize = Ui::Size(Ui::width(), kWindowHeight);
@@ -53,6 +53,7 @@ namespace OpenLoco::Ui::Windows::EditorStepController
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground,
             getEvents());
 
+        window->number = enumValue(direction);
         window->setWidgets(_widgets);
         window->var_854 = 0;
         window->initScrollWidgets();
