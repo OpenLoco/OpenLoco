@@ -345,6 +345,7 @@ namespace OpenLoco::Input::Shortcuts
             return;
         }
 
+        // Could be either a track object or a road object
         auto track = getGameState().defaultRailroadObjectId;
 
         if (track == 0xFF)
@@ -357,6 +358,11 @@ namespace OpenLoco::Input::Shortcuts
         {
             // Find next available track
             const auto available = companyGetAvailableRailTracks(GameCommands::getUpdatingCompanyId());
+            if (available.empty())
+            {
+                assert(false); // getGameState().defaultRailroadObjectId != 0xFF, but there are no available rail tracks?
+                return;
+            }
             auto it = std::find(available.begin(), available.end(), track);
             if (it != available.end() && it + 1 != available.end())
             {
@@ -379,6 +385,7 @@ namespace OpenLoco::Input::Shortcuts
             return;
         }
 
+        // Could be either a track object or a road object
         auto road = getGameState().defaultRoadObjectId;
 
         if (road == 0xFF)
@@ -391,6 +398,11 @@ namespace OpenLoco::Input::Shortcuts
         {
             // Find next available road
             const auto available = companyGetAvailableRoads(GameCommands::getUpdatingCompanyId());
+            if (available.empty())
+            {
+                assert(false); // getGameState().defaultRoadObjectId != 0xFF, but there are no available roads?
+                return;
+            }
             auto it = std::find(available.begin(), available.end(), road);
             if (it != available.end() && it + 1 != available.end())
             {
