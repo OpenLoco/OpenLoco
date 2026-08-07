@@ -8,8 +8,6 @@
 #include "Ui/Widgets/ImageButtonWidget.h"
 #include "Ui/Widgets/Wt3Widget.h"
 
-#include <OpenLoco/Utility/LookupTable.hpp>
-
 namespace OpenLoco::Ui::Windows::EditorStepController
 {
     static constexpr Size kWindowSize = { 200, 32 };
@@ -69,13 +67,6 @@ namespace OpenLoco::Ui::Windows::EditorStepController
         self.widgets[widx::button].hidden = hidden;
     }
 
-    static constexpr auto kStepNames = Utility::buildLookupTable<EditorController::Step, StringId>({
-        { EditorController::Step::objectSelection, StringIds::editor_step_object_selection },
-        { EditorController::Step::landscapeEditor, StringIds::editor_step_landscape },
-        { EditorController::Step::scenarioOptions, StringIds::editor_step_options },
-        { EditorController::Step::saveScenario, StringIds::editor_step_save },
-    });
-
     struct StepFrame
     {
         StringId label;
@@ -127,8 +118,8 @@ namespace OpenLoco::Ui::Windows::EditorStepController
         tr.drawStringCentred(textPos, textColour, layout.label);
 
         textPos.y += 10;
-        auto labelStep = isPreviousButton(self) ? EditorController::getPreviousStep() : EditorController::getNextStep();
-        tr.drawStringCentred(textPos, textColour, kStepNames.at(labelStep));
+        auto labelStep = isPreviousButton(self) ? EditorController::getPreviousStepString() : EditorController::getNextStepString();
+        tr.drawStringCentred(textPos, textColour, labelStep);
     }
 
     // 0x0043D0ED

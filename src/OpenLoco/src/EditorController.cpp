@@ -30,6 +30,7 @@
 #include "World/CompanyManager.h"
 #include "World/TownManager.h"
 
+#include <OpenLoco/Utility/LookupTable.hpp>
 #include <span>
 
 using namespace OpenLoco::Ui;
@@ -149,24 +150,41 @@ namespace OpenLoco::EditorController
         Gui::resize();
     }
 
+    static constexpr auto kStepNames = Utility::buildLookupTable<EditorController::Step, StringId>({
+        { EditorController::Step::objectSelection, StringIds::editor_step_object_selection },
+        { EditorController::Step::landscapeEditor, StringIds::editor_step_landscape },
+        { EditorController::Step::scenarioOptions, StringIds::editor_step_options },
+        { EditorController::Step::saveScenario, StringIds::editor_step_save },
+    });
+
+    static StringId getStringForStep(Step step)
+    {
+        return kStepNames.at(step);
+    }
+
     Step getCurrentStep()
     {
         return Scenario::getOptions().editorStep;
     }
 
-    Step getPreviousStep()
+    StringId getCurrentStepString()
     {
-        return Step(enumValue(getCurrentStep()) - 1);
+        return getStringForStep(getCurrentStep());
     }
 
-    Step getNextStep()
+    StringId getPreviousStepString()
     {
-        return Step(enumValue(getCurrentStep()) + 1);
+        return getStringForStep(Step(enumValue(getCurrentStep()) - 1));
+    }
+
+    StringId getNextStepString()
+    {
+        return getStringForStep(Step(enumValue(getCurrentStep()) + 1));
     }
 
     bool canGoBack()
     {
-        return getCurrentStep() != Step::objectSelection;
+        return Scenario::getOptions().editorStep != Step::objectSelection;
     }
 
     // 0x00440165
