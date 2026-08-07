@@ -546,19 +546,24 @@ namespace OpenLoco::World::MapGenerator
             Scenario::LandDistributionPattern::aroundCliffs,
         };
 
-        for (auto i = 0U; i < landDistributionPatterns.size(); i++)
+        constexpr auto kProgressStart = 55;
+        constexpr auto kProgressEnd = 175;
+        constexpr auto kProgressRange = kProgressEnd - kProgressStart;
+        constexpr auto kProgressStep = kProgressRange / ObjectManager::getMaxObjects(ObjectType::land);
+
+        for (uint8_t landObjectIdx = 0; landObjectIdx < ObjectManager::getMaxObjects(ObjectType::land); ++landObjectIdx)
         {
-            updateProgress(55 + 12 * i);
+            updateProgress(kProgressStart + landObjectIdx * kProgressStep);
 
-            for (uint8_t landObjectIdx = 0; landObjectIdx < ObjectManager::getMaxObjects(ObjectType::land); ++landObjectIdx)
+            const auto* landObj = ObjectManager::get<LandObject>(landObjectIdx);
+            if (landObj == nullptr)
             {
-                const auto* landObj = ObjectManager::get<LandObject>(landObjectIdx);
-                if (landObj == nullptr)
-                {
-                    continue;
-                }
+                continue;
+            }
 
-                const auto typePattern = Scenario::getOptions().landDistributionPatterns[landObjectIdx];
+            const auto typePattern = Scenario::getOptions().landDistributionPatterns[landObjectIdx];
+            for (auto i = 0U; i < landDistributionPatterns.size(); i++)
+            {
                 const auto distPattern = landDistributionPatterns[i];
                 if (typePattern != distPattern)
                 {
