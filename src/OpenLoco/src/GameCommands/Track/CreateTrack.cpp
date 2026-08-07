@@ -259,8 +259,8 @@ namespace OpenLoco::GameCommands
         {
             elRoad.setHasLevelCrossing(true);
             elRoad.setLevelCrossingObjectId(getGameState().currentDefaultLevelCrossingType);
-            elRoad.setUnk7_10(false);
-            elRoad.setUnk6l(0);
+            elRoad.setLevelCrossingClosed(false);
+            elRoad.setLevelCrossingAnimationFrame(0);
         }
 
         return World::TileClearance::ClearFuncResult::noCollision;

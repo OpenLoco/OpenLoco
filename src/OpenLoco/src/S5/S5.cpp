@@ -321,10 +321,10 @@ namespace OpenLoco::S5
                     dstElem.setSequenceIndex(d.sequenceIndex());
                     dstElem.setLevelCrossingObjectId(d.levelCrossingObjectId());
                     dstElem.setRoadObjectId(d.roadObjectId());
-                    dstElem.setUnk6l(d.unk6l());
+                    dstElem.setLevelCrossingAnimationFrame(d.levelCrossingAnimationFrame());
                     dstElem.setBridgeObjectId(d.bridge());
                     dstElem.setOwner(static_cast<CompanyId>(d.owner()));
-                    dstElem.setUnk7_10(d.unk7_10());
+                    dstElem.setLevelCrossingClosed(d.isLevelCrossingClosed());
                     dstElem.setHasLevelCrossing(d.hasLevelCrossing());
                     dstElem.setUnk7_40(d.unk7_40());
                     dstElem.setUnk7_80(d.unk7_80());

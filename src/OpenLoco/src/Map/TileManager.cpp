@@ -1455,7 +1455,7 @@ namespace OpenLoco::World::TileManager
                 [hasTrack](World::TrackElement& elTrack) { if (hasTrack) { elTrack.setHasLevelCrossing(false); } },
                 [hasRoad](World::RoadElement& elRoad) { if (hasRoad) {
                     elRoad.setHasLevelCrossing(false);
-                    elRoad.setUnk7_10(false);
+                    elRoad.setLevelCrossingClosed(false);
                     elRoad.setLevelCrossingObjectId(0);
                 } });
         }
