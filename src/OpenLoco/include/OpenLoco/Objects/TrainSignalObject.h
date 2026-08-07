@@ -40,7 +40,7 @@ namespace OpenLoco
 
         StringId name;
         TrainSignalObjectFlags flags; // 0x02
-        uint8_t animationSpeed;       // 0x04
+        uint8_t animationFrameInterval;       // 0x04
         uint8_t numFrames;            // 0x05
         int16_t costFactor;           // 0x06
         int16_t sellCostFactor;       // 0x08
