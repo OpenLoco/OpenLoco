@@ -341,7 +341,7 @@ namespace OpenLoco::World::MapGenerator
         for (auto pos : getWorldRange())
         {
             auto height = heightMap.getHeight({ pos.x, pos.y });
-            if (height < seaLevel)
+            if (height > seaLevel)
             {
                 continue;
             }
