@@ -497,7 +497,7 @@ namespace OpenLoco::World::MapGenerator
     static void generateTerrainNull([[maybe_unused]] HeightMap& heightMap, [[maybe_unused]] uint8_t surfaceStyle) {}
 
     using GenerateTerrainFunc = void (*)(HeightMap&, uint8_t);
-    static const GenerateTerrainFunc _generateFuncs[] = {
+    static constexpr GenerateTerrainFunc kGenerateFuncs[] = {
         generateTerrainNull,               // LandDistributionPattern::everywhere This is null as it is a special function performed separately
         generateTerrainNull,               // LandDistributionPattern::nowhere
         generateTerrainFarFromWater,       // LandDistributionPattern::farFromWater
@@ -536,16 +536,6 @@ namespace OpenLoco::World::MapGenerator
             }
         }
 
-        constexpr std::array landDistributionPatterns = {
-            Scenario::LandDistributionPattern::farFromWater,
-            Scenario::LandDistributionPattern::nearWater,
-            Scenario::LandDistributionPattern::onMountains,
-            Scenario::LandDistributionPattern::farFromMountains,
-            Scenario::LandDistributionPattern::inSmallRandomAreas,
-            Scenario::LandDistributionPattern::inLargeRandomAreas,
-            Scenario::LandDistributionPattern::aroundCliffs,
-        };
-
         constexpr auto kProgressStart = 52;
         constexpr auto kProgressEnd = 178;
         constexpr auto kProgressRange = kProgressEnd - kProgressStart;
@@ -562,16 +552,7 @@ namespace OpenLoco::World::MapGenerator
             }
 
             const auto typePattern = Scenario::getOptions().landDistributionPatterns[landObjectIdx];
-            for (auto i = 0U; i < landDistributionPatterns.size(); i++)
-            {
-                const auto distPattern = landDistributionPatterns[i];
-                if (typePattern != distPattern)
-                {
-                    continue;
-                }
-
-                _generateFuncs[enumValue(distPattern)](heightMap, landObjectIdx);
-            }
+            kGenerateFuncs[enumValue(typePattern)](heightMap, landObjectIdx);
         }
     }
 
