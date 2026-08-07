@@ -42,13 +42,6 @@ namespace OpenLoco::Ui::Windows::EditorStatusLine
         window->setColour(WindowColour::tertiary, AdvancedColour(Colour::mutedSeaGreen).translucent());
     }
 
-    // 0x00439B3D
-    static void prepareDraw(Window&)
-    {
-        // self.widgets[widx::frame].right = /
-    }
-
-    // 0x00439B4A
     static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
     {
         auto& widget = self.widgets[widx::frame];
@@ -60,7 +53,6 @@ namespace OpenLoco::Ui::Windows::EditorStatusLine
     }
 
     static constexpr WindowEventList kEvents = {
-        .prepareDraw = prepareDraw,
         .draw = draw,
     };
 
