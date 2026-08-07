@@ -546,8 +546,8 @@ namespace OpenLoco::World::MapGenerator
             Scenario::LandDistributionPattern::aroundCliffs,
         };
 
-        constexpr auto kProgressStart = 55;
-        constexpr auto kProgressEnd = 175;
+        constexpr auto kProgressStart = 52;
+        constexpr auto kProgressEnd = 178;
         constexpr auto kProgressRange = kProgressEnd - kProgressStart;
         constexpr auto kProgressStep = kProgressRange / ObjectManager::getMaxObjects(ObjectType::land);
 
@@ -1114,11 +1114,11 @@ namespace OpenLoco::World::MapGenerator
             updateProgress(45);
 
             generateTerrain(heightMap);
-            updateProgress(55);
+            updateProgress(52);
         }
 
         generateSurfaceVariation();
-        updateProgress(175);
+        updateProgress(178);
 
         generateTrees();
         updateProgress(200);
