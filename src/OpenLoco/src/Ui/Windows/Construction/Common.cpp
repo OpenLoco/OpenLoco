@@ -67,8 +67,8 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             Common::setDisabledWidgets(window);
         }
-
         Construction::activateSelectedConstructionWidgets();
+
         window = WindowManager::find(WindowType::construction);
 
         if (window != nullptr)
@@ -338,12 +338,14 @@ namespace OpenLoco::Ui::Windows::Construction
 
         cState.lastSelectedMods = copyElement->mods();
         cState.byte_113603A = 0;
+
         auto* window = WindowManager::find(WindowType::construction);
 
         if (window != nullptr)
         {
             Common::setDisabledWidgets(window);
         }
+        Construction::activateSelectedConstructionWidgets();
 
         return window;
     }
@@ -441,6 +443,7 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             Common::setDisabledWidgets(window);
         }
+        Construction::activateSelectedConstructionWidgets();
 
         return window;
     }
