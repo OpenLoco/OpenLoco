@@ -46,7 +46,7 @@ namespace OpenLoco::Ui::WindowManager
 
     static std::array<AdvancedColour, enumValue(WindowColour::count)> _windowColours;
 
-    static void viewportRedrawAfterShift(Window* window, Viewport* viewport, int32_t x, int32_t y);
+    static void viewportRedrawAfterShift(Window* window, Viewport* viewport, const Ui::Rect& area, int32_t x, int32_t y);
 
     void init()
     {
@@ -106,7 +106,7 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004C6118
-    void update()
+    void tick()
     {
         uint16_t timeSinceLastTick = getTimeSinceLastTick();
         ToolTip::setNotShownTicks(ToolTip::getNotShownTicks() + timeSinceLastTick);
@@ -192,6 +192,18 @@ namespace OpenLoco::Ui::WindowManager
         });
     }
 
+    Window* findWindowForViewport(const Viewport* viewport)
+    {
+        if (viewport == nullptr)
+        {
+            return nullptr;
+        }
+
+        return findImpl([viewport](auto&& w) {
+            return w.viewports[0] == viewport || w.viewports[1] == viewport;
+        });
+    }
+
     // 0x004C9A95
     Window* findAt(int32_t x, int32_t y)
     {
@@ -229,11 +241,6 @@ namespace OpenLoco::Ui::WindowManager
                 {
                     continue;
                 }
-            }
-
-            if (w.callOnResize() == nullptr)
-            {
-                return findAt(x, y);
             }
 
             return &w;
@@ -278,11 +285,6 @@ namespace OpenLoco::Ui::WindowManager
                 {
                     continue;
                 }
-            }
-
-            if (w.callOnResize() == nullptr)
-            {
-                return findAt(x, y);
             }
 
             return &w;
@@ -357,7 +359,6 @@ namespace OpenLoco::Ui::WindowManager
         std::for_each(_windows.rbegin(), _windows.rend(), [](Ui::Window& w) {
             w.updateScrollWidgets();
             w.invalidatePressedImageButtons();
-            w.callOnResize();
         });
     }
 
@@ -423,15 +424,7 @@ namespace OpenLoco::Ui::WindowManager
         // If window is almost off-screen to the left
         if (right < 20)
         {
-            const auto shiftRight = 20 - window->x;
             window->x = 20;
-            for (auto* vp : window->viewports)
-            {
-                if (vp != nullptr)
-                {
-                    vp->x += shiftRight;
-                }
-            }
             window->invalidate();
         }
 
@@ -888,7 +881,12 @@ namespace OpenLoco::Ui::WindowManager
         drawingCtx.pushRenderTarget(rt);
 
         w->callPrepareDraw();
-        w->callDraw(drawingCtx);
+
+        if (drawingCtx.pushClip(Ui::Rect(w->x, w->y, w->width, w->height)))
+        {
+            w->callDraw(drawingCtx);
+            drawingCtx.popClip();
+        }
 
         drawingCtx.popRenderTarget();
     }
@@ -990,26 +988,11 @@ namespace OpenLoco::Ui::WindowManager
             if (extendsX || extendsY)
             {
                 // Calculate the new locations
-                auto oldX = w.x;
-                auto oldY = w.y;
                 w.x = newLocation;
                 w.y = newLocation + 28;
 
                 // Move the next new location so windows are not directly on top
                 newLocation += 8;
-
-                // Adjust the viewports if required.
-                if (w.viewports[0] != nullptr)
-                {
-                    w.viewports[0]->x -= oldX - w.x;
-                    w.viewports[0]->y -= oldY - w.y;
-                }
-
-                if (w.viewports[1] != nullptr)
-                {
-                    w.viewports[1]->x -= oldX - w.x;
-                    w.viewports[1]->y -= oldY - w.y;
-                }
             }
         }
     }
@@ -1066,16 +1049,6 @@ namespace OpenLoco::Ui::WindowManager
                 int dY = bottom + 3 - w.y;
                 w.y += dY;
                 w.invalidate();
-
-                if (w.viewports[0] != nullptr)
-                {
-                    w.viewports[0]->y += dY;
-                }
-
-                if (w.viewports[1] != nullptr)
-                {
-                    w.viewports[1]->y += dY;
-                }
             }
         }
     }
@@ -1205,12 +1178,14 @@ namespace OpenLoco::Ui::WindowManager
                 break;
             }
 
-            if (isStepperGroup(w, reverseIndex, WidgetType::toolbarTab))
+            // Regular stepper buttons
+            if (isStepperGroup(w, reverseIndex, WidgetType::button))
             {
                 return reverseIndex;
             }
 
-            if (isStepperGroup(w, reverseIndex, WidgetType::button))
+            // Terraform tool size inputs
+            if (isStepperGroup(w, reverseIndex, WidgetType::buttonWithAlternateImage))
             {
                 return reverseIndex;
             }
@@ -1404,7 +1379,7 @@ namespace OpenLoco::Ui::WindowManager
             }
 
             auto viewport = w.viewports[0];
-            if (viewport->zoom != 0)
+            if (viewport->zoom != ZoomLevel::full)
             {
                 continue;
             }
@@ -1503,7 +1478,7 @@ namespace OpenLoco::Ui::WindowManager
             }
         }
 
-        viewportRedrawAfterShift(window, viewport, dX, dY);
+        viewportRedrawAfterShift(window, viewport, viewport->getUiRect(), dX, dY);
     }
 
     /**
@@ -1514,87 +1489,59 @@ namespace OpenLoco::Ui::WindowManager
      * @param y @<bp>
      * @param viewport @<esi>
      */
-    void viewportRedrawAfterShift(Window* window, Viewport* viewport, int32_t x, int32_t y)
+    void viewportRedrawAfterShift(Window* window, Viewport* viewport, const Ui::Rect& area, int32_t x, int32_t y)
     {
         while (window != nullptr)
         {
             // skip current window and non-intersecting windows
             if (viewport == window->viewports[0]
                 || viewport == window->viewports[1]
-                || viewport->x + viewport->width <= window->x
-                || viewport->x >= window->x + window->width
-                || viewport->y + viewport->height <= window->y
-                || viewport->y >= window->y + window->height)
+                || area.right() <= window->x
+                || area.left() >= window->x + window->width
+                || area.bottom() <= window->y
+                || area.top() >= window->y + window->height)
             {
                 size_t nextWindowIndex = WindowManager::indexOf(*window) + 1;
                 window = nextWindowIndex >= count() ? nullptr : WindowManager::get(nextWindowIndex);
                 continue;
             }
 
-            // save viewport
-            Ui::Viewport viewCopy = *viewport;
+            const auto splitVertically = [&](int32_t splitX) {
+                viewportRedrawAfterShift(window, viewport, Ui::Rect::fromLTRB(area.left(), area.top(), splitX, area.bottom()), x, y);
+                viewportRedrawAfterShift(window, viewport, Ui::Rect::fromLTRB(splitX, area.top(), area.right(), area.bottom()), x, y);
+            };
+            const auto splitHorizontally = [&](int32_t splitY) {
+                viewportRedrawAfterShift(window, viewport, Ui::Rect::fromLTRB(area.left(), area.top(), area.right(), splitY), x, y);
+                viewportRedrawAfterShift(window, viewport, Ui::Rect::fromLTRB(area.left(), splitY, area.right(), area.bottom()), x, y);
+            };
 
-            if (viewport->x < window->x)
+            if (area.left() < window->x)
             {
-                viewport->width = window->x - viewport->x;
-                viewport->viewWidth = viewport->width << viewport->zoom;
-                viewportRedrawAfterShift(window, viewport, x, y);
-
-                viewport->x += viewport->width;
-                viewport->viewX += viewport->width << viewport->zoom;
-                viewport->width = viewCopy.width - viewport->width;
-                viewport->viewWidth = viewport->width << viewport->zoom;
-                viewportRedrawAfterShift(window, viewport, x, y);
+                splitVertically(window->x);
             }
-            else if (viewport->x + viewport->width > window->x + window->width)
+            else if (area.right() > window->x + window->width)
             {
-                viewport->width = window->x + window->width - viewport->x;
-                viewport->viewWidth = viewport->width << viewport->zoom;
-                viewportRedrawAfterShift(window, viewport, x, y);
-
-                viewport->x += viewport->width;
-                viewport->viewX += viewport->width << viewport->zoom;
-                viewport->width = viewCopy.width - viewport->width;
-                viewport->viewWidth = viewport->width << viewport->zoom;
-                viewportRedrawAfterShift(window, viewport, x, y);
+                splitVertically(window->x + window->width);
             }
-            else if (viewport->y < window->y)
+            else if (area.top() < window->y)
             {
-                viewport->height = window->y - viewport->y;
-                viewport->viewHeight = viewport->height << viewport->zoom;
-                viewportRedrawAfterShift(window, viewport, x, y);
-
-                viewport->y += viewport->height;
-                viewport->viewY += viewport->height << viewport->zoom;
-                viewport->height = viewCopy.height - viewport->height;
-                viewport->viewHeight = viewport->height << viewport->zoom;
-                viewportRedrawAfterShift(window, viewport, x, y);
+                splitHorizontally(window->y);
             }
-            else if (viewport->y + viewport->height > window->y + window->height)
+            else if (area.bottom() > window->y + window->height)
             {
-                viewport->height = window->y + window->height - viewport->y;
-                viewport->viewHeight = viewport->height << viewport->zoom;
-                viewportRedrawAfterShift(window, viewport, x, y);
-
-                viewport->y += viewport->height;
-                viewport->viewY += viewport->height << viewport->zoom;
-                viewport->height = viewCopy.height - viewport->height;
-                viewport->viewHeight = viewport->height << viewport->zoom;
-                viewportRedrawAfterShift(window, viewport, x, y);
+                splitHorizontally(window->y + window->height);
             }
 
-            // restore viewport
-            *viewport = viewCopy;
             return;
         }
 
-        auto left = viewport->x;
-        auto top = viewport->y;
-        auto right = left + viewport->width;
-        auto bottom = top + viewport->height;
+        auto left = area.left();
+        auto top = area.top();
+        auto right = area.right();
+        auto bottom = area.bottom();
 
         // if moved more than the viewport size
-        if (std::abs(x) >= viewport->width || std::abs(y) >= viewport->height)
+        if (std::abs(x) >= area.width() || std::abs(y) >= area.height())
         {
             // redraw whole viewport
             Gfx::render(left, top, right, bottom);
@@ -1602,7 +1549,7 @@ namespace OpenLoco::Ui::WindowManager
         else
         {
             // update whole block
-            Gfx::movePixelsOnScreen(left, top, viewport->width, viewport->height, x, y);
+            Gfx::movePixelsOnScreen(left, top, area.width(), area.height(), x, y);
 
             if (x > 0)
             {

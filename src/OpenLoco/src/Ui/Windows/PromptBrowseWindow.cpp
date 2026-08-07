@@ -39,6 +39,10 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Ui::Windows::PromptBrowse
 {
+    constexpr Size kWindowSize = { 500, 380 };
+    constexpr Size kMinWindowSize = { 400, 340 };
+    constexpr Size kMaxWindowSize = { 640, 800 };
+
     enum BrowseFileType : uint8_t
     {
         savedGame,
@@ -60,17 +64,31 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         scrollview,
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kFrame{ "frame" };
+        constexpr WidgetId kCaption{ "caption" };
+        constexpr WidgetId kCloseButton{ "close_button" };
+        constexpr WidgetId kPanel{ "panel" };
+        constexpr WidgetId kFolderPath{ "folder_path" };
+        constexpr WidgetId kParentButton{ "parent_button" };
+        constexpr WidgetId kHomeButton{ "home_button" };
+        constexpr WidgetId kTextFilename{ "text_filename" };
+        constexpr WidgetId kOkButton{ "ok_button" };
+        constexpr WidgetId kScrollview{ "scrollview" };
+    }
+
     static constexpr auto widgets = makeWidgets(
-        Widgets::Frame({ 0, 0 }, { 500, 380 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 498, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::empty),
-        Widgets::ImageButton({ 485, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        Widgets::Panel({ 0, 15 }, { 500, 365 }, WindowColour::secondary),
-        Widgets::Label({ 3, 18 }, { 447, 24 }, WindowColour::secondary, ContentAlign::left, StringIds::window_browse_folder),
-        Widgets::ImageButton({ 449, 18 }, { 24, 24 }, WindowColour::secondary, ImageIds::icon_parent_folder, StringIds::window_browse_parent_folder_tooltip),
-        Widgets::ImageButton({ 473, 18 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_left_turnaround, StringIds::window_browse_home_folder_tooltip),
-        Widgets::TextBox({ 88, 348 }, { 408, 14 }, WindowColour::secondary),
-        Widgets::Button({ 426, 364 }, { 70, 12 }, WindowColour::secondary, StringIds::label_button_ok),
-        Widgets::ScrollView({ 3, 45 }, { 494, 323 }, WindowColour::secondary, Scrollbars::vertical)
+        Widgets::Frame(Widx::kFrame, { 0, 0 }, { 500, 380 }, WindowColour::primary),
+        Widgets::Caption(Widx::kCaption, { 1, 1 }, { 498, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::empty),
+        Widgets::ImageButton(Widx::kCloseButton, { 485, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::Panel(Widx::kPanel, { 0, 15 }, { 500, 365 }, WindowColour::secondary),
+        Widgets::Label(Widx::kFolderPath, { 3, 18 }, { 447, 24 }, WindowColour::secondary, ContentAlign::left, StringIds::window_browse_folder),
+        Widgets::ImageButton(Widx::kParentButton, { 449, 18 }, { 24, 24 }, WindowColour::secondary, ImageIds::icon_parent_folder, StringIds::window_browse_parent_folder_tooltip),
+        Widgets::ImageButton(Widx::kHomeButton, { 473, 18 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_left_turnaround, StringIds::window_browse_home_folder_tooltip),
+        Widgets::TextBox(Widx::kTextFilename, { 88, 348 }, { 408, 14 }, WindowColour::secondary),
+        Widgets::Button(Widx::kOkButton, { 426, 364 }, { 70, 12 }, WindowColour::secondary, StringIds::label_button_ok),
+        Widgets::ScrollView(Widx::kScrollview, { 3, 45 }, { 494, 323 }, WindowColour::secondary, Scrollbars::vertical)
 
     );
 
@@ -140,13 +158,14 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         auto window = WindowManager::createWindowCentred(
             WindowType::fileBrowserPrompt,
-            { 500, 380 },
+            kWindowSize,
             Ui::WindowFlags::stickToFront | Ui::WindowFlags::resizable | Ui::WindowFlags::playSoundOnOpen,
             getEvents());
 
         if (window != nullptr)
         {
             window->setWidgets(widgets);
+            window->callOnResize();
             window->widgets[widx::caption].text = titleId;
             window->initScrollWidgets();
 
@@ -178,7 +197,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                     WindowManager::dispatchUpdateAll();
                     Input::processKeyboardInput();
                     Input::processMouseWheel();
-                    WindowManager::update();
+                    WindowManager::tick();
                     Ui::minimalHandleInput();
                     Gfx::renderAndUpdate();
                     return WindowManager::find(WindowType::fileBrowserPrompt) != nullptr;
@@ -206,32 +225,32 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     // 0x004467F6
     static void onResize(Window& window)
     {
-        window.capSize(400, 300, 640, 800);
+        window.setSizeBounds(kMinWindowSize, kMaxWindowSize);
     }
 
     // 0x00446465
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseUp(Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case widx::close_button:
+            case Widx::kCloseButton:
                 _currentDirectory.clear();
                 _targetPath = std::nullopt;
                 WindowManager::close(&window);
                 break;
-            case widx::parent_button:
+            case Widx::kParentButton:
                 upOneLevel();
                 window.var_85A = -1;
                 window.initScrollWidgets();
                 window.invalidate();
                 break;
-            case widx::home_button:
+            case Widx::kHomeButton:
                 defaultDirectory();
                 window.var_85A = -1;
                 window.initScrollWidgets();
                 window.invalidate();
                 break;
-            case widx::ok_button:
+            case Widx::kOkButton:
                 processFileForLoadSave(&window);
                 break;
         }
@@ -454,8 +473,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 const auto& widget = window.widgets[widx::scrollview];
 
                 auto width = window.width - widget.right - 8;
-                auto x = window.x + widget.right + 3;
-                auto y = window.y + 45;
+                auto x = widget.right + 3;
+                auto y = 45;
 
                 auto nameBuffer = selectedFile.stem().u8string();
                 nameBuffer = Localisation::convertUnicodeToLoco(nameBuffer);
@@ -492,20 +511,16 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         if (!filenameBox.hidden)
         {
             // Draw filename label
-            auto point = Point(window.x + 3, window.y + filenameBox.top + 2);
+            auto point = Point(3, filenameBox.top + 2);
             tr.drawStringLeft(point, Colour::black, StringIds::window_browse_filename);
 
             // Clip to text box
-            const auto& rt = drawingCtx.currentRenderTarget();
-            auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(window.x + filenameBox.left + 1, window.y + filenameBox.top + 1, filenameBox.right - filenameBox.left - 1, filenameBox.bottom - filenameBox.top - 1));
-            if (clipped)
+            if (drawingCtx.pushClip(Ui::Rect(filenameBox.left + 1, filenameBox.top + 1, filenameBox.right - filenameBox.left - 1, filenameBox.bottom - filenameBox.top - 1)))
             {
-                drawingCtx.pushRenderTarget(*clipped);
-
                 bool showCaret = Input::isFocused(window.type, window.number, widx::text_filename) && (inputSession.cursorFrame & 0x10) == 0;
                 drawTextInput(&window, drawingCtx, inputSession.buffer.c_str(), static_cast<int32_t>(inputSession.cursorPosition), showCaret);
 
-                drawingCtx.popRenderTarget();
+                drawingCtx.popClip();
             }
         }
     }
@@ -526,7 +541,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             g1->offset = (uint8_t*)saveInfo.image;
             g1->width = 250;
             g1->height = 200;
-            drawingCtx.drawImage(x + 1, y + 1, imageId);
+            drawingCtx.drawImage(ZoomLevel::full, x + 1, y + 1, imageId);
             *g1 = backupg1;
         }
         y += 207;
@@ -596,17 +611,17 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 g1->offset = &_previewScenarioOptions->preview[0][0];
                 g1->width = 128;
                 g1->height = 128;
-                drawingCtx.drawImage(x + 1, y + 1, imageId);
+                drawingCtx.drawImage(ZoomLevel::full, x + 1, y + 1, imageId);
                 *g1 = backupg1;
 
-                drawingCtx.drawImage(x, y + 1, ImageIds::height_map_compass);
+                drawingCtx.drawImage(ZoomLevel::full, x, y + 1, ImageIds::height_map_compass);
             }
         }
         else
         {
             // Randomly generated landscape
             auto imageId = Gfx::recolour(ImageIds::random_map_watermark, window.getColour(WindowColour::secondary).c());
-            drawingCtx.drawImage(x, y, imageId);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, imageId);
             auto origin = Ui::Point(x + 64, y + 60);
             tr.drawStringCentredWrapped(origin, 128, Colour::black, StringIds::randomly_generated_landscape);
         }
@@ -688,7 +703,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             auto x = 1;
             if (isRootPath(entry) || fs::is_directory(entry))
             {
-                drawingCtx.drawImage(x, y, ImageIds::icon_folder);
+                drawingCtx.drawImage(ZoomLevel::full, x, y, ImageIds::icon_folder);
                 x += 14;
             }
 

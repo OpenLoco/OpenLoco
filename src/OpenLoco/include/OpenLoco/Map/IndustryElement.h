@@ -92,7 +92,7 @@ namespace OpenLoco::World
         bool isConstructed() const { return _0 & kIndustryElement0Constructed; }
         void setIsConstructed(bool val);
 
-        bool update(const World::Pos2& loc);
+        bool tick(const World::Pos2& loc);
 
         bool randomAnimationPlaying() const { return _6 & kIndustryElement6RandomAnimationPlaying; }
         void setRandomAnimationPlaying(bool val);

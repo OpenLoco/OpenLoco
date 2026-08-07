@@ -71,10 +71,10 @@ namespace OpenLoco
         imageId += frameIndex;
         imageId += image;
 
-        drawingCtx.drawImage(x, y, imageId);
-        drawingCtx.drawImage(x, y, imageId + 1);
-        drawingCtx.drawImage(x, y, imageId + 2);
-        drawingCtx.drawImage(x, y, imageId + 3);
+        drawingCtx.drawImage(ZoomLevel::full, x, y, imageId);
+        drawingCtx.drawImage(ZoomLevel::full, x, y, imageId + 1);
+        drawingCtx.drawImage(ZoomLevel::full, x, y, imageId + 2);
+        drawingCtx.drawImage(ZoomLevel::full, x, y, imageId + 3);
     }
 
     // 0x004781A4

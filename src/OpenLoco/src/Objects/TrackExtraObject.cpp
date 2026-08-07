@@ -17,13 +17,13 @@ namespace OpenLoco
 
         if (paintStyle == 0)
         {
-            drawingCtx.drawImage(x, y, colourImage);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, colourImage);
         }
         else
         {
-            drawingCtx.drawImage(x, y, colourImage);
-            drawingCtx.drawImage(x, y, colourImage + 97);
-            drawingCtx.drawImage(x, y, colourImage + 96);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, colourImage);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, colourImage + 97);
+            drawingCtx.drawImage(ZoomLevel::full, x, y, colourImage + 96);
         }
     }
 

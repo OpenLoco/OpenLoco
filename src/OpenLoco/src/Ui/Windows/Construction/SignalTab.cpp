@@ -31,9 +31,9 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 {
     static constexpr auto widgets = makeWidgets(
         Common::makeCommonWidgets(138, 167, StringIds::stringid_2),
-        Widgets::dropdownWidgets({ 3, 45 }, { 132, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_signal_type),
-        Widgets::ImageButton({ 27, 110 }, { 40, 40 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_both_directions),
-        Widgets::ImageButton({ 71, 110 }, { 40, 40 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_single_direction));
+        Widgets::dropdownWidgets(Widx::kSignal, Widx::kSignalDropdown, { 3, 45 }, { 132, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_signal_type),
+        Widgets::ImageButton(Widx::kBothDirections, { 27, 110 }, { 40, 40 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_both_directions),
+        Widgets::ImageButton(Widx::kSingleDirection, { 71, 110 }, { 40, 40 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_single_direction));
 
     std::span<const Widget> getWidgets()
     {
@@ -45,16 +45,16 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     // 0x0049E64E
     static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case Common::widx::close_button:
+            case Common::Widx::kCloseButton:
                 WindowManager::close(&self);
                 break;
 
-            case Common::widx::tab_construction:
-            case Common::widx::tab_overhead:
-            case Common::widx::tab_signal:
-            case Common::widx::tab_station:
+            case Common::Widx::kTabConstruction:
+            case Common::Widx::kTabOverhead:
+            case Common::Widx::kTabSignal:
+            case Common::Widx::kTabStation:
                 Common::switchTab(self, widgetIndex);
                 break;
         }
@@ -64,9 +64,9 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     static void onMouseDown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
         auto& cState = getConstructionState();
-        switch (widgetIndex)
+        switch (id)
         {
-            case widx::signal_dropdown:
+            case Widx::kSignalDropdown:
             {
                 uint8_t signalCount = 0;
                 while (cState.signalList[signalCount] != 0xFF)
@@ -97,7 +97,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
                 break;
             }
 
-            case widx::both_directions:
+            case Widx::kBothDirections:
             {
                 cState.isSignalBothDirections = 1;
                 ToolManager::toolCancel();
@@ -105,7 +105,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
                 break;
             }
 
-            case widx::single_direction:
+            case Widx::kSingleDirection:
             {
                 cState.isSignalBothDirections = 0;
                 ToolManager::toolCancel();
@@ -116,9 +116,9 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     }
 
     // 0x0049E67C
-    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+    static void onDropdown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
     {
-        if (widgetIndex != widx::signal_dropdown)
+        if (id != Widx::kSignalDropdown)
         {
             return;
         }
@@ -331,8 +331,8 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         auto& cState = getConstructionState();
         auto trainSignalObject = ObjectManager::get<TrainSignalObject>(cState.lastSelectedSignal);
 
-        auto xPos = self.x + 3;
-        auto yPos = self.y + 63;
+        auto xPos = 3;
+        auto yPos = 63;
         auto width = 130;
 
         {
@@ -345,24 +345,24 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
         auto imageId = trainSignalObject->image;
 
-        xPos = self.widgets[widx::both_directions].midX() + self.x;
-        yPos = self.widgets[widx::both_directions].bottom + self.y - 4;
+        xPos = self.widgets[widx::both_directions].midX();
+        yPos = self.widgets[widx::both_directions].bottom - 4;
 
-        drawingCtx.drawImage(xPos - 8, yPos, imageId);
+        drawingCtx.drawImage(ZoomLevel::full, xPos - 8, yPos, imageId);
 
-        drawingCtx.drawImage(xPos + 8, yPos, imageId + 4);
+        drawingCtx.drawImage(ZoomLevel::full, xPos + 8, yPos, imageId + 4);
 
-        xPos = self.widgets[widx::single_direction].midX() + self.x;
-        yPos = self.widgets[widx::single_direction].bottom + self.y - 4;
+        xPos = self.widgets[widx::single_direction].midX();
+        yPos = self.widgets[widx::single_direction].bottom - 4;
 
-        drawingCtx.drawImage(xPos, yPos, imageId);
+        drawingCtx.drawImage(ZoomLevel::full, xPos, yPos, imageId);
 
         if (cState.signalCost != GameCommands::kFailure && cState.signalCost != 0)
         {
             FormatArguments args{};
             args.push<uint32_t>(cState.signalCost);
 
-            auto point = Point(self.x + 69, self.widgets[widx::single_direction].bottom + self.y + 5);
+            auto point = Point(69, self.widgets[widx::single_direction].bottom + 5);
             tr.drawStringCentred(point, Colour::black, StringIds::build_cost, args);
         }
     }

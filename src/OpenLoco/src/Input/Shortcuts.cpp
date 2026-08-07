@@ -344,12 +344,12 @@ namespace OpenLoco::Input::Shortcuts
             return;
         }
 
-        if (getGameState().lastRailroadOption == 0xFF)
+        if (getGameState().defaultRailroadObjectId == 0xFF)
         {
             return;
         }
 
-        Windows::Construction::openWithFlags(getGameState().lastRailroadOption);
+        Windows::Construction::openWithFlags(getGameState().defaultRailroadObjectId);
     }
 
     // 0x004BF24F
@@ -360,12 +360,12 @@ namespace OpenLoco::Input::Shortcuts
             return;
         }
 
-        if (getGameState().lastRoadOption == 0xFF)
+        if (getGameState().defaultRoadObjectId == 0xFF)
         {
             return;
         }
 
-        Windows::Construction::openWithFlags(getGameState().lastRoadOption);
+        Windows::Construction::openWithFlags(getGameState().defaultRoadObjectId);
     }
 
     // 0x004BF276
@@ -409,12 +409,12 @@ namespace OpenLoco::Input::Shortcuts
         }
 
         // This can't ever happen as nothing sets it to 0xFFU
-        if (enumValue(getGameState().lastBuildVehiclesOption) == 0xFF)
+        if (enumValue(getGameState().defaultBuildVehicleType) == 0xFF)
         {
             return;
         }
 
-        Windows::BuildVehicle::openByType(getGameState().lastBuildVehiclesOption);
+        Windows::BuildVehicle::openByType(getGameState().defaultBuildVehicleType);
     }
 
     // 0x004BF2D1
@@ -721,8 +721,8 @@ namespace OpenLoco::Input::Shortcuts
         ShortcutManager::add(Shortcut::showStationsList,                StringIds::shortcut_show_stations_list,                 showStationsList,               "showStationsList",                 "S");
         ShortcutManager::add(Shortcut::showTownsList,                   StringIds::shortcut_show_towns_list,                    showTownsList,                  "showTownsList",                    "U");
         ShortcutManager::add(Shortcut::showIndustriesList,              StringIds::shortcut_show_industries_list,               showIndustriesList,             "showIndustriesList",               "I");
-        ShortcutManager::add(Shortcut::showMap,                         StringIds::shortcut_show_map,                           showMap,                        "showMap",                          "M");
         ShortcutManager::add(Shortcut::showCompaniesList,               StringIds::shortcut_show_companies_list,                showCompaniesList,              "showCompaniesList",                "C");
+        ShortcutManager::add(Shortcut::showMap,                         StringIds::shortcut_show_map,                           showMap,                        "showMap",                          "M");
         ShortcutManager::add(Shortcut::showCompanyInformation,          StringIds::shortcut_show_company_information,           showCompanyInformation,         "showCompanyInformation",           "Q");
         ShortcutManager::add(Shortcut::showFinances,                    StringIds::shortcut_show_finances,                      showFinances,                   "showFinances",                     "F");
         ShortcutManager::add(Shortcut::showAnnouncementsList,           StringIds::shortcut_show_announcements_list,            showAnnouncementsList,          "showAnnouncementsList",            "Tab");
@@ -743,7 +743,7 @@ namespace OpenLoco::Input::Shortcuts
         ShortcutManager::add(Shortcut::gameSpeedNormal,                 StringIds::shortcut_game_speed_normal,                  gameSpeedNormal,                "gameSpeedNormal",                  "");
         ShortcutManager::add(Shortcut::gameSpeedFastForward,            StringIds::shortcut_game_speed_fast_forward,            gameSpeedFastForward,           "gameSpeedFastForward",             "");
         ShortcutManager::add(Shortcut::gameSpeedExtraFastForward,       StringIds::shortcut_game_speed_extra_fast_forward,      gameSpeedExtraFastForward,      "gameSpeedExtraFastForward",        "");
-        ShortcutManager::add(Shortcut::openDebugWindow,                 StringIds::empty,                                       openDebugWindow,                "openDebugWindow",                  "F10");
+        ShortcutManager::add(Shortcut::openDebugWindow,                 StringIds::shortcut_debug_window,                       openDebugWindow,                "openDebugWindow",                  "F10");
         // clang-format on
 
         loadBindings();

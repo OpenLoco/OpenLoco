@@ -263,48 +263,83 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         objectImage,
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kFrame{ "frame" };
+        constexpr WidgetId kCaption{ "caption" };
+        constexpr WidgetId kCloseButton{ "closeButton" };
+        constexpr WidgetId kPanel{ "panel" };
+        constexpr WidgetId kPrimaryTab1{ "primaryTab1" };
+        constexpr WidgetId kPrimaryTab2{ "primaryTab2" };
+        constexpr WidgetId kPrimaryTab3{ "primaryTab3" };
+        constexpr WidgetId kPrimaryTab4{ "primaryTab4" };
+        constexpr WidgetId kPrimaryTab5{ "primaryTab5" };
+        constexpr WidgetId kPrimaryTab6{ "primaryTab6" };
+        constexpr WidgetId kPrimaryTab7{ "primaryTab7" };
+        constexpr WidgetId kPrimaryTab8{ "primaryTab8" };
+        constexpr WidgetId kPrimaryTab9{ "primaryTab9" };
+        constexpr WidgetId kPrimaryTab10{ "primaryTab10" };
+        constexpr WidgetId kPrimaryTab11{ "primaryTab11" };
+        constexpr WidgetId kPrimaryTab12{ "primaryTab12" };
+        constexpr WidgetId kFilterLabel{ "filterLabel" };
+        constexpr WidgetId kFilterDropdown{ "filterDropdown" };
+        constexpr WidgetId kTextInput{ "textInput" };
+        constexpr WidgetId kClearButton{ "clearButton" };
+        constexpr WidgetId kSecondaryTab1{ "secondaryTab1" };
+        constexpr WidgetId kSecondaryTab2{ "secondaryTab2" };
+        constexpr WidgetId kSecondaryTab3{ "secondaryTab3" };
+        constexpr WidgetId kSecondaryTab4{ "secondaryTab4" };
+        constexpr WidgetId kSecondaryTab5{ "secondaryTab5" };
+        constexpr WidgetId kSecondaryTab6{ "secondaryTab6" };
+        constexpr WidgetId kSecondaryTab7{ "secondaryTab7" };
+        constexpr WidgetId kSecondaryTab8{ "secondaryTab8" };
+        constexpr WidgetId kScrollviewFrame{ "scrollviewFrame" };
+        constexpr WidgetId kScrollview{ "scrollview" };
+        constexpr WidgetId kObjectImage{ "objectImage" };
+    }
+
     static constexpr uint8_t kMaxNumPrimaryTabs = 12;
     static constexpr uint8_t kMaxNumSecondaryTabs = 8;
 
     static constexpr auto widgets = makeWidgets(
-        Widgets::Frame({ 0, 0 }, { 600, 398 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 598, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::title_object_selection),
-        Widgets::ImageButton({ 585, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        Widgets::Panel({ 0, 41 }, { 600, 357 }, WindowColour::secondary),
+        Widgets::Frame(Widx::kFrame, { 0, 0 }, { 600, 398 }, WindowColour::primary),
+        Widgets::Caption(Widx::kCaption, { 1, 1 }, { 598, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::title_object_selection),
+        Widgets::ImageButton(Widx::kCloseButton, { 585, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::Panel(Widx::kPanel, { 0, 41 }, { 600, 357 }, WindowColour::secondary),
 
         // Primary tab area
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 127, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 158, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 189, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 220, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 251, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 282, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 313, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 344, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kPrimaryTab1, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kPrimaryTab2, { 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kPrimaryTab3, { 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kPrimaryTab4, { 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kPrimaryTab5, { 127, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kPrimaryTab6, { 158, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kPrimaryTab7, { 189, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kPrimaryTab8, { 220, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kPrimaryTab9, { 251, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kPrimaryTab10, { 282, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kPrimaryTab11, { 313, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kPrimaryTab12, { 344, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
 
         // Filter options
-        Widgets::dropdownWidgets({ 492, 20 }, { 100, 12 }, WindowColour::primary, StringIds::wcolour2_stringid),
-        Widgets::TextBox({ 4, 45 }, { 246, 14 }, WindowColour::secondary),
-        Widgets::Button({ 254, 45 }, { 38, 14 }, WindowColour::secondary, StringIds::clearInput),
+        Widgets::dropdownWidgets(Widx::kFilterLabel, Widx::kFilterDropdown, { 492, 20 }, { 100, 12 }, WindowColour::primary, StringIds::wcolour2_stringid),
+        Widgets::TextBox(Widx::kTextInput, { 4, 45 }, { 246, 14 }, WindowColour::secondary),
+        Widgets::Button(Widx::kClearButton, { 254, 45 }, { 38, 14 }, WindowColour::secondary, StringIds::clearInput),
 
         // Secondary tabs
-        Widgets::Tab({ 3, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 34, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 65, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 96, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 127, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 158, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 189, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-        Widgets::Tab({ 220, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kSecondaryTab1, { 3, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kSecondaryTab2, { 34, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kSecondaryTab3, { 65, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kSecondaryTab4, { 96, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kSecondaryTab5, { 127, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kSecondaryTab6, { 158, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kSecondaryTab7, { 189, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+        Widgets::Tab(Widx::kSecondaryTab8, { 220, 62 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
 
         // Scroll and preview areas
-        Widgets::Panel({ 3, 83 }, { 290, 303 }, WindowColour::secondary),
-        Widgets::ScrollView({ 4, 85 }, { 288, 300 }, WindowColour::secondary, Scrollbars::vertical),
-        Widgets::ImageButton({ 391, 45 }, kObjectPreviewSize, WindowColour::secondary)
+        Widgets::Panel(Widx::kScrollviewFrame, { 3, 83 }, { 290, 303 }, WindowColour::secondary),
+        Widgets::ScrollView(Widx::kScrollview, { 4, 85 }, { 288, 300 }, WindowColour::secondary, Scrollbars::vertical),
+        Widgets::ImageButton(Widx::kObjectImage, { 391, 45 }, kObjectPreviewSize, WindowColour::secondary)
 
     );
 
@@ -374,7 +409,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             auto widgetIndex = widx::primaryTab1 + i;
             if (shouldShowPrimaryTab(i, FilterLevel(self->filterLevel)))
             {
-                self->disabledWidgets &= ~(1ULL << widgetIndex);
                 self->widgets[widgetIndex].hidden = false;
                 self->widgets[widgetIndex].left = xPos;
                 self->widgets[widgetIndex].right = xPos + 31;
@@ -382,7 +416,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             }
             else
             {
-                self->disabledWidgets |= (1ULL << widgetIndex);
                 self->widgets[widgetIndex].hidden = true;
             }
         }
@@ -507,7 +540,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static Ui::Window* internalOpen(std::optional<ObjectType> optionalObjectType)
     {
         auto window = WindowManager::bringToFront(WindowType::objectSelection);
-
         if (window != nullptr)
         {
             return window;
@@ -515,9 +547,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         auto& selection = ObjectManager::prepareSelectionList(true);
 
-        window = WindowManager::createWindowCentred(WindowType::objectSelection, { kWindowSizeMin }, WindowFlags::resizable, getEvents());
+        window = WindowManager::createWindowCentred(WindowType::objectSelection, kWindowSizeMin, WindowFlags::resizable, getEvents());
         window->setWidgets(widgets);
-        window->setSize(kWindowSizeMin, kWindowSizeMax);
+        window->setSizeBounds(kWindowSizeMin, kWindowSizeMax);
         window->initScrollWidgets();
         window->frameNo = 0;
         window->rowHover = -1;
@@ -608,23 +640,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         self.widgets[widx::scrollviewFrame].bottom = self.widgets[widx::scrollview].bottom + 1;
         self.widgets[widx::scrollviewFrame].right = self.widgets[widx::scrollview].right + 1;
 
-        const auto& currentTab = kMainTabInfo[self.currentTab];
-        const auto& subTabs = currentTab.subTabs;
-        const bool showSecondaryTabs = !subTabs.empty() && FilterLevel(self.filterLevel) != FilterLevel::beginner;
-
-        // Secondary tabs reduce the amount of space for the scroll view
-        if (showSecondaryTabs)
-        {
-            self.widgets[widx::scrollview].top = 62 + 28;
-            self.widgets[widx::scrollviewFrame].hidden = false;
-            self.widgets[widx::scrollviewFrame].top = self.widgets[widx::scrollview].top - 2;
-        }
-        else
-        {
-            self.widgets[widx::scrollview].top = 62;
-            self.widgets[widx::scrollviewFrame].hidden = true;
-        }
-
         // Reposition preview area in the centre of the second half
         self.widgets[widx::objectImage].left = self.width / 4 * 3 - kObjectPreviewSize.width / 2;
         self.widgets[widx::objectImage].right = self.widgets[widx::objectImage].left + kObjectPreviewSize.width;
@@ -641,11 +656,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             self.widgets[widx::closeButton].hidden = true;
         }
 
-        self.activatedWidgets |= 1ULL << (widx::primaryTab1 + self.currentTab);
-        const auto& currentTab = kMainTabInfo[self.currentTab];
-        const auto& subTabs = currentTab.subTabs;
-        const bool showSecondaryTabs = !subTabs.empty() && FilterLevel(self.filterLevel) != FilterLevel::beginner;
-
         static constexpr std::array<StringId, 3> kFilterLevelStringIds = {
             StringIds::objSelectionFilterBeginner,
             StringIds::objSelectionFilterAdvanced,
@@ -657,6 +667,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             FormatArguments args{ widget.textArgs };
             args.push(kFilterLevelStringIds[self.filterLevel]);
         }
+
+        self.activatedWidgets |= 1ULL << (widx::primaryTab1 + self.currentTab);
+        const auto& currentTab = kMainTabInfo[self.currentTab];
+        const auto& subTabs = currentTab.subTabs;
+        const bool showSecondaryTabs = !subTabs.empty() && FilterLevel(self.filterLevel) != FilterLevel::beginner;
 
         // Update page title
         auto args = FormatArguments(self.widgets[widx::caption].textArgs);
@@ -675,14 +690,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             const auto widgetIndex = i + widx::secondaryTab1;
 
             const bool subTabIsVisible = showSecondaryTabs && i < subTabs.size() && shouldShowSubTab(subTabs, i, FilterLevel(self.filterLevel));
-            if (subTabIsVisible)
-            {
-                self.disabledWidgets &= ~(1ULL << widgetIndex);
-            }
-            else
-            {
-                self.disabledWidgets |= (1ULL << widgetIndex);
-            }
+            self.widgets[widgetIndex].hidden = !subTabIsVisible;
 
             if (self.currentSecondaryTab == i)
             {
@@ -692,6 +700,19 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             {
                 self.activatedWidgets &= ~(1ULL << widgetIndex);
             }
+        }
+
+        // Secondary tabs reduce the amount of space for the scroll view
+        if (showSecondaryTabs)
+        {
+            self.widgets[widx::scrollview].top = 62 + 28;
+            self.widgets[widx::scrollviewFrame].hidden = false;
+            self.widgets[widx::scrollviewFrame].top = self.widgets[widx::scrollview].top - 2;
+        }
+        else
+        {
+            self.widgets[widx::scrollview].top = 62;
+            self.widgets[widx::scrollviewFrame].hidden = true;
         }
     }
 
@@ -758,14 +779,10 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         // Clip the draw area to simplify image draw
         Ui::Point drawAreaPos = Ui::Point{ x, y } - kObjectPreviewOffset;
-        const auto& rt = drawingCtx.currentRenderTarget();
-        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(drawAreaPos.x, drawAreaPos.y, kObjectPreviewSize.width - 2, kObjectPreviewSize.height - 2));
-        if (!clipped)
+        if (!drawingCtx.pushClip(Ui::Rect(drawAreaPos.x, drawAreaPos.y, kObjectPreviewSize.width - 2, kObjectPreviewSize.height - 2)))
         {
             return;
         }
-
-        drawingCtx.pushRenderTarget(*clipped);
 
         switch (type)
         {
@@ -886,7 +903,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 break;
         }
 
-        drawingCtx.popRenderTarget();
+        drawingCtx.popClip();
     }
 
     template<typename T>
@@ -898,18 +915,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static void drawDescription(const ObjectHeader& header, Window* self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y, Object& objectPtr)
     {
-        int16_t width = self->x + self->width - x;
-        int16_t height = self->y + self->height - y;
+        int16_t width = self->width - x;
+        int16_t height = self->height - y;
 
         // Clip the draw area to simplify image draw
-        const auto& rt = drawingCtx.currentRenderTarget();
-        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(x, y, width, height));
-        if (!clipped)
+        if (!drawingCtx.pushClip(Ui::Rect(x, y, width, height)))
         {
             return;
         }
-
-        drawingCtx.pushRenderTarget(*clipped);
 
         switch (header.getType())
         {
@@ -950,23 +963,19 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 break;
         }
 
-        drawingCtx.popRenderTarget();
+        drawingCtx.popClip();
     }
 
     static void drawDatDetails(const ObjectManager::ObjectIndexEntry& indexEntry, Window* self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y)
     {
-        int16_t width = self->x + self->width - x;
-        int16_t height = self->y + self->height - y;
+        int16_t width = self->width - x;
+        int16_t height = self->height - y;
 
         // Clip the draw area to simplify image draw
-        const auto& rt = drawingCtx.currentRenderTarget();
-        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(x, y, width, height));
-        if (!clipped)
+        if (!drawingCtx.pushClip(Ui::Rect(x, y, width, height)))
         {
             return;
         }
-
-        drawingCtx.pushRenderTarget(*clipped);
 
         auto tr = Gfx::TextRenderer(drawingCtx);
 
@@ -983,7 +992,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             tr.drawStringLeft(point, Colour::black, StringIds::object_selection_filename, args);
         }
 
-        drawingCtx.popRenderTarget();
+        drawingCtx.popClip();
     }
 
     static void drawSearchBox(Window& self, Gfx::DrawingContext& drawingCtx)
@@ -992,14 +1001,10 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         strncpy(textBuffer, inputSession.buffer.c_str(), 256);
 
         auto& widget = widgets[widx::textInput];
-        const auto& rt = drawingCtx.currentRenderTarget();
-        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(widget.left + 1 + self.x, widget.top + 1 + self.y, widget.width() - 2, widget.height() - 2));
-        if (!clipped)
+        if (!drawingCtx.pushClip(Ui::Rect(widget.left + 1, widget.top + 1, widget.width() - 2, widget.height() - 2)))
         {
             return;
         }
-
-        drawingCtx.pushRenderTarget(*clipped);
 
         FormatArguments args{};
         args.push(StringIds::buffer_2039);
@@ -1020,7 +1025,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             drawingCtx.fillRect(position.x, position.y, position.x, position.y + 9, Colours::getShade(self.getColour(WindowColour::secondary).c(), 9), Gfx::RectFlags::none);
         }
 
-        drawingCtx.popRenderTarget();
+        drawingCtx.popClip();
     }
 
     // 0x004733F5
@@ -1030,7 +1035,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         // TODO: this should not be needed
         if (Config::get().windowFrameStyle == Config::WindowFrameStyle::background)
         {
-            drawingCtx.fillRectInset(self.x, self.y + 20, self.x + self.width - 1, self.y + 20 + 60, self.getColour(WindowColour::primary), Gfx::RectInsetFlags::none);
+            drawingCtx.fillRectInset(0, 20, self.width - 1, 20 + 60, self.getColour(WindowColour::primary), Gfx::RectInsetFlags::none);
         }
 
         self.draw(drawingCtx);
@@ -1055,13 +1060,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         {
             auto widget = self.widgets[widx::objectImage];
             auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 5);
-            drawingCtx.drawRect(self.x + widget.left, self.y + widget.top, widget.width(), widget.height(), colour, Gfx::RectFlags::none);
+            drawingCtx.drawRect(widget.left, widget.top, widget.width(), widget.height(), colour, Gfx::RectFlags::none);
         }
         else
         {
             auto widget = self.widgets[widx::objectImage];
             auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 0);
-            drawingCtx.drawRect(self.x + widget.left + 1, self.y + widget.top + 1, widget.width() - 2, widget.height() - 2, colour, Gfx::RectFlags::none);
+            drawingCtx.drawRect(widget.left + 1, widget.top + 1, widget.width() - 2, widget.height() - 2, colour, Gfx::RectFlags::none);
         }
 
         ObjectType type{};
@@ -1080,7 +1085,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         args.push(ObjectManager::getMaxObjects(type));
 
         {
-            auto point = Point(self.x + 3, self.y + self.height - 12);
+            auto point = Point(3, self.height - 12);
             tr.drawStringLeft(point, Colour::black, StringIds::num_selected_num_max, args);
         }
 
@@ -1102,13 +1107,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             drawPreviewImage(
                 objectHeader,
                 drawingCtx,
-                self.widgets[widx::objectImage].midX() + self.x,
-                self.widgets[widx::objectImage].midY() + self.y,
+                self.widgets[widx::objectImage].midX(),
+                self.widgets[widx::objectImage].midY(),
                 *temporaryObject);
         }
 
-        auto x = self.widgets[widx::objectImage].midX() + self.x;
-        auto y = self.widgets[widx::objectImage].bottom + 3 + self.y;
+        auto x = self.widgets[widx::objectImage].midX();
+        auto y = self.widgets[widx::objectImage].bottom + 3;
         auto width = self.width - self.widgets[widx::scrollview].right - 6;
 
         {
@@ -1129,7 +1134,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 objHeader,
                 &self,
                 drawingCtx,
-                self.widgets[widx::scrollview].right + self.x + 4,
+                self.widgets[widx::scrollview].right + 4,
                 y + kDescriptionRowHeight,
                 *temporaryObject);
         }
@@ -1139,7 +1144,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 ObjectManager::getObjectInIndex(self.rowHover),
                 &self,
                 drawingCtx,
-                self.widgets[widx::scrollview].right + self.x + 4,
+                self.widgets[widx::scrollview].right + 4,
                 y + kDescriptionRowHeight);
         }
     }
@@ -1366,31 +1371,31 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x004737BA
     static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case widx::closeButton:
+            case Widx::kCloseButton:
                 tryCloseWindow();
                 break;
 
-            case widx::primaryTab1:
-            case widx::primaryTab2:
-            case widx::primaryTab3:
-            case widx::primaryTab4:
-            case widx::primaryTab5:
-            case widx::primaryTab6:
-            case widx::primaryTab7:
-            case widx::primaryTab8:
-            case widx::primaryTab9:
-            case widx::primaryTab10:
-            case widx::primaryTab11:
-            case widx::primaryTab12:
+            case Widx::kPrimaryTab1:
+            case Widx::kPrimaryTab2:
+            case Widx::kPrimaryTab3:
+            case Widx::kPrimaryTab4:
+            case Widx::kPrimaryTab5:
+            case Widx::kPrimaryTab6:
+            case Widx::kPrimaryTab7:
+            case Widx::kPrimaryTab8:
+            case Widx::kPrimaryTab9:
+            case Widx::kPrimaryTab10:
+            case Widx::kPrimaryTab11:
+            case Widx::kPrimaryTab12:
             {
                 auto clickedTab = widgetIndex - widx::primaryTab1;
                 switchPrimaryTab(self, clickedTab);
                 break;
             }
 
-            case widx::clearButton:
+            case Widx::kClearButton:
             {
                 inputSession.clearInput();
                 applyFilterToObjectList(FilterFlags(self.var_858));
@@ -1399,14 +1404,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 break;
             }
 
-            case widx::secondaryTab1:
-            case widx::secondaryTab2:
-            case widx::secondaryTab3:
-            case widx::secondaryTab4:
-            case widx::secondaryTab5:
-            case widx::secondaryTab6:
-            case widx::secondaryTab7:
-            case widx::secondaryTab8:
+            case Widx::kSecondaryTab1:
+            case Widx::kSecondaryTab2:
+            case Widx::kSecondaryTab3:
+            case Widx::kSecondaryTab4:
+            case Widx::kSecondaryTab5:
+            case Widx::kSecondaryTab6:
+            case Widx::kSecondaryTab7:
+            case Widx::kSecondaryTab8:
             {
                 auto& subTabs = kMainTabInfo[self.currentTab].subTabs;
                 auto previousSubType = subTabs[self.currentSecondaryTab].objectType;
@@ -1429,9 +1434,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
-    static void onMouseDown(Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseDown(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        if (widgetIndex == widx::filterDropdown)
+        if (id == Widx::kFilterDropdown)
         {
             auto& dropdown = self.widgets[widx::filterLabel];
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 7, 0);
@@ -1467,9 +1472,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
-    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+    static void onDropdown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
     {
-        if (widgetIndex != widx::filterDropdown)
+        if (id != Widx::kFilterDropdown)
         {
             return;
         }

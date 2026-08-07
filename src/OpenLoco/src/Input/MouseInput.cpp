@@ -599,8 +599,9 @@ namespace OpenLoco::Input
                     }
                     else
                     {
-                        const auto offsetX = dragOffset.x << (vp->zoom + 1);
-                        const auto offsetY = dragOffset.y << (vp->zoom + 1);
+                        const auto panZoom = vp->zoom + 1;
+                        const auto offsetX = -panZoom.applyTo(-std::abs(dragOffset.x)) * (dragOffset.x < 0 ? -1 : 1);
+                        const auto offsetY = -panZoom.applyTo(-std::abs(dragOffset.y)) * (dragOffset.y < 0 ? -1 : 1);
 
                         const auto invert = Config::get().invertRightMouseViewPan ? -1 : 1;
 
@@ -806,10 +807,8 @@ namespace OpenLoco::Input
 
         w->invalidate();
 
-        w->width = std::clamp(w->width + dx, w->minWidth, w->maxWidth);
-        w->height = std::clamp(w->height + dy, w->minHeight, w->maxHeight);
+        w->setSize({ w->width + dx, w->height + dy });
         w->flags |= Ui::WindowFlags::hasBeenResized;
-        w->callOnResize();
         w->callPrepareDraw();
 
         w->scrollAreas[0].contentWidth = -1;

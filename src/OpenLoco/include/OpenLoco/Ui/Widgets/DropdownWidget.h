@@ -15,29 +15,19 @@ namespace OpenLoco::Ui::Widgets
             events.draw = &draw;
         }
 
-        constexpr ComboBox(Point origin, Size size, WindowColour colour, StringId content = StringIds::null, StringId tooltip = StringIds::null)
-            : ComboBox(WidgetId::none, origin, size, colour, content, tooltip)
-        {
-            events.draw = &draw;
-        }
-
         static void draw(Gfx::DrawingContext& drawingCtx, const Widget& widget, const WidgetState& widgetState);
     };
 
-    constexpr auto dropdownWidgets(Ui::Point origin, Ui::Size size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
+    // TODO: Make this a single widget.
+    constexpr auto dropdownWidgets(WidgetId comboId, WidgetId buttonId, Ui::Point origin, Ui::Size size, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
     {
-        const auto makeDropdownButtonWidget = [](Ui::Point origin, Ui::Size size, WindowColour colour) {
-            const int16_t xPos = origin.x + size.width - 12;
-            const int16_t yPos = origin.y + 1;
-            const uint16_t width = 11;
-            const uint16_t height = 10;
+        const int16_t xPos = origin.x + size.width - 12;
+        const int16_t yPos = origin.y + 1;
+        const uint16_t width = 11;
+        const uint16_t height = 10;
 
-            return Button({ xPos, yPos }, { width, height }, colour, StringIds::dropdown);
-        };
-
-        // TODO: Make this a single widget.
         return makeWidgets(
-            ComboBox(origin, size, colour, content, tooltip),
-            makeDropdownButtonWidget(origin, size, colour));
+            ComboBox(comboId, origin, size, colour, content, tooltip),
+            Button(buttonId, { xPos, yPos }, { width, height }, colour, StringIds::dropdown));
     }
 }

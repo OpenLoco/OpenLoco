@@ -80,7 +80,7 @@ namespace OpenLoco::World::AnimationManager
     }
 
     // 0x004612EC
-    void update()
+    void tick()
     {
         if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
         {

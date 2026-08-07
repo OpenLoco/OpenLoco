@@ -81,7 +81,7 @@ namespace OpenLoco::Config
             audioConfig.ambientVolume = audioNode["ambientVolume"].as<int32_t>(100);
             audioConfig.playJukeboxMusic = audioNode["playJukeboxMusic"].as<bool>(true);
             audioConfig.playTitleMusic = audioNode["play_title_music"].as<bool>(true);
-            audioConfig.playNewsSounds = audioNode["play_news_sounds"].as<bool>(true);
+            audioConfig.playNewsSounds = audioNode["playNewsSounds"].as<bool>(true);
             audioConfig.playlist = audioNode["playlist"].as<MusicPlaylistType>(MusicPlaylistType::currentEra);
 
             if (audioNode["customJukebox"])
@@ -158,6 +158,9 @@ namespace OpenLoco::Config
         _config.cashPopupRendering = config["cashPopupRendering"].as<bool>(true);
         _config.edgeScrolling = config["edgeScrolling"].as<bool>(true);
         _config.edgeScrollingSpeed = config["edgeScrollingSpeed"].as<int32_t>(12);
+        _config.invertRightMouseViewPan = config["invertRightMouseViewPan"].as<bool>(false);
+        _config.toolbarAutoMenu = config["toolbarAutoMenu"].as<bool>(true);
+        _config.toolbarButtonsCentred = config["toolbarButtonsCentred"].as<bool>(false);
         _config.windowFrameStyle = config["windowFrameStyle"].as<WindowFrameStyle>(WindowFrameStyle::background);
         _config.zoomToCursor = config["zoom_to_cursor"].as<bool>(true);
 
@@ -173,7 +176,6 @@ namespace OpenLoco::Config
         _config.companyAIDisabled = config["companyAIDisabled"].as<bool>(false);
         _config.disableVehicleLoadPenaltyCheat = config["disableVehicleLoadPenaltyCheat"].as<bool>(false);
         _config.displayLockedVehicles = config["displayLockedVehicles"].as<bool>(false);
-        _config.invertRightMouseViewPan = config["invertRightMouseViewPan"].as<bool>(false);
         _config.townGrowthDisabled = config["townGrowthDisabled"].as<bool>(false);
         _config.trainsReverseAtSignals = config["trainsReverseAtSignals"].as<bool>(false);
         _config.disableStationSizeLimit = config["disableStationSizeLimit"].as<bool>(false);
@@ -297,6 +299,8 @@ namespace OpenLoco::Config
         node["cashPopupRendering"] = _config.cashPopupRendering;
         node["edgeScrolling"] = _config.edgeScrolling;
         node["edgeScrollingSpeed"] = _config.edgeScrollingSpeed;
+        node["toolbarAutoMenu"] = _config.toolbarAutoMenu;
+        node["toolbarButtonsCentred"] = _config.toolbarButtonsCentred;
         node["windowFrameStyle"] = _config.windowFrameStyle;
         node["zoom_to_cursor"] = _config.zoomToCursor;
 

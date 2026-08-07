@@ -8,7 +8,7 @@ namespace OpenLoco
     {
         uint16_t frame; // 0x28
 
-        void update();
+        void tick();
     };
     static_assert(sizeof(Fireball) <= sizeof(Entity));
 }

@@ -138,7 +138,7 @@ namespace OpenLoco::Scenario
     /**
      * Resets the game state (e.g. companies, year, money etc.) for starting a new scenario.
      */
-    [[noreturn]] void start();
+    void start();
 
     void formatChallengeArguments(const Objective& objective, const ObjectiveProgress& progress, FormatArguments& args);
     void sub_46115C();

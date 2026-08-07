@@ -405,21 +405,27 @@ namespace OpenLoco::Vehicles::OrderManager
             auto [loc, str] = generateOrderUiStringAndLoc(order->getOffset(), i);
             const auto pos = World::gameToScreen(loc, Ui::WindowManager::getCurrentRotation());
             auto stringWidth = Gfx::TextRenderer::getStringWidth(Gfx::Font::medium_bold, str.c_str());
-            for (auto zoom = 0; zoom < 4; ++zoom)
+            for (auto level = ZoomLevel::min; level <= ZoomLevel::max; ++level)
             {
+                const auto zoom = ZoomLevel{ level };
+                const auto index = zoom.index();
+
                 // The first line of the label will always be at the centre
                 // of the station/waypoint. This works out where the subsequent
                 // lines of the label will end up.
-                auto width = (stringWidth + 3) << zoom;
-                auto numberHeight = (unk.lineNumber * 10 /* lineHeight TODO make same as Windows::Vehicle.cpp lineHeight */) << zoom;
-                auto firstLineHeight = 11 << zoom;
+                const auto uiWidth = stringWidth + 3;
+                const auto uiHeight = 11;
+
+                auto width = zoom.applyTo<int32_t>(uiWidth);
+                auto numberHeight = zoom.applyTo(unk.lineNumber * 10 /* lineHeight TODO make same as Windows::Vehicle.cpp lineHeight */);
+                auto firstLineHeight = zoom.applyTo(uiHeight);
                 auto midX = width / 2;
                 auto midFirstLineY = firstLineHeight / 2;
 
-                unk.frame.left[zoom] = (pos.x - midX) >> zoom;
-                unk.frame.right[zoom] = (pos.x + midX) >> zoom;
-                unk.frame.top[zoom] = (pos.y - midFirstLineY + numberHeight) >> zoom;
-                unk.frame.bottom[zoom] = (pos.y + midFirstLineY + numberHeight) >> zoom;
+                unk.frame.left[index] = zoom.applyInversedTo(pos.x - midX);
+                unk.frame.right[index] = unk.frame.left[index] + uiWidth;
+                unk.frame.top[index] = zoom.applyInversedTo(pos.y - midFirstLineY + numberHeight);
+                unk.frame.bottom[index] = unk.frame.top[index] + uiHeight;
             }
             i++;
         }

@@ -18,7 +18,7 @@ namespace OpenLoco::VehicleManager
 {
     using VehicleList = EntityManager::EntityList<EntityManager::EntityListIterator<Vehicles::VehicleHead>, EntityManager::EntityListType::vehicleHead>;
 
-    void update();
+    void tick();
     void updateMonthly();
     void updateDaily();
     void determineAvailableVehicles(Company& company);

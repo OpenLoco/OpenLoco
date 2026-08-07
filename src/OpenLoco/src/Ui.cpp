@@ -457,7 +457,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004524C1
-    void update()
+    void tick()
     {
     }
 
@@ -959,7 +959,7 @@ namespace OpenLoco::Ui
             Input::MouseButton state;
             while ((state = Input::nextMouseInput(x, y)) != Input::MouseButton::released)
             {
-                if (SceneManager::isTitleMode() && Intro::isActive() && state == Input::MouseButton::leftPressed)
+                if (Intro::isActive() && state == Input::MouseButton::leftPressed)
                 {
                     if (Intro::state() == Intro::State::displayNotice)
                     {

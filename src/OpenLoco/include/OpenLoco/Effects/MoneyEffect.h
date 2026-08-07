@@ -21,7 +21,7 @@ namespace OpenLoco
         int16_t offsetX;       // 0x44
         uint16_t wiggle;       // 0x46
 
-        void update();
+        void tick();
 
         static MoneyEffect* create(const World::Pos3& loc, const CompanyId company, const currency32_t amount);
     };

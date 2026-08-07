@@ -17,9 +17,14 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         frame
     };
 
+    namespace Widx
+    {
+        constexpr WidgetId kFrame{ "frame" };
+    }
+
     // 0x00522504
     static constexpr auto widgets = makeWidgets(
-        Widgets::Wt3Widget({ 0, 0 }, { 150, 60 }, WindowColour::primary)
+        Widgets::Wt3Widget(Widx::kFrame, { 0, 0 }, { 150, 60 }, WindowColour::primary)
 
     );
 
@@ -89,12 +94,8 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     // 0x004B6197
     static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        const auto& rt = drawingCtx.currentRenderTarget();
-        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(self.x, self.y, self.width, self.height));
-        if (clipped)
+        if (drawingCtx.pushClip(Ui::Rect(0, 0, self.width, self.height)))
         {
-            drawingCtx.pushRenderTarget(*clipped);
-
             Vehicles::Vehicle train(_dragVehicleHead);
             for (auto& car : train.cars)
             {
@@ -105,7 +106,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
                     break;
                 }
             }
-            drawingCtx.popRenderTarget();
+            drawingCtx.popClip();
         }
     }
 

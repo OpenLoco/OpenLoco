@@ -103,6 +103,6 @@ namespace OpenLoco
     void LandObject::drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const
     {
         uint32_t imageId = image + (numGrowthStages - 1) * numImagesPerGrowthStage;
-        drawingCtx.drawImage(x, y, imageId);
+        drawingCtx.drawImage(ZoomLevel::full, x, y, imageId);
     }
 }

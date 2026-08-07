@@ -145,7 +145,7 @@ namespace OpenLoco
 
         bool empty() const { return name == StringIds::null; }
         StationId id() const;
-        void update();
+        void tick();
         uint32_t calcAcceptedCargo(CargoSearchState& cargoSearchState) const;
         char* getStatusString(char* buffer);
         bool updateCargo();
@@ -190,5 +190,5 @@ namespace OpenLoco
 
     void sub_48D794(const Station& station);
 
-    void drawStationName(Gfx::DrawingContext& drawingCtx, const Station& station, uint8_t zoom, bool isHovered);
+    void drawStationName(Gfx::DrawingContext& drawingCtx, const Station& station, ZoomLevel zoom, bool isHovered);
 }

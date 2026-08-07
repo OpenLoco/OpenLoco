@@ -7,6 +7,8 @@ set(CMAKE_POLICY_DEFAULT_CMP0069 NEW)
 
 set (PROJECT openloco)
 
+set(VCPKG_GIT_TAG d015e31e90838a4c9dfa3eed45979bc70d9357fc)
+
 # Store the top level source directory in a variable to be passed down to targets.
 set(OPENLOCO_PROJECT_PATH ${CMAKE_SOURCE_DIR})
 
@@ -45,7 +47,7 @@ if (OPENLOCO_USE_VCPKG)
         endif ()
         FetchContent_Declare(vcpkg
             GIT_REPOSITORY https://github.com/microsoft/vcpkg.git
-            GIT_TAG d015e31e90838a4c9dfa3eed45979bc70d9357fc
+            GIT_TAG ${VCPKG_GIT_TAG}
         )
         FetchContent_MakeAvailable(vcpkg)
 
@@ -54,7 +56,7 @@ if (OPENLOCO_USE_VCPKG)
     endif()
 endif ()
 
-project(${PROJECT} LANGUAGES CXX VERSION 26.05)
+project(${PROJECT} LANGUAGES CXX VERSION 26.07.1)
 
 # Enable IPO for all Release targets by default
 include(CheckIPOSupported)
@@ -117,8 +119,8 @@ if (${OPENLOCO_BUILD_TESTS})
 endif()
 
 FetchContent_Declare(openloco_objects
-            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.8/objects.zip
-            URL_HASH SHA256=658891d94a46040b7bf71dfd7f01bbc1dda6470712cb3dc07482931feb5013c7)
+            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.9/objects.zip
+            URL_HASH SHA256=442790242746559704516e98f8427af108607b532145c3502f7770e132f9e1bd)
 FetchContent_MakeAvailable(openloco_objects)
 
 add_subdirectory(src)

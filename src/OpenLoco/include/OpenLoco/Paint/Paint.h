@@ -7,6 +7,7 @@
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Engine/Ui/Point.hpp>
 #include <OpenLoco/Engine/World.hpp>
+#include <OpenLoco/ZoomLevel.hpp>
 #include <array>
 #include <sfl/segmented_vector.hpp>
 #include <span>
@@ -233,7 +234,7 @@ namespace OpenLoco::Paint
     struct PaintSession
     {
     public:
-        PaintSession(const Gfx::RenderTarget& rt, const SessionOptions& options);
+        PaintSession(const Gfx::RenderTarget& rt, ZoomLevel zoom, const SessionOptions& options);
 
         void generate();
         void arrangeStructs();
@@ -244,6 +245,11 @@ namespace OpenLoco::Paint
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getStationNameInteractionInfo(const Ui::ViewportInteraction::InteractionItemFlags flags) const;
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getTownNameInteractionInfo(const Ui::ViewportInteraction::InteractionItemFlags flags) const;
         const Gfx::RenderTarget* getRenderTarget() const { return _renderTarget; }
+        ZoomLevel getZoom() const { return _zoom; }
+        int32_t getWorldX() const;
+        int32_t getWorldY() const;
+        int32_t getWorldWidth() const;
+        int32_t getWorldHeight() const;
         uint8_t getRotation() const { return currentRotation; }
         void setRotation(uint8_t rotation) { currentRotation = rotation; }
         int16_t getMaxHeight() const { return _maxHeight; }
@@ -445,6 +451,7 @@ namespace OpenLoco::Paint
         sfl::segmented_vector<PaintEntry, 128> _paintEntries;
 
         const Gfx::RenderTarget* _renderTarget{};
+        ZoomLevel _zoom{};
         PaintStruct* _paintHead{};
         coord_t _spritePositionX{};
         coord_t _unkPositionX{};

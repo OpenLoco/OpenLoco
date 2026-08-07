@@ -1019,11 +1019,11 @@ strings:
   994: ???
   995: ???
 
-  996: "{STRINGID} :{MOVE_X 215}{STRINGID}{STRINGID}"
+  996: "{STRINGID} :"
   997: "MAJ + "
   998: "CTRL + "
   999: Modifier raccourci clavier
-  1000: "{COLOUR WINDOW_2}Nouveau raccourci clavier pour :
+  1000: "{COLOUR WINDOW_2}Nouveau raccourci clavier pour :"
   1001: "{SMALLFONT}{COLOUR BLACK}Cliquer sur la description du raccourci pour choisir une nouvelle touche"
   1002: Faire défiler la vue quand le curseur atteint le bord de l'écran
   1003: "{SMALLFONT}{COLOUR BLACK}Choisir s'il faut faire défiler la vue quand le curseur atteint le bord de l'écran"

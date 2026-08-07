@@ -7,7 +7,6 @@
 #include "Environment.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
-#include "GameException.hpp"
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "Graphics/Gfx.h"
@@ -49,6 +48,7 @@
 #include "World/TownManager.h"
 
 #include <OpenLoco/Platform/Platform.h>
+#include <algorithm>
 
 using namespace OpenLoco::World;
 using namespace OpenLoco::Ui;
@@ -216,7 +216,7 @@ namespace OpenLoco::Scenario
 
         Vehicles::RoutingManager::resetRoutingTable();
         Vehicles::OrderManager::reset();
-        Ui::Windows::Terraform::resetLastSelections();
+        Ui::Windows::Terraform::resetDefaultObjectIds();
         sub_43C8FD();
         MessageManager::reset();
     }
@@ -227,7 +227,7 @@ namespace OpenLoco::Scenario
     {
         ObjectManager::updateRoadObjectIdFlags();
         ObjectManager::updateDefaultLevelCrossingType();
-        ObjectManager::updateLastTrackTypeOption();
+        ObjectManager::resetDefaultTrackTypeObjectId();
         CompanyManager::updatePlayerInfrastructureOptions();
         Gfx::invalidateScreen();
         ObjectManager::updateTerraformObjects();
@@ -318,7 +318,7 @@ namespace OpenLoco::Scenario
                 SavedViewSimple savedView;
                 savedView.viewX = gameState.savedViewX;
                 savedView.viewY = gameState.savedViewY;
-                savedView.zoomLevel = static_cast<ZoomLevel>(gameState.savedViewZoom);
+                savedView.zoomLevel = ZoomLevel{ std::clamp<int8_t>(gameState.savedViewZoom, ZoomLevel::min, ZoomLevel::max) };
                 savedView.rotation = gameState.savedViewRotation;
                 mainWindow->viewportFromSavedView(savedView);
                 mainWindow->invalidate();
@@ -332,7 +332,7 @@ namespace OpenLoco::Scenario
 
         EntityManager::updateSpatialIndex();
         WindowManager::resetThousandthTickCounter();
-        Ui::Windows::Terraform::resetLastSelections();
+        Ui::Windows::Terraform::resetDefaultObjectIds();
         MessageManager::reset();
 
         std::memcpy(gameState.scenarioDetails, Scenario::getOptions().scenarioDetails, sizeof(gameState.scenarioDetails));
@@ -370,7 +370,7 @@ namespace OpenLoco::Scenario
         Gfx::invalidateScreen();
         SceneManager::resetSceneAge();
         MultiPlayer::setFlag(MultiPlayer::flags::flag_10);
-        throw GameException::Interrupt;
+        SceneManager::requestScene(SceneManager::SceneId::gameplay);
     }
 
     // 0x0044400C
@@ -389,6 +389,7 @@ namespace OpenLoco::Scenario
         gameState.rng = Core::Prng(Platform::getTime() ^ oldRng.srand_0(), oldRng.srand_1());
         std::strncpy(gameState.scenarioFileName, path.u8string().c_str(), std::size(gameState.scenarioFileName) - 1);
         start();
+        return true;
     }
 
     // this will prepare _commonFormatArgs array before drawing the StringIds::challenge_value

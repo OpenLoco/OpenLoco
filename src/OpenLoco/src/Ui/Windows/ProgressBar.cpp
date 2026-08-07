@@ -19,7 +19,7 @@
 
 namespace OpenLoco::Ui::Windows::ProgressBar
 {
-    enum Widx
+    enum widx
     {
         frame,
         caption,
@@ -100,20 +100,15 @@ namespace OpenLoco::Ui::Windows::ProgressBar
     // 004CF7A0
     static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        const auto& rt = drawingCtx.currentRenderTarget();
-
         self.draw(drawingCtx);
 
-        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(self.x + 2, self.y + 17, self.width - 5, self.height - 19));
-        if (!clipped)
+        if (!drawingCtx.pushClip(Ui::Rect(2, 17, self.width - 5, self.height - 19)))
         {
             return;
         }
 
-        drawingCtx.pushRenderTarget(*clipped);
-
         // First, draw the train track.
-        drawingCtx.drawImage(0, 0, ImageIds::progressbar_track);
+        drawingCtx.drawImage(ZoomLevel::full, 0, 0, ImageIds::progressbar_track);
 
         // What train image to use depends on the progress bar style.
         uint32_t trainImage;
@@ -144,9 +139,9 @@ namespace OpenLoco::Ui::Windows::ProgressBar
 
         // Draw the train image from the right of the window,
         int16_t xPos = _progressBarValue - 255;
-        drawingCtx.drawImage(xPos, 0, trainImage);
+        drawingCtx.drawImage(ZoomLevel::full, xPos, 0, trainImage);
 
-        drawingCtx.popRenderTarget();
+        drawingCtx.popClip();
     }
 
     static constexpr WindowEventList kEvents = {

@@ -241,9 +241,9 @@ namespace OpenLoco::World::MapGenerator
                 return landObjectIdx;
             }
         }
-        if (getGameState().lastLandOption != 0xFF)
+        if (getGameState().defaultLandObjectId != 0xFF)
         {
-            return getGameState().lastLandOption;
+            return getGameState().defaultLandObjectId;
         }
         return std::nullopt;
     }
@@ -277,7 +277,7 @@ namespace OpenLoco::World::MapGenerator
         {
             return 0;
         }
-        return ((randVal & 0xFF) * landObj->numVariations) >> 8;
+        return ((randVal & 0xFF) * (landObj->numVariations + 1)) >> 8;
     }
 
     static void applySurfaceStyleToMarkedTiles(HeightMap& heightMap, uint8_t surfaceStyle, bool requireMark)

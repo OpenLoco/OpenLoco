@@ -376,7 +376,17 @@ namespace OpenLoco::Input
                 continue;
             }
 
-            if (!SceneManager::isTitleMode())
+            if (Intro::isActive())
+            {
+                if (Intro::state() == Intro::State::displayNotice)
+                {
+                    Intro::state(Intro::State::end);
+                    continue;
+                }
+
+                Intro::state(Intro::State::displayNoticeBegin);
+            }
+            else if (!SceneManager::isTitleMode())
             {
                 for (const auto& shortcut : ShortcutManager::getList())
                 {
@@ -386,17 +396,6 @@ namespace OpenLoco::Input
                     }
                 }
                 continue;
-            }
-
-            if (Intro::state() == Intro::State::displayNotice)
-            {
-                Intro::state(Intro::State::end);
-                continue;
-            }
-
-            if (Intro::isActive())
-            {
-                Intro::state(Intro::State::displayNoticeBegin);
             }
 
             if (tryShortcut(Shortcut::sendMessage, nextKey->keyCode, _keyModifier))
@@ -488,8 +487,8 @@ namespace OpenLoco::Input
             return;
         }
 
-        delta.x *= 1 << viewport->zoom;
-        delta.y *= 1 << viewport->zoom;
+        delta.x = viewport->zoom.applyTo(delta.x);
+        delta.y = viewport->zoom.applyTo(delta.y);
         main->viewportConfigurations[0].savedViewX += delta.x;
         main->viewportConfigurations[0].savedViewY += delta.y;
         Input::setFlag(Flags::viewportScrolling);
@@ -556,8 +555,8 @@ namespace OpenLoco::Input
             return;
         }
 
-        delta.x *= 1 << viewport->zoom;
-        delta.y *= 1 << viewport->zoom;
+        delta.x = viewport->zoom.applyTo(delta.x);
+        delta.y = viewport->zoom.applyTo(delta.y);
         main->viewportConfigurations[0].savedViewX += delta.x;
         main->viewportConfigurations[0].savedViewY += delta.y;
         Input::setFlag(Flags::viewportScrolling);

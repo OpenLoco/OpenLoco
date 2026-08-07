@@ -52,8 +52,7 @@ namespace OpenLoco::Paint
     // 0x00440331
     static void paintExhaustEntity(PaintSession& session, Exhaust* exhaustEntity)
     {
-        const Gfx::RenderTarget* rt = session.getRenderTarget();
-        if (rt->zoomLevel > 1)
+        if (session.getZoom() > 1)
         {
             return;
         }
@@ -75,8 +74,7 @@ namespace OpenLoco::Paint
     // 0x004403C5
     static void paintRedGreenCurrencyEntity(PaintSession& session, MoneyEffect* moneyEffect)
     {
-        const Gfx::RenderTarget* rt = session.getRenderTarget();
-        if (rt->zoomLevel > 1)
+        if (session.getZoom() > 1)
         {
             return;
         }
@@ -94,9 +92,7 @@ namespace OpenLoco::Paint
         {
             return;
         }
-
-        const Gfx::RenderTarget* rt = session.getRenderTarget();
-        if (rt->zoomLevel > 1)
+        if (session.getZoom() > 1)
         {
             return;
         }
@@ -111,8 +107,7 @@ namespace OpenLoco::Paint
     // 0x0044044E
     static void paintVehicleCrashParticleEntity(PaintSession& session, VehicleCrashParticle* particle)
     {
-        const Gfx::RenderTarget* rt = session.getRenderTarget();
-        if (rt->zoomLevel != 0)
+        if (session.getZoom() != 0)
         {
             return;
         }
@@ -137,8 +132,7 @@ namespace OpenLoco::Paint
     // 0x0044051C
     static void paintExplosionCloudEntity(PaintSession& session, ExplosionCloud* particle)
     {
-        const Gfx::RenderTarget* rt = session.getRenderTarget();
-        if (rt->zoomLevel > 2)
+        if (session.getZoom() > 2)
         {
             return;
         }
@@ -172,8 +166,7 @@ namespace OpenLoco::Paint
     // 0x00440557
     static void paintSplashEntity(PaintSession& session, Splash* particle)
     {
-        const Gfx::RenderTarget* rt = session.getRenderTarget();
-        if (rt->zoomLevel > 2)
+        if (session.getZoom() > 2)
         {
             return;
         }
@@ -217,8 +210,7 @@ namespace OpenLoco::Paint
     // 0x00440592
     static void paintFireballEntity(PaintSession& session, Fireball* particle)
     {
-        const Gfx::RenderTarget* rt = session.getRenderTarget();
-        if (rt->zoomLevel > 2)
+        if (session.getZoom() > 2)
         {
             return;
         }
@@ -265,8 +257,7 @@ namespace OpenLoco::Paint
     // 0x004404A6
     static void paintExplosionSmokeEntity(PaintSession& session, ExplosionSmoke* particle)
     {
-        const Gfx::RenderTarget* rt = session.getRenderTarget();
-        if (rt->zoomLevel > 1)
+        if (session.getZoom() > 1)
         {
             return;
         }
@@ -292,8 +283,7 @@ namespace OpenLoco::Paint
     // 0x004404E1
     static void paintSmokeEntity(PaintSession& session, Smoke* particle)
     {
-        const Gfx::RenderTarget* rt = session.getRenderTarget();
-        if (rt->zoomLevel > 1)
+        if (session.getZoom() > 1)
         {
             return;
         }

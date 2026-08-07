@@ -107,6 +107,6 @@ namespace OpenLoco
         frameIndex *= 8;
         auto colourImage = image + frameIndex;
 
-        drawingCtx.drawImage(x, y + 15, colourImage);
+        drawingCtx.drawImage(ZoomLevel::full, x, y + 15, colourImage);
     }
 }

@@ -24,7 +24,7 @@ namespace OpenLoco::IndustryManager
     Flags getFlags();
     bool hasFlags(const Flags flags);
     void setFlags(const Flags flags);
-    void update();
+    void tick();
     void updateDaily();
     uint8_t getMostCommonBuildingCargoType();
     void updateMonthly();

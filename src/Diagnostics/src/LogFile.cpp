@@ -8,6 +8,7 @@
 #include <LogLevel.h>
 #include <chrono>
 #include <filesystem>
+#include <fmt/chrono.h>
 #include <fmt/ostream.h>
 #include <string>
 #include <string_view>

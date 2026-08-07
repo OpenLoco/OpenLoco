@@ -14,10 +14,13 @@ namespace OpenLoco
     enum class LoadOrQuitMode : uint16_t;
     enum class ObjectType : uint8_t;
 }
-
 namespace OpenLoco::Gfx
 {
     struct RenderTarget;
+}
+namespace OpenLoco::Input
+{
+    enum class Shortcut : uint32_t;
 }
 namespace OpenLoco::Ui
 {
@@ -56,12 +59,13 @@ namespace OpenLoco::Ui::WindowManager
     size_t count();
 
     void updateViewports();
-    void update();
+    void tick();
     void updateDaily();
     Window* getMainWindow();
     Viewport* getMainViewport();
     Window* find(WindowType type);
     Window* find(WindowType type, WindowNumber_t number);
+    Window* findWindowForViewport(const Viewport* viewport);
     Window* findAt(int32_t x, int32_t y);
     Window* findAt(Ui::Point point);
     Window* findAtAlt(int32_t x, int32_t y);
@@ -188,7 +192,7 @@ namespace OpenLoco::Ui::Windows
 
     namespace EditKeyboardShortcut
     {
-        Window* open(uint8_t shortcutIndex);
+        Window* open(Input::Shortcut shortcutId);
     }
 
     namespace Error
@@ -375,7 +379,7 @@ namespace OpenLoco::Ui::Windows
         void setAdjustWaterToolSize(uint8_t size);
         void setClearAreaToolSize(uint8_t size);
         void setLastPlacedTree(World::TreeElement* elTree);
-        void resetLastSelections();
+        void resetDefaultObjectIds();
     }
 
     namespace TextInput

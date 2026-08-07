@@ -85,7 +85,7 @@ namespace OpenLoco::Paint
         // ceil to 4
         clearHeight += 3;
         clearHeight &= ~3;
-        const int16_t bbLengthZ = std::min(clearHeight, 128) - 2;
+        const int16_t bbLengthZ = clearHeight - 2;
 
         const auto baseHeight = elStation.baseHeight();
 
@@ -99,7 +99,7 @@ namespace OpenLoco::Paint
         session.resetLastPS(); // Odd...
         if (airportObj->hasFlags(AirportObjectFlags::hasShadows))
         {
-            if (session.getRenderTarget()->zoomLevel <= 1)
+            if (session.getZoom() <= 1)
             {
                 const auto shadowImageOffset = variation * 4 + airportObj->image + rotation + 1;
                 const ImageId shadowImage = ImageId(shadowImageOffset).withTranslucency(Colours::getShadow(Colour::orange));

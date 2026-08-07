@@ -6,5 +6,5 @@ namespace OpenLoco::EffectsManager
 {
     using EffectsList = EntityManager::EntityList<EntityManager::EntityListIterator<EffectEntity>, EntityManager::EntityListType::misc>;
 
-    void update();
+    void tick();
 }

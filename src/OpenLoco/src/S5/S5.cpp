@@ -6,7 +6,6 @@
 #include "EditorController.h"
 #include "Entities/EntityManager.h"
 #include "Game.h"
-#include "GameException.hpp"
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "Gui.h"
@@ -419,7 +418,7 @@ namespace OpenLoco::S5
         dst = *exportGameState(src);
         dst.general.savedViewX = savedView.viewX;
         dst.general.savedViewY = savedView.viewY;
-        dst.general.savedViewZoom = static_cast<uint8_t>(savedView.zoomLevel);
+        dst.general.savedViewZoom = static_cast<uint8_t>(static_cast<int8_t>(savedView.zoomLevel));
         dst.general.savedViewRotation = savedView.rotation;
 
         // Copy tile elements; remove any ghosts before saving
@@ -811,8 +810,8 @@ namespace OpenLoco::S5
                 };
 
                 Ui::ProgressBar::end();
-                // Throws!
                 Game::returnToTitle();
+                return false;
             }
 
             if (!hasLoadFlags(flags, LoadFlags::scenario | LoadFlags::landscape))
@@ -963,7 +962,7 @@ namespace OpenLoco::S5
                 SavedViewSimple savedView;
                 savedView.viewX = file->gameState.general.savedViewX;
                 savedView.viewY = file->gameState.general.savedViewY;
-                savedView.zoomLevel = static_cast<ZoomLevel>(file->gameState.general.savedViewZoom);
+                savedView.zoomLevel = ZoomLevel{ std::clamp<int8_t>(file->gameState.general.savedViewZoom, ZoomLevel::min, ZoomLevel::max) };
                 savedView.rotation = file->gameState.general.savedViewRotation;
                 mainWindow->viewportFromSavedView(savedView);
                 mainWindow->invalidate();
@@ -972,7 +971,7 @@ namespace OpenLoco::S5
             EntityManager::updateSpatialIndex();
             TownManager::updateLabels();
             StationManager::updateLabels();
-            Ui::Windows::Terraform::resetLastSelections();
+            Ui::Windows::Terraform::resetDefaultObjectIds();
             WindowManager::resetThousandthTickCounter();
             Gfx::invalidateScreen();
             if (!hasLoadFlags(flags, LoadFlags::landscape))
@@ -994,7 +993,6 @@ namespace OpenLoco::S5
             if (!hasLoadFlags(flags, LoadFlags::titleSequence) && !hasLoadFlags(flags, LoadFlags::twoPlayer) && !hasLoadFlags(flags, LoadFlags::landscape))
             {
                 SceneManager::resetSceneAge();
-                throw GameException::Interrupt;
             }
 
             return true;

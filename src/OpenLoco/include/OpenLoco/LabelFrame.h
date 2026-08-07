@@ -8,26 +8,27 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct LabelFrame
     {
-        int16_t left[ZoomLevel::max]{};
-        int16_t right[ZoomLevel::max]{};
-        int16_t top[ZoomLevel::max]{};
-        int16_t bottom[ZoomLevel::max]{};
+        int32_t left[ZoomLevel::count]{};
+        int32_t right[ZoomLevel::count]{};
+        int32_t top[ZoomLevel::count]{};
+        int32_t bottom[ZoomLevel::count]{};
 
-        [[nodiscard]] bool contains(const Ui::Rect& rec, uint8_t zoom) const
+        [[nodiscard]] bool contains(const Ui::Rect& rec, ZoomLevel zoom) const
         {
-            if (rec.top() > bottom[zoom])
+            const auto index = zoom.index();
+            if (rec.top() > bottom[index])
             {
                 return false;
             }
-            if (rec.bottom() < top[zoom])
+            if (rec.bottom() < top[index])
             {
                 return false;
             }
-            if (rec.left() > right[zoom])
+            if (rec.left() > right[index])
             {
                 return false;
             }
-            if (rec.right() < left[zoom])
+            if (rec.right() < left[index])
             {
                 return false;
             }
