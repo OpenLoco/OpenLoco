@@ -324,7 +324,8 @@ jobs:
           # Cache currently broken as docker image does not include unzip
       - name: Build OpenLoco
         run: |
-          cmake --preset linux-vcpkg-static
+          mkdir -p artifacts
+          cmake --preset linux-vcpkg-static -DCMAKE_INSTALL_PREFIX=./artifacts
           cmake --build --preset linux-vcpkg-static
       - name: Save binary cache
         if: always()
@@ -335,8 +336,7 @@ jobs:
       # Static linkage means the binary should be fairly portable / distributable across distros!
       - name: Install to artifacts
         run: |
-          mkdir -p artifacts
-          cmake --install build/linux-vcpkg-static --prefix ./artifacts
+          cmake --build --preset linux-vcpkg-static --target install
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
