@@ -68,10 +68,10 @@ namespace OpenLoco::Config
 
         // Audio settings
         auto& audioNode = config["audio"];
+        auto& audioConfig = _config.audio;
         bool havePlaylist = false;
         if (audioNode && audioNode.IsMap())
         {
-            auto& audioConfig = _config.audio;
             audioConfig.device = audioNode["device"].as<std::string>("");
             audioConfig.mainVolume = audioNode["mainVolume"].as<int32_t>(-1100);
             audioConfig.masterVolume = audioNode["masterVolume"].as<int32_t>(100);
