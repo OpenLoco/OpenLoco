@@ -86,7 +86,7 @@ jobs:
           Copy-Item CHANGELOG.md,CONTRIBUTORS.md,LICENSE artifacts
           Copy-Item build\${{ matrix.build_dir }}\Release\* artifacts -Recurse
       - name: Upload release artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: OpenLoco-${{ matrix.os }}-x64
           path: |
@@ -94,7 +94,7 @@ jobs:
             !artifacts/*.pdb
           if-no-files-found: error
       - name: Upload symbols artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: OpenLoco-${{ matrix.os }}-x64-symbols
           path: |
@@ -175,7 +175,7 @@ jobs:
           Copy-Item CHANGELOG.md,CONTRIBUTORS.md,LICENSE artifacts
           Copy-Item build\windows-x86-32-ci\Release\* artifacts -Recurse
       - name: Upload release artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: OpenLoco-${{ runner.os }}-Win32
           path: |
@@ -183,7 +183,7 @@ jobs:
             !artifacts/*.pdb
           if-no-files-found: error
       - name: Upload symbols artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: OpenLoco-${{ runner.os }}-Win32-symbols
           path: |
@@ -342,7 +342,7 @@ jobs:
           cd artifacts
           tar zcvf OpenLoco-linux-x64-glibc2.43.tar.gz *
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           path: artifacts/OpenLoco-linux-x64-glibc2.43.tar.gz
           archive: false
@@ -392,7 +392,7 @@ jobs:
         run: |
           cmake --build --preset macos-vcpkg-static --target install
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: OpenLoco-macos-arm64
           path: artifacts
