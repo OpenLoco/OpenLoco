@@ -66,7 +66,7 @@ namespace OpenLoco
     {
         auto imageId = (transitionAnimationFrameCount + 1) * 8;
         auto frameCount = (closedAnimationFrameCount - 1);
-        auto animationFrame = frameCount & (ScenarioManager::getScenarioTicks() >> closedAnimationDelay);
+        auto animationFrame = frameCount & (ScenarioManager::getScenarioTicks() >> closedAnimationFrameInterval);
         auto frameIndex = 8 * animationFrame;
         imageId += frameIndex;
         imageId += image;

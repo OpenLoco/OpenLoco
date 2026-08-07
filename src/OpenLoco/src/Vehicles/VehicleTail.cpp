@@ -14,7 +14,7 @@ using namespace OpenLoco::World;
 namespace OpenLoco::Vehicles
 {
     // 0x004794BC
-    // This is enter level crossing if isEnteringLevelCrossing==8 and leave level crossing if isEnteringLevelCrossing==9
+    // This is enter level crossing if isEnteringLevelCrossing==true and leave level crossing if isEnteringLevelCrossing==false
     void leaveLevelCrossing(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const bool isEnteringLevelCrossing)
     {
         auto levelCrossingLoc = loc;

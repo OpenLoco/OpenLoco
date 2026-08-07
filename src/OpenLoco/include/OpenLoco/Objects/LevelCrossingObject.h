@@ -26,7 +26,7 @@ namespace OpenLoco
         int16_t costFactor;                      // 0x02
         int16_t sellCostFactor;                  // 0x04
         uint8_t costIndex;                       // 0x06
-        uint8_t closedAnimationDelay;            // 0x07
+        uint8_t closedAnimationFrameInterval;    // 0x07
         uint8_t closedAnimationFrameCount;       // 0x08
         uint8_t transitionAnimationFrameCount;   // 0x09
         uint8_t transitionAnimationDelayBitmask; // 0x0A
