@@ -450,7 +450,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
 
         auto* roadObj = ObjectManager::get<RoadObject>(cState.trackType & ~(1 << 7));
-        if (!roadObj->hasFlags(RoadObjectFlags::unk_02))
+        if (!roadObj->hasFlags(RoadObjectFlags::allowsJunctions))
         {
             rc.connections.resize(1);
         }

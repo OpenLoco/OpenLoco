@@ -29,13 +29,13 @@ namespace OpenLoco::CompanyAi
     // 0x00431295
     static void beginPlacement(Company& company)
     {
-        company.var_4A6 = AiPlaceVehicleState::resetList;
+        company.aiPlaceVehicleState = AiPlaceVehicleState::resetList;
     }
 
     // 0x0043129D
     static void resetPlacementList(Company& company)
     {
-        company.var_4A6 = AiPlaceVehicleState::place;
+        company.aiPlaceVehicleState = AiPlaceVehicleState::place;
         company.aiPlaceVehicleIndex = 0;
     }
 
@@ -58,7 +58,7 @@ namespace OpenLoco::CompanyAi
         }
         auto& thought = company.aiThoughts[head.aiThoughtId];
         removeEntityFromThought(thought, head.id);
-        thought.var_43--;
+        thought.numVehiclesTarget--;
         thought.purchaseFlags |= AiPurchaseFlags::unk4;
 
         GameCommands::VehicleSellArgs args{};
@@ -621,14 +621,14 @@ namespace OpenLoco::CompanyAi
     {
         if (tryPlaceVehicles(company))
         {
-            company.var_4A6 = AiPlaceVehicleState::restart;
+            company.aiPlaceVehicleState = AiPlaceVehicleState::restart;
         }
     }
 
     // 0x004312BF
     static void restartPlacement(Company& company)
     {
-        company.var_4A6 = AiPlaceVehicleState::begin;
+        company.aiPlaceVehicleState = AiPlaceVehicleState::begin;
     }
 
     void processVehiclePlaceStateMachine(Company& company)
@@ -637,7 +637,7 @@ namespace OpenLoco::CompanyAi
         // this FSM down into just two states
         // a reset and a placement state
         using enum AiPlaceVehicleState;
-        switch (company.var_4A6)
+        switch (company.aiPlaceVehicleState)
         {
             case begin:
                 beginPlacement(company);

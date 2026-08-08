@@ -873,7 +873,7 @@ namespace OpenLoco::GameCommands
         if ((flags & Flags::apply)
             && !(flags & (Flags::aiAllocated | Flags::ghost))
             && (roadIdUnk[0] & (1U << 7))
-            && roadObj->hasFlags(RoadObjectFlags::unk_02))
+            && roadObj->hasFlags(RoadObjectFlags::allowsJunctions))
         {
             for (auto i = 0U; i < 4; ++i)
             {
