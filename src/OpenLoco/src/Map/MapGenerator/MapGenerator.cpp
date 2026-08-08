@@ -548,6 +548,7 @@ namespace OpenLoco::World::MapGenerator
 
         for (auto i = 0U; i < landDistributionPatterns.size(); i++)
         {
+            const auto distPattern = landDistributionPatterns[i];
             updateProgress(55 + 12 * i);
 
             for (uint8_t landObjectIdx = 0; landObjectIdx < ObjectManager::getMaxObjects(ObjectType::land); ++landObjectIdx)
@@ -559,7 +560,6 @@ namespace OpenLoco::World::MapGenerator
                 }
 
                 const auto typePattern = Scenario::getOptions().landDistributionPatterns[landObjectIdx];
-                const auto distPattern = landDistributionPatterns[i];
                 if (typePattern != distPattern)
                 {
                     continue;
