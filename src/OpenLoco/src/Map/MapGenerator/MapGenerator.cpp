@@ -467,13 +467,13 @@ namespace OpenLoco::World::MapGenerator
         // Mark tiles with sudden height changes in the next row
         for (auto pos : getDrawableTileRange())
         {
-            auto heightA = heightMap.getHeight({ pos + TilePos2{ 0, 1 } });
+            auto heightA = heightMap.getHeight({ pos + TilePos2{ 0, 0 } });
             auto heightB = heightMap.getHeight({ pos + TilePos2{ 0, 1 } });
 
             // Find no cliff between A and B?
             if (std::abs(heightB - heightA) < kCliffTerrainHeightDiff)
             {
-                auto heightC = heightMap.getHeight({ pos + TilePos2{ 0, 1 } });
+                auto heightC = heightMap.getHeight({ pos + TilePos2{ 0, 0 } });
                 auto heightD = heightMap.getHeight({ pos + TilePos2{ 0, 1 } });
 
                 // Find no cliff between C and D?
