@@ -150,6 +150,12 @@ namespace OpenLoco::Ui::Windows
         void open(const CompanyId id, const WindowType callingWindowType);
     }
 
+    namespace CompanyInfoPanel
+    {
+        Window* open();
+        void invalidateFrame();
+    }
+
     namespace CompanyList
     {
         void openPerformanceIndexes();
@@ -301,12 +307,6 @@ namespace OpenLoco::Ui::Windows
     {
         Window* open();
         Window* openAudioSettings();
-    }
-
-    namespace PlayerInfoPanel
-    {
-        Window* open();
-        void invalidateFrame();
     }
 
     namespace ProgressBar
