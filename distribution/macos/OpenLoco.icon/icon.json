@@ -1,0 +1,67 @@
+{
+  "fill" : {
+    "linear-gradient" : [
+      "display-p3:0.52941,0.52941,0.52941,1.00000",
+      "display-p3:0.82353,0.82353,0.82353,1.00000"
+    ]
+  },
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "glass" : false,
+          "image-name" : "loco.png",
+          "name" : "loco",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              6.169999999999959
+            ]
+          }
+        },
+        {
+          "blend-mode" : "normal",
+          "glass" : false,
+          "image-name" : "steam.png",
+          "name" : "steam",
+          "opacity" : 0.8,
+          "position" : {
+            "scale" : 0.74,
+            "translation-in-points" : [
+              -9.073171443541469,
+              -159.51458182421078
+            ]
+          }
+        },
+        {
+          "glass" : false,
+          "image-name" : "cog.png",
+          "name" : "cog",
+          "opacity" : 0.8,
+          "position" : {
+            "scale" : 1.1,
+            "translation-in-points" : [
+              -1.9127638418544848,
+              -7.385994722987789
+            ]
+          }
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}
