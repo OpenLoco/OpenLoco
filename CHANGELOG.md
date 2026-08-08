@@ -12,7 +12,7 @@
 - Fix: [#3861] The news sound setting is not read properly from the config file.
 - Fix: [#3888] Bridges can be drawn over tall buildings, industries and stations (original bug).
 - Fix: [#3890] On Linux/POSIX, setting the game path does not work correctly if it contains spaces.
-- Fix: [#3906] Random landscapes have the wrong terrain applied due to inverted 'terrain near water' condition.
+- Fix: [#3906] Random landscapes have their land types applied incorrectly due to incorrect 'near water' and 'around cliffs' conditions.
 
 26.07.1 (2026-07-27)
 ------------------------------------------------------------------------
