@@ -190,6 +190,11 @@ namespace OpenLoco::GameCommands
         {
             return GameCommands::kFailure;
         }
+
+        // Set the position as the initial tile we placed as that is usually what we want
+        // we could also have chosen the middle point of all the tiles we placed on but
+        // that would be annoying to calculate and I'm not sure if it would be better.
+        setPosition(pos + World::Pos3{ 16, 16, 0 });
         return totalCost;
     }
 }
