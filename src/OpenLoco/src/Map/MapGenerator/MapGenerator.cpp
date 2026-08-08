@@ -474,7 +474,7 @@ namespace OpenLoco::World::MapGenerator
             if (std::abs(heightB - heightA) < kCliffTerrainHeightDiff)
             {
                 auto heightC = heightMap.getHeight({ pos + TilePos2{ 0, 0 } });
-                auto heightD = heightMap.getHeight({ pos + TilePos2{ 0, 1 } });
+                auto heightD = heightMap.getHeight({ pos + TilePos2{ 1, 0 } });
 
                 // Find no cliff between C and D?
                 if (std::abs(heightD - heightC) < kCliffTerrainHeightDiff)
