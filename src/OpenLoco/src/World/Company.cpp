@@ -889,7 +889,7 @@ namespace OpenLoco
         Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(id()));
         if (id() == CompanyManager::getControllingId())
         {
-            Ui::WindowManager::invalidate(Ui::WindowType::playerInfoToolbar);
+            Ui::WindowManager::invalidate(Ui::WindowType::companyInfoToolbar);
         }
         Ui::WindowManager::invalidate(Ui::WindowType::vehicleList, enumValue(id()));
         Ui::WindowManager::invalidate(Ui::WindowType::stationList, enumValue(id()));

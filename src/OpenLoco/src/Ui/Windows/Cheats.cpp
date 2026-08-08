@@ -317,7 +317,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     args.param1 = _cashIncreaseStep;
 
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
-                    WindowManager::invalidate(WindowType::playerInfoToolbar);
+                    WindowManager::invalidate(WindowType::companyInfoToolbar);
                     break;
                 }
 
@@ -548,7 +548,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     args.param1 = enumValue(_targetCompanyId);
 
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
-                    WindowManager::invalidate(WindowType::playerInfoToolbar);
+                    WindowManager::invalidate(WindowType::companyInfoToolbar);
                     return;
                 }
 
@@ -559,7 +559,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     args.param1 = enumValue(_targetCompanyId);
 
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
-                    WindowManager::invalidate(WindowType::playerInfoToolbar);
+                    WindowManager::invalidate(WindowType::companyInfoToolbar);
                     return;
                 }
 
@@ -570,7 +570,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     args.param1 = enumValue(_targetCompanyId);
 
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
-                    WindowManager::invalidate(WindowType::playerInfoToolbar);
+                    WindowManager::invalidate(WindowType::companyInfoToolbar);
                     return;
                 }
             }

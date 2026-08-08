@@ -38,7 +38,7 @@ namespace OpenLoco
         Colour topToolbarSecondaryColour;  // 0x13
         Colour topToolbarTertiaryColour;   // 0x14
         Colour topToolbarQuaternaryColour; // 0x15
-        Colour playerInfoToolbarColour;    // 0x16
+        Colour companyInfoToolbarColour;   // 0x16
         Colour timeToolbarColour;          // 0x17
 
         // 0x0043C888

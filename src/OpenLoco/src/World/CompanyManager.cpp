@@ -266,7 +266,7 @@ namespace OpenLoco::CompanyManager
         }
         Ui::WindowManager::invalidate(Ui::WindowType::company);
         Ui::WindowManager::invalidate(Ui::WindowType::companyList);
-        Ui::WindowManager::invalidate(Ui::WindowType::playerInfoToolbar);
+        Ui::WindowManager::invalidate(Ui::WindowType::companyInfoToolbar);
 
         uint8_t numActiveCompanies = std::distance(std::begin(companies()), std::end(companies()));
 
@@ -1133,7 +1133,7 @@ namespace OpenLoco::CompanyManager
         // Invalidate the company balance if this is the player company
         if (getControllingId() == id)
         {
-            Ui::Windows::PlayerInfoPanel::invalidateFrame();
+            Ui::Windows::CompanyInfoPanel::invalidateFrame();
         }
         auto cost = currency48_t{ payment };
         company->cash -= cost;

@@ -23,7 +23,7 @@
 #include "World/CompanyManager.h"
 #include <map>
 
-namespace OpenLoco::Ui::Windows::PlayerInfoPanel
+namespace OpenLoco::Ui::Windows::CompanyInfoPanel
 {
     static constexpr Ui::Size kWindowSize = { 140, 27 };
 
@@ -31,7 +31,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     {
         outer_frame,
         inner_frame,
-        player,
+        competitor,
         company_value,
         performanceIndex
     };
@@ -40,7 +40,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     {
         constexpr WidgetId kOuterFrame{ "outer_frame" };
         constexpr WidgetId kInnerFrame{ "inner_frame" };
-        constexpr WidgetId kPlayer{ "player" };
+        constexpr WidgetId kPlayer{ "competitor" };
         constexpr WidgetId kCompanyValue{ "company_value" };
         constexpr WidgetId kPerformanceIndex{ "performanceIndex" };
     }
@@ -65,7 +65,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     static bool _redrawScheduled = false; // _50A004 (first bit)
 
     // 0x43AA4C
-    static void playerMouseDown(Ui::Window* self, WidgetIndex_t widgetIndex)
+    static void competitorMouseDown(Ui::Window* self, WidgetIndex_t widgetIndex)
     {
         _sortedCompanies.clear();
 
@@ -133,7 +133,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x43AB87
-    static void playerDropdownClick(int16_t itemIndex)
+    static void competitorDropdownClick(int16_t itemIndex)
     {
         if (itemIndex == -1)
         {
@@ -161,7 +161,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     Window* open()
     {
         auto window = WindowManager::createWindow(
-            WindowType::playerInfoToolbar,
+            WindowType::companyInfoToolbar,
             { 0, Ui::height() - kWindowSize.height },
             { kWindowSize.width, kWindowSize.height },
             Ui::WindowFlags::stickToFront | Ui::WindowFlags::transparent | Ui::WindowFlags::noBackground,
@@ -173,8 +173,8 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
-            window->setColour(WindowColour::primary, AdvancedColour(skin->playerInfoToolbarColour).translucent());
-            window->setColour(WindowColour::secondary, AdvancedColour(skin->playerInfoToolbarColour).translucent());
+            window->setColour(WindowColour::primary, AdvancedColour(skin->companyInfoToolbarColour).translucent());
+            window->setColour(WindowColour::secondary, AdvancedColour(skin->companyInfoToolbarColour).translucent());
         }
 
         return window;
@@ -220,7 +220,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             }
 
             auto colour = window.getColour(WindowColour::primary).opaque();
-            if (Input::isHovering(WindowType::playerInfoToolbar, 0, widx::company_value))
+            if (Input::isHovering(WindowType::companyInfoToolbar, 0, widx::company_value))
             {
                 colour = Colour::white;
             }
@@ -245,7 +245,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             }
 
             auto colour = window.getColour(WindowColour::primary).opaque();
-            if (Input::isHovering(WindowType::playerInfoToolbar, 0, widx::performanceIndex))
+            if (Input::isHovering(WindowType::companyInfoToolbar, 0, widx::performanceIndex))
             {
                 colour = Colour::white;
             }
@@ -278,7 +278,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         switch (id)
         {
             case Widx::kPlayer:
-                playerMouseDown(&window, widgetIndex);
+                competitorMouseDown(&window, widgetIndex);
                 break;
         }
     }
@@ -289,7 +289,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         switch (id)
         {
             case Widx::kPlayer:
-                playerDropdownClick(item_index);
+                competitorDropdownClick(item_index);
                 break;
         }
     }
@@ -368,7 +368,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         if (_redrawScheduled)
         {
             _redrawScheduled = false;
-            WindowManager::invalidateWidget(WindowType::playerInfoToolbar, 0, widx::inner_frame);
+            WindowManager::invalidateWidget(WindowType::companyInfoToolbar, 0, widx::inner_frame);
         }
     }
 
