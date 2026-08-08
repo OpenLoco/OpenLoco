@@ -82,7 +82,7 @@ namespace OpenLoco::Scenario
     constexpr uint8_t kMinRiverMeanderRate = 0;
     constexpr uint8_t kMaxRiverMeanderRate = 20;
 
-    constexpr uint8_t kMinBaseLandHeight = 0;
+    constexpr uint8_t kMinBaseLandHeight = 1;
     constexpr uint8_t kMaxBaseLandHeight = 15;
 
     constexpr uint8_t kMinHillDensity = 0;
