@@ -497,7 +497,7 @@ namespace OpenLoco::World::MapGenerator
     static void generateTerrainNull([[maybe_unused]] HeightMap& heightMap, [[maybe_unused]] uint8_t surfaceStyle) {}
 
     using GenerateTerrainFunc = void (*)(HeightMap&, uint8_t);
-    static constexpr GenerateTerrainFunc kGenerateFuncs[] = {
+    static const GenerateTerrainFunc _generateFuncs[] = {
         generateTerrainNull,               // LandDistributionPattern::everywhere This is null as it is a special function performed separately
         generateTerrainNull,               // LandDistributionPattern::nowhere
         generateTerrainFarFromWater,       // LandDistributionPattern::farFromWater
@@ -536,23 +536,37 @@ namespace OpenLoco::World::MapGenerator
             }
         }
 
-        constexpr auto kProgressStart = 52;
-        constexpr auto kProgressEnd = 178;
-        constexpr auto kProgressRange = kProgressEnd - kProgressStart;
-        constexpr auto kProgressStep = kProgressRange / ObjectManager::getMaxObjects(ObjectType::land);
+        constexpr std::array landDistributionPatterns = {
+            Scenario::LandDistributionPattern::farFromWater,
+            Scenario::LandDistributionPattern::nearWater,
+            Scenario::LandDistributionPattern::onMountains,
+            Scenario::LandDistributionPattern::farFromMountains,
+            Scenario::LandDistributionPattern::inSmallRandomAreas,
+            Scenario::LandDistributionPattern::inLargeRandomAreas,
+            Scenario::LandDistributionPattern::aroundCliffs,
+        };
 
-        for (uint8_t landObjectIdx = 0; landObjectIdx < ObjectManager::getMaxObjects(ObjectType::land); ++landObjectIdx)
+        for (auto i = 0U; i < landDistributionPatterns.size(); i++)
         {
-            updateProgress(kProgressStart + landObjectIdx * kProgressStep);
+            updateProgress(55 + 12 * i);
 
-            const auto* landObj = ObjectManager::get<LandObject>(landObjectIdx);
-            if (landObj == nullptr)
+            for (uint8_t landObjectIdx = 0; landObjectIdx < ObjectManager::getMaxObjects(ObjectType::land); ++landObjectIdx)
             {
-                continue;
-            }
+                const auto* landObj = ObjectManager::get<LandObject>(landObjectIdx);
+                if (landObj == nullptr)
+                {
+                    continue;
+                }
 
-            const auto typePattern = Scenario::getOptions().landDistributionPatterns[landObjectIdx];
-            kGenerateFuncs[enumValue(typePattern)](heightMap, landObjectIdx);
+                const auto typePattern = Scenario::getOptions().landDistributionPatterns[landObjectIdx];
+                const auto distPattern = landDistributionPatterns[i];
+                if (typePattern != distPattern)
+                {
+                    continue;
+                }
+
+                _generateFuncs[enumValue(distPattern)](heightMap, landObjectIdx);
+            }
         }
     }
 
@@ -1095,11 +1109,11 @@ namespace OpenLoco::World::MapGenerator
             updateProgress(45);
 
             generateTerrain(heightMap);
-            updateProgress(52);
+            updateProgress(55);
         }
 
         generateSurfaceVariation();
-        updateProgress(178);
+        updateProgress(175);
 
         generateTrees();
         updateProgress(200);
