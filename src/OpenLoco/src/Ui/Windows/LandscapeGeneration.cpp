@@ -247,6 +247,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             window.widgets[widx::close_button].left = window.width - 15;
             window.widgets[widx::close_button].right = window.width - 3;
 
+            window.activatedWidgets &= ~((1 << tab_options) | (1 << tab_land) | (1 << tab_water) | (1 << tab_forests) | (1 << tab_towns) | (1 << tab_industries));
+            window.activatedWidgets |= (1ULL << tabWidgetIdxByTabId[window.currentTab]);
+
             auto& options = Scenario::getOptions();
             if (options.generator == Scenario::LandGeneratorType::PngHeightMap)
             {
@@ -1716,9 +1719,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 tab_towns,
                 tab_industries,
             };
-
-            window->activatedWidgets &= ~((1 << tab_options) | (1 << tab_land) | (1 << tab_water) | (1 << tab_forests) | (1 << tab_towns) | (1 << tab_industries));
-            window->activatedWidgets |= (1ULL << tabWidgetIdxByTabId[window->currentTab]);
         }
 
         // 0x0043DC98
