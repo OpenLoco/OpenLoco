@@ -13,6 +13,7 @@
 - Fix: [#3861] The news sound setting is not read properly from the config file.
 - Fix: [#3888] Bridges can be drawn over tall buildings, industries and stations (original bug).
 - Fix: [#3890] On Linux/POSIX, setting the game path does not work correctly if it contains spaces.
+- Fix: [#3899] The custom jukebox playlist is not initialised properly for new config files.
 
 26.07.1 (2026-07-27)
 ------------------------------------------------------------------------
