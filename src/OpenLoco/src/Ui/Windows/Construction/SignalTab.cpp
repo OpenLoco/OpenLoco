@@ -1,16 +1,13 @@
 #include "Audio/Audio.h"
 #include "GameCommands/GameCommands.h"
-#include "GameCommands/Track/CreateSignal.h"
-#include "GameCommands/Track/RemoveSignal.h"
+#include "GameCommands/Track/CreateSignalsAuto.h"
+#include "GameCommands/Track/RemoveSignalsAuto.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
-#include "Map/SignalElement.h"
 #include "Map/TileElementEntry.h"
-#include "Map/TileManager.h"
-#include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/TrackObject.h"
@@ -20,8 +17,11 @@
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
+#include "Ui/Widgets/CheckboxWidget.h"
 #include "Ui/Widgets/DropdownWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/LabelWidget.h"
+#include "Ui/Widgets/StepperWidget.h"
 #include "Ui/Windows/Construction/Construction.h"
 
 using namespace OpenLoco::World;
@@ -29,11 +29,23 @@ using namespace OpenLoco::World::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction::Signal
 {
+    constexpr int32_t kWidth = 156;
+    constexpr int32_t kHeight = 208;
+    constexpr int32_t kSpacing = 4;
+    constexpr int32_t kImageButtonSize = 40;
+    constexpr int32_t kStepperWidth = 48;
+
     static constexpr auto widgets = makeWidgets(
-        Common::makeCommonWidgets(138, 167, StringIds::stringid_2),
-        Widgets::dropdownWidgets(Widx::kSignal, Widx::kSignalDropdown, { 3, 45 }, { 132, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_signal_type),
-        Widgets::ImageButton(Widx::kBothDirections, { 27, 110 }, { 40, 40 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_both_directions),
-        Widgets::ImageButton(Widx::kSingleDirection, { 71, 110 }, { 40, 40 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_single_direction));
+        Common::makeCommonWidgets(kWidth, kHeight, StringIds::stringid_2),
+        Widgets::dropdownWidgets(Widx::kSignal, Widx::kSignalDropdown, { kSpacing, 45 }, { kWidth - (kSpacing * 2), 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_signal_type),
+        Widgets::ImageButton(Widx::kBothDirections, { ((kWidth - (kSpacing * 2)) / 2) - kSpacing - kImageButtonSize, 96 }, { kImageButtonSize, kImageButtonSize }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_both_directions),
+        Widgets::ImageButton(Widx::kSingleDirection, { ((kWidth - (kSpacing * 2)) / 2) + kSpacing, 96 }, { kImageButtonSize, kImageButtonSize }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_single_direction),
+        Widgets::Checkbox(Widx::kAutoMode, { kSpacing, 144 + 8 }, { kWidth - (kSpacing * 2), 12 }, WindowColour::secondary, StringIds::signal_placement_repeat, StringIds::signal_placement_repeat_tooltip),
+        Widgets::Label(Widx::kStepLabel, { kSpacing, 160 + 8 }, { kWidth - (kSpacing * 2), 13 }, WindowColour::secondary, ContentAlign::left, StringIds::signal_placement_step_size),
+        Widgets::stepperWidgets(Widx::kStepValue, Widx::kStepDecrease, Widx::kStepIncrease, { kWidth - kSpacing - kStepperWidth, 160 + 8 }, { kStepperWidth, 12 }, WindowColour::secondary, StringIds::uint16_raw, StringIds::tooltip_select_signal_type)
+        // cost of signal placement is drawn at the bottom of the window as the last widget
+
+    );
 
     std::span<const Widget> getWidgets()
     {
@@ -56,6 +68,12 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             case Common::Widx::kTabSignal:
             case Common::Widx::kTabStation:
                 Common::switchTab(self, widgetIndex);
+                break;
+
+            case Widx::kAutoMode:
+                auto& cState = getConstructionState();
+                cState.repeatedSignalMode = !cState.repeatedSignalMode;
+                self.invalidate();
                 break;
         }
     }
@@ -112,6 +130,21 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
                 ToolManager::toolSet(self, widgetIndex, CursorId::placeSignal);
                 break;
             }
+
+            case Widx::kStepDecrease:
+            {
+                cState.signalPlacementStepSize = std::max<uint8_t>(1, cState.signalPlacementStepSize - 1);
+                self.invalidate();
+
+                break;
+            }
+
+            case Widx::kStepIncrease:
+            {
+                cState.signalPlacementStepSize = std::min<uint8_t>(kMaxSignalPlacementStepSize, cState.signalPlacementStepSize + 1);
+                self.invalidate();
+                break;
+            }
         }
     }
 
@@ -149,7 +182,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         return isCloserToNext;
     }
 
-    static std::optional<GameCommands::SignalPlacementArgs> getSignalPlacementArgsFromCursor(const int16_t x, const int16_t y, const bool isBothDirectons)
+    static std::optional<GameCommands::SignalsPlacementAutoArgs> getSignalPlacementArgsFromCursor(const int16_t x, const int16_t y, const bool isBothDirectons)
     {
         auto [interaction, viewport] = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::track));
         if (interaction.type != ViewportInteraction::InteractionItem::track)
@@ -165,13 +198,15 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
         auto& cState = getConstructionState();
 
-        GameCommands::SignalPlacementArgs args;
+        GameCommands::SignalsPlacementAutoArgs args;
         args.type = cState.lastSelectedSignal;
         args.pos = World::Pos3(interaction.pos.x, interaction.pos.y, elTrack->baseHeight());
         args.rotation = elTrack->rotation();
         args.trackId = elTrack->trackId();
         args.index = elTrack->sequenceIndex();
         args.trackObjType = elTrack->trackObjectId();
+        args.step = cState.repeatedSignalMode ? cState.signalPlacementStepSize : 0;
+
         if (isBothDirectons)
         {
             args.sides = 0xC000;
@@ -180,10 +215,11 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         {
             args.sides = getSide(args.pos, { x, y }, *elTrack, *viewport) ? 0x4000 : 0x8000;
         }
+
         return { args };
     }
 
-    static uint32_t placeSignalGhost(const GameCommands::SignalPlacementArgs& args)
+    static uint32_t placeSignalGhost(const GameCommands::SignalsPlacementAutoArgs& args)
     {
         auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
         if (res != GameCommands::kFailure)
@@ -197,6 +233,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             cState.signalGhostTileIndex = args.index;
             cState.signalGhostSides = args.sides;
             cState.signalGhostTrackObjId = args.trackObjType;
+            cState.signalGhostStep = args.step;
         }
         return res;
     }
@@ -208,13 +245,14 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         {
             auto& cState = getConstructionState();
 
-            GameCommands::SignalRemovalArgs args;
+            GameCommands::SignalsRemovalAutoArgs args;
             args.pos = cState.signalGhostPos;
             args.rotation = cState.signalGhostRotation;
             args.trackId = cState.signalGhostTrackId;
             args.index = cState.signalGhostTileIndex;
             args.flags = cState.signalGhostSides;
             args.trackObjType = cState.signalGhostTrackObjId;
+            args.step = cState.signalGhostStep;
             GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
 
             Common::unsetGhostVisibilityFlag(GhostVisibilityFlags::signal);
@@ -252,7 +290,8 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
                 && cState.signalGhostTrackId == placementArgs->trackId
                 && cState.signalGhostTileIndex == placementArgs->index
                 && cState.signalGhostSides == placementArgs->sides
-                && cState.signalGhostTrackObjId == placementArgs->trackObjType)
+                && cState.signalGhostTrackObjId == placementArgs->trackObjType
+                && cState.signalGhostStep == placementArgs->step)
             {
                 return;
             }
@@ -279,26 +318,28 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         removeConstructionGhosts();
 
         const bool isBothDirections = widgetIndex == widx::both_directions;
+        auto& cState = getConstructionState();
+
         auto args = getSignalPlacementArgsFromCursor(x, y, isBothDirections);
         if (!args)
         {
             return;
         }
 
-        auto& cState = getConstructionState();
-
+        const auto errorTitle = isBothDirections || cState.repeatedSignalMode ? StringIds::cant_build_signals_here : StringIds::cant_build_signal_here;
         if (args->trackObjType != cState.trackType)
         {
-            Error::open(StringIds::cant_build_signal_here, StringIds::wrong_type_of_track_road);
+            Error::open(errorTitle, StringIds::wrong_type_of_track_road);
             return;
         }
 
-        GameCommands::setErrorTitle(isBothDirections ? StringIds::cant_build_signals_here : StringIds::cant_build_signal_here);
+        GameCommands::setErrorTitle(errorTitle);
         auto res = GameCommands::doCommand(*args, GameCommands::Flags::apply);
         if (res == GameCommands::kFailure)
         {
             return;
         }
+
         Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, GameCommands::getPosition());
     }
 
@@ -310,12 +351,32 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         auto& cState = getConstructionState();
         auto trackObj = ObjectManager::get<TrackObject>(cState.trackType);
 
-        auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
-        args.push(trackObj->name);
+        {
+            auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
+            args.push(trackObj->name);
+        }
 
         auto trainSignalObject = ObjectManager::get<TrainSignalObject>(cState.lastSelectedSignal);
-
         self.widgets[widx::signal].text = trainSignalObject->name;
+
+        if (cState.repeatedSignalMode)
+        {
+            self.activatedWidgets |= (1 << widx::auto_mode);
+            self.disabledWidgets &= ~(
+                (1ULL << widx::step_label) | (1ULL << widx::step_value) | (1ULL << widx::signal_placement_step_decrease) | (1ULL << widx::signal_placement_step_increase));
+        }
+        else
+        {
+            self.activatedWidgets &= ~(1 << widx::auto_mode);
+            self.disabledWidgets |= (1ULL << widx::step_label) | (1ULL << widx::step_value) | (1ULL << widx::signal_placement_step_decrease) | (1ULL << widx::signal_placement_step_increase);
+        }
+
+        // Update step size value display
+        {
+            auto& widget = self.widgets[widx::step_value];
+            FormatArguments args{ widget.textArgs };
+            args.push<uint16_t>(cState.signalPlacementStepSize); // can't push a single byte???
+        }
 
         Common::repositionTabs(&self);
     }
@@ -331,44 +392,54 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         auto& cState = getConstructionState();
         auto trainSignalObject = ObjectManager::get<TrainSignalObject>(cState.lastSelectedSignal);
 
-        auto xPos = 3;
-        auto yPos = 63;
-        auto width = 130;
-
         {
             FormatArguments args{};
             args.push(trainSignalObject->description);
 
-            auto point = Point(xPos, yPos);
-            tr.drawStringLeftWrapped(point, width, Colour::black, StringIds::signal_black, args);
+            tr.drawStringLeftWrapped({ 3, 63 }, 130, Colour::black, StringIds::signal_black, args);
         }
 
-        auto imageId = trainSignalObject->image;
+        auto baseImageId = trainSignalObject->image;
 
-        xPos = self.widgets[widx::both_directions].midX();
-        yPos = self.widgets[widx::both_directions].bottom - 4;
+        // Both directions
+        {
+            auto xPos = self.widgets[widx::both_directions].midX();
+            auto yPos = self.widgets[widx::both_directions].bottom - 4;
 
-        drawingCtx.drawImage(ZoomLevel::full, xPos - 8, yPos, imageId);
+            drawingCtx.drawImage(ZoomLevel::full, xPos - 8, yPos, baseImageId);
 
-        drawingCtx.drawImage(ZoomLevel::full, xPos + 8, yPos, imageId + 4);
+            drawingCtx.drawImage(ZoomLevel::full, xPos + 8, yPos, baseImageId + 4);
+        }
 
-        xPos = self.widgets[widx::single_direction].midX();
-        yPos = self.widgets[widx::single_direction].bottom - 4;
+        // Single direction
+        {
+            auto xPos = self.widgets[widx::single_direction].midX();
+            auto yPos = self.widgets[widx::single_direction].bottom - 4;
 
-        drawingCtx.drawImage(ZoomLevel::full, xPos, yPos, imageId);
+            drawingCtx.drawImage(ZoomLevel::full, xPos, yPos, baseImageId);
+        }
+
+        auto drawSeparator = [&self, &drawingCtx](int16_t yPos) {
+            auto xPos = 3;
+            auto width = self.width - 7;
+            drawingCtx.drawRectInset(xPos, yPos, width, 1, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset);
+        };
+
+        drawSeparator(self.widgets[widx::single_direction].bottom + 9);
+        drawSeparator(kHeight - 12 - 9);
 
         if (cState.signalCost != GameCommands::kFailure && cState.signalCost != 0)
         {
             FormatArguments args{};
             args.push<uint32_t>(cState.signalCost);
-
-            auto point = Point(69, self.widgets[widx::single_direction].bottom + 5);
+            auto point = Point(kWidth / 2, kHeight - kSpacing - 12); // drawn at the bottom of the window, centered
             tr.drawStringCentred(point, Colour::black, StringIds::build_cost, args);
         }
     }
 
     void tabReset(Window& self)
     {
+        self.holdableWidgets = kHoldableWidgets;
         self.callOnMouseDown(Signal::widx::both_directions, self.widgets[Signal::widx::both_directions].id);
     }
 

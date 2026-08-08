@@ -57,54 +57,6 @@ namespace OpenLoco::GameCommands
         return { nullptr, nullptr };
     };
 
-    static bool validateTrackIsSignalCompatible(const SignalPlacementArgs& args, const std::span<const World::TrackData::PreviewTrack> trackPieces, const World::Pos3 trackStart)
-    {
-        for (auto& piece : trackPieces)
-        {
-            const auto trackLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
-            auto [trackEntry, pieceElTrack] = getElTrackAt(args, trackLoc, piece.index);
-            if (trackEntry == nullptr)
-            {
-                return false;
-            }
-            if (pieceElTrack->hasStationElement())
-            {
-                setErrorText(StringIds::signals_cannot_be_built_in_stations);
-                return false;
-            }
-            const auto connectFlags = piece.connectFlags[pieceElTrack->rotation()];
-            auto tile = World::TileManager::get(trackLoc);
-            for (auto& el : tile)
-            {
-                auto* otherElTrack = el.as<World::TrackElement>();
-                if (otherElTrack == nullptr)
-                {
-                    continue;
-                }
-                if (otherElTrack == pieceElTrack)
-                {
-                    continue;
-                }
-                if (otherElTrack->baseZ() != pieceElTrack->baseZ())
-                {
-                    continue;
-                }
-                if (otherElTrack->isGhost())
-                {
-                    continue;
-                }
-
-                const auto otherConnectFlags = World::TrackData::getTrackPiece(otherElTrack->trackId())[otherElTrack->sequenceIndex()].connectFlags[otherElTrack->rotation()];
-                if (otherConnectFlags & connectFlags)
-                {
-                    setErrorText(StringIds::signals_cannot_be_built_on_a_junction);
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     static currency32_t signalCost(const SignalPlacementArgs& args, const World::TrackData::PreviewTrack trackPiece0, const World::Pos3 trackStart)
     {
         const auto trackLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece0.x, trackPiece0.y }, args.rotation), trackPiece0.z };
@@ -194,8 +146,9 @@ namespace OpenLoco::GameCommands
 
         const auto trackStart = args.pos - World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece.x, trackPiece.y }, args.rotation), trackPiece.z };
 
-        if (!validateTrackIsSignalCompatible(args, trackPieces, trackStart))
+        if (auto res = World::Track::validateTrackIsSignalCompatible(trackStart, args.rotation, args.trackId, args.trackObjType); res.has_value())
         {
+            setErrorText(res.value());
             return kFailure;
         }
 

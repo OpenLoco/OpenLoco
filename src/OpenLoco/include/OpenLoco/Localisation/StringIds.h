@@ -2175,6 +2175,10 @@ namespace OpenLoco::StringIds
     constexpr StringId shortcut_debug_window = 2459;
     constexpr StringId toolbar_auto_menu = 2460;
     constexpr StringId toolbar_buttons_centred = 2461;
+    constexpr StringId signal_placement_repeat = 2462;
+    constexpr StringId signal_placement_repeat_tooltip = 2463;
+    constexpr StringId signal_placement_step_size = 2464;
+    constexpr StringId capt_signals_block = 2465;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
