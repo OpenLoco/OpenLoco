@@ -1,0 +1,2516 @@
+header:
+  locale: ca-ES
+  english_name: Catalan (ES)
+  native_name: Català (ES)
+  loco_original_id: 4
+strings:
+  0: ""
+  1: "{POP16}"
+  2: Companyia nova{POP16}
+  3: Sense nom{POP16}
+  4: Tren {INT16}
+  5: Autobús {INT16}
+  6: Camió {INT16}
+  7: Tramvia {INT16}
+  8: Aeronau {INT16}
+  9: Vaixell {INT16}
+
+  # Days
+  10: 1
+  11: 2
+  12: 3
+  13: 4
+  14: 5
+  15: 6
+  16: 7
+  17: 8
+  18: 9
+  19: 10
+  20: 11
+  21: 12
+  22: 13
+  23: 14
+  24: 15
+  25: 16
+  26: 17
+  27: 18
+  28: 19
+  29: 20
+  30: 21
+  31: 22
+  32: 23
+  33: 24
+  34: 25
+  35: 26
+  36: 27
+  37: 28
+  38: 29
+  39: 30
+  40: 31
+
+  41: Gen
+  42: Feb
+  43: Mar
+  44: Abr
+  45: Mai
+  46: Jun
+  47: Jul
+  48: Ago
+  49: Set
+  50: Oct
+  51: Nov
+  52: Des
+
+  53: No s'ha pogut accedir al fitxer de dades gràfiques.
+  54: Fa falta el fitxer de dades o bé no s'hi pot accedir.
+  55: No s'ha pogut assignar prou memòria
+  56: "{COLOUR BLACK}❌"
+  57: El nom escollit ja està en ús.
+  58: S'han definit massa noms.
+  59: No hi ha prou diners - fan falta {CURRENCY32}.
+  60: "{SMALLFONT}{COLOUR BLACK}Tanca la finestra"
+  61: S'ha produït un error en la inicialització del joc.
+  62: El joc no es pot iniciar en estat minimitzat.
+  63: El sistema gràfic no s'ha pogut inicialitzar.
+  64: La clau del CD {INT32 RAW} no és vàlida per al vostre CD de Locomotion!{COLOUR WINDOW_1}{COLOUR WINDOW_1}Si us plau, desinstal·leu el Chris Sawyer's Locomotion i torneu-lo a instal·lar amb la clau de CD correcta.
+
+  65: "{UINT16 RAW} x {UINT16 RAW}"
+  66: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{UINT16 RAW} x {UINT16 RAW}"
+
+  67: Quant al «Chris Sawyer's Locomotion»
+  68: Chris Sawyer's Locomotion
+  69: "{COLOUR WINDOW_2}Versió 4.02.176 (Anglès del Regne Unit)"
+  70: "{COLOUR WINDOW_2}Copyright © 2004 Chris Sawyer, tots els drets reservats"
+  71: "{COLOUR WINDOW_2}Dissenyat i programat per en Chris Sawyer"
+  72: "{COLOUR WINDOW_2}Gràfics d'en Simon Foster"
+  73: "{COLOUR WINDOW_2}So i música de l'Allister Brimble"
+  74: "{COLOUR WINDOW_2}Peça musical de la presentació d'en John Broomhall"
+  75: "{COLOUR WINDOW_2}Representació a càrrec de Jacqui Lyons, de Marjacq Ltd."
+  76: "{COLOUR WINDOW_2}Gràcies a:"
+  77: "{COLOUR WINDOW_2}Katrina Morrin, Natasha Morrin i Jim Wills"
+  78: ""
+  79: ""
+  80: ""
+  81: ""
+  82: ""
+  83: ""
+  84: ""
+
+  85: "{STRINGID}"
+  86: "{POP16}{STRINGID}"
+  87: "{POP16}{POP16}{STRINGID}"
+  88: "{POP16}{POP16}{POP16}{STRINGID}"
+  89: "{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  90: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  91: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  92: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  93: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  94: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  95: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  96: "{COLOUR BLACK}▼"
+  97: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  98: Massa baix!
+  99: Massa alt!
+  100: El terreny no es pot abaixar...
+  101: El terreny no es pot apujar...
+  102: Hi ha un objecte que ho impedeix.
+  103: Carrega una partida
+  104: Desa la partida
+  105: Surt de l'editor d'escenaris
+  106: Surt del joc
+  107: Captura de pantalla
+  108: Captura de pantalla
+  109: La captura de pantalla s'ha desat amb el nom «{STRING}».
+  110: La captura de pantalla no s'ha pogut desar.
+  111: L'àrea de dades del terreny és plena!
+  112: No es pot construir en part per sobre i en part per sota del nivell del terra.
+  113: "{STRINGID}"
+  114: "{SMALLFONT}{COLOUR BLACK}Left-Hand Curve"
+  115: "{SMALLFONT}{COLOUR BLACK}Right-Hand Curve"
+  116: "{SMALLFONT}{COLOUR BLACK}Left-Hand Curve (Small Radius)"
+  117: "{SMALLFONT}{COLOUR BLACK}Right-Hand Curve (Small Radius)"
+  118: "{SMALLFONT}{COLOUR BLACK}Left-Hand Curve (Very Small Radius)"
+  119: "{SMALLFONT}{COLOUR BLACK}Right-Hand Curve (Very Small Radius)"
+  120: "{SMALLFONT}{COLOUR BLACK}Left-Hand Curve (Large Radius)"
+  121: "{SMALLFONT}{COLOUR BLACK}Right-Hand Curve (Large Radius)"
+  122: "{SMALLFONT}{COLOUR BLACK}Straight"
+  123: "{SMALLFONT}{COLOUR BLACK}'S' Bend Left"
+  124: "{SMALLFONT}{COLOUR BLACK}'S' Bend Right"
+  125: "{SMALLFONT}{COLOUR BLACK}'S' Bend to left side of dual track"
+  126: "{SMALLFONT}{COLOUR BLACK}'S' Bend to right side of dual track"
+  127: "{SMALLFONT}{COLOUR BLACK}'S' Bend to single track"
+  128: "{SMALLFONT}{COLOUR BLACK}Turnaround"
+  129: "{SMALLFONT}{COLOUR BLACK}(Click on landscape to start construction)"
+  130: "{SMALLFONT}{COLOUR BLACK}Construct this Track Section"
+  131: "{SMALLFONT}{COLOUR BLACK}Remove Previous Track Section"
+  132: "{SMALLFONT}{COLOUR BLACK}Steep Slope Down"
+  133: "{SMALLFONT}{COLOUR BLACK}Slope Down"
+  134: "{SMALLFONT}{COLOUR BLACK}Level"
+  135: "{SMALLFONT}{COLOUR BLACK}Slope Up"
+  136: "{SMALLFONT}{COLOUR BLACK}Steep Slope Up"
+  137: "{COLOUR WINDOW_2}Build this..."
+  138: "{COLOUR WINDOW_2}Cost: {COLOUR BLACK}{CURRENCY32}"
+  139: Aquí no es pot posar cap senyal...
+  140: Aquí no es poden posar senyals..
+  141: El senyal no es pot traure...
+  142: "{POP16}{POP16}{POP16}{STRINGID} no es pot traure..."
+  143: No es pot construir {POP16}{POP16}{POP16}{STRINGID}...
+  144: Primer cal apujar o abaixar el terreny.
+  145: Vista subterrània
+  146: Amaga les vies i carreteres en primer pla
+  147: Aquest tipus d'estació només es pot construir al final de la carretera.
+  148: Aquest tipus d'estació no és adequat per a {STRINGID}.
+  149: L'estació no és compatible amb {STRINGID}.
+  150: Hi ha un pas a nivell que ho impedeix.
+  151: Els passos a nivell només són possibles amb una carretera i una via rectes al mateix nivell.
+  152: No es pot fer un encreuament.
+  153: L'encreuament ha d'estar completament anivellat.
+  154: "{STRINGID} ho impedeix o no és a l'altitud adequada per a l'encreuament."
+  155: Ja està construït.
+  156: No es pot fer un encreuament amb {STRINGID}.
+  157: No es poden fer encreuaments.
+  158: Senyal
+  159: Estació
+  160: Aeroport
+  161: Port
+  162: Hi ha una estació que ho impedeix.
+  163: Hi ha un senyal que ho impedeix.
+  164: L'aeroport no es pot eliminar...
+  165: El port no es pot eliminar...
+  166: L'estació no es pot eliminar...
+  167: Tipus de via o carretera incorrecte!
+  168: Els tipus de pont han de coincidir.
+  169: El pont no és adequat per a un encreuament.
+  170: Aquesta combinació de vies no és possible.
+  171: Hi ha massa objectes a la partida.
+  172: Gira en sentit horari
+  173: Gira en sentit antihorari
+  174: "S'inicia per primera vegada..."
+  175: "Es comproven els fitxers d'objectes..."
+  176: Carrega la partida
+  177: Surt del joc
+  178: Surt del joc
+  179: Surt de l'editor d'escenaris
+  180: Carrega el paisatge
+  181: Voleu desar-ho abans de carregar?
+  182: Voleu desar-ho abans de sortir?
+  183: Voleu desar-ho abans de sortir?
+  184: Desa
+  185: No desis
+  186: Cancel·la
+  187: D'acord
+
+  188: "{SMALLFONT}{COLOUR BLACK}Desplaça {STRINGID} cap a l'esquerra"
+  189: "{SMALLFONT}{COLOUR BLACK}Desplaça {STRINGID} cap a la dreta"
+  190: "{SMALLFONT}{COLOUR BLACK}Desplaça {STRINGID} ràpidament cap a l'esquerra"
+  191: "{SMALLFONT}{COLOUR BLACK}Desplaça {STRINGID} ràpidament cap a la dreta"
+  192: "{SMALLFONT}{COLOUR BLACK}Desplaça {STRINGID} cap a l'esquerra o la dreta"
+  193: "{SMALLFONT}{COLOUR BLACK}Desplaça {STRINGID} cap amunt"
+  194: "{SMALLFONT}{COLOUR BLACK}Desplaça {STRINGID} cap avall"
+  195: "{SMALLFONT}{COLOUR BLACK}Desplaça {STRINGID} ràpidament cap amunt"
+  196: "{SMALLFONT}{COLOUR BLACK}Desplaça {STRINGID} ràpidament cap avall"
+  197: "{SMALLFONT}{COLOUR BLACK}Desplaça {STRINGID} cap amunt o cap avall"
+
+  198: mapa
+  199: llista de vehicles
+  200: llista de vehicles nous
+  201: llista
+  202: llista d'arbres
+  203: llista d'ordres
+  204: llista d'estacions
+  205: llista de ciutats
+  206: llista d'indústries
+  207: llista d'indústries noves
+  208: llista d'edificis
+  209: llista de murs
+  210: llista de valoracions
+  211: llista de mercaderies
+  212: llista de missatges
+  213: llista d'empreses
+  214: llista d'escenaris
+  215: llista dels crèdits
+
+  216: "{COLOUR WINDOW_2}▲{COLOUR BLACK}  {CURRENCY32}"
+  217: "{COLOUR WINDOW_2}▼{COLOUR BLACK}  {CURRENCY32}"
+  218: No es pot canviar al mode seleccionat.
+  219: "{COLOUR WINDOW_2}Cost: {COLOUR BLACK}{CURRENCY32}"
+  220: (jugador 1)
+  221: (jugador 2)
+  222: L'esquema de colors no es pot canviar...
+  223: Apropa
+  224: Allunya
+  225: Poblacions
+  226: Indústries
+  227: Aeroport
+  228: Port
+  229: Opcions de generació del paisatge
+  230: ""
+  231: 🛤
+  232: 🛣️
+  233: 🛤🛣️
+  234: ☁️
+  235: 🛤☁️
+  236: 🛣️☁️
+  237: 🛤🛣️☁️
+  238: 🌊
+  239: 🛤🌊
+  240: 🛣️🌊
+  241: 🛤🛣️🌊
+  242: ☁️🌊
+  243: 🛤☁️🌊
+  244: 🛣️☁️🌊
+  245: 🛤🛣️☁️🌊
+  246: "{STRINGID}"
+  247: "{STRINGID} - Detalls"
+  248: "{STRINGID} - Finances"
+  249: "{STRINGID} - Mercaderies lliurades"
+  250: "{STRINGID} - Esquema de colors"
+  251: "{STRINGID} - Repte"
+  252: "{SMALLFONT}{COLOUR BLACK}Canvia el sentit"
+  253: "{SMALLFONT}{COLOUR BLACK}Passa el senyal en perill"
+  254: "{SMALLFONT}{COLOUR BLACK}Trau {POP16}{STRINGID} de la via o carretera"
+  255: "{SMALLFONT}{COLOUR BLACK}Col·loca {POP16}{STRINGID} a la via o carretera"
+  256: "{SMALLFONT}{COLOUR BLACK}Trau {POP16}{STRINGID} de l'aeroport"
+  257: "{SMALLFONT}{COLOUR BLACK}Col·loca {POP16}{STRINGID} a l'aeroport"
+  258: "{SMALLFONT}{COLOUR BLACK}Trau {POP16}{STRINGID} de l'aigua"
+  259: "{SMALLFONT}{COLOUR BLACK}Col·loca {POP16}{STRINGID} al port"
+  260: "{POP16}{POP16}{POP16}{STRINGID} no es pot iniciar..."
+  261: No es pot seleccionar el mode manual per a {POP16}{POP16}{POP16}{STRINGID}...
+  262: "{POP16}{POP16}{POP16}{STRINGID} no es pot aturar..."
+  263: "{VELOCITY}"
+  264: Il·limitat{POP16}
+  265: Atura
+  266: Inicia
+  267: Manual
+  268: "{SMALLFONT}{COLOUR BLACK}Seleccioneu quina longitud de via o carretera voleu millorar."
+  269: "{SMALLFONT}{COLOUR BLACK}Atura o inicia {POP16}{STRINGID}"
+  270: "{COLOUR BLACK}{STRINGID}"
+  271: "{SMALLFONT}{COLOUR BLACK}Construcció de vies i carreteres"
+  272: "{SMALLFONT}{COLOUR BLACK}Construcció d'estacions"
+  273: "{SMALLFONT}{COLOUR BLACK}Construcció de senyals"
+  274: "{SMALLFONT}{COLOUR BLACK}Electrificació de les vies i altres millores"
+  275: "{SMALLFONT}{COLOUR BLACK}Seleccioneu el tipus de senyal."
+  276: "{SMALLFONT}{COLOUR BLACK}Construeix senyals en tots dos sentits"
+  277: "{SMALLFONT}{COLOUR BLACK}Construeix un senyal en un sol sentit (els trens no podran circular en l'altre sentit)"
+  278: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID}{NEWLINE}Velocitat màxima: {STRINGID}{NEWLINE}Alçària màxima sobre el terreny: {HEIGHT}"
+  279: "{SMALLFONT}{COLOUR BLACK}Seleccioneu el tipus d'estació."
+  280: Estació {INT16}
+  281: "{STRINGID}"
+  282: "{STRINGID} Nord"
+  283: "{STRINGID} Sud"
+  284: "{STRINGID} Est"
+  285: "{STRINGID} Oest"
+  286: "{STRINGID} Centre"
+  287: "Intercambiador de {STRINGID}"
+  288: "Baixador de {STRINGID}"
+  289: "Vall de {STRINGID}"
+  290: "Alts de {STRINGID}"
+  291: "Boscos de {STRINGID}"
+  292: "Llac de {STRINGID}"
+  293: "Transbord de {STRINGID}"
+  294: "Aeroport de {STRINGID}"
+  295: "Pou petrolífer de {STRINGID}"
+  296: "Mines de {STRINGID}"
+  297: "Port de {STRINGID}"
+  298: "Annexe de {STRINGID}"
+  299: "Vies mortes de {STRINGID}"
+  300: "Ramal de {STRINGID}"
+  301: "{STRINGID} Alt"
+  302: "{STRINGID} Baix"
+  303: "Heliport de {STRINGID}"
+  304: "Bosc de {STRINGID}"
+  305: "Cruïlla de {STRINGID}"
+  306: "Pas de {STRINGID}"
+  307: "Vistes de {STRINGID}"
+  308: "{STRINGID} 1"
+  309: "{STRINGID} 2"
+  310: "{STRINGID} 3"
+  311: "{STRINGID} 4"
+  312: "{STRINGID} 5"
+  313: "{STRINGID} 6"
+  314: "{STRINGID} 7"
+  315: "{STRINGID} 8"
+  316: "{STRINGID} 9"
+  317: "{STRINGID} 10"
+  318: "{STRINGID} 11"
+  319: "{STRINGID} 12"
+  320: "{STRINGID} 13"
+  321: "{STRINGID} 14"
+  322: "{STRINGID} 15"
+  323: "{STRINGID} 16"
+  324: "{STRINGID} 17"
+  325: "{STRINGID} 18"
+  326: "{STRINGID} 19"
+  327: "{STRINGID} 20"
+  328: "{COLOUR WINDOW_2}{POP16}Pes: {COLOUR BLACK}{INT32} t"
+  329: "{COLOUR WINDOW_2}Potència total: {COLOUR BLACK}{POWER}{COLOUR WINDOW_2} Pes: {COLOUR BLACK}{INT32} t"
+  330: "{COLOUR WINDOW_2}Vel. màx.: {COLOUR BLACK}{VELOCITY}{POP16}{COLOUR WINDOW_2} Fiabilitat: {COLOUR BLACK}{INT16} %"
+  331: "{COLOUR WINDOW_2}Vel. màx.: {COLOUR BLACK}{VELOCITY} / {VELOCITY}{COLOUR WINDOW_2} Fiabilitat: {COLOUR BLACK}{INT16} %"
+  332: "{SMALLFONT}{COLOUR BLACK}Ven {POP16}{STRINGID}{NEWLINE}(o arrossegueu els vehicles que vulgueu vendre un per un)"
+  333: "{SMALLFONT}{COLOUR BLACK}Construeix aquest vehicle a un preu de {POP16}{STRINGID}"
+  334: "{COLOUR BLACK}(Feu clic a la vista per a establir {STRINGID} com a posició inicial.)"
+  335: Els vehicles no són compatibles.
+  336: Hi ha massa vehicles a la partida.
+  337: ""
+  338: ""
+  339: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  340: "{NEWLINE}Construcció:  {DATE MY}"
+  341: "{NEWLINE}Valor:  {CURRENCY32}"
+  342: "{NEWLINE}Potència:  {POWER}"
+  343: "{NEWLINE}Pes:  {INT16}t"
+  344: "{NEWLINE}Vel. màx.:  {VELOCITY}"
+  345: " ({VELOCITY} a {STRINGID})"
+  346: "{NEWLINE}Fiabilitat:  {INT16} %"
+  347: "{STRINGID} {STRINGID}"
+  348: Un tram
+  349: Tram de bloc
+  350: Tota la via connectada
+  351: "Avís: hi ha massa vies!{NEWLINE}És possible que no s'hagin millorat totes les vies seleccionades."
+  352: "{SMALLFONT}{COLOUR BLACK}Aplica aquestes millores a les vies"
+  353: "{SMALLFONT}{COLOUR BLACK}(Feu clic a la via seleccionada per a afegir-les)"
+  354: "{SMALLFONT}{COLOUR BLACK}Seleccioneu què voleu afegir a la via."
+  355: "{SMALLFONT}{COLOUR BLACK}Desplaceu la vista principal fins aquí"
+  356: Fora dels límits del mapa!
+  357: No es pot construir en part per sobre i en part per sota del nivell de l'aigua.
+  358: Massa a prop de la superfície de l'aigua!
+  359: Aquí no es pot construir sota l'aigua!
+  360: Això només es pot construir a dalt de terra!
+  361: Això només es pot construir sobre terreny pla.
+  362: Carrega una partida
+  363: Carrega el paisatge
+  364: Desa el paisatge
+  365: Desa la partida
+  366: Desa l'escenari
+  367: Fitxer de partida desada de l'OpenLoco
+  368: Fitxer d'escenari de l'OpenLoco
+  369: Fitxer de paisatge de l'OpenLoco
+  370: La partida no s'ha pogut desar!
+  371: La partida desada no s'ha pogut carregar...{NEWLINE}El fitxer conté dades no vàlides!
+  372: Amaga els edificis i els elements del paisatge en primer pla
+  373: Això només es pot construir sobre l'aigua!
+  374: Això només es pot construir sobre l'aigua si és al costat d'una indústria situada a l'aigua!
+  375: Anomena {STRINGID}
+  376: "Escriviu el nom nou d'aquest vehicle ({STRINGID}):"
+  377: El nom d'aquest vehicle no es pot canviar...
+  378: Cal un pont
+  379: Massa alt sobre el terreny per a aquest tipus de pont
+  380: El pont ja és a l'alçària màxima sobre el terreny
+  381: "{STRINGID} requereix un pont"
+  382: Aquest tipus de pont no és adequat per a aquesta configuració.
+  383: Nom de l'estació
+  384: "Escriviu el nom nou de l'estació {STRINGID}:"
+  385: El nom de l'estació no es pot canviar...
+  386: Nom d'estació no vàlid
+  387: El vehicle no es pot moure...
+  388: El sentit de moviment del tren no es pot invertir...
+  389: El vehicle no es pot vendre...
+  390: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID} no es pot vendre..."
+  391: "{STRINGID}"
+  392: "{STRINGID}"
+  393: Andana de l'estació {STRINGID}
+  394: Edifici de l'estació / parada d'autobús {STRINGID}
+  395: "{SMALLFONT}{COLOUR BLACK}Ressalta l'àrea de cobertura d'aquesta estació"
+  396: Silencia
+  397: Reprodueix la música
+  398: "{COLOUR RED}En fallida!"
+  399: "{STRINGID} no pot esperar una càrrega completa a {STRINGID}."
+  400: "{STRINGID} s'ha aturat en un pendent per manca de potència."
+  401: "{STRINGID} ara accepta {STRINGID}."
+  402: "{STRINGID} ja no accepta {STRINGID}."
+  403: Empresa de transports nova!{NEWLINE}{STRINGID} comença la construcció a prop de {STRINGID}!
+  404: "{STRINGID} no pot aterrar a {STRINGID} perquè l'aeroport no és adequat."
+  405: Celebració ciutadana!{NEWLINE}Arriba el primer transport de {STRINGID} a {STRINGID}!
+  406: Celebració ciutadana!{NEWLINE}Arriba el primer carregament de {STRINGID} a {STRINGID}!
+  407: Els treballadors estan d'enhorabona!{NEWLINE}El primer carregament de {STRINGID} arriba a {STRINGID}!
+  408: Nou vehicle inventat!{NEWLINE}«{STRINGID}»!
+  409: "{STRINGID} és ascendit de «{STRINGID}» a «{STRINGID}»!"
+  410: Indústria nova! {STRINGID} en construcció a prop de {STRINGID}!
+  411: Enhorabona!{NEWLINE}Heu superat el repte amb èxit!
+  412: Heu fracassat!{NEWLINE}No heu superat el repte!
+  413: Us han derrotat!{NEWLINE}{STRINGID} ha superat el repte!
+  414: Avís de fallida!{NEWLINE}{STRINGID} tancarà d'aquí a 6 mesos si el rendiment no millora!
+  415: Últim avís!{NEWLINE}Es liquidarà {STRINGID} d'aquí a 3 mesos si el rendiment no millora!
+  416: En fallida!{NEWLINE}{STRINGID} s'ha declarat en fallida i ha tancat!
+  417: En fallida!{NEWLINE}{STRINGID} s'ha declarat en fallida i ha tancat!
+  418: "{STRINGID} ha tingut un accident!"
+  419: Escàndol empresarial!{NEWLINE}{STRINGID} ha estat empresonat per intent de robatori!
+  420: Nou rècord de velocitat de {STRINGID}!{NEWLINE}{STRINGID} aconsegueix una velocitat mitjana de {VELOCITY} entre parades!
+
+  421: "{MOVE_X 10}{STRINGID}"
+  422: »{MOVE_X 10}{STRINGID}
+
+  423: "{NEWLINE 1 2}{SPRITE}{NEWLINE 26 8}{STRINGID}"
+
+  424: "{MOVE_X 10}{STRING}"
+  425: »{MOVE_X 10}{STRING}
+
+  426: Marques d'altitud a les vies i carreteres
+  427: Marques d'altitud al terreny
+  428: Fletxes de direcció única
+  429: Mostra els noms de les ciutats
+  430: Mostra els noms de les estacions
+  431: "{NEWLINE}{COLOUR WINDOW_3}Accepta "
+  432: "1/8 "
+  433: "1/4 "
+  434: "3/8 "
+  435: "1/2 "
+  436: "5/8 "
+  437: "3/4 "
+  438: "7/8 "
+  439: ", "
+  440: "{NEWLINE}{COLOUR WINDOW_3}Produeix "
+  441: "{NEWLINE}{COLOUR WINDOW_3}En construcció"
+  442: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}Propietat de {STRINGID}"
+  443: "{MOVE_X 10}{STRINGID}"
+  444: ✓{MOVE_X 10}{STRINGID}
+  445: Això no es pot eliminar...
+  446: Murs i tanques
+  447: Planta arbres
+  448: Això aquí no es pot col·locar...
+  449: Això aquí no es pot plantar...
+  450: "{OUTLINE}{COLOUR WINDOW_2}{STRINGID}"
+  451: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}Feu clic amb el botó dret per a modificar."
+  452: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}Feu clic amb el botó dret per a traure."
+  453: "{TINYFONT}{COLOUR BLACK}{STRINGID}"
+  454: "{COLOUR RED}{STRINGID}"
+  455: "{COLOUR BLACK}{STRINGID}"
+  456: "{COLOUR BLACK}{STRINGID} {STRINGID}"
+  457: "{COLOUR WINDOW_2}{STRINGID}"
+  458: "{COLOUR WHITE}{STRINGID}"
+  459: Aturant-se{POP16}{POP16}
+  460: / Esperant al senyal{POP16}{POP16}
+  461: a {VELOCITY}{POP16}
+  462: "{COLOUR RED}Ha tingut un accident!{POP16}{POP16}"
+  463: "{COLOUR RED}Blocat!{POP16}{POP16}"
+  464: "{COLOUR RED}Avariat{POP16}{POP16}"
+  465: Aturat{POP16}{POP16}
+  466: Carregant a {STRINGID}
+  467: Descarregant a {STRINGID}
+  468: Apropant-se a {STRINGID}
+  469: Aterrant a {STRINGID}
+  470: Circulant per {STRINGID}
+  471: Enlairant-se a {STRINGID}
+  472: En direcció a {STRINGID}
+  473: Sense posició{POP16}{POP16}
+  474: En trajecte{POP16}{POP16}
+  475: "{STRINGID} - {STRINGID}"
+  476: "{POP16}{POP16}{STRINGID}"
+  477: Aquí no es pot abaixar el nivell de l'aigua...
+  478: Aquí no es pot apujar el nivell de l'aigua...
+  479: (Cap)
+  480: "{STRING}"
+  481: "{COLOUR RED}Tancat - - "
+  482: "{COLOUR YELLOW}{STRINGID} - - "
+  483: El pendent del terreny no és adequat.
+  484: Això no es pot construir sota l'aigua!
+  485: El tipus de terreny no és adequat.
+  486: "{COLOUR BLACK}▴"
+  487: "{COLOUR BLACK}▾"
+  488: tren
+  489: trens
+  490: Tren
+  491: Trens
+  492: "{INT16} tren"
+  493: "{INT16} trens"
+  494: Tren {INT16}
+  495: vaixell
+  496: vaixells
+  497: Vaixell
+  498: Vaixells
+  499: "{INT16} vaixell"
+  500: "{INT16} vaixells"
+  501: Vaixell {INT16}
+  502: via
+  503: vies
+  504: Via
+  505: Vies
+  506: "{INT16} via"
+  507: "{INT16} vies"
+  508: Via {INT16}
+  509: moll
+  510: molls
+  511: Moll
+  512: Molls
+  513: "{INT16} moll"
+  514: "{INT16} molls"
+  515: Moll {INT16}
+  516: estació
+  517: estacions
+  518: Estació
+  519: Estacions
+  520: "{INT16} estació"
+  521: "{INT16} estacions"
+  522: Estació {INT16}
+  523: vehicle
+  524: vehicles
+  525: Vehicle
+  526: Vehicles
+  527: "{INT16} vehicle"
+  528: "{INT16} vehicles"
+  529: Vehicle {INT16}
+  530: edifici
+  531: edificis
+  532: Edifici
+  533: Edificis
+  534: "{INT16} edifici"
+  535: "{INT16} edificis"
+  536: Edifici {INT16}
+  537: estructura
+  538: estructures
+  539: Estructura
+  540: Estructures
+  541: "{INT16} estructura"
+  542: "{INT16} estructures"
+  543: Estructura {INT16}
+  544: vaixell
+  545: vaixells
+  546: Vaixell
+  547: Vaixells
+  548: "{INT16} vaixell"
+  549: "{INT16} vaixells"
+  550: Vaixell {INT16}
+  551: població
+  552: poblacions
+  553: Població
+  554: Poblacions
+  555: "{INT16} població"
+  556: "{INT16} poblacions"
+  557: Població {INT16}
+  558: indústria
+  559: indústries
+  560: Indústria
+  561: Indústries
+  562: "{INT16} indústria"
+  563: "{INT16} indústries"
+  564: Indústria {INT16}
+  565: "{SMALLFONT}{COLOUR BLACK}Gira els objectes 90°"
+  566: Cal un terreny pla.
+  567: El tipus de terreny aquí no es pot canviar...
+  568: "{OUTLINE}{COLOUR GREEN}+ {CURRENCY32}"
+  569: "{OUTLINE}{COLOUR RED}- {CURRENCY32}"
+  570: "{OUTLINE}{COLOUR WINDOW_1}+ {CURRENCY32}"
+  571: "{OUTLINE}{COLOUR WINDOW_1}- {CURRENCY32}"
+  572: "{CURRENCY48}"
+  573: "{COLOUR RED}{CURRENCY48}"
+  574: "{SMALLFONT}{COLOUR BLACK}Mostra la vista de {POP16}{STRINGID}."
+  575: "{SMALLFONT}{COLOUR BLACK}Mostra els detalls i les opcions de disseny de {POP16}{STRINGID}."
+  576: "{SMALLFONT}{COLOUR BLACK}Mostra les mercaderies o els passatgers de {POP16}{STRINGID}."
+  577: "{SMALLFONT}{COLOUR BLACK}Mostra els detalls de la ruta de {POP16}{STRINGID}."
+  578: "{SMALLFONT}{COLOUR BLACK}Mostra les despeses de funcionament i els ingressos de {POP16}{STRINGID}."
+  579: "{SMALLFONT}{COLOUR BLACK}Seleccioneu la nova posició inicial de construcció."
+  580: "{SMALLFONT}{COLOUR BLACK}Gira 90°"
+  581: "{STRINGID} pel mig"
+  582: "{CURRENCY32}"
+  583: Aquí no es pot construir...
+  584: "{DATE MY}"
+  585: OpenLoco
+  586: "Inseriu el CD del Locomotion a la unitat següent:"
+  587: "{COLOUR WINDOW_2}Despeses/Ingressos"
+  588: Ingressos dels trens
+  589: Despeses dels trens
+  590: Ingressos dels autobusos
+  591: Despeses dels autobusos
+  592: Ingressos dels camions
+  593: Despeses dels camions
+  594: Ingressos dels tramvies
+  595: Despeses dels tramvies
+  596: Ingressos dels avions
+  597: Despeses dels avions
+  598: Ingressos dels vaixells
+  599: Despeses dels vaixells
+  600: Construcció
+  601: Compra de vehicles
+  602: Venda de vehicles
+  603: Interessos del préstec
+  604: Altres
+  605: "{UINT16 RAW}"
+  606: +{CURRENCY48}
+  607: "{CURRENCY48}"
+  608: "{COLOUR WINDOW_2}Préstec:"
+  609: "{CURRENCY32}"
+  610: No es poden demanar més diners prestats!
+  611: No hi ha prou diners disponibles!
+  612: El préstec no es pot retornar!
+  613: "{SMALLFONT}{COLOUR BLACK}Comença una partida nova."
+  614: "{SMALLFONT}{COLOUR BLACK}Carrega una partida desada."
+  615: "{SMALLFONT}{COLOUR BLACK}Mostra el tutorial."
+  616: "{SMALLFONT}{COLOUR BLACK}Surt del joc."
+  617: Llogaret
+  618: Poble
+  619: Vila
+  620: Ciutat
+  621: Metròpoli
+  622: La via o la carretera no és adequada.
+  623: La via o la carretera no és adequada per a una estació.
+  624: No es pot construir una estació en un encreuament.
+  625: No es poden construir senyals en un encreuament.
+  626: A les estacions no es poden construir senyals.
+  627: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}"
+  628: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}"
+  629: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID} {STRINGID}"
+  630: "{COLOUR WINDOW_2}Efectiu:  {MOVE_X 81}{COLOUR RED}En fallida!"
+  631: "{COLOUR WINDOW_2}Efectiu:  {MOVE_X 81}{COLOUR BLACK}{CURRENCY48}"
+  632: "{COLOUR WINDOW_2}Efectiu:  {MOVE_X 81}{COLOUR RED}{CURRENCY48}"
+  633: "{COLOUR WINDOW_2}Valor de l'empresa: {COLOUR BLACK}{CURRENCY48}"
+  634: "{COLOUR WINDOW_2}Benefici dels vehicles: {COLOUR BLACK}{CURRENCY48} al mes"
+
+  635: Gener
+  636: Febrer
+  637: Març
+  638: Abril
+  639: Maig
+  640: Juny
+  641: Juliol
+  642: Agost
+  643: Setembre
+  644: Octubre
+  645: Novembre
+  646: Desembre
+
+
+  647: "{SMALLFONT}{COLOUR BLACK}{DATE DMY}{STRINGID}"
+  648: Selecció d'escenari per a partida nova
+  649: ""
+  650: "{COLOUR WINDOW_2}Qualitat del so:"
+  651: Baixa
+  652: Mitjana
+  653: Alta
+  654: Opcions
+  655: "{COLOUR WINDOW_2}Moneda:"
+  656: "{COLOUR WINDOW_2}Unitats de distància i velocitat:"
+  657: "{COLOUR WINDOW_2}Alçades:"
+  658: Imperial
+  659: Mètric
+  660: Unitats
+  661: Valors reals
+  662: "{COLOUR WINDOW_2}Resolució de pantalla:"
+  663: Suavitza el terreny
+  664: "{SMALLFONT}{COLOUR BLACK}Activa o desactiva la suavització de les vores del terreny."
+  665: Graella del terreny
+  666: "{SMALLFONT}{COLOUR BLACK}Mostra o amaga la graella del terreny."
+  667: El banc es nega a ampliar-vos el préstec!
+  668: "{SMALLFONT}{COLOUR BLACK}Feu clic sobre el terreny per a traure arbres i edificis."
+  669: "{SMALLFONT}{COLOUR BLACK}Neteja una àrea petita del terreny."
+  670: "{SMALLFONT}{COLOUR BLACK}Neteja una àrea gran del terreny."
+  671: "{SMALLFONT}{COLOUR BLACK}Modifica una àrea petita del terreny."
+  672: "{SMALLFONT}{COLOUR BLACK}Modifica una àrea gran del terreny."
+  673: "{SMALLFONT}{COLOUR BLACK}Modifica una àrea petita d'aigua."
+  674: "{SMALLFONT}{COLOUR BLACK}Modifica una àrea gran d'aigua."
+  675: Modifica el terreny
+  676: Modifica l'aigua
+  677: "{SMALLFONT}{COLOUR BLACK}Feu clic sobre el terreny i arrossegueu amunt o avall per a apujar o abaixar el nivell de l'aigua."
+  678: "{SMALLFONT}{COLOUR BLACK}Feu clic sobre el terreny i arrossegueu amunt o avall per a apujar o abaixar el terreny."
+  679: Neteja l'àrea
+  680: Neteja l'àrea
+  681: Modifica el terreny
+  682: Modifica l'aigua
+  683: Planta arbres
+  684: Construeix murs
+  685: "{STRINGID} - Detalls del vehicle"
+  686: "{STRINGID} - Mercaderies"
+  687: "{STRINGID} - Ruta"
+  688: "{STRINGID} - Finances"
+  689: "{COLOUR WINDOW_2}Trens: {COLOUR BLACK}{INT16}"
+  690: "{COLOUR WINDOW_2}Autobusos: {COLOUR BLACK}{INT16}"
+  691: "{COLOUR WINDOW_2}Camions: {COLOUR BLACK}{INT16}"
+  692: "{COLOUR WINDOW_2}Tramvies: {COLOUR BLACK}{INT16}"
+  693: "{COLOUR WINDOW_2}Avions: {COLOUR BLACK}{INT16}"
+  694: "{COLOUR WINDOW_2}Vaixells: {COLOUR BLACK}{INT16}"
+  695: "{NEWLINE}No heu superat el repte!"
+  696: "{NEWLINE}Heu superat el repte!"
+  697: "{SMALLFONT}{COLOUR BLACK}Índex de rendiment: {INT16_1DP}% «{STRINGID}»"
+  698: "{SMALLFONT}{COLOUR BLACK}Valor de l'empresa: {CURRENCY48}{NEWLINE}Benefici dels vehicles: {CURRENCY48}/mes"
+  699: "{NEWLINE}Progrés del repte: {INT16}%{STRINGID}"
+  700: "{NEWLINE}Temps restant: {COLOUR BLACK}{INT16} anys i {INT16} mesos"
+  701: Personalitza les tecles...
+  702: Dreceres de teclat
+  703: Restableix les tecles
+  704: "{SMALLFONT}{COLOUR BLACK}Restableix totes les dreceres de teclat als valors predeterminats."
+  705: Tanca la finestra superior
+  706: Tanca totes les finestres flotants
+  707: Cancel·la el mode de construcció
+  708: Posa el joc en pausa o reprèn-lo
+  709: Allunya la vista
+  710: Apropa la vista
+  711: Gira la vista
+  712: Gira l'objecte en construcció
+  713: Commuta la vista subterrània
+  714: Commuta la visibilitat de les vies i carreteres en primer pla
+  715: Commuta la visibilitat dels elements del paisatge en primer pla
+  716: Commuta les marques d'alçada del terreny
+  717: Commuta les marques d'alçada de les vies i carreteres
+  718: Commuta les fletxes de sentit de les vies i carreteres
+  719: Modifica el terreny
+  720: Modifica l'aigua
+  721: Planta arbres
+  722: Neteja una àrea
+  723: Construeix vies
+  724: Construeix carreteres
+  725: Construeix aeroports
+  726: Construeix ports
+  727: Construeix vehicles nous
+  728: Mostra la llista de vehicles
+  729: Mostra la llista d'estacions
+  730: Mostra la llista de ciutats
+  731: Mostra la llista d'indústries
+  732: Mostra el mapa
+  733: Mostra la llista d'empreses
+  734: Mostra la informació de l'empresa
+  735: Mostra les finances
+  736: Mostra la llista d'anuncis
+  737: Captura de pantalla
+  738: Cancel·la o mostra l'últim anunci
+  739: Envia un missatge (mode de dos jugadors)
+
+  # Virtual-Key Codes
+  740: ???
+  741: ???
+  742: ???
+  743: ???
+  744: ???
+  745: ???
+  746: ???
+  747: ???
+  748: Retrocés
+  749: Tab
+  750: ???
+  751: ???
+  752: Supr
+  753: Retorn
+  754: ???
+  755: ???
+  756: ???
+  757: ???
+  758: Alt/Menú
+  759: Pausa
+  760: Majúscules
+  761: ???
+  762: ???
+  763: ???
+  764: ???
+  765: ???
+  766: ???
+  767: Escapament
+  768: ???
+  769: ???
+  770: ???
+  771: ???
+  772: Barra espaiadora
+  773: Re Pàg
+  774: Av Pàg
+  775: Fi
+  776: Inici
+  777: Esquerra
+  778: Amunt
+  779: Dreta
+  780: Avall
+  781: Selecciona
+  782: Imprimeix
+  783: Executa
+  784: Impr Pant
+  785: Insereix
+  786: Esborra
+  787: Ajuda
+  788: "0"
+  789: "1"
+  790: "2"
+  791: "3"
+  792: "4"
+  793: "5"
+  794: "6"
+  795: "7"
+  796: "8"
+  797: "9"
+  798: ???
+  799: ???
+  800: ???
+  801: ???
+  802: ???
+  803: ???
+  804: ???
+  805: A
+  806: B
+  807: C
+  808: D
+  809: E
+  810: F
+  811: G
+  812: H
+  813: I
+  814: J
+  815: K
+  816: L
+  817: M
+  818: N
+  819: O
+  820: P
+  821: Q
+  822: R
+  823: S
+  824: T
+  825: U
+  826: V
+  827: W
+  828: X
+  829: Y
+  830: Z
+  831: ???
+  832: ???
+  833: Menú
+  834: ???
+  835: ???
+  836: 0 del teclat numèric
+  837: 1 del teclat numèric
+  838: 2 del teclat numèric
+  839: 3 del teclat numèric
+  840: 4 del teclat numèric
+  841: 5 del teclat numèric
+  842: 6 del teclat numèric
+  843: 7 del teclat numèric
+  844: 8 del teclat numèric
+  845: 9 del teclat numèric
+  846: "* del teclat numèric"
+  847: + del teclat numèric
+  848: Retorn del teclat numèric
+  849: "- del teclat numèric"
+  850: ". del teclat numèric"
+  851: "/ del teclat numèric"
+  852: F1
+  853: F2
+  854: F3
+  855: F4
+  856: F5
+  857: F6
+  858: F7
+  859: F8
+  860: F9
+  861: F10
+  862: F11
+  863: F12
+  864: F13
+  865: F14
+  866: F15
+  867: F16
+  868: F17
+  869: F18
+  870: F19
+  871: F20
+  872: F21
+  873: F22
+  874: F23
+  875: F24
+  876: ???
+  877: ???
+  878: ???
+  879: ???
+  880: ???
+  881: ???
+  882: ???
+  883: ???
+  884: Bloq Num
+  885: Bloq Despl
+  886: ???
+  887: ???
+  888: ???
+  889: ???
+  890: ???
+  891: ???
+  892: ???
+  893: ???
+  894: ???
+  895: ???
+  896: ???
+  897: ???
+  898: ???
+  899: ???
+  900: ???
+  901: ???
+  902: ???
+  903: ???
+  904: ???
+  905: ???
+  906: ???
+  907: ???
+  908: ???
+  909: ???
+  910: ???
+  911: ???
+  912: ???
+  913: ???
+  914: ???
+  915: ???
+  916: ???
+  917: ???
+  918: ???
+  919: ???
+  920: ???
+  921: ???
+  922: ???
+  923: ???
+  924: ???
+  925: ???
+  926: ;
+  927: =
+  928: ","
+  929: "-"
+  930: .
+  931: /
+  932: "'"
+  933: ???
+  934: ???
+  935: ???
+  936: ???
+  937: ???
+  938: ???
+  939: ???
+  940: ???
+  941: ???
+  942: ???
+  943: ???
+  944: ???
+  945: ???
+  946: ???
+  947: ???
+  948: ???
+  949: ???
+  950: ???
+  951: ???
+  952: ???
+  953: ???
+  954: ???
+  955: ???
+  956: ???
+  957: ???
+  958: ???
+  959: "["
+  960: \
+  961: "]"
+  962: "#"
+  963: Bar
+  964: ???
+  965: ???
+  966: ???
+  967: ???
+  968: ???
+  969: ???
+  970: ???
+  971: ???
+  972: ???
+  973: ???
+  974: ???
+  975: ???
+  976: ???
+  977: ???
+  978: ???
+  979: ???
+  980: ???
+  981: ???
+  982: ???
+  983: ???
+  984: ???
+  985: ???
+  986: ???
+  987: ???
+  988: ???
+  989: ???
+  990: ???
+  991: ???
+  992: ???
+  993: ???
+  994: ???
+  995: ???
+
+  996: "{STRINGID}:"
+  997: "MAJ + "
+  998: "CTRL + "
+  999: Canvia la drecera de teclat
+  1000: "{COLOUR WINDOW_2}Premeu la tecla nova per a la drecera:"
+  1001: "{SMALLFONT}{COLOUR BLACK}Feu clic a la descripció de la drecera per assignar una tecla nova"
+  1002: Desplaça la vista quan el punter és a la vora de la pantalla
+  1003: "{SMALLFONT}{COLOUR BLACK}Trieu si la vista s'ha de desplaçar quan el punter del ratolí és a la vora de la pantalla."
+  1004: "{SMALLFONT}{COLOUR BLACK}Mostra o modifica les assignacions de les dreceres de teclat."
+  1005: Mapa
+  1006: Mapa - Vehicles
+  1007: Mapa - Indústries
+  1008: Mapa - Rutes de transport
+  1009: Mapa - Empreses
+  1010: Mescla de memòria intermèdia per programari forçada
+  1011: "{SMALLFONT}{COLOUR BLACK}Seleccioneu aquesta opció per a millorar el rendiment si el joc va a trompicons quan es reprodueixen sons o se senten interferències."
+  1012: L'escenari s'ha instal·lat correctament.
+  1013: L'escenari ja està instal·lat.
+  1014: "{OUTLINE}{COLOUR WINDOW_1}{STRINGID}"
+  1015: "{OUTLINE}{COLOUR WINDOW_2}(Premeu una tecla o un botó del ratolí per a prendre'n el control)"
+  1016: Ja hi ha una altra instància del Chris Sawyer's Locomotion en execució.
+
+  1017: Agraïments de la música...
+  1018: Agraïments de la música
+  1019: "{COLOUR BLACK}Copyright © Chris Sawyer"
+  1020: "{COLOUR WINDOW_2}Locomotion Title"
+  1021: "{COLOUR BLACK}John Broomhall (amb en Keith Thompson a la guitarra)"
+  1022: "{COLOUR WINDOW_2}Long Dusty Road"
+  1023: "{COLOUR BLACK}Allister Brimble (amb en Brian Moore a la trompeta)"
+  1024: "{COLOUR WINDOW_2}Flying High"
+  1025: "{COLOUR BLACK}Allister Brimble"
+  1026: "{COLOUR WINDOW_2}Gettin' On The Gas"
+  1027: "{COLOUR BLACK}Allister Brimble"
+  1028: "{COLOUR WINDOW_2}Jumpin' The Rails"
+  1029: "{COLOUR BLACK}Allister Brimble"
+  1030: "{COLOUR WINDOW_2}Smooth Running"
+  1031: "{COLOUR BLACK}Allister Brimble"
+  1032: "{COLOUR WINDOW_2}Traffic Jam"
+  1033: "{COLOUR BLACK}Allister Brimble"
+  1034: "{COLOUR WINDOW_2}Never Stop 'til You Get There"
+  1035: "{COLOUR BLACK}Allister Brimble"
+  1036: "{COLOUR WINDOW_2}Soaring Away"
+  1037: "{COLOUR BLACK}Allister Brimble"
+  1038: "{COLOUR WINDOW_2}Techno Torture"
+  1039: "{COLOUR BLACK}Allister Brimble"
+  1040: "{COLOUR WINDOW_2}Everlasting High-Rise"
+  1041: "{COLOUR BLACK}Allister Brimble"
+  1042: "{COLOUR WINDOW_2}Solace"
+  1043: "{COLOUR BLACK}Scott Joplin (interpretada per en Peter James Adcock)"
+  1044: "{COLOUR WINDOW_2}Chrysanthemum"
+  1045: "{COLOUR BLACK}Scott Joplin (interpretada per en Peter James Adcock)"
+  1046: "{COLOUR WINDOW_2}Eugenia"
+  1047: "{COLOUR BLACK}Scott Joplin (interpretada per en Peter James Adcock)"
+  1048: "{COLOUR WINDOW_2}The Ragtime Dance"
+  1049: "{COLOUR BLACK}Scott Joplin (interpretada per en Peter James Adcock)"
+  1050: "{COLOUR WINDOW_2}Easy Winners"
+  1051: "{COLOUR BLACK}Scott Joplin (interpretada per en Peter James Adcock)"
+  1052: "{COLOUR WINDOW_2}Setting Off"
+  1053: "{COLOUR BLACK}Allister Brimble (amb en Brian Moore a la trompeta i en John Glanfield al clarinet)"
+  1054: "{COLOUR WINDOW_2}A Traveller's Seranade"
+  1055: "{COLOUR BLACK}David Punshon"
+  1056: "{COLOUR WINDOW_2}Latino Trip"
+  1057: "{COLOUR BLACK}David Punshon"
+  1058: "{COLOUR WINDOW_2}A Good Head Of Steam"
+  1059: "{COLOUR BLACK}Allister Brimble"
+  1060: "{COLOUR WINDOW_2}Hop To The Bop"
+  1061: "{COLOUR BLACK}David Punshon"
+  1062: "{COLOUR WINDOW_2}The City Lights"
+  1063: "{COLOUR BLACK}Allister Brimble"
+  1064: "{COLOUR WINDOW_2}Steamin' Down Town"
+  1065: "{COLOUR BLACK}David Punshon"
+  1066: "{COLOUR WINDOW_2}Bright Expectations"
+  1067: "{COLOUR BLACK}Allister Brimble"
+  1068: "{COLOUR WINDOW_2}Mo' Station"
+  1069: "{COLOUR BLACK}John Broomhall"
+  1070: "{COLOUR WINDOW_2}Far Out"
+  1071: "{COLOUR BLACK}John Broomhall"
+  1072: "{COLOUR WINDOW_2}Running On Time"
+  1073: "{COLOUR BLACK}Allister Brimble"
+  1074: "{COLOUR WINDOW_2}Get Me To Gladstone Bay"
+  1075: "{COLOUR BLACK}Allister Brimble"
+  1076: "{COLOUR WINDOW_2}Chuggin' Along"
+  1077: "{COLOUR BLACK}Allister Brimble (amb en Brian Moore a la trompeta)"
+  1078: "{COLOUR WINDOW_2}Don't Lose Your Rag"
+  1079: "{COLOUR BLACK}Allister Brimble"
+  1080: "{COLOUR WINDOW_2}Sandy Track Blues"
+  1081: "{COLOUR BLACK}Allister Brimble"
+
+  1082: La partida desada no s'ha pogut carregar...
+  1083: El fitxer conté dades no vàlides.
+  1084: El fitxer no és una partida desada d'un sol jugador.
+  1085: El fitxer no és una partida desada de dos jugadors.
+  1086: Espereu...
+  1087: S'inicialitza...
+  1088: Es carrega...
+  1089: "S'instal·len dades noves: "
+
+  1090: Blanc
+  1091: Translúcid
+  1092: "{COLOUR WINDOW_2}Indicador de construcció:"
+  1093: "{COLOUR WINDOW_2}Escala mínima per a mostrar els vehicles:"
+  1094: "{COLOUR WINDOW_2}Esc. mín. per a mostrar noms d'estacions:"
+  1095: A escala completa
+  1096: A mitja escala
+  1097: A un quart d'escala
+  1098: A un vuitè d'escala
+  1099: "{SMALLFONT}{COLOUR BLACK}Seleccioneu l'escala mínima de visualització dels vehicles."
+  1100: "{SMALLFONT}{COLOUR BLACK}Seleccioneu l'escala mínima de visualització dels noms de les estacions."
+
+  1101: "{COLOUR WINDOW_2}Esquema de colors principal:"
+  1102: "{COLOUR BLACK}Locomotores de vapor:"
+  1103: "{COLOUR BLACK}Locomotores dièsel:"
+  1104: "{COLOUR BLACK}Locomotores elèctriques:"
+  1105: "{COLOUR BLACK}Unitats múltiples:"
+  1106: "{COLOUR BLACK}Vehicles de passatgers:"
+  1107: "{COLOUR BLACK}Vehicles de mercaderies:"
+  1108: "{COLOUR BLACK}Autobusos:"
+  1109: "{COLOUR BLACK}Camions:"
+  1110: "{COLOUR BLACK}Avions:"
+  1111: "{COLOUR BLACK}Vaixells:"
+  1112: "{SMALLFONT}{COLOUR BLACK}Seu i detalls de l'empresa"
+  1113: "{SMALLFONT}{COLOUR BLACK}Propietari i estat de l'empresa"
+  1114: "{SMALLFONT}{COLOUR BLACK}Finances de l'empresa"
+  1115: "{SMALLFONT}{COLOUR BLACK}Mercaderies lliurades"
+  1116: "{SMALLFONT}{COLOUR BLACK}Esquema de colors de l'empresa"
+  1117: "{SMALLFONT}{COLOUR BLACK}Repte de l'empresa en aquesta partida"
+  1118: "{COLOUR WINDOW_2}Esquemes de colors especials per a:"
+  1119: "{SMALLFONT}{COLOUR BLACK}Seleccioneu el color principal"
+  1120: "{SMALLFONT}{COLOUR BLACK}Seleccioneu el color secundari (només s'utilitza en alguns tipus de vehicles)"
+  1121: "{SMALLFONT}{COLOUR BLACK}Seleccioneu si voleu utilitzar un esquema de colors diferent per a aquest tipus de vehicle"
+  1122: "{STRINGID} - Trens"
+  1123: "{STRINGID} - Autobusos"
+  1124: "{STRINGID} - Camions"
+  1125: "{STRINGID} - Tramvies"
+  1126: "{STRINGID} - Avions"
+  1127: "{STRINGID} - Vaixells"
+  1128: "{STRINGID} - Totes les estacions"
+  1129: "{STRINGID} - Estacions ferroviàries"
+  1130: "{STRINGID} - Estacions de carretera"
+  1131: "{STRINGID} - Aeroports"
+  1132: "{STRINGID} - Ports"
+  1133: Totes les estacions
+  1134: Estacions ferroviàries
+  1135: Estacions de carretera
+  1136: Aeroports
+  1137: Ports
+  1138: "{COLOUR WINDOW_2}{STRINGID} - {STRINGID}"
+  1139: "{COLOUR WINDOW_2}{STRINGID} - {STRINGID} {STRINGID}"
+  1140: "{COLOUR WINDOW_2}{CURRENCY32}"
+  1141: "{COLOUR RED}-{CURRENCY32}"
+  1142: "{COLOUR WINDOW_2}{INT16} any"
+  1143: "{COLOUR WINDOW_2}{INT16} anys"
+  1144: "{COLOUR WINDOW_2}{INT16} %"
+  1145: "{COLOUR BLACK}Nom"
+  1146: "{COLOUR BLACK}Nom ▼"
+  1147: "{COLOUR BLACK}Benefici mensual"
+  1148: "{COLOUR BLACK}Benefici mensual ▼"
+  1149: "{COLOUR BLACK}Antiguitat"
+  1150: "{COLOUR BLACK}Antiguitat ▼"
+  1151: "{COLOUR BLACK}Fiabilitat"
+  1152: "{COLOUR BLACK}Fiabilitat ▼"
+  1153: "{SMALLFONT}{COLOUR BLACK}Ordena la llista per nom"
+  1154: "{SMALLFONT}{COLOUR BLACK}Ordena la llista per benefici"
+  1155: "{SMALLFONT}{COLOUR BLACK}Ordena la llista per antiguitat"
+  1156: "{SMALLFONT}{COLOUR BLACK}Ordena la llista per fiabilitat"
+  1157: Primer cal aturar el vehicle!
+  1158: El vehicle ha tingut un accident!
+  1159: El vehicle s'ha avariat!
+  1160: El vehicle ha quedat blocat!
+  1161: No hi ha prou espai o hi ha un vehicle pel mig.
+  1162: S'acosta un vehicle o n'hi ha un que ho impedeix.
+  1163: Aquí no es pot col·locar {POP16}{POP16}{POP16}{STRINGID}...
+  1164: No es pot retirar {POP16}{POP16}{POP16}{STRINGID}...
+  1165: No es pot ignorar el senyal en vermell...
+  1166: Aquest vehicle necessita {STRINGID}.
+  1167: El tren no té vehicles!
+  1168: El tren no té cabina de conducció.
+  1169: El tren necessita una locomotora o un cotxe motor.
+  1170: "{STRINGID} de {STRINGID}"
+  1171: Buit
+  1172: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  1173: "{NEWLINE}Capacitat:  {STRINGID}"
+  1174: "{NEWLINE}+ {STRINGID}"
+  1175: Hi ha massa estacions a la partida!
+  1176: L'estació és massa gran!
+  1177: Primer cal construir una ciutat!
+  1178: "{SMALLFONT}{COLOUR BLACK}Mostra el mapa general"
+  1179: "{SMALLFONT}{COLOUR BLACK}Mostra els tipus de vehicles al mapa"
+  1180: "{SMALLFONT}{COLOUR BLACK}Mostra els tipus d'indústries al mapa"
+  1181: "{SMALLFONT}{COLOUR BLACK}Mostra les rutes dels vehicles al mapa"
+  1182: "{SMALLFONT}{COLOUR BLACK}Mostra la propietat de les empreses al mapa"
+  1183: L'estació està massa dispersa!
+  1184: No es pot afegir {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID} a {STRINGID}...
+  1185: No es pot construir {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}...
+  1186: "{COLOUR BLACK}Seleccioneu un vehicle nou"
+  1187: "{COLOUR BLACK}Seleccioneu el vehicle que voleu afegir a {STRINGID}."
+  1188: "{SMALLFONT}{COLOUR BLACK}Compra vehicles ferroviaris nous"
+  1189: "{SMALLFONT}{COLOUR BLACK}Compra autobusos nous"
+  1190: "{SMALLFONT}{COLOUR BLACK}Compra camions nous"
+  1191: "{SMALLFONT}{COLOUR BLACK}Compra tramvies nous"
+  1192: "{SMALLFONT}{COLOUR BLACK}Compra avions nous"
+  1193: "{SMALLFONT}{COLOUR BLACK}Compra vaixells nous"
+  1194: "{SMALLFONT}{COLOUR BLACK}Trens"
+  1195: "{SMALLFONT}{COLOUR BLACK}Autobusos"
+  1196: "{SMALLFONT}{COLOUR BLACK}Camions"
+  1197: "{SMALLFONT}{COLOUR BLACK}Tramvies"
+  1198: "{SMALLFONT}{COLOUR BLACK}Avions"
+  1199: "{SMALLFONT}{COLOUR BLACK}Vaixells"
+  1200: "{SMALLFONT}{COLOUR BLACK}Totes les estacions"
+  1201: "{SMALLFONT}{COLOUR BLACK}Estacions ferroviàries"
+  1202: "{SMALLFONT}{COLOUR BLACK}Estacions de carretera"
+  1203: "{SMALLFONT}{COLOUR BLACK}Aeroports"
+  1204: "{SMALLFONT}{COLOUR BLACK}Ports"
+  1205: "{SMALLFONT}{COLOUR BLACK}Neteja una àrea del terreny"
+  1206: "{SMALLFONT}{COLOUR BLACK}Arbres"
+  1207: "{SMALLFONT}{COLOUR BLACK}Modifica o crea terreny"
+  1208: "{SMALLFONT}{COLOUR BLACK}Modifica o crea aigua"
+  1209: "{SMALLFONT}{COLOUR BLACK}Murs i tanques"
+  1210: "{SMALLFONT}{COLOUR BLACK}Seleccioneu el color de l'objecte"
+  1211: "{COLOUR WINDOW_2}{STRINGID}"
+  1212: "{COLOUR WINDOW_2}{STRINGID} (procedent de"
+  1213: "{COLOUR WINDOW_2}{STRINGID})"
+  1214: No hi ha espai per a més ordres!
+  1215: Aquest vehicle té massa ordres!
+  1216: "Local"
+  1217: "Exprés"
+  1218: "{COLOUR BLACK}- - No s'ha definit cap ruta - -"
+  1219: "{COLOUR BLACK}- - Fi de la llista de la ruta - -"
+  1220: Atura't a {STRINGID}
+  1221: Passa per {STRINGID}
+  1222: Passa pel punt de pas
+  1223: Descarrega tota la càrrega de {STRINGID} {SPRITE}
+  1224: Espera fins a tenir una càrrega completa de {STRINGID} {SPRITE}
+  1225: Descarrega tota la càrrega de {STRINGID} {SPRITE}
+  1226: Espera fins a tenir una càrrega completa de {STRINGID} {SPRITE}
+  1227: "{COLOUR WINDOW_2}▶"
+  1228: L'ordre no es pot inserir...
+  1229: "{COLOUR WINDOW_3}Feu clic per inserir una ordre{NEWLINE}de passar pel punt de pas en aquesta posició."
+  1230: "{COLOUR WINDOW_3}Feu clic per inserir una ordre{NEWLINE}d'aturar-se a {STRINGID}."
+  1231: "{COLOUR WINDOW_3}Feu clic una altra vegada per canviar l'última ordre{NEWLINE}a passar per {STRINGID}."
+  1232: "{SMALLFONT}{COLOUR BLACK}Insereix una ordre d'esperar fins a tenir una càrrega completa."
+  1233: "{SMALLFONT}{COLOUR BLACK}Insereix una ordre per a forçar la descàrrega de la càrrega, encara que l'estació no l'accepti."
+  1234: "{SMALLFONT}{COLOUR BLACK}Passa a l'ordre següent de la llista."
+  1235: "{SMALLFONT}{COLOUR BLACK}Suprimeix l'última ordre o l'ordre seleccionada."
+  1236: "{COLOUR BLACK}Feu clic sobre una estació o un punt de pas per a definir la ruta."
+  1237: "{SMALLFONT}{COLOUR BLACK}Feu clic sobre una ordre per a seleccionar-la; feu-hi doble clic per a centrar la vista a l'estació o al punt de pas."
+  1238: "{SMALLFONT}{COLOUR BLACK}Feu clic sobre una ordre per a copiar-la al vehicle seleccionat."
+  1239: "{STRINGID} {STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}"
+  1240: Compra trens
+  1241: Compra autobusos
+  1242: Compra camions
+  1243: Compra tramvies
+  1244: Compra avions
+  1245: Compra vaixells
+  1246: Només es pot col·locar sobre {STRINGID}...
+  1247: Carretera
+  1248: "{COLOUR BLACK}No hi ha cap vehicle disponible."
+  1249: "{COLOUR BLACK}No hi ha cap vehicle compatible per a afegir a {STRINGID}."
+  1250: ""
+  1251: "{COLOUR WINDOW_2} Cost: {COLOUR BLACK}{CURRENCY32}"
+  1252: "{NEWLINE}{COLOUR WINDOW_2} Requereix: {COLOUR BLACK}"
+  1253: "{NEWLINE}{COLOUR WINDOW_2} Potència: {COLOUR BLACK}{POWER}"
+  1254: "{NEWLINE}{COLOUR WINDOW_2} Pes: {COLOUR BLACK}{INT16} t"
+  1255: "{NEWLINE}{COLOUR WINDOW_2} Velocitat màx.: {COLOUR BLACK}{VELOCITY}"
+  1256: "{NEWLINE}{COLOUR WINDOW_2} Any de disseny: {COLOUR BLACK}{UINT16 RAW}"
+  1257: "{NEWLINE}{COLOUR WINDOW_2} Capacitat: {COLOUR BLACK}{STRINGID}"
+  1258: " + {STRINGID}"
+  1259: " (+ {STRINGID} per a pendents empinats)"
+  1260: " ({VELOCITY} en {STRINGID})"
+  1261: o {STRINGID}
+  1262: "{NEWLINE}{COLOUR WINDOW_2} Cost de funcionament: {COLOUR BLACK}{CURRENCY32}/mes"
+  1263: " (remodelable)"
+  1264: "{INT16} tren"
+  1265: "{INT16} autobús"
+  1266: "{INT16} camió"
+  1267: "{INT16} tramvia"
+  1268: "{INT16} avió"
+  1269: "{INT16} vaixell"
+  1270: "{INT16} trens"
+  1271: "{INT16} autobusos"
+  1272: "{INT16} camions"
+  1273: "{INT16} tramvies"
+  1274: "{INT16} avions"
+  1275: "{INT16} vaixells"
+  1276: tren
+  1277: autobús
+  1278: camió
+  1279: tramvia
+  1280: avió
+  1281: vaixell
+  1282: "{COLOUR WINDOW_2}Total: {COLOUR BLACK}{STRINGID}"
+  1283: Buit
+  1284: "{SMALLFONT}{COLOUR BLACK}Càrrega: "
+  1285: "Requereix aquest vehicle addicional: {STRINGID}"
+  1286: "{SMALLFONT}{COLOUR BLACK}Vehicles per a {STRINGID}"
+  1287: "{SPRITE}{NEWLINE 31 8} {STRINGID}"
+  1288: "{POP16}{POP16}{NEWLINE 31 8} {STRINGID}"
+  1289: "{SPRITE}{NEWLINE 31 8} Construcció de {STRINGID}"
+  1290: L'autoritat local de {STRINGID} denega el permís!
+  1291: Ciutats
+  1292: Construeix ciutats noves
+  1293: Construeix edificis urbans
+  1294: Construeix edificis diversos
+  1295: "{COLOUR BLACK}Habitants"
+  1296: "{COLOUR BLACK}Habitants ▼"
+  1297: "{SMALLFONT}{COLOUR BLACK}Ordena la llista per nombre d'habitants."
+  1298: "{INT32}"
+  1299: "{COLOUR BLACK}Estacions"
+  1300: "{COLOUR BLACK}Estacions ▼"
+  1301: "{SMALLFONT}{COLOUR BLACK}Ordena la llista pel nombre d'estacions"
+  1302: "{COLOUR BLACK}Població"
+  1303: "{COLOUR BLACK}Població ▼"
+  1304: "{STRINGID}, població {INT32}"
+  1305: "{SMALLFONT}{COLOUR BLACK}Ordena la llista pel tipus de població."
+  1306: "{COLOUR BLACK}Tipus"
+  1307: "{COLOUR BLACK}Tipus ▼"
+  1308: Nom de la ciutat
+  1309: "Escriviu el nom nou per a {STRINGID}:"
+  1310: "{COLOUR BLACK}{STRINGID}, {INT32} habitants"
+  1311: El nom de la ciutat no es pot canviar...
+  1312: Estació nova
+  1313: "{COLOUR BLACK}({STRINGID})"
+  1314: "{COLOUR WINDOW_2}Àrea de cobertura{NEWLINE} Accepta: "
+  1315: "{COLOUR WINDOW_2} Produeix: "
+  1316: "{COLOUR BLACK}Res"
+  1317: Hi ha massa indústries!
+  1318: Indústries
+  1319: Finança indústries noves
+  1320: Construeix indústries
+  1321: "{SMALLFONT}{COLOUR BLACK}Llista de poblacions"
+  1322: "{SMALLFONT}{COLOUR BLACK}Construeix poblacions"
+  1323: "{SMALLFONT}{COLOUR BLACK}Construeix edificis urbans"
+  1324: "{SMALLFONT}{COLOUR BLACK}Construeix edificis diversos"
+  1325: "{SMALLFONT}{COLOUR BLACK}Llista d'indústries"
+  1326: "{SMALLFONT}{COLOUR BLACK}Finança indústries noves"
+  1327: "{SMALLFONT}{COLOUR BLACK}Construeix indústries"
+  1328: Banús
+  1329: Plata
+  1330: Ivori
+  1331: Indi
+  1332: Safir
+  1333: Maragda
+  1334: Daurat
+  1335: Ambre
+  1336: Bronze
+  1337: Borgonya
+  1338: Escarlata
+  1339: "{STRINGID}"
+  1340: "{POP16}{STRINGID}"
+  1341: Transports {STRINGID}
+  1342: Exprés {STRINGID}
+  1343: Línies {STRINGID}
+  1344: Vies {STRINGID}
+  1345: Autocars {STRINGID}
+  1346: Línies aèries {STRINGID}
+  1347: Ferrocarrils {STRINGID}
+  1348: Transports {STRINGID}
+  1349: Trens {STRINGID}
+  1350: Transports {STRINGID}
+  1351: Navegació {STRINGID}
+  1352: Mercaderies {STRINGID}
+  1353: Camions {STRINGID}
+  1354: "{COLOUR WINDOW_2}Seu"
+  1355: "{COLOUR WINDOW_2}Propietari"
+  1356: "{COLOUR BLACK}@ {INT16} % d'interès anual"
+  1357: "{COLOUR BLACK}{SMALLFONT}{INT32}"
+  1358: "{COLOUR BLACK}{SMALLFONT}{UINT16 RAW}"
+  1359: "{STRINGID}"
+  1360: "{STRINGID} - Habitants"
+  1361: "Autoritat local de {STRINGID}"
+  1362: "{STRINGID} - Producció mensual"
+  1363: "{STRINGID} - Estadístiques"
+  1364: "{STRINGID} {STRINGID}"
+  1365: "{SMALLFONT}{COLOUR BLACK}Enderroca aquesta indústria."
+  1366: En construcció
+  1367: "Produeix "
+  1368: "Produeix "
+  1369: "Produeixen "
+  1370: " per a produir "
+  1371: "Requereix "
+  1372: "Requereixen "
+  1373: " i "
+  1374: " o "
+  1375: ", "
+  1376: "{SMALLFONT}{COLOUR BLACK}Ordena la llista per estat de la indústria."
+  1377: "{SMALLFONT}{COLOUR BLACK}Ordena la llista pel percentatge de producció transportada."
+  1378: "{COLOUR BLACK}Estat"
+  1379: "{COLOUR BLACK}Estat ▼"
+  1380: "{COLOUR BLACK}Producció transportada"
+  1381: "{COLOUR BLACK}Producció transportada ▼"
+  1382: "{SMALLFONT}{COLOUR BLACK}Ordena la llista pel nom de la indústria."
+  1383: "{COLOUR BLACK}Indústria"
+  1384: "{COLOUR BLACK}Indústria ▼"
+  1385: "{COLOUR BLACK}No hi ha cap indústria disponible."
+  1386: "{SMALLFONT}{COLOUR BLACK}Població"
+  1387: "{SMALLFONT}{COLOUR BLACK}Gràfic de població"
+  1388: "{SMALLFONT}{COLOUR BLACK}Valoració de cada empresa per part de la ciutat"
+  1389: "{SMALLFONT}{COLOUR BLACK}Indústria"
+  1390: "{SMALLFONT}{COLOUR BLACK}Gràfic de producció"
+  1391: "{COLOUR BLACK}{SMALLFONT}({STRINGID})"
+  1392: "{SMALLFONT}{COLOUR BLACK}Trau completament aquesta ciutat (i les indústries properes)."
+  1393: La població no es pot traure...
+  1394: Primer cal eliminar totes les estacions properes a la població.
+  1395: Massa a prop d'una altra població
+  1396: Hi ha massa poblacions.
+  1397: Massa a prop d'una altra població o bé la ubicació no és adequada.
+  1398: "{SMALLFONT}{COLOUR BLACK}Seleccioneu la mida de la població que voleu crear."
+  1399: 1 (petita)
+  1400: "2"
+  1401: 3 (mitjana)
+  1402: "4"
+  1403: "5"
+  1404: 6 (gran)
+  1405: "7"
+  1406: 8 (gegantina)
+  1407: "{COLOUR BLACK}Mida de la població:"
+  1408: "{COLOUR BLACK}(Feu clic al terreny per a construir una població nova)"
+  1409: "{SMALLFONT}{COLOUR BLACK}Amplia aquesta població."
+  1410: Massa a prop d'una altra indústria
+  1411: Primer cal construir una població a prop.
+  1412: "{SMALLFONT}{COLOUR BLACK}Planta un grup d'arbres del tipus seleccionat."
+  1413: "{SMALLFONT}{COLOUR BLACK}Planta un grup aleatori d'arbres."
+  1414: "{SMALLFONT}{COLOUR BLACK}Estadístiques"
+  1415: "{COLOUR WINDOW_2}Rebut el mes passat:"
+  1416: "{COLOUR WINDOW_2}Produït el mes passat:"
+  1417: "{COLOUR BLACK}{STRINGID} (transportat el {INT16} %)"
+  1418: "{COLOUR BLACK}{INT16} %"
+  1419: En procés de liquidació
+  1420: Pertany a {STRINGID}
+  1421: "{STRINGID} pertany a {STRINGID}."
+  1422: El senyal pertany a {STRINGID}.
+  1423: "{COLOUR BLACK}{INT16}%"
+  1424: "{COLOUR BLACK}{TINYFONT}{DATE DMY}"
+  1425: Missatges
+  1426: "{SMALLFONT}{COLOUR BLACK}Mostra els missatges recents"
+  1427: "{SMALLFONT}{COLOUR BLACK}Opcions dels missatges"
+  1428: Opcions dels missatges
+  1429: "{TINYFONT}{DATE DMY}"
+  1430: " + "
+  1431: " en espera"
+  1432: No hi ha res en espera.
+  1433: "{COLOUR BLACK}Estat"
+  1434: "{COLOUR BLACK}Estat ▼"
+  1435: "{COLOUR BLACK}Total en espera"
+  1436: "{COLOUR BLACK}Total en espera ▼"
+  1437: "{COLOUR BLACK}Accepta"
+  1438: "{COLOUR BLACK}Accepta ▼"
+  1439: "{SMALLFONT}{COLOUR BLACK}Ordena la llista per estat de l'estació."
+  1440: "{SMALLFONT}{COLOUR BLACK}Ordena la llista pel total d'unitats en espera."
+  1441: "{SMALLFONT}{COLOUR BLACK}Ordena la llista per càrrega acceptada."
+  1442: "{INT32} unitats"
+  1443: ", "
+  1444: "{NEWLINE}Accepta "
+  1445: "{COLOUR BLACK}Accepta: "
+  1446: Res
+  1447: "{SMALLFONT}{COLOUR BLACK}Estació"
+  1448: "{SMALLFONT}{COLOUR BLACK}Càrrega en espera i acceptada"
+  1449: "{SMALLFONT}{COLOUR BLACK}Valoracions de la càrrega"
+  1450: Demolició no permesa
+  1451: Una altra companyia està a punt de construir per aquí.
+  1452: Ha trigat massa!
+  1453: "{SMALLFONT}{COLOUR BLACK}Construïu o traslladeu la seu central."
+  1454: "{SMALLFONT}{COLOUR BLACK}Canvieu el nom del propietari."
+  1455: "{COLOUR BLACK}(encara no construïda)"
+  1456: Nom de la companyia
+  1457: "Introduïu el nom nou de la companyia:"
+  1458: El nom d'aquesta companyia no es pot canviar...
+  1459: Nom del propietari
+  1460: "Introduïu el nom nou del propietari:"
+  1461: El nom del propietari no es pot canviar...
+  1462: Seu central
+  1463: Seu central de {STRINGID}
+  1464: "{STRINGID}: l'autoritat local no permet eliminar carreteres que es facin servir."
+  1465: "{SMALLFONT}{COLOUR BLACK}Selecciona la companyia."
+  1466: Partida de dos jugadors
+  1467: Partida de dos jugadors - Opcions
+  1468: "{COLOUR BLACK}Per a configurar una partida de dos jugadors, un ordinador ha d'actuar com a amfitrió i l'altre s'hi ha de connectar.{NEWLINE}{NEWLINE}Seleccioneu una opció:"
+  1469: ""
+  1470: "{COLOUR BLACK}Es configura aquest ordinador com a amfitrió..."
+  1471: "{COLOUR BLACK}Error: no s'ha pogut configurar aquest ordinador com a amfitrió."
+  1472: "{COLOUR BLACK}Configuració de l'amfitrió completada. S'espera que l'altre ordinador es connecti..."
+  1473: ""
+  1474: ""
+  1475: ""
+  1476: "{COLOUR BLACK}S'intenta connectar..."
+  1477: "{COLOUR BLACK}Error: no s'ha pogut localitzar o connectar amb l'amfitrió."
+  1478: "{COLOUR BLACK}Connexió correcta!{NEWLINE}Ara esteu connectat a: {STRINGID}"
+  1479: "{COLOUR BLACK}Connectat a: {STRINGID}{NEWLINE}{NEWLINE}Feu clic a sota per a desconnectar-vos i tornar al mode d'un jugador."
+  1480: "{COLOUR WINDOW_2}Configura aquest ordinador com a amfitrió"
+  1481: "{COLOUR WINDOW_2}Connecta't a un amfitrió"
+  1482: "{COLOUR WINDOW_2}Desconnecta"
+  1483: Adreça de l'amfitrió
+  1484: "Introduïu l'adreça IP o el nom de l'ordinador amfitrió al qual us voleu connectar o deixeu-ho en blanc per a cercar-lo a la xarxa local:"
+  1485: "{COLOUR RED}Avís: esteu connectat a una versió diferent del Chris Sawyer's Locomotion i el funcionament de la partida de dos jugadors podria no ser fiable"
+
+  # Opcions
+  1486: "{SMALLFONT}{COLOUR BLACK}Opcions de pantalla"
+  1487: "{SMALLFONT}{COLOUR BLACK}Opcions de so"
+  1488: "{SMALLFONT}{COLOUR BLACK}Opcions de música"
+  1489: "{SMALLFONT}{COLOUR BLACK}Opcions de localització"
+  1490: "{SMALLFONT}{COLOUR BLACK}Opcions de control"
+  1491: "{SMALLFONT}{COLOUR BLACK}Altres opcions"
+  1492: Opcions - Pantalla
+  1493: Opcions - So
+  1494: Opcions - Música
+  1495: Opcions - Localització
+  1496: Opcions - Controls
+  1497: Opcions - Altres
+
+  # Opcions/Moneda
+  1498: Utilitza sempre la moneda preferida
+  1499: "{SMALLFONT}{COLOUR BLACK}Utilitzeu sempre la moneda preferida."
+  1500: Utilitza la moneda preferida en iniciar una partida nova
+  1501: "{SMALLFONT}{COLOUR BLACK}Seleccioneu aquesta opció per a substituir la moneda predeterminada d'un escenari."
+  1502: "{SMALLFONT}{COLOUR BLACK}Seleccioneu la moneda de la partida actual"
+  1503: "{SMALLFONT}{COLOUR BLACK}Seleccioneu la moneda predeterminada per crear escenaris nous."
+  1504: "{COLOUR WINDOW_2}Moneda actual:"
+  1505: "{COLOUR WINDOW_2}Moneda preferida:"
+  1506: ""
+
+  1507: "Notícies importants de la vostra companyia:"
+  1508: "Notícies importants d'altres companyies:"
+  1509: "Notícies secundàries de la pròpia companyia:"
+  1510: "Notícies secundàries d'altres companyies:"
+  1511: "Notícies generals:"
+  1512: "Consells:"
+  1513: Desactivat
+  1514: Missatge al teletip
+  1515: Finestra de notícies
+  1516: "{COLOUR WINDOW_2}Cost mensual de funcionament: {COLOUR BLACK}{CURRENCY32}"
+  1517: "{COLOUR WINDOW_2}Benefici mensual: {COLOUR BLACK}{CURRENCY32}"
+  1518: Trens
+  1519: Autobusos
+  1520: Camions
+  1521: Tramvies
+  1522: Aeronaus
+  1523: Vaixells
+  1524: Aeroport
+  1525: Port
+  1526: Aquest tipus d'ordre no és vàlid per a aeronaus.
+  1527: Aquest tipus d'ordre no és vàlid per a vaixells.
+  1528: L'estació pertany a una altra companyia.
+  1529: No hi ha aigua!
+  1530: Aquest canal d'aigua és necessari per als vaixells.
+  1531: Actualment l'utilitza almenys un vehicle.
+  1532: "{SMALLFONT}{COLOUR BLACK}Remodela el vehicle perquè transporti un altre tipus de càrrega."
+  1533: No es pot remodelar aquest vehicle perquè transporti un altre tipus de càrrega.
+  1534: Cal que davant del moll hi hagi aigua.
+
+  1535: "{COLOUR WINDOW_2}S'està reproduint:"
+  1536: "{SMALLFONT}{COLOUR BLACK}Atureu la música"
+  1537: "{SMALLFONT}{COLOUR BLACK}Reproduïu la música"
+  1538: "{SMALLFONT}{COLOUR BLACK}Pista següent"
+  1539: Reprodueix només la música de l'època actual
+  1540: Reprodueix tota la música
+  1541: Reprodueix una selecció personalitzada de música
+  1542: Edita la selecció...
+  1543: "{SMALLFONT}{COLOUR BLACK}Editeu la llista de selecció de pistes musicals"
+  1544: Edita la selecció de música
+  1545: "{SMALLFONT}{COLOUR BLACK}Feu clic sobre una pista per activar-la o desactivar-la"
+  1546: ✓
+  1547: "{COLOUR WINDOW_2}Volum:"
+  1548: "{SMALLFONT}{COLOUR BLACK}Ajusteu el volum de la música"
+  1549: Opcions de música
+  1550: Seleccioneu la cara del propietari de {STRINGID}
+  1551: "{SMALLFONT}{COLOUR BLACK}Feu clic per seleccionar la cara de la companyia o del propietari"
+  1552: Ja està seleccionada per a una altra companyia
+  1553: Aquesta cara no es pot seleccionar...
+  1554: aeroports
+  1555: molls
+  1556: "{COLOUR WINDOW_2}Companyia fundada: {COLOUR BLACK}{DATE MY}"
+  1557: "{COLOUR WINDOW_2}Índex de rendiment: {COLOUR BLACK}{INT16_1DP} % {NEWLINE}  «{STRINGID}»"
+  1558: "{COLOUR WINDOW_2}Índex de rendiment: {COLOUR BLACK}{INT16_1DP} %{SPRITE 2325}{NEWLINE}  «{STRINGID}»"
+  1559: "{COLOUR WINDOW_2}Índex de rendiment: {COLOUR BLACK}{INT16_1DP} %{SPRITE 2324}{NEWLINE}  «{STRINGID}»"
+  1560: "{COLOUR WINDOW_2}Propietari: {COLOUR BLACK}{STRINGID}"
+  1561: baixa
+  1562: mitjana
+  1563: alta
+  1564: "{COLOUR WINDOW_2}Intel·ligència: {COLOUR BLACK}{INT16} ({STRINGID})"
+  1565: "{COLOUR WINDOW_2}Agressivitat: {COLOUR BLACK}{INT16} ({STRINGID})"
+  1566: "{COLOUR WINDOW_2}Competitivitat: {COLOUR BLACK}{INT16} ({STRINGID})"
+  1567: "{SMALLFONT}{COLOUR BLACK}Canvia entre el mode d'un jugador i el mode de dos jugadors."
+  1568: "{OUTLINE}{COLOUR WINDOW_2}Mode d'un jugador"
+  1569: "{OUTLINE}{COLOUR WINDOW_2}Mode de dos jugadors: connectat a {STRINGID}"
+  1570: Principiant
+  1571: Fàcil
+  1572: Mitjà
+  1573: Difícil
+  1574: Expert
+  1575: Selecció de regió i objectes
+  1576: Editor de paisatge
+  1577: Opcions de l'escenari
+  1578: Desa l'escenari
+  1579: "Pas anterior:"
+  1580: "Pas següent:"
+  1581: Carrega un paisatge
+  1582: Desa el paisatge
+  1583: Es genera el paisatge...
+  1584: No es pot netejar tota l'àrea...
+  1585: Generació del paisatge - Opcions
+  1586: Generació del paisatge - Relleu
+  1587: Generació del paisatge - Boscos
+  1588: Generació del paisatge - Poblacions
+  1589: Generació del paisatge - Indústries
+  1590: "{SMALLFONT}{COLOUR BLACK}Opcions generals de generació del paisatge"
+  1591: "{SMALLFONT}{COLOUR BLACK}Opcions de generació del relleu"
+  1592: "{SMALLFONT}{COLOUR BLACK}Opcions de generació dels boscos"
+  1593: "{SMALLFONT}{COLOUR BLACK}Opcions de generació de les poblacions"
+  1594: "{SMALLFONT}{COLOUR BLACK}Opcions de generació de les indústries"
+
+  1595: "[Cap]"
+  1596: Chuggin' Along
+  1597: Long Dusty Road
+  1598: Flying High
+  1599: Gettin' On The Gas
+  1600: Jumpin' The Rails
+  1601: Smooth Running
+  1602: Traffic Jam
+  1603: Never Stop 'til You Get There
+  1604: Soaring Away
+  1605: Techno Torture
+  1606: Everlasting High-Rise
+  1607: Solace
+  1608: Chrysanthemum
+  1609: Eugenia
+  1610: The Ragtime Dance
+  1611: Easy Winners
+  1612: Setting Off
+  1613: A Traveller's Seranade
+  1614: Latino Trip
+  1615: A Good Head Of Steam
+  1616: Hop To The Bop
+  1617: The City Lights
+  1618: Steamin' Down Town
+  1619: Bright Expectations
+  1620: Mo' Station
+  1621: Far Out
+  1622: Running On Time
+  1623: Get Me To Gladstone Bay
+  1624: Sandy Track Blues
+
+  1625: "{UINT16 RAW}"
+  1626: "{COLOUR WINDOW_2}Any d'inici:"
+  1627: Genera un paisatge aleatori quan comenci la partida
+  1628: "{SMALLFONT}{COLOUR BLACK}Genera un paisatge aleatori cada vegada que comenceu una partida nova."
+  1629: Genera un paisatge nou
+  1630: "{SMALLFONT}{COLOUR BLACK}Genereu un paisatge aleatori nou (es perdrà el paisatge actual)."
+  1631: D'acord
+  1632: Genera un paisatge nou
+  1633: Opció de paisatge aleatori
+  1634: Esteu segur que voleu generar un paisatge nou i perdre l'actual?
+  1635: Esteu segur que voleu generar un paisatge nou a l'inici de cada partida?{NEWLINE}Si trieu aquesta opció, perdreu el terreny actual.
+  1636: "{COLOUR WINDOW_2}Nivell del mar:"
+  1637: +{INT16} unitats
+  1638: "{COLOUR WINDOW_2}Nombre de boscos:"
+  1639: "{INT16}"
+  1640: "{COLOUR WINDOW_2}Radi mínim dels boscos:"
+  1641: "{INT16} blocs"
+  1642: "{COLOUR WINDOW_2}Radi màxim dels boscos:"
+  1643: "{INT16} blocs"
+  1644: "{COLOUR WINDOW_2}Densitat mínima dels boscos:"
+  1645: "{INT16}%"
+  1646: "{COLOUR WINDOW_2}Densitat màxima dels boscos:"
+  1647: "{INT16}%"
+  1648: "{COLOUR WINDOW_2}Nombre d'arbres individuals aleatoris:"
+  1649: "{INT16}"
+  1650: "{COLOUR WINDOW_2}Altitud mínima per als arbres:"
+  1651: "{HEIGHT}"
+  1652: "{COLOUR WINDOW_2}Altitud màxima per als arbres:"
+  1653: "{HEIGHT}"
+  1654: "{COLOUR WINDOW_2}Altitud mínima del terreny:"
+  1655: "{INT16} unitats"
+  1656: "{COLOUR WINDOW_2}Estil del relleu:"
+  1657: Terreny pla
+  1658: Turons
+  1659: Muntanyes
+  1660: Meitat muntanyes, meitat turons
+  1661: Meitat muntanyes, meitat pla
+  1662: "{COLOUR WINDOW_2}Densitat dels turons:"
+  1663: "{INT16} %"
+  1664: "{COLOUR WINDOW_2}Nombre de ciutats:"
+  1665: "{INT16}"
+  1666: "{COLOUR WINDOW_2}Mida màxima de les ciutats:"
+  1667: Baixa
+  1668: Mitjana
+  1669: Alta
+  1670: "{COLOUR WINDOW_2}Nombre d'indústries:"
+  1671: Cal construir almenys una ciutat
+  1672: No es pot avançar a la fase següent de l'editor...
+  1673: Encara no es pot desar l'escenari...
+  1674: "{SMALLFONT}{COLOUR BLACK}Opcions de l'escenari"
+  1675: "{SMALLFONT}{COLOUR BLACK}Repte de l'escenari"
+  1676: "{SMALLFONT}{COLOUR BLACK}Opcions de les companyies"
+  1677: "{SMALLFONT}{COLOUR BLACK}Opcions financeres"
+  1678: Opcions de l'escenari
+  1679: Repte de l'escenari
+  1680: Opcions de les companyies
+  1681: Opcions financeres
+  1682: "{COLOUR WINDOW_2}Nombre màxim de companyies competidores:"
+  1683: "{INT16}"
+  1684: "{COLOUR WINDOW_2}Demora abans que comencin les companyies competidores:"
+  1685: "{INT16} mesos"
+  1686: "{COLOUR WINDOW_2}Selecció de companyies competidores"
+  1687: "{COLOUR WINDOW_2}Intel·ligència preferida:"
+  1688: "{COLOUR WINDOW_2}Agressivitat preferida:"
+  1689: "{COLOUR WINDOW_2}Competitivitat preferida:"
+  1690: Qualsevol
+  1691: Baixa
+  1692: Mitjana
+  1693: Alta
+  1694: "{COLOUR WINDOW_2}Préstec inicial:"
+  1695: "{CURRENCY32}"
+  1696: "{COLOUR WINDOW_2}Préstec màxim:"
+  1697: "{CURRENCY32}"
+  1698: "{COLOUR WINDOW_2}Tipus d'interès del préstec:"
+  1699: "{INT16} %"
+  1700: Canvia...
+  1701: "{COLOUR WINDOW_2}Nom de l'escenari: {COLOUR BLACK}{STRINGID}"
+  1702: "{COLOUR WINDOW_2}Grup de l'escenari:"
+  1703: "{COLOUR WINDOW_2}Descripció de l'escenari:"
+  1704: Nom de l'escenari
+  1705: "Introduïu el nom de l'escenari:"
+  1706: Descripció de l'escenari
+  1707: "Introduïu la descripció d'aquest escenari:"
+  1708: Encara no hi ha cap descripció
+  1709: Sense nom
+  1710: La desada del terreny ha fallat!
+  1711: La desada de l'escenari ha fallat!
+  1712: Es transfereixen dades a l'altre jugador...
+  1713: Es reben dades de l'altre jugador...
+  1714: Espereu... L'altre jugador desa la partida...
+  1715: Espereu... L'altre jugador carrega la partida...
+  1716: Envia un missatge
+  1717: Envia un missatge
+  1718: "Introduïu el missatge que voleu enviar a {STRINGID}:"
+  1719: ""
+  1720: "{COLOUR WINDOW_2}Temps d'espera de la connexió:"
+  1721: "{INT16} s"
+  1722: Ha fallat la connexió de dades entre els dos jugadors!
+  1723: "{COLOUR WINDOW_2} Dissenyat l'any: {COLOUR BLACK}{UINT16 RAW}"
+  1724: "{COLOUR WINDOW_2} Obsolet a partir del: {COLOUR BLACK}{UINT16 RAW}"
+  1725: "{COLOUR WINDOW_2} Potència: {COLOUR BLACK}{POWER}"
+  1726: "{COLOUR WINDOW_2} Pes: {COLOUR BLACK}{INT16} t"
+  1727: "{COLOUR WINDOW_2} Velocitat màxima: {COLOUR BLACK}{VELOCITY}"
+  1728: "{COLOUR WINDOW_2} Capacitat: {COLOUR BLACK}{STRINGID}"
+  1729: S'estableix la connexió...
+  1730: Per tot arreu
+  1731: Enlloc
+  1732: Lluny de l'aigua
+  1733: A prop de l'aigua
+  1734: A les muntanyes
+  1735: Lluny de les muntanyes
+  1736: En petites zones a l'atzar
+  1737: En grans zones a l'atzar
+  1738: Al voltant dels penya-segats
+  1739: Crea turons fins al límit del mapa
+  1740: "{SMALLFONT}{COLOUR BLACK}Editor d'escenaris"
+  1741: "Transports {STRINGID}"
+  1742: Mapa
+  1743: "{NEWLINE 1 2}{SPRITE}{NEWLINE 33 8}Llista de companyies"
+  1744: "{NEWLINE 0 8}{STRINGID}{NEWLINE 25 2}{SPRITE}{NEWLINE 51 2}{STRINGID}{NEWLINE 51 12}{COLOUR WINDOW_1}{INT16_1DP} % «{STRINGID}»"
+  1745: Companyies
+  1746: Índexs de rendiment de les companyies
+  1747: Unitats de càrrega transportades per mes
+  1748: Valor de les companyies
+  1749: Tarifes de transport de càrrega
+  1750: "{SMALLFONT}{COLOUR BLACK}Compara les companyies."
+  1751: "{SMALLFONT}{COLOUR BLACK}Gràfics de l'índex de rendiment de les companyies"
+  1752: "{SMALLFONT}{COLOUR BLACK}Gràfics de la càrrega transportada per cada companyia"
+  1753: "{SMALLFONT}{COLOUR BLACK}Gràfics del valor de les companyies"
+  1754: "{SMALLFONT}{COLOUR BLACK}Tarifes de transport de càrrega"
+  1755: "{SMALLFONT}{COLOUR BLACK}Ordena la llista per nom de la companyia."
+  1756: "{SMALLFONT}{COLOUR BLACK}Ordena la llista per estat de la companyia."
+  1757: "{SMALLFONT}{COLOUR BLACK}Ordena la llista per índex de rendiment."
+  1758: "{SMALLFONT}{COLOUR BLACK}Ordena la llista per valor de la companyia."
+  1759: "{COLOUR BLACK}Companyia"
+  1760: "{COLOUR BLACK}Companyia ▼"
+  1761: "{COLOUR BLACK}Estat"
+  1762: "{COLOUR BLACK}Estat ▼"
+  1763: "{COLOUR BLACK}Índex de rendiment"
+  1764: "{COLOUR BLACK}Índex de rendiment ▼"
+  1765: "{COLOUR BLACK}Valor de la companyia"
+  1766: "{COLOUR BLACK}Valor de la companyia ▼"
+  1767: "{NEWLINE 1 2}{SPRITE}{NEWLINE 27 8}{STRINGID}"
+  1768: "{NEWLINE 0 3}{INT16_1DP} %        {NEWLINE 0 13}«{STRINGID}»"
+  1769: "{NEWLINE 0 3}{INT16_1DP} %{SPRITE 2325}{NEWLINE 0 13}«{STRINGID}»"
+  1770: "{NEWLINE 0 3}{INT16_1DP} %{SPRITE 2324}{NEWLINE 0 13}«{STRINGID}»"
+  1771: "{NEWLINE 0 8}{CURRENCY48}"
+  1772: Obrer
+  1773: Enginyer
+  1774: Cap de trànsit
+  1775: Coordinador de transport
+  1776: Supervisor de rutes
+  1777: Director
+  1778: Director executiu
+  1779: Conseller delegat
+  1780: President
+  1781: Magnat del transport
+  1782: "{INT16} companyia"
+  1783: "{INT16} companyies"
+  1784: "{RAWDATE MY SHORT}"
+  1785: "{INT16_1DP} %"
+  1786: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  1787: "{INT32}"
+  1788: "{INT16_1DP} %"
+  1789: "         {INT16_1DP} % {SPRITE 2325}"
+  1790: "         {INT16_1DP} % {SPRITE 2324}"
+  1791: "{SMALLFONT}{COLOUR BLACK}{CURRENCY48}"
+  1792: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  1793: "{SMALLFONT}{COLOUR WHITE}{STRINGID}"
+  1794: El tipus d'aeroport no és adequat per a aquesta aeronau.
+  1795: "{COLOUR BLACK} £"
+  1796: "{INT16} dies"
+  1797: "{CURRENCY32}"
+  1798: "{SMALLFONT}{COLOUR BLACK}Pagament per transportar {INT16} unitats de càrrega una distància de {INT16} blocs"
+  1799: "{SMALLFONT}{COLOUR BLACK}Temps en trànsit"
+  1800: "*  En pausa  *"
+  1801: L'autoritat local no permet construir aquí un altre aeroport.
+  1802: Poblacions
+  1803: Indústries
+  1804: Carreteres
+  1805: Vies fèrries
+  1806: Estacions
+  1807: Vegetació
+  1808: Rutes aèries
+  1809: Rutes marítimes
+  1810: ""
+  1811: Construeix {STRINGID} a prop de {STRINGID}
+  1812: Construeix {STRINGID} a prop de {STRINGID}
+  1813: Construeix {STRINGID} a prop de {STRINGID}
+  1814: Comprova els serveis a prop de {STRINGID}
+  1815: Explora el terreny a prop de {STRINGID}
+  1816: "{COLOUR RED}Fallida!"
+  1817: "{SMALLFONT}{COLOUR BLACK}Posa el joc en pausa."
+  1818: "{SMALLFONT}{COLOUR BLACK}Velocitat normal"
+  1819: "{SMALLFONT}{COLOUR BLACK}Avanç ràpid"
+  1820: "{SMALLFONT}{COLOUR BLACK}Avanç molt ràpid"
+  1821: "{COLOUR BLACK}Terreny generat aleatòriament"
+  1822: "{COLOUR WINDOW_2}Data d'inici: {COLOUR BLACK}{UINT16 RAW}"
+  1823: "{COLOUR WINDOW_2}Companyies competidores: {COLOUR BLACK}Cap"
+  1824: "{COLOUR WINDOW_2}Companyies competidores: {COLOUR BLACK}Fins a {INT16}"
+  1825: "{COLOUR BLACK}{MOVE_X 10}(no començarà fins d'aquí a {INT16} mes)"
+  1826: "{COLOUR BLACK}{MOVE_X 10}(no començarà fins d'aquí a {INT16} mesos)"
+  1827: "{COLOUR WINDOW_2}Valor de venda del vehicle: {COLOUR BLACK}{CURRENCY32}"
+  1828: "{COLOUR WINDOW_2}Últim ingrés: {COLOUR BLACK}N/D"
+  1829: "{COLOUR WINDOW_2}Últim ingrés el: {COLOUR BLACK}{DATE DMY}"
+  1830: "{COLOUR BLACK}{STRINGID} ha transportat {INT16} blocs en {INT16} dies = {CURRENCY32}"
+  1831: "{COLOUR WINDOW_2} Primer any de construcció: {COLOUR BLACK}{UINT16 RAW}"
+  1832: "{COLOUR WINDOW_2} Últim any de construcció: {COLOUR BLACK}{UINT16 RAW}"
+  1833: "{COLOUR WINDOW_2}Valoracions de les autoritats locals sobre les companyies de transport:"
+  1834: Pèssima
+  1835: Dolenta
+  1836: Normal
+  1837: Bona
+  1838: Excel·lent
+  1839: "{COLOUR WINDOW_2}{STRINGID}: {COLOUR BLACK}{INT16}% ({STRINGID})"
+  1840: Aconseguiu un valor de companyia de {CURRENCY32}{STRINGID}{STRINGID}
+  1841: Aconseguiu un benefici mensual dels vehicles de {CURRENCY32}{STRINGID}{STRINGID}
+  1842: Aconseguiu un índex de rendiment del {INT16_1DP} % («{STRINGID}»){STRINGID}{STRINGID}
+  1843: Transporteu {STRINGID}{STRINGID}{STRINGID}
+  1844: " i sigueu la companyia amb millor rendiment"
+  1845: " i situeu-vos entre les 3 companyies amb millor rendiment"
+  1846: " en un termini de {INT16} anys"
+  1847: " abans d'acabar l'any {UINT16 RAW}"
+  1848: ...i sigueu la millor companyia
+  1849: ...i situeu-vos entre les 3 millors companyies
+  1850: "...amb un límit de temps de:"
+  1851: "{COLOUR WINDOW_2}Repte:"
+  1852: "{COLOUR BLACK}  {STRINGID}."
+  1853: Aconseguiu un determinat valor de companyia
+  1854: Aconseguiu un determinat benefici mensual dels vehicles
+  1855: Aconseguiu un determinat índex de rendiment
+  1856: Transporteu una determinada quantitat de càrrega
+  1857: "{CURRENCY32}"
+  1858: "{INT16_1DP} %"
+  1859: "{INT32}"
+  1860: "{INT16} anys"
+  1861: "{SMALLFONT}(Completat per {STRINGID} en {INT16} anys i {INT16} mesos)"
+  1862: "{COLOUR WINDOW_2}Molt bé!{NEWLINE}{COLOUR BLACK}  Heu completat el repte en {INT16} anys i {INT16} mesos."
+  1863: "{COLOUR WINDOW_2}Fracàs!{NEWLINE}{COLOUR BLACK}  No heu pogut completar el repte."
+  1864: "{COLOUR WINDOW_2}L'altre jugador us ha superat!{NEWLINE}{COLOUR BLACK}  {STRINGID} ha completat el repte en {INT16} anys i {INT16} mesos."
+  1865: "{COLOUR WINDOW_2}Progrés del repte: {COLOUR BLACK}{INT16} %"
+  1866: "{COLOUR WINDOW_2}Temps restant: {COLOUR BLACK}{INT16} anys i {INT16} mesos"
+  1867: "{COLOUR WINDOW_2}Càrrega transportada:"
+  1868: "{COLOUR BLACK}Cap"
+
+  1869: "{OUTLINE}{COLOUR WINDOW_2}Surt{NEWLINE}del joc"
+
+  1870: L'empresa ha fet fallida!
+  1871: Permet que les indústries tanquin durant la partida
+  1872: Permet que apareguin noves indústries durant la partida
+  1873: Comparteix empreses i cares de propietari addicionals
+  1874: "{SMALLFONT}{COLOUR BLACK}Activeu aquesta opció per a enviar a l'altre ordinador les dades personalitzades d'empreses i cares de propietari durant la connexió."
+  1875: "{COLOUR WINDOW_2}Prohibeix que les empreses competidores utilitzin"
+  1876: "{COLOUR WINDOW_2}Prohibeix que les empreses dels jugadors utilitzin"
+  1877: "{NEWLINE}S'atura a: {STRINGID}"
+  1878: ", {STRINGID}"
+
+  1879: "Tutorial 1: Crear un servei d'autobús dins d'una ciutat"
+  1880: "Tutorial 2: Crear un servei d'autobús entre dues ciutats"
+  1881: "Tutorial 3: Crear un servei ferroviari entre dues ciutats"
+
+  # Tutorial 1
+  1882: "{SMALLFONT}{COLOUR BLACK}Construirem un servei d'autobús per a transportar passatgers dins d'una ciutat. El primer pas és escollir una ciutat..."
+  1883: "{SMALLFONT}{COLOUR BLACK}Mantingueu premut el botó dret del ratolí i moveu-lo per a desplaçar la vista i observar les ciutats..."
+  1884: "{SMALLFONT}{COLOUR BLACK}Boulders Bay és la ciutat més gran, així que generarà més passatgers. Apropeu-hi la vista amb la roda del ratolí o amb la icona de zoom..."
+  1885: "{SMALLFONT}{COLOUR BLACK}La construcció relacionada amb carreteres es fa des de la finestra de construcció de carreteres..."
+  1886: "{SMALLFONT}{COLOUR BLACK}Per a aquest servei no cal construir carreteres noves, només parades d'autobús..."
+  1887: "{SMALLFONT}{COLOUR BLACK}El nostre servei anirà d'un extrem de la ciutat a l'altre..."
+  1888: "{SMALLFONT}{COLOUR BLACK}La zona ressaltada en blau és l'àrea de cobertura de l'estació. Com més edificis hi hagi dins d'aquesta àrea, més passatgers faran servir l'estació..."
+  1889: "{SMALLFONT}{COLOUR BLACK}Comproveu que la ubicació de l'estació accepta passatgers; si no, no els podreu descarregar ni rebreu diners a canvi. Observeu el text «Àrea de cobertura» a la part inferior de la finestra de construcció..."
+  1890: "{SMALLFONT}{COLOUR BLACK}Quan estigueu satisfet amb la ubicació, feu clic amb el botó esquerre per a construir l'estació..."
+  1891: "{SMALLFONT}{COLOUR BLACK}Ara construirem la segona estació a l'altre costat de la ciutat..."
+  1892: "{SMALLFONT}{COLOUR BLACK}Ara hem de comprar un autobús..."
+  1893: "{SMALLFONT}{COLOUR BLACK}Podem triar entre dos models. Escollim el més modern, que pot transportar més passatgers..."
+  1894: "{SMALLFONT}{COLOUR BLACK}Moveu el cursor a una carretera i feu clic amb el botó esquerre per a col·locar-hi l'autobús..."
+  1895: "{SMALLFONT}{COLOUR BLACK}Abans de posar-lo en marxa, cal indicar-li el recorregut. Seleccioneu la pestanya d'itinerari a la finestra del vehicle..."
+  1896: "{SMALLFONT}{COLOUR BLACK}Per a definir el recorregut, només cal fer clic al damunt de les estacions de la vista..."
+  1897: "{SMALLFONT}{COLOUR BLACK}Ara ja podem posar l'autobús en marxa..."
+  1898: "{SMALLFONT}{COLOUR BLACK}Observem finalment com recull els seus primers passatgers..."
+
+  # Tutorial 2
+  1899: "{SMALLFONT}{COLOUR BLACK}Construirem un servei d'autobús entre Boulder Bay i Breakers Bridge. Com que no hi ha cap carretera entre les dues ciutats, n'haurem de construir una..."
+  1900: "{SMALLFONT}{COLOUR BLACK}Seleccioneu l'orientació del nou tram de carretera i feu clic a la vista per a començar-ne la construcció..."
+  1901: "{SMALLFONT}{COLOUR BLACK}Si feu clic a la icona «Construeix-ho, s'afegiran més trams de carretera del mateix tipus..."
+  1902: "{SMALLFONT}{COLOUR BLACK}Abans de continuar, aquí teniu una manera més ràpida d'iniciar la construcció de carreteres..."
+  1903: "{SMALLFONT}{COLOUR BLACK}Només cal fer clic amb el botó dret sobre l'extrem de la carretera que voleu allargar..."
+  1904: "{SMALLFONT}{COLOUR BLACK}Aquí hem de girar a l'esquerra, així que seleccioneu una corba cap a l'esquerra..."
+  1905: "{SMALLFONT}{COLOUR BLACK}I ara continuem construint en línia recta..."
+  1906: "{SMALLFONT}{COLOUR BLACK}Ja tenim la carretera. Ara toca construir les estacions..."
+  1907: "{SMALLFONT}{COLOUR BLACK}Finalment, comprarem un autobús i el posarem en servei..."
+  1908: "{SMALLFONT}{COLOUR BLACK}Aquesta ruta pot arribar a ser molt transitada, així que comprarem un segon autobús..."
+  1909: "{SMALLFONT}{COLOUR BLACK}Per a copiar ràpidament tot l'itinerari de l'Autobús 1 a l'Autobús 2, només cal fer clic al text «fi de la llista d'itinerari» de l'Autobús 1..."
+
+  # Tutorial 3
+  1910: "{SMALLFONT}{COLOUR BLACK}Hem de construir un servei ferroviari de passatgers entre les dues ciutats més grans..."
+  1911: "{SMALLFONT}{COLOUR BLACK}Les estacions de tren només es poden construir sobre vies rectes i han de tenir prou longitud per al nostre tren. D'aquí a uns instants en construirem una aquí..."
+  1912: "{SMALLFONT}{COLOUR BLACK}Ara construirem les estacions..."
+  1913: "{SMALLFONT}{COLOUR BLACK}Ara comprarem el tren. Necessitarem una locomotora per a arrossegar el tren i vagons per a transportar passatgers..."
+  1914: "{SMALLFONT}{COLOUR BLACK}Com que la via és d'una sola línia, no cal definir cap itinerari. Només cal posar el tren en marxa..."
+  1915: "{SMALLFONT}{COLOUR BLACK}Allarguem la via per a crear un encreuament i un ramal cap a la tercera ciutat. Si feu clic amb el botó dret sobre la via, s'obrirà la finestra de construcció de vies preparada per a crear l'encreuament..."
+  1916: "{SMALLFONT}{COLOUR BLACK}Ara que el traçat de la via ja no és tan senzill, cal definir un itinerari per al nostre tren..."
+  1917: "{SMALLFONT}{COLOUR BLACK}Ara podríem afegir un segon tren, però abans hem d'afegir-hi senyals per a evitar que xoquin..."
+  1918: "{SMALLFONT}{COLOUR BLACK}Els senyals divideixen la via en tres blocs independents i faran que només hi pugui haver un sol tren a cada ramal..."
+
+  # Opcions / Miscel·lània
+  1919: Utilitza sempre el nom de propietari preferit en iniciar una partida nova
+  1920: "{SMALLFONT}{COLOUR BLACK}Activa aquesta opció per a fer servir sempre el mateix nom de propietari quan comenci una partida nova."
+  1921: "{COLOUR WINDOW_2}Nom de propietari preferit: {COLOUR BLACK}{STRINGID}"
+  1922: Nom de propietari preferit
+  1923: "Introduïu el nom de propietari preferit:"
+
+  1924: "{COLOUR BLACK}{TINYFONT}Potència"
+  1925: "{COLOUR BLACK}{TINYFONT}Frens"
+  1926: "{SMALLFONT}{COLOUR BLACK}Mou l'ordre seleccionada una posició amunt."
+  1927: "{SMALLFONT}{COLOUR BLACK}Mou l'ordre seleccionada una posició avall."
+  1928: No es pot executar el joc directament des d'un suport de només lectura.
+
+  1929: Crèdits d'Atari Inc...
+  1930: "{COLOUR WINDOW_2}Llicenciat a Atari Inc."
+  1931: Crèdits d'Atari Inc.
+
+  1932: Les versions del joc són incompatibles. No es pot establir la connexió!
+  1933: "{SMALLFONT}{COLOUR BLACK}Envia un missatge de text curt a l'altre jugador."
+  1934: l'altre jugador
+  1935: "L'altre jugador ha sortit de la partida. S'ha sortit del mode de dos jugadors."
+
+  1936: "{COLOUR YELLOW}L'ús d'aquest producte està subjecte als termes de l'acord de llicència{NEWLINE}que es troba al fitxer «ReadMe» del producte i al manual."
+  1937: "{COLOUR YELLOW}Avís ESRB: L'experiència de joc pot variar durant les partides en línia."
+  1938: "{COLOUR TOPAZ}Alguns mitjans de transport d'aquest joc tenen noms que poden assemblar-se als dels vehicles reals."
+  1939: "{COLOUR TOPAZ}Això només és un recurs per tal que als jugadors els sigui més fàcil familiaritzar-se amb el joc."
+  1940: "{COLOUR TOPAZ}Els atributs dels diferents vehicles (incloent-hi velocitat, capacitat,"
+  1941: "{COLOUR TOPAZ}fiabilitat i cost) només tenen finalitats lúdiques i no pretenen representar les de màquines"
+  1942: "{COLOUR TOPAZ}reals disponibles comercialment, tant si tenen noms semblants com si no."
+
+  1943: "{COLOUR WINDOW_2}Productor en cap: Thomas J. Zahorik"
+  1944: "{COLOUR WINDOW_2}Cap de la marca: Jeff Foley"
+  1945: "{COLOUR WINDOW_2}Productor executiu: Bob Welch"
+  1946: "{COLOUR WINDOW_2}Director de tecnologia: Paul Hellier"
+  1947: "{COLOUR WINDOW_2}Director de màrqueting: Peter Matiss"
+  1948: "{COLOUR WINDOW_2}Director de serveis creatius: Steve Martin"
+  1949: "{COLOUR WINDOW_2}Dissenyador gràfic: Rod Tilley"
+  1950: "{COLOUR WINDOW_2}Directora de serveis editorials i documentació: Elizabeth Mackney"
+  1951: "{COLOUR WINDOW_2}Especialista en documentació: Kurt Carlson"
+  1952: "{COLOUR WINDOW_2}Redactor: Paul Collin"
+  1953: "{COLOUR WINDOW_2}Redactor del manual: David Ellis"
+  1954: "{COLOUR WINDOW_2}Director de suport editorial: Michael Gilmartin"
+  1955: "{COLOUR WINDOW_2}Responsables de control de qualitat: Bill Carroll i Dave Strang"
+  1956: "{COLOUR WINDOW_2}Supervisor de control de qualitat: Jason Cordero"
+  1957: "{COLOUR WINDOW_2}Responsable de TI (Regió Oest): Ken Ford"
+  1958: "{COLOUR WINDOW_2}Responsable de suport tècnic: Michael Vetsch"
+  1959: "{COLOUR WINDOW_2}Cap de proves: Marshall Clevesy"
+  1960: "{COLOUR WINDOW_2}Cap adjunt de proves: Sean McLaren"
+  1961: "{COLOUR WINDOW_2}Provadors: Randy Alfonso, Leticia Dueñas, John Hockaday, Tony Hsu, Brandon Reed i Nessie Rilveria"
+  1962: "{COLOUR WINDOW_2}Supervisor del laboratori de compatibilitat: Dave Strang"
+  1963: "{COLOUR WINDOW_2}Cap de proves de compatibilitat: Cuong Vu"
+  1964: "{COLOUR WINDOW_2}Analistes de compatibilitat: Randy Buchholz, Mark Florentino, Chris McQuinn, Scotte Kramer i Patricia-Jean Cody"
+  1965: "{COLOUR WINDOW_2}Especialista en serveis d'enginyeria: Ken Edwards"
+  1966: "{COLOUR WINDOW_2}Tècnics de serveis d'enginyeria: Eugene Lai i Dan Burkhead"
+  1967: "{COLOUR WINDOW_2}Agraïments especials: John Billington i Cecelia Hernandez"
+  1968: "{COLOUR WINDOW_2}"
+  1969: "{COLOUR WINDOW_2}"
+  1970: "{COLOUR WINDOW_2}"
+  1971: "{COLOUR WINDOW_2}"
+  1972: "{COLOUR WINDOW_2}"
+  1973: "{COLOUR WINDOW_2}"
+  1974: "{COLOUR WINDOW_2}"
+  1975: "{COLOUR WINDOW_2}"
+  1976: "{COLOUR WINDOW_2}"
+  1977: "{COLOUR WINDOW_2}"
+  1978: "{COLOUR WINDOW_2}"
+  1979: "{COLOUR WINDOW_2}"
+  1980: "{COLOUR WINDOW_2}"
+  1981: "{COLOUR WINDOW_2}"
+  1982: "{COLOUR WINDOW_2}"
+
+  1983: Distància × unitats de càrrega transportades al mes
+  1984: "{SMALLFONT}{COLOUR BLACK}Gràfics de la distància de càrrega transportada per cada empresa"
+  1985: "{COLOUR WINDOW_2}Velocitat mitjana de l'últim trajecte: {COLOUR BLACK}{VELOCITY}"
+  1986: terrestre
+  1987: aeri
+  1988: aquàtic
+  1989: Tren
+  1990: Autobús
+  1991: Camió
+  1992: Tramvia
+  1993: Avió
+  1994: Vaixell
+  1995: "{SMALLFONT}{COLOUR BLACK}Rècords de velocitat"
+  1996: Rècords de velocitat
+  1997: "{COLOUR WINDOW_2}Rècord de velocitat del servei terrestre: {COLOUR BLACK}{VELOCITY}"
+  1998: "{COLOUR WINDOW_2}Rècord de velocitat del servei aeri: {COLOUR BLACK}{VELOCITY}"
+  1999: "{COLOUR WINDOW_2}Rècord de velocitat del servei aquàtic: {COLOUR BLACK}{VELOCITY}"
+  2000: "{COLOUR BLACK}Aconseguit per {STRINGID} el {DATE DMY}."
+  2001: Confirma el canvi del mode de visualització
+  2002: "{COLOUR WINDOW_2}La resolució de pantalla ha canviat a {UINT16 RAW} × {UINT16 RAW}."
+  2003: "{COLOUR WINDOW_2}_"
+  2004: "{COLOUR WINDOW_2}Nom del fitxer:"
+  2005: "{COLOUR WINDOW_2}Carpeta: {COLOUR BLACK}{STRINGID}"
+  2006: "{SMALLFONT}{COLOUR BLACK}Puja un nivell fins a la carpeta superior."
+  2007: "{COLOUR WINDOW_2}Empresa: {COLOUR BLACK}{STRINGID}"
+  2008: "{COLOUR WINDOW_2}Data: {COLOUR BLACK}{DATE DMY}"
+  2009: "{COLOUR WINDOW_2}Progrés del repte: {COLOUR BLACK}{INT16}%"
+  2010: "{COLOUR WINDOW_2}Repte: {COLOUR BLACK}Completat"
+  2011: "{COLOUR WINDOW_2}Repte: {COLOUR BLACK}No superat"
+  2012: "Voleu substituir el fitxer existent «{STRINGID}»?"
+  2013: Substitueix
+  2014: "Voleu suprimir el fitxer «{STRINGID}»?"
+  2015: Suprimeix
+  2016: "Error: nom de fitxer no vàlid"
+  2017: Nom de la indústria
+  2018: "Introdueix un nom nou per a {STRINGID}:"
+  2019: El nom de la indústria no es pot canviar...
+  2020: "{NEWLINE 0 1}{SPRITE}{SMALLFONT}{NEWLINE 45 1}Velocitat màx.: {STRINGID}{NEWLINE 45 11}Límit d'altura: {HEIGHT}"
+  2021: S'han detectat claus de CD duplicades. La connexió no es pot establir!
+  2022: "{COLOUR BLACK}{SMALLFONT}(Nom de l'ordinador = {STRINGID})"
+  2023: 1r
+  2024: 2n
+  2025: 3r
+  2026: 4t
+  2027: 5è
+  2028: 6è
+  2029: 7è
+  2030: 8è
+  2031: 9è
+  2032: 10è
+  2033: 11è
+  2034: 12è
+  2035: 13è
+  2036: 14è
+  2037: 15è
+  2038: "{COLOUR BLACK}{INT16} seleccionats (màxim {INT16})"
+  2039: ""
+  2040: ""
+  2041: "{COLOUR BLACK}(ID: "
+  2042: "No s'han trobat dades de l'objecte següent: "
+  2043: No hi ha prou memòria per als gràfics.
+  2044: Hi ha massa objectes d'aquest tipus seleccionats.
+  2045: "Abans cal seleccionar l'objecte següent: "
+  2046: Aquest objecte ja s'utilitza actualment.
+  2047: Aquest objecte és necessari per a un altre objecte.
+  2048: Aquest objecte és obligatori.
+  2049: Aquest objecte no es pot seleccionar.
+  2050: Aquest objecte no es pot traure de la selecció.
+  2051: Selecció d'objectes no vàlida
+  2052: Selecció d'objectes - {STRINGID}
+  2053: Estils de la interfície
+  2054: Sons
+  2055: Moneda
+  2056: Efectes d'animació
+  2057: Costats verticals del terreny
+  2058: Aigua
+  2059: Terreny
+  2060: Noms de les poblacions
+  2061: Càrrega
+  2062: Murs
+  2063: Senyals
+  2064: Passos a nivell
+  2065: Fanals
+  2066: Túnels
+  2067: Ponts
+  2068: Estacions ferroviàries
+  2069: Complements ferroviaris
+  2070: Vies
+  2071: Estacions de carretera
+  2072: Complements de carretera
+  2073: Carreteres
+  2074: Aeroports
+  2075: Ports
+  2076: Vehicles
+  2077: Arbres
+  2078: Neu
+  2079: Clima
+  2080: Dades de generació del mapa
+  2081: Edificis
+  2082: Bastides
+  2083: Indústries
+  2084: Regió del món
+  2085: Propietaris d'empreses
+  2086: Descripcions dels escenaris
+  2087: llista d'objectes
+  2088: "Falten dades de l'objecte, ID: "
+  2089: Exporta els objectes dels connectors amb les partides desades.
+  2090: "{SMALLFONT}{COLOUR BLACK}Seleccioneu si voleu desar les dades addicionals dels objectes de complement necessàries (dades addicionals no incloses amb el producte principal) dins de les partides desades o dels escenaris, de manera que puguin ser carregats per altres persones encara que no disposin d'aquestes dades addicionals."
+  2091: Cal seleccionar com a mínim un tipus de carretera genèrica de doble sentit.
+  2092: Cal seleccionar un tipus de bastida.
+  2093: Avançat
+  2094: "{SMALLFONT}{COLOUR BLACK}Permet una selecció més avançada dels elements individuals."
+  2095: "{COLOUR WHITE}{BIGFONT} £"
+  2096: Els objectes nous s'han instal·lat correctament.
+  2097: Cal seleccionar com a mínim una indústria.
+  2098: Cal seleccionar com a mínim un edifici urbà.
+  2099: Cal seleccionar un tipus d'edifici per a la seu de l'empresa.
+  2100: Només es pot seleccionar un tipus d'edifici per a la seu de l'empresa.
+  2101: Cal seleccionar un tipus d'interfície.
+  2102: Cal seleccionar com a mínim un tipus de vehicle.
+  2103: Cal seleccionar com a mínim un tipus de terreny.
+  2104: Cal seleccionar un tipus de moneda.
+  2105: Cal seleccionar un tipus d'aigua.
+  2106: Cal seleccionar un estil de noms de ciutats.
+  2107: Cal seleccionar com a mínim un tipus de pas a nivell.
+  2108: Cal seleccionar un tipus d'enllumenat públic.
+  2109: Cal seleccionar un tipus de neu (encara que no sigui necessari).
+  2110: Cal seleccionar un tipus de clima.
+  2111: Cal seleccionar un tipus de dades de generació del mapa.
+  2112: Cal seleccionar un tipus de regió.
+  2113: mph
+  2114: km/h
+  2115: "hora:"
+  2116: "hores:"
+  2117: min
+  2118: "min:"
+  2119: s
+  2120: " unitats"
+  2121: peus
+  2122: m
+  2123: CV
+  2124: kW
+  2125: "{COLOUR WINDOW_2}Idioma:"
+  2126: "{COLOUR WINDOW_2}Desactiva les avaries dels vehicles"
+  2127: "{COLOUR WINDOW_2}Mode de pantalla:"
+  2128: Finestra
+  2129: Pantalla completa
+  2130: Pantalla completa (sense vores)
+  2131: Dispositiu de so predeterminat
+  2132: "{COLOUR WINDOW_2}Factor d'escala de la finestra:"
+  2133: "{COLOUR BLACK}+"
+  2134: "{COLOUR BLACK}-"
+  2135: "{COLOUR BLACK}{INT32_2DP}"
+  2136: "{COLOUR WINDOW_2}Amplia cap a la posició del cursor"
+  2137: "{SMALLFONT}{COLOUR BLACK}Quan està activat i en ampliar la vista, aquesta se centrarà al voltant del cursor en lloc del centre de la pantalla."
+  2138: "{COLOUR WINDOW_2}Reprodueix la música de la pantalla inicial"
+  2139: "Surt al menú"
+  2140: "Surt de l'OpenLoco"
+  2141: "{COLOUR WINDOW_2}Desactiva les empreses controlades per la IA"
+  2142: "{SMALLFONT}{COLOUR BLACK}Això impedeix que la IA «pensi», fent que les empreses controlades per aquesta siguin ineficients.{NEWLINE}A les partides noves, també evita que es creïn empreses noves controlades per la IA."
+  2143: "{COLOUR WINDOW_2}Nombre de desades automàtiques:"
+  2144: "{COLOUR WINDOW_2}Freqüència de les desades automàtiques:"
+  2145: "Mai"
+  2146: "Cada mes"
+  2147: "Cada {INT32} mesos"
+  2148: "{COLOUR WINDOW_2}Origen del mapa d'altituds:"
+  2149: Generador original
+  2150: Generador símplex
+  2151: "Modifica el vehicle"
+  2152: "Clona el vehicle"
+  2153: "El vehicle no es pot clonar..."
+  2154: "Localitza el vehicle a la vista principal."
+  2155: "Segueix el vehicle a la vista principal."
+  2156: "Activa el menú de trucs/depuració a la barra d'eines"
+  2157: "{SMALLFONT}{COLOUR BLACK}Afegeix un botó addicional a la barra d'eines del joc que permet accedir fàcilment a diversos trucs i opcions de depuració."
+  2158: "Activa el mode lliure"
+  2159: "Permet la conducció manual"
+  2160: "Permet construir amb la partida en pausa"
+  2161: "Mostra el comptador de FPS"
+  2162: "{SMALLFONT}{COLOUR BLACK}Mostra un comptador a la part superior de la pantalla que indica el nombre d'imatges per segon processades."
+  2163: "Sense límit de fotogrames"
+  2164: "{SMALLFONT}{COLOUR BLACK}Suprimeix la limitació de renderització a 40 Hz."
+  2165: "Maquinari"
+  2166: "Renderització del mapa"
+  2167: "Inspector de caselles"
+  2168: "{SMALLFONT}{COLOUR BLACK}Activeu-ho per a seleccionar una casella del mapa i inspeccionar-la."
+  2169: "Superfície"
+  2170: "Via"
+  2171: "Estació"
+  2172: "Senyal"
+  2173: "Edifici"
+  2174: "Arbre"
+  2175: "Mur"
+  2176: "Carretera"
+  2177: "Indústria"
+  2178: "{COLOUR WINDOW_2} {STRINGID} ({STRINGID})"
+  2179: "{COLOUR WINDOW_2} {STRINGID} - {STRINGID} ({STRINGID})"
+  2180: "X:"
+  2181: "Y:"
+  2182: "{COLOUR WINDOW_2}{INT16}"
+  2183: "Dades dels elements de la casella"
+  2184: "Trucs"
+  2185: "Trucs financers"
+  2186: "Trucs de l'empresa"
+  2187: "Trucs dels vehicles"
+  2188: "Trucs de les poblacions"
+  2189: "Amortitza el préstec"
+  2190: "Amortitza"
+  2191: "{COLOUR BLACK}{CURRENCY32}"
+  2192: "Seleccioneu l'empresa objectiu."
+  2193: "Seleccioneu el truc que voleu aplicar."
+  2194: "Pren el control d'aquesta empresa"
+  2195: "Adquireix tots els actius de l'empresa"
+  2196: "Commuta l'estat de fallida"
+  2197: "Commuta l'estat d'empresonament"
+  2198: "Augmenta els fons"
+  2199: "{COLOUR WINDOW_2}Quantitat:"
+  2200: "Afegeix"
+  2201: "Fiabilitat dels vehicles"
+  2202: "Posa-ho tot a zero (il·limitat)"
+  2203: "Posa-ho tot a cent (renovació completa)"
+  2204: "Estableix les valoracions de l'empresa"
+  2205: "-10 % per tot arreu"
+  2206: "+10 % per tot arreu"
+  2207: "Mínim per tot arreu"
+  2208: "Màxim per tot arreu"
+  2209: "Tots els vehicles"
+  2210: "Parant a l'estació"
+  2211: "Transportant càrrega"
+  2212: "{MOVE_X 10}Transportant {STRINGID} {SPRITE}"
+  2213: "»{MOVE_X 10}Transportant {STRINGID} {SPRITE}"
+  2214: "No s'ha seleccionat cap estació."
+  2215: "No s'ha seleccionat cap tipus de càrrega."
+  2216: "{SMALLFONT}{COLOUR BLACK}Obriu una finestra d'estació per a filtrar per estació."
+  2217: "{SMALLFONT}{COLOUR BLACK}Seleccioneu un tipus de càrrega de la llista de càrregues disponibles."
+  2218: "Construcció: pestanya anterior"
+  2219: "Construcció: pestanya següent"
+  2220: "Construcció: tram de via anterior"
+  2221: "Construcció: tram de via següent"
+  2222: "Construcció: pendent anterior"
+  2223: "Construcció: pendent següent"
+  2224: "Construcció: construeix a la posició actual"
+  2225: "Construcció: elimina a la posició actual"
+  2226: "Construcció: selecciona la posició"
+  2227: "Els trens fan marxa enrere als senyals"
+  2228: Pagament automàtic
+  2229: "{SMALLFONT}{COLOUR BLACK}Un cop al dia, els fons disponibles s'utilitzaran automàticament per a amortitzar el préstec, si en teniu."
+  2230: "{COLOUR WINDOW_2}Any:"
+  2231: "{COLOUR WINDOW_2}Mes:"
+  2232: "{COLOUR WINDOW_2}Dia:"
+  2233: Estableix la data
+  2234: "{COLOUR BLACK}{UINT16 RAW}"
+  2235: "{COLOUR BLACK}{INT32}"
+  2236: "{COLOUR BLACK}{INT32}"
+  2237: "{DATE DMY}"
+  2238: "Velocitat del joc: normal"
+  2239: "Velocitat del joc: avanç ràpid"
+  2240: "Velocitat del joc: avanç molt ràpid"
+  2241: "{COLOUR WINDOW_2}Capacitat: {COLOUR BLACK}{STRINGID}"
+  2242: "{NEWLINE}{COLOUR WINDOW_2} Obsolet: {COLOUR BLACK}{UINT16 RAW}"
+  2243: "El vehicle està blocat!"
+  2244: "Mostra els vehicles bloquejats"
+  2245: "{SMALLFONT}{COLOUR BLACK}Quan està activat, es mostraran els vehicles obsolets i els que encara no s'ha dissenyat."
+  2246: "{NEWLINE}{COLOUR WINDOW_2} Projectat: {COLOUR BLACK}{UINT16 RAW}"
+  2247: "Permet construir vehicles bloquejats"
+  2248: "{SMALLFONT}{COLOUR BLACK}Quan està activat, permet construir vehicles obsolets i vehicles que encara no s'han dissenyat."
+  2249: "Finestra de construcció de vehicles"
+  2250: "{SMALLFONT}{COLOUR BLACK}Activeu-ho per a canviar el tipus de terreny en lloc de l'elevació."
+  2251: "Inverteix l'arrossegament amb el botó dret"
+  2252: "{SMALLFONT}{COLOUR BLACK}Quan està activat, el desplaçament de la vista principal tindrà el moviment invertit."
+  2253: "Mostra els indicadors de diners"
+  2254: "{SMALLFONT}{COLOUR BLACK}Activa o desactiva la visualització dels indicadors de diners procedents de la construcció i dels vehicles."
+  2255: "Inicia el servidor"
+  2256: "Tanca el servidor"
+  2257: "Desconnecta"
+  2258: "{COLOUR WINDOW_2}Longitud: {COLOUR BLACK}{INT32_2DP} casella/es, {INT32} vehicles"
+  2259: "{COLOUR WINDOW_2}Longitud: {COLOUR BLACK}{INT32_2DP} casella/es"
+  2260: "{COLOUR WINDOW_2} Longitud: {COLOUR BLACK}{INT32_2DP} casella/es"
+  2261: "{NEWLINE}{COLOUR WINDOW_2} Longitud: {COLOUR BLACK}{INT32_2DP} casella/es"
+  2262: "{NEWLINE}Longitud: {INT32_2DP} casella/es"
+  2263: "{COLOUR BLACK}{UINT16}/{UINT16}"
+  2264: "Captura de pantalla gegant"
+  2265: "{COLOUR WINDOW_2} Nom del fitxer: {COLOUR BLACK}{STRINGID}"
+  2266: "Opcions de l'escenari"
+  2267: "Selecció d'objectes"
+  2268: "Ajustos de jugabilitat"
+  2269: "Propietari preferit"
+  2270: "Preferències de desament automàtic"
+  2271: "Desactiva el creixement de les ciutats"
+  2272: "{SMALLFONT}{COLOUR BLACK}Quan està activat, les ciutats no es renovaran ni creixeran amb el temps."
+  2273: "Completa el repte de l'escenari"
+  2274: "Cancel·la"
+  2275: "Error en carregar els objectes"
+  2276: "{COLOUR BLACK}No s'ha pogut carregar el fitxer perquè falten alguns dels objectes referenciats o estan malmesos. A continuació es mostra la llista d'aquests objectes."
+  2277: "{COLOUR BLACK}ID de l'objecte"
+  2278: "{COLOUR BLACK}Tipus"
+  2279: "{COLOUR BLACK}Suma de verificació"
+  2280: "Reprodueix efectes de so per als missatges nous"
+  2281: "{SMALLFONT}{COLOUR BLACK}Quan està activat, els missatges nous aniran acompanyats d'un efecte de so amb els aplaudiments d'un públic entusiasta."
+  2282: "{SMALLFONT}{COLOUR BLACK}Inverteix l'ordre de la taula de rutes"
+  2283: "Nom i tipus"
+  2284: "AB"
+  2285: "AL"
+  2286: "D"
+  2287: "F"
+  2288: "{SMALLFONT}{COLOUR BLACK}Nom i tipus de l'element de la casella"
+  2289: "{SMALLFONT}{COLOUR BLACK}Alçària base de l'element de la casella"
+  2290: "{SMALLFONT}{COLOUR BLACK}Alçària lliure de l'element de la casella"
+  2291: "{SMALLFONT}{COLOUR BLACK}Direcció de l'element de la casella"
+  2292: "{SMALLFONT}{COLOUR BLACK}Estat fantasma de l'element de la casella"
+  2293: "Principiant"
+  2294: "Avançat"
+  2295: "Expert"
+  2296: "Original"
+  2297: "Personalitzat"
+  2298: "Components"
+  2299: "Any de disseny"
+  2300: "Nom"
+  2301: "Sense motor"
+  2302: "Motoritzat"
+  2303: "Desblocat"
+  2304: "Blocat"
+  2305: "Càrrega"
+  2306: "Tots els tipus de càrrega"
+  2307: "{MOVE_X 10}{STRINGID} {SPRITE}"
+  2308: "»{MOVE_X 10}{STRINGID} {SPRITE}"
+  2309: "{COLOUR BLACK}{STRINGID} {SPRITE}"
+  2310: "Sense càrrega"
+  2311: "Desactiva la penalització de càrrega dels vehicles"
+  2312: "{SMALLFONT}{COLOUR BLACK}Quan està activat, s'elimina la penalització de velocitat de càrrega quan la longitud del vehicle supera la longitud de l'estació."
+  2313: "Edificis transparents"
+  2314: "Carreteres transparents"
+  2315: "Decoració transparent"
+  2316: "Vies transparents"
+  2317: "Arbres transparents"
+  2318: "Commuta la visibilitat dels edificis"
+  2319: "Commuta la visibilitat de les carreteres"
+  2320: "Commuta la visibilitat de la decoració"
+  2321: "Commuta la visibilitat de les vies"
+  2322: "Commuta la visibilitat dels arbres"
+  2323: "{SMALLFONT}{COLOUR BLACK}Activeu-ho per a suavitzar les vores exteriors del terreny elevat. És útil per a crear muntanyes."
+  2324: "Comportament dels vehicles i les vies"
+  2325: "{SMALLFONT}{COLOUR BLACK}Opcions de l'empresa"
+  2326: "Opcions - Empresa"
+  2327: "Rostre preferit del propietari"
+  2328: "Utilitza el rostre preferit en començar una partida nova"
+  2329: "{SMALLFONT}{COLOUR BLACK}Quan està seleccionat, s'utilitzarà el rostre preferit del propietari quan comenci un escenari nou."
+  2330: "{COLOUR WINDOW_2}Rostre preferit del propietari: {COLOUR BLACK}{STRINGID}"
+  2331: "Seleccioneu el rostre preferit del propietari de l'empresa"
+  2332: "{COLOUR WINDOW_2}Desactiva les limitacions de mida de les estacions"
+  2333: "{SMALLFONT}{COLOUR BLACK}Quan està activat, la longitud màxima de les estacions ferroviàries ja no estarà limitada a 16 caselles. Tingueu en compte, però, que les estacions no poden ocupar més de 80 caselles en total."
+  2334: Generació del paisatge - Aigua
+  2335: "{SMALLFONT}{COLOUR BLACK}Opcions de generació d'aigua"
+  2336: General
+  2337: Generador
+  2338: "{COLOUR WINDOW_2}Objecte actual de turó: {COLOUR BLACK}{STRINGID}"
+  2339: "{COLOUR WINDOW_2}Nombre de passades de suavitzat del terreny:"
+  2340: "Fitxer de mapa d'altituds PNG"
+  2341: "Carrega un fitxer de mapa d'altituds PNG"
+  2342: "Navega..."
+  2343: "{COLOUR WINDOW_2}Fitxer de mapa d'altituds actual: {COLOUR BLACK}{STRING}"
+  2344: "(cap seleccionat)"
+  2345: "Es comproven els fitxers d'escenari..."
+  2346: "{COLOUR BLACK}Producció del mes passat"
+  2347: "{COLOUR BLACK}Producció del mes passat ▼"
+  2348: "{SMALLFONT}{COLOUR BLACK}Ordena la llista per la producció del mes passat."
+  2349: "Mostra la finestra d'opcions"
+  2350: "Ponts transparents"
+  2351: "Activa/desactiva els ponts transparents"
+  2352: "{COLOUR WINDOW_2}Nombre de lleres de riu:"
+  2353: "{COLOUR WINDOW_2}Amplada mínima del riu:"
+  2354: "{COLOUR WINDOW_2}Amplada màxima del riu:"
+  2355: "{COLOUR WINDOW_2}Amplada de la riba del riu:"
+  2356: "{COLOUR WINDOW_2}Índex de meandres:"
+  2357: "OpenLoco"
+  2358: "Activa/desactiva l'eina de pintar"
+  2359: "{SMALLFONT}{COLOUR BLACK}Repinta els vehicles {POP16}{STRINGID}.{NEWLINE}Amb Maj+clic, es pinten tots tots.{NEWLINE}Amb Ctrl+clic, es pinten els subvehicles."
+  2360: "Pinta tots els connectats"
+  2361: "Opcions - Renderització"
+  2362: "{SMALLFONT}{COLOUR BLACK}Opcions de renderització"
+  2363: "Confirma la venda del component"
+  2364: "Si es ven aquest component del vehicle, s'eliminarà tota la càrrega de tot el vehicle. Esteu segur que voleu continuar?"
+  2365: "Ven el component"
+  2366: "Confirma la remodelació del component"
+  2367: "Si es remodela aquest component del vehicle, s'eliminarà tota la càrrega de tot el vehicle. Esteu segur que voleu continuar?"
+  2368: "Remodela el component"
+  2369: "{SMALLFONT}{COLOUR BLACK}Opcions d'àudio"
+  2370: "Opcions - Àudio"
+  2371: "So"
+  2372: "Reproductor de música"
+  2373: "{COLOUR WINDOW_2}Volum de la música:"
+  2374: "Mostra com a fantasmes les vies/carreteres planificades per la IA"
+  2375: "{SMALLFONT}{COLOUR BLACK}Mostra les rutes planificades per les empreses controlades per la IA com a elements fantasma."
+  2376: "{MOVE_X 15}{COLOUR BLACK}Títol"
+  2377: "{MOVE_X 15}{COLOUR BLACK}Títol ▲"
+  2378: "{MOVE_X 15}{COLOUR BLACK}Títol ▼"
+  2379: "{COLOUR BLACK}Anys"
+  2380: "{COLOUR BLACK}Anys ▲"
+  2381: "{COLOUR BLACK}Anys ▼"
+  2382: "{SMALLFONT}{COLOUR BLACK}Ordena la llista pel títol de la pista."
+  2383: "{SMALLFONT}{COLOUR BLACK}Ordena la llista pels anys en què cada pista es reprodueix en el mode «era actual»."
+  2384: "{UINT16}-{UINT16}"
+  2385: "{UINT16}-"
+  2386: "-{UINT16}"
+  2387: "-"
+  2388: "{UINT16} pista musical seleccionada"
+  2389: "{UINT16} pistes musicals seleccionades"
+  2390: "Interfície d'usuari"
+  2391: "Estil del marc de la finestra:"
+  2392: "{SMALLFONT}{COLOUR BLACK}Aquest és l'estil utilitzat per a decorar les finestres."
+  2393: "Degradat (per defecte)"
+  2394: "Color sòlid"
+  2395: "Color translúcid"
+  2396: "Límit de fotogrames per segon:"
+  2397: "Velocitat interna (per defecte)"
+  2398: "Sincronització vertical"
+  2399: "Sense límit"
+  2400: "Confirma el moviment del component"
+  2401: "Mou el component"
+  2402: "Si moveu aquest component del vehicle, s'eliminarà tota la càrrega de tot el vehicle. Voleu continuar?"
+  2403: "Si moveu aquest component del vehicle, s'eliminarà tota la càrrega de tots dos vehicles. Voleu continuar?"
+  2404: "Principal:"
+  2405: "{SMALLFONT}{COLOUR BLACK}Ajusta el volum general."
+  2406: "Efectes:"
+  2407: "{SMALLFONT}{COLOUR BLACK}Ajusta el volum dels efectes."
+  2408: "Vehicles:"
+  2409: "{SMALLFONT}{COLOUR BLACK}Ajusta el volum dels vehicles."
+  2410: "Interfície:"
+  2411: "{SMALLFONT}{COLOUR BLACK}Ajusta el volum dels efectes de la interfície d'usuari."
+  2412: "{SMALLFONT}{COLOUR BLACK}Ajusta el volum de la música."
+  2413: "Volum"
+  2414: "Música:"
+  2415: "Ambient:"
+  2416: "{SMALLFONT}{COLOUR BLACK}Ajusta el volum dels sons ambientals."
+  2417: "Títol de Locomotion"
+  2418: "Copia"
+  2419: "{SMALLFONT}{COLOUR BLACK}Permet seleccionar una àrea d'elements de via per copiar."
+  2420: "Enganxa"
+  2421: "{SMALLFONT}{COLOUR BLACK}Permet enganxar al mapa una àrea d'elements de via copiada."
+  2422: "Obre les opcions d'àudio"
+  2423: "Obre el reproductor de música"
+  2424: "Mostra la finestra del reproductor de música"
+  2425: "Cost"
+  2426: "Potència"
+  2427: "Velocitat màxima"
+  2428: "Pes"
+  2429: "Longitud"
+  2430: "Ordre ascendent"
+  2431: "Ordre descendent"
+  2432: "Capacitat"
+  2433: "Obsolescència"
+  2434: "Càrrega del vehicle"
+  2435: "Conserva la càrrega del vehicle en modificar-lo o recollir-lo"
+  2436: "{SMALLFONT}{COLOUR BLACK}Quan està activat, la càrrega no s'eliminarà de tot el vehicle en afegir vagons, moure vagons o recollir el vehicle."
+  2437: "Ordena per"
+  2438: "Empresa preferida"
+  2439: Utilitza sempre el nom d'empresa preferit en començar una partida nova
+  2440: "{SMALLFONT}{COLOUR BLACK}Seleccioneu aquesta opció per a fer servir sempre el mateix nom d'empresa quan comenci una partida nova."
+  2441: "{COLOUR WINDOW_2}Nom d'empresa preferit: {COLOUR BLACK}{STRINGID}"
+  2442: Nom d'empresa preferit
+  2443: "Introduïu el nom d'empresa preferit:"
+  2444: El nom de l'empresa no es pot canviar...
+  2445: "{STRINGID} no té companyies de transport a prop."
+  2446: "{STRINGID} no ha rebut cap carregament durant l'últim mes."
+  2447: "{SMALLFONT}{COLOUR BLACK}Vés a la carpeta inicial d'aquest tipus d'element."
+  2448: "Alt + "
+  2449: "Ctrl e. + "
+  2450: "Ctrl e. + "
+  2451: "{STRINGID}{STRINGID}{STRINGID}{STRINGID}{STRINGID}"
+  2452: "{COLOUR BLACK}«{STRINGID}»"
+  2453: "Música"
+  2454: "{COLOUR WINDOW_2}Reprodueix música durant la partida"
+  2455: "Obre el reproductor de música..."
+  2456: "{COLOUR WINDOW_2}Càrrega en espera per a ser processada:"
+  2457: "{COLOUR WINDOW_2}Càrrega que espera per a ser transportada:"
+  2458: "{STRINGID}{STRINGID}"
+  2459: "Finestra de depuració"
+  2460: "Mostra els menús de la barra d'eines al passar-hi per sobre"
