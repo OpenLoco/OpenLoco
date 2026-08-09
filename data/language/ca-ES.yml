@@ -2412,7 +2412,7 @@ strings:
   2356: "{COLOUR WINDOW_2}Índex de meandres:"
   2357: "OpenLoco"
   2358: "Activa/desactiva l'eina de pintar"
-  2359: "{SMALLFONT}{COLOUR BLACK}Repinta els vehicles {POP16}{STRINGID}.{NEWLINE}Amb Maj+clic, es pinten tots tots.{NEWLINE}Amb Ctrl+clic, es pinten els subvehicles.".
+  2359: "{SMALLFONT}{COLOUR BLACK}Repinta els vehicles {POP16}{STRINGID}.{NEWLINE}Amb Maj+clic, es pinten tots tots.{NEWLINE}Amb Ctrl+clic, es pinten els subvehicles."
   2360: "Pinta tots els connectats"
   2361: "Opcions - Renderització"
   2362: "{SMALLFONT}{COLOUR BLACK}Opcions de renderització"
