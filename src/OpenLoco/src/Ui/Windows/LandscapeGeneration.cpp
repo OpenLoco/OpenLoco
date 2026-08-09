@@ -465,7 +465,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case Widx::kHeightMapDropdown:
                     if (itemIndex != -1)
                     {
-                        Scenario::getOptions().generator = static_cast<Scenario::LandGeneratorType>(itemIndex);
+                        auto generator = static_cast<Scenario::LandGeneratorType>(itemIndex);
+                        Scenario::getOptions().generator = generator;
                         window.invalidate();
                     }
                     break;
@@ -529,7 +530,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case Widx::kGenerateWhenGameStarts:
                     if ((Scenario::getOptions().scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none)
                     {
-                        Scenario::getOptions().scenarioFlags |= Scenario::ScenarioFlags::landscapeGenerationDone;
                         Scenario::generateLandscape();
                     }
                     else
