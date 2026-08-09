@@ -15,6 +15,7 @@
 - Fix: [#3855] UI invalidation issue when using switch company cheat.
 - Fix: [#3856] News ticker uses double the line height.
 - Fix: [#3858] Save file details can overflow the file browser window at minimum height.
+- Fix: [#3860] Viewport panning is broken during tutorial playback.
 - Fix: [#3861] The news sound setting is not read properly from the config file.
 - Fix: [#3888] Bridges can be drawn over tall buildings, industries and stations (original bug).
 - Fix: [#3890] On Linux/POSIX, setting the game path does not work correctly if it contains spaces.
