@@ -130,6 +130,7 @@ namespace OpenLoco::Input
         {
             case Tutorial::State::none:
             case Tutorial::State::initialising:
+            case Tutorial::State::standby:
                 break;
 
             case Tutorial::State::playing:

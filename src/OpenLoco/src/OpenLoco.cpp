@@ -291,6 +291,11 @@ namespace OpenLoco
             _time_since_last_tick = 31;
         }
 
+        if (Tutorial::state() == Tutorial::State::standby && SceneManager::isPlayMode())
+        {
+            Tutorial::start();
+        }
+
         GameCommands::resetCommandNestLevel();
         Ui::tick();
 

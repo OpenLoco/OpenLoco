@@ -433,7 +433,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             return;
         }
 
-        OpenLoco::Tutorial::start(itemIndex);
+        OpenLoco::Tutorial::initialise(itemIndex);
     }
 
     static void sub_4391DA()

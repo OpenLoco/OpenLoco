@@ -288,6 +288,7 @@ namespace OpenLoco::Input
         {
             case Tutorial::State::none:
             case Tutorial::State::initialising:
+            case Tutorial::State::standby:
             {
                 _cursor2 = _cursor;
                 break;
