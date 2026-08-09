@@ -393,6 +393,17 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             self.widgets[widx::heightmapFileLabel].hidden = !isPngFile;
             self.widgets[widx::browseHeightmapFile].hidden = !isPngFile;
 
+            // Enable/disable the 'generate when game starts' checkbox
+            if ((options.scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none)
+            {
+                self.activatedWidgets |= (1 << widx::generate_when_game_starts);
+                self.disabledWidgets &= ~(1 << widx::generate_when_game_starts);
+            }
+            else
+            {
+                self.activatedWidgets &= ~(1 << widx::generate_when_game_starts);
+            }
+
             if (isOriginal)
             {
                 // Prepare object name
@@ -404,6 +415,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 self.disabledWidgets &= ~(1 << widx::change_heightmap_btn);
                 self.disabledWidgets |= ((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
                 self.disabledWidgets |= (1 << widx::browseHeightmapFile);
+                self.disabledWidgets &= ~(1 << widx::generate_when_game_starts);
             }
 
             else if (isSimplex)
@@ -416,6 +428,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 self.disabledWidgets |= (1 << widx::change_heightmap_btn);
                 self.disabledWidgets &= ~((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
                 self.disabledWidgets |= (1 << widx::browseHeightmapFile);
+                self.disabledWidgets &= ~(1 << widx::generate_when_game_starts);
             }
 
             else if (isPngFile)
@@ -438,19 +451,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 self.disabledWidgets |= (1 << widx::change_heightmap_btn);
                 self.disabledWidgets |= ((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
                 self.disabledWidgets &= ~(1 << widx::browseHeightmapFile);
-
-                self.activatedWidgets &= ~(1 << widx::generate_when_game_starts);
                 self.disabledWidgets |= (1 << widx::generate_when_game_starts);
-            }
 
-            // Enable/disable the 'generate when game starts' checkbox
-            if ((options.scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none)
-            {
-                self.activatedWidgets |= (1 << widx::generate_when_game_starts);
-                self.disabledWidgets &= ~(1 << widx::generate_when_game_starts);
-            }
-            else
-            {
                 self.activatedWidgets &= ~(1 << widx::generate_when_game_starts);
             }
         }
@@ -463,7 +465,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case Widx::kHeightMapDropdown:
                     if (itemIndex != -1)
                     {
-                        Scenario::getOptions().generator = static_cast<Scenario::LandGeneratorType>(itemIndex);
+                        auto generator = static_cast<Scenario::LandGeneratorType>(itemIndex);
+                        Scenario::getOptions().generator = generator;
                         window.invalidate();
                     }
                     break;
@@ -527,7 +530,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case Widx::kGenerateWhenGameStarts:
                     if ((Scenario::getOptions().scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none)
                     {
-                        Scenario::getOptions().scenarioFlags |= Scenario::ScenarioFlags::landscapeGenerationDone;
                         Scenario::generateLandscape();
                     }
                     else

@@ -250,6 +250,7 @@ namespace OpenLoco::Scenario
         auto& options = Scenario::getOptions();
         MapGenerator::generate(options);
         options.madeAnyChanges = 0;
+        options.scenarioFlags |= Scenario::ScenarioFlags::landscapeGenerationDone;
     }
 
     // 0x0049685C
