@@ -4,6 +4,7 @@
 - Feature: [#3872] Added an option to align the top toolbar buttons horizontally centred (off by default).
 - Change: [#3815] The keyboard shortcuts window is now separated into groups, and can now be resized.
 - Change: [#3863] The toolbar buttons can now be set to open on click instead of hover.
+- Change: [#3903] Updated the macOS app icon to match the new Liquid Glass style.
 - Fix: [#2082] Scrollbars can be overdrawn when certain windows are resized but their scrollview is not.
 - Fix: [#2983] Can no longer scroll to adjust terraform tool size widgets.
 - Fix: [#3534] The minimum landscape height can be set to 0 in the landscape generator, while 1 is expected.
