@@ -1740,20 +1740,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             switchTabWidgets(self);
 
-            self.invalidate();
-
-            const auto newSize = [widgetIndex]() {
-                if (widgetIndex == widx::tab_land)
-                {
-                    return kLandTabSize;
-                }
-                else
-                {
-                    return kWindowSize;
-                }
-            }();
-
+            const auto newSize = widgetIndex == widx::tab_land ? kLandTabSize : kWindowSize;
             self.setSizeFixed(newSize);
+
             self.callPrepareDraw();
             self.initScrollWidgets();
             self.invalidate();
