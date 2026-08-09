@@ -12,6 +12,7 @@
 #include "GameCommands/Terraform/RemoveTree.h"
 #include "GameCommands/Terraform/RemoveWall.h"
 #include "GameCommands/Track/RemoveSignal.h"
+#include "GameCommands/Track/RemoveSignalsAuto.h"
 #include "GameCommands/Track/RemoveTrackMod.h"
 #include "GameCommands/Track/RemoveTrainStation.h"
 #include "Graphics/RenderTarget.h"
@@ -48,6 +49,7 @@
 #include "Ui/ToolManager.h"
 #include "Ui/Window.h"
 #include "Ui/WindowManager.h"
+#include "Ui/Windows/Construction/Construction.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/Vehicle2.h"
 #include "Vehicles/VehicleBody.h"
@@ -571,7 +573,10 @@ namespace OpenLoco::Ui::ViewportInteraction
         {
             return false;
         }
-        FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, StringIds::capt_signal);
+        const auto tooltipMessage = Windows::Construction::getConstructionState().repeatedSignalMode ? StringIds::capt_signals_block : StringIds::capt_signal;
+
+        FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, tooltipMessage);
+
         return true;
     }
 
@@ -1099,14 +1104,6 @@ namespace OpenLoco::Ui::ViewportInteraction
             }
         }
 
-        GameCommands::SignalRemovalArgs args;
-        args.pos = Pos3(pos.x, pos.y, track->baseHeight());
-        args.rotation = track->rotation();
-        args.trackId = track->trackId();
-        args.index = track->sequenceIndex();
-        args.trackObjType = track->trackObjectId();
-        args.flags = unkFlags;
-
         auto* window = WindowManager::find(WindowType::construction);
         if (window != nullptr)
         {
@@ -1114,6 +1111,15 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
 
         GameCommands::setErrorTitle(StringIds::cant_remove_signal);
+
+        GameCommands::SignalsRemovalAutoArgs args;
+        args.pos = Pos3(pos.x, pos.y, track->baseHeight());
+        args.rotation = track->rotation();
+        args.trackId = track->trackId();
+        args.index = track->sequenceIndex();
+        args.trackObjType = track->trackObjectId();
+        args.flags = unkFlags;
+        args.step = Windows::Construction::getConstructionState().repeatedSignalMode ? 1 : 0;
         if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure)
         {
             Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());

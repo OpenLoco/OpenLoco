@@ -47,10 +47,12 @@
 #include "GameCommands/Town/RemoveTown.h"
 #include "GameCommands/Town/RenameTown.h"
 #include "GameCommands/Track/CreateSignal.h"
+#include "GameCommands/Track/CreateSignalsAuto.h"
 #include "GameCommands/Track/CreateTrack.h"
 #include "GameCommands/Track/CreateTrackMod.h"
 #include "GameCommands/Track/CreateTrainStation.h"
 #include "GameCommands/Track/RemoveSignal.h"
+#include "GameCommands/Track/RemoveSignalsAuto.h"
 #include "GameCommands/Track/RemoveTrack.h"
 #include "GameCommands/Track/RemoveTrackMod.h"
 #include "GameCommands/Track/RemoveTrainStation.h"
@@ -145,7 +147,7 @@ namespace OpenLoco::GameCommands
     static constexpr StringId kErrorBelongsToOther = 0xFFFEU;
 
     // clang-format off
-    static constexpr GameCommandInfo kGameCommandDefinitions[85] = {
+    static constexpr GameCommandInfo kGameCommandDefinitions[87] = {
         { GameCommand::vehicleRearrange,             vehicleRearrange,          0x004AF1DF, true  },
         { GameCommand::vehiclePlace,                 vehiclePlace,              0x004B01B6, true  },
         { GameCommand::vehiclePickup,                vehiclePickup,             0x004B0826, true  },
@@ -231,6 +233,8 @@ namespace OpenLoco::GameCommands
         { GameCommand::setGameSpeed,                 setGameSpeed,              0,          true  },
         { GameCommand::vehicleOrderReverse,          vehicleOrderReverse,       0,          false },
         { GameCommand::vehicleRepaint,               vehicleRepaint,            0,          false },
+        { GameCommand::createSignalsAuto,            createSignalsAuto,         0,          true  },
+        { GameCommand::removeSignalsAuto,            removeSignalsAuto,         0,          true  },
     };
     // clang-format on
 

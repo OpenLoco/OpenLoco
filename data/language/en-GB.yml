@@ -2514,3 +2514,8 @@ strings:
   2459: "Debug window"
   2460: "Show toolbar menus on hover instead of click"
   2461: "Align toolbar buttons horizontally centred"
+  2462: "Repeated placement"
+  2463: "{SMALLFONT}{COLOUR BLACK}Place signals repeatedly at every 'step size' track elements"
+  2464: "Step size:"
+  2465: "Signals block"
+

@@ -1259,7 +1259,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         xPos = 3;
         yPos = self.widgets[widx::image].bottom + 16;
-        auto width = self.width - 4;
+        auto width = self.width - 7;
         drawingCtx.drawRectInset(xPos, yPos, width, 1, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset);
 
         // Following information is only calculated when a ghost has been placed
