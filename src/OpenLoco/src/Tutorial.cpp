@@ -103,6 +103,8 @@ namespace OpenLoco::Tutorial
         // Disable options that interfere with tutorial operations.
         config.cheatsMenuEnabled = false;
         config.invertRightMouseViewPan = false;
+        config.toolbarAutoMenu = true;
+        config.toolbarButtonsCentred = false;
 
         // Get the environment file for this tutorial.
         static constexpr Environment::PathId tutorialFileIds[] = {
