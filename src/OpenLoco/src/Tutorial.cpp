@@ -101,7 +101,9 @@ namespace OpenLoco::Tutorial
         }
 
         // Disable options that interfere with tutorial operations.
+        config.buildLockedVehicles = false;
         config.cheatsMenuEnabled = false;
+        config.displayLockedVehicles = false;
         config.invertRightMouseViewPan = false;
         config.toolbarAutoMenu = true;
         config.toolbarButtonsCentred = false;
