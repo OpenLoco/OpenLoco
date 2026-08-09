@@ -11,6 +11,7 @@
 - Fix: [#3566] The 'Only generate landscape when game starts' option remains in effect when switching to PNG heightmaps.
 - Fix: [#3597] News messages don't update viewport/image position correctly between messages.
 - Fix: [#3676] Fix bug where last land variation sprite went unused (original bug).
+- Fix: [#3795] Window layout changes prevent tutorials from playing correctly.
 - Fix: [#3855] UI invalidation issue when using switch company cheat.
 - Fix: [#3856] News ticker uses double the line height.
 - Fix: [#3858] Save file details can overflow the file browser window at minimum height.

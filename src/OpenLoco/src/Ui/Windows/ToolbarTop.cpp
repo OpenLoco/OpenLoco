@@ -22,6 +22,7 @@
 #include "Objects/WaterObject.h"
 #include "S5/S5.h"
 #include "SceneManager.h"
+#include "Tutorial.h"
 #include "Ui/Dropdown.h"
 #include "Ui/Screenshot.h"
 #include "Ui/ToolManager.h"
@@ -128,8 +129,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                      .separator()
                      .item(LoadSaveDropdownId::about, StringIds::menu_about)
                      .item(LoadSaveDropdownId::options, StringIds::options)
-                     .item(LoadSaveDropdownId::screenshot, StringIds::menu_screenshot)
-                     .item(LoadSaveDropdownId::giantScreenshot, StringIds::menu_giant_screenshot);
+                     .item(LoadSaveDropdownId::screenshot, StringIds::menu_screenshot);
+
+        if (OpenLoco::Tutorial::state() == OpenLoco::Tutorial::State::none)
+        {
+            d.item(LoadSaveDropdownId::giantScreenshot, StringIds::menu_giant_screenshot);
+        }
 
         auto& newConfig = Config::get();
         if (newConfig.network.enabled)
