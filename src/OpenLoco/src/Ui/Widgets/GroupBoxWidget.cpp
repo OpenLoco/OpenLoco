@@ -30,24 +30,24 @@ namespace OpenLoco::Ui::Widgets
         const auto borderPos = Ui::Point{ 0, 4 };
         const auto borderSize = Ui::Size{ size.width + 0, size.height - 4 };
 
-        // Border left of text
+        // Border top - left of text
         drawingCtx.fillRect(borderPos, { 5, 1 }, Colours::getShade(colour.c(), 4), Gfx::RectFlags::none);
         drawingCtx.fillRect(borderPos + Ui::Point{ 1, 1 }, { 4, 1 }, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
 
-        // Border right of text
+        // Border top - right of text
         drawingCtx.fillRect(Ui::Point{ textEndPos, borderPos.y }, { borderSize.width - (textEndPos - borderPos.x) - 1, 1 }, Colours::getShade(colour.c(), 4), Gfx::RectFlags::none);
         drawingCtx.fillRect(Ui::Point{ textEndPos, borderPos.y } + Ui::Point(0, 1), { borderSize.width - (textEndPos - borderPos.x) - 2, 1 }, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
 
         // Border right
-        drawingCtx.fillRect(Ui::Point{ borderPos.x + borderSize.width - 1, borderPos.y + 1 }, { 1, borderSize.height - 1 }, Colours::getShade(colour.c(), 4), Gfx::RectFlags::none);
-        drawingCtx.fillRect(Ui::Point{ borderPos.x + borderSize.width, borderPos.y }, { 1, borderSize.height + 1 }, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
+        drawingCtx.fillRect(Ui::Point{ borderPos.x + borderSize.width - 2, borderPos.y + 1 }, { 1, borderSize.height - 1 }, Colours::getShade(colour.c(), 4), Gfx::RectFlags::none);
+        drawingCtx.fillRect(Ui::Point{ borderPos.x + borderSize.width - 1, borderPos.y }, { 1, borderSize.height }, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
 
         // Border bottom
-        drawingCtx.fillRect(Ui::Point{ borderPos.x, borderPos.y + borderSize.height - 1 }, { borderSize.width - 1, 1 }, Colours::getShade(colour.c(), 4), Gfx::RectFlags::none);
-        drawingCtx.fillRect(Ui::Point{ borderPos.x, borderPos.y + borderSize.height }, { borderSize.width + 0, 1 }, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
+        drawingCtx.fillRect(Ui::Point{ borderPos.x, borderPos.y + borderSize.height - 2 }, { borderSize.width - 1, 1 }, Colours::getShade(colour.c(), 4), Gfx::RectFlags::none);
+        drawingCtx.fillRect(Ui::Point{ borderPos.x, borderPos.y + borderSize.height - 1 }, { borderSize.width + 0, 1 }, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
 
         // Border left
         drawingCtx.fillRect(Ui::Point{ borderPos.x, borderPos.y + 1 }, { 1, borderSize.height - 2 }, Colours::getShade(colour.c(), 4), Gfx::RectFlags::none);
-        drawingCtx.fillRect(Ui::Point{ borderPos.x + 1, borderPos.y + 2 }, { 1, borderSize.height - 3 }, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
+        drawingCtx.fillRect(Ui::Point{ borderPos.x + 1, borderPos.y + 2 }, { 1, borderSize.height - 4 }, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
     }
 }
