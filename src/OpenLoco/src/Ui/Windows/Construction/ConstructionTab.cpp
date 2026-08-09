@@ -1643,7 +1643,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049DAA5
-    static void onResize(Window& self)
+    static void setDisabledWidgets(Window& self)
     {
         auto disabledWidgets = self.disabledWidgets;
 
@@ -2904,6 +2904,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     {
         Common::prepareDraw(&self);
 
+        setDisabledWidgets(self);
+
         auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
         auto& cState = getConstructionState();
 
@@ -3393,7 +3395,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static constexpr WindowEventList kEvents = {
         .onClose = Common::onClose,
         .onMouseUp = onMouseUp,
-        .onResize = onResize,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
         .onUpdate = onUpdate,
