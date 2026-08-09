@@ -21,7 +21,7 @@ namespace OpenLoco::GameCommands
 
     static uint32_t createSignalsAuto(const SignalsPlacementAutoArgs& args, const uint8_t flags)
     {
-        return AutoSignalsWalk(
+        return autoSignalsWalk(
             args.pos,
             args.trackId,
             args.rotation,

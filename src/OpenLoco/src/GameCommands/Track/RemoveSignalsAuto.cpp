@@ -20,7 +20,7 @@ namespace OpenLoco::GameCommands
 
     static uint32_t removeSignalsAuto(const SignalsRemovalAutoArgs& args, const uint8_t flags)
     {
-        return AutoSignalsWalk(
+        return autoSignalsWalk(
             args.pos,
             args.trackId,
             args.rotation,

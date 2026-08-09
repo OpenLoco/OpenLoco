@@ -52,7 +52,7 @@ namespace OpenLoco::GameCommands
     };
 
     template<typename FilterFunction, typename ActionFunction>
-    static PlaceResult AutoPlaceSignals(const World::Pos3& trackStart, uint16_t tad, const uint8_t trackObjType, const uint16_t sides, const uint8_t step, const uint8_t initialStep, const uint8_t flags, FilterFunction&& filterFunc, ActionFunction&& actionFunc)
+    static PlaceResult autoPlaceSignals(const World::Pos3& trackStart, uint16_t tad, const uint8_t trackObjType, const uint16_t sides, const uint8_t step, const uint8_t initialStep, const uint8_t flags, FilterFunction&& filterFunc, ActionFunction&& actionFunc)
     {
         PlaceResult result{};
         int32_t currentStep = initialStep;
@@ -123,7 +123,7 @@ namespace OpenLoco::GameCommands
     }
 
     template<typename FilterFunction, typename ActionFunction>
-    static uint32_t AutoSignalsWalk(const World::Pos3& pos, const uint8_t trackId, const uint8_t rotation, const uint8_t index, const uint8_t trackObjType, const uint16_t sides, const uint8_t step, const uint8_t flags, FilterFunction&& filterFunc, ActionFunction&& actionFunc)
+    static uint32_t autoSignalsWalk(const World::Pos3& pos, const uint8_t trackId, const uint8_t rotation, const uint8_t index, const uint8_t trackObjType, const uint16_t sides, const uint8_t step, const uint8_t flags, FilterFunction&& filterFunc, ActionFunction&& actionFunc)
     {
         if (step == 0)
         {
@@ -144,7 +144,7 @@ namespace OpenLoco::GameCommands
         // Perform a forward walk along the track placing signals every arg.step tiles
         {
             const auto startTad = rotation | (trackId << 3);
-            auto result = AutoPlaceSignals(trackStart, startTad, trackObjType, sides, step, 0, flags, filterFunc, actionFunc);
+            auto result = autoPlaceSignals(trackStart, startTad, trackObjType, sides, step, 0, flags, filterFunc, actionFunc);
             if (result.failure)
             {
                 return GameCommands::kFailure;
@@ -175,7 +175,7 @@ namespace OpenLoco::GameCommands
                     reverseSides ^= (1U << 15) | (1U << 14);
                 }
                 // Start at step 1 so we don't place a signal on the first tile
-                auto result = AutoPlaceSignals(reverseStart, reverseTad, trackObjType, reverseSides, step, 1, flags, filterFunc, actionFunc);
+                auto result = autoPlaceSignals(reverseStart, reverseTad, trackObjType, reverseSides, step, 1, flags, filterFunc, actionFunc);
                 if (result.failure)
                 {
                     return GameCommands::kFailure;
