@@ -369,11 +369,11 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                     if (view.isEntityView())
                     {
-                        ViewportManager::create(&self, 0, origin, viewportSize, view.zoomLevel, view.entityId);
+                        ViewportManager::create(&self, subjectIndex, origin, viewportSize, view.zoomLevel, view.entityId);
                     }
                     else
                     {
-                        ViewportManager::create(&self, 0, origin, viewportSize, view.zoomLevel, view.getPos());
+                        ViewportManager::create(&self, subjectIndex, origin, viewportSize, view.zoomLevel, view.getPos());
                     }
 
                     self.invalidate();
