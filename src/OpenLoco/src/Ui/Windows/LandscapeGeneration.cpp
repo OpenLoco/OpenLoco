@@ -103,8 +103,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // Defined at the bottom of this file.
-        static void switchTabWidgets(Window* window);
+        static void prepareDraw(Window& window);
         static void switchTab(Window& window, WidgetIndex_t widgetIndex);
+        static void switchTabWidgets(Window& window);
 
         static void confirmResetLandscape(ResetLandscapeMode promptType)
         {
@@ -232,41 +233,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             window.draw(drawingCtx);
             drawTabs(window, drawingCtx);
-        }
-
-        static void prepareDraw(Window& window)
-        {
-            window.widgets[widx::frame].right = window.width - 1;
-            window.widgets[widx::frame].bottom = window.height - 1;
-
-            window.widgets[widx::panel].right = window.width - 1;
-            window.widgets[widx::panel].bottom = window.height - 1;
-
-            window.widgets[widx::caption].right = window.width - 2;
-
-            window.widgets[widx::close_button].left = window.width - 15;
-            window.widgets[widx::close_button].right = window.width - 3;
-
-            auto& options = Scenario::getOptions();
-            if (options.generator == Scenario::LandGeneratorType::PngHeightMap)
-            {
-                if (World::MapGenerator::getPngHeightmapPath().empty())
-                {
-                    window.disabledWidgets |= (1 << widx::generate_now);
-                }
-                else
-                {
-                    window.disabledWidgets &= ~(1 << widx::generate_now);
-                }
-            }
-            else if ((options.scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none)
-            {
-                window.disabledWidgets |= (1 << widx::generate_now);
-            }
-            else
-            {
-                window.disabledWidgets &= ~(1 << widx::generate_now);
-            }
         }
 
         static void update(Window& window)
@@ -1692,35 +1658,71 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
     namespace Common
     {
-        static void switchTabWidgets(Window* window)
+        struct TabInformation
         {
-            window->activatedWidgets = 0;
+            std::span<const Widget> widgets;
+            const widx widgetIndex;
+            const uint64_t holdableWidgets;
+            const WindowEventList& events;
+        };
 
-            static std::span<const Widget> widgetCollectionsByTabId[] = {
-                Options::widgets,
-                Land::widgets,
-                Water::widgets,
-                Forests::widgets,
-                Towns::widgets,
-                Industries::widgets,
-            };
+        // clang-format off
+        static TabInformation kTabInformationByTabOffset[] = {
+            { Options::widgets,    widx::tab_options,    Options::holdable_widgets,    Options::getEvents() },
+            { Land::widgets,       widx::tab_land,       Land::holdable_widgets,       Land::getEvents() },
+            { Water::widgets,      widx::tab_water,      Water::holdable_widgets,      Water::getEvents() },
+            { Forests::widgets,    widx::tab_forests,    Forests::holdable_widgets,    Forests::getEvents() },
+            { Towns::widgets,      widx::tab_towns,      Towns::holdable_widgets,      Towns::getEvents() },
+            { Industries::widgets, widx::tab_industries, Industries::holdable_widgets, Industries::getEvents() },
+        };
+        // clang-format on
 
-            auto newWidgets = widgetCollectionsByTabId[window->currentTab];
+        static void prepareDraw(Window& window)
+        {
+            window.widgets[widx::frame].right = window.width - 1;
+            window.widgets[widx::frame].bottom = window.height - 1;
 
-            window->setWidgets(newWidgets);
-            window->initScrollWidgets();
+            window.widgets[widx::panel].right = window.width - 1;
+            window.widgets[widx::panel].bottom = window.height - 1;
 
-            static constexpr widx tabWidgetIdxByTabId[] = {
-                tab_options,
-                tab_land,
-                tab_water,
-                tab_forests,
-                tab_towns,
-                tab_industries,
-            };
+            window.widgets[widx::caption].right = window.width - 2;
 
-            window->activatedWidgets &= ~((1 << tab_options) | (1 << tab_land) | (1 << tab_water) | (1 << tab_forests) | (1 << tab_towns) | (1 << tab_industries));
-            window->activatedWidgets |= (1ULL << tabWidgetIdxByTabId[window->currentTab]);
+            window.widgets[widx::close_button].left = window.width - 15;
+            window.widgets[widx::close_button].right = window.width - 3;
+
+            window.activatedWidgets &= ~((1 << tab_options) | (1 << tab_land) | (1 << tab_water) | (1 << tab_forests) | (1 << tab_towns) | (1 << tab_industries));
+            window.activatedWidgets |= (1ULL << kTabInformationByTabOffset[window.currentTab].widgetIndex);
+
+            auto& options = Scenario::getOptions();
+            if (options.generator == Scenario::LandGeneratorType::PngHeightMap)
+            {
+                if (World::MapGenerator::getPngHeightmapPath().empty())
+                {
+                    window.disabledWidgets |= (1 << widx::generate_now);
+                }
+                else
+                {
+                    window.disabledWidgets &= ~(1 << widx::generate_now);
+                }
+            }
+            else if ((options.scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none)
+            {
+                window.disabledWidgets |= (1 << widx::generate_now);
+            }
+            else
+            {
+                window.disabledWidgets &= ~(1 << widx::generate_now);
+            }
+        }
+
+        static void switchTabWidgets(Window& window)
+        {
+            window.activatedWidgets = 0;
+
+            auto newWidgets = kTabInformationByTabOffset[window.currentTab].widgets;
+
+            window.setWidgets(newWidgets);
+            window.initScrollWidgets();
         }
 
         // 0x0043DC98
@@ -1735,45 +1737,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             self.frameNo = 0;
             self.flags &= ~(WindowFlags::maximised);
             self.disabledWidgets = 0;
+            self.holdableWidgets = kTabInformationByTabOffset[self.currentTab].holdableWidgets;
+            self.eventHandlers = &kTabInformationByTabOffset[self.currentTab].events;
 
-            static const uint64_t* holdableWidgetsByTab[] = {
-                &Options::holdable_widgets,
-                &Land::holdable_widgets,
-                &Water::holdable_widgets,
-                &Forests::holdable_widgets,
-                &Towns::holdable_widgets,
-                &Industries::holdable_widgets,
-            };
+            switchTabWidgets(self);
 
-            self.holdableWidgets = *holdableWidgetsByTab[self.currentTab];
-
-            static const WindowEventList* eventsByTab[] = {
-                &Options::getEvents(),
-                &Land::getEvents(),
-                &Water::getEvents(),
-                &Forests::getEvents(),
-                &Towns::getEvents(),
-                &Industries::getEvents(),
-            };
-
-            self.eventHandlers = eventsByTab[self.currentTab];
-
-            switchTabWidgets(&self);
-
-            self.invalidate();
-
-            const auto newSize = [widgetIndex]() {
-                if (widgetIndex == widx::tab_land)
-                {
-                    return kLandTabSize;
-                }
-                else
-                {
-                    return kWindowSize;
-                }
-            }();
-
+            const auto newSize = widgetIndex == widx::tab_land ? kLandTabSize : kWindowSize;
             self.setSizeFixed(newSize);
+
             self.callPrepareDraw();
             self.initScrollWidgets();
             self.invalidate();
