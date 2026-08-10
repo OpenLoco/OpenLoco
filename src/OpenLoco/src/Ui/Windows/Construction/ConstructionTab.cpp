@@ -1108,6 +1108,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         window->invalidate();
     }
 
+    static void setDisabledWidgets(Window& self);
+
     // 0x0049F1B5
     void activateSelectedConstructionWidgets()
     {
@@ -1131,6 +1133,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             }
         }
 
+        setDisabledWidgets(*window);
+
+        // TODO: rework when tutorial is reworked
         if (OpenLoco::Tutorial::state() != OpenLoco::Tutorial::State::none)
         {
             // Restore original window layout from before copy and paste buttons were added
@@ -1643,7 +1648,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049DAA5
-    static void onResize(Window& self)
+    static void setDisabledWidgets(Window& self)
     {
         auto disabledWidgets = self.disabledWidgets;
 
@@ -3393,7 +3398,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static constexpr WindowEventList kEvents = {
         .onClose = Common::onClose,
         .onMouseUp = onMouseUp,
-        .onResize = onResize,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
         .onUpdate = onUpdate,
