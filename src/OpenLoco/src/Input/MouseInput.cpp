@@ -288,6 +288,7 @@ namespace OpenLoco::Input
         {
             case Tutorial::State::none:
             case Tutorial::State::initialising:
+            case Tutorial::State::standby:
             {
                 _cursor2 = _cursor;
                 break;
@@ -582,7 +583,13 @@ namespace OpenLoco::Input
                 }
 
                 Ui::Point dragOffset = { x, y };
-                if (Tutorial::state() != Tutorial::State::playing)
+                if (Tutorial::state() == Tutorial::State::playing)
+                {
+                    // Tutorial has negative coords stored as int16_t when dragging.
+                    // OpenLoco uses int32_t, which makes them be interpreted as positive!
+                    dragOffset = { static_cast<int16_t>(x), static_cast<int16_t>(y) };
+                }
+                else
                 {
                     // Fix #151: use relative drag from one frame to the next rather than
                     //           using the relative position from the message loop
