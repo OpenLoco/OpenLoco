@@ -263,40 +263,10 @@ namespace OpenLoco::Ui::Windows::TextInput
                 WindowManager::close(&window);
                 break;
             case Widx::kOk:
-                auto buffer = inputSession.loco();
-                buffer.erase(
-                    std::remove_if(
-                        buffer.begin(),
-                        buffer.end(),
-                        [](uint32_t chr) {
-                            if (chr < ' ')
-                            {
-                                return true;
-                            }
-                            else if (chr <= 'z')
-                            {
-                                return false;
-                            }
-                            else if (chr == 171)
-                            {
-                                return false;
-                            }
-                            else if (chr == 187)
-                            {
-                                return false;
-                            }
-                            else if (chr >= 191)
-                            {
-                                return false;
-                            }
-
-                            return true;
-                        }),
-                    buffer.end());
                 auto caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
                 if (caller != nullptr)
                 {
-                    caller->callTextInput(_callingWidget, caller->widgets[_callingWidget].id, buffer.c_str());
+                    caller->callTextInput(_callingWidget, caller->widgets[_callingWidget].id, inputSession.loco().c_str());
                 }
                 WindowManager::close(&window);
                 break;
