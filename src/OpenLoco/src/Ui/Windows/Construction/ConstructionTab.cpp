@@ -1108,6 +1108,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         window->invalidate();
     }
 
+    static void setDisabledWidgets(Window& self);
+
     // 0x0049F1B5
     void activateSelectedConstructionWidgets()
     {
@@ -1131,6 +1133,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             }
         }
 
+        setDisabledWidgets(*window);
+
+        // TODO: rework when tutorial is reworked
         if (OpenLoco::Tutorial::state() != OpenLoco::Tutorial::State::none)
         {
             // Restore original window layout from before copy and paste buttons were added
@@ -2903,8 +2908,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static void prepareDraw(Window& self)
     {
         Common::prepareDraw(&self);
-
-        setDisabledWidgets(self);
 
         auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
         auto& cState = getConstructionState();
