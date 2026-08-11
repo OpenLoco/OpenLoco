@@ -1135,7 +1135,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         setDisabledWidgets(*window);
 
-        // TODO: rework when tutorial is reworked
+        // TODO: REMOVE WHEN REWORKING TUTORIALS (and tutorial.h include above)
         if (OpenLoco::Tutorial::state() != OpenLoco::Tutorial::State::none)
         {
             // Restore original window layout from before copy and paste buttons were added

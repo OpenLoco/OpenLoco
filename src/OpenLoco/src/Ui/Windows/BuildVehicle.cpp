@@ -435,6 +435,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             resetTrackTypeTabSelection(window);
             sub_4B92A5(window);
 
+            // TODO: REMOVE WHEN REWORKING TUTORIALS (and tutorial.h include above)
             if (OpenLoco::Tutorial::state() != OpenLoco::Tutorial::State::none)
             {
                 // Restore vanilla window layout

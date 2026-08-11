@@ -902,6 +902,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
             setDisabledWidgets(&self);
 
+            // TODO: REMOVE WHEN REWORKING TUTORIALS (and tutorial.h include above)
             if (widgetIndex == widx::tab_signal && OpenLoco::Tutorial::state() != OpenLoco::Tutorial::State::none)
             {
                 // Restore original window size/layout from before signal auto placement was added

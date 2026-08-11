@@ -131,6 +131,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                      .item(LoadSaveDropdownId::options, StringIds::options)
                      .item(LoadSaveDropdownId::screenshot, StringIds::menu_screenshot);
 
+        // TODO: REMOVE WHEN REWORKING TUTORIALS (the if statement - keep the item) (and tutorial.h include above)
         if (OpenLoco::Tutorial::state() == OpenLoco::Tutorial::State::none)
         {
             d.item(LoadSaveDropdownId::giantScreenshot, StringIds::menu_giant_screenshot);
