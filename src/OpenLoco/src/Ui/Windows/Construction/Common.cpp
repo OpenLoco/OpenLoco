@@ -27,6 +27,7 @@
 #include "Objects/TrainStationObject.h"
 #include "Objects/VehicleObject.h"
 #include "SceneManager.h"
+#include "Tutorial.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
 #include "Ui/Windows/Construction/Construction.h"
@@ -900,6 +901,15 @@ namespace OpenLoco::Ui::Windows::Construction
             self.holdableWidgets = 0;
 
             setDisabledWidgets(&self);
+
+            // TODO: REMOVE WHEN REWORKING TUTORIALS (and tutorial.h include above)
+            if (widgetIndex == widx::tab_signal && OpenLoco::Tutorial::state() != OpenLoco::Tutorial::State::none)
+            {
+                // Restore original window size/layout from before signal auto placement was added
+                // ...Or actually just the close button because I'm lazy and that is all is needed for the original tutorial 3 to play correctly
+                self.widgets[widx::close_button].left = 138 - 15;
+                self.widgets[widx::close_button].right = 138 - 15 + 13 - 1;
+            }
 
             self.invalidate();
 
