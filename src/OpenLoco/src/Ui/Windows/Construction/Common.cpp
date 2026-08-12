@@ -780,8 +780,9 @@ namespace OpenLoco::Ui::Windows::Construction
             self.setWidgets(tabInfo.widgets);
 
             setDisabledWidgets(&self);
-
-            self.setSize({ self.widgets[widx::frame].right + 1, self.widgets[widx::frame].bottom + 1 });
+            self.callPrepareDraw();
+            const auto size = Ui::Size{ self.widgets[widx::frame].right + 1, self.widgets[widx::frame].bottom + 1 };
+            self.setSizeFixed(size);
         }
 
         void setNextAndPreviousTrackTile(const TrackElement& elTrack, const World::Pos2& pos)
@@ -913,8 +914,8 @@ namespace OpenLoco::Ui::Windows::Construction
 
             self.invalidate();
 
-            self.width = self.widgets[widx::frame].right + 1;
-            self.height = self.widgets[widx::frame].bottom + 1;
+            const auto size = Ui::Size{ self.widgets[widx::frame].right + 1, self.widgets[widx::frame].bottom + 1 };
+            self.setSizeFixed(size);
 
             self.callOnResize();
             self.callPrepareDraw();
