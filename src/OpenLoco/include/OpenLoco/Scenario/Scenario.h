@@ -117,7 +117,7 @@ namespace OpenLoco::Scenario
     void updateSeason(int32_t currentDayOfYear, const ClimateObject* climateObj);
 
     void reset();
-    void sub_4748D4();
+    void setScenarioDefaultObjects();
     void sub_4969E0(uint8_t al);
     void eraseLandscape();
     void generateLandscape();

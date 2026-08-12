@@ -1131,7 +1131,7 @@ namespace OpenLoco::World::MapGenerator
         updateProgress(255);
 
         Scenario::sub_4969E0(0);
-        Scenario::sub_4748D4();
+        Scenario::setScenarioDefaultObjects();
         Ui::ProgressBar::end();
 
         Ui::Windows::IndustryList::refreshList();

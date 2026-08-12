@@ -143,7 +143,7 @@ namespace OpenLoco::Title
         ObjectManager::loadSelectionListObjects(selection.objectFlags);
         ObjectManager::freeSelectionList();
         ObjectManager::reloadAll();
-        Scenario::sub_4748D4();
+        Scenario::setScenarioDefaultObjects();
         Scenario::reset();
         resetSubsystems();
         MessageManager::reset();
