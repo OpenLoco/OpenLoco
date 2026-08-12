@@ -30,7 +30,7 @@ using namespace OpenLoco::World::TileManager;
 namespace OpenLoco::Ui::Windows::Construction::Signal
 {
     constexpr int32_t kWidth = 156;
-    constexpr int32_t kHeight = 208;
+    constexpr int32_t kHeight = 222;
     constexpr int32_t kSpacing = 4;
     constexpr int32_t kImageButtonSize = 40;
     constexpr int32_t kStepperWidth = 48;
@@ -38,11 +38,11 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     static constexpr auto widgets = makeWidgets(
         Common::makeCommonWidgets(kWidth, kHeight, StringIds::stringid_2),
         Widgets::dropdownWidgets(Widx::kSignal, Widx::kSignalDropdown, { kSpacing, 45 }, { kWidth - (kSpacing * 2), 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_signal_type),
-        Widgets::ImageButton(Widx::kBothDirections, { ((kWidth - (kSpacing * 2)) / 2) - kSpacing - kImageButtonSize, 96 }, { kImageButtonSize, kImageButtonSize }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_both_directions),
-        Widgets::ImageButton(Widx::kSingleDirection, { ((kWidth - (kSpacing * 2)) / 2) + kSpacing, 96 }, { kImageButtonSize, kImageButtonSize }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_single_direction),
-        Widgets::Checkbox(Widx::kAutoMode, { kSpacing, 144 + 8 }, { kWidth - (kSpacing * 2), 12 }, WindowColour::secondary, StringIds::signal_placement_repeat, StringIds::signal_placement_repeat_tooltip),
-        Widgets::Label(Widx::kStepLabel, { kSpacing, 160 + 8 }, { kWidth - (kSpacing * 2), 13 }, WindowColour::secondary, ContentAlign::left, StringIds::signal_placement_step_size),
-        Widgets::stepperWidgets(Widx::kStepValue, Widx::kStepDecrease, Widx::kStepIncrease, { kWidth - kSpacing - kStepperWidth, 160 + 8 }, { kStepperWidth, 12 }, WindowColour::secondary, StringIds::uint16_raw, StringIds::tooltip_select_signal_type)
+        Widgets::ImageButton(Widx::kBothDirections, { ((kWidth - (kSpacing * 2)) / 2) - kSpacing - kImageButtonSize, 110 }, { kImageButtonSize, kImageButtonSize }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_both_directions),
+        Widgets::ImageButton(Widx::kSingleDirection, { ((kWidth - (kSpacing * 2)) / 2) + kSpacing, 110 }, { kImageButtonSize, kImageButtonSize }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_single_direction),
+        Widgets::Checkbox(Widx::kAutoMode, { kSpacing, 166 }, { kWidth - (kSpacing * 2), 12 }, WindowColour::secondary, StringIds::signal_placement_repeat, StringIds::signal_placement_repeat_tooltip),
+        Widgets::Label(Widx::kStepLabel, { kSpacing, 182 }, { kWidth - (kSpacing * 2), 13 }, WindowColour::secondary, ContentAlign::left, StringIds::signal_placement_step_size),
+        Widgets::stepperWidgets(Widx::kStepValue, Widx::kStepDecrease, Widx::kStepIncrease, { kWidth - kSpacing - kStepperWidth, 182 }, { kStepperWidth, 12 }, WindowColour::secondary, StringIds::uint16_raw, StringIds::tooltip_select_signal_type)
         // cost of signal placement is drawn at the bottom of the window as the last widget
 
     );
