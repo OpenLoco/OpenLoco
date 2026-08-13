@@ -205,13 +205,13 @@ namespace OpenLoco::Ui::Windows::Construction
         const auto stationList = getAvailableDocks();
         Common::copyToLegacyList(stationList, cState.stationList);
 
-        if (getGameState().lastShipPort == 0xFF)
+        if (getGameState().lastShipPortBuilt == 0xFF)
         {
             cState.lastSelectedStationType = cState.stationList[0];
         }
         else
         {
-            cState.lastSelectedStationType = getGameState().lastShipPort;
+            cState.lastSelectedStationType = getGameState().lastShipPortBuilt;
         }
 
         return nonTrackWindow();
@@ -233,13 +233,13 @@ namespace OpenLoco::Ui::Windows::Construction
         const auto stationList = getAvailableAirports();
         Common::copyToLegacyList(stationList, cState.stationList);
 
-        if (getGameState().lastAirport == 0xFF)
+        if (getGameState().lastAirportBuilt == 0xFF)
         {
             cState.lastSelectedStationType = cState.stationList[0];
         }
         else
         {
-            cState.lastSelectedStationType = getGameState().lastAirport;
+            cState.lastSelectedStationType = getGameState().lastAirportBuilt;
         }
 
         return nonTrackWindow();
@@ -540,7 +540,7 @@ namespace OpenLoco::Ui::Windows::Construction
     // Update available road and rail for player company
     void updateAvailableRoadAndRailOptions()
     {
-        if (getGameState().defaultRoadObjectId == 0xFF)
+        if (getGameState().lastRoadBuilt == 0xFF)
         {
             uint8_t defaultRoadObjectId = getGameState().defaultTrackTypeObjectId;
             if (defaultRoadObjectId == 0xFF)
@@ -555,16 +555,16 @@ namespace OpenLoco::Ui::Windows::Construction
             {
                 defaultRoadObjectId |= 1 << 7;
             }
-            getGameState().defaultRoadObjectId = defaultRoadObjectId;
+            getGameState().lastRoadBuilt = defaultRoadObjectId;
             WindowManager::invalidate(Ui::WindowType::topToolbar, 0);
         }
 
-        if (getGameState().defaultRailroadObjectId == 0xFF)
+        if (getGameState().lastTrackBuilt == 0xFF)
         {
             const auto availableObjects = companyGetAvailableRailTracks(CompanyManager::getControllingId());
             if (!availableObjects.empty())
             {
-                getGameState().defaultRailroadObjectId = availableObjects[0];
+                getGameState().lastTrackBuilt = availableObjects[0];
             }
             WindowManager::invalidate(Ui::WindowType::topToolbar, 0);
         }
@@ -574,21 +574,21 @@ namespace OpenLoco::Ui::Windows::Construction
     // Update available airports and docks for player company
     void updateAvailableAirportAndDockOptions()
     {
-        if (getGameState().lastAirport != 0xFF)
+        if (getGameState().lastAirportBuilt != 0xFF)
         {
-            const auto* airportObj = ObjectManager::get<AirportObject>(getGameState().lastAirport);
+            const auto* airportObj = ObjectManager::get<AirportObject>(getGameState().lastAirportBuilt);
             if (getGameState().currentYear > airportObj->obsoleteYear)
             {
-                getGameState().lastAirport = 0xFF;
+                getGameState().lastAirportBuilt = 0xFF;
             }
         }
 
-        if (getGameState().lastAirport == 0xFF)
+        if (getGameState().lastAirportBuilt == 0xFF)
         {
             const auto availableObjects = getAvailableAirports();
             if (!availableObjects.empty())
             {
-                getGameState().lastAirport = availableObjects[0];
+                getGameState().lastAirportBuilt = availableObjects[0];
                 bool found = false;
                 for (size_t vehicleObjectIndex = 0; vehicleObjectIndex < ObjectManager::getMaxObjects(ObjectType::vehicle); ++vehicleObjectIndex)
                 {
@@ -609,17 +609,17 @@ namespace OpenLoco::Ui::Windows::Construction
                 }
                 if (!found)
                 {
-                    getGameState().lastAirport = 0xFF;
+                    getGameState().lastAirportBuilt = 0xFF;
                 }
             }
         }
 
-        if (getGameState().lastShipPort == 0xFF)
+        if (getGameState().lastShipPortBuilt == 0xFF)
         {
             const auto availableObjects = getAvailableDocks();
             if (!availableObjects.empty())
             {
-                getGameState().lastShipPort = availableObjects[0];
+                getGameState().lastShipPortBuilt = availableObjects[0];
                 bool found = false;
                 for (size_t vehicleObjectIndex = 0; vehicleObjectIndex < ObjectManager::getMaxObjects(ObjectType::vehicle); ++vehicleObjectIndex)
                 {
@@ -640,7 +640,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 }
                 if (!found)
                 {
-                    getGameState().lastShipPort = 0xFF;
+                    getGameState().lastShipPortBuilt = 0xFF;
                 }
             }
         }
@@ -1248,11 +1248,11 @@ namespace OpenLoco::Ui::Windows::Construction
                 auto roadObj = ObjectManager::get<RoadObject>(newTrackType);
                 if (!roadObj->hasFlags(RoadObjectFlags::isRail))
                 {
-                    getGameState().defaultRoadObjectId = trackType;
+                    getGameState().lastRoadBuilt = trackType;
                 }
                 else
                 {
-                    getGameState().defaultRailroadObjectId = trackType;
+                    getGameState().lastTrackBuilt = trackType;
                 }
             }
             else
@@ -1260,11 +1260,11 @@ namespace OpenLoco::Ui::Windows::Construction
                 auto trackObj = ObjectManager::get<TrackObject>(newTrackType);
                 if (!trackObj->hasFlags(TrackObjectFlags::isRoad))
                 {
-                    getGameState().defaultRailroadObjectId = trackType;
+                    getGameState().lastTrackBuilt = trackType;
                 }
                 else
                 {
-                    getGameState().defaultRoadObjectId = trackType;
+                    getGameState().lastRoadBuilt = trackType;
                 }
             }
             WindowManager::invalidate(WindowType::topToolbar, 0);

@@ -471,7 +471,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { objImage, objStringId });
 
-            if (objIndex == getGameState().defaultRailroadObjectId)
+            if (objIndex == getGameState().lastTrackBuilt)
             {
                 highlightedItem = i;
             }
@@ -503,14 +503,14 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     {
         uint8_t ddIndex = 0;
         auto interface = ObjectManager::get<InterfaceSkinObject>();
-        if (getGameState().lastAirport != 0xFF)
+        if (getGameState().lastAirportBuilt != 0xFF)
         {
             Dropdown::add(ddIndex, StringIds::menu_sprite_stringid_construction, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_airport, StringIds::menu_airport });
             Dropdown::setMenuOption(ddIndex, 0);
             ddIndex++;
         }
 
-        if (getGameState().lastShipPort != 0xFF)
+        if (getGameState().lastShipPortBuilt != 0xFF)
         {
             Dropdown::add(ddIndex, StringIds::menu_sprite_stringid_construction, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_ship_port, StringIds::menu_ship_port });
             Dropdown::setMenuOption(ddIndex, 1);
@@ -845,7 +845,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             uint32_t fg_image = 0;
 
             // Figure out what icon to show on the button face.
-            uint8_t ebx = getGameState().defaultRailroadObjectId;
+            uint8_t ebx = getGameState().lastTrackBuilt;
             if ((ebx & (1 << 7)) != 0)
             {
                 ebx = ebx & ~(1 << 7);
@@ -961,8 +961,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         offsetWidget(Common::widx::view_menu, 3);
 
         if (_defaultPortObjectId == 0
-            && getGameState().lastAirport == 0xFF
-            && getGameState().lastShipPort != 0xFF)
+            && getGameState().lastAirportBuilt == 0xFF
+            && getGameState().lastShipPortBuilt != 0xFF)
         {
             _defaultPortObjectId = 1;
         }
@@ -993,9 +993,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             window.widgets[Common::widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_ports);
         }
 
-        window.widgets[Common::widx::road_menu].hidden = !(getGameState().defaultRoadObjectId != 0xFF);
-        window.widgets[Common::widx::railroad_menu].hidden = !(getGameState().defaultRailroadObjectId != 0xFF);
-        window.widgets[Common::widx::port_menu].hidden = !(getGameState().lastAirport != 0xFF || getGameState().lastShipPort != 0xFF);
+        window.widgets[Common::widx::road_menu].hidden = !(getGameState().lastRoadBuilt != 0xFF);
+        window.widgets[Common::widx::railroad_menu].hidden = !(getGameState().lastTrackBuilt != 0xFF);
+        window.widgets[Common::widx::port_menu].hidden = !(getGameState().lastAirportBuilt != 0xFF || getGameState().lastShipPortBuilt != 0xFF);
 
         if (Config::get().toolbarButtonsCentred)
         {

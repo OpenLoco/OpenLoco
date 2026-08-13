@@ -158,8 +158,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     {
         Scenario::resetTrackObjects();
 
-        getGameState().lastAirport = 0xFF;
-        getGameState().lastShipPort = 0xFF;
+        getGameState().lastAirportBuilt = 0xFF;
+        getGameState().lastShipPortBuilt = 0xFF;
         getGameState().pickupDirection = 0;
     }
 

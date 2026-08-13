@@ -53,7 +53,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
         const auto companyColour = CompanyManager::getPlayerCompanyColour();
 
-        auto defaultRoadObjectId = getGameState().defaultRoadObjectId;
+        auto defaultRoadObjectId = getGameState().lastRoadBuilt;
 
         if (!self.widgets[widx::road_menu].hidden && defaultRoadObjectId != 0xFF)
         {
@@ -278,7 +278,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
             Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { objImage, objStringId });
 
-            if (objIndex == getGameState().defaultRoadObjectId)
+            if (objIndex == getGameState().lastRoadBuilt)
             {
                 highlightedItem = i;
             }

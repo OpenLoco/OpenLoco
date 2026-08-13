@@ -177,11 +177,11 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
             if (cState.byte_1136063 & (1 << 7))
             {
-                getGameState().lastAirport = selectedStation;
+                getGameState().lastAirportBuilt = selectedStation;
             }
             else if (cState.byte_1136063 & (1 << 6))
             {
-                getGameState().lastShipPort = selectedStation;
+                getGameState().lastShipPortBuilt = selectedStation;
             }
             else if (cState.trackType & (1 << 7))
             {

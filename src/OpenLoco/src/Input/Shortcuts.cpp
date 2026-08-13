@@ -344,12 +344,12 @@ namespace OpenLoco::Input::Shortcuts
             return;
         }
 
-        if (getGameState().defaultRailroadObjectId == 0xFF)
+        if (getGameState().lastTrackBuilt == 0xFF)
         {
             return;
         }
 
-        Windows::Construction::openWithFlags(getGameState().defaultRailroadObjectId);
+        Windows::Construction::openWithFlags(getGameState().lastTrackBuilt);
     }
 
     // 0x004BF24F
@@ -360,12 +360,12 @@ namespace OpenLoco::Input::Shortcuts
             return;
         }
 
-        if (getGameState().defaultRoadObjectId == 0xFF)
+        if (getGameState().lastRoadBuilt == 0xFF)
         {
             return;
         }
 
-        Windows::Construction::openWithFlags(getGameState().defaultRoadObjectId);
+        Windows::Construction::openWithFlags(getGameState().lastRoadBuilt);
     }
 
     // 0x004BF276
@@ -376,7 +376,7 @@ namespace OpenLoco::Input::Shortcuts
             return;
         }
 
-        if (getGameState().lastAirport == 0xFF)
+        if (getGameState().lastAirportBuilt == 0xFF)
         {
             return;
         }
@@ -392,7 +392,7 @@ namespace OpenLoco::Input::Shortcuts
             return;
         }
 
-        if (getGameState().lastShipPort == 0xFF)
+        if (getGameState().lastShipPortBuilt == 0xFF)
         {
             return;
         }
