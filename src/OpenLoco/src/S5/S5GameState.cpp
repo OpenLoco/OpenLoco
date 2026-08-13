@@ -52,10 +52,10 @@ namespace OpenLoco::S5
         dst.numMapAnimations = src.numMapAnimations;
         dst.tileUpdateStartLocation = src.tileUpdateStartLocation;
         dst.scenarioConstruction = exportConstruction(src.scenarioConstruction);
-        dst.defaultRailroadObjectId = src.defaultRailroadObjectId;
-        dst.defaultRoadObjectId = src.defaultRoadObjectId;
-        dst.lastAirport = src.lastAirport;
-        dst.lastShipPort = src.lastShipPort;
+        dst.lastTrackBuilt = src.lastTrackBuilt;
+        dst.lastRoadBuilt = src.lastRoadBuilt;
+        dst.lastAirportBuilt = src.lastAirportBuilt;
+        dst.lastShipPortBuilt = src.lastShipPortBuilt;
         dst.trafficHandedness = src.trafficHandedness;
         dst.lastVehicleType = enumValue(src.lastVehicleType);
         dst.pickupDirection = src.pickupDirection;
@@ -69,7 +69,7 @@ namespace OpenLoco::S5
         dst.roadObjectIdIsAnyRoadTypeCompatible = src.roadObjectIdIsAnyRoadTypeCompatible;
         dst.roadObjectIdIsUsableByAllCompanies = src.roadObjectIdIsUsableByAllCompanies;
         dst.currentDefaultLevelCrossingType = src.currentDefaultLevelCrossingType;
-        dst.defaultTrackTypeObjectId = src.defaultTrackTypeObjectId;
+        dst.defaultRoadType = src.defaultRoadType;
         dst.loanInterestRate = src.loanInterestRate;
         dst.defaultIndustryObjectId = src.defaultIndustryObjectId;
         dst.defaultBuildingObjectId = src.defaultBuildingObjectId;
@@ -256,10 +256,10 @@ namespace OpenLoco::S5
         dst.numMapAnimations = src.numMapAnimations;
         dst.tileUpdateStartLocation = src.tileUpdateStartLocation;
         dst.scenarioConstruction = importConstruction(src.scenarioConstruction);
-        dst.defaultRailroadObjectId = src.defaultRailroadObjectId;
-        dst.defaultRoadObjectId = src.defaultRoadObjectId;
-        dst.lastAirport = src.lastAirport;
-        dst.lastShipPort = src.lastShipPort;
+        dst.lastTrackBuilt = src.lastTrackBuilt;
+        dst.lastRoadBuilt = src.lastRoadBuilt;
+        dst.lastAirportBuilt = src.lastAirportBuilt;
+        dst.lastShipPortBuilt = src.lastShipPortBuilt;
         dst.trafficHandedness = src.trafficHandedness;
         dst.lastVehicleType = static_cast<VehicleType>(src.lastVehicleType);
         dst.pickupDirection = src.pickupDirection;
@@ -273,7 +273,7 @@ namespace OpenLoco::S5
         dst.roadObjectIdIsAnyRoadTypeCompatible = src.roadObjectIdIsAnyRoadTypeCompatible;
         dst.roadObjectIdIsUsableByAllCompanies = src.roadObjectIdIsUsableByAllCompanies;
         dst.currentDefaultLevelCrossingType = src.currentDefaultLevelCrossingType;
-        dst.defaultTrackTypeObjectId = src.defaultTrackTypeObjectId;
+        dst.defaultRoadType = src.defaultRoadType;
         dst.loanInterestRate = src.loanInterestRate;
         dst.defaultIndustryObjectId = src.defaultIndustryObjectId;
         dst.defaultBuildingObjectId = src.defaultBuildingObjectId;

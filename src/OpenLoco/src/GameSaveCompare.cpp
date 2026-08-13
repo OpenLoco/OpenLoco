@@ -428,10 +428,10 @@ namespace OpenLoco::GameSaveCompare
         foundDivergence |= isLoggedDivergence("scenarioConstruction.var_17A", gameState1.general.scenarioConstruction.var_17A, gameState2.general.scenarioConstruction.var_17A, 8, displayAllDivergences);
         foundDivergence |= isLoggedDivergence("scenarioConstruction.roadStations", gameState1.general.scenarioConstruction.roadStations, gameState2.general.scenarioConstruction.roadStations, 8, displayAllDivergences);
         foundDivergence |= isLoggedDivergence("scenarioConstruction.roadMods", gameState1.general.scenarioConstruction.roadMods, gameState2.general.scenarioConstruction.roadMods, 8, displayAllDivergences);
-        foundDivergence |= isLoggedDivergentGameStateField("defaultRailroadObjectId", 0, gameState1.general.defaultRailroadObjectId, gameState2.general.defaultRailroadObjectId);
-        foundDivergence |= isLoggedDivergentGameStateField("defaultRoadObjectId", 0, gameState1.general.defaultRoadObjectId, gameState2.general.defaultRoadObjectId);
-        foundDivergence |= isLoggedDivergentGameStateField("lastAirport", 0, gameState1.general.lastAirport, gameState2.general.lastAirport);
-        foundDivergence |= isLoggedDivergentGameStateField("lastShipPort", 0, gameState1.general.lastShipPort, gameState2.general.lastShipPort);
+        foundDivergence |= isLoggedDivergentGameStateField("lastTrackBuilt", 0, gameState1.general.lastTrackBuilt, gameState2.general.lastTrackBuilt);
+        foundDivergence |= isLoggedDivergentGameStateField("lastRoadBuilt", 0, gameState1.general.lastRoadBuilt, gameState2.general.lastRoadBuilt);
+        foundDivergence |= isLoggedDivergentGameStateField("lastAirportBuilt", 0, gameState1.general.lastAirportBuilt, gameState2.general.lastAirportBuilt);
+        foundDivergence |= isLoggedDivergentGameStateField("lastShipPortBuilt", 0, gameState1.general.lastShipPortBuilt, gameState2.general.lastShipPortBuilt);
         foundDivergence |= isLoggedDivergentGameStateField("trafficHandedness", 0, gameState1.general.trafficHandedness, gameState2.general.trafficHandedness);
         foundDivergence |= isLoggedDivergentGameStateField("lastVehicleType", 0, gameState1.general.lastVehicleType, gameState2.general.lastVehicleType);
         foundDivergence |= isLoggedDivergentGameStateField("pickupDirection", 0, gameState1.general.pickupDirection, gameState2.general.pickupDirection);
@@ -445,7 +445,7 @@ namespace OpenLoco::GameSaveCompare
         foundDivergence |= isLoggedDivergentGameStateField("roadObjectIdIsAnyRoadTypeCompatible", 0, gameState1.general.roadObjectIdIsAnyRoadTypeCompatible, gameState2.general.roadObjectIdIsAnyRoadTypeCompatible);
         foundDivergence |= isLoggedDivergentGameStateField("roadObjectIdIsUsableByAllCompanies", 0, gameState1.general.roadObjectIdIsUsableByAllCompanies, gameState2.general.roadObjectIdIsUsableByAllCompanies);
         foundDivergence |= isLoggedDivergentGameStateField("currentDefaultLevelCrossingType", 0, gameState1.general.currentDefaultLevelCrossingType, gameState2.general.currentDefaultLevelCrossingType);
-        foundDivergence |= isLoggedDivergentGameStateField("defaultTrackTypeObjectId", 0, gameState1.general.defaultTrackTypeObjectId, gameState2.general.defaultTrackTypeObjectId);
+        foundDivergence |= isLoggedDivergentGameStateField("defaultRoadType", 0, gameState1.general.defaultRoadType, gameState2.general.defaultRoadType);
         foundDivergence |= isLoggedDivergentGameStateField("loanInterestRate", 0, gameState1.general.loanInterestRate, gameState2.general.loanInterestRate);
         foundDivergence |= isLoggedDivergentGameStateField("defaultIndustryObjectId", 0, gameState1.general.defaultIndustryObjectId, gameState2.general.defaultIndustryObjectId);
         foundDivergence |= isLoggedDivergentGameStateField("defaultBuildingObjectId", 0, gameState1.general.defaultBuildingObjectId, gameState2.general.defaultBuildingObjectId);

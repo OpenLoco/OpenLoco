@@ -1165,7 +1165,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x0047AC05
-    void resetDefaultTrackTypeObjectId()
+    void resetDefaultRoadType()
     {
         static_assert(ObjectManager::getMaxObjects(ObjectType::road) <= 128); // protect against possible int8_t overflow in the future
         TownSize largestTownSize = TownSize::hamlet;
@@ -1186,6 +1186,6 @@ namespace OpenLoco::ObjectManager
                 }
             }
         }
-        getGameState().defaultTrackTypeObjectId = lastIndex;
+        getGameState().defaultRoadType = lastIndex;
     }
 }

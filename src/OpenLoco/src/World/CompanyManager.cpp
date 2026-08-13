@@ -791,23 +791,23 @@ namespace OpenLoco::CompanyManager
     {
         auto* playerCompany = getPlayerCompany();
         auto& gameState = getGameState();
-        auto roadType = gameState.defaultTrackTypeObjectId | (1U << 7);
+        auto roadType = gameState.defaultRoadType | (1U << 7);
         if (roadType == 0xFFU)
         {
             const auto roads = companyGetAvailableRoads(playerCompany->id());
             roadType = roads.empty() ? 0xFFU : roads[0];
         }
-        gameState.defaultRoadObjectId = roadType;
+        gameState.lastRoadBuilt = roadType;
         const auto tracks = companyGetAvailableRailTracks(playerCompany->id());
-        gameState.defaultRailroadObjectId = tracks.empty() ? 0xFFU : tracks[0];
+        gameState.lastTrackBuilt = tracks.empty() ? 0xFFU : tracks[0];
 
         auto vehicleTypeInt = Numerics::bitScanForward(playerCompany->availableVehicles);
         const auto vehicleType = vehicleTypeInt == -1 ? VehicleType::train : static_cast<VehicleType>(vehicleTypeInt);
 
         gameState.lastVehicleType = vehicleType;
         gameState.defaultBuildVehicleType = vehicleType;
-        gameState.lastAirport = 0xFFU;
-        gameState.lastShipPort = 0xFFU;
+        gameState.lastAirportBuilt = 0xFFU;
+        gameState.lastShipPortBuilt = 0xFFU;
 
         Ui::Windows::Construction::updateAvailableAirportAndDockOptions();
     }

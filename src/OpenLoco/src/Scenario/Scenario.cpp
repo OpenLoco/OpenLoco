@@ -222,12 +222,11 @@ namespace OpenLoco::Scenario
     }
 
     // 0x004748D4
-    // ?Set default types for building. Like the initial track type and vehicle type and such.?
-    void sub_4748D4()
+    void setScenarioDefaultObjects()
     {
         ObjectManager::updateRoadObjectIdFlags();
         ObjectManager::updateDefaultLevelCrossingType();
-        ObjectManager::resetDefaultTrackTypeObjectId();
+        ObjectManager::resetDefaultRoadType();
         CompanyManager::updatePlayerInfrastructureOptions();
         Gfx::invalidateScreen();
         ObjectManager::updateTerraformObjects();
@@ -357,7 +356,7 @@ namespace OpenLoco::Scenario
         CompanyManager::createPlayerCompany();
         initialiseDate(Scenario::getOptions().scenarioStartYear);
         initialiseSnowLine();
-        sub_4748D4();
+        setScenarioDefaultObjects();
 
         CompanyManager::setRecords(CompanyManager::kZeroRecords);
         getObjectiveProgress().timeLimitUntilYear = getObjective().timeLimitYears - 1 + gameState.currentYear;

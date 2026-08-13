@@ -6881,7 +6881,7 @@ namespace OpenLoco::Vehicles
             uint8_t roadObjId = trackType;
             if (roadObjId == 0xFF)
             {
-                roadObjId = getGameState().defaultTrackTypeObjectId;
+                roadObjId = getGameState().defaultRoadType;
             }
             auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
             setTrainModFlags(train, *roadObj);

@@ -65,7 +65,7 @@ namespace OpenLoco::EditorController
         ObjectManager::loadSelectionListObjects(selection.objectFlags);
         ObjectManager::freeSelectionList();
         ObjectManager::reloadAll();
-        Scenario::sub_4748D4();
+        Scenario::setScenarioDefaultObjects();
 
         options.scenarioStartYear = 1900;
         gameState.seaLevel = 4;
@@ -328,7 +328,7 @@ namespace OpenLoco::EditorController
                     Windows::Error::open(StringIds::invalid_selection_of_objects, res);
                     return;
                 }
-                Scenario::sub_4748D4();
+                Scenario::setScenarioDefaultObjects();
                 Scenario::initialiseSnowLine();
                 Windows::Terraform::resetDefaultObjectIds();
                 Scenario::getOptions().editorStep = Step::landscapeEditor;
