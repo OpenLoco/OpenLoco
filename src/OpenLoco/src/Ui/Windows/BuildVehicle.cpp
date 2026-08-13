@@ -475,7 +475,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             targetTrackType |= (1 << 7);
             if (targetTrackType == 0xFF)
             {
-                targetTrackType = getGameState().defaultTrackTypeObjectId;
+                targetTrackType = getGameState().defaultRoadType;
             }
         }
 
@@ -1784,7 +1784,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 auto trackType = vehicleObj->trackType;
                 if (trackType == 0xFF)
                 {
-                    trackType = getGameState().defaultTrackTypeObjectId;
+                    trackType = getGameState().defaultRoadType;
                 }
                 roadTrackTypes |= (1 << trackType);
             }

@@ -66,7 +66,7 @@ namespace OpenLoco
         uint32_t roadObjectIdIsAnyRoadTypeCompatible;                            // 0x0001A4 (0x00525FBC)
         uint32_t roadObjectIdIsUsableByAllCompanies;                             // 0x0001A8 (0x00525FC0)
         uint8_t currentDefaultLevelCrossingType;                                 // 0x0001AC (0x00525FC4)
-        uint8_t defaultTrackTypeObjectId;                                        // 0x0001AD (0x00525FC5)
+        uint8_t defaultRoadType;                                                 // 0x0001AD (0x00525FC5)
         uint8_t loanInterestRate;                                                // 0x0001AE (0x00525FC6)
         uint8_t defaultIndustryObjectId;                                         // 0x0001AF (0x00525FC7)
         uint8_t defaultBuildingObjectId;                                         // 0x0001B0 (0x00525FC8)

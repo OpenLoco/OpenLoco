@@ -69,7 +69,7 @@ namespace OpenLoco::S5
         dst.roadObjectIdIsAnyRoadTypeCompatible = src.roadObjectIdIsAnyRoadTypeCompatible;
         dst.roadObjectIdIsUsableByAllCompanies = src.roadObjectIdIsUsableByAllCompanies;
         dst.currentDefaultLevelCrossingType = src.currentDefaultLevelCrossingType;
-        dst.defaultTrackTypeObjectId = src.defaultTrackTypeObjectId;
+        dst.defaultRoadType = src.defaultRoadType;
         dst.loanInterestRate = src.loanInterestRate;
         dst.defaultIndustryObjectId = src.defaultIndustryObjectId;
         dst.defaultBuildingObjectId = src.defaultBuildingObjectId;
@@ -273,7 +273,7 @@ namespace OpenLoco::S5
         dst.roadObjectIdIsAnyRoadTypeCompatible = src.roadObjectIdIsAnyRoadTypeCompatible;
         dst.roadObjectIdIsUsableByAllCompanies = src.roadObjectIdIsUsableByAllCompanies;
         dst.currentDefaultLevelCrossingType = src.currentDefaultLevelCrossingType;
-        dst.defaultTrackTypeObjectId = src.defaultTrackTypeObjectId;
+        dst.defaultRoadType = src.defaultRoadType;
         dst.loanInterestRate = src.loanInterestRate;
         dst.defaultIndustryObjectId = src.defaultIndustryObjectId;
         dst.defaultBuildingObjectId = src.defaultBuildingObjectId;

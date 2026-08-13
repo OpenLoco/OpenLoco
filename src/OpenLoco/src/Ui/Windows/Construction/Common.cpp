@@ -542,7 +542,7 @@ namespace OpenLoco::Ui::Windows::Construction
     {
         if (getGameState().lastRoadBuilt == 0xFF)
         {
-            uint8_t defaultRoadObjectId = getGameState().defaultTrackTypeObjectId;
+            uint8_t defaultRoadObjectId = getGameState().defaultRoadType;
             if (defaultRoadObjectId == 0xFF)
             {
                 const auto availableObjects = companyGetAvailableRoads(CompanyManager::getControllingId());

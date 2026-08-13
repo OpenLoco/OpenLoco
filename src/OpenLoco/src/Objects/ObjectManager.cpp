@@ -1186,6 +1186,6 @@ namespace OpenLoco::ObjectManager
                 }
             }
         }
-        getGameState().defaultTrackTypeObjectId = lastIndex;
+        getGameState().defaultRoadType = lastIndex;
     }
 }

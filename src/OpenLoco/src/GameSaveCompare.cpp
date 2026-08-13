@@ -445,7 +445,7 @@ namespace OpenLoco::GameSaveCompare
         foundDivergence |= isLoggedDivergentGameStateField("roadObjectIdIsAnyRoadTypeCompatible", 0, gameState1.general.roadObjectIdIsAnyRoadTypeCompatible, gameState2.general.roadObjectIdIsAnyRoadTypeCompatible);
         foundDivergence |= isLoggedDivergentGameStateField("roadObjectIdIsUsableByAllCompanies", 0, gameState1.general.roadObjectIdIsUsableByAllCompanies, gameState2.general.roadObjectIdIsUsableByAllCompanies);
         foundDivergence |= isLoggedDivergentGameStateField("currentDefaultLevelCrossingType", 0, gameState1.general.currentDefaultLevelCrossingType, gameState2.general.currentDefaultLevelCrossingType);
-        foundDivergence |= isLoggedDivergentGameStateField("defaultTrackTypeObjectId", 0, gameState1.general.defaultTrackTypeObjectId, gameState2.general.defaultTrackTypeObjectId);
+        foundDivergence |= isLoggedDivergentGameStateField("defaultRoadType", 0, gameState1.general.defaultRoadType, gameState2.general.defaultRoadType);
         foundDivergence |= isLoggedDivergentGameStateField("loanInterestRate", 0, gameState1.general.loanInterestRate, gameState2.general.loanInterestRate);
         foundDivergence |= isLoggedDivergentGameStateField("defaultIndustryObjectId", 0, gameState1.general.defaultIndustryObjectId, gameState2.general.defaultIndustryObjectId);
         foundDivergence |= isLoggedDivergentGameStateField("defaultBuildingObjectId", 0, gameState1.general.defaultBuildingObjectId, gameState2.general.defaultBuildingObjectId);

@@ -791,7 +791,7 @@ namespace OpenLoco::CompanyManager
     {
         auto* playerCompany = getPlayerCompany();
         auto& gameState = getGameState();
-        auto roadType = gameState.defaultTrackTypeObjectId | (1U << 7);
+        auto roadType = gameState.defaultRoadType | (1U << 7);
         if (roadType == 0xFFU)
         {
             const auto roads = companyGetAvailableRoads(playerCompany->id());
