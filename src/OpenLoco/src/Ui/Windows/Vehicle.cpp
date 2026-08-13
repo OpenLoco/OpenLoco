@@ -4181,7 +4181,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     auto roadObjId = head.trackType == 0xFF ? getGameState().defaultTrackTypeObjectId : head.trackType;
                     auto roadObj = ObjectManager::get<RoadObject>(roadObjId);
-                    image = roadObj->image + (isPlaced ? 32 : 33);
+                    image = roadObj->image + (isPlaced ? RoadObj::ImageIds::kUiPickupFromRoad : RoadObj::ImageIds::kUiPlaceOnRoad);
                     tooltip = isPlaced ? StringIds::tooltip_remove_from_track : StringIds::tooltip_place_on_track;
                     break;
                 }
