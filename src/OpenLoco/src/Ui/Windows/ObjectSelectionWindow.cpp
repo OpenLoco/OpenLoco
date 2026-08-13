@@ -1646,11 +1646,15 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         if (!SceneManager::isEditorMode())
         {
             // Make new selection available in-game.
+            ObjectManager::updateRoadObjectIdFlags();
+            ObjectManager::updateDefaultLevelCrossingType();
+            ObjectManager::resetDefaultTrackTypeObjectId();
             ObjectManager::updateYearly2();
             ObjectManager::updateTerraformObjects();
             Gfx::loadCurrency();
             Gfx::loadDefaultPalette();
             Gfx::invalidateScreen();
+            CompanyManager::updatePlayerInfrastructureOptions();
             CompanyManager::determineAvailableVehicles();
             WindowManager::invalidate(WindowType::buildVehicle);
 
