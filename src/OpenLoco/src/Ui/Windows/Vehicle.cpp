@@ -4194,7 +4194,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case TransportMode::water:
                 {
                     auto waterObj = ObjectManager::get<WaterObject>();
-                    image = waterObj->image + (isPlaced ? 58 : 59);
+                    image = waterObj->image + (isPlaced ? Water::ImageIds::kUiPickupFromWater : Water::ImageIds::kUiPlaceOnWater);
                     tooltip = isPlaced ? StringIds::tooltip_remove_from_water : StringIds::tooltip_place_on_dock;
                     break;
                 }
