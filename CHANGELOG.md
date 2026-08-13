@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Feature: [#139, #3775] Added signal placement and removal at fixed step distance along a track block.
 - Feature: [#3872] Added an option to align the top toolbar buttons horizontally centred (off by default).
+- Feature: [#3932] Add OpenGraphics replacement for train station 2 and adjust balance of some of the vehicles.
 - Change: [#3815] The keyboard shortcuts window is now separated into groups, and can now be resized.
 - Change: [#3863] The toolbar buttons can now be set to open on click instead of hover.
 - Change: [#3903] Updated the macOS app icon to match the new Liquid Glass style.
