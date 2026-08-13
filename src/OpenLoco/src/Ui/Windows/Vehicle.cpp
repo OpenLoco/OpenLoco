@@ -4187,7 +4187,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
                 case TransportMode::air:
                 {
-                    image = isPlaced ? ImageIds::airport_pickup : ImageIds::airport_place;
+                    image = isPlaced ? ImageIds::pickupFromAirport : ImageIds::placeOnAirport;
                     tooltip = isPlaced ? StringIds::tooltip_remove_from_airport : StringIds::tooltip_place_on_airport;
                     break;
                 }
