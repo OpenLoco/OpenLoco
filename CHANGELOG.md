@@ -1,4 +1,4 @@
-26.07.1+ (???)
+26.08 (2026-08-13)
 ------------------------------------------------------------------------
 - Feature: [#139, #3775] Added signal placement and removal at fixed step distance along a track block.
 - Feature: [#3872] Added an option to align the top toolbar buttons horizontally centred (off by default).
