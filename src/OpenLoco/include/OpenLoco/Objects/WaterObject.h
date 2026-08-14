@@ -39,5 +39,7 @@ namespace OpenLoco
     {
         static constexpr uint32_t kColourPalette = 41;
         static constexpr uint32_t kToolbarTerraformWater = 42;
+        static constexpr uint32_t kUiPickupFromWater = 58;
+        static constexpr uint32_t kUiPlaceOnWater = 59;
     }
 }
