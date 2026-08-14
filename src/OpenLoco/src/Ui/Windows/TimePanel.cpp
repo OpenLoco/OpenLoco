@@ -1,3 +1,4 @@
+#include "Config.h"
 #include "Date.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/General/SetGameSpeed.h"
@@ -97,6 +98,11 @@ namespace OpenLoco::Ui::Windows::TimePanel
     // 0x004396A4
     static void prepareDraw([[maybe_unused]] Window& window)
     {
+        const bool infoPanelsOnTop = Config::get().infoPanelsOnTop;
+
+        Widget& frame = window.widgets[widx::outer_frame];
+        frame.top = infoPanelsOnTop ? -2 : 0;
+
         window.widgets[widx::inner_frame].hidden = true;
         window.widgets[widx::pause_btn].image = Gfx::recolour(ImageIds::speed_pause);
         window.widgets[widx::normal_speed_btn].image = Gfx::recolour(ImageIds::speed_normal);
