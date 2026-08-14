@@ -5,13 +5,13 @@
 
 namespace OpenLoco::GameCommands
 {
-    static uint32_t removeSignal(const World::Pos3& pos, const uint16_t tad, const uint16_t sides, const uint8_t trackObjType, const uint8_t flags)
+    static uint32_t removeSignal(const World::Pos3& pos, const uint16_t tad, const uint16_t sides, const uint8_t trackObjType, const uint8_t index, const uint8_t flags)
     {
         GameCommands::SignalRemovalArgs sargs{};
         sargs.pos = pos;
         sargs.rotation = tad & 0x3;
         sargs.trackId = (tad >> 3) & 0x3F;
-        sargs.index = 0;
+        sargs.index = index;
         sargs.flags = sides;
         sargs.trackObjType = trackObjType;
 
@@ -30,8 +30,8 @@ namespace OpenLoco::GameCommands
             args.step,
             flags,
             [](const World::TrackElement&) { return false; },
-            [](const World::Pos3& pos, const uint16_t tad, const uint16_t sides, const uint8_t trackObjType, const uint8_t flags) {
-                return removeSignal(pos, tad, sides, trackObjType, flags);
+            [](const World::Pos3& pos, const uint16_t tad, const uint16_t sides, const uint8_t trackObjType, const uint8_t index, const uint8_t flags) {
+                return removeSignal(pos, tad, sides, trackObjType, index, flags);
             });
     }
 
