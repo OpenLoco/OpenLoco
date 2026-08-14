@@ -3172,7 +3172,7 @@ namespace OpenLoco::Vehicles
                 cargoStats.flags |= StationCargoStatsFlags::flag3;
             }
 
-            company->var_4A0 |= 1ULL << cargo.type;
+            company->cargoTypesDelivered2 |= 1ULL << cargo.type;
         }
         else
         {
@@ -3303,7 +3303,7 @@ namespace OpenLoco::Vehicles
             if (aiThoughtId != 0xFF)
             {
                 auto company = CompanyManager::get(owner);
-                company->aiThoughts[aiThoughtId].var_80 += cargoProfit;
+                company->aiThoughts[aiThoughtId].income += cargoProfit;
             }
             train.veh2->curMonthRevenue += cargoProfit;
             if (cargoProfit != 0)
@@ -3479,7 +3479,7 @@ namespace OpenLoco::Vehicles
         }
 
         auto* company = CompanyManager::get(owner);
-        company->var_49C |= 1 << cargo.type;
+        company->cargoTypesDelivered |= 1 << cargo.type;
         updateTrainProperties();
         Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(id));
         return true;
@@ -6528,7 +6528,7 @@ namespace OpenLoco::Vehicles
                     {
                         return true;
                     }
-                    if (lastObj->hasFlags(VehicleObjectFlags::flag_08))
+                    if (lastObj->hasFlags(VehicleObjectFlags::canReverse))
                     {
                         return false;
                     }
