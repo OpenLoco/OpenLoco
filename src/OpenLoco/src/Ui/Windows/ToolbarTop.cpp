@@ -752,14 +752,15 @@ namespace OpenLoco::Ui::Windows::ToolbarTop
     }
 
     // 0x0043AF37
-    static void viewMenuDropdown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void viewMenuDropdown([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
         {
             itemIndex = Dropdown::getHighlightedItem();
         }
 
-        auto* viewport = WindowManager::getMainWindow()->viewports[0];
+        auto* mainWindow = WindowManager::getMainWindow();
+        auto* viewport = mainWindow->viewports[0];
 
         if (itemIndex == 0)
         {
@@ -810,7 +811,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop
             viewport->flags ^= ViewportFlags::hideStationNames;
         }
 
-        self.invalidate();
+        mainWindow->invalidate();
     }
 
     // 0x0043A3C3
