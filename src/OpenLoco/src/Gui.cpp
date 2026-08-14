@@ -1,4 +1,5 @@
 #include "Gui.h"
+#include "Config.h"
 #include "Graphics/Colour.h"
 #include "Map/Tile.h"
 #include "SceneManager.h"
@@ -48,18 +49,20 @@ namespace OpenLoco::Gui
 
     static void resizeEditorScene(const int32_t uiWidth, const int32_t uiHeight)
     {
+        const bool infoPanelsOnTop = Config::get().infoPanelsOnTop && uiWidth > 640;
+
         using Windows::EditorStepController::StepDirection;
 
         auto* window = WindowManager::find(WindowType::editorStepController, enumValue(StepDirection::previous));
         if (window)
         {
-            window->y = uiHeight - window->height;
+            window->y = infoPanelsOnTop ? 0 : uiHeight - window->height;
         }
 
         window = WindowManager::find(WindowType::editorStepController, enumValue(StepDirection::next));
         if (window)
         {
-            window->y = uiHeight - window->height;
+            window->y = infoPanelsOnTop ? 0 : uiHeight - window->height;
             window->x = std::max(uiWidth, 640) - window->width;
         }
 
@@ -73,23 +76,28 @@ namespace OpenLoco::Gui
 
     static void resizeGameScene(const int32_t uiWidth, const int32_t uiHeight)
     {
-        auto* window = WindowManager::find(WindowType::topToolbar);
-        if (window)
+        auto* topToolbar = WindowManager::find(WindowType::topToolbar);
+        if (topToolbar)
         {
-            window->width = std::max(uiWidth, 640);
+            topToolbar->width = std::max(uiWidth, 640);
+            topToolbar->callPrepareDraw();
         }
 
-        window = WindowManager::find(WindowType::companyInfoPanel);
-        if (window)
+        const bool infoPanelsOnTop = Config::get().infoPanelsOnTop && uiWidth > 640;
+        const bool infoPanelsJuxtaposed = infoPanelsOnTop && Config::get().infoPanelsJuxtaposed && uiWidth > 640;
+
+        auto* companyInfo = WindowManager::find(WindowType::companyInfoPanel);
+        if (companyInfo)
         {
-            window->y = uiHeight - window->height;
+            companyInfo->y = infoPanelsOnTop ? 0 : uiHeight - companyInfo->height;
+            companyInfo->x = infoPanelsJuxtaposed ? topToolbar->x - companyInfo->width - 5 : 0;
         }
 
-        window = WindowManager::find(WindowType::timePanel);
-        if (window)
+        auto* timeInfo = WindowManager::find(WindowType::timePanel);
+        if (timeInfo)
         {
-            window->y = uiHeight - window->height;
-            window->x = std::max(uiWidth, 640) - window->width;
+            timeInfo->y = infoPanelsOnTop ? 0 : uiHeight - timeInfo->height;
+            timeInfo->x = infoPanelsJuxtaposed ? topToolbar->x + topToolbar->width + 5 : std::max(uiWidth, 640) - timeInfo->width;
         }
     }
 
