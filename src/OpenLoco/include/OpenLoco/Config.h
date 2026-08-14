@@ -174,6 +174,8 @@ namespace OpenLoco::Config
         bool cashPopupRendering = true;
         bool edgeScrolling = true;
         int32_t edgeScrollingSpeed = 12;
+        bool infoPanelsJuxtaposed = false;
+        bool infoPanelsOnTop = false;
         bool invertRightMouseViewPan = false;
         bool toolbarAutoMenu = true;
         bool toolbarButtonsCentred = false;
