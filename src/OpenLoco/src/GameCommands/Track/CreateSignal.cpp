@@ -165,7 +165,7 @@ namespace OpenLoco::GameCommands
                 return kFailure;
             }
 
-            if (flags & Flags::ghost)
+            if (hasFlags(flags, Flags::ghost))
             {
                 if (pieceElTrack->hasSignal())
                 {
@@ -184,7 +184,7 @@ namespace OpenLoco::GameCommands
                 }
             }
 
-            if (flags & Flags::apply)
+            if (hasFlags(flags, Flags::apply))
             {
                 if (!pieceElTrack->hasSignal())
                 {
@@ -203,8 +203,8 @@ namespace OpenLoco::GameCommands
                     }
                     auto& newSignal = signalEntry->get<World::SignalElement>();
                     newSignal.setRotation(pieceElTrack->rotation());
-                    newSignal.setGhost(flags & Flags::ghost);
-                    newSignal.setAiAllocated(flags & Flags::aiAllocated);
+                    newSignal.setGhost(hasFlags(flags, Flags::ghost));
+                    newSignal.setAiAllocated(hasFlags(flags, Flags::aiAllocated));
                     newSignal.setClearZ(pieceElTrack->clearZ());
                     newSignal.getLeft() = World::SignalElement::Side{};
                     newSignal.getRight() = World::SignalElement::Side{};
@@ -218,11 +218,11 @@ namespace OpenLoco::GameCommands
                 }
                 if (sides & (1U << 15))
                 {
-                    if (!(flags & Flags::ghost) || !elSignal->getLeft().hasSignal())
+                    if (!hasFlags(flags, Flags::ghost) || !elSignal->getLeft().hasSignal())
                     {
                         auto& left = elSignal->getLeft();
                         left.setHasSignal(true);
-                        elSignal->setLeftGhost(flags & Flags::ghost);
+                        elSignal->setLeftGhost(hasFlags(flags, Flags::ghost));
                         left.setSignalObjectId(args.type);
                         left.setFrame(0);
                         left.setAllLights(0);
@@ -230,17 +230,17 @@ namespace OpenLoco::GameCommands
                 }
                 if (sides & (1U << 14))
                 {
-                    if (!(flags & Flags::ghost) || !elSignal->getRight().hasSignal())
+                    if (!hasFlags(flags, Flags::ghost) || !elSignal->getRight().hasSignal())
                     {
                         auto& right = elSignal->getRight();
                         right.setHasSignal(true);
-                        elSignal->setRightGhost(flags & Flags::ghost);
+                        elSignal->setRightGhost(hasFlags(flags, Flags::ghost));
                         right.setSignalObjectId(args.type);
                         right.setFrame(0);
                         right.setAllLights(0);
                     }
                 }
-                if (!(flags & Flags::ghost))
+                if (!hasFlags(flags, Flags::ghost))
                 {
                     World::AnimationManager::createAnimation(0, trackLoc, elSignal->baseZ());
                 }
@@ -248,9 +248,9 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        if (flags & Flags::apply)
+        if (hasFlags(flags, Flags::apply))
         {
-            if (!(flags & (Flags::aiAllocated | Flags::ghost)))
+            if (!hasFlags(flags, Flags::aiAllocated | Flags::ghost))
             {
                 const uint16_t tad = args.rotation | (args.trackId << 3);
                 {

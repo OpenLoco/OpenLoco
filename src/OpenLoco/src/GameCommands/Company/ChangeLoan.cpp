@@ -38,7 +38,7 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        if (flags & Flags::apply)
+        if (hasFlags(flags, Flags::apply))
         {
             company->currentLoan = newLoan;
             company->cash -= loanDifference;

@@ -92,17 +92,17 @@ namespace OpenLoco::GameCommands
             {
                 continue;
             }
-            if (elRoad->isGhost() != ((flags & Flags::ghost) != 0))
+            if (elRoad->isGhost() != hasFlags(flags, Flags::ghost))
             {
                 continue;
             }
-            if (elRoad->isAiAllocated() != ((flags & Flags::aiAllocated) != 0))
+            if (elRoad->isAiAllocated() != hasFlags(flags, Flags::aiAllocated))
             {
                 continue;
             }
             // Ghost only as this is checked elsewhere for non-ghost so that
             // neutral company is always allowed
-            if (((flags & Flags::ghost) != 0) && elRoad->owner() != companyId)
+            if (hasFlags(flags, Flags::ghost) && elRoad->owner() != companyId)
             {
                 return nullptr;
             }
@@ -291,7 +291,7 @@ namespace OpenLoco::GameCommands
                 roadBridgeId = roadElPiece->bridge();
             }
 
-            if (!(flags & Flags::apply))
+            if (!hasFlags(flags, Flags::apply))
             {
                 continue;
             }
@@ -313,9 +313,9 @@ namespace OpenLoco::GameCommands
         }
 
         // 0x00477B39
-        if (flags & Flags::apply)
+        if (hasFlags(flags, Flags::apply))
         {
-            if (!(flags & (Flags::aiAllocated | Flags::ghost)))
+            if (!hasFlags(flags, Flags::aiAllocated | Flags::ghost))
             {
                 if (getUpdatingCompanyId() != CompanyId::neutral)
                 {

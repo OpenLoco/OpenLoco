@@ -215,6 +215,11 @@ namespace OpenLoco::GameCommands
     bool checkCompanyCompatibility(const CompanyId company, const World::RoadElement& elRoad);
     bool checkCompanyCompatibility(const CompanyId company, const World::StationElement& elStation);
 
+    constexpr bool hasFlags(uint8_t flags, uint8_t check)
+    {
+        return (flags & check) == check;
+    }
+
     template<typename T>
     uint32_t doCommand(const T& args, uint8_t flags)
     {

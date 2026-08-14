@@ -5820,7 +5820,7 @@ namespace OpenLoco
         // Structured very like a game command
         GameCommands::setExpenditureType(ExpenditureType::Construction);
         const auto companyId = GameCommands::getUpdatingCompanyId();
-        if (flags & GameCommands::Flags::apply)
+        if (GameCommands::hasFlags(flags, GameCommands::Flags::apply))
         {
             const auto center = World::Pos2(pos) + World::Pos2{ 16, 16 };
             companySetObservation(companyId, ObservationStatus::buildingTrackRoad, center, EntityId::null, roadObjectId | (1U << 7));
@@ -5936,7 +5936,7 @@ namespace OpenLoco
 
         // This total cost check seems counter productive as the AI is allowed
         // to build for free if it can't afford it. TODO: probably remove
-        if ((flags & GameCommands::Flags::apply) && totalCost != 0)
+        if (GameCommands::hasFlags(flags, GameCommands::Flags::apply) && totalCost != 0)
         {
             GameCommands::playConstructionPlacementSound(pos);
         }

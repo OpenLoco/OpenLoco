@@ -101,7 +101,7 @@ namespace OpenLoco::GameCommands
                         continue;
                     }
 
-                    if (flags & GameCommands::Flags::apply)
+                    if (hasFlags(flags, GameCommands::Flags::apply))
                     {
                         World::TileManager::removeBuildingElement(element, subTilePos);
                         auto& options = Scenario::getOptions();

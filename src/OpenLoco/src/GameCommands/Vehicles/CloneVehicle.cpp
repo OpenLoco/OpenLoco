@@ -42,7 +42,7 @@ namespace OpenLoco::GameCommands
         Vehicles::VehicleHead* newHead = nullptr;
 
         // Get total cost for a new vehicle
-        if (!(flags & Flags::apply))
+        if (!hasFlags(flags, Flags::apply))
         {
             uint32_t totalCost = 0;
             for (auto& car : existingTrain.cars)

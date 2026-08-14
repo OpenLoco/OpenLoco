@@ -629,7 +629,7 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if (flags & Flags::apply)
+        if (hasFlags(flags, Flags::apply))
         {
             auto vehObject = ObjectManager::get<VehicleObject>(vehicleTypeId);
 
@@ -703,7 +703,7 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if (flags & Flags::apply)
+        if (hasFlags(flags, Flags::apply))
         {
             std::optional<TrainPlacementData> placement = std::nullopt;
             if (train.head->tileX != -1)

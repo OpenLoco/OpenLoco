@@ -125,7 +125,7 @@ namespace OpenLoco::GameCommands
                 totalCost += (removeCostBase * World::TrackData::getTrackMiscData(args.trackId).costFactor) / 256;
             }
 
-            if ((flags & Flags::apply) != 0)
+            if (hasFlags(flags, Flags::apply))
             {
                 elTrack->setClearZ(elTrack->clearZ() - stationObj->height);
                 Ui::ViewportManager::invalidate(World::Pos2(trackLoc), stationEl->baseHeight(), stationEl->clearHeight(), ZoomLevel::eighth);
@@ -134,7 +134,7 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        if (updateStationTileRegistration && (flags & Flags::apply) != 0)
+        if (updateStationTileRegistration && hasFlags(flags, Flags::apply))
         {
             auto* station = StationManager::get(foundStationId);
             removeTileFromStationAndRecalcCargo(foundStationId, trackStart, args.rotation);

@@ -19,7 +19,7 @@ namespace OpenLoco::GameCommands
         }
 
         setPosition(head->position);
-        if (!(flags & Flags::apply))
+        if (!hasFlags(flags, Flags::apply))
         {
             return 0;
         }

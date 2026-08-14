@@ -7,7 +7,7 @@ namespace OpenLoco::GameCommands
     // 0x004383CA
     static uint32_t updateOwnerStatus(const uint8_t flags, const OwnerStatus& ownerStatus)
     {
-        if (flags & Flags::apply)
+        if (hasFlags(flags, Flags::apply))
         {
             auto companyId = GameCommands::getUpdatingCompanyId();
             auto* company = CompanyManager::get(companyId);

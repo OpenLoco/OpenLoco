@@ -89,7 +89,7 @@ namespace OpenLoco::GameCommands
     // 0x0048BDCE & 0x0048BD40
     static std::pair<NearbyStationValidation, StationId> validateNearbyStation(const World::Pos3 pos, const uint16_t tad, const uint8_t trackObjectId, const uint8_t flags)
     {
-        auto func = (flags & Flags::aiAllocated) ? &findNearbyStationOnTrackAi : &findNearbyStationOnTrack;
+        auto func = hasFlags(flags, Flags::aiAllocated) ? &findNearbyStationOnTrackAi : &findNearbyStationOnTrack;
         auto nearbyStation = func(pos, tad, trackObjectId);
         if (nearbyStation.id == StationId::null)
         {
@@ -109,7 +109,7 @@ namespace OpenLoco::GameCommands
         }
         else
         {
-            if (!(flags & Flags::aiAllocated))
+            if (!hasFlags(flags, Flags::aiAllocated))
             {
                 if (StationManager::exceedsStationSize(*station, pos))
                 {
@@ -229,11 +229,11 @@ namespace OpenLoco::GameCommands
 
         if (initialEntry == nullptr)
         {
-            if (flags & Flags::apply)
+            if (hasFlags(flags, Flags::apply))
             {
                 return kFailure;
             }
-            if (!(flags & Flags::aiAllocated))
+            if (!hasFlags(flags, Flags::aiAllocated))
             {
                 return kFailure;
             }
@@ -251,7 +251,7 @@ namespace OpenLoco::GameCommands
         auto& argPiece = trackPieces[index];
         const auto trackStart = args.pos - World::Pos3(Math::Vector::rotate(World::Pos2(argPiece.x, argPiece.y), args.rotation), argPiece.z);
 
-        if ((flags & Flags::ghost) && (flags & Flags::apply))
+        if (hasFlags(flags, Flags::ghost) && hasFlags(flags, Flags::apply))
         {
             returnState.lastConstructedAdjoiningStationPos = trackStart;
             uint16_t tad = (args.trackId << 3) | args.rotation;
@@ -259,9 +259,9 @@ namespace OpenLoco::GameCommands
             returnState.lastConstructedAdjoiningStation = nearbyStation.id;
         }
 
-        if (!(flags & Flags::ghost))
+        if (!hasFlags(flags, Flags::ghost))
         {
-            if (flags & Flags::apply)
+            if (hasFlags(flags, Flags::apply))
             {
                 auto [result, nearbyStationId] = validateNearbyStation(trackStart, (args.trackId << 3) | args.rotation, args.trackObjectId, flags);
                 switch (result)
@@ -435,7 +435,7 @@ namespace OpenLoco::GameCommands
                 const auto baseZ = elTrack->baseZ();
                 const auto clearZ = baseZ + 8 + stationObj->height / World::kSmallZStep;
                 World::QuarterTile qt(elTrack->occupiedQuarter(), 0);
-                if (!(flags & Flags::aiAllocated))
+                if (!hasFlags(flags, Flags::aiAllocated))
                 {
                     auto clearFunc = [&elTrack](World::TileElementEntry& entry) {
                         return clearFuncAiReservation(entry, *elTrack);
@@ -452,14 +452,14 @@ namespace OpenLoco::GameCommands
 
                 // elTrack is still valid as applyClearAtStandardHeight set to not remove anything
                 // this will need changed if ever a different clear function is used
-                if (elTrack->hasStationElement() && (flags & Flags::ghost))
+                if (elTrack->hasStationElement() && hasFlags(flags, Flags::ghost))
                 {
                     // ?????
                     setErrorText(StringIds::empty);
                     return kFailure;
                 }
 
-                if (!(flags & Flags::apply))
+                if (!hasFlags(flags, Flags::apply))
                 {
                     continue;
                 }
@@ -503,13 +503,13 @@ namespace OpenLoco::GameCommands
                     }
                     newStationElement = &stationEntry->get<World::StationElement>();
                     newStationElement->setRotation(elTrack->rotation());
-                    newStationElement->setGhost(flags & Flags::ghost);
-                    newStationElement->setAiAllocated(flags & Flags::aiAllocated);
+                    newStationElement->setGhost(hasFlags(flags, Flags::ghost));
+                    newStationElement->setAiAllocated(hasFlags(flags, Flags::aiAllocated));
                     newStationElement->setSequenceIndex(0);
                     newStationElement->setUnk4SLR4(0);
                     newStationElement->setStationType(StationType::trainStation);
                     newStationElement->setBuildingType(0);
-                    if (!(flags & Flags::ghost))
+                    if (!hasFlags(flags, Flags::ghost))
                     {
                         newStationElement->setStationId(returnState.lastPlacedTrackRoadStationId);
                     }
@@ -527,7 +527,7 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        if (!(flags & Flags::ghost) && (flags & Flags::apply))
+        if (!hasFlags(flags, Flags::ghost) && hasFlags(flags, Flags::apply))
         {
             if (updateStationTileRegistration)
             {

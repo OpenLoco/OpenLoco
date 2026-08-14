@@ -53,7 +53,7 @@ namespace OpenLoco::GameCommands
         {
             const auto airportPos = World::Pos3(searchTile.pos + pos, pos.z);
 
-            if ((flags & Flags::aiAllocated) != 0 && (flags & Flags::apply) != 0)
+            if (hasFlags(flags, Flags::aiAllocated) && hasFlags(flags, Flags::apply))
             {
                 auto tile = World::TileManager::get(airportPos);
                 auto* surfaceEl = tile.surface();
@@ -63,7 +63,7 @@ namespace OpenLoco::GameCommands
                 }
             }
 
-            if ((flags & Flags::apply) == 0)
+            if (!hasFlags(flags, Flags::apply))
             {
                 continue;
             }
@@ -92,7 +92,7 @@ namespace OpenLoco::GameCommands
                 return false;
             }
 
-            if ((flags & (Flags::aiAllocated)) == 0)
+            if (!hasFlags(flags, Flags::aiAllocated))
             {
                 Ui::ViewportManager::invalidate(World::Pos2(airportPos), stationEl->baseHeight(), stationEl->clearHeight(), ZoomLevel::eighth);
             }
@@ -150,9 +150,9 @@ namespace OpenLoco::GameCommands
 
         // Adjust number of airports for nearest town
         auto maybeTown = TownManager::getClosestTownAndDensity(pos);
-        if (maybeTown && (flags & Flags::apply) != 0)
+        if (maybeTown && hasFlags(flags, Flags::apply))
         {
-            if ((flags & (Flags::aiAllocated | Flags::ghost)) == 0)
+            if (!hasFlags(flags, Flags::aiAllocated | Flags::ghost))
             {
                 auto* town = TownManager::get(maybeTown->first);
                 town->numberOfAirports--;
@@ -183,7 +183,7 @@ namespace OpenLoco::GameCommands
 
         // 0x00493858
         // Should we update the station meta data?
-        if ((flags & Flags::ghost) == 0 && (flags & Flags::apply) != 0)
+        if (!hasFlags(flags, Flags::ghost) && hasFlags(flags, Flags::apply))
         {
             auto* station = StationManager::get(stationId);
 
@@ -214,7 +214,7 @@ namespace OpenLoco::GameCommands
         }
 
         StationId stationId = StationId::null;
-        if ((flags & Flags::ghost) != 0)
+        if (hasFlags(flags, Flags::ghost))
         {
             return loc_49372F(stationId, *stationEl, args.pos, flags);
         }

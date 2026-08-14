@@ -40,7 +40,7 @@ namespace OpenLoco::GameCommands
 
         static char staticRenameBuffer[37]{};
 
-        if ((flags & Flags::apply) != 0)
+        if (hasFlags(flags, Flags::apply))
         {
             static constexpr std::array<int, 3> kTransformTable = { 2, 0, 1 };
             int arrayIndex = kTransformTable.at(args.i);
@@ -81,7 +81,7 @@ namespace OpenLoco::GameCommands
             {
                 return kFailure;
             }
-            if ((flags & Flags::apply) == 0)
+            if (!hasFlags(flags, Flags::apply))
             {
                 StringManager::emptyUserString(allocatedStringId);
                 return 0;
@@ -89,7 +89,7 @@ namespace OpenLoco::GameCommands
         }
         else
         {
-            if ((flags & Flags::apply) == 0)
+            if (!hasFlags(flags, Flags::apply))
             {
                 return 0;
             }

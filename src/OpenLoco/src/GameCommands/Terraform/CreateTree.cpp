@@ -91,7 +91,7 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if (flags & Flags::apply)
+        if (hasFlags(flags, Flags::apply))
         {
             auto* treeEntry = World::TileManager::insertElement<World::TreeElement>(args.pos, baseZ, qt.getBaseQuarterOccupied());
             if (treeEntry == nullptr)
@@ -121,7 +121,7 @@ namespace OpenLoco::GameCommands
                     elTree.setSnow(true);
                 }
             }
-            if (flags & Flags::ghost)
+            if (hasFlags(flags, Flags::ghost))
             {
                 elTree.setGhost(true);
             }

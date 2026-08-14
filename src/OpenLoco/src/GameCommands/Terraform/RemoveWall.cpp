@@ -49,12 +49,12 @@ namespace OpenLoco::GameCommands
                 continue;
             }
 
-            if ((flags & Flags::ghost) == 0 && wallElement->isGhost())
+            if (!hasFlags(flags, Flags::ghost) && wallElement->isGhost())
             {
                 continue;
             }
 
-            if ((flags & Flags::apply) == 0)
+            if (!hasFlags(flags, Flags::apply))
             {
                 return 0;
             }

@@ -17,7 +17,7 @@ namespace OpenLoco::GameCommands
 
         auto* company = CompanyManager::get(args.companyId);
 
-        if (flags & Flags::apply)
+        if (hasFlags(flags, Flags::apply))
         {
             // Toggling vehicle palette
             if (args.setColourMode)

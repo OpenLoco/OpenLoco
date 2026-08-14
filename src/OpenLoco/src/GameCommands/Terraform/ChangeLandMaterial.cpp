@@ -19,7 +19,7 @@ namespace OpenLoco::GameCommands
         auto height = World::TileManager::getHeight(midPoint);
         GameCommands::setPosition({ midPoint.x, midPoint.y, height.landHeight });
 
-        if ((flags & Flags::apply) == 0)
+        if (!hasFlags(flags, Flags::apply))
         {
             return 0;
         }

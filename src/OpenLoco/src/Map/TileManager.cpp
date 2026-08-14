@@ -1519,7 +1519,7 @@ namespace OpenLoco::World::TileManager
 
         currency32_t totalCost = 0;
 
-        if (flags & GameCommands::Flags::apply)
+        if (GameCommands::hasFlags(flags, GameCommands::Flags::apply))
         {
             removeSurfaceIndustry(pos);
 
@@ -1641,7 +1641,7 @@ namespace OpenLoco::World::TileManager
             }
         }
 
-        if (!(flags & GameCommands::Flags::apply))
+        if (!GameCommands::hasFlags(flags, GameCommands::Flags::apply))
         {
             return totalCost;
         }
@@ -1692,7 +1692,7 @@ namespace OpenLoco::World::TileManager
 
         currency32_t totalCost = 0;
 
-        if (flags & GameCommands::Flags::apply)
+        if (GameCommands::hasFlags(flags, GameCommands::Flags::apply))
         {
             removeSurfaceIndustry(pos);
 
@@ -1738,7 +1738,7 @@ namespace OpenLoco::World::TileManager
         auto* waterObj = ObjectManager::get<WaterObject>();
         totalCost += Economy::getInflationAdjustedCost(waterObj->costFactor, waterObj->costIndex, 10);
 
-        if (flags & GameCommands::Flags::apply)
+        if (GameCommands::hasFlags(flags, GameCommands::Flags::apply))
         {
             if (targetHeight <= surface->baseZ())
             {

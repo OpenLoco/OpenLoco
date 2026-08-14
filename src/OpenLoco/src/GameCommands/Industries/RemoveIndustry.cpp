@@ -135,7 +135,7 @@ namespace OpenLoco::GameCommands
 
         const auto height = World::TileManager::getHeight(World::Pos2{ industry->x, industry->y } + World::Pos2{ 16, 16 });
         setPosition({ industry->x, industry->y, height.landHeight });
-        if (flags & Flags::apply)
+        if (hasFlags(flags, Flags::apply))
         {
             for (auto i = industry->numTiles; i != 0; --i)
             {

@@ -107,7 +107,7 @@ namespace OpenLoco::GameCommands
     // 0x0048BDCE & 0x0048BD40
     static std::pair<NearbyStationValidation, StationId> validateNearbyStation(const World::Pos3 pos, const uint8_t flags)
     {
-        auto func = (flags & Flags::aiAllocated) ? &findNearbyStationDocksAi : &findNearbyStationDocks;
+        auto func = hasFlags(flags, Flags::aiAllocated) ? &findNearbyStationDocksAi : &findNearbyStationDocks;
         auto nearbyStation = func(pos);
         if (nearbyStation.id == StationId::null)
         {
@@ -127,7 +127,7 @@ namespace OpenLoco::GameCommands
         }
         else
         {
-            if (!(flags & Flags::aiAllocated))
+            if (!hasFlags(flags, Flags::aiAllocated))
             {
                 if (StationManager::exceedsStationSize(*station, pos))
                 {
@@ -219,7 +219,7 @@ namespace OpenLoco::GameCommands
                 return kFailure;
             }
 
-            if ((flags & Flags::apply) && !(flags & Flags::ghost) && !(flags & Flags::aiAllocated))
+            if (hasFlags(flags, Flags::apply) && !hasFlags(flags, Flags::ghost) && !hasFlags(flags, Flags::aiAllocated))
             {
                 World::TileManager::removeAllWallsOnTileBelow(tilePos, (args.pos.z + clearHeight) / World::kSmallZStep);
             }
@@ -293,11 +293,11 @@ namespace OpenLoco::GameCommands
                 auto* landObj = ObjectManager::get<LandObject>(surface->terrain());
                 totalCost += Economy::getInflationAdjustedCost(landObj->costFactor, landObj->costIndex, 10) * baseZDiff;
                 // Flatten surfaces
-                if (!(flags & Flags::ghost) && (flags & Flags::apply))
+                if (!hasFlags(flags, Flags::ghost) && hasFlags(flags, Flags::apply))
                 {
                     if (surface->slope() || args.pos.z != surface->baseHeight())
                     {
-                        if (flags & Flags::aiAllocated)
+                        if (hasFlags(flags, Flags::aiAllocated))
                         {
                             surface->setAiAllocated(true);
                         }
@@ -319,9 +319,9 @@ namespace OpenLoco::GameCommands
             }
 
             // Create new tile
-            if (flags & Flags::apply)
+            if (hasFlags(flags, Flags::apply))
             {
-                if (!(flags & Flags::ghost) && !(flags & Flags::aiAllocated))
+                if (!hasFlags(flags, Flags::ghost) && !hasFlags(flags, Flags::aiAllocated))
                 {
                     World::TileManager::removeSurfaceIndustry(World::toWorldSpace(tilePos));
                     World::TileManager::setTerrainStyleAsCleared(World::toWorldSpace(tilePos));
@@ -339,7 +339,7 @@ namespace OpenLoco::GameCommands
                 elStation.setOwner(getUpdatingCompanyId());
                 elStation.setUnk4SLR4(0);
                 elStation.setBuildingType(buildingType);
-                if (!(flags & Flags::ghost))
+                if (!hasFlags(flags, Flags::ghost))
                 {
                     elStation.setStationId(stationId);
                 }
@@ -347,11 +347,11 @@ namespace OpenLoco::GameCommands
                 {
                     elStation.setStationId(static_cast<StationId>(0));
                 }
-                elStation.setGhost(flags & Flags::ghost);
+                elStation.setGhost(hasFlags(flags, Flags::ghost));
                 elStation.setSequenceIndex(offset.index);
                 World::AnimationManager::createAnimation(8, World::toWorldSpace(tilePos), elStation.baseZ());
 
-                elStation.setAiAllocated(flags & Flags::aiAllocated);
+                elStation.setAiAllocated(hasFlags(flags, Flags::aiAllocated));
                 if (shouldInvalidateTile(flags))
                 {
                     World::TileManager::mapInvalidateTileFull(World::toWorldSpace(tilePos));
@@ -407,7 +407,7 @@ namespace OpenLoco::GameCommands
         returnState.lastConstructedAdjoiningStationPos = World::Pos2(-1, -1);
         returnState.lastConstructedAdjoiningStation = StationId::null;
 
-        if ((flags & Flags::apply) && !(flags & Flags::aiAllocated))
+        if (hasFlags(flags, Flags::apply) && !hasFlags(flags, Flags::aiAllocated))
         {
             companySetObservation(getUpdatingCompanyId(), ObservationStatus::buildingDock, World::Pos2(args.pos) + World::Pos2{ 16, 16 }, EntityId::null, args.type);
         }
@@ -427,16 +427,16 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        if ((flags & Flags::ghost) && (flags & Flags::apply))
+        if (hasFlags(flags, Flags::ghost) && hasFlags(flags, Flags::apply))
         {
             returnState.lastConstructedAdjoiningStationPos = args.pos;
             auto nearbyStation = flags & Flags::aiAllocated ? findNearbyStationDocksAi(args.pos) : findNearbyStationDocks(args.pos);
             returnState.lastConstructedAdjoiningStation = nearbyStation.id;
         }
 
-        if (!(flags & Flags::ghost))
+        if (!hasFlags(flags, Flags::ghost))
         {
-            if (flags & Flags::apply)
+            if (hasFlags(flags, Flags::apply))
             {
                 auto [result, nearbyStationId] = validateNearbyStation(args.pos, flags);
                 switch (result)
@@ -497,7 +497,7 @@ namespace OpenLoco::GameCommands
         }
         totalCost += buildingCost;
 
-        if (!(flags & Flags::ghost) && (flags & Flags::apply))
+        if (!hasFlags(flags, Flags::ghost) && hasFlags(flags, Flags::apply))
         {
             addTileToStation(returnState.lastPlacedDock, args.pos, args.rotation);
 
@@ -509,13 +509,13 @@ namespace OpenLoco::GameCommands
             station->invalidate();
             sub_48D794(*station);
         }
-        if (!(flags & (Flags::ghost | Flags::aiAllocated)) && (flags & Flags::apply))
+        if (!hasFlags(flags, Flags::ghost | Flags::aiAllocated) && hasFlags(flags, Flags::apply))
         {
             playConstructionPlacementSound(args.pos);
         }
 
         // Vanilla did this check wrong
-        if ((flags & Flags::apply) && CompanyManager::isPlayerCompany(getUpdatingCompanyId()))
+        if (hasFlags(flags, Flags::apply) && CompanyManager::isPlayerCompany(getUpdatingCompanyId()))
         {
             companyEmotionEvent(getUpdatingCompanyId(), Emotion::thinking);
         }

@@ -68,7 +68,7 @@ namespace OpenLoco::GameCommands
             auto treeObj = ObjectManager::get<TreeObject>(treeElement->treeObjectId());
             currency32_t removalCost = Economy::getInflationAdjustedCost(treeObj->clearCostFactor, treeObj->costIndex, 12);
 
-            if (flags & Flags::apply)
+            if (hasFlags(flags, Flags::apply))
             {
                 World::TileManager::removeTree(element, flags, args.pos);
             }

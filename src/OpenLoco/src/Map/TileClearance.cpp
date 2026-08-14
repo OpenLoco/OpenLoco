@@ -491,7 +491,7 @@ namespace OpenLoco::World::TileClearance
 
         World::TileManager::setRemoveElementPointerChecker(entry);
         uint8_t removeBuildingFlags = flags;
-        if ((flags & GameCommands::Flags::apply) || removedBuildings.size() != 1)
+        if (GameCommands::hasFlags(flags, GameCommands::Flags::apply) || removedBuildings.size() != 1)
         {
             removeBuildingFlags |= GameCommands::Flags::flag_7;
         }
@@ -510,13 +510,13 @@ namespace OpenLoco::World::TileClearance
         {
             return ClearFuncResult::collisionErrorSet;
         }
-        if (flags & GameCommands::Flags::apply)
+        if (GameCommands::hasFlags(flags, GameCommands::Flags::apply))
         {
             Scenario::getOptions().madeAnyChanges = 1;
         }
         cost += buildingCost;
 
-        if (!(flags & GameCommands::Flags::apply) || (flags & (GameCommands::Flags::ghost | GameCommands::Flags::aiAllocated)))
+        if (!GameCommands::hasFlags(flags, GameCommands::Flags::apply) || (flags & (GameCommands::Flags::ghost | GameCommands::Flags::aiAllocated)))
         {
             return ClearFuncResult::noCollision;
         }
@@ -533,7 +533,7 @@ namespace OpenLoco::World::TileClearance
         auto* treeObj = ObjectManager::get<TreeObject>(elTree.treeObjectId());
         cost += Economy::getInflationAdjustedCost(treeObj->clearCostFactor, treeObj->costIndex, 12);
 
-        if ((flags & (GameCommands::Flags::ghost | GameCommands::Flags::aiAllocated)) || !(flags & GameCommands::Flags::apply))
+        if ((flags & (GameCommands::Flags::ghost | GameCommands::Flags::aiAllocated)) || !GameCommands::hasFlags(flags, GameCommands::Flags::apply))
         {
             return ClearFuncResult::noCollision;
         }

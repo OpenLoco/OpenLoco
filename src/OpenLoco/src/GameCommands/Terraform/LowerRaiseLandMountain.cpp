@@ -225,7 +225,7 @@ namespace OpenLoco::GameCommands
     {
         _mtnToolGCFlags = flags;
 
-        if (flags & Flags::apply)
+        if (hasFlags(flags, Flags::apply))
         {
             Scenario::getOptions().madeAnyChanges = 1;
         }
@@ -238,7 +238,7 @@ namespace OpenLoco::GameCommands
         World::TileClearance::RemovedBuildings removedBuildings{};
 
         // Play sound if this is a company action
-        if ((flags & Flags::apply) && getCommandNestLevel() == 1 && getUpdatingCompanyId() != CompanyId::neutral)
+        if (hasFlags(flags, Flags::apply) && getCommandNestLevel() == 1 && getUpdatingCompanyId() != CompanyId::neutral)
         {
             const auto height = TileManager::getHeight(args.centre).landHeight;
             Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, World::Pos3(args.centre.x, args.centre.y, height));

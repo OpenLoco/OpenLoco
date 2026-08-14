@@ -121,7 +121,7 @@ namespace OpenLoco::GameCommands
         }
         else
         {
-            if (!(flags & Flags::aiAllocated))
+            if (!hasFlags(flags, Flags::aiAllocated))
             {
                 if (StationManager::exceedsStationSize(*station, pos))
                 {
@@ -169,7 +169,7 @@ namespace OpenLoco::GameCommands
                 return kFailure;
             }
 
-            if ((flags & Flags::apply) && !(flags & Flags::ghost) && !(flags & Flags::aiAllocated))
+            if (hasFlags(flags, Flags::apply) && !hasFlags(flags, Flags::ghost) && !hasFlags(flags, Flags::aiAllocated))
             {
                 World::TileManager::removeAllWallsOnTileBelow(tilePos, (baseHeight + clearHeight) / World::kSmallZStep);
             }
@@ -217,11 +217,11 @@ namespace OpenLoco::GameCommands
             auto* landObj = ObjectManager::get<LandObject>(surface->terrain());
             totalCost += Economy::getInflationAdjustedCost(landObj->costFactor, landObj->costIndex, 10) * baseZDiff;
             // Flatten surfaces
-            if (!(flags & Flags::ghost) && (flags & Flags::apply))
+            if (!hasFlags(flags, Flags::ghost) && hasFlags(flags, Flags::apply))
             {
                 if (surface->slope() || baseHeight != surface->baseHeight())
                 {
-                    if (flags & Flags::aiAllocated)
+                    if (hasFlags(flags, Flags::aiAllocated))
                     {
                         surface->setAiAllocated(true);
                     }
@@ -242,9 +242,9 @@ namespace OpenLoco::GameCommands
             }
 
             // Create new tile
-            if (flags & Flags::apply)
+            if (hasFlags(flags, Flags::apply))
             {
-                if (!(flags & Flags::ghost) && !(flags & Flags::aiAllocated))
+                if (!hasFlags(flags, Flags::ghost) && !hasFlags(flags, Flags::aiAllocated))
                 {
                     World::TileManager::removeSurfaceIndustry(World::toWorldSpace(tilePos));
                     World::TileManager::setTerrainStyleAsCleared(World::toWorldSpace(tilePos));
@@ -262,7 +262,7 @@ namespace OpenLoco::GameCommands
                 elStation.setOwner(getUpdatingCompanyId());
                 elStation.setUnk4SLR4(0);
                 elStation.setBuildingType(variation);
-                if (!(flags & Flags::ghost))
+                if (!hasFlags(flags, Flags::ghost))
                 {
                     elStation.setStationId(stationId);
                 }
@@ -270,11 +270,11 @@ namespace OpenLoco::GameCommands
                 {
                     elStation.setStationId(static_cast<StationId>(0));
                 }
-                elStation.setGhost(flags & Flags::ghost);
+                elStation.setGhost(hasFlags(flags, Flags::ghost));
                 elStation.setSequenceIndex(offset.index);
                 World::AnimationManager::createAnimation(7, World::toWorldSpace(tilePos), elStation.baseZ());
 
-                elStation.setAiAllocated(flags & Flags::aiAllocated);
+                elStation.setAiAllocated(hasFlags(flags, Flags::aiAllocated));
                 if (shouldInvalidateTile(flags))
                 {
                     World::TileManager::mapInvalidateTileFull(World::toWorldSpace(tilePos));
@@ -297,7 +297,7 @@ namespace OpenLoco::GameCommands
         returnState.lastConstructedAdjoiningStation = StationId::null;
         returnState.lastConstructedAdjoiningStationPos = World::Pos2(-1, -1);
 
-        if ((flags & Flags::apply) && !(flags & Flags::aiAllocated))
+        if (hasFlags(flags, Flags::apply) && !hasFlags(flags, Flags::aiAllocated))
         {
             companySetObservation(getUpdatingCompanyId(), ObservationStatus::buildingAirport, World::Pos2(args.pos) + World::Pos2{ 16, 16 }, EntityId::null, args.type);
         }
@@ -329,12 +329,12 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        if ((flags & Flags::apply) && !(flags & Flags::aiAllocated) && !(flags & Flags::ghost))
+        if (hasFlags(flags, Flags::apply) && !hasFlags(flags, Flags::aiAllocated) && !hasFlags(flags, Flags::ghost))
         {
             town->numberOfAirports++;
         }
 
-        if ((flags & Flags::ghost) && (flags & Flags::apply))
+        if (hasFlags(flags, Flags::ghost) && hasFlags(flags, Flags::apply))
         {
             returnState.lastConstructedAdjoiningStationPos = args.pos;
             auto nearbyStation = findNearbyStationAirport(args.pos, args.type, args.rotation);
@@ -343,10 +343,10 @@ namespace OpenLoco::GameCommands
 
         auto* airportObj = ObjectManager::get<AirportObject>(args.type);
 
-        if (!(flags & Flags::ghost))
+        if (!hasFlags(flags, Flags::ghost))
         {
             const auto nameMode = airportObj->hasFlags(AirportObjectFlags::isHelipad) ? 2 : 1;
-            if (flags & Flags::apply)
+            if (hasFlags(flags, Flags::apply))
             {
                 auto [result, nearbyStationId] = validateNearbyStation(args.pos, args.type, args.rotation, flags);
                 switch (result)
@@ -419,7 +419,7 @@ namespace OpenLoco::GameCommands
                 return kFailure;
             }
         }
-        if (!(flags & Flags::ghost) && (flags & Flags::apply))
+        if (!hasFlags(flags, Flags::ghost) && hasFlags(flags, Flags::apply))
         {
             addTileToStation(returnState.lastPlacedAirport, args.pos, args.rotation);
 
@@ -435,12 +435,12 @@ namespace OpenLoco::GameCommands
             station->invalidate();
             sub_48D794(*station);
         }
-        if (!(flags & (Flags::ghost | Flags::aiAllocated)) && (flags & Flags::apply))
+        if (!hasFlags(flags, Flags::ghost | Flags::aiAllocated) && hasFlags(flags, Flags::apply))
         {
             playConstructionPlacementSound(args.pos);
         }
 
-        if ((flags & Flags::apply) && CompanyManager::isPlayerCompany(getUpdatingCompanyId()))
+        if (hasFlags(flags, Flags::apply) && CompanyManager::isPlayerCompany(getUpdatingCompanyId()))
         {
             companyEmotionEvent(getUpdatingCompanyId(), Emotion::thinking);
         }
