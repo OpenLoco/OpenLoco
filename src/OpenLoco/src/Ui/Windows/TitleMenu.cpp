@@ -139,11 +139,11 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     );
 
     static void sub_439112(Window* window);
-    static void sub_4391CC(int16_t itemIndex);
-    static void sub_43918F(const char* string);
-    static void sub_4391DA();
-    static void sub_4391E2();
-    static void sub_43910A();
+    static void openTutorial(int16_t itemIndex);
+    static void sendChatMessage(const char* string);
+    static void openScenarioSelect();
+    static void loadGameClick();
+    static void openEditor();
     static void showMultiplayer(Window* window);
     static void multiplayerConnect(std::string_view host);
     static const WindowEventList& getEvents();
@@ -308,14 +308,14 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         switch (id)
         {
             case Widx::kScenarioListBtn:
-                sub_4391DA();
+                openScenarioSelect();
                 break;
             case Widx::kLoadGameBtn:
-                sub_4391E2();
+                loadGameClick();
                 break;
             case Widx::kScenarioEditorBtn:
                 Title::stop();
-                sub_43910A();
+                openEditor();
                 break;
             case Widx::kChatBtn:
                 beginSendChatMessage(window);
@@ -343,7 +343,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         switch (id)
         {
             case Widx::kTutorialBtn:
-                sub_4391CC(itemIndex);
+                openTutorial(itemIndex);
                 break;
         }
     }
@@ -354,7 +354,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         switch (id)
         {
             case Widx::kChatBtn:
-                sub_43918F(input);
+                sendChatMessage(input);
                 break;
             case Widx::kMultiplayerToggleBtn:
                 multiplayerConnect(input);
@@ -381,7 +381,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         Network::joinServer(host);
     }
 
-    static void sub_43910A()
+    static void openEditor()
     {
         EditorController::init();
     }
@@ -414,7 +414,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         TextInput::openTextInput(&self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, widx::chat_btn, args);
     }
 
-    static void sub_43918F(const char* string)
+    static void sendChatMessage(const char* string)
     {
         // Identical to processChatMessage
         GameCommands::setErrorTitle(StringIds::empty);
@@ -425,7 +425,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         }
     }
 
-    static void sub_4391CC(int16_t itemIndex)
+    static void openTutorial(int16_t itemIndex)
     {
         // DROPDOWN_ITEM_UNDEFINED
         if (itemIndex == -1)
@@ -436,12 +436,12 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         OpenLoco::Tutorial::initialise(itemIndex);
     }
 
-    static void sub_4391DA()
+    static void openScenarioSelect()
     {
         ScenarioSelect::open();
     }
 
-    static void sub_4391E2()
+    static void loadGameClick()
     {
         GameCommands::LoadSaveQuitGameArgs args{};
         args.loadQuitMode = LoadOrQuitMode::loadGamePrompt;
