@@ -25,8 +25,8 @@ namespace OpenLoco::Ui::Windows::EditorStepController
     }
 
     static constexpr auto _widgets = makeWidgets(
-        Widgets::Wt3Widget(Widx::kFrame, { 0, 0 }, kWindowSize, WindowColour::primary),
-        Widgets::ImageButton(Widx::kButton, { 2, 2 }, kWindowSize - Size{ 4, 4 }, WindowColour::primary)
+        Widgets::Wt3Widget(Widx::kFrame, { 0, 0 }, kWindowSize + Size{ 0, 2 }, WindowColour::primary),
+        Widgets::ImageButton(Widx::kButton, { 2, 2 }, kWindowSize - Size{ 4, 2 }, WindowColour::primary)
 
     );
 
