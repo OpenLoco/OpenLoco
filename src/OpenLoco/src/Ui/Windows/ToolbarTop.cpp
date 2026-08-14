@@ -1648,7 +1648,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop
         const bool isLandscapeEditor = EditorController::getCurrentStep() == EditorController::Step::landscapeEditor;
 
         // Left-hand side
-        self.widgets[widx::cheats_menu].hidden = isEditor;
+        self.widgets[widx::cheats_menu].hidden = isEditor || !Config::get().cheatsMenuEnabled;
         self.widgets[widx::map_generation_menu].hidden = !isEditor || !isLandscapeEditor;
         self.widgets[widx::zoom_menu].hidden = isEditor && !isLandscapeEditor;
         self.widgets[widx::rotate_menu].hidden = isEditor && !isLandscapeEditor;
@@ -1656,9 +1656,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop
 
         // Right-hand side
         self.widgets[widx::terraform_menu].hidden = isEditor && !isLandscapeEditor;
-        self.widgets[widx::railroad_menu].hidden = isEditor;
-        self.widgets[widx::road_menu].hidden = isEditor && !(isLandscapeEditor && getGameState().defaultRoadObjectId != 0xFF);
-        self.widgets[widx::port_menu].hidden = isEditor;
+        self.widgets[widx::railroad_menu].hidden = isEditor || getGameState().defaultRailroadObjectId == 0xFF;
+        self.widgets[widx::road_menu].hidden = (isEditor && !isLandscapeEditor) || getGameState().defaultRoadObjectId == 0xFF;
+        self.widgets[widx::port_menu].hidden = isEditor || (getGameState().lastAirport == 0xFF && getGameState().lastShipPort == 0xFF);
         self.widgets[widx::build_vehicles_menu].hidden = isEditor;
 
         self.widgets[widx::vehicles_menu].hidden = isEditor;
@@ -1678,8 +1678,6 @@ namespace OpenLoco::Ui::Windows::ToolbarTop
         }
 
         const bool cheatsOn = Config::get().cheatsMenuEnabled;
-        self.widgets[widx::cheats_menu].hidden = !cheatsOn;
-
         const auto& refWidget = self.widgets[cheatsOn ? enumValue(widx::cheats_menu) : enumValue(widx::audio_menu)];
         const auto offsetWidget = [&self, refWidget](uint8_t widgetIndex, uint8_t index) {
             auto& widget = self.widgets[widgetIndex];
@@ -1700,6 +1698,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop
 
         self.widgets[widx::loadsave_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_loadsave);
         self.widgets[widx::cheats_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_cogwheels);
+        self.widgets[widx::map_generation_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_cogwheels);
         self.widgets[widx::zoom_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_zoom);
         self.widgets[widx::rotate_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_rotate);
         self.widgets[widx::view_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_view);
@@ -1730,10 +1729,6 @@ namespace OpenLoco::Ui::Windows::ToolbarTop
         {
             self.widgets[widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_ports);
         }
-
-        self.widgets[widx::road_menu].hidden = !(getGameState().defaultRoadObjectId != 0xFF);
-        self.widgets[widx::railroad_menu].hidden = !(getGameState().defaultRailroadObjectId != 0xFF);
-        self.widgets[widx::port_menu].hidden = !(getGameState().lastAirport != 0xFF || getGameState().lastShipPort != 0xFF);
 
         if (Config::get().toolbarButtonsCentred)
         {
