@@ -193,7 +193,8 @@ namespace OpenLoco
         topAndTailPosition = 1U << 1,   // vehicle is forced to the rear of the train
         jacobsBogieFront = 1U << 2,
         jacobsBogieRear = 1U << 3,
-        flag_04 = 1U << 4,
+        // if four vehicles with this flag are present, the second and third are positioned in the middle of the train, to simulate two trainsets being coupled together
+        trainsetsCoupleInCenter = 1U << 4,
         centerPosition = 1U << 5, // vehicle is forced to the middle of train
         rackRail = 1U << 6,
         // Alternates between sprite 0 and sprite 1 for each vehicle of this type in a train

@@ -660,7 +660,7 @@ namespace OpenLoco::Vehicles
         {
             // If there are at least 4 cars with VehicleObjectFlags::flag_04 places 2 of them in the middle of the train
             // This flag is used to create train sets comprised of 2 double ended trains
-            const auto numFlag4s = std::count_if(carData.begin(), carData.end(), [](auto& d) { return d.hasFlags(VehicleObjectFlags::flag_04); });
+            const auto numFlag4s = std::count_if(carData.begin(), carData.end(), [](auto& d) { return d.hasFlags(VehicleObjectFlags::trainsetsCoupleInCenter); });
             if (numFlag4s >= 4)
             {
                 uint8_t moveCount = 0;
@@ -671,7 +671,7 @@ namespace OpenLoco::Vehicles
                     for (auto i = 1U; i < carData.size() - 1; ++i)
                     {
                         auto& cd = carData[i];
-                        if (cd.hasFlags(VehicleObjectFlags::flag_04))
+                        if (cd.hasFlags(VehicleObjectFlags::trainsetsCoupleInCenter))
                         {
                             toBeMoved[moveCount++] = cd;
                             carData.erase(carData.begin() + i);
