@@ -45,7 +45,7 @@ namespace OpenLoco::GameCommands
             Ui::WindowManager::invalidate(Ui::WindowType::company, static_cast<uint16_t>(GameCommands::getUpdatingCompanyId()));
             if (CompanyManager::getControllingId() == GameCommands::getUpdatingCompanyId())
             {
-                Ui::Windows::CompanyInfoPanel::invalidateFrame();
+                Ui::WindowManager::invalidate(Ui::WindowType::companyInfoToolbar);
             }
         }
         return 0;

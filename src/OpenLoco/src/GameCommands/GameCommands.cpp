@@ -299,7 +299,7 @@ namespace OpenLoco::GameCommands
             if ((SceneManager::getPauseFlags() & PauseFlags::player) != PauseFlags::none)
             {
                 SceneManager::unsetPauseFlag(PauseFlags::player);
-                Ui::Windows::CompanyInfoPanel::invalidateFrame();
+                WindowManager::invalidate(WindowType::companyInfoToolbar);
             }
 
             if (SceneManager::getGameSpeed() != GameSpeed::Normal)

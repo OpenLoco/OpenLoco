@@ -153,7 +153,6 @@ namespace OpenLoco::Ui::Windows
     namespace CompanyInfoPanel
     {
         Window* open();
-        void invalidateFrame();
     }
 
     namespace CompanyList
@@ -398,7 +397,6 @@ namespace OpenLoco::Ui::Windows
     namespace TimePanel
     {
         Window* open();
-        void invalidateFrame();
         void beginSendChatMessage(Window& self);
     }
 

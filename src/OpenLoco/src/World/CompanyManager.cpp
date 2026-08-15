@@ -1133,7 +1133,7 @@ namespace OpenLoco::CompanyManager
         // Invalidate the company balance if this is the player company
         if (getControllingId() == id)
         {
-            Ui::Windows::CompanyInfoPanel::invalidateFrame();
+            WindowManager::invalidate(WindowType::companyInfoToolbar);
         }
         auto cost = currency48_t{ payment };
         company->cash -= cost;

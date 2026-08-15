@@ -62,8 +62,6 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
 
     std::vector<const Company*> _sortedCompanies;
 
-    static bool _redrawScheduled = false; // _50A004 (first bit)
-
     // 0x43AA4C
     static void competitorMouseDown(Ui::Window* self, WidgetIndex_t widgetIndex)
     {
@@ -351,11 +349,6 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
         formatPerformanceIndex(playerCompany->performanceIndex, args);
     }
 
-    void invalidateFrame()
-    {
-        _redrawScheduled = true;
-    }
-
     // 0x00439670
     static void onUpdate(Window& w)
     {
@@ -363,12 +356,6 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
         if (w.var_854 >= 24)
         {
             w.var_854 = 0;
-        }
-
-        if (_redrawScheduled)
-        {
-            _redrawScheduled = false;
-            WindowManager::invalidateWidget(WindowType::companyInfoToolbar, 0, widx::inner_frame);
         }
     }
 
