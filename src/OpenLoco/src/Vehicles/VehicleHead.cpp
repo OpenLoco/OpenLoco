@@ -716,7 +716,7 @@ namespace OpenLoco::Vehicles
             for (auto& car : train.cars)
             {
                 auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
-                if (!vehicleObj->hasFlags(VehicleObjectFlags::alternatingCarSprite))
+                if (!vehicleObj->hasFlags(VehicleObjectFlags::alternatingBody))
                 {
                     continue;
                 }
