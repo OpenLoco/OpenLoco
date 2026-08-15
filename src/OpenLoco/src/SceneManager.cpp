@@ -333,13 +333,13 @@ namespace OpenLoco::SceneManager
     static void onPause()
     {
         Audio::pauseSound();
-        Ui::Windows::TimePanel::invalidateFrame();
+        Ui::WindowManager::invalidate(Ui::WindowType::timeToolbar);
     }
 
     static void onUnpause()
     {
         Audio::unpauseSound();
-        Ui::Windows::TimePanel::invalidateFrame();
+        Ui::WindowManager::invalidate(Ui::WindowType::timeToolbar);
     }
 
     void setPauseFlag(PauseFlags value)
