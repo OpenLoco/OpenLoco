@@ -201,8 +201,8 @@ namespace OpenLoco
         alternatingBody = 1U << 7,
         mustFlipOnReverse = 1U << 8,
         aircraftIsTaildragger = 1U << 8,
-        anyRoadType = 1U << 9, // set on all road vehicles except trams
-        flag_10 = 1U << 10,
+        anyRoadType = 1U << 9,       // set on all road vehicles except trams
+        flag10Unused = 1U << 10,
         cannotCoupleToSelf = 1U << 11,
         aircraftFlaresLanding = 1U << 11, // set only on Concorde
         mustHavePair = 1U << 12,          // train requires two or more of this vehicle
