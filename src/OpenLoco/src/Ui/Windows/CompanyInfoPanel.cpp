@@ -162,7 +162,7 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
         auto window = WindowManager::createWindow(
             WindowType::companyInfoPanel,
             { 0, Ui::height() - kWindowSize.height },
-            { kWindowSize.width, kWindowSize.height },
+            kWindowSize,
             Ui::WindowFlags::stickToFront | Ui::WindowFlags::transparent | Ui::WindowFlags::noBackground,
             getEvents());
         window->setWidgets(_widgets);
