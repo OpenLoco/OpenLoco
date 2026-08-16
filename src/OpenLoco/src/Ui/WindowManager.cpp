@@ -1442,35 +1442,10 @@ namespace OpenLoco::Ui::WindowManager
                 continue;
             }
 
-            auto left = w.x;
-            auto top = w.y;
-            auto right = w.x + w.width;
-            auto bottom = w.y + w.height;
-
-            // TODO: replace these with min/max
-            auto cx = viewport->x;
-            if (left < cx)
-            {
-                left = cx;
-            }
-
-            cx = viewport->x + viewport->width;
-            if (right > cx)
-            {
-                right = cx;
-            }
-
-            cx = viewport->y;
-            if (top < cx)
-            {
-                top = cx;
-            }
-
-            cx = viewport->y + viewport->height;
-            if (bottom > cx)
-            {
-                bottom = cx;
-            }
+            const int32_t left = std::max(w.x, viewport->x);
+            const int32_t right = std::min(w.x + w.width, viewport->x + viewport->width);
+            const int32_t top = std::max(w.y, viewport->y);
+            const int32_t bottom = std::min(w.y + w.height, viewport->y + viewport->height);
 
             if (left < right && top < bottom)
             {
