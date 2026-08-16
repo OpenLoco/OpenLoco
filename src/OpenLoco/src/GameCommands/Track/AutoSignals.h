@@ -102,7 +102,7 @@ namespace OpenLoco::GameCommands
                         adjustedSides ^= (1U << 15) | (1U << 14);
                     }
 
-                    auto cost = actionFunc(iterationTrackStart, tad, adjustedSides, trackObjType, flags);
+                    auto cost = actionFunc(iterationTrackStart, tad, adjustedSides, trackObjType, 0, flags);
 
                     if (cost == GameCommands::kFailure)
                     {
@@ -127,7 +127,7 @@ namespace OpenLoco::GameCommands
     {
         if (step == 0)
         {
-            return actionFunc(pos, (rotation & 0x3) | (trackId << 3), sides, trackObjType, flags);
+            return actionFunc(pos, (rotation & 0x3) | (trackId << 3), sides, trackObjType, index, flags);
         }
         const auto trackPieces = World::TrackData::getTrackPiece(trackId);
         if (trackPieces.size() < index)
