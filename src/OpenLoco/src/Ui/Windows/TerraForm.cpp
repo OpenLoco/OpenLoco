@@ -384,11 +384,13 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (!Input::hasFlag(Input::Flags::toolActive))
             {
                 WindowManager::close(&self);
+                return;
             }
 
             if (ToolManager::getToolWindowType() != WindowType::terraform)
             {
                 WindowManager::close(&self);
+                return;
             }
 
             if (!Input::hasFlag(Input::Flags::rightMousePressed))
@@ -2371,11 +2373,13 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (!Input::hasFlag(Input::Flags::toolActive))
             {
                 WindowManager::close(&self);
+                return;
             }
 
             if (ToolManager::getToolWindowType() != WindowType::terraform)
             {
                 WindowManager::close(&self);
+                return;
             }
 
             if (!Input::hasFlag(Input::Flags::rightMousePressed))
@@ -2764,11 +2768,13 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (!Input::hasFlag(Input::Flags::toolActive))
             {
                 WindowManager::close(&self);
+                return;
             }
 
             if (ToolManager::getToolWindowType() != WindowType::terraform)
             {
                 WindowManager::close(&self);
+                return;
             }
 
             self.frameNo++;
