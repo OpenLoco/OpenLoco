@@ -75,7 +75,7 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if (!(flags & GameCommands::Flags::apply))
+        if (!hasFlags(flags, GameCommands::Flags::apply))
         {
             return 0;
         }

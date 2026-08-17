@@ -54,17 +54,17 @@ namespace OpenLoco::GameCommands
             {
                 continue;
             }
-            if (elTrack->isGhost() != ((flags & Flags::ghost) != 0))
+            if (elTrack->isGhost() != hasFlags(flags, Flags::ghost))
             {
                 continue;
             }
-            if (elTrack->isAiAllocated() != ((flags & Flags::aiAllocated) != 0))
+            if (elTrack->isAiAllocated() != hasFlags(flags, Flags::aiAllocated))
             {
                 continue;
             }
             // Ghost only as this is checked elsewhere for non-ghost so that
             // neutral company is always allowed
-            if (elTrack->owner() != getUpdatingCompanyId() && ((flags & Flags::ghost) != 0))
+            if (elTrack->owner() != getUpdatingCompanyId() && hasFlags(flags, Flags::ghost))
             {
                 continue;
             }
@@ -128,7 +128,7 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if ((flags & Flags::ghost) == 0 && !checkCompanyCompatibility(elTrack->owner(), *elTrack))
+        if (!hasFlags(flags, Flags::ghost) && !checkCompanyCompatibility(elTrack->owner(), *elTrack))
         {
             return kFailure;
         }
@@ -231,7 +231,7 @@ namespace OpenLoco::GameCommands
                 trackBridgeId = pieceElTrack->bridge();
             }
 
-            if (!(flags & Flags::apply))
+            if (!hasFlags(flags, Flags::apply))
             {
                 continue;
             }
@@ -249,9 +249,9 @@ namespace OpenLoco::GameCommands
             totalRemovalCost += (bridgeBaseCost * World::TrackData::getTrackMiscData(args.trackId).costFactor) / 256;
         }
 
-        if (flags & Flags::apply)
+        if (hasFlags(flags, Flags::apply))
         {
-            if (!(flags & (Flags::aiAllocated | Flags::ghost)))
+            if (!hasFlags(flags, Flags::aiAllocated | Flags::ghost))
             {
                 playTrackRemovalSound(args.pos);
             }

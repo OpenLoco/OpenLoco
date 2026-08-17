@@ -218,7 +218,7 @@ namespace OpenLoco::GameCommands
 
     static uint32_t cheat(const GameCommands::GenericCheatArgs& args, uint8_t flags)
     {
-        if (!(flags & GameCommands::Flags::apply))
+        if (!hasFlags(flags, GameCommands::Flags::apply))
         {
             return 0;
         }
@@ -275,7 +275,7 @@ namespace OpenLoco::GameCommands
         {
             return GameCommands::kFailure;
         }
-        if (flags & Flags::apply)
+        if (hasFlags(flags, Flags::apply))
         {
             veh->vehicleFlags |= Vehicles::VehicleFlags::shuntCheat;
         }
@@ -291,7 +291,7 @@ namespace OpenLoco::GameCommands
     // 0x00438A08
     static uint32_t freeCashCheat(uint8_t flags)
     {
-        if (flags & Flags::apply)
+        if (hasFlags(flags, Flags::apply))
         {
             auto companyId = GameCommands::getUpdatingCompanyId();
             auto* company = CompanyManager::get(companyId);

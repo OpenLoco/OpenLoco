@@ -68,7 +68,7 @@ namespace OpenLoco::GameCommands
             setErrorText(StringIds::track_road_unsuitable);
             return kFailure;
         }
-        if (result.networkTooComplex && (flags & Flags::apply) && !(flags & Flags::ghost))
+        if (result.networkTooComplex && hasFlags(flags, Flags::apply) && !hasFlags(flags, Flags::ghost))
         {
             Ui::Windows::Error::open(StringIds::null, StringIds::too_much_track_some_track_not_upgraded);
         }

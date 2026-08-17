@@ -1123,7 +1123,7 @@ namespace OpenLoco::Vehicles
                     }
                 }
 
-                if (flags & GameCommands::Flags::apply)
+                if (GameCommands::hasFlags(flags, GameCommands::Flags::apply))
                 {
                     bool invalidate = false;
                     if (flags & GameCommands::Flags::ghost)
@@ -1261,7 +1261,7 @@ namespace OpenLoco::Vehicles
                 }
             }
 
-            if (flags & GameCommands::Flags::apply)
+            if (GameCommands::hasFlags(flags, GameCommands::Flags::apply))
             {
                 bool invalidate = false;
                 if (flags & GameCommands::Flags::ghost)
@@ -1465,7 +1465,7 @@ namespace OpenLoco::Vehicles
                     }
                 }
 
-                if (flags & GameCommands::Flags::apply)
+                if (GameCommands::hasFlags(flags, GameCommands::Flags::apply))
                 {
                     bool invalidate = false;
                     if (flags & GameCommands::Flags::ghost)
@@ -1627,7 +1627,7 @@ namespace OpenLoco::Vehicles
                 }
             }
 
-            if (flags & GameCommands::Flags::apply)
+            if (GameCommands::hasFlags(flags, GameCommands::Flags::apply))
             {
                 bool invalidate = false;
                 if (flags & GameCommands::Flags::ghost)

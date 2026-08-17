@@ -32,7 +32,7 @@ namespace OpenLoco::GameCommands
         auto* sourceHead = EntityManager::get<Vehicles::VehicleHead>(sourceVehicle->getHead());
         auto* destHead = EntityManager::get<Vehicles::VehicleHead>(destVehicle->getHead());
 
-        if (!(flags & Flags::apply))
+        if (!hasFlags(flags, Flags::apply))
         {
             if (!checkCompanyCompatibility(sourceVehicle->owner))
             {

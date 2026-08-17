@@ -49,7 +49,7 @@ namespace OpenLoco::GameCommands
                 return 0;
             }
 
-            if (!(flags & Flags::apply))
+            if (!hasFlags(flags, Flags::apply))
             {
                 return 0;
             }

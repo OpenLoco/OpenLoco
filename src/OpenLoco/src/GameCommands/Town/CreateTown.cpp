@@ -143,7 +143,7 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if (!(flags & Flags::apply))
+        if (!hasFlags(flags, Flags::apply))
         {
             StringManager::emptyUserString(newTown->name);
             newTown->name = StringIds::null;

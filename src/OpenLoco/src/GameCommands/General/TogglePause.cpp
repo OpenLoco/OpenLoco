@@ -10,7 +10,7 @@ namespace OpenLoco::GameCommands
     // 0x00431E32
     static uint32_t togglePause(uint8_t flags)
     {
-        if ((flags & Flags::apply) == 0)
+        if (!hasFlags(flags, Flags::apply))
         {
             return 0;
         }

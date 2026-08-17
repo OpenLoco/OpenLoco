@@ -246,7 +246,7 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if (!(flags & Flags::apply))
+        if (!hasFlags(flags, Flags::apply))
         {
             return 0;
         }
@@ -270,7 +270,7 @@ namespace OpenLoco::GameCommands
             wall.setTertiaryColour(args.tertiaryColour);
         }
 
-        if (flags & Flags::ghost)
+        if (hasFlags(flags, Flags::ghost))
         {
             wall.setGhost(true);
         }

@@ -48,7 +48,7 @@ namespace OpenLoco::GameCommands
             refundCost = bogie->refundCost;
         }
 
-        if (flags & Flags::apply)
+        if (hasFlags(flags, Flags::apply))
         {
             if (head == vehBase)
             {

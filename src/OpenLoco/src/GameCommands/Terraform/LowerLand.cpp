@@ -22,7 +22,7 @@ namespace OpenLoco::GameCommands
     // 0x004638C6, 0x004638CF
     uint32_t lowerLand(const LowerLandArgs& args, World::TileClearance::RemovedBuildings& removedBuildings, const uint8_t flags)
     {
-        if (flags & Flags::apply)
+        if (hasFlags(flags, Flags::apply))
         {
             Scenario::getOptions().madeAnyChanges = 1;
 

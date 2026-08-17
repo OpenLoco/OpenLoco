@@ -125,7 +125,7 @@ namespace OpenLoco::GameCommands
                 return kFailure;
             }
 
-            if (!(flags & Flags::apply))
+            if (!hasFlags(flags, Flags::apply))
             {
                 continue;
             }
@@ -144,7 +144,7 @@ namespace OpenLoco::GameCommands
 
             if (args.flags & (1U << 15))
             {
-                if (!(flags & Flags::ghost) || elSignal->isLeftGhost())
+                if (!hasFlags(flags, Flags::ghost) || elSignal->isLeftGhost())
                 {
                     auto& left = elSignal->getLeft();
                     left.setHasSignal(false);
@@ -155,7 +155,7 @@ namespace OpenLoco::GameCommands
             }
             if (args.flags & (1U << 14))
             {
-                if (!(flags & Flags::ghost) || elSignal->isRightGhost())
+                if (!hasFlags(flags, Flags::ghost) || elSignal->isRightGhost())
                 {
                     auto& right = elSignal->getRight();
                     right.setHasSignal(false);
@@ -176,9 +176,9 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        if (flags & Flags::apply)
+        if (hasFlags(flags, Flags::apply))
         {
-            if (!(flags & (Flags::aiAllocated | Flags::ghost)))
+            if (!hasFlags(flags, Flags::aiAllocated | Flags::ghost))
             {
                 const Vehicles::TrackAndDirection::_TrackAndDirection tad(args.trackId, args.rotation);
 

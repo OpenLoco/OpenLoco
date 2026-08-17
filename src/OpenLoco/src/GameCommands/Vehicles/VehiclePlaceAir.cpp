@@ -149,7 +149,7 @@ namespace OpenLoco::GameCommands
                 return kFailure;
             }
 
-            if (!(flags & Flags::apply))
+            if (!hasFlags(flags, Flags::apply))
             {
                 return 0;
             }
@@ -179,7 +179,7 @@ namespace OpenLoco::GameCommands
             train.veh2->currentSpeed = 0.0_mph;
             train.veh2->motorState = Vehicles::MotorState::stopped;
 
-            if (flags & Flags::ghost)
+            if (hasFlags(flags, Flags::ghost))
             {
                 train.applyToComponents([](auto& component) {
                     component.var_38 |= Vehicles::Flags38::isGhost;
@@ -187,7 +187,7 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        if ((flags & Flags::apply) && !(flags & Flags::ghost))
+        if (hasFlags(flags, Flags::apply) && !hasFlags(flags, Flags::ghost))
         {
             Vehicles::playPlacedownSound(pos);
         }

@@ -95,7 +95,7 @@ namespace OpenLoco::GameCommands
     // 0x004B6AEE
     static uint32_t changeLocalExpressMode(const Vehicles::Vehicle& train, const uint8_t flags)
     {
-        if (!(flags & Flags::apply))
+        if (!hasFlags(flags, Flags::apply))
         {
             return 0;
         }
@@ -126,7 +126,7 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        if (!(flags & Flags::apply))
+        if (!hasFlags(flags, Flags::apply))
         {
             return 0;
         }
@@ -160,7 +160,7 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if (!(flags & Flags::apply))
+        if (!hasFlags(flags, Flags::apply))
         {
             return 0;
         }
@@ -207,7 +207,7 @@ namespace OpenLoco::GameCommands
             // If a vehicle is stuck or crashed, immediately sell the vehicle instead.
             if ((train.head->status == Vehicles::Status::stuck || train.head->status == Vehicles::Status::crashed) && CompanyManager::isPlayerCompany(train.head->owner))
             {
-                if (flags & Flags::apply)
+                if (hasFlags(flags, Flags::apply))
                 {
                     // 0x004B69C7
                     train.head->sub_4AD778();

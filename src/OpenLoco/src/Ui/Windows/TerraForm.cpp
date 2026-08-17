@@ -2055,7 +2055,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static uint32_t raiseWater(uint8_t flags)
         {
-            if (flags & GameCommands::Flags::apply)
+            if (hasFlags(flags, GameCommands::Flags::apply))
             {
                 Common::sub_4A69DD();
                 GameCommands::setErrorTitle(StringIds::error_cant_raise_water_here);
@@ -2070,7 +2070,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static uint32_t lowerWater(uint8_t flags)
         {
-            if (flags & GameCommands::Flags::apply)
+            if (hasFlags(flags, GameCommands::Flags::apply))
             {
                 Common::sub_4A69DD();
                 GameCommands::setErrorTitle(StringIds::error_cant_raise_water_here);

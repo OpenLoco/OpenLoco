@@ -42,7 +42,7 @@ namespace OpenLoco::GameCommands
         {
             const auto portPos = World::Pos3(searchTile.pos + pos, pos.z);
 
-            if ((flags & (Flags::aiAllocated | Flags::apply)) != 0)
+            if (hasFlags(flags, Flags::aiAllocated | Flags::apply))
             {
                 auto tile = World::TileManager::get(portPos);
                 auto* surfaceEl = tile.surface();
@@ -76,12 +76,12 @@ namespace OpenLoco::GameCommands
                 return false;
             }
 
-            if ((flags & Flags::apply) == 0)
+            if (!hasFlags(flags, Flags::apply))
             {
                 continue;
             }
 
-            if ((flags & (Flags::aiAllocated)) == 0)
+            if (!hasFlags(flags, Flags::aiAllocated))
             {
                 Ui::ViewportManager::invalidate(World::Pos2(portPos), stationEl->baseHeight(), stationEl->clearHeight(), ZoomLevel::eighth);
             }
@@ -109,7 +109,7 @@ namespace OpenLoco::GameCommands
         const auto rotation = stationEl->rotation();
 
         // Do we need to remove the port from a station?
-        if ((flags & Flags::ghost) == 0)
+        if (!hasFlags(flags, Flags::ghost))
         {
             stationId = stationEl->stationId();
         }
@@ -132,7 +132,7 @@ namespace OpenLoco::GameCommands
         }
 
         // Should we update the station meta data?
-        if ((flags & Flags::ghost) == 0 && (flags & Flags::apply) != 0)
+        if (!hasFlags(flags, Flags::ghost) && hasFlags(flags, Flags::apply))
         {
             auto* station = StationManager::get(stationId);
 

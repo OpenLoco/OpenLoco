@@ -243,7 +243,7 @@ namespace OpenLoco::GameCommands
 
     static bool commandRequiresUnpausingGame(GameCommand command, uint16_t flags)
     {
-        if ((flags & (Flags::aiAllocated | Flags::ghost)) != 0)
+        if (hasFlags(flags, Flags::aiAllocated | Flags::ghost))
         {
             return false;
         }
@@ -268,12 +268,12 @@ namespace OpenLoco::GameCommands
             return loc_4313C6(esi, regs, flags);
         }
 
-        if ((flags & Flags::apply) == 0)
+        if (!hasFlags(flags, Flags::apply))
         {
             return loc_4313C6(esi, regs, flags);
         }
 
-        auto isGhost = (flags & Flags::ghost) != 0;
+        auto isGhost = hasFlags(flags, Flags::ghost);
         if (!isGhost && Network::isConnected())
         {
             // For network games, we need to delay the command apply processing
@@ -357,8 +357,8 @@ namespace OpenLoco::GameCommands
 
             if (_gameCommandNestLevel == 1)
             {
-                if ((flags & Flags::allowNegativeCashFlow) == 0
-                    && (flags & Flags::noPayment) == 0
+                if (!hasFlags(flags, Flags::allowNegativeCashFlow)
+                    && !hasFlags(flags, Flags::noPayment)
                     && ebx != 0)
                 {
                     if (!CompanyManager::ensureCompanyFunding(getUpdatingCompanyId(), ebx))
@@ -371,7 +371,7 @@ namespace OpenLoco::GameCommands
 
         if (ebx == static_cast<int32_t>(GameCommands::kFailure))
         {
-            if (flags & Flags::apply)
+            if (hasFlags(flags, Flags::apply))
             {
                 return loc_4314EA(flags);
             }
@@ -382,7 +382,7 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        if ((flags & Flags::apply) == 0)
+        if (!hasFlags(flags, Flags::apply))
         {
             _gameCommandNestLevel--;
             return ebx;
@@ -413,7 +413,7 @@ namespace OpenLoco::GameCommands
             return ebx;
         }
 
-        if ((flags & Flags::noPayment) != 0)
+        if (hasFlags(flags, Flags::noPayment))
         {
             return ebx;
         }
@@ -443,7 +443,7 @@ namespace OpenLoco::GameCommands
             return GameCommands::kFailure;
         }
 
-        if (flags & Flags::noErrorWindow)
+        if (hasFlags(flags, Flags::noErrorWindow))
         {
             return GameCommands::kFailure;
         }
@@ -646,6 +646,6 @@ namespace OpenLoco::GameCommands
     // TODO: Maybe move this somewhere else used by multiple game commands
     bool shouldInvalidateTile(uint8_t flags)
     {
-        return !(flags & Flags::aiAllocated) || Config::get().showAiPlanningAsGhosts;
+        return !hasFlags(flags, Flags::aiAllocated) || Config::get().showAiPlanningAsGhosts;
     }
 }

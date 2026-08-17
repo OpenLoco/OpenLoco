@@ -31,14 +31,14 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if (!(flags & Flags::apply))
+        if (!hasFlags(flags, Flags::apply))
         {
             return 0;
         }
 
         if (train.head->tileX != -1)
         {
-            if (!(flags & Flags::ghost))
+            if (!hasFlags(flags, Flags::ghost))
             {
                 Vehicles::playPickupSound(train.veh2);
             }

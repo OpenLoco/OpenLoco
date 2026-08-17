@@ -236,7 +236,7 @@ namespace OpenLoco::GameCommands
                 }
             }
 
-            if (!(flags & Flags::apply))
+            if (!hasFlags(flags, Flags::apply))
             {
                 return 0;
             }
@@ -280,7 +280,7 @@ namespace OpenLoco::GameCommands
 
                 train.head->vehicleFlags |= Vehicles::VehicleFlags::commandStop;
                 train.head->manualPower = -40;
-                if (flags & Flags::ghost)
+                if (hasFlags(flags, Flags::ghost))
                 {
                     train.applyToComponents([](auto& component) {
                         component.var_38 |= Vehicles::Flags38::isGhost;
@@ -292,7 +292,7 @@ namespace OpenLoco::GameCommands
         {
             return kFailure;
         }
-        if ((flags & Flags::apply) && !(flags & Flags::ghost))
+        if (hasFlags(flags, Flags::apply) && !hasFlags(flags, Flags::ghost))
         {
             Vehicles::playPlacedownSound(args.pos);
         }

@@ -40,7 +40,7 @@ namespace OpenLoco::GameCommands
         }
 
         // Stop here if we're just querying
-        if ((flags & GameCommands::Flags::apply) == 0)
+        if (!hasFlags(flags, GameCommands::Flags::apply))
         {
             return 0;
         }

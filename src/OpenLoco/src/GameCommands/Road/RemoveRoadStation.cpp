@@ -167,7 +167,7 @@ namespace OpenLoco::GameCommands
                 totalCost += (removeCostBase * World::TrackData::getRoadMiscData(args.roadId).costFactor) / 256;
             }
 
-            if ((flags & Flags::apply) != 0)
+            if (hasFlags(flags, Flags::apply))
             {
                 for (auto* roadEntry = roadRange.begin; roadEntry != roadRange.end; ++roadEntry)
                 {
@@ -183,7 +183,7 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        if (updateStationTileRegistration && (flags & Flags::apply) != 0)
+        if (updateStationTileRegistration && hasFlags(flags, Flags::apply))
         {
             auto* station = StationManager::get(foundStationId);
             removeTileFromStation(foundStationId, roadStart, args.rotation);
