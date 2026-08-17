@@ -10,7 +10,7 @@
 namespace OpenLoco::GameCommands
 {
     // 0x0043483D
-    static uint32_t changeCompanyColour(const ChangeCompanyColourSchemeArgs& args, uint8_t flags)
+    static uint32_t changeCompanyColour(const ChangeCompanyColourSchemeArgs& args, Flags flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Miscellaneous);
         GameCommands::setPosition({ static_cast<int16_t>(0x8000), 0, 0 });
@@ -84,7 +84,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void changeCompanyColour(registers& regs, const uint8_t flags)
+    void changeCompanyColour(registers& regs, const Flags flags)
     {
         regs.ebx = changeCompanyColour(ChangeCompanyColourSchemeArgs(regs), flags);
     }

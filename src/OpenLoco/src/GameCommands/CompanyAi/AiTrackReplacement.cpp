@@ -34,7 +34,7 @@ namespace OpenLoco::GameCommands
             uint8_t trackId;
             uint8_t bridgeId;
             uint8_t trackObjectId;
-            uint8_t flags;
+            Flags flags;
         };
     }
 
@@ -130,7 +130,7 @@ namespace OpenLoco::GameCommands
         hasLevelCrossing = true;
         getLegacyReturnState().flags_1136073 |= (1U << 2);
 
-        if (args.flags & Flags::apply)
+        if (hasFlags(args.flags, Flags::apply))
         {
             elRoad.setHasLevelCrossing(true);
             elRoad.setLevelCrossingObjectId(getGameState().currentDefaultLevelCrossingType);
@@ -189,7 +189,7 @@ namespace OpenLoco::GameCommands
         return World::TileClearance::ClearFuncResult::collision;
     }
 
-    static currency32_t aiTrackReplacement(const AiTrackReplacementArgs& args, const uint8_t flags)
+    static currency32_t aiTrackReplacement(const AiTrackReplacementArgs& args, const Flags flags)
     {
         getLegacyReturnState().flags_1136072 = World::TileManager::ElementPositionFlags::none;
         GameCommands::setExpenditureType(ExpenditureType::Construction);
@@ -425,7 +425,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004A734F
-    void aiTrackReplacement(registers& regs, const uint8_t flags)
+    void aiTrackReplacement(registers& regs, const Flags flags)
     {
         regs.ebx = aiTrackReplacement(AiTrackReplacementArgs(regs), flags);
     }

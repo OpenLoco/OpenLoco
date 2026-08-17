@@ -26,7 +26,7 @@ using namespace OpenLoco::World;
 namespace OpenLoco::GameCommands
 {
     // 0x0049711F
-    static uint32_t removeTown(const TownRemovalArgs& args, const uint8_t flags)
+    static uint32_t removeTown(const TownRemovalArgs& args, const Flags flags)
     {
         for (auto& station : StationManager::stations())
         {
@@ -165,7 +165,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void removeTown(registers& regs, const uint8_t flags)
+    void removeTown(registers& regs, const Flags flags)
     {
         TownRemovalArgs args(regs);
         regs.ebx = removeTown(args, flags);

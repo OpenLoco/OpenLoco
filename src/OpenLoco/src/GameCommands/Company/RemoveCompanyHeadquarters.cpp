@@ -9,7 +9,7 @@
 namespace OpenLoco::GameCommands
 {
     // 0x0042EEAF
-    static uint32_t removeCompanyHeadquarters(World::Pos3 pos, uint8_t flags)
+    static uint32_t removeCompanyHeadquarters(World::Pos3 pos, Flags flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(pos);
@@ -73,7 +73,7 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void removeCompanyHeadquarters(registers& regs, const uint8_t flags)
+    void removeCompanyHeadquarters(registers& regs, const Flags flags)
     {
         HeadquarterRemovalArgs args(regs);
         regs.ebx = removeCompanyHeadquarters(args.pos, flags);

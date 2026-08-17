@@ -5,7 +5,7 @@
 namespace OpenLoco::GameCommands
 {
     // 0x004383CA
-    static uint32_t updateOwnerStatus(const uint8_t flags, const OwnerStatus& ownerStatus)
+    static uint32_t updateOwnerStatus(const Flags flags, const OwnerStatus& ownerStatus)
     {
         if (hasFlags(flags, Flags::apply))
         {
@@ -20,7 +20,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void updateOwnerStatus(registers& regs, const uint8_t flags)
+    void updateOwnerStatus(registers& regs, const Flags flags)
     {
         UpdateOwnerStatusArgs args(regs);
         regs.ebx = updateOwnerStatus(flags, args.ownerStatus);

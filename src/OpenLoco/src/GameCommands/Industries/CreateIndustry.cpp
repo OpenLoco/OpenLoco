@@ -107,7 +107,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0045572D
-    static World::TileClearance::ClearFuncResult tileClearFunction(World::TileElementEntry& entry, const World::Pos2 pos, const uint8_t flags, currency32_t& cost)
+    static World::TileClearance::ClearFuncResult tileClearFunction(World::TileElementEntry& entry, const World::Pos2 pos, const Flags flags, currency32_t& cost)
     {
         if (entry.type() != World::ElementType::tree)
         {
@@ -126,7 +126,7 @@ namespace OpenLoco::GameCommands
        cx = pos.y
        bl = flags
     */
-    static currency32_t placeIndustryBuilding(const IndustryId industryId, const World::Pos2& pos, const uint8_t direction, const uint8_t buildingType, const Colour colour, const bool buildImmediate, const uint8_t flags)
+    static currency32_t placeIndustryBuilding(const IndustryId industryId, const World::Pos2& pos, const uint8_t direction, const uint8_t buildingType, const Colour colour, const bool buildImmediate, const Flags flags)
     {
         auto* industry = IndustryManager::get(industryId);
         auto* indObj = industry->getObject();
@@ -412,7 +412,7 @@ namespace OpenLoco::GameCommands
     };
 
     // 0x0045436B
-    static currency32_t createIndustry(const IndustryPlacementArgs& args, const uint8_t flags)
+    static currency32_t createIndustry(const IndustryPlacementArgs& args, const Flags flags)
     {
         getLegacyReturnState().lastPlacedIndustryId = IndustryId::null;
         GameCommands::setExpenditureType(ExpenditureType::Miscellaneous);
@@ -705,7 +705,7 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void createIndustry(registers& regs, const uint8_t flags)
+    void createIndustry(registers& regs, const Flags flags)
     {
         IndustryPlacementArgs args(regs);
         regs.ebx = createIndustry(args, flags);

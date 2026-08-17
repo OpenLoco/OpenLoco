@@ -21,7 +21,7 @@ using namespace OpenLoco::World;
 namespace OpenLoco::GameCommands
 {
     // 0x00469D76
-    static uint32_t clearTile(World::Pos2 pos, World::TileClearance::RemovedBuildings& removedBuildings, const uint8_t flags)
+    static uint32_t clearTile(World::Pos2 pos, World::TileClearance::RemovedBuildings& removedBuildings, const Flags flags)
     {
         // This shouldn't happen due to using TilePosRangeView
         if (!World::validCoords(pos))
@@ -61,7 +61,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x00469CCB
-    static uint32_t clearLand(const ClearLandArgs& args, const uint8_t flags)
+    static uint32_t clearLand(const ClearLandArgs& args, const Flags flags)
     {
         const auto tileLoop = World::getClampedRange(args.pointA, args.pointB);
         uint32_t totalCost = 0;
@@ -92,7 +92,7 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void clearLand(registers& regs, const uint8_t flags)
+    void clearLand(registers& regs, const Flags flags)
     {
         const ClearLandArgs args(regs);
         regs.ebx = clearLand(args, flags);

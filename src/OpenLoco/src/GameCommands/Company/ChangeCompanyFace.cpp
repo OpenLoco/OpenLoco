@@ -9,7 +9,7 @@
 namespace OpenLoco::GameCommands
 {
     // 0x00435506
-    static uint32_t changeCompanyFace(uint8_t flags, CompanyId targetCompanyId, ObjectHeader& targetHeader)
+    static uint32_t changeCompanyFace(Flags flags, CompanyId targetCompanyId, ObjectHeader& targetHeader)
     {
         GameCommands::setExpenditureType(ExpenditureType::Miscellaneous);
         GameCommands::setPosition({ static_cast<int16_t>(0x8000), 0, 0 });
@@ -107,7 +107,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void changeCompanyFace(registers& regs, const uint8_t flags)
+    void changeCompanyFace(registers& regs, const Flags flags)
     {
         ChangeCompanyFaceArgs args(regs);
         regs.ebx = changeCompanyFace(flags, args.companyId, args.objHeader);

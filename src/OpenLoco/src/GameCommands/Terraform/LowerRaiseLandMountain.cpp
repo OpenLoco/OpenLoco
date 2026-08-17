@@ -15,7 +15,7 @@ using namespace OpenLoco::World;
 namespace OpenLoco::GameCommands
 {
     static uint32_t _mtnToolCost;         // 0x00F0014E
-    static uint8_t _mtnToolGCFlags;       // 0x00F00154
+    static Flags _mtnToolGCFlags;         // 0x00F00154
     static uint8_t _mtnToolHeightDiff;    // 0x00F00155
     static int8_t _mtnToolOuterLoopIndex; // 0x00F00156
 
@@ -100,7 +100,7 @@ namespace OpenLoco::GameCommands
         adjustSurfaceSlope(pos, targetBaseZ, 1, SurfaceSlope::CornerUp::east, removedBuildings);
     }
 
-    static uint32_t adjustMountainCentre(const LowerRaiseLandMountainArgs& args, World::TileClearance::RemovedBuildings& removedBuildings, const uint8_t flags)
+    static uint32_t adjustMountainCentre(const LowerRaiseLandMountainArgs& args, World::TileClearance::RemovedBuildings& removedBuildings, const Flags flags)
     {
         // Prepare parameters for raise/lower land tool
         uint32_t result = kFailure;
@@ -221,7 +221,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x00462DCE
-    static uint32_t lowerRaiseLandMountain(const LowerRaiseLandMountainArgs& args, const uint8_t flags)
+    static uint32_t lowerRaiseLandMountain(const LowerRaiseLandMountainArgs& args, const Flags flags)
     {
         _mtnToolGCFlags = flags;
 
@@ -390,7 +390,7 @@ namespace OpenLoco::GameCommands
         return _mtnToolCost;
     }
 
-    void lowerRaiseLandMountain(registers& regs, const uint8_t flags)
+    void lowerRaiseLandMountain(registers& regs, const Flags flags)
     {
         const LowerRaiseLandMountainArgs args(regs);
         regs.ebx = lowerRaiseLandMountain(args, flags);

@@ -11,6 +11,11 @@
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Exception.hpp>
 
+namespace OpenLoco::GameCommands
+{
+    enum class Flags : uint8_t;
+}
+
 namespace OpenLoco::Vehicles
 {
     constexpr auto kMaxRoadVehicleLength = 176;    // TODO: Units?
@@ -224,10 +229,10 @@ namespace OpenLoco::Vehicles
         bool networkTooComplex;
         bool allPlacementsFailed;
     };
-    ApplyTrackModsResult applyTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, World::Track::ModSection modSelection, uint8_t trackModObjIds);
-    currency32_t removeTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, World::Track::ModSection modSelection, uint8_t trackModObjIds);
-    ApplyTrackModsResult applyRoadModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_RoadAndDirection roadAndDirection, CompanyId company, uint8_t roadType, uint8_t flags, World::Track::ModSection modSelection, uint8_t roadModObjIds);
-    currency32_t removeRoadModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_RoadAndDirection roadAndDirection, CompanyId company, uint8_t roadType, uint8_t flags, World::Track::ModSection modSelection, uint8_t roadModObjIds);
+    ApplyTrackModsResult applyTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, GameCommands::Flags flags, World::Track::ModSection modSelection, uint8_t trackModObjIds);
+    currency32_t removeTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, GameCommands::Flags flags, World::Track::ModSection modSelection, uint8_t trackModObjIds);
+    ApplyTrackModsResult applyRoadModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_RoadAndDirection roadAndDirection, CompanyId company, uint8_t roadType, GameCommands::Flags flags, World::Track::ModSection modSelection, uint8_t roadModObjIds);
+    currency32_t removeRoadModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_RoadAndDirection roadAndDirection, CompanyId company, uint8_t roadType, GameCommands::Flags flags, World::Track::ModSection modSelection, uint8_t roadModObjIds);
     void leaveLevelCrossing(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const bool isEnteringLevelCrossing);
 
     enum class RoadOccupationFlags : uint8_t

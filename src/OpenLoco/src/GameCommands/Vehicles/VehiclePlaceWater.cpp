@@ -30,7 +30,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004267BE
-    static uint32_t vehiclePlaceWater(const VehicleWaterPlacementArgs& args, uint8_t flags)
+    static uint32_t vehiclePlaceWater(const VehicleWaterPlacementArgs& args, Flags flags)
     {
         setExpenditureType(ExpenditureType::ShipRunningCosts);
         setPosition(args.pos + World::Pos3{ 32, 32, 0 }); // Odd why 32,32
@@ -157,7 +157,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehiclePlaceWater(registers& regs, const uint8_t flags)
+    void vehiclePlaceWater(registers& regs, const Flags flags)
     {
         regs.ebx = vehiclePlaceWater(VehicleWaterPlacementArgs(regs), flags);
     }

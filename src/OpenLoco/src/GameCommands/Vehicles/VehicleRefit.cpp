@@ -15,7 +15,7 @@
 namespace OpenLoco::GameCommands
 {
     // 0x0042F6DB
-    static uint32_t vehicleRefit(const VehicleRefitArgs& args, const uint8_t flags)
+    static uint32_t vehicleRefit(const VehicleRefitArgs& args, const Flags flags)
     {
         setExpenditureType(ExpenditureType::TrainRunningCosts);
 
@@ -91,7 +91,7 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    void vehicleRefit(registers& regs, const uint8_t flags)
+    void vehicleRefit(registers& regs, const Flags flags)
     {
         regs.ebx = vehicleRefit(VehicleRefitArgs(regs), flags);
     }

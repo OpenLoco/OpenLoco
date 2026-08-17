@@ -216,7 +216,7 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    static uint32_t cheat(const GameCommands::GenericCheatArgs& args, uint8_t flags)
+    static uint32_t cheat(const GameCommands::GenericCheatArgs& args, Flags flags)
     {
         if (!hasFlags(flags, GameCommands::Flags::apply))
         {
@@ -262,13 +262,13 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void cheat(registers& regs, const uint8_t flags)
+    void cheat(registers& regs, const Flags flags)
     {
         regs.ebx = cheat(GameCommands::GenericCheatArgs(regs), flags);
     }
 
     // 0x004BAC53
-    static uint32_t vehicleShuntCheat(EntityId head, uint8_t flags)
+    static uint32_t vehicleShuntCheat(EntityId head, Flags flags)
     {
         auto* veh = EntityManager::get<Vehicles::VehicleHead>(head);
         if (veh == nullptr)
@@ -282,14 +282,14 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehicleShuntCheat(registers& regs, const uint8_t flags)
+    void vehicleShuntCheat(registers& regs, const Flags flags)
     {
         VehicleApplyShuntCheatArgs args(regs);
         regs.ebx = vehicleShuntCheat(args.head, flags);
     }
 
     // 0x00438A08
-    static uint32_t freeCashCheat(uint8_t flags)
+    static uint32_t freeCashCheat(Flags flags)
     {
         if (hasFlags(flags, Flags::apply))
         {
@@ -305,7 +305,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void freeCashCheat(registers& regs, const uint8_t flags)
+    void freeCashCheat(registers& regs, const Flags flags)
     {
         regs.ebx = freeCashCheat(flags);
     }

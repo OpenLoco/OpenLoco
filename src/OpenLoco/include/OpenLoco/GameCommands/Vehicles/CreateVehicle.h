@@ -27,5 +27,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void createVehicle(registers& regs, const uint8_t flags);
+    void createVehicle(registers& regs, const Flags flags);
 }

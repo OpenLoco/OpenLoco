@@ -14,7 +14,7 @@ using namespace OpenLoco::Vehicles;
 namespace OpenLoco::GameCommands
 {
     // 0x0047036E
-    static uint32_t vehicleOrderInsert(const VehicleOrderInsertArgs& args, uint8_t flags)
+    static uint32_t vehicleOrderInsert(const VehicleOrderInsertArgs& args, Flags flags)
     {
         auto* head = EntityManager::get<VehicleHead>(args.head);
         if (head == nullptr)
@@ -119,7 +119,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehicleOrderInsert(registers& regs, const uint8_t flags)
+    void vehicleOrderInsert(registers& regs, const Flags flags)
     {
         regs.ebx = vehicleOrderInsert(VehicleOrderInsertArgs(regs), flags);
     }

@@ -12,7 +12,7 @@
 namespace OpenLoco::GameCommands
 {
     // 0x0043BFCB
-    static uint32_t loadSaveQuit(const LoadSaveQuitGameArgs& args, const uint8_t flags)
+    static uint32_t loadSaveQuit(const LoadSaveQuitGameArgs& args, const Flags flags)
     {
         if (!hasFlags(flags, Flags::apply))
         {
@@ -71,7 +71,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void loadSaveQuit(registers& regs, const uint8_t flags)
+    void loadSaveQuit(registers& regs, const Flags flags)
     {
         regs.ebx = loadSaveQuit(LoadSaveQuitGameArgs(regs), flags);
     }

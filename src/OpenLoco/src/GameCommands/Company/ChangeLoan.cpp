@@ -8,7 +8,7 @@
 namespace OpenLoco::GameCommands
 {
     // 0x0046DE88
-    static uint32_t changeLoan(const currency32_t newLoan, const uint8_t flags)
+    static uint32_t changeLoan(const currency32_t newLoan, const Flags flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::LoanInterest);
 
@@ -51,7 +51,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void changeLoan(registers& regs, const uint8_t flags)
+    void changeLoan(registers& regs, const Flags flags)
     {
         ChangeLoanArgs args(regs);
         regs.ebx = changeLoan(args.newLoan, flags);

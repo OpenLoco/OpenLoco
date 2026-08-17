@@ -614,7 +614,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004AE74E
-    static uint32_t createNewVehicle(const uint8_t flags, const uint16_t vehicleTypeId)
+    static uint32_t createNewVehicle(const Flags flags, const uint16_t vehicleTypeId)
     {
         getLegacyReturnState().lastCreatedVehicleId = EntityId::null;
 
@@ -678,7 +678,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004AE5FF
-    static uint32_t addCarToVehicle(const uint8_t flags, const uint16_t vehicleTypeId, const EntityId headId)
+    static uint32_t addCarToVehicle(const Flags flags, const uint16_t vehicleTypeId, const EntityId headId)
     {
         Vehicle train(headId);
         setPosition(train.veh2->position);
@@ -743,7 +743,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004AE5E4
-    static uint32_t createVehicle(const uint8_t flags, const uint16_t vehicleTypeId, const EntityId headId)
+    static uint32_t createVehicle(const Flags flags, const uint16_t vehicleTypeId, const EntityId headId)
     {
         setExpenditureType(ExpenditureType::VehiclePurchases);
 
@@ -766,7 +766,7 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    void createVehicle(registers& regs, const uint8_t flags)
+    void createVehicle(registers& regs, const Flags flags)
     {
         regs.ebx = createVehicle(flags, regs.dx, EntityId(regs.di));
     }

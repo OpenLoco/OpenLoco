@@ -10,7 +10,7 @@
 namespace OpenLoco::GameCommands
 {
     // 0x004A6479
-    static currency32_t createTrackMod(const TrackModsPlacementArgs& args, uint8_t flags)
+    static currency32_t createTrackMod(const TrackModsPlacementArgs& args, Flags flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3(16, 16, 0));
@@ -87,7 +87,7 @@ namespace OpenLoco::GameCommands
         return result.cost;
     }
 
-    void createTrackMod(registers& regs, const uint8_t flags)
+    void createTrackMod(registers& regs, const Flags flags)
     {
         regs.ebx = createTrackMod(TrackModsPlacementArgs(regs), flags);
     }

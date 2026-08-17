@@ -1258,7 +1258,7 @@ namespace OpenLoco::World::TileManager
     // esi = X86Pointer(&element);
     // ax = pos.x;
     // cx = pos.y;
-    void removeTree(TileElementEntry& entry, const uint8_t flags, const World::Pos2& pos)
+    void removeTree(TileElementEntry& entry, const GameCommands::Flags flags, const World::Pos2& pos)
     {
         auto& element = entry.get<World::TreeElement>();
         if ((!element.isGhost() && !element.isAiAllocated())
@@ -1268,7 +1268,7 @@ namespace OpenLoco::World::TileManager
             playDemolishTreeSound(loc);
         }
 
-        if ((flags & GameCommands::Flags::ghost) == 0)
+        if (!GameCommands::hasFlags(flags, GameCommands::Flags::ghost))
         {
             auto treeObj = ObjectManager::get<TreeObject>(element.treeObjectId());
             auto ratingReduction = treeObj->demolishRatingReduction;
@@ -1496,7 +1496,7 @@ namespace OpenLoco::World::TileManager
     }
 
     // 0x00468651
-    uint32_t adjustSurfaceHeight(World::Pos2 pos, SmallZ targetBaseZ, uint8_t slopeFlags, World::TileClearance::RemovedBuildings& removedBuildings, uint8_t flags)
+    uint32_t adjustSurfaceHeight(World::Pos2 pos, SmallZ targetBaseZ, uint8_t slopeFlags, World::TileClearance::RemovedBuildings& removedBuildings, GameCommands::Flags flags)
     {
         if (!validCoords(pos))
         {
@@ -1673,7 +1673,7 @@ namespace OpenLoco::World::TileManager
     }
 
     // 0x004C4C28
-    uint32_t adjustWaterHeight(World::Pos2 pos, SmallZ targetHeight, World::TileClearance::RemovedBuildings& removedBuildings, uint8_t flags)
+    uint32_t adjustWaterHeight(World::Pos2 pos, SmallZ targetHeight, World::TileClearance::RemovedBuildings& removedBuildings, GameCommands::Flags flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Construction);
         GameCommands::setPosition(World::Pos3(pos.x + World::kTileSize / 2, pos.y + World::kTileSize / 2, targetHeight * kMicroToSmallZStep));

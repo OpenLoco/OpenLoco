@@ -34,7 +34,7 @@ namespace OpenLoco::GameCommands
         return World::TileClearance::ClearFuncResult::collision;
     }
 
-    static currency32_t aiCreateTrackAndStation(const AiTrackAndStationPlacementArgs& args, uint8_t flags)
+    static currency32_t aiCreateTrackAndStation(const AiTrackAndStationPlacementArgs& args, Flags flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Construction);
         if (!World::TileManager::checkFreeElementsAndReorganise())
@@ -167,7 +167,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004A6FDC
-    void aiCreateTrackAndStation(registers& regs, const uint8_t flags)
+    void aiCreateTrackAndStation(registers& regs, const Flags flags)
     {
         regs.ebx = aiCreateTrackAndStation(AiTrackAndStationPlacementArgs(regs), flags);
     }

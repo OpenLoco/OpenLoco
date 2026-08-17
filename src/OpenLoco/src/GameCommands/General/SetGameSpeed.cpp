@@ -15,7 +15,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void setGameSpeed(registers& regs, const uint8_t)
+    void setGameSpeed(registers& regs, const Flags)
     {
         SetGameSpeedArgs args(regs);
         regs.ebx = GameCommands::setGameSpeed(args.newSpeed);

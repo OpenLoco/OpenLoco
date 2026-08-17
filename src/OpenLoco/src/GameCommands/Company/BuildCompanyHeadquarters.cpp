@@ -10,7 +10,7 @@
 namespace OpenLoco::GameCommands
 {
     // 0x0042ECFC
-    static uint32_t buildCompanyHeadquarters(HeadquarterPlacementArgs args, uint8_t flags)
+    static uint32_t buildCompanyHeadquarters(HeadquarterPlacementArgs args, Flags flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(World::Pos3(args.pos.x + World::kTileSize / 2, args.pos.y + World::kTileSize / 2, args.pos.z));
@@ -69,7 +69,7 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void buildCompanyHeadquarters(registers& regs, const uint8_t flags)
+    void buildCompanyHeadquarters(registers& regs, const Flags flags)
     {
         HeadquarterPlacementArgs args(regs);
         regs.ebx = buildCompanyHeadquarters(args, flags);

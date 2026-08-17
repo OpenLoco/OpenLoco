@@ -34,7 +34,7 @@ namespace OpenLoco::GameCommands
      * This is called when you activate the Plant Trees from the construction menu and you move the cursor over the terrain.
      *
      */
-    static uint32_t createTree(const TreePlacementArgs& args, const uint8_t flags)
+    static uint32_t createTree(const TreePlacementArgs& args, const Flags flags)
     {
         setExpenditureType(ExpenditureType::Construction);
 
@@ -135,7 +135,7 @@ namespace OpenLoco::GameCommands
         return Economy::getInflationAdjustedCost(treeObj->buildCostFactor, treeObj->costIndex, 12);
     }
 
-    void createTree(registers& regs, const uint8_t flags)
+    void createTree(registers& regs, const Flags flags)
     {
         TreePlacementArgs args(regs);
         regs.ebx = createTree(args, flags);

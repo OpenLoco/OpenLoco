@@ -1076,7 +1076,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
 
             GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
-            uint8_t flags = GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing;
+            const auto flags = GameCommands::Flags::apply | GameCommands::Flags::preventBuildingClearing;
             auto commandResult = GameCommands::doCommand(*placementArgs, flags);
             if (commandResult != GameCommands::kFailure)
             {

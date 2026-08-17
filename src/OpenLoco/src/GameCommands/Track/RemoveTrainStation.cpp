@@ -50,7 +50,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0048C402
-    static currency32_t removeTrainStation(const TrainStationRemovalArgs& args, const uint8_t flags)
+    static currency32_t removeTrainStation(const TrainStationRemovalArgs& args, const Flags flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3(16, 16, 0));
@@ -151,7 +151,7 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void removeTrainStation(registers& regs, const uint8_t flags)
+    void removeTrainStation(registers& regs, const Flags flags)
     {
         regs.ebx = removeTrainStation(TrainStationRemovalArgs(regs), flags);
     }

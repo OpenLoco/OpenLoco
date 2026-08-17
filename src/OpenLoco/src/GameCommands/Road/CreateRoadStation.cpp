@@ -193,7 +193,7 @@ namespace OpenLoco::GameCommands
     };
 
     // 0x0048C708
-    static currency32_t createRoadStation(const RoadStationPlacementArgs& args, const uint8_t flags)
+    static currency32_t createRoadStation(const RoadStationPlacementArgs& args, const Flags flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3(16, 16, 0));
@@ -700,7 +700,7 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void createRoadStation(registers& regs, const uint8_t flags)
+    void createRoadStation(registers& regs, const Flags flags)
     {
         regs.ebx = createRoadStation(RoadStationPlacementArgs(regs), flags);
     }

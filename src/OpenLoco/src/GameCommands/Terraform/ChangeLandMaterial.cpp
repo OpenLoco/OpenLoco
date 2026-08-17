@@ -12,7 +12,7 @@
 namespace OpenLoco::GameCommands
 {
     // 0x00468EDD
-    static uint32_t changeLandMaterial(const World::Pos2& pointA, const World::Pos2& pointB, const uint8_t landType, const uint8_t flags)
+    static uint32_t changeLandMaterial(const World::Pos2& pointA, const World::Pos2& pointB, const uint8_t landType, const Flags flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Construction);
         const auto midPoint = (pointA + pointB) / 2 + World::Pos2{ 16, 16 };
@@ -61,7 +61,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void changeLandMaterial(registers& regs, const uint8_t flags)
+    void changeLandMaterial(registers& regs, const Flags flags)
     {
         ChangeLandMaterialArgs args(regs);
         regs.ebx = changeLandMaterial(args.pointA, args.pointB, args.landType, flags);

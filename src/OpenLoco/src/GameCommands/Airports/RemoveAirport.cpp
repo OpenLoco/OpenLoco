@@ -47,7 +47,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004938D9
-    static bool removeAirportTileElement(const World::Pos3& pos, const AirportObject* airportObj, const uint8_t buildingIndex, const uint8_t flags)
+    static bool removeAirportTileElement(const World::Pos3& pos, const AirportObject* airportObj, const uint8_t buildingIndex, const Flags flags)
     {
         for (auto& searchTile : getBuildingTileOffsets(airportObj->largeTiles & (1U << buildingIndex)))
         {
@@ -130,7 +130,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0049372F
-    static currency32_t loc_49372F(const StationId stationId, const World::StationElement& stationEl, const World::Pos3 pos, const uint8_t flags)
+    static currency32_t loc_49372F(const StationId stationId, const World::StationElement& stationEl, const World::Pos3 pos, const Flags flags)
     {
         const auto rotation = stationEl.rotation();
         const auto objectId = stationEl.objectId();
@@ -201,7 +201,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x00493559
-    static currency32_t removeAirport(const AirportRemovalArgs& args, const uint8_t flags)
+    static currency32_t removeAirport(const AirportRemovalArgs& args, const Flags flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3(16, 16, 0));
@@ -294,7 +294,7 @@ namespace OpenLoco::GameCommands
         return loc_49372F(stationId, *foundStationEl, foundPos, flags);
     }
 
-    void removeAirport(registers& regs, const uint8_t flags)
+    void removeAirport(registers& regs, const Flags flags)
     {
         regs.ebx = removeAirport(AirportRemovalArgs(regs), flags);
     }

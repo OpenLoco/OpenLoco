@@ -35,5 +35,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void vehicleChangeRunningMode(registers& regs, const uint8_t flags);
+    void vehicleChangeRunningMode(registers& regs, const Flags flags);
 }

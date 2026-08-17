@@ -442,7 +442,7 @@ namespace OpenLoco::World::TileClearance
     }
 
     // 0x00469E07, 0x00468949, 0x004C4DAD, 0x0042D5E5, 0x0049434F
-    static ClearFuncResult tileClearFunction(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const uint8_t flags, currency32_t& cost, bool defaultCollision)
+    static ClearFuncResult tileClearFunction(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const GameCommands::Flags flags, currency32_t& cost, bool defaultCollision)
     {
         switch (entry.type())
         {
@@ -461,17 +461,17 @@ namespace OpenLoco::World::TileClearance
         }
     };
 
-    ClearFuncResult clearWithDefaultCollision(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const uint8_t flags, currency32_t& cost)
+    ClearFuncResult clearWithDefaultCollision(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const GameCommands::Flags flags, currency32_t& cost)
     {
         return tileClearFunction(entry, pos, removedBuildings, flags, cost, true);
     }
 
-    ClearFuncResult clearWithoutDefaultCollision(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const uint8_t flags, currency32_t& cost)
+    ClearFuncResult clearWithoutDefaultCollision(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const GameCommands::Flags flags, currency32_t& cost)
     {
         return tileClearFunction(entry, pos, removedBuildings, flags, cost, false);
     }
 
-    ClearFuncResult clearBuildingCollision(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const uint8_t flags, currency32_t& cost)
+    ClearFuncResult clearBuildingCollision(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const GameCommands::Flags flags, currency32_t& cost)
     {
         auto& elBuilding = entry.get<World::BuildingElement>();
         auto* buildingObj = elBuilding.getObject();
@@ -490,12 +490,12 @@ namespace OpenLoco::World::TileClearance
         removedBuildings.insert(buildingStart);
 
         World::TileManager::setRemoveElementPointerChecker(entry);
-        uint8_t removeBuildingFlags = flags;
+        GameCommands::Flags removeBuildingFlags = flags;
         if (GameCommands::hasFlags(flags, GameCommands::Flags::apply) || removedBuildings.size() != 1)
         {
             removeBuildingFlags |= GameCommands::Flags::flag_7;
         }
-        if (flags & (GameCommands::Flags::ghost | GameCommands::Flags::aiAllocated))
+        if (GameCommands::hasFlags(flags, GameCommands::Flags::ghost | GameCommands::Flags::aiAllocated))
         {
             removeBuildingFlags &= ~(GameCommands::Flags::ghost | GameCommands::Flags::aiAllocated | GameCommands::Flags::apply);
         }
@@ -516,7 +516,8 @@ namespace OpenLoco::World::TileClearance
         }
         cost += buildingCost;
 
-        if (!GameCommands::hasFlags(flags, GameCommands::Flags::apply) || (flags & (GameCommands::Flags::ghost | GameCommands::Flags::aiAllocated)))
+        if (!GameCommands::hasFlags(flags, GameCommands::Flags::apply)
+            || GameCommands::hasFlags(flags, GameCommands::Flags::ghost | GameCommands::Flags::aiAllocated))
         {
             return ClearFuncResult::noCollision;
         }
@@ -527,13 +528,14 @@ namespace OpenLoco::World::TileClearance
         return ClearFuncResult::collisionRemoved;
     }
 
-    ClearFuncResult clearTreeCollision(World::TileElementEntry& entry, const World::Pos2 pos, const uint8_t flags, currency32_t& cost)
+    ClearFuncResult clearTreeCollision(World::TileElementEntry& entry, const World::Pos2 pos, const GameCommands::Flags flags, currency32_t& cost)
     {
         auto& elTree = entry.get<World::TreeElement>();
         auto* treeObj = ObjectManager::get<TreeObject>(elTree.treeObjectId());
         cost += Economy::getInflationAdjustedCost(treeObj->clearCostFactor, treeObj->costIndex, 12);
 
-        if ((flags & (GameCommands::Flags::ghost | GameCommands::Flags::aiAllocated)) || !GameCommands::hasFlags(flags, GameCommands::Flags::apply))
+        if (GameCommands::hasFlags(flags, GameCommands::Flags::ghost | GameCommands::Flags::aiAllocated)
+            || !GameCommands::hasFlags(flags, GameCommands::Flags::apply))
         {
             return ClearFuncResult::noCollision;
         }

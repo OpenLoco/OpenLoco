@@ -8,7 +8,7 @@
 
 namespace OpenLoco::GameCommands
 {
-    static uint32_t vehicleOrderReverse(const VehicleOrderReverseArgs& args, uint8_t flags)
+    static uint32_t vehicleOrderReverse(const VehicleOrderReverseArgs& args, Flags flags)
     {
         auto* head = EntityManager::get<Vehicles::VehicleHead>(args.head);
         if (head == nullptr)
@@ -29,7 +29,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehicleOrderReverse(registers& regs, const uint8_t flags)
+    void vehicleOrderReverse(registers& regs, const Flags flags)
     {
         regs.ebx = vehicleOrderReverse(VehicleOrderReverseArgs(regs), flags);
     }

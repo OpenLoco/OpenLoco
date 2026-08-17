@@ -35,7 +35,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0042D74E
-    static uint32_t removeBuilding(World::Pos3& pos, uint8_t flags)
+    static uint32_t removeBuilding(World::Pos3& pos, Flags flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Construction);
         GameCommands::setPosition(pos);
@@ -58,7 +58,7 @@ namespace OpenLoco::GameCommands
             const auto* buildingObj = elBuilding->getObject();
             if (!SceneManager::isEditorMode())
             {
-                if ((flags & (GameCommands::Flags::ghost | GameCommands::Flags::flag_7)) == 0)
+                if (!hasFlags(flags, GameCommands::Flags::ghost | GameCommands::Flags::flag_7))
                 {
                     bool isPlayerCompany = CompanyManager::isPlayerCompany(GameCommands::getUpdatingCompanyId());
                     if (!(SceneManager::isSandboxMode() && isPlayerCompany) && buildingObj->hasFlags(BuildingObjectFlags::indestructible))
@@ -114,7 +114,7 @@ namespace OpenLoco::GameCommands
         return GameCommands::kFailure;
     }
 
-    void removeBuilding(registers& regs, const uint8_t flags)
+    void removeBuilding(registers& regs, const Flags flags)
     {
         BuildingRemovalArgs args(regs);
         regs.ebx = removeBuilding(args.pos, flags);

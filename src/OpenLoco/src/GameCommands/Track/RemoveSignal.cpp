@@ -87,7 +87,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004891E4
-    static currency32_t removeSignal(const SignalRemovalArgs& args, uint8_t flags)
+    static currency32_t removeSignal(const SignalRemovalArgs& args, Flags flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3{ 16, 16, 0 });
@@ -188,7 +188,7 @@ namespace OpenLoco::GameCommands
         return cost;
     }
 
-    void removeSignal(registers& regs, const uint8_t flags)
+    void removeSignal(registers& regs, const Flags flags)
     {
         regs.ebx = removeSignal(SignalRemovalArgs(regs), flags);
     }

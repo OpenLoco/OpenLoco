@@ -1074,7 +1074,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
-        static void clearLand(uint8_t flags)
+        static void clearLand(GameCommands::Flags flags)
         {
             if (World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
             {
@@ -1430,10 +1430,10 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x00468DFD
-        static uint32_t lowerLand(uint8_t flags)
+        static uint32_t lowerLand(GameCommands::Flags flags)
         {
             uint32_t cost;
-            if ((flags & 1))
+            if (GameCommands::hasFlags(flags, Flags::apply))
             {
                 Common::sub_4A69DD();
             }
@@ -1464,10 +1464,10 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x00468D1D
-        static uint32_t raiseLand(uint8_t flags)
+        static uint32_t raiseLand(GameCommands::Flags flags)
         {
             uint32_t cost;
-            if ((flags & 1))
+            if (GameCommands::hasFlags(flags, Flags::apply))
             {
                 Common::sub_4A69DD();
             }
@@ -1991,8 +1991,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             WindowManager::invalidate(WindowType::terraform);
         }
 
-        static uint32_t raiseWater(uint8_t flags);
-        static uint32_t lowerWater(uint8_t flags);
+        static uint32_t raiseWater(GameCommands::Flags flags);
+        static uint32_t lowerWater(GameCommands::Flags flags);
 
         // 0x004BCDB4
         static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
@@ -2034,7 +2034,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
             else
             {
-                setAdjustCost(raiseWater(0), lowerWater(0));
+                setAdjustCost(raiseWater(GameCommands::Flags::none), lowerWater(GameCommands::Flags::none));
             }
         }
 
@@ -2053,7 +2053,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             ToolManager::setToolCursor(CursorId::upDownArrow);
         }
 
-        static uint32_t raiseWater(uint8_t flags)
+        static uint32_t raiseWater(GameCommands::Flags flags)
         {
             if (hasFlags(flags, GameCommands::Flags::apply))
             {
@@ -2068,7 +2068,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             return GameCommands::doCommand(args, flags);
         }
 
-        static uint32_t lowerWater(uint8_t flags)
+        static uint32_t lowerWater(GameCommands::Flags flags)
         {
             if (hasFlags(flags, GameCommands::Flags::apply))
             {

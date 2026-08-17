@@ -24,7 +24,7 @@ namespace OpenLoco::GameCommands
         World::TrackElement* element;
     };
 
-    static TrackLookup getElTrackAt(const TrackRemovalArgs& args, const uint8_t flags, const World::Pos3 pos, const uint8_t sequenceIndex)
+    static TrackLookup getElTrackAt(const TrackRemovalArgs& args, const Flags flags, const World::Pos3 pos, const uint8_t sequenceIndex)
     {
         auto tile = World::TileManager::get(pos);
         for (auto& el : tile)
@@ -74,7 +74,7 @@ namespace OpenLoco::GameCommands
     };
 
     // 0x0049CC23
-    static currency32_t trackRemoveCost(const TrackRemovalArgs& args, const World::TrackData::PreviewTrack trackPiece0, const World::Pos3 trackStart, const uint8_t flags)
+    static currency32_t trackRemoveCost(const TrackRemovalArgs& args, const World::TrackData::PreviewTrack trackPiece0, const World::Pos3 trackStart, const Flags flags)
     {
         const auto trackLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece0.x, trackPiece0.y }, args.rotation), trackPiece0.z };
         auto [trackEntry, pieceElTrack] = getElTrackAt(args, flags, trackLoc, trackPiece0.index);
@@ -115,7 +115,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0049C7F2
-    static currency32_t removeTrack(const TrackRemovalArgs& args, const uint8_t flags)
+    static currency32_t removeTrack(const TrackRemovalArgs& args, const Flags flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3{ 16, 16, 0 });
@@ -260,7 +260,7 @@ namespace OpenLoco::GameCommands
         return totalRemovalCost;
     }
 
-    void removeTrack(registers& regs, const uint8_t flags)
+    void removeTrack(registers& regs, const Flags flags)
     {
         regs.ebx = removeTrack(TrackRemovalArgs(regs), flags);
     }

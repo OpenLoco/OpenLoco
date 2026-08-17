@@ -5815,7 +5815,7 @@ namespace OpenLoco
 
     // 0x0047BA2C
     // Converts AiAllocated road to real road
-    static uint32_t replaceAiAllocatedRoad(World::Pos3 pos, uint8_t rotation, uint8_t roadObjectId, uint8_t roadId, uint8_t sequenceIndex, bool noStations, uint8_t flags)
+    static uint32_t replaceAiAllocatedRoad(World::Pos3 pos, uint8_t rotation, uint8_t roadObjectId, uint8_t roadId, uint8_t sequenceIndex, bool noStations, GameCommands::Flags flags)
     {
         // Structured very like a game command
         GameCommands::setExpenditureType(ExpenditureType::Construction);
@@ -6035,7 +6035,7 @@ namespace OpenLoco
                 // Road
 
                 // TODO: Vanilla bug passes rotation for flags???
-                if (replaceAiAllocatedRoad(pos, aiStation.rotation, thought.trackObjId & ~(1U << 7), 0, 0, false, aiStation.rotation) == GameCommands::kFailure)
+                if (replaceAiAllocatedRoad(pos, aiStation.rotation, thought.trackObjId & ~(1U << 7), 0, 0, false, static_cast<GameCommands::Flags>(aiStation.rotation)) == GameCommands::kFailure)
                 {
                     return 2;
                 }
@@ -6226,7 +6226,7 @@ namespace OpenLoco
 
                     // This is completely wrong but it matches vanilla
                     // TODO: Remove and replace with 'apply' when we want to diverge
-                    uint8_t flags = enumValue(company.id()) & 0b1;
+                    GameCommands::Flags flags = static_cast<GameCommands::Flags>(enumValue(company.id()) & 0b1);
 
                     if (replaceTad & (1U << 2))
                     {
@@ -6234,7 +6234,7 @@ namespace OpenLoco
                         replacePos += roadSize.pos;
 
                         // Again completely wrong but it matches vanilla
-                        flags = roadSize.rotationEnd & 0b1;
+                        flags = static_cast<GameCommands::Flags>(roadSize.rotationEnd & 0b1);
 
                         replacePos.x -= kRotationOffset[roadSize.rotationEnd].x;
                         replacePos.y -= kRotationOffset[roadSize.rotationEnd].y;
@@ -7391,7 +7391,7 @@ namespace OpenLoco
     }
 
     // 0x00487DAD
-    static uint32_t tryPlaceTrackOrRoadMods(AiThought& thought, uint8_t flags)
+    static uint32_t tryPlaceTrackOrRoadMods(AiThought& thought, GameCommands::Flags flags)
     {
         if (thought.trackObjId & (1U << 7))
         {
@@ -7471,7 +7471,7 @@ namespace OpenLoco
 
         if (thought.hasPurchaseFlags(AiPurchaseFlags::requiresMods))
         {
-            thought.var_76 += tryPlaceTrackOrRoadMods(thought, 0);
+            thought.var_76 += tryPlaceTrackOrRoadMods(thought, GameCommands::Flags::none);
         }
     }
 
@@ -7613,7 +7613,7 @@ namespace OpenLoco
                     args.rotation = elTrack->rotation();
                     args.trackId = elTrack->trackId();
                     args.trackObjectId = elTrack->trackObjectId();
-                    auto aiPreviewFlag = elTrack->isAiAllocated() ? GameCommands::Flags::aiAllocated : 0;
+                    auto aiPreviewFlag = elTrack->isAiAllocated() ? GameCommands::Flags::aiAllocated : GameCommands::Flags::none;
                     GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noPayment | aiPreviewFlag);
                     break;
                 }
@@ -7631,7 +7631,7 @@ namespace OpenLoco
                     args.rotation = elRoad->rotation();
                     args.roadId = elRoad->roadId();
                     args.objectId = elRoad->roadObjectId();
-                    auto aiPreviewFlag = elRoad->isAiAllocated() ? GameCommands::Flags::aiAllocated : 0;
+                    auto aiPreviewFlag = elRoad->isAiAllocated() ? GameCommands::Flags::aiAllocated : GameCommands::Flags::none;
                     GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noPayment | aiPreviewFlag);
                     break;
                 }

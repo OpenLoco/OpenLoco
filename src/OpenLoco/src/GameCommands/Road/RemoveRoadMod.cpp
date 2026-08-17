@@ -10,7 +10,7 @@
 namespace OpenLoco::GameCommands
 {
     // 0x0047A42F
-    static currency32_t removeRoadMod(const RoadModsRemovalArgs& args, uint8_t flags)
+    static currency32_t removeRoadMod(const RoadModsRemovalArgs& args, Flags flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3(16, 16, 0));
@@ -78,7 +78,7 @@ namespace OpenLoco::GameCommands
         return cost;
     }
 
-    void removeRoadMod(registers& regs, const uint8_t flags)
+    void removeRoadMod(registers& regs, const Flags flags)
     {
         regs.ebx = removeRoadMod(RoadModsRemovalArgs(regs), flags);
     }
