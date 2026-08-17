@@ -1,6 +1,7 @@
 26.08+ (???)
 ------------------------------------------------------------------------
 - Fix: [#3943] Unable to place or remove signals on multi tile track elements.
+- Fix: [#3955] Terraform window can break dimensions of construction window.
 
 26.08 (2026-08-13)
 ------------------------------------------------------------------------
