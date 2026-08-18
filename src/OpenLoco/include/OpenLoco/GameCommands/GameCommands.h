@@ -217,7 +217,7 @@ namespace OpenLoco::GameCommands
 
     constexpr bool hasFlags(uint8_t flags, uint8_t check)
     {
-        return (flags & check) == check;
+        return (flags & check) != 0;
     }
 
     template<typename T>
