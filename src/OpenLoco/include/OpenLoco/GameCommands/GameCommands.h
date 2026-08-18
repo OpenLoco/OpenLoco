@@ -221,7 +221,7 @@ namespace OpenLoco::GameCommands
 
     constexpr bool hasFlags(Flags flags, Flags check)
     {
-        return (flags & check) != 0;
+        return (flags & check) != Flags::none;
     }
 
     template<typename T>
