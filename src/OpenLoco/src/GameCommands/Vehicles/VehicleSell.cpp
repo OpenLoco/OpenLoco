@@ -14,7 +14,7 @@ using namespace OpenLoco::Vehicles;
 
 namespace OpenLoco::GameCommands
 {
-    static currency32_t sellVehicle(EntityId id, uint8_t flags)
+    static currency32_t sellVehicle(EntityId id, Flags flags)
     {
         setExpenditureType(ExpenditureType::VehicleDisposals);
 
@@ -126,7 +126,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004AED34
-    void sellVehicle(registers& regs, const uint8_t flags)
+    void sellVehicle(registers& regs, const Flags flags)
     {
         regs.ebx = sellVehicle(EntityId(regs.dx), flags);
     }

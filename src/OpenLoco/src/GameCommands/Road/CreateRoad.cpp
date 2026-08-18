@@ -62,7 +62,7 @@ namespace OpenLoco::GameCommands
             uint8_t roadObjectId;
             uint8_t index;
             bool isLastIndex;
-            uint8_t flags;
+            Flags flags;
             uint8_t unkFlags;
         };
     }
@@ -241,7 +241,7 @@ namespace OpenLoco::GameCommands
         {
             return false;
         }
-        if (!(args.flags & Flags::aiAllocated))
+        if (!hasFlags(args.flags, Flags::aiAllocated))
         {
             return false;
         }
@@ -280,7 +280,7 @@ namespace OpenLoco::GameCommands
         // RoadObject of the road we are placing as part of createRoad
         const auto& newRoadObj = ObjectManager::get<RoadObject>(args.roadObjectId);
 
-        if ((args.flags & Flags::aiAllocated) && (args.unkFlags & (1U << 4)) && targetRoadObj->hasFlags(RoadObjectFlags::isOneWay))
+        if (hasFlags(args.flags, Flags::aiAllocated) && (args.unkFlags & (1U << 4)) && targetRoadObj->hasFlags(RoadObjectFlags::isOneWay))
         {
             setErrorText(StringIds::junctions_not_possible);
             return RoadClearFunctionResult(World::TileClearance::ClearFuncResult::collisionErrorSet);
@@ -591,7 +591,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x00475FBC
-    static uint32_t createRoad(const RoadPlacementArgs& args, uint8_t flags)
+    static uint32_t createRoad(const RoadPlacementArgs& args, Flags flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3{ 16, 16, 0 });
@@ -1105,7 +1105,7 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void createRoad(registers& regs, const uint8_t flags)
+    void createRoad(registers& regs, const Flags flags)
     {
         regs.ebx = createRoad(RoadPlacementArgs(regs), flags);
     }

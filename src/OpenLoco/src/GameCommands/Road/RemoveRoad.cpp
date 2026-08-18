@@ -59,7 +59,7 @@ namespace OpenLoco::GameCommands
         World::TileElementEntry* end() const { return _end; }
     };
 
-    static World::TileElementEntry* getRoadElement(const World::Pos3 pos, const RoadRemovalArgs& args, uint8_t sequenceIndex, uint8_t flags)
+    static World::TileElementEntry* getRoadElement(const World::Pos3 pos, const RoadRemovalArgs& args, uint8_t sequenceIndex, Flags flags)
     {
         auto tile = World::TileManager::get(pos);
         const auto baseZ = pos.z / World::kSmallZStep;
@@ -114,7 +114,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x00477A10
-    static currency32_t roadRemoveCost(const RoadRemovalArgs& args, const World::TrackData::PreviewTrack roadPiece0, const World::Pos3 roadStart, const uint8_t flags)
+    static currency32_t roadRemoveCost(const RoadRemovalArgs& args, const World::TrackData::PreviewTrack roadPiece0, const World::Pos3 roadStart, const Flags flags)
     {
         const auto roadLoc = roadStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ roadPiece0.x, roadPiece0.y }, args.rotation), roadPiece0.z };
 
@@ -158,7 +158,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004775A5
-    static uint32_t removeRoad(const RoadRemovalArgs& args, uint8_t flags)
+    static uint32_t removeRoad(const RoadRemovalArgs& args, Flags flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3{ 16, 16, 0 });
@@ -327,7 +327,7 @@ namespace OpenLoco::GameCommands
         return totalRemovalCost;
     }
 
-    void removeRoad(registers& regs, const uint8_t flags)
+    void removeRoad(registers& regs, const Flags flags)
     {
         regs.ebx = removeRoad(RoadRemovalArgs(regs), flags);
     }

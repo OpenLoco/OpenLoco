@@ -34,7 +34,7 @@ namespace OpenLoco::Vehicles
 namespace OpenLoco::GameCommands
 {
     // 0x004267BE
-    static uint32_t vehiclePlaceAir(const VehicleAirPlacementArgs& args, uint8_t flags)
+    static uint32_t vehiclePlaceAir(const VehicleAirPlacementArgs& args, Flags flags)
     {
         setExpenditureType(ExpenditureType::AircraftRunningCosts);
 
@@ -194,7 +194,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehiclePlaceAir(registers& regs, const uint8_t flags)
+    void vehiclePlaceAir(registers& regs, const Flags flags)
     {
         regs.ebx = vehiclePlaceAir(VehicleAirPlacementArgs(regs), flags);
     }

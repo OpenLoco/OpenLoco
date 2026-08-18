@@ -9,7 +9,7 @@
 namespace OpenLoco::GameCommands
 {
     // 0x00470CD2
-    static uint32_t vehicleOrderUp(const VehicleOrderUpArgs& args, uint8_t flags)
+    static uint32_t vehicleOrderUp(const VehicleOrderUpArgs& args, Flags flags)
     {
         auto* head = EntityManager::get<Vehicles::VehicleHead>(args.head);
         if (head == nullptr)
@@ -70,7 +70,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehicleOrderUp(registers& regs, const uint8_t flags)
+    void vehicleOrderUp(registers& regs, const Flags flags)
     {
         regs.ebx = vehicleOrderUp(VehicleOrderUpArgs(regs), flags);
     }

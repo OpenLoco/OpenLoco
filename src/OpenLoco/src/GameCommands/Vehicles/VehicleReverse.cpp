@@ -9,7 +9,7 @@
 namespace OpenLoco::GameCommands
 {
     // 0x004ADAA8
-    static uint32_t vehicleReverse(EntityId headId, const uint8_t flags)
+    static uint32_t vehicleReverse(EntityId headId, const Flags flags)
     {
         setExpenditureType(ExpenditureType::TrainRunningCosts);
 
@@ -49,7 +49,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehicleReverse(registers& regs, const uint8_t flags)
+    void vehicleReverse(registers& regs, const Flags flags)
     {
         VehicleReverseArgs args(regs);
         regs.ebx = vehicleReverse(args.head, flags);

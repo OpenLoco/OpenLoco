@@ -100,7 +100,7 @@ namespace OpenLoco::GameCommands
     };
 
     // 0x00492E48 & 0x00492DBA
-    static std::pair<NearbyStationValidation, StationId> validateNearbyStation(const World::Pos3 pos, const uint8_t airportObjectId, const uint8_t rotation, const uint8_t flags)
+    static std::pair<NearbyStationValidation, StationId> validateNearbyStation(const World::Pos3 pos, const uint8_t airportObjectId, const uint8_t rotation, const Flags flags)
     {
         auto nearbyStation = findNearbyStationAirport(pos, airportObjectId, rotation);
         if (nearbyStation.id == StationId::null)
@@ -138,7 +138,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004930E1
-    static uint32_t createBuilding(const StationId stationId, const World::TilePos2 pos, const int16_t baseHeight, const uint8_t rotation, const uint8_t variation, const uint8_t airportObjectId, World::TileClearance::RemovedBuildings& removedBuildings, const uint8_t flags)
+    static uint32_t createBuilding(const StationId stationId, const World::TilePos2 pos, const int16_t baseHeight, const uint8_t rotation, const uint8_t variation, const uint8_t airportObjectId, World::TileClearance::RemovedBuildings& removedBuildings, const Flags flags)
     {
         auto* airportObj = ObjectManager::get<AirportObject>(airportObjectId);
 
@@ -287,7 +287,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x00492C41
-    static currency32_t createAirport(const AirportPlacementArgs& args, const uint8_t flags)
+    static currency32_t createAirport(const AirportPlacementArgs& args, const Flags flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3(16, 16, 0));
@@ -447,7 +447,7 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void createAirport(registers& regs, const uint8_t flags)
+    void createAirport(registers& regs, const Flags flags)
     {
         regs.ebx = createAirport(AirportPlacementArgs(regs), flags);
     }

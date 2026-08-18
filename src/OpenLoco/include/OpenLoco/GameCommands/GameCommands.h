@@ -3,6 +3,7 @@
 #include "Economy/Currency.h"
 #include "Objects/Object.h"
 #include "Types.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Engine/World.hpp>
 
 namespace OpenLoco
@@ -34,17 +35,20 @@ namespace OpenLoco::Vehicles
 
 namespace OpenLoco::GameCommands
 {
-    namespace Flags
+    enum class Flags : uint8_t
     {
-        constexpr uint8_t apply = 1 << 0;                   // 0x01
-        constexpr uint8_t preventBuildingClearing = 1 << 1; // 0x02
-        constexpr uint8_t allowNegativeCashFlow = 1 << 2;   // 0x04
-        constexpr uint8_t noErrorWindow = 1 << 3;           // 0x08 do not show an error window even on failure (use this with ghosts)
-        constexpr uint8_t aiAllocated = 1 << 4;             // 0x10 ai can place down invisible ghosts with this that blocks players
-        constexpr uint8_t noPayment = 1 << 5;               // 0x20 calculates cost but does not deduct it
-        constexpr uint8_t ghost = 1 << 6;                   // 0x40
-        constexpr uint8_t flag_7 = 1 << 7;                  // 0x80 ai only?
-    }
+        none = 0U,
+
+        apply = 1U << 0,                   // 0x01
+        preventBuildingClearing = 1U << 1, // 0x02
+        allowNegativeCashFlow = 1U << 2,   // 0x04
+        noErrorWindow = 1U << 3,           // 0x08 do not show an error window even on failure (use this with ghosts)
+        aiAllocated = 1U << 4,             // 0x10 ai can place down invisible ghosts with this that blocks players
+        noPayment = 1U << 5,               // 0x20 calculates cost but does not deduct it
+        ghost = 1U << 6,                   // 0x40
+        flag_7 = 1U << 7,                  // 0x80 ai only?
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(Flags);
 
     enum class GameCommand : uint8_t
     {
@@ -206,7 +210,7 @@ namespace OpenLoco::GameCommands
     constexpr uint32_t kFailure = 0x80000000;
 
     uint32_t doCommand(GameCommand command, const registers& registers);
-    uint32_t doCommandForReal(GameCommand command, CompanyId company, const registers& registers, const uint8_t flags);
+    uint32_t doCommandForReal(GameCommand command, CompanyId company, const registers& registers, const Flags flags);
 
     // If the company matches the current updating company or if either is neutral.
     // On failure sets relevant error text and returns false (has overloads for setting more specific error text)
@@ -215,16 +219,16 @@ namespace OpenLoco::GameCommands
     bool checkCompanyCompatibility(const CompanyId company, const World::RoadElement& elRoad);
     bool checkCompanyCompatibility(const CompanyId company, const World::StationElement& elStation);
 
-    constexpr bool hasFlags(uint8_t flags, uint8_t check)
+    constexpr bool hasFlags(Flags flags, Flags check)
     {
-        return (flags & check) != 0;
+        return (flags & check) != Flags::none;
     }
 
     template<typename T>
-    uint32_t doCommand(const T& args, uint8_t flags)
+    uint32_t doCommand(const T& args, Flags flags)
     {
         registers regs = registers(args);
-        regs.bl = flags;
+        regs.bl = enumValue(flags);
         return doCommand(T::command, regs);
     }
 
@@ -232,7 +236,7 @@ namespace OpenLoco::GameCommands
     inline void do_67([[maybe_unused]] const char* filename)
     {
         registers regs;
-        regs.bl = Flags::apply;
+        regs.bl = enumValue(Flags::apply);
         // This is commented out as it will not work on 64-bit builds
         // regs.ebp = reinterpret_cast<uint32_t>(filename);
         doCommand(GameCommand::loadMultiplayerMap, regs);
@@ -242,7 +246,7 @@ namespace OpenLoco::GameCommands
     inline void do_69()
     {
         registers regs;
-        regs.bl = Flags::apply;
+        regs.bl = enumValue(Flags::apply);
         doCommand(GameCommand::gc_unk_69, regs);
     }
 
@@ -250,7 +254,7 @@ namespace OpenLoco::GameCommands
     inline void do_70()
     {
         registers regs;
-        regs.bl = Flags::apply;
+        regs.bl = enumValue(Flags::apply);
         doCommand(GameCommand::gc_unk_70, regs);
     }
 
@@ -258,7 +262,7 @@ namespace OpenLoco::GameCommands
     inline void do_71(int32_t ax, const char* string)
     {
         registers regs;
-        regs.bl = Flags::apply;
+        regs.bl = enumValue(Flags::apply);
         regs.ax = ax;
         memcpy(&regs.ecx, &string[0], 4);
         memcpy(&regs.edx, &string[4], 4);
@@ -271,7 +275,7 @@ namespace OpenLoco::GameCommands
     inline void do_72()
     {
         registers regs;
-        regs.bl = Flags::apply;
+        regs.bl = enumValue(Flags::apply);
         doCommand(GameCommand::multiplayerSave, regs);
     }
 
@@ -310,5 +314,5 @@ namespace OpenLoco::GameCommands
     LegacyReturnState& getLegacyReturnState();
 
     void playConstructionPlacementSound(World::Pos3 pos);
-    bool shouldInvalidateTile(uint8_t flags);
+    bool shouldInvalidateTile(Flags flags);
 }

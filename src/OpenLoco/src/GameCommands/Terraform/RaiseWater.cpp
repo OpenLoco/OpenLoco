@@ -15,7 +15,7 @@ using namespace OpenLoco::World;
 namespace OpenLoco::GameCommands
 {
     // 0x004C4F19
-    static uint32_t raiseWater(const RaiseWaterArgs& args, const uint8_t flags)
+    static uint32_t raiseWater(const RaiseWaterArgs& args, const Flags flags)
     {
         // We keep track of removed buildings for each tile visited
         // this prevents accidentally double counting their removal
@@ -94,7 +94,7 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void raiseWater(registers& regs, const uint8_t flags)
+    void raiseWater(registers& regs, const Flags flags)
     {
         const RaiseWaterArgs args(regs);
         regs.ebx = raiseWater(args, flags);

@@ -20,7 +20,7 @@ using namespace OpenLoco::World::SurfaceSlope;
 namespace OpenLoco::GameCommands
 {
     // 0x004638C6, 0x004638CF
-    uint32_t lowerLand(const LowerLandArgs& args, World::TileClearance::RemovedBuildings& removedBuildings, const uint8_t flags)
+    uint32_t lowerLand(const LowerLandArgs& args, World::TileClearance::RemovedBuildings& removedBuildings, const Flags flags)
     {
         if (hasFlags(flags, Flags::apply))
         {
@@ -86,7 +86,7 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void lowerLand(registers& regs, const uint8_t flags)
+    void lowerLand(registers& regs, const Flags flags)
     {
         // We keep track of removed buildings for each tile visited
         // this prevents accidentally double counting their removal

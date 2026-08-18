@@ -10,7 +10,7 @@
 namespace OpenLoco::GameCommands
 {
     // 0x004A668A
-    static currency32_t removeTrackMod(const TrackModsRemovalArgs& args, uint8_t flags)
+    static currency32_t removeTrackMod(const TrackModsRemovalArgs& args, Flags flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3(16, 16, 0));
@@ -78,7 +78,7 @@ namespace OpenLoco::GameCommands
         return cost;
     }
 
-    void removeTrackMod(registers& regs, const uint8_t flags)
+    void removeTrackMod(registers& regs, const Flags flags)
     {
         regs.ebx = removeTrackMod(TrackModsRemovalArgs(regs), flags);
     }

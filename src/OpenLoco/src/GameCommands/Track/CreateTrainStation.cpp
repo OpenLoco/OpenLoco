@@ -87,7 +87,7 @@ namespace OpenLoco::GameCommands
     };
 
     // 0x0048BDCE & 0x0048BD40
-    static std::pair<NearbyStationValidation, StationId> validateNearbyStation(const World::Pos3 pos, const uint16_t tad, const uint8_t trackObjectId, const uint8_t flags)
+    static std::pair<NearbyStationValidation, StationId> validateNearbyStation(const World::Pos3 pos, const uint16_t tad, const uint8_t trackObjectId, const Flags flags)
     {
         auto func = hasFlags(flags, Flags::aiAllocated) ? &findNearbyStationOnTrackAi : &findNearbyStationOnTrack;
         auto nearbyStation = func(pos, tad, trackObjectId);
@@ -196,7 +196,7 @@ namespace OpenLoco::GameCommands
     };
 
     // 0x0048BB20
-    static currency32_t createTrainStation(const TrainStationPlacementArgs& args, const uint8_t flags)
+    static currency32_t createTrainStation(const TrainStationPlacementArgs& args, const Flags flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3(16, 16, 0));
@@ -544,7 +544,7 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void createTrainStation(registers& regs, const uint8_t flags)
+    void createTrainStation(registers& regs, const Flags flags)
     {
         regs.ebx = createTrainStation(TrainStationPlacementArgs(regs), flags);
     }

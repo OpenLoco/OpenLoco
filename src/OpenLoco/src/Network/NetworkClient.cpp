@@ -385,7 +385,7 @@ void NetworkClient::runGameCommandsForTick(uint32_t tick)
         if (nextPacket.index == _localGameCommandIndex + 1 && nextPacket.tick == tick)
         {
             _localGameCommandIndex++;
-            GameCommands::doCommandForReal(static_cast<GameCommands::GameCommand>(nextPacket.regs.esi), nextPacket.company, nextPacket.regs, nextPacket.flags);
+            GameCommands::doCommandForReal(static_cast<GameCommands::GameCommand>(nextPacket.regs.esi), nextPacket.company, nextPacket.regs, static_cast<GameCommands::Flags>(nextPacket.flags));
             _receivedGameCommands.pop_front();
         }
         else

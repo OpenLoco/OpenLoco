@@ -131,7 +131,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004C436C
-    static uint32_t createWall(const WallPlacementArgs& args, const uint8_t flags)
+    static uint32_t createWall(const WallPlacementArgs& args, const Flags flags)
     {
         getLegacyReturnState().lastPlacedWall = nullptr;
         setExpenditureType(ExpenditureType::Construction);
@@ -284,7 +284,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void createWall(registers& regs, const uint8_t flags)
+    void createWall(registers& regs, const Flags flags)
     {
         WallPlacementArgs args(regs);
         regs.ebx = createWall(args, flags);

@@ -2220,7 +2220,7 @@ namespace OpenLoco::CompanyAi
                 args.trackObjectId = trackObjId;
 
                 auto regs(static_cast<GameCommands::registers>(args));
-                GameCommands::aiTrackReplacement(regs, 0);
+                GameCommands::aiTrackReplacement(regs, GameCommands::Flags::none);
                 if (static_cast<uint32_t>(regs.ebx) != GameCommands::kFailure)
                 {
                     result.totalCost += static_cast<uint32_t>(regs.ebx);

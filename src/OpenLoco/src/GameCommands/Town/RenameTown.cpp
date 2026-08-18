@@ -28,7 +28,7 @@ namespace OpenLoco::GameCommands
      * @param buffer2 @<bp> - Third part (4 chars) of the 12 update buffer
      * @return @<ebx> - returns 0 if rename is successful; otherwise GameCommands::kFailure
      */
-    static uint32_t renameTown(const GameCommands::RenameTownArgs& args, const uint8_t flags)
+    static uint32_t renameTown(const GameCommands::RenameTownArgs& args, const Flags flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Miscellaneous);
 
@@ -103,7 +103,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void renameTown(registers& regs, const uint8_t flags)
+    void renameTown(registers& regs, const Flags flags)
     {
         regs.ebx = renameTown(GameCommands::RenameTownArgs(regs), flags);
     }

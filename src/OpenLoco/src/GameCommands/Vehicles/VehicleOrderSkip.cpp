@@ -10,7 +10,7 @@
 namespace OpenLoco::GameCommands
 {
     // 0x0047071A
-    static uint32_t vehicleOrderSkip(EntityId headId, uint8_t flags)
+    static uint32_t vehicleOrderSkip(EntityId headId, Flags flags)
     {
         auto* head = EntityManager::get<Vehicles::VehicleHead>(headId);
         if (head == nullptr)
@@ -32,7 +32,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehicleOrderSkip(registers& regs, const uint8_t flags)
+    void vehicleOrderSkip(registers& regs, const Flags flags)
     {
         regs.ebx = vehicleOrderSkip(EntityId(regs.di), flags);
     }

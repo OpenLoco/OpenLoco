@@ -999,7 +999,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A5D94
-    static bool applyTrackModToTrack(const LocationOfInterest& interest, const uint8_t flags, RoutingResults* results, ModSection modSelection, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId, bool& hasFailedAllPlacement)
+    static bool applyTrackModToTrack(const LocationOfInterest& interest, const GameCommands::Flags flags, RoutingResults* results, ModSection modSelection, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId, bool& hasFailedAllPlacement)
     {
         // If not in single segment mode then we should add the reverse
         // direction of track to the results to prevent it being visited.
@@ -1126,7 +1126,7 @@ namespace OpenLoco::Vehicles
                 if (GameCommands::hasFlags(flags, GameCommands::Flags::apply))
                 {
                     bool invalidate = false;
-                    if (flags & GameCommands::Flags::ghost)
+                    if (GameCommands::hasFlags(flags, GameCommands::Flags::ghost))
                     {
                         if (CompanyManager::getControllingId() == companyId)
                         {
@@ -1161,7 +1161,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A6136
-    static bool removeTrackModToTrack(const LocationOfInterest& interest, const uint8_t flags, RoutingResults* results, ModSection modSelection, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId)
+    static bool removeTrackModToTrack(const LocationOfInterest& interest, const GameCommands::Flags flags, RoutingResults* results, ModSection modSelection, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId)
     {
         // If not in single segment mode then we should add the reverse
         // direction of track to the results to prevent it being visited.
@@ -1264,7 +1264,7 @@ namespace OpenLoco::Vehicles
             if (GameCommands::hasFlags(flags, GameCommands::Flags::apply))
             {
                 bool invalidate = false;
-                if (flags & GameCommands::Flags::ghost)
+                if (GameCommands::hasFlags(flags, GameCommands::Flags::ghost))
                 {
                     if (CompanyManager::getControllingId() == companyId)
                     {
@@ -1297,7 +1297,7 @@ namespace OpenLoco::Vehicles
         return false;
     }
 
-    ApplyTrackModsResult applyTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, ModSection modSelection, uint8_t trackModObjIds)
+    ApplyTrackModsResult applyTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, GameCommands::Flags flags, ModSection modSelection, uint8_t trackModObjIds)
     {
         ApplyTrackModsResult result{};
         result.cost = 0;
@@ -1321,7 +1321,7 @@ namespace OpenLoco::Vehicles
         return result;
     }
 
-    currency32_t removeTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, ModSection modSelection, uint8_t trackModObjIds)
+    currency32_t removeTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, GameCommands::Flags flags, ModSection modSelection, uint8_t trackModObjIds)
     {
         currency32_t cost = 0;
         if (modSelection == Track::ModSection::single)
@@ -1341,7 +1341,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0047A5E6
-    static bool applyRoadModToRoad(const LocationOfInterest& interest, const uint8_t flags, RoutingResults* results, ModSection modSelection, uint8_t roadObjectId, uint8_t roadModObjectIds, currency32_t& totalCost, CompanyId companyId, bool& hasFailedAllPlacement)
+    static bool applyRoadModToRoad(const LocationOfInterest& interest, const GameCommands::Flags flags, RoutingResults* results, ModSection modSelection, uint8_t roadObjectId, uint8_t roadModObjectIds, currency32_t& totalCost, CompanyId companyId, bool& hasFailedAllPlacement)
     {
         // If not in single segment mode then we should add the reverse
         // direction of track to the results to prevent it being visited.
@@ -1468,7 +1468,7 @@ namespace OpenLoco::Vehicles
                 if (GameCommands::hasFlags(flags, GameCommands::Flags::apply))
                 {
                     bool invalidate = false;
-                    if (flags & GameCommands::Flags::ghost)
+                    if (GameCommands::hasFlags(flags, GameCommands::Flags::ghost))
                     {
                         if (CompanyManager::getControllingId() == companyId)
                         {
@@ -1502,7 +1502,7 @@ namespace OpenLoco::Vehicles
         return false;
     }
 
-    ApplyTrackModsResult applyRoadModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_RoadAndDirection roadAndDirection, CompanyId company, uint8_t roadType, uint8_t flags, ModSection modSelection, uint8_t roadModObjIds)
+    ApplyTrackModsResult applyRoadModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_RoadAndDirection roadAndDirection, CompanyId company, uint8_t roadType, GameCommands::Flags flags, ModSection modSelection, uint8_t roadModObjIds)
     {
         ApplyTrackModsResult result{};
         result.cost = 0;
@@ -1527,7 +1527,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0047A8F0
-    static bool removeRoadModToTrack(const LocationOfInterest& interest, const uint8_t flags, RoutingResults* results, ModSection modSelection, uint8_t roadObjectId, uint8_t roadModObjectIds, currency32_t& totalCost, CompanyId companyId)
+    static bool removeRoadModToTrack(const LocationOfInterest& interest, const GameCommands::Flags flags, RoutingResults* results, ModSection modSelection, uint8_t roadObjectId, uint8_t roadModObjectIds, currency32_t& totalCost, CompanyId companyId)
     {
         // If not in single segment mode then we should add the reverse
         // direction of track to the results to prevent it being visited.
@@ -1630,7 +1630,7 @@ namespace OpenLoco::Vehicles
             if (GameCommands::hasFlags(flags, GameCommands::Flags::apply))
             {
                 bool invalidate = false;
-                if (flags & GameCommands::Flags::ghost)
+                if (GameCommands::hasFlags(flags, GameCommands::Flags::ghost))
                 {
                     if (CompanyManager::getControllingId() == companyId)
                     {
@@ -1663,7 +1663,7 @@ namespace OpenLoco::Vehicles
         return false;
     }
 
-    currency32_t removeRoadModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_RoadAndDirection roadAndDirection, CompanyId company, uint8_t roadType, uint8_t flags, World::Track::ModSection modSelection, uint8_t roadModObjIds)
+    currency32_t removeRoadModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_RoadAndDirection roadAndDirection, CompanyId company, uint8_t roadType, GameCommands::Flags flags, World::Track::ModSection modSelection, uint8_t roadModObjIds)
     {
         currency32_t cost = 0;
         if (modSelection == Track::ModSection::single)

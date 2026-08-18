@@ -16,7 +16,7 @@ using namespace OpenLoco::Vehicles;
 namespace OpenLoco::GameCommands
 {
     // 0x00426B29
-    static uint32_t vehiclePickupAir(const VehiclePickupAirArgs& args, uint8_t flags)
+    static uint32_t vehiclePickupAir(const VehiclePickupAirArgs& args, Flags flags)
     {
         setExpenditureType(ExpenditureType::AircraftRunningCosts);
         Vehicle train(args.head);
@@ -79,7 +79,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehiclePickupAir(registers& regs, const uint8_t flags)
+    void vehiclePickupAir(registers& regs, const Flags flags)
     {
         const VehiclePickupAirArgs args(regs);
         regs.ebx = vehiclePickupAir(args, flags);

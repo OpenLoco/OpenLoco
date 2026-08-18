@@ -134,7 +134,7 @@ namespace OpenLoco::GameCommands
 
     static LegacyReturnState _legacyReturnState; // 0x01136072
 
-    using GameCommandFunc = void (*)(registers& regs, const uint8_t flags);
+    using GameCommandFunc = void (*)(registers& regs, const Flags flags);
 
     struct GameCommandInfo
     {
@@ -238,10 +238,10 @@ namespace OpenLoco::GameCommands
     };
     // clang-format on
 
-    static uint32_t loc_4314EA(const uint8_t flags);
-    static uint32_t loc_4313C6(int esi, const registers& regs, const uint8_t flags);
+    static uint32_t loc_4314EA(const Flags flags);
+    static uint32_t loc_4313C6(int esi, const registers& regs, const Flags flags);
 
-    static bool commandRequiresUnpausingGame(GameCommand command, uint16_t flags)
+    static bool commandRequiresUnpausingGame(GameCommand command, Flags flags)
     {
         if (hasFlags(flags, Flags::aiAllocated | Flags::ghost))
         {
@@ -260,7 +260,7 @@ namespace OpenLoco::GameCommands
     // 0x00431315
     uint32_t doCommand(GameCommand command, const registers& regs)
     {
-        const uint8_t flags = regs.bl;
+        const auto flags = static_cast<Flags>(regs.bl);
         uint32_t esi = static_cast<uint32_t>(command);
 
         if (_gameCommandNestLevel != 0)
@@ -288,7 +288,7 @@ namespace OpenLoco::GameCommands
         return doCommandForReal(command, _updatingCompanyId, regs, flags);
     }
 
-    uint32_t doCommandForReal(GameCommand command, CompanyId company, const registers& regs, const uint8_t flags)
+    uint32_t doCommandForReal(GameCommand command, CompanyId company, const registers& regs, const Flags flags)
     {
         _updatingCompanyId = company;
 
@@ -325,7 +325,7 @@ namespace OpenLoco::GameCommands
         return loc_4313C6(esi, regs, flags);
     }
 
-    static void callGameCommandFunction(uint32_t command, registers& regs, const uint8_t flags)
+    static void callGameCommandFunction(uint32_t command, registers& regs, const Flags flags)
     {
         auto& gameCommand = kGameCommandDefinitions[command];
         if (gameCommand.implementation != nullptr)
@@ -339,7 +339,7 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    static uint32_t loc_4313C6(int esi, const registers& regs, const uint8_t flags)
+    static uint32_t loc_4313C6(int esi, const registers& regs, const Flags flags)
     {
         _gGameCommandErrorText = StringIds::null;
         _gameCommandNestLevel++;
@@ -430,7 +430,7 @@ namespace OpenLoco::GameCommands
         return ebx;
     }
 
-    static uint32_t loc_4314EA(const uint8_t flags)
+    static uint32_t loc_4314EA(const Flags flags)
     {
         _gameCommandNestLevel--;
         if (_gameCommandNestLevel != 0)
@@ -644,7 +644,7 @@ namespace OpenLoco::GameCommands
     }
 
     // TODO: Maybe move this somewhere else used by multiple game commands
-    bool shouldInvalidateTile(uint8_t flags)
+    bool shouldInvalidateTile(Flags flags)
     {
         return !hasFlags(flags, Flags::aiAllocated) || Config::get().showAiPlanningAsGhosts;
     }

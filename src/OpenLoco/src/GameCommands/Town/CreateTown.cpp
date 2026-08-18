@@ -59,7 +59,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x00496C22
-    static uint32_t createTown(const TownPlacementArgs& args, const uint8_t flags)
+    static uint32_t createTown(const TownPlacementArgs& args, const Flags flags)
     {
         auto& gameState = getGameState();
         Pos2 pos = args.pos;
@@ -181,7 +181,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void createTown(registers& regs, const uint8_t flags)
+    void createTown(registers& regs, const Flags flags)
     {
         TownPlacementArgs args(regs);
         regs.ebx = createTown(args, flags);

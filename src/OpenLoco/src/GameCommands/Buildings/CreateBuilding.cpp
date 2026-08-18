@@ -25,7 +25,7 @@
 namespace OpenLoco::GameCommands
 {
     // 0x0042D133
-    static uint32_t createBuilding(const BuildingPlacementArgs& args, uint8_t flags)
+    static uint32_t createBuilding(const BuildingPlacementArgs& args, Flags flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Construction);
         GameCommands::setPosition(args.pos + World::Pos3{ 16, 16, 0 });
@@ -272,7 +272,7 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void createBuilding(registers& regs, const uint8_t flags)
+    void createBuilding(registers& regs, const Flags flags)
     {
         BuildingPlacementArgs args(regs);
         regs.ebx = createBuilding(args, flags);

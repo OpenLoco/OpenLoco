@@ -105,7 +105,7 @@ namespace OpenLoco::GameCommands
     };
 
     // 0x0048BDCE & 0x0048BD40
-    static std::pair<NearbyStationValidation, StationId> validateNearbyStation(const World::Pos3 pos, const uint8_t flags)
+    static std::pair<NearbyStationValidation, StationId> validateNearbyStation(const World::Pos3 pos, const Flags flags)
     {
         auto func = hasFlags(flags, Flags::aiAllocated) ? &findNearbyStationDocksAi : &findNearbyStationDocks;
         auto nearbyStation = func(pos);
@@ -177,7 +177,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x00493F0E
-    static uint32_t createBuilding(const StationId stationId, const PortPlacementArgs& args, const uint8_t flags, World::TileClearance::RemovedBuildings& removedBuildings, const uint8_t buildingType)
+    static uint32_t createBuilding(const StationId stationId, const PortPlacementArgs& args, const Flags flags, World::TileClearance::RemovedBuildings& removedBuildings, const uint8_t buildingType)
     {
         // 0x00112C80B
         bool isWaterIndustryPort = false;
@@ -397,7 +397,7 @@ namespace OpenLoco::GameCommands
         return true;
     }
 
-    static currency32_t createPort(const PortPlacementArgs& args, const uint8_t flags)
+    static currency32_t createPort(const PortPlacementArgs& args, const Flags flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3(16, 16, 0));
@@ -430,7 +430,7 @@ namespace OpenLoco::GameCommands
         if (hasFlags(flags, Flags::ghost) && hasFlags(flags, Flags::apply))
         {
             returnState.lastConstructedAdjoiningStationPos = args.pos;
-            auto nearbyStation = flags & Flags::aiAllocated ? findNearbyStationDocksAi(args.pos) : findNearbyStationDocks(args.pos);
+            auto nearbyStation = hasFlags(flags, Flags::aiAllocated) ? findNearbyStationDocksAi(args.pos) : findNearbyStationDocks(args.pos);
             returnState.lastConstructedAdjoiningStation = nearbyStation.id;
         }
 
@@ -523,7 +523,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x00493AA7
-    void createPort(registers& regs, const uint8_t flags)
+    void createPort(registers& regs, const Flags flags)
     {
         regs.ebx = createPort(PortPlacementArgs(regs), flags);
     }

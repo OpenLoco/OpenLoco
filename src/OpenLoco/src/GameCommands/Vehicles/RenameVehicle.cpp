@@ -28,7 +28,7 @@ namespace OpenLoco::GameCommands
      * @param buffer2 @<bp> - Third group of 4 characters of a 12 character update buffer
      * @return @<ebx> - if rename is successful, return 0, if failed, return kFailure
      */
-    static uint32_t renameVehicle(const VehicleRenameArgs& args, const uint8_t flags)
+    static uint32_t renameVehicle(const VehicleRenameArgs& args, const Flags flags)
     {
         setExpenditureType(ExpenditureType::TrainRunningCosts);
 
@@ -112,7 +112,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void renameVehicle(registers& regs, const uint8_t flags)
+    void renameVehicle(registers& regs, const Flags flags)
     {
         regs.ebx = renameVehicle(VehicleRenameArgs(regs), flags);
     }

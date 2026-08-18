@@ -60,7 +60,7 @@ namespace OpenLoco::GameCommands
             uint8_t trackObjectId;
             uint8_t index;
             bool isLastIndex;
-            uint8_t flags;
+            Flags flags;
         };
     }
 
@@ -319,7 +319,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0049BB98
-    static uint32_t createTrack(const TrackPlacementArgs& args, uint8_t flags)
+    static uint32_t createTrack(const TrackPlacementArgs& args, Flags flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3{ 16, 16, 0 });
@@ -585,7 +585,7 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void createTrack(registers& regs, const uint8_t flags)
+    void createTrack(registers& regs, const Flags flags)
     {
         regs.ebx = createTrack(TrackPlacementArgs(regs), flags);
     }

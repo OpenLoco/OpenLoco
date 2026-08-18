@@ -11,7 +11,7 @@
 namespace OpenLoco::GameCommands
 {
     // 0x004B0B50
-    static uint32_t vehiclePassSignal(EntityId headId, const uint8_t flags)
+    static uint32_t vehiclePassSignal(EntityId headId, const Flags flags)
     {
         setExpenditureType(ExpenditureType::TrainRunningCosts);
 
@@ -51,7 +51,7 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    void vehiclePassSignal(registers& regs, const uint8_t flags)
+    void vehiclePassSignal(registers& regs, const Flags flags)
     {
         VehiclePassSignalArgs args(regs);
         regs.ebx = vehiclePassSignal(args.head, flags);

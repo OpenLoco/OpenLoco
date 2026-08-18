@@ -36,7 +36,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x00494706
-    static bool removePortTileElements(const World::Pos3& pos, const uint8_t flags)
+    static bool removePortTileElements(const World::Pos3& pos, const Flags flags)
     {
         for (auto& searchTile : getBuildingTileOffsets(true))
         {
@@ -93,7 +93,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x00494570
-    static currency32_t removePort(const PortRemovalArgs& args, const uint8_t flags)
+    static currency32_t removePort(const PortRemovalArgs& args, const Flags flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3(16, 16, 0));
@@ -148,7 +148,7 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void removePort(registers& regs, const uint8_t flags)
+    void removePort(registers& regs, const Flags flags)
     {
         regs.ebx = removePort(PortRemovalArgs(regs), flags);
     }

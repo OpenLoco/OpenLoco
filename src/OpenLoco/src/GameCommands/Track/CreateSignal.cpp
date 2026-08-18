@@ -114,7 +114,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x00488BDB
-    static uint32_t createSignal(const SignalPlacementArgs& args, uint8_t flags)
+    static uint32_t createSignal(const SignalPlacementArgs& args, Flags flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3{ 16, 16, 0 });
@@ -283,7 +283,7 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void createSignal(registers& regs, const uint8_t flags)
+    void createSignal(registers& regs, const Flags flags)
     {
         regs.ebx = createSignal(SignalPlacementArgs(regs), flags);
     }

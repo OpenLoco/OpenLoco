@@ -47,7 +47,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0047A21E
-    static uint32_t createRoadMod(const RoadModsPlacementArgs& args, uint8_t flags)
+    static uint32_t createRoadMod(const RoadModsPlacementArgs& args, Flags flags)
     {
         auto* roadEl = getRoadElement(args);
         if (roadEl == nullptr || !checkCompanyCompatibility(roadEl->owner(), *roadEl))
@@ -76,7 +76,7 @@ namespace OpenLoco::GameCommands
         return result.cost;
     }
 
-    void createRoadMod(registers& regs, const uint8_t flags)
+    void createRoadMod(registers& regs, const Flags flags)
     {
         regs.ebx = createRoadMod(RoadModsPlacementArgs(regs), flags);
     }

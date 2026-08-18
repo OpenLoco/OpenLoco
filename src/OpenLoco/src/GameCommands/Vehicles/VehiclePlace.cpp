@@ -196,7 +196,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004B01B6
-    static currency32_t vehiclePlace(const VehiclePlacementArgs& args, const uint8_t flags)
+    static currency32_t vehiclePlace(const VehiclePlacementArgs& args, const Flags flags)
     {
         if (args.head == EntityId::null)
         {
@@ -299,7 +299,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehiclePlace(registers& regs, const uint8_t flags)
+    void vehiclePlace(registers& regs, const Flags flags)
     {
         regs.ebx = vehiclePlace(VehiclePlacementArgs(regs), flags);
     }

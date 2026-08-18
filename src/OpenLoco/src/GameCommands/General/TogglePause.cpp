@@ -8,7 +8,7 @@
 namespace OpenLoco::GameCommands
 {
     // 0x00431E32
-    static uint32_t togglePause(uint8_t flags)
+    static uint32_t togglePause(Flags flags)
     {
         if (!hasFlags(flags, Flags::apply))
         {
@@ -29,7 +29,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void togglePause(registers& regs, const uint8_t flags)
+    void togglePause(registers& regs, const Flags flags)
     {
         regs.ebx = togglePause(flags);
     }

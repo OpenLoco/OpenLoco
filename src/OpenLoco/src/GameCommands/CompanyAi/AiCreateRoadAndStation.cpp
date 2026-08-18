@@ -38,7 +38,7 @@ namespace OpenLoco::GameCommands
         return World::TileClearance::ClearFuncResult::collision;
     }
 
-    static currency32_t aiCreateRoadAndStationCost(const AiRoadAndStationPlacementArgs& args, uint8_t flags)
+    static currency32_t aiCreateRoadAndStationCost(const AiRoadAndStationPlacementArgs& args, Flags flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Construction);
         if (!World::TileManager::checkFreeElementsAndReorganise())
@@ -119,7 +119,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0047AF0B
-    void aiCreateRoadAndStation(registers& regs, const uint8_t flags)
+    void aiCreateRoadAndStation(registers& regs, const Flags flags)
     {
         regs.ebx = aiCreateRoadAndStationCost(AiRoadAndStationPlacementArgs(regs), flags);
     }
