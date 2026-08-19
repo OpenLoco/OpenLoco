@@ -102,5 +102,7 @@ namespace OpenLoco::Gfx
         virtual void drawImageSolid(const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex) = 0;
 
         virtual void drawImagePaletteSet(const Ui::Point& pos, const ImageId& image, PaletteMap::View palette, const G1Element* noiseImage) = 0;
+
+        virtual void drawPaletteBitmap(const Ui::Point& pos, const G1Element& element, PaletteMap::View palette) = 0;
     };
 }

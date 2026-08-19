@@ -3,6 +3,8 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
+#include "Graphics/UnicodeFont.h"
+#include "Localisation/Conversion.h"
 #include "Localisation/Formatting.h"
 #include "Ui/WindowManager.h"
 
@@ -22,6 +24,13 @@ namespace OpenLoco::Gfx
         static std::pair<uint16_t, uint16_t> wrapString(Font font, char* buffer, uint16_t stringWidth);
         static uint16_t wrapStringTicker(Font font, char* buffer, uint16_t stringWidth, uint16_t numCharacters);
         static int16_t clipString(Font font, int16_t width, char* string);
+
+        static uint32_t consumeUnicodePayload(const char*& str)
+        {
+            const auto codepoint = Localisation::decodeUnicodeEscapePayload(reinterpret_cast<const uint8_t*>(str));
+            str += 4;
+            return codepoint;
+        }
 
         static uint16_t getLineHeight(Font font)
         {
@@ -203,6 +212,16 @@ namespace OpenLoco::Gfx
                         }
 
                         pos.x += getG1Element(imageId.getIndex())->width;
+                        break;
+                    }
+
+                    case ControlCodes::unicode:
+                    {
+                        const auto codepoint = consumeUnicodePayload(str);
+                        if (!offscreen)
+                        {
+                            UnicodeFont::draw(ctx, pos, drawState.font, codepoint, PaletteMap::View{ drawState.textColours });
+                        }
                         break;
                     }
 
@@ -929,6 +948,29 @@ namespace OpenLoco::Gfx
                         break;
                     }
 
+                    case ControlCodes::unicode:
+                    {
+                        const auto codepoint = consumeUnicodePayload(str);
+                        if (pos.x >= rt.x + rt.width)
+                        {
+                            offscreen = true;
+                        }
+                        if (!offscreen)
+                        {
+                            if (pos.x + 26 < rt.x)
+                            {
+                                pos.x += UnicodeFont::getAdvanceWidth(drawState.font, codepoint);
+                                yOffsets++;
+                            }
+                            else
+                            {
+                                UnicodeFont::draw(ctx, pos, drawState.font, codepoint, PaletteMap::View{ drawState.textColours }, *yOffsets);
+                                yOffsets++;
+                            }
+                        }
+                        break;
+                    }
+
                     case ControlCodes::Colour::black:
                         setTextColour(drawState, 0);
                         break;
@@ -1156,6 +1198,17 @@ namespace OpenLoco::Gfx
                         break;
                     }
 
+                    case ControlCodes::unicode:
+                    {
+                        const auto codepoint = consumeUnicodePayload(str);
+                        numChars--;
+                        if (!offscreen)
+                        {
+                            UnicodeFont::draw(ctx, pos, drawState.font, codepoint, PaletteMap::View{ drawState.textColours });
+                        }
+                        break;
+                    }
+
                     case ControlCodes::Colour::black:
                         setTextColour(drawState, 0);
                         break;
@@ -1366,6 +1419,9 @@ namespace OpenLoco::Gfx
                                 }
                                 break;
                             }
+                            case ControlCodes::unicode:
+                                lineWidth += UnicodeFont::getAdvanceWidth(font, Localisation::decodeUnicodeEscapePayload(reinterpret_cast<const uint8_t*>(ptr + 1)));
+                                break;
                         }
                         ptr += 4;
                     }
@@ -1491,6 +1547,9 @@ namespace OpenLoco::Gfx
                                 }
                                 break;
                             }
+                            case ControlCodes::unicode:
+                                lineWidth += UnicodeFont::getAdvanceWidth(font, Localisation::decodeUnicodeEscapePayload(reinterpret_cast<const uint8_t*>(ptr + 1)));
+                                break;
                         }
                         ptr += 4;
                     }
@@ -1708,6 +1767,13 @@ namespace OpenLoco::Gfx
                         break;
                     }
 
+                    case ControlCodes::unicode:
+                    {
+                        const auto codepoint = consumeUnicodePayload(str);
+                        width += UnicodeFont::getAdvanceWidth(font, codepoint);
+                        break;
+                    }
+
                     default:
                         if (chr <= 0x16)
                         {
@@ -1781,6 +1847,9 @@ namespace OpenLoco::Gfx
                             }
                             break;
                         }
+                        case ControlCodes::unicode:
+                            lineWidth += UnicodeFont::getAdvanceWidth(font, Localisation::decodeUnicodeEscapePayload(reinterpret_cast<const uint8_t*>(ptr + 1)));
+                            break;
                     }
                     ptr += 4;
                 }
@@ -1885,6 +1954,13 @@ namespace OpenLoco::Gfx
                         const uint32_t imageId = image & 0x7FFFF;
                         str += 4;
                         width += getG1Element(imageId)->width;
+                        break;
+                    }
+
+                    case ControlCodes::unicode:
+                    {
+                        const auto codepoint = consumeUnicodePayload(str);
+                        width += UnicodeFont::getAdvanceWidth(font, codepoint);
                         break;
                     }
 

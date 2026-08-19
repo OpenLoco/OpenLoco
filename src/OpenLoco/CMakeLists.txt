@@ -115,6 +115,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/SoftwareDrawingContext.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/SoftwareDrawingEngine.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/TextRenderer.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/UnicodeFont.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Gui.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input/Keyboard.cpp"
@@ -507,6 +508,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Graphics/SoftwareDrawingContext.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Graphics/SoftwareDrawingEngine.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Graphics/TextRenderer.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Graphics/UnicodeFont.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Gui.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Input.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Input/Shortcuts.h"
@@ -787,4 +789,7 @@ loco_add_library(OpenLoco STATIC
         ${private_compile_definitions}
 )
 
-target_include_directories(OpenLoco PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco")
+target_include_directories(OpenLoco PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco"
+    "${CMAKE_SOURCE_DIR}/thirdparty/stb"
+)
