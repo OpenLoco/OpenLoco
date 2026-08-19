@@ -4,8 +4,8 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageId.h"
 #include "Logging.h"
-#include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/Core/FileSystem.hpp>
+#include <OpenLoco/Platform/Platform.h>
 #include <algorithm>
 #include <cstdint>
 #include <fstream>
