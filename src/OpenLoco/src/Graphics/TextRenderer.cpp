@@ -25,7 +25,8 @@ namespace OpenLoco::Gfx
         static uint16_t wrapStringTicker(Font font, char* buffer, uint16_t stringWidth, uint16_t numCharacters);
         static int16_t clipString(Font font, int16_t width, char* string);
 
-        static uint32_t consumeUnicodePayload(const char*& str)
+        template<typename TChar>
+        static uint32_t consumeUnicodePayload(TChar*& str)
         {
             const auto codepoint = Localisation::decodeUnicodeEscapePayload(reinterpret_cast<const uint8_t*>(str));
             str += 4;
