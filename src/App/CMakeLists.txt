@@ -55,15 +55,21 @@ if (APPLE)
     list(APPEND BUNDLE_RESOURCES ${CMAKE_SOURCE_DIR}/distribution/macos/OpenLoco.icns)
 
     file(GLOB BUNDLE_LANGUAGES "${CMAKE_SOURCE_DIR}/data/language/*")
+    file(GLOB BUNDLE_FONTS "${CMAKE_SOURCE_DIR}/data/fonts/*")
     file(GLOB_RECURSE  BUNDLE_OBJECTS "${openloco_objects_SOURCE_DIR}/*")
 
-    target_sources(App PRIVATE "${BUNDLE_RESOURCES}" "${BUNDLE_LANGUAGES}" "${BUNDLE_OBJECTS}")
+    target_sources(App PRIVATE "${BUNDLE_RESOURCES}" "${BUNDLE_LANGUAGES}" "${BUNDLE_FONTS}" "${BUNDLE_OBJECTS}")
 
-    set_target_properties(App PROPERTIES RESOURCE "${BUNDLE_RESOURCES}" "${BUNDLE_LANGUAGES}" "${BUNDLE_OBJECTS}")
+    set_target_properties(App PROPERTIES RESOURCE "${BUNDLE_RESOURCES}" "${BUNDLE_LANGUAGES}" "${BUNDLE_FONTS}" "${BUNDLE_OBJECTS}")
 
     set_property(
         SOURCE ${BUNDLE_LANGUAGES}
         PROPERTY MACOSX_PACKAGE_LOCATION "Resources/language"
+    )
+
+    set_property(
+        SOURCE ${BUNDLE_FONTS}
+        PROPERTY MACOSX_PACKAGE_LOCATION "Resources/fonts"
     )
 
     set_property(

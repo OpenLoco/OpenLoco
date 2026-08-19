@@ -1,6 +1,6 @@
 26.08+ (???)
 ------------------------------------------------------------------------
-- Feature: [#304] Render Korean, Japanese, Chinese and other non-Latin text using a system Unicode font instead of '?'.
+- Feature: [#304] Render Korean, Japanese, Chinese and other non-Latin text using bundled A2Z Bold (Hangul) and Noto Sans CJK (Japanese/Chinese) instead of '?'.
 - Fix: [#3943] Unable to place or remove signals on multi tile track elements.
 - Fix: [#3955] Terraform window can break dimensions of construction window.
 

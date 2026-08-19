@@ -1,4 +1,5 @@
 #include "Graphics/UnicodeFont.h"
+#include "Environment.h"
 #include "Graphics/Colour.h"
 #include "Graphics/DrawingContext.h"
 #include "Graphics/Gfx.h"
@@ -51,6 +52,8 @@ namespace OpenLoco::Gfx::UnicodeFont
     {
         std::shared_ptr<std::vector<uint8_t>> data;
         stbtt_fontinfo info{};
+        bool preferHangul = false;
+        bool preferCjk = false;
     };
 
     static std::vector<LoadedFont> _fonts;
@@ -80,48 +83,24 @@ namespace OpenLoco::Gfx::UnicodeFont
         }
     }
 
-    static std::vector<fs::path> candidateFontPaths()
+    static bool isHangul(uint32_t cp)
     {
-        std::vector<fs::path> paths;
-#ifdef _WIN32
-        fs::path fontsDir = "C:/Windows/Fonts";
-        const auto windir = Platform::getEnvironmentVariable("WINDIR");
-        if (!windir.empty())
-        {
-            fontsDir = fs::path(windir) / "Fonts";
-        }
-        paths.insert(paths.end(), {
-                                      fontsDir / "malgun.ttf",
-                                      fontsDir / "malgunbd.ttf",
-                                      fontsDir / "YuGothM.ttc",
-                                      fontsDir / "msyh.ttc",
-                                      fontsDir / "msyh.ttf",
-                                      fontsDir / "msgothic.ttc",
-                                      fontsDir / "gulim.ttc",
-                                      fontsDir / "simsun.ttc",
-                                      fontsDir / "segoeui.ttf",
-                                      fontsDir / "arial.ttf",
-                                  });
-#elif defined(__APPLE__) && defined(__MACH__)
-        paths.insert(paths.end(), {
-                                      "/System/Library/Fonts/AppleSDGothicNeo.ttc",
-                                      "/System/Library/Fonts/Supplemental/AppleGothic.ttf",
-                                      "/System/Library/Fonts/Hiragino Sans GB.ttc",
-                                      "/Library/Fonts/Arial Unicode.ttf",
-                                  });
-#else
-        paths.insert(paths.end(), {
-                                      "/usr/share/fonts/truetype/nanum/NanumGothic.ttf",
-                                      "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
-                                      "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc",
-                                      "/usr/share/fonts/opentype/noto/NotoSansCJKkr-Regular.otf",
-                                      "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-                                  });
-#endif
-        return paths;
+        return (cp >= 0x1100 && cp <= 0x11FF) || (cp >= 0x3130 && cp <= 0x318F) || (cp >= 0xA960 && cp <= 0xA97F)
+            || (cp >= 0xAC00 && cp <= 0xD7FF);
     }
 
-    static void tryLoadFontFile(const fs::path& path)
+    static bool isCjk(uint32_t cp)
+    {
+        return (cp >= 0x3040 && cp <= 0x30FF) || (cp >= 0x31F0 && cp <= 0x31FF) || (cp >= 0x3400 && cp <= 0x4DBF)
+            || (cp >= 0x4E00 && cp <= 0x9FFF) || (cp >= 0xF900 && cp <= 0xFAFF) || (cp >= 0xFF66 && cp <= 0xFF9D);
+    }
+
+    static fs::path bundledFontsDir()
+    {
+        return Environment::getPathNoWarning(Environment::PathId::languageFiles).parent_path() / "fonts";
+    }
+
+    static void tryLoadFontFile(const fs::path& path, bool preferHangul, bool preferCjk)
     {
         std::ifstream in(path, std::ios::binary);
         if (!in)
@@ -156,13 +135,12 @@ namespace OpenLoco::Gfx::UnicodeFont
 
             LoadedFont font;
             font.data = data;
+            font.preferHangul = preferHangul;
+            font.preferCjk = preferCjk;
             if (stbtt_InitFont(&font.info, font.data->data(), offset) != 0)
             {
+                Logging::info("Loaded Unicode font: {}", path.filename().string());
                 _fonts.push_back(std::move(font));
-                if (_fonts.size() >= 6)
-                {
-                    return;
-                }
             }
         }
     }
@@ -175,32 +153,81 @@ namespace OpenLoco::Gfx::UnicodeFont
         }
         _initialised = true;
 
-        for (const auto& path : candidateFontPaths())
+        const auto bundled = bundledFontsDir();
+        tryLoadFontFile(bundled / "A2Z-Bold.ttf", true, false);
+#ifdef _WIN32
+        const bool hasHangulFont = std::any_of(_fonts.begin(), _fonts.end(), [](const LoadedFont& font) { return font.preferHangul; });
+        if (!hasHangulFont)
         {
-            tryLoadFontFile(path);
-            if (_fonts.size() >= 6)
+            const auto localAppData = Platform::getEnvironmentVariable("LOCALAPPDATA");
+            if (!localAppData.empty())
             {
-                break;
+                tryLoadFontFile(fs::path(localAppData) / "Microsoft/Windows/Fonts/에이투지체-7Bold.ttf", true, false);
             }
         }
+#endif
+        tryLoadFontFile(bundled / "NotoSansCJKjp-Regular.otf", false, true);
+        tryLoadFontFile(bundled / "NotoSansCJKsc-Regular.otf", false, true);
+
+#ifdef _WIN32
+        fs::path fontsDir = "C:/Windows/Fonts";
+        const auto windir = Platform::getEnvironmentVariable("WINDIR");
+        if (!windir.empty())
+        {
+            fontsDir = fs::path(windir) / "Fonts";
+        }
+        tryLoadFontFile(fontsDir / "malgunbd.ttf", true, false);
+        tryLoadFontFile(fontsDir / "YuGothM.ttc", false, true);
+        tryLoadFontFile(fontsDir / "msyh.ttc", false, true);
+        tryLoadFontFile(fontsDir / "segoeui.ttf", false, false);
+#elif defined(__APPLE__) && defined(__MACH__)
+        tryLoadFontFile("/System/Library/Fonts/AppleSDGothicNeo.ttc", true, false);
+        tryLoadFontFile("/System/Library/Fonts/Hiragino Sans GB.ttc", false, true);
+#else
+        tryLoadFontFile("/usr/share/fonts/truetype/nanum/NanumGothicBold.ttf", true, false);
+        tryLoadFontFile("/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc", false, true);
+#endif
 
         if (_fonts.empty() && !_loggedMissingFont)
         {
             _loggedMissingFont = true;
-            Logging::warn("No system Unicode font found; CJK text will still show as '?'");
-        }
-        else if (!_fonts.empty())
-        {
-            Logging::info("Loaded {} Unicode font face(s) for non-Latin text", _fonts.size());
+            Logging::warn("No Unicode font found; CJK text will still show as '?'");
         }
     }
 
     static const LoadedFont* findFontWithGlyph(uint32_t codepoint)
     {
         initialise();
+        const bool wantHangul = isHangul(codepoint);
+        const bool wantCjk = isCjk(codepoint);
+
+        const auto hasGlyph = [codepoint](const LoadedFont& font) {
+            return stbtt_FindGlyphIndex(&font.info, static_cast<int>(codepoint)) != 0;
+        };
+
+        if (wantHangul)
+        {
+            for (const auto& font : _fonts)
+            {
+                if (font.preferHangul && hasGlyph(font))
+                {
+                    return &font;
+                }
+            }
+        }
+        if (wantCjk)
+        {
+            for (const auto& font : _fonts)
+            {
+                if (font.preferCjk && hasGlyph(font))
+                {
+                    return &font;
+                }
+            }
+        }
         for (const auto& font : _fonts)
         {
-            if (stbtt_FindGlyphIndex(&font.info, static_cast<int>(codepoint)) != 0)
+            if (hasGlyph(font))
             {
                 return &font;
             }
@@ -253,7 +280,7 @@ namespace OpenLoco::Gfx::UnicodeFont
         glyph.pixels.resize(static_cast<std::size_t>(w) * static_cast<std::size_t>(h));
         for (int i = 0; i < w * h; ++i)
         {
-            glyph.pixels[static_cast<std::size_t>(i)] = bitmap[i] >= 96 ? PaletteIndex::textRemap0 : PaletteIndex::transparent;
+            glyph.pixels[static_cast<std::size_t>(i)] = bitmap[i] >= 48 ? PaletteIndex::textRemap0 : PaletteIndex::transparent;
         }
         stbtt_FreeBitmap(bitmap, nullptr);
 
