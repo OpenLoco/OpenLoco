@@ -60,7 +60,7 @@ if (APPLE)
 
     target_sources(App PRIVATE "${BUNDLE_RESOURCES}" "${BUNDLE_LANGUAGES}" "${BUNDLE_FONTS}" "${BUNDLE_OBJECTS}")
 
-    set_target_properties(App PROPERTIES RESOURCE "${BUNDLE_RESOURCES}" "${BUNDLE_LANGUAGES}" "${BUNDLE_FONTS}" "${BUNDLE_OBJECTS}")
+    set_target_properties(App PROPERTIES RESOURCE "${BUNDLE_RESOURCES}")
 
     set_property(
         SOURCE ${BUNDLE_LANGUAGES}
