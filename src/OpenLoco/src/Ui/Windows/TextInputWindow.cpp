@@ -263,6 +263,9 @@ namespace OpenLoco::Ui::Windows::TextInput
                 WindowManager::close(&window);
                 break;
             case Widx::kOk:
+                // inputSession.sanitizeInput() was previously called here.
+                // We are currently converting to Locomotion's encoding here, which effectively does sanitisation.
+                // TODO: once we are not converting to 'Loco', consider ensuring inputSession cannot give us any unwanted UTF-8 characters here.
                 auto caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
                 if (caller != nullptr)
                 {
