@@ -77,7 +77,7 @@ strings:
   65: "{UINT16 RAW} x {UINT16 RAW}"
   66: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{UINT16 RAW} x {UINT16 RAW}"
 
-  67: "About 'Chris Sawyer’s Locomotion'"
+  67: "About ‘Chris Sawyer’s Locomotion’"
   68: "Chris Sawyer’s Locomotion"
   69: "{COLOUR WINDOW_2}Version 4.02.176 (UK English)"
   70: "{COLOUR WINDOW_2}Copyright © 2004 Chris Sawyer, All Rights Reserved"
@@ -120,7 +120,7 @@ strings:
   106: Quit Game
   107: Screenshot
   108: Screenshot
-  109: Screenshot saved to disk as '{STRING}'
+  109: Screenshot saved to disk as ‘{STRING}’
   110: Screenshot failed!
   111: Landscape data area full!
   112: Can’t build partly above and partly below ground
@@ -134,11 +134,11 @@ strings:
   120: "{SMALLFONT}{COLOUR BLACK}Left-Hand Curve (Large Radius)"
   121: "{SMALLFONT}{COLOUR BLACK}Right-Hand Curve (Large Radius)"
   122: "{SMALLFONT}{COLOUR BLACK}Straight"
-  123: "{SMALLFONT}{COLOUR BLACK}'S' Bend Left"
-  124: "{SMALLFONT}{COLOUR BLACK}'S' Bend Right"
-  125: "{SMALLFONT}{COLOUR BLACK}'S' Bend to left side of dual track"
-  126: "{SMALLFONT}{COLOUR BLACK}'S' Bend to right side of dual track"
-  127: "{SMALLFONT}{COLOUR BLACK}'S' Bend to single track"
+  123: "{SMALLFONT}{COLOUR BLACK}‘S’ Bend Left"
+  124: "{SMALLFONT}{COLOUR BLACK}‘S’ Bend Right"
+  125: "{SMALLFONT}{COLOUR BLACK}‘S’ Bend to left side of dual track"
+  126: "{SMALLFONT}{COLOUR BLACK}‘S’ Bend to right side of dual track"
+  127: "{SMALLFONT}{COLOUR BLACK}‘S’ Bend to single track"
   128: "{SMALLFONT}{COLOUR BLACK}Turnaround"
   129: "{SMALLFONT}{COLOUR BLACK}(Click on landscape to start construction)"
   130: "{SMALLFONT}{COLOUR BLACK}Construct this Track Section"
@@ -1943,7 +1943,7 @@ strings:
   # Tutorial 2
   1899: "{SMALLFONT}{COLOUR BLACK}We’re going to build a bus service to transport passengers between Boulder Bay and Breakers Bridge. As there are no roads linking the towns, we’ll need to build one..."
   1900: "{SMALLFONT}{COLOUR BLACK}Select the orientation of the new section of road, and click on the view to start construction..."
-  1901: "{SMALLFONT}{COLOUR BLACK}Clicking the 'build this' icon will add more road sections of the same type..."
+  1901: "{SMALLFONT}{COLOUR BLACK}Clicking the ‘build this’ icon will add more road sections of the same type..."
   1902: "{SMALLFONT}{COLOUR BLACK}Before continuing, here’s a quicker way of starting road construction..."
   1903: "{SMALLFONT}{COLOUR BLACK}Just click the right mouse button on the end of the road you want to extend..."
   1904: "{SMALLFONT}{COLOUR BLACK}We need to turn left here, so select a left hand curve..."
@@ -1951,7 +1951,7 @@ strings:
   1906: "{SMALLFONT}{COLOUR BLACK}That’s the road built, now for the stations..."
   1907: "{SMALLFONT}{COLOUR BLACK}And finally we’ll purchase a bus and set it going..."
   1908: "{SMALLFONT}{COLOUR BLACK}This could be quite a busy route, so we’ll buy a second bus as well..."
-  1909: "{SMALLFONT}{COLOUR BLACK}To quickly copy Bus 1’s entire route to Bus 2, just click on Bus 1’s 'end of route list' text..."
+  1909: "{SMALLFONT}{COLOUR BLACK}To quickly copy Bus 1’s entire route to Bus 2, just click on Bus 1’s ‘end of route list’ text..."
 
   # Tutorial 3
   1910: "{SMALLFONT}{COLOUR BLACK}Let’s start by building a rail passenger service between the two largest towns..."
@@ -1962,7 +1962,7 @@ strings:
   1915: "{SMALLFONT}{COLOUR BLACK}Let’s extend the track to create a junction and spur to the third town. Right-clicking the track opens the track construction window ready to build a junction..."
   1916: "{SMALLFONT}{COLOUR BLACK}Because the track layout is no longer simple we need to give our train a route..."
   1917: "{SMALLFONT}{COLOUR BLACK}We could now add a second train, but first we need to build signals to prevent train collisions..."
-  1918: "{SMALLFONT}{COLOUR BLACK}The signals divide the track into 3 separate 'block sections' and only one train will be allowed to enter each section at once..."
+  1918: "{SMALLFONT}{COLOUR BLACK}The signals divide the track into 3 separate ‘block sections’ and only one train will be allowed to enter each section at once..."
 
   # Options/Misc
   1919: Use preferred owner name when starting a new game
@@ -2194,7 +2194,7 @@ strings:
   2139: "Quit to menu"
   2140: "Exit OpenLoco"
   2141: "{COLOUR WINDOW_2}Disable AI companies"
-  2142: "{SMALLFONT}{COLOUR BLACK}This disables AI from 'thinking', rendering them ineffective.{NEWLINE}In new games, this also prevents new AI companies from forming."
+  2142: "{SMALLFONT}{COLOUR BLACK}This disables AI from ‘thinking’, rendering them ineffective.{NEWLINE}In new games, this also prevents new AI companies from forming."
   2143: "{COLOUR WINDOW_2}Autosave amount:"
   2144: "{COLOUR WINDOW_2}Autosave frequency:"
   2145: "Never"
@@ -2435,7 +2435,7 @@ strings:
   2380: "{COLOUR BLACK}Years ▲"
   2381: "{COLOUR BLACK}Years ▼"
   2382: "{SMALLFONT}{COLOUR BLACK}Sort list by track title"
-  2383: "{SMALLFONT}{COLOUR BLACK}Sort list by years each track plays in 'current era' mode"
+  2383: "{SMALLFONT}{COLOUR BLACK}Sort list by years each track plays in ‘current era’ mode"
   2384: "{UINT16}-{UINT16}"
   2385: "{UINT16}-"
   2386: "-{UINT16}"
@@ -2515,7 +2515,7 @@ strings:
   2460: "Show toolbar menus on hover instead of click"
   2461: "Align toolbar buttons horizontally centred"
   2462: "Repeated placement"
-  2463: "{SMALLFONT}{COLOUR BLACK}Place signals repeatedly at every 'step size' track elements"
+  2463: "{SMALLFONT}{COLOUR BLACK}Place signals repeatedly at every ‘step size’ track elements"
   2464: "Step size:"
   2465: "Signals block"
 
