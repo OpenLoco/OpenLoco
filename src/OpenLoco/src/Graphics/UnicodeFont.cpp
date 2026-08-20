@@ -1,4 +1,5 @@
 #include "Graphics/UnicodeFont.h"
+#include "Config.h"
 #include "Environment.h"
 #include "Graphics/Colour.h"
 #include "Graphics/DrawingContext.h"
@@ -13,6 +14,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <memory>
+#include <string>
 #include <unordered_map>
 #include <vector>
 
@@ -92,10 +94,15 @@ namespace OpenLoco::Gfx::UnicodeFont
             || (cp >= 0xAC00 && cp <= 0xD7FF);
     }
 
-    static bool isCjk(uint32_t cp)
+    static bool isKana(uint32_t cp)
     {
-        return (cp >= 0x3040 && cp <= 0x30FF) || (cp >= 0x31F0 && cp <= 0x31FF) || (cp >= 0x3400 && cp <= 0x4DBF)
-            || (cp >= 0x4E00 && cp <= 0x9FFF) || (cp >= 0xF900 && cp <= 0xFAFF) || (cp >= 0xFF66 && cp <= 0xFF9D);
+        return (cp >= 0x3040 && cp <= 0x30FF) || (cp >= 0x31F0 && cp <= 0x31FF) || (cp >= 0xFF66 && cp <= 0xFF9D);
+    }
+
+    static bool isHan(uint32_t cp)
+    {
+        return (cp >= 0x3000 && cp <= 0x303F) || (cp >= 0x3400 && cp <= 0x4DBF) || (cp >= 0x4E00 && cp <= 0x9FFF)
+            || (cp >= 0xF900 && cp <= 0xFAFF);
     }
 
     static fs::path bundledFontsDir()
@@ -158,9 +165,10 @@ namespace OpenLoco::Gfx::UnicodeFont
         _initialised = true;
 
         const auto bundled = bundledFontsDir();
-        tryLoadFontFile(bundled / "Galmuri7.ttf", true, true, 8);
-        tryLoadFontFile(bundled / "Galmuri9.ttf", true, true, 10);
-        tryLoadFontFile(bundled / "Galmuri14.ttf", true, true, 15);
+        // Galmuri is a pixel Hangul/JIS font: use it for Hangul and kana, not Simplified Chinese.
+        tryLoadFontFile(bundled / "Galmuri7.ttf", true, false, 8);
+        tryLoadFontFile(bundled / "Galmuri9.ttf", true, false, 10);
+        tryLoadFontFile(bundled / "Galmuri14.ttf", true, false, 15);
         tryLoadFontFile(bundled / "A2Z-Bold.ttf", true, false);
 #ifdef _WIN32
         const bool hasHangulFont = std::any_of(_fonts.begin(), _fonts.end(), [](const LoadedFont& font) { return font.preferHangul; });
@@ -173,8 +181,8 @@ namespace OpenLoco::Gfx::UnicodeFont
             }
         }
 #endif
-        tryLoadFontFile(bundled / "NotoSansCJKjp-Regular.otf", false, true);
         tryLoadFontFile(bundled / "NotoSansCJKsc-Regular.otf", false, true);
+        tryLoadFontFile(bundled / "NotoSansCJKjp-Regular.otf", false, true);
 
 #ifdef _WIN32
         fs::path fontsDir = "C:/Windows/Fonts";
@@ -206,7 +214,8 @@ namespace OpenLoco::Gfx::UnicodeFont
     {
         initialise();
         const bool wantHangul = isHangul(codepoint);
-        const bool wantCjk = isCjk(codepoint);
+        const bool wantKana = isKana(codepoint);
+        const bool wantHan = isHan(codepoint);
 
         const auto hasGlyph = [codepoint](const LoadedFont& font) {
             return stbtt_FindGlyphIndex(&font.info, static_cast<int>(codepoint)) != 0;
@@ -231,6 +240,25 @@ namespace OpenLoco::Gfx::UnicodeFont
             return best;
         };
 
+        const auto pickPixel = [&]() -> const LoadedFont* {
+            const LoadedFont* best = nullptr;
+            int bestDist = 1000;
+            for (const auto& font : _fonts)
+            {
+                if (font.nativePx <= 0 || !hasGlyph(font))
+                {
+                    continue;
+                }
+                const int dist = std::abs(font.nativePx - pixelHeight);
+                if (dist < bestDist)
+                {
+                    best = &font;
+                    bestDist = dist;
+                }
+            }
+            return best;
+        };
+
         if (wantHangul)
         {
             if (const auto* best = pickPreferred(&LoadedFont::preferHangul))
@@ -238,8 +266,25 @@ namespace OpenLoco::Gfx::UnicodeFont
                 return best;
             }
         }
-        if (wantCjk)
+        if (wantKana)
         {
+            if (const auto* best = pickPixel())
+            {
+                return best;
+            }
+        }
+        if (wantHan)
+        {
+            // Galmuri covers JP/KR Han but is missing many Simplified Chinese glyphs.
+            // Mixing it with Noto in one string looks like overlapping tofu.
+            const bool usePixelHan = !Config::get().language.starts_with("zh");
+            if (usePixelHan)
+            {
+                if (const auto* best = pickPixel())
+                {
+                    return best;
+                }
+            }
             if (const auto* best = pickPreferred(&LoadedFont::preferCjk))
             {
                 return best;
@@ -257,6 +302,13 @@ namespace OpenLoco::Gfx::UnicodeFont
 
     static const Glyph& getGlyph(Font font, uint32_t codepoint)
     {
+        static std::string cachedLang;
+        if (cachedLang != Config::get().language)
+        {
+            cachedLang = Config::get().language;
+            _glyphCache.clear();
+        }
+
         const auto key = glyphKey(font, codepoint);
         if (auto it = _glyphCache.find(key); it != _glyphCache.end())
         {
@@ -299,11 +351,15 @@ namespace OpenLoco::Gfx::UnicodeFont
         glyph.width = static_cast<int16_t>(w);
         glyph.height = static_cast<int16_t>(h);
         glyph.xOffset = static_cast<int16_t>(xoff);
-        glyph.yOffset = static_cast<int16_t>(std::lround(ascent * scale + yoff));
+        const int rawY = static_cast<int>(std::lround(ascent * scale + yoff));
+        glyph.yOffset = loaded->nativePx > 0 ? static_cast<int16_t>(rawY)
+                                            : static_cast<int16_t>(std::clamp(rawY, 0, std::max(0, pixelHeight - h)));
+        glyph.advanceWidth = static_cast<int16_t>(std::max(static_cast<int>(glyph.advanceWidth), xoff + w));
         glyph.pixels.resize(static_cast<std::size_t>(w) * static_cast<std::size_t>(h));
+        const uint8_t onThreshold = loaded->nativePx > 0 ? 48 : 80;
         for (int i = 0; i < w * h; ++i)
         {
-            glyph.pixels[static_cast<std::size_t>(i)] = bitmap[i] >= 48 ? PaletteIndex::textRemap0 : PaletteIndex::transparent;
+            glyph.pixels[static_cast<std::size_t>(i)] = bitmap[i] >= onThreshold ? PaletteIndex::textRemap0 : PaletteIndex::transparent;
         }
         stbtt_FreeBitmap(bitmap, nullptr);
 
