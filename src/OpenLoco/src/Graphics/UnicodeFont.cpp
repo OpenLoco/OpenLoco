@@ -158,9 +158,9 @@ namespace OpenLoco::Gfx::UnicodeFont
         _initialised = true;
 
         const auto bundled = bundledFontsDir();
-        tryLoadFontFile(bundled / "Galmuri7.ttf", true, false, 8);
-        tryLoadFontFile(bundled / "Galmuri9.ttf", true, false, 10);
-        tryLoadFontFile(bundled / "Galmuri14.ttf", true, false, 15);
+        tryLoadFontFile(bundled / "Galmuri7.ttf", true, true, 8);
+        tryLoadFontFile(bundled / "Galmuri9.ttf", true, true, 10);
+        tryLoadFontFile(bundled / "Galmuri14.ttf", true, true, 15);
         tryLoadFontFile(bundled / "A2Z-Bold.ttf", true, false);
 #ifdef _WIN32
         const bool hasHangulFont = std::any_of(_fonts.begin(), _fonts.end(), [](const LoadedFont& font) { return font.preferHangul; });
@@ -212,13 +212,12 @@ namespace OpenLoco::Gfx::UnicodeFont
             return stbtt_FindGlyphIndex(&font.info, static_cast<int>(codepoint)) != 0;
         };
 
-        if (wantHangul)
-        {
+        const auto pickPreferred = [&](bool LoadedFont::*flag) -> const LoadedFont* {
             const LoadedFont* best = nullptr;
             int bestDist = 1000;
             for (const auto& font : _fonts)
             {
-                if (!font.preferHangul || !hasGlyph(font))
+                if (!(font.*flag) || !hasGlyph(font))
                 {
                     continue;
                 }
@@ -229,19 +228,21 @@ namespace OpenLoco::Gfx::UnicodeFont
                     bestDist = dist;
                 }
             }
-            if (best != nullptr)
+            return best;
+        };
+
+        if (wantHangul)
+        {
+            if (const auto* best = pickPreferred(&LoadedFont::preferHangul))
             {
                 return best;
             }
         }
         if (wantCjk)
         {
-            for (const auto& font : _fonts)
+            if (const auto* best = pickPreferred(&LoadedFont::preferCjk))
             {
-                if (font.preferCjk && hasGlyph(font))
-                {
-                    return &font;
-                }
+                return best;
             }
         }
         for (const auto& font : _fonts)
@@ -272,11 +273,9 @@ namespace OpenLoco::Gfx::UnicodeFont
         }
 
         const int rasterHeight = loaded->nativePx > 0 ? loaded->nativePx : pixelHeight;
-        // Pixel fonts are drawn to the em square. ScaleForPixelHeight also
-        // fits unused descent, which squashes Hangul.
-        const float scale = loaded->nativePx > 0
-            ? stbtt_ScaleForMappingEmToPixels(&loaded->info, static_cast<float>(rasterHeight))
-            : stbtt_ScaleForPixelHeight(&loaded->info, static_cast<float>(rasterHeight));
+        // Pixel fonts and CJK outlines are drawn to the em square.
+        // ScaleForPixelHeight also fits unused descent, which squashes glyphs.
+        const float scale = stbtt_ScaleForMappingEmToPixels(&loaded->info, static_cast<float>(rasterHeight));
 
         int advanceWidth = 0;
         int leftSideBearing = 0;
