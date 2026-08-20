@@ -231,6 +231,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         }
 
         auto point = Point(55, 0);
+        tr.setCurrentFont(Gfx::Font::small);
         tr.drawStringTicker(point, StringIds::buffer_2039, Colour::black, 4, ((_nState.numCharsToDisplay & ~(1 << 15)) >> 2), 109);
 
         drawingCtx.popClip();

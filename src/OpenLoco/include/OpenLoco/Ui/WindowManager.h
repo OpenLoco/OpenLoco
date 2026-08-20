@@ -150,6 +150,11 @@ namespace OpenLoco::Ui::Windows
         void open(const CompanyId id, const WindowType callingWindowType);
     }
 
+    namespace CompanyInfoPanel
+    {
+        Window* open();
+    }
+
     namespace CompanyList
     {
         void openPerformanceIndexes();
@@ -181,6 +186,7 @@ namespace OpenLoco::Ui::Windows
         void removeConstructionGhosts();
         void resetGhostVisibilityFlags();
         uint16_t getLastSelectedMods();
+        uint8_t getCurrentTrackType();
         World::Track::ModSection getLastSelectedTrackModSection();
     }
 
@@ -303,12 +309,6 @@ namespace OpenLoco::Ui::Windows
         Window* openAudioSettings();
     }
 
-    namespace PlayerInfoPanel
-    {
-        Window* open();
-        void invalidateFrame();
-    }
-
     namespace ProgressBar
     {
         Window* open(std::string_view captionString);
@@ -398,7 +398,6 @@ namespace OpenLoco::Ui::Windows
     namespace TimePanel
     {
         Window* open();
-        void invalidateFrame();
         void beginSendChatMessage(Window& self);
     }
 
@@ -433,12 +432,7 @@ namespace OpenLoco::Ui::Windows
         void open();
     }
 
-    namespace ToolbarTop::Game
-    {
-        void open();
-    }
-
-    namespace ToolbarTop::Editor
+    namespace ToolbarTop
     {
         void open();
     }

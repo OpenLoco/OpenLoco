@@ -35,7 +35,7 @@ if (APPLE)
     set(MACOSX_BUNDLE_BUNDLE_VERSION "${OPENLOCO_COMMIT_SHA1_SHORT}")
     set(MACOSX_BUNDLE_COPYRIGHT "OpenLoco is licensed under the MIT License")
     set(MACOSX_BUNDLE_GUI_IDENTIFIER "io.openloco.OpenLoco")
-    set(MACOSX_BUNDLE_ICON_FILE "AppIcon")
+    set(MACOSX_BUNDLE_ICON_FILE "OpenLoco")
 
     if("${OPENLOCO_BRANCH}" STREQUAL "master")
         set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${OPENLOCO_VERSION_TAG}")
@@ -47,30 +47,12 @@ if (APPLE)
 
     set(BUNDLE_RESOURCES "")
 
-    find_program(ICONUTIL iconutil)
-    if (ICONUTIL)
-        file(COPY ${CMAKE_SOURCE_DIR}/distribution/macos/AppIcon.iconset DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-        set(ICON_TARGET "${CMAKE_CURRENT_BINARY_DIR}/AppIcon.iconset")
-        set(ICON_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/AppIcon.icns")
-        set(SOURCE_ICON_DIR "${CMAKE_SOURCE_DIR}/src/Resources/src/logo")
-        add_custom_command(OUTPUT ${ICON_OUTPUT}
-                COMMAND cp icon_x16.png ${ICON_TARGET}/icon_16x16.png
-                COMMAND cp icon_x32.png ${ICON_TARGET}/icon_16x16@2x.png
-                COMMAND cp icon_x32.png ${ICON_TARGET}/icon_32x32.png
-                COMMAND cp icon_x64.png ${ICON_TARGET}/icon_32x32@2x.png
-                COMMAND cp icon_x128.png ${ICON_TARGET}/icon_128x128.png
-                COMMAND cp icon_x256.png ${ICON_TARGET}/icon_128x128@2x.png
-                COMMAND cp icon_x256.png ${ICON_TARGET}/icon_256x256.png
-                COMMAND cp icon_x512.png ${ICON_TARGET}/icon_256x256@2x.png
-                COMMAND cp icon_x512.png ${ICON_TARGET}/icon_512x512.png
-                COMMAND cp icon_x1024.png ${ICON_TARGET}/icon_512x512@2x.png
-                COMMAND ${ICONUTIL} --convert icns --output ${ICON_OUTPUT} ${ICON_TARGET}
-                WORKING_DIRECTORY ${SOURCE_ICON_DIR})
-        list(APPEND BUNDLE_RESOURCES ${ICON_OUTPUT})
-    endif ()
-
     list(APPEND BUNDLE_RESOURCES ${CMAKE_SOURCE_DIR}/CHANGELOG.md)
     list(APPEND BUNDLE_RESOURCES ${CMAKE_SOURCE_DIR}/CONTRIBUTORS.md)
+
+    # NB: icons are created Icon Composer and then exported using Xcode's `actool`
+    list(APPEND BUNDLE_RESOURCES ${CMAKE_SOURCE_DIR}/distribution/macos/Assets.car)
+    list(APPEND BUNDLE_RESOURCES ${CMAKE_SOURCE_DIR}/distribution/macos/OpenLoco.icns)
 
     file(GLOB BUNDLE_LANGUAGES "${CMAKE_SOURCE_DIR}/data/language/*")
     file(GLOB_RECURSE  BUNDLE_OBJECTS "${openloco_objects_SOURCE_DIR}/*")

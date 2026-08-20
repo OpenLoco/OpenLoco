@@ -27,6 +27,7 @@
 #include "Objects/TrainStationObject.h"
 #include "Objects/VehicleObject.h"
 #include "SceneManager.h"
+#include "Tutorial.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
 #include "Ui/Windows/Construction/Construction.h"
@@ -133,6 +134,9 @@ namespace OpenLoco::Ui::Windows::Construction
 
         cState.lastSelectedMods = lastMod;
         cState.byte_113603A = 0;
+
+        cState.signalPlacementStepSize = Signal::kDefaultSignalPlacementStepSize;
+        cState.repeatedSignalMode = false;
 
         return trackWindow();
     }
@@ -725,6 +729,12 @@ namespace OpenLoco::Ui::Windows::Construction
         return getConstructionState().lastSelectedMods;
     }
 
+    uint8_t getCurrentTrackType()
+    {
+        auto& cState = getConstructionState();
+        return cState.trackType;
+    }
+
     Track::ModSection getLastSelectedTrackModSection()
     {
         auto& cState = getConstructionState();
@@ -776,8 +786,9 @@ namespace OpenLoco::Ui::Windows::Construction
             self.setWidgets(tabInfo.widgets);
 
             setDisabledWidgets(&self);
-
-            self.setSize({ self.widgets[widx::frame].right + 1, self.widgets[widx::frame].bottom + 1 });
+            self.callPrepareDraw();
+            const auto size = Ui::Size{ self.widgets[widx::frame].right + 1, self.widgets[widx::frame].bottom + 1 };
+            self.setSizeFixed(size);
         }
 
         void setNextAndPreviousTrackTile(const TrackElement& elTrack, const World::Pos2& pos)
@@ -898,10 +909,19 @@ namespace OpenLoco::Ui::Windows::Construction
 
             setDisabledWidgets(&self);
 
+            // TODO: REMOVE WHEN REWORKING TUTORIALS (and tutorial.h include above)
+            if (widgetIndex == widx::tab_signal && OpenLoco::Tutorial::state() != OpenLoco::Tutorial::State::none)
+            {
+                // Restore original window size/layout from before signal auto placement was added
+                // ...Or actually just the close button because I'm lazy and that is all is needed for the original tutorial 3 to play correctly
+                self.widgets[widx::close_button].left = 138 - 15;
+                self.widgets[widx::close_button].right = 138 - 15 + 13 - 1;
+            }
+
             self.invalidate();
 
-            self.width = self.widgets[widx::frame].right + 1;
-            self.height = self.widgets[widx::frame].bottom + 1;
+            const auto size = Ui::Size{ self.widgets[widx::frame].right + 1, self.widgets[widx::frame].bottom + 1 };
+            self.setSizeFixed(size);
 
             self.callOnResize();
             self.callPrepareDraw();
@@ -1110,7 +1130,7 @@ namespace OpenLoco::Ui::Windows::Construction
                     {
                         auto frames = signalFrames[(((trainSignalObject->numFrames + 2) / 3) - 2)];
                         auto frameCount = std::size(frames) - 1;
-                        frameCount &= (self.frameNo >> trainSignalObject->animationSpeed);
+                        frameCount &= (self.frameNo >> trainSignalObject->animationFrameInterval);
                         auto frameIndex = frames[frameCount];
                         frameIndex <<= 3;
                         imageId += frameIndex;

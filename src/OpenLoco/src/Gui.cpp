@@ -32,9 +32,9 @@ namespace OpenLoco::Gui
         }
         else if (SceneManager::isPlayMode())
         {
-            Windows::ToolbarTop::Game::open();
+            Windows::ToolbarTop::open();
 
-            Windows::PlayerInfoPanel::open();
+            Windows::CompanyInfoPanel::open();
             Windows::TimePanel::open();
 
             if (OpenLoco::Tutorial::state() != Tutorial::State::none)
@@ -77,7 +77,7 @@ namespace OpenLoco::Gui
             window->width = std::max(uiWidth, 640);
         }
 
-        window = WindowManager::find(WindowType::playerInfoToolbar);
+        window = WindowManager::find(WindowType::companyInfoToolbar);
         if (window)
         {
             window->y = uiHeight - window->height;

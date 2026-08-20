@@ -61,7 +61,7 @@ namespace OpenLoco::Tutorial
     }
 
     // 0x0043C590
-    void start(int16_t tutorialNumber)
+    void initialise(int16_t tutorialNumber)
     {
         if (tutorialNumber < 0 || tutorialNumber > 3)
         {
@@ -101,8 +101,12 @@ namespace OpenLoco::Tutorial
         }
 
         // Disable options that interfere with tutorial operations.
+        config.buildLockedVehicles = false;
         config.cheatsMenuEnabled = false;
+        config.displayLockedVehicles = false;
         config.invertRightMouseViewPan = false;
+        config.toolbarAutoMenu = true;
+        config.toolbarButtonsCentred = false;
 
         // Get the environment file for this tutorial.
         static constexpr Environment::PathId tutorialFileIds[] = {
@@ -124,7 +128,7 @@ namespace OpenLoco::Tutorial
             StringIds::tutorial_3_string_1,
         };
 
-        _state = State::playing;
+        _state = State::standby;
         _tutorialString = openingStringIds[_tutorialNumber];
 
         // Load the scenario
@@ -137,6 +141,12 @@ namespace OpenLoco::Tutorial
 
         // Start the scenario
         Scenario::start();
+    }
+
+    void start()
+    {
+        assert(_state == State::standby);
+        _state = State::playing;
     }
 
     // 0x0043C70E

@@ -341,7 +341,7 @@ namespace OpenLoco::World::MapGenerator
         for (auto pos : getWorldRange())
         {
             auto height = heightMap.getHeight({ pos.x, pos.y });
-            if (height < seaLevel)
+            if (height > seaLevel)
             {
                 continue;
             }
@@ -467,14 +467,14 @@ namespace OpenLoco::World::MapGenerator
         // Mark tiles with sudden height changes in the next row
         for (auto pos : getDrawableTileRange())
         {
-            auto heightA = heightMap.getHeight({ pos + TilePos2{ 0, 1 } });
+            auto heightA = heightMap.getHeight({ pos + TilePos2{ 0, 0 } });
             auto heightB = heightMap.getHeight({ pos + TilePos2{ 0, 1 } });
 
             // Find no cliff between A and B?
             if (std::abs(heightB - heightA) < kCliffTerrainHeightDiff)
             {
-                auto heightC = heightMap.getHeight({ pos + TilePos2{ 0, 1 } });
-                auto heightD = heightMap.getHeight({ pos + TilePos2{ 0, 1 } });
+                auto heightC = heightMap.getHeight({ pos + TilePos2{ 0, 0 } });
+                auto heightD = heightMap.getHeight({ pos + TilePos2{ 1, 0 } });
 
                 // Find no cliff between C and D?
                 if (std::abs(heightD - heightC) < kCliffTerrainHeightDiff)
@@ -548,6 +548,7 @@ namespace OpenLoco::World::MapGenerator
 
         for (auto i = 0U; i < landDistributionPatterns.size(); i++)
         {
+            const auto distPattern = landDistributionPatterns[i];
             updateProgress(55 + 12 * i);
 
             for (uint8_t landObjectIdx = 0; landObjectIdx < ObjectManager::getMaxObjects(ObjectType::land); ++landObjectIdx)
@@ -559,7 +560,6 @@ namespace OpenLoco::World::MapGenerator
                 }
 
                 const auto typePattern = Scenario::getOptions().landDistributionPatterns[landObjectIdx];
-                const auto distPattern = landDistributionPatterns[i];
                 if (typePattern != distPattern)
                 {
                     continue;

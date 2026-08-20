@@ -27,6 +27,7 @@
 #include "Objects/TrackObject.h"
 #include "Paint/Paint.h"
 #include "Paint/PaintTile.h"
+#include "Tutorial.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
 #include "Ui/ToolTip.h"
@@ -1107,6 +1108,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         window->invalidate();
     }
 
+    static void setDisabledWidgets(Window& self);
+
     // 0x0049F1B5
     void activateSelectedConstructionWidgets()
     {
@@ -1128,6 +1131,20 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 activateSelectedTrackWidgets(window);
             }
+        }
+
+        setDisabledWidgets(*window);
+
+        // TODO: REMOVE WHEN REWORKING TUTORIALS (and tutorial.h include above)
+        if (OpenLoco::Tutorial::state() != OpenLoco::Tutorial::State::none)
+        {
+            // Restore original window layout from before copy and paste buttons were added
+            window->widgets[widx::remove].left = 6;
+            window->widgets[widx::remove].right = 6 + 46 + 1;
+            window->widgets[widx::rotate_90].left = 57;
+            window->widgets[widx::rotate_90].right = 57 + 24 + 1;
+            window->widgets[widx::copy].hidden = true;
+            window->widgets[widx::paste].hidden = true;
         }
     }
 
@@ -1631,7 +1648,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049DAA5
-    static void onResize(Window& self)
+    static void setDisabledWidgets(Window& self)
     {
         auto disabledWidgets = self.disabledWidgets;
 
@@ -3381,7 +3398,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static constexpr WindowEventList kEvents = {
         .onClose = Common::onClose,
         .onMouseUp = onMouseUp,
-        .onResize = onResize,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
         .onUpdate = onUpdate,

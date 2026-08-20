@@ -35,6 +35,13 @@ namespace OpenLoco::Config
         }
     }
 
+    static void resetPlaylistConfig()
+    {
+        auto& audioConfig = _config.audio;
+        std::fill(audioConfig.customJukebox.begin(), audioConfig.customJukebox.end(), true);
+        audioConfig.customJukebox[enumValue(PlaylistItem::locomotionTitle)] = false;
+    }
+
     Config& read()
     {
         auto configPath = Environment::getPathNoWarning(Environment::PathId::openlocoYML);
@@ -43,6 +50,7 @@ namespace OpenLoco::Config
         if (!fs::exists(configPath))
         {
             readShortcutConfig(YAML::Node());
+            resetPlaylistConfig();
             return _config;
         }
 
@@ -68,6 +76,7 @@ namespace OpenLoco::Config
 
         // Audio settings
         auto& audioNode = config["audio"];
+        bool havePlaylist = false;
         if (audioNode && audioNode.IsMap())
         {
             auto& audioConfig = _config.audio;
@@ -87,14 +96,13 @@ namespace OpenLoco::Config
             if (audioNode["customJukebox"])
             {
                 audioConfig.customJukebox = audioNode["customJukebox"].as<Playlist>(Playlist{});
+                havePlaylist = true;
             }
-            else
-            {
-                std::fill(audioConfig.customJukebox.begin(), audioConfig.customJukebox.end(), true);
+        }
 
-                // "Locomotion Title" was originally not available for the custom playlist, so we disable it by default to match historical behaviour.
-                audioConfig.customJukebox[enumValue(PlaylistItem::locomotionTitle)] = false;
-            }
+        if (!havePlaylist)
+        {
+            resetPlaylistConfig();
         }
 
         // Network settings

@@ -57,54 +57,6 @@ namespace OpenLoco::GameCommands
         return { nullptr, nullptr };
     };
 
-    static bool validateTrackIsSignalCompatible(const SignalPlacementArgs& args, const std::span<const World::TrackData::PreviewTrack> trackPieces, const World::Pos3 trackStart)
-    {
-        for (auto& piece : trackPieces)
-        {
-            const auto trackLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
-            auto [trackEntry, pieceElTrack] = getElTrackAt(args, trackLoc, piece.index);
-            if (trackEntry == nullptr)
-            {
-                return false;
-            }
-            if (pieceElTrack->hasStationElement())
-            {
-                setErrorText(StringIds::signals_cannot_be_built_in_stations);
-                return false;
-            }
-            const auto connectFlags = piece.connectFlags[pieceElTrack->rotation()];
-            auto tile = World::TileManager::get(trackLoc);
-            for (auto& el : tile)
-            {
-                auto* otherElTrack = el.as<World::TrackElement>();
-                if (otherElTrack == nullptr)
-                {
-                    continue;
-                }
-                if (otherElTrack == pieceElTrack)
-                {
-                    continue;
-                }
-                if (otherElTrack->baseZ() != pieceElTrack->baseZ())
-                {
-                    continue;
-                }
-                if (otherElTrack->isGhost())
-                {
-                    continue;
-                }
-
-                const auto otherConnectFlags = World::TrackData::getTrackPiece(otherElTrack->trackId())[otherElTrack->sequenceIndex()].connectFlags[otherElTrack->rotation()];
-                if (otherConnectFlags & connectFlags)
-                {
-                    setErrorText(StringIds::signals_cannot_be_built_on_a_junction);
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     static currency32_t signalCost(const SignalPlacementArgs& args, const World::TrackData::PreviewTrack trackPiece0, const World::Pos3 trackStart)
     {
         const auto trackLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece0.x, trackPiece0.y }, args.rotation), trackPiece0.z };
@@ -162,7 +114,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x00488BDB
-    static uint32_t createSignal(const SignalPlacementArgs& args, uint8_t flags)
+    static uint32_t createSignal(const SignalPlacementArgs& args, Flags flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3{ 16, 16, 0 });
@@ -194,8 +146,9 @@ namespace OpenLoco::GameCommands
 
         const auto trackStart = args.pos - World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece.x, trackPiece.y }, args.rotation), trackPiece.z };
 
-        if (!validateTrackIsSignalCompatible(args, trackPieces, trackStart))
+        if (auto res = World::Track::validateTrackIsSignalCompatible(trackStart, args.rotation, args.trackId, args.trackObjType); res.has_value())
         {
+            setErrorText(res.value());
             return kFailure;
         }
 
@@ -212,7 +165,7 @@ namespace OpenLoco::GameCommands
                 return kFailure;
             }
 
-            if (flags & Flags::ghost)
+            if (hasFlags(flags, Flags::ghost))
             {
                 if (pieceElTrack->hasSignal())
                 {
@@ -231,7 +184,7 @@ namespace OpenLoco::GameCommands
                 }
             }
 
-            if (flags & Flags::apply)
+            if (hasFlags(flags, Flags::apply))
             {
                 if (!pieceElTrack->hasSignal())
                 {
@@ -250,8 +203,8 @@ namespace OpenLoco::GameCommands
                     }
                     auto& newSignal = signalEntry->get<World::SignalElement>();
                     newSignal.setRotation(pieceElTrack->rotation());
-                    newSignal.setGhost(flags & Flags::ghost);
-                    newSignal.setAiAllocated(flags & Flags::aiAllocated);
+                    newSignal.setGhost(hasFlags(flags, Flags::ghost));
+                    newSignal.setAiAllocated(hasFlags(flags, Flags::aiAllocated));
                     newSignal.setClearZ(pieceElTrack->clearZ());
                     newSignal.getLeft() = World::SignalElement::Side{};
                     newSignal.getRight() = World::SignalElement::Side{};
@@ -265,11 +218,11 @@ namespace OpenLoco::GameCommands
                 }
                 if (sides & (1U << 15))
                 {
-                    if (!(flags & Flags::ghost) || !elSignal->getLeft().hasSignal())
+                    if (!hasFlags(flags, Flags::ghost) || !elSignal->getLeft().hasSignal())
                     {
                         auto& left = elSignal->getLeft();
                         left.setHasSignal(true);
-                        elSignal->setLeftGhost(flags & Flags::ghost);
+                        elSignal->setLeftGhost(hasFlags(flags, Flags::ghost));
                         left.setSignalObjectId(args.type);
                         left.setFrame(0);
                         left.setAllLights(0);
@@ -277,17 +230,17 @@ namespace OpenLoco::GameCommands
                 }
                 if (sides & (1U << 14))
                 {
-                    if (!(flags & Flags::ghost) || !elSignal->getRight().hasSignal())
+                    if (!hasFlags(flags, Flags::ghost) || !elSignal->getRight().hasSignal())
                     {
                         auto& right = elSignal->getRight();
                         right.setHasSignal(true);
-                        elSignal->setRightGhost(flags & Flags::ghost);
+                        elSignal->setRightGhost(hasFlags(flags, Flags::ghost));
                         right.setSignalObjectId(args.type);
                         right.setFrame(0);
                         right.setAllLights(0);
                     }
                 }
-                if (!(flags & Flags::ghost))
+                if (!hasFlags(flags, Flags::ghost))
                 {
                     World::AnimationManager::createAnimation(0, trackLoc, elSignal->baseZ());
                 }
@@ -295,9 +248,9 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        if (flags & Flags::apply)
+        if (hasFlags(flags, Flags::apply))
         {
-            if (!(flags & (Flags::aiAllocated | Flags::ghost)))
+            if (!hasFlags(flags, Flags::aiAllocated | Flags::ghost))
             {
                 const uint16_t tad = args.rotation | (args.trackId << 3);
                 {
@@ -330,7 +283,7 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void createSignal(registers& regs, const uint8_t flags)
+    void createSignal(registers& regs, const Flags flags)
     {
         regs.ebx = createSignal(SignalPlacementArgs(regs), flags);
     }

@@ -34,7 +34,7 @@ namespace OpenLoco::GameCommands
         return World::TileClearance::ClearFuncResult::collision;
     }
 
-    static currency32_t aiCreateTrackAndStation(const AiTrackAndStationPlacementArgs& args, uint8_t flags)
+    static currency32_t aiCreateTrackAndStation(const AiTrackAndStationPlacementArgs& args, Flags flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Construction);
         if (!World::TileManager::checkFreeElementsAndReorganise())
@@ -46,7 +46,7 @@ namespace OpenLoco::GameCommands
         auto trackPos = args.pos;
         for (auto i = 0U; i < args.stationLength; ++i, trackPos += World::Pos3(World::kRotationOffset[args.rotation], 0))
         {
-            if (!(flags & Flags::apply))
+            if (!hasFlags(flags, Flags::apply))
             {
                 if (World::validCoords(trackPos))
                 {
@@ -90,7 +90,7 @@ namespace OpenLoco::GameCommands
                 auto trackRegs = static_cast<registers>(trackArgs);
                 createTrack(trackRegs, flags);
                 const auto trackRes = static_cast<currency32_t>(trackRegs.ebx);
-                if (!(flags & GameCommands::Flags::apply))
+                if (!hasFlags(flags, GameCommands::Flags::apply))
                 {
                     if (static_cast<uint32_t>(trackRes) == GameCommands::kFailure)
                     {
@@ -117,7 +117,7 @@ namespace OpenLoco::GameCommands
                 auto stationRegs = static_cast<registers>(stationArgs);
                 createTrainStation(stationRegs, flags);
                 const auto stationRes = static_cast<currency32_t>(stationRegs.ebx);
-                if (!(flags & GameCommands::Flags::apply))
+                if (!hasFlags(flags, GameCommands::Flags::apply))
                 {
                     if (static_cast<uint32_t>(stationRes) == GameCommands::kFailure)
                     {
@@ -156,7 +156,7 @@ namespace OpenLoco::GameCommands
                 pos += World::kRotationOffset[args.rotation];
             }
         }
-        if (!(flags & Flags::apply))
+        if (!hasFlags(flags, Flags::apply))
         {
             if (numTilesTrackOrRoadUnderneath >= args.stationLength - 2)
             {
@@ -167,7 +167,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004A6FDC
-    void aiCreateTrackAndStation(registers& regs, const uint8_t flags)
+    void aiCreateTrackAndStation(registers& regs, const Flags flags)
     {
         regs.ebx = aiCreateTrackAndStation(AiTrackAndStationPlacementArgs(regs), flags);
     }

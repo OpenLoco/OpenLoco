@@ -8,7 +8,7 @@
 namespace OpenLoco::GameCommands
 {
     // 0x0046DE88
-    static uint32_t changeLoan(const currency32_t newLoan, const uint8_t flags)
+    static uint32_t changeLoan(const currency32_t newLoan, const Flags flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::LoanInterest);
 
@@ -38,20 +38,20 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        if (flags & Flags::apply)
+        if (hasFlags(flags, Flags::apply))
         {
             company->currentLoan = newLoan;
             company->cash -= loanDifference;
             Ui::WindowManager::invalidate(Ui::WindowType::company, static_cast<uint16_t>(GameCommands::getUpdatingCompanyId()));
             if (CompanyManager::getControllingId() == GameCommands::getUpdatingCompanyId())
             {
-                Ui::Windows::PlayerInfoPanel::invalidateFrame();
+                Ui::WindowManager::invalidate(Ui::WindowType::companyInfoToolbar);
             }
         }
         return 0;
     }
 
-    void changeLoan(registers& regs, const uint8_t flags)
+    void changeLoan(registers& regs, const Flags flags)
     {
         ChangeLoanArgs args(regs);
         regs.ebx = changeLoan(args.newLoan, flags);

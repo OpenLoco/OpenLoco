@@ -41,5 +41,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void createTree(registers& regs, const uint8_t flags);
+    void createTree(registers& regs, const Flags flags);
 }

@@ -40,5 +40,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void createRoad(registers& regs, const uint8_t flags);
+    void createRoad(registers& regs, const Flags flags);
 }

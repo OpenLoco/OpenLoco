@@ -1178,12 +1178,12 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         auto numProducedCargoTypes = std::max(1, std::popcount(cState.constructingStationProducedCargoTypes));
 
         auto& baseFrame = kWidgets[Common::widx::frame];
-        auto newHeight = baseFrame.height() + 1 + (numAcceptedCargoTypes + numProducedCargoTypes) * 11;
+        auto newHeight = baseFrame.height() + (numAcceptedCargoTypes + numProducedCargoTypes) * 11;
         auto newSize = Size{ baseFrame.width(), newHeight };
-        self.setSizeBounds(newSize, newSize);
+        self.setSizeFixed(newSize);
 
-        self.widgets[Common::widx::frame].bottom = self.height - 1;
-        self.widgets[Common::widx::panel].bottom = self.height - 1;
+        self.widgets[Common::widx::frame].bottom = newHeight - 1;
+        self.widgets[Common::widx::panel].bottom = newHeight - 1;
     }
 
     // 0x0049DE40
@@ -1259,7 +1259,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         xPos = 3;
         yPos = self.widgets[widx::image].bottom + 16;
-        auto width = self.width - 4;
+        auto width = self.width - 7;
         drawingCtx.drawRectInset(xPos, yPos, width, 1, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset);
 
         // Following information is only calculated when a ghost has been placed

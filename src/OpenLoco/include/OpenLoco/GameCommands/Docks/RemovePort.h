@@ -26,5 +26,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void removePort(registers& regs, const uint8_t flags);
+    void removePort(registers& regs, const Flags flags);
 }

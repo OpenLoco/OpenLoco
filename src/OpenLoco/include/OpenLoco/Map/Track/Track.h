@@ -2,6 +2,7 @@
 
 #include "Types.hpp"
 #include <OpenLoco/Engine/World.hpp>
+#include <optional>
 #include <sfl/static_vector.hpp>
 #include <utility>
 
@@ -69,4 +70,7 @@ namespace OpenLoco::World::Track
     TrackConnections getTrackConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t trackObjectId, const uint8_t requiredMods, const uint8_t queryMods);
     TrackConnections getTrackConnectionsAi(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t trackObjectId, const uint8_t requiredMods, const uint8_t queryMods);
     ConnectionEnd getTrackConnectionEnd(const World::Pos3& pos, const uint16_t trackAndDirection);
+
+    // Returns an error message on failure, or std::nullopt on success
+    std::optional<StringId> validateTrackIsSignalCompatible(const World::Pos3 trackStart, const uint8_t rotation, const uint8_t trackId, const uint8_t trackObjId);
 }

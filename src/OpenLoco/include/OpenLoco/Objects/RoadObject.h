@@ -86,6 +86,41 @@ namespace OpenLoco
 
     namespace RoadObj::ImageIds
     {
+        constexpr uint32_t kUiPreviewImage0 = 0;
+        constexpr uint32_t kUiPreviewImage1 = 1;
+        constexpr uint32_t kUiPreviewImage2 = 2;
+        constexpr uint32_t kUiPreviewImage3 = 3;
+        constexpr uint32_t kUiPreviewImage4 = 4;
+        constexpr uint32_t kUiPreviewImage5 = 5;
+        constexpr uint32_t kUiPreviewImage6 = 6;
+        constexpr uint32_t kUiPreviewImage7 = 7;
+        constexpr uint32_t kUiPreviewImage8 = 8;
+        constexpr uint32_t kUiPreviewImage9 = 9;
+        constexpr uint32_t kUiPreviewImage10 = 10;
+        constexpr uint32_t kUiPreviewImage11 = 11;
+        constexpr uint32_t kUiPreviewImage12 = 12;
+        constexpr uint32_t kUiPreviewImage13 = 13;
+        constexpr uint32_t kUiPreviewImage14 = 14;
+        constexpr uint32_t kUiPreviewImage15 = 15;
+        constexpr uint32_t kUiPreviewImage16 = 16;
+        constexpr uint32_t kUiPreviewImage17 = 17;
+        constexpr uint32_t kUiPreviewImage18 = 18;
+        constexpr uint32_t kUiPreviewImage19 = 19;
+        constexpr uint32_t kUiPreviewImage20 = 20;
+        constexpr uint32_t kUiPreviewImage21 = 21;
+        constexpr uint32_t kUiPreviewImage22 = 22;
+        constexpr uint32_t kUiPreviewImage23 = 23;
+        constexpr uint32_t kUiPreviewImage24 = 24;
+        constexpr uint32_t kUiPreviewImage25 = 25;
+        constexpr uint32_t kUiPreviewImage26 = 26;
+        constexpr uint32_t kUiPreviewImage27 = 27;
+        constexpr uint32_t kUiPreviewImage28 = 28;
+        constexpr uint32_t kUiPreviewImage29 = 29;
+        constexpr uint32_t kUiPreviewImage30 = 30;
+        constexpr uint32_t kUiPreviewImage31 = 31;
+        constexpr uint32_t kUiPickupFromRoad = 32;
+        constexpr uint32_t kUiPlaceOnRoad = 33;
+
         namespace Style0
         {
             constexpr uint32_t kStraight0NE = 34;

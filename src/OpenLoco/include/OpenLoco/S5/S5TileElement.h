@@ -377,14 +377,14 @@ namespace OpenLoco::S5
         void setLevelCrossingObjectId(uint8_t v) { _5 = (_5 & ~0xC) | ((v & 0x3) << 2); }
         uint8_t roadObjectId() const { return _5 >> 4; }
         void setRoadObjectId(uint8_t v) { _5 = (_5 & ~0xF0) | ((v & 0xF) << 4); }
-        uint8_t unk6l() const { return _6 & 0xF; }
-        void setUnk6l(uint8_t v) { _6 = (_6 & ~0xF) | (v & 0xF); }
+        uint8_t levelCrossingAnimationFrame() const { return _6 & 0xF; }
+        void setLevelCrossingAnimationFrame(uint8_t v) { _6 = (_6 & ~0xF) | (v & 0xF); }
         uint8_t bridge() const { return _6 >> 5; }
         void setBridge(uint8_t v) { _6 = (_6 & ~0xE0) | (v << 5); }
         uint8_t owner() const { return _7 & 0xF; }
         void setOwner(uint8_t v) { _7 = (_7 & ~0xF) | (v & 0xF); }
-        bool unk7_10() const { return _7 & 0x10; }
-        void setUnk7_10(bool v) { _7 = (_7 & ~0x10) | (v ? 0x10 : 0); }
+        bool isLevelCrossingClosed() const { return _7 & 0x10; }
+        void setLevelCrossingClosed(bool v) { _7 = (_7 & ~0x10) | (v ? 0x10 : 0); }
         bool hasLevelCrossing() const { return _7 & 0x20; }
         void setHasLevelCrossing(bool v) { _7 = (_7 & ~0x20) | (v ? 0x20 : 0); }
         bool unk7_40() const { return _7 & 0x40; }

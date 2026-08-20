@@ -105,12 +105,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         Dropdown::add(6, StringIds::menu_giant_screenshot);
         Dropdown::add(7, 0);
         Dropdown::add(8, StringIds::menu_quit_to_menu);
-#ifndef __EMSCRIPTEN__
+    #ifndef __EMSCRIPTEN__
         Dropdown::add(9, StringIds::menu_exit_openloco);
-        Dropdown::showBelow(window, widgetIndex, 10, 0);
-#else
         Dropdown::showBelow(window, widgetIndex, 9, 0);
+#else
+        Dropdown::showBelow(window, widgetIndex, 8, 0);
 #endif
+        Dropdown::setHighlightedItem(1);
         Dropdown::setHighlightedItem(1);
     }
 

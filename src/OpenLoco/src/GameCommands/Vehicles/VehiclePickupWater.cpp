@@ -17,7 +17,7 @@ using namespace OpenLoco::Vehicles;
 namespace OpenLoco::GameCommands
 {
     // 0x004279CC
-    static uint32_t vehiclePickupWater(EntityId head, uint8_t flags)
+    static uint32_t vehiclePickupWater(EntityId head, Flags flags)
     {
         setExpenditureType(ExpenditureType::ShipRunningCosts);
         Vehicle train(head);
@@ -32,12 +32,12 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if (!(flags & Flags::apply))
+        if (!hasFlags(flags, Flags::apply))
         {
             return 0;
         }
 
-        if (!(flags & Flags::ghost))
+        if (!hasFlags(flags, Flags::ghost))
         {
             Vehicles::playPickupSound(train.veh2);
         }
@@ -93,7 +93,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehiclePickupWater(registers& regs, const uint8_t flags)
+    void vehiclePickupWater(registers& regs, const Flags flags)
     {
         regs.ebx = vehiclePickupWater(EntityId(regs.di), flags);
     }

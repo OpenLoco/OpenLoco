@@ -93,9 +93,9 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004B6AEE
-    static uint32_t changeLocalExpressMode(const Vehicles::Vehicle& train, const uint8_t flags)
+    static uint32_t changeLocalExpressMode(const Vehicles::Vehicle& train, const Flags flags)
     {
-        if (!(flags & Flags::apply))
+        if (!hasFlags(flags, Flags::apply))
         {
             return 0;
         }
@@ -106,7 +106,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004B6A08
-    static uint32_t startStopVehicle(const Vehicles::Vehicle& train, bool startVehicle, const uint8_t flags)
+    static uint32_t startStopVehicle(const Vehicles::Vehicle& train, bool startVehicle, const Flags flags)
     {
         // Starting this vehicle -- can we?
         if (startVehicle && !canVehicleBeStarted(train))
@@ -126,7 +126,7 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        if (!(flags & Flags::apply))
+        if (!hasFlags(flags, Flags::apply))
         {
             return 0;
         }
@@ -152,7 +152,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004B6AAF
-    static uint32_t toggleManualDriving(const Vehicles::Vehicle& train, const uint8_t flags)
+    static uint32_t toggleManualDriving(const Vehicles::Vehicle& train, const Flags flags)
     {
         // Can we change driving modes?
         if (!canVehicleBeStarted(train))
@@ -160,7 +160,7 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if (!(flags & Flags::apply))
+        if (!hasFlags(flags, Flags::apply))
         {
             return 0;
         }
@@ -189,7 +189,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004B694B
-    static uint32_t vehicleChangeRunningMode(const VehicleChangeRunningModeArgs& args, const uint8_t flags)
+    static uint32_t vehicleChangeRunningMode(const VehicleChangeRunningModeArgs& args, const Flags flags)
     {
         setExpenditureType(ExpenditureType::TrainRunningCosts);
 
@@ -207,7 +207,7 @@ namespace OpenLoco::GameCommands
             // If a vehicle is stuck or crashed, immediately sell the vehicle instead.
             if ((train.head->status == Vehicles::Status::stuck || train.head->status == Vehicles::Status::crashed) && CompanyManager::isPlayerCompany(train.head->owner))
             {
-                if (flags & Flags::apply)
+                if (hasFlags(flags, Flags::apply))
                 {
                     // 0x004B69C7
                     train.head->sub_4AD778();
@@ -236,7 +236,7 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    void vehicleChangeRunningMode(registers& regs, const uint8_t flags)
+    void vehicleChangeRunningMode(registers& regs, const Flags flags)
     {
         regs.ebx = vehicleChangeRunningMode(VehicleChangeRunningModeArgs(regs), flags);
     }

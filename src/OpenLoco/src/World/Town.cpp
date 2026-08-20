@@ -1130,7 +1130,7 @@ namespace OpenLoco
                 args.roadId = 0;
                 args.roadObjectId = roadObjectId;
                 args.rotation = rotation;
-                if (GameCommands::doCommand(args, 0) != GameCommands::kFailure)
+                if (GameCommands::doCommand(args, GameCommands::Flags::none) != GameCommands::kFailure)
                 {
                     iterationValidBridgeTypes.push_back(bridgeObjId);
                 }

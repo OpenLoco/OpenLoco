@@ -18,7 +18,7 @@ namespace OpenLoco::GameCommands
      * This command is called 3 times before the buffer is applied. Each time, 12 chars of the 36 char buffer are provided.
      * The resulting company name has a maximum length of 31 chars; the last bytes are not used.
      */
-    static uint32_t changeCompanyName(const ChangeCompanyNameArgs& args, const uint8_t flags)
+    static uint32_t changeCompanyName(const ChangeCompanyNameArgs& args, const Flags flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Miscellaneous);
 
@@ -32,7 +32,7 @@ namespace OpenLoco::GameCommands
         static char renameBuffer[37]{};
 
         // Fill buffer over calls into the renameBuffer
-        if ((flags & GameCommands::Flags::apply) != 0)
+        if (hasFlags(flags, GameCommands::Flags::apply))
         {
             static const std::array<int, 3> transformTable = { 2, 0, 1 };
             const int arrayIndex = transformTable.at(args.bufferIndex);
@@ -92,7 +92,7 @@ namespace OpenLoco::GameCommands
         }
 
         // Bailing out early?
-        if ((flags & GameCommands::Flags::apply) == 0)
+        if (!hasFlags(flags, GameCommands::Flags::apply))
         {
             StringManager::emptyUserString(allocatedStringId);
             return 0;
@@ -106,7 +106,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void changeCompanyName(registers& regs, const uint8_t flags)
+    void changeCompanyName(registers& regs, const Flags flags)
     {
         regs.ebx = changeCompanyName(ChangeCompanyNameArgs(regs), flags);
     }

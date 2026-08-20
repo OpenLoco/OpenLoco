@@ -107,12 +107,12 @@ namespace OpenLoco::Paint
     {
         auto* crossingObj = ObjectManager::get<LevelCrossingObject>(elRoad.levelCrossingObjectId());
 
-        uint8_t frame = elRoad.unk6l();
+        uint8_t frame = elRoad.levelCrossingAnimationFrame();
         if (frame != 0)
         {
             if (frame == 15)
             {
-                frame = (((ScenarioManager::getScenarioTicks() / (1U << crossingObj->animationSpeed)) & (crossingObj->closingFrames - 1)) + crossingObj->closedFrames + 1);
+                frame = (((ScenarioManager::getScenarioTicks() / (1U << crossingObj->closedAnimationFrameInterval)) & (crossingObj->closedAnimationFrameCount - 1)) + crossingObj->transitionAnimationFrameCount + 1);
             }
         }
 
@@ -143,7 +143,7 @@ namespace OpenLoco::Paint
         }
 
         const auto image3 = baseRoadImageColour.withIndex(imageIndex0 + 3);
-        if (elRoad.unk6l() != 15)
+        if (elRoad.levelCrossingAnimationFrame() != 15)
         {
             const auto bbOffset = World::Pos3{ 30, 30, 1 } + heightOffset;
             const auto bbSize = World::Pos3{ 1, 1, 8 };

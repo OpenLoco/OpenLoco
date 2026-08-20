@@ -24,5 +24,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void vehicleReverse(registers& regs, const uint8_t flags);
+    void vehicleReverse(registers& regs, const Flags flags);
 }

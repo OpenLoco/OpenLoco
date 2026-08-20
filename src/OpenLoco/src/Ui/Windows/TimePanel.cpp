@@ -69,8 +69,6 @@ namespace OpenLoco::Ui::Windows::TimePanel
         Widgets::ImageButton(Widx::kFastForwardBtn, { 58, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),
         Widgets::ImageButton(Widx::kExtraFastForwardBtn, { 78, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_extra_fast_forward, StringIds::tooltip_speed_extra_fast_forward));
 
-    static bool redrawScheduled = false; // 0x0050A004 (2nd bit)
-
     static const WindowEventList& getEvents();
 
     Window* open()
@@ -386,11 +384,6 @@ namespace OpenLoco::Ui::Windows::TimePanel
         Network::sendChatMessage(string);
     }
 
-    void invalidateFrame()
-    {
-        redrawScheduled = true;
-    }
-
     // 0x00439AD9
     static void onUpdate(Window& w)
     {
@@ -411,16 +404,8 @@ namespace OpenLoco::Ui::Windows::TimePanel
         {
             if (w.numTicksVisible == 0 || w.numTicksVisible == kPausedStatusTextDuration)
             {
-                redrawScheduled = true;
+                WindowManager::invalidate(WindowType::timeToolbar);
             }
-        }
-
-        if (redrawScheduled)
-        {
-            redrawScheduled = false;
-
-            // Invalidating the inner frame widget effectively causes the entire time panel to be redrawn.
-            WindowManager::invalidateWidget(WindowType::timeToolbar, 0, widx::inner_frame);
         }
     }
 

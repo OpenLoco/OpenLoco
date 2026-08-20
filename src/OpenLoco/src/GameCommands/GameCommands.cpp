@@ -47,10 +47,12 @@
 #include "GameCommands/Town/RemoveTown.h"
 #include "GameCommands/Town/RenameTown.h"
 #include "GameCommands/Track/CreateSignal.h"
+#include "GameCommands/Track/CreateSignalsAuto.h"
 #include "GameCommands/Track/CreateTrack.h"
 #include "GameCommands/Track/CreateTrackMod.h"
 #include "GameCommands/Track/CreateTrainStation.h"
 #include "GameCommands/Track/RemoveSignal.h"
+#include "GameCommands/Track/RemoveSignalsAuto.h"
 #include "GameCommands/Track/RemoveTrack.h"
 #include "GameCommands/Track/RemoveTrackMod.h"
 #include "GameCommands/Track/RemoveTrainStation.h"
@@ -132,7 +134,7 @@ namespace OpenLoco::GameCommands
 
     static LegacyReturnState _legacyReturnState; // 0x01136072
 
-    using GameCommandFunc = void (*)(registers& regs, const uint8_t flags);
+    using GameCommandFunc = void (*)(registers& regs, const Flags flags);
 
     struct GameCommandInfo
     {
@@ -145,7 +147,7 @@ namespace OpenLoco::GameCommands
     static constexpr StringId kErrorBelongsToOther = 0xFFFEU;
 
     // clang-format off
-    static constexpr GameCommandInfo kGameCommandDefinitions[85] = {
+    static constexpr GameCommandInfo kGameCommandDefinitions[87] = {
         { GameCommand::vehicleRearrange,             vehicleRearrange,          0x004AF1DF, true  },
         { GameCommand::vehiclePlace,                 vehiclePlace,              0x004B01B6, true  },
         { GameCommand::vehiclePickup,                vehiclePickup,             0x004B0826, true  },
@@ -231,15 +233,17 @@ namespace OpenLoco::GameCommands
         { GameCommand::setGameSpeed,                 setGameSpeed,              0,          true  },
         { GameCommand::vehicleOrderReverse,          vehicleOrderReverse,       0,          false },
         { GameCommand::vehicleRepaint,               vehicleRepaint,            0,          false },
+        { GameCommand::createSignalsAuto,            createSignalsAuto,         0,          true  },
+        { GameCommand::removeSignalsAuto,            removeSignalsAuto,         0,          true  },
     };
     // clang-format on
 
-    static uint32_t loc_4314EA(const uint8_t flags);
-    static uint32_t loc_4313C6(int esi, const registers& regs, const uint8_t flags);
+    static uint32_t loc_4314EA(const Flags flags);
+    static uint32_t loc_4313C6(int esi, const registers& regs, const Flags flags);
 
-    static bool commandRequiresUnpausingGame(GameCommand command, uint16_t flags)
+    static bool commandRequiresUnpausingGame(GameCommand command, Flags flags)
     {
-        if ((flags & (Flags::aiAllocated | Flags::ghost)) != 0)
+        if (hasFlags(flags, Flags::aiAllocated | Flags::ghost))
         {
             return false;
         }
@@ -256,7 +260,7 @@ namespace OpenLoco::GameCommands
     // 0x00431315
     uint32_t doCommand(GameCommand command, const registers& regs)
     {
-        const uint8_t flags = regs.bl;
+        const auto flags = static_cast<Flags>(regs.bl);
         uint32_t esi = static_cast<uint32_t>(command);
 
         if (_gameCommandNestLevel != 0)
@@ -264,12 +268,12 @@ namespace OpenLoco::GameCommands
             return loc_4313C6(esi, regs, flags);
         }
 
-        if ((flags & Flags::apply) == 0)
+        if (!hasFlags(flags, Flags::apply))
         {
             return loc_4313C6(esi, regs, flags);
         }
 
-        auto isGhost = (flags & Flags::ghost) != 0;
+        auto isGhost = hasFlags(flags, Flags::ghost);
         if (!isGhost && Network::isConnected())
         {
             // For network games, we need to delay the command apply processing
@@ -284,7 +288,7 @@ namespace OpenLoco::GameCommands
         return doCommandForReal(command, _updatingCompanyId, regs, flags);
     }
 
-    uint32_t doCommandForReal(GameCommand command, CompanyId company, const registers& regs, const uint8_t flags)
+    uint32_t doCommandForReal(GameCommand command, CompanyId company, const registers& regs, const Flags flags)
     {
         _updatingCompanyId = company;
 
@@ -295,7 +299,7 @@ namespace OpenLoco::GameCommands
             if ((SceneManager::getPauseFlags() & PauseFlags::player) != PauseFlags::none)
             {
                 SceneManager::unsetPauseFlag(PauseFlags::player);
-                Ui::Windows::PlayerInfoPanel::invalidateFrame();
+                WindowManager::invalidate(WindowType::companyInfoToolbar);
             }
 
             if (SceneManager::getGameSpeed() != GameSpeed::Normal)
@@ -321,7 +325,7 @@ namespace OpenLoco::GameCommands
         return loc_4313C6(esi, regs, flags);
     }
 
-    static void callGameCommandFunction(uint32_t command, registers& regs, const uint8_t flags)
+    static void callGameCommandFunction(uint32_t command, registers& regs, const Flags flags)
     {
         auto& gameCommand = kGameCommandDefinitions[command];
         if (gameCommand.implementation != nullptr)
@@ -335,7 +339,7 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    static uint32_t loc_4313C6(int esi, const registers& regs, const uint8_t flags)
+    static uint32_t loc_4313C6(int esi, const registers& regs, const Flags flags)
     {
         _gGameCommandErrorText = StringIds::null;
         _gameCommandNestLevel++;
@@ -353,8 +357,8 @@ namespace OpenLoco::GameCommands
 
             if (_gameCommandNestLevel == 1)
             {
-                if ((flags & Flags::allowNegativeCashFlow) == 0
-                    && (flags & Flags::noPayment) == 0
+                if (!hasFlags(flags, Flags::allowNegativeCashFlow)
+                    && !hasFlags(flags, Flags::noPayment)
                     && ebx != 0)
                 {
                     if (!CompanyManager::ensureCompanyFunding(getUpdatingCompanyId(), ebx))
@@ -367,7 +371,7 @@ namespace OpenLoco::GameCommands
 
         if (ebx == static_cast<int32_t>(GameCommands::kFailure))
         {
-            if (flags & Flags::apply)
+            if (hasFlags(flags, Flags::apply))
             {
                 return loc_4314EA(flags);
             }
@@ -378,7 +382,7 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        if ((flags & Flags::apply) == 0)
+        if (!hasFlags(flags, Flags::apply))
         {
             _gameCommandNestLevel--;
             return ebx;
@@ -409,7 +413,7 @@ namespace OpenLoco::GameCommands
             return ebx;
         }
 
-        if ((flags & Flags::noPayment) != 0)
+        if (hasFlags(flags, Flags::noPayment))
         {
             return ebx;
         }
@@ -426,7 +430,7 @@ namespace OpenLoco::GameCommands
         return ebx;
     }
 
-    static uint32_t loc_4314EA(const uint8_t flags)
+    static uint32_t loc_4314EA(const Flags flags)
     {
         _gameCommandNestLevel--;
         if (_gameCommandNestLevel != 0)
@@ -439,7 +443,7 @@ namespace OpenLoco::GameCommands
             return GameCommands::kFailure;
         }
 
-        if (flags & Flags::noErrorWindow)
+        if (hasFlags(flags, Flags::noErrorWindow))
         {
             return GameCommands::kFailure;
         }
@@ -640,8 +644,8 @@ namespace OpenLoco::GameCommands
     }
 
     // TODO: Maybe move this somewhere else used by multiple game commands
-    bool shouldInvalidateTile(uint8_t flags)
+    bool shouldInvalidateTile(Flags flags)
     {
-        return !(flags & Flags::aiAllocated) || Config::get().showAiPlanningAsGhosts;
+        return !hasFlags(flags, Flags::aiAllocated) || Config::get().showAiPlanningAsGhosts;
     }
 }
