@@ -1,6 +1,7 @@
 26.08+ (???)
 ------------------------------------------------------------------------
 - Feature: [#304] Render Korean, Japanese, Chinese and other non-Latin text using Galmuri (Hangul pixel font) and Noto Sans CJK (Japanese/Chinese) instead of '?'.
+- Change: [#304] Fill remaining Japanese and Simplified Chinese UI strings (including OpenLoco-added options).
 - Fix: [#3943] Unable to place or remove signals on multi tile track elements.
 - Fix: [#3955] Terraform window can break dimensions of construction window.
 
