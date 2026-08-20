@@ -26,7 +26,9 @@ set(public_link_libraries
 )
 
 if (MSVC)
-    list(APPEND public_link_libraries ${BREAKPAD_LIBRARIES})
+    if (BREAKPAD_LIBRARIES)
+        list(APPEND public_link_libraries ${BREAKPAD_LIBRARIES})
+    endif()
     list(APPEND public_link_libraries "Winmm.lib")
 endif()
 
@@ -39,7 +41,7 @@ loco_add_library(Platform STATIC
         ${public_link_libraries}
 )
 
-if (MSVC)
+if (MSVC AND BREAKPAD_LIBRARIES)
     target_compile_definitions(Platform
         PRIVATE
             USE_BREAKPAD)

@@ -48,10 +48,15 @@ else()
     set(OPENAL_LIBRARIES OpenAL::OpenAL)
 endif()
 
-# breakpad is also required
+# breakpad needs ATL (not in all VS Build Tools installs)
 if (MSVC)
-    find_package(unofficial-breakpad CONFIG REQUIRED)
-    set(BREAKPAD_LIBRARIES unofficial::breakpad::libbreakpad unofficial::breakpad::libbreakpad_client)
+    find_package(unofficial-breakpad CONFIG)
+    if (unofficial-breakpad_FOUND)
+        set(BREAKPAD_LIBRARIES unofficial::breakpad::libbreakpad unofficial::breakpad::libbreakpad_client CACHE INTERNAL "Breakpad libs")
+    else()
+        set(BREAKPAD_LIBRARIES "" CACHE INTERNAL "Breakpad libs")
+        message(STATUS "Breakpad not found; crash dumps disabled")
+    endif()
 endif()
 
 find_package(fmt QUIET)
