@@ -193,16 +193,16 @@ namespace OpenLoco
         topAndTailPosition = 1U << 1,   // vehicle is forced to the rear of the train
         jacobsBogieFront = 1U << 2,
         jacobsBogieRear = 1U << 3,
-        flag_04 = 1U << 4,
+        // if four vehicles with this flag are present, the second and third are positioned in the middle of the train, to simulate two trainsets being coupled together
+        trainsetsCoupleInCenter = 1U << 4,
         centerPosition = 1U << 5, // vehicle is forced to the middle of train
         rackRail = 1U << 6,
-        // Alternates between sprite 0 and sprite 1 for each vehicle of this type in a train
-        // NOTE: This is for vehicles and not vehicle components (which can also do similar)
-        alternatingCarSprite = 1U << 7,
-        flag_08 = 1U << 8,
+        // CarComponents with this flag alternate between body 0 and body 1
+        alternatingBody = 1U << 7,
+        mustFlipOnReverse = 1U << 8,
         aircraftIsTaildragger = 1U << 8,
         anyRoadType = 1U << 9, // set on all road vehicles except trams
-        flag_10 = 1U << 10,
+        flag10Unused = 1U << 10,
         cannotCoupleToSelf = 1U << 11,
         aircraftFlaresLanding = 1U << 11, // set only on Concorde
         mustHavePair = 1U << 12,          // train requires two or more of this vehicle
