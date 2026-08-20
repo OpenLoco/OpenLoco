@@ -73,13 +73,13 @@ strings:
   61: Game Initialization Failed
   62: Unable to start game in a minimized state
   63: Unable to initialize graphics system
-  64: CD Key Code {INT32 RAW} is not valid for your Locomotion CD!{COLOUR WINDOW_1}{COLOUR WINDOW_1}Please un-install Chris Sawyer's Locomotion and re-install with the correct CD Key Code
+  64: CD Key Code {INT32 RAW} is not valid for your Locomotion CD!{COLOUR WINDOW_1}{COLOUR WINDOW_1}Please un-install Chris Sawyer’s Locomotion and re-install with the correct CD Key Code
 
   65: "{UINT16 RAW} x {UINT16 RAW}"
   66: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{UINT16 RAW} x {UINT16 RAW}"
 
-  67: About 'Chris Sawyer's Locomotion'
-  68: Chris Sawyer's Locomotion
+  67: About ‘Chris Sawyer’s Locomotion’
+  68: Chris Sawyer’s Locomotion
   69: "{COLOUR WINDOW_2}Version 4.02.176 (US English)"
   70: "{COLOUR WINDOW_2}Copyright © 2004 Chris Sawyer, All Rights Reserved"
   71: "{COLOUR WINDOW_2}Designed & Programmed by Chris Sawyer"
@@ -112,8 +112,8 @@ strings:
   97: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
   98: Too low!
   99: Too high!
-  100: Can't lower land here...
-  101: Can't raise land here...
+  100: Can’t lower land here...
+  101: Can’t raise land here...
   102: Object in the way
   103: Load Game
   104: Save Game
@@ -121,10 +121,10 @@ strings:
   106: Quit Game
   107: Screenshot
   108: Screenshot
-  109: Screenshot saved to disk as '{STRING}'
+  109: Screenshot saved to disk as ‘{STRING}’
   110: Screenshot failed!
   111: Landscape data area full!
-  112: Can't build partly above and partly below ground
+  112: Can’t build partly above and partly below ground
   113: "{STRINGID}"
   114: "{SMALLFONT}{COLOUR BLACK}Left-Hand Curve"
   115: "{SMALLFONT}{COLOUR BLACK}Right-Hand Curve"
@@ -135,11 +135,11 @@ strings:
   120: "{SMALLFONT}{COLOUR BLACK}Left-Hand Curve (Large Radius)"
   121: "{SMALLFONT}{COLOUR BLACK}Right-Hand Curve (Large Radius)"
   122: "{SMALLFONT}{COLOUR BLACK}Straight"
-  123: "{SMALLFONT}{COLOUR BLACK}'S' Bend Left"
-  124: "{SMALLFONT}{COLOUR BLACK}'S' Bend Right"
-  125: "{SMALLFONT}{COLOUR BLACK}'S' Bend to left side of dual track"
-  126: "{SMALLFONT}{COLOUR BLACK}'S' Bend to right side of dual track"
-  127: "{SMALLFONT}{COLOUR BLACK}'S' Bend to single track"
+  123: "{SMALLFONT}{COLOUR BLACK}‘S’ Bend Left"
+  124: "{SMALLFONT}{COLOUR BLACK}‘S’ Bend Right"
+  125: "{SMALLFONT}{COLOUR BLACK}‘S’ Bend to left side of dual track"
+  126: "{SMALLFONT}{COLOUR BLACK}‘S’ Bend to right side of dual track"
+  127: "{SMALLFONT}{COLOUR BLACK}‘S’ Bend to single track"
   128: "{SMALLFONT}{COLOUR BLACK}Turnaround"
   129: "{SMALLFONT}{COLOUR BLACK}(Click on landscape to start construction)"
   130: "{SMALLFONT}{COLOUR BLACK}Construct this Track Section"
@@ -151,11 +151,11 @@ strings:
   136: "{SMALLFONT}{COLOUR BLACK}Steep Slope Up"
   137: "{COLOUR WINDOW_2}Build this..."
   138: "{COLOUR WINDOW_2}Cost: {COLOUR BLACK}{CURRENCY32}"
-  139: Can't build signal here...
-  140: Can't build signals here...
-  141: Can't remove signal...
-  142: Can't remove {POP16}{POP16}{POP16}{STRINGID}...
-  143: Can't build {POP16}{POP16}{POP16}{STRINGID}...
+  139: Can’t build signal here...
+  140: Can’t build signals here...
+  141: Can’t remove signal...
+  142: Can’t remove {POP16}{POP16}{POP16}{STRINGID}...
+  143: Can’t build {POP16}{POP16}{POP16}{STRINGID}...
   144: Raise or lower land first
   145: Underground view
   146: Hide foreground tracks & roads
@@ -176,9 +176,9 @@ strings:
   161: Ship Port
   162: Station in the way
   163: Signal in the way
-  164: Can't remove airport...
-  165: Can't remove ship port...
-  166: Can't remove station...
+  164: Can’t remove airport...
+  165: Can’t remove ship port...
+  166: Can’t remove station...
   167: Wrong type of track/road!
   168: Bridge types must match
   169: Bridge not suitable for junction
@@ -197,7 +197,7 @@ strings:
   182: Save this before quitting ?
   183: Save this before quitting ?
   184: Save
-  185: Don't Save
+  185: Don’t Save
   186: Cancel
   187: OK
 
@@ -237,7 +237,7 @@ strings:
   219: "{COLOUR WINDOW_2}Cost: {COLOUR BLACK}{CURRENCY32}"
   220: (player 1)
   221: (player 2)
-  222: Can't change color scheme...
+  222: Can’t change color scheme...
   223: Zoom In
   224: Zoom Out
   225: Towns
@@ -275,9 +275,9 @@ strings:
   257: "{SMALLFONT}{COLOUR BLACK}Place {POP16}{STRINGID} in airport"
   258: "{SMALLFONT}{COLOUR BLACK}Remove {POP16}{STRINGID} from water"
   259: "{SMALLFONT}{COLOUR BLACK}Place {POP16}{STRINGID} in dock"
-  260: Can't start {POP16}{POP16}{POP16}{STRINGID}...
-  261: Can't select manual mode for {POP16}{POP16}{POP16}{STRINGID}...
-  262: Can't stop {POP16}{POP16}{POP16}{STRINGID}...
+  260: Can’t start {POP16}{POP16}{POP16}{STRINGID}...
+  261: Can’t select manual mode for {POP16}{POP16}{POP16}{STRINGID}...
+  262: Can’t stop {POP16}{POP16}{POP16}{STRINGID}...
   263: "{VELOCITY}"
   264: Unlimited{POP16}
   265: Stop
@@ -374,7 +374,7 @@ strings:
   356: Off edge of map!
   357: Cannot build partly above and partly below water!
   358: Too close to water surface!
-  359: Can't build this underwater!
+  359: Can’t build this underwater!
   360: Can only build this above ground!
   361: Can only build this on level land
   362: Load Game
@@ -392,7 +392,7 @@ strings:
   374: Can only be built on water if next to a water-based industry!
   375: Name {STRINGID}
   376: "Type new name for this {STRINGID}:"
-  377: Can't rename this vehicle...
+  377: Can’t rename this vehicle...
   378: Bridge needed
   379: Too far above ground for this bridge type
   380: Bridge is already at its maximum height above ground
@@ -400,12 +400,12 @@ strings:
   382: Bridge type unsuitable for this configuration
   383: Station Name
   384: "Type new name for {STRINGID} station:"
-  385: Can't rename station...
+  385: Can’t rename station...
   386: Invalid name for station
-  387: Can't move vehicle...
-  388: Can't reverse train...
-  389: Can't sell vehicle...
-  390: Can't sell {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}...
+  387: Can’t move vehicle...
+  388: Can’t reverse train...
+  389: Can’t sell vehicle...
+  390: Can’t sell {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}...
   391: "{STRINGID}"
   392: "{STRINGID}"
   393: "{STRINGID} station platform"
@@ -464,11 +464,11 @@ strings:
   442: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}Owned by {STRINGID}"
   443: "{MOVE_X 10}{STRINGID}"
   444: ✓{MOVE_X 10}{STRINGID}
-  445: Can't remove this...
+  445: Can’t remove this...
   446: Walls & Fences
   447: Plant Trees
-  448: Can't position this here...
-  449: Can't plant this here...
+  448: Can’t position this here...
+  449: Can’t plant this here...
   450: "{OUTLINE}{COLOUR WINDOW_2}{STRINGID}"
   451: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}Right-Click to Modify"
   452: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}Right-Click to Remove"
@@ -496,14 +496,14 @@ strings:
   474: Traveling{POP16}{POP16}
   475: "{STRINGID} - {STRINGID}"
   476: "{POP16}{POP16}{STRINGID}"
-  477: Can't lower water level here...
-  478: Can't raise water level here...
+  477: Can’t lower water level here...
+  478: Can’t raise water level here...
   479: (None)
   480: "{STRING}"
   481: "{COLOUR RED}Closed - - "
   482: "{COLOUR YELLOW}{STRINGID} - - "
   483: Land slope unsuitable
-  484: Can't build this underwater!
+  484: Can’t build this underwater!
   485: Land type not suitable
   486: "{COLOUR BLACK}▴"
   487: "{COLOUR BLACK}▾"
@@ -586,7 +586,7 @@ strings:
   564: Industry {INT16}
   565: "{SMALLFONT}{COLOUR BLACK}Rotate objects by 90°"
   566: Level land required
-  567: Can't change land type...
+  567: Can’t change land type...
   568: "{OUTLINE}{COLOUR GREEN}+ {CURRENCY32}"
   569: "{OUTLINE}{COLOUR RED}- {CURRENCY32}"
   570: "{OUTLINE}{COLOUR WINDOW_1}+ {CURRENCY32}"
@@ -602,7 +602,7 @@ strings:
   580: "{SMALLFONT}{COLOUR BLACK}Rotate 90°"
   581: "{STRINGID} in the way"
   582: "{CURRENCY32}"
-  583: Can't build this here...
+  583: Can’t build this here...
   584: "{DATE MY}"
   585: OpenLoco
   586: Please insert your Locomotion CD in the following drive:-
@@ -629,9 +629,9 @@ strings:
   607: "{CURRENCY48}"
   608: "{COLOUR WINDOW_2}Loan:"
   609: "{CURRENCY32}"
-  610: Can't borrow any more money!
+  610: Can’t borrow any more money!
   611: Not enough cash available!
-  612: Can't pay back loan!
+  612: Can’t pay back loan!
   613: "{SMALLFONT}{COLOUR BLACK}Start New Game"
   614: "{SMALLFONT}{COLOUR BLACK}Load Saved Game"
   615: "{SMALLFONT}{COLOUR BLACK}Show Tutorial"
@@ -1040,7 +1040,7 @@ strings:
   1013: Scenario already installed
   1014: "{OUTLINE}{COLOUR WINDOW_1}{STRINGID}"
   1015: "{OUTLINE}{COLOUR WINDOW_2}(Press a key or mouse button to take control)"
-  1016: Another instance of Chris Sawyer's Locomotion is already running
+  1016: Another instance of Chris Sawyer’s Locomotion is already running
 
   1017: Music Acknowledgments...
   1018: Music Acknowledgments
@@ -1051,15 +1051,15 @@ strings:
   1023: "{COLOUR BLACK}Allister Brimble (Trumpet played by Brian Moore)"
   1024: "{COLOUR WINDOW_2}Flying High"
   1025: "{COLOUR BLACK}Allister Brimble"
-  1026: "{COLOUR WINDOW_2}Gettin' On The Gas"
+  1026: "{COLOUR WINDOW_2}Gettin’ On The Gas"
   1027: "{COLOUR BLACK}Allister Brimble"
-  1028: "{COLOUR WINDOW_2}Jumpin' The Rails"
+  1028: "{COLOUR WINDOW_2}Jumpin’ The Rails"
   1029: "{COLOUR BLACK}Allister Brimble"
   1030: "{COLOUR WINDOW_2}Smooth Running"
   1031: "{COLOUR BLACK}Allister Brimble"
   1032: "{COLOUR WINDOW_2}Traffic Jam"
   1033: "{COLOUR BLACK}Allister Brimble"
-  1034: "{COLOUR WINDOW_2}Never Stop 'til You Get There"
+  1034: "{COLOUR WINDOW_2}Never Stop ’til You Get There"
   1035: "{COLOUR BLACK}Allister Brimble"
   1036: "{COLOUR WINDOW_2}Soaring Away"
   1037: "{COLOUR BLACK}Allister Brimble"
@@ -1079,7 +1079,7 @@ strings:
   1051: "{COLOUR BLACK}Scott Joplin (Performed by Peter James Adcock)"
   1052: "{COLOUR WINDOW_2}Setting Off"
   1053: "{COLOUR BLACK}Allister Brimble (Trumpet played by Brian Moore, Clarinet played by John Glanfield)"
-  1054: "{COLOUR WINDOW_2}A Traveller's Serenade"
+  1054: "{COLOUR WINDOW_2}A Traveller’s Serenade"
   1055: "{COLOUR BLACK}David Punshon"
   1056: "{COLOUR WINDOW_2}Latino Trip"
   1057: "{COLOUR BLACK}David Punshon"
@@ -1089,11 +1089,11 @@ strings:
   1061: "{COLOUR BLACK}David Punshon"
   1062: "{COLOUR WINDOW_2}The City Lights"
   1063: "{COLOUR BLACK}Allister Brimble"
-  1064: "{COLOUR WINDOW_2}Steamin' Down Town"
+  1064: "{COLOUR WINDOW_2}Steamin’ Down Town"
   1065: "{COLOUR BLACK}David Punshon"
   1066: "{COLOUR WINDOW_2}Bright Expectations"
   1067: "{COLOUR BLACK}Allister Brimble"
-  1068: "{COLOUR WINDOW_2}Mo' Station"
+  1068: "{COLOUR WINDOW_2}Mo’ Station"
   1069: "{COLOUR BLACK}John Broomhall"
   1070: "{COLOUR WINDOW_2}Far Out"
   1071: "{COLOUR BLACK}John Broomhall"
@@ -1101,9 +1101,9 @@ strings:
   1073: "{COLOUR BLACK}Allister Brimble"
   1074: "{COLOUR WINDOW_2}Get Me To Gladstone Bay"
   1075: "{COLOUR BLACK}Allister Brimble"
-  1076: "{COLOUR WINDOW_2}Chuggin' Along"
+  1076: "{COLOUR WINDOW_2}Chuggin’ Along"
   1077: "{COLOUR BLACK}Allister Brimble (Trumpet played by Brian Moore)"
-  1078: "{COLOUR WINDOW_2}Don't Lose Your Rag"
+  1078: "{COLOUR WINDOW_2}Don’t Lose Your Rag"
   1079: "{COLOUR BLACK}Allister Brimble"
   1080: "{COLOUR WINDOW_2}Sandy Track Blues"
   1081: "{COLOUR BLACK}Allister Brimble"
@@ -1148,8 +1148,8 @@ strings:
   1117: "{SMALLFONT}{COLOUR BLACK}Company challenge for this game"
   1118: "{COLOUR WINDOW_2}Special color schemes used for:"
   1119: "{SMALLFONT}{COLOUR BLACK}Select main color"
-  1120: '{SMALLFONT}{COLOUR BLACK}Select secondary color (used only on some vehicle types)'
-  1121: '{SMALLFONT}{COLOUR BLACK}Select whether to use a different color scheme for this type of vehicle'
+  1120: "{SMALLFONT}{COLOUR BLACK}Select secondary color (used only on some vehicle types)"
+  1121: "{SMALLFONT}{COLOUR BLACK}Select whether to use a different color scheme for this type of vehicle"
   1122: "{STRINGID} - Trains"
   1123: "{STRINGID} - Buses"
   1124: "{STRINGID} - Trucks"
@@ -1191,9 +1191,9 @@ strings:
   1160: Vehicle is stuck!
   1161: Not enough space, or vehicle in the way
   1162: Vehicle approaching, or in the way
-  1163: Can't place {POP16}{POP16}{POP16}{STRINGID} here...
-  1164: Can't remove {POP16}{POP16}{POP16}{STRINGID}...
-  1165: Can't pass signal at danger...
+  1163: Can’t place {POP16}{POP16}{POP16}{STRINGID} here...
+  1164: Can’t remove {POP16}{POP16}{POP16}{STRINGID}...
+  1165: Can’t pass signal at danger...
   1166: This vehicle requires {STRINGID}
   1167: Train has no vehicles!
   1168: Train has no driving cab
@@ -1212,8 +1212,8 @@ strings:
   1181: "{SMALLFONT}{COLOUR BLACK}Show vehicle routes on map"
   1182: "{SMALLFONT}{COLOUR BLACK}Show company ownership on map"
   1183: Station too spread out!
-  1184: Can't add {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID} to {STRINGID}...
-  1185: Can't build {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}...
+  1184: Can’t add {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID} to {STRINGID}...
+  1185: Can’t build {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}...
   1186: "{COLOUR BLACK}Select new vehicle"
   1187: "{COLOUR BLACK}Select vehicle to add to {STRINGID}"
   1188: "{SMALLFONT}{COLOUR BLACK}Build new train vehicles"
@@ -1256,7 +1256,7 @@ strings:
   1225: Unload all {STRINGID} {SPRITE}
   1226: Wait for full load of {STRINGID} {SPRITE}
   1227: "{COLOUR WINDOW_2}▶"
-  1228: Can't insert order...
+  1228: Can’t insert order...
   1229: "{COLOUR WINDOW_3}Click to insert new order to{NEWLINE}route through waypoint at this position"
   1230: "{COLOUR WINDOW_3}Click to insert new order to{NEWLINE}stop at {STRINGID}"
   1231: "{COLOUR WINDOW_3}Click again to change last order to{NEWLINE}route through {STRINGID}"
@@ -1339,7 +1339,7 @@ strings:
   1308: Town Name
   1309: "Type new name for {STRINGID}:"
   1310: "{COLOUR BLACK}{STRINGID} population {INT32}"
-  1311: Can't rename town...
+  1311: Can’t rename town...
   1312: New Station
   1313: "{COLOUR BLACK}({STRINGID})"
   1314: "{COLOUR WINDOW_2}Catchment Area{NEWLINE}  Accepts: "
@@ -1416,12 +1416,12 @@ strings:
   1385: "{COLOUR BLACK}No industries available"
   1386: "{SMALLFONT}{COLOUR BLACK}Town"
   1387: "{SMALLFONT}{COLOUR BLACK}Population graph"
-  1388: "{SMALLFONT}{COLOUR BLACK}Town's ratings of each company"
+  1388: "{SMALLFONT}{COLOUR BLACK}Town’s ratings of each company"
   1389: "{SMALLFONT}{COLOUR BLACK}Industry"
   1390: "{SMALLFONT}{COLOUR BLACK}Production graph"
   1391: "{COLOUR BLACK}{SMALLFONT}({STRINGID})"
   1392: "{SMALLFONT}{COLOUR BLACK}Completely demolish this town (and any nearby industries)"
-  1393: Can't remove town...
+  1393: Can’t remove town...
   1394: All stations near this town must be removed first
   1395: Too close to another town
   1396: Too many towns
@@ -1486,13 +1486,13 @@ strings:
   1455: "{COLOUR BLACK}(not yet constructed)"
   1456: Name Company
   1457: "Enter new company name:"
-  1458: Can't rename this company...
+  1458: Can’t rename this company...
   1459: Name Owner
   1460: "Enter new name for owner:"
-  1461: Can't change owner name...
+  1461: Can’t change owner name...
   1462: Headquarters
   1463: "{STRINGID} Headquarters"
-  1464: "{STRINGID} local authority won't allow removal of roads currently in use"
+  1464: "{STRINGID} local authority won’t allow removal of roads currently in use"
   1465: "{SMALLFONT}{COLOUR BLACK}Select company"
   1466: Two Player Game
   1467: Two Player Game - Options
@@ -1513,7 +1513,7 @@ strings:
   1482: "{COLOUR WINDOW_2}Disconnect"
   1483: Enter Host Address
   1484: "Enter the IP address or computer name of the host to connect to, or leave blank to search the local network:"
-  1485: "{COLOUR RED}Warning: You are connected to a different version of Chris Sawyer's Locomotion and two player game performance may not be reliable"
+  1485: "{COLOUR RED}Warning: You are connected to a different version of Chris Sawyer’s Locomotion and two player game performance may not be reliable"
 
   # Options
   1486: "{SMALLFONT}{COLOUR BLACK}Display options"
@@ -1566,7 +1566,7 @@ strings:
   1530: Water channel is currently needed by ships
   1531: Currently in use by at least one vehicle
   1532: "{SMALLFONT}{COLOUR BLACK}Refit vehicle to carry a different type of cargo"
-  1533: Can't refit this vehicle to carry a different type of cargo
+  1533: Can’t refit this vehicle to carry a different type of cargo
   1534: Requires water in front of dock
 
   1535: "{COLOUR WINDOW_2}Currently playing:"
@@ -1584,10 +1584,10 @@ strings:
   1547: "{COLOUR WINDOW_2}Volume:"
   1548: "{SMALLFONT}{COLOUR BLACK}Set music volume"
   1549: Music Options
-  1550: Select Owner's Face for {STRINGID}
+  1550: Select Owner’s Face for {STRINGID}
   1551: "{SMALLFONT}{COLOUR BLACK}Click to select company/owner face"
   1552: Already selected for another company
-  1553: Can't select face...
+  1553: Can’t select face...
   1554: airports
   1555: docks
   1556: "{COLOUR WINDOW_2}Company started: {COLOUR BLACK}{DATE MY}"
@@ -1618,7 +1618,7 @@ strings:
   1581: Load Landscape
   1582: Save Landscape
   1583: Generating landscape...
-  1584: Can't clear entire area...
+  1584: Can’t clear entire area...
   1585: Landscape Generation - Options
   1586: Landscape Generation - Land
   1587: Landscape Generation - Forests
@@ -1631,14 +1631,14 @@ strings:
   1594: "{SMALLFONT}{COLOUR BLACK}Industry generation options"
 
   1595: "[None]"
-  1596: Chuggin' Along
+  1596: Chuggin’ Along
   1597: Long Dusty Road
   1598: Flying High
-  1599: Gettin' On The Gas
-  1600: Jumpin' The Rails
+  1599: Gettin’ On The Gas
+  1600: Jumpin’ The Rails
   1601: Smooth Running
   1602: Traffic Jam
-  1603: Never Stop 'til You Get There
+  1603: Never Stop ’til You Get There
   1604: Soaring Away
   1605: Techno Torture
   1606: Everlasting High-Rise
@@ -1648,14 +1648,14 @@ strings:
   1610: The Ragtime Dance
   1611: Easy Winners
   1612: Setting Off
-  1613: A Traveller's Serenade
+  1613: A Traveller’s Serenade
   1614: Latino Trip
   1615: A Good Head Of Steam
   1616: Hop To The Bop
   1617: The City Lights
-  1618: Steamin' Down Town
+  1618: Steamin’ Down Town
   1619: Bright Expectations
-  1620: Mo' Station
+  1620: Mo’ Station
   1621: Far Out
   1622: Running On Time
   1623: Get Me To Gladstone Bay
@@ -1708,8 +1708,8 @@ strings:
   1669: High
   1670: "{COLOUR WINDOW_2}No. of industries:"
   1671: At least one town needs to be built
-  1672: Can't advance to next editor stage...
-  1673: Can't save scenario yet...
+  1672: Can’t advance to next editor stage...
+  1673: Can’t save scenario yet...
   1674: "{SMALLFONT}{COLOUR BLACK}Scenario options"
   1675: "{SMALLFONT}{COLOUR BLACK}Scenario challenge"
   1676: "{SMALLFONT}{COLOUR BLACK}Company options"
@@ -1837,7 +1837,7 @@ strings:
   1798: "{SMALLFONT}{COLOUR BLACK}Payment for transporting {INT16} units of cargo a distance of {INT16} blocks"
   1799: "{SMALLFONT}{COLOUR BLACK}Transit time"
   1800: "*  Paused  *"
-  1801: Town authority won't allow another airport to be constructed here
+  1801: Town authority won’t allow another airport to be constructed here
   1802: Towns
   1803: Industries
   1804: Roads
@@ -1869,7 +1869,7 @@ strings:
   1830: "{COLOUR BLACK}{STRINGID} transported {INT16} blocks in {INT16} days = {CURRENCY32}"
   1831: "{COLOUR WINDOW_2} Earliest construction year: {COLOUR BLACK}{UINT16 RAW}"
   1832: "{COLOUR WINDOW_2} Latest construction year: {COLOUR BLACK}{UINT16 RAW}"
-  1833: "{COLOUR WINDOW_2}Local authority's ratings of transport companies:"
+  1833: "{COLOUR WINDOW_2}Local authority’s ratings of transport companies:"
   1834: Appalling
   1835: Poor
   1836: Average
@@ -1923,47 +1923,47 @@ strings:
   1881: "Tutorial 3: Building a rail service between two towns"
 
   # Tutorial 1
-  1882: "{SMALLFONT}{COLOUR BLACK}We're going to build a bus service to transport passengers within a town, so the first step is to choose a town..."
+  1882: "{SMALLFONT}{COLOUR BLACK}We’re going to build a bus service to transport passengers within a town, so the first step is to choose a town..."
   1883: "{SMALLFONT}{COLOUR BLACK}Move the mouse with the right mouse button held down to scroll the view to take a look at the towns..."
   1884: "{SMALLFONT}{COLOUR BLACK}Boulders Bay is the largest town, so will produce the most passengers. Zoom in using the mouse scroll wheel or the zoom icon..."
   1885: "{SMALLFONT}{COLOUR BLACK}All road-based construction is done using the road construction window..."
-  1886: "{SMALLFONT}{COLOUR BLACK}We don't need any new roads in the town for our bus service, just bus stop stations..."
+  1886: "{SMALLFONT}{COLOUR BLACK}We don’t need any new roads in the town for our bus service, just bus stop stations..."
   1887: "{SMALLFONT}{COLOUR BLACK}Our bus service will go from one side of town to the other..."
   1888: "{SMALLFONT}{COLOUR BLACK}The area highlighted in blue is the catchment area of the station. The more buildings in the catchment area the more passengers will use your station..."
-  1889: "{SMALLFONT}{COLOUR BLACK}Check the station position accepts passengers otherwise you won't be able to unload them and won't be paid. Watch the “Catchment Area” text at the bottom of the construction window..."
-  1890: "{SMALLFONT}{COLOUR BLACK}When you're happy with the location, click the left mouse button to build the station..."
-  1891: "{SMALLFONT}{COLOUR BLACK}We'll build the second station at the opposite side of town..."
+  1889: "{SMALLFONT}{COLOUR BLACK}Check the station position accepts passengers otherwise you won’t be able to unload them and won’t be paid. Watch the “Catchment Area” text at the bottom of the construction window..."
+  1890: "{SMALLFONT}{COLOUR BLACK}When you’re happy with the location, click the left mouse button to build the station..."
+  1891: "{SMALLFONT}{COLOUR BLACK}We’ll build the second station at the opposite side of town..."
   1892: "{SMALLFONT}{COLOUR BLACK}Now we need to purchase a bus..."
-  1893: "{SMALLFONT}{COLOUR BLACK}We have a choice of two bus types. Let's choose the newer design which carries more passengers..."
+  1893: "{SMALLFONT}{COLOUR BLACK}We have a choice of two bus types. Let’s choose the newer design which carries more passengers..."
   1894: "{SMALLFONT}{COLOUR BLACK}Move the mouse cursor to position the bus on a road and click the left mouse button to place it..."
   1895: "{SMALLFONT}{COLOUR BLACK}Before we set the bus going it needs to know where to go to. Select the route details tab on the vehicle window..."
   1896: "{SMALLFONT}{COLOUR BLACK}To set the route, just click on the stations in the view..."
   1897: "{SMALLFONT}{COLOUR BLACK}Now we can set the bus going..."
-  1898: "{SMALLFONT}{COLOUR BLACK}Let's watch it pick up its first passengers..."
+  1898: "{SMALLFONT}{COLOUR BLACK}Let’s watch it pick up its first passengers..."
 
   # Tutorial 2
-  1899: "{SMALLFONT}{COLOUR BLACK}We're going to build a bus service to transport passengers between Boulder Bay and Breakers Bridge. As there are no roads linking the towns, we'll need to build one..."
+  1899: "{SMALLFONT}{COLOUR BLACK}We’re going to build a bus service to transport passengers between Boulder Bay and Breakers Bridge. As there are no roads linking the towns, we’ll need to build one..."
   1900: "{SMALLFONT}{COLOUR BLACK}Select the orientation of the new section of road, and click on the view to start construction..."
-  1901: "{SMALLFONT}{COLOUR BLACK}Clicking the 'build this' icon will add more road sections of the same type..."
-  1902: "{SMALLFONT}{COLOUR BLACK}Before continuing, here's a quicker way of starting road construction..."
+  1901: "{SMALLFONT}{COLOUR BLACK}Clicking the ‘build this’ icon will add more road sections of the same type..."
+  1902: "{SMALLFONT}{COLOUR BLACK}Before continuing, here’s a quicker way of starting road construction..."
   1903: "{SMALLFONT}{COLOUR BLACK}Just click the right mouse button on the end of the road you want to extend..."
   1904: "{SMALLFONT}{COLOUR BLACK}We need to turn left here, so select a left hand curve..."
   1905: "{SMALLFONT}{COLOUR BLACK}And now back to building straight again..."
-  1906: "{SMALLFONT}{COLOUR BLACK}That's the road built, now for the stations..."
-  1907: "{SMALLFONT}{COLOUR BLACK}And finally we'll purchase a bus and set it going..."
-  1908: "{SMALLFONT}{COLOUR BLACK}This could be quite a busy route, so we'll buy a second bus as well..."
-  1909: "{SMALLFONT}{COLOUR BLACK}To quickly copy Bus 1's entire route to Bus 2, just click on Bus 1's 'end of route list' text..."
+  1906: "{SMALLFONT}{COLOUR BLACK}That’s the road built, now for the stations..."
+  1907: "{SMALLFONT}{COLOUR BLACK}And finally we’ll purchase a bus and set it going..."
+  1908: "{SMALLFONT}{COLOUR BLACK}This could be quite a busy route, so we’ll buy a second bus as well..."
+  1909: "{SMALLFONT}{COLOUR BLACK}To quickly copy Bus 1’s entire route to Bus 2, just click on Bus 1’s ‘end of route list’ text..."
 
   # Tutorial 3
-  1910: "{SMALLFONT}{COLOUR BLACK}Let's start by building a rail passenger service between the two largest towns..."
-  1911: "{SMALLFONT}{COLOUR BLACK}Rail stations can only be built on straight track and need to be long enough for our train - This is where we'll build one station in a few minutes..."
+  1910: "{SMALLFONT}{COLOUR BLACK}Let’s start by building a rail passenger service between the two largest towns..."
+  1911: "{SMALLFONT}{COLOUR BLACK}Rail stations can only be built on straight track and need to be long enough for our train - This is where we’ll build one station in a few minutes..."
   1912: "{SMALLFONT}{COLOUR BLACK}Now to build the stations..."
   1913: "{SMALLFONT}{COLOUR BLACK}Now to build the train. We will need a locomotive to pull the train and carriages to carry the passengers..."
-  1914: "{SMALLFONT}{COLOUR BLACK}Because the track is just a single line, there's no need to set up a route - Just start the train..."
-  1915: "{SMALLFONT}{COLOUR BLACK}Let's extend the track to create a junction and spur to the third town. Right-clicking the track opens the track construction window ready to build a junction..."
+  1914: "{SMALLFONT}{COLOUR BLACK}Because the track is just a single line, there’s no need to set up a route - Just start the train..."
+  1915: "{SMALLFONT}{COLOUR BLACK}Let’s extend the track to create a junction and spur to the third town. Right-clicking the track opens the track construction window ready to build a junction..."
   1916: "{SMALLFONT}{COLOUR BLACK}Because the track layout is no longer simple we need to give our train a route..."
   1917: "{SMALLFONT}{COLOUR BLACK}We could now add a second train, but first we need to build signals to prevent train collisions..."
-  1918: "{SMALLFONT}{COLOUR BLACK}The signals divide the track into 3 separate 'block sections' and only one train will be allowed to enter each section at once..."
+  1918: "{SMALLFONT}{COLOUR BLACK}The signals divide the track into 3 separate ‘block sections’ and only one train will be allowed to enter each section at once..."
 
   # Options/Misc
   1919: Use preferred owner name when starting a new game
@@ -1987,7 +1987,7 @@ strings:
   1934: the other player
   1935: "The other player has exited the game: Two player mode has been disconnected"
 
-  1936: "{COLOUR YELLOW}Use of this product is subject to the terms of a license agreement{NEWLINE}found in the product's “ReadMe” file and in the manual"
+  1936: "{COLOUR YELLOW}Use of this product is subject to the terms of a license agreement{NEWLINE}found in the product’s “ReadMe” file and in the manual"
   1937: "{COLOUR YELLOW}ESRB Notice: Game experience may change during online play"
   1938: "{COLOUR TOPAZ}Some forms of transport in this game have names that may be similar to those of real vehicles."
   1939: "{COLOUR TOPAZ}This is a device to help players relate to the fictional universe of the game."
@@ -2072,7 +2072,7 @@ strings:
   2016: "Error: Invalid filename"
   2017: Industry Name
   2018: "Enter new name for {STRINGID}:"
-  2019: Can't rename industry...
+  2019: Can’t rename industry...
   2020: "{NEWLINE 0 1}{SPRITE}{SMALLFONT}{NEWLINE 45 1}Max. speed: {STRINGID}{NEWLINE 45 11}Height limit: {HEIGHT}"
   2021: Duplicate CD Keys found - Unable to connect!
   2022: "{COLOUR BLACK}{SMALLFONT}(Computer Name = {STRINGID})"
@@ -2143,7 +2143,7 @@ strings:
   2087: list of objects
   2088: "Missing object data, ID: "
   2089: Export plug-in objects with saved games
-  2090: "{SMALLFONT}{COLOUR BLACK}Select whether to save any additional plug-in object data required (add-in data not supplied with the main product) in saved game or scenario files, allowing them to be loaded by someone who doesn't have the additional object data"
+  2090: "{SMALLFONT}{COLOUR BLACK}Select whether to save any additional plug-in object data required (add-in data not supplied with the main product) in saved game or scenario files, allowing them to be loaded by someone who doesn’t have the additional object data"
   2091: At least one generic dual direction road type must be selected
   2092: A scaffolding type must be selected
   2093: Advanced
