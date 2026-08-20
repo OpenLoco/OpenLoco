@@ -2036,7 +2036,7 @@ strings:
   1982: "{COLOUR WINDOW_2}"
 
   1983: Distância por Unidades de Carga Entregues por Mês
-  1984: "{SMALLFONT}{COLOUR BLACK}Cráficos de carga por distância entregues por cada companhia"
+  1984: "{SMALLFONT}{COLOUR BLACK}Gráficos de carga por distância entregues por cada companhia"
   1985: "{COLOUR WINDOW_2}Velocidade média do último trajeto: {COLOUR BLACK}{VELOCITY}"
   1986: terra
   1987: ar
