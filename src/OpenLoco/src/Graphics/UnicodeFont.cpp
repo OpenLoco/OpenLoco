@@ -8,6 +8,7 @@
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Platform/Platform.h>
 #include <algorithm>
+#include <cmath>
 #include <cstdint>
 #include <cstdlib>
 #include <fstream>
@@ -271,13 +272,17 @@ namespace OpenLoco::Gfx::UnicodeFont
         }
 
         const int rasterHeight = loaded->nativePx > 0 ? loaded->nativePx : pixelHeight;
-        const float scale = stbtt_ScaleForPixelHeight(&loaded->info, static_cast<float>(rasterHeight));
+        // Pixel fonts are drawn to the em square. ScaleForPixelHeight also
+        // fits unused descent, which squashes Hangul.
+        const float scale = loaded->nativePx > 0
+            ? stbtt_ScaleForMappingEmToPixels(&loaded->info, static_cast<float>(rasterHeight))
+            : stbtt_ScaleForPixelHeight(&loaded->info, static_cast<float>(rasterHeight));
 
         int advanceWidth = 0;
         int leftSideBearing = 0;
         stbtt_GetCodepointHMetrics(&loaded->info, static_cast<int>(codepoint), &advanceWidth, &leftSideBearing);
         (void)leftSideBearing;
-        glyph.advanceWidth = static_cast<int16_t>(std::max(1, static_cast<int>(advanceWidth * scale + 0.5f)));
+        glyph.advanceWidth = static_cast<int16_t>(std::max(1, static_cast<int>(std::lround(advanceWidth * scale))));
 
         int ascent = 0;
         stbtt_GetFontVMetrics(&loaded->info, &ascent, nullptr, nullptr);
@@ -295,7 +300,7 @@ namespace OpenLoco::Gfx::UnicodeFont
         glyph.width = static_cast<int16_t>(w);
         glyph.height = static_cast<int16_t>(h);
         glyph.xOffset = static_cast<int16_t>(xoff);
-        glyph.yOffset = static_cast<int16_t>(ascent * scale + yoff + 0.5f);
+        glyph.yOffset = static_cast<int16_t>(std::lround(ascent * scale + yoff));
         glyph.pixels.resize(static_cast<std::size_t>(w) * static_cast<std::size_t>(h));
         for (int i = 0; i < w * h; ++i)
         {
