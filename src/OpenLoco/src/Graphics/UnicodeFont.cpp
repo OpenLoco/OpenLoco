@@ -9,6 +9,7 @@
 #include <OpenLoco/Platform/Platform.h>
 #include <algorithm>
 #include <cstdint>
+#include <cstdlib>
 #include <fstream>
 #include <memory>
 #include <unordered_map>
@@ -54,6 +55,7 @@ namespace OpenLoco::Gfx::UnicodeFont
         stbtt_fontinfo info{};
         bool preferHangul = false;
         bool preferCjk = false;
+        int nativePx = 0;
     };
 
     static std::vector<LoadedFont> _fonts;
@@ -100,7 +102,7 @@ namespace OpenLoco::Gfx::UnicodeFont
         return Environment::getPathNoWarning(Environment::PathId::languageFiles).parent_path() / "fonts";
     }
 
-    static void tryLoadFontFile(const fs::path& path, bool preferHangul, bool preferCjk)
+    static void tryLoadFontFile(const fs::path& path, bool preferHangul, bool preferCjk, int nativePx = 0)
     {
         std::ifstream in(path, std::ios::binary);
         if (!in)
@@ -137,6 +139,7 @@ namespace OpenLoco::Gfx::UnicodeFont
             font.data = data;
             font.preferHangul = preferHangul;
             font.preferCjk = preferCjk;
+            font.nativePx = nativePx;
             if (stbtt_InitFont(&font.info, font.data->data(), offset) != 0)
             {
                 Logging::info("Loaded Unicode font: {}", path.filename().string());
@@ -154,6 +157,9 @@ namespace OpenLoco::Gfx::UnicodeFont
         _initialised = true;
 
         const auto bundled = bundledFontsDir();
+        tryLoadFontFile(bundled / "Galmuri7.ttf", true, false, 8);
+        tryLoadFontFile(bundled / "Galmuri9.ttf", true, false, 10);
+        tryLoadFontFile(bundled / "Galmuri14.ttf", true, false, 15);
         tryLoadFontFile(bundled / "A2Z-Bold.ttf", true, false);
 #ifdef _WIN32
         const bool hasHangulFont = std::any_of(_fonts.begin(), _fonts.end(), [](const LoadedFont& font) { return font.preferHangul; });
@@ -195,7 +201,7 @@ namespace OpenLoco::Gfx::UnicodeFont
         }
     }
 
-    static const LoadedFont* findFontWithGlyph(uint32_t codepoint)
+    static const LoadedFont* findFontWithGlyph(uint32_t codepoint, int pixelHeight)
     {
         initialise();
         const bool wantHangul = isHangul(codepoint);
@@ -207,12 +213,24 @@ namespace OpenLoco::Gfx::UnicodeFont
 
         if (wantHangul)
         {
+            const LoadedFont* best = nullptr;
+            int bestDist = 1000;
             for (const auto& font : _fonts)
             {
-                if (font.preferHangul && hasGlyph(font))
+                if (!font.preferHangul || !hasGlyph(font))
                 {
-                    return &font;
+                    continue;
                 }
+                const int dist = font.nativePx > 0 ? std::abs(font.nativePx - pixelHeight) : 50;
+                if (dist < bestDist)
+                {
+                    best = &font;
+                    bestDist = dist;
+                }
+            }
+            if (best != nullptr)
+            {
+                return best;
             }
         }
         if (wantCjk)
@@ -244,15 +262,16 @@ namespace OpenLoco::Gfx::UnicodeFont
         }
 
         Glyph glyph;
-        const auto* loaded = findFontWithGlyph(codepoint);
+        const int pixelHeight = pixelHeightFor(font);
+        const auto* loaded = findFontWithGlyph(codepoint, pixelHeight);
         if (loaded == nullptr)
         {
             glyph.advanceWidth = getCharacterWidth(font, '?');
             return _glyphCache.emplace(key, std::move(glyph)).first->second;
         }
 
-        const int pixelHeight = pixelHeightFor(font);
-        const float scale = stbtt_ScaleForPixelHeight(&loaded->info, static_cast<float>(pixelHeight));
+        const int rasterHeight = loaded->nativePx > 0 ? loaded->nativePx : pixelHeight;
+        const float scale = stbtt_ScaleForPixelHeight(&loaded->info, static_cast<float>(rasterHeight));
 
         int advanceWidth = 0;
         int leftSideBearing = 0;
