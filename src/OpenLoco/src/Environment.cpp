@@ -69,6 +69,26 @@ namespace OpenLoco::Environment
                 return path;
             }
         }
+#ifndef _WIN32
+        // Relative to the user's home directory: Steam, and Heroic Games Launcher (covers GOG installs on Linux).
+        auto home = fs::path(Platform::getEnvironmentVariable("HOME"));
+        if (!home.empty())
+        {
+            static constexpr const char* kHomeSearchPaths[] = {
+                ".local/share/Steam/steamapps/common/Locomotion",
+                "Games/Heroic/Locomotion",
+            };
+            for (auto relativePath : kHomeSearchPaths)
+            {
+                auto path = home / relativePath;
+                if (validateLocoInstallPath(path))
+                {
+                    Logging::info("  found: {}", path);
+                    return path;
+                }
+            }
+        }
+#endif
         return fs::path();
     }
 
