@@ -188,16 +188,16 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
     // 0x43944B
     static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
     {
-        const bool infoPanelsOnTop = Config::get().infoPanelsOnTop;
-
         Widget& frame = window.widgets[widx::outer_frame];
-        auto offsetY = infoPanelsOnTop ? -2 : 0;
-        drawingCtx.drawRect(frame.left, frame.top + offsetY, frame.width(), frame.height() - offsetY, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(frame.left, frame.top, frame.width(), frame.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
 
         // Draw widgets.
         window.draw(drawingCtx);
 
-        drawingCtx.drawRectInset(frame.left + 1, frame.top + 1 + offsetY, frame.width() - 2, frame.height() - 2 - offsetY, window.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
+        const bool infoPanelsOnTop = Config::get().infoPanelsOnTop;
+        auto offsetY = infoPanelsOnTop ? -2 : 1;
+        auto height = infoPanelsOnTop ? 0 : -2;
+        drawingCtx.drawRectInset(frame.left + 1, frame.top + offsetY, frame.width() - 2, frame.height() + height, window.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
         auto playerCompany = CompanyManager::get(CompanyManager::getControllingId());
         auto competitor = ObjectManager::get<CompetitorObject>(playerCompany->competitorId);
