@@ -1248,17 +1248,17 @@ strings:
   1218: "{COLOUR BLACK}- - 경로 없음 - -"
   1219: "{COLOUR BLACK}- - 경로 목록 끝 - -"
   1220: "{STRINGID}에 정차"
-  1221: "{STRINGID}를 지나감"
-  1222: 경유지 통과 중
-  1223: "{STRINGID}에서 모두 하차 중 {SPRITE}"
-  1224: "{STRINGID}에서 모무 적재 중 {SPRITE}"
-  1225: "{STRINGID}에서 모두 하차 중 {SPRITE}"
-  1226: "{STRINGID}에서 모무 적재 중 {SPRITE}"
+  1221: "{STRINGID}을(를) 통과"
+  1222: 경유지 통과
+  1223: "{STRINGID}을(를) 모두 내림 {SPRITE}"
+  1224: "{STRINGID} 만차까지 대기 {SPRITE}"
+  1225: "{STRINGID}을(를) 모두 내림 {SPRITE}"
+  1226: "{STRINGID} 만차까지 대기 {SPRITE}"
   1227: "{COLOUR WINDOW_2}▶"
   1228: 경로를 삽입할 수 없습니다...
   1229: "{COLOUR WINDOW_3}여기에 있는 경유지를 통과하는{NEWLINE}새로운 경로를 삽입하려면 클릭하세요"
   1230: "{COLOUR WINDOW_3}클릭해서 새 명령을 삽입:{NEWLINE}{STRINGID}에 정차"
-  1231: "{COLOUR WINDOW_3}마지막 경로를 {STRINGID}(을)를 통과하는{NEWLINE}경로로 바꾸려면 클릭하세요"
+  1231: "{COLOUR WINDOW_3}다시 클릭하면 마지막 명령을{NEWLINE}{STRINGID} 통과로 바꿉니다"
   1232: "{SMALLFONT}{COLOUR BLACK}화물을 가득 싣도록 하는 경로를 삽입합니다"
   1233: "{SMALLFONT}{COLOUR BLACK}역에서 화물을 받지 않아도, 강제로 화물을 모두 내리도록 하는 경로를 삽입합니다"
   1234: "{SMALLFONT}{COLOUR BLACK}목록의 다음 경로로 넘어갑니다"
@@ -1287,7 +1287,7 @@ strings:
   1257: "{NEWLINE}{COLOUR WINDOW_2} 용량: {COLOUR BLACK}{STRINGID}"
   1258: " + {STRINGID}"
   1259: " (경사로에 + {STRINGID})"
-  1260: " ({VELOCITY} on {STRINGID})"
+  1260: " ({VELOCITY}, {STRINGID})"
   1261: 또는 {STRINGID}
   1262: "{NEWLINE}{COLOUR WINDOW_2} 유지비: {COLOUR BLACK}{CURRENCY32}/월"
   1263: " (개조 가능)"
