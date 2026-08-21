@@ -272,6 +272,7 @@ namespace OpenLoco::EditorController
                 break;
         }
 
+        Gui::resize();
         Gfx::invalidateScreen();
     }
 
@@ -446,6 +447,7 @@ namespace OpenLoco::EditorController
                 break;
         }
 
+        Gui::resize();
         Gfx::invalidateScreen();
     }
 
