@@ -64,11 +64,11 @@ namespace OpenLoco::Ui::Windows::TimePanel
         Widgets::Wt3Widget(Widx::kOuterFrame, { 0, 0 }, { 140, 29 }, WindowColour::primary),
         Widgets::Wt3Widget(Widx::kInnerFrame, { 2, 2 }, { 136, 25 }, WindowColour::primary),
         Widgets::ImageButton(Widx::kMapChatMenu, { 113, 1 }, { 26, 26 }, WindowColour::primary),
-        Widgets::ImageButton(Widx::kDateBtn, { 2, 2 }, { 111, 12 }, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_daymonthyear_challenge),
-        Widgets::ImageButton(Widx::kPauseBtn, { 18, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_pause, StringIds::tooltip_speed_pause),
-        Widgets::ImageButton(Widx::kNormalSpeedBtn, { 38, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_normal, StringIds::tooltip_speed_normal),
-        Widgets::ImageButton(Widx::kFastForwardBtn, { 58, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),
-        Widgets::ImageButton(Widx::kExtraFastForwardBtn, { 78, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_extra_fast_forward, StringIds::tooltip_speed_extra_fast_forward));
+        Widgets::ImageButton(Widx::kDateBtn, { 2, 1 }, { 111, 12 }, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_daymonthyear_challenge),
+        Widgets::ImageButton(Widx::kPauseBtn, { 18, 14 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_pause, StringIds::tooltip_speed_pause),
+        Widgets::ImageButton(Widx::kNormalSpeedBtn, { 38, 14 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_normal, StringIds::tooltip_speed_normal),
+        Widgets::ImageButton(Widx::kFastForwardBtn, { 58, 14 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),
+        Widgets::ImageButton(Widx::kExtraFastForwardBtn, { 78, 14 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_extra_fast_forward, StringIds::tooltip_speed_extra_fast_forward));
 
     static const WindowEventList& getEvents();
 
