@@ -90,14 +90,14 @@ namespace OpenLoco::Gui
         if (companyInfo)
         {
             companyInfo->y = infoPanelsOnTop ? 0 : uiHeight - companyInfo->height;
-            companyInfo->x = infoPanelsJuxtaposed ? topToolbar->x - companyInfo->width - 5 : 0;
+            companyInfo->x = infoPanelsJuxtaposed ? topToolbar->x - companyInfo->width - 10 : 0;
         }
 
         auto* timeInfo = WindowManager::find(WindowType::timePanel);
         if (timeInfo)
         {
             timeInfo->y = infoPanelsOnTop ? 0 : uiHeight - timeInfo->height;
-            timeInfo->x = infoPanelsJuxtaposed ? topToolbar->x + topToolbar->width + 5 : std::max(uiWidth, 640) - timeInfo->width;
+            timeInfo->x = infoPanelsJuxtaposed ? topToolbar->x + topToolbar->width + 10 : std::max(uiWidth, 640) - timeInfo->width;
         }
     }
 
