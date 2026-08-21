@@ -354,7 +354,6 @@ jobs:
     needs: check-code-formatting
     container:
       image: ghcr.io/openloco/openloco:12-ubuntu26.04.vcpkg
-      options: --device /dev/fuse
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -365,10 +364,6 @@ jobs:
         uses: ammaraskar/gcc-problem-matcher@master
       - name: Workaround git permissions issue
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
-      - name: Install FUSE
-        run: |
-          apt-get update -qq
-          apt-get install -y -qq --no-install-recommends fuse
       - name: Setup cache env vars
         run: |
           echo "VCPKG_DEFAULT_BINARY_CACHE=$GITHUB_WORKSPACE/vcpkg-cache" >> "$GITHUB_ENV"
@@ -398,7 +393,7 @@ jobs:
           path: vcpkg-cache
           key: ${{ runner.os }}-vcpkg-ubuntu26.04.vcpkg-${{ steps.vcpkg_baseline.outputs.sha }}-${{ hashFiles('vcpkg.json') }}-${{ hashFiles('vcpkg-cache/**') }}
       - name: Smoke test
-        run: ./build/linux-vcpkg-static/dist/OpenLoco-*-linux-x64.AppImage --version
+        run: ./build/linux-vcpkg-static/dist/OpenLoco-*-linux-x64.AppImage --appimage-extract-and-run --version
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
