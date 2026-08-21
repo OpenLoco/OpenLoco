@@ -1,0 +1,4 @@
+#!/bin/sh
+# Bundled data is located relative to the executable, so no path manipulation is needed.
+DIR="$(dirname "$(readlink -f "$0")")"
+exec -a OpenLoco "$DIR/usr/bin/OpenLoco" "$@"

@@ -347,6 +347,66 @@ jobs:
           path: artifacts/OpenLoco-linux-x64-glibc2.43.tar.gz
           archive: false
           if-no-files-found: error
+
+  appimage:
+    name: Linux x64 AppImage
+    runs-on: ubuntu-latest
+    needs: check-code-formatting
+    container:
+      image: ghcr.io/openloco/openloco:12-ubuntu26.04.vcpkg
+      options: --device /dev/fuse
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: true
+      - name: Install GCC problem matcher
+        uses: ammaraskar/gcc-problem-matcher@master
+      - name: Workaround git permissions issue
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - name: Install FUSE
+        run: |
+          apt-get update -qq
+          apt-get install -y -qq --no-install-recommends fuse
+      - name: Setup cache env vars
+        run: |
+          echo "VCPKG_DEFAULT_BINARY_CACHE=$GITHUB_WORKSPACE/vcpkg-cache" >> "$GITHUB_ENV"
+      - name: Setup cache directories
+        run: mkdir -p "$GITHUB_WORKSPACE/vcpkg-cache"
+      - name: Get vcpkg baseline
+        id: vcpkg_baseline
+        run: |
+          sha=$(sed -n 's/^set(VCPKG_GIT_TAG[[:space:]]*\([0-9a-f]*\)).*/\1/p' CMakeLists.txt)
+          test -n "$sha" || { echo "VCPKG_GIT_TAG not found in CMakeLists.txt" >&2; exit 1; }
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+      - name: Restore binary cache
+        uses: actions/cache/restore@v6
+        with:
+          path: vcpkg-cache
+          key: ${{ runner.os }}-vcpkg-ubuntu26.04.vcpkg-${{ steps.vcpkg_baseline.outputs.sha }}-${{ hashFiles('vcpkg.json') }}
+          restore-keys: |
+            ${{ runner.os }}-vcpkg-ubuntu26.04.vcpkg-${{ steps.vcpkg_baseline.outputs.sha }}-
+      - name: Build AppImage
+        run: |
+          cmake --preset linux-vcpkg-static -DOPENLOCO_BUILD_TESTS=OFF -DOPENLOCO_BUILD_APPIMAGE=ON
+          cmake --build --preset linux-vcpkg-static --target appimage
+      - name: Save binary cache
+        if: always()
+        uses: actions/cache/save@v6
+        with:
+          path: vcpkg-cache
+          key: ${{ runner.os }}-vcpkg-ubuntu26.04.vcpkg-${{ steps.vcpkg_baseline.outputs.sha }}-${{ hashFiles('vcpkg.json') }}-${{ hashFiles('vcpkg-cache/**') }}
+      - name: Smoke test
+        run: ./build/linux-vcpkg-static/dist/OpenLoco-*-linux-x64.AppImage --version
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: OpenLoco-linux-x64-AppImage
+          path: build/linux-vcpkg-static/dist/OpenLoco-*-linux-x64.AppImage
+          archive: false
+          if-no-files-found: error
+
   macos:
     name: macOS Sequoia ARM64 vcpkg
     runs-on: macos-15

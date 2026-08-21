@@ -96,6 +96,7 @@ include(OpenLocoUtility)
 option(STRICT "Build with warnings as errors" YES)
 option(OPENLOCO_BUILD_TESTS "Build tests" YES)
 option(OPENLOCO_HEADER_CHECK "Verify all public interfaces are standalone" NO)
+option(OPENLOCO_BUILD_APPIMAGE "Build a Linux x86_64 AppImage (custom target 'appimage')" OFF)
 
 if (APPLE)
     # Enable the use of e.g. std::execution::par
@@ -169,4 +170,8 @@ endif()
 if (NOT APPLE)
     install(DIRECTORY "data/" DESTINATION "${CMAKE_INSTALL_BINDIR}/data")
     install(DIRECTORY "${openloco_objects_SOURCE_DIR}" DESTINATION "${CMAKE_INSTALL_BINDIR}/data/objects")
+endif()
+
+if (OPENLOCO_BUILD_APPIMAGE)
+    include(OpenLocoAppImage)
 endif()
