@@ -17,10 +17,10 @@ Includes all git commit authors. Aliases are GitHub user names.
 * Joe Bloomfield (Svelbeard)
 * LeeSpork
 * Kelson Blakewood (spacek531)
- * luciditee
- * killerdevildog
- * ravsmedstrom
- * ben-leone
+* luciditee
+* killerdevildog
+* ravsmedstrom
+* ben-leone
 
 ## Bugfixes
 * seifer7
