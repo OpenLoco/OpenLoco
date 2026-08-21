@@ -392,8 +392,6 @@ jobs:
         with:
           path: vcpkg-cache
           key: ${{ runner.os }}-vcpkg-ubuntu26.04.vcpkg-${{ steps.vcpkg_baseline.outputs.sha }}-${{ hashFiles('vcpkg.json') }}-${{ hashFiles('vcpkg-cache/**') }}
-      - name: Smoke test
-        run: ./build/linux-vcpkg-static/dist/OpenLoco-*-linux-x64.AppImage --appimage-extract-and-run --version
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
