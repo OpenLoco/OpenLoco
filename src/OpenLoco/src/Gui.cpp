@@ -49,21 +49,25 @@ namespace OpenLoco::Gui
 
     static void resizeEditorScene(const int32_t uiWidth, const int32_t uiHeight)
     {
-        const bool infoPanelsOnTop = Config::get().infoPanelsOnTop && uiWidth > 640;
-
         using Windows::EditorStepController::StepDirection;
+
+        auto* topToolbar = WindowManager::find(WindowType::topToolbar);
+
+        const bool infoPanelsOnTop = Config::get().infoPanelsOnTop && uiWidth > 640;
+        const bool infoPanelsJuxtaposed = infoPanelsOnTop && Config::get().infoPanelsJuxtaposed && topToolbar != nullptr && uiWidth > 640;
 
         auto* window = WindowManager::find(WindowType::editorStepController, enumValue(StepDirection::previous));
         if (window)
         {
             window->y = infoPanelsOnTop ? 0 : uiHeight - window->height;
+            window->x = infoPanelsJuxtaposed ? topToolbar->x - window->width - 10 : 0;
         }
 
         window = WindowManager::find(WindowType::editorStepController, enumValue(StepDirection::next));
         if (window)
         {
             window->y = infoPanelsOnTop ? 0 : uiHeight - window->height;
-            window->x = std::max(uiWidth, 640) - window->width;
+            window->x = infoPanelsJuxtaposed ? topToolbar->x + topToolbar->width + 10 : std::max(uiWidth, 640) - window->width;
         }
 
         window = WindowManager::find(WindowType::editorStatusLine);
