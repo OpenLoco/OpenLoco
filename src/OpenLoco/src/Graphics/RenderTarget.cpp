@@ -11,6 +11,11 @@ namespace OpenLoco::Gfx
     std::optional<RenderTarget> clipRenderTarget(const RenderTarget& src, const Ui::Rect& newRect)
     {
         const Ui::Rect oldRect = src.getUiRect();
+        if (!oldRect.intersects(newRect))
+        {
+            return {};
+        }
+
         Ui::Rect intersect = oldRect.intersection(newRect);
         const auto stride = oldRect.size.width + src.pitch;
         const auto newPitch = stride - intersect.size.width;
