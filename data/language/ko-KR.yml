@@ -85,7 +85,7 @@ strings:
   72: "{COLOUR WINDOW_2}그래픽: Simon Foster"
   73: "{COLOUR WINDOW_2}사운드 & 음악: Allister Brimble"
   74: "{COLOUR WINDOW_2}타이틀 음악: John Broomhall"
-  75: "{COLOUR WINDOW_2}재구현: Jacqui Lyons at Marjacq Ltd."
+  75: "{COLOUR WINDOW_2}대리인: Jacqui Lyons at Marjacq Ltd."
   76: "{COLOUR WINDOW_2}감사한 분들: -"
   77: "{COLOUR WINDOW_2}Katrina Morrin, Natasha Morrin, Jim Wills"
   78: ""
@@ -1200,9 +1200,9 @@ strings:
   1170: "도착: {STRINGID} / 출발: {STRINGID}"
   1171: 비어 있음
   1172: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
-  1173: "{NEWLINE}수용량:  {STRINGID}"
+  1173: "{NEWLINE}용량:  {STRINGID}"
   1174: "{NEWLINE}+ {STRINGID}"
-  1175: 겡미에 역이 너무 많습니다!
+  1175: 게임에 역이 너무 많습니다!
   1176: 역이 너무 큽니다!
   1177: 도시를 먼저 지어야 합니다!
   1178: "{SMALLFONT}{COLOUR BLACK}지도 전체 보기"
@@ -1214,7 +1214,7 @@ strings:
   1184: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}(을)를 {STRINGID}에 추가할 수 없습니다..."
   1185: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}(을)를 지을 수 없습니다..."
   1186: "{COLOUR BLACK}새 차량을 선택하세요"
-  1187: "{COLOUR BLACK}{STRINGID}"
+  1187: "{COLOUR BLACK}{STRINGID}에 추가할 차량을 선택하세요"
   1188: "{SMALLFONT}{COLOUR BLACK}새로운 철도 차량 만들기"
   1189: "{SMALLFONT}{COLOUR BLACK}새로운 버스 만들기"
   1190: "{SMALLFONT}{COLOUR BLACK}새로운 트럭 만들기"
@@ -1284,7 +1284,7 @@ strings:
   1254: "{NEWLINE}{COLOUR WINDOW_2} 무게: {COLOUR BLACK}{INT16}t"
   1255: "{NEWLINE}{COLOUR WINDOW_2} 최고 속력: {COLOUR BLACK}{VELOCITY}"
   1256: "{NEWLINE}{COLOUR WINDOW_2} 개발: {COLOUR BLACK}{UINT16 RAW}"
-  1257: "{NEWLINE}{COLOUR WINDOW_2} 수송량: {COLOUR BLACK}{STRINGID}"
+  1257: "{NEWLINE}{COLOUR WINDOW_2} 용량: {COLOUR BLACK}{STRINGID}"
   1258: " + {STRINGID}"
   1259: " (경사로에 + {STRINGID})"
   1260: " ({VELOCITY} on {STRINGID})"
@@ -1999,7 +1999,7 @@ strings:
   1945: "{COLOUR WINDOW_2}총괄 프로듀서:  Bob Welch"
   1946: "{COLOUR WINDOW_2}기술 감독:  Paul Hellier"
   1947: "{COLOUR WINDOW_2}홍보 감독:  Peter Matiss"
-  1948: "{COLOUR WINDOW_2}크리에이디브 서비스 감독:  Steve Martin"
+  1948: "{COLOUR WINDOW_2}크리에이티브 서비스 감독:  Steve Martin"
   1949: "{COLOUR WINDOW_2}그래픽 디자이너:  Rod Tilley"
   1950: "{COLOUR WINDOW_2}편집 & 문서 서비스 감독:  Elizabeth Mackney"
   1951: "{COLOUR WINDOW_2}문서 전문가:  Kurt Carlson"
@@ -2201,8 +2201,8 @@ strings:
   2146: "매월마다"
   2147: "매 {INT32}개월마다"
   2148: "{COLOUR WINDOW_2}생성 알고리즘:"
-  2149: 오리지널
-  2150: 개선
+  2149: 원본 생성기
+  2150: 심플렉스 생성기
   2151: "차량 수정"
   2152: "차량 복제"
   2153: "차량을 복제할 수 없습니다..."
@@ -2249,7 +2249,7 @@ strings:
   2194: "이 회사로 이동합니다"
   2195: "모든 회사 자산 획득"
   2196: "파산 켜기/끄기"
-  2197: "감옥에 가두기"
+  2197: "감옥 상태 켜기/끄기"
   2198: "돈 추가"
   2199: "{COLOUR WINDOW_2}금액:"
   2200: "추가"
@@ -2281,7 +2281,7 @@ strings:
   2226: "건설: 위치 선택"
   2227: "신호기에서 열차 회차"
   2228: 자동 상환
-  2229: "{SMALLFONT}{COLOUR BLACK}하루에 한 번, 대출을 받은 게 있다면 모든 수익을 대출을 갚는데 먼저 사용합니다."
+  2229: "{SMALLFONT}{COLOUR BLACK}하루에 한 번, 대출이 있으면 보유 자금으로 먼저 갚습니다."
   2230: "{COLOUR WINDOW_2}연:"
   2231: "{COLOUR WINDOW_2}월:"
   2232: "{COLOUR WINDOW_2}일:"
@@ -2293,7 +2293,7 @@ strings:
   2238: "게임 속도: 보통"
   2239: "게임 속도: 빠르게"
   2240: "게임 속도: 매우 빠르게"
-  2241: "{COLOUR WINDOW_2}수송량: {COLOUR BLACK}{STRINGID}"
+  2241: "{COLOUR WINDOW_2}용량: {COLOUR BLACK}{STRINGID}"
   2242: "{NEWLINE}{COLOUR WINDOW_2} 퇴역: {COLOUR BLACK}{UINT16 RAW}"
   2243: "차량이 잠겨있습니다!"
   2244: "잠긴 차량 표시"
@@ -2342,11 +2342,11 @@ strings:
   2287: "G"
   2288: "{SMALLFONT}{COLOUR BLACK}오브젝트 이름 및 칸 요소 종류"
   2289: "{SMALLFONT}{COLOUR BLACK}칸 요소의 기본 높이"
-  2290: "{SMALLFONT}{COLOUR BLACK}칸 요소의 머리 높이"
+  2290: "{SMALLFONT}{COLOUR BLACK}칸 요소의 상단 높이"
   2291: "{SMALLFONT}{COLOUR BLACK}칸 요소의 방향"
   2292: "{SMALLFONT}{COLOUR BLACK}칸 요소의 고스트 상태"
   2293: "초심자"
-  2294: "도전자"
+  2294: "중급"
   2295: "전문가"
   2296: "원본"
   2297: "사용자"
@@ -2391,7 +2391,7 @@ strings:
   2336: 일반
   2337: 생성기
   2338: "{COLOUR WINDOW_2}현재 언덕 오브젝트: {COLOUR BLACK}{STRINGID}"
-  2339: "{COLOUR WINDOW_2}지형 다듬기가 패스된 횟수:"
+  2339: "{COLOUR WINDOW_2}지형 다듬기 횟수:"
   2340: "PNG 높이맵 파일"
   2341: "PNG 높이맵 파일 불러오기"
   2342: "찾아보기..."
@@ -2440,8 +2440,8 @@ strings:
   2385: "{UINT16}-"
   2386: "-{UINT16}"
   2387: "-"
-  2388: "{UINT16} 음악 트랙 선택됨"
-  2389: "{UINT16} 음악 트랙 선택됨"
+  2388: "{UINT16}개 음악 트랙이 선택됨"
+  2389: "{UINT16}개 음악 트랙이 선택됨"
   2390: 사용자 인터페이스
   2391: '창 프레임 스타일:'
   2392: "{SMALLFONT}{COLOUR BLACK}창을 표현하는 데 사용되는 스타일입니다."
