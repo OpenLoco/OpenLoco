@@ -52,7 +52,9 @@ namespace OpenLoco
 
         // Arguments (4 bytes): uint32_t
         constexpr uint8_t inlineSpriteStr = 23;
-        // 24-31 Not used
+        // Arguments (4 bytes): 0x7F-padded UTF-8 for a codepoint outside the sprite font
+        constexpr uint8_t unicode = 24;
+        // 25-31 Not used
         constexpr uint8_t fourArgBegin = inlineSpriteStr;
         constexpr uint8_t fourArgEnd = 31 + 1;
 

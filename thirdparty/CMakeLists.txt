@@ -48,10 +48,15 @@ else()
     set(OPENAL_LIBRARIES OpenAL::OpenAL)
 endif()
 
-# breakpad is also required
+# breakpad needs ATL (not in all VS Build Tools installs)
 if (MSVC)
-    find_package(unofficial-breakpad CONFIG REQUIRED)
-    set(BREAKPAD_LIBRARIES unofficial::breakpad::libbreakpad unofficial::breakpad::libbreakpad_client)
+    find_package(unofficial-breakpad CONFIG)
+    if (unofficial-breakpad_FOUND)
+        set(BREAKPAD_LIBRARIES unofficial::breakpad::libbreakpad unofficial::breakpad::libbreakpad_client CACHE INTERNAL "Breakpad libs")
+    else()
+        set(BREAKPAD_LIBRARIES "" CACHE INTERNAL "Breakpad libs")
+        message(STATUS "Breakpad not found; crash dumps disabled")
+    endif()
 endif()
 
 find_package(fmt QUIET)
@@ -86,5 +91,23 @@ if (HAS_LIBSTDCPP)
     find_package(TBB)
     if (NOT TBB_FOUND )
         message(WARNING "TBB could not be found but using libstdc++ multithreding may be broken")
+    endif()
+endif()
+
+# stb_truetype is a single public-domain header; download it instead of vendoring ~5k lines.
+set(STB_INCLUDE_DIR "${CMAKE_BINARY_DIR}/_deps/stb")
+set(_stb_truetype_h "${STB_INCLUDE_DIR}/stb_truetype.h")
+if (NOT EXISTS "${_stb_truetype_h}")
+    file(MAKE_DIRECTORY "${STB_INCLUDE_DIR}")
+    file(DOWNLOAD
+        "https://raw.githubusercontent.com/nothings/stb/f1c79c02822848a9bed4315b12c8c8f3761e1296/stb_truetype.h"
+        "${_stb_truetype_h}"
+        EXPECTED_HASH SHA256=ecd30b05e0dd4fea3a13c26810dd9e1992dc379049482c393d5a19e6b5090aab
+        TLS_VERIFY ON
+        STATUS _stb_status
+    )
+    list(GET _stb_status 0 _stb_code)
+    if (NOT _stb_code EQUAL 0)
+        message(FATAL_ERROR "Failed to download stb_truetype.h: ${_stb_status}")
     endif()
 endif()

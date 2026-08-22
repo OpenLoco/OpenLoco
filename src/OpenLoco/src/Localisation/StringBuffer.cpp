@@ -64,12 +64,12 @@ namespace OpenLoco
             }
             else if (ch >= ControlCodes::fourArgBegin && ch < ControlCodes::fourArgEnd)
             {
-                if (i + 4 > inputLen)
+                if (i + 5 > inputLen)
                 {
                     throw Exception::OverflowError("String buffer overflow");
                 }
-                appendData(input + i, 4);
-                i += 4;
+                appendData(input + i, 5);
+                i += 5;
             }
             else
             {
