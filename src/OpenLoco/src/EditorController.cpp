@@ -153,6 +153,7 @@ namespace OpenLoco::EditorController
     }
 
     static constexpr auto kStepNames = Utility::buildLookupTable<EditorController::Step, StringId>({
+        { EditorController::Step::null, StringIds::empty },
         { EditorController::Step::objectSelection, StringIds::editor_step_object_selection },
         { EditorController::Step::landscapeEditor, StringIds::editor_step_landscape },
         { EditorController::Step::scenarioOptions, StringIds::editor_step_options },
