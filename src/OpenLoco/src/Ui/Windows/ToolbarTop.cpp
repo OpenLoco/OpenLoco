@@ -1611,7 +1611,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop
             }
         }
 
-        auto totalWidth = numVisibleWidgets * 30 + (3 * 11);
+        auto separatorWidth = numVisibleWidgets > 2 ? 3 * 11 : 0;
+        auto totalWidth = numVisibleWidgets * 30 + separatorWidth;
 
         // Left-hand side
         int32_t x = std::max(0, (Ui::width() - totalWidth) / 2);
