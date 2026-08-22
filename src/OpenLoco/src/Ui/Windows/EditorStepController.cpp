@@ -11,6 +11,7 @@
 namespace OpenLoco::Ui::Windows::EditorStepController
 {
     static constexpr Size kWindowSize = { 200, 32 };
+    static constexpr Size kWindowSizeShrunk = { 200, 26 };
 
     enum widx
     {
@@ -65,6 +66,10 @@ namespace OpenLoco::Ui::Windows::EditorStepController
         const bool hidden = isPreviousButton(self) && !EditorController::canGoBack();
         self.widgets[widx::frame].hidden = hidden;
         self.widgets[widx::button].hidden = hidden;
+
+        const auto& size = self.y > 0 ? kWindowSize : kWindowSizeShrunk;
+        self.widgets[widx::frame].bottom = size.height;
+        self.widgets[widx::button].bottom = size.height;
     }
 
     struct StepFrame
@@ -109,9 +114,13 @@ namespace OpenLoco::Ui::Windows::EditorStepController
 
         auto textPos = frame.position() + labelOffset;
         auto tr = Gfx::TextRenderer(drawingCtx);
-        tr.drawStringCentred(textPos, textColour, layout.label);
 
-        textPos.y += 10;
+        if (self.y != 0)
+        {
+            tr.drawStringCentred(textPos, textColour, layout.label);
+            textPos.y += 10;
+        }
+
         auto labelStep = isPreviousButton(self) ? EditorController::getPreviousStepString() : EditorController::getNextStepString();
         tr.drawStringCentred(textPos, textColour, labelStep);
     }
