@@ -2,6 +2,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/TextRenderer.h"
+#include "Gui.h"
 #include "Input.h"
 #include "Localisation/StringIds.h"
 #include "Ui/Widget.h"
@@ -10,8 +11,9 @@
 
 namespace OpenLoco::Ui::Windows::EditorStepController
 {
-    static constexpr Size kWindowSize = { 200, 32 };
-    static constexpr Size kWindowSizeShrunk = { 200, 24 };
+    static constexpr int32_t kBaseWidth = 70;
+    static constexpr Size kWindowSize = { kBaseWidth + 130, 32 };
+    static constexpr Size kWindowSizeShrunk = { kBaseWidth + 130, 24 };
 
     enum widx
     {
@@ -60,19 +62,6 @@ namespace OpenLoco::Ui::Windows::EditorStepController
         return StepDirection(self.number) == StepDirection::previous;
     }
 
-    // 0x0043CE21
-    static void prepareDraw(Window& self)
-    {
-        const bool hidden = isPreviousButton(self) && !EditorController::canGoBack();
-        self.widgets[widx::frame].hidden = hidden;
-        self.widgets[widx::button].hidden = hidden;
-
-        const auto& size = self.y > 0 ? kWindowSize : kWindowSizeShrunk;
-        self.widgets[widx::frame].bottom = size.height + 2;
-        self.widgets[widx::button].top = self.y > 0 ? -2 : 2;
-        self.widgets[widx::button].bottom = size.height + 2;
-    }
-
     struct StepFrame
     {
         StringId label;
@@ -85,6 +74,40 @@ namespace OpenLoco::Ui::Windows::EditorStepController
         { StringIds::editor_previous_step, ImageIds::step_back, (kWindowSize.width + 30) / 2, 6 },
         { StringIds::editor_next_step, ImageIds::step_forward, (kWindowSize.width - 31) / 2, kWindowSize.width - 29 },
     });
+
+    // 0x0043CE21
+    static void prepareDraw(Window& self)
+    {
+        const bool hidden = isPreviousButton(self) && !EditorController::canGoBack();
+        self.widgets[widx::frame].hidden = hidden;
+        self.widgets[widx::button].hidden = hidden;
+
+        const auto& size = self.y > 0 ? kWindowSize : kWindowSizeShrunk;
+        self.widgets[widx::frame].bottom = size.height + 2;
+        self.widgets[widx::button].top = self.y > 0 ? -2 : 2;
+        self.widgets[widx::button].bottom = size.height + 2;
+
+        auto stepString = isPreviousButton(self) ? EditorController::getPreviousStepString() : EditorController::getNextStepString();
+        auto labelWidth = Gfx::TextRenderer::getStringWidth(Gfx::Font::medium_bold, StringManager::getString(stepString));
+        if (labelWidth == 0)
+        {
+            return;
+        }
+
+        if (self.y != 0)
+        {
+            const auto& layout = isPreviousButton(self) ? kStepFrames[0] : kStepFrames[1];
+            labelWidth = std::max(labelWidth, Gfx::TextRenderer::getStringWidth(Gfx::Font::medium_bold, StringManager::getString(layout.label)));
+        }
+
+        if (self.width != labelWidth + kBaseWidth)
+        {
+            self.width = labelWidth + kBaseWidth;
+            self.widgets[widx::frame].right = self.width;
+            self.widgets[widx::button].right = self.width - 4;
+            Gui::resize();
+        }
+    }
 
     // 0x0043CE65
     static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
