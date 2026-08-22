@@ -137,7 +137,7 @@ namespace OpenLoco::Localisation
                     {
                         *out++ = (char)ControlCodes::inlineSpriteStr;
                         int32_t spriteId = std::atoi(commands[1].data());
-                        *((uint32_t*)out) = spriteId;
+                        memcpy(out, &spriteId, 4);
                         out += 4;
                     }
                 }
