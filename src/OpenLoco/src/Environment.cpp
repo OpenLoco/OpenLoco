@@ -52,16 +52,8 @@ namespace OpenLoco::Environment
 
     static fs::path autoDetectLocoInstallPath()
     {
-        static constexpr const char* kSearchPaths[] = {
-            "C:/Program Files (x86)/Atari/Locomotion",
-            "C:/GOG Games/Chris Sawyer's Locomotion",
-            "C:/GOG Games/Locomotion",
-            "C:/Program Files/Steam/steamapps/common/Locomotion",
-            "C:/Program Files (x86)/Steam/steamapps/common/Locomotion",
-        };
-
         Logging::info("Searching for Locomotion install path...");
-        for (auto path : kSearchPaths)
+        for (const auto& path : Platform::getLocoInstallSearchPaths())
         {
             if (validateLocoInstallPath(path))
             {
@@ -69,26 +61,6 @@ namespace OpenLoco::Environment
                 return path;
             }
         }
-#ifndef _WIN32
-        // Relative to the user's home directory: Steam, and Heroic Games Launcher (covers GOG installs on Linux).
-        auto home = fs::path(Platform::getEnvironmentVariable("HOME"));
-        if (!home.empty())
-        {
-            static constexpr const char* kHomeSearchPaths[] = {
-                ".local/share/Steam/steamapps/common/Locomotion",
-                "Games/Heroic/Locomotion",
-            };
-            for (auto relativePath : kHomeSearchPaths)
-            {
-                auto path = home / relativePath;
-                if (validateLocoInstallPath(path))
-                {
-                    Logging::info("  found: {}", path);
-                    return path;
-                }
-            }
-        }
-#endif
         return fs::path();
     }
 

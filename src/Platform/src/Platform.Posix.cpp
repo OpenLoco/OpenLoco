@@ -115,6 +115,32 @@ namespace OpenLoco::Platform
         auto path = fs::canonical(input);
         return path;
     }
+
+    std::vector<fs::path> getLocoInstallSearchPaths()
+    {
+        // Locomotion is a Windows game, so it is normally installed here by a launcher
+        // that runs it through Wine/Proton. Look in those launchers' default locations.
+        const auto home = getHomeDirectory();
+        if (home.empty())
+        {
+            return {};
+        }
+
+        auto dataHome = fs::path(getEnvironmentVariable("XDG_DATA_HOME"));
+        if (dataHome.empty())
+        {
+            dataHome = home / ".local/share";
+        }
+
+        return {
+            // Steam
+            dataHome / "Steam/steamapps/common/Locomotion",
+            home / ".steam/steam/steamapps/common/Locomotion",
+            home / ".var/app/com.valvesoftware.Steam/.local/share/Steam/steamapps/common/Locomotion",
+            // Heroic Games Launcher, which covers GOG installs
+            home / "Games/Heroic/Locomotion",
+        };
+    }
 #endif // !(defined(__APPLE__) && defined(__MACH__))
 
     bool isRunningInWine()
