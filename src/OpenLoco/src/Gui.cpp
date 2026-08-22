@@ -83,7 +83,6 @@ namespace OpenLoco::Gui
         auto* topToolbar = WindowManager::find(WindowType::topToolbar);
         if (topToolbar)
         {
-            topToolbar->width = std::max(uiWidth, 640);
             topToolbar->callPrepareDraw();
         }
 
