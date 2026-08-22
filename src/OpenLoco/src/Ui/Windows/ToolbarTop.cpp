@@ -1614,7 +1614,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop
         auto separatorWidth = numVisibleWidgets > 2 ? 3 * 11 : 0;
         auto totalWidth = numVisibleWidgets * 30 + separatorWidth;
 
-        // Left-hand side
+        // Adjust toolbar width as needed
         int32_t x = std::max(0, (Ui::width() - totalWidth) / 2);
         if (self.x != x)
         {
@@ -1624,6 +1624,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop
             self.invalidate();
         }
 
+        // Left-hand side
         x = 0;
         x = leftAlignButtons(self, x, { widx::loadsave_menu, widx::audio_menu, widx::cheats_menu, widx::map_generation_menu });
         x += 11;
@@ -1638,7 +1639,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop
 
     static void justifyToolbar(Window& self)
     {
-        // Left-hand side
+        // Adjust toolbar width as needed
         int32_t x = 0;
         if (self.x != x)
         {
@@ -1648,6 +1649,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop
             self.invalidate();
         }
 
+        // Left-hand side
         x = leftAlignButtons(self, x, { widx::loadsave_menu, widx::audio_menu, widx::cheats_menu, widx::map_generation_menu });
         x += 11;
         x = leftAlignButtons(self, x, { widx::zoom_menu, widx::rotate_menu, widx::view_menu });
