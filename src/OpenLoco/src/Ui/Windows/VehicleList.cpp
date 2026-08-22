@@ -137,7 +137,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     enum FilterMode : uint8_t
     {
         allVehicles,
-        transportingCargo,
+        transportsCargo,
         hasCargoOrder,
     };
 
@@ -159,7 +159,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
     constexpr bool isTransportsCargoFilterActive(const Window& self, bool checkSelection = true)
     {
-        return self.var_850 == static_cast<uint16_t>(FilterMode::transportingCargo) && (!checkSelection || self.var_852 != 0xFFFF);
+        return self.var_850 == static_cast<uint16_t>(FilterMode::transportsCargo) && (!checkSelection || self.var_852 != 0xFFFF);
     }
 
     constexpr bool isCargoFilterActive(const Window& self, bool checkSelection = true)
