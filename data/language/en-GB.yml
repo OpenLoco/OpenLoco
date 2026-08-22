@@ -2520,4 +2520,5 @@ strings:
   2465: "Signals block"
   2466: "Has cargo order"
   2467: "Transports cargo"
-
+  2468: "Place info panels on top"
+  2469: "Place info panels alongside toolbar"

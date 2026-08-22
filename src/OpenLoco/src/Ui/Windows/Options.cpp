@@ -7,6 +7,7 @@
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
+#include "Gui.h"
 #include "Input.h"
 #include "Jukebox.h"
 #include "Localisation/FormatArguments.hpp"
@@ -1902,6 +1903,8 @@ namespace OpenLoco::Ui::Windows::Options
             invert_right_mouse_view_pan,
             toolbar_auto_menu,
             toolbar_buttons_centred,
+            info_panels_top,
+            info_panels_juxapose,
             customize_keys
         };
 
@@ -1912,10 +1915,12 @@ namespace OpenLoco::Ui::Windows::Options
             constexpr WidgetId kInvertRightMouseViewPan{ "invert_right_mouse_view_pan" };
             constexpr WidgetId kToolbarMenuAuto{ "toolbar_auto_menu" };
             constexpr WidgetId kToolbarButtonsCentred{ "toolbar_buttons_centred" };
+            constexpr WidgetId kInfoPanelsTop{ "info_panels_top" };
+            constexpr WidgetId kInfoPanelsJuxapose{ "info_panels_juxapose" };
             constexpr WidgetId kCustomizeKeys{ "customize_keys" };
         }
 
-        static constexpr Ui::Size kWindowSize = { 366, 144 };
+        static constexpr Ui::Size kWindowSize = { 366, 174 };
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_controls),
@@ -1924,7 +1929,9 @@ namespace OpenLoco::Ui::Windows::Options
             Widgets::Checkbox(Widx::kInvertRightMouseViewPan, { 10, 79 }, { 346, 12 }, WindowColour::secondary, StringIds::invert_right_mouse_dragging, StringIds::tooltip_invert_right_mouse_dragging),
             Widgets::Checkbox(Widx::kToolbarMenuAuto, { 10, 94 }, { 346, 12 }, WindowColour::secondary, StringIds::toolbar_auto_menu),
             Widgets::Checkbox(Widx::kToolbarButtonsCentred, { 10, 109 }, { 346, 12 }, WindowColour::secondary, StringIds::toolbar_buttons_centred),
-            Widgets::Button(Widx::kCustomizeKeys, { 26, 124 }, { 160, 12 }, WindowColour::secondary, StringIds::customise_keys, StringIds::customise_keys_tip)
+            Widgets::Checkbox(Widx::kInfoPanelsTop, { 10, 124 }, { 346, 12 }, WindowColour::secondary, StringIds::place_info_panels_on_top),
+            Widgets::Checkbox(Widx::kInfoPanelsJuxapose, { 10, 139 }, { 346, 12 }, WindowColour::secondary, StringIds::place_info_panels_alongside_toolbar),
+            Widgets::Button(Widx::kCustomizeKeys, { 26, 154 }, { 160, 12 }, WindowColour::secondary, StringIds::customise_keys, StringIds::customise_keys_tip)
 
         );
 
@@ -1933,6 +1940,8 @@ namespace OpenLoco::Ui::Windows::Options
         static void invertRightMouseViewPan(Window& self);
         static void toolbarAutoMenuMouseUp(Window& self);
         static void toolbarButtonsCentredMouseUp(Window& self);
+        static void infoPanelsTopMouseUp(Window& self);
+        static void infoPanelsJuxaposeMouseUp(Window& self);
         static void openKeyboardShortcuts();
 
         static void prepareDraw(Window& self)
@@ -1941,7 +1950,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             Common::prepareDraw(self);
 
-            self.activatedWidgets &= ~(1ULL << widx::edge_scrolling | 1ULL << widx::zoom_to_cursor | 1ULL << widx::invert_right_mouse_view_pan | 1ULL << widx::toolbar_auto_menu);
+            self.activatedWidgets &= ~(1ULL << widx::edge_scrolling | 1ULL << widx::zoom_to_cursor | 1ULL << widx::invert_right_mouse_view_pan | 1ULL << widx::toolbar_auto_menu | 1ULL << widx::info_panels_top | 1ULL << widx::info_panels_juxapose);
             if (Config::get().edgeScrolling)
             {
                 self.activatedWidgets |= (1ULL << widx::edge_scrolling);
@@ -1961,6 +1970,14 @@ namespace OpenLoco::Ui::Windows::Options
             if (Config::get().toolbarButtonsCentred)
             {
                 self.activatedWidgets |= (1ULL << widx::toolbar_buttons_centred);
+            }
+            if (Config::get().infoPanelsOnTop)
+            {
+                self.activatedWidgets |= (1ULL << widx::info_panels_top);
+            }
+            if (Config::get().infoPanelsJuxtaposed)
+            {
+                self.activatedWidgets |= (1ULL << widx::info_panels_juxapose);
             }
         }
 
@@ -2003,6 +2020,14 @@ namespace OpenLoco::Ui::Windows::Options
                 case Widx::kToolbarButtonsCentred:
                     toolbarButtonsCentredMouseUp(self);
                     break;
+
+                case Widx::kInfoPanelsTop:
+                    infoPanelsTopMouseUp(self);
+                    break;
+
+                case Widx::kInfoPanelsJuxapose:
+                    infoPanelsJuxaposeMouseUp(self);
+                    break;
             }
         }
 
@@ -2043,14 +2068,34 @@ namespace OpenLoco::Ui::Windows::Options
             self.invalidate();
         }
 
-        static void toolbarButtonsCentredMouseUp(Window& self)
+        static void toolbarButtonsCentredMouseUp([[maybe_unused]] Window& self)
         {
             auto& cfg = OpenLoco::Config::get();
             cfg.toolbarButtonsCentred = !cfg.toolbarButtonsCentred;
             Config::write();
 
-            WindowManager::invalidate(WindowType::topToolbar);
-            self.invalidate();
+            Gui::resize();
+            Gfx::invalidateScreen();
+        }
+
+        static void infoPanelsTopMouseUp([[maybe_unused]] Window& self)
+        {
+            auto& cfg = OpenLoco::Config::get();
+            cfg.infoPanelsOnTop = !cfg.infoPanelsOnTop;
+            Config::write();
+
+            Gui::resize();
+            Gfx::invalidateScreen();
+        }
+
+        static void infoPanelsJuxaposeMouseUp([[maybe_unused]] Window& self)
+        {
+            auto& cfg = OpenLoco::Config::get();
+            cfg.infoPanelsJuxtaposed = !cfg.infoPanelsJuxtaposed;
+            Config::write();
+
+            Gui::resize();
+            Gfx::invalidateScreen();
         }
 
         // 0x004C118D
