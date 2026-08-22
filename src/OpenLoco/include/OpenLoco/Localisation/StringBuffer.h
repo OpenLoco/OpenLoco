@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdlib>
 #include <cstddef>
 #include <fmt/core.h>
 #include <iterator>
