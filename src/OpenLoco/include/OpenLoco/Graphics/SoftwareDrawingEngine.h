@@ -61,8 +61,8 @@ namespace OpenLoco::Gfx
             int16_t dstY,
             int16_t width,
             int16_t height,
-            int16_t srcX,
-            int16_t srcY);
+            int16_t deltaX,
+            int16_t deltaY);
 
         const Ui::ScreenInfo& getScreenInfo() const;
 

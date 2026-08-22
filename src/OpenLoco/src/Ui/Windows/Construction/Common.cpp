@@ -729,6 +729,12 @@ namespace OpenLoco::Ui::Windows::Construction
         return getConstructionState().lastSelectedMods;
     }
 
+    uint8_t getCurrentTrackType()
+    {
+        auto& cState = getConstructionState();
+        return cState.trackType;
+    }
+
     Track::ModSection getLastSelectedTrackModSection()
     {
         auto& cState = getConstructionState();

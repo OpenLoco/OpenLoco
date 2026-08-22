@@ -1,8 +1,11 @@
 26.08+ (???)
 ------------------------------------------------------------------------
+
 - Feature: [#304] Render Korean, Japanese, Chinese and other non-Latin text using Galmuri (Hangul pixel font) and Noto Sans CJK (Japanese/Chinese) instead of '?'.
 - Change: [#304] Fill remaining Japanese and Simplified Chinese UI strings (including OpenLoco-added options).
 - Change: [#304] Fetch stb_truetype.h at configure time instead of vendoring it.
+- Change: [#3867] Repeated presses of the build tracks and build roads keyboard shortcuts now cycles track/road types.
+- Fix: [#2753] Unable to remove walls and trees at heights above 127.
 - Fix: [#3943] Unable to place or remove signals on multi tile track elements.
 - Fix: [#3955] Terraform window can break dimensions of construction window.
 

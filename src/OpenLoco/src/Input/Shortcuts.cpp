@@ -19,6 +19,7 @@
 #include "World/TownManager.h"
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <SDL3/SDL_keyboard.h>
+#include <algorithm>
 #include <string>
 #include <unordered_map>
 #include <utility>
@@ -336,6 +337,37 @@ namespace OpenLoco::Input::Shortcuts
         Windows::Terraform::openClearArea();
     }
 
+    static void buildTracksBuildRoadsCommon(uint8_t roadOrTrackId, const AvailableTracksAndRoads available)
+    {
+        if (roadOrTrackId == 0xFF)
+        {
+            return;
+        }
+
+        if (available.empty())
+        {
+            assert(false); // If there are none avaiable, why is the default not 0xFF ?
+            return;
+        }
+
+        // Is construction with this road/track type already open?
+        if (WindowManager::find(WindowType::construction) != nullptr && Windows::Construction::getCurrentTrackType() == roadOrTrackId)
+        {
+            // Find next available with wrapping
+            auto it = std::find(available.begin(), available.end(), roadOrTrackId);
+            if (it != available.end() && it + 1 != available.end())
+            {
+                roadOrTrackId = *(it + 1);
+            }
+            else
+            {
+                roadOrTrackId = available[0];
+            }
+        }
+
+        Windows::Construction::openWithFlags(roadOrTrackId);
+    }
+
     // 0x004BF232
     static void buildTracks()
     {
@@ -344,12 +376,7 @@ namespace OpenLoco::Input::Shortcuts
             return;
         }
 
-        if (getGameState().defaultRailroadObjectId == 0xFF)
-        {
-            return;
-        }
-
-        Windows::Construction::openWithFlags(getGameState().defaultRailroadObjectId);
+        buildTracksBuildRoadsCommon(getGameState().defaultRailroadObjectId, companyGetAvailableRailTracks(GameCommands::getUpdatingCompanyId()));
     }
 
     // 0x004BF24F
@@ -360,12 +387,7 @@ namespace OpenLoco::Input::Shortcuts
             return;
         }
 
-        if (getGameState().defaultRoadObjectId == 0xFF)
-        {
-            return;
-        }
-
-        Windows::Construction::openWithFlags(getGameState().defaultRoadObjectId);
+        buildTracksBuildRoadsCommon(getGameState().defaultRoadObjectId, companyGetAvailableRoads(GameCommands::getUpdatingCompanyId()));
     }
 
     // 0x004BF276

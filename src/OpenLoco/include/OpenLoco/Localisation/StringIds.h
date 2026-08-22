@@ -751,7 +751,7 @@ namespace OpenLoco::StringIds
 
     constexpr StringId tutorial_text = 1014;
     constexpr StringId tutorial_control = 1015;
-    constexpr StringId loco_already_running = 1016;
+    constexpr StringId openloco_already_running = 1016;
     constexpr StringId music_acknowledgements_btn = 1017;
     constexpr StringId music_acknowledgements_caption = 1018;
     constexpr StringId music_copyright = 1019;

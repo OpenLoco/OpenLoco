@@ -1040,7 +1040,8 @@ strings:
   1014: "{OUTLINE}{COLOUR WINDOW_1}{STRINGID}"
   1015: "{OUTLINE}{COLOUR WINDOW_2}（キーまたはマウスボタンを押して操作を開始）"
   1016: "Chris Sawyer's Locomotionは既に起動しています"
-
+  1015: "{OUTLINE}{COLOUR WINDOW_2}(Press a key or mouse button to take control)"
+  1016: Another instance of OpenLoco is already running
   1017: 音楽クレジット…
   1018: 音楽クレジット
   1019: "{COLOUR BLACK}Copyright © Chris Sawyer"

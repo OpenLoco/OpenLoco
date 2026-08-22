@@ -10,7 +10,7 @@ namespace OpenLoco::GameCommands
 
         WallRemovalArgs() = default;
         explicit WallRemovalArgs(const registers& regs)
-            : pos(regs.ax, regs.cx, regs.dh * World::kSmallZStep)
+            : pos(regs.ax, regs.cx, static_cast<uint8_t>(regs.dh) * World::kSmallZStep)
             , rotation(regs.dl)
         {
         }

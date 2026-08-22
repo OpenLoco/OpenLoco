@@ -186,6 +186,7 @@ namespace OpenLoco::Ui::Windows
         void removeConstructionGhosts();
         void resetGhostVisibilityFlags();
         uint16_t getLastSelectedMods();
+        uint8_t getCurrentTrackType();
         World::Track::ModSection getLastSelectedTrackModSection();
     }
 
