@@ -157,14 +157,14 @@ namespace OpenLoco::Ui::Windows::VehicleList
         return self.var_850 == static_cast<uint16_t>(FilterMode::hasCargoOrder) && (!checkSelection || self.var_852 != 0xFFFF);
     }
 
-    constexpr bool isTransportingCargoFilterActive(const Window& self, bool checkSelection = true)
+    constexpr bool isTransportsCargoFilterActive(const Window& self, bool checkSelection = true)
     {
         return self.var_850 == static_cast<uint16_t>(FilterMode::transportingCargo) && (!checkSelection || self.var_852 != 0xFFFF);
     }
 
     constexpr bool isCargoFilterActive(const Window& self, bool checkSelection = true)
     {
-        return isCargoOrderFilterActive(self, checkSelection) || isTransportingCargoFilterActive(self, checkSelection);
+        return isCargoOrderFilterActive(self, checkSelection) || isTransportsCargoFilterActive(self, checkSelection);
     }
 
     using Vehicles::VehicleHead;
@@ -193,7 +193,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         return false;
     }
 
-    static bool vehicleIsTransportingCargo(const VehicleHead* head, int16_t filterCargoId)
+    static bool vehicleTransportsCargo(const VehicleHead* head, int16_t filterCargoId)
     {
         auto train = Vehicles::Vehicle(*head);
         for (auto& car : train.cars)
@@ -231,7 +231,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 continue;
             }
 
-            if (isTransportingCargoFilterActive(self) && !vehicleIsTransportingCargo(vehicle, self.var_852))
+            if (isTransportsCargoFilterActive(self) && !vehicleTransportsCargo(vehicle, self.var_852))
             {
                 continue;
             }
@@ -582,7 +582,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         static constexpr std::array<StringId, 3> kTypeToFilterStringIds{
             StringIds::all_vehicles,
             StringIds::has_cargo_order,
-            StringIds::transporting_cargo,
+            StringIds::transports_cargo,
         };
 
         {
@@ -835,7 +835,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 3, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::all_vehicles);
-            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::transporting_cargo);
+            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::transports_cargo);
             Dropdown::add(2, StringIds::dropdown_stringid, StringIds::has_cargo_order);
             Dropdown::setItemSelected(self.var_850);
         }
