@@ -11,9 +11,10 @@
 
 namespace OpenLoco::Ui::Windows::EditorStepController
 {
-    static constexpr int32_t kBaseWidth = 70;
-    static constexpr Size kWindowSize = { kBaseWidth + 130, 32 };
-    static constexpr Size kWindowSizeShrunk = { kBaseWidth + 130, 24 };
+    static constexpr int32_t kImageWidth = 30;
+    static constexpr int32_t kBaseWidth = 40;
+    static constexpr Size kWindowSize = { kImageWidth + kBaseWidth + 130, 32 };
+    static constexpr Size kWindowSizeShrunk = { kImageWidth + kBaseWidth + 130, 24 };
 
     enum widx
     {
@@ -82,7 +83,8 @@ namespace OpenLoco::Ui::Windows::EditorStepController
         self.widgets[widx::frame].hidden = hidden;
         self.widgets[widx::button].hidden = hidden;
 
-        const auto& size = self.y > 0 ? kWindowSize : kWindowSizeShrunk;
+        const bool isBottom = self.y > 0;
+        const auto& size = isBottom ? kWindowSize : kWindowSizeShrunk;
         self.widgets[widx::frame].bottom = size.height + 2;
         self.widgets[widx::button].top = self.y > 0 ? -2 : 2;
         self.widgets[widx::button].bottom = size.height + 2;
@@ -94,17 +96,18 @@ namespace OpenLoco::Ui::Windows::EditorStepController
             return;
         }
 
-        if (self.y != 0)
+        if (isBottom)
         {
             const auto& layout = isPreviousButton(self) ? kStepFrames[0] : kStepFrames[1];
             labelWidth = std::max(labelWidth, Gfx::TextRenderer::getStringWidth(Gfx::Font::medium_bold, StringManager::getString(layout.label)));
         }
 
-        if (self.width != labelWidth + kBaseWidth)
+        auto buttonWidth = labelWidth + kImageWidth + kBaseWidth;
+        if (self.width != buttonWidth)
         {
-            self.width = labelWidth + kBaseWidth;
+            self.width = buttonWidth;
             self.widgets[widx::frame].right = self.width;
-            self.widgets[widx::button].right = self.width - 4;
+            self.widgets[widx::button].right = self.width - 3;
             Gui::resize();
         }
     }
@@ -117,16 +120,19 @@ namespace OpenLoco::Ui::Windows::EditorStepController
             return;
         }
 
+        const bool isBottom = self.y > 0;
+
         // Draw frame
         auto& frame = self.widgets[widx::frame];
-        auto frameYOffset = self.y > 0 ? 0 : -2;
+        auto frameYOffset = isBottom ? 0 : -2;
         drawingCtx.drawRect(frame.left, frame.top + frameYOffset, frame.width(), frame.height() - frameYOffset, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
         self.draw(drawingCtx);
         drawingCtx.drawRectInset(frame.left + 1, frame.top + frameYOffset + 1, frame.width() - 2, frame.height() - frameYOffset - 2, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
-        const auto& layout = isPreviousButton(self) ? kStepFrames[0] : kStepFrames[1];
-        const auto& labelOffset = Point{ layout.labelXOffset, self.y > 0 ? 6 : 8 };
-        const auto& imageOffset = Point{ layout.imageXOffset, self.y > 0 ? 6 : 1 };
+        const bool isPrev = isPreviousButton(self);
+        const auto& layout = isPrev ? kStepFrames[0] : kStepFrames[1];
+        const auto& labelOffset = Point{ (self.width + (isPrev ? 1 : -1) * kImageWidth) / 2, isBottom ? 6 : 8 };
+        const auto& imageOffset = Point{ isPrev ? 6 : self.width - kImageWidth, isBottom ? 6 : 1 };
 
         auto imagePos = frame.position() + imageOffset;
         drawingCtx.drawImage(ZoomLevel::full, imagePos.x, imagePos.y, layout.image);
@@ -140,7 +146,7 @@ namespace OpenLoco::Ui::Windows::EditorStepController
         auto textPos = frame.position() + labelOffset;
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        if (self.y != 0)
+        if (isBottom)
         {
             tr.drawStringCentred(textPos, textColour, layout.label);
             textPos.y += 10;
