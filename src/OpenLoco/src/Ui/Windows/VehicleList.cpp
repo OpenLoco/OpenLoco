@@ -581,8 +581,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         static constexpr std::array<StringId, 3> kTypeToFilterStringIds{
             StringIds::all_vehicles,
-            StringIds::has_cargo_order,
             StringIds::transports_cargo,
+            StringIds::has_cargo_order,
         };
 
         {
