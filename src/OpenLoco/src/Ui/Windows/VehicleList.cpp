@@ -137,8 +137,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
     enum FilterMode : uint8_t
     {
         allVehicles,
-        hasCargoOrder,
         transportingCargo,
+        hasCargoOrder,
     };
 
     static constexpr uint8_t row_heights[] = {
