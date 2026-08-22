@@ -2521,3 +2521,5 @@ strings:
   2466: "Has cargo order"
   2467: "Transports cargo"
   2468: "{INT16} x {INT16}"
+  2469: "Place info panels on top"
+  2470: "Place info panels alongside toolbar"
