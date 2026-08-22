@@ -76,13 +76,13 @@ namespace OpenLoco::Ui::Windows::EditorStepController
     {
         StringId label;
         uint32_t image;
-        Point labelOffset;
-        Point imageOffset;
+        int32_t labelXOffset;
+        int32_t imageXOffset;
     };
 
     static constexpr std::array kStepFrames = std::to_array<StepFrame>({
-        { StringIds::editor_previous_step, ImageIds::step_back, Point{ (kWindowSize.width + 30) / 2, 6 }, Point{ 6, 6 } },
-        { StringIds::editor_next_step, ImageIds::step_forward, Point{ (kWindowSize.width - 31) / 2, 6 }, Point{ kWindowSize.width - 29, 6 } },
+        { StringIds::editor_previous_step, ImageIds::step_back, (kWindowSize.width + 30) / 2, 6 },
+        { StringIds::editor_next_step, ImageIds::step_forward, (kWindowSize.width - 31) / 2, kWindowSize.width - 29 },
     });
 
     // 0x0043CE65
@@ -100,8 +100,8 @@ namespace OpenLoco::Ui::Windows::EditorStepController
         drawingCtx.drawRectInset(frame.left + 1, frame.top + 1, frame.width() - 2, frame.height() - 2, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
         const auto& layout = isPreviousButton(self) ? kStepFrames[0] : kStepFrames[1];
-        const auto& labelOffset = layout.labelOffset;
-        const auto& imageOffset = layout.imageOffset;
+        const auto& labelOffset = Point{ layout.labelXOffset, self.y > 0 ? 6 : 8 };
+        const auto& imageOffset = Point{ layout.imageXOffset, self.y > 0 ? 6 : 1 };
 
         auto imagePos = frame.position() + imageOffset;
         drawingCtx.drawImage(ZoomLevel::full, imagePos.x, imagePos.y, layout.image);
