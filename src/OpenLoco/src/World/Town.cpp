@@ -71,7 +71,7 @@ namespace OpenLoco
                 break;
         }
         char buff[4];
-        sprintf(buff,"%d",speed - TownGrowthSpeed::intZero);
+        sprintf(buff, "%d", speed - TownGrowthSpeed::intZero);
         return buff;
     }
 
@@ -191,7 +191,7 @@ namespace OpenLoco
     {
         auto objHeader = ObjectHeader();
         objHeader.flags = enumValue(ObjectType::cargo);
-        memcpy(objHeader.name, name.c_str(),8);
+        memcpy(objHeader.name, name.c_str(), 8);
         return ObjectManager::findObjectHandle(objHeader);
     }
 
@@ -366,7 +366,7 @@ namespace OpenLoco
             }
             speed = bracket.speed;
         }
-        printf("Town %d scored %d points this month. Growth speed is %s\n",enumValue(id()),points,getTownGrowthSpeedName(speed).c_str());
+        printf("Town %d scored %d points this month. Growth speed is %s\n", enumValue(id()), points, getTownGrowthSpeedName(speed).c_str());
         buildSpeed = speed;
         // Reset all monthlyCargoDelivered intermediaries to zero.
         memset(&monthlyCargoDelivered, 0, sizeof(monthlyCargoDelivered));
