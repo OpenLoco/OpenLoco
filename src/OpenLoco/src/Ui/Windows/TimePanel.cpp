@@ -74,7 +74,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     Window* open()
     {
         auto window = WindowManager::createWindow(
-            WindowType::timeToolbar,
+            WindowType::timePanel,
             { Ui::width() - kWindowSize.width, Ui::height() - kWindowSize.height },
             { kWindowSize.width, kWindowSize.height },
             Ui::WindowFlags::stickToFront | Ui::WindowFlags::transparent | Ui::WindowFlags::noBackground,
@@ -87,8 +87,8 @@ namespace OpenLoco::Ui::Windows::TimePanel
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
-            window->setColour(WindowColour::primary, AdvancedColour(skin->timeToolbarColour).translucent());
-            window->setColour(WindowColour::secondary, AdvancedColour(skin->timeToolbarColour).translucent());
+            window->setColour(WindowColour::primary, AdvancedColour(skin->timePanelColour).translucent());
+            window->setColour(WindowColour::secondary, AdvancedColour(skin->timePanelColour).translucent());
         }
 
         return window;
@@ -181,7 +181,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         }
 
         auto c = self.getColour(WindowColour::primary).opaque();
-        if (Input::isHovering(WindowType::timeToolbar, 0, widx::date_btn))
+        if (Input::isHovering(WindowType::timePanel, 0, widx::date_btn))
         {
             c = Colour::white;
         }
@@ -404,7 +404,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         {
             if (w.numTicksVisible == 0 || w.numTicksVisible == kPausedStatusTextDuration)
             {
-                WindowManager::invalidate(WindowType::timeToolbar);
+                WindowManager::invalidate(WindowType::timePanel);
             }
         }
     }

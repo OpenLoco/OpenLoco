@@ -317,7 +317,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     args.param1 = _cashIncreaseStep;
 
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
-                    WindowManager::invalidate(WindowType::companyInfoToolbar);
+                    WindowManager::invalidate(WindowType::companyInfoPanel);
                     break;
                 }
 
@@ -340,7 +340,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     args.param3 = _date.day + 1; // +1 days again
 
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
-                    WindowManager::invalidate(WindowType::timeToolbar);
+                    WindowManager::invalidate(WindowType::timePanel);
                     break;
                 }
             }
@@ -548,7 +548,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     args.param1 = enumValue(_targetCompanyId);
 
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
-                    WindowManager::invalidate(WindowType::companyInfoToolbar);
+                    WindowManager::invalidate(WindowType::companyInfoPanel);
                     return;
                 }
 
@@ -559,7 +559,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     args.param1 = enumValue(_targetCompanyId);
 
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
-                    WindowManager::invalidate(WindowType::companyInfoToolbar);
+                    WindowManager::invalidate(WindowType::companyInfoPanel);
                     return;
                 }
 
@@ -570,7 +570,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     args.param1 = enumValue(_targetCompanyId);
 
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
-                    WindowManager::invalidate(WindowType::companyInfoToolbar);
+                    WindowManager::invalidate(WindowType::companyInfoPanel);
                     return;
                 }
             }

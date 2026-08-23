@@ -77,13 +77,13 @@ namespace OpenLoco::Gui
             window->width = std::max(uiWidth, 640);
         }
 
-        window = WindowManager::find(WindowType::companyInfoToolbar);
+        window = WindowManager::find(WindowType::companyInfoPanel);
         if (window)
         {
             window->y = uiHeight - window->height;
         }
 
-        window = WindowManager::find(WindowType::timeToolbar);
+        window = WindowManager::find(WindowType::timePanel);
         if (window)
         {
             window->y = uiHeight - window->height;
