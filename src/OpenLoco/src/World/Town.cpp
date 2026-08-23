@@ -255,19 +255,19 @@ namespace OpenLoco
             },
             {
                 TownGrowthSpeedBracket(
-                    50,
+                    0,
                     TownGrowthSpeed::oneEighth),
                 TownGrowthSpeedBracket(
-                    400,
+                    50,
                     TownGrowthSpeed::one),
                 TownGrowthSpeedBracket(
-                    800,
+                    400,
                     TownGrowthSpeed::intZero + 3),
                 TownGrowthSpeedBracket(
-                    1250,
+                    800,
                     TownGrowthSpeed::intZero + 5),
                 TownGrowthSpeedBracket(
-                    65535,
+                    1250,
                     TownGrowthSpeed::intZero + 7),
             },
         };
@@ -360,11 +360,12 @@ namespace OpenLoco
         GrowthSpeed speed = TownGrowthSpeed::zero;
         for (auto bracket : growthConfiguration.brackets)
         {
-            if (bracket.maximumPoints > points)
+            if (bracket.startThreshold < points)
             {
                 speed = bracket.speed;
-                break;
+                continue;
             }
+            break;
         }
         printf("Town %d scored %d points this month. Growth speed is %s\n",enumValue(id()),points,getTownGrowthSpeedName(speed).c_str());
         buildSpeed = speed;

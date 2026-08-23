@@ -80,7 +80,7 @@ namespace OpenLoco
 
     struct TownGrowthSpeedBracket
     {
-        int32_t maximumPoints = 0;
+        int32_t startThreshold = 0;
         GrowthSpeed speed = TownGrowthSpeed::zero;
     };
 
