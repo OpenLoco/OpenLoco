@@ -1,3 +1,4 @@
+#include "Config.h"
 #include "EditorController.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
@@ -14,7 +15,7 @@ namespace OpenLoco::Ui::Windows::EditorStepController
     static constexpr int32_t kImageWidth = 30;
     static constexpr int32_t kBaseWidth = 40;
     static constexpr Size kWindowSize = { kImageWidth + kBaseWidth + 130, 32 };
-    static constexpr Size kWindowSizeShrunk = { kImageWidth + kBaseWidth + 130, 24 };
+    static constexpr Size kWindowSizeShrunk = { kImageWidth + kBaseWidth + 130, 27 };
 
     enum widx
     {
@@ -83,11 +84,14 @@ namespace OpenLoco::Ui::Windows::EditorStepController
         self.widgets[widx::frame].hidden = hidden;
         self.widgets[widx::button].hidden = hidden;
 
-        const bool isBottom = self.y > 0;
-        const auto& size = isBottom ? kWindowSize : kWindowSizeShrunk;
-        self.widgets[widx::frame].bottom = size.height + 2;
-        self.widgets[widx::button].top = self.y > 0 ? -2 : 2;
-        self.widgets[widx::button].bottom = size.height + 2;
+        const bool infoPanelsOnTop = Config::get().infoPanelsOnTop;
+        const auto& size = !infoPanelsOnTop ? kWindowSize : kWindowSizeShrunk;
+        if (self.height != size.height)
+        {
+            self.widgets[widx::frame].bottom = size.height;
+            self.widgets[widx::button].top = infoPanelsOnTop ? 1 : 2;
+            self.widgets[widx::button].bottom = size.height - 2;
+        }
 
         auto stepString = isPreviousButton(self) ? EditorController::getPreviousStepString() : EditorController::getNextStepString();
         auto labelWidth = Gfx::TextRenderer::getStringWidth(Gfx::Font::medium_bold, StringManager::getString(stepString));
@@ -96,7 +100,7 @@ namespace OpenLoco::Ui::Windows::EditorStepController
             return;
         }
 
-        if (isBottom)
+        if (!infoPanelsOnTop)
         {
             const auto& layout = isPreviousButton(self) ? kStepFrames[0] : kStepFrames[1];
             labelWidth = std::max(labelWidth, Gfx::TextRenderer::getStringWidth(Gfx::Font::medium_bold, StringManager::getString(layout.label)));
@@ -106,7 +110,7 @@ namespace OpenLoco::Ui::Windows::EditorStepController
         if (self.width != buttonWidth)
         {
             self.width = buttonWidth;
-            self.widgets[widx::frame].right = self.width;
+            self.widgets[widx::frame].right = self.width - 1;
             self.widgets[widx::button].right = self.width - 3;
             Gui::resize();
         }
@@ -120,19 +124,23 @@ namespace OpenLoco::Ui::Windows::EditorStepController
             return;
         }
 
-        const bool isBottom = self.y > 0;
+        const bool infoPanelsOnTop = Config::get().infoPanelsOnTop;
+        auto offsetY = infoPanelsOnTop ? -2 : 1;
+        auto height = infoPanelsOnTop ? 0 : -2;
 
         // Draw frame
         auto& frame = self.widgets[widx::frame];
-        auto frameYOffset = isBottom ? 0 : -2;
-        drawingCtx.drawRect(frame.left, frame.top + frameYOffset, frame.width(), frame.height() - frameYOffset, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+
+        drawingCtx.drawRect(frame.left, frame.top + offsetY, frame.width(), frame.height() + height, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+
         self.draw(drawingCtx);
-        drawingCtx.drawRectInset(frame.left + 1, frame.top + frameYOffset + 1, frame.width() - 2, frame.height() - frameYOffset - 2, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
+
+        drawingCtx.drawRectInset(frame.left + 1, frame.top + offsetY, frame.width() - 2, frame.height() + height + 1, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
         const bool isPrev = isPreviousButton(self);
         const auto& layout = isPrev ? kStepFrames[0] : kStepFrames[1];
-        const auto& labelOffset = Point{ (self.width + (isPrev ? 1 : -1) * kImageWidth) / 2, isBottom ? 6 : 8 };
-        const auto& imageOffset = Point{ isPrev ? 6 : self.width - kImageWidth, isBottom ? 6 : 1 };
+        const auto& labelOffset = Point{ (self.width + (isPrev ? 1 : -1) * kImageWidth) / 2, !infoPanelsOnTop ? 6 : 8 };
+        const auto& imageOffset = Point{ isPrev ? 6 : self.width - kImageWidth, !infoPanelsOnTop ? 6 : 1 };
 
         auto imagePos = frame.position() + imageOffset;
         drawingCtx.drawImage(ZoomLevel::full, imagePos.x, imagePos.y, layout.image);
@@ -146,7 +154,7 @@ namespace OpenLoco::Ui::Windows::EditorStepController
         auto textPos = frame.position() + labelOffset;
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        if (isBottom)
+        if (!infoPanelsOnTop)
         {
             tr.drawStringCentred(textPos, textColour, layout.label);
             textPos.y += 10;
