@@ -53,8 +53,8 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
 
     // 0x00509d08
     static constexpr auto _widgets = makeWidgets(
-        Widgets::Wt3Widget(Widx::kOuterFrame, { 0, 0 }, { 140, 29 }, WindowColour::primary),
-        Widgets::Wt3Widget(Widx::kInnerFrame, { 2, 2 }, { 136, 25 }, WindowColour::primary),
+        Widgets::Wt3Widget(Widx::kOuterFrame, { 0, 0 }, kWindowSize + Size{ 0, 2 }, WindowColour::primary),
+        Widgets::Wt3Widget(Widx::kInnerFrame, { 2, 2 }, kWindowSize - Size{ 4, 2 }, WindowColour::primary),
         Widgets::ImageButton(Widx::kPlayer, { 1, 1 }, { 26, 26 }, WindowColour::primary),
         Widgets::ImageButton(Widx::kCompanyValue, { 27, 2 }, { 111, 12 }, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_company_value),
         Widgets::ImageButton(Widx::kPerformanceIndex, { 27, 14 }, { 111, 12 }, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_performance_index)
@@ -188,15 +188,15 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
     // 0x43944B
     static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
     {
-        Widget& frame = window.widgets[widx::outer_frame];
-        drawingCtx.drawRect(frame.left, frame.top, frame.width(), frame.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
-
-        // Draw widgets.
-        window.draw(drawingCtx);
-
         const bool infoPanelsOnTop = Config::get().infoPanelsOnTop;
         auto offsetY = infoPanelsOnTop ? -2 : 1;
         auto height = infoPanelsOnTop ? 0 : -2;
+
+        Widget& frame = window.widgets[widx::outer_frame];
+        drawingCtx.drawRect(frame.left, frame.top + offsetY, frame.width(), frame.height() + height, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+
+        window.draw(drawingCtx);
+
         drawingCtx.drawRectInset(frame.left + 1, frame.top + offsetY, frame.width() - 2, frame.height() + height, window.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
         auto playerCompany = CompanyManager::get(CompanyManager::getControllingId());
