@@ -156,6 +156,17 @@ namespace OpenLoco::Platform
         return result == nullptr ? std::string() : result;
     }
 
+    std::vector<fs::path> getLocoInstallSearchPaths()
+    {
+        return {
+            "C:/Program Files (x86)/Atari/Locomotion",
+            "C:/GOG Games/Chris Sawyer's Locomotion",
+            "C:/GOG Games/Locomotion",
+            "C:/Program Files/Steam/steamapps/common/Locomotion",
+            "C:/Program Files (x86)/Steam/steamapps/common/Locomotion",
+        };
+    }
+
     bool isRunningInWine()
     {
         HMODULE ntdllMod = GetModuleHandleW(L"ntdll.dll");

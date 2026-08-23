@@ -52,16 +52,8 @@ namespace OpenLoco::Environment
 
     static fs::path autoDetectLocoInstallPath()
     {
-        static constexpr const char* kSearchPaths[] = {
-            "C:/Program Files (x86)/Atari/Locomotion",
-            "C:/GOG Games/Chris Sawyer's Locomotion",
-            "C:/GOG Games/Locomotion",
-            "C:/Program Files/Steam/steamapps/common/Locomotion",
-            "C:/Program Files (x86)/Steam/steamapps/common/Locomotion",
-        };
-
         Logging::info("Searching for Locomotion install path...");
-        for (auto path : kSearchPaths)
+        for (const auto& path : Platform::getLocoInstallSearchPaths())
         {
             if (validateLocoInstallPath(path))
             {
