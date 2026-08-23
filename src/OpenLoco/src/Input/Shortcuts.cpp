@@ -598,7 +598,7 @@ namespace OpenLoco::Input::Shortcuts
         }
         else
         {
-            auto* caller = WindowManager::find(WindowType::timeToolbar);
+            auto* caller = WindowManager::find(WindowType::timePanel);
             if (caller == nullptr)
             {
                 return;

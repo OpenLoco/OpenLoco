@@ -38,8 +38,8 @@ namespace OpenLoco
         Colour topToolbarSecondaryColour;  // 0x13
         Colour topToolbarTertiaryColour;   // 0x14
         Colour topToolbarQuaternaryColour; // 0x15
-        Colour companyInfoToolbarColour;   // 0x16
-        Colour timeToolbarColour;          // 0x17
+        Colour companyInfoPanelColour;     // 0x16
+        Colour timePanelColour;            // 0x17
 
         // 0x0043C888
         bool validate() const { return true; }
