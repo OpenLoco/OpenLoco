@@ -61,8 +61,8 @@ namespace OpenLoco::Ui::Windows::TimePanel
     static void sendChatMessage(const char* str);
 
     static constexpr auto _widgets = makeWidgets(
-        Widgets::Wt3Widget(Widx::kOuterFrame, { 0, 0 }, { 140, 29 }, WindowColour::primary),
-        Widgets::Wt3Widget(Widx::kInnerFrame, { 2, 2 }, { 136, 25 }, WindowColour::primary),
+        Widgets::Wt3Widget(Widx::kOuterFrame, { 0, 0 }, kWindowSize + Size{ 0, 2 }, WindowColour::primary),
+        Widgets::Wt3Widget(Widx::kInnerFrame, { 2, 2 }, kWindowSize - Size{ 4, 2 }, WindowColour::primary),
         Widgets::ImageButton(Widx::kMapChatMenu, { 113, 1 }, { 26, 26 }, WindowColour::primary),
         Widgets::ImageButton(Widx::kDateBtn, { 2, 1 }, { 111, 12 }, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_daymonthyear_challenge),
         Widgets::ImageButton(Widx::kPauseBtn, { 18, 14 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_pause, StringIds::tooltip_speed_pause),
@@ -98,11 +98,6 @@ namespace OpenLoco::Ui::Windows::TimePanel
     // 0x004396A4
     static void prepareDraw([[maybe_unused]] Window& window)
     {
-        const bool infoPanelsOnTop = Config::get().infoPanelsOnTop;
-
-        Widget& frame = window.widgets[widx::outer_frame];
-        frame.top = infoPanelsOnTop ? -2 : 0;
-
         window.widgets[widx::inner_frame].hidden = true;
         window.widgets[widx::pause_btn].image = Gfx::recolour(ImageIds::speed_pause);
         window.widgets[widx::normal_speed_btn].image = Gfx::recolour(ImageIds::speed_normal);
@@ -163,17 +158,15 @@ namespace OpenLoco::Ui::Windows::TimePanel
     // 0x004397BE
     static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        auto tr = Gfx::TextRenderer(drawingCtx);
-
-        Widget& frame = self.widgets[widx::outer_frame];
-        drawingCtx.drawRect(frame.left, frame.top, frame.width(), frame.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
-
-        // Draw widgets.
-        self.draw(drawingCtx);
-
         const bool infoPanelsOnTop = Config::get().infoPanelsOnTop;
         auto offsetY = infoPanelsOnTop ? -2 : 1;
         auto height = infoPanelsOnTop ? 0 : -2;
+
+        Widget& frame = self.widgets[widx::outer_frame];
+        drawingCtx.drawRect(frame.left, frame.top + offsetY, frame.width(), frame.height() + height, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+
+        self.draw(drawingCtx);
+
         drawingCtx.drawRectInset(frame.left + 1, frame.top + offsetY, frame.width() - 2, frame.height() + height, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
         FormatArguments args{};
@@ -198,6 +191,8 @@ namespace OpenLoco::Ui::Windows::TimePanel
         {
             auto& widget = _widgets[widx::date_btn];
             auto point = Point(widget.midX(), widget.top + 1);
+
+            auto tr = Gfx::TextRenderer(drawingCtx);
             tr.drawStringCentred(point, c, format, args);
         }
 
