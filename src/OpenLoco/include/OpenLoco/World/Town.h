@@ -12,6 +12,7 @@ namespace OpenLoco
 {
     constexpr int32_t kMinCompanyRating = -1000;
     constexpr int32_t kMaxCompanyRating = 1000;
+    constexpr uint8_t kNumTownGrowthBrackets = 16;
 
     enum class TownFlags : uint16_t
     {
@@ -52,6 +53,42 @@ namespace OpenLoco
         struct RenderTarget;
     }
 
+    struct TownGrowthInputCargo
+    {
+        uint16_t pointsMultiplier;
+        uint16_t pointsCap;
+        TownSize necessaryAtThisSize;
+        uint8_t cargoType;
+    };
+
+    enum class TownGrowthSpeed
+    {
+        zero,
+        oneEighth,
+        oneQuarter,
+        threeEighth,
+        oneHalf,
+        fiveEighth,
+        threeQuarter,
+        sevenEighth,
+        one,
+        two,
+        three,
+        four,
+        five,
+        six,
+        seven,
+        eight,
+        nine,
+    };
+
+    struct TownGrowthSpeedBracket
+    {
+        uint16_t minimumCargo;
+        TownGrowthSpeed speed;
+    };
+    using TownGrowthSpeedBrackets = std::array<TownGrowthSpeedBracket, kNumTownGrowthBrackets>;
+
     struct Town
     {
         StringId name;                      // 0x00
@@ -80,7 +117,7 @@ namespace OpenLoco
 
         bool empty() const;
         TownId id() const;
-        void tick();
+        void tick(uint8_t tickNum);
         void drawLabel(Gfx::DrawingContext& drawingCtx, ZoomLevel zoom);
         void updateLabel();
         void updateMonthly();

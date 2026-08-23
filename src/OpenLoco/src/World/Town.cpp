@@ -51,8 +51,9 @@ namespace OpenLoco
      * Update town
      *
      * @param this @<esi>
+     * @param tickNum
      */
-    void Town::tick()
+    void Town::tick(uint8_t tickNum)
     {
         recalculateSize();
 
@@ -60,7 +61,7 @@ namespace OpenLoco
         {
             return;
         }
-
+        assert(buildSpeed < 6);
         static constexpr std::array<uint8_t, 12> kBuildSpeedToGrowthPerTick = { 0, 1, 3, 5, 7, 9, 12, 16, 22, 0, 0, 0 };
         auto growthPerTick = kBuildSpeedToGrowthPerTick[this->buildSpeed];
         if (growthPerTick == 0 || (growthPerTick == 1 && (gPrng1().randNext() & 7)))
