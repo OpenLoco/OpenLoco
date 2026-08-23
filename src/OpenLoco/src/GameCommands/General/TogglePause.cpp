@@ -15,7 +15,7 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        Ui::WindowManager::invalidate(Ui::WindowType::timeToolbar);
+        Ui::WindowManager::invalidate(Ui::WindowType::timePanel);
 
         if ((SceneManager::getPauseFlags() & PauseFlags::player) != PauseFlags::none)
         {

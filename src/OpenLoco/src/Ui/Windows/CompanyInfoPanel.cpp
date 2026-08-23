@@ -159,7 +159,7 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
     Window* open()
     {
         auto window = WindowManager::createWindow(
-            WindowType::companyInfoToolbar,
+            WindowType::companyInfoPanel,
             { 0, Ui::height() - kWindowSize.height },
             { kWindowSize.width, kWindowSize.height },
             Ui::WindowFlags::stickToFront | Ui::WindowFlags::transparent | Ui::WindowFlags::noBackground,
@@ -171,8 +171,8 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
-            window->setColour(WindowColour::primary, AdvancedColour(skin->companyInfoToolbarColour).translucent());
-            window->setColour(WindowColour::secondary, AdvancedColour(skin->companyInfoToolbarColour).translucent());
+            window->setColour(WindowColour::primary, AdvancedColour(skin->companyInfoPanelColour).translucent());
+            window->setColour(WindowColour::secondary, AdvancedColour(skin->companyInfoPanelColour).translucent());
         }
 
         return window;
@@ -218,7 +218,7 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
             }
 
             auto colour = window.getColour(WindowColour::primary).opaque();
-            if (Input::isHovering(WindowType::companyInfoToolbar, 0, widx::company_value))
+            if (Input::isHovering(WindowType::companyInfoPanel, 0, widx::company_value))
             {
                 colour = Colour::white;
             }
@@ -243,7 +243,7 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
             }
 
             auto colour = window.getColour(WindowColour::primary).opaque();
-            if (Input::isHovering(WindowType::companyInfoToolbar, 0, widx::performanceIndex))
+            if (Input::isHovering(WindowType::companyInfoPanel, 0, widx::performanceIndex))
             {
                 colour = Colour::white;
             }

@@ -8,8 +8,8 @@ namespace OpenLoco::Ui
     {
         main = 0,
         topToolbar = 1,
-        companyInfoToolbar = 2,
-        timeToolbar = 3,
+        companyInfoPanel = 2,
+        timePanel = 3,
         editorToolbar = 4,
 
         tooltip = 6,
