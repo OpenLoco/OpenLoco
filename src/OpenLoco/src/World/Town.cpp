@@ -187,20 +187,23 @@ namespace OpenLoco
         return kBuildSpeedToGrowthPerTick[bracket];
     }
 
+    static std::optional<LoadedObjectHandle> getCargoObject(std::string name)
+    {
+        auto objHeader = ObjectHeader();
+        objHeader.flags = enumValue(ObjectType::cargo);
+        memcpy(objHeader.name, name.c_str(),8);
+        return ObjectManager::findObjectHandle(objHeader);
+    }
+
     TownGrowthConfiguration getDefaultTownGrowthConfiguration()
     {
-        // this is specifically designed to work with the vanilla region objects. Custom region objects may not work.
         uint8_t paxCargoId = 255;
-        const auto* regionObj = ObjectManager::get<RegionObject>();
-        for (auto i = 0U; i < regionObj->numCargoInflunceObjects; ++i)
+        auto res = getCargoObject("PASS    ");
+        if (res.has_value())
         {
-            auto a = regionObj->cargoInfluenceObjectIds[i];
-            if (a != 255 && regionObj->cargoInfluenceTownFilter[i] == CargoInfluenceTownFilterType::allTowns)
-            {
-                paxCargoId = a;
-                break;
-            }
+            paxCargoId = res->id;
         }
+
         assert(paxCargoId != 255);
         TownGrowthConfiguration config = {
             {
