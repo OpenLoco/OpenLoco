@@ -61,15 +61,13 @@ namespace OpenLoco
         {
             return;
         }
-        assert(buildSpeed < 6);
-        static constexpr std::array<uint8_t, 12> kBuildSpeedToGrowthPerTick = { 0, 1, 3, 5, 7, 9, 12, 16, 22, 0, 0, 0 };
-        auto growthPerTick = kBuildSpeedToGrowthPerTick[this->buildSpeed];
-        if (growthPerTick == 0 || (growthPerTick == 1 && (gPrng1().randNext() & 7)))
+        if (buildSpeed < TownGrowthSpeed::one && tickNum >= buildSpeed)
         {
             grow(TownGrowFlags::buildInitialRoad | TownGrowFlags::roadUpdate | TownGrowFlags::neutralRoadTakeover);
         }
-        else
+        else if (buildSpeed > TownGrowthSpeed::zero)
         {
+            auto growthPerTick = buildSpeed >= TownGrowthSpeed::one ? buildSpeed - TownGrowthSpeed::intZero : 1;
             for (int32_t counter = 0; counter < growthPerTick; ++counter)
             {
                 grow(TownGrowFlags::buildInitialRoad | TownGrowFlags::roadUpdate | TownGrowFlags::neutralRoadTakeover | TownGrowFlags::allowRoadExpansion | TownGrowFlags::allowRoadBranching | TownGrowFlags::constructBuildings);
@@ -137,6 +135,25 @@ namespace OpenLoco
             labelFrame.top[index] = zoom.applyInversedTo(yOffset);
             labelFrame.bottom[index] = labelFrame.top[index] + uiHeight;
         }
+    }
+
+    GrowthSpeed getTownGrowthSpeed(uint8_t bracket)
+    {
+        static constexpr std::array<GrowthSpeed, 12> kBuildSpeedToGrowthPerTick = {
+            TownGrowthSpeed::zero,
+            TownGrowthSpeed::oneEighth,
+            TownGrowthSpeed::intZero + 3,
+            TownGrowthSpeed::intZero + 5,
+            TownGrowthSpeed::intZero + 7,
+            TownGrowthSpeed::intZero + 9,
+            TownGrowthSpeed::intZero + 12,
+            TownGrowthSpeed::intZero + 16,
+            TownGrowthSpeed::intZero + 22,
+            TownGrowthSpeed::zero,
+            TownGrowthSpeed::zero,
+            TownGrowthSpeed::zero,
+        };
+        return kBuildSpeedToGrowthPerTick[bracket];
     }
 
     // 0x0049749B
@@ -221,9 +238,8 @@ namespace OpenLoco
 
             minCargoDelivered = std::min(minCargoDelivered, monthlyCargoDelivered[cargoId]);
         }
-
         // Compute build speed (1=slow build speed, 4=fast build speed)
-        buildSpeed = std::clamp((minCargoDelivered / 100) + 1, 1, 4);
+        buildSpeed = getTownGrowthSpeed(std::clamp((minCargoDelivered / 100) + 1, 1, 4));
 
         // Reset all monthlyCargoDelivered intermediaries to zero.
         memset(&monthlyCargoDelivered, 0, sizeof(monthlyCargoDelivered));

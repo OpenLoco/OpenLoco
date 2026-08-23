@@ -61,33 +61,32 @@ namespace OpenLoco
         uint8_t cargoType;
     };
 
-    enum class TownGrowthSpeed
+    using GrowthSpeed = uint8_t;
+    namespace TownGrowthSpeed
     {
-        zero,
-        oneEighth,
-        oneQuarter,
-        threeEighth,
-        oneHalf,
-        fiveEighth,
-        threeQuarter,
-        sevenEighth,
-        one,
-        two,
-        three,
-        four,
-        five,
-        six,
-        seven,
-        eight,
-        nine,
-    };
+        constexpr GrowthSpeed zero = 0;
+        constexpr GrowthSpeed oneEighth = 1;
+        constexpr GrowthSpeed oneQuarter = 2;
+        constexpr GrowthSpeed threeEighth = 3;
+        constexpr GrowthSpeed oneHalf = 4;
+        constexpr GrowthSpeed fiveEighth = 5;
+        constexpr GrowthSpeed threeQuarter = 6;
+        constexpr GrowthSpeed sevenEighth = 7;
+        constexpr GrowthSpeed intZero = 7;
+        constexpr GrowthSpeed one = 8;
+    }
 
     struct TownGrowthSpeedBracket
     {
         uint16_t minimumCargo;
-        TownGrowthSpeed speed;
+        GrowthSpeed speed;
     };
-    using TownGrowthSpeedBrackets = std::array<TownGrowthSpeedBracket, kNumTownGrowthBrackets>;
+
+    struct TownGrowthConfiguration
+    {
+        std::array<TownGrowthInputCargo, 8> cargos;
+        std::array<TownGrowthSpeedBracket, kNumTownGrowthBrackets> brackets;
+    };
 
     struct Town
     {
@@ -110,7 +109,7 @@ namespace OpenLoco
         uint16_t monthlyCargoDelivered[32]; // 0x158
         uint32_t cargoInfluenceFlags;       // 0x198
         uint16_t var_19C[2][2];
-        uint8_t buildSpeed;       // 0x1A4, 1=slow build speed, 4=fast build speed
+        GrowthSpeed buildSpeed;   // 0x1A4
         uint8_t numberOfAirports; // 0x1A5
         uint16_t numStations;     // 0x1A6
         uint32_t var_1A8;
@@ -126,4 +125,6 @@ namespace OpenLoco
         void grow(TownGrowFlags growFlags);
         StringId getTownSizeString() const;
     };
+
+    GrowthSpeed getTownGrowthSpeed(uint8_t bracket);
 }

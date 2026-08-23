@@ -27,7 +27,8 @@ namespace OpenLoco::S5
         std::ranges::copy(src.monthlyCargoDelivered, dst.monthlyCargoDelivered);
         dst.cargoInfluenceFlags = src.cargoInfluenceFlags;
         std::memcpy(dst.var_19C, src.var_19C, sizeof(dst.var_19C));
-        dst.buildSpeed = src.buildSpeed;
+        // not implemented
+        dst.buildSpeed = 1;
         dst.numberOfAirports = src.numberOfAirports;
         dst.numStations = src.numStations;
         dst.var_1A8 = src.var_1A8;
@@ -56,7 +57,7 @@ namespace OpenLoco::S5
         std::ranges::copy(src.monthlyCargoDelivered, dst.monthlyCargoDelivered);
         dst.cargoInfluenceFlags = src.cargoInfluenceFlags;
         std::memcpy(dst.var_19C, src.var_19C, sizeof(dst.var_19C));
-        dst.buildSpeed = src.buildSpeed;
+        dst.buildSpeed = getTownGrowthSpeed(src.buildSpeed);
         dst.numberOfAirports = src.numberOfAirports;
         dst.numStations = src.numStations;
         dst.var_1A8 = src.var_1A8;
