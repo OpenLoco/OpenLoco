@@ -201,6 +201,22 @@ namespace OpenLoco::Ui::Windows
         Window* open(Input::Shortcut shortcutId);
     }
 
+    namespace EditorStepController
+    {
+        enum class StepDirection : uint8_t
+        {
+            previous,
+            next,
+        };
+
+        void open(StepDirection direction);
+    }
+
+    namespace EditorStatusLine
+    {
+        void open();
+    }
+
     namespace Error
     {
         void open(StringId title, StringId message = StringIds::null);
@@ -425,11 +441,6 @@ namespace OpenLoco::Ui::Windows
     namespace TitleVersion
     {
         Window* open();
-    }
-
-    namespace ToolbarBottom::Editor
-    {
-        void open();
     }
 
     namespace ToolbarTop

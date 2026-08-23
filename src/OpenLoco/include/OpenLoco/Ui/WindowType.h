@@ -10,8 +10,8 @@ namespace OpenLoco::Ui
         topToolbar = 1,
         companyInfoPanel = 2,
         timePanel = 3,
-        editorToolbar = 4,
-
+        editorStepController = 4,
+        editorStatusLine = 5,
         tooltip = 6,
         dropdown = 7,
 
