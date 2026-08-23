@@ -282,8 +282,8 @@ namespace OpenLoco::TownManager
 
         std::fill_n(&town->monthlyCargoDelivered[0], std::size(town->monthlyCargoDelivered), 0);
 
-        town->cargoInfluenceFlags = calcCargoInfluenceFlags(*town);
-        town->buildSpeed = 1;
+        getDefaultTownGrowthConfiguration();
+        town->buildSpeed = town->growthConfiguration.brackets[0].speed;
 
         // Figure out a name for this town?
         if (!generateTownName(town))
@@ -454,7 +454,7 @@ namespace OpenLoco::TownManager
                 if (town != nullptr && !town->empty())
                 {
                     GameCommands::setUpdatingCompanyId(CompanyId::neutral);
-                    auto ticknum = (ticks / 8 / 256) % 8;
+                    auto ticknum = (ticks / 8 / 127) % 8;
                     town->tick(ticknum);
                 }
             }

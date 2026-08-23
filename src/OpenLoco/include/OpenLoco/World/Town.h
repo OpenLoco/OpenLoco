@@ -13,6 +13,7 @@ namespace OpenLoco
     constexpr int32_t kMinCompanyRating = -1000;
     constexpr int32_t kMaxCompanyRating = 1000;
     constexpr uint8_t kNumTownGrowthBrackets = 16;
+    constexpr uint8_t kNumGrowthCargos = 4;
 
     enum class TownFlags : uint16_t
     {
@@ -55,10 +56,11 @@ namespace OpenLoco
 
     struct TownGrowthInputCargo
     {
-        uint16_t pointsMultiplier;
-        uint16_t pointsCap;
-        TownSize necessaryAtThisSize;
-        uint8_t cargoType;
+        int32_t pointsMultiplier = 1;
+        int32_t pointsCap = std::numeric_limits<int32_t>::max();
+        int32_t pointsFloor = 0;
+        TownSize minimumTownSize = TownSize::hamlet;
+        uint8_t cargoType = 255;
     };
 
     using GrowthSpeed = uint8_t;
@@ -78,13 +80,13 @@ namespace OpenLoco
 
     struct TownGrowthSpeedBracket
     {
-        uint16_t minimumCargo;
-        GrowthSpeed speed;
+        int32_t maximumPoints = 0;
+        GrowthSpeed speed = TownGrowthSpeed::zero;
     };
 
     struct TownGrowthConfiguration
     {
-        std::array<TownGrowthInputCargo, 8> cargos;
+        std::array<TownGrowthInputCargo, kNumGrowthCargos> cargos;
         std::array<TownGrowthSpeedBracket, kNumTownGrowthBrackets> brackets;
     };
 
@@ -113,6 +115,7 @@ namespace OpenLoco
         uint8_t numberOfAirports; // 0x1A5
         uint16_t numStations;     // 0x1A6
         uint32_t var_1A8;
+        TownGrowthConfiguration growthConfiguration;
 
         bool empty() const;
         TownId id() const;
@@ -127,4 +130,5 @@ namespace OpenLoco
     };
 
     GrowthSpeed getTownGrowthSpeed(uint8_t bracket);
+    TownGrowthConfiguration getDefaultTownGrowthConfiguration();
 }

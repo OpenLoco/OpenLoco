@@ -61,6 +61,7 @@ namespace OpenLoco::S5
         dst.numberOfAirports = src.numberOfAirports;
         dst.numStations = src.numStations;
         dst.var_1A8 = src.var_1A8;
+        dst.growthConfiguration = getDefaultTownGrowthConfiguration();
         return dst;
     }
 }

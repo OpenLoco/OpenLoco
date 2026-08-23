@@ -23,6 +23,7 @@
 #include "Objects/BuildingObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/ObjectUtils.h"
+#include "Objects/RegionObject.h"
 #include "Objects/RoadObject.h"
 #include "Objects/RoadStationObject.h"
 #include "Objects/StreetLightObject.h"
@@ -156,6 +157,48 @@ namespace OpenLoco
         return kBuildSpeedToGrowthPerTick[bracket];
     }
 
+    TownGrowthConfiguration getDefaultTownGrowthConfiguration()
+    {
+        // this is specifically designed to work with the vanilla region objects. Custom region objects may not work.
+        uint8_t paxCargoId = 255;
+        const auto* regionObj = ObjectManager::get<RegionObject>();
+        for (auto i = 0U; i < regionObj->numCargoInflunceObjects; ++i)
+        {
+            auto a = regionObj->cargoInfluenceObjectIds[i];
+            if (a != 255 && regionObj->cargoInfluenceTownFilter[i] == CargoInfluenceTownFilterType::allTowns)
+            {
+                paxCargoId = i;
+                break;
+            }
+        }
+        assert(paxCargoId != 255);
+        TownGrowthConfiguration config = {
+            {
+                TownGrowthInputCargo(
+                    1,
+                    300,
+                    0,
+                    TownSize::hamlet,
+                    paxCargoId),
+            },
+            {
+                TownGrowthSpeedBracket(
+                    100,
+                    TownGrowthSpeed::oneEighth),
+                TownGrowthSpeedBracket(
+                    200,
+                    TownGrowthSpeed::intZero + 3),
+                TownGrowthSpeedBracket(
+                    300,
+                    TownGrowthSpeed::intZero + 5),
+                TownGrowthSpeedBracket(
+                    65535,
+                    TownGrowthSpeed::intZero + 5),
+            },
+        };
+        return config;
+    }
+
     // 0x0049749B
     void Town::updateMonthly()
     {
@@ -225,22 +268,26 @@ namespace OpenLoco
             }
         }
 
-        // Work towards computing new build speed.
-        // will be the smallest of the influence cargo delivered to the town
-        // i.e. to get maximum growth max of the influence cargo must be delivered
-        // every update. If no influence cargo the town grows at max rate
-        uint16_t minCargoDelivered = std::numeric_limits<uint16_t>::max();
-        uint32_t cargoFlags = cargoInfluenceFlags;
-        while (cargoFlags != 0)
+        int32_t points = 0;
+        for (auto cargo: growthConfiguration.cargos)
         {
-            uint32_t cargoId = Numerics::bitScanForward(cargoFlags);
-            cargoFlags &= ~(1 << cargoId);
-
-            minCargoDelivered = std::min(minCargoDelivered, monthlyCargoDelivered[cargoId]);
+            if (cargo.cargoType == 255)
+                continue;
+            if (size < cargo.minimumTownSize)
+                continue;
+            auto cargoPoints = std::clamp<int32_t>(monthlyCargoDelivered[cargo.cargoType] * cargo.pointsMultiplier, cargo.pointsFloor, cargo.pointsCap);
+            points += cargoPoints;
         }
-        // Compute build speed (1=slow build speed, 4=fast build speed)
-        buildSpeed = getTownGrowthSpeed(std::clamp((minCargoDelivered / 100) + 1, 1, 4));
-
+        GrowthSpeed speed = TownGrowthSpeed::zero;
+        for (auto bracket: growthConfiguration.brackets)
+        {
+            if (bracket.maximumPoints > points)
+            {
+                speed = bracket.speed;
+                break;
+            }
+        }
+        buildSpeed = speed;
         // Reset all monthlyCargoDelivered intermediaries to zero.
         memset(&monthlyCargoDelivered, 0, sizeof(monthlyCargoDelivered));
     }
