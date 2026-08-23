@@ -59,6 +59,7 @@ namespace OpenLoco
         int32_t pointsMultiplier = 1;
         int32_t pointsCap = std::numeric_limits<int32_t>::max();
         int32_t pointsFloor = 0;
+        TownSize maximumTownSize = TownSize::metropolis;
         TownSize minimumTownSize = TownSize::hamlet;
         uint8_t cargoType = 255;
     };

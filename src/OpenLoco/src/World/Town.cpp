@@ -233,24 +233,28 @@ namespace OpenLoco
                     65535,
                     0,
                     TownSize::hamlet,
+                    TownSize::metropolis,
                     paxCargoId),
                 TownGrowthInputCargo(
                     2,
                     65535,
                     0,
                     TownSize::hamlet,
+                    TownSize::metropolis,
                     mailCargoId),
                 TownGrowthInputCargo(
                     10,
                     65535,
                     0,
                     TownSize::hamlet,
+                    TownSize::metropolis,
                     foodCargoId),
                 TownGrowthInputCargo(
                     10,
                     65535,
                     0,
                     TownSize::hamlet,
+                    TownSize::metropolis,
                     goodsCargoId),
             },
             {
@@ -351,6 +355,10 @@ namespace OpenLoco
                 continue;
             }
             if (size < cargo.minimumTownSize)
+            {
+                continue;
+            }
+            if (size > cargo.maximumTownSize)
             {
                 continue;
             }
