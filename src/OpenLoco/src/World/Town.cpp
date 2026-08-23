@@ -356,22 +356,26 @@ namespace OpenLoco
             }
             if (size < cargo.minimumTownSize)
             {
+                printf("Town %d was smaller than minimum for cargo %d (%d < %d)\n", enumValue(id()), cargo.cargoType, enumValue(cargo.minimumTownSize), enumValue(size));
                 continue;
             }
             if (size > cargo.maximumTownSize)
             {
+                printf("Town %d was larger than maximum for cargo %d (%d > %d)\n", enumValue(id()), cargo.cargoType, enumValue(cargo.maximumTownSize), enumValue(size));
                 continue;
             }
             auto cargoPoints = std::clamp<int32_t>(monthlyCargoDelivered[cargo.cargoType] * cargo.pointsMultiplier, cargo.pointsFloor, cargo.pointsCap);
             points += cargoPoints;
         }
         GrowthSpeed speed = TownGrowthSpeed::zero;
+        int32_t previousBracket = std::numeric_limits<int32_t>::min();
         for (auto bracket : growthConfiguration.brackets)
         {
-            if (bracket.startThreshold >= points)
+            if ((bracket.startThreshold > points) || (previousBracket > bracket.startThreshold))
             {
                 break;
             }
+            previousBracket = bracket.startThreshold;
             speed = bracket.speed;
         }
         printf("Town %d scored %d points this month. Growth speed is %s\n", enumValue(id()), points, getTownGrowthSpeedName(speed).c_str());

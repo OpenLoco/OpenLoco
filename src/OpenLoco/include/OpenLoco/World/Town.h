@@ -13,7 +13,7 @@ namespace OpenLoco
     constexpr int32_t kMinCompanyRating = -1000;
     constexpr int32_t kMaxCompanyRating = 1000;
     constexpr uint8_t kNumTownGrowthBrackets = 16;
-    constexpr uint8_t kNumGrowthCargos = 4;
+    constexpr uint8_t kNumGrowthCargos = 8;
 
     enum class TownFlags : uint16_t
     {
@@ -59,8 +59,8 @@ namespace OpenLoco
         int32_t pointsMultiplier = 1;
         int32_t pointsCap = std::numeric_limits<int32_t>::max();
         int32_t pointsFloor = 0;
-        TownSize maximumTownSize = TownSize::metropolis;
         TownSize minimumTownSize = TownSize::hamlet;
+        TownSize maximumTownSize = TownSize::metropolis;
         uint8_t cargoType = 255;
     };
 
