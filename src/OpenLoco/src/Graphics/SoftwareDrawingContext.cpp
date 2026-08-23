@@ -1,7 +1,9 @@
 #include "Graphics/SoftwareDrawingContext.h"
+#include "Graphics/Colour.h"
 #include "Graphics/DrawSprite.h"
 #include "Graphics/Font.h"
 #include "Graphics/Gfx.h"
+#include "Graphics/ImageId.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
 #include "Graphics/TextRenderer.h"
@@ -1190,6 +1192,12 @@ namespace OpenLoco::Gfx
     {
         auto& rt = currentRenderTarget();
         return Impl::drawImagePaletteSet(rt, ZoomLevel::full, pos, image, palette, noiseImage);
+    }
+
+    void SoftwareDrawingContext::drawPaletteBitmap(const Ui::Point& pos, const G1Element& element, PaletteMap::View palette)
+    {
+        auto& rt = currentRenderTarget();
+        Impl::drawImagePaletteSet<0, false>(rt, pos, ImageId(0).withPrimary(Colour::black), element, palette, nullptr);
     }
 
     void SoftwareDrawingContext::pushRenderTarget(const RenderTarget& rt)

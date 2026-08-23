@@ -57,8 +57,8 @@ namespace OpenLoco::Localisation
 
     static std::unique_ptr<char[]> readString(const char* value, size_t size)
     {
-        // Take terminating NULL character in account
-        auto str = std::make_unique<char[]>(size + 1);
+        // Unicode escapes are 5 bytes; 2-byte UTF-8 (e.g. Cyrillic) expands 2 -> 5.
+        auto str = std::make_unique<char[]>(size * 3 + 1);
         char* out = str.get();
 
         const utf8_t* ptr = (utf8_t*)value;
@@ -217,8 +217,7 @@ namespace OpenLoco::Localisation
             }
             else
             {
-                *out = convertUnicodeToLoco(codepoint);
-                out++;
+                out += writeLocoChar(out, codepoint);
             }
 
             if (codepoint == '\0')

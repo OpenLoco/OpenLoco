@@ -77,16 +77,16 @@ strings:
   65: "{UINT16 RAW} x {UINT16 RAW}"
   66: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{UINT16 RAW} x {UINT16 RAW}"
 
-  67: About 'Chris Sawyer's Locomotion'
-  68: Chris Sawyer's Locomotion
-  69: "{COLOUR WINDOW_2}Version 4.02.176 (UK English)"
+  67: "关于“Chris Sawyer's Locomotion”"
+  68: "Chris Sawyer's Locomotion"
+  69: "{COLOUR WINDOW_2}版本 4.02.176 (简体中文)"
   70: "{COLOUR WINDOW_2}Copyright © 2004 Chris Sawyer, All Rights Reserved"
-  71: "{COLOUR WINDOW_2}Designed & Programmed by Chris Sawyer"
-  72: "{COLOUR WINDOW_2}Graphics by Simon Foster"
-  73: "{COLOUR WINDOW_2}Sound & Music by Allister Brimble"
-  74: "{COLOUR WINDOW_2}Title Music by John Broomhall"
-  75: "{COLOUR WINDOW_2}Representation by Jacqui Lyons at Marjacq Ltd."
-  76: "{COLOUR WINDOW_2}Thanks to:-"
+  71: "{COLOUR WINDOW_2}设计与程序: Chris Sawyer"
+  72: "{COLOUR WINDOW_2}图形: Simon Foster"
+  73: "{COLOUR WINDOW_2}音效与音乐: Allister Brimble"
+  74: "{COLOUR WINDOW_2}标题音乐: John Broomhall"
+  75: "{COLOUR WINDOW_2}代理: Jacqui Lyons at Marjacq Ltd."
+  76: "{COLOUR WINDOW_2}鸣谢:-"
   77: "{COLOUR WINDOW_2}Katrina Morrin, Natasha Morrin, Jim Wills"
   78: ""
   79: ""
@@ -228,7 +228,7 @@ strings:
   212: 消息列表
   213: 公司列表
   214: 场景列表
-  215: credits list
+  215: 制作人员列表
 
   216: "{COLOUR WINDOW_2}▲{COLOUR BLACK}  {CURRENCY32}"
   217: "{COLOUR WINDOW_2}▼{COLOUR BLACK}  {CURRENCY32}"
@@ -414,7 +414,7 @@ strings:
   397: 播放音乐
   398: "{COLOUR RED}破产!"
   399: "{STRINGID}不允许在{STRINGID}等待满载货物"
-  400: "{STRINGID} has slipped to a halt on an incline"
+  400: "{STRINGID}在坡道上停下了"
   401: "{STRINGID}现在接受{STRINGID}"
   402: "{STRINGID}不在接受{STRINGID}"
   403: 新运输公司!{NEWLINE}{STRINGID}在{STRINGID}附近开始建设!
@@ -527,13 +527,13 @@ strings:
   506: "{INT16}段轨道"
   507: "{INT16}段轨道"
   508: 轨道 {INT16}
-  509: docking platform
-  510: docking platforms
-  511: Docking platform
-  512: Docking platforms
-  513: "{INT16} docking platform"
-  514: "{INT16} docking platforms"
-  515: Docking platform {INT16}
+  509: 码头
+  510: 码头
+  511: 码头
+  512: 码头
+  513: "{INT16}个码头"
+  514: "{INT16}个码头"
+  515: "码头 {INT16}"
   516: 站点
   517: 站点
   518: 站点
@@ -555,13 +555,13 @@ strings:
   534: "{INT16}栋建筑"
   535: "{INT16}栋建筑"
   536: 建筑 {INT16}
-  537: structure
-  538: structures
-  539: Structure
-  540: Structures
-  541: "{INT16} structure"
-  542: "{INT16} structures"
-  543: Structure {INT16}
+  537: 结构
+  538: 结构
+  539: 结构
+  540: 结构
+  541: "{INT16}个结构"
+  542: "{INT16}个结构"
+  543: "结构 {INT16}"
   544: 船
   545: 船
   546: 船
@@ -775,7 +775,7 @@ strings:
   750: ???
   751: ???
   752: Clear
-  753: Return
+  753: 回车
   754: ???
   755: ???
   756: ???
@@ -789,12 +789,12 @@ strings:
   764: ???
   765: ???
   766: ???
-  767: Escape
+  767: Esc
   768: ???
   769: ???
   770: ???
   771: ???
-  772: Spacebar
+  772: 空格
   773: PgUp
   774: PgDn
   775: End
@@ -1044,7 +1044,7 @@ strings:
   1017: 音乐说明...
   1018: 音乐说明
   1019: "{COLOUR BLACK}Copyright © Chris Sawyer"
-  1020: "{COLOUR WINDOW_2}Locomotion Title"
+  1020: "{COLOUR WINDOW_2}Locomotion 标题曲"
   1021: "{COLOUR BLACK}John Broomhall (Guitar played by Keith Thompson)"
   1022: "{COLOUR WINDOW_2}Long Dusty Road"
   1023: "{COLOUR BLACK}Allister Brimble (Trumpet played by Brian Moore)"
@@ -1067,17 +1067,17 @@ strings:
   1040: "{COLOUR WINDOW_2}Everlasting High-Rise"
   1041: "{COLOUR BLACK}Allister Brimble"
   1042: "{COLOUR WINDOW_2}Solace"
-  1043: "{COLOUR BLACK}Scott Joplin (Performed by Peter James Adcock)"
+  1043: "{COLOUR BLACK}Scott Joplin (Peter James Adcock 演奏)"
   1044: "{COLOUR WINDOW_2}Chrysanthemum"
-  1045: "{COLOUR BLACK}Scott Joplin (Performed by Peter James Adcock)"
+  1045: "{COLOUR BLACK}Scott Joplin (Peter James Adcock 演奏)"
   1046: "{COLOUR WINDOW_2}Eugenia"
-  1047: "{COLOUR BLACK}Scott Joplin (Performed by Peter James Adcock)"
+  1047: "{COLOUR BLACK}Scott Joplin (Peter James Adcock 演奏)"
   1048: "{COLOUR WINDOW_2}The Ragtime Dance"
-  1049: "{COLOUR BLACK}Scott Joplin (Performed by Peter James Adcock)"
+  1049: "{COLOUR BLACK}Scott Joplin (Peter James Adcock 演奏)"
   1050: "{COLOUR WINDOW_2}Easy Winners"
-  1051: "{COLOUR BLACK}Scott Joplin (Performed by Peter James Adcock)"
+  1051: "{COLOUR BLACK}Scott Joplin (Peter James Adcock 演奏)"
   1052: "{COLOUR WINDOW_2}Setting Off"
-  1053: "{COLOUR BLACK}Allister Brimble (Trumpet played by Brian Moore, Clarinet played by John Glanfield)"
+  1053: "{COLOUR BLACK}Allister Brimble (小号: Brian Moore, 单簧管: John Glanfield)"
   1054: "{COLOUR WINDOW_2}A Traveller's Seranade"
   1055: "{COLOUR BLACK}David Punshon"
   1056: "{COLOUR WINDOW_2}Latino Trip"
@@ -1101,7 +1101,7 @@ strings:
   1074: "{COLOUR WINDOW_2}Get Me To Gladstone Bay"
   1075: "{COLOUR BLACK}Allister Brimble"
   1076: "{COLOUR WINDOW_2}Chuggin' Along"
-  1077: "{COLOUR BLACK}Allister Brimble (Trumpet played by Brian Moore)"
+  1077: "{COLOUR BLACK}Allister Brimble (小号: Brian Moore)"
   1078: "{COLOUR WINDOW_2}Don't Lose Your Rag"
   1079: "{COLOUR BLACK}Allister Brimble"
   1080: "{COLOUR WINDOW_2}Sandy Track Blues"
@@ -1546,7 +1546,7 @@ strings:
   1511: "一般新闻:"
   1512: "建议:"
   1513: 关闭
-  1514: Ticker Message
+  1514: 新闻字幕
   1515: 新闻窗口
   1516: "{COLOUR WINDOW_2}月运行费用: {COLOUR BLACK}{CURRENCY32}"
   1517: "{COLOUR WINDOW_2}月利润: {COLOUR BLACK}{CURRENCY32}"
@@ -1629,7 +1629,7 @@ strings:
   1593: "{SMALLFONT}{COLOUR BLACK}城镇生成选项"
   1594: "{SMALLFONT}{COLOUR BLACK}工业设施生成选项"
 
-  1595: "[None]"
+  1595: "[无]"
   1596: Chuggin' Along
   1597: Long Dusty Road
   1598: Flying High
@@ -1977,48 +1977,48 @@ strings:
   1927: "{SMALLFONT}{COLOUR BLACK}将调度指令在调度列表中下移"
   1928: 无法在只读介质中直接运行游戏
 
-  1929: Atari Inc. Credits...
-  1930: "{COLOUR WINDOW_2}Licensed to Atari Inc."
-  1931: Atari Inc. Credits
+  1929: Atari Inc. 制作人员...
+  1930: "{COLOUR WINDOW_2}授权予 Atari Inc."
+  1931: Atari Inc. 制作人员
 
   1932: 游戏版本不兼容 - 无法连接!
   1933: "{SMALLFONT}{COLOUR BLACK}向另一个玩家发送一条短消息"
   1934: 另一个玩家
   1935: "另一个玩家已经退出游戏: 双人模式已断开"
 
-  1936: "{COLOUR YELLOW}Use of this product is subject to the terms of a license agreement{NEWLINE}found in the product's “ReadMe” file and in the manual"
-  1937: "{COLOUR YELLOW}ESRB Notice: Game experience may change during online play"
-  1938: "{COLOUR TOPAZ}Some forms of transport in this game have names that may be similar to those of real vehicles."
-  1939: "{COLOUR TOPAZ}This is a device to help players relate to the fictional universe of the game."
-  1940: "{COLOUR TOPAZ}The qualities (including speed, capacity, reliability, and cost) that have been attributed to various"
-  1941: "{COLOUR TOPAZ}vehicles are for game purposes only and are not intended to represent those of real"
-  1942: "{COLOUR TOPAZ}commercially available machines whether similarly named or not."
+  1936: "{COLOUR YELLOW}使用本产品即表示同意许可协议条款{NEWLINE}详见产品“ReadMe”文件和手册"
+  1937: "{COLOUR YELLOW}ESRB 提示: 在线游戏体验可能会有所不同"
+  1938: "{COLOUR TOPAZ}本游戏中部分交通工具的名称可能与真实车辆相似。"
+  1939: "{COLOUR TOPAZ}这是为了帮助玩家理解游戏中的虚构世界。"
+  1940: "{COLOUR TOPAZ}各种载具被赋予的特性（包括速度、载量、可靠性和成本）"
+  1941: "{COLOUR TOPAZ}仅用于游戏目的，即使名称相似，也不代表"
+  1942: "{COLOUR TOPAZ}真实商用机器的实际性能。"
 
-  1943: "{COLOUR WINDOW_2}Senior Producer:  Thomas J. Zahorik"
-  1944: "{COLOUR WINDOW_2}Senior Brand Manager:  Jeff Foley"
-  1945: "{COLOUR WINDOW_2}Executive Producer:  Bob Welch"
-  1946: "{COLOUR WINDOW_2}Director of Technology:  Paul Hellier"
-  1947: "{COLOUR WINDOW_2}Director of Marketing:  Peter Matiss"
-  1948: "{COLOUR WINDOW_2}Director of Creative Services:  Steve Martin"
-  1949: "{COLOUR WINDOW_2}Graphic Designer:  Rod Tilley"
-  1950: "{COLOUR WINDOW_2}Director of Editorial & Documentation Services:  Elizabeth Mackney"
-  1951: "{COLOUR WINDOW_2}Documentation Specialist:  Kurt Carlson"
-  1952: "{COLOUR WINDOW_2}Copywriter:  Paul Collin"
-  1953: "{COLOUR WINDOW_2}Manual Writer:  David Ellis"
-  1954: "{COLOUR WINDOW_2}Director of Publishing Support:  Michael Gilmartin"
-  1955: "{COLOUR WINDOW_2}Q.A. Managers:  Bill Carroll, Dave Strang"
-  1956: "{COLOUR WINDOW_2}Q.A. Supervisor:  Jason Cordero"
-  1957: "{COLOUR WINDOW_2}I.T. Manager/Western Region:  Ken Ford"
-  1958: "{COLOUR WINDOW_2}Manager of Technical Support:  Michael Vetsch"
-  1959: "{COLOUR WINDOW_2}Lead Tester:  Marshall Clevesy"
-  1960: "{COLOUR WINDOW_2}Assistant Lead Tester:  Sean McLaren"
-  1961: "{COLOUR WINDOW_2}Testers:  Randy Alfonso, Leticia Dueñas, John Hockaday, Tony Hsu, Brandon Reed, Nessie Rilveria"
-  1962: "{COLOUR WINDOW_2}Compatibility Lab Supervisor:  Dave Strang "
-  1963: "{COLOUR WINDOW_2}Compatibility Test Lead:  Cuong Vu"
-  1964: "{COLOUR WINDOW_2}Compatibility Analysts:  Randy Buchholz, Mark Florentino, Chris McQuinn, Scotte Kramer, Patricia-Jean Cody"
-  1965: "{COLOUR WINDOW_2}Engineering Services Specialist:  Ken Edwards"
-  1966: "{COLOUR WINDOW_2}Engineering Services Technicians:  Eugene Lai, Dan Burkhead"
-  1967: "{COLOUR WINDOW_2}Special Thanks:  John Billington, Cecelia Hernandez"
+  1943: "{COLOUR WINDOW_2}高级制作人:  Thomas J. Zahorik"
+  1944: "{COLOUR WINDOW_2}高级品牌经理:  Jeff Foley"
+  1945: "{COLOUR WINDOW_2}执行制作人:  Bob Welch"
+  1946: "{COLOUR WINDOW_2}技术总监:  Paul Hellier"
+  1947: "{COLOUR WINDOW_2}市场总监:  Peter Matiss"
+  1948: "{COLOUR WINDOW_2}创意服务总监:  Steve Martin"
+  1949: "{COLOUR WINDOW_2}图形设计师:  Rod Tilley"
+  1950: "{COLOUR WINDOW_2}编辑与文档服务总监:  Elizabeth Mackney"
+  1951: "{COLOUR WINDOW_2}文档专员:  Kurt Carlson"
+  1952: "{COLOUR WINDOW_2}文案:  Paul Collin"
+  1953: "{COLOUR WINDOW_2}手册作者:  David Ellis"
+  1954: "{COLOUR WINDOW_2}出版支持总监:  Michael Gilmartin"
+  1955: "{COLOUR WINDOW_2}质量保证经理:  Bill Carroll, Dave Strang"
+  1956: "{COLOUR WINDOW_2}质量保证主管:  Jason Cordero"
+  1957: "{COLOUR WINDOW_2}西部区域IT经理:  Ken Ford"
+  1958: "{COLOUR WINDOW_2}技术支持经理:  Michael Vetsch"
+  1959: "{COLOUR WINDOW_2}测试组长:  Marshall Clevesy"
+  1960: "{COLOUR WINDOW_2}助理测试组长:  Sean McLaren"
+  1961: "{COLOUR WINDOW_2}测试员:  Randy Alfonso, Leticia Dueñas, John Hockaday, Tony Hsu, Brandon Reed, Nessie Rilveria"
+  1962: "{COLOUR WINDOW_2}兼容性实验室主管:  Dave Strang "
+  1963: "{COLOUR WINDOW_2}兼容性测试组长:  Cuong Vu"
+  1964: "{COLOUR WINDOW_2}兼容性分析:  Randy Buchholz, Mark Florentino, Chris McQuinn, Scotte Kramer, Patricia-Jean Cody"
+  1965: "{COLOUR WINDOW_2}工程服务专员:  Ken Edwards"
+  1966: "{COLOUR WINDOW_2}工程服务技术员:  Eugene Lai, Dan Burkhead"
+  1967: "{COLOUR WINDOW_2}特别感谢:  John Billington, Cecelia Hernandez"
   1968: "{COLOUR WINDOW_2}"
   1969: "{COLOUR WINDOW_2}"
   1970: "{COLOUR WINDOW_2}"
@@ -2261,3 +2261,260 @@ strings:
   2206: "在所有地方+10%"
   2207: "在所有地方设为最小值"
   2208: "在所有地方设为最大值"
+  2209: 全部载具
+  2210: 正在停站
+  2211: 正在运送货物
+  2212: "{MOVE_X 10}运送 {STRINGID} {SPRITE}"
+  2213: "»{MOVE_X 10}运送 {STRINGID} {SPRITE}"
+  2214: 未选择站点
+  2215: 未选择货物
+  2216: "{SMALLFONT}{COLOUR BLACK}打开站点窗口并按站点筛选"
+  2217: "{SMALLFONT}{COLOUR BLACK}从可用货物列表中选择货物种类"
+  2218: "建造: 上一选项卡"
+  2219: "建造: 下一选项卡"
+  2220: "建造: 上一段轨道"
+  2221: "建造: 下一段轨道"
+  2222: "建造: 上一坡度"
+  2223: "建造: 下一坡度"
+  2224: "建造: 在当前位置建造"
+  2225: "建造: 移除当前位置"
+  2226: "建造: 选择位置"
+  2227: 列车在信号处折返
+  2228: 自动还贷
+  2229: "{SMALLFONT}{COLOUR BLACK}每天一次，若有贷款则用现有资金偿还。"
+  2230: "{COLOUR WINDOW_2}年:"
+  2231: "{COLOUR WINDOW_2}月:"
+  2232: "{COLOUR WINDOW_2}日:"
+  2233: 设置日期
+  2234: "{COLOUR BLACK}{UINT16 RAW}"
+  2235: "{COLOUR BLACK}{INT32}"
+  2236: "{COLOUR BLACK}{INT32}"
+  2237: "{DATE DMY}"
+  2238: "游戏速度: 普通"
+  2239: "游戏速度: 快进"
+  2240: "游戏速度: 极速快进"
+  2241: "{COLOUR WINDOW_2}载量: {COLOUR BLACK}{STRINGID}"
+  2242: "{NEWLINE}{COLOUR WINDOW_2} 退役: {COLOUR BLACK}{UINT16 RAW}"
+  2243: "载具已锁定!"
+  2244: 显示锁定的载具
+  2245: "{SMALLFONT}{COLOUR BLACK}启用后，将显示退役和拟引入的载具"
+  2246: "{NEWLINE}{COLOUR WINDOW_2} 拟引入: {COLOUR BLACK}{UINT16 RAW}"
+  2247: 允许建造锁定的载具
+  2248: "{SMALLFONT}{COLOUR BLACK}启用后，允许建造退役和拟引入的载具"
+  2249: 购买载具窗口
+  2250: "{SMALLFONT}{COLOUR BLACK}拖动时改为绘制地形类型，而不是改变高度"
+  2251: 反转右键拖动
+  2252: "{SMALLFONT}{COLOUR BLACK}启用后，主画面平移方向相反。"
+  2253: 显示资金弹出
+  2254: "{SMALLFONT}{COLOUR BLACK}开关建造和载具的资金弹出显示"
+  2255: 启动服务器
+  2256: 关闭服务器
+  2257: 断开连接
+  2258: "{COLOUR WINDOW_2}长度: {COLOUR BLACK}{INT32_2DP}格, {INT32}节"
+  2259: "{COLOUR WINDOW_2}长度: {COLOUR BLACK}{INT32_2DP}格"
+  2260: "{COLOUR WINDOW_2} 长度: {COLOUR BLACK}{INT32_2DP}格"
+  2261: "{NEWLINE}{COLOUR WINDOW_2} 长度: {COLOUR BLACK}{INT32_2DP}格"
+  2262: "{NEWLINE}长度:  {INT32_2DP}格"
+  2263: "{COLOUR BLACK}{UINT16}/{UINT16}"
+  2264: 巨型截图
+  2265: "{COLOUR WINDOW_2} 文件名: {COLOUR BLACK}{STRINGID}"
+  2266: 场景选项
+  2267: 对象选择
+  2268: 玩法调整
+  2269: 偏好所有者
+  2270: 自动存档偏好
+  2271: 禁用城镇扩张
+  2272: "{SMALLFONT}{COLOUR BLACK}启用后，城镇不会随时间重建或扩张"
+  2273: 完成场景挑战
+  2274: 清除
+  2275: 载入对象出错
+  2276: "{COLOUR BLACK}文件引用的部分对象缺失或损坏，无法载入。这些对象如下。"
+  2277: "{COLOUR BLACK}对象ID"
+  2278: "{COLOUR BLACK}类型"
+  2279: "{COLOUR BLACK}校验和"
+  2280: 新消息播放音效
+  2281: "{SMALLFONT}{COLOUR BLACK}启用后，新消息会伴随适当的欢呼音效。"
+  2282: "{SMALLFONT}{COLOUR BLACK}反转路径顺序表"
+  2283: 名称和类型
+  2284: BH
+  2285: CH
+  2286: D
+  2287: G
+  2288: "{SMALLFONT}{COLOUR BLACK}对象名称和格块元素类型"
+  2289: "{SMALLFONT}{COLOUR BLACK}格块元素的基础高度"
+  2290: "{SMALLFONT}{COLOUR BLACK}格块元素的净空高度"
+  2291: "{SMALLFONT}{COLOUR BLACK}格块元素的方向"
+  2292: "{SMALLFONT}{COLOUR BLACK}格块元素的幽灵状态"
+  2293: 新手
+  2294: 进阶
+  2295: 专家
+  2296: 原版
+  2297: 自定义
+  2298: 部件
+  2299: 设计年份
+  2300: 名称
+  2301: 无动力
+  2302: 有动力
+  2303: 已解锁
+  2304: 已锁定
+  2305: 货物
+  2306: 全部货物
+  2307: "{MOVE_X 10}{STRINGID} {SPRITE}"
+  2308: "»{MOVE_X 10}{STRINGID} {SPRITE}"
+  2309: "{COLOUR BLACK}{STRINGID} {SPRITE}"
+  2310: 无货物
+  2311: 禁用载具装载惩罚
+  2312: "{SMALLFONT}{COLOUR BLACK}启用后，载具长度超过站点长度时不再降低装载速度"
+  2313: 建筑透视
+  2314: 道路透视
+  2315: 景物透视
+  2316: 轨道透视
+  2317: 树木透视
+  2318: 切换建筑透视
+  2319: 切换道路透视
+  2320: 切换景物透视
+  2321: 切换轨道透视
+  2322: 切换树木透视
+  2323: "{SMALLFONT}{COLOUR BLACK}抬升地形时平滑外侧边缘。适合造山。"
+  2324: 载具/轨道行为
+  2325: "{SMALLFONT}{COLOUR BLACK}公司选项"
+  2326: 选项 - 公司
+  2327: 偏好的公司面孔
+  2328: 开始新游戏时使用偏好的公司面孔
+  2329: "{SMALLFONT}{COLOUR BLACK}选中后，开始新场景时将使用偏好的公司所有者面孔。"
+  2330: "{COLOUR WINDOW_2}偏好所有者面孔: {COLOUR BLACK}{STRINGID}"
+  2331: 选择偏好的公司所有者面孔
+  2332: "{COLOUR WINDOW_2}禁用站点尺寸限制"
+  2333: "{SMALLFONT}{COLOUR BLACK}启用后，铁路站最大长度不再限制为16格。注意站点总共仍不能超过80格。"
+  2334: 地形生成 - 水体
+  2335: "{SMALLFONT}{COLOUR BLACK}水体生成选项"
+  2336: 常规
+  2337: 生成器
+  2338: "{COLOUR WINDOW_2}当前丘陵对象: {COLOUR BLACK}{STRINGID}"
+  2339: "{COLOUR WINDOW_2}地形平滑次数:"
+  2340: PNG高度图文件
+  2341: 载入PNG高度图文件
+  2342: 浏览...
+  2343: "{COLOUR WINDOW_2}当前高度图文件: {COLOUR BLACK}{STRING}"
+  2344: (未选择)
+  2345: 正在检查场景文件...
+  2346: "{COLOUR BLACK}上月产量"
+  2347: "{COLOUR BLACK}上月产量 ▼"
+  2348: "{SMALLFONT}{COLOUR BLACK}按上月产量排序列表"
+  2349: 显示选项窗口
+  2350: 桥梁透视
+  2351: 切换桥梁透视
+  2352: "{COLOUR WINDOW_2}河床数量:"
+  2353: "{COLOUR WINDOW_2}最小河宽:"
+  2354: "{COLOUR WINDOW_2}最大河宽:"
+  2355: "{COLOUR WINDOW_2}河岸宽度:"
+  2356: "{COLOUR WINDOW_2}蜿蜒程度:"
+  2357: OpenLoco
+  2358: 切换涂装工具
+  2359: "{SMALLFONT}{COLOUR BLACK}为{POP16}{STRINGID}载具重新涂装{NEWLINE}Shift+点击涂装全部{NEWLINE}Ctrl+点击仅涂装子载具"
+  2360: 涂装所有已连接载具
+  2361: 选项 - 渲染
+  2362: "{SMALLFONT}{COLOUR BLACK}渲染选项"
+  2363: 确认出售部件
+  2364: "出售此载具部件将清除整列车上的所有货物。要继续吗?"
+  2365: 出售部件
+  2366: 确认改装部件
+  2367: "改装此载具部件将清除整列车上的所有货物。要继续吗?"
+  2368: 改装部件
+  2369: "{SMALLFONT}{COLOUR BLACK}音频选项"
+  2370: 选项 - 音频
+  2371: 音效
+  2372: 点唱机
+  2373: "{COLOUR WINDOW_2}音乐音量:"
+  2374: 将AI规划的轨道/道路显示为幽灵
+  2375: "{SMALLFONT}{COLOUR BLACK}将AI公司规划的路线显示为普通幽灵元素。"
+  2376: "{MOVE_X 15}{COLOUR BLACK}标题"
+  2377: "{MOVE_X 15}{COLOUR BLACK}标题 ▲"
+  2378: "{MOVE_X 15}{COLOUR BLACK}标题 ▼"
+  2379: "{COLOUR BLACK}年份"
+  2380: "{COLOUR BLACK}年份 ▲"
+  2381: "{COLOUR BLACK}年份 ▼"
+  2382: "{SMALLFONT}{COLOUR BLACK}按曲目标题排序列表"
+  2383: "{SMALLFONT}{COLOUR BLACK}按“当前时代”模式下各曲目播放年份排序"
+  2384: "{UINT16}-{UINT16}"
+  2385: "{UINT16}-"
+  2386: "-{UINT16}"
+  2387: "-"
+  2388: "已选择 {UINT16} 首音乐"
+  2389: "已选择 {UINT16} 首音乐"
+  2390: 用户界面
+  2391: "窗口边框样式:"
+  2392: "{SMALLFONT}{COLOUR BLACK}用于装饰窗口的样式。"
+  2393: 渐变 (默认)
+  2394: 纯色
+  2395: 半透明色
+  2396: "帧率限制:"
+  2397: 内部速度 (默认)
+  2398: 垂直同步
+  2399: 无限制
+  2400: 确认移动部件
+  2401: 移动部件
+  2402: "移动此载具部件将清除整列车上的所有货物。要继续吗?"
+  2403: "移动此载具部件将清除两列车上的所有货物。要继续吗?"
+  2404: "主音量:"
+  2405: "{SMALLFONT}{COLOUR BLACK}调整主音量"
+  2406: "音效:"
+  2407: "{SMALLFONT}{COLOUR BLACK}调整音效音量"
+  2408: "载具:"
+  2409: "{SMALLFONT}{COLOUR BLACK}调整载具音量"
+  2410: "界面:"
+  2411: "{SMALLFONT}{COLOUR BLACK}调整用户界面音量"
+  2412: "{SMALLFONT}{COLOUR BLACK}调整音乐音量"
+  2413: 音量
+  2414: "音乐:"
+  2415: "环境:"
+  2416: "{SMALLFONT}{COLOUR BLACK}调整环境音音量"
+  2417: Locomotion 标题曲
+  2418: 复制
+  2419: "{SMALLFONT}{COLOUR BLACK}可选择要复制的轨道元素区域"
+  2420: 粘贴
+  2421: "{SMALLFONT}{COLOUR BLACK}可将复制的轨道元素区域粘贴到地图"
+  2422: 打开音频选项
+  2423: 打开点唱机
+  2424: 显示点唱机窗口
+  2425: 价格
+  2426: 功率
+  2427: 最高速度
+  2428: 重量
+  2429: 长度
+  2430: 升序
+  2431: 降序
+  2432: 载量
+  2433: 退役
+  2434: 载具货物
+  2435: 改装或收回时保留载具货物
+  2436: "{SMALLFONT}{COLOUR BLACK}启用后，添加车厢、移动车厢或收回载具时不会清除整列车货物"
+  2437: 排序方式
+  2438: 偏好公司
+  2439: 开始新游戏时使用偏好公司名
+  2440: "{SMALLFONT}{COLOUR BLACK}选中后，每次开始新游戏都使用相同的公司名"
+  2441: "{COLOUR WINDOW_2}偏好公司名: {COLOUR BLACK}{STRINGID}"
+  2442: 偏好公司名
+  2443: "输入偏好的公司名:"
+  2444: 无法更改公司名...
+  2445: "{STRINGID}附近没有运输公司"
+  2446: "{STRINGID}上个月未收到任何交付"
+  2447: "{SMALLFONT}{COLOUR BLACK}返回此项目类型的主文件夹"
+  2448: "ALT + "
+  2449: "R.CTRL + "
+  2450: "R.ALT + "
+  2451: "{STRINGID}{STRINGID}{STRINGID}{STRINGID}{STRINGID}"
+  2452: "{COLOUR BLACK}“{STRINGID}”"
+  2453: 音乐
+  2454: "{COLOUR WINDOW_2}游戏中播放音乐"
+  2455: 打开点唱机...
+  2456: "{COLOUR WINDOW_2}待处理货物:"
+  2457: "{COLOUR WINDOW_2}待运输货物:"
+  2458: "{STRINGID}{STRINGID}"
+  2459: 调试窗口
+  2460: 悬停而非点击时显示工具栏菜单
+  2461: 工具栏按钮水平居中对齐
+  2462: 重复放置
+  2463: "{SMALLFONT}{COLOUR BLACK}按“间距”格重复放置信号"
+  2464: "间距:"
+  2465: 信号区间

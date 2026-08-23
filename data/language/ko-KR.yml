@@ -85,7 +85,7 @@ strings:
   72: "{COLOUR WINDOW_2}그래픽: Simon Foster"
   73: "{COLOUR WINDOW_2}사운드 & 음악: Allister Brimble"
   74: "{COLOUR WINDOW_2}타이틀 음악: John Broomhall"
-  75: "{COLOUR WINDOW_2}재구현: Jacqui Lyons at Marjacq Ltd."
+  75: "{COLOUR WINDOW_2}대리인: Jacqui Lyons at Marjacq Ltd."
   76: "{COLOUR WINDOW_2}감사한 분들: -"
   77: "{COLOUR WINDOW_2}Katrina Morrin, Natasha Morrin, Jim Wills"
   78: ""
@@ -118,7 +118,7 @@ strings:
   104: 게임 저장하기
   105: 시나리오 에디터 종료
   106: 게임 종료
-  107: Screenshot
+  107: 스크린샷
   108: 스크린 샷
   109: 스크린 샷이 디스크에 '{STRING}'(으)로 저장되었습니다.
   110: 스크린 샷 저장 실패!
@@ -159,7 +159,7 @@ strings:
   145: 지하 시점
   146: 선로 & 도로 감추기
   147: 정류장은 도로 끝에만 지을 수 있습니다
-  148: Wrong type of station for {STRINGID}
+  148: "{STRINGID}에 맞지 않는 역 종류입니다"
   149: 역이 {STRINGID}와 호환되지 않습니다
   150: 건널목이 중간에 있습니다
   151: 건널목은 같은 높이의 직진 도로에만 지을 수 있습니다
@@ -167,7 +167,7 @@ strings:
   153: 분기는 전체가 평지 위에 있어야 합니다
   154: "{STRINGID}(이)가 중간에 있습니다 / 분기에 적절하지 않은 높이입니다"
   155: 이미 여기에 지어져 있습니다
-  156: Unable to cross or create junction with {STRINGID}
+  156: "{STRINGID}와 교차하거나 분기할 수 없습니다"
   157: 분기를 만들 수 없습니다
   158: 신호기
   159: 역
@@ -283,7 +283,7 @@ strings:
   266: 출발
   267: 수동 운전
   268: "{SMALLFONT}{COLOUR BLACK}업그레이드할 선로/도로를 선택하세요"
-  269: "{SMALLFONT}{COLOUR BLACK}Stop/Start {POP16}{STRINGID}"
+  269: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID} 정지/출발"
   270: "{COLOUR BLACK}{STRINGID}"
   271: "{SMALLFONT}{COLOUR BLACK}선로/도로 건설"
   272: "{SMALLFONT}{COLOUR BLACK}역 건설"
@@ -296,10 +296,10 @@ strings:
   279: "{SMALLFONT}{COLOUR BLACK}역 종류 선택"
   280: 역 {INT16}
   281: "{STRINGID}"
-  282: "{STRINGID} North"
-  283: "{STRINGID} South"
-  284: "{STRINGID} East"
-  285: "{STRINGID} West"
+  282: "{STRINGID} 북"
+  283: "{STRINGID} 남"
+  284: "{STRINGID} 동"
+  285: "{STRINGID} 서"
   286: "{STRINGID}중앙"
   287: "{STRINGID} 환승"
   288: "{STRINGID} 정류장"
@@ -346,7 +346,7 @@ strings:
   329: "{COLOUR WINDOW_2}힘: {COLOUR BLACK}{POWER}{COLOUR WINDOW_2} 무게: {COLOUR BLACK}{INT32}t"
   330: "{COLOUR WINDOW_2}최고 속력: {COLOUR BLACK}{VELOCITY}{POP16}{COLOUR WINDOW_2} 신뢰도: {COLOUR BLACK}{INT16}%"
   331: "{COLOUR WINDOW_2}최고 속력: {COLOUR BLACK}{VELOCITY} / {VELOCITY}{COLOUR WINDOW_2} 신뢰도: {COLOUR BLACK}{INT16}%"
-  332: "{SMALLFONT}{COLOUR BLACK}Sell {POP16}{STRINGID}{NEWLINE}(또는 여기로 각 차량을 드래그해서 판매)"
+  332: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID} 판매{NEWLINE}(또는 여기로 각 차량을 드래그해서 판매)"
   333: "{SMALLFONT}{COLOUR BLACK}이 {POP16}{STRINGID}(을)를 위해 새 차량 만들기"
   334: "{COLOUR BLACK}({STRINGID}(을)를 시작 지점으로 설정해서 보려면 클릭하세요)"
   335: 차량이 호환되지 않습니다
@@ -389,7 +389,7 @@ strings:
   372: 풍경 & 건물 감추기
   373: 물 위에만 지을 수 있습니다!
   374: 수상 산업 시설이 옆에 있는 경우에만 물 위에 지을 수 있습니다!
-  375: Name {STRINGID}
+  375: "{STRINGID} 이름 짓기"
   376: "이 {STRINGID}의 이름을 입력하세요:"
   377: 이 차량의 이름을 바꿀 수 없습니다...
   378: 다리가 필요합니다
@@ -460,7 +460,7 @@ strings:
   439: ", "
   440: "{NEWLINE}{COLOUR WINDOW_3}생산"
   441: "{NEWLINE}{COLOUR WINDOW_3}건설 중"
-  442: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}Owned by {STRINGID}"
+  442: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}소유주: {STRINGID}"
   443: "{MOVE_X 10}{STRINGID}"
   444: ✓{MOVE_X 10}{STRINGID}
   445: 제거할 수 없습니다...
@@ -484,12 +484,12 @@ strings:
   463: "{COLOUR RED}끼임!{POP16}{POP16}"
   464: "{COLOUR RED}고장남{POP16}{POP16}"
   465: 멈춤{POP16}{POP16}
-  466: Loading at {STRINGID}
-  467: Unloading at {STRINGID}
-  468: Approaching {STRINGID}
-  469: Landing at {STRINGID}
-  470: Taxiing at {STRINGID}
-  471: Taking off from {STRINGID}
+  466: "{STRINGID}에서 싣는 중"
+  467: "{STRINGID}에서 내리는 중"
+  468: "{STRINGID}에 접근 중"
+  469: "{STRINGID}에 착륙 중"
+  470: "{STRINGID}에서 지상 이동 중"
+  471: "{STRINGID}에서 이륙 중"
   472: "목적지: {STRINGID}"
   473: 목적지 없음{POP16}{POP16}
   474: 운행 중{POP16}{POP16}
@@ -499,7 +499,7 @@ strings:
   478: 물을 올릴 수 없습니다...
   479: (없음)
   480: "{STRING}"
-  481: "{COLOUR RED}Closed - - "
+  481: "{COLOUR RED}폐쇄 - - "
   482: "{COLOUR YELLOW}{STRINGID} - - "
   483: 지면의 경사가 적절하지 않습니다
   484: 물 아래에 지을 수 없습니다!
@@ -592,9 +592,9 @@ strings:
   571: "{OUTLINE}{COLOUR WINDOW_1}- {CURRENCY32}"
   572: "{CURRENCY48}"
   573: "{COLOUR RED}{CURRENCY48}"
-  574: "{SMALLFONT}{COLOUR BLACK}Show view of {POP16}{STRINGID}"
+  574: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID} 보기"
   575: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID} 디자인과 설정 상세 보기"
-  576: "{SMALLFONT}{COLOUR BLACK}Show cargo/passengers in {POP16}{STRINGID}"
+  576: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID}의 화물/승객 보기"
   577: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID} 경로 상세 보기"
   578: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID} 유지비와 수익 보기"
   579: "{SMALLFONT}{COLOUR BLACK}새 건설 지점을 선택하세요"
@@ -1200,9 +1200,9 @@ strings:
   1170: "도착: {STRINGID} / 출발: {STRINGID}"
   1171: 비어 있음
   1172: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
-  1173: "{NEWLINE}수용량:  {STRINGID}"
+  1173: "{NEWLINE}용량:  {STRINGID}"
   1174: "{NEWLINE}+ {STRINGID}"
-  1175: 겡미에 역이 너무 많습니다!
+  1175: 게임에 역이 너무 많습니다!
   1176: 역이 너무 큽니다!
   1177: 도시를 먼저 지어야 합니다!
   1178: "{SMALLFONT}{COLOUR BLACK}지도 전체 보기"
@@ -1214,7 +1214,7 @@ strings:
   1184: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}(을)를 {STRINGID}에 추가할 수 없습니다..."
   1185: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}(을)를 지을 수 없습니다..."
   1186: "{COLOUR BLACK}새 차량을 선택하세요"
-  1187: "{COLOUR BLACK}{STRINGID}"
+  1187: "{COLOUR BLACK}{STRINGID}에 추가할 차량을 선택하세요"
   1188: "{SMALLFONT}{COLOUR BLACK}새로운 철도 차량 만들기"
   1189: "{SMALLFONT}{COLOUR BLACK}새로운 버스 만들기"
   1190: "{SMALLFONT}{COLOUR BLACK}새로운 트럭 만들기"
@@ -1247,18 +1247,18 @@ strings:
   1217: "급행"
   1218: "{COLOUR BLACK}- - 경로 없음 - -"
   1219: "{COLOUR BLACK}- - 경로 목록 끝 - -"
-  1220: Stop at {STRINGID}
-  1221: Route through {STRINGID}
-  1222: 경유지 통과 중
-  1223: "{STRINGID}에서 모두 하차 중 {SPRITE}"
-  1224: "{STRINGID}에서 모무 적재 중 {SPRITE}"
-  1225: "{STRINGID}에서 모두 하차 중 {SPRITE}"
-  1226: "{STRINGID}에서 모무 적재 중 {SPRITE}"
+  1220: "{STRINGID}에 정차"
+  1221: "{STRINGID}을(를) 통과"
+  1222: 경유지 통과
+  1223: "{STRINGID}을(를) 모두 내림 {SPRITE}"
+  1224: "{STRINGID} 만차까지 대기 {SPRITE}"
+  1225: "{STRINGID}을(를) 모두 내림 {SPRITE}"
+  1226: "{STRINGID} 만차까지 대기 {SPRITE}"
   1227: "{COLOUR WINDOW_2}▶"
   1228: 경로를 삽입할 수 없습니다...
   1229: "{COLOUR WINDOW_3}여기에 있는 경유지를 통과하는{NEWLINE}새로운 경로를 삽입하려면 클릭하세요"
-  1230: "{COLOUR WINDOW_3}Click to insert new order to{NEWLINE}stop at {STRINGID}"
-  1231: "{COLOUR WINDOW_3}마지막 경로를 {STRINGID}(을)를 통과하는{NEWLINE}경로로 바꾸려면 클릭하세요"
+  1230: "{COLOUR WINDOW_3}클릭해서 새 명령을 삽입:{NEWLINE}{STRINGID}에 정차"
+  1231: "{COLOUR WINDOW_3}다시 클릭하면 마지막 명령을{NEWLINE}{STRINGID} 통과로 바꿉니다"
   1232: "{SMALLFONT}{COLOUR BLACK}화물을 가득 싣도록 하는 경로를 삽입합니다"
   1233: "{SMALLFONT}{COLOUR BLACK}역에서 화물을 받지 않아도, 강제로 화물을 모두 내리도록 하는 경로를 삽입합니다"
   1234: "{SMALLFONT}{COLOUR BLACK}목록의 다음 경로로 넘어갑니다"
@@ -1276,7 +1276,7 @@ strings:
   1246: "{STRINGID}에만 놓을 수 있습니다..."
   1247: 도로
   1248: "{COLOUR BLACK}사용할 수 있는 차량이 없습니다"
-  1249: "{COLOUR BLACK}No compatible vehicles available to add to {STRINGID}"
+  1249: "{COLOUR BLACK}{STRINGID}에 추가할 수 있는 호환 차량이 없습니다"
   1250: ""
   1251: "{COLOUR WINDOW_2} 가격: {COLOUR BLACK}{CURRENCY32}"
   1252: "{NEWLINE}{COLOUR WINDOW_2} 필요: {COLOUR BLACK}"
@@ -1284,10 +1284,10 @@ strings:
   1254: "{NEWLINE}{COLOUR WINDOW_2} 무게: {COLOUR BLACK}{INT16}t"
   1255: "{NEWLINE}{COLOUR WINDOW_2} 최고 속력: {COLOUR BLACK}{VELOCITY}"
   1256: "{NEWLINE}{COLOUR WINDOW_2} 개발: {COLOUR BLACK}{UINT16 RAW}"
-  1257: "{NEWLINE}{COLOUR WINDOW_2} 수송량: {COLOUR BLACK}{STRINGID}"
+  1257: "{NEWLINE}{COLOUR WINDOW_2} 용량: {COLOUR BLACK}{STRINGID}"
   1258: " + {STRINGID}"
   1259: " (경사로에 + {STRINGID})"
-  1260: " ({VELOCITY} on {STRINGID})"
+  1260: " ({VELOCITY}, {STRINGID})"
   1261: 또는 {STRINGID}
   1262: "{NEWLINE}{COLOUR WINDOW_2} 유지비: {COLOUR BLACK}{CURRENCY32}/월"
   1263: " (개조 가능)"
@@ -1312,8 +1312,8 @@ strings:
   1282: "{COLOUR WINDOW_2}전체: {COLOUR BLACK}{STRINGID}"
   1283: 비어있음
   1284: "{SMALLFONT}{COLOUR BLACK}적재:"
-  1285: Requires an extra {STRINGID}
-  1286: "{SMALLFONT}{COLOUR BLACK}Vehicles for {STRINGID}"
+  1285: "추가로 {STRINGID}이(가) 필요합니다"
+  1286: "{SMALLFONT}{COLOUR BLACK}{STRINGID}용 차량"
   1287: "{SPRITE}{NEWLINE 31 8} {STRINGID}"
   1288: "{POP16}{POP16}{NEWLINE 31 8} {STRINGID}"
   1289: "{SPRITE}{NEWLINE 31 8} {STRINGID} 건설"
@@ -1447,7 +1447,7 @@ strings:
   1417: "{COLOUR BLACK}{STRINGID} ({INT16}% 수송됨)"
   1418: "{COLOUR BLACK}{INT16}%"
   1419: 공장 폐쇄
-  1420: Belongs to {STRINGID}
+  1420: "{STRINGID} 소속"
   1421: "{STRINGID} - {STRINGID} 소속입니다"
   1422: 이 신호기는 {STRINGID} 소속입니다
   1423: "{COLOUR BLACK}{INT16}%"
@@ -1583,7 +1583,7 @@ strings:
   1547: "{COLOUR WINDOW_2}음량:"
   1548: "{SMALLFONT}{COLOUR BLACK}음악 음량 설정"
   1549: 음악 설정
-  1550: Select Owner's Face for {STRINGID}
+  1550: "{STRINGID}의 사장 얼굴 선택"
   1551: "{SMALLFONT}{COLOUR BLACK}회사/소유주 얼굴을 선택하려면 클릭하세요"
   1552: 이미 다른 회사가 선택하였습니다
   1553: 얼굴을 선택할 수 없습니다...
@@ -1846,11 +1846,11 @@ strings:
   1808: 항공기 경로
   1809: 선박 경로
   1810: ""
-  1811: Building {STRINGID} near {STRINGID}
-  1812: Building {STRINGID} near {STRINGID}
-  1813: Building {STRINGID} near {STRINGID}
-  1814: Checking services near {STRINGID}
-  1815: Surveying landscape near {STRINGID}
+  1811: "{STRINGID}을(를) {STRINGID} 근처에서 건설 중"
+  1812: "{STRINGID}을(를) {STRINGID} 근처에서 건설 중"
+  1813: "{STRINGID}을(를) {STRINGID} 근처에서 건설 중"
+  1814: "{STRINGID} 근처의 운송 서비스 확인 중"
+  1815: "{STRINGID} 근처의 지형 조사 중"
   1816: "{COLOUR RED}파산!"
   1817: "{SMALLFONT}{COLOUR BLACK}게임 일시 정지"
   1818: "{SMALLFONT}{COLOUR BLACK}보통 속도"
@@ -1878,7 +1878,7 @@ strings:
   1840: 회사 가치를 {CURRENCY32}{STRINGID}{STRINGID} 만큼 달성
   1841: 차량 월 수익을 {CURRENCY32}{STRINGID}{STRINGID} 만큼 달성
   1842: 성취도 지수를 {INT16_1DP}% 만큼 달성 (“{STRINGID}”){STRINGID}{STRINGID}
-  1843: Deliver {STRINGID}{STRINGID}{STRINGID}
+  1843: "{STRINGID}{STRINGID}{STRINGID} 배송"
   1844: " & 성취도 1위 등극"
   1845: " & 성취도 3위 이내로 진입"
   1846: " & {INT16}년 이내"
@@ -1999,7 +1999,7 @@ strings:
   1945: "{COLOUR WINDOW_2}총괄 프로듀서:  Bob Welch"
   1946: "{COLOUR WINDOW_2}기술 감독:  Paul Hellier"
   1947: "{COLOUR WINDOW_2}홍보 감독:  Peter Matiss"
-  1948: "{COLOUR WINDOW_2}크리에이디브 서비스 감독:  Steve Martin"
+  1948: "{COLOUR WINDOW_2}크리에이티브 서비스 감독:  Steve Martin"
   1949: "{COLOUR WINDOW_2}그래픽 디자이너:  Rod Tilley"
   1950: "{COLOUR WINDOW_2}편집 & 문서 서비스 감독:  Elizabeth Mackney"
   1951: "{COLOUR WINDOW_2}문서 전문가:  Kurt Carlson"
@@ -2052,7 +2052,7 @@ strings:
   1997: "{COLOUR WINDOW_2}지표면 서비스 속력 기록: {COLOUR BLACK}{VELOCITY}"
   1998: "{COLOUR WINDOW_2}공중 서비스 속력 기록: {COLOUR BLACK}{VELOCITY}"
   1999: "{COLOUR WINDOW_2}수상 서비스 속력 기록: {COLOUR BLACK}{VELOCITY}"
-  2000: "{COLOUR BLACK}Achieved by {STRINGID} on {DATE DMY}"
+  2000: "{COLOUR BLACK}{STRINGID}(이)가 {DATE DMY}에 달성"
   2001: 디스플레이 모드 변경 확인
   2002: "{COLOUR WINDOW_2}화면 해상도가 {UINT16 RAW} x {UINT16 RAW} 로 변경되었습니다"
   2003: "{COLOUR WINDOW_2}_"
@@ -2072,7 +2072,7 @@ strings:
   2017: 산업 시설 이름
   2018: "{STRINGID}의 새 이름을 입력하세요:"
   2019: 산업 시설 이름을 변경할 수 없습니다...
-  2020: "{NEWLINE 0 1}{SPRITE}{SMALLFONT}{NEWLINE 45 1}Max. speed: {STRINGID}{NEWLINE 45 11}Height limit: {HEIGHT}"
+  2020: "{NEWLINE 0 1}{SPRITE}{SMALLFONT}{NEWLINE 45 1}최고 속력: {STRINGID}{NEWLINE 45 11}높이 제한: {HEIGHT}"
   2021: 중복된 CD키를 발견하였습니다 - 접속할 수 없습니다!
   2022: "{COLOUR BLACK}{SMALLFONT}(컴퓨터 이름 = {STRINGID})"
   2023: 1번째
@@ -2201,8 +2201,8 @@ strings:
   2146: "매월마다"
   2147: "매 {INT32}개월마다"
   2148: "{COLOUR WINDOW_2}생성 알고리즘:"
-  2149: 오리지널
-  2150: 개선
+  2149: 원본 생성기
+  2150: 심플렉스 생성기
   2151: "차량 수정"
   2152: "차량 복제"
   2153: "차량을 복제할 수 없습니다..."
@@ -2249,7 +2249,7 @@ strings:
   2194: "이 회사로 이동합니다"
   2195: "모든 회사 자산 획득"
   2196: "파산 켜기/끄기"
-  2197: "감옥에 가두기"
+  2197: "감옥 상태 켜기/끄기"
   2198: "돈 추가"
   2199: "{COLOUR WINDOW_2}금액:"
   2200: "추가"
@@ -2281,7 +2281,7 @@ strings:
   2226: "건설: 위치 선택"
   2227: "신호기에서 열차 회차"
   2228: 자동 상환
-  2229: "{SMALLFONT}{COLOUR BLACK}하루에 한 번, 대출을 받은 게 있다면 모든 수익을 대출을 갚는데 먼저 사용합니다."
+  2229: "{SMALLFONT}{COLOUR BLACK}하루에 한 번, 대출이 있으면 보유 자금으로 먼저 갚습니다."
   2230: "{COLOUR WINDOW_2}연:"
   2231: "{COLOUR WINDOW_2}월:"
   2232: "{COLOUR WINDOW_2}일:"
@@ -2293,7 +2293,7 @@ strings:
   2238: "게임 속도: 보통"
   2239: "게임 속도: 빠르게"
   2240: "게임 속도: 매우 빠르게"
-  2241: "{COLOUR WINDOW_2}수송량: {COLOUR BLACK}{STRINGID}"
+  2241: "{COLOUR WINDOW_2}용량: {COLOUR BLACK}{STRINGID}"
   2242: "{NEWLINE}{COLOUR WINDOW_2} 퇴역: {COLOUR BLACK}{UINT16 RAW}"
   2243: "차량이 잠겨있습니다!"
   2244: "잠긴 차량 표시"
@@ -2308,10 +2308,10 @@ strings:
   2253: "돈 사용 표시"
   2254: "{SMALLFONT}{COLOUR BLACK}건설과 차량의 돈 사용 표시를 켜거나 끌 수 있습니다"
   2255: "서버 열기"
-  2256: 서버 닫기"
+  2256: "서버 닫기"
   2257: "연결 종료"
   2258: "{COLOUR WINDOW_2}길이: {COLOUR BLACK}{INT32_2DP}칸, {INT32}량"
-  2259: "{COLOUR WINDOW_2}길이: {COLOUR BLACK}{INT32_2DP}킨"
+  2259: "{COLOUR WINDOW_2}길이: {COLOUR BLACK}{INT32_2DP}칸"
   2260: "{COLOUR WINDOW_2} 길이: {COLOUR BLACK}{INT32_2DP}칸"
   2261: "{NEWLINE}{COLOUR WINDOW_2} 길이: {COLOUR BLACK}{INT32_2DP}칸"
   2262: "{NEWLINE}길이:  {INT32_2DP}칸"
@@ -2342,11 +2342,11 @@ strings:
   2287: "G"
   2288: "{SMALLFONT}{COLOUR BLACK}오브젝트 이름 및 칸 요소 종류"
   2289: "{SMALLFONT}{COLOUR BLACK}칸 요소의 기본 높이"
-  2290: "{SMALLFONT}{COLOUR BLACK}칸 요소의 머리 높이"
+  2290: "{SMALLFONT}{COLOUR BLACK}칸 요소의 상단 높이"
   2291: "{SMALLFONT}{COLOUR BLACK}칸 요소의 방향"
   2292: "{SMALLFONT}{COLOUR BLACK}칸 요소의 고스트 상태"
   2293: "초심자"
-  2294: "도전자"
+  2294: "중급"
   2295: "전문가"
   2296: "원본"
   2297: "사용자"
@@ -2391,7 +2391,7 @@ strings:
   2336: 일반
   2337: 생성기
   2338: "{COLOUR WINDOW_2}현재 언덕 오브젝트: {COLOUR BLACK}{STRINGID}"
-  2339: "{COLOUR WINDOW_2}지형 다듬기가 패스된 횟수:"
+  2339: "{COLOUR WINDOW_2}지형 다듬기 횟수:"
   2340: "PNG 높이맵 파일"
   2341: "PNG 높이맵 파일 불러오기"
   2342: "찾아보기..."
@@ -2440,11 +2440,81 @@ strings:
   2385: "{UINT16}-"
   2386: "-{UINT16}"
   2387: "-"
-  2388: "{UINT16} 음악 트랙 선택됨"
-  2389: "{UINT16} 음악 트랙 선택됨"
+  2388: "{UINT16}개 음악 트랙이 선택됨"
+  2389: "{UINT16}개 음악 트랙이 선택됨"
   2390: 사용자 인터페이스
   2391: '창 프레임 스타일:'
   2392: "{SMALLFONT}{COLOUR BLACK}창을 표현하는 데 사용되는 스타일입니다."
   2393: '그라데이션 (기본값)'
   2394: '단색'
   2395: '반투명 색'
+  2396: "프레임 제한:"
+  2397: "내부 속도 (기본값)"
+  2398: "수직 동기화"
+  2399: "제한 없음"
+  2400: "요소 이동 확인"
+  2401: "요소 이동"
+  2402: "이 차량 요소를 옮기면 전체 차량에 실린 모든 화물이 제거됩니다. 계속하시겠습니까?"
+  2403: "이 차량 요소를 옮기면 양쪽 차량에 실린 모든 화물이 제거됩니다. 계속하시겠습니까?"
+  2404: "마스터:"
+  2405: "{SMALLFONT}{COLOUR BLACK}마스터 볼륨을 조절합니다"
+  2406: "효과음:"
+  2407: "{SMALLFONT}{COLOUR BLACK}효과음 볼륨을 조절합니다"
+  2408: "차량:"
+  2409: "{SMALLFONT}{COLOUR BLACK}차량 볼륨을 조절합니다"
+  2410: "인터페이스:"
+  2411: "{SMALLFONT}{COLOUR BLACK}사용자 인터페이스 볼륨을 조절합니다"
+  2412: "{SMALLFONT}{COLOUR BLACK}음악 볼륨을 조절합니다"
+  2413: "볼륨"
+  2414: "음악:"
+  2415: "환경음:"
+  2416: "{SMALLFONT}{COLOUR BLACK}환경음 볼륨을 조절합니다"
+  2417: "로코모션 타이틀"
+  2418: "복사"
+  2419: "{SMALLFONT}{COLOUR BLACK}복사할 선로 요소 영역을 선택할 수 있습니다"
+  2420: "붙여넣기"
+  2421: "{SMALLFONT}{COLOUR BLACK}복사한 선로 요소 영역을 맵에 붙여넣을 수 있습니다"
+  2422: "오디오 설정 열기"
+  2423: "주크박스 열기"
+  2424: "주크박스 창 보기"
+  2425: "가격"
+  2426: "동력"
+  2427: "최고 속력"
+  2428: "무게"
+  2429: "길이"
+  2430: "오름차순"
+  2431: "내림차순"
+  2432: "용량"
+  2433: "퇴역"
+  2434: "차량 화물"
+  2435: "개조/회수 시 차량 화물 유지"
+  2436: "{SMALLFONT}{COLOUR BLACK}이 설정을 켜면, 객차를 추가하거나 옮기거나 차량을 회수할 때 전체 차량의 화물이 지워지지 않습니다"
+  2437: "정렬 기준"
+  2438: "즐겨쓰는 회사"
+  2439: "새 게임을 시작할 때 즐겨쓰는 회사 이름 사용"
+  2440: "{SMALLFONT}{COLOUR BLACK}이 설정을 켜면, 새 게임을 시작할 때마다 같은 회사 이름을 사용합니다"
+  2441: "{COLOUR WINDOW_2}즐겨쓰는 회사 이름: {COLOUR BLACK}{STRINGID}"
+  2442: "즐겨쓰는 회사 이름"
+  2443: "즐겨쓰는 회사 이름을 입력하세요:"
+  2444: "회사 이름을 바꿀 수 없습니다..."
+  2445: "{STRINGID} 근처에 운송 회사가 없습니다"
+  2446: "{STRINGID}은(는) 지난달에 배송을 받지 않았습니다"
+  2447: "{SMALLFONT}{COLOUR BLACK}이 종류 항목의 홈 폴더로 돌아갑니다"
+  2448: "ALT + "
+  2449: "R.CTRL + "
+  2450: "R.ALT + "
+  2451: "{STRINGID}{STRINGID}{STRINGID}{STRINGID}{STRINGID}"
+  2452: "{COLOUR BLACK}“{STRINGID}”"
+  2453: "음악"
+  2454: "{COLOUR WINDOW_2}게임 중 음악 재생"
+  2455: "주크박스 열기..."
+  2456: "{COLOUR WINDOW_2}처리 대기 화물:"
+  2457: "{COLOUR WINDOW_2}수송 대기 화물:"
+  2458: "{STRINGID}{STRINGID}"
+  2459: "디버그 창"
+  2460: "클릭 대신 마우스를 올리면 툴바 메뉴 표시"
+  2461: "툴바 버튼을 가로로 가운데 정렬"
+  2462: "반복 배치"
+  2463: "{SMALLFONT}{COLOUR BLACK}'간격'칸마다 신호기를 반복해서 배치합니다"
+  2464: "간격:"
+  2465: "신호기 구간"

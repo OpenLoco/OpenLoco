@@ -15,7 +15,6 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "World/CompanyManager.h"
-#include <Localisation/Conversion.h>
 #include <Localisation/Unicode.h>
 #include <OpenLoco/Core/BitSet.hpp>
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
@@ -228,9 +227,19 @@ namespace OpenLoco::Input
             return;
         }
 
-        uint32_t index = _keyQueueLastWrite;
+        // IME commits (Hangul/CJK) arrive as UTF-8 without a matching KEY_DOWN
+        // in this frame. Keep the raw codepoint; text boxes encode it as a
+        // unicode escape. convertUnicodeToLoco would turn it into '?'.
         auto unsignedText = reinterpret_cast<const uint8_t*>(text);
-        _keyQueue[index].charCode = convertUnicodeToLoco(readCodePoint(&unsignedText));
+        while (const utf32_t codepoint = readCodePoint(&unsignedText))
+        {
+            const auto prevWrite = _keyQueueWriteIndex;
+            enqueueKey(codepoint < 32 ? codepoint : 0);
+            if (_keyQueueWriteIndex != prevWrite)
+            {
+                _keyQueue[_keyQueueLastWrite].charCode = codepoint;
+            }
+        }
     }
 
     // 0x00407028
