@@ -198,35 +198,77 @@ namespace OpenLoco
     TownGrowthConfiguration getDefaultTownGrowthConfiguration()
     {
         uint8_t paxCargoId = 255;
+        uint8_t mailCargoId = 255;
+        uint8_t goodsCargoId = 255;
+        uint8_t foodCargoId = 255;
         auto res = getCargoObject("PASS    ");
         if (res.has_value())
         {
             paxCargoId = res->id;
         }
+        res = getCargoObject("GOODS   ");
+        if (res.has_value())
+        {
+            goodsCargoId = res->id;
+        }
+        res = getCargoObject("FOOD    ");
+        if (res.has_value())
+        {
+            foodCargoId = res->id;
+        }
+        res = getCargoObject("MAIL    ");
+        if (res.has_value())
+        {
+            mailCargoId = res->id;
+        }
 
         assert(paxCargoId != 255);
+        assert(goodsCargoId != 255);
+        assert(foodCargoId != 255);
+        assert(mailCargoId != 255);
         TownGrowthConfiguration config = {
             {
                 TownGrowthInputCargo(
                     1,
-                    300,
+                    65535,
                     0,
                     TownSize::hamlet,
                     paxCargoId),
+                TownGrowthInputCargo(
+                    2,
+                    65535,
+                    0,
+                    TownSize::hamlet,
+                    mailCargoId),
+                TownGrowthInputCargo(
+                    10,
+                    65535,
+                    0,
+                    TownSize::hamlet,
+                    foodCargoId),
+                TownGrowthInputCargo(
+                    10,
+                    65535,
+                    0,
+                    TownSize::hamlet,
+                    goodsCargoId),
             },
             {
                 TownGrowthSpeedBracket(
-                    100,
+                    50,
                     TownGrowthSpeed::oneEighth),
                 TownGrowthSpeedBracket(
-                    200,
+                    400,
+                    TownGrowthSpeed::one),
+                TownGrowthSpeedBracket(
+                    800,
                     TownGrowthSpeed::intZero + 3),
                 TownGrowthSpeedBracket(
-                    300,
+                    1250,
                     TownGrowthSpeed::intZero + 5),
                 TownGrowthSpeedBracket(
                     65535,
-                    TownGrowthSpeed::intZero + 5),
+                    TownGrowthSpeed::intZero + 7),
             },
         };
         return config;
