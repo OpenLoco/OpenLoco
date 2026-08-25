@@ -167,10 +167,8 @@ namespace OpenLoco::Config
         _config.edgeScrolling = config["edgeScrolling"].as<bool>(true);
         _config.edgeScrollingSpeed = config["edgeScrollingSpeed"].as<int32_t>(12);
         _config.invertRightMouseViewPan = config["invertRightMouseViewPan"].as<bool>(false);
-        _config.infoPanelsJuxtaposed = config["infoPanelsJuxtaposed"].as<bool>(false);
-        _config.infoPanelsOnTop = config["infoPanelsOnTop"].as<bool>(false);
         _config.toolbarAutoMenu = config["toolbarAutoMenu"].as<bool>(true);
-        _config.toolbarButtonsCentred = config["toolbarButtonsCentred"].as<bool>(false);
+        _config.toolbarLayout = config["toolbarLayout"].as<ToolbarLayout>(ToolbarLayout::vanilla);
         _config.windowFrameStyle = config["windowFrameStyle"].as<WindowFrameStyle>(WindowFrameStyle::background);
         _config.zoomToCursor = config["zoom_to_cursor"].as<bool>(true);
 
@@ -309,10 +307,8 @@ namespace OpenLoco::Config
         node["cashPopupRendering"] = _config.cashPopupRendering;
         node["edgeScrolling"] = _config.edgeScrolling;
         node["edgeScrollingSpeed"] = _config.edgeScrollingSpeed;
-        node["infoPanelsJuxtaposed"] = _config.infoPanelsJuxtaposed;
-        node["infoPanelsOnTop"] = _config.infoPanelsOnTop;
         node["toolbarAutoMenu"] = _config.toolbarAutoMenu;
-        node["toolbarButtonsCentred"] = _config.toolbarButtonsCentred;
+        node["toolbarLayout"] = _config.toolbarLayout;
         node["windowFrameStyle"] = _config.windowFrameStyle;
         node["zoom_to_cursor"] = _config.zoomToCursor;
 
