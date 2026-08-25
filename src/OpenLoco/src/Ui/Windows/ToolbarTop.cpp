@@ -1751,7 +1751,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop
             self.widgets[widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_ports);
         }
 
-        if (Config::get().toolbarButtonsCentred)
+        if (Config::get().toolbarLayout != Config::ToolbarLayout::vanilla)
         {
             centreToolbar(self);
         }
