@@ -636,7 +636,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Rendering
     {
-        static constexpr Ui::Size kWindowSize = { 400, 218 };
+        static constexpr Ui::Size kWindowSize = { 400, 233 };
 
         enum widx
         {
@@ -656,6 +656,9 @@ namespace OpenLoco::Ui::Windows::Options
             show_company_ai_planning,
 
             frame_user_interface,
+            toolbar_layout_label,
+            toolbar_layout,
+            toolbar_layout_btn,
             window_frame_style_label,
             window_frame_style,
             window_frame_style_btn,
@@ -673,6 +676,8 @@ namespace OpenLoco::Ui::Windows::Options
             constexpr WidgetId kGridlinesOnLandscape{ "gridlines_on_landscape" };
             constexpr WidgetId kCashPopupRendering{ "cash_popup_rendering" };
             constexpr WidgetId kShowCompanyAiPlanning{ "show_company_ai_planning" };
+            constexpr WidgetId kToolbarLayout{ "toolbar_layout" };
+            constexpr WidgetId kToolbarLayoutBtn{ "toolbar_layout_btn" };
             constexpr WidgetId kWindowFrameStyle{ "window_frame_style" };
             constexpr WidgetId kWindowFrameStyleBtn{ "window_frame_style_btn" };
         }
@@ -695,9 +700,13 @@ namespace OpenLoco::Ui::Windows::Options
             Widgets::Checkbox(Widx::kCashPopupRendering, { 10, 142 }, { 346, 12 }, WindowColour::secondary, StringIds::cash_popup_rendering, StringIds::tooltip_cash_popup_rendering),
             Widgets::Checkbox(Widx::kShowCompanyAiPlanning, { 10, 158 }, { 346, 12 }, WindowColour::secondary, StringIds::show_company_ai_planning, StringIds::show_company_ai_planning_tip),
 
-            Widgets::GroupBox({ 4, 180 }, { 392, 32 }, WindowColour::secondary, StringIds::userInterfaceGroup),
-            Widgets::Label({ 10, 195 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::windowFrameStyle),
-            Widgets::dropdownWidgets(Widx::kWindowFrameStyle, Widx::kWindowFrameStyleBtn, { 235, 194 }, { 154, 12 }, WindowColour::secondary, StringIds::empty, StringIds::windowFrameStyleTip)
+            Widgets::GroupBox({ 4, 180 }, { 392, 47 }, WindowColour::secondary, StringIds::userInterfaceGroup),
+
+            Widgets::Label({ 10, 195 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::preferred_toolbar_layout),
+            Widgets::dropdownWidgets(Widx::kToolbarLayout, Widx::kToolbarLayoutBtn, { 235, 194 }, { 154, 12 }, WindowColour::secondary, StringIds::empty),
+
+            Widgets::Label({ 10, 210 }, { 215, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::windowFrameStyle),
+            Widgets::dropdownWidgets(Widx::kWindowFrameStyle, Widx::kWindowFrameStyleBtn, { 235, 209 }, { 154, 12 }, WindowColour::secondary, StringIds::empty, StringIds::windowFrameStyleTip)
 
         );
 
@@ -860,6 +869,37 @@ namespace OpenLoco::Ui::Windows::Options
             Gfx::invalidateScreen();
         }
 
+        static void toolbarLayoutMouseDown(const Window& self, [[maybe_unused]] WidgetIndex_t wi)
+        {
+            auto& dropdown = self.widgets[widx::toolbar_layout];
+            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 4, 0x80);
+
+            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::preferred_toolbar_layout_original_game);
+            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::preferred_toolbar_layout_horizontally_centred);
+            Dropdown::add(2, StringIds::dropdown_stringid, StringIds::preferred_toolbar_layout_all_panels_on_top);
+            Dropdown::add(3, StringIds::dropdown_stringid, StringIds::preferred_toolbar_layout_all_panels_centred_on_top);
+            Dropdown::setItemSelected(enumValue(Config::get().toolbarLayout));
+        }
+
+        static void toolbarLayoutDropdown(int16_t selectedItem)
+        {
+            if (selectedItem == -1)
+            {
+                return;
+            }
+
+            if (selectedItem == enumValue(Config::get().toolbarLayout))
+            {
+                return;
+            }
+
+            auto& cfg = OpenLoco::Config::get();
+            cfg.toolbarLayout = Config::ToolbarLayout(selectedItem);
+            Config::write();
+            Gui::resize();
+            Gfx::invalidateScreen();
+        }
+
         static void windowFrameStyleMouseDown(const Window& self, [[maybe_unused]] WidgetIndex_t wi)
         {
             auto& dropdown = self.widgets[widx::window_frame_style];
@@ -903,6 +943,9 @@ namespace OpenLoco::Ui::Windows::Options
                 case Widx::kStationNamesMinScaleBtn:
                     stationNamesScaleMouseDown(self, wi);
                     break;
+                case Widx::kToolbarLayoutBtn:
+                    toolbarLayoutMouseDown(self, wi);
+                    break;
                 case Widx::kWindowFrameStyleBtn:
                     windowFrameStyleMouseDown(self, wi);
                     break;
@@ -922,6 +965,9 @@ namespace OpenLoco::Ui::Windows::Options
                     break;
                 case Widx::kStationNamesMinScaleBtn:
                     stationNamesScaleDropdown(item_index);
+                    break;
+                case Widx::kToolbarLayoutBtn:
+                    toolbarLayoutDropdown(item_index);
                     break;
                 case Widx::kWindowFrameStyleBtn:
                     windowFrameStyleDropdown(item_index);
@@ -962,6 +1008,15 @@ namespace OpenLoco::Ui::Windows::Options
 
             self.widgets[widx::vehicles_min_scale].text = kScaleStringIds[Config::get().vehiclesMinScale];
             self.widgets[widx::station_names_min_scale].text = kScaleStringIds[Config::get().stationNamesMinScale];
+
+            static constexpr StringId kToolbarLayoutStringIds[] = {
+                StringIds::preferred_toolbar_layout_original_game,
+                StringIds::preferred_toolbar_layout_horizontally_centred,
+                StringIds::preferred_toolbar_layout_all_panels_on_top,
+                StringIds::preferred_toolbar_layout_all_panels_centred_on_top,
+            };
+
+            self.widgets[widx::toolbar_layout].text = kToolbarLayoutStringIds[enumValue(Config::get().toolbarLayout)];
 
             static constexpr StringId kWindowStyleStringIds[] = {
                 StringIds::windowFrameStyleGradient,
@@ -1902,9 +1957,6 @@ namespace OpenLoco::Ui::Windows::Options
             zoom_to_cursor,
             invert_right_mouse_view_pan,
             toolbar_auto_menu,
-            toolbar_buttons_centred,
-            info_panels_top,
-            info_panels_juxapose,
             customize_keys
         };
 
@@ -1914,13 +1966,10 @@ namespace OpenLoco::Ui::Windows::Options
             constexpr WidgetId kZoomToCursor{ "zoom_to_cursor" };
             constexpr WidgetId kInvertRightMouseViewPan{ "invert_right_mouse_view_pan" };
             constexpr WidgetId kToolbarMenuAuto{ "toolbar_auto_menu" };
-            constexpr WidgetId kToolbarButtonsCentred{ "toolbar_buttons_centred" };
-            constexpr WidgetId kInfoPanelsTop{ "info_panels_top" };
-            constexpr WidgetId kInfoPanelsJuxapose{ "info_panels_juxapose" };
             constexpr WidgetId kCustomizeKeys{ "customize_keys" };
         }
 
-        static constexpr Ui::Size kWindowSize = { 366, 174 };
+        static constexpr Ui::Size kWindowSize = { 366, 129 };
 
         static constexpr auto _widgets = makeWidgets(
             Common::makeCommonWidgets(kWindowSize, StringIds::options_title_controls),
@@ -1928,10 +1977,7 @@ namespace OpenLoco::Ui::Windows::Options
             Widgets::Checkbox(Widx::kZoomToCursor, { 10, 64 }, { 346, 12 }, WindowColour::secondary, StringIds::zoom_to_cursor, StringIds::zoom_to_cursor_tip),
             Widgets::Checkbox(Widx::kInvertRightMouseViewPan, { 10, 79 }, { 346, 12 }, WindowColour::secondary, StringIds::invert_right_mouse_dragging, StringIds::tooltip_invert_right_mouse_dragging),
             Widgets::Checkbox(Widx::kToolbarMenuAuto, { 10, 94 }, { 346, 12 }, WindowColour::secondary, StringIds::toolbar_auto_menu),
-            Widgets::Checkbox(Widx::kToolbarButtonsCentred, { 10, 109 }, { 346, 12 }, WindowColour::secondary, StringIds::toolbar_buttons_centred),
-            Widgets::Checkbox(Widx::kInfoPanelsTop, { 10, 124 }, { 346, 12 }, WindowColour::secondary, StringIds::place_info_panels_on_top),
-            Widgets::Checkbox(Widx::kInfoPanelsJuxapose, { 10, 139 }, { 346, 12 }, WindowColour::secondary, StringIds::place_info_panels_alongside_toolbar),
-            Widgets::Button(Widx::kCustomizeKeys, { 26, 154 }, { 160, 12 }, WindowColour::secondary, StringIds::customise_keys, StringIds::customise_keys_tip)
+            Widgets::Button(Widx::kCustomizeKeys, { 26, 109 }, { 160, 12 }, WindowColour::secondary, StringIds::customise_keys, StringIds::customise_keys_tip)
 
         );
 
@@ -1939,9 +1985,6 @@ namespace OpenLoco::Ui::Windows::Options
         static void zoomToCursorMouseUp(Window& self);
         static void invertRightMouseViewPan(Window& self);
         static void toolbarAutoMenuMouseUp(Window& self);
-        static void toolbarButtonsCentredMouseUp(Window& self);
-        static void infoPanelsTopMouseUp(Window& self);
-        static void infoPanelsJuxaposeMouseUp(Window& self);
         static void openKeyboardShortcuts();
 
         static void prepareDraw(Window& self)
@@ -1950,7 +1993,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             Common::prepareDraw(self);
 
-            self.activatedWidgets &= ~(1ULL << widx::edge_scrolling | 1ULL << widx::zoom_to_cursor | 1ULL << widx::invert_right_mouse_view_pan | 1ULL << widx::toolbar_auto_menu | 1ULL << widx::info_panels_top | 1ULL << widx::info_panels_juxapose);
+            self.activatedWidgets &= ~(1ULL << widx::edge_scrolling | 1ULL << widx::zoom_to_cursor | 1ULL << widx::invert_right_mouse_view_pan);
             if (Config::get().edgeScrolling)
             {
                 self.activatedWidgets |= (1ULL << widx::edge_scrolling);
@@ -1966,18 +2009,6 @@ namespace OpenLoco::Ui::Windows::Options
             if (Config::get().toolbarAutoMenu)
             {
                 self.activatedWidgets |= (1ULL << widx::toolbar_auto_menu);
-            }
-            if (Config::get().toolbarButtonsCentred)
-            {
-                self.activatedWidgets |= (1ULL << widx::toolbar_buttons_centred);
-            }
-            if (Config::get().infoPanelsOnTop)
-            {
-                self.activatedWidgets |= (1ULL << widx::info_panels_top);
-            }
-            if (Config::get().infoPanelsJuxtaposed)
-            {
-                self.activatedWidgets |= (1ULL << widx::info_panels_juxapose);
             }
         }
 
@@ -2015,18 +2046,6 @@ namespace OpenLoco::Ui::Windows::Options
 
                 case Widx::kToolbarMenuAuto:
                     toolbarAutoMenuMouseUp(self);
-                    break;
-
-                case Widx::kToolbarButtonsCentred:
-                    toolbarButtonsCentredMouseUp(self);
-                    break;
-
-                case Widx::kInfoPanelsTop:
-                    infoPanelsTopMouseUp(self);
-                    break;
-
-                case Widx::kInfoPanelsJuxapose:
-                    infoPanelsJuxaposeMouseUp(self);
                     break;
             }
         }
@@ -2066,36 +2085,6 @@ namespace OpenLoco::Ui::Windows::Options
             Config::write();
 
             self.invalidate();
-        }
-
-        static void toolbarButtonsCentredMouseUp([[maybe_unused]] Window& self)
-        {
-            auto& cfg = OpenLoco::Config::get();
-            cfg.toolbarButtonsCentred = !cfg.toolbarButtonsCentred;
-            Config::write();
-
-            Gui::resize();
-            Gfx::invalidateScreen();
-        }
-
-        static void infoPanelsTopMouseUp([[maybe_unused]] Window& self)
-        {
-            auto& cfg = OpenLoco::Config::get();
-            cfg.infoPanelsOnTop = !cfg.infoPanelsOnTop;
-            Config::write();
-
-            Gui::resize();
-            Gfx::invalidateScreen();
-        }
-
-        static void infoPanelsJuxaposeMouseUp([[maybe_unused]] Window& self)
-        {
-            auto& cfg = OpenLoco::Config::get();
-            cfg.infoPanelsJuxtaposed = !cfg.infoPanelsJuxtaposed;
-            Config::write();
-
-            Gui::resize();
-            Gfx::invalidateScreen();
         }
 
         // 0x004C118D
