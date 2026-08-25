@@ -158,7 +158,9 @@ namespace OpenLoco::Ui::Windows::TimePanel
     // 0x004397BE
     static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        const bool infoPanelsOnTop = Config::get().infoPanelsOnTop;
+        using Config::ToolbarLayout;
+        const auto layout = Config::get().toolbarLayout;
+        const bool infoPanelsOnTop = layout == ToolbarLayout::panelsOnTop || layout == ToolbarLayout::allCombined;
         auto offsetY = infoPanelsOnTop ? -2 : 1;
         auto height = infoPanelsOnTop ? 0 : -2;
 
