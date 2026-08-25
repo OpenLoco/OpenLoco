@@ -48,13 +48,6 @@ namespace OpenLoco::StringManager
         return str;
     }
 
-    void setString(StringId id, std::string_view value)
-    {
-        auto* dst = _strings[id];
-        std::memcpy(dst, value.data(), value.size());
-        dst[value.size()] = '\0';
-    }
-
     const char* swapString(StringId id, const char* src)
     {
         auto* dst = _strings[id];

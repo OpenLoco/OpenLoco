@@ -1107,7 +1107,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             {
                 // Prepare scenario name text.
-                char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
+                char* buffer = StringManager::getBufferString(StringIds::buffer_2039);
                 strncpy(buffer, Scenario::getOptions().scenarioName, 512);
 
                 FormatArguments args{};
@@ -1146,7 +1146,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             {
                 // Prepare scenario details text.
-                char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
+                char* buffer = StringManager::getBufferString(StringIds::buffer_2039);
                 strncpy(buffer, Scenario::getOptions().scenarioDetails, 512);
 
                 FormatArguments args{};
@@ -1218,7 +1218,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                 case Widx::kChangeNameBtn:
                 {
-                    char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
+                    char* buffer = StringManager::getBufferString(StringIds::buffer_2039);
                     strncpy(buffer, Scenario::getOptions().scenarioName, 512);
                     auto inputSize = std::size(Scenario::getOptions().scenarioName) - 1;
 
@@ -1228,7 +1228,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                 case Widx::kChangeDetailsBtn:
                 {
-                    char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
+                    char* buffer = StringManager::getBufferString(StringIds::buffer_2039);
                     strncpy(buffer, Scenario::getOptions().scenarioDetails, 512);
                     auto inputSize = std::size(Scenario::getOptions().scenarioDetails) - 1;
 

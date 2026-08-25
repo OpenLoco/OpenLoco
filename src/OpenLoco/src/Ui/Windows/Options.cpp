@@ -2228,7 +2228,7 @@ namespace OpenLoco::Ui::Windows::Options
             // Set preferred owner name.
             {
                 // TODO: Do not share this buffer, also unsafe, we should change the localisation to use a string pointer.
-                auto buffer = (char*)StringManager::getString(StringIds::buffer_2039);
+                auto buffer = StringManager::getBufferString(StringIds::buffer_2039);
                 const char* playerName = Config::get().preferredOwnerName.c_str();
                 strcpy(buffer, playerName);
                 buffer[strlen(playerName)] = '\0';
@@ -2255,7 +2255,7 @@ namespace OpenLoco::Ui::Windows::Options
             // Set preferred company nam
             {
                 // TODO: Do not share this buffer, also unsafe, we should change the localisation to use a string pointer.
-                auto buffer = (char*)StringManager::getString(StringIds::buffer_2040);
+                auto buffer = StringManager::getBufferString(StringIds::buffer_2040);
                 const char* companyName = Config::get().preferredCompanyName.c_str();
                 strcpy(buffer, companyName);
                 buffer[strlen(companyName)] = '\0';
@@ -2273,7 +2273,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C1319
         static void changePreferredName(Window& self)
         {
-            auto buffer = (char*)StringManager::getString(StringIds::buffer_2039);
+            auto buffer = StringManager::getBufferString(StringIds::buffer_2039);
             const char* playerName = Config::get().preferredOwnerName.c_str();
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
@@ -2317,7 +2317,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void changePreferredCompany(Window& self)
         {
-            auto buffer = (char*)StringManager::getString(StringIds::buffer_2040);
+            auto buffer = StringManager::getBufferString(StringIds::buffer_2040);
             const char* companyName = Config::get().preferredCompanyName.c_str();
             strcpy(buffer, companyName);
             buffer[strlen(companyName)] = '\0';

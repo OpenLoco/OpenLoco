@@ -33,7 +33,6 @@ namespace OpenLoco::StringManager
     constexpr uint16_t kTownNamesEnd = kTownNamesStart + kMaxTownNames;
 
     void reset();
-    void setString(StringId id, std::string_view value);
     const char* swapString(StringId id, const char* src);
     const char* getString(StringId id);
     char* getBufferString(StringId id);

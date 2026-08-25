@@ -1418,7 +1418,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
     static void drawSearchBox(Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        char* textBuffer = (char*)StringManager::getString(StringIds::buffer_2039);
+        char* textBuffer = StringManager::getBufferString(StringIds::buffer_2039);
         strncpy(textBuffer, inputSession.buffer.c_str(), 256);
 
         auto& widget = _widgets[widx::searchBox];
