@@ -2513,7 +2513,7 @@ strings:
   2458: "{STRINGID}{STRINGID}"
   2459: "Debug window"
   2460: "Show toolbar menus on hover instead of click"
-  2461: "Align toolbar buttons horizontally centred"
+
   2462: "Repeated placement"
   2463: "{SMALLFONT}{COLOUR BLACK}Place signals repeatedly at every ‘step size’ track elements"
   2464: "Step size:"
@@ -2534,3 +2534,8 @@ strings:
   2479: "Invalid file type"
   2480: "Place info panels on top"
   2481: "Place info panels alongside toolbar"
+  2482: "Preferred toolbar layout:"
+  2483: "Original game"
+  2484: "Horizontally centred"
+  2485: "All panels on top"
+  2486: "All panels centred on top"

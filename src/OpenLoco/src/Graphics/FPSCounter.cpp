@@ -53,7 +53,7 @@ namespace OpenLoco::Gfx
 
         // Draw text
         const int stringWidth = tr.getStringWidth(buffer);
-        const bool inCentre = Config::get().toolbarLayout != Config::ToolbarLayout::vanilla;
+        const bool inCentre = Config::get().toolbarLayout == Config::ToolbarLayout::vanilla;
         auto point = Ui::Point{ (inCentre ? (Ui::width() - stringWidth) / 2 : 4), 4 };
         tr.drawString(point, Colour::black, buffer);
 
