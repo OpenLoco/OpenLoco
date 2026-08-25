@@ -53,8 +53,10 @@ namespace OpenLoco::Gui
 
         auto* topToolbar = WindowManager::find(WindowType::topToolbar);
 
-        const bool infoPanelsOnTop = Config::get().infoPanelsOnTop && uiWidth > 640;
-        const bool infoPanelsJuxtaposed = infoPanelsOnTop && Config::get().infoPanelsJuxtaposed && topToolbar != nullptr && uiWidth > 640;
+        using Config::ToolbarLayout;
+        const auto layout = Config::get().toolbarLayout;
+        const bool infoPanelsOnTop = (layout == ToolbarLayout::panelsOnTop || layout == ToolbarLayout::allCombined) && uiWidth > 640;
+        const bool infoPanelsJuxtaposed = layout == ToolbarLayout::allCombined && topToolbar != nullptr && uiWidth > 640;
 
         auto* window = WindowManager::find(WindowType::editorStepController, enumValue(StepDirection::previous));
         if (window)
@@ -86,8 +88,10 @@ namespace OpenLoco::Gui
             topToolbar->callPrepareDraw();
         }
 
-        const bool infoPanelsOnTop = Config::get().infoPanelsOnTop && uiWidth > 640;
-        const bool infoPanelsJuxtaposed = infoPanelsOnTop && Config::get().infoPanelsJuxtaposed && uiWidth > 640;
+        using Config::ToolbarLayout;
+        const auto layout = Config::get().toolbarLayout;
+        const bool infoPanelsOnTop = (layout == ToolbarLayout::panelsOnTop || layout == ToolbarLayout::allCombined) && uiWidth > 640;
+        const bool infoPanelsJuxtaposed = layout == ToolbarLayout::allCombined && uiWidth > 640;
 
         auto* companyInfo = WindowManager::find(WindowType::companyInfoPanel);
         if (companyInfo)

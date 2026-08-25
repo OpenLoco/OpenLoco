@@ -228,6 +228,19 @@ namespace YAML
         static const convert_pair_vector<ScreenMode>& getEntries() { return kScreenModeEntries; }
     };
 
+    // ToolbarLayout
+    const convert_pair_vector<ToolbarLayout> kToolbarLayoutEntries = {
+        enum_def(ToolbarLayout, vanilla),
+        enum_def(ToolbarLayout, centred),
+        enum_def(ToolbarLayout, panelsOnTop),
+        enum_def(ToolbarLayout, allCombined),
+    };
+    template<>
+    struct convert<ToolbarLayout> : convert_enum_base<ToolbarLayout>
+    {
+        static const convert_pair_vector<ToolbarLayout>& getEntries() { return kToolbarLayoutEntries; }
+    };
+
     // WindowFrameStyle
     const convert_pair_vector<WindowFrameStyle> kWindowFrameStyleEntries = {
         enum_def(WindowFrameStyle, background),
