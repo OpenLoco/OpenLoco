@@ -9,13 +9,13 @@ Includes all git commit authors. Aliases are GitHub user names.
 * Michał Janiszewski (janisozaur) - CI, Linux management
 * Benjamin Sutas (LeftofZen)
 * Matthias Moninger (ZehMatt)
+* LeeSpork
 
 ## Additional implementation
 * Richard Jenkins (rwjuk)
 * Hielke Morsink (Broxzier)
 * Peter Gaál (petergaal)
 * Joe Bloomfield (Svelbeard)
-* LeeSpork
 * Kelson Blakewood (spacek531)
 * luciditee
 * killerdevildog
