@@ -2170,15 +2170,18 @@ namespace OpenLoco::StringIds
     constexpr StringId keyboard_shortcut_binding = 2458;
     constexpr StringId shortcut_debug_window = 2459;
     constexpr StringId toolbar_auto_menu = 2460;
-    constexpr StringId toolbar_buttons_centred = 2461;
+
     constexpr StringId signal_placement_repeat = 2462;
     constexpr StringId signal_placement_repeat_tooltip = 2463;
     constexpr StringId signal_placement_step_size = 2464;
     constexpr StringId capt_signals_block = 2465;
     constexpr StringId has_cargo_order = 2466;
     constexpr StringId transports_cargo = 2467;
-    constexpr StringId place_info_panels_on_top = 2468;
-    constexpr StringId place_info_panels_alongside_toolbar = 2469;
+    constexpr StringId preferred_toolbar_layout = 2468;
+    constexpr StringId preferred_toolbar_layout_original_game = 2469;
+    constexpr StringId preferred_toolbar_layout_horizontally_centred = 2470;
+    constexpr StringId preferred_toolbar_layout_all_panels_on_top = 2471;
+    constexpr StringId preferred_toolbar_layout_all_panels_centred_on_top = 2472;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
