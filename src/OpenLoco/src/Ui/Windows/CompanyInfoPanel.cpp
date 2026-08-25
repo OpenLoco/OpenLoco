@@ -188,7 +188,9 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
     // 0x43944B
     static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
     {
-        const bool infoPanelsOnTop = Config::get().infoPanelsOnTop;
+        using Config::ToolbarLayout;
+        const auto layout = Config::get().toolbarLayout;
+        const bool infoPanelsOnTop = layout == ToolbarLayout::panelsOnTop || layout == ToolbarLayout::allCombined;
         auto offsetY = infoPanelsOnTop ? -2 : 1;
         auto height = infoPanelsOnTop ? 0 : -2;
 
