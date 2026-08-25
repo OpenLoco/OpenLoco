@@ -77,6 +77,13 @@ namespace OpenLoco::Ui::Windows::EditorStepController
         { StringIds::editor_next_step, ImageIds::step_forward, (kWindowSize.width - 31) / 2, kWindowSize.width - 29 },
     });
 
+    static bool panelsAreOnTop()
+    {
+        using Config::ToolbarLayout;
+        const auto layout = Config::get().toolbarLayout;
+        return layout == ToolbarLayout::panelsOnTop || layout == ToolbarLayout::allCombined;
+    }
+
     // 0x0043CE21
     static void prepareDraw(Window& self)
     {
@@ -84,7 +91,7 @@ namespace OpenLoco::Ui::Windows::EditorStepController
         self.widgets[widx::frame].hidden = hidden;
         self.widgets[widx::button].hidden = hidden;
 
-        const bool infoPanelsOnTop = Config::get().infoPanelsOnTop;
+        const bool infoPanelsOnTop = panelsAreOnTop();
         const auto& size = !infoPanelsOnTop ? kWindowSize : kWindowSizeShrunk;
         if (self.height != size.height)
         {
@@ -124,7 +131,7 @@ namespace OpenLoco::Ui::Windows::EditorStepController
             return;
         }
 
-        const bool infoPanelsOnTop = Config::get().infoPanelsOnTop;
+        const bool infoPanelsOnTop = panelsAreOnTop();
         auto offsetY = infoPanelsOnTop ? -2 : 1;
         auto height = infoPanelsOnTop ? 0 : -2;
 
