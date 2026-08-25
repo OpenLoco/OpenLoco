@@ -290,7 +290,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             const auto x = self.widgets[widx::face_frame].midX();
             const auto y = self.widgets[widx::face_frame].bottom + 3;
             const auto width = self.width - self.widgets[widx::scrollview].right - 6;
-            auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+            auto str = StringManager::getBufferString(StringIds::buffer_2039);
             *str++ = ControlCodes::windowColour2;
             strcpy(str, ObjectManager::getObjectInIndex(self.rowHover)._name.c_str());
 

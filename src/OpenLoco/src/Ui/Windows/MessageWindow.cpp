@@ -240,7 +240,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
                 auto message = MessageManager::get(MessageId(i));
                 char* buffer = message->messageString;
-                auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+                auto str = StringManager::getBufferString(StringIds::buffer_2039);
 
                 const size_t bufferLength = 512;
                 strncpy(str, buffer, bufferLength);

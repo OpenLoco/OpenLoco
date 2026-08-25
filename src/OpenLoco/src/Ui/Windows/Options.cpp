@@ -2865,7 +2865,7 @@ namespace OpenLoco::Ui::Windows::Options
         const auto res = ObjectManager::findObjectInIndex(Config::get().preferredCurrency);
         if (res.has_value())
         {
-            auto buffer = const_cast<char*>(StringManager::getString(StringIds::preferred_currency_buffer));
+            auto buffer = StringManager::getBufferString(StringIds::preferred_currency_buffer);
             strcpy(buffer, res->_name.c_str());
         }
     }

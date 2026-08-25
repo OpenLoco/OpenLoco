@@ -257,7 +257,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
     // 0x004C94F7
     static void onClose([[maybe_unused]] Ui::Window& window)
     {
-        auto str337 = const_cast<char*>(StringManager::getString(StringIds::buffer_337));
+        auto str337 = StringManager::getBufferString(StringIds::buffer_337);
         str337[0] = '\0';
     }
 

@@ -975,7 +975,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             tooltipId = StringIds::null;
         }
 
-        char* tooltipBuffer = const_cast<char*>(StringManager::getString(StringIds::buffer_337));
+        char* tooltipBuffer = StringManager::getBufferString(StringIds::buffer_337);
 
         // Have we already got the right tooltip?
         if (tooltipBuffer[0] != '\0' && self.widgets[widx::scrollview].tooltip == tooltipId && self.rowHover == self.var_85C)

@@ -541,7 +541,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             char* newsString = news->messageString;
-            auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+            auto buffer = StringManager::getBufferString(StringIds::buffer_2039);
             const auto& mtd = getMessageTypeDescriptor(news->type);
 
             if (!mtd.hasFlag(MessageTypeFlags::smallerFont))
@@ -621,7 +621,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             char* newsString = news->messageString;
-            auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+            auto buffer = StringManager::getBufferString(StringIds::buffer_2039);
             const auto& mtd = getMessageTypeDescriptor(news->type);
 
             if (!mtd.hasFlag(MessageTypeFlags::smallerFont))
@@ -674,7 +674,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             char* newsString = news->messageString;
-            auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+            auto buffer = StringManager::getBufferString(StringIds::buffer_2039);
 
             *buffer = ControlCodes::Colour::black;
             buffer++;

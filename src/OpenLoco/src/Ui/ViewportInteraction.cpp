@@ -196,7 +196,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         args.push(station->name);
         args.push(station->town);
         args.push(getTransportIconsFromStationFlags(station->flags));
-        char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_338));
+        char* buffer = StringManager::getBufferString(StringIds::buffer_338);
         buffer = station->getStatusString(buffer);
 
         buffer = StringManager::formatString(buffer, StringIds::station_accepts);
@@ -254,7 +254,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         interaction.value = enumValue(industryTile->industryId());
         auto industry = industryTile->industry();
 
-        char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_338));
+        char* buffer = StringManager::getBufferString(StringIds::buffer_338);
         *buffer = 0;
         industry->getStatusString(buffer);
         auto args = FormatArguments::mapToolTip();
@@ -885,7 +885,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
 
         const auto* buildingObj = building->getObject();
-        auto* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_338));
+        auto* buffer = StringManager::getBufferString(StringIds::buffer_338);
         buffer = StringManager::formatString(buffer, buildingObj->name);
         if (!building->isConstructed())
         {
