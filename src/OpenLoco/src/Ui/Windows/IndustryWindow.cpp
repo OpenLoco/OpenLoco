@@ -159,9 +159,9 @@ namespace OpenLoco::Ui::Windows::Industry
             self.draw(drawingCtx);
             Common::drawTabs(self, drawingCtx);
 
-            const char* buffer = StringManager::getString(StringIds::buffer_1250);
+            char* buffer = StringManager::getBufferString(StringIds::buffer_1250);
             auto industry = IndustryManager::get(IndustryId(self.number));
-            industry->getStatusString(const_cast<char*>(buffer));
+            industry->getStatusString(buffer);
 
             FormatArguments args{};
             args.push(StringIds::buffer_1250);

@@ -41,9 +41,9 @@ namespace OpenLoco
         return produceCargoState;
     }
 
-    char* IndustryObject::getProducedCargoString(const char* buffer) const
+    char* IndustryObject::getProducedCargoString(char* buffer) const
     {
-        char* ptr = (char*)buffer;
+        char* ptr = buffer;
         auto producedCargoCount = 0;
 
         for (const auto& producedCargo : producedCargoType)
@@ -64,9 +64,9 @@ namespace OpenLoco
         return ptr;
     }
 
-    char* IndustryObject::getRequiredCargoString(const char* buffer) const
+    char* IndustryObject::getRequiredCargoString(char* buffer) const
     {
-        char* ptr = (char*)buffer;
+        char* ptr = buffer;
         auto requiredCargoCount = 0;
 
         for (const auto& requiredCargo : requiredCargoType)

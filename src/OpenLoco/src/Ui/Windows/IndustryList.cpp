@@ -463,8 +463,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 }
                 // Industry Status
                 {
-                    const char* buffer = StringManager::getString(StringIds::buffer_1250);
-                    industry->getStatusString((char*)buffer);
+                    char* buffer = StringManager::getBufferString(StringIds::buffer_1250);
+                    industry->getStatusString(buffer);
 
                     FormatArguments args{};
                     args.push(StringIds::buffer_1250);
@@ -828,7 +828,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 string = StringIds::null;
             }
 
-            if (StringManager::getString(StringIds::buffer_337)[0] != '\0')
+            if (StringManager::getBufferString(StringIds::buffer_337)[0] != '\0')
             {
                 if (string == self.widgets[widx::scrollview].tooltip)
                 {
@@ -848,8 +848,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
             }
 
             auto industryObj = ObjectManager::get<IndustryObject>(rowInfo);
-            auto buffer = const_cast<char*>(StringManager::getString(string));
-            char* ptr = (char*)buffer;
+            auto* buffer = StringManager::getBufferString(StringIds::buffer_337);
+            char* ptr = buffer;
 
             *ptr = '\0';
             *ptr++ = ControlCodes::Font::regular;
