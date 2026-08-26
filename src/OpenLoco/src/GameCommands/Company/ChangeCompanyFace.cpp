@@ -1,5 +1,6 @@
 #include "GameCommands/Company/ChangeCompanyFace.h"
 #include "GameCommands/GameCommands.h"
+#include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Objects/CompetitorObject.h"
 #include "Objects/ObjectManager.h"
@@ -98,9 +99,10 @@ namespace OpenLoco::GameCommands
         if (!CompanyManager::isPlayerCompany(targetCompanyId))
         {
             auto* competitor = ObjectManager::get<CompetitorObject>(foundCompetitor->id);
-            auto oldName = targetCompany->ownerName;
-            targetCompany->ownerName = competitor->firstName;
-            StringManager::emptyUserString(oldName);
+            StringManager::emptyUserString(targetCompany->ownerName);
+            char buffer[256]{};
+            StringManager::formatString(buffer, 256U, competitor->firstName);
+            targetCompany->ownerName = StringManager::userStringAllocate(buffer, false);
         }
 
         Gfx::invalidateScreen();

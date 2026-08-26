@@ -602,7 +602,9 @@ namespace OpenLoco::CompanyManager
         }
         else
         {
-            company->ownerName = competitorObj->firstName;
+            char ownerNameBuffer[256]{};
+            StringManager::formatString(ownerNameBuffer, 256U, competitorObj->firstName);
+            company->ownerName = StringManager::userStringAllocate(ownerNameBuffer, false);
             uint32_t randVal = 0;
             uint8_t companyNamePrefix = 0; // Usually a colour but can be a town
             uint8_t companyPlaystyle = 0;
