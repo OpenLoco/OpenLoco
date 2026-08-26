@@ -29,5 +29,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void removeCompanyHeadquarters(registers& regs, const uint8_t flags);
+    void removeCompanyHeadquarters(registers& regs, const Flags flags);
 }

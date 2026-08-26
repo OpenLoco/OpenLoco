@@ -119,7 +119,7 @@ namespace OpenLoco
         const auto& config = Config::get();
         if (!config.allowMultipleInstances && !Platform::lockSingleInstance())
         {
-            exitWithError(StringIds::game_init_failure, StringIds::loco_already_running);
+            exitWithError(StringIds::game_init_failure, StringIds::openloco_already_running);
         }
 
         // Originally the game would check that all the game

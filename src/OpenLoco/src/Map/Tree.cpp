@@ -124,7 +124,7 @@ namespace OpenLoco::World
         args.requiresFullClearance = true;
 
         // First query if we can place a tree at this location; skip if we can't.
-        auto queryRes = doCommand(args, 0);
+        auto queryRes = doCommand(args, GameCommands::Flags::none);
         if (queryRes == GameCommands::kFailure)
         {
             return false;

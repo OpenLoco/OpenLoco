@@ -28,7 +28,7 @@ namespace OpenLoco::GameCommands
      * @param buffer2 @<bp> - Third part (4 chars) of the 12 update buffer
      * @return @<ebx> - returns 0 if rename is successful; otherwise GameCommands::kFailure
      */
-    static uint32_t renameStation(const GameCommands::RenameStationArgs& args, const uint8_t flags)
+    static uint32_t renameStation(const GameCommands::RenameStationArgs& args, const Flags flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Miscellaneous);
 
@@ -42,7 +42,7 @@ namespace OpenLoco::GameCommands
         static char staticRenameBuffer[37]{};
 
         // Fill buffer over calls into the renameBuffer
-        if ((flags & GameCommands::Flags::apply) != 0)
+        if (hasFlags(flags, GameCommands::Flags::apply))
         {
             static constexpr std::array<int, 3> kTransformTable = { 2, 0, 1 };
             int arrayIndex = kTransformTable.at(args.nameBufferIndex);
@@ -78,7 +78,7 @@ namespace OpenLoco::GameCommands
         if (strlen(renameStringBuffer) == 0)
         {
             // Are we bailing out early?
-            if ((flags & GameCommands::Flags::apply) == 0)
+            if (!hasFlags(flags, GameCommands::Flags::apply))
             {
                 return 0;
             }
@@ -95,7 +95,7 @@ namespace OpenLoco::GameCommands
             }
 
             // Are we bailing out early?
-            if ((flags & GameCommands::Flags::apply) == 0)
+            if (!hasFlags(flags, GameCommands::Flags::apply))
             {
                 StringManager::emptyUserString(allocatedStringId);
                 return 0;
@@ -111,7 +111,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void renameStation(registers& regs, const uint8_t flags)
+    void renameStation(registers& regs, const Flags flags)
     {
         regs.ebx = renameStation(GameCommands::RenameStationArgs(regs), flags);
     }

@@ -38,5 +38,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void aiTrackReplacement(registers& regs, const uint8_t flags);
+    void aiTrackReplacement(registers& regs, const Flags flags);
 }

@@ -69,14 +69,12 @@ namespace OpenLoco::Ui::Windows::TimePanel
         Widgets::ImageButton(Widx::kFastForwardBtn, { 58, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),
         Widgets::ImageButton(Widx::kExtraFastForwardBtn, { 78, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_extra_fast_forward, StringIds::tooltip_speed_extra_fast_forward));
 
-    static bool redrawScheduled = false; // 0x0050A004 (2nd bit)
-
     static const WindowEventList& getEvents();
 
     Window* open()
     {
         auto window = WindowManager::createWindow(
-            WindowType::timeToolbar,
+            WindowType::timePanel,
             { Ui::width() - kWindowSize.width, Ui::height() - kWindowSize.height },
             { kWindowSize.width, kWindowSize.height },
             Ui::WindowFlags::stickToFront | Ui::WindowFlags::transparent | Ui::WindowFlags::noBackground,
@@ -89,8 +87,8 @@ namespace OpenLoco::Ui::Windows::TimePanel
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
-            window->setColour(WindowColour::primary, AdvancedColour(skin->timeToolbarColour).translucent());
-            window->setColour(WindowColour::secondary, AdvancedColour(skin->timeToolbarColour).translucent());
+            window->setColour(WindowColour::primary, AdvancedColour(skin->timePanelColour).translucent());
+            window->setColour(WindowColour::secondary, AdvancedColour(skin->timePanelColour).translucent());
         }
 
         return window;
@@ -183,7 +181,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         }
 
         auto c = self.getColour(WindowColour::primary).opaque();
-        if (Input::isHovering(WindowType::timeToolbar, 0, widx::date_btn))
+        if (Input::isHovering(WindowType::timePanel, 0, widx::date_btn))
         {
             c = Colour::white;
         }
@@ -386,11 +384,6 @@ namespace OpenLoco::Ui::Windows::TimePanel
         Network::sendChatMessage(string);
     }
 
-    void invalidateFrame()
-    {
-        redrawScheduled = true;
-    }
-
     // 0x00439AD9
     static void onUpdate(Window& w)
     {
@@ -411,16 +404,8 @@ namespace OpenLoco::Ui::Windows::TimePanel
         {
             if (w.numTicksVisible == 0 || w.numTicksVisible == kPausedStatusTextDuration)
             {
-                redrawScheduled = true;
+                WindowManager::invalidate(WindowType::timePanel);
             }
-        }
-
-        if (redrawScheduled)
-        {
-            redrawScheduled = false;
-
-            // Invalidating the inner frame widget effectively causes the entire time panel to be redrawn.
-            WindowManager::invalidateWidget(WindowType::timeToolbar, 0, widx::inner_frame);
         }
     }
 

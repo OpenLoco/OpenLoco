@@ -395,10 +395,10 @@ namespace OpenLoco::Gfx
         int16_t dstY,
         int16_t width,
         int16_t height,
-        int16_t srcX,
-        int16_t srcY)
+        int16_t deltaX,
+        int16_t deltaY)
     {
-        if (dstX == 0 && dstY == 0)
+        if (deltaX == 0 && deltaY == 0)
         {
             return;
         }
@@ -407,10 +407,10 @@ namespace OpenLoco::Gfx
         // NOTE: when zooming, there can be x, y, dx, dy combinations that go off the
         // canvas; hence the checks. This code should ultimately not be called when
         // zooming because this function is specific to updating the screen on move
-        int32_t lmargin = std::min(dstX - srcX, 0);
-        int32_t rmargin = std::min((int32_t)rt.width - (dstX - srcX + width), 0);
-        int32_t tmargin = std::min(dstY - srcY, 0);
-        int32_t bmargin = std::min((int32_t)rt.height - (dstY - srcY + height), 0);
+        int32_t lmargin = std::min(dstX - deltaX, 0);
+        int32_t rmargin = std::min((int32_t)rt.width - (dstX - deltaX + width), 0);
+        int32_t tmargin = std::min(dstY - deltaY, 0);
+        int32_t bmargin = std::min((int32_t)rt.height - (dstY - deltaY + height), 0);
 
         dstX -= lmargin;
         dstY -= tmargin;
@@ -419,9 +419,9 @@ namespace OpenLoco::Gfx
 
         int32_t stride = rt.width + rt.pitch;
         uint8_t* to = rt.bits + dstY * stride + dstX;
-        uint8_t* from = rt.bits + (dstY - srcY) * stride + dstX - srcX;
+        uint8_t* from = rt.bits + (dstY - deltaY) * stride + dstX - deltaX;
 
-        if (srcY > 0)
+        if (deltaY > 0)
         {
             // If positive dy, reverse directions
             to += (height - 1) * stride;

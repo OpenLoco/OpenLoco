@@ -60,7 +60,7 @@ namespace OpenLoco::GameCommands
             uint8_t trackObjectId;
             uint8_t index;
             bool isLastIndex;
-            uint8_t flags;
+            Flags flags;
         };
     }
 
@@ -254,8 +254,8 @@ namespace OpenLoco::GameCommands
         hasLevelCrossing = true;
         getLegacyReturnState().flags_1136073 |= (1U << 2);
 
-        if (!(args.flags & (Flags::aiAllocated | Flags::ghost))
-            && (args.flags & Flags::apply))
+        if (!hasFlags(args.flags, Flags::aiAllocated | Flags::ghost)
+            && hasFlags(args.flags, Flags::apply))
         {
             elRoad.setHasLevelCrossing(true);
             elRoad.setLevelCrossingObjectId(getGameState().currentDefaultLevelCrossingType);
@@ -319,7 +319,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0049BB98
-    static uint32_t createTrack(const TrackPlacementArgs& args, uint8_t flags)
+    static uint32_t createTrack(const TrackPlacementArgs& args, Flags flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3{ 16, 16, 0 });
@@ -331,7 +331,7 @@ namespace OpenLoco::GameCommands
         returnState.byte_1136075 = 0xFFU;
         // 0x01135C68 = unkFlags
 
-        if ((flags & Flags::apply) && !(flags & Flags::aiAllocated))
+        if (hasFlags(flags, Flags::apply) && !hasFlags(flags, Flags::aiAllocated))
         {
             companySetObservation(getUpdatingCompanyId(), ObservationStatus::buildingTrackRoad, args.pos, EntityId::null, args.trackObjectId);
         }
@@ -482,7 +482,7 @@ namespace OpenLoco::GameCommands
                 totalCost += Economy::getInflationAdjustedCost(levelCrossObj->costFactor, levelCrossObj->costIndex, 10);
             }
 
-            if ((flags & Flags::apply) && !(flags & (Flags::ghost | Flags::aiAllocated)))
+            if (hasFlags(flags, Flags::apply) && !hasFlags(flags, Flags::ghost | Flags::aiAllocated))
             {
                 World::TileManager::removeAllWallsOnTileBelow(World::toTileSpace(trackLoc), baseZ);
             }
@@ -510,7 +510,7 @@ namespace OpenLoco::GameCommands
                 return kFailure;
             }
 
-            if (!(flags & Flags::apply))
+            if (!hasFlags(flags, Flags::apply))
             {
                 continue;
             }
@@ -519,7 +519,7 @@ namespace OpenLoco::GameCommands
             {
                 companyEmotionEvent(getUpdatingCompanyId(), Emotion::thinking);
             }
-            if (!(flags & (Flags::ghost | Flags::aiAllocated)))
+            if (!hasFlags(flags, Flags::ghost | Flags::aiAllocated))
             {
                 World::TileManager::removeSurfaceIndustryAtHeight(trackLoc);
                 World::TileManager::setTerrainStyleAsClearedAtHeight(trackLoc);
@@ -548,8 +548,8 @@ namespace OpenLoco::GameCommands
             newElTrack.setHasBridge(returnState.flags_1136073 & (1U << 1));
             newElTrack.setHasLevelCrossing(hasLevelCrossing);
             newElTrack.setFlag6(piece.index == (trackPieces.size() - 1));
-            newElTrack.setGhost(flags & Flags::ghost);
-            newElTrack.setAiAllocated(flags & Flags::aiAllocated);
+            newElTrack.setGhost(hasFlags(flags, Flags::ghost));
+            newElTrack.setAiAllocated(hasFlags(flags, Flags::aiAllocated));
 
             if (shouldInvalidateTile(flags))
             {
@@ -578,14 +578,14 @@ namespace OpenLoco::GameCommands
             totalCost += cost;
         }
 
-        if ((flags & Flags::apply) && !(flags & (Flags::aiAllocated | Flags::ghost)))
+        if (hasFlags(flags, Flags::apply) && !hasFlags(flags, Flags::aiAllocated | Flags::ghost))
         {
             playConstructionPlacementSound(getPosition());
         }
         return totalCost;
     }
 
-    void createTrack(registers& regs, const uint8_t flags)
+    void createTrack(registers& regs, const Flags flags)
     {
         regs.ebx = createTrack(TrackPlacementArgs(regs), flags);
     }

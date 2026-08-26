@@ -34,7 +34,7 @@ namespace OpenLoco::Vehicles
 namespace OpenLoco::GameCommands
 {
     // 0x004267BE
-    static uint32_t vehiclePlaceAir(const VehicleAirPlacementArgs& args, uint8_t flags)
+    static uint32_t vehiclePlaceAir(const VehicleAirPlacementArgs& args, Flags flags)
     {
         setExpenditureType(ExpenditureType::AircraftRunningCosts);
 
@@ -149,7 +149,7 @@ namespace OpenLoco::GameCommands
                 return kFailure;
             }
 
-            if (!(flags & Flags::apply))
+            if (!hasFlags(flags, Flags::apply))
             {
                 return 0;
             }
@@ -179,7 +179,7 @@ namespace OpenLoco::GameCommands
             train.veh2->currentSpeed = 0.0_mph;
             train.veh2->motorState = Vehicles::MotorState::stopped;
 
-            if (flags & Flags::ghost)
+            if (hasFlags(flags, Flags::ghost))
             {
                 train.applyToComponents([](auto& component) {
                     component.var_38 |= Vehicles::Flags38::isGhost;
@@ -187,14 +187,14 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        if ((flags & Flags::apply) && !(flags & Flags::ghost))
+        if (hasFlags(flags, Flags::apply) && !hasFlags(flags, Flags::ghost))
         {
             Vehicles::playPlacedownSound(pos);
         }
         return 0;
     }
 
-    void vehiclePlaceAir(registers& regs, const uint8_t flags)
+    void vehiclePlaceAir(registers& regs, const Flags flags)
     {
         regs.ebx = vehiclePlaceAir(VehicleAirPlacementArgs(regs), flags);
     }

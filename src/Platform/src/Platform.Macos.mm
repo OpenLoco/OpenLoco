@@ -93,6 +93,13 @@ namespace OpenLoco::Platform
         return result == nullptr ? std::string() : result;
     }
 
+    std::vector<fs::path> getLocoInstallSearchPaths()
+    {
+        // TODO: Implement me. Locomotion is a Windows game, so any install here is made by
+        // a compatibility layer such as CrossOver or Whisky, in a location of its choosing.
+        return {};
+    }
+
     bool isRunningInWine()
     {
         return false;

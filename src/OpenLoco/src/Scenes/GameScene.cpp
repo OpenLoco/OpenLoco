@@ -164,7 +164,7 @@ namespace OpenLoco::Scenes::GameScene
                 auto today = calcDate(getCurrentDay());
                 setDate(today);
                 Scenario::updateSnowLine(today.dayOfYear);
-                Ui::Windows::TimePanel::invalidateFrame();
+                WindowManager::invalidate(WindowType::timePanel);
 
                 if (today.month != yesterday.month)
                 {

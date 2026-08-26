@@ -33,5 +33,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void loadSaveQuit(registers& regs, const uint8_t flags);
+    void loadSaveQuit(registers& regs, const Flags flags);
 }

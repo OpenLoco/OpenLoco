@@ -10,7 +10,7 @@
 namespace OpenLoco::GameCommands
 {
     // 0x0042ECFC
-    static uint32_t buildCompanyHeadquarters(HeadquarterPlacementArgs args, uint8_t flags)
+    static uint32_t buildCompanyHeadquarters(HeadquarterPlacementArgs args, Flags flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(World::Pos3(args.pos.x + World::kTileSize / 2, args.pos.y + World::kTileSize / 2, args.pos.z));
@@ -19,7 +19,7 @@ namespace OpenLoco::GameCommands
         auto targetCompanyId = getUpdatingCompanyId();
         auto* company = CompanyManager::get(targetCompanyId);
 
-        if (company->headquartersX != -1 && !(flags & Flags::ghost))
+        if (company->headquartersX != -1 && !hasFlags(flags, Flags::ghost))
         {
             HeadquarterRemovalArgs rmArgs{};
             rmArgs.pos = World::Pos3(company->headquartersX, company->headquartersY, company->headquartersZ * World::kSmallZStep);
@@ -53,7 +53,7 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if ((flags & Flags::apply) && !(flags & Flags::ghost))
+        if (hasFlags(flags, Flags::apply) && !hasFlags(flags, Flags::ghost))
         {
             company->headquartersX = args.pos.x;
             company->headquartersY = args.pos.y;
@@ -61,7 +61,7 @@ namespace OpenLoco::GameCommands
             Ui::WindowManager::invalidate(Ui::WindowType::company, Ui::WindowNumber_t(targetCompanyId));
         }
 
-        if ((flags & Flags::apply) && !(flags & (Flags::aiAllocated | Flags::ghost)))
+        if (hasFlags(flags, Flags::apply) && !hasFlags(flags, Flags::aiAllocated | Flags::ghost))
         {
             Audio::playSound(Audio::SoundId::construct, Audio::ChannelId::effects, args.pos);
         }
@@ -69,7 +69,7 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void buildCompanyHeadquarters(registers& regs, const uint8_t flags)
+    void buildCompanyHeadquarters(registers& regs, const Flags flags)
     {
         HeadquarterPlacementArgs args(regs);
         regs.ebx = buildCompanyHeadquarters(args, flags);

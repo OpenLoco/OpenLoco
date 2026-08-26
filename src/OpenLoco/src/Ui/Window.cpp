@@ -27,14 +27,14 @@ using namespace OpenLoco::World;
 namespace OpenLoco::Ui
 {
     Window::Window(Ui::Point position, Ui::Size size)
-        : x(static_cast<int16_t>(position.x))
-        , y(static_cast<int16_t>(position.y))
-        , width(static_cast<uint16_t>(size.width))
-        , height(static_cast<uint16_t>(size.height))
-        , minWidth(static_cast<uint16_t>(size.width))
-        , maxWidth(static_cast<uint16_t>(size.width))
-        , minHeight(static_cast<uint16_t>(size.height))
-        , maxHeight(static_cast<uint16_t>(size.height))
+        : x(position.x)
+        , y(position.y)
+        , width(size.width)
+        , height(size.height)
+        , minWidth(size.width)
+        , maxWidth(size.width)
+        , minHeight(size.height)
+        , maxHeight(size.height)
     {
     }
 

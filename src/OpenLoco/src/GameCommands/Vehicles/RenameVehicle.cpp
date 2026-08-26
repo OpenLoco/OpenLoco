@@ -28,7 +28,7 @@ namespace OpenLoco::GameCommands
      * @param buffer2 @<bp> - Third group of 4 characters of a 12 character update buffer
      * @return @<ebx> - if rename is successful, return 0, if failed, return kFailure
      */
-    static uint32_t renameVehicle(const VehicleRenameArgs& args, const uint8_t flags)
+    static uint32_t renameVehicle(const VehicleRenameArgs& args, const Flags flags)
     {
         setExpenditureType(ExpenditureType::TrainRunningCosts);
 
@@ -40,7 +40,7 @@ namespace OpenLoco::GameCommands
 
         static char staticRenameBuffer[37]{};
 
-        if ((flags & Flags::apply) != 0)
+        if (hasFlags(flags, Flags::apply))
         {
             static constexpr std::array<int, 3> kTransformTable = { 2, 0, 1 };
             int arrayIndex = kTransformTable.at(args.i);
@@ -81,7 +81,7 @@ namespace OpenLoco::GameCommands
             {
                 return kFailure;
             }
-            if ((flags & Flags::apply) == 0)
+            if (!hasFlags(flags, Flags::apply))
             {
                 StringManager::emptyUserString(allocatedStringId);
                 return 0;
@@ -89,7 +89,7 @@ namespace OpenLoco::GameCommands
         }
         else
         {
-            if ((flags & Flags::apply) == 0)
+            if (!hasFlags(flags, Flags::apply))
             {
                 return 0;
             }
@@ -112,7 +112,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void renameVehicle(registers& regs, const uint8_t flags)
+    void renameVehicle(registers& regs, const Flags flags)
     {
         regs.ebx = renameVehicle(VehicleRenameArgs(regs), flags);
     }

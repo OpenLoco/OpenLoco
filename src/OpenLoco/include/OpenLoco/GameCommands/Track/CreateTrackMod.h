@@ -43,5 +43,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void createTrackMod(registers& regs, const uint8_t flags);
+    void createTrackMod(registers& regs, const Flags flags);
 }

@@ -4181,20 +4181,20 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     auto roadObjId = head.trackType == 0xFF ? getGameState().defaultTrackTypeObjectId : head.trackType;
                     auto roadObj = ObjectManager::get<RoadObject>(roadObjId);
-                    image = roadObj->image + (isPlaced ? 32 : 33);
+                    image = roadObj->image + (isPlaced ? RoadObj::ImageIds::kUiPickupFromRoad : RoadObj::ImageIds::kUiPlaceOnRoad);
                     tooltip = isPlaced ? StringIds::tooltip_remove_from_track : StringIds::tooltip_place_on_track;
                     break;
                 }
                 case TransportMode::air:
                 {
-                    image = isPlaced ? ImageIds::airport_pickup : ImageIds::airport_place;
+                    image = isPlaced ? ImageIds::pickupFromAirport : ImageIds::placeOnAirport;
                     tooltip = isPlaced ? StringIds::tooltip_remove_from_airport : StringIds::tooltip_place_on_airport;
                     break;
                 }
                 case TransportMode::water:
                 {
                     auto waterObj = ObjectManager::get<WaterObject>();
-                    image = waterObj->image + (isPlaced ? 58 : 59);
+                    image = waterObj->image + (isPlaced ? Water::ImageIds::kUiPickupFromWater : Water::ImageIds::kUiPlaceOnWater);
                     tooltip = isPlaced ? StringIds::tooltip_remove_from_water : StringIds::tooltip_place_on_dock;
                     break;
                 }

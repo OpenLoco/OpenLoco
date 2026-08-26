@@ -75,7 +75,7 @@ namespace OpenLoco::Ui::ToolTip
     // 0x00439BB1
     bool isTimeTooltip()
     {
-        return _tooltipWindowType == WindowType::timeToolbar && _tooltipWidgetIndex == 3;
+        return _tooltipWindowType == WindowType::timePanel && _tooltipWidgetIndex == 3;
     }
 
     Ui::Point getTooltipMouseLocation()

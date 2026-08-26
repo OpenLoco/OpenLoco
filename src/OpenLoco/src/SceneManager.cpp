@@ -333,13 +333,13 @@ namespace OpenLoco::SceneManager
     static void onPause()
     {
         Audio::pauseSound();
-        Ui::Windows::TimePanel::invalidateFrame();
+        Ui::WindowManager::invalidate(Ui::WindowType::timePanel);
     }
 
     static void onUnpause()
     {
         Audio::unpauseSound();
-        Ui::Windows::TimePanel::invalidateFrame();
+        Ui::WindowManager::invalidate(Ui::WindowType::timePanel);
     }
 
     void setPauseFlag(PauseFlags value)
@@ -375,7 +375,7 @@ namespace OpenLoco::SceneManager
         if (_gameSpeed != speed)
         {
             _gameSpeed = speed;
-            Ui::WindowManager::invalidate(Ui::WindowType::timeToolbar);
+            Ui::WindowManager::invalidate(Ui::WindowType::timePanel);
         }
     }
 }

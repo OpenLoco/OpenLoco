@@ -751,7 +751,7 @@ namespace OpenLoco::StringIds
 
     constexpr StringId tutorial_text = 1014;
     constexpr StringId tutorial_control = 1015;
-    constexpr StringId loco_already_running = 1016;
+    constexpr StringId openloco_already_running = 1016;
     constexpr StringId music_acknowledgements_btn = 1017;
     constexpr StringId music_acknowledgements_caption = 1018;
     constexpr StringId music_copyright = 1019;
@@ -2179,6 +2179,8 @@ namespace OpenLoco::StringIds
     constexpr StringId signal_placement_repeat_tooltip = 2463;
     constexpr StringId signal_placement_step_size = 2464;
     constexpr StringId capt_signals_block = 2465;
+    constexpr StringId has_cargo_order = 2466;
+    constexpr StringId transports_cargo = 2467;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

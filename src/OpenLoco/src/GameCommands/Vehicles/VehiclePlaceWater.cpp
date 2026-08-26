@@ -30,7 +30,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004267BE
-    static uint32_t vehiclePlaceWater(const VehicleWaterPlacementArgs& args, uint8_t flags)
+    static uint32_t vehiclePlaceWater(const VehicleWaterPlacementArgs& args, Flags flags)
     {
         setExpenditureType(ExpenditureType::ShipRunningCosts);
         setPosition(args.pos + World::Pos3{ 32, 32, 0 }); // Odd why 32,32
@@ -121,7 +121,7 @@ namespace OpenLoco::GameCommands
                 return kFailure;
             }
 
-            if (!(flags & Flags::apply))
+            if (!hasFlags(flags, Flags::apply))
             {
                 return 0;
             }
@@ -142,7 +142,7 @@ namespace OpenLoco::GameCommands
 
             train.veh1->var_48 |= Vehicles::Flags48::flag2;
 
-            if (flags & Flags::ghost)
+            if (hasFlags(flags, Flags::ghost))
             {
                 train.applyToComponents([](auto& component) {
                     component.var_38 |= Vehicles::Flags38::isGhost;
@@ -150,14 +150,14 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        if ((flags & Flags::apply) && !(flags & Flags::ghost))
+        if (hasFlags(flags, Flags::apply) && !hasFlags(flags, Flags::ghost))
         {
             playWaterPlacedownSound(getPosition());
         }
         return 0;
     }
 
-    void vehiclePlaceWater(registers& regs, const uint8_t flags)
+    void vehiclePlaceWater(registers& regs, const Flags flags)
     {
         regs.ebx = vehiclePlaceWater(VehicleWaterPlacementArgs(regs), flags);
     }

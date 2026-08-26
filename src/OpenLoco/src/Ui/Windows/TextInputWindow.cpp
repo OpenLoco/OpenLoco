@@ -118,7 +118,7 @@ namespace OpenLoco::Ui::Windows::TextInput
             window->owner = CompanyId::null;
         }
 
-        if (caller->type == WindowType::timeToolbar)
+        if (caller->type == WindowType::timePanel)
         {
             const InterfaceSkinObject* interface = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::secondary, interface->windowPlayerColor);

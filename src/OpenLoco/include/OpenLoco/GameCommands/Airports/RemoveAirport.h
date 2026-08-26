@@ -27,5 +27,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void removeAirport(registers& regs, const uint8_t flags);
+    void removeAirport(registers& regs, const Flags flags);
 }

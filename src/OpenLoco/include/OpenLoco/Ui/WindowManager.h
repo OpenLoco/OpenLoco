@@ -153,7 +153,6 @@ namespace OpenLoco::Ui::Windows
     namespace CompanyInfoPanel
     {
         Window* open();
-        void invalidateFrame();
     }
 
     namespace CompanyList
@@ -187,6 +186,7 @@ namespace OpenLoco::Ui::Windows
         void removeConstructionGhosts();
         void resetGhostVisibilityFlags();
         uint16_t getLastSelectedMods();
+        uint8_t getCurrentTrackType();
         World::Track::ModSection getLastSelectedTrackModSection();
     }
 
@@ -199,6 +199,22 @@ namespace OpenLoco::Ui::Windows
     namespace EditKeyboardShortcut
     {
         Window* open(Input::Shortcut shortcutId);
+    }
+
+    namespace EditorStepController
+    {
+        enum class StepDirection : uint8_t
+        {
+            previous,
+            next,
+        };
+
+        void open(StepDirection direction);
+    }
+
+    namespace EditorStatusLine
+    {
+        void open();
     }
 
     namespace Error
@@ -398,7 +414,6 @@ namespace OpenLoco::Ui::Windows
     namespace TimePanel
     {
         Window* open();
-        void invalidateFrame();
         void beginSendChatMessage(Window& self);
     }
 
@@ -428,17 +443,7 @@ namespace OpenLoco::Ui::Windows
         Window* open();
     }
 
-    namespace ToolbarBottom::Editor
-    {
-        void open();
-    }
-
-    namespace ToolbarTop::Game
-    {
-        void open();
-    }
-
-    namespace ToolbarTop::Editor
+    namespace ToolbarTop
     {
         void open();
     }

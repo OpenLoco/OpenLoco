@@ -32,7 +32,7 @@ namespace OpenLoco::Gui
         }
         else if (SceneManager::isPlayMode())
         {
-            Windows::ToolbarTop::Game::open();
+            Windows::ToolbarTop::open();
 
             Windows::CompanyInfoPanel::open();
             Windows::TimePanel::open();
@@ -77,24 +77,39 @@ namespace OpenLoco::Gui
             window->width = std::max(uiWidth, 640);
         }
 
-        window = WindowManager::find(WindowType::companyInfoToolbar);
+        window = WindowManager::find(WindowType::companyInfoPanel);
         if (window)
         {
             window->y = uiHeight - window->height;
         }
 
-        window = WindowManager::find(WindowType::timeToolbar);
+        window = WindowManager::find(WindowType::timePanel);
         if (window)
         {
             window->y = uiHeight - window->height;
             window->x = std::max(uiWidth, 640) - window->width;
         }
 
-        window = WindowManager::find(WindowType::editorToolbar);
+        using Windows::EditorStepController::StepDirection;
+
+        window = WindowManager::find(WindowType::editorStepController, enumValue(StepDirection::previous));
         if (window)
         {
             window->y = uiHeight - window->height;
-            window->width = std::max(uiWidth, 640);
+        }
+
+        window = WindowManager::find(WindowType::editorStepController, enumValue(StepDirection::next));
+        if (window)
+        {
+            window->y = uiHeight - window->height;
+            window->x = std::max(uiWidth, 640) - window->width;
+        }
+
+        window = WindowManager::find(WindowType::editorStatusLine);
+        if (window)
+        {
+            window->y = uiHeight - window->height;
+            window->x = (std::max(uiWidth, 640) - window->width) / 2;
         }
 
         window = WindowManager::find(WindowType::titleMenu);

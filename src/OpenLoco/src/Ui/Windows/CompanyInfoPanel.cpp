@@ -62,8 +62,6 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
 
     std::vector<const Company*> _sortedCompanies;
 
-    static bool _redrawScheduled = false; // _50A004 (first bit)
-
     // 0x43AA4C
     static void competitorMouseDown(Ui::Window* self, WidgetIndex_t widgetIndex)
     {
@@ -161,7 +159,7 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
     Window* open()
     {
         auto window = WindowManager::createWindow(
-            WindowType::companyInfoToolbar,
+            WindowType::companyInfoPanel,
             { 0, Ui::height() - kWindowSize.height },
             { kWindowSize.width, kWindowSize.height },
             Ui::WindowFlags::stickToFront | Ui::WindowFlags::transparent | Ui::WindowFlags::noBackground,
@@ -173,8 +171,8 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
-            window->setColour(WindowColour::primary, AdvancedColour(skin->companyInfoToolbarColour).translucent());
-            window->setColour(WindowColour::secondary, AdvancedColour(skin->companyInfoToolbarColour).translucent());
+            window->setColour(WindowColour::primary, AdvancedColour(skin->companyInfoPanelColour).translucent());
+            window->setColour(WindowColour::secondary, AdvancedColour(skin->companyInfoPanelColour).translucent());
         }
 
         return window;
@@ -220,7 +218,7 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
             }
 
             auto colour = window.getColour(WindowColour::primary).opaque();
-            if (Input::isHovering(WindowType::companyInfoToolbar, 0, widx::company_value))
+            if (Input::isHovering(WindowType::companyInfoPanel, 0, widx::company_value))
             {
                 colour = Colour::white;
             }
@@ -245,7 +243,7 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
             }
 
             auto colour = window.getColour(WindowColour::primary).opaque();
-            if (Input::isHovering(WindowType::companyInfoToolbar, 0, widx::performanceIndex))
+            if (Input::isHovering(WindowType::companyInfoPanel, 0, widx::performanceIndex))
             {
                 colour = Colour::white;
             }
@@ -351,11 +349,6 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
         formatPerformanceIndex(playerCompany->performanceIndex, args);
     }
 
-    void invalidateFrame()
-    {
-        _redrawScheduled = true;
-    }
-
     // 0x00439670
     static void onUpdate(Window& w)
     {
@@ -363,12 +356,6 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
         if (w.var_854 >= 24)
         {
             w.var_854 = 0;
-        }
-
-        if (_redrawScheduled)
-        {
-            _redrawScheduled = false;
-            WindowManager::invalidateWidget(WindowType::companyInfoToolbar, 0, widx::inner_frame);
         }
     }
 

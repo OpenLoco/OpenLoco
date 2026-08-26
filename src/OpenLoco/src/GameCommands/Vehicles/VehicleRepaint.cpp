@@ -35,7 +35,7 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    static uint32_t vehicleRepaint(const VehicleRepaintArgs& args, const uint8_t flags)
+    static uint32_t vehicleRepaint(const VehicleRepaintArgs& args, const Flags flags)
     {
         auto entity = EntityManager::get<EntityBase>(args.head);
         auto veh = entity->asBase<Vehicles::VehicleBase>();
@@ -49,7 +49,7 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if (!(flags & Flags::apply))
+        if (!hasFlags(flags, Flags::apply))
         {
             return 0;
         }
@@ -83,7 +83,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehicleRepaint(registers& regs, const uint8_t flags)
+    void vehicleRepaint(registers& regs, const Flags flags)
     {
         regs.ebx = vehicleRepaint(VehicleRepaintArgs(regs), flags);
     }

@@ -45,7 +45,7 @@ namespace OpenLoco
 {
     constexpr uint8_t kMinCargoRating = 0;
     constexpr uint8_t kMaxCargoRating = 200;
-    constexpr uint8_t catchmentSize = 4;
+    constexpr uint8_t kCatchmentSize = 4;
 
     struct CargoMap
     {
@@ -575,10 +575,10 @@ namespace OpenLoco
 
                     auto [minPos, maxPos] = airportObject->getAirportExtents(World::toTileSpace(pos), stationElement->rotation());
 
-                    minPos.x -= catchmentSize;
-                    minPos.y -= catchmentSize;
-                    maxPos.x += catchmentSize;
-                    maxPos.y += catchmentSize;
+                    minPos.x -= kCatchmentSize;
+                    minPos.y -= kCatchmentSize;
+                    maxPos.x += kCatchmentSize;
+                    maxPos.y += kCatchmentSize;
 
                     setStationCatchmentRegion(minPos, maxPos, catchmentFlag);
                 }
@@ -588,11 +588,11 @@ namespace OpenLoco
                     auto minPos = World::toTileSpace(pos);
                     auto maxPos = minPos;
 
-                    minPos.x -= catchmentSize;
-                    minPos.y -= catchmentSize;
+                    minPos.x -= kCatchmentSize;
+                    minPos.y -= kCatchmentSize;
                     // Docks are always size 2x2
-                    maxPos.x += catchmentSize + 1;
-                    maxPos.y += catchmentSize + 1;
+                    maxPos.x += kCatchmentSize + 1;
+                    maxPos.y += kCatchmentSize + 1;
 
                     setStationCatchmentRegion(minPos, maxPos, catchmentFlag);
                 }
@@ -602,10 +602,10 @@ namespace OpenLoco
                     auto minPos = World::toTileSpace(pos);
                     auto maxPos = minPos;
 
-                    minPos.x -= catchmentSize;
-                    minPos.y -= catchmentSize;
-                    maxPos.x += catchmentSize;
-                    maxPos.y += catchmentSize;
+                    minPos.x -= kCatchmentSize;
+                    minPos.y -= kCatchmentSize;
+                    maxPos.x += kCatchmentSize;
+                    maxPos.y += kCatchmentSize;
 
                     setStationCatchmentRegion(minPos, maxPos, catchmentFlag);
                 }
@@ -1068,10 +1068,10 @@ namespace OpenLoco
     {
         auto minPos = World::toTileSpace(pos);
         auto maxPos = minPos;
-        maxPos.x += catchmentSize;
-        maxPos.y += catchmentSize;
-        minPos.x -= catchmentSize;
-        minPos.y -= catchmentSize;
+        maxPos.x += kCatchmentSize;
+        maxPos.y += kCatchmentSize;
+        minPos.x -= kCatchmentSize;
+        minPos.y -= kCatchmentSize;
 
         setStationCatchmentRegion(minPos, maxPos, flag);
     }
@@ -1329,10 +1329,10 @@ namespace OpenLoco
 
         auto [minPos, maxPos] = airportObject->getAirportExtents(World::toTileSpace(pos), rotation);
 
-        minPos.x -= catchmentSize;
-        minPos.y -= catchmentSize;
-        maxPos.x += catchmentSize;
-        maxPos.y += catchmentSize;
+        minPos.x -= kCatchmentSize;
+        minPos.y -= kCatchmentSize;
+        maxPos.x += kCatchmentSize;
+        maxPos.y += kCatchmentSize;
 
         setStationCatchmentRegion(minPos, maxPos, flag);
     }
@@ -1342,10 +1342,10 @@ namespace OpenLoco
     {
         auto minPos = World::toTileSpace(pos);
         auto maxPos = minPos + TilePos2{ 1, 1 };
-        maxPos.x += catchmentSize;
-        maxPos.y += catchmentSize;
-        minPos.x -= catchmentSize;
-        minPos.y -= catchmentSize;
+        maxPos.x += kCatchmentSize;
+        maxPos.y += kCatchmentSize;
+        minPos.x -= kCatchmentSize;
+        minPos.y -= kCatchmentSize;
 
         setStationCatchmentRegion(minPos, maxPos, flag);
     }
