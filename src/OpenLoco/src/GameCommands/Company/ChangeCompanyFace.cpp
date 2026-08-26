@@ -98,8 +98,8 @@ namespace OpenLoco::GameCommands
         if (!CompanyManager::isPlayerCompany(targetCompanyId))
         {
             auto* competitor = ObjectManager::get<CompetitorObject>(foundCompetitor->id);
-            auto oldName = targetCompany->name;
-            targetCompany->name = competitor->firstName;
+            auto oldName = targetCompany->ownerName;
+            targetCompany->ownerName = competitor->firstName;
             StringManager::emptyUserString(oldName);
         }
 
