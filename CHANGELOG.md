@@ -7,6 +7,7 @@
 - Fix: [#3676] Roads added using object selection window could not be used by vehicles.
 - Fix: [#3943] Unable to place or remove signals on multi tile track elements.
 - Fix: [#3955] Terraform window can break dimensions of construction window.
+- Fix: [#3987] Unable to remove multi tile stations if one of the stations is for trams.
 
 26.08 (2026-08-13)
 ------------------------------------------------------------------------
