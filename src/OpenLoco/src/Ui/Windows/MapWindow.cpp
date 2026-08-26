@@ -1645,8 +1645,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 stringId = industryObj->nameSingular;
             }
 
-            auto buffer = StringManager::getString(StringIds::buffer_1250);
-            char* ptr = const_cast<char*>(buffer);
+            auto buffer = StringManager::getBufferString(StringIds::buffer_1250);
+            char* ptr = buffer;
 
             auto argsBuf = FormatArgumentsBuffer{};
             auto argsTmp = FormatArguments{ argsBuf };

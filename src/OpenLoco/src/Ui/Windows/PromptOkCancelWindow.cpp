@@ -121,7 +121,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     static void prepareDraw([[maybe_unused]] Window& self)
     {
         // Prepare description string for drawing.
-        char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+        char* buffer_2039 = StringManager::getBufferString(StringIds::buffer_2039);
         strncpy(&buffer_2039[0], _descriptionBuffer, 512);
     }
 

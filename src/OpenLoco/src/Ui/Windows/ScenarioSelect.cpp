@@ -256,7 +256,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
         // Scenario name
         {
-            auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+            auto str = StringManager::getBufferString(StringIds::buffer_2039);
             strncpy(str, scenarioInfo->scenarioName, std::size(scenarioInfo->scenarioName));
 
             FormatArguments args{};
@@ -324,7 +324,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             y = baseY + 150;
 
             // Description
-            auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+            auto str = StringManager::getBufferString(StringIds::buffer_2039);
             strncpy(str, scenarioInfo->description, std::size(scenarioInfo->description));
 
             FormatArguments args{};
@@ -338,7 +338,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             tr.drawStringLeft(Point(x, y), Colour::black, StringIds::challenge_label);
 
             // Challenge text
-            str = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
+            str = StringManager::getBufferString(StringIds::buffer_1250);
             strncpy(str, scenarioInfo->objective, std::size(scenarioInfo->objective));
 
             y += 10;
@@ -418,7 +418,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
             // Scenario name
             {
-                auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+                auto str = StringManager::getBufferString(StringIds::buffer_2039);
                 strncpy(str, scenarioInfo->scenarioName, std::size(scenarioInfo->scenarioName));
 
                 FormatArguments args{};
@@ -440,7 +440,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
             // 'Completed by' info
             {
-                auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+                auto str = StringManager::getBufferString(StringIds::buffer_2039);
                 strncpy(str, scenarioInfo->highscoreName, std::size(scenarioInfo->highscoreName));
 
                 FormatArguments args{};

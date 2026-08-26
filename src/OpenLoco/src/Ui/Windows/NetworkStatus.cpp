@@ -103,7 +103,8 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
 
     static void prepareDraw([[maybe_unused]] Window& self)
     {
-        StringManager::setString(StringIds::buffer_1250, _text.c_str());
+        char* buffer = StringManager::getBufferString(StringIds::buffer_2039);
+        strcpy(buffer, _text.c_str());
     }
 
     static void draw(Window& self, Gfx::DrawingContext& drawingCtx)

@@ -188,7 +188,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         drawingCtx.clearSingle(colour);
 
         char* newsString = news->messageString;
-        auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+        auto buffer = StringManager::getBufferString(StringIds::buffer_2039);
 
         *buffer = ControlCodes::Colour::black;
         buffer++;

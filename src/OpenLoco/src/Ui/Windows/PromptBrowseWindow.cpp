@@ -965,7 +965,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             if (fs::exists(path))
             {
                 // Copy directory and filename to buffer.
-                char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+                char* buffer_2039 = StringManager::getBufferString(StringIds::buffer_2039);
                 auto filenameUtf8 = path.stem().make_preferred().u8string();
                 auto filenameLoco = Localisation::convertUnicodeToLoco(filenameUtf8);
                 strncpy(&buffer_2039[0], filenameLoco.c_str(), 512);
@@ -1027,7 +1027,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         path += getExtensionFromFileType(_fileType);
 
         // Copy directory and filename to buffer.
-        char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+        char* buffer_2039 = StringManager::getBufferString(StringIds::buffer_2039);
         auto filenameUtf8 = path.stem().make_preferred().u8string();
         auto filenameLoco = Localisation::convertUnicodeToLoco(filenameUtf8);
         strncpy(&buffer_2039[0], filenameLoco.c_str(), 512);

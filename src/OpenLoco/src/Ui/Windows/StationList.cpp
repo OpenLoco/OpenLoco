@@ -480,7 +480,7 @@ namespace OpenLoco::Ui::Windows::StationList
                 tr.drawStringLeftClipped(point, 198, Colour::black, text_colour_id, args);
             }
 
-            char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
+            char* buffer = StringManager::getBufferString(StringIds::buffer_1250);
             station->getStatusString(buffer);
 
             // Then the station's current status.

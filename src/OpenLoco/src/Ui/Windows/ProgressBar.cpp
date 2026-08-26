@@ -93,7 +93,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
         self.x = (Ui::width() / 2) - (self.width / 2);
         self.y = std::max(28, (Ui::height() / 2) - (self.height / 2));
 
-        char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
+        char* buffer = StringManager::getBufferString(StringIds::buffer_1250);
         strncpy(buffer, _captionString.c_str(), 256);
     }
 

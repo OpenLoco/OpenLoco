@@ -187,7 +187,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         drawingCtx.clearSingle(shade);
 
         // Acquire string buffer
-        auto* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+        auto* buffer = StringManager::getBufferString(StringIds::buffer_2039);
 
         uint16_t y = 0;
         auto namePos = Point(1, y);

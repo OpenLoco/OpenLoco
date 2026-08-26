@@ -167,8 +167,8 @@ namespace OpenLoco::Ui::Windows::Station
 
             // Set station status
             auto station = StationManager::get(StationId(self.number));
-            const char* buffer = StringManager::getString(StringIds::buffer_1250);
-            station->getStatusString((char*)buffer);
+            char* buffer = StringManager::getBufferString(StringIds::buffer_1250);
+            station->getStatusString(buffer);
             FormatArguments args{ self.widgets[widx::status_bar].textArgs };
             args.push(StringIds::buffer_1250);
 

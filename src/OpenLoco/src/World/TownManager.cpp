@@ -98,7 +98,7 @@ namespace OpenLoco::TownManager
     }
 
     // 0x00497A6A
-    static LocationFlags townNameFromNamesObject(uint32_t rand, const char* buffer)
+    static LocationFlags townNameFromNamesObject(uint32_t rand, char* buffer)
     {
         auto* namesObj = ObjectManager::get<TownNamesObject>();
         LocationFlags locationFlags = LocationFlags::none;
@@ -122,7 +122,7 @@ namespace OpenLoco::TownManager
 
             if (index >= 0)
             {
-                char* strEnd = const_cast<char*>(buffer + strlen(buffer));
+                char* strEnd = buffer + strlen(buffer);
                 locationFlags |= copyTownNameToBuffer(namesObj, category.offset, index, strEnd);
             }
 

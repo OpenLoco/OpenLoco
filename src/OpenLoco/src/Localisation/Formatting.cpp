@@ -607,6 +607,11 @@ namespace OpenLoco::StringManager
 
             buffer.append(sourceStr, kUserStringSize);
         }
+        else if (id < kBufferStringsEnd)
+        {
+            const char* sourceStr = getBufferString(id);
+            formatStringPart(buffer, sourceStr, args);
+        }
         else if (id < kTownNamesEnd)
         {
             id -= kTownNamesStart;

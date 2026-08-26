@@ -982,7 +982,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         // Draw object filename
         {
             auto filename = fs::u8path(indexEntry._filepath).filename().u8string();
-            auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
+            auto buffer = StringManager::getBufferString(StringIds::buffer_1250);
             strncpy(buffer, filename.c_str(), filename.length() + 1);
 
             FormatArguments args{};
@@ -997,7 +997,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static void drawSearchBox(Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        char* textBuffer = (char*)StringManager::getString(StringIds::buffer_2039);
+        char* textBuffer = StringManager::getBufferString(StringIds::buffer_2039);
         strncpy(textBuffer, inputSession.buffer.c_str(), 256);
 
         auto& widget = widgets[widx::textInput];
@@ -1117,7 +1117,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         auto width = self.width - self.widgets[widx::scrollview].right - 6;
 
         {
-            auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+            auto buffer = StringManager::getBufferString(StringIds::buffer_2039);
 
             *buffer++ = ControlCodes::windowColour2;
 

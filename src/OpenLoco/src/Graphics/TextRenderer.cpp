@@ -464,7 +464,7 @@ namespace OpenLoco::Gfx
             const char* ptr = buffer;
             for (auto i = 0; ptr != nullptr && i < breakCount; i++)
             {
-                drawString(drawState, ctx, rt, point, AdvancedColour::FE(), const_cast<char*>(ptr));
+                drawString(drawState, ctx, rt, point, AdvancedColour::FE(), ptr);
                 ptr = advanceToNextLineWrapped(ptr);
                 point.y += lineHeight;
             }
@@ -726,7 +726,7 @@ namespace OpenLoco::Gfx
                 auto point = basePoint;
                 point.x -= lineWidth / 2;
 
-                drawString(drawState, ctx, rt, point, AdvancedColour::FE(), const_cast<char*>(ptr));
+                drawString(drawState, ctx, rt, point, AdvancedColour::FE(), ptr);
                 ptr = advanceToNextLineWrapped(ptr);
 
                 basePoint.y += lineHeight;
@@ -768,7 +768,7 @@ namespace OpenLoco::Gfx
                 auto point = basePoint;
                 point.x -= lineWidth / 2;
 
-                drawString(drawState, ctx, rt, point, AdvancedColour::FE(), const_cast<char*>(ptr));
+                drawString(drawState, ctx, rt, point, AdvancedColour::FE(), ptr);
 
                 ptr = advanceToNextLineWrapped(ptr);
                 basePoint.y += getLineHeight(drawState.font);

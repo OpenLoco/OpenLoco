@@ -1418,7 +1418,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
     static void drawSearchBox(Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        char* textBuffer = (char*)StringManager::getString(StringIds::buffer_2039);
+        char* textBuffer = StringManager::getBufferString(StringIds::buffer_2039);
         strncpy(textBuffer, inputSession.buffer.c_str(), 256);
 
         auto& widget = _widgets[widx::searchBox];
@@ -1498,7 +1498,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         }
 
         auto vehicleObj = ObjectManager::get<VehicleObject>(self.rowHover);
-        auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
+        auto buffer = StringManager::getBufferString(StringIds::buffer_1250);
 
         {
             auto cost = Economy::getInflationAdjustedCost(vehicleObj->costFactor, vehicleObj->costIndex, 6);
@@ -1731,7 +1731,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 drawVehicleOverview(drawingCtx, { 90, 37 }, window.rowHover, yaw, roll, CompanyManager::getControllingId());
 
                 auto vehicleObj = ObjectManager::get<VehicleObject>(window.rowHover);
-                auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
+                auto buffer = StringManager::getBufferString(StringIds::buffer_1250);
                 buffer = StringManager::formatString(buffer, vehicleObj->name);
                 auto usableCargoTypes = vehicleObj->compatibleCargoCategories[0] | vehicleObj->compatibleCargoCategories[1];
 

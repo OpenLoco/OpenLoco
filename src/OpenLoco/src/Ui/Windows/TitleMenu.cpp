@@ -372,7 +372,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
     static void showMultiplayer(Window* window)
     {
-        StringManager::setString(StringIds::buffer_2039, "");
+        char* buffer = StringManager::getBufferString(StringIds::buffer_2039);
+        buffer[0] = '\0';
         TextInput::openTextInput(window, StringIds::enter_host_address, StringIds::enter_host_address_description, StringIds::buffer_2039, widx::multiplayer_toggle_btn, {});
     }
 

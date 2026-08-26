@@ -76,7 +76,7 @@ namespace OpenLoco
         bool empty() const;
         bool canReceiveCargo() const;
         bool canProduceCargo() const;
-        void getStatusString(const char* buffer);
+        void getStatusString(char* buffer);
 
         void tick();
         void updateDaily();

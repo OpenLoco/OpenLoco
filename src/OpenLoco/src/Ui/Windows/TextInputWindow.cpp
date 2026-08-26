@@ -226,7 +226,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         auto& inputWidget = window.widgets[widx::input];
         if (drawingCtx.pushClip(Ui::Rect(inputWidget.left + 1, inputWidget.top + 1, inputWidget.width() - 2, inputWidget.height() - 2)))
         {
-            char* drawnBuffer = (char*)StringManager::getString(StringIds::buffer_2039);
+            char* drawnBuffer = StringManager::getBufferString(StringIds::buffer_2039);
             strcpy(drawnBuffer, inputSession.buffer.c_str());
 
             {

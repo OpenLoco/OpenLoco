@@ -394,7 +394,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Temporarily store the new name in buffer string 2039.
             // TODO: replace with a fixed length!
-            char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+            char* buffer = StringManager::getBufferString(StringIds::buffer_2039);
             strcpy(buffer, input);
 
             FormatArguments args{};
@@ -2405,7 +2405,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.draw(drawingCtx);
             Common::drawTabs(self, drawingCtx);
 
-            char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+            char* buffer_2039 = StringManager::getBufferString(StringIds::buffer_2039);
             *buffer_2039++ = static_cast<char>(ControlCodes::Colour::black);
             char* scenarioDetailsString = getGameState().scenarioDetails;
             StringManager::locoStrcpy(buffer_2039, scenarioDetailsString);

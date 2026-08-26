@@ -1522,7 +1522,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 self.invalidate();
             }
 
-            char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_337));
+            char* buffer = StringManager::getBufferString(StringIds::buffer_337);
             if (StringManager::locoStrlen(buffer) != 0)
             {
                 if (self.widgets[widx::carList].tooltip == tooltipFormat && self.var_85C == enumValue(tooltipContent))
@@ -2323,7 +2323,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Common::drawTabs(self, drawingCtx);
 
             // draw total cargo
-            char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
+            char* buffer = StringManager::getBufferString(StringIds::buffer_1250);
             auto head = Common::getVehicle(self);
             if (head == nullptr)
             {
@@ -2341,7 +2341,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             // draw cargo capacity
             {
-                buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
+                buffer = StringManager::getBufferString(StringIds::buffer_1250);
                 head->generateCargoCapacityString(buffer);
 
                 FormatArguments args = {};
@@ -2631,7 +2631,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
             }
 
-            char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_337));
+            char* buffer = StringManager::getBufferString(StringIds::buffer_337);
             if (*buffer != '\0')
             {
                 if (self.widgets[widx::cargoList].tooltip == tooltipFormat && EntityId(self.var_85C) == tooltipContent)

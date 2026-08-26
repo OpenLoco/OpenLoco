@@ -3,6 +3,7 @@
 #include "GameState.h"
 #include "Localisation/StringIds.h"
 #include <OpenLoco/Diagnostics/Logging.h>
+#include <array>
 #include <cassert>
 #include <cstring>
 
@@ -14,32 +15,18 @@ namespace OpenLoco::StringManager
     // Size for buffer strings that are used for temporary text storage
     static constexpr size_t kBufferStringSize = 512;
 
-    static char _buffer_337[kBufferStringSize];
-    static char _buffer_338[kBufferStringSize];
-    static char _buffer_1250[kBufferStringSize];
-    static char _preferred_currency_buffer[kBufferStringSize];
-    static char _buffer_1719[kBufferStringSize];
-    static char _buffer_2039[kBufferStringSize];
-    static char _buffer_2040[kBufferStringSize];
+    static std::array<std::array<char, kBufferStringSize>, 7> _bufferStrings = {};
 
     // 0x005183FC
-    // Initialize string pointer array with buffers for specific IDs
-    static std::array<char*, kNumStringPointers> _strings = []() {
-        std::array<char*, kNumStringPointers> strings = {};
-
-        // Assign pre-allocated buffers to specific string IDs
-        strings[StringIds::buffer_337] = _buffer_337;
-        strings[StringIds::buffer_338] = _buffer_338;
-        strings[StringIds::buffer_1250] = _buffer_1250;
-        strings[StringIds::preferred_currency_buffer] = _preferred_currency_buffer;
-        strings[StringIds::buffer_1719] = _buffer_1719;
-        strings[StringIds::buffer_2039] = _buffer_2039;
-        strings[StringIds::buffer_2040] = _buffer_2040;
-
-        return strings;
-    }();
+    static std::array<char*, kNumStringPointers> _strings = {};
 
     static auto& rawUserStrings() { return getGameState().userStrings; }
+
+    char* getBufferString(StringId id)
+    {
+        const auto index = id - StringManager::kBufferStringsStart;
+        return _bufferStrings[index].data();
+    }
 
     // 0x0049650E
     void reset()
@@ -59,13 +46,6 @@ namespace OpenLoco::StringManager
         }
         char* str = _strings[id];
         return str;
-    }
-
-    void setString(StringId id, std::string_view value)
-    {
-        auto* dst = _strings[id];
-        std::memcpy(dst, value.data(), value.size());
-        dst[value.size()] = '\0';
     }
 
     const char* swapString(StringId id, const char* src)

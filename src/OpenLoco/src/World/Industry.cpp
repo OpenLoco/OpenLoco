@@ -95,9 +95,9 @@ namespace OpenLoco
     }
 
     // 0x0045935F
-    void Industry::getStatusString(const char* buffer)
+    void Industry::getStatusString(char* buffer)
     {
-        char* ptr = (char*)buffer;
+        char* ptr = buffer;
         *ptr = '\0';
         const auto* industryObj = getObject();
 
