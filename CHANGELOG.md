@@ -6,6 +6,7 @@
 - Fix: [#2753] Unable to remove walls and trees at heights above 127.
 - Fix: [#3943] Unable to place or remove signals on multi tile track elements.
 - Fix: [#3955] Terraform window can break dimensions of construction window.
+- Fix: [#3676] Roads added using object selection could not be used.
 
 26.08 (2026-08-13)
 ------------------------------------------------------------------------
