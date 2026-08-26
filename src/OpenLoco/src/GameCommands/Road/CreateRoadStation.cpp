@@ -354,7 +354,10 @@ namespace OpenLoco::GameCommands
         }
 
         currency32_t totalCost = 0;
-
+        // It is possible that this might not == args.rotation but
+        // we need it later on for the stations tile list to exactly match
+        // what we place so hence why we are tracking it.
+        uint8_t stationPiece0Rotation = args.rotation;
         for (auto& piece : roadPieces)
         {
             const auto roadLoc = roadStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
@@ -648,6 +651,10 @@ namespace OpenLoco::GameCommands
                         elRoadEntries[0] = &el;
                     }
                 }
+                if (piece.index == 0)
+                {
+                    stationPiece0Rotation = elRoads[1]->rotation();
+                }
                 newStationElement->setRotation(elRoads[1]->rotation());
                 newStationElement->setGhost(hasFlags(flags, Flags::ghost));
                 newStationElement->setAiAllocated(hasFlags(flags, Flags::aiAllocated));
@@ -688,7 +695,7 @@ namespace OpenLoco::GameCommands
         {
             if (isNewStationTile)
             {
-                addTileToStation(returnState.lastPlacedTrackRoadStationId, roadStart, args.rotation);
+                addTileToStation(returnState.lastPlacedTrackRoadStationId, roadStart, stationPiece0Rotation);
             }
             auto* station = StationManager::get(returnState.lastPlacedTrackRoadStationId);
             station->invalidate();
