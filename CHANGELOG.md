@@ -2,7 +2,8 @@
 ------------------------------------------------------------------------
 - Feature: [#3978] Improved automatic detection of Locomotion installs on Linux.
 - Change: [#3867] Repeated presses of the build tracks and build roads keyboard shortcuts now cycles track/road types.
-- Change: [#3967, #3973] Minor changes to strings: game already running error message now says OpenLoco instead of Chris Sawyer's Locomotion, and English localisations now use correctly curved single quotes.
+- Change: [#3967] English localisations now use typographically correct curved single quotes.
+- Change: [#3973] Game already running error message now says "OpenLoco" instead of "Chris Sawyer's Locomotion".
 - Change: [#3974] The vehicle list can now be filtered by vehicles that transport cargo, rather than just 'wait for' orders.
 - Fix: [#2753] Unable to remove walls and trees at heights above 127.
 - Fix: [#3676] Roads added using object selection window could not be used by vehicles.
