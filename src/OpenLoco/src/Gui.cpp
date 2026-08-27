@@ -52,6 +52,10 @@ namespace OpenLoco::Gui
         using Windows::EditorStepController::StepDirection;
 
         auto* topToolbar = WindowManager::find(WindowType::topToolbar);
+        if (topToolbar != nullptr)
+        {
+            topToolbar->callPrepareDraw();
+        }
 
         using Config::ToolbarLayout;
         const auto layout = Config::get().toolbarLayout;
@@ -83,7 +87,7 @@ namespace OpenLoco::Gui
     static void resizeGameScene(const int32_t uiWidth, const int32_t uiHeight)
     {
         auto* topToolbar = WindowManager::find(WindowType::topToolbar);
-        if (topToolbar)
+        if (topToolbar != nullptr)
         {
             topToolbar->callPrepareDraw();
         }
@@ -94,14 +98,14 @@ namespace OpenLoco::Gui
         const bool infoPanelsJuxtaposed = layout == ToolbarLayout::allCombined && uiWidth > 640;
 
         auto* companyInfo = WindowManager::find(WindowType::companyInfoPanel);
-        if (companyInfo)
+        if (companyInfo != nullptr)
         {
             companyInfo->y = infoPanelsOnTop ? 0 : uiHeight - companyInfo->height;
             companyInfo->x = infoPanelsJuxtaposed ? topToolbar->x - companyInfo->width - 10 : 0;
         }
 
         auto* timeInfo = WindowManager::find(WindowType::timePanel);
-        if (timeInfo)
+        if (timeInfo != nullptr)
         {
             timeInfo->y = infoPanelsOnTop ? 0 : uiHeight - timeInfo->height;
             timeInfo->x = infoPanelsJuxtaposed ? topToolbar->x + topToolbar->width + 10 : std::max(uiWidth, 640) - timeInfo->width;
