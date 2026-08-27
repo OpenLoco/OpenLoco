@@ -187,6 +187,43 @@ namespace OpenLoco
         return kBuildSpeedToGrowthPerTick[bracket];
     }
 
+    uint8_t getLegacyTownGrowthSpeed(GrowthSpeed speed)
+    {
+        if (speed == TownGrowthSpeed::zero)
+        {
+            return 0;
+        }
+        if (speed < TownGrowthSpeed::intZero + 3)
+        {
+            return 1;
+        }
+        if (speed < TownGrowthSpeed::intZero + 5)
+        {
+            return 2;
+        }
+        if (speed < TownGrowthSpeed::intZero + 7)
+        {
+            return 3;
+        }
+        if (speed < TownGrowthSpeed::intZero + 9)
+        {
+            return 4;
+        }
+        if (speed < TownGrowthSpeed::intZero + 12)
+        {
+            return 5;
+        }
+        if (speed < TownGrowthSpeed::intZero + 16)
+        {
+            return 6;
+        }
+        if (speed < TownGrowthSpeed::intZero + 22)
+        {
+            return 7;
+        }
+        return 8;
+    }
+
     static std::optional<LoadedObjectHandle> getCargoObject(std::string name)
     {
         auto objHeader = ObjectHeader();

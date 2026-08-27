@@ -131,5 +131,6 @@ namespace OpenLoco
     };
 
     GrowthSpeed getTownGrowthSpeed(uint8_t bracket);
+    uint8_t getLegacyTownGrowthSpeed(GrowthSpeed speed);
     TownGrowthConfiguration getDefaultTownGrowthConfiguration();
 }
