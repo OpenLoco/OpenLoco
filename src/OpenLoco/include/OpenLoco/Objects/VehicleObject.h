@@ -198,7 +198,7 @@ namespace OpenLoco
         // vehicle is forced to the middle of train and train requires a topAndTailPosition-flagged vehicle or a powered vehicle without this flag at the head of the train
         centrePosition = 1U << 5,
         rackRail = 1U << 6,
-        // The first CarComponent of a Car with this flag set will alternate between body sprite 0 and body sprite 1
+        // The first CarComponent of Cars with this flag set will alternate between body sprite 0 and body sprite 1
         alternatingBody = 1U << 7,
         mustFlipOnReverse = 1U << 8,
         aircraftIsTaildragger = 1U << 8,
