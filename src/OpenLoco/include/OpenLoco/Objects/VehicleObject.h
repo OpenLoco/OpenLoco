@@ -195,7 +195,7 @@ namespace OpenLoco
         jacobsBogieRear = 1U << 3,
         // if four vehicles with this flag are present, the second and third are positioned in the middle of the train, to simulate two trainsets being coupled together
         trainsetsCoupleInCenter = 1U << 4,
-        centerPosition = 1U << 5, // vehicle is forced to the middle of train and cannot drive the train
+        centrePosition = 1U << 5, // vehicle is forced to the middle of train and cannot drive the train
         rackRail = 1U << 6,
         // The first CarComponent of a Car with this flag set will alternate between body sprite 0 and body sprite 1
         alternatingBody = 1U << 7,

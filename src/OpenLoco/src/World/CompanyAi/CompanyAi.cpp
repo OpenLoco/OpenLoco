@@ -1039,7 +1039,7 @@ namespace OpenLoco
             {
                 return true;
             }
-            return vehicleObj->hasFlags(VehicleObjectFlags::centerPosition);
+            return vehicleObj->hasFlags(VehicleObjectFlags::centrePosition);
         };
         if (requiresFurtherVehicle(chosenObjects.cargoObjId) && requiresFurtherVehicle(chosenObjects.frontObjId))
         {
