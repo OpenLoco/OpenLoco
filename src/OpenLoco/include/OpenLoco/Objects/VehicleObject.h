@@ -197,7 +197,7 @@ namespace OpenLoco
         trainsetsCoupleInCenter = 1U << 4,
         centerPosition = 1U << 5, // vehicle is forced to the middle of train
         rackRail = 1U << 6,
-        // CarComponents with this flag alternate between body 0 and body 1
+        // The first CarComponent of a Car with this flag set will alternate between body sprite 0 and body sprite 1
         alternatingBody = 1U << 7,
         mustFlipOnReverse = 1U << 8,
         aircraftIsTaildragger = 1U << 8,
