@@ -1,6 +1,7 @@
 #pragma once
 
 #include <OpenLoco/Engine/Ui/Point.hpp>
+#include "OpenLoco/Core/FileSystem.hpp"
 #include <string>
 #include <vector>
 
@@ -111,6 +112,7 @@ namespace OpenLoco::Ui
     void triggerResize();
     void render();
     void showMessageBox(const std::string& title, const std::string& message);
+    fs::path showFolderPicker();
     Config::Resolution getResolution();
     Config::Resolution getDesktopResolution();
     bool setDisplayMode(Config::ScreenMode mode, Config::Resolution newResolution);

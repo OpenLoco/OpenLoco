@@ -42,6 +42,7 @@
 #include <SDL3/SDL_rect.h>
 #include <SDL3/SDL_stdinc.h>
 #include <SDL3/SDL_video.h>
+#include <SDL3/SDL_dialog.h>
 #include <Ui/Widget.h>
 #include <algorithm>
 #include <cmath>
@@ -547,6 +548,55 @@ namespace OpenLoco::Ui
     {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, title.c_str(), message.c_str(), _window);
     }
+
+    fs::path showFolderPicker()
+    {
+        using namespace std::literals;
+        enum { failed, cancelled, inprogress, ok };
+        struct userdata_t {fs::path dir; int status=inprogress;} data;
+
+        auto callback = [](void* userdata, const char* const* filelist, int) {
+            auto d = static_cast<userdata_t*>(userdata);
+
+            if (!filelist) {
+                d->status = failed;
+                return;
+            }
+            if (!filelist[0]) {
+                d->status = cancelled;
+                return;
+            }
+
+            d->dir = filelist[0];
+            d->status = ok;
+        };
+
+        SDL_ShowOpenFolderDialog(callback, &data, nullptr, nullptr, false);
+
+        // wait for dialog to close
+        while (data.status == inprogress) {
+            std::this_thread::sleep_for(100ms);
+        }
+
+        if (data.status != ok) {
+            Logging::error("Folder picker failed");
+        }
+
+        switch (data.status) {
+            case ok:
+                break;
+            case failed:
+                Logging::error("{}: {}", __func__, SDL_GetError());
+                break;
+            default:
+            case cancelled:
+                Logging::error("User didn't pick a folder");
+                break;
+        }
+
+        return data.dir;
+    }
+
 
     static Config::Resolution getDisplayResolutionByMode(Config::ScreenMode mode)
     {
