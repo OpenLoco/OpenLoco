@@ -549,7 +549,7 @@ namespace OpenLoco::Ui
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, title.c_str(), message.c_str(), _window);
     }
 
-    fs::path showFolderPicker()
+    fs::path showFolderPicker(const std::string& title)
     {
         using namespace std::literals;
         enum { failed, cancelled, inprogress, ok };
@@ -571,12 +571,17 @@ namespace OpenLoco::Ui
             d->status = ok;
         };
 
-        SDL_ShowOpenFolderDialog(callback, &data, nullptr, nullptr, false);
+        auto props = SDL_CreateProperties();
+        SDL_SetStringProperty(props, SDL_PROP_FILE_DIALOG_TITLE_STRING, title.c_str());
+        SDL_SetBooleanProperty(props, SDL_PROP_FILE_DIALOG_MANY_BOOLEAN, false);
 
-        // wait for dialog to close
-        while (data.status == inprogress) {
+        SDL_ShowFileDialogWithProperties(SDL_FILEDIALOG_OPENFOLDER, callback, &data, props);
+
+        // SDL's File dialogs are async, wait for it to close
+        do {
             std::this_thread::sleep_for(100ms);
-        }
+            SDL_PumpEvents();
+        } while (data.status == inprogress);
 
         if (data.status != ok) {
             Logging::error("Folder picker failed");
@@ -593,6 +598,8 @@ namespace OpenLoco::Ui
                 Logging::error("User didn't pick a folder");
                 break;
         }
+
+        SDL_DestroyProperties(props);
 
         return data.dir;
     }

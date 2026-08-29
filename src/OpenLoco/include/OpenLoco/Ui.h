@@ -112,7 +112,7 @@ namespace OpenLoco::Ui
     void triggerResize();
     void render();
     void showMessageBox(const std::string& title, const std::string& message);
-    fs::path showFolderPicker();
+    fs::path showFolderPicker(const std::string& title);
     Config::Resolution getResolution();
     Config::Resolution getDesktopResolution();
     bool setDisplayMode(Config::ScreenMode mode, Config::Resolution newResolution);
