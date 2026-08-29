@@ -33,6 +33,7 @@
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Engine/Ui/Point.hpp>
+#include <SDL3/SDL_dialog.h>
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_init.h>
 #include <SDL3/SDL_keyboard.h>
@@ -42,7 +43,6 @@
 #include <SDL3/SDL_rect.h>
 #include <SDL3/SDL_stdinc.h>
 #include <SDL3/SDL_video.h>
-#include <SDL3/SDL_dialog.h>
 #include <Ui/Widget.h>
 #include <algorithm>
 #include <cmath>
@@ -552,17 +552,29 @@ namespace OpenLoco::Ui
     fs::path showFolderPicker(const std::string& title)
     {
         using namespace std::literals;
-        enum { failed, cancelled, inprogress, ok };
-        struct userdata_t {fs::path dir; int status=inprogress;} data;
+        enum
+        {
+            failed,
+            cancelled,
+            inprogress,
+            ok
+        };
+        struct userdata_t
+        {
+            fs::path dir;
+            int status = inprogress;
+        } data;
 
         auto callback = [](void* userdata, const char* const* filelist, int) {
             auto d = static_cast<userdata_t*>(userdata);
 
-            if (!filelist) {
+            if (!filelist)
+            {
                 d->status = failed;
                 return;
             }
-            if (!filelist[0]) {
+            if (!filelist[0])
+            {
                 d->status = cancelled;
                 return;
             }
@@ -578,16 +590,19 @@ namespace OpenLoco::Ui
         SDL_ShowFileDialogWithProperties(SDL_FILEDIALOG_OPENFOLDER, callback, &data, props);
 
         // SDL's File dialogs are async, wait for it to close
-        do {
+        do
+        {
             std::this_thread::sleep_for(100ms);
             SDL_PumpEvents();
         } while (data.status == inprogress);
 
-        if (data.status != ok) {
+        if (data.status != ok)
+        {
             Logging::error("Folder picker failed");
         }
 
-        switch (data.status) {
+        switch (data.status)
+        {
             case ok:
                 break;
             case failed:
@@ -603,7 +618,6 @@ namespace OpenLoco::Ui
 
         return data.dir;
     }
-
 
     static Config::Resolution getDisplayResolutionByMode(Config::ScreenMode mode)
     {
