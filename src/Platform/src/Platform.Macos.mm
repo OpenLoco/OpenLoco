@@ -25,6 +25,11 @@ namespace OpenLoco::Platform
         return {};
     }
 
+    fs::path getDataDirectory()
+    {
+        return Platform::getBundlePath();
+    }
+
     fs::path getUserDirectory()
     {
         @autoreleasepool
@@ -55,7 +60,7 @@ namespace OpenLoco::Platform
         }
     }
 
-    fs::path GetCurrentExecutablePath()
+    fs::path getCurrentExecutablePath()
     {
         char exePath[PATH_MAX];
         uint32_t size = PATH_MAX;
@@ -70,7 +75,7 @@ namespace OpenLoco::Platform
         }
     }
 
-    fs::path GetBundlePath()
+    fs::path getBundlePath()
     {
         @autoreleasepool
         {

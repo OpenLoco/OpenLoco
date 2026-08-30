@@ -60,6 +60,24 @@ namespace OpenLoco::Platform
         }
     }
 
+    fs::path getDataDirectory()
+    {
+        auto envDir = fs::path(getEnvironmentVariable("OPENLOCO_DATA_DIR"));
+        if (!envDir.empty())
+        {
+            return envDir;
+        }
+
+        auto shareDir = fs::path("/usr/share/openloco");
+        if (shareDir.exists())
+        {
+            return shareDir;
+        }
+
+        auto execDir = Platform::getCurrentExecutablePath().parent_path() / "data";
+        return execDir;
+    }
+
     fs::path getUserDirectory()
     {
         auto path = fs::path(getEnvironmentVariable("XDG_CONFIG_HOME"));
