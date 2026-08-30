@@ -69,7 +69,7 @@ namespace OpenLoco::Platform
         }
 
         auto shareDir = fs::path("/usr/share/openloco");
-        if (shareDir.exists())
+        if (fs::exists(shareDir))
         {
             return shareDir;
         }
