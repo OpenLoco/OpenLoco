@@ -1,7 +1,7 @@
 #pragma once
 
-#include <OpenLoco/Engine/Ui/Point.hpp>
 #include "OpenLoco/Core/FileSystem.hpp"
+#include <OpenLoco/Engine/Ui/Point.hpp>
 #include <string>
 #include <vector>
 
