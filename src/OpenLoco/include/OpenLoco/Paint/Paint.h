@@ -192,7 +192,7 @@ namespace OpenLoco::Paint
             , subType(_subType)
             , height(_height)
             , edgesQuarters((edges << 4U) | quarters)
-            , objectId(_objectId) {};
+            , objectId(_objectId){};
 
         bool isEmpty() const { return height == -1; }
     };

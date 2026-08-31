@@ -2,8 +2,8 @@
 
 #include "Platform.h"
 #include <cstdlib>
-#include <iostream>
 #include <emscripten.h>
+#include <iostream>
 
 namespace OpenLoco::Platform
 {

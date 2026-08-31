@@ -1,6 +1,6 @@
 #include "OpenLoco/Diagnostics/Logging.h"
-#include "OpenLoco/Diagnostics/LogTerminal.h"
 #include "LogSink.h"
+#include "OpenLoco/Diagnostics/LogTerminal.h"
 #include <algorithm>
 #include <cstdarg>
 #include <cstdio>
