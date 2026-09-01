@@ -183,8 +183,8 @@ namespace OpenLoco::Localisation
     static_assert(std::ranges::is_sorted(kUnicodeToLocoTable, {}, &EncodingConvertEntry::unicode));
     static_assert(std::ranges::is_sorted(kUnicodeTemporaryStrip, {}, &EncodingConvertEntry::unicode));
 
-    // Table of first 256 unicode codepoints to if they are representable in Locomotion
-    static constexpr bool kUnicodeCharacterIsRepresentable[256] = {
+    // Table of first 256 unicode codepoints to if they can be displayed by Locomotion's sprite font
+    static constexpr bool kUnicodeCharacterInSpriteFont[256] = {
         true, // Null character (very important!)
         false,
         false,
@@ -219,12 +219,12 @@ namespace OpenLoco::Localisation
         false,
         true,  // Space
         true,  // !
-        true,  // " (but not really it converts to ” (quote_close))
+        true,  // " (Not really - replaced with ” (quote_close))
         true,  // #
         true,  // $
         true,  // %
         true,  // &
-        true,  // ' (but not really it converts to ’ (single_quote_close))
+        true,  // ' (Not really - replaced with ’ (single_quote_close))
         true,  // (
         true,  // )
         true,  // *
@@ -349,7 +349,7 @@ namespace OpenLoco::Localisation
         true,  // ¡
         false, // ¢ (Replaced with Ć (c_acute_uc))
         false, // £ (Replaced with symbol of currently loaded currency)
-        false, // ¤ (Currency)| (Renders horribly incorrectly)
+        false, // ¤ (Looks horribly messed up in Loco)
         true,  // ¥
         false, // ¦ (Replaced with Ę (e_ogonek_uc))
         false, // § (Replaced with Ł (l_stroke_uc))
@@ -370,7 +370,7 @@ namespace OpenLoco::Localisation
         false, // ¶ (Replaced with 🛣 (road))
         false, // · (Replaced with ☁ (air))
         false, // ¸ (Replaced with 🌊 (water))
-        true,  // ¹ TODO: superscript one is replaced with superscript negative one. In the language YML files we write "⁻¹" but the superscript minus sign is ignored in LanguageFiles.cpp
+        true,  // ¹ TODO: superscript one is replaced with superscript negative one. In the language YML files we write "⁻¹", but the superscript minus sign is ignored by LanguageFiles.cpp
         false, // º (Replaced with • (Bullet))
         true,  // »
         false, // ¼ (Replaced with ▴ (small_up))
@@ -484,7 +484,7 @@ namespace OpenLoco::Localisation
         // Basic Latin characters
         if (unicode < 256)
         {
-            if (kUnicodeCharacterIsRepresentable[unicode])
+            if (kUnicodeCharacterInSpriteFont[unicode])
             {
                 return static_cast<uint8_t>(unicode);
             }
