@@ -1,6 +1,8 @@
 #if !defined(_WIN32) && !(defined(__APPLE__) && defined(__MACH__))
 
 #include "Platform.h"
+#include <SDL3/SDL_dialog.h>
+#include <SDL3/SDL_events.h>
 #include <cstdlib>
 #include <cstring>
 #include <fcntl.h>
@@ -104,16 +106,6 @@ namespace OpenLoco::Platform
 #error "Platform does not support full path exe retrieval"
 #endif // __linux__
         return exePath;
-    }
-
-    fs::path promptDirectory([[maybe_unused]] const std::string& Title, [[maybe_unused]] void* hwnd)
-    {
-        std::string input;
-        std::cout << "Type your Locomotion path: ";
-        std::getline(std::cin, input);
-
-        auto path = fs::canonical(input);
-        return path;
     }
 
     std::vector<fs::path> getLocoInstallSearchPaths()
