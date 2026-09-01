@@ -1068,9 +1068,10 @@ namespace OpenLoco
 
         auto& objectiveProgress = Scenario::getObjectiveProgress();
         auto& objective = Scenario::getObjective();
-        if ((challengeFlags & CompanyFlags::unk2) != CompanyFlags::none)
+        if ((objective.flags & Scenario::ObjectiveFlags::withinTimeLimit) != Scenario::ObjectiveFlags::none)
         {
-            if (objectiveProgress.timeLimitUntilYear < getCurrentYear() && getCurrentMonth() != MonthId::january)
+            // Vanilla behaviour, for whatever reason: the scenario fails on Jan 2nd
+            if (objectiveProgress.timeLimitUntilYear < getCurrentYear() && (getCurrentMonth() == MonthId::january && getCurrentDayOfMonth() == 1))
             {
                 return 255;
             }
