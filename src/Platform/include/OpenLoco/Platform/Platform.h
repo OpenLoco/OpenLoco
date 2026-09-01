@@ -10,7 +10,7 @@ namespace OpenLoco::Platform
     void initialise();
     uint32_t getTime();
     fs::path getUserDirectory();
-    fs::path promptDirectory(const std::string& title, void* hwnd);
+    fs::path showFolderPicker(const std::string& title);
     fs::path getCurrentExecutablePath();
     std::vector<fs::path> getDrives();
     std::string getEnvironmentVariable(const std::string& name);

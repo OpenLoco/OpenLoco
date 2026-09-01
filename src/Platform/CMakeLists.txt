@@ -9,6 +9,7 @@ set(private_files
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform.Macos.mm"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform.Posix.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform.Windows.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform.cpp"
 )
 
 if (APPLE)

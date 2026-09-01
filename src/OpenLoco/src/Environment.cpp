@@ -95,7 +95,7 @@ namespace OpenLoco::Environment
                                        "Please locate the Locomotion game folder manually.");
 
         // Let user manually specify the Locomotion install folder, and verify files are present
-        path = Ui::showFolderPicker("Select Locomotion's game folder");
+        path = Platform::showFolderPicker("Select Locomotion's game folder");
 
         if (validateLocoInstallPath(path))
         {
