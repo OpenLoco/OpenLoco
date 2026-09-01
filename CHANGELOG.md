@@ -7,6 +7,7 @@
 - Change: [#3974] The vehicle list can now be filtered by vehicles that transport cargo, rather than just 'wait for' orders.
 - Fix: [#2753] Unable to remove walls and trees at heights above 127.
 - Fix: [#2992] Track and Road additions may incorrectly draw on some curves.
+- Fix: [#3112] Scenario challenge is not failed when exceeding its time limit.
 - Fix: [#3676] Roads added using object selection window could not be used by vehicles.
 - Fix: [#3943] Unable to place or remove signals on multi tile track elements.
 - Fix: [#3955] Terraform window can break dimensions of construction window.
