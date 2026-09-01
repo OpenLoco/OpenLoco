@@ -8,7 +8,7 @@
 
 ### Suggested testing steps
 
-<!-- Any particular areas of the game we need to look at? You can include example save games if needed. -->
+<!-- Any particular areas of the game we need to look at? If needed, you can include example save games, compressed to zip. -->
 
 ### Did you use AI to help find, test, or implement this issue or feature?
 
