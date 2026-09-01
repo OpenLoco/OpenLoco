@@ -1,15 +1,14 @@
 #if !defined(_WIN32) && !(defined(__APPLE__) && defined(__MACH__))
 
 #include "Platform.h"
+#include <SDL3/SDL_dialog.h>
+#include <SDL3/SDL_events.h>
 #include <cstdlib>
 #include <cstring>
 #include <fcntl.h>
 #include <iostream>
 #include <pwd.h>
 #include <time.h>
-#include <SDL3/SDL_dialog.h>
-#include <SDL3/SDL_events.h>
-#include <thread>
 
 #ifdef __linux__
 #include <linux/limits.h>

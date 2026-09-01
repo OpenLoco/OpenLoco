@@ -53,63 +53,6 @@ namespace OpenLoco::Platform
         return result;
     }
 
-    static std::wstring SHGetPathFromIDListLongPath(LPCITEMIDLIST pidl)
-    {
-        std::wstring pszPath(MAX_PATH, 0);
-        while (!SHGetPathFromIDListW(pidl, &pszPath[0]))
-        {
-            if (pszPath.size() >= SHRT_MAX)
-            {
-                // Clearly not succeeding at all, bail
-                return std::wstring();
-            }
-            pszPath.resize(pszPath.size() * 2);
-        }
-
-        auto nullBytePos = pszPath.find(L'\0');
-        if (nullBytePos != std::wstring::npos)
-        {
-            pszPath.resize(nullBytePos);
-        }
-
-        return pszPath;
-    }
-
-    fs::path promptDirectory(const std::string& title, void* hwnd)
-    {
-        fs::path result;
-
-        // Initialize COM and get a pointer to the shell memory allocator
-        LPMALLOC lpMalloc;
-        if (SUCCEEDED(SHGetMalloc(&lpMalloc)))
-        {
-            auto titleW = Utility::toUtf16(title);
-            BROWSEINFOW bi{};
-            bi.lpszTitle = titleW.c_str();
-            bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_NONEWFOLDERBUTTON;
-
-            LPITEMIDLIST pidl = SHBrowseForFolderW(&bi);
-            if (pidl != nullptr)
-            {
-                result = fs::path(SHGetPathFromIDListLongPath(pidl).c_str());
-            }
-            CoTaskMemFree(pidl);
-        }
-        else
-        {
-            std::cerr << "Error opening directory browse window";
-        }
-
-        // SHBrowseForFolderW might minimize the main window,
-        // so make sure that it's visible again.
-        if (hwnd != nullptr)
-        {
-            ShowWindow(static_cast<HWND>(hwnd), SW_RESTORE);
-        }
-
-        return result;
-    }
-
     static fs::path WIN32_GetModuleFileNameW(HMODULE hModule)
     {
         uint32_t wExePathCapacity = MAX_PATH;

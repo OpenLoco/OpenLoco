@@ -4,7 +4,6 @@
 #include <SDL3/SDL_events.h>
 #include <thread>
 
-
 namespace OpenLoco::Platform
 {
     fs::path showFolderPicker(const std::string& title)
