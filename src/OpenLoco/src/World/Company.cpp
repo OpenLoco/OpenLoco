@@ -163,6 +163,7 @@ namespace OpenLoco
             Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(id()));
         }
 
+        // Do not evaluate challenge progress if the challenge is already over
         constexpr auto requiredFlags = CompanyFlags::challengeBeatenByOpponent | CompanyFlags::challengeCompleted | CompanyFlags::challengeFailed;
         if ((challengeFlags & requiredFlags) != CompanyFlags::none)
         {
