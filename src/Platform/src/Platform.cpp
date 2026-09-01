@@ -55,20 +55,18 @@ namespace OpenLoco::Platform
 
         if (data.status != ok)
         {
-            fprintf(stderr, "Platform::%s failed: ", __func__);
-        }
+            auto emsg = "unknown error :(";
 
-        switch (data.status)
-        {
-            case ok:
-                break;
-            case failed:
-                fprintf(stderr, "%s\n", SDL_GetError());
-                break;
-            default:
-            case cancelled:
-                fprintf(stderr, "%s\n", "User didn't pick a folder");
-                break;
+            if (data.status == failed)
+            {
+                emsg = SDL_GetError();
+            }
+            else if (data.status == cancelled)
+            {
+                emsg = "User didn't pick a folder";
+            }
+
+            fprintf(stderr, "Platform::%s failed: %s\n", __func__, emsg);
         }
 
         SDL_DestroyProperties(props);
