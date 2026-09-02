@@ -3,6 +3,7 @@ on: [push, pull_request, workflow_dispatch]
 env:
   OPENLOCO_BUILD_SERVER: GitHub
   ASSETS_SSH_KEY: ${{ secrets.ASSETS_SSH_KEY }}
+  GLIBC_FLOOR: "2.28"
 jobs:
   check-code-formatting:
     name: Check code formatting
@@ -347,6 +348,190 @@ jobs:
           path: artifacts/OpenLoco-linux-x64-glibc2.43.tar.gz
           archive: false
           if-no-files-found: error
+
+  linux-zig-static:
+    name: Linux x64 zig static linkage (glibc 2.28)
+    runs-on: ubuntu-latest
+    needs: check-code-formatting
+    env:
+      ZIG_VERSION: "0.14.1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: true
+      - name: Install GCC problem matcher
+        uses: ammaraskar/gcc-problem-matcher@master
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build pkg-config \
+            autoconf autoconf-archive automake libtool \
+            libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxfixes-dev \
+            libxft-dev libxrender-dev libxinerama-dev libxss-dev libxtst-dev libx11-xcb-dev \
+            libxkbcommon-dev libwayland-dev wayland-protocols libdecor-0-dev \
+            libgl1-mesa-dev libegl1-mesa-dev \
+            libasound2-dev libpulse-dev libdbus-1-dev
+      - name: Install zig
+        run: |
+          curl -sL "https://ziglang.org/download/${ZIG_VERSION}/zig-x86_64-linux-${ZIG_VERSION}.tar.xz" -o zig.tar.xz
+          mkdir zig && tar -xf zig.tar.xz -C zig --strip-components=1
+          echo "ZIG=$PWD/zig/zig" >> "$GITHUB_ENV"
+      - name: Setup cache env vars
+        run: |
+          echo "VCPKG_DEFAULT_BINARY_CACHE=$GITHUB_WORKSPACE/vcpkg-cache" >> "$GITHUB_ENV"
+      - name: Setup cache directories
+        run: mkdir -p "$GITHUB_WORKSPACE/vcpkg-cache"
+      - name: Get vcpkg baseline
+        id: vcpkg_baseline
+        run: |
+          sha=$(sed -n 's/^set(VCPKG_GIT_TAG[[:space:]]*\([0-9a-f]*\)).*/\1/p' CMakeLists.txt)
+          test -n "$sha" || { echo "VCPKG_GIT_TAG not found in CMakeLists.txt" >&2; exit 1; }
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+      - name: Restore binary cache
+        uses: actions/cache/restore@v6
+        with:
+          path: vcpkg-cache
+          key: ${{ runner.os }}-vcpkg-zig${{ env.ZIG_VERSION }}-${{ steps.vcpkg_baseline.outputs.sha }}-${{ hashFiles('vcpkg.json') }}
+          restore-keys: |
+            ${{ runner.os }}-vcpkg-zig${{ env.ZIG_VERSION }}-${{ steps.vcpkg_baseline.outputs.sha }}-
+      - name: Build OpenLoco
+        env:
+          ZIG_TARGET: x86_64-linux-gnu.${{ env.GLIBC_FLOOR }}
+        run: bash scripts/build-linux-zig.sh
+      - name: Save binary cache
+        if: always()
+        uses: actions/cache/save@v6
+        with:
+          path: vcpkg-cache
+          key: ${{ runner.os }}-vcpkg-zig${{ env.ZIG_VERSION }}-${{ steps.vcpkg_baseline.outputs.sha }}-${{ hashFiles('vcpkg.json') }}-${{ hashFiles('vcpkg-cache/**') }}
+      - name: Verify portability
+        run: |
+          BIN=build/linux-zig-static/Release/OpenLoco
+          floor="GLIBC_${GLIBC_FLOOR}"
+          file "$BIN"
+          if objdump -T "$BIN" | grep -qE "GLIBCXX_|CXXABI_"; then
+            echo "binary depends on a shared libstdc++" >&2
+            objdump -T "$BIN" | grep -E "GLIBCXX_|CXXABI_"
+            exit 1
+          fi
+          max_glibc=$(objdump -T "$BIN" | grep -oE "GLIBC_[0-9]+\.[0-9]+" | sort -u -V | tail -n1)
+          echo "highest referenced glibc version: ${max_glibc}"
+          if [ "$(printf '%s\n%s\n' "$max_glibc" "$floor" | sort -u -V | tail -n1)" != "$floor" ]; then
+            echo "binary requires a glibc newer than ${GLIBC_FLOOR}" >&2
+            exit 1
+          fi
+          echo "shared library dependencies:"
+          ldd "$BIN"
+          for sofile in libX11.so.6 libwayland-client.so.0; do
+            if strings -a "$BIN" | grep -qxF "$sofile" || ldd "$BIN" | grep -qF "$sofile"; then
+              echo "found the display backend using ${sofile}"
+            else
+              echo "SDL3 was built without the display backend using ${sofile}" >&2
+              exit 1
+            fi
+          done
+      - name: Run Tests
+        run: ctest --test-dir build/linux-zig-static/ --output-on-failure
+      - name: Stage test binaries
+        run: |
+          mkdir -p test-bin
+          find build/linux-zig-static -type f -name '*Tests' -exec cp {} test-bin/ \;
+          ls -la test-bin
+      - name: Tar test binaries
+        run: tar zcf OpenLoco-linux-x64-tests.tar.gz -C test-bin .
+      - name: Upload test binaries
+        uses: actions/upload-artifact@v7
+        with:
+          path: OpenLoco-linux-x64-tests.tar.gz
+          archive: false
+          if-no-files-found: error
+      - name: Install to artifacts
+        run: |
+          mkdir -p artifacts
+          cmake --install build/linux-zig-static --prefix ./artifacts
+      - name: Tar artifacts
+        run: |
+          cd artifacts
+          tar zcf OpenLoco-linux-x64.tar.gz *
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          path: artifacts/OpenLoco-linux-x64.tar.gz
+          archive: false
+          if-no-files-found: error
+
+  linux-static-compat:
+    name: Linux compat ${{ matrix.image }}
+    runs-on: ubuntu-latest
+    needs: linux-zig-static
+    container: ${{ matrix.image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - debian:buster-slim
+          - almalinux:8
+          - ubuntu:20.04
+          - debian:bullseye-slim
+          - fedora:34
+          - opensuse/leap:15.5
+          - ubuntu:22.04
+          - archlinux:base
+    steps:
+      - name: Download release artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: OpenLoco-linux-x64.tar.gz
+          path: dl
+      - name: Download test binaries
+        uses: actions/download-artifact@v8
+        with:
+          name: OpenLoco-linux-x64-tests.tar.gz
+          path: dl
+      - name: Ensure tar is available
+        run: |
+          if command -v tar >/dev/null 2>&1; then
+            exit 0
+          fi
+          echo "tar is missing from this image, installing it"
+          if command -v zypper >/dev/null 2>&1; then
+            zypper --non-interactive install tar gzip
+          elif command -v dnf >/dev/null 2>&1; then
+            dnf install -y tar gzip
+          elif command -v apt-get >/dev/null 2>&1; then
+            apt-get update && apt-get install -y tar gzip
+          elif command -v pacman >/dev/null 2>&1; then
+            pacman -Sy --noconfirm tar gzip
+          else
+            echo "no known package manager available to install tar" >&2
+            exit 1
+          fi
+      - name: Extract artifacts
+        run: |
+          mkdir -p app test-bin
+          tar xzf dl/OpenLoco-linux-x64.tar.gz -C app
+          tar xzf dl/OpenLoco-linux-x64-tests.tar.gz -C test-bin
+      - name: Report distribution
+        run: |
+          cat /etc/os-release 2>/dev/null | head -2 || true
+          ldd --version | head -1
+      - name: Check loader accepts OpenLoco
+        run: |
+          out=$(ldd app/bin/OpenLoco 2>&1)
+          echo "$out"
+          if echo "$out" | grep -qE "not found"; then
+            echo "unresolved library or symbol version" >&2
+            exit 1
+          fi
+      - name: Run Tests
+        run: |
+          for t in test-bin/*Tests; do
+            echo "::group::$(basename "$t")"
+            "$t"
+            echo "::endgroup::"
+          done
   macos:
     name: macOS Sequoia ARM64 vcpkg
     runs-on: macos-15
