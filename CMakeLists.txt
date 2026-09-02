@@ -149,29 +149,3 @@ set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT A
 install(TARGETS App
     RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
     BUNDLE DESTINATION ".")
-
-# TODO: move to App/CMakeLists.txt?
-if (NOT APPLE)
-    if (UNIX)
-        set(DATADIR ${CMAKE_INSTALL_FULL_DATADIR}/openloco/data)
-
-        install(FILES "CHANGELOG.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
-        install(FILES "CONTRIBUTORS.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
-        install(FILES "LICENSE" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
-        install(FILES "README.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
-
-        install(FILES "distribution/linux/openloco.desktop" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
-        install(FILES "src/Resources/src/logo/icon_x16.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/16x16/apps" RENAME "openloco.png")
-        install(FILES "src/Resources/src/logo/icon_x32.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/32x32/apps" RENAME "openloco.png")
-        install(FILES "src/Resources/src/logo/icon_x64.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/64x64/apps" RENAME "openloco.png")
-        install(FILES "src/Resources/src/logo/icon_x128.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/128x128/apps" RENAME "openloco.png")
-        install(FILES "src/Resources/src/logo/icon_x256.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/256x256/apps" RENAME "openloco.png")
-        install(FILES "src/Resources/src/logo/icon_x512.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/512x512/apps" RENAME "openloco.png")
-        install(FILES "src/Resources/src/logo/icon_steam.svg" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/scalable/apps" RENAME "openloco.svg")
-    else()
-        set(DATADIR ${CMAKE_INSTALL_BINDIR}/data)
-    endif()
-
-    install(DIRECTORY "data/" DESTINATION "${DATADIR}")
-    install(DIRECTORY "${openloco_objects_SOURCE_DIR}" DESTINATION "${DATADIR}/objects")
-endif()
