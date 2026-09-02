@@ -68,14 +68,25 @@ namespace OpenLoco::Platform
             return envDir;
         }
 
+        auto execDir = Platform::getCurrentExecutablePath().parent_path() / "data";
+        if (!execDir.empty())
+        {
+            return execDir;
+        }
+
+        auto execDirAlt = Platform::getCurrentExecutablePath().parent_path() / "openloco" / "data";
+        if (!execDirAlt.empty())
+        {
+            return execDirAlt;
+        }
+
         auto shareDir = fs::path("/usr/share/openloco");
         if (fs::exists(shareDir))
         {
             return shareDir;
         }
 
-        auto execDir = Platform::getCurrentExecutablePath().parent_path() / "data";
-        return execDir;
+        throw std::exception("OpenLoco data path could not be found!");
     }
 
     fs::path getUserDirectory()
