@@ -77,15 +77,8 @@ namespace OpenLoco::Platform
             return execDir;
         }
 
-        // This is an alternate development set-up
-        auto execDirAlt = Platform::getCurrentExecutablePath().parent_path().parent_path() / "share" / "data";
-        if (fs::exists(execDirAlt))
-        {
-            return execDirAlt;
-        }
-
-        // This is the usual install folder
-        auto shareDir = fs::path("/usr/share/openloco");
+        // This is the usual install folder (e.g. /usr/share/openloco)
+        auto shareDir = Platform::getCurrentExecutablePath().parent_path().parent_path() / "share" / "openloco";
         if (fs::exists(shareDir))
         {
             return shareDir;
