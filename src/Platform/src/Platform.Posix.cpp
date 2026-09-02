@@ -1,6 +1,7 @@
 #if !defined(_WIN32) && !(defined(__APPLE__) && defined(__MACH__))
 
 #include "Platform.h"
+#include <OpenLoco/Core/Exception.hpp>
 #include <cstdlib>
 #include <cstring>
 #include <fcntl.h>
@@ -86,7 +87,7 @@ namespace OpenLoco::Platform
             return shareDir;
         }
 
-        throw std::exception("OpenLoco data path could not be found!");
+        throw Exception::RuntimeError("OpenLoco data path could not be found!");
     }
 
     fs::path getUserDirectory()
