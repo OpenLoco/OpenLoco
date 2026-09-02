@@ -26,7 +26,7 @@ set_target_properties(App PROPERTIES OUTPUT_NAME OpenLoco)
 
 if (NOT APPLE)
     if (UNIX)
-        set(DATADIR ${CMAKE_INSTALL_FULL_DATADIR}/openloco/data)
+        set(DATADIR ${CMAKE_INSTALL_FULL_DATADIR}/openloco)
 
         install(FILES "${CMAKE_SOURCE_DIR}/CHANGELOG.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
         install(FILES "${CMAKE_SOURCE_DIR}/CONTRIBUTORS.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")

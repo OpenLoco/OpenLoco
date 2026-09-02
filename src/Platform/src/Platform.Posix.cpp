@@ -63,24 +63,28 @@ namespace OpenLoco::Platform
 
     fs::path getDataDirectory()
     {
+        // Data folder override in environment?
         auto envDir = fs::path(getEnvironmentVariable("OPENLOCO_DATA_DIR"));
         if (!envDir.empty())
         {
             return envDir;
         }
 
+        // This is the usual development set-up
         auto execDir = Platform::getCurrentExecutablePath().parent_path() / "data";
-        if (!execDir.empty())
+        if (fs::exists(execDir))
         {
             return execDir;
         }
 
-        auto execDirAlt = Platform::getCurrentExecutablePath().parent_path() / "openloco" / "data";
-        if (!execDirAlt.empty())
+        // This is an alternate development set-up
+        auto execDirAlt = Platform::getCurrentExecutablePath().parent_path().parent_path() / "share" / "data";
+        if (fs::exists(execDirAlt))
         {
             return execDirAlt;
         }
 
+        // This is the usual install folder
         auto shareDir = fs::path("/usr/share/openloco");
         if (fs::exists(shareDir))
         {
