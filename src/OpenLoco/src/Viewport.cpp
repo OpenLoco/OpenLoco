@@ -280,7 +280,7 @@ namespace OpenLoco::Ui
         return { res->first };
     }
 
-    static constexpr uint8_t kDefaultMaxClipHeight = 160;
+    static constexpr uint8_t kDefaultMaxClipHeight = 255;
     static uint8_t maxClipHeight = kDefaultMaxClipHeight;
 
     uint8_t getMaxClipHeight()
@@ -291,6 +291,7 @@ namespace OpenLoco::Ui
     void setMaxClipHeight(uint8_t newClipHeight)
     {
         maxClipHeight = newClipHeight;
+        Gfx::invalidateScreen();
     }
 
     void resetMaxClipHeight()
