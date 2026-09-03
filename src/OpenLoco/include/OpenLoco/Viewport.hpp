@@ -250,7 +250,7 @@ namespace OpenLoco::Ui
         }
     }
 
-    uint8_t getMaxClipHeight();
-    void setMaxClipHeight(uint8_t maxClipHeight);
+    int16_t getMaxClipHeight();
+    void setMaxClipHeight(int16_t maxClipHeight);
     void resetMaxClipHeight();
 }

@@ -319,10 +319,10 @@ namespace OpenLoco::Paint
         void setLastPS(PaintStruct* ps) { _lastPS = ps; }
         bool isHitTest() const { return _isHitTest; }
         bool skipTrackRoadSurfaces() const { return _skipTrackRoadSurfaces; }
-        void setMaxClipHeight(const uint8_t height) { _maxClipHeight = height * World::kSmallZStep; }
-        void setMinClipHeight(const uint8_t height) { _minClipHeight = height * World::kSmallZStep; }
-        uint8_t getMaxClipHeight() const { return _maxClipHeight / World::kSmallZStep; }
-        uint8_t getMinClipHeight() const { return _minClipHeight / World::kSmallZStep; }
+        void setMaxClipHeight(const int16_t height) { _maxClipHeight = height; }
+        void setMinClipHeight(const int16_t height) { _minClipHeight = height; }
+        int16_t getMaxClipHeight() const { return _maxClipHeight; }
+        int16_t getMinClipHeight() const { return _minClipHeight; }
         /*
          * @param amount    @<eax>
          * @param stringId  @<bx>
