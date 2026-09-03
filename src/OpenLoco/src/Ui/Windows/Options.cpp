@@ -1032,7 +1032,7 @@ namespace OpenLoco::Ui::Windows::Options
         constexpr auto kSliderSecondaryLabelX = 190;
         constexpr auto kSliderSecondaryX = 260;
         constexpr auto kSliderLabelWidth = 70;
-        constexpr auto kSliderSize = Size{ 196, 24 };
+        constexpr auto kSliderSize = Size{ 100, 24 };
         constexpr auto kVolumeGroupHeight = kVolumeFirstSliderYOffset + (kNumVolumeSliders / kNumVolumeColumns) * kSliderRowHeight;
 
         constexpr auto kMusicGroupOffset = kVolumeGroupOffset + kVolumeGroupHeight + 4;
@@ -1145,7 +1145,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             auto getSliderPos = [](Audio::ChannelId channel) {
                 auto volume = Audio::getChannelVolume(channel);
-                return Widgets::kThumbHalfWidth + Audio::dbToPercent(volume) * Widgets::kSliderPixelRange / 100;
+                return Widgets::kThumbHalfWidth + Audio::dbToPercent(volume) * Widgets::kSliderPixelRange / kSliderSize.width;
             };
 
             // Set volume sliders
@@ -1374,7 +1374,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             auto mousePos = Input::getScrollLastLocation();
             int x = mousePos.x - self.x - self.widgets[wi].left - Widgets::kThumbHalfWidth;
-            auto percent = std::clamp(x * 100 / Widgets::kSliderPixelRange, 0, 100);
+            auto percent = std::clamp(x * kSliderSize.width / Widgets::kSliderPixelRange, 0, 100);
 
             auto channel = widgetToChannelId(wi);
             Audio::setChannelVolume(channel, Audio::percentToDb(percent));
