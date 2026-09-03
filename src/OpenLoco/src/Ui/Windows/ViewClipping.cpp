@@ -1,4 +1,5 @@
 #include "Config.h"
+#include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
@@ -38,17 +39,17 @@ namespace OpenLoco::Ui::Windows::ViewClipping
         constexpr WidgetId kHeight{ "height" };
     }
 
-    static constexpr Ui::Size kWindowSize = { 350, 60 };
+    static constexpr Ui::Size kWindowSize = { 200, 60 };
 
     static constexpr auto kSliderSize = Size{ 100, 24 };
 
     static constexpr auto widgets = makeWidgets(
-        Widgets::Frame(Widx::kFrame, { 0, 0 }, { 350, kWindowSize.height }, WindowColour::primary),
-        Widgets::Caption(Widx::kCaption, { 1, 1 }, { 348, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::title_view_clipping),
+        Widgets::Frame(Widx::kFrame, { 0, 0 }, kWindowSize, WindowColour::primary),
+        Widgets::Caption(Widx::kCaption, { 1, 1 }, { kWindowSize.width - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::title_view_clipping),
         Widgets::ImageButton(Widx::kCloseButton, { kWindowSize.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        Widgets::Panel(Widx::kPanel, { 0, 15 }, { 350, kWindowSize.height - 15 }, WindowColour::secondary),
+        Widgets::Panel(Widx::kPanel, { 0, 15 }, kWindowSize - Size{ 0, 15 }, WindowColour::secondary),
         Widgets::Slider(Widx::kSlider, { 5, 25 }, kSliderSize, WindowColour::secondary),
-        Widgets::Label(Widx::kHeight, { 5 + kSliderSize.width + 5, 25 }, { 100, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::stringptr)
+        Widgets::Label(Widx::kHeight, { 5 + kSliderSize.width + 5, 29 }, { 100, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::stringptr)
 
     );
 
@@ -80,7 +81,7 @@ namespace OpenLoco::Ui::Windows::ViewClipping
 
     static void updateHeightLabel(Window& self)
     {
-        auto height = getMaxClipHeight() - 128;
+        const auto height = (getMaxClipHeight() + 3) / World::kMicroZStep - getGameState().seaLevel;
 
         auto& config = Config::get();
         if (config.showHeightAsUnits)
