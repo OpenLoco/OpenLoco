@@ -2179,6 +2179,8 @@ namespace OpenLoco::StringIds
     constexpr StringId transports_cargo = 2467;
     constexpr StringId shortcut_max_clip_height_increment = 2468;
     constexpr StringId shortcut_max_clip_height_decrement = 2469;
+    constexpr StringId menu_open_view_clipping = 2470;
+    constexpr StringId title_view_clipping = 2471;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
