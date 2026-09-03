@@ -5,6 +5,7 @@
 - Change: [#3967] English localisations now use typographically correct curved single quotes.
 - Change: [#3973] Game already running error message now says "OpenLoco" instead of "Chris Sawyer's Locomotion".
 - Change: [#3974] The vehicle list can now be filtered by vehicles that transport cargo, rather than just 'wait for' orders.
+- Change: [#3995] On POSIX/Linux/BSD, OpenLoco will now look in /usr/share/openloco for its application data.
 - Fix: [#2753] Unable to remove walls and trees at heights above 127.
 - Fix: [#3676] Roads added using object selection window could not be used by vehicles.
 - Fix: [#3943] Unable to place or remove signals on multi tile track elements.
