@@ -280,7 +280,7 @@ namespace OpenLoco::Ui
         return { res->first };
     }
 
-    static constexpr int16_t kDefaultMaxClipHeight = 0x280;
+    static constexpr int16_t kDefaultMaxClipHeight = 128 * World::kSmallZStep;
     static int16_t maxClipHeight = kDefaultMaxClipHeight;
 
     int16_t getMaxClipHeight()
