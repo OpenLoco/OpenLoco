@@ -280,15 +280,15 @@ namespace OpenLoco::Ui
         return { res->first };
     }
 
-    static constexpr int16_t kDefaultMaxClipHeight = 0x280;
-    static int16_t maxClipHeight = kDefaultMaxClipHeight;
+    static constexpr uint8_t kDefaultMaxClipHeight = 160;
+    static uint8_t maxClipHeight = kDefaultMaxClipHeight;
 
-    int16_t getMaxClipHeight()
+    uint8_t getMaxClipHeight()
     {
         return maxClipHeight;
     }
 
-    void setMaxClipHeight(int16_t newClipHeight)
+    void setMaxClipHeight(uint8_t newClipHeight)
     {
         maxClipHeight = newClipHeight;
     }
