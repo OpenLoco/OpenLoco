@@ -40,8 +40,8 @@ namespace OpenLoco::Ui::Windows::ViewClipping
     }
 
     static constexpr Ui::Size kWindowSize = { 200, 60 };
-
     static constexpr auto kSliderSize = Size{ 100, 24 };
+    static constexpr auto kMaxClipHeight = 128 * World::kSmallZStep;
 
     static constexpr auto widgets = makeWidgets(
         Widgets::Frame(Widx::kFrame, { 0, 0 }, kWindowSize, WindowColour::primary),
@@ -104,7 +104,7 @@ namespace OpenLoco::Ui::Windows::ViewClipping
     static void prepareDraw(Window& self)
     {
         auto sliderWidth = self.widgets[widx::slider].width() - 5;
-        auto height = getMaxClipHeight() * sliderWidth / 255;
+        auto height = getMaxClipHeight() * sliderWidth / kMaxClipHeight;
 
         self.widgets[widx::slider].content = height;
 
@@ -134,7 +134,7 @@ namespace OpenLoco::Ui::Windows::ViewClipping
             auto x = mousePos.x - self.x - self.widgets[widgetIndex].left + 5;
 
             auto sliderWidth = self.widgets[widgetIndex].width() - 5;
-            auto height = std::clamp(x * 255 / sliderWidth, 0, 255);
+            auto height = std::clamp(x * kMaxClipHeight / sliderWidth, 0, kMaxClipHeight);
 
             setMaxClipHeight(height);
             self.invalidate();
