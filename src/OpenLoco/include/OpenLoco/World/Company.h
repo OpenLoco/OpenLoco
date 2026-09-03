@@ -21,7 +21,7 @@ namespace OpenLoco
         none = 0U,
         aiHasStarted = (1U << 0),              // 0x01 Set when an AI starts converting its first ai allocated to real assets
         unk1 = (1U << 1),                      // 0x02
-        unk2 = (1U << 2),                      // 0x04
+        unk2 = (1U << 2),                      // 0x04 Set when converting aiAllocated items into real items
         sorted = (1U << 3),                    // 0x08; unused; previously used by the compnay list
         increasedPerformance = (1U << 4),      // 0x10
         decreasedPerformance = (1U << 5),      // 0x20

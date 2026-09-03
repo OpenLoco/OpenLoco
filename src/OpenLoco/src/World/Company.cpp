@@ -163,6 +163,7 @@ namespace OpenLoco
             Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(id()));
         }
 
+        // Do not evaluate challenge progress if the challenge is already over
         constexpr auto requiredFlags = CompanyFlags::challengeBeatenByOpponent | CompanyFlags::challengeCompleted | CompanyFlags::challengeFailed;
         if ((challengeFlags & requiredFlags) != CompanyFlags::none)
         {
@@ -1068,9 +1069,10 @@ namespace OpenLoco
 
         auto& objectiveProgress = Scenario::getObjectiveProgress();
         auto& objective = Scenario::getObjective();
-        if ((challengeFlags & CompanyFlags::unk2) != CompanyFlags::none)
+        if ((objective.flags & Scenario::ObjectiveFlags::withinTimeLimit) != Scenario::ObjectiveFlags::none)
         {
-            if (objectiveProgress.timeLimitUntilYear < getCurrentYear() && getCurrentMonth() != MonthId::january)
+            // The time limit does not kick in until the 2nd (currentDayOfMonth uses 0 for the 1st)
+            if (objectiveProgress.timeLimitUntilYear < getCurrentYear() && getCurrentDayOfMonth() != 0)
             {
                 return 255;
             }
