@@ -9,9 +9,12 @@ namespace OpenLoco::Platform
 {
     void initialise();
     uint32_t getTime();
+
+    fs::path getDataDirectory();
     fs::path getUserDirectory();
     fs::path promptDirectory(const std::string& title, void* hwnd);
     fs::path getCurrentExecutablePath();
+
     std::vector<fs::path> getDrives();
     std::string getEnvironmentVariable(const std::string& name);
 
@@ -22,7 +25,7 @@ namespace OpenLoco::Platform
 
     bool isRunningInWine();
 #if defined(__APPLE__) && defined(__MACH__)
-    fs::path GetBundlePath();
+    fs::path getBundlePath();
 #endif
     bool isStdOutRedirected();
     bool hasTerminalVT100Support();

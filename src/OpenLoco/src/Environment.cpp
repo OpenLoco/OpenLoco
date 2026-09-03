@@ -306,11 +306,7 @@ namespace OpenLoco::Environment
                 return Platform::getUserDirectory();
             case PathId::languageFiles:
             case PathId::objects:
-#if defined(__APPLE__) && defined(__MACH__)
-                return Platform::GetBundlePath();
-#else
-                return Platform::getCurrentExecutablePath().parent_path() / "data";
-#endif
+                return Platform::getDataDirectory();
             default:
                 return _configurablePaths.install;
         }

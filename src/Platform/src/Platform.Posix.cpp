@@ -1,6 +1,7 @@
 #if !defined(_WIN32) && !(defined(__APPLE__) && defined(__MACH__))
 
 #include "Platform.h"
+#include <OpenLoco/Core/Exception.hpp>
 #include <cstdlib>
 #include <cstring>
 #include <fcntl.h>
@@ -58,6 +59,32 @@ namespace OpenLoco::Platform
         {
             return getEnvironmentVariable("HOME");
         }
+    }
+
+    fs::path getDataDirectory()
+    {
+        // Data folder override in environment?
+        auto envDir = fs::path(getEnvironmentVariable("OPENLOCO_DATA_DIR"));
+        if (!envDir.empty())
+        {
+            return envDir;
+        }
+
+        // This is the usual development set-up
+        auto execDir = Platform::getCurrentExecutablePath().parent_path() / "data";
+        if (fs::exists(execDir))
+        {
+            return execDir;
+        }
+
+        // This is the usual install folder (e.g. /usr/share/openloco)
+        auto shareDir = Platform::getCurrentExecutablePath().parent_path().parent_path() / "share" / "openloco";
+        if (fs::exists(shareDir))
+        {
+            return shareDir;
+        }
+
+        throw Exception::RuntimeError("OpenLoco data path could not be found!");
     }
 
     fs::path getUserDirectory()
