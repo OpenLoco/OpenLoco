@@ -41,7 +41,7 @@ namespace OpenLoco::Ui::Windows::ViewClipping
 
     static constexpr Ui::Size kWindowSize = { 200, 60 };
     static constexpr auto kSliderSize = Size{ 100, 24 };
-    static constexpr auto kMaxClipHeight = 128 * World::kSmallZStep;
+    static constexpr auto kMaxClipHeight = World::kMaxTileHeightSmallZ * World::kSmallZStep;
 
     static constexpr auto widgets = makeWidgets(
         Widgets::Frame(Widx::kFrame, { 0, 0 }, kWindowSize, WindowColour::primary),
