@@ -1504,14 +1504,14 @@ namespace OpenLoco::World::TileManager
             return GameCommands::kFailure;
         }
 
-        if (targetBaseZ < 4)
+        if (targetBaseZ < World::kMinTileHeightSmallZ)
         {
             GameCommands::setErrorText(StringIds::error_too_low);
             return GameCommands::kFailure;
         }
-        if (targetBaseZ > 160
-            || (targetBaseZ == 160 && (slopeFlags & 0x1F) != 0)
-            || (targetBaseZ == 156 && (slopeFlags & 0x10) != 0))
+        if (targetBaseZ > World::kMaxTileHeightSmallZ
+            || (targetBaseZ == World::kMaxTileHeightSmallZ && (slopeFlags & 0x1F) != 0)
+            || (targetBaseZ == World::kMaxTileHeightSmallZ - World::kSmallZStep && (slopeFlags & 0x10) != 0))
         {
             GameCommands::setErrorText(StringIds::error_too_high);
             return GameCommands::kFailure;
@@ -1529,7 +1529,7 @@ namespace OpenLoco::World::TileManager
             }
 
             auto clearHeight = getHeight(pos).landHeight;
-            removeAllWallsOnTileAbove(toTileSpace(pos), clearHeight / 4);
+            removeAllWallsOnTileAbove(toTileSpace(pos), clearHeight / World::kSmallZStep);
         }
 
         // Compute cost of landscape operation
