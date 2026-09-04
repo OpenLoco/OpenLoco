@@ -31,5 +31,5 @@ write_shim zig-ranlib ranlib
 
 export OPENLOCO_ZIG_SHIM_DIR="$SHIM_DIR"
 
-cmake --preset "$PRESET"
+cmake --preset "$PRESET" ${ADDITIONAL_CMAKE_ARGS}
 cmake --build --preset "$PRESET"
