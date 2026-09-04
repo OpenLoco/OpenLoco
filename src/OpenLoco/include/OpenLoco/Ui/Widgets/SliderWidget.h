@@ -4,6 +4,9 @@
 
 namespace OpenLoco::Ui::Widgets
 {
+    static constexpr int32_t kSliderPixelRange = 80;
+    static constexpr int32_t kThumbHalfWidth = 10;
+
     struct Slider : public Widget
     {
         static constexpr auto kWidgetType = WidgetType::slider;
