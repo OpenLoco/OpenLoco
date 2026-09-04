@@ -399,7 +399,10 @@ jobs:
       - name: Build OpenLoco
         env:
           ZIG_TARGET: x86_64-linux-gnu.${{ env.GLIBC_FLOOR }}
-        run: bash scripts/build-linux-zig.sh
+          ADDITIONAL_CMAKE_ARGS: -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/artifacts
+        run: |
+          mkdir -p artifacts
+          bash scripts/build-linux-zig.sh
       - name: Save binary cache
         if: always()
         uses: actions/cache/save@v6
@@ -448,9 +451,7 @@ jobs:
           archive: false
           if-no-files-found: error
       - name: Install to artifacts
-        run: |
-          mkdir -p artifacts
-          cmake --install build/linux-zig-static --prefix ./artifacts
+        run: cmake --build --preset linux-zig-static --target install
       - name: Tar artifacts
         run: |
           cd artifacts
