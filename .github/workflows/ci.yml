@@ -399,7 +399,7 @@ jobs:
       - name: Build OpenLoco
         env:
           ZIG_TARGET: x86_64-linux-gnu.${{ env.GLIBC_FLOOR }}
-          ADDITIONAL_CMAKE_ARGS: -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/artifacts
+          ADDITIONAL_CMAKE_ARGS: -DCMAKE_INSTALL_PREFIX=./artifacts
         run: |
           mkdir -p artifacts
           bash scripts/build-linux-zig.sh
