@@ -96,11 +96,6 @@ include(OpenLocoUtility)
 option(STRICT "Build with warnings as errors" YES)
 option(OPENLOCO_BUILD_TESTS "Build tests" YES)
 option(OPENLOCO_HEADER_CHECK "Verify all public interfaces are standalone" NO)
-option(OPENLOCO_BUILD_APPIMAGE "Create an appimage build (-rpath=$ORIGIN/../lib)" OFF)
-
-if (OPENLOCO_BUILD_APPIMAGE)
-    set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
-endif ()
 
 if (APPLE)
     # Enable the use of e.g. std::execution::par

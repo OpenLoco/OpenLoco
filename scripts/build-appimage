@@ -14,13 +14,10 @@ if [[ "$(uname -s)" != "Linux" || "$(uname -m)" != "x86_64" ]]; then
     exit 1
 fi
 
-appdir="build/appimage/AppDir"
+appdir="$INPUT_PATH"
 
 if [[ ! -d "$appdir" ]]; then
     echo "AppDir not found at ${appdir}. Build and install first:" >&2
-    echo "  cmake --preset linux-vcpkg-static -DOPENLOCO_BUILD_APPIMAGE=ON -DCMAKE_INSTALL_PREFIX=./build/appimage/AppDir/usr" >&2
-    echo "  cmake --build --preset linux-vcpkg-static" >&2
-    echo "  cmake --build --preset linux-vcpkg-static --target install" >&2
     exit 1
 fi
 
@@ -28,15 +25,15 @@ linuxdeploy=/tmp/linuxdeploy-x86_64.AppImage
 curl -fLo "$linuxdeploy" https://github.com/TheAssassin/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
 chmod +x "$linuxdeploy"
 pushd build/appimage
-    "$linuxdeploy" --appimage-extract-and-run --appdir "${basedir}/${appdir}" --output appimage --desktop-file "${basedir}/${appdir}/usr/share/applications/openloco.desktop"
+    "$linuxdeploy" --appimage-extract-and-run --appdir "${basedir}/${appdir}" --output appimage --desktop-file "${basedir}/${appdir}/share/applications/openloco.desktop"
 popd
-mkdir -p artifacts
+
 # If APPIMAGE_FILE_NAME is set, use it as the filename, otherwise use the default
 # Version tag, e.g. "v26.08-18" (mirrors cmake/OpenLocoVersion.cmake)
 if [[ -z "$APPIMAGE_FILE_NAME" ]]; then
     APPIMAGE_FILE_NAME="OpenLoco-$(git describe HEAD --always | sed -E 's/-g[0-9a-f]+$//')-linux-x64.AppImage"
 fi
-mv build/appimage/OpenLoco-x86_64.AppImage "artifacts/${APPIMAGE_FILE_NAME}"
+mv build/appimage/OpenLoco-x86_64.AppImage "$OUTPUT_PATH/${APPIMAGE_FILE_NAME}"
 rm "$linuxdeploy"
 
-echo -e "\033[0;36mDone: artifacts/${APPIMAGE_FILE_NAME}\033[0m"
+echo -e "\033[0;36mDone: $OUTPUT_PATH/${APPIMAGE_FILE_NAME}\033[0m"
