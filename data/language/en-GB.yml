@@ -2513,11 +2513,15 @@ strings:
   2458: "{STRINGID}{STRINGID}"
   2459: "Debug window"
   2460: "Show toolbar menus on hover instead of click"
-  2461: "Align toolbar buttons horizontally centred"
+
   2462: "Repeated placement"
   2463: "{SMALLFONT}{COLOUR BLACK}Place signals repeatedly at every ‘step size’ track elements"
   2464: "Step size:"
   2465: "Signals block"
   2466: "Has cargo order"
   2467: "Transports cargo"
-
+  2468: "Preferred toolbar layout:"
+  2469: "Original game"
+  2470: "Horizontally centred"
+  2471: "All panels on top"
+  2472: "All panels centred on top"
