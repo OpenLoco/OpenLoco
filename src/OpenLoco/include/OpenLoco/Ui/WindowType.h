@@ -68,6 +68,7 @@ namespace OpenLoco::Ui
         cheats = 58,
         networkStatus = 59,
         objectLoadError = 60,
+        viewClipping = 61,
 
         debug = 61,
 

@@ -2520,4 +2520,8 @@ strings:
   2465: "Signals block"
   2466: "Has cargo order"
   2467: "Transports cargo"
-
+  2468: "Max Clip Height Increment"
+  2469: "Max Clip Height Decrement"
+  2470: "Open View Clipping..."
+  2471: "View Clipping"
+  2472: "Max drawing height:"
