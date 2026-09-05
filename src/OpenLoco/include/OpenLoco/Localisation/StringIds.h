@@ -2182,6 +2182,7 @@ namespace OpenLoco::StringIds
     constexpr StringId shortcut_max_clip_height_decrement = 2470;
     constexpr StringId menu_open_view_clipping = 2471;
     constexpr StringId title_view_clipping = 2472;
+    constexpr StringId clipping_max_height = 2473;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
