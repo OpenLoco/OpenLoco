@@ -5,7 +5,6 @@
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Gfx/PngImage.h>
 #include <OpenLoco/Platform/Platform.h>
-#include <png.h>
 
 using namespace OpenLoco::Diagnostics;
 

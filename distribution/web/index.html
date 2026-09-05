@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenLoco</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a2e;
+            color: #eee;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        #game-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        canvas {
+            display: block;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+        }
+        #loading h1 {
+            margin: 0 0 20px 0;
+            font-size: 2em;
+            color: #4a9eff;
+        }
+        #loading .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #333;
+            border-top: 4px solid #4a9eff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        #loading .progress {
+            margin-top: 15px;
+            font-size: 1.1em;
+            color: #aaa;
+        }
+        #error-message {
+            display: none;
+            color: #ff6b6b;
+            background: rgba(0,0,0,0.8);
+            padding: 20px 40px;
+            border-radius: 8px;
+            max-width: 500px;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex="-1"></canvas>
+        <div id="loading">
+            <h1>OpenLoco</h1>
+            <div class="spinner"></div>
+            <div class="progress" id="progress-text">Loading...</div>
+        </div>
+        <div id="error-message"></div>
+    </div>
+
+    <script>
+        // Show progress during loading
+        var loadingEl = document.getElementById('loading');
+        var progressText = document.getElementById('progress-text');
+        var errorEl = document.getElementById('error-message');
+
+        // Create a custom module configuration
+        var Module = {
+            canvas: (function() {
+                var canvas = document.getElementById('canvas');
+                // As a default initial behavior, pop up an alert when webgl context is lost. To make your
+                // application robust, you may want to override this behavior before shipping!
+                // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
+                canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
+                return canvas;
+            })(),
+            print: function(text) {
+                console.log('[OpenLoco]', text);
+            },
+            printErr: function(text) {
+                console.error('[OpenLoco]', text);
+            },
+            onAbort: function(what) {
+                loadingEl.style.display = 'none';
+                errorEl.style.display = 'block';
+                errorEl.innerHTML = '<h2>Error</h2><p>Failed to load OpenLoco.</p><p>' + what + '</p><p>Please ensure you have built the project correctly.</p>';
+                console.error('OpenLoco aborted:', what);
+            },
+            setStatus: function(text) {
+                if (!Module.setStatus.last) Module.setStatus.last = { time: Date.now(), text: '' };
+                if (text === Module.setStatus.last.text) return;
+                var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+                var now = Date.now();
+                if (m && now - Module.setStatus.last.time < 30) return; // if this is a progress update, skip it if too soon
+                Module.setStatus.last.time = now;
+                Module.setStatus.last.text = text;
+                if (m) {
+                    text = m[1];
+                }
+                if (text) {
+                    progressText.textContent = text;
+                    console.log('[OpenLoco] Status:', text);
+                } else {
+                    loadingEl.style.display = 'none';
+                }
+            },
+            // Handle exceptions from C++ code
+            onRuntimeInitialized: function() {
+                console.log('[OpenLoco] Runtime initialized');
+            }
+        };
+    </script>
+    <script src="OpenLocoData.js"></script>
+    <script src="OpenLoco.js"></script>
+</body>
+</html>
