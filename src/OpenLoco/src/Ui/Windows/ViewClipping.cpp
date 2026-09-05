@@ -25,6 +25,7 @@ namespace OpenLoco::Ui::Windows::ViewClipping
         caption,
         closeButton,
         panel,
+        label,
         slider,
         height,
     };
@@ -35,11 +36,12 @@ namespace OpenLoco::Ui::Windows::ViewClipping
         constexpr WidgetId kCaption{ "caption" };
         constexpr WidgetId kCloseButton{ "close_button" };
         constexpr WidgetId kPanel{ "panel" };
+        constexpr WidgetId kLabel{ "label" };
         constexpr WidgetId kSlider{ "slider" };
         constexpr WidgetId kHeight{ "height" };
     }
 
-    static constexpr Ui::Size kWindowSize = { 200, 60 };
+    static constexpr Ui::Size kWindowSize = { 280, 55 };
     static constexpr auto kSliderSize = Size{ 100, 24 };
     static constexpr auto kMaxClipHeight = World::kMaxTileHeightSmallZ * World::kSmallZStep;
 
@@ -48,8 +50,9 @@ namespace OpenLoco::Ui::Windows::ViewClipping
         Widgets::Caption(Widx::kCaption, { 1, 1 }, { kWindowSize.width - 2, 13 }, Widgets::Caption::Style::whiteText, WindowColour::primary, StringIds::title_view_clipping),
         Widgets::ImageButton(Widx::kCloseButton, { kWindowSize.width - 15, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         Widgets::Panel(Widx::kPanel, { 0, 15 }, kWindowSize - Size{ 0, 15 }, WindowColour::secondary),
-        Widgets::Slider(Widx::kSlider, { 5, 25 }, kSliderSize, WindowColour::secondary),
-        Widgets::Label(Widx::kHeight, { 5 + kSliderSize.width + 5, 29 }, { 100, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::stringptr)
+        Widgets::Label(Widx::kLabel, { 5, 29 }, { 120, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::clipping_max_height),
+        Widgets::Slider(Widx::kSlider, { 125, 22 }, kSliderSize, WindowColour::secondary),
+        Widgets::Label(Widx::kHeight, { 130 + kSliderSize.width, 29 }, { 100, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::stringptr)
 
     );
 
