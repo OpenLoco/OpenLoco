@@ -650,7 +650,7 @@ namespace OpenLoco::Vehicles
             // Places all cars with VehicleObjectFlags::centerPosition in the middle of the train
 
             // Partition such that the middle cars are at the end of the carData
-            auto centreIter = std::stable_partition(carData.begin(), carData.end(), [](auto& a) { return !a.hasFlags(VehicleObjectFlags::centerPosition); });
+            auto centreIter = std::stable_partition(carData.begin(), carData.end(), [](auto& a) { return !a.hasFlags(VehicleObjectFlags::centrePosition); });
             const auto numNonMiddles = std::distance(carData.begin(), centreIter);
             // Rotate the middle cars to the middle of the train biased towards the back if odd
             std::rotate(carData.begin() + numNonMiddles / 2 + numNonMiddles % 2, centreIter, carData.end());
@@ -660,7 +660,7 @@ namespace OpenLoco::Vehicles
         {
             // If there are at least 4 cars with VehicleObjectFlags::flag_04 places 2 of them in the middle of the train
             // This flag is used to create train sets comprised of 2 double ended trains
-            const auto numFlag4s = std::count_if(carData.begin(), carData.end(), [](auto& d) { return d.hasFlags(VehicleObjectFlags::flag_04); });
+            const auto numFlag4s = std::count_if(carData.begin(), carData.end(), [](auto& d) { return d.hasFlags(VehicleObjectFlags::trainsetsCoupleInCenter); });
             if (numFlag4s >= 4)
             {
                 uint8_t moveCount = 0;
@@ -671,7 +671,7 @@ namespace OpenLoco::Vehicles
                     for (auto i = 1U; i < carData.size() - 1; ++i)
                     {
                         auto& cd = carData[i];
-                        if (cd.hasFlags(VehicleObjectFlags::flag_04))
+                        if (cd.hasFlags(VehicleObjectFlags::trainsetsCoupleInCenter))
                         {
                             toBeMoved[moveCount++] = cd;
                             carData.erase(carData.begin() + i);
@@ -716,7 +716,7 @@ namespace OpenLoco::Vehicles
             for (auto& car : train.cars)
             {
                 auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
-                if (!vehicleObj->hasFlags(VehicleObjectFlags::alternatingCarSprite))
+                if (!vehicleObj->hasFlags(VehicleObjectFlags::alternatingBody))
                 {
                     continue;
                 }
@@ -6528,7 +6528,7 @@ namespace OpenLoco::Vehicles
                     {
                         return true;
                     }
-                    if (lastObj->hasFlags(VehicleObjectFlags::flag_08))
+                    if (lastObj->hasFlags(VehicleObjectFlags::mustFlipOnReverse))
                     {
                         return false;
                     }
@@ -6540,7 +6540,7 @@ namespace OpenLoco::Vehicles
                     {
                         return false;
                     }
-                    return !lastObj->hasFlags(VehicleObjectFlags::centerPosition);
+                    return !lastObj->hasFlags(VehicleObjectFlags::centrePosition);
                 }();
             }
 
