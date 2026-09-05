@@ -1643,6 +1643,7 @@ namespace OpenLoco::Input
                 const auto area = World::getMapSelectionArea();
                 const auto length = std::abs(area.first.x - area.second.x) / 32 + 1;
                 const auto depth = std::abs(area.first.y - area.second.y) / 32 + 1;
+
                 auto args = FormatArguments::mapToolTip();
                 args.push<StringId>(StringIds::map_tooltip_int_x_int);
                 args.push<int16_t>(length);
