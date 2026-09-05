@@ -2,6 +2,7 @@
 #include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
+#include "Map/MapSelection.h"
 #include "Objects/CompetitorObject.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
@@ -35,22 +36,25 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         _mapTooltipTimeout++;
         auto cursor = Input::getMouseLocation();
 
-        static Ui::Point tooltipLocation = {};
-        if ((std::abs(tooltipLocation.x - cursor.x) > 5)
-            || (std::abs(tooltipLocation.y - cursor.y) > 5)
-            || Input::hasFlag(Input::Flags::rightMousePressed))
+        if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
         {
-            _mapTooltipTimeout = 0;
-        }
+            static Ui::Point tooltipLocation = {};
+            if ((std::abs(tooltipLocation.x - cursor.x) > 5)
+                || (std::abs(tooltipLocation.y - cursor.y) > 5)
+                || Input::hasFlag(Input::Flags::rightMousePressed))
+            {
+                _mapTooltipTimeout = 0;
+            }
 
-        tooltipLocation = cursor;
-        auto args = FormatArguments::mapToolTip();
-        FormatArgumentsView argsWrap(args);
-        auto firstArg = argsWrap.pop<StringId>();
-        if (_mapTooltipTimeout < 25 || firstArg == StringIds::null || Input::hasFlag(Input::Flags::rightMousePressed) || Input::hasKeyModifier(Input::KeyModifier::control) || Input::hasKeyModifier(Input::KeyModifier::shift) || WindowManager::find(WindowType::error) != nullptr)
-        {
-            WindowManager::close(WindowType::mapTooltip);
-            return;
+            tooltipLocation = cursor;
+            auto args = FormatArguments::mapToolTip();
+            FormatArgumentsView argsWrap(args);
+            auto firstArg = argsWrap.pop<StringId>();
+            if (_mapTooltipTimeout < 25 || firstArg == StringIds::null || Input::hasFlag(Input::Flags::rightMousePressed) || Input::hasKeyModifier(Input::KeyModifier::control) || Input::hasKeyModifier(Input::KeyModifier::shift) || WindowManager::find(WindowType::error) != nullptr)
+            {
+                WindowManager::close(WindowType::mapTooltip);
+                return;
+            }
         }
 
         const auto height = 55;
