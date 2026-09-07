@@ -899,7 +899,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                 bool requiresComma = false;
                 for (auto i = 0; i < 2; ++i)
                 {
-                    if (buildingObj->producedQuantity[i] != 0)
+                    if (buildingObj->producedCargoType[i] != 0xFFU && buildingObj->producedQuantity[i] != 0)
                     {
                         if (requiresComma)
                         {
@@ -917,7 +917,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                 bool requiresComma = false;
                 for (auto i = 0; i < 2; ++i)
                 {
-                    if (buildingObj->producedCargoQty[i] != 0)
+                    if (buildingObj->producedCargoType[i] != 0xFFU && buildingObj->producedCargoQty[i] != 0)
                     {
                         if (requiresComma)
                         {
@@ -934,7 +934,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                 }
                 for (auto i = 0; i < 2; ++i)
                 {
-                    if (buildingObj->consumedCargoQty[i] != 0)
+                    if (buildingObj->consumedCargoType[i] != 0xFF && buildingObj->consumedCargoQty[i] != 0)
                     {
                         if (requiresComma)
                         {
