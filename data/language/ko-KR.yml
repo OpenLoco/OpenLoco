@@ -389,7 +389,7 @@ strings:
   372: 풍경 & 건물 감추기
   373: 물 위에만 지을 수 있습니다!
   374: 수상 산업 시설이 옆에 있는 경우에만 물 위에 지을 수 있습니다!
-  375: {STRINGID} 이름 변경
+  375: "{STRINGID} 이름 변경"
   376: "이 {STRINGID}의 이름을 입력하세요:"
   377: 이 차량의 이름을 바꿀 수 없습니다...
   378: 다리가 필요합니다
@@ -1247,13 +1247,13 @@ strings:
   1217: "급행"
   1218: "{COLOUR BLACK}- - 경로 없음 - -"
   1219: "{COLOUR BLACK}- - 경로 목록 끝 - -"
-  1220: {STRINGID} 정차
-  1221: {STRINGID} 통과
+  1220: "{STRINGID} 정차"
+  1221: "{STRINGID} 통과"
   1222: 경유지 통과
-  1223: {STRINGID} 모두 내림 {SPRITE}
-  1224: {STRINGID} 가득 실을 때까지 대기 {SPRITE}
-  1225: {STRINGID} 모두 내림 {SPRITE}
-  1226: {STRINGID} 가득 실을 때까지 대기 {SPRITE}
+  1223: "{STRINGID} 모두 내림 {SPRITE}"
+  1224: "{STRINGID}을(를) 가득 실을 때까지 대기 {SPRITE}"
+  1225: "{STRINGID} 모두 내림 {SPRITE}"
+  1226: "{STRINGID}을(를) 가득 실을 때까지 대기 {SPRITE}"
   1227: "{COLOUR WINDOW_2}▶"
   1228: 경로를 삽입할 수 없습니다...
   1229: "{COLOUR WINDOW_3}여기에 있는 경유지를 통과하는{NEWLINE}새로운 경로를 삽입하려면 클릭하세요"
@@ -1287,7 +1287,7 @@ strings:
   1257: "{NEWLINE}{COLOUR WINDOW_2} 수송량: {COLOUR BLACK}{STRINGID}"
   1258: " + {STRINGID}"
   1259: " (경사로에 + {STRINGID})"
-  1260: " ({VELOCITY}, {STRINGID})"
+  1260: " ({STRINGID}에서 {VELOCITY})"
   1261: 또는 {STRINGID}
   1262: "{NEWLINE}{COLOUR WINDOW_2} 유지비: {COLOUR BLACK}{CURRENCY32}/월"
   1263: " (개조 가능)"
@@ -1763,7 +1763,7 @@ strings:
   1725: "{COLOUR WINDOW_2} 힘: {COLOUR BLACK}{POWER}"
   1726: "{COLOUR WINDOW_2} 무게: {COLOUR BLACK}{INT16}t"
   1727: "{COLOUR WINDOW_2} 최대 속력: {COLOUR BLACK}{VELOCITY}"
-  1728: "{COLOUR WINDOW_2} 수용량: {COLOUR BLACK}{STRINGID}"
+  1728: "{COLOUR WINDOW_2} 수송량: {COLOUR BLACK}{STRINGID}"
   1729: 연결 수립 중...
   1730: 어디에나
   1731: 아무데도
@@ -1846,11 +1846,11 @@ strings:
   1808: 항공기 경로
   1809: 선박 경로
   1810: ""
-  1811: {STRINGID}(을)를 {STRINGID} 근처에서 건설 중
-  1812: {STRINGID}(을)를 {STRINGID} 근처에서 건설 중
-  1813: {STRINGID}(을)를 {STRINGID} 근처에서 건설 중
-  1814: {STRINGID} 근처의 운송 서비스 확인 중
-  1815: {STRINGID} 근처의 지형 조사 중
+  1811: "{STRINGID}(을)를 {STRINGID} 근처에서 건설 중"
+  1812: "{STRINGID}(을)를 {STRINGID} 근처에서 건설 중"
+  1813: "{STRINGID}(을)를 {STRINGID} 근처에서 건설 중"
+  1814: "{STRINGID} 근처의 운송 서비스 확인 중"
+  1815: "{STRINGID} 근처의 지형 조사 중"
   1816: "{COLOUR RED}파산!"
   1817: "{SMALLFONT}{COLOUR BLACK}게임 일시 정지"
   1818: "{SMALLFONT}{COLOUR BLACK}보통 속도"
@@ -2346,7 +2346,7 @@ strings:
   2291: "{SMALLFONT}{COLOUR BLACK}칸 요소의 방향"
   2292: "{SMALLFONT}{COLOUR BLACK}칸 요소의 고스트 상태"
   2293: "초심자"
-  2294: "중급"
+  2294: "숙련자"
   2295: "전문가"
   2296: "원본"
   2297: "사용자"
@@ -2498,7 +2498,7 @@ strings:
   2443: "즐겨쓰는 회사 이름을 입력하세요:"
   2444: "회사 이름을 바꿀 수 없습니다..."
   2445: "{STRINGID} 근처에 운송 회사가 없습니다"
-  2446: "{STRINGID}은(는) 지난달에 배송을 받지 않았습니다"
+  2446: "{STRINGID}(은)는 지난달에 배송을 받지 않았습니다"
   2447: "{SMALLFONT}{COLOUR BLACK}이 종류 항목의 홈 폴더로 돌아갑니다"
   2448: "ALT + "
   2449: "R.CTRL + "
