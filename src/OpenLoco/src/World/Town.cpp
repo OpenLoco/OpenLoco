@@ -23,6 +23,7 @@
 #include "Objects/BuildingObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/ObjectUtils.h"
+#include "Objects/RegionObject.h"
 #include "Objects/RoadObject.h"
 #include "Objects/RoadStationObject.h"
 #include "Objects/StreetLightObject.h"
@@ -46,13 +47,42 @@ namespace OpenLoco
         return name == StringIds::null;
     }
 
+    static std::string getTownGrowthSpeedName(GrowthSpeed speed)
+    {
+        switch (speed)
+        {
+            case TownGrowthSpeed::zero:
+                return "0";
+            case TownGrowthSpeed::oneEighth:
+                return "1/8";
+            case TownGrowthSpeed::oneQuarter:
+                return "1/4";
+            case TownGrowthSpeed::threeEighth:
+                return "3/8";
+            case TownGrowthSpeed::oneHalf:
+                return "1/2";
+            case TownGrowthSpeed::fiveEighth:
+                return "5/8";
+            case TownGrowthSpeed::threeQuarter:
+                return "3/4";
+            case TownGrowthSpeed::sevenEighth:
+                return "7/8";
+            default:
+                break;
+        }
+        char buff[4];
+        sprintf(buff, "%d", speed - TownGrowthSpeed::intZero);
+        return buff;
+    }
+
     /**
      * 0x0049742F
      * Update town
      *
      * @param this @<esi>
+     * @param tickNum
      */
-    void Town::tick()
+    void Town::tick(uint8_t tickNum)
     {
         recalculateSize();
 
@@ -60,15 +90,15 @@ namespace OpenLoco
         {
             return;
         }
-
-        static constexpr std::array<uint8_t, 12> kBuildSpeedToGrowthPerTick = { 0, 1, 3, 5, 7, 9, 12, 16, 22, 0, 0, 0 };
-        auto growthPerTick = kBuildSpeedToGrowthPerTick[this->buildSpeed];
-        if (growthPerTick == 0 || (growthPerTick == 1 && (gPrng1().randNext() & 7)))
+        printf("Ticking town %d with growth speed %s\n", enumValue(id()), getTownGrowthSpeedName(buildSpeed).c_str());
+        auto rng = gPrng1().randNext() & 7;
+        if (buildSpeed < TownGrowthSpeed::one && buildSpeed > rng)
         {
             grow(TownGrowFlags::buildInitialRoad | TownGrowFlags::roadUpdate | TownGrowFlags::neutralRoadTakeover);
         }
-        else
+        else if (buildSpeed > TownGrowthSpeed::zero)
         {
+            auto growthPerTick = buildSpeed >= TownGrowthSpeed::one ? buildSpeed - TownGrowthSpeed::intZero : 1;
             for (int32_t counter = 0; counter < growthPerTick; ++counter)
             {
                 grow(TownGrowFlags::buildInitialRoad | TownGrowFlags::roadUpdate | TownGrowFlags::neutralRoadTakeover | TownGrowFlags::allowRoadExpansion | TownGrowFlags::allowRoadBranching | TownGrowFlags::constructBuildings);
@@ -136,6 +166,153 @@ namespace OpenLoco
             labelFrame.top[index] = zoom.applyInversedTo(yOffset);
             labelFrame.bottom[index] = labelFrame.top[index] + uiHeight;
         }
+    }
+
+    GrowthSpeed getTownGrowthSpeed(uint8_t bracket)
+    {
+        static constexpr std::array<GrowthSpeed, 12> kBuildSpeedToGrowthPerTick = {
+            TownGrowthSpeed::zero,
+            TownGrowthSpeed::oneEighth,
+            TownGrowthSpeed::intZero + 3,
+            TownGrowthSpeed::intZero + 5,
+            TownGrowthSpeed::intZero + 7,
+            TownGrowthSpeed::intZero + 9,
+            TownGrowthSpeed::intZero + 12,
+            TownGrowthSpeed::intZero + 16,
+            TownGrowthSpeed::intZero + 22,
+            TownGrowthSpeed::zero,
+            TownGrowthSpeed::zero,
+            TownGrowthSpeed::zero,
+        };
+        return kBuildSpeedToGrowthPerTick[bracket];
+    }
+
+    uint8_t getLegacyTownGrowthSpeed(GrowthSpeed speed)
+    {
+        if (speed == TownGrowthSpeed::zero)
+        {
+            return 0;
+        }
+        if (speed < TownGrowthSpeed::intZero + 3)
+        {
+            return 1;
+        }
+        if (speed < TownGrowthSpeed::intZero + 5)
+        {
+            return 2;
+        }
+        if (speed < TownGrowthSpeed::intZero + 7)
+        {
+            return 3;
+        }
+        if (speed < TownGrowthSpeed::intZero + 9)
+        {
+            return 4;
+        }
+        if (speed < TownGrowthSpeed::intZero + 12)
+        {
+            return 5;
+        }
+        if (speed < TownGrowthSpeed::intZero + 16)
+        {
+            return 6;
+        }
+        if (speed < TownGrowthSpeed::intZero + 22)
+        {
+            return 7;
+        }
+        return 8;
+    }
+
+    static std::optional<LoadedObjectHandle> getCargoObject(std::string name)
+    {
+        auto objHeader = ObjectHeader();
+        objHeader.flags = enumValue(ObjectType::cargo);
+        memcpy(objHeader.name, name.c_str(), 8);
+        return ObjectManager::findObjectHandle(objHeader);
+    }
+
+    TownGrowthConfiguration getDefaultTownGrowthConfiguration()
+    {
+        uint8_t paxCargoId = 255;
+        uint8_t mailCargoId = 255;
+        uint8_t goodsCargoId = 255;
+        uint8_t foodCargoId = 255;
+        auto res = getCargoObject("PASS    ");
+        if (res.has_value())
+        {
+            paxCargoId = res->id;
+        }
+        res = getCargoObject("GOODS   ");
+        if (res.has_value())
+        {
+            goodsCargoId = res->id;
+        }
+        res = getCargoObject("FOOD    ");
+        if (res.has_value())
+        {
+            foodCargoId = res->id;
+        }
+        res = getCargoObject("MAIL    ");
+        if (res.has_value())
+        {
+            mailCargoId = res->id;
+        }
+
+        assert(paxCargoId != 255);
+        assert(goodsCargoId != 255);
+        assert(foodCargoId != 255);
+        assert(mailCargoId != 255);
+        TownGrowthConfiguration config = {
+            {
+                TownGrowthInputCargo(
+                    1,
+                    65535,
+                    0,
+                    TownSize::hamlet,
+                    TownSize::metropolis,
+                    paxCargoId),
+                TownGrowthInputCargo(
+                    2,
+                    65535,
+                    0,
+                    TownSize::hamlet,
+                    TownSize::metropolis,
+                    mailCargoId),
+                TownGrowthInputCargo(
+                    10,
+                    65535,
+                    0,
+                    TownSize::hamlet,
+                    TownSize::metropolis,
+                    foodCargoId),
+                TownGrowthInputCargo(
+                    10,
+                    65535,
+                    0,
+                    TownSize::hamlet,
+                    TownSize::metropolis,
+                    goodsCargoId),
+            },
+            {
+                TownGrowthSpeedBracket(
+                    0,
+                    TownGrowthSpeed::oneEighth),
+                TownGrowthSpeedBracket(
+                    50,
+                    TownGrowthSpeed::one),
+                TownGrowthSpeedBracket(
+                    400,
+                    TownGrowthSpeed::intZero + 3),
+                TownGrowthSpeedBracket(
+                    800,
+                    TownGrowthSpeed::intZero + 5),
+                TownGrowthSpeedBracket(
+                    1250,
+                    TownGrowthSpeed::intZero + 7),
+            },
+        };
+        return config;
     }
 
     // 0x0049749B
@@ -207,23 +384,39 @@ namespace OpenLoco
             }
         }
 
-        // Work towards computing new build speed.
-        // will be the smallest of the influence cargo delivered to the town
-        // i.e. to get maximum growth max of the influence cargo must be delivered
-        // every update. If no influence cargo the town grows at max rate
-        uint16_t minCargoDelivered = std::numeric_limits<uint16_t>::max();
-        uint32_t cargoFlags = cargoInfluenceFlags;
-        while (cargoFlags != 0)
+        int32_t points = 0;
+        for (auto cargo : growthConfiguration.cargos)
         {
-            uint32_t cargoId = Numerics::bitScanForward(cargoFlags);
-            cargoFlags &= ~(1 << cargoId);
-
-            minCargoDelivered = std::min(minCargoDelivered, monthlyCargoDelivered[cargoId]);
+            if (cargo.cargoType == 255)
+            {
+                continue;
+            }
+            if (size < cargo.minimumTownSize)
+            {
+                printf("Town %d was smaller than minimum for cargo %d (%d < %d)\n", enumValue(id()), cargo.cargoType, enumValue(cargo.minimumTownSize), enumValue(size));
+                continue;
+            }
+            if (size > cargo.maximumTownSize)
+            {
+                printf("Town %d was larger than maximum for cargo %d (%d > %d)\n", enumValue(id()), cargo.cargoType, enumValue(cargo.maximumTownSize), enumValue(size));
+                continue;
+            }
+            auto cargoPoints = std::clamp<int32_t>(monthlyCargoDelivered[cargo.cargoType] * cargo.pointsMultiplier, cargo.pointsFloor, cargo.pointsCap);
+            points += cargoPoints;
         }
-
-        // Compute build speed (1=slow build speed, 4=fast build speed)
-        buildSpeed = std::clamp((minCargoDelivered / 100) + 1, 1, 4);
-
+        GrowthSpeed speed = TownGrowthSpeed::zero;
+        int32_t previousBracket = std::numeric_limits<int32_t>::min();
+        for (auto bracket : growthConfiguration.brackets)
+        {
+            if ((bracket.startThreshold > points) || (previousBracket > bracket.startThreshold))
+            {
+                break;
+            }
+            previousBracket = bracket.startThreshold;
+            speed = bracket.speed;
+        }
+        printf("Town %d scored %d points this month. Growth speed is %s\n", enumValue(id()), points, getTownGrowthSpeedName(speed).c_str());
+        buildSpeed = speed;
         // Reset all monthlyCargoDelivered intermediaries to zero.
         memset(&monthlyCargoDelivered, 0, sizeof(monthlyCargoDelivered));
     }
