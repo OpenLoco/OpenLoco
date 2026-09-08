@@ -1,6 +1,0 @@
-Galmuri
-Copyright 2019-2025 Lee Minseo (quiple)
-https://github.com/quiple/galmuri
-
-This Font Software is licensed under the SIL Open Font License, Version 1.1.
-https://openfontlicense.org/open-font-license-official-text/

@@ -150,7 +150,8 @@ namespace OpenLoco::Gfx::UnicodeFont
         _initialised = true;
 
         const auto bundled = bundledFontsDir();
-        // Optional Galmuri pack keeps Hangul on the 8/10/15px sprite-font grid.
+        // Optional drop-in: Galmuri (OFL) in data/fonts for pixel Hangul at 8/10/15px.
+        // Official builds do not need to ship these; system Hangul fonts are enough.
         tryLoadFontFile(bundled / "Galmuri7.ttf", true, 8);
         tryLoadFontFile(bundled / "Galmuri9.ttf", true, 10);
         tryLoadFontFile(bundled / "Galmuri14.ttf", true, 15);

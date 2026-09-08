@@ -1,11 +1,22 @@
-# Bundled Hangul fonts
+# Optional Hangul fonts
 
-OpenLoco draws Korean Hangul with `stb_truetype`. Optional Galmuri files match
-the 8/10/15px sprite-font grid; otherwise a system Hangul font is used
-(Malgun / Apple SD Gothic Neo / Nanum).
+By default OpenLoco does **not** ship font files. Korean Hangul is drawn with
+`stb_truetype` from fonts already installed on the system:
 
-| File | Script | License |
-| --- | --- | --- |
-| `Galmuri7.ttf` / `Galmuri9.ttf` / `Galmuri14.ttf` | Hangul (pixel, 8/10/15px) | SIL OFL 1.1, Lee Minseo (`Galmuri-LICENSE.txt`) |
+| Platform | Tried fonts |
+| --- | --- |
+| Windows | Malgun Gothic (`malgunbd.ttf` / `malgun.ttf`) |
+| macOS | Apple SD Gothic Neo |
+| Linux | Nanum Gothic |
 
-This path is scoped to Korean. Japanese and Chinese are out of scope here.
+## Optional: Galmuri (pixel Hangul)
+
+For clearer Hangul at the original 8/10/15px sprite-font sizes, you may drop
+[Galmuri](https://github.com/quiple/galmuri) (SIL OFL 1.1) into this folder:
+
+- `Galmuri7.ttf` (8px)
+- `Galmuri9.ttf` (10px)
+- `Galmuri14.ttf` (15px)
+
+If present, OpenLoco loads them before the system Hangul fonts. Bundling them
+in the official distribution is optional and left for maintainers to decide.
