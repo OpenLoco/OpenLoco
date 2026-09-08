@@ -49,9 +49,7 @@ namespace OpenLoco::Gfx
 
         virtual void popClip() = 0;
 
-        virtual void clear(uint32_t fill) = 0;
-
-        virtual void clearSingle(uint8_t paletteId) = 0;
+        virtual void clear(uint8_t paletteId) = 0;
 
         virtual void fillRect(int32_t left, int32_t top, int32_t right, int32_t bottom, uint8_t colour, RectFlags flags) = 0;
 

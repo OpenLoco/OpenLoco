@@ -2173,7 +2173,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             return;
         }
 
-        drawingCtx.clearSingle(PaletteIndex::black0);
+        drawingCtx.clear(PaletteIndex::black0);
 
         auto* element = Gfx::getG1Element(0);
         auto backupElement = *element;

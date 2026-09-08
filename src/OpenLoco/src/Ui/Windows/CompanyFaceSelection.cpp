@@ -307,7 +307,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         const auto& rt = drawingCtx.currentRenderTarget();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        drawingCtx.clearSingle(Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
+        drawingCtx.clear(Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
         auto index = 0;
         for (const auto& object : _competitorList)

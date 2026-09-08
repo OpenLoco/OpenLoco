@@ -185,7 +185,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         }
 
         auto tr = Gfx::TextRenderer(drawingCtx);
-        drawingCtx.clearSingle(colour);
+        drawingCtx.clear(colour);
 
         char* newsString = news->messageString;
         auto buffer = StringManager::getBufferString(StringIds::buffer_2039);

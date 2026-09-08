@@ -189,7 +189,7 @@ namespace OpenLoco::Ui
             Gfx::SoftwareDrawingContext columnDrawingCtx;
             columnDrawingCtx.pushRenderTarget(columnRt);
 
-            columnDrawingCtx.clearSingle(fillColour);
+            columnDrawingCtx.clear(fillColour);
             auto sess = Paint::PaintSession(columnRt, zoom, options);
             sess.generate();
             sess.arrangeStructs();

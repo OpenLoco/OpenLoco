@@ -1156,7 +1156,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        drawingCtx.clearSingle(Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
+        drawingCtx.clear(Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
         if (ObjectManager::getNumInstalledObjects() == 0)
         {
