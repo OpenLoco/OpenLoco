@@ -118,7 +118,7 @@ strings:
   104: 게임 저장하기
   105: 시나리오 에디터 종료
   106: 게임 종료
-  107: 스크린샷
+  107: 스크린 샷
   108: 스크린 샷
   109: 스크린 샷이 디스크에 '{STRING}'(으)로 저장되었습니다.
   110: 스크린 샷 저장 실패!
@@ -389,7 +389,7 @@ strings:
   372: 풍경 & 건물 감추기
   373: 물 위에만 지을 수 있습니다!
   374: 수상 산업 시설이 옆에 있는 경우에만 물 위에 지을 수 있습니다!
-  375: "{STRINGID} 이름 짓기"
+  375: {STRINGID} 이름 변경
   376: "이 {STRINGID}의 이름을 입력하세요:"
   377: 이 차량의 이름을 바꿀 수 없습니다...
   378: 다리가 필요합니다
@@ -1039,7 +1039,7 @@ strings:
   1013: 시나리오가 이미 설치되어 있습니다
   1014: "{OUTLINE}{COLOUR WINDOW_1}{STRINGID}"
   1015: "{OUTLINE}{COLOUR WINDOW_2}(직접 컨트롤하려면 키보드나 마우스를 누르세요)"
-  1016: 크리스 소이어의 로코모션이 이미 실행 중입니다
+  1016: OpenLoco가 이미 실행 중입니다
 
   1017: 음악 저작권...
   1018: 음악 저작권
@@ -1200,7 +1200,7 @@ strings:
   1170: "도착: {STRINGID} / 출발: {STRINGID}"
   1171: 비어 있음
   1172: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
-  1173: "{NEWLINE}용량:  {STRINGID}"
+  1173: "{NEWLINE}수송량:  {STRINGID}"
   1174: "{NEWLINE}+ {STRINGID}"
   1175: 게임에 역이 너무 많습니다!
   1176: 역이 너무 큽니다!
@@ -1247,18 +1247,18 @@ strings:
   1217: "급행"
   1218: "{COLOUR BLACK}- - 경로 없음 - -"
   1219: "{COLOUR BLACK}- - 경로 목록 끝 - -"
-  1220: "{STRINGID}에 정차"
-  1221: "{STRINGID}을(를) 통과"
+  1220: {STRINGID} 정차
+  1221: {STRINGID} 통과
   1222: 경유지 통과
-  1223: "{STRINGID}을(를) 모두 내림 {SPRITE}"
-  1224: "{STRINGID} 만차까지 대기 {SPRITE}"
-  1225: "{STRINGID}을(를) 모두 내림 {SPRITE}"
-  1226: "{STRINGID} 만차까지 대기 {SPRITE}"
+  1223: {STRINGID} 모두 내림 {SPRITE}
+  1224: {STRINGID} 가득 실을 때까지 대기 {SPRITE}
+  1225: {STRINGID} 모두 내림 {SPRITE}
+  1226: {STRINGID} 가득 실을 때까지 대기 {SPRITE}
   1227: "{COLOUR WINDOW_2}▶"
   1228: 경로를 삽입할 수 없습니다...
   1229: "{COLOUR WINDOW_3}여기에 있는 경유지를 통과하는{NEWLINE}새로운 경로를 삽입하려면 클릭하세요"
-  1230: "{COLOUR WINDOW_3}클릭해서 새 명령을 삽입:{NEWLINE}{STRINGID}에 정차"
-  1231: "{COLOUR WINDOW_3}다시 클릭하면 마지막 명령을{NEWLINE}{STRINGID} 통과로 바꿉니다"
+  1230: "{COLOUR WINDOW_3}클릭해서 새 경로를 삽입:{NEWLINE}{STRINGID} 정차"
+  1231: "{COLOUR WINDOW_3}다시 클릭하면 마지막 경로를{NEWLINE}{STRINGID} 통과로 바꿉니다"
   1232: "{SMALLFONT}{COLOUR BLACK}화물을 가득 싣도록 하는 경로를 삽입합니다"
   1233: "{SMALLFONT}{COLOUR BLACK}역에서 화물을 받지 않아도, 강제로 화물을 모두 내리도록 하는 경로를 삽입합니다"
   1234: "{SMALLFONT}{COLOUR BLACK}목록의 다음 경로로 넘어갑니다"
@@ -1284,7 +1284,7 @@ strings:
   1254: "{NEWLINE}{COLOUR WINDOW_2} 무게: {COLOUR BLACK}{INT16}t"
   1255: "{NEWLINE}{COLOUR WINDOW_2} 최고 속력: {COLOUR BLACK}{VELOCITY}"
   1256: "{NEWLINE}{COLOUR WINDOW_2} 개발: {COLOUR BLACK}{UINT16 RAW}"
-  1257: "{NEWLINE}{COLOUR WINDOW_2} 용량: {COLOUR BLACK}{STRINGID}"
+  1257: "{NEWLINE}{COLOUR WINDOW_2} 수송량: {COLOUR BLACK}{STRINGID}"
   1258: " + {STRINGID}"
   1259: " (경사로에 + {STRINGID})"
   1260: " ({VELOCITY}, {STRINGID})"
@@ -1312,7 +1312,7 @@ strings:
   1282: "{COLOUR WINDOW_2}전체: {COLOUR BLACK}{STRINGID}"
   1283: 비어있음
   1284: "{SMALLFONT}{COLOUR BLACK}적재:"
-  1285: "추가로 {STRINGID}이(가) 필요합니다"
+  1285: 추가로 {STRINGID}(이)가 필요합니다
   1286: "{SMALLFONT}{COLOUR BLACK}{STRINGID}용 차량"
   1287: "{SPRITE}{NEWLINE 31 8} {STRINGID}"
   1288: "{POP16}{POP16}{NEWLINE 31 8} {STRINGID}"
@@ -1846,11 +1846,11 @@ strings:
   1808: 항공기 경로
   1809: 선박 경로
   1810: ""
-  1811: "{STRINGID}을(를) {STRINGID} 근처에서 건설 중"
-  1812: "{STRINGID}을(를) {STRINGID} 근처에서 건설 중"
-  1813: "{STRINGID}을(를) {STRINGID} 근처에서 건설 중"
-  1814: "{STRINGID} 근처의 운송 서비스 확인 중"
-  1815: "{STRINGID} 근처의 지형 조사 중"
+  1811: {STRINGID}(을)를 {STRINGID} 근처에서 건설 중
+  1812: {STRINGID}(을)를 {STRINGID} 근처에서 건설 중
+  1813: {STRINGID}(을)를 {STRINGID} 근처에서 건설 중
+  1814: {STRINGID} 근처의 운송 서비스 확인 중
+  1815: {STRINGID} 근처의 지형 조사 중
   1816: "{COLOUR RED}파산!"
   1817: "{SMALLFONT}{COLOUR BLACK}게임 일시 정지"
   1818: "{SMALLFONT}{COLOUR BLACK}보통 속도"
@@ -2293,7 +2293,7 @@ strings:
   2238: "게임 속도: 보통"
   2239: "게임 속도: 빠르게"
   2240: "게임 속도: 매우 빠르게"
-  2241: "{COLOUR WINDOW_2}용량: {COLOUR BLACK}{STRINGID}"
+  2241: "{COLOUR WINDOW_2}수송량: {COLOUR BLACK}{STRINGID}"
   2242: "{NEWLINE}{COLOUR WINDOW_2} 퇴역: {COLOUR BLACK}{UINT16 RAW}"
   2243: "차량이 잠겨있습니다!"
   2244: "잠긴 차량 표시"
@@ -2484,7 +2484,7 @@ strings:
   2429: "길이"
   2430: "오름차순"
   2431: "내림차순"
-  2432: "용량"
+  2432: "수송량"
   2433: "퇴역"
   2434: "차량 화물"
   2435: "개조/회수 시 차량 화물 유지"
