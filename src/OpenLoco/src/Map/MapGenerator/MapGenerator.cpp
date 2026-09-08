@@ -806,8 +806,15 @@ namespace OpenLoco::World::MapGenerator
             currentProgress += progressTicksPerIndustry;
             updateProgress(currentProgress);
 
-            // Check if industry is available at present
-            if (getCurrentYear() < industryObj->designedYear || getCurrentYear() >= industryObj->obsoleteYear)
+            // Check whether industry has been invented yet
+            if (getCurrentYear() < industryObj->designedYear)
+            {
+                continue;
+            }
+            
+            // Don't generate obsolete industries, unless the
+            // "generate obsolete industries" flag is active.
+            if (getCurrentYear() >= industryObj->obsoleteYear && !Scenario::getOptions().genObsoleteIndustries)
             {
                 continue;
             }

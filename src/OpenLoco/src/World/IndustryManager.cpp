@@ -176,7 +176,7 @@ namespace OpenLoco::IndustryManager
             return false;
         }
 
-        if (getCurrentYear() >= indObj.obsoleteYear)
+        if (getCurrentYear() >= indObj.obsoleteYear && !SceneManager::isGenerateObsoleteIndustries())
         {
             return false;
         }
