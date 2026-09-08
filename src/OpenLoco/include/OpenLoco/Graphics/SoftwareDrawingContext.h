@@ -28,8 +28,7 @@ namespace OpenLoco::Gfx
         const RenderTarget& currentRenderTarget() const override;
         bool pushClip(const Ui::Rect& rect) override;
         void popClip() override;
-        void clear(uint32_t fill) override;
-        void clearSingle(uint8_t paletteId) override;
+        void clear(uint8_t paletteId) override;
         void fillRect(int32_t left, int32_t top, int32_t right, int32_t bottom, uint8_t colour, RectFlags flags) override;
         void drawRect(int32_t x, int32_t y, int32_t dx, int32_t dy, uint8_t colour, RectFlags flags) override;
         void fillRectInset(int32_t left, int32_t top, int32_t right, int32_t bottom, AdvancedColour colour, RectInsetFlags flags) override;

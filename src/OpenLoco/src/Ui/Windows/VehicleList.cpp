@@ -639,7 +639,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 1);
-        drawingCtx.clearSingle(shade);
+        drawingCtx.clear(shade);
 
         auto yPos = 0;
         for (auto i = 0; i < self.rowCount; i++)

@@ -560,7 +560,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             auto tr = Gfx::TextRenderer(drawingCtx);
 
-            drawingCtx.clearSingle(Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
+            drawingCtx.clear(Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
             const auto station = StationManager::get(StationId(self.number));
             int16_t y = 1;
@@ -772,7 +772,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             auto tr = Gfx::TextRenderer(drawingCtx);
 
-            drawingCtx.clearSingle(Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
+            drawingCtx.clear(Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
             const auto station = StationManager::get(StationId(self.number));
             auto point = Point(0, 0);
@@ -1022,7 +1022,7 @@ namespace OpenLoco::Ui::Windows::Station
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 1);
-            drawingCtx.clearSingle(shade);
+            drawingCtx.clear(shade);
 
             auto yPos = 0;
             for (auto i = 0; i < self.rowCount; i++)

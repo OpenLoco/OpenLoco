@@ -223,7 +223,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             const auto& rt = drawingCtx.currentRenderTarget();
             auto tr = Gfx::TextRenderer(drawingCtx);
 
-            drawingCtx.clearSingle(colour);
+            drawingCtx.clear(colour);
 
             auto height = 0;
             for (auto i = 0; i < MessageManager::getNumMessages(); i++)

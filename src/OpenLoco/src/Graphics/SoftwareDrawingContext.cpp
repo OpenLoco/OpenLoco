@@ -46,8 +46,8 @@ namespace OpenLoco::Gfx
 
         // 0x00447485
         // edi: rt
-        // ebp: fill
-        static void clear(const RenderTarget& rt, uint32_t fill)
+        // ebp: paletteId (was duplicated across al, ah, eax)
+        static void clear(const RenderTarget& rt, uint8_t paletteId)
         {
             int32_t w = rt.width;
             int32_t h = rt.height;
@@ -55,15 +55,9 @@ namespace OpenLoco::Gfx
 
             for (int32_t y = 0; y < h; y++)
             {
-                std::fill_n(ptr, w, fill);
+                std::fill_n(ptr, w, paletteId);
                 ptr += w + rt.pitch;
             }
-        }
-
-        static void clearSingle(const RenderTarget& rt, uint8_t paletteId)
-        {
-            auto fill = (paletteId << 24) | (paletteId << 16) | (paletteId << 8) | paletteId;
-            clear(rt, fill);
         }
 
         static const G1Element* getNoiseMaskImageFromImage(const ImageId image)
@@ -1120,16 +1114,10 @@ namespace OpenLoco::Gfx
         // Need to keep the empty destructor to allow for unique_ptr to delete the actual type.
     }
 
-    void SoftwareDrawingContext::clear(uint32_t fill)
+    void SoftwareDrawingContext::clear(uint8_t paletteId)
     {
         auto& rt = currentRenderTarget();
-        return Impl::clear(rt, fill);
-    }
-
-    void SoftwareDrawingContext::clearSingle(uint8_t paletteId)
-    {
-        auto& rt = currentRenderTarget();
-        return Impl::clearSingle(rt, paletteId);
+        return Impl::clear(rt, paletteId);
     }
 
     void SoftwareDrawingContext::fillRect(int32_t left, int32_t top, int32_t right, int32_t bottom, uint8_t colour, RectFlags flags)
