@@ -120,7 +120,7 @@ strings:
   106: 게임 종료
   107: 스크린 샷
   108: 스크린 샷
-  109: 스크린 샷이 디스크에 '{STRING}'으(로) 저장되었습니다.
+  109: 스크린 샷이 디스크에 '{STRING}'(으)로 저장되었습니다.
   110: 스크린 샷 저장 실패!
   111: 풍경 데이터 영역이 가득 찼습니다!
   112: 일부분만 땅 위로 나오고 일부분만 지하에 들어가게 지을 수 없습니다
@@ -153,8 +153,8 @@ strings:
   139: 여기에 신호기를 지을 수 없습니다...
   140: 여기에 신호기를 지을 수 없습니다...
   141: 신호기를 제거할 수 없습니다...
-  142: "{POP16}{POP16}{POP16}{STRINGID}을(를) 제거할 수 없습니다..."
-  143: "{POP16}{POP16}{POP16}{STRINGID}을(를) 지을 수 없습니다..."
+  142: "{POP16}{POP16}{POP16}{STRINGID}(을)를 제거할 수 없습니다..."
+  143: "{POP16}{POP16}{POP16}{STRINGID}(을)를 지을 수 없습니다..."
   144: 땅을 먼저 올리거나 내리세요
   145: 지하 시점
   146: 선로 & 도로 감추기
@@ -165,7 +165,7 @@ strings:
   151: 건널목은 같은 높이의 직진 도로에만 지을 수 있습니다
   152: 분기를 만들 수 없습니다
   153: 분기는 전체가 평지 위에 있어야 합니다
-  154: "{STRINGID}이(가) 중간에 있습니다 / 분기에 적절하지 않은 높이입니다"
+  154: "{STRINGID}(이)가 중간에 있습니다 / 분기에 적절하지 않은 높이입니다"
   155: 이미 여기에 지어져 있습니다
   156: "{STRINGID}와 교차하거나 분기할 수 없습니다"
   157: 분기를 만들 수 없습니다
@@ -200,16 +200,16 @@ strings:
   186: 취소
   187: 확인
 
-  188: "{SMALLFONT}{COLOUR BLACK}{STRINGID}을(를) 왼쪽으로 스크롤"
-  189: "{SMALLFONT}{COLOUR BLACK}{STRINGID}을(를) 오른쪽으로 스크롤"
-  190: "{SMALLFONT}{COLOUR BLACK}{STRINGID}을(를) 왼쪽으로 빠르게 스크롤"
-  191: "{SMALLFONT}{COLOUR BLACK}{STRINGID}을(를) 오른쪽으로 빠르게 스크롤"
-  192: "{SMALLFONT}{COLOUR BLACK}{STRINGID}을(를) 좌/우로 스크롤"
-  193: "{SMALLFONT}{COLOUR BLACK}{STRINGID}을(를) 위로 스크롤"
-  194: "{SMALLFONT}{COLOUR BLACK}{STRINGID}을(를) 아래로 스크롤"
-  195: "{SMALLFONT}{COLOUR BLACK}{STRINGID}을(를) 위로 빠르게 스크롤"
-  196: "{SMALLFONT}{COLOUR BLACK}{STRINGID}을(를) 아래로 빠르게 스크롤"
-  197: "{SMALLFONT}{COLOUR BLACK}{STRINGID}을(를) 위/아래로 스크롤"
+  188: "{SMALLFONT}{COLOUR BLACK}{STRINGID}(을)를 왼쪽으로 스크롤"
+  189: "{SMALLFONT}{COLOUR BLACK}{STRINGID}(을)를 오른쪽으로 스크롤"
+  190: "{SMALLFONT}{COLOUR BLACK}{STRINGID}(을)를 왼쪽으로 빠르게 스크롤"
+  191: "{SMALLFONT}{COLOUR BLACK}{STRINGID}(을)를 오른쪽으로 빠르게 스크롤"
+  192: "{SMALLFONT}{COLOUR BLACK}{STRINGID}(을)를 좌/우로 스크롤"
+  193: "{SMALLFONT}{COLOUR BLACK}{STRINGID}(을)를 위로 스크롤"
+  194: "{SMALLFONT}{COLOUR BLACK}{STRINGID}(을)를 아래로 스크롤"
+  195: "{SMALLFONT}{COLOUR BLACK}{STRINGID}(을)를 위로 빠르게 스크롤"
+  196: "{SMALLFONT}{COLOUR BLACK}{STRINGID}(을)를 아래로 빠르게 스크롤"
+  197: "{SMALLFONT}{COLOUR BLACK}{STRINGID}(을)를 위/아래로 스크롤"
 
   198: 지도
   199: 자동차 목록
@@ -347,8 +347,8 @@ strings:
   330: "{COLOUR WINDOW_2}최고 속력: {COLOUR BLACK}{VELOCITY}{POP16}{COLOUR WINDOW_2} 신뢰도: {COLOUR BLACK}{INT16}%"
   331: "{COLOUR WINDOW_2}최고 속력: {COLOUR BLACK}{VELOCITY} / {VELOCITY}{COLOUR WINDOW_2} 신뢰도: {COLOUR BLACK}{INT16}%"
   332: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID} 판매{NEWLINE}(또는 여기로 각 차량을 드래그해서 판매)"
-  333: "{SMALLFONT}{COLOUR BLACK}이 {POP16}{STRINGID}을(를) 위해 새 차량 만들기"
-  334: "{COLOUR BLACK}({STRINGID}을(를) 시작 지점으로 설정해서 보려면 클릭하세요)"
+  333: "{SMALLFONT}{COLOUR BLACK}이 {POP16}{STRINGID}(을)를 위해 새 차량 만들기"
+  334: "{COLOUR BLACK}({STRINGID}(을)를 시작 지점으로 설정해서 보려면 클릭하세요)"
   335: 차량이 호환되지 않습니다
   336: 게임에 차량이 너무 많습니다
   337: ""
@@ -404,7 +404,7 @@ strings:
   387: 차량을 옮길 수 없습니다...
   388: 열차를 돌릴 수 없습니다...
   389: 차량을 팔 수 없습니다...
-  390: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}을(를) 팔 수 없습니다..."
+  390: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}(을)를 팔 수 없습니다..."
   391: "{STRINGID}"
   392: "{STRINGID}"
   393: "{STRINGID} 역 승강장"
@@ -415,26 +415,26 @@ strings:
   398: "{COLOUR RED}파산!"
   399: "{STRINGID} - {STRINGID}에서 가득 싣도록 대기시킬 수 없습니다"
   400: "{STRINGID} - 경사로에서 멈춰섰습니다"
-  401: "{STRINGID}에서 이제 {STRINGID}을(를) 받습니다"
-  402: "{STRINGID}에서 이제 {STRINGID}을(를) 받지 않습니다"
-  403: 새로운 운송 회사 등장!{NEWLINE}{STRINGID}이(가) {STRINGID} 근처에서 건설을 시작했습니다!
+  401: "{STRINGID}에서 이제 {STRINGID}(을)를 받습니다"
+  402: "{STRINGID}에서 이제 {STRINGID}(을)를 받지 않습니다"
+  403: 새로운 운송 회사 등장!{NEWLINE}{STRINGID}(이)가 {STRINGID} 근처에서 건설을 시작했습니다!
   404: "{STRINGID} - {STRINGID} 공항에 적합하지 않아서 착륙할 수 없습니다"
-  405: 시민들이 축하하고 있습니다!{NEWLINE}첫 {STRINGID}이(가) {STRINGID}에 도착했습니다!
+  405: 시민들이 축하하고 있습니다!{NEWLINE}첫 {STRINGID}(이)가 {STRINGID}에 도착했습니다!
   406: 시민들이 축하하고 있습니다!{NEWLINE}첫 {STRINGID} 배송이 {STRINGID}에 도착했습니다!
-  407: 근로자들이 축하하고 있습니다!{NEWLINE}{STRINGID}이(가) 처음으로 {STRINGID}에 배송되었습니다!
+  407: 근로자들이 축하하고 있습니다!{NEWLINE}{STRINGID}(이)가 처음으로 {STRINGID}에 배송되었습니다!
   408: 새로운 차량이 개발되었습니다 -{NEWLINE}“{STRINGID}”!
   409: "{STRINGID} - “{STRINGID}에서 “{STRINGID}”으로 승격되었습니다!"
-  410: 새로운 {STRINGID}이(가) {STRINGID} 근처에서 건설 중입니다!
+  410: 새로운 {STRINGID}(이)가 {STRINGID} 근처에서 건설 중입니다!
   411: 축하합니다!{NEWLINE}성공적으로 목표를 달성하셨습니다!
   412: 실패!{NEWLINE}목표 달성에 실패하셨습니다!
-  413: 패배!{NEWLINE}{STRINGID}이(가) 목표를 먼저 달성했습니다!
-  414: 파산 경고!{NEWLINE}{STRINGID}은(는) 성취도를 올리지 않는다면 6개월 이내에 문이 닫힐 것입니다!
-  415: 마지막 경고!{NEWLINE}{STRINGID}은(는) 성취도를 올리지 않는다면 3개월 이내에 문이 닫힐 것입니다!
+  413: 패배!{NEWLINE}{STRINGID}(이)가 목표를 먼저 달성했습니다!
+  414: 파산 경고!{NEWLINE}{STRINGID}(은)는 성취도를 올리지 않는다면 6개월 이내에 문이 닫힐 것입니다!
+  415: 마지막 경고!{NEWLINE}{STRINGID}(은)는 성취도를 올리지 않는다면 3개월 이내에 문이 닫힐 것입니다!
   416: 파산!{NEWLINE}{STRINGID} - 파산이 선고되어 문을 닫았습니다!
   417: 파산!{NEWLINE}{STRINGID} - 파산이 선고되어 문을 닫았습니다!
   418: "{STRINGID} - 충돌하였습니다!"
   419: 기업 비리!{NEWLINE}{STRINGID} - 뇌물 수수 시도로 감옥에 갔습니다
-  420: 신규 {STRINGID} 최고 속력 기록!{NEWLINE}{STRINGID}이(가) {VELOCITY}의 역간 평균 속력을 달성하였습니다!
+  420: 신규 {STRINGID} 최고 속력 기록!{NEWLINE}{STRINGID}(이)가 {VELOCITY}의 역간 평균 속력을 달성하였습니다!
 
   421: "{MOVE_X 10}{STRINGID}"
   422: »{MOVE_X 10}{STRINGID}
@@ -599,7 +599,7 @@ strings:
   578: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID} 유지비와 수익 보기"
   579: "{SMALLFONT}{COLOUR BLACK}새 건설 지점을 선택하세요"
   580: "{SMALLFONT}{COLOUR BLACK}90° 회전"
-  581: "{STRINGID}이(가) 중간에 있습니다"
+  581: "{STRINGID}(이)가 중간에 있습니다"
   582: "{CURRENCY32}"
   583: 여기에 지을 수 없습니다...
   584: "{DATE MY}"
@@ -1190,10 +1190,10 @@ strings:
   1160: 차량이 끼었습니다!
   1161: 공간이 부족하거나 차량이 중간에 있습니다
   1162: 차량이 접근 중이거나 중간에 있습니다
-  1163: 여기에 {POP16}{POP16}{POP16}{STRINGID}을(를) 놓을 수 없습니다...
-  1164: "{POP16}{POP16}{POP16}{STRINGID}을(를) 제거할 수 없습니다..."
+  1163: 여기에 {POP16}{POP16}{POP16}{STRINGID}(을)를 놓을 수 없습니다...
+  1164: "{POP16}{POP16}{POP16}{STRINGID}(을)를 제거할 수 없습니다..."
   1165: 정지 신호를 무시할 수 없습니다...
-  1166: 이 차량은 {STRINGID}이(가) 필요합니다
+  1166: 이 차량은 {STRINGID}(이)가 필요합니다
   1167: 열차에 차량이 없습니다!
   1168: 열차에 운전실이 없습니다
   1169: 열차에 기관차나 발전차가 필요합니다
@@ -1211,8 +1211,8 @@ strings:
   1181: "{SMALLFONT}{COLOUR BLACK}지도에 차량 경로 표시"
   1182: "{SMALLFONT}{COLOUR BLACK}지도에 회사 소유주 표시"
   1183: 역이 너무 넓게 퍼져있습니다!
-  1184: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}을(를) {STRINGID}에 추가할 수 없습니다..."
-  1185: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}을(를) 지을 수 없습니다..."
+  1184: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}(을)를 {STRINGID}에 추가할 수 없습니다..."
+  1185: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}(을)를 지을 수 없습니다..."
   1186: "{COLOUR BLACK}새 차량을 선택하세요"
   1187: "{COLOUR BLACK}{STRINGID}에 추가할 차량을 선택하세요"
   1188: "{SMALLFONT}{COLOUR BLACK}새로운 철도 차량 만들기"
@@ -1312,7 +1312,7 @@ strings:
   1282: "{COLOUR WINDOW_2}전체: {COLOUR BLACK}{STRINGID}"
   1283: 비어있음
   1284: "{SMALLFONT}{COLOUR BLACK}적재:"
-  1285: 추가로 {STRINGID}이(가) 필요합니다
+  1285: 추가로 {STRINGID}(이)가 필요합니다
   1286: "{SMALLFONT}{COLOUR BLACK}{STRINGID}용 차량"
   1287: "{SPRITE}{NEWLINE 31 8} {STRINGID}"
   1288: "{POP16}{POP16}{NEWLINE 31 8} {STRINGID}"
@@ -1392,7 +1392,7 @@ strings:
   1362: "{STRINGID} - 월 생산량"
   1363: "{STRINGID} - 통계"
   1364: "{STRINGID} {STRINGID}"
-  1365: "{SMALLFONT}{COLOUR BLACK}이(가) 산업 시설 파괴"
+  1365: "{SMALLFONT}{COLOUR BLACK}(이)가 산업 시설 파괴"
   1366: 건설 중
   1367: 생산 중
   1368: 생산
@@ -1846,9 +1846,9 @@ strings:
   1808: 항공기 경로
   1809: 선박 경로
   1810: ""
-  1811: "{STRINGID}을(를) {STRINGID} 근처에서 건설 중"
-  1812: "{STRINGID}을(를) {STRINGID} 근처에서 건설 중"
-  1813: "{STRINGID}을(를) {STRINGID} 근처에서 건설 중"
+  1811: "{STRINGID}(을)를 {STRINGID} 근처에서 건설 중"
+  1812: "{STRINGID}(을)를 {STRINGID} 근처에서 건설 중"
+  1813: "{STRINGID}(을)를 {STRINGID} 근처에서 건설 중"
   1814: "{STRINGID} 근처의 운송 서비스 확인 중"
   1815: "{STRINGID} 근처의 지형 조사 중"
   1816: "{COLOUR RED}파산!"
@@ -1865,7 +1865,7 @@ strings:
   1827: "{COLOUR WINDOW_2}차량의 판매 가격: {COLOUR BLACK}{CURRENCY32}"
   1828: "{COLOUR WINDOW_2}최근 수익: {COLOUR BLACK}없음"
   1829: "{COLOUR WINDOW_2}최근 수익: {COLOUR BLACK}{DATE DMY}"
-  1830: "{COLOUR BLACK}{STRINGID}을(를) {INT16}칸 & {INT16}일 만에 수송 = {CURRENCY32}"
+  1830: "{COLOUR BLACK}{STRINGID}(을)를 {INT16}칸 & {INT16}일 만에 수송 = {CURRENCY32}"
   1831: "{COLOUR WINDOW_2} 가장 빠른 건설 연도: {COLOUR BLACK}{UINT16 RAW}"
   1832: "{COLOUR WINDOW_2} 가장 최근 건설 연도: {COLOUR BLACK}{UINT16 RAW}"
   1833: "{COLOUR WINDOW_2}지역 당국의 운송 회사의 평판:"
@@ -2052,7 +2052,7 @@ strings:
   1997: "{COLOUR WINDOW_2}지표면 서비스 속력 기록: {COLOUR BLACK}{VELOCITY}"
   1998: "{COLOUR WINDOW_2}공중 서비스 속력 기록: {COLOUR BLACK}{VELOCITY}"
   1999: "{COLOUR WINDOW_2}수상 서비스 속력 기록: {COLOUR BLACK}{VELOCITY}"
-  2000: "{COLOUR BLACK}{STRINGID}이(가) {DATE DMY}에 달성"
+  2000: "{COLOUR BLACK}{STRINGID}(이)가 {DATE DMY}에 달성"
   2001: 디스플레이 모드 변경 확인
   2002: "{COLOUR WINDOW_2}화면 해상도가 {UINT16 RAW} x {UINT16 RAW} 로 변경되었습니다"
   2003: "{COLOUR WINDOW_2}_"
@@ -2498,7 +2498,7 @@ strings:
   2443: "즐겨쓰는 회사 이름을 입력하세요:"
   2444: "회사 이름을 바꿀 수 없습니다..."
   2445: "{STRINGID} 근처에 운송 회사가 없습니다"
-  2446: "{STRINGID}은(는) 지난달에 배송을 받지 않았습니다"
+  2446: "{STRINGID}(은)는 지난달에 배송을 받지 않았습니다"
   2447: "{SMALLFONT}{COLOUR BLACK}이 종류 항목의 홈 폴더로 돌아갑니다"
   2448: "ALT + "
   2449: "R.CTRL + "
