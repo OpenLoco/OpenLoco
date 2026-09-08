@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Unicode.h"
+#include <cstddef>
 #include <cstdint>
 #include <string>
 
@@ -9,6 +10,12 @@ namespace OpenLoco::Localisation
     utf32_t convertLocoToUnicode(uint8_t loco_char);
     uint8_t convertUnicodeToLoco(utf32_t unicode);
     std::string convertUnicodeToLoco(const std::string& unicode_string);
+
+    // ControlCodes::unicode + 4-byte 0x7F-padded UTF-8. Returns 5.
+    std::size_t writeUnicodeEscape(char* out, utf32_t unicode);
+    utf32_t decodeUnicodeEscapePayload(const uint8_t payload[4]);
+    // Sprite-font byte, or a unicode escape when the glyph is missing. Returns 1 or 5.
+    std::size_t writeLocoChar(char* out, utf32_t unicode);
 
     namespace LocoChar
     {

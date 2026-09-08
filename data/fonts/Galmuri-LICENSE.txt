@@ -1,0 +1,6 @@
+Galmuri
+Copyright 2019-2025 Lee Minseo (quiple)
+https://github.com/quiple/galmuri
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+The full license text is in NotoCJK-OFL.txt in this folder.

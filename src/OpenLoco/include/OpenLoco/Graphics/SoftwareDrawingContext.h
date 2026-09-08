@@ -40,5 +40,6 @@ namespace OpenLoco::Gfx
         void drawImageMasked(ZoomLevel zoom, const Ui::Point& worldPos, const ImageId& image, const ImageId& maskImage) override;
         void drawImageSolid(const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex) override;
         void drawImagePaletteSet(const Ui::Point& pos, const ImageId& image, PaletteMap::View palette, const G1Element* noiseImage) override;
+        void drawPaletteBitmap(const Ui::Point& pos, const G1Element& element, PaletteMap::View palette) override;
     };
 }
