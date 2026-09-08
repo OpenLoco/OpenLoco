@@ -2520,7 +2520,7 @@ strings:
   2465: "Signals block"
   2466: "Has cargo order"
   2467: "Transports cargo"
-  2468: "Prevent Obsolete Industries from Closing"
-  2469: "Allow Generation of Obsolete Industries"
-  2470: "Generate Obsolete Industries when Generating Landscape"
-
+  2468: "Reduce closures of obsolete industries"
+  2469: "Allow generation of obsolete industries"
+  2470: "Generate obsolete industries when generating new landscape"
+  2471: "{SMALLFONT}{COLOUR BLACK}Include obsolete industries when generating a new landscape (does not work for scenarios with random maps)"

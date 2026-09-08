@@ -2180,6 +2180,7 @@ namespace OpenLoco::StringIds
     constexpr StringId cheat_ignore_industry_obsolete = 2468;
     constexpr StringId cheat_generate_obsolete_industries = 2469;
     constexpr StringId label_generate_obsolete_industries = 2470;
+    constexpr StringId tooltip_generate_obsolete_industries = 2471;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
