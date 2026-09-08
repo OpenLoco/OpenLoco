@@ -1,6 +1,6 @@
 26.08+ (???)
 ------------------------------------------------------------------------
-- Feature: [#304] Render Korean, Japanese and Chinese text with Galmuri and system fonts instead of '?'.
+- Feature: [#304] Render Korean Hangul with Galmuri and system Hangul fonts instead of '?'.
 - Feature: [#3978] Improved automatic detection of Locomotion installs on Linux.
 - Change: [#3867] Repeated presses of the build tracks and build roads keyboard shortcuts now cycles track/road types.
 - Change: [#3967] English localisations now use typographically correct curved single quotes.

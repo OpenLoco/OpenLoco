@@ -227,7 +227,7 @@ namespace OpenLoco::Input
             return;
         }
 
-        // IME commits (Hangul/CJK) arrive as UTF-8 without a matching KEY_DOWN
+        // IME commits (Hangul) arrive as UTF-8 without a matching KEY_DOWN
         // in this frame. Keep the raw codepoint; text boxes encode it as a
         // unicode escape. convertUnicodeToLoco would turn it into '?'.
         auto unsignedText = reinterpret_cast<const uint8_t*>(text);

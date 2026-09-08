@@ -1,5 +1,4 @@
 #include "Graphics/UnicodeFont.h"
-#include "Config.h"
 #include "Environment.h"
 #include "Graphics/Colour.h"
 #include "Graphics/DrawingContext.h"
@@ -14,7 +13,6 @@
 #include <cstdlib>
 #include <fstream>
 #include <memory>
-#include <string>
 #include <unordered_map>
 #include <vector>
 
@@ -57,7 +55,6 @@ namespace OpenLoco::Gfx::UnicodeFont
         std::shared_ptr<std::vector<uint8_t>> data;
         stbtt_fontinfo info{};
         bool preferHangul = false;
-        bool preferCjk = false;
         int nativePx = 0;
     };
 
@@ -94,23 +91,12 @@ namespace OpenLoco::Gfx::UnicodeFont
             || (cp >= 0xAC00 && cp <= 0xD7FF);
     }
 
-    static bool isKana(uint32_t cp)
-    {
-        return (cp >= 0x3040 && cp <= 0x30FF) || (cp >= 0x31F0 && cp <= 0x31FF) || (cp >= 0xFF66 && cp <= 0xFF9D);
-    }
-
-    static bool isHan(uint32_t cp)
-    {
-        return (cp >= 0x3000 && cp <= 0x303F) || (cp >= 0x3400 && cp <= 0x4DBF) || (cp >= 0x4E00 && cp <= 0x9FFF)
-            || (cp >= 0xF900 && cp <= 0xFAFF);
-    }
-
     static fs::path bundledFontsDir()
     {
         return Environment::getPathNoWarning(Environment::PathId::languageFiles).parent_path() / "fonts";
     }
 
-    static void tryLoadFontFile(const fs::path& path, bool preferHangul, bool preferCjk, int nativePx = 0)
+    static void tryLoadFontFile(const fs::path& path, bool preferHangul, int nativePx = 0)
     {
         std::ifstream in(path, std::ios::binary);
         if (!in)
@@ -146,7 +132,6 @@ namespace OpenLoco::Gfx::UnicodeFont
             LoadedFont font;
             font.data = data;
             font.preferHangul = preferHangul;
-            font.preferCjk = preferCjk;
             font.nativePx = nativePx;
             if (stbtt_InitFont(&font.info, font.data->data(), offset) != 0)
             {
@@ -165,11 +150,10 @@ namespace OpenLoco::Gfx::UnicodeFont
         _initialised = true;
 
         const auto bundled = bundledFontsDir();
-        // Optional Galmuri pack for Hangul/kana at sprite-font size. Han falls back to system fonts
-        // (OpenRCT2-style: no bundled CJK outline fonts).
-        tryLoadFontFile(bundled / "Galmuri7.ttf", true, false, 8);
-        tryLoadFontFile(bundled / "Galmuri9.ttf", true, false, 10);
-        tryLoadFontFile(bundled / "Galmuri14.ttf", true, false, 15);
+        // Optional Galmuri pack keeps Hangul on the 8/10/15px sprite-font grid.
+        tryLoadFontFile(bundled / "Galmuri7.ttf", true, 8);
+        tryLoadFontFile(bundled / "Galmuri9.ttf", true, 10);
+        tryLoadFontFile(bundled / "Galmuri14.ttf", true, 15);
 
 #ifdef _WIN32
         fs::path fontsDir = "C:/Windows/Fonts";
@@ -178,47 +162,37 @@ namespace OpenLoco::Gfx::UnicodeFont
         {
             fontsDir = fs::path(windir) / "Fonts";
         }
-        tryLoadFontFile(fontsDir / "malgunbd.ttf", true, false);
-        tryLoadFontFile(fontsDir / "malgun.ttf", true, false);
-        tryLoadFontFile(fontsDir / "YuGothM.ttc", false, true);
-        tryLoadFontFile(fontsDir / "msyh.ttc", false, true);
-        tryLoadFontFile(fontsDir / "msgothic.ttc", false, true);
-        tryLoadFontFile(fontsDir / "segoeui.ttf", false, false);
+        tryLoadFontFile(fontsDir / "malgunbd.ttf", true);
+        tryLoadFontFile(fontsDir / "malgun.ttf", true);
 #elif defined(__APPLE__) && defined(__MACH__)
-        tryLoadFontFile("/System/Library/Fonts/AppleSDGothicNeo.ttc", true, false);
-        tryLoadFontFile("/System/Library/Fonts/Hiragino Sans GB.ttc", false, true);
-        tryLoadFontFile("/System/Library/Fonts/ヒラギノ角ゴシック W3.ttc", false, true);
+        tryLoadFontFile("/System/Library/Fonts/AppleSDGothicNeo.ttc", true);
 #else
-        tryLoadFontFile("/usr/share/fonts/truetype/nanum/NanumGothicBold.ttf", true, false);
-        tryLoadFontFile("/usr/share/fonts/truetype/nanum/NanumGothic.ttf", true, false);
-        tryLoadFontFile("/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc", false, true);
-        tryLoadFontFile("/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc", false, true);
+        tryLoadFontFile("/usr/share/fonts/truetype/nanum/NanumGothicBold.ttf", true);
+        tryLoadFontFile("/usr/share/fonts/truetype/nanum/NanumGothic.ttf", true);
 #endif
 
         if (_fonts.empty() && !_loggedMissingFont)
         {
             _loggedMissingFont = true;
-            Logging::warn("No Unicode font found; CJK text will still show as '?'");
+            Logging::warn("No Hangul font found; Korean text will still show as '?'");
         }
     }
 
     static const LoadedFont* findFontWithGlyph(uint32_t codepoint, int pixelHeight)
     {
         initialise();
-        const bool wantHangul = isHangul(codepoint);
-        const bool wantKana = isKana(codepoint);
-        const bool wantHan = isHan(codepoint);
 
         const auto hasGlyph = [codepoint](const LoadedFont& font) {
             return stbtt_FindGlyphIndex(&font.info, static_cast<int>(codepoint)) != 0;
         };
 
-        const auto pickPreferred = [&](bool LoadedFont::*flag) -> const LoadedFont* {
+        if (isHangul(codepoint))
+        {
             const LoadedFont* best = nullptr;
             int bestDist = 1000;
             for (const auto& font : _fonts)
             {
-                if (!(font.*flag) || !hasGlyph(font))
+                if (!font.preferHangul || !hasGlyph(font))
                 {
                     continue;
                 }
@@ -229,59 +203,12 @@ namespace OpenLoco::Gfx::UnicodeFont
                     bestDist = dist;
                 }
             }
-            return best;
-        };
+            if (best != nullptr)
+            {
+                return best;
+            }
+        }
 
-        const auto pickPixel = [&]() -> const LoadedFont* {
-            const LoadedFont* best = nullptr;
-            int bestDist = 1000;
-            for (const auto& font : _fonts)
-            {
-                if (font.nativePx <= 0 || !hasGlyph(font))
-                {
-                    continue;
-                }
-                const int dist = std::abs(font.nativePx - pixelHeight);
-                if (dist < bestDist)
-                {
-                    best = &font;
-                    bestDist = dist;
-                }
-            }
-            return best;
-        };
-
-        if (wantHangul)
-        {
-            if (const auto* best = pickPreferred(&LoadedFont::preferHangul))
-            {
-                return best;
-            }
-        }
-        if (wantKana)
-        {
-            if (const auto* best = pickPixel())
-            {
-                return best;
-            }
-        }
-        if (wantHan)
-        {
-            // Galmuri covers JP/KR Han but is missing many Simplified Chinese glyphs.
-            // Mixing it with Noto in one string looks like overlapping tofu.
-            const bool usePixelHan = !Config::get().language.starts_with("zh");
-            if (usePixelHan)
-            {
-                if (const auto* best = pickPixel())
-                {
-                    return best;
-                }
-            }
-            if (const auto* best = pickPreferred(&LoadedFont::preferCjk))
-            {
-                return best;
-            }
-        }
         for (const auto& font : _fonts)
         {
             if (hasGlyph(font))
@@ -294,13 +221,6 @@ namespace OpenLoco::Gfx::UnicodeFont
 
     static const Glyph& getGlyph(Font font, uint32_t codepoint)
     {
-        static std::string cachedLang;
-        if (cachedLang != Config::get().language)
-        {
-            cachedLang = Config::get().language;
-            _glyphCache.clear();
-        }
-
         const auto key = glyphKey(font, codepoint);
         if (auto it = _glyphCache.find(key); it != _glyphCache.end())
         {
@@ -317,8 +237,8 @@ namespace OpenLoco::Gfx::UnicodeFont
         }
 
         const int rasterHeight = loaded->nativePx > 0 ? loaded->nativePx : pixelHeight;
-        // Pixel fonts and CJK outlines are drawn to the em square.
-        // ScaleForPixelHeight also fits unused descent, which squashes glyphs.
+        // Pixel Hangul is drawn to the em square. ScaleForPixelHeight also fits
+        // unused Latin descent, which squashes Hangul.
         const float scale = stbtt_ScaleForMappingEmToPixels(&loaded->info, static_cast<float>(rasterHeight));
 
         int advanceWidth = 0;
