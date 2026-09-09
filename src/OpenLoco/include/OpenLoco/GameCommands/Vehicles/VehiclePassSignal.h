@@ -24,5 +24,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void vehiclePassSignal(registers& regs, const uint8_t flags);
+    void vehiclePassSignal(registers& regs, const Flags flags);
 }

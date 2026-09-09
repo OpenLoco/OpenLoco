@@ -156,6 +156,55 @@
             }
         },
         {
+            "name": "linux-zig-static",
+            "displayName": "Linux-zig-static",
+            "description": "Ninja configure environment for portable linux builds (zig cc, glibc 2.28, static linkage)",
+            "inherits": "posix-base",
+            "vendor": { "microsoft.com/VisualStudioSettings/CMake/1.0": { "intelliSenseMode": "linux-clang-x64" } },
+            "cacheVariables": {
+                "OPENLOCO_USE_VCPKG": {
+                    "type": "BOOL",
+                    "value": true
+                },
+                "OPENLOCO_USE_CCACHE": {
+                    "type": "BOOL",
+                    "value": false
+                },
+                "VCPKG_OVERLAY_TRIPLETS": {
+                    "type": "STRING",
+                    "value": "${sourceDir}/cmake/triplets"
+                },
+                "VCPKG_TARGET_TRIPLET": {
+                    "type": "STRING",
+                    "value": "x64-linux-zig"
+                },
+                "VCPKG_MANIFEST_NO_DEFAULT_FEATURES": {
+                    "type": "BOOL",
+                    "value": true
+                },
+                "VCPKG_LIBRARY_LINKAGE": {
+                    "type": "STRING",
+                    "value": "static"
+                },
+                "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": {
+                    "type": "FILEPATH",
+                    "value": "${sourceDir}/cmake/zig_linux_toolchain.cmake"
+                },
+                "CMAKE_CXX_FLAGS_RELEASE": {
+                    "type": "STRING",
+                    "value": "-O3 -DNDEBUG -g"
+                },
+                "CMAKE_FIND_ROOT_PATH_MODE_LIBRARY": {
+                    "type": "STRING",
+                    "value": "ONLY"
+                },
+                "CMAKE_FIND_ROOT_PATH_MODE_PACKAGE": {
+                    "type": "STRING",
+                    "value": "ONLY"
+                }
+            }
+        },
+        {
             "name": "macos-vcpkg-static",
             "displayName": "MacOS arm64 VCPKG static",
             "description": "Ninja configure environment for MacOS (static linkage)",
@@ -249,6 +298,14 @@
             "configurePreset": "linux-vcpkg-static",
             "displayName": "Release",
             "description": "Build Release Configuration (vcpkg static linkage)",
+            "configuration": "Release",
+            "nativeToolOptions": [ "-k0" ]
+        },
+        {
+            "name": "linux-zig-static",
+            "configurePreset": "linux-zig-static",
+            "displayName": "Release",
+            "description": "Build Release Configuration (zig cc, static linkage)",
             "configuration": "Release",
             "nativeToolOptions": [ "-k0" ]
         },

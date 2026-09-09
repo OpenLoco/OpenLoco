@@ -1019,11 +1019,11 @@ strings:
   994: ???
   995: ???
 
-  996: "{STRINGID}:{MOVE_X 215}{STRINGID}{STRINGID}"
+  996: "{STRINGID}:"
   997: "SHIFT + "
   998: "CTRL + "
   999: 키보드 단축키 변경
-  1000: "{COLOUR WINDOW_2}아래 기능에 지정할 새로운 단축키를 입력하세요:{NEWLINE}{NEWLINE_SMALLER}{COLOUR BLACK}“{STRINGID}”"
+  1000: "{COLOUR WINDOW_2}아래 기능에 지정할 새로운 단축키를 입력하세요:"
   1001: "{SMALLFONT}{COLOUR BLACK}새 단축키를 지정할 단축키 설명을 클릭하세요"
   1002: 화면 가장자리에 마우스 커서를 가져가면 화면 스크롤
   1003: "{SMALLFONT}{COLOUR BLACK}마우스 커서가 화면 가장자리에 가까이 가면 지도 화면을 스크롤할지 선택합니다"
@@ -1039,7 +1039,7 @@ strings:
   1013: 시나리오가 이미 설치되어 있습니다
   1014: "{OUTLINE}{COLOUR WINDOW_1}{STRINGID}"
   1015: "{OUTLINE}{COLOUR WINDOW_2}(직접 컨트롤하려면 키보드나 마우스를 누르세요)"
-  1016: 크리스 소이어의 로코모션이 이미 실행 중입니다
+  1016: OpenLoco 이미 실행 중입니다
 
   1017: 음악 저작권...
   1018: 음악 저작권

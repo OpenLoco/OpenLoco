@@ -13,9 +13,9 @@ namespace OpenLoco
     {
         auto colourImage = Gfx::recolour(image + TrackObj::ImageIds::kUiPreviewImage0, Colour::mutedDarkRed);
 
-        drawingCtx.drawImage(x, y, colourImage + TrackObj::ImageIds::Style0::kStraight0BallastNE);
-        drawingCtx.drawImage(x, y, colourImage + TrackObj::ImageIds::Style0::kStraight0SleeperNE);
-        drawingCtx.drawImage(x, y, colourImage + TrackObj::ImageIds::Style0::kStraight0RailNE);
+        drawingCtx.drawImage(ZoomLevel::full, x, y, colourImage + TrackObj::ImageIds::Style0::kStraight0BallastNE);
+        drawingCtx.drawImage(ZoomLevel::full, x, y, colourImage + TrackObj::ImageIds::Style0::kStraight0SleeperNE);
+        drawingCtx.drawImage(ZoomLevel::full, x, y, colourImage + TrackObj::ImageIds::Style0::kStraight0RailNE);
     }
 
     // 0x004A6C6C

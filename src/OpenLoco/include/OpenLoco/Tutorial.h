@@ -7,13 +7,16 @@ namespace OpenLoco::Tutorial
     enum class State : uint8_t
     {
         none,
+        initialising,
+        standby,
         playing,
         recording,
     };
 
     State state();
 
-    void start(int16_t tutorialNumber);
+    void initialise(int16_t tutorialNumber);
+    void start();
     void stop();
 
     int32_t nextInput();

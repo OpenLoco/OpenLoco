@@ -40,5 +40,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void renameVehicle(registers& regs, const uint8_t flags);
+    void renameVehicle(registers& regs, const Flags flags);
 }

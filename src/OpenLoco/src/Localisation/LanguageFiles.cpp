@@ -3,7 +3,6 @@
 #include "Environment.h"
 #include "Localisation/Conversion.h"
 #include "Localisation/Formatting.h"
-#include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
 #include "Localisation/Unicode.h"
 #include "Logging.h"
@@ -230,23 +229,6 @@ namespace OpenLoco::Localisation
         return str;
     }
 
-    static bool stringIsBuffer(int id)
-    {
-        switch (id)
-        {
-            case StringIds::buffer_337:
-            case StringIds::buffer_338:
-            case StringIds::buffer_1250:
-            case StringIds::preferred_currency_buffer:
-            case StringIds::buffer_1719:
-            case StringIds::buffer_2039:
-            case StringIds::buffer_2040:
-                return true;
-            default:
-                return false;
-        }
-    }
-
     static bool loadLanguageStringTable(fs::path languageFile)
     {
         try
@@ -257,11 +239,6 @@ namespace OpenLoco::Localisation
             for (YAML::const_iterator it = node.begin(); it != node.end(); ++it)
             {
                 int id = it->first.as<int>();
-                if (stringIsBuffer(id))
-                {
-                    continue;
-                }
-
                 std::string new_string = it->second.as<std::string>();
                 _stringsOwner.emplace_back(readString(new_string.data(), new_string.length()));
                 char* processedString = _stringsOwner.back().get();

@@ -1,4 +1,5 @@
 #include <OpenLoco/Core/Prng.h>
+#include <cstdint>
 #include <gtest/gtest.h>
 
 using namespace OpenLoco;

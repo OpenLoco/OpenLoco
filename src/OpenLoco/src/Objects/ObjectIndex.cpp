@@ -747,7 +747,7 @@ namespace OpenLoco::ObjectManager
         // Note: This mode is never used in vanilla!
         if (isRecursed && (mode & SelectObjectModes::selectDependents) == SelectObjectModes::none)
         {
-            auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2040));
+            auto buffer = StringManager::getBufferString(StringIds::buffer_2040);
             buffer = StringManager::formatString(buffer, 512, StringIds::the_following_object_must_be_selected_first);
             objectCreateIdentifierName(buffer, objHeader);
             GameCommands::setErrorText(StringIds::buffer_2040);
@@ -824,7 +824,7 @@ namespace OpenLoco::ObjectManager
         auto objIndexEntry = internalFindObjectInIndex(objHeader);
         if (!objIndexEntry.has_value())
         {
-            auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2040));
+            auto buffer = StringManager::getBufferString(StringIds::buffer_2040);
             buffer = StringManager::formatString(buffer, 512, StringIds::data_for_following_object_not_found);
             objectCreateIdentifierName(buffer, objHeader);
             GameCommands::setErrorText(StringIds::buffer_2040);

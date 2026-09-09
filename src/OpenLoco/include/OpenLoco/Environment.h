@@ -69,6 +69,7 @@ namespace OpenLoco::Environment
     };
 
     void autoCreateDirectory(const fs::path& path);
+    fs::path getDefaultPathNoWarning(PathId id);
     fs::path getPath(PathId id);
     fs::path getPathNoWarning(PathId id);
     void resolvePaths();

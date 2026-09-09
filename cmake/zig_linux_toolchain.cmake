@@ -1,0 +1,28 @@
+if (NOT OPENLOCO_ZIG_SHIM_DIR)
+    set(OPENLOCO_ZIG_SHIM_DIR "$ENV{OPENLOCO_ZIG_SHIM_DIR}")
+endif()
+
+if (NOT OPENLOCO_ZIG_SHIM_DIR)
+    message(FATAL_ERROR "OPENLOCO_ZIG_SHIM_DIR is not set, configure through scripts/build-linux-zig.sh")
+endif()
+
+set(CMAKE_C_COMPILER "${OPENLOCO_ZIG_SHIM_DIR}/zig-cc")
+set(CMAKE_CXX_COMPILER "${OPENLOCO_ZIG_SHIM_DIR}/zig-c++")
+
+set(CMAKE_AR "${OPENLOCO_ZIG_SHIM_DIR}/zig-ar" CACHE FILEPATH "zig ar")
+set(CMAKE_RANLIB "${OPENLOCO_ZIG_SHIM_DIR}/zig-ranlib" CACHE FILEPATH "zig ranlib")
+set(CMAKE_C_COMPILER_AR "${CMAKE_AR}")
+set(CMAKE_CXX_COMPILER_AR "${CMAKE_AR}")
+set(CMAKE_C_COMPILER_RANLIB "${CMAKE_RANLIB}")
+set(CMAKE_CXX_COMPILER_RANLIB "${CMAKE_RANLIB}")
+
+set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
+
+set(CMAKE_SYSTEM_LIBRARY_PATH /usr/lib/x86_64-linux-gnu /lib/x86_64-linux-gnu)
+
+set(OPENLOCO_ZIG_HOST_INCLUDES "-idirafter /usr/include/x86_64-linux-gnu -idirafter /usr/include")
+
+set(CMAKE_C_FLAGS_INIT "${OPENLOCO_ZIG_HOST_INCLUDES} -g0")
+set(CMAKE_CXX_FLAGS_INIT "${OPENLOCO_ZIG_HOST_INCLUDES} -fexperimental-library -g0")
+
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)

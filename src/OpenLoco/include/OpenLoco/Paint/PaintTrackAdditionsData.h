@@ -1577,7 +1577,7 @@ namespace OpenLoco::Paint
         constexpr std::array<uint8_t, 4> kRotationTable2301 = { 2, 3, 0, 1 };
         constexpr std::array<uint8_t, 4> kRotationTable3012 = { 3, 0, 1, 2 };
 
-        constexpr TrackPaintAdditionPiece kNullTrackPaintAdditionPiece = {};
+        constexpr TrackPaintAdditionPiece kNullTrackPaintAdditionPiece = { { std::numeric_limits<uint32_t>::max() } };
         constexpr auto kNoSupports = std::nullopt;
 
         consteval std::optional<TrackAdditionSupport> rotateTrackPPASupport(const std::optional<TrackAdditionSupport>& reference, const std::array<uint8_t, 4>& rotationTable)

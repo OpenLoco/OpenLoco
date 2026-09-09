@@ -42,5 +42,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void aiCreateRoadAndStation(registers& regs, const uint8_t flags);
+    void aiCreateRoadAndStation(registers& regs, const Flags flags);
 }

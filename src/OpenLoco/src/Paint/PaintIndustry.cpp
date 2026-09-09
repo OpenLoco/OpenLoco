@@ -31,14 +31,14 @@ namespace OpenLoco::Paint
         if (!elIndustry.isConstructed())
         {
             ticks = 0;
-            numSections = elIndustry.var_6_003F();
+            numSections = elIndustry.sectionsCompleted();
             sectionProgress = elIndustry.sectionProgress();
         }
 
         std::span<const std::uint8_t> animationSequence{};
-        if ((elIndustry.var_6_003F() & (1 << 5)) && (elIndustry.var_6_003F() & (1 << 4)))
+        if (elIndustry.randomAnimationPlaying() && elIndustry.randomAnimationAvailable())
         {
-            animationSequence = indObj.getAnimationSequence(elIndustry.var_6_003F() & 0x3);
+            animationSequence = indObj.getAnimationSequence(elIndustry.randomAnimationType());
         }
 
         uint32_t buildingType = elIndustry.buildingType();
@@ -165,7 +165,7 @@ namespace OpenLoco::Paint
         auto* industry = elIndustry.industry();
         auto* indObj = industry->getObject();
 
-        ImageId baseColour(0, elIndustry.var_6_F800());
+        ImageId baseColour(0, elIndustry.colour());
         if (elIndustry.isGhost())
         {
             session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
@@ -175,7 +175,7 @@ namespace OpenLoco::Paint
         const uint8_t rotation = (session.getRotation() + elIndustry.rotation()) & 0x3;
 
         // 0x00525D4E
-        const int16_t bbLengthZ = std::min(elIndustry.clearHeight() - elIndustry.baseHeight(), 128) - 2;
+        const int16_t bbLengthZ = elIndustry.clearHeight() - elIndustry.baseHeight() - 2;
 
         // 0x00E0C3A4
         uint32_t buildingType = elIndustry.buildingType();
@@ -191,10 +191,10 @@ namespace OpenLoco::Paint
         session.resetLastPS(); // Odd...
         if (indObj->hasFlags(IndustryObjectFlags::hasShadows))
         {
-            if (session.getRenderTarget()->zoomLevel <= 1)
+            if (session.getZoom() <= 1)
             {
                 const auto shadowImageOffset = buildingType * 4 + indObj->shadowImageIds + rotation;
-                const ImageId shadowImage = baseColour.withIndex(shadowImageOffset).withTranslucency(Colours::getShadow(elIndustry.var_6_F800()));
+                const ImageId shadowImage = baseColour.withIndex(shadowImageOffset).withTranslucency(Colours::getShadow(elIndustry.colour()));
                 if (isMultiTile)
                 {
                     session.addToPlotListAsChild(shadowImage, imageOffset, bbOffset, bbSize);

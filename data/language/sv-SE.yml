@@ -1000,11 +1000,11 @@ strings:
   993: '???'
   994: '???'
   995: '???'
-  996: '{STRINGID}:{MOVE_X 215}{STRINGID}{STRINGID}'
+  996: '{STRINGID}:'
   997: 'SHIFT +'
   998: 'CTRL +'
   999: Ändra tangentbordsgenväg
-  1000: '{COLOUR WINDOW_2}Tryck in ny genvägstangent för:{NEWLINE}{NEWLINE_SMALLER}{COLOUR BLACK}“{STRINGID}”'
+  1000: '{COLOUR WINDOW_2}Tryck in ny genvägstangent för:'
   1001: '{SMALLFONT}{COLOUR BLACK}Klicka på genvägsbeskrivningen för att välja ny tangent'
   1002: Skrolla vyn när pekaren är vid skärmkanten
   1003: '{SMALLFONT}{COLOUR BLACK}Välj om vyn ska skrollas när muspekaren är vid skärmkanten'
@@ -1020,7 +1020,7 @@ strings:
   1013: Scenariot är redan installerat
   1014: '{OUTLINE}{COLOUR WINDOW_1}{STRINGID}'
   1015: '{OUTLINE}{COLOUR WINDOW_2}(Tryck på en tangent eller musknapp för att ta kontroll)'
-  1016: Ett annat exemplar av Chris Sawyer's Locomotion körs redan
+  1016: Ett annat exemplar av OpenLoco körs redan
   1017: Musikacknowledgement...
   1018: Musikacknowledgement
   1019: '{COLOUR BLACK}Copyright © Chris Sawyer'

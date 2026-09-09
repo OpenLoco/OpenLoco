@@ -1019,11 +1019,11 @@ strings:
   994: ???
   995: ???
 
-  996: "{STRINGID}:{MOVE_X 215}{STRINGID}{STRINGID}"
+  996: "{STRINGID}:"
   997: 'Shift + '
   998: 'Ctrl + '
   999: Zmiana Skrótu Klawiszowego
-  1000: '{COLOUR WINDOW_2}Wciśnij nowy klawisz skrótu dla:{NEWLINE}{NEWLINE_SMALLER}{COLOUR BLACK}“{STRINGID}”'
+  1000: '{COLOUR WINDOW_2}Wciśnij nowy klawisz skrótu dla:'
   1001: '{SMALLFONT}{COLOUR BLACK}Kliknij na opis skrótu, aby wybrać nowy klawisz'
   1002: Przesuwaj widok wskaźnikiem na krawędzi ekranu
   1003: '{SMALLFONT}{COLOUR BLACK}Wybierz, czy chcesz przewijać widok, gdy wskaźnik myszy znajduje się na krawędzi ekranu'
@@ -1039,7 +1039,7 @@ strings:
   1013: Scenariusz jest już zainstalowany
   1014: '{OUTLINE}{COLOUR WINDOW_1}{STRINGID}'
   1015: '{OUTLINE}{COLOUR WINDOW_2}(Naciśnij przycisk myszy, aby przejąć kontrolę)'
-  1016: Inna instancja Chris Sawyer's Locomotion jest już uruchomiona
+  1016: Inna instancja OpenLoco jest już uruchomiona
   
   1017: Podziękowania dla muzyków...
   1018: Podziękowania dla muzyków

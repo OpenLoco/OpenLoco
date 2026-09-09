@@ -39,12 +39,12 @@ namespace OpenLoco
         static constexpr auto kObjectType = ObjectType::trackSignal;
 
         StringId name;
-        TrainSignalObjectFlags flags; // 0x02
-        uint8_t animationSpeed;       // 0x04
-        uint8_t numFrames;            // 0x05
-        int16_t costFactor;           // 0x06
-        int16_t sellCostFactor;       // 0x08
-        uint8_t costIndex;            // 0x0A
+        TrainSignalObjectFlags flags;   // 0x02
+        uint8_t animationFrameInterval; // 0x04
+        uint8_t numFrames;              // 0x05
+        int16_t costFactor;             // 0x06
+        int16_t sellCostFactor;         // 0x08
+        uint8_t costIndex;              // 0x0A
         uint8_t var_0B;
         StringId description;  // 0x0C
         uint32_t image;        // 0x0E

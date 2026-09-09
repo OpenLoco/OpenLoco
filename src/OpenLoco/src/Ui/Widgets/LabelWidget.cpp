@@ -22,8 +22,6 @@ namespace OpenLoco::Ui::Widgets
             colour = colour.inset();
         }
 
-        auto* window = widgetState.window;
-        const auto position = window->position() + widget.position();
         const auto size = widget.size();
 
         auto formatArgs = FormatArguments(widget.textArgs);
@@ -33,18 +31,18 @@ namespace OpenLoco::Ui::Widgets
         const auto x = [&]() -> int32_t {
             if (widget.contentAlign == ContentAlign::left)
             {
-                return position.x;
+                return 0;
             }
             else if (widget.contentAlign == ContentAlign::center)
             {
-                return position.x + (size.width - 1) / 2;
+                return (size.width - 1) / 2;
             }
             else if (widget.contentAlign == ContentAlign::right)
             {
                 char buffer[512]{};
                 StringManager::formatString(buffer, std::size(buffer), widget.text, formatArgs);
                 const auto stringWidth = tr.getStringWidthNewLined(buffer);
-                return position.x + size.width - stringWidth - 1;
+                return size.width - stringWidth - 1;
             }
             assert(false);
             return {};
@@ -52,8 +50,7 @@ namespace OpenLoco::Ui::Widgets
 
         const auto fontHeight = tr.getLineHeight(tr.getCurrentFont());
         // NOTE: -1 is an ugly hack for buttons with inset border, remove that when all buttons have consistent height.
-        const auto yOffset = std::max(0, (size.height - fontHeight) / 2 - 1);
-        const auto y = position.y + yOffset;
+        const auto y = std::max(0, (size.height - fontHeight) / 2 - 1);
         const auto width = size.width - 2;
 
         if (widget.contentAlign == ContentAlign::left)

@@ -40,5 +40,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void createWall(registers& regs, const uint8_t flags);
+    void createWall(registers& regs, const Flags flags);
 }

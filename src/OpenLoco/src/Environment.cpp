@@ -52,16 +52,8 @@ namespace OpenLoco::Environment
 
     static fs::path autoDetectLocoInstallPath()
     {
-        static constexpr const char* kSearchPaths[] = {
-            "C:/Program Files (x86)/Atari/Locomotion",
-            "C:/GOG Games/Chris Sawyer's Locomotion",
-            "C:/GOG Games/Locomotion",
-            "C:/Program Files/Steam/steamapps/common/Locomotion",
-            "C:/Program Files (x86)/Steam/steamapps/common/Locomotion",
-        };
-
         Logging::info("Searching for Locomotion install path...");
-        for (auto path : kSearchPaths)
+        for (const auto& path : Platform::getLocoInstallSearchPaths())
         {
             if (validateLocoInstallPath(path))
             {
@@ -175,7 +167,7 @@ namespace OpenLoco::Environment
         return result;
     }
 
-    static fs::path getDefaultPathNoWarning(PathId id)
+    fs::path getDefaultPathNoWarning(PathId id)
     {
         auto basePath = getBasePath(id);
         auto subPath = getSubPath(id);
@@ -257,14 +249,17 @@ namespace OpenLoco::Environment
     void resolvePaths()
     {
         _configurablePaths.install = resolveLocoInstallPath();
+        Logging::info("Using Locomotion install path: {}", _configurablePaths.install.u8string());
 
         // Figure out what save directory to default to
         auto configLastSavePath = fs::u8path(Config::get().lastSavePath);
         _configurablePaths.saves = tryPathOrDefault(configLastSavePath, PathId::save);
+        Logging::info("Using save path: {}", _configurablePaths.saves.u8string());
 
         // Figure out what landscape directory to default to
         auto configLastLandscapePath = fs::u8path(Config::get().lastLandscapePath);
         _configurablePaths.landscapes = tryPathOrDefault(configLastLandscapePath, PathId::landscape);
+        Logging::info("Using landscape path: {}", _configurablePaths.landscapes.u8string());
 
         autoCreateDirectory(getPath(PathId::customObjects));
     }
@@ -311,11 +306,7 @@ namespace OpenLoco::Environment
                 return Platform::getUserDirectory();
             case PathId::languageFiles:
             case PathId::objects:
-#if defined(__APPLE__) && defined(__MACH__)
-                return Platform::GetBundlePath();
-#else
-                return Platform::getCurrentExecutablePath().parent_path() / "data";
-#endif
+                return Platform::getDataDirectory();
             default:
                 return _configurablePaths.install;
         }

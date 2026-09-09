@@ -24,7 +24,30 @@ loco_add_executable(App
 
 set_target_properties(App PROPERTIES OUTPUT_NAME OpenLoco)
 
-if (APPLE)
+if (NOT APPLE)
+    if (UNIX)
+        set(DATADIR ${CMAKE_INSTALL_FULL_DATADIR}/openloco)
+
+        install(FILES "${CMAKE_SOURCE_DIR}/CHANGELOG.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
+        install(FILES "${CMAKE_SOURCE_DIR}/CONTRIBUTORS.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
+        install(FILES "${CMAKE_SOURCE_DIR}/LICENSE" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
+        install(FILES "${CMAKE_SOURCE_DIR}/README.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
+
+        install(FILES "${CMAKE_SOURCE_DIR}/distribution/linux/openloco.desktop" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
+        install(FILES "${CMAKE_SOURCE_DIR}/src/Resources/src/logo/icon_x16.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/16x16/apps" RENAME "openloco.png")
+        install(FILES "${CMAKE_SOURCE_DIR}/src/Resources/src/logo/icon_x32.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/32x32/apps" RENAME "openloco.png")
+        install(FILES "${CMAKE_SOURCE_DIR}/src/Resources/src/logo/icon_x64.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/64x64/apps" RENAME "openloco.png")
+        install(FILES "${CMAKE_SOURCE_DIR}/src/Resources/src/logo/icon_x128.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/128x128/apps" RENAME "openloco.png")
+        install(FILES "${CMAKE_SOURCE_DIR}/src/Resources/src/logo/icon_x256.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/256x256/apps" RENAME "openloco.png")
+        install(FILES "${CMAKE_SOURCE_DIR}/src/Resources/src/logo/icon_x512.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/512x512/apps" RENAME "openloco.png")
+        install(FILES "${CMAKE_SOURCE_DIR}/src/Resources/src/logo/icon_steam.svg" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/scalable/apps" RENAME "openloco.svg")
+    else()
+        set(DATADIR ${CMAKE_INSTALL_BINDIR}/data)
+    endif()
+
+    install(DIRECTORY "${CMAKE_SOURCE_DIR}/data/" DESTINATION "${DATADIR}")
+    install(DIRECTORY "${openloco_objects_SOURCE_DIR}" DESTINATION "${DATADIR}/objects")
+else()
     target_link_options(App PRIVATE "-framework" "Cocoa")
 
     set_target_properties(App PROPERTIES
@@ -35,7 +58,7 @@ if (APPLE)
     set(MACOSX_BUNDLE_BUNDLE_VERSION "${OPENLOCO_COMMIT_SHA1_SHORT}")
     set(MACOSX_BUNDLE_COPYRIGHT "OpenLoco is licensed under the MIT License")
     set(MACOSX_BUNDLE_GUI_IDENTIFIER "io.openloco.OpenLoco")
-    set(MACOSX_BUNDLE_ICON_FILE "AppIcon")
+    set(MACOSX_BUNDLE_ICON_FILE "OpenLoco")
 
     if("${OPENLOCO_BRANCH}" STREQUAL "master")
         set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${OPENLOCO_VERSION_TAG}")
@@ -47,30 +70,12 @@ if (APPLE)
 
     set(BUNDLE_RESOURCES "")
 
-    find_program(ICONUTIL iconutil)
-    if (ICONUTIL)
-        file(COPY ${CMAKE_SOURCE_DIR}/distribution/macos/AppIcon.iconset DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-        set(ICON_TARGET "${CMAKE_CURRENT_BINARY_DIR}/AppIcon.iconset")
-        set(ICON_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/AppIcon.icns")
-        set(SOURCE_ICON_DIR "${CMAKE_SOURCE_DIR}/src/Resources/src/logo")
-        add_custom_command(OUTPUT ${ICON_OUTPUT}
-                COMMAND cp icon_x16.png ${ICON_TARGET}/icon_16x16.png
-                COMMAND cp icon_x32.png ${ICON_TARGET}/icon_16x16@2x.png
-                COMMAND cp icon_x32.png ${ICON_TARGET}/icon_32x32.png
-                COMMAND cp icon_x64.png ${ICON_TARGET}/icon_32x32@2x.png
-                COMMAND cp icon_x128.png ${ICON_TARGET}/icon_128x128.png
-                COMMAND cp icon_x256.png ${ICON_TARGET}/icon_128x128@2x.png
-                COMMAND cp icon_x256.png ${ICON_TARGET}/icon_256x256.png
-                COMMAND cp icon_x512.png ${ICON_TARGET}/icon_256x256@2x.png
-                COMMAND cp icon_x512.png ${ICON_TARGET}/icon_512x512.png
-                COMMAND cp icon_x1024.png ${ICON_TARGET}/icon_512x512@2x.png
-                COMMAND ${ICONUTIL} --convert icns --output ${ICON_OUTPUT} ${ICON_TARGET}
-                WORKING_DIRECTORY ${SOURCE_ICON_DIR})
-        list(APPEND BUNDLE_RESOURCES ${ICON_OUTPUT})
-    endif ()
-
     list(APPEND BUNDLE_RESOURCES ${CMAKE_SOURCE_DIR}/CHANGELOG.md)
     list(APPEND BUNDLE_RESOURCES ${CMAKE_SOURCE_DIR}/CONTRIBUTORS.md)
+
+    # NB: icons are created Icon Composer and then exported using Xcode's `actool`
+    list(APPEND BUNDLE_RESOURCES ${CMAKE_SOURCE_DIR}/distribution/macos/Assets.car)
+    list(APPEND BUNDLE_RESOURCES ${CMAKE_SOURCE_DIR}/distribution/macos/OpenLoco.icns)
 
     file(GLOB BUNDLE_LANGUAGES "${CMAKE_SOURCE_DIR}/data/language/*")
     file(GLOB_RECURSE  BUNDLE_OBJECTS "${openloco_objects_SOURCE_DIR}/*")

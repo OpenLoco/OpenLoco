@@ -40,5 +40,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void createTrainStation(registers& regs, const uint8_t flags);
+    void createTrainStation(registers& regs, const Flags flags);
 }

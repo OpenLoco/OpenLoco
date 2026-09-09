@@ -119,7 +119,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x00455943
-    static uint32_t removeIndustry(IndustryId id, uint8_t flags)
+    static uint32_t removeIndustry(IndustryId id, Flags flags)
     {
         setExpenditureType(ExpenditureType::Miscellaneous);
         auto* industry = IndustryManager::get(id);
@@ -135,7 +135,7 @@ namespace OpenLoco::GameCommands
 
         const auto height = World::TileManager::getHeight(World::Pos2{ industry->x, industry->y } + World::Pos2{ 16, 16 });
         setPosition({ industry->x, industry->y, height.landHeight });
-        if (flags & Flags::apply)
+        if (hasFlags(flags, Flags::apply))
         {
             for (auto i = industry->numTiles; i != 0; --i)
             {
@@ -168,7 +168,7 @@ namespace OpenLoco::GameCommands
         return Economy::getInflationAdjustedCost(indObj->clearCostFactor, indObj->costIndex, 3);
     }
 
-    void removeIndustry(registers& regs, const uint8_t flags)
+    void removeIndustry(registers& regs, const Flags flags)
     {
         IndustryRemovalArgs args(regs);
         regs.ebx = removeIndustry(args.industryId, flags);

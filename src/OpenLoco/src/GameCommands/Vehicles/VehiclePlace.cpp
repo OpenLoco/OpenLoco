@@ -196,7 +196,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004B01B6
-    static currency32_t vehiclePlace(const VehiclePlacementArgs& args, const uint8_t flags)
+    static currency32_t vehiclePlace(const VehiclePlacementArgs& args, const Flags flags)
     {
         if (args.head == EntityId::null)
         {
@@ -236,7 +236,7 @@ namespace OpenLoco::GameCommands
                 }
             }
 
-            if (!(flags & Flags::apply))
+            if (!hasFlags(flags, Flags::apply))
             {
                 return 0;
             }
@@ -280,7 +280,7 @@ namespace OpenLoco::GameCommands
 
                 train.head->vehicleFlags |= Vehicles::VehicleFlags::commandStop;
                 train.head->manualPower = -40;
-                if (flags & Flags::ghost)
+                if (hasFlags(flags, Flags::ghost))
                 {
                     train.applyToComponents([](auto& component) {
                         component.var_38 |= Vehicles::Flags38::isGhost;
@@ -292,14 +292,14 @@ namespace OpenLoco::GameCommands
         {
             return kFailure;
         }
-        if ((flags & Flags::apply) && !(flags & Flags::ghost))
+        if (hasFlags(flags, Flags::apply) && !hasFlags(flags, Flags::ghost))
         {
             Vehicles::playPlacedownSound(args.pos);
         }
         return 0;
     }
 
-    void vehiclePlace(registers& regs, const uint8_t flags)
+    void vehiclePlace(registers& regs, const Flags flags)
     {
         regs.ebx = vehiclePlace(VehiclePlacementArgs(regs), flags);
     }

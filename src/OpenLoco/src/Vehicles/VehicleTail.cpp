@@ -14,8 +14,8 @@ using namespace OpenLoco::World;
 namespace OpenLoco::Vehicles
 {
     // 0x004794BC
-    // This is enter level crossing if unk==8 and leave level crossing if unk==9
-    void leaveLevelCrossing(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint16_t unk)
+    // This is enter level crossing if isEnteringLevelCrossing==true and leave level crossing if isEnteringLevelCrossing==false
+    void leaveLevelCrossing(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const bool isEnteringLevelCrossing)
     {
         auto levelCrossingLoc = loc;
         if (trackAndDirection.isReversed())
@@ -50,12 +50,12 @@ namespace OpenLoco::Vehicles
                 continue;
             }
 
-            road->setUnk7_10(false);
-            if (unk != 8)
+            road->setLevelCrossingClosed(false);
+            if (!isEnteringLevelCrossing)
             {
                 continue;
             }
-            road->setUnk7_10(true);
+            road->setLevelCrossingClosed(true);
 
             World::AnimationManager::createAnimation(1, levelCrossingLoc, levelCrossingLoc.z / 4);
         }
@@ -111,7 +111,7 @@ namespace OpenLoco::Vehicles
             auto trackAndDirection2 = trackAndDir;
             trackAndDirection2.track.setReversed(!trackAndDirection2.track.isReversed());
             sub_4A2AD7(nextTile, trackAndDirection2.track, owner, trackType);
-            leaveLevelCrossing(_oldTilePos, trackAndDir.track, 9);
+            leaveLevelCrossing(_oldTilePos, trackAndDir.track, false);
         }
         return true;
     }
@@ -167,7 +167,7 @@ namespace OpenLoco::Vehicles
                     setSignalState(pos, tad, tail.trackType, 0);
                 }
 
-                leaveLevelCrossing(pos, tad, 9);
+                leaveLevelCrossing(pos, tad, false);
 
                 pos += World::TrackData::getUnkTrack(tad._data).pos;
             }

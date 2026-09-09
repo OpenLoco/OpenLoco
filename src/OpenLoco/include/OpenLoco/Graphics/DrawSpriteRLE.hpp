@@ -7,6 +7,54 @@
 
 namespace OpenLoco::Gfx
 {
+    template<DrawBlendOp TBlendOp>
+    inline void drawRLESpriteMagnify(const RenderTarget& rt, ZoomLevel zoom, const DrawSpriteArgs& args)
+    {
+        const auto* src0 = args.sourceImage.offset;
+        const int32_t width = args.size.width;
+        const int32_t height = args.size.height;
+        const auto dstLineWidth = static_cast<size_t>(rt.width) + rt.pitch;
+        auto* dst = rt.bits + dstLineWidth * args.dstPos.y + args.dstPos.x;
+        const auto& paletteMap = args.palMap;
+
+        for (int32_t y = 0; y < height; y++)
+        {
+            auto* nextDst = dst + dstLineWidth;
+
+            const auto srcY = zoom.applyTo(args.srcPos.y + y);
+            const uint16_t lineOffset = src0[srcY * 2] | (src0[srcY * 2 + 1] << 8);
+            const auto* nextRun = src0 + lineOffset;
+
+            auto isEndOfLine = false;
+            int32_t firstPixelX = 0;
+            int32_t numPixels = 0;
+            const uint8_t* runData = nullptr;
+
+            for (int32_t x = 0; x < width; x++, dst++)
+            {
+                const auto srcX = zoom.applyTo(args.srcPos.x + x);
+
+                while (srcX >= firstPixelX + numPixels && !isEndOfLine)
+                {
+                    const auto* src = nextRun;
+                    auto dataSize = *src++;
+                    firstPixelX = *src++;
+                    isEndOfLine = (dataSize & 0x80) != 0;
+                    dataSize &= 0x7F;
+                    numPixels = dataSize;
+                    runData = src;
+                    nextRun = src + dataSize;
+                }
+
+                if (runData != nullptr && srcX >= firstPixelX && srcX < firstPixelX + numPixels)
+                {
+                    blitPixel<TBlendOp>(runData[srcX - firstPixelX], *dst, paletteMap, 0xFF);
+                }
+            }
+            dst = nextDst;
+        }
+    }
+
     template<DrawBlendOp TBlendOp, uint8_t TZoomLevel>
     inline void drawRLESprite(const RenderTarget& rt, const DrawSpriteArgs& args)
     {
@@ -16,7 +64,7 @@ namespace OpenLoco::Gfx
         const int32_t width = args.size.width;
         int32_t height = args.size.height;
         constexpr auto zoom = 1 << TZoomLevel;
-        auto dstLineWidth = (static_cast<size_t>(rt.width) >> TZoomLevel) + rt.pitch;
+        auto dstLineWidth = static_cast<size_t>(rt.width) + rt.pitch;
         auto* dst0 = rt.bits;
         // Move the pointer to the start point of the destination
         dst0 += dstLineWidth * args.dstPos.y + args.dstPos.x;

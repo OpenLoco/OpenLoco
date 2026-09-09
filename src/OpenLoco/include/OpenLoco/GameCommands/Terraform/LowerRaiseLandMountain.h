@@ -35,5 +35,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void lowerRaiseLandMountain(registers& regs, const uint8_t flags);
+    void lowerRaiseLandMountain(registers& regs, const Flags flags);
 }

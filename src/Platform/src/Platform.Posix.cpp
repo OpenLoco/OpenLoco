@@ -1,6 +1,7 @@
 #if !defined(_WIN32) && !(defined(__APPLE__) && defined(__MACH__))
 
 #include "Platform.h"
+#include <OpenLoco/Core/Exception.hpp>
 #include <cstdlib>
 #include <cstring>
 #include <fcntl.h>
@@ -23,6 +24,10 @@
 namespace OpenLoco::Platform
 {
     static constexpr auto kSingleInstanceMutexName = "OpenLoco.lock";
+
+    void initialise()
+    {
+    }
 
     uint32_t getTime()
     {
@@ -54,6 +59,32 @@ namespace OpenLoco::Platform
         {
             return getEnvironmentVariable("HOME");
         }
+    }
+
+    fs::path getDataDirectory()
+    {
+        // Data folder override in environment?
+        auto envDir = fs::path(getEnvironmentVariable("OPENLOCO_DATA_DIR"));
+        if (!envDir.empty())
+        {
+            return envDir;
+        }
+
+        // This is the usual development set-up
+        auto execDir = Platform::getCurrentExecutablePath().parent_path() / "data";
+        if (fs::exists(execDir))
+        {
+            return execDir;
+        }
+
+        // This is the usual install folder (e.g. /usr/share/openloco)
+        auto shareDir = Platform::getCurrentExecutablePath().parent_path().parent_path() / "share" / "openloco";
+        if (fs::exists(shareDir))
+        {
+            return shareDir;
+        }
+
+        throw Exception::RuntimeError("OpenLoco data path could not be found!");
     }
 
     fs::path getUserDirectory()
@@ -106,10 +137,36 @@ namespace OpenLoco::Platform
     {
         std::string input;
         std::cout << "Type your Locomotion path: ";
-        std::cin >> input;
+        std::getline(std::cin, input);
 
         auto path = fs::canonical(input);
         return path;
+    }
+
+    std::vector<fs::path> getLocoInstallSearchPaths()
+    {
+        // Locomotion is a Windows game, so it is normally installed here by a launcher
+        // that runs it through Wine/Proton. Look in those launchers' default locations.
+        const auto home = getHomeDirectory();
+        if (home.empty())
+        {
+            return {};
+        }
+
+        auto dataHome = fs::path(getEnvironmentVariable("XDG_DATA_HOME"));
+        if (dataHome.empty())
+        {
+            dataHome = home / ".local/share";
+        }
+
+        return {
+            // Steam
+            dataHome / "Steam/steamapps/common/Locomotion",
+            home / ".steam/steam/steamapps/common/Locomotion",
+            home / ".var/app/com.valvesoftware.Steam/.local/share/Steam/steamapps/common/Locomotion",
+            // Heroic Games Launcher, which covers GOG installs
+            home / "Games/Heroic/Locomotion",
+        };
     }
 #endif // !(defined(__APPLE__) && defined(__MACH__))
 

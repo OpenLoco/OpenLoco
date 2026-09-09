@@ -16,7 +16,7 @@ namespace OpenLoco
         uint8_t objectId; // 0x49
 
         const SteamObject* getObject() const;
-        void update();
+        void tick();
 
         static Exhaust* create(World::Pos3 loc, uint8_t type);
         bool isSubObjType1() const { return objectId & (1 << 7); } // Used for steam / steampuff

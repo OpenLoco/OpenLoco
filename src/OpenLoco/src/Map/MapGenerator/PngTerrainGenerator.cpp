@@ -7,7 +7,6 @@
 #include <OpenLoco/Platform/Platform.h>
 #include <png.h>
 
-using namespace OpenLoco::World;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::World::MapGenerator
@@ -27,9 +26,8 @@ namespace OpenLoco::World::MapGenerator
             return;
         }
 
-        // TODO: Move the constants to a more sensible place, values are taken from TileManager::adjustSurfaceHeight
-        constexpr int minLandHeight = 4 / kMicroToSmallZStep;
-        constexpr int maxLandHeight = 160 / kMicroToSmallZStep;
+        constexpr int minLandHeight = World::kMinTileHeightSmallZ / kSmallZStep;
+        constexpr int maxLandHeight = World::kMaxTileHeightSmallZ / kSmallZStep;
 
         const int heightRange = maxLandHeight - std::max<int>(minLandHeight, options.minLandHeight);
 

@@ -1,13 +1,13 @@
 #pragma once
 
 #include "CompanyAi/CompanyAi.h"
-#include "Economy/Currency.h"
-#include "Economy/Expenditures.h"
-#include "Engine/Limits.h"
-#include "Types.hpp"
 #include <OpenLoco/Core/BitSet.hpp>
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <OpenLoco/Economy/Currency.h>
+#include <OpenLoco/Economy/Expenditures.h>
+#include <OpenLoco/Engine/Limits.h>
 #include <OpenLoco/Engine/World.hpp>
+#include <OpenLoco/Types.hpp>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
@@ -21,7 +21,7 @@ namespace OpenLoco
         none = 0U,
         aiHasStarted = (1U << 0),              // 0x01 Set when an AI starts converting its first ai allocated to real assets
         unk1 = (1U << 1),                      // 0x02
-        unk2 = (1U << 2),                      // 0x04
+        unk2 = (1U << 2),                      // 0x04 Set when converting aiAllocated items into real items
         sorted = (1U << 3),                    // 0x08; unused; previously used by the compnay list
         increasedPerformance = (1U << 4),      // 0x10
         decreasedPerformance = (1U << 5),      // 0x20

@@ -1,10 +1,10 @@
 #pragma once
 
+#include "Types.hpp"
 #include <cstdint>
 
 namespace OpenLoco::EditorController
 {
-
     enum class Step : int8_t
     {
         null = -1,
@@ -18,8 +18,11 @@ namespace OpenLoco::EditorController
     void showEditor();
 
     Step getCurrentStep();
-    Step getPreviousStep();
-    Step getNextStep();
+
+    StringId getCurrentStepString();
+    StringId getPreviousStepString();
+    StringId getNextStepString();
+
     bool canGoBack();
     void goToPreviousStep();
     void goToNextStep();

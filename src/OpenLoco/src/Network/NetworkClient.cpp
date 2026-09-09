@@ -267,7 +267,10 @@ void NetworkClient::processFullState(std::span<uint8_t const> fullData)
     updateLocalTick();
 
     BinaryStream bs(fullData.data(), fullData.size() - sizeof(ExtraState));
-    S5::importSaveToGameState(bs, S5::LoadFlags::none);
+    if (S5::importSaveToGameState(bs, S5::LoadFlags::none))
+    {
+        SceneManager::requestScene(SceneManager::SceneId::gameplay);
+    }
 }
 
 void NetworkClient::receiveChatMessagePacket(const ReceiveChatMessage& packet)
@@ -382,7 +385,7 @@ void NetworkClient::runGameCommandsForTick(uint32_t tick)
         if (nextPacket.index == _localGameCommandIndex + 1 && nextPacket.tick == tick)
         {
             _localGameCommandIndex++;
-            GameCommands::doCommandForReal(static_cast<GameCommands::GameCommand>(nextPacket.regs.esi), nextPacket.company, nextPacket.regs, nextPacket.flags);
+            GameCommands::doCommandForReal(static_cast<GameCommands::GameCommand>(nextPacket.regs.esi), nextPacket.company, nextPacket.regs, static_cast<GameCommands::Flags>(nextPacket.flags));
             _receivedGameCommands.pop_front();
         }
         else

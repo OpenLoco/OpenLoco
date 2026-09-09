@@ -199,7 +199,7 @@ namespace OpenLoco::Gfx
                         }
                         else
                         {
-                            ctx.drawImage(pos.x, pos.y, image);
+                            ctx.drawImage(ZoomLevel::full, pos.x, pos.y, image);
                         }
 
                         pos.x += getG1Element(imageId.getIndex())->width;
@@ -464,7 +464,7 @@ namespace OpenLoco::Gfx
             const char* ptr = buffer;
             for (auto i = 0; ptr != nullptr && i < breakCount; i++)
             {
-                drawString(drawState, ctx, rt, point, AdvancedColour::FE(), const_cast<char*>(ptr));
+                drawString(drawState, ctx, rt, point, AdvancedColour::FE(), ptr);
                 ptr = advanceToNextLineWrapped(ptr);
                 point.y += lineHeight;
             }
@@ -726,7 +726,7 @@ namespace OpenLoco::Gfx
                 auto point = basePoint;
                 point.x -= lineWidth / 2;
 
-                drawString(drawState, ctx, rt, point, AdvancedColour::FE(), const_cast<char*>(ptr));
+                drawString(drawState, ctx, rt, point, AdvancedColour::FE(), ptr);
                 ptr = advanceToNextLineWrapped(ptr);
 
                 basePoint.y += lineHeight;
@@ -768,7 +768,7 @@ namespace OpenLoco::Gfx
                 auto point = basePoint;
                 point.x -= lineWidth / 2;
 
-                drawString(drawState, ctx, rt, point, AdvancedColour::FE(), const_cast<char*>(ptr));
+                drawString(drawState, ctx, rt, point, AdvancedColour::FE(), ptr);
 
                 ptr = advanceToNextLineWrapped(ptr);
                 basePoint.y += getLineHeight(drawState.font);
@@ -1148,7 +1148,7 @@ namespace OpenLoco::Gfx
                         ImageId imageId{ image & 0x7FFFF };
                         str += 4;
 
-                        ctx.drawImage(pos.x, pos.y, image);
+                        ctx.drawImage(ZoomLevel::full, pos.x, pos.y, image);
 
                         // For some reason the wrapStringTicker doesn't do this??
                         numChars--;

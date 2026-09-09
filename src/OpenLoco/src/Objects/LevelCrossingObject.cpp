@@ -22,7 +22,7 @@ namespace OpenLoco
             return false;
         }
 
-        switch (closingFrames)
+        switch (closedAnimationFrameCount)
         {
             case 1:
             case 2:
@@ -64,17 +64,17 @@ namespace OpenLoco
     // 0x00478156
     void LevelCrossingObject::drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const
     {
-        auto imageId = (closedFrames + 1) * 8;
-        auto frameCount = (closingFrames - 1);
-        auto animationFrame = frameCount & (ScenarioManager::getScenarioTicks() >> animationSpeed);
+        auto imageId = (transitionAnimationFrameCount + 1) * 8;
+        auto frameCount = (closedAnimationFrameCount - 1);
+        auto animationFrame = frameCount & (ScenarioManager::getScenarioTicks() >> closedAnimationFrameInterval);
         auto frameIndex = 8 * animationFrame;
         imageId += frameIndex;
         imageId += image;
 
-        drawingCtx.drawImage(x, y, imageId);
-        drawingCtx.drawImage(x, y, imageId + 1);
-        drawingCtx.drawImage(x, y, imageId + 2);
-        drawingCtx.drawImage(x, y, imageId + 3);
+        drawingCtx.drawImage(ZoomLevel::full, x, y, imageId);
+        drawingCtx.drawImage(ZoomLevel::full, x, y, imageId + 1);
+        drawingCtx.drawImage(ZoomLevel::full, x, y, imageId + 2);
+        drawingCtx.drawImage(ZoomLevel::full, x, y, imageId + 3);
     }
 
     // 0x004781A4

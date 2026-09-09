@@ -1019,11 +1019,11 @@ strings:
   994: ???
   995: ???
 
-  996: "{STRINGID}:{MOVE_X 215}{STRINGID}{STRINGID}"
+  996: "{STRINGID}:"
   997: "MAYÚS + "
   998: "CTRL + "
   999: Cambiar atajo de teclado
-  1000: "{COLOUR WINDOW_2}Pulsar nuevo atajo de teclado para:{NEWLINE}{NEWLINE_SMALLER}{COLOUR BLACK}“{STRINGID}”"
+  1000: "{COLOUR WINDOW_2}Pulsar nuevo atajo de teclado para:"
   1001: "{SMALLFONT}{COLOUR BLACK}Pulsa en la descripción del atajo para seleccionar una nueva tecla"
   1002: Desplazar vista cuando el cursor esté en el borde de la pantalla
   1003: "{SMALLFONT}{COLOUR BLACK}Selecciona si quieres desplazar la vista cuando el cursor del ratón esté en el borde de la pantalla"
@@ -1039,7 +1039,7 @@ strings:
   1013: Escenario ya instalado
   1014: "{OUTLINE}{COLOUR WINDOW_1}{STRINGID}"
   1015: "{OUTLINE}{COLOUR WINDOW_2}(Pulsar una tecla o botón del ratón para tomar el control)"
-  1016: Ya se está ejecutando otra instancia de Chris Sawyer's Locomotion
+  1016: Ya se está ejecutando otra instancia de OpenLoco
 
   1017: Agradecimientos musicales...
   1018: Agradecimientos musicales

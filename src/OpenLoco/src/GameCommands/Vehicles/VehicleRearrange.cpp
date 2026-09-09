@@ -22,7 +22,7 @@ namespace OpenLoco::GameCommands
     };
 
     // 0x004AF1DF
-    static currency32_t vehicleRearrange(const VehicleRearrangeArgs& args, uint8_t flags)
+    static currency32_t vehicleRearrange(const VehicleRearrangeArgs& args, Flags flags)
     {
         setExpenditureType(ExpenditureType::TrainRunningCosts);
 
@@ -32,7 +32,7 @@ namespace OpenLoco::GameCommands
         auto* sourceHead = EntityManager::get<Vehicles::VehicleHead>(sourceVehicle->getHead());
         auto* destHead = EntityManager::get<Vehicles::VehicleHead>(destVehicle->getHead());
 
-        if (!(flags & Flags::apply))
+        if (!hasFlags(flags, Flags::apply))
         {
             if (!checkCompanyCompatibility(sourceVehicle->owner))
             {
@@ -165,7 +165,7 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    void vehicleRearrange(registers& regs, const uint8_t flags)
+    void vehicleRearrange(registers& regs, const Flags flags)
     {
         regs.ebx = vehicleRearrange(VehicleRearrangeArgs(regs), flags);
     }

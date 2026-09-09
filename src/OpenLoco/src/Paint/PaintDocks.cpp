@@ -70,7 +70,7 @@ namespace OpenLoco::Paint
         // Combine this with any imageId
         const auto rotation = (session.getRotation() + elStation.rotation()) & 0x3;
 
-        const int16_t bbLengthZ = std::min(elStation.clearHeight() - elStation.baseHeight(), 128) - 2;
+        const int16_t bbLengthZ = elStation.clearHeight() - elStation.baseHeight() - 2;
 
         const auto baseHeight = elStation.baseHeight();
 
@@ -84,7 +84,7 @@ namespace OpenLoco::Paint
         session.resetLastPS(); // Odd...
         if (dockObj->hasFlags(DockObjectFlags::hasShadows))
         {
-            if (session.getRenderTarget()->zoomLevel <= 1)
+            if (session.getZoom() <= 1)
             {
                 const auto shadowImageOffset = variation * 4 + dockObj->image + rotation + 1;
                 const ImageId shadowImage = ImageId(shadowImageOffset).withTranslucency(Colours::getShadow(Colour::orange));

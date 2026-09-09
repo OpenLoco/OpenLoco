@@ -198,7 +198,7 @@ namespace OpenLoco::Paint
         else
         {
             if (((session.getViewFlags() & Ui::ViewportFlags::one_way_direction_arrows) != Ui::ViewportFlags::none)
-                && (session.getRenderTarget()->zoomLevel == 0))
+                && (session.getZoom() <= ZoomLevel::full))
             {
                 session.setItemType(InteractionItem::noInteraction);
                 const auto imageId = ImageId{ getOneWayArrowImage(!isRight, trackId, rotation), Colour::mutedAvocadoGreen };
@@ -231,7 +231,7 @@ namespace OpenLoco::Paint
             return;
         }
 
-        if (session.getRenderTarget()->zoomLevel > 1)
+        if (session.getZoom() > 1)
         {
             return;
         }

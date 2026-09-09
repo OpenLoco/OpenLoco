@@ -24,5 +24,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void vehicleOrderSkip(registers& regs, const uint8_t flags);
+    void vehicleOrderSkip(registers& regs, const Flags flags);
 }

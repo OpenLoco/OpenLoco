@@ -75,8 +75,8 @@ namespace OpenLoco::World
             _5 &= ~0b1100;
             _5 |= (style & 0x3) << 2;
         }
-        uint8_t unk6l() const { return _6 & 0xF; }
-        void setUnk6l(uint8_t value)
+        uint8_t levelCrossingAnimationFrame() const { return _6 & 0xF; }
+        void setLevelCrossingAnimationFrame(uint8_t value)
         {
             _6 &= ~0xF;
             _6 |= value & 0xF;
@@ -93,9 +93,9 @@ namespace OpenLoco::World
             _0 &= ~0x80;
             _0 |= state ? 0x80 : 0;
         }
-        bool hasSignalElement() const { return (_0 & 0x40) != 0; } // Always false
-        bool hasUnk7_10() const { return _7 & (1 << 4); }          // _7u (bit 4) level crossing related
-        void setUnk7_10(bool newState)                             // _7u (bit 4) level crossing related
+        bool hasSignalElement() const { return (_0 & 0x40) != 0; }   // Always false
+        bool isLevelCrossingClosed() const { return _7 & (1 << 4); } // _7u (bit 4)
+        void setLevelCrossingClosed(bool newState)                   // _7u (bit 4)
         {
             _7 &= ~(1 << 4);
             _7 |= newState ? (1 << 4) : 0;
@@ -136,7 +136,7 @@ namespace OpenLoco::World
         }
         CompanyId owner() const { return CompanyId(_7 & 0xF); } // _7l
         void setOwner(CompanyId newOwner) { _7 = (_7 & 0xF0) | (enumValue(newOwner) & 0xF); }
-        bool update(const World::Pos2& loc);
+        bool tick(const World::Pos2& loc);
     };
 #pragma pack(pop)
     static_assert(sizeof(RoadElement) == kTileElementSize);

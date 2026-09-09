@@ -107,12 +107,12 @@ namespace OpenLoco::Paint
     {
         auto* crossingObj = ObjectManager::get<LevelCrossingObject>(elRoad.levelCrossingObjectId());
 
-        uint8_t frame = elRoad.unk6l();
+        uint8_t frame = elRoad.levelCrossingAnimationFrame();
         if (frame != 0)
         {
             if (frame == 15)
             {
-                frame = (((ScenarioManager::getScenarioTicks() / (1U << crossingObj->animationSpeed)) & (crossingObj->closingFrames - 1)) + crossingObj->closedFrames + 1);
+                frame = (((ScenarioManager::getScenarioTicks() / (1U << crossingObj->closedAnimationFrameInterval)) & (crossingObj->closedAnimationFrameCount - 1)) + crossingObj->transitionAnimationFrameCount + 1);
             }
         }
 
@@ -143,7 +143,7 @@ namespace OpenLoco::Paint
         }
 
         const auto image3 = baseRoadImageColour.withIndex(imageIndex0 + 3);
-        if (elRoad.unk6l() != 15)
+        if (elRoad.levelCrossingAnimationFrame() != 15)
         {
             const auto bbOffset = World::Pos3{ 30, 30, 1 } + heightOffset;
             const auto bbSize = World::Pos3{ 1, 1, 8 };
@@ -297,8 +297,7 @@ namespace OpenLoco::Paint
 
         static void paintRoadAdditionPP(PaintSession& session, const World::RoadElement& elRoad, const uint8_t rotation, const ImageId baseImageId, const RoadPaintAdditionPiece& tppa)
         {
-            // TODO: Better way to detect kNullTrackPaintAdditionPiece
-            if (tppa.imageIds[3] != 0)
+            if (tppa.imageIds[0] != kNullRoadPaintAdditionPiece.imageIds[0])
             {
                 if (tppa.isIsMergeable)
                 {
@@ -341,7 +340,7 @@ namespace OpenLoco::Paint
                 session.setMergeRoadBaseImage(roadSession.roadBaseImageId.withIndexOffset(kMergeBaseImageIndex[enumValue(rpp.isMultiTileMerge[rotation]) - 1]).toUInt32());
                 session.setMergeRoadHeight(height);
             }
-            if (session.getRenderTarget()->zoomLevel == 0 && !elRoad.hasLevelCrossing() && !elRoad.hasSignalElement() && !elRoad.hasStationElement() && elRoad.streetLightStyle() != 0)
+            if (session.getZoom() <= ZoomLevel::full && !elRoad.hasLevelCrossing() && !elRoad.hasSignalElement() && !elRoad.hasStationElement() && elRoad.streetLightStyle() != 0)
             {
                 session.setMergeRoadStreetlight(elRoad.streetLightStyle());
             }
@@ -362,7 +361,7 @@ namespace OpenLoco::Paint
                 rpcp.boundingBoxOffsets[rotation] + heightOffset,
                 rpcp.boundingBoxSizes[rotation]);
 
-            if (session.getRenderTarget()->zoomLevel == 0 && !elRoad.hasLevelCrossing() && !elRoad.hasSignalElement() && !elRoad.hasStationElement() && elRoad.streetLightStyle() != 0)
+            if (session.getZoom() <= ZoomLevel::full && !elRoad.hasLevelCrossing() && !elRoad.hasSignalElement() && !elRoad.hasStationElement() && elRoad.streetLightStyle() != 0)
             {
                 paintRoadStreetlights(session, elRoad, rpp.streetlightHeights[rotation]);
             }
@@ -453,7 +452,7 @@ namespace OpenLoco::Paint
         const auto height = elRoad.baseHeight();
         const auto rotation = (session.getRotation() + elRoad.rotation()) & 0x3;
         if (((session.getViewFlags() & Ui::ViewportFlags::height_marks_on_tracks_roads) != Ui::ViewportFlags::none)
-            && session.getRenderTarget()->zoomLevel == 0)
+            && session.getZoom() <= ZoomLevel::full)
         {
             const bool isLast = elRoad.isFlag6();
             const bool isFirstTile = elRoad.sequenceIndex() == 0;
@@ -471,7 +470,7 @@ namespace OpenLoco::Paint
 
         auto* roadObj = ObjectManager::get<RoadObject>(elRoad.roadObjectId());
         if (((session.getViewFlags() & Ui::ViewportFlags::one_way_direction_arrows) != Ui::ViewportFlags::none)
-            && session.getRenderTarget()->zoomLevel == 0
+            && session.getZoom() <= ZoomLevel::full
             && !elRoad.isGhost()
             && roadObj->hasFlags(RoadObjectFlags::isOneWay))
         {
@@ -541,7 +540,7 @@ namespace OpenLoco::Paint
             }
         }
 
-        if (session.getRenderTarget()->zoomLevel > 1)
+        if (session.getZoom() > 1)
         {
             return;
         }
@@ -551,7 +550,7 @@ namespace OpenLoco::Paint
             paintLevelCrossing(session, baseRoadImageColour, elRoad, rotation);
         }
 
-        if (session.getRenderTarget()->zoomLevel > 0 || roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
+        if (session.getZoom() > 0 || roadObj->hasFlags(RoadObjectFlags::anyRoadTypeCompatible))
         {
             return;
         }

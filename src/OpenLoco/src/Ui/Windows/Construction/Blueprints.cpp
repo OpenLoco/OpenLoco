@@ -18,7 +18,7 @@
 
 namespace OpenLoco
 {
-    currency32_t removeBlueprint(const CopiedTrack& copiedTrack, const World::Pos3& ghostBPPos, const uint8_t flags)
+    currency32_t removeBlueprint(const CopiedTrack& copiedTrack, const World::Pos3& ghostBPPos, const GameCommands::Flags flags)
     {
         currency32_t totalRes = 0;
         for (auto& stationArg : copiedTrack.stationArgs)
@@ -72,7 +72,7 @@ namespace OpenLoco
         return totalRes;
     }
 
-    currency32_t placeBlueprint(const CopiedTrack& _copiedTrack, const World::Pos3& ghostBPPos, const uint8_t flags)
+    currency32_t placeBlueprint(const CopiedTrack& _copiedTrack, const World::Pos3& ghostBPPos, const GameCommands::Flags flags)
     {
         // Duplicate as we need to adjust the position
         auto copiedTrack = CopiedTrack(_copiedTrack);

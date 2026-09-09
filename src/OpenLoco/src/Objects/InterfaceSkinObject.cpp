@@ -30,6 +30,6 @@ namespace OpenLoco
     void InterfaceSkinObject::drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const
     {
         auto image = Gfx::recolour(img + InterfaceSkin::ImageIds::preview_image, Colour::mutedSeaGreen);
-        drawingCtx.drawImage(x - 32, y - 32, image);
+        drawingCtx.drawImage(ZoomLevel::full, x - 32, y - 32, image);
     }
 }

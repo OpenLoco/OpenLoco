@@ -23,5 +23,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void changeLoan(registers& regs, const uint8_t flags);
+    void changeLoan(registers& regs, const Flags flags);
 }

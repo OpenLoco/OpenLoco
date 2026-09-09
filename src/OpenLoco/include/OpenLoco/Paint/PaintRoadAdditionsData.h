@@ -63,7 +63,7 @@ namespace OpenLoco::Paint::AdditionStyle1
     constexpr std::array<uint8_t, 4> kRotationTable2301 = { 2, 3, 0, 1 };
     constexpr std::array<uint8_t, 4> kRotationTable3012 = { 3, 0, 1, 2 };
 
-    constexpr RoadPaintAdditionPiece kNullRoadPaintAdditionPiece = {};
+    constexpr RoadPaintAdditionPiece kNullRoadPaintAdditionPiece = { { std::numeric_limits<uint32_t>::max() } };
     constexpr auto kNoSupports = std::nullopt;
 
     consteval std::optional<RoadAdditionSupport> rotateRoadPPASupport(const std::optional<RoadAdditionSupport>& reference, const std::array<uint8_t, 4>& rotationTable)

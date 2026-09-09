@@ -52,7 +52,7 @@ namespace OpenLoco
         Fireball* asFireball() const { return as<Fireball, EffectType::fireball>(); }
         ExplosionSmoke* asExplosionSmoke() const { return as<ExplosionSmoke, EffectType::explosionSmoke>(); }
         Smoke* asSmoke() const { return as<Smoke, EffectType::smoke>(); }
-        void update();
+        void tick();
     };
     static_assert(sizeof(EffectEntity) <= sizeof(Entity));
 }

@@ -12,6 +12,7 @@
 #include "GameCommands/Terraform/RemoveTree.h"
 #include "GameCommands/Terraform/RemoveWall.h"
 #include "GameCommands/Track/RemoveSignal.h"
+#include "GameCommands/Track/RemoveSignalsAuto.h"
 #include "GameCommands/Track/RemoveTrackMod.h"
 #include "GameCommands/Track/RemoveTrainStation.h"
 #include "Graphics/RenderTarget.h"
@@ -48,6 +49,7 @@
 #include "Ui/ToolManager.h"
 #include "Ui/Window.h"
 #include "Ui/WindowManager.h"
+#include "Ui/Windows/Construction/Construction.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/Vehicle2.h"
 #include "Vehicles/VehicleBody.h"
@@ -194,7 +196,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         args.push(station->name);
         args.push(station->town);
         args.push(getTransportIconsFromStationFlags(station->flags));
-        char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_338));
+        char* buffer = StringManager::getBufferString(StringIds::buffer_338);
         buffer = station->getStatusString(buffer);
 
         buffer = StringManager::formatString(buffer, StringIds::station_accepts);
@@ -252,7 +254,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         interaction.value = enumValue(industryTile->industryId());
         auto industry = industryTile->industry();
 
-        char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_338));
+        char* buffer = StringManager::getBufferString(StringIds::buffer_338);
         *buffer = 0;
         industry->getStatusString(buffer);
         auto args = FormatArguments::mapToolTip();
@@ -457,7 +459,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         uint32_t nearestDistance = std::numeric_limits<uint32_t>().max();
         Vehicles::VehicleBase* nearestVehicle = nullptr;
-        auto targetPosition = viewport->screenToViewport({ tempX, tempY });
+        auto targetPosition = viewport->windowToViewport(Ui::Point(tempX, tempY) - window->position());
 
         for (auto* v : VehicleManager::VehicleList())
         {
@@ -571,7 +573,10 @@ namespace OpenLoco::Ui::ViewportInteraction
         {
             return false;
         }
-        FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, StringIds::capt_signal);
+        const auto tooltipMessage = Windows::Construction::getConstructionState().repeatedSignalMode ? StringIds::capt_signals_block : StringIds::capt_signal;
+
+        FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, tooltipMessage);
+
         return true;
     }
 
@@ -880,7 +885,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
 
         const auto* buildingObj = building->getObject();
-        auto* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_338));
+        auto* buffer = StringManager::getBufferString(StringIds::buffer_338);
         buffer = StringManager::formatString(buffer, buildingObj->name);
         if (!building->isConstructed())
         {
@@ -894,7 +899,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                 bool requiresComma = false;
                 for (auto i = 0; i < 2; ++i)
                 {
-                    if (buildingObj->producedQuantity[i] != 0)
+                    if (buildingObj->producedCargoType[i] != 0xFFU && buildingObj->producedQuantity[i] != 0)
                     {
                         if (requiresComma)
                         {
@@ -912,7 +917,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                 bool requiresComma = false;
                 for (auto i = 0; i < 2; ++i)
                 {
-                    if (buildingObj->producedCargoQty[i] != 0)
+                    if (buildingObj->producedCargoType[i] != 0xFFU && buildingObj->producedCargoQty[i] != 0)
                     {
                         if (requiresComma)
                         {
@@ -929,7 +934,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                 }
                 for (auto i = 0; i < 2; ++i)
                 {
-                    if (buildingObj->consumedCargoQty[i] != 0)
+                    if (buildingObj->consumedCargoType[i] != 0xFF && buildingObj->consumedCargoQty[i] != 0)
                     {
                         if (requiresComma)
                         {
@@ -969,7 +974,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         {
             for (auto vp : w->viewports)
             {
-                if (vp != nullptr && vp->containsUi({ screenPos.x, screenPos.y }))
+                if (vp != nullptr && vp->containsWindowPos(screenPos - w->position()))
                 {
                     if (vp->hasFlags(ViewportFlags::seeThroughBuildings))
                     {
@@ -1099,14 +1104,6 @@ namespace OpenLoco::Ui::ViewportInteraction
             }
         }
 
-        GameCommands::SignalRemovalArgs args;
-        args.pos = Pos3(pos.x, pos.y, track->baseHeight());
-        args.rotation = track->rotation();
-        args.trackId = track->trackId();
-        args.index = track->sequenceIndex();
-        args.trackObjType = track->trackObjectId();
-        args.flags = unkFlags;
-
         auto* window = WindowManager::find(WindowType::construction);
         if (window != nullptr)
         {
@@ -1114,6 +1111,15 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
 
         GameCommands::setErrorTitle(StringIds::cant_remove_signal);
+
+        GameCommands::SignalsRemovalAutoArgs args;
+        args.pos = Pos3(pos.x, pos.y, track->baseHeight());
+        args.rotation = track->rotation();
+        args.trackId = track->trackId();
+        args.index = track->sequenceIndex();
+        args.trackObjType = track->trackObjectId();
+        args.flags = unkFlags;
+        args.step = Windows::Construction::getConstructionState().repeatedSignalMode ? 1 : 0;
         if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure)
         {
             Audio::playSound(Audio::SoundId::demolish, Audio::ChannelId::effects, GameCommands::getPosition());
@@ -1491,7 +1497,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     std::pair<ViewportInteraction::InteractionArg, Viewport*> getMapCoordinatesFromPos(int32_t screenX, int32_t screenY, InteractionItemFlags flags)
     {
         ViewportInteraction::InteractionArg interaction{};
-        Ui::Point screenPos = { static_cast<int16_t>(screenX), static_cast<int16_t>(screenY) };
+        Ui::Point screenPos = { screenX, screenY };
         auto w = WindowManager::findAt(screenPos);
         if (w == nullptr)
         {
@@ -1506,25 +1512,25 @@ namespace OpenLoco::Ui::ViewportInteraction
                 continue;
             }
 
-            if (!vp->containsUi({ screenPos.x, screenPos.y }))
+            if (!vp->containsWindowPos(screenPos - w->position()))
             {
                 continue;
             }
 
             chosenV = vp;
-            auto vpPos = vp->screenToViewport({ screenPos.x, screenPos.y });
+            auto vpPos = vp->windowToViewport(screenPos - w->position());
+
+            const int32_t alignMask = vp->zoom > ZoomLevel::full ? ~(vp->zoom.applyTo(1) - 1) : ~0;
 
             Gfx::RenderTarget _rt1; // 0x00E0C3E4
-            _rt1.zoomLevel = vp->zoom;
-            _rt1.x = (0xFFFF << vp->zoom) & vpPos.x;
-            _rt1.y = (0xFFFF << vp->zoom) & vpPos.y;
+            _rt1.x = vp->zoom.applyInversedTo(alignMask & vpPos.x);
+            _rt1.y = vp->zoom.applyInversedTo(alignMask & vpPos.y);
 
             Gfx::RenderTarget _rt2; // 0x00E0C3F4
             _rt2.x = _rt1.x;
             _rt2.y = _rt1.y;
             _rt2.width = 1;
             _rt2.height = 1;
-            _rt2.zoomLevel = _rt1.zoomLevel;
 
             Paint::SessionOptions options{};
             options.rotation = vp->getRotation();
@@ -1532,13 +1538,13 @@ namespace OpenLoco::Ui::ViewportInteraction
             options.isHitTest = true;
             // Todo: should this pass the cullHeight...
 
-            auto session = Paint::PaintSession(_rt2, options);
+            auto session = Paint::PaintSession(_rt2, vp->zoom, options);
             session.generate();
             session.arrangeStructs();
             interaction = session.getNormalInteractionInfo(flags);
             if (!vp->hasFlags(ViewportFlags::hideStationNames))
             {
-                if (_rt2.zoomLevel <= Config::get().stationNamesMinScale)
+                if (vp->zoom <= Config::get().stationNamesMinScale)
                 {
                     auto stationInteraction = session.getStationNameInteractionInfo(flags);
                     if (stationInteraction.type != InteractionItem::noInteraction)
@@ -1589,10 +1595,16 @@ namespace OpenLoco::Ui::ViewportInteraction
             }
         }
 
+        auto* vpOwner = WindowManager::findWindowForViewport(viewport);
+        if (vpOwner == nullptr)
+        {
+            return {};
+        }
+
         const auto minPosition = info.pos;                  // E40128/A
         const auto maxPosition = info.pos + Pos2{ 31, 31 }; // E4012C/E
         auto mapPos = info.pos + Pos2{ 16, 16 };
-        const auto initialVPPos = viewport->screenToViewport(screenCoords);
+        const auto initialVPPos = viewport->windowToViewport(screenCoords - vpOwner->position());
 
         for (int32_t i = 0; i < 5; i++)
         {
@@ -1622,10 +1634,16 @@ namespace OpenLoco::Ui::ViewportInteraction
             return {};
         }
 
+        auto* vpOwner = WindowManager::findWindowForViewport(viewport);
+        if (vpOwner == nullptr)
+        {
+            return {};
+        }
+
         const auto minPosition = info.pos;                  // E40128/A
         const auto maxPosition = info.pos + Pos2{ 31, 31 }; // E4012C/E
         auto mapPos = info.pos + Pos2{ 16, 16 };
-        const auto initialVPPos = viewport->screenToViewport(screenCoords);
+        const auto initialVPPos = viewport->windowToViewport(screenCoords - vpOwner->position());
 
         for (int32_t i = 0; i < 5; i++)
         {

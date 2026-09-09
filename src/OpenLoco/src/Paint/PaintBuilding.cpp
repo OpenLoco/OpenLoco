@@ -182,7 +182,7 @@ namespace OpenLoco::Paint
         const uint8_t rotation = (session.getRotation() + elBuilding.rotation()) & 0x3;
 
         // 0x00525D4E
-        const int16_t bbLengthZ = std::min(elBuilding.clearHeight() - elBuilding.baseHeight(), 128) - 2;
+        const int16_t bbLengthZ = elBuilding.clearHeight() - elBuilding.baseHeight() - 2;
 
         // 0x00525D18
         const auto variation = elBuilding.variation();
@@ -199,7 +199,7 @@ namespace OpenLoco::Paint
         session.resetLastPS(); // Odd...
         if (buildingObj->hasFlags(BuildingObjectFlags::hasShadows))
         {
-            if (session.getRenderTarget()->zoomLevel <= 1)
+            if (session.getZoom() <= 1)
             {
                 const auto shadowImageOffset = (buildingObj->numParts + buildingObj->numElevatorSequences + variation) * 4 + buildingObj->image + rotation;
                 const ImageId shadowImage = ImageId(shadowImageOffset).withTranslucency(Colours::getShadow(Colour::orange));

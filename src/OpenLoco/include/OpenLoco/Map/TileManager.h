@@ -21,6 +21,11 @@ namespace OpenLoco::World
     enum class ElementType : uint8_t;
 }
 
+namespace OpenLoco::GameCommands
+{
+    enum class Flags : uint8_t;
+}
+
 namespace OpenLoco::World::TileManager
 {
     constexpr size_t kMaxElements = 3 * kMapColumns * kMapRows;
@@ -113,18 +118,18 @@ namespace OpenLoco::World::TileManager
     uint16_t countSurroundingDesertTiles(const Pos2& pos);
     uint16_t countSurroundingTrees(const Pos2& pos);
     uint16_t countNearbyWaterTiles(Pos2 pos);
-    void update();
+    void tick();
     void updateYearly();
     void removeSurfaceIndustry(const Pos2& pos);
     void removeSurfaceIndustryAtHeight(const Pos3& pos);
     void createDestructExplosion(const World::Pos3& pos);
     void removeBuildingElement(TileElementEntry& entry, const World::Pos2& pos);
-    void removeTree(TileElementEntry& entry, const uint8_t flags, const World::Pos2& pos);
+    void removeTree(TileElementEntry& entry, const GameCommands::Flags flags, const World::Pos2& pos);
     void removeAllWallsOnTileAbove(const World::TilePos2& pos, SmallZ baseZ);
     void removeAllWallsOnTileBelow(const World::TilePos2& pos, SmallZ baseZ);
     void setLevelCrossingFlags(const World::Pos3 pos);
     void setTerrainStyleAsCleared(const Pos2& pos);
     void setTerrainStyleAsClearedAtHeight(const Pos3& pos);
-    uint32_t adjustSurfaceHeight(World::Pos2 pos, SmallZ targetBaseZ, uint8_t slopeFlags, World::TileClearance::RemovedBuildings& removedBuildings, uint8_t flags);
-    uint32_t adjustWaterHeight(World::Pos2 pos, SmallZ targetHeight, World::TileClearance::RemovedBuildings& removedBuildings, uint8_t flags);
+    uint32_t adjustSurfaceHeight(World::Pos2 pos, SmallZ targetBaseZ, uint8_t slopeFlags, World::TileClearance::RemovedBuildings& removedBuildings, GameCommands::Flags flags);
+    uint32_t adjustWaterHeight(World::Pos2 pos, SmallZ targetHeight, World::TileClearance::RemovedBuildings& removedBuildings, GameCommands::Flags flags);
 }

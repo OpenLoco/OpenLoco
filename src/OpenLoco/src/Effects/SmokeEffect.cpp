@@ -6,7 +6,7 @@
 namespace OpenLoco
 {
     // 0x004407A1
-    void Smoke::update()
+    void Smoke::tick()
     {
         moveTo(position + World::Pos3(0, 0, 1));
 

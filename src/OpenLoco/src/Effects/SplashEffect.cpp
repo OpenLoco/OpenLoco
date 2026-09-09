@@ -4,7 +4,7 @@
 namespace OpenLoco
 {
     // 0x004407E0
-    void Splash::update()
+    void Splash::tick()
     {
         invalidateSprite();
         frame += 0x55;

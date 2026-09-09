@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Types.hpp"
+#include <OpenLoco/Types.hpp>
 
 namespace OpenLoco
 {

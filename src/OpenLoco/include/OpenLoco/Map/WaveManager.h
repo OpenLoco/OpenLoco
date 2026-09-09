@@ -8,7 +8,7 @@ namespace OpenLoco::World
 
 namespace OpenLoco::World::WaveManager
 {
-    void update();
+    void tick();
     void reset();
     void createWave(SurfaceElement& surface, const World::Pos2& pos);
 

@@ -7,6 +7,7 @@
 namespace OpenLoco::GameCommands
 {
     struct registers;
+    enum class Flags : uint8_t;
 }
 
 namespace OpenLoco::Network
@@ -22,12 +23,12 @@ namespace OpenLoco::Network
     bool joinServer(std::string_view host);
     bool joinServer(std::string_view host, port_t port);
     void close();
-    void update();
+    void tick();
 
     void sendChatMessage(std::string_view message);
     void receiveChatMessage(client_id_t client, std::string_view message);
 
-    void queueGameCommand(CompanyId company, const OpenLoco::GameCommands::registers& regs, const uint8_t flags);
+    void queueGameCommand(CompanyId company, const OpenLoco::GameCommands::registers& regs, const GameCommands::Flags flags);
     bool shouldProcessTick(uint32_t tick);
     void processGameCommands(uint32_t tick);
 

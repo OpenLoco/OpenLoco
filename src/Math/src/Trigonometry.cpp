@@ -1,5 +1,6 @@
 #include "Trigonometry.hpp"
 #include <array>
+#include <cstdint>
 
 namespace OpenLoco::Math::Trigonometry
 {

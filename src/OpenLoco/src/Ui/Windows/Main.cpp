@@ -9,16 +9,18 @@
 
 namespace OpenLoco::Ui::Windows::Main
 {
-    namespace widx
+    enum widx
     {
-        enum
-        {
-            viewport
-        };
+        viewport
+    };
+
+    namespace Widx
+    {
+        constexpr WidgetId kViewport{ "viewport" };
     }
 
     static constexpr auto _widgets = makeWidgets(
-        Widgets::Viewport({ 0, 0 }, { 0, 0 }, WindowColour::primary, Widget::kContentUnk)
+        Widgets::Viewport(Widx::kViewport, { 0, 0 }, { 0, 0 }, WindowColour::primary, Widget::kContentUnk)
 
     );
 
@@ -45,7 +47,7 @@ namespace OpenLoco::Ui::Windows::Main
         ViewportManager::create(
             window,
             0,
-            { window->x, window->y },
+            { 0, 0 },
             { window->width, window->height },
             ZoomLevel::full,
             { (World::kMapRows * World::kTileSize) / 2 - 1, (World::kMapRows * World::kTileSize) / 2 - 1, 480 });

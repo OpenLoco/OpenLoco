@@ -38,5 +38,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void createBuilding(registers& regs, const uint8_t flags);
+    void createBuilding(registers& regs, const Flags flags);
 }

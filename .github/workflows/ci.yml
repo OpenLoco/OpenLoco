@@ -3,6 +3,7 @@ on: [push, pull_request, workflow_dispatch]
 env:
   OPENLOCO_BUILD_SERVER: GitHub
   ASSETS_SSH_KEY: ${{ secrets.ASSETS_SSH_KEY }}
+  GLIBC_FLOOR: "2.28"
 jobs:
   check-code-formatting:
     name: Check code formatting
@@ -55,25 +56,38 @@ jobs:
           echo "VCPKG_DEFAULT_BINARY_CACHE=${{ github.workspace }}/vcpkg-cache" | Out-File -FilePath $env:GITHUB_ENV -Append
       - name: Setup cache directories
         run: mkdir ${{ env.VCPKG_DEFAULT_BINARY_CACHE }} | Out-Null
-      - name: Set up binary cache
-        uses: actions/cache@v5
+      - name: Get vcpkg baseline
+        id: vcpkg_baseline
+        shell: bash
+        run: |
+          sha=$(sed -n 's/^set(VCPKG_GIT_TAG[[:space:]]*\([0-9a-f]*\)).*/\1/p' CMakeLists.txt)
+          test -n "$sha" || { echo "VCPKG_GIT_TAG not found in CMakeLists.txt" >&2; exit 1; }
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+      - name: Restore binary cache
+        uses: actions/cache/restore@v6
         with:
           path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
-          key: ${{ matrix.os }}-64-vcpkg-${{ env.ImageVersion }}-${{ hashFiles('vcpkg*.json') }}
+          key: ${{ matrix.os }}-64-vcpkg-${{ steps.vcpkg_baseline.outputs.sha }}-${{ hashFiles('vcpkg.json') }}
           restore-keys: |
-            ${{ matrix.os }}-64-vcpkg-${{ env.ImageVersion }}-
+            ${{ matrix.os }}-64-vcpkg-${{ steps.vcpkg_baseline.outputs.sha }}-
       - name: Build OpenLoco
         shell: cmd
         run: |
           cmake --preset ${{ matrix.preset }}
           cmake --build --preset ${{ matrix.build_preset }}
+      - name: Save binary cache
+        if: always()
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
+          key: ${{ matrix.os }}-64-vcpkg-${{ steps.vcpkg_baseline.outputs.sha }}-${{ hashFiles('vcpkg.json') }}-${{ hashFiles('vcpkg-cache/**') }}
       - name: Build release
         run: |
           mkdir artifacts | Out-Null
           Copy-Item CHANGELOG.md,CONTRIBUTORS.md,LICENSE artifacts
           Copy-Item build\${{ matrix.build_dir }}\Release\* artifacts -Recurse
       - name: Upload release artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: OpenLoco-${{ matrix.os }}-x64
           path: |
@@ -81,7 +95,7 @@ jobs:
             !artifacts/*.pdb
           if-no-files-found: error
       - name: Upload symbols artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: OpenLoco-${{ matrix.os }}-x64-symbols
           path: |
@@ -131,25 +145,38 @@ jobs:
           echo "VCPKG_DEFAULT_BINARY_CACHE=${{ github.workspace }}/vcpkg-cache" | Out-File -FilePath $env:GITHUB_ENV -Append
       - name: Setup cache directories
         run: mkdir ${{ env.VCPKG_DEFAULT_BINARY_CACHE }} | Out-Null
-      - name: Set up binary cache
-        uses: actions/cache@v5
+      - name: Get vcpkg baseline
+        id: vcpkg_baseline
+        shell: bash
+        run: |
+          sha=$(sed -n 's/^set(VCPKG_GIT_TAG[[:space:]]*\([0-9a-f]*\)).*/\1/p' CMakeLists.txt)
+          test -n "$sha" || { echo "VCPKG_GIT_TAG not found in CMakeLists.txt" >&2; exit 1; }
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+      - name: Restore binary cache
+        uses: actions/cache/restore@v6
         with:
           path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
-          key: ${{ runner.os }}-32-vcpkg-${{ env.ImageVersion }}-${{ hashFiles('vcpkg*.json') }}
+          key: ${{ runner.os }}-32-vcpkg-${{ steps.vcpkg_baseline.outputs.sha }}-${{ hashFiles('vcpkg.json') }}
           restore-keys: |
-            ${{ runner.os }}-32-vcpkg-${{ env.ImageVersion }}-
+            ${{ runner.os }}-32-vcpkg-${{ steps.vcpkg_baseline.outputs.sha }}-
       - name: Build OpenLoco
         shell: cmd
         run: |
           cmake --preset windows-x86-32-ci
           cmake --build --preset windows-x86-32-ci
+      - name: Save binary cache
+        if: always()
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
+          key: ${{ runner.os }}-32-vcpkg-${{ steps.vcpkg_baseline.outputs.sha }}-${{ hashFiles('vcpkg.json') }}-${{ hashFiles('vcpkg-cache/**') }}
       - name: Build release
         run: |
           mkdir artifacts | Out-Null
           Copy-Item CHANGELOG.md,CONTRIBUTORS.md,LICENSE artifacts
           Copy-Item build\windows-x86-32-ci\Release\* artifacts -Recurse
       - name: Upload release artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: OpenLoco-${{ runner.os }}-Win32
           path: |
@@ -157,7 +184,7 @@ jobs:
             !artifacts/*.pdb
           if-no-files-found: error
       - name: Upload symbols artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: OpenLoco-${{ runner.os }}-Win32-symbols
           path: |
@@ -172,7 +199,7 @@ jobs:
     name: Ubuntu ${{ matrix.distro }} ${{ matrix.compiler }} i686
     runs-on: ubuntu-latest
     needs: check-code-formatting
-    container: ghcr.io/openloco/openloco:11-ubuntu${{ matrix.distro }}.32
+    container: ghcr.io/openloco/openloco:12-ubuntu${{ matrix.distro }}.32
     strategy:
       fail-fast: false
       matrix:
@@ -197,7 +224,7 @@ jobs:
     name: Ubuntu ${{ matrix.distro }} ${{ matrix.compiler }} x64
     runs-on: ubuntu-latest
     needs: check-code-formatting
-    container: ghcr.io/openloco/openloco:11-ubuntu${{ matrix.distro }}
+    container: ghcr.io/openloco/openloco:12-ubuntu${{ matrix.distro }}
     strategy:
       fail-fast: false
       matrix:
@@ -223,7 +250,7 @@ jobs:
     name: Header checks ${{ matrix.distro }} ${{ matrix.compiler }}
     runs-on: ubuntu-latest
     needs: check-code-formatting
-    container: ghcr.io/openloco/openloco:11-ubuntu${{ matrix.distro }}
+    container: ghcr.io/openloco/openloco:12-ubuntu${{ matrix.distro }}
     strategy:
       fail-fast: false
       matrix:
@@ -244,7 +271,7 @@ jobs:
     name: Fedora shared=${{ matrix.build_shared_libs }} i686 MinGW32
     runs-on: ubuntu-latest
     needs: check-code-formatting
-    container: ghcr.io/openloco/openloco:11-mingw32
+    container: ghcr.io/openloco/openloco:12-mingw32
     strategy:
       fail-fast: false
       matrix:
@@ -266,7 +293,7 @@ jobs:
     name: Ubuntu 26.04 g++ x64 vcpkg static linkage
     runs-on: ubuntu-latest
     needs: check-code-formatting
-    container: ghcr.io/openloco/openloco:11-ubuntu26.04.vcpkg
+    container: ghcr.io/openloco/openloco:12-ubuntu26.04.vcpkg
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -279,31 +306,263 @@ jobs:
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - name: Setup cache env vars
         run: |
-          echo "VCPKG_DEFAULT_BINARY_CACHE=/w/OpenLoco/OpenLoco/vcpkg-cache" >> "$GITHUB_ENV"
+          echo "VCPKG_DEFAULT_BINARY_CACHE=$GITHUB_WORKSPACE/vcpkg-cache" >> "$GITHUB_ENV"
       - name: Setup cache directories
-        run: mkdir -p ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
-      - name: Set up binary cache
-        uses: actions/cache@v5
+        run: mkdir -p "$GITHUB_WORKSPACE/vcpkg-cache"
+      - name: Get vcpkg baseline
+        id: vcpkg_baseline
+        run: |
+          sha=$(sed -n 's/^set(VCPKG_GIT_TAG[[:space:]]*\([0-9a-f]*\)).*/\1/p' CMakeLists.txt)
+          test -n "$sha" || { echo "VCPKG_GIT_TAG not found in CMakeLists.txt" >&2; exit 1; }
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+      - name: Restore binary cache
+        uses: actions/cache/restore@v6
         with:
-          path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
-          key: ${{ runner.os }}-vcpkg-ubuntu26.04.vcpkg-${{ hashFiles('vcpkg*.json') }}
+          path: vcpkg-cache
+          key: ${{ runner.os }}-vcpkg-ubuntu26.04.vcpkg-${{ steps.vcpkg_baseline.outputs.sha }}-${{ hashFiles('vcpkg.json') }}
           restore-keys: |
-            ${{ runner.os }}-vcpkg-ubuntu26.04.vcpkg-
+            ${{ runner.os }}-vcpkg-ubuntu26.04.vcpkg-${{ steps.vcpkg_baseline.outputs.sha }}-
           # Cache currently broken as docker image does not include unzip
       - name: Build OpenLoco
         run: |
-          cmake --preset linux-vcpkg-static
+          mkdir -p artifacts
+          cmake --preset linux-vcpkg-static -DCMAKE_INSTALL_PREFIX=./artifacts
           cmake --build --preset linux-vcpkg-static
+      - name: Save binary cache
+        if: always()
+        uses: actions/cache/save@v6
+        with:
+          path: vcpkg-cache
+          key: ${{ runner.os }}-vcpkg-ubuntu26.04.vcpkg-${{ steps.vcpkg_baseline.outputs.sha }}-${{ hashFiles('vcpkg.json') }}-${{ hashFiles('vcpkg-cache/**') }}
       # Static linkage means the binary should be fairly portable / distributable across distros!
       - name: Install to artifacts
         run: |
-          mkdir -p artifacts
-          cmake --install build/linux-vcpkg-static --prefix ./artifacts
+          cmake --build --preset linux-vcpkg-static --target install
+      - name: Tar artifacts
+        run: |
+          cd artifacts
+          tar zcvf OpenLoco-linux-x64-glibc2.43.tar.gz *
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: OpenLoco-linux-x64-glibc2.42
-          path: artifacts
+          path: artifacts/OpenLoco-linux-x64-glibc2.43.tar.gz
+          archive: false
+          if-no-files-found: error
+
+  linux-zig-static:
+    name: Linux x64 zig static linkage (glibc 2.28)
+    runs-on: ubuntu-latest
+    needs: check-code-formatting
+    env:
+      ZIG_VERSION: "0.14.1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: true
+      - name: Install GCC problem matcher
+        uses: ammaraskar/gcc-problem-matcher@master
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build pkg-config \
+            autoconf autoconf-archive automake libtool \
+            libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxfixes-dev \
+            libxft-dev libxrender-dev libxinerama-dev libxss-dev libxtst-dev libx11-xcb-dev \
+            libxkbcommon-dev libwayland-dev wayland-protocols libdecor-0-dev \
+            libgl1-mesa-dev libegl1-mesa-dev \
+            libasound2-dev libpulse-dev libdbus-1-dev
+      - name: Install zig
+        run: |
+          curl -sL "https://ziglang.org/download/${ZIG_VERSION}/zig-x86_64-linux-${ZIG_VERSION}.tar.xz" -o zig.tar.xz
+          mkdir zig && tar -xf zig.tar.xz -C zig --strip-components=1
+          echo "ZIG=$PWD/zig/zig" >> "$GITHUB_ENV"
+      - name: Setup cache env vars
+        run: |
+          echo "VCPKG_DEFAULT_BINARY_CACHE=$GITHUB_WORKSPACE/vcpkg-cache" >> "$GITHUB_ENV"
+      - name: Setup cache directories
+        run: mkdir -p "$GITHUB_WORKSPACE/vcpkg-cache"
+      - name: Get vcpkg baseline
+        id: vcpkg_baseline
+        run: |
+          sha=$(sed -n 's/^set(VCPKG_GIT_TAG[[:space:]]*\([0-9a-f]*\)).*/\1/p' CMakeLists.txt)
+          test -n "$sha" || { echo "VCPKG_GIT_TAG not found in CMakeLists.txt" >&2; exit 1; }
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+      - name: Restore binary cache
+        uses: actions/cache/restore@v6
+        with:
+          path: vcpkg-cache
+          key: ${{ runner.os }}-vcpkg-zig${{ env.ZIG_VERSION }}-${{ steps.vcpkg_baseline.outputs.sha }}-${{ hashFiles('vcpkg.json') }}
+          restore-keys: |
+            ${{ runner.os }}-vcpkg-zig${{ env.ZIG_VERSION }}-${{ steps.vcpkg_baseline.outputs.sha }}-
+      - name: Build OpenLoco
+        env:
+          ZIG_TARGET: x86_64-linux-gnu.${{ env.GLIBC_FLOOR }}
+          ADDITIONAL_CMAKE_ARGS: -DCMAKE_INSTALL_PREFIX=./artifacts
+        run: |
+          mkdir -p artifacts
+          bash scripts/build-linux-zig.sh
+      - name: Save binary cache
+        if: always()
+        uses: actions/cache/save@v6
+        with:
+          path: vcpkg-cache
+          key: ${{ runner.os }}-vcpkg-zig${{ env.ZIG_VERSION }}-${{ steps.vcpkg_baseline.outputs.sha }}-${{ hashFiles('vcpkg.json') }}-${{ hashFiles('vcpkg-cache/**') }}
+      - name: Verify portability
+        run: |
+          BIN=build/linux-zig-static/Release/OpenLoco
+          floor="GLIBC_${GLIBC_FLOOR}"
+          file "$BIN"
+          if objdump -T "$BIN" | grep -qE "GLIBCXX_|CXXABI_"; then
+            echo "binary depends on a shared libstdc++" >&2
+            objdump -T "$BIN" | grep -E "GLIBCXX_|CXXABI_"
+            exit 1
+          fi
+          max_glibc=$(objdump -T "$BIN" | grep -oE "GLIBC_[0-9]+\.[0-9]+" | sort -u -V | tail -n1)
+          echo "highest referenced glibc version: ${max_glibc}"
+          if [ "$(printf '%s\n%s\n' "$max_glibc" "$floor" | sort -u -V | tail -n1)" != "$floor" ]; then
+            echo "binary requires a glibc newer than ${GLIBC_FLOOR}" >&2
+            exit 1
+          fi
+          echo "shared library dependencies:"
+          ldd "$BIN"
+          for sofile in libX11.so.6 libwayland-client.so.0; do
+            if strings -a "$BIN" | grep -qxF "$sofile" || ldd "$BIN" | grep -qF "$sofile"; then
+              echo "found the display backend using ${sofile}"
+            else
+              echo "SDL3 was built without the display backend using ${sofile}" >&2
+              exit 1
+            fi
+          done
+      - name: Run Tests
+        run: ctest --test-dir build/linux-zig-static/ --output-on-failure
+      - name: Stage test binaries
+        run: |
+          mkdir -p test-bin
+          find build/linux-zig-static -type f -name '*Tests' -exec cp {} test-bin/ \;
+          ls -la test-bin
+      - name: Tar test binaries
+        run: tar zcf OpenLoco-linux-x64-tests.tar.gz -C test-bin .
+      - name: Upload test binaries
+        uses: actions/upload-artifact@v7
+        with:
+          path: OpenLoco-linux-x64-tests.tar.gz
+          archive: false
+          if-no-files-found: error
+      - name: Install to artifacts
+        run: cmake --build --preset linux-zig-static --target install
+      - name: Tar artifacts
+        run: |
+          cd artifacts
+          tar zcf OpenLoco-linux-x64.tar.gz *
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          path: artifacts/OpenLoco-linux-x64.tar.gz
+          archive: false
+          if-no-files-found: error
+
+  linux-static-compat:
+    name: Linux compat ${{ matrix.image }}
+    runs-on: ubuntu-latest
+    needs: linux-zig-static
+    container: ${{ matrix.image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - debian:buster-slim
+          - almalinux:8
+          - ubuntu:20.04
+          - debian:bullseye-slim
+          - fedora:34
+          - opensuse/leap:15.5
+          - ubuntu:22.04
+          - archlinux:base
+    steps:
+      - name: Download release artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: OpenLoco-linux-x64.tar.gz
+          path: dl
+      - name: Download test binaries
+        uses: actions/download-artifact@v8
+        with:
+          name: OpenLoco-linux-x64-tests.tar.gz
+          path: dl
+      - name: Ensure tar is available
+        run: |
+          if command -v tar >/dev/null 2>&1; then
+            exit 0
+          fi
+          echo "tar is missing from this image, installing it"
+          if command -v zypper >/dev/null 2>&1; then
+            zypper --non-interactive install tar gzip
+          elif command -v dnf >/dev/null 2>&1; then
+            dnf install -y tar gzip
+          elif command -v apt-get >/dev/null 2>&1; then
+            apt-get update && apt-get install -y tar gzip
+          elif command -v pacman >/dev/null 2>&1; then
+            pacman -Sy --noconfirm tar gzip
+          else
+            echo "no known package manager available to install tar" >&2
+            exit 1
+          fi
+      - name: Extract artifacts
+        run: |
+          mkdir -p app test-bin
+          tar xzf dl/OpenLoco-linux-x64.tar.gz -C app
+          tar xzf dl/OpenLoco-linux-x64-tests.tar.gz -C test-bin
+      - name: Report distribution
+        run: |
+          cat /etc/os-release 2>/dev/null | head -2 || true
+          ldd --version | head -1
+      - name: Check loader accepts OpenLoco
+        run: |
+          out=$(ldd app/bin/OpenLoco 2>&1)
+          echo "$out"
+          if echo "$out" | grep -qE "not found"; then
+            echo "unresolved library or symbol version" >&2
+            exit 1
+          fi
+      - name: Run Tests
+        run: |
+          for t in test-bin/*Tests; do
+            echo "::group::$(basename "$t")"
+            "$t"
+            echo "::endgroup::"
+          done
+  linux-appimage:
+    name: Linux AppImage
+    runs-on: ubuntu-latest
+    needs: linux-zig-static
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Download release artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: OpenLoco-linux-x64.tar.gz
+          path: dl
+      - name: Extract release artifacts
+        run: |
+          mkdir -p app/usr artifacts
+          tar xzf dl/OpenLoco-linux-x64.tar.gz -C app/usr
+      - name: Build AppImage
+        env:
+          NO_STRIP: true # Keep debug symbols in the bundled binary for backtraces
+          ARCH: x86_64
+          OUTPUT_PATH: ./artifacts
+          INPUT_PATH: ./app
+        run: scripts/build-appimage
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          path: artifacts/OpenLoco-*-linux-x64.AppImage
+          archive: false
           if-no-files-found: error
   macos:
     name: macOS Sequoia ARM64 vcpkg
@@ -322,23 +581,35 @@ jobs:
           echo "VCPKG_DEFAULT_BINARY_CACHE=$GITHUB_WORKSPACE/vcpkg-cache" >> "$GITHUB_ENV"
       - name: Setup cache directories
         run: mkdir -p ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
-      - name: Set up binary cache
-        uses: actions/cache@v5
+      - name: Get vcpkg baseline
+        id: vcpkg_baseline
+        run: |
+          sha=$(sed -n 's/^set(VCPKG_GIT_TAG[[:space:]]*\([0-9a-f]*\)).*/\1/p' CMakeLists.txt)
+          test -n "$sha" || { echo "VCPKG_GIT_TAG not found in CMakeLists.txt" >&2; exit 1; }
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+      - name: Restore binary cache
+        uses: actions/cache/restore@v6
         with:
           path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
-          key: ${{ runner.os }}-vcpkg-${{ env.ImageVersion }}-${{ hashFiles('vcpkg*.json') }}
+          key: ${{ runner.os }}-vcpkg-${{ steps.vcpkg_baseline.outputs.sha }}-${{ hashFiles('vcpkg.json') }}
           restore-keys: |
-            ${{ runner.os }}-vcpkg-${{ env.ImageVersion }}-
+            ${{ runner.os }}-vcpkg-${{ steps.vcpkg_baseline.outputs.sha }}-
       - name: Build OpenLoco
         run: |
           mkdir -p artifacts
           cmake --preset macos-vcpkg-static -DCMAKE_INSTALL_PREFIX=./artifacts
           cmake --build --preset macos-vcpkg-static
+      - name: Save binary cache
+        if: always()
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
+          key: ${{ runner.os }}-vcpkg-${{ steps.vcpkg_baseline.outputs.sha }}-${{ hashFiles('vcpkg.json') }}-${{ hashFiles('vcpkg-cache/**') }}
       - name: Install to artifacts
         run: |
           cmake --build --preset macos-vcpkg-static --target install
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: OpenLoco-macos-arm64
           path: artifacts

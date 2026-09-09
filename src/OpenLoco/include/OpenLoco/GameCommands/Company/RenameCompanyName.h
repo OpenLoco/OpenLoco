@@ -39,5 +39,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void changeCompanyName(registers& regs, const uint8_t flags);
+    void changeCompanyName(registers& regs, const Flags flags);
 }

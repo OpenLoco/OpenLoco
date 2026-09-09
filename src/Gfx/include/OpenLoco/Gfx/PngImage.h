@@ -1,6 +1,9 @@
 #pragma once
 
+#include <OpenLoco/Core/FileSystem.hpp>
+#include <cstdint>
 #include <filesystem>
+#include <memory>
 #include <vector>
 
 namespace OpenLoco::Gfx
@@ -25,7 +28,7 @@ namespace OpenLoco::Gfx
         PngImage() = default;
         PngImage(int w, int h, int c);
 
-        static std::unique_ptr<PngImage> loadFromFile(const std::filesystem::path& filePath);
+        static std::unique_ptr<PngImage> loadFromFile(const fs::path& filePath);
 
         Colour32 getPixel(int x, int y);
     };

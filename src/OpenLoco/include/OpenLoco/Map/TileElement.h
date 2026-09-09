@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Types.hpp"
 #include <OpenLoco/Engine/World.hpp>
+#include <OpenLoco/Types.hpp>
 #include <cassert>
 #include <span>
 

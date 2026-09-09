@@ -24,7 +24,7 @@ namespace OpenLoco::GameCommands
      * @param flags @<bl>
      * @return @<ebx> - returns 0 (always successful)
      */
-    static uint32_t removeWall(const WallRemovalArgs& args, const uint8_t flags)
+    static uint32_t removeWall(const WallRemovalArgs& args, const Flags flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Construction);
 
@@ -49,12 +49,12 @@ namespace OpenLoco::GameCommands
                 continue;
             }
 
-            if ((flags & Flags::ghost) == 0 && wallElement->isGhost())
+            if (!hasFlags(flags, Flags::ghost) && wallElement->isGhost())
             {
                 continue;
             }
 
-            if ((flags & Flags::apply) == 0)
+            if (!hasFlags(flags, Flags::apply))
             {
                 return 0;
             }
@@ -72,7 +72,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void removeWall(registers& regs, const uint8_t flags)
+    void removeWall(registers& regs, const Flags flags)
     {
         const WallRemovalArgs args(regs);
         regs.ebx = removeWall(args, flags);

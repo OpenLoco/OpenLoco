@@ -340,7 +340,7 @@ void NetworkServer::runGameCommands()
     {
         auto& gc = _gameCommands.front();
 
-        [[maybe_unused]] auto result = GameCommands::doCommandForReal(static_cast<GameCommands::GameCommand>(gc.regs.esi), gc.company, gc.regs, gc.flags);
+        [[maybe_unused]] auto result = GameCommands::doCommandForReal(static_cast<GameCommands::GameCommand>(gc.regs.esi), gc.company, gc.regs, static_cast<GameCommands::Flags>(gc.flags));
 
         // TODO We can't do this, we have to send a dummy command to the clients
         //      otherwise we skip a game command index

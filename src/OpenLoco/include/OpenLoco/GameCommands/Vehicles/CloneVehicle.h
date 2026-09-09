@@ -24,5 +24,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void cloneVehicle(registers& regs, const uint8_t flags);
+    void cloneVehicle(registers& regs, const Flags flags);
 }

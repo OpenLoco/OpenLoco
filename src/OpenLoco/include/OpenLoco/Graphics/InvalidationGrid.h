@@ -82,5 +82,4 @@ namespace OpenLoco::Gfx
             }
         }
     };
-
-} // namespace OpenRCT2
+} // namespace OpenLoco::Gfx

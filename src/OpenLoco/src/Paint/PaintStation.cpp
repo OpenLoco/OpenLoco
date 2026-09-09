@@ -26,7 +26,7 @@ namespace OpenLoco::Paint
         {
             return;
         }
-        if (session.getRenderTarget()->zoomLevel > 0)
+        if (session.getZoom() > 0)
         {
             return;
         }

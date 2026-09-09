@@ -5,11 +5,9 @@
 #include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
-#include "Gui.h"
 #include "Localisation/StringIds.h"
 #include "MultiPlayer.h"
 #include "OpenLoco.h"
-#include "Title.h"
 #include "Ui.h"
 #include "ViewportManager.h"
 
@@ -36,18 +34,8 @@ namespace OpenLoco::Intro
     static void updateEnd(Gfx::DrawingContext& drawingCtx)
     {
         drawingCtx.clearSingle(PaletteIndex::black0);
-        _state = State::end2;
-        _introTicks = 0;
-    }
-
-    static void updateEnd2([[maybe_unused]] Gfx::DrawingContext& drawingCtx)
-    {
         _state = State::none;
-        Gfx::loadDefaultPalette();
-        Gfx::invalidateScreen();
-        resetSubsystems();
-        Gui::init();
-        Title::reset();
+        _introTicks = 0;
     }
 
     static void updateNone([[maybe_unused]] Gfx::DrawingContext& drawingCtx) {}
@@ -71,8 +59,8 @@ namespace OpenLoco::Intro
         drawingCtx.clearSingle(PaletteIndex::mutedDarkRed5); // this isn't actually mutedDarkRed5 as the atari palette is different
 
         const auto pos = Ui::Point(Ui::width() / 2 - 216, Ui::height() / 2 - 54);
-        drawingCtx.drawImage(pos, ImageId(ImageIds::atari_logo_intro_left));
-        drawingCtx.drawImage(pos + Ui::Point(216, 0), ImageId(ImageIds::atari_logo_intro_right));
+        drawingCtx.drawImage(ZoomLevel::full, pos, ImageId(ImageIds::atari_logo_intro_left));
+        drawingCtx.drawImage(ZoomLevel::full, pos + Ui::Point(216, 0), ImageId(ImageIds::atari_logo_intro_right));
         _introTicks = -24;
         _state = State::displayAtari;
     }
@@ -100,8 +88,8 @@ namespace OpenLoco::Intro
             drawingCtx.clearSingle(PaletteIndex::black0);
 
             const auto pos = Ui::Point(Ui::width() / 2 - 320 + 70, Ui::height() / 2 - 58);
-            drawingCtx.drawImage(pos, ImageId(ImageIds::chris_sawyer_logo_intro_left));
-            drawingCtx.drawImage(pos + Ui::Point(250, 0), ImageId(ImageIds::chris_sawyer_logo_intro_right));
+            drawingCtx.drawImage(ZoomLevel::full, pos, ImageId(ImageIds::chris_sawyer_logo_intro_left));
+            drawingCtx.drawImage(ZoomLevel::full, pos + Ui::Point(250, 0), ImageId(ImageIds::chris_sawyer_logo_intro_right));
 
             _introTicks = 0;
             _state = State::displayCS;
@@ -203,7 +191,7 @@ namespace OpenLoco::Intro
     };
 
     // 0x0046AE0C
-    void update()
+    void tick()
     {
         auto& drawingEngine = Gfx::getDrawingEngine();
         auto& drawingCtx = drawingEngine.getDrawingContext();
@@ -211,10 +199,6 @@ namespace OpenLoco::Intro
         if (_state == State::end)
         {
             updateEnd(drawingCtx);
-        }
-        else if (_state == State::end2)
-        {
-            updateEnd2(drawingCtx);
         }
         else if (enumValue(_state) < std::size(kUpdateFunctions))
         {

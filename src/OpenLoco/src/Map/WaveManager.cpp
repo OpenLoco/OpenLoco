@@ -94,7 +94,7 @@ namespace OpenLoco::World::WaveManager
     }
 
     // 0x004C56F6
-    void update()
+    void tick()
     {
         if (!Game::hasFlags(GameStateFlags::tileManagerLoaded) || (ScenarioManager::getScenarioTicks() & 0x3))
         {

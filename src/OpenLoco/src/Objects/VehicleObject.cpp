@@ -63,7 +63,7 @@ namespace OpenLoco
             args.push(speed);
             tr.drawStringLeft(rowPosition, Colour::black, StringIds::object_selection_max_speed, args);
         }
-        auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
+        auto buffer = StringManager::getBufferString(StringIds::buffer_1250);
         // Clear buffer
         *buffer = '\0';
 

@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Company.h"
-#include "LabelFrame.h"
-#include "Map/Tile.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Prng.h>
+#include <OpenLoco/LabelFrame.h>
+#include <OpenLoco/Map/Tile.h>
 #include <limits>
 #include <optional>
 
@@ -80,8 +80,8 @@ namespace OpenLoco
 
         bool empty() const;
         TownId id() const;
-        void update();
-        void drawLabel(Gfx::DrawingContext& drawingCtx, const Gfx::RenderTarget& rt);
+        void tick();
+        void drawLabel(Gfx::DrawingContext& drawingCtx, ZoomLevel zoom);
         void updateLabel();
         void updateMonthly();
         void adjustCompanyRating(CompanyId cid, int amount);

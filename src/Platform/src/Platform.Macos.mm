@@ -9,6 +9,10 @@
 
 namespace OpenLoco::Platform
 {
+    void initialise()
+    {
+    }
+
     uint32_t getTime()
     {
         struct timespec spec;
@@ -19,6 +23,11 @@ namespace OpenLoco::Platform
     std::vector<fs::path> getDrives()
     {
         return {};
+    }
+
+    fs::path getDataDirectory()
+    {
+        return Platform::getBundlePath();
     }
 
     fs::path getUserDirectory()
@@ -51,7 +60,7 @@ namespace OpenLoco::Platform
         }
     }
 
-    fs::path GetCurrentExecutablePath()
+    fs::path getCurrentExecutablePath()
     {
         char exePath[PATH_MAX];
         uint32_t size = PATH_MAX;
@@ -66,7 +75,7 @@ namespace OpenLoco::Platform
         }
     }
 
-    fs::path GetBundlePath()
+    fs::path getBundlePath()
     {
         @autoreleasepool
         {
@@ -87,6 +96,13 @@ namespace OpenLoco::Platform
     {
         auto result = std::getenv(name.c_str());
         return result == nullptr ? std::string() : result;
+    }
+
+    std::vector<fs::path> getLocoInstallSearchPaths()
+    {
+        // TODO: Implement me. Locomotion is a Windows game, so any install here is made by
+        // a compatibility layer such as CrossOver or Whisky, in a location of its choosing.
+        return {};
     }
 
     bool isRunningInWine()

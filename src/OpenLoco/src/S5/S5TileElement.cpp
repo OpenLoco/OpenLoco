@@ -187,10 +187,10 @@ namespace OpenLoco::S5
                 dstElem.setSequenceIndex(srcElem.sequenceIndex());
                 dstElem.setLevelCrossingObjectId(srcElem.levelCrossingObjectId());
                 dstElem.setRoadObjectId(srcElem.roadObjectId());
-                dstElem.setUnk6l(srcElem.unk6l());
+                dstElem.setLevelCrossingAnimationFrame(srcElem.levelCrossingAnimationFrame());
                 dstElem.setBridge(srcElem.bridge());
                 dstElem.setOwner(enumValue(srcElem.owner()));
-                dstElem.setUnk7_10(srcElem.hasUnk7_10());
+                dstElem.setLevelCrossingClosed(srcElem.isLevelCrossingClosed());
                 dstElem.setHasLevelCrossing(srcElem.hasLevelCrossing());
                 dstElem.setUnk7_40(srcElem.hasUnk7_40());
                 dstElem.setUnk7_80(srcElem.hasUnk7_80());
@@ -208,9 +208,9 @@ namespace OpenLoco::S5
                 dstElem.setIndustryId(enumValue(srcElem.industryId()));
                 dstElem.setSequenceIndex(srcElem.sequenceIndex());
                 dstElem.setSectionProgress(srcElem.sectionProgress());
-                dstElem.setVar6_003F(srcElem.var_6_003F());
+                dstElem.setVar6_003F(srcElem.sectionsCompleted());
                 dstElem.setBuildingType(srcElem.buildingType());
-                dstElem.setColour(enumValue(srcElem.var_6_F800()));
+                dstElem.setColour(enumValue(srcElem.colour()));
                 break;
             }
         }

@@ -25,7 +25,7 @@
 namespace OpenLoco::GameCommands
 {
     // 0x0042D133
-    static uint32_t createBuilding(const BuildingPlacementArgs& args, uint8_t flags)
+    static uint32_t createBuilding(const BuildingPlacementArgs& args, Flags flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Construction);
         GameCommands::setPosition(args.pos + World::Pos3{ 16, 16, 0 });
@@ -82,7 +82,7 @@ namespace OpenLoco::GameCommands
                 return kFailure;
             }
 
-            if ((flags & Flags::apply) && !(flags & Flags::ghost))
+            if (hasFlags(flags, Flags::apply) && !hasFlags(flags, Flags::ghost))
             {
                 World::TileManager::removeAllWallsOnTileBelow(tilePos, (args.pos.z + clearHeight) / World::kSmallZStep);
             }
@@ -112,7 +112,7 @@ namespace OpenLoco::GameCommands
                             // even if a clear could succeed here. This is
                             // because if it did place a ghost the ghost cleanup
                             // function might remove the wrong building!
-                            if (flags & Flags::preventBuildingClearing)
+                            if (hasFlags(flags, Flags::preventBuildingClearing))
                             {
                                 return World::TileClearance::ClearFuncResult::collision;
                             }
@@ -134,7 +134,7 @@ namespace OpenLoco::GameCommands
             }
 
             // Flatten surfaces (also checks if other elements will cause issues due to the flattening of the surface)
-            if (!(flags & Flags::ghost))
+            if (!hasFlags(flags, Flags::ghost))
             {
                 auto tile = World::TileManager::get(tilePos);
                 auto* surface = tile.surface();
@@ -194,7 +194,7 @@ namespace OpenLoco::GameCommands
                             }
                         }
                     }
-                    if (flags & Flags::apply)
+                    if (hasFlags(flags, Flags::apply))
                     {
                         World::TileManager::mapInvalidateTileFull(World::toWorldSpace(tilePos));
                         surface->setBaseZ(args.pos.z / World::kSmallZStep);
@@ -207,9 +207,9 @@ namespace OpenLoco::GameCommands
             }
 
             // Create new tile
-            if (flags & Flags::apply)
+            if (hasFlags(flags, Flags::apply))
             {
-                if (!(flags & Flags::ghost))
+                if (!hasFlags(flags, Flags::ghost))
                 {
                     World::TileManager::removeSurfaceIndustry(World::toWorldSpace(tilePos));
                     World::TileManager::setTerrainStyleAsCleared(World::toWorldSpace(tilePos));
@@ -249,13 +249,13 @@ namespace OpenLoco::GameCommands
                     World::AnimationManager::createAnimation(6, World::toWorldSpace(tilePos), elBuilding.baseZ());
                 }
 
-                elBuilding.setGhost(flags & Flags::ghost);
+                elBuilding.setGhost(hasFlags(flags, Flags::ghost));
                 Ui::ViewportManager::invalidate(World::toWorldSpace(tilePos), elBuilding.baseHeight(), elBuilding.clearHeight());
                 Scenario::getOptions().madeAnyChanges = 1;
             }
         }
 
-        if ((flags & Flags::apply) && !(flags & Flags::ghost) && !buildingObj->hasFlags(BuildingObjectFlags::miscBuilding))
+        if (hasFlags(flags, Flags::apply) && !hasFlags(flags, Flags::ghost) && !buildingObj->hasFlags(BuildingObjectFlags::miscBuilding))
         {
             const auto populationCapacity = buildingObj->producedQuantity[0];
             const auto population = args.buildImmediately ? populationCapacity : 0;
@@ -272,7 +272,7 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void createBuilding(registers& regs, const uint8_t flags)
+    void createBuilding(registers& regs, const Flags flags)
     {
         BuildingPlacementArgs args(regs);
         regs.ebx = createBuilding(args, flags);

@@ -6,8 +6,12 @@
 	<key>CFBundleExecutable</key>
 	<string>${MACOSX_BUNDLE_EXECUTABLE_NAME}</string>
 
-	<!-- Icon file -->
+	<!-- Icon file (macOS 15 and earlier -->
 	<key>CFBundleIconFile</key>
+	<string>${MACOSX_BUNDLE_ICON_FILE}</string>
+
+	<!-- Icon file (macOS 26 and later -->
+	<key>CFBundleIconName</key>
 	<string>${MACOSX_BUNDLE_ICON_FILE}</string>
 
 	<!-- Bundle identifier -->

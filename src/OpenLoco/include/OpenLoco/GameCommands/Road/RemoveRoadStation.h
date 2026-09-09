@@ -38,5 +38,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void removeRoadStation(registers& regs, const uint8_t flags);
+    void removeRoadStation(registers& regs, const Flags flags);
 }

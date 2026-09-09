@@ -120,8 +120,7 @@ namespace OpenLoco::Paint
 
         static void paintTrackAdditionPP(PaintSession& session, const World::TrackElement& elTrack, const uint8_t rotation, const ImageId baseImageId, const TrackPaintAdditionPiece& tppa)
         {
-            // TODO: Better way to detect kNullTrackPaintAdditionPiece
-            if (tppa.imageIds[3] != 0)
+            if (tppa.imageIds[0] != kNullTrackPaintAdditionPiece.imageIds[0])
             {
                 if (tppa.isIsMergeable)
                 {
@@ -251,7 +250,7 @@ namespace OpenLoco::Paint
         const auto height = elTrack.baseZ() * 4;
         const auto rotation = (session.getRotation() + elTrack.rotation()) & 0x3;
         if (((session.getViewFlags() & Ui::ViewportFlags::height_marks_on_tracks_roads) != Ui::ViewportFlags::none)
-            && session.getRenderTarget()->zoomLevel == 0)
+            && session.getZoom() <= ZoomLevel::full)
         {
             const bool isLast = elTrack.isFlag6();
             const bool isFirstTile = elTrack.sequenceIndex() == 0;
@@ -298,7 +297,7 @@ namespace OpenLoco::Paint
             }
         }
 
-        if (session.getRenderTarget()->zoomLevel > 0)
+        if (session.getZoom() > 0)
         {
             return;
         }

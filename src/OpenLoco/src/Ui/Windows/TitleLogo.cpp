@@ -10,16 +10,18 @@ namespace OpenLoco::Ui::Windows::TitleLogo
 {
     static constexpr Ui::Size kWindowSize = { 298, 170 };
 
+    enum widx
+    {
+        logo
+    };
+
     namespace Widx
     {
-        enum
-        {
-            logo
-        };
+        constexpr WidgetId kLogo{ "logo" };
     }
 
     static constexpr auto _widgets = makeWidgets(
-        Widgets::Wt3Widget({ 0, 0 }, kWindowSize, WindowColour::primary)
+        Widgets::Wt3Widget(Widx::kLogo, { 0, 0 }, kWindowSize, WindowColour::primary)
 
     );
 
@@ -44,17 +46,17 @@ namespace OpenLoco::Ui::Windows::TitleLogo
     }
 
     // 0x00439298
-    static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
+    static void draw([[maybe_unused]] Ui::Window& window, Gfx::DrawingContext& drawingCtx)
     {
-        drawingCtx.drawImage(window.x, window.y, ImageIds::locomotion_logo);
+        drawingCtx.drawImage(ZoomLevel::full, 0, 0, ImageIds::locomotion_logo);
     }
 
     // 0x004392AD
-    static void onMouseUp([[maybe_unused]] Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseUp([[maybe_unused]] Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case Widx::logo:
+            case Widx::kLogo:
                 About::open();
                 break;
         }

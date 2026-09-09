@@ -12,8 +12,8 @@ namespace OpenLoco
     // 0x0048995F
     bool TrainSignalObject::validate() const
     {
-        // animationSpeed must be 1 less than a power of 2 (its a mask)
-        switch (animationSpeed)
+        // animationFrameInterval must be 1 less than a power of 2 (its a mask)
+        switch (animationFrameInterval)
         {
             case 0:
             case 1:
@@ -101,12 +101,12 @@ namespace OpenLoco
     {
         auto& frames = signalFrames[(((numFrames + 2) / 3) - 2)];
         auto frameCount = std::size(frames) - 1;
-        auto animationFrame = frameCount & (ScenarioManager::getScenarioTicks() >> animationSpeed);
+        auto animationFrame = frameCount & (ScenarioManager::getScenarioTicks() >> animationFrameInterval);
 
         auto frameIndex = frames[animationFrame];
         frameIndex *= 8;
         auto colourImage = image + frameIndex;
 
-        drawingCtx.drawImage(x, y + 15, colourImage);
+        drawingCtx.drawImage(ZoomLevel::full, x, y + 15, colourImage);
     }
 }

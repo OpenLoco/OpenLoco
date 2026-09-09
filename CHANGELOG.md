@@ -1,5 +1,69 @@
-26.05+ (???)
+26.08+ (???)
 ------------------------------------------------------------------------
+- Feature: [#3978] Improved automatic detection of Locomotion installs on Linux.
+- Change: [#3867] Repeated presses of the build tracks and build roads keyboard shortcuts now cycles track/road types.
+- Change: [#3967] English localisations now use typographically correct curved single quotes.
+- Change: [#3973] Game already running error message now says "OpenLoco" instead of "Chris Sawyer's Locomotion".
+- Change: [#3974] The vehicle list can now be filtered by vehicles that transport cargo, rather than just 'wait for' orders.
+- Change: [#3995] On POSIX/Linux/BSD, OpenLoco will now look in /usr/share/openloco for its application data.
+- Fix: [#2753] Unable to remove walls and trees at heights above 127.
+- Fix: [#2992] Track and Road additions may incorrectly draw on some curves.
+- Fix: [#3112] Scenario challenge is not failed when exceeding its time limit.
+- Fix: [#3676] Roads added using object selection window could not be used by vehicles.
+- Fix: [#3943] Unable to place or remove signals on multi tile track elements.
+- Fix: [#3955] Terraform window can break dimensions of construction window.
+- Fix: [#3987] Unable to remove multi tile stations if one of the stations is for trams.
+- Fix: [#4006] Crash when generating mouse over tooltip of a building on a corrupted save.
+
+26.08 (2026-08-13)
+------------------------------------------------------------------------
+- Feature: [#139, #3775] Added signal placement and removal at fixed step distance along a track block.
+- Feature: [#3872] Added an option to align the top toolbar buttons horizontally centred (off by default).
+- Feature: [#3932] Add OpenGraphics replacement for train station 2 and adjust balance of some of the vehicles.
+- Change: [#3815] The keyboard shortcuts window is now separated into groups, and can now be resized.
+- Change: [#3863] The toolbar buttons can now be set to open on click instead of hover.
+- Change: [#3903] Updated the macOS app icon to match the new Liquid Glass style.
+- Fix: [#2082] Scrollbars can be overdrawn when certain windows are resized but their scrollview is not.
+- Fix: [#2983] Can no longer scroll to adjust terraform tool size widgets.
+- Fix: [#3534] The minimum landscape height can be set to 0 in the landscape generator, while 1 is expected.
+- Fix: [#3566] The 'Only generate landscape when game starts' option remains in effect when switching to PNG heightmaps.
+- Fix: [#3597] News messages don't update viewport/image position correctly between messages.
+- Fix: [#3676] Fix bug where last land variation sprite went unused (original bug).
+- Fix: [#3795] Window layout changes prevent tutorials from playing correctly.
+- Fix: [#3855] UI invalidation issue when using switch company cheat.
+- Fix: [#3856] News ticker uses double the line height.
+- Fix: [#3858] Save file details can overflow the file browser window at minimum height.
+- Fix: [#3860] Viewport panning is broken during tutorial playback.
+- Fix: [#3861] The news sound setting is not read properly from the config file.
+- Fix: [#3888] Bridges can be drawn over tall buildings, industries and stations (original bug).
+- Fix: [#3890] On Linux/POSIX, setting the game path does not work correctly if it contains spaces.
+- Fix: [#3899] The custom jukebox playlist is not initialised properly for new config files.
+- Fix: [#3906] Random landscapes have their land types applied incorrectly due to incorrect 'near water' and 'around cliffs' conditions.
+
+26.07.1 (2026-07-27)
+------------------------------------------------------------------------
+- Fix: [#3524] Jittery window height in the 'gridded' tabs of the industry list, town list, and terraform windows.
+- Fix: [#3841] Extreme lag when a map reaches the maximum number of audio sources (e.g. many vehicles in view).
+- Fix: [#3842] Native browse prompt not working on Windows, preventing selecting the Locomotion path on first start.
+- Fix: [#3846] Can click beyond last item in station and company list windows, opening invalid windows.
+
+26.07 (2026-07-26)
+------------------------------------------------------------------------
+- Feature: [#3569] Add a "home" button to the browse prompt window.
+- Feature: [#3760] Add amount of cargo awaiting processing and transport to the industry window.
+- Feature: [#3768] Add tab to town window to show delivered cargo last month.
+- Feature: [#3805] Keyboard shortcuts can now combine multiple modifiers, including left and right Ctrl and Alt.
+- Feature: [#3813] Add OpenGraphics replacements for town names, trams, tracks, roads and a large number of trains.
+- Feature: [#3836] Add new double and quadruple viewport zoom levels.
+- Change: [#3740] Options that interfere with tutorial operation are temporarily disabled options during playback.
+- Change: [#3777] Jukebox can now be toggled and opened from the options window, grouped together with the title screen music toggle.
+- Fix: [#2956] Roads drawn over cliffs can have a visible gap (original bug).
+- Fix: [#3525] The grid cell borders in the terraform window overlap subtly with their contents.
+- Fix: [#3573] Town population graphs values draw overflow if the line is outside the viewable part of the window.
+- Fix: [#3776] Unchecking "Play Music" from the top toolbar does not invalidate Jukebox window.
+- Fix: [#3790] Some windows (e.g. town population) don't have a window resize handle in the bottom-right corner.
+- Fix: [#3802] Fix some spelling mistakes in the en-GB and en-US translations.
+- Fix: [#3828] The vehicle list is not refreshed when applying a cargo filter.
 
 26.05 (2026-05-30)
 ------------------------------------------------------------------------

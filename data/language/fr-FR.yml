@@ -1019,11 +1019,11 @@ strings:
   994: ???
   995: ???
 
-  996: "{STRINGID} :{MOVE_X 215}{STRINGID}{STRINGID}"
+  996: "{STRINGID} :"
   997: "MAJ + "
   998: "CTRL + "
   999: Modifier raccourci clavier
-  1000: "{COLOUR WINDOW_2}Nouveau raccourci clavier pour : {NEWLINE}{NEWLINE_SMALLER}{COLOUR BLACK}“{STRINGID}”"
+  1000: "{COLOUR WINDOW_2}Nouveau raccourci clavier pour :"
   1001: "{SMALLFONT}{COLOUR BLACK}Cliquer sur la description du raccourci pour choisir une nouvelle touche"
   1002: Faire défiler la vue quand le curseur atteint le bord de l'écran
   1003: "{SMALLFONT}{COLOUR BLACK}Choisir s'il faut faire défiler la vue quand le curseur atteint le bord de l'écran"
@@ -1039,7 +1039,7 @@ strings:
   1013: Scénario déjà installé
   1014: "{OUTLINE}{COLOUR WINDOW_1}{STRINGID}"
   1015: "{OUTLINE}{COLOUR WINDOW_2}(appuyer sur une touche ou un bouton de la souris pour essayer vous-même)"
-  1016: Une session de Chris Sawyer's Locomotion est déjà ouverte
+  1016: Une session de OpenLoco est déjà ouverte
 
   1017: Remerciements musique...
   1018: Remerciements musique

@@ -36,10 +36,6 @@ namespace OpenLoco
     };
 
     std::optional<CommandLineOptions> parseCommandLine(std::vector<std::string>&& argv);
-    std::optional<int> runCommandLineOnlyCommand(const CommandLineOptions& options);
     const CommandLineOptions& getCommandLineOptions();
     void setCommandLineOptions(const CommandLineOptions& options);
-
-    void printVersion();
-    void printHelp();
 }

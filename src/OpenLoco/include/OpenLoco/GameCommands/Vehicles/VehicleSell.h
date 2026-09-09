@@ -24,5 +24,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void sellVehicle(registers& regs, const uint8_t flags);
+    void sellVehicle(registers& regs, const Flags flags);
 }

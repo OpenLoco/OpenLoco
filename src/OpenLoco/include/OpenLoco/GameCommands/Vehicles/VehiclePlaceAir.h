@@ -33,5 +33,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void vehiclePlaceAir(registers& regs, const uint8_t flags);
+    void vehiclePlaceAir(registers& regs, const Flags flags);
 }

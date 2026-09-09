@@ -1,4 +1,5 @@
 #include "OpenLoco/Diagnostics/LogSink.h"
+#include <LogLevel.h>
 #include <cassert>
 
 namespace OpenLoco::Diagnostics::Logging

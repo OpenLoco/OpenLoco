@@ -4,7 +4,7 @@
 namespace OpenLoco
 {
     // 0x00440078D
-    void ExplosionSmoke::update()
+    void ExplosionSmoke::tick()
     {
         invalidateSprite();
         frame += 0x80;

@@ -186,7 +186,7 @@ namespace OpenLoco::ObjectManager
             for (LoadedObjectId i = 0; i < maxObjectsForType; i++)
             {
                 auto obj = typedObjectList.objects[i];
-                if (obj != nullptr && obj != reinterpret_cast<Object*>(-1))
+                if (obj != nullptr)
                 {
                     const auto& objHeader = typedObjectList.objectEntryExtendeds[i];
 
@@ -216,7 +216,7 @@ namespace OpenLoco::ObjectManager
         for (LoadedObjectId i = 0; i < maxObjectsForType; i++)
         {
             auto obj = typedObjectList.objects[i];
-            if (obj == nullptr || obj != reinterpret_cast<Object*>(-1))
+            if (obj == nullptr)
             {
                 continue;
             }
@@ -595,7 +595,7 @@ namespace OpenLoco::ObjectManager
         }
         unload(*handle);
         free(_objectRepository[enumValue(handle->type)].objects[handle->id]);
-        _objectRepository[enumValue(handle->type)].objects[handle->id] = reinterpret_cast<Object*>(-1);
+        _objectRepository[enumValue(handle->type)].objects[handle->id] = nullptr;
     }
 
     // 0x00471BCE
@@ -658,7 +658,7 @@ namespace OpenLoco::ObjectManager
         size_t index = 0;
         for (; index < getMaxObjects(type); ++index)
         {
-            if (getRepositoryItem(type).objects[index] == reinterpret_cast<Object*>(-1))
+            if (getRepositoryItem(type).objects[index] == nullptr)
             {
                 break;
             }
@@ -1117,7 +1117,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x00469F90
-    static void resetDefaultLandObject()
+    static void resetDefaultLandObjectId()
     {
         for (auto i = 0U; i < getMaxObjects(ObjectType::land); i++)
         {
@@ -1126,7 +1126,7 @@ namespace OpenLoco::ObjectManager
             {
                 if (landObj->distributionPattern == 0)
                 {
-                    getGameState().lastLandOption = i;
+                    getGameState().defaultLandObjectId = i;
                     return;
                 }
             }
@@ -1136,11 +1136,11 @@ namespace OpenLoco::ObjectManager
             auto* landObj = get<LandObject>(i);
             if (landObj != nullptr)
             {
-                getGameState().lastLandOption = i;
+                getGameState().defaultLandObjectId = i;
                 return;
             }
         }
-        getGameState().lastLandOption = 0xFFU;
+        getGameState().defaultLandObjectId = 0xFFU;
     }
 
     // 0x0047D9F2
@@ -1161,11 +1161,11 @@ namespace OpenLoco::ObjectManager
         updateLandObjectFlags();
         updateTrafficHandedness();
         updateWaterPalette();
-        resetDefaultLandObject();
+        resetDefaultLandObjectId();
     }
 
     // 0x0047AC05
-    void updateLastTrackTypeOption()
+    void resetDefaultTrackTypeObjectId()
     {
         static_assert(ObjectManager::getMaxObjects(ObjectType::road) <= 128); // protect against possible int8_t overflow in the future
         TownSize largestTownSize = TownSize::hamlet;
@@ -1186,6 +1186,6 @@ namespace OpenLoco::ObjectManager
                 }
             }
         }
-        getGameState().lastTrackTypeOption = lastIndex;
+        getGameState().defaultTrackTypeObjectId = lastIndex;
     }
 }

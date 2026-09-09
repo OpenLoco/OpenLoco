@@ -27,5 +27,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void updateOwnerStatus(registers& regs, const uint8_t flags);
+    void updateOwnerStatus(registers& regs, const Flags flags);
 }

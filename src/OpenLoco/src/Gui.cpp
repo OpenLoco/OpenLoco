@@ -32,9 +32,9 @@ namespace OpenLoco::Gui
         }
         else if (SceneManager::isPlayMode())
         {
-            Windows::ToolbarTop::Game::open();
+            Windows::ToolbarTop::open();
 
-            Windows::PlayerInfoPanel::open();
+            Windows::CompanyInfoPanel::open();
             Windows::TimePanel::open();
 
             if (OpenLoco::Tutorial::state() != Tutorial::State::none)
@@ -46,13 +46,56 @@ namespace OpenLoco::Gui
         resize();
     }
 
-    // 0x004392BD
-    void resize()
+    static void resizeEditorScene(const int32_t uiWidth, const int32_t uiHeight)
     {
-        const int32_t uiWidth = Ui::width();
-        const int32_t uiHeight = Ui::height();
+        using Windows::EditorStepController::StepDirection;
 
-        auto window = WindowManager::getMainWindow();
+        auto* window = WindowManager::find(WindowType::editorStepController, enumValue(StepDirection::previous));
+        if (window)
+        {
+            window->y = uiHeight - window->height;
+        }
+
+        window = WindowManager::find(WindowType::editorStepController, enumValue(StepDirection::next));
+        if (window)
+        {
+            window->y = uiHeight - window->height;
+            window->x = std::max(uiWidth, 640) - window->width;
+        }
+
+        window = WindowManager::find(WindowType::editorStatusLine);
+        if (window)
+        {
+            window->y = uiHeight - window->height;
+            window->x = (std::max(uiWidth, 640) - window->width) / 2;
+        }
+    }
+
+    static void resizeGameScene(const int32_t uiWidth, const int32_t uiHeight)
+    {
+        auto* window = WindowManager::find(WindowType::topToolbar);
+        if (window)
+        {
+            window->width = std::max(uiWidth, 640);
+        }
+
+        window = WindowManager::find(WindowType::companyInfoPanel);
+        if (window)
+        {
+            window->y = uiHeight - window->height;
+        }
+
+        window = WindowManager::find(WindowType::timePanel);
+        if (window)
+        {
+            window->y = uiHeight - window->height;
+            window->x = std::max(uiWidth, 640) - window->width;
+        }
+    }
+
+    static void resizeMain(const int32_t uiWidth, const int32_t uiHeight)
+    {
+        auto* window = WindowManager::getMainWindow();
         if (window)
         {
             window->width = uiWidth;
@@ -66,38 +109,33 @@ namespace OpenLoco::Gui
             {
                 window->viewports[0]->width = uiWidth;
                 window->viewports[0]->height = uiHeight;
-                window->viewports[0]->viewWidth = uiWidth << window->viewports[0]->zoom;
-                window->viewports[0]->viewHeight = uiHeight << window->viewports[0]->zoom;
+                window->viewports[0]->viewWidth = window->viewports[0]->zoom.applyTo(uiWidth);
+                window->viewports[0]->viewHeight = window->viewports[0]->zoom.applyTo(uiHeight);
+            }
+        }
+    }
+
+    static void resizeMisc()
+    {
+        auto* window = WindowManager::find(WindowType::tutorial);
+        if (window)
+        {
+            if (Tutorial::state() == Tutorial::State::none)
+            {
+                WindowManager::close(window);
             }
         }
 
-        window = WindowManager::find(WindowType::topToolbar);
-        if (window)
+        window = WindowManager::find(WindowType::options);
+        if (window != nullptr)
         {
-            window->width = std::max(uiWidth, 640);
+            window->moveToCentre();
         }
+    }
 
-        window = WindowManager::find(WindowType::playerInfoToolbar);
-        if (window)
-        {
-            window->y = uiHeight - window->height;
-        }
-
-        window = WindowManager::find(WindowType::timeToolbar);
-        if (window)
-        {
-            window->y = uiHeight - window->height;
-            window->x = std::max(uiWidth, 640) - window->width;
-        }
-
-        window = WindowManager::find(WindowType::editorToolbar);
-        if (window)
-        {
-            window->y = uiHeight - window->height;
-            window->width = std::max(uiWidth, 640);
-        }
-
-        window = WindowManager::find(WindowType::titleMenu);
+    static void resizeTitleScene(const int32_t uiWidth, const int32_t uiHeight)
+    {
+        auto* window = WindowManager::find(WindowType::titleMenu);
         if (window)
         {
             window->x = uiWidth / 2 - 148;
@@ -122,20 +160,29 @@ namespace OpenLoco::Gui
         {
             window->x = uiWidth - window->width;
         }
+    }
 
-        window = WindowManager::find(WindowType::tutorial);
-        if (window)
+    // 0x004392BD
+    void resize()
+    {
+        const int32_t uiWidth = Ui::width();
+        const int32_t uiHeight = Ui::height();
+
+        resizeMain(uiWidth, uiHeight);
+
+        if (SceneManager::isEditorMode())
         {
-            if (Tutorial::state() == Tutorial::State::none)
-            {
-                WindowManager::close(window);
-            }
+            resizeEditorScene(uiWidth, uiHeight);
+        }
+        else if (SceneManager::isTitleMode())
+        {
+            resizeTitleScene(uiWidth, uiHeight);
+        }
+        else
+        {
+            resizeGameScene(uiWidth, uiHeight);
         }
 
-        window = WindowManager::find(WindowType::options);
-        if (window != nullptr)
-        {
-            window->moveToCentre();
-        }
+        resizeMisc();
     }
 }

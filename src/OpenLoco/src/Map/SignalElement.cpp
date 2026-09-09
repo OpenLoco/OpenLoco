@@ -31,7 +31,7 @@ namespace OpenLoco::World
             if (side.frame() != targetFrame)
             {
                 res.hasAnimation = true;
-                if (!(ScenarioManager::getScenarioTicks() & signalObj->animationSpeed))
+                if (!(ScenarioManager::getScenarioTicks() & signalObj->animationFrameInterval))
                 {
                     uint8_t newFrame = side.frame() + 1;
                     if (side.frame() >= targetFrame)

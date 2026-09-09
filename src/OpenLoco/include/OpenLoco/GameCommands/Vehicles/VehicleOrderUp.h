@@ -27,5 +27,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void vehicleOrderUp(registers& regs, const uint8_t flags);
+    void vehicleOrderUp(registers& regs, const Flags flags);
 }

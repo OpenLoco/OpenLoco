@@ -1,7 +1,8 @@
 #include <OpenLoco/Core/Store.hpp>
-#include <algorithm>
 #include <gtest/gtest.h>
+#include <limits>
 #include <string>
+#include <utility>
 #include <vector>
 
 using namespace OpenLoco;

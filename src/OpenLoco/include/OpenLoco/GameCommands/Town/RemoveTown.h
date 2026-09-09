@@ -24,5 +24,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void removeTown(registers& regs, const uint8_t flags);
+    void removeTown(registers& regs, const Flags flags);
 }

@@ -1246,8 +1246,8 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t red_flag = 2369;
     constexpr uint32_t green_flag = 2370;
     constexpr uint32_t yellow_flag = 2371;
-    constexpr uint32_t airport_pickup = 2372;
-    constexpr uint32_t airport_place = 2373;
+    constexpr uint32_t pickupFromAirport = 2372;
+    constexpr uint32_t placeOnAirport = 2373;
     constexpr uint32_t pass_signal = 2374;
     constexpr uint32_t route_delete = 2375;
     constexpr uint32_t route_skip = 2376;

@@ -27,6 +27,7 @@
 #include "Objects/TrainStationObject.h"
 #include "Objects/VehicleObject.h"
 #include "SceneManager.h"
+#include "Tutorial.h"
 #include "Ui/ToolManager.h"
 #include "Ui/Widget.h"
 #include "Ui/Windows/Construction/Construction.h"
@@ -133,6 +134,9 @@ namespace OpenLoco::Ui::Windows::Construction
 
         cState.lastSelectedMods = lastMod;
         cState.byte_113603A = 0;
+
+        cState.signalPlacementStepSize = Signal::kDefaultSignalPlacementStepSize;
+        cState.repeatedSignalMode = false;
 
         return trackWindow();
     }
@@ -537,31 +541,31 @@ namespace OpenLoco::Ui::Windows::Construction
     // Update available road and rail for player company
     void updateAvailableRoadAndRailOptions()
     {
-        if (getGameState().lastRoadOption == 0xFF)
+        if (getGameState().defaultRoadObjectId == 0xFF)
         {
-            uint8_t lastRoadOption = getGameState().lastTrackTypeOption;
-            if (lastRoadOption == 0xFF)
+            uint8_t defaultRoadObjectId = getGameState().defaultTrackTypeObjectId;
+            if (defaultRoadObjectId == 0xFF)
             {
                 const auto availableObjects = companyGetAvailableRoads(CompanyManager::getControllingId());
                 if (!availableObjects.empty())
                 {
-                    lastRoadOption = availableObjects[0];
+                    defaultRoadObjectId = availableObjects[0];
                 }
             }
             else
             {
-                lastRoadOption |= 1 << 7;
+                defaultRoadObjectId |= 1 << 7;
             }
-            getGameState().lastRoadOption = lastRoadOption;
+            getGameState().defaultRoadObjectId = defaultRoadObjectId;
             WindowManager::invalidate(Ui::WindowType::topToolbar, 0);
         }
 
-        if (getGameState().lastRailroadOption == 0xFF)
+        if (getGameState().defaultRailroadObjectId == 0xFF)
         {
             const auto availableObjects = companyGetAvailableRailTracks(CompanyManager::getControllingId());
             if (!availableObjects.empty())
             {
-                getGameState().lastRailroadOption = availableObjects[0];
+                getGameState().defaultRailroadObjectId = availableObjects[0];
             }
             WindowManager::invalidate(Ui::WindowType::topToolbar, 0);
         }
@@ -725,6 +729,12 @@ namespace OpenLoco::Ui::Windows::Construction
         return getConstructionState().lastSelectedMods;
     }
 
+    uint8_t getCurrentTrackType()
+    {
+        auto& cState = getConstructionState();
+        return cState.trackType;
+    }
+
     Track::ModSection getLastSelectedTrackModSection()
     {
         auto& cState = getConstructionState();
@@ -776,9 +786,9 @@ namespace OpenLoco::Ui::Windows::Construction
             self.setWidgets(tabInfo.widgets);
 
             setDisabledWidgets(&self);
-
-            self.width = self.widgets[widx::frame].right + 1;
-            self.height = self.widgets[widx::frame].bottom + 1;
+            self.callPrepareDraw();
+            const auto size = Ui::Size{ self.widgets[widx::frame].right + 1, self.widgets[widx::frame].bottom + 1 };
+            self.setSizeFixed(size);
         }
 
         void setNextAndPreviousTrackTile(const TrackElement& elTrack, const World::Pos2& pos)
@@ -838,12 +848,15 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             auto& cState = getConstructionState();
 
+            auto* vpOwner = WindowManager::findWindowForViewport(&viewport);
+            const auto vpOffset = vpOwner != nullptr ? vpOwner->position() : Ui::Point{};
+
             const auto vpPosNext = gameToScreen(cState.nextTile + World::Pos3(16, 16, 0), viewport.getRotation());
-            const auto uiPosNext = viewport.viewportToScreen(vpPosNext);
+            const auto uiPosNext = viewport.viewportToWindow(vpPosNext) + vpOffset;
             const auto distanceToNext = Math::Vector::manhattanDistance2D(uiPosNext, point);
 
             const auto vpPosPrevious = gameToScreen(cState.previousTile + World::Pos3(16, 16, 0), viewport.getRotation());
-            const auto uiPosPrevious = viewport.viewportToScreen(vpPosPrevious);
+            const auto uiPosPrevious = viewport.viewportToWindow(vpPosPrevious) + vpOffset;
             const auto distanceToPrevious = Math::Vector::manhattanDistance2D(uiPosPrevious, point);
 
             return distanceToNext < distanceToPrevious;
@@ -896,10 +909,19 @@ namespace OpenLoco::Ui::Windows::Construction
 
             setDisabledWidgets(&self);
 
+            // TODO: REMOVE WHEN REWORKING TUTORIALS (and tutorial.h include above)
+            if (widgetIndex == widx::tab_signal && OpenLoco::Tutorial::state() != OpenLoco::Tutorial::State::none)
+            {
+                // Restore original window size/layout from before signal auto placement was added
+                // ...Or actually just the close button because I'm lazy and that is all is needed for the original tutorial 3 to play correctly
+                self.widgets[widx::close_button].left = 138 - 15;
+                self.widgets[widx::close_button].right = 138 - 15 + 13 - 1;
+            }
+
             self.invalidate();
 
-            self.width = self.widgets[widx::frame].right + 1;
-            self.height = self.widgets[widx::frame].bottom + 1;
+            const auto size = Ui::Size{ self.widgets[widx::frame].right + 1, self.widgets[widx::frame].bottom + 1 };
+            self.setSizeFixed(size);
 
             self.callOnResize();
             self.callPrepareDraw();
@@ -935,8 +957,8 @@ namespace OpenLoco::Ui::Windows::Construction
             {
                 Widget::drawTab(self, drawingCtx, ImageIds::null, widx::tab_station);
 
-                auto x = self.widgets[widx::tab_station].left + self.x + 1;
-                auto y = self.widgets[widx::tab_station].top + self.y + 1;
+                auto x = self.widgets[widx::tab_station].left + 1;
+                auto y = self.widgets[widx::tab_station].top + 1;
                 auto width = 29;
                 auto height = 25;
                 if (self.currentTab == widx::tab_station - widx::tab_construction)
@@ -944,30 +966,22 @@ namespace OpenLoco::Ui::Windows::Construction
                     height++;
                 }
 
-                const auto& rt = drawingCtx.currentRenderTarget();
-                auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(x, y, width, height));
-                if (clipped)
+                if (drawingCtx.pushClip(Ui::Rect(x, y, width, height)))
                 {
-                    clipped->zoomLevel = 1;
-                    clipped->width <<= 1;
-                    clipped->height <<= 1;
-                    clipped->x <<= 1;
-                    clipped->y <<= 1;
-
-                    drawingCtx.pushRenderTarget(*clipped);
+                    const auto zoom = ZoomLevel{ ZoomLevel::half };
 
                     auto roadStationObj = ObjectManager::get<RoadStationObject>(cState.lastSelectedStationType);
                     auto imageId = Gfx::recolour(roadStationObj->image, companyColour);
-                    drawingCtx.drawImage(-4, -10, imageId);
+                    drawingCtx.drawImage(zoom, { -4, -10 }, ImageId::fromUInt32(imageId));
                     auto colour = Colours::getTranslucent(companyColour);
                     if (!roadStationObj->hasFlags(RoadStationFlags::recolourable))
                     {
                         colour = ExtColour::unk2E;
                     }
                     imageId = Gfx::recolourTranslucent(roadStationObj->image, colour) + 1;
-                    drawingCtx.drawImage(-4, -10, imageId);
+                    drawingCtx.drawImage(zoom, { -4, -10 }, ImageId::fromUInt32(imageId));
 
-                    drawingCtx.popRenderTarget();
+                    drawingCtx.popClip();
                 }
 
                 Widget::drawTab(self, drawingCtx, Widget::kContentUnk, widx::tab_station);
@@ -977,8 +991,8 @@ namespace OpenLoco::Ui::Windows::Construction
             {
                 Widget::drawTab(self, drawingCtx, ImageIds::null, widx::tab_overhead);
 
-                auto x = self.widgets[widx::tab_overhead].left + self.x + 2;
-                auto y = self.widgets[widx::tab_overhead].top + self.y + 2;
+                auto x = self.widgets[widx::tab_overhead].left + 2;
+                auto y = self.widgets[widx::tab_overhead].top + 2;
 
                 for (auto i = 0; i < 2; i++)
                 {
@@ -990,7 +1004,7 @@ namespace OpenLoco::Ui::Windows::Construction
                         {
                             imageId += (self.frameNo / 2) % 8;
                         }
-                        drawingCtx.drawImage(x, y, imageId);
+                        drawingCtx.drawImage(ZoomLevel::full, x, y, imageId);
                     }
                 }
 
@@ -1064,8 +1078,8 @@ namespace OpenLoco::Ui::Windows::Construction
             {
                 Widget::drawTab(self, drawingCtx, ImageIds::null, widx::tab_station);
 
-                auto x = self.widgets[widx::tab_station].left + self.x + 1;
-                auto y = self.widgets[widx::tab_station].top + self.y + 1;
+                auto x = self.widgets[widx::tab_station].left + 1;
+                auto y = self.widgets[widx::tab_station].top + 1;
                 auto width = 29;
                 auto height = 25;
                 if (self.currentTab == widx::tab_station - widx::tab_construction)
@@ -1073,21 +1087,13 @@ namespace OpenLoco::Ui::Windows::Construction
                     height++;
                 }
 
-                const auto& rt = drawingCtx.currentRenderTarget();
-                auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(x, y, width, height));
-                if (clipped)
+                if (drawingCtx.pushClip(Ui::Rect(x, y, width, height)))
                 {
-                    clipped->zoomLevel = 1;
-                    clipped->width *= 2;
-                    clipped->height *= 2;
-                    clipped->x *= 2;
-                    clipped->y *= 2;
-
-                    drawingCtx.pushRenderTarget(*clipped);
+                    const auto zoom = ZoomLevel{ ZoomLevel::half };
 
                     auto trainStationObj = ObjectManager::get<TrainStationObject>(cState.lastSelectedStationType);
                     auto imageId = Gfx::recolour(trainStationObj->image + TrainStation::ImageIds::preview_image, companyColour);
-                    drawingCtx.drawImage(-4, -9, imageId);
+                    drawingCtx.drawImage(zoom, { -4, -9 }, ImageId::fromUInt32(imageId));
 
                     auto colour = Colours::getTranslucent(companyColour);
                     if (!trainStationObj->hasFlags(TrainStationFlags::recolourable))
@@ -1095,9 +1101,9 @@ namespace OpenLoco::Ui::Windows::Construction
                         colour = ExtColour::unk2E;
                     }
                     imageId = Gfx::recolourTranslucent(trainStationObj->image + TrainStation::ImageIds::preview_image_windows, colour);
-                    drawingCtx.drawImage(-4, -9, imageId);
+                    drawingCtx.drawImage(zoom, { -4, -9 }, ImageId::fromUInt32(imageId));
 
-                    drawingCtx.popRenderTarget();
+                    drawingCtx.popClip();
                 }
 
                 Widget::drawTab(self, drawingCtx, Widget::kContentUnk, widx::tab_station);
@@ -1107,8 +1113,8 @@ namespace OpenLoco::Ui::Windows::Construction
             if (!self.isDisabled(widx::tab_signal))
             {
                 Widget::drawTab(self, drawingCtx, ImageIds::null, widx::tab_signal);
-                auto x = self.widgets[widx::tab_signal].left + self.x + 1;
-                auto y = self.widgets[widx::tab_signal].top + self.y + 1;
+                auto x = self.widgets[widx::tab_signal].left + 1;
+                auto y = self.widgets[widx::tab_signal].top + 1;
                 auto width = 29;
                 auto height = 25;
                 if (self.currentTab == widx::tab_station - widx::tab_construction)
@@ -1116,26 +1122,22 @@ namespace OpenLoco::Ui::Windows::Construction
                     height++;
                 }
 
-                const auto& rt = drawingCtx.currentRenderTarget();
-                auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(x, y, width, height));
-                if (clipped)
+                if (drawingCtx.pushClip(Ui::Rect(x, y, width, height)))
                 {
-                    drawingCtx.pushRenderTarget(*clipped);
-
                     auto trainSignalObject = ObjectManager::get<TrainSignalObject>(cState.lastSelectedSignal);
                     auto imageId = trainSignalObject->image;
                     if (self.currentTab == widx::tab_signal - widx::tab_construction)
                     {
                         auto frames = signalFrames[(((trainSignalObject->numFrames + 2) / 3) - 2)];
                         auto frameCount = std::size(frames) - 1;
-                        frameCount &= (self.frameNo >> trainSignalObject->animationSpeed);
+                        frameCount &= (self.frameNo >> trainSignalObject->animationFrameInterval);
                         auto frameIndex = frames[frameCount];
                         frameIndex <<= 3;
                         imageId += frameIndex;
                     }
-                    drawingCtx.drawImage(15, 31, imageId);
+                    drawingCtx.drawImage(ZoomLevel::full, 15, 31, imageId);
 
-                    drawingCtx.popRenderTarget();
+                    drawingCtx.popClip();
                 }
 
                 Widget::drawTab(self, drawingCtx, Widget::kContentUnk, widx::tab_signal);
@@ -1145,8 +1147,8 @@ namespace OpenLoco::Ui::Windows::Construction
             if (!self.isDisabled(widx::tab_overhead))
             {
                 Widget::drawTab(self, drawingCtx, ImageIds::null, widx::tab_overhead);
-                auto x = self.widgets[widx::tab_overhead].left + self.x + 2;
-                auto y = self.widgets[widx::tab_overhead].top + self.y + 2;
+                auto x = self.widgets[widx::tab_overhead].left + 2;
+                auto y = self.widgets[widx::tab_overhead].top + 2;
                 for (auto i = 0; i < 4; i++)
                 {
                     if (cState.modList[i] != 0xFF)
@@ -1157,7 +1159,7 @@ namespace OpenLoco::Ui::Windows::Construction
                         {
                             imageId += (self.frameNo / 2) % 8;
                         }
-                        drawingCtx.drawImage(x, y, imageId);
+                        drawingCtx.drawImage(ZoomLevel::full, x, y, imageId);
                     }
                 }
 
@@ -1263,11 +1265,11 @@ namespace OpenLoco::Ui::Windows::Construction
                 auto roadObj = ObjectManager::get<RoadObject>(newTrackType);
                 if (!roadObj->hasFlags(RoadObjectFlags::isRail))
                 {
-                    getGameState().lastRoadOption = trackType;
+                    getGameState().defaultRoadObjectId = trackType;
                 }
                 else
                 {
-                    getGameState().lastRailroadOption = trackType;
+                    getGameState().defaultRailroadObjectId = trackType;
                 }
             }
             else
@@ -1275,11 +1277,11 @@ namespace OpenLoco::Ui::Windows::Construction
                 auto trackObj = ObjectManager::get<TrackObject>(newTrackType);
                 if (!trackObj->hasFlags(TrackObjectFlags::isRoad))
                 {
-                    getGameState().lastRailroadOption = trackType;
+                    getGameState().defaultRailroadObjectId = trackType;
                 }
                 else
                 {
-                    getGameState().lastRoadOption = trackType;
+                    getGameState().defaultRoadObjectId = trackType;
                 }
             }
             WindowManager::invalidate(WindowType::topToolbar, 0);

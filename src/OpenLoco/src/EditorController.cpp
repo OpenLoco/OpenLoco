@@ -4,7 +4,6 @@
 #include "Date.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
-#include "GameException.hpp"
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "Gui.h"
@@ -31,6 +30,7 @@
 #include "World/CompanyManager.h"
 #include "World/TownManager.h"
 
+#include <OpenLoco/Utility/LookupTable.hpp>
 #include <span>
 
 using namespace OpenLoco::Ui;
@@ -53,7 +53,7 @@ namespace OpenLoco::EditorController
         options.difficulty = 2;
         options.madeAnyChanges = 0;
         options.scenarioFlags = Scenario::ScenarioFlags::landscapeGenerationDone;
-        gameState.lastLandOption = 0xFF;
+        gameState.defaultLandObjectId = 0xFF;
         gameState.lastMapWindowAttributes.flags = WindowFlags::none;
 
         WindowManager::closeAllFloatingWindows();
@@ -129,7 +129,7 @@ namespace OpenLoco::EditorController
         options.riverMeanderRate = 10;
 
         SceneManager::resetSceneAge();
-        throw GameException::Interrupt;
+        SceneManager::requestScene(SceneManager::SceneId::editor);
     }
 
     // 0x0043CB9F
@@ -141,9 +141,27 @@ namespace OpenLoco::EditorController
         Windows::Terraform::setAdjustWaterToolSize(1);
         Windows::Terraform::setClearAreaToolSize(2);
 
-        Windows::ToolbarTop::Editor::open();
-        Windows::ToolbarBottom::Editor::open();
+        Windows::ToolbarTop::open();
+
+        using Windows::EditorStepController::StepDirection;
+        Windows::EditorStepController::open(StepDirection::previous);
+        Windows::EditorStepController::open(StepDirection::next);
+
+        Windows::EditorStatusLine::open();
+
         Gui::resize();
+    }
+
+    static constexpr auto kStepNames = Utility::buildLookupTable<EditorController::Step, StringId>({
+        { EditorController::Step::objectSelection, StringIds::editor_step_object_selection },
+        { EditorController::Step::landscapeEditor, StringIds::editor_step_landscape },
+        { EditorController::Step::scenarioOptions, StringIds::editor_step_options },
+        { EditorController::Step::saveScenario, StringIds::editor_step_save },
+    });
+
+    static StringId getStringForStep(Step step)
+    {
+        return kStepNames.at(step);
     }
 
     Step getCurrentStep()
@@ -151,19 +169,24 @@ namespace OpenLoco::EditorController
         return Scenario::getOptions().editorStep;
     }
 
-    Step getPreviousStep()
+    StringId getCurrentStepString()
     {
-        return Step(enumValue(getCurrentStep()) - 1);
+        return getStringForStep(getCurrentStep());
     }
 
-    Step getNextStep()
+    StringId getPreviousStepString()
     {
-        return Step(enumValue(getCurrentStep()) + 1);
+        return getStringForStep(Step(enumValue(getCurrentStep()) - 1));
+    }
+
+    StringId getNextStepString()
+    {
+        return getStringForStep(Step(enumValue(getCurrentStep()) + 1));
     }
 
     bool canGoBack()
     {
-        return getCurrentStep() != Step::objectSelection;
+        return Scenario::getOptions().editorStep != Step::objectSelection;
     }
 
     // 0x00440165
@@ -257,7 +280,7 @@ namespace OpenLoco::EditorController
             case Step::scenarioOptions:
                 // 0x0043D12C
                 WindowManager::closeAllFloatingWindows();
-                Windows::Terraform::resetLastSelections();
+                Windows::Terraform::resetDefaultObjectIds();
                 Scenario::getOptions().editorStep = Step::landscapeEditor;
                 Windows::LandscapeGeneration::open();
                 break;
@@ -331,7 +354,7 @@ namespace OpenLoco::EditorController
                 }
                 Scenario::sub_4748D4();
                 Scenario::initialiseSnowLine();
-                Windows::Terraform::resetLastSelections();
+                Windows::Terraform::resetDefaultObjectIds();
                 Scenario::getOptions().editorStep = Step::landscapeEditor;
                 Windows::LandscapeGeneration::open();
                 if ((Scenario::getOptions().scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) != Scenario::ScenarioFlags::none)
@@ -409,9 +432,8 @@ namespace OpenLoco::EditorController
 
                 ScenarioManager::loadIndex(true);
 
-                // This ends with a premature tick termination
                 Game::returnToTitle();
-                return; // won't be reached
+                return;
             }
 
             case Step::saveScenario:

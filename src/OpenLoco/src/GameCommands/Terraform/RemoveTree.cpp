@@ -29,7 +29,7 @@ namespace OpenLoco::GameCommands
      * @param flags @<bl>
      * @return @<ebx> - returns the remove cost if successful; otherwise GameCommands::kFailure (in the assembly code we never get into failure path)
      */
-    static uint32_t removeTree(const TreeRemovalArgs& args, const uint8_t flags)
+    static uint32_t removeTree(const TreeRemovalArgs& args, const Flags flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Construction);
 
@@ -68,7 +68,7 @@ namespace OpenLoco::GameCommands
             auto treeObj = ObjectManager::get<TreeObject>(treeElement->treeObjectId());
             currency32_t removalCost = Economy::getInflationAdjustedCost(treeObj->clearCostFactor, treeObj->costIndex, 12);
 
-            if (flags & Flags::apply)
+            if (hasFlags(flags, Flags::apply))
             {
                 World::TileManager::removeTree(element, flags, args.pos);
             }
@@ -82,7 +82,7 @@ namespace OpenLoco::GameCommands
         return kFailure;
     }
 
-    void removeTree(registers& regs, const uint8_t flags)
+    void removeTree(registers& regs, const Flags flags)
     {
         TreeRemovalArgs args(regs);
         regs.ebx = removeTree(args, flags);

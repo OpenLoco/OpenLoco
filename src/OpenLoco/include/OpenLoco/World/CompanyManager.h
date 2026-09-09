@@ -35,7 +35,7 @@ namespace OpenLoco::CompanyManager
     Colour getCompanyColour(CompanyId id);
     Colour getPlayerCompanyColour();
     bool isPlayerCompany(CompanyId id);
-    void update();
+    void tick();
     void updateDaily();
     void updateMonthly1();
     void updateMonthlyHeadquarters();

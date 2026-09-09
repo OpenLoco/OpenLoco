@@ -8,7 +8,7 @@ namespace OpenLoco
     {
         uint16_t frame; // 0x28
 
-        void update();
+        void tick();
 
         static Smoke* create(World::Pos3 loc);
     };

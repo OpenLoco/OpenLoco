@@ -78,6 +78,7 @@ The following libraries/dependencies are used:
 - [sfl](https://github.com/slavenf/sfl-library) (fetched during CMake generation)
 - [breakpad](https://github.com/google/breakpad) (only required on Windows)
 - [tbb](https://www.intel.com/content/www/us/en/developer/tools/oneapi/onetbb.html) (only required if using libstdc++)
+- [gtest](https://github.com/google/googletest) (only required for building tests)
 
 ### Windows
 - 10 / 11

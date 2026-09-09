@@ -58,7 +58,7 @@ namespace OpenLoco::World
     }
 
     // 0x0042DF8B
-    bool BuildingElement::update(const World::Pos2& loc)
+    bool BuildingElement::tick(const World::Pos2& loc)
     {
         // Only update from tile index 0 of multi tile buildings
         if (sequenceIndex())
@@ -172,6 +172,10 @@ namespace OpenLoco::World
             const uint8_t randArr[2] = { static_cast<uint8_t>(randVal), static_cast<uint8_t>(randVal >> 8) };
             for (auto i = 0; i < 2; ++i)
             {
+                if (buildingObj->producedCargoType[i] == 0xFFU)
+                {
+                    continue;
+                }
                 if (randArr[i] >= buildingObj->producedQuantity[i])
                 {
                     continue;

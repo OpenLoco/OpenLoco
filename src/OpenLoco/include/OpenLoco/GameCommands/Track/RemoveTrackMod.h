@@ -43,5 +43,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void removeTrackMod(registers& regs, const uint8_t flags);
+    void removeTrackMod(registers& regs, const Flags flags);
 }

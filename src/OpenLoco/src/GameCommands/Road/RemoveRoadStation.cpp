@@ -89,7 +89,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0048D2AC
-    static currency32_t removeRoadStation(const RoadStationRemovalArgs& args, const uint8_t flags)
+    static currency32_t removeRoadStation(const RoadStationRemovalArgs& args, const Flags flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3(16, 16, 0));
@@ -167,7 +167,7 @@ namespace OpenLoco::GameCommands
                 totalCost += (removeCostBase * World::TrackData::getRoadMiscData(args.roadId).costFactor) / 256;
             }
 
-            if ((flags & Flags::apply) != 0)
+            if (hasFlags(flags, Flags::apply))
             {
                 for (auto* roadEntry = roadRange.begin; roadEntry != roadRange.end; ++roadEntry)
                 {
@@ -183,7 +183,7 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        if (updateStationTileRegistration && (flags & Flags::apply) != 0)
+        if (updateStationTileRegistration && hasFlags(flags, Flags::apply))
         {
             auto* station = StationManager::get(foundStationId);
             removeTileFromStation(foundStationId, roadStart, args.rotation);
@@ -198,7 +198,7 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void removeRoadStation(registers& regs, const uint8_t flags)
+    void removeRoadStation(registers& regs, const Flags flags)
     {
         regs.ebx = removeRoadStation(RoadStationRemovalArgs(regs), flags);
     }

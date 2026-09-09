@@ -42,5 +42,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void createSignal(registers& regs, const uint8_t flags);
+    void createSignal(registers& regs, const Flags flags);
 }

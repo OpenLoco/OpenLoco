@@ -17,7 +17,7 @@ namespace OpenLoco
     static constexpr int32_t kGravity = 5041;
 
     // 0x004406A0
-    void VehicleCrashParticle::update()
+    void VehicleCrashParticle::tick()
     {
         invalidateSprite();
 

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Economy/Currency.h"
-#include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <OpenLoco/Economy/Currency.h>
 #include <OpenLoco/Engine/World.hpp>
+#include <OpenLoco/Types.hpp>
 
 namespace OpenLoco
 {

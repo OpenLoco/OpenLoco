@@ -31,5 +31,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void removeBuilding(registers& regs, const uint8_t flags);
+    void removeBuilding(registers& regs, const Flags flags);
 }

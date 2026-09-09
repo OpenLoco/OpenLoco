@@ -36,13 +36,13 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    static uint32_t cloneVehicle(EntityId head, uint8_t flags)
+    static uint32_t cloneVehicle(EntityId head, Flags flags)
     {
         Vehicles::Vehicle existingTrain(head);
         Vehicles::VehicleHead* newHead = nullptr;
 
         // Get total cost for a new vehicle
-        if (!(flags & Flags::apply))
+        if (!hasFlags(flags, Flags::apply))
         {
             uint32_t totalCost = 0;
             for (auto& car : existingTrain.cars)
@@ -51,7 +51,7 @@ namespace OpenLoco::GameCommands
                 args.vehicleId = EntityId::null;
                 args.vehicleType = car.front->objectId;
 
-                const auto cost = doCommand(args, 0);
+                const auto cost = doCommand(args, Flags::none);
                 if (cost == kFailure)
                 {
                     totalCost = kFailure;
@@ -161,7 +161,7 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
-    void cloneVehicle(registers& regs, const uint8_t flags)
+    void cloneVehicle(registers& regs, const Flags flags)
     {
         regs.ebx = cloneVehicle(EntityId(regs.ax), flags);
     }

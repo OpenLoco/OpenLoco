@@ -2,8 +2,8 @@
 
 #include "BuildingCommon.h"
 #include "Object.h"
-#include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <OpenLoco/Types.hpp>
 #include <span>
 
 namespace OpenLoco
@@ -124,8 +124,8 @@ namespace OpenLoco
 
         bool requiresCargo() const;
         bool producesCargo() const;
-        char* getProducedCargoString(const char* buffer) const;
-        char* getRequiredCargoString(const char* buffer) const;
+        char* getProducedCargoString(char* buffer) const;
+        char* getRequiredCargoString(char* buffer) const;
         void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
         void drawIndustry(Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y) const;
         bool validate() const;

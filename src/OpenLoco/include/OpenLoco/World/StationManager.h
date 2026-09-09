@@ -15,7 +15,7 @@ namespace OpenLoco::StationManager
     void reset();
     FixedVector<Station, Limits::kMaxStations> stations();
     Station* get(StationId id);
-    void update();
+    void tick();
     void updateLabels();
     void updateDaily();
     StringId generateNewStationName(StationId stationId, TownId townId, World::Pos3 position, uint8_t mode);

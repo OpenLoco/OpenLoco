@@ -68,7 +68,7 @@ namespace OpenLoco::World
             _6 &= ~0x3F;
             _6 |= value & 0x3F;
         }
-        bool update(const World::Pos2& loc);
+        bool tick(const World::Pos2& loc);
     };
 #pragma pack(pop)
     static_assert(sizeof(BuildingElement) == kTileElementSize);

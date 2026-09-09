@@ -10,7 +10,7 @@
 namespace OpenLoco::GameCommands
 {
     // 0x004A6479
-    static currency32_t createTrackMod(const TrackModsPlacementArgs& args, uint8_t flags)
+    static currency32_t createTrackMod(const TrackModsPlacementArgs& args, Flags flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3(16, 16, 0));
@@ -79,7 +79,7 @@ namespace OpenLoco::GameCommands
             setErrorText(StringIds::track_road_unsuitable);
             return kFailure;
         }
-        if (result.networkTooComplex && (flags & Flags::apply) && !(flags & Flags::ghost))
+        if (result.networkTooComplex && hasFlags(flags, Flags::apply) && !hasFlags(flags, Flags::ghost))
         {
             Ui::Windows::Error::open(StringIds::null, StringIds::too_much_track_some_track_not_upgraded);
         }
@@ -87,7 +87,7 @@ namespace OpenLoco::GameCommands
         return result.cost;
     }
 
-    void createTrackMod(registers& regs, const uint8_t flags)
+    void createTrackMod(registers& regs, const Flags flags)
     {
         regs.ebx = createTrackMod(TrackModsPlacementArgs(regs), flags);
     }

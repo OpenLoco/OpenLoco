@@ -11,11 +11,11 @@
 namespace OpenLoco::GameCommands
 {
     // 0x004BAB63
-    static uint32_t vehicleSpeedControl(const VehicleSpeedControlArgs& args, const uint8_t flags)
+    static uint32_t vehicleSpeedControl(const VehicleSpeedControlArgs& args, const Flags flags)
     {
         setExpenditureType(ExpenditureType::TrainRunningCosts);
 
-        if (!(flags & Flags::apply))
+        if (!hasFlags(flags, Flags::apply))
         {
             return 0;
         }
@@ -45,7 +45,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehicleSpeedControl(registers& regs, const uint8_t flags)
+    void vehicleSpeedControl(registers& regs, const Flags flags)
     {
         regs.ebx = vehicleSpeedControl(VehicleSpeedControlArgs(regs), flags);
     }

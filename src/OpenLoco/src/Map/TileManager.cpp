@@ -217,7 +217,7 @@ namespace OpenLoco::World::TileManager
     {
         _periodicDefragStartTile = 0;
         getGameState().tileUpdateStartLocation = World::Pos2(0, 0);
-        const auto landType = getGameState().lastLandOption == 0xFF ? 0 : getGameState().lastLandOption;
+        const auto landType = getGameState().defaultLandObjectId == 0xFF ? 0 : getGameState().defaultLandObjectId;
 
         storeClearAll();
         if (tileState().entries.size() != kMaxElements)
@@ -1168,7 +1168,7 @@ namespace OpenLoco::World::TileManager
         return nearbyWaterTiles;
     }
 
-    static bool update(TileElementEntry& el, const World::Pos2& loc)
+    static bool tick(TileElementEntry& el, const World::Pos2& loc)
     {
         switch (el.type())
         {
@@ -1180,7 +1180,7 @@ namespace OpenLoco::World::TileManager
             case ElementType::building:
             {
                 auto& elBuilding = el.get<BuildingElement>();
-                return elBuilding.update(loc);
+                return elBuilding.tick(loc);
             }
             case ElementType::tree:
             {
@@ -1189,12 +1189,12 @@ namespace OpenLoco::World::TileManager
             case ElementType::road:
             {
                 auto& elRoad = el.get<RoadElement>();
-                return elRoad.update(loc);
+                return elRoad.tick(loc);
             }
             case ElementType::industry:
             {
                 auto& elIndustry = el.get<IndustryElement>();
-                return elIndustry.update(loc);
+                return elIndustry.tick(loc);
             }
             case ElementType::track: break;
             case ElementType::station: break;
@@ -1205,7 +1205,7 @@ namespace OpenLoco::World::TileManager
     }
 
     // 0x00463ABA
-    void update()
+    void tick()
     {
         if (!Game::hasFlags(GameStateFlags::tileManagerLoaded))
         {
@@ -1227,7 +1227,7 @@ namespace OpenLoco::World::TileManager
                     }
 
                     // If update removed/added tiles we must stop loop as pointer is invalid
-                    if (!update(el, pos))
+                    if (!tick(el, pos))
                     {
                         break;
                     }
@@ -1258,7 +1258,7 @@ namespace OpenLoco::World::TileManager
     // esi = X86Pointer(&element);
     // ax = pos.x;
     // cx = pos.y;
-    void removeTree(TileElementEntry& entry, const uint8_t flags, const World::Pos2& pos)
+    void removeTree(TileElementEntry& entry, const GameCommands::Flags flags, const World::Pos2& pos)
     {
         auto& element = entry.get<World::TreeElement>();
         if ((!element.isGhost() && !element.isAiAllocated())
@@ -1268,7 +1268,7 @@ namespace OpenLoco::World::TileManager
             playDemolishTreeSound(loc);
         }
 
-        if ((flags & GameCommands::Flags::ghost) == 0)
+        if (!GameCommands::hasFlags(flags, GameCommands::Flags::ghost))
         {
             auto treeObj = ObjectManager::get<TreeObject>(element.treeObjectId());
             auto ratingReduction = treeObj->demolishRatingReduction;
@@ -1455,7 +1455,7 @@ namespace OpenLoco::World::TileManager
                 [hasTrack](World::TrackElement& elTrack) { if (hasTrack) { elTrack.setHasLevelCrossing(false); } },
                 [hasRoad](World::RoadElement& elRoad) { if (hasRoad) {
                     elRoad.setHasLevelCrossing(false);
-                    elRoad.setUnk7_10(false);
+                    elRoad.setLevelCrossingClosed(false);
                     elRoad.setLevelCrossingObjectId(0);
                 } });
         }
@@ -1496,7 +1496,7 @@ namespace OpenLoco::World::TileManager
     }
 
     // 0x00468651
-    uint32_t adjustSurfaceHeight(World::Pos2 pos, SmallZ targetBaseZ, uint8_t slopeFlags, World::TileClearance::RemovedBuildings& removedBuildings, uint8_t flags)
+    uint32_t adjustSurfaceHeight(World::Pos2 pos, SmallZ targetBaseZ, uint8_t slopeFlags, World::TileClearance::RemovedBuildings& removedBuildings, GameCommands::Flags flags)
     {
         if (!validCoords(pos))
         {
@@ -1504,14 +1504,14 @@ namespace OpenLoco::World::TileManager
             return GameCommands::kFailure;
         }
 
-        if (targetBaseZ < 4)
+        if (targetBaseZ < World::kMinTileHeightSmallZ)
         {
             GameCommands::setErrorText(StringIds::error_too_low);
             return GameCommands::kFailure;
         }
-        if (targetBaseZ > 160
-            || (targetBaseZ == 160 && (slopeFlags & 0x1F) != 0)
-            || (targetBaseZ == 156 && (slopeFlags & 0x10) != 0))
+        if (targetBaseZ > World::kMaxTileHeightSmallZ
+            || (targetBaseZ == World::kMaxTileHeightSmallZ && (slopeFlags & 0x1F) != 0)
+            || (targetBaseZ == World::kMaxTileHeightSmallZ - World::kSmallZStep && (slopeFlags & 0x10) != 0))
         {
             GameCommands::setErrorText(StringIds::error_too_high);
             return GameCommands::kFailure;
@@ -1519,7 +1519,7 @@ namespace OpenLoco::World::TileManager
 
         currency32_t totalCost = 0;
 
-        if (flags & GameCommands::Flags::apply)
+        if (GameCommands::hasFlags(flags, GameCommands::Flags::apply))
         {
             removeSurfaceIndustry(pos);
 
@@ -1529,7 +1529,7 @@ namespace OpenLoco::World::TileManager
             }
 
             auto clearHeight = getHeight(pos).landHeight;
-            removeAllWallsOnTileAbove(toTileSpace(pos), clearHeight / 4);
+            removeAllWallsOnTileAbove(toTileSpace(pos), clearHeight / World::kSmallZStep);
         }
 
         // Compute cost of landscape operation
@@ -1641,7 +1641,7 @@ namespace OpenLoco::World::TileManager
             }
         }
 
-        if (!(flags & GameCommands::Flags::apply))
+        if (!GameCommands::hasFlags(flags, GameCommands::Flags::apply))
         {
             return totalCost;
         }
@@ -1673,7 +1673,7 @@ namespace OpenLoco::World::TileManager
     }
 
     // 0x004C4C28
-    uint32_t adjustWaterHeight(World::Pos2 pos, SmallZ targetHeight, World::TileClearance::RemovedBuildings& removedBuildings, uint8_t flags)
+    uint32_t adjustWaterHeight(World::Pos2 pos, SmallZ targetHeight, World::TileClearance::RemovedBuildings& removedBuildings, GameCommands::Flags flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Construction);
         GameCommands::setPosition(World::Pos3(pos.x + World::kTileSize / 2, pos.y + World::kTileSize / 2, targetHeight * kMicroToSmallZStep));
@@ -1692,7 +1692,7 @@ namespace OpenLoco::World::TileManager
 
         currency32_t totalCost = 0;
 
-        if (flags & GameCommands::Flags::apply)
+        if (GameCommands::hasFlags(flags, GameCommands::Flags::apply))
         {
             removeSurfaceIndustry(pos);
 
@@ -1738,7 +1738,7 @@ namespace OpenLoco::World::TileManager
         auto* waterObj = ObjectManager::get<WaterObject>();
         totalCost += Economy::getInflationAdjustedCost(waterObj->costFactor, waterObj->costIndex, 10);
 
-        if (flags & GameCommands::Flags::apply)
+        if (GameCommands::hasFlags(flags, GameCommands::Flags::apply))
         {
             if (targetHeight <= surface->baseZ())
             {

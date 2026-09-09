@@ -1019,11 +1019,11 @@ strings:
   994: ???
   995: ???
 
-  996: "{STRINGID}:{MOVE_X 215}{STRINGID}{STRINGID}"
+  996: "{STRINGID}:"
   997: "SHIFT + "
   998: "CTRL + "
   999: Alterar Atalhos de Teclado
-  1000: "{COLOUR WINDOW_2}Pressione uma nova tecla de atalho para:{NEWLINE}{NEWLINE_SMALLER}{COLOUR BLACK}“{STRINGID}”"
+  1000: "{COLOUR WINDOW_2}Pressione uma nova tecla de atalho para:"
   1001: "{SMALLFONT}{COLOUR BLACK}Clique na descrição do atalho para selecionar uma nova tecla"
   1002: Mover câmera quando o cursor estiver na borda da tela
   1003: "{SMALLFONT}{COLOUR BLACK}Move a câmera quando o cursor do mouse estiver na borda da tela"
@@ -1039,7 +1039,7 @@ strings:
   1013: Cenário já instalado
   1014: "{OUTLINE}{COLOUR WINDOW_1}{STRINGID}"
   1015: "{OUTLINE}{COLOUR WINDOW_2}(Pressione uma tecla ou botão do mouse para tomar controle)"
-  1016: Outra instância de Chris Sawyer's Locomotion já está rodando
+  1016: Outra instância de OpenLoco já está rodando
 
   1017: Agradecimentos Músicais...
   1018: Agradecimentos Músicais

@@ -1,4 +1,5 @@
 #include <OpenLoco/Core/Timer.hpp>
+#include <chrono>
 #include <gtest/gtest.h>
 #include <thread>
 

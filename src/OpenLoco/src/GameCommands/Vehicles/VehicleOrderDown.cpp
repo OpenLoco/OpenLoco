@@ -9,7 +9,7 @@
 namespace OpenLoco::GameCommands
 {
     // 0x00470E06
-    static uint32_t vehicleOrderDown(const VehicleOrderDownArgs& args, uint8_t flags)
+    static uint32_t vehicleOrderDown(const VehicleOrderDownArgs& args, Flags flags)
     {
         auto* head = EntityManager::get<Vehicles::VehicleHead>(args.head);
         if (head == nullptr)
@@ -18,7 +18,7 @@ namespace OpenLoco::GameCommands
         }
 
         GameCommands::setPosition(head->position);
-        if (!(flags & GameCommands::Flags::apply))
+        if (!hasFlags(flags, GameCommands::Flags::apply))
         {
             return 0;
         }
@@ -63,7 +63,7 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void vehicleOrderDown(registers& regs, const uint8_t flags)
+    void vehicleOrderDown(registers& regs, const Flags flags)
     {
         regs.ebx = vehicleOrderDown(VehicleOrderDownArgs(regs), flags);
     }

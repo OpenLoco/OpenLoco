@@ -29,9 +29,22 @@ namespace OpenLoco::Platform
 {
     static constexpr auto kSingleInstanceMutexName = L"OpenLocoMutex";
 
+    void initialise()
+    {
+        // Ensures that assert dialogs allow for ignoring them (not the default behaviour for console subsystem)
+        _set_error_mode(_OUT_TO_MSGBOX);
+
+        CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+    }
+
     uint32_t getTime()
     {
         return timeGetTime();
+    }
+
+    fs::path getDataDirectory()
+    {
+        return Platform::getCurrentExecutablePath().parent_path() / "data";
     }
 
     fs::path getUserDirectory()
@@ -73,7 +86,7 @@ namespace OpenLoco::Platform
 
         // Initialize COM and get a pointer to the shell memory allocator
         LPMALLOC lpMalloc;
-        if (SUCCEEDED(CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED)) && SUCCEEDED(SHGetMalloc(&lpMalloc)))
+        if (SUCCEEDED(SHGetMalloc(&lpMalloc)))
         {
             auto titleW = Utility::toUtf16(title);
             BROWSEINFOW bi{};
@@ -91,7 +104,6 @@ namespace OpenLoco::Platform
         {
             std::cerr << "Error opening directory browse window";
         }
-        CoUninitialize();
 
         // SHBrowseForFolderW might minimize the main window,
         // so make sure that it's visible again.
@@ -147,6 +159,17 @@ namespace OpenLoco::Platform
     {
         auto result = std::getenv(name.c_str());
         return result == nullptr ? std::string() : result;
+    }
+
+    std::vector<fs::path> getLocoInstallSearchPaths()
+    {
+        return {
+            "C:/Program Files (x86)/Atari/Locomotion",
+            "C:/GOG Games/Chris Sawyer's Locomotion",
+            "C:/GOG Games/Locomotion",
+            "C:/Program Files/Steam/steamapps/common/Locomotion",
+            "C:/Program Files (x86)/Steam/steamapps/common/Locomotion",
+        };
     }
 
     bool isRunningInWine()

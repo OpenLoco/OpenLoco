@@ -31,5 +31,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void changeLandMaterial(registers& regs, const uint8_t flags);
+    void changeLandMaterial(registers& regs, const Flags flags);
 }

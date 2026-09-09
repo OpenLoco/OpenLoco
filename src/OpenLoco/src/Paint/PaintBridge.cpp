@@ -1396,7 +1396,7 @@ namespace OpenLoco::Paint
 
         // 0x0042BED2
         // Paint shadow
-        if (session.getRenderTarget()->zoomLevel <= 1)
+        if (session.getZoom() <= 1)
         {
             auto displaySlope = 0;
             auto height = session.getWaterHeight2();

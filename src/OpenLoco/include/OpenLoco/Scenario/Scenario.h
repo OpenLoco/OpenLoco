@@ -82,7 +82,7 @@ namespace OpenLoco::Scenario
     constexpr uint8_t kMinRiverMeanderRate = 0;
     constexpr uint8_t kMaxRiverMeanderRate = 20;
 
-    constexpr uint8_t kMinBaseLandHeight = 0;
+    constexpr uint8_t kMinBaseLandHeight = 1;
     constexpr uint8_t kMaxBaseLandHeight = 15;
 
     constexpr uint8_t kMinHillDensity = 0;
@@ -138,7 +138,7 @@ namespace OpenLoco::Scenario
     /**
      * Resets the game state (e.g. companies, year, money etc.) for starting a new scenario.
      */
-    [[noreturn]] void start();
+    void start();
 
     void formatChallengeArguments(const Objective& objective, const ObjectiveProgress& progress, FormatArguments& args);
     void sub_46115C();

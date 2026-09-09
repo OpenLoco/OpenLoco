@@ -23,6 +23,7 @@
 #include "Objects/TrackObject.h"
 #include "Objects/VehicleObject.h"
 #include "OpenLoco.h"
+#include "Tutorial.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ScrollView.h"
 #include "Ui/TextInput.h"
@@ -84,6 +85,38 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         scrollview_vehicle_selection,
         scrollview_vehicle_preview,
     };
+
+    namespace Widx
+    {
+        constexpr WidgetId kFrame{ "frame" };
+        constexpr WidgetId kCaption{ "caption" };
+        constexpr WidgetId kCloseButton{ "close_button" };
+        constexpr WidgetId kPanel{ "panel" };
+        constexpr WidgetId kSearchBox{ "searchBox" };
+        constexpr WidgetId kSearchClearButton{ "searchClearButton" };
+        constexpr WidgetId kFilterLabel{ "filterLabel" };
+        constexpr WidgetId kFilterDropdown{ "filterDropdown" };
+        constexpr WidgetId kCargoLabel{ "cargoLabel" };
+        constexpr WidgetId kCargoDropdown{ "cargoDropdown" };
+        constexpr WidgetId kSortLabel{ "sortLabel" };
+        constexpr WidgetId kSortDropdown{ "sortDropdown" };
+        constexpr WidgetId kTabBuildNewTrains{ "tab_build_new_trains" };
+        constexpr WidgetId kTabBuildNewBuses{ "tab_build_new_buses" };
+        constexpr WidgetId kTabBuildNewTrucks{ "tab_build_new_trucks" };
+        constexpr WidgetId kTabBuildNewTrams{ "tab_build_new_trams" };
+        constexpr WidgetId kTabBuildNewAircraft{ "tab_build_new_aircraft" };
+        constexpr WidgetId kTabBuildNewShips{ "tab_build_new_ships" };
+        constexpr WidgetId kTabTrackType0{ "tab_track_type_0" };
+        constexpr WidgetId kTabTrackType1{ "tab_track_type_1" };
+        constexpr WidgetId kTabTrackType2{ "tab_track_type_2" };
+        constexpr WidgetId kTabTrackType3{ "tab_track_type_3" };
+        constexpr WidgetId kTabTrackType4{ "tab_track_type_4" };
+        constexpr WidgetId kTabTrackType5{ "tab_track_type_5" };
+        constexpr WidgetId kTabTrackType6{ "tab_track_type_6" };
+        constexpr WidgetId kTabTrackType7{ "tab_track_type_7" };
+        constexpr WidgetId kScrollviewVehicleSelection{ "scrollview_vehicle_selection" };
+        constexpr WidgetId kScrollviewVehiclePreview{ "scrollview_vehicle_preview" };
+    }
 
     enum scrollIdx
     {
@@ -223,39 +256,39 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
     // 0x5231D0
     static constexpr auto _widgets = makeWidgets(
-        Widgets::Frame({ 0, 0 }, { 380, 233 }, WindowColour::primary),
-        Widgets::Caption({ 1, 1 }, { 378, 13 }, Widgets::Caption::Style::colourText, WindowColour::primary),
-        Widgets::ImageButton({ 365, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        Widgets::Panel({ 0, 41 }, { 380, 192 }, WindowColour::secondary),
+        Widgets::Frame(Widx::kFrame, { 0, 0 }, { 380, 233 }, WindowColour::primary),
+        Widgets::Caption(Widx::kCaption, { 1, 1 }, { 378, 13 }, Widgets::Caption::Style::colourText, WindowColour::primary),
+        Widgets::ImageButton(Widx::kCloseButton, { 365, 2 }, { 13, 13 }, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        Widgets::Panel(Widx::kPanel, { 0, 41 }, { 380, 192 }, WindowColour::secondary),
 
         // Filter options
-        Widgets::TextBox({ 4, 72 }, { 246, 14 }, WindowColour::secondary),
-        Widgets::Button({ 50, 72 }, { 38, 14 }, WindowColour::secondary, StringIds::clearInput),
-        Widgets::dropdownWidgets({ 3, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterComponents),
-        Widgets::dropdownWidgets({ 48, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterCargoSupported),
-        Widgets::dropdownWidgets({ 93, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::sortComponents),
+        Widgets::TextBox(Widx::kSearchBox, { 4, 72 }, { 246, 14 }, WindowColour::secondary),
+        Widgets::Button(Widx::kSearchClearButton, { 50, 72 }, { 38, 14 }, WindowColour::secondary, StringIds::clearInput),
+        Widgets::dropdownWidgets(Widx::kFilterLabel, Widx::kFilterDropdown, { 3, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterComponents),
+        Widgets::dropdownWidgets(Widx::kCargoLabel, Widx::kCargoDropdown, { 48, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::filterCargoSupported),
+        Widgets::dropdownWidgets(Widx::kSortLabel, Widx::kSortDropdown, { 93, 87 }, { 90, 12 }, WindowColour::secondary, StringIds::sortComponents),
 
         // Primary tabs
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_train_vehicles),
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_buses),
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_trucks),
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_trams),
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_aircraft),
-        Widgets::Tab({ 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_ships),
+        Widgets::Tab(Widx::kTabBuildNewTrains, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_train_vehicles),
+        Widgets::Tab(Widx::kTabBuildNewBuses, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_buses),
+        Widgets::Tab(Widx::kTabBuildNewTrucks, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_trucks),
+        Widgets::Tab(Widx::kTabBuildNewTrams, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_trams),
+        Widgets::Tab(Widx::kTabBuildNewAircraft, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_aircraft),
+        Widgets::Tab(Widx::kTabBuildNewShips, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_ships),
 
         // Secondary tabs
-        Widgets::Tab({ 5, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        Widgets::Tab({ 36, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        Widgets::Tab({ 67, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        Widgets::Tab({ 98, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        Widgets::Tab({ 129, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        Widgets::Tab({ 160, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        Widgets::Tab({ 191, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        Widgets::Tab({ 222, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        Widgets::Tab(Widx::kTabTrackType0, { 5, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        Widgets::Tab(Widx::kTabTrackType1, { 36, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        Widgets::Tab(Widx::kTabTrackType2, { 67, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        Widgets::Tab(Widx::kTabTrackType3, { 98, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        Widgets::Tab(Widx::kTabTrackType4, { 129, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        Widgets::Tab(Widx::kTabTrackType5, { 160, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        Widgets::Tab(Widx::kTabTrackType6, { 191, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        Widgets::Tab(Widx::kTabTrackType7, { 222, 43 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
 
         // Scroll and preview areas
-        Widgets::ScrollView({ 3, 102 }, { 374, 146 }, WindowColour::secondary, Scrollbars::vertical),
-        Widgets::ScrollView({ 250, 44 }, { 180, 66 }, WindowColour::secondary, Scrollbars::none)
+        Widgets::ScrollView(Widx::kScrollviewVehicleSelection, { 3, 102 }, { 374, 146 }, WindowColour::secondary, Scrollbars::vertical),
+        Widgets::ScrollView(Widx::kScrollviewVehiclePreview, { 250, 44 }, { 180, 66 }, WindowColour::secondary, Scrollbars::none)
 
     );
 
@@ -371,8 +404,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         else
         {
             window = create(CompanyManager::getControllingId());
-            window->width = kWindowSize.width;
-            window->height = kWindowSize.height;
+            window->setSize(kWindowSize);
             _buildTargetVehicle = -1;
             if (!isTabId)
             {
@@ -403,6 +435,24 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             resetTrackTypeTabSelection(window);
             sub_4B92A5(window);
 
+            // TODO: REMOVE WHEN REWORKING TUTORIALS (and tutorial.h include above)
+            if (OpenLoco::Tutorial::state() != OpenLoco::Tutorial::State::none)
+            {
+                // Restore vanilla window layout
+                window->width = 380;
+                window->height = 233;
+                window->widgets[widx::searchBox].hidden = true;
+                window->widgets[widx::searchClearButton].hidden = true;
+                window->widgets[widx::filterLabel].hidden = true;
+                window->widgets[widx::filterDropdown].hidden = true;
+                window->widgets[widx::cargoLabel].hidden = true;
+                window->widgets[widx::cargoDropdown].hidden = true;
+                window->widgets[widx::sortLabel].hidden = true;
+                window->widgets[widx::sortDropdown].hidden = true;
+                window->widgets[widx::scrollview_vehicle_selection].top = 72;
+                window->widgets[widx::scrollview_vehicle_selection].bottom = 72 + 146 + 1;
+            }
+
             window->callOnResize();
             window->callPrepareDraw();
             window->initScrollWidgets();
@@ -426,7 +476,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             targetTrackType |= (1 << 7);
             if (targetTrackType == 0xFF)
             {
-                targetTrackType = getGameState().lastTrackTypeOption;
+                targetTrackType = getGameState().defaultTrackTypeObjectId;
             }
         }
 
@@ -772,20 +822,20 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C3576
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        switch (widgetIndex)
+        switch (id)
         {
-            case widx::close_button:
+            case Widx::kCloseButton:
                 WindowManager::close(&window);
                 break;
 
-            case widx::tab_build_new_trains:
-            case widx::tab_build_new_buses:
-            case widx::tab_build_new_trucks:
-            case widx::tab_build_new_trams:
-            case widx::tab_build_new_aircraft:
-            case widx::tab_build_new_ships:
+            case Widx::kTabBuildNewTrains:
+            case Widx::kTabBuildNewBuses:
+            case Widx::kTabBuildNewTrucks:
+            case Widx::kTabBuildNewTrams:
+            case Widx::kTabBuildNewAircraft:
+            case Widx::kTabBuildNewShips:
             {
 
                 if (Input::hasFlag(Input::Flags::toolActive))
@@ -798,9 +848,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 window.rowHeight = kScrollRowHeight[newTab];
                 window.frameNo = 0;
                 window.currentSecondaryTab = 0;
-                if (newTab != enumValue(getGameState().lastBuildVehiclesOption))
+                if (newTab != enumValue(getGameState().defaultBuildVehicleType))
                 {
-                    getGameState().lastBuildVehiclesOption = static_cast<VehicleType>(newTab);
+                    getGameState().defaultBuildVehicleType = static_cast<VehicleType>(newTab);
                     WindowManager::invalidate(WindowType::topToolbar, 0);
                 }
 
@@ -830,14 +880,14 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 window.moveInsideScreenEdges();
                 break;
             }
-            case widx::tab_track_type_0:
-            case widx::tab_track_type_1:
-            case widx::tab_track_type_2:
-            case widx::tab_track_type_3:
-            case widx::tab_track_type_4:
-            case widx::tab_track_type_5:
-            case widx::tab_track_type_6:
-            case widx::tab_track_type_7:
+            case Widx::kTabTrackType0:
+            case Widx::kTabTrackType1:
+            case Widx::kTabTrackType2:
+            case Widx::kTabTrackType3:
+            case Widx::kTabTrackType4:
+            case Widx::kTabTrackType5:
+            case Widx::kTabTrackType6:
+            case Widx::kTabTrackType7:
             {
                 auto tab = widxToTrackTypeTab(widgetIndex);
                 if (window.currentSecondaryTab == tab)
@@ -859,7 +909,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 break;
             }
 
-            case widx::searchClearButton:
+            case Widx::kSearchClearButton:
             {
                 inputSession.clearInput();
                 sub_4B92A5(&window);
@@ -870,9 +920,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         }
     }
 
-    static void onMouseDown(Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id)
+    static void onMouseDown(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const WidgetId id)
     {
-        if (widgetIndex == widx::filterDropdown)
+        if (id == Widx::kFilterDropdown)
         {
             auto& dropdown = self.widgets[widx::filterLabel];
             auto numItems = Config::get().displayLockedVehicles ? 5 : 2;
@@ -912,7 +962,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 Dropdown::setItemSelected(3);
             }
         }
-        else if (widgetIndex == widx::sortDropdown)
+        else if (id == Widx::kSortDropdown)
         {
             auto& dropdown = self.widgets[widx::sortLabel];
             auto numItems = 12;
@@ -943,7 +993,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 Dropdown::setItemSelected(11);
             }
         }
-        else if (widgetIndex == widx::cargoDropdown)
+        else if (id == Widx::kCargoDropdown)
         {
             auto& dropdown = self.widgets[widx::cargoLabel];
             auto numItems = 2U;
@@ -1001,14 +1051,14 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         }
     }
 
-    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, int16_t itemIndex)
+    static void onDropdown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id, int16_t itemIndex)
     {
         if (itemIndex < 0)
         {
             return;
         }
 
-        if (widgetIndex == widx::filterDropdown)
+        if (id == Widx::kFilterDropdown)
         {
             if (itemIndex == 0)
             {
@@ -1027,7 +1077,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 _vehicleFilterFlags ^= VehicleFilterFlags::locked;
             }
         }
-        else if (widgetIndex == widx::sortDropdown)
+        else if (id == Widx::kSortDropdown)
         {
             if (itemIndex == 0)
             {
@@ -1074,7 +1124,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 _vehicleSortAscending = false;
             }
         }
-        else if (widgetIndex == widx::cargoDropdown)
+        else if (id == Widx::kCargoDropdown)
         {
             if (itemIndex >= 2)
             {
@@ -1100,7 +1150,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         window.flags |= WindowFlags::resizable;
 
         auto minWidth = std::max<uint16_t>(_numTrackTypeTabs * 31 + 195, 380);
-        window.setSize({ minWidth, 233 }, kMaxWindowSize);
+        window.setSizeBounds({ minWidth, 233 }, kMaxWindowSize);
 
         auto& scrollArea = window.scrollAreas[scrollIdx::vehicle_selection];
         auto& scrollWidget = window.widgets[widx::scrollview_vehicle_selection];
@@ -1274,9 +1324,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C37CB
-    static Ui::CursorId cursor(Window& window, WidgetIndex_t widgetIdx, [[maybe_unused]] const WidgetId id, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId cursor(Window& window, [[maybe_unused]] WidgetIndex_t widgetIdx, const WidgetId id, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
-        if (widgetIdx != widx::scrollview_vehicle_selection)
+        if (id != Widx::kScrollviewVehicleSelection)
         {
             return fallback;
         }
@@ -1368,17 +1418,14 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
     static void drawSearchBox(Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        char* textBuffer = (char*)StringManager::getString(StringIds::buffer_2039);
+        char* textBuffer = StringManager::getBufferString(StringIds::buffer_2039);
         strncpy(textBuffer, inputSession.buffer.c_str(), 256);
 
         auto& widget = _widgets[widx::searchBox];
-        auto clipped = Gfx::clipRenderTarget(drawingCtx.currentRenderTarget(), Ui::Rect(self.x + widget.left, widget.top + 1 + self.y, widget.width() - 2, widget.height() - 2));
-        if (!clipped)
+        if (!drawingCtx.pushClip(Ui::Rect(widget.left, widget.top + 1, widget.width() - 2, widget.height() - 2)))
         {
             return;
         }
-
-        drawingCtx.pushRenderTarget(*clipped);
 
         auto tr = Gfx::TextRenderer(drawingCtx);
 
@@ -1399,7 +1446,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             drawingCtx.fillRect(position.x, position.y, position.x, position.y + 9, Colours::getShade(self.getColour(WindowColour::secondary).c(), 9), Gfx::RectFlags::none);
         }
 
-        drawingCtx.popRenderTarget();
+        drawingCtx.popClip();
     }
 
     // 0x4C2F23
@@ -1427,7 +1474,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 }
             }
 
-            auto point = Point(self.x + 2, self.y + self.height - 13);
+            auto point = Point(2, self.height - 13);
             tr.drawStringLeftClipped(point, self.width - 186, Colour::black, bottomLeftMessage, args);
         }
 
@@ -1441,7 +1488,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             args.push(cargoObj->unitInlineSprite);
 
             auto& widget = self.widgets[widx::cargoLabel];
-            auto point = Point(self.x + widget.left + 2, self.y + widget.top);
+            auto point = Point(widget.left + 2, widget.top);
             tr.drawStringLeftClipped(point, widget.width() - 15, Colour::black, StringIds::wcolour2_stringid, args);
         }
 
@@ -1451,7 +1498,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         }
 
         auto vehicleObj = ObjectManager::get<VehicleObject>(self.rowHover);
-        auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
+        auto buffer = StringManager::getBufferString(StringIds::buffer_1250);
 
         {
             auto cost = Economy::getInflationAdjustedCost(vehicleObj->costFactor, vehicleObj->costIndex, 6);
@@ -1566,8 +1613,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         vehicleObj->getCargoString(buffer);
 
-        auto x = self.widgets[widx::scrollview_vehicle_selection].right + self.x + 2;
-        auto y = self.widgets[widx::scrollview_vehicle_preview].bottom + self.y + 2;
+        auto x = self.widgets[widx::scrollview_vehicle_selection].right + 2;
+        auto y = self.widgets[widx::scrollview_vehicle_preview].bottom + 2;
         tr.drawStringLeftWrapped(Point(x, y), 180, Colour::black, StringIds::buffer_1250);
     }
 
@@ -1684,7 +1731,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 drawVehicleOverview(drawingCtx, { 90, 37 }, window.rowHover, yaw, roll, CompanyManager::getControllingId());
 
                 auto vehicleObj = ObjectManager::get<VehicleObject>(window.rowHover);
-                auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
+                auto buffer = StringManager::getBufferString(StringIds::buffer_1250);
                 buffer = StringManager::formatString(buffer, vehicleObj->name);
                 auto usableCargoTypes = vehicleObj->compatibleCargoCategories[0] | vehicleObj->compatibleCargoCategories[1];
 
@@ -1738,7 +1785,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 auto trackType = vehicleObj->trackType;
                 if (trackType == 0xFF)
                 {
-                    trackType = getGameState().lastTrackTypeOption;
+                    trackType = getGameState().defaultTrackTypeObjectId;
                 }
                 roadTrackTypes |= (1 << trackType);
             }
@@ -1800,13 +1847,13 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         uint32_t trackTab = 0;
         for (; trackTab < _numTrackTypeTabs; trackTab++)
         {
-            if (getGameState().lastRailroadOption == _trackTypesForTab[trackTab])
+            if (getGameState().defaultRailroadObjectId == _trackTypesForTab[trackTab])
             {
                 found = true;
                 break;
             }
 
-            if (getGameState().lastRoadOption == _trackTypesForTab[trackTab])
+            if (getGameState().defaultRoadObjectId == _trackTypesForTab[trackTab])
             {
                 found = true;
                 break;
@@ -1844,11 +1891,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         if (setRail)
         {
-            getGameState().lastRailroadOption = trackType | (isRoad ? (1 << 7) : 0);
+            getGameState().defaultRailroadObjectId = trackType | (isRoad ? (1 << 7) : 0);
         }
         else
         {
-            getGameState().lastRoadOption = trackType | (isRoad ? (1 << 7) : 0);
+            getGameState().defaultRoadObjectId = trackType | (isRoad ? (1 << 7) : 0);
         }
 
         // The window number doesn't really matter as there is only one top toolbar
@@ -1879,14 +1926,14 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         auto companyColour = CompanyManager::getCompanyColour(CompanyId(window.number));
 
-        auto left = window.x;
-        auto top = window.y + 69;
+        auto left = 0;
+        auto top = 69;
         auto right = left + window.width - 187;
         auto bottom = top;
         drawingCtx.fillRect(left, top, right, bottom, Colours::getShade(window.getColour(WindowColour::secondary).c(), 7), Gfx::RectFlags::none);
 
-        left = window.x + window.width - 187;
-        top = window.y + 41;
+        left = window.width - 187;
+        top = 41;
         right = left;
         bottom = top + 27;
         drawingCtx.fillRect(left, top, right, bottom, Colours::getShade(window.getColour(WindowColour::secondary).c(), 7), Gfx::RectFlags::none);
@@ -1896,8 +1943,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             const auto widget = window.widgets[tab + widx::tab_track_type_0];
             if (window.currentSecondaryTab == tab)
             {
-                left = widget.left + window.x + 1;
-                top = widget.top + window.y + 26;
+                left = widget.left + 1;
+                top = widget.top + 26;
                 right = left + 29;
                 bottom = top;
                 drawingCtx.fillRect(left, top, right, bottom, Colours::getShade(window.getColour(WindowColour::secondary).c(), 5), Gfx::RectFlags::none);

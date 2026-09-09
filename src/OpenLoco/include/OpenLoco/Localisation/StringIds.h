@@ -342,8 +342,7 @@ namespace OpenLoco::StringIds
     constexpr StringId click_on_view_select_string_id_start = 334;
     constexpr StringId incompatible_vehicle = 335;
     constexpr StringId too_many_vehicles = 336;
-    constexpr StringId buffer_337 = 337;
-    constexpr StringId buffer_338 = 338;
+    // UNUSED 337, 338 (was buffer string)
     constexpr StringId tooltip_stringid = 339;
     constexpr StringId vehicle_details_tooltip_built = 340;
     constexpr StringId vehicle_details_tooltip_value = 341;
@@ -751,7 +750,7 @@ namespace OpenLoco::StringIds
 
     constexpr StringId tutorial_text = 1014;
     constexpr StringId tutorial_control = 1015;
-    constexpr StringId loco_already_running = 1016;
+    constexpr StringId openloco_already_running = 1016;
     constexpr StringId music_acknowledgements_btn = 1017;
     constexpr StringId music_acknowledgements_caption = 1018;
     constexpr StringId music_copyright = 1019;
@@ -985,7 +984,7 @@ namespace OpenLoco::StringIds
     constexpr StringId road = 1247;
     constexpr StringId no_vehicles_available = 1248;
     constexpr StringId no_compatible_vehicles_available = 1249;
-    constexpr StringId buffer_1250 = 1250;
+    // UNUSED was buffer string 1250
     constexpr StringId stats_cost = 1251;
     constexpr StringId stats_requires = 1252;
     constexpr StringId stats_power = 1253;
@@ -1225,7 +1224,7 @@ namespace OpenLoco::StringIds
     constexpr StringId new_game_currency_tip = 1503;
     constexpr StringId current_game_currency = 1504;
     constexpr StringId new_game_currency = 1505;
-    constexpr StringId preferred_currency_buffer = 1506;
+    // UNUSED was buffer string 1506
     constexpr StringId company_major_news = 1507;
     constexpr StringId competitor_major_news = 1508;
     constexpr StringId company_minor_news = 1509;
@@ -1435,8 +1434,7 @@ namespace OpenLoco::StringIds
     constexpr StringId chat_send_message = 1716;
     constexpr StringId chat_title = 1717;
     constexpr StringId chat_instructions = 1718;
-    constexpr StringId buffer_1719 = 1719;
-
+    // UNUSED was buffer string 1719
     constexpr StringId object_selection_designed = 1723;
     constexpr StringId object_selection_obsolete = 1724;
     constexpr StringId object_selection_power = 1725;
@@ -1752,9 +1750,7 @@ namespace OpenLoco::StringIds
     constexpr StringId position_14th = 2036;
     constexpr StringId position_15th = 2037;
     constexpr StringId num_selected_num_max = 2038;
-    constexpr StringId buffer_2039 = 2039;
-    constexpr StringId buffer_2040 = 2040;
-
+    // UNUSED was buffer string 2039, 2040
     constexpr StringId data_for_following_object_not_found = 2042;
     constexpr StringId not_enough_space_for_graphics = 2043;
     constexpr StringId too_many_objects_of_this_type_selected = 2044;
@@ -2158,6 +2154,29 @@ namespace OpenLoco::StringIds
     constexpr StringId title_preferred_company_name = 2442;
     constexpr StringId enter_preferred_company_name = 2443;
     constexpr StringId cannot_change_company_name = 2444;
+    constexpr StringId town_not_served = 2445;
+    constexpr StringId town_no_deliveries = 2446;
+    constexpr StringId window_browse_home_folder_tooltip = 2447;
+    constexpr StringId keyboard_shortcut_modifier_alt = 2448;
+    constexpr StringId keyboard_shortcut_modifier_right_ctrl = 2449;
+    constexpr StringId keyboard_shortcut_modifier_right_alt = 2450;
+    constexpr StringId keyboard_shortcut_modifiers = 2451;
+    constexpr StringId black_quoted_stringid = 2452;
+    constexpr StringId frame_music = 2453;
+    constexpr StringId play_game_music = 2454;
+    constexpr StringId options_open_jukebox = 2455;
+    constexpr StringId cargo_awaiting_processing = 2456;
+    constexpr StringId cargo_awaiting_transport = 2457;
+    constexpr StringId keyboard_shortcut_binding = 2458;
+    constexpr StringId shortcut_debug_window = 2459;
+    constexpr StringId toolbar_auto_menu = 2460;
+    constexpr StringId toolbar_buttons_centred = 2461;
+    constexpr StringId signal_placement_repeat = 2462;
+    constexpr StringId signal_placement_repeat_tooltip = 2463;
+    constexpr StringId signal_placement_step_size = 2464;
+    constexpr StringId capt_signals_block = 2465;
+    constexpr StringId has_cargo_order = 2466;
+    constexpr StringId transports_cargo = 2467;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
@@ -2176,4 +2195,12 @@ namespace OpenLoco::StringIds
     constexpr StringId temporary_object_load_str_14 = 8206;
     constexpr StringId temporary_object_load_str_15 = 8207;
     constexpr StringId object_strings_begin = 8208;
+
+    constexpr StringId buffer_337 = StringManager::kBufferStringsStart + 0;
+    constexpr StringId buffer_338 = StringManager::kBufferStringsStart + 1;
+    constexpr StringId buffer_1250 = StringManager::kBufferStringsStart + 2;
+    constexpr StringId buffer_1719 = StringManager::kBufferStringsStart + 3;
+    constexpr StringId buffer_2039 = StringManager::kBufferStringsStart + 4;
+    constexpr StringId buffer_2040 = StringManager::kBufferStringsStart + 5;
+    constexpr StringId preferred_currency_buffer = StringManager::kBufferStringsStart + 6;
 }

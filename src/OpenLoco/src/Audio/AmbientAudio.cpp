@@ -28,10 +28,10 @@ namespace OpenLoco::Audio
     static constexpr auto kAmbientNumTreeTilesForForest = 30;
     static constexpr auto kAmbientNumMountainTilesForWilderness = 60;
 
-    static constexpr int32_t getAmbientMaxVolume(uint8_t zoom)
+    static constexpr int32_t getAmbientMaxVolume(ZoomLevel zoom)
     {
-        constexpr int32_t _volumes[]{ -1200, -2000, -3000, -3000 };
-        return _volumes[zoom];
+        constexpr int32_t _volumes[ZoomLevel::count]{ -1200, -1200, -1200, -2000, -3000, -3000 };
+        return _volumes[zoom.index()];
     }
 
     void updateAmbientNoise()
