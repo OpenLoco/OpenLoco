@@ -1251,9 +1251,9 @@ strings:
   1221: "{STRINGID} 통과"
   1222: 경유지 통과
   1223: "{STRINGID} 모두 내림 {SPRITE}"
-  1224: "{STRINGID}을(를) 가득 실을 때까지 대기 {SPRITE}"
+  1224: "{STRINGID}(을)를 가득 실을 때까지 대기 {SPRITE}"
   1225: "{STRINGID} 모두 내림 {SPRITE}"
-  1226: "{STRINGID}을(를) 가득 실을 때까지 대기 {SPRITE}"
+  1226: "{STRINGID}(을)를 가득 실을 때까지 대기 {SPRITE}"
   1227: "{COLOUR WINDOW_2}▶"
   1228: 경로를 삽입할 수 없습니다...
   1229: "{COLOUR WINDOW_3}여기에 있는 경유지를 통과하는{NEWLINE}새로운 경로를 삽입하려면 클릭하세요"
@@ -1846,9 +1846,9 @@ strings:
   1808: 항공기 경로
   1809: 선박 경로
   1810: ""
-  1811: "{STRINGID}(을)를 {STRINGID} 근처에서 건설 중"
-  1812: "{STRINGID}(을)를 {STRINGID} 근처에서 건설 중"
-  1813: "{STRINGID}(을)를 {STRINGID} 근처에서 건설 중"
+  1811: "{STRINGID} 근처에서 {STRINGID} 건설 중"
+  1812: "{STRINGID} 근처에서 {STRINGID} 건설 중"
+  1813: "{STRINGID} 근처에서 {STRINGID} 건설 중"
   1814: "{STRINGID} 근처의 운송 서비스 확인 중"
   1815: "{STRINGID} 근처의 지형 조사 중"
   1816: "{COLOUR RED}파산!"
