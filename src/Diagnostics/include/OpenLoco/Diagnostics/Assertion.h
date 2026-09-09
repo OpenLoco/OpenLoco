@@ -7,6 +7,7 @@
 #include <fmt/format.h>
 #include <functional>
 #include <memory>
+#include <source_location>
 #include <string>
 #include <string_view>
 
@@ -35,11 +36,11 @@ namespace OpenLoco::Diagnostics::Assert
         }
 
         template<typename L, typename R>
-        inline void assertionFailure(std::string_view op, const L& lhs, const R& rhs, const SourceLocation& loc)
+        inline void assertionFailure(std::string_view op, const L& lhs, const R& rhs, const std::source_location& loc)
         {
             Logging::error(
                 "Assertion failure ({}:{}): {} {} {}",
-                loc.file(),
+                OpenLoco::Detail::sanitizePath(loc.file_name()),
                 loc.line(),
                 Detail::formatValue(lhs),
                 op,
@@ -54,7 +55,7 @@ namespace OpenLoco::Diagnostics::Assert
     }
 
     template<typename U1, typename U2>
-    inline void eq(const U1& expected, const U2& actual, const SourceLocation& loc = SourceLocation{})
+    inline void eq(const U1& expected, const U2& actual, const std::source_location& loc = std::source_location::current())
     {
         if (expected != actual)
         {
@@ -64,7 +65,7 @@ namespace OpenLoco::Diagnostics::Assert
     }
 
     template<typename U1, typename U2>
-    inline void neq(const U1& expected, const U2& actual, const SourceLocation& loc = SourceLocation{})
+    inline void neq(const U1& expected, const U2& actual, const std::source_location& loc = std::source_location::current())
     {
         if (expected == actual)
         {
@@ -74,7 +75,7 @@ namespace OpenLoco::Diagnostics::Assert
     }
 
     template<typename U1, typename U2>
-    inline void lt(const U1& lhs, const U2& rhs, const SourceLocation& loc = SourceLocation{})
+    inline void lt(const U1& lhs, const U2& rhs, const std::source_location& loc = std::source_location::current())
     {
         if (!(lhs < rhs))
         {
@@ -84,7 +85,7 @@ namespace OpenLoco::Diagnostics::Assert
     }
 
     template<typename U1, typename U2>
-    inline void le(const U1& lhs, const U2& rhs, const SourceLocation& loc = SourceLocation{})
+    inline void le(const U1& lhs, const U2& rhs, const std::source_location& loc = std::source_location::current())
     {
         if (!(lhs <= rhs))
         {
@@ -94,7 +95,7 @@ namespace OpenLoco::Diagnostics::Assert
     }
 
     template<typename U1, typename U2>
-    inline void gt(const U1& lhs, const U2& rhs, const SourceLocation& loc = SourceLocation{})
+    inline void gt(const U1& lhs, const U2& rhs, const std::source_location& loc = std::source_location::current())
     {
         if (!(lhs > rhs))
         {
@@ -104,7 +105,7 @@ namespace OpenLoco::Diagnostics::Assert
     }
 
     template<typename U1, typename U2>
-    inline void ge(const U1& lhs, const U2& rhs, const SourceLocation& loc = SourceLocation{})
+    inline void ge(const U1& lhs, const U2& rhs, const std::source_location& loc = std::source_location::current())
     {
         if (!(lhs >= rhs))
         {
@@ -113,38 +114,38 @@ namespace OpenLoco::Diagnostics::Assert
         }
     }
 
-    inline void isTrue(bool condition, const SourceLocation& loc = SourceLocation{})
+    inline void isTrue(bool condition, const std::source_location& loc = std::source_location::current())
     {
         if (!condition)
         {
             Logging::error(
                 "Assertion failure ({}:{}): expected true",
-                loc.file(),
+                OpenLoco::Detail::sanitizePath(loc.file_name()),
                 loc.line());
             OPENLOCO_DEBUG_BREAK();
         }
     }
 
-    inline void isFalse(bool condition, const SourceLocation& loc = SourceLocation{})
+    inline void isFalse(bool condition, const std::source_location& loc = std::source_location::current())
     {
         if (condition)
         {
             Logging::error(
                 "Assertion failure ({}:{}): expected false",
-                loc.file(),
+                OpenLoco::Detail::sanitizePath(loc.file_name()),
                 loc.line());
             OPENLOCO_DEBUG_BREAK();
         }
     }
 
     template<Detail::NullablePointer Ptr>
-    inline void isNull(Ptr&& ptr, const SourceLocation& loc = SourceLocation{})
+    inline void isNull(Ptr&& ptr, const std::source_location& loc = std::source_location::current())
     {
         if (ptr != nullptr)
         {
             Logging::error(
                 "Assertion failure ({}:{}): expected null pointer (got {})",
-                loc.file(),
+                OpenLoco::Detail::sanitizePath(loc.file_name()),
                 loc.line(),
                 Detail::formatValue(ptr));
             OPENLOCO_DEBUG_BREAK();
@@ -152,13 +153,13 @@ namespace OpenLoco::Diagnostics::Assert
     }
 
     template<Detail::NullablePointer Ptr>
-    inline void notNull(Ptr&& ptr, const SourceLocation& loc = SourceLocation{})
+    inline void notNull(Ptr&& ptr, const std::source_location& loc = std::source_location::current())
     {
         if (ptr == nullptr)
         {
             Logging::error(
                 "Assertion failure ({}:{}): expected non-null pointer",
-                loc.file(),
+                OpenLoco::Detail::sanitizePath(loc.file_name()),
                 loc.line());
             OPENLOCO_DEBUG_BREAK();
         }
