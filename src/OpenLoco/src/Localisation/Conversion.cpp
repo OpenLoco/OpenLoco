@@ -1,8 +1,10 @@
 #include "Localisation/Conversion.h"
+#include "Localisation/Formatting.h"
 #include "Localisation/Unicode.h"
 #include <algorithm>
 #include <array>
 #include <cstdlib>
+#include <cstring>
 #include <string>
 
 namespace OpenLoco::Localisation
@@ -240,13 +242,78 @@ namespace OpenLoco::Localisation
         return LocoChar::replacement_character;
     }
 
+    static constexpr uint8_t kUnicodePad = 0x7F;
+
+    static std::size_t encodeUtf8(uint8_t* out, utf32_t cp)
+    {
+        if (cp < 0x80)
+        {
+            out[0] = static_cast<uint8_t>(cp);
+            return 1;
+        }
+        if (cp < 0x800)
+        {
+            out[0] = static_cast<uint8_t>(0xC0 | (cp >> 6));
+            out[1] = static_cast<uint8_t>(0x80 | (cp & 0x3F));
+            return 2;
+        }
+        if (cp < 0x10000)
+        {
+            out[0] = static_cast<uint8_t>(0xE0 | (cp >> 12));
+            out[1] = static_cast<uint8_t>(0x80 | ((cp >> 6) & 0x3F));
+            out[2] = static_cast<uint8_t>(0x80 | (cp & 0x3F));
+            return 3;
+        }
+        out[0] = static_cast<uint8_t>(0xF0 | (cp >> 18));
+        out[1] = static_cast<uint8_t>(0x80 | ((cp >> 12) & 0x3F));
+        out[2] = static_cast<uint8_t>(0x80 | ((cp >> 6) & 0x3F));
+        out[3] = static_cast<uint8_t>(0x80 | (cp & 0x3F));
+        return 4;
+    }
+
+    std::size_t writeUnicodeEscape(char* out, utf32_t unicode)
+    {
+        uint8_t payload[4] = { kUnicodePad, kUnicodePad, kUnicodePad, kUnicodePad };
+        encodeUtf8(payload, unicode);
+        out[0] = static_cast<char>(ControlCodes::unicode);
+        std::memcpy(out + 1, payload, 4);
+        return 5;
+    }
+
+    utf32_t decodeUnicodeEscapePayload(const uint8_t payload[4])
+    {
+        uint8_t tmp[5] = { payload[0], payload[1], payload[2], payload[3], 0 };
+        int len = 4;
+        while (len > 0 && tmp[len - 1] == kUnicodePad)
+        {
+            tmp[len - 1] = 0;
+            --len;
+        }
+        const utf8_t* ptr = tmp;
+        return readCodePoint(&ptr);
+    }
+
+    std::size_t writeLocoChar(char* out, utf32_t unicode)
+    {
+        const uint8_t loco = convertUnicodeToLoco(unicode);
+        // Keep the sprite-font mapping for Latin-1 / Loco glyphs. Only emit an
+        // escape when the codepoint cannot fit in a single byte at all.
+        if (unicode < 256 || loco != LocoChar::replacement_character)
+        {
+            *out = static_cast<char>(loco);
+            return 1;
+        }
+        return writeUnicodeEscape(out, unicode);
+    }
+
     std::string convertUnicodeToLoco(const std::string& unicodeString)
     {
         std::string out;
         const uint8_t* input = (uint8_t*)unicodeString.c_str();
         while (utf32_t unicodePoint = readCodePoint(&input))
         {
-            out += convertUnicodeToLoco(unicodePoint);
+            char buf[5];
+            out.append(buf, writeLocoChar(buf, unicodePoint));
         }
 
         return out;

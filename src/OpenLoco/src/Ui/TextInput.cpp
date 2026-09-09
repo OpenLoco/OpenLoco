@@ -1,5 +1,6 @@
 #include "Ui/TextInput.h"
 #include "Graphics/TextRenderer.h"
+#include "Localisation/Conversion.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringManager.h"
 
@@ -7,26 +8,43 @@
 
 namespace OpenLoco::Ui::TextInput
 {
+    static constexpr std::size_t kUnicodeEscapeSize = 5;
+
+    static bool isUnicodeEscapeAt(const std::string& buffer, std::size_t pos)
+    {
+        return pos + kUnicodeEscapeSize <= buffer.size()
+            && static_cast<uint8_t>(buffer[pos]) == ControlCodes::unicode;
+    }
+
+    static std::size_t glyphSizeAt(const std::string& buffer, std::size_t pos)
+    {
+        return isUnicodeEscapeAt(buffer, pos) ? kUnicodeEscapeSize : 1;
+    }
+
+    static std::size_t glyphSizeBefore(const std::string& buffer, std::size_t pos)
+    {
+        if (pos >= kUnicodeEscapeSize && isUnicodeEscapeAt(buffer, pos - kUnicodeEscapeSize))
+        {
+            return kUnicodeEscapeSize;
+        }
+        return pos > 0 ? 1 : 0;
+    }
+
     // Common code from 0x0044685C, 0x004CE910
     bool InputSession::handleInput(uint32_t charCode, uint32_t keyCode)
     {
-        if ((charCode >= SDLK_SPACE && charCode < SDLK_DELETE) || (charCode >= 159 && charCode <= 255))
+        if ((charCode >= SDLK_SPACE && charCode != SDLK_DELETE) || (charCode >= 159 && charCode <= 255))
         {
-            if (inputLenLimit > 0 && buffer.length() >= inputLenLimit)
+            char encoded[5];
+            const auto n = Localisation::writeLocoChar(encoded, charCode);
+            if (inputLenLimit > 0 && buffer.length() + n > inputLenLimit)
             {
                 // Limit reached but we need to consume this input.
                 return true;
             }
 
-            if (cursorPosition == buffer.length())
-            {
-                buffer.append(1, (char)charCode);
-            }
-            else
-            {
-                buffer.insert(cursorPosition, 1, (char)charCode);
-            }
-            cursorPosition += 1;
+            buffer.insert(cursorPosition, encoded, n);
+            cursorPosition += n;
         }
         else if (charCode == SDLK_BACKSPACE)
         {
@@ -36,8 +54,9 @@ namespace OpenLoco::Ui::TextInput
                 return true;
             }
 
-            buffer.erase(cursorPosition - 1, 1);
-            cursorPosition -= 1;
+            const auto n = glyphSizeBefore(buffer, cursorPosition);
+            cursorPosition -= n;
+            buffer.erase(cursorPosition, n);
         }
         else if (keyCode == SDLK_DELETE)
         {
@@ -47,7 +66,7 @@ namespace OpenLoco::Ui::TextInput
                 return true;
             }
 
-            buffer.erase(cursorPosition, 1);
+            buffer.erase(cursorPosition, glyphSizeAt(buffer, cursorPosition));
         }
         else if (keyCode == SDLK_HOME)
         {
@@ -65,7 +84,7 @@ namespace OpenLoco::Ui::TextInput
                 return true;
             }
 
-            cursorPosition -= 1;
+            cursorPosition -= glyphSizeBefore(buffer, cursorPosition);
         }
         else if (keyCode == SDLK_RIGHT)
         {
@@ -75,7 +94,7 @@ namespace OpenLoco::Ui::TextInput
                 return true;
             }
 
-            cursorPosition += 1;
+            cursorPosition += glyphSizeAt(buffer, cursorPosition);
         }
 
         cursorFrame = 0;
@@ -151,34 +170,29 @@ namespace OpenLoco::Ui::TextInput
     // 0x004CEBFB
     void InputSession::sanitizeInput()
     {
-        buffer.erase(
-            std::remove_if(
-                buffer.begin(),
-                buffer.end(),
-                [](unsigned char chr) {
-                    if (chr < ' ')
-                    {
-                        return true;
-                    }
-                    else if (chr <= 'z')
-                    {
-                        return false;
-                    }
-                    else if (chr == 171)
-                    {
-                        return false;
-                    }
-                    else if (chr == 187)
-                    {
-                        return false;
-                    }
-                    else if (chr >= 191)
-                    {
-                        return false;
-                    }
+        std::string out;
+        out.reserve(buffer.size());
+        for (std::size_t i = 0; i < buffer.size();)
+        {
+            if (isUnicodeEscapeAt(buffer, i))
+            {
+                out.append(buffer, i, kUnicodeEscapeSize);
+                i += kUnicodeEscapeSize;
+                continue;
+            }
 
-                    return true;
-                }),
-            buffer.end());
+            const auto chr = static_cast<unsigned char>(buffer[i]);
+            const bool keep = (chr >= ' ' && chr <= 'z') || chr == 171 || chr == 187 || chr >= 191;
+            if (keep)
+            {
+                out.push_back(buffer[i]);
+            }
+            ++i;
+        }
+        buffer = std::move(out);
+        if (cursorPosition > buffer.size())
+        {
+            cursorPosition = buffer.size();
+        }
     }
 }
