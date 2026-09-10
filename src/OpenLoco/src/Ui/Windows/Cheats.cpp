@@ -73,7 +73,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 Widgets::Tab(Widx::kTabCompanies, { 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
                 Widgets::Tab(Widx::kTabVehicles, { 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
                 Widgets::Tab(Widx::kTabTowns, { 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-                Widgets::Tab(Widx::kTabIndustries, {127, 15}, {31, 27}, WindowColour::secondary, ImageIds::tab));
+                Widgets::Tab(Widx::kTabIndustries, { 127, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab));
         }
 
         static void drawTabs(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
@@ -947,11 +947,11 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         enum widx
         {
-            //reliability_group = Common::nextWidx,
+            // reliability_group = Common::nextWidx,
             general_group = Common::nextWidx,
             checkbox_general_prevent_closure,
-            //Maybe make a "Generate random new industry" button here.
-            //Also possibly a "Cancel any current industry closures".
+            // Maybe make a "Generate random new industry" button here.
+            // Also possibly a "Cancel any current industry closures".
             obsolete_group,
             checkbox_obsolete_reduce_closure,
             checkbox_obsolete_allow_generation,
@@ -970,8 +970,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             Widgets::Checkbox(Widx::kCheckboxGeneralPreventClosure, { 10, 62 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_no_industry_closures, StringIds::tooltip_no_industry_closures),
             Widgets::GroupBox({ 4, 83 }, { kWindowSize.width - 8, 45 }, WindowColour::secondary, StringIds::cheat_group_obsolete_industries),
             Widgets::Checkbox(Widx::kCheckboxObsoleteReduceClosure, { 10, 97 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_ignore_industry_obsolete, StringIds::tooltip_ignore_industry_obsolete),
-            Widgets::Checkbox(Widx::kCheckboxObsoleteAllowGeneration, { 10, 111 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_generate_obsolete_industries, StringIds::tooltip_cheat_generate_obsolete_industries)
-        );
+            Widgets::Checkbox(Widx::kCheckboxObsoleteAllowGeneration, { 10, 111 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_generate_obsolete_industries, StringIds::tooltip_cheat_generate_obsolete_industries));
 
         static void prepareDraw(Window& self)
         {
@@ -979,15 +978,15 @@ namespace OpenLoco::Ui::Windows::Cheats
 
             // Might want to disable this widget if the current scenario
             // has industry closures disabled.
-            if (Config::get().preventAllIndustryClosures) 
+            if (Config::get().preventAllIndustryClosures)
             {
                 self.activatedWidgets |= (1 << widx::checkbox_general_prevent_closure);
-                self.disabledWidgets  |= (1 << widx::checkbox_obsolete_reduce_closure);
+                self.disabledWidgets |= (1 << widx::checkbox_obsolete_reduce_closure);
             }
-            else 
+            else
             {
                 self.activatedWidgets &= ~(1 << widx::checkbox_general_prevent_closure);
-                self.disabledWidgets  &= ~(1 << widx::checkbox_obsolete_reduce_closure);
+                self.disabledWidgets &= ~(1 << widx::checkbox_obsolete_reduce_closure);
             }
             if (Config::get().reduceObsoleteIndustryClosures)
             {
@@ -1033,7 +1032,6 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Widx::kCheckboxGeneralPreventClosure:
                 {
                     Config::get().preventAllIndustryClosures = !Config::get().preventAllIndustryClosures;
-
 
                     Config::write();
                     WindowManager::invalidateWidget(self.type, self.number, widx::checkbox_general_prevent_closure);

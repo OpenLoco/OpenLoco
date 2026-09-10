@@ -811,7 +811,7 @@ namespace OpenLoco::World::MapGenerator
             {
                 continue;
             }
-            
+
             // Don't generate obsolete industries, unless the
             // "generate obsolete industries" flag is active.
             if (getCurrentYear() >= industryObj->obsoleteYear && !Scenario::getOptions().genObsoleteIndustries)
