@@ -6,6 +6,7 @@
 - Change: [#3973] Game already running error message now says "OpenLoco" instead of "Chris Sawyer's Locomotion".
 - Change: [#3974] The vehicle list can now be filtered by vehicles that transport cargo, rather than just 'wait for' orders.
 - Change: [#3995] On POSIX/Linux/BSD, OpenLoco will now look in /usr/share/openloco for its application data.
+- Change: [#4009] Correct typos and leftover English phrases in the Korean localisation.
 - Fix: [#2753] Unable to remove walls and trees at heights above 127.
 - Fix: [#2992] Track and Road additions may incorrectly draw on some curves.
 - Fix: [#3112] Scenario challenge is not failed when exceeding its time limit.
@@ -899,3 +900,4 @@
 - Feature: Clicking track / road construction while holding shift will place 10 pieces in a row.
 - Change: [#79] Store `game.cfg`, `plugin.dat` and `scores.dat` in OpenLoco config directory.
 - Change: [#79] Disable file existence and size checks.
+
