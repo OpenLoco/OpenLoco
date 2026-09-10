@@ -684,7 +684,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop
         Dropdown::add(11, 0);
         Dropdown::add(12, StringIds::dropdown_without_checkmark, StringIds::menu_town_names_displayed);
         Dropdown::add(13, StringIds::dropdown_without_checkmark, StringIds::menu_station_names_displayed);
-        Dropdown::showBelow(&self, widgetIndex, 14, 0);
+        Dropdown::add(14, 0);
+        Dropdown::add(15, StringIds::dropdown_without_checkmark, StringIds::menu_open_view_clipping);
+        Dropdown::showBelow(&self, widgetIndex, 16, 0);
 
         ViewportFlags current_viewport_flags = WindowManager::getMainWindow()->viewports[0]->flags;
 
@@ -809,6 +811,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop
         else if (itemIndex == 13)
         {
             viewport->flags ^= ViewportFlags::hideStationNames;
+        }
+        else if (itemIndex == 15)
+        {
+            ViewClipping::open();
         }
 
         mainWindow->invalidate();

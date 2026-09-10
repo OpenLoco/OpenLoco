@@ -496,6 +496,11 @@ namespace OpenLoco::Ui::Windows
         void removeTrainFromList(Window& self, EntityId head);
     }
 
+    namespace ViewClipping
+    {
+        Window* open();
+    }
+
     namespace Debug
     {
         Window* open();

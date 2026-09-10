@@ -608,6 +608,35 @@ namespace OpenLoco::Input::Shortcuts
         }
     }
 
+    static void openViewClipping()
+    {
+        Windows::ViewClipping::open();
+    }
+
+    static void maxClipIncrement()
+    {
+        setMaxClipHeight(getMaxClipHeight() + 0x10);
+        auto window = WindowManager::getMainWindow();
+        if (window == nullptr)
+        {
+            return;
+        }
+
+        window->invalidate();
+    }
+
+    static void maxClipDecrement()
+    {
+        setMaxClipHeight(getMaxClipHeight() - 0x10);
+        auto window = WindowManager::getMainWindow();
+        if (window == nullptr)
+        {
+            return;
+        }
+
+        window->invalidate();
+    }
+
     static void constructionPreviousTab()
     {
         auto window = WindowManager::find(WindowType::construction);
@@ -753,6 +782,9 @@ namespace OpenLoco::Input::Shortcuts
         ShortcutManager::add(Shortcut::screenshot,                      StringIds::shortcut_screenshot,                         makeScreenshot,                 "makeScreenshot",                   "Left Ctrl+S");
         ShortcutManager::add(Shortcut::toggleLastAnnouncement,          StringIds::shortcut_toggle_last_announcement,           toggleLastAnnouncement,         "toggleLastAnnouncement",           "Space");
         ShortcutManager::add(Shortcut::sendMessage,                     StringIds::shortcut_send_message,                       sendMessage,                    "sendMessage",                      "F1");
+        ShortcutManager::add(Shortcut::viewClippingOpen,                StringIds::menu_open_view_clipping,                     openViewClipping,               "openViewClipping",                 "'");
+        ShortcutManager::add(Shortcut::viewClippingIncrement,           StringIds::shortcut_max_clip_height_increment,          maxClipIncrement,               "maxClipIncrement",                 "");
+        ShortcutManager::add(Shortcut::viewClippingDecrement,           StringIds::shortcut_max_clip_height_decrement,          maxClipDecrement,               "maxClipDecrement",                 "");
         ShortcutManager::add(Shortcut::constructionPreviousTab,         StringIds::shortcut_construction_previous_tab,          constructionPreviousTab,        "constructionPreviousTab",          "");
         ShortcutManager::add(Shortcut::constructionNextTab,             StringIds::shortcut_construction_next_tab,              constructionNextTab,            "constructionNextTab",              "");
         ShortcutManager::add(Shortcut::constructionPreviousTrackPiece,  StringIds::shortcut_construction_previous_track_piece,  constructionPreviousTrackPiece, "constructionPreviousTrackPiece",   "");

@@ -45,6 +45,9 @@ namespace OpenLoco::Paint
 
         // TODO: unused
         _foregroundCullingHeight = options.foregroundCullHeight;
+
+        _maxClipHeight = static_cast<int16_t>(0x7FFF);
+        _minClipHeight = static_cast<int16_t>(-0x7FFE);
     }
 
     // Magnifying zoom levels have several screen pixels per world unit, so the far
@@ -1078,6 +1081,11 @@ namespace OpenLoco::Paint
         {
             const bool shouldCull = shouldTryCullPaintStruct(*ps, _viewFlags);
 
+            if ((ps->bounds.mins.z < getMinClipHeight()) || (ps->bounds.maxs.z > getMaxClipHeight()))
+            {
+                continue;
+            }
+
             if (shouldCull)
             {
                 if (cullPaintStructImage(ps->imageId, _viewFlags))
@@ -1323,6 +1331,11 @@ namespace OpenLoco::Paint
 
         for (auto* ps = _paintHead; ps != nullptr; ps = ps->nextQuadrantPS)
         {
+            if ((ps->bounds.mins.z < getMinClipHeight()) || (ps->bounds.maxs.z > getMaxClipHeight()))
+            {
+                continue;
+            }
+
             // Check main paint struct
             if (isSpriteInteractedWith(getRenderTarget(), getZoom(), ps->imageId, ps->vpPos))
             {
