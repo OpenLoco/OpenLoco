@@ -9,7 +9,6 @@ set(private_files
 set(public_link_libraries
     Core
     Diagnostics
-    PNG::PNG
 )
 
 loco_add_library(Gfx STATIC

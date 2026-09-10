@@ -6,18 +6,25 @@ set(public_files
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Audio/AudioHandle.h"
 )
 
-set(private_files
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/AudioEngine.cpp"
-)
+if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    set(private_files
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/AudioEngine.WebAudio.cpp"
+    )
+else()
+    set(private_files
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/AudioEngine.cpp"
+    )
+endif()
 
 set(public_link_libraries
     Core
     Diagnostics
 )
 
-set(private_link_libraries
-    ${OPENAL_LIBRARIES}
-)
+set(private_link_libraries)
+if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    list(APPEND private_link_libraries ${OPENAL_LIBRARIES})
+endif()
 
 loco_add_library(Audio STATIC
     PUBLIC_FILES

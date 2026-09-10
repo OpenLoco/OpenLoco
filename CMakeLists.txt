@@ -37,7 +37,8 @@ option(OPENLOCO_USE_VCPKG "Use vcpkg for dependencies and toolchain" ${OPENLOCO_
 
 
 # On windows VCPKG is used to get all dependencies other platforms can use it as well by setting OPENLOCO_USE_VCPKG
-if (OPENLOCO_USE_VCPKG)
+# Skip VCPKG for Emscripten builds - detect via CMAKE_SYSTEM_NAME as it's set by the toolchain
+if (OPENLOCO_USE_VCPKG AND NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     if (EXISTS ${VCPKG_ROOT})
         set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
     else()
@@ -125,7 +126,8 @@ FetchContent_MakeAvailable(openloco_objects)
 
 add_subdirectory(src)
 
-if (NOT APPLE)
+# Asset handling - skip for Emscripten as assets are preloaded via linker flags
+if (NOT APPLE AND NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     if (${CMAKE_VERSION} VERSION_GREATER 3.26)
         # Uses the copy_directory_if_different to avoid copying objects/language every time (3.26 feature)
         add_custom_target(OpenLocoAssets ALL

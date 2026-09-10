@@ -213,7 +213,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop
 
         d.separator()
             .item(LoadSaveDropdownId::quitToMenu, StringIds::menu_quit_to_menu)
+#ifndef __EMSCRIPTEN__
             .item(LoadSaveDropdownId::quitToDesktop, StringIds::menu_exit_openloco)
+#endif
             .highlight(LoadSaveDropdownId::saveGame)
             .show();
     }
