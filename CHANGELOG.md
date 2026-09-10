@@ -9,6 +9,7 @@
 - Fix: [#2753] Unable to remove walls and trees at heights above 127.
 - Fix: [#2992] Track and Road additions may incorrectly draw on some curves.
 - Fix: [#3112] Scenario challenge is not failed when exceeding its time limit.
+- Fix: [#3332] Incorrect curve and slope options appear for one frame when right-clicking on track or road.
 - Fix: [#3676] Roads added using object selection window could not be used by vehicles.
 - Fix: [#3943] Unable to place or remove signals on multi tile track elements.
 - Fix: [#3955] Terraform window can break dimensions of construction window.
@@ -88,7 +89,6 @@
 - Fix: [#3029] Even when audio is muted, the game continues to advance the jukebox playlist.
 - Fix: [#3173] Having multiple (station) vehicle lists open at once may cause duplicates and/or flashing listings.
 - Fix: [#3183] Sound and music being unpaused when the game is still paused in certain situations.
-- Fix: [#3332] Incorrect curve and slope options appear for one frame when right-clicking on track or road.
 - Fix: [#3334] Auto order of cars with centrePosition flag incorrectly calculated.
 - Fix: [#3467] 'Menu' key is not localised in the keyboard shortcuts list.
 - Fix: [#3634] Invalidation issue when show AI planning is turned off.
