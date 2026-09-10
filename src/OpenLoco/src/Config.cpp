@@ -189,6 +189,9 @@ namespace OpenLoco::Config
         _config.disableStationSizeLimit = config["disableStationSizeLimit"].as<bool>(false);
         _config.showAiPlanningAsGhosts = config["showAiPlanningAsGhosts"].as<bool>(false);
         _config.keepCargoModifyPickup = config["keepCargoModifyPickup"].as<bool>(false);
+        _config.preventAllIndustryClosures = config["preventAllIndustryClosures"].as<bool>(false);
+        _config.reduceObsoleteIndustryClosures = config["reduceObsoleteIndustryClosures"].as<bool>(false);
+        _config.generateObsoleteIndustries = config["generateObsoleteIndustries"].as<bool>(false);
 
         // Preferred owner
         _config.preferredOwnerName = config["preferredOwnerName"].as<std::string>("");

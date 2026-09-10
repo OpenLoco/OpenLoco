@@ -84,6 +84,7 @@ namespace OpenLoco::Scenario
         uint8_t maxRiverWidth;
         uint8_t riverbankWidth;
         uint8_t riverMeanderRate;
+        bool genObsoleteIndustries;
     };
 
     Options& getOptions();

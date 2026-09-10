@@ -1,4 +1,5 @@
 #include "World/IndustryManager.h"
+#include "Config.h"
 #include "Date.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
@@ -176,7 +177,7 @@ namespace OpenLoco::IndustryManager
             return false;
         }
 
-        if (getCurrentYear() >= indObj.obsoleteYear)
+        if (getCurrentYear() >= indObj.obsoleteYear && !Config::get().generateObsoleteIndustries)
         {
             return false;
         }

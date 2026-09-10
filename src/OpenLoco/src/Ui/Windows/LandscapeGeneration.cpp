@@ -264,6 +264,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             terrainSmoothingNumDown,
             terrainSmoothingNumUp,
             generate_when_game_starts,
+            generate_obsolete_industries,
 
             heightmapFileLabel,
             browseHeightmapFile,
@@ -283,6 +284,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             constexpr WidgetId kTerrainSmoothingNumDown{ "terrainSmoothingNumDown" };
             constexpr WidgetId kTerrainSmoothingNumUp{ "terrainSmoothingNumUp" };
             constexpr WidgetId kGenerateWhenGameStarts{ "generate_when_game_starts" };
+            constexpr WidgetId kGenerateObsoleteIndustries{ "generate_obsolete_industries" };
             constexpr WidgetId kHeightmapFileLabel{ "heightmapFileLabel" };
             constexpr WidgetId kBrowseHeightmapFile{ "browseHeightmapFile" };
         }
@@ -306,12 +308,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             Widgets::dropdownWidgets(Widx::kHeightMapBox, Widx::kHeightMapDropdown, { 176, 81 }, { 180, 12 }, WindowColour::secondary),
 
             // Generator options
-            Widgets::GroupBox({ 4, 105 }, { 358, 50 }, WindowColour::secondary, StringIds::landscapeOptionsGroupGenerator),
+            Widgets::GroupBox({ 4, 105 }, { 358, 62 }, WindowColour::secondary, StringIds::landscapeOptionsGroupGenerator),
             Widgets::Label(Widx::kHillObjectLabel, { 10, 120 }, { 260, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::landscapeOptionsCurrentHillObject),
             Widgets::Button(Widx::kChangeHeightmapBtn, { 280, 120 }, { 75, 12 }, WindowColour::secondary, StringIds::change),
             Widgets::Label(Widx::kTerrainSmoothingLabel, { 10, 120 }, { 260, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::landscapeOptionsSmoothingPasses),
             Widgets::stepperWidgets(Widx::kTerrainSmoothingNum, Widx::kTerrainSmoothingNumDown, Widx::kTerrainSmoothingNumUp, { 256, 120 }, { 100, 12 }, WindowColour::secondary, StringIds::uint16_raw),
             Widgets::Checkbox(Widx::kGenerateWhenGameStarts, { 10, 136 }, { 346, 12 }, WindowColour::secondary, StringIds::label_generate_random_landscape_when_game_starts, StringIds::tooltip_generate_random_landscape_when_game_starts),
+            Widgets::Checkbox(Widx::kGenerateObsoleteIndustries, { 10, 152 }, { 346, 12 }, WindowColour::secondary, StringIds::label_generate_obsolete_industries, StringIds::tooltip_generate_obsolete_industries),
 
             // PNG browser
             Widgets::Label(Widx::kHeightmapFileLabel, { 10, 120 }, { 260, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::currentHeightmapFile),
@@ -347,6 +350,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             bool isSimplex = options.generator == Scenario::LandGeneratorType::Simplex;
             bool isPngFile = options.generator == Scenario::LandGeneratorType::PngHeightMap;
 
+            bool allowObsoleteInds = options.genObsoleteIndustries;
+
             // Hide widgets depending on active generator
             self.widgets[widx::hillObjectLabel].hidden = !isOriginal;
             self.widgets[widx::change_heightmap_btn].hidden = !isOriginal;
@@ -364,10 +369,23 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             {
                 self.activatedWidgets |= (1 << widx::generate_when_game_starts);
                 self.disabledWidgets &= ~(1 << widx::generate_when_game_starts);
+
+                self.disabledWidgets |= (1 << widx::generate_obsolete_industries);
             }
             else
             {
                 self.activatedWidgets &= ~(1 << widx::generate_when_game_starts);
+
+                self.disabledWidgets &= ~(1 << widx::generate_obsolete_industries);
+            }
+
+            if (allowObsoleteInds)
+            {
+                self.activatedWidgets |= (1 << widx::generate_obsolete_industries);
+            }
+            else
+            {
+                self.activatedWidgets &= ~(1 << widx::generate_obsolete_industries);
             }
 
             if (isOriginal)
@@ -518,6 +536,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                         window.invalidate();
                     }
                     break;
+                }
+
+                case Widx::kGenerateObsoleteIndustries:
+                {
+                    auto& options = Scenario::getOptions();
+                    bool orig = options.genObsoleteIndustries;
+                    options.genObsoleteIndustries = !orig;
+                    window.invalidate();
                 }
 
                 default:

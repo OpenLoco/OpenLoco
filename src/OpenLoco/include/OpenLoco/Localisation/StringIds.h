@@ -2177,6 +2177,17 @@ namespace OpenLoco::StringIds
     constexpr StringId capt_signals_block = 2465;
     constexpr StringId has_cargo_order = 2466;
     constexpr StringId transports_cargo = 2467;
+    constexpr StringId cheat_ignore_industry_obsolete = 2468;
+    constexpr StringId cheat_generate_obsolete_industries = 2469;
+    constexpr StringId label_generate_obsolete_industries = 2470;
+    constexpr StringId tooltip_generate_obsolete_industries = 2471;
+    constexpr StringId industry_cheats = 2472;
+    constexpr StringId cheat_group_all_industries = 2473;
+    constexpr StringId cheat_no_industry_closures = 2474;
+    constexpr StringId tooltip_ignore_industry_obsolete = 2475;
+    constexpr StringId tooltip_no_industry_closures = 2476;
+    constexpr StringId cheat_group_obsolete_industries = 2477;
+    constexpr StringId tooltip_cheat_generate_obsolete_industries = 2478;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
