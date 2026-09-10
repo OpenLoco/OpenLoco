@@ -47,9 +47,10 @@ namespace OpenLoco::Ui::Windows::Cheats
             tab_companies,
             tab_vehicles,
             tab_towns,
+            tab_industries,
         };
         // this should be 1 more than the number of widgets defined above in commonWidgets
-        constexpr uint32_t nextWidx = 8;
+        constexpr uint32_t nextWidx = 9;
 
         namespace Widx
         {
@@ -58,6 +59,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             constexpr WidgetId kTabCompanies{ "tab_companies" };
             constexpr WidgetId kTabVehicles{ "tab_vehicles" };
             constexpr WidgetId kTabTowns{ "tab_towns" };
+            constexpr WidgetId kTabIndustries{ "tab_industries" };
         }
 
         static constexpr auto makeCommonWidgets(int32_t frameWidth, int32_t frameHeight, StringId windowCaptionId)
@@ -70,7 +72,8 @@ namespace OpenLoco::Ui::Windows::Cheats
                 Widgets::Tab(Widx::kTabFinances, { 3, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
                 Widgets::Tab(Widx::kTabCompanies, { 34, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
                 Widgets::Tab(Widx::kTabVehicles, { 65, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
-                Widgets::Tab(Widx::kTabTowns, { 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab));
+                Widgets::Tab(Widx::kTabTowns, { 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab),
+                Widgets::Tab(Widx::kTabIndustries, {127, 15}, {31, 27}, WindowColour::secondary, ImageIds::tab));
         }
 
         static void drawTabs(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
@@ -152,6 +155,12 @@ namespace OpenLoco::Ui::Windows::Cheats
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_towns;
                 Widget::drawTab(self, drawingCtx, imageId, widx::tab_towns);
+            }
+
+            // Industries tab
+            {
+                const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_industries;
+                Widget::drawTab(self, drawingCtx, imageId, widx::tab_industries);
             }
         }
 
@@ -307,6 +316,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Common::Widx::kTabCompanies:
                 case Common::Widx::kTabVehicles:
                 case Common::Widx::kTabTowns:
+                case Common::Widx::kTabIndustries:
                     Common::switchTab(self, widgetIndex);
                     break;
 
@@ -516,6 +526,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Common::Widx::kTabCompanies:
                 case Common::Widx::kTabVehicles:
                 case Common::Widx::kTabTowns:
+                case Common::Widx::kTabIndustries:
                     Common::switchTab(self, widgetIndex);
                     break;
 
@@ -709,6 +720,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Common::Widx::kTabCompanies:
                 case Common::Widx::kTabVehicles:
                 case Common::Widx::kTabTowns:
+                case Common::Widx::kTabIndustries:
                     Common::switchTab(self, widgetIndex);
                     break;
 
@@ -855,6 +867,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Common::Widx::kTabCompanies:
                 case Common::Widx::kTabVehicles:
                 case Common::Widx::kTabTowns:
+                case Common::Widx::kTabIndustries:
                     Common::switchTab(self, widgetIndex);
                     break;
 
@@ -928,6 +941,144 @@ namespace OpenLoco::Ui::Windows::Cheats
         }
     }
 
+    namespace Industries
+    {
+        static constexpr Ui::Size kWindowSize = { 250, 134 };
+
+        enum widx
+        {
+            //reliability_group = Common::nextWidx,
+            general_group = Common::nextWidx,
+            checkbox_general_prevent_closure,
+            //Maybe make a "Generate random new industry" button here.
+            //Also possibly a "Cancel any current industry closures".
+            obsolete_group,
+            checkbox_obsolete_reduce_closure,
+            checkbox_obsolete_allow_generation,
+        };
+
+        namespace Widx
+        {
+            constexpr WidgetId kCheckboxGeneralPreventClosure{ "checkbox_general_prevent_closure" };
+            constexpr WidgetId kCheckboxObsoleteReduceClosure{ "checkbox_obsolete_reduce_closure" };
+            constexpr WidgetId kCheckboxObsoleteAllowGeneration{ "checkbox_obsolete_allow_generation" };
+        }
+
+        static constexpr auto _widgets = makeWidgets(
+            Common::makeCommonWidgets(kWindowSize.width, kWindowSize.height, StringIds::industry_cheats),
+            Widgets::GroupBox({ 4, 48 }, { kWindowSize.width - 8, 30 }, WindowColour::secondary, StringIds::cheat_group_all_industries),
+            Widgets::Checkbox(Widx::kCheckboxGeneralPreventClosure, { 10, 62 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_no_industry_closures, StringIds::tooltip_no_industry_closures),
+            Widgets::GroupBox({ 4, 83 }, { kWindowSize.width - 8, 45 }, WindowColour::secondary, StringIds::cheat_group_obsolete_industries),
+            Widgets::Checkbox(Widx::kCheckboxObsoleteReduceClosure, { 10, 97 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_ignore_industry_obsolete, StringIds::tooltip_ignore_industry_obsolete),
+            Widgets::Checkbox(Widx::kCheckboxObsoleteAllowGeneration, { 10, 111 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_generate_obsolete_industries, StringIds::tooltip_cheat_generate_obsolete_industries)
+        );
+
+        static void prepareDraw(Window& self)
+        {
+            self.activatedWidgets = (1 << Common::widx::tab_industries);
+
+            // Might want to disable this widget if the current scenario
+            // has industry closures disabled.
+            if (Config::get().preventAllIndustryClosures) 
+            {
+                self.activatedWidgets |= (1 << widx::checkbox_general_prevent_closure);
+                self.disabledWidgets  |= (1 << widx::checkbox_obsolete_reduce_closure);
+            }
+            else 
+            {
+                self.activatedWidgets &= ~(1 << widx::checkbox_general_prevent_closure);
+                self.disabledWidgets  &= ~(1 << widx::checkbox_obsolete_reduce_closure);
+            }
+            if (Config::get().reduceObsoleteIndustryClosures)
+            {
+                self.activatedWidgets |= (1 << widx::checkbox_obsolete_reduce_closure);
+            }
+            else
+            {
+                self.activatedWidgets &= ~(1 << widx::checkbox_obsolete_reduce_closure);
+            }
+            if (Config::get().generateObsoleteIndustries)
+            {
+                self.activatedWidgets |= (1 << widx::checkbox_obsolete_allow_generation);
+            }
+            else
+            {
+                self.activatedWidgets &= ~(1 << widx::checkbox_obsolete_allow_generation);
+            }
+        }
+
+        static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
+        {
+            // Draw widgets and tabs.
+            self.draw(drawingCtx);
+            Common::drawTabs(self, drawingCtx);
+        }
+
+        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
+        {
+            switch (id)
+            {
+                case Common::Widx::kCloseButton:
+                    WindowManager::close(self.type);
+                    break;
+
+                case Common::Widx::kTabFinances:
+                case Common::Widx::kTabCompanies:
+                case Common::Widx::kTabVehicles:
+                case Common::Widx::kTabTowns:
+                case Common::Widx::kTabIndustries:
+                    Common::switchTab(self, widgetIndex);
+                    break;
+
+                case Widx::kCheckboxGeneralPreventClosure:
+                {
+                    Config::get().preventAllIndustryClosures = !Config::get().preventAllIndustryClosures;
+
+
+                    Config::write();
+                    WindowManager::invalidateWidget(self.type, self.number, widx::checkbox_general_prevent_closure);
+                    WindowManager::invalidateWidget(self.type, self.number, widx::checkbox_obsolete_reduce_closure);
+                    break;
+                }
+
+                case Widx::kCheckboxObsoleteReduceClosure:
+                {
+                    Config::get().reduceObsoleteIndustryClosures = !Config::get().reduceObsoleteIndustryClosures;
+                    Config::write();
+                    WindowManager::invalidateWidget(self.type, self.number, widx::checkbox_obsolete_reduce_closure);
+                    break;
+                }
+
+                case Widx::kCheckboxObsoleteAllowGeneration:
+                {
+                    Config::get().generateObsoleteIndustries = !Config::get().generateObsoleteIndustries;
+                    Config::write();
+                    WindowManager::invalidateWidget(self.type, self.number, widx::checkbox_obsolete_allow_generation);
+                    break;
+                }
+            }
+        }
+
+        static void onUpdate(Window& self)
+        {
+            self.frameNo += 1;
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(self.type, self.number, Common::widx::tab_industries);
+        }
+
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
+        {
+            return kEvents;
+        }
+    }
+
     Window* open()
     {
         auto window = WindowManager::bringToFront(WindowType::cheats);
@@ -973,6 +1124,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             { Companies::_widgets, widx::tab_companies, Companies::getEvents(), nullptr,                    Companies::kWindowSize },
             { Vehicles::_widgets,  widx::tab_vehicles,  Vehicles::getEvents(),  nullptr,                    Vehicles::kWindowSize  },
             { Towns::_widgets,     widx::tab_towns,     Towns::getEvents(),     nullptr,                    Towns::kWindowSize     },
+            { Industries::_widgets,widx::tab_industries,Industries::getEvents(),nullptr,                    Industries::kWindowSize},
         };
         // clang-format on
 

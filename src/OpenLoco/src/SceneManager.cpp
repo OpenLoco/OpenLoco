@@ -320,16 +320,6 @@ namespace OpenLoco::SceneManager
         return hasSceneFlags(Flags::pauseOverrideEnabled);
     }
 
-    bool isIgnoreIndustryObsolete()
-    {
-        return hasSceneFlags(Flags::ignoreIndustryObsolete);
-    }
-
-    bool isGenerateObsoleteIndustries()
-    {
-        return hasSceneFlags(Flags::generateObsoleteIndustries);
-    }
-
     bool isPaused()
     {
         return _pausedState != PauseFlags::none;

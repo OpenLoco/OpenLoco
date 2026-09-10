@@ -1,4 +1,5 @@
 #include "World/Industry.h"
+#include "Config.h"
 #include "Date.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Industries/RemoveIndustry.h"
@@ -16,7 +17,6 @@
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
 #include "Random.h"
-#include "SceneManager.h"
 #include "ViewportManager.h"
 #include "World/IndustryManager.h"
 #include "World/StationManager.h"
@@ -307,6 +307,7 @@ namespace OpenLoco
         }
         if (!hasEvent
             && !IndustryManager::hasFlags(IndustryManager::Flags::disallowIndustriesCloseDown)
+            && !Config::get().preventAllIndustryClosures
             && under_construction == 0xFF
             && !hasFlags(IndustryFlags::closingDown))
         {
@@ -403,7 +404,7 @@ namespace OpenLoco
     {
         auto* indObj = getObject();
         // isObsolete or isTooLowProduction
-        return (!SceneManager::isIgnoreIndustryObsolete() && getCurrentYear() > indObj->obsoleteYear && prng.randNext(0xFFFF) < 102)
+        return (!Config::get().reduceObsoleteIndustryClosures && getCurrentYear() > indObj->obsoleteYear && prng.randNext(0xFFFF) < 102)
             || (indObj->monthlyClosureChance != 0 && indObj->monthlyClosureChance > prng.randNext(0xFFFF));
     }
 

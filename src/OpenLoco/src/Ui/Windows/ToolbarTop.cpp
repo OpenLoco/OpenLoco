@@ -446,9 +446,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop
         Dropdown::add(5, StringIds::dropdown_without_checkmark, StringIds::cheat_enable_sandbox_mode);
         Dropdown::add(6, StringIds::dropdown_without_checkmark, StringIds::cheat_allow_building_while_paused);
         Dropdown::add(7, StringIds::dropdown_without_checkmark, StringIds::cheat_allow_manual_driving);
-        Dropdown::add(8, StringIds::dropdown_without_checkmark, StringIds::cheat_ignore_industry_obsolete);
-        Dropdown::add(9, StringIds::dropdown_without_checkmark, StringIds::cheat_generate_obsolete_industries);
-        Dropdown::showBelow(&self, widgetIndex, 10, 0);
+        Dropdown::showBelow(&self, widgetIndex, 8, 0);
 
         if (SceneManager::isSandboxMode())
         {
@@ -463,16 +461,6 @@ namespace OpenLoco::Ui::Windows::ToolbarTop
         if (SceneManager::isDriverCheatEnabled())
         {
             Dropdown::setItemSelected(7);
-        }
-
-        if (SceneManager::isIgnoreIndustryObsolete())
-        {
-            Dropdown::setItemSelected(8);
-        }
-
-        if (SceneManager::isGenerateObsoleteIndustries())
-        {
-            Dropdown::setItemSelected(9);
         }
     }
 
@@ -533,28 +521,6 @@ namespace OpenLoco::Ui::Windows::ToolbarTop
                     SceneManager::removeSceneFlags(SceneManager::Flags::driverCheatEnabled);
                 }
                 break;
-
-            case 8:
-                if (!SceneManager::isIgnoreIndustryObsolete())
-                {
-                    SceneManager::addSceneFlags(SceneManager::Flags::ignoreIndustryObsolete);
-                }
-                else
-                {
-                    SceneManager::removeSceneFlags(SceneManager::Flags::ignoreIndustryObsolete);
-                }
-                break;
-            case 9:
-                if (!SceneManager::isGenerateObsoleteIndustries())
-                {
-                    SceneManager::addSceneFlags(SceneManager::Flags::generateObsoleteIndustries);
-                }
-                else
-                {
-                    SceneManager::removeSceneFlags(SceneManager::Flags::generateObsoleteIndustries);
-                }
-                break;
-
         }
     }
 
@@ -587,17 +553,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop
             case 0:
                 Windows::LandscapeGeneration::open();
                 break;
+
             case 1:
-                if (!SceneManager::isGenerateObsoleteIndustries())
-                {
-                    SceneManager::addSceneFlags(SceneManager::Flags::generateObsoleteIndustries);
-                }
-                else
-                {
-                    SceneManager::removeSceneFlags(SceneManager::Flags::generateObsoleteIndustries);
-                }
-                break;
-            case 2:
                 TileInspector::open();
                 break;
         }
