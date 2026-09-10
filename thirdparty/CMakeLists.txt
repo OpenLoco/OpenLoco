@@ -48,8 +48,8 @@ else()
     set(OPENAL_LIBRARIES OpenAL::OpenAL)
 endif()
 
-# breakpad is also required
-if (MSVC)
+# breakpad is not supported on ARM64
+if (MSVC AND NOT CMAKE_GENERATOR_PLATFORM STREQUAL "ARM64")
     find_package(unofficial-breakpad CONFIG REQUIRED)
     set(BREAKPAD_LIBRARIES unofficial::breakpad::libbreakpad unofficial::breakpad::libbreakpad_client)
 endif()
