@@ -334,6 +334,8 @@ namespace OpenLoco::EditorController
     // 0x0043D15D
     void goToNextStep()
     {
+        auto& options = Scenario::getOptions();
+
         switch (getCurrentStep())
         {
             case Step::null:
@@ -355,9 +357,9 @@ namespace OpenLoco::EditorController
                 Scenario::sub_4748D4();
                 Scenario::initialiseSnowLine();
                 Windows::Terraform::resetDefaultObjectIds();
-                Scenario::getOptions().editorStep = Step::landscapeEditor;
+                options.editorStep = Step::landscapeEditor;
                 Windows::LandscapeGeneration::open();
-                if ((Scenario::getOptions().scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) != Scenario::ScenarioFlags::none)
+                if ((options.scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) != Scenario::ScenarioFlags::none)
                 {
                     if (!Game::hasFlags(GameStateFlags::tileManagerLoaded))
                     {
@@ -374,7 +376,6 @@ namespace OpenLoco::EditorController
                     break;
                 }
 
-                auto& options = Scenario::getOptions();
                 const bool landscapeNotGenerated = (options.scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none;
                 const bool isPngFile = options.generator == Scenario::LandGeneratorType::PngHeightMap;
                 if (isPngFile && landscapeNotGenerated)
@@ -383,24 +384,24 @@ namespace OpenLoco::EditorController
                     return;
                 }
 
-                const auto cargoId = Scenario::getOptions().objective.deliveredCargoType;
+                const auto cargoId = options.objective.deliveredCargoType;
                 if (ObjectManager::get<CargoObject>(cargoId) == nullptr)
                 {
                     for (size_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::cargo); i++)
                     {
                         if (ObjectManager::get<CargoObject>(i) != nullptr)
                         {
-                            Scenario::getOptions().objective.deliveredCargoType = static_cast<uint8_t>(i);
+                            options.objective.deliveredCargoType = static_cast<uint8_t>(i);
                             break;
                         }
                     }
                 }
 
                 WindowManager::closeAllFloatingWindows();
-                Scenario::initialiseDate(Scenario::getOptions().scenarioStartYear);
+                Scenario::initialiseDate(options.scenarioStartYear);
                 Scenario::initialiseSnowLine();
                 Windows::ScenarioOptions::open();
-                Scenario::getOptions().editorStep = Step::scenarioOptions;
+                options.editorStep = Step::scenarioOptions;
                 break;
             }
 
@@ -417,7 +418,7 @@ namespace OpenLoco::EditorController
                     break;
                 }
 
-                Scenario::getOptions().editorStep = Step::null;
+                options.editorStep = Step::null;
                 setupMultiplayerData();
 
                 auto path = fs::u8path(*res);
@@ -435,7 +436,7 @@ namespace OpenLoco::EditorController
                 if (!success)
                 {
                     Windows::Error::open(StringIds::scenario_save_failed);
-                    Scenario::getOptions().editorStep = Step::scenarioOptions;
+                    options.editorStep = Step::scenarioOptions;
                     break;
                 }
 
