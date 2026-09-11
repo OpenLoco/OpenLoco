@@ -374,6 +374,15 @@ namespace OpenLoco::EditorController
                     break;
                 }
 
+                auto& options = Scenario::getOptions();
+                const bool landscapeNotGenerated = (options.scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none;
+                const bool isPngFile = options.generator == Scenario::LandGeneratorType::PngHeightMap;
+                if (isPngFile && landscapeNotGenerated)
+                {
+                    Windows::Error::open(StringIds::cant_advance_to_next_editor_stage, StringIds::png_heightmap_must_be_generated);
+                    return;
+                }
+
                 const auto cargoId = Scenario::getOptions().objective.deliveredCargoType;
                 if (ObjectManager::get<CargoObject>(cargoId) == nullptr)
                 {

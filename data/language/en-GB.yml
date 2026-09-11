@@ -2522,3 +2522,4 @@ strings:
   2467: "Transports cargo"
   2468: "{INT16} x {INT16}"
   2469: "{COLOUR BLACK}None yet"
+  2470: "Landscape must be generated when using PNG heightmap source"

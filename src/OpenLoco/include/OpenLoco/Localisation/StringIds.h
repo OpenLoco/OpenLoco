@@ -2179,6 +2179,7 @@ namespace OpenLoco::StringIds
     constexpr StringId transports_cargo = 2467;
     constexpr StringId map_tooltip_int_x_int = 2468;
     constexpr StringId no_speedrecords_yet = 2469;
+    constexpr StringId png_heightmap_must_be_generated = 2470;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
