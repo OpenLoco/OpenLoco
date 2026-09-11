@@ -245,23 +245,6 @@ namespace OpenLoco::EditorController
         }
     }
 
-    // 0x0043EE25
-    static bool validateStep1()
-    {
-        if (!Game::hasFlags(GameStateFlags::tileManagerLoaded))
-        {
-            return true;
-        }
-
-        if (TownManager::towns().size() >= Limits::kMinTowns)
-        {
-            return true;
-        }
-
-        GameCommands::setErrorText(StringIds::at_least_one_town_be_built);
-        return false;
-    }
-
     // 0x0043D0FA
     void goToPreviousStep()
     {
@@ -319,6 +302,33 @@ namespace OpenLoco::EditorController
         return StringIds::null;
     }
 
+    // 0x0043EE25
+    static StringId validateLandscapeEditor()
+    {
+        const auto& options = Scenario::getOptions();
+
+        // Validate landscape must be generated when using PNG heightmap source
+        const bool isPngFile = options.generator == Scenario::LandGeneratorType::PngHeightMap;
+        const bool landscapeNotGenerated = (options.scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none;
+        if (isPngFile && landscapeNotGenerated)
+        {
+            return StringIds::png_heightmap_must_be_generated;
+        }
+
+        // Validate number of towns
+        if (!Game::hasFlags(GameStateFlags::tileManagerLoaded))
+        {
+            return StringIds::null;
+        }
+
+        if (TownManager::towns().size() >= Limits::kMinTowns)
+        {
+            return StringIds::null;
+        }
+
+        return StringIds::at_least_one_town_be_built;
+    }
+
     // 0x0046F910
     static void setupMultiplayerData()
     {
@@ -370,17 +380,10 @@ namespace OpenLoco::EditorController
             }
             case Step::landscapeEditor:
             {
-                if (!validateStep1())
+                auto errorMessage = validateLandscapeEditor();
+                if (errorMessage != StringIds::null)
                 {
-                    Windows::Error::open(StringIds::cant_advance_to_next_editor_stage, GameCommands::getErrorText());
-                    break;
-                }
-
-                const bool landscapeNotGenerated = (options.scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none;
-                const bool isPngFile = options.generator == Scenario::LandGeneratorType::PngHeightMap;
-                if (isPngFile && landscapeNotGenerated)
-                {
-                    Windows::Error::open(StringIds::cant_advance_to_next_editor_stage, StringIds::png_heightmap_must_be_generated);
+                    Windows::Error::open(StringIds::cant_advance_to_next_editor_stage, errorMessage);
                     return;
                 }
 
