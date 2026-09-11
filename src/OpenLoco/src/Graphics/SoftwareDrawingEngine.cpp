@@ -32,7 +32,7 @@ namespace OpenLoco::Gfx
 
     SoftwareDrawingEngine::~SoftwareDrawingEngine()
     {
-        
+
         // Free textures
         if (_screenTexture != nullptr)
         {
@@ -44,7 +44,7 @@ namespace OpenLoco::Gfx
             SDL_DestroyTexture(_scaledScreenTexture);
             _scaledScreenTexture = nullptr;
         }
-        
+
         // Free surfaces
         if (_screenSurface != nullptr)
         {
