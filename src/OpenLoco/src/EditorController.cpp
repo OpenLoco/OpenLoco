@@ -245,23 +245,6 @@ namespace OpenLoco::EditorController
         }
     }
 
-    // 0x0043EE25
-    static bool validateStep1()
-    {
-        if (!Game::hasFlags(GameStateFlags::tileManagerLoaded))
-        {
-            return true;
-        }
-
-        if (TownManager::towns().size() >= Limits::kMinTowns)
-        {
-            return true;
-        }
-
-        GameCommands::setErrorText(StringIds::at_least_one_town_be_built);
-        return false;
-    }
-
     // 0x0043D0FA
     void goToPreviousStep()
     {
@@ -319,6 +302,33 @@ namespace OpenLoco::EditorController
         return StringIds::null;
     }
 
+    // 0x0043EE25
+    static StringId validateLandscapeEditor()
+    {
+        const auto& options = Scenario::getOptions();
+
+        // Validate landscape must be generated when using PNG heightmap source
+        const bool isPngFile = options.generator == Scenario::LandGeneratorType::PngHeightMap;
+        const bool landscapeNotGenerated = (options.scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none;
+        if (isPngFile && landscapeNotGenerated)
+        {
+            return StringIds::png_heightmap_must_be_generated;
+        }
+
+        // Validate number of towns
+        if (!Game::hasFlags(GameStateFlags::tileManagerLoaded))
+        {
+            return StringIds::null;
+        }
+
+        if (TownManager::towns().size() >= Limits::kMinTowns)
+        {
+            return StringIds::null;
+        }
+
+        return StringIds::at_least_one_town_be_built;
+    }
+
     // 0x0046F910
     static void setupMultiplayerData()
     {
@@ -334,6 +344,8 @@ namespace OpenLoco::EditorController
     // 0x0043D15D
     void goToNextStep()
     {
+        auto& options = Scenario::getOptions();
+
         switch (getCurrentStep())
         {
             case Step::null:
@@ -355,9 +367,9 @@ namespace OpenLoco::EditorController
                 Scenario::sub_4748D4();
                 Scenario::initialiseSnowLine();
                 Windows::Terraform::resetDefaultObjectIds();
-                Scenario::getOptions().editorStep = Step::landscapeEditor;
+                options.editorStep = Step::landscapeEditor;
                 Windows::LandscapeGeneration::open();
-                if ((Scenario::getOptions().scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) != Scenario::ScenarioFlags::none)
+                if ((options.scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) != Scenario::ScenarioFlags::none)
                 {
                     if (!Game::hasFlags(GameStateFlags::tileManagerLoaded))
                     {
@@ -368,30 +380,31 @@ namespace OpenLoco::EditorController
             }
             case Step::landscapeEditor:
             {
-                if (!validateStep1())
+                auto errorMessage = validateLandscapeEditor();
+                if (errorMessage != StringIds::null)
                 {
-                    Windows::Error::open(StringIds::cant_advance_to_next_editor_stage, GameCommands::getErrorText());
-                    break;
+                    Windows::Error::open(StringIds::cant_advance_to_next_editor_stage, errorMessage);
+                    return;
                 }
 
-                const auto cargoId = Scenario::getOptions().objective.deliveredCargoType;
+                const auto cargoId = options.objective.deliveredCargoType;
                 if (ObjectManager::get<CargoObject>(cargoId) == nullptr)
                 {
                     for (size_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::cargo); i++)
                     {
                         if (ObjectManager::get<CargoObject>(i) != nullptr)
                         {
-                            Scenario::getOptions().objective.deliveredCargoType = static_cast<uint8_t>(i);
+                            options.objective.deliveredCargoType = static_cast<uint8_t>(i);
                             break;
                         }
                     }
                 }
 
                 WindowManager::closeAllFloatingWindows();
-                Scenario::initialiseDate(Scenario::getOptions().scenarioStartYear);
+                Scenario::initialiseDate(options.scenarioStartYear);
                 Scenario::initialiseSnowLine();
                 Windows::ScenarioOptions::open();
-                Scenario::getOptions().editorStep = Step::scenarioOptions;
+                options.editorStep = Step::scenarioOptions;
                 break;
             }
 
@@ -408,7 +421,7 @@ namespace OpenLoco::EditorController
                     break;
                 }
 
-                Scenario::getOptions().editorStep = Step::null;
+                options.editorStep = Step::null;
                 setupMultiplayerData();
 
                 auto path = fs::u8path(*res);
@@ -426,7 +439,7 @@ namespace OpenLoco::EditorController
                 if (!success)
                 {
                     Windows::Error::open(StringIds::scenario_save_failed);
-                    Scenario::getOptions().editorStep = Step::scenarioOptions;
+                    options.editorStep = Step::scenarioOptions;
                     break;
                 }
 
