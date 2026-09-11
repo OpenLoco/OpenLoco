@@ -11,6 +11,7 @@
 - Fix: [#3112] Scenario challenge is not failed when exceeding its time limit.
 - Fix: [#3332] Incorrect curve and slope options appear for one frame when right-clicking on track or road.
 - Fix: [#3676] Roads added using object selection window could not be used by vehicles.
+- Fix: [#3916] Can save scenario set to use PNG heightmap source without generating landscape.
 - Fix: [#3943] Unable to place or remove signals on multi tile track elements.
 - Fix: [#3955] Terraform window can break dimensions of construction window.
 - Fix: [#3987] Unable to remove multi tile stations if one of the stations is for trams.
