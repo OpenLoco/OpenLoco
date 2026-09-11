@@ -237,6 +237,11 @@ namespace OpenLoco::Gfx
         return *engine;
     }
 
+    void disposeDrawingEngine()
+    {
+        engine.reset();
+    }
+
     /**
      * 0x004C5C69
      *

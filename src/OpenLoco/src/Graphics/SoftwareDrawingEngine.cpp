@@ -32,11 +32,8 @@ namespace OpenLoco::Gfx
 
     SoftwareDrawingEngine::~SoftwareDrawingEngine()
     {
-        if (_palette != nullptr)
-        {
-            SDL_DestroyPalette(_palette);
-            _palette = nullptr;
-        }
+        
+        // Free textures
         if (_screenTexture != nullptr)
         {
             SDL_DestroyTexture(_screenTexture);
@@ -45,7 +42,34 @@ namespace OpenLoco::Gfx
         if (_scaledScreenTexture != nullptr)
         {
             SDL_DestroyTexture(_scaledScreenTexture);
-            _screenTexture = nullptr;
+            _scaledScreenTexture = nullptr;
+        }
+        
+        // Free surfaces
+        if (_screenSurface != nullptr)
+        {
+            SDL_DestroySurface(_screenSurface);
+            _screenSurface = nullptr;
+        }
+        if (_screenRGBASurface != nullptr)
+        {
+            SDL_DestroySurface(_screenRGBASurface);
+            _screenRGBASurface = nullptr;
+        }
+
+        // Free palette
+        if (_palette != nullptr)
+        {
+            SDL_DestroyPalette(_palette);
+            _palette = nullptr;
+        }
+
+        // Free renderer
+        if (_renderer != nullptr)
+        {
+            SDL_DestroyRenderer(_renderer);
+            _renderer = nullptr;
+            _screenRT.bits = nullptr;
         }
     }
 
