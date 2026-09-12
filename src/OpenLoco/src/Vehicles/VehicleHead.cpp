@@ -7113,6 +7113,9 @@ namespace OpenLoco::Vehicles
         train.veh1->var_3C = 0;
         status = Status::unk_0;
         stationId = StationId::null;
+
+        // Make the current journey not count for updateLastJourneyAverageSpeed
+        breakdownFlags &= ~BreakdownFlags::journeyStarted;
     }
 
     // 0x004C3BA6

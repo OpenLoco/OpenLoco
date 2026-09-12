@@ -14,6 +14,7 @@
 - Fix: [#3943] Unable to place or remove signals on multi tile track elements.
 - Fix: [#3955] Terraform window can break dimensions of construction window.
 - Fix: [#3987] Unable to remove multi tile stations if one of the stations is for trams.
+- Fix: [#3991] Average speed of journey is counted even if the vehicle was picked up and moved.
 - Fix: [#4006] Crash when generating mouse over tooltip of a building on a corrupted save.
 
 26.08 (2026-08-13)
