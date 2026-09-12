@@ -7114,7 +7114,7 @@ namespace OpenLoco::Vehicles
         status = Status::unk_0;
         stationId = StationId::null;
 
-        // Make the current journey not count for updateLastJourneyAverageSpeed (fix for #3991)
+        // Make the current journey not count for updateLastJourneyAverageSpeed
         breakdownFlags &= ~BreakdownFlags::journeyStarted;
     }
 
