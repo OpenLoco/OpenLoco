@@ -305,28 +305,21 @@ namespace OpenLoco::EditorController
     // 0x0043EE25
     static StringId validateLandscapeEditor()
     {
-        const auto& options = Scenario::getOptions();
-
-        // Validate landscape must be generated when using PNG heightmap source
-        const bool isPngFile = options.generator == Scenario::LandGeneratorType::PngHeightMap;
-        const bool landscapeNotGenerated = (options.scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none;
-        if (isPngFile && landscapeNotGenerated)
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
         {
-            return StringIds::png_heightmap_must_be_generated;
+            if (TownManager::towns().size() < Limits::kMinTowns)
+            {
+                return StringIds::at_least_one_town_be_built;
+            }
         }
-
-        // Validate number of towns
-        if (!Game::hasFlags(GameStateFlags::tileManagerLoaded))
+        else
         {
-            return StringIds::null;
+            if (Scenario::getOptions().generator == Scenario::LandGeneratorType::PngHeightMap)
+            {
+                return StringIds::png_heightmap_must_be_generated;
+            }
         }
-
-        if (TownManager::towns().size() >= Limits::kMinTowns)
-        {
-            return StringIds::null;
-        }
-
-        return StringIds::at_least_one_town_be_built;
+        return StringIds::null;
     }
 
     // 0x0046F910
