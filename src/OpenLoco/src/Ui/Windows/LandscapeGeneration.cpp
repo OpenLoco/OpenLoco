@@ -899,6 +899,28 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             {
                 window.activatedWidgets &= ~(1 << widx::hillsEdgeOfMap);
             }
+
+            // clang-format off
+            constexpr uint64_t dontApplyToPNGHeightmapWidgets = (
+                  (1ull << widx::topography_style_label)
+                | (1ull << widx::topography_style)
+                | (1ull << widx::topography_style_btn)
+                | (1ull << widx::hill_density_label)
+                | (1ull << widx::hill_density)
+                | (1ull << widx::hill_density_down)
+                | (1ull << widx::hill_density_up)
+                | (1ull << widx::hillsEdgeOfMap)
+                );
+            // clang-format on
+
+            if (options.generator == Scenario::LandGeneratorType::PngHeightMap)
+            {
+                window.disabledWidgets |= dontApplyToPNGHeightmapWidgets;
+            }
+            else
+            {
+                window.disabledWidgets &= ~dontApplyToPNGHeightmapWidgets;
+            }
         }
 
         // 0x0043E2A2
