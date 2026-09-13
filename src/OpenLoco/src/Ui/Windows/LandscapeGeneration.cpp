@@ -1097,6 +1097,35 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             auto& gameState = getGameState();
             auto& options = Scenario::getOptions();
 
+            // clang-format off
+            constexpr uint64_t riverConfigWidgets = (
+                  (1ull << widx::min_river_width_label)
+                | (1ull << widx::min_river_width)
+                | (1ull << widx::min_river_width_down)
+                | (1ull << widx::min_river_width_up)
+                | (1ull << widx::max_river_width_label)
+                | (1ull << widx::max_river_width)
+                | (1ull << widx::max_river_width_down)
+                | (1ull << widx::max_river_width_up)
+                | (1ull << widx::riverbank_width_label)
+                | (1ull << widx::riverbank_width)
+                | (1ull << widx::riverbank_width_down)
+                | (1ull << widx::riverbank_width_up)
+                | (1ull << widx::meander_rate_label)
+                | (1ull << widx::meander_rate)
+                | (1ull << widx::meander_rate_down)
+                | (1ull << widx::meander_rate_up)
+                );
+            // clang-format on
+            if (options.numRiverbeds == 0)
+            {
+                window.disabledWidgets |= riverConfigWidgets;
+            }
+            else
+            {
+                window.disabledWidgets &= ~riverConfigWidgets;
+            }
+
             {
                 auto args = FormatArguments(window.widgets[widx::sea_level].textArgs);
                 args.push(gameState.seaLevel);
