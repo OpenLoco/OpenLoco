@@ -1098,6 +1098,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             auto& options = Scenario::getOptions();
 
             // clang-format off
+            constexpr uint64_t numRiversWidget = (
+                  (1ull << widx::num_riverbeds_label)
+                | (1ull << widx::num_riverbeds)
+                | (1ull << widx::num_riverbeds_down)
+                | (1ull << widx::num_riverbeds_up)
+                );
             constexpr uint64_t riverConfigWidgets = (
                   (1ull << widx::min_river_width_label)
                 | (1ull << widx::min_river_width)
@@ -1117,13 +1123,23 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 | (1ull << widx::meander_rate_up)
                 );
             // clang-format on
-            if (options.numRiverbeds == 0)
+
+            if (options.topographyStyle == Scenario::TopographyStyle::flatLand && options.generator == Scenario::LandGeneratorType::Original)
             {
-                window.disabledWidgets |= riverConfigWidgets;
+                window.disabledWidgets |= (riverConfigWidgets | numRiversWidget);
             }
             else
             {
-                window.disabledWidgets &= ~riverConfigWidgets;
+                window.disabledWidgets &= ~numRiversWidget;
+
+                if (options.numRiverbeds == 0)
+                {
+                    window.disabledWidgets |= riverConfigWidgets;
+                }
+                else
+                {
+                    window.disabledWidgets &= ~riverConfigWidgets;
+                }
             }
 
             {
