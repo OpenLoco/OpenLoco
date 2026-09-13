@@ -1,6 +1,7 @@
 26.08+ (???)
 ------------------------------------------------------------------------
 - Feature: [#3978] Improved automatic detection of Locomotion installs on Linux.
+- Change: [#3578, #3918, #3919] Several landscape generation options are now disabled when they do not apply.
 - Change: [#3867] Repeated presses of the build tracks and build roads keyboard shortcuts now cycles track/road types.
 - Change: [#3967] English localisations now use typographically correct curved single quotes.
 - Change: [#3973] Game already running error message now says "OpenLoco" instead of "Chris Sawyer's Locomotion".
