@@ -71,6 +71,11 @@ namespace OpenLoco::World::MapGenerator
 
     static void generateRivers(const Scenario::Options& options, HeightMap& heightMap)
     {
+        if (options.topographyStyle == Scenario::TopographyStyle::flatLand && options.generator == Scenario::LandGeneratorType::Original)
+        {
+            return;
+        }
+
         for (auto i = 0; i < options.numRiverbeds; i++)
         {
             auto& gs = getGameState();
