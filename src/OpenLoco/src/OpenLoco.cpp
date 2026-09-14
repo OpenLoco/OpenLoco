@@ -97,6 +97,8 @@ namespace OpenLoco
         Ui::disposeCursors();
         Localisation::unloadLanguageFile();
 
+        OpenLoco::Gfx::disposeDrawingEngine();
+
         auto tempFilePath = Environment::getPathNoWarning(Environment::PathId::_1tmp);
         if (fs::exists(tempFilePath))
         {

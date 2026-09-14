@@ -184,6 +184,7 @@ namespace OpenLoco::Gfx
     G1Element* getG1Element(uint32_t id);
 
     Gfx::SoftwareDrawingEngine& getDrawingEngine();
+    void disposeDrawingEngine();
 
     void loadCurrency();
     void loadDefaultPalette();
