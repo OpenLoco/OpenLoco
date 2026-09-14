@@ -150,9 +150,9 @@ strings:
   136: "{SMALLFONT}{COLOUR BLACK}Subida íngreme"
   137: "{COLOUR WINDOW_2}Construir isto..."
   138: "{COLOUR WINDOW_2}Custo: {COLOUR BLACK}{CURRENCY32}"
-  139: Impossível construir semáforo aqui...
-  140: Impossível construir semáforos aqui...
-  141: Impossível remover semáforo...
+  139: Impossível construir sinal aqui...
+  140: Impossível construir sinal aqui...
+  141: Impossível remover sinal...
   142: Impossível remover {POP16}{POP16}{POP16}{STRINGID}...
   143: Impossível construir {POP16}{POP16}{POP16}{STRINGID}...
   144: Aumente ou rebaixe o terreno primeiro
@@ -169,12 +169,12 @@ strings:
   155: Já construído aqui
   156: Impossível cruzar ou criar junção com {STRINGID}
   157: Junções não são possíveis
-  158: Semáforo
+  158: Sinal
   159: Estação
   160: Aeroporto
   161: Porto
   162: Estação no caminho
-  163: Semáforo no caminho
+  163: Sinal no caminho
   164: Impossível remover aeroporto...
   165: Impossível remover porto...
   166: Impossível remover estação...
@@ -267,7 +267,7 @@ strings:
   250: "{STRINGID} - Esquema de Cores"
   251: "{STRINGID} - Desafio"
   252: "{SMALLFONT}{COLOUR BLACK}Mudar Direção"
-  253: "{SMALLFONT}{COLOUR BLACK}Atravessar semáforo por conta e risco"
+  253: "{SMALLFONT}{COLOUR BLACK}Atravessar sinal por conta e risco"
   254: "{SMALLFONT}{COLOUR BLACK}Remover {POP16}{STRINGID} da via/estrada"
   255: "{SMALLFONT}{COLOUR BLACK}Colocar {POP16}{STRINGID} na via/estrada"
   256: "{SMALLFONT}{COLOUR BLACK}Remover {POP16}{STRINGID} do aeroporto"
@@ -287,11 +287,11 @@ strings:
   270: "{COLOUR BLACK}{STRINGID}"
   271: "{SMALLFONT}{COLOUR BLACK}Construção de vias/estradas"
   272: "{SMALLFONT}{COLOUR BLACK}Construção de estação"
-  273: "{SMALLFONT}{COLOUR BLACK}Construção de semáforo"
+  273: "{SMALLFONT}{COLOUR BLACK}Construção de sinal"
   274: "{SMALLFONT}{COLOUR BLACK}Eletrificação de vias e outras melhorias"
-  275: "{SMALLFONT}{COLOUR BLACK}Selecionar tipo de semáforo"
-  276: "{SMALLFONT}{COLOUR BLACK}Construir semáforos em ambas as direções"
-  277: "{SMALLFONT}{COLOUR BLACK}Construir semáforo em apenas uma direção (trens não poderão transitar na outra direção)"
+  275: "{SMALLFONT}{COLOUR BLACK}Selecionar tipo de sinal"
+  276: "{SMALLFONT}{COLOUR BLACK}Construir sinais em ambas as direções"
+  277: "{SMALLFONT}{COLOUR BLACK}Construir sinal em apenas uma direção (trens não poderão transitar na outra direção)"
   278: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID}{NEWLINE}Vel. máxima:  {STRINGID}{NEWLINE}Altura máxima acima do solo:  {HEIGHT}"
   279: "{SMALLFONT}{COLOUR BLACK}Selecionar tipo de estação"
   280: Estação {INT16}
@@ -478,7 +478,7 @@ strings:
   457: "{COLOUR WINDOW_2}{STRINGID}"
   458: "{COLOUR WHITE}{STRINGID}"
   459: Parando{POP16}{POP16}
-  460: / Esperando no semáforo{POP16}{POP16}
+  460: / Esperando no sinal{POP16}{POP16}
   461: a {VELOCITY}{POP16}
   462: "{COLOUR RED}Bateu!{POP16}{POP16}"
   463: "{COLOUR RED}Preso!{POP16}{POP16}"
@@ -643,8 +643,8 @@ strings:
   622: Via/estrada imprópria
   623: Via/estrada imprópria para estação
   624: Estação não pode ser construída numa junção
-  625: Semáforos não podem ser construídos numa junção
-  626: Semáforos não podem ser construídos numa estação
+  625: Sinais não podem ser construídos numa junção
+  626: Sinais não podem ser construídos numa estação
   627: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}"
   628: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}"
   629: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID} {STRINGID}"
@@ -1192,7 +1192,7 @@ strings:
   1162: Veículo se aproximando, ou no caminho
   1163: Impossível colocar {POP16}{POP16}{POP16}{STRINGID} aqui...
   1164: Impossível remover {POP16}{POP16}{POP16}{STRINGID}...
-  1165: Impossível atravessar semáforo por conta e risco...
+  1165: Impossível atravessar sinal por conta e risco...
   1166: Esse veículo requer {STRINGID}
   1167: Trem não têm veículos!
   1168: Trem não tem cabine de condução
@@ -1449,7 +1449,7 @@ strings:
   1419: Fechando
   1420: Pertence a {STRINGID}
   1421: "{STRINGID} pertence a {STRINGID}"
-  1422: Semáforo pertence a {STRINGID}
+  1422: Sinal pertence a {STRINGID}
   1423: "{COLOUR BLACK}{INT16}%"
   1424: "{COLOUR BLACK}{TINYFONT}{DATE DMY}"
   1425: Mensagens
@@ -1961,8 +1961,8 @@ strings:
   1914: "{SMALLFONT}{COLOUR BLACK}Como a via é de uma só linha, não precisamos configurar uma rota - Apenas por o trem para andar..."
   1915: "{SMALLFONT}{COLOUR BLACK}Vamos extender a via para criar uma junção e uma extensão para o terceiro município. Clicar com o botão direito na via abre a janela de construção de vias pronta para construir a junção..."
   1916: "{SMALLFONT}{COLOUR BLACK}Já que o traçado da via não é mais simples precisaremos dar ao nosso trem uma rota..."
-  1917: "{SMALLFONT}{COLOUR BLACK}Poderíamos agora adicionar um segundo trem, mas primeiro precisamos construir semáforos para evitar colisões entre trens..."
-  1918: "{SMALLFONT}{COLOUR BLACK}Os semáforos dividem a via em três diferentes 'Seções de bloco' e apenas um trem por vez poderá entrar em cada seção..."
+  1917: "{SMALLFONT}{COLOUR BLACK}Poderíamos agora adicionar um segundo trem, mas primeiro precisamos construir sinais para evitar colisões entre trens..."
+  1918: "{SMALLFONT}{COLOUR BLACK}Os sinais dividem a via em três diferentes 'Seções de bloco' e apenas um trem por vez poderá entrar em cada seção..."
 
   # Options/Misc
   1919: Usar nome do proprietário preferido no início de cada partida
@@ -2115,7 +2115,7 @@ strings:
   2060: Nomes de Municípios
   2061: Carga
   2062: Paredes
-  2063: Semáforos
+  2063: Sinais
   2064: Passagem em Nível
   2065: Postes de Iluminação
   2066: Túneis
@@ -2224,7 +2224,7 @@ strings:
   2169: "Superfíce"
   2170: "Via"
   2171: "Estação"
-  2172: "Semáforo"
+  2172: "Sinal"
   2173: "Construção"
   2174: "Árvore"
   2175: "Parede"
