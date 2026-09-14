@@ -17,6 +17,11 @@ namespace OpenLoco::Ui::Windows::MapToolTip
     static CompanyId _mapTooltipOwner;  // 0x0050A040
     static uint16_t _mapTooltipTimeout; // 0x00523348
 
+    // Current location of the tooltip
+    // We track this so that we only show the tooltip after a timeout of
+    // the cursor being in the same location
+    static Ui::Point _tooltipLocation = {};
+
     enum widx
     {
         text
@@ -38,15 +43,14 @@ namespace OpenLoco::Ui::Windows::MapToolTip
 
         if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
         {
-            static Ui::Point tooltipLocation = {};
-            if ((std::abs(tooltipLocation.x - cursor.x) > 5)
-                || (std::abs(tooltipLocation.y - cursor.y) > 5)
+            if ((std::abs(_tooltipLocation.x - cursor.x) > 5)
+                || (std::abs(_tooltipLocation.y - cursor.y) > 5)
                 || Input::hasFlag(Input::Flags::rightMousePressed))
             {
                 _mapTooltipTimeout = 0;
             }
 
-            tooltipLocation = cursor;
+            _tooltipLocation = cursor;
             auto args = FormatArguments::mapToolTip();
             FormatArgumentsView argsWrap(args);
             auto firstArg = argsWrap.pop<StringId>();
