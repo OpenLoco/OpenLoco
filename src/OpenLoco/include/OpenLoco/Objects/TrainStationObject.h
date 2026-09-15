@@ -53,7 +53,7 @@ namespace OpenLoco
         uint16_t designedYear;                     // 0x2A
         uint16_t obsoleteYear;                     // 0x2C
         uint32_t cargoOffsetBytes[4][4];           // 0x2E
-        uint32_t diagonalCargoOffsetBytes[16];       // 0x6E parsed in the same way as cargoOffsetBytes but never read
+        uint32_t diagonalCargoOffsetBytes[16];     // 0x6E parsed in the same way as cargoOffsetBytes but never read
 
         void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
