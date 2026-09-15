@@ -39,15 +39,15 @@ namespace OpenLoco
         StringId name;                   // 0x00
         uint8_t initialHeight;           // 0x02
         uint8_t height;                  // 0x03
-        uint8_t var_04;                  // 0x04
-        uint8_t var_05;                  // 0x05
+        uint8_t minHeight;               // 0x04
+        uint8_t maxHeight;               // 0x05 trees taller than 34 are checked for nearby obstructions
         uint8_t numRotations;            // 0x06 (1,2,4)
         uint8_t growth;                  // 0x07 (number of tree size images)
         TreeObjectFlags flags;           // 0x08
         uint32_t sprites[6];             // 0x0A
         uint32_t snowSprites[6];         // 0x22
         uint16_t shadowImageOffset;      // 0x3A
-        uint8_t var_3C;                  // 0x3C
+        uint8_t variantFlags;            // 0x3C bitset of which of the six sprites[] variants have their own images
         uint8_t seasonState;             // 0x3D (index for sprites, seasons + dying)
         uint8_t currentSeason;           // 0x3E
         uint8_t costIndex;               // 0x3F
