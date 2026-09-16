@@ -93,4 +93,54 @@ namespace OpenLoco::World
     };
 #pragma pack(pop)
     static_assert(sizeof(TrackElement) == kTileElementSize);
+
+    enum TrackElementTrackId : uint8_t
+    {
+        Straight = 0,
+        Diagonal,
+        LeftCurveVerySmall,
+        RightCurveVerySmall,
+        LeftCurveSmall,
+        RightCurveSmall,
+        LeftCurve,
+        RightCurve,
+        LeftCurveLarge,
+        RightCurveLarge,
+        DiagonalLeftCurveLarge,
+        DiagonalRightCurveLarge,
+        SBendLeft,
+        SBendRight,
+        StraightSlopeUp,
+        StraightSlopeDown,
+        StraightSteepSlopeUp,
+        StraightSteepSlopeDown,
+        LeftCurveSmallSlopeUp,
+        RightCurveSmallSlopeUp,
+        LeftCurveSmallSlopeDown,
+        RightCurveSmallSlopeDown,
+        LeftCurveSmallSteepSlopeUp,
+        RightCurveSmallSteepSlopeUp,
+        LeftCurveSmallSteepSlopeDown,
+        RightCurveSmallSteepSlopeDown,
+
+        // TODO delete the following ones from the game
+        StraightLeftSide,
+        StraightRightSide,
+        LeftCurveVerySmallInner,
+        LeftCurveVerySmallOuter,
+        RightCurveVerySmallOuter,
+        RightCurveVerySmallInner,
+        SBendLeftSideToRightSide,
+        SBendRightSideToLeftSide,
+        StraightLeftSideSteepSlopeUp,
+        StraightRightSideSteepSlopeUp,
+        StraightLeftSideSteepSlopeDown,
+        StraightRightSideSteepSlopeDown,
+        SBendSingleToLeftSide,
+        SBendSingleToRightSide,
+        SBendLeftSideToSingle,
+        SBendRightSideToSingle,
+        TurnaroundClockwise,
+        TurnaroundAnticlockwise,
+    };
 }
