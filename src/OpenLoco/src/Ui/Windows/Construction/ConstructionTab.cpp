@@ -1612,7 +1612,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 {
                     return std::nullopt;
                 }
-                id = TrackId::sBendSingleToRightSide;
+                id = Track::TrackId::sBendSingleToRightSide;
                 break;
             }
 
@@ -1631,7 +1631,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                     id = Track::TrackId::turnaroundAnticlockwise;
                     break;
                 }
-                id = TrackId::turnaroundClockwise;
+                id = Track::TrackId::turnaroundClockwise;
                 if (rotation >= 4)
                 {
                     return std::nullopt;
