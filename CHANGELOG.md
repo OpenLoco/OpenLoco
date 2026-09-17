@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Feature: [#3942] Added a tooltip to show the drag dimensions when using area selection tools.
 - Feature: [#3978] Improved automatic detection of Locomotion installs on Linux.
+- Feature: [#4023] Add OpenGraphics North American Expansion vehicles! And vanilla replacements for various bus', American horn sound, American region, overhead wires, train station 3! And updated OG_PCARUS2, OG_ALOCENT, OG_DASH7 OG_SD70MAC, OG_E8.
 - Change: [#3867] Repeated presses of the build tracks and build roads keyboard shortcuts now cycles track/road types.
 - Change: [#3967] English localisations now use typographically correct curved single quotes.
 - Change: [#3973] Game already running error message now says "OpenLoco" instead of "Chris Sawyer's Locomotion".
