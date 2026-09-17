@@ -71,7 +71,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             right_hand_curve_large,
             s_bend_left,
             s_bend_right,
-            s_bend_to_dual_track,
+            s_bend_to_dual_track_left,
+            s_bend_to_dual_track_right,
             s_bend_to_single_track,
             turnaround,
             null = 0xFF,
@@ -143,9 +144,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         widx::right_hand_curve_large,
         widx::s_bend_left,
         widx::s_bend_right,
-        widx::s_bend_dual_track_left, // s_bend_to_dual_track; unused?
-        widx::s_bend_dual_track_left, // s_bend_to_single_track; unused?
-        widx::s_bend_dual_track_left, // turnaround
+        widx::s_bend_dual_track_left,  // s_bend_to_dual_track_left
+        widx::s_bend_dual_track_right, // s_bend_to_dual_track_right
+        widx::s_bend_dual_track_left,  // s_bend_to_single_track
+        widx::s_bend_dual_track_left,  // turnaround
     };
 
     WindowEventList events;
@@ -996,7 +998,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             window->widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_s_bend_left_dual_track;
             window->widgets[widx::s_bend_dual_track_right].tooltip = StringIds::tooltip_s_bend_right_dual_track;
 
-            trackPieceWidgets[TrackPiece::s_bend_to_dual_track] = widx::s_bend_dual_track_left;
             trackPieceWidgets[TrackPiece::s_bend_to_single_track] = widx::s_bend_dual_track_right;
 
             if (cState.constructionRotation >= 4 && cState.constructionRotation < 12)
@@ -1005,7 +1006,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 window->widgets[widx::s_bend_dual_track_right].image = ImageIds::construction_s_bend_to_single_track_left;
                 window->widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_turnaround;
                 window->widgets[widx::s_bend_dual_track_right].tooltip = StringIds::tooltip_s_bend_to_single_track;
-                trackPieceWidgets[TrackPiece::s_bend_to_dual_track] = widx::s_bend_dual_track_right;
+                trackPieceWidgets[TrackPiece::s_bend_to_single_track] = widx::s_bend_dual_track_right;
                 trackPieceWidgets[TrackPiece::turnaround] = widx::s_bend_dual_track_left;
                 if (cState.constructionRotation >= 8)
                 {
@@ -1246,7 +1247,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             case TrackPiece::right_hand_curve_large:
             case TrackPiece::s_bend_left:
             case TrackPiece::s_bend_right:
-            case TrackPiece::s_bend_to_dual_track:
+            case TrackPiece::s_bend_to_dual_track_left:
+            case TrackPiece::s_bend_to_dual_track_right:
             case TrackPiece::s_bend_to_single_track:
             {
                 return std::nullopt;
@@ -1573,22 +1575,37 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 break;
             }
 
-            case TrackPiece::s_bend_to_dual_track: // loc_4A077C
+            case TrackPiece::s_bend_to_dual_track_left: // loc_4A077C
             {
                 if (gradient != TrackGradient::level)
                 {
                     return std::nullopt;
                 }
-                if (rotation >= 8)
+                if (rotation >= 8) // right side of dual track
                 {
                     return std::nullopt;
                 }
-                id = 40;
-                if (rotation >= 4)
+                if (rotation >= 4) // left side of dual track
                 {
+                    // ???????
+                    id = 40;
                     break;
                 }
-                id = 38;
+                id = 38; // To left side
+                break;
+            }
+
+            case TrackPiece::s_bend_to_dual_track_right: // loc_4A077C
+            {
+                if (gradient != TrackGradient::level)
+                {
+                    return std::nullopt;
+                }
+                if (rotation >= 4) // left or right side of dual track
+                {
+                    return std::nullopt;
+                }
+                id = 39;
                 break;
             }
 
@@ -1602,17 +1619,17 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 {
                     return std::nullopt;
                 }
-                id = 41;
-                if (rotation >= 8)
+                if (rotation >= 8) // right side of dual track
                 {
+                    id = 41; // 'S' Bend to single track (from right side)
                     break;
                 }
-                if (rotation >= 4)
+                if (rotation >= 4) // left side of dual track
                 {
-                    return std::nullopt;
+                    id = 40;
+                    break;
                 }
-                id = 39;
-                break;
+                return std::nullopt;
             }
 
             case TrackPiece::turnaround: // loc_4A07C0
@@ -1625,17 +1642,17 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 {
                     return std::nullopt;
                 }
-                id = 43;
-                if (rotation >= 8)
+                if (rotation >= 8) // right side of dual track
                 {
+                    id = 43;
                     break;
                 }
-                id = 42;
-                if (rotation >= 4)
+                if (rotation >= 4) // left side of dual track
                 {
-                    return std::nullopt;
+                    id = 42;
+                    break;
                 }
-                break;
+                return std::nullopt;
             }
         }
 
@@ -1854,7 +1871,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
                 if (self.widgets[widx::s_bend_dual_track_left].image == ImageIds::construction_s_bend_dual_track_left)
                 {
-                    cState.lastSelectedTrackPiece = TrackPiece::s_bend_to_dual_track;
+                    cState.lastSelectedTrackPiece = TrackPiece::s_bend_to_dual_track_left;
                 }
                 else if (self.widgets[widx::s_bend_dual_track_left].image == ImageIds::construction_left_turnaround || self.widgets[widx::s_bend_dual_track_left].image == ImageIds::construction_right_turnaround)
                 {
@@ -1877,7 +1894,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
                 if (self.widgets[widx::s_bend_dual_track_right].image == ImageIds::construction_s_bend_dual_track_right)
                 {
-                    cState.lastSelectedTrackPiece = TrackPiece::s_bend_to_dual_track;
+                    cState.lastSelectedTrackPiece = TrackPiece::s_bend_to_dual_track_right;
                 }
                 else if (self.widgets[widx::s_bend_dual_track_right].image == ImageIds::construction_left_turnaround)
                 {
