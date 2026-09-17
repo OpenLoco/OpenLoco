@@ -94,7 +94,7 @@ namespace OpenLoco::World
 #pragma pack(pop)
     static_assert(sizeof(TrackElement) == kTileElementSize);
 
-    enum TrackId : uint8_t
+    enum class TrackId : uint8_t
     {
         straight = 0,
         diagonal,
