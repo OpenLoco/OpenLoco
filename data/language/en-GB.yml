@@ -2521,3 +2521,4 @@ strings:
   2466: "Has cargo order"
   2467: "Transports cargo"
   2468: "{INT16} x {INT16}"
+  2469: "{COLOUR BLACK}None yet"

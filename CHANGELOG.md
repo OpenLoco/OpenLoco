@@ -4,6 +4,7 @@
 - Feature: [#3978] Improved automatic detection of Locomotion installs on Linux.
 - Feature: [#4023] Add OpenGraphics North American Expansion vehicles! And vanilla replacements for various bus', American horn sound, American region, overhead wires, train station 3! And updated OG_PCARUS2, OG_ALOCENT, OG_DASH7 OG_SD70MAC, OG_E8.
 - Change: [#3867] Repeated presses of the build tracks and build roads keyboard shortcuts now cycles track/road types.
+- Change: [#3956] Speed Records tab in the Company List window now shows text when no records are set yet.
 - Change: [#3967] English localisations now use typographically correct curved single quotes.
 - Change: [#3973] Game already running error message now says "OpenLoco" instead of "Chris Sawyer's Locomotion".
 - Change: [#3974] The vehicle list can now be filtered by vehicles that transport cargo, rather than just 'wait for' orders.
