@@ -1,0 +1,2520 @@
+header:
+  locale: tr-AZ
+  english_name: Turkish (AZ)
+  native_name: Türkçe (AZ)
+  loco_original_id: 0
+strings:
+  0: ""
+  1: "{POP16}"
+  2: Yeni Sirket{POP16}
+  3: Adsiz{POP16}
+  4: Qatar {INT16}
+  5: Avtobus {INT16}
+  6: Yük masini {INT16}
+  7: Tramvay {INT16}
+  8: Teyyare {INT16}
+  9: Gemi {INT16}
+
+  # Günler
+  10: 1-ci
+  11: 2-ci
+  12: 3-cü
+  13: 4-cü
+  14: 5-ci
+  15: 6-ci
+  16: 7-ci
+  17: 8-ci
+  18: 9-cu
+  19: 10-cu
+  20: 11-ci
+  21: 12-ci
+  22: 13-cü
+  23: 14-cü
+  24: 15-ci
+  25: 16-ci
+  26: 17-ci
+  27: 18-ci
+  28: 19-cu
+  29: 20-ci
+  30: 21-ci
+  31: 22-ci
+  32: 23-cü
+  33: 24-cü
+  34: 25-ci
+  35: 26-ci
+  36: 27-ci
+  37: 28-ci
+  38: 29-cu
+  39: 30-cu
+  40: 31-ci
+
+  41: Yan
+  42: Fev
+  43: Mar
+  44: Apr
+  45: May
+  46: Iyn
+  47: Iyl
+  48: Avq
+  49: Sen
+  50: Okt
+  51: Noy
+  52: Dek
+
+  53: Qrafik melumat faylina giris mümkün olmadi
+  54: Melumat fayli yoxdur ve ya elcatan deyil
+  55: Kifayet qeder yaddas ayrila bilmedi
+  56: "{COLOUR BLACK}❌"
+  57: Secilen ad artiq istifade edilir
+  58: Heddinden artiq teyin edilmis ad var
+  59: Kifayet qeder pul yoxdur - teleb olunan {CURRENCY32}
+  60: "{SMALLFONT}{COLOUR BLACK}Pencereni bagla"
+  61: Oyun basladila bilmedi
+  62: Oyun kicildilmis veziyyetde basladila bilmir
+  63: Qrafik sistemi basladila bilmedi
+  64: CD Açar Kodu {INT32 RAW} Locomotion CD-niz üçün kecersizdir!{COLOUR WINDOW_1}{COLOUR WINDOW_1}Lütfen Chris Sawyer's Locomotion-u silin ve dogru CD acar kodu ile yeniden yükleyin
+
+  65: "{UINT16 RAW} x {UINT16 RAW}"
+  66: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{UINT16 RAW} x {UINT16 RAW}"
+
+  67: "'Chris Sawyer's Locomotion' haqqinda"
+  68: Chris Sawyer's Locomotion
+  69: "{COLOUR WINDOW_2}Versiya 4.02.176 (US English)"
+  70: "{COLOUR WINDOW_2}Müellif Hüququ © 2004 Chris Sawyer, Bütün Hüquqlar Qorunur"
+  71: "{COLOUR WINDOW_2}Dizayn ve Proqramlasdirma: Chris Sawyer"
+  72: "{COLOUR WINDOW_2}Qrafika: Simon Foster"
+  73: "{COLOUR WINDOW_2}Ses ve Musiqi: Allister Brimble"
+  74: "{COLOUR WINDOW_2}Giris Musiqisi: John Broomhall"
+  75: "{COLOUR WINDOW_2}Temsil: Jacqui Lyons (Marjacq Ltd.)"
+  76: "{COLOUR WINDOW_2}Tesekkürler:"
+  77: "{COLOUR WINDOW_2}Katrina Morrin, Natasha Morrin, Jim Wills"
+  78: ""
+  79: ""
+  80: ""
+  81: ""
+  82: ""
+  83: ""
+  84: ""
+
+  85: "{STRINGID}"
+  86: "{POP16}{STRINGID}"
+  87: "{POP16}{POP16}{STRINGID}"
+  88: "{POP16}{POP16}{POP16}{STRINGID}"
+  89: "{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  90: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  91: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  92: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  93: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  94: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  95: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  96: "{COLOUR BLACK}▼"
+  97: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  98: Çox alçaq!
+  99: Çox hündür!
+  100: Burada erazi alçaldila bilmir...
+  101: Burada erazi yükseldile bilmir...
+  102: Manee var
+  103: Oyunu Yükle
+  104: Oyunu Saxla
+  105: Ssenari Redaktorundan Çix
+  106: Oyundan Çix
+  107: Ekran Görüntüsü
+  108: Ekran Görüntüsü
+  109: Ekran görüntüsü '{STRING}' olaraq diske saxlanildi
+  110: Ekran görüntüsü alina bilmedi!
+  111: Erazi melumat sahesi doldu!
+  112: Tikili hem yer üstünde hem de yer altinda olacaq sekilde tikile bilmez
+  113: "{STRINGID}"
+  114: "{SMALLFONT}{COLOUR BLACK}Sol Dönge"
+  115: "{SMALLFONT}{COLOUR BLACK}Sag Dönge"
+  116: "{SMALLFONT}{COLOUR BLACK}Sol Dönge (Kiçik Radius)"
+  117: "{SMALLFONT}{COLOUR BLACK}Sag Dönge (Kiçik Radius)"
+  118: "{SMALLFONT}{COLOUR BLACK}Sol Dönge (Çox Kiçik Radius)"
+  119: "{SMALLFONT}{COLOUR BLACK}Sag Dönge (Çox Kiçik Radius)"
+  120: "{SMALLFONT}{COLOUR BLACK}Sol Dönge (Böyük Radius)"
+  121: "{SMALLFONT}{COLOUR BLACK}Sag Dönge (Böyük Radius)"
+  122: "{SMALLFONT}{COLOUR BLACK}Düz"
+  123: "{SMALLFONT}{COLOUR BLACK}(S) Döngesi Sol"
+  124: "{SMALLFONT}{COLOUR BLACK}(S) Döngesi Sag"
+  125: "{SMALLFONT}{COLOUR BLACK}Cüt xett üçün sola (S) döngesi"
+  126: "{SMALLFONT}{COLOUR BLACK}Cüt xett üçün saga (S) döngesi"
+  127: "{SMALLFONT}{COLOUR BLACK}Tek xett üçün (S) döngesi"
+  128: "{SMALLFONT}{COLOUR BLACK}Geri Dönüs"
+  129: "{SMALLFONT}{COLOUR BLACK}Tikintiye baslamaq üçün eraziye klikleyin"
+  130: "{SMALLFONT}{COLOUR BLACK}Bu Rel Hissesini Tik"
+  131: "{SMALLFONT}{COLOUR BLACK}Evvelki Rel Hissesini Sil"
+  132: "{SMALLFONT}{COLOUR BLACK}Dik Enme"
+  133: "{SMALLFONT}{COLOUR BLACK}Enme"
+  134: "{SMALLFONT}{COLOUR BLACK}Düz"
+  135: "{SMALLFONT}{COLOUR BLACK}Yoxus"
+  136: "{SMALLFONT}{COLOUR BLACK}Dik Yoxus"
+  137: "{COLOUR WINDOW_2}Bunu tik..."
+  138: "{COLOUR WINDOW_2}Qiymet: {COLOUR BLACK}{CURRENCY32}"
+  139: Buraya siqnal tikile bilmez...
+  140: Buraya siqnallar tikile bilmez...
+  141: Siqnal siline bilmir...
+  142: "{POP16}{POP16}{POP16}{STRINGID} siline bilmir"
+  143: "{POP16}{POP16}{POP16}{STRINGID} tikile bilmir"
+  144: Evvel erazini yükseldin ve ya alçaldin
+  145: Yeralti görünüsü
+  146: Ön plandaki relslari ve yollari gizlet
+  147: Bu stansiya növü yalniz yolun sonunda tikile biler
+  148: "{STRINGID} üçün yanlis stansiya növü"
+  149: "{STRINGID} ile uygun olmayan stansiya"
+  150: Hemzemin keçid manee yaradir
+  151: Hemzemin keçid yalniz düz yol ve rel eyni seviyyede olanda mümkündür
+  152: Qovsaq tikile bilmez
+  153: Qovsaq tam düz olmalidir
+  154: "{STRINGID} manee yaradir / qovsaq üçün hündürlük uygun deyil"
+  155: Buraya artiq tikilib
+  156: "{STRINGID} ile kesisme ve ya qovsaq tikile bilmir"
+  157: Qovsaqlar mümkün deyil
+  158: Siqnal
+  159: Stansiya
+  160: Hava Limani
+  161: Liman
+  162: Stansiya manee yaradir
+  163: Siqnal manee yaradir
+  164: Hava Limani siline bilmir...
+  165: Liman siline bilmir...
+  166: Stansiya siline bilmir...
+  167: Yanlis rel/yol növü!
+  168: Körpü növleri eyni olmalidir
+  169: Körpü qovsaq üçün uygun deyil
+  170: Rel kombinasiyasi mümkün deyil
+  171: Oyunda çox sayda obyekt var
+  172: Saat istiqametinde dönder
+  173: Saat istiqametinin eksine dönder
+  174: "Ilk defe basladilir..."
+  175: "Obyekt fayllari yoxlanilir..."
+  176: Oyunu Yükle
+  177: Oyundan Çix
+  178: Oyundan Çix
+  179: Ssenari Redaktorundan Çix
+  180: Eraziyi Yükle
+  181: Yüklemeden evvel saxlanilsin?
+  182: Çixmadan evvel saxlanilsin?
+  183: Çixmadan evvel saxlanilsin?
+  184: Saxla
+  185: Saxlama
+  186: Legv et
+  187: Tamam
+
+  188: "{SMALLFONT}{COLOUR BLACK}{STRINGID} sola sürüsdür"
+  189: "{SMALLFONT}{COLOUR BLACK}{STRINGID} saga sürüsdür"
+  190: "{SMALLFONT}{COLOUR BLACK}{STRINGID} süretle sola sürüsdür"
+  191: "{SMALLFONT}{COLOUR BLACK}{STRINGID} süretle saga sürüsdür"
+  192: "{SMALLFONT}{COLOUR BLACK}{STRINGID} sola/saga sürüsdür"
+  193: "{SMALLFONT}{COLOUR BLACK}{STRINGID} yuxari sürüsdür"
+  194: "{SMALLFONT}{COLOUR BLACK}{STRINGID} asagi sürüsdür"
+  195: "{SMALLFONT}{COLOUR BLACK}{STRINGID} süretle yuxari sürüsdür"
+  196: "{SMALLFONT}{COLOUR BLACK}{STRINGID} süretle asagi sürüsdür"
+  197: "{SMALLFONT}{COLOUR BLACK}{STRINGID} yuxari/asagi sürüsdür"
+
+  198: xerite
+  199: neqliyyat vasiteleri siyahisi
+  200: yeni neqliyyat vasiteleri siyahisi
+  201: siyahi
+  202: agaç siyahisi
+  203: emr siyahisi
+  204: stansiya siyahisi
+  205: yasayis menteqeleri siyahisi
+  206: zavod siyahisi
+  207: yeni zavod siyahisi
+  208: bina siyahisi
+  209: divar siyahisi
+  210: reytinq siyahisi
+  211: yük siyahisi
+  212: mesaj siyahisi
+  213: sirket siyahisi
+  214: ssenari siyahisi
+  215: kredit siyahisi
+
+  216: "{COLOUR WINDOW_2}▲{COLOUR BLACK}  {CURRENCY32}"
+  217: "{COLOUR WINDOW_2}▼{COLOUR BLACK}  {CURRENCY32}"
+  218: Secilen rejime keçile bilmir
+  219: "{COLOUR WINDOW_2}Qiymet: {COLOUR BLACK}{CURRENCY32}"
+  220: (oyuncu 1)
+  221: (oyuncu 2)
+  222: Reng palitrasi deyisdirile bilmir...
+  223: Yaxinlasdir
+  224: Uzaqlasdir
+  225: Yasayis Menteqeleri
+  226: Zavodlar
+  227: Hava Limani
+  228: Liman
+  229: Erazi Qurulusu Seçimleri
+  230: ""
+  231: 🛤
+  232: 🛣️
+  233: 🛤🛣️
+  234: ☁️
+  235: 🛤☁️
+  236: 🛣️☁️
+  237: 🛤🛣️☁️
+  238: 🌊
+  239: 🛤🌊
+  240: 🛣️🌊
+  241: 🛤🛣️🌊
+  242: ☁️🌊
+  243: 🛤☁️🌊
+  244: 🛣️☁️🌊
+  245: 🛤🛣️☁️🌊
+  246: "{STRINGID}"
+  247: "{STRINGID} - Melumat"
+  248: "{STRINGID} - Maliyye"
+  249: "{STRINGID} - Çatdirilan Yük"
+  250: "{STRINGID} - Reng Palitrasi"
+  251: "{STRINGID} - Meydan Oxuma"
+  252: "{SMALLFONT}{COLOUR BLACK}Istiqameti deyisdir"
+  253: "{SMALLFONT}{COLOUR BLACK}Tehlükede siqnali keç"
+  254: "{SMALLFONT}{COLOUR BLACK}Reldan/yoldan {POP16}{STRINGID} obyektini sil"
+  255: "{SMALLFONT}{COLOUR BLACK}Rel/yol üzerine {POP16}{STRINGID} yerlestir"
+  256: "{SMALLFONT}{COLOUR BLACK}Hava limanindan {POP16}{STRINGID} obyektini sil"
+  257: "{SMALLFONT}{COLOUR BLACK}Hava limanina {POP16}{STRINGID} yerlestir"
+  258: "{SMALLFONT}{COLOUR BLACK}Sudan {POP16}{STRINGID} obyektini sil"
+  259: "{SMALLFONT}{COLOUR BLACK}Limana {POP16}{STRINGID} yerlestir"
+  260: "{POP16}{POP16}{POP16}{STRINGID} basladila bilmir..."
+  261: "{POP16}{POP16}{POP16}{STRINGID} üçün el ile rejim secile bilmir..."
+  262: "{POP16}{POP16}{POP16}{STRINGID} dayandirila bilmir..."
+  263: "{VELOCITY}"
+  264: Limitsiz{POP16}
+  265: Dayandir
+  266: Baslat
+  267: El ile
+  268: "{SMALLFONT}{COLOUR BLACK}Nece rel/yol hissesinin yükseldileceyini seç"
+  269: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID} baslat/dayandir"
+  270: "{COLOUR BLACK}{STRINGID}"
+  271: "{SMALLFONT}{COLOUR BLACK}Rel/yol tikintisi"
+  272: "{SMALLFONT}{COLOUR BLACK}Stansiya tikintisi"
+  273: "{SMALLFONT}{COLOUR BLACK}Siqnal tikintisi"
+  274: "{SMALLFONT}{COLOUR BLACK}Rel elektriklesdirilmesi ve diger yaxsilasdirmalar"
+  275: "{SMALLFONT}{COLOUR BLACK}Siqnal növünü sec"
+  276: "{SMALLFONT}{COLOUR BLACK}Her iki istiqametde siqnal tik"
+  277: "{SMALLFONT}{COLOUR BLACK}Yalniz bir istiqametde siqnal tik (qatarlar eks istiqametde gede bilmez)"
+  278: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID}{NEWLINE}Maksimum süret:  {STRINGID}{NEWLINE}Yerden maksimum hündürlük:  {HEIGHT}"
+  279: "{SMALLFONT}{COLOUR BLACK}Stansiya növünü sec"
+  280: Stansiya {INT16}
+  281: "{STRINGID}"
+  282: "{STRINGID} Simal"
+  283: "{STRINGID} Cenub"
+  284: "{STRINGID} Serq"
+  285: "{STRINGID} Qerb"
+  286: "{STRINGID} Merkez"
+  287: "{STRINGID} Transfer Merkezi"
+  288: "{STRINGID} Dayanacagi"
+  289: "{STRINGID} Vadisi"
+  290: "{STRINGID} Tepeleri"
+  291: "{STRINGID} Mesesi"
+  292: "{STRINGID} Sahili"
+  293: "{STRINGID} Deyisme"
+  294: "{STRINGID} Hava Limani"
+  295: "{STRINGID} Neft Sahesi"
+  296: "{STRINGID} Meden Ocagi"
+  297: "{STRINGID} Limani"
+  298: "{STRINGID} elave Binasi"
+  299: "{STRINGID} Yan Xetti"
+  300: "{STRINGID} Söbesi"
+  301: Yuxari {STRINGID}
+  302: Asagi {STRINGID}
+  303: "{STRINGID} Helikopter Meydancasi"
+  304: "{STRINGID} Mesesi"
+  305: "{STRINGID} Qovsagi"
+  306: "{STRINGID} Keçidi"
+  307: "{STRINGID} Menzereleri"
+  308: "{STRINGID} 1"
+  309: "{STRINGID} 2"
+  310: "{STRINGID} 3"
+  311: "{STRINGID} 4"
+  312: "{STRINGID} 5"
+  313: "{STRINGID} 6"
+  314: "{STRINGID} 7"
+  315: "{STRINGID} 8"
+  316: "{STRINGID} 9"
+  317: "{STRINGID} 10"
+  318: "{STRINGID} 11"
+  319: "{STRINGID} 12"
+  320: "{STRINGID} 13"
+  321: "{STRINGID} 14"
+  322: "{STRINGID} 15"
+  323: "{STRINGID} 16"
+  324: "{STRINGID} 17"
+  325: "{STRINGID} 18"
+  326: "{STRINGID} 19"
+  327: "{STRINGID} 20"
+  328: "{COLOUR WINDOW_2}{POP16}Çeki: {COLOUR BLACK}{INT32}t"
+  329: "{COLOUR WINDOW_2}Ümumi güç: {COLOUR BLACK}{POWER}{COLOUR WINDOW_2} Çeki: {COLOUR BLACK}{INT32}t"
+  330: "{COLOUR WINDOW_2}Maksimum süret: {COLOUR BLACK}{VELOCITY}{POP16}{COLOUR WINDOW_2} Etibarliliq: {COLOUR BLACK}{INT16}%"
+  331: "{COLOUR WINDOW_2}Maksimum süret: {COLOUR BLACK}{VELOCITY} / {VELOCITY}{COLOUR WINDOW_2} Etibarliliq: {COLOUR BLACK}{INT16}%"
+  332: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID} sat{NEWLINE}(Veya satmaq üçün araci buraya sürükleyin)"
+  333: "{SMALLFONT}{COLOUR BLACK}Bu {POP16}{STRINGID} üçün yeni araç tik"
+  334: "{COLOUR BLACK}(Baslangiç mövqeyini seçmek üçün görüntüye klikleyin: {STRINGID})"
+  335: Araçlar uyusmur
+  336: Oyunda çox sayda araç var
+  337: ""
+  338: ""
+  339: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  340: "{NEWLINE}Tikildi:  {DATE MY}"
+  341: "{NEWLINE}Deyeri:  {CURRENCY32}"
+  342: "{NEWLINE}Güç:  {POWER}"
+  343: "{NEWLINE}Çeki:  {INT16}t"
+  344: "{NEWLINE}Maksimum Süret:  {VELOCITY}"
+  345: " ({STRINGID} üzerinde {VELOCITY})"
+  346: "{NEWLINE}Etibarliliq:  {INT16}%"
+  347: "{STRINGID} {STRINGID}"
+  348: Tek bölme
+  349: Blok bölme
+  350: Bütün bagli relsler
+  351: "Xeberdarliq: Çox sayda rel var!{NEWLINE}Secilen relslerin bezileri yükseldilmemis ola biler"
+  352: "{SMALLFONT}{COLOUR BLACK}Reli bu yaxsilasdirmalarla yükselt"
+  353: "{SMALLFONT}{COLOUR BLACK}(Elave etmek üçün secilen rele klikleyin)"
+  354: "{SMALLFONT}{COLOUR BLACK}Relslere ne elave olunacagini seç"
+  355: "{SMALLFONT}{COLOUR BLACK}Esas görünüsü buraya yönelt"
+  356: Xeritenin kenarindan kenardadir!
+  357: Qismen su altinda ve üstünde tikile bilmez!
+  358: Su seviyyesine çox yaxindir!
+  359: Bu, su altinda tikile bilmez!
+  360: Bu yalniz yer üstünde tikile biler!
+  361: Bu yalniz düz erazide tikile biler!
+  362: Oyunu Yükle
+  363: Eraziyi Yükle
+  364: Eraziyi Saxla
+  365: Oyunu Saxla
+  366: Ssenarini Saxla
+  367: OpenLoco Saxlanmis Oyun Fayli
+  368: OpenLoco Ssenari Fayli
+  369: OpenLoco erazi Fayli
+  370: Oyun saxlanila bilmedi!
+  371: Saxlanmis oyun yüklene bilmedi...{NEWLINE}Faylda etibarsiz melumat var!
+  372: Ön plandaki landsafti ve binalari gizlet
+  373: Yalniz su üzerinde tikile biler!
+  374: Yalniz su esasli zavodun yaninda su üzerinde tikile biler!
+  375: "{STRINGID} Adi"
+  376: "Bu {STRINGID} üçün yeni ad daxil edin:"
+  377: Bu araç yeniden adlandirila bilmir...
+  378: Körpü teleb olunur
+  379: Bu körpü növü üçün zemin çox hündürdür
+  380: Körpü artiq yerden maksimum hündürlükdedir
+  381: "{STRINGID} üçün körpü teleb olunur"
+  382: Bu tikili üçün körpü növü uygun deyil
+  383: Stansiya Adi
+  384: "{STRINGID} stansiyasi üçün yeni ad daxil edin:"
+  385: Stansiya adi deyisdirile bilmir...
+  386: Etibarsiz stansiya adi
+  387: Araç dasina bilmir...
+  388: Qatar geri döndürüle bilmir...
+  389: Araç satila bilmir...
+  390: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID} satila bilmir..."
+  391: "{STRINGID}"
+  392: "{STRINGID}"
+  393: "{STRINGID} stansiya perronu"
+  394: "{STRINGID} stansiya binasi / avtobus dayanacagi"
+  395: "{SMALLFONT}{COLOUR BLACK}Bu stansiyanin xidmet sahesini vurgula"
+  396: Sessiz
+  397: Musiqini Çal
+  398: "{COLOUR RED}Iflas!"
+  399: "{STRINGID}, {STRINGID} stansiyasinda tam yük gözleye bilmez"
+  400: "{STRINGID}, enisde sürüserek dayandi"
+  401: "{STRINGID} artiq {STRINGID} qebul edir"
+  402: "{STRINGID} artiq {STRINGID} qebul etmir"
+  403: Yeni Dasima Sirketi!{NEWLINE}{STRINGID}, {STRINGID} yaxinliginda tikintiye baslayir!"
+  404: "{STRINGID}, hava limani uygun olmadigi üçün {STRINGID} mövqeyine ene bilmir"
+  405: Vetendaslar Bayram Edir!{NEWLINE}Ilk {STRINGID}, {STRINGID}-e catdi!"
+  406: Vetendaslar Bayram Edir!{NEWLINE}Ilk {STRINGID} çatdirilmasi {STRINGID}-e catdi!"
+  407: Isciler Bayram Edir!{NEWLINE}Ilk {STRINGID}, {STRINGID}-e çatdirildi!
+  408: Yeni Neqliyyat Vasitesi İxtira Edildi -{NEWLINE}“{STRINGID}”!
+  409: "{STRINGID}, “{STRINGID}” seviyyesinden “{STRINGID}” seviyyesine yükseldi!"
+  410: Yeni {STRINGID}, {STRINGID} yaxinliginda tikilir!
+  411: Tebrikler!{NEWLINE}Meydan oxumani ugurla tamamladiniz!
+  412: Ugursuzluq!{NEWLINE}Meydan oxumada ugursuz oldunuz!
+  413: Uduzdunuz!{NEWLINE}{STRINGID}, meydan oxumani tamamladi!
+  414: Iflas Xeberdarligi!{NEWLINE}{STRINGID}, semereliliyini yaxsilasdirmasa 6 ay erzinde baglanacaq!
+  415: Son Xeberdarliq!{NEWLINE}{STRINGID}, semereliliyini yaxsilasdirmasa 3 ay erzinde baglanacaq!
+  416: Iflas!{NEWLINE}{STRINGID} iflas etdi ve baglandi!
+  417: Iflas!{NEWLINE}{STRINGID} iflas etdi ve baglandi!
+  418: "{STRINGID} qezaya düsdü!"
+  419: Korporativ Skandal!{NEWLINE}{STRINGID}, soygun cehdine göre hebs olundu!"
+  420: Yeni {STRINGID} süret rekordu!{NEWLINE}{STRINGID}, dayanacaqlar arasinda orta hesabla {VELOCITY} sürete catdi!"
+
+  421: "{MOVE_X 10}{STRINGID}"
+  422: »{MOVE_X 10}{STRINGID}
+
+  423: "{NEWLINE 1 2}{SPRITE}{NEWLINE 26 8}{STRINGID}"
+
+  424: "{MOVE_X 10}{STRING}"
+  425: »{MOVE_X 10}{STRING}
+
+  426: Rel ve yollarda hündürlük isaretleri
+  427: Erazi üzerinde hündürlük isaretleri
+  428: Tek istiqamet oxlari
+  429: Yasayis menteqelerinin adlari gösterilir
+  430: Stansiya adlari gösterilir
+  431: "{NEWLINE}{COLOUR WINDOW_3}Qebul edir: "
+  432: "1/8 "
+  433: "1/4 "
+  434: "3/8 "
+  435: "1/2 "
+  436: "5/8 "
+  437: "3/4 "
+  438: "7/8 "
+  439: ", "
+  440: "{NEWLINE}{COLOUR WINDOW_3}Istehsal edir: "
+  441: "{NEWLINE}{COLOUR WINDOW_3}Tikinti davam edir"
+  442: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}Sahibi: {STRINGID}"
+  443: "{MOVE_X 10}{STRINGID}"
+  444: ✓{MOVE_X 10}{STRINGID}
+  445: Siline bilmir...
+  446: Divarlar ve Hasarlar
+  447: Agaç ek"
+  448: Buraya yerlestirile bilmez...
+  449: Buraya ekile bilmez...
+  450: "{OUTLINE}{COLOUR WINDOW_2}{STRINGID}"
+  451: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}Sag klik, Redakte et"
+  452: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}Sag klik, Sil"
+  453: "{TINYFONT}{COLOUR BLACK}{STRINGID}"
+  454: "{COLOUR RED}{STRINGID}"
+  455: "{COLOUR BLACK}{STRINGID}"
+  456: "{COLOUR BLACK}{STRINGID} {STRINGID}"
+  457: "{COLOUR WINDOW_2}{STRINGID}"
+  458: "{COLOUR WHITE}{STRINGID}"
+  459: Dayanib{POP16}{POP16}
+  460: / Siqnalda gözleyir{POP16}{POP16}
+  461: "{VELOCITY}{POP16} süretle hereket edir"
+  462: "{COLOUR RED}Qeza etdi!{POP16}{POP16}"
+  463: "{COLOUR RED}Sixisdi!{POP16}{POP16}"
+  464: "{COLOUR RED}Siradan çixdi{POP16}{POP16}"
+  465: Dayandi{POP16}{POP16}
+  466: "{STRINGID} mövqeyinde yükleyir"
+  467: "{STRINGID} mövqeyinde bosaldir"
+  468: "{STRINGID} mövqeyine yaxinlasir"
+  469: "{STRINGID} mövqeyine enis edir"
+  470: "{STRINGID} mövqeyinde taksi edir"
+  471: "{STRINGID} mövqeyinden qalxir"
+  472: "{STRINGID} istiqametine hereket edir"
+  473: Mövqe yoxdur{POP16}{POP16}
+  474: Seyahet edir{POP16}{POP16}
+  475: "{STRINGID} - {STRINGID}"
+  476: "{POP16}{POP16}{STRINGID}"
+  477: Burada su seviyyesi endirile bilmez...
+  478: Burada su seviyyesi qaldirila bilmez...
+  479: (Yoxdur)
+  480: "{STRING}"
+  481: "{COLOUR RED}Baglidir - - "
+  482: "{COLOUR YELLOW}{STRINGID} - - "
+  483: Erazi meyli uygun deyil
+  484: Su altinda tikile bilmez!
+  485: Erazi növü uygun deyil
+  486: "{COLOUR BLACK}▴"
+  487: "{COLOUR BLACK}▾"
+  488: qatar
+  489: qatarlar
+  490: Qatar
+  491: Qatarlar
+  492: "{INT16} qatar"
+  493: "{INT16} qatarlar"
+  494: Qatar {INT16}
+  495: tekne
+  496: tekneler
+  497: Tekne
+  498: Tekneler
+  499: "{INT16} tekne"
+  500: "{INT16} tekneler"
+  501: Tekne {INT16}
+  502: rel
+  503: relsler
+  504: Rel
+  505: Relsler
+  506: "{INT16} rel"
+  507: "{INT16} relsler"
+  508: Rel {INT16}
+  509: yanasma platformasi
+  510: yanasma platformalari
+  511: Yanasma Platformasi
+  512: Yanasma Platformalari
+  513: "{INT16} yanasma platformasi"
+  514: "{INT16} yanasma platformalari"
+  515: Yanasma Platformasi {INT16}
+  516: stansiya
+  517: stansiyalar
+  518: Stansiya
+  519: Stansiyalar
+  520: "{INT16} stansiya"
+  521: "{INT16} stansiyalar"
+  522: Stansiya {INT16}
+  523: araç
+  524: araçlar
+  525: Araç
+  526: Araçlar
+  527: "{INT16} araç"
+  528: "{INT16} araçlar"
+  529: Araç {INT16}
+  530: bina
+  531: binalar
+  532: Bina
+  533: Binalar
+  534: "{INT16} bina"
+  535: "{INT16} binalar"
+  536: Bina {INT16}
+  537: tikili
+  538: tikililer
+  539: Tikili
+  540: Tikililer
+  541: "{INT16} tikili"
+  542: "{INT16} tikililer"
+  543: Tikili {INT16}
+  544: gemi
+  545: gemiler
+  546: Gemi
+  547: Gemiler
+  548: "{INT16} gemi"
+  549: "{INT16} gemiler"
+  550: Gemi {INT16}
+  551: yasayis menteqesi
+  552: yasayis menteqeleri
+  553: Yasayis Menteqesi
+  554: Yasayis Menteqeleri
+  555: "{INT16} yasayis menteqesi"
+  556: "{INT16} yasayis menteqeleri"
+  557: Yasayis Menteqesi {INT16}
+  558: zavod
+  559: zavodlar
+  560: Zavod
+  561: Zavodlar
+  562: "{INT16} zavod"
+  563: "{INT16} zavodlar"
+  564: Zavod {INT16}
+  565: "{SMALLFONT}{COLOUR BLACK}Obyektleri 90° döndür"
+  566: Düz zemin teleb olunur
+  567: Erazi növü deyisdirile bilmir...
+  568: "{OUTLINE}{COLOUR GREEN}+ {CURRENCY32}"
+  569: "{OUTLINE}{COLOUR RED}- {CURRENCY32}"
+  570: "{OUTLINE}{COLOUR WINDOW_1}+ {CURRENCY32}"
+  571: "{OUTLINE}{COLOUR WINDOW_1}- {CURRENCY32}"
+  572: "{CURRENCY48}"
+  573: "{COLOUR RED}{CURRENCY48}"
+  574: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID} görüntüsünü göster"
+  575: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID} dizayn melumatlarini ve seçimlerini göster"
+  576: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID} daxilindeki yük/sernisinleri göster"
+  577: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID} marsrut melumatlarini göster"
+  578: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID} istismar xerclerini ve gelirlerini göster"
+  579: "{SMALLFONT}{COLOUR BLACK}Tikinti üçün yeni baslangic mövqeyi sec"
+  580: "{SMALLFONT}{COLOUR BLACK}90° döndür"
+  581: "{STRINGID} manee olur"
+  582: "{CURRENCY32}"
+  583: Burada tikile bilmez...
+  584: "{DATE MY}"
+  585: OpenLoco
+  586: Zehmet olmasa Locomotion CD-nizi sürücüye yerlestirin:-
+  587: "{COLOUR WINDOW_2}Xercler/Gelirler"
+  588: Qatar Geliri
+  589: Qatar Istismar Xerci
+  590: Avtobus Geliri
+  591: Avtobus Istismar Xerci
+  592: Yük Masini Geliri
+  593: Yük Masini Istismar Xerci
+  594: Tramvay Geliri
+  595: Tramvay Istismar Xerci
+  596: Teyyare Geliri
+  597: Teyyare Istismar Xerci
+  598: Gemi Geliri
+  599: Gemi Istismar Xerci
+  600: Tikinti
+  601: Araç Alisi
+  602: Araç Satisi
+  603: Kredit Faizi
+  604: Diger
+  605: "{UINT16 RAW}"
+  606: +{CURRENCY48}
+  607: "{CURRENCY48}"
+  608: "{COLOUR WINDOW_2}Kredit:"
+  609: "{CURRENCY32}"
+  610: Daha cox borc alina bilmez!
+  611: Kifayet qeder vesait yoxdur!
+  612: Kredit geri ödene bilmir!
+  613: "{SMALLFONT}{COLOUR BLACK}Yeni Oyun Baslat"
+  614: "{SMALLFONT}{COLOUR BLACK}Saxlanmis Oyunu Yükle"
+  615: "{SMALLFONT}{COLOUR BLACK}Telim Videosunu Göster"
+  616: "{SMALLFONT}{COLOUR BLACK}Oyundan Cix"
+  617: Mezre
+  618: Kend
+  619: Qesebe
+  620: Seher
+  621: Böyük Seher
+  622: Rel/Yol uygun deyil
+  623: Stansiya üçün rel/yol uygun deyil
+  624: Qovsaq üzerinde stansiya tikile bilmez
+  625: Qovsaq üzerinde siqnal yerlestirile bilmez
+  626: Stansiyalarda siqnal yerlestirile bilmez
+  627: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}"
+  628: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}"
+  629: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID} {STRINGID}"
+  630: "{COLOUR WINDOW_2}Vesait:  {MOVE_X 81}{COLOUR RED}Iflas!"
+  631: "{COLOUR WINDOW_2}Vesait:  {MOVE_X 81}{COLOUR BLACK}{CURRENCY48}"
+  632: "{COLOUR WINDOW_2}Vesait:  {MOVE_X 81}{COLOUR RED}{CURRENCY48}"
+  633: "{COLOUR WINDOW_2}Sirket Deyeri: {COLOUR BLACK}{CURRENCY48}"
+  634: "{COLOUR WINDOW_2}Neqliyyatdan Menfeet: {COLOUR BLACK}{CURRENCY48} / ay"
+
+  635: Yanvar
+  636: Fevral
+  637: Mart
+  638: Aprel
+  639: May
+  640: Iyun
+  641: Iyul
+  642: Avqust
+  643: Sentyabr
+  644: Oktyabr
+  645: Noyabr
+  646: Dekabr
+
+  647: "{SMALLFONT}{COLOUR BLACK}{DATE DMY}{STRINGID}"
+  648: Yeni Oyun Ücun Ssenari Seç
+  649: ""
+  650: "{COLOUR WINDOW_2}Ses Keyfiyyeti:"
+  651: Asagi
+  652: Orta
+  653: Yüksek
+  654: Ayarlar
+  655: "{COLOUR WINDOW_2}Pul Vahidi:"
+  656: "{COLOUR WINDOW_2}Mesafe ve Süret:"
+  657: "{COLOUR WINDOW_2}Hündürlük:"
+  658: Ingilis Vahidi
+  659: Metrik
+  660: Vahidler
+  661: Heqiqi Deyerler
+  662: "{COLOUR WINDOW_2}Ekran Görüntüsü:"
+  663: Erazi yumsaldilmasini tetbiq et
+  664: "{SMALLFONT}{COLOUR BLACK}Arazi plitesinin kenar yumsaldilmasini aç/bagla"
+  665: Erazi üzerinde tor xetlerini göster
+  666: "{SMALLFONT}{COLOUR BLACK}erazi üzerinde tor xetlerini ac/bagla"
+  667: Bank kredit limitinizi artirmaqdan imtina etdi!
+  668: "{SMALLFONT}{COLOUR BLACK}Agaçlari ve binalari silmek üçün eraziye klikleyin"
+  669: "{SMALLFONT}{COLOUR BLACK}Daha kicik erazi sahesini temizle"
+  670: "{SMALLFONT}{COLOUR BLACK}Daha böyük erazi sahesini temizle"
+  671: "{SMALLFONT}{COLOUR BLACK}Daha kicik erazi sahesini tenzimle"
+  672: "{SMALLFONT}{COLOUR BLACK}Daha böyük erazi sahesini tenzimle"
+  673: "{SMALLFONT}{COLOUR BLACK}Daha kicik su sahesini tenzimle"
+  674: "{SMALLFONT}{COLOUR BLACK}Daha böyük su sahesini tenzimle"
+  675: Erazini Redakte Et
+  676: Su Seviyyesini Tenzimle
+  677: "{SMALLFONT}{COLOUR BLACK}Su seviyyesini artirmaq/azaltmaq üçün eraziye klikleyib yuxari/asagi sürükleyin"
+  678: "{SMALLFONT}{COLOUR BLACK}Erazi seviyyesini artirmaq/azaltmaq üçün klikleyib yuxari/asagi sürükleyin"
+  679: Saheni Temizle
+  680: Saheni Temizle
+  681: Erazini Redakte Et
+  682: Su Seviyyesini Tenzimle
+  683: Agaç ek
+  684: Divar Tik
+  685: "{STRINGID} - Araç Melumatlari"
+  686: "{STRINGID} - Yük"
+  687: "{STRINGID} - Marsrut"
+  688: "{STRINGID} - Maliyye"
+  689: "{COLOUR WINDOW_2}Qatarlar: {COLOUR BLACK}{INT16}"
+  690: "{COLOUR WINDOW_2}Avtobuslar: {COLOUR BLACK}{INT16}"
+  691: "{COLOUR WINDOW_2}Yük Masinlari: {COLOUR BLACK}{INT16}"
+  692: "{COLOUR WINDOW_2}Tramvaylar: {COLOUR BLACK}{INT16}"
+  693: "{COLOUR WINDOW_2}Teyyareler: {COLOUR BLACK}{INT16}"
+  694: "{COLOUR WINDOW_2}Gemiler: {COLOUR BLACK}{INT16}"
+  695: "{NEWLINE}Tapsiriq ugursuz oldu!"
+  696: "{NEWLINE}Tapsiriq tamamlandi!"
+  697: "{SMALLFONT}{COLOUR BLACK}Ugur Göstergesi: {INT16_1DP}% “{STRINGID}”"
+  698: "{SMALLFONT}{COLOUR BLACK}Sirket Deyeri: {CURRENCY48}{NEWLINE}Neqliyyatdan gelir: {CURRENCY48}/ay"
+  699: "{NEWLINE}Tapsiriq ireleyisi: %{INT16}{STRINGID}"
+  700: "{NEWLINE}Qalan müddet: {COLOUR BLACK}{INT16} il {INT16} ay"
+  701: Tuslari Ferdilesdir...
+  702: Klaviatura Qisayollari
+  703: Tuslari Sifirla
+  704: "{SMALLFONT}{COLOUR BLACK}Bütün klaviatura qisayollarini ilkin ayarlara qaytar"
+  705: En Üst Pencereni Bagla
+  706: Bütün Üzen Pencereleri Bagla
+  707: Tikinti Rejimini Legv Et
+  708: Oyunu Dayandir/Davam Et
+  709: Görünüsü Uzaqlasdir
+  710: Görünüsü Yaxinlasdir
+  711: Görünüsü Döndür
+  712: Tikinti Obyektini Döndür
+  713: Yeralti Görünüsünü Aç/Bagla
+  714: Ön Plandaki Relsleri ve Yollari Gizle
+  715: Ön Plandaki Tebii Görünüsü Gizle
+  716: Erazi Hündürlüklerini Göster/Gizle
+  717: Rel ve Yol Hündürlüklerini Göster/Gizle
+  718: Rel ve Yol Istiqamet Oxlarini Göster/Gizle
+  719: Erazini Redakte Et
+  720: Su Seviyyesini Tenzimle
+  721: Agaç ek
+  722: Saheni Temizle
+  723: Rel Tik
+  724: Yol Tik
+  725: Hava Limani Tik
+  726: Liman Tik
+  727: Yeni Araçlar Tik
+  728: Araç Siyahisini Göster
+  729: Stansiya Siyahisini Göster
+  730: Yasayis Menteqeleri Siyahisini Göster
+  731: Zavodlar Siyahisini Göster
+  732: Xeriteni Göster
+  733: Sirketler Siyahisini Göster
+  734: Sirket Melumatlarini Göster
+  735: Maliyyeni Göster
+  736: Bildirisler Siyahisini Göster
+  737: Ekran Görüntüsü Al
+  738: Son Bildirisi Legv Et ve ya Göster
+  739: Mesaj Gönder (2 oyunçulu rejimde)
+
+  # Virtual Tus Kodlari
+  740: ???
+  741: ???
+  742: ???
+  743: ???
+  744: ???
+  745: ???
+  746: ???
+  747: ???
+  748: Geri (Backspace)
+  749: Sekme (Tab)
+  750: ???
+  751: ???
+  752: Temizle (Clear)
+  753: Enter (Return)
+  754: ???
+  755: ???
+  756: ???
+  757: ???
+  758: Alt / Menü
+  759: Fasile (Pause)
+  760: Böyük Herf Kilidi (Caps)
+  761: ???
+  762: ???
+  763: ???
+  764: ???
+  765: ???
+  766: ???
+  767: Cixis (Escape)
+  768: ???
+  769: ???
+  770: ???
+  771: ???
+  772: Bosluq (Spacebar)
+  773: Sehife Yuxari (PgUp)
+  774: Sehife Asagi (PgDn)
+  775: Son (End)
+  776: Baslangic (Home)
+  777: Sol
+  778: Yuxari
+  779: Sag
+  780: Asagi
+  781: Sec
+  782: Çap Et
+  783: Tetbiq Et
+  784: Ekran Görüntüsü (Snapshot)
+  785: Elave Et (Insert)
+  786: Sil (Delete)
+  787: Kömek
+  788: "0"
+  789: "1"
+  790: "2"
+  791: "3"
+  792: "4"
+  793: "5"
+  794: "6"
+  795: "7"
+  796: "8"
+  797: "9"
+  798: ???
+  799: ???
+  800: ???
+  801: ???
+  802: ???
+  803: ???
+  804: ???
+  805: A
+  806: B
+  807: C
+  808: D
+  809: E
+  810: F
+  811: G
+  812: H
+  813: I
+  814: J
+  815: K
+  816: L
+  817: M
+  818: N
+  819: O
+  820: P
+  821: Q
+  822: R
+  823: S
+  824: T
+  825: U
+  826: V
+  827: W
+  828: X
+  829: Y
+  830: Z
+  831: ???
+  832: ???
+  833: Menu
+  834: ???
+  835: ???
+  836: NumPad 0
+  837: NumPad 1
+  838: NumPad 2
+  839: NumPad 3
+  840: NumPad 4
+  841: NumPad 5
+  842: NumPad 6
+  843: NumPad 7
+  844: NumPad 8
+  845: NumPad 9
+  846: NumPad *
+  847: NumPad +
+  848: NumPad Enter
+  849: NumPad -
+  850: NumPad .
+  851: NumPad /
+  852: F1
+  853: F2
+  854: F3
+  855: F4
+  856: F5
+  857: F6
+  858: F7
+  859: F8
+  860: F9
+  861: F10
+  862: F11
+  863: F12
+  864: F13
+  865: F14
+  866: F15
+  867: F16
+  868: F17
+  869: F18
+  870: F19
+  871: F20
+  872: F21
+  873: F22
+  874: F23
+  875: F24
+  876: ???
+  877: ???
+  878: ???
+  879: ???
+  880: ???
+  881: ???
+  882: ???
+  883: ???
+  884: Raqem Kilidi (NumLock)
+  885: Scroll
+  886: ???
+  887: ???
+  888: ???
+  889: ???
+  890: ???
+  891: ???
+  892: ???
+  893: ???
+  894: ???
+  895: ???
+  896: ???
+  897: ???
+  898: ???
+  899: ???
+  900: ???
+  901: ???
+  902: ???
+  903: ???
+  904: ???
+  905: ???
+  906: ???
+  907: ???
+  908: ???
+  909: ???
+  910: ???
+  911: ???
+  912: ???
+  913: ???
+  914: ???
+  915: ???
+  916: ???
+  917: ???
+  918: ???
+  919: ???
+  920: ???
+  921: ???
+  922: ???
+  923: ???
+  924: ???
+  925: ???
+  926: ;
+  927: =
+  928: ","
+  929: "-"
+  930: .
+  931: /
+  932: "'"
+  933: ???
+  934: ???
+  935: ???
+  936: ???
+  937: ???
+  938: ???
+  939: ???
+  940: ???
+  941: ???
+  942: ???
+  943: ???
+  944: ???
+  945: ???
+  946: ???
+  947: ???
+  948: ???
+  949: ???
+  950: ???
+  951: ???
+  952: ???
+  953: ???
+  954: ???
+  955: ???
+  956: ???
+  957: ???
+  958: ???
+  959: "["
+  960: \
+  961: "]"
+  962: "#"
+  963: Bar
+  964: ???
+  965: ???
+  966: ???
+  967: ???
+  968: ???
+  969: ???
+  970: ???
+  971: ???
+  972: ???
+  973: ???
+  974: ???
+  975: ???
+  976: ???
+  977: ???
+  978: ???
+  979: ???
+  980: ???
+  981: ???
+  982: ???
+  983: ???
+  984: ???
+  985: ???
+  986: ???
+  987: ???
+  988: ???
+  989: ???
+  990: ???
+  991: ???
+  992: ???
+  993: ???
+  994: ???
+  995: ???
+
+  996: "{STRINGID}:"
+  997: "SHIFT + "
+  998: "CTRL + "
+  999: Klaviatura Qisayolunu Deyisdir
+  1000: "{COLOUR WINDOW_2}Yeni qisayol düymesini basin:"
+  1001: "{SMALLFONT}{COLOUR BLACK}Yeni düyme teyin etmek üçün qisayol aciqlamasina tiklayin"
+  1002: Imleç ekran kenarinda olarken görünüsü sürüsdür
+  1003: "{SMALLFONT}{COLOUR BLACK}Fare imleci ekranin kenarinda olarken görünüsün sürüsdürülüb-sürüsdürülmeyeceyini seçin"
+  1004: "{SMALLFONT}{COLOUR BLACK}Idareetme düymelerinin teyinatlarini göster ve ya deyisdir"
+  1005: Xerite
+  1006: Xerite - Neqliyyat Vasiteleri
+  1007: Xerite - Zavodlar
+  1008: Xerite - Dasima Marsrutlari
+  1009: Xerite - Sirketler
+  1010: Mecburi Proqram Teminatli Kes Yaddas Qarisdirmasi
+  1011: "{SMALLFONT}{COLOUR BLACK}Sesler baslayanda oyun qisa müddetlik dayanirsa, performansi artirmaq üçün bu seçeneyi aktivlesdirin"
+  1012: Ssenari ugurla yüklendi
+  1013: Ssenari artiq yüklenib
+  1014: "{OUTLINE}{COLOUR WINDOW_1}{STRINGID}"
+  1015: "{OUTLINE}{COLOUR WINDOW_2}(Idareetmeni ele almaq üçün bir düyme ve ya fare düymesini basin)"
+  1016: Chris Sawyer's Locomotion oyununun basqa bir nüsxesi artiq isleyir
+
+  1017: Musiqi Tesekkürleri...
+  1018: Musiqi Tesekkürleri
+  1019: "{COLOUR BLACK}Müellif Hüququ © Chris Sawyer"
+  1020: "{COLOUR WINDOW_2}Locomotion Title"
+  1021: "{COLOUR BLACK}John Broomhall (Guitar played by Keith Thompson)"
+  1022: "{COLOUR WINDOW_2}Long Dusty Road"
+  1023: "{COLOUR BLACK}Allister Brimble (Trumpet played by Brian Moore)"
+  1024: "{COLOUR WINDOW_2}Flying High"
+  1025: "{COLOUR BLACK}Allister Brimble"
+  1026: "{COLOUR WINDOW_2}Gettin' On The Gas"
+  1027: "{COLOUR BLACK}Allister Brimble"
+  1028: "{COLOUR WINDOW_2}Jumpin' The Rails"
+  1029: "{COLOUR BLACK}Allister Brimble"
+  1030: "{COLOUR WINDOW_2}Smooth Running"
+  1031: "{COLOUR BLACK}Allister Brimble"
+  1032: "{COLOUR WINDOW_2}Traffic Jam"
+  1033: "{COLOUR BLACK}Allister Brimble"
+  1034: "{COLOUR WINDOW_2}Never Stop 'til You Get There"
+  1035: "{COLOUR BLACK}Allister Brimble"
+  1036: "{COLOUR WINDOW_2}Soaring Away"
+  1037: "{COLOUR BLACK}Allister Brimble"
+  1038: "{COLOUR WINDOW_2}Techno Torture"
+  1039: "{COLOUR BLACK}Allister Brimble"
+  1040: "{COLOUR WINDOW_2}Everlasting High-Rise"
+  1041: "{COLOUR BLACK}Allister Brimble"
+  1042: "{COLOUR WINDOW_2}Solace"
+  1043: "{COLOUR BLACK}Scott Joplin (Performed by Peter James Adcock)"
+  1044: "{COLOUR WINDOW_2}Chrysanthemum"
+  1045: "{COLOUR BLACK}Scott Joplin (Performed by Peter James Adcock)"
+  1046: "{COLOUR WINDOW_2}Eugenia"
+  1047: "{COLOUR BLACK}Scott Joplin (Performed by Peter James Adcock)"
+  1048: "{COLOUR WINDOW_2}The Ragtime Dance"
+  1049: "{COLOUR BLACK}Scott Joplin (Performed by Peter James Adcock)"
+  1050: "{COLOUR WINDOW_2}Easy Winners"
+  1051: "{COLOUR BLACK}Scott Joplin (Performed by Peter James Adcock)"
+  1052: "{COLOUR WINDOW_2}Setting Off"
+  1053: "{COLOUR BLACK}Allister Brimble (Trumpet played by Brian Moore, Clarinet played by John Glanfield)"
+  1054: "{COLOUR WINDOW_2}A Traveller's Serenade"
+  1055: "{COLOUR BLACK}David Punshon"
+  1056: "{COLOUR WINDOW_2}Latino Trip"
+  1057: "{COLOUR BLACK}David Punshon"
+  1058: "{COLOUR WINDOW_2}A Good Head Of Steam"
+  1059: "{COLOUR BLACK}Allister Brimble"
+  1060: "{COLOUR WINDOW_2}Hop To The Bop"
+  1061: "{COLOUR BLACK}David Punshon"
+  1062: "{COLOUR WINDOW_2}The City Lights"
+  1063: "{COLOUR BLACK}Allister Brimble"
+  1064: "{COLOUR WINDOW_2}Steamin' Down Town"
+  1065: "{COLOUR BLACK}David Punshon"
+  1066: "{COLOUR WINDOW_2}Bright Expectations"
+  1067: "{COLOUR BLACK}Allister Brimble"
+  1068: "{COLOUR WINDOW_2}Mo' Station"
+  1069: "{COLOUR BLACK}John Broomhall"
+  1070: "{COLOUR WINDOW_2}Far Out"
+  1071: "{COLOUR BLACK}John Broomhall"
+  1072: "{COLOUR WINDOW_2}Running On Time"
+  1073: "{COLOUR BLACK}Allister Brimble"
+  1074: "{COLOUR WINDOW_2}Get Me To Gladstone Bay"
+  1075: "{COLOUR BLACK}Allister Brimble"
+  1076: "{COLOUR WINDOW_2}Chuggin' Along"
+  1077: "{COLOUR BLACK}Allister Brimble (Trumpet played by Brian Moore)"
+  1078: "{COLOUR WINDOW_2}Don't Lose Your Rag"
+  1079: "{COLOUR BLACK}Allister Brimble"
+  1080: "{COLOUR WINDOW_2}Sandy Track Blues"
+  1081: "{COLOUR BLACK}Allister Brimble"
+
+  1082: Yadda saxlanmis oyun yüklenmir...
+  1083: Faylda etibarsiz melumat var
+  1084: Fayl tek oyunculu qeyd deyil
+  1085: Fayl iki oyunculu qeyd deyil
+  1086: Zehmet olmasa gözleyin...
+  1087: Basladilir...
+  1088: Yüklenir...
+  1089: "Yeni melumat qurasdirilir: "
+
+  1090: Ag
+  1091: Seffaf
+  1092: "{COLOUR WINDOW_2}Tikinti Isareti:"
+  1093: "{COLOUR WINDOW_2}Neqliyyat Vasitesinin minimum gösterilme miqyasi:"
+  1094: "{COLOUR WINDOW_2}Istasiya adlarinin minimum gösterilme miqyasi:"
+  1095: Tam miqyas
+  1096: Yari miqyas
+  1097: Dördde bir miqyas
+  1098: Sekkizde bir miqyas
+  1099: "{SMALLFONT}{COLOUR BLACK}Neqliyyat Vasitelerinin gösterilmesi üçün minimum görünüs miqyasini secin"
+  1100: "{SMALLFONT}{COLOUR BLACK}Istasiya adlarinin gösterilmesi üçün minimum görünüs miqyasini secin"
+
+  1101: "{COLOUR WINDOW_2}Esas reng palitrasi:"
+  1102: "{COLOUR BLACK}Buxar Lokomotivleri:"
+  1103: "{COLOUR BLACK}Dizel Lokomotivleri:"
+  1104: "{COLOUR BLACK}Elektrik Lokomotivleri:"
+  1105: "{COLOUR BLACK}Elektrikli Coxvahidli Qatarlar:"
+  1106: "{COLOUR BLACK}Sernisin Vasiteleri:"
+  1107: "{COLOUR BLACK}Yük Vasiteleri:"
+  1108: "{COLOUR BLACK}Avtobuslar:"
+  1109: "{COLOUR BLACK}Yük Masinlari:"
+  1110: "{COLOUR BLACK}Teyyareler:"
+  1111: "{COLOUR BLACK}Gemiler ve Qayiqlar:"
+  1112: "{SMALLFONT}{COLOUR BLACK}Sirket merkezi ve melumatlari"
+  1113: "{SMALLFONT}{COLOUR BLACK}Sirket sahibi ve veziyyeti"
+  1114: "{SMALLFONT}{COLOUR BLACK}Sirket maliyyesi"
+  1115: "{SMALLFONT}{COLOUR BLACK}Teslim edilen yükler"
+  1116: "{SMALLFONT}{COLOUR BLACK}Sirket reng palitrasi"
+  1117: "{SMALLFONT}{COLOUR BLACK}Bu oyun üçün sirket tapsirigi"
+  1118: "{COLOUR WINDOW_2}Asagidaki neqliyyat vasitelerinde istifade olunan xüsusi rengler:"
+  1119: "{SMALLFONT}{COLOUR BLACK}Esas rengi sec"
+  1120: "{SMALLFONT}{COLOUR BLACK}Ikinci rengi sec (yalniz bezi neqliyyat vasitelerinde istifade olunur)"
+  1121: "{SMALLFONT}{COLOUR BLACK}Bu neqliyyat vasitesi növü üçün ferqli reng palitrasi istifade olunsunmu?"
+  1122: "{STRINGID} - Qatarlar"
+  1123: "{STRINGID} - Avtobuslar"
+  1124: "{STRINGID} - Yük Masinlari"
+  1125: "{STRINGID} - Tramvaylar"
+  1126: "{STRINGID} - Teyyareler"
+  1127: "{STRINGID} - Gemiler ve Qayiqlar"
+  1128: "{STRINGID} - Bütün Istasiyalar"
+  1129: "{STRINGID} - Demiryolu Istasiyalari"
+  1130: "{STRINGID} - Yol Dayanacaqlari"
+  1131: "{STRINGID} - Hava Limanlari"
+  1132: "{STRINGID} - Limanlar"
+  1133: Bütün Istasiyalar
+  1134: Demiryolu Istasiyalari
+  1135: Yol Dayanacaqlari
+  1136: Hava Limanlari
+  1137: Limanlar
+  1138: "{COLOUR WINDOW_2}{STRINGID} - {STRINGID}"
+  1139: "{COLOUR WINDOW_2}{STRINGID} - {STRINGID} {STRINGID}"
+  1140: "{COLOUR WINDOW_2}{CURRENCY32}"
+  1141: "{COLOUR RED}-{CURRENCY32}"
+  1142: "{COLOUR WINDOW_2}{INT16} il"
+  1143: "{COLOUR WINDOW_2}{INT16} il"
+  1144: "{COLOUR WINDOW_2}{INT16}%"
+  1145: "{COLOUR BLACK}Ad"
+  1146: "{COLOUR BLACK}Ad ▼"
+  1147: "{COLOUR BLACK}Ayliq Menfeet"
+  1148: "{COLOUR BLACK}Ayliq Menfeet ▼"
+  1149: "{COLOUR BLACK}Yas"
+  1150: "{COLOUR BLACK}Yas ▼"
+  1151: "{COLOUR BLACK}Etibarliliq"
+  1152: "{COLOUR BLACK}Etibarliliq ▼"
+  1153: "{SMALLFONT}{COLOUR BLACK}Siyahini ada göre sirala"
+  1154: "{SMALLFONT}{COLOUR BLACK}Siyahini menfeete göre sirala"
+  1155: "{SMALLFONT}{COLOUR BLACK}Siyahini yasa göre sirala"
+  1156: "{SMALLFONT}{COLOUR BLACK}Siyahini etibarliliga göre sirala"
+  1157: Neqliyyat Vasitesi evvelce dayandirilmalidir!
+  1158: Neqliyyat Vasitesi qezaya ugradi!
+  1159: Neqliyyat Vasitesi xarab oldu!
+  1160: Neqliyyat Vasitesi sixisib qaldi!
+  1161: Kifayet qeder yer yoxdur ve ya neqliyyat vasitesi yoldadir
+  1162: Neqliyyat Vasitesi yaxinlasir ve ya yoldadir
+  1163: "Buraya {POP16}{POP16}{POP16}{STRINGID} yerlesdirile bilmir..."
+  1164: "{POP16}{POP16}{POP16}{STRINGID} kaldirila bilmir..."
+  1165: Siqnalda dayandirila bilmir...
+  1166: Bu neqliyyat vasitesi üçün {STRINGID} teleb olunur
+  1167: Qatarda neqliyyat vasitesi yoxdur!
+  1168: Qatarda sürücü kabinesi yoxdur
+  1169: Qatara lokomotiv ve ya güç vahidi lazimdir
+  1170: "{STRINGID} -den {STRINGID}-e"
+  1171: Bos
+  1172: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  1173: "{NEWLINE}Tutum:  {STRINGID}"
+  1174: "{NEWLINE}+ {STRINGID}"
+  1175: Oyunda cox sayda istasiya var!
+  1176: Istasiya cox böyüktür!
+  1177: Evvelce yasayis menteqesi qurulmalidir!
+  1178: "{SMALLFONT}{COLOUR BLACK}Ümumi xeriteni göster"
+  1179: "{SMALLFONT}{COLOUR BLACK}Xeritede neqliyyat vasitesi növlerini göster"
+  1180: "{SMALLFONT}{COLOUR BLACK}Xeritede zavod növlerini göster"
+  1181: "{SMALLFONT}{COLOUR BLACK}Xeritede neqliyyat marsrutlarini göster"
+  1182: "{SMALLFONT}{COLOUR BLACK}Xeritede sirket mülkiyyetini göster"
+  1183: Istasiya cox daginiqdir!
+  1184: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID} {STRINGID} elave edile bilmir..."
+  1185: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID} tikile bilmir..."
+  1186: "{COLOUR BLACK}Yeni neqliyyat vasitesi sec"
+  1187: "{COLOUR BLACK}Elave olunacaq neqliyyat vasitesini seç {STRINGID}"
+  1188: "{SMALLFONT}{COLOUR BLACK}Yeni qatar vasitesi yarat"
+  1189: "{SMALLFONT}{COLOUR BLACK}Yeni avtobus yarat"
+  1190: "{SMALLFONT}{COLOUR BLACK}Yeni yük masini yarat"
+  1191: "{SMALLFONT}{COLOUR BLACK}Yeni tramvay yarat"
+  1192: "{SMALLFONT}{COLOUR BLACK}Yeni teyyare yarat"
+  1193: "{SMALLFONT}{COLOUR BLACK}Yeni gemi yarat"
+  1194: "{SMALLFONT}{COLOUR BLACK}Qatarlar"
+  1195: "{SMALLFONT}{COLOUR BLACK}Avtobuslar"
+  1196: "{SMALLFONT}{COLOUR BLACK}Yük Masinlari"
+  1197: "{SMALLFONT}{COLOUR BLACK}Tramvaylar"
+  1198: "{SMALLFONT}{COLOUR BLACK}Teyyareler"
+  1199: "{SMALLFONT}{COLOUR BLACK}Gemiler"
+  1200: "{SMALLFONT}{COLOUR BLACK}Bütün istasiyalar"
+  1201: "{SMALLFONT}{COLOUR BLACK}Demiryolu istasiyalari"
+  1202: "{SMALLFONT}{COLOUR BLACK}Yol dayanacaqlari"
+  1203: "{SMALLFONT}{COLOUR BLACK}Hava limanlari"
+  1204: "{SMALLFONT}{COLOUR BLACK}Limanlar"
+  1205: "{SMALLFONT}{COLOUR BLACK}Bir erazini temizle"
+  1206: "{SMALLFONT}{COLOUR BLACK}Agaçlar"
+  1207: "{SMALLFONT}{COLOUR BLACK}Erazini yarat ve ya redakte et"
+  1208: "{SMALLFONT}{COLOUR BLACK}Suyu yarat ve ya redakte et"
+  1209: "{SMALLFONT}{COLOUR BLACK}Divarlar ve Cerpeler"
+  1210: "{SMALLFONT}{COLOUR BLACK}Obyekt rengini seç"
+  1211: "{COLOUR WINDOW_2}{STRINGID}"
+  1212: "{COLOUR WINDOW_2}{STRINGID} (yolda"
+  1213: "{COLOUR WINDOW_2}{STRINGID})"
+  1214: Daha cox neqliyyat emri üçün yer yoxdur!
+  1215: Bu neqliyyat vasitesi üçün cox sayda emr var!
+  1216: "Yerli"
+  1217: "Ekspres"
+  1218: "{COLOUR BLACK}- - Marsrut teyin edilmeyib - -"
+  1219: "{COLOUR BLACK}- - Marsrut siyahisinin sonu - -"
+  1220: "{STRINGID} dayanacaginda dayan"
+  1221: "{STRINGID} üzerinden marsrut"
+  1222: Ara noqte üzerinden marsrut
+  1223: Bütün {STRINGID} {SPRITE} bosalt
+  1224: Bütün {STRINGID} {SPRITE} dolana qeder gözle
+  1225: Bütün {STRINGID} {SPRITE} bosalt
+  1226: Bütün {STRINGID} {SPRITE} dolana qeder gözle
+  1227: "{COLOUR WINDOW_2}▶"
+  1228: Emr elave edile bilmir...
+  1229: "{COLOUR WINDOW_3}Yeni emr elave etmek üçün tiklayin{NEWLINE}buradaki ara noqte üzerinden marsrut"
+  1230: "{COLOUR WINDOW_3}Yeni emr elave etmek üçün tiklayin{NEWLINE}{STRINGID} dayanacaginda dayan"
+  1231: "{COLOUR WINDOW_3}Son emri deyisdirmek üçün yeniden tiklayin{NEWLINE}{STRINGID} üzerinden marsrut"
+  1232: "{SMALLFONT}{COLOUR BLACK}Tam yük üçün gözleme emri elave et"
+  1233: "{SMALLFONT}{COLOUR BLACK}Yükün bosaldilmasini mecburi eden emr elave et, stansiya qebul etmese bele"
+  1234: "{SMALLFONT}{COLOUR BLACK}Siyahidaki növbeti emre keç"
+  1235: "{SMALLFONT}{COLOUR BLACK}Son ve ya seçili emri sil"
+  1236: "{COLOUR BLACK}Marsrut teyin etmek üçün stansiyaya ve ya ara noqtaya tikla"
+  1237: "{SMALLFONT}{COLOUR BLACK}Emre tiklayaraq seç, stansiyani/ara noqteni göstermek üçün iki defe tikla"
+  1238: "{SMALLFONT}{COLOUR BLACK}Emre tiklayaraq seçili neqliyyat vasitesine köçür"
+  1239: "{STRINGID} {STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}"
+  1240: Qatar Satin Al
+  1241: Avtobus Satin Al
+  1242: Yük Masini Satin Al
+  1243: Tramvay Satin Al
+  1244: Teyyare Satin Al
+  1245: Gemi Satin Al
+  1246: Yalniz {STRINGID} üzerine yerlesdirile biler..."
+  1247: Yol
+  1248: "{COLOUR BLACK}Uygun neqliyyat vasitesi yoxdur"
+  1249: "{COLOUR BLACK}{STRINGID} üçün uygun neqliyyat vasitesi yoxdur"
+  1250: ""
+  1251: "{COLOUR WINDOW_2} Xerc: {COLOUR BLACK}{CURRENCY32}"
+  1252: "{NEWLINE}{COLOUR WINDOW_2} Telebler: {COLOUR BLACK}"
+  1253: "{NEWLINE}{COLOUR WINDOW_2} Güc: {COLOUR BLACK}{POWER}"
+  1254: "{NEWLINE}{COLOUR WINDOW_2} Çeki: {COLOUR BLACK}{INT16}t"
+  1255: "{NEWLINE}{COLOUR WINDOW_2} Azami Süret: {COLOUR BLACK}{VELOCITY}"
+  1256: "{NEWLINE}{COLOUR WINDOW_2} Layihe Ili: {COLOUR BLACK}{UINT16 RAW}"
+  1257: "{NEWLINE}{COLOUR WINDOW_2} Tutum: {COLOUR BLACK}{STRINGID}"
+  1258: " + {STRINGID}"
+  1259: " (dik yokuslar üçün + {STRINGID})"
+  1260: " ({VELOCITY} {STRINGID} üzerinde)"
+  1261: ve ya {STRINGID}
+  1262: "{NEWLINE}{COLOUR WINDOW_2} Isletme Xerci: {COLOUR BLACK}{CURRENCY32}/ay"
+  1263: " (yeniden techiz edile biler)"
+  1264: "{INT16} qatar"
+  1265: "{INT16} avtobus"
+  1266: "{INT16} yük masini"
+  1267: "{INT16} tramvay"
+  1268: "{INT16} teyyare"
+  1269: "{INT16} gemi"
+  1270: Qatarlarim
+  1271: Avtobuslarim
+  1272: Yük Masinlarim
+  1273: Tramvaylarim
+  1274: Teyyarelerim
+  1275: Gemilerim
+  1276: Qatar
+  1277: Avtobus
+  1278: Yük masini
+  1279: Tramvay
+  1280: Teyyare
+  1281: Gemi
+  1282: "{COLOUR WINDOW_2}Çemi: {COLOUR BLACK}{STRINGID}"
+  1283: Bos
+  1284: "{SMALLFONT}{COLOUR BLACK}Yük: "
+  1285: Elave {STRINGID} teleb edir
+  1286: "{SMALLFONT}{COLOUR BLACK}{STRINGID} üçün neqliyyat vasitesi"
+  1287: "{SPRITE}{NEWLINE 31 8} {STRINGID}"
+  1288: "{POP16}{POP16}{NEWLINE 31 8} {STRINGID}"
+  1289: "{SPRITE}{NEWLINE 31 8} {STRINGID} Insa Et"
+  1290: "{STRINGID} yerli idaresi icaze vermedi!"
+  1291: Yasayis Menteqeleri
+  1292: Yeni Yasayis Menteqesi Insa Et
+  1293: Müsteqil Binalar Insa Et
+  1294: Müxtelif Tikililer Insa Et
+  1295: "{COLOUR BLACK}Ehali"
+  1296: "{COLOUR BLACK}Ehali ▼"
+  1297: "{SMALLFONT}{COLOUR BLACK}Siyahini ehaliye göre sirala"
+  1298: "{INT32}"
+  1299: "{COLOUR BLACK}Stansiyalar"
+  1300: "{COLOUR BLACK}Stansiyalar ▼"
+  1301: "{SMALLFONT}{COLOUR BLACK}Siyahini stansiya sayina göre sirala"
+  1302: "{COLOUR BLACK}Yasayis Menteqesi"
+  1303: "{COLOUR BLACK}Yasayis Menteqesi ▼"
+  1304: "{STRINGID} Ehali {INT32}"
+  1305: "{SMALLFONT}{COLOUR BLACK}Siyahini yasayis menteqesi növüne göre sirala"
+  1306: "{COLOUR BLACK}Növ"
+  1307: "{COLOUR BLACK}Növ ▼"
+  1308: Yasayis Menteqesinin Adi
+  1309: "{STRINGID} üçün yeni ad daxil edin:"
+  1310: "{COLOUR BLACK}{STRINGID} ehalisi {INT32}"
+  1311: Yasayis menteqesinin adi deyisdirile bilmir..."
+  1312: Yeni Stansiya
+  1313: "{COLOUR BLACK}({STRINGID})"
+  1314: "{COLOUR WINDOW_2}Xidmet Saheciyi{NEWLINE}  Qebul Edilenler: "
+  1315: "{COLOUR WINDOW_2}  Istehsal Edilenler: "
+  1316: "{COLOUR BLACK}Hecbiri"
+  1317: Cox cox zavod var
+  1318: Zavodlar
+  1319: Yeni Zavodlar Insa Et
+  1320: Zavodlar Insa Et
+  1321: "{SMALLFONT}{COLOUR BLACK}Yasayis menteqeleri siyahisi"
+  1322: "{SMALLFONT}{COLOUR BLACK}Yasayis menteqesi insa et"
+  1323: "{SMALLFONT}{COLOUR BLACK}Müsteqil binalar insa et"
+  1324: "{SMALLFONT}{COLOUR BLACK}Müxtelif tikililer insa et"
+  1325: "{SMALLFONT}{COLOUR BLACK}Zavod siyahisi"
+  1326: "{SMALLFONT}{COLOUR BLACK}Yeni zavod maliyyelesdir"
+  1327: "{SMALLFONT}{COLOUR BLACK}Zavodlar insa et"
+  1328: Qara
+  1329: Gümüs
+  1330: Fil Disi
+  1331: Civit Mavisi
+  1332: Safir
+  1333: Zümrüd
+  1334: Qizili
+  1335: Kehreba
+  1336: Bürünc
+  1337: Bordo
+  1338: Qirmizi
+  1339: "{STRINGID}"
+  1340: "{POP16}{STRINGID}"
+  1341: "{STRINGID} Dasimaciliq"
+  1342: "{STRINGID} Ekspres"
+  1343: "{STRINGID} Xetleri"
+  1344: "{STRINGID} Relsleri"
+  1345: "{STRINGID} Vaqonlari"
+  1346: "{STRINGID} Hava Yolu"
+  1347: "{STRINGID} Demir Yolu"
+  1348: "{STRINGID} Dasima Vasiteleri"
+  1349: "{STRINGID} Qatarlari"
+  1350: "{STRINGID} Dasimaciligi"
+  1351: "{STRINGID} Denizcilik"
+  1352: "{STRINGID} Nakliyyat"
+  1353: "{STRINGID} Yük Masinlari"
+  1354: "{COLOUR WINDOW_2}Merkez"
+  1355: "{COLOUR WINDOW_2}Oyuncu"
+  1356: "{COLOUR BLACK} Illik % {INT16} faiz"
+  1357: "{COLOUR BLACK}{SMALLFONT}{INT32}"
+  1358: "{COLOUR BLACK}{SMALLFONT}{UINT16 RAW}"
+  1359: "{STRINGID}"
+  1360: "{STRINGID} - Ehali"
+  1361: "{STRINGID} Yerli Idaresi"
+  1362: "{STRINGID} - Ayliq Istehsal"
+  1363: "{STRINGID} - Statistikalar"
+  1364: "{STRINGID} {STRINGID}"
+  1365: "{SMALLFONT}{COLOUR BLACK}Bu zavodu yix"
+  1366: Insaat altinda
+  1367: "Istehsal edir "
+  1368: "Istehsal eder "
+  1369: "Istehsal et "
+  1370: " teleb olunur > Istehsal etmek üçün "
+  1371: ""
+  1372: ""
+  1373: " ve "
+  1374: " ve ya "
+  1375: ", "
+  1376: "{SMALLFONT}{COLOUR BLACK}Siyahini zavod veziyyetine göre sirala"
+  1377: "{SMALLFONT}{COLOUR BLACK}Siyahini dasinan istehsal faizine göre sirala"
+  1378: "{COLOUR BLACK}Veziyyet"
+  1379: "{COLOUR BLACK}Veziyyet ▼"
+  1380: "{COLOUR BLACK}Dasinan Istehsal"
+  1381: "{COLOUR BLACK}Dasinan Istehsal ▼"
+  1382: "{SMALLFONT}{COLOUR BLACK}Siyahini zavod adina göre sirala"
+  1383: "{COLOUR BLACK}Zavod"
+  1384: "{COLOUR BLACK}Zavod ▼"
+  1385: "{COLOUR BLACK}Zavod yoxdur"
+  1386: "{SMALLFONT}{COLOUR BLACK}Yasayis Menteqesi"
+  1387: "{SMALLFONT}{COLOUR BLACK}Ehali qrafiki"
+  1388: "{SMALLFONT}{COLOUR BLACK}Yasayis menteqesinin her sirkete verdiyi xal"
+  1389: "{SMALLFONT}{COLOUR BLACK}Zavod"
+  1390: "{SMALLFONT}{COLOUR BLACK}Istehsal qrafiki"
+  1391: "{COLOUR BLACK}{SMALLFONT}({STRINGID})"
+  1392: "{SMALLFONT}{COLOUR BLACK}Bu yasayis menteqesini (ve yaxinindaki zavodlari) tamamiyle yix"
+  1393: Yasayis menteqesi siline bilmir...
+  1394: Bu yasayis menteqesinin yaxinligindaki bütün stansiyalar evvelce silinmelidir
+  1395: Basqa yasayis menteqesine cox yaxindir
+  1396: Heddinden artiq yasayis menteqesi var
+  1397: Basqa yasayis menteqesine cox yaxindir ve ya mövqe uygun deyil
+  1398: "{SMALLFONT}{COLOUR BLACK}Insa edilecek yasayis menteqesinin ölçüsünü seç"
+  1399: 1 (kicik)
+  1400: "2"
+  1401: 3 (orta)
+  1402: "4"
+  1403: "5"
+  1404: 6 (böyük)
+  1405: "7"
+  1406: 8 (neng)
+  1407: "{COLOUR BLACK}Azami böyüklük:"
+  1408: "{COLOUR BLACK}Yasayis menteqesi üçün eraziye tiklayin"
+  1409: "{SMALLFONT}{COLOUR BLACK}Bu yasayis menteqesini genislendir"
+  1410: Basqa bir zavoda cox yaxindir
+  1411: Evvelce yaxinliqda bir yasayis menteqesi insa edilmelidir
+  1412: "{SMALLFONT}{COLOUR BLACK}Seçilmis agaç növünden bir deste ek"
+  1413: "{SMALLFONT}{COLOUR BLACK}Tesadüfi agaç desteleri ek"
+  1414: "{SMALLFONT}{COLOUR BLACK}Statistikalar"
+  1415: "{COLOUR WINDOW_2}Öten ay alindi:"
+  1416: "{COLOUR WINDOW_2}Öten ay istehsal edildi:"
+  1417: "{COLOUR BLACK}{STRINGID} (%{INT16} dasindi)"
+  1418: "{COLOUR BLACK}{INT16}%"
+  1419: Baglanir
+  1420: "{STRINGID} mexsusdur"
+  1421: "{STRINGID}, {STRINGID} mexsusdur"
+  1422: Siqnal {STRINGID} mexsusdur
+  1423: "{COLOUR BLACK}%{INT16}"
+  1424: "{COLOUR BLACK}{TINYFONT}{DATE DMY}"
+  1425: Mesajlar
+  1426: "{SMALLFONT}{COLOUR BLACK}Son mesajlari göster"
+  1427: "{SMALLFONT}{COLOUR BLACK}Mesaj seçimleri"
+  1428: Mesaj Seçimleri
+  1429: "{TINYFONT}{DATE DMY}"
+  1430: " + "
+  1431: " gözleyir"
+  1432: Gözleyen yoxdur
+  1433: "{COLOUR BLACK}Veziyyet"
+  1434: "{COLOUR BLACK}Veziyyet ▼"
+  1435: "{COLOUR BLACK}Cemi gözleyen"
+  1436: "{COLOUR BLACK}Cemi gözleyen ▼"
+  1437: "{COLOUR BLACK}Qebul edir"
+  1438: "{COLOUR BLACK}Qebul edir ▼"
+  1439: "{SMALLFONT}{COLOUR BLACK}Siyahini stansiya veziyyetine göre sirala"
+  1440: "{SMALLFONT}{COLOUR BLACK}Siyahini cemi gözleyen vahid sayina göre sirala"
+  1441: "{SMALLFONT}{COLOUR BLACK}Siyahini qebul edilen yük miqdarina göre sirala"
+  1442: "{INT32} vahid"
+  1443: ", "
+  1444: "{NEWLINE}Qebul edir "
+  1445: "{COLOUR BLACK}Qebul edir: "
+  1446: Hec ne
+  1447: "{SMALLFONT}{COLOUR BLACK}Stansiya"
+  1448: "{SMALLFONT}{COLOUR BLACK}Gözleyen ve qebul edilen yük"
+  1449: "{SMALLFONT}{COLOUR BLACK}Yük xallari"
+  1450: Yixmaga icaze verilmir
+  1451: Basqa bir sirket burada insa edir
+  1452: Cox uzundur!
+  1453: "{SMALLFONT}{COLOUR BLACK}Merkez binasi insa et ve ya dasi"
+  1454: "{SMALLFONT}{COLOUR BLACK}Kimlik adini deyisdir"
+  1455: "{COLOUR BLACK}(hele insa edilmeyib)"
+  1456: Sirket Adi
+  1457: "Yeni sirket adi daxil edin:"
+  1458: Bu sirketin adi deyisdirile bilmir..."
+  1459: Kimlik Adi
+  1460: "Yeni kimlik adi daxil edin:"
+  1461: Kimlik adi deyisdirile bilmir..."
+  1462: Merkez Binasi
+  1463: "{STRINGID} Merkez Binasi"
+  1464: "{STRINGID} yerli idaresi istifadede olan yollarin silinmesine icaze vermir"
+  1465: "{SMALLFONT}{COLOUR BLACK}Sirket seç"
+  1466: Iki Neferlik Oyun
+  1467: Iki Neferlik Oyun - Seçimler
+  1468: "{COLOUR BLACK}Iki neferlik oyun qurmaq üçün bir kompüter host kimi qurulmalidir ve digeri ona qosulmalidir.{NEWLINE}{NEWLINE}Lütfen seçin:"
+  1469: ""
+  1470: "{COLOUR BLACK}Bu kompüteri host kimi qur..."
+  1471: "{COLOUR BLACK}Xeta: Bu kompüter host kimi qurula bilmedi"
+  1472: "{COLOUR BLACK}Host quruldu - Diger kompüterin qosulmasi gözlenilir..."
+  1473: ""
+  1474: ""
+  1475: ""
+  1476: "{COLOUR BLACK}Qosulmaga calisilir..."
+  1477: "{COLOUR BLACK}Xeta: Host tapilmir ve ya qosulmaq olmur"
+  1478: "{COLOUR BLACK}Ugurlu!{NEWLINE}Indi {STRINGID} ile qoslmusunuz"
+  1479: "{COLOUR BLACK}Hazirda {STRINGID} ile qoslmusunuz{NEWLINE}{NEWLINE}Tek neferlik rejime qayitmaq üçün asagidaki düymeye tiklayin"
+  1480: "{COLOUR WINDOW_2}Bu kompüteri host kimi qur"
+  1481: "{COLOUR WINDOW_2}Hosta qosul"
+  1482: "{COLOUR WINDOW_2}Baglantini kes"
+  1483: Host Unvani Daxil Edin
+  1484: "Qosulmaq üçün hostun IP ünvanini ve ya kompüter adini daxil edin, yaxud yerli sebekede axtaris etmek üçün bos buraxin:"
+  1485: "{COLOUR RED}Xeberdarliq: Chris Sawyer's Locomotion-un ferqli versiyasina qosulmusunuz ve iki neferlik oyunda isleyis etibarli olmaya biler"
+
+  # Seçimler
+  1486: "{SMALLFONT}{COLOUR BLACK}Görüntü seçimleri"
+  1487: "{SMALLFONT}{COLOUR BLACK}Ses seçimleri"
+  1488: "{SMALLFONT}{COLOUR BLACK}Musiqi seçimleri"
+  1489: "{SMALLFONT}{COLOUR BLACK}Regional seçimler"
+  1490: "{SMALLFONT}{COLOUR BLACK}Idareetme seçimleri"
+  1491: "{SMALLFONT}{COLOUR BLACK}Diger seçimler"
+  1492: Seçimler - Görüntü
+  1493: Seçimler - Ses
+  1494: Seçimler - Musiqi
+  1495: Seçimler - Regional
+  1496: Seçimler - Idareetme
+  1497: Seçimler - Diger
+
+  # Seçimler/Pul Vahidi
+  1498: Tercih edilen pul vahidinden hemise istifade et
+  1499: "{SMALLFONT}{COLOUR BLACK}Tercih edilen pul vahidinden hemise istifade et"
+  1500: Yeni oyun basladarken tercih edilen pul vahidinden istifade et
+  1501: "{SMALLFONT}{COLOUR BLACK}Ssenaride standart pul vahidini deyisdirmek üçün seçin"
+  1502: "{SMALLFONT}{COLOUR BLACK}Cari oyun üçün pul vahidini seçin"
+  1503: "{SMALLFONT}{COLOUR BLACK}Yeni ssenari yaradarken standart pul vahidini seçin"
+  1504: "{COLOUR WINDOW_2}Cari pul vahidi:"
+  1505: "{COLOUR WINDOW_2}Tercih edilen pul vahidi:"
+  1506: ""
+
+  1507: "Öz sirketinizin vacib xeberleri:"
+  1508: "Diger sirketlerin vacib xeberleri:"
+  1509: "Öz sirketinizin kicik xeberleri:"
+  1510: "Diger sirketlerin kicik xeberleri:"
+  1511: "Ümumi xeberler:"
+  1512: "Meslehet:"
+  1513: Baglidir
+  1514: Axan Yazi
+  1515: Xeber Penceresi
+  1516: "{COLOUR WINDOW_2}Ayliq Isletme Xerci: {COLOUR BLACK}{CURRENCY32}"
+  1517: "{COLOUR WINDOW_2}Ayliq Menfeet: {COLOUR BLACK}{CURRENCY32}"
+  1518: Qatarlar
+  1519: Avtobuslar
+  1520: Yük Masinlari
+  1521: Tramvaylar
+  1522: Teyyareler
+  1523: Gemiler
+  1524: Hava Limani
+  1525: Liman
+  1526: Sifaris növü teyyareler üçün keçerli deyil
+  1527: Sifaris növü gemiler üçün keçerli deyil
+  1528: Stansiya basqa bir sirkete mexsusdur
+  1529: Su yoxdur!
+  1530: Su kanali hazirda gemiler terefinden istifade olunur
+  1531: En azi bir neqliyyat vasitesi terefinden hazirda istifade olunur
+  1532: "{SMALLFONT}{COLOUR BLACK}Neqliyyat vasitesini ferqli növ yük dasimaq üçün yeniden techiz et"
+  1533: Bu neqliyyat vasitesi ferqli növ yük dasimaq üçün yeniden techiz edile bilmez
+  1534: Iskelenin önünde su olmalidir
+
+  1535: "{COLOUR WINDOW_2}Hazirda oxudulur:"
+  1536: "{SMALLFONT}{COLOUR BLACK}Müzigini dayandir"
+  1537: "{SMALLFONT}{COLOUR BLACK}Müzigini oxut"
+  1538: "{SMALLFONT}{COLOUR BLACK}Novbeti musiqi parçasi"
+  1539: Yalniz cari dövrün musiqilerini oxut
+  1540: Bütün musiqileri oxut
+  1541: Özellesdirilmis musiqi seçimini oxut
+  1542: Seçimi redakte et...
+  1543: "{SMALLFONT}{COLOUR BLACK}Musiqi parça seçim siyahisini redakte et"
+  1544: Musiqi Seçimini Redakte Et
+  1545: "{SMALLFONT}{COLOUR BLACK}Musiqi parçasini seçimi açmaq/baglamaq üçün tikla"
+  1546: ✓
+  1547: "{COLOUR WINDOW_2}Ses Seviyyesi:"
+  1548: "{SMALLFONT}{COLOUR BLACK}Musiqi ses seviyyesini ayarla"
+  1549: Musiqi Seçimleri
+  1550: "{STRINGID} Üçün Kimlik Üzü Seç"
+  1551: "{SMALLFONT}{COLOUR BLACK}Sirket/kimlik üzünü seçmek üçün tikla"
+  1552: Artig basqa bir sirket üçün seçilib
+  1553: Üz seçile bilmir...
+  1554: hava limanlari
+  1555: iskeleler
+  1556: "{COLOUR WINDOW_2}Sirket quruldu: {COLOUR BLACK}{DATE MY}"
+  1557: "{COLOUR WINDOW_2}Basari Göstergesi: {COLOUR BLACK}{INT16_1DP}% {NEWLINE}  “{STRINGID}”"
+  1558: "{COLOUR WINDOW_2}Basari Göstergesi: {COLOUR BLACK}{INT16_1DP}%{SPRITE 2325}{NEWLINE}  “{STRINGID}”"
+  1559: "{COLOUR WINDOW_2}Basari Göstergesi: {COLOUR BLACK}{INT16_1DP}%{SPRITE 2324}{NEWLINE}  “{STRINGID}”"
+  1560: "{COLOUR WINDOW_2}Kimlik: {COLOUR BLACK}{STRINGID}"
+  1561: asagi
+  1562: orta
+  1563: yüksek
+  1564: "{COLOUR WINDOW_2}Zeka: {COLOUR BLACK}{INT16} ({STRINGID})"
+  1565: "{COLOUR WINDOW_2}Saldirganliq: {COLOUR BLACK}{INT16} ({STRINGID})"
+  1566: "{COLOUR WINDOW_2}Rekabetçilik: {COLOUR BLACK}{INT16} ({STRINGID})"
+  1567: "{SMALLFONT}{COLOUR BLACK}Tek oyunçu ve iki oyunçu rejimi arasinda keçid et"
+  1568: "{OUTLINE}{COLOUR WINDOW_2}Tek Oyunçu Rejimi"
+  1569: "{OUTLINE}{COLOUR WINDOW_2}Iki Oyunçu Rejimi: {STRINGID} ile bagli"
+  1570: Acemi
+  1571: Asan
+  1572: Orta
+  1573: Çetin
+  1574: Mütexessis
+  1575: Bölge / Obyekt Seçimi
+  1576: Peyzaj Redaktoru
+  1577: Ssenari Seçimleri
+  1578: Ssenarini Yadda Saxla
+  1579: "evvelki Addima Qayit:"
+  1580: "Sonraki Addima Keç:"
+  1581: Peyzaji Yükle
+  1582: Peyzaji Saxla
+  1583: Peyzaj yaradilir...
+  1584: Bütün sahe temizlene bilmedi...
+  1585: Peyzaj Yaradma - Seçimler
+  1586: Peyzaj Yaradma - erazi
+  1587: Peyzaj Yaradma - Meseler
+  1588: Peyzaj Yaradma - Meskunlasmalar
+  1589: Peyzaj Yaradma - Zavodlar
+  1590: "{SMALLFONT}{COLOUR BLACK}Peyzaj olusturma ümumi seçimleri"
+  1591: "{SMALLFONT}{COLOUR BLACK}erazi olusturma seçimleri"
+  1592: "{SMALLFONT}{COLOUR BLACK}Mese olusturma seçimleri"
+  1593: "{SMALLFONT}{COLOUR BLACK}Meskunlasma olusturma seçimleri"
+  1594: "{SMALLFONT}{COLOUR BLACK}Zavod olusturma seçimleri"
+
+  1595: "[Yox]"
+  1596: Chuggin' Along
+  1597: Long Dusty Road
+  1598: Flying High
+  1599: Gettin' On The Gas
+  1600: Jumpin' The Rails
+  1601: Smooth Running
+  1602: Traffic Jam
+  1603: Never Stop 'til You Get There
+  1604: Soaring Away
+  1605: Techno Torture
+  1606: Everlasting High-Rise
+  1607: Solace
+  1608: Chrysanthemum
+  1609: Eugenia
+  1610: The Ragtime Dance
+  1611: Easy Winners
+  1612: Setting Off
+  1613: A Traveller's Serenade
+  1614: Latino Trip
+  1615: A Good Head Of Steam
+  1616: Hop To The Bop
+  1617: The City Lights
+  1618: Steamin' Down Town
+  1619: Bright Expectations
+  1620: Mo' Station
+  1621: Far Out
+  1622: Running On Time
+  1623: Get Me To Gladstone Bay
+  1624: Sandy Track Blues
+
+  1625: "{UINT16 RAW}"
+  1626: "{COLOUR WINDOW_2}Baslangic ili:"
+  1627: Oyun baslayanda tesadüfi peyzaj olustur
+  1628: "{SMALLFONT}{COLOUR BLACK}Her yeni oyun basladiginda tesadüfi peyzaj olustur"
+  1629: Yeni peyzaj olustur
+  1630: "{SMALLFONT}{COLOUR BLACK}Yeni tesadüfi bir peyzaj olustur (movcud peyzaj itirilecek)"
+  1631: Tamam
+  1632: Yeni Peyzaj Olustur
+  1633: Tesadüfi Peyzaj Secenegi
+  1634: Movcud peyzajinizi itirerek yeni bir peyzaj olusturmaq istediyinizden eminsinizmi?
+  1635: Her oyunun basinda yeni bir peyzaj olusturmaq istediyinizden eminsinizmi?{NEWLINE}Bu secenegi secerseniz movcud peyzajinizi itirersiniz
+  1636: "{COLOUR WINDOW_2}Deniz seviyyesi:"
+  1637: "+{INT16} vahid"
+  1638: "{COLOUR WINDOW_2}Mese sayi:"
+  1639: "{INT16}"
+  1640: "{COLOUR WINDOW_2}Minimum mese radiusu:"
+  1641: "{INT16} blok"
+  1642: "{COLOUR WINDOW_2}Maksimum mese radiusu:"
+  1643: "{INT16} blok"
+  1644: "{COLOUR WINDOW_2}Minimum mese sixligi:"
+  1645: "{INT16}%"
+  1646: "{COLOUR WINDOW_2}Maksimum mese sixligi:"
+  1647: "{INT16}%"
+  1648: "{COLOUR WINDOW_2}Tesadüfi yerlesdirilecek agaç sayi:"
+  1649: "{INT16}"
+  1650: "{COLOUR WINDOW_2}Agaçlar üçün minimum hündürlük:"
+  1651: "{HEIGHT}"
+  1652: "{COLOUR WINDOW_2}Agaçlar üçün maksimum hündürlük:"
+  1653: "{HEIGHT}"
+  1654: "{COLOUR WINDOW_2}Minimum erazi hündürlüyü:"
+  1655: "{INT16} vahid"
+  1656: "{COLOUR WINDOW_2}Topoqrafiya üslubu:"
+  1657: Düz erazi
+  1658: Kiçik Tepeler
+  1659: Daglar
+  1660: Yari Dag, Yari Tepe
+  1661: Yari Dag, Yari Düzenlik
+  1662: "{COLOUR WINDOW_2}Tepe Sixligi:"
+  1663: "{INT16}%"
+  1664: "{COLOUR WINDOW_2}Yasayis menteqelerinin sayi:"
+  1665: "{INT16}"
+  1666: "{COLOUR WINDOW_2}Maksimum yasayis menteqesi ölçüsü:"
+  1667: Asagi
+  1668: Orta
+  1669: Yüksek
+  1670: "{COLOUR WINDOW_2}Zavod sayi:"
+  1671: En azi bir yasayis menteqesi insa edilmelidir
+  1672: Növbeti redakte merhelesine keçmek mümkün deyil...
+  1673: Ssenari hele saxlanila bilmir...
+  1674: "{SMALLFONT}{COLOUR BLACK}Ssenari seçimleri"
+  1675: "{SMALLFONT}{COLOUR BLACK}Ssenari çetinliyi"
+  1676: "{SMALLFONT}{COLOUR BLACK}Sirket seçimleri"
+  1677: "{SMALLFONT}{COLOUR BLACK}Maliyye seçimleri"
+  1678: Ssenari Seçimleri
+  1679: Ssenari Çetinliyi
+  1680: Sirket Seçimleri
+  1681: Maliyye Seçimleri
+  1682: "{COLOUR WINDOW_2}Maksimum reqib sirket sayi:"
+  1683: "{INT16}"
+  1684: "{COLOUR WINDOW_2}Reqib sirketlerin baslamasi üçün gecikme:"
+  1685: "{INT16} ay"
+  1686: "{COLOUR WINDOW_2}Reqib sirket seçimi"
+  1687: "{COLOUR WINDOW_2}Üstünlük verilen süni zeka seviyyesi:"
+  1688: "{COLOUR WINDOW_2}Üstünlük verilen aqressivlik:"
+  1689: "{COLOUR WINDOW_2}Üstünlük verilen reqabetçilik:"
+  1690: Istenilen
+  1691: Asagi
+  1692: Orta
+  1693: Yüksek
+  1694: "{COLOUR WINDOW_2}Baslangic kredisi:"
+  1695: "{CURRENCY32}"
+  1696: "{COLOUR WINDOW_2}Maksimum kredit meblegi:"
+  1697: "{CURRENCY32}"
+  1698: "{COLOUR WINDOW_2}Kredit faiz derecesi:"
+  1699: "{INT16}%"
+  1700: Deyisdir...
+  1701: "{COLOUR WINDOW_2}Ssenari Adi: {COLOUR BLACK}{STRINGID}"
+  1702: "{COLOUR WINDOW_2}Ssenari Qrupu:"
+  1703: "{COLOUR WINDOW_2}Ssenari Teferrüatlari:"
+  1704: Ssenari Adi
+  1705: Ssenari üçün ad daxil edin:-
+  1706: Ssenari Teferrüatlari
+  1707: Bu ssenarinin açiqlamasini daxil edin:-
+  1708: Hele teferrüat yoxdur
+  1709: Adsiz
+  1710: Landsaft qeydiyyati ugursuz oldu!
+  1711: Ssenari qeydiyyati ugursuz oldu!
+  1712: Melumatlar diger oyunçuya ötürülür...
+  1713: Melumatlar diger oyunçudan alinir...
+  1714: Zehmet olmasa gözleyin - Oyun diger oyunçu terefinden saxlanilir...
+  1715: Zehmet olmasa gözleyin - Oyun diger oyunçu terefinden yüklenir...
+  1716: Mesaj Gönder
+  1717: Mesaj Gönder
+  1718: "{STRINGID}'ye gönderilecek mesaji daxil edin:"
+  1719: ""
+  1720: "{COLOUR WINDOW_2}Baglanti zaman asimi:"
+  1721: "{INT16} san."
+  1722: Iki oyunçulu melumat baglantisi ugursuz oldu!
+  1723: "{COLOUR WINDOW_2} Dizayn ili: {COLOUR BLACK}{UINT16 RAW}"
+  1724: "{COLOUR WINDOW_2} Istifadeden çixma ili: {COLOUR BLACK}{UINT16 RAW}"
+  1725: "{COLOUR WINDOW_2} Güc: {COLOUR BLACK}{POWER}"
+  1726: "{COLOUR WINDOW_2} Çeki: {COLOUR BLACK}{INT16}t"
+  1727: "{COLOUR WINDOW_2} Maksimum Süret: {COLOUR BLACK}{VELOCITY}"
+  1728: "{COLOUR WINDOW_2} Tutum: {COLOUR BLACK}{STRINGID}"
+  1729: Baglanti qurulur...
+  1730: Her yerde
+  1731: Heç bir yerde
+  1732: Sudan uzaqda
+  1733: Suyun yaninda
+  1734: Daglarda
+  1735: Daglardan uzaqda
+  1736: Kiçik tesadüfi erazilerde
+  1737: Böyük tesadüfi erazilerde
+  1738: Uçurumlarin etrafinda
+  1739: Xerite kenarina qeder tepe yarat
+  1740: "{SMALLFONT}{COLOUR BLACK}Ssenari Redaktoru"
+  1741: "{STRINGID} Neqliyyat"
+  1742: Xerite
+  1743: "{NEWLINE 1 2}{SPRITE}{NEWLINE 33 8}Sirketler Siyahisi"
+  1744: "{NEWLINE 0 8}{STRINGID}{NEWLINE 25 2}{SPRITE}{NEWLINE 51 2}{STRINGID}{NEWLINE 51 12}{COLOUR WINDOW_1}{INT16_1DP}% “{STRINGID}”"
+  1745: Sirketler
+  1746: Sirket Ugur Göstericileri
+  1747: Ayliq Dasinan Yük Vahidleri
+  1748: Sirket Deyerleri
+  1749: Yük Ödenis Dereceleri
+  1750: "{SMALLFONT}{COLOUR BLACK}Sirketleri müqayise et"
+  1751: "{SMALLFONT}{COLOUR BLACK}Sirket ugur göstericisi qrafikleri"
+  1752: "{SMALLFONT}{COLOUR BLACK}Her sirket terefinden dasinan yük qrafikleri"
+  1753: "{SMALLFONT}{COLOUR BLACK}Sirket deyeri qrafikleri"
+  1754: "{SMALLFONT}{COLOUR BLACK}Yük ödenis dereceleri"
+  1755: "{SMALLFONT}{COLOUR BLACK}Siyahini sirket adina göre sirala"
+  1756: "{SMALLFONT}{COLOUR BLACK}Siyahini sirket veziyyetine göre sirala"
+  1757: "{SMALLFONT}{COLOUR BLACK}Siyahini ugur göstericisine göre sirala"
+  1758: "{SMALLFONT}{COLOUR BLACK}Siyahini sirket deyerine göre sirala"
+  1759: "{COLOUR BLACK}Sirket"
+  1760: "{COLOUR BLACK}Sirket ▼"
+  1761: "{COLOUR BLACK}Veziyyet"
+  1762: "{COLOUR BLACK}Veziyyet ▼"
+  1763: "{COLOUR BLACK}Ugur Göstericisi"
+  1764: "{COLOUR BLACK}Ugur Göstericisi ▼"
+  1765: "{COLOUR BLACK}Sirket Deyeri"
+  1766: "{COLOUR BLACK}Sirket Deyeri ▼"
+  1767: "{NEWLINE 1 2}{SPRITE}{NEWLINE 27 8}{STRINGID}"
+  1768: "{NEWLINE 0 3}{INT16_1DP}%        {NEWLINE 0 13}“{STRINGID}”"
+  1769: "{NEWLINE 0 3}{INT16_1DP}%{SPRITE 2325}{NEWLINE 0 13}“{STRINGID}”"
+  1770: "{NEWLINE 0 3}{INT16_1DP}%{SPRITE 2324}{NEWLINE 0 13}“{STRINGID}”"
+  1771: "{NEWLINE 0 8}{CURRENCY48}"
+  1772: Xett Isçisi
+  1773: Mühendis
+  1774: Trafik Müdiri
+  1775: Neqliyyat Koordinatoru
+  1776: Marsrut Mesulu
+  1777: Müdir
+  1778: Bas Müdir
+  1779: Sedr
+  1780: Idare Heyeti Sedri
+  1781: Böyük Sahibkar
+  1782: "{INT16} Sirket"
+  1783: "{INT16} Sirket"
+  1784: "{RAWDATE MY SHORT}"
+  1785: "{INT16_1DP}%"
+  1786: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  1787: "{INT32}"
+  1788: "{INT16_1DP}%"
+  1789: "         {INT16_1DP}% {SPRITE 2325}"
+  1790: "         {INT16_1DP}% {SPRITE 2324}"
+  1791: "{SMALLFONT}{COLOUR BLACK}{CURRENCY48}"
+  1792: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  1793: "{SMALLFONT}{COLOUR WHITE}{STRINGID}"
+  1794: Hava limani növü bu teyyare üçün uygun deyil
+  1795: "{COLOUR BLACK}₺"
+  1796: "{INT16} gün"
+  1797: "{CURRENCY32}"
+  1798: "{SMALLFONT}{COLOUR BLACK}{INT16} vahid yükü {INT16} blok uzaqliqa dasimaq üçün ödenis"
+  1799: "{SMALLFONT}{COLOUR BLACK}Dasima müddeti"
+  1800: "*  Dayandirildi  *"
+  1801: Belediyye burada basqa hava limani tikilmesine icaze vermir
+  1802: Yerlesim Yerleri
+  1803: Zavodlar
+  1804: Yollar
+  1805: Demir yollari
+  1806: Stansiyalar
+  1807: Bitki Örtüyü
+  1808: Teyyare Marsrutlari
+  1809: Gemi Marsrutlari
+  1810: ""
+  1811: "{STRINGID}, {STRINGID} yaxininda tikilir"
+  1812: "{STRINGID}, {STRINGID} yaxininda tikilir"
+  1813: "{STRINGID}, {STRINGID} yaxininda tikilir"
+  1814: "{STRINGID} yaxinindaki xidmetler yoxlanilir"
+  1815: "{STRINGID} yaxinindaki erazi arasdirilir"
+  1816: "{COLOUR RED}Iflas!"
+  1817: "{SMALLFONT}{COLOUR BLACK}Oyunu dayandir"
+  1818: "{SMALLFONT}{COLOUR BLACK}Normal suret"
+  1819: "{SMALLFONT}{COLOUR BLACK}Süretli sar"
+  1820: "{SMALLFONT}{COLOUR BLACK}Daha süretli sar"
+  1821: "{COLOUR BLACK}Tesadüfi Olusdurulmus Errazi"
+  1822: "{COLOUR WINDOW_2}Baslangic tarixi: {COLOUR BLACK}{UINT16 RAW}"
+  1823: "{COLOUR WINDOW_2}Reqib sirketler: {COLOUR BLACK}Yox"
+  1824: "{COLOUR WINDOW_2}Reqib sirketler: {COLOUR BLACK}En çox {INT16}"
+  1825: "{COLOUR BLACK}{MOVE_X 10}({INT16} ay baslamayacaq)"
+  1826: "{COLOUR BLACK}{MOVE_X 10}({INT16} ay baslamayacaq)"
+  1827: "{COLOUR WINDOW_2}Aracin satis deyeri: {COLOUR BLACK}{CURRENCY32}"
+  1828: "{COLOUR WINDOW_2}Son gelir: {COLOUR BLACK}Yox"
+  1829: "{COLOUR WINDOW_2}Son gelir tarixi: {COLOUR BLACK}{DATE DMY}"
+  1830: "{COLOUR BLACK}{STRINGID}, {INT16} blok dasidi, {INT16} günde = {CURRENCY32}"
+  1831: "{COLOUR WINDOW_2} En erken tikinti ili: {COLOUR BLACK}{UINT16 RAW}"
+  1832: "{COLOUR WINDOW_2} En son tikinti ili: {COLOUR BLACK}{UINT16 RAW}"
+  1833: "{COLOUR WINDOW_2}Yerli hakimiyyetin dasima sirketleri haqqindaki qiymetlendirmesi:"
+  1834: Berbad
+  1835: Pis
+  1836: Orta
+  1837: Yaxsi
+  1838: Mukemmel
+  1839: "{COLOUR WINDOW_2}{STRINGID}: {COLOUR BLACK}{INT16}% ({STRINGID})"
+  1840: Sirket deyeri {CURRENCY32}{STRINGID}{STRINGID} olacaq
+  1841: Neqliyyat vasitelerinden aylig {CURRENCY32}{STRINGID}{STRINGID} gelir elde et
+  1842: "{INT16_1DP}% basari gostericisine nail ol (“{STRINGID}”){STRINGID}{STRINGID}"
+  1843: "{STRINGID}{STRINGID}{STRINGID} teqdim et"
+  1844: " ve en yaxsi basari gösteren sirket ol"
+  1845: " ve en yaxsi 3 sirket arasinda yer al"
+  1846: " {INT16} il erzinde"
+  1847: " {UINT16 RAW} sonuna qeder"
+  1848: ...ve en yaxsi sirket ol
+  1849: ...ve en yaxsi 3 sirket arasinda ol
+  1850: "...zaman mehdudiyyeti ile:"
+  1851: "{COLOUR WINDOW_2}Tapshiriq:"
+  1852: "{COLOUR BLACK}  {STRINGID}"
+  1853: Muayyen bir sirket deyerine çat
+  1854: Neqliyyat vasitelerinden muayyen aylig gelir elde et
+  1855: Muayyen bir basari gostericisine çat
+  1856: Muayyen miqdarda yük teslim et
+  1857: "{CURRENCY32}"
+  1858: "{INT16_1DP}%"
+  1859: "{INT32}"
+  1860: "{INT16} il"
+  1861: "{SMALLFONT}({STRINGID}, {INT16} il {INT16} ayda tamamladi)"
+  1862: "{COLOUR WINDOW_2}Ugurlu!{NEWLINE}{COLOUR BLACK}  Tapsirigi {INT16} il {INT16} ayda tamamladiniz"
+  1863: "{COLOUR WINDOW_2}Ugursuz!{NEWLINE}{COLOUR BLACK}  Tapsirigi tamamlaya bilmediniz"
+  1864: "{COLOUR WINDOW_2}Diger oyunçu sizi keçdi!{NEWLINE}{COLOUR BLACK}  Tapsiriq {STRINGID} terefinden {INT16} il {INT16} ayda tamamlandi"
+  1865: "{COLOUR WINDOW_2}Tapsirigin tamamlanma irelileyisi: {COLOUR BLACK}{INT16}%"
+  1866: "{COLOUR WINDOW_2}Qalan vaxt: {COLOUR BLACK}{INT16} il {INT16} ay"
+  1867: "{COLOUR WINDOW_2}Çatdirilan yük:"
+  1868: "{COLOUR BLACK}Yox"
+
+  1869: "{OUTLINE}{COLOUR WINDOW_2}Oyunu{NEWLINE}Bagla"
+
+  1870: Sirket iflas etdi!
+  1871: Oyun zamani zavodlarin baglanmasina icaze ver
+  1872: Oyun zamani yeni zavodlarin acilmasina icaze ver
+  1873: Diger sirket/kimlik üzlerini paylas
+  1874: "{SMALLFONT}{COLOUR BLACK}Baglanti zamani özellesdirilmis sirket/kimlik üzü veri fayllarinin diger bilgisayara gönderilmesini seçin"
+  1875: "{COLOUR WINDOW_2}Reqib sirketlerin istifade etmesini qadagan et"
+  1876: "{COLOUR WINDOW_2}Oyunçu sirketlerinin istifade etmesini qadagan et"
+  1877: "{NEWLINE}Dayanacaqlar: {STRINGID}"
+  1878: ", {STRINGID}"
+
+  1879: "Tedris 1: Yerlesim daxilinde avtobus xidmeti baslatma"
+  1880: "Tedris 2: Iki yerlesim arasinda avtobus xidmeti qurma"
+  1881: "Tedris 3: Iki yerlesim arasinda qatar xetti qurma"
+
+  # Egitim 1
+  1882: "{SMALLFONT}{COLOUR BLACK}Bir yerlesim daxilinde sernisin dasimaq ücün avtobus xidmeti quracagiq; ilk addim olaraq bir yerlesim secmeliyik..."
+  1883: "{SMALLFONT}{COLOUR BLACK}Görünüsü sürüsmek ücün sag fare düymesini basili saxlayaraq fareyi hereket etdirin ve yerlesimleri inceleyin..."
+  1884: "{SMALLFONT}{COLOUR BLACK}Boulders Bay en böyük yerlesimdir, buna göre en cox sernisin yaradir. Fare tekerini ve ya yaxinlasdirma ikonunu istifade ederek yaxinlasdirin..."
+  1885: "{SMALLFONT}{COLOUR BLACK}Yol esasli bütün tikintiler yol tikintisi penceresinden edilir..."
+  1886: "{SMALLFONT}{COLOUR BLACK}Avtobus xidmeti ücün yeni yollara ehtiyac yoxdur, sadece avtobus dayanacagi kifayetdir..."
+  1887: "{SMALLFONT}{COLOUR BLACK}Avtobusumuz bu yerlesimde bir ucdan diger uca gedecek..."
+  1888: "{SMALLFONT}{COLOUR BLACK}Mavi ile vurgulanan sahe dayanacagin ehate saheisidir. Ehate sahesindeki bina sayi artdiqca dayanacagi daha cox sernisin istifade edir..."
+  1889: "{SMALLFONT}{COLOUR BLACK}Dayanacagin sernisin qebul edib-etmediyini yoxlayin, eks halda sernisinleri endire bilmezsiniz ve ödenis ala bilmezsiniz. Tikinti penceresinin altindaki “Ehate sahesi” yazisina diqqet edin..."
+  1890: "{SMALLFONT}{COLOUR BLACK}Movqeden razisinizsa, dayanacagi tikmek ücün sol fare düymesine basin..."
+  1891: "{SMALLFONT}{COLOUR BLACK}Ikinci dayanacagi yerlesimin qarsisindaki terefe tikeciyik..."
+  1892: "{SMALLFONT}{COLOUR BLACK}Indi bir avtobus almaliyiq..."
+  1893: "{SMALLFONT}{COLOUR BLACK}Iki avtobus tipi arasindan secim ede bilerik. Daha cox sernisin dasiyan yeni modeli seçek..."
+  1894: "{SMALLFONT}{COLOUR BLACK}Avtobusu yola yerlesdirmek ücün fare imlecini movqelendirib sol klik edin..."
+  1895: "{SMALLFONT}{COLOUR BLACK}Avtobus islemeye baslamazdan evvel hara gedeceyini bilmelidir. Neqliyyat vasiteleri penceresindeki marsrut bölmesini secin..."
+  1896: "{SMALLFONT}{COLOUR BLACK}Marsrutu tenzimlemek üçün sadece görünüsdeki dayanacaqlara klik edin..."
+  1897: "{SMALLFONT}{COLOUR BLACK}Artiq avtobusu islede bilerik..."
+  1898: "{SMALLFONT}{COLOUR BLACK}Ilk sernisinlerini almasini izleyek..."
+
+  # Egitim 2
+  1899: "{SMALLFONT}{COLOUR BLACK}Boulder Bay ve Breakers Bridge arasinda sernisin dasimaq ücün avtobus xidmeti quracagiq. Yerlesimler arasinda yol olmadigi ücün yol tikmeliyik..."
+  1900: "{SMALLFONT}{COLOUR BLACK}Yeni yol hissesinin istiqametini secin ve tikintiye baslamaq ücün görünüsde bir yere klik edin..."
+  1901: "{SMALLFONT}{COLOUR BLACK}'Bunu tik' simgesine klik etmek eyni növden daha cox yol hissesi elave edir..."
+  1902: "{SMALLFONT}{COLOUR BLACK}Davam etmeden evvel, yol tikintisine baslamagin daha suretli yolunu gösterek..."
+  1903: "{SMALLFONT}{COLOUR BLACK}Uzatmaq istediyiniz yolun sonuna sag klik edin..."
+  1904: "{SMALLFONT}{COLOUR BLACK}Burada sola dönmeliyik, buna göre sol dönüs eyrisini secin..."
+  1905: "{SMALLFONT}{COLOUR BLACK}Indi yeniden düz yol tikirik..."
+  1906: "{SMALLFONT}{COLOUR BLACK}Yol tamamlandi, indi dayanacaqlar qurulmalidir..."
+  1907: "{SMALLFONT}{COLOUR BLACK}Son olaraq bir avtobus alib isledeceyik..."
+  1908: "{SMALLFONT}{COLOUR BLACK}Bu xett olduqca six ola biler, buna göre ikinci bir avtobus da alacagiq..."
+  1909: "{SMALLFONT}{COLOUR BLACK}Avtobus 2-ye Avtobus 1-in bütün marsrutunu kopyalamaq üçün sadece Avtobus 1-in 'marsrut sonu' yazisina klik edin..."
+
+  # Egitim 3
+  1910: "{SMALLFONT}{COLOUR BLACK}Iki böyük yerlesim arasinda sernisin dasimaq ücün qatar xidmeti quraraq baslayaq..."
+  1911: "{SMALLFONT}{COLOUR BLACK}Qatar stansiyalari sadece düz relslere qurula biler ve qatarimizin uzunluguna uygun olmalidir – Bir nece deqiqe erzinde buraya stansiya quracagiq..."
+  1912: "{SMALLFONT}{COLOUR BLACK}Indi stansiyalari tikirik..."
+  1913: "{SMALLFONT}{COLOUR BLACK}Indi qatar tikeciyik. Lokomotiv ve sernisin vaqonlarina ehtiyacimiz olacaq..."
+  1914: "{SMALLFONT}{COLOUR BLACK}Rel xetti tek istiqametli oldugu ücün marsrut teyin etmeye ehtiyac yoxdur – Sadece qatari baslatin..."
+  1915: "{SMALLFONT}{COLOUR BLACK}Relsi ücüncü yerlesime gedecek sekilde bir qovsaga qeder uzadaq. Rels üzerinde sag klik etmek, qovsag tikinti penceresini acir..."
+  1916: "{SMALLFONT}{COLOUR BLACK}Artiq rels qurulusu sade olmadigi ücün qatarimiza marsrut vermeliyik..."
+  1917: "{SMALLFONT}{COLOUR BLACK}Indi ikinci qatar elave ede bilerik, amma evvel qatar toqqusmalarinin qarsisini almaq ücün siqnallar qurmagimiz lazimdir..."
+  1918: "{SMALLFONT}{COLOUR BLACK}Siqnallar relsi 3 ayri 'blok bölgesine' ayirir ve her defe yalniz bir qatar her bloka daxil ola biler..."
+
+  # Seçimler/Müxtelif
+  1919: Yeni oyuna baslayarken üstün tutulan sirket sahibi adini istifade et
+  1920: "{SMALLFONT}{COLOUR BLACK}Her yeni oyuna basladiginizda eyni sirket sahibi adini istifade etmek üçün bu seçimi isareleyin"
+  1921: "{COLOUR WINDOW_2}Üstün tutulan sexs adi: {COLOUR BLACK}{STRINGID}"
+  1922: Üstün Tutulan Sexs Adi
+  1923: "Üstün tutulan sexs adini daxil edin:"
+
+  1924: "{COLOUR BLACK}{TINYFONT}Güc"
+  1925: "{COLOUR BLACK}{TINYFONT}Eylec"
+  1926: "{SMALLFONT}{COLOUR BLACK}Seçilmis emri siyahida yuxari dasi"
+  1927: "{SMALLFONT}{COLOUR BLACK}Seçilmis emri siyahida asagi dasi"
+  1928: Oyun yalniz oxunan mediadan birbasa ise salina bilmir
+
+  1929: Atari Inc. Credits...
+  1930: "{COLOUR WINDOW_2}Atari Inc. terefinden lisanslanmisdir"
+  1931: Atari Inc. Credits
+
+  1932: Oyun sürümleri uygun deyil - Baglanti qurulmadi!
+  1933: "{SMALLFONT}{COLOUR BLACK}Diger oyunçuya qisa bir mesaj gönder"
+  1934: diger oyunçu
+  1935: "Diger oyunçu oyundan çixdi: Iki oyunçulu mod baglantisi kesildi"
+
+  1936: "{COLOUR YELLOW}Bu mehsulun istifadesi, mehsulun “ReadMe” faylinda ve rehberde olan lisenziya razilasmasinin sertlerine tabedir{NEWLINE}"
+  1937: "{COLOUR YELLOW}ESRB Xeberdarligi: Oyun tecrübesi onlayn oynanis zamaninda deyise biler"
+  1938: "{COLOUR TOPAZ}Bu oyundaki bezi neqliyyat vasitelerinin adlari, gerçek vesitelerin adlarina benzeye biler."
+  1939: "{COLOUR TOPAZ}Bu, oyuncularin oyunun xeyali kainati ile elaqe qurmasina kömek etmek ücün edilmisdir."
+  1940: "{COLOUR TOPAZ}Vasitelere aid edilen xüsusiyyetler (suret, tutum, etibarliqliq ve xercler daxil olmaqla)"
+  1941: "{COLOUR TOPAZ}yalniz oyun meqsedi ücün teyin edilmisdir ve gerçekde mövcud olan"
+  1942: "{COLOUR TOPAZ}oxsar adlara sahib ticari masinlari temsil etmek meqsedi dasimir."
+
+  1943: "{COLOUR WINDOW_2}Qidemli Prodüser:  Thomas J. Zahorik"
+  1944: "{COLOUR WINDOW_2}Qidemli Marka Meneceri:  Jeff Foley"
+  1945: "{COLOUR WINDOW_2}Icraci Prodüser:  Bob Welch"
+  1946: "{COLOUR WINDOW_2}Texnologiya Direktoru:  Paul Hellier"
+  1947: "{COLOUR WINDOW_2}Marketinq Direktoru:  Peter Matiss"
+  1948: "{COLOUR WINDOW_2}Yaradici Xidmetler Direktoru:  Steve Martin"
+  1949: "{COLOUR WINDOW_2}Qrafik Dizayner:  Rod Tilley"
+  1950: "{COLOUR WINDOW_2}Yayim ve Senedlesdirme Xidmetleri Direktoru:  Elizabeth Mackney"
+  1951: "{COLOUR WINDOW_2}Senedlesdirme Mütexessisi:  Kurt Carlson"
+  1952: "{COLOUR WINDOW_2}Metn Yazari:  Paul Collin"
+  1953: "{COLOUR WINDOW_2}Rehber Yazari:  David Ellis"
+  1954: "{COLOUR WINDOW_2}Yayim Desteyi Direktoru:  Michael Gilmartin"
+  1955: "{COLOUR WINDOW_2}Keyfiyyet Teminati Müdirleri:  Bill Carroll, Dave Strang"
+  1956: "{COLOUR WINDOW_2}Keyfiyyet Teminati Supervisoru:  Jason Cordero"
+  1957: "{COLOUR WINDOW_2}BT Müdiri / Qerb Bolgesi:  Ken Ford"
+  1958: "{COLOUR WINDOW_2}Texniki Destek Müdiri:  Michael Vetsch"
+  1959: "{COLOUR WINDOW_2}Bas Test Mütexessisi:  Marshall Clevesy"
+  1960: "{COLOUR WINDOW_2}Bas Test Mütexessisi Komekçisi:  Sean McLaren"
+  1961: "{COLOUR WINDOW_2}Test Mütexessisleri:  Randy Alfonso, Leticia Dueñas, John Hockaday, Tony Hsu, Brandon Reed, Nessie Rilveria"
+  1962: "{COLOUR WINDOW_2}Uygunluq Laboratoriyasi Supervisoru:  Dave Strang"
+  1963: "{COLOUR WINDOW_2}Uygunluq Test Lideri:  Cuong Vu"
+  1964: "{COLOUR WINDOW_2}Uygunluq Analitikleri:  Randy Buchholz, Mark Florentino, Chris McQuinn, Scotte Kramer, Patricia-Jean Cody"
+  1965: "{COLOUR WINDOW_2}Muhendislik Xidmetleri Mütexessisi:  Ken Edwards"
+  1966: "{COLOUR WINDOW_2}Muhendislik Xidmetleri Texnikleri:  Eugene Lai, Dan Burkhead"
+  1967: "{COLOUR WINDOW_2}Xüsusi Tesekkürler:  John Billington, Cecelia Hernandez"
+  1968: "{COLOUR WINDOW_2}"
+  1969: "{COLOUR WINDOW_2}"
+  1970: "{COLOUR WINDOW_2}"
+  1971: "{COLOUR WINDOW_2}"
+  1972: "{COLOUR WINDOW_2}"
+  1973: "{COLOUR WINDOW_2}"
+  1974: "{COLOUR WINDOW_2}"
+  1975: "{COLOUR WINDOW_2}"
+  1976: "{COLOUR WINDOW_2}"
+  1977: "{COLOUR WINDOW_2}"
+  1978: "{COLOUR WINDOW_2}"
+  1979: "{COLOUR WINDOW_2}"
+  1980: "{COLOUR WINDOW_2}"
+  1981: "{COLOUR WINDOW_2}"
+  1982: "{COLOUR WINDOW_2}"
+
+  1983: Mesafe x Ayliq Teslim Edilen Yük Vahidi
+  1984: "{SMALLFONT}{COLOUR BLACK}Her sirketin teslim etdiyi yükün mesafe qrafikleri"
+  1985: "{COLOUR WINDOW_2}Son seferin orta süreti: {COLOUR BLACK}{VELOCITY}"
+  1986: quru
+  1987: hava
+  1988: su
+  1989: Qatar
+  1990: Avtobus
+  1991: Yük masini
+  1992: Tramvay
+  1993: Teyyare
+  1994: Gemi
+  1995: "{SMALLFONT}{COLOUR BLACK}Süret Rekordlari"
+  1996: Süret Rekordlari
+  1997: "{COLOUR WINDOW_2}Quru xidmet süreti rekordu: {COLOUR BLACK}{VELOCITY}"
+  1998: "{COLOUR WINDOW_2}Hava xidmet süreti rekordu: {COLOUR BLACK}{VELOCITY}"
+  1999: "{COLOUR WINDOW_2}Su xidmet süreti rekordu: {COLOUR BLACK}{VELOCITY}"
+  2000: "{COLOUR BLACK}Qazanildi: {STRINGID} terefinden {DATE DMY}"
+  2001: Ekran Rejimi Deyisikliyini Tesdiqle
+  2002: "{COLOUR WINDOW_2}Ekran ölçüsü {UINT16 RAW} x {UINT16 RAW} olaraq deyisdirildi"
+  2003: "{COLOUR WINDOW_2}_"
+  2004: "{COLOUR WINDOW_2}Fayl adi:"
+  2005: "{COLOUR WINDOW_2}Qovluq: {COLOUR BLACK}{STRINGID}"
+  2006: "{SMALLFONT}{COLOUR BLACK}Yuxari qovluga çix"
+  2007: "{COLOUR WINDOW_2}sirket: {COLOUR BLACK}{STRINGID}"
+  2008: "{COLOUR WINDOW_2}Tarix: {COLOUR BLACK}{DATE DMY}"
+  2009: "{COLOUR WINDOW_2}Tapsiriq irelileyisi: {COLOUR BLACK}{INT16}%"
+  2010: "{COLOUR WINDOW_2}Tapsiriq: {COLOUR BLACK}Tamamlandi"
+  2011: "{COLOUR WINDOW_2}Tapsiriq: {COLOUR BLACK}Ugursuz oldu"
+  2012: "Mövcud fayl deyisdirilsin? “{STRINGID}”?"
+  2013: Deyisdir
+  2014: "Fayl silinsin? “{STRINGID}”?"
+  2015: Sil
+  2016: "Xeta: Yanlis fayl adi"
+  2017: Zavod Adi
+  2018: "{STRINGID} üçün yeni ad daxil edin:"
+  2019: Zavod adi deyisdirile bilmir...
+  2020: "{NEWLINE 0 1}{SPRITE}{SMALLFONT}{NEWLINE 45 1}Maksimum süret: {STRINGID}{NEWLINE 45 11}Hündürlük heddi: {HEIGHT}"
+  2021: Ikiqat CD açari tapildi - Qosulmaq mümkün deyil!
+  2022: "{COLOUR BLACK}{SMALLFONT}(Kompüter Adi = {STRINGID})"
+  2023: 1-cisi
+  2024: 2-cisi
+  2025: 3-cüsü
+  2026: 4-cüsü
+  2027: 5-cisi
+  2028: 6-cisi
+  2029: 7-cisi
+  2030: 8-cisi
+  2031: 9-cusu
+  2032: 10-cusu
+  2033: 11-cisi
+  2034: 12-cisi
+  2035: 13-cüsü
+  2036: 14-cüsü
+  2037: 15-cisi
+  2038: "{COLOUR BLACK}{INT16} seçildi (maksimum {INT16})"
+  2039: ""
+  2040: ""
+  2041: "{COLOUR BLACK}(ID: "
+  2042: "Asagidaki obyekt üçün melumat tapilmadi: "
+  2043: Qrafikler üçün kifayet qeder yer yoxdur
+  2044: Bu növden çox sayda obyekt seçildi
+  2045: "evvelce bu obyektin seçilmesi teleb olunur: "
+  2046: Bu obyekt hazirda istifadededir
+  2047: Bu obyekt basqa bir obyekt terefinden teleb olunur
+  2048: Bu obyekt hemise teleb olunur
+  2049: Bu obyekt seçile bilmedi
+  2050: Bu obyekt seçimden çixarila bilmedi
+  2051: Yanlis obyekt seçimi
+  2052: Obyekt Seçimi - {STRINGID}
+  2053: Arayüz Stilleri
+  2054: Sesler
+  2055: Pul Vahidi
+  2056: Animasiya Effektleri
+  2057: Erazi Saquli Sethleri
+  2058: Su
+  2059: Erazi
+  2060: Yasayis Adlari
+  2061: Yük
+  2062: Divarlar
+  2063: Siqnallar
+  2064: Seviyyeli Keçidler
+  2065: Küçe Lampalari
+  2066: Tuneller
+  2067: Körpüler
+  2068: Xett Stansiyalari
+  2069: Xett Ekstralari
+  2070: Relsler
+  2071: Karayolu Dayanacaqlari
+  2072: Karayolu Ekstralari
+  2073: Yollar
+  2074: Hava Limanlari
+  2075: Limanlar
+  2076: Neqliyyat Vasiteleri
+  2077: Agaçlar
+  2078: Qar
+  2079: Iqlim
+  2080: Xerite Yaratma Verisi
+  2081: Binalar
+  2082: Iskeleler
+  2083: Zavodlar
+  2084: Dünya Bölgesi
+  2085: Sirket Sahibleri
+  2086: Ssenari Aciqlamalari
+  2087: Obyekt siyahisi
+  2088: "Çatismayan obyekt verisi, ID: "
+  2089: Saxlanilan oyunlarla birlikde eklenti obyektlerini disa aktar
+  2090: "{SMALLFONT}{COLOUR BLACK}Saxlanilan oyun ya da ssenari fayllarina, elave obyekt verisine sahib olmayan bir oyunçunun yükleye bilmesi üçün esas mehsulla birlikte verilmeyen eklenti obyekt verilerinin de daxil edilib-edilmeyeceyini seçin"
+  2091: En azi bir umumi çift yönlu yol növü seçilmelidir
+  2092: Bir iskele növü seçilmelidir
+  2093: Tekmillesdirilmis
+  2094: "{SMALLFONT}{COLOUR BLACK}Ayri-ayri ogelerin daha tekmil seçimine icaze ver"
+  2095: "{COLOUR WHITE}{BIGFONT}₺"
+  2096: Yeni obyektler ugurla yüklendi
+  2097: En azi bir zavod növü seçilmelidir
+  2098: En azi bir bina növü seçilmelidir
+  2099: Bir sirket merkez binasi növü seçilmelidir
+  2100: Yalnizca bir sirket merkez binasi növü seçilmelidir
+  2101: Bir arayuz növü seçilmelidir
+  2102: En azi bir neqliyyat vasitesi növü seçilmelidir
+  2103: En azi bir erazi növü seçilmelidir
+  2104: Bir pul vahidi növü seçilmelidir
+  2105: Bir su növü seçilmelidir
+  2106: Bir yasayis adi stili seçilmelidir
+  2107: En azi bir seviyyeli keçid növü seçilmelidir
+  2108: Bir kuce lampasi növü seçilmelidir
+  2109: Bir qar növü seçilmelidir (lazim olmasa bele)
+  2110: Bir iqlim növü seçilmelidir
+  2111: Bir xerite yaratma verisi növü seçilmelidir
+  2112: Bir bölge növü seçilmelidir
+  2113: mph
+  2114: kmh⁻¹
+  2115: "saat:"
+  2116: "saat:"
+  2117: deqiqe
+  2118: "deq:"
+  2119: saniye
+  2120: " vahid"
+  2121: ft
+  2122: m
+  2123: hp
+  2124: kW
+  2125: "{COLOUR WINDOW_2}Dil:"
+  2126: "{COLOUR WINDOW_2}Neqliyyat vasitesi nasazliqlarini deaktiv et"
+  2127: "{COLOUR WINDOW_2}Ekran rejimi:"
+  2128: Pencereli
+  2129: Tam ekran
+  2130: Çerçivesiz pencere
+  2131: Standart ses cihazi
+  2132: "{COLOUR WINDOW_2}Pencere miqyasi emsali:"
+  2133: "{COLOUR BLACK}+"
+  2134: "{COLOUR BLACK}-"
+  2135: "{COLOUR BLACK}{INT32_2DP}"
+  2136: "{COLOUR WINDOW_2}Yaxinlasdirmani kursor mövqeyine dogru et"
+  2137: "{SMALLFONT}{COLOUR BLACK}Aktivlesdirildikde, yaxinlasdirma ekranin merkezi evezine kursorun etrafinda heyata keçirilir."
+  2138: "{COLOUR WINDOW_2}Giris ekrani musiqisini çal"
+  2139: "Menyuya qayit"
+  2140: "OpenLoco'dan çix"
+  2141: "{COLOUR WINDOW_2}Süni intellekt sirketlerini deaktiv et"
+  2142: "{SMALLFONT}{COLOUR BLACK}Bu, süni intellektin 'düsünmesinin' qarsisini alir ve onu deaktiv edir.{NEWLINE}Yeni oyunlarda hemçinin yeni süni intellekt sirketlerinin yaradilmasinin qarsisini alir."
+  2143: "{COLOUR WINDOW_2}Avtomatik yadda saxlama miqdari:"
+  2144: "{COLOUR WINDOW_2}Avtomatik yadda saxlama intervali:"
+  2145: "Heç vaxt"
+  2146: "Her ay"
+  2147: "Her {INT32} aydan bir"
+  2148: "{COLOUR WINDOW_2}Hündürlük xeritesi menbeyi:"
+  2149: Standart generator
+  2150: Simplex generator
+  2151: "Neqliyyat vasitesini deyisdir"
+  2152: "Neqliyyat vasitesini kopyala"
+  2153: "Neqliyyat vasitesi kopyalana bilmir..."
+  2154: "Neqliyyat vasitesini esas görünüsde tap"
+  2155: "Neqliyyat vasitesini esas görünüsde izle"
+  2156: "Firildaqlar/sazlama alet paneli menyusunu aktivlesdir"
+  2157: "{SMALLFONT}{COLOUR BLACK}Bu, oyunun alet paneline elave düyme elave edir ve bezi firildaqlara ve sazlama seçimlerine asan giris temin edir."
+  2158: "Mehdudiyyetsiz rejimi aktivlesdir"
+  2159: "El ile idare etmeye icaze ver"
+  2160: "Dayandirilmis veziyyetde tikintiye icaze ver"
+  2161: "FPS saygacini göster"
+  2162: "{SMALLFONT}{COLOUR BLACK}Bu, ekranin yuxari hissesinde saniyede çekilen kadr sayini gösteren saygac gösterir."
+  2163: "Kadr süreti limitini sil"
+  2164: "{SMALLFONT}{COLOUR BLACK}40Hz-de render mehdudiyyetini aradan qaldirir."
+  2165: "Avadanliq"
+  2166: "Xerite emali"
+  2167: "Kafel detalini yoxla"
+  2168: "{SMALLFONT}{COLOUR BLACK}Yoxlamaq üçün xeritede bir kafel seçmek meqsedile aktivlesdirin."
+  2169: "Seth"
+  2170: "Rel"
+  2171: "Stansiya"
+  2172: "Siqnal"
+  2173: "Bina"
+  2174: "Agaç"
+  2175: "Divar"
+  2176: "Yol"
+  2177: "Zavod"
+  2178: "{COLOUR WINDOW_2} {STRINGID} ({STRINGID})"
+  2179: "{COLOUR WINDOW_2} {STRINGID} - {STRINGID} ({STRINGID})"
+  2180: "X:"
+  2181: "Y:"
+  2182: "{COLOUR WINDOW_2}{INT16}"
+  2183: "Kafel element melumatlari"
+  2184: "Firildaqlar"
+  2185: "Maliyye firildaqlari"
+  2186: "Sirket firildaqlari"
+  2187: "Neqliyyat vasitesi firildaqlari"
+  2188: "Mesken firildaqlari"
+  2189: "Krediti temizle"
+  2190: "Temizle"
+  2191: "{COLOUR BLACK}{CURRENCY32}"
+  2192: "Hedef sirketi seç"
+  2193: "Tetbiq edilecek firildagi seç"
+  2194: "Nezareti bu sirkete keçir"
+  2195: "Bütün sirket aktivlerini ele keçir"
+  2196: "Müflisliyi aç/bagla"
+  2197: "Hebsxana veziyyetini aç/bagla"
+  2198: "Vesaitleri artir"
+  2199: "{COLOUR WINDOW_2}Miqdar:"
+  2200: "Elave et"
+  2201: "Neqliyyat vasitesinin etibarliligi"
+  2202: "Hamisini sifira teyin et (limitsiz)"
+  2203: "Hamisini yüze teyin et (tam yenilenme)"
+  2204: "Sirket reytinqlerini teyin et"
+  2205: "-%10 her yerde"
+  2206: "+%10 her yerde"
+  2207: "Her yerde minimum"
+  2208: "Her yerde maksimum"
+  2209: "Bütün neqliyyat vasiteleri"
+  2210: "Stansiyada dayanir"
+  2211: "Yük dasiyir"
+  2212: "{MOVE_X 10}{STRINGID} {SPRITE} dasiyir"
+  2213: "»{MOVE_X 10}{STRINGID} {SPRITE} dasiyir"
+  2214: "Stansiya seçilmeyib"
+  2215: "Yük növü seçilmeyib"
+  2216: "{SMALLFONT}{COLOUR BLACK}Stansiyaya göre filtrlemek üçün stansiya penceresi açin"
+  2217: "{SMALLFONT}{COLOUR BLACK}Mövcud yük siyahisindan yük növü seçin"
+  2218: "Tikinti: Evvelki bölme"
+  2219: "Tikinti: Sonraki bölme"
+  2220: "Tikinti: Evvelki rel hissesi"
+  2221: "Tikinti: Sonraki rel hissesi"
+  2222: "Tikinti: Evvelki maililik"
+  2223: "Tikinti: Sonraki maililik"
+  2224: "Tikinti: Cari mövqede tik"
+  2225: "Tikinti: Cari mövqede sök"
+  2226: "Tikinti: Mövqe seç"
+  2227: "Qatarlar siqnal bagli olduqda gözlemek evezine geri qayidir"
+  2228: "Avtomatik ödenis"
+  2229: "{SMALLFONT}{COLOUR BLACK}Günde bir defe, mövcud vesaitiniz varsa krediti ödemek üçün istifade olunur."
+  2230: "{COLOUR WINDOW_2}Il:"
+  2231: "{COLOUR WINDOW_2}Ay:"
+  2232: "{COLOUR WINDOW_2}Gün:"
+  2233: "Tarixi teyin et"
+  2234: "{COLOUR BLACK}{UINT16 RAW}"
+  2235: "{COLOUR BLACK}{INT32}"
+  2236: "{COLOUR BLACK}{INT32}"
+  2237: "{DATE DMY}"
+  2238: "Oyun süreti: Normal"
+  2239: "Oyun süreti: Süretlendir"
+  2240: "Oyun süreti: Daha süretli süretlendir"
+  2241: "{COLOUR WINDOW_2}Tutum: {COLOUR BLACK}{STRINGID}"
+  2242: "{NEWLINE}{COLOUR WINDOW_2} Istifade olunmur: {COLOUR BLACK}{UINT16 RAW}"
+  2243: "Neqliyyat vasitesi kilidlenib!"
+  2244: "Kilidli neqliyyat vasitelerini göster"
+  2245: "{SMALLFONT}{COLOUR BLACK}Aktivlesdirildikde istifadesiz ve tövsiye olunan neqliyyat vasiteleri gösterilir"
+  2246: "{NEWLINE}{COLOUR WINDOW_2} Tövsiye olunan: {COLOUR BLACK}{UINT16 RAW}"
+  2247: "Kilidli neqliyyat vasitelerinin tikintisine icaze ver"
+  2248: "{SMALLFONT}{COLOUR BLACK}Aktivlesdirildikde istifadesiz ve tövsiye olunan neqliyyat vasitelerinin tikintisine icaze verir"
+  2249: "Neqliyyat Vasitesi Tikinti Penceresi"
+  2250: "{SMALLFONT}{COLOUR BLACK}Hündürlük evezine erazi növünü deyismek üçün aktivlesdirin"
+  2251: "Sag siçan sürüsdürmesini tersine çevir"
+  2252: "{SMALLFONT}{COLOUR BLACK}Aktivlesdirildikde, esas oyun görünüsünü sürüsdürme hereketi tersine çevrilir"
+  2253: "Nagd pul açilan pencerelerini göster"
+  2254: "{SMALLFONT}{COLOUR BLACK}Tikinti ve neqliyyat vasitelerinden gelen nagd pul açilan pencerelerinin görünmesini aç/bagla"
+  2255: "Serveri baslat"
+  2256: "Serveri dayandir"
+  2257: "Baglantini kes"
+  2258: "{COLOUR WINDOW_2}Uzunluq: {COLOUR BLACK}{INT32_2DP} kafel, {INT32} vaqon"
+  2259: "{COLOUR WINDOW_2}Uzunluq: {COLOUR BLACK}{INT32_2DP} kafel"
+  2260: "{COLOUR WINDOW_2} Uzunluq: {COLOUR BLACK}{INT32_2DP} kafel"
+  2261: "{NEWLINE}{COLOUR WINDOW_2} Uzunluq: {COLOUR BLACK}{INT32_2DP} kafel"
+  2262: "{NEWLINE}Uzunluq: {INT32_2DP} kafel"
+  2263: "{COLOUR WINDOW_2}{UINT16}/{UINT16}"
+  2264: "Böyük ekran görüntüsü"
+  2265: "{COLOUR WINDOW_2} Fayl adi: {COLOUR BLACK}{STRINGID}"
+  2266: "Ssenari seçimleri"
+  2267: "Obyekt seçimi"
+  2268: "Oynanis Ayarlari"
+  2269: "Üstün tutulan sahib"
+  2270: "Avtomatik Yadda Saxlama Üstünlükleri"
+  2271: "Mesken genislenmesini deaktiv et"
+  2272: "{SMALLFONT}{COLOUR BLACK}Aktivlesdirildikde, meskenler zamanla yenilenmir ve ya genislenmir"
+  2273: "Ssenari tapsirigini tamamla"
+  2274: "Temizle"
+  2275: "Obyektler yüklenerken xeta"
+  2276: "{COLOUR BLACK}Fayl yüklene bilmedi, çünki içindeki bezi obyektler çatismir ve ya zedelenib. Bu obyektlerin siyahisi asagida verilmisdir."
+  2277: "{COLOUR BLACK}Obyekt Kimliyi"
+  2278: "{COLOUR BLACK}Növ"
+  2279: "{COLOUR BLACK}Yoxlama cemi"
+  2280: "Yeni mesajlar üçün ses effektlerini çal"
+  2281: "{SMALLFONT}{COLOUR BLACK}Aktivlesdirildikde, yeni mesajlara uygun izdiham alqis sesi müsayiet olunur."
+  2282: "{SMALLFONT}{COLOUR BLACK}Marsrut sirasi cedvelini tersine çevir"
+  2283: "Ad ve növ"
+  2284: "BH"
+  2285: "CH"
+  2286: "D"
+  2287: "G"
+  2288: "{SMALLFONT}{COLOUR BLACK}Kafel elementinin obyekt adi ve növü"
+  2289: "{SMALLFONT}{COLOUR BLACK}Kafel elementinin esas hündürlüyü"
+  2290: "{SMALLFONT}{COLOUR BLACK}Kafel elementinin temiz hündürlüyü"
+  2291: "{SMALLFONT}{COLOUR BLACK}Kafel elementinin istiqameti"
+  2292: "{SMALLFONT}{COLOUR BLACK}Kafel elementinin xeyal veziyyeti"
+  2293: "Baslangic"
+  2294: "Ireli"
+  2295: "Mütexessis"
+  2296: "Standart"
+  2297: "Xüsusi"
+  2298: "Komponentler"
+  2299: "Dizayn iline göre sirala"
+  2300: "Ada göre sirala"
+  2301: "Gücsüz"
+  2302: "Güclü"
+  2303: "Kilidli deyil"
+  2304: "Kilidli"
+  2305: "Yük"
+  2306: "Bütün yük növleri"
+  2307: "{MOVE_X 10}{STRINGID} {SPRITE}"
+  2308: "»{MOVE_X 10}{STRINGID} {SPRITE}"
+  2309: "{COLOUR BLACK}{STRINGID} {SPRITE}"
+  2310: "Yüksüz"
+  2311: "Neqliyyat vasitesi yükleme cezasini deaktiv et"
+  2312: "{SMALLFONT}{COLOUR BLACK}Aktivlesdirildikde, neqliyyat vasitesinin uzunlugu stansiya uzunlugunu asdiqda tetbiq olunan yükleme süreti cezasini deaktiv edir"
+  2313: "Binalari seffaf göster"
+  2314: "Yollari seffaf göster"
+  2315: "Menzereni seffaf göster"
+  2316: "Relleri seffaf göster"
+  2317: "Agaçlari seffaf göster"
+  2318: "Binalari seffaf gösterme keçidi"
+  2319: "Yollari seffaf gösterme keçidi"
+  2320: "Menzereni seffaf gösterme keçidi"
+  2321: "Relleri seffaf gösterme keçidi"
+  2322: "Agaçlari seffaf gösterme keçidi"
+  2323: "{SMALLFONT}{COLOUR BLACK}Sökülmüs erazinin xarici kenarlarini yumsaltmaq üçün aktivlesdirin. Dag yaratmaq üçün faydalidir."
+  2324: "Neqliyyat Vasitesi/Rel Davranisi"
+  2325: "{SMALLFONT}{COLOUR BLACK}sirket seçimleri"
+  2326: "Seçimler - sirket"
+  2327: "Üstün tutulan sirket simasi"
+  2328: "Yeni oyun basladarken üstün tutulan sexsiyyet simasindan istifade et"
+  2329: "{SMALLFONT}{COLOUR BLACK}Seçildikde, yeni ssenari basladarken üstün tutulan sirket simasindan istifade olunur."
+  2330: "{COLOUR WINDOW_2}Üstün tutulan sahib simasi: {COLOUR BLACK}{STRINGID}"
+  2331: "Üstün tutulan sirket sahibinin simasini seç"
+  2332: "{COLOUR WINDOW_2}Stansiya ölçüsü mehdudiyyetlerini deaktiv et"
+  2333: "{SMALLFONT}{COLOUR BLACK}Aktivlesdirildikde, demiryolu stansiyalari üçün maksimum uzunluq artiq 16 kafel ile mehdudlasmir. Lakin stansiyalar ümumilikde 80 kafelden çox ola bilmez."
+  2334: "Erazi Yaratma - Su"
+  2335: "{SMALLFONT}{COLOUR BLACK}Su yaratma seçimleri"
+  2336: "Ümumi"
+  2337: "Generator"
+  2338: "{COLOUR WINDOW_2}Cari tepe obyekti: {COLOUR BLACK}{STRINGID}"
+  2339: "{COLOUR WINDOW_2}erazi yumsaltma keçidlerinin sayi:"
+  2340: "PNG hündürlük xeritesi fayli"
+  2341: "PNG hündürlük xeritesi faylini yükle"
+  2342: "Bax..."
+  2343: "{COLOUR WINDOW_2}Cari hündürlük xeritesi fayli: {COLOUR BLACK}{STRING}"
+  2344: "(heç biri seçilmeyib)"
+  2345: "Ssenari fayllari yoxlanilir..."
+  2346: "{COLOUR BLACK}Keçen Ay Istehsal"
+  2347: "{COLOUR BLACK}Keçen Ay Istehsal ▼"
+  2348: "{SMALLFONT}{COLOUR BLACK}Siyahini keçen ayin istehsalina göre sirala"
+  2349: "Seçimler Penceresini Göster"
+  2350: "Körpüleri seffaf göster"
+  2351: "Körpüleri seffaf gösterme keçidi"
+  2352: "{COLOUR WINDOW_2}Çay yataqlarinin sayi:"
+  2353: "{COLOUR WINDOW_2}Minimum çay eni:"
+  2354: "{COLOUR WINDOW_2}Maksimum çay eni:"
+  2355: "{COLOUR WINDOW_2}Çay kenari eni:"
+  2356: "{COLOUR WINDOW_2}Dolambac nisbeti:"
+  2357: "OpenLoco"
+  2358: "Boya aletini aç/bagla"
+  2359: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID} vasitelerini yeniden boya{NEWLINE}shift+klikle hamisini boya{NEWLINE}ctrl+klikle alt vasiteleri boya"
+  2360: "Bagli olanlarin hamisini boya"
+  2361: "Seçimler - Vizualizasiya"
+  2362: "{SMALLFONT}{COLOUR BLACK}Vizualizasiya seçimleri"
+  2363: "Komponent satisini tesdiqle"
+  2364: "Bu neqliyyat vasitesi komponentini satmaq, neqliyyat vasitesinin içindeki bütün yükü çixaracaq. Davam edilsin?"
+  2365: "Komponenti sat"
+  2366: "Komponenti yeniden techiz etmeni tesdiqle"
+  2367: "Bu neqliyyat vasitesi komponentini yeniden techiz etmek, neqliyyat vasitesinin içindeki bütün yükü çixaracaq. Davam edilsin?"
+  2368: "Komponenti yeniden techiz et"
+  2369: "{SMALLFONT}{COLOUR BLACK}Ses seçimleri"
+  2370: "Seçimler - Ses"
+  2371: "Ses"
+  2372: "Musiqi qutusu"
+  2373: "{COLOUR WINDOW_2}Musiqi sesi:"
+  2374: "Planlasdirilan süni intellekt rel/yolunu xeyal kimi göster"
+  2375: "{SMALLFONT}{COLOUR BLACK}Bu, süni intellekt sirketleri terefinden planlasdirilan marsrutlari xeyal elementleri kimi gösterir."
+  2376: "{MOVE_X 15}{COLOUR BLACK}Basliq"
+  2377: "{MOVE_X 15}{COLOUR BLACK}Basliq ▲"
+  2378: "{MOVE_X 15}{COLOUR BLACK}Basliq ▼"
+  2379: "{COLOUR BLACK}Iller"
+  2380: "{COLOUR BLACK}Iller ▲"
+  2381: "{COLOUR BLACK}Iller ▼"
+  2382: "{SMALLFONT}{COLOUR BLACK}Siyahini musiqi parçasinin basligina göre sirala"
+  2383: "{SMALLFONT}{COLOUR BLACK}Siyahini 'mövcud dövr' rejiminde her parçanin ifa olundugu illere göre sirala"
+  2384: "{UINT16}-{UINT16}"
+  2385: "{UINT16}-"
+  2386: "-{UINT16}"
+  2387: "-"
+  2388: "{UINT16} musiqi parçasi seçildi"
+  2389: "{UINT16} musiqi parçasi seçildi"
+  2390: "Istifadeçi interfeysi"
+  2391: "Pencere çerçive üslubu:"
+  2392: "{SMALLFONT}{COLOUR BLACK}Bu, pencereleri bezemek üçün istifade olunan üslubdur."
+  2393: "Qradient (standart)"
+  2394: "Sade reng"
+  2395: "Yari seffaf reng"
+  2396: "Kadr süreti limiti:"
+  2397: "Daxili süret (standart)"
+  2398: "saquli sinxronizasiya"
+  2399: "Limitsiz"
+  2400: "Komponent köçürme tesdiqi"
+  2401: "Komponenti köçür"
+  2402: "Bu neqliyyat vasitesi komponentini köçürmek, neqliyyat vasitesindeki bütün yükün bosaldilmasina sebeb olacaq. Davam edilsin?"
+  2403: "Bu neqliyyat vasitesi komponentini köçürmek, her iki neqliyyat vasitesindeki bütün yükün bosaldilmasina sebeb olacaq. Davam edilsin?"
+  2404: "Esas ses:"
+  2405: "{SMALLFONT}{COLOUR BLACK}esas ses seviyyesini teyin et"
+  2406: "Effektler:"
+  2407: "{SMALLFONT}{COLOUR BLACK}Effekt ses seviyyesini teyin et"
+  2408: "Neqliyyat vasiteleri:"
+  2409: "{SMALLFONT}{COLOUR BLACK}Neqliyyat vasitesi ses seviyyesini teyin et"
+  2410: "Interfeys:"
+  2411: "{SMALLFONT}{COLOUR BLACK}Interfeys ses seviyyesini teyin et"
+  2412: "{SMALLFONT}{COLOUR BLACK}Musiqi ses seviyyesini teyin et"
+  2413: "Ses seviyyesi"
+  2414: "Musiqi:"
+  2415: "Mühit:"
+  2416: "{SMALLFONT}{COLOUR BLACK}Mühit ses seviyyesini teyin et"
+  2417: "Locomotion Title"
+  2418: "Kopyala"
+  2419: "{SMALLFONT}{COLOUR BLACK}Kopyalanacaq rel elementleri sahesini seçmeye imkan verir"
+  2420: "Yapisdir"
+  2421: "{SMALLFONT}{COLOUR BLACK}Kopyalanmis rel elementleri sahesini xeriteye yapisdirmaga imkan verir"
+  2422: "Ses seçimlerini aç"
+  2423: "Musiqi qutusunu aç"
+  2424: "Musiqi qutusu penceresini göster"
+  2425: "Qiymete göre sirala"
+  2426: "Güce göre sirala"
+  2427: "Maksimum sürete göre sirala"
+  2428: "Çekiye göre sirala"
+  2429: "Uzunluga göre sirala"
+  2430: "Artan sira"
+  2431: "Azalan sira"
+  2432: "Tutuma göre sirala"
+  2433: "Köhnelme veziyyetine göre sirala"
+  2434: "Araç yükü"
+  2435: "Deyisdirme ve ya alma zamani araç yükünü qoru"
+  2436: "{SMALLFONT}{COLOUR BLACK}Aktivlesdirildikde, vaqon elave ederken, vaqon dasiyarken ve ya araci alarken yük araçdan bosaldilmaz"
+  2437: "Siralama meyari"
+  2438: "Tercih Edilen Sirket"
+  2439: "Yeni oyun baslayarken tercih edilen sirket adini istifade et"
+  2440: "{SMALLFONT}{COLOUR BLACK}Her yeni oyunda eyni sirket adini istifade etmek üçün bu seçeneyi aktivlesdirin"
+  2441: "{COLOUR WINDOW_2}Tercih edilen sirket adi: {COLOUR BLACK}{STRINGID}"
+  2442: "Tercih Edilen Sirket Adi"
+  2443: "Tercih edilen sirket adini daxil edin:"
+  2444: "Sirket adi deyisdirile bilmir..."
+  2445: "{STRINGID} yaxinliginda heç bir neqliyyat sirketi yoxdur"
+  2446: "{STRINGID} keçen ay heç bir çatdirilma almadi"
+  2447: "{SMALLFONT}{COLOUR BLACK}Bu öge növünün esas qovluguna qayit"
+  2448: "ALT + "
+  2449: "SAG CTRL + "
+  2450: "SAG ALT + "
+  2451: "{STRINGID}{STRINGID}{STRINGID}{STRINGID}{STRINGID}"
+  2452: "{COLOUR BLACK}“{STRINGID}”"
+  2453: "Musiqi"
+  2454: "{COLOUR WINDOW_2}Oyun zamani musiqi çal"
+  2455: "Musiqi qutusunu aç..."
+  2456: "{COLOUR WINDOW_2}Islenmeyi gözleyen yük:"
+  2457: "{COLOUR WINDOW_2}Dasinmagi gözleyen yük:"
+  2458: "{STRINGID}{STRINGID}"
+  2459: "Xeta ayiklama penceresi"
+  2460: "Alet çubugu menyularini kliklemek evezine üzerine geldikde göster"
+  2461: "Alet çubugu düymelerini üfüqi olaraq merkezlesdir"
+  2462: "Tekrarli yerlesdirme"
+  2463: "{SMALLFONT}{COLOUR BLACK}Siqnallari, rel hisselerinde gösterilen 'addim araligi' qeder irelileyerek tekrarli sekilde yerlesdir"
+  2464: "Addim araligi:"
+  2465: "Siqnal bloku"
