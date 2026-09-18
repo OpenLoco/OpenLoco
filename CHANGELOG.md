@@ -19,6 +19,7 @@
 - Fix: [#3987] Unable to remove multi tile stations if one of the stations is for trams.
 - Fix: [#3991] Average speed of journey is counted even if the vehicle was picked up and moved.
 - Fix: [#4006] Crash when generating mouse over tooltip of a building on a corrupted save.
+- Fix: [#4027] Crash when starting the game with maformed YAML schema.
 
 26.08 (2026-08-13)
 ------------------------------------------------------------------------

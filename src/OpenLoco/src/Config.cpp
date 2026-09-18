@@ -3,9 +3,13 @@
 #include "Environment.h"
 #include <Message.h>
 #include <OpenLoco/Core/FileSystem.hpp>
+#include <exception>
 #include <filesystem>
+#include <format>
 #include <fstream>
 #include <locale>
+#include <stdexcept>
+#include <yaml-cpp/exceptions.h>
 #include <yaml-cpp/yaml.h>
 
 namespace OpenLoco::Config
@@ -59,9 +63,21 @@ namespace OpenLoco::Config
         std::ifstream stream;
         stream.exceptions(std::ifstream::failbit);
         stream.open(configPath, std::ios::in | std::ios::binary);
-        _configYaml = YAML::Load(stream);
+
+        try
+        {
+            _configYaml = YAML::Load(stream);
+        }
+        catch (const YAML::Exception& e)
+        {
+            throw std::runtime_error(std::format("Malformed YAML syntax in config file '{}': {}", configPath.string(), e.what()));
+        }
 
         const auto& config = _configYaml;
+        if (!config.IsMap())
+        {
+            throw std::runtime_error(std::format("Configuration root in config file '{}' must be a YAML mapping", configPath.string()));
+        }
 
         // Display settings
         auto& displayNode = config["display"];
