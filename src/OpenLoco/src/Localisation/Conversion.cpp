@@ -14,10 +14,6 @@ namespace OpenLoco::Localisation
     };
 
     static constexpr auto kUnicodeToLocoTable = std::to_array<EncodingConvertEntry>({
-        { UnicodeChar::curly_bracket_open, LocoChar::replacement_character }, // These four are replaced with formatting control codes in Loco
-        { UnicodeChar::vertical_line, LocoChar::replacement_character },
-        { UnicodeChar::curly_bracket_close, LocoChar::replacement_character },
-        { UnicodeChar::tilde, LocoChar::replacement_character },
         { UnicodeChar::a_ogonek_uc, LocoChar::a_ogonek_uc },
         { UnicodeChar::a_ogonek, LocoChar::a_ogonek },
         { UnicodeChar::c_acute_uc, LocoChar::c_acute_uc },
@@ -187,14 +183,268 @@ namespace OpenLoco::Localisation
     static_assert(std::ranges::is_sorted(kUnicodeToLocoTable, {}, &EncodingConvertEntry::unicode));
     static_assert(std::ranges::is_sorted(kUnicodeTemporaryStrip, {}, &EncodingConvertEntry::unicode));
 
+    // Table of first 256 unicode codepoints to if they can be displayed by Locomotion's sprite font
+    static constexpr bool kUnicodeCharacterInSpriteFont[256] = {
+        true, // Null character (very important!)
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,  // Space
+        true,  // !
+        true,  // " (Not really - replaced with ” (quote_close))
+        true,  // #
+        true,  // $
+        true,  // %
+        true,  // &
+        true,  // ' (Not really - replaced with ’ (single_quote_close))
+        true,  // (
+        true,  // )
+        true,  // *
+        true,  // +
+        true,  // ,
+        true,  // -
+        true,  // .
+        true,  // /
+        true,  // 0
+        true,  // 1
+        true,  // 2
+        true,  // 3
+        true,  // 4
+        true,  // 5
+        true,  // 6
+        true,  // 7
+        true,  // 8
+        true,  // 9
+        true,  // :
+        true,  // ;
+        true,  // <
+        true,  // =
+        true,  // >
+        true,  // ?
+        true,  // @
+        true,  // A
+        true,  // B
+        true,  // C
+        true,  // D
+        true,  // E
+        true,  // F
+        true,  // G
+        true,  // H
+        true,  // I
+        true,  // J
+        true,  // K
+        true,  // L
+        true,  // M
+        true,  // N
+        true,  // O
+        true,  // P
+        true,  // Q
+        true,  // R
+        true,  // S
+        true,  // T
+        true,  // U
+        true,  // V
+        true,  // W
+        true,  // X
+        true,  // Y
+        true,  // Z
+        true,  // [
+        true,  // Backslash
+        true,  // ]
+        true,  // ^
+        true,  // _
+        false, // ` (Replaced with ‘ (single_quote_open))
+        true,  // a
+        true,  // b
+        true,  // c
+        true,  // d
+        true,  // e
+        true,  // f
+        true,  // g
+        true,  // h
+        true,  // i
+        true,  // j
+        true,  // k
+        true,  // l
+        true,  // m
+        true,  // n
+        true,  // o
+        true,  // p
+        true,  // q
+        true,  // r
+        true,  // s
+        true,  // t
+        true,  // u
+        true,  // v
+        true,  // w
+        true,  // x
+        true,  // y
+        true,  // z
+        false, // { (These four are replaced with formatting control codes in Loco)
+        false, // |
+        false, // }
+        false, // ~
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false, // NBSP (Replaced with ▲ (up))
+        true,  // ¡
+        false, // ¢ (Replaced with Ć (c_acute_uc))
+        false, // £ (Replaced with symbol of currently loaded currency)
+        false, // ¤ (Looks horribly messed up in Loco)
+        true,  // ¥
+        false, // ¦ (Replaced with Ę (e_ogonek_uc))
+        false, // § (Replaced with Ł (l_stroke_uc))
+        false, // ¨ (Appears to be zero-width in Loco)
+        true,  // ©
+        false, // ª (Replaced with ▼ (down))
+        true,  // «
+        false, // ¬ (Replaced with ✓ (tick))
+        false, // Soft hyphen (Replaced with ❌ (cross))
+        false, // ® (Appears to be zero-width in Loco)
+        false, // ¯ (Replaced with ▶ (right))
+        true,  // ° (Degree sign)
+        false, // ± (Replaced with 🛤 (railway))
+        true,  // ² (Superscript two)
+        false, // ³ (Appears to be zero-width in Loco)
+        false, // ´ (Acute accent) (Replaced with “ (quote_open))
+        false, // µ (Replaced with €)
+        false, // ¶ (Replaced with 🛣 (road))
+        false, // · (Replaced with ☁ (air))
+        false, // ¸ (Replaced with 🌊 (water))
+        true,  // ¹ TODO: superscript one is replaced with superscript negative one. In the language YML files we write "⁻¹", but the superscript minus sign is ignored by LanguageFiles.cpp
+        false, // º (Replaced with • (Bullet))
+        true,  // »
+        false, // ¼ (Replaced with ▴ (small_up))
+        false, // ½ (Replaced with ▾ (small_down))
+        false, // ¾ (Replaced with ◀ (left))
+        true,  // ¿
+        true,  // À
+        true,  // Á
+        true,  // Â
+        true,  // Ã
+        true,  // Ä
+        true,  // Å
+        false, // Æ (Replaced with Ń (n_acute_uc))
+        true,  // Ç
+        true,  // È
+        true,  // É
+        true,  // Ê
+        true,  // Ë
+        true,  // Ì
+        true,  // Í
+        true,  // Î
+        true,  // Ï
+        false, // Ð (Replaced with Ś (s_acute_uc))
+        true,  // Ñ
+        true,  // Ò
+        true,  // Ó
+        true,  // Ô
+        true,  // Õ
+        true,  // Ö
+        false, // × (Replaced with Ź (z_acute_uc))
+        false, // Ø (Replaced with Ż (z_dot_uc) (Renders as a strikethrough Z))
+        true,  // Ù
+        true,  // Ú
+        true,  // Û
+        true,  // Ü
+        false, // Ý (Replaced with ą (a_ogonek))
+        false, // Þ (Replaced with ć (c_acute))
+        true,  // ß
+        true,  // à
+        true,  // á
+        true,  // â (though diacritic looks more like a macron than a circumflex in Loco)
+        true,  // ã
+        true,  // ä
+        true,  // å
+        false, // æ (Replaced with ę (e_ogonek))
+        true,  // ç
+        true,  // è
+        true,  // é
+        true,  // ê (though diacritic looks more like a macron than a circumflex in Loco)
+        true,  // ë
+        true,  // ì
+        true,  // í
+        true,  // î
+        true,  // ï
+        false, // ð (Replaced with ń (n_acute))
+        true,  // ñ
+        true,  // ò
+        true,  // ó
+        true,  // ô
+        true,  // õ
+        true,  // ö
+        false, // ÷ (Replaced with ł (l_stroke))
+        false, // ø (Replaced with ś (s_acute))
+        true,  // ù
+        true,  // ú
+        true,  // û
+        true,  // ü
+        false, // ý (Replaced with ż (z_dot))
+        false, // þ (Replaced with ź (z_acute))
+        false  // ÿ (Appears to be zero-width in Loco)
+    };
+
     utf32_t convertLocoToUnicode(uint8_t locoCode)
     {
-        // Do not convert '?' character.
-        if (locoCode == LocoChar::replacement_character)
-        {
-            return LocoChar::replacement_character;
-        }
-
         // We can't do a binary search here, as the table is sorted by Unicode point, not Loco's internal encoding.
         for (const auto& entry : kUnicodeToLocoTable)
         {
@@ -234,7 +484,10 @@ namespace OpenLoco::Localisation
         // Basic Latin characters
         if (unicode < 256)
         {
-            return static_cast<uint8_t>(unicode);
+            if (kUnicodeCharacterInSpriteFont[unicode])
+            {
+                return static_cast<uint8_t>(unicode);
+            }
         }
 
         return LocoChar::replacement_character;
