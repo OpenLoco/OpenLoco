@@ -475,7 +475,7 @@ namespace OpenLoco::ObjectManager
         {
             free(preLoadObj.object);
             // Object failed validation
-            Logging::error("Object {} in index failed validation! (This should not be possible)", header.getName());
+            Logging::error("Object {} failed validation!", header.getName());
             return std::nullopt;
         }
 
