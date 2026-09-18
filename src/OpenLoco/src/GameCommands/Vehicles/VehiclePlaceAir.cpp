@@ -131,7 +131,7 @@ namespace OpenLoco::GameCommands
                 return kFailure;
             }
 
-            if (station->airportMovementOccupiedEdges & airportObj->var_B6)
+            if (station->airportMovementOccupiedEdges & airportObj->requiredClearEdges)
             {
                 setErrorText(StringIds::vehicle_approaching_or_in_the_way);
                 return kFailure;

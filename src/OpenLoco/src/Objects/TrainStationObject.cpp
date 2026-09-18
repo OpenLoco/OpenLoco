@@ -108,9 +108,9 @@ namespace OpenLoco
             }
         }
 
-        for (size_t i = 0; i < sizeof(var_6E) / sizeof(var_6E[0]); ++i)
+        for (size_t i = 0; i < sizeof(diagonalCargoOffsetBytes) / sizeof(diagonalCargoOffsetBytes[0]); ++i)
         {
-            var_6E[i] = static_cast<uint32_t>(remainingData.data() - data.data());
+            diagonalCargoOffsetBytes[i] = static_cast<uint32_t>(remainingData.data() - data.data());
 
             auto* bytes = reinterpret_cast<const int8_t*>(remainingData.data());
             bytes++; // z?
@@ -145,7 +145,7 @@ namespace OpenLoco
         std::fill(std::begin(imageOffsets), std::end(imageOffsets), 0);
         std::fill(std::begin(mods), std::end(mods), 0);
         std::fill(&cargoOffsetBytes[0][0], &cargoOffsetBytes[0][0] + sizeof(cargoOffsetBytes) / sizeof(uint32_t), 0);
-        std::fill(std::begin(var_6E), std::end(var_6E), 0);
+        std::fill(std::begin(diagonalCargoOffsetBytes), std::end(diagonalCargoOffsetBytes), 0);
     }
 
     sfl::static_vector<TrainStationObject::CargoOffset, Limits::kMaxStationCargoDensity> TrainStationObject::getCargoOffsets(const uint8_t rotation, const uint8_t nibble) const

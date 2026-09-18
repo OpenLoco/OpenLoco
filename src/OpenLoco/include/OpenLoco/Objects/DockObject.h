@@ -31,10 +31,10 @@ namespace OpenLoco
         static constexpr auto kObjectType = ObjectType::dock;
 
         StringId name;
-        int16_t buildCostFactor; // 0x02
-        int16_t sellCostFactor;  // 0x04
-        uint8_t costIndex;       // 0x06
-        uint8_t var_07;
+        int16_t buildCostFactor;                  // 0x02
+        int16_t sellCostFactor;                   // 0x04
+        uint8_t costIndex;                        // 0x06
+        uint8_t pad_07;                           // 0x07 unused
         uint32_t image;                           // 0x08
         uint32_t buildingImage;                   // 0x0C
         DockObjectFlags flags;                    // 0x10
