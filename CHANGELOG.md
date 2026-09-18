@@ -1,4 +1,4 @@
-26.08+ (???)
+26.09 (2026-09-18)
 ------------------------------------------------------------------------
 - Feature: [#3942] Added a tooltip to show the drag dimensions when using area selection tools.
 - Feature: [#3978] Improved automatic detection of Locomotion installs on Linux.
