@@ -9,6 +9,7 @@
 - Change: [#3974] The vehicle list can now be filtered by vehicles that transport cargo, rather than just 'wait for' orders.
 - Change: [#3995] On POSIX/Linux/BSD, OpenLoco will now look in /usr/share/openloco for its application data.
 - Fix: [#2753] Unable to remove walls and trees at heights above 127.
+- Fix: [#2879] Crash when starting the game with an empty openloco.yaml file.
 - Fix: [#2992] Track and Road additions may incorrectly draw on some curves.
 - Fix: [#3112] Scenario challenge is not failed when exceeding its time limit.
 - Fix: [#3332] Incorrect curve and slope options appear for one frame when right-clicking on track or road.
@@ -18,6 +19,7 @@
 - Fix: [#3987] Unable to remove multi tile stations if one of the stations is for trams.
 - Fix: [#3991] Average speed of journey is counted even if the vehicle was picked up and moved.
 - Fix: [#4006] Crash when generating mouse over tooltip of a building on a corrupted save.
+- Fix: [#4027] Crash when starting the game with maformed YAML schema.
 
 26.08 (2026-08-13)
 ------------------------------------------------------------------------

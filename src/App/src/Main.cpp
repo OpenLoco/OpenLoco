@@ -16,6 +16,7 @@
 #include <OpenLoco/S5/SawyerStream.h>
 #include <OpenLoco/Version.hpp>
 #include <SDL3/SDL_main.h>
+#include <cstdlib>
 #include <fmt/chrono.h>
 #include <iostream>
 
@@ -290,7 +291,17 @@ namespace OpenLoco
 
         setCommandLineOptions(options);
 
-        Config::read();
+        try
+        {
+            Config::read();
+        }
+        catch (const std::exception& e)
+        {
+            Logging::error("Exception: {}", e.what());
+            Ui::showMessageBox("Exception", e.what());
+            return EXIT_FAILURE;
+        }
+
         if (options.locomotionDataPath.has_value())
         {
             Config::get().locoInstallPath = options.locomotionDataPath.value();
