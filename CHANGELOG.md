@@ -9,6 +9,7 @@
 - Change: [#3974] The vehicle list can now be filtered by vehicles that transport cargo, rather than just 'wait for' orders.
 - Change: [#3995] On POSIX/Linux/BSD, OpenLoco will now look in /usr/share/openloco for its application data.
 - Fix: [#2753] Unable to remove walls and trees at heights above 127.
+- Fix: [#2879] Crash when starting the game with an empty openloco.yaml file.
 - Fix: [#2992] Track and Road additions may incorrectly draw on some curves.
 - Fix: [#3112] Scenario challenge is not failed when exceeding its time limit.
 - Fix: [#3332] Incorrect curve and slope options appear for one frame when right-clicking on track or road.
