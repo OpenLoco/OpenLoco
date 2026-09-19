@@ -101,11 +101,6 @@ namespace OpenLoco
             return getSourceGame() == SourceGame::custom;
         }
 
-        constexpr bool isOpenLoco() const
-        {
-            return getSourceGame() == SourceGame::openLoco;
-        }
-
         constexpr bool isEmpty() const;
 
         // The original game would check whether an object was part of the base game by means of the sourceGame attribute.
@@ -113,6 +108,11 @@ namespace OpenLoco
         // correctly. Therefore those objects would not be packed by Locomotion. We change this behaviour by explicitly
         // checking objects against a list of vanilla objects instead. The original logic is left in the isCustom method.
         bool isVanilla() const;
+
+        constexpr bool isOpenLoco() const
+        {
+            return getSourceGame() == SourceGame::openLoco;
+        }
 
         bool operator==(const ObjectHeader& rhs) const
         {
