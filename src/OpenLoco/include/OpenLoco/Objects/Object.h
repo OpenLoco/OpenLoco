@@ -101,6 +101,11 @@ namespace OpenLoco
             return getSourceGame() == SourceGame::custom;
         }
 
+        constexpr bool isOpenLoco() const
+        {
+            return getSourceGame() == SourceGame::openLoco;
+        }
+
         constexpr bool isEmpty() const;
 
         // The original game would check whether an object was part of the base game by means of the sourceGame attribute.
