@@ -24,6 +24,7 @@ endif()
 set(public_link_libraries
     Core
     Utility
+    SDL3::SDL3
 )
 
 if (MSVC)
