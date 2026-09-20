@@ -192,7 +192,7 @@ namespace OpenLoco::Ui::Windows::TownList
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 3);
-            drawingCtx.clearSingle(shade);
+            drawingCtx.clear(shade);
 
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < self.rowCount; i++)
@@ -1229,7 +1229,7 @@ namespace OpenLoco::Ui::Windows::TownList
             const auto& rt = drawingCtx.currentRenderTarget();
 
             auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 3);
-            drawingCtx.clearSingle(shade);
+            drawingCtx.clear(shade);
 
             uint16_t xPos = 0;
             uint16_t yPos = 0;

@@ -42,6 +42,11 @@ namespace OpenLoco::Platform
         return timeGetTime();
     }
 
+    fs::path getDataDirectory()
+    {
+        return Platform::getCurrentExecutablePath().parent_path() / "data";
+    }
+
     fs::path getUserDirectory()
     {
         auto result = fs::path{};

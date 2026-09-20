@@ -13,9 +13,14 @@ namespace OpenLoco::World
     constexpr coord_t kMapHeight = kMapRows * kTileSize;
     constexpr coord_t kMapWidth = kMapColumns * kTileSize;
     constexpr int32_t kMapSize = kMapColumns * kMapRows;
+
+    constexpr int16_t kMinTileHeightSmallZ = 4;
+    constexpr int16_t kMaxTileHeightSmallZ = 160;
+
     constexpr int16_t kMicroZStep = 16;       // e.g. SurfaceElement::water is a microZ
     constexpr int16_t kMicroToSmallZStep = 4; // e.g. for comparisons between water and baseZ
     constexpr int16_t kSmallZStep = 4;        // e.g. TileElement::baseZ is a smallZ
+
     using SmallZ = uint8_t;
     using MicroZ = uint8_t;
 

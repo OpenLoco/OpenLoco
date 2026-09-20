@@ -217,7 +217,7 @@ namespace OpenLoco::Gfx
 
         auto& drawingEngine = getDrawingEngine();
         auto& drawingCtx = drawingEngine.getDrawingContext();
-        drawingCtx.clearSingle(PaletteIndex::black0);
+        drawingCtx.clear(PaletteIndex::black0);
     }
 
     // 0x004CD406
@@ -235,6 +235,11 @@ namespace OpenLoco::Gfx
             engine = std::make_unique<Gfx::SoftwareDrawingEngine>();
         }
         return *engine;
+    }
+
+    void disposeDrawingEngine()
+    {
+        engine.reset();
     }
 
     /**
@@ -270,7 +275,7 @@ namespace OpenLoco::Gfx
             if (!SceneManager::isSceneInitialised())
             {
                 auto& ctx = drawingEngine.getDrawingContext();
-                ctx.clearSingle(PaletteIndex::black0);
+                ctx.clear(PaletteIndex::black0);
             }
 
             drawingEngine.render();

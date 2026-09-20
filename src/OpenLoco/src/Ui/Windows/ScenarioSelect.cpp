@@ -384,7 +384,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 4);
-        drawingCtx.clearSingle(colour);
+        drawingCtx.clear(colour);
 
         using namespace ScenarioManager;
         auto scenarioCount = getScenarioCountByCategory(self.currentTab);

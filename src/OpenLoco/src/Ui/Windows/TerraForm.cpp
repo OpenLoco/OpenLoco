@@ -839,7 +839,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             const auto& rt = drawingCtx.currentRenderTarget();
 
             auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 3);
-            drawingCtx.clearSingle(shade);
+            drawingCtx.clear(shade);
 
             uint16_t xPos = 0;
             uint16_t yPos = 0;
@@ -2677,7 +2677,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             const auto& rt = drawingCtx.currentRenderTarget();
 
             auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 3);
-            drawingCtx.clearSingle(shade);
+            drawingCtx.clear(shade);
 
             uint16_t xPos = 0;
             uint16_t yPos = 0;

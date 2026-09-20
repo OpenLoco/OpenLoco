@@ -25,6 +25,11 @@ namespace OpenLoco::Platform
         return {};
     }
 
+    fs::path getDataDirectory()
+    {
+        return Platform::getBundlePath();
+    }
+
     fs::path getUserDirectory()
     {
         @autoreleasepool
@@ -51,7 +56,7 @@ namespace OpenLoco::Platform
         }
     }
 
-    fs::path GetBundlePath()
+    fs::path getBundlePath()
     {
         @autoreleasepool
         {

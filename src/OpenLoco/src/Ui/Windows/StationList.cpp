@@ -434,7 +434,7 @@ namespace OpenLoco::Ui::Windows::StationList
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         auto shade = Colours::getShade(window.getColour(WindowColour::secondary).c(), 4);
-        drawingCtx.clearSingle(shade);
+        drawingCtx.clear(shade);
 
         uint16_t yPos = 0;
         for (uint16_t i = 0; i < window.rowCount; i++)

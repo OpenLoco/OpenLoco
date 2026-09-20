@@ -182,7 +182,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 
         auto bgColour = self.getColour(WindowColour::secondary).c();
         auto shade = Colours::getShade(bgColour, 4);
-        drawingCtx.clearSingle(shade);
+        drawingCtx.clear(shade);
 
         auto width = self.widgets[widx::list].width();
         auto yPos = 0;

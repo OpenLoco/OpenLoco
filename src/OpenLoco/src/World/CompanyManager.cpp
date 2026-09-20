@@ -569,8 +569,8 @@ namespace OpenLoco::CompanyManager
         auto* competitorObj = ObjectManager::get<CompetitorObject>(competitorId);
         company->competitorId = competitorId;
         company->challengeFlags = CompanyFlags::none;
-        company->var_49C = 0;
-        company->var_4A0 = 0;
+        company->cargoTypesDelivered = 0;
+        company->cargoTypesDelivered2 = 0;
         company->ownerEmotion = Emotion::neutral;
         company->name = StringIds::new_company;
         company->ownerName = StringIds::new_owner;
@@ -739,15 +739,15 @@ namespace OpenLoco::CompanyManager
         {
             company->expenditures[0][i] = 0;
         }
-        company->var_4A4 = AiThinkState::unk0;
-        company->var_4A6 = AiPlaceVehicleState::begin;
-        company->var_85F6 = 0;
+        company->aiThinkState = AiThinkState::unk0;
+        company->aiPlaceVehicleState = AiPlaceVehicleState::begin;
+        company->aiThinkTimer = 0;
         for (auto& thought : company->aiThoughts)
         {
             thought.type = AiThoughtType::null;
         }
         company->headquartersX = -1;
-        company->var_25BE = AiThoughtType::null;
+        company->aiSavedThoughtType = AiThoughtType::null;
         company->unlockedVehicles.reset();
         company->availableVehicles = 0;
         company->currentLoan = getInflationAdjustedStartingLoan();

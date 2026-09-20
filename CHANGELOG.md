@@ -1,15 +1,26 @@
-26.08+ (???)
+26.09+ (???)
 ------------------------------------------------------------------------
+
+26.09 (2026-09-18)
+------------------------------------------------------------------------
+- Feature: [#3942] Added a tooltip to show the drag dimensions when using area selection tools.
 - Feature: [#3978] Improved automatic detection of Locomotion installs on Linux.
+- Feature: [#4023] Add OpenGraphics North American Expansion vehicles! And vanilla replacements for various bus', American horn sound, American region, overhead wires, train station 3! And updated OG_PCARUS2, OG_ALOCENT, OG_DASH7 OG_SD70MAC, OG_E8.
 - Change: [#3867] Repeated presses of the build tracks and build roads keyboard shortcuts now cycles track/road types.
 - Change: [#3967] English localisations now use typographically correct curved single quotes.
 - Change: [#3973] Game already running error message now says "OpenLoco" instead of "Chris Sawyer's Locomotion".
 - Change: [#3974] The vehicle list can now be filtered by vehicles that transport cargo, rather than just 'wait for' orders.
+- Change: [#3995] On POSIX/Linux/BSD, OpenLoco will now look in /usr/share/openloco for its application data.
 - Fix: [#2753] Unable to remove walls and trees at heights above 127.
+- Fix: [#2992] Track and Road additions may incorrectly draw on some curves.
+- Fix: [#3112] Scenario challenge is not failed when exceeding its time limit.
+- Fix: [#3332] Incorrect curve and slope options appear for one frame when right-clicking on track or road.
 - Fix: [#3676] Roads added using object selection window could not be used by vehicles.
 - Fix: [#3943] Unable to place or remove signals on multi tile track elements.
 - Fix: [#3955] Terraform window can break dimensions of construction window.
 - Fix: [#3987] Unable to remove multi tile stations if one of the stations is for trams.
+- Fix: [#3991] Average speed of journey is counted even if the vehicle was picked up and moved.
+- Fix: [#4006] Crash when generating mouse over tooltip of a building on a corrupted save.
 
 26.08 (2026-08-13)
 ------------------------------------------------------------------------

@@ -71,8 +71,11 @@ namespace OpenLoco::Gfx
     private:
         void renderDirtyRegions();
 
-        SDL_Renderer* _renderer{};
+        // Initialize top to bottom, destroy bottom to top
         SDL_Window* _window{};
+
+        SDL_Renderer* _renderer{};
+
         SDL_Palette* _palette{};
         SDL_Surface* _screenSurface{};
         SDL_Surface* _screenRGBASurface{};

@@ -297,8 +297,7 @@ namespace OpenLoco::Paint
 
         static void paintRoadAdditionPP(PaintSession& session, const World::RoadElement& elRoad, const uint8_t rotation, const ImageId baseImageId, const RoadPaintAdditionPiece& tppa)
         {
-            // TODO: Better way to detect kNullTrackPaintAdditionPiece
-            if (tppa.imageIds[3] != 0)
+            if (tppa.imageIds[0] != kNullRoadPaintAdditionPiece.imageIds[0])
             {
                 if (tppa.isIsMergeable)
                 {

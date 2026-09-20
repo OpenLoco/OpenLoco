@@ -203,7 +203,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         auto shade = Colours::getShade(window.getColour(WindowColour::secondary).c(), 4);
-        drawingCtx.clearSingle(shade);
+        drawingCtx.clear(shade);
 
         const auto& config = Config::get().audio;
 

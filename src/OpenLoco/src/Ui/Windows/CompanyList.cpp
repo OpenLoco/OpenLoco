@@ -411,7 +411,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 3);
-            drawingCtx.clearSingle(colour);
+            drawingCtx.clear(colour);
 
             auto yBottom = 0;
             for (auto i = 0; i < self.rowCount; i++, yBottom += 25)

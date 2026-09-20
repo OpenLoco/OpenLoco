@@ -1629,7 +1629,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             case scrollIdx::vehicle_selection:
             {
                 auto colour = Colours::getShade(window.getColour(WindowColour::secondary).c(), 4);
-                drawingCtx.clear(colour * 0x01010101);
+                drawingCtx.clear(colour);
                 if (window.rowCount == 0)
                 {
                     auto defaultMessage = StringIds::no_vehicles_available;
@@ -1718,8 +1718,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             case scrollIdx::vehicle_preview:
             {
                 auto colour = Colours::getShade(window.getColour(WindowColour::secondary).c(), 0);
-                // Gfx::clear needs the colour copied to each byte of eax
-                drawingCtx.clear(colour * 0x01010101);
+                drawingCtx.clear(colour);
 
                 if (window.rowHover == -1)
                 {

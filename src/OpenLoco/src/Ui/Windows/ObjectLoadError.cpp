@@ -184,7 +184,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         const auto shade = Colours::getShade(window.getColour(WindowColour::secondary).c(), 4);
-        drawingCtx.clearSingle(shade);
+        drawingCtx.clear(shade);
 
         // Acquire string buffer
         auto* buffer = StringManager::getBufferString(StringIds::buffer_2039);

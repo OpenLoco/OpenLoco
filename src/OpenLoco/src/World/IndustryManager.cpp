@@ -121,6 +121,7 @@ namespace OpenLoco::IndustryManager
                 continue;
             }
             if (!buildObj->hasFlags(BuildingObjectFlags::miscBuilding)
+                && buildObj->producedCargoType[0] != 0xFFU
                 && buildObj->producedQuantity[0] != 0)
             {
                 cargoCounts[buildObj->producedCargoType[0]]++;

@@ -120,8 +120,7 @@ namespace OpenLoco::Paint
 
         static void paintTrackAdditionPP(PaintSession& session, const World::TrackElement& elTrack, const uint8_t rotation, const ImageId baseImageId, const TrackPaintAdditionPiece& tppa)
         {
-            // TODO: Better way to detect kNullTrackPaintAdditionPiece
-            if (tppa.imageIds[3] != 0)
+            if (tppa.imageIds[0] != kNullTrackPaintAdditionPiece.imageIds[0])
             {
                 if (tppa.isIsMergeable)
                 {

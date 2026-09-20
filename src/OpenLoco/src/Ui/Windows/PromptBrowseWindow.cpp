@@ -672,7 +672,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         // Background
-        drawingCtx.clearSingle(Colours::getShade(window.getColour(WindowColour::secondary).c(), 4));
+        drawingCtx.clear(Colours::getShade(window.getColour(WindowColour::secondary).c(), 4));
 
         // Directories / files
         auto i = 0;

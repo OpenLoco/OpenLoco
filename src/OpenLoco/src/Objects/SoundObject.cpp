@@ -17,14 +17,15 @@ namespace OpenLoco
         // Unknown structure size 0x10
         uint32_t numUnkStructs = *reinterpret_cast<const uint32_t*>(remainingData.data());
         remainingData = remainingData.subspan(sizeof(uint32_t));
-        [[maybe_unused]] uint32_t pcmDataLength = *reinterpret_cast<const uint32_t*>(remainingData.data());
+        // Not really used as there is another length field within the fixed size pcm structure
+        [[maybe_unused]] uint32_t pcmDataAndHeaderLength = *reinterpret_cast<const uint32_t*>(remainingData.data());
         remainingData = remainingData.subspan(sizeof(uint32_t));
         remainingData = remainingData.subspan(numUnkStructs * 16);
 
         // Main pcm data structure
         dataOffset = static_cast<uint32_t>(remainingData.data() - objData.data());
-
-        assert(remainingData.size() == pcmDataLength);
+        [[maybe_unused]] auto* data = getData();
+        assert(remainingData.size() >= (data->length + sizeof(SoundObjectData)));
     }
 
     // 0x0048AFE1

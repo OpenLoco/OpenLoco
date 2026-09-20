@@ -40,7 +40,7 @@ namespace OpenLoco::GameCommands
             auto* vehicleObj = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
             if (!vehicleObj->hasFlags(VehicleObjectFlags::topAndTailPosition))
             {
-                if (vehicleObj->power == 0 || vehicleObj->hasFlags(VehicleObjectFlags::centerPosition))
+                if (vehicleObj->power == 0 || vehicleObj->hasFlags(VehicleObjectFlags::centrePosition))
                 {
                     GameCommands::setErrorText(StringIds::train_has_no_driving_cab);
                     return false;

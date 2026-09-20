@@ -1969,7 +1969,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             auto tr = Gfx::TextRenderer(drawingCtx);
 
-            drawingCtx.clearSingle(Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
+            drawingCtx.clear(Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
             auto head = Common::getVehicle(self);
             if (head == nullptr)
             {
@@ -2383,7 +2383,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             auto tr = Gfx::TextRenderer(drawingCtx);
 
-            drawingCtx.clearSingle(Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
+            drawingCtx.clear(Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
             auto* head = Common::getVehicle(self);
             if (head == nullptr)
             {
@@ -4019,7 +4019,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             auto tr = Gfx::TextRenderer(drawingCtx);
 
-            drawingCtx.clearSingle(Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
+            drawingCtx.clear(Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
             auto head = Common::getVehicle(self);
             if (head == nullptr)
