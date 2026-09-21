@@ -8,6 +8,7 @@
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"
 #include "MessageManager.h"
+#include "Objects/ObjectManager.h"
 #include "Scenario/Scenario.h"
 #include "Types.hpp"
 #include "Ui/WindowManager.h"
@@ -49,6 +50,20 @@ namespace OpenLoco::GameCommands
             }
         }
 
+        template<typename TVehicleType>
+        static void resetVehicleColour(TVehicleType* component, Company* ourCompany)
+        {
+            const auto* vehObject = ObjectManager::get<VehicleObject>(component->objectId);
+
+            auto colourScheme = ourCompany->mainColours;
+            if (ourCompany->customVehicleColoursSet & (1 << vehObject->colourType))
+            {
+                colourScheme = ourCompany->vehicleColours[vehObject->colourType - 1];
+            }
+
+            component->colourScheme = colourScheme;
+        }
+
         static uint32_t acquireAssets(CompanyId targetCompanyId)
         {
             auto ourCompanyId = GameCommands::getUpdatingCompanyId();
@@ -70,6 +85,7 @@ namespace OpenLoco::GameCommands
             }
 
             // Third phase: change ownership of all vehicles that currently belong to the target company.
+            auto* ourCompany = CompanyManager::get(ourCompanyId);
             for (auto* vehicle : VehicleManager::VehicleList())
             {
                 if (vehicle->owner != targetCompanyId)
@@ -78,8 +94,18 @@ namespace OpenLoco::GameCommands
                 }
 
                 Vehicles::Vehicle train(*vehicle);
-                train.applyToComponents([ourCompanyId](Vehicles::VehicleBase& component) {
-                    component.owner = ourCompanyId;
+
+                train.applyToComponents([ourCompany](Vehicles::VehicleBase& component) {
+                    component.owner = ourCompany->id();
+
+                    if (component.isVehicleBogie())
+                    {
+                        resetVehicleColour<Vehicles::VehicleBogie>(component.asVehicleBogie(), ourCompany);
+                    }
+                    else if (component.isVehicleBody())
+                    {
+                        resetVehicleColour<Vehicles::VehicleBody>(component.asVehicleBody(), ourCompany);
+                    }
                 });
             }
 
@@ -89,6 +115,7 @@ namespace OpenLoco::GameCommands
             targetCompany->aiThinkSubState = 0;
             targetCompany->aiPathfindTargetPos = World::Pos2{ 0, 0 };
 
+            Gfx::invalidateScreen();
             return 0;
         }
 
