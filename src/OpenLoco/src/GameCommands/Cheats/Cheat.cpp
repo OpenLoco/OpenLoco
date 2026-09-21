@@ -83,6 +83,12 @@ namespace OpenLoco::GameCommands
                 });
             }
 
+            // Fourth phase: shut down the AI company
+            auto* targetCompany = CompanyManager::get(targetCompanyId);
+            targetCompany->aiThinkState = AiThinkState::endCompany;
+            targetCompany->aiThinkSubState = 0;
+            targetCompany->aiPathfindTargetPos = World::Pos2{ 0, 0 };
+
             return 0;
         }
 
