@@ -30,37 +30,28 @@ namespace OpenLoco::GameCommands
 {
     namespace Cheats
     {
+        template<typename TElementType>
+        static void acquireTiles(CompanyId targetCompanyId, CompanyId ourCompanyId)
+        {
+            for (auto& element : TileManager::getStore<TElementType>())
+            {
+                if (element.owner() != targetCompanyId)
+                {
+                    continue;
+                }
+
+                element.setOwner(ourCompanyId);
+            }
+        }
+
         static uint32_t acquireAssets(CompanyId targetCompanyId)
         {
             auto ourCompanyId = GameCommands::getUpdatingCompanyId();
 
-            // First phase: change ownership of all tile elements that currently belong to the target company.
-            for (auto& roadElement : TileManager::getStore<RoadElement>())
-            {
-                // Check to verify that roadElement is owned by the target company
-                if (roadElement.owner() == targetCompanyId)
-                {
-                    roadElement.setOwner(ourCompanyId);
-                }
-            }
-
-            for (auto& trackElement : TileManager::getStore<TrackElement>())
-            {
-                // Check to verify that the trackElement is owned by the target company.
-                if (trackElement.owner() == targetCompanyId)
-                {
-                    trackElement.setOwner(ourCompanyId);
-                }
-            }
-
-            // Because changing the owner of the station does not mean you own the road station element
-            for (auto& stationElement : TileManager::getStore<StationElement>())
-            {
-                if (stationElement.owner() == targetCompanyId)
-                {
-                    stationElement.setOwner(ourCompanyId);
-                }
-            }
+            // First phase: change ownership of all tile elements that currently belong to the target company
+            acquireTiles<RoadElement>(targetCompanyId, ourCompanyId);
+            acquireTiles<TrackElement>(targetCompanyId, ourCompanyId);
+            acquireTiles<StationElement>(targetCompanyId, ourCompanyId);
 
             // Second phase: change ownership of all stations that currently belong to the target company.
             for (auto& station : StationManager::stations())
