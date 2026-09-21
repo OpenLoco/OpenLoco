@@ -82,6 +82,13 @@ namespace OpenLoco::GameCommands
                 }
 
                 station.owner = ourCompanyId;
+
+                auto* window = Ui::WindowManager::find(Ui::WindowType::station, enumValue(station.id()));
+                if (window != nullptr)
+                {
+                    window->owner = ourCompanyId;
+                    window->invalidate();
+                }
             }
 
             // Third phase: change ownership of all vehicles that currently belong to the target company.
@@ -107,6 +114,13 @@ namespace OpenLoco::GameCommands
                         resetVehicleColour<Vehicles::VehicleBody>(component.asVehicleBody(), ourCompany);
                     }
                 });
+
+                auto* window = Ui::WindowManager::find(Ui::WindowType::vehicle, enumValue(vehicle->id));
+                if (window != nullptr)
+                {
+                    window->owner = ourCompanyId;
+                    window->invalidate();
+                }
             }
 
             // Fourth phase: shut down the AI company
