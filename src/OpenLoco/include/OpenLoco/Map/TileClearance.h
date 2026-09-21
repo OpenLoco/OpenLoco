@@ -3,9 +3,9 @@
 #include "Economy/Currency.h"
 #include "QuarterTile.h"
 #include "Tile.h"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <functional>
 #include <sfl/small_set.hpp>
-#include <OpenLoco/Core/EnumFlags.hpp>
 
 namespace OpenLoco::World
 {
