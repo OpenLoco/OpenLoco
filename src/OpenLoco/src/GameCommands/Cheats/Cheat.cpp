@@ -40,6 +40,11 @@ namespace OpenLoco::GameCommands
                     continue;
                 }
 
+                if (element.isAiAllocated())
+                {
+                    continue;
+                }
+
                 element.setOwner(ourCompanyId);
             }
         }
