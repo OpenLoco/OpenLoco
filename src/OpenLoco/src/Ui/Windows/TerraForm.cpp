@@ -40,6 +40,7 @@
 #include "Ui/ViewportInteraction.h"
 #include "Ui/Widget.h"
 #include "Ui/Widgets/CaptionWidget.h"
+#include "Ui/Widgets/CheckboxWidget.h"
 #include "Ui/Widgets/ColourButtonWidget.h"
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/ImageButtonAltWidget.h"
@@ -978,6 +979,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             tool_area = 9,
             decrease_area,
             increase_area,
+            remove_scenery,
+            remove_buildings,
+            remove_tracks_and_roads,
         };
 
         namespace Widx
@@ -985,17 +989,29 @@ namespace OpenLoco::Ui::Windows::Terraform
             constexpr WidgetId kToolArea{ "tool_area" };
             constexpr WidgetId kDecreaseArea{ "decrease_area" };
             constexpr WidgetId kIncreaseArea{ "increase_area" };
+            constexpr WidgetId kRemoveScenery{ "remove_scenery" };
+            constexpr WidgetId kRemoveBuildings{ "remove_buildings" };
+            constexpr WidgetId kRemoveTracksAndRoads{ "remove_tracks_and_roads" };
         }
 
         const uint64_t holdableWidgets = (1 << decrease_area) | (1 << increase_area);
 
+        constexpr auto kFrameWidth = 161;
+        constexpr auto kFrameHeight = 147;
+
         static constexpr auto widgets = makeWidgets(
-            Common::makeCommonWidgets(130, 105, StringIds::clear_area),
+            Common::makeCommonWidgets(kFrameWidth, kFrameHeight, StringIds::clear_area),
             Widgets::Wt3Widget(Widx::kToolArea, { 33 + 16, 45 }, { 64, 44 }, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_clear_area),
             Widgets::ImageButtonAlt(Widx::kDecreaseArea, { 34 + 16, 46 }, { 16, 16 }, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_clear_area),
-            Widgets::ImageButtonAlt(Widx::kIncreaseArea, { 80 + 16, 72 }, { 16, 16 }, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_clear_area)
+            Widgets::ImageButtonAlt(Widx::kIncreaseArea, { 80 + 16, 72 }, { 16, 16 }, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_clear_area),
+            Widgets::Checkbox(Widx::kRemoveScenery, { 10, 105 }, { kFrameWidth - 10, 12 }, WindowColour::secondary, StringIds::clear_scenery),
+            Widgets::Checkbox(Widx::kRemoveBuildings, { 10, 119 }, { kFrameWidth - 10, 12 }, WindowColour::secondary, StringIds::clear_buildings),
+            Widgets::Checkbox(Widx::kRemoveTracksAndRoads, { 10, 133 }, { kFrameWidth - 10, 12 }, WindowColour::secondary, StringIds::clear_tracks_and_roads)
 
         );
+
+        // TODO find a home for these bits instead of it being static here
+        static World::TileClearance::ClearFilters filters;
 
         // 0x004BC671
         static void onClose([[maybe_unused]] Window& self)
@@ -1010,6 +1026,25 @@ namespace OpenLoco::Ui::Windows::Terraform
             Input::setFlag(Input::Flags::flag6);
             _raiseLandCost = GameCommands::kFailure;
             _adjustToolSize = _clearAreaToolSize;
+            filters = (World::TileClearance::ClearFilters::scenery | World::TileClearance::ClearFilters::buildings);
+        }
+
+        static void onMouseUp(Window& self, WidgetIndex_t wi, [[maybe_unused]] const WidgetId id)
+        {
+            Common::onMouseUp(self, wi, id);
+
+            switch (id)
+            {
+                case Widx::kRemoveScenery:
+                    filters ^= World::TileClearance::ClearFilters::scenery;
+                    break;
+                case Widx::kRemoveBuildings:
+                    filters ^= World::TileClearance::ClearFilters::buildings;
+                    break;
+                case Widx::kRemoveTracksAndRoads:
+                    filters ^= World::TileClearance::ClearFilters::trackAndRoad;
+                    break;
+            }
         }
 
         // 0x004BC65C
@@ -1064,6 +1099,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 args.centre = centre;
                 args.pointA = pointA;
                 args.pointB = pointB;
+                args.filters = filters;
                 cost = GameCommands::doCommand(args, GameCommands::Flags::allowNegativeCashFlow | GameCommands::Flags::ghost);
             }
 
@@ -1086,6 +1122,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 args.centre = centre;
                 args.pointA = pointA;
                 args.pointB = pointB;
+                args.filters = filters;
                 GameCommands::doCommand(args, flags);
             }
         }
@@ -1141,6 +1178,31 @@ namespace OpenLoco::Ui::Windows::Terraform
                 self.widgets[widx::tool_area].image = Widget::kContentNull;
             }
 
+            if ((filters & World::TileClearance::ClearFilters::scenery) != World::TileClearance::ClearFilters::none)
+            {
+                self.activatedWidgets |= (1ULL << widx::remove_scenery);
+            }
+            else
+            {
+                self.activatedWidgets &= ~(1ULL << widx::remove_scenery);
+            }
+            if ((filters & World::TileClearance::ClearFilters::buildings) != World::TileClearance::ClearFilters::none)
+            {
+                self.activatedWidgets |= (1ULL << widx::remove_buildings);
+            }
+            else
+            {
+                self.activatedWidgets &= ~(1ULL << widx::remove_buildings);
+            }
+            if ((filters & World::TileClearance::ClearFilters::trackAndRoad) != World::TileClearance::ClearFilters::none)
+            {
+                self.activatedWidgets |= (1ULL << widx::remove_tracks_and_roads);
+            }
+            else
+            {
+                self.activatedWidgets &= ~(1ULL << widx::remove_tracks_and_roads);
+            }
+
             Widget::leftAlignTabs(self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
         }
 
@@ -1190,7 +1252,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static constexpr WindowEventList kEvents = {
             .onClose = onClose,
-            .onMouseUp = Common::onMouseUp,
+            .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onUpdate = Common::onUpdate,
             .onToolUpdate = onToolUpdate,
@@ -2754,7 +2816,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { ClearArea::widgets,   widx::tab_clear_area,   ClearArea::getEvents(),   ClearArea::holdableWidgets,   { 161, 105 } },
+            { ClearArea::widgets,   widx::tab_clear_area,   ClearArea::getEvents(),   ClearArea::holdableWidgets,   { ClearArea::kFrameWidth, ClearArea::kFrameHeight } },
             { AdjustLand::widgets,  widx::tab_adjust_land,  AdjustLand::getEvents(),  AdjustLand::holdableWidgets,  { 161, 140 } },
             { AdjustWater::widgets, widx::tab_adjust_water, AdjustWater::getEvents(), AdjustWater::holdableWidgets, { 161, 115 } },
             { PlantTrees::widgets,  widx::tab_plant_trees,  PlantTrees::getEvents(),  PlantTrees::holdableWidgets,  PlantTrees::kWindowSize },
