@@ -2178,6 +2178,9 @@ namespace OpenLoco::StringIds
     constexpr StringId has_cargo_order = 2466;
     constexpr StringId transports_cargo = 2467;
     constexpr StringId map_tooltip_int_x_int = 2468;
+    constexpr StringId clear_scenery = 2469;
+    constexpr StringId clear_buildings = 2470;
+    constexpr StringId clear_tracks_and_roads = 2471;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

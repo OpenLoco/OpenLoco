@@ -3,6 +3,7 @@
 #include "Economy/Currency.h"
 #include "QuarterTile.h"
 #include "Tile.h"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <functional>
 #include <sfl/small_set.hpp>
 
@@ -33,6 +34,15 @@ namespace OpenLoco::World::TileClearance
         collisionRemoved,
     };
 
+    enum class ClearFilters : uint8_t
+    {
+        none = 0,
+        scenery = (1 << 0),
+        buildings = (1 << 1),
+        trackAndRoad = (1 << 2),
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(ClearFilters);
+
     void setCollisionErrorMessage(const World::TileElementEntry& el);
 
     bool applyClearAtAllHeights(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearFuncResult(TileElementEntry& entry)> clearFunc);
@@ -42,11 +52,13 @@ namespace OpenLoco::World::TileClearance
     using RemovedBuildings = sfl::small_set<World::Pos3, 128, LessThanPos3>;
 
     // Removes Buildings and Trees but everything else is a collision
-    ClearFuncResult clearWithDefaultCollision(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const GameCommands::Flags flags, currency32_t& cost);
+    ClearFuncResult clearWithDefaultCollision(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const GameCommands::Flags flags, currency32_t& cost, ClearFilters filters = (ClearFilters::scenery | ClearFilters::buildings));
     // Removes Buildings and Trees but everything else is **NOT** a collision
-    ClearFuncResult clearWithoutDefaultCollision(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const GameCommands::Flags flags, currency32_t& cost);
+    ClearFuncResult clearWithoutDefaultCollision(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const GameCommands::Flags flags, currency32_t& cost, ClearFilters filters);
     // Removes a building as per normal clear function setup
     ClearFuncResult clearBuildingCollision(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const GameCommands::Flags flags, currency32_t& cost);
+    ClearFuncResult clearTrackCollision(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const GameCommands::Flags flags, currency32_t& cost);
+    ClearFuncResult clearRoadCollision(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const GameCommands::Flags flags, currency32_t& cost);
     // Removes a tree as per normal clear function setup
     ClearFuncResult clearTreeCollision(World::TileElementEntry& entry, const World::Pos2 pos, const GameCommands::Flags flags, currency32_t& cost);
 
