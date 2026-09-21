@@ -33,7 +33,6 @@
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Engine/Ui/Point.hpp>
-#include <SDL3/SDL_dialog.h>
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_init.h>
 #include <SDL3/SDL_keyboard.h>

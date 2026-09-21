@@ -41,7 +41,7 @@ namespace OpenLoco::Platform
         }
     }
 
-    fs::path GetCurrentExecutablePath()
+    fs::path getCurrentExecutablePath()
     {
         char exePath[PATH_MAX];
         uint32_t size = PATH_MAX;
