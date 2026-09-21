@@ -2,6 +2,8 @@
 #include "Economy/Economy.h"
 #include "GameCommands/Buildings/RemoveBuilding.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Road/RemoveRoad.h"
+#include "GameCommands/Track/RemoveTrack.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/BuildingElement.h"
@@ -335,7 +337,7 @@ namespace OpenLoco::World::TileClearance
     {
         if (flags == BuildingCollisionType::anyHeight)
         {
-            if (el.type() == ElementType::tree || el.type() == ElementType::building || el.type() == ElementType::industry)
+            if (el.type() == ElementType::tree || el.type() == ElementType::building || el.type() == ElementType::industry || el.type() == ElementType::track || el.type() == ElementType::road)
             {
                 return callClearFunction(el, clearFunc);
             }
@@ -442,33 +444,50 @@ namespace OpenLoco::World::TileClearance
     }
 
     // 0x00469E07, 0x00468949, 0x004C4DAD, 0x0042D5E5, 0x0049434F
-    static ClearFuncResult tileClearFunction(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const GameCommands::Flags flags, currency32_t& cost, bool defaultCollision)
+    static ClearFuncResult tileClearFunction(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const GameCommands::Flags flags, currency32_t& cost, bool defaultCollision, ClearFilters filters)
     {
         switch (entry.type())
         {
             case ElementType::surface:
                 return ClearFuncResult::noCollision;
             case ElementType::tree:
-            {
-                return clearTreeCollision(entry, pos, flags, cost);
-            }
+                if ((filters & ClearFilters::scenery) != ClearFilters::none)
+                {
+                    return clearTreeCollision(entry, pos, flags, cost);
+                }
+                break;
             case ElementType::building:
-            {
-                return clearBuildingCollision(entry, pos, removedBuildings, flags, cost);
-            }
+                if ((filters & ClearFilters::buildings) != ClearFilters::none)
+                {
+                    return clearBuildingCollision(entry, pos, removedBuildings, flags, cost);
+                }
+                break;
+            case ElementType::track:
+                if ((filters & ClearFilters::trackAndRoad) != ClearFilters::none)
+                {
+                    return clearTrackCollision(entry, pos, removedBuildings, flags, cost);
+                }
+                break;
+            case ElementType::road:
+                if ((filters & ClearFilters::trackAndRoad) != ClearFilters::none)
+                {
+                    return clearRoadCollision(entry, pos, removedBuildings, flags, cost);
+                }
+                break;
             default:
-                return defaultCollision ? ClearFuncResult::collision : ClearFuncResult::noCollision;
+                break;
         }
+        return defaultCollision ? ClearFuncResult::collision : ClearFuncResult::noCollision;
     };
 
-    ClearFuncResult clearWithDefaultCollision(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const GameCommands::Flags flags, currency32_t& cost)
+    ClearFuncResult clearWithDefaultCollision(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const GameCommands::Flags flags, currency32_t& cost, ClearFilters filters)
     {
-        return tileClearFunction(entry, pos, removedBuildings, flags, cost, true);
+        return tileClearFunction(entry, pos, removedBuildings, flags, cost, true, filters);
     }
 
-    ClearFuncResult clearWithoutDefaultCollision(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const GameCommands::Flags flags, currency32_t& cost)
+    ClearFuncResult clearWithoutDefaultCollision(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const GameCommands::Flags flags, currency32_t& cost, ClearFilters filters)
     {
-        return tileClearFunction(entry, pos, removedBuildings, flags, cost, false);
+        return tileClearFunction(entry, pos, removedBuildings, flags, cost, false, filters);
     }
 
     ClearFuncResult clearBuildingCollision(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const GameCommands::Flags flags, currency32_t& cost)
@@ -515,6 +534,138 @@ namespace OpenLoco::World::TileClearance
             Scenario::getOptions().madeAnyChanges = 1;
         }
         cost += buildingCost;
+
+        if (!GameCommands::hasFlags(flags, GameCommands::Flags::apply)
+            || GameCommands::hasFlags(flags, GameCommands::Flags::ghost | GameCommands::Flags::aiAllocated))
+        {
+            return ClearFuncResult::noCollision;
+        }
+        if (World::TileManager::wasRemoveOnLastElement())
+        {
+            return ClearFuncResult::allCollisionsRemoved;
+        }
+        return ClearFuncResult::collisionRemoved;
+    }
+
+    ClearFuncResult clearTrackCollision(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const GameCommands::Flags flags, currency32_t& cost)
+    {
+
+        auto& elTrack = entry.get<World::TrackElement>();
+        const auto trackStart = World::Pos3{
+            pos, elTrack.baseHeight()
+        };
+
+        if (elTrack.isGhost() || elTrack.isAiAllocated())
+        {
+            return ClearFuncResult::noCollision;
+        }
+
+        // Reusing set of removed buildings, to not try and remove the same multi-tile track element multiple times.
+        // Bad plan because multiple track/road elements can be in the same position. But it works okay.
+        if (removedBuildings.count(trackStart) != 0)
+        {
+            return ClearFuncResult::noCollision;
+        }
+        removedBuildings.insert(trackStart);
+
+        World::TileManager::setRemoveElementPointerChecker(entry);
+
+        GameCommands::Flags removeTrackFlags = flags;
+        if (GameCommands::hasFlags(flags, GameCommands::Flags::apply) || removedBuildings.size() != 1)
+        {
+            removeTrackFlags |= GameCommands::Flags::flag_7;
+        }
+        if (GameCommands::hasFlags(flags, GameCommands::Flags::ghost | GameCommands::Flags::aiAllocated))
+        {
+            removeTrackFlags &= ~(GameCommands::Flags::ghost | GameCommands::Flags::aiAllocated | GameCommands::Flags::apply);
+        }
+
+        GameCommands::TrackRemovalArgs args{};
+        args.pos = trackStart;
+        args.trackObjectId = elTrack.trackObjectId();
+        args.trackId = elTrack.trackId();
+        args.rotation = elTrack.rotation();
+        args.index = elTrack.sequenceIndex();
+        GameCommands::registers regs = static_cast<GameCommands::registers>(args);
+        // As with clearBuildingCollision,
+        // We should probably call doCommand here but then it gets messy with the costs
+        // look into changing this in the future.
+        GameCommands::removeTrack(regs, removeTrackFlags);
+        const auto trackCost = static_cast<currency32_t>(regs.ebx);
+        if (static_cast<uint32_t>(trackCost) == GameCommands::kFailure)
+        {
+            return ClearFuncResult::collisionErrorSet;
+        }
+        if (GameCommands::hasFlags(flags, GameCommands::Flags::apply))
+        {
+            Scenario::getOptions().madeAnyChanges = 1;
+        }
+        cost += trackCost;
+
+        if (!GameCommands::hasFlags(flags, GameCommands::Flags::apply)
+            || GameCommands::hasFlags(flags, GameCommands::Flags::ghost | GameCommands::Flags::aiAllocated))
+        {
+            return ClearFuncResult::noCollision;
+        }
+        if (World::TileManager::wasRemoveOnLastElement())
+        {
+            return ClearFuncResult::allCollisionsRemoved;
+        }
+        return ClearFuncResult::collisionRemoved;
+    }
+
+    ClearFuncResult clearRoadCollision(World::TileElementEntry& entry, const World::Pos2 pos, RemovedBuildings& removedBuildings, const GameCommands::Flags flags, currency32_t& cost)
+    {
+
+        auto& elRoad = entry.get<World::RoadElement>();
+        const auto roadStart = World::Pos3{
+            pos, elRoad.baseHeight()
+        };
+
+        if (elRoad.isGhost() || elRoad.isAiAllocated())
+        {
+            return ClearFuncResult::noCollision;
+        }
+
+        if (removedBuildings.count(roadStart) != 0)
+        {
+            return ClearFuncResult::noCollision;
+        }
+        removedBuildings.insert(roadStart);
+
+        World::TileManager::setRemoveElementPointerChecker(entry);
+
+        GameCommands::Flags removeRoadFlags = flags;
+        if (GameCommands::hasFlags(flags, GameCommands::Flags::apply) || removedBuildings.size() != 1)
+        {
+            removeRoadFlags |= GameCommands::Flags::flag_7;
+        }
+        if (GameCommands::hasFlags(flags, GameCommands::Flags::ghost | GameCommands::Flags::aiAllocated))
+        {
+            removeRoadFlags &= ~(GameCommands::Flags::ghost | GameCommands::Flags::aiAllocated | GameCommands::Flags::apply);
+        }
+
+        GameCommands::RoadRemovalArgs args{};
+        args.pos = roadStart;
+        args.rotation = elRoad.rotation();
+        args.roadId = elRoad.roadId();
+        args.objectId = elRoad.roadObjectId();
+        args.sequenceIndex = elRoad.sequenceIndex();
+        GameCommands::registers regs = static_cast<GameCommands::registers>(args);
+        // As with clearBuildingCollision,
+        // We should probably call doCommand here but then it gets messy with the costs
+        // look into changing this in the future.
+        GameCommands::removeRoad(regs, removeRoadFlags);
+        const auto RoadCost = static_cast<currency32_t>(regs.ebx);
+        if (static_cast<uint32_t>(RoadCost) == GameCommands::kFailure)
+        {
+            return ClearFuncResult::collisionErrorSet;
+        }
+        if (GameCommands::hasFlags(flags, GameCommands::Flags::apply))
+        {
+            Scenario::getOptions().madeAnyChanges = 1;
+        }
+        cost += RoadCost;
 
         if (!GameCommands::hasFlags(flags, GameCommands::Flags::apply)
             || GameCommands::hasFlags(flags, GameCommands::Flags::ghost | GameCommands::Flags::aiAllocated))
