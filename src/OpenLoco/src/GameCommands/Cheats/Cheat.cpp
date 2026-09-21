@@ -4,6 +4,7 @@
 #include "GameCommands/GameCommands.h"
 #include "Logging.h"
 #include "Map/RoadElement.h"
+#include "Map/StationElement.h"
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"
 #include "MessageManager.h"
@@ -49,6 +50,15 @@ namespace OpenLoco::GameCommands
                 if (trackElement.owner() == targetCompanyId)
                 {
                     trackElement.setOwner(ourCompanyId);
+                }
+            }
+
+            // Because changing the owner of the station does not mean you own the road station element
+            for (auto& stationElement : TileManager::getStore<StationElement>())
+            {
+                if (stationElement.owner() == targetCompanyId)
+                {
+                    stationElement.setOwner(ourCompanyId);
                 }
             }
 
