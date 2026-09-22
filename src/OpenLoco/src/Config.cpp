@@ -3,10 +3,14 @@
 #include "Environment.h"
 #include <Message.h>
 #include <OpenLoco/Core/FileSystem.hpp>
+#include <OpenLoco/Logging.h>
 #include <filesystem>
 #include <fstream>
 #include <locale>
+#include <yaml-cpp/exceptions.h>
 #include <yaml-cpp/yaml.h>
+
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Config
 {
@@ -43,6 +47,13 @@ namespace OpenLoco::Config
         audioConfig.customJukebox[enumValue(PlaylistItem::locomotionTitle)] = false;
     }
 
+    static Config& fallbackToDefaultConfig()
+    {
+        readShortcutConfig(YAML::Node());
+        resetPlaylistConfig();
+        return _config;
+    }
+
     Config& read()
     {
         auto configPath = Environment::getPathNoWarning(Environment::PathId::openlocoYML);
@@ -50,18 +61,30 @@ namespace OpenLoco::Config
         // No config file? Use defaults.
         if (!fs::exists(configPath) || fs::file_size(configPath) == 0)
         {
-            readShortcutConfig(YAML::Node());
-            resetPlaylistConfig();
-            return _config;
+            return fallbackToDefaultConfig();
         }
 
         // On Windows, YAML::LoadFile only supports ANSI paths, so we pass an ifstream instead.
         std::ifstream stream;
         stream.exceptions(std::ifstream::failbit);
         stream.open(configPath, std::ios::in | std::ios::binary);
-        _configYaml = YAML::Load(stream);
+
+        try
+        {
+            _configYaml = YAML::Load(stream);
+        }
+        catch (const YAML::Exception&)
+        {
+            Logging::warn("Malformed YAML syntax in config file, falling back to default config");
+            return fallbackToDefaultConfig();
+        }
 
         const auto& config = _configYaml;
+        if (!config.IsMap())
+        {
+            Logging::warn("Configuration root in config file must be a YAML mapping, falling back to default config");
+            return fallbackToDefaultConfig();
+        }
 
         // Display settings
         auto& displayNode = config["display"];
