@@ -126,7 +126,7 @@ jobs:
       - name: Run Tests
         shell: cmd
         run: |
-          ctest --test-dir build\${{ matrix.build_dir }}\ --output-on-failure
+          ctest --test-dir build\${{ matrix.build_dir }}\ --output-on-failure --parallel
   windows32:
     name: Windows Win32
     runs-on: windows-2022
@@ -193,7 +193,7 @@ jobs:
       - name: Run Tests
         shell: cmd
         run: |
-          ctest --test-dir build\windows-x86-32-ci\ --output-on-failure
+          ctest --test-dir build\windows-x86-32-ci\ --output-on-failure --parallel
 
   ubuntu32:
     name: Ubuntu ${{ matrix.distro }} ${{ matrix.compiler }} i686
@@ -219,7 +219,7 @@ jobs:
           cmake --build --preset linux-x86-32-ci
       - name: Run Tests
         run: |
-          ctest --test-dir build/linux-x86-32-ci/ --output-on-failure
+          ctest --test-dir build/linux-x86-32-ci/ --output-on-failure --parallel
   ubuntu:
     name: Ubuntu ${{ matrix.distro }} ${{ matrix.compiler }} x64
     runs-on: ubuntu-latest
@@ -244,7 +244,7 @@ jobs:
           cmake --build --preset posix-release
       - name: Run Tests
         run: |
-          ctest --test-dir build/posix/ --output-on-failure
+          ctest --test-dir build/posix/ --output-on-failure --parallel
 
   header-checks:
     name: Header checks ${{ matrix.distro }} ${{ matrix.compiler }}
@@ -436,7 +436,7 @@ jobs:
             fi
           done
       - name: Run Tests
-        run: ctest --test-dir build/linux-zig-static/ --output-on-failure
+        run: ctest --test-dir build/linux-zig-static/ --output-on-failure --parallel
       - name: Stage test binaries
         run: |
           mkdir -p test-bin
