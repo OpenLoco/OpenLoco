@@ -3,6 +3,7 @@
 #include "Environment.h"
 #include <Message.h>
 #include <OpenLoco/Core/FileSystem.hpp>
+#include <filesystem>
 #include <fstream>
 #include <locale>
 #include <yaml-cpp/yaml.h>
@@ -47,7 +48,7 @@ namespace OpenLoco::Config
         auto configPath = Environment::getPathNoWarning(Environment::PathId::openlocoYML);
 
         // No config file? Use defaults.
-        if (!fs::exists(configPath))
+        if (!fs::exists(configPath) || fs::file_size(configPath) == 0)
         {
             readShortcutConfig(YAML::Node());
             resetPlaylistConfig();
