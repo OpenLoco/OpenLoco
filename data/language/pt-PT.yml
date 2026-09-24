@@ -1965,8 +1965,8 @@ strings:
   1918: "{SMALLFONT}{COLOUR BLACK}Os sinais dividem a via em três diferentes 'Secções de bloco' e apenas um comboio por vez poderá entrar em cada secção..."
 
   # Options/Misc
-  1919: Usar nome do proprietário preferido no início de cada partida
-  1920: "{SMALLFONT}{COLOUR BLACK}Selecione esta opção para utilizar o mesmo nome do proprietário toda vez que você começar uma nova partida"
+  1919: Usar nome do proprietário preferido ao iniciar um jogo novo
+  1920: "{SMALLFONT}{COLOUR BLACK}Selecione esta opção para utilizar o mesmo nome do proprietário ao iniciar um jogo novo"
   1921: "{COLOUR WINDOW_2}Nome do proprietário preferido: {COLOUR BLACK}{STRINGID}"
   1922: Nome do Proprietário Preferido
   1923: "Escreva o nome do proprietário preferido:"
@@ -1975,7 +1975,7 @@ strings:
   1925: "{COLOUR BLACK}{TINYFONT}Freio"
   1926: "{SMALLFONT}{COLOUR BLACK}Subir na lista a ordem selecionada"
   1927: "{SMALLFONT}{COLOUR BLACK}Descer na lista a ordem selecionada"
-  1928: "Impossível rodar o jogo diretamente de um disco apenas de leitura "
+  1928: "Impossível lançar o jogo diretamente de um disco apenas de leitura "
 
   1929: Créditos de Atari Inc...
   1930: "{COLOUR WINDOW_2}Licenciado para Atari Inc."
@@ -2379,9 +2379,9 @@ strings:
   2324: "Comportamento dos veículos/vias"
   2325: "{SMALLFONT}{COLOUR BLACK}Opções de companhia"
   2326: "Opções - Companhia"
-  2327: "Face preferida da companhia"
-  2328: "Utilizar a face preferida da companhia quando começa um jogo novo"
-  2329: "{SMALLFONT}{COLOUR BLACK}Quando seleccionada, a face preferida da companhia é utilizada quando começa um cenário novo."
+  2327: "Face preferida do proprietário"
+  2328: "Usar a face preferida do proprietário ao iniciar um jogo novo"
+  2329: "{SMALLFONT}{COLOUR BLACK}Quando seleccionada, a face preferida do proprietário é utilizada ao iniciar um cenário novo."
   2330: "{COLOUR WINDOW_2}Face preferida do proprietário : {COLOUR BLACK}{STRINGID}"
   2331: "Selecionar a face preferida do proprietário"
   2332: "{COLOUR WINDOW_2}Desabilitar limite de tamanho das estações"
