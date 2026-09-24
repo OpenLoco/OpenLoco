@@ -231,6 +231,33 @@
                     "value": "ONLY"
                 }
             }
+        },
+        {
+            "name": "emscripten-base",
+            "hidden": true,
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "generator": "Ninja"
+        },
+        {
+            "name": "emscripten",
+            "displayName": "Emscripten (WebAssembly)",
+            "description": "Ninja configure environment for Emscripten/WebAssembly",
+            "inherits": "emscripten-base",
+            "toolchainFile": "${sourceDir}/cmake/emscripten_toolchain.cmake",
+            "cacheVariables": {
+                "OPENLOCO_USE_VCPKG": {
+                    "type": "BOOL",
+                    "value": false
+                },
+                "OPENLOCO_BUILD_TESTS": {
+                    "type": "BOOL",
+                    "value": false
+                },
+                "CMAKE_BUILD_TYPE": {
+                    "type": "STRING",
+                    "value": "Release"
+                }
+            }
         }
     ],
     "buildPresets": [
@@ -322,6 +349,14 @@
             "configurePreset": "mingw32",
             "displayName": "Release",
             "description": "Build Release Configuration",
+            "configuration": "Release",
+            "nativeToolOptions": [ "-k0" ]
+        },
+        {
+            "name": "emscripten",
+            "configurePreset": "emscripten",
+            "displayName": "Release (WebAssembly)",
+            "description": "Build Release Configuration for WebAssembly",
             "configuration": "Release",
             "nativeToolOptions": [ "-k0" ]
         }
