@@ -434,7 +434,7 @@ strings:
   417: Falido!{NEWLINE}{STRINGID} declarou falência e fechou as portas!
   418: "{STRINGID} Bateu!"
   419: Escândalo Corporativo!{NEWLINE}{STRINGID} preso por tentativa de roubo!
-  420: Novo recorde {STRINGID} de velocidade!{NEWLINE}{STRINGID} alcaça velocidade média de {VELOCITY} entre paradas!
+  420: Novo recorde {STRINGID} de velocidade!{NEWLINE}{STRINGID} alcança velocidade média de {VELOCITY} entre paradas!
 
   421: "{MOVE_X 10}{STRINGID}"
   422: »{MOVE_X 10}{STRINGID}

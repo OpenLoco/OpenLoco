@@ -61,8 +61,8 @@ strings:
   51: Nov
   52: Dez
 
-  53: Impossível acessar o arquivo de gráficos
-  54: Arquivo de dados ausente ou inacessível
+  53: Impossível aceder ao ficheiro de gráficos
+  54: Ficheiro de dados ausente ou inacessível
   55: Impossível alocar memória suficiente
   56: "{COLOUR BLACK}❌"
   57: Nome escolhido já está em uso
@@ -381,11 +381,11 @@ strings:
   364: Salvar Paisagem
   365: Salvar Jogo
   366: Salvar Cenário
-  367: Arquivo de Jogo Salvo do OpenLoco
-  368: Arquivo de Cenário do OpenLoco
-  369: Arquivo de Paisagem do OpenLoco
+  367: Ficheiro de Jogo Salvo do OpenLoco
+  368: Ficheiro de Cenário do OpenLoco
+  369: Ficheiro de Paisagem do OpenLoco
   370: Falha ao salvar jogo!
-  371: Falha ao carregar jogo salvo...{NEWLINE}Arquivo contém dados inválidos!
+  371: Falha ao carregar jogo salvo...{NEWLINE}Ficheiro contém dados inválidos!
   372: "Esconder cenário e construções em primeiro plano "
   373: Somente possível construir isto na água!
   374: Somente possível construir isto próximo a indústria sobre a água!
@@ -419,22 +419,22 @@ strings:
   402: "{STRINGID} não aceita mais {STRINGID}"
   403: Nova Companhia de Transportes!{NEWLINE}{STRINGID} começa construção perto de {STRINGID}!
   404: "{STRINGID} não consegue pousar em {STRINGID} devido a inadequação do aeroporto"
-  405: Cidadãos Celebram!{NEWLINE}Primeiro {STRINGID} chega em {STRINGID}!
-  406: Cidadãos Celebram!{NEWLINE}Primeira entrega de {STRINGID} chega em {STRINGID}!
-  407: Trabalhadores Celebram!{NEWLINE}Primeira entrega de {STRINGID} em {STRINGID}!
+  405: Cidadãos Celebram!{NEWLINE}Primeiro {STRINGID} chega a {STRINGID}!
+  406: Cidadãos Celebram!{NEWLINE}Primeira entrega de {STRINGID} chega a {STRINGID}!
+  407: Trabalhadores Celebram!{NEWLINE}Primeira entrega de {STRINGID} a {STRINGID}!
   408: Novo Veículo Inventado -{NEWLINE}“{STRINGID}”!
   409: "{STRINGID} é promovido de “{STRINGID}” para “{STRINGID}”!"
   410: Nova {STRINGID} em construção perto de {STRINGID}!
   411: Parabéns!{NEWLINE}Você completou o desafio com êxito!
   412: Fracasso!{NEWLINE}Você falhou o desafio!
   413: Vencido!{NEWLINE}{STRINGID} completou o desafio!
-  414: Alerta de Falência!{NEWLINE}{STRINGID} será fechado em 6 meses a menos que sua performance melhore!
-  415: Alerta Final!{NEWLINE}{STRINGID} será fechado em 3 meses a menos que sua performance melhore!
+  414: Alerta de Falência!{NEWLINE}{STRINGID} será fechado em 6 meses a menos que a sua performance melhore!
+  415: Alerta Final!{NEWLINE}{STRINGID} será fechado em 3 meses a menos que a sua performance melhore!
   416: Falido!{NEWLINE}{STRINGID} declarou falência e fechou as portas!
   417: Falido!{NEWLINE}{STRINGID} declarou falência e fechou as portas!
   418: "{STRINGID} Bateu!"
   419: Escândalo Corporativo!{NEWLINE}{STRINGID} preso por tentativa de roubo!
-  420: Novo recorde {STRINGID} de velocidade!{NEWLINE}{STRINGID} alcaça velocidade média de {VELOCITY} entre paradas!
+  420: Novo recorde {STRINGID} de velocidade!{NEWLINE}{STRINGID} alcança velocidade média de {VELOCITY} entre paragens!
 
   421: "{MOVE_X 10}{STRINGID}"
   422: »{MOVE_X 10}{STRINGID}
@@ -484,10 +484,10 @@ strings:
   463: "{COLOUR RED}Preso!{POP16}{POP16}"
   464: "{COLOUR RED}Avariou{POP16}{POP16}"
   465: Parado{POP16}{POP16}
-  466: Carregando em {STRINGID}
-  467: Descarregando em {STRINGID}
+  466: A carregar em {STRINGID}
+  467: A descarregar em {STRINGID}
   468: Aproximando-se de {STRINGID}
-  469: Aterrisando em {STRINGID}
+  469: A aterrar em {STRINGID}
   470: Taxiando em {STRINGID}
   471: Decolando de {STRINGID}
   472: Indo para {STRINGID}
@@ -1025,8 +1025,8 @@ strings:
   999: Alterar Atalhos de Teclado
   1000: "{COLOUR WINDOW_2}Pressione uma nova tecla de atalho para:"
   1001: "{SMALLFONT}{COLOUR BLACK}Clique na descrição do atalho para selecionar uma nova tecla"
-  1002: Mover câmera quando o cursor estiver na borda do ecrã
-  1003: "{SMALLFONT}{COLOUR BLACK}Move a câmera quando o cursor do mouse estiver na borda do ecrã"
+  1002: Mover câmara quando o cursor estiver na borda do ecrã
+  1003: "{SMALLFONT}{COLOUR BLACK}Move a câmara quando o cursor do mouse estiver na borda do ecrã"
   1004: "{SMALLFONT}{COLOUR BLACK}Visualiza ou muda atribuições de teclas de controle"
   1005: Mapa
   1006: Mapa - Veículos
@@ -1108,9 +1108,9 @@ strings:
   1081: "{COLOUR BLACK}Allister Brimble"
 
   1082: Falha ao carregar jogo salvo...
-  1083: Arquivo contém dados inválidos
-  1084: Arquivo não é um save de um jogador
-  1085: Arquivo não é um save de dois jogadores
+  1083: Ficheiro contém dados inválidos
+  1084: Ficheiro não é um save de um jogador
+  1085: Ficheiro não é um save de dois jogadores
   1086: Por Favor, Aguarde...
   1087: Inicializando...
   1088: Carregando...
@@ -1613,7 +1613,7 @@ strings:
   1577: Opções de Cenário
   1578: Salvar Cenário
   1579: "Voltar à etapa anterior:"
-  1580: "Seguir à próxima etapa:"
+  1580: "Continuar para a próxima etapa:"
   1581: Carregar Paisagem
   1582: Salvar Paisagem
   1583: Gerando paisagem...
@@ -1986,7 +1986,7 @@ strings:
   1934: o outro jogador
   1935: "O outro jogador saiu do jogo: Modo de dois jogadores foi desconectado"
 
-  1936: "{COLOUR YELLOW}Uso deste produto está sujeito aos termos de um acordo de licenciação{NEWLINE}encontrado no arquivo “ReadMe” do produto e no manual"
+  1936: "{COLOUR YELLOW}Uso deste produto está sujeito aos termos de um acordo de licenciação{NEWLINE}encontrado no ficheiro “ReadMe” do produto e no manual"
   1937: "{COLOUR YELLOW}Aviso da ESRB: Experiência de jogo pode variar durante partidas online"
   1938: "{COLOUR TOPAZ}Alguns meios de transporte neste jogo contam com nomes que podem ser semelhantes a nomes de veículos reais."
   1939: "{COLOUR TOPAZ}Isso é um recurso para ajudar os jogadores relacionarem-se ao universo fictício do jogo."
@@ -2056,7 +2056,7 @@ strings:
   2001: Confirmar troca do modo de visualização
   2002: "{COLOUR WINDOW_2}Resolução do ecrã mudou para {UINT16 RAW} x {UINT16 RAW}"
   2003: "{COLOUR WINDOW_2}_"
-  2004: "{COLOUR WINDOW_2}Nome do arquivo:"
+  2004: "{COLOUR WINDOW_2}Nome do ficheiro:"
   2005: "{COLOUR WINDOW_2}Diretório:  {COLOUR BLACK}{STRINGID}"
   2006: "{SMALLFONT}{COLOUR BLACK}Subir um nível para a pasta principal"
   2007: "{COLOUR WINDOW_2}Companhia: {COLOUR BLACK}{STRINGID}"
@@ -2064,11 +2064,11 @@ strings:
   2009: "{COLOUR WINDOW_2}Progresso do Desafio: {COLOUR BLACK}{INT16}%"
   2010: "{COLOUR WINDOW_2}Desafio: {COLOUR BLACK}Completed"
   2011: "{COLOUR WINDOW_2}Desafio: {COLOUR BLACK}Failed"
-  2012: "Substituir arquivo existente: “{STRINGID}”?"
+  2012: "Substituir ficheiro existente: “{STRINGID}”?"
   2013: Substituir
-  2014: "Excluir arquivo: “{STRINGID}”?"
+  2014: "Excluir ficheiro: “{STRINGID}”?"
   2015: Excluir
-  2016: "Erro: nome de arquivo inválido"
+  2016: "Erro: nome de ficheiro inválido"
   2017: Nome da Indústria
   2018: "Escreva um novo nome para {STRINGID}:"
   2019: Impossível renomear indústria...
