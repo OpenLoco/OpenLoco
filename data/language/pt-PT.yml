@@ -115,12 +115,12 @@ strings:
   101: Não é possível subir o terreno aqui...
   102: Objeto no caminho
   103: Carregar Jogo
-  104: Salvar Jogo
+  104: Guardar Jogo
   105: Sair do Editor de Cenário
   106: Sair do Jogo
   107: Captura de ecrã
   108: Captura de ecrã
-  109: Captura de ecrã salva no disco como '{STRING}'
+  109: Captura de ecrã guardada no disco como '{STRING}'
   110: Captura de ecrã falhou!
   111: Dados da área de paisagem cheios!
   112: Impossível construir parcialmente acima e abaixo do solo
@@ -162,7 +162,7 @@ strings:
   148: Tipo errado de estação para {STRINGID}
   149: Estação não compatível com {STRINGID}
   150: Passagem em nível no caminho
-  151: Passagem em nível somente possível com uma estrada reta e uma via no mesmo nível
+  151: Passagem em nível apenas possível com uma estrada reta e uma via no mesmo nível
   152: Junção impossível
   153: Junção deve ser completamente plana
   154: "{STRINGID} no caminho / altura errada para junção"
@@ -192,11 +192,11 @@ strings:
   178: Sair do Jogo
   179: Sair do Editor de Cenário
   180: Carregar Paisagem
-  181: Salvar antes de carregar?
-  182: Salvar antes de sair?
-  183: Salvar antes de sair?
-  184: Salvar
-  185: Não Salvar
+  181: Guardar antes de carregar?
+  182: Guardar antes de sair?
+  183: Guardar antes de sair?
+  184: Guardar
+  185: Não Guardar
   186: Cancelar
   187: OK
 
@@ -374,21 +374,21 @@ strings:
   357: Impossível construir parcialmente acima ou abaixo d'água!
   358: Muito próximo da superfície da água!
   359: Impossível construir isto debaixo d'água!
-  360: Somente possível construir isto acima do chão!
-  361: Somente possível construir isto em terra nivelada!
+  360: Apenas possível construir isto acima do chão!
+  361: Apenas possível construir isto em terra nivelada!
   362: Carregar Jogo
   363: Carregar Paisagem
-  364: Salvar Paisagem
-  365: Salvar Jogo
-  366: Salvar Cenário
-  367: Ficheiro de Jogo Salvo do OpenLoco
+  364: Guardar Paisagem
+  365: Guardar Jogo
+  366: Guardar Cenário
+  367: Ficheiro de Jogo Guardado do OpenLoco
   368: Ficheiro de Cenário do OpenLoco
   369: Ficheiro de Paisagem do OpenLoco
-  370: Falha ao salvar jogo!
-  371: Falha ao carregar jogo salvo...{NEWLINE}Ficheiro contém dados inválidos!
+  370: Falha ao guardar jogo!
+  371: Falha ao carregar jogo guardado...{NEWLINE}Ficheiro contém dados inválidos!
   372: "Esconder cenário e construções em primeiro plano "
-  373: Somente possível construir isto na água!
-  374: Somente possível construir isto próximo a indústria sobre a água!
+  373: Apenas possível construir isto na água!
+  374: Apenas possível construir isto próximo a indústria sobre a água!
   375: Nome {STRINGID}
   376: "Escreva o novo nome para este {STRINGID}:"
   377: Impossível renomear este veículo...
@@ -411,7 +411,7 @@ strings:
   394: "{STRINGID}"
   395: "{SMALLFONT}{COLOUR BLACK}Ressaltar área de captação desta estação"
   396: Silenciar
-  397: Tocar Música
+  397: Reproduzir Música
   398: "{COLOUR RED}Falido!"
   399: "{STRINGID} não pode esperar por carga total em {STRINGID}"
   400: "{STRINGID} está patinando no lugar num declive"
@@ -632,7 +632,7 @@ strings:
   611: Sem dinheiro suficiente!
   612: Impossível pagar empréstimo!
   613: "{SMALLFONT}{COLOUR BLACK}Começar Jogo Novo"
-  614: "{SMALLFONT}{COLOUR BLACK}Carregar Jogo Salvo"
+  614: "{SMALLFONT}{COLOUR BLACK}Carregar Jogo Guardado"
   615: "{SMALLFONT}{COLOUR BLACK}Mostrar Tutorial"
   616: "{SMALLFONT}{COLOUR BLACK}Sair do jogo"
   617: Lugar
@@ -721,7 +721,7 @@ strings:
   698: "{SMALLFONT}{COLOUR BLACK}Valor da Companhia: {CURRENCY48}{NEWLINE}Lucro de veículos: {CURRENCY48}/mês"
   699: "{NEWLINE}Progresso do desafio: {INT16}%{STRINGID}"
   700: "{NEWLINE}Tempo restante: {COLOUR BLACK}{INT16} anos {INT16} meses"
-  701: Customizar Teclas...
+  701: Configurar Teclas...
   702: Atalhos de Teclado
   703: Redefinir Teclas
   704: "{SMALLFONT}{COLOUR BLACK}Redefinir todos os atalhos de teclado para as configurações por omissão"
@@ -1107,7 +1107,7 @@ strings:
   1080: "{COLOUR WINDOW_2}Sandy Track Blues"
   1081: "{COLOUR BLACK}Allister Brimble"
 
-  1082: Falha ao carregar jogo salvo...
+  1082: Falha ao carregar jogo guardado...
   1083: Ficheiro contém dados inválidos
   1084: Ficheiro não é um save de um jogador
   1085: Ficheiro não é um save de dois jogadores
@@ -1331,13 +1331,13 @@ strings:
   1301: "{SMALLFONT}{COLOUR BLACK}Ordenar lista pelo n° de estações"
   1302: "{COLOUR BLACK}Município"
   1303: "{COLOUR BLACK}Município ▼"
-  1304: "{STRINGID} população {INT32}"
+  1304: "População da {STRINGID} {INT32}"
   1305: "{SMALLFONT}{COLOUR BLACK}Ordenar lista pelo tipo de município"
   1306: "{COLOUR BLACK}Tipo"
   1307: "{COLOUR BLACK}Tipo ▼"
   1308: Nome do Município
   1309: "Escreva um novo nome para {STRINGID}:"
-  1310: "{COLOUR BLACK}{STRINGID} população {INT32}"
+  1310: "{COLOUR BLACK}População da {STRINGID} {INT32}"
   1311: Impossível renomear município...
   1312: Nova Estação
   1313: "{COLOUR BLACK}({STRINGID})"
@@ -1568,13 +1568,13 @@ strings:
   1533: Impossível remodelar este veículo para carregar um tipo diferente de carga
   1534: Requer água na frente da doca
 
-  1535: "{COLOUR WINDOW_2}Atualmente tocando:"
+  1535: "{COLOUR WINDOW_2}A reproduzir:"
   1536: "{SMALLFONT}{COLOUR BLACK}Parar música"
-  1537: "{SMALLFONT}{COLOUR BLACK}Tocar música"
-  1538: "{SMALLFONT}{COLOUR BLACK}Tocar pŕoxima música"
-  1539: Tocar somente músicas da era atual
-  1540: Tocar todas as músicas
-  1541: Tocar seleção customizada de músicas
+  1537: "{SMALLFONT}{COLOUR BLACK}Reproduzir música"
+  1538: "{SMALLFONT}{COLOUR BLACK}Reproduzir próxima música"
+  1539: Reproduzir apenas músicas da era atual
+  1540: Reproduzir todas as músicas
+  1541: Reproduzir seleção personalizada de músicas
   1542: Editar seleção...
   1543: "{SMALLFONT}{COLOUR BLACK}Edite a lista de seleção de músicas"
   1544: Editar seleção de músicas
@@ -1611,11 +1611,11 @@ strings:
   1575: Seleção de Região / Objetos
   1576: Editor de Paisagens
   1577: Opções de Cenário
-  1578: Salvar Cenário
+  1578: Guardar Cenário
   1579: "Voltar à etapa anterior:"
   1580: "Continuar para a próxima etapa:"
   1581: Carregar Paisagem
-  1582: Salvar Paisagem
+  1582: Guardar Paisagem
   1583: Gerando paisagem...
   1584: Impossível limpar toda a área...
   1585: Geração de Paisagens - Opções
@@ -1662,7 +1662,7 @@ strings:
 
   1625: "{UINT16 RAW}"
   1626: "{COLOUR WINDOW_2}Ano inicial:"
-  1627: Somente gerar paisagem aleatória no início da partida
+  1627: Apenas gerar paisagem aleatória no início da partida
   1628: "{SMALLFONT}{COLOUR BLACK}Gera uma paisagem aleatória cada vez que começar um novo jogo"
   1629: Gerar nova paisagem
   1630: "{SMALLFONT}{COLOUR BLACK}Gera uma nova paisagem aleatória (a paisagem atual será perdida)"
@@ -1708,7 +1708,7 @@ strings:
   1670: "{COLOUR WINDOW_2}N° de indústrias:"
   1671: Pelo menos um município deve ser construído
   1672: Impossível avançar para o próximo estágio do editor...
-  1673: Impossível salvar o cenário ainda...
+  1673: Impossível guardar o cenário ainda...
   1674: "{SMALLFONT}{COLOUR BLACK}Opções do cenário"
   1675: "{SMALLFONT}{COLOUR BLACK}Desafio do cenário"
   1676: "{SMALLFONT}{COLOUR BLACK}Opções da companhia"
@@ -1745,8 +1745,8 @@ strings:
   1707: Escreva a descrição do cenário:-
   1708: Sem detalhes ainda
   1709: Sem nome
-  1710: Falha ao salvar a paisagem!
-  1711: Falha ao salvar o cenário!
+  1710: Falha ao guardar a paisagem!
+  1711: Falha ao guardar o cenário!
   1712: A transferir dados para o outro jogador...
   1713: A receber dados do outro jogador...
   1714: Por favor espere - O outro jogador está a guardar a partida...
@@ -1975,7 +1975,7 @@ strings:
   1925: "{COLOUR BLACK}{TINYFONT}Freio"
   1926: "{SMALLFONT}{COLOUR BLACK}Subir na lista a ordem selecionada"
   1927: "{SMALLFONT}{COLOUR BLACK}Descer na lista a ordem selecionada"
-  1928: "Impossível rodar o jogo diretamente de um disco somente de leitura "
+  1928: "Impossível rodar o jogo diretamente de um disco apenas de leitura "
 
   1929: Créditos de Atari Inc...
   1930: "{COLOUR WINDOW_2}Licenciado para Atari Inc."
@@ -2141,8 +2141,8 @@ strings:
   2086: Descrições dos Cenários
   2087: lista de objetos
   2088: "Faltam dados de objeto, ID: "
-  2089: Exportar objetos de plug-in com os jogos salvos
-  2090: "{SMALLFONT}{COLOUR BLACK}Selecione se deseja salvar os dados de objetos de plug-in adicionais (dados adicionais não proporcionados com o produto principal) nos arquivos de jogos salvos ou cenários, possibilitando que alguém sem os dados de objeto os carregue"
+  2089: Exportar objetos de plug-in com os jogos guardados
+  2090: "{SMALLFONT}{COLOUR BLACK}Selecione se deseja guardar os dados de objetos de plug-in adicionais (dados adicionais não proporcionados com o produto principal) nos arquivos de jogos guardados ou cenários, possibilitando que alguém sem os dados de objeto os carregue"
   2091: Pelo menos uma estrada de mão dupla deve ser selecionada
   2092: Um tipo de suporte deve ser selecionado
   2093: Avançado
@@ -2190,7 +2190,7 @@ strings:
   2135: "{COLOUR BLACK}{INT32_2DP}"
   2136: "{COLOUR WINDOW_2}Zoom para posição do cursor"
   2137: "{SMALLFONT}{COLOUR BLACK}Quando ativado, o zoom centralizará no cursor ao invés do centro do ecrã"
-  2138: "{COLOUR WINDOW_2}Tocar música do menu"
+  2138: "{COLOUR WINDOW_2}Reproduzir música do menu"
   2139: "Sair para o menu"
   2140: "Sair do OpenLoco"
   2141: "{COLOUR WINDOW_2}Desabilitar companhias de IA"
@@ -2332,7 +2332,7 @@ strings:
   2277: "{COLOUR BLACK}Object ID"
   2278: "{COLOUR BLACK}Type"
   2279: "{COLOUR BLACK}Checksum"
-  2280: "Play sound effects for new messages"
+  2280: "Emitir sons para novas mensagens"
   2281: "{SMALLFONT}{COLOUR BLACK}When enabled, new messages will be accompanied by a sound effect of an appropriately cheering crowd."
   2282: "{SMALLFONT}{COLOUR BLACK}Reverse the route order table"
   2283: "Name and type"
@@ -2353,8 +2353,8 @@ strings:
   2298: "Componentes"
   2299: "Ano de concepção"
   2300: "Nome"
-  2301: "Unpowered"
-  2302: "Powered"
+  2301: "Sem motor"
+  2302: "Com motor"
   2303: "Unlocked"
   2304: "Locked"
   2305: "Carga"
@@ -2362,7 +2362,7 @@ strings:
   2307: "{MOVE_X 10}{STRINGID} {SPRITE}"
   2308: "»{MOVE_X 10}{STRINGID} {SPRITE}"
   2309: "{COLOUR BLACK}{STRINGID} {SPRITE}"
-  2310: "Cargo-less"
+  2310: "Sem capacidade de carga"
   2311: "Desabilitar penalização na carga do veículo"
   2312: "{SMALLFONT}{COLOUR BLACK}Quando ligado, desabilita a penalização na velocidade de carga do veículo quando este é mais comprido que a estação."
   2313: "Edifícios transparentes"
@@ -2376,16 +2376,16 @@ strings:
   2321: "Liga / desliga carris transparentes"
   2322: "Liga / desliga árvores transparentes"
   2323: "{SMALLFONT}{COLOUR BLACK}Enable to smoothen the outer edges of land raised. Useful for creating mountains."
-  2324: "Vehicle/track behaviour"
+  2324: "Comportamento dos veículos/vias"
   2325: "{SMALLFONT}{COLOUR BLACK}Opções de companhia"
   2326: "Opções - Companhia"
   2327: "Face preferida da companhia"
   2328: "Utilizar a face preferida da companhia quando começa um jogo novo"
   2329: "{SMALLFONT}{COLOUR BLACK}Quando seleccionada, a face preferida da companhia é utilizada quando começa um cenário novo."
-  2330: "{COLOUR WINDOW_2}Preferred owner face: {COLOUR BLACK}{STRINGID}"
-  2331: "Select preferred company owner face"
-  2332: "{COLOUR WINDOW_2}Disable station size limitations"
-  2333: "{SMALLFONT}{COLOUR BLACK}When enabled, the maximum length for railroad stations is no longer constrained to 16 tiles. Note that stations can still not occupy more than 80 tiles overall."
+  2330: "{COLOUR WINDOW_2}Face preferida do proprietário : {COLOUR BLACK}{STRINGID}"
+  2331: "Selecionar a face preferida do proprietário"
+  2332: "{COLOUR WINDOW_2}Desabilitar limite de tamanho das estações"
+  2333: "{SMALLFONT}{COLOUR BLACK}Quando activo, as estações de caminhos de ferro deixam de estar limitadas ao tamanho máximo de 16 quadrículas. No entanto, as estações não podem ocupar mais de 80 quadrículas."
   2334: Landscape Generation - Water
   2335: "{SMALLFONT}{COLOUR BLACK}Opções da geração de água"
   2336: Geral
@@ -2506,7 +2506,7 @@ strings:
   2451: "{STRINGID}{STRINGID}{STRINGID}{STRINGID}{STRINGID}"
   2452: "{COLOUR BLACK}“{STRINGID}”"
   2453: "Música"
-  2454: "{COLOUR WINDOW_2}Tocar música durante o jogo"
+  2454: "{COLOUR WINDOW_2}Reproduzir música durante o jogo"
   2455: "Abrir jukebox..."
   2456: "{COLOUR WINDOW_2}Carga a aguardar processamento:"
   2457: "{COLOUR WINDOW_2}Carga a aguardar transporte:"
