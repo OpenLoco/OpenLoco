@@ -486,11 +486,11 @@ strings:
   465: Parado{POP16}{POP16}
   466: A carregar em {STRINGID}
   467: A descarregar em {STRINGID}
-  468: Aproximando-se de {STRINGID}
+  468: A aproximar de {STRINGID}
   469: A aterrar em {STRINGID}
   470: Taxiando em {STRINGID}
   471: Decolando de {STRINGID}
-  472: Indo para {STRINGID}
+  472: A ir para {STRINGID}
   473: Sem posição{POP16}{POP16}
   474: Viajando{POP16}{POP16}
   475: "{STRINGID} - {STRINGID}"
@@ -1747,10 +1747,10 @@ strings:
   1709: Sem nome
   1710: Falha ao salvar a paisagem!
   1711: Falha ao salvar o cenário!
-  1712: Transferindo dados para o outro jogador...
-  1713: Recebendo dados do outro jogador...
-  1714: Por favor espere - O outro jogador está salvando a partida...
-  1715: Por favor espere - O outro jogador está carregando a partida...
+  1712: A transferir dados para o outro jogador...
+  1713: A receber dados do outro jogador...
+  1714: Por favor espere - O outro jogador está a guardar a partida...
+  1715: Por favor espere - O outro jogador está a carregar a partida...
   1716: Enviar Mensagem
   1717: Enviar Mensagem
   1718: "Escreva a mensagem a ser enviada para {STRINGID}:"
@@ -1846,10 +1846,10 @@ strings:
   1808: Rotas Aéreas
   1809: Rotas Marítimas
   1810: ""
-  1811: Construindo {STRINGID} perto de {STRINGID}
-  1812: Construindo {STRINGID} perto de {STRINGID}
-  1813: Construindo {STRINGID} perto de {STRINGID}
-  1814: Verficando serviços perto de {STRINGID}
+  1811: A construir {STRINGID} perto de {STRINGID}
+  1812: A construir {STRINGID} perto de {STRINGID}
+  1813: A construir {STRINGID} perto de {STRINGID}
+  1814: A verificar serviços perto de {STRINGID}
   1815: Fazendo levantamento perto de {STRINGID}
   1816: "{COLOUR RED}Falido!"
   1817: "{SMALLFONT}{COLOUR BLACK}Pausar jogo"
@@ -1863,9 +1863,9 @@ strings:
   1825: "{COLOUR BLACK}{MOVE_X 10}(não começam antes de {INT16} mês)"
   1826: "{COLOUR BLACK}{MOVE_X 10}(não começam antes de {INT16} meses)"
   1827: "{COLOUR WINDOW_2}Valor de venda do veículo: {COLOUR BLACK}{CURRENCY32}"
-  1828: "{COLOUR WINDOW_2}Última renda: {COLOUR BLACK}N/A"
-  1829: "{COLOUR WINDOW_2}Última renda em: {COLOUR BLACK}{DATE DMY}"
-  1830: "{COLOUR BLACK}{STRINGID} transportou {INT16} blocos em {INT16} dias = {CURRENCY32}"
+  1828: "{COLOUR WINDOW_2}Última receita: {COLOUR BLACK}N/A"
+  1829: "{COLOUR WINDOW_2}Última receita em: {COLOUR BLACK}{DATE DMY}"
+  1830: "{COLOUR BLACK}{STRINGID} transportados por {INT16} blocos em {INT16} dias = {CURRENCY32}"
   1831: "{COLOUR WINDOW_2} Primeiro ano de construção: {COLOUR BLACK}{UINT16 RAW}"
   1832: "{COLOUR WINDOW_2} Último ano de construção: {COLOUR BLACK}{UINT16 RAW}"
   1833: "{COLOUR WINDOW_2}Classificação das companhias segundo a autoridade local:"
@@ -2293,7 +2293,7 @@ strings:
   2238: "Velocidade de jogo: Normal"
   2239: "Velocidade de jogo: Rápido"
   2240: "Velocidade de jogo: Extra rápido"
-  2241: "{COLOUR WINDOW_2}Capacity: {COLOUR BLACK}{STRINGID}"
+  2241: "{COLOUR WINDOW_2}Capacidade: {COLOUR BLACK}{STRINGID}"
   2242: "{NEWLINE}{COLOUR WINDOW_2} Obsoleto: {COLOUR BLACK}{UINT16 RAW}"
   2243: "Vehicle is locked!"
   2244: "Display locked vehicles"
@@ -2310,11 +2310,11 @@ strings:
   2255: "Iniciar Servidor"
   2256: "Parar Servidor"
   2257: "Fechar ligação"
-  2258: "{COLOUR WINDOW_2}Length: {COLOUR BLACK}{INT32_2DP} tile(s), {INT32} cars"
-  2259: "{COLOUR WINDOW_2}Length: {COLOUR BLACK}{INT32_2DP} tile(s)"
-  2260: "{COLOUR WINDOW_2} Length: {COLOUR BLACK}{INT32_2DP} tile(s)"
-  2261: "{NEWLINE}{COLOUR WINDOW_2} Length: {COLOUR BLACK}{INT32_2DP} tile(s)"
-  2262: "{NEWLINE}Length:  {INT32_2DP} tile(s)"
+  2258: "{COLOUR WINDOW_2}Comprimento: {COLOUR BLACK}{INT32_2DP} tile(s), {INT32} cars"
+  2259: "{COLOUR WINDOW_2}Comprimento: {COLOUR BLACK}{INT32_2DP} tile(s)"
+  2260: "{COLOUR WINDOW_2} Comprimento: {COLOUR BLACK}{INT32_2DP} tile(s)"
+  2261: "{NEWLINE}{COLOUR WINDOW_2} Comprimento: {COLOUR BLACK}{INT32_2DP} tile(s)"
+  2262: "{NEWLINE}Comprimento:  {INT32_2DP} tile(s)"
   2263: "{COLOUR BLACK}{UINT16}/{UINT16}"
   2264: "Captura gigante de ecrã"
   2265: "{COLOUR WINDOW_2} Nome do ficheiro: {COLOUR BLACK}{STRINGID}"
