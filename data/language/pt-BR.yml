@@ -80,7 +80,7 @@ strings:
   67: Sobre 'Chris Sawyer's Locomotion'
   68: Chris Sawyer's Locomotion
   69: "{COLOUR WINDOW_2}Versão 4.02.176 (Português BR)"
-  70: "{COLOUR WINDOW_2}Copyright Ⓒ 2004 Chris Sawyer, todos os direitos reservados"
+  70: "{COLOUR WINDOW_2}Copyright © 2004 Chris Sawyer, todos os direitos reservados"
   71: "{COLOUR WINDOW_2}Projetado e Programado por Chris Sawyer"
   72: "{COLOUR WINDOW_2}Gráficos por Simon Foster"
   73: "{COLOUR WINDOW_2}Som e músicas por Allister Brimble"
@@ -1373,7 +1373,7 @@ strings:
   1343: "{STRINGID} Rodovias"
   1344: "{STRINGID} Linhas Férreas"
   1345: "{STRINGID} Ônibus"
-  1346: "{STRINGID} Air"
+  1346: "{STRINGID} Ar"
   1347: "{STRINGID} Ferroviária"
   1348: "{STRINGID} Carts"
   1349: "{STRINGID} Trens"
@@ -1388,7 +1388,7 @@ strings:
   1358: "{COLOUR BLACK}{SMALLFONT}{UINT16 RAW}"
   1359: "{STRINGID}"
   1360: "{STRINGID} - População"
-  1361: "{STRINGID} Autoridade Local"
+  1361: "{STRINGID} - Autoridade Local"
   1362: "{STRINGID} - Produção Mensal"
   1363: "{STRINGID} - Estatísticas"
   1364: "{STRINGID} {STRINGID}"
@@ -1441,7 +1441,7 @@ strings:
   1411: Município deve ser construído nas proximidades antes
   1412: "{SMALLFONT}{COLOUR BLACK}Plante um grupo do tipo de árvore selecionado"
   1413: "{SMALLFONT}{COLOUR BLACK}Plante um grupo aleatório de árvores"
-  1414: "{SMALLFONT}{COLOUR BLACK}Estatíticas"
+  1414: "{SMALLFONT}{COLOUR BLACK}Estatísticas"
   1415: "{COLOUR WINDOW_2}Recebidos no mês passado:"
   1416: "{COLOUR WINDOW_2}Produzidos no mês passado:"
   1417: "{COLOUR BLACK}{STRINGID} ({INT16}% transportado)"
@@ -1491,7 +1491,7 @@ strings:
   1461: Impossível renomear proprietário...
   1462: Sede
   1463: "{STRINGID} Sede"
-  1464: "{STRINGID} autoridade local não permite a remoção de estradas atualmente em uso"
+  1464: "A autoridade local de {STRINGID} não permite a remoção de estradas atualmente em uso"
   1465: "{SMALLFONT}{COLOUR BLACK}Selecionar companhia"
   1466: Jogo de Dois Jogadores
   1467: Jogo de Dois Jogadores - Opções

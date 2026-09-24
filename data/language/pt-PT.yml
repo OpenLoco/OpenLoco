@@ -80,7 +80,7 @@ strings:
   67: Sobre 'Chris Sawyer's Locomotion'
   68: Chris Sawyer's Locomotion
   69: "{COLOUR WINDOW_2}Versão 4.02.176 (Português PT)"
-  70: "{COLOUR WINDOW_2}Copyright Ⓒ 2004 Chris Sawyer, todos os direitos reservados"
+  70: "{COLOUR WINDOW_2}Copyright © 2004 Chris Sawyer, todos os direitos reservados"
   71: "{COLOUR WINDOW_2}Projectado e Programado por Chris Sawyer"
   72: "{COLOUR WINDOW_2}Gráficos por Simon Foster"
   73: "{COLOUR WINDOW_2}Som e músicas por Allister Brimble"
@@ -372,10 +372,10 @@ strings:
   355: "{SMALLFONT}{COLOUR BLACK}Mova a visão principal para mostrar isto"
   356: Fora da borda do mapa!
   357: Impossível construir parcialmente acima ou abaixo d'água!
-  358: Muito próximo da superfície da água
-  359: Impossível construir isto embaixo d'água!
+  358: Muito próximo da superfície da água!
+  359: Impossível construir isto debaixo d'água!
   360: Somente possível construir isto acima do chão!
-  361: Somente possível construir isto em terra!
+  361: Somente possível construir isto em terra nivelada!
   362: Carregar Jogo
   363: Carregar Paisagem
   364: Salvar Paisagem
@@ -394,7 +394,7 @@ strings:
   377: Impossível renomear este veículo...
   378: Ponte necessária
   379: Muito longe do solo para este tipo de ponte
-  380: Ponte já está em sua altura máxima acima do solo
+  380: Ponte já está na sua altura máxima acima do solo
   381: "{STRINGID} requer uma ponte"
   382: Tipo de ponte impróprio para esta configuração
   383: Nome da Estação
@@ -527,13 +527,13 @@ strings:
   506: "{INT16} via"
   507: "{INT16} vias"
   508: Via {INT16}
-  509: plataforma de ancoragem
-  510: plataformas de ancoragem
-  511: Plataforma de ancoragem
-  512: Plataformas de ancoragem
-  513: "{INT16} plataforma de ancoragem"
-  514: "{INT16} plataformas de ancoragem"
-  515: Plataforma de ancoragem {INT16}
+  509: cais
+  510: cais
+  511: Cais
+  512: Cais
+  513: "{INT16} cais"
+  514: "{INT16} cais"
+  515: Cais {INT16}
   516: estação
   517: estações
   518: Estação
@@ -605,22 +605,22 @@ strings:
   584: "{DATE MY}"
   585: OpenLoco
   586: Por favor insira o seu CD de Locomotion na seguinte unidade de disco:-
-  587: "{COLOUR WINDOW_2}Despesa/Renda"
-  588: Renda de Comboios
-  589: Custos operação de Comboios
-  590: Renda de Autocarros
-  591: Custos operação de Autocarros
-  592: Renda de Camiões
-  593: Custos operação de Camiões
-  594: Renda de Elétricos
-  595: Custos operação de Elétricos
-  596: Renda de Aeronaves
-  597: Custos operação de Aeronaves
-  598: Renda de Navios
-  599: Custos operação de Navios
+  587: "{COLOUR WINDOW_2}Despesa/Receita"
+  588: Receita de Comboios
+  589: Despesa de Comboios
+  590: Receita de Autocarros
+  591: Despesa de Autocarros
+  592: Receita de Camiões
+  593: Despesa de Camiões
+  594: Receita de Elétricos
+  595: Despesa de Elétricos
+  596: Receita de Aeronaves
+  597: Despesa de Aeronaves
+  598: Receita de Navios
+  599: Despesa de Navios
   600: Construção
-  601: Compras de Veículos
-  602: Vendas de Veículos
+  601: Compra de Veículos
+  602: Venda de Veículos
   603: Juros do Empréstimo
   604: Diversos
   605: "{UINT16 RAW}"
@@ -635,9 +635,9 @@ strings:
   614: "{SMALLFONT}{COLOUR BLACK}Carregar Jogo Salvo"
   615: "{SMALLFONT}{COLOUR BLACK}Mostrar Tutorial"
   616: "{SMALLFONT}{COLOUR BLACK}Sair do jogo"
-  617: Aldeia
-  618: Vila
-  619: Vilarejo
+  617: Lugar
+  618: Aldeia
+  619: Vila
   620: Cidade
   621: Metrópole
   622: Via/estrada imprópria
@@ -684,9 +684,9 @@ strings:
   661: Valores Reais
   662: "{COLOUR WINDOW_2}Resolução de Ecrã:"
   663: Suavizar Terreno
-  664: "{SMALLFONT}{COLOUR BLACK}Liga/Desliga suavização do ladrilho de terreno"
-  665: Grelhas no Terreno
-  666: "{SMALLFONT}{COLOUR BLACK}Liga/Desliga grelhas no terreno"
+  664: "{SMALLFONT}{COLOUR BLACK}Ligar/Desligar suavização das margens das quadrículas de terreno"
+  665: Quadrículas no Terreno
+  666: "{SMALLFONT}{COLOUR BLACK}Ligar/Desligar margens das quadrículas no terreno"
   667: O banco recusa-se a aumentar o empréstimo!
   668: "{SMALLFONT}{COLOUR BLACK}Clique no terreno para remover árvores e construções"
   669: "{SMALLFONT}{COLOUR BLACK}Limpa uma área menor de terreno"
@@ -1316,7 +1316,7 @@ strings:
   1286: "{SMALLFONT}{COLOUR BLACK}Veículos para {STRINGID}"
   1287: "{SPRITE}{NEWLINE 31 8} {STRINGID}"
   1288: "{POP16}{POP16}{NEWLINE 31 8} {STRINGID}"
-  1289: "{SPRITE}{NEWLINE 31 8} {STRINGID} Construção"
+  1289: "{SPRITE}{NEWLINE 31 8} Construção de {STRINGID}"
   1290: "{STRINGID} autoridade local recusa-se a conceder permissão!"
   1291: Municípios
   1292: Construir Novos Municípios
@@ -1373,7 +1373,7 @@ strings:
   1343: "{STRINGID} Rodovias"
   1344: "{STRINGID} Linhas Férreas"
   1345: "{STRINGID} Autocarros"
-  1346: "{STRINGID} Air"
+  1346: "{STRINGID} Ar"
   1347: "{STRINGID} Ferroviária"
   1348: "{STRINGID} Carts"
   1349: "{STRINGID} Comboios"
@@ -1383,18 +1383,18 @@ strings:
   1353: "{STRINGID} Camiões"
   1354: "{COLOUR WINDOW_2}Sede"
   1355: "{COLOUR WINDOW_2}Proprietário"
-  1356: "{COLOUR BLACK}@ {INT16}% juros por ano"
+  1356: "{COLOUR BLACK}@ {INT16}% juros ao ano"
   1357: "{COLOUR BLACK}{SMALLFONT}{INT32}"
   1358: "{COLOUR BLACK}{SMALLFONT}{UINT16 RAW}"
   1359: "{STRINGID}"
   1360: "{STRINGID} - População"
-  1361: "{STRINGID} Autoridade Local"
+  1361: "{STRINGID} - Autoridade Local"
   1362: "{STRINGID} - Produção Mensal"
   1363: "{STRINGID} - Estatísticas"
   1364: "{STRINGID} {STRINGID}"
   1365: "{SMALLFONT}{COLOUR BLACK}Demolir esta indústria"
   1366: Em construção
-  1367: "Produzindo "
+  1367: "A produzir "
   1368: "Produz "
   1369: "Produto "
   1370: " para produzir "
@@ -1403,10 +1403,10 @@ strings:
   1373: " e "
   1374: " ou "
   1375: ", "
-  1376: "{SMALLFONT}{COLOUR BLACK}Ordenar lista por status da indústria"
-  1377: "{SMALLFONT}{COLOUR BLACK}Ordenar lista por percentual transportado"
-  1378: "{COLOUR BLACK}Status"
-  1379: "{COLOUR BLACK}Status ▼"
+  1376: "{SMALLFONT}{COLOUR BLACK}Ordenar lista por estado da indústria"
+  1377: "{SMALLFONT}{COLOUR BLACK}Ordenar lista por percentagem transportada"
+  1378: "{COLOUR BLACK}Estado"
+  1379: "{COLOUR BLACK}Estado ▼"
   1380: "{COLOUR BLACK}Produção Transportada"
   1381: "{COLOUR BLACK}Produção Transportada ▼"
   1382: "{SMALLFONT}{COLOUR BLACK}Ordenar lista por nome da indústria"
@@ -1441,7 +1441,7 @@ strings:
   1411: Município deve ser construído nas proximidades antes
   1412: "{SMALLFONT}{COLOUR BLACK}Plante um grupo do tipo de árvore selecionado"
   1413: "{SMALLFONT}{COLOUR BLACK}Plante um grupo aleatório de árvores"
-  1414: "{SMALLFONT}{COLOUR BLACK}Estatíticas"
+  1414: "{SMALLFONT}{COLOUR BLACK}Estatísticas"
   1415: "{COLOUR WINDOW_2}Recebidos no mês passado:"
   1416: "{COLOUR WINDOW_2}Produzidos no mês passado:"
   1417: "{COLOUR BLACK}{STRINGID} ({INT16}% transportado)"
@@ -1460,8 +1460,8 @@ strings:
   1430: " + "
   1431: " em espera"
   1432: Nada em espera
-  1433: "{COLOUR BLACK}Status"
-  1434: "{COLOUR BLACK}Status ▼"
+  1433: "{COLOUR BLACK}Estado"
+  1434: "{COLOUR BLACK}Estado ▼"
   1435: "{COLOUR BLACK}Total em espera"
   1436: "{COLOUR BLACK}Total em espera ▼"
   1437: "{COLOUR BLACK}Aceita"
@@ -1491,7 +1491,7 @@ strings:
   1461: Impossível renomear proprietário...
   1462: Sede
   1463: "{STRINGID} Sede"
-  1464: "{STRINGID} autoridade local não permite a remoção de estradas atualmente em uso"
+  1464: "A autoridade local de {STRINGID} não permite a remoção de estradas atualmente em uso"
   1465: "{SMALLFONT}{COLOUR BLACK}Selecionar companhia"
   1466: Jogo de Dois Jogadores
   1467: Jogo de Dois Jogadores - Opções
@@ -2398,8 +2398,8 @@ strings:
   2343: "{COLOUR WINDOW_2}Mapa de altura actual: {COLOUR BLACK}{STRING}"
   2344: "(none selected)"
   2345: "Checking scenario files..."
-  2346: "{COLOUR BLACK}Production Last Month"
-  2347: "{COLOUR BLACK}Production Last Month ▼"
+  2346: "{COLOUR BLACK}Produção no Mês Anterior"
+  2347: "{COLOUR BLACK}Produção no Mês Anterior ▼"
   2348: "{SMALLFONT}{COLOUR BLACK}Ordenar lista por produção do mês anterior"
   2349: "Mostrar janela de Opções"
   2350: "Pontes transparentes"
