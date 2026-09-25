@@ -60,7 +60,7 @@ namespace OpenLoco
 
         // Load images
         auto imageRes = ObjectManager::loadImageTable(remainingData);
-        var_0E = imageRes.imageOffset;
+        baseImageOffset = imageRes.imageOffset;
         image = imageRes.imageOffset + 8;
 
         // Ensure we've loaded the entire object
@@ -71,7 +71,7 @@ namespace OpenLoco
     void TrackExtraObject::unload()
     {
         name = 0;
-        var_0E = 0;
+        baseImageOffset = 0;
         image = 0;
     }
 }

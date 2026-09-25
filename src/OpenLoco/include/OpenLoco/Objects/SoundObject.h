@@ -19,7 +19,7 @@ namespace OpenLoco
 
     struct SoundObjectData
     {
-        int32_t var_00;
+        int32_t pad_00; // unused
         int32_t offset;
         uint32_t length;
         Audio::WAVEFORMATEX pcmHeader;
