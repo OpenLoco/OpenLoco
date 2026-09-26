@@ -109,6 +109,11 @@ namespace OpenLoco
         // checking objects against a list of vanilla objects instead. The original logic is left in the isCustom method.
         bool isVanilla() const;
 
+        constexpr bool isOpenLoco() const
+        {
+            return getSourceGame() == SourceGame::openLoco;
+        }
+
         bool operator==(const ObjectHeader& rhs) const
         {
             // Some vanilla objects reference other vanilla objects using a

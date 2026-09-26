@@ -1,5 +1,6 @@
 26.09+ (???)
 ------------------------------------------------------------------------
+- Change: [#4033] Objects marked with source OpenLoco (OpenGraphics) are no longer exported in scenario or save files.
 - Fix: [#4037] Cannot delete road stations acquired with the 'acquire all company assets' cheat.
 
 26.09 (2026-09-18)
