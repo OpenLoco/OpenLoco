@@ -1,5 +1,6 @@
 26.09+ (???)
 ------------------------------------------------------------------------
+- Change: [#3956] Speed Records tab in the Company List window now shows text when no records are set yet.
 - Fix: [#4037] Cannot delete road stations acquired with the 'acquire all company assets' cheat.
 
 26.09 (2026-09-18)
