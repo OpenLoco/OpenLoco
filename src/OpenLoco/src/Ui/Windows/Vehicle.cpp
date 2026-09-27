@@ -21,6 +21,7 @@
 #include "GameCommands/Vehicles/VehiclePlaceWater.h"
 #include "GameCommands/Vehicles/VehicleRearrange.h"
 #include "GameCommands/Vehicles/VehicleRefit.h"
+#include "GameCommands/Vehicles/VehicleRefreshLoco.h"
 #include "GameCommands/Vehicles/VehicleRepaint.h"
 #include "GameCommands/Vehicles/VehicleReverse.h"
 #include "GameCommands/Vehicles/VehicleSell.h"
@@ -1221,6 +1222,23 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
+        static void refreshLocos(Window& self)
+        {
+            auto head = Common::getVehicle(self);
+            if (head == nullptr)
+            {
+                return;
+            }
+
+            GameCommands::setErrorTitle(StringIds::cant_refresh_locos)
+
+            GameCommands::VehicleRefreshLocoArgs args{};
+            args.head = head->head;
+
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+        }
+
         // 0x004B3823
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, const WidgetId id)
         {
@@ -1283,6 +1301,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 Dropdown::add(0, StringIds::dropdown_stringid, StringIds::dropdown_modify_vehicle);
                 Dropdown::add(1, StringIds::dropdown_stringid, StringIds::dropdown_clone_vehicle);
+                Dropdown::add(2, StringIds::dropdown_stringid, StringIds::dropdown_refresh_locos);
 
                 auto& widget = self.widgets[widx::buildNew];
                 Dropdown::showText(
@@ -1338,6 +1357,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 else if (itemIndex == 1)
                 {
                     cloneVehicle(self);
+                }
+                else if (itemIndex == 2)
+                {
+                    // Insert refresh action here
                 }
                 return;
             }
