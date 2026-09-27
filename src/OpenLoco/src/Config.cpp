@@ -4,7 +4,6 @@
 #include <Message.h>
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Logging.h>
-#include <filesystem>
 #include <fstream>
 #include <locale>
 #include <yaml-cpp/exceptions.h>
