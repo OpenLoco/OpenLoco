@@ -8,6 +8,7 @@
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"
 #include "MessageManager.h"
+#include "Objects/ObjectManager.h"
 #include "Scenario/Scenario.h"
 #include "Types.hpp"
 #include "Ui/WindowManager.h"
@@ -30,37 +31,47 @@ namespace OpenLoco::GameCommands
 {
     namespace Cheats
     {
+        template<typename TElementType>
+        static void acquireTiles(CompanyId targetCompanyId, CompanyId ourCompanyId)
+        {
+            for (auto& element : TileManager::getStore<TElementType>())
+            {
+                if (element.owner() != targetCompanyId)
+                {
+                    continue;
+                }
+
+                if (element.isAiAllocated())
+                {
+                    continue;
+                }
+
+                element.setOwner(ourCompanyId);
+            }
+        }
+
+        template<typename TVehicleType>
+        static void resetVehicleColour(TVehicleType* component, Company* ourCompany)
+        {
+            const auto* vehObject = ObjectManager::get<VehicleObject>(component->objectId);
+
+            auto colourScheme = ourCompany->mainColours;
+            if (ourCompany->customVehicleColoursSet & (1 << vehObject->colourType))
+            {
+                colourScheme = ourCompany->vehicleColours[vehObject->colourType - 1];
+            }
+
+            component->colourScheme = colourScheme;
+        }
+
         static uint32_t acquireAssets(CompanyId targetCompanyId)
         {
             auto ourCompanyId = GameCommands::getUpdatingCompanyId();
 
-            // First phase: change ownership of all tile elements that currently belong to the target company.
-            for (auto& roadElement : TileManager::getStore<RoadElement>())
-            {
-                // Check to verify that roadElement is owned by the target company
-                if (roadElement.owner() == targetCompanyId)
-                {
-                    roadElement.setOwner(ourCompanyId);
-                }
-            }
-
-            for (auto& trackElement : TileManager::getStore<TrackElement>())
-            {
-                // Check to verify that the trackElement is owned by the target company.
-                if (trackElement.owner() == targetCompanyId)
-                {
-                    trackElement.setOwner(ourCompanyId);
-                }
-            }
-
-            // Because changing the owner of the station does not mean you own the road station element
-            for (auto& stationElement : TileManager::getStore<StationElement>())
-            {
-                if (stationElement.owner() == targetCompanyId)
-                {
-                    stationElement.setOwner(ourCompanyId);
-                }
-            }
+            // First phase: change ownership of all tile elements that currently belong to the target company
+            acquireTiles<RoadElement>(targetCompanyId, ourCompanyId);
+            acquireTiles<TrackElement>(targetCompanyId, ourCompanyId);
+            acquireTiles<StationElement>(targetCompanyId, ourCompanyId);
 
             // Second phase: change ownership of all stations that currently belong to the target company.
             for (auto& station : StationManager::stations())
@@ -71,9 +82,17 @@ namespace OpenLoco::GameCommands
                 }
 
                 station.owner = ourCompanyId;
+
+                auto* window = Ui::WindowManager::find(Ui::WindowType::station, enumValue(station.id()));
+                if (window != nullptr)
+                {
+                    window->owner = ourCompanyId;
+                    window->invalidate();
+                }
             }
 
             // Third phase: change ownership of all vehicles that currently belong to the target company.
+            auto* ourCompany = CompanyManager::get(ourCompanyId);
             for (auto* vehicle : VehicleManager::VehicleList())
             {
                 if (vehicle->owner != targetCompanyId)
@@ -82,11 +101,35 @@ namespace OpenLoco::GameCommands
                 }
 
                 Vehicles::Vehicle train(*vehicle);
-                train.applyToComponents([ourCompanyId](Vehicles::VehicleBase& component) {
-                    component.owner = ourCompanyId;
+
+                train.applyToComponents([ourCompany](Vehicles::VehicleBase& component) {
+                    component.owner = ourCompany->id();
+
+                    if (component.isVehicleBogie())
+                    {
+                        resetVehicleColour<Vehicles::VehicleBogie>(component.asVehicleBogie(), ourCompany);
+                    }
+                    else if (component.isVehicleBody())
+                    {
+                        resetVehicleColour<Vehicles::VehicleBody>(component.asVehicleBody(), ourCompany);
+                    }
                 });
+
+                auto* window = Ui::WindowManager::find(Ui::WindowType::vehicle, enumValue(vehicle->id));
+                if (window != nullptr)
+                {
+                    window->owner = ourCompanyId;
+                    window->invalidate();
+                }
             }
 
+            // Fourth phase: shut down the AI company
+            auto* targetCompany = CompanyManager::get(targetCompanyId);
+            targetCompany->aiThinkState = AiThinkState::endCompany;
+            targetCompany->aiThinkSubState = 0;
+            targetCompany->aiPathfindTargetPos = World::Pos2{ 0, 0 };
+
+            Gfx::invalidateScreen();
             return 0;
         }
 
