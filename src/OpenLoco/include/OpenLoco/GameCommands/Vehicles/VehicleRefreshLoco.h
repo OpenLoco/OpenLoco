@@ -21,7 +21,7 @@ namespace OpenLoco::GameCommands
         explicit operator registers() const
         {
             registers regs;
-            regs.di = enumValue(head);
+            regs.ax = enumValue(head);
             //regs.dl = cargoType;
             return regs;
         }

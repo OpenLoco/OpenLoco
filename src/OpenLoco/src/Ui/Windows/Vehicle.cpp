@@ -1230,7 +1230,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            GameCommands::setErrorTitle(StringIds::cant_refresh_locos)
+            GameCommands::setErrorTitle(StringIds::cant_refresh_locos);
 
             GameCommands::VehicleRefreshLocoArgs args{};
             args.head = head->head;
@@ -1310,7 +1310,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     widget.width(),
                     widget.height(),
                     self.getColour(WindowColour::secondary),
-                    2,
+                    3,
                     0);
 
                 Dropdown::setItemSelected(0);
@@ -1360,7 +1360,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
                 else if (itemIndex == 2)
                 {
-                    // Insert refresh action here
+                    refreshLocos(self);
                 }
                 return;
             }

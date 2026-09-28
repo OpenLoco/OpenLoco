@@ -75,6 +75,7 @@
 #include "GameCommands/Vehicles/VehiclePlaceWater.h"
 #include "GameCommands/Vehicles/VehicleRearrange.h"
 #include "GameCommands/Vehicles/VehicleRefit.h"
+#include "GameCommands/Vehicles/VehicleRefreshLoco.h"
 #include "GameCommands/Vehicles/VehicleRepaint.h"
 #include "GameCommands/Vehicles/VehicleReverse.h"
 #include "GameCommands/Vehicles/VehicleSell.h"
@@ -147,7 +148,7 @@ namespace OpenLoco::GameCommands
     static constexpr StringId kErrorBelongsToOther = 0xFFFEU;
 
     // clang-format off
-    static constexpr GameCommandInfo kGameCommandDefinitions[87] = {
+    static constexpr GameCommandInfo kGameCommandDefinitions[88] = {
         { GameCommand::vehicleRearrange,             vehicleRearrange,          0x004AF1DF, true  },
         { GameCommand::vehiclePlace,                 vehiclePlace,              0x004B01B6, true  },
         { GameCommand::vehiclePickup,                vehiclePickup,             0x004B0826, true  },
@@ -235,6 +236,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::vehicleRepaint,               vehicleRepaint,            0,          false },
         { GameCommand::createSignalsAuto,            createSignalsAuto,         0,          true  },
         { GameCommand::removeSignalsAuto,            removeSignalsAuto,         0,          true  },
+        { GameCommand::vehicleRefreshLoco,           vehicleRefreshLoco,        0,          true  },
     };
     // clang-format on
 
