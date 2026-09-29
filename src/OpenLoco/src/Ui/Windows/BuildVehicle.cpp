@@ -680,7 +680,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 continue;
             }
 
-            const currency32_t cost = Economy::getInflationAdjustedCost(vehicleObj->costFactor, vehicleObj->costIndex, 10);
+            const currency32_t cost = Economy::getInflationAdjustedCost(vehicleObj->costFactor, vehicleObj->costIndex, 6);
 
             buildableVehicles.push_back({
                 vehicleObjIndex,
