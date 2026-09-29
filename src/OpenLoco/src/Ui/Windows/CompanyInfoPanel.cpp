@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
     std::vector<const Company*> _sortedCompanies;
 
     // 0x43AA4C
-    static void competitorMouseDown(Ui::Window* self, WidgetIndex_t widgetIndex)
+    static void competitorMouseDown(Ui::Window& self, WidgetIndex_t widgetIndex)
     {
         _sortedCompanies.clear();
 
@@ -121,7 +121,7 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
         }
 
         Dropdown::add(index++, StringIds::dropdown_companies_list, ImageIds::company_list_dropdown_icon);
-        Dropdown::showBelow(self, widgetIndex, index, 25, (1 << 6));
+        Dropdown::showBelow(&self, widgetIndex, index, 25, (1 << 6));
         if (highlightIndex != -1)
         {
             Dropdown::setHighlightedItem(highlightIndex);
@@ -276,7 +276,7 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
         switch (id)
         {
             case Widx::kPlayer:
-                competitorMouseDown(&window, widgetIndex);
+                competitorMouseDown(window, widgetIndex);
                 break;
         }
     }
