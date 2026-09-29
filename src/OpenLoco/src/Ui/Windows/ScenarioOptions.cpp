@@ -24,6 +24,7 @@
 #include "Ui/Widgets/FrameWidget.h"
 #include "Ui/Widgets/GroupBoxWidget.h"
 #include "Ui/Widgets/ImageButtonWidget.h"
+#include "Ui/Widgets/LabelWidget.h"
 #include "Ui/Widgets/PanelWidget.h"
 #include "Ui/Widgets/StepperWidget.h"
 #include "Ui/Widgets/TabWidget.h"
@@ -592,17 +593,22 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
     {
         enum widx
         {
-            max_competing_companies = 8,
+            max_competing_companies_label = 8,
+            max_competing_companies,
             max_competing_companies_down,
             max_competing_companies_up,
+            delay_before_competing_companies_start_label,
             delay_before_competing_companies_start,
             delay_before_competing_companies_start_down,
             delay_before_competing_companies_start_up,
             groupbox_preferred_ai,
+            preferred_intelligence_label,
             preferred_intelligence,
             preferred_intelligence_btn,
+            preferred_aggressiveness_label,
             preferred_aggressiveness,
             preferred_aggressiveness_btn,
+            preferred_competitiveness_label,
             preferred_competitiveness,
             preferred_competitiveness_btn,
             groupbox_forbid_competitor_vehicles,
@@ -651,11 +657,16 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(327, StringIds::title_company_options),
+            Widgets::Label({ 10, 52 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::max_competing_companies),
             Widgets::stepperWidgets(Widx::kMaxCompetingCompanies, Widx::kMaxCompetingCompaniesDown, Widx::kMaxCompetingCompaniesUp, { 256, 52 }, { 100, 12 }, WindowColour::secondary, StringIds::max_competing_companies_value),
+            Widgets::Label({ 10, 67 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::delay_before_competing_companies_start),
             Widgets::stepperWidgets(Widx::kDelayBeforeCompetingCompaniesStart, Widx::kDelayBeforeCompetingCompaniesStartDown, Widx::kDelayBeforeCompetingCompaniesStartUp, { 256, 67 }, { 100, 12 }, WindowColour::secondary, StringIds::delay_before_competing_companies_start_months),
             Widgets::GroupBox({ 5, 102 - 14 - 5 }, { 356, 63 }, WindowColour::secondary, StringIds::selection_of_competing_companies),
+            Widgets::Label({ 10, 102 - 4 }, { 230, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::preferred_intelligence),
             Widgets::dropdownWidgets(Widx::kPreferredIntelligence, Widx::kPreferredIntelligenceBtn, { 246, 102 - 4 }, { 110, 12 }, WindowColour::secondary),
+            Widgets::Label({ 10, 117 - 4 }, { 230, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::preferred_aggressiveness),
             Widgets::dropdownWidgets(Widx::kPreferredAggressiveness, Widx::kPreferredAggressivenessBtn, { 246, 117 - 4 }, { 110, 12 }, WindowColour::secondary),
+            Widgets::Label({ 10, 132 - 4 }, { 230, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::preferred_competitiveness),
             Widgets::dropdownWidgets(Widx::kPreferredCompetitiveness, Widx::kPreferredCompetitivenessBtn, { 246, 132 - 4 }, { 110, 12 }, WindowColour::secondary),
             Widgets::GroupBox({ 5, 150 }, { 356, 50 }, WindowColour::secondary, StringIds::forbid_competing_companies_from_using),
             Widgets::Checkbox(Widx::kCompetitorForbidTrains, { 15 + 113 * 0, 166 }, { 110, 12 }, WindowColour::secondary, StringIds::forbid_trains),
@@ -679,24 +690,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         // 0x0043F4EB
         static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
         {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
             Common::draw(window, drawingCtx);
-
-            auto point = Point(10, widgets[widx::max_competing_companies].top + 1);
-            tr.drawStringLeft(point, Colour::black, StringIds::max_competing_companies);
-
-            point.y = widgets[widx::delay_before_competing_companies_start].top + 1;
-            tr.drawStringLeft(point, Colour::black, StringIds::delay_before_competing_companies_start);
-
-            point.y = widgets[widx::preferred_intelligence].top + 1;
-            tr.drawStringLeft(point, Colour::black, StringIds::preferred_intelligence);
-
-            point.y = widgets[widx::preferred_aggressiveness].top + 1;
-            tr.drawStringLeft(point, Colour::black, StringIds::preferred_aggressiveness);
-
-            point.y = widgets[widx::preferred_competitiveness].top + 1;
-            tr.drawStringLeft(point, Colour::black, StringIds::preferred_competitiveness);
         }
 
         static StringId preferenceLabelIds[] = {
@@ -919,12 +913,15 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
     {
         enum widx
         {
-            starting_loan = 8,
+            starting_loan_label = 8,
+            starting_loan,
             starting_loan_down,
             starting_loan_up,
+            max_loan_size_label,
             max_loan_size,
             max_loan_size_down,
             max_loan_size_up,
+            loan_interest_rate_label,
             loan_interest_rate,
             loan_interest_rate_down,
             loan_interest_rate_up,
@@ -945,8 +942,11 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         static constexpr auto widgets = makeWidgets(
             Common::makeCommonWidgets(217, StringIds::title_financial_options),
+            Widgets::Label({ 10, 52 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::starting_loan),
             Widgets::stepperWidgets(Widx::kStartingLoan, Widx::kStartingLoanDown, Widx::kStartingLoanUp, { 256, 52 }, { 100, 12 }, WindowColour::secondary, StringIds::starting_loan_value),
+            Widgets::Label({ 10, 67 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::max_loan_size),
             Widgets::stepperWidgets(Widx::kMaxLoanSize, Widx::kMaxLoanSizeDown, Widx::kMaxLoanSizeUp, { 256, 67 }, { 100, 12 }, WindowColour::secondary, StringIds::max_loan_size_value),
+            Widgets::Label({ 10, 82 }, { 240, 12 }, WindowColour::secondary, ContentAlign::left, StringIds::loan_interest_rate),
             Widgets::stepperWidgets(Widx::kLoanInterestRate, Widx::kLoanInterestRateDown, Widx::kLoanInterestRateUp, { 256, 82 }, { 100, 12 }, WindowColour::secondary, StringIds::loan_interest_rate_value)
 
         );
@@ -956,18 +956,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         // 0x0043F97D
         static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
         {
-            auto tr = Gfx::TextRenderer(drawingCtx);
-
             Common::draw(window, drawingCtx);
-
-            auto point = Point(10, widgets[widx::starting_loan].top + 1);
-            tr.drawStringLeft(point, Colour::black, StringIds::starting_loan);
-
-            point.y = widgets[widx::max_loan_size].top + 1;
-            tr.drawStringLeft(point, Colour::black, StringIds::max_loan_size);
-
-            point.y = widgets[widx::loan_interest_rate].top + 1;
-            tr.drawStringLeft(point, Colour::black, StringIds::loan_interest_rate);
         }
 
         static void onMouseDown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
