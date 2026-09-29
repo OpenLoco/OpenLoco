@@ -1881,7 +1881,434 @@ namespace OpenLoco::Paint
         kLeftCurveSmallSteepSlopeDown3,
     };
 
-    constexpr std::array<std::span<const TrackPaintPiece>, 26> kTrackPaintParts = {
+    constexpr TrackPaintPiece kStraightLeftSide0 = {
+        std::array<std::array<uint32_t, 3>, 4>{
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kStraightLeftSide0BallastNE, TrackObj::ImageIds::Style0::kStraightLeftSide0SleeperNE, TrackObj::ImageIds::Style0::kStraightLeftSide0RailNE },
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kStraightLeftSide0BallastSE, TrackObj::ImageIds::Style0::kStraightLeftSide0SleeperSE, TrackObj::ImageIds::Style0::kStraightLeftSide0RailSE },
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kStraightLeftSide0BallastSW, TrackObj::ImageIds::Style0::kStraightLeftSide0SleeperSW, TrackObj::ImageIds::Style0::kStraightLeftSide0RailSW },
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kStraightLeftSide0BallastNW, TrackObj::ImageIds::Style0::kStraightLeftSide0SleeperNW, TrackObj::ImageIds::Style0::kStraightLeftSide0RailNW },
+        },
+        /* BoundingBoxOffsets */ std::array<World::Pos3, 4>{
+            // TODO: copied from another paint piece; may not be correct for this one.
+            World::Pos3{ 2, 5, 0 },
+            World::Pos3{ 5, 2, 0 },
+            World::Pos3{ 2, 5, 0 },
+            World::Pos3{ 5, 2, 0 },
+        },
+        /* BoundingBoxSizes */ std::array<World::Pos3, 4>{
+            // TODO: copied from another paint piece; may not be correct for this one.
+            World::Pos3{ 28, 22, 1 },
+            World::Pos3{ 22, 28, 1 },
+            World::Pos3{ 28, 22, 1 },
+            World::Pos3{ 22, 28, 1 },
+        },
+        /* BridgeEdges */ 0b0101,
+        /* BridgeQuarters */ 0b1111,
+        /* BridgeType */ kFlatBridge,
+        /* TunnelHeights */ std::array<int16_t, 4>{
+            0,
+            kNoTunnel,
+            0,
+            kNoTunnel,
+        },
+        /* Segments */ SegmentFlags::x1y1 | SegmentFlags::x0y1 | SegmentFlags::x2y1, // TODO: copied from another paint piece; may not be correct for this one.
+    };
+
+    constexpr std::array<TrackPaintPiece, 1> kStraightLeftSideTPP = {
+        kStraightLeftSide0,
+    };
+
+    constexpr TrackPaintPiece kStraightRightSide0 = rotateTrackPP(kStraightLeftSide0, kRotationTable2301);
+
+    constexpr std::array<TrackPaintPiece, 1> kStraightRightSideTPP = {
+        kStraightRightSide0,
+    };
+
+    constexpr TrackPaintPiece kSBendLeftSideToRightSide0 = {
+        std::array<std::array<uint32_t, 3>, 4>{
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kSBendLeftSideToRightSide0BallastNE, TrackObj::ImageIds::Style0::kSBendLeftSideToRightSide0SleeperNE, TrackObj::ImageIds::Style0::kSBendLeftSideToRightSide0RailNE },
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kSBendLeftSideToRightSide0BallastSE, TrackObj::ImageIds::Style0::kSBendLeftSideToRightSide0SleeperSE, TrackObj::ImageIds::Style0::kSBendLeftSideToRightSide0RailSE },
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kSBendLeftSideToRightSide0BallastNE, TrackObj::ImageIds::Style0::kSBendLeftSideToRightSide0SleeperNE, TrackObj::ImageIds::Style0::kSBendLeftSideToRightSide0RailNE },
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kSBendLeftSideToRightSide0BallastSE, TrackObj::ImageIds::Style0::kSBendLeftSideToRightSide0SleeperSE, TrackObj::ImageIds::Style0::kSBendLeftSideToRightSide0RailSE },
+        },
+        /* BoundingBoxOffsets */ std::array<World::Pos3, 4>{
+            // TODO: copied from another paint piece; may not be correct for this one.
+            World::Pos3{ 2, 5, 0 },
+            World::Pos3{ 5, 2, 0 },
+            World::Pos3{ 2, 5, 0 },
+            World::Pos3{ 5, 2, 0 },
+        },
+        /* BoundingBoxSizes */ std::array<World::Pos3, 4>{
+            // TODO: copied from another paint piece; may not be correct for this one.
+            World::Pos3{ 28, 22, 1 },
+            World::Pos3{ 22, 28, 1 },
+            World::Pos3{ 28, 22, 1 },
+            World::Pos3{ 22, 28, 1 },
+        },
+        /* BridgeEdges */ 0b0101,
+        /* BridgeQuarters */ 0b1111,
+        /* BridgeType */ kFlatBridge,
+        /* TunnelHeights */ std::array<int16_t, 4>{
+            0,
+            kNoTunnel,
+            0,
+            kNoTunnel,
+        },
+        /* Segments */ SegmentFlags::x1y1 | SegmentFlags::x0y1 | SegmentFlags::x2y1, // TODO: copied from another paint piece; may not be correct for this one.
+    };
+
+    constexpr std::array<TrackPaintPiece, 1> kSBendLeftSideToRightSideTPP = {
+        kSBendLeftSideToRightSide0,
+    };
+
+    constexpr TrackPaintPiece kSBendRightSideToLeftSide0 = {
+        std::array<std::array<uint32_t, 3>, 4>{
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kSBendRightSideToLeftSide0BallastNE, TrackObj::ImageIds::Style0::kSBendRightSideToLeftSide0SleeperNE, TrackObj::ImageIds::Style0::kSBendRightSideToLeftSide0RailNE },
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kSBendRightSideToLeftSide0BallastSE, TrackObj::ImageIds::Style0::kSBendRightSideToLeftSide0SleeperSE, TrackObj::ImageIds::Style0::kSBendRightSideToLeftSide0RailSE },
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kSBendRightSideToLeftSide0BallastNE, TrackObj::ImageIds::Style0::kSBendRightSideToLeftSide0SleeperNE, TrackObj::ImageIds::Style0::kSBendRightSideToLeftSide0RailNE },
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kSBendRightSideToLeftSide0BallastSE, TrackObj::ImageIds::Style0::kSBendRightSideToLeftSide0SleeperSE, TrackObj::ImageIds::Style0::kSBendRightSideToLeftSide0RailSE },
+        },
+        /* BoundingBoxOffsets */ std::array<World::Pos3, 4>{
+            // TODO: copied from another paint piece; may not be correct for this one.
+            World::Pos3{ 2, 5, 0 },
+            World::Pos3{ 5, 2, 0 },
+            World::Pos3{ 2, 5, 0 },
+            World::Pos3{ 5, 2, 0 },
+        },
+        /* BoundingBoxSizes */ std::array<World::Pos3, 4>{
+            // TODO: copied from another paint piece; may not be correct for this one.
+            World::Pos3{ 28, 22, 1 },
+            World::Pos3{ 22, 28, 1 },
+            World::Pos3{ 28, 22, 1 },
+            World::Pos3{ 22, 28, 1 },
+        },
+        /* BridgeEdges */ 0b0101,
+        /* BridgeQuarters */ 0b1111,
+        /* BridgeType */ kFlatBridge,
+        /* TunnelHeights */ std::array<int16_t, 4>{
+            0,
+            kNoTunnel,
+            0,
+            kNoTunnel,
+        },
+        /* Segments */ SegmentFlags::x1y1 | SegmentFlags::x0y1 | SegmentFlags::x2y1, // TODO: copied from another paint piece; may not be correct for this one.
+    };
+
+    constexpr std::array<TrackPaintPiece, 1> kSBendRightSideToLeftSideTPP = {
+        kSBendRightSideToLeftSide0,
+    };
+
+    // Wasn't implemented or didn't work correctly in vanilla
+    constexpr TrackPaintPiece kStraightLeftSideSteepSlopeUp0 = {
+        std::array<uint32_t, 4>{
+            // TODO - are these the numbers original Locomotion would have used?
+            496,
+            497,
+            498,
+            499,
+        },
+        /* BoundingBoxOffsets */ std::array<World::Pos3, 4>{
+            // TODO: copied from another paint piece; may not be correct for this one.
+            World::Pos3{ 2, 6, 2 },
+            World::Pos3{ 6, 2, 2 },
+            World::Pos3{ 2, 6, 2 },
+            World::Pos3{ 6, 2, 2 },
+        },
+        /* BoundingBoxSizes */ std::array<World::Pos3, 4>{
+            // TODO: copied from another paint piece; may not be correct for this one.
+            World::Pos3{ 28, 20, 1 },
+            World::Pos3{ 20, 28, 1 },
+            World::Pos3{ 28, 20, 1 },
+            World::Pos3{ 20, 28, 1 },
+        },
+        /* BridgeEdges */ 0b0101,
+        /* BridgeQuarters */ 0b1111,
+        /* BridgeType */ std::array<uint8_t, 4>{
+            9,
+            10,
+            11,
+            12,
+        },
+        /* TunnelHeights */ std::array<int16_t, 4>{
+            16,
+            kNoTunnel,
+            0,
+            kNoTunnel,
+        },
+        /* Segments */ SegmentFlags::x1y1 | SegmentFlags::x0y1 | SegmentFlags::x2y1, // TODO: copied from another paint piece; may not be correct for this one.
+    };
+
+    constexpr std::array<TrackPaintPiece, 1> kStraightLeftSideSteepSlopeUpTPP = {
+        kStraightLeftSideSteepSlopeUp0,
+    };
+
+    constexpr TrackPaintPiece kStraightRightSideSteepSlopeDown0 = rotateTrackPP(kStraightLeftSideSteepSlopeUp0, kRotationTable2301);
+
+    constexpr std::array<TrackPaintPiece, 1> kStraightRightSideSteepSlopeDownTPP = {
+        kStraightRightSideSteepSlopeDown0,
+    };
+
+    // Wasn't implemented or didn't work correctly in vanilla
+    constexpr TrackPaintPiece kStraightRightSideSteepSlopeUp0 = {
+        std::array<uint32_t, 4>{
+            // TODO - are these the numbers original Locomotion would have used?
+            500,
+            501,
+            502,
+            503,
+        },
+        /* BoundingBoxOffsets */ std::array<World::Pos3, 4>{
+            // TODO: copied from another paint piece; may not be correct for this one.
+            World::Pos3{ 2, 6, 2 },
+            World::Pos3{ 6, 2, 2 },
+            World::Pos3{ 2, 6, 2 },
+            World::Pos3{ 6, 2, 2 },
+        },
+        /* BoundingBoxSizes */ std::array<World::Pos3, 4>{
+            // TODO: copied from another paint piece; may not be correct for this one.
+            World::Pos3{ 28, 20, 1 },
+            World::Pos3{ 20, 28, 1 },
+            World::Pos3{ 28, 20, 1 },
+            World::Pos3{ 20, 28, 1 },
+        },
+        /* BridgeEdges */ 0b0101,
+        /* BridgeQuarters */ 0b1111,
+        /* BridgeType */ std::array<uint8_t, 4>{
+            9,
+            10,
+            11,
+            12,
+        },
+        /* TunnelHeights */ std::array<int16_t, 4>{
+            16,
+            kNoTunnel,
+            0,
+            kNoTunnel,
+        },
+        /* Segments */ SegmentFlags::x1y1 | SegmentFlags::x0y1 | SegmentFlags::x2y1, // TODO: copied from another paint piece; may not be correct for this one.
+    };
+
+    constexpr std::array<TrackPaintPiece, 1> kStraightRightSideSteepSlopeUpTPP = {
+        kStraightRightSideSteepSlopeUp0,
+    };
+
+    constexpr TrackPaintPiece kStraightLeftSideSteepSlopeDown0 = rotateTrackPP(kStraightRightSideSteepSlopeUp0, kRotationTable2301);
+
+    constexpr std::array<TrackPaintPiece, 1> kStraightLeftSideSteepSlopeDownTPP = {
+        kStraightLeftSideSteepSlopeDown0,
+    };
+
+    constexpr TrackPaintPiece kSBendSingleToLeftSide0 = {
+        std::array<std::array<uint32_t, 3>, 4>{
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kSBendSingleToLeftSide0BallastNE, TrackObj::ImageIds::Style0::kSBendSingleToLeftSide0SleeperNE, TrackObj::ImageIds::Style0::kSBendSingleToLeftSide0RailNE },
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kSBendSingleToLeftSide0BallastSE, TrackObj::ImageIds::Style0::kSBendSingleToLeftSide0SleeperSE, TrackObj::ImageIds::Style0::kSBendSingleToLeftSide0RailSE },
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kSBendSingleToLeftSide0BallastSW, TrackObj::ImageIds::Style0::kSBendSingleToLeftSide0SleeperSW, TrackObj::ImageIds::Style0::kSBendSingleToLeftSide0RailSW },
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kSBendSingleToLeftSide0BallastNW, TrackObj::ImageIds::Style0::kSBendSingleToLeftSide0SleeperNW, TrackObj::ImageIds::Style0::kSBendSingleToLeftSide0RailNW },
+        },
+        /* BoundingBoxOffsets */ std::array<World::Pos3, 4>{
+            // TODO: copied from another paint piece; may not be correct for this one.
+            World::Pos3{ 2, 5, 0 },
+            World::Pos3{ 5, 2, 0 },
+            World::Pos3{ 2, 5, 0 },
+            World::Pos3{ 5, 2, 0 },
+        },
+        /* BoundingBoxSizes */ std::array<World::Pos3, 4>{
+            // TODO: copied from another paint piece; may not be correct for this one.
+            World::Pos3{ 28, 22, 1 },
+            World::Pos3{ 22, 28, 1 },
+            World::Pos3{ 28, 22, 1 },
+            World::Pos3{ 22, 28, 1 },
+        },
+        /* BridgeEdges */ 0b0101,
+        /* BridgeQuarters */ 0b1111,
+        /* BridgeType */ kFlatBridge,
+        /* TunnelHeights */ std::array<int16_t, 4>{
+            0,
+            kNoTunnel,
+            0,
+            kNoTunnel,
+        },
+        /* Segments */ SegmentFlags::x1y1 | SegmentFlags::x0y1 | SegmentFlags::x2y1, // TODO: copied from another paint piece; may not be correct for this one.
+    };
+
+    constexpr std::array<TrackPaintPiece, 1> kSBendSingleToLeftSideTPP = {
+        kSBendSingleToLeftSide0,
+    };
+
+    constexpr TrackPaintPiece kSBendSingleToRightSide0 = {
+        std::array<std::array<uint32_t, 3>, 4>{
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kSBendSingleToRightSide0BallastNE, TrackObj::ImageIds::Style0::kSBendSingleToRightSide0SleeperNE, TrackObj::ImageIds::Style0::kSBendSingleToRightSide0RailNE },
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kSBendSingleToRightSide0BallastSE, TrackObj::ImageIds::Style0::kSBendSingleToRightSide0SleeperSE, TrackObj::ImageIds::Style0::kSBendSingleToRightSide0RailSE },
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kSBendSingleToRightSide0BallastSW, TrackObj::ImageIds::Style0::kSBendSingleToRightSide0SleeperSW, TrackObj::ImageIds::Style0::kSBendSingleToRightSide0RailSW },
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kSBendSingleToRightSide0BallastNW, TrackObj::ImageIds::Style0::kSBendSingleToRightSide0SleeperNW, TrackObj::ImageIds::Style0::kSBendSingleToRightSide0RailNW },
+        },
+        /* BoundingBoxOffsets */ std::array<World::Pos3, 4>{
+            // TODO: copied from another paint piece; may not be correct for this one.
+            World::Pos3{ 2, 5, 0 },
+            World::Pos3{ 5, 2, 0 },
+            World::Pos3{ 2, 5, 0 },
+            World::Pos3{ 5, 2, 0 },
+        },
+        /* BoundingBoxSizes */ std::array<World::Pos3, 4>{
+            // TODO: copied from another paint piece; may not be correct for this one.
+            World::Pos3{ 28, 22, 1 },
+            World::Pos3{ 22, 28, 1 },
+            World::Pos3{ 28, 22, 1 },
+            World::Pos3{ 22, 28, 1 },
+        },
+        /* BridgeEdges */ 0b0101,
+        /* BridgeQuarters */ 0b1111,
+        /* BridgeType */ kFlatBridge,
+        /* TunnelHeights */ std::array<int16_t, 4>{
+            0,
+            kNoTunnel,
+            0,
+            kNoTunnel,
+        },
+        /* Segments */ SegmentFlags::x1y1 | SegmentFlags::x0y1 | SegmentFlags::x2y1, // TODO: copied from another paint piece; may not be correct for this one.
+    };
+
+    constexpr std::array<TrackPaintPiece, 1> kSBendSingleToRightSideTPP = {
+        kSBendSingleToRightSide0,
+    };
+
+    constexpr TrackPaintPiece kSBendLeftSideToSingle0 = rotateTrackPP(kSBendSingleToRightSide0, kRotationTable2301);
+
+    constexpr std::array<TrackPaintPiece, 1> kSBendLeftSideToSingleTPP = {
+        kSBendLeftSideToSingle0,
+    };
+
+    constexpr TrackPaintPiece kSBendRightSideToSingle0 = rotateTrackPP(kSBendSingleToLeftSide0, kRotationTable2301);
+
+    constexpr std::array<TrackPaintPiece, 1> kSBendRightSideToSingleTPP = {
+        kSBendRightSideToSingle0,
+    };
+
+    constexpr TrackPaintPiece kRightCurveVerySmallOuterSide0 = {
+        std::array<std::array<uint32_t, 3>, 4>{
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kRightCurveVerySmallOuterSide0BallastNE, TrackObj::ImageIds::Style0::kRightCurveVerySmallOuterSide0SleeperNE, TrackObj::ImageIds::Style0::kRightCurveVerySmallOuterSide0RailNE },
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kRightCurveVerySmallOuterSide0BallastSE, TrackObj::ImageIds::Style0::kRightCurveVerySmallOuterSide0SleeperSE, TrackObj::ImageIds::Style0::kRightCurveVerySmallOuterSide0RailSE },
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kRightCurveVerySmallOuterSide0BallastSW, TrackObj::ImageIds::Style0::kRightCurveVerySmallOuterSide0SleeperSW, TrackObj::ImageIds::Style0::kRightCurveVerySmallOuterSide0RailSW },
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kRightCurveVerySmallOuterSide0BallastNW, TrackObj::ImageIds::Style0::kRightCurveVerySmallOuterSide0SleeperNW, TrackObj::ImageIds::Style0::kRightCurveVerySmallOuterSide0RailNW },
+        },
+        /* BoundingBoxOffsets */ std::array<World::Pos3, 4>{
+            // TODO: copied from another paint piece; may not be correct for this one.
+            World::Pos3{ 2, 2, 0 },
+            World::Pos3{ 2, 2, 0 },
+            World::Pos3{ 2, 2, 0 },
+            World::Pos3{ 2, 2, 0 },
+        },
+        /* BoundingBoxSizes */ std::array<World::Pos3, 4>{
+            // TODO: copied from another paint piece; may not be correct for this one.
+            World::Pos3{ 28, 28, 1 },
+            World::Pos3{ 28, 28, 1 },
+            World::Pos3{ 28, 28, 1 },
+            World::Pos3{ 28, 28, 1 },
+        },
+        /* BridgeEdges */ 0b0110,
+        /* BridgeQuarters */ 0b1111,
+        /* BridgeType */ kFlatBridge,
+        /* TunnelHeights */ std::array<int16_t, 4>{
+            kNoTunnel,
+            0,
+            0,
+            kNoTunnel,
+        },
+        /* Segments */ SegmentFlags::x2y2 | SegmentFlags::x1y1 | SegmentFlags::x2y1 | SegmentFlags::x1y2, // TODO: copied from another paint piece; may not be correct for this one.
+    };
+
+    constexpr std::array<TrackPaintPiece, 1> kRightCurveVerySmallOuterSideTPP = {
+        kRightCurveVerySmallOuterSide0,
+    };
+
+    constexpr TrackPaintPiece kRightCurveVerySmallInnerSide0 = {
+        std::array<std::array<uint32_t, 3>, 4>{
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kRightCurveVerySmallInnerSide0BallastNE, TrackObj::ImageIds::Style0::kRightCurveVerySmallInnerSide0SleeperNE, TrackObj::ImageIds::Style0::kRightCurveVerySmallInnerSide0RailNE },
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kRightCurveVerySmallInnerSide0BallastSE, TrackObj::ImageIds::Style0::kRightCurveVerySmallInnerSide0SleeperSE, TrackObj::ImageIds::Style0::kRightCurveVerySmallInnerSide0RailSE },
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kRightCurveVerySmallInnerSide0BallastSW, TrackObj::ImageIds::Style0::kRightCurveVerySmallInnerSide0SleeperSW, TrackObj::ImageIds::Style0::kRightCurveVerySmallInnerSide0RailSW },
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kRightCurveVerySmallInnerSide0BallastNW, TrackObj::ImageIds::Style0::kRightCurveVerySmallInnerSide0SleeperNW, TrackObj::ImageIds::Style0::kRightCurveVerySmallInnerSide0RailNW },
+        },
+        /* BoundingBoxOffsets */ std::array<World::Pos3, 4>{
+            // TODO: copied from another paint piece; may not be correct for this one.
+            World::Pos3{ 2, 2, 0 },
+            World::Pos3{ 2, 2, 0 },
+            World::Pos3{ 2, 2, 0 },
+            World::Pos3{ 2, 2, 0 },
+        },
+        /* BoundingBoxSizes */ std::array<World::Pos3, 4>{
+            // TODO: copied from another paint piece; may not be correct for this one.
+            World::Pos3{ 28, 28, 1 },
+            World::Pos3{ 28, 28, 1 },
+            World::Pos3{ 28, 28, 1 },
+            World::Pos3{ 28, 28, 1 },
+        },
+        /* BridgeEdges */ 0b0110,
+        /* BridgeQuarters */ 0b1111,
+        /* BridgeType */ kFlatBridge,
+        /* TunnelHeights */ std::array<int16_t, 4>{
+            kNoTunnel,
+            0,
+            0,
+            kNoTunnel,
+        },
+        /* Segments */ SegmentFlags::x2y2 | SegmentFlags::x1y1 | SegmentFlags::x2y1 | SegmentFlags::x1y2, // TODO: copied from another paint piece; may not be correct for this one.
+    };
+
+    constexpr std::array<TrackPaintPiece, 1> kRightCurveVerySmallInnerSideTPP = {
+        kRightCurveVerySmallInnerSide0,
+    };
+
+    constexpr TrackPaintPiece kLeftCurveVerySmallOuterSide0 = rotateTrackPP(kRightCurveVerySmallOuterSide0, kRotationTable1230);
+
+    constexpr std::array<TrackPaintPiece, 1> kLeftCurveVerySmallOuterTPP = {
+        kLeftCurveVerySmallOuterSide0,
+    };
+
+    constexpr TrackPaintPiece kLeftCurveVerySmallInner0 = rotateTrackPP(kRightCurveVerySmallInnerSide0, kRotationTable1230);
+
+    constexpr std::array<TrackPaintPiece, 1> kLeftCurveVerySmallInnerTPP = {
+        kLeftCurveVerySmallInner0,
+    };
+
+    // Adapted from PaintRoadStyle1Data.h; PaintRoadCommonData.h
+    constexpr TrackPaintPiece kTurnaround0 = {
+        std::array<std::array<uint32_t, 3>, 4>{
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kTurnaround0BallastNE, TrackObj::ImageIds::Style0::kTurnaround0SleeperNE, TrackObj::ImageIds::Style0::kTurnaround0RailNE },
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kTurnaround0BallastSE, TrackObj::ImageIds::Style0::kTurnaround0SleeperSE, TrackObj::ImageIds::Style0::kTurnaround0RailSE },
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kTurnaround0BallastSW, TrackObj::ImageIds::Style0::kTurnaround0SleeperSW, TrackObj::ImageIds::Style0::kTurnaround0RailSW },
+            std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::kTurnaround0BallastNW, TrackObj::ImageIds::Style0::kTurnaround0SleeperNW, TrackObj::ImageIds::Style0::kTurnaround0RailNW },
+        },
+        /* BoundingBoxOffsets */ std::array<World::Pos3, 4>{
+            // TODO: copied from another paint piece; may not be correct for this one.
+            World::Pos3{ 16, 2, 0 },
+            World::Pos3{ 2, 2, 0 },
+            World::Pos3{ 2, 2, 0 },
+            World::Pos3{ 2, 16, 0 },
+        },
+        /* BoundingBoxSizes */ std::array<World::Pos3, 4>{
+            // TODO: copied from another paint piece; may not be correct for this one.
+            World::Pos3{ 14, 28, 1 },
+            World::Pos3{ 28, 14, 1 },
+            World::Pos3{ 14, 28, 1 },
+            World::Pos3{ 28, 14, 1 },
+        },
+        /* BridgeEdges */ 0b0100,
+        /* BridgeQuarters */ 0b1111,
+        /* BridgeType */ kFlatBridge,
+        /* TunnelHeights */ std::array<int16_t, 4>{
+            kNoTunnel,
+            kNoTunnel,
+            0,
+            kNoTunnel,
+        },
+        /* Segments */ SegmentFlags::x2y0 | SegmentFlags::x2y2 | SegmentFlags::x1y1 | SegmentFlags::x2y1, // TODO: copied from another paint piece; may not be correct for this one.
+    };
+
+    constexpr std::array<TrackPaintPiece, 1> kTurnaroundTPP = {
+        kTurnaround0,
+    };
+
+    constexpr std::array<std::span<const TrackPaintPiece>, 44> kTrackPaintParts = {
         kStraightTPP,
         kDiagonalTPP,
         kLeftCurveVerySmallTPP,
@@ -1908,6 +2335,24 @@ namespace OpenLoco::Paint
         kRightCurveSmallSteepSlopeUpTPP,
         kLeftCurveSmallSteepSlopeDownTPP,
         kRightCurveSmallSteepSlopeDownTPP,
+        kStraightLeftSideTPP,
+        kStraightRightSideTPP,
+        kLeftCurveVerySmallInnerTPP,
+        kLeftCurveVerySmallOuterTPP,
+        kRightCurveVerySmallOuterSideTPP,
+        kRightCurveVerySmallInnerSideTPP,
+        kSBendLeftSideToRightSideTPP,
+        kSBendRightSideToLeftSideTPP,
+        kStraightLeftSideSteepSlopeUpTPP,
+        kStraightRightSideSteepSlopeUpTPP,
+        kStraightLeftSideSteepSlopeDownTPP,
+        kStraightRightSideSteepSlopeDownTPP,
+        kSBendSingleToLeftSideTPP,
+        kSBendSingleToRightSideTPP,
+        kSBendLeftSideToSingleTPP,
+        kSBendRightSideToSingleTPP,
+        kTurnaroundTPP,
+        kTurnaroundTPP,
     };
 
 }
