@@ -433,7 +433,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             setDisabledTransportTabs(*window);
             setTrackTypeTabs(*window);
             resetTrackTypeTabSelection(*window);
-            sub_4B92A5(window);
+            sub_4B92A5(*window);
 
             // TODO: REMOVE WHEN REWORKING TUTORIALS (and tutorial.h include above)
             if (OpenLoco::Tutorial::state() != OpenLoco::Tutorial::State::none)
@@ -527,7 +527,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         }
 
         auto rowHover = window->rowHover;
-        sub_4B92A5(window);
+        sub_4B92A5(*window);
         window->rowHover = rowHover;
 
         return window;
@@ -871,7 +871,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 resetTrackTypeTabSelection(window);
                 window.rowCount = 0;
                 window.rowHover = -1;
-                sub_4B92A5(&window);
+                sub_4B92A5(window);
                 window.callOnResize();
                 window.callOnPeriodicUpdate();
                 window.callPrepareDraw();
@@ -900,7 +900,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 _buildTargetVehicle = -1;
                 window.rowCount = 0;
                 window.rowHover = -1;
-                sub_4B92A5(&window);
+                sub_4B92A5(window);
                 window.callOnResize();
                 window.callOnPeriodicUpdate();
                 window.callPrepareDraw();
@@ -912,7 +912,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             case Widx::kSearchClearButton:
             {
                 inputSession.clearInput();
-                sub_4B92A5(&window);
+                sub_4B92A5(window);
                 window.initScrollWidgets();
                 window.invalidate();
                 break;
@@ -1140,7 +1140,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             }
         }
 
-        sub_4B92A5(&self);
+        sub_4B92A5(self);
         self.invalidate();
     }
 
@@ -1185,7 +1185,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         // Do we need to refresh the component list?
         if (!linkedVehicleAvailable || _lastRefreshYear != getCurrentYear() || _lastDisplayLockedVehiclesState != Config::get().displayLockedVehicles)
         {
-            sub_4B92A5(&window);
+            sub_4B92A5(window);
         }
 
         window.frameNo++;
@@ -1255,7 +1255,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             auto vehicle = EntityManager::get<Vehicles::VehicleBase>(GameCommands::getLegacyReturnState().lastCreatedVehicleId);
             Vehicle::Details::open(vehicle);
         }
-        sub_4B92A5(&window);
+        sub_4B92A5(window);
     }
 
     // 0x4C3802
@@ -2010,7 +2010,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         inputSession.cursorFrame = 0;
 
-        sub_4B92A5(&w);
+        sub_4B92A5(w);
 
         w.initScrollWidgets();
         w.invalidate();
