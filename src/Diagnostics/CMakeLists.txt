@@ -14,6 +14,18 @@ set(private_files
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Logging.cpp"
 )
 
+# Emscripten-specific source files (override native implementations)
+if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    # Remove native implementations
+    list(REMOVE_ITEM private_files 
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/LogTerminal.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/Logging.cpp")
+    # Add Emscripten-specific implementations
+    list(APPEND private_files 
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/LogTerminal.Emscripten.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/Logging.Emscripten.cpp")
+endif()
+
 set(test_files
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/AssertionTests.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/LoggingTests.cpp"

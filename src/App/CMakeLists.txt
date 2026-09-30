@@ -94,3 +94,14 @@ else()
         PROPERTY MACOSX_PACKAGE_LOCATION "Resources/objects"
     )
 endif ()
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    set(webSourceDir "${CMAKE_SOURCE_DIR}/distribution/web")
+    add_custom_command(
+        TARGET App POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${webSourceDir}/index.html"
+            "$<TARGET_FILE_DIR:App>/index.html"
+        COMMENT "Copying web files"
+    )
+endif()
