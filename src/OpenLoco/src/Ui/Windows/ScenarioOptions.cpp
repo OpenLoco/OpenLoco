@@ -687,12 +687,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         const uint64_t holdableWidgets = (1ULL << widx::max_competing_companies_down) | (1ULL << widx::max_competing_companies_up) | (1ULL << widx::delay_before_competing_companies_start_down) | (1ULL << widx::delay_before_competing_companies_start_up);
 
-        // 0x0043F4EB
-        static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
-        {
-            Common::draw(window, drawingCtx);
-        }
-
         static StringId preferenceLabelIds[] = {
             StringIds::preference_any,
             StringIds::preference_low,
@@ -900,7 +894,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             .onDropdown = onDropdown,
             .onUpdate = Common::update,
             .prepareDraw = prepareDraw,
-            .draw = draw,
+            .draw = Common::draw,
         };
 
         static const WindowEventList& getEvents()
@@ -952,12 +946,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         );
 
         const uint64_t holdableWidgets = (1 << widx::starting_loan_down) | (1 << widx::starting_loan_up) | (1 << widx::max_loan_size_down) | (1 << widx::max_loan_size_up) | (1 << widx::loan_interest_rate_down) | (1 << widx::loan_interest_rate_up);
-
-        // 0x0043F97D
-        static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
-        {
-            Common::draw(window, drawingCtx);
-        }
 
         static void onMouseDown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
         {
@@ -1050,7 +1038,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             .onMouseDown = onMouseDown,
             .onUpdate = Common::update,
             .prepareDraw = prepareDraw,
-            .draw = draw,
+            .draw = Common::draw,
         };
 
         static const WindowEventList& getEvents()
