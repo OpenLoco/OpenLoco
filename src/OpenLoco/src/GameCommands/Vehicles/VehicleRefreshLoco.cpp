@@ -18,11 +18,11 @@
 
 namespace OpenLoco::GameCommands
 {
-    
+
     static uint32_t vehicleRefreshLoco(const VehicleRefreshLocoArgs& args, const Flags flags)
     {
         // moved to end
-        //setExpenditureType(ExpenditureType::VehiclePurchases);
+        // setExpenditureType(ExpenditureType::VehiclePurchases);
 
         EntityId headId = args.head;
 
@@ -41,7 +41,7 @@ namespace OpenLoco::GameCommands
             {
                 return kFailure;
             }
-                        
+
             currency32_t refundCost = 0;
             currency32_t purchaseCost = 0;
 
@@ -50,19 +50,18 @@ namespace OpenLoco::GameCommands
             for (const auto& car : train.cars)
             {
                 auto* vehObj = ObjectManager::get<VehicleObject>(car.body->objectId);
-                if (vehObj->power != 0) // check that it's a power car. 
+                if (vehObj->power != 0) // check that it's a power car.
                 {
-                  auto temp_cost = Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
-                  refundCost += car.front->refundCost;
-                  purchaseCost += temp_cost;
-                  
+                    auto temp_cost = Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
+                    refundCost += car.front->refundCost;
+                    purchaseCost += temp_cost;
                 }
             }
 
             // Note: Refund cost might already be negative signed;
             // make sure netCost <= purchaseCost.
             currency32_t netCost = purchaseCost - refundCost;
-            assert (netCost <= purchaseCost); // safety check
+            assert(netCost <= purchaseCost); // safety check
 
             uint32_t thisDay = getCurrentDay();
             // maybe replace each call to getCurrentYear() with

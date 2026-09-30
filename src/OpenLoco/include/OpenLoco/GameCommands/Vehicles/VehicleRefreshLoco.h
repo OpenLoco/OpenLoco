@@ -20,7 +20,7 @@ namespace OpenLoco::GameCommands
         {
             registers regs;
             regs.ax = enumValue(head);
-            //regs.dl = cargoType;
+            // regs.dl = cargoType;
             return regs;
         }
     };
