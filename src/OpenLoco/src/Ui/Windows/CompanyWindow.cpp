@@ -2696,7 +2696,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 
-        static void drawCompanySelect(const Window& const self, Gfx::DrawingContext& drawingCtx)
+        static void drawCompanySelect(const Window& self, Gfx::DrawingContext& drawingCtx)
         {
             const auto* company = CompanyManager::get(CompanyId(self.number));
             const auto* competitor = ObjectManager::get<CompetitorObject>(company->competitorId);
