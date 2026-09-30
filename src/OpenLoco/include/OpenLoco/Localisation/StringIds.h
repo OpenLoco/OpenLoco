@@ -2180,6 +2180,15 @@ namespace OpenLoco::StringIds
     constexpr StringId map_tooltip_int_x_int = 2468;
     constexpr StringId no_speedrecords_yet = 2469;
     constexpr StringId png_heightmap_must_be_generated = 2470;
+    constexpr StringId title_dropped_file = 2471;
+    constexpr StringId load_save_file_prompt = 2472;
+    constexpr StringId load_scenario_file_prompt = 2473;
+    constexpr StringId load_landscape_file_prompt = 2474;
+    constexpr StringId load_save_file_confirm = 2475;
+    constexpr StringId load_scenario_file_confirm = 2476;
+    constexpr StringId load_landscape_file_confirm = 2477;
+    constexpr StringId error_cant_open_save_in_editor = 2478;
+    constexpr StringId error_invalid_file_type = 2479;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
