@@ -341,6 +341,7 @@ namespace OpenLoco::GameCommands
         }
     }
 
+    // Apply Cost/Payment
     static uint32_t loc_4313C6(int esi, const registers& regs, const Flags flags)
     {
         _gGameCommandErrorText = StringIds::null;
@@ -432,6 +433,7 @@ namespace OpenLoco::GameCommands
         return ebx;
     }
 
+    // Report an error
     static uint32_t loc_4314EA(const Flags flags)
     {
         _gameCommandNestLevel--;
