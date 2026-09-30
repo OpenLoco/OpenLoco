@@ -390,7 +390,7 @@ namespace OpenLoco::Game
             Scenario::loadAndStart(path);
             return;
         }
-            
+
         // Invalid file type
         Ui::Windows::Error::open(StringIds::error_invalid_file_type);
         return;
