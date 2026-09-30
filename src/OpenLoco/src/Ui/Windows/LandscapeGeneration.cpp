@@ -541,7 +541,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
     }
 
     // 0x0043DA43
-    Window* open()
+    Window& open()
     {
         auto window = WindowManager::bringToFront(WindowType::landscapeGeneration, 0);
         if (window != nullptr)
@@ -581,7 +581,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         window->callPrepareDraw();
         window->initScrollWidgets();
 
-        return window;
+        return *window;
     }
 
     namespace Land

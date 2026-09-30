@@ -239,12 +239,12 @@ namespace OpenLoco::Ui::Windows
 
     namespace KeyboardShortcuts
     {
-        Window* open();
+        Window& open();
     }
 
     namespace LandscapeGeneration
     {
-        Window* open();
+        Window& open();
     }
 
     namespace Main
@@ -282,19 +282,19 @@ namespace OpenLoco::Ui::Windows
 
     namespace MusicJukebox
     {
-        Window* open();
+        Window& open();
     }
 
     namespace MusicSelection
     {
-        Window* open();
+        Window& open();
     }
 
     namespace NetworkStatus
     {
         using CloseCallback = std::function<void()>;
 
-        Window* open(std::string_view text, CloseCallback cbClose);
+        Window& open(std::string_view text, CloseCallback cbClose);
         void setText(std::string_view text);
         void setText(std::string_view text, CloseCallback cbClose);
         void close();

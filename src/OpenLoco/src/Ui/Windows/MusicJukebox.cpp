@@ -320,12 +320,12 @@ namespace OpenLoco::Ui::Windows::MusicJukebox
     };
 
     // 0x004BF823
-    Window* open()
+    Window& open()
     {
         Window* window = WindowManager::bringToFront(WindowType::musicJukebox);
         if (window != nullptr)
         {
-            return window;
+            return *window;
         }
 
         window = WindowManager::createWindowCentred(
@@ -353,6 +353,6 @@ namespace OpenLoco::Ui::Windows::MusicJukebox
         window->callPrepareDraw();
         window->initScrollWidgets();
 
-        return window;
+        return *window;
     }
 }

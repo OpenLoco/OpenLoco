@@ -1193,23 +1193,23 @@ namespace OpenLoco::Ui::Windows::Construction
         }
 
         // 0x004A09DE
-        void repositionTabs(Window* self)
+        void repositionTabs(Window& self)
         {
-            int16_t xPos = self->widgets[widx::tab_construction].left;
-            const int16_t tabWidth = self->widgets[widx::tab_construction].right - xPos;
+            int16_t xPos = self.widgets[widx::tab_construction].left;
+            const int16_t tabWidth = self.widgets[widx::tab_construction].right - xPos;
 
             for (uint8_t i = widx::tab_construction; i <= widx::tab_overhead; i++)
             {
-                if (self->isDisabled(i))
+                if (self.isDisabled(i))
                 {
-                    self->widgets[i].hidden = true;
+                    self.widgets[i].hidden = true;
                     continue;
                 }
 
-                self->widgets[i].hidden = false;
-                self->widgets[i].left = xPos;
-                self->widgets[i].right = xPos + tabWidth;
-                xPos = self->widgets[i].right + 1;
+                self.widgets[i].hidden = false;
+                self.widgets[i].left = xPos;
+                self.widgets[i].right = xPos + tabWidth;
+                xPos = self.widgets[i].right + 1;
             }
         }
 
@@ -1226,13 +1226,13 @@ namespace OpenLoco::Ui::Windows::Construction
         }
 
         // 0x0049E437, 0x0049E76F, 0x0049ECD1
-        void onUpdate(Window* self, GhostVisibilityFlags flag)
+        void onUpdate(Window& self, GhostVisibilityFlags flag)
         {
-            self->frameNo++;
-            self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::construction, self->number, self->currentTab + Common::widx::tab_construction);
+            self.frameNo++;
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(WindowType::construction, self.number, self.currentTab + Common::widx::tab_construction);
 
-            if (ToolManager::isToolActive(WindowType::construction, self->number))
+            if (ToolManager::isToolActive(WindowType::construction, self.number))
             {
                 return;
             }
@@ -1395,21 +1395,21 @@ namespace OpenLoco::Ui::Windows::Construction
             Construction::activateSelectedConstructionWidgets();
         }
 
-        void previousTab(Window* self)
+        void previousTab(Window& self)
         {
-            WidgetIndex_t prev = self->prevAvailableWidgetInRange(widx::tab_construction, widx::tab_overhead);
+            WidgetIndex_t prev = self.prevAvailableWidgetInRange(widx::tab_construction, widx::tab_overhead);
             if (prev != -1)
             {
-                self->callOnMouseUp(prev, self->widgets[prev].id);
+                self.callOnMouseUp(prev, self.widgets[prev].id);
             }
         }
 
-        void nextTab(Window* self)
+        void nextTab(Window& self)
         {
-            WidgetIndex_t next = self->nextAvailableWidgetInRange(widx::tab_construction, widx::tab_overhead);
+            WidgetIndex_t next = self.nextAvailableWidgetInRange(widx::tab_construction, widx::tab_overhead);
             if (next != -1)
             {
-                self->callOnMouseUp(next, self->widgets[next].id);
+                self.callOnMouseUp(next, self.widgets[next].id);
             }
         }
 
