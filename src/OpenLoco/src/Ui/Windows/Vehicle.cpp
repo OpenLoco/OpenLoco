@@ -183,6 +183,83 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return false;
         }
 
+        // Used when checking whether to refurbish.
+        // Note that this doesn't have any arguments for whether to check the cheats.
+        // That is because they are always checked in this function.
+        static bool needsLocomotiveChangeConfirm(EntityId id)
+        {
+            auto* vehBase = EntityManager::get<Vehicles::VehicleBase>(id);
+            if (vehBase == nullptr)
+            {
+                return false;
+            }
+
+            auto* head = EntityManager::get<Vehicles::VehicleHead>(vehBase->getHead());
+            if (head == nullptr)
+            {
+                return false;
+            }
+
+            bool keepCheat1On = Config::get().keepCargoModifyPickup;
+            bool keepCheat2On = false; // not yet implemented.
+
+            // Assert that keepCheat2On implies keepCheat1On.
+            // (x <- y) === (x || !y)
+            assert(keepCheat1On || !keepCheat2On);
+
+            // Same as hasAnyCargo(), but only checks
+            // power units.
+            if (keepCheat1On && !keepCheat2On)
+            {
+                uint16_t locoCargoTotal = 0;
+                Vehicles::Vehicle train(*head);
+                for (const auto& car : train.cars)
+                {
+                    auto* vehObj = ObjectManager::get<VehicleObject>(car.body->objectId);
+
+                    // Skip the check for car if unpowered
+                    if (vehObj->power == 0)
+                    {
+                        continue;
+                    }
+
+                    auto front = car.front;
+                    auto body = car.body;
+
+                    if (front->secondaryCargo.type != 0xFF)
+                    {
+                        locoCargoTotal += front->secondaryCargo.qty;
+                    }
+                    if (body->primaryCargo.type != 0xFF)
+                    {
+                        locoCargoTotal += body->primaryCargo.qty;
+                    }
+                }
+
+                // If all power units are empty, return false.
+                if (locoCargoTotal == 0)
+                {
+                    return false;
+                }
+            }
+
+            // Checks all units if both cheats are off.
+            if (!keepCheat1On && !keepCheat2On)
+            {
+                if (!head->hasAnyCargo())
+                {
+                    return false;
+                }
+            }
+
+            if (head->getCarCount() > 0 && CompanyManager::getControllingId() == head->owner)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         static bool confirmComponentChange(const EntityId id, const OpenLoco::StringId windowTitle, const OpenLoco::StringId windowMessage, const OpenLoco::StringId windowConfirm, const bool checkKeepCargoCheat = true)
         {
             if (!needsComponentChangeConfirm(id, checkKeepCargoCheat))
@@ -203,6 +280,21 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             auto format = FormatArguments{};
             return Windows::PromptOkCancel::open(windowTitle, windowMessage, format, windowConfirm);
+        }
+
+        static bool confirmComponentRefresh(const EntityId id, const OpenLoco::StringId windowTitle, const OpenLoco::StringId windowMessage, const OpenLoco::StringId windowTitleLoco, const OpenLoco::StringId windowMessageLoco, const OpenLoco::StringId windowConfirm)
+        {
+
+            // This needs to be checked either here or in the calling function,
+            // since the message depends on whether keepCargoModifyPickup is on.
+            bool keepC = Config::get().keepCargoModifyPickup;
+            if (!needsLocomotiveChangeConfirm(id))
+            {
+                return true;
+            }
+
+            auto format = FormatArguments{};
+            return Windows::PromptOkCancel::open(keepC ? windowTitleLoco : windowTitle, keepC ? windowMessageLoco : windowMessage, format, windowConfirm);
         }
 
         static void onClose(Window& self);
@@ -1230,13 +1322,33 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            GameCommands::setErrorTitle(StringIds::cant_refresh_locos);
+            EntityId eid = head->head;
 
-            GameCommands::VehicleRefreshLocoArgs args{};
-            args.head = head->head;
+            StringId warnTitle = StringIds::confirm_vehicle_component_refurbish_title;
+            StringId warnMessage = StringIds::confirm_vehicle_component_refurbish_message;
 
-            GameCommands::doCommand(args, GameCommands::Flags::apply);
+            StringId warnTitleLoco = StringIds::confirm_vehicle_component_refurbish_title;
+            StringId warnMessageLoco = StringIds::confirm_vehicle_component_refurbish_loco_only_message;
 
+            if (head->vehicleType == VehicleType::ship || head->vehicleType == VehicleType::aircraft)
+            {
+                warnTitle = StringIds::confirm_vehicle_component_refurbish_ship_plane_title;
+                warnMessage = StringIds::confirm_vehicle_component_refurbish_ship_plane_message;
+                // Same for both.
+                warnTitleLoco = StringIds::confirm_vehicle_component_refurbish_ship_plane_title;
+                warnMessageLoco = StringIds::confirm_vehicle_component_refurbish_ship_plane_message;
+            }
+
+            if (Common::confirmComponentRefresh(eid, warnTitle, warnMessage, warnTitleLoco, warnMessageLoco, StringIds::confirm_vehicle_component_refurbish_confirm))
+            {
+
+                GameCommands::setErrorTitle(StringIds::cant_refresh_locos);
+
+                GameCommands::VehicleRefreshLocoArgs args{};
+                args.head = eid;
+
+                GameCommands::doCommand(args, GameCommands::Flags::apply);
+            }
         }
 
         // 0x004B3823
