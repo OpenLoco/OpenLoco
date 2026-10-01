@@ -2529,3 +2529,5 @@ strings:
   2474: "Refurbishing the power unit(s) will remove all cargo aboard the power units. Continue?"
   2475: "Confirm Refurbish Vehicle"
   2476: "Refurbishing this vehicle will remove all cargo aboard the entire vehicle. Continue?"
+  2477: "Keep power unit cargo on refurbish"
+  2478: "{SMALLFONT}{COLOUR BLACK}When enabled, cargo will not be cleared from power units (locomotives, airplanes, ships, etc...) when refurbishing them."

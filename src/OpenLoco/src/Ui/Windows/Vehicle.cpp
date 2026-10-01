@@ -201,11 +201,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             bool keepCheat1On = Config::get().keepCargoModifyPickup;
-            bool keepCheat2On = false; // not yet implemented.
+            bool keepCheat2On = Config::get().keepCargoLocoRefurbish;
 
             // Assert that keepCheat2On implies keepCheat1On.
             // (x <- y) === (x || !y)
             assert(keepCheat1On || !keepCheat2On);
+
+            if (keepCheat2On)
+            {
+                return false;
+            }
 
             // Same as hasAnyCargo(), but only checks
             // power units.
@@ -282,19 +287,19 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return Windows::PromptOkCancel::open(windowTitle, windowMessage, format, windowConfirm);
         }
 
-        static bool confirmComponentRefresh(const EntityId id, const OpenLoco::StringId windowTitle, const OpenLoco::StringId windowMessage, const OpenLoco::StringId windowTitleLoco, const OpenLoco::StringId windowMessageLoco, const OpenLoco::StringId windowConfirm)
+        static bool confirmComponentRefresh(const EntityId id, const OpenLoco::StringId windowTitle, const OpenLoco::StringId windowMessage, const OpenLoco::StringId windowConfirm)
         {
 
             // This needs to be checked either here or in the calling function,
             // since the message depends on whether keepCargoModifyPickup is on.
-            bool keepC = Config::get().keepCargoModifyPickup;
+            // bool keepC = Config::get().keepCargoModifyPickup;
             if (!needsLocomotiveChangeConfirm(id))
             {
                 return true;
             }
 
             auto format = FormatArguments{};
-            return Windows::PromptOkCancel::open(keepC ? windowTitleLoco : windowTitle, keepC ? windowMessageLoco : windowMessage, format, windowConfirm);
+            return Windows::PromptOkCancel::open(windowTitle, windowMessage, format, windowConfirm);
         }
 
         static void onClose(Window& self);
@@ -1327,19 +1332,19 @@ namespace OpenLoco::Ui::Windows::Vehicle
             StringId warnTitle = StringIds::confirm_vehicle_component_refurbish_title;
             StringId warnMessage = StringIds::confirm_vehicle_component_refurbish_message;
 
-            StringId warnTitleLoco = StringIds::confirm_vehicle_component_refurbish_title;
-            StringId warnMessageLoco = StringIds::confirm_vehicle_component_refurbish_loco_only_message;
-
             if (head->vehicleType == VehicleType::ship || head->vehicleType == VehicleType::aircraft)
             {
                 warnTitle = StringIds::confirm_vehicle_component_refurbish_ship_plane_title;
                 warnMessage = StringIds::confirm_vehicle_component_refurbish_ship_plane_message;
-                // Same for both.
-                warnTitleLoco = StringIds::confirm_vehicle_component_refurbish_ship_plane_title;
-                warnMessageLoco = StringIds::confirm_vehicle_component_refurbish_ship_plane_message;
+            }
+            // Only use this one if the vehicle *isn't* a ship/plane.
+            else if (Config::get().keepCargoModifyPickup)
+            {
+                warnTitle = StringIds::confirm_vehicle_component_refurbish_title;
+                warnMessage = StringIds::confirm_vehicle_component_refurbish_loco_only_message;
             }
 
-            if (Common::confirmComponentRefresh(eid, warnTitle, warnMessage, warnTitleLoco, warnMessageLoco, StringIds::confirm_vehicle_component_refurbish_confirm))
+            if (Common::confirmComponentRefresh(eid, warnTitle, warnMessage, StringIds::confirm_vehicle_component_refurbish_confirm))
             {
 
                 GameCommands::setErrorTitle(StringIds::cant_refresh_locos);

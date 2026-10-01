@@ -2186,6 +2186,8 @@ namespace OpenLoco::StringIds
     constexpr StringId confirm_vehicle_component_refurbish_loco_only_message = 2474;
     constexpr StringId confirm_vehicle_component_refurbish_ship_plane_title = 2475;
     constexpr StringId confirm_vehicle_component_refurbish_ship_plane_message = 2476;
+    constexpr StringId cheat_keep_cargo_loco_refurbish = 2477;
+    constexpr StringId tooltip_keep_cargo_loco_refurbish = 2478;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

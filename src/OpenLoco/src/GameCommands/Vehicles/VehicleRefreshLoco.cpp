@@ -133,7 +133,7 @@ namespace OpenLoco::GameCommands
                         // would have already had its cargo removed
                         // earlier. This prevents "removeAllCargo" from
                         // being run twice.
-                        if (Config::get().keepCargoModifyPickup)
+                        if (Config::get().keepCargoModifyPickup && !Config::get().keepCargoLocoRefurbish)
                         {
                             for (auto& component : car)
                             {

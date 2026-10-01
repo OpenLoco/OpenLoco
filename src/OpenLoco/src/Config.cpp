@@ -353,6 +353,7 @@ namespace OpenLoco::Config
         node["disableStationSizeLimit"] = _config.disableStationSizeLimit;
         node["showAiPlanningAsGhosts"] = _config.showAiPlanningAsGhosts;
         node["keepCargoModifyPickup"] = _config.keepCargoModifyPickup;
+        node["keepCargoLocoRefurbish"] = _config.keepCargoLocoRefurbish;
 
         // Preferred owner
         node["preferredOwnerName"] = _config.preferredOwnerName;
