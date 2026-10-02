@@ -147,6 +147,23 @@ namespace OpenLoco::GameCommands
             }
 
             setExpenditureType(ExpenditureType::VehiclePurchases);
+
+            // Sets the position the floating/flying money
+            // emerges from.
+            // Note: there are two options:
+            // (1) Set it to the position of the vehicle.
+            // (2) Set it to {null, null, 0}.
+            //
+            // Option (1) means the floating cost number will pop out
+            // near the train. However, it will be off screen if the
+            // vehicle itself is off-screen.
+            // Option (2) will always have the cost number pop out around
+            // the middle of the screen, even if the vehicle isn't on screen.
+            // However, this behaviour differs from that of adding new cars
+            // to an existing train.
+            setPosition(head->position);
+            //setPosition({ Location::null, Location::null, 0 });
+
             return netCost;
         }
         catch (std::runtime_error&)
