@@ -23,9 +23,13 @@
             "inherits": "windows-base",
             "generator": "Visual Studio 17 2022",
             "cacheVariables": {
+                "VCPKG_OVERLAY_TRIPLETS": {
+                    "type": "STRING",
+                    "value": "${sourceDir}/cmake/triplets"
+                },
                 "VCPKG_TARGET_TRIPLET": {
                     "type": "STRING",
-                    "value": "x64-windows-static"
+                    "value": "x64-windows-static-v143"
                 }
             }
         },
@@ -36,9 +40,13 @@
             "inherits": "windows-base",
             "generator": "Visual Studio 18 2026",
             "cacheVariables": {
+                "VCPKG_OVERLAY_TRIPLETS": {
+                    "type": "STRING",
+                    "value": "${sourceDir}/cmake/triplets"
+                },
                 "VCPKG_TARGET_TRIPLET": {
                     "type": "STRING",
-                    "value": "x64-windows-static"
+                    "value": "x64-windows-static-v145"
                 }
             }
         },
