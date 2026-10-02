@@ -1,3 +1,4 @@
+#include "Config.h"
 #include "Date.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
@@ -52,8 +53,8 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
 
     // 0x00509d08
     static constexpr auto _widgets = makeWidgets(
-        Widgets::Wt3Widget(Widx::kOuterFrame, { 0, 0 }, { 140, 29 }, WindowColour::primary),
-        Widgets::Wt3Widget(Widx::kInnerFrame, { 2, 2 }, { 136, 25 }, WindowColour::primary),
+        Widgets::Wt3Widget(Widx::kOuterFrame, { 0, 0 }, kWindowSize + Size{ 0, 2 }, WindowColour::primary),
+        Widgets::Wt3Widget(Widx::kInnerFrame, { 2, 2 }, kWindowSize - Size{ 4, 2 }, WindowColour::primary),
         Widgets::ImageButton(Widx::kPlayer, { 1, 1 }, { 26, 26 }, WindowColour::primary),
         Widgets::ImageButton(Widx::kCompanyValue, { 27, 2 }, { 111, 12 }, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_company_value),
         Widgets::ImageButton(Widx::kPerformanceIndex, { 27, 14 }, { 111, 12 }, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_performance_index)
@@ -161,7 +162,7 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
         auto window = WindowManager::createWindow(
             WindowType::companyInfoPanel,
             { 0, Ui::height() - kWindowSize.height },
-            { kWindowSize.width, kWindowSize.height },
+            kWindowSize,
             Ui::WindowFlags::stickToFront | Ui::WindowFlags::transparent | Ui::WindowFlags::noBackground,
             getEvents());
         window->setWidgets(_widgets);
@@ -187,20 +188,25 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
     // 0x43944B
     static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
     {
-        auto tr = Gfx::TextRenderer(drawingCtx);
+        using Config::ToolbarLayout;
+        const auto layout = Config::get().toolbarLayout;
+        const bool infoPanelsOnTop = layout == ToolbarLayout::panelsOnTop || layout == ToolbarLayout::allCombined;
+        auto offsetY = infoPanelsOnTop ? -2 : 1;
+        auto height = infoPanelsOnTop ? 0 : -2;
 
         Widget& frame = window.widgets[widx::outer_frame];
-        drawingCtx.drawRect(frame.left, frame.top, frame.width(), frame.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(frame.left, frame.top + offsetY, frame.width(), frame.height() + height, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
 
-        // Draw widgets.
         window.draw(drawingCtx);
 
-        drawingCtx.drawRectInset(frame.left + 1, frame.top + 1, frame.width() - 2, frame.height() - 2, window.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
+        drawingCtx.drawRectInset(frame.left + 1, frame.top + offsetY, frame.width() - 2, frame.height() + height, window.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
         auto playerCompany = CompanyManager::get(CompanyManager::getControllingId());
         auto competitor = ObjectManager::get<CompetitorObject>(playerCompany->competitorId);
         auto image = Gfx::recolour(competitor->images[enumValue(playerCompany->ownerEmotion)], playerCompany->mainColours.primary);
         drawingCtx.drawImage(ZoomLevel::full, frame.left + 2, frame.top + 2, image);
+
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         auto x = frame.width() / 2 + 12;
         {

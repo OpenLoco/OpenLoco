@@ -106,7 +106,7 @@ namespace OpenLoco::Tutorial
         config.displayLockedVehicles = false;
         config.invertRightMouseViewPan = false;
         config.toolbarAutoMenu = true;
-        config.toolbarButtonsCentred = false;
+        config.toolbarLayout = Config::ToolbarLayout::vanilla;
 
         // Get the environment file for this tutorial.
         static constexpr Environment::PathId tutorialFileIds[] = {
