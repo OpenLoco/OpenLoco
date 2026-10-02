@@ -735,8 +735,8 @@ namespace OpenLoco::Input::Shortcuts
         ShortcutManager::add(Shortcut::pauseUnpauseGame,                StringIds::shortcut_pause_unpause_game,                 pauseUnpauseGame,               "pauseUnpauseGame",                 "Pause");
         ShortcutManager::add(Shortcut::zoomViewOut,                     StringIds::shortcut_zoom_view_out,                      zoomViewOut,                    "zoomViewOut",                      "PageUp");
         ShortcutManager::add(Shortcut::zoomViewIn,                      StringIds::shortcut_zoom_view_in,                       zoomViewIn,                     "zoomViewIn",                       "PageDown");
-        ShortcutManager::add(Shortcut::rotateViewClockwise,             StringIds::shortcut_rotate_view,                        rotateViewClockwise,            "rotateViewClockwise",              "Return");
-        ShortcutManager::add(Shortcut::rotateViewAntiClockwise,         StringIds::shortcut_rotate_view,                        rotateViewAntiClockwise,        "rotateViewAntiClockwise",          "Left Shift+Return");
+        ShortcutManager::add(Shortcut::rotateViewClockwise,             StringIds::shortcut_rotate_view_clockwise,              rotateViewClockwise,            "rotateViewClockwise",              "Return");
+        ShortcutManager::add(Shortcut::rotateViewAntiClockwise,         StringIds::shortcut_rotate_view_anti_clockwise,         rotateViewAntiClockwise,        "rotateViewAntiClockwise",          "Left Shift+Return");
         ShortcutManager::add(Shortcut::rotateConstructionObject,        StringIds::shortcut_rotate_construction_object,         rotateConstructionObject,       "rotateConstructionObject",         "Z");
         ShortcutManager::add(Shortcut::toggleUndergroundView,           StringIds::shortcut_toggle_underground_view,            toggleUndergroundView,          "toggleUndergroundView",            "1");
         ShortcutManager::add(Shortcut::toggleSeeThroughTracks,          StringIds::shortcutSeeThroughTracks,                    toggleSeeThroughTracks,         "toggleSeeThroughTracks",           "2");
