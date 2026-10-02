@@ -2178,6 +2178,16 @@ namespace OpenLoco::StringIds
     constexpr StringId has_cargo_order = 2466;
     constexpr StringId transports_cargo = 2467;
     constexpr StringId map_tooltip_int_x_int = 2468;
+    constexpr StringId dropdown_refurbish_locos = 2469;
+    constexpr StringId cant_refurbish_locos = 2470;
+    constexpr StringId confirm_vehicle_component_refurbish_title = 2471;
+    constexpr StringId confirm_vehicle_component_refurbish_message = 2472;
+    constexpr StringId confirm_vehicle_component_refurbish_confirm = 2473;
+    constexpr StringId confirm_vehicle_component_refurbish_loco_only_message = 2474;
+    constexpr StringId confirm_vehicle_component_refurbish_ship_plane_title = 2475;
+    constexpr StringId confirm_vehicle_component_refurbish_ship_plane_message = 2476;
+    constexpr StringId cheat_keep_cargo_loco_refurbish = 2477;
+    constexpr StringId tooltip_keep_cargo_loco_refurbish = 2478;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
