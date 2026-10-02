@@ -162,7 +162,7 @@ namespace OpenLoco::GameCommands
             // However, this behaviour differs from that of adding new cars
             // to an existing train.
             setPosition(head->position);
-            //setPosition({ Location::null, Location::null, 0 });
+            // setPosition({ Location::null, Location::null, 0 });
 
             return netCost;
         }
