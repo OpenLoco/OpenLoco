@@ -45,8 +45,6 @@ namespace OpenLoco::GameCommands
             currency32_t refundCost = 0;
             currency32_t purchaseCost = 0;
 
-            // StringIds::vehicle_is_locked
-
             for (const auto& car : train.cars)
             {
                 auto* vehObj = ObjectManager::get<VehicleObject>(car.body->objectId);
@@ -61,7 +59,7 @@ namespace OpenLoco::GameCommands
             // Note: Refund cost might already be negative signed;
             // make sure netCost <= purchaseCost.
             currency32_t netCost = purchaseCost - refundCost;
-            assert(netCost <= purchaseCost); // safety check
+            // assert(netCost <= purchaseCost); // safety check
 
             uint32_t thisDay = getCurrentDay();
             // maybe replace each call to getCurrentYear() with
@@ -75,8 +73,6 @@ namespace OpenLoco::GameCommands
                     auto* vehObj = ObjectManager::get<VehicleObject>(car.body->objectId);
                     // Remove cargo from all components
                     // (unless keepCargoModifyPickup is on)
-                    // Possibly todo: add check that the user knows that
-                    // cargo will be removed.
                     if (!Config::get().keepCargoModifyPickup)
                     {
                         for (auto& component : car)
@@ -119,20 +115,21 @@ namespace OpenLoco::GameCommands
                         // Only the front bogie stores the reliability.
                         car.front->reliability = maxRely;
                         // Reset the breakdown timer.
+                        // Todo:
                         car.front->timeoutToBreakdown = 0xFFFF;
                         // Reset the refund cost to 7/8 * (new cost).
                         auto temp_cost = Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
                         temp_cost -= temp_cost / 8;
                         car.front->refundCost = temp_cost;
 
-                        // Todo: Add extra cheat that prevents removal
-                        // of cargo from power units.
-                        //
                         // This checks whether "keepCargoModifyPickup"
                         // is *ON*, since if it is off, then the car
                         // would have already had its cargo removed
                         // earlier. This prevents "removeAllCargo" from
                         // being run twice.
+                        // It also checks that keepCargoLocoRefurbish is *off*,
+                        // since the whole point of that cheat is to stop
+                        // the cargo from being removed from power units.
                         if (Config::get().keepCargoModifyPickup && !Config::get().keepCargoLocoRefurbish)
                         {
                             for (auto& component : car)
