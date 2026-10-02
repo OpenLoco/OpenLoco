@@ -19,6 +19,7 @@ namespace OpenLoco::Input
         zoomViewOut,
         zoomViewIn,
         rotateViewClockwise,
+        rotateViewAntiClockwise,
         rotateConstructionObject,
         toggleUndergroundView,
         toggleSeeThroughTracks,
