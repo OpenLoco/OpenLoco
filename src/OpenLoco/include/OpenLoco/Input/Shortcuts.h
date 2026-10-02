@@ -18,7 +18,7 @@ namespace OpenLoco::Input
         pauseUnpauseGame,
         zoomViewOut,
         zoomViewIn,
-        rotateView,
+        rotateViewClockwise,
         rotateConstructionObject,
         toggleUndergroundView,
         toggleSeeThroughTracks,
