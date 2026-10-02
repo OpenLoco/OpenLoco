@@ -21,7 +21,7 @@
 #include "GameCommands/Vehicles/VehiclePlaceWater.h"
 #include "GameCommands/Vehicles/VehicleRearrange.h"
 #include "GameCommands/Vehicles/VehicleRefit.h"
-#include "GameCommands/Vehicles/VehicleRefreshLoco.h"
+#include "GameCommands/Vehicles/VehicleRefurbishLoco.h"
 #include "GameCommands/Vehicles/VehicleRepaint.h"
 #include "GameCommands/Vehicles/VehicleReverse.h"
 #include "GameCommands/Vehicles/VehicleSell.h"
@@ -287,7 +287,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return Windows::PromptOkCancel::open(windowTitle, windowMessage, format, windowConfirm);
         }
 
-        static bool confirmComponentRefresh(const EntityId id, const OpenLoco::StringId windowTitle, const OpenLoco::StringId windowMessage, const OpenLoco::StringId windowConfirm)
+        static bool confirmComponentRefurbish(const EntityId id, const OpenLoco::StringId windowTitle, const OpenLoco::StringId windowMessage, const OpenLoco::StringId windowConfirm)
         {
 
             // This needs to be checked either here or in the calling function,
@@ -1319,7 +1319,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
-        static void refreshLocos(Window& self)
+        static void refurbishLocos(Window& self)
         {
             auto head = Common::getVehicle(self);
             if (head == nullptr)
@@ -1344,12 +1344,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 warnMessage = StringIds::confirm_vehicle_component_refurbish_loco_only_message;
             }
 
-            if (Common::confirmComponentRefresh(eid, warnTitle, warnMessage, StringIds::confirm_vehicle_component_refurbish_confirm))
+            if (Common::confirmComponentRefurbish(eid, warnTitle, warnMessage, StringIds::confirm_vehicle_component_refurbish_confirm))
             {
 
-                GameCommands::setErrorTitle(StringIds::cant_refresh_locos);
+                GameCommands::setErrorTitle(StringIds::cant_refurbish_locos);
 
-                GameCommands::VehicleRefreshLocoArgs args{};
+                GameCommands::VehicleRefurbishLocoArgs args{};
                 args.head = eid;
 
                 GameCommands::doCommand(args, GameCommands::Flags::apply);
@@ -1418,7 +1418,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 Dropdown::add(0, StringIds::dropdown_stringid, StringIds::dropdown_modify_vehicle);
                 Dropdown::add(1, StringIds::dropdown_stringid, StringIds::dropdown_clone_vehicle);
-                Dropdown::add(2, StringIds::dropdown_stringid, StringIds::dropdown_refresh_locos);
+                Dropdown::add(2, StringIds::dropdown_stringid, StringIds::dropdown_refurbish_locos);
 
                 auto& widget = self.widgets[widx::buildNew];
                 Dropdown::showText(
@@ -1477,7 +1477,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
                 else if (itemIndex == 2)
                 {
-                    refreshLocos(self);
+                    refurbishLocos(self);
                 }
                 return;
             }

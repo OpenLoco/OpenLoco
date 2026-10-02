@@ -75,7 +75,7 @@
 #include "GameCommands/Vehicles/VehiclePlaceWater.h"
 #include "GameCommands/Vehicles/VehicleRearrange.h"
 #include "GameCommands/Vehicles/VehicleRefit.h"
-#include "GameCommands/Vehicles/VehicleRefreshLoco.h"
+#include "GameCommands/Vehicles/VehicleRefurbishLoco.h"
 #include "GameCommands/Vehicles/VehicleRepaint.h"
 #include "GameCommands/Vehicles/VehicleReverse.h"
 #include "GameCommands/Vehicles/VehicleSell.h"
@@ -236,7 +236,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::vehicleRepaint,               vehicleRepaint,            0,          false },
         { GameCommand::createSignalsAuto,            createSignalsAuto,         0,          true  },
         { GameCommand::removeSignalsAuto,            removeSignalsAuto,         0,          true  },
-        { GameCommand::vehicleRefreshLoco,           vehicleRefreshLoco,        0,          true  },
+        { GameCommand::vehicleRefurbishLoco,         vehicleRefurbishLoco,      0,          true  },
     };
     // clang-format on
 
