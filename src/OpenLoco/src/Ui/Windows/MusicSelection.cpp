@@ -128,12 +128,12 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     }
 
     // 0x004C1602
-    Window* open()
+    Window& open()
     {
         Window* window = WindowManager::bringToFront(WindowType::musicSelection, 0);
         if (window != nullptr)
         {
-            return window;
+            return *window;
         }
 
         window = WindowManager::createWindow(
@@ -159,7 +159,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         uint16_t numTracksSelected = std::ranges::count(Config::get().audio.customJukebox, true);
         updateStatusBar(*window, numTracksSelected);
 
-        return window;
+        return *window;
     }
 
     static void onResize(Ui::Window& self)

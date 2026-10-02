@@ -1022,7 +1022,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         };
 
         // 0x00437949
-        static void drawGraphLegend(Window* self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y)
+        static void drawGraphLegend(Window& self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y)
         {
             auto tr = Gfx::TextRenderer(drawingCtx);
 
@@ -1039,12 +1039,12 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 auto palette = Colours::getShade(colour, 6);
                 auto stringId = StringIds::small_black_string;
 
-                if (self->var_854 & (1 << cargoCount))
+                if (self.var_854 & (1 << cargoCount))
                 {
                     stringId = StringIds::small_white_string;
                 }
 
-                if (!(self->var_854 & (1 << cargoCount)) || !(_hoverItemTicks & (1 << 2)))
+                if (!(self.var_854 & (1 << cargoCount)) || !(_hoverItemTicks & (1 << 2)))
                 {
                     drawingCtx.fillRect(x, y + 3, x + 4, y + 7, palette, Gfx::RectFlags::none);
                 }
@@ -1138,7 +1138,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 auto x = self.width - kLegendWidth - kWindowPadding;
                 auto y = 52;
 
-                drawGraphLegend(&self, drawingCtx, x, y);
+                drawGraphLegend(self, drawingCtx, x, y);
             }
 
             auto canvasMidX = _graphSettings.xOffset + (_graphSettings.width - _graphSettings.xOffset) / 2;
@@ -1163,7 +1163,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x004379F2
-        static void setLegendHover(Window* self, int16_t x, int16_t y)
+        static void setLegendHover(Window& self, int16_t x, int16_t y)
         {
             uint32_t selectedCargo = 0;
             if (!Input::hasFlag(Input::Flags::rightMousePressed))
@@ -1172,7 +1172,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 auto* frontWindow = WindowManager::findAt(location);
                 const auto xDiff = location.x - x;
                 const auto yDiff = location.y - y;
-                if (frontWindow != nullptr && frontWindow == self && xDiff <= kLegendWidth && xDiff >= 0 && yDiff < 320 && yDiff >= 0)
+                if (frontWindow != nullptr && frontWindow == &self && xDiff <= kLegendWidth && xDiff >= 0 && yDiff < 320 && yDiff >= 0)
                 {
                     auto listY = yDiff;
                     uint8_t cargoItem = 0;
@@ -1192,15 +1192,15 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     }
                 }
             }
-            if (self->var_854 != selectedCargo)
+            if (self.var_854 != selectedCargo)
             {
                 // TODO: var_854 is 16 bits but selectedCargo is 32 bits. Only the first 15 cargo types can be selected.
-                self->var_854 = selectedCargo;
-                self->invalidate();
+                self.var_854 = selectedCargo;
+                self.invalidate();
             }
-            if (self->var_854 != 0)
+            if (self.var_854 != 0)
             {
-                self->invalidate();
+                self.invalidate();
             }
         }
 
@@ -1358,7 +1358,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x004378BA
-        static void setLegendHover(Window* self, int16_t x, int16_t y)
+        static void setLegendHover(Window& self, int16_t x, int16_t y)
         {
             uint32_t selectedCompany = 0;
             if (!Input::hasFlag(Input::Flags::rightMousePressed))
@@ -1367,7 +1367,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 auto* frontWindow = WindowManager::findAt(location);
                 const auto xDiff = location.x - x;
                 const auto yDiff = location.y - y;
-                if (frontWindow != nullptr && frontWindow == self && xDiff <= kLegendWidth && xDiff >= 0 && yDiff < 150 && yDiff >= 0)
+                if (frontWindow != nullptr && frontWindow == &self && xDiff <= kLegendWidth && xDiff >= 0 && yDiff < 150 && yDiff >= 0)
                 {
                     auto listY = yDiff;
                     for (auto& company : CompanyManager::companies())
@@ -1381,14 +1381,14 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     }
                 }
             }
-            if (self->var_854 != selectedCompany)
+            if (self.var_854 != selectedCompany)
             {
-                self->var_854 = selectedCompany;
-                self->invalidate();
+                self.var_854 = selectedCompany;
+                self.invalidate();
             }
-            if (self->var_854 != 0)
+            if (self.var_854 != 0)
             {
-                self->invalidate();
+                self.invalidate();
             }
         }
 
@@ -1410,13 +1410,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 case widx::tab_values:
                 {
                     _hoverItemTicks++;
-                    setLegendHover(&self, legendX, legendY);
+                    setLegendHover(self, legendX, legendY);
                     break;
                 }
                 case widx::tab_payment_rates:
                 {
                     _hoverItemTicks++;
-                    CargoPaymentRates::setLegendHover(&self, legendX, legendY);
+                    CargoPaymentRates::setLegendHover(self, legendX, legendY);
                     break;
                 }
                 case widx::tab_speed_records:

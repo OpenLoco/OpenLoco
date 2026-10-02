@@ -200,7 +200,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     // 0x0049E437
     static void onUpdate(Window& self)
     {
-        Common::onUpdate(&self, GhostVisibilityFlags::station);
+        Common::onUpdate(self, GhostVisibilityFlags::station);
     }
 
     // 0x0049FF4B
@@ -1165,7 +1165,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             self.widgets[widx::station].text = trainStationObject->name;
         }
 
-        Common::repositionTabs(&self);
+        Common::repositionTabs(self);
 
         // Following information is only calculated when a ghost has been placed
         if (!Common::hasGhostVisibilityFlag(GhostVisibilityFlags::station))

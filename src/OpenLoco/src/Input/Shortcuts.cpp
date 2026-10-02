@@ -613,7 +613,7 @@ namespace OpenLoco::Input::Shortcuts
         auto window = WindowManager::find(WindowType::construction);
         if (window != nullptr)
         {
-            Ui::Windows::Construction::Common::previousTab(window);
+            Ui::Windows::Construction::Common::previousTab(*window);
         }
     }
 
@@ -622,7 +622,7 @@ namespace OpenLoco::Input::Shortcuts
         auto window = WindowManager::find(WindowType::construction);
         if (window != nullptr)
         {
-            Ui::Windows::Construction::Common::nextTab(window);
+            Ui::Windows::Construction::Common::nextTab(*window);
         }
     }
 

@@ -372,7 +372,7 @@ namespace OpenLoco::VehicleManager
         if (vehBuildWnd != nullptr)
         {
             vehBuildWnd->invalidate();
-            Ui::Windows::BuildVehicle::sub_4B92A5(vehBuildWnd);
+            Ui::Windows::BuildVehicle::sub_4B92A5(*vehBuildWnd);
         }
 
         // 0x004AF0A3
