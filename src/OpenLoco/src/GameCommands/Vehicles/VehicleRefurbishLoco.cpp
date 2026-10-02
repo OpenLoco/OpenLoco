@@ -1,4 +1,4 @@
-#include "GameCommands/Vehicles/VehicleRefreshLoco.h"
+#include "GameCommands/Vehicles/VehicleRefurbishLoco.h"
 #include "Config.h"
 #include "Date.h"
 #include "Economy/Economy.h"
@@ -19,7 +19,7 @@
 namespace OpenLoco::GameCommands
 {
 
-    static uint32_t vehicleRefreshLoco(const VehicleRefreshLocoArgs& args, const Flags flags)
+    static uint32_t vehicleRefurbishLoco(const VehicleRefurbishLocoArgs& args, const Flags flags)
     {
         // moved to end
         // setExpenditureType(ExpenditureType::VehiclePurchases);
@@ -155,11 +155,11 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    void vehicleRefreshLoco(registers& regs, const Flags flags)
+    void vehicleRefurbishLoco(registers& regs, const Flags flags)
     {
-        regs.ebx = vehicleRefreshLoco(VehicleRefreshLocoArgs(regs), flags);
+        regs.ebx = vehicleRefurbishLoco(VehicleRefurbishLocoArgs(regs), flags);
         // In case you want to inspect the value before returning it:
-        // uint32_t rslt = vehicleRefreshLoco(VehicleRefreshLocoArgs(regs), flags);
+        // uint32_t rslt = vehicleRefurbishLoco(VehicleRefurbishLocoArgs(regs), flags);
         // regs.ebx = rslt;
     }
 }

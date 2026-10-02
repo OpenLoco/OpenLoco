@@ -139,7 +139,7 @@ namespace OpenLoco::GameCommands
         vehicleRepaint = 84,
         createSignalsAuto = 85,
         removeSignalsAuto = 86,
-        vehicleRefreshLoco = 87,
+        vehicleRefurbishLoco = 87,
     };
 
     constexpr int32_t kDefaultRegValue = 0xCCCCCCCC;

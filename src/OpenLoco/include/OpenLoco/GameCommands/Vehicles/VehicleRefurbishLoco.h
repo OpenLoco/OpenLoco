@@ -4,12 +4,12 @@
 
 namespace OpenLoco::GameCommands
 {
-    struct VehicleRefreshLocoArgs
+    struct VehicleRefurbishLocoArgs
     {
-        static constexpr auto command = GameCommand::vehicleRefreshLoco;
+        static constexpr auto command = GameCommand::vehicleRefurbishLoco;
 
-        VehicleRefreshLocoArgs() = default;
-        explicit VehicleRefreshLocoArgs(const registers& regs)
+        VehicleRefurbishLocoArgs() = default;
+        explicit VehicleRefurbishLocoArgs(const registers& regs)
             : head(static_cast<EntityId>(regs.ax))
         {
         }
@@ -25,5 +25,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void vehicleRefreshLoco(registers& regs, const Flags flags);
+    void vehicleRefurbishLoco(registers& regs, const Flags flags);
 }
