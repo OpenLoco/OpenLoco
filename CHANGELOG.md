@@ -1,5 +1,6 @@
 26.09+ (???)
 ------------------------------------------------------------------------
+- Change: [#3868] Split Rotate View keyboard shortcut into Clockwise and Anti-Clockwise shortcuts.
 - Change: [#4033] Objects marked with source OpenLoco (OpenGraphics) are no longer exported in scenario or save files.
 - Fix: [#2879] Crash when starting the game with an empty openloco.yaml file.
 - Fix: [#4027] Crash when starting the game with malformed YAML schema.
