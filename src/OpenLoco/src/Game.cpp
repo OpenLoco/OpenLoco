@@ -317,6 +317,85 @@ namespace OpenLoco::Game
         return saveResult;
     }
 
+    void onDropFile(std::string pathString)
+    {
+        if (!(SceneManager::isTitleMode() || SceneManager::isPlayMode() || SceneManager::isEditorMode()))
+        {
+            return;
+        }
+
+        fs::path path = fs::canonical(pathString);
+
+        if (!fs::is_regular_file(path))
+        {
+            // Just ignore whatever was dropped
+            // TODO open error window? Use dropped folders (fs::is_directory) if browse prompt is open?
+            return;
+        }
+
+        FormatArguments args{};
+
+        // push name of file
+        {
+            char* buffer_2039 = StringManager::getBufferString(StringIds::buffer_2039);
+            auto name = path.stem().make_preferred().u8string();
+            strncpy(&buffer_2039[0], name.c_str(), 512);
+            args.push(StringIds::buffer_2039);
+        }
+
+        // Check file extension - is it a save file?
+        if (S5::matchesFilter(path, S5::filterSV5))
+        {
+            if (SceneManager::isEditorMode())
+            {
+                // You cannot edit a save.
+                Ui::Windows::Error::open(StringIds::error_cant_open_save_in_editor);
+                return;
+            }
+
+            if (!Ui::Windows::PromptOkCancel::open(StringIds::title_dropped_file, StringIds::load_save_file_prompt, args, StringIds::load_save_file_confirm))
+            {
+                // Player clicked cancel
+                return;
+            }
+
+            SceneManager::requestSceneLoad(SceneManager::SceneId::gameplay, path, S5::LoadFlags::none);
+            return;
+        }
+
+        // Is it a scenario/landscape file?
+        if (S5::matchesFilter(path, S5::filterSC5))
+        {
+            if (SceneManager::isEditorMode())
+            {
+                // Prompt to load landscape/scenario file to edit.
+
+                if (!Ui::Windows::PromptOkCancel::open(StringIds::title_dropped_file, StringIds::load_landscape_file_prompt, args, StringIds::load_landscape_file_confirm))
+                {
+                    return;
+                }
+
+                SceneManager::requestSceneLoad(SceneManager::SceneId::editor, path, S5::LoadFlags::landscape);
+                return;
+            }
+
+            // Prompt to play scenario.
+            // TODO check that it is a scenario and not a landscape
+
+            if (!Ui::Windows::PromptOkCancel::open(StringIds::title_dropped_file, StringIds::load_scenario_file_prompt, args, StringIds::load_scenario_file_confirm))
+            {
+                return;
+            }
+
+            Scenario::loadAndStart(path);
+            return;
+        }
+
+        // Invalid file type
+        Ui::Windows::Error::open(StringIds::error_invalid_file_type);
+        return;
+    }
+
     std::string getActiveSavePath()
     {
         return _activeSavePath;
