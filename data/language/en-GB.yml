@@ -725,41 +725,41 @@ strings:
   702: Keyboard Shortcuts
   703: Reset Keys
   704: "{SMALLFONT}{COLOUR BLACK}Set all keyboard shortcuts back to default settings"
-  705: Close Top-most Window
-  706: Close All Floating Windows
-  707: Cancel Construction Mode
-  708: Pause/Unpause Game
-  709: Zoom View Out
-  710: Zoom View In
-  711: Rotate View
-  712: Rotate Construction Object
-  713: Underground View Toggle
-  714: Hide Foreground Tracks & Roads Toggle
-  715: Hide Foreground Scenery Toggle
-  716: Height Marks on Land Toggle
-  717: Height Marks on Tracks & Roads Toggle
-  718: Dir. Arrows on Tracks & Roads Toggle
-  719: Adjust Land
-  720: Adjust Water
-  721: Plant Trees
-  722: Bulldoze Area
-  723: Build Tracks
-  724: Build Roads
-  725: Build Airports
-  726: Build Ship Ports
-  727: Build New Vehicles
-  728: Show Vehicles List
-  729: Show Stations List
-  730: Show Towns List
-  731: Show Industries List
-  732: Show Map
-  733: Show Companies List
-  734: Show Company Information
-  735: Show Finances
-  736: Show Announcements List
+  705: Close top-most window
+  706: Close all floating windows
+  707: Cancel construction mode
+  708: Pause/Unpause game
+  709: Zoom view out
+  710: Zoom view in
+  711: Rotate view
+  712: Rotate construction object
+  713: Underground view toggle
+  714: Hide Foreground tracks & roads toggle
+  715: Hide Foreground scenery toggle
+  716: Height marks on land toggle
+  717: Height marks on tracks & roads toggle
+  718: Dir. arrows on tracks & roads toggle
+  719: Adjust land
+  720: Adjust water
+  721: Plant trees
+  722: Bulldoze area
+  723: Build tracks
+  724: Build roads
+  725: Build airports
+  726: Build ship ports
+  727: Build new vehicles
+  728: Show vehicles list
+  729: Show stations list
+  730: Show towns list
+  731: Show industries list
+  732: Show map
+  733: Show companies list
+  734: Show company Information
+  735: Show finances
+  736: Show announcements list
   737: Screenshot
-  738: Cancel or Show Last Announcement
-  739: Send Message (2-player mode)
+  738: Cancel or show last announcement
+  739: Send message (2-player mode)
 
   # Virtual-Key Codes
   740: ???
@@ -2401,7 +2401,7 @@ strings:
   2346: "{COLOUR BLACK}Production Last Month"
   2347: "{COLOUR BLACK}Production Last Month ▼"
   2348: "{SMALLFONT}{COLOUR BLACK}Sort list by production last month"
-  2349: "Show Options Window"
+  2349: "Show options window"
   2350: "See-through bridges"
   2351: "See-through bridges toggle"
   2352: "{COLOUR WINDOW_2}No. of riverbeds:"
