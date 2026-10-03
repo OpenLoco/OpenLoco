@@ -928,12 +928,12 @@ namespace OpenLoco::Ui::Windows::Cheats
         }
     }
 
-    Window* open()
+    Window& open()
     {
         auto window = WindowManager::bringToFront(WindowType::cheats);
         if (window != nullptr)
         {
-            return window;
+            return *window;
         }
 
         window = WindowManager::createWindow(
@@ -953,7 +953,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         window->setColour(WindowColour::primary, skin->windowTitlebarColour);
         window->setColour(WindowColour::secondary, skin->windowColour);
 
-        return window;
+        return *window;
     }
 
     namespace Common

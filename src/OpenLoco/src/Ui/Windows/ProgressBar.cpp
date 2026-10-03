@@ -43,7 +43,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
     static const WindowEventList& getEvents();
 
     // 0x004CF6E2
-    Window* open(std::string_view captionString)
+    Window& open(std::string_view captionString)
     {
         _captionString = captionString;
         SceneManager::addSceneFlags(SceneManager::Flags::progressBarActive);
@@ -61,7 +61,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
         window->setColour(WindowColour::secondary, Colour::black);
 
         setProgress(0);
-        return window;
+        return *window;
     }
 
     // 0x004CF74E

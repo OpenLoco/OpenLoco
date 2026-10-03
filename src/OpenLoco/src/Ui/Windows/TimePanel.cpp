@@ -71,7 +71,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
     static const WindowEventList& getEvents();
 
-    Window* open()
+    Window& open()
     {
         auto window = WindowManager::createWindow(
             WindowType::timePanel,
@@ -91,7 +91,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
             window->setColour(WindowColour::secondary, AdvancedColour(skin->timePanelColour).translucent());
         }
 
-        return window;
+        return *window;
     }
 
     // 0x004396A4
@@ -220,7 +220,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x0043A67F
-    static void mapMouseDown(Ui::Window* self, WidgetIndex_t widgetIndex)
+    static void mapMouseDown(Ui::Window& self, WidgetIndex_t widgetIndex)
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -228,13 +228,13 @@ namespace OpenLoco::Ui::Windows::TimePanel
         {
             Dropdown::add(0, StringIds::menu_sprite_stringid, { (uint32_t)skin->img + InterfaceSkin::ImageIds::phone, StringIds::chat_send_message });
             Dropdown::add(1, StringIds::menu_sprite_stringid, { (uint32_t)skin->img + map_sprites_by_rotation[WindowManager::getCurrentRotation()], StringIds::menu_map });
-            Dropdown::showBelow(self, widgetIndex, 2, 25, (1 << 6));
+            Dropdown::showBelow(&self, widgetIndex, 2, 25, (1 << 6));
             Dropdown::setHighlightedItem(1);
         }
         else
         {
             Dropdown::add(0, StringIds::menu_sprite_stringid, { (uint32_t)skin->img + map_sprites_by_rotation[WindowManager::getCurrentRotation()], StringIds::menu_map });
-            Dropdown::showBelow(self, widgetIndex, 1, 25, (1 << 6));
+            Dropdown::showBelow(&self, widgetIndex, 1, 25, (1 << 6));
             Dropdown::setHighlightedItem(0);
         }
     }
@@ -246,11 +246,11 @@ namespace OpenLoco::Ui::Windows::TimePanel
         args.push(opponent->name);
 
         // TODO: convert this to a builder pattern, with chainable functions to set the different string ids and arguments
-        TextInput::openTextInput(&self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, widx::map_chat_menu, args);
+        TextInput::openTextInput(self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, widx::map_chat_menu, args);
     }
 
     // 0x0043A72F
-    static void mapDropdown(Window* self, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void mapDropdown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
         {
@@ -262,7 +262,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
             switch (itemIndex)
             {
                 case 0:
-                    beginSendChatMessage(*self);
+                    beginSendChatMessage(self);
                     break;
                 case 1:
                     MapWindow::open();
@@ -286,7 +286,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         switch (id)
         {
             case Widx::kMapChatMenu:
-                mapMouseDown(&window, widgetIndex);
+                mapMouseDown(window, widgetIndex);
                 break;
         }
     }
@@ -297,7 +297,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         switch (id)
         {
             case Widx::kMapChatMenu:
-                mapDropdown(&w, widgetIndex, item_index);
+                mapDropdown(w, widgetIndex, item_index);
                 break;
         }
     }
