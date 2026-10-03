@@ -133,16 +133,6 @@ namespace OpenLoco::Platform
         return exePath;
     }
 
-    fs::path promptDirectory([[maybe_unused]] const std::string& Title, [[maybe_unused]] void* hwnd)
-    {
-        std::string input;
-        std::cout << "Type your Locomotion path: ";
-        std::getline(std::cin, input);
-
-        auto path = fs::canonical(input);
-        return path;
-    }
-
     std::vector<fs::path> getLocoInstallSearchPaths()
     {
         // Locomotion is a Windows game, so it is normally installed here by a launcher

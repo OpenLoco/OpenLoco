@@ -12,7 +12,7 @@ namespace OpenLoco::Platform
 
     fs::path getDataDirectory();
     fs::path getUserDirectory();
-    fs::path promptDirectory(const std::string& title, void* hwnd);
+    fs::path showFolderPicker(const std::string& title);
     fs::path getCurrentExecutablePath();
 
     std::vector<fs::path> getDrives();
