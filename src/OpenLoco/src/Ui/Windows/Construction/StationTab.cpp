@@ -1129,7 +1129,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     // 0x0049DD39
     static void prepareDraw(Window& self)
     {
-        Common::prepareDraw(&self);
+        Common::prepareDraw(self);
 
         self.widgets[widx::rotate].hidden = true;
 

@@ -48,7 +48,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         if (window != nullptr)
         {
-            Common::setDisabledWidgets(window);
+            Common::setDisabledWidgets(*window);
         }
 
         window = WindowManager::find(WindowType::construction);
@@ -66,7 +66,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         if (window != nullptr)
         {
-            Common::setDisabledWidgets(window);
+            Common::setDisabledWidgets(*window);
         }
         Construction::activateSelectedConstructionWidgets();
 
@@ -347,7 +347,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         if (window != nullptr)
         {
-            Common::setDisabledWidgets(window);
+            Common::setDisabledWidgets(*window);
         }
         Construction::activateSelectedConstructionWidgets();
 
@@ -445,7 +445,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         if (window != nullptr)
         {
-            Common::setDisabledWidgets(window);
+            Common::setDisabledWidgets(*window);
         }
         Construction::activateSelectedConstructionWidgets();
 
@@ -770,11 +770,11 @@ namespace OpenLoco::Ui::Windows::Construction
         };
         // clang-format on
 
-        void prepareDraw(Window* self)
+        void prepareDraw(Window& self)
         {
             // Activate the current tab
-            self->activatedWidgets &= ~((1ULL << tab_construction) | (1ULL << tab_overhead) | (1ULL << tab_signal) | (1ULL << tab_station));
-            self->activatedWidgets |= (1ULL << Common::tabInformationByTabOffset[self->currentTab].widgetIndex);
+            self.activatedWidgets &= ~((1ULL << tab_construction) | (1ULL << tab_overhead) | (1ULL << tab_signal) | (1ULL << tab_station));
+            self.activatedWidgets |= (1ULL << Common::tabInformationByTabOffset[self.currentTab].widgetIndex);
         }
 
         // 0x004A0EF4
@@ -788,7 +788,7 @@ namespace OpenLoco::Ui::Windows::Construction
             self.activatedWidgets = 0;
             self.setWidgets(tabInfo.widgets);
 
-            setDisabledWidgets(&self);
+            setDisabledWidgets(self);
             self.callPrepareDraw();
             const auto size = Ui::Size{ self.widgets[widx::frame].right + 1, self.widgets[widx::frame].bottom + 1 };
             self.setSizeFixed(size);
@@ -910,7 +910,7 @@ namespace OpenLoco::Ui::Windows::Construction
             self.setWidgets(tabInfo.widgets);
             self.holdableWidgets = 0;
 
-            setDisabledWidgets(&self);
+            setDisabledWidgets(self);
 
             // TODO: REMOVE WHEN REWORKING TUTORIALS (and tutorial.h include above)
             if (widgetIndex == widx::tab_signal && OpenLoco::Tutorial::state() != OpenLoco::Tutorial::State::none)
@@ -1291,7 +1291,7 @@ namespace OpenLoco::Ui::Windows::Construction
         }
 
         // 0x0049CE33
-        void setDisabledWidgets(Window* self)
+        void setDisabledWidgets(Window& self)
         {
             auto disabledWidgets = 0;
             if (SceneManager::isEditorMode())
@@ -1321,7 +1321,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 disabledWidgets |= (1ULL << Common::widx::tab_station);
             }
 
-            self->disabledWidgets = disabledWidgets;
+            self.disabledWidgets = disabledWidgets;
         }
 
         // 0x004A0963
@@ -1337,7 +1337,7 @@ namespace OpenLoco::Ui::Windows::Construction
             window->currentTab = 0;
             window->activatedWidgets = 0;
 
-            setDisabledWidgets(window);
+            setDisabledWidgets(*window);
 
             window->initScrollWidgets();
             window->owner = CompanyManager::getControllingId();
@@ -1390,7 +1390,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
             if (window != nullptr)
             {
-                setDisabledWidgets(window);
+                setDisabledWidgets(*window);
             }
             Construction::activateSelectedConstructionWidgets();
         }
