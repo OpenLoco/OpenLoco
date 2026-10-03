@@ -617,7 +617,7 @@ namespace OpenLoco::IndustryManager
             std::fill(std::begin(industry->history_min_production), std::end(industry->history_min_production), 0);
 
             industry->town = nearbyTown;
-            industry->name = indObj->var_02;
+            industry->name = indObj->defaultName;
 
             for (auto& innerInd : IndustryManager::industries())
             {
@@ -639,7 +639,7 @@ namespace OpenLoco::IndustryManager
                     FormatArguments args{};
                     args.push<uint16_t>(unique);
                     char buffer[512]{};
-                    StringManager::formatString(buffer, indObj->var_02 + 1, args);
+                    StringManager::formatString(buffer, indObj->defaultName + 1, args);
                     const auto newName = StringManager::userStringAllocate(buffer, true);
                     if (newName == StringIds::empty)
                     {

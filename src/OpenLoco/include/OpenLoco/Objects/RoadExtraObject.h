@@ -28,7 +28,7 @@ namespace OpenLoco
         int16_t buildCostFactor;                 // 0x06
         int16_t sellCostFactor;                  // 0x08
         uint32_t image;                          // 0x0A
-        uint32_t var_0E;
+        uint32_t baseImageOffset;                // 0x0E
 
         void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
         bool validate() const;

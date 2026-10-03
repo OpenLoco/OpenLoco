@@ -32,14 +32,14 @@ namespace OpenLoco
         };
         static constexpr auto kObjectType = ObjectType::steam;
 
-        StringId name;                // 0x00
-        uint16_t numImages;           // 0x02
-        uint8_t numStationaryTicks;   // 0x04 while stationary can be affected by wind
-        uint8_t spriteWidth;          // 0x05
-        uint8_t spriteHeightNegative; // 0x06
-        uint8_t spriteHeightPositive; // 0x07
-        SteamObjectFlags flags;       // 0x08
-        uint32_t var_0A;
+        StringId name;                   // 0x00
+        uint16_t numImages;              // 0x02
+        uint8_t numStationaryTicks;      // 0x04 while stationary can be affected by wind
+        uint8_t spriteWidth;             // 0x05
+        uint8_t spriteHeightNegative;    // 0x06
+        uint8_t spriteHeightPositive;    // 0x07
+        SteamObjectFlags flags;          // 0x08
+        uint32_t imageOffset;            // 0x0A offset added to baseImageId when drawing exhaust sprites
         uint32_t baseImageId;            // 0x0E
         uint16_t totalNumFramesType0;    // 0x12
         uint16_t totalNumFramesType1;    // 0x14

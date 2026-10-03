@@ -38,10 +38,10 @@ namespace OpenLoco
 
         StringId name;
         uint32_t sprite;       // 0x02
-        uint8_t var_06;        // 0x06 tool cursor type not used in Locomotion
+        uint8_t var_06;        // 0x06 unused tool cursor type in Locomotion
         WallObjectFlags flags; // 0x07
         World::SmallZ height;  // 0x08
-        uint8_t var_09;        // 0x09 flags2 None of these are used in Locomotion 0x10 used to be animation
+        uint8_t var_09;        // 0x09 unused flags, none of these are used in Locomotion
 
         // 0x004C4AF0
         bool validate() const { return true; }

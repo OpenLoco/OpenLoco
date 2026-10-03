@@ -45,13 +45,13 @@ namespace OpenLoco
         int16_t costFactor;             // 0x06
         int16_t sellCostFactor;         // 0x08
         uint8_t costIndex;              // 0x0A
-        uint8_t var_0B;
-        StringId description;  // 0x0C
-        uint32_t image;        // 0x0E
-        uint8_t numCompatible; // 0x12
-        uint8_t mods[7];       // 0x13
-        uint16_t designedYear; // 0x1A
-        uint16_t obsoleteYear; // 0x1C
+        uint8_t pad_0B;                 // 0x0B unused
+        StringId description;           // 0x0C
+        uint32_t image;                 // 0x0E
+        uint8_t numCompatible;          // 0x12
+        uint8_t mods[7];                // 0x13
+        uint16_t designedYear;          // 0x1A
+        uint16_t obsoleteYear;          // 0x1C
 
         bool validate() const;
         void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);

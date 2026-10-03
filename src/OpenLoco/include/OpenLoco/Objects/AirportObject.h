@@ -72,19 +72,19 @@ namespace OpenLoco
 
         struct MovementEdge
         {
-            uint8_t var_00;
-            uint8_t curNode;  // 0x01
-            uint8_t nextNode; // 0x02
-            uint8_t var_03;
-            uint32_t mustBeClearEdges;     // 0x04 Which edges must be clear to use the transition edge
-            uint32_t atLeastOneClearEdges; // 0x08 Which edges must have at least one clear to use transition edge
+            uint8_t curNodeType;           // 0x00 determines the movement type away from curNode, 2 means take off
+            uint8_t curNode;               // 0x01
+            uint8_t nextNode;              // 0x02
+            uint8_t nextNodeType;          // 0x03 determines the status an aircraft adopts on arriving at nextNode
+            uint32_t mustBeClearEdges;     // 0x04 which edges must be clear to use the transition edge
+            uint32_t atLeastOneClearEdges; // 0x08 which edges must have at least one clear to use transition edge
         };
 
         StringId name;
-        int16_t buildCostFactor; // 0x02
-        int16_t sellCostFactor;  // 0x04
-        uint8_t costIndex;       // 0x06
-        uint8_t var_07;
+        int16_t buildCostFactor;                   // 0x02
+        int16_t sellCostFactor;                    // 0x04
+        uint8_t costIndex;                         // 0x06
+        uint8_t pad_07;                            // 0x07 unused
         uint32_t image;                            // 0x08
         uint32_t buildingImage;                    // 0x0C
         AirportObjectFlags flags;                  // 0x10
@@ -105,7 +105,7 @@ namespace OpenLoco
         uint8_t numMovementEdges;                  // 0xAD
         uint32_t movementNodesOffset;              // 0xAE
         uint32_t movementEdgesOffset;              // 0xB2
-        uint32_t var_B6;
+        uint32_t requiredClearEdges;               // 0xB6 edges which must be clear to place an aircraft at a movement node
 
         void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;

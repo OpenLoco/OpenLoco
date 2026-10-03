@@ -76,8 +76,8 @@ namespace OpenLoco
         constexpr uint32_t preview_image = 0;
         constexpr uint32_t preview_image_windows = 1;
         constexpr uint32_t totalPreviewImages = 2;
-        // These are relative to var_10
-        // var_10 is the imageIds per sequenceIndex (for start/middle/end of the platform)
+        // These are relative to imageOffsets
+        // imageOffsets is the imageIds per sequenceIndex (for start/middle/end of the platform)
         namespace Style0
         {
             constexpr uint32_t straightBackNE = 0;
