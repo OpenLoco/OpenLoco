@@ -74,12 +74,12 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     static bool _warnOnce = false;
 
     // 0x00443807
-    static void initTabs(Window* self)
+    static void initTabs(Window& self)
     {
         uint16_t xPos = 3;
         for (int i = 0; i < 5; i++)
         {
-            Widget& widget = self->widgets[widx::tab0 + i];
+            Widget& widget = self.widgets[widx::tab0 + i];
             if (ScenarioManager::hasScenariosForCategory(i))
             {
                 widget.hidden = false;
@@ -95,34 +95,34 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x00443946
-    static void initList(Window* self)
+    static void initList(Window& self)
     {
-        if (self->info == 0xFFFFFFFF)
+        if (self.info == 0xFFFFFFFF)
         {
             return;
         }
 
         using namespace ScenarioManager;
-        auto scenarioInfo = reinterpret_cast<ScenarioIndexEntry*>(self->info);
-        if (hasScenarioInCategory(self->currentTab, scenarioInfo))
+        auto scenarioInfo = reinterpret_cast<ScenarioIndexEntry*>(self.info);
+        if (hasScenarioInCategory(self.currentTab, scenarioInfo))
         {
             return;
         }
 
         // Reset currently selected scenario if it is not in the current category.
-        self->info = 0xFFFFFFFF;
-        self->invalidate();
+        self.info = 0xFFFFFFFF;
+        self.invalidate();
     }
 
     static const WindowEventList& getEvents();
 
     // 0x00443868
-    Window* open()
+    Window& open()
     {
         Window* self = WindowManager::bringToFront(WindowType::scenarioSelect);
         if (self != nullptr)
         {
-            return self;
+            return *self;
         }
 
         self = WindowManager::createWindow(
@@ -141,7 +141,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         self->var_846 = 0xFFFF;
         self->var_85A = static_cast<int32_t>(0xFFFFFFFF);
 
-        initTabs(self);
+        initTabs(*self);
 
         // Select the last tab used, or the first available one.
         uint8_t selectedTab = Config::get().scenarioSelectedTab;
@@ -160,9 +160,9 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
         self->currentTab = selectedTab;
 
-        initList(self);
+        initList(*self);
 
-        return self;
+        return *self;
     }
 
     // 0x00443995
@@ -498,7 +498,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 self.initScrollWidgets();
                 self.invalidate();
 
-                initList(&self);
+                initList(self);
                 break;
             }
         }

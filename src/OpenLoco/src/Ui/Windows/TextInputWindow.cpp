@@ -76,13 +76,13 @@ namespace OpenLoco::Ui::Windows::TextInput
      * @param value @<cx>
      * @param callingWidget @<dx>
      */
-    void openTextInput(Ui::Window* caller, StringId title, StringId message, StringId value, int callingWidget, FormatArgumentsView valueArgs, uint32_t inputSize)
+    void openTextInput(Ui::Window& caller, StringId title, StringId message, StringId value, int callingWidget, FormatArgumentsView valueArgs, uint32_t inputSize)
     {
         _title = title;
         _message = message;
 
-        _callingWindowType = caller->type;
-        _callingWindowNumber = caller->number;
+        _callingWindowType = caller.type;
+        _callingWindowNumber = caller.number;
         _callingWidget = callingWidget;
 
         // Close any previous text input window
@@ -104,13 +104,13 @@ namespace OpenLoco::Ui::Windows::TextInput
         inputSession = Ui::TextInput::InputSession(temp, inputSize);
         inputSession.calculateTextOffset(window->widgets[widx::input].width() - 2);
 
-        caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
+        caller = *WindowManager::find(_callingWindowType, _callingWindowNumber);
 
-        window->setColour(WindowColour::primary, caller->getColour(WindowColour::primary));
-        window->setColour(WindowColour::secondary, caller->getColour(WindowColour::secondary));
-        window->owner = caller->owner;
+        window->setColour(WindowColour::primary, caller.getColour(WindowColour::primary));
+        window->setColour(WindowColour::secondary, caller.getColour(WindowColour::secondary));
+        window->owner = caller.owner;
 
-        if (caller->type == WindowType::titleMenu)
+        if (caller.type == WindowType::titleMenu)
         {
             const InterfaceSkinObject* interface = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::primary, interface->windowTitlebarColour);
@@ -118,7 +118,7 @@ namespace OpenLoco::Ui::Windows::TextInput
             window->owner = CompanyId::null;
         }
 
-        if (caller->type == WindowType::timePanel)
+        if (caller.type == WindowType::timePanel)
         {
             const InterfaceSkinObject* interface = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::secondary, interface->windowPlayerColor);
