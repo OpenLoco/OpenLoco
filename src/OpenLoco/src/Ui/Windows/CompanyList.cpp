@@ -541,7 +541,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
     }
 
     // 0x00435BC8
-    Window* open()
+    Window& open()
     {
         auto window = WindowManager::bringToFront(WindowType::companyList);
 
@@ -587,7 +587,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         window->activatedWidgets = 0;
         window->initScrollWidgets();
 
-        return window;
+        return *window;
     }
 
     void removeCompany(CompanyId id)
@@ -615,7 +615,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
     void openPerformanceIndexes()
     {
         auto window = open();
-        window->callOnMouseUp(Common::widx::tab_performance, window->widgets[Common::widx::tab_performance].id);
+        window.callOnMouseUp(Common::widx::tab_performance, window.widgets[Common::widx::tab_performance].id);
     }
 
     namespace CompanyPerformance
