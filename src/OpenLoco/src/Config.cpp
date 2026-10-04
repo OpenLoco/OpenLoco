@@ -354,6 +354,7 @@ namespace OpenLoco::Config
         node["showAiPlanningAsGhosts"] = _config.showAiPlanningAsGhosts;
         node["keepCargoModifyPickup"] = _config.keepCargoModifyPickup;
         node["keepCargoLocoRefurbish"] = _config.keepCargoLocoRefurbish;
+        node["allowRefurbishBroken"] = _config.allowRefurbishBroken;
 
         // Preferred owner
         node["preferredOwnerName"] = _config.preferredOwnerName;

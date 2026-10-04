@@ -7076,6 +7076,75 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    // Variant of canBeModified() that returns true
+    // even if the vehicle is broken down.
+    // This can be used together with canBeModified() to
+    // check whether the only thing preventing the vehicle
+    // from being modified is that it's broken down.
+    bool Vehicles::VehicleHead::canBeModifiedIgnoringBreakdowns() const
+    {
+        switch (this->status)
+        {
+            case Status::crashed:
+                GameCommands::setErrorText(StringIds::vehicle_has_crashed);
+                return false;
+            case Status::stuck:
+                GameCommands::setErrorText(StringIds::vehicle_is_stuck);
+                return false;
+            // case Status::brokenDown:
+            //     GameCommands::setErrorText(StringIds::vehicle_has_broken_down);
+            //     return false;
+            default:
+            {
+                Vehicle train(head);
+                if (this->vehicleType == VehicleType::aircraft || this->vehicleType == VehicleType::ship)
+                {
+                    // if (train.veh2->has73Flags(Flags73::isBrokenDown))
+                    // {
+                    //     GameCommands::setErrorText(StringIds::vehicle_has_broken_down);
+                    //     return false;
+                    // }
+
+                    if (this->tileX == -1)
+                    {
+                        return true;
+                    }
+
+                    if (this->status != Status::loading && this->status != Status::stopped)
+                    {
+                        GameCommands::setErrorText(StringIds::vehicle_must_be_stopped);
+                        return false;
+                    }
+
+                    if (train.veh2->currentSpeed == 0.0_mph)
+                    {
+                        return true;
+                    }
+                    GameCommands::setErrorText(StringIds::vehicle_must_be_stopped);
+                    return false;
+                }
+                else
+                {
+                    if (this->tileX == -1)
+                    {
+                        return true;
+                    }
+
+                    if (train.veh2->currentSpeed == 0.0_mph)
+                    {
+                        return true;
+                    }
+                    if (train.veh1->var_3C <= 0x3689)
+                    {
+                        return true;
+                    }
+                    GameCommands::setErrorText(StringIds::vehicle_must_be_stopped);
+                    return false;
+                }
+            }
+        }
+    }
+
     // 0x004B08DD
     void VehicleHead::liftUpVehicle()
     {

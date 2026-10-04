@@ -205,6 +205,7 @@ namespace OpenLoco::Config
         bool showAiPlanningAsGhosts = false;
         bool keepCargoModifyPickup = false;
         bool keepCargoLocoRefurbish = false;
+        bool allowRefurbishBroken = false;
 
         bool usePreferredOwnerName = false;
         std::string preferredOwnerName;

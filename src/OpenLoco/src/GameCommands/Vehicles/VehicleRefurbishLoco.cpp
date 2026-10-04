@@ -21,8 +21,6 @@ namespace OpenLoco::GameCommands
 
     static uint32_t vehicleRefurbishLoco(const VehicleRefurbishLocoArgs& args, const Flags flags)
     {
-        // moved to end
-        // setExpenditureType(ExpenditureType::VehiclePurchases);
 
         EntityId headId = args.head;
 
@@ -31,8 +29,19 @@ namespace OpenLoco::GameCommands
             Vehicles::Vehicle train(headId);
             auto& head = train.head;
 
+            // Set to true if the train is currently broken
+            // down and "allow refurbishing broken vehicles"
+            // is on.
+            bool mustRepair = false;
+            bool canBeMod = head->canBeModified();
+            // Using || to short-circuit the code.
+            bool canBeModIB = canBeMod || head->canBeModifiedIgnoringBreakdowns();
+
+            // != is equivalent to xor.
+            mustRepair = Config::get().allowRefurbishBroken && (canBeMod != canBeModIB);
+
             // Fail if the vehicle can't be modified.
-            if (!head->canBeModified())
+            if (!canBeMod && !mustRepair)
             {
                 return kFailure;
             }
@@ -56,10 +65,10 @@ namespace OpenLoco::GameCommands
                 }
             }
 
-            // Note: Refund cost might already be negative signed;
-            // make sure netCost <= purchaseCost.
+            // Note: In the event that refundCost is ever changed
+            // to be a negative integer, this assertion will check it.
             currency32_t netCost = purchaseCost - refundCost;
-            // assert(netCost <= purchaseCost); // safety check
+            assert(netCost <= purchaseCost);
 
             uint32_t thisDay = getCurrentDay();
             // maybe replace each call to getCurrentYear() with
@@ -68,6 +77,9 @@ namespace OpenLoco::GameCommands
             // Actually replace the vehicles if apply is on.
             if (hasFlags(flags, Flags::apply))
             {
+                // Stop any pending breakdowns.
+                head->breakdownFlags &= ~(Vehicles::BreakdownFlags::breakdownPending);
+
                 for (const auto& car : train.cars)
                 {
                     auto* vehObj = ObjectManager::get<VehicleObject>(car.body->objectId);
@@ -115,8 +127,14 @@ namespace OpenLoco::GameCommands
                         // Only the front bogie stores the reliability.
                         car.front->reliability = maxRely;
                         // Reset the breakdown timer.
-                        // Todo:
                         car.front->timeoutToBreakdown = 0xFFFF;
+                        // Reduce the amount of time broken down.
+                        if (mustRepair)
+                        {
+                            car.front->breakdownTimeout = std::min(car.front->breakdownTimeout, (uint8_t)1);
+                            // possibly increase the cost of refurbishment if the vehicle
+                            // is broken down?
+                        }
                         // Reset the refund cost to 7/8 * (new cost).
                         auto temp_cost = Economy::getInflationAdjustedCost(vehObj->costFactor, vehObj->costIndex, 6);
                         temp_cost -= temp_cost / 8;
