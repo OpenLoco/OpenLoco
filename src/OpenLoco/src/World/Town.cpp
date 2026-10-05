@@ -693,6 +693,10 @@ namespace OpenLoco
         }
 
         const auto& [townId, townDensity] = res.value();
+        if (targetTown != townId)
+        {
+            return std::nullopt;
+        }
 
         auto* town = TownManager::get(townId);
 
@@ -758,13 +762,6 @@ namespace OpenLoco
         {
             const auto randColourIndex = ((town->prng.randNext() & 0xFFFFU) * potentialColours.size()) / 65536;
             colour = potentialColours[randColourIndex];
-        }
-
-        // TODO: This should be done earlier but would cause a divergence
-        // move higher when we want to diverge
-        if (targetTown != townId)
-        {
-            return std::nullopt;
         }
 
         GameCommands::BuildingPlacementArgs args{};
@@ -1267,11 +1264,6 @@ namespace OpenLoco
                     args.roadObjectId = roadObjectId;
                     args.rotation = rotation;
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
-                    return;
-                }
-                // TODO: Remove this its just due to a mistake by CS
-                if (normalisedCorners > 8)
-                {
                     return;
                 }
             }
