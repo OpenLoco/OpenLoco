@@ -99,9 +99,7 @@ namespace OpenLoco::Vehicles
             newTargetSpeed = std::min(newTargetSpeed, train.veh2->rackRailMaxSpeed);
         }
 
-        // TODO: Original CS Bug. Fix when we diverge on replays
-        // newTargetSpeed = std::min(newTargetSpeed, toSpeed16(speedFromDistanceInATick(var_3C)) + 5_mph);
-        newTargetSpeed = std::min(newTargetSpeed, Speed16(static_cast<uint32_t>(var_3C) >> 15) + 5_mph);
+        newTargetSpeed = std::min(newTargetSpeed, toSpeed16(speedFromDistanceInATick(var_3C)) + 5_mph);
 
         if ((train.head->hasVehicleFlags(VehicleFlags::manualControl) && train.head->manualPower <= -20)
             || train.head->hasVehicleFlags(VehicleFlags::commandStop))
@@ -142,8 +140,6 @@ namespace OpenLoco::Vehicles
         {
             return;
         }
-
-        gPrng1().randNext(); // TODO: Remove when we can diverge from vanilla
 
         const auto soundNum = (vehObj->numStartSounds & NumStartSounds::kMask) - 1;
         const auto soundObjId = vehObj->startSounds[soundNum];
@@ -207,9 +203,7 @@ namespace OpenLoco::Vehicles
 
         if (!train.head->hasVehicleFlags(VehicleFlags::manualControl))
         {
-            // TODO: Original CS Bug. Fix when we diverge on replays
-            // newTargetSpeed = std::min(newTargetSpeed, toSpeed16(speedFromDistanceInATick(var_3C)) + 5_mph);
-            newTargetSpeed = std::min(newTargetSpeed, Speed16(static_cast<uint32_t>(var_3C) >> 15) + 5_mph);
+            newTargetSpeed = std::min(newTargetSpeed, toSpeed16(speedFromDistanceInATick(var_3C)) + 5_mph);
         }
 
         if ((train.head->hasVehicleFlags(VehicleFlags::manualControl) && train.head->manualPower <= -20)
