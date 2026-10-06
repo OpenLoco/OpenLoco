@@ -899,6 +899,28 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             {
                 window.activatedWidgets &= ~(1 << widx::hillsEdgeOfMap);
             }
+
+            // clang-format off
+            constexpr uint64_t dontApplyToPNGHeightmapWidgets = (
+                  (1ull << widx::topography_style_label)
+                | (1ull << widx::topography_style)
+                | (1ull << widx::topography_style_btn)
+                | (1ull << widx::hill_density_label)
+                | (1ull << widx::hill_density)
+                | (1ull << widx::hill_density_down)
+                | (1ull << widx::hill_density_up)
+                | (1ull << widx::hillsEdgeOfMap)
+                );
+            // clang-format on
+
+            if (options.generator == Scenario::LandGeneratorType::PngHeightMap)
+            {
+                window.disabledWidgets |= dontApplyToPNGHeightmapWidgets;
+            }
+            else
+            {
+                window.disabledWidgets &= ~dontApplyToPNGHeightmapWidgets;
+            }
         }
 
         // 0x0043E2A2
@@ -1096,6 +1118,51 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             auto& gameState = getGameState();
             auto& options = Scenario::getOptions();
+
+            // clang-format off
+            constexpr uint64_t numRiversWidget = (
+                  (1ull << widx::num_riverbeds_label)
+                | (1ull << widx::num_riverbeds)
+                | (1ull << widx::num_riverbeds_down)
+                | (1ull << widx::num_riverbeds_up)
+                );
+            constexpr uint64_t riverConfigWidgets = (
+                  (1ull << widx::min_river_width_label)
+                | (1ull << widx::min_river_width)
+                | (1ull << widx::min_river_width_down)
+                | (1ull << widx::min_river_width_up)
+                | (1ull << widx::max_river_width_label)
+                | (1ull << widx::max_river_width)
+                | (1ull << widx::max_river_width_down)
+                | (1ull << widx::max_river_width_up)
+                | (1ull << widx::riverbank_width_label)
+                | (1ull << widx::riverbank_width)
+                | (1ull << widx::riverbank_width_down)
+                | (1ull << widx::riverbank_width_up)
+                | (1ull << widx::meander_rate_label)
+                | (1ull << widx::meander_rate)
+                | (1ull << widx::meander_rate_down)
+                | (1ull << widx::meander_rate_up)
+                );
+            // clang-format on
+
+            if (options.topographyStyle == Scenario::TopographyStyle::flatLand && options.generator == Scenario::LandGeneratorType::Original)
+            {
+                window.disabledWidgets |= (riverConfigWidgets | numRiversWidget);
+            }
+            else
+            {
+                window.disabledWidgets &= ~numRiversWidget;
+
+                if (options.numRiverbeds == 0)
+                {
+                    window.disabledWidgets |= riverConfigWidgets;
+                }
+                else
+                {
+                    window.disabledWidgets &= ~riverConfigWidgets;
+                }
+            }
 
             {
                 auto args = FormatArguments(window.widgets[widx::sea_level].textArgs);
