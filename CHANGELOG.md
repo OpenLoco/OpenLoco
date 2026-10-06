@@ -4,6 +4,11 @@
 - Fix: [#2879] Crash when starting the game with an empty openloco.yaml file.
 - Fix: [#4027] Crash when starting the game with malformed YAML schema.
 - Fix: [#4037] Cannot delete road stations acquired with the 'acquire all company assets' cheat.
+- Fix: [#4061] Creating industries does not select a random colour (vanilla bug).
+- Fix: [#4063] AI fails to create road at some rotations (vanilla bug).
+- Fix: [#4063] Road path finding uses incorrect values for road length (vanilla bug).
+- Fix: [#4063] Incorrect vehicle speed calculation (vanilla bug).
+- Fix: [#4063] Town expansion does not raise/lower certain land corners (vanilla bug).
 
 26.09 (2026-09-18)
 ------------------------------------------------------------------------
