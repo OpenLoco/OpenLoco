@@ -326,7 +326,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case Widx::kChangeOwnerName:
                 {
                     auto company = CompanyManager::get(CompanyId(self.number));
-                    TextInput::openTextInput(&self, StringIds::title_name_owner, StringIds::prompt_enter_new_name_for_owner, company->ownerName, widgetIndex, {});
+                    TextInput::openTextInput(self, StringIds::title_name_owner, StringIds::prompt_enter_new_name_for_owner, company->ownerName, widgetIndex, {});
                     break;
                 }
             }
@@ -2666,7 +2666,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void renameCompanyPrompt(Window& self, WidgetIndex_t widgetIndex)
         {
             auto* company = CompanyManager::get(CompanyId(self.number));
-            TextInput::openTextInput(&self, StringIds::title_name_company, StringIds::prompt_enter_new_company_name, company->name, widgetIndex, {});
+            TextInput::openTextInput(self, StringIds::title_name_company, StringIds::prompt_enter_new_company_name, company->name, widgetIndex, {});
         }
 
         // 0x0043254F

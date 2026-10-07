@@ -374,7 +374,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     {
         char* buffer = StringManager::getBufferString(StringIds::buffer_2039);
         buffer[0] = '\0';
-        TextInput::openTextInput(window, StringIds::enter_host_address, StringIds::enter_host_address_description, StringIds::buffer_2039, widx::multiplayer_toggle_btn, {});
+        TextInput::openTextInput(*window, StringIds::enter_host_address, StringIds::enter_host_address_description, StringIds::buffer_2039, widx::multiplayer_toggle_btn, {});
     }
 
     static void multiplayerConnect(std::string_view host)
@@ -412,7 +412,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         args.push(StringIds::the_other_player);
 
         // TODO: convert this to a builder pattern, with chainable functions to set the different string ids and arguments
-        TextInput::openTextInput(&self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, widx::chat_btn, args);
+        TextInput::openTextInput(self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, widx::chat_btn, args);
     }
 
     static void sendChatMessage(const char* string)
