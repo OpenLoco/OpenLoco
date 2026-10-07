@@ -1,5 +1,6 @@
 26.09+ (???)
 ------------------------------------------------------------------------
+- Feature: [#4053] Save and scenario files can now be loaded by dragging & dropping them into the game window.
 - Change: [#4033] Objects marked with source OpenLoco (OpenGraphics) are no longer exported in scenario or save files.
 - Fix: [#2879] Crash when starting the game with an empty openloco.yaml file.
 - Fix: [#4027] Crash when starting the game with malformed YAML schema.

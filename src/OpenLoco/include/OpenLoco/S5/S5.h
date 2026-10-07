@@ -124,6 +124,8 @@ namespace OpenLoco::S5
     constexpr const char* filterSC5 = "*.SC5";
     constexpr const char* filterSV5 = "*.SV5";
 
+    bool matchesFilter(fs::path path, const char* filter);
+
     bool exportGameStateToFile(const fs::path& path, SaveFlags flags);
     bool exportGameStateToFile(Stream& stream, SaveFlags flags);
 
