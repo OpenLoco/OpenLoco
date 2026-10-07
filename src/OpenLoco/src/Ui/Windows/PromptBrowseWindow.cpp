@@ -118,11 +118,11 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void upOneLevel();
     static void defaultDirectory();
     static void changeDirectory(const fs::path& path);
-    static void processFileForLoadSave(Window* window);
-    static void processFileForLoadSave(Window* window, fs::path& entry);
-    static void processFileForDelete(Window* self, fs::path& entry);
+    static void processFileForLoadSave(Window& window);
+    static void processFileForLoadSave(Window& window, fs::path& entry);
+    static void processFileForDelete(Window& self, fs::path& entry);
     static void refreshDirectoryList();
-    static void loadFileDetails(Window* self);
+    static void loadFileDetails(Window& self);
     static bool filenameContainsInvalidChars();
     static const WindowEventList& getEvents();
 
@@ -251,7 +251,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 window.invalidate();
                 break;
             case Widx::kOkButton:
-                processFileForLoadSave(&window);
+                processFileForLoadSave(window);
                 break;
         }
     }
@@ -306,12 +306,12 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             self.invalidate();
 
             // Continue processing for load/save.
-            processFileForLoadSave(&self, entry);
+            processFileForLoadSave(self, entry);
         }
         // Clicking a file, with right mouse button
         else
         {
-            processFileForDelete(&self, entry);
+            processFileForDelete(self, entry);
         }
     }
 
@@ -335,7 +335,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
 
         self.var_85A = index;
-        loadFileDetails(&self);
+        loadFileDetails(self);
         self.invalidate();
     }
 
@@ -940,7 +940,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x00446574
-    static void processFileForLoadSave(Window* self)
+    static void processFileForLoadSave(Window& self)
     {
         // Create full path to target file.
         fs::path path = _currentDirectory / inputSession.buffer;
@@ -951,7 +951,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         processFileForLoadSave(self, path);
     }
 
-    static void processFileForLoadSave(Window* self, fs::path& path)
+    static void processFileForLoadSave(Window& self, fs::path& path)
     {
         if (_type == browse_type::save)
         {
@@ -975,7 +975,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 args.push(StringIds::buffer_2039);
 
                 // Ask for confirmation to replace the file.
-                auto titleId = self->widgets[widx::caption].text;
+                auto titleId = self.widgets[widx::caption].text;
                 if (!Windows::PromptOkCancel::open(titleId, StringIds::replace_existing_file_prompt, args, StringIds::replace_existing_file_button))
                 {
                     return;
@@ -1016,11 +1016,11 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
 
         // Close browse window to continue saving.
-        WindowManager::close(self);
+        WindowManager::close(&self);
     }
 
     // 0x004466CA
-    static void processFileForDelete(Window* self, fs::path& entry)
+    static void processFileForDelete(Window& self, fs::path& entry)
     {
         // Create full path to target file.
         fs::path path = _currentDirectory / entry.stem();
@@ -1036,7 +1036,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         args.push(StringIds::buffer_2039);
 
         // Ask for confirmation to delete the file.
-        auto titleId = self->widgets[widx::caption].text;
+        auto titleId = self.widgets[widx::caption].text;
         if (!Windows::PromptOkCancel::open(titleId, StringIds::delete_file_prompt, args, StringIds::delete_file_button))
         {
             return;
@@ -1047,20 +1047,20 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         // Refresh window
         refreshDirectoryList();
-        self->invalidate();
+        self.invalidate();
     }
 
     // 0x00446E87
-    static void loadFileDetails(Window* self)
+    static void loadFileDetails(Window& self)
     {
         freeFileDetails();
 
-        if (self->var_85A == -1)
+        if (self.var_85A == -1)
         {
             return;
         }
 
-        auto& entry = _files[self->var_85A];
+        auto& entry = _files[self.var_85A];
         if (fs::is_directory(entry))
         {
             return;
