@@ -94,6 +94,7 @@ namespace OpenLoco::Vehicles
         char* generateCargoCapacityString(char* buffer);
         char* cargoLUTToString(CargoTotalArray& cargoTotals, char* buffer);
         bool canBeModified() const;
+        bool canBeModifiedIgnoringBreakdowns() const;
         void liftUpVehicle();
         void updateTrainProperties();
         currency32_t calculateRunningCost() const;
