@@ -1,4 +1,5 @@
 #include "GameCommands/Vehicles/VehicleRefurbishLoco.h"
+#include "Audio/Audio.h"
 #include "Config.h"
 #include "Date.h"
 #include "Economy/Economy.h"
@@ -7,6 +8,7 @@
 #include "GameCommands/GameCommands.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/VehicleObject.h"
+#include "Random.h"
 #include "Types.hpp"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
@@ -15,6 +17,17 @@
 #include "Vehicles/VehicleBogie.h"
 #include "Vehicles/VehicleHead.h"
 #include <OpenLoco/Core/Numerics.hpp>
+#include <OpenLoco/Core/Prng.h>
+
+namespace OpenLoco::Vehicles
+{
+    // Code taken from VehiclePickup
+    void playRefurbishSound(Vehicles::VehicleHead* head)
+    {
+        const auto frequency = gPrng2().randNext(20003, 24098);
+        Audio::playSound(Audio::SoundId::vehiclePlace, Audio::ChannelId::ui, head->position, -1000, frequency);
+    }
+}
 
 namespace OpenLoco::GameCommands
 {
@@ -181,6 +194,7 @@ namespace OpenLoco::GameCommands
             // to an existing train.
             setPosition(head->position);
             // setPosition({ Location::null, Location::null, 0 });
+            Vehicles::playRefurbishSound(head);
 
             return netCost;
         }
