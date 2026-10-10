@@ -1,8 +1,8 @@
 ---
 header:
   locale: tr-TR
-  english_name: Turkish
-  native_name: Türkçe
+  english_name: Turkish (TR)
+  native_name: Türkçe (TR)
   loco_original_id: 0
 strings:
   0: ""
@@ -1304,12 +1304,12 @@ strings:
   1273: Tramvaylarim
   1274: Uçaklarim
   1275: Gemilerim
-  1276: tren
-  1277: otobüs
-  1278: kamyon
-  1279: tramvay
-  1280: uçak
-  1281: gemi
+  1276: Tren
+  1277: Otobüs
+  1278: Kamyon
+  1279: Tramvay
+  1280: Uçak
+  1281: Gemi
   1282: "{COLOUR WINDOW_2}Toplam: {COLOUR BLACK}{STRINGID}"
   1283: Bos
   1284: "{SMALLFONT}{COLOUR BLACK}Yük: "
@@ -2211,7 +2211,7 @@ strings:
   2155: "Araci ana görünümde takip et"
   2156: "Hileler/hata ayiklama araç çubugu menüsünü etkinlestir"
   2157: "{SMALLFONT}{COLOUR BLACK}Bu, oyunun araç çubuguna ekstra bir dügme ekler ve bazi hilelere ve hata ayiklama seçeneklerine kolay erisim saglar."
-  2158: "Kum havuzu modunu etkinlestir"
+  2158: "Kisitlamasiz modu etkinlestir"
   2159: "Manuel sürüse izin ver"
   2160: "Duraklatilmisken insaata izin ver"
   2161: "FPS sayacini göster"
@@ -2470,7 +2470,7 @@ strings:
   2414: "Müzik:"
   2415: "Ortam:"
   2416: "{SMALLFONT}{COLOUR BLACK}Ortam ses seviyesini ayarla"
-  2417: "Locomotion Baslıği"
+  2417: "Locomotion Title"
   2418: "Kopyala"
   2419: "{SMALLFONT}{COLOUR BLACK}Kopyalanacak ray ögeleri alani seçmenizi saglar"
   2420: "Yapistir"
@@ -2487,3 +2487,35 @@ strings:
   2431: "Azalan siralama"
   2432: "Kapasiteye göre sirala"
   2433: "Eskime durumuna göre sirala"
+  2434: "Araç yükü"
+  2435: "Degistirme veya alma sirasinda araç yükünü koru"
+  2436: "{SMALLFONT}{COLOUR BLACK}Etkinlestirildiginde, vagon eklerken, vagon tasirken veya araci alirken yük araçtan bosaltilmaz"
+  2437: "Siralama ölçütü"
+  2438: "Tercih Edilen Sirket"
+  2439: "Yeni bir oyuna baslarken tercih edilen sirket adini kullan"
+  2440: "{SMALLFONT}{COLOUR BLACK}Her yeni oyunda ayni sirket adini kullanmak için bu seçenegi etkinlestirin"
+  2441: "{COLOUR WINDOW_2}Tercih edilen sirket adi: {COLOUR BLACK}{STRINGID}"
+  2442: "Tercih Edilen Sirket Adi"
+  2443: "Tercih edilen sirket adini girin:"
+  2444: "Sirket adi degistirilemiyor..."
+  2445: "{STRINGID} yakininda hiçbir ulasim sirketi yok"
+  2446: "{STRINGID} geçen ay hiçbir teslimat almadi"
+  2447: "{SMALLFONT}{COLOUR BLACK}Bu öge türünün ana klasörüne geri dön"
+  2448: "ALT + "
+  2449: "SAG CTRL + "
+  2450: "SAG ALT + "
+  2451: "{STRINGID}{STRINGID}{STRINGID}{STRINGID}{STRINGID}"
+  2452: "{COLOUR BLACK}“{STRINGID}”"
+  2453: "Müzik"
+  2454: "{COLOUR WINDOW_2}Oyun sirasinda müzik çal"
+  2455: "Müzik kutusunu aç..."
+  2456: "{COLOUR WINDOW_2}Islenmeyi bekleyen yük:"
+  2457: "{COLOUR WINDOW_2}Tasinmayi bekleyen yük:"
+  2458: "{STRINGID}{STRINGID}"
+  2459: "Hata ayiklama penceresi"
+  2460: "Araç çubugu menülerini tiklama yerine üzerine gelince göster"
+  2461: "Araç çubugu dügmelerini yatayda ortala"
+  2462: "Tekrarli yerlestirme"
+  2463: "{SMALLFONT}{COLOUR BLACK}Sinyalleri, ray parçalarinda belirtilen 'adim araligi' kadar ilerleyerek tekrarli olarak yerlestir"
+  2464: "Adim araligi:"
+  2465: "Sinyal blogu"
