@@ -2521,3 +2521,8 @@ strings:
   2466: "Has cargo order"
   2467: "Transports cargo"
   2468: "{INT16} x {INT16}"
+  2469: "Max Clip Height Increment"
+  2470: "Max Clip Height Decrement"
+  2471: "Open View Clipping..."
+  2472: "View Clipping"
+  2473: "Max drawing height:"

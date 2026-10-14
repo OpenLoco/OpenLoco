@@ -356,6 +356,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/Tutorial.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/Vehicle.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/VehicleList.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Windows/ViewClipping.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/OrderManager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/Orders.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/Routing.cpp"

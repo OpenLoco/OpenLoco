@@ -27,6 +27,7 @@ namespace OpenLoco::Ui::ViewportManager
     void init()
     {
         _viewports.clear();
+        Ui::resetMaxClipHeight();
     }
 
     static Viewport* allocate()
