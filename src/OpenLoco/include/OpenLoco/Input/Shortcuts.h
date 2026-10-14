@@ -53,6 +53,7 @@ namespace OpenLoco::Input
         screenshot,
         toggleLastAnnouncement,
         sendMessage,
+        honkAllTrains,
         constructionPreviousTab,
         constructionNextTab,
         constructionPreviousTrackPiece,
