@@ -1,4 +1,5 @@
 #include "Gui.h"
+#include "Config.h"
 #include "Graphics/Colour.h"
 #include "Map/Tile.h"
 #include "SceneManager.h"
@@ -50,17 +51,29 @@ namespace OpenLoco::Gui
     {
         using Windows::EditorStepController::StepDirection;
 
+        auto* topToolbar = WindowManager::find(WindowType::topToolbar);
+        if (topToolbar != nullptr)
+        {
+            topToolbar->callPrepareDraw();
+        }
+
+        using Config::ToolbarLayout;
+        const auto layout = Config::get().toolbarLayout;
+        const bool infoPanelsOnTop = (layout == ToolbarLayout::panelsOnTop || layout == ToolbarLayout::allCombined) && uiWidth > 640;
+        const bool infoPanelsJuxtaposed = layout == ToolbarLayout::allCombined && topToolbar != nullptr && uiWidth > 640;
+
         auto* window = WindowManager::find(WindowType::editorStepController, enumValue(StepDirection::previous));
         if (window)
         {
-            window->y = uiHeight - window->height;
+            window->y = infoPanelsOnTop ? 0 : uiHeight - window->height;
+            window->x = infoPanelsJuxtaposed ? topToolbar->x - window->width - 10 : 0;
         }
 
         window = WindowManager::find(WindowType::editorStepController, enumValue(StepDirection::next));
         if (window)
         {
-            window->y = uiHeight - window->height;
-            window->x = std::max(uiWidth, 640) - window->width;
+            window->y = infoPanelsOnTop ? 0 : uiHeight - window->height;
+            window->x = infoPanelsJuxtaposed ? topToolbar->x + topToolbar->width + 10 : std::max(uiWidth, 640) - window->width;
         }
 
         window = WindowManager::find(WindowType::editorStatusLine);
@@ -73,23 +86,29 @@ namespace OpenLoco::Gui
 
     static void resizeGameScene(const int32_t uiWidth, const int32_t uiHeight)
     {
-        auto* window = WindowManager::find(WindowType::topToolbar);
-        if (window)
+        auto* topToolbar = WindowManager::find(WindowType::topToolbar);
+        if (topToolbar != nullptr)
         {
-            window->width = std::max(uiWidth, 640);
+            topToolbar->callPrepareDraw();
         }
 
-        window = WindowManager::find(WindowType::companyInfoPanel);
-        if (window)
+        using Config::ToolbarLayout;
+        const auto layout = Config::get().toolbarLayout;
+        const bool infoPanelsOnTop = (layout == ToolbarLayout::panelsOnTop || layout == ToolbarLayout::allCombined) && uiWidth > 640;
+        const bool infoPanelsJuxtaposed = layout == ToolbarLayout::allCombined && uiWidth > 640;
+
+        auto* companyInfo = WindowManager::find(WindowType::companyInfoPanel);
+        if (companyInfo != nullptr)
         {
-            window->y = uiHeight - window->height;
+            companyInfo->y = infoPanelsOnTop ? 0 : uiHeight - companyInfo->height;
+            companyInfo->x = infoPanelsJuxtaposed ? topToolbar->x - companyInfo->width - 10 : 0;
         }
 
-        window = WindowManager::find(WindowType::timePanel);
-        if (window)
+        auto* timeInfo = WindowManager::find(WindowType::timePanel);
+        if (timeInfo != nullptr)
         {
-            window->y = uiHeight - window->height;
-            window->x = std::max(uiWidth, 640) - window->width;
+            timeInfo->y = infoPanelsOnTop ? 0 : uiHeight - timeInfo->height;
+            timeInfo->x = infoPanelsJuxtaposed ? topToolbar->x + topToolbar->width + 10 : std::max(uiWidth, 640) - timeInfo->width;
         }
     }
 

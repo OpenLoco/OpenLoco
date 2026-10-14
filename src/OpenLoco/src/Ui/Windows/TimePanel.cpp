@@ -1,3 +1,4 @@
+#include "Config.h"
 #include "Date.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/General/SetGameSpeed.h"
@@ -60,14 +61,14 @@ namespace OpenLoco::Ui::Windows::TimePanel
     static void sendChatMessage(const char* str);
 
     static constexpr auto _widgets = makeWidgets(
-        Widgets::Wt3Widget(Widx::kOuterFrame, { 0, 0 }, { 140, 29 }, WindowColour::primary),
-        Widgets::Wt3Widget(Widx::kInnerFrame, { 2, 2 }, { 136, 25 }, WindowColour::primary),
+        Widgets::Wt3Widget(Widx::kOuterFrame, { 0, 0 }, kWindowSize + Size{ 0, 2 }, WindowColour::primary),
+        Widgets::Wt3Widget(Widx::kInnerFrame, { 2, 2 }, kWindowSize - Size{ 4, 2 }, WindowColour::primary),
         Widgets::ImageButton(Widx::kMapChatMenu, { 113, 1 }, { 26, 26 }, WindowColour::primary),
-        Widgets::ImageButton(Widx::kDateBtn, { 2, 2 }, { 111, 12 }, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_daymonthyear_challenge),
-        Widgets::ImageButton(Widx::kPauseBtn, { 18, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_pause, StringIds::tooltip_speed_pause),
-        Widgets::ImageButton(Widx::kNormalSpeedBtn, { 38, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_normal, StringIds::tooltip_speed_normal),
-        Widgets::ImageButton(Widx::kFastForwardBtn, { 58, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),
-        Widgets::ImageButton(Widx::kExtraFastForwardBtn, { 78, 15 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_extra_fast_forward, StringIds::tooltip_speed_extra_fast_forward));
+        Widgets::ImageButton(Widx::kDateBtn, { 2, 1 }, { 111, 12 }, WindowColour::primary, Widget::kContentNull, StringIds::tooltip_daymonthyear_challenge),
+        Widgets::ImageButton(Widx::kPauseBtn, { 18, 14 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_pause, StringIds::tooltip_speed_pause),
+        Widgets::ImageButton(Widx::kNormalSpeedBtn, { 38, 14 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_normal, StringIds::tooltip_speed_normal),
+        Widgets::ImageButton(Widx::kFastForwardBtn, { 58, 14 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),
+        Widgets::ImageButton(Widx::kExtraFastForwardBtn, { 78, 14 }, { 20, 12 }, WindowColour::primary, ImageIds::speed_extra_fast_forward, StringIds::tooltip_speed_extra_fast_forward));
 
     static const WindowEventList& getEvents();
 
@@ -76,7 +77,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         auto window = WindowManager::createWindow(
             WindowType::timePanel,
             { Ui::width() - kWindowSize.width, Ui::height() - kWindowSize.height },
-            { kWindowSize.width, kWindowSize.height },
+            kWindowSize,
             Ui::WindowFlags::stickToFront | Ui::WindowFlags::transparent | Ui::WindowFlags::noBackground,
             getEvents());
         window->setWidgets(_widgets);
@@ -157,15 +158,18 @@ namespace OpenLoco::Ui::Windows::TimePanel
     // 0x004397BE
     static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        auto tr = Gfx::TextRenderer(drawingCtx);
+        using Config::ToolbarLayout;
+        const auto layout = Config::get().toolbarLayout;
+        const bool infoPanelsOnTop = layout == ToolbarLayout::panelsOnTop || layout == ToolbarLayout::allCombined;
+        auto offsetY = infoPanelsOnTop ? -2 : 1;
+        auto height = infoPanelsOnTop ? 0 : -2;
 
         Widget& frame = self.widgets[widx::outer_frame];
-        drawingCtx.drawRect(frame.left, frame.top, frame.width(), frame.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(frame.left, frame.top + offsetY, frame.width(), frame.height() + height, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
 
-        // Draw widgets.
         self.draw(drawingCtx);
 
-        drawingCtx.drawRectInset(frame.left + 1, frame.top + 1, frame.width() - 2, frame.height() - 2, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
+        drawingCtx.drawRectInset(frame.left + 1, frame.top + offsetY, frame.width() - 2, frame.height() + height, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
         FormatArguments args{};
         args.push<uint32_t>(getCurrentDay());
@@ -189,6 +193,8 @@ namespace OpenLoco::Ui::Windows::TimePanel
         {
             auto& widget = _widgets[widx::date_btn];
             auto point = Point(widget.midX(), widget.top + 1);
+
+            auto tr = Gfx::TextRenderer(drawingCtx);
             tr.drawStringCentred(point, c, format, args);
         }
 

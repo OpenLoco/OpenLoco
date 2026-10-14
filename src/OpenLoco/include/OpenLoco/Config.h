@@ -38,6 +38,14 @@ namespace OpenLoco::Config
         custom,
     };
 
+    enum class ToolbarLayout : uint8_t
+    {
+        vanilla,
+        centred,
+        panelsOnTop,
+        allCombined,
+    };
+
     enum class WindowFrameStyle : uint8_t
     {
         background,
@@ -176,7 +184,7 @@ namespace OpenLoco::Config
         int32_t edgeScrollingSpeed = 12;
         bool invertRightMouseViewPan = false;
         bool toolbarAutoMenu = true;
-        bool toolbarButtonsCentred = false;
+        ToolbarLayout toolbarLayout = ToolbarLayout::vanilla;
         WindowFrameStyle windowFrameStyle = WindowFrameStyle::background;
         bool zoomToCursor = true;
 

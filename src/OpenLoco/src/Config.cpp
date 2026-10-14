@@ -191,7 +191,7 @@ namespace OpenLoco::Config
         _config.edgeScrollingSpeed = config["edgeScrollingSpeed"].as<int32_t>(12);
         _config.invertRightMouseViewPan = config["invertRightMouseViewPan"].as<bool>(false);
         _config.toolbarAutoMenu = config["toolbarAutoMenu"].as<bool>(true);
-        _config.toolbarButtonsCentred = config["toolbarButtonsCentred"].as<bool>(false);
+        _config.toolbarLayout = config["toolbarLayout"].as<ToolbarLayout>(ToolbarLayout::vanilla);
         _config.windowFrameStyle = config["windowFrameStyle"].as<WindowFrameStyle>(WindowFrameStyle::background);
         _config.zoomToCursor = config["zoom_to_cursor"].as<bool>(true);
 
@@ -331,7 +331,7 @@ namespace OpenLoco::Config
         node["edgeScrolling"] = _config.edgeScrolling;
         node["edgeScrollingSpeed"] = _config.edgeScrollingSpeed;
         node["toolbarAutoMenu"] = _config.toolbarAutoMenu;
-        node["toolbarButtonsCentred"] = _config.toolbarButtonsCentred;
+        node["toolbarLayout"] = _config.toolbarLayout;
         node["windowFrameStyle"] = _config.windowFrameStyle;
         node["zoom_to_cursor"] = _config.zoomToCursor;
 
