@@ -1,6 +1,9 @@
 26.09+ (???)
 ------------------------------------------------------------------------
 - Change: [#4033] Objects marked with source OpenLoco (OpenGraphics) are no longer exported in scenario or save files.
+- Change: [#4041] Vehicle colours are now reset to the target company's when using the company takeover cheat.
+- Change: [#4041] Invisible 'planned' AI company track is no longer inherited when using the company takeover cheat.
+- Change: [#4041] The original AI company is now shut down after using the company takeover cheat.
 - Fix: [#2879] Crash when starting the game with an empty openloco.yaml file.
 - Fix: [#4027] Crash when starting the game with malformed YAML schema.
 - Fix: [#4037] Cannot delete road stations acquired with the 'acquire all company assets' cheat.
