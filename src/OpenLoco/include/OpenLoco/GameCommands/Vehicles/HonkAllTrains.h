@@ -19,5 +19,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void honkAllTrains(registers& regs);
+    void honkAllTrains(registers& regs, Flags flags);
 }

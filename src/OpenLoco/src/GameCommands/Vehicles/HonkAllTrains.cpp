@@ -8,9 +8,9 @@
 
 namespace OpenLoco::GameCommands
 {
-    static uint32_t honkAllTrains(uint8_t flags)
+    static uint32_t honkAllTrains(Flags flags)
     {
-        if ((flags & Flags::apply) == 0)
+        if ((flags & Flags::apply) == Flags::none)
         {
             return 0;
         }
@@ -24,8 +24,8 @@ namespace OpenLoco::GameCommands
         return 0;
     }
 
-    void honkAllTrains(registers& regs)
+    void honkAllTrains(registers& regs, Flags flags)
     {
-        regs.ebx = honkAllTrains(regs.bl);
+        regs.ebx = honkAllTrains(flags);
     }
 }
