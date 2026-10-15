@@ -120,10 +120,10 @@ namespace OpenLoco::Ui::Windows::Station
         static void prepareDraw(Window& self);
         static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input);
         static void update(Window& self);
-        static void renameStationPrompt(Window* self, WidgetIndex_t widgetIndex);
+        static void renameStationPrompt(Window& self, WidgetIndex_t widgetIndex);
         static void switchTab(Window& self, WidgetIndex_t widgetIndex);
         static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx);
-        static void enableRenameByCaption(Window* self);
+        static void enableRenameByCaption(Window& self);
     }
 
     namespace Station
@@ -206,7 +206,7 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048E70B
         static void onResize(Window& self)
         {
-            Common::enableRenameByCaption(&self);
+            Common::enableRenameByCaption(self);
 
             self.setSizeBounds(kWindowSize, Common::kMaxWindowSize);
 
@@ -482,7 +482,7 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048EBB7
         static void onResize(Window& self)
         {
-            Common::enableRenameByCaption(&self);
+            Common::enableRenameByCaption(self);
 
             self.setSizeBounds(Common::kMinWindowSize, Common::kMaxWindowSize);
         }
@@ -728,7 +728,7 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048EE97
         static void onResize(Window& self)
         {
-            Common::enableRenameByCaption(&self);
+            Common::enableRenameByCaption(self);
 
             self.setSizeBounds(kWindowSize, kMaxWindowSize);
         }
@@ -756,9 +756,9 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EF02
-        static void drawRatingBar(Window* self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y, uint8_t amount, Colour colour)
+        static void drawRatingBar(Window& self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y, uint8_t amount, Colour colour)
         {
-            drawingCtx.fillRectInset(x, y, x + 99, y + 9, self->getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
+            drawingCtx.fillRectInset(x, y, x + 99, y + 9, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
             uint16_t rating = (amount * 96) / 256;
             if (rating > 2)
@@ -808,7 +808,7 @@ namespace OpenLoco::Ui::Windows::Station
                 }
 
                 uint8_t amount = (rating * 327) / 256;
-                drawRatingBar(&self, drawingCtx, 100, point.y, amount, colour);
+                drawRatingBar(self, drawingCtx, 100, point.y, amount, colour);
 
                 uint16_t percent = rating / 2;
                 point.x = 201;
@@ -1169,7 +1169,7 @@ namespace OpenLoco::Ui::Windows::Station
 
         static void onResize(Window& self)
         {
-            Common::enableRenameByCaption(&self);
+            Common::enableRenameByCaption(self);
 
             self.setSizeBounds(kWindowSize, kMaxWindowSize);
         }
@@ -1277,7 +1277,7 @@ namespace OpenLoco::Ui::Windows::Station
             switch (id)
             {
                 case Widx::kCaption:
-                    renameStationPrompt(&self, widgetIndex);
+                    renameStationPrompt(self, widgetIndex);
                     break;
 
                 case Widx::kCloseButton:
@@ -1378,9 +1378,9 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048E5E7
-        static void renameStationPrompt(Window* self, WidgetIndex_t widgetIndex)
+        static void renameStationPrompt(Window& self, WidgetIndex_t widgetIndex)
         {
-            auto station = StationManager::get(StationId(self->number));
+            auto station = StationManager::get(StationId(self.number));
             auto args = FormatArguments();
             args.push<int64_t>(0);
             args.push(station->name);
@@ -1389,7 +1389,7 @@ namespace OpenLoco::Ui::Windows::Station
             FormatArgumentsBuffer buffer{};
             auto args2 = FormatArguments(buffer);
             args2.push(station->town);
-            TextInput::openTextInput(self, StringIds::title_station_name, StringIds::prompt_type_new_station_name, station->name, widgetIndex, args2);
+            TextInput::openTextInput(&self, StringIds::title_station_name, StringIds::prompt_type_new_station_name, station->name, widgetIndex, args2);
         }
 
         // 0x0048E520
@@ -1595,18 +1595,18 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048E32C
-        static void enableRenameByCaption(Window* self)
+        static void enableRenameByCaption(Window& self)
         {
-            auto station = StationManager::get(StationId(self->number));
+            auto station = StationManager::get(StationId(self.number));
             if (station->owner != CompanyId::null)
             {
                 if (CompanyManager::isPlayerCompany(station->owner))
                 {
-                    self->disabledWidgets &= ~(1 << Common::widx::caption);
+                    self.disabledWidgets &= ~(1 << Common::widx::caption);
                 }
                 else
                 {
-                    self->disabledWidgets |= (1 << Common::widx::caption);
+                    self.disabledWidgets |= (1 << Common::widx::caption);
                 }
             }
         }

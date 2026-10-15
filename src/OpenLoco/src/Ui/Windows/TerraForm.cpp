@@ -1297,7 +1297,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCB47
-        static void showDropdown(Window* self, WidgetIndex_t widgetIndex)
+        static void showDropdown(Window& self, WidgetIndex_t widgetIndex)
         {
             auto landCount = 0;
             for (auto i = 0; i < 32; i++)
@@ -1309,10 +1309,10 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
             }
 
-            auto xPos = self->widgets[widgetIndex].left + self->x;
-            auto yPos = self->widgets[widgetIndex].bottom + self->y;
-            auto heightOffset = self->widgets[widgetIndex].height() - 18;
-            auto colour = self->getColour(WindowColour::secondary).translucent();
+            auto xPos = self.widgets[widgetIndex].left + self.x;
+            auto yPos = self.widgets[widgetIndex].bottom + self.y;
+            auto heightOffset = self.widgets[widgetIndex].height() - 18;
+            auto colour = self.getColour(WindowColour::secondary).translucent();
             auto count = Dropdown::getItemsPerRow(landCount);
 
             Dropdown::showImage(xPos, yPos, 20, 20, heightOffset, colour, count, landCount);
@@ -1348,7 +1348,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 case Widx::kLandMaterial:
                 {
-                    showDropdown(&self, widgetIndex);
+                    showDropdown(self, widgetIndex);
                     break;
                 }
 
