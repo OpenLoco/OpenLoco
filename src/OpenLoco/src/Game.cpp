@@ -348,8 +348,8 @@ namespace OpenLoco::Game
         {
             if (SceneManager::isEditorMode())
             {
-                // You cannot edit a save.
-                Ui::Windows::Error::open(StringIds::error_cant_open_save_in_editor);
+                // Loading saves in the scenario editor doesn't work so give an error message instead
+                Ui::Windows::Error::open(StringIds::error_saves_cant_be_loaded_in_editor);
                 return;
             }
 
@@ -380,7 +380,7 @@ namespace OpenLoco::Game
             }
 
             // Prompt to play scenario.
-            // TODO check that it is a scenario and not a landscape
+            // TODO check that it is a scenario and not just a 'landscape'
 
             if (!Ui::Windows::PromptOkCancel::open(StringIds::title_dropped_file, StringIds::load_scenario_file_prompt, args, StringIds::load_scenario_file_confirm))
             {
@@ -391,7 +391,6 @@ namespace OpenLoco::Game
             return;
         }
 
-        // Invalid file type
         Ui::Windows::Error::open(StringIds::error_invalid_file_type);
         return;
     }
