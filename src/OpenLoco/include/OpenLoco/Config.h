@@ -204,6 +204,8 @@ namespace OpenLoco::Config
         bool disableStationSizeLimit = false;
         bool showAiPlanningAsGhosts = false;
         bool keepCargoModifyPickup = false;
+        bool keepCargoLocoRefurbish = false;
+        bool allowRefurbishBroken = false;
 
         bool usePreferredOwnerName = false;
         std::string preferredOwnerName;

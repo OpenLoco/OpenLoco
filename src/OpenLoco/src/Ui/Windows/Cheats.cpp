@@ -622,7 +622,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
     namespace Vehicles
     {
-        static constexpr Ui::Size kWindowSize = { 250, 188 };
+        static constexpr Ui::Size kWindowSize = { 250, 238 };
 
         enum widx
         {
@@ -634,6 +634,9 @@ namespace OpenLoco::Ui::Windows::Cheats
             checkbox_build_locked_vehicles,
             vehicle_cargo_group,
             checkbox_keep_cargo_modify_pickup,
+            checkbox_keep_cargo_loco_refurbish,
+            vehicle_breakdown_group,
+            checkbox_allow_refurbish_broken,
         };
 
         namespace Widx
@@ -643,6 +646,8 @@ namespace OpenLoco::Ui::Windows::Cheats
             constexpr WidgetId kCheckboxDisplayLockedVehicles{ "checkbox_display_locked_vehicles" };
             constexpr WidgetId kCheckboxBuildLockedVehicles{ "checkbox_build_locked_vehicles" };
             constexpr WidgetId kCheckboxKeepCargoModifyPickup{ "checkbox_keep_cargo_modify_pickup" };
+            constexpr WidgetId kCheckboxKeepCargoLocoRefurbish{ "checkbox_keep_cargo_loco_refurbish" };
+            constexpr WidgetId kCheckboxAllowRefurbishBroken{ "checkbox_allow_refurbish_broken" };
         }
 
         static constexpr auto _widgets = makeWidgets(
@@ -653,8 +658,11 @@ namespace OpenLoco::Ui::Windows::Cheats
             Widgets::GroupBox({ 4, 102 }, { kWindowSize.width - 8, 45 }, WindowColour::secondary, StringIds::cheat_build_vehicle_window),
             Widgets::Checkbox(Widx::kCheckboxDisplayLockedVehicles, { 10, 116 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::display_locked_vehicles, StringIds::tooltip_display_locked_vehicles),
             Widgets::Checkbox(Widx::kCheckboxBuildLockedVehicles, { 25, 130 }, { kWindowSize.width - 35, 12 }, WindowColour::secondary, StringIds::allow_building_locked_vehicles, StringIds::tooltip_build_locked_vehicles),
-            Widgets::GroupBox({ 4, 152 }, { kWindowSize.width - 8, 30 }, WindowColour::secondary, StringIds::cheat_vehicle_cargo),
-            Widgets::Checkbox(Widx::kCheckboxKeepCargoModifyPickup, { 10, 166 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_keep_cargo_modify_pickup, StringIds::tooltip_keep_cargo_modify_pickup));
+            Widgets::GroupBox({ 4, 152 }, { kWindowSize.width - 8, 45 }, WindowColour::secondary, StringIds::cheat_vehicle_cargo),
+            Widgets::Checkbox(Widx::kCheckboxKeepCargoModifyPickup, { 10, 166 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_keep_cargo_modify_pickup, StringIds::tooltip_keep_cargo_modify_pickup),
+            Widgets::Checkbox(Widx::kCheckboxKeepCargoLocoRefurbish, { 25, 180 }, { kWindowSize.width - 35, 12 }, WindowColour::secondary, StringIds::cheat_keep_cargo_loco_refurbish, StringIds::tooltip_keep_cargo_loco_refurbish),
+            Widgets::GroupBox({ 4, 202 }, { kWindowSize.width - 8, 30 }, WindowColour::secondary, StringIds::cheat_vehicle_breakdowns),
+            Widgets::Checkbox(Widx::kCheckboxAllowRefurbishBroken, { 10, 216 }, { kWindowSize.width - 20, 12 }, WindowColour::secondary, StringIds::cheat_allow_refurbish_broken, StringIds::tooltip_allow_refurbish_broken));
 
         static void prepareDraw(Window& self)
         {
@@ -683,10 +691,29 @@ namespace OpenLoco::Ui::Windows::Cheats
             if (Config::get().keepCargoModifyPickup)
             {
                 self.activatedWidgets |= (1 << widx::checkbox_keep_cargo_modify_pickup);
+                self.disabledWidgets &= ~(1 << widx::checkbox_keep_cargo_loco_refurbish);
             }
             else
             {
                 self.activatedWidgets &= ~(1 << widx::checkbox_keep_cargo_modify_pickup);
+                self.disabledWidgets |= (1 << widx::checkbox_keep_cargo_loco_refurbish);
+            }
+
+            if (Config::get().keepCargoLocoRefurbish)
+            {
+                self.activatedWidgets |= (1 << widx::checkbox_keep_cargo_loco_refurbish);
+            }
+            else
+            {
+                self.activatedWidgets &= ~(1 << widx::checkbox_keep_cargo_loco_refurbish);
+            }
+            if (Config::get().allowRefurbishBroken)
+            {
+                self.activatedWidgets |= (1 << widx::checkbox_allow_refurbish_broken);
+            }
+            else
+            {
+                self.activatedWidgets &= ~(1 << widx::checkbox_allow_refurbish_broken);
             }
         }
 
@@ -773,8 +800,39 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Widx::kCheckboxKeepCargoModifyPickup:
                 {
                     Config::get().keepCargoModifyPickup = !Config::get().keepCargoModifyPickup;
+
+                    // if we don't want to display locked vehicles, there is no reason to allow building them
+                    if (Config::get().keepCargoModifyPickup)
+                    {
+                        self.disabledWidgets &= ~(1 << widx::checkbox_keep_cargo_loco_refurbish);
+                    }
+                    else
+                    {
+                        Config::get().keepCargoLocoRefurbish = false;
+                        self.disabledWidgets |= (1 << widx::checkbox_keep_cargo_loco_refurbish);
+                    }
+
                     Config::write();
                     WindowManager::invalidateWidget(self.type, self.number, widx::checkbox_keep_cargo_modify_pickup);
+                    WindowManager::invalidateWidget(self.type, self.number, widx::checkbox_keep_cargo_loco_refurbish);
+                    break;
+                }
+
+                case Widx::kCheckboxKeepCargoLocoRefurbish:
+                {
+                    if (Config::get().keepCargoModifyPickup)
+                    {
+                        Config::get().keepCargoLocoRefurbish = !Config::get().keepCargoLocoRefurbish;
+                        Config::write();
+                        WindowManager::invalidateWidget(self.type, self.number, widx::checkbox_keep_cargo_loco_refurbish);
+                    }
+                    break;
+                }
+                case Widx::kCheckboxAllowRefurbishBroken:
+                {
+                    Config::get().allowRefurbishBroken = !Config::get().allowRefurbishBroken;
+                    Config::write();
+                    WindowManager::invalidateWidget(self.type, self.number, widx::checkbox_allow_refurbish_broken);
                     break;
                 }
             }
