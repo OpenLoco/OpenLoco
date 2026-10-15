@@ -11,6 +11,14 @@ set(private_files
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform.Windows.cpp"
 )
 
+# Emscripten-specific source file
+if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    list(REMOVE_ITEM private_files
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform.Posix.cpp")
+    list(APPEND private_files 
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform.Emscripten.cpp")
+endif()
+
 if (APPLE)
     set_source_files_properties(${private_files} PROPERTIES COMPILE_FLAGS "-x objective-c++")
 else()
