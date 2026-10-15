@@ -145,7 +145,7 @@ namespace OpenLoco
             return false;
         }
 
-        if (var_E8 > 8)
+        if (numFarmTileImages > 8)
         {
             return false;
         }
@@ -192,7 +192,7 @@ namespace OpenLoco
             StringId notUsed{};
 
             loadString(name, 0);
-            loadString(var_02, 1);
+            loadString(defaultName, 1);
             loadString(notUsed, 2);
             loadString(nameClosingDown, 3);
             loadString(nameUpProduction, 4);
@@ -219,11 +219,11 @@ namespace OpenLoco
             remainingData = remainingData.subspan(*ptr * sizeof(uint8_t) + 1);
         }
 
-        // Load unk Animation Related Structure
-        var_38_Offset = remainingData.data() - data.data();
+        // Load random animations
+        randomAnimationsOffset = remainingData.data() - data.data();
         while (*remainingData.data() != static_cast<std::byte>(0xFF))
         {
-            remainingData = remainingData.subspan(sizeof(IndustryObjectUnk38));
+            remainingData = remainingData.subspan(sizeof(IndustryObjectRandomAnimation));
         }
         remainingData = remainingData.subspan(1);
 
@@ -357,7 +357,7 @@ namespace OpenLoco
     void IndustryObject::unload()
     {
         name = 0;
-        var_02 = 0;
+        defaultName = 0;
         nameClosingDown = 0;
         nameUpProduction = 0;
         nameDownProduction = 0;
@@ -371,7 +371,7 @@ namespace OpenLoco
         buildingPartHeightsOffset = 0;
         buildingPartAnimationsOffset = 0;
         std::fill(std::begin(animationSequenceOffsets), std::end(animationSequenceOffsets), 0);
-        var_38_Offset = 0;
+        randomAnimationsOffset = 0;
         std::fill(std::begin(buildingVariationPartOffsets), std::end(buildingVariationPartOffsets), 0);
         buildingsOffset = 0;
         std::fill(std::begin(producedCargoType), std::end(producedCargoType), 0);
@@ -395,11 +395,11 @@ namespace OpenLoco
         return std::span<const std::uint8_t>(partsPointer, end);
     }
 
-    std::span<const std::uint8_t> IndustryObject::getAnimationSequence(const uint8_t unk) const
+    std::span<const std::uint8_t> IndustryObject::getAnimationSequence(const uint8_t animationSequenceIndex) const
     {
         // animationSequences comprises of a size then data. Size will always be a power of 2
         const auto* base = reinterpret_cast<const std::uint8_t*>(this);
-        const auto* sequencePointer = base + animationSequenceOffsets[unk];
+        const auto* sequencePointer = base + animationSequenceOffsets[animationSequenceIndex];
         const auto size = *sequencePointer++;
         return std::span<const std::uint8_t>(sequencePointer, size);
     }
@@ -423,15 +423,15 @@ namespace OpenLoco
         return std::span<const std::uint8_t>(base + buildingsOffset, maxNumBuildings);
     }
 
-    std::span<const IndustryObjectUnk38> OpenLoco::IndustryObject::getUnk38() const
+    std::span<const IndustryObjectRandomAnimation> OpenLoco::IndustryObject::getRandomAnimations() const
     {
         const auto* base = reinterpret_cast<const std::uint8_t*>(this);
-        const auto* unkPointer = reinterpret_cast<const IndustryObjectUnk38*>(base + var_38_Offset);
-        auto* end = unkPointer;
-        while (end->var_00 != 0xFF)
+        const auto* randomAnimations = reinterpret_cast<const IndustryObjectRandomAnimation*>(base + randomAnimationsOffset);
+        auto* end = randomAnimations;
+        while (end->buildingPart != 0xFF)
         {
             end++;
         }
-        return std::span<const IndustryObjectUnk38>(unkPointer, end);
+        return std::span<const IndustryObjectRandomAnimation>(randomAnimations, end);
     }
 }

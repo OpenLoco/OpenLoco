@@ -3537,7 +3537,7 @@ namespace OpenLoco
             thought.purchaseFlags |= AiPurchaseFlags::unk0;
         }
         auto* trackObj = ObjectManager::get<TrackObject>(bestTrack);
-        if (trackObj->hasFlags(TrackObjectFlags::unk_04))
+        if (trackObj->hasFlags(TrackObjectFlags::restrictsAiPathfinding))
         {
             thought.purchaseFlags |= AiPurchaseFlags::unk1;
         }

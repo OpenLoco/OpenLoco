@@ -2053,8 +2053,8 @@ namespace OpenLoco::Vehicles
             auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
             const auto movementEdges = airportObject->getMovementEdges();
 
-            uint8_t al = movementEdges[airportMovementEdge].var_03;
-            uint8_t cl = movementEdges[airportMovementEdge].var_00;
+            uint8_t al = movementEdges[airportMovementEdge].nextNodeType;
+            uint8_t cl = movementEdges[airportMovementEdge].curNodeType;
 
             auto veh2 = train.veh2;
             if (al != 0)

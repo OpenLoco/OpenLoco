@@ -25,7 +25,7 @@ namespace OpenLoco
         noSlipSurface = 1U << 1, // if set vehicles can't start slipping
         isRoad = 1U << 2,        // controls if the object appears in the roads menu instead of the track menu
 
-        unk_04 = 1U << 4,
+        restrictsAiPathfinding = 1U << 4, // causes the AI to use a more restrictive track/road weighting limit when pathfinding
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(TrackObjectFlags);
 
@@ -37,27 +37,27 @@ namespace OpenLoco
         StringId name;
         World::Track::TrackTraitFlags trackPieces;        // 0x02
         World::Track::TrackTraitFlags stationTrackPieces; // 0x04
-        uint8_t var_06;
-        uint8_t numCompatible;     // 0x07
-        uint8_t numMods;           // 0x08
-        uint8_t numSignals;        // 0x09
-        uint8_t mods[4];           // 0x0A
-        uint16_t signals;          // 0x0E bitset
-        uint16_t compatibleTracks; // 0x10 bitset
-        uint16_t compatibleRoads;  // 0x12 bitset
-        int16_t buildCostFactor;   // 0x14
-        int16_t sellCostFactor;    // 0x16
-        int16_t tunnelCostFactor;  // 0x18
-        uint8_t costIndex;         // 0x1A
-        uint8_t tunnel;            // 0x1B
-        Speed16 curveSpeed;        // 0x1C
-        uint32_t image;            // 0x1E
-        TrackObjectFlags flags;    // 0x22
-        uint8_t numBridges;        // 0x24
-        uint8_t bridges[7];        // 0x25
-        uint8_t numStations;       // 0x2C
-        uint8_t stations[7];       // 0x2D
-        uint8_t displayOffset;     // 0x34
+        uint8_t var_06;                                   // 0x06 validation exists for it, but this is otherwise unused?
+        uint8_t numCompatible;                            // 0x07
+        uint8_t numMods;                                  // 0x08
+        uint8_t numSignals;                               // 0x09
+        uint8_t mods[4];                                  // 0x0A
+        uint16_t signals;                                 // 0x0E bitset
+        uint16_t compatibleTracks;                        // 0x10 bitset
+        uint16_t compatibleRoads;                         // 0x12 bitset
+        int16_t buildCostFactor;                          // 0x14
+        int16_t sellCostFactor;                           // 0x16
+        int16_t tunnelCostFactor;                         // 0x18
+        uint8_t costIndex;                                // 0x1A
+        uint8_t tunnel;                                   // 0x1B
+        Speed16 curveSpeed;                               // 0x1C
+        uint32_t image;                                   // 0x1E
+        TrackObjectFlags flags;                           // 0x22
+        uint8_t numBridges;                               // 0x24
+        uint8_t bridges[7];                               // 0x25
+        uint8_t numStations;                              // 0x2C
+        uint8_t stations[7];                              // 0x2D
+        uint8_t displayOffset;                            // 0x34
         uint8_t pad_35;
 
         void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;

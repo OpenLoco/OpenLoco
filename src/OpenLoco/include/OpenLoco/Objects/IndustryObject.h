@@ -53,12 +53,12 @@ namespace OpenLoco
     OPENLOCO_ENABLE_ENUM_OPERATORS(IndustryObjectFlags);
 
 #pragma pack(push, 1)
-    struct IndustryObjectUnk38
+    struct IndustryObjectRandomAnimation
     {
-        uint8_t var_00;
-        uint8_t var_01;
+        uint8_t buildingPart;   // 0x00 building part the animation can be applied to
+        uint8_t animationIndex; // 0x01 animation sequence index to use
     };
-    static_assert(sizeof(IndustryObjectUnk38) == 0x2);
+    static_assert(sizeof(IndustryObjectRandomAnimation) == 0x2);
 
     struct IndustryObjectProductionRateRange
     {
@@ -72,7 +72,7 @@ namespace OpenLoco
         static constexpr auto kObjectType = ObjectType::industry;
 
         StringId name;                             // 0x0
-        StringId var_02;                           // 0x2
+        StringId defaultName;                      // 0x2 name given to newly created industries
         StringId nameClosingDown;                  // 0x4
         StringId nameUpProduction;                 // 0x6
         StringId nameDownProduction;               // 0x8
@@ -87,7 +87,7 @@ namespace OpenLoco
         uint32_t buildingPartHeightsOffset;        // 0x20 This is the height of a building image
         uint32_t buildingPartAnimationsOffset;     // 0x24
         uint32_t animationSequenceOffsets[4];      // 0x28 Access with getAnimationSequence helper method
-        uint32_t var_38_Offset;                    // 0x38 Access with getUnk38 helper method
+        uint32_t randomAnimationsOffset;           // 0x38 Access with getRandomAnimations helper method
         uint32_t buildingVariationPartOffsets[32]; // 0x3C Access with getBuildingParts helper method
         uint8_t minNumBuildings;                   // 0xBC
         uint8_t maxNumBuildings;                   // 0xBD
@@ -111,12 +111,12 @@ namespace OpenLoco
         uint8_t requiredCargoType[3];                               // 0xE0 (0xFF = null)
         Colour mapColour;                                           // 0xE3
         IndustryObjectFlags flags;                                  // 0xE4
-        uint8_t var_E8;
-        uint8_t farmTileNumImageAngles;          // 0xE9 How many viewing angles the farm tiles have
-        uint8_t farmTileGrowthStageNoProduction; // 0xEA At this stage of growth (except 0), a field tile produces nothing
-        uint8_t farmNumFields;                   // 0xEB Max production is reached at farmIdealSize * 25 tiles
-        uint8_t farmTileNumGrowthStages;         // 0xEC How many growth stages there are sprites for
-        uint8_t wallTypes[4];                    // 0xED There can be up to 4 different wall types for an industry
+        uint8_t numFarmTileImages;                                  // 0xE8 maximum of 8 images per farm tile
+        uint8_t farmTileNumImageAngles;                             // 0xE9 How many viewing angles the farm tiles have
+        uint8_t farmTileGrowthStageNoProduction;                    // 0xEA At this stage of growth (except 0), a field tile produces nothing
+        uint8_t farmNumFields;                                      // 0xEB Max production is reached at farmIdealSize * 25 tiles
+        uint8_t farmTileNumGrowthStages;                            // 0xEC How many growth stages there are sprites for
+        uint8_t wallTypes[4];                                       // 0xED There can be up to 4 different wall types for an industry
         // Selection of wall types isn't completely random from the 4 it is biased into 2 groups of 2 (wall and entrance)
         uint8_t buildingWall;         // 0xF1
         uint8_t buildingWallEntrance; // 0xF2 An alternative wall type that looks like a gate placed at random places in building perimeter
@@ -132,9 +132,9 @@ namespace OpenLoco
         void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
         void unload();
         std::span<const std::uint8_t> getBuildingParts(const uint8_t buildingType) const;
-        std::span<const std::uint8_t> getAnimationSequence(const uint8_t unk) const;
+        std::span<const std::uint8_t> getAnimationSequence(const uint8_t animationSequenceIndex) const;
         std::span<const std::uint8_t> getBuildingPartHeights() const;
-        std::span<const IndustryObjectUnk38> getUnk38() const;
+        std::span<const IndustryObjectRandomAnimation> getRandomAnimations() const;
         std::span<const BuildingPartAnimation> getBuildingPartAnimations() const;
         std::span<const std::uint8_t> getBuildings() const;
 

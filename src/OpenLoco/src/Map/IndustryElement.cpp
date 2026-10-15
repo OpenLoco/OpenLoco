@@ -209,11 +209,11 @@ namespace OpenLoco::World
             {
                 std::array<uint8_t, 8> _E0C3D4{};
                 auto ptr = _E0C3D4.begin();
-                for (const auto& unk38 : indObj->getUnk38())
+                for (const auto& randomAnimation : indObj->getRandomAnimations())
                 {
-                    if (unk38.var_00 == type)
+                    if (randomAnimation.buildingPart == type)
                     {
-                        *ptr++ = unk38.var_01;
+                        *ptr++ = randomAnimation.animationIndex;
                     }
                 }
                 const auto numAnimations = std::distance(_E0C3D4.begin(), ptr);

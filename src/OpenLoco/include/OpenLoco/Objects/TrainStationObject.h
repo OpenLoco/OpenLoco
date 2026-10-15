@@ -43,17 +43,17 @@ namespace OpenLoco
         int16_t buildCostFactor;                   // 0x06
         int16_t sellCostFactor;                    // 0x08
         uint8_t costIndex;                         // 0x0A
-        uint8_t var_0B;
-        TrainStationFlags flags; // 0x0C
-        uint8_t var_0D;
-        uint32_t image;                  // 0x0E
-        uint32_t imageOffsets[4];        // 0x12 "sequenceIndexImageOffsets"
-        uint8_t numCompatible;           // 0x22
-        uint8_t mods[7];                 // 0x23
-        uint16_t designedYear;           // 0x2A
-        uint16_t obsoleteYear;           // 0x2C
-        uint32_t cargoOffsetBytes[4][4]; // 0x2E
-        uint32_t var_6E[16];
+        uint8_t platformType;                      // 0x0B 0 = terminus, 1 = always uses the middle platform image, 2+ = only uses it when connected at both ends
+        TrainStationFlags flags;                   // 0x0C
+        uint8_t pad_0D;                            // 0x0D unused
+        uint32_t image;                            // 0x0E
+        uint32_t imageOffsets[4];                  // 0x12 "sequenceIndexImageOffsets"
+        uint8_t numCompatible;                     // 0x22
+        uint8_t mods[7];                           // 0x23
+        uint16_t designedYear;                     // 0x2A
+        uint16_t obsoleteYear;                     // 0x2C
+        uint32_t cargoOffsetBytes[4][4];           // 0x2E
+        uint32_t diagonalCargoOffsetBytes[16];     // 0x6E parsed in the same way as cargoOffsetBytes but never read
 
         void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
@@ -74,8 +74,8 @@ namespace OpenLoco
         constexpr uint32_t preview_image = 0;
         constexpr uint32_t preview_image_windows = 1;
         constexpr uint32_t totalPreviewImages = 2;
-        // These are relative to var_12
-        // var_12 is the imageIds per sequenceIndex (for start/middle/end of the platform)
+        // These are relative to imageOffsets
+        // imageOffsets is the imageIds per sequenceIndex (for start/middle/end of the platform)
         namespace Style0
         {
             constexpr uint32_t straightBackNE = 0;

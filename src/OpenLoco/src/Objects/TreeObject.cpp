@@ -104,7 +104,7 @@ namespace OpenLoco
             return false;
         }
 
-        return var_05 >= var_04;
+        return maxHeight >= minHeight;
     }
 
     // 0x004BE144
@@ -134,7 +134,7 @@ namespace OpenLoco
         auto totalImageCount = 0;
         for (auto variant = 0; variant < 6; variant++)
         {
-            if ((var_3C & (1 << variant)) == 0)
+            if ((variantFlags & (1 << variant)) == 0)
             {
                 continue;
             }
@@ -146,27 +146,27 @@ namespace OpenLoco
         // 0x004BE186
         const auto numPrimaryImages = totalImageCount;
 
-        if ((var_3C & (1 << 5)) == 0 && (var_3C & (1 << 4)) != 0)
+        if ((variantFlags & (1 << 5)) == 0 && (variantFlags & (1 << 4)) != 0)
         {
             sprites[5] = sprites[4];
         }
 
-        if ((var_3C & (1 << 5)) == 0 && (var_3C & (1 << 1)) != 0)
+        if ((variantFlags & (1 << 5)) == 0 && (variantFlags & (1 << 1)) != 0)
         {
             sprites[5] = sprites[1];
         }
 
-        if ((var_3C & (1 << 4)) == 0 && (var_3C & (1 << 1)) != 0)
+        if ((variantFlags & (1 << 4)) == 0 && (variantFlags & (1 << 1)) != 0)
         {
             sprites[4] = sprites[1];
         }
 
-        if ((var_3C & (1 << 1)) == 0 && (var_3C & (1 << 0)) != 0)
+        if ((variantFlags & (1 << 1)) == 0 && (variantFlags & (1 << 0)) != 0)
         {
             sprites[1] = sprites[0];
         }
 
-        if ((var_3C & (1 << 0)) == 0 && (var_3C & (1 << 1)) != 0)
+        if ((variantFlags & (1 << 0)) == 0 && (variantFlags & (1 << 1)) != 0)
         {
             sprites[0] = sprites[1];
         }
