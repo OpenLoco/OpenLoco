@@ -784,14 +784,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     // 0x00446A93
     static void refreshDirectoryList()
     {
-        // All our filters are probably *.something so just truncate the *
-        // and treat as an extension filter
-        auto filterExtension = std::string(_filter);
-        if (filterExtension[0] == '*')
-        {
-            filterExtension = filterExtension.substr(1);
-        }
-
         _files.clear();
         if (_currentDirectory.empty())
         {
@@ -805,23 +797,11 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             {
                 for (const auto& file : fs::directory_iterator(_currentDirectory, fs::directory_options::skip_permission_denied))
                 {
-                    // Only list directories and normal files
-                    if (!(file.is_regular_file() || file.is_directory()))
+                    // Only list directories and normal files that match the filter
+                    if (file.is_directory() || (file.is_regular_file() && S5::matchesFilter(file.path(), _filter)))
                     {
-                        continue;
+                        _files.emplace_back(file.path());
                     }
-
-                    // Filter files by extension
-                    if (file.is_regular_file())
-                    {
-                        auto extension = file.path().extension().u8string();
-                        if (!Utility::iequals(extension, filterExtension))
-                        {
-                            continue;
-                        }
-                    }
-
-                    _files.emplace_back(file.path());
                 }
             }
             catch (const fs::filesystem_error& err)
