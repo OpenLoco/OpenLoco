@@ -1205,7 +1205,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return self;
         }
 
-        static void cloneVehicle(Window& self)
+        static void cloneVehicle(Window& self, bool shareOrders)
         {
             auto head = Common::getVehicle(self);
             if (head == nullptr)
@@ -1217,6 +1217,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             GameCommands::VehicleCloneArgs args{};
             args.vehicleHeadId = head->head;
+            args.shareOrders = shareOrders;
 
             if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure)
             {
@@ -1290,6 +1291,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 Dropdown::add(0, StringIds::dropdown_stringid, StringIds::dropdown_modify_vehicle);
                 Dropdown::add(1, StringIds::dropdown_stringid, StringIds::dropdown_clone_vehicle);
+                Dropdown::add(2, StringIds::dropdown_stringid, StringIds::dropdown_clone_vehicle_shared_orders);
 
                 auto& widget = self.widgets[widx::buildNew];
                 Dropdown::showText(
@@ -1298,9 +1300,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     widget.width(),
                     widget.height(),
                     self.getColour(WindowColour::secondary),
-                    2,
+                    3,
                     0);
 
+                const auto* head = Common::getVehicle(self);
+                if (head == nullptr || head->sizeOfOrderTable == 1)
+                {
+                    Dropdown::setItemDisabled(2);
+                }
                 Dropdown::setItemSelected(0);
                 Dropdown::setHighlightedItem(0);
                 return;
@@ -1338,13 +1345,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             if (id == Widx::kBuildNew)
             {
-                if (itemIndex <= 0)
+                if (itemIndex == 0)
                 {
                     BuildVehicle::openByVehicleId(EntityId(self.number));
                 }
-                else if (itemIndex == 1)
+                else if (itemIndex == 1 || itemIndex == 2)
                 {
-                    cloneVehicle(self);
+                    cloneVehicle(self, itemIndex == 2);
                 }
                 return;
             }

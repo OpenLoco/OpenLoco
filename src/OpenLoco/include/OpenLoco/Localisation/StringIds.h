@@ -2186,6 +2186,7 @@ namespace OpenLoco::StringIds
     constexpr StringId shared_vehicle_orders_button = 2474;
     constexpr StringId cant_share_vehicle_orders = 2475;
     constexpr StringId cant_make_vehicle_orders_independent = 2476;
+    constexpr StringId dropdown_clone_vehicle_shared_orders = 2477;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

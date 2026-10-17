@@ -2529,3 +2529,4 @@ strings:
   2474: "Unshare"
   2475: "Can't share vehicle orders"
   2476: "Can't make an independent copy"
+  2477: "Clone with shared orders"
