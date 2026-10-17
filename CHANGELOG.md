@@ -1,5 +1,6 @@
 26.09+ (???)
 ------------------------------------------------------------------------
+- Change: [#3868] Split Rotate View keyboard shortcut into Clockwise and Anti-Clockwise shortcuts.
 - Change: [#4033] Objects marked with source OpenLoco (OpenGraphics) are no longer exported in scenario or save files.
 - Change: [#4041] Vehicle colours are now reset to the target company's when using the company takeover cheat.
 - Change: [#4041] Invisible 'planned' AI company track is no longer inherited when using the company takeover cheat.

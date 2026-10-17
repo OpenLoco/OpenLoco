@@ -96,8 +96,7 @@ namespace OpenLoco::Input::Shortcuts
         StationManager::updateLabels();
     }
 
-    // 0x004BF12C
-    static void rotateView()
+    static void rotateView(bool clockwise)
     {
         Window* main = WindowManager::getMainWindow();
         if (main == nullptr)
@@ -105,10 +104,28 @@ namespace OpenLoco::Input::Shortcuts
             return;
         }
 
-        main->viewportRotateRight();
+        if (clockwise)
+        {
+            main->viewportRotateRight();
+        }
+        else
+        {
+            main->viewportRotateLeft();
+        }
         TownManager::updateLabels();
         StationManager::updateLabels();
         Windows::MapWindow::centerOnViewPoint();
+    }
+
+    // 0x004BF12C
+    static void rotateViewClockwise()
+    {
+        rotateView(true);
+    }
+
+    static void rotateViewAntiClockwise()
+    {
+        rotateView(false);
     }
 
     // 0x004BF148
@@ -718,7 +735,8 @@ namespace OpenLoco::Input::Shortcuts
         ShortcutManager::add(Shortcut::pauseUnpauseGame,                StringIds::shortcut_pause_unpause_game,                 pauseUnpauseGame,               "pauseUnpauseGame",                 "Pause");
         ShortcutManager::add(Shortcut::zoomViewOut,                     StringIds::shortcut_zoom_view_out,                      zoomViewOut,                    "zoomViewOut",                      "PageUp");
         ShortcutManager::add(Shortcut::zoomViewIn,                      StringIds::shortcut_zoom_view_in,                       zoomViewIn,                     "zoomViewIn",                       "PageDown");
-        ShortcutManager::add(Shortcut::rotateView,                      StringIds::shortcut_rotate_view,                        rotateView,                     "rotateView",                       "Return");
+        ShortcutManager::add(Shortcut::rotateViewClockwise,             StringIds::shortcut_rotate_view_clockwise,              rotateViewClockwise,            "rotateViewClockwise",              "Return");
+        ShortcutManager::add(Shortcut::rotateViewAntiClockwise,         StringIds::shortcut_rotate_view_anti_clockwise,         rotateViewAntiClockwise,        "rotateViewAntiClockwise",          "Left Shift+Return");
         ShortcutManager::add(Shortcut::rotateConstructionObject,        StringIds::shortcut_rotate_construction_object,         rotateConstructionObject,       "rotateConstructionObject",         "Z");
         ShortcutManager::add(Shortcut::toggleUndergroundView,           StringIds::shortcut_toggle_underground_view,            toggleUndergroundView,          "toggleUndergroundView",            "1");
         ShortcutManager::add(Shortcut::toggleSeeThroughTracks,          StringIds::shortcutSeeThroughTracks,                    toggleSeeThroughTracks,         "toggleSeeThroughTracks",           "2");

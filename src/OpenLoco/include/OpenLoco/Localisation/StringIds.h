@@ -652,7 +652,7 @@ namespace OpenLoco::StringIds
     constexpr StringId shortcut_pause_unpause_game = 708;
     constexpr StringId shortcut_zoom_view_out = 709;
     constexpr StringId shortcut_zoom_view_in = 710;
-    constexpr StringId shortcut_rotate_view = 711;
+    constexpr StringId shortcut_rotate_view = UNUSED_STR(711);
     constexpr StringId shortcut_rotate_construction_object = 712;
     constexpr StringId shortcut_toggle_underground_view = 713;
     constexpr StringId shortcut_toggle_hide_foreground_tracks = 714;
@@ -2178,6 +2178,8 @@ namespace OpenLoco::StringIds
     constexpr StringId has_cargo_order = 2466;
     constexpr StringId transports_cargo = 2467;
     constexpr StringId map_tooltip_int_x_int = 2468;
+    constexpr StringId shortcut_rotate_view_clockwise = 2469;
+    constexpr StringId shortcut_rotate_view_anti_clockwise = 2470;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
