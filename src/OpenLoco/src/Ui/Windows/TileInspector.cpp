@@ -126,12 +126,12 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
     static const WindowEventList& getEvents();
 
-    Window* open()
+    Window& open()
     {
         auto window = WindowManager::bringToFront(WindowType::tileInspector);
         if (window != nullptr)
         {
-            return window;
+            return *window;
         }
 
         window = WindowManager::createWindow(
@@ -152,7 +152,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
         activateMapSelectionTool(*window);
 
-        return window;
+        return *window;
     }
 
     static void prepareDraw(Window& self)

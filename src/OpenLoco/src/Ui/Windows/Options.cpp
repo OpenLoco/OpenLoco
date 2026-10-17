@@ -2273,7 +2273,7 @@ namespace OpenLoco::Ui::Windows::Options
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
-            TextInput::openTextInput(&self, StringIds::preferred_owner_name, StringIds::enter_preferred_owner_name, StringIds::buffer_2039, widx::usePreferredOwnerName, {});
+            TextInput::openTextInput(self, StringIds::preferred_owner_name, StringIds::enter_preferred_owner_name, StringIds::buffer_2039, widx::usePreferredOwnerName, {});
         }
 
         // 0x004C135F
@@ -2317,7 +2317,7 @@ namespace OpenLoco::Ui::Windows::Options
             strcpy(buffer, companyName);
             buffer[strlen(companyName)] = '\0';
 
-            TextInput::openTextInput(&self, StringIds::preferred_company_name, StringIds::enter_preferred_company_name, StringIds::buffer_2040, widx::usePreferredCompanyName, {});
+            TextInput::openTextInput(self, StringIds::preferred_company_name, StringIds::enter_preferred_company_name, StringIds::buffer_2040, widx::usePreferredCompanyName, {});
         }
 
         static void usePreferredCompanyNameMouseUp(Window& self)
@@ -2866,12 +2866,12 @@ namespace OpenLoco::Ui::Windows::Options
     }
 
     // 0x004BF7B9
-    Window* open()
+    Window& open()
     {
         Window* window = WindowManager::bringToFront(WindowType::options);
         if (window != nullptr)
         {
-            return window;
+            return *window;
         }
 
         // 0x004BF833 (create_options_window)
@@ -2906,15 +2906,15 @@ namespace OpenLoco::Ui::Windows::Options
         window->callPrepareDraw();
         window->initScrollWidgets();
 
-        return window;
+        return *window;
     }
 
     // 0x004BF823
-    Window* openAudioSettings()
+    Window& openAudioSettings()
     {
-        auto* window = open();
+        auto window = open();
 
-        window->callOnMouseUp(Common::widx::tab_audio, window->widgets[Common::widx::tab_audio].id);
+        window.callOnMouseUp(Common::widx::tab_audio, window.widgets[Common::widx::tab_audio].id);
 
         return window;
     }

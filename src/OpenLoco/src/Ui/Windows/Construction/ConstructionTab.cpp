@@ -2907,7 +2907,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x0049CE79
     static void prepareDraw(Window& self)
     {
-        Common::prepareDraw(&self);
+        Common::prepareDraw(self);
 
         auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
         auto& cState = getConstructionState();

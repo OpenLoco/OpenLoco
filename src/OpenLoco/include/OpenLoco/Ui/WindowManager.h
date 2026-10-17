@@ -142,7 +142,7 @@ namespace OpenLoco::Ui::Windows
 
     namespace Cheats
     {
-        Window* open();
+        Window& open();
     }
 
     namespace CompanyFaceSelection
@@ -152,13 +152,13 @@ namespace OpenLoco::Ui::Windows
 
     namespace CompanyInfoPanel
     {
-        Window* open();
+        Window& open();
     }
 
     namespace CompanyList
     {
         void openPerformanceIndexes();
-        Window* open();
+        Window& open();
         void removeCompany(CompanyId id);
     }
 
@@ -321,13 +321,13 @@ namespace OpenLoco::Ui::Windows
 
     namespace Options
     {
-        Window* open();
-        Window* openAudioSettings();
+        Window& open();
+        Window& openAudioSettings();
     }
 
     namespace ProgressBar
     {
-        Window* open(std::string_view captionString);
+        Window& open(std::string_view captionString);
         void setProgress(uint8_t value);
         void close();
     }
@@ -359,7 +359,7 @@ namespace OpenLoco::Ui::Windows
 
     namespace ScenarioSelect
     {
-        Window* open();
+        Window& open();
     }
 
     namespace Station
@@ -400,7 +400,7 @@ namespace OpenLoco::Ui::Windows
 
     namespace TextInput
     {
-        void openTextInput(Ui::Window* w, StringId title, StringId message, StringId value, int callingWidget, FormatArgumentsView valueArgs, uint32_t inputSize = StringManager::kUserStringSize - 1);
+        void openTextInput(Ui::Window& w, StringId title, StringId message, StringId value, int callingWidget, FormatArgumentsView valueArgs, uint32_t inputSize = StringManager::kUserStringSize - 1);
         void sub_4CE6C9(WindowType type, WindowNumber_t number);
         void cancel();
         void sub_4CE6FF();
@@ -408,12 +408,12 @@ namespace OpenLoco::Ui::Windows
 
     namespace TileInspector
     {
-        Window* open();
+        Window& open();
     }
 
     namespace TimePanel
     {
-        Window* open();
+        Window& open();
         void beginSendChatMessage(Window& self);
     }
 
