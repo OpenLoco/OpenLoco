@@ -4222,9 +4222,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             loc.y -= 1;
-            auto args = FormatArguments::common(Vehicles::OrderManager::isOrderTableShared(head)
-                    ? StringIds::orders_end_shared
-                    : orderString[0]);
+            auto args = FormatArguments::common(Vehicles::OrderManager::isOrderTableShared(head) ? StringIds::orders_end_shared : orderString[0]);
             tr.drawStringLeft(loc, Colour::black, strFormat, args);
         }
 

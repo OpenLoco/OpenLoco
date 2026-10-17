@@ -16,9 +16,7 @@ namespace OpenLoco::GameCommands
         if (order.is<Vehicles::OrderRouteThrough>()
             && (head.mode == OpenLoco::TransportMode::water || head.mode == OpenLoco::TransportMode::air))
         {
-            setErrorText(head.mode == OpenLoco::TransportMode::water
-                    ? StringIds::orderTypeNotValidForShips
-                    : StringIds::orderTypeNotValidForAircraft);
+            setErrorText(head.mode == OpenLoco::TransportMode::water ? StringIds::orderTypeNotValidForShips : StringIds::orderTypeNotValidForAircraft);
             return false;
         }
 
