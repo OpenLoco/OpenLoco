@@ -10,6 +10,7 @@
 #include "GameCommands/Vehicles/VehicleOrderDown.h"
 #include "GameCommands/Vehicles/VehicleOrderInsert.h"
 #include "GameCommands/Vehicles/VehicleOrderReverse.h"
+#include "GameCommands/Vehicles/VehicleOrderShare.h"
 #include "GameCommands/Vehicles/VehicleOrderSkip.h"
 #include "GameCommands/Vehicles/VehicleOrderUp.h"
 #include "GameCommands/Vehicles/VehiclePassSignal.h"
@@ -337,6 +338,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             tool = Common::widx::tabRoute + 1, // Only used to hold the tool does nothing
             localMode,
             expressMode,
+            shareOrders,
             routeList,
             orderForceUnload,
             orderWait,
@@ -344,13 +346,15 @@ namespace OpenLoco::Ui::Windows::Vehicle
             orderDelete,
             orderUp,
             orderDown,
-            orderReverse
+            orderReverse,
+            stopSharing
         };
 
         namespace Widx
         {
             constexpr WidgetId kLocalMode{ "localMode" };
             constexpr WidgetId kExpressMode{ "expressMode" };
+            constexpr WidgetId kShareOrders{ "shareOrders" };
             constexpr WidgetId kRouteList{ "routeList" };
             constexpr WidgetId kOrderForceUnload{ "orderForceUnload" };
             constexpr WidgetId kOrderWait{ "orderWait" };
@@ -359,6 +363,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             constexpr WidgetId kOrderUp{ "orderUp" };
             constexpr WidgetId kOrderDown{ "orderDown" };
             constexpr WidgetId kOrderReverse{ "orderReverse" };
+            constexpr WidgetId kStopSharing{ "stopSharing" };
         }
 
         constexpr uint64_t holdableWidgets = 0;
@@ -368,8 +373,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Common::makeCommonWidgets(265, 189, StringIds::title_vehicle_route),
             // TODO: This is not ideal, this is used for the tool, do this in a better way.
             makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::empty, WindowColour::primary),
-            Widgets::Button(Widx::kLocalMode, { 3, 44 }, { 118, 12 }, WindowColour::secondary, StringIds::local_mode_button),
-            Widgets::Button(Widx::kExpressMode, { 121, 44 }, { 119, 12 }, WindowColour::secondary, StringIds::express_mode_button),
+            Widgets::Button(Widx::kLocalMode, { 3, 44 }, { 88, 12 }, WindowColour::secondary, StringIds::local_mode_button),
+            Widgets::Button(Widx::kExpressMode, { 91, 44 }, { 88, 12 }, WindowColour::secondary, StringIds::express_mode_button),
+            Widgets::Button(Widx::kShareOrders, { 180, 44 }, { 60, 12 }, WindowColour::secondary, StringIds::share_vehicle_orders_button, StringIds::share_vehicle_orders_tooltip),
             Widgets::ScrollView(Widx::kRouteList, { 3, 58 }, { 237, 120 }, WindowColour::secondary, Scrollbars::vertical, StringIds::tooltip_route_scrollview),
             Widgets::ImageButton(Widx::kOrderForceUnload, { 240, 44 }, { 24, 24 }, WindowColour::secondary, ImageIds::route_force_unload, StringIds::tooltip_route_insert_force_unload),
             Widgets::ImageButton(Widx::kOrderWait, { 240, 68 }, { 24, 24 }, WindowColour::secondary, ImageIds::route_wait, StringIds::tooltip_route_insert_wait_full_cargo),
@@ -377,7 +383,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Widgets::ImageButton(Widx::kOrderDelete, { 240, 116 }, { 24, 24 }, WindowColour::secondary, ImageIds::route_delete, StringIds::tooltip_route_delete_order),
             Widgets::ImageButton(Widx::kOrderUp, { 240, 140 }, { 24, 12 }, WindowColour::secondary, ImageIds::red_arrow_up, StringIds::tooltip_route_move_order_up),
             Widgets::ImageButton(Widx::kOrderDown, { 240, 152 }, { 24, 12 }, WindowColour::secondary, ImageIds::red_arrow_down, StringIds::tooltip_route_move_order_down),
-            Widgets::ImageButton(Widx::kOrderReverse, { 240, 164 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_right_turnaround, StringIds::reverseOrderTableTooltip)
+            Widgets::ImageButton(Widx::kOrderReverse, { 240, 164 }, { 24, 24 }, WindowColour::secondary, ImageIds::construction_right_turnaround, StringIds::reverseOrderTableTooltip),
+            Widgets::Button(Widx::kStopSharing, { 3, 189 }, { 62, 12 }, WindowColour::secondary, StringIds::shared_vehicle_orders_button, StringIds::orders_stop_sharing_tooltip)
 
         );
     }
@@ -1198,7 +1205,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return self;
         }
 
-        static void cloneVehicle(Window& self)
+        static void cloneVehicle(Window& self, bool shareOrders)
         {
             auto head = Common::getVehicle(self);
             if (head == nullptr)
@@ -1210,6 +1217,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             GameCommands::VehicleCloneArgs args{};
             args.vehicleHeadId = head->head;
+            args.shareOrders = shareOrders;
 
             if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure)
             {
@@ -1283,6 +1291,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 Dropdown::add(0, StringIds::dropdown_stringid, StringIds::dropdown_modify_vehicle);
                 Dropdown::add(1, StringIds::dropdown_stringid, StringIds::dropdown_clone_vehicle);
+                Dropdown::add(2, StringIds::dropdown_stringid, StringIds::dropdown_clone_vehicle_shared_orders);
 
                 auto& widget = self.widgets[widx::buildNew];
                 Dropdown::showText(
@@ -1291,9 +1300,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     widget.width(),
                     widget.height(),
                     self.getColour(WindowColour::secondary),
-                    2,
+                    3,
                     0);
 
+                const auto* head = Common::getVehicle(self);
+                if (head == nullptr || head->sizeOfOrderTable == 1)
+                {
+                    Dropdown::setItemDisabled(2);
+                }
                 Dropdown::setItemSelected(0);
                 Dropdown::setHighlightedItem(0);
                 return;
@@ -1331,13 +1345,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             if (id == Widx::kBuildNew)
             {
-                if (itemIndex <= 0)
+                if (itemIndex == 0)
                 {
                     BuildVehicle::openByVehicleId(EntityId(self.number));
                 }
-                else if (itemIndex == 1)
+                else if (itemIndex == 1 || itemIndex == 2)
                 {
-                    cloneVehicle(self);
+                    cloneVehicle(self, itemIndex == 2);
                 }
                 return;
             }
@@ -3027,7 +3041,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     break;
                 case Widx::kOrderDelete:
                 {
-
                     onOrderDelete(head, self.orderTableIndex);
                     if (self.orderTableIndex == -1)
                     {
@@ -3115,6 +3128,27 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case Widx::kOrderReverse:
                 {
                     orderReverseCommand(head);
+                    break;
+                }
+                case Widx::kShareOrders:
+                    if (head->sizeOfOrderTable > 1)
+                    {
+                        ToolManager::toolSet(self, widx::shareOrders, CursorId::crosshair);
+                    }
+                    self.invalidate();
+                    break;
+                case Widx::kStopSharing:
+                {
+                    GameCommands::VehicleOrderShareArgs args{};
+                    args.head = head->id;
+                    args.sourceHead = EntityId::null;
+                    GameCommands::setErrorTitle(StringIds::cant_make_vehicle_orders_independent);
+                    if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure)
+                    {
+                        self.orderTableIndex = -1;
+                        Vehicles::OrderManager::generateNumDisplayFrames(head);
+                        self.invalidate();
+                    }
                     break;
                 }
             }
@@ -3552,8 +3586,63 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Gfx::invalidateScreen();
         }
 
-        static void onToolDown(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
+        static bool shareVehicleOrders(Window& self, Vehicles::VehicleHead* target)
         {
+            auto* source = Common::getVehicle(self);
+            if (source == nullptr || target == nullptr || source == target || source->owner != CompanyManager::getControllingId()
+                || source->sizeOfOrderTable == 1 || target->owner != source->owner || target->vehicleType != source->vehicleType)
+            {
+                return false;
+            }
+
+            GameCommands::VehicleOrderShareArgs args{};
+            // The route window is the source; the clicked vehicle receives its orders.
+            args.head = target->id;
+            args.sourceHead = source->id;
+            GameCommands::setErrorTitle(StringIds::cant_share_vehicle_orders);
+            if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::kFailure)
+            {
+                self.orderTableIndex = -1;
+                Vehicles::OrderManager::generateNumDisplayFrames(source);
+                ToolManager::toolCancel();
+            }
+            return true;
+        }
+
+        bool selectOrdersFromVehicleList(Vehicles::VehicleHead* target)
+        {
+            auto* toolWindow = ToolManager::toolGetActiveWindow();
+            if (toolWindow == nullptr || toolWindow->type != WindowType::vehicle || toolWindow->currentTab != Common::widx::tabRoute - Common::widx::tabMain
+                || !ToolManager::isToolActive(toolWindow->type, toolWindow->number, widx::shareOrders))
+            {
+                return false;
+            }
+            if (!shareVehicleOrders(*toolWindow, target))
+            {
+                return false;
+            }
+            WindowManager::bringToFront(*toolWindow);
+            return true;
+        }
+
+        static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id, const int16_t x, const int16_t y)
+        {
+            if (widgetIndex == widx::shareOrders)
+            {
+                const auto interaction = ViewportInteraction::getItemLeft(x, y);
+                if (interaction.type == ViewportInteraction::InteractionItem::entity)
+                {
+                    auto* entity = reinterpret_cast<EntityBase*>(interaction.object);
+                    auto* vehicle = entity->asBase<Vehicles::VehicleBase>();
+                    if (vehicle != nullptr)
+                    {
+                        auto* target = EntityManager::get<Vehicles::VehicleHead>(vehicle->getHead());
+                        shareVehicleOrders(self, target);
+                    }
+                }
+                return;
+            }
+
             const auto args = getRouteInteractionFromCursor(self, x, y);
             switch (args.type)
             {
@@ -3638,6 +3727,26 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B50CE
         static Ui::CursorId toolCursor(Window& self, const int16_t x, const int16_t y, const Ui::CursorId fallback, bool& out)
         {
+            if (ToolManager::isToolActive(self.type, self.number, widx::shareOrders))
+            {
+                const auto interaction = ViewportInteraction::getItemLeft(x, y);
+                if (interaction.type == ViewportInteraction::InteractionItem::entity)
+                {
+                    auto* entity = reinterpret_cast<EntityBase*>(interaction.object);
+                    auto* vehicle = entity->asBase<Vehicles::VehicleBase>();
+                    auto* source = Common::getVehicle(self);
+                    auto* target = vehicle == nullptr ? nullptr : EntityManager::get<Vehicles::VehicleHead>(vehicle->getHead());
+                    if (source != nullptr && target != nullptr && source != target && source->sizeOfOrderTable > 1
+                        && target->owner == source->owner && target->vehicleType == source->vehicleType)
+                    {
+                        out = true;
+                        return CursorId::inwardArrows;
+                    }
+                }
+                out = false;
+                return fallback;
+            }
+
             const auto args = getRouteInteractionFromCursor(self, x, y);
             out = args.type != Ui::ViewportInteraction::InteractionItem::noInteraction;
             if (out)
@@ -3677,32 +3786,29 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             auto* toolWindow = ToolManager::toolGetActiveWindow();
-            // If another vehicle window is open and has focus (tool)
-            if (toolWindow != nullptr && toolWindow->type == self.type && toolWindow->number != self.number)
+            // Copy orders using the route tool in another vehicle window.
+            if (toolWindow != nullptr && toolWindow->type == self.type && toolWindow->number != self.number
+                && ToolManager::isToolActive(toolWindow->type, toolWindow->number, widx::tool))
             {
+                Audio::playSound(Audio::SoundId::waypoint, Audio::ChannelId::ui, Input::getDragLastLocation().x);
                 if (item == -1)
                 {
-                    // Copy complete order list
-                    Audio::playSound(Audio::SoundId::waypoint, Audio::ChannelId::ui, Input::getDragLastLocation().x);
                     std::vector<std::shared_ptr<Vehicles::Order>> clonedOrders;
-                    for (auto& existingOrders : getOrderTable(head))
+                    for (auto& existingOrder : getOrderTable(head))
                     {
-                        clonedOrders.push_back(existingOrders.clone());
+                        clonedOrders.push_back(existingOrder.clone());
                     }
                     for (auto& order : clonedOrders)
                     {
                         addNewOrder(*toolWindow, *order);
                     }
-                    WindowManager::bringToFront(*toolWindow);
                 }
                 else
                 {
-                    // Copy a single entry on the order list
-                    Audio::playSound(Audio::SoundId::waypoint, Audio::ChannelId::ui, Input::getDragLastLocation().x);
                     auto clonedOrder = selectedOrder->clone();
                     addNewOrder(*toolWindow, *clonedOrder);
-                    WindowManager::bringToFront(*toolWindow);
                 }
+                WindowManager::bringToFront(*toolWindow);
                 return;
             }
 
@@ -3769,15 +3875,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
-        // 0x004B5339
         static Ui::CursorId cursor(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIdx, const WidgetId id, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y, const Ui::CursorId fallback)
         {
-            if (id != Widx::kRouteList)
-            {
-                return fallback;
-            }
-
-            if (ToolManager::isToolActive(self.type, self.number))
+            if (id == Widx::kRouteList && ToolManager::isToolActive(self.type, self.number, widx::tool))
             {
                 return CursorId::inwardArrows;
             }
@@ -3814,7 +3914,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 args.push(head->ordinalNumber);
             }
 
-            self.widgets[widx::routeList].tooltip = ToolManager::isToolActive(self.type, self.number) ? StringIds::tooltip_route_scrollview_copy : StringIds::tooltip_route_scrollview;
+            self.widgets[widx::routeList].tooltip = ToolManager::isToolActive(self.type, self.number, widx::tool)
+                ? StringIds::tooltip_route_scrollview_copy
+                : StringIds::tooltip_route_scrollview;
 
             self.widgets[Common::widx::frame].right = self.width - 1;
             self.widgets[Common::widx::frame].bottom = self.height - 1;
@@ -3853,6 +3955,22 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 self.disabledWidgets &= ~((1 << widx::orderWait) | (1 << widx::orderForceUnload));
             }
 
+            const bool orderTableIsShared = Vehicles::OrderManager::isOrderTableShared(head);
+            const bool shareToolActive = ToolManager::isToolActive(self.type, self.number, widx::shareOrders);
+            self.widgets[widx::stopSharing].hidden = !orderTableIsShared || shareToolActive;
+            self.widgets[widx::stopSharing].top = self.height - 13;
+            self.widgets[widx::stopSharing].bottom = self.height - 2;
+            self.disabledWidgets |= (1 << widx::shareOrders);
+            if (head->sizeOfOrderTable > 1)
+            {
+                self.disabledWidgets &= ~(1 << widx::shareOrders);
+            }
+            self.activatedWidgets &= ~(1 << widx::shareOrders);
+            if (shareToolActive)
+            {
+                self.activatedWidgets |= (1 << widx::shareOrders);
+            }
+
             // Express / local
             self.activatedWidgets &= ~((1 << widx::expressMode) | (1 << widx::localMode));
             Vehicles::Vehicle train(*head);
@@ -3865,16 +3983,18 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 self.activatedWidgets |= (1 << widx::localMode);
             }
 
-            const bool isControllingCompany = head->owner == CompanyManager::getControllingId() ? false : true;
-            self.widgets[widx::orderForceUnload].hidden = isControllingCompany;
-            self.widgets[widx::orderWait].hidden = isControllingCompany;
-            self.widgets[widx::orderSkip].hidden = isControllingCompany;
-            self.widgets[widx::orderDelete].hidden = isControllingCompany;
-            self.widgets[widx::orderUp].hidden = isControllingCompany;
-            self.widgets[widx::orderDown].hidden = isControllingCompany;
-            self.widgets[widx::orderReverse].hidden = isControllingCompany;
+            const bool isOtherCompany = head->owner != CompanyManager::getControllingId();
+            self.widgets[widx::orderForceUnload].hidden = isOtherCompany;
+            self.widgets[widx::orderWait].hidden = isOtherCompany;
+            self.widgets[widx::orderSkip].hidden = isOtherCompany;
+            self.widgets[widx::orderDelete].hidden = isOtherCompany;
+            self.widgets[widx::orderUp].hidden = isOtherCompany;
+            self.widgets[widx::orderDown].hidden = isOtherCompany;
+            self.widgets[widx::orderReverse].hidden = isOtherCompany;
+            self.widgets[widx::shareOrders].hidden = isOtherCompany;
+            self.widgets[widx::stopSharing].hidden |= isOtherCompany;
 
-            if (isControllingCompany)
+            if (isOtherCompany)
             {
                 self.widgets[widx::routeList].right += 22;
                 self.disabledWidgets |= (1 << widx::expressMode | 1 << widx::localMode);
@@ -3884,7 +4004,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 self.disabledWidgets &= ~(1 << widx::expressMode | 1 << widx::localMode);
             }
 
-            self.widgets[widx::expressMode].right = self.widgets[widx::routeList].right;
+            self.widgets[widx::shareOrders].right = self.widgets[widx::routeList].right;
+            self.widgets[widx::shareOrders].left = self.widgets[widx::shareOrders].right - 59;
+            self.widgets[widx::expressMode].right = isOtherCompany
+                ? self.widgets[widx::routeList].right
+                : self.widgets[widx::shareOrders].left - 1;
             self.widgets[widx::expressMode].left = (self.widgets[widx::expressMode].right - 3) / 2 + 3;
             self.widgets[widx::localMode].right = self.widgets[widx::expressMode].left - 1;
 
@@ -3907,8 +4031,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (ToolManager::isToolActive(WindowType::vehicle, self.number))
             {
                 // Location at bottom left edge of window
-                auto loc = Point(3, self.height - 13);
-                tr.drawStringLeftClipped(loc, self.width - 14, Colour::black, StringIds::route_click_on_waypoint);
+                auto loc = Point(self.widgets[widx::stopSharing].hidden ? 3 : 68, self.height - 13);
+                const auto instruction = ToolManager::isToolActive(self.type, self.number, widx::shareOrders)
+                    ? StringIds::route_click_vehicle_to_share
+                    : StringIds::route_click_on_waypoint;
+                tr.drawStringLeftClipped(loc, self.width - loc.x - 11, Colour::black, instruction);
             }
         }
 
@@ -4102,7 +4229,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             loc.y -= 1;
-            auto args = FormatArguments::common(orderString[0]);
+            auto args = FormatArguments::common(Vehicles::OrderManager::isOrderTableShared(head) ? StringIds::orders_end_shared : orderString[0]);
             tr.drawStringLeft(loc, Colour::black, strFormat, args);
         }
 

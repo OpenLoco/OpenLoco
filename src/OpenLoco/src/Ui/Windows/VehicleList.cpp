@@ -1084,6 +1084,11 @@ namespace OpenLoco::Ui::Windows::VehicleList
             return;
         }
 
+        if (Ui::Windows::Vehicle::Route::selectOrdersFromVehicleList(head))
+        {
+            return;
+        }
+
         if (head->isPlaced())
         {
             Ui::Windows::Vehicle::Main::open(head);

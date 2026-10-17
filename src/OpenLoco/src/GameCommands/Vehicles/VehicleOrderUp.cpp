@@ -1,10 +1,10 @@
 #include "GameCommands/Vehicles/VehicleOrderUp.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
-#include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleHead.h"
+#include "Vehicles/VehicleManager.h"
 
 namespace OpenLoco::GameCommands
 {
@@ -27,7 +27,7 @@ namespace OpenLoco::GameCommands
         {
             return kFailure;
         }
-        Ui::WindowManager::invalidateOrderPageByVehicleNumber(enumValue(head->id));
+        Vehicles::OrderManager::invalidateOrderPagesByOrderTableOffset(head->orderTableOffset);
 
         // Can't move up if the order is already at the start of the table
         if (args.orderOffset == 0)
@@ -49,22 +49,30 @@ namespace OpenLoco::GameCommands
 
         auto& currentOrder = *(iterator);
 
-        // Before we proceed, we keep track of the currently active order
-        bool prevOrderIsActive = head->currentOrder == prevOrder->getOffset() - head->orderTableOffset;
-        bool currentOrderIsActive = head->currentOrder == currentOrder.getOffset() - head->orderTableOffset;
-        auto oldOffsetDiff = currentOrder.getOffset() - prevOrder->getOffset();
+        const auto prevOrderOffset = prevOrder->getOffset() - head->orderTableOffset;
+        const auto currentOrderOffset = currentOrder.getOffset() - head->orderTableOffset;
+        const auto oldOffsetDiff = currentOrder.getOffset() - prevOrder->getOffset();
 
-        // Actually swap the two orders
         const auto newOffsetDiff = Vehicles::OrderManager::swapAdjacentOrders(*prevOrder, currentOrder);
 
-        // Compensate if we swapped the current order around
-        if (prevOrderIsActive)
+        for (auto* orderHead : VehicleManager::VehicleList())
         {
-            head->currentOrder += newOffsetDiff;
-        }
-        else if (currentOrderIsActive)
-        {
-            head->currentOrder -= oldOffsetDiff;
+            if (orderHead->orderTableOffset != head->orderTableOffset)
+            {
+                continue;
+            }
+
+            const bool prevOrderIsActive = orderHead->currentOrder == prevOrderOffset;
+            const bool currentOrderIsActive = orderHead->currentOrder == currentOrderOffset;
+
+            if (prevOrderIsActive)
+            {
+                orderHead->currentOrder += newOffsetDiff;
+            }
+            else if (currentOrderIsActive)
+            {
+                orderHead->currentOrder -= oldOffsetDiff;
+            }
         }
 
         return 0;
