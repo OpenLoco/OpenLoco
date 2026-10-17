@@ -112,6 +112,29 @@ namespace OpenLoco::Vehicles::OrderManager
     Order* orders() { return reinterpret_cast<Order*>(getGameState().orders); }
     uint32_t& orderTableLength() { return getGameState().orderTableLength; }
 
+    bool isOrderTableShared(const VehicleHead* head)
+    {
+        for (auto* otherHead : VehicleManager::VehicleList())
+        {
+            if (otherHead != head && otherHead->orderTableOffset == head->orderTableOffset)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void invalidateOrderPagesByOrderTableOffset(uint32_t tableOffset)
+    {
+        for (auto* head : VehicleManager::VehicleList())
+        {
+            if (head->orderTableOffset == tableOffset)
+            {
+                Ui::WindowManager::invalidateOrderPageByVehicleNumber(enumValue(head->id));
+            }
+        }
+    }
+
     void shiftOrdersLeft(const uint32_t offsetToShiftTowards, const int16_t sizeToShiftBy)
     {
         std::rotate(&orders()[offsetToShiftTowards], &orders()[offsetToShiftTowards + sizeToShiftBy], &orders()[orderTableLength()]);
@@ -161,6 +184,18 @@ namespace OpenLoco::Vehicles::OrderManager
         assert(order->getType() != OrderType::End && orderOffset < head->sizeOfOrderTable);
         auto insOrderLength = kOrderSizes[enumValue(order->getType())];
 
+        for (auto* otherHead : VehicleManager::VehicleList())
+        {
+            if (otherHead != head && otherHead->orderTableOffset == head->orderTableOffset)
+            {
+                if (otherHead->sizeOfOrderTable > 1 && otherHead->currentOrder >= orderOffset)
+                {
+                    otherHead->currentOrder += insOrderLength;
+                }
+                otherHead->sizeOfOrderTable += insOrderLength;
+            }
+        }
+
         // Shift current order to compensate for the new order.
         // For empty order tables, let current order point to the first order.
         if (head->sizeOfOrderTable > 1 && head->currentOrder >= orderOffset)
@@ -193,6 +228,25 @@ namespace OpenLoco::Vehicles::OrderManager
         auto& selectedOrder = *(orders.begin());
 
         auto removeOrderSize = kOrderSizes[enumValue(selectedOrder.getType())];
+
+        for (auto* otherHead : VehicleManager::VehicleList())
+        {
+            if (otherHead != head && otherHead->orderTableOffset == head->orderTableOffset)
+            {
+                otherHead->sizeOfOrderTable -= removeOrderSize;
+
+                if (otherHead->currentOrder > orderOffset)
+                {
+                    otherHead->currentOrder -= removeOrderSize;
+                }
+
+                if (otherHead->currentOrder + 1 >= otherHead->sizeOfOrderTable)
+                {
+                    otherHead->currentOrder = 0;
+                }
+            }
+        }
+
         head->sizeOfOrderTable -= removeOrderSize;
 
         // Are we removing an order that appears before the current order? Move back a bit
@@ -238,6 +292,11 @@ namespace OpenLoco::Vehicles::OrderManager
         // Copy the offset as it will get modified during sub_470795
         const auto offset = head->orderTableOffset;
         const auto size = head->sizeOfOrderTable;
+
+        if (isOrderTableShared(head))
+        {
+            return;
+        }
 
         reoffsetVehicleOrderTables(offset, -size);
 
@@ -439,9 +498,11 @@ namespace OpenLoco::Vehicles::OrderManager
         // Retrieve list of raw orders
         std::vector<uint64_t> rawOrders{};
         Vehicles::OrderRingView orderTable(tableOffset);
+        uint32_t totalOrderSize = 0;
         for (auto& order : orderTable)
         {
             rawOrders.push_back(order.getRaw());
+            totalOrderSize += kOrderSizes[enumValue(order.getType())];
         }
 
         // Nothing to do? Bail early
@@ -452,6 +513,18 @@ namespace OpenLoco::Vehicles::OrderManager
 
         // Keep track of the type of the order of interest
         auto ooiType = orders()[tableOffset + orderOfInterest].getType();
+
+        for (auto* otherHead : VehicleManager::VehicleList())
+        {
+            if (otherHead->orderTableOffset != tableOffset)
+            {
+                continue;
+            }
+
+            const auto currentOrderType = orders()[tableOffset + otherHead->currentOrder].getType();
+            const auto currentOrderSize = kOrderSizes[enumValue(currentOrderType)];
+            otherHead->currentOrder = totalOrderSize - otherHead->currentOrder - currentOrderSize;
+        }
 
         // Figure out where the order table starts in memory
         auto firstOrder = reinterpret_cast<uint8_t*>(orderTable.atIndex(0));
@@ -517,6 +590,7 @@ namespace OpenLoco::Vehicles::OrderManager
                             && i < head->orderTableOffset + head->sizeOfOrderTable)
                         {
                             deleteOrder(head, i - head->orderTableOffset);
+                            invalidateOrderPagesByOrderTableOffset(head->orderTableOffset);
                             break;
                         }
                     }

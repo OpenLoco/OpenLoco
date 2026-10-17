@@ -2,11 +2,11 @@
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Objects/VehicleObject.h"
-#include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleHead.h"
+#include "Vehicles/VehicleManager.h"
 #include "World/StationManager.h"
 
 using namespace OpenLoco::Vehicles;
@@ -41,48 +41,12 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        // Certain orders can't be used by ships or aircraft
-        if (order->is<OrderRouteThrough>() || order->is<OrderRouteWaypoint>())
-        {
-            // Ships can have route waypoints, but not route through orders.
-            if (head->mode == TransportMode::water && order->is<OrderRouteThrough>())
-            {
-                setErrorText(StringIds::orderTypeNotValidForShips);
-                return kFailure;
-            }
-            // Aircraft can't have either order
-            else if (head->mode == TransportMode::air)
-            {
-                setErrorText(StringIds::orderTypeNotValidForAircraft);
-                return kFailure;
-            }
-        }
-
-        // Verify we have room for more orders, both globally and for this particular vehicle
-        if (!OrderManager::spaceLeftInGlobalOrderTableForOrder(order))
-        {
-            setErrorText(StringIds::no_space_for_more_vehicle_orders);
-            return kFailure;
-        }
-        if (!OrderManager::spaceLeftInVehicleOrderTable(head))
-        {
-            setErrorText(StringIds::tooManyOrdersForThisVehicle);
-            return kFailure;
-        }
-
         if (args.orderOffset > head->sizeOfOrderTable)
         {
             return kFailure;
         }
 
-        if (!hasFlags(flags, GameCommands::Flags::apply))
-        {
-            return 0;
-        }
-
-        Ui::WindowManager::invalidateOrderPageByVehicleNumber(enumValue(head->id));
-
-        // If we're inserting the same stop order once more, change its type to route through
+        OrderStopAt* orderToConvert = nullptr;
         if (order->getType() == OrderType::StopAt && !(head->mode == TransportMode::water || head->mode == TransportMode::air))
         {
             // To get the previous order (to check if it was also the same stop order)
@@ -108,9 +72,58 @@ namespace OpenLoco::GameCommands
 
             if (existingOrder != nullptr && newOrder != nullptr && existingOrder->getStation() == newOrder->getStation())
             {
-                existingOrder->setType(OrderType::RouteThrough);
-                return 0;
+                orderToConvert = existingOrder;
             }
+        }
+
+        // Certain order can't be used by ships or aircraft
+        const bool willAddRouteThrough = order->is<OrderRouteThrough>() || orderToConvert != nullptr;
+
+        if (willAddRouteThrough || order->is<OrderRouteWaypoint>())
+        {
+            for (auto* otherHead : VehicleManager::VehicleList())
+            {
+                if (otherHead->orderTableOffset != head->orderTableOffset)
+                {
+                    continue;
+                }
+
+                if (otherHead->mode == TransportMode::water && willAddRouteThrough)
+                {
+                    setErrorText(StringIds::orderTypeNotValidForShips);
+                    return kFailure;
+                }
+                else if (otherHead->mode == TransportMode::air)
+                {
+                    setErrorText(StringIds::orderTypeNotValidForAircraft);
+                    return kFailure;
+                }
+            }
+        }
+
+        // Verify we have room for more orders, both globally and for this particular vehicle
+        if (!OrderManager::spaceLeftInGlobalOrderTableForOrder(order))
+        {
+            setErrorText(StringIds::no_space_for_more_vehicle_orders);
+            return kFailure;
+        }
+        if (!OrderManager::spaceLeftInVehicleOrderTable(head))
+        {
+            setErrorText(StringIds::tooManyOrdersForThisVehicle);
+            return kFailure;
+        }
+
+        if (!hasFlags(flags, GameCommands::Flags::apply))
+        {
+            return 0;
+        }
+
+        OrderManager::invalidateOrderPagesByOrderTableOffset(head->orderTableOffset);
+
+        if (orderToConvert != nullptr)
+        {
+            orderToConvert->setType(OrderType::RouteThrough);
+            return 0;
         }
 
         // All looks good -- insert a brand new order!

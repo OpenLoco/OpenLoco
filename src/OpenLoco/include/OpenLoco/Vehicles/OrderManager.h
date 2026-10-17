@@ -120,6 +120,8 @@ namespace OpenLoco::Vehicles::OrderManager
     void shiftOrdersLeft(const uint32_t offsetToShiftTowards, const int16_t sizeToShiftBy);
     void shiftOrdersRight(const uint32_t offsetToShiftFrom, const int16_t sizeToShiftBy);
     void reoffsetVehicleOrderTables(const uint32_t removeOrderTableOffset, const int16_t sizeOfRemovedOrderTable);
+    bool isOrderTableShared(const VehicleHead* head);
+    void invalidateOrderPagesByOrderTableOffset(uint32_t tableOffset);
 
     bool spaceLeftInGlobalOrderTableForOrder(const Order* order);
     bool spaceLeftInVehicleOrderTable(VehicleHead* head);
