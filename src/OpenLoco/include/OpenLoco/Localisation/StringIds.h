@@ -2178,6 +2178,14 @@ namespace OpenLoco::StringIds
     constexpr StringId has_cargo_order = 2466;
     constexpr StringId transports_cargo = 2467;
     constexpr StringId map_tooltip_int_x_int = 2468;
+    constexpr StringId share_vehicle_orders_button = 2469;
+    constexpr StringId share_vehicle_orders_tooltip = 2470;
+    constexpr StringId orders_end_shared = 2471;
+    constexpr StringId orders_stop_sharing_tooltip = 2472;
+    constexpr StringId route_click_vehicle_to_share = 2473;
+    constexpr StringId shared_vehicle_orders_button = 2474;
+    constexpr StringId cant_share_vehicle_orders = 2475;
+    constexpr StringId cant_make_vehicle_orders_independent = 2476;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

@@ -306,6 +306,56 @@ namespace OpenLoco::Vehicles::OrderManager
         orderTableLength() -= head->sizeOfOrderTable;
     }
 
+    void linkOrders(VehicleHead* head, VehicleHead* sourceHead)
+    {
+        if (head == sourceHead || head->orderTableOffset == sourceHead->orderTableOffset)
+        {
+            return;
+        }
+
+        const auto oldOffset = head->orderTableOffset;
+        if (isOrderTableShared(head))
+        {
+            invalidateOrderPagesByOrderTableOffset(oldOffset);
+        }
+
+        freeOrders(head);
+
+        head->orderTableOffset = sourceHead->orderTableOffset;
+        head->sizeOfOrderTable = sourceHead->sizeOfOrderTable;
+        head->currentOrder = 0;
+
+        invalidateOrderPagesByOrderTableOffset(head->orderTableOffset);
+    }
+
+    bool detachOrders(VehicleHead* head)
+    {
+        if (!isOrderTableShared(head))
+        {
+            return true;
+        }
+
+        const auto size = head->sizeOfOrderTable;
+        if (orderTableLength() + size > Limits::kMaxOrders)
+        {
+            return false;
+        }
+
+        const auto oldOffset = head->orderTableOffset;
+        const auto newOffset = orderTableLength();
+
+        auto* source = reinterpret_cast<uint8_t*>(&orders()[oldOffset]);
+        auto* dest = reinterpret_cast<uint8_t*>(&orders()[newOffset]);
+        std::memcpy(dest, source, size);
+
+        orderTableLength() += size;
+        head->orderTableOffset = newOffset;
+
+        invalidateOrderPagesByOrderTableOffset(oldOffset);
+        invalidateOrderPagesByOrderTableOffset(newOffset);
+        return true;
+    }
+
     // 0x00470312
     void allocateOrders(VehicleHead& head)
     {
