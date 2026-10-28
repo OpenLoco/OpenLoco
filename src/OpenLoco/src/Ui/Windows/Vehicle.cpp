@@ -4269,7 +4269,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 for (tile_coord_t j = 0; j < 8; ++j)
                 {
                     const auto loc = initialPos + World::toWorldSpace(World::TilePos2{ i, j });
-                    if (!World::validCoords(loc))
+                    if (!World::TileManager::validCoords(loc))
                     {
                         continue;
                     }
@@ -4295,7 +4295,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                         auto firstTile = loc - World::kOffsets[elStation->sequenceIndex()];
                         auto* dockObject = ObjectManager::get<DockObject>(elStation->objectId());
-                        auto boatLoc = firstTile + World::toWorldSpace(TilePos2{ 1, 1 }) + Math::Vector::rotate(dockObject->boatPosition, elStation->rotation());
+                        auto boatLoc = firstTile + World::toWorldSpace(TilePos2{ 1, 1 }) + Math::Vector::rotate(dockObject->getBoatPosition(), elStation->rotation());
 
                         auto distance = Math::Vector::manhattanDistance2D(boatLoc, centerPos);
                         if (distance < bestDistance)

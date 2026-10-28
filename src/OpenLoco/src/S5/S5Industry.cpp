@@ -8,8 +8,8 @@ namespace OpenLoco::S5
     {
         S5::Industry dst{};
         dst.name = src.name;
-        dst.x = src.x;
-        dst.y = src.y;
+        dst.x = toSaveCoord(src.x);
+        dst.y = toSaveCoord(src.y);
         dst.flags = enumValue(src.flags);
         dst.prng0 = src.prng.srand_0();
         dst.prng1 = src.prng.srand_1();
@@ -17,9 +17,9 @@ namespace OpenLoco::S5
         dst.under_construction = src.under_construction;
         dst.foundingYear = src.foundingYear;
         dst.numTiles = src.numTiles;
-        std::ranges::copy(src.tiles, dst.tiles);
+        toSavePosArray(src.tiles, dst.tiles);
         dst.town = enumValue(src.town);
-        dst.tileLoop = src.tileLoop.current();
+        dst.tileLoop = toSavePos(src.tileLoop.current());
         dst.numFarmTiles = src.numFarmTiles;
         dst.numIdleFarmTiles = src.numIdleFarmTiles;
         dst.productionRate = src.productionRate;
@@ -71,9 +71,9 @@ namespace OpenLoco::S5
         dst.under_construction = src.under_construction;
         dst.foundingYear = src.foundingYear;
         dst.numTiles = src.numTiles;
-        std::ranges::copy(src.tiles, dst.tiles);
+        fromSavePosArray(src.tiles, dst.tiles);
         dst.town = static_cast<TownId>(src.town);
-        dst.tileLoop = World::TileLoop{ src.tileLoop };
+        dst.tileLoop = World::TileLoop{ fromSavePos(src.tileLoop) };
         dst.numFarmTiles = src.numFarmTiles;
         dst.numIdleFarmTiles = src.numIdleFarmTiles;
         dst.productionRate = src.productionRate;

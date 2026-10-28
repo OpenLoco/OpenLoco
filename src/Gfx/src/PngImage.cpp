@@ -26,7 +26,7 @@ namespace OpenLoco::Gfx
         imageData = std::vector<png_byte>(w * h * c);
     }
 
-    Colour32 PngImage::getPixel(int x, int y)
+    Colour32 PngImage::getPixel(int x, int y) const
     {
         const size_t index = (y * width + x) * channels;
         assert(index + channels <= imageData.size());

@@ -1421,7 +1421,7 @@ namespace OpenLoco::Paint
         const auto& offset = kNeighbourOffsets[rotation][TDirection];
         const auto position = session.getSpritePosition() + offset;
 
-        if (!World::validCoords(position))
+        if (!World::TileManager::validCoords(position))
         {
             return {};
         }
@@ -1483,6 +1483,22 @@ namespace OpenLoco::Paint
         descriptor.growthStage = surface->getGrowthStage();
 
         return descriptor;
+    }
+
+    // The colour the map window gives a water tile (see MapWindow.cpp). It is a palette index into the
+    // strip of water colours the water object provides, selected by how deep the water is.
+    static PaletteIndex_t getWaterTileColour(const World::SurfaceElement& elSurface)
+    {
+        const auto* waterObj = ObjectManager::get<WaterObject>();
+        const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
+        if (waterImage == nullptr)
+        {
+            return PaletteIndex::transparent;
+        }
+
+        const auto depth = (elSurface.water() * World::kMicroToSmallZStep - elSurface.baseZ()) / 2;
+        const auto colourCount = static_cast<int32_t>(waterImage->width) * waterImage->height;
+        return waterImage->offset[std::clamp(depth - 2, 0, std::max(0, colourCount - 1))];
     }
 
     // 0x004656BF
@@ -1822,10 +1838,27 @@ namespace OpenLoco::Paint
             auto* waterObj = ObjectManager::get<WaterObject>();
             const auto imageId = ImageId(waterObj->image).withIndexOffset(shape + 35).withBlend(ExtColour::water);
 
-            session.addToPlotListAsParent(imageId, { 0, 0, waterHeight }, { 32, 32, -1 });
+            auto* ps = session.addToPlotListAsParent(imageId, { 0, 0, waterHeight }, { 32, 32, -1 });
 
-            const auto attachedImage = ImageId(waterObj->image).withIndexOffset(shape + 30);
-            session.attachToPrevious(attachedImage, { 0, 0 });
+            // At the furthest zoom out levels a whole tile is only a pixel or two. The water sprite selects
+            // a shade of the water palette map for each of its pixels and is meant to be blended with the
+            // terrain below it, which cannot work once the terrain below it is no longer drawn (the blend
+            // is transparent for most of the combinations that occur then, which is why water disappeared
+            // from the map at those levels). Draw the tile as a plain water coloured rectangle instead.
+            const auto isFarZoomOut = session.getZoom() >= ZoomLevel::sixteenth;
+            if (isFarZoomOut)
+            {
+                if (ps != nullptr)
+                {
+                    ps->flags |= PaintStructFlags::solidColour;
+                    ps->solidColour = getWaterTileColour(elSurface);
+                }
+            }
+            else
+            {
+                const auto attachedImage = ImageId(waterObj->image).withIndexOffset(shape + 30);
+                session.attachToPrevious(attachedImage, { 0, 0 });
+            }
 
             // Draw waves
             if (elSurface.isFlag6() && zoomLevel <= ZoomLevel::full)

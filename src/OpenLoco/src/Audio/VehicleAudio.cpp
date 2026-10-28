@@ -37,7 +37,7 @@ namespace OpenLoco::Audio
 
     static bool isUnderground(const World::Pos3& pos)
     {
-        if (pos.x == Location::null || !World::validCoords(pos))
+        if (pos.x == Location::null || !World::TileManager::validCoords(pos))
         {
             return false;
         }

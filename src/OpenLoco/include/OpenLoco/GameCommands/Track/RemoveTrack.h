@@ -10,7 +10,7 @@ namespace OpenLoco::GameCommands
 
         TrackRemovalArgs() = default;
         explicit TrackRemovalArgs(const registers& regs)
-            : pos(regs.ax, regs.cx, regs.di)
+            : pos(regs.eax, regs.ecx, regs.edi)
             , rotation(regs.bh & 0x3)
             , trackId(regs.dl & 0x3F)
             , index(regs.dh)
@@ -28,8 +28,8 @@ namespace OpenLoco::GameCommands
         {
             registers regs;
             regs.eax = pos.x;
-            regs.cx = pos.y;
-            regs.di = pos.z;
+            regs.ecx = pos.y;
+            regs.edi = pos.z;
             regs.bh = rotation;
             regs.dl = trackId;
             regs.dh = index;

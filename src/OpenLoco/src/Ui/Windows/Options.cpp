@@ -797,12 +797,16 @@ namespace OpenLoco::Ui::Windows::Options
         static void vehicleZoomMouseDown(const Window& self, [[maybe_unused]] WidgetIndex_t wi)
         {
             auto& dropdown = self.widgets[widx::vehicles_min_scale];
-            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 4, 0x80);
+            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 8, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::full_scale);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::half_scale);
             Dropdown::add(2, StringIds::dropdown_stringid, StringIds::quarter_scale);
             Dropdown::add(3, StringIds::dropdown_stringid, StringIds::eighth_scale);
+            Dropdown::add(4, StringIds::dropdown_stringid, StringIds::sixteenth_scale);
+            Dropdown::add(5, StringIds::dropdown_stringid, StringIds::thirty_second_scale);
+            Dropdown::add(6, StringIds::dropdown_stringid, StringIds::sixty_fourth_scale);
+            Dropdown::add(7, StringIds::dropdown_stringid, StringIds::hundred_twenty_eighth_scale);
             Dropdown::setItemSelected(Config::get().vehiclesMinScale);
         }
 
@@ -831,12 +835,16 @@ namespace OpenLoco::Ui::Windows::Options
         static void stationNamesScaleMouseDown(const Window& self, [[maybe_unused]] WidgetIndex_t wi)
         {
             auto& dropdown = self.widgets[widx::station_names_min_scale];
-            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 4, 0x80);
+            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 8, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::full_scale);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::half_scale);
             Dropdown::add(2, StringIds::dropdown_stringid, StringIds::quarter_scale);
             Dropdown::add(3, StringIds::dropdown_stringid, StringIds::eighth_scale);
+            Dropdown::add(4, StringIds::dropdown_stringid, StringIds::sixteenth_scale);
+            Dropdown::add(5, StringIds::dropdown_stringid, StringIds::thirty_second_scale);
+            Dropdown::add(6, StringIds::dropdown_stringid, StringIds::sixty_fourth_scale);
+            Dropdown::add(7, StringIds::dropdown_stringid, StringIds::hundred_twenty_eighth_scale);
             Dropdown::setItemSelected(Config::get().stationNamesMinScale);
         }
 
@@ -957,6 +965,10 @@ namespace OpenLoco::Ui::Windows::Options
                 StringIds::half_scale,
                 StringIds::quarter_scale,
                 StringIds::eighth_scale,
+                StringIds::sixteenth_scale,
+                StringIds::thirty_second_scale,
+                StringIds::sixty_fourth_scale,
+                StringIds::hundred_twenty_eighth_scale,
             };
 
             self.widgets[widx::vehicles_min_scale].text = kScaleStringIds[Config::get().vehiclesMinScale];

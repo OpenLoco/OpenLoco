@@ -13,6 +13,9 @@ namespace OpenLoco
         return static_cast<std::underlying_type_t<TEnum>>(enumerator);
     }
 
-    using coord_t = int16_t;
+    // World space coordinates. These are 32 bit so that maps larger than 1024 tiles
+    // (i.e. wider than 32768 world units) can be represented.
+    using coord_t = int32_t;
+    // Tile space coordinates. A tile is 32 world units, so 16 bit is enough for any map size.
     using tile_coord_t = int16_t;
 }

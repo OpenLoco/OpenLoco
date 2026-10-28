@@ -10,7 +10,7 @@ namespace OpenLoco::GameCommands
 
         VehiclePlacementArgs() = default;
         explicit VehiclePlacementArgs(const registers& regs)
-            : pos(regs.ax, regs.cx, regs.dx * World::kSmallZStep)
+            : pos(regs.eax, regs.ecx, regs.dx * World::kSmallZStep)
             , trackAndDirection(regs.bp)
             , trackProgress(regs.ebx >> 16)
             , head(EntityId(regs.di))
@@ -29,8 +29,8 @@ namespace OpenLoco::GameCommands
             registers regs;
             regs.ebp = trackAndDirection;
             regs.di = enumValue(head);
-            regs.ax = pos.x;
-            regs.cx = pos.y;
+            regs.eax = pos.x;
+            regs.ecx = pos.y;
             regs.dx = pos.z / World::kSmallZStep;
             regs.ebx = convertGhost ? 0xFFFF0000 : (trackProgress << 16);
             return regs;

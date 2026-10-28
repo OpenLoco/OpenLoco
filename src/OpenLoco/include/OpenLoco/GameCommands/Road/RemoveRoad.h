@@ -10,7 +10,7 @@ namespace OpenLoco::GameCommands
 
         RoadRemovalArgs() = default;
         explicit RoadRemovalArgs(const registers& regs)
-            : pos(regs.ax, regs.cx, regs.di)
+            : pos(regs.eax, regs.ecx, regs.edi)
             , rotation(regs.bh & 0x3)
             , roadId(regs.dl & 0xF)
             , sequenceIndex(regs.dh & 0x3)
@@ -27,9 +27,9 @@ namespace OpenLoco::GameCommands
         explicit operator registers() const
         {
             registers regs;
-            regs.ax = pos.x;
-            regs.cx = pos.y;
-            regs.di = pos.z;
+            regs.eax = pos.x;
+            regs.ecx = pos.y;
+            regs.edi = pos.z;
             regs.bh = rotation;
             regs.dl = roadId;
             regs.dh = sequenceIndex;

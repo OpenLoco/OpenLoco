@@ -120,6 +120,8 @@ namespace OpenLoco::S5
         saveDetails->performanceIndex = playerCompany.performanceIndex;
         saveDetails->challengeProgress = playerCompany.challengeProgress;
         saveDetails->challengeFlags = playerCompany.challengeFlags;
+        saveDetails->mapSizeX = World::TileManager::getMapColumns();
+        saveDetails->mapSizeY = World::TileManager::getMapRows();
 
         std::strncpy(saveDetails->scenario, gameState.scenarioName, sizeof(saveDetails->scenario));
         Scenario::drawSavePreviewImage(saveDetails->image, { 250, 200 });
@@ -140,9 +142,9 @@ namespace OpenLoco::S5
         ts.road.clear();
         ts.industry.clear();
 
-        if (ts.entries.size() != World::TileManager::kMaxElements)
+        if (ts.entries.size() != World::TileManager::getMaxElements())
         {
-            ts.entries.assign(World::TileManager::kMaxElements, World::TileElementEntry::empty());
+            ts.entries.assign(World::TileManager::getMaxElements(), World::TileElementEntry::empty());
         }
         else
         {
@@ -416,10 +418,13 @@ namespace OpenLoco::S5
         // Copy the source gamestate contents to the S5 gamestate, field by field
         auto& dst = file->gameState;
         dst = *exportGameState(src);
-        dst.general.savedViewX = savedView.viewX;
-        dst.general.savedViewY = savedView.viewY;
+        dst.general.savedViewX = toSaveCoord(savedView.viewX);
+        dst.general.savedViewY = toSaveCoord(savedView.viewY);
         dst.general.savedViewZoom = static_cast<uint8_t>(static_cast<int8_t>(savedView.zoomLevel));
         dst.general.savedViewRotation = savedView.rotation;
+
+        // Coordinates outside the 16 bit range of the save format are stored separately
+        file->widePositions = collectWidePositions(src);
 
         // Copy tile elements; remove any ghosts before saving
         const auto entries = TileManager::getEntries();
@@ -563,6 +568,12 @@ namespace OpenLoco::S5
                 fs.writeChunk(SawyerEncoding::runLengthMulti, file.tileElements.data(), file.tileElements.size() * sizeof(TileElement));
             }
 
+            // The coordinates that the 16 bit fields of the vanilla chunks cannot hold are stored in
+            // an extra chunk (see S5WidePositions.h). It is written for all maps, regardless of
+            // their size, and is empty for maps that do not need it.
+            const auto widePositions = encodeWidePositions(file.widePositions);
+            fs.writeChunk(SawyerEncoding::uncompressed, widePositions.data(), widePositions.size());
+
             fs.writeChecksum();
             return true;
         }
@@ -614,6 +625,8 @@ namespace OpenLoco::S5
             // 0x004420B2
         }
 
+        bool readTileElements = false;
+
         if (file->header.type == S5Type::scenario)
         {
             // Load required objects
@@ -635,6 +648,7 @@ namespace OpenLoco::S5
                 auto numTileElements = tileElements.size() / sizeof(TileElement);
                 file->tileElements.resize(numTileElements);
                 std::memcpy(file->tileElements.data(), tileElements.data(), numTileElements * sizeof(TileElement));
+                readTileElements = true;
             }
         }
         else
@@ -663,6 +677,17 @@ namespace OpenLoco::S5
             auto numTileElements = tileElements.size() / sizeof(TileElement);
             file->tileElements.resize(numTileElements);
             std::memcpy(file->tileElements.data(), tileElements.data(), numTileElements * sizeof(TileElement));
+            readTileElements = true;
+        }
+
+        // The coordinates that do not fit in the 16 bit fields of the vanilla chunks are stored in
+        // an extra chunk at the end of the file (the last 4 bytes are the checksum). Save files
+        // written before large maps were supported do not have this chunk, so it is only read when
+        // there is data left after the chunks above.
+        if (readTileElements && stream.getLength() - stream.getPosition() > sizeof(uint32_t))
+        {
+            const auto widePositions = fs.readChunk();
+            file->widePositions = decodeWidePositions(widePositions);
         }
 
         // Reset fields that don't affect the simulation, but would cause issues when comparing game states.
@@ -727,6 +752,7 @@ namespace OpenLoco::S5
             Ui::ProgressBar::begin(StringIds::loading);
             Ui::ProgressBar::setProgress(10);
 
+            World::TileManager::allocateMapElements();
             auto file = loadSave(stream);
 
             Ui::ProgressBar::setProgress(90);
@@ -877,11 +903,33 @@ namespace OpenLoco::S5
             auto& src = file->gameState;
             dst = *importGameState(src);
 
+            // Restore the coordinates that the 16 bit fields of the vanilla save format could not hold
+            applyWidePositions(dst, file->widePositions);
+
             // Copy scenario options
+            auto mapWidth = World::TileManager::kDefaultMapDimension;
+            auto mapHeight = World::TileManager::kDefaultMapDimension;
+
             if (hasLoadFlags(flags, LoadFlags::scenario | LoadFlags::landscape))
             {
-                Scenario::getOptions() = importOptions(*file->scenarioOptions);
+                auto& options = Scenario::getOptions();
+                options = importOptions(*file->scenarioOptions);
+                mapWidth = options.mapSizeX;
+                mapHeight = options.mapSizeY;
             }
+            else if (file->saveDetails != nullptr)
+            {
+                auto& options = *file->saveDetails;
+                mapWidth = options.mapSizeX;
+                mapHeight = options.mapSizeY;
+            }
+
+            if (mapWidth < World::TileManager::kMinMapDimension || mapHeight < World::TileManager::kMinMapDimension || mapWidth > World::TileManager::kMaxMapDimension || mapHeight > World::TileManager::kMaxMapDimension)
+            {
+                mapWidth = World::TileManager::kDefaultMapDimension;
+                mapHeight = World::TileManager::kDefaultMapDimension;
+            }
+            TileManager::setMapSize(mapWidth, mapHeight);
 
             // Copy tile elements
             if ((dst.flags & GameStateFlags::tileManagerLoaded) != GameStateFlags::none)
@@ -890,7 +938,6 @@ namespace OpenLoco::S5
             }
             else
             {
-                World::TileManager::initialise();
                 Scenario::sub_46115C();
             }
 
@@ -960,8 +1007,8 @@ namespace OpenLoco::S5
             if (mainWindow != nullptr)
             {
                 SavedViewSimple savedView;
-                savedView.viewX = file->gameState.general.savedViewX;
-                savedView.viewY = file->gameState.general.savedViewY;
+                savedView.viewX = dst.savedViewX;
+                savedView.viewY = dst.savedViewY;
                 savedView.zoomLevel = ZoomLevel{ std::clamp<int8_t>(file->gameState.general.savedViewZoom, ZoomLevel::min, ZoomLevel::max) };
                 savedView.rotation = file->gameState.general.savedViewRotation;
                 mainWindow->viewportFromSavedView(savedView);
@@ -1048,7 +1095,7 @@ namespace OpenLoco::S5
         {
             // 0x0050AEA8
             auto ret = std::make_unique<SaveDetails>();
-            fs.readChunk(ret.get(), sizeof(*ret));
+            fs.readChunk(ret.get(), sizeof(SaveDetails));
             return ret;
         }
         return nullptr;

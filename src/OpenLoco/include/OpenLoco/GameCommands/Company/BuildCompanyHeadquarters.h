@@ -10,7 +10,7 @@ namespace OpenLoco::GameCommands
 
         HeadquarterPlacementArgs() = default;
         explicit HeadquarterPlacementArgs(const registers& regs)
-            : pos(regs.ax, regs.cx, regs.di)
+            : pos(regs.eax, regs.ecx, regs.edi)
             , rotation(regs.bh & 0x3)
             , type(regs.dl)
             , buildImmediately(regs.bh & 0x80)
@@ -25,9 +25,9 @@ namespace OpenLoco::GameCommands
         {
 
             registers regs;
-            regs.ax = pos.x;
-            regs.cx = pos.y;
-            regs.di = pos.z;
+            regs.eax = pos.x;
+            regs.ecx = pos.y;
+            regs.edi = pos.z;
             regs.dx = type;
             regs.bh = rotation | (buildImmediately ? 0x80 : 0);
             return regs;

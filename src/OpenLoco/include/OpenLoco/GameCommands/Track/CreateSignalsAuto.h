@@ -10,7 +10,7 @@ namespace OpenLoco::GameCommands
 
         SignalsPlacementAutoArgs() = default;
         explicit SignalsPlacementAutoArgs(const registers& regs)
-            : pos(regs.ax, regs.cx, regs.di)
+            : pos(regs.eax, regs.ecx, regs.edi)
             , rotation(regs.bh & 0x3)
             , trackId(regs.dl & 0x3F)
             , index(regs.dh)
@@ -33,7 +33,7 @@ namespace OpenLoco::GameCommands
         explicit operator registers() const
         {
             registers regs;
-            regs.ax = pos.x;
+            regs.eax = pos.x;
             regs.ecx = pos.y | (step << 16);
             regs.bh = rotation;
             regs.dl = trackId;

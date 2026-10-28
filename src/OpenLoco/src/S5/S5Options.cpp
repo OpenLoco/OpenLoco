@@ -61,6 +61,8 @@ namespace OpenLoco::S5
         dst.maxRiverWidth = src.maxRiverWidth;
         dst.riverbankWidth = src.riverbankWidth;
         dst.riverMeanderRate = src.riverMeanderRate;
+        dst.mapSizeX = src.mapSizeX;
+        dst.mapSizeY = src.mapSizeY;
 
         return dst;
     }
@@ -122,6 +124,8 @@ namespace OpenLoco::S5
         dst.maxRiverWidth = src.maxRiverWidth;
         dst.riverbankWidth = src.riverbankWidth;
         dst.riverMeanderRate = src.riverMeanderRate;
+        dst.mapSizeX = src.mapSizeX;
+        dst.mapSizeY = src.mapSizeY;
 
         return dst;
     }

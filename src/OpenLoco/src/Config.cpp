@@ -4,6 +4,8 @@
 #include <Message.h>
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Logging.h>
+#include <OpenLoco/ZoomLevel.hpp>
+#include <algorithm>
 #include <fstream>
 #include <locale>
 #include <yaml-cpp/exceptions.h>
@@ -159,8 +161,9 @@ namespace OpenLoco::Config
         _config.heightMarkerOffset = config["heightMarkerOffset"].as<int32_t>(1);
         _config.landscapeSmoothing = config["landscapeSmoothing"].as<bool>(true);
         _config.showHeightAsUnits = config["showHeightAsUnits"].as<bool>(false);
-        _config.stationNamesMinScale = config["stationNamesMinScale"].as<int32_t>(2);
-        _config.vehiclesMinScale = config["vehiclesMinScale"].as<int32_t>(2);
+        // The zoom levels are used as an index into the scale lists, so they must be in range
+        _config.stationNamesMinScale = std::clamp<int32_t>(config["stationNamesMinScale"].as<int32_t>(2), ZoomLevel::full, ZoomLevel::max);
+        _config.vehiclesMinScale = std::clamp<int32_t>(config["vehiclesMinScale"].as<int32_t>(2), ZoomLevel::full, ZoomLevel::max);
 
         // News settings
         auto& newsNode = config["news"];

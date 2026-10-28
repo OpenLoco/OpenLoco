@@ -10,7 +10,7 @@ namespace OpenLoco::GameCommands
 
         TrainStationRemovalArgs() = default;
         explicit TrainStationRemovalArgs(const registers& regs)
-            : pos(regs.ax, regs.cx, regs.di)
+            : pos(regs.eax, regs.ecx, regs.edi)
             , rotation(regs.bh & 0x3)
             , trackId(regs.dl & 0x3F)
             , index(regs.dh & 0xF)
@@ -27,9 +27,9 @@ namespace OpenLoco::GameCommands
         explicit operator registers() const
         {
             registers regs;
-            regs.ax = pos.x;
-            regs.cx = pos.y;
-            regs.di = pos.z;
+            regs.eax = pos.x;
+            regs.ecx = pos.y;
+            regs.edi = pos.z;
             regs.bh = rotation;
             regs.dl = trackId;
             regs.dh = index;

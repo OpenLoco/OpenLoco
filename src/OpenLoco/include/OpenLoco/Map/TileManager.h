@@ -28,10 +28,16 @@ namespace OpenLoco::GameCommands
 
 namespace OpenLoco::World::TileManager
 {
-    constexpr size_t kMaxElements = 3 * kMapColumns * kMapRows;
-    constexpr size_t kMaxElementsOnOneTile = 1024; // If you exceed this then the game may buffer overflow in certain situations
-    constexpr size_t kMaxUsableElements = kMaxElements - kMaxElementsOnOneTile;
     const TileElement* const kInvalidTile = reinterpret_cast<const TileElement*>(static_cast<intptr_t>(-1));
+
+    constexpr size_t kMaxElementsOnOneTile = 1024; // If you exceed this then the game may buffer overflow in certain situations
+
+    const uint16_t kMinMapDimension = 16;
+    const uint16_t kDefaultMapDimension = 384;
+    // The largest map that can be created. World coordinates are 32 bit so the map extents are
+    // limited by the tile pointer array and the entity spatial index (which are both sized from
+    // the map pitch) rather than by the coordinate type.
+    const uint16_t kMaxMapDimension = 4096;
 
     enum class ElementPositionFlags : uint8_t
     {
@@ -132,4 +138,24 @@ namespace OpenLoco::World::TileManager
     void setTerrainStyleAsClearedAtHeight(const Pos3& pos);
     uint32_t adjustSurfaceHeight(World::Pos2 pos, SmallZ targetBaseZ, uint8_t slopeFlags, World::TileClearance::RemovedBuildings& removedBuildings, GameCommands::Flags flags);
     uint32_t adjustWaterHeight(World::Pos2 pos, SmallZ targetHeight, World::TileClearance::RemovedBuildings& removedBuildings, GameCommands::Flags flags);
+
+    void setMapSize(coord_t cols, coord_t rows);
+    coord_t getMapRows();
+    coord_t getMapColumns();
+    // Number of slots per row of the tile pointer array. Always >= max(columns, rows) so that
+    // tiles of different rows never share a slot (see getTileIndex).
+    coord_t getMapPitch();
+    int32_t getMapHeight();
+    int32_t getMapWidth();
+    uint32_t getMapSize();
+    uint32_t getMaxElements();
+
+    bool validCoords(const Pos2& coords);
+    bool validCoords(const TilePos2& coords);
+    TilePos2 clampTileCoords(const TilePos2& coords);
+    Pos2 clampCoords(const Pos2& coords);
+
+    // drawing coordinates validation differs from general valid coordinate validation
+    bool drawableCoords(const Pos2& coords);
+    bool drawableTileCoords(const TilePos2& coords);
 }

@@ -82,4 +82,40 @@ namespace OpenLoco::Gfx
             return true;
         }
     }
+
+    // Draws the sampled pixel of a block of source pixels of a zoomed out sprite. Mask images (water,
+    // glass, ...) are drawn by transforming the pixels that are already in the render target and only
+    // use the source image as a mask, so for those all that matters is that the sampled pixel is not
+    // transparent. The sampled pixel of a block can be transparent for the diamond shaped sprites the
+    // map is made of, which would leave the mask image (such as water) undrawn. In that case the
+    // block of source pixels is searched for a pixel that is not transparent instead. A block length
+    // of one is used where the block cannot be searched (RLE compressed images), in which case only
+    // the pixel at blockStart is tried as an alternative.
+    template<DrawBlendOp TBlendOp>
+    bool blitSampledPixel(const uint8_t src, uint8_t& dst, const PaletteMap::View paletteMap, const uint8_t noiseMask, const uint8_t* blockStart, const int32_t blockLength)
+    {
+        if (blitPixel<TBlendOp>(src, dst, paletteMap, noiseMask))
+        {
+            return true;
+        }
+
+        if constexpr (((TBlendOp & DrawBlendOp::dst) != DrawBlendOp::none) && ((TBlendOp & DrawBlendOp::src) == DrawBlendOp::none))
+        {
+            // Noise masks are never used by mask images
+            if (noiseMask != 0xFF)
+            {
+                return false;
+            }
+
+            for (auto i = 0; i < blockLength; i++)
+            {
+                if (blockStart[i] != PaletteIndex::transparent)
+                {
+                    return blitPixel<TBlendOp>(blockStart[i], dst, paletteMap, noiseMask);
+                }
+            }
+        }
+
+        return false;
+    }
 }

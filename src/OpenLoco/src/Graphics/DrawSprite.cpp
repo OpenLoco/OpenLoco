@@ -229,4 +229,44 @@ namespace OpenLoco::Gfx
     {
         drawSpriteToBufferHelper<3, true>(rt, args, op);
     }
+    template<>
+    void drawSpriteToBuffer<4, false>(const RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
+    {
+        drawSpriteToBufferHelper<4, false>(rt, args, op);
+    }
+    template<>
+    void drawSpriteToBuffer<4, true>(const RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
+    {
+        drawSpriteToBufferHelper<4, true>(rt, args, op);
+    }
+    template<>
+    void drawSpriteToBuffer<5, false>(const RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
+    {
+        drawSpriteToBufferHelper<5, false>(rt, args, op);
+    }
+    template<>
+    void drawSpriteToBuffer<5, true>(const RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
+    {
+        drawSpriteToBufferHelper<5, true>(rt, args, op);
+    }
+    template<>
+    void drawSpriteToBuffer<6, false>(const RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
+    {
+        drawSpriteToBufferHelper<6, false>(rt, args, op);
+    }
+    template<>
+    void drawSpriteToBuffer<6, true>(const RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
+    {
+        drawSpriteToBufferHelper<6, true>(rt, args, op);
+    }
+    template<>
+    void drawSpriteToBuffer<7, false>(const RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
+    {
+        drawSpriteToBufferHelper<7, false>(rt, args, op);
+    }
+    template<>
+    void drawSpriteToBuffer<7, true>(const RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
+    {
+        drawSpriteToBufferHelper<7, true>(rt, args, op);
+    }
 }

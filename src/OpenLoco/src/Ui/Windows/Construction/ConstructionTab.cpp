@@ -2195,7 +2195,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             for (const auto& tile : getMapSelectionFreeFormTiles())
             {
-                if (!World::validCoords(tile))
+                if (!World::TileManager::validCoords(tile))
                 {
                     continue;
                 }
@@ -2206,12 +2206,12 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                     continue;
                 }
 
-                maxHeight = std::max(tileHeight->landHeight, maxHeight);
+                maxHeight = static_cast<int16_t>(std::max<coord_t>(tileHeight->landHeight, maxHeight));
 
                 if (tileHeight->waterHeight)
                 {
                     // Constructing over water is always +16
-                    maxHeight = std::max<int16_t>(tileHeight->waterHeight + 16, maxHeight);
+                    maxHeight = std::max<int16_t>(static_cast<int16_t>(tileHeight->waterHeight + 16), maxHeight);
                 }
             }
         }
@@ -2267,10 +2267,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             return std::nullopt;
         }
-        auto height = std::min(tileHeight->landHeight, baseHeight);
+        auto height = std::min<coord_t>(tileHeight->landHeight, baseHeight);
         height = std::max(height, tileHeight->waterHeight);
 
-        return { std::make_pair(World::toTileSpace(*mapPos), height) };
+        return { std::make_pair(World::toTileSpace(*mapPos), static_cast<int16_t>(height)) };
     }
 
     static int16_t getMinPieceHeight(const std::span<const TrackData::PreviewTrack> piece)

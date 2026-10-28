@@ -2407,7 +2407,7 @@ namespace OpenLoco::CompanyAi
         // TODO: When diverging just set this all to a fixed value rather than only first entry
         for (auto& htEntry : company.trackandRoadHashTable)
         {
-            htEntry.posX = 0xFFFFU;
+            htEntry = Company::TrackRoadHashTableEntry();
         }
         company.hashTableLength = 0;
     }

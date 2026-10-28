@@ -10,7 +10,7 @@ namespace OpenLoco::GameCommands
         static constexpr auto command = GameCommand::updateOwnerStatus;
         UpdateOwnerStatusArgs() = default;
         explicit UpdateOwnerStatusArgs(const registers& regs)
-            : ownerStatus(regs.ax, regs.cx)
+            : ownerStatus(regs.eax, regs.ecx)
         {
         }
 
@@ -19,10 +19,10 @@ namespace OpenLoco::GameCommands
         explicit operator registers() const
         {
             registers regs;
-            int16_t res[2];
+            coord_t res[2];
             ownerStatus.getData(res);
-            regs.ax = res[0];
-            regs.cx = res[1];
+            regs.eax = res[0];
+            regs.ecx = res[1];
             return regs;
         }
     };

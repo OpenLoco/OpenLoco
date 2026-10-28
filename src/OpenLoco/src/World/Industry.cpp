@@ -480,7 +480,7 @@ namespace OpenLoco
     // 0x0045510C bl == 0
     static bool isSurfaceClaimed(const World::TilePos2& pos)
     {
-        if (!World::validCoords(pos))
+        if (!World::TileManager::validCoords(pos))
         {
             return false;
         }

@@ -31,8 +31,8 @@ namespace OpenLoco::S5
         dst.currentYear = src.currentYear;
         dst.currentMonth = src.currentMonth;
         dst.currentDayOfMonth = src.currentDayOfMonth;
-        dst.savedViewX = src.savedViewX;
-        dst.savedViewY = src.savedViewY;
+        dst.savedViewX = toSaveCoord(src.savedViewX);
+        dst.savedViewY = toSaveCoord(src.savedViewY);
         dst.savedViewZoom = src.savedViewZoom;
         dst.savedViewRotation = src.savedViewRotation;
         dst.playerCompanies[0] = enumValue(src.playerCompanies[0]);
@@ -50,7 +50,7 @@ namespace OpenLoco::S5
         dst.scenarioTicks2 = src.scenarioTicks2;
         dst.magicNumber = kMagicNumber; // Match implementation at 0x004437FC
         dst.numMapAnimations = src.numMapAnimations;
-        dst.tileUpdateStartLocation = src.tileUpdateStartLocation;
+        dst.tileUpdateStartLocation = toSavePos(src.tileUpdateStartLocation);
         dst.scenarioConstruction = exportConstruction(src.scenarioConstruction);
         dst.defaultRailroadObjectId = src.defaultRailroadObjectId;
         dst.defaultRoadObjectId = src.defaultRoadObjectId;
@@ -234,8 +234,8 @@ namespace OpenLoco::S5
         dst.currentYear = src.currentYear;
         dst.currentMonth = src.currentMonth;
         dst.currentDayOfMonth = src.currentDayOfMonth;
-        dst.savedViewX = src.savedViewX;
-        dst.savedViewY = src.savedViewY;
+        dst.savedViewX = fromSaveCoord(src.savedViewX);
+        dst.savedViewY = fromSaveCoord(src.savedViewY);
         dst.savedViewZoom = src.savedViewZoom;
         dst.savedViewRotation = src.savedViewRotation;
         for (auto i = 0U; i < std::size(dst.playerCompanies); ++i)
@@ -254,7 +254,7 @@ namespace OpenLoco::S5
         dst.scenarioTicks2 = src.scenarioTicks2;
         dst.magicNumber = src.magicNumber;
         dst.numMapAnimations = src.numMapAnimations;
-        dst.tileUpdateStartLocation = src.tileUpdateStartLocation;
+        dst.tileUpdateStartLocation = fromSavePos(src.tileUpdateStartLocation);
         dst.scenarioConstruction = importConstruction(src.scenarioConstruction);
         dst.defaultRailroadObjectId = src.defaultRailroadObjectId;
         dst.defaultRoadObjectId = src.defaultRoadObjectId;

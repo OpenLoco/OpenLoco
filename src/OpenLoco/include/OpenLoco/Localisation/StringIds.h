@@ -834,6 +834,11 @@ namespace OpenLoco::StringIds
     constexpr StringId quarter_scale = 1097;
     constexpr StringId eighth_scale = 1098;
     constexpr StringId vehicles_min_scale_tip = 1099;
+    // OpenLoco additions (the vanilla zoom levels only go up to eighth-scale)
+    constexpr StringId sixteenth_scale = 2470;
+    constexpr StringId thirty_second_scale = 2471;
+    constexpr StringId sixty_fourth_scale = 2472;
+    constexpr StringId hundred_twenty_eighth_scale = 2473;
     constexpr StringId station_names_min_scale_tip = 1100;
     constexpr StringId main_colour_scheme = 1101;
     constexpr StringId colour_steam_locomotives = 1102;
@@ -2178,6 +2183,7 @@ namespace OpenLoco::StringIds
     constexpr StringId has_cargo_order = 2466;
     constexpr StringId transports_cargo = 2467;
     constexpr StringId map_tooltip_int_x_int = 2468;
+    constexpr StringId mapSize = 2469;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

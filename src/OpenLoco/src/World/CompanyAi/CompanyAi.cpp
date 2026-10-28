@@ -3280,7 +3280,7 @@ namespace OpenLoco
         auto maxBaseZ = std::numeric_limits<SmallZ>::min();
         for (auto& aiStation : thought.stations)
         {
-            if (!World::validCoords(aiStation.pos))
+            if (!World::TileManager::validCoords(aiStation.pos))
             {
                 continue;
             }
@@ -4316,7 +4316,7 @@ namespace OpenLoco
             maxHeight = std::max<int>(maxHeight, height);
         }
         // 0x00482FA4
-        if (!World::validCoords(maxPos))
+        if (!World::TileManager::validCoords(maxPos))
         {
             return true;
         }
@@ -4518,7 +4518,7 @@ namespace OpenLoco
         for (auto& offset : kPortBorderOffsetsAi)
         {
             const auto borderPos = offset + newPortTilePos;
-            if (!World::validCoords(borderPos))
+            if (!World::TileManager::validCoords(borderPos))
             {
                 continue;
             }
@@ -4574,7 +4574,7 @@ namespace OpenLoco
             }
         }
 
-        if (!World::validCoords(maxPos) || height == -1)
+        if (!World::TileManager::validCoords(maxPos) || height == -1)
         {
             return true;
         }
@@ -4913,7 +4913,7 @@ namespace OpenLoco
             std::swap(stationMin.y, stationMax.y);
         }
 
-        if (!World::validCoords(stationMax))
+        if (!World::TileManager::validCoords(stationMax))
         {
             return true;
         }
@@ -5253,7 +5253,7 @@ namespace OpenLoco
         // TODO: When diverging just set this all to a fixed value rather than only first entry
         for (auto& htEntry : company.trackandRoadHashTable)
         {
-            htEntry.posX = 0xFFFFU;
+            htEntry = Company::TrackRoadHashTableEntry();
         }
         company.hashTableLength = 0;
         return false;
@@ -7103,13 +7103,13 @@ namespace OpenLoco
             removeAiAllocatedCompanyTracksRoadsOnTile(pos);
 
             pos.x += 32;
-            if (pos.x < World::kMapWidth)
+            if (pos.x < World::TileManager::getMapWidth())
             {
                 continue;
             }
             pos.x = 0;
             pos.y += 32;
-            if (pos.y < World::kMapHeight)
+            if (pos.y < World::TileManager::getMapHeight())
             {
                 continue;
             }
@@ -7636,7 +7636,7 @@ namespace OpenLoco
     {
         auto remainingRange = World::TilePosRangeView(
             World::toTileSpace(company.aiPathfindTargetPos),
-            World::TilePos2{ World::kMapColumns - 1, World::kMapRows - 1 });
+            World::TilePos2{ World::TileManager::getMapColumns() - 1, World::TileManager::getMapRows() - 1 });
 
         auto count = 1500;
         for (auto& tilePos : remainingRange)
@@ -7644,7 +7644,7 @@ namespace OpenLoco
             removeCompanyTracksRoadsOnTile(company.id(), tilePos);
             count--;
             // TODO: Remove when divergence from vanilla as this is silly
-            if (tilePos.x == World::kMapColumns - 1)
+            if (tilePos.x == World::TileManager::getMapColumns() - 1)
             {
                 count--;
             }
@@ -7751,7 +7751,7 @@ namespace OpenLoco
         } - World::toWorldSpace(World::TilePos2{ 16, 16 });
 
         const auto selectedPos = randPos + pos;
-        if (World::validCoords(selectedPos))
+        if (World::TileManager::validCoords(selectedPos))
         {
             auto tile = World::TileManager::get(selectedPos);
             auto* surface = tile.surface();

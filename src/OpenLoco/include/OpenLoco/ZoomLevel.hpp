@@ -18,9 +18,13 @@ namespace OpenLoco
         static constexpr int8_t half = 1;
         static constexpr int8_t quarter = 2;
         static constexpr int8_t eighth = 3;
+        static constexpr int8_t sixteenth = 4;
+        static constexpr int8_t thirtySecond = 5;
+        static constexpr int8_t sixtyFourth = 6;
+        static constexpr int8_t hundredTwentyEighth = 7;
 
         static constexpr int8_t min = quadrupled;
-        static constexpr int8_t max = eighth;
+        static constexpr int8_t max = hundredTwentyEighth;
         static constexpr uint8_t count = max - min + 1;
 
         constexpr ZoomLevel() = default;

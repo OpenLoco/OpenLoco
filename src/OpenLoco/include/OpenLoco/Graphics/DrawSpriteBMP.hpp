@@ -48,8 +48,15 @@ namespace OpenLoco::Gfx
     template<DrawBlendOp TBlendOp, uint8_t TZoomLevel>
     inline void drawBMPSprite(const RenderTarget& rt, const DrawSpriteArgs& args)
     {
+        constexpr auto zoom = 1 << TZoomLevel;
+
         const auto& g1 = args.sourceImage;
-        const auto* src = g1.offset + ((static_cast<size_t>(g1.width) * args.srcPos.y) + args.srcPos.x);
+        // Take the sample of each block of source pixels from the middle of the block (see
+        // zoomOutSampleOffset); the corners of the diamond shaped map sprites are transparent
+        const auto sampleOffsetX = zoomOutSampleOffset(zoom, args.size.width);
+        const auto sampleOffsetY = zoomOutSampleOffset(zoom, args.size.height);
+
+        const auto* src = g1.offset + ((static_cast<size_t>(g1.width) * (args.srcPos.y + sampleOffsetY)) + (args.srcPos.x + sampleOffsetX));
         const auto& paletteMap = args.palMap;
         const int32_t width = args.size.width;
         int32_t height = args.size.height;
@@ -59,10 +66,9 @@ namespace OpenLoco::Gfx
         // Move the pointer to the start point of the destination
         dst += dstLineWidth * args.dstPos.y + args.dstPos.x;
 
-        constexpr auto zoom = 1 << TZoomLevel;
         if constexpr ((TBlendOp & DrawBlendOp::noiseMask) != DrawBlendOp::none)
         {
-            const auto* noiseMask = args.noiseImage->offset + ((static_cast<size_t>(g1.width) * args.srcPos.y) + args.srcPos.x);
+            const auto* noiseMask = args.noiseImage->offset + ((static_cast<size_t>(g1.width) * (args.srcPos.y + sampleOffsetY)) + (args.srcPos.x + sampleOffsetX));
             for (; height > 0; height -= zoom)
             {
                 auto* nextSrc = src + srcLineWidth;
@@ -70,7 +76,7 @@ namespace OpenLoco::Gfx
                 auto* nextNoiseMask = noiseMask + srcLineWidth;
                 for (int32_t widthRemaining = width; widthRemaining > 0; widthRemaining -= zoom, src += zoom, noiseMask += zoom, dst++)
                 {
-                    blitPixel<TBlendOp>(*src, *dst, paletteMap, *noiseMask);
+                    blitSampledPixel<TBlendOp>(*src, *dst, paletteMap, *noiseMask, src - sampleOffsetX, std::min<int32_t>(zoom, widthRemaining));
                 }
                 src = nextSrc;
                 dst = nextDst;
@@ -85,7 +91,7 @@ namespace OpenLoco::Gfx
                 auto* nextDst = dst + dstLineWidth;
                 for (int32_t widthRemaining = width; widthRemaining > 0; widthRemaining -= zoom, src += zoom, dst++)
                 {
-                    blitPixel<TBlendOp>(*src, *dst, paletteMap, 0xFF);
+                    blitSampledPixel<TBlendOp>(*src, *dst, paletteMap, 0xFF, src - sampleOffsetX, std::min<int32_t>(zoom, widthRemaining));
                 }
                 src = nextSrc;
                 dst = nextDst;

@@ -112,7 +112,7 @@ namespace OpenLoco::GameCommands
 
             auto* dockObj = ObjectManager::get<DockObject>(elStation->objectId());
 
-            const auto boatPos = World::Pos3(Math::Vector::rotate(dockObj->boatPosition, elStation->rotation()), 0) + args.pos + World::Pos3(32, 32, 0);
+            const auto boatPos = World::Pos3(Math::Vector::rotate(dockObj->getBoatPosition(), elStation->rotation()), 0) + args.pos + World::Pos3(32, 32, 0);
 
             const auto waterHeight = World::TileManager::getHeight(boatPos).waterHeight;
             if (waterHeight == 0)

@@ -2,12 +2,20 @@
 #include "GameState.h"
 #include "Graphics/Gfx.h"
 #include "Map/MapGenerator/MapGenerator.h"
+#include "Map/TileManager.h"
 #include "Objects/HillShapesObject.h"
 #include "Objects/ObjectManager.h"
 #include "Scenario/ScenarioOptions.h"
+#include <OpenLoco/Diagnostics/Logging.h>
+#include <limits>
 
 namespace OpenLoco::World::MapGenerator
 {
+    // The vanilla height map image is a fixed size bitmap which the vanilla code samples with a
+    // fixed row stride, so it can only be used for maps of the original size.
+    constexpr coord_t kVanillaHeightMapPitch = 512;
+    constexpr uint16_t kVanillaHeightMapMaxDimension = 512;
+
     void OriginalTerrainGenerator::blitHill(const Scenario::Options& options, HeightMap& heightMap)
     {
         const uint32_t randomVal = getGameState().rng.randNext();
@@ -162,9 +170,19 @@ namespace OpenLoco::World::MapGenerator
     void OriginalTerrainGenerator::generateHills(const Scenario::Options& options, HeightMap& heightMap)
     {
         uint8_t baseCount = getGameState().rng.randNext() & 7;
-        uint16_t numHills = baseCount + (options.hillDensity * 5) + 1;
+        uint32_t numHills = baseCount + (options.hillDensity * 5) + 1;
 
-        for (uint16_t i = 0; i < numHills; i++)
+        // The vanilla hill count is for a map of the default size. Scale it by the map area so that
+        // larger maps get the same density of splatted hills instead of being almost entirely flat.
+        const auto mapArea = static_cast<uint64_t>(heightMap.width) * heightMap.height;
+        const auto vanillaMapArea = static_cast<uint64_t>(TileManager::kDefaultMapDimension) * TileManager::kDefaultMapDimension;
+        if (mapArea > vanillaMapArea)
+        {
+            const auto areaScale = static_cast<uint32_t>((mapArea + vanillaMapArea - 1) / vanillaMapArea);
+            numHills = std::min<uint32_t>(numHills * areaScale, std::numeric_limits<uint16_t>::max());
+        }
+
+        for (uint32_t i = 0; i < numHills; i++)
         {
             blitHill(options, heightMap);
         }
@@ -184,7 +202,7 @@ namespace OpenLoco::World::MapGenerator
                 src++;
             }
 
-            src += kMapPitch;
+            src += kVanillaHeightMapPitch;
         }
     }
 
@@ -230,7 +248,17 @@ namespace OpenLoco::World::MapGenerator
         std::fill_n(heightMap.data(), heightMap.size(), options.minLandHeight);
 
         auto hillShapesObj = ObjectManager::get<HillShapesObject>();
-        if ((hillShapesObj->flags & HillShapeFlags::isHeightMap) != HillShapeFlags::none)
+        const bool isHeightMapObject = (hillShapesObj->flags & HillShapeFlags::isHeightMap) != HillShapeFlags::none;
+        const bool canUseVanillaHeightMap = heightMap.width <= kVanillaHeightMapMaxDimension && heightMap.height <= kVanillaHeightMapMaxDimension;
+
+        if (isHeightMapObject && !canUseVanillaHeightMap)
+        {
+            // The base map is created at the requested size and the hill shapes are then splatted
+            // over it, which works for any map size
+            OpenLoco::Diagnostics::Logging::info("The original height map image only covers maps up to {}x{} tiles, splatting hills instead", kVanillaHeightMapMaxDimension, kVanillaHeightMapMaxDimension);
+        }
+
+        if (isHeightMapObject && canUseVanillaHeightMap)
         {
             auto g1Element = Gfx::getG1Element(hillShapesObj->image);
             copyHeightMapFromG1(g1Element, heightMap);

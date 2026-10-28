@@ -10,7 +10,7 @@ namespace OpenLoco::GameCommands
 
         IndustryPlacementArgs() = default;
         explicit IndustryPlacementArgs(const registers& regs)
-            : pos(regs.ax, regs.cx)
+            : pos(regs.eax, regs.ecx)
             , type(regs.dl & 0x7F)
             , buildImmediately(regs.dl & 0x80)
             , srand0(regs.ebp)
@@ -27,8 +27,8 @@ namespace OpenLoco::GameCommands
         explicit operator registers() const
         {
             registers regs;
-            regs.ax = pos.x;
-            regs.cx = pos.y;
+            regs.eax = pos.x;
+            regs.ecx = pos.y;
             regs.dl = type | (buildImmediately ? 0x80 : 0);
             regs.ebp = srand0;
             regs.edi = srand1;

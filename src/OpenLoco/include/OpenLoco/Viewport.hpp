@@ -69,6 +69,13 @@ namespace OpenLoco::Ui
 
     struct Viewport;
 
+    // The width in screen pixels of a column of the map, which is one tile at full zoom. When
+    // zoomed out so far that a tile is smaller than a screen pixel a column grows to the number of
+    // tiles that fit in a pixel, so that the columns line up with the tiles that the paint session
+    // generates (see Paint::tileStrideForZoom). A column is never zero pixels wide, otherwise the
+    // column loop in Viewport::render would never terminate.
+    int32_t getColumnWidth(ZoomLevel zoom);
+
     namespace WindowToViewport
     {
         [[nodiscard]] constexpr Point applyTransform(const Point& uiPoint, const Viewport& vp);

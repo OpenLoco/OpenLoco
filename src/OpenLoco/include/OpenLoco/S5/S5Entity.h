@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Economy/Currency.h"
+#include "S5/S5Types.h"
 #include <OpenLoco/Engine/World.hpp>
 #include <cstdint>
 
@@ -23,7 +24,7 @@ namespace OpenLoco::S5
         uint8_t spriteHeightNegative; // 0x09
         uint16_t id;                  // 0x0A
         uint16_t vehicleFlags;        // 0x0C, Move these to VehicleBase after full reimplementation
-        World::Pos3 position;         // 0x0E
+        S5::Pos3 position;            // 0x0E
         uint8_t spriteWidth;          // 0x14
         uint8_t spriteHeightPositive; // 0x15
         int16_t spriteLeft;           // 0x16
@@ -114,7 +115,7 @@ namespace OpenLoco::S5
         uint8_t colourSchemePrimary;   // 0x2E
         uint8_t colourSchemeSecondary; // 0x2F
         uint16_t crashedSpriteBase;    // 0x30 crashed_sprite_base
-        World::Pos3 velocity;          // 0x32
+        S5::Pos3 velocity;             // 0x32
         int32_t accelerationX;         // 0x38
         int32_t accelerationY;         // 0x3C
         int32_t accelerationZ;         // 0x40
@@ -166,14 +167,14 @@ namespace OpenLoco::S5
         uint8_t vehicleType;               // 0x5E
         uint8_t breakdownFlags;            // 0x5F
         uint8_t aiThoughtId;               // 0x60 0xFFU for null
-        World::Pos2 aiPlacementPos;        // 0x61
+        S5::Pos2 aiPlacementPos;           // 0x61
         uint16_t aiPlacementTaD;           // 0x65 for air/water this is just rotation
         uint8_t aiPlacementBaseZ;          // 0x67
         uint8_t airportMovementEdge;       // 0x68
         uint32_t totalRefundCost;          // 0x69
         uint8_t crashedTimeout;            // 0x6D
         int8_t manualPower;                // 0x6E manual power control VehicleFlags::manualControl
-        World::Pos2 journeyStartPos;       // 0x6F journey start position
+        S5::Pos2 journeyStartPos;          // 0x6F journey start position
         uint32_t journeyStartTicks;        // 0x73 ticks since journey start
         int16_t lastAverageSpeed;          // 0x77
         uint8_t restartStoppedCarsTimeout; // 0x79 timeout before auto starting trams/buses

@@ -10,7 +10,7 @@ namespace OpenLoco::GameCommands
 
         TreePlacementArgs() = default;
         explicit TreePlacementArgs(const registers& regs)
-            : pos(regs.ax, regs.cx)
+            : pos(regs.eax, regs.ecx)
             , rotation(regs.di & 0x3)
             , type(regs.bh)
             , quadrant(regs.dl)
@@ -31,8 +31,8 @@ namespace OpenLoco::GameCommands
         explicit operator registers() const
         {
             registers regs;
-            regs.ax = pos.x;
-            regs.cx = pos.y;
+            regs.eax = pos.x;
+            regs.ecx = pos.y;
             regs.dl = quadrant;
             regs.dh = enumValue(colour);
             regs.di = rotation | (buildImmediately ? 0x8000 : 0) | (requiresFullClearance ? 0x4000 : 0);

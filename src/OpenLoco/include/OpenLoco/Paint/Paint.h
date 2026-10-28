@@ -2,6 +2,7 @@
 
 #include "Graphics/ImageId.h"
 #include "Localisation/FormatArguments.hpp"
+#include "Map/TileManager.h"
 #include "Types.hpp"
 #include "Viewport.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
@@ -55,6 +56,27 @@ namespace OpenLoco::Paint
     // Handy array for converting a bit index to the flag
     constexpr std::array<SegmentFlags, 9> kSegmentOffsets = { SegmentFlags::x0y0, SegmentFlags::x2y0, SegmentFlags::x0y2, SegmentFlags::x2y2, SegmentFlags::x1y1, SegmentFlags::x1y0, SegmentFlags::x0y1, SegmentFlags::x2y1, SegmentFlags::x1y2 };
 
+    // At the furthest zoom out levels a single tile (32 world units) is smaller than a screen
+    // pixel. The paint session generates and draws its tiles in steps of the number of tiles that
+    // fit in a pixel, so that it does not create paint structs for tiles that would be clipped
+    // away again as they map onto the same screen pixel.
+    constexpr int32_t tileStrideForZoom(const ZoomLevel zoom)
+    {
+        const auto worldUnitsPerPixel = zoom.applyTo<int32_t>(1);
+        return std::max(1, worldUnitsPerPixel / World::kTileSize);
+    }
+
+    // At the furthest zoom out levels a whole tile is drawn as a solid rectangle instead of its
+    // image (see PaintSurface). The rectangle covers the tile's bounding box: a tile is a diamond
+    // that is twice as wide as it is tall, so filling the box overlaps the neighbouring tiles a
+    // little. Once a tile is only a single pixel a single pixel is filled instead, which keeps the
+    // water exactly within the tile.
+    constexpr Ui::Point solidTileSizeForZoom(const ZoomLevel zoom)
+    {
+        const auto tilePixels = std::max<int32_t>(1, zoom.applyInversedTo<int32_t>(World::kTileSize));
+        return Ui::Point{ tilePixels > 1 ? tilePixels * 2 : 1, tilePixels };
+    }
+
     namespace
     {
         constexpr std::array<std::array<uint8_t, 4>, 4> kSegMap1 = {
@@ -100,6 +122,8 @@ namespace OpenLoco::Paint
     {
         none = 0U,
         hasMaskedImage = 1U << 0,
+        // Draw a filled rectangle of the size of a tile (in solidColour) instead of the image
+        solidColour = 1U << 1,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(PaintStructFlags);
 
@@ -155,6 +179,8 @@ namespace OpenLoco::Paint
         uint16_t quadrantIndex;
         uint8_t modId; // used for track mods and signal sides
         PaintStructFlags flags;
+        // Only used when the solidColour flag is set
+        PaletteIndex_t solidColour;
         QuadrantFlags quadrantFlags;
         Ui::ViewportInteraction::InteractionItem type;
 
@@ -229,7 +255,11 @@ namespace OpenLoco::Paint
         }
     };
 
-    static constexpr auto kMaxPaintQuadrants = 1024;
+    // The number of paint quadrants, which are used as a sort key for the paint structs. The index
+    // is derived from the rotated map coordinates, so it has to cover the whole diagonal of the
+    // largest map (its width plus its height in tiles). Indices beyond this are clamped, which
+    // would draw sprites in the wrong order.
+    static constexpr auto kMaxPaintQuadrants = World::TileManager::kMaxMapDimension * 2;
 
     struct PaintSession
     {

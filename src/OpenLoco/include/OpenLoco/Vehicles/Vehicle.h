@@ -269,8 +269,8 @@ namespace OpenLoco::Vehicles
         EntityId head;
         TrackAndDirection trackAndDirection;
         uint16_t subPosition;
-        int16_t tileX;
-        int16_t tileY;
+        coord_t tileX;
+        coord_t tileY;
         World::SmallZ tileBaseZ;
         uint8_t trackType;
         int32_t remainingDistance;

@@ -84,6 +84,8 @@ namespace OpenLoco::Scenario
         uint8_t maxRiverWidth;
         uint8_t riverbankWidth;
         uint8_t riverMeanderRate;
+        uint16_t mapSizeX;
+        uint16_t mapSizeY;
     };
 
     Options& getOptions();

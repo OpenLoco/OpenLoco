@@ -11,10 +11,12 @@
 #include "Ui.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Core/Exception.hpp>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Platform/Platform.h>
 #include <algorithm>
 #include <cstdint>
 #include <fstream>
+#include <limits>
 #include <png.h>
 #include <string>
 
@@ -59,8 +61,9 @@ namespace OpenLoco::Ui
                     FormatArguments::common(fileName.c_str());
                     Windows::Error::openQuiet(StringIds::screenshot_saved_as, StringIds::null);
                 }
-                catch (const std::exception&)
+                catch (const std::exception& ex)
                 {
+                    OpenLoco::Diagnostics::Logging::error("Saving screenshot failed", ex.what());
                     Windows::Error::open(StringIds::screenshot_failed);
                 }
             }
@@ -190,7 +193,7 @@ namespace OpenLoco::Ui
         return prepareSaveScreenshot(rt);
     }
 
-    static Ui::Viewport createGiantViewport(const uint16_t resolutionWidth, const uint16_t resolutionHeight, const ZoomLevel zoomLevel)
+    static Ui::Viewport createGiantViewport(const int32_t resolutionWidth, const int32_t resolutionHeight, const ZoomLevel zoomLevel)
     {
         Ui::Viewport viewport{};
         viewport.width = resolutionWidth;
@@ -203,8 +206,8 @@ namespace OpenLoco::Ui
         viewport.pad_11 = 0;
         viewport.flags = ViewportFlags::none;
 
-        const coord_t centreX = (World::kMapColumns / 2) * 32 + 16;
-        const coord_t centreY = (World::kMapRows / 2) * 32 + 16;
+        const coord_t centreX = static_cast<coord_t>((World::TileManager::getMapWidth() / 2) + (World::kTileSize / 2));
+        const coord_t centreY = static_cast<coord_t>((World::TileManager::getMapHeight() / 2) + (World::kTileSize / 2));
         const coord_t z = World::TileManager::getHeight({ centreX, centreY }).landHeight;
 
         auto pos = viewport.centre2dCoordinates({ centreX, centreY, z });
@@ -220,19 +223,31 @@ namespace OpenLoco::Ui
 
         const auto zoomLevel = ZoomLevel{ std::max<int8_t>(static_cast<int8_t>(main->viewports[0]->zoom), ZoomLevel::full) };
 
-        const uint16_t resolutionWidth = zoomLevel.applyInversedTo(World::kMapColumns * 32 * 2) + 8;
-        const uint16_t resolutionHeight = zoomLevel.applyInversedTo(World::kMapRows * 32 * 1) + 128;
+        const int32_t resolutionWidth = zoomLevel.applyInversedTo<int32_t>(World::TileManager::getMapWidth() * 2) + 8;
+        const int32_t resolutionHeight = zoomLevel.applyInversedTo<int32_t>(World::TileManager::getMapHeight() * 1) + 8;
 
         Ui::Viewport viewport = createGiantViewport(resolutionWidth, resolutionHeight, zoomLevel);
 
         // Ensure sprites appear regardless of rotation
         EntityManager::resetSpatialIndex();
 
+        // A giant screenshot captures the whole map at the current zoom level, so it can be far
+        // larger than the screen (a 4096 tile map at full zoom is over 30 GB). Refuse to attempt
+        // such an allocation rather than slowing the machine down to a crawl.
+        constexpr uint64_t kMaxGiantScreenshotBytes = 1ULL << 30;
+        const auto numPixels = static_cast<uint64_t>(resolutionWidth) * static_cast<uint64_t>(resolutionHeight);
+        if (numPixels > kMaxGiantScreenshotBytes || numPixels > std::numeric_limits<size_t>::max())
+        {
+            OpenLoco::Diagnostics::Logging::error("A giant screenshot of the map at this zoom level needs {} MB ({}x{} pixels); zoom out to take a smaller screenshot", numPixels / (1024 * 1024), resolutionWidth, resolutionHeight);
+            throw Exception::RuntimeError("Giant screenshot is too large");
+        }
+
         Gfx::RenderTarget rt{};
-        rt.bits = static_cast<uint8_t*>(malloc(resolutionWidth * resolutionHeight));
+        rt.bits = static_cast<uint8_t*>(malloc(static_cast<size_t>(numPixels)));
         if (rt.bits == nullptr)
         {
-            return {};
+            OpenLoco::Diagnostics::Logging::error("Unable to allocate {} MB for a {}x{} giant screenshot", numPixels / (1024 * 1024), resolutionWidth, resolutionHeight);
+            throw Exception::RuntimeError("Unable to allocate memory for a giant screenshot");
         }
 
         rt.x = 0;

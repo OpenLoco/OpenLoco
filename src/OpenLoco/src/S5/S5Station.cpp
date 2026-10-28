@@ -24,9 +24,9 @@ namespace OpenLoco::S5
     {
         S5::Station dst{};
         dst.name = src.name;
-        dst.x = src.x;
-        dst.y = src.y;
-        dst.z = src.z;
+        dst.x = toSaveCoord(src.x);
+        dst.y = toSaveCoord(src.y);
+        dst.z = toSaveCoord(src.z);
         dst.labelFrame = exportLabelFrame(src.labelFrame);
         dst.owner = enumValue(src.owner);
         dst.noTilesTimeout = src.noTilesTimeout;
@@ -37,12 +37,12 @@ namespace OpenLoco::S5
             dst.cargoStats[i] = exportCargoStats(src.cargoStats[i]);
         }
         dst.stationTileSize = src.stationTileSize;
-        std::ranges::copy(src.stationTiles, dst.stationTiles);
+        toSavePosArray(src.stationTiles, dst.stationTiles);
         dst.var_3B0 = src.var_3B0;
         dst.var_3B1 = src.var_3B1;
         dst.var_3B2 = src.var_3B2;
         dst.airportRotation = src.airportRotation;
-        dst.airportStartPos = src.airportStartPos;
+        dst.airportStartPos = toSavePos(src.airportStartPos);
         dst.airportMovementOccupiedEdges = src.airportMovementOccupiedEdges;
 
         return dst;
@@ -81,12 +81,12 @@ namespace OpenLoco::S5
             dst.cargoStats[i] = importCargoStats(src.cargoStats[i]);
         }
         dst.stationTileSize = src.stationTileSize;
-        std::ranges::copy(src.stationTiles, dst.stationTiles);
+        fromSavePosArray(src.stationTiles, dst.stationTiles);
         dst.var_3B0 = src.var_3B0;
         dst.var_3B1 = src.var_3B1;
         dst.var_3B2 = src.var_3B2;
         dst.airportRotation = src.airportRotation;
-        dst.airportStartPos = src.airportStartPos;
+        dst.airportStartPos = fromSavePos(src.airportStartPos);
         dst.airportMovementOccupiedEdges = src.airportMovementOccupiedEdges;
         return dst;
     }

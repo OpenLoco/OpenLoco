@@ -94,9 +94,9 @@ namespace OpenLoco
                 continue;
             }
 
-            auto newPos = World::Pos3{ static_cast<int16_t>(std::round(posB.x * alpha + posA.x * inv)),
-                                       static_cast<int16_t>(std::round(posB.y * alpha + posA.y * inv)),
-                                       static_cast<int16_t>(std::round(posB.z * alpha + posA.z * inv)) };
+            auto newPos = World::Pos3{ static_cast<coord_t>(std::round(posB.x * alpha + posA.x * inv)),
+                                       static_cast<coord_t>(std::round(posB.y * alpha + posA.y * inv)),
+                                       static_cast<coord_t>(std::round(posB.z * alpha + posA.z * inv)) };
 
             if (ent->position == newPos)
             {

@@ -5,11 +5,24 @@
 #include <OpenLoco/Engine/Ui/Point.hpp>
 #include <OpenLoco/Engine/Ui/Size.hpp>
 #include <OpenLoco/ZoomLevel.hpp>
+#include <algorithm>
 
 namespace OpenLoco::Gfx
 {
     struct G1Element;
     struct RenderTarget;
+
+    // The offset, in source pixels, from the start of a block of source pixels to the pixel that
+    // represents it when a sprite is drawn zoomed out. The middle of the block is used, unless the
+    // block is longer than the (clipped) sprite (then the middle of the sprite is used, or the start
+    // of the block if there is not even room for that). Sampling the top left pixel instead would
+    // sample the transparent corner of the diamond shaped sprites that the map is made of (surface
+    // tiles, water, ...) and leave the map full of holes at the furthest zoom out levels. The
+    // returned offset is small enough to keep every sample inside the sprite.
+    constexpr int32_t zoomOutSampleOffset(const int32_t blockSize, const int32_t clippedSize)
+    {
+        return std::min({ blockSize / 2, clippedSize / 2, (clippedSize - 1) % blockSize });
+    }
 
     struct DrawSpritePosArgs
     {

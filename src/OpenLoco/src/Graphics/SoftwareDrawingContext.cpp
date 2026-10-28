@@ -302,6 +302,18 @@ namespace OpenLoco::Gfx
                     case 3:
                         drawImagePaletteSet<3, true>(rt, pos, image, *element, palette, noiseImage);
                         break;
+                    case 4:
+                        drawImagePaletteSet<4, true>(rt, pos, image, *element, palette, noiseImage);
+                        break;
+                    case 5:
+                        drawImagePaletteSet<5, true>(rt, pos, image, *element, palette, noiseImage);
+                        break;
+                    case 6:
+                        drawImagePaletteSet<6, true>(rt, pos, image, *element, palette, noiseImage);
+                        break;
+                    case 7:
+                        drawImagePaletteSet<7, true>(rt, pos, image, *element, palette, noiseImage);
+                        break;
                 }
             }
             else
@@ -319,6 +331,18 @@ namespace OpenLoco::Gfx
                         break;
                     case 3:
                         drawImagePaletteSet<3, false>(rt, pos, image, *element, palette, noiseImage);
+                        break;
+                    case 4:
+                        drawImagePaletteSet<4, false>(rt, pos, image, *element, palette, noiseImage);
+                        break;
+                    case 5:
+                        drawImagePaletteSet<5, false>(rt, pos, image, *element, palette, noiseImage);
+                        break;
+                    case 6:
+                        drawImagePaletteSet<6, false>(rt, pos, image, *element, palette, noiseImage);
+                        break;
+                    case 7:
+                        drawImagePaletteSet<7, false>(rt, pos, image, *element, palette, noiseImage);
                         break;
                 }
             }
@@ -650,6 +674,18 @@ namespace OpenLoco::Gfx
                     return;
                 case 3:
                     drawImageMaskedZoom<3>(rt, zoom, pos, image, maskImage);
+                    return;
+                case 4:
+                    drawImageMaskedZoom<4>(rt, zoom, pos, image, maskImage);
+                    return;
+                case 5:
+                    drawImageMaskedZoom<5>(rt, zoom, pos, image, maskImage);
+                    return;
+                case 6:
+                    drawImageMaskedZoom<6>(rt, zoom, pos, image, maskImage);
+                    return;
+                case 7:
+                    drawImageMaskedZoom<7>(rt, zoom, pos, image, maskImage);
                     return;
                 default:
                     break;

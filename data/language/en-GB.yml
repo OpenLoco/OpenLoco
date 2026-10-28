@@ -2521,3 +2521,8 @@ strings:
   2466: "Has cargo order"
   2467: "Transports cargo"
   2468: "{INT16} x {INT16}"
+  2469: "Map Size:"
+  2470: Sixteenth-scale
+  2471: Thirty-second-scale
+  2472: Sixty-fourth-scale
+  2473: Hundred-and-twenty-eighth-scale
