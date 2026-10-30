@@ -239,6 +239,26 @@
                     "value": "ONLY"
                 }
             }
+        },
+        {
+            "name": "macos-vcpkg-static-x64",
+            "displayName": "MacOS x64 VCPKG static",
+            "description": "Ninja configure environment for MacOS Intel (static linkage)",
+            "inherits": "macos-vcpkg-static",
+            "cacheVariables": {
+                "VCPKG_TARGET_TRIPLET": {
+                    "type": "STRING",
+                    "value": "x64-osx"
+                },
+                "CMAKE_OSX_ARCHITECTURES": {
+                    "type": "STRING",
+                    "value": "x86_64"
+                },
+                "CMAKE_OSX_DEPLOYMENT_TARGET": {
+                    "type": "STRING",
+                    "value": "11.0"
+                }
+            }
         }
     ],
     "buildPresets": [
@@ -322,6 +342,14 @@
             "configurePreset": "macos-vcpkg-static",
             "displayName": "Release",
             "description": "Build Release Configuration (vcpkg static linkage)",
+            "configuration": "Release",
+            "nativeToolOptions": [ "-k0" ]
+        },
+        {
+            "name": "macos-vcpkg-static-x64",
+            "configurePreset": "macos-vcpkg-static-x64",
+            "displayName": "Release",
+            "description": "Build Release Configuration (vcpkg static linkage, Intel)",
             "configuration": "Release",
             "nativeToolOptions": [ "-k0" ]
         },

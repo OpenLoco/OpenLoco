@@ -565,9 +565,21 @@ jobs:
           archive: false
           if-no-files-found: error
   macos:
-    name: macOS Sequoia ARM64 vcpkg
-    runs-on: macos-15
+    name: macOS ${{ matrix.arch }} vcpkg
+    runs-on: ${{ matrix.runner }}
     needs: check-code-formatting
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            arch: arm64
+            preset: macos-vcpkg-static
+            artifact: OpenLoco-macos-arm64
+          - runner: macos-15-intel
+            arch: x64
+            preset: macos-vcpkg-static-x64
+            artifact: OpenLoco-macos-x64
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -591,26 +603,28 @@ jobs:
         uses: actions/cache/restore@v6
         with:
           path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
-          key: ${{ runner.os }}-vcpkg-${{ steps.vcpkg_baseline.outputs.sha }}-${{ hashFiles('vcpkg.json') }}
+          key: ${{ runner.os }}-${{ matrix.arch }}-vcpkg-${{ steps.vcpkg_baseline.outputs.sha }}-${{ hashFiles('vcpkg.json') }}
           restore-keys: |
-            ${{ runner.os }}-vcpkg-${{ steps.vcpkg_baseline.outputs.sha }}-
+            ${{ runner.os }}-${{ matrix.arch }}-vcpkg-${{ steps.vcpkg_baseline.outputs.sha }}-
       - name: Build OpenLoco
+        env:
+          VCPKG_OSX_DEPLOYMENT_TARGET: "11.0"
         run: |
           mkdir -p artifacts
-          cmake --preset macos-vcpkg-static -DCMAKE_INSTALL_PREFIX=./artifacts
-          cmake --build --preset macos-vcpkg-static
+          cmake --preset ${{ matrix.preset }} -DCMAKE_INSTALL_PREFIX=./artifacts
+          cmake --build --preset ${{ matrix.preset }}
       - name: Save binary cache
         if: always()
         uses: actions/cache/save@v6
         with:
           path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
-          key: ${{ runner.os }}-vcpkg-${{ steps.vcpkg_baseline.outputs.sha }}-${{ hashFiles('vcpkg.json') }}-${{ hashFiles('vcpkg-cache/**') }}
+          key: ${{ runner.os }}-${{ matrix.arch }}-vcpkg-${{ steps.vcpkg_baseline.outputs.sha }}-${{ hashFiles('vcpkg.json') }}-${{ hashFiles('vcpkg-cache/**') }}
       - name: Install to artifacts
         run: |
-          cmake --build --preset macos-vcpkg-static --target install
+          cmake --build --preset ${{ matrix.preset }} --target install
       - name: Upload artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: OpenLoco-macos-arm64
+          name: ${{ matrix.artifact }}
           path: artifacts
           if-no-files-found: error
