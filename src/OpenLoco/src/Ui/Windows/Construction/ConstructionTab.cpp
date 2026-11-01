@@ -18,6 +18,7 @@
 #include "Map/TileManager.h"
 #include "Map/Track/Track.h"
 #include "Map/Track/TrackData.h"
+#include "Map/Track/TrackEnum.h"
 #include "Map/TrackElement.h"
 #include "Objects/BridgeObject.h"
 #include "Objects/ObjectManager.h"
@@ -327,7 +328,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049F92D
-    static void constructTrackOrRoad([[maybe_unused]] Window* self, [[maybe_unused]] WidgetIndex_t widgetIndex)
+    static void constructTrackOrRoad([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex)
     {
         auto& cState = getConstructionState();
         if (cState.trackType & (1 << 7))
@@ -501,7 +502,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x004A0121
-    static void removeTrack([[maybe_unused]] Window* self, [[maybe_unused]] WidgetIndex_t widgetIndex)
+    static void removeTrack([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex)
     {
         auto& cState = getConstructionState();
         if (cState.trackType & (1 << 7))
@@ -532,11 +533,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 break;
 
             case Widx::kConstruct:
-                constructTrackOrRoad(&self, widgetIndex);
+                constructTrackOrRoad(self, widgetIndex);
                 break;
 
             case Widx::kRemove:
-                removeTrack(&self, widgetIndex);
+                removeTrack(self, widgetIndex);
                 break;
 
             case Widx::kRotate90:
@@ -715,7 +716,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         mapInvalidateMapSelectionFreeFormTiles();
     }
 
-    static void activateSelectedRoadWidgets(Window* window)
+    static void activateSelectedRoadWidgets(Window& window)
     {
         World::mapInvalidateMapSelectionFreeFormTiles();
         World::setMapSelectionFlags(World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::unk_03);
@@ -745,118 +746,118 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         rotation &= 3;
 
         setMapSelectedTilesFromPiece(roadPiece, World::Pos2(x, y), rotation);
-        window->holdableWidgets = (1 << widx::construct) | (1 << widx::remove);
+        window.holdableWidgets = (1 << widx::construct) | (1 << widx::remove);
 
         auto trackType = cState.trackType & ~(1 << 7);
         auto roadObj = ObjectManager::get<RoadObject>(trackType);
 
-        window->widgets[widx::s_bend_left].hidden = true;
-        window->widgets[widx::s_bend_right].hidden = true;
-        window->widgets[widx::left_hand_curve_large].hidden = true;
-        window->widgets[widx::right_hand_curve_large].hidden = true;
-        window->widgets[widx::left_hand_curve].hidden = true;
-        window->widgets[widx::right_hand_curve].hidden = true;
-        window->widgets[widx::left_hand_curve_small].hidden = true;
-        window->widgets[widx::right_hand_curve_small].hidden = true;
-        window->widgets[widx::left_hand_curve_very_small].hidden = true;
-        window->widgets[widx::right_hand_curve_very_small].hidden = true;
+        window.widgets[widx::s_bend_left].hidden = true;
+        window.widgets[widx::s_bend_right].hidden = true;
+        window.widgets[widx::left_hand_curve_large].hidden = true;
+        window.widgets[widx::right_hand_curve_large].hidden = true;
+        window.widgets[widx::left_hand_curve].hidden = true;
+        window.widgets[widx::right_hand_curve].hidden = true;
+        window.widgets[widx::left_hand_curve_small].hidden = true;
+        window.widgets[widx::right_hand_curve_small].hidden = true;
+        window.widgets[widx::left_hand_curve_very_small].hidden = true;
+        window.widgets[widx::right_hand_curve_very_small].hidden = true;
 
-        window->widgets[widx::left_hand_curve_small].left = 3;
-        window->widgets[widx::left_hand_curve_small].right = 24;
-        window->widgets[widx::right_hand_curve_small].left = 113;
-        window->widgets[widx::right_hand_curve_small].right = 134;
-        window->widgets[widx::left_hand_curve].left = 25;
-        window->widgets[widx::left_hand_curve].right = 46;
-        window->widgets[widx::right_hand_curve].left = 91;
-        window->widgets[widx::right_hand_curve].right = 112;
+        window.widgets[widx::left_hand_curve_small].left = 3;
+        window.widgets[widx::left_hand_curve_small].right = 24;
+        window.widgets[widx::right_hand_curve_small].left = 113;
+        window.widgets[widx::right_hand_curve_small].right = 134;
+        window.widgets[widx::left_hand_curve].left = 25;
+        window.widgets[widx::left_hand_curve].right = 46;
+        window.widgets[widx::right_hand_curve].left = 91;
+        window.widgets[widx::right_hand_curve].right = 112;
 
         if (roadObj->hasTraitFlags(World::Track::RoadTraitFlags::verySmallCurve))
         {
-            window->widgets[widx::left_hand_curve_small].left = 25;
-            window->widgets[widx::left_hand_curve_small].right = 46;
-            window->widgets[widx::right_hand_curve_small].left = 91;
-            window->widgets[widx::right_hand_curve_small].right = 112;
-            window->widgets[widx::left_hand_curve].left = 47;
-            window->widgets[widx::left_hand_curve].right = 68;
-            window->widgets[widx::right_hand_curve].left = 69;
-            window->widgets[widx::right_hand_curve].right = 90;
+            window.widgets[widx::left_hand_curve_small].left = 25;
+            window.widgets[widx::left_hand_curve_small].right = 46;
+            window.widgets[widx::right_hand_curve_small].left = 91;
+            window.widgets[widx::right_hand_curve_small].right = 112;
+            window.widgets[widx::left_hand_curve].left = 47;
+            window.widgets[widx::left_hand_curve].right = 68;
+            window.widgets[widx::right_hand_curve].left = 69;
+            window.widgets[widx::right_hand_curve].right = 90;
 
-            window->widgets[widx::left_hand_curve_very_small].hidden = false;
-            window->widgets[widx::right_hand_curve_very_small].hidden = false;
+            window.widgets[widx::left_hand_curve_very_small].hidden = false;
+            window.widgets[widx::right_hand_curve_very_small].hidden = false;
         }
 
         if (roadObj->hasTraitFlags(World::Track::RoadTraitFlags::smallCurve))
         {
-            window->widgets[widx::left_hand_curve_small].hidden = false;
-            window->widgets[widx::right_hand_curve_small].hidden = false;
+            window.widgets[widx::left_hand_curve_small].hidden = false;
+            window.widgets[widx::right_hand_curve_small].hidden = false;
         }
 
-        window->widgets[widx::s_bend_dual_track_left].hidden = true;
-        window->widgets[widx::s_bend_dual_track_right].hidden = true;
+        window.widgets[widx::s_bend_dual_track_left].hidden = true;
+        window.widgets[widx::s_bend_dual_track_right].hidden = true;
 
         if (roadObj->hasTraitFlags(World::Track::RoadTraitFlags::turnaround))
         {
-            window->widgets[widx::s_bend_dual_track_left].hidden = false;
-            window->widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_right_turnaround;
-            window->widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_turnaround;
+            window.widgets[widx::s_bend_dual_track_left].hidden = false;
+            window.widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_right_turnaround;
+            window.widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_turnaround;
 
             if (getGameState().trafficHandedness == 0)
             {
-                window->widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_left_turnaround;
+                window.widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_left_turnaround;
             }
         }
 
-        window->widgets[widx::steep_slope_down].hidden = true;
-        window->widgets[widx::slope_down].hidden = true;
-        window->widgets[widx::slope_up].hidden = true;
-        window->widgets[widx::steep_slope_up].hidden = true;
+        window.widgets[widx::steep_slope_down].hidden = true;
+        window.widgets[widx::slope_down].hidden = true;
+        window.widgets[widx::slope_up].hidden = true;
+        window.widgets[widx::steep_slope_up].hidden = true;
 
         if (roadObj->hasTraitFlags(World::Track::RoadTraitFlags::slope))
         {
-            window->widgets[widx::slope_down].hidden = false;
-            window->widgets[widx::slope_up].hidden = false;
+            window.widgets[widx::slope_down].hidden = false;
+            window.widgets[widx::slope_up].hidden = false;
         }
 
         if (roadObj->hasTraitFlags(World::Track::RoadTraitFlags::steepSlope))
         {
-            window->widgets[widx::steep_slope_down].hidden = false;
-            window->widgets[widx::steep_slope_up].hidden = false;
+            window.widgets[widx::steep_slope_down].hidden = false;
+            window.widgets[widx::steep_slope_up].hidden = false;
         }
 
-        window->widgets[widx::bridge].hidden = false;
-        window->widgets[widx::bridge_dropdown].hidden = false;
+        window.widgets[widx::bridge].hidden = false;
+        window.widgets[widx::bridge_dropdown].hidden = false;
 
         if (cState.lastSelectedBridge == 0xFF || (!cState.constructionHover && !(cState.byte_1136076 & 1)))
         {
-            window->widgets[widx::bridge].hidden = true;
-            window->widgets[widx::bridge_dropdown].hidden = true;
+            window.widgets[widx::bridge].hidden = true;
+            window.widgets[widx::bridge_dropdown].hidden = true;
         }
 
-        auto activatedWidgets = window->activatedWidgets;
+        auto activatedWidgets = window.activatedWidgets;
         activatedWidgets &= ~(Construction::allTrack);
 
-        window->widgets[widx::construct].hidden = true;
-        window->widgets[widx::remove].hidden = false;
-        window->widgets[widx::rotate_90].hidden = true;
+        window.widgets[widx::construct].hidden = true;
+        window.widgets[widx::remove].hidden = false;
+        window.widgets[widx::rotate_90].hidden = true;
 
         if (cState.constructionHover)
         {
             // Previously turned to wt_6 which is same as Tab, when pressed increments image index and no background.
-            window->widgets[widx::construct].hidden = false;
-            window->widgets[widx::construct].tooltip = StringIds::tooltip_start_construction;
-            window->widgets[widx::remove].hidden = true;
-            window->widgets[widx::rotate_90].hidden = false;
-            window->widgets[widx::rotate_90].image = ImageIds::rotate_object;
-            window->widgets[widx::rotate_90].tooltip = StringIds::rotate_90;
+            window.widgets[widx::construct].hidden = false;
+            window.widgets[widx::construct].tooltip = StringIds::tooltip_start_construction;
+            window.widgets[widx::remove].hidden = true;
+            window.widgets[widx::rotate_90].hidden = false;
+            window.widgets[widx::rotate_90].image = ImageIds::rotate_object;
+            window.widgets[widx::rotate_90].tooltip = StringIds::rotate_90;
         }
         else if (!cState.constructionHover)
         {
             // Previously turned to wt_3, draws background and image, no behavior when clicked.
-            window->widgets[widx::construct].hidden = false;
-            window->widgets[widx::construct].tooltip = StringIds::tooltip_construct;
-            window->widgets[widx::rotate_90].hidden = false;
-            window->widgets[widx::rotate_90].image = ImageIds::construction_new_position;
-            window->widgets[widx::rotate_90].tooltip = StringIds::new_construction_position;
+            window.widgets[widx::construct].hidden = false;
+            window.widgets[widx::construct].tooltip = StringIds::tooltip_construct;
+            window.widgets[widx::rotate_90].hidden = false;
+            window.widgets[widx::rotate_90].image = ImageIds::construction_new_position;
+            window.widgets[widx::rotate_90].tooltip = StringIds::new_construction_position;
         }
 
         if (true)
@@ -894,11 +895,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             activatedWidgets |= 1ULL << trackGradient;
         }
-        window->activatedWidgets = activatedWidgets;
-        window->invalidate();
+        window.activatedWidgets = activatedWidgets;
+        window.invalidate();
     }
 
-    static void activateSelectedTrackWidgets(Window* window)
+    static void activateSelectedTrackWidgets(Window& window)
     {
         World::mapInvalidateMapSelectionFreeFormTiles();
         World::setMapSelectionFlags(World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::unk_03);
@@ -927,146 +928,146 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         rotation &= 3;
 
         setMapSelectedTilesFromPiece(trackPiece, World::Pos2(x, y), rotation);
-        window->holdableWidgets = (1 << widx::construct) | (1 << widx::remove);
+        window.holdableWidgets = (1 << widx::construct) | (1 << widx::remove);
 
         auto trackObj = ObjectManager::get<TrackObject>(cState.trackType);
 
-        window->widgets[widx::s_bend_left].hidden = false;
-        window->widgets[widx::s_bend_right].hidden = false;
-        window->widgets[widx::left_hand_curve_large].hidden = true;
-        window->widgets[widx::right_hand_curve_large].hidden = true;
-        window->widgets[widx::left_hand_curve].hidden = true;
-        window->widgets[widx::right_hand_curve].hidden = true;
-        window->widgets[widx::left_hand_curve_small].hidden = true;
-        window->widgets[widx::right_hand_curve_small].hidden = true;
-        window->widgets[widx::left_hand_curve_very_small].hidden = true;
-        window->widgets[widx::right_hand_curve_very_small].hidden = true;
+        window.widgets[widx::s_bend_left].hidden = false;
+        window.widgets[widx::s_bend_right].hidden = false;
+        window.widgets[widx::left_hand_curve_large].hidden = true;
+        window.widgets[widx::right_hand_curve_large].hidden = true;
+        window.widgets[widx::left_hand_curve].hidden = true;
+        window.widgets[widx::right_hand_curve].hidden = true;
+        window.widgets[widx::left_hand_curve_small].hidden = true;
+        window.widgets[widx::right_hand_curve_small].hidden = true;
+        window.widgets[widx::left_hand_curve_very_small].hidden = true;
+        window.widgets[widx::right_hand_curve_very_small].hidden = true;
 
-        window->widgets[widx::left_hand_curve_small].left = 3;
-        window->widgets[widx::left_hand_curve_small].right = 24;
-        window->widgets[widx::right_hand_curve_small].left = 113;
-        window->widgets[widx::right_hand_curve_small].right = 134;
-        window->widgets[widx::left_hand_curve].left = 25;
-        window->widgets[widx::left_hand_curve].right = 46;
-        window->widgets[widx::right_hand_curve].left = 91;
-        window->widgets[widx::right_hand_curve].right = 112;
+        window.widgets[widx::left_hand_curve_small].left = 3;
+        window.widgets[widx::left_hand_curve_small].right = 24;
+        window.widgets[widx::right_hand_curve_small].left = 113;
+        window.widgets[widx::right_hand_curve_small].right = 134;
+        window.widgets[widx::left_hand_curve].left = 25;
+        window.widgets[widx::left_hand_curve].right = 46;
+        window.widgets[widx::right_hand_curve].left = 91;
+        window.widgets[widx::right_hand_curve].right = 112;
 
         if (trackObj->hasTraitFlags(Track::TrackTraitFlags::verySmallCurve))
         {
-            window->widgets[widx::left_hand_curve_small].left = 25;
-            window->widgets[widx::left_hand_curve_small].right = 46;
-            window->widgets[widx::right_hand_curve_small].left = 91;
-            window->widgets[widx::right_hand_curve_small].right = 112;
-            window->widgets[widx::left_hand_curve].left = 47;
-            window->widgets[widx::left_hand_curve].right = 68;
-            window->widgets[widx::right_hand_curve].left = 69;
-            window->widgets[widx::right_hand_curve].right = 90;
+            window.widgets[widx::left_hand_curve_small].left = 25;
+            window.widgets[widx::left_hand_curve_small].right = 46;
+            window.widgets[widx::right_hand_curve_small].left = 91;
+            window.widgets[widx::right_hand_curve_small].right = 112;
+            window.widgets[widx::left_hand_curve].left = 47;
+            window.widgets[widx::left_hand_curve].right = 68;
+            window.widgets[widx::right_hand_curve].left = 69;
+            window.widgets[widx::right_hand_curve].right = 90;
 
-            window->widgets[widx::left_hand_curve_very_small].hidden = false;
-            window->widgets[widx::right_hand_curve_very_small].hidden = false;
+            window.widgets[widx::left_hand_curve_very_small].hidden = false;
+            window.widgets[widx::right_hand_curve_very_small].hidden = false;
         }
 
         if (trackObj->hasTraitFlags(Track::TrackTraitFlags::largeCurve))
         {
-            window->widgets[widx::left_hand_curve_large].hidden = false;
-            window->widgets[widx::right_hand_curve_large].hidden = false;
+            window.widgets[widx::left_hand_curve_large].hidden = false;
+            window.widgets[widx::right_hand_curve_large].hidden = false;
         }
 
         if (trackObj->hasTraitFlags(Track::TrackTraitFlags::normalCurve))
         {
-            window->widgets[widx::left_hand_curve].hidden = false;
-            window->widgets[widx::right_hand_curve].hidden = false;
+            window.widgets[widx::left_hand_curve].hidden = false;
+            window.widgets[widx::right_hand_curve].hidden = false;
         }
 
         if (trackObj->hasTraitFlags(Track::TrackTraitFlags::smallCurve))
         {
-            window->widgets[widx::left_hand_curve_small].hidden = false;
-            window->widgets[widx::right_hand_curve_small].hidden = false;
+            window.widgets[widx::left_hand_curve_small].hidden = false;
+            window.widgets[widx::right_hand_curve_small].hidden = false;
         }
 
-        window->widgets[widx::s_bend_dual_track_left].hidden = true;
-        window->widgets[widx::s_bend_dual_track_right].hidden = true;
+        window.widgets[widx::s_bend_dual_track_left].hidden = true;
+        window.widgets[widx::s_bend_dual_track_right].hidden = true;
 
         if (trackObj->hasTraitFlags(Track::TrackTraitFlags::oneSided))
         {
-            window->widgets[widx::s_bend_dual_track_left].hidden = false;
-            window->widgets[widx::s_bend_dual_track_right].hidden = false;
-            window->widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_s_bend_dual_track_left;
-            window->widgets[widx::s_bend_dual_track_right].image = ImageIds::construction_s_bend_dual_track_right;
-            window->widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_s_bend_left_dual_track;
-            window->widgets[widx::s_bend_dual_track_right].tooltip = StringIds::tooltip_s_bend_right_dual_track;
+            window.widgets[widx::s_bend_dual_track_left].hidden = false;
+            window.widgets[widx::s_bend_dual_track_right].hidden = false;
+            window.widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_s_bend_dual_track_left;
+            window.widgets[widx::s_bend_dual_track_right].image = ImageIds::construction_s_bend_dual_track_right;
+            window.widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_s_bend_left_dual_track;
+            window.widgets[widx::s_bend_dual_track_right].tooltip = StringIds::tooltip_s_bend_right_dual_track;
 
             trackPieceWidgets[TrackPiece::s_bend_to_dual_track] = widx::s_bend_dual_track_left;
             trackPieceWidgets[TrackPiece::s_bend_to_single_track] = widx::s_bend_dual_track_right;
 
             if (cState.constructionRotation >= 4 && cState.constructionRotation < 12)
             {
-                window->widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_right_turnaround;
-                window->widgets[widx::s_bend_dual_track_right].image = ImageIds::construction_s_bend_to_single_track_left;
-                window->widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_turnaround;
-                window->widgets[widx::s_bend_dual_track_right].tooltip = StringIds::tooltip_s_bend_to_single_track;
+                window.widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_right_turnaround;
+                window.widgets[widx::s_bend_dual_track_right].image = ImageIds::construction_s_bend_to_single_track_left;
+                window.widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_turnaround;
+                window.widgets[widx::s_bend_dual_track_right].tooltip = StringIds::tooltip_s_bend_to_single_track;
                 trackPieceWidgets[TrackPiece::s_bend_to_dual_track] = widx::s_bend_dual_track_right;
                 trackPieceWidgets[TrackPiece::turnaround] = widx::s_bend_dual_track_left;
                 if (cState.constructionRotation >= 8)
                 {
-                    window->widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_s_bend_to_single_track_right;
-                    window->widgets[widx::s_bend_dual_track_right].image = ImageIds::construction_left_turnaround;
-                    window->widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_s_bend_to_single_track;
-                    window->widgets[widx::s_bend_dual_track_right].tooltip = StringIds::tooltip_turnaround;
+                    window.widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_s_bend_to_single_track_right;
+                    window.widgets[widx::s_bend_dual_track_right].image = ImageIds::construction_left_turnaround;
+                    window.widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_s_bend_to_single_track;
+                    window.widgets[widx::s_bend_dual_track_right].tooltip = StringIds::tooltip_turnaround;
                     trackPieceWidgets[TrackPiece::s_bend_to_single_track] = widx::s_bend_dual_track_left;
                     trackPieceWidgets[TrackPiece::turnaround] = widx::s_bend_dual_track_right;
                 }
             }
         }
-        window->widgets[widx::steep_slope_down].hidden = true;
-        window->widgets[widx::slope_down].hidden = true;
-        window->widgets[widx::slope_up].hidden = true;
-        window->widgets[widx::steep_slope_up].hidden = true;
+        window.widgets[widx::steep_slope_down].hidden = true;
+        window.widgets[widx::slope_down].hidden = true;
+        window.widgets[widx::slope_up].hidden = true;
+        window.widgets[widx::steep_slope_up].hidden = true;
 
         if (trackObj->hasTraitFlags(Track::TrackTraitFlags::slope))
         {
-            window->widgets[widx::slope_down].hidden = false;
-            window->widgets[widx::slope_up].hidden = false;
+            window.widgets[widx::slope_down].hidden = false;
+            window.widgets[widx::slope_up].hidden = false;
         }
 
         if (trackObj->hasTraitFlags(Track::TrackTraitFlags::steepSlope))
         {
-            window->widgets[widx::steep_slope_down].hidden = false;
-            window->widgets[widx::steep_slope_up].hidden = false;
+            window.widgets[widx::steep_slope_down].hidden = false;
+            window.widgets[widx::steep_slope_up].hidden = false;
         }
 
-        window->widgets[widx::bridge].hidden = false;
-        window->widgets[widx::bridge_dropdown].hidden = false;
+        window.widgets[widx::bridge].hidden = false;
+        window.widgets[widx::bridge_dropdown].hidden = false;
 
         if (cState.lastSelectedBridge == 0xFF || (!cState.constructionHover && !(cState.byte_1136076 & 1)))
         {
-            window->widgets[widx::bridge].hidden = true;
-            window->widgets[widx::bridge_dropdown].hidden = true;
+            window.widgets[widx::bridge].hidden = true;
+            window.widgets[widx::bridge_dropdown].hidden = true;
         }
 
-        auto activatedWidgets = window->activatedWidgets;
+        auto activatedWidgets = window.activatedWidgets;
         activatedWidgets &= ~(Construction::allTrack);
 
-        window->widgets[widx::construct].hidden = true;
-        window->widgets[widx::remove].hidden = false;
-        window->widgets[widx::rotate_90].hidden = true;
+        window.widgets[widx::construct].hidden = true;
+        window.widgets[widx::remove].hidden = false;
+        window.widgets[widx::rotate_90].hidden = true;
 
         if (cState.constructionHover)
         {
-            window->widgets[widx::construct].hidden = false;
-            window->widgets[widx::construct].tooltip = StringIds::tooltip_start_construction;
-            window->widgets[widx::remove].hidden = true;
-            window->widgets[widx::rotate_90].hidden = false;
-            window->widgets[widx::rotate_90].image = ImageIds::rotate_object;
-            window->widgets[widx::rotate_90].tooltip = StringIds::rotate_90;
+            window.widgets[widx::construct].hidden = false;
+            window.widgets[widx::construct].tooltip = StringIds::tooltip_start_construction;
+            window.widgets[widx::remove].hidden = true;
+            window.widgets[widx::rotate_90].hidden = false;
+            window.widgets[widx::rotate_90].image = ImageIds::rotate_object;
+            window.widgets[widx::rotate_90].tooltip = StringIds::rotate_90;
         }
         else if (!cState.constructionHover)
         {
-            window->widgets[widx::construct].hidden = false;
-            window->widgets[widx::construct].tooltip = StringIds::tooltip_construct;
-            window->widgets[widx::rotate_90].hidden = false;
-            window->widgets[widx::rotate_90].image = ImageIds::construction_new_position;
-            window->widgets[widx::rotate_90].tooltip = StringIds::new_construction_position;
+            window.widgets[widx::construct].hidden = false;
+            window.widgets[widx::construct].tooltip = StringIds::tooltip_construct;
+            window.widgets[widx::rotate_90].hidden = false;
+            window.widgets[widx::rotate_90].image = ImageIds::construction_new_position;
+            window.widgets[widx::rotate_90].tooltip = StringIds::new_construction_position;
         }
 
         if (true)
@@ -1104,8 +1105,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             activatedWidgets |= 1ULL << trackGradient;
         }
-        window->activatedWidgets = activatedWidgets;
-        window->invalidate();
+        window.activatedWidgets = activatedWidgets;
+        window.invalidate();
     }
 
     static void setDisabledWidgets(Window& self);
@@ -1125,11 +1126,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             if (cState.trackType & (1 << 7))
             {
-                activateSelectedRoadWidgets(window);
+                activateSelectedRoadWidgets(*window);
             }
             else
             {
-                activateSelectedTrackWidgets(window);
+                activateSelectedTrackWidgets(*window);
             }
         }
 
@@ -1156,7 +1157,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             return std::nullopt;
         }
 
-        uint8_t id = 0;
+        Track::RoadId id = Track::RoadId::straight;
 
         switch (trackPiece)
         {
@@ -1171,19 +1172,19 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                     default:
                         return std::nullopt;
                     case TrackGradient::level:
-                        id = 0;
+                        id = Track::RoadId::straight;
                         break;
                     case TrackGradient::slope_up:
-                        id = 5;
+                        id = Track::RoadId::straightSlopeUp;
                         break;
                     case TrackGradient::slope_down:
-                        id = 6;
+                        id = Track::RoadId::straightSlopeDown;
                         break;
                     case TrackGradient::steep_slope_up:
-                        id = 7;
+                        id = Track::RoadId::straightSteepSlopeUp;
                         break;
                     case TrackGradient::steep_slope_down:
-                        id = 8;
+                        id = Track::RoadId::straightSteepSlopeDown;
                         break;
                 }
                 break;
@@ -1198,7 +1199,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 {
                     return std::nullopt;
                 }
-                id = 1;
+                id = Track::RoadId::leftCurveVerySmall;
                 break;
             }
             case TrackPiece::right_hand_curve_very_small: // 0x004A08CD
@@ -1211,7 +1212,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 {
                     return std::nullopt;
                 }
-                id = 2;
+                id = Track::RoadId::rightCurveVerySmall;
                 break;
             }
             case TrackPiece::left_hand_curve_small: // 0x004A08ED
@@ -1220,7 +1221,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 {
                     return std::nullopt;
                 }
-                id = 3;
+                id = Track::RoadId::leftCurveSmall;
                 if (gradient != TrackGradient::level)
                 {
                     return std::nullopt;
@@ -1233,7 +1234,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 {
                     return std::nullopt;
                 }
-                id = 4;
+                id = Track::RoadId::rightCurveSmall;
                 if (gradient != TrackGradient::level)
                 {
                     return std::nullopt;
@@ -1261,7 +1262,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 {
                     return std::nullopt;
                 }
-                id = 9;
+                id = Track::RoadId::turnaround;
                 break;
             }
         }
@@ -1271,7 +1272,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             rotation &= 3;
         }
 
-        return TrackPieceId{ id, rotation };
+        return TrackPieceId{ enumValue(id), rotation };
     }
 
     // 0x004A04F8
@@ -1282,7 +1283,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             return std::nullopt;
         }
 
-        uint8_t id = 0;
+        Track::TrackId id = Track::TrackId::straight;
 
         switch (trackPiece)
         {
@@ -1290,7 +1291,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 if (rotation >= 12)
                 {
-                    id = 1;
+                    id = Track::TrackId::diagonal;
                     if (gradient != TrackGradient::level)
                     {
                         return std::nullopt;
@@ -1305,13 +1306,13 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                             default:
                                 return std::nullopt;
                             case TrackGradient::level:
-                                id = 27;
+                                id = Track::TrackId::straightRightSide;
                                 break;
                             case TrackGradient::steep_slope_up:
-                                id = 35;
+                                id = Track::TrackId::straightRightSideSteepSlopeUp;
                                 break;
                             case TrackGradient::steep_slope_down:
-                                id = 37;
+                                id = Track::TrackId::straightRightSideSteepSlopeDown;
                                 break;
                         }
                     }
@@ -1322,13 +1323,13 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                             default:
                                 return std::nullopt;
                             case TrackGradient::level:
-                                id = 26;
+                                id = Track::TrackId::straightLeftSide;
                                 break;
                             case TrackGradient::steep_slope_up:
-                                id = 34;
+                                id = Track::TrackId::straightLeftSideSteepSlopeUp;
                                 break;
                             case TrackGradient::steep_slope_down:
-                                id = 36;
+                                id = Track::TrackId::straightLeftSideSteepSlopeDown;
                                 break;
                         }
                     }
@@ -1339,19 +1340,19 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                             default:
                                 return std::nullopt;
                             case TrackGradient::level:
-                                id = 0;
+                                id = Track::TrackId::straight;
                                 break;
                             case TrackGradient::slope_up:
-                                id = 14;
+                                id = Track::TrackId::straightSlopeUp;
                                 break;
                             case TrackGradient::slope_down:
-                                id = 15;
+                                id = Track::TrackId::straightSlopeDown;
                                 break;
                             case TrackGradient::steep_slope_up:
-                                id = 16;
+                                id = Track::TrackId::straightSteepSlopeUp;
                                 break;
                             case TrackGradient::steep_slope_down:
-                                id = 17;
+                                id = Track::TrackId::straightSteepSlopeDown;
                                 break;
                         }
                     }
@@ -1371,15 +1372,15 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 }
                 if (rotation >= 8)
                 {
-                    id = 29;
+                    id = Track::TrackId::leftCurveVerySmallOuter;
                     break;
                 }
                 if (rotation >= 4)
                 {
-                    id = 28;
+                    id = Track::TrackId::leftCurveVerySmallInner;
                     break;
                 }
-                id = 2;
+                id = Track::TrackId::leftCurveVerySmall;
                 break;
             }
 
@@ -1395,15 +1396,15 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 }
                 if (rotation >= 8)
                 {
-                    id = 31;
+                    id = Track::TrackId::rightCurveVerySmallInner;
                     break;
                 }
                 if (rotation >= 4)
                 {
-                    id = 30;
+                    id = Track::TrackId::rightCurveVerySmallOuter;
                     break;
                 }
-                id = 3;
+                id = Track::TrackId::rightCurveVerySmall;
                 break;
             }
 
@@ -1418,19 +1419,19 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                     default:
                         return std::nullopt;
                     case TrackGradient::level:
-                        id = 4;
+                        id = Track::TrackId::leftCurveSmall;
                         break;
                     case TrackGradient::slope_up:
-                        id = 18;
+                        id = Track::TrackId::leftCurveSmallSlopeUp;
                         break;
                     case TrackGradient::slope_down:
-                        id = 20;
+                        id = Track::TrackId::leftCurveSmallSlopeDown;
                         break;
                     case TrackGradient::steep_slope_up:
-                        id = 22;
+                        id = Track::TrackId::leftCurveSmallSteepSlopeUp;
                         break;
                     case TrackGradient::steep_slope_down:
-                        id = 24;
+                        id = Track::TrackId::leftCurveSmallSteepSlopeDown;
                         break;
                 }
                 break;
@@ -1447,19 +1448,19 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                     default:
                         return std::nullopt;
                     case TrackGradient::level:
-                        id = 5;
+                        id = Track::TrackId::rightCurveSmall;
                         break;
                     case TrackGradient::slope_up:
-                        id = 19;
+                        id = Track::TrackId::rightCurveSmallSlopeUp;
                         break;
                     case TrackGradient::slope_down:
-                        id = 21;
+                        id = Track::TrackId::rightCurveSmallSlopeDown;
                         break;
                     case TrackGradient::steep_slope_up:
-                        id = 23;
+                        id = Track::TrackId::rightCurveSmallSlopeDown;
                         break;
                     case TrackGradient::steep_slope_down:
-                        id = 25;
+                        id = Track::TrackId::rightCurveSmallSteepSlopeDown;
                         break;
                 }
                 break;
@@ -1471,7 +1472,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 {
                     return std::nullopt;
                 }
-                id = 6;
+                id = Track::TrackId::leftCurve;
                 if (gradient != TrackGradient::level)
                 {
                     return std::nullopt;
@@ -1485,7 +1486,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 {
                     return std::nullopt;
                 }
-                id = 7;
+                id = Track::TrackId::rightCurve;
                 if (gradient != TrackGradient::level)
                 {
                     return std::nullopt;
@@ -1499,16 +1500,16 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 {
                     return std::nullopt;
                 }
-                id = 10;
                 if (rotation >= 12)
                 {
+                    id = Track::TrackId::diagonalLeftCurveLarge;
                     break;
                 }
                 if (rotation >= 4)
                 {
                     return std::nullopt;
                 }
-                id = 8;
+                id = Track::TrackId::leftCurveLarge;
                 break;
             }
 
@@ -1518,16 +1519,16 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 {
                     return std::nullopt;
                 }
-                id = 11;
                 if (rotation >= 12)
                 {
+                    id = Track::TrackId::diagonalRightCurveLarge;
                     break;
                 }
                 if (rotation >= 4)
                 {
                     return std::nullopt;
                 }
-                id = 9;
+                id = Track::TrackId::rightCurveLarge;
                 break;
             }
 
@@ -1541,16 +1542,16 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 {
                     return std::nullopt;
                 }
-                id = 33;
                 if (rotation >= 8)
                 {
+                    id = Track::TrackId::sBendRightSideToLeftSide;
                     break;
                 }
                 if (rotation >= 4)
                 {
                     return std::nullopt;
                 }
-                id = 12;
+                id = Track::TrackId::sBendLeft;
                 break;
             }
 
@@ -1564,12 +1565,12 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 {
                     return std::nullopt;
                 }
-                id = 32;
                 if (rotation >= 4)
                 {
+                    id = Track::TrackId::sBendLeftSideToRightSide;
                     break;
                 }
-                id = 13;
+                id = Track::TrackId::sBendRight;
                 break;
             }
 
@@ -1583,12 +1584,12 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 {
                     return std::nullopt;
                 }
-                id = 40;
                 if (rotation >= 4)
                 {
+                    id = Track::TrackId::sBendLeftSideToSingle;
                     break;
                 }
-                id = 38;
+                id = Track::TrackId::sBendSingleToLeftSide;
                 break;
             }
 
@@ -1602,16 +1603,16 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 {
                     return std::nullopt;
                 }
-                id = 41;
                 if (rotation >= 8)
                 {
+                    id = Track::TrackId::sBendRightSideToSingle;
                     break;
                 }
                 if (rotation >= 4)
                 {
                     return std::nullopt;
                 }
-                id = 39;
+                id = Track::TrackId::sBendSingleToRightSide;
                 break;
             }
 
@@ -1625,12 +1626,12 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 {
                     return std::nullopt;
                 }
-                id = 43;
                 if (rotation >= 8)
                 {
+                    id = Track::TrackId::turnaroundAnticlockwise;
                     break;
                 }
-                id = 42;
+                id = Track::TrackId::turnaroundClockwise;
                 if (rotation >= 4)
                 {
                     return std::nullopt;
@@ -1644,7 +1645,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             rotation &= 3;
         }
 
-        return TrackPieceId{ id, rotation };
+        return TrackPieceId{ enumValue(id), rotation };
     }
 
     // 0x0049DAA5
@@ -1736,7 +1737,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049D83A
-    static void bridgeDropdown(Window* self)
+    static void bridgeDropdown(Window& self)
     {
         auto& cState = getConstructionState();
 
@@ -1750,13 +1751,13 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
 
         uint8_t flags = (1 << 7) | (1 << 6);
-        auto widget = self->widgets[widx::bridge];
-        auto x = widget.left + self->x;
-        auto y = widget.top + self->y;
+        auto widget = self.widgets[widx::bridge];
+        auto x = widget.left + self.x;
+        auto y = widget.top + self.y;
         auto width = 155;
         auto height = widget.height();
 
-        Dropdown::show(x, y, width, height, self->getColour(WindowColour::secondary), bridgeCount, 22, flags);
+        Dropdown::show(x, y, width, height, self.getColour(WindowColour::secondary), bridgeCount, 22, flags);
         for (auto i = 0; i < 9; i++)
         {
             auto bridge = cState.bridgeList[i];
@@ -1914,7 +1915,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             case Widx::kBridgeDropdown:
             {
-                bridgeDropdown(&self);
+                bridgeDropdown(self);
                 break;
             }
 
@@ -1922,7 +1923,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 if (Input::getClickRepeatTicks() >= 40)
                 {
-                    constructTrackOrRoad(&self, widgetIndex);
+                    constructTrackOrRoad(self, widgetIndex);
                 }
                 break;
             }
@@ -1931,7 +1932,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 if (Input::getClickRepeatTicks() >= 40)
                 {
-                    removeTrack(&self, widgetIndex);
+                    removeTrack(self, widgetIndex);
                 }
                 break;
             }
@@ -2810,7 +2811,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
                 // Try placing the track at this location, ignoring errors if they occur
                 GameCommands::setErrorSound(false);
-                constructTrackOrRoad(&self, widgetIndex);
+                constructTrackOrRoad(self, widgetIndex);
                 GameCommands::setErrorSound(true);
 
                 builtAnything |= cState.trackCost != GameCommands::kFailure || cState.roadCost != GameCommands::kFailure;
@@ -2922,7 +2923,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             auto trackObj = ObjectManager::get<TrackObject>(cState.trackType);
             args.push(trackObj->name);
         }
-        Common::repositionTabs(&self);
+        Common::repositionTabs(self);
     }
 
     static std::optional<FormatArguments> tooltip(Ui::Window&, WidgetIndex_t, [[maybe_unused]] const WidgetId id)
@@ -3159,12 +3160,12 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049D38A and 0x0049D16B
-    static void drawCostString(Window* self, Gfx::DrawingContext& drawingCtx)
+    static void drawCostString(Window& self, Gfx::DrawingContext& drawingCtx)
     {
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        auto x = self->widgets[widx::construct].midX();
-        auto y = self->widgets[widx::construct].bottom - 23;
+        auto x = self.widgets[widx::construct].midX();
+        auto y = self.widgets[widx::construct].bottom - 23;
 
         auto& cState = getConstructionState();
         if (!cState.constructionHover)
@@ -3189,7 +3190,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049D106
-    static void drawTrackCost(Window* self, Gfx::RenderTarget* clipped, Gfx::DrawingContext& drawingCtx, Point pos, uint16_t width, uint16_t height)
+    static void drawTrackCost(Window& self, Gfx::RenderTarget* clipped, Gfx::DrawingContext& drawingCtx, Point pos, uint16_t width, uint16_t height)
     {
         width >>= 1;
         height >>= 1;
@@ -3218,7 +3219,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049D325
-    static void drawRoadCost(Window* self, Gfx::RenderTarget* clipped, Gfx::DrawingContext& drawingCtx, Point pos, uint16_t width, uint16_t height)
+    static void drawRoadCost(Window& self, Gfx::RenderTarget* clipped, Gfx::DrawingContext& drawingCtx, Point pos, uint16_t width, uint16_t height)
     {
         width >>= 1;
         height >>= 1;
@@ -3322,11 +3323,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 auto pos2D = gameToScreen(pos3D, WindowManager::getCurrentRotation());
 
                 Point pos = { pos2D.x, pos2D.y };
-                drawRoadCost(&self, &*clipped, drawingCtx, pos, width, height);
+                drawRoadCost(self, &*clipped, drawingCtx, pos, width, height);
             }
             else
             {
-                drawCostString(&self, drawingCtx);
+                drawCostString(self, drawingCtx);
             }
         }
         else
@@ -3375,11 +3376,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 auto pos2D = gameToScreen(pos3D, WindowManager::getCurrentRotation());
 
                 Point pos = { pos2D.x, pos2D.y };
-                drawTrackCost(&self, &*clipped, drawingCtx, pos, width, height);
+                drawTrackCost(self, &*clipped, drawingCtx, pos, width, height);
             }
             else
             {
-                drawCostString(&self, drawingCtx);
+                drawCostString(self, drawingCtx);
             }
         }
     }

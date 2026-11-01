@@ -1,7 +1,19 @@
 26.09+ (???)
 ------------------------------------------------------------------------
+- Change: [#3578, #3918, #3919] Several landscape generation options are now disabled when they do not apply.
 - Change: [#3956] Speed Records tab in the Company List window now shows text when no records are set yet.
+- Change: [#4033] Objects marked with source OpenLoco (OpenGraphics) are no longer exported in scenario or save files.
+- Change: [#4041] Vehicle colours are now reset to the target company's when using the company takeover cheat.
+- Change: [#4041] Invisible 'planned' AI company track is no longer inherited when using the company takeover cheat.
+- Change: [#4041] The original AI company is now shut down after using the company takeover cheat.
+- Fix: [#2879] Crash when starting the game with an empty openloco.yaml file.
+- Fix: [#4027] Crash when starting the game with malformed YAML schema.
 - Fix: [#4037] Cannot delete road stations acquired with the 'acquire all company assets' cheat.
+- Fix: [#4061] Creating industries does not select a random colour (vanilla bug).
+- Fix: [#4063] AI fails to create road at some rotations (vanilla bug).
+- Fix: [#4063] Road path finding uses incorrect values for road length (vanilla bug).
+- Fix: [#4063] Incorrect vehicle speed calculation (vanilla bug).
+- Fix: [#4063] Town expansion does not raise/lower certain land corners (vanilla bug).
 
 26.09 (2026-09-18)
 ------------------------------------------------------------------------

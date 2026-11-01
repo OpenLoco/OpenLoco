@@ -144,7 +144,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     // 0x0049ECD1
     static void onUpdate(Window& self)
     {
-        Common::onUpdate(&self, GhostVisibilityFlags::overhead);
+        Common::onUpdate(self, GhostVisibilityFlags::overhead);
     }
 
     static std::optional<GameCommands::RoadModsPlacementArgs> getRoadModsPlacementArgsFromCursor(const int16_t x, const int16_t y)
@@ -499,7 +499,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
         self.widgets[widx::track].text = modString[enumValue(cState.lastSelectedTrackModSection)];
 
-        Common::repositionTabs(&self);
+        Common::repositionTabs(self);
     }
 
     // 0x0049EA3E

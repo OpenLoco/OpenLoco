@@ -168,7 +168,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     // 0x0049E76F
     static void onUpdate(Window& self)
     {
-        Common::onUpdate(&self, GhostVisibilityFlags::signal);
+        Common::onUpdate(self, GhostVisibilityFlags::signal);
     }
 
     // 0x004A417A
@@ -378,7 +378,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             args.push<uint16_t>(cState.signalPlacementStepSize); // can't push a single byte???
         }
 
-        Common::repositionTabs(&self);
+        Common::repositionTabs(self);
     }
 
     // 0x0049E501

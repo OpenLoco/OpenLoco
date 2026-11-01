@@ -181,6 +181,7 @@ namespace OpenLoco::Localisation
         { 0x0219, 's' }, // ș
         { 0x021A, 'T' }, // Ț
         { 0x021B, 't' }, // ț
+        { 0x0259, 'e' }, // ə
     });
 
     // Ensure that the table is sorted by Unicode point.

@@ -5449,10 +5449,7 @@ namespace OpenLoco::Vehicles
         curTad._data = tad;
         for (; true;)
         {
-            // TODO: This is a vanilla mistake where it accesses the wrong data!
-            // CHANGE THIS WHEN WE DIVERGE FROM VANILLA
-            state.totalTrackWeighting += World::TrackData::getTrackMiscData(curTad.id()).unkWeighting;
-            // state.totalTrackWeighting += World::TrackData::getRoadMiscData(curTad.id()).unkWeighting;
+            state.totalTrackWeighting += World::TrackData::getRoadMiscData(curTad.id()).unkWeighting;
             if (state.totalTrackWeighting > 1280)
             {
                 break;

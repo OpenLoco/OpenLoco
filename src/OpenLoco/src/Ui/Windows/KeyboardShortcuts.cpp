@@ -87,12 +87,12 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE6C7
-    Window* open()
+    Window& open()
     {
         Window* window = WindowManager::bringToFront(WindowType::keyboardShortcuts, 0);
         if (window != nullptr)
         {
-            return window;
+            return *window;
         }
 
         // 0x004BF833 (create_options_window)
@@ -111,7 +111,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 
         window->setSizeBounds(kWindowSize, kMaxWindowSize);
 
-        return window;
+        return *window;
     }
 
     // 0x004BE726

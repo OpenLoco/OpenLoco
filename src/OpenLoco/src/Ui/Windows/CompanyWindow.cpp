@@ -114,12 +114,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         extern std::array<TabInformation, 6> kTabInformationByTabOffset;
 
         // 0x004343FC
-        static void disableChallengeTab(Window* self)
+        static void disableChallengeTab(Window& self)
         {
-            self->disabledWidgets = 0;
-            if (CompanyId(self->number) != CompanyManager::getControllingId())
+            self.disabledWidgets = 0;
+            if (CompanyId(self.number) != CompanyManager::getControllingId())
             {
-                self->disabledWidgets |= (1 << widx::tab_challenge);
+                self.disabledWidgets |= (1 << widx::tab_challenge);
             }
         }
 
@@ -137,12 +137,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // Defined at the bottom of this file.
-        static void renameCompanyPrompt(Window* self, WidgetIndex_t widgetIndex);
-        static void renameCompany(Window* self, const char* input);
-        static void switchCompany(Window* self, int16_t itemIndex);
+        static void renameCompanyPrompt(Window& self, WidgetIndex_t widgetIndex);
+        static void renameCompany(Window& self, const char* input);
+        static void switchCompany(Window& self, int16_t itemIndex);
         static void switchTab(Window& self, WidgetIndex_t widgetIndex);
         static void prepareDraw(Window& self);
-        static void drawCompanySelect(const Window* const self, Gfx::DrawingContext& drawingCtx);
+        static void drawCompanySelect(const Window& self, Gfx::DrawingContext& drawingCtx);
         static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx);
     }
 
@@ -225,7 +225,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             self.draw(drawingCtx);
             Common::drawTabs(self, drawingCtx);
-            Common::drawCompanySelect(&self, drawingCtx);
+            Common::drawCompanySelect(self, drawingCtx);
             const auto company = CompanyManager::get(CompanyId(self.number));
             const auto competitor = ObjectManager::get<CompetitorObject>(company->competitorId);
 
@@ -299,7 +299,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             switch (id)
             {
                 case Common::Widx::kCaption:
-                    Common::renameCompanyPrompt(&self, widgetIndex);
+                    Common::renameCompanyPrompt(self, widgetIndex);
                     break;
 
                 case Common::Widx::kCloseButton:
@@ -346,12 +346,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             if (id == Common::Widx::kCompanySelect)
             {
-                Common::switchCompany(&self, itemIndex);
+                Common::switchCompany(self, itemIndex);
             }
         }
 
         // 0x004325DF
-        static void renameCompanyOwnerName(Window* self, const char* input)
+        static void renameCompanyOwnerName(Window& self, const char* input)
         {
             if (strlen(input) == 0)
             {
@@ -364,7 +364,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             {
                 GameCommands::ChangeCompanyOwnerNameArgs args{};
 
-                args.companyId = CompanyId(self->number);
+                args.companyId = CompanyId(self.number);
                 args.bufferIndex = 1;
                 std::memcpy(args.newName, input, 36);
 
@@ -386,7 +386,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
 
             // Only name company after owner if this is a new company.
-            const auto& company = CompanyManager::get(CompanyId(self->number));
+            const auto& company = CompanyManager::get(CompanyId(self.number));
             if (company->name != StringIds::new_company)
             {
                 return;
@@ -409,11 +409,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             if (id == Common::Widx::kCaption)
             {
-                Common::renameCompany(&self, input);
+                Common::renameCompany(self, input);
             }
             else if (id == Widx::kChangeOwnerName)
             {
-                renameCompanyOwnerName(&self, input);
+                renameCompanyOwnerName(self, input);
             }
         }
 
@@ -664,7 +664,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window->activatedWidgets = 0;
         window->callOnResize();
 
-        Common::disableChallengeTab(window);
+        Common::disableChallengeTab(*window);
         window->initScrollWidgets();
         window->moveInsideScreenEdges();
 
@@ -802,7 +802,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             self.draw(drawingCtx);
             Common::drawTabs(self, drawingCtx);
-            Common::drawCompanySelect(&self, drawingCtx);
+            Common::drawCompanySelect(self, drawingCtx);
 
             auto* company = CompanyManager::get(CompanyId(self.number));
             auto x = 3;
@@ -887,7 +887,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             switch (id)
             {
                 case Common::Widx::kCaption:
-                    Common::renameCompanyPrompt(&self, widgetIndex);
+                    Common::renameCompanyPrompt(self, widgetIndex);
                     break;
 
                 case Common::Widx::kCloseButton:
@@ -939,7 +939,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             if (id == Common::Widx::kCompanySelect)
             {
-                Common::switchCompany(&self, itemIndex);
+                Common::switchCompany(self, itemIndex);
             }
         }
 
@@ -953,7 +953,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             if (id == Common::Widx::kCaption)
             {
-                Common::renameCompany(&self, input);
+                Common::renameCompany(self, input);
             }
         }
 
@@ -1452,7 +1452,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             self.draw(drawingCtx);
             Common::drawTabs(self, drawingCtx);
-            Common::drawCompanySelect(&self, drawingCtx);
+            Common::drawCompanySelect(self, drawingCtx);
 
             const auto& widget = self.widgets[widx::main_colour_scheme];
             auto point = Point(6, widget.top + 3);
@@ -1477,7 +1477,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             switch (id)
             {
                 case Common::Widx::kCaption:
-                    Common::renameCompanyPrompt(&self, widgetIndex);
+                    Common::renameCompanyPrompt(self, widgetIndex);
                     break;
 
                 case Common::Widx::kCloseButton:
@@ -1597,7 +1597,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             if (id == Common::Widx::kCaption)
             {
-                Common::renameCompany(&self, input);
+                Common::renameCompany(self, input);
             }
         }
 
@@ -1607,7 +1607,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             switch (id)
             {
                 case Common::Widx::kCompanySelect:
-                    Common::switchCompany(&self, itemIndex);
+                    Common::switchCompany(self, itemIndex);
                     break;
 
                 case Widx::kMainColourScheme:
@@ -1775,7 +1775,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             self.draw(drawingCtx);
             Common::drawTabs(self, drawingCtx);
-            Common::drawCompanySelect(&self, drawingCtx);
+            Common::drawCompanySelect(self, drawingCtx);
 
             const auto company = CompanyManager::get(CompanyId(self.number));
 
@@ -2027,7 +2027,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             switch (id)
             {
                 case Common::Widx::kCaption:
-                    Common::renameCompanyPrompt(&self, widgetIndex);
+                    Common::renameCompanyPrompt(self, widgetIndex);
                     break;
 
                 case Common::Widx::kCloseButton:
@@ -2096,7 +2096,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             if (id == Common::Widx::kCaption)
             {
-                Common::renameCompany(&self, input);
+                Common::renameCompany(self, input);
             }
         }
 
@@ -2130,7 +2130,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             if (id == Common::Widx::kCompanySelect)
             {
-                Common::switchCompany(&self, itemIndex);
+                Common::switchCompany(self, itemIndex);
                 scrollToLatestData(self);
                 self.invalidate();
             }
@@ -2205,7 +2205,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window->eventHandlers = &Finances::getEvents();
         window->activatedWidgets = 0;
 
-        Common::disableChallengeTab(window);
+        Common::disableChallengeTab(*window);
         window->initScrollWidgets();
         window->moveInsideScreenEdges();
         Finances::scrollToLatestData(*window);
@@ -2235,7 +2235,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             self.draw(drawingCtx);
             Common::drawTabs(self, drawingCtx);
-            Common::drawCompanySelect(&self, drawingCtx);
+            Common::drawCompanySelect(self, drawingCtx);
 
             uint16_t y = 47;
 
@@ -2290,7 +2290,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             switch (id)
             {
                 case Common::Widx::kCaption:
-                    Common::renameCompanyPrompt(&self, widgetIndex);
+                    Common::renameCompanyPrompt(self, widgetIndex);
                     break;
 
                 case Common::Widx::kCloseButton:
@@ -2322,7 +2322,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             if (id == Common::Widx::kCaption)
             {
-                Common::renameCompany(&self, input);
+                Common::renameCompany(self, input);
             }
         }
 
@@ -2331,7 +2331,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             if (id == Common::Widx::kCompanySelect)
             {
-                Common::switchCompany(&self, itemIndex);
+                Common::switchCompany(self, itemIndex);
             }
         }
 
@@ -2490,7 +2490,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             switch (id)
             {
                 case Common::Widx::kCaption:
-                    Common::renameCompanyPrompt(&self, widgetIndex);
+                    Common::renameCompanyPrompt(self, widgetIndex);
                     break;
 
                 case Common::Widx::kCloseButton:
@@ -2513,7 +2513,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             if (id == Common::Widx::kCaption)
             {
-                Common::renameCompany(&self, input);
+                Common::renameCompany(self, input);
             }
         }
 
@@ -2565,7 +2565,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window->eventHandlers = &Challenge::getEvents();
         window->activatedWidgets = 0;
 
-        Common::disableChallengeTab(window);
+        Common::disableChallengeTab(*window);
         window->initScrollWidgets();
         window->moveInsideScreenEdges();
 
@@ -2585,7 +2585,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         });
         // clang-format on
 
-        static void switchCompany(Window* self, int16_t itemIndex)
+        static void switchCompany(Window& self, int16_t itemIndex)
         {
             if (itemIndex == -1)
             {
@@ -2608,11 +2608,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 return;
             }
 
-            self->number = enumValue(companyId);
-            self->owner = companyId;
+            self.number = enumValue(companyId);
+            self.owner = companyId;
 
             Common::disableChallengeTab(self);
-            self->invalidate();
+            self.invalidate();
         }
 
         // 0x0043230B
@@ -2642,7 +2642,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 self.holdableWidgets = Finances::holdableWidgets;
             }
 
-            Common::disableChallengeTab(&self);
+            Common::disableChallengeTab(self);
             self.invalidate();
             self.setSizeFixed(tabInfo.kWindowSize);
             self.callOnResize();
@@ -2663,14 +2663,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043252E
-        static void renameCompanyPrompt(Window* self, WidgetIndex_t widgetIndex)
+        static void renameCompanyPrompt(Window& self, WidgetIndex_t widgetIndex)
         {
-            auto* company = CompanyManager::get(CompanyId(self->number));
-            TextInput::openTextInput(self, StringIds::title_name_company, StringIds::prompt_enter_new_company_name, company->name, widgetIndex, {});
+            auto* company = CompanyManager::get(CompanyId(self.number));
+            TextInput::openTextInput(&self, StringIds::title_name_company, StringIds::prompt_enter_new_company_name, company->name, widgetIndex, {});
         }
 
         // 0x0043254F
-        static void renameCompany(Window* self, const char* input)
+        static void renameCompany(Window& self, const char* input)
         {
             if (strlen(input) == 0)
             {
@@ -2681,7 +2681,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             GameCommands::ChangeCompanyNameArgs args{};
 
-            args.companyId = CompanyId(self->number);
+            args.companyId = CompanyId(self.number);
             args.bufferIndex = 1;
             std::memcpy(args.buffer, input, 36);
 
@@ -2696,15 +2696,15 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 
-        static void drawCompanySelect(const Window* const self, Gfx::DrawingContext& drawingCtx)
+        static void drawCompanySelect(const Window& self, Gfx::DrawingContext& drawingCtx)
         {
-            const auto* company = CompanyManager::get(CompanyId(self->number));
+            const auto* company = CompanyManager::get(CompanyId(self.number));
             const auto* competitor = ObjectManager::get<CompetitorObject>(company->competitorId);
 
             // Draw company owner face.
             const uint32_t image = Gfx::recolour(competitor->images[enumValue(company->ownerEmotion)], company->mainColours.primary);
-            const uint16_t x = self->widgets[widx::company_select].left + 1;
-            const uint16_t y = self->widgets[widx::company_select].top + 1;
+            const uint16_t x = self.widgets[widx::company_select].left + 1;
+            const uint16_t y = self.widgets[widx::company_select].top + 1;
             drawingCtx.drawImage(ZoomLevel::full, x, y, image);
         }
 

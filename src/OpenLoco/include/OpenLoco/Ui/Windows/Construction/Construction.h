@@ -155,10 +155,10 @@ namespace OpenLoco::Ui::Windows::Construction
         void prepareDraw(Window* self);
         void resetWindow(Window& self, WidgetIndex_t tabWidgetIndex);
         void switchTab(Window& self, WidgetIndex_t widgetIndex);
-        void repositionTabs(Window* self);
+        void repositionTabs(Window& self);
         void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx);
         void onClose(Window& self);
-        void onUpdate(Window* self, GhostVisibilityFlags flag);
+        void onUpdate(Window& self, GhostVisibilityFlags flag);
         void sub_4CD454();
         void setTrackOptions(const uint8_t trackType);
         void setDisabledWidgets(Window* self);
@@ -167,8 +167,8 @@ namespace OpenLoco::Ui::Windows::Construction
         void setNextAndPreviousTrackTile(const World::TrackElement& elTrack, const World::Pos2& pos);
         void setNextAndPreviousRoadTile(const World::RoadElement& elRoad, const World::Pos2& pos);
         bool isPointCloserToNextOrPreviousTile(const Point& point, const Viewport& viewport);
-        void previousTab(Window* self);
-        void nextTab(Window* self);
+        void previousTab(Window& self);
+        void nextTab(Window& self);
 
         [[nodiscard]] bool hasGhostVisibilityFlag(GhostVisibilityFlags flags);
         void setGhostVisibilityFlag(GhostVisibilityFlags flag);

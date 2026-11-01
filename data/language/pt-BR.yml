@@ -80,7 +80,7 @@ strings:
   67: Sobre 'Chris Sawyer's Locomotion'
   68: Chris Sawyer's Locomotion
   69: "{COLOUR WINDOW_2}Versão 4.02.176 (Português BR)"
-  70: "{COLOUR WINDOW_2}Copyright Ⓒ 2004 Chris Sawyer, todos os direitos reservados"
+  70: "{COLOUR WINDOW_2}Copyright © 2004 Chris Sawyer, todos os direitos reservados"
   71: "{COLOUR WINDOW_2}Projetado e Programado por Chris Sawyer"
   72: "{COLOUR WINDOW_2}Gráficos por Simon Foster"
   73: "{COLOUR WINDOW_2}Som e músicas por Allister Brimble"
@@ -150,9 +150,9 @@ strings:
   136: "{SMALLFONT}{COLOUR BLACK}Subida íngreme"
   137: "{COLOUR WINDOW_2}Construir isto..."
   138: "{COLOUR WINDOW_2}Custo: {COLOUR BLACK}{CURRENCY32}"
-  139: Impossível construir semáforo aqui...
-  140: Impossível construir semáforos aqui...
-  141: Impossível remover semáforo...
+  139: Impossível construir sinal aqui...
+  140: Impossível construir sinal aqui...
+  141: Impossível remover sinal...
   142: Impossível remover {POP16}{POP16}{POP16}{STRINGID}...
   143: Impossível construir {POP16}{POP16}{POP16}{STRINGID}...
   144: Aumente ou rebaixe o terreno primeiro
@@ -169,12 +169,12 @@ strings:
   155: Já construído aqui
   156: Impossível cruzar ou criar junção com {STRINGID}
   157: Junções não são possíveis
-  158: Semáforo
+  158: Sinal
   159: Estação
   160: Aeroporto
   161: Porto
   162: Estação no caminho
-  163: Semáforo no caminho
+  163: Sinal no caminho
   164: Impossível remover aeroporto...
   165: Impossível remover porto...
   166: Impossível remover estação...
@@ -267,7 +267,7 @@ strings:
   250: "{STRINGID} - Esquema de Cores"
   251: "{STRINGID} - Desafio"
   252: "{SMALLFONT}{COLOUR BLACK}Mudar Direção"
-  253: "{SMALLFONT}{COLOUR BLACK}Atravessar semáforo por conta e risco"
+  253: "{SMALLFONT}{COLOUR BLACK}Atravessar sinal por conta e risco"
   254: "{SMALLFONT}{COLOUR BLACK}Remover {POP16}{STRINGID} da via/estrada"
   255: "{SMALLFONT}{COLOUR BLACK}Colocar {POP16}{STRINGID} na via/estrada"
   256: "{SMALLFONT}{COLOUR BLACK}Remover {POP16}{STRINGID} do aeroporto"
@@ -287,11 +287,11 @@ strings:
   270: "{COLOUR BLACK}{STRINGID}"
   271: "{SMALLFONT}{COLOUR BLACK}Construção de vias/estradas"
   272: "{SMALLFONT}{COLOUR BLACK}Construção de estação"
-  273: "{SMALLFONT}{COLOUR BLACK}Construção de semáforo"
+  273: "{SMALLFONT}{COLOUR BLACK}Construção de sinal"
   274: "{SMALLFONT}{COLOUR BLACK}Eletrificação de vias e outras melhorias"
-  275: "{SMALLFONT}{COLOUR BLACK}Selecionar tipo de semádoro"
-  276: "{SMALLFONT}{COLOUR BLACK}Contruir semáforos em ambas as direções"
-  277: "{SMALLFONT}{COLOUR BLACK}Construir semáforo em apenas uma direção (trens não poderão transitar na outra direção)"
+  275: "{SMALLFONT}{COLOUR BLACK}Selecionar tipo de sinal"
+  276: "{SMALLFONT}{COLOUR BLACK}Construir sinais em ambas as direções"
+  277: "{SMALLFONT}{COLOUR BLACK}Construir sinal em apenas uma direção (trens não poderão transitar na outra direção)"
   278: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID}{NEWLINE}Vel. máxima:  {STRINGID}{NEWLINE}Altura máxima acima do solo:  {HEIGHT}"
   279: "{SMALLFONT}{COLOUR BLACK}Selecionar tipo de estação"
   280: Estação {INT16}
@@ -434,7 +434,7 @@ strings:
   417: Falido!{NEWLINE}{STRINGID} declarou falência e fechou as portas!
   418: "{STRINGID} Bateu!"
   419: Escândalo Corporativo!{NEWLINE}{STRINGID} preso por tentativa de roubo!
-  420: Novo recorde {STRINGID} de velocidade!{NEWLINE}{STRINGID} alcaça velocidade média de {VELOCITY} entre paradas!
+  420: Novo recorde {STRINGID} de velocidade!{NEWLINE}{STRINGID} alcança velocidade média de {VELOCITY} entre paradas!
 
   421: "{MOVE_X 10}{STRINGID}"
   422: »{MOVE_X 10}{STRINGID}
@@ -478,7 +478,7 @@ strings:
   457: "{COLOUR WINDOW_2}{STRINGID}"
   458: "{COLOUR WHITE}{STRINGID}"
   459: Parando{POP16}{POP16}
-  460: / Esperando no semáforo{POP16}{POP16}
+  460: / Esperando no sinal{POP16}{POP16}
   461: a {VELOCITY}{POP16}
   462: "{COLOUR RED}Bateu!{POP16}{POP16}"
   463: "{COLOUR RED}Preso!{POP16}{POP16}"
@@ -643,8 +643,8 @@ strings:
   622: Via/estrada imprópria
   623: Via/estrada imprópria para estação
   624: Estação não pode ser construída numa junção
-  625: Semáforos não podem ser construídos numa junção
-  626: Semáforos não podem ser construídos numa estação
+  625: Sinais não podem ser construídos numa junção
+  626: Sinais não podem ser construídos numa estação
   627: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}"
   628: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}"
   629: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID} {STRINGID}"
@@ -1041,8 +1041,8 @@ strings:
   1015: "{OUTLINE}{COLOUR WINDOW_2}(Pressione uma tecla ou botão do mouse para tomar controle)"
   1016: Outra instância de OpenLoco já está rodando
 
-  1017: Agradecimentos Músicais...
-  1018: Agradecimentos Músicais
+  1017: Agradecimentos Musicais...
+  1018: Agradecimentos Musicais
   1019: "{COLOUR BLACK}Copyright © Chris Sawyer"
   1020: "{COLOUR WINDOW_2}Locomotion Title"
   1021: "{COLOUR BLACK}John Broomhall (Guitarra tocada por Keith Thompson)"
@@ -1192,7 +1192,7 @@ strings:
   1162: Veículo se aproximando, ou no caminho
   1163: Impossível colocar {POP16}{POP16}{POP16}{STRINGID} aqui...
   1164: Impossível remover {POP16}{POP16}{POP16}{STRINGID}...
-  1165: Impossível atravessar semáforo por conta e risco...
+  1165: Impossível atravessar sinal por conta e risco...
   1166: Esse veículo requer {STRINGID}
   1167: Trem não têm veículos!
   1168: Trem não tem cabine de condução
@@ -1373,7 +1373,7 @@ strings:
   1343: "{STRINGID} Rodovias"
   1344: "{STRINGID} Linhas Férreas"
   1345: "{STRINGID} Ônibus"
-  1346: "{STRINGID} Air"
+  1346: "{STRINGID} Ar"
   1347: "{STRINGID} Ferroviária"
   1348: "{STRINGID} Carts"
   1349: "{STRINGID} Trens"
@@ -1388,7 +1388,7 @@ strings:
   1358: "{COLOUR BLACK}{SMALLFONT}{UINT16 RAW}"
   1359: "{STRINGID}"
   1360: "{STRINGID} - População"
-  1361: "{STRINGID} Autoridade Local"
+  1361: "{STRINGID} - Autoridade Local"
   1362: "{STRINGID} - Produção Mensal"
   1363: "{STRINGID} - Estatísticas"
   1364: "{STRINGID} {STRINGID}"
@@ -1441,7 +1441,7 @@ strings:
   1411: Município deve ser construído nas proximidades antes
   1412: "{SMALLFONT}{COLOUR BLACK}Plante um grupo do tipo de árvore selecionado"
   1413: "{SMALLFONT}{COLOUR BLACK}Plante um grupo aleatório de árvores"
-  1414: "{SMALLFONT}{COLOUR BLACK}Estatíticas"
+  1414: "{SMALLFONT}{COLOUR BLACK}Estatísticas"
   1415: "{COLOUR WINDOW_2}Recebidos no mês passado:"
   1416: "{COLOUR WINDOW_2}Produzidos no mês passado:"
   1417: "{COLOUR BLACK}{STRINGID} ({INT16}% transportado)"
@@ -1449,7 +1449,7 @@ strings:
   1419: Fechando
   1420: Pertence a {STRINGID}
   1421: "{STRINGID} pertence a {STRINGID}"
-  1422: Semáforo pertence a {STRINGID}
+  1422: Sinal pertence a {STRINGID}
   1423: "{COLOUR BLACK}{INT16}%"
   1424: "{COLOUR BLACK}{TINYFONT}{DATE DMY}"
   1425: Mensagens
@@ -1491,7 +1491,7 @@ strings:
   1461: Impossível renomear proprietário...
   1462: Sede
   1463: "{STRINGID} Sede"
-  1464: "{STRINGID} autoridade local não permite a remoção de estradas atualmente em uso"
+  1464: "A autoridade local de {STRINGID} não permite a remoção de estradas atualmente em uso"
   1465: "{SMALLFONT}{COLOUR BLACK}Selecionar companhia"
   1466: Jogo de Dois Jogadores
   1467: Jogo de Dois Jogadores - Opções
@@ -1571,7 +1571,7 @@ strings:
   1535: "{COLOUR WINDOW_2}Atualmente tocando:"
   1536: "{SMALLFONT}{COLOUR BLACK}Parar música"
   1537: "{SMALLFONT}{COLOUR BLACK}Tocar música"
-  1538: "{SMALLFONT}{COLOUR BLACK}Tocar pŕoxima música"
+  1538: "{SMALLFONT}{COLOUR BLACK}Tocar próxima música"
   1539: Tocar somente músicas da era atual
   1540: Tocar todas as músicas
   1541: Tocar seleção customizada de músicas
@@ -1764,7 +1764,7 @@ strings:
   1726: "{COLOUR WINDOW_2} Peso: {COLOUR BLACK}{INT16}t"
   1727: "{COLOUR WINDOW_2} Vel. Máxima: {COLOUR BLACK}{VELOCITY}"
   1728: "{COLOUR WINDOW_2} Capacidade: {COLOUR BLACK}{STRINGID}"
-  1729: Estabeleçendo conexão...
+  1729: Estabelecendo conexão...
   1730: Em todo lugar
   1731: Em nenhum lugar
   1732: Longe da água
@@ -1799,7 +1799,7 @@ strings:
   1761: "{COLOUR BLACK}Status"
   1762: "{COLOUR BLACK}Status ▼"
   1763: "{COLOUR BLACK}Índice de Performance"
-  1764: "{COLOUR BLACK}Índice de  Performance ▼"
+  1764: "{COLOUR BLACK}Índice de Performance ▼"
   1765: "{COLOUR BLACK}Valor da Companhia"
   1766: "{COLOUR BLACK}Valor da Companhia ▼"
   1767: "{NEWLINE 1 2}{SPRITE}{NEWLINE 27 8}{STRINGID}"
@@ -1875,9 +1875,9 @@ strings:
   1837: Boa
   1838: Excelente
   1839: "{COLOUR WINDOW_2}{STRINGID}: {COLOUR BLACK}{INT16}% ({STRINGID})"
-  1840: Alcançe um valor da companhia de {CURRENCY32}{STRINGID}{STRINGID}
-  1841: Alcançe uma renda mensal de veículos de {CURRENCY32}{STRINGID}{STRINGID}
-  1842: Alcançe um índice de performance de {INT16_1DP}% (“{STRINGID}”){STRINGID}{STRINGID}
+  1840: Alcance um valor da companhia de {CURRENCY32}{STRINGID}{STRINGID}
+  1841: Alcance uma renda mensal de veículos de {CURRENCY32}{STRINGID}{STRINGID}
+  1842: Alcance um índice de performance de {INT16_1DP}% (“{STRINGID}”){STRINGID}{STRINGID}
   1843: Entregue {STRINGID}{STRINGID}{STRINGID}
   1844: " e seja a companhia de melhor performance"
   1845: " e esteja estre uma das três companhias de melhor performance"
@@ -1888,9 +1888,9 @@ strings:
   1850: "...com um limite de tempo de:"
   1851: "{COLOUR WINDOW_2}Desafio:"
   1852: "{COLOUR BLACK}  {STRINGID}"
-  1853: Alcançe um certo valor de companhia
-  1854: Alcançe uma certa renda mensal de veículos
-  1855: Alcançe um certo índice de performance
+  1853: Alcance um certo valor de companhia
+  1854: Alcance uma certa renda mensal de veículos
+  1855: Alcance um certo índice de performance
   1856: Entregue uma certa quantidade de carga
   1857: "{CURRENCY32}"
   1858: "{INT16_1DP}%"
@@ -1961,8 +1961,8 @@ strings:
   1914: "{SMALLFONT}{COLOUR BLACK}Como a via é de uma só linha, não precisamos configurar uma rota - Apenas por o trem para andar..."
   1915: "{SMALLFONT}{COLOUR BLACK}Vamos extender a via para criar uma junção e uma extensão para o terceiro município. Clicar com o botão direito na via abre a janela de construção de vias pronta para construir a junção..."
   1916: "{SMALLFONT}{COLOUR BLACK}Já que o traçado da via não é mais simples precisaremos dar ao nosso trem uma rota..."
-  1917: "{SMALLFONT}{COLOUR BLACK}Poderíamos agora adicionar um segundo trem, mas primeiro precisamos construir semáforos para evitar colisões entre trens..."
-  1918: "{SMALLFONT}{COLOUR BLACK}Os semáforos dividem a via em três diferentes 'Seções de bloco' e apenas um trem por vez poderá entrar em cada seção..."
+  1917: "{SMALLFONT}{COLOUR BLACK}Poderíamos agora adicionar um segundo trem, mas primeiro precisamos construir sinais para evitar colisões entre trens..."
+  1918: "{SMALLFONT}{COLOUR BLACK}Os sinais dividem a via em três diferentes 'Seções de bloco' e apenas um trem por vez poderá entrar em cada seção..."
 
   # Options/Misc
   1919: Usar nome do proprietário preferido no início de cada partida
@@ -1986,7 +1986,7 @@ strings:
   1934: o outro jogador
   1935: "O outro jogador saiu do jogo: Modo de dois jogadores foi desconectado"
 
-  1936: "{COLOUR YELLOW}Uso deste procuto está sujeito aos termos de um acordo de licenciação{NEWLINE}encontrado no arquivo “ReadMe” do produto e no manual"
+  1936: "{COLOUR YELLOW}Uso deste produto está sujeito aos termos de um acordo de licenciação{NEWLINE}encontrado no arquivo “ReadMe” do produto e no manual"
   1937: "{COLOUR YELLOW}Aviso da ESRB: Experiência de jogo pode variar durante partidas online"
   1938: "{COLOUR TOPAZ}Alguns meios de transporte neste jogo contam com nomes que podem ser semelhantes a nomes de veículos reais."
   1939: "{COLOUR TOPAZ}Isso é um recurso para ajudar os jogadores relacionarem-se ao universo fictício do jogo."
@@ -2036,7 +2036,7 @@ strings:
   1982: "{COLOUR WINDOW_2}"
 
   1983: Distância por Unidades de Carga Entregues por Mês
-  1984: "{SMALLFONT}{COLOUR BLACK}Cráficos de carga por distância entregues por cada companhia"
+  1984: "{SMALLFONT}{COLOUR BLACK}Gráficos de carga por distância entregues por cada companhia"
   1985: "{COLOUR WINDOW_2}Velocidade média do último trajeto: {COLOUR BLACK}{VELOCITY}"
   1986: terra
   1987: ar
@@ -2099,7 +2099,7 @@ strings:
   2044: Muitos objetos deste tipo selecionados
   2045: "O seguinte objeto deve ser selecionado primeiro: "
   2046: Este objeto está atualmente em uso
-  2047: Este objeto e requerido por outro objeto
+  2047: Este objeto é requerido por outro objeto
   2048: Este objeto é sempre necessário
   2049: Impossível selecionar este objeto
   2050: Impossível cancelar a seleção deste objeto
@@ -2115,7 +2115,7 @@ strings:
   2060: Nomes de Municípios
   2061: Carga
   2062: Paredes
-  2063: Semáforos
+  2063: Sinais
   2064: Passagem em Nível
   2065: Postes de Iluminação
   2066: Túneis
@@ -2183,7 +2183,7 @@ strings:
   2128: Janela
   2129: Tela Cheia
   2130: Tela Cheia Sem Borda
-  2131: Dispositivo padrão de aúdio
+  2131: Dispositivo padrão de áudio
   2132: "{COLOUR WINDOW_2}Fator de escala da janela:"
   2133: "{COLOUR BLACK}+"
   2134: "{COLOUR BLACK}-"
@@ -2221,10 +2221,10 @@ strings:
   2166: "Renderização de mapa"
   2167: "Inspetor de Tiles"
   2168: "{SMALLFONT}{COLOUR BLACK}Ative para selecionar um tile para inspecionar."
-  2169: "Superfíce"
+  2169: "Superfície"
   2170: "Via"
   2171: "Estação"
-  2172: "Semáforo"
+  2172: "Sinal"
   2173: "Construção"
   2174: "Árvore"
   2175: "Parede"

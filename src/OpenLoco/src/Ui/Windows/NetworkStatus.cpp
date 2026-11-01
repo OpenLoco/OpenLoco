@@ -45,7 +45,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
 
     static const WindowEventList& getEvents();
 
-    Window* open(std::string_view text, CloseCallback cbClose)
+    Window& open(std::string_view text, CloseCallback cbClose)
     {
         _text = text;
         _cbClose = cbClose;
@@ -61,7 +61,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
         window->setColour(WindowColour::primary, Colour::black);
         window->setColour(WindowColour::secondary, Colour::black);
 
-        return window;
+        return *window;
     }
 
     void setText(std::string_view text)
