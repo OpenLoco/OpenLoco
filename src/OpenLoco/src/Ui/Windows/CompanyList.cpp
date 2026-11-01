@@ -1250,6 +1250,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             auto y = 47;
 
+            bool hasRecord = false;
             for (auto i = 0; i < 3; i++)
             {
                 auto recordSpeed = CompanyManager::getRecords().speed[i];
@@ -1257,6 +1258,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 {
                     continue;
                 }
+                hasRecord = true;
+
                 {
                     FormatArguments args{};
                     args.push(recordSpeed);
@@ -1298,6 +1301,11 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 }
 
                 y += 5;
+            }
+            if (!hasRecord)
+            {
+                auto point = Point(4, y);
+                tr.drawStringLeft(point, Colour::black, StringIds::no_speedrecords_yet);
             }
         }
 
