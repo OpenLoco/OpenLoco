@@ -36,10 +36,16 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    static uint32_t cloneVehicle(EntityId head, Flags flags)
+    static uint32_t cloneVehicle(EntityId head, bool shareOrders, Flags flags)
     {
         Vehicles::Vehicle existingTrain(head);
         Vehicles::VehicleHead* newHead = nullptr;
+
+        if (shareOrders && existingTrain.head->sizeOfOrderTable == 1)
+        {
+            setErrorText(StringIds::no_route_defined);
+            return kFailure;
+        }
 
         // Get total cost for a new vehicle
         if (!hasFlags(flags, Flags::apply))
@@ -117,23 +123,30 @@ namespace OpenLoco::GameCommands
         auto newTrain = Vehicles::Vehicle(*newHead);
         copyVehicleColours(existingTrain, newTrain);
 
-        // Copy orders
-        std::vector<std::shared_ptr<Vehicles::Order>> clonedOrders;
-        for (auto& existingOrders : Vehicles::OrderRingView(existingTrain.head->orderTableOffset))
+        if (shareOrders)
         {
-            clonedOrders.push_back(existingOrders.clone());
+            Vehicles::OrderManager::linkOrders(newHead, existingTrain.head);
         }
-
-        for (auto& order : clonedOrders)
+        else
         {
-            // Do not cache this as it will be a different value every iteration
-            auto chosenOffset = newHead->sizeOfOrderTable - 1;
+            // Copy orders
+            std::vector<std::shared_ptr<Vehicles::Order>> clonedOrders;
+            for (auto& existingOrders : Vehicles::OrderRingView(existingTrain.head->orderTableOffset))
+            {
+                clonedOrders.push_back(existingOrders.clone());
+            }
 
-            VehicleOrderInsertArgs args{};
-            args.head = newHead->id;
-            args.orderOffset = chosenOffset;
-            args.rawOrder = order->getRaw();
-            GameCommands::doCommand(args, GameCommands::Flags::apply);
+            for (auto& order : clonedOrders)
+            {
+                // Do not cache this as it will be a different value every iteration
+                auto chosenOffset = newHead->sizeOfOrderTable - 1;
+
+                VehicleOrderInsertArgs args{};
+                args.head = newHead->id;
+                args.orderOffset = chosenOffset;
+                args.rawOrder = order->getRaw();
+                GameCommands::doCommand(args, GameCommands::Flags::apply);
+            }
         }
 
         // Copy express/local
@@ -163,6 +176,7 @@ namespace OpenLoco::GameCommands
 
     void cloneVehicle(registers& regs, const Flags flags)
     {
-        regs.ebx = cloneVehicle(EntityId(regs.ax), flags);
+        const VehicleCloneArgs args(regs);
+        regs.ebx = cloneVehicle(args.vehicleHeadId, args.shareOrders, flags);
     }
 }

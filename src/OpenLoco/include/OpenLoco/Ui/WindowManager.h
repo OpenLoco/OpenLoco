@@ -116,6 +116,7 @@ namespace OpenLoco::Ui::WindowManager
 namespace OpenLoco::Vehicles
 {
     struct VehicleBase;
+    struct VehicleHead;
     struct VehicleBogie;
     struct Car;
 }
@@ -485,6 +486,10 @@ namespace OpenLoco::Ui::Windows
             Window* open(const Vehicles::VehicleBase* vehicle);
             void scrollDrag(const Ui::Point& pos);
             void scrollDragEnd(const Ui::Point& pos);
+        }
+        namespace Route
+        {
+            bool selectOrdersFromVehicleList(Vehicles::VehicleHead* target);
         }
         bool rotate();
         bool cancelVehicleTools();

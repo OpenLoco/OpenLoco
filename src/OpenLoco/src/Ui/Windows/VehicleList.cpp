@@ -15,6 +15,7 @@
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "Ui/Dropdown.h"
+#include "Ui/ScrollView.h"
 #include "Ui/ToolManager.h"
 #include "Ui/ToolTip.h"
 #include "Ui/Widget.h"
@@ -40,8 +41,11 @@
 #include "Vehicles/VehicleManager.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Utility/String.hpp>
+#include <map>
+#include <set>
 #include <stdexcept>
 #include <utility>
+#include <vector>
 
 namespace OpenLoco::Ui::Windows::VehicleList
 {
@@ -117,7 +121,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         Widgets::TableHeader(Widx::kSortReliability, { 479, 43 }, { 67, 12 }, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_reliability),
         Widgets::ScrollView(Widx::kScrollview, { 3, 56 }, { 544, 138 }, WindowColour::secondary, Scrollbars::vertical),
         Widgets::Label(Widx::kStatusBar, { 3, kWindowSize.height - 13 }, { kWindowSize.width - kResizeHandleSize, 10 }, WindowColour::secondary, ContentAlign::left, StringIds::black_stringid),
-        Widgets::dropdownWidgets(Widx::kFilterType, Widx::kFilterTypeBtn, { 280 - 16, 200 }, { 120, 12 }, WindowColour::secondary, StringIds::wcolour2_stringid),
+        Widgets::dropdownWidgets(Widx::kFilterType, Widx::kFilterTypeBtn, { 280 - 16, 200 }, { 160, 12 }, WindowColour::secondary, StringIds::wcolour2_stringid),
         Widgets::dropdownWidgets(Widx::kCargoType, Widx::kCargoTypeBtn, { 402 - 16, 200 }, { 150, 12 }, WindowColour::secondary, StringIds::wcolour2_stringid)
 
     );
@@ -139,6 +143,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         allVehicles,
         transportsCargo,
         hasCargoOrder,
+        groupBySharedOrders
     };
 
     static constexpr uint8_t row_heights[] = {
@@ -168,6 +173,186 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     using Vehicles::VehicleHead;
+
+    struct OrderGroup
+    {
+        EntityId representative;
+        std::vector<EntityId> members;
+        int64_t monthlyProfit = 0;
+        bool expanded = false;
+    };
+
+    struct DisplayRow
+    {
+        EntityId vehicle = EntityId::null;
+        uint16_t group = 0;
+
+        bool isGroupHeader() const { return vehicle == EntityId::null; }
+        bool operator==(const DisplayRow&) const = default;
+    };
+
+    struct GroupedListState
+    {
+        std::vector<OrderGroup> groups;
+        std::vector<DisplayRow> rows;
+    };
+
+    static std::array<GroupedListState, Limits::kMaxCompanies> _groupedLists;
+    static constexpr int32_t kGroupHeaderHeight = 14;
+    static constexpr int16_t kGroupIndent = 12;
+
+    static bool isGrouped(const Window& self)
+    {
+        return self.var_850 == FilterMode::groupBySharedOrders;
+    }
+
+    static int32_t getRowHeight(const Window& self, const DisplayRow& row)
+    {
+        return row.isGroupHeader() ? kGroupHeaderHeight : self.rowHeight;
+    }
+
+    static const DisplayRow* getDisplayRowAt(const Window& self, int32_t y)
+    {
+        if (y < 0)
+        {
+            return nullptr;
+        }
+
+        for (const auto& row : _groupedLists[self.number].rows)
+        {
+            y -= getRowHeight(self, row);
+            if (y < 0)
+            {
+                return &row;
+            }
+        }
+
+        return nullptr;
+    }
+
+    static void rebuildDisplayRows(Window& self)
+    {
+        auto& state = _groupedLists[self.number];
+        std::vector<DisplayRow> rows;
+        for (size_t i = 0; i < state.groups.size(); i++)
+        {
+            const auto& group = state.groups[i];
+            const auto number = static_cast<uint16_t>(i + 1);
+            rows.push_back({ EntityId::null, number });
+
+            if (group.expanded)
+            {
+                for (auto id : group.members)
+                {
+                    rows.push_back({ id, number });
+                }
+            }
+        }
+
+        // Group members are emitted above, the remainder are independent vehicles.
+        std::set<EntityId> groupedVehicles;
+        for (const auto& group : state.groups)
+        {
+            groupedVehicles.insert(group.members.begin(), group.members.end());
+        }
+
+        for (uint16_t i = 0; i < self.rowCount; i++)
+        {
+            auto id = EntityId(self.rowInfo[i]);
+            if (!groupedVehicles.contains(id))
+            {
+                rows.push_back({ id, 0 });
+            }
+        }
+
+        if (state.rows != rows)
+        {
+            state.rows = std::move(rows);
+            self.rowHover = -1;
+            self.var_85C = -1;
+            self.widgets[widx::scrollview].tooltip = StringIds::null;
+            Ui::Windows::ToolTip::closeAndReset();
+        }
+
+        int32_t height = 0;
+        for (const auto& row : state.rows)
+        {
+            height += getRowHeight(self, row);
+        }
+
+        auto& scroll = self.scrollAreas[0];
+        auto visibleHeight = self.widgets[widx::scrollview].height() - 2;
+        scroll.contentOffsetY = std::clamp(scroll.contentOffsetY, 0, std::max(height + 1 - visibleHeight, 0));
+        self.updateScrollWidgets();
+        ScrollView::updateThumbs(self, widx::scrollview);
+    }
+
+    static void rebuildGroups(Window& self)
+    {
+        auto& state = _groupedLists[self.number];
+        std::set<EntityId> expandedVehicles;
+
+        for (const auto& group : state.groups)
+        {
+            if (group.expanded)
+            {
+                expandedVehicles.insert(group.members.begin(), group.members.end());
+            }
+        }
+
+        state.groups.clear();
+
+        if (isGrouped(self))
+        {
+            std::map<uint32_t, std::vector<EntityId>> membersByOrderTable;
+            for (uint16_t i = 0; i < self.rowCount; i++)
+            {
+                auto id = EntityId(self.rowInfo[i]);
+                auto* head = EntityManager::get<VehicleHead>(id);
+                if (head != nullptr)
+                {
+                    membersByOrderTable[head->orderTableOffset].push_back(id);
+                }
+            }
+
+            for (const auto& [offset, members] : membersByOrderTable)
+            {
+                if (members.size() < 2)
+                {
+                    continue;
+                }
+
+                OrderGroup group{ *std::min_element(members.begin(), members.end()), members };
+                for (auto id : members)
+                {
+                    group.monthlyProfit += Vehicles::Vehicle(*EntityManager::get<VehicleHead>(id)).veh2->totalRecentProfit() / 4;
+                    group.expanded |= expandedVehicles.contains(id);
+                }
+
+                state.groups.push_back(std::move(group));
+            }
+
+            // Column sorting changes member order, not group order or numbering
+            std::sort(state.groups.begin(), state.groups.end(), [](const auto& lhs, const auto& rhs) {
+                return lhs.representative < rhs.representative;
+            });
+        }
+
+        rebuildDisplayRows(self);
+    }
+
+    static void resetGroupedList(Window& self)
+    {
+        _groupedLists[self.number] = {};
+        self.rowHover = -1;
+        self.var_85C = -1;
+        self.scrollAreas[0].contentOffsetY = 0;
+    }
+
+    static void onClose(Window& self)
+    {
+        resetGroupedList(self);
+    }
 
     static bool vehicleHasCargoOrder(const VehicleHead* head, int16_t filterCargoId)
     {
@@ -320,6 +505,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             return getOrder(SortMode(self.sortMode), *lhsVehicle, *rhsVehicle);
         });
 
+        rebuildGroups(self);
         self.invalidate();
     }
 
@@ -431,6 +617,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->setWidgets(_widgets);
         self->number = enumValue(companyId);
         self->owner = companyId;
+        resetGroupedList(*self);
         self->frameNo = 0;
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
@@ -485,6 +672,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
         if (numRemoved > 0)
         {
             self.rowCount -= numRemoved;
+            rebuildGroups(self);
+            self.invalidate();
         }
     }
 
@@ -542,7 +731,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self.widgets[widx::sort_reliability].text = self.sortMode == SortMode::Reliability ? StringIds::table_header_reliability_desc : StringIds::table_header_reliability;
 
         // Disable cargo dropdown if not applicable
-        if (self.var_850 == FilterMode::allVehicles)
+        if (!isCargoFilterActive(self, false))
         {
             self.disabledWidgets |= (1 << widx::cargo_type) | (1 << widx::cargo_type_btn);
         }
@@ -552,10 +741,11 @@ namespace OpenLoco::Ui::Windows::VehicleList
         }
 
         // Set appropriate tooltip
-        static constexpr std::array<StringId, 3> kFilterTooltipByType = {
+        static constexpr std::array<StringId, 4> kFilterTooltipByType = {
             StringIds::null,
             StringIds::tooltip_open_station_window_to_filter,
             StringIds::tooltip_select_cargo_type,
+            StringIds::null,
         };
         self.widgets[widx::cargo_type_btn].tooltip = kFilterTooltipByType[self.var_850];
 
@@ -579,10 +769,11 @@ namespace OpenLoco::Ui::Windows::VehicleList
             args.push(self.rowCount);
         }
 
-        static constexpr std::array<StringId, 3> kTypeToFilterStringIds{
+        static constexpr std::array<StringId, 4> kTypeToFilterStringIds{
             StringIds::all_vehicles,
             StringIds::transports_cargo,
             StringIds::has_cargo_order,
+            StringIds::group_by_shared_orders,
         };
 
         {
@@ -631,6 +822,28 @@ namespace OpenLoco::Ui::Windows::VehicleList
         drawingCtx.drawImage(ZoomLevel::full, x, y, image);
     }
 
+    static void drawGroupHeader(Window& self, Gfx::DrawingContext& drawingCtx, const DisplayRow& row, int32_t y)
+    {
+        const auto& group = _groupedLists[self.number].groups[row.group - 1];
+        drawingCtx.drawRectInset(0, y, self.widgets[widx::scrollview].width() - 2, kGroupHeaderHeight, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::none);
+        auto tr = Gfx::TextRenderer(drawingCtx);
+        const auto& nameHeader = self.widgets[widx::sort_name];
+        auto args = FormatArguments::common(row.group, static_cast<uint16_t>(group.members.size()));
+        auto format = group.expanded ? StringIds::vehicle_order_group_expanded : StringIds::vehicle_order_group_collapsed;
+        tr.drawStringLeftClipped(Point(nameHeader.left + 1, y + 2), nameHeader.width() - 2, Colour::black, format, args);
+
+        const auto& profitHeader = self.widgets[widx::sort_profit];
+        auto profit = group.monthlyProfit;
+        format = StringIds::vehicle_order_group_profit_pos;
+        if (profit < 0)
+        {
+            format = StringIds::vehicle_order_group_profit_neg;
+            profit = -profit;
+        }
+        args = FormatArguments::common(currency48_t(profit));
+        tr.drawStringLeftClipped(Point(profitHeader.left + 1, y + 2), profitHeader.width() - 2, Colour::black, format, args);
+    }
+
     // 0x004C21CD
     static void drawScroll(Window& self, Gfx::DrawingContext& drawingCtx, [[maybe_unused]] const uint32_t scrollIndex)
     {
@@ -642,25 +855,33 @@ namespace OpenLoco::Ui::Windows::VehicleList
         drawingCtx.clear(shade);
 
         auto yPos = 0;
-        for (auto i = 0; i < self.rowCount; i++)
+        for (const auto& row : _groupedLists[self.number].rows)
         {
-            const auto vehicleId = EntityId(self.rowInfo[i]);
+            const auto vehicleId = row.vehicle;
+            const auto height = getRowHeight(self, row);
 
             // Item not in rendering context, or no vehicle available for this slot?
-            if (yPos + self.rowHeight < rt.y || vehicleId == EntityId::null)
+            if (yPos + height < rt.y)
             {
-                yPos += self.rowHeight;
+                yPos += height;
                 continue;
             }
-            else if (yPos >= rt.y + rt.height + self.rowHeight)
+            else if (yPos >= rt.y + rt.height)
             {
                 break;
+            }
+
+            if (row.isGroupHeader())
+            {
+                drawGroupHeader(self, drawingCtx, row, yPos);
+                yPos += height;
+                continue;
             }
 
             auto head = EntityManager::get<VehicleHead>(vehicleId);
             if (head == nullptr)
             {
-                removeTrainFromList(self, vehicleId);
+                yPos += height;
                 continue;
             }
 
@@ -671,8 +892,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
             }
 
             auto vehicle = Vehicles::Vehicle(*head);
+            const auto indent = row.group != 0 ? kGroupIndent : 0;
             // Draw vehicle at the bottom of the row.
-            drawTrainInline(drawingCtx, vehicle, Ui::Point(0, yPos + (self.rowHeight - 28) / 2 + 6));
+            drawTrainInline(drawingCtx, vehicle, Ui::Point(indent, yPos + (self.rowHeight - 28) / 2 + 6));
 
             // Draw vehicle status
             auto& statusHeader = self.widgets[widx::sort_name];
@@ -695,8 +917,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
                 // Draw status
                 yPos += 2;
-                auto point = Point(statusHeader.left + 1, yPos);
-                tr.drawStringLeftClipped(point, statusHeader.width() - 2, AdvancedColour(Colour::black).outline(), format, args);
+                auto point = Point(statusHeader.left + 1 + indent, yPos);
+                tr.drawStringLeftClipped(point, statusHeader.width() - 2 - indent, AdvancedColour(Colour::black).outline(), format, args);
             }
 
             // Vehicle profit
@@ -752,6 +974,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
         }
 
         auto tabIndex = static_cast<uint8_t>(type);
+        if (self.currentTab != tabIndex)
+        {
+            resetGroupedList(self);
+        }
         self.currentTab = tabIndex;
         self.rowHeight = row_heights[tabIndex];
         self.frameNo = 0;
@@ -832,11 +1058,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
         else if (id == Widx::kFilterTypeBtn)
         {
             Widget dropdown = self.widgets[widx::filter_type];
-            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 3, 0x80);
+            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 4, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::all_vehicles);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::transports_cargo);
             Dropdown::add(2, StringIds::dropdown_stringid, StringIds::has_cargo_order);
+            Dropdown::add(3, StringIds::dropdown_stringid, StringIds::group_by_shared_orders);
             Dropdown::setItemSelected(self.var_850);
         }
         else if (id == Widx::kCargoTypeBtn)
@@ -898,8 +1125,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
             return;
         }
 
+        resetGroupedList(self);
         self.number = enumValue(companyId);
         self.owner = companyId;
+        resetGroupedList(self);
 
         disableUnavailableVehicleTypes(self);
 
@@ -925,6 +1154,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         {
             if (self.var_850 != itemIndex)
             {
+                resetGroupedList(self);
                 self.var_850 = itemIndex;
                 self.var_852 = 0xFFFF;
                 populateVehicleList(self);
@@ -953,19 +1183,30 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C260B
     static void onUpdate(Window& self)
     {
+        if (isGrouped(self))
+        {
+            populateVehicleList(self);
+        }
+        else
+        {
+            sortVehicleList(self);
+        }
+
         self.frameNo++;
         self.callPrepareDraw();
 
         auto widgetIndex = getTabFromType(static_cast<VehicleType>(self.currentTab));
         WindowManager::invalidateWidget(WindowType::vehicleList, self.number, widgetIndex);
-
-        sortVehicleList(self);
     }
 
     // 0x004C265B
     static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] int32_t& scrollWidth, int32_t& scrollHeight)
     {
-        scrollHeight = self.rowCount * self.rowHeight;
+        scrollHeight = 0;
+        for (const auto& row : _groupedLists[self.number].rows)
+        {
+            scrollHeight += getRowHeight(self, row);
+        }
     }
 
     // 0x004C266D
@@ -976,8 +1217,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             return fallback;
         }
 
-        uint16_t currentIndex = yPos / self.rowHeight;
-        if (currentIndex < self.rowCount && EntityId(self.rowInfo[currentIndex]) != EntityId::null)
+        if (getDisplayRowAt(self, yPos) != nullptr)
         {
             return CursorId::handPointer;
         }
@@ -992,14 +1232,17 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         self.flags &= ~WindowFlags::notScrollView;
 
-        uint16_t currentRow = y / self.rowHeight;
-        if (currentRow < self.rowCount)
+        const auto* row = getDisplayRowAt(self, y);
+        self.rowHover = row != nullptr ? enumValue(row->vehicle) : -1;
+        if (row != nullptr && row->isGroupHeader())
         {
-            self.rowHover = self.rowInfo[currentRow];
-        }
-        else
-        {
-            self.rowHover = -1;
+            if (self.widgets[widx::scrollview].tooltip != StringIds::tooltip_toggle_order_group)
+            {
+                Ui::Windows::ToolTip::closeAndReset();
+            }
+            self.widgets[widx::scrollview].tooltip = StringIds::tooltip_toggle_order_group;
+            self.var_85C = -1;
+            return;
         }
 
         StringId tooltipId = StringIds::buffer_337;
@@ -1066,13 +1309,22 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C27C0
     static void onScrollMouseDown(Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
-        uint16_t currentRow = y / self.rowHeight;
-        if (currentRow >= self.rowCount)
+        const auto* row = getDisplayRowAt(self, y);
+        if (row == nullptr)
         {
             return;
         }
 
-        EntityId currentVehicleId = EntityId(self.rowInfo[currentRow]);
+        if (row->isGroupHeader())
+        {
+            auto& group = _groupedLists[self.number].groups[row->group - 1];
+            group.expanded = !group.expanded;
+            rebuildDisplayRows(self);
+            self.invalidate();
+            return;
+        }
+
+        EntityId currentVehicleId = row->vehicle;
         if (currentVehicleId == EntityId::null)
         {
             return;
@@ -1080,6 +1332,11 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         auto* head = EntityManager::get<VehicleHead>(currentVehicleId);
         if (head == nullptr)
+        {
+            return;
+        }
+
+        if (Ui::Windows::Vehicle::Route::selectOrdersFromVehicleList(head))
         {
             return;
         }
@@ -1179,6 +1436,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     static constexpr WindowEventList kEvents = {
+        .onClose = onClose,
         .onMouseUp = onMouseUp,
         .onResize = onResize,
         .onMouseDown = onMouseDown,

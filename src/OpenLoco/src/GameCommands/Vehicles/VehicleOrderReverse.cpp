@@ -1,7 +1,6 @@
 #include "GameCommands/Vehicles/VehicleOrderReverse.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
-#include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleHead.h"
@@ -22,7 +21,7 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        Ui::WindowManager::invalidateOrderPageByVehicleNumber(enumValue(head->id));
+        Vehicles::OrderManager::invalidateOrderPagesByOrderTableOffset(head->orderTableOffset);
 
         head->currentOrder = Vehicles::OrderManager::reverseVehicleOrderTable(head->orderTableOffset, head->currentOrder);
 

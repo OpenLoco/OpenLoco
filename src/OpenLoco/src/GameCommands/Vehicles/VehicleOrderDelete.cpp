@@ -1,7 +1,6 @@
 #include "GameCommands/Vehicles/VehicleOrderDelete.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
-#include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
@@ -28,7 +27,7 @@ namespace OpenLoco::GameCommands
         {
             return kFailure;
         }
-        Ui::WindowManager::invalidateOrderPageByVehicleNumber(enumValue(head->id));
+        Vehicles::OrderManager::invalidateOrderPagesByOrderTableOffset(head->orderTableOffset);
 
         Vehicles::OrderManager::deleteOrder(head, args.orderOffset);
 
