@@ -257,7 +257,7 @@ namespace OpenLoco::World
             return true;
         }
 
-        if (treeObj->var_05 > 34)
+        if (treeObj->maxHeight > 34)
         {
             bool hasObstruction = hasObstructionsTooNear(loc, elTree.quadrant(), elTree.baseZ(), elTree.clearZ());
             if (hasObstruction)
@@ -310,7 +310,7 @@ namespace OpenLoco::World
             auto* newTreeObj = ObjectManager::get<TreeObject>(newTreeObjId);
             const auto newQuadrant = (rand >> 5) & 0x3;
 
-            if (newTreeObj->var_05 > 34)
+            if (newTreeObj->maxHeight > 34)
             {
                 const auto newTreeQuadPos = newTreePos + kTreeQuadrantOffset[newQuadrant] - World::Pos2{ 1, 1 };
                 const auto heights = TileManager::getHeight(newTreeQuadPos);
