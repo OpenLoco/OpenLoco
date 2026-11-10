@@ -47,10 +47,10 @@
 - Change: [#3903] Updated the macOS app icon to match the new Liquid Glass style.
 - Fix: [#2082] Scrollbars can be overdrawn when certain windows are resized but their scrollview is not.
 - Fix: [#2983] Can no longer scroll to adjust terraform tool size widgets.
+- Fix: [#3155] Fix bug where last land variation sprite went unused (original bug).
 - Fix: [#3534] The minimum landscape height can be set to 0 in the landscape generator, while 1 is expected.
 - Fix: [#3566] The 'Only generate landscape when game starts' option remains in effect when switching to PNG heightmaps.
 - Fix: [#3597] News messages don't update viewport/image position correctly between messages.
-- Fix: [#3155] Fix bug where last land variation sprite went unused (original bug).
 - Fix: [#3795] Window layout changes prevent tutorials from playing correctly.
 - Fix: [#3855] UI invalidation issue when using switch company cheat.
 - Fix: [#3856] News ticker uses double the line height.
