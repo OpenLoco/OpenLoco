@@ -729,6 +729,7 @@
 
 21.09.1 (2021-09-14)
 ------------------------------------------------------------------------
+- Change: [#4096] Save prompts can now be confirmed with the numeric keypad enter key.
 - Fix: [#1161] Stuttering vehicle movement due to incorrect vehicle positions.
 - Fix: [#1162] Signal side placement is inverted.
 - Fix: [#1162] Single side signal removal incorrectly removing both signals.
