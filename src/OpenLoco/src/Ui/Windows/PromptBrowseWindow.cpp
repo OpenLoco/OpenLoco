@@ -724,7 +724,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     // 0x0044685C
     static bool keyUp(Window& w, uint32_t charCode, uint32_t keyCode)
     {
-        if (keyCode == SDLK_RETURN)
+        if (keyCode == SDLK_RETURN || keyCode == SDLK_KP_ENTER)
         {
             w.callOnMouseUp(widx::ok_button, w.widgets[widx::ok_button].id);
             return true;
