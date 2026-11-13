@@ -323,10 +323,10 @@ namespace OpenLoco
         for (auto i = 0U; i < numTicks; i++)
         {
             SceneManager::tick();
+            applyPendingScene();
         }
 
         SceneManager::tickInterface();
-
         applyPendingScene();
     }
 
