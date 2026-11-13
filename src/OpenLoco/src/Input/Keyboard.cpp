@@ -8,6 +8,7 @@
 #include "Intro.h"
 #include "Localisation/StringIds.h"
 #include "Logging.h"
+#include "OpenLoco.h"
 #include "SceneManager.h"
 #include "Tutorial.h"
 #include "Ui.h"
@@ -566,8 +567,11 @@ namespace OpenLoco::Input
     // 0x004BE92A
     void handleKeyboard()
     {
-        handleScreenshotCountdown();
-        edgeScroll();
+        for (auto i = 0U; i < getInputTickDelta(); i++)
+        {
+            handleScreenshotCountdown();
+            edgeScroll();
+        }
 
         _keyModifier = _keyModifier & ~(KeyModifier::shift | KeyModifier::control | KeyModifier::alt | KeyModifier::unknown);
 
@@ -606,6 +610,9 @@ namespace OpenLoco::Input
             _keyModifier |= KeyModifier::rightAlt;
         }
 
-        keyScroll();
+        for (auto i = 0U; i < getInputTickDelta(); i++)
+        {
+            keyScroll();
+        }
     }
 }

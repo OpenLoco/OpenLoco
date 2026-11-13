@@ -1,5 +1,6 @@
 #include "Ui/ScrollView.h"
 #include "Input.h"
+#include "OpenLoco.h"
 #include "Ui.h"
 #include "Ui/ToolTip.h"
 #include "Ui/Widget.h"
@@ -562,20 +563,32 @@ namespace OpenLoco::Ui::ScrollView
                     break;
 
                 case ScrollPart::hscrollbarButtonLeft:
-                    hButtonLeft(window, res.index, widgetIndex);
+                    for (auto i = 0U; i < getInputTickDelta(); i++)
+                    {
+                        hButtonLeft(window, res.index, widgetIndex);
+                    }
                     break;
                 case ScrollPart::hscrollbarButtonRight:
-                    hButtonRight(window, res.index, widgetIndex);
+                    for (auto i = 0U; i < getInputTickDelta(); i++)
+                    {
+                        hButtonRight(window, res.index, widgetIndex);
+                    }
                     break;
                 case ScrollPart::hscrollbarTrackLeft:
                 case ScrollPart::hscrollbarTrackRight:
                     break;
 
                 case ScrollPart::vscrollbarButtonTop:
-                    vButtonTop(window, res.index, widgetIndex);
+                    for (auto i = 0U; i < getInputTickDelta(); i++)
+                    {
+                        vButtonTop(window, res.index, widgetIndex);
+                    }
                     break;
                 case ScrollPart::vscrollbarButtonBottom:
-                    vButtonBottom(window, res.index, widgetIndex);
+                    for (auto i = 0U; i < getInputTickDelta(); i++)
+                    {
+                        vButtonBottom(window, res.index, widgetIndex);
+                    }
                     break;
                 case ScrollPart::vscrollbarTrackTop:
                 case ScrollPart::vscrollbarTrackBottom:

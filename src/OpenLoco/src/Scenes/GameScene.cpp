@@ -6,8 +6,10 @@
 #include "Effects/EffectsManager.h"
 #include "Environment.h"
 #include "Game.h"
+#include "GameCommands/GameCommands.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
+#include "Input.h"
 #include "Localisation/StringIds.h"
 #include "Logging.h"
 #include "Map/AnimationManager.h"
@@ -23,6 +25,7 @@
 #include "Scenario/ScenarioManager.h"
 #include "Scenario/ScenarioOptions.h"
 #include "SceneManager.h"
+#include "Ui.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/VehicleManager.h"
 #include "World/CompanyManager.h"
@@ -264,5 +267,14 @@ namespace OpenLoco::Scenes::GameScene
         Audio::playBackgroundMusic();
 
         sub_431695(getNumFrameUpdates());
+    }
+
+    void update()
+    {
+        GameCommands::setUpdatingCompanyId(CompanyManager::getControllingId());
+
+        Input::processKeyboardInput();
+        Ui::handleInput();
+        WindowManager::dispatchFrameUpdateAll();
     }
 }

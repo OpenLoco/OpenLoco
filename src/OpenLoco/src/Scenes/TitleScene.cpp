@@ -28,6 +28,7 @@ namespace OpenLoco::Scenes::TitleScene
 
     void update()
     {
+        GameScene::update();
     }
 
 }

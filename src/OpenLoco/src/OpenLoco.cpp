@@ -77,6 +77,11 @@ namespace OpenLoco
     static uint32_t _last_tick_time;       // 0x0050C19E
     static uint16_t _numFrameUpdates;      // 0x00F253A0
 
+    static uint32_t _pendingInputTime;
+    static uint32_t _pendingInputTicks;
+    static uint16_t _inputTimeDelta;
+    static uint32_t _inputTickDelta;
+
     // 0x004BE621
     [[noreturn]] void exitWithError(StringId titleStringId, StringId messageStringId)
     {
@@ -192,9 +197,7 @@ namespace OpenLoco
             WindowManager::dispatchUpdateAll();
         }
 
-        Input::processKeyboardInput();
         WindowManager::tick();
-        Ui::handleInput();
         CompanyManager::updateOwnerStatus();
     }
 
@@ -293,6 +296,9 @@ namespace OpenLoco
             _time_since_last_tick = 31;
         }
 
+        _pendingInputTime += _time_since_last_tick;
+        _pendingInputTicks++;
+
         if (Tutorial::state() == Tutorial::State::standby && SceneManager::isPlayMode())
         {
             Tutorial::start();
@@ -304,8 +310,6 @@ namespace OpenLoco
         // Original called 0x00440DEC here which handled legacy cmd line options
         // like installing scenarios and handling multiplayer.
 
-        Input::handleKeyboard();
-        Input::processMouseMovement();
         Audio::tick();
 
         // Network messages are handled outside of the scenes, they can request a scene transition.
@@ -339,6 +343,8 @@ namespace OpenLoco
         {
             _last_tick_time = Platform::getTime();
             _time_since_last_tick = 31;
+            _inputTimeDelta = static_cast<uint16_t>(_time_since_last_tick);
+            _inputTickDelta = 1;
             if (!Input::processMessages())
             {
                 return false;
@@ -351,6 +357,17 @@ namespace OpenLoco
             tickWait();
         }
         return true;
+    }
+
+    static void updateInput()
+    {
+        _inputTimeDelta = static_cast<uint16_t>(std::min(_pendingInputTime, Engine::MaxTimeDeltaMs));
+        _inputTickDelta = _pendingInputTicks;
+        _pendingInputTime = 0;
+        _pendingInputTicks = 0;
+
+        Input::handleKeyboard();
+        Input::processMouseMovement();
     }
 
     constexpr auto MaxUpdateTime = static_cast<double>(Engine::MaxTimeDeltaMs) / 1000.0;
@@ -375,6 +392,7 @@ namespace OpenLoco
 
         tweener.tween(alpha);
 
+        updateInput();
         SceneManager::update();
 
         Ui::render();
@@ -394,6 +412,7 @@ namespace OpenLoco
             tick();
             _accumulator -= UpdateTime;
 
+            updateInput();
             SceneManager::update();
 
             Ui::render();
@@ -423,6 +442,16 @@ namespace OpenLoco
     uint16_t getTimeSinceLastTick()
     {
         return _time_since_last_tick;
+    }
+
+    uint16_t getInputTimeDelta()
+    {
+        return _inputTimeDelta;
+    }
+
+    uint32_t getInputTickDelta()
+    {
+        return _inputTickDelta;
     }
 
     uint16_t getNumFrameUpdates()
