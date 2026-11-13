@@ -15,6 +15,7 @@
 - Fix: [#4063] Road path finding uses incorrect values for road length (original bug).
 - Fix: [#4063] Incorrect vehicle speed calculation (original bug).
 - Fix: [#4063] Town expansion does not raise/lower certain land corners (original bug).
+- Fix: [#4096] Numeric keypad Enter key not confirming save prompts.
 
 26.09 (2026-09-18)
 ------------------------------------------------------------------------
@@ -729,7 +730,6 @@
 
 21.09.1 (2021-09-14)
 ------------------------------------------------------------------------
-- Change: [#4096] Save prompts can now be confirmed with the numeric keypad enter key.
 - Fix: [#1161] Stuttering vehicle movement due to incorrect vehicle positions.
 - Fix: [#1162] Signal side placement is inverted.
 - Fix: [#1162] Single side signal removal incorrectly removing both signals.
