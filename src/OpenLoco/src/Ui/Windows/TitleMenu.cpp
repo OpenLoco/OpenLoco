@@ -374,7 +374,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     {
         char* buffer = StringManager::getBufferString(StringIds::buffer_2039);
         buffer[0] = '\0';
-        TextInput::openTextInput(&window, StringIds::enter_host_address, StringIds::enter_host_address_description, StringIds::buffer_2039, widx::multiplayer_toggle_btn, {});
+        TextInput::openTextInput(*window, StringIds::enter_host_address, StringIds::enter_host_address_description, StringIds::buffer_2039, widx::multiplayer_toggle_btn, {});
     }
 
     static void multiplayerConnect(std::string_view host)
