@@ -15,6 +15,9 @@ namespace OpenLoco::Input
     static State _state;
     static Ui::Point _cursorDragStart;
     static uint32_t _cursorDragState;
+    static bool _cursorDragRelative;
+    static float _cursorDragRemainderX;
+    static float _cursorDragRemainderY;
     static bool _exitRequested = false;
 
     void init()
@@ -56,7 +59,18 @@ namespace OpenLoco::Input
             _cursorDragState = 1;
             auto cursor = Ui::getCursorPos();
             _cursorDragStart = cursor;
-            Ui::hideCursor();
+            _cursorDragRemainderX = 0.0f;
+            _cursorDragRemainderY = 0.0f;
+
+            _cursorDragRelative = Ui::setRelativeMouseMode(true);
+            if (_cursorDragRelative)
+            {
+                SDL_GetRelativeMouseState(nullptr, nullptr);
+            }
+            else
+            {
+                Ui::hideCursor();
+            }
         }
     }
 
@@ -66,6 +80,11 @@ namespace OpenLoco::Input
         if (_cursorDragState != 0)
         {
             _cursorDragState = 0;
+            if (_cursorDragRelative)
+            {
+                Ui::setRelativeMouseMode(false);
+                _cursorDragRelative = false;
+            }
             Ui::setCursorPos(_cursorDragStart.x, _cursorDragStart.y);
             Ui::showCursor();
         }
@@ -73,17 +92,32 @@ namespace OpenLoco::Input
 
     Ui::Point getNextDragOffset()
     {
-        auto current = Ui::getCursorPos();
+        float deltaX = 0.0f;
+        float deltaY = 0.0f;
 
-        auto delta = current - _cursorDragStart;
+        if (_cursorDragRelative)
+        {
+            SDL_GetRelativeMouseState(&deltaX, &deltaY);
+        }
+        else
+        {
+            const auto current = Ui::getCursorPos();
+            deltaX = static_cast<float>(current.x - _cursorDragStart.x);
+            deltaY = static_cast<float>(current.y - _cursorDragStart.y);
 
-        Ui::setCursorPos(_cursorDragStart.x, _cursorDragStart.y);
+            Ui::setCursorPos(_cursorDragStart.x, _cursorDragStart.y);
+        }
 
-        auto scale = Config::get().scaleFactor;
-        delta.x /= scale;
-        delta.y /= scale;
+        const auto scale = Config::get().scaleFactor;
+        _cursorDragRemainderX += deltaX / scale;
+        _cursorDragRemainderY += deltaY / scale;
 
-        return { static_cast<int16_t>(delta.x), static_cast<int16_t>(delta.y) };
+        const auto offsetX = static_cast<int16_t>(_cursorDragRemainderX);
+        const auto offsetY = static_cast<int16_t>(_cursorDragRemainderY);
+        _cursorDragRemainderX -= offsetX;
+        _cursorDragRemainderY -= offsetY;
+
+        return { offsetX, offsetY };
     }
 
     // 0x004072EC

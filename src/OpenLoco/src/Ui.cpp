@@ -456,6 +456,11 @@ namespace OpenLoco::Ui
         SDL_ShowCursor();
     }
 
+    bool setRelativeMouseMode(bool enabled)
+    {
+        return SDL_SetWindowRelativeMouseMode(_window, enabled);
+    }
+
     // 0x004524C1
     void tick()
     {
