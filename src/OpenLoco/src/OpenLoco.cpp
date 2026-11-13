@@ -399,10 +399,12 @@ namespace OpenLoco
             tweener.postTick();
         }
 
-        tweener.tween(alpha);
+        tweener.restore();
 
         updateInput();
         SceneManager::update();
+
+        tweener.tween(alpha);
 
         Ui::render();
     }

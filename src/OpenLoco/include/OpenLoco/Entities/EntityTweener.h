@@ -11,6 +11,7 @@ namespace OpenLoco
         std::vector<EntityBase*> _entities;
         std::vector<World::Pos3> _prePos;
         std::vector<World::Pos3> _postPos;
+        std::vector<bool> _tweened;
 
     public:
         static EntityTweener& get();
