@@ -81,6 +81,8 @@ namespace OpenLoco
     static uint32_t _pendingInputTicks;
     static uint16_t _inputTimeDelta;
     static uint32_t _inputTickDelta;
+    static float _inputFrameTime;
+    static Timepoint _lastInputUpdate = Clock::now();
 
     // 0x004BE621
     [[noreturn]] void exitWithError(StringId titleStringId, StringId messageStringId)
@@ -345,6 +347,8 @@ namespace OpenLoco
             _time_since_last_tick = 31;
             _inputTimeDelta = static_cast<uint16_t>(_time_since_last_tick);
             _inputTickDelta = 1;
+            _inputFrameTime = static_cast<float>(_time_since_last_tick);
+            _lastInputUpdate = Clock::now();
             if (!Input::processMessages())
             {
                 return false;
@@ -361,6 +365,11 @@ namespace OpenLoco
 
     static void updateInput()
     {
+        const auto now = Clock::now();
+        const auto frameTime = std::chrono::duration<float, std::milli>(now - _lastInputUpdate).count();
+        _lastInputUpdate = now;
+        _inputFrameTime = std::min(frameTime, static_cast<float>(Engine::MaxTimeDeltaMs));
+
         _inputTimeDelta = static_cast<uint16_t>(std::min(_pendingInputTime, Engine::MaxTimeDeltaMs));
         _inputTickDelta = _pendingInputTicks;
         _pendingInputTime = 0;
@@ -452,6 +461,11 @@ namespace OpenLoco
     uint32_t getInputTickDelta()
     {
         return _inputTickDelta;
+    }
+
+    float getInputFrameTime()
+    {
+        return _inputFrameTime;
     }
 
     uint16_t getNumFrameUpdates()

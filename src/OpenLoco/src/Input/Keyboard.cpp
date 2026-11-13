@@ -417,6 +417,11 @@ namespace OpenLoco::Input
         }
     }
 
+    static float _edgeScrollRemainderX;
+    static float _edgeScrollRemainderY;
+    static float _keyScrollRemainderX;
+    static float _keyScrollRemainderY;
+
     static void edgeScroll()
     {
         if (!Ui::hasInputFocus())
@@ -469,6 +474,8 @@ namespace OpenLoco::Input
 
         if (delta.x == 0 && delta.y == 0)
         {
+            _edgeScrollRemainderX = 0.0f;
+            _edgeScrollRemainderY = 0.0f;
             return;
         }
 
@@ -489,10 +496,16 @@ namespace OpenLoco::Input
             return;
         }
 
-        delta.x = viewport->zoom.applyTo(delta.x);
-        delta.y = viewport->zoom.applyTo(delta.y);
-        main->viewportConfigurations[0].savedViewX += delta.x;
-        main->viewportConfigurations[0].savedViewY += delta.y;
+        const auto frameScale = getInputFrameTime() / Engine::UpdateRateInMs;
+        const auto scrollX = viewport->zoom.applyTo(delta.x) * frameScale + _edgeScrollRemainderX;
+        const auto scrollY = viewport->zoom.applyTo(delta.y) * frameScale + _edgeScrollRemainderY;
+        const auto stepX = static_cast<int32_t>(scrollX);
+        const auto stepY = static_cast<int32_t>(scrollY);
+        _edgeScrollRemainderX = scrollX - stepX;
+        _edgeScrollRemainderY = scrollY - stepY;
+
+        main->viewportConfigurations[0].savedViewX += stepX;
+        main->viewportConfigurations[0].savedViewY += stepY;
         Input::setFlag(Flags::viewportScrolling);
     }
 
@@ -537,6 +550,8 @@ namespace OpenLoco::Input
 
         if (delta.x == 0 && delta.y == 0)
         {
+            _keyScrollRemainderX = 0.0f;
+            _keyScrollRemainderY = 0.0f;
             return;
         }
 
@@ -557,10 +572,16 @@ namespace OpenLoco::Input
             return;
         }
 
-        delta.x = viewport->zoom.applyTo(delta.x);
-        delta.y = viewport->zoom.applyTo(delta.y);
-        main->viewportConfigurations[0].savedViewX += delta.x;
-        main->viewportConfigurations[0].savedViewY += delta.y;
+        const auto frameScale = getInputFrameTime() / Engine::UpdateRateInMs;
+        const auto scrollX = viewport->zoom.applyTo(delta.x) * frameScale + _keyScrollRemainderX;
+        const auto scrollY = viewport->zoom.applyTo(delta.y) * frameScale + _keyScrollRemainderY;
+        const auto stepX = static_cast<int32_t>(scrollX);
+        const auto stepY = static_cast<int32_t>(scrollY);
+        _keyScrollRemainderX = scrollX - stepX;
+        _keyScrollRemainderY = scrollY - stepY;
+
+        main->viewportConfigurations[0].savedViewX += stepX;
+        main->viewportConfigurations[0].savedViewY += stepY;
         Input::setFlag(Flags::viewportScrolling);
     }
 
@@ -570,8 +591,8 @@ namespace OpenLoco::Input
         for (auto i = 0U; i < getInputTickDelta(); i++)
         {
             handleScreenshotCountdown();
-            edgeScroll();
         }
+        edgeScroll();
 
         _keyModifier = _keyModifier & ~(KeyModifier::shift | KeyModifier::control | KeyModifier::alt | KeyModifier::unknown);
 
@@ -610,9 +631,6 @@ namespace OpenLoco::Input
             _keyModifier |= KeyModifier::rightAlt;
         }
 
-        for (auto i = 0U; i < getInputTickDelta(); i++)
-        {
-            keyScroll();
-        }
+        keyScroll();
     }
 }
