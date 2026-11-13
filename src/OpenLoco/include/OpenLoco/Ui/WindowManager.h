@@ -83,6 +83,7 @@ namespace OpenLoco::Ui::WindowManager
     Window* createWindowCentred(WindowType type, Ui::Size size, WindowFlags flags, const WindowEventList& events);
     Window* createWindow(WindowType type, Ui::Size size, WindowFlags flags, const WindowEventList& events);
     void dispatchUpdateAll();
+    void dispatchFrameUpdateAll();
     void callHandleInputBeginEventOnAllWindows();
     void callHandleInputEndEventOnAllWindows();
     void callViewportRotateEventOnAllWindows();

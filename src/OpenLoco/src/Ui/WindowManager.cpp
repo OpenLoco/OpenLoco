@@ -904,6 +904,13 @@ namespace OpenLoco::Ui::WindowManager
         Ui::Windows::MapToolTip::open();
     }
 
+    void dispatchFrameUpdateAll()
+    {
+        std::for_each(_windows.rbegin(), _windows.rend(), [](auto& w) {
+            w.callFrameUpdate();
+        });
+    }
+
     // 0x004CC6EA
     void close(Window* window)
     {

@@ -941,6 +941,16 @@ namespace OpenLoco::Ui
         eventHandlers->onUpdate(*this);
     }
 
+    void Window::callFrameUpdate()
+    {
+        if (eventHandlers->onFrameUpdate == nullptr)
+        {
+            return;
+        }
+
+        eventHandlers->onFrameUpdate(*this);
+    }
+
     void Window::callHandleInputBegin()
     {
         if (eventHandlers->onHandleInputBegin == nullptr)
