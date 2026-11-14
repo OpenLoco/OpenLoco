@@ -60,7 +60,6 @@ namespace OpenLoco::Ui::WindowManager
 
     void updateViewports();
     void tick();
-    void updateDaily();
     Window* getMainWindow();
     Viewport* getMainViewport();
     Window* find(WindowType type);

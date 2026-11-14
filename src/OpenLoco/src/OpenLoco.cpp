@@ -190,16 +190,6 @@ namespace OpenLoco
         ScenarioManager::loadIndex();
     }
 
-    void sub_431695()
-    {
-        GameCommands::setUpdatingCompanyId(CompanyManager::getControllingId());
-        MessageManager::sub_428E47();
-        WindowManager::dispatchTickAll();
-
-        WindowManager::tick();
-        CompanyManager::updateOwnerStatus();
-    }
-
     // The remainder of a tick is abandoned when a scene transition was requested, the game
     // state it was operating on has been replaced by that point.
     static void applyPendingScene()

@@ -23,7 +23,6 @@ namespace OpenLoco
 
     void initialise();
     void update();
-    void sub_431695();
     uint16_t getTimeSinceLastTick();
     uint16_t getInputTimeDelta();
     uint32_t getInputTickDelta();

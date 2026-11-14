@@ -49,41 +49,35 @@ namespace OpenLoco::Intro
         }
     }
 
-    static void updateEnd(Gfx::DrawingContext& drawingCtx)
+    static void tickEnd()
     {
-        drawingCtx.clear(PaletteIndex::black0);
         _state = State::none;
         _introTicks = 0;
     }
 
-    static void updateNone([[maybe_unused]] Gfx::DrawingContext& drawingCtx) {}
+    static void tickNone() {}
 
-    static void updateDisplayNoticeBegin([[maybe_unused]] Gfx::DrawingContext& drawingCtx)
+    static void tickDisplayNoticeBegin()
     {
         Gfx::loadPalette(ImageIds::default_palette, 0);
         _state = State::displayNoticeBeginReset;
     }
 
-    static void updateBegin(Gfx::DrawingContext& drawingCtx)
+    static void tickBegin()
     {
         if (MultiPlayer::hasFlag(MultiPlayer::flag_8) || MultiPlayer::hasFlag(MultiPlayer::flag_9))
         {
-            updateDisplayNoticeBegin(drawingCtx);
+            tickDisplayNoticeBegin();
             return;
         }
 
         Gfx::loadPalette(ImageIds::atari_intro_palette, 0);
 
-        drawingCtx.clear(PaletteIndex::mutedDarkRed5); // this isn't actually mutedDarkRed5 as the atari palette is different
-
-        const auto pos = Ui::Point(Ui::width() / 2 - 216, Ui::height() / 2 - 54);
-        drawingCtx.drawImage(ZoomLevel::full, pos, ImageId(ImageIds::atari_logo_intro_left));
-        drawingCtx.drawImage(ZoomLevel::full, pos + Ui::Point(216, 0), ImageId(ImageIds::atari_logo_intro_right));
         _introTicks = -24;
         _state = State::displayAtari;
     }
 
-    static void updateDisplayAtari(Gfx::DrawingContext& drawingCtx)
+    static void tickDisplayAtari()
     {
         _introTicks++;
         uint8_t modifier = 0;
@@ -103,17 +97,11 @@ namespace OpenLoco::Intro
         {
             Gfx::loadPalette(ImageIds::chris_sawyer_intro_palette, 0);
 
-            drawingCtx.clear(PaletteIndex::black0);
-
-            const auto pos = Ui::Point(Ui::width() / 2 - 320 + 70, Ui::height() / 2 - 58);
-            drawingCtx.drawImage(ZoomLevel::full, pos, ImageId(ImageIds::chris_sawyer_logo_intro_left));
-            drawingCtx.drawImage(ZoomLevel::full, pos + Ui::Point(250, 0), ImageId(ImageIds::chris_sawyer_logo_intro_right));
-
             _introTicks = 0;
             _state = State::displayCS;
         }
     }
-    static void updateDisplayCS(Gfx::DrawingContext& drawingCtx)
+    static void tickDisplayCS()
     {
         _introTicks++;
         uint8_t modifier = 0;
@@ -130,15 +118,13 @@ namespace OpenLoco::Intro
         Gfx::loadPalette(ImageIds::chris_sawyer_intro_palette, modifier);
         if (_introTicks >= 100)
         {
-            drawingCtx.clear(PaletteIndex::black0);
-
             _state = State::displayNoticeBegin;
         }
     }
-    static void updateState4([[maybe_unused]] Gfx::DrawingContext& drawingCtx) {}
-    static void updateState5([[maybe_unused]] Gfx::DrawingContext& drawingCtx) {}
-    static void updateState6([[maybe_unused]] Gfx::DrawingContext& drawingCtx) {}
-    static void updateState7([[maybe_unused]] Gfx::DrawingContext& drawingCtx) {}
+    static void tickState4() {}
+    static void tickState5() {}
+    static void tickState6() {}
+    static void tickState7() {}
 
     constexpr std::array<StringId, 5> kIntroNoticeStrings = {
         StringIds::intro_vehicle_notice_0,
@@ -148,24 +134,8 @@ namespace OpenLoco::Intro
         StringIds::intro_vehicle_notice_4,
     };
 
-    static void updateDisplayNotice(Gfx::DrawingContext& drawingCtx)
+    static void tickDisplayNotice()
     {
-        auto tr = Gfx::TextRenderer(drawingCtx);
-
-        drawingCtx.clear(PaletteIndex::black0);
-
-        const auto pos = Ui::Point(Ui::width() / 2, Ui::height() / 2);
-
-        tr.drawStringCentredWrapped(pos + Ui::Point(0, -80), Ui::width(), Colour::black, StringIds::intro_notice_0);
-        tr.drawStringCentredWrapped(pos, Ui::width(), Colour::black, StringIds::intro_notice_1);
-
-        auto noticePos = pos + Ui::Point(0, 80);
-        for (auto& noticeId : kIntroNoticeStrings)
-        {
-            tr.drawStringCentred(noticePos, Colour::black, noticeId);
-            noticePos += Ui::Point(0, 10);
-        }
-
         if (_introTicks == 0)
         {
             Gfx::loadPalette(ImageIds::default_palette, 0xFF);
@@ -187,40 +157,93 @@ namespace OpenLoco::Intro
             }
         }
     }
-    static void updateDisplayNoticeBeginReset(Gfx::DrawingContext& drawingCtx)
+    static void tickDisplayNoticeBeginReset()
     {
         _introTicks = 0;
         _state = State::displayNotice;
-        updateDisplayNotice(drawingCtx);
+        tickDisplayNotice();
     }
 
-    constexpr std::array<void (*)(Gfx::DrawingContext&), 11> kUpdateFunctions = {
-        updateNone,
-        updateBegin,
-        updateDisplayAtari,
-        updateDisplayCS,
-        updateState4,
-        updateState5,
-        updateState6,
-        updateState7,
-        updateDisplayNoticeBegin,
-        updateDisplayNotice,
-        updateDisplayNoticeBeginReset,
+    constexpr std::array<void (*)(), 11> kTickFunctions = {
+        tickNone,
+        tickBegin,
+        tickDisplayAtari,
+        tickDisplayCS,
+        tickState4,
+        tickState5,
+        tickState6,
+        tickState7,
+        tickDisplayNoticeBegin,
+        tickDisplayNotice,
+        tickDisplayNoticeBeginReset,
     };
 
     // 0x0046AE0C
     void tick()
     {
-        auto& drawingEngine = Gfx::getDrawingEngine();
-        auto& drawingCtx = drawingEngine.getDrawingContext();
-
         if (_state == State::end)
         {
-            updateEnd(drawingCtx);
+            tickEnd();
         }
-        else if (enumValue(_state) < std::size(kUpdateFunctions))
+        else if (enumValue(_state) < std::size(kTickFunctions))
         {
-            kUpdateFunctions[enumValue(_state)](drawingCtx);
+            kTickFunctions[enumValue(_state)]();
+        }
+    }
+
+    static void drawAtari(Gfx::DrawingContext& drawingCtx)
+    {
+        drawingCtx.clear(PaletteIndex::mutedDarkRed5); // this isn't actually mutedDarkRed5 as the atari palette is different
+
+        const auto pos = Ui::Point(Ui::width() / 2 - 216, Ui::height() / 2 - 54);
+        drawingCtx.drawImage(ZoomLevel::full, pos, ImageId(ImageIds::atari_logo_intro_left));
+        drawingCtx.drawImage(ZoomLevel::full, pos + Ui::Point(216, 0), ImageId(ImageIds::atari_logo_intro_right));
+    }
+
+    static void drawChrisSawyer(Gfx::DrawingContext& drawingCtx)
+    {
+        drawingCtx.clear(PaletteIndex::black0);
+
+        const auto pos = Ui::Point(Ui::width() / 2 - 320 + 70, Ui::height() / 2 - 58);
+        drawingCtx.drawImage(ZoomLevel::full, pos, ImageId(ImageIds::chris_sawyer_logo_intro_left));
+        drawingCtx.drawImage(ZoomLevel::full, pos + Ui::Point(250, 0), ImageId(ImageIds::chris_sawyer_logo_intro_right));
+    }
+
+    static void drawNotice(Gfx::DrawingContext& drawingCtx)
+    {
+        auto tr = Gfx::TextRenderer(drawingCtx);
+
+        drawingCtx.clear(PaletteIndex::black0);
+
+        const auto pos = Ui::Point(Ui::width() / 2, Ui::height() / 2);
+
+        tr.drawStringCentredWrapped(pos + Ui::Point(0, -80), Ui::width(), Colour::black, StringIds::intro_notice_0);
+        tr.drawStringCentredWrapped(pos, Ui::width(), Colour::black, StringIds::intro_notice_1);
+
+        auto noticePos = pos + Ui::Point(0, 80);
+        for (auto& noticeId : kIntroNoticeStrings)
+        {
+            tr.drawStringCentred(noticePos, Colour::black, noticeId);
+            noticePos += Ui::Point(0, 10);
+        }
+    }
+
+    void draw(Gfx::DrawingContext& drawingCtx)
+    {
+        switch (_state)
+        {
+            case State::displayAtari:
+                drawAtari(drawingCtx);
+                break;
+            case State::displayCS:
+                drawChrisSawyer(drawingCtx);
+                break;
+            case State::displayNotice:
+                drawNotice(drawingCtx);
+                break;
+            default:
+                drawingCtx.clear(PaletteIndex::black0);
+                break;
         }
     }
 }

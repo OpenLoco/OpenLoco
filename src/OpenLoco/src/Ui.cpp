@@ -540,7 +540,11 @@ namespace OpenLoco::Ui
             return;
         }
 
-        if (!Intro::isActive())
+        if (Intro::isActive())
+        {
+            Intro::draw(drawingEngine.getDrawingContext());
+        }
+        else
         {
             drawingEngine.render();
         }

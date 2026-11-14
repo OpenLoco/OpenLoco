@@ -161,7 +161,6 @@ namespace OpenLoco::Scenes::GameScene
                 VehicleManager::updateDaily();
                 IndustryManager::updateDaily();
                 MessageManager::updateDaily();
-                WindowManager::updateDaily();
 
                 auto yesterday = calcDate(getCurrentDay() - 1);
                 auto today = calcDate(getCurrentDay());
@@ -265,7 +264,12 @@ namespace OpenLoco::Scenes::GameScene
 
         Audio::playBackgroundMusic();
 
-        sub_431695();
+        GameCommands::setUpdatingCompanyId(CompanyManager::getControllingId());
+        MessageManager::sub_428E47();
+        WindowManager::dispatchTickAll();
+
+        WindowManager::tick();
+        CompanyManager::updateOwnerStatus();
     }
 
     void update()

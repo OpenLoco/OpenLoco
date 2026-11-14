@@ -1,5 +1,6 @@
 #include "Ui/WindowManager.h"
 #include "Audio/Audio.h"
+#include "Date.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
@@ -38,7 +39,8 @@ namespace OpenLoco::Ui::WindowManager
 {
     static constexpr size_t kMaxWindows = 64;
 
-    static uint16_t _thousandthTickCounter;                      // 0x0052334E
+    static uint16_t _thousandthTickCounter; // 0x0052334E
+    static uint32_t _lastDay;
     static WindowType _currentModalType = WindowType::undefined; // 0x005233B6
     static int32_t _currentRotation;                             // 0x00E3F0B8
 
@@ -111,6 +113,16 @@ namespace OpenLoco::Ui::WindowManager
         uint16_t timeSinceLastTick = getTimeSinceLastTick();
         ToolTip::setNotShownTicks(ToolTip::getNotShownTicks() + timeSinceLastTick);
 
+        // 0x00439BA5
+        if (getCurrentDay() != _lastDay)
+        {
+            _lastDay = getCurrentDay();
+            if (find(WindowType::tooltip) && ToolTip::isTimeTooltip())
+            {
+                Windows::ToolTip::closeAndReset();
+            }
+        }
+
         // 1000 tick update
         _thousandthTickCounter += timeSinceLastTick;
         if (_thousandthTickCounter >= 1000)
@@ -138,15 +150,6 @@ namespace OpenLoco::Ui::WindowManager
                 }
             }
         });
-    }
-
-    // 0x00439BA5
-    void updateDaily()
-    {
-        if (find(WindowType::tooltip) && ToolTip::isTimeTooltip())
-        {
-            Windows::ToolTip::closeAndReset();
-        }
     }
 
     // 0x004CE438
