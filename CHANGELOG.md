@@ -1,5 +1,6 @@
 26.09+ (???)
 ------------------------------------------------------------------------
+- Feature: [#4053] Save and scenario files can now be loaded by dragging & dropping them into the game window.
 - Change: [#3578, #3918, #3919] Several landscape generation options are now disabled when they do not apply.
 - Change: [#3956] Speed Records tab in the Company List window now shows text when no records are set yet.
 - Change: [#4033] Objects marked with source OpenLoco (OpenGraphics) are no longer exported in scenario or save files.

@@ -1,6 +1,7 @@
 #include "Input.h"
 #include "Audio/Audio.h"
 #include "Config.h"
+#include "Game.h"
 #include "Localisation/StringIds.h"
 #include "Ui.h"
 #include "Ui/ScrollView.h"
@@ -207,6 +208,10 @@ namespace OpenLoco::Input
                     break;
                 case SDL_EVENT_TEXT_INPUT:
                     enqueueText(e.text.text);
+                    break;
+
+                case SDL_EVENT_DROP_FILE:
+                    Game::onDropFile(e.drop.data);
                     break;
             }
         }
