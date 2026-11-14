@@ -287,7 +287,7 @@ namespace OpenLoco::Ui::Windows::TextInput
     // 0x004CE910
     static bool keyUp(Window& w, uint32_t charCode, uint32_t keyCode)
     {
-        if (charCode == SDLK_RETURN)
+        if (charCode == SDLK_RETURN || keyCode == SDLK_KP_ENTER)
         {
             w.callOnMouseUp(widx::ok, w.widgets[widx::ok].id);
             return true;
