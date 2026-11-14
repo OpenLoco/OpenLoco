@@ -8,6 +8,7 @@
 - Change: [#4041] The original AI company is now shut down after using the company takeover cheat.
 - Fix: [#2879] Crash when starting the game with an empty openloco.yaml file.
 - Fix: [#3916] Can save scenario set to use PNG heightmap source without generating landscape.
+- Fix: [#4012] The display resolution dropdown is not disabled on macOS.
 - Fix: [#4027] Crash when starting the game with malformed YAML schema.
 - Fix: [#4037] Cannot delete road stations acquired with the 'acquire all company assets' cheat.
 - Fix: [#4061] Creating industries does not select a random colour (original bug).
