@@ -850,7 +850,7 @@ namespace OpenLoco::Ui::Windows::Industry
             FormatArgumentsBuffer buffer{};
             auto args2 = FormatArguments(buffer);
             args2.push(industry->town);
-            TextInput::openTextInput(&self, StringIds::title_industry_name, StringIds::prompt_enter_new_industry_name, industry->name, widgetIndex, args2);
+            TextInput::openTextInput(self, StringIds::title_industry_name, StringIds::prompt_enter_new_industry_name, industry->name, widgetIndex, args2);
         }
 
         // 0x00455CC7

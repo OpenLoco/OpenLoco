@@ -117,12 +117,12 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     static const WindowEventList& getEvents();
 
     // 0x00443868
-    Window& open()
+    Window* open()
     {
         Window* self = WindowManager::bringToFront(WindowType::scenarioSelect);
         if (self != nullptr)
         {
-            return *self;
+            return self;
         }
 
         self = WindowManager::createWindow(
@@ -162,7 +162,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
         initList(*self);
 
-        return *self;
+        return self;
     }
 
     // 0x00443995

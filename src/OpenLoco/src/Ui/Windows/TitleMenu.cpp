@@ -412,7 +412,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         args.push(StringIds::the_other_player);
 
         // TODO: convert this to a builder pattern, with chainable functions to set the different string ids and arguments
-        TextInput::openTextInput(&self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, widx::chat_btn, args);
+        TextInput::openTextInput(self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, widx::chat_btn, args);
     }
 
     static void sendChatMessage(const char* string)

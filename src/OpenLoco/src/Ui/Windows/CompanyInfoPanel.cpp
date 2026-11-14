@@ -156,9 +156,9 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
     static const WindowEventList& getEvents();
 
     // 0x00438BC7
-    Window& open()
+    Window* open()
     {
-        auto window = WindowManager::createWindow(
+        auto* window = WindowManager::createWindow(
             WindowType::companyInfoPanel,
             { 0, Ui::height() - kWindowSize.height },
             { kWindowSize.width, kWindowSize.height },
@@ -175,7 +175,7 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
             window->setColour(WindowColour::secondary, AdvancedColour(skin->companyInfoPanelColour).translucent());
         }
 
-        return *window;
+        return window;
     }
 
     // 0x004393E7
