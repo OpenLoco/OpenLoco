@@ -40,7 +40,7 @@ namespace OpenLoco::Vehicles
 
         bool has73Flags(Flags73 flagsToTest) const;
 
-        bool update();
+        bool tick();
         bool sub_4A9F20();
         currency32_t totalRecentProfit() const
         {

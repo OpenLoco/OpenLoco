@@ -9,7 +9,7 @@ namespace OpenLoco::Vehicles
         VehicleSound sound;
         uint16_t trainDanglingTimeout; // counts up when no cars on train
 
-        bool update();
+        bool tick();
     };
     static_assert(sizeof(VehicleTail) <= sizeof(Entity));
 }

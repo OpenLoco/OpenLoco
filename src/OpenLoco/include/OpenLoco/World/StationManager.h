@@ -17,7 +17,7 @@ namespace OpenLoco::StationManager
     Station* get(StationId id);
     void tick();
     void updateLabels();
-    void updateDaily();
+    void tickDaily();
     StringId generateNewStationName(StationId stationId, TownId townId, World::Pos3 position, uint8_t mode);
     void zeroUnused();
     uint16_t deliverCargoToNearbyStations(const uint8_t cargoType, const uint8_t cargoQty, const World::Pos2& pos, const World::TilePos2& size);

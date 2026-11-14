@@ -148,7 +148,7 @@ namespace OpenLoco
         void tick();
         uint32_t calcAcceptedCargo(CargoSearchState& cargoSearchState) const;
         char* getStatusString(char* buffer);
-        bool updateCargo();
+        bool tickCargo();
         int32_t calculateCargoRating(const StationCargoStats& cargo) const;
         void updateLabel();
         void invalidate();

@@ -556,8 +556,8 @@ namespace OpenLoco::Audio
     void tick()
     {
         reclaimFinishedInstances();
-        updateVehicleNoise();
-        updateAmbientNoise();
+        tickVehicleNoise();
+        tickAmbientNoise();
     }
 
     void resetSoundObjects()

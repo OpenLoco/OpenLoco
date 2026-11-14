@@ -83,7 +83,7 @@ namespace OpenLoco
         void tick();
         void drawLabel(Gfx::DrawingContext& drawingCtx, ZoomLevel zoom);
         void updateLabel();
-        void updateMonthly();
+        void tickMonthly();
         void adjustCompanyRating(CompanyId cid, int amount);
         void recalculateSize();
         void grow(TownGrowFlags growFlags);

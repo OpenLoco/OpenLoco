@@ -81,11 +81,11 @@ namespace OpenLoco::Vehicles
 
     public:
         bool isVehicleTypeCompatible(const uint16_t vehicleTypeId);
-        void updateBreakdown();
-        void updateVehicle();
-        bool update();
-        void updateMonthly();
-        void updateDaily();
+        void tickBreakdown();
+        void tickVehicle();
+        bool tick();
+        void tickMonthly();
+        void tickDaily();
         VehicleStatus getStatus() const;
         OrderRingView getCurrentOrders() const;
         bool isPlaced() const { return tileX != -1 && !has38Flags(Flags38::isGhost); }
@@ -102,7 +102,7 @@ namespace OpenLoco::Vehicles
         void sub_4ADB47(bool unk);
         uint32_t getCarCount() const;
         void applyBreakdownToTrain();
-        void landCrashedUpdate();
+        void landCrashedTick();
         void autoLayoutTrain();
         uint32_t getVehicleTotalLength() const;
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
@@ -114,32 +114,32 @@ namespace OpenLoco::Vehicles
         Sub4ACEE7Result sub_4ACEE7(uint32_t unk1, uint32_t var_113612C, bool isPlaceDown);
 
     private:
-        void updateDrivingSounds();
-        void updateDrivingSound(VehicleSound& sound, const bool isVeh2);
-        void updateDrivingSoundNone(VehicleSound& sound);
-        void updateDrivingSoundFriction(VehicleSound& sound, const VehicleObjectFrictionSound* snd);
-        void updateSimpleMotorSound(VehicleSound& sound, const bool isVeh2, const VehicleSimpleMotorSound* snd);
-        void updateGearboxMotorSound(VehicleSound& sound, const bool isVeh2, const VehicleGearboxMotorSound* snd);
-        bool updateLand();
+        void tickDrivingSounds();
+        void tickDrivingSound(VehicleSound& sound, const bool isVeh2);
+        void tickDrivingSoundNone(VehicleSound& sound);
+        void tickDrivingSoundFriction(VehicleSound& sound, const VehicleObjectFrictionSound* snd);
+        void tickSimpleMotorSound(VehicleSound& sound, const bool isVeh2, const VehicleSimpleMotorSound* snd);
+        void tickGearboxMotorSound(VehicleSound& sound, const bool isVeh2, const VehicleGearboxMotorSound* snd);
+        bool tickLand();
         bool sub_4A8DB7();
         bool tryReverse();
-        bool stoppingUpdate();
+        bool stoppingTick();
         bool sub_4A8C81();
         bool landTryBeginUnloading();
-        bool landLoadingUpdate();
-        bool landNormalMovementUpdate();
-        bool trainNormalMovementUpdate(uint8_t al, uint8_t flags, StationId nextStation);
-        bool roadNormalMovementUpdate(uint8_t al, StationId nextStation);
+        bool landLoadingTick();
+        bool landNormalMovementTick();
+        bool trainNormalMovementTick(uint8_t al, uint8_t flags, StationId nextStation);
+        bool roadNormalMovementTick(uint8_t al, StationId nextStation);
         bool landReverseFromSignal();
-        bool updateAir();
-        bool airplaneLoadingUpdate();
+        bool tickAir();
+        bool airplaneLoadingTick();
         bool sub_4A95CB();
         bool sub_4A9348(uint8_t newMovementEdge, const AirplaneApproachTargetParams& approachParams);
         bool airplaneApproachTarget(const AirplaneApproachTargetParams& params);
         std::pair<Status, Speed16> airplaneGetNewStatus();
         uint8_t airportGetNextMovementEdge(uint8_t curEdge);
         AirplaneApproachTargetParams sub_427122();
-        bool updateWater();
+        bool tickWater();
         void tryCreateInitialMovementSound(const Status initialStatus);
         void setStationVisitedTypes();
         void checkIfAtOrderStation();

@@ -155,32 +155,32 @@ namespace OpenLoco::Scenes::GameScene
     {
         if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !SceneManager::isEditorMode())
         {
-            if (updateDayCounter())
+            if (tickDayCounter())
             {
-                StationManager::updateDaily();
-                VehicleManager::updateDaily();
-                IndustryManager::updateDaily();
-                MessageManager::updateDaily();
+                StationManager::tickDaily();
+                VehicleManager::tickDaily();
+                IndustryManager::tickDaily();
+                MessageManager::tickDaily();
 
                 auto yesterday = calcDate(getCurrentDay() - 1);
                 auto today = calcDate(getCurrentDay());
                 setDate(today);
-                Scenario::updateSnowLine(today.dayOfYear);
+                Scenario::tickSnowLine(today.dayOfYear);
                 WindowManager::invalidate(WindowType::timePanel);
 
                 if (today.month != yesterday.month)
                 {
                     // End of every month
                     Scenario::getObjectiveProgress().monthsInChallenge++;
-                    TownManager::updateMonthly();
-                    IndustryManager::updateMonthly();
-                    CompanyManager::updateMonthly1();
-                    CompanyManager::updateMonthlyHeadquarters();
-                    VehicleManager::updateMonthly();
+                    TownManager::tickMonthly();
+                    IndustryManager::tickMonthly();
+                    CompanyManager::tickMonthly1();
+                    CompanyManager::tickMonthlyHeadquarters();
+                    VehicleManager::tickMonthly();
 
                     if (today.year <= 2029)
                     {
-                        Economy::updateMonthly();
+                        Economy::tickMonthly();
                     }
 
                     // clang-format off
@@ -190,22 +190,22 @@ namespace OpenLoco::Scenes::GameScene
                         today.month == MonthId::october)
                     // clang-format on
                     {
-                        CompanyManager::updateQuarterly();
+                        CompanyManager::tickQuarterly();
                     }
 
                     if (today.year != yesterday.year)
                     {
                         // End of every year
-                        CompanyManager::updateYearly();
+                        CompanyManager::tickYearly();
                         ObjectManager::updateDefaultLevelCrossingType();
-                        ObjectManager::updateYearly2();
-                        World::TileManager::updateYearly();
+                        ObjectManager::tickYearly2();
+                        World::TileManager::tickYearly();
                     }
 
                     autosaveCheck();
                 }
 
-                CompanyManager::updateDaily();
+                CompanyManager::tickDaily();
             }
         }
     }

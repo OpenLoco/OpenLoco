@@ -79,8 +79,8 @@ namespace OpenLoco
         void getStatusString(char* buffer);
 
         void tick();
-        void updateDaily();
-        void updateMonthly();
+        void tickDaily();
+        void tickMonthly();
         bool isMonthlyProductionUp();
         bool isMonthlyProductionDown();
         bool isMonthlyProductionClosing();
@@ -88,7 +88,7 @@ namespace OpenLoco
         void calculateFarmProduction();
         void expandGrounds(const World::Pos2& pos, uint8_t primaryWallType, uint8_t wallEntranceType, uint8_t growthStage, uint8_t updateTimer);
         void createMapAnimations();
-        void updateProducedCargoStats();
+        void tickProducedCargoStats();
 
         constexpr bool hasFlags(IndustryFlags flagsToTest) const
         {

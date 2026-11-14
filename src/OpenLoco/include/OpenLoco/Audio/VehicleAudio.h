@@ -2,7 +2,7 @@
 
 namespace OpenLoco::Audio
 {
-    void updateVehicleNoise();
+    void tickVehicleNoise();
     void stopVehicleNoise();
     void stopVehicleNoise(EntityId head);
 }

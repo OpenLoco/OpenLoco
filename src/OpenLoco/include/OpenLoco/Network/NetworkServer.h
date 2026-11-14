@@ -48,7 +48,7 @@ namespace OpenLoco::Network
         void sendChatMessages();
         void processIncomingConnections();
         void processPackets();
-        void updateClients();
+        void tickClients();
 
         template<typename T>
         void sendPacketToAll(const T& packet)

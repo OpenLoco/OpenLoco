@@ -1649,7 +1649,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             ObjectManager::updateRoadObjectIdFlags();
             ObjectManager::updateDefaultLevelCrossingType();
             ObjectManager::resetDefaultTrackTypeObjectId();
-            ObjectManager::updateYearly2();
+            ObjectManager::tickYearly2();
             ObjectManager::updateTerraformObjects();
             Gfx::loadCurrency();
             Gfx::loadDefaultPalette();

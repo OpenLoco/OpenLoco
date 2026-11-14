@@ -52,28 +52,28 @@ namespace OpenLoco::World::AnimationManager
         numAnimations() = 0;
     }
 
-    static bool callUpdateFunction(Animation& anim)
+    static bool callTickFunction(Animation& anim)
     {
         switch (anim.type)
         {
             case 0:
-                return updateSignalAnimation(anim);
+                return tickSignalAnimation(anim);
             case 1:
-                return updateLevelCrossingAnimation(anim);
+                return tickLevelCrossingAnimation(anim);
             case 2:
                 return false;
             case 3:
-                return updateIndustryContinuousAnimation(anim);
+                return tickIndustryContinuousAnimation(anim);
             case 4:
-                return updateIndustryRandomAnimation(anim);
+                return tickIndustryRandomAnimation(anim);
             case 5:
-                return updateBuildingAnimation1(anim);
+                return tickBuildingAnimation1(anim);
             case 6:
-                return updateBuildingAnimation2(anim);
+                return tickBuildingAnimation2(anim);
             case 7:
-                return updateAirportStationAnimation(anim);
+                return tickAirportStationAnimation(anim);
             case 8:
-                return updateDockStationAnimation(anim);
+                return tickDockStationAnimation(anim);
         }
         assert(false);
         return false;
@@ -88,7 +88,7 @@ namespace OpenLoco::World::AnimationManager
             for (uint16_t i = 0; i < numAnimations(); ++i)
             {
                 auto& animation = rawAnimations()[i];
-                animsToRemove[i] = callUpdateFunction(animation);
+                animsToRemove[i] = callTickFunction(animation);
             }
 
             // Remove animations that are no longer required

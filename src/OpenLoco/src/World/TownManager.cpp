@@ -470,11 +470,11 @@ namespace OpenLoco::TownManager
     }
 
     // 0x0049748C
-    void updateMonthly()
+    void tickMonthly()
     {
         for (Town& currTown : towns())
         {
-            currTown.updateMonthly();
+            currTown.tickMonthly();
         }
 
         Ui::WindowManager::invalidate(Ui::WindowType::town);
