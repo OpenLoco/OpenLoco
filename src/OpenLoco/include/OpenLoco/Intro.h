@@ -22,6 +22,7 @@ namespace OpenLoco::Intro
     bool isActive();
     State state();
     void state(State state);
+    void skip();
 
     void tick();
 }

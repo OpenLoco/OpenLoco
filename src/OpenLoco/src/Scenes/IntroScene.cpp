@@ -2,6 +2,7 @@
 #include "Graphics/Gfx.h"
 #include "Intro.h"
 #include "SceneManager.h"
+#include "Ui.h"
 
 namespace OpenLoco::Scenes::IntroScene
 {
@@ -32,5 +33,6 @@ namespace OpenLoco::Scenes::IntroScene
 
     void update()
     {
+        Ui::handleInput();
     }
 }

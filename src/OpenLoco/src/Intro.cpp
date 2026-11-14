@@ -31,6 +31,24 @@ namespace OpenLoco::Intro
         _state = state;
     }
 
+    void skip()
+    {
+        switch (_state)
+        {
+            case State::displayAtari:
+                _introTicks = 109;
+                break;
+            case State::displayCS:
+                _introTicks = 99;
+                break;
+            case State::displayNotice:
+                _state = State::end;
+                break;
+            default:
+                break;
+        }
+    }
+
     static void updateEnd(Gfx::DrawingContext& drawingCtx)
     {
         drawingCtx.clear(PaletteIndex::black0);
