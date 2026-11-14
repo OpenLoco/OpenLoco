@@ -7,6 +7,9 @@
 - Change: [#4041] Vehicle colours are now reset to the target company's when using the company takeover cheat.
 - Change: [#4041] Invisible 'planned' AI company track is no longer inherited when using the company takeover cheat.
 - Change: [#4041] The original AI company is now shut down after using the company takeover cheat.
+- Change: [#4101] Input is no longer tied to the internal 40 Hz tick rate and is now processed at the frame rate.
+- Change: [#4101] Edge and arrow key scrolling is no longer tied to the internal 40 Hz tick rate and now runs at the frame rate.
+- Change: [#4101] Right click dragging the view is no longer limited by the edges of the screen.
 - Fix: [#2879] Crash when starting the game with an empty openloco.yaml file.
 - Fix: [#3916] Can save scenario set to use PNG heightmap source without generating landscape.
 - Fix: [#4012] The display resolution dropdown is not disabled on macOS.
@@ -19,6 +22,7 @@
 - Fix: [#4063] Town expansion does not raise/lower certain land corners (original bug).
 - Fix: [#4087] Industries with zero production are using singular cargo unit strings.
 - Fix: [#4096] Numeric keypad Enter key does not confirm text input and save prompts.
+- Fix: [#4101] The intro does not play when starting the game with --intro.
 
 26.09 (2026-09-18)
 ------------------------------------------------------------------------
