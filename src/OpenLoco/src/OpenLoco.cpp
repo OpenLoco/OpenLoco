@@ -70,12 +70,12 @@ namespace OpenLoco
     using Timepoint = Clock::time_point;
 
     static double _accumulator = 0.0;
+    static double _gameAccumulator = 0.0;
     static Timepoint _lastUpdate = Clock::now();
     static CrashHandler::Handle _exHandler = nullptr;
 
     static uint32_t _time_since_last_tick; // 0x0050C19C
     static uint32_t _last_tick_time;       // 0x0050C19E
-    static uint16_t _numFrameUpdates;      // 0x00F253A0
 
     static uint32_t _pendingInputTime;
     static uint32_t _pendingInputTicks;
@@ -190,14 +190,11 @@ namespace OpenLoco
         ScenarioManager::loadIndex();
     }
 
-    void sub_431695(uint16_t var_F253A0)
+    void sub_431695()
     {
         GameCommands::setUpdatingCompanyId(CompanyManager::getControllingId());
-        for (auto i = 0; i < var_F253A0; i++)
-        {
-            MessageManager::sub_428E47();
-            WindowManager::dispatchUpdateAll();
-        }
+        MessageManager::sub_428E47();
+        WindowManager::dispatchUpdateAll();
 
         WindowManager::tick();
         CompanyManager::updateOwnerStatus();
@@ -215,83 +212,45 @@ namespace OpenLoco
         EntityTweener::get().reset();
     }
 
-    // Decides how many ticks the world is advanced by this fixed update.
-    static uint32_t calculateNumTicks()
+    static double getGameSpeedFactor()
     {
-        uint32_t numUpdates = std::clamp<uint32_t>(_time_since_last_tick / 31U, 1, 3);
-
-        if (WindowManager::find(Ui::WindowType::multiplayer, 0) != nullptr)
-        {
-            numUpdates = 1;
-        }
-        if (SceneManager::isNetworked())
-        {
-            numUpdates = 1;
-        }
-
-        if (Input::hasPendingMouseInputUpdate())
-        {
-            Input::clearPendingMouseInputUpdate();
-            numUpdates = 1;
-        }
-        else
-        {
-            switch (Input::state())
-            {
-                case State::reset:
-                case State::normal:
-                case State::dropdownActive:
-                    if (Input::hasFlag(Flags::viewportScrolling))
-                    {
-                        Input::resetFlag(Flags::viewportScrolling);
-                        numUpdates = 1;
-                    }
-                    break;
-                case State::widgetPressed: break;
-                case State::positioningWindow: break;
-                case State::viewportRight: break;
-                case State::viewportLeft: break;
-                case State::scrollLeft: break;
-                case State::resizing: break;
-                case State::scrollRight: break;
-            }
-        }
-
-        Ui::WindowManager::setVehiclePreviewRotationFrame(Ui::WindowManager::getVehiclePreviewRotationFrame() + numUpdates);
-
         if (SceneManager::isPaused())
         {
-            numUpdates = 0;
+            return 0.0;
         }
 
-        _numFrameUpdates = std::max<uint16_t>(1, numUpdates);
-        SceneManager::setSceneAge(std::min(0xFFFF, (int32_t)SceneManager::getSceneAge() + _numFrameUpdates));
-
-        if (SceneManager::getGameSpeed() != GameSpeed::Normal)
+        if (SceneManager::isNetworked() || SceneManager::getGameSpeed() == GameSpeed::Normal)
         {
-            numUpdates *= 3;
-            if (SceneManager::getGameSpeed() != GameSpeed::FastForward)
-            {
-                numUpdates *= 3;
-            }
+            return 1.0;
         }
 
-        // Catch up to server (usually after we have just joined the game)
-        auto numTicksBehind = Network::getServerTick() - ScenarioManager::getScenarioTicks();
-        if (numTicksBehind > 4)
+        if (SceneManager::getGameSpeed() == GameSpeed::FastForward)
         {
-            numUpdates = 4;
+            return 3.0;
         }
 
-        return numUpdates;
+        return 9.0;
+    }
+
+    static void tickNetwork()
+    {
+        // Network messages are handled outside of the scenes, they can request a scene transition.
+        Network::tick();
+        applyPendingScene();
+    }
+
+    static void tickGame()
+    {
+        GameCommands::resetCommandNestLevel();
+        SceneManager::tick();
+        applyPendingScene();
     }
 
     // 0x0046A794
-    static void tick()
+    static void tickInterface()
     {
-        uint32_t time = Platform::getTime();
-        _time_since_last_tick = (uint16_t)std::min(time - _last_tick_time, 500U);
-        _last_tick_time = time;
+        _time_since_last_tick = Engine::UpdateRateInMs;
+        _last_tick_time = Platform::getTime();
 
         if (Tutorial::state() != Tutorial::State::none)
         {
@@ -312,22 +271,16 @@ namespace OpenLoco
         // Original called 0x00440DEC here which handled legacy cmd line options
         // like installing scenarios and handling multiplayer.
 
-        Audio::tick();
-
-        // Network messages are handled outside of the scenes, they can request a scene transition.
-        Network::tick();
-
-        applyPendingScene();
-
-        const auto numTicks = calculateNumTicks();
-        for (auto i = 0U; i < numTicks; i++)
-        {
-            SceneManager::tick();
-            applyPendingScene();
-        }
+        Ui::WindowManager::setVehiclePreviewRotationFrame(Ui::WindowManager::getVehiclePreviewRotationFrame() + 1);
+        SceneManager::setSceneAge(std::min(0xFFFF, (int32_t)SceneManager::getSceneAge() + 1));
 
         SceneManager::tickInterface();
         applyPendingScene();
+    }
+
+    static void tickAudio()
+    {
+        Audio::tick();
     }
 
     static void tickWait()
@@ -379,75 +332,96 @@ namespace OpenLoco
         Input::processMouseMovement();
     }
 
-    constexpr auto MaxUpdateTime = static_cast<double>(Engine::MaxTimeDeltaMs) / 1000.0;
-    constexpr auto UpdateTime = static_cast<double>(Engine::UpdateRateInMs) / 1000.0;
-    constexpr auto TimeScale = 1.0;
-
-    static void variableUpdate()
-    {
-        auto& tweener = EntityTweener::get();
-
-        const auto alpha = std::min<float>(_accumulator / UpdateTime, 1.0);
-
-        while (_accumulator > UpdateTime)
-        {
-            tweener.preTick();
-
-            tick();
-            _accumulator -= UpdateTime;
-
-            tweener.postTick();
-        }
-
-        tweener.restore();
-
-        updateInput();
-        SceneManager::update();
-
-        tweener.tween(alpha);
-
-        Ui::render();
-    }
-
-    static void fixedUpdate()
-    {
-        auto& tweener = EntityTweener::get();
-        tweener.reset();
-
-        if (_accumulator < UpdateTime)
-        {
-            std::this_thread::sleep_for(std::chrono::milliseconds(1));
-        }
-        else
-        {
-            tick();
-            _accumulator -= UpdateTime;
-
-            updateInput();
-            SceneManager::update();
-
-            Ui::render();
-        }
-    }
+    constexpr auto kMaxUpdateTime = static_cast<double>(Engine::MaxTimeDeltaMs) / 1000.0;
+    constexpr auto kUpdateTime = static_cast<double>(Engine::UpdateRateInMs) / 1000.0;
+    constexpr auto kTimeScale = 1.0;
 
     void update()
     {
         auto timeNow = Clock::now();
         auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(timeNow - _lastUpdate).count() / 1'000'000.0;
 
-        elapsed *= TimeScale;
+        elapsed *= kTimeScale;
 
-        _accumulator = std::min(_accumulator + elapsed, MaxUpdateTime);
+        _accumulator = std::min(_accumulator + elapsed, kMaxUpdateTime);
         _lastUpdate = timeNow;
 
-        if (Config::get().uncapFPS)
+        const auto gameSpeedFactor = getGameSpeedFactor();
+        _gameAccumulator = std::min(_gameAccumulator + elapsed * gameSpeedFactor, kMaxUpdateTime);
+
+        // TODO: updateNetwork, we want to receive/send packets as fast as possible.
+
+        const bool uncapped = Config::get().uncapFPS;
+        if (!uncapped && _accumulator < kUpdateTime)
         {
-            variableUpdate();
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            return;
+        }
+
+        auto& tweener = EntityTweener::get();
+        if (!uncapped)
+        {
+            tweener.reset();
+        }
+
+        const auto numFixedTicks = static_cast<uint32_t>(_accumulator / kUpdateTime);
+        _accumulator -= numFixedTicks * kUpdateTime;
+
+        uint32_t numGameTicks = 0;
+        if (Network::isConnected() && !SceneManager::isNetworkHost())
+        {
+            // Catch up to server (usually after we have just joined the game)
+            _gameAccumulator = 0.0;
+            numGameTicks = std::min<uint32_t>(Network::getServerTick() - ScenarioManager::getScenarioTicks(), 4);
         }
         else
         {
-            fixedUpdate();
+            numGameTicks = static_cast<uint32_t>(_gameAccumulator / kUpdateTime);
+            _gameAccumulator -= numGameTicks * kUpdateTime;
         }
+
+        if (numGameTicks == 0)
+        {
+            tickNetwork();
+        }
+
+        for (auto i = 0U; i < numGameTicks; i++)
+        {
+            tickNetwork();
+
+            if (uncapped)
+            {
+                tweener.preTick();
+            }
+
+            tickGame();
+
+            if (uncapped)
+            {
+                tweener.postTick();
+            }
+        }
+
+        for (auto i = 0U; i < numFixedTicks; i++)
+        {
+            tickInterface();
+            tickAudio();
+        }
+
+        if (uncapped)
+        {
+            tweener.restore();
+        }
+
+        updateInput();
+        SceneManager::update();
+
+        if (uncapped)
+        {
+            tweener.tween(static_cast<float>(std::min(_gameAccumulator / kUpdateTime, 1.0)));
+        }
+
+        Ui::render();
     }
 
     uint16_t getTimeSinceLastTick()
@@ -468,11 +442,6 @@ namespace OpenLoco
     float getInputFrameTime()
     {
         return _inputFrameTime;
-    }
-
-    uint16_t getNumFrameUpdates()
-    {
-        return _numFrameUpdates;
     }
 
     void simulateGame(const fs::path& savePath, int32_t ticks)

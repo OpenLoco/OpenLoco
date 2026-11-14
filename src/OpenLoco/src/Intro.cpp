@@ -222,6 +222,5 @@ namespace OpenLoco::Intro
         {
             kUpdateFunctions[enumValue(_state)](drawingCtx);
         }
-        sub_431695(0);
     }
 }

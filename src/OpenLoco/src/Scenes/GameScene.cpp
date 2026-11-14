@@ -239,7 +239,6 @@ namespace OpenLoco::Scenes::GameScene
         EffectsManager::tick();
         CompanyManager::tick();
         World::AnimationManager::tick();
-        Audio::tick();
 
         Scenario::getOptions().madeAnyChanges = userMadeAnyChanges;
 
@@ -266,7 +265,7 @@ namespace OpenLoco::Scenes::GameScene
 
         Audio::playBackgroundMusic();
 
-        sub_431695(getNumFrameUpdates());
+        sub_431695();
     }
 
     void update()
