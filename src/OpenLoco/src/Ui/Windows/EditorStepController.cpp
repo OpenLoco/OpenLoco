@@ -1,7 +1,9 @@
+#include "Config.h"
 #include "EditorController.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/TextRenderer.h"
+#include "Gui.h"
 #include "Input.h"
 #include "Localisation/StringIds.h"
 #include "Ui/Widget.h"
@@ -10,7 +12,10 @@
 
 namespace OpenLoco::Ui::Windows::EditorStepController
 {
-    static constexpr Size kWindowSize = { 200, 32 };
+    static constexpr int32_t kImageWidth = 30;
+    static constexpr int32_t kBaseWidth = 40;
+    static constexpr Size kWindowSize = { kImageWidth + kBaseWidth + 130, 32 };
+    static constexpr Size kWindowSizeShrunk = { kImageWidth + kBaseWidth + 130, 27 };
 
     enum widx
     {
@@ -59,26 +64,64 @@ namespace OpenLoco::Ui::Windows::EditorStepController
         return StepDirection(self.number) == StepDirection::previous;
     }
 
+    struct StepFrame
+    {
+        StringId label;
+        uint32_t image;
+        int32_t labelXOffset;
+        int32_t imageXOffset;
+    };
+
+    static constexpr std::array kStepFrames = std::to_array<StepFrame>({
+        { StringIds::editor_previous_step, ImageIds::step_back, (kWindowSize.width + 30) / 2, 6 },
+        { StringIds::editor_next_step, ImageIds::step_forward, (kWindowSize.width - 31) / 2, kWindowSize.width - 29 },
+    });
+
+    static bool panelsAreOnTop()
+    {
+        using Config::ToolbarLayout;
+        const auto layout = Config::get().toolbarLayout;
+        return layout == ToolbarLayout::panelsOnTop || layout == ToolbarLayout::allCombined;
+    }
+
     // 0x0043CE21
     static void prepareDraw(Window& self)
     {
         const bool hidden = isPreviousButton(self) && !EditorController::canGoBack();
         self.widgets[widx::frame].hidden = hidden;
         self.widgets[widx::button].hidden = hidden;
+
+        const bool infoPanelsOnTop = panelsAreOnTop();
+        const auto& size = !infoPanelsOnTop ? kWindowSize : kWindowSizeShrunk;
+        if (self.height != size.height)
+        {
+            self.widgets[widx::frame].bottom = size.height;
+            self.widgets[widx::button].top = infoPanelsOnTop ? 1 : 2;
+            self.widgets[widx::button].bottom = size.height - 2;
+        }
+
+        auto stepString = isPreviousButton(self) ? EditorController::getPreviousStepString() : EditorController::getNextStepString();
+        auto labelWidth = Gfx::TextRenderer::getStringWidth(Gfx::Font::medium_bold, StringManager::getString(stepString));
+        if (labelWidth == 0)
+        {
+            return;
+        }
+
+        if (!infoPanelsOnTop)
+        {
+            const auto& layout = isPreviousButton(self) ? kStepFrames[0] : kStepFrames[1];
+            labelWidth = std::max(labelWidth, Gfx::TextRenderer::getStringWidth(Gfx::Font::medium_bold, StringManager::getString(layout.label)));
+        }
+
+        auto buttonWidth = labelWidth + kImageWidth + kBaseWidth;
+        if (self.width != buttonWidth)
+        {
+            self.width = buttonWidth;
+            self.widgets[widx::frame].right = self.width - 1;
+            self.widgets[widx::button].right = self.width - 3;
+            Gui::resize();
+        }
     }
-
-    struct StepFrame
-    {
-        StringId label;
-        uint32_t image;
-        Point labelOffset;
-        Point imageOffset;
-    };
-
-    static constexpr std::array kStepFrames = std::to_array<StepFrame>({
-        { StringIds::editor_previous_step, ImageIds::step_back, Point{ (kWindowSize.width + 30) / 2, 6 }, Point{ 6, 6 } },
-        { StringIds::editor_next_step, ImageIds::step_forward, Point{ (kWindowSize.width - 31) / 2, 6 }, Point{ kWindowSize.width - 29, 6 } },
-    });
 
     // 0x0043CE65
     static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
@@ -88,15 +131,23 @@ namespace OpenLoco::Ui::Windows::EditorStepController
             return;
         }
 
+        const bool infoPanelsOnTop = panelsAreOnTop();
+        auto offsetY = infoPanelsOnTop ? -2 : 1;
+        auto height = infoPanelsOnTop ? 0 : -2;
+
         // Draw frame
         auto& frame = self.widgets[widx::frame];
-        drawingCtx.drawRect(frame.left, frame.top, frame.width(), frame.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
-        self.draw(drawingCtx);
-        drawingCtx.drawRectInset(frame.left + 1, frame.top + 1, frame.width() - 2, frame.height() - 2, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
-        const auto& layout = isPreviousButton(self) ? kStepFrames[0] : kStepFrames[1];
-        const auto& labelOffset = layout.labelOffset;
-        const auto& imageOffset = layout.imageOffset;
+        drawingCtx.drawRect(frame.left, frame.top + offsetY, frame.width(), frame.height() + height, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+
+        self.draw(drawingCtx);
+
+        drawingCtx.drawRectInset(frame.left + 1, frame.top + offsetY, frame.width() - 2, frame.height() + height + 1, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
+
+        const bool isPrev = isPreviousButton(self);
+        const auto& layout = isPrev ? kStepFrames[0] : kStepFrames[1];
+        const auto& labelOffset = Point{ (self.width + (isPrev ? 1 : -1) * kImageWidth) / 2, !infoPanelsOnTop ? 6 : 8 };
+        const auto& imageOffset = Point{ isPrev ? 6 : self.width - kImageWidth, !infoPanelsOnTop ? 6 : 1 };
 
         auto imagePos = frame.position() + imageOffset;
         drawingCtx.drawImage(ZoomLevel::full, imagePos.x, imagePos.y, layout.image);
@@ -109,9 +160,13 @@ namespace OpenLoco::Ui::Windows::EditorStepController
 
         auto textPos = frame.position() + labelOffset;
         auto tr = Gfx::TextRenderer(drawingCtx);
-        tr.drawStringCentred(textPos, textColour, layout.label);
 
-        textPos.y += 10;
+        if (!infoPanelsOnTop)
+        {
+            tr.drawStringCentred(textPos, textColour, layout.label);
+            textPos.y += 10;
+        }
+
         auto labelStep = isPreviousButton(self) ? EditorController::getPreviousStepString() : EditorController::getNextStepString();
         tr.drawStringCentred(textPos, textColour, labelStep);
     }
