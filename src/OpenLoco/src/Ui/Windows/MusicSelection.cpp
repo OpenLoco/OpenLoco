@@ -364,7 +364,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     }
 
     // 0x004C17E3
-    static void onUpdate(Window& window)
+    static void onTick(Window& window)
     {
         auto jukeboxWindow = WindowManager::find(WindowType::musicJukebox);
         if (jukeboxWindow == nullptr)
@@ -385,7 +385,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
         .onResize = onResize,
-        .onUpdate = onUpdate,
+        .onTick = onTick,
         .getScrollSize = getScrollSize,
         .scrollMouseDown = onScrollMouseDown,
         .scrollMouseOver = onScrollMouseOver,

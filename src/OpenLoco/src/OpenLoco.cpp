@@ -194,7 +194,7 @@ namespace OpenLoco
     {
         GameCommands::setUpdatingCompanyId(CompanyManager::getControllingId());
         MessageManager::sub_428E47();
-        WindowManager::dispatchUpdateAll();
+        WindowManager::dispatchTickAll();
 
         WindowManager::tick();
         CompanyManager::updateOwnerStatus();

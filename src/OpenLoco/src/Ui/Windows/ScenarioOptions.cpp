@@ -78,7 +78,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x00440082
-        static void update(Window& window)
+        static void tick(Window& window)
         {
             window.frameNo++;
             window.callPrepareDraw();
@@ -529,7 +529,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = Common::update,
+            .onTick = Common::tick,
             .prepareDraw = prepareDraw,
             .draw = draw,
         };
@@ -892,7 +892,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = Common::update,
+            .onTick = Common::tick,
             .prepareDraw = prepareDraw,
             .draw = Common::draw,
         };
@@ -1036,7 +1036,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
-            .onUpdate = Common::update,
+            .onTick = Common::tick,
             .prepareDraw = prepareDraw,
             .draw = Common::draw,
         };
@@ -1264,7 +1264,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = Common::update,
+            .onTick = Common::tick,
             .textInput = textInput,
             .prepareDraw = prepareDraw,
             .draw = draw,

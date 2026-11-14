@@ -119,7 +119,7 @@ namespace OpenLoco::Ui::Windows::Station
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, const WidgetId id);
         static void prepareDraw(Window& self);
         static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input);
-        static void update(Window& self);
+        static void tick(Window& self);
         static void renameStationPrompt(Window& self, WidgetIndex_t widgetIndex);
         static void switchTab(Window& self, WidgetIndex_t widgetIndex);
         static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx);
@@ -299,7 +299,7 @@ namespace OpenLoco::Ui::Windows::Station
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onResize = onResize,
-            .onUpdate = Common::update,
+            .onTick = Common::tick,
             .textInput = Common::textInput,
             .viewportRotate = initViewport,
             .prepareDraw = prepareDraw,
@@ -663,7 +663,7 @@ namespace OpenLoco::Ui::Windows::Station
             .onClose = onClose,
             .onMouseUp = onMouseUp,
             .onResize = onResize,
-            .onUpdate = Common::update,
+            .onTick = Common::tick,
             .getScrollSize = getScrollSize,
             .textInput = Common::textInput,
             .tooltip = tooltip,
@@ -828,7 +828,7 @@ namespace OpenLoco::Ui::Windows::Station
         static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
             .onResize = onResize,
-            .onUpdate = Common::update,
+            .onTick = Common::tick,
             .getScrollSize = getScrollSize,
             .textInput = Common::textInput,
             .tooltip = tooltip,
@@ -1093,7 +1093,7 @@ namespace OpenLoco::Ui::Windows::Station
             return args;
         }
 
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo++;
             self.callPrepareDraw();
@@ -1177,7 +1177,7 @@ namespace OpenLoco::Ui::Windows::Station
         static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
             .onResize = onResize,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .onHandleInputBegin = listWindowOnHandleInputBegin,
             .onHandleInputEnd = listWindowOnHandleInputEnd,
             .getScrollSize = getScrollSize,
@@ -1370,7 +1370,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048E6F1
-        static void update(Window& self)
+        static void tick(Window& self)
         {
             self.frameNo++;
             self.callPrepareDraw();

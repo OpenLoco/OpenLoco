@@ -194,7 +194,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             const bool success = promptTickLoop(
                 []() {
                     Input::handleKeyboard();
-                    WindowManager::dispatchUpdateAll();
+                    WindowManager::dispatchTickAll();
                     Input::processKeyboardInput();
                     Input::processMouseWheel();
                     WindowManager::tick();
@@ -257,7 +257,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x004467E1
-    static void onUpdate(Window& self)
+    static void onTick(Window& self)
     {
         if (!Input::isFocused(self.type, self.number, widx::text_filename))
         {
@@ -1068,7 +1068,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         .onClose = onClose,
         .onMouseUp = onMouseUp,
         .onResize = onResize,
-        .onUpdate = onUpdate,
+        .onTick = onTick,
         .getScrollSize = getScrollSize,
         .scrollMouseDown = onScrollMouseDown,
         .scrollMouseOver = onScrollMouseOver,

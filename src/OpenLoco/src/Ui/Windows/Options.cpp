@@ -516,7 +516,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C01F5
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo += 1;
             self.callPrepareDraw();
@@ -620,7 +620,7 @@ namespace OpenLoco::Ui::Windows::Options
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .prepareDraw = prepareDraw,
             .draw = draw,
         };
@@ -927,7 +927,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C01F5
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo += 1;
             self.callPrepareDraw();
@@ -1001,7 +1001,7 @@ namespace OpenLoco::Ui::Windows::Options
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .prepareDraw = prepareDraw,
             .draw = draw,
         };
@@ -1382,7 +1382,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C04E0, 0x004C0A37
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo += 1;
             self.callPrepareDraw();
@@ -1394,7 +1394,7 @@ namespace OpenLoco::Ui::Windows::Options
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .prepareDraw = prepareDraw,
             .draw = draw,
         };
@@ -1863,7 +1863,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C1195
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo += 1;
             self.callPrepareDraw();
@@ -1875,7 +1875,7 @@ namespace OpenLoco::Ui::Windows::Options
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .prepareDraw = prepareDraw,
             .draw = draw,
         };
@@ -2053,7 +2053,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C1195
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo += 1;
             self.callPrepareDraw();
@@ -2063,7 +2063,7 @@ namespace OpenLoco::Ui::Windows::Options
         static constexpr WindowEventList kEvents = {
             .onClose = Common::onClose,
             .onMouseUp = onMouseUp,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .prepareDraw = prepareDraw,
             .draw = draw,
         };
@@ -2411,7 +2411,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C139C
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo += 1;
             self.callPrepareDraw();
@@ -2421,7 +2421,7 @@ namespace OpenLoco::Ui::Windows::Options
         static constexpr WindowEventList kEvents = {
             .onClose = Common::onClose,
             .onMouseUp = onMouseUp,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .textInput = textInput,
             .prepareDraw = prepareDraw,
             .draw = draw,
@@ -2811,7 +2811,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C139C
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo += 1;
             self.callPrepareDraw();
@@ -2823,7 +2823,7 @@ namespace OpenLoco::Ui::Windows::Options
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .prepareDraw = prepareDraw,
             .draw = draw,
         };

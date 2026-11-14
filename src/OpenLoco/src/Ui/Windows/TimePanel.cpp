@@ -385,7 +385,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x00439AD9
-    static void onUpdate(Window& w)
+    static void onTick(Window& w)
     {
         w.var_854 += 1;
         if (w.var_854 >= 24)
@@ -414,7 +414,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         .onMouseHover = onMouseDown,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
-        .onUpdate = onUpdate,
+        .onTick = onTick,
         .textInput = textInput,
         .tooltip = tooltip,
         .cursor = onCursor,

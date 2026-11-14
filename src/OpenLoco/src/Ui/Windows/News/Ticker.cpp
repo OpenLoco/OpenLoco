@@ -65,7 +65,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
     }
 
     // 0x00429EEB
-    static void onUpdate(Window& self)
+    static void onTick(Window& self)
     {
         auto cursor = Input::getMouseLocation2();
         auto window = WindowManager::findAtAlt(cursor.x, cursor.y);
@@ -240,7 +240,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
     static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
         .onResize = onResize,
-        .onUpdate = onUpdate,
+        .onTick = onTick,
         .draw = draw,
     };
 

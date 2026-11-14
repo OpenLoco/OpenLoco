@@ -93,7 +93,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id);
-        static void onUpdate(Window& self);
+        static void onTick(Window& self);
         static void prepareDraw(Window& self);
         static void switchTab(Window& self, WidgetIndex_t widgetIndex);
         static void populateCompanyList(Window& self);
@@ -277,7 +277,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x004362C0
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo++;
 
@@ -521,7 +521,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onResize = onResize,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .onHandleInputBegin = listWindowOnHandleInputBegin,
             .onHandleInputEnd = listWindowOnHandleInputEnd,
             .getScrollSize = getScrollSize,
@@ -695,7 +695,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
             .onResize = onResize,
-            .onUpdate = Common::onUpdate,
+            .onTick = Common::onTick,
             .prepareDraw = Common::prepareDraw,
             .draw = draw,
         };
@@ -783,7 +783,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
             .onResize = onResize,
-            .onUpdate = Common::onUpdate,
+            .onTick = Common::onTick,
             .prepareDraw = Common::prepareDraw,
             .draw = draw,
         };
@@ -871,7 +871,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
             .onResize = onResize,
-            .onUpdate = Common::onUpdate,
+            .onTick = Common::onTick,
             .prepareDraw = Common::prepareDraw,
             .draw = draw,
         };
@@ -959,7 +959,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
             .onResize = onResize,
-            .onUpdate = Common::onUpdate,
+            .onTick = Common::onTick,
             .prepareDraw = Common::prepareDraw,
             .draw = draw,
         };
@@ -1214,7 +1214,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
             .onResize = onResize,
-            .onUpdate = Common::onUpdate,
+            .onTick = Common::onTick,
             .prepareDraw = Common::prepareDraw,
             .draw = draw,
         };
@@ -1312,7 +1312,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
             .onResize = onResize,
-            .onUpdate = Common::onUpdate,
+            .onTick = Common::onTick,
             .prepareDraw = Common::prepareDraw,
             .draw = draw,
         };
@@ -1401,7 +1401,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00437570
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo++;
             self.callPrepareDraw();

@@ -117,7 +117,7 @@ namespace OpenLoco::Ui::WindowManager
         {
             _thousandthTickCounter = 0;
             std::for_each(_windows.rbegin(), _windows.rend(), [](Ui::Window& w) {
-                w.callOnPeriodicUpdate();
+                w.callOnPeriodicTick();
             });
         }
 
@@ -892,22 +892,22 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004CD3D0
-    void dispatchUpdateAll()
+    void dispatchTickAll()
     {
         GameCommands::setUpdatingCompanyId(CompanyManager::getControllingId());
 
         std::for_each(_windows.rbegin(), _windows.rend(), [](auto& w) {
-            w.callUpdate();
+            w.callTick();
         });
 
         Ui::Windows::TextInput::sub_4CE6FF();
         Ui::Windows::MapToolTip::open();
     }
 
-    void dispatchFrameUpdateAll()
+    void dispatchUpdateAll()
     {
         std::for_each(_windows.rbegin(), _windows.rend(), [](auto& w) {
-            w.callFrameUpdate();
+            w.callUpdate();
         });
     }
 

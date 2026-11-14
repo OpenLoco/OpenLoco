@@ -275,7 +275,7 @@ namespace OpenLoco::Ui::Windows::TextInput
     }
 
     // 0x004CE8FA
-    static void onUpdate(Ui::Window& window)
+    static void onTick(Ui::Window& window)
     {
         inputSession.cursorFrame++;
         if ((inputSession.cursorFrame % 16) == 0)
@@ -316,7 +316,7 @@ namespace OpenLoco::Ui::Windows::TextInput
 
     static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
-        .onUpdate = onUpdate,
+        .onTick = onTick,
         .prepareDraw = prepareDraw,
         .draw = draw,
         .keyUp = keyUp,

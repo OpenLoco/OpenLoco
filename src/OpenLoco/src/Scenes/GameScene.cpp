@@ -274,6 +274,6 @@ namespace OpenLoco::Scenes::GameScene
 
         Input::processKeyboardInput();
         Ui::handleInput();
-        WindowManager::dispatchFrameUpdateAll();
+        WindowManager::dispatchUpdateAll();
     }
 }

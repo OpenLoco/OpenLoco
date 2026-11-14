@@ -2036,7 +2036,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049DCA2
-    static void onUpdate(Window& self)
+    static void onTick(Window& self)
     {
         self.frameNo++;
         self.callPrepareDraw();
@@ -3401,7 +3401,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         .onMouseUp = onMouseUp,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
-        .onUpdate = onUpdate,
+        .onTick = onTick,
         .onToolUpdate = onToolUpdate,
         .onToolDown = onToolDown,
         .toolDrag = onToolDrag,

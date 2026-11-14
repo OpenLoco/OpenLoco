@@ -161,7 +161,7 @@ namespace OpenLoco::Ui::Windows::Debug
         drawingCtx.drawCircle(localPos, radius, 2, PaletteIndex::red5);
     }
 
-    static void onUpdate(Ui::Window& window)
+    static void onTick(Ui::Window& window)
     {
         window.frameNo++;
 
@@ -186,7 +186,7 @@ namespace OpenLoco::Ui::Windows::Debug
 
     static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
-        .onUpdate = onUpdate,
+        .onTick = onTick,
         .draw = draw,
     };
 

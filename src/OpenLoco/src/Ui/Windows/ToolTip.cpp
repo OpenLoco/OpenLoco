@@ -262,7 +262,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
     }
 
     // 0x004C94FF
-    static void update([[maybe_unused]] Ui::Window& window)
+    static void tick([[maybe_unused]] Ui::Window& window)
     {
         if (Ui::ToolTip::_52336E == false)
         {
@@ -284,7 +284,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
 
     static constexpr WindowEventList kEvents = {
         .onClose = onClose,
-        .onUpdate = update,
+        .onTick = tick,
         .draw = draw,
     };
 

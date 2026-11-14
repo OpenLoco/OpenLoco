@@ -451,7 +451,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     // 0x004391F9
-    static void onUpdate(Window& window)
+    static void onTick(Window& window)
     {
         window.var_846++;
 
@@ -462,7 +462,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         .onMouseUp = onMouseUp,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
-        .onUpdate = onUpdate,
+        .onTick = onTick,
         .textInput = onTextInput,
         .cursor = onCursor,
         .prepareDraw = prepareDraw,

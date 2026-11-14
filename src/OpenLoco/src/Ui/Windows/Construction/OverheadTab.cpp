@@ -142,9 +142,9 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049ECD1
-    static void onUpdate(Window& self)
+    static void onTick(Window& self)
     {
-        Common::onUpdate(self, GhostVisibilityFlags::overhead);
+        Common::onTick(self, GhostVisibilityFlags::overhead);
     }
 
     static std::optional<GameCommands::RoadModsPlacementArgs> getRoadModsPlacementArgsFromCursor(const int16_t x, const int16_t y)
@@ -571,7 +571,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         .onMouseUp = onMouseUp,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
-        .onUpdate = onUpdate,
+        .onTick = onTick,
         .onToolUpdate = onToolUpdate,
         .toolUp = onToolUp,
         .prepareDraw = prepareDraw,

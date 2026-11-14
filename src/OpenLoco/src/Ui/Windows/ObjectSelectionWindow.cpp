@@ -1666,7 +1666,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00473A04
-    static void onUpdate(Window& self)
+    static void onTick(Window& self)
     {
         WindowManager::invalidateWidget(WindowType::objectSelection, self.number, widx::objectImage);
 
@@ -1710,7 +1710,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         .onResize = onResize,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
-        .onUpdate = onUpdate,
+        .onTick = onTick,
         .getScrollSize = getScrollSize,
         .scrollMouseDown = onScrollMouseDown,
         .scrollMouseOver = onScrollMouseOver,

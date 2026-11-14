@@ -147,7 +147,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         // 0x00429D2C
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             auto height = _nState.slideInHeight + 4;
 
@@ -773,7 +773,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onResize = initViewports,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .viewportRotate = initViewports,
             .draw = draw,
         };
