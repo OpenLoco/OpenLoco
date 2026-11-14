@@ -12,6 +12,8 @@ namespace OpenLoco
 {
     constexpr int32_t kMinCompanyRating = -1000;
     constexpr int32_t kMaxCompanyRating = 1000;
+    constexpr uint8_t kNumTownGrowthBrackets = 16;
+    constexpr uint8_t kNumGrowthCargos = 8;
 
     enum class TownFlags : uint16_t
     {
@@ -52,6 +54,43 @@ namespace OpenLoco
         struct RenderTarget;
     }
 
+    struct TownGrowthInputCargo
+    {
+        int32_t pointsMultiplier = 1;
+        int32_t pointsCap = std::numeric_limits<int32_t>::max();
+        int32_t pointsFloor = 0;
+        TownSize minimumTownSize = TownSize::hamlet;
+        TownSize maximumTownSize = TownSize::metropolis;
+        uint8_t cargoType = 255;
+    };
+
+    using GrowthSpeed = uint8_t;
+    namespace TownGrowthSpeed
+    {
+        constexpr GrowthSpeed zero = 0;
+        constexpr GrowthSpeed oneEighth = 1;
+        constexpr GrowthSpeed oneQuarter = 2;
+        constexpr GrowthSpeed threeEighth = 3;
+        constexpr GrowthSpeed oneHalf = 4;
+        constexpr GrowthSpeed fiveEighth = 5;
+        constexpr GrowthSpeed threeQuarter = 6;
+        constexpr GrowthSpeed sevenEighth = 7;
+        constexpr GrowthSpeed intZero = 7;
+        constexpr GrowthSpeed one = 8;
+    }
+
+    struct TownGrowthSpeedBracket
+    {
+        int32_t startThreshold = 0;
+        GrowthSpeed speed = TownGrowthSpeed::zero;
+    };
+
+    struct TownGrowthConfiguration
+    {
+        std::array<TownGrowthInputCargo, kNumGrowthCargos> cargos;
+        std::array<TownGrowthSpeedBracket, kNumTownGrowthBrackets> brackets;
+    };
+
     struct Town
     {
         StringId name;                      // 0x00
@@ -73,14 +112,15 @@ namespace OpenLoco
         uint16_t monthlyCargoDelivered[32]; // 0x158
         uint32_t cargoInfluenceFlags;       // 0x198
         uint16_t var_19C[2][2];
-        uint8_t buildSpeed;       // 0x1A4, 1=slow build speed, 4=fast build speed
+        GrowthSpeed buildSpeed;   // 0x1A4
         uint8_t numberOfAirports; // 0x1A5
         uint16_t numStations;     // 0x1A6
         uint32_t var_1A8;
+        TownGrowthConfiguration growthConfiguration;
 
         bool empty() const;
         TownId id() const;
-        void tick();
+        void tick(uint8_t tickNum);
         void drawLabel(Gfx::DrawingContext& drawingCtx, ZoomLevel zoom);
         void updateLabel();
         void updateMonthly();
@@ -89,4 +129,8 @@ namespace OpenLoco
         void grow(TownGrowFlags growFlags);
         StringId getTownSizeString() const;
     };
+
+    GrowthSpeed getTownGrowthSpeed(uint8_t bracket);
+    uint8_t getLegacyTownGrowthSpeed(GrowthSpeed speed);
+    TownGrowthConfiguration getDefaultTownGrowthConfiguration();
 }
