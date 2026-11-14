@@ -17,6 +17,7 @@
 - Fix: [#4063] Road path finding uses incorrect values for road length (original bug).
 - Fix: [#4063] Incorrect vehicle speed calculation (original bug).
 - Fix: [#4063] Town expansion does not raise/lower certain land corners (original bug).
+- Fix: [#4087] Industries with zero production are using singular cargo unit strings.
 - Fix: [#4096] Numeric keypad Enter key does not confirm text input and save prompts.
 
 26.09 (2026-09-18)
