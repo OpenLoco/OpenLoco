@@ -1380,7 +1380,7 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048E5E7
         static void renameStationPrompt(Window& self, WidgetIndex_t widgetIndex)
         {
-            auto station = StationManager::get(StationId(self.number));
+            auto* station = StationManager::get(StationId(self.number));
             auto args = FormatArguments();
             args.push<int64_t>(0);
             args.push(station->name);
@@ -1389,7 +1389,7 @@ namespace OpenLoco::Ui::Windows::Station
             FormatArgumentsBuffer buffer{};
             auto args2 = FormatArguments(buffer);
             args2.push(station->town);
-            TextInput::openTextInput(&self, StringIds::title_station_name, StringIds::prompt_type_new_station_name, station->name, widgetIndex, args2);
+            TextInput::openTextInput(self, StringIds::title_station_name, StringIds::prompt_type_new_station_name, station->name, widgetIndex, args2);
         }
 
         // 0x0048E520

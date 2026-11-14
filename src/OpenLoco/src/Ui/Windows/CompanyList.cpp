@@ -543,7 +543,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
     // 0x00435BC8
     Window* open()
     {
-        auto window = WindowManager::bringToFront(WindowType::companyList);
+        auto* window = WindowManager::bringToFront(WindowType::companyList);
 
         if (window != nullptr)
         {
@@ -614,7 +614,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
     // 0x00435C69
     void openPerformanceIndexes()
     {
-        auto window = open();
+        auto* window = open();
         window->callOnMouseUp(Common::widx::tab_performance, window->widgets[Common::widx::tab_performance].id);
     }
 

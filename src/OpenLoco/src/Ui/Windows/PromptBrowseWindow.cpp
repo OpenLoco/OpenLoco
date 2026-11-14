@@ -114,7 +114,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
     static void drawSavePreview(Ui::Window& window, Gfx::DrawingContext& drawingCtx, int32_t x, int32_t y, int32_t width, int32_t height, const S5::SaveDetails& saveInfo);
     static void drawLandscapePreview(Ui::Window& window, Gfx::DrawingContext& drawingCtx, int32_t x, int32_t y, int32_t width, int32_t height);
-    static void drawTextInput(Ui::Window* window, Gfx::DrawingContext& drawingCtx, const char* text, int32_t caret, bool showCaret);
+    static void drawTextInput(Ui::Window& window, Gfx::DrawingContext& drawingCtx, const char* text, int32_t caret, bool showCaret);
     static void upOneLevel();
     static void defaultDirectory();
     static void changeDirectory(const fs::path& path);
@@ -518,7 +518,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             if (drawingCtx.pushClip(Ui::Rect(filenameBox.left + 1, filenameBox.top + 1, filenameBox.right - filenameBox.left - 1, filenameBox.bottom - filenameBox.top - 1)))
             {
                 bool showCaret = Input::isFocused(window.type, window.number, widx::text_filename) && (inputSession.cursorFrame & 0x10) == 0;
-                drawTextInput(&window, drawingCtx, inputSession.buffer.c_str(), static_cast<int32_t>(inputSession.cursorPosition), showCaret);
+                drawTextInput(window, drawingCtx, inputSession.buffer.c_str(), static_cast<int32_t>(inputSession.cursorPosition), showCaret);
 
                 drawingCtx.popClip();
             }
@@ -627,7 +627,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
     }
 
-    static void drawTextInput(Ui::Window* window, Gfx::DrawingContext& drawingCtx, const char* text, int32_t caret, bool showCaret)
+    static void drawTextInput(Ui::Window& window, Gfx::DrawingContext& drawingCtx, const char* text, int32_t caret, bool showCaret)
     {
         auto tr = Gfx::TextRenderer(drawingCtx);
 
@@ -655,7 +655,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 origin = tr.drawStringLeft(origin, Colour::black, StringIds::black_stringid, args);
 
                 // Draw vertical caret
-                drawingCtx.drawRect(origin.x, origin.y, 1, 9, Colours::getShade(window->getColour(WindowColour::secondary).c(), 9), Gfx::RectFlags::none);
+                drawingCtx.drawRect(origin.x, origin.y, 1, 9, Colours::getShade(window.getColour(WindowColour::secondary).c(), 9), Gfx::RectFlags::none);
             }
         }
     }

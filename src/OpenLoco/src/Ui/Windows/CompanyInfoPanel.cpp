@@ -158,7 +158,7 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
     // 0x00438BC7
     Window* open()
     {
-        auto window = WindowManager::createWindow(
+        auto* window = WindowManager::createWindow(
             WindowType::companyInfoPanel,
             { 0, Ui::height() - kWindowSize.height },
             { kWindowSize.width, kWindowSize.height },

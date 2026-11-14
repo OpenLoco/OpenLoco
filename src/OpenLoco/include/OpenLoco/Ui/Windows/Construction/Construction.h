@@ -152,7 +152,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 Widgets::Tab(Widx::kTabOverhead, { 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_electrification_construction));
         }
 
-        void prepareDraw(Window* self);
+        void prepareDraw(Window& self);
         void resetWindow(Window& self, WidgetIndex_t tabWidgetIndex);
         void switchTab(Window& self, WidgetIndex_t widgetIndex);
         void repositionTabs(Window& self);
@@ -161,7 +161,7 @@ namespace OpenLoco::Ui::Windows::Construction
         void onUpdate(Window& self, GhostVisibilityFlags flag);
         void sub_4CD454();
         void setTrackOptions(const uint8_t trackType);
-        void setDisabledWidgets(Window* self);
+        void setDisabledWidgets(Window& self);
         void createConstructionWindow();
         void sub_4A3A50();
         void setNextAndPreviousTrackTile(const World::TrackElement& elTrack, const World::Pos2& pos);

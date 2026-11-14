@@ -422,7 +422,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     // 0x0049E7D3
     static void prepareDraw(Window& self)
     {
-        Common::prepareDraw(&self);
+        Common::prepareDraw(self);
 
         self.activatedWidgets &= ~(1 << widx::checkbox_1 | 1 << widx::checkbox_2 | 1 << widx::checkbox_3 | 1 << widx::checkbox_4);
 

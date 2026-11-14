@@ -2273,7 +2273,7 @@ namespace OpenLoco::Ui::Windows::Options
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
-            TextInput::openTextInput(&self, StringIds::preferred_owner_name, StringIds::enter_preferred_owner_name, StringIds::buffer_2039, widx::usePreferredOwnerName, {});
+            TextInput::openTextInput(self, StringIds::preferred_owner_name, StringIds::enter_preferred_owner_name, StringIds::buffer_2039, widx::usePreferredOwnerName, {});
         }
 
         // 0x004C135F
@@ -2317,7 +2317,7 @@ namespace OpenLoco::Ui::Windows::Options
             strcpy(buffer, companyName);
             buffer[strlen(companyName)] = '\0';
 
-            TextInput::openTextInput(&self, StringIds::preferred_company_name, StringIds::enter_preferred_company_name, StringIds::buffer_2040, widx::usePreferredCompanyName, {});
+            TextInput::openTextInput(self, StringIds::preferred_company_name, StringIds::enter_preferred_company_name, StringIds::buffer_2040, widx::usePreferredCompanyName, {});
         }
 
         static void usePreferredCompanyNameMouseUp(Window& self)
