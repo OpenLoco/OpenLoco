@@ -604,7 +604,7 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 self.disabledWidgets |= (1ULL << widx::display_scale_up_btn);
             }
-            
+
             applyScreenModeRestrictions(self);
         }
 
