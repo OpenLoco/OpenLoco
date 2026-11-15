@@ -8,8 +8,8 @@ namespace OpenLoco::S5
     {
         S5::Town dst{};
         dst.name = src.name;
-        dst.x = src.x;
-        dst.y = src.y;
+        dst.x = toSaveCoord(src.x);
+        dst.y = toSaveCoord(src.y);
         dst.flags = enumValue(src.flags);
         dst.labelFrame = exportLabelFrame(src.labelFrame);
         dst.prng0 = src.prng.srand_0();

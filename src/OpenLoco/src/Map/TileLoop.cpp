@@ -4,25 +4,25 @@ namespace OpenLoco::World
 {
     TilePosRangeView getClampedRange(const TilePos2& posA, const TilePos2& posB)
     {
-        auto clampedA = TilePos2(clampTileCoord(posA.x), clampTileCoord(posA.y));
-        auto clampedB = TilePos2(clampTileCoord(posB.x), clampTileCoord(posB.y));
+        auto clampedA = World::TileManager::clampTileCoords(posA);
+        auto clampedB = World::TileManager::clampTileCoords(posB);
         return TilePosRangeView(clampedA, clampedB);
     }
 
     TilePosRangeView getClampedRange(const Pos2& posA, const Pos2& posB)
     {
-        auto clampedA = Pos2(clampCoord(posA.x), clampCoord(posA.y));
-        auto clampedB = Pos2(clampCoord(posB.x), clampCoord(posB.y));
+        auto clampedA = World::TileManager::clampCoords(posA);
+        auto clampedB = World::TileManager::clampCoords(posB);
         return TilePosRangeView(toTileSpace(clampedA), toTileSpace(clampedB));
     }
 
     TilePosRangeView getDrawableTileRange()
     {
-        return TilePosRangeView({ 1, 1 }, { kMapColumns - 2, kMapRows - 2 });
+        return TilePosRangeView({ 1, 1 }, { World::TileManager::getMapColumns() - 2, World::TileManager::getMapRows() - 2 });
     }
 
     TilePosRangeView getWorldRange()
     {
-        return TilePosRangeView({ 0, 0 }, { kMapColumns - 1, kMapRows - 1 });
+        return TilePosRangeView({ 0, 0 }, { World::TileManager::getMapColumns() - 1, World::TileManager::getMapRows() - 1 });
     }
 }

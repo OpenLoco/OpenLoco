@@ -1,6 +1,7 @@
 #include "Map/MapGenerator/PngTerrainGenerator.h"
 #include "Logging.h"
 #include "Map/MapGenerator/MapGenerator.h"
+#include "Map/TileManager.h"
 #include "Scenario/ScenarioOptions.h"
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Gfx/PngImage.h>
@@ -11,18 +12,28 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::World::MapGenerator
 {
-    void PngTerrainGenerator::generate(const Scenario::Options& options, const fs::path& path, HeightMap& heightMap)
+    // The map size to use for a heightmap image. The image is used at its native resolution whenever that
+    // is a valid map size; otherwise the caller keeps the size the map already has, and the image is
+    // scaled to fit the map (see generate).
+    TilePos2 PngTerrainGenerator::getMapSizeForImage(const Gfx::PngImage& image, const TilePos2 defaultSize)
     {
-        if (!fs::is_regular_file(path))
+        const auto isValidMapSize = [](const int32_t dimension) {
+            return dimension >= TileManager::kMinMapDimension && dimension <= TileManager::kMaxMapDimension;
+        };
+
+        if (!isValidMapSize(image.width) || !isValidMapSize(image.height))
         {
-            Logging::error("Can't find heightmap file ({})", path);
-            return;
+            return defaultSize;
         }
 
-        auto pngImage = Gfx::PngImage::loadFromFile(path);
+        return TilePos2{ static_cast<coord_t>(image.width), static_cast<coord_t>(image.height) };
+    }
+
+    void PngTerrainGenerator::generate(const Scenario::Options& options, const Gfx::PngImage* pngImage, HeightMap& heightMap)
+    {
         if (pngImage == nullptr)
         {
-            Logging::error("Can't load heightmap file ({})", path);
+            Logging::error("Can't load heightmap file");
             return;
         }
 
@@ -33,14 +44,16 @@ namespace OpenLoco::World::MapGenerator
 
         std::fill_n(heightMap.data(), heightMap.size(), options.minLandHeight);
 
-        // Map the entire map area to the image with interpolation
-        for (int32_t y = 0; y < World::kMapRows; y++)
+        // Map the entire map area to the image, with interpolation. When the image is used at its native
+        // resolution (see getMapSizeForImage) every map tile maps to exactly one image pixel, so the
+        // image is copied over as-is.
+        for (int32_t y = 0; y < heightMap.height; y++)
         {
-            for (int32_t x = 0; x < World::kMapColumns; x++)
+            for (int32_t x = 0; x < heightMap.width; x++)
             {
                 // Map from map coordinates to image coordinates
-                const float imgX = (x * pngImage->width) / static_cast<float>(World::kMapColumns);
-                const float imgY = (y * pngImage->height) / static_cast<float>(World::kMapRows);
+                const float imgX = (x * pngImage->width) / static_cast<float>(heightMap.width);
+                const float imgY = (y * pngImage->height) / static_cast<float>(heightMap.height);
 
                 // Bilinear interpolation coordinates
                 const int x0 = static_cast<int>(imgX);

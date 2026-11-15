@@ -9,8 +9,8 @@ namespace OpenLoco::GameCommands
         static constexpr auto command = GameCommand::changeLandMaterial;
         ChangeLandMaterialArgs() = default;
         explicit ChangeLandMaterialArgs(const registers& regs)
-            : pointA(regs.ax, regs.cx)
-            , pointB(regs.di, regs.bp)
+            : pointA(regs.eax, regs.ecx)
+            , pointB(regs.edi, regs.ebp)
             , landType(regs.dl)
         {
         }
@@ -22,10 +22,10 @@ namespace OpenLoco::GameCommands
         explicit operator registers() const
         {
             registers regs;
-            regs.ax = pointA.x;
-            regs.cx = pointA.y;
-            regs.di = pointB.x;
-            regs.bp = pointB.y;
+            regs.eax = pointA.x;
+            regs.ecx = pointA.y;
+            regs.edi = pointB.x;
+            regs.ebp = pointB.y;
             regs.dl = landType;
             return regs;
         }

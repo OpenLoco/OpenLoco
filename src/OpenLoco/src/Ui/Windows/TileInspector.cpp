@@ -513,22 +513,22 @@ namespace OpenLoco::Ui::Windows::TileInspector
         switch (id)
         {
             case Widx::kXPosDecrease:
-                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x - 1, 1, World::kMapColumns);
+                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x - 1, 1, World::TileManager::getMapColumns());
                 self.invalidate();
                 break;
 
             case Widx::kXPosIncrease:
-                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x + 1, 1, World::kMapColumns);
+                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x + 1, 1, World::TileManager::getMapColumns());
                 self.invalidate();
                 break;
 
             case Widx::kYPosDecrease:
-                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y - 1, 1, World::kMapRows);
+                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y - 1, 1, World::TileManager::getMapRows());
                 self.invalidate();
                 break;
 
             case Widx::kYPosIncrease:
-                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y + 1, 1, World::kMapRows);
+                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y + 1, 1, World::TileManager::getMapRows());
                 self.invalidate();
                 break;
         }

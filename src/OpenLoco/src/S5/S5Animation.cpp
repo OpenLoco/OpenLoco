@@ -8,7 +8,7 @@ namespace OpenLoco::S5
         S5::Animation dst{};
         dst.baseZ = src.baseZ;
         dst.type = src.type;
-        dst.pos = src.pos;
+        dst.pos = toSavePos(src.pos);
 
         return dst;
     }
@@ -18,7 +18,7 @@ namespace OpenLoco::S5
         OpenLoco::World::Animation dst{};
         dst.baseZ = src.baseZ;
         dst.type = src.type;
-        dst.pos = src.pos;
+        dst.pos = fromSavePos(src.pos);
 
         return dst;
     }

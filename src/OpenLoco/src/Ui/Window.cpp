@@ -101,7 +101,7 @@ namespace OpenLoco::Ui
         {
             viewport_pos vpos = vp->windowToViewport(mouse - w->position());
             World::Pos2 position = viewportCoordToMapCoord(vpos.x, vpos.y, z, WindowManager::getCurrentRotation());
-            if (World::validCoords(position))
+            if (World::TileManager::validCoords(position))
             {
                 return position;
             }
@@ -286,8 +286,9 @@ namespace OpenLoco::Ui
             }
             else
             {
-                int16_t midX = config->savedViewX + (viewport->viewWidth / 2);
-                int16_t midY = config->savedViewY + (viewport->viewHeight / 2);
+                // Note: these must be 32 bit, world coordinates can be far outside the 16 bit range on large maps
+                const int32_t midX = config->savedViewX + (viewport->viewWidth / 2);
+                const int32_t midY = config->savedViewY + (viewport->viewHeight / 2);
 
                 World::Pos2 mapCoord = viewportCoordToMapCoord(midX, midY, 128, viewport->getRotation());
                 viewportSetUndergroundFlag(false, viewport);
@@ -303,14 +304,18 @@ namespace OpenLoco::Ui
                     mapCoord.y = -256;
                     atMapEdge = true;
                 }
-                if (mapCoord.x > 0x30FE)
+
+                auto xBounds = World::TileManager::getMapColumns() * 32;
+                if (mapCoord.x > xBounds)
                 {
-                    mapCoord.x = 0x30FE;
+                    mapCoord.x = xBounds;
                     atMapEdge = true;
                 }
-                if (mapCoord.y > 0x30FE)
+
+                auto yBounds = World::TileManager::getMapRows() * 32;
+                if (mapCoord.y > yBounds)
                 {
-                    mapCoord.y = 0x30FE;
+                    mapCoord.y = yBounds;
                     atMapEdge = true;
                 }
 

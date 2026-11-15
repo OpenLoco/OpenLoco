@@ -9,9 +9,9 @@ namespace OpenLoco::GameCommands
         static constexpr auto command = GameCommand::clearLand;
         ClearLandArgs() = default;
         explicit ClearLandArgs(const registers& regs)
-            : centre(regs.ax, regs.cx)
-            , pointA(regs.edx & 0xFFFF, regs.ebp & 0xFFFF)
-            , pointB(regs.edx >> 16, regs.ebp >> 16)
+            : centre(regs.eax, regs.ecx)
+            , pointA(regs.edx, regs.ebp)
+            , pointB(regs.esi, regs.edi)
         {
         }
 
@@ -22,10 +22,12 @@ namespace OpenLoco::GameCommands
         explicit operator registers() const
         {
             registers regs;
-            regs.ax = centre.x;
-            regs.cx = centre.y;
-            regs.edx = (pointB.x << 16) | pointA.x;
-            regs.ebp = (pointB.y << 16) | pointA.y;
+            regs.eax = centre.x;
+            regs.ecx = centre.y;
+            regs.edx = pointA.x;
+            regs.ebp = pointA.y;
+            regs.esi = pointB.x;
+            regs.edi = pointB.y;
             return regs;
         }
     };

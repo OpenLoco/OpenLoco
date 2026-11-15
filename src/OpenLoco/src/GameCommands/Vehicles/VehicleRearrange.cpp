@@ -13,8 +13,8 @@ namespace OpenLoco::GameCommands
 {
     struct PlacementBackup
     {
-        int16_t tileX;
-        int16_t tileY;
+        coord_t tileX;
+        coord_t tileY;
         World::SmallZ tileBaseZ;
         Vehicles::TrackAndDirection trackAndDirection;
         uint16_t subPosition;

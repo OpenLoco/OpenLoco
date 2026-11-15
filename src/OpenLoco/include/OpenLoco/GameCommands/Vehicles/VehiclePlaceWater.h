@@ -10,7 +10,7 @@ namespace OpenLoco::GameCommands
 
         VehicleWaterPlacementArgs() = default;
         explicit VehicleWaterPlacementArgs(const registers& regs)
-            : pos(regs.ax, regs.cx, regs.dx)
+            : pos(regs.eax, regs.ecx, regs.dx)
             , head(EntityId(regs.di))
             , convertGhost((regs.ebx & 0xFFFF0000) == 0xFFFF0000)
         {
@@ -23,8 +23,8 @@ namespace OpenLoco::GameCommands
         explicit operator registers() const
         {
             registers regs;
-            regs.ax = pos.x;
-            regs.cx = pos.y;
+            regs.eax = pos.x;
+            regs.ecx = pos.y;
             regs.dx = pos.z;
             regs.di = enumValue(head);
             regs.ebx = convertGhost ? 0xFFFF0000 : 0;

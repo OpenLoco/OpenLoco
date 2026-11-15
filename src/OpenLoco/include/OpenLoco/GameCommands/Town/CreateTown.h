@@ -10,7 +10,7 @@ namespace OpenLoco::GameCommands
 
         TownPlacementArgs() = default;
         explicit TownPlacementArgs(const registers& regs)
-            : pos(regs.ax, regs.cx)
+            : pos(regs.eax, regs.ecx)
             , size(regs.dl)
         {
         }
@@ -21,8 +21,8 @@ namespace OpenLoco::GameCommands
         explicit operator registers() const
         {
             registers regs;
-            regs.ax = pos.x;
-            regs.cx = pos.y;
+            regs.eax = pos.x;
+            regs.ecx = pos.y;
             regs.edx = size;
             return regs;
         }

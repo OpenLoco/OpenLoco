@@ -13,11 +13,10 @@ namespace OpenLoco::World::TrackData
 {
     struct MoveInfo
     {
-        World::Pos3 loc; // 0x00
+        World::Pos3 loc; // 0x00 (vanilla stored 16 bit coordinate pairs here)
         uint8_t yaw;     // 0x06
         Pitch pitch;     // 0x07
     };
-    static_assert(sizeof(MoveInfo) == 0x8);
 
     std::span<const MoveInfo> getTrackSubPositon(const uint16_t trackAndDirection);
     std::span<const MoveInfo> getRoadSubPositon(const uint16_t trackAndDirection);

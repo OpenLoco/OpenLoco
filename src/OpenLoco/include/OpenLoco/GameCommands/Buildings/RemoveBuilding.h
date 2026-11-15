@@ -11,7 +11,7 @@ namespace OpenLoco::GameCommands
 
         BuildingRemovalArgs() = default;
         explicit BuildingRemovalArgs(const registers& regs)
-            : pos(regs.ax, regs.cx, regs.di)
+            : pos(regs.eax, regs.ecx, regs.edi)
         {
         }
         explicit BuildingRemovalArgs(const BuildingPlacementArgs& place)
@@ -24,9 +24,9 @@ namespace OpenLoco::GameCommands
         explicit operator registers() const
         {
             registers regs;
-            regs.ax = pos.x;
-            regs.cx = pos.y;
-            regs.di = pos.z;
+            regs.eax = pos.x;
+            regs.ecx = pos.y;
+            regs.edi = pos.z;
             return regs;
         }
     };

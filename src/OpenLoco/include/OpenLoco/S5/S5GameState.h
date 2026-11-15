@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Limits.h"
+#include "S5/S5Types.h"
 #include "S5Animation.h"
 #include "S5Company.h"
 #include "S5Entity.h"
@@ -60,7 +61,7 @@ namespace OpenLoco::S5
         uint32_t scenarioTicks2;                            // 0x00014C (0x00525F64)
         uint32_t magicNumber;                               // 0x000150 (0x00525F68)
         uint16_t numMapAnimations;                          // 0x000154 (0x00525F6C)
-        World::Pos2 tileUpdateStartLocation;                // 0x000156 (0x00525F6E)
+        S5::Pos2 tileUpdateStartLocation;                   // 0x000156 (0x00525F6E)
         Construction scenarioConstruction;                  // 0x00015A (0x00525F72)
         uint8_t defaultRailroadObjectId;                    // 0x000192 (0x00525FAA)
         uint8_t defaultRoadObjectId;                        // 0x000193 (0x00525FAB)

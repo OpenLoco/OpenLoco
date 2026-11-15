@@ -10,7 +10,7 @@ namespace OpenLoco::GameCommands
 
         RoadPlacementArgs() = default;
         explicit RoadPlacementArgs(const registers& regs)
-            : pos(regs.ax, regs.cx, regs.di)
+            : pos(regs.eax, regs.ecx, regs.edi)
             , rotation(regs.bh & 0x3)
             , roadId(regs.dh & 0xF)
             , mods(regs.edi >> 16)
@@ -32,7 +32,7 @@ namespace OpenLoco::GameCommands
         {
             registers regs;
             regs.eax = pos.x;
-            regs.cx = pos.y;
+            regs.ecx = pos.y;
             regs.edi = (0xFFFFU & pos.z) | (mods << 16);
             regs.bh = rotation;
             regs.edx = roadObjectId | (roadId << 8) | (unkFlags << 16) | (bridge << 24);

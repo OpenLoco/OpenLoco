@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Map/TileManager.h"
 #include "Tile.h"
 
 namespace OpenLoco::World
@@ -17,14 +18,16 @@ namespace OpenLoco::World
         {
         }
         Pos2 current() const { return _pos; }
+        // Mutable access to the loop position (used when restoring saved games with large maps)
+        Pos2& currentPos() { return _pos; }
         Pos2 next()
         {
             _pos.x += kTileSize;
-            if (_pos.x >= kMapWidth - 1)
+            if (_pos.x >= TileManager::getMapWidth() - 1)
             {
                 _pos.x = 0;
                 _pos.y += kTileSize;
-                if (_pos.y >= kMapHeight - 1)
+                if (_pos.y >= TileManager::getMapHeight() - 1)
                 {
                     _pos.y = 0;
                 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Economy/Currency.h"
+#include "S5/S5Types.h"
 #include <OpenLoco/Engine/World.hpp>
 
 namespace OpenLoco
@@ -22,7 +23,7 @@ namespace OpenLoco::S5
             uint16_t id;              // 0x0
             uint8_t flags;            // 0x2
             uint8_t rotation;         // 0x3
-            World::Pos2 pos;          // 0x4
+            S5::Pos2 pos;             // 0x4
             uint8_t baseZ;            // 0x8
             uint8_t nextStationIndex; // 0x9
             uint8_t prevStationIndex; // 0xA
@@ -95,8 +96,8 @@ namespace OpenLoco::S5
         AiThought aiThoughts[60];                  // 0x04A8
         uint8_t activeThoughtId;                   // 0x2578
         World::SmallZ headquartersZ;               // 0x2579
-        coord_t headquartersX;                     // 0x257A -1 on no headquarter placed
-        coord_t headquartersY;                     // 0x257C
+        int16_t headquartersX;                     // 0x257A -1 on no headquarter placed
+        int16_t headquartersY;                     // 0x257C
         currency32_t activeThoughtRevenueEstimate; // 0x257E Also used for thoughtState2AiStationIdx in sub_430CEC TODO: Don't do this
         uint32_t aiThoughtCooldown;                // 0x2582
         uint8_t pad_2586[0x2596 - 0x2586];
@@ -113,16 +114,16 @@ namespace OpenLoco::S5
         uint16_t hashTableLength;                              // 0x85C0 Hash table length
         uint8_t aiStationIndex;                                // 0x85C2
         uint8_t aiStationFlags;                                // 0x85C3
-        World::Pos2 aiPathfindTargetPos;                       // 0x85C4
+        S5::Pos2 aiPathfindTargetPos;                          // 0x85C4
         World::SmallZ aiPathfindTargetBaseZ;                   // 0x85C8
-        World::Pos2 aiPathfindTargetPos2;                      // 0x85C9
+        S5::Pos2 aiPathfindTargetPos2;                         // 0x85C9
         World::SmallZ aiPathfindTargetBaseZ2;                  // 0x85CD
         uint8_t aiPathfindTargetRot;                           // 0x85CE
         uint8_t aiPathfindTargetRot2;                          // 0x85CF
-        World::Pos2 aiPathfindStartPos;                        // 0x85D0
+        S5::Pos2 aiPathfindStartPos;                           // 0x85D0
         World::SmallZ aiPathfindStartBaseZ;                    // 0x85D4
         uint16_t aiPathfindStartTad;                           // 0x85D5
-        World::Pos2 aiPathfindStartPos2;                       // 0x85D7
+        S5::Pos2 aiPathfindStartPos2;                          // 0x85D7
         World::SmallZ aiPathfindStartBaseZ2;                   // 0x85DB
         uint16_t aiPathfindStartTad2;                          // 0x85DC
         uint32_t aiPathfindWeighting1;                         // 0x85DE
@@ -199,8 +200,8 @@ namespace OpenLoco::S5
         AiThought aiThoughts[60];                  // 0x04A8
         uint8_t activeThoughtId;                   // 0x2578
         World::SmallZ headquartersZ;               // 0x2579
-        coord_t headquartersX;                     // 0x257A -1 on no headquarter placed
-        coord_t headquartersY;                     // 0x257C
+        int16_t headquartersX;                     // 0x257A -1 on no headquarter placed
+        int16_t headquartersY;                     // 0x257C
         currency32_t activeThoughtRevenueEstimate; // 0x257E Also used for thoughtState2AiStationIdx in sub_430CEC TODO: Don't do this
         uint32_t aiThoughtCooldown;                // 0x2582
         uint8_t pad_2586[0x2596 - 0x2586];
@@ -217,16 +218,16 @@ namespace OpenLoco::S5
         uint16_t hashTableLength;                              // 0x85C0 Hash table length
         uint8_t aiStationIndex;                                // 0x85C2
         uint8_t aiStationFlags;                                // 0x85C3
-        World::Pos2 aiPathfindTargetPos;                       // 0x85C4
+        S5::Pos2 aiPathfindTargetPos;                          // 0x85C4
         World::SmallZ aiPathfindTargetBaseZ;                   // 0x85C8
-        World::Pos2 aiPathfindTargetPos2;                      // 0x85C9
+        S5::Pos2 aiPathfindTargetPos2;                         // 0x85C9
         World::SmallZ aiPathfindTargetBaseZ2;                  // 0x85CD
         uint8_t aiPathfindTargetRot;                           // 0x85CE
         uint8_t aiPathfindTargetRot2;                          // 0x85CF
-        World::Pos2 aiPathfindStartPos;                        // 0x85D0
+        S5::Pos2 aiPathfindStartPos;                           // 0x85D0
         World::SmallZ aiPathfindStartBaseZ;                    // 0x85D4
         uint16_t aiPathfindStartTad;                           // 0x85D5
-        World::Pos2 aiPathfindStartPos2;                       // 0x85D7
+        S5::Pos2 aiPathfindStartPos2;                          // 0x85D7
         World::SmallZ aiPathfindStartBaseZ2;                   // 0x85DB
         uint16_t aiPathfindStartTad2;                          // 0x85DC
         uint32_t aiPathfindWeighting1;                         // 0x85DE

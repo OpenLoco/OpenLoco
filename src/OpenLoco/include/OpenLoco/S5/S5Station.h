@@ -1,5 +1,6 @@
 #pragma once
 
+#include "S5/S5Types.h"
 #include "S5LabelFrame.h"
 #include <OpenLoco/Engine/World.hpp>
 #include <cstdint>
@@ -30,9 +31,9 @@ namespace OpenLoco::S5
     struct Station
     {
         uint16_t name;                    // 0x00
-        coord_t x;                        // 0x02
-        coord_t y;                        // 0x04
-        coord_t z;                        // 0x06
+        int16_t x;                        // 0x02
+        int16_t y;                        // 0x04
+        int16_t z;                        // 0x06
         LabelFrame labelFrame;            // 0x08
         uint8_t owner;                    // 0x28
         uint8_t noTilesTimeout;           // 0x29 measured in days
@@ -40,12 +41,12 @@ namespace OpenLoco::S5
         uint16_t town;                    // 0x2C
         StationCargoStats cargoStats[32]; // 0x2E
         uint16_t stationTileSize;         // 0x1CE
-        World::Pos3 stationTiles[80];     // 0x1D0 Note: z coordinate also contains rotation so always floor
+        S5::Pos3 stationTiles[80];        // 0x1D0 Note: z coordinate also contains rotation so always floor
         uint8_t var_3B0;
         uint8_t var_3B1;
         uint8_t var_3B2;
         uint8_t airportRotation;               // 0x3B3
-        World::Pos3 airportStartPos;           // 0x3B4
+        S5::Pos3 airportStartPos;              // 0x3B4
         uint32_t airportMovementOccupiedEdges; // 0x3BA
         uint8_t pad_3BE[0x3D2 - 0x3BE];
     };

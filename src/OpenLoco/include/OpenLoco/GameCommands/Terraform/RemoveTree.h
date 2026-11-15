@@ -10,7 +10,7 @@ namespace OpenLoco::GameCommands
 
         TreeRemovalArgs() = default;
         explicit TreeRemovalArgs(const registers& regs)
-            : pos(regs.ax, regs.cx, static_cast<uint8_t>(regs.dl) * World::kSmallZStep)
+            : pos(regs.eax, regs.ecx, static_cast<uint8_t>(regs.dl) * World::kSmallZStep)
             , type(regs.dh)
             , quadrant(regs.di & 0b11)
             , rotation(regs.bh & 0b11)
@@ -25,8 +25,8 @@ namespace OpenLoco::GameCommands
         explicit operator registers() const
         {
             registers regs;
-            regs.ax = pos.x;
-            regs.cx = pos.y;
+            regs.eax = pos.x;
+            regs.ecx = pos.y;
             regs.dl = pos.z / World::kSmallZStep;
             regs.dh = type;
             regs.bh = rotation & 0b11;

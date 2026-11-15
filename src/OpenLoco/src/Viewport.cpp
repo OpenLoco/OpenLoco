@@ -23,12 +23,18 @@
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 
+#include <cassert>
 #include <execution>
 
 using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui
 {
+    int32_t getColumnWidth(const ZoomLevel zoom)
+    {
+        return std::max<int32_t>(1, zoom.applyInversedTo(World::kTileSize * Paint::tileStrideForZoom(zoom)));
+    }
+
     int Viewport::getRotation() const
     {
         return WindowManager::getCurrentRotation(); // Eventually this should become a variable of the viewport
@@ -150,7 +156,13 @@ namespace OpenLoco::Ui
 
         // make sure, the compare operation is done in int32_t to avoid the loop becoming an infinite loop.
         // this as well as the [x += 32] in the loop causes signed integer overflow -> undefined behaviour.
-        const auto columnWidth = zoom.applyInversedTo(32);
+        //
+        // Drawing is performed in columns of one tile of the map, which is 32 screen pixels at full
+        // zoom. When zoomed out far enough that a tile is smaller than a screen pixel, a column is
+        // scaled to the number of tiles a pixel covers so that the columns line up with the tiles
+        // that the paint session generates (see getColumnWidth and Paint::tileStrideForZoom).
+        const auto columnWidth = getColumnWidth(zoom);
+        assert(columnWidth > 0); // A column must always be at least one pixel wide or the loop below never terminates
         auto rightBorder = zoomViewRt.x + zoomViewRt.width;
         // Floors to nearest column
         auto alignedX = zoomViewRt.x & ~(columnWidth - 1);

@@ -590,8 +590,8 @@ namespace OpenLoco::GameCommands
 
     struct TrainPlacementData
     {
-        int16_t x;
-        int16_t y;
+        coord_t x;
+        coord_t y;
         uint8_t tileBaseZ;
         TrackAndDirection trackAndDirection;
         uint16_t subPosition;

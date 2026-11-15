@@ -30,7 +30,7 @@ namespace OpenLoco::Audio
 
     static constexpr int32_t getAmbientMaxVolume(ZoomLevel zoom)
     {
-        constexpr int32_t _volumes[ZoomLevel::count]{ -1200, -1200, -1200, -2000, -3000, -3000 };
+        constexpr int32_t _volumes[ZoomLevel::count]{ -1200, -1200, -1200, -2000, -3000, -3000, -3000, -3000, -3000, -3000 };
         return _volumes[zoom.index()];
     }
 

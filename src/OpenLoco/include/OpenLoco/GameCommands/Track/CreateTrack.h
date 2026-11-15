@@ -10,7 +10,7 @@ namespace OpenLoco::GameCommands
 
         TrackPlacementArgs() = default;
         explicit TrackPlacementArgs(const registers& regs)
-            : pos(regs.ax, regs.cx, regs.di)
+            : pos(regs.eax, regs.ecx, regs.edi)
             , rotation(regs.bh & 0x3)
             , trackId(regs.dh & 0x3F)
             , mods((regs.edi >> 16) & 0xFF)
@@ -34,7 +34,7 @@ namespace OpenLoco::GameCommands
         {
             registers regs;
             regs.eax = pos.x;
-            regs.cx = pos.y;
+            regs.ecx = pos.y;
             regs.edi = (0xFFFF & pos.z) | (mods << 16) | (unk ? 0x800000 : 0);
             regs.bh = rotation;
             regs.edx = trackObjectId | (trackId << 8) | (unkFlags << 20) | (bridge << 24);

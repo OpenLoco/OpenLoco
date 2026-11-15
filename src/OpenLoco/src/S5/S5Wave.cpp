@@ -6,7 +6,7 @@ namespace OpenLoco::S5
     S5::Wave exportWave(const OpenLoco::World::Wave& src)
     {
         S5::Wave dst{};
-        dst.loc = src.loc;
+        dst.loc = toSavePos(src.loc);
         dst.frame = src.frame;
         return dst;
     }
@@ -14,7 +14,7 @@ namespace OpenLoco::S5
     OpenLoco::World::Wave importWave(const S5::Wave& src)
     {
         OpenLoco::World::Wave dst{};
-        dst.loc = src.loc;
+        dst.loc = fromSavePos(src.loc);
         dst.frame = src.frame;
         return dst;
     }

@@ -47,7 +47,7 @@ namespace OpenLoco::GameCommands
             return kFailure;
         }
 
-        if (!World::validCoords(args.pos))
+        if (!World::TileManager::validCoords(args.pos))
         {
             return kFailure;
         }

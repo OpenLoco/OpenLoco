@@ -44,8 +44,8 @@ namespace OpenLoco::Ui::Windows::Construction
         World::Pos2 stationMaxPos;                      // 0x01135F80
 
         ViewportFlags viewportFlags;      // 0x01135F86
-        uint16_t x;                       // 0x01135FB4
-        uint16_t y;                       // 0x01135FB6
+        coord_t x;                        // 0x01135FB4
+        coord_t y;                        // 0x01135FB6
         uint16_t constructionZ;           // 0x01135FB8
         World::Pos3 ghostTrackPos;        // 0x01135FBA
         World::Pos3 ghostRemovalTrackPos; // 0x01135FC0

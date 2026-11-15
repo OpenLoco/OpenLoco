@@ -523,8 +523,13 @@ namespace OpenLoco::Paint
         const auto worldY = zoom.applyTo(static_cast<int32_t>(rt->y));
         const auto worldHeight = screenToWorldCeil(zoom, rt->y + rt->height) - worldY;
 
+        // Tiles are generated in steps of the number of tiles that fit in a screen pixel; the
+        // additional locations cover the neighbouring tiles so that every pixel row of the column
+        // is filled in by the tiles that map onto it.
+        const auto tileStride = tileStrideForZoom(zoom);
+
         // TODO: Work out what these constants represent
-        uint16_t numVerticalQuadrants = (worldHeight + (rotation == 0 ? 1040 : 1056)) >> 5;
+        uint16_t numVerticalQuadrants = static_cast<uint16_t>(((worldHeight / tileStride) + (rotation == 0 ? 1040 : 1056)) >> 5);
 
         auto mapLoc = Ui::viewportCoordToMapCoord(
             Numerics::floor2(worldX, 32),
@@ -539,14 +544,14 @@ namespace OpenLoco::Paint
         mapLoc.y = Numerics::floor2(mapLoc.y, 32);
 
         constexpr auto direction = directionFlipXAxis(rotation);
-        constexpr std::array<World::Pos2, 5> additionalQuadrants = {
-            Math::Vector::rotate(World::Pos2{ -32, 32 }, direction),
-            Math::Vector::rotate(World::Pos2{ 0, 32 }, direction),
-            Math::Vector::rotate(World::Pos2{ 32, 0 }, direction),
-            Math::Vector::rotate(World::Pos2{ 32, -32 }, direction),
-            Math::Vector::rotate(World::Pos2{ -32, 64 }, direction),
+        const std::array<World::Pos2, 5> additionalQuadrants = {
+            Math::Vector::rotate(World::Pos2{ -32, 32 }, direction) * tileStride,
+            Math::Vector::rotate(World::Pos2{ 0, 32 }, direction) * tileStride,
+            Math::Vector::rotate(World::Pos2{ 32, 0 }, direction) * tileStride,
+            Math::Vector::rotate(World::Pos2{ 32, -32 }, direction) * tileStride,
+            Math::Vector::rotate(World::Pos2{ -32, 64 }, direction) * tileStride,
         };
-        constexpr auto nextVerticalQuadrant = Math::Vector::rotate(World::Pos2{ 32, 32 }, direction);
+        const auto nextVerticalQuadrant = Math::Vector::rotate(World::Pos2{ 32, 32 }, direction) * tileStride;
 
         return { mapLoc, numVerticalQuadrants, additionalQuadrants, nextVerticalQuadrant };
     }
@@ -628,6 +633,7 @@ namespace OpenLoco::Paint
         ps->bounds.mins = rotBoundBoxOffset + World::Pos3{ spritePos.x, spritePos.y, 0 };
         ps->bounds.maxs = rotBoundBoxOffset + rotBoundBoxSize + World::Pos3{ spritePos.x, spritePos.y, 0 };
         ps->flags = PaintStructFlags::none;
+        ps->solidColour = PaletteIndex::transparent;
         ps->attachedPS = nullptr;
         ps->children = nullptr;
         ps->type = _itemType;
@@ -1004,6 +1010,20 @@ namespace OpenLoco::Paint
     static void drawStruct(ZoomLevel zoom, Gfx::DrawingContext& drawingCtx, const PaintStruct& ps, const bool shouldCull)
     {
         auto imageId = ps.imageId;
+
+        if ((ps.flags & PaintStructFlags::solidColour) != PaintStructFlags::none)
+        {
+            // Draw the tile as a filled rectangle in one colour. Water uses this at the zoom levels where
+            // a whole tile is only a pixel or two and its sprite (which selects a shade of the water
+            // palette map for each of its pixels and is blended with the terrain below it) can no longer
+            // be drawn, as those levels are past the ones the game was designed for. The rectangle is
+            // anchored at the top left of the tile's bounding box, so it covers the whole tile.
+            const auto size = solidTileSizeForZoom(zoom);
+            const auto left = zoom.applyInversedTo(ps.vpPos.x - (World::kTileSize / 2));
+            const auto top = zoom.applyInversedTo(ps.vpPos.y + (World::kTileSize / 4));
+            drawingCtx.fillRect(left, top, left + size.x - 1, top + size.y - 1, ps.solidColour, Gfx::RectFlags::none);
+            return;
+        }
 
         if (shouldCull)
         {

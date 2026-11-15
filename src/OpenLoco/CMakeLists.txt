@@ -239,6 +239,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5TileElement.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Town.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5Wave.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5WidePositions.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/SawyerStream.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Scenario/Scenario.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Scenario/ScenarioConstruction.cpp"
@@ -651,11 +652,13 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/S5/S5Industry.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/S5/S5LabelFrame.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/S5/S5Station.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/S5/S5Types.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/S5/S5Message.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/S5/S5Options.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/S5/S5TileElement.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/S5/S5Town.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/S5/S5Wave.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/S5/S5WidePositions.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/S5/SawyerStream.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Scenario/Scenario.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Scenario/ScenarioConstruction.h"
@@ -772,6 +775,10 @@ set(private_compile_definitions
 )
 
 set(test_files
+    "${CMAKE_CURRENT_SOURCE_DIR}/tests/GameCommandArgsTests.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/tests/MapGeneratorTests.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/tests/PaintTests.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/tests/S5WidePositionsTests.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/TileManagerTests.cpp"
 )
 

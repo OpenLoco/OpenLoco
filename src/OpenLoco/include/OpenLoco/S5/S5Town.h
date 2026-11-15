@@ -1,6 +1,7 @@
 #pragma once
 
 #include "S5/S5LabelFrame.h"
+#include "S5/S5Types.h"
 #include <OpenLoco/Engine/World.hpp>
 
 namespace OpenLoco
@@ -14,8 +15,8 @@ namespace OpenLoco::S5
     struct Town
     {
         uint16_t name;                      // 0x00
-        coord_t x;                          // 0x02
-        coord_t y;                          // 0x04
+        int16_t x;                          // 0x02
+        int16_t y;                          // 0x04
         uint16_t flags;                     // 0x06
         LabelFrame labelFrame;              // 0x08
         uint32_t prng0;                     // 0x28

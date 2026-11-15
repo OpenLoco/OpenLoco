@@ -77,10 +77,12 @@ namespace OpenLoco
     };
 
     // Max size of a Entity. Use when needing to know Entity size
+    constexpr size_t kEntitySize = 0x90;
+
     struct Entity : EntityBase
     {
     private:
-        uint8_t pad_24[0x80 - 0x20];
+        uint8_t pad_24[kEntitySize - sizeof(EntityBase)];
     };
-    static_assert(sizeof(Entity) == 0x80);
+    static_assert(sizeof(Entity) == kEntitySize);
 }

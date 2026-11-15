@@ -10,7 +10,7 @@ namespace OpenLoco::GameCommands
 
         WallPlacementArgs() = default;
         explicit WallPlacementArgs(const registers& regs)
-            : pos(regs.ax, regs.cx, regs.di)
+            : pos(regs.eax, regs.ecx, regs.edi)
             , rotation(regs.dl)
             , type(regs.bh)
             , primaryColour(static_cast<Colour>(regs.dh))
@@ -29,11 +29,11 @@ namespace OpenLoco::GameCommands
         explicit operator registers() const
         {
             registers regs;
-            regs.ax = pos.x;
-            regs.cx = pos.y;
+            regs.eax = pos.x;
+            regs.ecx = pos.y;
             regs.dl = rotation;
             regs.dh = enumValue(primaryColour);
-            regs.di = pos.z;
+            regs.edi = pos.z;
             regs.bp = enumValue(secondaryColour) | (enumValue(tertiaryColour) << 8);
             regs.bh = type;
             return regs;

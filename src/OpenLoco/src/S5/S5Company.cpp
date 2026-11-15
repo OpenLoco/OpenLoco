@@ -5,6 +5,19 @@
 
 namespace OpenLoco::S5
 {
+    // The save format stores hash table entries as 16 bit coordinates: empty entries are marked with
+    // 0xFFFF (which is a valid coordinate on a large map) and the hash collision flag is packed into
+    // the low bit of the y coordinate
+    static uint16_t toSaveHashEntryPosX(const OpenLoco::Company::TrackRoadHashTableEntry& entry)
+    {
+        return entry.isEmpty() ? 0xFFFFU : toSaveUCoord(entry.posX);
+    }
+
+    static uint16_t toSaveHashEntryPosYAndFlags(const OpenLoco::Company::TrackRoadHashTableEntry& entry)
+    {
+        return static_cast<uint16_t>(toSaveUCoord(entry.posY) & 0xFFFEU) | (entry.hashCollision ? 1U : 0U);
+    }
+
     S5::Company exportCompany(const OpenLoco::Company& src)
     {
         S5::Company dst{};
@@ -59,7 +72,7 @@ namespace OpenLoco::S5
                 dstThought.stations[j].id = enumValue(srcThought.stations[j].id);
                 dstThought.stations[j].flags = enumValue(srcThought.stations[j].flags);
                 dstThought.stations[j].rotation = srcThought.stations[j].rotation;
-                dstThought.stations[j].pos = srcThought.stations[j].pos;
+                dstThought.stations[j].pos = toSavePos(srcThought.stations[j].pos);
                 dstThought.stations[j].baseZ = srcThought.stations[j].baseZ;
                 dstThought.stations[j].nextStationIndex = srcThought.stations[j].nextStationIndex;
                 dstThought.stations[j].prevStationIndex = srcThought.stations[j].prevStationIndex;
@@ -93,8 +106,8 @@ namespace OpenLoco::S5
 
         dst.activeThoughtId = src.activeThoughtId;
         dst.headquartersZ = src.headquartersZ;
-        dst.headquartersX = src.headquartersX;
-        dst.headquartersY = src.headquartersY;
+        dst.headquartersX = toSaveCoord(src.headquartersX);
+        dst.headquartersY = toSaveCoord(src.headquartersY);
         dst.activeThoughtRevenueEstimate = src.activeThoughtRevenueEstimate;
         dst.aiThoughtCooldown = src.aiThoughtCooldown;
         dst.aiBridgeSelectionCounter = src.aiBridgeSelectionCounter;
@@ -108,8 +121,8 @@ namespace OpenLoco::S5
         // Copy hash table
         for (auto i = 0U; i < std::size(src.trackandRoadHashTable); ++i)
         {
-            dst.trackandRoadHashTable[i].posX = src.trackandRoadHashTable[i].posX;
-            dst.trackandRoadHashTable[i].posYAndFlags = src.trackandRoadHashTable[i].posYAndFlags;
+            dst.trackandRoadHashTable[i].posX = toSaveHashEntryPosX(src.trackandRoadHashTable[i]);
+            dst.trackandRoadHashTable[i].posYAndFlags = toSaveHashEntryPosYAndFlags(src.trackandRoadHashTable[i]);
             dst.trackandRoadHashTable[i].posZ = src.trackandRoadHashTable[i].posZ;
             dst.trackandRoadHashTable[i].trackRoadIdAndDirection = src.trackandRoadHashTable[i].trackRoadIdAndDirection;
         }
@@ -117,16 +130,16 @@ namespace OpenLoco::S5
         dst.hashTableLength = src.hashTableLength;
         dst.aiStationIndex = src.aiStationIndex;
         dst.aiStationFlags = src.aiStationFlags;
-        dst.aiPathfindTargetPos = src.aiPathfindTargetPos;
+        dst.aiPathfindTargetPos = toSavePos(src.aiPathfindTargetPos);
         dst.aiPathfindTargetBaseZ = src.aiPathfindTargetBaseZ;
-        dst.aiPathfindTargetPos2 = src.aiPathfindTargetPos2;
+        dst.aiPathfindTargetPos2 = toSavePos(src.aiPathfindTargetPos2);
         dst.aiPathfindTargetBaseZ2 = src.aiPathfindTargetBaseZ2;
         dst.aiPathfindTargetRot = src.aiPathfindTargetRot;
         dst.aiPathfindTargetRot2 = src.aiPathfindTargetRot2;
-        dst.aiPathfindStartPos = src.aiPathfindStartPos;
+        dst.aiPathfindStartPos = toSavePos(src.aiPathfindStartPos);
         dst.aiPathfindStartBaseZ = src.aiPathfindStartBaseZ;
         dst.aiPathfindStartTad = src.aiPathfindStartTad;
-        dst.aiPathfindStartPos2 = src.aiPathfindStartPos2;
+        dst.aiPathfindStartPos2 = toSavePos(src.aiPathfindStartPos2);
         dst.aiPathfindStartBaseZ2 = src.aiPathfindStartBaseZ2;
         dst.aiPathfindStartTad2 = src.aiPathfindStartTad2;
         dst.aiPathfindWeighting1 = src.aiPathfindWeighting1;
@@ -150,12 +163,12 @@ namespace OpenLoco::S5
         dst.observationStatus = src.observationStatus;
         dst.observationTownId = enumValue(src.observationTownId);
         dst.observationEntity = enumValue(src.observationEntity);
-        dst.observationX = src.observationX;
-        dst.observationY = src.observationY;
+        dst.observationX = toSaveCoord(src.observationX);
+        dst.observationY = toSaveCoord(src.observationY);
         dst.observationObject = src.observationObject;
         dst.observationTimeout = src.observationTimeout;
-        dst.ownerStatus[0] = src.ownerStatus.data[0];
-        dst.ownerStatus[1] = src.ownerStatus.data[1];
+        dst.ownerStatus[0] = toSaveUCoord(src.ownerStatus.data[0]);
+        dst.ownerStatus[1] = toSaveUCoord(src.ownerStatus.data[1]);
         std::ranges::copy(src.cargoDelivered, dst.cargoDelivered);
         dst.challengeProgress = src.challengeProgress;
         dst.numMonthsInTheRed = src.numMonthsInTheRed;
@@ -351,7 +364,7 @@ namespace OpenLoco::S5
                 dstThought.stations[j].id = static_cast<StationId>(srcThought.stations[j].id);
                 dstThought.stations[j].flags = static_cast<AiThoughtStationFlags>(srcThought.stations[j].flags);
                 dstThought.stations[j].rotation = srcThought.stations[j].rotation;
-                dstThought.stations[j].pos = srcThought.stations[j].pos;
+                dstThought.stations[j].pos = fromSavePos(srcThought.stations[j].pos);
                 dstThought.stations[j].baseZ = srcThought.stations[j].baseZ;
                 dstThought.stations[j].nextStationIndex = srcThought.stations[j].nextStationIndex;
                 dstThought.stations[j].prevStationIndex = srcThought.stations[j].prevStationIndex;
@@ -395,24 +408,25 @@ namespace OpenLoco::S5
         // Copy hash table
         for (auto i = 0U; i < std::size(src.trackandRoadHashTable); ++i)
         {
-            dst.trackandRoadHashTable[i].posX = src.trackandRoadHashTable[i].posX;
-            dst.trackandRoadHashTable[i].posYAndFlags = src.trackandRoadHashTable[i].posYAndFlags;
+            dst.trackandRoadHashTable[i].posX = src.trackandRoadHashTable[i].posX == 0xFFFFU ? OpenLoco::Company::TrackRoadHashTableEntry::kEmptyPosX : fromSaveUCoord(src.trackandRoadHashTable[i].posX);
+            dst.trackandRoadHashTable[i].posY = fromSaveUCoord(src.trackandRoadHashTable[i].posYAndFlags & 0xFFFEU);
+            dst.trackandRoadHashTable[i].hashCollision = (src.trackandRoadHashTable[i].posYAndFlags & 1U) != 0;
             dst.trackandRoadHashTable[i].posZ = src.trackandRoadHashTable[i].posZ;
             dst.trackandRoadHashTable[i].trackRoadIdAndDirection = src.trackandRoadHashTable[i].trackRoadIdAndDirection;
         }
         dst.hashTableLength = src.hashTableLength;
         dst.aiStationIndex = src.aiStationIndex;
         dst.aiStationFlags = src.aiStationFlags;
-        dst.aiPathfindTargetPos = src.aiPathfindTargetPos;
+        dst.aiPathfindTargetPos = fromSavePos(src.aiPathfindTargetPos);
         dst.aiPathfindTargetBaseZ = src.aiPathfindTargetBaseZ;
-        dst.aiPathfindTargetPos2 = src.aiPathfindTargetPos2;
+        dst.aiPathfindTargetPos2 = fromSavePos(src.aiPathfindTargetPos2);
         dst.aiPathfindTargetBaseZ2 = src.aiPathfindTargetBaseZ2;
         dst.aiPathfindTargetRot = src.aiPathfindTargetRot;
         dst.aiPathfindTargetRot2 = src.aiPathfindTargetRot2;
-        dst.aiPathfindStartPos = src.aiPathfindStartPos;
+        dst.aiPathfindStartPos = fromSavePos(src.aiPathfindStartPos);
         dst.aiPathfindStartBaseZ = src.aiPathfindStartBaseZ;
         dst.aiPathfindStartTad = src.aiPathfindStartTad;
-        dst.aiPathfindStartPos2 = src.aiPathfindStartPos2;
+        dst.aiPathfindStartPos2 = fromSavePos(src.aiPathfindStartPos2);
         dst.aiPathfindStartBaseZ2 = src.aiPathfindStartBaseZ2;
         dst.aiPathfindStartTad2 = src.aiPathfindStartTad2;
         dst.aiPathfindWeighting1 = src.aiPathfindWeighting1;
@@ -436,12 +450,12 @@ namespace OpenLoco::S5
         dst.observationStatus = static_cast<ObservationStatus>(src.observationStatus);
         dst.observationTownId = static_cast<TownId>(src.observationTownId);
         dst.observationEntity = static_cast<EntityId>(src.observationEntity);
-        dst.observationX = src.observationX;
-        dst.observationY = src.observationY;
+        dst.observationX = fromSaveCoord(src.observationX);
+        dst.observationY = fromSaveCoord(src.observationY);
         dst.observationObject = src.observationObject;
         dst.observationTimeout = src.observationTimeout;
-        dst.ownerStatus.data[0] = src.ownerStatus[0];
-        dst.ownerStatus.data[1] = src.ownerStatus[1];
+        dst.ownerStatus.data[0] = fromSaveUCoord(src.ownerStatus[0]);
+        dst.ownerStatus.data[1] = fromSaveUCoord(src.ownerStatus[1]);
         std::ranges::copy(src.cargoDelivered, dst.cargoDelivered);
         dst.challengeProgress = src.challengeProgress;
         dst.numMonthsInTheRed = src.numMonthsInTheRed;

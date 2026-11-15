@@ -30,7 +30,7 @@ namespace OpenLoco::Gfx
 
         static std::unique_ptr<PngImage> loadFromFile(const fs::path& filePath);
 
-        Colour32 getPixel(int x, int y);
+        Colour32 getPixel(int x, int y) const;
     };
 
 }

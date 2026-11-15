@@ -18,8 +18,6 @@
 
 namespace OpenLoco::World
 {
-    constexpr auto kTileStateNumTiles = kMapPitch * kMapColumns;
-
     struct TileState
     {
         Store<SurfaceElement> surface;
@@ -32,7 +30,8 @@ namespace OpenLoco::World
         Store<RoadElement> road;
         Store<IndustryElement> industry;
 
-        std::array<TileElementEntry*, kTileStateNumTiles> tiles{};
+        // The number of tiles depends on the current map dimensions, so this is resized when the map size changes.
+        std::vector<TileElementEntry*> tiles{};
         std::vector<TileElementEntry> entries;
         std::ptrdiff_t entriesEnd = 0;
     };

@@ -907,7 +907,7 @@ namespace OpenLoco
     bool Company::hashTableContains(const TrackRoadHashTableEntry& entry) const
     {
         auto index = entry.calculateHash();
-        while (trackandRoadHashTable[index].posX != 0xFFFF)
+        while (!trackandRoadHashTable[index].isEmpty())
         {
             auto& rhsEntry = trackandRoadHashTable[index];
             if (rhsEntry.getPosition() == entry.getPosition()
@@ -939,10 +939,10 @@ namespace OpenLoco
         }
         auto index = entry.calculateHash();
 
-        while (trackandRoadHashTable[index].posX != 0xFFFF)
+        while (!trackandRoadHashTable[index].isEmpty())
         {
             auto& rhsEntry = trackandRoadHashTable[index];
-            rhsEntry.posYAndFlags |= 1U << 0; // mark as hash collision
+            rhsEntry.hashCollision = true; // mark as hash collision
 
             index++;
             if (index >= std::size(trackandRoadHashTable))
@@ -1142,9 +1142,10 @@ namespace OpenLoco
     Company::TrackRoadHashTableEntry::TrackRoadHashTableEntry(World::Pos3 pos, uint8_t trackRoadId, uint8_t direction)
     {
         posX = pos.x;
-        posYAndFlags = pos.y;
+        posY = pos.y;
         posZ = pos.z / World::kSmallZStep;
         trackRoadIdAndDirection = (trackRoadId & 0x3F) | (direction << 6);
+        hashCollision = false;
     }
 
     constexpr uint16_t Company::TrackRoadHashTableEntry::calculateHash() const

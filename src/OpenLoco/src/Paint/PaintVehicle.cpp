@@ -252,7 +252,7 @@ namespace OpenLoco::Paint
         World::Pos3 boundBoxSize;
         if ((body->getTransportMode() == TransportMode::air) || (body->getTransportMode() == TransportMode::water))
         {
-            boundBoxOffsets = { -8, -8, static_cast<int16_t>(body->position.z + 11) };
+            boundBoxOffsets = { -8, -8, body->position.z + 11 };
             boundBoxSize = { 48, 48, 15 };
         }
         else

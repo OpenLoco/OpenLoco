@@ -45,7 +45,11 @@ namespace OpenLoco
         uint32_t buildingVariationPartsOffset[1]; // 0x1C odd that this is size 1 but that is how its used
         uint16_t designedYear;                    // 0x20
         uint16_t obsoleteYear;                    // 0x22
-        World::Pos2 boatPosition;                 // 0x24
+        // The object file stores the boat position as two 16 bit coordinates
+        int16_t boatPositionX; // 0x24
+        int16_t boatPositionY; // 0x26
+
+        World::Pos2 getBoatPosition() const { return { boatPositionX, boatPositionY }; }
 
         void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;

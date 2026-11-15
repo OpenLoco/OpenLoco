@@ -4,6 +4,7 @@
 #include "S5/S5.h"
 #include "S5/S5GameState.h"
 #include "S5/S5TileElement.h"
+#include "S5/S5WidePositions.h"
 
 namespace OpenLoco::S5
 {
@@ -16,5 +17,8 @@ namespace OpenLoco::S5
         GameState gameState;
         std::vector<TileElement> tileElements;
         std::vector<std::pair<ObjectHeader, std::vector<std::byte>>> packedObjects;
+        // The coordinates of large maps that do not fit in the 16 bit fields of the vanilla chunks
+        // (not part of the vanilla save format, see S5WidePositions.h)
+        std::vector<WidePosition> widePositions;
     };
 }

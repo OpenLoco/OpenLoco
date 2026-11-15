@@ -88,7 +88,7 @@ namespace OpenLoco
     class OwnerStatus
     {
     public:
-        int16_t data[2];
+        coord_t data[2];
         OwnerStatus()
         {
             data[0] = -1;
@@ -104,12 +104,12 @@ namespace OpenLoco
             data[0] = pos.x;
             data[1] = pos.y;
         }
-        OwnerStatus(int16_t ax, int16_t cx)
+        OwnerStatus(coord_t ax, coord_t cx)
         {
             data[0] = ax;
             data[1] = cx;
         }
-        void getData(int16_t* res) const
+        void getData(coord_t* res) const
         {
             res[0] = data[0];
             res[1] = data[1];
@@ -143,17 +143,26 @@ namespace OpenLoco
     {
         struct TrackRoadHashTableEntry
         {
-            uint16_t posX;                   // x
-            uint16_t posYAndFlags;           // y + flags
-            uint8_t posZ;                    // z
-            uint8_t trackRoadIdAndDirection; // trackId | (direction << 6)
+            // Empty entries are marked with an invalid x coordinate (the save format uses 0xFFFF for
+            // this, which is a valid coordinate on a large map)
+            static constexpr coord_t kEmptyPosX = std::numeric_limits<coord_t>::min();
+
+            coord_t posX = kEmptyPosX;           // x
+            coord_t posY = 0;                    // y
+            uint8_t posZ = 0;                    // z
+            uint8_t trackRoadIdAndDirection = 0; // trackId | (direction << 6)
+            bool hashCollision = false;          // set when a different position hashes to this entry
 
             TrackRoadHashTableEntry() = default;
             TrackRoadHashTableEntry(World::Pos3 pos, uint8_t trackRoadId, uint8_t direction);
 
+            constexpr bool isEmpty() const
+            {
+                return posX == kEmptyPosX;
+            }
             constexpr World::Pos3 getPosition() const
             {
-                return World::Pos3(posX, posYAndFlags & 0xFFFE, posZ * 4 /*World::kSmallZStep*/);
+                return World::Pos3(posX, posY, posZ * 4 /*World::kSmallZStep*/);
             }
             constexpr uint8_t getTrackRoadId() const
             {
@@ -168,7 +177,7 @@ namespace OpenLoco
             // the table as well for matches until no hash collision or match is found
             constexpr bool hasHashCollision() const
             {
-                return (posYAndFlags & (1U << 0)) != 0;
+                return hashCollision;
             }
             constexpr uint16_t calculateHash() const;
         };
@@ -253,8 +262,8 @@ namespace OpenLoco
         ObservationStatus observationStatus;                   // 0x8BB9;
         TownId observationTownId;                              // 0x8BBA;
         EntityId observationEntity;                            // 0x8BBC;
-        int16_t observationX;                                  // 0x8BBE;
-        int16_t observationY;                                  // 0x8BC0;
+        coord_t observationX;                                  // 0x8BBE;
+        coord_t observationY;                                  // 0x8BC0;
         uint16_t observationObject;                            // 0x8BC2;
         uint16_t observationTimeout;                           // 0x8BC4
         OwnerStatus ownerStatus;                               // 0x8BC6

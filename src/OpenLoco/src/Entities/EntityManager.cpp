@@ -5,20 +5,34 @@
 #include "GameStateFlags.h"
 #include "Localisation/StringIds.h"
 #include "Logging.h"
+#include "Map/TileManager.h"
 #include <OpenLoco/Core/LocoFixedVector.hpp>
+#include <vector>
 
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::EntityManager
 {
-    constexpr size_t kSpatialEntityMapSize = (World::kMapPitch * World::kMapPitch) + 1;
-    constexpr size_t kEntitySpatialIndexNull = kSpatialEntityMapSize - 1;
+    // The spatial index holds one linked list head per tile of the map, plus a bucket for
+    // entities that are not on the map (invalid positions). Its size depends on the current
+    // map pitch so it is a vector which is resized whenever the map size changes.
+    static std::vector<EntityId> _entitySpatialIndex;
+    static uint32_t _entitySpatialCount; // 0x01025A88
 
-    static_assert(kSpatialEntityMapSize == 0x40001);
-    static_assert(kEntitySpatialIndexNull == 0x40000);
+    static size_t getSpatialIndexNullIndex()
+    {
+        return _entitySpatialIndex.empty() ? 0 : _entitySpatialIndex.size() - 1;
+    }
 
-    static EntityId _entitySpatialIndex[kSpatialEntityMapSize]; // 0x01025A8C
-    static uint32_t _entitySpatialCount;                        // 0x01025A88
+    static void ensureSpatialIndexSize()
+    {
+        const auto pitch = static_cast<size_t>(World::TileManager::getMapPitch());
+        const auto requiredSize = (pitch * pitch) + 1;
+        if (_entitySpatialIndex.size() != requiredSize)
+        {
+            _entitySpatialIndex.assign(requiredSize, EntityId::null);
+        }
+    }
 
     static auto& rawEntities() { return getGameState().entities; }
     static auto entities() { return FixedVector(rawEntities()); }
@@ -129,22 +143,25 @@ namespace OpenLoco::EntityManager
         return result;
     }
 
-    constexpr size_t getSpatialIndexOffset(const World::Pos2& loc)
+    static size_t getSpatialIndexOffset(const World::Pos2& loc)
     {
+        ensureSpatialIndexSize();
+
         if (loc.x == Location::null)
         {
-            return kEntitySpatialIndexNull;
+            return getSpatialIndexNullIndex();
         }
 
         const auto tileX = std::abs(loc.x) / World::kTileSize;
         const auto tileY = std::abs(loc.y) / World::kTileSize;
 
-        if (tileX >= World::kMapPitch || tileY >= World::kMapPitch)
+        const auto pitch = static_cast<size_t>(World::TileManager::getMapPitch());
+        if (tileX >= pitch || tileY >= pitch)
         {
-            return kEntitySpatialIndexNull;
+            return getSpatialIndexNullIndex();
         }
 
-        return (World::kMapPitch * tileX) + tileY;
+        return (pitch * tileX) + tileY;
     }
 
     EntityId firstQuadrantId(const World::Pos2& loc)
@@ -168,6 +185,8 @@ namespace OpenLoco::EntityManager
     // 0x0046FF54
     void resetSpatialIndex()
     {
+        ensureSpatialIndexSize();
+
         // Clear existing array
         std::fill(std::begin(_entitySpatialIndex), std::end(_entitySpatialIndex), EntityId::null);
 

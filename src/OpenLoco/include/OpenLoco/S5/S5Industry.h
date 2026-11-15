@@ -1,5 +1,6 @@
 #pragma once
 
+#include "S5/S5Types.h"
 #include <OpenLoco/Engine/World.hpp>
 
 namespace OpenLoco
@@ -13,8 +14,8 @@ namespace OpenLoco::S5
     struct Industry
     {
         uint16_t name;
-        coord_t x;                                               // 0x02
-        coord_t y;                                               // 0x04
+        int16_t x;                                               // 0x02
+        int16_t y;                                               // 0x04
         uint16_t flags;                                          // 0x06
         uint32_t prng0;                                          // 0x08
         uint32_t prng1;                                          // 0x0C
@@ -22,9 +23,9 @@ namespace OpenLoco::S5
         uint8_t under_construction;                              // 0x11 (0xFF = Finished)
         uint16_t foundingYear;                                   // 0x12
         uint8_t numTiles;                                        // 0x14
-        World::Pos3 tiles[32];                                   // 0x15 bit 15 of z indicates if multiTile (2x2)
+        S5::Pos3 tiles[32];                                      // 0x15 bit 15 of z indicates if multiTile (2x2)
         uint16_t town;                                           // 0xD5
-        World::Pos2 tileLoop;                                    // 0xD7
+        S5::Pos2 tileLoop;                                       // 0xD7
         int16_t numFarmTiles;                                    // 0xDB
         int16_t numIdleFarmTiles;                                // 0xDD
         uint8_t productionRate;                                  // 0xDF fraction of dailyTargetProduction out of 256
