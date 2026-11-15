@@ -128,7 +128,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
     Window* open()
     {
-        auto window = WindowManager::bringToFront(WindowType::tileInspector);
+        auto* window = WindowManager::bringToFront(WindowType::tileInspector);
         if (window != nullptr)
         {
             return window;

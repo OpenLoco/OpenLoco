@@ -4999,7 +4999,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 FormatArgumentsBuffer buffer{};
                 auto args2 = FormatArguments(buffer);
                 args2.push(vehicle->ordinalNumber);
-                TextInput::openTextInput(&self, StringIds::title_name_vehicle, StringIds::prompt_enter_new_vehicle_name, vehicle->name, widgetIndex, args2);
+                TextInput::openTextInput(self, StringIds::title_name_vehicle, StringIds::prompt_enter_new_vehicle_name, vehicle->name, widgetIndex, args2);
             }
         }
 

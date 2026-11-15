@@ -1,17 +1,24 @@
 26.09+ (???)
 ------------------------------------------------------------------------
+- Feature: [#4053] Save and scenario files can now be loaded by dragging & dropping them into the game window.
+- Change: [#3578, #3918, #3919] Several landscape generation options are now disabled when they do not apply.
+- Change: [#3956] Speed Records tab in the Company List window now shows text when no records are set yet.
 - Change: [#4033] Objects marked with source OpenLoco (OpenGraphics) are no longer exported in scenario or save files.
 - Change: [#4041] Vehicle colours are now reset to the target company's when using the company takeover cheat.
 - Change: [#4041] Invisible 'planned' AI company track is no longer inherited when using the company takeover cheat.
 - Change: [#4041] The original AI company is now shut down after using the company takeover cheat.
 - Fix: [#2879] Crash when starting the game with an empty openloco.yaml file.
+- Fix: [#3916] Can save scenario set to use PNG heightmap source without generating landscape.
+- Fix: [#4012] The display resolution dropdown is not disabled on macOS.
 - Fix: [#4027] Crash when starting the game with malformed YAML schema.
 - Fix: [#4037] Cannot delete road stations acquired with the 'acquire all company assets' cheat.
-- Fix: [#4061] Creating industries does not select a random colour (vanilla bug).
-- Fix: [#4063] AI fails to create road at some rotations (vanilla bug).
-- Fix: [#4063] Road path finding uses incorrect values for road length (vanilla bug).
-- Fix: [#4063] Incorrect vehicle speed calculation (vanilla bug).
-- Fix: [#4063] Town expansion does not raise/lower certain land corners (vanilla bug).
+- Fix: [#4061] Creating industries does not select a random colour (original bug).
+- Fix: [#4063] AI fails to create road at some rotations (original bug).
+- Fix: [#4063] Road path finding uses incorrect values for road length (original bug).
+- Fix: [#4063] Incorrect vehicle speed calculation (original bug).
+- Fix: [#4063] Town expansion does not raise/lower certain land corners (original bug).
+- Fix: [#4087] Industries with zero production are using singular cargo unit strings.
+- Fix: [#4096] Numeric keypad Enter key does not confirm text input and save prompts.
 
 26.09 (2026-09-18)
 ------------------------------------------------------------------------
@@ -44,10 +51,10 @@
 - Change: [#3903] Updated the macOS app icon to match the new Liquid Glass style.
 - Fix: [#2082] Scrollbars can be overdrawn when certain windows are resized but their scrollview is not.
 - Fix: [#2983] Can no longer scroll to adjust terraform tool size widgets.
+- Fix: [#3155] Fix bug where last land variation sprite went unused (original bug).
 - Fix: [#3534] The minimum landscape height can be set to 0 in the landscape generator, while 1 is expected.
 - Fix: [#3566] The 'Only generate landscape when game starts' option remains in effect when switching to PNG heightmaps.
 - Fix: [#3597] News messages don't update viewport/image position correctly between messages.
-- Fix: [#3676] Fix bug where last land variation sprite went unused (original bug).
 - Fix: [#3795] Window layout changes prevent tutorials from playing correctly.
 - Fix: [#3855] UI invalidation issue when using switch company cheat.
 - Fix: [#3856] News ticker uses double the line height.

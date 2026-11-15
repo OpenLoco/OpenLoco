@@ -346,7 +346,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     // 0x0049E499
     static void prepareDraw(Window& self)
     {
-        Common::prepareDraw(&self);
+        Common::prepareDraw(self);
 
         auto& cState = getConstructionState();
         auto trackObj = ObjectManager::get<TrackObject>(cState.trackType);

@@ -114,15 +114,15 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
     static void drawSavePreview(Ui::Window& window, Gfx::DrawingContext& drawingCtx, int32_t x, int32_t y, int32_t width, int32_t height, const S5::SaveDetails& saveInfo);
     static void drawLandscapePreview(Ui::Window& window, Gfx::DrawingContext& drawingCtx, int32_t x, int32_t y, int32_t width, int32_t height);
-    static void drawTextInput(Ui::Window* window, Gfx::DrawingContext& drawingCtx, const char* text, int32_t caret, bool showCaret);
+    static void drawTextInput(Ui::Window& window, Gfx::DrawingContext& drawingCtx, const char* text, int32_t caret, bool showCaret);
     static void upOneLevel();
     static void defaultDirectory();
     static void changeDirectory(const fs::path& path);
-    static void processFileForLoadSave(Window* window);
-    static void processFileForLoadSave(Window* window, fs::path& entry);
-    static void processFileForDelete(Window* self, fs::path& entry);
+    static void processFileForLoadSave(Window& window);
+    static void processFileForLoadSave(Window& window, fs::path& entry);
+    static void processFileForDelete(Window& self, fs::path& entry);
     static void refreshDirectoryList();
-    static void loadFileDetails(Window* self);
+    static void loadFileDetails(Window& self);
     static bool filenameContainsInvalidChars();
     static const WindowEventList& getEvents();
 
@@ -251,7 +251,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 window.invalidate();
                 break;
             case Widx::kOkButton:
-                processFileForLoadSave(&window);
+                processFileForLoadSave(window);
                 break;
         }
     }
@@ -306,12 +306,12 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             self.invalidate();
 
             // Continue processing for load/save.
-            processFileForLoadSave(&self, entry);
+            processFileForLoadSave(self, entry);
         }
         // Clicking a file, with right mouse button
         else
         {
-            processFileForDelete(&self, entry);
+            processFileForDelete(self, entry);
         }
     }
 
@@ -335,7 +335,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
 
         self.var_85A = index;
-        loadFileDetails(&self);
+        loadFileDetails(self);
         self.invalidate();
     }
 
@@ -518,7 +518,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             if (drawingCtx.pushClip(Ui::Rect(filenameBox.left + 1, filenameBox.top + 1, filenameBox.right - filenameBox.left - 1, filenameBox.bottom - filenameBox.top - 1)))
             {
                 bool showCaret = Input::isFocused(window.type, window.number, widx::text_filename) && (inputSession.cursorFrame & 0x10) == 0;
-                drawTextInput(&window, drawingCtx, inputSession.buffer.c_str(), static_cast<int32_t>(inputSession.cursorPosition), showCaret);
+                drawTextInput(window, drawingCtx, inputSession.buffer.c_str(), static_cast<int32_t>(inputSession.cursorPosition), showCaret);
 
                 drawingCtx.popClip();
             }
@@ -627,7 +627,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
     }
 
-    static void drawTextInput(Ui::Window* window, Gfx::DrawingContext& drawingCtx, const char* text, int32_t caret, bool showCaret)
+    static void drawTextInput(Ui::Window& window, Gfx::DrawingContext& drawingCtx, const char* text, int32_t caret, bool showCaret)
     {
         auto tr = Gfx::TextRenderer(drawingCtx);
 
@@ -655,7 +655,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 origin = tr.drawStringLeft(origin, Colour::black, StringIds::black_stringid, args);
 
                 // Draw vertical caret
-                drawingCtx.drawRect(origin.x, origin.y, 1, 9, Colours::getShade(window->getColour(WindowColour::secondary).c(), 9), Gfx::RectFlags::none);
+                drawingCtx.drawRect(origin.x, origin.y, 1, 9, Colours::getShade(window.getColour(WindowColour::secondary).c(), 9), Gfx::RectFlags::none);
             }
         }
     }
@@ -724,7 +724,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     // 0x0044685C
     static bool keyUp(Window& w, uint32_t charCode, uint32_t keyCode)
     {
-        if (keyCode == SDLK_RETURN)
+        if (keyCode == SDLK_RETURN || keyCode == SDLK_KP_ENTER)
         {
             w.callOnMouseUp(widx::ok_button, w.widgets[widx::ok_button].id);
             return true;
@@ -784,14 +784,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     // 0x00446A93
     static void refreshDirectoryList()
     {
-        // All our filters are probably *.something so just truncate the *
-        // and treat as an extension filter
-        auto filterExtension = std::string(_filter);
-        if (filterExtension[0] == '*')
-        {
-            filterExtension = filterExtension.substr(1);
-        }
-
         _files.clear();
         if (_currentDirectory.empty())
         {
@@ -805,23 +797,11 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             {
                 for (const auto& file : fs::directory_iterator(_currentDirectory, fs::directory_options::skip_permission_denied))
                 {
-                    // Only list directories and normal files
-                    if (!(file.is_regular_file() || file.is_directory()))
+                    // Only list directories and normal files that match the filter
+                    if (file.is_directory() || (file.is_regular_file() && S5::matchesFilter(file.path(), _filter)))
                     {
-                        continue;
+                        _files.emplace_back(file.path());
                     }
-
-                    // Filter files by extension
-                    if (file.is_regular_file())
-                    {
-                        auto extension = file.path().extension().u8string();
-                        if (!Utility::iequals(extension, filterExtension))
-                        {
-                            continue;
-                        }
-                    }
-
-                    _files.emplace_back(file.path());
                 }
             }
             catch (const fs::filesystem_error& err)
@@ -940,7 +920,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x00446574
-    static void processFileForLoadSave(Window* self)
+    static void processFileForLoadSave(Window& self)
     {
         // Create full path to target file.
         fs::path path = _currentDirectory / inputSession.buffer;
@@ -951,7 +931,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         processFileForLoadSave(self, path);
     }
 
-    static void processFileForLoadSave(Window* self, fs::path& path)
+    static void processFileForLoadSave(Window& self, fs::path& path)
     {
         if (_type == browse_type::save)
         {
@@ -975,7 +955,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 args.push(StringIds::buffer_2039);
 
                 // Ask for confirmation to replace the file.
-                auto titleId = self->widgets[widx::caption].text;
+                auto titleId = self.widgets[widx::caption].text;
                 if (!Windows::PromptOkCancel::open(titleId, StringIds::replace_existing_file_prompt, args, StringIds::replace_existing_file_button))
                 {
                     return;
@@ -1016,11 +996,11 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
 
         // Close browse window to continue saving.
-        WindowManager::close(self);
+        WindowManager::close(&self);
     }
 
     // 0x004466CA
-    static void processFileForDelete(Window* self, fs::path& entry)
+    static void processFileForDelete(Window& self, fs::path& entry)
     {
         // Create full path to target file.
         fs::path path = _currentDirectory / entry.stem();
@@ -1036,7 +1016,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         args.push(StringIds::buffer_2039);
 
         // Ask for confirmation to delete the file.
-        auto titleId = self->widgets[widx::caption].text;
+        auto titleId = self.widgets[widx::caption].text;
         if (!Windows::PromptOkCancel::open(titleId, StringIds::delete_file_prompt, args, StringIds::delete_file_button))
         {
             return;
@@ -1047,20 +1027,20 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         // Refresh window
         refreshDirectoryList();
-        self->invalidate();
+        self.invalidate();
     }
 
     // 0x00446E87
-    static void loadFileDetails(Window* self)
+    static void loadFileDetails(Window& self)
     {
         freeFileDetails();
 
-        if (self->var_85A == -1)
+        if (self.var_85A == -1)
         {
             return;
         }
 
-        auto& entry = _files[self->var_85A];
+        auto& entry = _files[self.var_85A];
         if (fs::is_directory(entry))
         {
             return;

@@ -2521,8 +2521,15 @@ strings:
   2466: "Has cargo order"
   2467: "Transports cargo"
   2468: "{INT16} x {INT16}"
-  2469: "Map Size:"
-  2470: Sixteenth-scale
-  2471: Thirty-second-scale
-  2472: Sixty-fourth-scale
-  2473: Hundred-and-twenty-eighth-scale
+  2469: "{COLOUR BLACK}None yet"
+  2470: "Landscape must be generated when using PNG heightmap source"
+  2471: "Dropped file"
+  2472: "Load save file “{STRINGID}”?"
+  2473: "Load scenario file “{STRINGID}”?"
+  2474: "Load landscape/scenario file “{STRINGID}”?"
+  2475: "Load Save"
+  2476: "Load Scenario"
+  2477: "Load Landscape"
+  2478: "Cannot open a saved game in the Scenario Editor"
+  2479: "Invalid file type"
+  3000: "Map size

@@ -174,7 +174,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             }
         }
 
-        static SavedView getView(Window* self, const Message* news, uint16_t itemId, MessageItemArgumentType itemType, bool& selectable)
+        static SavedView getView(Window& self, const Message* news, uint16_t itemId, MessageItemArgumentType itemType, bool& selectable)
         {
             SavedView view;
             view.mapX = -1;
@@ -255,7 +255,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     // Used to indicate to drawNewsSubjectImages to draw a company image
                     // TODO: Do this better
                     view.zoomLevel = enumValue(SubjectType::companyFace);
-                    self->invalidate();
+                    self.invalidate();
                     selectable = true;
                     break;
 
@@ -276,7 +276,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     // Used to indicate to drawNewsSubjectImages to draw a vehicle image
                     // TODO: Do this better
                     view.zoomLevel = enumValue(SubjectType::vehicleImage);
-                    self->invalidate();
+                    self.invalidate();
                     selectable = true;
                     break;
             }
@@ -324,7 +324,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                     if (news->itemSubjects[subjectIndex] != 0xFFFF)
                     {
-                        view = getView(&self, news, news->itemSubjects[subjectIndex], itemType, selectable);
+                        view = getView(self, news, news->itemSubjects[subjectIndex], itemType, selectable);
                     }
                 }
             }
@@ -389,12 +389,12 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         // 0x0042A136
-        static void drawNewsSubjectImages(Window* self, Gfx::DrawingContext& drawingCtx, Message* news)
+        static void drawNewsSubjectImages(Window& self, Gfx::DrawingContext& drawingCtx, Message* news)
         {
             for (auto i = 0; i < 2; ++i)
             {
                 const auto itemSubject = news->itemSubjects[i];
-                const auto& viewWidget = self->widgets[Common::widx::viewport1 + i];
+                const auto& viewWidget = self.widgets[Common::widx::viewport1 + i];
                 const SubjectType subjectType = SubjectType(static_cast<uint8_t>(static_cast<int8_t>(_nState.savedView[i].zoomLevel)));
 
                 if (subjectType == SubjectType::companyFace && itemSubject != 0xFFFFU)
@@ -569,7 +569,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             args.push(news->date);
             tr.drawStringLeft(origin, Colour::black, StringIds::news_date, args);
 
-            drawNewsSubjectImages(&self, drawingCtx, news);
+            drawNewsSubjectImages(self, drawingCtx, news);
         }
 
         // 0x00429934
@@ -648,7 +648,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             args.push(news->date);
             tr.drawStringLeft(origin, Colour::black, StringIds::news_date, args);
 
-            drawNewsSubjectImages(&self, drawingCtx, news);
+            drawNewsSubjectImages(self, drawingCtx, news);
 
             x = 3;
             y = 5;

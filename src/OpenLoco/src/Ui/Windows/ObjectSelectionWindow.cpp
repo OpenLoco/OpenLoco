@@ -222,7 +222,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static Ui::TextInput::InputSession inputSession;
 
-    static void assignTabPositions(Window* self);
+    static void assignTabPositions(Window& self);
 
     enum widx
     {
@@ -401,22 +401,22 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00473154
-    static void assignTabPositions(Window* self)
+    static void assignTabPositions(Window& self)
     {
         auto xPos = 3;
         for (auto i = 0U; i < kMainTabInfo.size(); i++)
         {
             auto widgetIndex = widx::primaryTab1 + i;
-            if (shouldShowPrimaryTab(i, FilterLevel(self->filterLevel)))
+            if (shouldShowPrimaryTab(i, FilterLevel(self.filterLevel)))
             {
-                self->widgets[widgetIndex].hidden = false;
-                self->widgets[widgetIndex].left = xPos;
-                self->widgets[widgetIndex].right = xPos + 31;
-                xPos = self->widgets[widgetIndex].right;
+                self.widgets[widgetIndex].hidden = false;
+                self.widgets[widgetIndex].left = xPos;
+                self.widgets[widgetIndex].right = xPos + 31;
+                xPos = self.widgets[widgetIndex].right;
             }
             else
             {
-                self->widgets[widgetIndex].hidden = true;
+                self.widgets[widgetIndex].hidden = true;
             }
         }
     }
@@ -558,7 +558,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         window->currentSecondaryTab = 0;
         window->object = nullptr;
 
-        assignTabPositions(window);
+        assignTabPositions(*window);
         static_assert(kMainTabInfo[0].objectType == ObjectType::region);
         populateTabObjectList(ObjectType::region, FilterFlags(window->var_858));
 
@@ -584,7 +584,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             ObjectType objectType = optionalObjectType.value();
 
             window->filterLevel = enumValue(FilterLevel::advanced);
-            assignTabPositions(window);
+            assignTabPositions(*window);
             switchTabByObjectType(*window, objectType);
         }
 
@@ -913,10 +913,10 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         object->drawDescription(drawingCtx, x, y, width);
     }
 
-    static void drawDescription(const ObjectHeader& header, Window* self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y, Object& objectPtr)
+    static void drawDescription(const ObjectHeader& header, Window& self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y, Object& objectPtr)
     {
-        int16_t width = self->width - x;
-        int16_t height = self->height - y;
+        int16_t width = self.width - x;
+        int16_t height = self.height - y;
 
         // Clip the draw area to simplify image draw
         if (!drawingCtx.pushClip(Ui::Rect(x, y, width, height)))
@@ -966,10 +966,10 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         drawingCtx.popClip();
     }
 
-    static void drawDatDetails(const ObjectManager::ObjectIndexEntry& indexEntry, Window* self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y)
+    static void drawDatDetails(const ObjectManager::ObjectIndexEntry& indexEntry, Window& self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y)
     {
-        int16_t width = self->width - x;
-        int16_t height = self->height - y;
+        int16_t width = self.width - x;
+        int16_t height = self.height - y;
 
         // Clip the draw area to simplify image draw
         if (!drawingCtx.pushClip(Ui::Rect(x, y, width, height)))
@@ -1132,7 +1132,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
             drawDescription(
                 objHeader,
-                &self,
+                self,
                 drawingCtx,
                 self.widgets[widx::scrollview].right + 4,
                 y + kDescriptionRowHeight,
@@ -1142,7 +1142,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         {
             drawDatDetails(
                 ObjectManager::getObjectInIndex(self.rowHover),
-                &self,
+                self,
                 drawingCtx,
                 self.widgets[widx::scrollview].right + 4,
                 y + kDescriptionRowHeight);
@@ -1482,7 +1482,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         if (itemIndex < 0)
         {
             self.filterLevel = (self.filterLevel ^ 1) % 3;
-            assignTabPositions(&self);
+            assignTabPositions(self);
         }
 
         // Switch level?
@@ -1498,7 +1498,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             }
 
             self.filterLevel = itemIndex;
-            assignTabPositions(&self);
+            assignTabPositions(self);
 
             // Switch back to previously selected object type, if possible
             switchTabByObjectType(self, currentObjectType);
@@ -1540,7 +1540,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00472B54
-    static ObjectManager::ObjIndexPair getObjectFromSelection([[maybe_unused]] Window* self, int16_t& y)
+    static ObjectManager::ObjIndexPair getObjectFromSelection([[maybe_unused]] Window& self, int16_t& y)
     {
         for (auto& entry : _tabObjectList)
         {
@@ -1562,7 +1562,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x0047390A
     static void onScrollMouseOver(Ui::Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
-        auto objIndex = getObjectFromSelection(&self, y);
+        auto objIndex = getObjectFromSelection(self, y);
 
         if (objIndex.index == self.rowHover || objIndex.index == ObjectManager::kNullObjectIndex)
         {
@@ -1584,7 +1584,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x00473948
     static void onScrollMouseDown(Ui::Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
-        auto objIndex = getObjectFromSelection(&self, y);
+        auto objIndex = getObjectFromSelection(self, y);
         auto index = objIndex.index;
         auto object = objIndex.object._header;
 

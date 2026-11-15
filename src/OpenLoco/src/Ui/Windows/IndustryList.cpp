@@ -339,7 +339,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                         cargoProduction = industry.producedCargoQuantityPreviousMonth[cargoNumber];
 
                         auto cargoObj = ObjectManager::get<CargoObject>(producedCargoType);
-                        unitType = cargoProduction > 1 ? cargoObj->unitNamePlural : cargoObj->unitNameSingular;
+                        unitType = cargoProduction != 1 ? cargoObj->unitNamePlural : cargoObj->unitNameSingular;
                         break; // Only support one cargo type for now - it seems most (all?) industries only have a single cargo type
                     }
 

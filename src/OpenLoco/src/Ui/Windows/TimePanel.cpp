@@ -246,11 +246,11 @@ namespace OpenLoco::Ui::Windows::TimePanel
         args.push(opponent->name);
 
         // TODO: convert this to a builder pattern, with chainable functions to set the different string ids and arguments
-        TextInput::openTextInput(&self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, widx::map_chat_menu, args);
+        TextInput::openTextInput(self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, widx::map_chat_menu, args);
     }
 
     // 0x0043A72F
-    static void mapDropdown(Window* self, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void mapDropdown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
         {
@@ -262,7 +262,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
             switch (itemIndex)
             {
                 case 0:
-                    beginSendChatMessage(*self);
+                    beginSendChatMessage(self);
                     break;
                 case 1:
                     MapWindow::open();
@@ -297,7 +297,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         switch (id)
         {
             case Widx::kMapChatMenu:
-                mapDropdown(&w, widgetIndex, item_index);
+                mapDropdown(w, widgetIndex, item_index);
                 break;
         }
     }

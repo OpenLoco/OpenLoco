@@ -1008,7 +1008,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046D34D based on
-    static void setHoverItem(Window* self, int16_t y, int index)
+    static void setHoverItem(Window& self, int16_t y, int index)
     {
         uint32_t itemHover;
 
@@ -1021,15 +1021,15 @@ namespace OpenLoco::Ui::Windows::MapWindow
             itemHover = 0;
         }
 
-        if (itemHover != self->var_854)
+        if (itemHover != self.var_854)
         {
-            self->var_854 = itemHover;
-            self->invalidate();
+            self.var_854 = itemHover;
+            self.invalidate();
         }
 
-        if (self->var_854 != 0)
+        if (self.var_854 != 0)
         {
-            self->invalidate();
+            self.invalidate();
         }
     }
 
@@ -1047,7 +1047,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
     };
 
-    static void setHoverItemTab(Window* self, int16_t legendLeft, int16_t legendBottom)
+    static void setHoverItemTab(Window& self, int16_t legendLeft, int16_t legendBottom)
     {
         if (Input::hasFlag(Input::Flags::rightMousePressed))
         {
@@ -1057,7 +1057,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         auto cursorPos = Input::getMouseLocation2();
         auto window = WindowManager::findAt(cursorPos);
 
-        if (window != self)
+        if (window != &self)
         {
             return;
         }
@@ -1074,7 +1074,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         uint8_t i = 0;
         int16_t y = 0;
 
-        if (self->currentTab == (widx::tabRoutes - widx::tabOverall))
+        if (self.currentTab == (widx::tabRoutes - widx::tabOverall))
         {
             y = cursorPos.y;
 
@@ -1088,13 +1088,13 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 }
             }
         }
-        else if (cursorPos.y < static_cast<int16_t>(legendLengths[self->currentTab] * legendItemHeight))
+        else if (cursorPos.y < static_cast<int16_t>(legendLengths[self.currentTab] * legendItemHeight))
         {
             y = cursorPos.y;
 
-            for (; i < legendLengths[self->currentTab]; i++)
+            for (; i < legendLengths[self.currentTab]; i++)
             {
-                if (self->currentTab == (widx::tabIndustries - widx::tabOverall))
+                if (self.currentTab == (widx::tabIndustries - widx::tabOverall))
                 {
                     auto industryObj = ObjectManager::get<IndustryObject>(i);
 
@@ -1103,7 +1103,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         continue;
                     }
                 }
-                else if (self->currentTab == (widx::tabOwnership - widx::tabOverall))
+                else if (self.currentTab == (widx::tabOwnership - widx::tabOverall))
                 {
                     auto company = CompanyManager::get(CompanyId(i));
 
@@ -1163,7 +1163,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         auto x = self.x + self.width - 104;
         auto y = self.y + 44;
 
-        setHoverItemTab(&self, x, y);
+        setHoverItemTab(self, x, y);
     }
 
     // 0x0046B9E7
@@ -1354,7 +1354,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046D273
-    static void drawGraphKeyOverall(Window* self, Gfx::DrawingContext& drawingCtx, uint16_t x, uint16_t& y)
+    static void drawGraphKeyOverall(Window& self, Gfx::DrawingContext& drawingCtx, uint16_t x, uint16_t& y)
     {
         static constexpr PaletteIndex_t overallColours[] = {
             PaletteIndex::mutedDarkRed7,
@@ -1379,7 +1379,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         for (auto i = 0; i < kOverallGraphKeySize; i++)
         {
             auto colour = overallColours[i];
-            if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
+            if (!(self.var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
                 drawingCtx.drawRect(x, y + 3, 5, 5, colour, Gfx::RectFlags::none);
             }
@@ -1389,7 +1389,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             auto stringId = StringIds::small_black_string;
 
-            if (self->var_854 & (1 << i))
+            if (self.var_854 & (1 << i))
             {
                 stringId = StringIds::small_white_string;
             }
@@ -1412,7 +1412,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     };
 
     // 0x0046D379
-    static void drawGraphKeyVehicles(Window* self, Gfx::DrawingContext& drawingCtx, uint16_t x, uint16_t& y)
+    static void drawGraphKeyVehicles(Window& self, Gfx::DrawingContext& drawingCtx, uint16_t x, uint16_t& y)
     {
         static constexpr StringId lineNames[] = {
             StringIds::forbid_trains,
@@ -1427,7 +1427,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         for (uint8_t i = 0; i < std::size(_vehicleTypeCounts); i++)
         {
-            if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
+            if (!(self.var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
                 auto colour = vehicleTypeColours[i];
 
@@ -1439,7 +1439,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             auto stringId = StringIds::small_black_string;
 
-            if (self->var_854 & (1 << i))
+            if (self.var_854 & (1 << i))
             {
                 stringId = StringIds::small_white_string;
             }
@@ -1452,7 +1452,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046D47F
-    static void drawGraphKeyIndustries(Window* self, Gfx::DrawingContext& drawingCtx, uint16_t x, uint16_t& y)
+    static void drawGraphKeyIndustries(Window& self, Gfx::DrawingContext& drawingCtx, uint16_t x, uint16_t& y)
     {
         auto tr = Gfx::TextRenderer(drawingCtx);
 
@@ -1465,7 +1465,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 continue;
             }
 
-            if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
+            if (!(self.var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
                 auto colour = kIndustryColours[_assignedIndustryColours[i]];
 
@@ -1477,7 +1477,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             auto stringId = StringIds::small_black_string;
 
-            if (self->var_854 & (1 << i))
+            if (self.var_854 & (1 << i))
             {
                 stringId = StringIds::small_white_string;
             }
@@ -1490,7 +1490,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046D5A4
-    static void drawGraphKeyRoutes(Window* self, Gfx::DrawingContext& drawingCtx, uint16_t x, uint16_t& y)
+    static void drawGraphKeyRoutes(Window& self, Gfx::DrawingContext& drawingCtx, uint16_t x, uint16_t& y)
     {
         auto tr = Gfx::TextRenderer(drawingCtx);
 
@@ -1499,7 +1499,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             auto index = _routeToObjectIdMap[i];
             auto colour = _routeColours[i];
 
-            if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
+            if (!(self.var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
                 drawingCtx.drawRect(x, y + 3, 5, 5, colour, Gfx::RectFlags::none);
             }
@@ -1530,7 +1530,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             auto stringId = StringIds::small_black_string;
 
-            if (self->var_854 & (1 << i))
+            if (self.var_854 & (1 << i))
             {
                 stringId = StringIds::small_white_string;
             }
@@ -1543,7 +1543,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046D6E1
-    static void drawGraphKeyCompanies(Window* self, Gfx::DrawingContext& drawingCtx, uint16_t x, uint16_t& y)
+    static void drawGraphKeyCompanies(Window& self, Gfx::DrawingContext& drawingCtx, uint16_t x, uint16_t& y)
     {
         auto tr = Gfx::TextRenderer(drawingCtx);
 
@@ -1552,7 +1552,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             auto index = company.id();
             auto colour = Colours::getShade(company.mainColours.primary, 6);
 
-            if (!(self->var_854 & (1 << enumValue(index))) || !(mapFrameNumber & (1 << 2)))
+            if (!(self.var_854 & (1 << enumValue(index))) || !(mapFrameNumber & (1 << 2)))
             {
                 drawingCtx.drawRect(x, y + 3, 5, 5, colour, Gfx::RectFlags::none);
             }
@@ -1562,7 +1562,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             auto stringId = StringIds::small_black_string;
 
-            if (self->var_854 & (1 << enumValue(index)))
+            if (self.var_854 & (1 << enumValue(index)))
             {
                 stringId = StringIds::small_white_string;
             }
@@ -1575,7 +1575,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046D81F
-    static void formatVehicleString(Window* self, FormatArguments& args)
+    static void formatVehicleString(Window& self, FormatArguments& args)
     {
         static constexpr StringId vehicleStringSingular[] = {
             StringIds::num_trains_singular,
@@ -1595,7 +1595,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             StringIds::num_ships_plural,
         };
 
-        int16_t vehicleIndex = Numerics::bitScanForward(self->var_854);
+        int16_t vehicleIndex = Numerics::bitScanForward(self.var_854);
         uint16_t totalVehicleCount = 0;
         auto stringId = StringIds::status_num_vehicles_plural;
 
@@ -1627,9 +1627,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046D87C
-    static void formatIndustryString(Window* self, FormatArguments& args)
+    static void formatIndustryString(Window& self, FormatArguments& args)
     {
-        int16_t industryIndex = Numerics::bitScanForward(self->var_854);
+        int16_t industryIndex = Numerics::bitScanForward(self.var_854);
 
         if (industryIndex == -1)
         {
@@ -1719,23 +1719,23 @@ namespace OpenLoco::Ui::Windows::MapWindow
             switch (self.currentTab + widx::tabOverall)
             {
                 case widx::tabOverall:
-                    drawGraphKeyOverall(&self, drawingCtx, x, y);
+                    drawGraphKeyOverall(self, drawingCtx, x, y);
                     break;
 
                 case widx::tabVehicles:
-                    drawGraphKeyVehicles(&self, drawingCtx, x, y);
+                    drawGraphKeyVehicles(self, drawingCtx, x, y);
                     break;
 
                 case widx::tabIndustries:
-                    drawGraphKeyIndustries(&self, drawingCtx, x, y);
+                    drawGraphKeyIndustries(self, drawingCtx, x, y);
                     break;
 
                 case widx::tabRoutes:
-                    drawGraphKeyRoutes(&self, drawingCtx, x, y);
+                    drawGraphKeyRoutes(self, drawingCtx, x, y);
                     break;
 
                 case widx::tabOwnership:
-                    drawGraphKeyCompanies(&self, drawingCtx, x, y);
+                    drawGraphKeyCompanies(self, drawingCtx, x, y);
                     break;
             }
 
@@ -1756,11 +1756,11 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 break;
 
             case widx::tabVehicles:
-                formatVehicleString(&self, args);
+                formatVehicleString(self, args);
                 break;
 
             case widx::tabIndustries:
-                formatIndustryString(&self, args);
+                formatIndustryString(self, args);
                 break;
         }
 

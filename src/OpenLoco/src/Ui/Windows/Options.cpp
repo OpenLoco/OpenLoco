@@ -523,6 +523,23 @@ namespace OpenLoco::Ui::Windows::Options
             WindowManager::invalidateWidget(self.type, self.number, self.currentTab + 4);
         }
 
+        static void applyScreenModeRestrictions(Window& self)
+        {
+            if (Config::get().display.mode != Config::ScreenMode::fullscreen)
+            {
+                self.disabledWidgets |= (1ULL << Display::widx::display_resolution) | (1ULL << Display::widx::display_resolution_btn);
+            }
+
+#if !(defined(__APPLE__) && defined(__MACH__))
+            Display::screenModeToggleEnabled(self);
+#else
+            self.disabledWidgets |= (1ULL << Display::widx::screen_mode)
+                | (1ULL << Display::widx::screen_mode_btn)
+                | (1ULL << Display::widx::display_resolution)
+                | (1ULL << Display::widx::display_resolution_btn);
+#endif
+        }
+
         // 0x004BFA04
         static void prepareDraw(Window& self)
         {
@@ -588,9 +605,7 @@ namespace OpenLoco::Ui::Windows::Options
                 self.disabledWidgets |= (1ULL << widx::display_scale_up_btn);
             }
 
-#if !(defined(__APPLE__) && defined(__MACH__))
-            screenModeToggleEnabled(self);
-#endif
+            applyScreenModeRestrictions(self);
         }
 
         // 0x004BFAF9
@@ -598,23 +613,6 @@ namespace OpenLoco::Ui::Windows::Options
         {
             // Draw widgets.
             self.draw(drawingCtx);
-        }
-
-        static void applyScreenModeRestrictions(Window& self)
-        {
-            if (Config::get().display.mode != Config::ScreenMode::fullscreen)
-            {
-                self.disabledWidgets = (1ULL << Display::widx::display_resolution) | (1ULL << Display::widx::display_resolution_btn);
-            }
-
-#if !(defined(__APPLE__) && defined(__MACH__))
-            Display::screenModeToggleEnabled(self);
-#else
-            self.disabledWidgets |= (1ULL << Display::widx::screen_mode)
-                | (1ULL << Display::widx::screen_mode_btn)
-                | (1ULL << Display::widx::display_resolution)
-                | (1ULL << Display::widx::display_resolution_btn);
-#endif
         }
 
         static constexpr WindowEventList kEvents = {
@@ -2285,7 +2283,7 @@ namespace OpenLoco::Ui::Windows::Options
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
-            TextInput::openTextInput(&self, StringIds::preferred_owner_name, StringIds::enter_preferred_owner_name, StringIds::buffer_2039, widx::usePreferredOwnerName, {});
+            TextInput::openTextInput(self, StringIds::preferred_owner_name, StringIds::enter_preferred_owner_name, StringIds::buffer_2039, widx::usePreferredOwnerName, {});
         }
 
         // 0x004C135F
@@ -2329,7 +2327,7 @@ namespace OpenLoco::Ui::Windows::Options
             strcpy(buffer, companyName);
             buffer[strlen(companyName)] = '\0';
 
-            TextInput::openTextInput(&self, StringIds::preferred_company_name, StringIds::enter_preferred_company_name, StringIds::buffer_2040, widx::usePreferredCompanyName, {});
+            TextInput::openTextInput(self, StringIds::preferred_company_name, StringIds::enter_preferred_company_name, StringIds::buffer_2040, widx::usePreferredCompanyName, {});
         }
 
         static void usePreferredCompanyNameMouseUp(Window& self)
@@ -2908,8 +2906,6 @@ namespace OpenLoco::Ui::Windows::Options
         populateAvailableCurrencies();
         setPreferredCurrencyNameBuffer();
 
-        Display::applyScreenModeRestrictions(*window);
-
         window->holdableWidgets = 0;
         window->eventHandlers = &Display::getEvents();
         window->activatedWidgets = 0;
@@ -2971,12 +2967,7 @@ namespace OpenLoco::Ui::Windows::Options
         self.invalidate();
         self.setSizeFixed(tabInfo.kWindowSize);
 
-        if ((Common::tab)self.currentTab == Common::tab::display)
-        {
-            Display::applyScreenModeRestrictions(self);
-        }
-
-        else if ((Common::tab)self.currentTab == Common::tab::audio)
+        if ((Common::tab)self.currentTab == Common::tab::audio)
         {
             self.holdableWidgets = (1ULL << AudioTab::widx::volume_master) | (1ULL << AudioTab::widx::volume_music) | (1ULL << AudioTab::widx::volume_effects) | (1ULL << AudioTab::widx::volume_vehicles) | (1ULL << AudioTab::widx::volume_ui) | (1ULL << AudioTab::widx::volume_ambient);
         }

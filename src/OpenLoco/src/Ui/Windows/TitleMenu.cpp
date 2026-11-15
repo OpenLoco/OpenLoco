@@ -138,13 +138,13 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
     );
 
-    static void sub_439112(Window* window);
+    static void sub_439112(Window& window);
     static void openTutorial(int16_t itemIndex);
     static void sendChatMessage(const char* string);
     static void openScenarioSelect();
     static void loadGameClick();
     static void openEditor();
-    static void showMultiplayer(Window* window);
+    static void showMultiplayer(Window& window);
     static void multiplayerConnect(std::string_view host);
     static const WindowEventList& getEvents();
 
@@ -321,7 +321,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
                 beginSendChatMessage(window);
                 break;
             case Widx::kMultiplayerToggleBtn:
-                showMultiplayer(&window);
+                showMultiplayer(window);
                 break;
         }
     }
@@ -332,7 +332,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         switch (id)
         {
             case Widx::kTutorialBtn:
-                sub_439112(&window);
+                sub_439112(window);
                 break;
         }
     }
@@ -370,7 +370,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         return fallback;
     }
 
-    static void showMultiplayer(Window* window)
+    static void showMultiplayer(Window& window)
     {
         char* buffer = StringManager::getBufferString(StringIds::buffer_2039);
         buffer[0] = '\0';
@@ -387,19 +387,19 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         EditorController::init();
     }
 
-    static void sub_439112(Window* window)
+    static void sub_439112(Window& window)
     {
         Dropdown::add(0, StringIds::tutorial_1_title);
         Dropdown::add(1, StringIds::tutorial_2_title);
         Dropdown::add(2, StringIds::tutorial_3_title);
 
-        Widget* widget = &window->widgets[widx::tutorial_btn];
+        Widget* widget = &window.widgets[widx::tutorial_btn];
         Dropdown::showText(
-            window->x + widget->left,
-            window->y + widget->top,
+            window.x + widget->left,
+            window.y + widget->top,
             widget->width(),
             widget->height(),
-            window->getColour(WindowColour::primary).translucent(),
+            window.getColour(WindowColour::primary).translucent(),
             3,
             0x80);
     }
@@ -412,7 +412,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         args.push(StringIds::the_other_player);
 
         // TODO: convert this to a builder pattern, with chainable functions to set the different string ids and arguments
-        TextInput::openTextInput(&self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, widx::chat_btn, args);
+        TextInput::openTextInput(self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, widx::chat_btn, args);
     }
 
     static void sendChatMessage(const char* string)
