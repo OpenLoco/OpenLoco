@@ -50,6 +50,9 @@
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
+#include <OpenLoco/Diagnostics/Logging.h>
+#include <algorithm>
+#include <vector>
 
 using namespace OpenLoco::Ui::WindowManager;
 using namespace OpenLoco::World;
@@ -96,6 +99,13 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static uint8_t _trackColours[8];             // 0x00F25404
     static uint8_t _roadColours[8];              // 0x00F2540C
 
+    // Industry types picked in the industries key. Empty means every type is shown.
+    // Kept as object headers rather than indices so the choice stays valid after loading
+    // another game: indices are only meaningful for the currently loaded objects.
+    static std::vector<ObjectHeader> _industryFilter;
+    // _industryFilter resolved against the currently loaded industry objects (bit = object index).
+    static uint32_t _industryFilterMask = 0;
+
     enum widx
     {
         frame = 0,
@@ -109,6 +119,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         tabOwnership,
         scrollview,
         statusBar,
+        industryLegend,
     };
 
     namespace Widx
@@ -124,7 +135,22 @@ namespace OpenLoco::Ui::Windows::MapWindow
         constexpr WidgetId kTabOwnership{ "tabOwnership" };
         constexpr WidgetId kScrollview{ "scrollview" };
         constexpr WidgetId kStatusBar{ "statusBar" };
+        constexpr WidgetId kIndustryLegend{ "industryLegend" };
     }
+
+    // Invisible clickable area laid over the industries key. The key itself is painted in
+    // draw(); this widget only exists so clicks reach onMouseDown instead of starting a
+    // window move (which is what clicking the background panel does).
+    struct LegendHitArea : public Widget
+    {
+        constexpr LegendHitArea(WidgetId id, Point origin, Size size)
+            : Widget(id, origin, size, WidgetType::wt_6, WindowColour::secondary)
+        {
+            events.draw = &draw;
+        }
+
+        static void draw(Gfx::DrawingContext&, const Widget&, const WidgetState&) {}
+    };
 
     static constexpr auto kWidgets = makeWidgets(
         Widgets::Frame(Widx::kFrame, { 0, 0 }, { 350, 272 }, WindowColour::primary),
@@ -137,7 +163,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         Widgets::Tab(Widx::kTabRoutes, { 96, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_routes),
         Widgets::Tab(Widx::kTabOwnership, { 158, 15 }, { 31, 27 }, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_ownership),
         Widgets::ScrollView(Widx::kScrollview, { 3, 44 }, { 240, 215 }, WindowColour::secondary, Scrollbars::horizontal | Scrollbars::vertical),
-        Widgets::Label(Widx::kStatusBar, { 3, 250 }, { 322, 21 }, WindowColour::secondary, ContentAlign::center)
+        Widgets::Label(Widx::kStatusBar, { 3, 250 }, { 322, 21 }, WindowColour::secondary, ContentAlign::center),
+        LegendHitArea(Widx::kIndustryLegend, { 246, 44 }, { 100, 10 })
 
     );
 
@@ -545,6 +572,14 @@ namespace OpenLoco::Ui::Windows::MapWindow
     };
     // clang-format on
 
+    // An industry type is hidden when the key filter is active and the type isn't picked.
+    // A hovered key entry stays visible so it can still flash to show where it is.
+    static bool isIndustryTypeHidden(uint8_t objectId)
+    {
+        const auto bit = 1U << objectId;
+        return _industryFilterMask != 0 && !(_industryFilterMask & bit) && !(_flashingItems & bit);
+    }
+
     // 0x0046C9A8
     static void setMapPixelsIndustries(PaletteIndex_t* mapPtr, PaletteIndex_t* mapAltPtr, Pos2 pos, Pos2 delta)
     {
@@ -586,7 +621,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                             colour0 = colour1 = colourFlash0 = colourFlash1 = landImage->offset[0];
                         }
 
-                        if (surfaceEl->isIndustrial())
+                        if (surfaceEl->isIndustrial() && !isIndustryTypeHidden(IndustryManager::get(surfaceEl->industryId())->objectId))
                         {
                             const auto* industry = IndustryManager::get(surfaceEl->industryId());
                             const auto colourIndex = _assignedIndustryColours[industry->objectId];
@@ -623,6 +658,12 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         }
 
                         const auto* industry = IndustryManager::get(industryEl->industryId());
+                        if (isIndustryTypeHidden(industry->objectId))
+                        {
+                            // Leave the terrain colour underneath.
+                            continue;
+                        }
+
                         const auto colourIndex = _assignedIndustryColours[industry->objectId];
                         colourFlash0 = colourFlash1 = colour0 = colour1 = kIndustryColours[colourIndex];
                         if (_flashingItems & (1 << industry->objectId))
@@ -1114,6 +1155,129 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x00F2541D
     static uint16_t mapFrameNumber = 0;
 
+    static constexpr int16_t kLegendOffsetX = 104; // Key is drawn at window width minus this.
+    static constexpr int16_t kLegendOffsetY = 44;
+
+    static size_t getIndustryLegendRowCount()
+    {
+        size_t rows = 0;
+        for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::industry); i++)
+        {
+            if (ObjectManager::get<IndustryObject>(i) != nullptr)
+            {
+                rows++;
+            }
+        }
+        return rows;
+    }
+
+    // Returns the industry object index of the key row under a screen position, or -1.
+    // Mirrors the row layout of drawGraphKeyIndustries: one row per loaded industry object.
+    static int32_t getIndustryLegendItemAt(const Window& self, Point screenPos)
+    {
+        const int32_t legendLeft = self.x + self.width - kLegendOffsetX;
+        if (screenPos.x < legendLeft || screenPos.x > legendLeft + legendWidth)
+        {
+            return -1;
+        }
+
+        int32_t y = screenPos.y - (self.y + kLegendOffsetY);
+        if (y < 0)
+        {
+            return -1;
+        }
+
+        for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::industry); i++)
+        {
+            if (ObjectManager::get<IndustryObject>(i) == nullptr)
+            {
+                continue;
+            }
+
+            y -= legendItemHeight;
+            if (y < 0)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    static uint32_t computeIndustryFilterMask()
+    {
+        if (_industryFilter.empty())
+        {
+            return 0;
+        }
+
+        uint32_t mask = 0;
+        for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::industry); i++)
+        {
+            if (ObjectManager::get<IndustryObject>(i) == nullptr)
+            {
+                continue;
+            }
+
+            const auto& header = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::industry, i });
+            if (std::find(_industryFilter.begin(), _industryFilter.end(), header) != _industryFilter.end())
+            {
+                mask |= 1U << i;
+            }
+        }
+        return mask;
+    }
+
+    // Re-resolves the filter and repaints the whole map at once when it changed, so toggling
+    // a type is visible immediately instead of waiting for the incremental column sweep.
+    static void refreshIndustryFilter(Window& self)
+    {
+        const auto newMask = computeIndustryFilterMask();
+        if (newMask == _industryFilterMask)
+        {
+            return;
+        }
+
+        Diagnostics::Logging::verbose("Map industry filter mask: {:#x} -> {:#x}", _industryFilterMask, newMask);
+        _industryFilterMask = newMask;
+
+        if (self.currentTab == widx::tabIndustries - widx::tabOverall)
+        {
+            for (auto column = 0; column <= kMapColumns; column++)
+            {
+                setMapPixels(self);
+            }
+        }
+        self.invalidate();
+    }
+
+    static void onMouseDown(Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex, const WidgetId id)
+    {
+        if (id != Widx::kIndustryLegend)
+        {
+            return;
+        }
+
+        const auto index = getIndustryLegendItemAt(self, Input::getMouseLocation2());
+        if (index < 0)
+        {
+            return;
+        }
+
+        const auto& header = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::industry, static_cast<LoadedObjectId>(index) });
+        auto it = std::find(_industryFilter.begin(), _industryFilter.end(), header);
+        if (it != _industryFilter.end())
+        {
+            _industryFilter.erase(it);
+        }
+        else
+        {
+            _industryFilter.push_back(header);
+        }
+
+        Diagnostics::Logging::verbose("Map industry filter: toggled '{}', {} type(s) picked", header.getName(), _industryFilter.size());
+        refreshIndustryFilter(self);
+    }
+
     // 0x0046BA5B
     static void onUpdate(Window& self)
     {
@@ -1129,6 +1293,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
             self.var_846 = getCurrentRotation();
             clearMap();
         }
+
+        // Objects can change underneath an open map (e.g. loading a game), keep the mask in sync.
+        refreshIndustryFilter(self);
 
         auto i = 80;
 
@@ -1217,6 +1384,17 @@ namespace OpenLoco::Ui::Windows::MapWindow
         self.widgets[widx::statusBar].top = self.height - 12;
         self.widgets[widx::statusBar].bottom = self.height - 3;
         self.widgets[widx::statusBar].right = self.width - 14;
+
+        // Clickable only on the industries tab and only over the rows actually drawn.
+        {
+            auto& legend = self.widgets[widx::industryLegend];
+            const auto rows = static_cast<int16_t>(getIndustryLegendRowCount());
+            legend.hidden = self.currentTab != (widx::tabIndustries - widx::tabOverall) || rows == 0;
+            legend.left = self.width - kLegendOffsetX;
+            legend.right = legend.left + legendWidth;
+            legend.top = kLegendOffsetY;
+            legend.bottom = kLegendOffsetY + std::max<int16_t>(rows, 1) * legendItemHeight - 1;
+        }
 
         auto disabledWidgets = 0;
 
@@ -1445,7 +1623,11 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 continue;
             }
 
-            if (!(self.var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
+            const bool isHovered = self.var_854 & (1 << i);
+            // With an active filter, types that are not picked lose their colour swatch and are muted.
+            const bool isFilteredOut = _industryFilterMask != 0 && !(_industryFilterMask & (1U << i));
+
+            if (!isFilteredOut && (!isHovered || !(mapFrameNumber & (1 << 2))))
             {
                 auto colour = kIndustryColours[_assignedIndustryColours[i]];
 
@@ -1455,15 +1637,25 @@ namespace OpenLoco::Ui::Windows::MapWindow
             FormatArguments args{};
             args.push(industry->name);
 
-            auto stringId = StringIds::small_black_string;
-
-            if (self.var_854 & (1 << i))
-            {
-                stringId = StringIds::small_white_string;
-            }
-
             auto point = Point(x + 6, y);
-            tr.drawStringLeftClipped(point, 94, Colour::black, stringId, args);
+            if (isHovered)
+            {
+                tr.drawStringLeftClipped(point, 94, Colour::black, StringIds::small_white_string, args);
+            }
+            else if (isFilteredOut)
+            {
+                // Same font as the other rows ({SMALLFONT} in language files is Font::regular),
+                // drawn in the window's muted text colour instead of black.
+                auto* buffer = StringManager::getBufferString(StringIds::buffer_2039);
+                *buffer++ = ControlCodes::Font::regular;
+                *buffer++ = ControlCodes::windowColour2;
+                StringManager::formatString(buffer, 254, industry->name);
+                tr.drawStringLeftClipped(point, 94, Colour::black, StringIds::buffer_2039);
+            }
+            else
+            {
+                tr.drawStringLeftClipped(point, 94, Colour::black, StringIds::small_black_string, args);
+            }
 
             y += 10;
         }
@@ -1613,8 +1805,15 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         if (industryIndex == -1)
         {
-            auto industries = IndustryManager::industries();
-            auto industryCount = std::distance(std::begin(industries), std::end(industries));
+            int32_t industryCount = 0;
+            for (const auto& industry : IndustryManager::industries())
+            {
+                // With an active filter only count the picked types.
+                if (_industryFilterMask == 0 || (_industryFilterMask & (1U << industry.objectId)))
+                {
+                    industryCount++;
+                }
+            }
 
             auto stringId = StringIds::status_num_industries_plural;
 
@@ -2214,6 +2413,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         .onClose = onClose,
         .onMouseUp = onMouseUp,
         .onResize = onResize,
+        .onMouseDown = onMouseDown,
         .onUpdate = onUpdate,
         .getScrollSize = getScrollSize,
         .scrollMouseDown = scrollMouseDown,
@@ -2444,6 +2644,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         assignIndustryColours();
         assignRouteColours();
+
+        // The filter survives closing the map; resolve it against the objects loaded now.
+        _industryFilterMask = computeIndustryFilterMask();
 
         mapFrameNumber = 0;
     }
