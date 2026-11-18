@@ -556,46 +556,31 @@ namespace OpenLoco::Ui::ScrollView
                 return;
             }
 
-            switch (res.area)
+            if (res.area == ScrollPart::view) // 0x004C729A
             {
-                case ScrollPart::view: // 0x004C729A
-                    window.callScrollMouseDrag(res.scrollviewLoc.x, res.scrollviewLoc.y, static_cast<uint8_t>(res.index));
-                    break;
+                window.callScrollMouseDrag(res.scrollviewLoc.x, res.scrollviewLoc.y, static_cast<uint8_t>(res.index));
+                return;
+            }
 
-                case ScrollPart::hscrollbarButtonLeft:
-                    for (auto i = 0U; i < getInputTickDelta(); i++)
-                    {
+            for (auto i = 0U; i < getInputTickDelta(); i++)
+            {
+                switch (res.area)
+                {
+                    case ScrollPart::hscrollbarButtonLeft:
                         hButtonLeft(window, res.index, widgetIndex);
-                    }
-                    break;
-                case ScrollPart::hscrollbarButtonRight:
-                    for (auto i = 0U; i < getInputTickDelta(); i++)
-                    {
+                        break;
+                    case ScrollPart::hscrollbarButtonRight:
                         hButtonRight(window, res.index, widgetIndex);
-                    }
-                    break;
-                case ScrollPart::hscrollbarTrackLeft:
-                case ScrollPart::hscrollbarTrackRight:
-                    break;
-
-                case ScrollPart::vscrollbarButtonTop:
-                    for (auto i = 0U; i < getInputTickDelta(); i++)
-                    {
+                        break;
+                    case ScrollPart::vscrollbarButtonTop:
                         vButtonTop(window, res.index, widgetIndex);
-                    }
-                    break;
-                case ScrollPart::vscrollbarButtonBottom:
-                    for (auto i = 0U; i < getInputTickDelta(); i++)
-                    {
+                        break;
+                    case ScrollPart::vscrollbarButtonBottom:
                         vButtonBottom(window, res.index, widgetIndex);
-                    }
-                    break;
-                case ScrollPart::vscrollbarTrackTop:
-                case ScrollPart::vscrollbarTrackBottom:
-                    break;
-
-                default:
-                    break;
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }

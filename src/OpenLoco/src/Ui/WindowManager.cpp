@@ -40,7 +40,7 @@ namespace OpenLoco::Ui::WindowManager
     static constexpr size_t kMaxWindows = 64;
 
     static uint16_t _thousandthTickCounter; // 0x0052334E
-    static uint32_t _lastDay;
+    static uint32_t _lastTickDay;
     static WindowType _currentModalType = WindowType::undefined; // 0x005233B6
     static int32_t _currentRotation;                             // 0x00E3F0B8
 
@@ -114,9 +114,9 @@ namespace OpenLoco::Ui::WindowManager
         ToolTip::setNotShownTicks(ToolTip::getNotShownTicks() + timeSinceLastTick);
 
         // 0x00439BA5
-        if (getCurrentDay() != _lastDay)
+        if (getCurrentDay() != _lastTickDay)
         {
-            _lastDay = getCurrentDay();
+            _lastTickDay = getCurrentDay();
             if (find(WindowType::tooltip) && ToolTip::isTimeTooltip())
             {
                 Windows::ToolTip::closeAndReset();
