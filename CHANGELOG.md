@@ -19,6 +19,7 @@
 - Fix: [#4063] Town expansion does not raise/lower certain land corners (original bug).
 - Fix: [#4087] Industries with zero production are using singular cargo unit strings.
 - Fix: [#4096] Numeric keypad Enter key does not confirm text input and save prompts.
+- Fix: [#4102] Transitions between single and dual tracks to the right and dual track clockwise turnarounds cannot be constructed.
 
 26.09 (2026-09-18)
 ------------------------------------------------------------------------
