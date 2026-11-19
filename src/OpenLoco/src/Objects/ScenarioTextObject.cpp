@@ -21,7 +21,7 @@ namespace OpenLoco
         loadString(name, 0);
         loadString(details, 1);
 
-        assert(remainingData.size() == 0);
+        assert(remainingData.empty());
     }
 
     // 0x0043EE0B

@@ -281,7 +281,7 @@ namespace OpenLoco
         std::optional<int32_t> getArg(std::string_view name, size_t index = 0)
         {
             auto arg = getArg(name, index);
-            if (arg.size() != 0)
+            if (!arg.empty())
             {
                 return std::stoi(std::string(arg));
             }

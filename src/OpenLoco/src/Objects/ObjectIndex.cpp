@@ -94,7 +94,7 @@ namespace OpenLoco::ObjectManager
     // optionally recurses
     // func takes a const fs::directory_entry parameter and returns false to stop iteration
     template<typename Func>
-    static void iterateObjectFolder(fs::path path, bool shouldRecurse, Func&& func)
+    static void iterateObjectFolder(const fs::path& path, bool shouldRecurse, Func&& func)
     {
         if (!fs::exists(path))
         {
@@ -136,7 +136,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x00470F3C
-    static ObjectFolderState getCurrentObjectFolderState(fs::path path, bool shouldRecurse)
+    static ObjectFolderState getCurrentObjectFolderState(const fs::path& path, bool shouldRecurse)
     {
         ObjectFolderState currentState{};
 
@@ -333,7 +333,7 @@ namespace OpenLoco::ObjectManager
         Logging::verbose("Saved object index in {} milliseconds.", saveTimer.elapsed());
     }
 
-    static ObjectIndexEntry createPartialNewEntry(const ObjectHeader& objHeader, const fs::path filepath)
+    static ObjectIndexEntry createPartialNewEntry(const ObjectHeader& objHeader, const fs::path& filepath)
     {
         ObjectIndexEntry entry{};
 
@@ -361,7 +361,7 @@ namespace OpenLoco::ObjectManager
         return entry;
     }
 
-    static ObjectIndexEntry createNewEntry(const ObjectHeader& objHeader, const fs::path filepath, const TempLoadMetaData& metaData)
+    static ObjectIndexEntry createNewEntry(const ObjectHeader& objHeader, const fs::path& filepath, const TempLoadMetaData& metaData)
     {
         ObjectIndexEntry entry{};
 
@@ -390,7 +390,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // Adds a new object to the index by: 1. creating a partial index, 2. validating, 3. creating a full index entry
-    static void addObjectToIndex(const fs::path filepath)
+    static void addObjectToIndex(const fs::path& filepath)
     {
         ObjectHeader objHeader{};
         try
@@ -437,7 +437,7 @@ namespace OpenLoco::ObjectManager
         _installedObjectList.push_back(newEntry); // Previously ordered by name...
     }
 
-    static void addObjectsInFolder(fs::path path, bool shouldRecurse, uint32_t numObjects)
+    static void addObjectsInFolder(const fs::path& path, bool shouldRecurse, uint32_t numObjects)
     {
         uint8_t progress = 0; // Progress is used for the ProgressBar Ui element
         uint32_t i = 0;

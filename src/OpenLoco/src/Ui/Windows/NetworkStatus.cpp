@@ -48,7 +48,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
     Window& open(std::string_view text, CloseCallback cbClose)
     {
         _text = text;
-        _cbClose = cbClose;
+        _cbClose = std::move(cbClose);
 
         auto window = WindowManager::createWindowCentred(
             WindowType::networkStatus,
@@ -73,7 +73,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
     void setText(std::string_view text, CloseCallback cbClose)
     {
         _text = text;
-        _cbClose = cbClose;
+        _cbClose = std::move(cbClose);
         WindowManager::invalidate(WindowType::networkStatus);
     }
 

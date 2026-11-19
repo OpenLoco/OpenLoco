@@ -337,7 +337,7 @@ namespace OpenLoco::Input::Shortcuts
         Windows::Terraform::openClearArea();
     }
 
-    static void buildTracksBuildRoadsCommon(uint8_t roadOrTrackId, const AvailableTracksAndRoads available)
+    static void buildTracksBuildRoadsCommon(uint8_t roadOrTrackId, const AvailableTracksAndRoads& available)
     {
         if (roadOrTrackId == 0xFF)
         {

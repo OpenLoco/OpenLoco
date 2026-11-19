@@ -213,7 +213,7 @@ namespace OpenLoco::Audio
         const char* ptr = devices;
         do
         {
-            result.push_back(std::string(ptr));
+            result.emplace_back(ptr);
             ptr += result.back().size() + 1;
         } while (*ptr != '\0');
         return result;

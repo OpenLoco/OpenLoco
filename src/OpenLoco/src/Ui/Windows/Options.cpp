@@ -1231,7 +1231,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void audioDeviceMouseDown(const Window& self)
         {
             const auto& devices = Audio::getDevices();
-            if (devices.size() != 0)
+            if (!devices.empty())
             {
                 auto& dropdown = self.widgets[widx::audio_device];
                 Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), devices.size(), 0x80);

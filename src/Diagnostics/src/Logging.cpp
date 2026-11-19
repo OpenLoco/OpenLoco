@@ -55,12 +55,12 @@ namespace OpenLoco::Diagnostics::Logging
 
     }
 
-    void installSink(std::shared_ptr<LogSink> sink)
+    void installSink(const std::shared_ptr<LogSink>& sink)
     {
         _sinks.push_back(sink);
     }
 
-    void removeSink(std::shared_ptr<LogSink> sink)
+    void removeSink(const std::shared_ptr<LogSink>& sink)
     {
         auto it = std::find(_sinks.begin(), _sinks.end(), sink);
         if (it != _sinks.end())

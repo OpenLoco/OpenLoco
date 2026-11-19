@@ -27,7 +27,7 @@ namespace OpenLoco
         remainingData = remainingData.subspan(strRes.tableLength);
 
         // Ensure we've loaded the entire object
-        assert(remainingData.size() == 0);
+        assert(remainingData.empty());
     }
 
     // 0x00496B15
