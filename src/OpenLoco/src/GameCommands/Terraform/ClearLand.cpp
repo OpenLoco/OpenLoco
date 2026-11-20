@@ -21,7 +21,7 @@ using namespace OpenLoco::World;
 namespace OpenLoco::GameCommands
 {
     // 0x00469D76
-    static uint32_t clearTile(World::Pos2 pos, World::TileClearance::RemovedBuildings& removedBuildings, const Flags flags)
+    static uint32_t clearTile(World::Pos2 pos, World::TileClearance::RemovedBuildings& removedBuildings, const Flags flags, World::TileClearance::ClearFilters filters)
     {
         // This shouldn't happen due to using TilePosRangeView
         if (!World::validCoords(pos))
@@ -37,16 +37,19 @@ namespace OpenLoco::GameCommands
                 TileManager::setTerrainStyleAsCleared(pos);
             }
 
-            auto tileHeight = World::TileManager::getHeight(pos);
-            TileManager::removeAllWallsOnTileAbove(World::toTileSpace(pos), tileHeight.landHeight / 4);
+            if ((filters & World::TileClearance::ClearFilters::scenery) != World::TileClearance::ClearFilters::none)
+            {
+                auto tileHeight = World::TileManager::getHeight(pos);
+                TileManager::removeAllWallsOnTileAbove(World::toTileSpace(pos), tileHeight.landHeight / 4);
+            }
         }
 
         World::QuarterTile qt(0xF, 0);
 
         currency32_t cost{};
         // Bind our local vars to the tile clear function
-        auto clearFunc = [pos, &removedBuildings, flags, &cost](World::TileElementEntry& entry) {
-            return TileClearance::clearWithoutDefaultCollision(entry, pos, removedBuildings, flags, cost);
+        auto clearFunc = [pos, &removedBuildings, flags, filters, &cost](World::TileElementEntry& entry) {
+            return TileClearance::clearWithoutDefaultCollision(entry, pos, removedBuildings, flags, cost, filters);
         };
 
         auto tileHeight = World::TileManager::getHeight(pos);
@@ -73,7 +76,7 @@ namespace OpenLoco::GameCommands
 
         for (const auto& tilePos : tileLoop)
         {
-            uint32_t tileRes = clearTile(World::toWorldSpace(tilePos), removedBuildings, flags);
+            uint32_t tileRes = clearTile(World::toWorldSpace(tilePos), removedBuildings, flags, args.filters);
             if (tileRes == GameCommands::kFailure)
             {
                 return GameCommands::kFailure;
