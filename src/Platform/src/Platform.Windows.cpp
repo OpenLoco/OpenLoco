@@ -91,7 +91,7 @@ namespace OpenLoco::Platform
                 // Remove unaccessable drives (if error it is unaccessable)
                 if (fs::is_directory(drive, ec))
                 {
-                    drives.push_back(drive);
+                    drives.emplace_back(drive);
                 }
             }
         }

@@ -445,7 +445,7 @@ namespace OpenLoco::Vehicles::OrderManager
         }
 
         // Nothing to do? Bail early
-        if (rawOrders.size() == 0)
+        if (rawOrders.empty())
         {
             return orderOfInterest;
         }

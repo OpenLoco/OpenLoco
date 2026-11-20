@@ -525,7 +525,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             }
         }
 
-        if (_tabObjectList.size() > 0)
+        if (!_tabObjectList.empty())
         {
             return { static_cast<int16_t>(_tabObjectList[0].index), _tabObjectList[0].object };
         }

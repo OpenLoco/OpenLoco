@@ -869,7 +869,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop
         // Note: This is not using player company id! This looks odd.
         _railroadMenuObjects = companyGetAvailableRailTracks(GameCommands::getUpdatingCompanyId());
 
-        if (_railroadMenuObjects.size() == 0)
+        if (_railroadMenuObjects.empty())
         {
             return;
         }

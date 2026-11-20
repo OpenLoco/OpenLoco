@@ -610,7 +610,7 @@ namespace OpenLoco::S5
                 std::vector<std::byte> objectData;
                 objectData.resize(unownedObjectData.size());
                 std::copy(std::begin(unownedObjectData), std::end(unownedObjectData), std::begin(objectData));
-                file->packedObjects.push_back(std::make_pair(object, std::move(objectData)));
+                file->packedObjects.emplace_back(object, std::move(objectData));
             }
             // 0x004420B2
         }
@@ -1087,7 +1087,7 @@ namespace OpenLoco::S5
         return nullptr;
     }
 
-    bool matchesFilter(fs::path path, const char* filter)
+    bool matchesFilter(const fs::path& path, const char* filter)
     {
         // All our filters are probably *.something so just truncate the *
         // and treat as an extension filter

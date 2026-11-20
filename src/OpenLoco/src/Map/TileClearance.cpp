@@ -380,7 +380,7 @@ namespace OpenLoco::World::TileClearance
     }
 
     // 0x00462937
-    static bool canConstructAtWithClear(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, BuildingCollisionType flags, std::function<ClearFuncResult(TileElementEntry& el)> clearFunc)
+    static bool canConstructAtWithClear(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, BuildingCollisionType flags, const std::function<ClearFuncResult(TileElementEntry& el)>& clearFunc)
     {
         _constructAtElementPositionFlags = ElementPositionFlags::aboveGround;
         if (!drawableCoords(pos))
@@ -424,13 +424,13 @@ namespace OpenLoco::World::TileClearance
     }
 
     // 0x00462908
-    bool applyClearAtAllHeights(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearFuncResult(TileElementEntry& el)> clearFunc)
+    bool applyClearAtAllHeights(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, const std::function<ClearFuncResult(TileElementEntry& el)>& clearFunc)
     {
         return canConstructAtWithClear(pos, baseZ, clearZ, qt, BuildingCollisionType::anyHeight, clearFunc);
     }
 
     // 0x00462917
-    bool applyClearAtStandardHeight(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearFuncResult(TileElementEntry& el)> clearFunc)
+    bool applyClearAtStandardHeight(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, const std::function<ClearFuncResult(TileElementEntry& el)>& clearFunc)
     {
         return canConstructAtWithClear(pos, baseZ, clearZ, qt, BuildingCollisionType::standard, clearFunc);
     }

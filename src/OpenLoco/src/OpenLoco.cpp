@@ -282,7 +282,7 @@ namespace OpenLoco
         } while (Platform::getTime() - _last_tick_time < Engine::UpdateRateInMs);
     }
 
-    bool promptTickLoop(std::function<bool()> tickAction)
+    bool promptTickLoop(const std::function<bool()>& tickAction)
     {
         while (true)
         {

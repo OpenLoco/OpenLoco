@@ -232,7 +232,7 @@ void NetworkClient::receiveRequestStateResponseChunkPacket(const RequestStateRes
         }
 
         auto& rchunk = _requestStateChunksReceived[responseChunk.index];
-        if (rchunk.data.size() == 0)
+        if (rchunk.data.empty())
         {
             rchunk.offset = responseChunk.offset;
             rchunk.data.assign(responseChunk.data, responseChunk.data + responseChunk.dataSize);

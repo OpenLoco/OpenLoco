@@ -28,7 +28,7 @@ namespace OpenLoco::Game
 
     using Ui::Windows::PromptBrowse::browse_type;
 
-    static std::optional<std::string> openBrowsePrompt(std::string path, StringId titleId, browse_type type, const char* filter)
+    static std::optional<std::string> openBrowsePrompt(std::string_view path, StringId titleId, browse_type type, const char* filter)
     {
         SceneManager::setPauseFlag(PauseFlags::browsePrompt);
         Gfx::invalidateScreen();
@@ -302,7 +302,7 @@ namespace OpenLoco::Game
         Gfx::invalidateScreen();
     }
 
-    bool saveLandscape(std::string filename)
+    bool saveLandscape(const std::string& filename)
     {
         // 0x0043C4B3
         auto path = fs::u8path(filename).replace_extension(S5::extensionSC5);
@@ -317,7 +317,7 @@ namespace OpenLoco::Game
         return saveResult;
     }
 
-    void onDropFile(std::string pathString)
+    void onDropFile(const std::string& pathString)
     {
         if (!(SceneManager::isTitleMode() || SceneManager::isPlayMode() || SceneManager::isEditorMode()))
         {
@@ -402,7 +402,7 @@ namespace OpenLoco::Game
 
     void setActiveSavePath(std::string path)
     {
-        _activeSavePath = path;
+        _activeSavePath = std::move(path);
     }
 
     GameStateFlags getFlags()

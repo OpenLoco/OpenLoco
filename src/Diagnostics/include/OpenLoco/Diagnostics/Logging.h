@@ -67,7 +67,7 @@ namespace OpenLoco::Diagnostics::Logging
 
     void disableLevel(Level level);
 
-    void installSink(std::shared_ptr<LogSink> sink);
+    void installSink(const std::shared_ptr<LogSink>& sink);
 
-    void removeSink(std::shared_ptr<LogSink> sink);
+    void removeSink(const std::shared_ptr<LogSink>& sink);
 }

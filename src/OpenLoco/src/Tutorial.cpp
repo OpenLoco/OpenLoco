@@ -29,7 +29,7 @@ namespace OpenLoco::Tutorial
         return _state;
     }
 
-    static std::vector<uint16_t> readTutorialFile(fs::path filename)
+    static std::vector<uint16_t> readTutorialFile(const fs::path& filename)
     {
         std::ifstream file(filename, std::ios::in | std::ios::binary);
         file.unsetf(std::ios::skipws);

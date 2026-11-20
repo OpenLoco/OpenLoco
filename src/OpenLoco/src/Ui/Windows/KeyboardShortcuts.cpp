@@ -78,10 +78,10 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         _shortcutList.clear();
         for (auto& entry : ShortcutManager::getList())
         {
-            _shortcutList.push_back(entry.id);
+            _shortcutList.emplace_back(entry.id);
             if (std::find(kSeparatorPositions.begin(), kSeparatorPositions.end(), entry.id) != kSeparatorPositions.end())
             {
-                _shortcutList.push_back({});
+                _shortcutList.emplace_back();
             }
         }
     }

@@ -78,6 +78,10 @@ if (HAS_LIBSTDCPP)
     message(STATUS "libstdc++ detected will require linking with TBB")
 endif()
 
+# Enable a compilation database for clang-tidy (honoured by Makefile/Ninja generators;
+# the Visual Studio generator does not consume it).
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 if (NOT CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 20)
 endif()
