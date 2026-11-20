@@ -34,7 +34,7 @@ bool NetworkConnection::hasTimedOut() const
     return false;
 }
 
-void NetworkConnection::update()
+void NetworkConnection::tick()
 {
     resendUndeliveredPackets();
 }

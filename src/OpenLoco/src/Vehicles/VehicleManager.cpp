@@ -36,28 +36,28 @@ namespace OpenLoco::VehicleManager
         {
             for (auto* v : VehicleList())
             {
-                v->updateVehicle();
+                v->tickVehicle();
             }
         }
     }
 
     // 0x004C3C54
-    void updateMonthly()
+    void tickMonthly()
     {
         for (auto v : VehicleList())
         {
-            v->updateMonthly();
+            v->tickMonthly();
         }
     }
 
     // 0x004B94CF
-    void updateDaily()
+    void tickDaily()
     {
         if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !SceneManager::isEditorMode())
         {
             for (auto* v : VehicleList())
             {
-                v->updateDaily();
+                v->tickDaily();
             }
             Ui::WindowManager::invalidate(Ui::WindowType::vehicleList);
         }

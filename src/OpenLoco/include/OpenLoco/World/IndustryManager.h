@@ -25,13 +25,13 @@ namespace OpenLoco::IndustryManager
     bool hasFlags(const Flags flags);
     void setFlags(const Flags flags);
     void tick();
-    void updateDaily();
+    void tickDaily();
     uint8_t getMostCommonBuildingCargoType();
-    void updateMonthly();
+    void tickMonthly();
     int32_t capOfTypeOfIndustry(const uint8_t indObjId, const uint8_t numIndustriesFactor);
     void createNewIndustry(const uint8_t indObjId, const bool buildImmediately, const int32_t numAttempts);
     void createAllMapAnimations();
     bool industryNearPosition(const World::Pos2& position, IndustryObjectFlags flags);
-    void updateProducedCargoStats();
+    void tickProducedCargoStats();
     IndustryId allocateNewIndustry(const uint8_t type, const World::Pos2& pos, const Core::Prng& prng, const TownId nearbyTown);
 }

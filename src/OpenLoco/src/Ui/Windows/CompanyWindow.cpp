@@ -418,7 +418,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043270A
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo += 1;
             WindowManager::invalidateWidget(WindowType::company, self.number, Common::widx::tab_challenge);
@@ -604,7 +604,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             .onResize = onResize,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .textInput = textInput,
             .viewportRotate = viewportRotate,
             .prepareDraw = prepareDraw,
@@ -1100,7 +1100,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0432D85
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo += 1;
             WindowManager::invalidateWidget(WindowType::company, self.number, Common::widx::tab_details);
@@ -1194,7 +1194,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             .onResize = onResize,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .onToolUpdate = onToolUpdate,
             .onToolDown = onToolDown,
             .onToolAbort = onToolAbort,
@@ -1682,7 +1682,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043325F
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo += 1;
             WindowManager::invalidateWidget(WindowType::company, self.number, Common::widx::tab_colour_scheme);
@@ -1692,7 +1692,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .textInput = textInput,
             .prepareDraw = prepareDraw,
             .draw = draw,
@@ -2152,7 +2152,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043399D
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo += 1;
             WindowManager::invalidateWidget(WindowType::company, self.number, widx::scrollview);
@@ -2163,7 +2163,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .getScrollSize = getScrollSize,
             .textInput = textInput,
             .tooltip = tooltip,
@@ -2336,7 +2336,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433C7D
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo += 1;
             WindowManager::invalidateWidget(WindowType::company, self.number, Common::widx::tab_status);
@@ -2368,7 +2368,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             .onResize = onResize,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .textInput = textInput,
             .prepareDraw = prepareDraw,
             .draw = draw,
@@ -2518,7 +2518,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043402E
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo += 1;
             WindowManager::invalidateWidget(WindowType::company, self.number, Common::widx::tab_challenge);
@@ -2526,7 +2526,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .textInput = textInput,
             .prepareDraw = prepareDraw,
             .draw = draw,

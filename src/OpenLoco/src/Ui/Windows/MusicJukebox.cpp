@@ -303,7 +303,7 @@ namespace OpenLoco::Ui::Windows::MusicJukebox
     }
 
     // 0x004C04E0, 0x004C0A37
-    static void onUpdate(Window& self)
+    static void onTick(Window& self)
     {
         self.frameNo += 1;
         self.callPrepareDraw();
@@ -314,7 +314,7 @@ namespace OpenLoco::Ui::Windows::MusicJukebox
         .onMouseUp = onMouseUp,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
-        .onUpdate = onUpdate,
+        .onTick = onTick,
         .prepareDraw = prepareDraw,
         .draw = draw,
     };

@@ -430,7 +430,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A4A0
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo++;
 
@@ -484,7 +484,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .onHandleInputBegin = listWindowOnHandleInputBegin,
             .onHandleInputEnd = listWindowOnHandleInputEnd,
             .getScrollSize = getScrollSize,
@@ -684,7 +684,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A7F2
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo++;
             self.callPrepareDraw();
@@ -803,7 +803,7 @@ namespace OpenLoco::Ui::Windows::TownList
             .onResize = onResize,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .onToolUpdate = onToolUpdate,
             .onToolDown = onToolDown,
             .onToolAbort = onToolAbort,
@@ -942,7 +942,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AD51
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             if (!Input::hasFlag(Input::Flags::rightMousePressed))
             {
@@ -1481,7 +1481,7 @@ namespace OpenLoco::Ui::Windows::TownList
             .onResize = onResize,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .onHandleInputBegin = onHandleInputBegin,
             .onToolUpdate = onToolUpdate,
             .onToolDown = onToolDown,

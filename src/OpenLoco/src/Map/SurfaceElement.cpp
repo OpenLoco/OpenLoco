@@ -29,7 +29,7 @@ namespace OpenLoco::World
         }
     }
 
-    static void updateNonIndustrialSurface(SurfaceElement& elSurface, const World::Pos2 loc)
+    static void tickNonIndustrialSurface(SurfaceElement& elSurface, const World::Pos2 loc)
     {
         auto* landObj = ObjectManager::get<LandObject>(elSurface.terrain());
         if (landObj == nullptr)
@@ -102,7 +102,7 @@ namespace OpenLoco::World
         return nullptr;
     }
 
-    static bool updateIndustrialSurface(SurfaceElement& elSurface, const World::Pos2 loc)
+    static bool tickIndustrialSurface(SurfaceElement& elSurface, const World::Pos2 loc)
     {
         auto* industry = IndustryManager::get(elSurface.industryId());
         auto* industryObj = industry->getObject();
@@ -279,16 +279,16 @@ namespace OpenLoco::World
     }
 
     // 0x004691FA
-    bool updateSurface(SurfaceElement& elSurface, const World::Pos2 loc)
+    bool tickSurface(SurfaceElement& elSurface, const World::Pos2 loc)
     {
         bool elSurfaceValid = true;
         if (elSurface.isIndustrial())
         {
-            elSurfaceValid = !updateIndustrialSurface(elSurface, loc);
+            elSurfaceValid = !tickIndustrialSurface(elSurface, loc);
         }
         else
         {
-            updateNonIndustrialSurface(elSurface, loc);
+            tickNonIndustrialSurface(elSurface, loc);
         }
 
         auto* surf = elSurfaceValid ? &elSurface : TileManager::get(loc).surface();

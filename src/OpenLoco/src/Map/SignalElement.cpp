@@ -51,7 +51,7 @@ namespace OpenLoco::World
     }
 
     // 0x0048950F
-    bool updateSignalAnimation(const Animation& anim)
+    bool tickSignalAnimation(const Animation& anim)
     {
         AnimResult result{};
         auto tile = TileManager::get(anim.pos);

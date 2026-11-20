@@ -247,22 +247,22 @@ namespace OpenLoco::CompanyManager
     }
 
     // 0x00437FB8
-    void updateDaily()
+    void tickDaily()
     {
         for (auto& company : companies())
         {
-            company.updateDaily();
+            company.tickDaily();
         }
     }
 
     // 0x0043037B
-    void updateMonthly1()
+    void tickMonthly1()
     {
         setCompetitorStartDelay(Math::Bound::sub(getCompetitorStartDelay(), 1U));
 
         for (auto& company : companies())
         {
-            company.updateMonthly1();
+            company.tickMonthly1();
         }
         Ui::WindowManager::invalidate(Ui::WindowType::company);
         Ui::WindowManager::invalidate(Ui::WindowType::companyList);
@@ -280,29 +280,29 @@ namespace OpenLoco::CompanyManager
     }
 
     // 0x0042F213
-    void updateMonthlyHeadquarters()
+    void tickMonthlyHeadquarters()
     {
         for (auto& company : companies())
         {
-            company.updateMonthlyHeadquarters();
+            company.tickMonthlyHeadquarters();
         }
     }
 
     // 0x00487FC1
-    void updateQuarterly()
+    void tickQuarterly()
     {
         for (auto& company : companies())
         {
-            company.updateQuarterly();
+            company.tickQuarterly();
         }
     }
 
     // 0x004312C7
-    void updateYearly()
+    void tickYearly()
     {
         for (auto& company : companies())
         {
-            updateYearly(company);
+            tickYearly(company);
         }
         WindowManager::invalidate(Ui::WindowType::company);
     }

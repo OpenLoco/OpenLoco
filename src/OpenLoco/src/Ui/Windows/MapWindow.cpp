@@ -1115,7 +1115,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static uint16_t mapFrameNumber = 0;
 
     // 0x0046BA5B
-    static void onUpdate(Window& self)
+    static void onTick(Window& self)
     {
         self.frameNo++;
         self.callPrepareDraw();
@@ -2214,7 +2214,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         .onClose = onClose,
         .onMouseUp = onMouseUp,
         .onResize = onResize,
-        .onUpdate = onUpdate,
+        .onTick = onTick,
         .getScrollSize = getScrollSize,
         .scrollMouseDown = scrollMouseDown,
         .scrollMouseDrag = scrollMouseDown,

@@ -233,7 +233,7 @@ namespace OpenLoco::Ui::Windows::Error
         }
 
         // 0x00431E1B
-        static void onPeriodicUpdate(Ui::Window& self)
+        static void onPeriodicTick(Ui::Window& self)
         {
             self.var_846++;
             if (self.var_846 >= 7)
@@ -243,7 +243,7 @@ namespace OpenLoco::Ui::Windows::Error
         }
 
         static constexpr WindowEventList kEvents = {
-            .onPeriodicUpdate = onPeriodicUpdate,
+            .onPeriodicTick = onPeriodicTick,
             .draw = draw,
         };
 

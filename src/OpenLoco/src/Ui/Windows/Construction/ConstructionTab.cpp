@@ -1966,7 +1966,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static uint32_t placeTrackGhost(const GameCommands::TrackPlacementArgs& args);
     static void sub_4A193B();
 
-    static void updateConstructionArrow()
+    static void tickConstructionArrow()
     {
         auto& cState = getConstructionState();
 
@@ -1989,7 +1989,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // Places/removes the ghost, gets price, resets active widgets, updates the construction arrow
     // Ideally only construction arrow should be updated here the reason for doing the rest every update
     // instead of only in toolUpdate is unknown (but probably just to catch edge cases)
-    static void updateConstruction()
+    static void tickConstruction()
     {
         auto& cState = getConstructionState();
 
@@ -2032,11 +2032,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 }
             }
         }
-        updateConstructionArrow();
+        tickConstructionArrow();
     }
 
     // 0x0049DCA2
-    static void onUpdate(Window& self)
+    static void onTick(Window& self)
     {
         self.frameNo++;
         self.callPrepareDraw();
@@ -2060,7 +2060,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 ToolManager::toolCancel();
             }
         }
-        updateConstruction();
+        tickConstruction();
     }
 
     // Simplified TileManager::getHeight that only considers flat height
@@ -3401,7 +3401,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         .onMouseUp = onMouseUp,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
-        .onUpdate = onUpdate,
+        .onTick = onTick,
         .onToolUpdate = onToolUpdate,
         .onToolDown = onToolDown,
         .toolDrag = onToolDrag,

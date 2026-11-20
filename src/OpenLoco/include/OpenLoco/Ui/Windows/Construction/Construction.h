@@ -158,7 +158,7 @@ namespace OpenLoco::Ui::Windows::Construction
         void repositionTabs(Window& self);
         void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx);
         void onClose(Window& self);
-        void onUpdate(Window& self, GhostVisibilityFlags flag);
+        void onTick(Window& self, GhostVisibilityFlags flag);
         void sub_4CD454();
         void setTrackOptions(const uint8_t trackType);
         void setDisabledWidgets(Window& self);

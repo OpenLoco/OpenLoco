@@ -60,7 +60,6 @@ namespace OpenLoco::Ui::WindowManager
 
     void updateViewports();
     void tick();
-    void updateDaily();
     Window* getMainWindow();
     Viewport* getMainViewport();
     Window* find(WindowType type);
@@ -82,6 +81,7 @@ namespace OpenLoco::Ui::WindowManager
     Window* createWindow(WindowType type, Ui::Point origin, Ui::Size size, WindowFlags flags, const WindowEventList& events);
     Window* createWindowCentred(WindowType type, Ui::Size size, WindowFlags flags, const WindowEventList& events);
     Window* createWindow(WindowType type, Ui::Size size, WindowFlags flags, const WindowEventList& events);
+    void dispatchTickAll();
     void dispatchUpdateAll();
     void callHandleInputBeginEventOnAllWindows();
     void callHandleInputEndEventOnAllWindows();

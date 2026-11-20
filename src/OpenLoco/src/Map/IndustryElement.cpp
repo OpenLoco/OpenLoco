@@ -264,7 +264,7 @@ namespace OpenLoco::World
     }
 
     // 0x00456E32
-    bool updateIndustryContinuousAnimation(const Animation& anim)
+    bool tickIndustryContinuousAnimation(const Animation& anim)
     {
         auto tile = TileManager::get(anim.pos);
         for (auto& el : tile)
@@ -309,7 +309,7 @@ namespace OpenLoco::World
     }
 
     // 0x00456EEB
-    bool updateIndustryRandomAnimation(const Animation& anim)
+    bool tickIndustryRandomAnimation(const Animation& anim)
     {
         auto tile = TileManager::get(anim.pos);
         for (auto& el : tile)

@@ -34,7 +34,7 @@ namespace OpenLoco::Vehicles
     static_assert(distanceTraveledInATick(speedFromDistanceInATick(100)) == 100);
 
     // 0x004A9788
-    bool Vehicle1::update()
+    bool Vehicle1::tick()
     {
         switch (mode)
         {
@@ -42,16 +42,16 @@ namespace OpenLoco::Vehicles
             case TransportMode::water:
                 return true;
             case TransportMode::road:
-                return updateRoad();
+                return tickRoad();
             case TransportMode::rail:
-                return updateRail();
+                return tickRail();
             default:
                 return false;
         }
     }
 
     // 0x004A9969
-    bool Vehicle1::updateRoad()
+    bool Vehicle1::tickRoad()
     {
         uint16_t curveSpeedFraction = std::numeric_limits<uint16_t>::max();
         Speed16 newTargetSpeed = kSpeed16Max;
@@ -151,7 +151,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A97A6
-    bool Vehicle1::updateRail()
+    bool Vehicle1::tickRail()
     {
         Vehicle train{ head };
         uint16_t curveSpeedFraction = std::numeric_limits<uint16_t>::max();

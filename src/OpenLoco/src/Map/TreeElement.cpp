@@ -137,7 +137,7 @@ namespace OpenLoco::World
     }
 
     // 0x004BD52B
-    bool updateTreeElement(TileElementEntry& entry, const World::Pos2 loc)
+    bool tickTreeElement(TileElementEntry& entry, const World::Pos2 loc)
     {
         auto& elTree = entry.get<TreeElement>();
         if (elTree.unk7l() != 7)

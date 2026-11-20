@@ -19,8 +19,8 @@ namespace OpenLoco::VehicleManager
     using VehicleList = EntityManager::EntityList<EntityManager::EntityListIterator<Vehicles::VehicleHead>, EntityManager::EntityListType::vehicleHead>;
 
     void tick();
-    void updateMonthly();
-    void updateDaily();
+    void tickMonthly();
+    void tickDaily();
     void determineAvailableVehicles(Company& company);
     uint16_t determineAvailableVehicleTypes(const Company& company);
     void resetIfHeadingForStation(const StationId stationId);

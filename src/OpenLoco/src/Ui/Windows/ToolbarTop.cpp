@@ -1547,7 +1547,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop
         }
     }
 
-    static void onUpdate([[maybe_unused]] Window& self)
+    static void onTick([[maybe_unused]] Window& self)
     {
         _zoomTicks++;
     }
@@ -1763,7 +1763,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop
         .onMouseHover = onMouseHover,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
-        .onUpdate = onUpdate,
+        .onTick = onTick,
         .prepareDraw = prepareDraw,
         .draw = draw,
     };

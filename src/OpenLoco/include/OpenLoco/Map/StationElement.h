@@ -73,6 +73,6 @@ namespace OpenLoco::World
 #pragma pack(pop)
     static_assert(sizeof(StationElement) == kTileElementSize);
 
-    bool updateDockStationAnimation(const Animation& anim);
-    bool updateAirportStationAnimation(const Animation& anim);
+    bool tickDockStationAnimation(const Animation& anim);
+    bool tickAirportStationAnimation(const Animation& anim);
 }

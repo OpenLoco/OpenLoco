@@ -80,14 +80,14 @@ namespace OpenLoco
     }
 
     // 0x00437FC5
-    void Company::updateDaily()
+    void Company::tickDaily()
     {
         updateOwnerEmotion();
         for (auto& emotionDuration : activeEmotions)
         {
             emotionDuration = Math::Bound::sub(emotionDuration, 1u);
         }
-        updateDailyLogic();
+        tickDailyLogic();
         observationTimeout = Math::Bound::sub(observationTimeout, 1u);
         if (jailStatus != 0)
         {
@@ -101,16 +101,16 @@ namespace OpenLoco
         }
         if (CompanyManager::isPlayerCompany(id()))
         {
-            updateDailyPlayer();
+            tickDailyPlayer();
         }
         if (CompanyManager::getControllingId() == id())
         {
-            updateDailyControllingPlayer();
+            tickDailyControllingPlayer();
         }
     }
 
     // 0x00438205
-    void Company::updateDailyLogic()
+    void Company::tickDailyLogic()
     {
         if (CompanyManager::isPlayerCompany(id()))
         {
@@ -149,7 +149,7 @@ namespace OpenLoco
     }
 
     // 0x004387D0
-    void Company::updateDailyPlayer()
+    void Company::tickDailyPlayer()
     {
         if (SceneManager::isEditorMode() || SceneManager::isTitleMode())
         {
@@ -474,7 +474,7 @@ namespace OpenLoco
     }
 
     // 0x004312D2
-    void updateYearly(Company& company)
+    void tickYearly(Company& company)
     {
         for (auto type = 0U; type < ExpenditureType::Count; ++type)
         {
@@ -493,7 +493,7 @@ namespace OpenLoco
     }
 
     // 0x00487FCC
-    void Company::updateQuarterly()
+    void Company::tickQuarterly()
     {
         for (auto& thought : aiThoughts)
         {
@@ -518,13 +518,13 @@ namespace OpenLoco
         }
     }
 
-    void Company::updateDailyControllingPlayer()
+    void Company::tickDailyControllingPlayer()
     {
-        updateLoanAutorepay();
+        tickLoanAutorepay();
     }
 
     // 0x0042F220
-    void Company::updateMonthlyHeadquarters()
+    void Company::tickMonthlyHeadquarters()
     {
         setHeadquartersVariation(getHeadquarterPerformanceVariation());
     }
@@ -636,7 +636,7 @@ namespace OpenLoco
         GameCommands::setUpdatingCompanyId(prevUpdateCompany);
     }
 
-    void Company::updateMonthly1()
+    void Company::tickMonthly1()
     {
         std::rotate(std::begin(cargoUnitsDeliveredHistory), std::end(cargoUnitsDeliveredHistory) - 1, std::end(cargoUnitsDeliveredHistory));
         cargoUnitsDeliveredHistory[0] = cargoUnitsTotalDelivered;
@@ -772,7 +772,7 @@ namespace OpenLoco
         }
     }
 
-    void Company::updateLoanAutorepay()
+    void Company::tickLoanAutorepay()
     {
         if (currentLoan > 0 && cash > 0 && ((challengeFlags & CompanyFlags::autopayLoan) != CompanyFlags::none))
         {

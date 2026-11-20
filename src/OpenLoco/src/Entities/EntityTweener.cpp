@@ -47,6 +47,7 @@ namespace OpenLoco
             }
             return vehicle->isVehicleBody() || vehicle->isVehicleBogie();
         });
+        _tweened.assign(_entities.size(), false);
     }
 
     void EntityTweener::postTick()
@@ -80,6 +81,8 @@ namespace OpenLoco
 
         for (size_t i = 0; i < _entities.size(); ++i)
         {
+            _tweened[i] = false;
+
             auto* ent = _entities[i];
             if (ent == nullptr)
             {
@@ -94,6 +97,11 @@ namespace OpenLoco
                 continue;
             }
 
+            if (ent->position != posB)
+            {
+                continue;
+            }
+
             auto newPos = World::Pos3{ static_cast<int16_t>(std::round(posB.x * alpha + posA.x * inv)),
                                        static_cast<int16_t>(std::round(posB.y * alpha + posA.y * inv)),
                                        static_cast<int16_t>(std::round(posB.z * alpha + posA.z * inv)) };
@@ -104,6 +112,7 @@ namespace OpenLoco
             }
 
             ent->moveTo(newPos);
+            _tweened[i] = true;
         }
     }
 
@@ -111,6 +120,12 @@ namespace OpenLoco
     {
         for (size_t i = 0; i < _entities.size(); ++i)
         {
+            if (!_tweened[i])
+            {
+                continue;
+            }
+            _tweened[i] = false;
+
             auto* ent = _entities[i];
             if (ent == nullptr)
             {
@@ -133,6 +148,7 @@ namespace OpenLoco
         _entities.clear();
         _prePos.clear();
         _postPos.clear();
+        _tweened.clear();
     }
 
 }

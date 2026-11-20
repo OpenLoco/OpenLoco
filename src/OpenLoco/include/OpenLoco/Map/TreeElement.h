@@ -80,5 +80,5 @@ namespace OpenLoco::World
 #pragma pack(pop)
     static_assert(sizeof(TreeElement) == kTileElementSize);
 
-    bool updateTreeElement(TileElementEntry& entry, const World::Pos2 loc);
+    bool tickTreeElement(TileElementEntry& entry, const World::Pos2 loc);
 }

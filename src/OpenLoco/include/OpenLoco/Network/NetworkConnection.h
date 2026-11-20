@@ -46,7 +46,7 @@ namespace OpenLoco::Network
 
         const INetworkEndpoint& getEndpoint() const;
         bool hasTimedOut() const;
-        void update();
+        void tick();
         void receivePacket(const Packet& packet);
         void sendPacket(const Packet& packet);
         std::optional<Packet> takeNextPacket();

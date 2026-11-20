@@ -669,7 +669,7 @@ namespace OpenLoco
     }
 
     // 0x00492793
-    bool Station::updateCargo()
+    bool Station::tickCargo()
     {
         bool atLeastOneGoodRating = false;
         bool quantityUpdated = false;

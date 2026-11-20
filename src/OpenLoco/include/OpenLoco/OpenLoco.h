@@ -23,9 +23,10 @@ namespace OpenLoco
 
     void initialise();
     void update();
-    void sub_431695(uint16_t var_F253A0);
     uint16_t getTimeSinceLastTick();
-    uint16_t getNumFrameUpdates();
+    uint16_t getInputTimeDelta();
+    uint32_t getInputTickDelta();
+    float getInputFrameTime();
     bool promptTickLoop(std::function<bool()> tickAction);
     [[noreturn]] void exitCleanly();
     [[noreturn]] void exitWithError(StringId titleStringId, StringId messageStringId);

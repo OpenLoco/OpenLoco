@@ -1226,7 +1226,7 @@ namespace OpenLoco::Ui::Windows::Construction
         }
 
         // 0x0049E437, 0x0049E76F, 0x0049ECD1
-        void onUpdate(Window& self, GhostVisibilityFlags flag)
+        void onTick(Window& self, GhostVisibilityFlags flag)
         {
             self.frameNo++;
             self.callPrepareDraw();

@@ -496,7 +496,7 @@ namespace OpenLoco::MessageManager
     }
 
     // 0x004284DB
-    void updateDaily()
+    void tickDaily()
     {
         for (auto i = getNumMessages() - 1; i >= 0; --i)
         {

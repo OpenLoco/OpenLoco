@@ -139,7 +139,7 @@ namespace OpenLoco
     }
 
     // 0x0049749B
-    void Town::updateMonthly()
+    void Town::tickMonthly()
     {
         // Scroll history
         if (historySize == std::size(history))

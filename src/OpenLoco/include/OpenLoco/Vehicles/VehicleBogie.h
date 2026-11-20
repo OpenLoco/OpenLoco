@@ -33,8 +33,8 @@ namespace OpenLoco::Vehicles
 
     public:
         AirportObjectFlags getCompatibleAirportType();
-        bool update();
-        void updateSegmentCrashed();
+        bool tick();
+        void tickSegmentCrashed();
         bool isOnRackRail();
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
         {
@@ -42,7 +42,7 @@ namespace OpenLoco::Vehicles
         }
 
     private:
-        void updateRoll(const int32_t unkDistance);
+        void tickRoll(const int32_t unkDistance);
         void collision(const EntityId collideEntityId);
     };
     static_assert(sizeof(VehicleBogie) <= sizeof(Entity));

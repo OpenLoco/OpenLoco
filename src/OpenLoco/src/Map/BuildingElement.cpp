@@ -196,7 +196,7 @@ namespace OpenLoco::World
     }
 
     // 0x0042E4D4
-    bool updateBuildingAnimation1(const Animation& anim)
+    bool tickBuildingAnimation1(const Animation& anim)
     {
         auto tile = TileManager::get(anim.pos);
         BuildingElement* elBuilding = nullptr;
@@ -244,7 +244,7 @@ namespace OpenLoco::World
     }
 
     // 0x0042E646
-    bool updateBuildingAnimation2(const Animation& anim)
+    bool tickBuildingAnimation2(const Animation& anim)
     {
         auto tile = TileManager::get(anim.pos);
         BuildingElement* elBuilding = nullptr;

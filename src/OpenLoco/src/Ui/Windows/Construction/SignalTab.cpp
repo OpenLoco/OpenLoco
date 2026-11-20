@@ -166,9 +166,9 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     }
 
     // 0x0049E76F
-    static void onUpdate(Window& self)
+    static void onTick(Window& self)
     {
-        Common::onUpdate(self, GhostVisibilityFlags::signal);
+        Common::onTick(self, GhostVisibilityFlags::signal);
     }
 
     // 0x004A417A
@@ -448,7 +448,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         .onMouseUp = onMouseUp,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
-        .onUpdate = onUpdate,
+        .onTick = onTick,
         .onToolUpdate = onToolUpdate,
         .toolUp = onToolUp,
         .prepareDraw = prepareDraw,

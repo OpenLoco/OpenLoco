@@ -75,7 +75,7 @@ namespace OpenLoco
         getGameState().dayCounter = progression;
     }
 
-    bool updateDayCounter()
+    bool tickDayCounter()
     {
         bool result = false;
         constexpr uint16_t kIncrement = 682; // Results in a day length of ~96.09 updates (~2.4 seconds).

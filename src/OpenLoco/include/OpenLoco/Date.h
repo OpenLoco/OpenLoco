@@ -59,7 +59,7 @@ namespace OpenLoco
      * Updates the current day counter.
      * @returns true if the counter wraps indicating a new day.
      */
-    bool updateDayCounter();
+    bool tickDayCounter();
     Date calcDate(uint32_t totalDays);
     uint32_t calcDays(Date date);
 

@@ -184,7 +184,7 @@ namespace OpenLoco::ObjectManager
 
     void updateRoadObjectIdFlags();
     void updateDefaultLevelCrossingType();
-    void updateYearly2();
+    void tickYearly2();
 
     void updateTerraformObjects();
     void resetDefaultTrackTypeObjectId();

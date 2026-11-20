@@ -25,7 +25,7 @@ namespace OpenLoco::Network
         void endReceivePacketLoop();
 
         virtual void onClose();
-        virtual void onUpdate();
+        virtual void onTick();
         virtual void onReceivePacket(IUdpSocket& socket, std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet);
 
     public:
@@ -34,7 +34,7 @@ namespace OpenLoco::Network
 
         bool isClosed() const;
         void close();
-        void update();
+        void tick();
 
         virtual void sendChatMessage(std::string_view message) = 0;
     };

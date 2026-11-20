@@ -350,7 +350,7 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
     }
 
     // 0x00439670
-    static void onUpdate(Window& w)
+    static void onTick(Window& w)
     {
         w.var_854++;
         if (w.var_854 >= 24)
@@ -364,7 +364,7 @@ namespace OpenLoco::Ui::Windows::CompanyInfoPanel
         .onMouseHover = onMouseDown,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
-        .onUpdate = onUpdate,
+        .onTick = onTick,
         .tooltip = tooltip,
         .cursor = onCursor,
         .prepareDraw = prepareDraw,

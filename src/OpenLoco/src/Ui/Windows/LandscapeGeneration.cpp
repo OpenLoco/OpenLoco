@@ -235,7 +235,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             drawTabs(window, drawingCtx);
         }
 
-        static void update(Window& window)
+        static void tick(Window& window)
         {
             window.frameNo++;
             window.callPrepareDraw();
@@ -529,7 +529,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = Common::update,
+            .onTick = Common::tick,
             .prepareDraw = prepareDraw,
             .draw = Common::draw,
         };
@@ -932,9 +932,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043E3D9
-        static void update(Window& window)
+        static void tick(Window& window)
         {
-            Common::update(window);
+            Common::tick(window);
 
             auto dropdown = WindowManager::find(WindowType::dropdown, 0);
             if (dropdown == nullptr && window.rowHover != -1)
@@ -948,7 +948,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = update,
+            .onTick = tick,
             .getScrollSize = getScrollSize,
             .scrollMouseDown = scrollMouseDown,
             .tooltip = tooltip,
@@ -1193,7 +1193,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
             .onMouseDown = onMouseDown,
-            .onUpdate = Common::update,
+            .onTick = Common::tick,
             .prepareDraw = prepareDraw,
             .draw = Common::draw,
         };
@@ -1473,7 +1473,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
             .onMouseDown = onMouseDown,
-            .onUpdate = Common::update,
+            .onTick = Common::tick,
             .prepareDraw = prepareDraw,
             .draw = Common::draw,
         };
@@ -1601,7 +1601,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             .onMouseUp = Common::onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = Common::update,
+            .onTick = Common::tick,
             .prepareDraw = prepareDraw,
             .draw = Common::draw,
         };
@@ -1712,7 +1712,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             .onMouseUp = Common::onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = Common::update,
+            .onTick = Common::tick,
             .prepareDraw = prepareDraw,
             .draw = Common::draw,
         };

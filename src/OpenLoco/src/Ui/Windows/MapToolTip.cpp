@@ -109,7 +109,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
     }
 
     // 0x004CF13B
-    static void update(Window& self)
+    static void tick(Window& self)
     {
         self.invalidate();
     }
@@ -153,7 +153,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
     }
 
     static constexpr WindowEventList kEvents = {
-        .onUpdate = update,
+        .onTick = tick,
         .draw = draw,
     };
 

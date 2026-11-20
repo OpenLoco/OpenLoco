@@ -11,7 +11,7 @@
 namespace OpenLoco::World
 {
     template<typename Object>
-    bool updateStationAnimation(const Animation& anim, StationType stationType)
+    bool tickStationAnimation(const Animation& anim, StationType stationType)
     {
         auto tile = TileManager::get(anim.pos);
         for (auto& el : tile)
@@ -59,14 +59,14 @@ namespace OpenLoco::World
     }
 
     // 0x004944B6
-    bool updateDockStationAnimation(const Animation& anim)
+    bool tickDockStationAnimation(const Animation& anim)
     {
-        return updateStationAnimation<DockObject>(anim, StationType::docks);
+        return tickStationAnimation<DockObject>(anim, StationType::docks);
     }
 
     // 0x004939ED
-    bool updateAirportStationAnimation(const Animation& anim)
+    bool tickAirportStationAnimation(const Animation& anim)
     {
-        return updateStationAnimation<AirportObject>(anim, StationType::airport);
+        return tickStationAnimation<AirportObject>(anim, StationType::airport);
     }
 }

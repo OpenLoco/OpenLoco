@@ -398,7 +398,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             WindowManager::invalidate(WindowType::cheats);
         }
 
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo += 1;
             self.callPrepareDraw();
@@ -413,7 +413,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .prepareDraw = prepareDraw,
             .draw = draw,
         };
@@ -598,7 +598,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo += 1;
             self.callPrepareDraw();
@@ -609,7 +609,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .prepareDraw = prepareDraw,
             .draw = draw,
         };
@@ -780,7 +780,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo += 1;
             self.callPrepareDraw();
@@ -789,7 +789,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .prepareDraw = prepareDraw,
             .draw = draw,
         };
@@ -908,7 +908,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo += 1;
             self.callPrepareDraw();
@@ -917,7 +917,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .prepareDraw = prepareDraw,
             .draw = draw,
         };

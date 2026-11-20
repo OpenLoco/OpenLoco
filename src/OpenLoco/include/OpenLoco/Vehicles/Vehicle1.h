@@ -38,9 +38,9 @@ namespace OpenLoco::Vehicles
         uint8_t var_52;
         IncomeStats lastIncome;
 
-        bool update();
-        bool updateRoad();
-        bool updateRail();
+        bool tick();
+        bool tickRoad();
+        bool tickRail();
         UpdateMotionResult updateRoadMotion(int32_t distance);
     };
     static_assert(sizeof(Vehicle1) <= sizeof(Entity));

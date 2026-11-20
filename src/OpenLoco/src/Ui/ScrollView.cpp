@@ -1,5 +1,6 @@
 #include "Ui/ScrollView.h"
 #include "Input.h"
+#include "OpenLoco.h"
 #include "Ui.h"
 #include "Ui/ToolTip.h"
 #include "Ui/Widget.h"
@@ -555,34 +556,31 @@ namespace OpenLoco::Ui::ScrollView
                 return;
             }
 
-            switch (res.area)
+            if (res.area == ScrollPart::view) // 0x004C729A
             {
-                case ScrollPart::view: // 0x004C729A
-                    window.callScrollMouseDrag(res.scrollviewLoc.x, res.scrollviewLoc.y, static_cast<uint8_t>(res.index));
-                    break;
+                window.callScrollMouseDrag(res.scrollviewLoc.x, res.scrollviewLoc.y, static_cast<uint8_t>(res.index));
+                return;
+            }
 
-                case ScrollPart::hscrollbarButtonLeft:
-                    hButtonLeft(window, res.index, widgetIndex);
-                    break;
-                case ScrollPart::hscrollbarButtonRight:
-                    hButtonRight(window, res.index, widgetIndex);
-                    break;
-                case ScrollPart::hscrollbarTrackLeft:
-                case ScrollPart::hscrollbarTrackRight:
-                    break;
-
-                case ScrollPart::vscrollbarButtonTop:
-                    vButtonTop(window, res.index, widgetIndex);
-                    break;
-                case ScrollPart::vscrollbarButtonBottom:
-                    vButtonBottom(window, res.index, widgetIndex);
-                    break;
-                case ScrollPart::vscrollbarTrackTop:
-                case ScrollPart::vscrollbarTrackBottom:
-                    break;
-
-                default:
-                    break;
+            for (auto i = 0U; i < getInputTickDelta(); i++)
+            {
+                switch (res.area)
+                {
+                    case ScrollPart::hscrollbarButtonLeft:
+                        hButtonLeft(window, res.index, widgetIndex);
+                        break;
+                    case ScrollPart::hscrollbarButtonRight:
+                        hButtonRight(window, res.index, widgetIndex);
+                        break;
+                    case ScrollPart::vscrollbarButtonTop:
+                        vButtonTop(window, res.index, widgetIndex);
+                        break;
+                    case ScrollPart::vscrollbarButtonBottom:
+                        vButtonBottom(window, res.index, widgetIndex);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }

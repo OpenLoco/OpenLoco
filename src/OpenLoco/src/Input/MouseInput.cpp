@@ -565,7 +565,7 @@ namespace OpenLoco::Input
             case MouseButton::released:
             {
                 // 4C74E4
-                _ticksSinceDragStart += getTimeSinceLastTick();
+                _ticksSinceDragStart += getInputTimeDelta();
                 auto vp = window->viewports[0];
                 if (vp == nullptr)
                 {
@@ -685,7 +685,7 @@ namespace OpenLoco::Input
         {
             case MouseButton::released:
             {
-                _ticksSinceDragStart += getTimeSinceLastTick();
+                _ticksSinceDragStart += getInputTimeDelta();
 
                 const Ui::Point dragOffset = getNextDragOffset();
                 if (dragOffset.x != 0 || dragOffset.y != 0)
@@ -979,13 +979,22 @@ namespace OpenLoco::Input
                 {
                     if (!window->isDisabled(widgetIndex))
                     {
-                        if (_clickRepeatTicks != 0)
+                        bool repeatClick = false;
+                        for (auto i = 0U; i < getInputTickDelta(); i++)
                         {
-                            _clickRepeatTicks++;
+                            if (_clickRepeatTicks != 0)
+                            {
+                                _clickRepeatTicks++;
+                            }
+
+                            if (_clickRepeatTicks >= 16 && (_clickRepeatTicks % 4) == 0)
+                            {
+                                repeatClick = true;
+                            }
                         }
 
                         // Handle click repeat
-                        if (window->isHoldable(widgetIndex) && _clickRepeatTicks >= 16 && (_clickRepeatTicks % 4) == 0)
+                        if (repeatClick && window->isHoldable(widgetIndex))
                         {
                             window->callOnMouseDown(widgetIndex, window->widgets[widgetIndex].id);
                         }
@@ -1202,7 +1211,7 @@ namespace OpenLoco::Input
             if (window != nullptr && Ui::ToolTip::getWindowType() == window->type && Ui::ToolTip::getWindowNumber() == window->number && Ui::ToolTip::getWidgetIndex() == widgetIndex)
             {
                 auto tooltipTimeout = Ui::ToolTip::getTooltipTimeout();
-                tooltipTimeout += getTimeSinceLastTick();
+                tooltipTimeout += getInputTimeDelta();
                 Ui::ToolTip::setTooltipTimeout(tooltipTimeout);
 
                 if (tooltipTimeout >= 8000)
@@ -1223,7 +1232,7 @@ namespace OpenLoco::Input
         if (tooltipNotShownTicks < 500 || (x == tooltipMousePos.x && y == tooltipMousePos.y))
         {
             auto tooltipTimeout = Ui::ToolTip::getTooltipTimeout();
-            tooltipTimeout += getTimeSinceLastTick();
+            tooltipTimeout += getInputTimeDelta();
             Ui::ToolTip::setTooltipTimeout(tooltipTimeout);
 
             int bp = 2000;

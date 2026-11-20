@@ -66,7 +66,7 @@ void NetworkClient::onClose()
     }
 }
 
-void NetworkClient::onUpdate()
+void NetworkClient::onTick()
 {
     processReceivedPackets();
     if (_status == NetworkClientStatus::connecting)
@@ -116,7 +116,7 @@ void NetworkClient::processReceivedPackets()
                 return;
             }
         }
-        _serverConnection->update();
+        _serverConnection->tick();
     }
 }
 

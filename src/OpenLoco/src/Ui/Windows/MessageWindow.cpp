@@ -70,7 +70,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         static void prepareDraw(Window& self);
         static void switchTab(Window& self, WidgetIndex_t widgetIndex);
-        static void onUpdate(Window& self);
+        static void onTick(Window& self);
         static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx);
     }
 
@@ -284,7 +284,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onResize = onResize,
-            .onUpdate = Common::onUpdate,
+            .onTick = Common::onTick,
             .onHandleInputBegin = listWindowOnHandleInputBegin,
             .onHandleInputEnd = listWindowOnHandleInputEnd,
             .getScrollSize = getScrollSize,
@@ -585,7 +585,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = Common::onUpdate,
+            .onTick = Common::onTick,
             .prepareDraw = prepareDraw,
             .draw = draw,
         };
@@ -691,7 +691,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A826 and 0x0042AB6A
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo++;
             self.callPrepareDraw();

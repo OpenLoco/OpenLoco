@@ -284,21 +284,21 @@ void NetworkServer::processPackets()
     }
 }
 
-void NetworkServer::onUpdate()
+void NetworkServer::onTick()
 {
     processIncomingConnections();
     processPackets();
-    updateClients();
+    tickClients();
     sendChatMessages();
     sendPings();
     removedTimedOutClients();
 }
 
-void NetworkServer::updateClients()
+void NetworkServer::tickClients()
 {
     for (auto& client : _clients)
     {
-        client->connection->update();
+        client->connection->tick();
     }
 }
 
