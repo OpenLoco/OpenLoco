@@ -1165,6 +1165,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC555
         static void prepareDraw(Window& self)
         {
+            self.activatedWidgets = 0;
+
             Common::prepareDraw(self);
 
             self.activatedWidgets |= (1ULL << widx::tool_area);
@@ -1182,25 +1184,15 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 self.activatedWidgets |= (1ULL << widx::remove_scenery);
             }
-            else
-            {
-                self.activatedWidgets &= ~(1ULL << widx::remove_scenery);
-            }
+
             if ((filters & World::TileClearance::ClearFilters::buildings) != World::TileClearance::ClearFilters::none)
             {
                 self.activatedWidgets |= (1ULL << widx::remove_buildings);
             }
-            else
-            {
-                self.activatedWidgets &= ~(1ULL << widx::remove_buildings);
-            }
+
             if ((filters & World::TileClearance::ClearFilters::trackAndRoad) != World::TileClearance::ClearFilters::none)
             {
                 self.activatedWidgets |= (1ULL << widx::remove_tracks_and_roads);
-            }
-            else
-            {
-                self.activatedWidgets &= ~(1ULL << widx::remove_tracks_and_roads);
             }
 
             Widget::leftAlignTabs(self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
