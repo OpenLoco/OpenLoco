@@ -7,7 +7,7 @@ set(CMAKE_POLICY_DEFAULT_CMP0069 NEW)
 
 set (PROJECT openloco)
 
-set(VCPKG_GIT_TAG d015e31e90838a4c9dfa3eed45979bc70d9357fc)
+set(VCPKG_GIT_TAG 2fb57e1c4738d4b4484d2234c886caf006612222)
 
 # Store the top level source directory in a variable to be passed down to targets.
 set(OPENLOCO_PROJECT_PATH ${CMAKE_SOURCE_DIR})
