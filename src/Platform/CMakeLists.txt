@@ -28,8 +28,10 @@ set(public_link_libraries
 )
 
 if (MSVC)
-    list(APPEND public_link_libraries ${BREAKPAD_LIBRARIES})
     list(APPEND public_link_libraries "Winmm.lib")
+endif()
+if (MSVC AND NOT CMAKE_GENERATOR_PLATFORM STREQUAL "ARM64")
+    list(APPEND public_link_libraries ${BREAKPAD_LIBRARIES})
 endif()
 
 loco_add_library(Platform STATIC
@@ -41,7 +43,7 @@ loco_add_library(Platform STATIC
         ${public_link_libraries}
 )
 
-if (MSVC)
+if (MSVC AND NOT CMAKE_GENERATOR_PLATFORM STREQUAL "ARM64")
     target_compile_definitions(Platform
         PRIVATE
             USE_BREAKPAD)
