@@ -36,6 +36,7 @@
 #include "Map/RoadElement.h"
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
+#include "Map/TileLoop.hpp"
 #include "Map/TileManager.h"
 #include "Map/Track/Track.h"
 #include "Map/Track/TrackData.h"
@@ -7634,23 +7635,27 @@ namespace OpenLoco
     // returns false until the whole map has been iterated
     static bool removeAllCompanyAssetsOnMapByChunk(Company& company)
     {
-        auto remainingRange = World::TilePosRangeView(
-            World::toTileSpace(company.aiPathfindTargetPos),
-            World::TilePos2{ World::kMapColumns - 1, World::kMapRows - 1 });
-
+        World::TileLoop tileLoop(company.aiPathfindTargetPos);
         auto count = 1500;
-        for (auto& tilePos : remainingRange)
+        while (true)
         {
+            const auto tilePos = World::toTileSpace(tileLoop.current());
             removeCompanyTracksRoadsOnTile(company.id(), tilePos);
             count--;
             // TODO: Remove when divergence from vanilla as this is silly
-            if (tilePos.x == World::kMapColumns - 1)
+            if (tileLoop.current().x == World::kMapWidth - World::kTileSize)
             {
                 count--;
             }
+
+            tileLoop.next();
+            if (tileLoop.current() == World::Pos2{ 0, 0 })
+            {
+                break;
+            }
             if (count == 0)
             {
-                company.aiPathfindTargetPos = World::toWorldSpace(tilePos);
+                company.aiPathfindTargetPos = tileLoop.current();
                 return false;
             }
         }

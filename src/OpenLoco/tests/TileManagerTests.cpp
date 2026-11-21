@@ -4,6 +4,7 @@
 #include <OpenLoco/Map/SurfaceElement.h>
 #include <OpenLoco/Map/Tile.h>
 #include <OpenLoco/Map/TileElement.h>
+#include <OpenLoco/Map/TileLoop.hpp>
 #include <OpenLoco/Map/TileManager.h>
 #include <OpenLoco/Map/TrackElement.h>
 #include <OpenLoco/Map/TreeElement.h>
@@ -241,6 +242,33 @@ TEST_F(TileManagerTest, GetByPos2AndCoordsAgreeWithTilePos2)
     EXPECT_EQ(c.size(), 2u);
     EXPECT_EQ(&*a.begin(), &*b.begin());
     EXPECT_EQ(&*a.begin(), &*c.begin());
+}
+
+TEST(TileLoopTest, NextAdvancesWithinRow)
+{
+    TileLoop tileLoop{ Pos2{ 10 * kTileSize, 10 * kTileSize } };
+
+    tileLoop.next();
+    EXPECT_EQ(tileLoop.current().x, 11 * kTileSize);
+    EXPECT_EQ(tileLoop.current().y, 10 * kTileSize);
+}
+
+TEST(TileLoopTest, NextWrapsAtEndOfRow)
+{
+    TileLoop tileLoop{ Pos2{ kMapWidth - kTileSize, 10 * kTileSize } };
+
+    tileLoop.next();
+    EXPECT_EQ(tileLoop.current().x, 0);
+    EXPECT_EQ(tileLoop.current().y, 11 * kTileSize);
+}
+
+TEST(TileLoopTest, NextWrapsAtEndOfMap)
+{
+    TileLoop tileLoop{ Pos2{ kMapWidth - kTileSize, kMapHeight - kTileSize } };
+
+    tileLoop.next();
+    EXPECT_EQ(tileLoop.current().x, 0);
+    EXPECT_EQ(tileLoop.current().y, 0);
 }
 
 TEST_F(TileManagerTest, TileSizeMatchesIteration)
