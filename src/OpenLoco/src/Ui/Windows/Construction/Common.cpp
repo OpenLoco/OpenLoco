@@ -1002,7 +1002,7 @@ namespace OpenLoco::Ui::Windows::Construction
                     if (cState.modList[i] != 0xFF)
                     {
                         auto roadExtraObj = ObjectManager::get<RoadExtraObject>(cState.modList[i]);
-                        auto imageId = roadExtraObj->var_0E;
+                        auto imageId = roadExtraObj->baseImageOffset;
                         if (self.currentTab == widx::tab_overhead - widx::tab_construction)
                         {
                             imageId += (self.frameNo / 2) % 8;
@@ -1157,7 +1157,7 @@ namespace OpenLoco::Ui::Windows::Construction
                     if (cState.modList[i] != 0xFF)
                     {
                         auto trackExtraObj = ObjectManager::get<TrackExtraObject>(cState.modList[i]);
-                        auto imageId = trackExtraObj->var_0E;
+                        auto imageId = trackExtraObj->baseImageOffset;
                         if (self.currentTab == widx::tab_overhead - widx::tab_construction)
                         {
                             imageId += (self.frameNo / 2) % 8;

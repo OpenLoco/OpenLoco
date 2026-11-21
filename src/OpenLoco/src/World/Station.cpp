@@ -1638,12 +1638,12 @@ namespace OpenLoco
             };
 
             forEachStationElement(pos, rotation, stationEntry, isStationElementCovered);
-            if (isCovered || stationObj->var_0B == 0)
+            if (isCovered || stationObj->platformType == 0)
             {
                 continue;
             }
 
-            if (stationObj->var_0B != 1)
+            if (stationObj->platformType != 1)
             {
                 auto* elTrack = stationEntry->prev()->as<TrackElement>();
                 if (elTrack == nullptr)

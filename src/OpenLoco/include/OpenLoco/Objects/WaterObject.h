@@ -21,8 +21,8 @@ namespace OpenLoco
         static constexpr auto kObjectType = ObjectType::water;
 
         StringId name;
-        uint8_t costIndex; // 0x02
-        uint8_t var_03;
+        uint8_t costIndex;      // 0x02
+        uint8_t pad_03;         // 0x03 unused
         int16_t costFactor;     // 0x04
         uint32_t image;         // 0x06
         uint32_t mapPixelImage; // 0x0A
