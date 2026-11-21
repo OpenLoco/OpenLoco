@@ -25,4 +25,17 @@ namespace OpenLoco::World
     {
         return TilePosRangeView({ 0, 0 }, { kMapColumns - 1, kMapRows - 1 });
     }
+
+    bool advanceTilePos(TilePos2& pos)
+    {
+        if (pos.x < kMapColumns - 1)
+        {
+            pos.x++;
+            return true;
+        }
+
+        pos.x = 0;
+        pos.y++;
+        return pos.y < kMapRows;
+    }
 }

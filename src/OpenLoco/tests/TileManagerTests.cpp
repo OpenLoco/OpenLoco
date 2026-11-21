@@ -4,6 +4,7 @@
 #include <OpenLoco/Map/SurfaceElement.h>
 #include <OpenLoco/Map/Tile.h>
 #include <OpenLoco/Map/TileElement.h>
+#include <OpenLoco/Map/TileLoop.hpp>
 #include <OpenLoco/Map/TileManager.h>
 #include <OpenLoco/Map/TrackElement.h>
 #include <OpenLoco/Map/TreeElement.h>
@@ -241,6 +242,33 @@ TEST_F(TileManagerTest, GetByPos2AndCoordsAgreeWithTilePos2)
     EXPECT_EQ(c.size(), 2u);
     EXPECT_EQ(&*a.begin(), &*b.begin());
     EXPECT_EQ(&*a.begin(), &*c.begin());
+}
+
+TEST(TileLoopTest, AdvanceTilePosAdvancesWithinRow)
+{
+    TilePos2 pos{ 10, 10 };
+
+    ASSERT_TRUE(advanceTilePos(pos));
+    EXPECT_EQ(pos.x, 11);
+    EXPECT_EQ(pos.y, 10);
+}
+
+TEST(TileLoopTest, AdvanceTilePosWrapsAtEndOfRow)
+{
+    TilePos2 pos{ kMapColumns - 1, 10 };
+
+    ASSERT_TRUE(advanceTilePos(pos));
+    EXPECT_EQ(pos.x, 0);
+    EXPECT_EQ(pos.y, 11);
+}
+
+TEST(TileLoopTest, AdvanceTilePosReportsEndOfMap)
+{
+    TilePos2 pos{ kMapColumns - 1, kMapRows - 1 };
+
+    EXPECT_FALSE(advanceTilePos(pos));
+    EXPECT_EQ(pos.x, 0);
+    EXPECT_EQ(pos.y, kMapRows);
 }
 
 TEST_F(TileManagerTest, TileSizeMatchesIteration)
