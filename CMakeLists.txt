@@ -123,8 +123,8 @@ if (${OPENLOCO_BUILD_TESTS})
 endif()
 
 FetchContent_Declare(openloco_objects
-            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.12/objects.zip
-            URL_HASH SHA256=9e6596aaa52b2296cfc779bbe3aab01d0fb37ef61fcb23cd0e5ff4d2b9e846ca)
+            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.13/objects.zip
+            URL_HASH SHA256=5af3dbf660ed0e20b9f425a46fbbd618a52a48fe96fa3a4dfea1fdf138950b0a)
 FetchContent_MakeAvailable(openloco_objects)
 
 add_subdirectory(src)
