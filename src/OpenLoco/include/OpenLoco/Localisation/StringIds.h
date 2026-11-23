@@ -2170,7 +2170,7 @@ namespace OpenLoco::StringIds
     constexpr StringId keyboard_shortcut_binding = 2458;
     constexpr StringId shortcut_debug_window = 2459;
     constexpr StringId toolbar_auto_menu = 2460;
-    constexpr StringId toolbar_buttons_centred = 2461;
+
     constexpr StringId signal_placement_repeat = 2462;
     constexpr StringId signal_placement_repeat_tooltip = 2463;
     constexpr StringId signal_placement_step_size = 2464;
@@ -2189,6 +2189,11 @@ namespace OpenLoco::StringIds
     constexpr StringId load_landscape_file_confirm = 2477;
     constexpr StringId error_saves_cant_be_loaded_in_editor = 2478;
     constexpr StringId error_invalid_file_type = 2479;
+    constexpr StringId preferred_toolbar_layout = 2480;
+    constexpr StringId preferred_toolbar_layout_original_game = 2481;
+    constexpr StringId preferred_toolbar_layout_horizontally_centred = 2482;
+    constexpr StringId preferred_toolbar_layout_all_panels_on_top = 2483;
+    constexpr StringId preferred_toolbar_layout_all_panels_centred_on_top = 2484;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
