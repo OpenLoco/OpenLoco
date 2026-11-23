@@ -2532,3 +2532,4 @@ strings:
   2477: "Load Landscape"
   2478: "Cannot open a saved game in the Scenario Editor"
   2479: "Invalid file type"
+  2480: "{COLOUR WINDOW_2}Refund: {COLOUR BLACK}{CURRENCY32}"

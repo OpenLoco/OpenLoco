@@ -11,6 +11,7 @@
 - Change: [#4101] Input is no longer tied to the internal 40 Hz tick rate and is now processed at the frame rate.
 - Change: [#4101] Edge and arrow key scrolling is no longer tied to the internal 40 Hz tick rate and now runs at the frame rate.
 - Change: [#4101] Right click dragging the view is no longer limited by the edges of the screen.
+- Change: [#4114] The Clear Area tool now displays a refund instead of a negative cost.
 - Fix: [#2879] Crash when starting the game with an empty openloco.yaml file.
 - Fix: [#3916] Can save scenario set to use PNG heightmap source without generating landscape.
 - Fix: [#4012] The display resolution dropdown is not disabled on macOS.
