@@ -2189,6 +2189,7 @@ namespace OpenLoco::StringIds
     constexpr StringId load_landscape_file_confirm = 2477;
     constexpr StringId error_saves_cant_be_loaded_in_editor = 2478;
     constexpr StringId error_invalid_file_type = 2479;
+    constexpr StringId clear_land_refund = 2480;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

@@ -1181,10 +1181,15 @@ namespace OpenLoco::Ui::Windows::Terraform
                 auto yPos = toolArea.bottom + 5;
                 auto point = Point(xPos, yPos);
 
-                FormatArguments args{};
-                args.push<uint32_t>(_raiseLandCost);
+                // A negative cost means clearing the area results in a refund
+                const auto cost = static_cast<currency32_t>(_raiseLandCost);
+                const bool isRefund = cost < 0;
 
-                tr.drawStringCentred(point, Colour::black, StringIds::clear_land_cost, args);
+                FormatArguments args{};
+                args.push<currency32_t>(isRefund ? -cost : cost);
+
+                const auto stringId = isRefund ? StringIds::clear_land_refund : StringIds::clear_land_cost;
+                tr.drawStringCentred(point, Colour::black, stringId, args);
             }
         }
 
