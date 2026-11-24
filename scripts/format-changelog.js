@@ -42,10 +42,10 @@ function readVersionHeader(ctx) {
         reportLineError(versionLine, "Expected a version number");
     }
 
-    // Check the version seperator
+    // Check the version separator
     const versionSeperator = consumeLine(ctx);
     if (versionSeperator.text != HeaderSeperator) {
-        reportLineError(versionSeperator, "Expected version seperator");
+        reportLineError(versionSeperator, "Expected version separator");
     }
 
     // Check for optional headline, this means the there is text not starting with - and an empty line before

@@ -14,7 +14,7 @@ function(_loco_add_target TARGET TYPE)
         add_library(OpenLoco::${TARGET} ALIAS ${TARGET})
 
         # We need to include both include and src as src may have private headers
-        # Note: Generator expresions for this were not working!
+        # Note: Generator expressions for this were not working!
         if (DEFINED _PUBLIC_FILES)
             target_include_directories(${TARGET}
                 PUBLIC
