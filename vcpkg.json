@@ -5,7 +5,7 @@
     "benchmark",
     {
       "name": "breakpad",
-      "platform": "windows"
+      "platform": "windows & !arm64"
     },
     "gtest",
     "libpng",
