@@ -207,7 +207,7 @@ namespace OpenLoco::Localisation
         return locoCode;
     }
 
-    std::string convertLocoToUnicode(const std::string& locoString)
+    std::string convertLocoToUnicode(std::string_view locoString)
     {
         std::string out;
         for (uint8_t locoCode : locoString)
