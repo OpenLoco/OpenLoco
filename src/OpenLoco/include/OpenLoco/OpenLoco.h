@@ -27,7 +27,7 @@ namespace OpenLoco
     uint16_t getInputTimeDelta();
     uint32_t getInputTickDelta();
     float getInputFrameTime();
-    bool promptTickLoop(std::function<bool()> tickAction);
+    bool promptTickLoop(const std::function<bool()>& tickAction);
     [[noreturn]] void exitCleanly();
     [[noreturn]] void exitWithError(StringId titleStringId, StringId messageStringId);
 }

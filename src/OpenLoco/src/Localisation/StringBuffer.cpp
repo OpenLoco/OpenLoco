@@ -6,7 +6,6 @@ namespace OpenLoco
 
     StringBuffer::StringBuffer(value_type* buffer, size_t maxLen)
         : buffer(buffer)
-        , offset(0)
         , maxLen(maxLen)
     {
     }

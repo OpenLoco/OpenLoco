@@ -11,7 +11,7 @@ namespace OpenLoco
         using value_type = char;
 
         char* buffer;
-        size_t offset;
+        size_t offset = 0;
         size_t maxLen;
 
     public:

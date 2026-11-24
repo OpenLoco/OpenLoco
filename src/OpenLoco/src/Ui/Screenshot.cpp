@@ -153,7 +153,7 @@ namespace OpenLoco::Ui
         Environment::autoCreateDirectory(screenshotsFolderPath);
 
         std::string scenarioName = getGameState().scenarioName;
-        if (scenarioName.length() == 0)
+        if (scenarioName.empty())
         {
             scenarioName = StringManager::getString(StringIds::screenshot_filename_template);
         }

@@ -4,6 +4,7 @@
 
 #include <cstdint>
 #include <string>
+#include <string_view>
 
 namespace OpenLoco::Ui::TextInput
 {
@@ -18,7 +19,7 @@ namespace OpenLoco::Ui::TextInput
         uint32_t inputLenLimit;
 
         InputSession() = default;
-        InputSession(const std::string initialString, uint32_t inputSize)
+        InputSession(std::string_view initialString, uint32_t inputSize)
         {
             buffer = initialString;
             cursorPosition = buffer.length();

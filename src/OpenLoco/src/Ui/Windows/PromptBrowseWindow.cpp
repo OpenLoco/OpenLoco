@@ -759,7 +759,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         else
         {
             auto str = path.u8string();
-            if (str.size() > 0)
+            if (!str.empty())
             {
                 auto lastCharacter = str[str.size() - 1];
                 if (lastCharacter == fs::path::preferred_separator)

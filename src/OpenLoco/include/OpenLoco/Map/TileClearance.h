@@ -45,8 +45,8 @@ namespace OpenLoco::World::TileClearance
 
     void setCollisionErrorMessage(const World::TileElementEntry& el);
 
-    bool applyClearAtAllHeights(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearFuncResult(TileElementEntry& entry)> clearFunc);
-    bool applyClearAtStandardHeight(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearFuncResult(TileElementEntry& entry)> clearFunc);
+    bool applyClearAtAllHeights(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, const std::function<ClearFuncResult(TileElementEntry& entry)>& clearFunc);
+    bool applyClearAtStandardHeight(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, const std::function<ClearFuncResult(TileElementEntry& entry)>& clearFunc);
     bool canConstructAt(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt);
 
     using RemovedBuildings = sfl::small_set<World::Pos3, 128, LessThanPos3>;

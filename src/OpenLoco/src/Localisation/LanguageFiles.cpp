@@ -82,7 +82,7 @@ namespace OpenLoco::Localisation
                     {
                         if (start != nullptr)
                         {
-                            commands.push_back(std::string_view(start, pos - start));
+                            commands.emplace_back(start, pos - start);
                         }
                         start = nullptr;
                         continue;
@@ -92,7 +92,7 @@ namespace OpenLoco::Localisation
                     {
                         if (start != nullptr)
                         {
-                            commands.push_back(std::string_view(start, pos - start));
+                            commands.emplace_back(start, pos - start);
                         }
                         break;
                     }
@@ -229,7 +229,7 @@ namespace OpenLoco::Localisation
         return str;
     }
 
-    static bool loadLanguageStringTable(fs::path languageFile)
+    static bool loadLanguageStringTable(const fs::path& languageFile)
     {
         try
         {

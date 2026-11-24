@@ -2,7 +2,9 @@
 ------------------------------------------------------------------------
 - Feature: [#3091] Clear Area tool now has togglable filters, and is able to demolish tracks and roads.
 - Feature: [#4053] Save and scenario files can now be loaded by dragging & dropping them into the game window.
+- Feature: [#4113] Add OpenGraphics Great Britain Expansion vehicles! And vanilla replacements for various GB vehicles, the fountain and the park. And updated various OpenGraphic GB vehicles for consistency with the rest of the set.
 - Change: [#3578, #3918, #3919] Several landscape generation options are now disabled when they do not apply.
+- Change: [#3868] Split Rotate View keyboard shortcut into Clockwise and Anti-Clockwise shortcuts.
 - Change: [#3956] Speed Records tab in the Company List window now shows text when no records are set yet.
 - Change: [#4033] Objects marked with source OpenLoco (OpenGraphics) are no longer exported in scenario or save files.
 - Change: [#4041] Vehicle colours are now reset to the target company's when using the company takeover cheat.
