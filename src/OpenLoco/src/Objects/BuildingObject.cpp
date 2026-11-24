@@ -168,7 +168,7 @@ namespace OpenLoco
     std::span<const uint8_t> BuildingObject::getBuildingPartHeights() const
     {
         const auto* base = reinterpret_cast<const uint8_t*>(this);
-        return std::span<const std::uint8_t>(base + partHeightsOffset, numParts);
+        return { base + partHeightsOffset, numParts };
     }
 
     std::span<const std::uint8_t> BuildingObject::getBuildingParts(const uint8_t variation) const
@@ -180,7 +180,7 @@ namespace OpenLoco
             end++;
         }
 
-        return std::span<const std::uint8_t>(partsPointer, end);
+        return { partsPointer, end };
     }
 
     std::span<const std::uint8_t> BuildingObject::getElevatorHeightSequence(const uint8_t animIdx) const
@@ -190,14 +190,14 @@ namespace OpenLoco
         const auto offset = elevatorHeightSequencesOffset[animIdx];
         const auto size = *reinterpret_cast<const uint16_t*>(base + offset);
         const auto* sequencePointer = base + offset + sizeof(uint16_t);
-        return std::span<const std::uint8_t>(sequencePointer, size);
+        return { sequencePointer, size };
     }
 
     std::span<const BuildingPartAnimation> BuildingObject::getBuildingPartAnimations() const
     {
         const auto* base = reinterpret_cast<const uint8_t*>(this);
         const auto* ptr = reinterpret_cast<const BuildingPartAnimation*>(base + partAnimationsOffset);
-        return std::span<const BuildingPartAnimation>(ptr, numParts);
+        return { ptr, numParts };
     }
 
 }

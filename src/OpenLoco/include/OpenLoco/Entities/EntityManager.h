@@ -145,11 +145,11 @@ namespace OpenLoco::EntityManager
 
         Iterator begin()
         {
-            return Iterator(firstId);
+            return { firstId };
         }
         Iterator end()
         {
-            return Iterator(EntityId::null);
+            return { EntityId::null };
         }
     };
 }

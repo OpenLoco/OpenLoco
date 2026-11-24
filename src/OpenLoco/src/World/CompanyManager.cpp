@@ -162,7 +162,7 @@ namespace OpenLoco::CompanyManager
 
     FixedVector<Company, Limits::kMaxCompanies> companies()
     {
-        return FixedVector(rawCompanies());
+        return { rawCompanies() };
     }
 
     Company* get(CompanyId id)

@@ -70,7 +70,7 @@ namespace OpenLoco::IndustryManager
 
     FixedVector<Industry, Limits::kMaxIndustries> industries()
     {
-        return FixedVector(rawIndustries());
+        return { rawIndustries() };
     }
 
     Industry* get(IndustryId id)

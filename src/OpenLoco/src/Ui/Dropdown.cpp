@@ -1076,7 +1076,7 @@ namespace OpenLoco::Ui::Dropdown
 
     Builder create()
     {
-        return Builder();
+        return {};
     }
 
     std::optional<DropdownItemId> getSelectedItem(int32_t index)

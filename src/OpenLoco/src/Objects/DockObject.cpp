@@ -98,20 +98,20 @@ namespace OpenLoco
             end++;
         }
 
-        return std::span<const std::uint8_t>(partsPointer, end);
+        return { partsPointer, end };
     }
 
     std::span<const BuildingPartAnimation> DockObject::getBuildingPartAnimations() const
     {
         const auto* base = reinterpret_cast<const uint8_t*>(this);
         const auto* ptr = reinterpret_cast<const BuildingPartAnimation*>(base + buildingPartAnimationsOffset);
-        return std::span<const BuildingPartAnimation>(ptr, numBuildingParts);
+        return { ptr, numBuildingParts };
     }
 
     std::span<const uint8_t> DockObject::getBuildingPartHeights() const
     {
         const auto* base = reinterpret_cast<const uint8_t*>(this);
-        return std::span<const std::uint8_t>(base + partHeightsOffset, numBuildingParts);
+        return { base + partHeightsOffset, numBuildingParts };
     }
 
 }

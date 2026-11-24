@@ -103,11 +103,11 @@ namespace OpenLoco::World
             assert(bottomLeft.y <= topRight.y);
         }
 
-        Iterator begin() const { return Iterator(_bottomLeft, _topRight); }
+        Iterator begin() const { return { _bottomLeft, _topRight }; }
         Iterator end() const
         {
             // End iterator must be 1 step past the end so that loop is inclusive
-            return Iterator(TilePos2(_bottomLeft.x, _topRight.y + 1), _topRight);
+            return { TilePos2(_bottomLeft.x, _topRight.y + 1), _topRight };
         }
     };
 

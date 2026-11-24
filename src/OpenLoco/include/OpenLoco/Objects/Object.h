@@ -78,7 +78,7 @@ namespace OpenLoco
 
         std::string_view getName() const
         {
-            return std::string_view(name, sizeof(name));
+            return { name, sizeof(name) };
         }
 
         constexpr SourceGame getSourceGame() const

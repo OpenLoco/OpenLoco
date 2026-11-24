@@ -26,10 +26,10 @@ namespace YAML
             {
                 if (rhs == e.first)
                 {
-                    return Node(e.second);
+                    return Node{ e.second };
                 }
             }
-            return Node();
+            return {};
         }
 
         static bool decode(const Node& node, T& rhs)

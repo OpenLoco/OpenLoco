@@ -392,7 +392,7 @@ namespace OpenLoco
             end++;
         }
 
-        return std::span<const std::uint8_t>(partsPointer, end);
+        return { partsPointer, end };
     }
 
     std::span<const std::uint8_t> IndustryObject::getAnimationSequence(const uint8_t unk) const
@@ -401,26 +401,26 @@ namespace OpenLoco
         const auto* base = reinterpret_cast<const std::uint8_t*>(this);
         const auto* sequencePointer = base + animationSequenceOffsets[unk];
         const auto size = *sequencePointer++;
-        return std::span<const std::uint8_t>(sequencePointer, size);
+        return { sequencePointer, size };
     }
 
     std::span<const std::uint8_t> IndustryObject::getBuildingPartHeights() const
     {
         const auto* base = reinterpret_cast<const uint8_t*>(this);
-        return std::span<const std::uint8_t>(base + buildingPartHeightsOffset, numBuildingParts);
+        return { base + buildingPartHeightsOffset, numBuildingParts };
     }
 
     std::span<const BuildingPartAnimation> IndustryObject::getBuildingPartAnimations() const
     {
         const auto* base = reinterpret_cast<const uint8_t*>(this);
         const auto* ptr = reinterpret_cast<const BuildingPartAnimation*>(base + buildingPartAnimationsOffset);
-        return std::span<const BuildingPartAnimation>(ptr, numBuildingParts);
+        return { ptr, numBuildingParts };
     }
 
     std::span<const std::uint8_t> IndustryObject::getBuildings() const
     {
         const auto* base = reinterpret_cast<const std::uint8_t*>(this);
-        return std::span<const std::uint8_t>(base + buildingsOffset, maxNumBuildings);
+        return { base + buildingsOffset, maxNumBuildings };
     }
 
     std::span<const IndustryObjectUnk38> OpenLoco::IndustryObject::getUnk38() const
@@ -432,6 +432,6 @@ namespace OpenLoco
         {
             end++;
         }
-        return std::span<const IndustryObjectUnk38>(unkPointer, end);
+        return { unkPointer, end };
     }
 }

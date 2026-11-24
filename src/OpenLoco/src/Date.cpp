@@ -55,7 +55,7 @@ namespace OpenLoco
 
     Date getCurrentDate()
     {
-        return Date(getCurrentYear(), getCurrentMonth(), getCurrentDayOfMonth() + 1);
+        return { getCurrentYear(), getCurrentMonth(), getCurrentDayOfMonth() + 1 };
     }
 
     void setDate(const Date& date)

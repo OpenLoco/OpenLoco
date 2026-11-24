@@ -6,6 +6,7 @@ Checks: >
     modernize-use-override,
     modernize-use-emplace,
     modernize-use-default-member-init,
+    modernize-return-braced-init-list,
     performance-unnecessary-value-param,
     performance-for-range-copy,
     readability-container-size-empty,

@@ -15,7 +15,7 @@ namespace OpenLoco::GameCommands
 
         explicit operator registers() const
         {
-            return registers();
+            return {};
         }
     };
 

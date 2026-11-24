@@ -69,12 +69,12 @@ namespace OpenLoco
 
     std::span<std::byte> MemoryStream::getSpan()
     {
-        return std::span(_data, _length);
+        return { _data, _length };
     }
 
     std::span<const std::byte> MemoryStream::getSpan() const
     {
-        return std::span(_data, _length);
+        return { _data, _length };
     }
 
     size_t MemoryStream::getLength() const noexcept

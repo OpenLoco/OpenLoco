@@ -153,7 +153,7 @@ namespace OpenLoco
 
             constexpr World::Pos3 getPosition() const
             {
-                return World::Pos3(posX, posYAndFlags & 0xFFFE, posZ * 4 /*World::kSmallZStep*/);
+                return { posX, posYAndFlags & 0xFFFE, posZ * 4 /*World::kSmallZStep*/ };
             }
             constexpr uint8_t getTrackRoadId() const
             {

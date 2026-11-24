@@ -460,11 +460,11 @@ namespace OpenLoco::Vehicles
 
         CarComponentIter begin() const
         {
-            return CarComponentIter(this);
+            return { this };
         }
         CarComponentIter end() const
         {
-            return CarComponentIter(nullptr);
+            return { nullptr };
         }
 
         Car(VehicleBase*& component)
@@ -525,11 +525,11 @@ namespace OpenLoco::Vehicles
 
             CarIter begin() const
             {
-                return CarIter(&firstCar);
+                return { &firstCar };
             }
             CarIter end() const
             {
-                return CarIter(nullptr);
+                return { nullptr };
             }
 
             std::size_t size() const

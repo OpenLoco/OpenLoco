@@ -7005,7 +7005,7 @@ namespace OpenLoco::Vehicles
 
     OrderRingView Vehicles::VehicleHead::getCurrentOrders() const
     {
-        return OrderRingView(orderTableOffset, currentOrder);
+        return { orderTableOffset, currentOrder };
     }
 
     // 0x004B0BDD

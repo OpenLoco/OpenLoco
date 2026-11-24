@@ -91,7 +91,7 @@ namespace OpenLoco::Vehicles
     OrderRingView::Iterator OrderRingView::begin() const
     {
         auto* orderTable = OrderManager::orders();
-        return Iterator(&orderTable[_beginTableOffset], &orderTable[_beginTableOffset + _currentOrderOffset]);
+        return { &orderTable[_beginTableOffset], &orderTable[_beginTableOffset + _currentOrderOffset] };
     }
 
     OrderRingView::Iterator OrderRingView::end() const

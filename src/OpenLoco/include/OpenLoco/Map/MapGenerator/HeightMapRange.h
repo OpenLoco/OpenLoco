@@ -52,7 +52,7 @@ namespace OpenLoco::World::MapGenerator
 
         HeightMapRange slice(int32_t l, int32_t t, int32_t w, int32_t h)
         {
-            return HeightMapRange(_heightMap, _minX + l, _minY + t, w, h);
+            return { _heightMap, _minX + l, _minY + t, w, h };
         }
     };
 }

@@ -80,7 +80,7 @@ namespace OpenLoco::Vehicles
 
     World::Pos3 VehicleBase::getTrackLoc() const
     {
-        return World::Pos3(tileX, tileY, tileBaseZ * World::kSmallZStep);
+        return { tileX, tileY, tileBaseZ * World::kSmallZStep };
     }
 
     TrackAndDirection VehicleBase::getTrackAndDirection() const

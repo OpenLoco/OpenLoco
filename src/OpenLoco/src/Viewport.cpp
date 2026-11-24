@@ -221,7 +221,7 @@ namespace OpenLoco::Ui
     {
         auto centre = World::gameToScreen(loc, getRotation());
 
-        return viewport_pos(centre.x - viewWidth / 2, centre.y - viewHeight / 2);
+        return { centre.x - viewWidth / 2, centre.y - viewHeight / 2 };
     }
 
     SavedViewSimple Viewport::toSavedView() const
@@ -237,12 +237,12 @@ namespace OpenLoco::Ui
 
     viewport_pos Viewport::getCentre() const
     {
-        return viewport_pos(viewX + viewWidth / 2, viewY + viewHeight / 2);
+        return { viewX + viewWidth / 2, viewY + viewHeight / 2 };
     }
 
     Point Viewport::getWindowCentre() const
     {
-        return Point(x + width / 2, y + height / 2);
+        return { x + width / 2, y + height / 2 };
     }
 
     // 0x0045F997
