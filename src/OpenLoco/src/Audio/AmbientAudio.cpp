@@ -34,7 +34,7 @@ namespace OpenLoco::Audio
         return _volumes[zoom.index()];
     }
 
-    void updateAmbientNoise()
+    void tickAmbientNoise()
     {
         if (!isAudioEnabled())
         {

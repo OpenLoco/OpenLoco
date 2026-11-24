@@ -15,5 +15,6 @@ namespace OpenLoco::Scenes::GameplayScene
 
     void update()
     {
+        GameScene::update();
     }
 }

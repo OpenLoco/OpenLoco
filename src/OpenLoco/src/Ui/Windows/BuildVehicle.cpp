@@ -680,7 +680,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 continue;
             }
 
-            const currency32_t cost = Economy::getInflationAdjustedCost(vehicleObj->costFactor, vehicleObj->costIndex, 10);
+            const currency32_t cost = Economy::getInflationAdjustedCost(vehicleObj->costFactor, vehicleObj->costIndex, 6);
 
             buildableVehicles.push_back({
                 vehicleObjIndex,
@@ -873,7 +873,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 window.rowHover = -1;
                 sub_4B92A5(window);
                 window.callOnResize();
-                window.callOnPeriodicUpdate();
+                window.callOnPeriodicTick();
                 window.callPrepareDraw();
                 window.initScrollWidgets();
                 window.invalidate();
@@ -902,7 +902,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 window.rowHover = -1;
                 sub_4B92A5(window);
                 window.callOnResize();
-                window.callOnPeriodicUpdate();
+                window.callOnPeriodicTick();
                 window.callPrepareDraw();
                 window.initScrollWidgets();
                 window.invalidate();
@@ -1177,7 +1177,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C377B, 0x4C3923
-    static void onUpdate(Window& window)
+    static void onTick(Window& window)
     {
         // Is the linked vehicle still available?
         const bool linkedVehicleAvailable = window.number && WindowManager::find(WindowType::vehicle, window.number);
@@ -2022,7 +2022,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         .onResize = onResize,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
-        .onUpdate = onUpdate,
+        .onTick = onTick,
         .getScrollSize = getScrollSize,
         .scrollMouseDown = onScrollMouseDown,
         .scrollMouseOver = onScrollMouseOver,

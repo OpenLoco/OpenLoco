@@ -34,7 +34,7 @@ namespace OpenLoco::Vehicles
     static_assert(distanceTraveledInATick(speedFromDistanceInATick(100)) == 100);
 
     // 0x004A9788
-    bool Vehicle1::update()
+    bool Vehicle1::tick()
     {
         switch (mode)
         {
@@ -42,16 +42,16 @@ namespace OpenLoco::Vehicles
             case TransportMode::water:
                 return true;
             case TransportMode::road:
-                return updateRoad();
+                return tickRoad();
             case TransportMode::rail:
-                return updateRail();
+                return tickRail();
             default:
                 return false;
         }
     }
 
     // 0x004A9969
-    bool Vehicle1::updateRoad()
+    bool Vehicle1::tickRoad()
     {
         uint16_t curveSpeedFraction = std::numeric_limits<uint16_t>::max();
         Speed16 newTargetSpeed = kSpeed16Max;
@@ -99,9 +99,7 @@ namespace OpenLoco::Vehicles
             newTargetSpeed = std::min(newTargetSpeed, train.veh2->rackRailMaxSpeed);
         }
 
-        // TODO: Original CS Bug. Fix when we diverge on replays
-        // newTargetSpeed = std::min(newTargetSpeed, toSpeed16(speedFromDistanceInATick(var_3C)) + 5_mph);
-        newTargetSpeed = std::min(newTargetSpeed, Speed16(static_cast<uint32_t>(var_3C) >> 15) + 5_mph);
+        newTargetSpeed = std::min(newTargetSpeed, toSpeed16(speedFromDistanceInATick(var_3C)) + 5_mph);
 
         if ((train.head->hasVehicleFlags(VehicleFlags::manualControl) && train.head->manualPower <= -20)
             || train.head->hasVehicleFlags(VehicleFlags::commandStop))
@@ -143,8 +141,6 @@ namespace OpenLoco::Vehicles
             return;
         }
 
-        gPrng1().randNext(); // TODO: Remove when we can diverge from vanilla
-
         const auto soundNum = (vehObj->numStartSounds & NumStartSounds::kMask) - 1;
         const auto soundObjId = vehObj->startSounds[soundNum];
 
@@ -155,7 +151,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A97A6
-    bool Vehicle1::updateRail()
+    bool Vehicle1::tickRail()
     {
         Vehicle train{ head };
         uint16_t curveSpeedFraction = std::numeric_limits<uint16_t>::max();
@@ -207,9 +203,7 @@ namespace OpenLoco::Vehicles
 
         if (!train.head->hasVehicleFlags(VehicleFlags::manualControl))
         {
-            // TODO: Original CS Bug. Fix when we diverge on replays
-            // newTargetSpeed = std::min(newTargetSpeed, toSpeed16(speedFromDistanceInATick(var_3C)) + 5_mph);
-            newTargetSpeed = std::min(newTargetSpeed, Speed16(static_cast<uint32_t>(var_3C) >> 15) + 5_mph);
+            newTargetSpeed = std::min(newTargetSpeed, toSpeed16(speedFromDistanceInATick(var_3C)) + 5_mph);
         }
 
         if ((train.head->hasVehicleFlags(VehicleFlags::manualControl) && train.head->manualPower <= -20)

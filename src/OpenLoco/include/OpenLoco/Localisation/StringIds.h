@@ -2178,8 +2178,19 @@ namespace OpenLoco::StringIds
     constexpr StringId has_cargo_order = 2466;
     constexpr StringId transports_cargo = 2467;
     constexpr StringId map_tooltip_int_x_int = 2468;
-    constexpr StringId shortcut_rotate_view_clockwise = 2469;
-    constexpr StringId shortcut_rotate_view_anti_clockwise = 2470;
+    constexpr StringId no_speedrecords_yet = 2469;
+    constexpr StringId png_heightmap_must_be_generated = 2470;
+    constexpr StringId title_dropped_file = 2471;
+    constexpr StringId load_save_file_prompt = 2472;
+    constexpr StringId load_scenario_file_prompt = 2473;
+    constexpr StringId load_landscape_file_prompt = 2474;
+    constexpr StringId load_save_file_confirm = 2475;
+    constexpr StringId load_scenario_file_confirm = 2476;
+    constexpr StringId load_landscape_file_confirm = 2477;
+    constexpr StringId error_saves_cant_be_loaded_in_editor = 2478;
+    constexpr StringId error_invalid_file_type = 2479;
+    constexpr StringId shortcut_rotate_view_clockwise = 2480;
+    constexpr StringId shortcut_rotate_view_anti_clockwise = 2481;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

@@ -6033,9 +6033,7 @@ namespace OpenLoco
             if (thought.trackObjId & (1U << 7))
             {
                 // Road
-
-                // TODO: Vanilla bug passes rotation for flags???
-                if (replaceAiAllocatedRoad(pos, aiStation.rotation, thought.trackObjId & ~(1U << 7), 0, 0, false, static_cast<GameCommands::Flags>(aiStation.rotation)) == GameCommands::kFailure)
+                if (replaceAiAllocatedRoad(pos, aiStation.rotation, thought.trackObjId & ~(1U << 7), 0, 0, false, GameCommands::Flags::apply) == GameCommands::kFailure)
                 {
                     return 2;
                 }
@@ -6224,17 +6222,10 @@ namespace OpenLoco
                     company.aiPathfindStartBaseZ = replacePos.z / World::kSmallZStep;
                     company.aiPathfindStartTad = replaceTad;
 
-                    // This is completely wrong but it matches vanilla
-                    // TODO: Remove and replace with 'apply' when we want to diverge
-                    GameCommands::Flags flags = static_cast<GameCommands::Flags>(enumValue(company.id()) & 0b1);
-
                     if (replaceTad & (1U << 2))
                     {
                         auto& roadSize = TrackData::getUnkRoad(replaceTad);
                         replacePos += roadSize.pos;
-
-                        // Again completely wrong but it matches vanilla
-                        flags = static_cast<GameCommands::Flags>(roadSize.rotationEnd & 0b1);
 
                         replacePos.x -= kRotationOffset[roadSize.rotationEnd].x;
                         replacePos.y -= kRotationOffset[roadSize.rotationEnd].y;
@@ -6246,7 +6237,7 @@ namespace OpenLoco
                     replacePos.z += TrackData::getRoadPiece(roadId)[0].z;
                     const auto noStations = true;
 
-                    const auto success = replaceAiAllocatedRoad(replacePos, rotation, roadObjId, roadId, 0, noStations, flags) != GameCommands::kFailure;
+                    const auto success = replaceAiAllocatedRoad(replacePos, rotation, roadObjId, roadId, 0, noStations, GameCommands::Flags::apply) != GameCommands::kFailure;
                     return success ? 0 : 2;
                 }
             }
@@ -7852,9 +7843,7 @@ namespace OpenLoco
         {
             if (iter + 1 == end)
             {
-                // TODO: This is purely so we match vanilla but its just copying some rubbish into our array
-                // change this when we diverge to EntityId::null
-                *iter = static_cast<EntityId>(thought.totalCost & 0xFFFFU);
+                *iter = EntityId::null;
                 break;
             }
             *iter = *(iter + 1);

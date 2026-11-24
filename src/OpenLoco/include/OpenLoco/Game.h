@@ -29,7 +29,9 @@ namespace OpenLoco::Game
     void quitGame();
     void returnToTitle();
     void confirmSaveGame(LoadOrQuitMode promptSaveType);
-    bool saveLandscape(std::string filename);
+    bool saveLandscape(const std::string& filename);
+
+    void onDropFile(const std::string& path);
 
     std::string getActiveSavePath();
     void setActiveSavePath(std::string path);

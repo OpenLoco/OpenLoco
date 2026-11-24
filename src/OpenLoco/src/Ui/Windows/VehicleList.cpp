@@ -774,7 +774,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self.rowHover = -1;
 
         self.callOnResize();
-        self.callOnPeriodicUpdate();
+        self.callOnPeriodicTick();
         self.callPrepareDraw();
         self.initScrollWidgets();
         self.invalidate();
@@ -951,7 +951,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C260B
-    static void onUpdate(Window& self)
+    static void onTick(Window& self)
     {
         self.frameNo++;
         self.callPrepareDraw();
@@ -1183,7 +1183,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         .onResize = onResize,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
-        .onUpdate = onUpdate,
+        .onTick = onTick,
         .onHandleInputBegin = listWindowOnHandleInputBegin,
         .onHandleInputEnd = listWindowOnHandleInputEnd,
         .getScrollSize = getScrollSize,

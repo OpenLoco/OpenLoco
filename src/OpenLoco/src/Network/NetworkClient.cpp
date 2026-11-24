@@ -66,7 +66,7 @@ void NetworkClient::onClose()
     }
 }
 
-void NetworkClient::onUpdate()
+void NetworkClient::onTick()
 {
     processReceivedPackets();
     if (_status == NetworkClientStatus::connecting)
@@ -116,7 +116,7 @@ void NetworkClient::processReceivedPackets()
                 return;
             }
         }
-        _serverConnection->update();
+        _serverConnection->tick();
     }
 }
 
@@ -232,7 +232,7 @@ void NetworkClient::receiveRequestStateResponseChunkPacket(const RequestStateRes
         }
 
         auto& rchunk = _requestStateChunksReceived[responseChunk.index];
-        if (rchunk.data.size() == 0)
+        if (rchunk.data.empty())
         {
             rchunk.offset = responseChunk.offset;
             rchunk.data.assign(responseChunk.data, responseChunk.data + responseChunk.dataSize);

@@ -921,14 +921,24 @@ namespace OpenLoco::Ui
         eventHandlers->onClose(*this);
     }
 
-    void Window::callOnPeriodicUpdate()
+    void Window::callOnPeriodicTick()
     {
-        if (eventHandlers->onPeriodicUpdate == nullptr)
+        if (eventHandlers->onPeriodicTick == nullptr)
         {
             return;
         }
 
-        eventHandlers->onPeriodicUpdate(*this);
+        eventHandlers->onPeriodicTick(*this);
+    }
+
+    void Window::callTick()
+    {
+        if (eventHandlers->onTick == nullptr)
+        {
+            return;
+        }
+
+        eventHandlers->onTick(*this);
     }
 
     void Window::callUpdate()

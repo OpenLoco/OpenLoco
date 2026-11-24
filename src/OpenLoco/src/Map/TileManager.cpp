@@ -1175,7 +1175,7 @@ namespace OpenLoco::World::TileManager
             case ElementType::surface:
             {
                 auto& elSurface = el.get<SurfaceElement>();
-                return updateSurface(elSurface, loc);
+                return tickSurface(elSurface, loc);
             }
             case ElementType::building:
             {
@@ -1184,7 +1184,7 @@ namespace OpenLoco::World::TileManager
             }
             case ElementType::tree:
             {
-                return updateTreeElement(el, loc);
+                return tickTreeElement(el, loc);
             }
             case ElementType::road:
             {
@@ -1242,7 +1242,7 @@ namespace OpenLoco::World::TileManager
         getGameState().tileUpdateStartLocation = World::toWorldSpace(TilePos2(shift & 0xF, shift >> 4));
         if (shift == 0)
         {
-            IndustryManager::updateProducedCargoStats();
+            IndustryManager::tickProducedCargoStats();
         }
     }
 
@@ -1757,7 +1757,7 @@ namespace OpenLoco::World::TileManager
     }
 
     // 0x0047AB9B
-    void updateYearly()
+    void tickYearly()
     {
         auto& gs = getGameState();
         auto& ts = gs.tileState;

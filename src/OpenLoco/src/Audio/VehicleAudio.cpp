@@ -161,7 +161,7 @@ namespace OpenLoco::Audio
         sound.activeSoundId = SoundObjectId::null;
     }
 
-    static void updateSingleVehicleSound(Vehicles::VehicleBase& base, Vehicles::VehicleSound& sound, EntityId headId)
+    static void tickSingleVehicleSound(Vehicles::VehicleBase& base, Vehicles::VehicleSound& sound, EntityId headId)
     {
         if (sound.drivingSoundId == SoundObjectId::null)
         {
@@ -211,7 +211,7 @@ namespace OpenLoco::Audio
         setReverb(sound.audioHandle, isUnderground(base.position) ? kTunnelReverb : kNoReverb);
     }
 
-    void updateVehicleNoise()
+    void tickVehicleNoise()
     {
         if (!Game::hasFlags(GameStateFlags::tileManagerLoaded))
         {
@@ -230,8 +230,8 @@ namespace OpenLoco::Audio
         {
             Vehicles::Vehicle train(*v);
             auto headId = v->id;
-            updateSingleVehicleSound(*train.veh2, train.veh2->sound, headId);
-            updateSingleVehicleSound(*train.tail, train.tail->sound, headId);
+            tickSingleVehicleSound(*train.veh2, train.veh2->sound, headId);
+            tickSingleVehicleSound(*train.tail, train.tail->sound, headId);
         }
     }
 

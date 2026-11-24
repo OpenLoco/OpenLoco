@@ -122,7 +122,7 @@ namespace OpenLoco::World
     }
 
     // 0x00479413
-    bool updateLevelCrossingAnimation(const Animation& anim)
+    bool tickLevelCrossingAnimation(const Animation& anim)
     {
         auto tile = TileManager::get(anim.pos);
         bool shouldInvalidate = false;

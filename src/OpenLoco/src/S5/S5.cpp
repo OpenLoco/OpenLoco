@@ -45,6 +45,7 @@
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Core/Stream.hpp>
 #include <OpenLoco/Diagnostics/Logging.h>
+#include <OpenLoco/Utility/String.hpp>
 #include <fstream>
 #include <iomanip>
 
@@ -609,7 +610,7 @@ namespace OpenLoco::S5
                 std::vector<std::byte> objectData;
                 objectData.resize(unownedObjectData.size());
                 std::copy(std::begin(unownedObjectData), std::end(unownedObjectData), std::begin(objectData));
-                file->packedObjects.push_back(std::make_pair(object, std::move(objectData)));
+                file->packedObjects.emplace_back(object, std::move(objectData));
             }
             // 0x004420B2
         }
@@ -1084,5 +1085,20 @@ namespace OpenLoco::S5
             return std::make_unique<Scenario::Options>(importOptions(*s5Options));
         }
         return nullptr;
+    }
+
+    bool matchesFilter(const fs::path& path, const char* filter)
+    {
+        // All our filters are probably *.something so just truncate the *
+        // and treat as an extension filter
+        auto fileExtension = path.extension().u8string();
+
+        auto filterExtension = std::string(filter);
+        if (filterExtension[0] == '*')
+        {
+            filterExtension = filterExtension.substr(1);
+        }
+
+        return Utility::iequals(fileExtension, filterExtension);
     }
 }

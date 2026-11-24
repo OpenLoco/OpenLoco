@@ -86,7 +86,7 @@ namespace OpenLoco::StationManager
     }
 
     // 0x0048B244
-    void updateDaily()
+    void tickDaily()
     {
         for (auto& town : TownManager::towns())
         {
@@ -113,7 +113,7 @@ namespace OpenLoco::StationManager
             {
                 station.noTilesTimeout = 0;
             }
-            if (station.updateCargo())
+            if (station.tickCargo())
             {
                 auto town = TownManager::get(station.town);
                 if (town != nullptr && (town->flags & TownFlags::ratingAdjusted) == TownFlags::none)

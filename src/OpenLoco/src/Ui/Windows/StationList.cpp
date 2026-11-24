@@ -724,7 +724,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x0049193F
-    static void onUpdate(Window& window)
+    static void onTick(Window& window)
     {
         window.frameNo++;
 
@@ -752,7 +752,7 @@ namespace OpenLoco::Ui::Windows::StationList
         .onMouseUp = onMouseUp,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
-        .onUpdate = onUpdate,
+        .onTick = onTick,
         .onHandleInputBegin = listWindowOnHandleInputBegin,
         .onHandleInputEnd = listWindowOnHandleInputEnd,
         .getScrollSize = getScrollSize,

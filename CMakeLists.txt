@@ -7,7 +7,7 @@ set(CMAKE_POLICY_DEFAULT_CMP0069 NEW)
 
 set (PROJECT openloco)
 
-set(VCPKG_GIT_TAG d015e31e90838a4c9dfa3eed45979bc70d9357fc)
+set(VCPKG_GIT_TAG 2fb57e1c4738d4b4484d2234c886caf006612222)
 
 # Store the top level source directory in a variable to be passed down to targets.
 set(OPENLOCO_PROJECT_PATH ${CMAKE_SOURCE_DIR})
@@ -78,6 +78,10 @@ if (HAS_LIBSTDCPP)
     message(STATUS "libstdc++ detected will require linking with TBB")
 endif()
 
+# Enable a compilation database for clang-tidy (honoured by Makefile/Ninja generators;
+# the Visual Studio generator does not consume it).
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 if (NOT CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 20)
 endif()
@@ -119,8 +123,8 @@ if (${OPENLOCO_BUILD_TESTS})
 endif()
 
 FetchContent_Declare(openloco_objects
-            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.12/objects.zip
-            URL_HASH SHA256=9e6596aaa52b2296cfc779bbe3aab01d0fb37ef61fcb23cd0e5ff4d2b9e846ca)
+            URL      https://github.com/OpenLoco/OpenGraphics/releases/download/v0.1.13/objects.zip
+            URL_HASH SHA256=5af3dbf660ed0e20b9f425a46fbbd618a52a48fe96fa3a4dfea1fdf138950b0a)
 FetchContent_MakeAvailable(openloco_objects)
 
 add_subdirectory(src)

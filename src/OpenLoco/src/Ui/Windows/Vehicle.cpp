@@ -670,7 +670,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B30F3
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo += 1;
             self.callPrepareDraw();
@@ -1168,7 +1168,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             .onResize = onResize,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .onToolUpdate = onToolUpdate,
             .onToolDown = onToolDown,
             .onToolAbort = onToolAbort,
@@ -1372,7 +1372,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         // 0x004B3C45
         // "Show <vehicle> design details and options" tab in vehicle window
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo += 1;
             self.callPrepareDraw();
@@ -2028,7 +2028,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             .onResize = onResize,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .onHandleInputBegin = listWindowOnHandleInputBegin,
             .onHandleInputEnd = listWindowOnHandleInputEnd,
             .onToolUpdate = onToolUpdate,
@@ -2665,7 +2665,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4607
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo += 1;
             self.callPrepareDraw();
@@ -2676,7 +2676,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .onHandleInputBegin = listWindowOnHandleInputBegin,
             .onHandleInputEnd = listWindowOnHandleInputEnd,
             .getScrollSize = getScrollSize,
@@ -2861,7 +2861,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5995
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo += 1;
             self.callPrepareDraw();
@@ -2870,7 +2870,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .textInput = Common::textInput,
             .tooltip = tooltip,
             .prepareDraw = prepareDraw,
@@ -3239,7 +3239,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         // 0x004B55D1
         // "Show <vehicle> route details" tab in vehicle window
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo += 1;
             self.callPrepareDraw();
@@ -4111,7 +4111,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .onHandleInputBegin = listWindowOnHandleInputBegin,
             .onHandleInputEnd = listWindowOnHandleInputEnd,
             .onToolDown = onToolDown,
@@ -4999,7 +4999,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 FormatArgumentsBuffer buffer{};
                 auto args2 = FormatArguments(buffer);
                 args2.push(vehicle->ordinalNumber);
-                TextInput::openTextInput(&self, StringIds::title_name_vehicle, StringIds::prompt_enter_new_vehicle_name, vehicle->name, widgetIndex, args2);
+                TextInput::openTextInput(self, StringIds::title_name_vehicle, StringIds::prompt_enter_new_vehicle_name, vehicle->name, widgetIndex, args2);
             }
         }
 

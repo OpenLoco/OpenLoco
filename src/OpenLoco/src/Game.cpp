@@ -28,7 +28,7 @@ namespace OpenLoco::Game
 
     using Ui::Windows::PromptBrowse::browse_type;
 
-    static std::optional<std::string> openBrowsePrompt(std::string path, StringId titleId, browse_type type, const char* filter)
+    static std::optional<std::string> openBrowsePrompt(std::string_view path, StringId titleId, browse_type type, const char* filter)
     {
         SceneManager::setPauseFlag(PauseFlags::browsePrompt);
         Gfx::invalidateScreen();
@@ -302,7 +302,7 @@ namespace OpenLoco::Game
         Gfx::invalidateScreen();
     }
 
-    bool saveLandscape(std::string filename)
+    bool saveLandscape(const std::string& filename)
     {
         // 0x0043C4B3
         auto path = fs::u8path(filename).replace_extension(S5::extensionSC5);
@@ -317,6 +317,84 @@ namespace OpenLoco::Game
         return saveResult;
     }
 
+    void onDropFile(const std::string& pathString)
+    {
+        if (!(SceneManager::isTitleMode() || SceneManager::isPlayMode() || SceneManager::isEditorMode()))
+        {
+            return;
+        }
+
+        fs::path path = fs::canonical(pathString);
+
+        if (!fs::is_regular_file(path))
+        {
+            // Just ignore whatever was dropped
+            // TODO open error window? Use dropped folders (fs::is_directory) if browse prompt is open?
+            return;
+        }
+
+        FormatArguments args{};
+
+        // push name of file
+        {
+            char* buffer_2039 = StringManager::getBufferString(StringIds::buffer_2039);
+            auto name = path.stem().make_preferred().u8string();
+            strncpy(&buffer_2039[0], name.c_str(), 512);
+            args.push(StringIds::buffer_2039);
+        }
+
+        // Check file extension - is it a save file?
+        if (S5::matchesFilter(path, S5::filterSV5))
+        {
+            if (SceneManager::isEditorMode())
+            {
+                // Loading saves in the scenario editor doesn't work so give an error message instead
+                Ui::Windows::Error::open(StringIds::error_saves_cant_be_loaded_in_editor);
+                return;
+            }
+
+            if (!Ui::Windows::PromptOkCancel::open(StringIds::title_dropped_file, StringIds::load_save_file_prompt, args, StringIds::load_save_file_confirm))
+            {
+                // Player clicked cancel
+                return;
+            }
+
+            SceneManager::requestSceneLoad(SceneManager::SceneId::gameplay, path, S5::LoadFlags::none);
+            return;
+        }
+
+        // Is it a scenario/landscape file?
+        if (S5::matchesFilter(path, S5::filterSC5))
+        {
+            if (SceneManager::isEditorMode())
+            {
+                // Prompt to load landscape/scenario file to edit.
+
+                if (!Ui::Windows::PromptOkCancel::open(StringIds::title_dropped_file, StringIds::load_landscape_file_prompt, args, StringIds::load_landscape_file_confirm))
+                {
+                    return;
+                }
+
+                SceneManager::requestSceneLoad(SceneManager::SceneId::editor, path, S5::LoadFlags::landscape);
+                return;
+            }
+
+            // Prompt to play scenario.
+            // TODO check that it is a scenario and not just a 'landscape'
+
+            if (!Ui::Windows::PromptOkCancel::open(StringIds::title_dropped_file, StringIds::load_scenario_file_prompt, args, StringIds::load_scenario_file_confirm))
+            {
+                return;
+            }
+
+            Scenario::loadAndStart(path);
+            return;
+        }
+
+        Ui::Windows::Error::open(StringIds::error_invalid_file_type);
+        return;
+    }
+
     std::string getActiveSavePath()
     {
         return _activeSavePath;
@@ -324,7 +402,7 @@ namespace OpenLoco::Game
 
     void setActiveSavePath(std::string path)
     {
-        _activeSavePath = path;
+        _activeSavePath = std::move(path);
     }
 
     GameStateFlags getFlags()

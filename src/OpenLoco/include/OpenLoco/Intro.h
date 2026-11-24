@@ -1,6 +1,11 @@
 #pragma once
 #include <cstdint>
 
+namespace OpenLoco::Gfx
+{
+    class DrawingContext;
+}
+
 namespace OpenLoco::Intro
 {
     enum class State : uint8_t
@@ -22,6 +27,8 @@ namespace OpenLoco::Intro
     bool isActive();
     State state();
     void state(State state);
+    void skip();
 
     void tick();
+    void draw(Gfx::DrawingContext& drawingCtx);
 }

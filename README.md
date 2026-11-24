@@ -139,6 +139,34 @@ Note: Only arm64 builds have been tested.
 
 ---
 
+## 4.3 Code quality tooling
+
+### clang-format
+
+Formatting is enforced in CI using `clang-format` and the repository's `.clang-format`. To check
+your changes locally:
+
+```
+scripts/check-code-formatting.sh
+```
+
+### clang-tidy
+
+`clang-tidy` checks are configured in `.clang-tidy`. Diagnostics fail CI, so only add checks once
+the codebase is clean of them.
+
+Running clang-tidy needs a compilation database. It is produced automatically by Makefile and Ninja
+generators (the project sets `CMAKE_EXPORT_COMPILE_COMMANDS`); with the Visual Studio generator
+configure a Ninja build directory instead. Once `compile_commands.json` exists, run:
+
+```
+find src -name '*.cpp' -exec clang-tidy -p build --quiet {} +
+```
+
+Use `--fix` to apply suggested fixes.
+
+---
+
 # 5 Licence
 **OpenLoco** is licensed under the MIT License.
 

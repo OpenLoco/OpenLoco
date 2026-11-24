@@ -120,14 +120,13 @@ namespace OpenLoco::Vehicles
 
     public:
         sfl::static_vector<LocationOfInterest, 4096> locs;
-        size_t count;
+        size_t count = 0;
         uint16_t mapSize;
         uint16_t mapSizeMask;
         uint16_t maxEntries;
 
         LocationOfInterestHashSet(uint16_t _maxSize)
-            : count()
-            , mapSize(_maxSize)
+            : mapSize(_maxSize)
             , mapSizeMask(_maxSize - 1)
             , maxEntries(_maxSize - kMinFreeSlots)
         {
@@ -180,11 +179,10 @@ namespace OpenLoco::Vehicles
     struct RoutingResults
     {
         LocationOfInterestHashSet reachableLocs;
-        bool hasDeadEnd; // 0x01136085
+        bool hasDeadEnd = false; // 0x01136085
 
         RoutingResults(uint16_t maxSize)
             : reachableLocs(maxSize)
-            , hasDeadEnd(false)
         {
         }
     };

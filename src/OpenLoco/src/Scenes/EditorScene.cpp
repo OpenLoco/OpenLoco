@@ -18,5 +18,6 @@ namespace OpenLoco::Scenes::EditorScene
 
     void update()
     {
+        GameScene::update();
     }
 }

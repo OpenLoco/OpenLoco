@@ -109,7 +109,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
         WindowManager::invalidate(WindowType::keyboardShortcuts);
     }
 
-    static void onUpdate(Window& self)
+    static void onTick(Window& self)
     {
         const auto modifiers = Input::getKeyModifier() & ~KeyModifier::cheat;
         if (modifiers == _pressedModifiers)
@@ -166,7 +166,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
 
     static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
-        .onUpdate = onUpdate,
+        .onTick = onTick,
         .prepareDraw = prepareDraw,
         .draw = draw,
         .keyUp = onKeyUp,

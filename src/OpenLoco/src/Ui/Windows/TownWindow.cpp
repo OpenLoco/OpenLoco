@@ -93,7 +93,7 @@ namespace OpenLoco::Ui::Windows::Town
         // Defined at the bottom of this file.
         static void prepareDraw(Window& self);
         static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input);
-        static void update(Window& self);
+        static void tick(Window& self);
         static void renameTownPrompt(Window& self, WidgetIndex_t widgetIndex);
         static void switchTab(Window& self, WidgetIndex_t widgetIndex);
         static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx);
@@ -366,7 +366,7 @@ namespace OpenLoco::Ui::Windows::Town
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onResize = onResize,
-            .onUpdate = Common::update,
+            .onTick = Common::tick,
             .textInput = Common::textInput,
             .viewportRotate = initViewport,
             .prepareDraw = prepareDraw,
@@ -559,7 +559,7 @@ namespace OpenLoco::Ui::Windows::Town
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onResize = onResize,
-            .onUpdate = Common::update,
+            .onTick = Common::tick,
             .textInput = Common::textInput,
             .prepareDraw = prepareDraw,
             .draw = draw,
@@ -683,7 +683,7 @@ namespace OpenLoco::Ui::Windows::Town
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onResize = onResize,
-            .onUpdate = Common::update,
+            .onTick = Common::tick,
             .textInput = Common::textInput,
             .prepareDraw = prepareDraw,
             .draw = draw,
@@ -794,7 +794,7 @@ namespace OpenLoco::Ui::Windows::Town
 
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
-            .onUpdate = Common::update,
+            .onTick = Common::tick,
             .textInput = Common::textInput,
             .prepareDraw = prepareDraw,
             .draw = draw,
@@ -882,7 +882,7 @@ namespace OpenLoco::Ui::Windows::Town
             GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 
-        static void update(Window& self)
+        static void tick(Window& self)
         {
             self.frameNo++;
             self.callPrepareDraw();
@@ -898,7 +898,7 @@ namespace OpenLoco::Ui::Windows::Town
             args.push(town->name);
             args.push(town->name);
 
-            TextInput::openTextInput(&self, StringIds::title_town_name, StringIds::prompt_type_new_town_name, town->name, widgetIndex, args);
+            TextInput::openTextInput(self, StringIds::title_town_name, StringIds::prompt_type_new_town_name, town->name, widgetIndex, args);
         }
 
         // 0x004991BC

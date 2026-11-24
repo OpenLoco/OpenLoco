@@ -87,7 +87,7 @@ namespace OpenLoco::Economy
 
     // 0x0046E239
     // NB: called in setInflationForYear below, as well in OpenLoco::::dateTick.
-    void updateMonthly()
+    void tickMonthly()
     {
         auto& factors = currencyMultiplicationFactors();
         for (uint8_t i = 0; i < 32; i++)
@@ -120,7 +120,7 @@ namespace OpenLoco::Economy
 
         for (uint32_t monthCount = baseYear * 12; monthCount > 0; monthCount--)
         {
-            updateMonthly();
+            tickMonthly();
         }
     }
 

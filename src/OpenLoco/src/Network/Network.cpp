@@ -100,7 +100,7 @@ namespace OpenLoco::Network
         auto serverOrClient = getServerOrClient();
         if (serverOrClient != nullptr)
         {
-            serverOrClient->update();
+            serverOrClient->tick();
             if (serverOrClient->isClosed())
             {
                 close();

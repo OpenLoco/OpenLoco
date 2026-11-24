@@ -2,6 +2,8 @@
 #include "Graphics/Gfx.h"
 #include "Intro.h"
 #include "SceneManager.h"
+#include "Ui.h"
+#include "Ui/WindowManager.h"
 
 namespace OpenLoco::Scenes::IntroScene
 {
@@ -28,9 +30,11 @@ namespace OpenLoco::Scenes::IntroScene
 
     void tickInterface()
     {
+        Ui::WindowManager::tick();
     }
 
     void update()
     {
+        Ui::handleInput();
     }
 }

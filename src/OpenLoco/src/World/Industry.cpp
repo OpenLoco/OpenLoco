@@ -168,7 +168,7 @@ namespace OpenLoco
     }
 
     // 0x004534BD
-    void Industry::updateDaily()
+    void Industry::tickDaily()
     {
         if (hasFlags(IndustryFlags::isGhost))
         {
@@ -269,7 +269,7 @@ namespace OpenLoco
     }
 
     // 0x00453868
-    void Industry::updateMonthly()
+    void Industry::tickMonthly()
     {
         if (hasFlags(IndustryFlags::isGhost))
         {
@@ -683,7 +683,7 @@ namespace OpenLoco
     }
 
     // 0x004574F7
-    void Industry::updateProducedCargoStats()
+    void Industry::tickProducedCargoStats()
     {
         const auto* industryObj = getObject();
 

@@ -36,11 +36,11 @@ namespace OpenLoco::CompanyManager
     Colour getPlayerCompanyColour();
     bool isPlayerCompany(CompanyId id);
     void tick();
-    void updateDaily();
-    void updateMonthly1();
-    void updateMonthlyHeadquarters();
-    void updateQuarterly();
-    void updateYearly();
+    void tickDaily();
+    void tickMonthly1();
+    void tickMonthlyHeadquarters();
+    void tickQuarterly();
+    void tickYearly();
     void determineAvailableVehicles();
     currency32_t calculateDeliveredCargoPayment(uint8_t cargoItem, int32_t numUnits, int32_t distance, uint16_t numDays);
 

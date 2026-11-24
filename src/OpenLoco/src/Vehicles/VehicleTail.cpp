@@ -64,7 +64,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AA24A
-    bool VehicleTail::update()
+    bool VehicleTail::tick()
     {
         if (mode == TransportMode::air || mode == TransportMode::water)
         {

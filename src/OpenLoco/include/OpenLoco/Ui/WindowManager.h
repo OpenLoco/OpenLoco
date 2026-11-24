@@ -60,7 +60,6 @@ namespace OpenLoco::Ui::WindowManager
 
     void updateViewports();
     void tick();
-    void updateDaily();
     Window* getMainWindow();
     Viewport* getMainViewport();
     Window* find(WindowType type);
@@ -82,6 +81,7 @@ namespace OpenLoco::Ui::WindowManager
     Window* createWindow(WindowType type, Ui::Point origin, Ui::Size size, WindowFlags flags, const WindowEventList& events);
     Window* createWindowCentred(WindowType type, Ui::Size size, WindowFlags flags, const WindowEventList& events);
     Window* createWindow(WindowType type, Ui::Size size, WindowFlags flags, const WindowEventList& events);
+    void dispatchTickAll();
     void dispatchUpdateAll();
     void callHandleInputBeginEventOnAllWindows();
     void callHandleInputEndEventOnAllWindows();
@@ -400,7 +400,7 @@ namespace OpenLoco::Ui::Windows
 
     namespace TextInput
     {
-        void openTextInput(Ui::Window* w, StringId title, StringId message, StringId value, int callingWidget, FormatArgumentsView valueArgs, uint32_t inputSize = StringManager::kUserStringSize - 1);
+        void openTextInput(Window& w, StringId title, StringId message, StringId value, int callingWidget, FormatArgumentsView valueArgs, uint32_t inputSize = StringManager::kUserStringSize - 1);
         void sub_4CE6C9(WindowType type, WindowNumber_t number);
         void cancel();
         void sub_4CE6FF();

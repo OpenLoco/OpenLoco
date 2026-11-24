@@ -71,8 +71,8 @@ namespace OpenLoco::Ui
         void (*onMouseHover)(Window&, WidgetIndex_t, WidgetId) = nullptr;
         void (*onMouseDown)(Window&, WidgetIndex_t, WidgetId) = nullptr;
         void (*onDropdown)(Window&, WidgetIndex_t, WidgetId, int16_t) = nullptr;
-        void (*onPeriodicUpdate)(Window&) = nullptr;
-        void (*onUpdate)(Window&) = nullptr;
+        void (*onPeriodicTick)(Window&) = nullptr;
+        void (*onTick)(Window&) = nullptr;
         void (*onHandleInputBegin)(Window&) = nullptr;
         void (*onHandleInputEnd)(Window&) = nullptr;
         void (*onToolUpdate)(Window&, const WidgetIndex_t, WidgetId, const int16_t, const int16_t) = nullptr;
@@ -95,6 +95,7 @@ namespace OpenLoco::Ui
         void (*draw)(Window&, Gfx::DrawingContext&) = nullptr;
         void (*drawScroll)(Window&, Gfx::DrawingContext&, const uint32_t scrollIndex) = nullptr;
         bool (*keyUp)(Window&, uint32_t charCode, uint32_t keyCode) = nullptr;
+        void (*onUpdate)(Window&) = nullptr;
     };
 
     struct SavedViewSimple
@@ -342,8 +343,8 @@ namespace OpenLoco::Ui
         void callOnMouseHover(WidgetIndex_t widgetIndex, WidgetId id);                                                    // 3
         void callOnMouseDown(WidgetIndex_t widgetIndex, WidgetId id);                                                     // 4
         void callOnDropdown(WidgetIndex_t widgetIndex, WidgetId id, int16_t itemIndex);                                   // 5
-        void callOnPeriodicUpdate();                                                                                      // 6
-        void callUpdate();                                                                                                // 7
+        void callOnPeriodicTick();                                                                                        // 6
+        void callTick();                                                                                                  // 7
         void callHandleInputBegin();                                                                                      // 8
         void callHandleInputEnd();                                                                                        // 9
         void callToolUpdate(WidgetIndex_t widgetIndex, WidgetId id, int16_t xPos, int16_t yPos);                          // 10
@@ -365,6 +366,7 @@ namespace OpenLoco::Ui
         void callDraw(Gfx::DrawingContext& ctx);                                                                          // 27
         void callDrawScroll(Gfx::DrawingContext& drawingCtx, uint32_t scrollIndex);                                       // 28
         bool callKeyUp(uint32_t charCode, uint32_t keyCode);                                                              // 29
+        void callUpdate();
 
         WidgetIndex_t firstActivatedWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex);
         WidgetIndex_t prevAvailableWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex);

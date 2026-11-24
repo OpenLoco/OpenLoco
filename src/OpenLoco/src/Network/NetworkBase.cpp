@@ -65,16 +65,16 @@ void NetworkBase::endReceivePacketLoop()
     _receivePacketThread = {};
 }
 
-void NetworkBase::update()
+void NetworkBase::tick()
 {
-    onUpdate();
+    onTick();
 }
 
 void NetworkBase::onClose()
 {
 }
 
-void NetworkBase::onUpdate()
+void NetworkBase::onTick()
 {
 }
 

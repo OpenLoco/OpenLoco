@@ -60,7 +60,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         _dragVehicleHead = EntityId::null;
     }
 
-    static void onUpdate(Window& self)
+    static void onTick(Window& self)
     {
         if (WindowManager::find(WindowType::vehicle, enumValue(_dragVehicleHead)) == nullptr)
         {
@@ -112,7 +112,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
 
     static constexpr WindowEventList kEvents = {
         .onClose = onClose,
-        .onUpdate = onUpdate,
+        .onTick = onTick,
         .cursor = cursor,
         .onMove = onMove,
         .draw = draw,

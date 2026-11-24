@@ -96,14 +96,14 @@ namespace OpenLoco::IndustryManager
     }
 
     // 0x00453487
-    void updateDaily()
+    void tickDaily()
     {
         if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
         {
             GameCommands::setUpdatingCompanyId(CompanyId::neutral);
             for (auto& industry : industries())
             {
-                industry.updateDaily();
+                industry.tickDaily();
             }
         }
     }
@@ -461,12 +461,8 @@ namespace OpenLoco::IndustryManager
                 args.type = indObjId;
                 args.buildImmediately = buildImmediately;
                 args.pos = *randomIndustryLoc;
-                // To match vanilla we will do this.
-                // TODO: Once match confirmed replace with two randNext() calls
-                const auto temp = gPrng1().srand_0();
-                gPrng1().randNext();
-                args.srand0 = gPrng1().srand_0() - temp;
-                args.srand1 = gPrng1().srand_1();
+                args.srand0 = gPrng1().randNext();
+                args.srand1 = gPrng1().randNext();
 
                 auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
                 if (res != GameCommands::kFailure)
@@ -507,7 +503,7 @@ namespace OpenLoco::IndustryManager
     }
 
     // 0x0045383B
-    void updateMonthly()
+    void tickMonthly()
     {
         if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
         {
@@ -516,7 +512,7 @@ namespace OpenLoco::IndustryManager
 
             for (auto& industry : industries())
             {
-                industry.updateMonthly();
+                industry.tickMonthly();
             }
 
             Ui::WindowManager::invalidate(Ui::WindowType::industry);
@@ -559,11 +555,11 @@ namespace OpenLoco::IndustryManager
     }
 
     // 0x004574E8
-    void updateProducedCargoStats()
+    void tickProducedCargoStats()
     {
         for (auto& industry : industries())
         {
-            industry.updateProducedCargoStats();
+            industry.tickProducedCargoStats();
         }
     }
 

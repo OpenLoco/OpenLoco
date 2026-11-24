@@ -228,7 +228,7 @@ namespace OpenLoco::Ui::Dropdown
         static WindowEventList events;
 
         // 0x004CD015
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.invalidate();
         }
@@ -359,7 +359,7 @@ namespace OpenLoco::Ui::Dropdown
 
         static void initEvents()
         {
-            events.onUpdate = onUpdate;
+            events.onTick = onTick;
             events.draw = draw;
         }
 

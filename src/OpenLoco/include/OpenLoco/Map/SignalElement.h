@@ -95,5 +95,5 @@ namespace OpenLoco::World
 #pragma pack(pop)
     static_assert(sizeof(SignalElement) == kTileElementSize);
 
-    bool updateSignalAnimation(const Animation& anim);
+    bool tickSignalAnimation(const Animation& anim);
 }

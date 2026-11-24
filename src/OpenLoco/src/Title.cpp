@@ -111,7 +111,7 @@ namespace OpenLoco::Title
     {
         loadTitle();
         SceneManager::resetSceneAge();
-        update();
+        tick();
     }
 
     // 0x00444357
@@ -211,7 +211,7 @@ namespace OpenLoco::Title
     }
 
     // 0x00444387
-    void update()
+    void tick()
     {
         if (!SceneManager::isTitleMode())
         {

@@ -3,7 +3,15 @@ Checks: >
     -*,
     cppcoreguidelines-macro-usage,
     modernize-use-nullptr,
-    modernize-use-override
+    modernize-use-override,
+    modernize-use-emplace,
+    modernize-use-default-member-init,
+    performance-unnecessary-value-param,
+    performance-for-range-copy,
+    readability-container-size-empty,
+    readability-redundant-string-cstr,
+    bugprone-sizeof-expression,
+    bugprone-suspicious-memset-usage
 CheckOptions:
   - key: cppcoreguidelines-macro-usage.AllowedRegexp
     value: 'OPENLOCO_ENABLE_ENUM_OPERATORS|WRITE_ADDRESS_STRICTALIAS|assert_struct_size|enum_def|UNUSED_STR'

@@ -3,7 +3,7 @@
 namespace OpenLoco::Title
 {
     void start();
-    void update();
+    void tick();
     void stop();
     void reset();
 }

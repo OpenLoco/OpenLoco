@@ -78,7 +78,7 @@ namespace OpenLoco::Ui::Windows::Industry
         // Defined at the bottom of this file.
         static void prepareDraw(Window& self);
         static void textInput(Window& self, WidgetIndex_t callingWidget, [[maybe_unused]] const WidgetId id, const char* input);
-        static void update(Window& self);
+        static void tick(Window& self);
         static void renameIndustryPrompt(Window& self, WidgetIndex_t widgetIndex);
         static void switchTab(Window& self, WidgetIndex_t widgetIndex);
         static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx);
@@ -310,7 +310,7 @@ namespace OpenLoco::Ui::Windows::Industry
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onResize = onResize,
-            .onUpdate = Common::update,
+            .onTick = Common::tick,
             .textInput = Common::textInput,
             .viewportRotate = initViewport,
             .prepareDraw = prepareDraw,
@@ -389,7 +389,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
         static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
-            .onUpdate = Common::update,
+            .onTick = Common::tick,
             .textInput = Common::textInput,
             .prepareDraw = prepareDraw,
             .draw = Common::draw,
@@ -422,7 +422,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
         static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
-            .onUpdate = Common::update,
+            .onTick = Common::tick,
             .textInput = Common::textInput,
             .prepareDraw = prepareDraw,
             .draw = Common::draw,
@@ -592,7 +592,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
         static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
-            .onUpdate = Common::update,
+            .onTick = Common::tick,
             .textInput = Common::textInput,
             .prepareDraw = prepareDraw,
             .draw = draw,
@@ -819,7 +819,7 @@ namespace OpenLoco::Ui::Windows::Industry
             GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 
-        static void update(Window& self)
+        static void tick(Window& self)
         {
             self.frameNo++;
             self.callPrepareDraw();
@@ -850,7 +850,7 @@ namespace OpenLoco::Ui::Windows::Industry
             FormatArgumentsBuffer buffer{};
             auto args2 = FormatArguments(buffer);
             args2.push(industry->town);
-            TextInput::openTextInput(&self, StringIds::title_industry_name, StringIds::prompt_enter_new_industry_name, industry->name, widgetIndex, args2);
+            TextInput::openTextInput(self, StringIds::title_industry_name, StringIds::prompt_enter_new_industry_name, industry->name, widgetIndex, args2);
         }
 
         // 0x00455CC7

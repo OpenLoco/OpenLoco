@@ -1033,7 +1033,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x004C3A9E
-    void updateYearly2()
+    void tickYearly2()
     {
         const auto currentYear = getCurrentYear();
         for (uint16_t vehicleObjId = 0; vehicleObjId < ObjectManager::getMaxObjects(ObjectType::vehicle); vehicleObjId++)

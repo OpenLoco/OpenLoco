@@ -23,9 +23,9 @@ namespace OpenLoco::Vehicles
         uint8_t breakdownTimeout; // (likely unused)
 
         const VehicleObject* getObject() const;
-        bool update(const CarUpdateState& carState);
-        void secondaryAnimationUpdate(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance);
-        void updateSegmentCrashed(const CarUpdateState& carState);
+        bool tick(const CarUpdateState& carState);
+        void secondaryAnimationTick(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance);
+        void tickSegmentCrashed(const CarUpdateState& carState);
         void sub_4AAB0B(const CarUpdateState& carState, const int32_t unkDistance);
         void updateCargoSprite();
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
@@ -35,13 +35,13 @@ namespace OpenLoco::Vehicles
         void sub_4AC255(VehicleBogie* backBogie, VehicleBogie* frontBogie);
 
     private:
-        void animationUpdate(const CarUpdateState& carState, const int32_t unkDistance);
-        void steamPuffsAnimationUpdate(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance, uint8_t num, int32_t var_05);
-        void dieselExhaust1AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t var_05);
-        void dieselExhaust2AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t var_05);
-        void electricSpark1AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance, uint8_t num, int32_t var_05);
-        void electricSpark2AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance, uint8_t num, int32_t var_05);
-        void shipWakeAnimationUpdate(const Vehicle& train, uint8_t num, int32_t var_05);
+        void animationTick(const CarUpdateState& carState, const int32_t unkDistance);
+        void steamPuffsAnimationTick(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance, uint8_t num, int32_t var_05);
+        void dieselExhaust1AnimationTick(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t var_05);
+        void dieselExhaust2AnimationTick(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t var_05);
+        void electricSpark1AnimationTick(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance, uint8_t num, int32_t var_05);
+        void electricSpark2AnimationTick(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance, uint8_t num, int32_t var_05);
+        void shipWakeAnimationTick(const Vehicle& train, uint8_t num, int32_t var_05);
         Pitch updateSpritePitchSteepSlopes(uint16_t xyOffset, int16_t zOffset);
         Pitch updateSpritePitch(uint16_t xyOffset, int16_t zOffset);
     };

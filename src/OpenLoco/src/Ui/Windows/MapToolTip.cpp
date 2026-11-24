@@ -61,6 +61,12 @@ namespace OpenLoco::Ui::Windows::MapToolTip
             }
         }
 
+        if (Input::hasFlag(Input::Flags::rightMousePressed))
+        {
+            WindowManager::close(WindowType::mapTooltip);
+            return;
+        }
+
         const auto height = 55;
         auto maxY = Ui::height() - height;
         int16_t y = cursor.y + 15; // Normally, we'd display the tooltip 15 lower
@@ -109,7 +115,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
     }
 
     // 0x004CF13B
-    static void update(Window& self)
+    static void tick(Window& self)
     {
         self.invalidate();
     }
@@ -153,7 +159,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
     }
 
     static constexpr WindowEventList kEvents = {
-        .onUpdate = update,
+        .onTick = tick,
         .draw = draw,
     };
 

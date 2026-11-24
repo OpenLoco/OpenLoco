@@ -105,7 +105,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void switchTab(Window& self, WidgetIndex_t widgetIndex);
         static void drawTabs(Window& self, Gfx::DrawingContext& drawingCtx);
         static void prepareDraw(Window& self);
-        static void onUpdate(Window& self);
+        static void onTick(Window& self);
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex, [[maybe_unused]] const WidgetId id);
         static void sub_4A69DD();
 
@@ -379,7 +379,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBDA5
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             if (!Input::hasFlag(Input::Flags::toolActive))
             {
@@ -887,7 +887,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             .onResize = onResize,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .onHandleInputBegin = onHandleInputBegin,
             .onToolUpdate = onToolUpdate,
             .onToolDown = onToolDown,
@@ -1192,7 +1192,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             .onClose = onClose,
             .onMouseUp = Common::onMouseUp,
             .onMouseDown = onMouseDown,
-            .onUpdate = Common::onUpdate,
+            .onTick = Common::onTick,
             .onToolUpdate = onToolUpdate,
             .onToolDown = onToolDown,
             .toolDrag = toolDrag,
@@ -1297,7 +1297,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCB47
-        static void showDropdown(Window* self, WidgetIndex_t widgetIndex)
+        static void showDropdown(Window& self, WidgetIndex_t widgetIndex)
         {
             auto landCount = 0;
             for (auto i = 0; i < 32; i++)
@@ -1309,10 +1309,10 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
             }
 
-            auto xPos = self->widgets[widgetIndex].left + self->x;
-            auto yPos = self->widgets[widgetIndex].bottom + self->y;
-            auto heightOffset = self->widgets[widgetIndex].height() - 18;
-            auto colour = self->getColour(WindowColour::secondary).translucent();
+            auto xPos = self.widgets[widgetIndex].left + self.x;
+            auto yPos = self.widgets[widgetIndex].bottom + self.y;
+            auto heightOffset = self.widgets[widgetIndex].height() - 18;
+            auto colour = self.getColour(WindowColour::secondary).translucent();
             auto count = Dropdown::getItemsPerRow(landCount);
 
             Dropdown::showImage(xPos, yPos, 20, 20, heightOffset, colour, count, landCount);
@@ -1348,7 +1348,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 case Widx::kLandMaterial:
                 {
-                    showDropdown(&self, widgetIndex);
+                    showDropdown(self, widgetIndex);
                     break;
                 }
 
@@ -1887,7 +1887,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             .onResize = onResize,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = Common::onUpdate,
+            .onTick = Common::onTick,
             .onToolUpdate = onToolUpdate,
             .onToolDown = onToolDown,
             .toolDrag = toolDrag,
@@ -2232,7 +2232,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             .onClose = onClose,
             .onMouseUp = Common::onMouseUp,
             .onMouseDown = onMouseDown,
-            .onUpdate = Common::onUpdate,
+            .onTick = Common::onTick,
             .onToolUpdate = onToolUpdate,
             .onToolDown = onToolDown,
             .toolDrag = toolDrag,
@@ -2368,7 +2368,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC23D
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             if (!Input::hasFlag(Input::Flags::toolActive))
             {
@@ -2721,7 +2721,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             .onClose = onClose,
             .onMouseUp = Common::onMouseUp,
             .onResize = onResize,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .onHandleInputBegin = onHandleInputBegin,
             .onToolUpdate = onToolUpdate,
             .onToolDown = onToolDown,
@@ -2763,7 +2763,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // clang-format on
 
         // 0x004BC78A, 0x004BCB0B
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             if (!Input::hasFlag(Input::Flags::toolActive))
             {

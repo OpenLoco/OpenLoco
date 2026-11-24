@@ -125,7 +125,7 @@ namespace OpenLoco::Scenario
     }
 
     // 0x00496A84
-    void updateSnowLine(int32_t currentDayOfYear)
+    void tickSnowLine(int32_t currentDayOfYear)
     {
         auto* climateObj = ObjectManager::get<ClimateObject>();
         if (climateObj == nullptr)

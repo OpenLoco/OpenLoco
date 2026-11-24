@@ -72,7 +72,7 @@ namespace OpenLoco::Network
 
     protected:
         void onClose() override;
-        void onUpdate() override;
+        void onTick() override;
         void onReceivePacket(IUdpSocket& socket, std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet) override;
 
     public:

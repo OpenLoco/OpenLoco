@@ -107,6 +107,7 @@ namespace OpenLoco::Ui
     void setCursorPos(int32_t x, int32_t y);
     void hideCursor();
     void showCursor();
+    bool setRelativeMouseMode(bool enabled);
     void tick();
     void triggerResize();
     void render();

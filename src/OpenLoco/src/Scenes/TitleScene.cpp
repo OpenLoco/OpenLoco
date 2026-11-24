@@ -18,7 +18,7 @@ namespace OpenLoco::Scenes::TitleScene
     {
         GameScene::tick();
 
-        Title::update();
+        Title::tick();
     }
 
     void tickInterface()
@@ -28,6 +28,7 @@ namespace OpenLoco::Scenes::TitleScene
 
     void update()
     {
+        GameScene::update();
     }
 
 }

@@ -45,12 +45,12 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AA1D0
-    bool VehicleBody::update(const CarUpdateState& carState)
+    bool VehicleBody::tick(const CarUpdateState& carState)
     {
         int32_t unkDistance = getVehicleUpdateDistances().unkDistance2;
         if (mode == TransportMode::air || mode == TransportMode::water)
         {
-            animationUpdate(carState, unkDistance);
+            animationTick(carState, unkDistance);
             return true;
         }
 
@@ -70,13 +70,13 @@ namespace OpenLoco::Vehicles
 
             unkDistance += var_1136130 * 320 + 500;
         }
-        animationUpdate(carState, unkDistance);
+        animationTick(carState, unkDistance);
         sub_4AAB0B(carState, unkDistance);
         return true;
     }
 
     // 0x004AAC4E
-    void VehicleBody::animationUpdate(const CarUpdateState& carState, const int32_t unkDistance)
+    void VehicleBody::animationTick(const CarUpdateState& carState, const int32_t unkDistance)
     {
         if (has38Flags(Flags38::isGhost))
         {
@@ -104,37 +104,37 @@ namespace OpenLoco::Vehicles
             case EmitterAnimationType::steam_puff1:
             case EmitterAnimationType::steam_puff2:
             case EmitterAnimationType::steam_puff3:
-                steamPuffsAnimationUpdate(train, carState, unkDistance, 0, emitterHorizontalPos);
+                steamPuffsAnimationTick(train, carState, unkDistance, 0, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::diesel_exhaust1:
-                dieselExhaust1AnimationUpdate(train, carState, 0, emitterHorizontalPos);
+                dieselExhaust1AnimationTick(train, carState, 0, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::electric_spark1:
-                electricSpark1AnimationUpdate(train, carState, unkDistance, 0, emitterHorizontalPos);
+                electricSpark1AnimationTick(train, carState, unkDistance, 0, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::electric_spark2:
-                electricSpark2AnimationUpdate(train, carState, unkDistance, 0, emitterHorizontalPos);
+                electricSpark2AnimationTick(train, carState, unkDistance, 0, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::diesel_exhaust2:
-                dieselExhaust2AnimationUpdate(train, carState, 0, emitterHorizontalPos);
+                dieselExhaust2AnimationTick(train, carState, 0, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::ship_wake:
-                shipWakeAnimationUpdate(train, 0, emitterHorizontalPos);
+                shipWakeAnimationTick(train, 0, emitterHorizontalPos);
                 break;
             default:
                 assert(false);
                 break;
         }
-        secondaryAnimationUpdate(train, carState, unkDistance);
+        secondaryAnimationTick(train, carState, unkDistance);
     }
 
     // 0x004AA904
-    void VehicleBody::updateSegmentCrashed(const CarUpdateState& carState)
+    void VehicleBody::tickSegmentCrashed(const CarUpdateState& carState)
     {
         invalidateSprite();
         sub_4AC255(carState.backBogie, carState.frontBogie);
         invalidateSprite();
-        animationUpdate(carState, getVehicleUpdateDistances().unkDistance2);
+        animationTick(carState, getVehicleUpdateDistances().unkDistance2);
         sub_4AAB0B(carState, getVehicleUpdateDistances().unkDistance2);
         if (!hasVehicleFlags(VehicleFlags::unk_5))
         {
@@ -881,7 +881,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AB655
-    void VehicleBody::secondaryAnimationUpdate(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance)
+    void VehicleBody::secondaryAnimationTick(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance)
     {
         const auto* vehicleObject = getObject();
 
@@ -900,22 +900,22 @@ namespace OpenLoco::Vehicles
             case EmitterAnimationType::steam_puff1:
             case EmitterAnimationType::steam_puff2:
             case EmitterAnimationType::steam_puff3:
-                steamPuffsAnimationUpdate(train, carState, unkDistance, 1, emitterHorizontalPos);
+                steamPuffsAnimationTick(train, carState, unkDistance, 1, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::diesel_exhaust1:
-                dieselExhaust1AnimationUpdate(train, carState, 1, emitterHorizontalPos);
+                dieselExhaust1AnimationTick(train, carState, 1, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::electric_spark1:
-                electricSpark1AnimationUpdate(train, carState, unkDistance, 1, emitterHorizontalPos);
+                electricSpark1AnimationTick(train, carState, unkDistance, 1, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::electric_spark2:
-                electricSpark2AnimationUpdate(train, carState, unkDistance, 1, emitterHorizontalPos);
+                electricSpark2AnimationTick(train, carState, unkDistance, 1, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::diesel_exhaust2:
-                dieselExhaust2AnimationUpdate(train, carState, 1, emitterHorizontalPos);
+                dieselExhaust2AnimationTick(train, carState, 1, emitterHorizontalPos);
                 break;
             case EmitterAnimationType::ship_wake:
-                shipWakeAnimationUpdate(train, 1, emitterHorizontalPos);
+                shipWakeAnimationTick(train, 1, emitterHorizontalPos);
                 break;
             default:
                 assert(false);
@@ -924,7 +924,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AB688, 0x004AACA5
-    void VehicleBody::steamPuffsAnimationUpdate(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance, uint8_t num, int32_t emitterHorizontalPos)
+    void VehicleBody::steamPuffsAnimationTick(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance, uint8_t num, int32_t emitterHorizontalPos)
     {
         const auto* vehicleObject = getObject();
         VehicleBogie* frontBogie = carState.frontBogie;
@@ -1086,7 +1086,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AB9DD & 0x004AAFFA
-    void VehicleBody::dieselExhaust1AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t emitterHorizontalPos)
+    void VehicleBody::dieselExhaust1AnimationTick(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t emitterHorizontalPos)
     {
         VehicleBogie* frontBogie = carState.frontBogie;
         VehicleBogie* backBogie = carState.backBogie;
@@ -1156,7 +1156,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004ABB5A & 0x004AB177
-    void VehicleBody::dieselExhaust2AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t emitterHorizontalPos)
+    void VehicleBody::dieselExhaust2AnimationTick(const Vehicle& train, const CarUpdateState& carState, uint8_t num, int32_t emitterHorizontalPos)
     {
         VehicleBogie* frontBogie = carState.frontBogie;
         VehicleBogie* backBogie = carState.backBogie;
@@ -1212,7 +1212,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004ABDAD & 0x004AB3CA
-    void VehicleBody::electricSpark1AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance, uint8_t num, int32_t emitterHorizontalPos)
+    void VehicleBody::electricSpark1AnimationTick(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance, uint8_t num, int32_t emitterHorizontalPos)
     {
         VehicleBogie* frontBogie = carState.frontBogie;
         VehicleBogie* backBogie = carState.backBogie;
@@ -1257,7 +1257,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004ABEC3 & 0x004AB4E0
-    void VehicleBody::electricSpark2AnimationUpdate(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance, uint8_t num, int32_t emitterHorizontalPos)
+    void VehicleBody::electricSpark2AnimationTick(const Vehicle& train, const CarUpdateState& carState, const int32_t unkDistance, uint8_t num, int32_t emitterHorizontalPos)
     {
         VehicleBogie* frontBogie = carState.frontBogie;
         VehicleBogie* backBogie = carState.backBogie;
@@ -1320,7 +1320,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004ABC8A & 0x004AB2A7
-    void VehicleBody::shipWakeAnimationUpdate(const Vehicle& train, uint8_t num, int32_t)
+    void VehicleBody::shipWakeAnimationTick(const Vehicle& train, uint8_t num, int32_t)
     {
         Vehicle2* veh_2 = train.veh2;
         const auto* vehicleObject = getObject();

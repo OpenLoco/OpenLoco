@@ -31,7 +31,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AA008
-    bool VehicleBogie::update()
+    bool VehicleBogie::tick()
     {
         if (mode == TransportMode::air || mode == TransportMode::water)
         {
@@ -52,7 +52,7 @@ namespace OpenLoco::Vehicles
             unkDistance = 500 + unk * 320;
         }
 
-        updateRoll(unkDistance);
+        tickRoll(unkDistance);
         if (motionResult.hasFlags(UpdateVar1136114Flags::noRouteFound))
         {
             destroyTrain();
@@ -68,7 +68,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AAC02
-    void VehicleBogie::updateRoll(const int32_t unkDistance)
+    void VehicleBogie::tickRoll(const int32_t unkDistance)
     {
         auto unk = unkDistance / 8;
         if (has38Flags(Flags38::isReversed))
@@ -164,7 +164,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AA68E
-    void VehicleBogie::updateSegmentCrashed()
+    void VehicleBogie::tickSegmentCrashed()
     {
         Speed32 speed = Speed32(var_5A & 0x7FFFFFFF);
         bool isComponentDestroyed = this->var_5A & (1U << 31);
@@ -180,7 +180,7 @@ namespace OpenLoco::Vehicles
         distances.unkDistance1 = speed.getRaw() / 128;
         distances.unkDistance2 = speed.getRaw() / 128;
 
-        this->updateRoll(distances.unkDistance1);
+        this->tickRoll(distances.unkDistance1);
 
         if (isComponentDestroyed)
         {

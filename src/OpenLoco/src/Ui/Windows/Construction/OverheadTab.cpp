@@ -142,9 +142,9 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049ECD1
-    static void onUpdate(Window& self)
+    static void onTick(Window& self)
     {
-        Common::onUpdate(self, GhostVisibilityFlags::overhead);
+        Common::onTick(self, GhostVisibilityFlags::overhead);
     }
 
     static std::optional<GameCommands::RoadModsPlacementArgs> getRoadModsPlacementArgsFromCursor(const int16_t x, const int16_t y)
@@ -406,23 +406,23 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         }
     }
 
-    static void setCheckbox(Window* self, WidgetIndex_t checkboxIndex, StringId name)
+    static void setCheckbox(Window& self, WidgetIndex_t checkboxIndex, StringId name)
     {
         auto widgetIndex = checkboxIndex + widx::checkbox_1;
-        self->widgets[widgetIndex].hidden = false;
-        self->widgets[widgetIndex].text = name;
+        self.widgets[widgetIndex].hidden = false;
+        self.widgets[widgetIndex].text = name;
 
         auto& cState = getConstructionState();
         if (cState.lastSelectedMods & (1 << checkboxIndex))
         {
-            self->activatedWidgets |= (1ULL << widgetIndex);
+            self.activatedWidgets |= (1ULL << widgetIndex);
         }
     }
 
     // 0x0049E7D3
     static void prepareDraw(Window& self)
     {
-        Common::prepareDraw(&self);
+        Common::prepareDraw(self);
 
         self.activatedWidgets &= ~(1 << widx::checkbox_1 | 1 << widx::checkbox_2 | 1 << widx::checkbox_3 | 1 << widx::checkbox_4);
 
@@ -445,7 +445,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 if (cState.modList[i] != 0xFF)
                 {
                     auto extraName = ObjectManager::get<RoadExtraObject>(cState.modList[i])->name;
-                    setCheckbox(&self, i, extraName);
+                    setCheckbox(self, i, extraName);
                 }
             }
         }
@@ -461,7 +461,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 if (cState.modList[i] != 0xFF)
                 {
                     auto extraName = ObjectManager::get<TrackExtraObject>(cState.modList[i])->name;
-                    setCheckbox(&self, i, extraName);
+                    setCheckbox(self, i, extraName);
                 }
             }
         }
@@ -571,7 +571,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         .onMouseUp = onMouseUp,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
-        .onUpdate = onUpdate,
+        .onTick = onTick,
         .onToolUpdate = onToolUpdate,
         .toolUp = onToolUp,
         .prepareDraw = prepareDraw,

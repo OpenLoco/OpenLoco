@@ -255,7 +255,7 @@ namespace OpenLoco::Audio
         std::string defaultDevice = ddChar == nullptr ? "" : std::string(ddChar);
         if (!defaultDevice.empty())
         {
-            _devices.push_back(getDefaultDeviceName());
+            _devices.emplace_back(getDefaultDeviceName());
         }
 #endif
         auto newDevices = getAvailableDevices();
@@ -556,8 +556,8 @@ namespace OpenLoco::Audio
     void tick()
     {
         reclaimFinishedInstances();
-        updateVehicleNoise();
-        updateAmbientNoise();
+        tickVehicleNoise();
+        tickAmbientNoise();
     }
 
     void resetSoundObjects()

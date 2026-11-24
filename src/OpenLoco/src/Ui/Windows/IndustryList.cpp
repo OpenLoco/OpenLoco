@@ -339,7 +339,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                         cargoProduction = industry.producedCargoQuantityPreviousMonth[cargoNumber];
 
                         auto cargoObj = ObjectManager::get<CargoObject>(producedCargoType);
-                        unitType = cargoProduction > 1 ? cargoObj->unitNamePlural : cargoObj->unitNameSingular;
+                        unitType = cargoProduction != 1 ? cargoObj->unitNamePlural : cargoObj->unitNameSingular;
                         break; // Only support one cargo type for now - it seems most (all?) industries only have a single cargo type
                     }
 
@@ -392,7 +392,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x004580AE
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             self.frameNo++;
 
@@ -531,7 +531,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .onHandleInputBegin = listWindowOnHandleInputBegin,
             .onHandleInputEnd = listWindowOnHandleInputEnd,
             .getScrollSize = getScrollSize,
@@ -874,7 +874,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x004585B8
-        static void onUpdate(Window& self)
+        static void onTick(Window& self)
         {
             if (!Input::hasFlag(Input::Flags::rightMousePressed))
             {
@@ -1269,7 +1269,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             .onClose = onClose,
             .onMouseUp = onMouseUp,
             .onResize = onResize,
-            .onUpdate = onUpdate,
+            .onTick = onTick,
             .onHandleInputBegin = onHandleInputBegin,
             .onToolUpdate = onToolUpdate,
             .onToolDown = onToolDown,

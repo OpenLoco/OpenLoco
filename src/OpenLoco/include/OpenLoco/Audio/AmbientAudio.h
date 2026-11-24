@@ -1,5 +1,5 @@
 namespace OpenLoco::Audio
 {
-    void updateAmbientNoise();
+    void tickAmbientNoise();
     void stopAmbientNoise();
 }

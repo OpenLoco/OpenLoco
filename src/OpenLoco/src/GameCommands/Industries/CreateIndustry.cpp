@@ -422,8 +422,7 @@ namespace OpenLoco::GameCommands
             GameCommands::setPosition({ args.pos.x, args.pos.y, centreHeight.landHeight });
         }
 
-        // TODO: Vanilla bug args.srand0 not set. Change this when we can diverge
-        Core::Prng prng{ enumValue(GameCommand::createIndustry), args.srand1 };
+        Core::Prng prng{ args.srand0, args.srand1 };
         const auto newIndustryId = sub_454C91(args.type, args.pos, prng);
         if (newIndustryId == IndustryId::null)
         {
@@ -452,29 +451,25 @@ namespace OpenLoco::GameCommands
         // 0x00E0C3BE - C0
         auto lastPlacedBuildingPos = World::Pos2{ newIndustry->x, newIndustry->y };
 
-        // TODO: used also for 0x00454552 break up into two when function allowed to diverge
-        const auto randVal = newIndustry->prng.randNext() & 0xFF;
-
-        auto prodRateRand = randVal;
         for (auto i = 0; i < 2; ++i)
         {
             newIndustry->dailyProduction[i] = 0;
 
             const auto& initalRate = indObj->initialProductionRate[i];
-            newIndustry->dailyProductionTarget[i] = (((initalRate.max - initalRate.min) * prodRateRand) / 256) + initalRate.min;
+            const auto randVal = newIndustry->prng.randNext() & 0xFF;
+            newIndustry->dailyProductionTarget[i] = (((initalRate.max - initalRate.min) * randVal) / 256) + initalRate.min;
 
             if (SceneManager::isEditorMode())
             {
                 newIndustry->dailyProduction[i] = newIndustry->dailyProductionTarget[i];
                 newIndustry->producedCargoQuantityPreviousMonth[i] = newIndustry->dailyProduction[i] * 30;
             }
-            // This is odd but follows vanilla
-            prodRateRand = newIndustry->dailyProductionTarget[i] & 0xFF;
         }
 
         currency32_t totalCost = 0;
 
         // 0x00454552
+        const auto randVal = newIndustry->prng.randNext() & 0xFF;
         const auto numBuildings = (((indObj->maxNumBuildings - indObj->minNumBuildings + 1) * randVal) / 256) + indObj->minNumBuildings;
         const auto buildings = indObj->getBuildings();
         for (auto i = 0U; i < numBuildings; ++i)

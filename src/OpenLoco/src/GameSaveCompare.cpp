@@ -46,7 +46,7 @@ namespace OpenLoco::GameSaveCompare
     }
 
     template<typename T1, typename T2>
-    long bitWiseLogDivergence(const std::string type, const T1& lhs, const T2& rhs, bool displayAllDivergences, long divergentBytesTotal)
+    long bitWiseLogDivergence(const std::string& type, const T1& lhs, const T2& rhs, bool displayAllDivergences, long divergentBytesTotal)
     {
         static_assert(sizeof(T1) == sizeof(T2));
 
@@ -77,7 +77,7 @@ namespace OpenLoco::GameSaveCompare
     }
 
     template<typename T1, typename T2>
-    bool isLoggedDivergence(const std::string type, const T1& lhs, const T2& rhs, bool displayAllDivergences)
+    bool isLoggedDivergence(const std::string& type, const T1& lhs, const T2& rhs, bool displayAllDivergences)
     {
         long divergentBytesTotal = 0;
         for (unsigned int offset = 0; offset < sizeof(lhs); offset++)
@@ -92,7 +92,7 @@ namespace OpenLoco::GameSaveCompare
     }
 
     template<typename T1, typename T2>
-    long logDivergence(const std::string type, const T1& lhs, const T2& rhs, int arraySize, bool displayAllDivergences)
+    long logDivergence(const std::string& type, const T1& lhs, const T2& rhs, int arraySize, bool displayAllDivergences)
     {
         long divergentBytesTotal = 0;
         for (int offset = 0; offset < arraySize; offset++)
@@ -107,7 +107,7 @@ namespace OpenLoco::GameSaveCompare
     }
 
     template<typename T1, typename T2>
-    bool isLoggedDivergence(const std::string type, const T1& lhs, const T2& rhs, int arraySize, bool displayAllDivergences)
+    bool isLoggedDivergence(const std::string& type, const T1& lhs, const T2& rhs, int arraySize, bool displayAllDivergences)
     {
         long divergentBytesTotal = 0;
         for (int offset = 0; offset < arraySize; offset++)
@@ -121,7 +121,7 @@ namespace OpenLoco::GameSaveCompare
         return divergentBytesTotal > 0;
     }
 
-    static bool isLoggedDivergenceUserString(const std::string type, const std::span<char[32]> lhsArr, const std::span<char[32]> rhsArr, bool displayAllDivergences)
+    static bool isLoggedDivergenceUserString(const std::string& type, const std::span<char[32]> lhsArr, const std::span<char[32]> rhsArr, bool displayAllDivergences)
     {
         long divergentBytesTotal = 0;
         for (auto offset = 0U; offset < lhsArr.size(); offset++)
@@ -148,7 +148,7 @@ namespace OpenLoco::GameSaveCompare
     }
 
     template<typename T>
-    bool isLoggedDivergentGameStateField(const std::string type, int offset, const T& lhs, const T& rhs)
+    bool isLoggedDivergentGameStateField(const std::string& type, int offset, const T& lhs, const T& rhs)
     {
         bool loggedDivergence = false;
         if (!bitWiseEqual(lhs, rhs))
@@ -164,7 +164,7 @@ namespace OpenLoco::GameSaveCompare
     }
 
     template<typename T>
-    bool isLoggedDivergentGameStateFlag(const std::string type, const T& lhs, const T& rhs)
+    bool isLoggedDivergentGameStateFlag(const std::string& type, const T& lhs, const T& rhs)
     {
         bool loggedDivergence = false;
         if (lhs != rhs)

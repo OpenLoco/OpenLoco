@@ -78,7 +78,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x00440082
-        static void update(Window& window)
+        static void tick(Window& window)
         {
             window.frameNo++;
             window.callPrepareDraw();
@@ -529,7 +529,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = Common::update,
+            .onTick = Common::tick,
             .prepareDraw = prepareDraw,
             .draw = draw,
         };
@@ -892,7 +892,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = Common::update,
+            .onTick = Common::tick,
             .prepareDraw = prepareDraw,
             .draw = Common::draw,
         };
@@ -1036,7 +1036,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
-            .onUpdate = Common::update,
+            .onTick = Common::tick,
             .prepareDraw = prepareDraw,
             .draw = Common::draw,
         };
@@ -1199,7 +1199,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     strncpy(buffer, Scenario::getOptions().scenarioName, 512);
                     auto inputSize = std::size(Scenario::getOptions().scenarioName) - 1;
 
-                    TextInput::openTextInput(&self, StringIds::scenario_name_title, StringIds::enter_name_for_scenario, StringIds::buffer_2039, widgetIndex, {}, inputSize);
+                    TextInput::openTextInput(self, StringIds::scenario_name_title, StringIds::enter_name_for_scenario, StringIds::buffer_2039, widgetIndex, {}, inputSize);
                     break;
                 }
 
@@ -1209,7 +1209,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     strncpy(buffer, Scenario::getOptions().scenarioDetails, 512);
                     auto inputSize = std::size(Scenario::getOptions().scenarioDetails) - 1;
 
-                    TextInput::openTextInput(&self, StringIds::scenario_details_title, StringIds::enter_description_of_this_scenario, StringIds::buffer_2039, widgetIndex, {}, inputSize);
+                    TextInput::openTextInput(self, StringIds::scenario_details_title, StringIds::enter_description_of_this_scenario, StringIds::buffer_2039, widgetIndex, {}, inputSize);
                     break;
                 }
             }
@@ -1264,7 +1264,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
-            .onUpdate = Common::update,
+            .onTick = Common::tick,
             .textInput = textInput,
             .prepareDraw = prepareDraw,
             .draw = draw,

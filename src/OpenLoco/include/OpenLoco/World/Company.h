@@ -270,15 +270,15 @@ namespace OpenLoco
         bool isVehicleIndexUnlocked(const uint8_t vehicleIndex) const;
         void recalculateTransportCounts();
         void clearOwnerStatusForDeletedVehicle(EntityId vehicleId);
-        void updateDaily();
-        void updateDailyLogic();
-        void updateDailyPlayer();
+        void tickDaily();
+        void tickDailyLogic();
+        void tickDailyPlayer();
         void evaluateChallengeProgress();
-        void updateDailyControllingPlayer();
-        void updateMonthlyHeadquarters();
-        void updateMonthly1();
-        void updateLoanAutorepay();
-        void updateQuarterly();
+        void tickDailyControllingPlayer();
+        void tickMonthlyHeadquarters();
+        void tickMonthly1();
+        void tickLoanAutorepay();
+        void tickQuarterly();
         void updateVehicleColours();
         void updateHeadquartersColour();
         void updateOwnerEmotion();
@@ -306,7 +306,7 @@ namespace OpenLoco
 
     AvailableTracksAndRoads companyGetAvailableRailTracks(const CompanyId id);
     AvailableTracksAndRoads companyGetAvailableRoads(const CompanyId id);
-    void updateYearly(Company& company);
+    void tickYearly(Company& company);
     struct ProfitAndValue
     {
         currency48_t vehicleProfit;

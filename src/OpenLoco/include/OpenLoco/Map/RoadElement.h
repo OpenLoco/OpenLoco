@@ -141,5 +141,5 @@ namespace OpenLoco::World
 #pragma pack(pop)
     static_assert(sizeof(RoadElement) == kTileElementSize);
 
-    bool updateLevelCrossingAnimation(const Animation& anim);
+    bool tickLevelCrossingAnimation(const Animation& anim);
 }

@@ -198,9 +198,9 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x0049E437
-    static void onUpdate(Window& self)
+    static void onTick(Window& self)
     {
-        Common::onUpdate(self, GhostVisibilityFlags::station);
+        Common::onTick(self, GhostVisibilityFlags::station);
     }
 
     // 0x0049FF4B
@@ -1129,7 +1129,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     // 0x0049DD39
     static void prepareDraw(Window& self)
     {
-        Common::prepareDraw(&self);
+        Common::prepareDraw(self);
 
         self.widgets[widx::rotate].hidden = true;
 
@@ -1360,7 +1360,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         .onMouseUp = onMouseUp,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
-        .onUpdate = onUpdate,
+        .onTick = onTick,
         .onToolUpdate = onToolUpdate,
         .onToolDown = onToolDown,
         .toolDrag = onToolDrag,

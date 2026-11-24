@@ -48,7 +48,7 @@ namespace OpenLoco::Network
         void sendChatMessages();
         void processIncomingConnections();
         void processPackets();
-        void updateClients();
+        void tickClients();
 
         template<typename T>
         void sendPacketToAll(const T& packet)
@@ -62,7 +62,7 @@ namespace OpenLoco::Network
     protected:
         void onClose() override;
         void onReceivePacket(IUdpSocket& socket, std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet) override;
-        void onUpdate() override;
+        void onTick() override;
 
     public:
         ~NetworkServer() override;

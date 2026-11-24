@@ -131,18 +131,18 @@ namespace OpenLoco::Vehicles
     };
     static WaterPathingResult waterPathfind(const VehicleHead& head);
 
-    void VehicleHead::updateVehicle()
+    void VehicleHead::tickVehicle()
     {
         Vehicle train(*this);
-        if (!train.head->update())
+        if (!train.head->tick())
         {
             return;
         }
-        if (!train.veh1->update())
+        if (!train.veh1->tick())
         {
             return;
         }
-        if (!train.veh2->update())
+        if (!train.veh2->tick())
         {
             return;
         }
@@ -154,35 +154,35 @@ namespace OpenLoco::Vehicles
             {
                 CarUpdateState carUpdateState{ carComponent.front, carComponent.back, false };
                 const auto initialFrontPos = carComponent.front->position;
-                if (!carComponent.front->update())
+                if (!carComponent.front->tick())
                 {
                     return;
                 }
                 carUpdateState.hasBogieMoved |= carComponent.front->position != initialFrontPos;
 
                 const auto initialBackPos = carComponent.front->position;
-                if (!carComponent.back->update())
+                if (!carComponent.back->tick())
                 {
                     return;
                 }
                 carUpdateState.hasBogieMoved |= carComponent.back->position != initialBackPos;
 
-                if (!carComponent.body->update(carUpdateState))
+                if (!carComponent.body->tick(carUpdateState))
                 {
                     return;
                 }
             }
         }
-        train.tail->update();
+        train.tail->tick();
     }
 
     // 0x004A8B81
-    bool VehicleHead::update()
+    bool VehicleHead::tick()
     {
         Vehicle train(head);
 
         const auto initialStatus = status;
-        updateDrivingSounds();
+        tickDrivingSounds();
 
         Vehicle2* veh2 = train.veh2;
         auto& distances = getVehicleUpdateDistances();
@@ -209,19 +209,19 @@ namespace OpenLoco::Vehicles
             VehicleManager::deleteTrain(*this);
             return false;
         }
-        updateBreakdown();
+        tickBreakdown();
         bool continueUpdating = true;
         switch (mode)
         {
             case TransportMode::rail:
             case TransportMode::road:
-                continueUpdating = updateLand();
+                continueUpdating = tickLand();
                 break;
             case TransportMode::air:
-                continueUpdating = updateAir();
+                continueUpdating = tickAir();
                 break;
             case TransportMode::water:
-                continueUpdating = updateWater();
+                continueUpdating = tickWater();
                 break;
         }
         if (continueUpdating)
@@ -232,7 +232,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004C3C65
-    void VehicleHead::updateMonthly()
+    void VehicleHead::tickMonthly()
     {
         Vehicle train(head);
         if ((tileX != -1) && !has38Flags(Flags38::isGhost))
@@ -292,7 +292,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004B9509
-    void VehicleHead::updateDaily()
+    void VehicleHead::tickDaily()
     {
         bool resetStoppedTimeout = true;
         if (status == Status::stopped)
@@ -430,7 +430,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004BA8D4
-    void VehicleHead::updateBreakdown()
+    void VehicleHead::tickBreakdown()
     {
         switch (status)
         {
@@ -1027,19 +1027,19 @@ namespace OpenLoco::Vehicles
         }
     }
     // 0x004A8882
-    void VehicleHead::updateDrivingSounds()
+    void VehicleHead::tickDrivingSounds()
     {
         Vehicle train(head);
-        updateDrivingSound(train.veh2->sound, true);
-        updateDrivingSound(train.tail->sound, false);
+        tickDrivingSound(train.veh2->sound, true);
+        tickDrivingSound(train.tail->sound, false);
     }
 
     // 0x004A88A6
-    void VehicleHead::updateDrivingSound(VehicleSound& sound, const bool isVeh2)
+    void VehicleHead::tickDrivingSound(VehicleSound& sound, const bool isVeh2)
     {
         if (tileX == -1 || status == Status::crashed || status == Status::stuck || has38Flags(Flags38::isGhost) || sound.objectId == 0xFFFF)
         {
-            updateDrivingSoundNone(sound);
+            tickDrivingSoundNone(sound);
             return;
         }
 
@@ -1047,16 +1047,16 @@ namespace OpenLoco::Vehicles
         switch (vehicleObject->drivingSoundType)
         {
             case DrivingSoundType::none:
-                updateDrivingSoundNone(sound);
+                tickDrivingSoundNone(sound);
                 break;
             case DrivingSoundType::friction:
-                updateDrivingSoundFriction(sound, &vehicleObject->sound.friction);
+                tickDrivingSoundFriction(sound, &vehicleObject->sound.friction);
                 break;
             case DrivingSoundType::simpleMotor:
-                updateSimpleMotorSound(sound, isVeh2, &vehicleObject->sound.simpleMotor);
+                tickSimpleMotorSound(sound, isVeh2, &vehicleObject->sound.simpleMotor);
                 break;
             case DrivingSoundType::gearboxMotor:
-                updateGearboxMotorSound(sound, isVeh2, &vehicleObject->sound.gearboxMotor);
+                tickGearboxMotorSound(sound, isVeh2, &vehicleObject->sound.gearboxMotor);
                 break;
             default:
                 break;
@@ -1064,19 +1064,19 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A8B7C
-    void VehicleHead::updateDrivingSoundNone(VehicleSound& sound)
+    void VehicleHead::tickDrivingSoundNone(VehicleSound& sound)
     {
         sound.drivingSoundId = 0xFF;
     }
 
     // 0x004A88F7
-    void VehicleHead::updateDrivingSoundFriction(VehicleSound& sound, const VehicleObjectFrictionSound* snd)
+    void VehicleHead::tickDrivingSoundFriction(VehicleSound& sound, const VehicleObjectFrictionSound* snd)
     {
         Vehicle train(head);
         Vehicle2* vehType2_2 = train.veh2;
         if (vehType2_2->currentSpeed < snd->minSpeed)
         {
-            updateDrivingSoundNone(sound);
+            tickDrivingSoundNone(sound);
             return;
         }
 
@@ -1090,7 +1090,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A8937
-    void VehicleHead::updateSimpleMotorSound(VehicleSound& sound, const bool isVeh2, const VehicleSimpleMotorSound* snd)
+    void VehicleHead::tickSimpleMotorSound(VehicleSound& sound, const bool isVeh2, const VehicleSimpleMotorSound* snd)
     {
         Vehicle train(head);
         if (isVeh2)
@@ -1104,7 +1104,7 @@ namespace OpenLoco::Vehicles
                 }
                 if (train.cars.firstCar.front->hasBreakdownFlags(BreakdownFlags::brokenDown))
                 {
-                    updateDrivingSoundNone(sound);
+                    tickDrivingSoundNone(sound);
                     return;
                 }
             }
@@ -1163,7 +1163,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A8A39
-    void VehicleHead::updateGearboxMotorSound(VehicleSound& sound, const bool isVeh2, const VehicleGearboxMotorSound* snd)
+    void VehicleHead::tickGearboxMotorSound(VehicleSound& sound, const bool isVeh2, const VehicleGearboxMotorSound* snd)
     {
         Vehicle train(head);
         if (isVeh2)
@@ -1177,7 +1177,7 @@ namespace OpenLoco::Vehicles
                 }
                 if (train.cars.firstCar.front->hasBreakdownFlags(BreakdownFlags::brokenDown))
                 {
-                    updateDrivingSoundNone(sound);
+                    tickDrivingSoundNone(sound);
                     return;
                 }
             }
@@ -1291,7 +1291,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A8C11
-    bool VehicleHead::updateLand()
+    bool VehicleHead::tickLand()
     {
         Vehicle train(head);
         Vehicle2* vehType2 = train.veh2;
@@ -1314,7 +1314,7 @@ namespace OpenLoco::Vehicles
 
             if (hasVehicleFlags(VehicleFlags::commandStop))
             {
-                return stoppingUpdate();
+                return stoppingTick();
             }
             else if (hasVehicleFlags(VehicleFlags::manualControl))
             {
@@ -1335,11 +1335,11 @@ namespace OpenLoco::Vehicles
         }
         else if (status == Status::loading)
         {
-            return landLoadingUpdate();
+            return landLoadingTick();
         }
         else if (status == Status::crashed)
         {
-            landCrashedUpdate();
+            landCrashedTick();
 
             return false;
         }
@@ -1357,11 +1357,11 @@ namespace OpenLoco::Vehicles
                 {
                     if (!hasVehicleFlags(VehicleFlags::commandStop))
                     {
-                        return landNormalMovementUpdate();
+                        return landNormalMovementTick();
                     }
                     else
                     {
-                        return stoppingUpdate();
+                        return stoppingTick();
                     }
                 }
                 else
@@ -1371,7 +1371,7 @@ namespace OpenLoco::Vehicles
             }
             else
             {
-                return stoppingUpdate();
+                return stoppingTick();
             }
         }
     }
@@ -1457,7 +1457,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A8CB6
-    bool VehicleHead::stoppingUpdate()
+    bool VehicleHead::stoppingTick()
     {
         Vehicle train(head);
 
@@ -1493,13 +1493,13 @@ namespace OpenLoco::Vehicles
         Vehicle train(head);
         if (train.veh2->currentSpeed > 1.0_mph)
         {
-            return landNormalMovementUpdate();
+            return landNormalMovementTick();
         }
 
         auto foundStationId = manualFindTrainStationAtLocation();
         if (foundStationId == StationId::null)
         {
-            return stoppingUpdate();
+            return stoppingTick();
         }
         stationId = foundStationId;
         setStationVisitedTypes();
@@ -1507,7 +1507,7 @@ namespace OpenLoco::Vehicles
         updateLastJourneyAverageSpeed();
         beginUnloading();
 
-        return stoppingUpdate();
+        return stoppingTick();
     }
 
     // 0x004A8FAC
@@ -1535,7 +1535,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A9011
-    bool VehicleHead::landLoadingUpdate()
+    bool VehicleHead::landLoadingTick()
     {
         if (updateLoadCargo())
         {
@@ -1560,23 +1560,23 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A8D48
-    bool VehicleHead::landNormalMovementUpdate()
+    bool VehicleHead::landNormalMovementTick()
     {
         advanceToNextRoutableOrder();
         auto [al, flags, nextStation] = sub_4ACEE7(0xD4CB00, getVehicleUpdateDistances().unkDistance1, false);
 
         if (mode == TransportMode::road)
         {
-            return roadNormalMovementUpdate(al, nextStation);
+            return roadNormalMovementTick(al, nextStation);
         }
         else
         {
-            return trainNormalMovementUpdate(al, flags, nextStation);
+            return trainNormalMovementTick(al, flags, nextStation);
         }
     }
 
     // 0x004A8D8F
-    bool VehicleHead::roadNormalMovementUpdate(uint8_t al, StationId nextStation)
+    bool VehicleHead::roadNormalMovementTick(uint8_t al, StationId nextStation)
     {
         auto timeoutStatus = categoriseTimeElapsed(); // bl
         if (timeoutStatus == SignalTimeoutStatus::firstTimeout)
@@ -1609,7 +1609,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A8D63
-    bool VehicleHead::trainNormalMovementUpdate(uint8_t al, uint8_t flags, StationId nextStation)
+    bool VehicleHead::trainNormalMovementTick(uint8_t al, uint8_t flags, StationId nextStation)
     {
         Vehicle train(head);
         if (al == 4)
@@ -1792,7 +1792,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A9051
-    bool VehicleHead::updateAir()
+    bool VehicleHead::tickAir()
     {
         Vehicle train(head);
         Vehicle2* vehType2 = train.veh2;
@@ -1825,7 +1825,7 @@ namespace OpenLoco::Vehicles
         }
         else if (status == Status::loading)
         {
-            return airplaneLoadingUpdate();
+            return airplaneLoadingTick();
         }
         status = Status::travelling;
         auto [newStatus, targetSpeed] = airplaneGetNewStatus();
@@ -2123,7 +2123,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A95F5
-    bool VehicleHead::airplaneLoadingUpdate()
+    bool VehicleHead::airplaneLoadingTick()
     {
         Vehicle train(head);
         train.veh2->currentSpeed = 0.0_mph;
@@ -2327,7 +2327,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A9649
-    bool VehicleHead::updateWater()
+    bool VehicleHead::tickWater()
     {
         Vehicle train(head);
         Vehicle2* vehType2 = train.veh2;
@@ -4029,7 +4029,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AA625
-    void VehicleHead::landCrashedUpdate()
+    void VehicleHead::landCrashedTick()
     {
         Vehicle train(*this);
         for (auto& car : train.cars)
@@ -4038,14 +4038,14 @@ namespace OpenLoco::Vehicles
             {
                 CarUpdateState carUpdateState{ carComponent.front, carComponent.back, false };
                 const auto initialFrontPos = carComponent.front->position;
-                carComponent.front->updateSegmentCrashed();
+                carComponent.front->tickSegmentCrashed();
                 carUpdateState.hasBogieMoved |= carComponent.front->position != initialFrontPos;
 
                 const auto initialBackPos = carComponent.front->position;
-                carComponent.back->updateSegmentCrashed();
+                carComponent.back->tickSegmentCrashed();
                 carUpdateState.hasBogieMoved |= carComponent.back->position != initialBackPos;
 
-                carComponent.body->updateSegmentCrashed(carUpdateState);
+                carComponent.body->tickSegmentCrashed(carUpdateState);
             }
         }
     }
@@ -5449,10 +5449,7 @@ namespace OpenLoco::Vehicles
         curTad._data = tad;
         for (; true;)
         {
-            // TODO: This is a vanilla mistake where it accesses the wrong data!
-            // CHANGE THIS WHEN WE DIVERGE FROM VANILLA
-            state.totalTrackWeighting += World::TrackData::getTrackMiscData(curTad.id()).unkWeighting;
-            // state.totalTrackWeighting += World::TrackData::getRoadMiscData(curTad.id()).unkWeighting;
+            state.totalTrackWeighting += World::TrackData::getRoadMiscData(curTad.id()).unkWeighting;
             if (state.totalTrackWeighting > 1280)
             {
                 break;

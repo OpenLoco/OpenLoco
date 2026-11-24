@@ -105,7 +105,7 @@ namespace OpenLoco::Scenario
 
     Season nextSeason(Season season);
     void initialiseSnowLine();
-    void updateSnowLine(int32_t currentDayOfYear);
+    void tickSnowLine(int32_t currentDayOfYear);
 
     // 0x00525FB4
     World::SmallZ getCurrentSnowLine();
