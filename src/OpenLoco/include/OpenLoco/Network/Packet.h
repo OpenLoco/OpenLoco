@@ -142,7 +142,7 @@ namespace OpenLoco::Network
 
         std::string_view getText() const
         {
-            return std::string_view(text, length);
+            return { text, length };
         }
     };
     static_assert(sizeof(SendChatMessage) <= kMaxPacketDataSize);
@@ -158,7 +158,7 @@ namespace OpenLoco::Network
 
         std::string_view getText() const
         {
-            return std::string_view(text, length);
+            return { text, length };
         }
     };
     static_assert(sizeof(SendChatMessage) <= kMaxPacketDataSize);

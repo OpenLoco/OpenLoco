@@ -13,7 +13,7 @@ namespace OpenLoco::Ui::Widgets
         const uint16_t width = 13;
         const uint16_t height = size.height - 2;
 
-        return Button(id, { xPos, yPos }, { width, height }, colour, StringIds::stepper_minus, tooltip);
+        return { id, { xPos, yPos }, { width, height }, colour, StringIds::stepper_minus, tooltip };
     }
 
     constexpr Button makeStepperIncreaseWidget(WidgetId id, Ui::Point origin, Ui::Size size, WindowColour colour, [[maybe_unused]] uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
@@ -23,7 +23,7 @@ namespace OpenLoco::Ui::Widgets
         const uint16_t width = 12;
         const uint16_t height = size.height - 2;
 
-        return Button(id, { xPos, yPos }, { width, height }, colour, StringIds::stepper_plus, tooltip);
+        return { id, { xPos, yPos }, { width, height }, colour, StringIds::stepper_plus, tooltip };
     }
 
     // TODO: Make this a single widget.

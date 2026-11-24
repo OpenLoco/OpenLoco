@@ -21,7 +21,7 @@ namespace OpenLoco::Ui
 
         static Rect fromLTRB(int32_t left, int32_t top, int32_t right, int32_t bottom)
         {
-            return Rect(left, top, right - left, bottom - top);
+            return { left, top, right - left, bottom - top };
         }
 
         bool intersects(const Rect& r2) const
@@ -52,7 +52,7 @@ namespace OpenLoco::Ui
             int right = std::min(this->origin.x + this->size.width, r2.origin.x + r2.size.width);
             int bottom = std::min(this->origin.y + this->size.height, r2.origin.y + r2.size.height);
 
-            return Rect(left, top, right - left, bottom - top);
+            return { left, top, right - left, bottom - top };
         }
 
         int32_t width() const

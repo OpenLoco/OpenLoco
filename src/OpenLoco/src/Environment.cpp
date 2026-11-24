@@ -61,7 +61,7 @@ namespace OpenLoco::Environment
                 return path;
             }
         }
-        return fs::path();
+        return {};
     }
 
     static fs::path resolveLocoInstallPath()

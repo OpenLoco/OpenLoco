@@ -32,7 +32,7 @@ namespace OpenLoco::World::WaveManager
 
     static FixedVector<Wave, Limits::kMaxWaves> waves()
     {
-        return FixedVector(rawWaves());
+        return { rawWaves() };
     }
     // 0x0046956E
     void createWave(SurfaceElement& surface, const World::Pos2& pos)

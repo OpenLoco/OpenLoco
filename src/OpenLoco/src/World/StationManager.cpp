@@ -49,7 +49,7 @@ namespace OpenLoco::StationManager
 
     FixedVector<Station, Limits::kMaxStations> stations()
     {
-        return FixedVector(rawStations());
+        return { rawStations() };
     }
 
     Station* get(StationId id)

@@ -247,7 +247,7 @@ namespace OpenLoco::World::TileManager
 
     std::span<const TileElementEntry> getEntries()
     {
-        return std::span<const TileElementEntry>(tileState().entries.data(), static_cast<size_t>(tileState().entriesEnd));
+        return { tileState().entries.data(), static_cast<size_t>(tileState().entriesEnd) };
     }
 
     uint32_t numFreeElements()
@@ -325,10 +325,10 @@ namespace OpenLoco::World::TileManager
         if (index >= tileState().tiles.size())
         {
             Logging::error("Attempted to get tile out of bounds! ({0}, {1})", pos.x, pos.y);
-            return Tile(pos, nullptr);
+            return { pos, nullptr };
         }
 
-        return Tile(pos, tileState().tiles[index]);
+        return { pos, tileState().tiles[index] };
     }
 
     Tile get(Pos2 pos)

@@ -55,7 +55,7 @@ namespace OpenLoco::Gfx
         }
         else
         {
-            return ImageId(imageIndex, ExtColour::unk2C);
+            return { imageIndex, ExtColour::unk2C };
         }
     }
 

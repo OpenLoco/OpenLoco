@@ -2887,7 +2887,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
     {
         static Vehicles::OrderRingView getOrderTable(const Vehicles::VehicleHead* const head)
         {
-            return Vehicles::OrderRingView(head->orderTableOffset);
+            return { head->orderTableOffset };
         }
 
         // 0x004B509B
@@ -3346,7 +3346,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     }
                 }
             }
-            return ViewportInteraction::InteractionArg(interaction.pos, enumValue(stationId), ViewportInteraction::InteractionItem::stationLabel, interaction.modId);
+            return { interaction.pos, enumValue(stationId), ViewportInteraction::InteractionItem::stationLabel, interaction.modId };
         }
 
         // 0x004B5BA3

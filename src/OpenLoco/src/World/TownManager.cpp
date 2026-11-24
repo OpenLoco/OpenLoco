@@ -429,7 +429,7 @@ namespace OpenLoco::TownManager
 
     FixedVector<Town, Limits::kMaxTowns> towns()
     {
-        return FixedVector(rawTowns());
+        return { rawTowns() };
     }
 
     Town* get(TownId id)

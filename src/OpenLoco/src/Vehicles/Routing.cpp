@@ -51,12 +51,12 @@ namespace OpenLoco::Vehicles
 
         TrackAndDirection::_TrackAndDirection tad() const
         {
-            return TrackAndDirection::_TrackAndDirection((trackAndDirection & 0x1F8) >> 3, trackAndDirection & 0x7);
+            return { static_cast<uint8_t>((trackAndDirection & 0x1F8) >> 3), static_cast<uint8_t>(trackAndDirection & 0x7) };
         }
 
         TrackAndDirection::_RoadAndDirection rad() const
         {
-            return TrackAndDirection::_RoadAndDirection((trackAndDirection & 0x78) >> 3, trackAndDirection & 0x7);
+            return { static_cast<uint8_t>((trackAndDirection & 0x78) >> 3), static_cast<uint8_t>(trackAndDirection & 0x7) };
         }
     };
 
@@ -168,11 +168,11 @@ namespace OpenLoco::Vehicles
 
         Iterator begin() const
         {
-            return Iterator(0, *this);
+            return { 0, *this };
         }
         Iterator end() const
         {
-            return Iterator(mapSize, *this);
+            return { mapSize, *this };
         }
     };
 

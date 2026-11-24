@@ -190,7 +190,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         x /= kTileSize;
         y /= kTileSize;
 
-        return Point(-x + y + kMapColumns, x + y);
+        return { -x + y + kMapColumns, x + y };
     }
 
     // 0x0046B8E6

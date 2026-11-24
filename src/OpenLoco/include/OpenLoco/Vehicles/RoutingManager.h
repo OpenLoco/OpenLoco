@@ -95,8 +95,8 @@ namespace OpenLoco::Vehicles::RoutingManager
         {
         }
 
-        RingView::Iterator begin() const { return Iterator(_begin, false, Iterator::Direction::forward); }
-        RingView::Iterator end() const { return Iterator(_begin, true, Iterator::Direction::forward); }
+        RingView::Iterator begin() const { return { _begin, false, Iterator::Direction::forward }; }
+        RingView::Iterator end() const { return { _begin, true, Iterator::Direction::forward }; }
         auto rbegin() const { return Iterator(_begin, false, Iterator::Direction::reverse); }
         auto rend() const { return Iterator(_begin, true, Iterator::Direction::reverse); }
     };

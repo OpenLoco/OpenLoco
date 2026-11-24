@@ -69,12 +69,12 @@ namespace OpenLoco::Platform
             wExePath = std::make_unique<wchar_t[]>(wExePathCapacity);
             size = GetModuleFileNameW(hModule, wExePath.get(), wExePathCapacity);
         } while (size >= wExePathCapacity);
-        return fs::path(wExePath.get());
+        return { wExePath.get() };
     }
 
     fs::path getCurrentExecutablePath()
     {
-        return WIN32_GetModuleFileNameW(nullptr);
+        return { WIN32_GetModuleFileNameW(nullptr) };
     }
 
     std::vector<fs::path> getDrives()

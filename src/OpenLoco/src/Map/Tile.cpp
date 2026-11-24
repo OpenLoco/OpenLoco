@@ -206,6 +206,6 @@ namespace OpenLoco::World
     Ui::viewport_pos gameToScreen(const Pos3& loc, int rotation)
     {
         auto rotLoc = Math::Vector::rotate(loc, rotation);
-        return Ui::viewport_pos(rotLoc.y - rotLoc.x, ((rotLoc.y + rotLoc.x) >> 1) - loc.z);
+        return { rotLoc.y - rotLoc.x, ((rotLoc.y + rotLoc.x) >> 1) - loc.z };
     }
 }

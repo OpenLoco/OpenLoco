@@ -141,7 +141,7 @@ namespace OpenLoco
             endBuildingPtr++;
         }
 
-        return std::span<const AirportBuilding>(firstBuildingPtr, endBuildingPtr);
+        return { firstBuildingPtr, endBuildingPtr };
     }
 
     std::span<const std::uint8_t> AirportObject::getBuildingParts(const uint8_t buildingType) const
@@ -155,34 +155,34 @@ namespace OpenLoco
             end++;
         }
 
-        return std::span<const std::uint8_t>(partsPointer, end);
+        return { partsPointer, end };
     }
 
     std::span<const uint8_t> AirportObject::getBuildingPartHeights() const
     {
         const auto* base = reinterpret_cast<const uint8_t*>(this);
-        return std::span<const std::uint8_t>(base + buildingPartHeightsOffset, numSpriteSets);
+        return { base + buildingPartHeightsOffset, numSpriteSets };
     }
 
     std::span<const BuildingPartAnimation> AirportObject::getBuildingPartAnimations() const
     {
         const auto* base = reinterpret_cast<const uint8_t*>(this);
         const auto* ptr = reinterpret_cast<const BuildingPartAnimation*>(base + buildingPartAnimationsOffset);
-        return std::span<const BuildingPartAnimation>(ptr, numSpriteSets);
+        return { ptr, numSpriteSets };
     }
 
     std::span<const AirportObject::MovementNode> AirportObject::getMovementNodes() const
     {
         const auto* base = reinterpret_cast<const uint8_t*>(this);
         const auto* ptr = reinterpret_cast<const MovementNode*>(base + movementNodesOffset);
-        return std::span<const MovementNode>(ptr, numMovementNodes);
+        return { ptr, numMovementNodes };
     }
 
     std::span<const AirportObject::MovementEdge> AirportObject::getMovementEdges() const
     {
         const auto* base = reinterpret_cast<const uint8_t*>(this);
         const auto* ptr = reinterpret_cast<const MovementEdge*>(base + movementEdgesOffset);
-        return std::span<const MovementEdge>(ptr, numMovementEdges);
+        return { ptr, numMovementEdges };
     }
 
 }

@@ -33,12 +33,12 @@ namespace OpenLoco
 
         constexpr currency48_t operator+(const currency32_t& rhs)
         {
-            return currency48_t(asInt64() + rhs);
+            return { asInt64() + rhs };
         }
 
         constexpr currency48_t operator+(const currency48_t& rhs)
         {
-            return currency48_t(asInt64() + rhs.asInt64());
+            return { asInt64() + rhs.asInt64() };
         }
 
         constexpr currency48_t& operator+=(const currency32_t& rhs)
@@ -55,12 +55,12 @@ namespace OpenLoco
 
         constexpr currency48_t operator-(const currency32_t& rhs)
         {
-            return currency48_t(asInt64() - rhs);
+            return { asInt64() - rhs };
         }
 
         constexpr currency48_t operator-(const currency48_t& rhs)
         {
-            return currency48_t(asInt64() - rhs.asInt64());
+            return { asInt64() - rhs.asInt64() };
         }
 
         constexpr currency48_t& operator-=(const currency32_t& rhs)
