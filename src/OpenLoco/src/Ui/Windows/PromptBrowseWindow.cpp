@@ -819,7 +819,11 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             {
                 return true;
             }
-            return a.stem() < b.stem();
+            auto& aStem = a.stem();
+            auto& bStem = b.stem();
+            return std::lexicographical_compare(aStem.begin(), aStem.end(), bStem.begin(), bStem.end(), [](char x, char y) {
+                return std::tolower(x) < std::tolower(y);
+            });
         });
     }
 
