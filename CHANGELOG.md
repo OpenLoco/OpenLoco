@@ -1,4 +1,4 @@
-26.09+ (???)
+26.11 (2026-11-28)
 ------------------------------------------------------------------------
 - Feature: [#4053] Save and scenario files can now be loaded by dragging & dropping them into the game window.
 - Feature: [#4113] Add OpenGraphics Great Britain Expansion vehicles! And vanilla replacements for various GB vehicles, the fountain and the park. And updated various OpenGraphic GB vehicles for consistency with the rest of the set.
