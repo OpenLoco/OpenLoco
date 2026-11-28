@@ -32,6 +32,7 @@
 #include <OpenLoco/Utility/String.hpp>
 #include <SDL3/SDL_keycode.h>
 #include <algorithm>
+#include <cctype>
 #include <cstring>
 #include <string>
 
@@ -819,7 +820,12 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             {
                 return true;
             }
-            return a.stem() < b.stem();
+            const auto aStem = a.stem().string();
+            const auto bStem = b.stem().string();
+            // shortcut: ASCII-only case folding, upgrade if non-ASCII names need locale-aware ordering
+            return std::lexicographical_compare(aStem.begin(), aStem.end(), bStem.begin(), bStem.end(), [](unsigned char x, unsigned char y) {
+                return std::tolower(x) < std::tolower(y);
+            });
         });
     }
 
