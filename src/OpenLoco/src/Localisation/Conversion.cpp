@@ -207,6 +207,16 @@ namespace OpenLoco::Localisation
         return locoCode;
     }
 
+    std::string convertLocoToUnicode(std::string_view locoString)
+    {
+        std::string out;
+        for (uint8_t locoCode : locoString)
+        {
+            out += codepointToUtf8(convertLocoToUnicode(locoCode));
+        }
+        return out;
+    }
+
     uint8_t convertUnicodeToLoco(utf32_t unicode)
     {
         auto tableLookup = [unicode](auto&& table) {
