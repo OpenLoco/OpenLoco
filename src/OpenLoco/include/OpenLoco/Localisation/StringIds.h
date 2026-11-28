@@ -2191,6 +2191,9 @@ namespace OpenLoco::StringIds
     constexpr StringId error_invalid_file_type = 2479;
     constexpr StringId shortcut_rotate_view_clockwise = 2480;
     constexpr StringId shortcut_rotate_view_anti_clockwise = 2481;
+    constexpr StringId clear_scenery = 2482;
+    constexpr StringId clear_buildings = 2483;
+    constexpr StringId clear_tracks_and_roads = 2484;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
